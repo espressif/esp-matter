@@ -1,0 +1,47 @@
+id: ot_coex
+label: Coexistence
+package: OpenThread
+category: OpenThread
+quality: production
+description: This component provides support for Wi-Fi coexistence with OpenThread
+provides:
+  - name: ot_coex
+requires:
+  - name: ot_platform_abstraction
+  - name: rail_util_coex
+  - name: rail_util_ieee802154_stack_event
+  - name: rail_util_ieee802154_phy_select
+  - name: sl_ot_custom_cli
+    condition: [ot_cli]
+config_file:
+  - path: protocol/openthread/config/sl_openthread_coex_config.h
+  - path: protocol/openthread/config/sl_openthread_coex_cli_config.h
+    condition: [ot_cli]
+toolchain_settings:
+  - option: preinclude
+    value: sl_openthread_coex_config.h
+  - option: preinclude
+    value: sl_openthread_coex_cli_config.h
+    condition: [ot_cli]
+template_contribution:
+  - name: rail_util_ieee802154_phy_select_callbacks
+    value:
+      include: sl_ot_phy_select.h
+      runtime_phy_select_stack_support: SL_OPENTHREAD_PHY_SELECT_STACK_SUPPORT
+      update_active_radio_config: sl_ot_update_active_radio_config
+    priority: -9020
+    unless:
+      - rail_mux
+  - name: sl_ot_cli_command
+    value:
+      name: "coexistence"
+      handler: "coexCommand"
+      macro: "SL_OPENTHREAD_COEX_CLI_ENABLE"
+
+include:
+  - path: protocol/openthread/include
+    file_list:
+      - path: sl_ot_phy_select.h
+source:
+  - path: protocol/openthread/src/cli/coexistence_cli.c
+    condition: [ot_cli]

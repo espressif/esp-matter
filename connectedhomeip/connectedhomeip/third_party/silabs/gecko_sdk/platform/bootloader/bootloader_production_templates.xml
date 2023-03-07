@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="ASCII"?>
+<model:MDescriptors xmlns:model="http://www.silabs.com/ss/Studio.ecore">
+  <descriptors name="bootloader-apploader" label="Bootloader - SoC Bluetooth AppLoader OTA DFU" description="Standalone Bootloader using the Bluetooth AppLoader OTA DFU. This implements in-place application updates using Bluetooth connection.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-apploader.bootloader-apploader.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-apploader/bootloader-apploader.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-apploader/readme.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd2703a brd4108a brd4171a brd4176a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4191a brd4194a brd4195a brd4196a brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a brd4316a brd4317a brd4319a brd4330a brd4331a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm22.* .*efr32bg21.* .*efr32bg22.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*mgm21.* .*mgm22.* .*mgm24.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="bootloader-spi-ezsp" label="Bootloader - NCP EZSP SPI" description="Standalone Bootloader using the EZSP protocol over SPI. This is the recommended SPI bootloader for the EmberZNet and Connect protocol stacks.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-spi-ezsp.bootloader-spi-ezsp.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-spi-ezsp/bootloader-spi-ezsp.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-spi-ezsp/readme.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd2603a brd4100a brd4101a brd4101b brd4103a brd4104a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4194a brd4195a brd4196a brd4200a brd4202a brd4203a brd4204a brd4204b brd4204c brd4204d brd4205a brd4205b brd4207a brd4209a brd4210a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4300a brd4300b brd4301a brd4302a brd4303a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4310a brd4311a brd4311b brd4312a brd4316a brd4317a brd4319a brd4328a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm22.* .*efm32g.* .*efm32gg.* .*efm32gg11b.* .*efm32gg12b.* .*efm32hg.* .*efm32lg.* .*efm32pg12b.* .*efm32pg1b.* .*efm32pg22.* .*efm32pg23.* .*efm32tg.* .*efm32tg11b.* .*efm32wg.* .*efm32zg.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg22.* .*efr32fg12p.* .*efr32fg13p.* .*efr32fg14p.* .*efr32fg1p.* .*efr32fg23.* .*efr32fg25.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*efr32zg13l.* .*efr32zg13p.* .*efr32zg13s.* .*efr32zg14p.* .*efr32zg23.* .*fgm23.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*wgm160.* .*zgm13.* .*zgm23.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|NCP MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="bootloader-storage-internal-ble" label="Bootloader - SoC Bluetooth in-place OTA DFU" description="This sample configuration of the Gecko bootloader configures the bootloader to use the internal main flash to store firmware update images. The storage configuration is set up to store a single firmware update image at a time, in a single storage slot. The storage slot is configured to start at address 0x21800 (or 0x8021800 for device with 0x8000000 flash base), and have a size of 86 kB. This can be configured on the &quot;Software Components-&gt;Platform-&gt;Bootloader-&gt;Storage-&gt;Bootloader Storage Slot Setup&quot;.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-storage-internal-ble.bootloader-storage-internal-ble.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-storage-internal-ble/bootloader-storage-internal-ble.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-storage-internal-ble/readme.md"/>
+    <properties key="boardCompatibility" value="brd2204a brd2204b brd2204c brd2207a brd2500a brd2501a brd4100a brd4101a brd4101b brd4103a brd4104a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4177a brd4190a brd4200a brd4201a brd4201c brd4201d brd4202a brd4203a brd4206a brd4207a brd4208a brd4209a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4300a brd4300b brd4301a brd4302a brd4303a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4321a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm22.* .*efm32g.* .*efm32gg.* .*efm32gg11b.* .*efm32gg12b.* .*efm32hg.* .*efm32lg.* .*efm32pg12b.* .*efm32pg1b.* .*efm32pg22.* .*efm32pg23.* .*efm32tg.* .*efm32tg11b.* .*efm32wg.* .*efm32zg.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg21.* .*efr32bg22.* .*efr32fg12p.* .*efr32fg13p.* .*efr32fg14p.* .*efr32fg1p.* .*efr32fg22.* .*efr32fg23.* .*efr32fg25.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*efr32zg13l.* .*efr32zg13p.* .*efr32zg13s.* .*efr32zg14p.* .*efr32zg23.* .*fgm23.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*wgm160.* .*zgm13.* .*zgm23.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="bootloader-storage-internal-single-1536k" label="Bootloader - SoC Internal Storage (single image on 1536kB device)" description="This sample configuration of the Gecko bootloader configures the bootloader to use the internal main flash to store firmware update images. The storage configuration is set up to store a single firmware update image at a time, in a single storage slot. The storage slot is configured to start at address 0xc0000 (or 0x80c0000 for device with 0x8000000 flash base), and have a size of 728 kB. This can be configured on the &quot;Storage&quot; tab.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-storage-internal-single-1536k.bootloader-storage-internal-single-1536k.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-storage-internal-single-1536k/bootloader-storage-internal-single-1536k.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-storage-internal-single-1536k/readme.md"/>
+    <properties key="boardCompatibility" value="brd2204a brd2204b brd2204c brd2601a brd2601b brd2703a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4316a brd4317a brd4319a brd4321a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm22.* .*efm32g.* .*efm32gg.* .*efm32gg11b.* .*efm32gg12b.* .*efm32hg.* .*efm32lg.* .*efm32pg12b.* .*efm32pg1b.* .*efm32pg22.* .*efm32pg23.* .*efm32tg.* .*efm32tg11b.* .*efm32wg.* .*efm32zg.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg21.* .*efr32bg22.* .*efr32fg12p.* .*efr32fg13p.* .*efr32fg14p.* .*efr32fg1p.* .*efr32fg22.* .*efr32fg23.* .*efr32fg25.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*efr32zg13l.* .*efr32zg13p.* .*efr32zg13s.* .*efr32zg14p.* .*efr32zg23.* .*fgm23.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*wgm160.* .*zgm13.* .*zgm23.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="bootloader-storage-internal-single-1920k" label="Bootloader - SoC Internal Storage (single image on 1920kB device)" description="This sample configuration of the Gecko bootloader configures the bootloader to use the internal main flash to store firmware update images. The storage configuration is set up to store a single firmware update image at a time, in a single storage slot. The storage slot is configured to start at address 0x80E8000, and have a size of 944 kB. This can be configured on the &quot;Storage&quot; tab.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-storage-internal-single-1920k.bootloader-storage-internal-single-1920k.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-storage-internal-single-1920k/bootloader-storage-internal-single-1920k.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-storage-internal-single-1920k/readme.md"/>
+    <properties key="boardCompatibility" value="brd2204a brd2204b brd2204c brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4321a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm22.* .*efm32g.* .*efm32gg.* .*efm32gg11b.* .*efm32gg12b.* .*efm32hg.* .*efm32lg.* .*efm32pg12b.* .*efm32pg1b.* .*efm32pg22.* .*efm32pg23.* .*efm32tg.* .*efm32tg11b.* .*efm32wg.* .*efm32zg.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg21.* .*efr32bg22.* .*efr32fg12p.* .*efr32fg13p.* .*efr32fg14p.* .*efr32fg1p.* .*efr32fg22.* .*efr32fg23.* .*efr32fg25.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*efr32zg13l.* .*efr32zg13p.* .*efr32zg13s.* .*efr32zg14p.* .*efr32zg23.* .*fgm23.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*wgm160.* .*zgm13.* .*zgm23.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value=""/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="bootloader-storage-internal-single-2048k" label="Bootloader - SoC Internal Storage (single image on 2MB device)" description="This sample configuration of the Gecko bootloader configures the bootloader to use the internal main flash to store firmware update images. The storage configuration is set up to store a single firmware update image at a time, in a single storage slot. The storage slot is configured to start at address 0x100000 (or 0x8100000 for device with 0x8000000 flash base), and have a size of 988 kB. This can be configured on the &quot;Storage&quot; tab.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-storage-internal-single-2048k.bootloader-storage-internal-single-2048k.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-storage-internal-single-2048k/bootloader-storage-internal-single-2048k.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-storage-internal-single-2048k/readme.md"/>
+    <properties key="boardCompatibility" value="brd2204a brd2204b brd2204c brd4321a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm22.* .*efm32g.* .*efm32gg.* .*efm32gg11b.* .*efm32gg12b.* .*efm32hg.* .*efm32lg.* .*efm32pg12b.* .*efm32pg1b.* .*efm32pg22.* .*efm32pg23.* .*efm32tg.* .*efm32tg11b.* .*efm32wg.* .*efm32zg.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg21.* .*efr32bg22.* .*efr32fg12p.* .*efr32fg13p.* .*efr32fg14p.* .*efr32fg1p.* .*efr32fg22.* .*efr32fg23.* .*efr32fg25.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*efr32zg13l.* .*efr32zg13p.* .*efr32zg13s.* .*efr32zg14p.* .*efr32zg23.* .*fgm23.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*wgm160.* .*zgm13.* .*zgm23.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="bootloader-storage-internal-single-352k" label="Bootloader - SoC Internal Storage (single image on 352kB device)" description="This sample configuration of the Gecko bootloader configures the bootloader to use the internal main flash to store firmware update images. The storage configuration is set up to store a single firmware update image at a time, in a single storage slot. The storage slot is configured to start at address 0x28000 (or 0x8028000 for device with 0x8000000 flash base), and have a size of 120 kB. This can be configured on the &quot;Storage&quot; tab.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-storage-internal-single-352k.bootloader-storage-internal-single-352k.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-storage-internal-single-352k/bootloader-storage-internal-single-352k.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-storage-internal-single-352k/readme.md"/>
+    <properties key="boardCompatibility" value="brd2204a brd2204b brd2204c brd2207a brd2501a brd2503a brd2504a brd2600a brd2601a brd2601b brd2603a brd2703a brd4103a brd4104a brd4108a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4195a brd4196a brd4200a brd4201c brd4201d brd4202a brd4203a brd4204a brd4204b brd4204c brd4204d brd4205a brd4205b brd4207a brd4209a brd4210a brd4253a brd4254a brd4255a brd4256a brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a brd4316a brd4317a brd4319a brd4321a brd4328a brd4330a brd4331a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm22.* .*efm32g.* .*efm32gg.* .*efm32gg11b.* .*efm32gg12b.* .*efm32hg.* .*efm32lg.* .*efm32pg12b.* .*efm32pg1b.* .*efm32pg22.* .*efm32pg23.* .*efm32tg.* .*efm32tg11b.* .*efm32wg.* .*efm32zg.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg21.* .*efr32bg22.* .*efr32fg12p.* .*efr32fg13p.* .*efr32fg14p.* .*efr32fg1p.* .*efr32fg22.* .*efr32fg23.* .*efr32fg25.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*efr32zg13l.* .*efr32zg13p.* .*efr32zg13s.* .*efr32zg14p.* .*efr32zg23.* .*fgm23.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*wgm160.* .*zgm13.* .*zgm23.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="bootloader-storage-internal-single-512k" label="Bootloader - SoC Internal Storage (single image on 512kB device)" description="This sample configuration of the Gecko bootloader configures the bootloader to use the internal main flash to store firmware update images. The storage configuration is set up to store a single firmware update image at a time, in a single storage slot. The storage slot is configured to start at address 0x44000 (or 0x8044000 for device with 0x8000000 flash base), and have a size of 192 kB. This can be configured on the &quot;Storage&quot; tab.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-storage-internal-single-512k.bootloader-storage-internal-single-512k.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-storage-internal-single-512k/bootloader-storage-internal-single-512k.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-storage-internal-single-512k/readme.md"/>
+    <properties key="boardCompatibility" value="brd2204a brd2204b brd2204c brd2207a brd2501a brd2503a brd2504a brd2600a brd2601a brd2601b brd2603a brd2703a brd4103a brd4104a brd4108a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4183a brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4195a brd4196a brd4200a brd4201c brd4201d brd4202a brd4203a brd4204a brd4204b brd4204c brd4204d brd4205a brd4205b brd4207a brd4209a brd4210a brd4253a brd4254a brd4255a brd4256a brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4311a brd4311b brd4312a brd4314a brd4316a brd4317a brd4319a brd4321a brd4328a brd4330a brd4331a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm22.* .*efm32g.* .*efm32gg.* .*efm32gg11b.* .*efm32gg12b.* .*efm32hg.* .*efm32lg.* .*efm32pg12b.* .*efm32pg1b.* .*efm32pg22.* .*efm32pg23.* .*efm32tg.* .*efm32tg11b.* .*efm32wg.* .*efm32zg.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg21.* .*efr32bg22.* .*efr32fg12p.* .*efr32fg13p.* .*efr32fg14p.* .*efr32fg1p.* .*efr32fg22.* .*efr32fg23.* .*efr32fg25.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*efr32zg13l.* .*efr32zg13p.* .*efr32zg13s.* .*efr32zg14p.* .*efr32zg23.* .*fgm23.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*wgm160.* .*zgm13.* .*zgm23.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="bootloader-storage-internal-single-768k" label="Bootloader - SoC Internal Storage (single image on 768kB device)" description="This sample configuration of the Gecko bootloader configures the bootloader to use the internal main flash to store firmware update images. The storage configuration is set up to store a single firmware update image at a time, in a single storage slot. The storage slot is configured to start at address 0x5C000 (or 0x805C000 for device with 0x8000000 flash base), and have a size of 368 kB. This can be configured on the &quot;Storage&quot; tab.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-storage-internal-single-768k.bootloader-storage-internal-single-768k.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-storage-internal-single-768k/bootloader-storage-internal-single-768k.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-storage-internal-single-768k/readme.md"/>
+    <properties key="boardCompatibility" value="brd2204a brd2204b brd2204c brd2207a brd2501a brd2601a brd2601b brd2703a brd4103a brd4161a brd4162a brd4163a brd4164a brd4166a brd4170a brd4171a brd4172a brd4172b brd4173a brd4176a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4194a brd4195a brd4196a brd4253a brd4254a brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4304a brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4316a brd4317a brd4319a brd4321a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm22.* .*efm32g.* .*efm32gg.* .*efm32gg11b.* .*efm32gg12b.* .*efm32hg.* .*efm32lg.* .*efm32pg12b.* .*efm32pg1b.* .*efm32pg22.* .*efm32pg23.* .*efm32tg.* .*efm32tg11b.* .*efm32wg.* .*efm32zg.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg21.* .*efr32bg22.* .*efr32fg12p.* .*efr32fg13p.* .*efr32fg14p.* .*efr32fg1p.* .*efr32fg22.* .*efr32fg23.* .*efr32fg25.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*efr32zg13l.* .*efr32zg13p.* .*efr32zg13s.* .*efr32zg14p.* .*efr32zg23.* .*fgm23.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*wgm160.* .*zgm13.* .*zgm23.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="bootloader-storage-internal-single-lzma" label="Bootloader - SoC Internal Storage (single image with LZMA compression, 1MB flash)" description="This sample configuration of the Gecko bootloader configures the bootloader to use the internal main flash to store firmware update images. The storage configuration is set up to store a single firmware update image at a time, in a single storage slot. The storage slot is configured to start at address 0x84000 (or 0x8084000 for device with 0x8000000 flash base), and have a size of 448 kB. This can be configured on the &quot;Storage&quot; tab.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-storage-internal-single-lzma.bootloader-storage-internal-single-lzma.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-storage-internal-single-lzma/bootloader-storage-internal-single-lzma.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-storage-internal-single-lzma/readme.md"/>
+    <properties key="boardCompatibility" value="brd2204a brd2204b brd2204c brd2207a brd2501a brd2601a brd2601b brd2703a brd4103a brd4161a brd4162a brd4163a brd4164a brd4166a brd4170a brd4171a brd4172a brd4172b brd4173a brd4176a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4195a brd4196a brd4253a brd4254a brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4304a brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4316a brd4317a brd4319a brd4321a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm22.* .*efm32g.* .*efm32gg.* .*efm32gg11b.* .*efm32gg12b.* .*efm32hg.* .*efm32lg.* .*efm32pg12b.* .*efm32pg1b.* .*efm32pg22.* .*efm32pg23.* .*efm32tg.* .*efm32tg11b.* .*efm32wg.* .*efm32zg.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg21.* .*efr32bg22.* .*efr32fg12p.* .*efr32fg13p.* .*efr32fg14p.* .*efr32fg1p.* .*efr32fg22.* .*efr32fg23.* .*efr32fg25.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*efr32zg13l.* .*efr32zg13p.* .*efr32zg13s.* .*efr32zg14p.* .*efr32zg23.* .*fgm23.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*wgm160.* .*zgm13.* .*zgm23.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="bootloader-storage-internal-single" label="Bootloader - SoC Internal Storage (single image on 1MB device)" description="This sample configuration of the Gecko bootloader configures the bootloader to use the internal main flash to store firmware update images. The storage configuration is set up to store a single firmware update image at a time, in a single storage slot. The storage slot is configured to start at address 0x84000 (or 0x8084000 for device with 0x8000000 flash base), and have a size of 448 kB. This can be configured on the &quot;Storage&quot; tab.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-storage-internal-single.bootloader-storage-internal-single.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-storage-internal-single/bootloader-storage-internal-single.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-storage-internal-single/readme.md"/>
+    <properties key="boardCompatibility" value="brd2204a brd2204b brd2204c brd2207a brd2501a brd2601a brd2601b brd2703a brd4103a brd4161a brd4162a brd4163a brd4164a brd4166a brd4170a brd4171a brd4172a brd4172b brd4173a brd4176a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4195a brd4196a brd4253a brd4254a brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4304a brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4316a brd4317a brd4319a brd4321a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm22.* .*efm32g.* .*efm32gg.* .*efm32gg11b.* .*efm32gg12b.* .*efm32hg.* .*efm32lg.* .*efm32pg12b.* .*efm32pg1b.* .*efm32pg22.* .*efm32pg23.* .*efm32tg.* .*efm32tg11b.* .*efm32wg.* .*efm32zg.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg21.* .*efr32bg22.* .*efr32fg12p.* .*efr32fg13p.* .*efr32fg14p.* .*efr32fg1p.* .*efr32fg22.* .*efr32fg23.* .*efr32fg25.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*efr32zg13l.* .*efr32zg13p.* .*efr32zg13s.* .*efr32zg14p.* .*efr32zg23.* .*fgm23.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*wgm160.* .*zgm13.* .*zgm23.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="bootloader-storage-internal" label="Bootloader - SoC Internal Storage (multiple images on 1MB device)" description="Application Bootloader for all EFR32 and EFM32 devices with 1MB or larger flash, using the internal flash memory to store upgrade images received by the application over the air in an application specific way. This sample configuration supports storing multiple firmware update images simultaneously by configuring multiple storage slots. The storage layout is designed for 1024 kB EFR32xG12 devices, and the layout of the storage should be modified before being run on other devices.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-storage-internal.bootloader-storage-internal.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-storage-internal/bootloader-storage-internal.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-storage-internal/readme.md"/>
+    <properties key="boardCompatibility" value="brd2204a brd2204b brd2204c brd2207a brd2501a brd4103a brd4161a brd4162a brd4163a brd4164a brd4166a brd4170a brd4172a brd4172b brd4173a brd4190a brd4253a brd4254a brd4304a brd4321a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm22.* .*efm32g.* .*efm32gg.* .*efm32gg11b.* .*efm32gg12b.* .*efm32hg.* .*efm32lg.* .*efm32pg12b.* .*efm32pg1b.* .*efm32pg22.* .*efm32pg23.* .*efm32tg.* .*efm32tg11b.* .*efm32wg.* .*efm32zg.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg21.* .*efr32bg22.* .*efr32fg12p.* .*efr32fg13p.* .*efr32fg14p.* .*efr32fg1p.* .*efr32fg22.* .*efr32fg23.* .*efr32fg25.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*efr32zg13l.* .*efr32zg13p.* .*efr32zg13s.* .*efr32zg14p.* .*efr32zg23.* .*fgm23.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*wgm160.* .*zgm13.* .*zgm23.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="bootloader-storage-spiflash-sfdp-single" label="Bootloader - SoC SPI Flash Storage using SFDP (single image)" description="This sample configuration of the Gecko bootloader configures the bootloader to use an external SPI flash to store firmware update images. The SPI flash type is detected automatically by querying the SFDP parameter table present inside the flash memory. The storage configuration is set up to store a single firmware update image at a time, in a single storage slot. The storage slot is configured to start at address 0x0 of the SPI flash, and have a size of 512 kB. This can be configured on the &quot;Storage&quot; tab.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-storage-spiflash-sfdp-single.bootloader-storage-spiflash-sfdp-single.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-storage-spiflash-sfdp-single/bootloader-storage-spiflash-sfdp-single.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-storage-spiflash-sfdp-single/readme.md"/>
+    <properties key="boardCompatibility" value="brd2503a brd2601a brd2601b brd2603a brd4100a brd4101a brd4101b brd4103a brd4104a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4177a brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4203a brd4204a brd4204b brd4204c brd4204d brd4205a brd4205b brd4209a brd4210a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4300b brd4302a brd4303a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4310a brd4311a brd4311b brd4312a brd4316a brd4317a brd4328a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm22.* .*efm32pg22.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg22.* .*efr32fg12p.* .*efr32fg13p.* .*efr32fg14p.* .*efr32fg1p.* .*efr32fg23.* .*efr32fg25.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32zg13p.* .*efr32zg23.* .*fgm23.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm22.* .*mgm24.* .*zgm23.* .*rm21.* .*efm32gg12b.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="bootloader-storage-spiflash-single-1024k" label="Bootloader - SoC SPI Flash Storage (single image with slot size of 1024k)" description="This sample configuration of the Gecko bootloader configures the bootloader to use an external SPI flash to store firmware update images. The storage configuration is set up to store a single firmware update image at a time, in a single storage slot. The storage slot is configured to start at address 0x0 of the SPI flash, and have a size of 1024 kB. This can be configured on the &quot;Storage&quot; tab.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-storage-spiflash-single-1024k.bootloader-storage-spiflash-single-1024k.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-storage-spiflash-single-1024k/bootloader-storage-spiflash-single-1024k.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-storage-spiflash-single-1024k/readme.md"/>
+    <properties key="boardCompatibility" value="brd2503a brd2601a brd2601b brd2603a brd4100a brd4101a brd4101b brd4103a brd4104a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4177a brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4203a brd4204a brd4204b brd4204c brd4204d brd4205a brd4205b brd4209a brd4210a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4300b brd4302a brd4303a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4310a brd4311a brd4311b brd4312a brd4316a brd4317a brd4328a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm22.* .*efm32pg22.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg22.* .*efr32fg12p.* .*efr32fg13p.* .*efr32fg14p.* .*efr32fg1p.* .*efr32fg23.* .*efr32fg25.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32zg13p.* .*efr32zg23.* .*fgm23.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm22.* .*mgm24.* .*zgm23.* .*rm21.* .*efm32gg12b.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="bootloader-storage-spiflash-single" label="Bootloader - SoC SPI Flash Storage (single image)" description="This sample configuration of the Gecko bootloader configures the bootloader to use an external SPI flash to store firmware update images. The storage configuration is set up to store a single firmware update image at a time, in a single storage slot. The storage slot is configured to start at address 0x0 of the SPI flash, and have a size of 512 kB. This can be configured on the &quot;Storage&quot; tab.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-storage-spiflash-single.bootloader-storage-spiflash-single.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-storage-spiflash-single/bootloader-storage-spiflash-single.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-storage-spiflash-single/readme.md"/>
+    <properties key="boardCompatibility" value="brd2503a brd2601a brd2601b brd2603a brd4100a brd4101a brd4101b brd4103a brd4104a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4177a brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4203a brd4204a brd4204b brd4204c brd4204d brd4205a brd4205b brd4209a brd4210a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4300b brd4302a brd4303a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4310a brd4311a brd4311b brd4312a brd4316a brd4317a brd4328a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm22.* .*efm32pg22.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg22.* .*efr32fg12p.* .*efr32fg13p.* .*efr32fg14p.* .*efr32fg1p.* .*efr32fg23.* .*efr32fg25.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32zg13p.* .*efr32zg23.* .*fgm23.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm22.* .*mgm24.* .*zgm23.* .*rm21.* .*efm32gg12b.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="bootloader-storage-spiflash" label="Bootloader - SoC SPI Flash Storage (multiple images)" description="This sample configuration of the Gecko bootloader configures the bootloader to use an external SPI flash to store firmware update images. The storage configuration is set up to store up to two firmware update images at a time, in two storage slots. The storage slots are configured to start at address 0x2000 and 0x41000 of the SPI flash respectively, and have a size of 252 kB. This can be configured on the &quot;Storage&quot; tab.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-storage-spiflash.bootloader-storage-spiflash.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-storage-spiflash/bootloader-storage-spiflash.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-storage-spiflash/readme.md"/>
+    <properties key="boardCompatibility" value="brd2503a brd2601a brd2601b brd2603a brd4100a brd4101a brd4101b brd4103a brd4104a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4177a brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4203a brd4204a brd4204b brd4204c brd4204d brd4205a brd4205b brd4209a brd4210a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4300b brd4302a brd4303a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4310a brd4311a brd4311b brd4312a brd4316a brd4317a brd4328a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm22.* .*efm32pg22.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg22.* .*efr32fg12p.* .*efr32fg13p.* .*efr32fg14p.* .*efr32fg1p.* .*efr32fg23.* .*efr32fg25.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32zg13p.* .*efr32zg23.* .*fgm23.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm22.* .*mgm24.* .*zgm23.* .*rm21.* .*efm32gg12b.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="bootloader-uart-bgapi" label="Bootloader - NCP BGAPI UART DFU" description="Standalone Bootloader using the BGAPI protocol for UART DFU. This is the recommended UART bootloader for the BLE protocol stack.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-uart-bgapi.bootloader-uart-bgapi.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-uart-bgapi/bootloader-uart-bgapi.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-uart-bgapi/readme.md"/>
+    <properties key="boardCompatibility" value="brd2600a brd2601a brd2601b brd2603a brd2703a brd4100a brd4101a brd4101b brd4103a brd4104a brd4108a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4195a brd4196a brd4200a brd4201a brd4201c brd4201d brd4202a brd4203a brd4204a brd4204b brd4204c brd4204d brd4205a brd4205b brd4206a brd4207a brd4208a brd4209a brd4210a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4300a brd4300b brd4301a brd4302a brd4303a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a brd4316a brd4317a brd4319a brd4328a brd4330a brd4331a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm22.* .*efm32g.* .*efm32gg.* .*efm32gg11b.* .*efm32gg12b.* .*efm32hg.* .*efm32lg.* .*efm32pg12b.* .*efm32pg1b.* .*efm32pg22.* .*efm32pg23.* .*efm32tg.* .*efm32tg11b.* .*efm32wg.* .*efm32zg.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg21.* .*efr32bg22.* .*efr32fg12p.* .*efr32fg13p.* .*efr32fg14p.* .*efr32fg1p.* .*efr32fg22.* .*efr32fg23.* .*efr32fg25.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*efr32zg13l.* .*efr32zg13p.* .*efr32zg13s.* .*efr32zg14p.* .*efr32zg23.* .*fgm23.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*wgm160.* .*zgm13.* .*zgm23.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|NCP MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="bootloader-uart-xmodem" label="Bootloader - NCP UART XMODEM" description="Standalone Bootloader using XMODEM-CRC over UART. The bootloader shows a menu, where an XMODEM transfer can be started by sending ASCII '1', or the application can be started by sending ASCII '2'. This is the recommended UART bootloader for the EmberZNet and Connect protocol stacks.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-uart-xmodem.bootloader-uart-xmodem.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-uart-xmodem/bootloader-uart-xmodem.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-uart-xmodem/readme.md"/>
+    <properties key="boardCompatibility" value="brd2102a brd2204a brd2204b brd2204c brd2207a brd2500a brd2501a brd2503a brd2504a brd2600a brd2601a brd2601b brd2603a brd2703a brd4100a brd4101a brd4101b brd4103a brd4104a brd4108a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4195a brd4196a brd4200a brd4201a brd4201c brd4201d brd4202a brd4203a brd4204a brd4204b brd4204c brd4204d brd4205a brd4205b brd4206a brd4207a brd4208a brd4209a brd4210a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4300a brd4300b brd4301a brd4302a brd4303a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a brd4316a brd4317a brd4319a brd4321a brd4328a brd4330a brd4331a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm22.* .*efm32g.* .*efm32gg.* .*efm32gg11b.* .*efm32gg12b.* .*efm32hg.* .*efm32lg.* .*efm32pg12b.* .*efm32pg1b.* .*efm32pg22.* .*efm32pg23.* .*efm32tg.* .*efm32tg11b.* .*efm32wg.* .*efm32zg.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg21.* .*efr32bg22.* .*efr32fg12p.* .*efr32fg13p.* .*efr32fg14p.* .*efr32fg1p.* .*efr32fg22.* .*efr32fg23.* .*efr32fg25.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*efr32zg13l.* .*efr32zg13p.* .*efr32zg13s.* .*efr32zg14p.* .*efr32zg23.* .*fgm23.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*wgm160.* .*zgm13.* .*zgm23.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|NCP MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="bootloader-storage-internal-single-512k" label="bootloader-storage-internal-single-512k" description="This sample configuration of the Gecko bootloader configures the bootloader to use the internal main flash to store firmware update images. The storage configuration is set up to store a single firmware update image at a time, in a single storage slot. The storage slot is configured to start at address 0x44000 (or 0x8044000 for device with 0x8000000 flash base), and have a size of 192 kB. This can be configured on the &quot;Storage&quot; tab.&#xA;This sample configuration works out-of-the-box with the &quot;Local Storage Bootloader&quot; option in Silicon Labs EmberZNet Application Builder projects as well as Bluetooth and Connect projects. The configuration is designed to be safe to use together with applications that use SimEE1, SimEE2, NVM3 or PStore as their NVM system. When changing the storage layout of the bootloader, take care to ensure that there is no overlap between the memory space the bootloader expects to use, and the memory space the application or NVM system expects to use.&#xA;For Silicon Labs EmberZNet Application Builder projects, the INTERNAL_STORAGE_SIZE_KB macro can be configured in the application to reserve space for the bootloader storage area. On 512 kB EFR32xG13 devices, this macro is by default set to 254 for applications using SimEE1, and 240 for applications using SimEE2.&#xA;Note: This sample configuration will not use all available flash space for bootloader storage. As the memory layout may differ between different application projects, this bootloader project has a safe configuration that ensures that it doesn't overlap with any application sample configuration. This comes at the expense of leaving some unused flash space. Always make sure to configure your bootloader to use the same area for storage as is set aside by your application.&#xA;If support for multiple storage slots is desired, the start address of the storage, configurable under &quot;Software Components-&gt;Platform-&gt;Bootloader-&gt;Storage-&gt;Bootloader Storage Slot Setup&quot;, *must* be configured to provide the location for &quot;bootload info&quot;, which is meta-information about the storage slots to tell the bootloader which storage slot to install the next firmware update from. See the &quot;Internal Storage Bootloader (multiple images)&quot; sample configuration for more information.&#xA;See UG489: Gecko Bootloader User's Guide to learn more about how to configure the bootloader, configure storage layout, enable security features, etc.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.z-wave.UCBootLoader.EFR32ZG23B020F512IM40.ota.bootloader-storage-internal-single-512k.slcp"/>
+    <properties key="projectFilePaths" value="../../protocol/z-wave/UCBootLoader/EFR32ZG23B020F512IM40/ota/bootloader-storage-internal-single-512k.slcp"/>
+    <properties key="readmeFiles" value=""/>
+    <properties key="boardCompatibility" value="com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32zg23.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value=""/>
+  </descriptors>
+  <descriptors name="bootloader-uart-xmodem" label="bootloader-uart-xmodem" description="Standalone Bootloader using XMODEM-CRC over UART. The bootloader shows a menu, where an XMODEM transfer can be started by sending ASCII '1', or the application can be started by sending ASCII '2'. This is the recommended UART bootloader for the EmberZNet and Connect protocol stacks.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.z-wave.UCBootLoader.EFR32ZG23B020F512IM40.otw.bootloader-uart-xmodem.slcp"/>
+    <properties key="projectFilePaths" value="../../protocol/z-wave/UCBootLoader/EFR32ZG23B020F512IM40/otw/bootloader-uart-xmodem.slcp"/>
+    <properties key="readmeFiles" value=""/>
+    <properties key="boardCompatibility" value="com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32zg23.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value=""/>
+  </descriptors>
+</model:MDescriptors>

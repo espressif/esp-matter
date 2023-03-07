@@ -1,0 +1,21 @@
+id: micriumos_net_app_http_server_auth
+label: Network Suite - HTTP Server Authentication
+package: micrium-tcpx
+description: Micrium OS Network HTTP Server Authentication
+category: Services|Micrium|Network Suite
+quality: production
+component_root_path: platform/micrium_os/net
+source:
+  - path: source/http/server/http_server_auth.c
+include:
+  - path: source
+    file_list:
+      - path: http/server/http_server_auth_priv.h
+  - path: include
+    file_list:
+      - path: http_server_addon_auth.h
+provides:
+  - name: net_app_http_server_auth
+requires:
+  - name: net_app_http_server
+  - name: common_auth

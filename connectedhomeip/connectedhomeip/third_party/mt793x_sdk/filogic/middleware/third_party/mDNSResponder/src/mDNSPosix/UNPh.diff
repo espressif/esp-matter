@@ -1,0 +1,44 @@
+--- mDNSUNP.h	2015-09-23 16:30:40.000000000 -0700
++++ /home/mtk09519/perforce/ws_14/Pach_CBr/MT7687_HomeKit_DEV/Pach/mcu/build.bach/work/libmDNSResponder/src/mDNSResponder-320.10.80_verified/mDNSPosix/mDNSUNP.h	2015-10-01 16:04:35.212934000 -0700
+@@ -29,6 +29,41 @@
+ 
+ #ifdef HAVE_LINUX
+ #include <linux/socket.h>
++#ifndef IPV6_2292PKTINFO
++#undef IPV6_2292PKTINFO
++#define IPV6_2292PKTINFO    2
++#endif
++
++#ifndef IPV6_2292HOPOPTS
++#undef IPV6_2292HOPOPTS
++#define IPV6_2292HOPOPTS    3
++#endif
++
++#ifndef IPV6_2292DSTOPTS
++#undef IPV6_2292DSTOPTS
++#define IPV6_2292DSTOPTS    4
++#endif
++
++#ifndef IPV6_2292RTHDR
++#undef IPV6_2292RTHDR
++#define IPV6_2292RTHDR      5
++#endif
++
++#ifndef IPV6_2292PKTOPTIONS
++#undef IPV6_2292PKTOPTIONS
++#define IPV6_2292PKTOPTIONS 6
++#endif
++
++#ifndef IPV6_2292HOPLIMIT
++#undef IPV6_2292HOPLIMIT
++#define IPV6_2292HOPLIMIT 8
++#endif
++
++#ifndef IPV6_V6ONLY
++#undef IPV6_V6ONLY
++#define IPV6_V6ONLY     26
++#endif
++
+ #define IPV6_2292_PKTINFO  IPV6_2292PKTINFO
+ #define IPV6_2292_HOPLIMIT IPV6_2292HOPLIMIT
+ #else

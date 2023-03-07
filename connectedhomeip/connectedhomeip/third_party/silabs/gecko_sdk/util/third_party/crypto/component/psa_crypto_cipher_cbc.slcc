@@ -1,0 +1,20 @@
+id: psa_crypto_cipher_cbc
+package: platform
+label: CBC Mode
+description: >-
+  This component provides support for the CBC block cipher chaining mode
+  (with no padding) in PSA Crypto.
+category: Platform|Security|PSA Crypto|Encryption
+quality: production
+provides:
+  - name: psa_crypto_cipher_cbc
+requires:
+  - name: psa_crypto_aes
+  - name: mbedtls_cipher_cbc
+    condition: [device_series_0]
+template_contribution:
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_CBC_NO_PADDING
+  - name: psa_crypto_config
+    value: "MBEDTLS_PSA_BUILTIN_ALG_CBC_NO_PADDING 1"
+    condition: [mbedtls_cipher_cbc]

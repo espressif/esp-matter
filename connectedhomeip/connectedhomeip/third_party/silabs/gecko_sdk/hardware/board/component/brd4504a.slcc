@@ -1,0 +1,30 @@
+!!omap
+- id: brd4504a
+- label: BRD4504A
+- package: platform
+- description: Board support for BRD4504A.
+- category: Platform|Board|Radio Board
+- quality: production
+- requires:
+  - name: ezr32lg330f256r63
+  - name: brd4504a_config
+  - name: hardware_board_mainboard
+- provides:
+  - name: brd4504a
+  - name: hardware_board
+  - name: hardware_board_rb
+  - name: hardware_board_from_stk
+  - name: hardware_board_from_slwstk6204a
+- recommends:
+  - id: brd4001a
+- template_contribution: []
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD4504A"'
+  - name: SL_BOARD_REV
+    value: '"A00"'
+- tag:
+  - board:pn:BRD4504
+  - board:variant:A
+  - board:revision:A00
+  - board:device:ezr32lg330f256r63

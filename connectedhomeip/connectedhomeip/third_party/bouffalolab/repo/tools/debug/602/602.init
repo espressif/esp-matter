@@ -1,0 +1,102 @@
+set architecture riscv:rv32
+#target remote :3333
+#set disassemble-next-line on
+set mem inaccessible-by-default off
+#gdb_breakpoint_override [hard|soft|disable]
+
+mem 0x22008000 0x22014000 rw
+mem 0x42008000 0x42014000 rw
+mem 0x22014000 0x22020000 rw
+mem 0x42014000 0x42020000 rw
+mem 0x22020000 0x22030000 rw
+mem 0x42020000 0x42030000 rw
+mem 0x22030000 0x2204C000 rw
+mem 0x42030000 0x4204C000 rw
+mem 0x23000000 0x23400000 ro
+
+def iterList
+     set $itemNum = $arg0.uxNumberOfItems
+     set $index = $arg0.pxIndex
+     set $next = $index->pxNext
+
+     while $itemNum
+          set $tcb = (TCB_t *) $next->pvOwner
+          set $taskName = $tcb->pcTaskName
+          set $pxTopOfStack = $tcb->pxTopOfStack
+
+          if $pxTopOfStack != 0
+               printf "task name is: %s\r\n", $taskName
+               set $sp = $pxTopOfStack + 64
+               set $ra = $pxTopOfStack[35]
+               set $pc = $pxTopOfStack[0]
+               bt
+
+               set $itemNum = $itemNum - 1
+          end
+
+          set $next = $next->pxNext
+          printf "\r\n"
+     end
+end
+
+
+define bts
+     set $spTemp = $sp
+     set $raTemp = $ra
+     set $pcTemp = $pc
+
+     printf "Current Task:\r\n"
+     if TrapNetCounter == 0
+          bt
+     else 
+          set $taskName = pxCurrentTCB->pcTaskName
+          set $pxTopOfStack = pxCurrentTCB->pxTopOfStack
+
+          if $pxTopOfStack != 0
+               printf "task name is: %s\r\n", $taskName
+               set $sp = $pxTopOfStack + 64
+               set $ra = $pxTopOfStack[35]
+               set $pc = $pxTopOfStack[0]
+               bt
+          end
+     end
+     printf "\r\n\r\n"
+
+     printf "Ready Tasks:\r\n"
+     set $uxTopPriority = 0
+     while $uxTopPriority < 32
+          set $item = pxReadyTasksLists[ $uxTopPriority ]
+          iterList $item
+          set $uxTopPriority = $uxTopPriority + 1
+     end  
+     printf "\r\n\r\n"
+
+     printf "Delayed Tasks:\r\n"
+     iterList xDelayedTaskList1
+     iterList xDelayedTaskList2
+     printf "\r\n\r\n"
+
+     printf "Pending Ready Tasks:\r\n"
+     iterList xPendingReadyList
+     printf "\r\n\r\n"
+
+     set $sp = $spTemp
+     set $ra = $raTemp
+     set $pc = $pcTemp
+end
+
+define chip_reset
+  mon reset init
+  set $pc=0x21000000
+  set $mie=0
+  set $mstatus=0x1880
+end
+
+document bts
+     dump all thread stacks
+     usage: bts
+end
+
+document chip_reset
+  chip reboot
+end

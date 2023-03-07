@@ -1,0 +1,32 @@
+id: aws_tests_defs
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|AWS Tests
+label: AWS Tests Defs
+description: Definitions needed by Amazon AWS tests
+
+package: amazon_platform
+quality: production
+
+component_root_path: "util/third_party/aws_iot_libs"
+
+provides:
+  - name: aws_tests_defs
+
+ui_hints:
+  visibility: never
+
+define:
+  - name: AWS_TESTS
+
+toolchain_settings:
+  - { option: gcc_compiler_option, value: "-Wno-clobbered" }
+  - { option: gcc_compiler_option, value: "-Wno-cast-function-type" }
+  - { option: gcc_compiler_option, value: "-Wno-sign-compare" }
+  - { option: gcc_compiler_option, value: "-Wno-unused-parameter" }
+  - { option: gcc_compiler_option, value: "-Wno-unused-variable" }
+  - { option: gcc_compiler_option, value: "-Wno-unused-function" }
+  - { option: gcc_compiler_option, value: "-Wno-implicit-function-declaration" }
+  - { option: gcc_compiler_option, value: "-Wno-format" }
+  - { option: gcc_compiler_option, value: "-Wno-type-limits" }
+  - { option: gcc_compiler_option, value: "-Wno-incompatible-pointer-types" }
+  - { option: gcc_compiler_option, value: "-Wno-address-of-packed-member" }

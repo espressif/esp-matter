@@ -1,0 +1,60 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load("@rules_python//python:defs.bzl", "py_binary", "py_library")
+
+package(default_visibility = ["//visibility:public"])
+
+# TODO(b/241456982): The following deps are required to build :pw_system_lib
+# deps = [
+#     "//pw_thread/py:pw_thread",
+#     "//pw_log:log_proto_py_pb2",
+#     "//pw_metric:metric_proto_py_pb2",
+#     "//pw_thread:thread_proto_py_pb2",
+#     "//pw_thread:thread_snapshot_service_py_pb2",
+#     "//pw_tokenizer:tokenizer_proto_py_pb2",
+#     "//pw_unit_test:unit_test_py_pb2",
+#     "//pw_unit_test/py:pw_unit_test_lib",
+# ],
+py_library(
+    name = "pw_system_lib",
+    srcs = [
+        "pw_system/__init__.py",
+        "pw_system/console.py",
+        "pw_system/device.py",
+    ],
+    imports = ["."],
+    tags = ["manual"],
+    deps = [
+        "//pw_cli/py:pw_cli",
+        "//pw_console/py:pw_console",
+        "//pw_hdlc/py:pw_hdlc",
+        "//pw_metric/py:pw_metric",
+        "//pw_rpc/py:pw_rpc",
+        "//pw_status/py:pw_status",
+        "//pw_tokenizer/py:pw_tokenizer",
+    ],
+)
+
+py_binary(
+    name = "pw_system_console",
+    srcs = [
+        "pw_system/console.py",
+    ],
+    main = "pw_system/console.py",
+    tags = ["manual"],
+    deps = [
+        ":pw_system_lib",
+    ],
+)

@@ -1,0 +1,17 @@
+id: zw_cc_version
+label: Version Command Class
+category: Z-Wave|Command Classes
+description: >
+  Version Command Class may be used to obtain the Z-Wave library type,
+  the Z-Wave protocol version used by the application,
+  the individual command class versions used by the application and
+  the vendor specific application version from a Z-Wave enabled device.
+  
+package: Z-Wave
+quality: production
+source:
+  - path: protocol/z-wave/ZAF/CommandClasses/Version/CC_Version.c
+provides:
+  - name: zw_cc_version
+requires:
+  - name: zw_core

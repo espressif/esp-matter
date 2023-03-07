@@ -1,0 +1,126 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/linker_script.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_malloc/backend.gni")
+import("$dir_pw_third_party/mcuxpresso/mcuxpresso.gni")
+import("$dir_pw_toolchain/generate_toolchain.gni")
+import("target_toolchains.gni")
+
+generate_toolchains("target_toolchains") {
+  toolchains = pw_target_toolchain_mimxrt595_evk_list
+}
+
+declare_args() {
+  # When compiling with an MCUXpresso SDK, this variable is set to the path of
+  # the manifest file within the SDK installation. When set, a pw_source_set
+  # for a sample project SDK is created at
+  # "//targets/mimxrt595_evk/sample_sdk".
+  pw_target_mimxrt595_evk_MANIFEST = ""
+
+  # This list should contain the necessary defines for setting linker script
+  # memory regions. While we don't directly use the pw_boot_cortex_m linker
+  # script, these are deliberately matching to make being able to later easier.
+  pw_target_mimxrt595_evk_LINK_CONFIG_DEFINES = []
+}
+
+config("pw_malloc_active") {
+  if (pw_malloc_BACKEND != "") {
+    defines = [ "PW_MALLOC_ACTIVE=1" ]
+  }
+}
+
+config("disable_warnings") {
+  cflags = [
+    "-Wno-cast-qual",
+    "-Wno-redundant-decls",
+    "-Wno-undef",
+    "-Wno-unused-parameter",
+    "-Wno-unused-variable",
+  ]
+  visibility = [ ":*" ]
+}
+
+config("freestanding") {
+  cflags = [
+    "-ffreestanding",
+    "-fno-builtin",
+  ]
+  asmflags = cflags
+  ldflags = cflags
+  visibility = [ ":*" ]
+}
+
+config("sdk_defines") {
+  defines = [
+    "CPU_MIMXRT595SFFOC_cm33",
+    "DEBUG_CONSOLE_TRANSFER_NON_BLOCKING",
+    "SDK_DEBUGCONSOLE=1",
+  ]
+  visibility = [ ":*" ]
+}
+
+if (current_toolchain != default_toolchain) {
+  pw_linker_script("flash_linker_script") {
+    defines = pw_target_mimxrt595_evk_LINK_CONFIG_DEFINES
+    linker_script = "mimxrt595_flash.ld"
+  }
+}
+
+if (pw_third_party_mcuxpresso_SDK != "") {
+  # Startup and vector table for NXP MIMXRT595-EVK.
+  pw_source_set("boot") {
+    public_configs = [ ":pw_malloc_active" ]
+    deps = [
+      "$dir_pw_boot",
+      "$dir_pw_boot_cortex_m",
+      "$dir_pw_preprocessor",
+      "$dir_pw_sys_io_mcuxpresso",
+      pw_third_party_mcuxpresso_SDK,
+    ]
+    if (pw_malloc_BACKEND != "") {
+      deps += [ "$dir_pw_malloc" ]
+    }
+    sources = [
+      "boot.cc",
+      "vector_table.c",
+    ]
+  }
+}
+
+if (pw_third_party_mcuxpresso_SDK == "//targets/mimxrt595_evk:sample_sdk") {
+  pw_mcuxpresso_sdk("sample_sdk") {
+    manifest = pw_target_mimxrt595_evk_MANIFEST
+    include = [
+      "component.serial_manager_uart.MIMXRT595S",
+      "project_template.evkmimxrt595.MIMXRT595S",
+      "utility.debug_console.MIMXRT595S",
+    ]
+    exclude = [ "device.MIMXRT595S_startup.MIMXRT595S" ]
+
+    public_configs = [
+      ":disable_warnings",
+      ":freestanding",
+      ":sdk_defines",
+    ]
+  }
+}
+
+pw_doc_group("target_docs") {
+  sources = [ "target_docs.rst" ]
+}

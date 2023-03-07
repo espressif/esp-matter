@@ -1,0 +1,35 @@
+id: segger_systemview
+label: SEGGER SystemView
+package: platform
+description: SEGGER SystemView
+category: Third Party
+quality: production
+config_file:
+  - path: util/third_party/segger/systemview/Config/SEGGER_SYSVIEW_Conf.h
+source:
+  - path: util/third_party/segger/systemview/SEGGER/SEGGER_SYSVIEW.c
+include:
+  - path: util/third_party/segger/systemview/SEGGER
+    file_list:
+      - path: Global.h
+      - path: SEGGER_SYSVIEW.h
+      - path: SEGGER_SYSVIEW_ConfDefaults.h
+      - path: SEGGER_SYSVIEW_Int.h
+provides:
+  - name: segger_systemview
+requires:
+  - name: segger_rtt
+  - name: segger_systemview_no_os_m0
+  - name: segger_systemview_no_os_m
+  - name: segger_systemview_micriumos
+    condition: [micriumos]
+  - name: segger_systemview_freertos
+    condition: [freertos]
+template_contribution:
+  - name: event_handler
+    value:
+      event: platform_init
+      include: SEGGER_SYSVIEW.h
+      handler: SEGGER_SYSVIEW_Conf
+  - name: component_catalog
+    value: systemview_trace

@@ -1,0 +1,73 @@
+{
+    "headers": [
+        {
+            "tool_name": "scancode-toolkit",
+            "tool_version": "3.1.1",
+            "options": {
+                "input": [],
+                "--json-pp": "scancode.json",
+                "--license": true
+            },
+            "notice":
+                "Generated with ScanCode and provided on an \"AS IS\" BASIS, WITHOUT WARRANTIES\nOR CONDITIONS OF ANY KIND, either express or implied. No content created from\nScanCode should be considered or used as legal advice. Consult an Attorney\nfor any legal advice.\nScanCode is a free software code scanning tool from nexB Inc. and others.\nVisit https://github.com/nexB/scancode-toolkit/ for support and download.",
+            "start_timestamp": "2020-10-01T135040.106260",
+            "end_timestamp": "2020-10-01T135047.793497",
+            "message": null,
+            "errors": [
+
+            ],
+            "extra_data": {
+                "files_count": 5
+            }
+        }
+    ],
+    "files": [
+        {
+            "path": "tools/utest/utest/utest_specification.h",
+            "type": "file",
+            "licenses": [
+                {
+                    "key": "apache-2.0",
+                    "score": 100.0,
+                    "name": "Apache License 2.0",
+                    "short_name": "Apache 2.0",
+                    "category": "Permissive",
+                    "is_exception": false,
+                    "owner": "Apache Software Foundation",
+                    "homepage_url": "http://www.apache.org/licenses/",
+                    "text_url": "http://www.apache.org/licenses/LICENSE-2.0",
+                    "reference_url": "https://scancode-licensedb.aboutcode.org/apache-2.0",
+                    "scancode_text_url":
+                        "https://github.com/nexB/scancode-toolkit/tree/develop/src/licensedcode/data/licenses/apache-2.0.LICENSE",
+                    "scancode_data_url":
+                        "https://github.com/nexB/scancode-toolkit/tree/develop/src/licensedcode/data/licenses/apache-2.0.yml",
+                    "spdx_url": "https://spdx.org/licenses/Apache-2.0",
+                    "start_line": 3,
+                    "end_line": 15,
+                    "matched_rule": {
+                        "identifier": "apache-2.0_358.RULE",
+                        "license_expression": "apache-2.0",
+                        "licenses": [
+                            "apache-2.0"
+                        ],
+                        "is_license_text": false,
+                        "is_license_notice": true,
+                        "is_license_reference": false,
+                        "is_license_tag": false,
+                        "is_license_intro": false,
+                        "matcher": "2-aho",
+                        "rule_length": 91,
+                        "matched_length": 91,
+                        "match_coverage": 100.0,
+                        "rule_relevance": 100
+                    }
+                }
+            ],
+            "license_expressions": [
+                "apache-2.0"
+            ],
+            "percentage_of_license_text": 10.78,
+            "scan_errors": []
+        }
+    ]
+}

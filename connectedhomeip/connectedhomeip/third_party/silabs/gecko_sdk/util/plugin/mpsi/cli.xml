@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<cli>
+  <group id="plugin-mpsi" name="Plugin Commands: MPSI">
+    <description>
+      This plugin provides a set of CLI commands to interact with the MPSI plugin.
+    </description>
+  </group>
+  <command cli="plugin mpsi receive-message" functionName="emAfPluginMpsiCliReceiveMessage" group="plugin-mpsi">
+    <description>
+      Simulate receiving an MPSI message.
+    </description>
+    <arg name="destinationAppId"  type="INT8U"        description="The application ID of the message"/>
+    <arg name="messageId"         type="INT16U"       description="The message ID of the message"/>
+    <arg name="payloadLength"     type="INT8U"        description="The payload length of the message"/>
+    <arg name="payload"           type="OCTET_STRING" description="The payload of the message. This represents a serialized specific MPSI message."/>
+  </command>
+  <command cli="plugin mpsi send-message" functionName="emAfPluginMpsiCliSendMessage" group="plugin-mpsi">
+    <description>
+      Simulate sending an MPSI message.
+    </description>
+    <arg name="destinationAppId"  type="INT8U"        description="The application ID of the message"/>
+    <arg name="messageId"         type="INT16U"       description="The message ID of the message"/>
+    <arg name="payloadLength"     type="INT8U"        description="The payload length of the message"/>
+    <arg name="payload"           type="OCTET_STRING" description="The payload of the message. This represents a serialized specific MPSI message."/>
+  </command>
+</cli>

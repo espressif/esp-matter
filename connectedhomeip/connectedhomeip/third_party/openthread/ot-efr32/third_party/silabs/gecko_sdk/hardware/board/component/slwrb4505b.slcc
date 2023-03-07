@@ -1,0 +1,22 @@
+!!omap
+- id: slwrb4505b
+- label: SLWRB4505B
+- package: platform
+- description: Kit BSP support for the EZR32WG 490 MHz 20 dBm Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4505b
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4505B"'
+  - name: SL_KIT_REV
+    value: '"A00"'
+- tag:
+  - kit:opn:SLWRB4505B
+  - kit:pn:WRB4505
+  - kit:variant:B
+  - kit:revision:A00

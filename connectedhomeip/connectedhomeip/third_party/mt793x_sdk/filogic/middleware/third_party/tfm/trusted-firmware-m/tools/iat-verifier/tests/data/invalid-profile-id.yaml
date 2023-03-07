@@ -1,0 +1,33 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+instance_id: !!binary AQcGBQQDAgEADw4NDAsKCQgXFhUUExIREB8eHRwbGhkY
+implementation_id: !!binary BwYFBAMCAQAPDg0MCwoJCBcWFRQTEhEQHx4dHBsaGRg=
+challenge: !!binary BwYFBAMCAQAPDg0MCwoJCBcWFRQTEhEQHx4dHBsaGRg=
+client_id: 2
+security_lifecycle: sl_secured
+profile_id: 42
+boot_seed: !!binary BwYFBAMCAQAPDg0MCwoJCBcWFRQTEhEQHx4dHBsaGRg=
+sw_components:
+    - sw_component_type: BL
+      signer_id: !!binary BwYFBAMCAQAPDg0MCwoJCBcWFRQTEhEQHx4dHBsaGRg=
+      sw_component_version: 3.4.2
+      measurement_value: !!binary BwYFBAMCAQAPDg0MCwoJCBcWFRQTEhEQHx4dHBsaGRg=
+      measurement_description: TF-M_SHA256MemPreXIP
+    - sw_component_type: M1
+      signer_id: !!binary BwYFBAMCAQAPDg0MCwoJCBcWFRQTEhEQHx4dHBsaGRg=
+      sw_component_version: 1.2
+      measurement_value: !!binary BwYFBAMCAQAPDg0MCwoJCBcWFRQTEhEQHx4dHBsaGRg=
+    - sw_component_type: M2
+      signer_id: !!binary BwYFBAMCAQAPDg0MCwoJCBcWFRQTEhEQHx4dHBsaGRg=
+      sw_component_version: 1.2.3
+      measurement_value: !!binary BwYFBAMCAQAPDg0MCwoJCBcWFRQTEhEQHx4dHBsaGRg=
+    - sw_component_type: M3
+      signer_id: !!binary BwYFBAMCAQAPDg0MCwoJCBcWFRQTEhEQHx4dHBsaGRg=
+      sw_component_version: 1
+      measurement_value: !!binary BwYFBAMCAQAPDg0MCwoJCBcWFRQTEhEQHx4dHBsaGRg=
+

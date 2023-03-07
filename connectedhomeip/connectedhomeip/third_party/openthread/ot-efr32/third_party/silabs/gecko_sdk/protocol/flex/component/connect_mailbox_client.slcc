@@ -1,0 +1,46 @@
+id: "connect_mailbox_client"
+label: "Mailbox Client"
+package: "Flex"
+category: "Connect|Mailbox"
+quality: "production"
+description: "Implements the client side of the Connect mailbox protocol. It provides APIs for submitting and retrieving messages to/from a mailbox server."
+provides:
+  - name: "connect_mailbox_client"
+requires:
+  - name: "connect_stack_common"
+source:
+      - path: "protocol/flex/mailbox/mailbox-client/mailbox-client.c"
+      - path: "protocol/flex/mailbox/mailbox-client/mailbox-client-cb.c"
+include:
+  - path: "protocol/flex/mailbox"
+    file_list:
+      - path: "mailbox-protocol.h"
+      - path: "mailbox-types.h"
+  - path: "protocol/flex/mailbox/mailbox-client"
+    file_list:
+      - path: "mailbox-client.h"
+config_file:
+  - path: "protocol/flex/mailbox/mailbox-client/config/mailbox-client-config.h"
+template_contribution:
+  - name: stack_callback
+    value:
+      callback_type: "init"
+      function_name: "emAfPluginMailboxClientInitCallback"
+  - name: stack_callback
+    value:
+      callback_type: "incoming_message"
+      function_name: "emAfPluginMailboxClientIncomingMessageCallback"
+  - name: stack_callback
+    value:
+      callback_type: "message_sent"
+      function_name: "emAfPluginMailboxClientMessageSentCallback"
+  - name: event_system
+    value:
+      event_control: "emAfPluginMailboxClientEventControl"
+      event_handler: "emAfPluginMailboxClientEventHandler"
+  - name: component_catalog
+    value: connect_mailbox_client
+
+documentation:
+  docset: connect-stack
+  document: group-mailbox-client

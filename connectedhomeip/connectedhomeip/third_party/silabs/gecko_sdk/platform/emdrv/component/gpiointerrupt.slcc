@@ -1,0 +1,27 @@
+id: "gpiointerrupt"
+label: "GPIOINT"
+package: "platform"
+description: >
+  The GPIO interrupt driver implements GPIO IRQ handlers and allows users
+  to register callback functions that are called when a GPIO interrupt is triggered.
+category: "Platform|Driver"
+quality: "production"
+source:
+- path: "platform/emdrv/gpiointerrupt/src/gpiointerrupt.c"
+include:
+  - path: "platform/emdrv/gpiointerrupt/inc"
+    file_list: ["path": "gpiointerrupt.h"]
+provides:
+  - name: "gpiointerrupt"
+requires:
+  - name: "emlib_gpio"
+  - name: "ecode"
+template_contribution:
+  - name: event_handler
+    value:
+      event: driver_init
+      include: "gpiointerrupt.h"
+      handler: "GPIOINT_Init"
+documentation:
+    docset: gecko-platform
+    document: driver/api/group-gpioint

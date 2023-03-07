@@ -1,0 +1,74 @@
+package: Zigbee
+description: Silicon Labs implementation of the Messaging client cluster. This component requires extending
+  to display the message on the hardware display.
+label: Messaging Client Cluster
+quality: extend
+id: zigbee_messaging_client
+category: Zigbee|Cluster Library|Smart Energy
+provides:
+   - name: "zigbee_messaging_client"
+requires:
+   - name: "zigbee_esi_management"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/messaging-client/config/messaging-client-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/messaging-client/messaging-client.c
+  - path: protocol/zigbee/app/framework/plugin/messaging-client/messaging-client-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/messaging-client/messaging-client-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/messaging-client
+    file_list:
+      - path: messaging-client.h    
+template_contribution:
+  - name: component_catalog
+    value: zigbee_messaging_client
+  - name: cluster_service
+    value:
+       cluster_id: "0x0703"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "CLIENT"
+       service_function: "emberAfMessagingClusterClientCommandParse"
+  - name: cli_group
+    value:
+      group: plugin
+      name: messaging-client
+      help: messaging-client related commands.
+  - name: cli_command
+    value:
+      group: messaging-client
+      name: confirm
+      handler: emAfMessagingClientCliConfirm
+      help: Sends the message confirmation.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cli_command
+    value:
+      group: messaging-client
+      name: print
+      handler: emAfMessagingClientCliPrint
+      help: Prints the message info.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cli_command
+    value:
+      group: messaging-client
+      name: clear
+      handler: emAfMessagingClientCliClear
+      help: Clears the message.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cluster_functions
+    value:
+      cluster_name: Messaging
+      cluster_id: 0x703
+      cluster_type: client
+      init_function: emberAfMessagingClusterClientInitCallback
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/messaging-client

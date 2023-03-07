@@ -1,0 +1,549 @@
+"*********Fractus FR05-S1-N-0-102 Chip antenna, 1.8V supply voltage*********"
+////Antenna Gain : 1.70dBi////
+//*************************************************************************************************//
+//*******************************B001P4:::1P8V::: FR05-S1-N-0-102 Antenna**************************//
+//*************************************************************************************************//
+
+B00_1P4_WLAN_2.4GHz_20MHz = {
+3,//NUM_OF_REGIONS
+    FCC, 0xB,//NUM_OF_CHANNELS
+//   rate,  11b, 11g, 11n
+        1,  28,  18,  14,
+        2,  30,  22,  18,
+        3,  30,  26,  22,
+        4,  30,  26,  26,
+        5,  30,  30,  30,
+        6,  30,  30,  30,
+        7,  30,  30,  30,
+        8,  30,  26,  26,
+        9,  30,  22,  20,
+        10, 28,  18,  16,
+        11, 26,  16,  12,
+    ETSI,0x11,
+       255, 32,  32, 32,
+    TELEC,0x11,
+       255, 32,  28, 28,
+};
+
+B00_1P4_BT_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+FCC,        17,
+ETSI,        8,
+TELEC,      16,
+WORLDWIDE,  11,
+};
+
+B00_1P4_BT_OFFSET = {
+4,//NUM_OF_REGIONS
+FCC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power_offset
+     255,       0,
+       0,       0,
+      39,       0,
+      78,       3,
+ETSI,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+     255,       0,
+       0,       0,
+      39,       0,
+      78,       0,
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+        0,       7,
+       39,       0,
+       78,       0,
+WORLDWIDE,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+        0,      0,
+       39,      0,
+       78,      0,
+};
+
+
+B00_1P4_BLE_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+FCC,        17,
+ETSI,        8,
+TELEC,      10,
+WORLDWIDE,  20,
+};
+
+B00_1P4_BLE_OFFSET = {
+4,//NUM_OF_REGIONS
+FCC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power_offset
+     255,       0,
+       0,       0,
+      20,       0,
+      39,       7,
+ETSI,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+     255,       0,
+       0,       1,
+      20,       1,
+      39,       0,
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,       0,
+        0,       6,
+       19,       0,
+       39,       0,
+WORLDWIDE,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,       0,
+        0,       0,
+       20,       0,
+       39,       0,
+};
+
+
+
+"*********Fractus FR05-S1-N-0-102 Chip antenna, 3.3V supply voltage*********"
+////Antenna Gain : 1.70dBi////
+//*************************************************************************************************//
+//***************************B001P4:::3P3V::: FR05-S1-N-0-102 Antenna*******************************//
+//*************************************************************************************************//
+
+
+B00_1P4_WLAN_2.4GHz_20MHz = {
+3,//NUM_OF_REGIONS
+    FCC, 0xB,//NUM_OF_CHANNELS
+//   rate,  11b, 11g, 11n
+        1,  36,  22,  20,
+        2,  36,  26,  24,
+        3,  36,  30,  28,
+        4,  36,  34,  32,
+        5,  36,  38,  36,
+        6,  36,  38,  36,
+        7,  36,  38,  36,
+        8,  36,  34,  34,
+        9,  36,  30,  30,
+        10, 34,  26,  26,
+        11, 32,  22,  22,
+    ETSI,0x11,
+       255, 32,  36, 36,
+    TELEC,0x11,
+       255, 38,  36, 36,
+};
+
+B00_1P4_BT_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+FCC,        20,
+ETSI,        8,
+TELEC,      20,
+WORLDWIDE,  11,
+};
+
+B00_1P4_BT_OFFSET = {
+4,//NUM_OF_REGIONS
+FCC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power_offset
+     255,       0,
+       0,       3,
+      39,       1,
+      78,       1,
+ETSI,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+     255,       0,
+       0,       0,
+      39,       0,
+      78,       0,
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,       0,
+        0,       8,
+       39,       0,
+       78,       0,
+WORLDWIDE,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+        0,      0,
+       39,      0,
+       78,      0,
+};
+
+
+B00_1P4_BLE_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+FCC,        21,
+ETSI,        8,
+TELEC,      10,
+WORLDWIDE,  20,
+};
+
+B00_1P4_BLE_OFFSET = {
+4,//NUM_OF_REGIONS
+FCC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power_offset
+     255,       0,
+       0,       0,
+      20,       0,
+      39,       9,
+
+ETSI,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+     255,       0,
+       0,       2,
+      20,       2,
+      39,       2,
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,       0,
+        0,       7,
+       19,       0,
+       39,       0,
+WORLDWIDE,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,       0,
+        0,       0,
+       20,       0,
+       39,       0,
+};
+
+
+
+
+"*********GW.34.5153 Dipole antenna, 1.8V supply voltage*********"
+///Antenna Gain : 5.89dBi////
+//*************************************************************************************************//
+//********************************B001P4:::1P8V:::GW.34.5153 Antenna*******************************//
+//*************************************************************************************************//
+
+B00_1P4_WLAN_2.4GHz_20MHz = {
+3,//NUM_OF_REGIONS
+    FCC, 0xB,//NUM_OF_CHANNELS
+//   rate,  11b, 11g, 11n
+        1,  30,  22,  18,
+        2,  30,  24,  22,
+        3,  30,  26,  24,
+        4,  30,  26,  26,
+        5,  30,  30,  30,
+        6,  30,  30,  30,
+        7,  30,  30,  30,
+        8,  30,  26,  26,
+        9,  30,  22,  22,
+        10, 28,  18,  18,
+        11, 26,  16,  16,
+    ETSI,0x11,
+       255, 24,  26, 26,
+    TELEC,0x11,
+       255, 30,  28, 28,
+};
+
+B00_1P4_BT_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+FCC,        17,
+ETSI,        3,
+TELEC,      16,
+WORLDWIDE,  11,
+};
+
+B00_1P4_BT_OFFSET = {
+4,//NUM_OF_REGIONS
+FCC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power_offset
+     255,       0,
+       0,       0,
+      39,       0,
+      78,       2,
+ETSI,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+     255,       0,
+       0,       0,
+      39,       0,
+      78,       0,
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+        0,       7,
+       39,       0,
+       78,       0,
+WORLDWIDE,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+        0,      0,
+       39,      0,
+       78,      0,
+};
+
+
+B00_1P4_BLE_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+FCC,        17,
+ETSI,        3,
+TELEC,       8,
+WORLDWIDE,  20,
+};
+
+B00_1P4_BLE_OFFSET = {
+4,//NUM_OF_REGIONS
+FCC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power_offset
+     255,       0,
+       0,       0,
+      20,       1,
+      39,       7,
+ETSI,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+     255,       0,
+       0,       0,
+      20,       1,
+      39,       0,
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,       0,
+        0,       2,
+       19,       0,
+       39,       0,
+WORLDWIDE,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,       0,
+        0,       0,
+       20,       0,
+       39,       0,
+};
+
+
+
+"*********GW.34.5153 Dipole antenna, 3.3V supply voltage*********"
+///Antenna Gain : 5.89dBi////
+//*************************************************************************************************//
+//********************************B001P4:::3P3V:::GW.34.5153 Antenna*******************************//
+//*************************************************************************************************//
+
+
+B00_1P4_WLAN_2.4GHz_20MHz = {
+3,//NUM_OF_REGIONS
+    FCC, 0xB,//NUM_OF_CHANNELS
+//   rate,  11b, 11g, 11n
+        1,  36,  24,  22,
+        2,  36,  26,  24,
+        3,  36,  30,  28,
+        4,  36,  34,  32,
+        5,  36,  38,  36,
+        6,  36,  38,  36,
+        7,  36,  38,  36,
+        8,  36,  34,  32,
+        9,  36,  30,  28,
+        10, 34,  26,  24,
+        11, 32,  22,  20,
+    ETSI,0x11,
+       255, 24,  28, 28,
+    TELEC,0x11,
+       255, 32,  34, 34,
+};
+
+
+B00_1P4_BT_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+FCC,        20,
+ETSI,        2,
+TELEC,      17,
+WORLDWIDE,  11,
+};
+
+B00_1P4_BT_OFFSET = {
+4,//NUM_OF_REGIONS
+FCC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power_offset
+     255,       0,
+       0,       3,
+      39,       1,
+      78,       1,
+ETSI,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+       0,       0,
+      39,       0,
+      78,       0,
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,       0,
+        0,       5,
+       39,       0,
+       78,       0,
+WORLDWIDE,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+        0,      0,
+       39,      0,
+       78,      0,
+};
+
+
+B00_1P4_BLE_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+FCC,        21,
+ETSI,        4,
+TELEC,       6,
+WORLDWIDE,  20,
+};
+
+B00_1P4_BLE_OFFSET = {
+4,//NUM_OF_REGIONS
+FCC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power_offset
+      255,      0,
+       0,       0,
+      20,       0,
+      39,       9,
+ETSI,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+       0,       2,
+      20,       0,
+      39,       1,
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,       0,
+        0,       3,
+       19,       0,
+       39,       0,
+WORLDWIDE,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,       0,
+        0,       0,
+       20,       0,
+       39,       0,
+};
+
+
+
+
+
+"*********RFPCA500609IMAB301 PCB antenna, 1.8V supply voltage*********"
+////Antenna-Gain 4.53 dBi////
+//*************************************************************************************************//
+//**************************B001P4:::1P8V:::RFPCA500609IMAB301 Antenna*****************************//
+//*************************************************************************************************//
+
+B00_1P4_WLAN_2.4GHz_20MHz = {
+1,//NUM_OF_REGIONS
+    TELEC,0x11,
+       255, 32,  28, 28,
+};
+
+B00_1P4_BT_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+TELEC,      16,
+};
+
+B00_1P4_BT_OFFSET = {
+1,//NUM_OF_REGIONS
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,       0,
+        0,       7,
+       39,       0,
+       78,       0,
+};
+
+
+B00_1P4_BLE_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+TELEC,      7,
+};
+
+B00_1P4_BLE_OFFSET = {
+1,//NUM_OF_REGIONS
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,       0,
+        0,       5,
+       19,       0,
+       39,       0,
+};
+
+
+"*********RFPCA500609IMAB301 PCB antenna, 3.3V supply voltage*********"
+////Antenna-Gain 4.53 dBi////
+//*************************************************************************************************//
+//**************************B001P4:::3P3V:::RFPCA500609IMAB301 Antenna*****************************//
+//*************************************************************************************************//
+
+
+B00_1P4_WLAN_2.4GHz_20MHz = {
+1,//NUM_OF_REGIONS
+    TELEC,0x11,
+       255, 34,  36, 34,
+};
+
+B00_1P4_BT_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+TELEC,      19,
+};
+
+B00_1P4_BT_OFFSET = {
+1,//NUM_OF_REGIONS
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+        0,      7,
+       39,      0,
+       78,      0,
+};
+
+
+B00_1P4_BLE_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+TELEC,      7,
+};
+
+B00_1P4_BLE_OFFSET = {
+1,//NUM_OF_REGIONS
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,       0,
+        0,       5,
+       19,       0,
+       39,       0,
+};
+
+
+
+
+
+
+
+
+
+
+

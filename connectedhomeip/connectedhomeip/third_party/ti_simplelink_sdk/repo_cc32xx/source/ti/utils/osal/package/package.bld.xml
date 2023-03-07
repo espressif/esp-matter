@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/build.dtd -->
+<package name="ti.utils.osal" version="1, 0, 0" producerId="undefined">
+    <units>
+    </units>
+    <sources>
+    </sources>
+    <configscripts>
+    </configscripts>
+    <makefiles>
+        <srcFile name="package.mak" src="package.bld"/>
+        <srcFile name="package/package.xdc.dep" src="package.xdc"/>
+        <srcFile name="package/package.cfg.dep" src="package.xdc"/>
+        <srcFile name="package/rel/ti_utils_osal.zip.dep" src="package/rel/ti_utils_osal.xdc.inc"/>
+    </makefiles>
+    <targets>
+    </targets>
+    <libraries>
+    </libraries>
+    <configurations>
+    </configurations>
+    <executables>
+    </executables>
+    <tests>
+    </tests>
+    <releases relDir="package/rel/">
+    <release name="ti_utils_osal"
+        pname="ti_utils_osal.zip"
+        label="default"
+    >
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+        <file name=".meta/Config.c.xdt"/>
+        <file name=".meta/Interrupt.Config.c.xdt"/>
+        <file name=".meta/Interrupt.syscfg.js"/>
+        <file name=".meta/Timestamp.Config.c.xdt"/>
+        <file name=".meta/Timestamp.syscfg.js"/>
+        <file name=".meta/osal.component.js"/>
+        <file name="Interrupt.h"/>
+        <file name="Interrupt_freertos.c"/>
+        <file name="Interrupt_tirtos.c"/>
+        <file name="Timestamp.h"/>
+        <file name="Timestamp_freertos.c"/>
+        <file name="Timestamp_tirtos.c"/>
+        <file name="package.bld"/>
+        <file name="package/package.cfg.xdc.inc"/>
+    </release>
+    </releases>
+    <repositories>
+    </repositories>
+</package>

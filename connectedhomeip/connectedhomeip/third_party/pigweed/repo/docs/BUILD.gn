@@ -1,0 +1,121 @@
+# Copyright 2019 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/python.gni")
+import("$dir_pw_docgen/docs.gni")
+
+pw_doc_group("static_assets") {
+  inputs = [
+    "_static/css/pigweed.css",
+    "_static/pw_logo.ico",
+    "_static/pw_logo.svg",
+  ]
+}
+
+# Note: These may be useful for downstream projects, which is why they are
+# split out from the overall docgen target below.
+pw_doc_group("core_docs") {
+  inputs = [
+    "images/pw_env_setup_demo.gif",
+    "images/pw_status_test.png",
+    "images/pw_watch_build_demo.gif",
+    "images/pw_watch_on_device_demo.gif",
+    "images/pw_watch_test_demo.gif",
+    "images/stm32f429i-disc1_connected.jpg",
+  ]
+  sources = [
+    "code_of_conduct.rst",
+    "concepts/index.rst",
+    "contributing.rst",
+    "embedded_cpp_guide.rst",
+    "faq.rst",
+    "getting_started.rst",
+    "module_structure.rst",
+    "os_abstraction_layers.rst",
+    "size_optimizations.rst",
+    "style_guide.rst",
+  ]
+}
+
+pw_doc_group("release_notes") {
+  sources = [
+    "release_notes/2022_jan.rst",
+    "release_notes/index.rst",
+  ]
+}
+
+# Documentation for upstream Pigweed targets.
+group("target_docs") {
+  deps = [
+    "$dir_pigweed/targets/android:target_docs",
+    "$dir_pigweed/targets/arduino:target_docs",
+    "$dir_pigweed/targets/docs:target_docs",
+    "$dir_pigweed/targets/emcraft_sf2_som:docs",
+    "$dir_pigweed/targets/host:target_docs",
+    "$dir_pigweed/targets/host_device_simulator:target_docs",
+    "$dir_pigweed/targets/lm3s6965evb_qemu:target_docs",
+    "$dir_pigweed/targets/mimxrt595_evk:target_docs",
+    "$dir_pigweed/targets/rp2040:target_docs",
+    "$dir_pigweed/targets/rp2040_pw_system:target_docs",
+    "$dir_pigweed/targets/stm32f429i_disc1:target_docs",
+    "$dir_pigweed/targets/stm32f429i_disc1_stm32cube:target_docs",
+  ]
+}
+
+group("module_docs") {
+  deps = pw_module_docs
+}
+
+group("third_party_docs") {
+  deps = [
+    "$dir_pigweed/third_party/boringssl:docs",
+    "$dir_pigweed/third_party/freertos:docs",
+    "$dir_pigweed/third_party/fuchsia:docs",
+    "$dir_pigweed/third_party/googletest:docs",
+    "$dir_pigweed/third_party/nanopb:docs",
+    "$dir_pigweed/third_party/tinyusb:docs",
+  ]
+}
+
+pw_doc_gen("docs") {
+  conf = "conf.py"
+  sources = [
+    # Note: These must use the "docs" prefix for links and image references. In
+    # contrast, the pw_doc_group above should not use the docs prefix.
+    "automated_analysis.rst",
+    "build_system.rst",
+    "index.rst",
+    "module_guides.rst",
+    "python_build.rst",
+    "targets.rst",
+    "third_party_support.rst",
+  ]
+  output_directory = target_gen_dir
+  deps = [
+    ":core_docs",
+    ":module_docs",
+    ":release_notes",
+    ":static_assets",
+    ":target_docs",
+    ":third_party_docs",
+    "$dir_pigweed/seed:docs",
+    "$dir_pw_env_setup:python.install",
+  ]
+
+  # Required to set the PYTHONPATH so automodule, autoclass or autofunction RST
+  # directives work.
+  python_metadata_deps = [ "$dir_pw_env_setup:core_pigweed_python_packages" ]
+}

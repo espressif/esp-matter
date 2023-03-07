@@ -1,0 +1,52 @@
+!!omap
+- id: brd2400a
+- label: BRD2400A
+- package: platform
+- description: Board support for BRD2400A.
+- category: Platform|Board|Starter Kit
+- quality: production
+- requires:
+  - name: efm32wg990f256
+  - name: brd2400a_config
+- provides:
+  - name: brd2400a
+  - name: hardware_board
+  - name: hardware_board_stk
+  - name: hardware_board_from_stk
+  - name: hardware_board_from_efm32wg-stk3800
+  - name: hardware_board_has_vcom
+  - name: hardware_board_has_hfxo
+  - name: hardware_board_has_lfxo
+- recommends:
+  - id: iostream_uart
+    instance:
+    - vcom
+  - id: bootloader_uart_driver
+  - id: simple_led
+    instance:
+    - led0
+    - led1
+  - id: simple_button
+    instance:
+    - btn0
+    - btn1
+  - id: bootloader_spi_peripheral_usart_driver
+- template_contribution: []
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD2400A"'
+  - name: SL_BOARD_REV
+    value: '"C01"'
+- tag:
+  - board:pn:BRD2400
+  - board:variant:A
+  - board:revision:C01
+  - board:device:efm32wg990f256
+  - hardware:has:vcom
+  - hardware:has:led:2
+  - hardware:has:button:2
+  - hardware:has:touch
+  - hardware:has:lcd
+  - hardware:has:lesense:lc
+  - hardware:has:lesense:light
+  - hardware:has:usb

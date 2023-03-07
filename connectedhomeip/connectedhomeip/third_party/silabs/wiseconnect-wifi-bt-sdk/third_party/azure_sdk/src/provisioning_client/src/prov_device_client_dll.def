@@ -1,0 +1,7 @@
+LIBRARY prov_device_client_dll
+EXPORTS
+Prov_Device_Create
+Prov_Device_Destroy
+Prov_Device_Register_Device
+Prov_Device_SetOption
+Prov_Device_GetVersionString

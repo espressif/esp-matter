@@ -1,0 +1,42 @@
+/*
+ *  Copyright 2021 by Texas Instruments Incorporated.
+ *
+ */
+
+var RtsBuild = xdc.loadCapsule('xdc/runtime/build.xs');
+var KnlBuild = xdc.loadCapsule('xdc/runtime/knl/build.xs');
+var Boot = ["cstartup_M.c", "iar_xdc_init.c", "cmain.s", "boot.s"];
+var vectorTable = ["VectorTable.c"];
+
+Pkg.makePrologue = RtsBuild.makePrologue;
+Pkg.otherFiles = ["package.bld", "linkcmd.xdt"];
+Pkg.otherSrcs = Pkg.otherFiles;
+Pkg.generatedFiles = ["lib/"];
+Pkg.attrs.exportAll = true;
+
+var cobjs = RtsBuild.objs.concat(KnlBuild.c_objs);
+
+for (var i = 0; i < Build.targets.length; i++) {
+    var targ = Build.targets[i];
+    if (targ.rts == Pkg.name) {
+        for (var pname in targ.profiles) {
+            var lib = Pkg.addLibrary("lib/" + pname + "/" + Pkg.name,
+                targ, {profile: pname});
+            lib.addObjects(cobjs);
+
+            var lib1 = Pkg.addLibrary("lib/" + pname + "/boot",
+                targ, {profile: pname});
+            lib1.addObjects(Boot);
+
+            /* Build vector table in a seperate library */
+            var lib2 = Pkg.addLibrary("lib/" + pname + "/iar_vectortable",
+                targ, {profile: pname});
+            lib2.addObjects(vectorTable);
+        }
+    }
+}
+/*
+ *  @(#) iar.targets.arm.rts; 1, 0, 0,; 7-28-2021 07:05:45; /db/ztree/library/trees/xdctargets/xdctargets-w20/src/ xlibrary
+
+ */
+

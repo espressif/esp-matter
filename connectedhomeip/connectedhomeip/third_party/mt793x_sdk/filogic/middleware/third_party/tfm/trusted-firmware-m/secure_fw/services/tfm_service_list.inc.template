@@ -1,0 +1,88 @@
+/*
+ * Copyright (c) 2018-2020, Arm Limited. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ *
+ */
+
+{{utilities.donotedit_warning}}
+
+#ifndef __TFM_SERVICE_LIST_INC__
+#define __TFM_SERVICE_LIST_INC__
+
+{% for header in utilities.manifest_header_list %}
+#include "{{header}}"
+{% endfor %}
+
+const struct tfm_spm_service_db_t service_db[] =
+{
+{% for manifest in manifests %}
+    {% if manifest.attr.tfm_partition_ipc %}
+        {% if manifest.manifest.services %}
+            {% if manifest.attr.conditional %}
+#ifdef {{manifest.attr.conditional}}
+            {% endif %}
+    /******** {{manifest.manifest.name}} ********/
+            {% for service in manifest.manifest.services %}
+    {{'{'}}
+        .name = "{{service.name}}",
+        .partition_id = {{manifest.manifest.name}},
+        .signal = {{service.name}}_SIGNAL,
+        .sid = {{service.sid}},
+            {% if service.non_secure_clients is sameas true %}
+        .non_secure_client = true,
+            {% else %}
+        .non_secure_client = false,
+            {% endif %}
+            {% if service.version %}
+        .version = {{service.version}},
+            {% else %}
+        .version = 1,
+            {% endif %}
+            {% if service.version_policy %}
+        .version_policy = TFM_VERSION_POLICY_{{service.version_policy}}
+            {% else %}
+        .version_policy = TFM_VERSION_POLICY_STRICT
+            {% endif %}
+    {{'}'}},
+            {% endfor %}
+            {% if manifest.attr.conditional %}
+#endif /* {{manifest.attr.conditional}} */
+            {% endif %}
+        {% endif %}
+
+    {% endif %}
+{% endfor %}
+};
+
+/**************************************************************************/
+/** The service list */
+/**************************************************************************/
+struct tfm_spm_service_t service[] =
+{
+{% for manifest in manifests %}
+    {% if manifest.attr.tfm_partition_ipc %}
+        {% if manifest.manifest.services %}
+            {% if manifest.attr.conditional %}
+#ifdef {{manifest.attr.conditional}}
+            {% endif %}
+    /******** {{manifest.manifest.name}} ********/
+            {% for service in manifest.manifest.services %}
+    {{'{'}}
+        .service_db = NULL,
+        .partition = NULL,
+        .handle_list = {0},
+        .msg_queue = {0},
+        .list = {0},
+    {{'}'}},
+            {% endfor %}
+            {% if manifest.attr.conditional %}
+#endif /* {{manifest.attr.conditional}} */
+            {% endif %}
+        {% endif %}
+
+    {% endif %}
+{% endfor %}
+};
+
+#endif /* __TFM_SERVICE_LIST_INC__ */

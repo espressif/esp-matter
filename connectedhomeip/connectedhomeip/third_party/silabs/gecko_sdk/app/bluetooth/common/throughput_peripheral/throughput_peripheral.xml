@@ -1,0 +1,89 @@
+<gatt>
+  <!--Throughput Test Service-->
+  <service advertise="false" id="ThroughputTestService" name="Throughput Test Service" requirement="mandatory" sourceId="custom.type" type="primary" uuid="bbb99e70-fff7-46cf-abc7-2d32c71820f2">
+    <informativeText>Throughput Test Service contains characteristics to test the throughput capabilities of the device. </informativeText>
+    <characteristic id="throughput_indications" name="Indications" sourceId="custom.type" uuid="6109b631-a643-4a51-83d2-2059700ad49f">
+      <description>Indication data array</description>
+      <informativeText>Indication data that is sent to test throughput. </informativeText>
+      <value length="255" type="hex" variable_length="false">0x00</value>
+      <properties indicate="true" indicate_requirement="optional"/>
+    </characteristic>
+    
+    <!--Notifications-->
+    <characteristic id="throughput_notifications" name="Notifications" sourceId="custom.type" uuid="47b73dd6-dee3-4da1-9be0-f5c539a9a4be">
+      <description>Notification data array</description>
+      <informativeText>Notification data that is sent to test throughput. </informativeText>
+      <value length="255" type="hex" variable_length="false">0x00</value>
+      <properties notify="true" notify_requirement="optional"/>
+    </characteristic>
+    
+    <!--Transmission ON-->
+    <characteristic id="transmission_on" name="Transmission ON" sourceId="custom.type" uuid="be6b6be1-cd8a-4106-9181-5ffe2bc67718">
+      <description>Transmission ON</description>
+      <informativeText>Start/Stop transmission. </informativeText>
+      <value length="1" type="hex" variable_length="false">0x00</value>
+      <properties read="true" read_requirement="optional" write="true" write_no_response="true" write_no_response_requirement="optional" write_requirement="optional" notify="true" notify_requirement="optional"/>
+    </characteristic>
+    
+    <!--Throughput result-->
+    <characteristic id="throughput_result" name="Throughput result" sourceId="custom.type" uuid="adf32227-b00f-400c-9eeb-b903a6cc291b">
+      <description>Throughput result</description>
+      <informativeText>Stores the result of the throughput test. </informativeText>
+      <value length="4" type="hex" variable_length="false">0x00000000</value>
+      <properties indicate="true" indicate_requirement="optional" read="true" read_requirement="optional"/>
+    </characteristic>
+  </service>
+  <!--Throughput Information Service-->
+  <service advertise="false" id="ThroughputInformationService" name="Throughput Information Service" requirement="mandatory" sourceId="custom.type" type="primary" uuid="ba1e0e9f-4d81-bae3-f748-3ad55da38b46">
+    <informativeText>Throughput Information Service contains characteristics to inform remote peer about the currently applied connection parameters. </informativeText>
+
+    <!--PHY status-->
+    <characteristic id="connection_phy" name="Connection PHY" sourceId="custom.type" uuid="00a82b93-0feb-2739-72be-abda1f5993d0">
+      <description>Connection PHY status: 0x01:1M 0x02:2M 0x04:Coded 125k, 0x08:Coded 500k PHY</description>
+      <informativeText>Stores the status of the used connection PHY. </informativeText>
+      <value length="1" type="hex" variable_length="false">0x00</value>
+      <properties notify="true" notify_requirement="optional" read="true" read_requirement="optional"/>
+    </characteristic>
+
+    <!--Connection interval-->
+    <characteristic id="connection_interval" name="Connection interval" sourceId="custom.type" uuid="0a32f5a6-0a6c-4954-f413-a698faf2c664">
+      <description>Connection interval (in 1.25 ms steps)</description>
+      <informativeText>Stores the actual connection interval (in 1.25 ms steps). </informativeText>
+      <value length="4" type="hex" variable_length="false">0x00000000</value>
+      <properties notify="true" notify_requirement="optional" read="true" read_requirement="optional"/>
+    </characteristic>
+
+    <!--Responder latency-->
+    <characteristic id="responder_latency" name="Responder latency" sourceId="custom.type" uuid="ff629b92-332b-e7f7-975f-0e535872ddae">
+      <description>Responder latency (in connection intervals)</description>
+      <informativeText>Stores the actual responder latency (in connection intervals). </informativeText>
+      <value length="4" type="hex" variable_length="false">0x00000000</value>
+      <properties notify="true" notify_requirement="optional" read="true" read_requirement="optional"/>
+    </characteristic>
+
+    <!--Supervision timeout-->
+    <characteristic id="supervision_timeout" name="Supervision timeout" sourceId="custom.type" uuid="67e2c4f2-2f50-914c-a611-adb3727b056d">
+      <description>Supervision timeout (in 10 ms steps)</description>
+      <informativeText>Stores the actual supervision timeout (in 10 ms steps). </informativeText>
+      <value length="4" type="hex" variable_length="false">0x00000000</value>
+      <properties notify="true" notify_requirement="optional" read="true" read_requirement="optional"/>
+    </characteristic>
+
+    <!--PDU size-->
+    <characteristic id="pdu_size" name="PDU size" sourceId="custom.type" uuid="30cc364a-0739-268c-4926-36f112631e0c">
+      <description>PDU size in bytes</description>
+      <informativeText>Stores the current PDU size in bytes. </informativeText>
+      <value length="1" type="hex" variable_length="false">0x00</value>
+      <properties notify="true" notify_requirement="optional" read="true" read_requirement="optional"/>
+    </characteristic>
+
+    <!--MTU size-->
+    <characteristic id="mtu_size" name="MTU size" sourceId="custom.type" uuid="3816df2f-d974-d915-d26e-78300f25e86e">
+      <description>MTU size in bytes</description>
+      <informativeText>Stores the current MTU size in bytes. </informativeText>
+      <value length="1" type="hex" variable_length="false">0x00</value>
+      <properties notify="true" notify_requirement="optional" read="true" read_requirement="optional"/>
+    </characteristic>
+
+  </service>
+</gatt>

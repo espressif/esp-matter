@@ -1,0 +1,30 @@
+id: legacy_hal
+label: Legacy HAL
+package: platform
+category: Services
+quality: production
+description: >
+  Legacy Ember HAL
+
+  The Legacy HAL is an implementation of the Hardware Abstraction Layer (HAL) that was used by the Zigbee EmberZNet stack and Flex Connect stack before their transition to the new component-based architecture (Zigbee version 7.0 and Connect version 3.0).  This component is not a complete duplicate of the old HAL. It only contains the most commonly used pieces to enable our networking stacks and sample applications and to support porting customer applications to the new component-based implementation.  Currently, Zigbee and Connect sample applications are dependent on this component.  Eventually, they will be ported to use new HAL components directly so that this  component can become optional or be deprecated.
+
+  For example, existing designs might have been using the Simulated EEPROM with devices in the field already holding important data in SimEE storage.
+  Ideally all new and old projects use NVM3, but the Legacy HAL's SimEE component might be necessary to maintain stored data such as network parameters.
+
+  The Legacy HAL component is only designed for Zigbee EmberZNet and Flex Connect stack applications. Do not use with any other stacks as it will likely introduce problems.  Keep in mind not all components that are considered Legacy HAL require the Legacy HAL component itself.
+provides:
+  - name: legacy_hal
+requires:
+  - name: legacy_hal_host
+    condition:
+      - device_host
+  - name: legacy_hal_soc
+    unless:
+      - device_host
+  - name: component_catalog
+template_contribution:
+  - name: component_catalog
+    value: legacy_hal
+documentation:
+    docset: gecko-platform
+    document: service/api/group-legacyhal

@@ -1,0 +1,189 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:annotation>
+    <xsd:documentation xml:lang="en">
+      Mini-XML 2.9 documentation schema for mxmldoc output.
+      Copyright 2003-2014 by Michael Sweet.
+
+      This program is free software; you can redistribute it and/or
+      modify it under the terms of the GNU Library General Public
+      License as published by the Free Software Foundation; either
+      version 2, or (at your option) any later version.
+
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+    </xsd:documentation>
+  </xsd:annotation>
+
+  <!-- basic element definitions -->
+  <xsd:element name="argument" type="argumentType"/>
+  <xsd:element name="class" type="classType"/>
+  <xsd:element name="constant" type="constantType"/>
+  <xsd:element name="description" type="xsd:string"/>
+  <xsd:element name="enumeration" type="enumerationType"/>
+  <xsd:element name="function" type="functionType"/>
+  <xsd:element name="mxmldoc" type="mxmldocType"/>
+  <xsd:element name="namespace" type="namespaceType"/>
+  <xsd:element name="returnvalue" type="returnvalueType"/>
+  <xsd:element name="seealso" type="identifierList"/>
+  <xsd:element name="struct" type="structType"/>
+  <xsd:element name="typedef" type="typedefType"/>
+  <xsd:element name="type" type="xsd:string"/>
+  <xsd:element name="union" type="unionType"/>
+  <xsd:element name="variable" type="variableType"/>
+
+  <!-- descriptions of complex elements -->
+  <xsd:complexType name="argumentType">
+    <xsd:sequence>
+      <xsd:element ref="type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element ref="description" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute name="default" type="xsd:string" use="optional"/>
+    <xsd:attribute name="name" type="identifier" use="required"/>
+    <xsd:attribute name="direction" type="direction" use="optional" default="I"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="classType">
+    <xsd:sequence>
+      <xsd:element ref="description" minOccurs="0" maxOccurs="1"/>
+      <xsd:choice minOccurs="0" maxOccurs="unbounded">
+	<xsd:element ref="class"/>
+	<xsd:element ref="enumeration"/>
+	<xsd:element ref="function"/>
+	<xsd:element ref="struct"/>
+	<xsd:element ref="typedef"/>
+	<xsd:element ref="union"/>
+	<xsd:element ref="variable"/>
+      </xsd:choice>
+    </xsd:sequence>
+    <xsd:attribute name="name" type="identifier" use="required"/>
+    <xsd:attribute name="parent" type="xsd:string" use="optional"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="constantType">
+    <xsd:sequence>
+      <xsd:element ref="description" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute name="name" type="identifier" use="required"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="enumerationType">
+    <xsd:sequence>
+      <xsd:element ref="description" minOccurs="0" maxOccurs="1"/>
+      <xsd:element ref="constant" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="name" type="identifier" use="required"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="functionType">
+    <xsd:sequence>
+      <xsd:element ref="returnvalue" minOccurs="0" maxOccurs="1"/>
+      <xsd:element ref="description" minOccurs="0" maxOccurs="1"/>
+      <xsd:element ref="argument" minOccurs="1" maxOccurs="unbounded"/>
+      <xsd:element ref="seealso" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute name="name" type="identifier" use="required"/>
+    <xsd:attribute name="scope" type="scope" use="optional"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="mxmldocType">
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="class"/>
+      <xsd:element ref="enumeration"/>
+      <xsd:element ref="function"/>
+      <xsd:element ref="namespace"/>
+      <xsd:element ref="struct"/>
+      <xsd:element ref="typedef"/>
+      <xsd:element ref="union"/>
+      <xsd:element ref="variable"/>
+    </xsd:choice>
+  </xsd:complexType>
+
+  <xsd:complexType name="namespaceType">
+    <xsd:sequence>
+      <xsd:element ref="description" minOccurs="0" maxOccurs="1"/>
+      <xsd:choice minOccurs="0" maxOccurs="unbounded">
+	<xsd:element ref="class"/>
+	<xsd:element ref="enumeration"/>
+	<xsd:element ref="function"/>
+	<xsd:element ref="struct"/>
+	<xsd:element ref="typedef"/>
+	<xsd:element ref="union"/>
+	<xsd:element ref="variable"/>
+      </xsd:choice>
+    </xsd:sequence>
+    <xsd:attribute name="name" type="identifier" use="required"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="returnvalueType">
+    <xsd:sequence>
+      <xsd:element ref="type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element ref="description" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="structType">
+    <xsd:sequence>
+      <xsd:element ref="description" minOccurs="0" maxOccurs="1"/>
+      <xsd:choice minOccurs="0" maxOccurs="unbounded">
+	<xsd:element ref="variable"/>
+	<xsd:element ref="function"/>
+      </xsd:choice>
+    </xsd:sequence>
+    <xsd:attribute name="name" type="identifier" use="required"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="typedefType">
+    <xsd:sequence>
+      <xsd:element ref="type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element ref="description" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute name="name" type="identifier" use="required"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="unionType">
+    <xsd:sequence>
+      <xsd:element ref="description" minOccurs="0" maxOccurs="1"/>
+      <xsd:element ref="variable" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="name" type="identifier" use="required"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="variableType">
+    <xsd:sequence>
+      <xsd:element ref="type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element ref="description" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute name="name" type="identifier" use="required"/>
+  </xsd:complexType>
+
+  <!-- data types -->
+  <xsd:simpleType name="direction">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="I"/>
+      <xsd:enumeration value="O"/>
+      <xsd:enumeration value="IO"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="identifier">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[a-zA-Z_(.]([a-zA-Z_(.,)* 0-9])*"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="identifierList">
+    <xsd:list itemType="identifier"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="scope">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value=""/>
+      <xsd:enumeration value="private"/>
+      <xsd:enumeration value="protected"/>
+      <xsd:enumeration value="public"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+</xsd:schema>

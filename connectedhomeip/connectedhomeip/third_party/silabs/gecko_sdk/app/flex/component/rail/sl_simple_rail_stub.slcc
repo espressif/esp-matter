@@ -1,0 +1,32 @@
+id: "sl_simple_rail_stub"
+label: "Simple RAIL Stub"
+package: "Flex"
+description: "Simple RAIL Stub that prevents installing some conflicting components."
+category: "Flex|RAIL|Utility"
+quality: "production"
+
+provides:
+  - name: "sl_simple_rail_stub"
+  - name: "simple_rail_rx"
+    condition: [sl_simple_rail_stub]
+  - name: "simple_rail_tx"
+    condition: [sl_simple_rail_stub]
+  - name: "simple_rail_heartbeat"
+    condition: [sl_simple_rail_stub]
+  - name: "simple_rail_rx_cli"
+    condition: [sl_simple_rail_stub]
+  - name: "simple_rail_tx_cli"
+    condition: [sl_simple_rail_stub]
+
+requires:
+  - name: "device_has_radio"
+
+#-------- Hides Component for user in Studio ---------
+ui_hints:
+  visibility: never
+
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: sl_simple_rail_stub

@@ -1,0 +1,24 @@
+id: micriumos_net_app_sntp
+label: Network Suite - SNTP client
+package: micrium-tcpx
+description: Micrium OS Network SNTP client
+category: Services|Micrium|Network Suite
+quality: production
+component_root_path: platform/micrium_os/net
+source:
+  - path: source/sntp/sntp_client.c
+  - path: source/cmd/sntp_client_cmd.c
+include:
+  - path: source
+    file_list:
+      - path: cmd/sntp_client_cmd_priv.h
+  - path: include
+    file_list:
+      - path: sntp_client.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: NET_SNTP_CLIENT
+provides:
+  - name: net_app_sntp
+requires:
+  - name: net

@@ -1,0 +1,88 @@
+# @EXAMPLE_TITLE@
+
+@EXAMPLE_INTRO@
+
+## Building the example
+
+### Prerequisites
+
+Please refer to [prerequisites for the Open IoT SDK](https://git.gitlab.arm.com/iot/open-iot-sdk/sdk/-/blob/main/docs/Prerequisites.md).
+
+### Background
+
+#### CMake build process
+
+Building a CMake project involves two steps:
+* Configuration: What to configure depends on the project. For the Open IoT SDK,
+this includes build directory, toolchain selection, components to fetch, options
+for examples and tests, etc. This step creates and populates the build directory
+with everything needed for building, including automatically fetching components.
+* Building: Triggering a build using the configuration set up in the
+Configuration step.
+
+#### Selecting the toolchain
+
+To configure CMake to use a particular toolchain you must pass in a
+[toolchain file](https://cmake.org/cmake/help/latest/manual/cmake-toolchains.7.html#cross-compiling).
+
+The example will automatically fetch the default toolchain files for
+* Arm Compiler 6: `--toolchain toolchains/toolchain-armclang.cmake`
+* GNU Arm Embedded Toolchain (GCC) `--toolchain toolchains/toolchain-arm-none-eabi-gcc.cmake`
+
+### Configuration and building
+
+To configure this example, e.g. using GCC:
+
+```
+cmake -B __build -GNinja --toolchain toolchains/toolchain-arm-none-eabi-gcc.cmake
+```
+
+**Notes**:
+* If you generated this example from a copy of the Open IoT SDK that contains *your own modifications*, then you
+**must** append `-D FETCHCONTENT_SOURCE_DIR_OPEN-IOT-SDK=<YOUR_LOCAL_SDK>` (note the difference between `_` and `-`) to
+the command above, where `<YOUR_LOCAL_SDK>` is the absolute or relative path to the SDK repository located on your hard
+drive.
+* Dependencies take time to fetch. You can pass `-D FETCHCONTENT_QUIET=OFF` to inform CMake to print fetching progress.
+
+To build:
+
+```
+cmake --build __build
+```
+
+## Running the example
+
+Once the example application has been built, it can be found in .elf and .bin formats inside the `__build` directory.
+
+To run it on an Arm Virtual Hardware (AVH) target:
+
+```
+@EXAMPLE_RUN_COMMAND@
+```
+
+## Troubleshooting
+
+### Windows path issue
+
+When running the above `cmake -B` command on Windows, you may run into the following issue:
+
+```
+ninja: error: Stat(__build/_deps/mcu-driver-reference-platforms-for-arm-subbuild/mcu-driver-reference-platforms-for-arm-populate-prefix/src/mcu-driver-reference-platforms-for-arm-populate-stamp/mcu-driver-reference-platforms-for-arm-populate-done): Filename longer than 260 characters
+```
+
+You can work around the error by performing either of the following solutions:
+- using WSL
+- moving the project closer to the drive's root
+- using `subst` windows command
+
+For example `subst` to use new drive `z:` if the path to your working directory is `c:\foo\very-very-long-directory-name\my-working-directory`,
+run the commands as follows:
+```
+subst z: c:\foo\very-very-long-directory-name\my-working-directory
+z:
+git config --system core.longpaths true
+```
+
+## Further information
+
+Please refer to [documentation for the Open IoT SDK](https://git.gitlab.arm.com/iot/open-iot-sdk/sdk/-/blob/main/docs/README.md).

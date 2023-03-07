@@ -1,0 +1,79 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_boot/backend.gni")
+import("$dir_pw_build/linker_script.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+
+declare_args() {
+  # This list should contain the necessary defines for setting pw_boot linker
+  # script memory regions.
+  pw_boot_cortex_m_LINK_CONFIG_DEFINES = []
+
+  # The pw_linker_script that should be used for the target.
+  pw_boot_cortex_m_LINKER_SCRIPT = ":cortex_m_linker_script"
+}
+
+if (pw_boot_BACKEND != "$dir_pw_boot_cortex_m" &&
+    pw_boot_BACKEND != "$dir_pw_boot_cortex_m:armv7m" &&
+    pw_boot_BACKEND != "$dir_pw_boot_cortex_m:armv8m") {
+  group("pw_boot_cortex_m") {
+  }
+  group("armv7m") {
+  }
+  group("armv8m") {
+  }
+} else {
+  config("default_config") {
+    include_dirs = [ "public" ]
+  }
+
+  pw_linker_script("cortex_m_linker_script") {
+    # pw_boot_cortex_m_LINK_CONFIG_DEFINES is a list of defines provided by the
+    # target.
+    defines = pw_boot_cortex_m_LINK_CONFIG_DEFINES
+    linker_script = "basic_cortex_m.ld"
+  }
+
+  pw_source_set("pw_boot_cortex_m") {
+    public_configs = [ ":default_config" ]
+    public = [ "public/pw_boot_cortex_m/boot.h" ]
+    public_deps = [ "$dir_pw_preprocessor" ]
+    deps = [
+      "$dir_pw_boot:facade",
+      "$dir_pw_preprocessor:arch",
+      pw_boot_cortex_m_LINKER_SCRIPT,
+    ]
+    sources = [ "core_init.c" ]
+  }
+
+  # These targets are deprecated, use ":pw_boot_cortex_m" directly.
+  group("armv7m") {
+    public_deps = [ ":pw_boot_cortex_m" ]
+  }
+  group("armv8m") {
+    public_deps = [ ":pw_boot_cortex_m" ]
+  }
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}
+
+pw_test_group("tests") {
+}

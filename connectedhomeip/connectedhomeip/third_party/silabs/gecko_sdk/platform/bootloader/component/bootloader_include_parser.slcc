@@ -1,0 +1,26 @@
+id: bootloader_include_parser
+label: Bootloader Include Parser
+package: bootloader
+description: >
+   Image Parser Header Files
+category: Platform|Bootloader|Core
+quality: production
+include:
+  - path: platform/bootloader
+  - path: platform/bootloader/parser
+    file_list:
+      - path: gbl/btl_gbl_parser.h
+      - path: gbl/btl_gbl_format.h
+      - path: gbl/btl_gbl_custom_tags.h
+  - path: platform/bootloader/api
+    file_list:
+      - path: btl_interface.h
+      - path: btl_errorcode.h
+      - path: btl_reset_info.h
+      - path: application_properties.h
+      - path: btl_interface_parser.h
+      - path: btl_interface_storage.h
+provides:
+  - name: bootloader_include_parser
+  - name: bootloader_nonsecure_incompatible
+    condition: [bootloader_core_nonsecure]

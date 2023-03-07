@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- IAR Project Connection File -->
+<iarProjectConnection version="1.6" name="SysConfig Generated Files" oneShot="false"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="IarProjectConnection_1.8.xsd">
+    <files>
+        <path>$PROJ_DIR$/tiop_config.c</path>
+        <path>$PROJ_DIR$/ti_devices_config.c</path>
+        <path>$PROJ_DIR$/ti_radio_config.c</path>
+        <path>$PROJ_DIR$/ti_drivers_config.c</path>
+        <path>$PROJ_DIR$/tiop_config.h</path>
+        <path>$PROJ_DIR$/ti_radio_config.h</path>
+        <path>$PROJ_DIR$/ti_drivers_config.h</path>
+    </files>
+</iarProjectConnection>

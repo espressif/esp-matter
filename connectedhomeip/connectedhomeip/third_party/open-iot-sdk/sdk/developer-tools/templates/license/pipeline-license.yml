@@ -1,0 +1,49 @@
+# Copyright (c) 2022 Arm Limited and Contributors. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+workflow:
+  rules:
+    - when: always
+
+variables:
+  LICENSE_SCHEMA_DIR: $CI_PROJECT_DIR
+  GIT_SUBMODULE_STRATEGY: none
+
+image: ${OPEN_IOT_SDK_DOCKER_REGISTRY}/scancode:21.x
+
+.license-check:
+  stage: quality_check
+  tags:
+    - iotmsw-amd64
+  variables:
+    # we don't want to run scancode in submodules
+    GIT_SUBMODULE_STRATEGY: none
+  before_script:
+    - env
+    - |
+      # as submodule is not checkedout, do it explicitly
+      if [[ "$CI_PROJECT_NAME" != "developer-tools" ]]; then
+        git submodule update --init developer-tools
+      fi
+
+  script:
+    - |
+      if [[ "$CI_PROJECT_NAME" != "developer-tools" ]]; then
+        LICENSE_SCHEMA_DIR=${CI_PROJECT_DIR}/developer-tools
+      fi
+    - scancode -l --json-pp scancode_report.json $CI_PROJECT_DIR
+    - jsonschema -i scancode_report.json ${LICENSE_SCHEMA_DIR}/templates/license/license.schema
+  artifacts:
+    paths:
+      - scancode_report.json
+    expire_in: 1 week
+
+license-scheme-test:
+  stage: quality_check
+  tags:
+    - iotmsw-amd64
+  script:
+    - cd $LICENSE_SCHEMA_DIR/templates/license
+    - ./test_schema.sh
+  rules:
+    - if: $CI_PROJECT_NAME == "developer-tools"

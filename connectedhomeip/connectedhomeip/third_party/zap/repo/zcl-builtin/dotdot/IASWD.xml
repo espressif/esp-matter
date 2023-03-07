@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster xmlns:zcl="http://zigbee.org/zcl/clusters"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:type="http://zigbee.org/zcl/types"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd"
+  id="0502" revision="2" name="IASWD">
+  <classification role="application" picsCode="IASWD" primaryTransaction="1" />
+  
+  <type:type short="IaswdLevel" name="IaswdLevel" id="30" inheritsFrom="enum8">
+    <restriction>
+      <type:enumeration name="LowLevel" value="00"/>
+      <type:enumeration name="MediumLevel" value="01"/>
+      <type:enumeration name="HighLevel" value="02"/>
+      <type:enumeration name="VeryHighLevel" value="03"/>
+    </restriction>
+  </type:type>
+
+  <server>
+    <attributes>
+      <attribute id="0000" name="MaxDuration" type="uint16" writable="true" required="true" max="65534" default="240" />
+    </attributes>
+    <commands>
+      <command id="00" name="StartWarning" required="true" >
+        <fields>
+          <!-- Invented name for this field; ZCL7 only names the bitmap subfields. -->
+          <field name="SirenConfiguration" type="map8" >
+            <bitmap>
+              <element name="SirenLevel" type="IaswdLevel" mask="03" shiftRight="0" />
+              <element name="Strobe" type="enum8" mask="0C" shiftRight="2" >
+                <restriction>
+                  <type:enumeration name="NoStrobe" value="00"/>
+                  <type:enumeration name="UseStrobe" value="01"/>
+                </restriction>
+              </element>
+              <element name="WarningMode" type="enum8" mask="F0" shiftRight="4" >
+                <restriction>
+                  <type:enumeration name="Stop" value="00"/>
+                  <type:enumeration name="Burgler" value="01"/>
+                  <type:enumeration name="Fire" value="02"/>
+                  <type:enumeration name="Emergency" value="03"/>
+                  <type:enumeration name="PolicePanic" value="04"/>
+                  <type:enumeration name="FirePanic" value="05"/>
+                  <type:enumeration name="EmergencyPanic" value="06"/>
+                </restriction>
+              </element>
+            </bitmap>
+          </field>
+          <field name="WarningDuration" type="uint16" />
+          <field name="StrobeDutyCycle" type="uint8" >
+            <restriction>
+              <!-- ZCL7 spec also states that value must be multiple of 10. -->
+              <type:maxInclusive value="100"/>
+            </restriction>
+          </field>
+          <field name="StrobeLevel" type="IaswdLevel" />
+        </fields>
+      </command>
+      <command id="01" name="Squawk" required="true" >
+        <fields>
+          <!-- Invented name for this field; ZCL7 only names the bitmap subfields. -->
+          <field name="SquawkConfiguration" type="map8" >
+            <bitmap>
+              <element name="SquawkLevel" type="IaswdLevel" mask="03" shiftRight="0" />
+              <!-- Bit 2 is undefined. -->
+              <element name="SquawkStrobeActive" type="bool" mask="08" shiftRight="3" />
+              <element name="SquawkMode" type="enum8" mask="F0" shiftRight="4" >
+                <restriction>
+                  <type:enumeration name="SoundForSystemIsArmed" value="00"/>
+                  <type:enumeration name="SoundForSystemIsDisarmed" value="01"/>
+                </restriction>
+              </element>
+            </bitmap>
+          </field>
+        </fields>
+      </command>
+    </commands>
+  </server>
+</zcl:cluster>

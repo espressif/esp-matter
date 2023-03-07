@@ -1,0 +1,44 @@
+# All these sections are optional. Each section with the exception of [general] represents
+# one rule and each key in it is an option for that specific rule.
+#
+# Rules and sections can be referenced by their full name or by id. For example
+# section "[body-max-line-length]" could also be written as "[B1]". Full section names are
+# used in here for clarity.
+#
+# For a full list of Gitlint rules please refer to https://jorisroovers.com/gitlint/rules/
+
+[general]
+
+verbosity = 3
+
+# Enforce Developer’s Certificate of Origin in the commit body
+contrib=contrib-body-requires-signed-off-by
+
+# By default gitlint will ignore merge, revert, fixup and squash commits.
+# The following are thus technically not required to be explicitly set
+# but are shown for clarity.
+ignore-merge-commits=true
+ignore-revert-commits=true
+ignore-fixup-commits=true
+ignore-squash-commits=true
+
+# Ignore any data send to gitlint via stdin
+ignore-stdin=true
+
+[title-max-length]
+line-length=72
+
+# python-style regex that the commit-msg title must match
+# Note that the regex can contradict with other rules if not used correctly
+# For the SDK this rule enforces a lowercase prefix followed by a ': ',
+# with the actual title then captialized.
+[title-match-regex]
+regex=^[a-z\-]+: [A-Z]{1}
+
+[body-max-line-length]
+line-length=72
+
+# Ignore all lines that contain URLs
+# Ignore all indented lines, as we require logs to be indented with four spaces
+[ignore-body-lines]
+regex=(.*(https*://)|(git@))|(^    )

@@ -1,0 +1,50 @@
+<gatt>
+  <!--Constant Tone Extension Service-->
+  <service advertise="true" id="cte" name="Constant Tone Extension Service" requirement="mandatory" sourceId="" type="primary" uuid="184A" instance_id="cte_s1">
+    
+    <!--Advertising Constant Tone Extension Minimum Length-->
+    <characteristic const="false" id="adv_cte_min_len" name="Advertising Constant Tone Extension Minimum Length" sourceId="" uuid="2BAE">
+      <informativeText/>
+      <value length="1" type="user" variable_length="false"/>
+      <properties>
+        <write authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--Advertising Constant Tone Extension Minimum Transmit Count-->
+    <characteristic const="false" id="adv_cte_min_tx_count" name="Advertising Constant Tone Extension Minimum Transmit Count" sourceId="" uuid="2BAF">
+      <informativeText/>
+      <value length="1" type="user" variable_length="false"/>
+      <properties>
+        <write authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--Advertising Constant Tone Extension Transmit Duration-->
+    <characteristic const="false" id="adv_cte_tx_duration" name="Advertising Constant Tone Extension Transmit Duration" sourceId="" uuid="2BB0">
+      <informativeText/>
+      <value length="1" type="user" variable_length="false"/>
+      <properties>
+        <write authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--Advertising Constant Tone Extension Interval-->
+    <characteristic const="false" id="adv_cte_interval" name="Advertising Constant Tone Extension Interval" sourceId="" uuid="2BB1">
+      <informativeText/>
+      <value length="2" type="user" variable_length="false"/>
+      <properties>
+        <write authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--Advertising Constant Tone Extension PHY-->
+    <characteristic const="false" id="adv_cte_phy" name="Advertising Constant Tone Extension PHY" sourceId="" uuid="2BB2">
+      <informativeText/>
+      <value length="1" type="user" variable_length="false"/>
+      <properties>
+        <write authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+  </service>
+</gatt>

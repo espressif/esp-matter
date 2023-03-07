@@ -1,0 +1,42 @@
+id: bootloader_internal_storage
+label: Internal Storage
+package: bootloader
+description: >
+  Storage component using internal flash
+category: Platform|Bootloader|Storage
+quality: production
+source:
+  - path: platform/bootloader/storage/internal_flash/btl_storage_internal_flash.c
+include:
+  - path: platform/bootloader/core/flash/
+    file_list:
+    - path: btl_internal_flash.h
+  - path: platform/bootloader
+  - path: platform/bootloader/api
+    file_list:
+    - path: application_properties.h
+    - path: btl_errorcode.h
+    - path: btl_interface.h
+    - path: btl_interface_parser.h
+    - path: btl_interface_storage.h
+    - path: btl_reset_info.h
+define:
+  - name: BOOTLOADER_SUPPORT_STORAGE
+    value: 1
+  - name: BOOTLOADER_SUPPORT_INTERNAL_STORAGE
+    value : 1
+provides:
+  - name: bootloader_internal_storage
+  - name: bootloader_nonsecure_incompatible
+    condition: [bootloader_core_nonsecure]
+requires:
+  - name: bootloader_crc
+config_file:
+  - path: platform/bootloader/config/s1/btl_internal_storage_cfg.h
+    file_id: btl_internal_storage_config
+    condition:
+      - device_series_1
+  - path: platform/bootloader/config/s2/btl_internal_storage_cfg.h
+    file_id: btl_internal_storage_config
+    condition:
+      - device_series_2

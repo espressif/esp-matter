@@ -1,0 +1,22 @@
+id: simple_timer_micriumos
+label: Simple timer service for Micrium RTOS
+package: Bluetooth
+description: Simple timer service for applications with less strict timing requirements.
+category: Application|Service
+quality: production
+root_path: app/bluetooth/common/simple_timer_micriumos
+source:
+  - path: sl_simple_timer_micriumos.c
+include:
+  - path: .
+    file_list:
+      - path: sl_simple_timer.h
+provides:
+  - name: simple_timer
+requires:
+  - name: micriumos_kernel
+template_contribution:
+  - name: component_catalog
+    value: simple_timer_micriumos
+validation_helper:
+  - path: simple_timer_micriumos_validation.lua

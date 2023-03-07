@@ -1,0 +1,26 @@
+id: iot_metrics
+
+category:    Third Party|Amazon FreeRTOS - AWS Libraries|Platform
+label:       IoT Metrics
+description: IoT Platform - Metrics API for FreeRTOS.
+
+package: amazon_platform
+quality: alpha
+
+provides:
+  - name: iot_metrics
+
+requires:
+  - name: iot_config_common
+  - name: iot_threads
+  - name: iot_tls
+
+root_path: util/third_party/aws_iot_libs
+
+source:
+  - path: libraries/abstractions/platform/freertos/iot_metrics.c
+
+include:
+  - path: libraries/abstractions/platform/include
+    file_list:
+      - path: platform/iot_metrics.h

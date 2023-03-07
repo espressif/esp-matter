@@ -1,0 +1,44 @@
+id: device_init_lfrco
+label: "Device Init: LFRCO"
+package: platform
+description: >
+  Device init for LFRCO configures the precision mode of the low-frequency RC oscillator.
+category: Services|Device Initialization
+quality: production
+root_path: platform/service/device_init/
+config_file:
+  - path: config/s1/sl_device_init_lfrco_config.h
+    file_id: device_init_lfrco_config
+    condition: [device_series_1]
+  - path: config/s2/sl_device_init_lfrco_config.h
+    file_id: device_init_lfrco_config
+    condition: [device_sdid_205]
+  - path: config/s2/sl_device_init_lfrco_config.h
+    file_id: device_init_lfrco_config
+    condition: [device_sdid_215]
+  - path: config/s2/sl_device_init_lfrco_config.h
+    file_id: device_init_lfrco_config
+    condition: [device_sdid_230]
+include:
+  - path: inc
+    file_list:
+      - path: sl_device_init_lfrco.h
+source:
+  - path: src/sl_device_init_lfrco.c
+provides:
+  - name: device_init_lfrco
+requires:
+  - name: emlib_cmu
+  - name: status
+template_contribution:
+  - name: event_handler
+    value:
+      event: platform_init
+      include: sl_device_init_lfrco.h
+      handler: sl_device_init_lfrco
+    priority: -9650
+  - name: device_init_clocks_present
+    value: lfrco
+documentation:
+    docset: gecko-platform
+    document: service/api/group-device-init-lfrco

@@ -1,0 +1,18 @@
+id: "sleep"
+label: "Sleep Driver"
+package: "platform"
+description: "Sleep Driver."
+category: "Platform|Driver"
+quality: "deprecated"
+source:
+- path: "platform/emdrv/sleep/src/sleep.c"
+include:
+  - path: "platform/emdrv/sleep/inc"
+    file_list:
+      - path: "sleep.h"
+provides:
+  - name: "sleep"
+requires:
+  - name: "emlib_rmu"
+  - name: "emlib_emu"
+  - name: "emlib_core"

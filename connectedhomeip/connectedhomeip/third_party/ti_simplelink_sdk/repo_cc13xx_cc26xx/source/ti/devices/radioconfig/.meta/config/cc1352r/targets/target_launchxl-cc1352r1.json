@@ -1,0 +1,13 @@
+{
+    "target": {
+        "Name": "LAUNCHXL-CC1352R1",
+        "Revision": [],
+        "Description": "CC1352LP. 7x7 VQFN48 package. External bias, differential output. 770-930MHz.",
+        "DeviceName": "CC1352R",
+        "DevicePackage": "VQFN 7x7",
+        "FrontEnd": "XD",
+        "PaSettings": "pasettings.json",
+        "RfDesign": "CC1352EM-XD7793-XD24",
+        "DefaultCategory": "Settings for 779 - 930 MHz band"
+    }
+}

@@ -1,0 +1,21 @@
+id: micriumos_net_app_tftp_client
+label: Network Suite - TFTP client
+package: micrium-tcpx
+description: Micrium OS Network TFTP client
+category: Services|Micrium|Network Suite
+quality: production
+component_root_path: platform/micrium_os/net
+source:
+  - path: source/tftp/tftp_client.c
+include:
+  - path: include
+    file_list:
+      - path: tftp_client.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: NET_TFTP_CLIENT
+provides:
+  - name: net_app_tftp_client
+requires:
+  - name: net
+  - name: fs

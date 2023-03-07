@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2015 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+last-modified="2015-05-18" name="HTTPS Security" type="org.bluetooth.characteristic.https_security" uuid="2ABB" approved="Yes">
+    <InformativeText>
+        <Abstract>
+            The HTTPS Security characteristic contains the known authenticity of the HTTPS Server certificate for the URI.
+        </Abstract>
+    </InformativeText>
+    <Value>
+        <Field name="HTTPS Security">
+            <InformativeText>
+                The known authenticity of the HTTP Server certificate for the URI.
+            </InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>boolean</Format>
+            <Enumerations>
+                <Enumeration key="0" value="False" />
+                <Enumeration key="1" value="True" />
+            </Enumerations>
+        </Field>
+    </Value>
+</Characteristic>

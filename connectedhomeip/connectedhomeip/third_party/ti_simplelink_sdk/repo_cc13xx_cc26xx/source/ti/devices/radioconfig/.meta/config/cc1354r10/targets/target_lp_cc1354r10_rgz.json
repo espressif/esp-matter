@@ -1,0 +1,13 @@
+{
+    "target": {
+        "Name": "LP_CC1354R10_RGZ",
+        "Revision": [],
+        "Description": "CC1354R10 RGZ on CC1352R1_LAUNCHXL",
+        "DeviceName": "CC1354R10",
+        "DevicePackage": "RGZ 7x7",
+        "FrontEnd": "XD",
+        "PaSettings": "pasettings.json",
+        "RfDesign": "LP-CC1354R10-7x7-XD7793-XD24",
+        "DefaultCategory": "Settings for 779 - 930 MHz band"
+    }
+}

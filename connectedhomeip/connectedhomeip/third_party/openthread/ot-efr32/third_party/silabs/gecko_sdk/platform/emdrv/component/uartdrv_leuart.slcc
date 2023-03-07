@@ -1,0 +1,50 @@
+id: uartdrv_leuart
+package: platform
+label: "UARTDRV LEUART"
+description: >
+  The UART LEUART driver supports the UART capabilities of the LEUART
+  peripheral. The driver is fully reentrant and supports multiple driver 
+  instances. Both blocking and non-blocking transfer functions are available. 
+  The non-blocking transfer functions use DMA to transfer data and report 
+  transfer completion with callback functions. Note that the blocking functions 
+  are not suitable for low energy applications because they use CPU polling.
+
+
+  If the Services->Runtime->System Setup->System Init component is included in
+  a project, the driver instances will be initialized automatically, using the
+  instance configurations, during the sl_system_init() call in main.c.
+
+
+  Selecting this component will also include the UARTDRV Core component, which is 
+  the implementation of the UARTDRV driver itself.
+category: "Platform|Driver|UART"
+quality: production
+root_path: "platform/emdrv/uartdrv"
+instantiable:
+  prefix: "inst"
+config_file:
+  - path: "config/leuart/s0/sl_uartdrv_leuart_{{instance}}_config.h"
+    file_id: uartdrv_leuart_config
+    condition: [device_series_0]
+  - path: "config/leuart/s1/sl_uartdrv_leuart_{{instance}}_config.h"
+    file_id: uartdrv_leuart_config
+    condition: [device_series_1]
+provides:
+  - name: "uartdrv_instance"
+    allow_multiple: true
+  - name: "uartdrv_leuart"
+    allow_multiple: true
+requires:
+  - name: "uartdrv_core"
+  - name: "device_has_leuart"
+template_contribution:
+  - name: "uartdrv_leuart_instances"
+    value: "{{instance}}"
+  - name: power_manager_handler
+    value:
+      event: sleep_on_isr_exit
+      include: "uartdrv.h"
+      handler: "sl_uartdrv_sleep_on_isr_exit"
+documentation:
+    docset: gecko-platform
+    document: driver/api/group-uartdrv

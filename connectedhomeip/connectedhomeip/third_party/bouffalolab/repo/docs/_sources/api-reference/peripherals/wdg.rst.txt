@@ -1,0 +1,24 @@
+WDG
+====
+
+概述
+--------
+
+看门狗（Watchdog），又叫看门狗计时器（Watchdog timer），是一种硬件的计时设备，当系统的主程序发生某些错误时，导致未及时清除看门狗计时器的计时值，这时看门狗计时器就会对系统发出复位信号，使系统从悬停状态恢复到正常运作状态
+
+.. note::
+
+    wdg更多资料请参考 `BL602参考手册 <https://dev.bouffalolab.com/media/doc/602/open/reference_manual/zh/html/content/TIMER.html>`_ 。
+
+应用实例
+----------
+
+串口实例： ``customer_app/peripheral/demo_wdg`` 。
+
+API参考
+----------
+
+.. include:: /_build/inc/hosal_wdg.inc
+
+
+

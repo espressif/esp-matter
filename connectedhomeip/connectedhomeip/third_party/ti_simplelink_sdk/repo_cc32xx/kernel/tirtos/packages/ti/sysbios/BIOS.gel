@@ -1,0 +1,13 @@
+#define Error_raise xdc_runtime_Error_raiseX__F
+
+hotmenu Break_On_Errors()
+{
+    GEL_BreakPtAdd("Error_raise");
+}
+
+OnFileLoaded()
+{
+    GEL_BreakPtAdd("Error_raise");
+}
+
+

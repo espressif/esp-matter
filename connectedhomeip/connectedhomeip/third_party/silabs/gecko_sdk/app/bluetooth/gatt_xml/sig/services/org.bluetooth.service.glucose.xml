@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Service xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Glucose" type="org.bluetooth.service.glucose" uuid="1808" last-modified="2012-1-17" approved="Yes">
+	<InformativeText>
+     <Abstract>This service exposes glucose and other data from a glucose sensor for use in consumer and professional healthcare applications.</Abstract>
+        <Summary>The Glucose Service exposes glucose and other data related to a glucose sensor for consumer and professional healthcare applications.</Summary>
+	</InformativeText>
+	<Dependencies>
+		<Dependency>This service has no dependencies on other GATT-based services.</Dependency>
+	</Dependencies>
+	<GATTRequirements>
+        <Requirement subProcedure="Write Characteristic Values">Manadatory</Requirement>
+        <Requirement subProcedure="Notifications">Mandatory</Requirement>
+        <Requirement subProcedure="Indications">Mandatory</Requirement>
+		<Requirement subProcedure="Read Characteristic Descriptors">Mandatory</Requirement>
+        <Requirement subProcedure="Write Characteristic Descriptors">Mandatory</Requirement>
+        
+	</GATTRequirements>
+	<Transports>
+		<Classic>false</Classic>
+		<LowEnergy>true</LowEnergy>
+	</Transports>
+	
+	<Characteristics>
+		<Characteristic name="Glucose Measurement" type="org.bluetooth.characteristic.glucose_measurement">
+			<InformativeText>The Glucose Measurement characteristic is used to send glucose measurements.</InformativeText>		
+			<Requirement>Mandatory</Requirement>
+			<Properties>
+				<Read>Excluded</Read>
+				<Write>Excluded</Write>
+				<WriteWithoutResponse>Excluded</WriteWithoutResponse>
+				<SignedWrite>Excluded</SignedWrite>
+				<ReliableWrite>Excluded</ReliableWrite>
+				<Notify>Mandatory</Notify>
+				<Indicate>Excluded</Indicate>
+				<WritableAuxiliaries>Excluded</WritableAuxiliaries>
+				<Broadcast>Excluded</Broadcast>
+			</Properties>
+            <Descriptors>
+               <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+                    <Requirement>Mandatory</Requirement>
+                    <Properties>
+                    <Read>Mandatory</Read>
+                    <Write>Mandatory</Write>
+                    </Properties>
+               </Descriptor>
+            </Descriptors>
+         </Characteristic>
+        
+        <Characteristic name="Glucose Measurement Context" type="org.bluetooth.characteristic.glucose_measurement_context">
+			<InformativeText>The Glucose Measurement Context characteristic is used to send additional contextual information relative to a Glucose Measurement characteristic.</InformativeText>		
+			<Requirement>Optional</Requirement>
+			<Properties>
+				<Read>Excluded</Read>
+				<Write>Excluded</Write>
+				<WriteWithoutResponse>Excluded</WriteWithoutResponse>
+				<SignedWrite>Excluded</SignedWrite>
+				<ReliableWrite>Excluded</ReliableWrite>
+				<Notify>Mandatory</Notify>
+				<Indicate>Excluded</Indicate>
+				<WritableAuxiliaries>Excluded</WritableAuxiliaries>
+				<Broadcast>Excluded</Broadcast>
+			</Properties>
+            <Descriptors>
+               <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+                    <Requirement>if_characteristic_supported</Requirement>
+                    <Properties>
+                    <Read>Mandatory</Read>
+                    <Write>Mandatory</Write>
+                    </Properties>
+               </Descriptor>
+            </Descriptors>
+        </Characteristic>
+                
+       <Characteristic name="Glucose Feature" type="org.bluetooth.characteristic.glucose_feature">
+			<InformativeText>The Glucose Feature characteristic is used to describe the supported features of the Server.</InformativeText>		
+			<Requirement>Mandatory</Requirement>
+			<Properties>
+				<Read>Mandatory</Read>
+				<Write>Excluded</Write>
+				<WriteWithoutResponse>Excluded</WriteWithoutResponse>
+				<SignedWrite>Excluded</SignedWrite>
+				<ReliableWrite>Excluded</ReliableWrite>
+				<Notify>Excluded</Notify>
+				<Indicate>Excluded</Indicate>
+				<WritableAuxiliaries>Excluded</WritableAuxiliaries>
+				<Broadcast>Excluded</Broadcast>
+			</Properties>
+       </Characteristic> 
+        
+        <Characteristic name="Record Access Control Point" type="org.bluetooth.characteristic.record_access_control_point">
+			<InformativeText>
+               This Record Access Control Point (RACP) characteristic value consists of the following fields to use for patient record access management.
+               - Op Code (Request/Response code)
+               - Operator (specifies how the Operand is applied)
+               - Operand (parameters)
+            </InformativeText>		
+			<Requirement>Mandatory</Requirement>
+			<Properties>
+				<Read>Excluded</Read>
+				<Write>Mandatory</Write>
+				<WriteWithoutResponse>Excluded</WriteWithoutResponse>
+				<SignedWrite>Excluded</SignedWrite>
+				<ReliableWrite>Excluded</ReliableWrite>
+				<Notify>Excluded</Notify>
+				<Indicate>Mandatory</Indicate>
+				<WritableAuxiliaries>Excluded</WritableAuxiliaries>
+				<Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                <Security>Writable With Authentication</Security>
+            </SecuritySettings>
+            <Descriptors>
+               <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+                    <Requirement>Mandatory</Requirement>
+                    <Properties>
+                    <Read>Mandatory</Read>
+                    <Write>Mandatory</Write>
+                    </Properties>
+               </Descriptor>
+            </Descriptors>
+        </Characteristic>
+	</Characteristics>
+</Service>

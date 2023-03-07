@@ -1,0 +1,67 @@
+id: emlib_cmu
+label: CMU
+package: platform
+description: >
+  Clock Management Unit (CMU) Peripheral API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_cmu.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_cmu.h"
+    - path: "em_cmu_compat.h"
+provides:
+  - name: emlib_cmu
+requires:
+  - name: device
+  - name: device_has_cmu
+  - name: emlib_common
+  - name: emlib_emu
+  - name: emlib_msc
+  - name: emlib_gpio
+  - name: emlib_system
+  - name: cmsis_core
+  - name: emlib_syscfg
+    condition: [device_has_syscfg]
+  - name: enum
+
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efm32g/group-cmu
+      condition: [device_sdid_71]
+    - page: emlib/api/efm32gg/group-cmu
+      condition: [device_sdid_72]
+    - page: emlib/api/efm32tg/group-cmu
+      condition: [device_sdid_73]
+    - page: emlib/api/efm32lg/group-cmu
+      condition: [device_sdid_74]
+    - page: emlib/api/efm32zg/group-cmu
+      condition: [device_sdid_76]
+    - page: emlib/api/efm32hg/group-cmu
+      condition: [device_sdid_77]
+    - page: emlib/api/efr32xg1/group-cmu
+      condition: [device_sdid_80]
+    - page: emlib/api/efr32xg12/group-cmu
+      condition: [device_sdid_84]
+    - page: emlib/api/efr32xg13/group-cmu
+      condition: [device_sdid_89]
+    - page: emlib/api/efr32xg14/group-cmu
+      condition: [device_sdid_95]
+    - page: emlib/api/efm32gg11/group-cmu
+      condition: [device_sdid_100]
+    - page: emlib/api/efm32tg11/group-cmu
+      condition: [device_sdid_103]
+    - page: emlib/api/efm32gg12/group-cmu
+      condition: [device_sdid_106]
+    - page: emlib/api/efr32xg21/group-cmu
+      condition: [device_sdid_200]
+    - page: emlib/api/efr32xg22/group-cmu
+      condition: [device_sdid_205]
+    - page: emlib/api/efr32xg23/group-cmu
+      condition: [device_sdid_210]
+    - page: emlib/api/efr32xg24/group-cmu
+      condition: [device_sdid_215]

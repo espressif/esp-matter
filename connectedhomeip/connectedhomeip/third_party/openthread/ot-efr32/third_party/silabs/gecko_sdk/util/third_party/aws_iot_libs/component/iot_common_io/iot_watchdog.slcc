@@ -1,0 +1,46 @@
+id: iot_watchdog
+category: Third Party|Amazon FreeRTOS - AWS Libraries|Common I/O
+label: IoT Watchdog
+description: >
+  Silicon Labs' Implementation of Amazon Common I/O Watchdog API
+  Doc: https://docs.aws.amazon.com/freertos/latest/lib-ref/common-io/files.html
+package: amazon_platform
+quality: production
+instantiable:
+  prefix: inst
+provides:
+  - name: iot_watchdog
+    allow_multiple: true
+requires:
+  - name: freertos
+  - name: device_init
+  - name: emlib_wdog
+  - name: status
+  - name: common_io_validation_lib
+root_path: util/third_party/aws_iot_libs
+config_file:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_watchdog/config/iot_watchdog_cfg_{{instance}}.h
+    file_id: iot_watchdog_cfg
+
+source:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_watchdog/source/iot_watchdog_drv.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_watchdog/source/iot_watchdog_hal.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_watchdog/test/iot_watchdog_test.c
+    condition: ["aws_tests_defs"]
+
+include:
+  - path: libraries/abstractions/common_io/include
+    file_list:
+      - path: iot_watchdog.h
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_watchdog/include
+    file_list:
+      - path: iot_watchdog_desc.h
+      - path: iot_watchdog_drv.h
+
+template_file:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_watchdog/template/iot_watchdog_desc.c.jinja
+template_contribution:
+  - name: iot_watchdog_instances
+    value: "{{instance}}"
+validation_helper:
+  - path: script/iot_watchdog_validation.lua

@@ -1,0 +1,160 @@
+%%{
+/*
+ * Copyright (c) 2020 Texas Instruments Incorporated - http://www.ti.com
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+ *  ======== model.gv.xdt ========
+ */
+%%}
+%%{
+    function nodeName(inst)
+    {
+        let name;
+
+        if (typeof inst == "string" ) {
+            name = inst.replace(/\//g, "_").replace(/^_/g, "");
+        }
+        else if ("$name" in inst) {
+            name = inst.$name.replace(/\//g, "_");
+            name = name.replace(/^_/g, "");
+        }
+        else {
+            name = "unknown";
+        }
+
+        return (name);
+    }
+
+    function modulesFindRefs(mod, inst)
+    {
+        let reqs = mod.modules(inst);
+        let nodes = new Array();
+
+        for (let i = 0; i < reqs.length; i++) {
+            nodes.push(reqs[i].moduleName);
+        }
+
+        return (nodes);
+    }
+
+    function moduleInstancesFindRefs(mod, inst)
+    {
+        let reqs = mod.moduleInstances(inst);
+        let nodes = new Array();
+
+        for (let i = 0; i < reqs.length; i++) {
+            if (inst[reqs[i].name].$name) {
+                nodes.push(inst[reqs[i].name].$name);
+            }
+        }
+
+        return (nodes);
+    }
+
+    function sharedModuleInstancesFindRefs(mod, inst)
+    {
+        let reqs = mod.sharedModuleInstances(inst);
+        let nodes = new Array();
+
+        for (let i = 0; i < reqs.length; i++) {
+            if (inst[reqs[i].name].$name) {
+                nodes.push(inst[reqs[i].name].$name);
+            }
+        }
+
+        return (nodes);
+    }
+%%}
+digraph Model
+{
+    graph[rankdir=LR]
+
+% /* compute a canonical order for the used modules */
+% let keys = Object.keys(system.modules).sort();
+%
+% /* loop over all modules in the current configuration */
+% for (let i = 0; i < keys.length; i++) {
+% let mod = system.modules[keys[i]];
+    // mod.$name=`mod.$name`
+%
+% if (mod.moduleStatic && mod.moduleStatic.modules) {
+% let refs = modulesFindRefs(mod.moduleStatic, mod.$static);
+% for (let j = 0; j < refs.length; j++) {
+    `nodeName(mod.$static)` -> `nodeName(refs[j])`
+% }
+% }
+%
+% if (mod.moduleStatic && mod.moduleStatic.moduleInstances) {
+% let refs = moduleInstancesFindRefs(mod.moduleStatic, mod.$static);
+% for (let j = 0; j < refs.length; j++) {
+    `nodeName(mod.$static)` -> `refs[j]`
+% }
+% }
+%
+% if (mod.moduleStatic && mod.moduleStatic.sharedModuleInstances) {
+% let refs = sharedModuleInstancesFindRefs(mod.moduleStatic, mod.$static);
+% for (let j = 0; j < refs.length; j++) {
+    `nodeName(mod.$static)` -> `refs[j]`
+% }
+% }
+%
+% if (mod.modules) {
+% for (let j = 0; j < mod.$instances.length; j++) {
+% let refs = modulesFindRefs(mod, mod.$instances[j]);
+% for (let k = 0; k < refs.length; k++) {
+    `nodeName(mod.$instances[j])` -> `nodeName(refs[k])`
+% }
+% }
+% }
+%
+% if (mod.moduleInstances) {
+% for (let j = 0; j < mod.$instances.length; j++) {
+% let refs = moduleInstancesFindRefs(mod, mod.$instances[j]);
+% for (let k = 0; k < refs.length; k++) {
+    `nodeName(mod.$instances[j])` -> `refs[k]`
+% }
+% }
+% }
+%
+% if (mod.sharedModuleInstances) {
+% for (let j = 0; j < mod.$instances.length; j++) {
+% let refs = sharedModuleInstancesFindRefs(mod, mod.$instances[j]);
+% for (let k = 0; k < refs.length; k++) {
+    `nodeName(mod.$instances[j])` -> `refs[k]`
+% }
+% }
+% }
+% if ((i + 1) < keys.length) {
+
+% }
+% } // foreach key
+}

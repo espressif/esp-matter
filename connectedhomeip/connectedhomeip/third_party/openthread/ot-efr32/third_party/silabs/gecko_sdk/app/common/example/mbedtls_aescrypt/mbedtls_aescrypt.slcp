@@ -1,0 +1,50 @@
+project_name: mbedtls_aescrypt
+package: platform
+quality: production
+label: Platform - mbedTLS AES
+description: >
+  mbedTLS AES example using hardware accelerators to
+  accelerate the AES encryption and SHA hash functions of mbedTLS.
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+source:
+   - path: main.c
+   - path: app.c
+   - path: app_aescrypt.c
+include:
+   - path: .
+     file_list:
+     - path: app.h
+     - path: app_aescrypt.h
+readme:
+   - path: readme.md
+ui_hints:
+   highlight: readme.md
+component:
+   - id: emlib_cmu
+   - id: emlib_chip
+   - id: mbedtls_aes
+   - id: mbedtls_hash
+   - id: mbedtls_sha
+   - id: mbedtls_ccm
+   - id: sl_system
+   - id: device_init
+   - id: iostream_retarget_stdio
+   - id: iostream_recommended_stream
+configuration:
+   - name: SL_BOARD_ENABLE_VCOM
+     value: 1
+   - name: SL_IOSTREAM_USART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+     value: "true"
+     condition: [iostream_usart]
+   - name: SL_IOSTREAM_UART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+     value: "true"
+     condition: [iostream_uart]     
+define:
+   - name: DEBUG_EFM

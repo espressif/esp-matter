@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="com.silabs.sdk.exx32.external.RTX" label="Keil RTX RTOS" contentRoot="$(sdkInstallationPath:default())/util/third_party/keil_rtx">
+  <property key="category" value="efm32|Third party"/>
+  <includePath uri="INC" />
+  <libraryPath uri="LIB/GCC" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.gnu.*" />
+  <libraryFile uri="$(sdkInstallationPath:default())/util/third_party/keil_rtx/LIB/IAR/RTX_CM3.a" partCompatibility="::ARMCore==CORTEX_M3" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.iar.*" />
+  <libraryFile uri="$(sdkInstallationPath:default())/util/third_party/keil_rtx/LIB/IAR/RTX_CM4.a" partCompatibility="::ARMCore==CORTEX_M4F" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.iar.*" />
+  <libraryFile uri="$(sdkInstallationPath:default())/util/third_party/keil_rtx/LIB/IAR/RTX_CM0.a" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.iar.*" />
+  <libraryFile name="RTX_CM3" partCompatibility="::ARMCore==CORTEX_M3" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.gnu.*" />
+  <libraryFile name="RTX_CM4_SFP" partCompatibility="::ARMCore==CORTEX_M4F" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.gnu.*" />
+  <libraryFile name="RTX_CM0" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.gnu.*" />
+</project>

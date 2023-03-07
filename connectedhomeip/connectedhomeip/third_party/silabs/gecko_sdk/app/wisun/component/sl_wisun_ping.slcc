@@ -1,0 +1,60 @@
+id: "sl_wisun_ping"
+label: "Ping"
+package: "wisun"
+description: "The component provides ping service"
+category: "Wi-SUN|Wi-SUN Services"
+quality: "production"
+root_path: "app/wisun/component/ping"
+provides:
+  - name: sl_wisun_ping
+source:
+  - path: "sl_wisun_ping.c"
+  - path: "sl_wisun_ping_cli.c"
+    condition:
+      - "sl_wisun_app_cli"
+
+include:
+  - path: "."
+    file_list:
+    - "path": "sl_wisun_ping.h"
+requires:
+  - name: "sl_wisun_socket"
+  - name: "sleeptimer"
+
+config_file:
+  - path: "config/sl_wisun_ping_config.h"
+
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+  - name: "event_handler"
+    value:
+      event: "internal_app_init"
+      include: "sl_wisun_ping.h"
+      handler: "sl_wisun_ping_init"
+
+  - name: "cli_group"
+    value:
+      name: "wisun"
+      help: "Wi-SUN commands"
+      shortcuts:
+        - name: "w"
+
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "ping"
+      handler: "app_ping"
+      help: "Ping a remote host"
+      shortcuts:
+        - name: "p"
+      argument:
+        - type: string
+          help: "Remote address"
+
+  - name: component_catalog
+    value: wisun_ping
+
+documentation:
+  docset: wisun
+  document: wisun-stack-api/sl-wisun-ping-api

@@ -1,0 +1,39 @@
+{
+    "target": {
+        "Name": "LP_CC1352P7-HIGH-PA",
+        "Revision": [],
+        "Description": "CC1352P7-1 LP. 7x7 VQFN48 package. External bias, differential output. 770-930 MHz and 2.4 GHz.",
+        "DeviceName": "CC1352P7",
+        "DevicePackage": "VQFN 7x7",
+        "FrontEnd": "XD",
+        "PaSettings": "pasettings.json",
+        "RfDesign": "LP-CC1352P7-1_20dBm",
+        "DefaultCategory": "Settings for 779 - 930 MHz band",
+        "IoSettings": {
+            "_name": "RF Switch",
+            "IoPin": [
+                {
+                    "_name": "DIO28",
+                    "ControlFunction": "Input\/Output",
+                    "Idle": "Input tristate (Default)",
+                    "Tx": "Output low",
+                    "Rx": "Output low"
+                },
+                {
+                    "_name": "DIO29",
+                    "ControlFunction": "Input\/Output",
+                    "Idle": "Input tristate (Default)",
+                    "Tx": "Output high",
+                    "Rx": "Output low"
+                },
+                {
+                    "_name": "DIO30",
+                    "ControlFunction": "Input\/Output",
+                    "Idle": "Input tristate (Default)",
+                    "Tx": "Output low",
+                    "Rx": "Output high"
+                }
+            ]
+        }
+    }
+}

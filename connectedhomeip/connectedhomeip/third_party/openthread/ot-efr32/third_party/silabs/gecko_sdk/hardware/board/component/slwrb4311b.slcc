@@ -1,0 +1,22 @@
+!!omap
+- id: slwrb4311b
+- label: SLWRB4311B
+- package: platform
+- description: Kit BSP support for the MGM220PC22 Wireless Gecko Module Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4311b
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4311B"'
+  - name: SL_KIT_REV
+    value: '"A03"'
+- tag:
+  - kit:opn:SLWRB4311B
+  - kit:pn:WRB4311
+  - kit:variant:B
+  - kit:revision:A03

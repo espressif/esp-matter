@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "outDir": "dist",
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "target": "es6",
+    "declarationDir": "./types",
+    "moduleResolution": "node",
+    "declaration": true,
+    "allowJs": true,
+    "paths": {
+      "pigweedjs/pw_*": [
+        "./pw_*/ts"
+      ],
+      "pigweedjs/protos/*": [
+        "./dist/protos/*"
+      ],
+      "pigweedjs/types/*": [
+        "./ts/types/*"
+      ]
+    }
+  },
+  "include": [
+    "ts",
+    "pw_status/ts",
+    "pw_hdlc/ts",
+    "pw_tokenizer/ts",
+    "pw_protobuf_compiler/ts",
+    "pw_rpc/ts",
+    "pw_rpc/internal",
+    "dist/protos/**/*"
+  ]
+}

@@ -1,0 +1,22 @@
+!!omap
+- id: slwrb4503b
+- label: SLWRB4503B
+- package: platform
+- description: Kit BSP support for the EZR32WG 915 MHz 20 dBm Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4503b
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4503B"'
+  - name: SL_KIT_REV
+    value: '"A00"'
+- tag:
+  - kit:opn:SLWRB4503B
+  - kit:pn:WRB4503
+  - kit:variant:B
+  - kit:revision:A00

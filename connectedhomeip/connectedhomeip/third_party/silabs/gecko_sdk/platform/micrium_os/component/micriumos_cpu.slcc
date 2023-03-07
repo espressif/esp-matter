@@ -1,0 +1,38 @@
+id: micriumos_cpu
+label: Micrium OS CPU Module
+package: micrium-krnx
+description: Micrium OS CPU
+category: RTOS|Micrium OS|Common
+quality: production
+component_root_path: platform/micrium_os/cpu
+config_file:
+  - path: ../cfg/cpu_cfg.h
+source:
+  - path: source/cpu_core.c
+include:
+  - path: include
+    file_list:
+      - path: cpu.h
+      - path: cpu_cache.h
+      - path: cpu_def.h
+      - path: cpu_port_sel.h
+provides:
+  - name: cpu
+requires:
+  - name: cpu_port_armv6m
+    condition: [armv6m]
+  - name: cpu_port_armv7m
+    condition: [armv7em]
+  - name: cpu_port_armv7m
+    condition: [armv7m]
+  - name: cpu_port_armv8m
+    condition: [armv8m.main]
+  - name: cpu_port_win32
+    condition: [win32]
+template_contribution:
+  - name: event_handler
+    value:
+      event: platform_init
+      include: cpu.h
+      handler: CPU_Init
+    priority: 2

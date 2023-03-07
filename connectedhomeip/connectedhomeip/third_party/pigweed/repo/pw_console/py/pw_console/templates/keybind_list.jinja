@@ -1,0 +1,39 @@
+{#
+Copyright 2021 The Pigweed Authors
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License. You may obtain a copy of
+the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+License for the specific language governing permissions and limitations under
+the License.
+#}
+{% set total_width = [max_description_width + max_key_list_width + 5, max_additional_help_text_width]|max %}
+{% set key_whitespace_indentation = ' ' * (max_description_width + 5) %}
+{% if preamble %}
+{{ preamble }}
+
+{% endif %}
+{% if additional_help_text %}
+{{ ' Help '.format(section).center(total_width, '=') }}
+
+{{ additional_help_text.rstrip() }}
+
+
+{# Two empty lines between sections #}
+{% endif %}
+{% for section, key_dict in sections.items() %}
+{{ ' {} Keys '.format(section).center(total_width, '=') }}
+
+{% for description, key_list in key_dict.items() %}
+{{ (description+' ').ljust(max_description_width + 3, '-') }}  {{ key_list|sort|join('\n' + key_whitespace_indentation) }}
+{% endfor %}
+
+
+{# Two empty lines between sections #}
+{% endfor %}

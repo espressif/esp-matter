@@ -1,0 +1,19 @@
+id: micriumos_usbh_driver_dwc_otg_fs
+label: Micrium-USB Host Driver - DWC OTG FS
+package: micrium-usbh
+description: Micrium OS USB Host Driver for DWC OTG FS
+category: Services|Micrium|USB
+quality: deprecated
+component_root_path: platform/micrium_os/drivers/usb
+source:
+  - path: source/host_pbhcds/usbh_pbhcd_dwc_otg_fs.c
+include:
+  - path: include
+    file_list:
+      - path: usbh_pbhcd.h
+provides:
+  - name: usbh_driver_dwc_otg_fs
+  - name: usbh_driver
+requires:
+  - name: usbh
+  - name: device_has_usb

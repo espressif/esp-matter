@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.intermediate_temperature" uuid="2A1E" name="Intermediate Temperature">
+    <InformativeText>
+        <Abstract>
+    The Intermediate Temperature characteristic has the same format as the Temperature Measurement characteristic. However, due to a different context, the Value field is referred to as the Intermediate Temperature Value field.            
+		</Abstract>
+  </InformativeText>
+    <Value>
+        <Field name="Intermediate Temperature">
+            <Requirement>Mandatory</Requirement>
+            <Reference>org.bluetooth.characteristic.temperature_measurement</Reference>
+        </Field>
+    </Value>
+</Characteristic>

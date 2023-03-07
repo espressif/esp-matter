@@ -1,0 +1,103 @@
+{
+  "name": "Generation templates for ZCL application layer on Silabs Zigbee stack",
+  "version": "zigbee-v0",
+  "options": {
+    "cli": "cli.json",
+    "tick_events": "cluster-endpoint-tick-events.json",
+    "generator": {
+      "enabled": "true",
+      "postProcessConditionalFile": "../../../../../tool/script/uncrustify/uncrustify.cfg",
+      "postProcessMulti": "uncrustify --no-backup -c ../../../../../tool/script/uncrustify/uncrustify.cfg -l C --replace",
+      "shareClusterStatesAcrossEndpoints": "true"
+    }
+  },
+  "requiredFeatureLevel": 74,
+  "templates": [
+    {
+      "path": "zap-id.zapt",
+      "name": "Various ZCL ids",
+      "output": "zap-id.h"
+    },
+    {
+      "path": "zap-type.zapt",
+      "name": "Various ZCL types",
+      "output": "zap-type.h"
+    },
+    {
+      "path": "zap-print.zapt",
+      "name": "Human-readable cluster names",
+      "output": "zap-print.h"
+    },
+    {
+      "path": "zap-command.zapt",
+      "name": "Generated command macros",
+      "output": "zap-command.h"
+    },
+    {
+      "path": "zap-config.zapt",
+      "name": "Endpoint configuration",
+      "output": "zap-config.h"
+    },
+    {
+      "path": "zap-cli.zapt",
+      "name": "CLI",
+      "output": "zap-cli.c"
+    },
+    {
+      "path": "zap-event.h.zapt",
+      "name": "Generated events header",
+      "output": "zap-event.h"
+    },
+    {
+      "path": "zap-event.c.zapt",
+      "name": "Generated events",
+      "output": "zap-event.c"
+    },
+    {
+      "path": "zap-tokens.zapt",
+      "name": "ZCL tokens",
+      "output": "zap-tokens.h"
+    },
+    {
+      "path": "zap-command-structs.zapt",
+      "name": "ZCL Command Struct",
+      "output": "zap-command-structs.h"
+    },
+    {
+      "path": "zap-cluster-command-parser.c.zapt",
+      "name": "Endpoint configuration",
+      "output": "zap-cluster-command-parser.c"
+    },
+    {
+      "path": "zap-cluster-command-parser.h.zapt",
+      "name": "Endpoint configuration",
+      "output": "zap-cluster-command-parser.h"
+    },
+    {
+      "path": "zap-enabled-incoming-commands.h.zapt",
+      "name": "Macros for enabled incoming commands",
+      "output": "zap-enabled-incoming-commands.h"
+    }
+  ],
+  "zcl": {
+    "cluster": {
+      "component": {
+        "type": "text",
+        "configurability": "hidden",
+        "globalDefault": null,
+        "label": "Cluster to Component dependency mapping",
+        "defaults": "cluster-to-component-dependencies.json",
+        "autoEnableComponents": true
+      }
+    },
+    "command": {
+      "implementedCommands": {
+        "type": "boolean",
+        "configurability": "hidden",
+        "globalDefault": false,
+        "label": "List of commands that are implemented by the SDK",
+        "defaults": "implemented-commands.json"
+      }
+    }
+  }
+}

@@ -1,0 +1,328 @@
+{
+    "configs": [
+        {
+            "name": "phyType",
+            "displayName": "PHY Type",
+            "description": "Selects the PHY setting",
+            "options": [
+                {
+                    "name": "bt5le1m",
+                    "displayName": "BLE, 1 Mbps, LE 1M"
+                },
+                {
+                    "name": "bt5le1madvnc",
+                    "displayName": "BLE, 1 Mbps, BT4"
+                },
+                {
+                    "name": "bt5le2m",
+                    "displayName": "BLE, 2 Mbps, LE 2M"
+                },
+                {
+                    "name": "bt5lecodeds2",
+                    "displayName": "BLE, 500 kbps, LE Coded"
+                },
+                {
+                    "name": "bt5lecodeds8",
+                    "displayName": "BLE, 125 kbps, LE Coded"
+                },
+                {
+                    "name": "wbms2m",
+                    "displayName": "wBMS, 2 mbps, GFSK"
+                }
+            ],
+            "default": "bt5le1m"
+        },
+        {
+            "name": "parent",
+            "displayName": "Parent",
+            "default": "Stack",
+            "hidden": true
+        },
+        {
+            "name": "permission",
+            "displayName": "Permission",
+            "default": "None",
+            "hidden": true,
+            "options": [
+                {
+                    "name": "None"
+                },
+                {
+                    "name": "ReadWrite"
+                },
+                {
+                    "name": "ReadOnly"
+                }
+            ]
+        },
+        {
+            "name": "paramVisibility",
+            "displayName": "Radio Parameter visibility",
+            "default": true,
+            "hidden": true
+        },
+        {
+            "name": "frequency",
+            "displayName": "Channel - Frequency (MHz)",
+            "description": "Channel",
+            "default": "2402",
+            "options": [
+                {
+                    "displayName": "Channel 0 - 2404 MHz",
+                    "key": 2404,
+                    "name": 2404
+                },
+                {
+                    "displayName": "Channel 1 - 2406 MHz",
+                    "key": 2406,
+                    "name": 2406
+                },
+                {
+                    "displayName": "Channel 2 - 2408 MHz",
+                    "key": 2408,
+                    "name": 2408
+                },
+                {
+                    "displayName": "Channel 3 - 2410 MHz",
+                    "key": 2410,
+                    "name": 2410
+                },
+                {
+                    "displayName": "Channel 4 - 2412 MHz",
+                    "key": 2412,
+                    "name": 2412
+                },
+                {
+                    "displayName": "Channel 5 - 2414 MHz",
+                    "key": 2414,
+                    "name": 2414
+                },
+                {
+                    "displayName": "Channel 6 - 2416 MHz",
+                    "key": 2416,
+                    "name": 2416
+                },
+                {
+                    "displayName": "Channel 7 - 2418 MHz",
+                    "key": 2418,
+                    "name": 2418
+                },
+                {
+                    "displayName": "Channel 8 - 2420 MHz",
+                    "key": 2420,
+                    "name": 2420
+                },
+                {
+                    "displayName": "Channel 9 - 2422 MHz",
+                    "key": 2422,
+                    "name": 2422
+                },
+                {
+                    "displayName": "Channel 10 - 2424 MHz",
+                    "key": 2424,
+                    "name": 2424
+                },
+                {
+                    "displayName": "Channel 11 - 2428 MHz",
+                    "key": 2428,
+                    "name": 2428
+                },
+                {
+                    "displayName": "Channel 12 - 2430 MHz",
+                    "key": 2430,
+                    "name": 2430
+                },
+                {
+                    "displayName": "Channel 13 - 2432 MHz",
+                    "key": 2432,
+                    "name": 2432
+                },
+                {
+                    "displayName": "Channel 14 - 2434 MHz",
+                    "key": 2434,
+                    "name": 2434
+                },
+                {
+                    "displayName": "Channel 15 - 2436 MHz",
+                    "key": 2436,
+                    "name": 2436
+                },
+                {
+                    "displayName": "Channel 16 - 2438 MHz",
+                    "key": 2438,
+                    "name": 2438
+                },
+                {
+                    "displayName": "Channel 17 - 2440 MHz",
+                    "key": 2440,
+                    "name": 2440
+                },
+                {
+                    "displayName": "Channel 18 - 2442 MHz",
+                    "key": 2442,
+                    "name": 2442
+                },
+                {
+                    "displayName": "Channel 19 - 2444 MHz",
+                    "key": 2444,
+                    "name": 2444
+                },
+                {
+                    "displayName": "Channel 20 - 2446 MHz",
+                    "key": 2446,
+                    "name": 2446
+                },
+                {
+                    "displayName": "Channel 21 - 2448 MHz",
+                    "key": 2448,
+                    "name": 2448
+                },
+                {
+                    "displayName": "Channel 22 - 2450 MHz",
+                    "key": 2450,
+                    "name": 2450
+                },
+                {
+                    "displayName": "Channel 23 - 2452 MHz",
+                    "key": 2452,
+                    "name": 2452
+                },
+                {
+                    "displayName": "Channel 24 - 2454 MHz",
+                    "key": 2454,
+                    "name": 2454
+                },
+                {
+                    "displayName": "Channel 25 - 2456 MHz",
+                    "key": 2456,
+                    "name": 2456
+                },
+                {
+                    "displayName": "Channel 26 - 2458 MHz",
+                    "key": 2458,
+                    "name": 2458
+                },
+                {
+                    "displayName": "Channel 27 - 2460 MHz",
+                    "key": 2460,
+                    "name": 2460
+                },
+                {
+                    "displayName": "Channel 28 - 2462 MHz",
+                    "key": 2462,
+                    "name": 2462
+                },
+                {
+                    "displayName": "Channel 29 - 2464 MHz",
+                    "key": 2464,
+                    "name": 2464
+                },
+                {
+                    "displayName": "Channel 30 - 2466 MHz",
+                    "key": 2466,
+                    "name": 2466
+                },
+                {
+                    "displayName": "Channel 31 - 2468 MHz",
+                    "key": 2468,
+                    "name": 2468
+                },
+                {
+                    "displayName": "Channel 32 - 2470 MHz",
+                    "key": 2470,
+                    "name": 2470
+                },
+                {
+                    "displayName": "Channel 33 - 2472 MHz",
+                    "key": 2472,
+                    "name": 2472
+                },
+                {
+                    "displayName": "Channel 34 - 2474 MHz",
+                    "key": 2474,
+                    "name": 2474
+                },
+                {
+                    "displayName": "Channel 35 - 2476 MHz",
+                    "key": 2476,
+                    "name": 2476
+                },
+                {
+                    "displayName": "Channel 36 - 2478 MHz",
+                    "key": 2478,
+                    "name": 2478
+                },
+                {
+                    "displayName": "Channel 37 - 2402 MHz (Advertising)",
+                    "key": 2402,
+                    "name": 2402
+                },
+                {
+                    "displayName": "Channel 38 - 2426 MHz (Advertising)",
+                    "key": 2426,
+                    "name": 2426
+                },
+                {
+                    "displayName": "Channel 39 - 2480 MHz (Advertising)",
+                    "key": 2480,
+                    "name": 2480
+                }
+            ]
+        },
+        {
+            "name": "whitening",
+            "displayName": "Whitening",
+            "description": "Whitening",
+            "default": true
+        },
+        {
+            "name": "txPower",
+            "displayName": "TX Power (dBm)",
+            "description": "TX Power",
+            "default": "14",
+            "longDescription": ""
+        },
+        {
+            "name": "packetLengthBle",
+            "displayName": "PDU Payload length",
+            "description": "The PDU payload includes the Extended header, Advertising address and the Advertising data.",
+            "default": "30",
+            "hidden": true
+        }
+    ],
+    "phys": {
+        "ble": [
+            {
+                "file": "setting_bt5_le_1m.json",
+                "name": "bt5le1m",
+                "description": "BLE, 1 Mbps, LE 1M"
+            },
+            {
+                "file": "setting_bt5_le_1m_adv_nc.json",
+                "name": "bt5le1madvnc",
+                "description": "BLE, 1 Mbps, BT4"
+            },
+            {
+                "file": "setting_bt5_le_2m.json",
+                "name": "bt5le2m",
+                "description": "BLE, 2 Mbps, LE 2M"
+            },
+            {
+                "file": "setting_bt5_le_coded_s2.json",
+                "name": "bt5lecodeds2",
+                "description": "BLE, 500 kbps, LE Coded"
+            },
+            {
+                "file": "setting_bt5_le_coded_s8.json",
+                "name": "bt5lecodeds8",
+                "description": "BLE, 125 kbps, LE Coded"
+            },
+            {
+                "file": "setting_wbms_2m.json",
+                "name": "wbms2m",
+                "description": "wBMS, 2 mbps, GFSK",
+                "options": "wbms"
+            }
+        ]
+    }
+}

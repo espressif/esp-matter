@@ -1,0 +1,14 @@
+[
+    {
+        "files": [
+            "+../../../../../../../source/ti/boards/CC3235SF_LAUNCHXL/Board.html -> Board.html",
+            "+cc32xxsf_tirtos.icf -> cc32xxsf_tirtos.icf",
+            "+../../mailbox.c -> mailbox.c",
+            "+../mailbox.cfg -> mailbox.cfg",
+            "+../../mailbox.syscfg -> mailbox.syscfg",
+            "+../../overview.rov.json -> overview.rov.json",
+            "+../../README.html -> README.html",
+            "+../../README.md -> README.md"
+        ]
+    }
+]

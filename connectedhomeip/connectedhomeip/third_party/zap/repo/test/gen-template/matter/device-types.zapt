@@ -1,0 +1,18 @@
+{{#zcl_device_types}}
+// device type: {{domain}} / {{asHex code 4}} => {{label}} // extension: '{{device_type_extension
+property="testDeviceTypeExtension"}}'
+
+{{#zcl_device_type_clusters}}
+  => cluster {{clusterName}}: includeClient/includeServer/lockClient/lockServer={{includeClient}}/{{includeServer}}/{{lockClient}}/{{lockServer}}
+{{#zcl_device_type_cluster_attributes}}
+     >> Attribute: {{name}} [{{code}}]
+{{/zcl_device_type_cluster_attributes}}
+{{#zcl_device_type_cluster_commands}}
+     >> Command: {{name}} [{{code}}]
+{{/zcl_device_type_cluster_commands}}
+
+{{/zcl_device_type_clusters}}
+
+
+{{/zcl_device_types}}
+

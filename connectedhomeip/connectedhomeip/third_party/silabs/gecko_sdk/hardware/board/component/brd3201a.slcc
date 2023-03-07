@@ -1,0 +1,23 @@
+!!omap
+- id: brd3201a
+- label: BRD3201A
+- package: platform
+- description: Board support for BRD3201A.
+- category: Platform|Board|DK Main Board
+- quality: production
+- requires: []
+- provides:
+  - name: brd3201a
+  - name: hardware_board
+  - name: hardware_board_dk
+- recommends: []
+- template_contribution: []
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD3201A"'
+  - name: SL_BOARD_REV
+    value: '"A03"'
+- tag:
+  - board:pn:BRD3201
+  - board:variant:A
+  - board:revision:A03

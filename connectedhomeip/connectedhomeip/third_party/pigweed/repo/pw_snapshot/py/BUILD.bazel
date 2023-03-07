@@ -1,0 +1,65 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+package(default_visibility = ["//visibility:public"])
+
+# TODO(b/241456982): Not expected to build yet due to the dependency on
+# snapshot_proto_py_pb2.
+py_library(
+    name = "pw_snapshot",
+    srcs = [
+        "pw_snapshot/__init__.py",
+        "pw_snapshot/processor.py",
+    ],
+    tags = ["manual"],
+    deps = [
+        ":pw_snapshot_metadata",
+        "//pw_build_info/py:pw_build_info",
+        "//pw_chrono/py:pw_chrono",
+        "//pw_cpu_exception_cortex_m/py:exception_analyzer",
+        "//pw_snapshot:snapshot_proto_py_pb2",
+        "//pw_symbolizer/py:pw_symbolizer",
+        "//pw_thread/py:pw_thread",
+        "//pw_tokenizer/py:pw_tokenizer",
+    ],
+)
+
+# TODO(b/241456982): Not expected to build yet due to the dependency on
+# metadata_proto_py_pb2.
+py_library(
+    name = "pw_snapshot_metadata",
+    srcs = [
+        "pw_snapshot_metadata/__init__.py",
+        "pw_snapshot_metadata/metadata.py",
+    ],
+    tags = ["manual"],
+    deps = [
+        "//pw_log_tokenized/py:pw_log_tokenized",
+        "//pw_snapshot:metadata_proto_py_pb2",
+        "//pw_tokenizer/py:pw_tokenizer",
+    ],
+)
+
+# TODO(b/241456982): Not expected to build yet due to the dependency on
+# snapshot_proto_py_pb2.
+py_test(
+    name = "metadata_test",
+    srcs = ["metadata_test.py"],
+    tags = ["manual"],
+    deps = [
+        ":pw_snapshot_metadata",
+        "//pw_snapshot:snapshot_proto_py_pb2",
+        "//pw_tokenizer/py:pw_tokenizer",
+    ],
+)

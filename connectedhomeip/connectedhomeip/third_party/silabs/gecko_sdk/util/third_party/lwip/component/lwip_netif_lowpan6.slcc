@@ -1,0 +1,23 @@
+id: lwip_netif_lowpan6
+label: lowpan6
+pretty_name : "LWIP generic network interface device drivers for lowpan6"
+package: platform
+description: >
+    LWIP generic network interface device drivers for lowpan6. A 6LoWPAN implementation as a netif.
+category: LwIP|netif
+quality: production
+provides:
+  - name: lwip_netif
+    allow_multiple: true
+  - name: lwip_netif_lowpan6
+requires:
+  - name: lwip_core
+source:
+  - path: util/third_party/lwip/lwip/src/netif/lowpan6_common.c
+  - path: util/third_party/lwip/lwip/src/netif/lowpan6.c
+include:  
+  - path: util/third_party/lwip/lwip/src/include
+    file_list:
+    - path: netif/lowpan6.h
+    - path: netif/lowpan6_common.h
+    - path: netif/lowpan6_opts.h

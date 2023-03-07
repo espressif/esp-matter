@@ -1,0 +1,52 @@
+id: mbedtls_random
+package: platform
+label: CTR-DRBG
+description: >-
+  This component provides support for pseudo-random number generation
+  using the CTR-DRBG construction in Mbed TLS.
+category: Platform|Security|Mbed TLS|Randomness
+quality: production
+source:
+  - path: util/third_party/crypto/mbedtls/library/entropy.c
+    unless: [trustzone_nonsecure]
+  - path: util/third_party/crypto/mbedtls/library/entropy_poll.c
+    unless: [trustzone_nonsecure]
+  - path: util/third_party/crypto/mbedtls/library/ctr_drbg.c
+    unless: [trustzone_nonsecure]
+  - path: util/third_party/crypto/mbedtls/library/hmac_drbg.c
+    unless: [trustzone_nonsecure]
+include:
+  - path: util/third_party/crypto/mbedtls/include
+    file_list:
+      - path: mbedtls/entropy.h
+      - path: mbedtls/ctr_drbg.h
+      - path: mbedtls/hmac_drbg.h
+    unless: [trustzone_nonsecure]
+  - path: util/third_party/crypto/mbedtls/library
+    file_list:
+      - path: entropy_poll.h
+    unless: [trustzone_nonsecure]
+provides:
+  - name: mbedtls_random
+requires:
+  - name: mbedtls_aes
+  - name: mbedtls_sha256
+  - name: mbedtls_core
+  - name: mbedtls_entropy_default
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_ENTROPY_C
+  - name: mbedtls_config
+    value: MBEDTLS_ENTROPY_FORCE_SHA256
+  - name: mbedtls_config
+    value: "MBEDTLS_ENTROPY_MAX_SOURCES  2"
+    unless: [test_suite_entropy]
+  - name: mbedtls_config
+    value: MBEDTLS_NO_PLATFORM_ENTROPY
+    condition:
+      - device_cortexm
+  - name: mbedtls_config
+    value: MBEDTLS_CTR_DRBG_C
+documentation:
+  docset: mbed-tls
+  document: group-rng-module

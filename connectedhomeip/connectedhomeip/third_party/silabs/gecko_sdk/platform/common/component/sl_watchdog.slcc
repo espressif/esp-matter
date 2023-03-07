@@ -1,0 +1,38 @@
+id: sl_watchdog
+label: Software Watchdog
+package: platform
+description: >
+  This component provides a software watchdog which can be
+  instantiated by applications and stacks. The hardware watchdog
+  is only fed once all instances are fed. This allows each task
+  to have its own watchdog.
+category: Platform|Utilities
+quality: production
+root_path: platform/common
+config_file:
+  - path: config/s0/sl_watchdog_config.h
+    condition: [device_series_0]
+  - path: config/s1/sl_watchdog_config.h
+    condition: [device_series_1]
+  - path: config/s2/sl_watchdog_config.h
+    condition: [device_series_2]
+source:
+  - path: src/sl_watchdog.c
+include:
+  - path: inc
+    file_list:
+      - path: sl_watchdog.h
+provides:
+  - name: sl_watchdog
+requires:
+  - name: emlib_wdog
+  - name: emlib_core
+  - name: status
+template_contribution:
+  - name: event_handler
+    value:
+      event: service_init
+      include: sl_watchdog.h
+      handler: sl_watchdog_init
+  - name: component_catalog
+    value: common_watchdog

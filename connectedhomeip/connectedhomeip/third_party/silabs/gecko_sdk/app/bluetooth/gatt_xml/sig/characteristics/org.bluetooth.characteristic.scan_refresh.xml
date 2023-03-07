@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2011 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Scan Refresh" type="org.bluetooth.characteristic.scan_refresh" uuid="2A31" last-modified="2011-11-21" approved="Yes">
+	<InformativeText>
+        <Abstract>            
+        The Scan Refresh characteristic is used to notify the Client that the Server requires the Scan Interval Window characteristic to be written with the latest values upon notification. 
+		</Abstract>
+	</InformativeText>
+	<Value>
+		<Field name="Scan Refresh Value">
+			<Requirement>Mandatory</Requirement>
+			<Format>uint8</Format>
+			<Enumerations>
+				<Enumeration key="0" value="Server requires refresh" />
+				<ReservedForFutureUse start="1" end="255"/>
+			</Enumerations>
+		</Field>
+	</Value>
+</Characteristic>

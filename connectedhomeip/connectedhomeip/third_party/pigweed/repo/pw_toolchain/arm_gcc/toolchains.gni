@@ -1,0 +1,325 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+import("//build_overrides/pigweed_environment.gni")
+import("$dir_pw_toolchain/rbe.gni")
+
+# Specifies the tools used by ARM GCC toolchains.
+arm_gcc_toolchain_tools = {
+  _rbe_debug_flag = ""
+  _local_tool_name_root = "arm-none-eabi-"
+  if (pw_toolchain_USE_RBE) {
+    if (pw_toolchain_RBE_DEBUG) {
+      _rbe_debug_flag = " -v "
+    }
+    _exec_root = rebase_path("//")
+    _rewrapper_binary = "rewrapper"
+    _pw_rbe_config = pw_rbe_arm_gcc_config
+    _inputs = rebase_path(pw_env_setup_CIPD_ARM, _exec_root) + "/"
+    _rbe_tool_name_root =
+        _rewrapper_binary +
+        " --labels=type=compile,lang=cpp,compiler=clang --cfg=" +
+        _pw_rbe_config + " --exec_root=" + _exec_root + " --inputs=" + _inputs +
+        " -- " + rebase_path(pw_env_setup_CIPD_ARM, root_build_dir) +
+        "/bin/arm-none-eabi-"
+    cc = _rbe_tool_name_root + "gcc" + _rbe_debug_flag
+    cxx = _rbe_tool_name_root + "g++" + _rbe_debug_flag
+  } else {
+    cc = _local_tool_name_root + "gcc"
+    cxx = _local_tool_name_root + "g++"
+  }
+  ar = _local_tool_name_root + "ar"
+  ld = _local_tool_name_root + "g++"
+
+  link_whole_archive = true
+}
+
+# Common configs shared by all ARM GCC toolchains.
+_arm_gcc = [ "$dir_pw_toolchain/arm_gcc:disable_psabi_warning" ]
+
+_cortex_m0plus = [
+  "$dir_pw_toolchain/arm_gcc:cortex_common",
+  "$dir_pw_toolchain/arm_gcc:cortex_m0plus",
+  "$dir_pw_toolchain/arm_gcc:cortex_software_fpu",
+]
+
+# Configs specific to different architectures.
+_cortex_m3 = [
+  "$dir_pw_toolchain/arm_gcc:cortex_common",
+  "$dir_pw_toolchain/arm_gcc:cortex_m3",
+  "$dir_pw_toolchain/arm_gcc:cortex_software_fpu",
+]
+
+_cortex_m4 = [
+  "$dir_pw_toolchain/arm_gcc:cortex_common",
+  "$dir_pw_toolchain/arm_gcc:cortex_m4",
+  "$dir_pw_toolchain/arm_gcc:cortex_software_fpu",
+]
+
+_cortex_m4f = [
+  "$dir_pw_toolchain/arm_gcc:cortex_common",
+  "$dir_pw_toolchain/arm_gcc:cortex_m4",
+  "$dir_pw_toolchain/arm_gcc:cortex_hardware_fpu",
+]
+
+_cortex_m7 = [
+  "$dir_pw_toolchain/arm_gcc:cortex_common",
+  "$dir_pw_toolchain/arm_gcc:cortex_m7",
+  "$dir_pw_toolchain/arm_gcc:cortex_software_fpu",
+]
+
+_cortex_m7f = [
+  "$dir_pw_toolchain/arm_gcc:cortex_common",
+  "$dir_pw_toolchain/arm_gcc:cortex_m7",
+  "$dir_pw_toolchain/arm_gcc:cortex_hardware_fpu_v5",
+]
+
+_cortex_m33 = [
+  "$dir_pw_toolchain/arm_gcc:cortex_common",
+  "$dir_pw_toolchain/arm_gcc:cortex_m33",
+  "$dir_pw_toolchain/arm_gcc:cortex_software_fpu",
+]
+
+_cortex_m33f = [
+  "$dir_pw_toolchain/arm_gcc:cortex_common",
+  "$dir_pw_toolchain/arm_gcc:cortex_m33",
+  "$dir_pw_toolchain/arm_gcc:cortex_hardware_fpu_v5_sp",
+]
+
+# Describes ARM GCC toolchains for specific targets.
+pw_toolchain_arm_gcc = {
+  cortex_m0plus_debug = {
+    name = "arm_gcc_cortex_m0plus_debug"
+    forward_variables_from(arm_gcc_toolchain_tools, "*")
+    defaults = {
+      default_configs =
+          _arm_gcc + _cortex_m0plus + [ "$dir_pw_build:optimize_debugging" ]
+    }
+  }
+  cortex_m0plus_speed_optimized = {
+    name = "arm_gcc_cortex_m0plus_speed_optimized"
+    forward_variables_from(arm_gcc_toolchain_tools, "*")
+    defaults = {
+      default_configs =
+          _arm_gcc + _cortex_m0plus + [ "$dir_pw_build:optimize_speed" ]
+    }
+  }
+  cortex_m0plus_size_optimized = {
+    name = "arm_gcc_cortex_m0plus_size_optimized"
+    forward_variables_from(arm_gcc_toolchain_tools, "*")
+    defaults = {
+      default_configs =
+          _arm_gcc + _cortex_m0plus + [ "$dir_pw_build:optimize_size" ]
+    }
+  }
+  cortex_m3_debug = {
+    name = "arm_gcc_cortex_m3_debug"
+    forward_variables_from(arm_gcc_toolchain_tools, "*")
+    defaults = {
+      default_configs =
+          _arm_gcc + _cortex_m3 + [ "$dir_pw_build:optimize_debugging" ]
+    }
+  }
+  cortex_m3_speed_optimized = {
+    name = "arm_gcc_cortex_m3_speed_optimized"
+    forward_variables_from(arm_gcc_toolchain_tools, "*")
+    defaults = {
+      default_configs =
+          _arm_gcc + _cortex_m3 + [ "$dir_pw_build:optimize_speed" ]
+    }
+  }
+  cortex_m3_size_optimized = {
+    name = "arm_gcc_cortex_m3_size_optimized"
+    forward_variables_from(arm_gcc_toolchain_tools, "*")
+    defaults = {
+      default_configs =
+          _arm_gcc + _cortex_m3 + [ "$dir_pw_build:optimize_size" ]
+    }
+  }
+  cortex_m4_debug = {
+    name = "arm_gcc_cortex_m4_debug"
+    forward_variables_from(arm_gcc_toolchain_tools, "*")
+    defaults = {
+      default_configs =
+          _arm_gcc + _cortex_m4 + [ "$dir_pw_build:optimize_debugging" ]
+    }
+  }
+  cortex_m4_speed_optimized = {
+    name = "arm_gcc_cortex_m4_speed_optimized"
+    forward_variables_from(arm_gcc_toolchain_tools, "*")
+    defaults = {
+      default_configs =
+          _arm_gcc + _cortex_m4 + [ "$dir_pw_build:optimize_speed" ]
+    }
+  }
+  cortex_m4_size_optimized = {
+    name = "arm_gcc_cortex_m4_size_optimized"
+    forward_variables_from(arm_gcc_toolchain_tools, "*")
+    defaults = {
+      default_configs =
+          _arm_gcc + _cortex_m4 + [ "$dir_pw_build:optimize_size" ]
+    }
+  }
+  cortex_m4f_debug = {
+    name = "arm_gcc_cortex_m4f_debug"
+    forward_variables_from(arm_gcc_toolchain_tools, "*")
+    defaults = {
+      default_configs =
+          _arm_gcc + _cortex_m4f + [ "$dir_pw_build:optimize_debugging" ]
+    }
+  }
+  cortex_m4f_speed_optimized = {
+    name = "arm_gcc_cortex_m4f_speed_optimized"
+    forward_variables_from(arm_gcc_toolchain_tools, "*")
+    defaults = {
+      default_configs =
+          _arm_gcc + _cortex_m4f + [ "$dir_pw_build:optimize_speed" ]
+    }
+  }
+  cortex_m4f_size_optimized = {
+    name = "arm_gcc_cortex_m4f_size_optimized"
+    forward_variables_from(arm_gcc_toolchain_tools, "*")
+    defaults = {
+      default_configs =
+          _arm_gcc + _cortex_m4f + [ "$dir_pw_build:optimize_size" ]
+    }
+  }
+  cortex_m7_debug = {
+    name = "arm_gcc_cortex_m7_debug"
+    forward_variables_from(arm_gcc_toolchain_tools, "*")
+    defaults = {
+      default_configs =
+          _arm_gcc + _cortex_m7 + [ "$dir_pw_build:optimize_debugging" ]
+    }
+  }
+  cortex_m7_speed_optimized = {
+    name = "arm_gcc_cortex_m7_speed_optimized"
+    forward_variables_from(arm_gcc_toolchain_tools, "*")
+    defaults = {
+      default_configs =
+          _arm_gcc + _cortex_m7 + [ "$dir_pw_build:optimize_speed" ]
+    }
+  }
+  cortex_m7_size_optimized = {
+    name = "arm_gcc_cortex_m7_size_optimized"
+    forward_variables_from(arm_gcc_toolchain_tools, "*")
+    defaults = {
+      default_configs =
+          _arm_gcc + _cortex_m7 + [ "$dir_pw_build:optimize_size" ]
+    }
+  }
+  cortex_m7f_debug = {
+    name = "arm_gcc_cortex_m7f_debug"
+    forward_variables_from(arm_gcc_toolchain_tools, "*")
+    defaults = {
+      default_configs =
+          _arm_gcc + _cortex_m7f + [ "$dir_pw_build:optimize_debugging" ]
+    }
+  }
+  cortex_m7f_speed_optimized = {
+    name = "arm_gcc_cortex_m7f_speed_optimized"
+    forward_variables_from(arm_gcc_toolchain_tools, "*")
+    defaults = {
+      default_configs =
+          _arm_gcc + _cortex_m7f + [ "$dir_pw_build:optimize_speed" ]
+    }
+  }
+  cortex_m7f_size_optimized = {
+    name = "arm_gcc_cortex_m7f_size_optimized"
+    forward_variables_from(arm_gcc_toolchain_tools, "*")
+    defaults = {
+      default_configs =
+          _arm_gcc + _cortex_m7f + [ "$dir_pw_build:optimize_size" ]
+    }
+  }
+  cortex_m33_debug = {
+    name = "arm_gcc_cortex_m33_debug"
+    forward_variables_from(arm_gcc_toolchain_tools, "*")
+    defaults = {
+      default_configs =
+          _arm_gcc + _cortex_m33 + [ "$dir_pw_build:optimize_debugging" ]
+    }
+  }
+  cortex_m33_speed_optimized = {
+    name = "arm_gcc_cortex_m33_speed_optimized"
+    forward_variables_from(arm_gcc_toolchain_tools, "*")
+    defaults = {
+      default_configs =
+          _arm_gcc + _cortex_m33 + [ "$dir_pw_build:optimize_speed" ]
+    }
+  }
+  cortex_m33_size_optimized = {
+    name = "arm_gcc_cortex_m33_size_optimized"
+    forward_variables_from(arm_gcc_toolchain_tools, "*")
+    defaults = {
+      default_configs =
+          _arm_gcc + _cortex_m33 + [ "$dir_pw_build:optimize_size" ]
+    }
+  }
+  cortex_m33f_debug = {
+    name = "arm_gcc_cortex_m33f_debug"
+    forward_variables_from(arm_gcc_toolchain_tools, "*")
+    defaults = {
+      default_configs =
+          _arm_gcc + _cortex_m33f + [ "$dir_pw_build:optimize_debugging" ]
+    }
+  }
+  cortex_m33f_speed_optimized = {
+    name = "arm_gcc_cortex_m33f_speed_optimized"
+    forward_variables_from(arm_gcc_toolchain_tools, "*")
+    defaults = {
+      default_configs =
+          _arm_gcc + _cortex_m33f + [ "$dir_pw_build:optimize_speed" ]
+    }
+  }
+  cortex_m33f_size_optimized = {
+    name = "arm_gcc_cortex_m33f_size_optimized"
+    forward_variables_from(arm_gcc_toolchain_tools, "*")
+    defaults = {
+      default_configs =
+          _arm_gcc + _cortex_m33f + [ "$dir_pw_build:optimize_size" ]
+    }
+  }
+}
+
+# This list just contains the members of the above scope for convenience to make
+# it trivial to generate all the toolchains in this file via a
+# `generate_toolchains` target.
+pw_toolchain_arm_gcc_list = [
+  pw_toolchain_arm_gcc.cortex_m0plus_debug,
+  pw_toolchain_arm_gcc.cortex_m0plus_speed_optimized,
+  pw_toolchain_arm_gcc.cortex_m0plus_size_optimized,
+  pw_toolchain_arm_gcc.cortex_m3_debug,
+  pw_toolchain_arm_gcc.cortex_m3_speed_optimized,
+  pw_toolchain_arm_gcc.cortex_m3_size_optimized,
+  pw_toolchain_arm_gcc.cortex_m4_debug,
+  pw_toolchain_arm_gcc.cortex_m4_speed_optimized,
+  pw_toolchain_arm_gcc.cortex_m4_size_optimized,
+  pw_toolchain_arm_gcc.cortex_m4f_debug,
+  pw_toolchain_arm_gcc.cortex_m4f_speed_optimized,
+  pw_toolchain_arm_gcc.cortex_m4f_size_optimized,
+  pw_toolchain_arm_gcc.cortex_m7_debug,
+  pw_toolchain_arm_gcc.cortex_m7_speed_optimized,
+  pw_toolchain_arm_gcc.cortex_m7_size_optimized,
+  pw_toolchain_arm_gcc.cortex_m7f_debug,
+  pw_toolchain_arm_gcc.cortex_m7f_speed_optimized,
+  pw_toolchain_arm_gcc.cortex_m7f_size_optimized,
+  pw_toolchain_arm_gcc.cortex_m33_debug,
+  pw_toolchain_arm_gcc.cortex_m33_speed_optimized,
+  pw_toolchain_arm_gcc.cortex_m33_size_optimized,
+  pw_toolchain_arm_gcc.cortex_m33f_debug,
+  pw_toolchain_arm_gcc.cortex_m33f_speed_optimized,
+  pw_toolchain_arm_gcc.cortex_m33f_size_optimized,
+]

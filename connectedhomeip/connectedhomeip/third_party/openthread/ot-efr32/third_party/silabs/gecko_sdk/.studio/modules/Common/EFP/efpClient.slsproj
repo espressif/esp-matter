@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="com.silabs.sdk.exx32.common.efp" label="EFP Drivers" contentRoot="$(sdkInstallationPath:default())/hardware/driver/efp">
+  <property key="category" value="efm32|Common"/>
+  <includePath uri="inc" />
+  <includePath uri="config/series2" />
+  <folder name="EFP" uri="src" includeAllFiles="true" includeAllFolders="false" />
+</project>

@@ -1,0 +1,33 @@
+id: gatt_service_sound
+label: Environment Sensing - Sound Level GATT Service
+package: Bluetooth
+description: >
+  Provides microphone sound level data in GATT characteristics.
+  Designed for the Thunderboard smartphone app.
+category: Bluetooth|GATT
+quality: production
+root_path: app/bluetooth/common/gatt_service_sound
+config_file:
+  - path: config/sl_gatt_service_sound_config.h
+  - path: gatt_service_sound.xml
+    directory: btconf
+source:
+  - path: sl_gatt_service_sound.c
+include:
+  - path: .
+    file_list:
+      - path: sl_gatt_service_sound.h
+provides:
+  - name: gatt_service_sound
+requires:
+  - name: bluetooth_stack
+  - name: gatt_configuration
+  - name: bluetooth_feature_gatt_server
+  - name: app_assert
+template_contribution:
+  - name: bluetooth_on_event
+    value:
+      include: sl_gatt_service_sound.h
+      function: sl_gatt_service_sound_on_event
+  - name: component_catalog
+    value: gatt_service_sound

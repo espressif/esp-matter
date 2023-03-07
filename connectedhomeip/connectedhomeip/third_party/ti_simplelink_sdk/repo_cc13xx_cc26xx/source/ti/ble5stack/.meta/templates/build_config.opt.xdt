@@ -1,0 +1,70 @@
+%%{
+
+const ble = system.modules["/ti/ble5stack/ble"].$static;
+const Common = system.getScript("/ti/ble5stack/ble_common.js");
+const devFamily = Common.device2DeviceFamily(system.deviceData.deviceId);
+
+%%}
+% if (ble){
+
+-DHOST_CONFIG=`ble.deviceRole`
+%
+% if(ble.extAdv && devFamily == "DeviceFamily_CC26X1") {
+
+-DUSE_AE
+%}
+% else if(!ble.extAdv && devFamily != "DeviceFamily_CC26X1"){
+
+-DEXCLUDE_AE
+%}
+%
+% if(ble.extAdv)
+%{
+% if(ble.periodicAdv) {
+
+-DUSE_PERIODIC_ADV
+%}
+%
+% if(ble.periodicAdvSync) {
+
+-DUSE_PERIODIC_SCAN
+%}
+%}
+%
+%if(ble.disablePairing && devFamily != "DeviceFamily_CC26X1" && (ble.deviceRole == "PERIPHERAL_CFG" || ble.deviceRole == "CENTRAL_CFG")){
+
+-DEXCLUDE_SM
+%}
+%
+% if(ble.gattDB) {
+
+-DGATT_DB_OFF_CHIP
+%}
+% if(ble.gattNoClient) {
+
+-DGATT_NO_CLIENT
+%}
+%
+% if(ble.bondManager) {
+
+-DGAP_BOND_MGR
+%}
+%
+% if(ble.L2CAPCOC) {
+
+-DV41_FEATURES=L2CAP_COC_CFG
+%}
+%
+% if(ble.delayingAttReadReq) {
+
+-DATT_DELAYED_REQ
+%}
+%
+
+-D`ble.trensLayer`
+
+%if(ble.gattBuilder) {
+-DUSE_GATT_BUILDER
+
+%}
+%}

@@ -1,0 +1,198 @@
+package: Zigbee
+description: This component implements the server-side functionality of the Smart Energy
+  1.2 Prepayment cluster.
+label: Prepayment Server
+quality: production
+id: zigbee_prepayment_server
+category: Zigbee|Cluster Library|Smart Energy
+provides:
+   - name: "zigbee_prepayment_server"
+requires:
+   - name: "zigbee_prepayment_snapshot_storage"
+   - name: "zigbee_calendar_client"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/prepayment-server/config/prepayment-server-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/prepayment-server/prepayment-server.c
+  - path: protocol/zigbee/app/framework/plugin/prepayment-server/prepayment-server-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/prepayment-server/prepayment-modes-table.c
+  - path: protocol/zigbee/app/framework/plugin/prepayment-server/prepayment-topup.c
+  - path: protocol/zigbee/app/framework/plugin/prepayment-server/prepayment-debt-log.c
+  - path: protocol/zigbee/app/framework/plugin/prepayment-server/prepayment-debt-schedule.c
+  - path: protocol/zigbee/app/framework/plugin/prepayment-server/prepayment-tick.c
+  - path: protocol/zigbee/app/framework/plugin/prepayment-server/prepayment-server-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/prepayment-server
+    file_list:
+      - path: prepayment-server.h  
+      - path: prepayment-debt-log.h
+      - path: prepayment-debt-schedule.h
+      - path: prepayment-modes-table.h
+      - path: prepayment-tick.h
+      - path: prepayment-topup.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_prepayment_server
+  - name: cluster_service
+    value:
+       cluster_id: "0x0705"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "SERVER"
+       service_function: "emberAfPrepaymentClusterServerCommandParse"
+  - name: cli_group
+    value:
+      group: plugin
+      name: prepayment-server
+      help: prepayment-server related commands.
+  - name: cli_command
+    value:
+      group: prepayment-server
+      name: writeAttribute
+      handler: emAfPrepaymentServerCliWriteAttribute
+      help: Writes the value of a local prepayment attribute (1-4 byte attribute value supported).
+      argument:
+      - type: uint8
+        help: Endpoint whose prepayment attribute is being written
+      - type: uint16
+        help: The attribute ID that should be written
+      - type: uint8
+        help: The attribute type (eg 0x23=U32)
+      - type: uint8
+        help: The number of bytes (1-4) of data to write
+      - type: uint32
+        help: The data that should be written to the attribute
+  - name: cli_command
+    value:
+      group: prepayment-server
+      name: verifyPaymentMode
+      handler: emAfPrepaymentServerCliVerifyPaymentMode
+      help: Verifies the payment mode matches an expected payment mode value.
+      argument:
+      - type: uint8
+        help: Metering endpoint whose payment mode value is being queried
+      - type: uint16
+        help: Expected payment mode value
+  - name: cli_command
+    value:
+      group: prepayment-server
+      name: verifyAttribute
+      handler: emAfPrepaymentServerCliVerifyAttribute
+      help: Verifies the prepayment attribute value matches an expected value.
+      argument:
+      - type: uint8
+        help: Metering endpoint whose payment mode value is being queried
+      - type: uint16
+        help: Attribute ID of the attribute that will be verified
+      - type: uint8
+        help: Size of the attribute in bytes
+      - type: uint32
+        help: Expected payment mode value
+  - name: cli_command
+    value:
+      group: prepayment-server
+      name: publishPrepaySnapshot
+      handler: emAfPrepaymentServerCliPublishPrepaySnapshot
+      help: Sends the publish prepay snapshot command.
+      argument:
+      - type: uint16
+        help: NodeId of the destination device
+      - type: uint8
+        help: The source endpoint of the sending device
+      - type: uint8
+        help: The destination endpoint of the receiving device
+      - type: uint32
+        help: A unique identifier assigned by the device creating the snapshot
+  - name: cli_command
+    value:
+      group: prepayment-server
+      name: init
+      handler: emAfPrepaymentServerCliInit
+      help: Initializes the prepayment server and snapshot table.
+      argument:
+      - type: uint8
+        help: Endpoint of the prepayment server
+  - name: cli_command
+    value:
+      group: prepayment-server
+      name: addSnapshotEvent
+      handler: emAfPrepaymentServerCliAddSnapshotEvent
+      help: Adds a snapshot event to the prepayment server.
+      argument:
+      - type: uint8
+        help: Endpoint of the device from which the snapshot will be taken
+      - type: uint32
+        help: A bitmask indicating the cause of the snapshot
+  - name: cli_command
+    value:
+      group: prepayment-server
+      name: readDebtLog
+      handler: emAfPrepaymentReadDebtLog
+      help: Reads the values from the debt log from a specified index.
+      argument:
+      - type: uint8
+        help: The index of the debt log to read
+  - name: cli_command
+    value:
+      group: prepayment-server
+      name: readDebtAttribs
+      handler: emAfPrepaymentReadDebtAttributes
+      help: Reads the values from the debt attribute set for a given index (1,2,3).
+      argument:
+      - type: uint8
+        help: The endpoint from which the debt attribute set will be read
+      - type: uint8
+        help: The index of the debt attribute set to read - 1, 2, or 3
+  - name: cli_command
+    value:
+      group: prepayment-server
+      name: getTopUpPercent
+      handler: emAfPrepaymentGetTopUpPercentage
+      help: Determines the total top up percentage required for debt reduction.
+      argument:
+      - type: uint8
+        help: The endpoint from which the debt attribute set will be read
+      - type: uint32
+        help: The current top up value from which a percentage may be required for debt reduction
+  - name: cli_command
+    value:
+      group: prepayment-server
+      name: checkCalendar
+      handler: emAfPrepaymentCheckCalendarCli
+      help: Checks that UTC time and calendar dates can be interchanged correctly.
+      argument:
+      - type: uint32
+        help: The UTC time that should be tested
+  - name: cli_command
+    value:
+      group: prepayment-server
+      name: getWeekdayFromUtc
+      handler: emAfPrepaymentGetWeekdayCli
+      help: Reads the day of the week for a given UTC time.
+      argument:
+      - type: uint32
+        help: The UTC time that should be converted
+  - name: cli_command
+    value:
+      group: prepayment-server
+      name: schedDebtRepay
+      handler: emAfPrepaymentScheduleDebtRepaymentCli
+      help: Checks that debt repayment handling correctly calculates and schedules various attributes.
+      argument:
+      - type: uint8
+        help: The endpoint of the prepayment server
+      - type: uint32
+        help: The issuer event ID for the debt
+      - type: uint8
+        help: The type of debt (0,1,2) that will be set
+      - type: uint16
+  - name: cluster_functions
+    value:
+      cluster_name: Prepayment
+      cluster_id: 0x705
+      cluster_type: server
+      init_function: emberAfPrepaymentClusterServerInitCallback
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/prepayment-server

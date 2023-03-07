@@ -1,0 +1,66 @@
+# Copyright 2019 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load(
+    "//pw_build:pigweed.bzl",
+    "pw_cc_library",
+    "pw_cc_test",
+)
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+pw_cc_library(
+    name = "pw_preprocessor",
+    srcs = [
+        "public/pw_preprocessor/internal/arg_count_impl.h",
+    ],
+    hdrs = [
+        "public/pw_preprocessor/arguments.h",
+        "public/pw_preprocessor/boolean.h",
+        "public/pw_preprocessor/compiler.h",
+        "public/pw_preprocessor/concat.h",
+        "public/pw_preprocessor/util.h",
+    ],
+    includes = ["public"],
+)
+
+pw_cc_library(
+    name = "cortex_m",
+    hdrs = [
+        "public/pw_preprocessor/arch.h",
+    ],
+    includes = ["public"],
+)
+
+TESTS = [
+    "arguments_test",
+    "boolean_test",
+    "compiler_test",
+    "concat_test",
+    "util_test",
+]
+
+[
+    pw_cc_test(
+        name = t,
+        srcs = [t + ".cc"],
+        deps = [
+            ":pw_preprocessor",
+            "//pw_unit_test",
+        ],
+    )
+    for t in TESTS
+]

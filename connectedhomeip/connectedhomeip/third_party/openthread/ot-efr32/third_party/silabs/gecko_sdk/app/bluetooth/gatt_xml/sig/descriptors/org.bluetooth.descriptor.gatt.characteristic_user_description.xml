@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Descriptor xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/descriptor.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.descriptor.gatt.characteristic_user_description" uuid="2901" name="Characteristic User Description">
+  <InformativeText>
+    <Abstract>
+        The Characteristic User Description descriptor provides a textual user description for a characteristic value.
+		</Abstract>
+    <InformativeDisclaimer/>
+    <Summary>
+        If the Writable Auxiliary bit of the Characteristics Properties is set then this descriptor is written.
+        Only one User Description descriptor exists in a characteristic definition.            
+		</Summary>
+  </InformativeText>
+  <Value>
+    <Field name="User Description">
+      <Requirement>Mandatory</Requirement>
+      <Format>utf8s</Format>
+    </Field>
+  </Value>
+</Descriptor>

@@ -1,0 +1,44 @@
+project_name: spidrv_eusart_slave_baremetal
+package: platform
+quality: production
+label: Platform - SPIDRV Slave Bare-metal using EUSART
+description: > 
+  This example project demonstrates how to use the slave mode of the Serial Peripheral Interface driver in a bare-metal configuration.
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+source:
+  - path: app.c
+  - path: main.c
+  - path: spidrv_slave_baremetal.c
+include:
+  - path: .
+    file_list:
+    - path: app.h
+    - path: spidrv_slave_baremetal.h
+component:
+  - id: sl_system
+  - id: device_init
+  - id: spidrv_eusart
+    instance: [exp]
+  - id: iostream_stdlib_config
+  - id: iostream_retarget_stdio
+  - id: iostream_recommended_stream
+define:
+  - name: DEBUG_EFM
+readme:
+  - path: readme.md
+configuration:
+  - name: SL_SPIDRV_EUSART_EXP_TYPE
+    value: spidrvSlave
+  - name: SL_SPIDRV_EUSART_EXP_SLAVE_START_MODE
+    value: spidrvSlaveStartDelayed
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+ui_hints:
+  highlight: readme.md

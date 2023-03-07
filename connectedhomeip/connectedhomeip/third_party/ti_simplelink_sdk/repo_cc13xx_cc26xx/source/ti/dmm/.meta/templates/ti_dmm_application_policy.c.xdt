@@ -1,0 +1,119 @@
+%%{
+/*
+ * Copyright (c) 2019 Texas Instruments Incorporated - http://www.ti.com
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+/*
+ *  ======== ti_dmm_application_policy.c.xdt ========
+ */
+
+"use strict";
+
+const module = system.modules["/ti/dmm/dmm"].$static;
+const codeGen = system.getScript("/ti/dmm/dmm_code_gen.js");
+const lprfCommon = system.getScript("/ti/common/lprf_common.js");
+
+const project = new codeGen.Project(module);
+
+%%}
+/*
+ *  ======== ti_dmm_application_policy.c ========
+ *  Configured DMM module definitions
+ *
+ *  DO NOT EDIT - This file is generated for the `lprfCommon.getDeviceOrLaunchPadName(false)`
+ *  by the SysConfig tool.
+ */
+
+#include <ti_dmm_application_policy.h>
+% if(project.customActivities.length > 0) {
+#include <ti_dmm_custom_activities.h>
+% }
+% if(module.projectStackConfiguration.includes("ti154stack")) {
+#include <ti_154stack_features.h>
+% }
+
+/***** Defines *****/
+
+//! \brief Stack role policy indexes
+% // BLE index currently is always 0 (dmm_policy.h)
+% let roles = project.roles.slice();
+% let blePeripheralRoleIndex = roles.findIndex(role => role.name === "blePeripheral");
+%
+% if(blePeripheralRoleIndex !== -1) {
+#define `roles[blePeripheralRoleIndex].policyIndexString` 0
+    % roles.splice(blePeripheralRoleIndex, 1);
+% }
+%
+% for(let i = 0; i < roles.length; i++) {
+    % if(roles[i].name !== "blePeripheral") {
+#define `roles[i].policyIndexString` `(blePeripheralRoleIndex !== -1 ? i+1 : i)`
+    % }
+% }
+
+DMMPolicy_Policy DMMPolicy_ApplicationPolicy[] = {
+% for(let policyIndex = 0; policyIndex < project.numPolicies; policyIndex++) {
+    // DMM Policy `policyIndex`
+    % if(module.policyArray[policyIndex].isDefineSpecific) {
+#ifdef `module.policyArray[policyIndex].buildDefine`
+    % }
+    {
+    % for(let roleIndex = 0; roleIndex < project.roles.length; roleIndex++) {
+        // `project.roles[roleIndex].displayName` Policy
+        .appState[`project.roles[roleIndex].policyIndexString`] = {
+            .state = `project.policyTable[policyIndex].roles[project.roles[roleIndex].name].states`,
+            .weight = `project.policyTable[policyIndex].roles[project.roles[roleIndex].name].weight`,
+            .timingConstraint = DMMPOLICY_TIME_RESERVED,
+            .pause = `project.policyTable[policyIndex].roles[project.roles[roleIndex].name].pause`,
+            .appliedActivity =  `project.policyTable[policyIndex].roles[project.roles[roleIndex].name].appliedActivity`,
+        },
+    % }
+        //Balanced Mode Policy
+        .balancedMode = `project.policyTable[policyIndex].balancedMode`,
+    },
+    % if(module.policyArray[policyIndex].isDefineSpecific) {
+#endif
+    % }
+% }
+};
+
+DMMPolicy_PolicyTable DMMPolicy_ApplicationPolicyTable = {
+    //Stack Roles
+% for(let i = 0; i < project.roles.length; i++) {
+    .stackRole[`project.roles[i].policyIndexString`] = `project.roles[i].dmmStackRole`,
+% }
+    //Policy table
+    .policy = DMMPolicy_ApplicationPolicy,
+    // Index Table for future use
+    .indexTable = NULL,
+};
+
+//! \brief The application policy table size
+uint32_t DMMPolicy_ApplicationPolicySize = (sizeof(DMMPolicy_ApplicationPolicy) / sizeof(DMMPolicy_Policy));

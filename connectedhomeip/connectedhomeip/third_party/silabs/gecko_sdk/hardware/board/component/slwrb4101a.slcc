@@ -1,0 +1,22 @@
+!!omap
+- id: slwrb4101a
+- label: SLWRB4101A
+- package: platform
+- description: Kit BSP support for the EFR32BG 2.4 GHz 19.5 dBm WLCSP Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4101a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4101A"'
+  - name: SL_KIT_REV
+    value: '"A00"'
+- tag:
+  - kit:opn:SLWRB4101A
+  - kit:pn:WRB4101
+  - kit:variant:A
+  - kit:revision:A00

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Heart Rate Max" type="org.bluetooth.characteristic.heart_rate_max" uuid="2A8D" last-modified="2014-06-10" approved="Yes">
+    <InformativeText>
+        <Abstract>Maximum heart rate a user can reach.</Abstract>
+	</InformativeText>
+    <Value>
+    <Field name="Heart Rate Max">
+        <InformativeText>
+            Unit is in beats per minute with a resolution of 1.
+		</InformativeText>
+        <Requirement>Mandatory</Requirement>
+        <Format>uint8</Format>
+        <Unit>org.bluetooth.unit.period.beats_per_minute</Unit>
+        <DecimalExponent>0</DecimalExponent>
+    </Field>
+	</Value>
+</Characteristic>

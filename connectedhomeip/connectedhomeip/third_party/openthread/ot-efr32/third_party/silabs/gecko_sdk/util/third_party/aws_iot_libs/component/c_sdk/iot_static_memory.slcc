@@ -1,0 +1,24 @@
+id: iot_static_memory
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|C SDK
+label: IoT Static Memory
+description: C SDK Static Memory Helper.
+
+package: amazon_platform
+quality: production
+
+provides:
+  - name: iot_static_memory
+
+requires:
+  - name: iot_config_common
+
+root_path: util/third_party/aws_iot_libs
+
+source:
+  - path: libraries/c_sdk/standard/common/iot_static_memory_common.c
+
+include:
+  - path: libraries/c_sdk/standard/common/include/private
+    file_list:
+      - path: iot_static_memory.h

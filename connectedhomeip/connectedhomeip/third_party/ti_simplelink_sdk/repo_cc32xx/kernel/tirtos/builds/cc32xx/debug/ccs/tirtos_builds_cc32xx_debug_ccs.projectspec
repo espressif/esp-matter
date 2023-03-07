@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectSpec>
+    <project
+        title="TI-RTOS build debug configuration"
+        name="tirtos_builds_cc32xx_debug_ccs"
+        outputType="rtscConfiguration"
+        device="Cortex M.CC3220SF"
+        toolChain="TI"
+        ignoreDefaultDeviceSettings="true"
+        ignoreDefaultCCSSettings="true"
+        description="TI-RTOS debug configuration project">
+
+        <property name="products" value="com.ti.SIMPLELINK_CC32XX_SDK"/>
+        <property name="xdcToolsVersion" value="3.62.999"/> <!-- use 999 to pickup latest 3.62 version -->
+        <property name="target" value="ti.targets.arm.elf.M4"/>
+        <property name="platform" value="ti.platforms.simplelink:CC32XX"/>
+        <property name="buildProfile" value="release"/>
+        <file path="makefile.defs" openOnCreation="false" excludeFromBuild="false" action="copy" ></file>
+        <file path="../debug.cfg" openOnCreation="false" excludeFromBuild="false" action="copy" >
+        </file>
+        <file path="../README.md" openOnCreation="false" excludeFromBuild="false" action="copy" >
+        </file>
+        <file path="../README.html" openOnCreation="false" excludeFromBuild="false" action="copy" >
+        </file>
+    </project>
+</projectSpec>
+

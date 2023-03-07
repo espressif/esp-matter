@@ -1,0 +1,386 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>device tree &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../index.html"/>
+        <link rel="up" title="&lt;no title&gt;" href="index.html"/>
+        <link rel="next" title="blog" href="blog.html"/>
+        <link rel="prev" title="AOS VFS" href="vfs.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Examples/index.html">Example</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Components</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../System/Coredump.html">Coredump</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../System/Libc.html">Libc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../System/Start.html">Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="yloop.html">yloop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vfs.html">vfs</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">dts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">一、 介绍</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dts-dtb">二、 dts 和 dtb 相互转换</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">三、 device tree 语法格式</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">四、 device tree 模块配置</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id4">串口配置</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="blog.html">blog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../BLE/ble_stack.html">ble_stack</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Components</a> &raquo;</li>
+        
+          <li><a href="index.html">&lt;no title&gt;</a> &raquo;</li>
+        
+      <li>device tree</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/Components/Middleware/devicetree.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="device-tree">
+<h1>device tree<a class="headerlink" href="#device-tree" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<h2>一、 介绍<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<ul>
+<li><p class="first">调试平台</p>
+<p><code class="docutils literal notranslate"><span class="pre">ubuntu18.04</span></code></p>
+</li>
+</ul>
+</div>
+<div class="section" id="dts-dtb">
+<h2>二、 dts 和 dtb 相互转换<a class="headerlink" href="#dts-dtb" title="永久链接至标题"></a></h2>
+<ul>
+<li><p class="first">device tree 调试工具</p>
+<p><code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">device-tree-compiler</span></code></p>
+</li>
+<li><p class="first">dts 转 dtb</p>
+<p><code class="docutils literal notranslate"><span class="pre">dtc</span> <span class="pre">-I</span> <span class="pre">dts</span> <span class="pre">-O</span> <span class="pre">dtb</span> <span class="pre">-o</span> <span class="pre">*.dtb</span> <span class="pre">*.dts</span></code></p>
+</li>
+<li><p class="first">dtb 转 dts</p>
+<p><code class="docutils literal notranslate"><span class="pre">dtc</span> <span class="pre">-I</span> <span class="pre">dtb</span> <span class="pre">-O</span> <span class="pre">dts</span> <span class="pre">*.dtb</span> <span class="pre">-o</span> <span class="pre">*.dts</span></code></p>
+</li>
+<li><p class="first">dtb 转数组到数组 *.c</p>
+<p><code class="docutils literal notranslate"><span class="pre">xxd</span> <span class="pre">-i</span> <span class="pre">*.dtb</span> <span class="pre">./*.c</span></code></p>
+</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2>三、 device tree 语法格式<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<ul>
+<li><p class="first">*.dts 文件开头必须采用如下所示开头
+<code class="docutils literal notranslate"><span class="pre">/dts-v1/;</span>&#160;&#160;&#160;&#160; <span class="pre">//</span> <span class="pre">version:</span> <span class="pre">17</span>&#160;&#160;&#160;&#160; <span class="pre">//</span> <span class="pre">last_comp_version:</span> <span class="pre">16</span>&#160;&#160;&#160;&#160; <span class="pre">//</span> <span class="pre">boot_cpuid_phys:</span> <span class="pre">0x0</span></code></p>
+</li>
+<li><p class="first">16进制数组表示方法如下(注：字节间必须有一个空格，且暂时不支持换行)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mac</span> <span class="p">{</span>
+        <span class="n">sta_mac_addr</span> <span class="o">=</span> <span class="p">[</span><span class="n">C8</span> <span class="mi">43</span> <span class="mi">57</span> <span class="mi">82</span> <span class="mi">73</span> <span class="mi">40</span><span class="p">];</span>
+        <span class="n">ap_mac_addr</span> <span class="o">=</span> <span class="p">[</span><span class="n">C8</span> <span class="mi">43</span> <span class="mi">57</span> <span class="mi">82</span> <span class="mi">73</span> <span class="mi">02</span><span class="p">];</span>
+    <span class="p">};</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">字符串或者字符串数据表示方法如下</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="s2">&quot;bl bl602 AVB board&quot;</span><span class="p">;</span>
+<span class="n">compatible</span> <span class="o">=</span> <span class="s2">&quot;bl,bl602-sample&quot;</span><span class="p">,</span> <span class="s2">&quot;bl,bl602-common&quot;</span><span class="p">;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">32bit数据表示方法(可以使用16进制ox方式，也可使用10进制方式，字节间必须有一个空格，且暂时不支持换行)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pwr_table</span> <span class="o">=</span> <span class="o">&lt;</span><span class="mh">0x4</span> <span class="mh">0x64</span><span class="o">&gt;</span>
+<span class="n">pwr_table</span> <span class="o">=</span> <span class="o">&lt;</span><span class="mi">4</span> <span class="mi">100</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h2>四、 device tree 模块配置<a class="headerlink" href="#id3" title="永久链接至标题"></a></h2>
+<div class="section" id="id4">
+<h3>串口配置<a class="headerlink" href="#id4" title="永久链接至标题"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">串口暂时仅支持配置以下功能</span>
+</pre></div>
+</div>
+<ul>
+<li><p class="first">使能串口</p>
+<p><code class="docutils literal notranslate"><span class="pre">status</span> <span class="pre">=</span> <span class="pre">&quot;okay&quot;;</span></code></p>
+</li>
+<li><p class="first">关闭串口</p>
+<p>关闭串口时，余下其他引脚、波特率等配置均无效，不会初始化相关硬件</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;disable&quot;</span><span class="p">;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">配置引脚</p>
+<p>暂时不支持配置cts和rts相关功能，故暂时<code class="docutils literal notranslate"><span class="pre">feature</span></code>中rts和cts均为<code class="docutils literal notranslate"><span class="pre">disable</span></code>。如果使用了串的tx和rx，<code class="docutils literal notranslate"><span class="pre">feature</span></code>中到tx和rx需要配置为<code class="docutils literal notranslate"><span class="pre">okay</span></code>，<code class="docutils literal notranslate"><span class="pre">pin</span></code>中的tx和rx需要选择相关引脚。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pin</span> <span class="p">{</span>
+    <span class="n">rx</span> <span class="o">=</span> <span class="o">&lt;</span><span class="mi">7</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="n">tx</span> <span class="o">=</span> <span class="o">&lt;</span><span class="mi">16</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="n">feature</span> <span class="p">{</span>
+    <span class="n">rts</span> <span class="o">=</span> <span class="s2">&quot;disable&quot;</span><span class="p">;</span>
+    <span class="n">cts</span> <span class="o">=</span> <span class="s2">&quot;disable&quot;</span><span class="p">;</span>
+    <span class="n">rx</span> <span class="o">=</span> <span class="s2">&quot;okay&quot;</span><span class="p">;</span>
+    <span class="n">tx</span> <span class="o">=</span> <span class="s2">&quot;okay&quot;</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">配置波特率</p>
+<p>配置波特率参考如下，最大支持 <code class="docutils literal notranslate"><span class="pre">2000000</span> <span class="pre">bps</span></code>这里以<code class="docutils literal notranslate"><span class="pre">9600</span></code>为例</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">baudrate</span> <span class="o">=</span> <span class="o">&lt;</span><span class="mi">9600</span><span class="o">&gt;</span><span class="p">;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">配置id号</p>
+<p>配置id参考如下，这里以<code class="docutils literal notranslate"><span class="pre">&lt;0&gt;</span></code>为例</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">id</span> <span class="o">=</span> <span class="o">&lt;</span><span class="mi">0</span><span class="o">&gt;</span><span class="p">;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">配置设备名</p>
+<p>目前串口设备名为/dev/ttyS<em>,至于</em>为当前串口id号，目前调试口使用
+/dev/ttyS0</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pin</span> <span class="p">{</span>
+        <span class="n">rx</span> <span class="o">=</span> <span class="o">&lt;</span><span class="mi">7</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">tx</span> <span class="o">=</span> <span class="o">&lt;</span><span class="mi">16</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+<span class="n">feature</span> <span class="p">{</span>
+    <span class="n">rts</span> <span class="o">=</span> <span class="s2">&quot;disable&quot;</span><span class="p">;</span>
+    <span class="n">cts</span> <span class="o">=</span> <span class="s2">&quot;disable&quot;</span><span class="p">;</span>
+    <span class="n">rx</span> <span class="o">=</span> <span class="s2">&quot;okay&quot;</span><span class="p">;</span>
+    <span class="n">tx</span> <span class="o">=</span> <span class="s2">&quot;okay&quot;</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;/dev/ttyS0&quot;</span><span class="p">;</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="blog.html" class="btn btn-neutral float-right" title="blog" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="vfs.html" class="btn btn-neutral" title="AOS VFS" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

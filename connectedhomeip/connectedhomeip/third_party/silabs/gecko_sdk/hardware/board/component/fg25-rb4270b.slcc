@@ -1,0 +1,22 @@
+!!omap
+- id: fg25_rb4270b
+- label: FG25-RB4270B
+- package: platform
+- description: Kit BSP support for the EFR32FG25 902-928 MHz +14 dBm Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_fg25-rb4270b
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"FG25-RB4270B"'
+  - name: SL_KIT_REV
+    value: '"A02"'
+- tag:
+  - kit:opn:FG25-RB4270B
+  - kit:pn:RB4270
+  - kit:variant:B
+  - kit:revision:A02

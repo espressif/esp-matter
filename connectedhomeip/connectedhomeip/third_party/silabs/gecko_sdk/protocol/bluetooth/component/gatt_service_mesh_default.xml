@@ -1,0 +1,5 @@
+<gatt>
+    <capabilities_declare>
+      <capability enable="true">mesh_default</capability>
+    </capabilities_declare>  
+</gatt>

@@ -1,0 +1,14 @@
+id: cli_recommended_instance
+label: "CLI Load recommended instance"
+package: platform
+description: CLI Load recommended instance
+category: Services|CLI
+quality: production
+ui_hints:
+  visibility: never
+provides:
+  - name: cli_recommended_instance
+requires:
+  - name: cli_recommends
+  - name: cli_core
+  - name: cli

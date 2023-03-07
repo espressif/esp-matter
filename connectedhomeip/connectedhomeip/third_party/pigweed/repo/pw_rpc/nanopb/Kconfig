@@ -1,0 +1,53 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+menuconfig PIGWEED_RPC_NANOPB
+    bool "Pigweed RPC nanobp"
+
+if PIGWEED_RPC_NANOPB
+
+config PIGWEED_RPC_NANOPB_DIR
+    string "Optional 3rd party directory for nanopb"
+    help
+      The directory for the custom nanopb build rules to integrate with pigweed.
+
+config PIGWEED_RPC_NANOPB_METHOD
+    bool "Enable Pigweed RPC/Nanopb method library (pw_rpc.nanopb.method)"
+    select PIGWEED_RPC_NANOPB_COMMON
+    select PIGWEED_RPC_SERVER
+    select PIGWEED_LOG
+
+config PIGWEED_RPC_NANOPB_METHOD_UNION
+    bool "Enable Pigweed RPC/Nanopb method union library (pw_rpc.nanopb.method_union)"
+    select PIGWEED_RPC_NANOPB_METHOD
+    select PIGWEED_RPC_RAW
+    select PIGWEED_RPC_SERVER
+    select PIGWEED_LOG
+
+config PIGWEED_RPC_NANOPB_CLIENT
+    bool "Enable Pigweed RPC/Nanopb client library (pw_rpc.nanopb.client)"
+    select PIGWEED_FUNCTION
+    select PIGWEED_RPC_NANOPB_COMMON
+    select PIGWEED_RPC_COMMON
+
+config PIGWEED_RPC_NANOPB_COMMON
+    bool "Enable Pigweed RPC/Nanopb common library (pw_rpc.nanopb.common)"
+    select PIGWEED_BYTES
+    select PIGWEED_LOG
+    select PIGWEED_RPC_COMMON
+
+config PIGWEED_RPC_NANOPB_ECHO_SERVICE
+    bool "Enable Pigweed RPC/Nanopb echo service library (pw_rpc.nanopb.echo_service)"
+
+endif # PIGWEED_RPC_NANOPB

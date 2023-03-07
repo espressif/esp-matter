@@ -1,0 +1,73 @@
+!!omap
+- id: brd4184a
+- label: BRD4184A
+- package: platform
+- description: Board support for BRD4184A.
+- category: Platform|Board|Thunderboard
+- quality: production
+- requires:
+  - name: efr32bg22c224f512im40
+  - name: brd4184a_config
+- provides:
+  - name: brd4184a
+  - name: hardware_board
+  - name: hardware_board_tb
+  - name: hardware_board_from_tb
+  - name: hardware_board_from_sltb010a
+  - name: hardware_board_has_si70xx
+  - name: hardware_board_has_tempsensor
+  - name: hardware_board_has_vcom
+  - name: hardware_board_has_spiflash
+  - name: hardware_board_has_hfxo
+  - name: hardware_board_has_lfxo
+  - name: hardware_board_supports_rf_band_2400
+  - name: hardware_board_supports_1_rf_band
+  - name: hardware_board_default_rf_band
+  - name: hardware_board_default_rf_band_2400
+- recommends:
+  - id: iostream_eusart
+    instance:
+    - vcom
+  - id: bootloader_uart_driver
+  - id: i2cspm
+    instance:
+    - sensor
+  - id: mic_pdm_driver
+  - id: simple_led
+    instance:
+    - led0
+  - id: simple_button
+    instance:
+    - btn0
+  - id: mx25_flash_shutdown_usart
+  - id: bootloader_spi_controller_usart_driver
+  - id: bootloader_spi_peripheral_usart_driver
+  - id: imu_driver_icm20648
+- template_contribution:
+  - name: board_default_init
+    value: sl_board_disable_sensor(SL_BOARD_SENSOR_RHT)
+  - name: board_default_init
+    value: sl_board_disable_sensor(SL_BOARD_SENSOR_IMU)
+  - name: board_default_init
+    value: sl_board_disable_sensor(SL_BOARD_SENSOR_MICROPHONE)
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD4184A"'
+  - name: SL_BOARD_REV
+    value: '"A02"'
+- tag:
+  - board:pn:BRD4184
+  - board:variant:A
+  - board:revision:A02
+  - board:device:efr32bg22c224f512im40
+  - hardware:has:vcom
+  - hardware:has:pti
+  - hardware:has:sensor:si7021
+  - hardware:has:sensor:si7210
+  - hardware:has:sensor:si1133
+  - hardware:has:sensor:spk0641ht4h
+  - hardware:has:microphone
+  - hardware:has:led:1
+  - hardware:has:button:1
+  - hardware:has:memory:spi:mx25r8035f
+  - hardware:has:imu

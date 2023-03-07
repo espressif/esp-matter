@@ -1,0 +1,25 @@
+id: "rtcdrv"
+label: "RTC driver"
+package: "platform"
+description: "RTCDRV timer API implementation. Included to generate DOC only"
+category: "Platform|Driver"
+quality: "deprecated"
+config_file:
+- path: "platform/emdrv/rtcdrv/config/rtcdrv_config.h"
+source:
+- path: "platform/emdrv/rtcdrv/src/rtcdriver.c"
+include:
+  - path: "platform/emdrv/rtcdrv/inc"
+    file_list:
+      - path: "rtcdriver.h"
+provides:
+  - name: "rtcdrv"
+requires:
+  - name: "emlib_rtc"
+    condition: ["device_has_rtc"]
+  - name: "emlib_rtcc"
+    condition: ["device_has_rtcc"]
+  - name: "ecode"
+documentation:
+    docset: gecko-platform
+    document: driver/api/group-rtcdrv

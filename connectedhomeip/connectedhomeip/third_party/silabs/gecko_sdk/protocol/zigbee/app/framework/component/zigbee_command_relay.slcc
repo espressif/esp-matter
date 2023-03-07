@@ -1,0 +1,107 @@
+package: Zigbee
+description: Relay incoming commands from one device to another.
+label: Command Relay
+# Note this plugin is marked deprecated and should be removed.
+# See https://confluence.silabs.com/pages/viewpage.action?pageId=191587383 for more information.
+quality: deprecated
+id: zigbee_command_relay
+category: Zigbee|Utility
+provides:
+   - name: "zigbee_command_relay"
+requires:
+   - name: "zigbee_device_table"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/command-relay/config/command-relay-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/command-relay/command-relay.c
+  - path: protocol/zigbee/app/framework/plugin/command-relay/command-relay-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/command-relay/command-relay-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/command-relay
+    file_list:
+      - path: command-relay.h
+      - path: command-relay-local.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_command_relay
+  - name: zigbee_af_callback
+    value:
+      callback_type: init_done
+      function_name: emberAfPluginCommandRelayInitCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: command-relay
+      help: command-relay related commands
+  - name: cli_command
+    value:
+      group: command-relay
+      name: add
+      handler: emAfPluginCommandRelayAddCommand
+      help: Retransmit commands from inDevice to outDevice.
+      argument:
+      - type: hex
+        help: Incoming device EUI64.
+      - type: uint8
+        help: Incoming device endpoint.
+      - type: uint16
+        help: Incoming cluster ID.
+      - type: hex
+        help: Outgoing device EUI64.
+      - type: uint8
+        help: Outgoing device endpoint.
+      - type: uint16
+        help: Outgoing cluster ID.
+  - name: cli_command
+    value:
+      group: command-relay
+      name: remove
+      handler: emAfPluginCommandRelayRemoveCommand
+      help: Deletes a relay between devices.
+      argument:
+      - type: hex
+        help: Incoming device EUI64.
+      - type: uint8
+        help: Incoming device endpoint.
+      - type: uint16
+        help: Incoming cluster ID.
+      - type: hex
+        help: Outgoing device EUI64.
+      - type: uint8
+        help: Outgoing device endpoint.
+      - type: uint16
+        help: Outgoing cluster ID.
+  - name: cli_command
+    value:
+      group: command-relay
+      name: clear
+      handler: emAfPluginCommandRelayClearCommand
+      help: Clear all relays.
+  - name: cli_command
+    value:
+      group: command-relay
+      name: save
+      handler: emAfPluginCommandRelaySaveCommand
+      help: Save to disk.
+  - name: cli_command
+    value:
+      group: command-relay
+      name: load
+      handler: emAfPluginCommandRelayLoadCommand
+      help: Load from disk.
+  - name: cli_command
+    value:
+      group: command-relay
+      name: print
+      handler: emAfPluginCommandRelayPrintCommand
+      help: Print relays.
+  - name: zigbee_af_callback
+    value:
+      callback_type: pre_command_received
+      function_name: emAfPluginCommandRelayPreCommandReceivedCallback    
+  - name: zigbee_af_device_table_callback
+    value:
+      callback_type: device_left
+      function_name: emAfPluginCommandRelayRemoveDeviceByEui64

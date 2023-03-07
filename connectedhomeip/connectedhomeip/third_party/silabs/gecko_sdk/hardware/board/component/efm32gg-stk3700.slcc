@@ -1,0 +1,22 @@
+!!omap
+- id: efm32gg_stk3700
+- label: EFM32GG-STK3700
+- package: platform
+- description: Kit BSP support for the EFM32 Giant Gecko Starter Kit.
+- category: Platform|Board|Kit|Starter Kit
+- quality: production
+- requires:
+  - name: hardware_board_from_efm32gg-stk3700
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_stk
+- define:
+  - name: SL_KIT_NAME
+    value: '"EFM32GG-STK3700"'
+  - name: SL_KIT_REV
+    value: '"C01"'
+- tag:
+  - kit:opn:EFM32GG-STK3700
+  - kit:pn:STK3700
+  - kit:variant:A
+  - kit:revision:C01

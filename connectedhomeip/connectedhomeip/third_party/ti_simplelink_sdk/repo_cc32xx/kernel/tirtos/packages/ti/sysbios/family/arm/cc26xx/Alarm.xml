@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="cc26xx/Alarm" title="Alarm Management" version="1">
+
+<page name="Module" title="Module Settings">
+<html><body><table>
+  <tr>
+      <td><form>
+        <p>The Alarm module provides alarm timing services for cc26xx devices.</p>
+        <p> </p>
+      </form></td>
+  </tr>
+  <tr>
+    <td><control type="checkbox" label="Add the Alarm management module to my configuration" value="value:this.$used" bold="true"/></td>
+  </tr>
+  <tr></tr>
+</table></body></html>
+</page>
+
+<page name="Instance" title="Instance Settings" DPI="10">
+<html><body><table>
+  <tr>
+    <td>
+      <h1>Alarms</h1>
+      <table><tr>
+        <td><control type="listbox" sort="true" id="master" text="value:this.$activeInstance" width="10" height="15" align="fill" labels="value:this"/></td>
+        <td>
+          <control type="pushbutton" label="Add ..." align="fill" link="action:New"/>
+          <control type="pushbutton" label="Remove" align="fill" link="action:Delete" context="value:widget.master.selection"/>
+        </td>
+      </tr></table>
+    </td>
+    <td context="value:widget.master.selection">
+      <h1>Required Settings</h1>
+      <table>
+        <tr>
+          <td><control type="label" label="Handle" align="left"/></td>
+          <td><control type="editbox"
+               value="value:this.instance.name"
+               tooltip="Handle name"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Alarm function" align="left"/></td>
+          <td colspan="2"><control type="editbox"
+               value="value:this.create.alarmFxn"
+               tooltip="value:this.create.alarmFxn.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Argument passed to the Alarm function" align="left"/></td>
+          <td><control type="editbox"
+               value="value:this.arg"
+               tooltip="value:this.arg.$summary"/></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table></body></html>
+</page>
+<properties name="Advanced" title="All Options" enabled="true" visible="true" link="this"/>
+</gep>

@@ -1,0 +1,64 @@
+package: Zigbee
+description: This component queries new devices for their endpoints and clusters to
+  record information in the Device Database component.
+label: Device Query Service
+quality: production
+id: zigbee_device_query_service
+category: Zigbee|Utility
+provides:
+   - name: "zigbee_device_query_service"
+requires:
+   - name: "zigbee_device_database"
+   - name: "zigbee_concentrator"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/device-query-service/config/device-query-service-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/device-query-service/device-query-service.c
+  - path: protocol/zigbee/app/framework/plugin/device-query-service/device-query-service-cli.c
+    condition:
+      - "cli"
+include:
+  - path: protocol/zigbee/app/framework/plugin/device-query-service
+    file_list:
+      - path: device-query-service.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_device_query_service
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emberAfPluginDeviceQueryServiceInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: local_data_init
+      function_name: emberAfPluginDeviceQueryServiceInitCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: device-query-service
+      help: device-query-service related commands.
+  - name: cli_command
+    value:
+      group: device-query-service
+      name: status
+      handler: emAfPluginDeviceQueryServiceStatusCommand
+      help: Prints the current status of the device query service.
+  - name: cli_command
+    value:
+      group: device-query-service
+      name: enable
+      handler: emAfPluginDeviceQueryServiceEnableDisableCommand
+      help: Enables the device query service.
+  - name: cli_command
+    value:
+      group: device-query-service
+      name: disable
+      handler: emAfPluginDeviceQueryServiceEnableDisableCommand
+      help: Disables the device query service.
+  - name: zigbee_af_callback
+    value:
+      callback_type: pre_zdo_message_received
+      function_name: emAfPluginDeviceQueryPreZDOMessageReceived
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/device-query-service

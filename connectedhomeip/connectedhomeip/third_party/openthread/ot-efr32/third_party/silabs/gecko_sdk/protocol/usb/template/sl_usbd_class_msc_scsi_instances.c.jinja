@@ -1,0 +1,134 @@
+//****************************************************************************
+// Includes.
+
+#include "sl_status.h"
+#include "sl_usbd_core.h"
+#include "sl_usbd_class_msc_scsi.h"
+
+/* template headers */
+#include "sl_usbd_configuration_instances.h"
+#include "sl_usbd_class_msc_scsi_instances.h"
+
+/* include config file for the instances */
+{% for instance in usb_msc_scsi_instances %}
+#include "sl_usbd_class_{{ instance }}_config.h"
+{% endfor %}
+
+//****************************************************************************
+// Function declarations.
+
+{# Generate callback function prototypes for all instances #}
+{% for instance in usb_msc_scsi_instances %}
+/* callback prototypes for {{ instance }} instance */
+void sli_usbd_msc_scsi_{{ instance }}_enable(uint8_t class_nbr);
+
+void sli_usbd_msc_scsi_{{ instance }}_disable(uint8_t class_nbr);
+
+void sli_usbd_msc_scsi_{{ instance }}_host_eject(uint8_t class_nbr,
+                                                 uint8_t lu_nbr);
+{% endfor %}
+
+//****************************************************************************
+// Global variables.
+
+{# Generate variables for all instances #}
+{% for instance in usb_msc_scsi_instances %}
+
+/* variables for {{ instance }} instance */
+
+uint8_t sl_usbd_msc_scsi_{{ instance }}_number = 0;
+
+sl_usbd_msc_scsi_callbacks_t sli_usbd_msc_scsi_{{ instance }}_callbacks = {
+  sli_usbd_msc_scsi_{{ instance }}_enable,
+  sli_usbd_msc_scsi_{{ instance }}_disable,
+  sli_usbd_msc_scsi_{{ instance }}_host_eject,
+};
+
+{% endfor %}
+
+//****************************************************************************
+// Callback functions.
+
+{# Generate callback functions for all instances #}
+{% for instance in usb_msc_scsi_instances %}
+/* callback functions for {{ instance }} instance */
+void sli_usbd_msc_scsi_{{ instance }}_enable(uint8_t class_nbr)
+{
+  (void)&class_nbr;
+
+  sl_usbd_msc_scsi_{{ instance }}_on_enable_event();
+
+  return;
+}
+
+void sli_usbd_msc_scsi_{{ instance }}_disable(uint8_t class_nbr)
+{
+  (void)&class_nbr;
+
+  sl_usbd_msc_scsi_{{ instance }}_on_disable_event();
+
+  return;
+}
+
+void sli_usbd_msc_scsi_{{ instance }}_host_eject(uint8_t class_nbr,
+                                                 uint8_t lu_nbr)
+{
+  (void)&class_nbr;
+
+  sl_usbd_msc_scsi_{{ instance }}_on_host_eject_event(lu_nbr);
+
+  return;
+}
+{% endfor %}
+
+//****************************************************************************
+// Global functions.
+
+{# Generate initialization functions for all configurations #}
+{% for instance in usb_msc_scsi_instances %}
+/* initialize {{ instance }} instance */
+void sli_usbd_msc_scsi_{{ instance }}_init()
+{
+  uint32_t      task_stack_size = 0;
+  osPriority_t  task_priority   = osPriorityNormal;
+  uint8_t       class_number    = 0;
+  uint8_t       config_number   = 0;
+  char         *configs         = NULL;
+  char         *token           = NULL;
+
+  /* configs to attach the class instance to */
+  configs = SL_USBD_MSC_SCSI_{{ instance | upper }}_CONFIGURATIONS;
+
+  /* task stack size */
+  task_stack_size = SL_USBD_MSC_SCSI_{{ instance | upper }}_TASK_STACK_SIZE;
+
+  /* task priority */
+  task_priority = SL_USBD_MSC_SCSI_{{ instance | upper }}_TASK_PRIORITY;
+
+  /* create MSC SCSI class instance */
+  sl_usbd_msc_scsi_create_instance(task_stack_size,
+                                   task_priority,
+                                   &sli_usbd_msc_scsi_{{ instance }}_callbacks,
+                                   &class_number);
+
+  /* store class number globally */
+  sl_usbd_msc_scsi_{{ instance }}_number = class_number;
+
+  /* tokenize configs by "," and spaces */
+  token = strtok(configs, ", ");
+
+  /* loop over tokens */
+  while (token != NULL) {
+    {% for cfg in usb_configuration_instances %}
+    /* add to {{ cfg }}? */
+    if (!strcmp(token, "{{ cfg }}") || !strcmp(token, "all")) {
+      config_number = sl_usbd_configuration_{{ cfg }}_number;
+      sl_usbd_msc_scsi_add_to_configuration(class_number, config_number);
+    }
+    {% endfor %}
+
+    /* next token */
+    token = strtok(NULL, ", ");
+  }
+}
+{% endfor %}

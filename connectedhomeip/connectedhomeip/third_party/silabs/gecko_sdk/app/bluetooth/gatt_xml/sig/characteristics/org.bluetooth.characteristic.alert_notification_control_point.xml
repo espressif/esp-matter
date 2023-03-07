@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2011 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Alert Notification Control Point" type="org.bluetooth.characteristic.alert_notification_control_point" 
+uuid="2A44">
+	<InformativeText>
+        <Abstract>Control point of the Alert Notification server.  Client can write the command here to request the several functions toward the server.</Abstract>
+        <Summary>
+         The 1st octet value of the characteristic is an unsigned 8 bit integer that has a fixed point exponent of 0.  The 1st octet value expresses the command ID that defines the server's actions.
+		 The 2nd octet value of the characteristic is an "Alert Category ID" format.  This octet shows the target category that the command ID applies for.
+        </Summary>
+        <Examples> 
+            <Example>The data 0x02 0x01 interprets "Disable New Incoming Notification for Email Category".</Example>
+		</Examples>
+	</InformativeText>
+	<Value>
+		<Field name="Command ID">
+            <Requirement>Mandatory</Requirement>
+			<Format>uint8</Format>      
+            <Enumerations>
+              <Enumeration key="0" value="Enable New Incoming Alert Notification" />
+              <Enumeration key="1" value="Enable Unread Category Status Notification" />
+              <Enumeration key="2" value="Disable New Incoming Alert Notification" />
+              <Enumeration key="3" value="Disable Unread Category Status Notification" />
+              <Enumeration key="4" value="Notify New Incoming Alert immediately" />
+              <Enumeration key="5" value="Notify Unread Category Status immediately" /> 
+              <ReservedForFutureUse start="6" end="255" />
+            </Enumerations>
+        </Field>
+        <Field name="Category ID">
+            <InformativeText>Target category that the command applies to.</InformativeText>
+            <Requirement>Mandatory</Requirement>
+			<Reference>org.bluetooth.characteristic.alert_category_id</Reference>
+        </Field>
+	</Value>
+    
+     <Note>The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet.</Note>
+</Characteristic>

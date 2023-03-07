@@ -1,0 +1,40 @@
+id: "btmesh_wstk_lcd"
+label: "WSTK LCD Driver"
+package: "Btmesh"
+description: >
+  The WSTK LCD Driver is an application-level software module which
+  implements an interface for WSTK board's LCD screen usage, ensuring the
+  uniform display of BT Mesh specific values. The interface contains an
+  initialization and a write function. The LCD initialization is executed
+  automatically at startup. The write interface is used to write one specified
+  line of text to the LCD.
+category: "Bluetooth Mesh|Utility"
+quality: "production"
+root_path: "app/bluetooth/common/btmesh_wstk_lcd"
+source:
+  - path: "sl_btmesh_wstk_graphics.c"
+  - path: "sl_btmesh_wstk_lcd.c"
+include:
+  - path: ""
+    file_list:
+      - path: "sl_btmesh_wstk_graphics.h"
+      - path: "sl_btmesh_wstk_lcd.h"
+config_file:
+  - path: "config/sl_btmesh_wstk_lcd_config.h"
+provides:
+  - name: "btmesh_wstk_lcd"
+requires:
+  - name: "app_assert"
+  - name: "btmesh_stack"
+  - name: "dmd_memlcd"
+  - name: "glib"
+  - name: "ls013b7dh03"
+
+template_contribution:
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: "sl_btmesh_wstk_lcd.h"
+      handler: "sl_btmesh_LCD_init"
+  - name: component_catalog
+    value: "btmesh_wstk_lcd"

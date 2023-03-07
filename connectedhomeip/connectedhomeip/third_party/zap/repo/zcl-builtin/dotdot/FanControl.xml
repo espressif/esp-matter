@@ -1,0 +1,40 @@
+﻿<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster xmlns:zcl="http://zigbee.org/zcl/clusters"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:type="http://zigbee.org/zcl/types"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd"
+  id="0202" revision="1" name="FanControl">
+  <classification role="application" picsCode="FAN" primaryTransaction="1" />
+  <server>
+    <attributes>
+      <attribute id="0000" name="FanMode" type="enum8" writable="true" required="true" default="5">
+        <restriction>
+          <type:enumeration value="00" name="Off" />
+          <type:enumeration value="01" name="Low" />
+          <type:enumeration value="02" name="Medium" />
+          <type:enumeration value="03" name="High" />
+          <type:enumeration value="04" name="On" />
+          <type:enumeration value="05" name="Auto" />
+          <type:enumeration value="06" name="Smart" />
+        </restriction>
+      </attribute>
+      <attribute id="0001" name="FanModeSequence" type="enum8" writable="true" required="true" default="2">
+        <restriction>
+          <type:enumeration value="00" name="LowMedHigh" />
+          <type:enumeration value="01" name="LowHigh" />
+          <type:enumeration value="02" name="LowMedHighAuto" /> 
+          <type:enumeration value="03" name="LowHighAuto" />
+          <type:enumeration value="04" name="OnAuto" />      
+        </restriction>
+      </attribute>
+    </attributes>
+  </server>
+</zcl:cluster>

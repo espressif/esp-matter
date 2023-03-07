@@ -1,0 +1,8 @@
+ifeq ("$(wildcard ${BL60X_SDK_PATH}/version.mk)","")
+BL_SDK_PHY_VER := $(shell cd ${BL60X_SDK_PATH}/components/network/wifi/plf/refip/src/driver/phy/bl602_phy_rf/ && git describe --always --tags --dirty)
+BL_SDK_RF_VER := $(shell cd ${BL60X_SDK_PATH}/components/network/wifi/plf/refip/src/driver/phy/bl602_phy_rf/rf && git describe --always --tags --dirty)
+BL_SDK_STDDRV_VER := $(shell cd ${BL60X_SDK_PATH}/components/platform/soc/bl602/bl602_std/bl602_std && git describe --always --tags --dirty)
+EXTRA_CPPFLAGS += -D BL_SDK_PHY_VER=\"$(BL_SDK_PHY_VER)\"
+EXTRA_CPPFLAGS += -D BL_SDK_RF_VER=\"$(BL_SDK_RF_VER)\"
+EXTRA_CPPFLAGS += -D BL_SDK_STDDRV_VER=\"$(BL_SDK_STDDRV_VER)\"
+endif

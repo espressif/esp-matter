@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2013 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                name="Bond Management Features"
+                type="org.bluetooth.characteristic.bond_management_feature"
+                uuid="2AA5"
+                last-modified="2014-10-17"
+                approved="Yes">
+       <Value>
+        <Field name="Bond Management Features">
+            <InformativeText>
+                Byte Order - LSO...MSO
+			</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>24bit</Format>
+            <BitField>
+                <Bit index="0" size="1" name="Delete Bond of current connection (BR/EDR and LE) supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="false" />
+                        <Enumeration key="1" value="true" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="1" size="1" name="Authorization Code required for feature above">
+                    <Enumerations>
+                        <Enumeration key="0" value="false" />
+                        <Enumeration key="1" value="true" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="2" size="1" name="Delete bond  of current connection (BR/EDR transport only) supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="false" />
+                        <Enumeration key="1" value="true" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="3" size="1" name="3	Authorization Code required for feature above">
+                    <Enumerations>
+                        <Enumeration key="0" value="false" />
+                        <Enumeration key="1" value="true" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="4" size="1" name="Delete bond  of current connection (LE transport only) supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="false" />
+                        <Enumeration key="1" value="true" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="5" size="1" name="Authorization Code required for feature above">
+                    <Enumerations>
+                        <Enumeration key="0" value="false" />
+                        <Enumeration key="1" value="true" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="6" size="1" name="Remove all bonds on server (BR/EDR and LE) supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="false" />
+                        <Enumeration key="1" value="true" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="7" size="1" name="Authorization Code required for feature above">
+                    <Enumerations>
+                        <Enumeration key="0" value="false" />
+                        <Enumeration key="1" value="true" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="8" size="1" name="Remove all bonds on server (BR/EDR transport only) supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="false" />
+                        <Enumeration key="1" value="true" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="9" size="1" name="Authorization Code required for feature above">
+                    <Enumerations>
+                        <Enumeration key="0" value="false" />
+                        <Enumeration key="1" value="true" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="10" size="1" name="Remove all bonds on server (LE transport only) supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="false" />
+                        <Enumeration key="1" value="true" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="11" size="1" name="Authorization Code required for feature above">
+                    <Enumerations>
+                        <Enumeration key="0" value="false" />
+                        <Enumeration key="1" value="true" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="12" size="1" name="Remove all but the active bond on server (BR/EDR and LE) supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="false" />
+                        <Enumeration key="1" value="true" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="13" size="1" name="Authorization Code required for feature above">
+                    <Enumerations>
+                        <Enumeration key="0" value="false" />
+                        <Enumeration key="1" value="true" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="14" size="1" name="Remove all but the active bond on server (BR/EDR transport only) supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="false" />
+                        <Enumeration key="1" value="true" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="15" size="1" name="Authorization Code required for feature above">
+                    <Enumerations>
+                        <Enumeration key="0" value="false" />
+                        <Enumeration key="1" value="true" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="16" size="1" name="Remove all but the active bond on server (LE transport only) supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="false" />
+                        <Enumeration key="1" value="true" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="17" size="1" name="Authorization Code required for feature above">
+                    <Enumerations>
+                        <Enumeration key="0" value="false" />
+                        <Enumeration key="1" value="true" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="18" size="1" name="Identify yourself supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="false" />
+                        <Enumeration key="1" value="true" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="23" size="1" name="Feature Extension">
+                    <Enumerations>
+                        <Enumeration key="0" value="false" />
+                        <Enumeration key="1" value="true" />
+                    </Enumerations>
+                </Bit>
+                <ReservedForFutureUse index="19" size="4" />
+            </BitField>
+		</Field>
+	</Value>
+    <Note>If the Feature Extension bit (bit number 23) is set, an additional octet is attached (bits 24 … 31), where bit 31 shall be used as Feature Extension bit in the same way. If this bit is set, then another octet is attached (bits 32 … 39) and so on. This is defined to allow future extension of the characteristic.</Note>
+</Characteristic>

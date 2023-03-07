@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Profile xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/profile.xsd" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    type="org.bluetooth.profile.heart_rate"
+    name="Heart Rate">
+    <InformativeText>
+        <Abstract>This profile enables a Collector device to connect and interact with a Heart Rate Sensor for use in fitness applications.</Abstract>
+        <Summary>The Heart Rate Profile is used to enable a data collection device to obtain data from a Heart Rate Sensor that exposes the Heart Rate Service.</Summary>
+	</InformativeText>
+	<Role name="Heart Rate Sensor">
+		<Service type="org.bluetooth.service.heart_rate">
+			<Declaration>Primary</Declaration>
+			<Requirement>Mandatory</Requirement>
+		</Service>
+		<Service type="org.bluetooth.service.device_information">
+			<Declaration>PrimarySingleInstance</Declaration>
+			<Requirement>Mandatory</Requirement>
+			<Characteristic type="org.bluetooth.characteristic.manufacturer_name_string">
+				<Requirement>Mandatory</Requirement>
+			</Characteristic>
+		</Service>
+	</Role>
+	<Role name="Collector">
+		<Client type="org.bluetooth.service.heart_rate">
+			<Requirement>Mandatory</Requirement>
+		</Client>
+		<Client type="org.bluetooth.service.device_information">
+			<Requirement>Optional</Requirement>
+		</Client>
+	</Role>
+</Profile>

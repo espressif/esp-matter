@@ -1,0 +1,266 @@
+/***************************************************************************//**
+ * @file sl_cli_command_table.c
+ * @brief Declarations of relevant command structs for cli framework.
+ * @version x.y.z
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ ******************************************************************************/
+
+#include <stdlib.h>
+
+#include "sl_cli_config.h"
+#include "sl_cli_command.h"
+#include "sl_cli_arguments.h"
+
+#ifdef __cplusplus
+extern "C" {{ '{' }}
+#endif
+
+/*******************************************************************************
+ *****************************   TEMPLATED FILE   ******************************
+ ******************************************************************************/
+
+/*******************************************************************************
+ * Example syntax (.slcc or .slcp) for populating this file:
+ *
+ *   template_contribution:
+ *     - name: cli_command          # Register a command
+ *       value:
+ *         name: status             # Name of command
+ *         handler: status_command  # Function to be called. Must be defined
+ *         help: "Prints status"    # Optional help description
+ *         shortcuts:               # Optional shorcut list
+ *           - name: st
+ *         argument:                # Argument list, if apliccable
+ *           - type: uint8          # Variable type
+ *             help: "Channel"      # Optional description
+ *           - type: string
+ *             help: "Text"
+ *     - name: cli_group            # Register a group
+ *       value:
+ *         name: shell              # Group name
+ *         help: "Shell commands"   # Optional help description
+ *         shortcuts:               # Optional shorcuts
+ *           - name: sh
+ *     - name: cli_command
+ *       value:
+ *         name: repeat
+ *         handler: repeat_cmd
+ *         help: "Repeat commands"
+ *         shortcuts:
+ *           - name: r
+ *           - name: rep
+ *         group: shell            # Associate command with group
+ *         argument:
+ *           - type: string
+ *             help: "Text"
+ *           - type: additional
+ *             help: "More text"
+ *
+ * For subgroups, an optional unique id can be used to allow a particular name to
+ * be used more than once. In the following case, from the command line the
+ * following commands are available:
+ *
+ * >  root_1 shell status
+ * >  root_2 shell status
+ *
+ *     - name: cli_group            # Register a group
+ *       value:
+ *         name: root_1             # Group name
+ *
+ *     - name: cli_group            # Register a group
+ *       value:
+ *         name: root_2             # Group name
+ *
+ *    - name: cli_group             # Register a group
+ *       value:
+ *         name: shell              # Group name
+ *         id: shell_root_1         # Optional unique id for group
+ *         group: root_1            # Add group to root_1 group
+ *
+ *    - name: cli_group             # Register a group
+ *       value:
+ *         name: shell              # Group name
+ *         id: shell_root_2         # Optional unique id for group
+ *         group: root_2            # Add group to root_1 group
+ *
+ *    - name: cli_command           # Register a command
+ *       value:
+ *         name: status
+ *         handler: status_1
+ *         group: shell_root_1      # id of subgroup
+ *
+ *    - name: cli_command           # Register a command
+ *       value:
+ *         name: status
+ *         handler: status_2
+ *         group: shell_root_2      # id of subgroup
+ *
+ ******************************************************************************/
+
+{# Input validation -#}
+{# Validate that names and handlers are defined -#}
+{%- for command in cli_command -%}
+  {%- if not command.name -%}
+    {{ raise("Missing command name for cli_command entry") }}
+  {%- endif -%}
+  {%- if not command.handler -%}
+    {{ raise("Missing handler for cli_command entry") }}
+  {%- endif -%}
+{%- endfor -%}
+{%- for group in cli_group -%}
+  {%- if not group.name -%}
+    {{ raise("Missing group name for cli_group entry") }}
+  {%- endif -%}
+{%- endfor -%}
+{# Validate argument types -#}
+{%- set types = ['uint8', 'uint16', 'uint32', 'int8', 'int16', 'int32', 'string', 'hex', 'uint8opt', 'uint16opt', 'uint32opt', 'int8opt', 'int16opt', 'int32opt', 'stringopt', 'hexopt', 'additional', 'wildcard'] -%}
+{%- for command in cli_command -%}
+  {%- for arg in command.argument -%}
+    {%- if not arg.type %}
+      {{ raise("Argument must have type specifyer") }}
+    {%- endif -%}
+    {%- if arg.type.lower() not in types -%}
+      {{ raise("Invalid argument type \'{}\'. Argument type must be one of: {}".format(arg.type.lower(), ", ".join(types))) }}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor -%}
+
+{#- Check if any command or group is provided.
+    If not, do nothing but print out comment indicating this in file #}
+{%- if cli_command or cli_group -%}
+
+// Provide function declarations
+{%- for command in cli_command %}
+void {{ command.handler }}(sl_cli_command_arg_t *arguments);
+{%- endfor %}
+
+// Command structs. Names are in the format : cli_cmd_{command group name}_{command name}
+// In order to support hyphen in command and group name, every occurence of it while
+// building struct names will be replaced by "_hyphen_" 
+{%- for command in cli_command %}
+static const sl_cli_command_info_t cli_cmd_{{command.group|replace("-","_hyphen_")}}_{{ command.name|replace("-","_hyphen_") }} = \
+  SL_CLI_COMMAND({{ command.handler }},
+                 {% if command.help -%}
+                 "{{ command.help }}",
+                 {%- else -%}
+                 "",
+                 {%- endif %}
+                 {% for arg in command.argument %} "{{ arg.help }}" SL_CLI_UNIT_SEPARATOR
+                 {%- else %} ""
+                 {%- endfor %},
+                 {{ '{' }}
+                 {%- for arg in command.argument -%} SL_CLI_ARG_{{ arg.type.upper() }}, {% endfor -%}
+                 SL_CLI_ARG_END, {{ '}' }});
+{% endfor %}
+
+// Create group command tables and structs if cli_groups given
+// in template. Group name is suffixed with _group_table for tables
+// and group commands are cli_cmd_grp_( group name )
+{# Recursively loop through the groups. The lowest group in the hierarchy
+   must be handled first, so the loop first digs down to find the lowest
+   group, and generates for that group first, then proceeds upwards -#}
+{%- set already_handled = [] -%}
+{%- for group in cli_group if group.name recursive -%}
+{#- For subgroups, use id if set, otherwise use name.
+    For root level groups, always use name -#}
+{%- set group_name = (group.id or group.name if group.group) or group.name -%}
+{# Check if any other group reference this group #}
+{%- set outer_loop = loop -%}
+{%- for sub_group in cli_group if sub_group.group -%}
+  {%- set sub_group_name = sub_group.id or sub_group.name -%}
+  {%- if sub_group.group == group_name -%}
+    {%- if sub_group_name not in already_handled and sub_group_name -%}
+      {{ outer_loop([sub_group]) }}
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- if group_name not in already_handled -%}
+{# Group table -#}
+static const sl_cli_command_entry_t {{ group_name|replace("-","_hyphen_") }}_group_table[] = {{ '{' }}
+{%- for command in cli_command if command.group == group_name %}
+  {{ '{' }} "{{ command.name }}", &cli_cmd_{{command.group|replace("-","_hyphen_")}}_{{ command.name|replace("-","_hyphen_") }}, false {{ '}' }},
+  {%- if command.shortcuts %}
+  {%- for shortcut in command.shortcuts %}
+  {{ '{' }} "{{ shortcut.name }}", &cli_cmd_{{command.group|replace("-","_hyphen_")}}_{{ command.name|replace("-","_hyphen_") }}, true {{ '}' }},
+  {%- endfor %}
+  {%- endif %}
+{%- endfor %}
+{%- for sub_group in cli_group if sub_group.group == group_name %}
+  {%- set sub_group_name = sub_group.id or sub_group.name %}
+  {{ '{' }} "{{ sub_group.name }}", &cli_cmd_grp_{{ sub_group_name|replace("-","_hyphen_") }}, false {{ '}' }},
+  {%- if sub_group.shortcuts %}
+  {%- for shortcut in sub_group.shortcuts %}
+  {{ '{' }} "{{ shortcut.name }}", &cli_cmd_grp_{{ sub_group_name|replace("-","_hyphen_") }}, true {{ '}' }},
+  {%- endfor %}
+  {%- endif %}
+{%- endfor %}
+  {{ '{' }} NULL, NULL, false {{ '}' }},
+{{ '}' }};
+{#- Group command #}
+static const sl_cli_command_info_t cli_cmd_grp_{{ group_name|replace("-","_hyphen_") }} = \
+  SL_CLI_COMMAND_GROUP({{ group_name|replace("-","_hyphen_") }}_group_table, {% if group.help -%} "{{ group.help }}" {%- else -%} "" {%- endif %});
+{% if already_handled.append(group_name) -%}
+{# This block does nothin, it only exists to perform the appending to
+   already_handled. Could be done cleaner with 'do' statement, if that
+   extension is enabled #}
+{%- endif %}
+{% endif %}
+{%- endfor -%}
+
+// Create root command table
+const sl_cli_command_entry_t sl_cli_default_command_table[] = {{ '{' }}
+{#- List root commands first, then groups -#}
+{%- for command in cli_command if not command.group %}
+  {{ '{' }} "{{ command.name }}", &cli_cmd_{{command.group|replace("-","_hyphen_")}}_{{ command.name|replace("-","_hyphen_") }}, false {{ '}' }},
+  {%- if command.shortcuts %}
+  {%- for shortcut in command.shortcuts %}
+  {{ '{' }} "{{ shortcut.name }}", &cli_cmd_{{command.group|replace("-","_hyphen_")}}_{{ command.name|replace("-","_hyphen_") }}, true {{ '}' }},
+  {%- endfor %}
+  {%- endif %}
+{%- endfor %}
+{#- Note that only group.name will be used at root level.  group.id will be silently ignored -#}
+{%- for group in cli_group  if not group.group %}
+  {{ '{' }} "{{ group.name }}", &cli_cmd_grp_{{ group.name|replace("-","_hyphen_") }}, false {{ '}' }},
+  {%- if group.shortcuts %}
+  {%- for shortcut in group.shortcuts %}
+  {{ '{' }} "{{ shortcut.name }}", &cli_cmd_grp_{{ group.name|replace("-","_hyphen_") }}, true {{ '}' }},
+  {%- endfor %}
+  {%- endif %}
+{%- endfor %}
+  {{ '{' }} NULL, NULL, false {{ '}' }},
+{{ '}' }};
+{% else %}
+/*******************************************************************************
+ * No template contributions supplied to project. Provide external definition
+ * of command table or regenerate project with template contributions.
+ ******************************************************************************/
+const sl_cli_command_entry_t *sl_cli_default_command_table = NULL;
+{% endif %}
+
+#ifdef __cplusplus
+{{ '}' }}
+#endif

@@ -1,0 +1,15 @@
+id: gsdk_version
+label: "Gecko SDK version"
+package: platform
+description: Retrieve GSDK version
+category: Platform|Utilities
+quality: production
+root_path: platform/common
+ui_hints:
+  visibility: never
+include:
+  - path: inc
+    file_list:
+      - path: sl_gsdk_version.h
+provides:
+  - name: gsdk_version

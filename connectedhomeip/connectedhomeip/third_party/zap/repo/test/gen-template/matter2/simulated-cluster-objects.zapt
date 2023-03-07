@@ -1,0 +1,66 @@
+{{>header}}
+
+TEST1
+
+{{#chip_tests_only_clusters}}
+{{#chip_tests_only_cluster_commands}}
+
+{{name}}Command
+{
+    {{#chip_tests_only_cluster_command_parameters}}
+    {{zapTypeToEncodableClusterObjectType type ns=cluster}} {{name}};
+    {{/chip_tests_only_cluster_command_parameters}}
+
+    xx
+    {
+        T
+        {{#chip_tests_only_cluster_command_parameters}}
+        U
+        {{/chip_tests_only_cluster_command_parameters}}
+        V
+    }
+
+            {{#chip_tests_only_cluster_command_parameters}}
+            C {{index}}:
+              Z
+            {{/chip_tests_only_cluster_command_parameters}}
+
+{{/chip_tests_only_cluster_commands}}
+{{#chip_tests_only_cluster_responses}}
+
+struct {{#if responseName}}{{responseName}}{{else}}{{name}}Response{{/if}}
+{
+    {{#chip_tests_only_cluster_response_parameters}}
+    {{zapTypeToEncodableClusterObjectType type}} {{name}};
+    {{/chip_tests_only_cluster_response_parameters}}
+
+        tag => {{index}}), {{name}}
+        {{/chip_tests_only_cluster_response_parameters}}
+
+        {{#chip_tests_only_cluster_response_parameters}}
+            C {{index}}
+            N {{name}}
+                break;
+            {{/chip_tests_only_cluster_response_parameters}}
+{{/chip_tests_only_cluster_responses}}
+{{/chip_tests_only_clusters}}
+
+namespace app {
+namespace Clusters {
+{{#chip_tests_only_clusters}}
+
+namespace {{name}} {
+namespace Commands {
+{{#chip_tests_only_cluster_commands}}
+namespace {{name}} {
+using Type = struct {{name}}Command;
+}
+{{/chip_tests_only_cluster_commands}}
+{{#chip_tests_only_cluster_responses}}
+namespace {{#if responseName}}{{responseName}}{{else}}{{name}}Response{{/if}} {
+using DecodableType = struct {{#if responseName}}{{responseName}}{{else}}{{name}}Response{{/if}};
+}
+{{/chip_tests_only_cluster_responses}}
+} // namespace {{name}}
+
+{{/chip_tests_only_clusters}}

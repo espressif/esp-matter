@@ -1,0 +1,209 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/python.gni")
+import("$dir_pw_build/python_dist.gni")
+import("$dir_pw_build/python_gn_args.gni")
+import("$dir_pw_build/python_venv.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+
+pw_doc_group("docs") {
+  inputs = [ "doc_resources/pw_env_setup_output.png" ]
+  sources = [ "docs.rst" ]
+}
+
+pw_python_group("core_pigweed_python_packages") {
+  python_deps = [
+    "$dir_pw_allocator/py",
+    "$dir_pw_arduino_build/py",
+    "$dir_pw_bloat/py",
+    "$dir_pw_build/py",
+    "$dir_pw_build_info/py",
+    "$dir_pw_build_mcuxpresso/py",
+    "$dir_pw_chrono/py",
+    "$dir_pw_cli/py",
+    "$dir_pw_compilation_testing/py",
+    "$dir_pw_console/py",
+    "$dir_pw_cpu_exception_cortex_m/py",
+    "$dir_pw_docgen/py",
+    "$dir_pw_doctor/py",
+    "$dir_pw_env_setup/py",
+    "$dir_pw_hdlc/py",
+    "$dir_pw_ide/py",
+    "$dir_pw_log:protos.python",
+    "$dir_pw_log_tokenized/py",
+    "$dir_pw_metric/py",
+    "$dir_pw_module/py",
+    "$dir_pw_package/py",
+    "$dir_pw_presubmit/py",
+    "$dir_pw_protobuf/py",
+    "$dir_pw_protobuf_compiler/py",
+    "$dir_pw_rpc/py",
+    "$dir_pw_snapshot/py:pw_snapshot",
+    "$dir_pw_snapshot/py:pw_snapshot_metadata",
+    "$dir_pw_software_update/py",
+    "$dir_pw_status/py",
+    "$dir_pw_stm32cube_build/py",
+    "$dir_pw_symbolizer/py",
+    "$dir_pw_system/py",
+    "$dir_pw_thread/py",
+    "$dir_pw_thread_freertos/py",
+    "$dir_pw_tls_client/py",
+    "$dir_pw_tokenizer/py",
+    "$dir_pw_toolchain/py",
+    "$dir_pw_trace/py",
+    "$dir_pw_trace_tokenized/py",
+    "$dir_pw_transfer/py",
+    "$dir_pw_unit_test/py",
+    "$dir_pw_watch/py",
+  ]
+}
+pw_python_group("python") {
+  python_deps = [
+    ":core_pigweed_python_packages",
+
+    # This target creates and installs Python package named 'pigweed' including
+    # every package listed in :core_pigweed_python_packages
+    ":pip_install_pigweed_package",
+
+    # Standalone scripts
+    "$dir_pw_hdlc/rpc_example:example_script",
+    "$dir_pw_rpc/py:python_client_cpp_server_test",
+    "$dir_pw_third_party/fuchsia:generate_fuchsia_patch",
+    "$dir_pw_third_party/nanopb:generate_nanopb_proto",
+  ]
+}
+
+pw_python_venv("pigweed_build_venv") {
+  path = "$root_build_dir/python-venv"
+  source_packages = [ ":core_pigweed_python_packages" ]
+}
+
+# Python packages for supporting specific targets.
+pw_python_pip_install("target_support_packages") {
+  packages = [
+    "$dir_pigweed/targets/lm3s6965evb_qemu/py",
+    "$dir_pigweed/targets/stm32f429i_disc1/py",
+  ]
+  editable = true
+}
+
+# This target is responsible for building the Python source uploaded to PyPI:
+# https://pypi.org/project/pigweed/
+pw_python_distribution("pypi_pigweed_python_source_tree") {
+  packages = [ ":core_pigweed_python_packages" ]
+  generate_setup_cfg = {
+    common_config_file = "pypi_common_setup.cfg"
+  }
+  extra_files = [
+    "$dir_pigweed/LICENSE > LICENSE",
+    "$dir_pigweed/README.md > README.md",
+    "pypi_pyproject.toml > pyproject.toml",
+  ]
+}
+
+# This target is creates the 'pigweed' Python package installed to the user's
+# dev environment. It's similar to the source tree for PyPI but it appends the
+# current date to the version so pip will consider it more up to date than the
+# one in PyPI.
+pw_python_distribution("generate_pigweed_python_package") {
+  packages = [ ":core_pigweed_python_packages" ]
+
+  generate_setup_cfg = {
+    common_config_file = "pypi_common_setup.cfg"
+    append_date_to_version = true
+    include_default_pyproject_file = true
+  }
+  extra_files = [
+    "$dir_pigweed/LICENSE > LICENSE",
+    "$dir_pigweed/README.md > README.md",
+  ]
+}
+
+# This pip installs the generate_pigweed_python_package into the user venv.
+pw_python_pip_install("pip_install_pigweed_package") {
+  packages = [ ":generate_pigweed_python_package" ]
+}
+
+# The next three targets are not built by default but demonstrate how to
+# generate Python distributions with only a subset of Python packages
+# included. The result could be bundled into PyOxidizer or distributed as a
+# standalone wheel.
+
+# To create this wheel run:
+#   ninja -C out pw_env_setup:generate_pw_env_setup_distribution.wheel
+# The resulting wheel is available in
+#   out/obj/pw_env_setup/generate_pw_env_setup_distribution._build_wheel/
+pw_python_distribution("generate_pw_env_setup_distribution") {
+  packages = [ "$dir_pw_env_setup/py" ]
+  generate_setup_cfg = {
+    common_config_file = "pypi_common_setup.cfg"
+  }
+  extra_files = [
+    "$dir_pigweed/LICENSE > LICENSE",
+    "$dir_pigweed/README.md > README.md",
+    "pypi_pyproject.toml > pyproject.toml",
+  ]
+}
+
+# To create this wheel run:
+#   ninja -C out pw_env_setup:generate_pw_system_distribution.wheel
+# The resulting wheel is available in
+#   out/obj/pw_env_setup/generate_pw_system_distribution._build_wheel/
+pw_python_distribution("generate_pw_system_distribution") {
+  packages = [ "$dir_pw_system/py" ]
+  generate_setup_cfg = {
+    common_config_file = "pypi_common_setup.cfg"
+  }
+  extra_files = [
+    "$dir_pigweed/LICENSE > LICENSE",
+    "$dir_pigweed/README.md > README.md",
+    "pypi_pyproject.toml > pyproject.toml",
+  ]
+}
+
+pw_python_group("hdlc_proto_rpc_python_packages") {
+  python_deps = [
+    "$dir_pw_hdlc/py",
+    "$dir_pw_protobuf_compiler/py",
+    "$dir_pw_rpc/py",
+    "$dir_pw_tokenizer/py",
+  ]
+}
+
+# To create this wheel run:
+#   ninja -C out pw_env_setup:generate_hdlc_proto_rpc_tokenizer_distribution.wheel
+# The resulting wheel is available in
+#   out/obj/pw_env_setup/generate_hdlc_proto_rpc_tokenizer_distribution._build_wheel/
+pw_python_distribution("generate_hdlc_proto_rpc_tokenizer_distribution") {
+  packages = [ ":hdlc_proto_rpc_python_packages" ]
+
+  generate_setup_cfg = {
+    common_config_file = "pypi_common_setup.cfg"
+    append_date_to_version = true
+  }
+  extra_files = [
+    "$dir_pigweed/LICENSE > LICENSE",
+    "$dir_pigweed/README.md > README.md",
+    "pypi_pyproject.toml > pyproject.toml",
+  ]
+}
+
+if (current_toolchain != default_toolchain) {
+  pw_test_group("tests") {
+  }
+}

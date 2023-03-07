@@ -1,0 +1,1032 @@
+package: Zigbee
+description: This component contains the functionality necessary for creating a Zigbee
+  3.0 test harness application.
+label: Zigbee 3.0 Test Harness
+quality: production
+id: zigbee_test_harness_z3
+category: Zigbee|Utility|Testing
+provides:
+   - name: "zigbee_test_harness_z3"
+requires:
+   - name: "zigbee_zll_profile"
+   - name: "zigbee_network_steering"
+   - name: "zigbee_packet_handoff"
+   - name: "zigbee_zll_commissioning_common"
+   - name: "zigbee_ota_server"
+   - name: "zigbee_interpan"
+source:
+  - path: protocol/zigbee/app/framework/plugin/test-harness-z3/test-harness-z3-core.c
+  - path: protocol/zigbee/app/framework/plugin/test-harness-z3/test-harness-z3-mac.c
+  - path: protocol/zigbee/app/framework/plugin/test-harness-z3/test-harness-z3-nwk.c
+  - path: protocol/zigbee/app/framework/plugin/test-harness-z3/test-harness-z3-aps.c
+  - path: protocol/zigbee/app/framework/plugin/test-harness-z3/test-harness-z3-zll.c
+  - path: protocol/zigbee/app/framework/plugin/test-harness-z3/test-harness-z3-zdo.c
+  - path: protocol/zigbee/app/framework/plugin/test-harness-z3/test-harness-z3-ota-server.c
+  - path: protocol/zigbee/app/framework/plugin/test-harness-z3/test-harness-z3-zcl.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/test-harness-z3
+    file_list:
+      - path: test-harness-z3-core.h
+      - path: test-harness-z3-mac.h
+      - path: test-harness-z3-nwk.h
+      - path: test-harness-z3-zdo.h
+      - path: test-harness-z3-zll.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_test_harness_z3
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emAfPluginTestHarnessZ3InitCallback    
+  - name: zigbee_stack_callback
+    value:
+      callback_type: stack_status
+      function_name: emberAfPluginTestHarnessZ3StackStatusCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: test-harness
+      help: test-harness related commands.
+  - name: cli_group
+    value:
+      group: test-harness
+      name: packet-printing
+      help: packet-printing related commands.
+  - name: cli_group
+    value:
+      group: packet-printing
+      name: beacon-printing
+      help: beacon-printing related commands.
+  - name: cli_command
+    value:
+      group: beacon-printing
+      name: enable
+      handler: emAfPluginTestHarnessZ3PrintingCommand
+      help: Enables printing beacon requests and received beacons.
+  - name: cli_command
+    value:
+      group: beacon-printing
+      name: disable
+      handler: emAfPluginTestHarnessZ3PrintingCommand
+      help: Disables printing beacon requests and received beacons.
+  - name: cli_group
+    value:
+      group: packet-printing
+      name: zdo-printing
+      help: zdo-printing related commands.
+  - name: cli_command
+    value:
+      group: zdo-printing
+      name: enable
+      handler: emAfPluginTestHarnessZ3PrintingCommand
+      help: Enables printing ZDO commands.
+  - name: cli_command
+    value:
+      group: zdo-printing
+      name: disable
+      handler: emAfPluginTestHarnessZ3PrintingCommand
+      help: Disables printing ZDO commands.
+  - name: cli_group
+    value:
+      group: packet-printing
+      name: nwk-printing
+      help: nwk-printing related commands.
+  - name: cli_command
+    value:
+      group: nwk-printing
+      name: enable
+      handler: emAfPluginTestHarnessZ3PrintingCommand
+      help: Enables printing network commands.
+  - name: cli_command
+    value:
+      group: nwk-printing
+      name: disable
+      handler: emAfPluginTestHarnessZ3PrintingCommand
+      help: Disables printing network commands.
+  - name: cli_group
+    value:
+      group: packet-printing
+      name: aps-printing
+      help: aps-printing related commands.
+  - name: cli_command
+    value:
+      group: aps-printing
+      name: enable
+      handler: emAfPluginTestHarnessZ3PrintingCommand
+      help: Enables printing APS commands.
+  - name: cli_command
+    value:
+      group: aps-printing
+      name: disable
+      handler: emAfPluginTestHarnessZ3PrintingCommand
+      help: Disables printing APS commands.
+  - name: cli_group
+    value:
+      group: packet-printing
+      name: raw-printing
+      help: raw-printing related commands.
+  - name: cli_command
+    value:
+      group: raw-printing
+      name: enable
+      handler: emAfPluginTestHarnessZ3PrintingCommand
+      help: Enables printing raw MAC commands.
+  - name: cli_command
+    value:
+      group: raw-printing
+      name: disable
+      handler: emAfPluginTestHarnessZ3PrintingCommand
+      help: Disables printing raw MAC commands.
+  - name: cli_group
+    value:
+      group: test-harness
+      name: z3
+      help: z3 related commands.
+  - name: cli_group
+    value:
+      group: z3
+      name: beacon
+      help: beacon related commands.
+  - name: cli_command
+    value:
+      group: beacon
+      name: beacon-req
+      handler: emAfPluginTestHarnessZ3BeaconBeaconReqCommand
+      help: Sends a beacon request.
+  - name: cli_command
+    value:
+      group: beacon
+      name: beacons-config
+      handler: emAfPluginTestHarnessZ3BeaconBeaconsConfigCommand
+      help: Sends a beacon.
+      argument:
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_group
+    value:
+      group: z3
+      name: nwk
+      help: nwk related commands
+  - name: cli_command
+    value:
+      group: nwk
+      name: nwk-rejoin-request
+      handler: emAfPluginTestHarnessZ3NwkNwkRejoinRequestCommand
+      help: Sends a Rejoin Request command.
+      argument:
+      - type: uint16
+        help: The destination address of the command
+  - name: cli_command
+    value:
+      group: nwk
+      name: nwk-rejoin-response
+      handler: emAfPluginTestHarnessZ3NwkNwkRejoinResponseCommand
+      help: Sends a Rejoin Response command.
+      argument:
+      - type: uint16
+        help: The new short address of the destination node
+      - type: uint8
+        help: The status of the rejoin
+      - type: uint16
+        help: The destination address of the command
+  - name: cli_command
+    value:
+      group: nwk
+      name: nwk-leave
+      handler: emAfPluginTestHarnessZ3NwkNwkLeaveCommand
+      help: Sends a Network Leave command.
+      argument:
+      - type: int8
+        help: Whether or not the device should rejoin
+      - type: int8
+        help: Whether or not this command is a request
+      - type: int8
+        help: Whether or not the leaving device should remove its children
+      - type: uint16
+        help: The destination address of the command
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_group
+    value:
+      group: nwk
+      name: nwk-leave-supression
+      help: nwk-leave-supression related commands.
+  - name: cli_command
+    value:
+      group: nwk-leave-supression
+      name: "on"
+      handler: emAfPluginTestHarnessZ3NwkNwkLeaveSupression
+      help: Suppresses network leave commands.
+  - name: cli_command
+    value:
+      group: nwk-leave-supression
+      name: "off"
+      handler: emAfPluginTestHarnessZ3NwkNwkLeaveSupression
+      help: Do not suppress network leave commands.
+  - name: cli_group
+    value:
+      group: nwk
+      name: nwk-key-supression
+      help: nwk-key-supression related commands.
+  - name: cli_command
+    value:
+      group: nwk-key-supression
+      name: "on"
+      handler: emAfPluginTestHarnessZ3NwkNwkKeySupression
+      help: Suppresses network leave commands.
+  - name: cli_command
+    value:
+      group: nwk-key-supression
+      name: "off"
+      handler: emAfPluginTestHarnessZ3NwkNwkKeySupression
+      help: Do not suppress network leave commands.
+  - name: cli_command
+    value:
+      group: nwk
+      name: get-network-update-id
+      handler: emAfPluginTestHarnessZ3NwkGetNetworkUpdateId
+      help: Gets the current network update ID.
+  - name: cli_command
+    value:
+      group: nwk
+      name: set-network-update-id
+      handler: emAfPluginTestHarnessZ3NwkSetNetworkUpdateId
+      help: Sets the network update ID in the current network parameters block.
+      argument:
+      - type: uint8
+        help: The new network update ID. 
+  - name: cli_group
+    value:
+      group: z3
+      name: aps
+      help: aps related commands.
+  - name: cli_command
+    value:
+      group: aps
+      name: aps-remove-device
+      handler: emAfPluginTestHarnessZ3ApsApsRemoveDevice
+      help: Sends an APS remove device command.
+      argument:
+      - type: hex
+        help: The long address of the parent whose child will be removed
+      - type: hex
+        help: The long address of the node which will be removed
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_command
+    value:
+      group: aps
+      name: aps-remove-device-config
+      handler: emAfPluginTestHarnessZ3ApsApsRemoveDeviceConfig
+      help: Configures the APS remove device command handling.
+      argument:
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_command
+    value:
+      group: aps
+      name: aps-request-key
+      handler: emAfPluginTestHarnessZ3ApsApsRequestKeyCommand
+      help: Sends an APS request key command.
+      argument:
+      - type: uint16
+        help: The short address destination of the command
+      - type: uint8
+        help: The key type in the command payload
+      - type: hex
+        help: The partner address for the requested link key
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_group
+    value:
+      group: z3
+      name: touchlink
+      help: touchlink related commands.
+  - name: cli_command
+    value:
+      group: touchlink
+      name: scan-request-process
+      handler: emAfPluginTestHarnessZ3TouchlinkScanRequestProcessCommand
+      help: Starts the scan request process.
+      argument:
+      - type: uint8
+        help: The link initiator bit in scan requests
+      - type: uint16
+        help: This argument is unused
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_command
+    value:
+      group: touchlink
+      name: start-as-router
+      handler: emAfPluginTestHarnessZ3TouchlinkStartAsRouterCommand
+      help: Starts a distributed network on which to perform ZLL operations.
+      argument:
+      - type: uint16
+        help: The PAN ID that will be used
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_command
+    value:
+      group: touchlink
+      name: is-scanning
+      handler: emAfPluginTestHarnessZ3TouchlinkIsScanningCommand
+      help: Prints out whether or not the device is currently performing the scan process for touchlinking.
+  - name: cli_command
+    value:
+      group: touchlink
+      name: device-information-request
+      handler: emAfPluginTestHarnessZ3TouchlinkDeviceInformationRequestCommand
+      help: Sends a device information request to the target found in the scan request process.
+      argument:
+      - type: uint8
+        help: The start index in the device information request command
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_command
+    value:
+      group: touchlink
+      name: device-information-request-w-target
+      handler: emAfPluginTestHarnessZ3TouchlinkDeviceInformationRequestWTargetCommand
+      help: Sends a device information request to the target specified with the short address in the command.
+      argument:
+      - type: uint8
+        help: The start index in the device information request command
+      - type: uint16
+        help: The short address of the target
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_command
+    value:
+      group: touchlink
+      name: identify-request
+      handler: emAfPluginTestHarnessZ3TouchlinkIdentifyRequestCommand
+      help: Sends an identify request to the target found in the scan request process.
+      argument:
+      - type: uint16
+        help: The duration length of the identify state
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_command
+    value:
+      group: touchlink
+      name: reset-to-factory-new-request
+      handler: emAfPluginTestHarnessZ3TouchlinkRTFNRequestCommand
+      help: Sends a reset to factory new request to the target found in the scan request process.
+      argument:
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_command
+    value:
+      group: touchlink
+      name: network-start-request
+      handler: emAfPluginTestHarnessZ3TouchlinkNetworkCommand
+      help: Sends a network start request to the target found in the scan request process.
+      argument:
+      - type: uint16
+        help: The designated node ID for the target node
+      - type: uint16
+        help: The free address range begin
+      - type: uint16
+        help: The free address range end
+      - type: uint16
+        help: The free group range begin
+      - type: uint16
+        help: The free group range end
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_command
+    value:
+      group: touchlink
+      name: network-join-router-request
+      handler: emAfPluginTestHarnessZ3TouchlinkNetworkCommand
+      help: Sends a network router join request to the target found in the scan request process.
+      argument:
+      - type: uint16
+        help: The designated node ID for the target node
+      - type: uint16
+        help: The free address range begin
+      - type: uint16
+        help: The free address range end
+      - type: uint16
+        help: The free group range begin
+      - type: uint16
+        help: The free group range end
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_command
+    value:
+      group: touchlink
+      name: network-join-end-device-request
+      handler: emAfPluginTestHarnessZ3TouchlinkNetworkCommand
+      help: Sends a network end device join request to the target found in the scan request process.
+      argument:
+      - type: uint16
+        help: The designated node ID for the target node
+      - type: uint16
+        help: The free address range begin
+      - type: uint16
+        help: The free address range end
+      - type: uint16
+        help: The free group range begin
+      - type: uint16
+        help: The free group range end
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_command
+    value:
+      group: touchlink
+      name: network-update-request
+      handler: emAfPluginTestHarnessZ3TouchlinkNetworkUpdateRequestCommand
+      help: Sends a network update request.
+      argument:
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_command
+    value:
+      group: touchlink
+      name: get-group-identifiers-request
+      handler: emAfPluginTestHarnessZ3TouchlinkGetGroupIdentifiersRequestCommand
+      help: Sends a get group identifiers request.
+      argument:
+      - type: uint8
+        help: The start index in the command payload
+  - name: cli_command
+    value:
+      group: touchlink
+      name: get-endpoint-list-request
+      handler: emAfPluginTestHarnessZ3TouchlinkGetEndpointListRequestCommand
+      help: Sends a get endpoint list request.
+      argument:
+      - type: uint8
+        help: The start index in the command payload
+  - name: cli_command
+    value:
+      group: touchlink
+      name: scan-response-config
+      handler: emAfPluginTestHarnessZ3TouchlinkScanResponseConfigCommand
+      help: Configures the next scan response.
+      argument:
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_command
+    value:
+      group: touchlink
+      name: network-start-response-config
+      handler: emAfPluginTestHarnessZ3TouchlinkNetworkStartResponseConfig
+      help: Configures the next outgoing network start response command.
+      argument:
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_command
+    value:
+      group: touchlink
+      name: network-join-router-response-config
+      handler: emAfPluginTestHarnessZ3TouchlinkNetworkJoinRouterResponseConfig
+      help: Configures the next outgoing network join router response command.
+      argument:
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_command
+    value:
+      group: touchlink
+      name: device-information-response-config
+      handler: emAfPluginTestHarnessZ3TouchlinkDeviceInformationResponseConfigCommand
+      help: Configures the next device information response.
+      argument:
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_group
+    value:
+      group: z3
+      name: mgmt
+      help: mgmt related commands
+  - name: cli_command
+    value:
+      group: mgmt
+      name: permit-joining-req
+      handler: emAfPluginTestHarnessZ3MgmtPermitJoiningReqCommand
+      help: Unicasts a permit joining command.
+      argument:
+      - type: uint16
+        help: The permit duration, in seconds
+      - type: uint16
+        help: The destination address of the command
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_command
+    value:
+      group: mgmt
+      name: leave
+      handler: emAfPluginTestHarnessZ3MgmtLeaveCommand
+      help: Unicasts a permit joining command.
+      argument:
+      - type: uint16
+        help: The destination address of the command.
+      - type: int8
+        help: Whether or not the leaving device should remove its children
+      - type: int8
+        help: Whether or not the destination node should rejoin the network
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_command
+    value:
+      group: mgmt
+      name: nwk-update-request
+      handler: emAfPluginTestHarnessZ3MgmtNwkUpdateRequestCommand
+      help: Unicasts a network update command.
+      argument:
+      - type: uint16
+        help: The scan channel for the command
+      - type: uint16
+        help: The scan duration for the command
+      - type: uint8
+        help: The scan count for the command
+      - type: uint16
+        help: The scan destination
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_group
+    value:
+      group: z3
+      name: zdo
+      help: zdo related commands.
+  - name: cli_command
+    value:
+      group: zdo
+      name: zdo-reset
+      handler: emAfPluginTestHarnessZ3ZdoZdoResetCommand
+      help: Resets any pending negative ZDO behavior.
+  - name: cli_command
+    value:
+      group: zdo
+      name: node-desc-req
+      handler: emAfPluginTestHarnessZ3ZdoNodeDescReqCommand
+      help: Unicasts a node descriptor request.
+      argument:
+      - type: uint16
+        help: The destination address of the command
+  - name: cli_command
+    value:
+      group: zdo
+      name: zdo-node-desc-rsp-config
+      handler: emAfPluginTestHarnessZ3ZdoZdoNodeDescRspConfigCommand
+      help: Configure the next outgoing node descriptor response.
+      argument:
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_command
+    value:
+      group: zdo
+      name: active-endpoint-request
+      handler: emAfPluginTestHarnessZ3ZdoActiveEndpointRequestCommand
+      help: Unicasts an active endpoint request.
+      argument:
+      - type: uint16
+        help: The destination address of the command
+      - type: uint16
+        help: The network address of interest
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_command
+    value:
+      group: zdo
+      name: match-desc-req
+      handler: emAfPluginTestHarnessZ3ZdoMatchDescReqCommand
+      help: Unicasts a match descriptor request.
+      argument:
+      - type: uint16
+        help: The destination address of the command
+      - type: uint16
+        help: The network address of interest
+      - type: uint16
+        help: The profile id in the APS header of the command
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_command
+    value:
+      group: zdo
+      name: match-desc-rsp-config
+      handler: emAfPluginTestHarnessZ3ZdoMatchDescRspConfigCommand
+      help: Configures the next outgoing match descriptor response.
+      argument:
+      - type: uint16
+        help: The network address of interest
+      - type: uint8
+        help: The status for the response command
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_command
+    value:
+      group: zdo
+      name: simple-desc-req
+      handler: emAfPluginTestHarnessZ3ZdoSimpleDescReqCommand
+      help: Unicasts a simple descriptor request.
+      argument:
+      - type: uint16
+        help: The destination address of the command
+      - type: uint8
+        help: The endpoint for the simple descriptor request
+      - type: uint16
+        help: The network address of interest
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_command
+    value:
+      group: zdo
+      name: simple-desc-rsp-config
+      handler: emAfPluginTestHarnessZ3ZdoSimpleDescRspConfigCommand
+      help: Configures the next outgoing simple descriptor response.
+      argument:
+      - type: uint16
+        help: The network address of interest
+      - type: uint8
+        help: The status for the response command
+      - type: uint8
+        help: The trimmed length of the command
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_group
+    value:
+      group: zdo
+      name: unbind
+      help: unbind related commands.
+  - name: cli_command
+    value:
+      group: unbind
+      name: unicast
+      handler: zdoUnbindUnicastCommand
+      help: Sends an unbind request for a unicast binding to the target device.
+      argument:
+      - type: uint16
+        help: Target node ID
+      - type: hex
+        help: The source EUI64 of the binding (the remote devices EUI64)
+      - type: uint8
+        help: The source endpoint of the binding
+      - type: uint16
+        help: The cluster ID to unbind
+      - type: hex
+        help: The destination EUI64 in the binding (usually the local nodes EUI64
+      - type: uint8
+        help: The destination endpoint of the binding
+  - name: cli_command
+    value:
+      group: unbind
+      name: group
+      handler: zdoUnbindGroupCommand
+      help: Sends an unbind request for a multicast binding to the target device.
+      argument:
+      - type: uint16
+        help: Target node ID
+      - type: hex
+        help: The source EUI64 of the binding (the remote devices EUI64)
+      - type: uint8
+        help: The source endpoint of the binding
+      - type: uint16
+        help: The cluster ID to unbind
+      - type: uint16
+        help: The group address in the binding
+  - name: cli_group
+    value:
+      group: zdo
+      name: in-cl-list
+      help: in-cl-list related commands.
+  - name: cli_command
+    value:
+      group: in-cl-list
+      name: add
+      handler: zdoAddClusterCommand
+      help: Add clusters to the known server (in) clusters on this device.
+      argument:
+      - type: uint16
+        help: Server cluster ID
+  - name: cli_command
+    value:
+      group: in-cl-list
+      name: clear
+      handler: zdoClearClusterCommand
+      help: Clears the ZDO list of server (in) clusters.
+  - name: cli_group
+    value:
+      group: zdo
+      name: out-cl-list
+      help: out-cl-list related commands.
+  - name: cli_command
+    value:
+      group: out-cl-list
+      name: add
+      handler: zdoAddClusterCommand
+      help: Adds clusters to the known client (out) clusters on this device.
+      argument:
+      - type: uint16
+        help: Client cluster IDs
+  - name: cli_command
+    value:
+      group: out-cl-list
+      name: clear
+      handler: zdoClearClusterCommand
+      help: Clears the ZDO list of client (out) clusters.
+  - name: cli_command
+    value:
+      group: zdo
+      name: node
+      handler: zdoNodeCommand
+      help: Sends a node descriptor request to a given target device.
+      argument:
+      - type: uint16
+        help: Two-byte address for the target device
+  - name: cli_command
+    value:
+      group: zdo
+      name: leave
+      handler: zdoLeaveRequestCommand
+      help: Sends a ZDO Management Leave command to the target device.
+      argument:
+      - type: uint16
+        help: Target node ID
+      - type: int8
+        help: Remove children
+      - type: int8
+        help: Rejoin after leave
+  - name: cli_command
+    value:
+      group: zdo
+      name: route
+      handler: zdoRouteRequestCommand
+      help: Sends a ZDO route request command to the target.
+      argument:
+      - type: uint16
+        help: Target node ID
+      - type: uint8
+        help: The index of the remote nodes routing table to request.
+  - name: cli_command
+    value:
+      group: zdo
+      name: power
+      handler: zdoPowerDescriptorRequestCommand
+      help: Sends a ZDO Power Descriptor Request to the target device.
+      argument:
+      - type: uint16
+        help: Target node ID
+  - name: cli_command
+    value:
+      group: zdo
+      name: bind
+      handler: zdoBindCommand
+      help: Sends a ZDO Bind command to a device specified in the command arguments.
+      argument:
+      - type: uint16
+        help: Two-byte destination node ID
+      - type: uint8
+        help: Remote devices source endpoint to bind
+      - type: uint8
+        help: Remote endpoint to bind
+      - type: uint16
+        help: Cluster on which to bind
+      - type: hex
+        help: Remote node EUI64
+      - type: hex
+        help: Bindings dest EUI64.  Usually the local nodes EUI64
+  - name: cli_command
+    value:
+      group: zdo
+      name: bind-group
+      handler: emAfPluginTestHarnessZ3ZdoBindGroupCommand
+      help: Sends a ZDO bind command to a device specified to create a groupcast binding.
+      argument:
+      - type: uint16
+        help: The destination of the ZDO command
+      - type: uint8
+        help: Remote devices source endpoint to bind
+      - type: uint8
+        help: Remote endpoint to bind
+      - type: uint16
+        help: Two-byte destination address for the binding
+      - type: uint16
+        help: Cluster on which to bind
+      - type: hex
+        help: The source IEEE address for the binding
+  - name: cli_command
+    value:
+      group: zdo
+      name: nwk-addr-req
+      handler: emAfPluginTestHarnessZ3ZdoNwkAddrReqCommand
+      help: Sends a ZDO address request.
+      argument:
+      - type: hex
+        help: The long address of the destination
+      - type: uint8
+        help: The type of the rejoin request
+      - type: uint8
+        help: The start index for the requested elements of the associated devices list, if the type is Extended response
+      - type: uint16
+        help: The destination address of the command
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_command
+    value:
+      group: zdo
+      name: ieee-addr-req
+      handler: emAfPluginTestHarnessZ3ZdoIeeeAddrReqCommand
+      help: Sends an IEEE address request.
+      argument:
+      - type: uint16
+        help: The short address of interest
+      - type: uint8
+        help: The request type
+      - type: uint8
+        help: The start index for the requested elements of the associated devices list, if the type is Extended response.
+      - type: uint16
+        help: The destination address of the command
+      - type: uint32
+        help: The negative behavior options for this command
+  - name: cli_command
+    value:
+      group: zdo
+      name: mgmt-bind
+      handler: zdoMgmtBindCommand
+      help: Sends a ZDO MGMT-Bind (Binding Table) Request to the target device.
+      argument:
+      - type: uint16
+        help: Target node ID
+      - type: uint8
+        help: Starting index into table query
+  - name: cli_command
+    value:
+      group: zdo
+      name: mgmt-lqi
+      handler: zdoMgmtLqiCommand
+      help: Sends a ZDO MGMT-LQI (LQI Table) Request to the target device.
+      argument:
+      - type: uint16
+        help: Target node ID
+      - type: uint8
+        help: Starting index into table query
+  - name: cli_group
+    value:
+      group: nwk
+      name: ieee-addr-rsp-config
+      help: ieee-addr-rsp-config related commands.
+  - name: cli_command
+    value:
+      group: ieee-addr-rsp-config
+      name: reset
+      handler: emAfPluginTestHarnessZ3ZdoIeeeAddrRspConfigCommand
+      help: Configures the next outgoing IEEE address request.
+  - name: cli_command
+    value:
+      group: ieee-addr-rsp-config
+      name: issuer-nwk-address-remote-dev
+      handler: emAfPluginTestHarnessZ3ZdoIeeeAddrRspConfigCommand
+      help: Configures the next outgoing IEEE address request.
+  - name: cli_command
+    value:
+      group: ieee-addr-rsp-config
+      name: status-device-not-found
+      handler: emAfPluginTestHarnessZ3ZdoIeeeAddrRspConfigCommand
+      help: Configures the next outgoing IEEE address request.
+  - name: cli_command
+    value:
+      group: zdo
+      name: bc-device-announce
+      handler: emAfPluginTestHarnessZ3ZdoBcDeviceAnnounceCommand
+      help: Rebroadcasts a "fake" ZDO device announce. The device sets random frame counter values to appear as though the DeviceAnnounce has been rebroadcasted from another device on the network out of range of the DUT.
+      argument:
+      - type: uint16
+        help: Short address of the fake device announce
+      - type: hex
+        help: IEEE address of the fake device announce
+  - name: cli_group
+    value:
+      group: z3
+      name: ota-server
+      help: ota-server related commands.
+  - name: cli_command
+    value:
+      group: ota-server
+      name: activate
+      handler: emAfPluginTestHarnessZ3OtaServerActivateCommand
+      help: Configuration command to set up OTA server.
+      argument:
+      - type: uint16
+        help: Short Address 
+      - type: uint8
+        help: Destination Endpoint 
+      - type: uint16
+        help: Manufacturer Code
+      - type: uint16
+        help: Image Type
+      - type: uint32
+        help: File Version
+      - type: uint32
+        help: File Size
+  - name: cli_command
+    value:
+      group: ota-server
+      name: deactivate
+      handler: emAfPluginTestHarnessZ3OtaServerDeActivateCommand
+      help: Configuration command to set up OTA server.
+  - name: cli_group
+    value:
+      group: z3
+      name: zcl
+      help: zcl related commands.
+  - name: cli_command
+    value:
+      group: zcl
+      name: read
+      handler: emAfPluginTestHarnessZ3ZclReadCommand
+      help: Sends a ZCL ReadAttribute command.
+      argument:
+      - type: uint16
+        help: The cluster ID in the command
+      - type: uint16
+        help: The attribute ID in the command
+      - type: uint16
+        help: The destination of the command
+      - type: uint8
+        help: The source endpoint of the command
+      - type: uint8
+        help: The destination endpoint of the command
+      - type: uint16
+        help: The profile ID in the command
+  - name: cli_command
+    value:
+      group: z3
+      name: reset
+      handler: emAfPluginTestHarnessZ3ResetCommand
+      help: Resets the device to a factory new state (empty tables, attributes at default values, no events queued etc) without resetting the any of the physical hardware that could cause the device to not operate on the same serial connection.
+  - name: cli_command
+    value:
+      group: z3
+      name: platform
+      handler: emAfPluginTestHarnessZ3PlatformCommand
+      help: Prints the platform information for this device.
+  - name: cli_command
+    value:
+      group: z3
+      name: set-pan-id
+      handler: emAfPluginTestHarnessSetNetworkCreatorPanId
+      help: Sets the PAN ID to be used by the Network Creator component.
+      argument:
+      - type: uint16
+        help: The PAN ID for the Network Creator component to use
+  - name: cli_command
+    value:
+      group: z3
+      name: set-short-address
+      handler: emAfPluginTestHarnessZ3SetShortAddressCommand
+      help: Sets the node ID to be used on the device.
+      argument:
+      - type: uint16
+        help: The node ID to use as this devices short ID
+  - name: cli_group
+    value:
+      group: z3
+      name: legacy-profile
+      help: legacy-profile related commands.
+  - name: cli_command
+    value:
+      group: legacy-profile
+      name: enable
+      handler: emAfPluginTestHarnessZ3LegacyProfileCommand
+      help: Enables using the legacy profile of 0xC05E for ZLL commands.
+  - name: cli_command
+    value:
+      group: legacy-profile
+      name: disable
+      handler: emAfPluginTestHarnessZ3LegacyProfileCommand
+      help: Disables using the legacy profile of 0xC05E for ZLL commands.
+  - name: cli_command
+    value:
+      group: z3
+      name: set-device-mode
+      handler: emAfPluginTestHarnessZ3SetDeviceModeCommand
+      help: Sets the node ID to be used on the device.
+      argument:
+      - type: uint8
+        help: The device mode
+  - name: cli_group
+    value:
+      group: z3
+      name: install-code
+      help: install-code related commands.
+  - name: cli_command
+    value:
+      group: install-code
+      name: clear
+      handler: emAfPluginTestHarnessZ3InstallCodeClearOrSetCommand
+      help: Clears the install code from the device.
+  - name: cli_command
+    value:
+      group: install-code
+      name: set
+      handler: emAfPluginTestHarnessZ3InstallCodeClearOrSetCommand
+      help: Clears the install code from the device.
+      argument:
+      - type: hex
+        help: The install code for this device to use
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/test-harness-z3

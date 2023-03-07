@@ -1,0 +1,24 @@
+{% for instance in cpc_instance_name %}
+{% for interface in cpc_interface_type %}
+{% for periph in cpc_periph_type %}
+#include <stdint.h>
+
+#include "em_{{ periph }}.h"
+#include "sl_cos.h"
+#include "sl_cpc_drv_secondary_{{ interface }}_{{ periph }}_{{ instance }}_config.h"
+
+void sl_cpc_config_vcom(void)
+{
+  uint8_t flowcontrol;
+
+  if (SL_CPC_DRV_{{ interface | upper }}_{{ instance | upper }}_FLOW_CONTROL_TYPE == {{ periph }}HwFlowControlCtsAndRts) {
+    flowcontrol = 0x03;
+  } else {
+    flowcontrol = 0x00;
+  }
+
+  sl_cos_config_vcom(SL_CPC_DRV_{{ interface | upper }}_{{ instance | upper }}_BAUDRATE, flowcontrol);
+}
+{% endfor %}
+{% endfor %}
+{% endfor %}

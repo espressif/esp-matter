@@ -1,0 +1,769 @@
+%%{
+	/*v.0.1 */
+    /* get ti/drivers common utility functions */
+    let Common = system.getScript("/ti/drivers/Common.js");
+
+	let general = system.modules["/ti/drivers/net/imagecreator/new_design/Device/General"] ;/*General*/
+	let imgcmd  = system.modules["/ti/drivers/net/imagecreator/new_design/Device/ImgCommands"] ;/*ImageCommands*/
+	let ota     = system.modules["/ti/drivers/net/imagecreator/new_design/Device/Ota"] ;/*OTA*/
+	let csr     = system.modules["/ti/drivers/net/imagecreator/new_design/Device/CSR"] ;/*DICE_CSR*/
+	let sdevice = system.modules["/ti/drivers/net/imagecreator/new_design/WiFi/Radio"];/* System -> Device*/
+	let srgen 	= system.modules["/ti/drivers/net/imagecreator/new_design/WiFi/Mac"];/*System->Role->General*/
+	let nw 	    = system.modules["/ti/drivers/net/imagecreator/new_design/NetworkServices/Network"];/*System -> Network*/
+	let cc 		= system.modules["/ti/drivers/net/imagecreator/new_design/UserFiles/CertStore"];/* Files -> CertStore*/
+	let uf 		= system.modules["/ti/drivers/net/imagecreator/new_design/UserFiles/fileTree"];/* Files -> UserFiles*/
+	let sp 		= system.modules["/ti/drivers/net/imagecreator/new_design/UserFiles/ServicePack"];/* Files -> Service Pack*/
+	let mcu 	= system.modules["/ti/drivers/net/imagecreator/new_design/UserFiles/MCUImage"];
+
+
+   /* localize the object names with this device ID */
+    let devId = system.deviceData.deviceId;
+
+	let flash   = (devId == "CC3220SF") || (devId == "CC3235SF") || (devId == "CC3230SF");
+	let gen3    = (devId == "CC3235S") || (devId == "CC3235SF") || (devId == "CC3135R") || (devId == "CC3230S") || (devId == "CC3230SF") || (devId == "CC3130R");
+	let gen33   = (devId == "CC3235S") || (devId == "CC3235SF") || (devId == "CC3135R") //For reg domein gen3 5G only
+	let support5G    = (devId == "CC3235S") || (devId == "CC3235SF") || (devId == "CC3135R") 
+
+
+	let co_ex_input_default  = 0
+    let co_ex_output_default = 3
+    let ant_sel1 = 8
+    let ant_sel2 = 9
+
+	if ((devId == "CC3135R") || (devId == "CC3130R"))
+	{
+		co_ex_input_default  = 9
+        co_ex_output_default = 12
+        ant_sel1 = 28
+        ant_sel2 = 10
+	}
+
+	function getChannelKeys(start, count) {
+		const a = [];
+		for (let i = 0; i < count; ++i) {
+			a.push(start + i * 4);
+		}
+		return a;
+	}
+
+	function allChannelKeys() {
+		return [
+			...getChannelKeys(36, 4),
+			...getChannelKeys(52, 4),
+			...getChannelKeys(100, 5),
+			...getChannelKeys(120, 7),
+			...getChannelKeys(149, 5)
+		];
+	}
+
+	function getP2pStationStartApps() {
+
+		let inst;
+		if(nw) {
+			inst = nw.$static;
+		}
+		if (!inst) {
+			return 5;
+		}
+		
+		let value = 0;
+		
+		_.each(inst.MDNS_Enabled_Roles, (selected) => {
+			switch (selected) {
+					case "STA_MDNS_SID_4":
+					value = value + 4;
+					break;
+			}
+		});
+
+		_.each(inst.HTTP_Enabled_Roles, (selected) => {
+			switch (selected) {
+					case "STA_HTTP_SID_1":
+					value = value + 1;
+					break;
+			}
+		});
+
+		
+		return value;
+	}
+	
+	function getP2pClsStartApps() {
+
+		let inst;
+		if(nw) {
+			inst = nw.$static;
+		}
+
+		if (!inst) {
+			return 5;
+		}
+
+
+		let value = 0;
+		
+		_.each(inst.HTTP_Enabled_Roles, (selected) => {
+			switch (selected) {
+					case "CLS_HTTP_SID_1":
+					value = value + 1;
+					break;
+			}
+		});
+		
+		_.each(inst.MDNS_Enabled_Roles, (selected) => {
+			switch (selected) {
+					case "CLS_MDNS_SID_4":
+					value = value + 4;
+					break;
+			}
+		});
+
+		return value;
+	}
+	
+	function getP2pGoStartApps() {
+
+		let inst;
+		if(nw) {
+			inst = nw.$static;
+		}
+
+		if (!inst) {
+			return 15;
+		}
+
+
+		let value = 0;
+		
+		_.each(inst.MDNS_Enabled_Roles, (selected) => {
+			switch (selected) {
+					case "GO_MDNS_SID_4":
+					value = value + 4;
+					break;
+			}
+		});
+
+		_.each(inst.HTTP_Enabled_Roles, (selected) => {
+			switch (selected) {
+					case "GO_HTTP_SID_1":
+					value = value + 1;
+					break;
+			}
+		});
+		
+		let inst2;
+		if (srgen) {
+			inst2 = srgen.$static;
+		}
+		if (!inst2) {
+			return value + 2 + 8;
+		}
+
+		if (srgen.$static.GO_DNS_SID_8)
+			value = value + 8;
+		
+		if (srgen.$static.GO_DHCP_SID_2)
+			value = value + 2;
+		return value;
+	}
+
+	function getP2pApStartApps() {
+
+		let inst;
+		if(nw) {
+			inst = nw.$static;
+		}
+
+		if (!inst) {
+			return 15;
+		}
+
+
+		let value = 0;
+		
+		
+		_.each(inst.MDNS_Enabled_Roles, (selected) => {
+			switch (selected) {
+					case "AP_MDNS_SID_4":
+					value = value + 4;
+					break;
+			}
+		});
+
+		_.each(inst.HTTP_Enabled_Roles, (selected) => {
+			switch (selected) {
+					case "AP_HTTP_SID_1":
+					value = value + 1;
+					break;
+			}
+		});
+		
+		let inst2;
+		if (srgen) {
+			inst2 = srgen.$static;
+		}
+		if (!inst2) {
+			return value + 2 + 8;
+		}
+
+		if (srgen.$static.AP_DNS_SID_8)
+			value = value + 8;
+		
+		if (srgen.$static.AP_DHCP_SID_2)
+			value = value + 2;
+		return value;
+
+	}
+%%}
+{
+    "header":{
+		"Name"							:"`devId`_sysconfig_image",
+        "Is5GSupport"					:`support5G`,
+        "IsGen3"						:`gen3`,
+		"DeviceType"					:"`devId`",
+		"Description"					:"project for SysConfig",
+        "IsTheDeviceSecure"				:true,
+	% if (cc) {
+        "UseDefaultCertStore"			:`cc.$static.USE_DEF_CERT_STORE_1`,
+		"UseDefaultPlayGroundCatalog"   :`cc.$static.USE_DUMMY_CERT`,
+		"UseOtp"						:`cc.$static.USE_OTP_1`,
+        "UseSecBtldr"					:`cc.$static.USE_SEC_BTLDR_1`,
+	% } else {
+		"UseDefaultCertStore"			:false,
+		"UseDefaultPlayGroundCatalog"	:true,
+		"UseOtp"						:false,
+        "UseSecBtldr"					:false,
+	% }
+	% if (sp) {
+        "UseDefaultSP"					:`sp.$static.USE_DEF_SP_1`,
+	% } else {
+		"UseDefaultSP"					:false,
+	% }
+		"ProductionNWP"					:"1",
+	% if (ota) {
+		"CreateOTA"                     :`ota.$static.CREATE_OTA`,
+		"AddClstOta"                    :`ota.$static.ADD_CLST_OTA`,
+		"SecuredOTA"                    :`ota.$static.OTA_SECURED`,
+		"OTAKeyFileLocation"            :"`ota.$static.userOtaKeyFileInput.replace(/\\/g, "/")`",
+	% } else {	
+		"CreateOTA"                     :false,
+		"AddClstOta"                    :false,
+		"SecuredOTA"                    :false,
+		"OTAKeyFileLocation"            :"",
+	% }
+	% if (general) {
+        "StorageCapacityBytes"			:"`general.$static.capacitySelect`",
+		"SET_DEV_MAC"                   : `general.$static.SET_DEV_MAC`,
+		"DEV_MAC_ADDR"                  :"`general.$static.DevMA`",
+		"Mode"				  			:"`general.$static.ModeSelect`",
+		"IsModule"                      :"`general.$static.ModuleSelect`",
+		"EnableReturnToFactory"     	:"`general.$static.FACTORY`",
+		"ReturnToFactoryGPIO"			:"`general.$static.IGNORE_FORCE_AP`",
+		"UseKey"						:`general.$static.USE_KEY_1`,
+        "KeyFileLocation"				:"`general.$static.keyFileInput.replace(/\\/g, "/")`",
+	% } else {	
+		"StorageCapacityBytes"			:"4194304",
+		"SET_DEV_MAC"                   : false,
+		"DEV_MAC_ADDR"                  :"00:00:00:00:00:04",
+		"Mode"				  			:"production",
+		"IsModule"                      :"0",
+		"EnableReturnToFactory"			:"defaults_and_image",
+		"ReturnToFactoryGPIO"			:"0",
+		"UseKey"						:false,
+        "KeyFileLocation"				:"",
+	% }
+    % if (sp) {
+		"ServicePackFileLocation"		:"`sp.$static.spFileInput.replace(/\\/g, "/")`",
+	% } else {
+		"ServicePackFileLocation"		:"",
+	% }
+	  % if (uf) {
+		"UserFileRoot"		            :"`uf.$static.rootDirCfg.replace(/\\/g, "/")`"
+	% } else {
+		"UserFileRoot"		            :""
+	% }
+    },
+    "systemFiles":{
+        "FILES":{
+            "SystemFileId":"FILES",
+		% if (cc && ! cc.$static.USE_DEF_CERT_STORE_1 ) {
+			% let cs_file_name =  cc.$static.keyCertStoreFileInput.replace(/\\/g, "/");
+			% let css_file_name = cc.$static.keyCertStoreSignFileInput.replace(/\\/g, "/");
+			"CS_FILE_NAME"						: "`cs_file_name`",
+            "CSS_FILE_NAME"						: "`css_file_name`",	
+		% } else {
+			"CS_FILE_NAME"						:"",
+            "CSS_FILE_NAME"						:"",
+		% }
+		% if (cc && cc.$static.USE_OTP_1 && cc.$static.USE_SEC_BTLDR_1) {
+			% let otp_file_name = cc.$static.otpFileInput.replace(/\\/g, "/");
+			"OTP_NAME"						: "`otp_file_name`",
+		% } else {
+			"OTP_NAME"						: "",
+		% }		
+		% if (sp) {
+		% let sp_file_name =  sp.$static.spFileInput.replace(/\\/g, "/");
+			"SP_FILE_NAME"						:"`sp_file_name`",
+		% } else {
+			"SP_FILE_NAME"						:"",
+		% } 
+		% if (mcu) {
+			"SM_MCU_NAME"	                    :"`mcu.$static.Filename`",   		
+            "SM_MCU_CERT_NAME"					:""
+		% } else {
+			"SM_MCU_NAME"	                    :"",   		
+            "SM_MCU_CERT_NAME"					:""
+		% }
+        },
+		% if (gen3 ) {
+			
+		 "CONFIG_TYPE_CSR_DICE_CFG": {
+			 % if (csr ) {
+			"ENABLE_DICE"						: "`csr.$static.ENABLE_DICE`",
+            "CREATE_CSR"						: `csr.$static.CREATE_CSR != "2"`,
+			"USE_RAND_NUMBER"					: false,
+            "USE_SELF_SIGNED_CERT"				: `csr.$static.CREATE_CSR == "1"`,
+			"CSR_TOKEN"							: "`csr.$static.CSR_TOKEN`",
+			"CSR_VENDOR"						: `csr.$static.CSR_VENDOR_1`,
+            "CSR_CERT_NUMBER"					: "`csr.$static.csrCertSerialNameText`",
+            "CSR_COUNTRY_CODE"					: "`csr.$static.csrCountryCodeInput`",
+            "CSR_EMAIL"							: "`csr.$static.csrEmailText`",
+            "CSR_END_DAY"						: "`csr.$static.csrValidityNameEnd.getDate() < 10 ? '0' + csr.$static.csrValidityNameEnd.getDate(): csr.$static.csrValidityNameEnd.getDate()`",
+            "CSR_END_MONTH"						: "`csr.$static.csrValidityNameEnd.getMonth() + 1< 10 ? '0' + (csr.$static.csrValidityNameEnd.getMonth() + 1) :csr.$static.csrValidityNameEnd.getMonth() + 1`",
+            "CSR_END_YEAR"						: "`csr.$static.csrValidityNameEnd.getFullYear()`",
+            "CSR_ISCA"							: `csr.$static.CSR_ISCA`,
+            "CSR_LOCALITY"						: "`csr.$static.csrLocalityNameText`",
+            "CSR_NAME"							: "`csr.$static.csrNameText`",
+            "CSR_ORGANIZATION"					: "`csr.$static.csrOrganizationNameText`",
+            "CSR_ORGANIZATION_UNIT"				: "`csr.$static.csrOrganizationUnitNameText`",
+            "CSR_START_DAY"						: "`csr.$static.csrValidityName.getDate() < 10 ? '0' + csr.$static.csrValidityName.getDate(): csr.$static.csrValidityName.getDate()`",
+            "CSR_START_MONTH"					: "`csr.$static.csrValidityName.getMonth() + 1 < 10 ? '0' + (csr.$static.csrValidityName.getMonth() + 1):csr.$static.csrValidityName.getMonth() + 1`",
+            "CSR_START_YEAR"					: "`csr.$static.csrValidityName.getFullYear()`",
+            "CSR_STATE"							: "`csr.$static.csrStateNameText`",
+            "CSR_SURNAME"						: "`csr.$static.csrSurnameNameText`",
+			"CSR_USE_UDID_AS_COMMON_NAME"		: `csr.$static.UDID_NAME_0`
+            
+			% } else {
+			"ENABLE_DICE"						: "0",
+            "CREATE_CSR"						: false,
+			"USE_RAND_NUMBER"					: false,
+            "USE_SELF_SIGNED_CERT"				: false,
+			"CSR_VENDOR"						: false,
+			"CSR_TOKEN"							: "0",
+            "CSR_CERT_NUMBER"					: "1111",
+            "CSR_COUNTRY_CODE"					: "US",
+            "CSR_EMAIL"							: "email@email.com",
+            "CSR_END_DAY"						: "31",
+            "CSR_END_MONTH"						: "12",
+            "CSR_END_YEAR"						: "2020",
+            "CSR_ISCA"							: true,
+            "CSR_LOCALITY"						: "Locality",
+            "CSR_NAME"							: "Name",
+            "CSR_ORGANIZATION"					: "Organisation",
+            "CSR_ORGANIZATION_UNIT"				: "Unit",
+            "CSR_START_DAY"						: "01",
+            "CSR_START_MONTH"					: "01",
+            "CSR_START_YEAR"					: "2020",
+            "CSR_STATE"							: "State",
+            "CSR_SURNAME"						: "Surame",
+			 "CSR_USE_UDID_AS_COMMON_NAME"		: false
+
+			% } //csr
+        },
+		% } //gen3
+        "CONFIG_TYPE_IP_CONFIG":{
+			"SystemFileId":"CONFIG_TYPE_IP_CONFIG", 
+            "AP_SUBNET_MASK"					:null,
+            "AP_IPV6_DNS_SERVER"				:null,
+            "AP_ARP_RENEW_TIME"					:null,
+            "AP_DHCP_CLIENT_TIME_OUT"			:null,
+            "AP_STATIC_IPV6_GLOBAL_ADDRESS"		:null,
+            "AP_KEEP_ALIVE_TIME"				:null,
+            "AP_DNS_CLIENT_TIME"				:null,
+            "AP_DHCP_SERVER_MODE"				:null,
+            "AP_STATIC_IPV6_LOCAL_ADDRESS"		:null,
+            "AP_INACTIVITY_TIME"				:null,
+            "AP_IP_MODE"						:null,
+		% if (srgen) {
+			"AP_STATIC_IP"						:"`srgen.$static.apipAddrText`",
+			"AP_DEFAULT_GATEWAY"				:"`srgen.$static.apdgText`",
+			"AP_IPV4_DNS_SERVER"                :"`srgen.$static.apDNSText`",
+		% } else {
+			"AP_STATIC_IP"						:"10.123.45.1",
+			"AP_DEFAULT_GATEWAY"				:"10.123.45.1",
+			"AP_IPV4_DNS_SERVER"                :"10.123.45.1",
+		% }   
+			"STA_DHCP_CLIENT_TIME_OUT"			:null,
+            "STA_STATIC_IPV6_LOCAL_ADDRESS"		:null,
+            "STA_INACTIVITY_TIME"				:null,
+			"STA_IPV6_DNS_SERVER"				:null,
+			"STA_ARP_RENEW_TIME"				:null,
+			"STA_ARP_RENEW_TIME"				:null,
+			"STA_STATIC_IPV6_GLOBAL_ADDRESS"	:null,
+			"STA_DNS_CLIENT_TIME"				:null,
+            "STA_DHCP_SERVER_LAST_IP_ADDRESS"	:null,
+			"STA_KEEP_ALIVE_TIME"				:null,
+            "STA_DHCP_SERVER_START_IP_ADDRESS"	:null,
+		% if (srgen) {
+		% if (srgen.$static.stap2pDHCPEnable) {
+			"STA_IP_MODE"						: "True", 
+		% } else {
+			"STA_IP_MODE"						: "False",
+		% } 
+			"STA_STATIC_IP"						:"`srgen.$static.staipAddrText`",		
+			"STA_SUBNET_MASK"					:"`srgen.$static.stasubnetMaskText`",
+			"STA_DEFAULT_GATEWAY"				:"`srgen.$static.stadgwText`",
+			"STA_IPV4_DNS_SERVER"				:"`srgen.$static.stadnsText`",
+		% } else {
+		    "STA_IP_MODE"						: "True",
+			"STA_STATIC_IP"						:"192.168.1.101",	
+			"STA_SUBNET_MASK"					:"255.255.255.0",
+			"STA_DEFAULT_GATEWAY"				:"192.168.1.31",
+			"STA_IPV4_DNS_SERVER"				:"192.168.1.31",			
+		% }   
+            "STA_DHCP_SERVER_MODE"				:null
+        },
+        "CONFIG_TYPE_DEVICE_NAME":{
+		% if (srgen) {
+			"DEVICE_URN"						: "`srgen.$static.deviceNameText`",	
+		% } else {
+			"DEVICE_URN"						: "mysimplelink",		
+		% }   
+            "DOMAIN_NAME":"mysimplelink.net"
+        },
+        "CONFIG_TYPE_AP":{
+		% if (srgen) {
+			"SSID"								:"`srgen.$static.apSSIDText`",
+            "SECURITY"							:"`srgen.$static.apSecuritySelect`",
+            "PASSWORD"							:"`srgen.$static.apPWText`",
+            "HIDDEN_SSID"						:"`srgen.$static.hiddenSSIDSelect`",
+            "CHANNEL"							:"`srgen.$static.apChannelNum`",
+            "MAX_STT"							:"`srgen.$static.apMaxStaNum`"	
+		% } else {
+			"SSID"								:"mysimplelink",
+            "SECURITY"							:"0",
+            "PASSWORD"							:"",
+            "HIDDEN_SSID"						:"0",
+            "CHANNEL"							:"1",
+            "MAX_STT"							:"4"		
+		% }   
+
+        },
+        "CONFIG_TYPE_HTTP_SRV":{
+		% if (nw) {
+            "PRIM_PORT_SECURE"					:`nw.$static.PRIM_PORT_SECURE_0`,
+			"PRIM_PORT_VAL"						:"`nw.$static.PRIM_PORT_VAL`",
+            "ACCESS_ROM"						:`nw.$static.ACCESS_ROM_1`,
+			"SEC_PORT_ENABLE"					:`nw.$static.SEC_PORT_ENABLE_0`,
+            "SEC_PORT_VAL"						:"`nw.$static.SEC_PORT_VAL`",
+            "PRIVATEKEY_FILE_NAME"				:"`nw.$static.keyHttpPrimFileInput.replace(/^.*[\\\/]/, '')`",
+            "CERTIFICATE_FILE_NAME"				:"`nw.$static.certHttpPrimFileInput.replace(/^.*[\\\/]/, '')`",
+            "ACCESS_CA_CERT"					:`nw.$static.PRIM_PORT_SECURE_0`, 
+            "CA_CERTIFICATE_FILE_NAME"			:"`nw.$static.cacertHttpPrimFileInput.replace(/^.*[\\\/]/, '')`"
+            
+		% } else {
+ 			"PRIM_PORT_SECURE"					:false,
+			"PRIM_PORT_VAL"					    :"80",
+            "ACCESS_ROM"						:true,
+			"SEC_PORT_ENABLE"					:false,
+            "SEC_PORT_VAL"						:"8080",
+            "PRIVATEKEY_FILE_NAME"				:"",
+            "CERTIFICATE_FILE_NAME"				:"",
+            "ACCESS_CA_CERT"					:false,
+            "CA_CERTIFICATE_FILE_NAME"			:""
+            
+		% } 
+        },
+        "CONFIG_TYPE_MAC":{
+			"SystemFileId"				:"CONFIG_TYPE_MAC",
+		% if (general) {
+		% 	if (general.$static.USE_DEV_MAC) {
+		    "USE_DEFAULT"				:1,
+		% } else {
+			"USE_DEFAULT"				:0,
+		% }   
+            "MAC_ADDR"					:"`general.$static.MA`"
+		% } else {	
+            "USE_DEFAULT"				:1,
+            "MAC_ADDR"					:"08:00:28:11:22:33"
+		% }  
+        },
+        "CONFIG_TYPE_MODE":{
+		    "SystemFileId":"CONFIG_TYPE_MODE",
+            "SL_EVENT_CLASS_NETCFG"				:0,
+            "SL_EVENT_CLASS_WLAN"				:0,
+            "SL_EVENT_CLASS_FS"					:0,
+			"SL_EVENT_CLASS_GLOBAL"				:0,
+            "SL_EVENT_CLASS_NETAPP"				:0,
+			"SL_EVENT_CLASS_DEVICE"				:0,
+			"SL_EVENT_CLASS_BSD"				:0,
+            "PROVISIONING_MODE"					:2,
+			"PROVISIONING_SAVED_ROLE"			:0,
+            "PROVISIONING_SAVED_AUTO_START"		:1,
+			"PROVISIONING_RESULT"				:0,
+			"PROVISIONING_ROLE_AFTER_SUCCESS"	:0,
+			"PROVISIONING_MONITOR_TIMER"		:0,
+			"PROVISIONING_STATE"				:0,
+			"P2P_CLS_START_APPS"				: "`getP2pClsStartApps()`",			
+			"P2P_GO_START_APPS"					: "`getP2pGoStartApps()`",
+		    "STA_START_APPS"					: "`getP2pStationStartApps()`",
+		    "AP_START_APPS"						: "`getP2pApStartApps()`",
+            "PHY_STA_HIGH_TX_POWER"             :0,
+			"PHY_AP_HIGH_TX_POWER"              :0,
+            "IGNORE_FORCE_AP"                   :"0",
+		% if (srgen) {
+			"START_ROLE"						: "`srgen.$static.StartRoleSelect`",
+			"COUNTRY_CODE"						: "`srgen.$static.CountryCodeInput`",
+			"AUTO_PROV_EXTERNAL_CONFIRMATION"   : "`srgen.$static.AutoProvExternalConfSelect`",
+			"NO_PSPOLL_MODE"                    : `srgen.$static.NO_PSPOLL_MODE == 0 `,
+		% } else {
+			"START_ROLE"						:"2",
+            "COUNTRY_CODE"						:"EU",	
+            "AUTO_PROV_EXTERNAL_CONFIRMATION"   :"0",
+			"NO_PSPOLL_MODE"                    : false,
+		% }   
+		% if (sdevice) {
+			"ANTSEL_MODE"						:"`sdevice.$static.ANT_SEL_MODE`",
+			"ANTSEL_ANT1"						:"`sdevice.$static.ANT1_PAD`",
+            "ANTSEL_ANT2"						:"`sdevice.$static.ANT2_PAD`",
+			"CO_EX_MODE"						:"`sdevice.$static.COEX_MODE`",
+			"CO_EX_INPUT"						:"`sdevice.$static.INPUT_PAD`",
+            "CO_EX_OUTPUT"						:"`sdevice.$static.OUTPUT_PAD`",
+			"Is5GEnabled"						: `sdevice.$static.Is5GEnabledSelect == '1'`,
+		    "PHY_CAL_MODE"						: "`sdevice.$static.PHY_CAL_MODE`",
+			"AP_TX_POWER_LEVEL"					: "`sdevice.$static.AP_TX_PL`",
+			"STA_TX_POWER_LEVEL"				: "`sdevice.$static.STA_TX_PL`"
+		% } else {
+			"ANTSEL_MODE"						:"0",
+			"ANTSEL_ANT1"						: "`ant_sel1`",
+            "ANTSEL_ANT2"						: "`ant_sel2`",
+			"CO_EX_MODE"						:"0",
+			"CO_EX_INPUT"						: "`co_ex_input_default`",
+            "CO_EX_OUTPUT"						: "`co_ex_output_default`",
+			"Is5GEnabled"						: true,
+			"PHY_CAL_MODE"						: "0",
+			"AP_TX_POWER_LEVEL"					: "0",
+			"STA_TX_POWER_LEVEL"				: "0"
+		% }   
+        },
+        "CONFIG_TYPE_STA_CONFIG":{
+		% if (srgen) {
+            "AUTOSTART"							:"`srgen.$static.conPolAutoStartSelect`",
+            "USEFASTCONNECT"					:"`srgen.$static.conPolFastConnectSelect`",
+            "AUTOPROVISIONING"					:"`srgen.$static.conPolAutoProvisioningSelect`",
+            "CONNECTTOANYP2P"					:"`srgen.$static.conAnyWFDirectSelect`"		
+		% } else {
+            "AUTOSTART"							:"1",
+            "USEFASTCONNECT"					:"0",
+            "AUTOPROVISIONING"					:"1",
+            "CONNECTTOANYP2P"					:"0"		
+		% }   
+
+        },
+        "CONFIG_TYPE_DHCP_SRV":{
+			"SystemFileId":"CONFIG_TYPE_DHCP_SRV",
+		% if (srgen) {
+			"AP_DHCP_SERVER_START_IP_ADDRESS"   :"`srgen.$static.apDhcpStartAddressText`",
+			"AP_DHCP_SERVER_LAST_IP_ADDRESS"    :"`srgen.$static.apDhcpLastAddressText`",
+			"AP_DHCP_SERVER_LEASE_TIME"         :"`srgen.$static.apDhcpLeaseTimeText`"
+		% } else {
+			"AP_DHCP_SERVER_START_IP_ADDRESS"   :"10.123.45.2",
+			"AP_DHCP_SERVER_LAST_IP_ADDRESS"    :"10.123.45.254",
+			"AP_DHCP_SERVER_LEASE_TIME"         :"24"
+		% }   
+        },
+		"REG_DOMAIN": {
+			"CURVE_00": 0,
+            "CURVE_01": 0,
+            "CURVE_02": 0,
+            "CURVE_03": 0,
+            "CURVE_04": 0,
+            "CURVE_10": 0,
+            "CURVE_11": 0,
+            "CURVE_12": 0,
+            "CURVE_13": 0,
+            "CURVE_14": 0,
+			% if (sdevice && gen33) {
+			"FCC24_ENABLED"     : `sdevice.$static.FCC24enable`,
+			"ETSI24_ENABLED"    : `sdevice.$static.ETSI24enable`,
+			"JP24_ENABLED"      : `sdevice.$static.JP24enable`,
+			% for ( let i = 1; i < 14; ++i ) {
+			% const FCC11b = sdevice.$static["FCC24channel" + i.toString() + "11b"];
+			% const FCClow = sdevice.$static["FCC24channel" + i.toString() + "low"];
+			% const FCChigh = sdevice.$static["FCC24channel" + i.toString() + "high"];
+			% const ETSI11b = sdevice.$static["ETSI24channel" + i.toString() + "11b"];
+			% const ETSIlow = sdevice.$static["ETSI24channel" + i.toString() + "low"];
+			% const ETSIhigh = sdevice.$static["ETSI24channel" + i.toString() + "high"];
+			% const JP11b = sdevice.$static["JP24channel" + i.toString() + "11b"];
+			% const JPlow = sdevice.$static["JP24channel" + i.toString() + "low"];
+			% const JPhigh = sdevice.$static["JP24channel" + i.toString() + "high"];
+			"FCC2411B_CHANNEL_`i.toString()`" : `Math.floor(Number(FCC11b)*8)`,
+			"FCC24BOL_CHANNEL_`i.toString()`" : `Math.floor(Number(FCClow)*8)`,
+			"FCC24BOH_CHANNEL_`i.toString()`" : `Math.floor(Number(FCChigh)*8)`,
+			"ETSI2411B_CHANNEL_`i.toString()`" : `Math.floor(Number(ETSI11b)*8)`,
+			"ETSI24BOL_CHANNEL_`i.toString()`" : `Math.floor(Number(ETSIlow)*8)`,
+			"ETSI24BOH_CHANNEL_`i.toString()`" : `Math.floor(Number(ETSIhigh)*8)`,
+			"JP2411B_CHANNEL_`i.toString()`" : `Math.floor(Number(JP11b )*8)`,
+			"JP24BOL_CHANNEL_`i.toString()`" : `Math.floor(Number(JPlow )*8)`,
+			"JP24BOH_CHANNEL_`i.toString()`" : `Math.floor(Number(JPhigh)*8)`,
+			% } /*for*/
+			% } else {
+            "FCC24_ENABLED"     : false,
+			"ETSI24_ENABLED"    : false,
+			"JP24_ENABLED"      : false,
+			% for ( let i = 1; i < 14; ++i ) {
+			"FCC2411B_CHANNEL_`i.toString()`" : 0,
+			"FCC24BOL_CHANNEL_`i.toString()`" : 0,
+			"FCC24BOH_CHANNEL_`i.toString()`" : 0,
+			"ETSI2411B_CHANNEL_`i.toString()`" : 0,
+			"ETSI24BOL_CHANNEL_`i.toString()`" : 0,
+			"ETSI24BOH_CHANNEL_`i.toString()`" : 0,
+			"JP2411B_CHANNEL_`i.toString()`" : 0,
+			"JP24BOL_CHANNEL_`i.toString()`" : 0,
+			"JP24BOH_CHANNEL_`i.toString()`" : 0,
+			% }/*for*/
+			% }
+			% if (sdevice && gen33) {
+			"FCC_ENABLED"       : `sdevice.$static.fccenable`,
+			"ETSI_ENABLED"      : `sdevice.$static.etsienable`,
+			"JP_ENABLED"        : `sdevice.$static.jpenable`,
+			"ExBO_ENABLED"      : `sdevice.$static.exboenable`,
+			"IL_ENABLED"        : `sdevice.$static.ilenable`,
+			%_.each(allChannelKeys(), (chan, index) => {
+			% const FCC    = sdevice.$static['FCCchannel'+chan];
+			% const ETSI   = sdevice.$static['ETSIchannel'+chan];
+			% const JP     = sdevice.$static['JPchannel'+chan];
+			% const EBLow  = sdevice.$static['channel' + chan + 'low'];
+			% const EBHigh = sdevice.$static['channel' + chan + 'high'];
+			"FCC_CHANNEL_`chan`"        : `Math.floor(Number(FCC))*8`,
+			"ETCI_CHANNEL_`chan`"       : `Math.floor(Number(ETSI))*8`,
+			"JP_CHANNEL_`chan`"         : `Math.floor(Number(JP))*8`,
+			"EBL_CHANNEL_`chan`"        : `Math.floor(Number(EBLow))*8`,
+			"EBH_CHANNEL_`chan`"        : `Math.floor(Number(EBHigh))*8`,
+			%					}); /*for*/
+			"UNII1_ALG_0"				: `Number(sdevice.$static.AntG1)`,
+            "UNII1_RX_0"				: `Number(sdevice.$static.RX1)`,
+            "UNII1_TX_0"				: `Number(sdevice.$static.TX1)`,
+            "UNII2A_ALG_1"				: `Number(sdevice.$static.AntG2)`,
+            "UNII2A_RX_1"				: `Number(sdevice.$static.RX2)`,
+            "UNII2A_TX_1"				: `Number(sdevice.$static.TX2)`,
+            "UNII2C1_ALG_2"				: `Number(sdevice.$static.AntG3)`,
+            "UNII2C1_RX_2"				: `Number(sdevice.$static.RX3)`,
+            "UNII2C1_TX_2"				: `Number(sdevice.$static.TX3)`,
+            "UNII2C2_ALG_3"				: `Number(sdevice.$static.AntG4)`,
+            "UNII2C2_RX_3"				: `Number(sdevice.$static.RX4)`,
+            "UNII2C2_TX_3"				: `Number(sdevice.$static.TX4)`,
+            "UNII3_ALG_4"				: `Number(sdevice.$static.AntG5)`,
+            "UNII3_RX_4"				: `Number(sdevice.$static.RX5)`,
+            "UNII3_TX_4"				: `Number(sdevice.$static.TX5)`
+			% } else {
+			"FCC_ENABLED"       : false,
+			"ETSI_ENABLED"      : false,
+			"JP_ENABLED"        : false,
+			"ExBO_ENABLED"      : false,
+			"IL_ENABLED"        : false,
+			%_.each(allChannelKeys(), (chan, index) => {
+			"FCC_CHANNEL_`chan`"        : 0,
+			"ETCI_CHANNEL_`chan`"       : 0,
+			"JP_CHANNEL_`chan`"         : 0,
+			"EBL_CHANNEL_`chan`"        : 0,
+			"EBH_CHANNEL_`chan`"        : 0,
+			%					}); /*for*/
+			"UNII1_ALG_0"				: 0,
+            "UNII1_RX_0"				: 0,
+            "UNII1_TX_0"				: 0,
+            "UNII2A_ALG_1"				: 0,
+            "UNII2A_RX_1"				: 0,
+            "UNII2A_TX_1"				: 0,
+            "UNII2C1_ALG_2"				: 0,
+            "UNII2C1_RX_2"				: 0,
+            "UNII2C1_TX_2"				: 0,
+            "UNII2C2_ALG_3"				: 0,
+            "UNII2C2_RX_3"				: 0,
+            "UNII2C2_TX_3"				: 0,
+            "UNII3_ALG_4"				: 0,
+            "UNII3_RX_4"				: 0,
+            "UNII3_TX_4"				: 0
+			% }
+		}
+    },
+	"userFiles":{
+		% if (mcu) {
+		% let mcu_file_name  =  mcu.$static.mcuFileInput.replace(/\\/g, "/");
+		% let priv_file_name =  mcu.$static.mcuKey.replace(/\\/g, "/");
+		% let cert_file_name =  mcu.$static.mcuCertificate.replace(/\\/g, "/");
+		"MCUIMG":{
+				% if (system.isStandAloneGUI()) {
+                "External"          : false ,
+				% } else {
+				"External"          : `mcu.$static.External` ,
+				% }
+				"OriginalPath"      : "`mcu_file_name`" ,
+				"UseOriginalPath"   : true ,
+				"FileSystemName"    : "`mcu.$static.Filename`" ,
+				"ProjectPath"       : "`mcu.$static.ProjectPath`" , 
+				"IsFlash"           : "`flash`",
+				"MaxFileSize"	    : `mcu.$static.fileSizeCfg` ,
+				"Failsafe"	        : `mcu.$static.Failsafe` ,
+				"Secure"	        : `mcu.$static.Secure` ,
+				"Static"            : `mcu.$static.Static` ,
+				"Vendor"	        : `mcu.$static.Vendor` ,
+				"Token"	            : "`mcu.$static.FileToken`" ,
+				"PublicWrite"	    : `mcu.$static.PublicWrite` ,
+				"PublicRead"	    : `mcu.$static.PublicRead` ,
+				"NoSecurityTest"	: `mcu.$static.NoSecurityTest` ,
+				"SimpleMode"        : `mcu.$static.KeySelect == "SIMPLE"`,
+				"PrivateKey"	    : "`priv_file_name`" ,
+				"Certificate"       : "`cert_file_name`" ,
+				"IncludeOTA"        : true
+			}
+		%}
+		% if (uf) {
+		% if (uf.$instances.length > 0) {
+		% if (mcu)  {
+		,
+		% } }
+
+			% let user_file_name = ""
+			% let user_priv_file_name = ""
+			% let user_cert_file_name = ""
+			% let root_path_length = uf.$static.rootDirCfg.length
+
+			% for( var i = 0; i < uf.$instances.length; i++ ) {
+			% user_file_name  		=  "USERFILE" + [i];
+			% //console.log(uf.$instances[i]);
+			% //test = uf.$instances[i].KeyCfg.substring(uf.$static.rootDirCfg.length);
+			% user_priv_file_name 	=  uf.$instances[i].KeyCfg.replace(/\\/g, "/");
+			% //user_priv_file_name 	=  uf.$instances[i].KeyCfg.substring(uf.$static.rootDirCfg.length).replace(/\\/g, "/");
+			% user_cert_file_name 	=  uf.$instances[i].CertCfg.replace(/\\/g, "/");
+		"`user_file_name`": {
+									"OriginalPath"      : "`uf.$instances[i].filePathCfg.replace(/\\/g, "/")`" ,
+									"UseOriginalPath"   : true ,
+									"FileSystemName"    : "`uf.$instances[i].filePathCfg.replace(/\\/g, "/")`" ,
+									"ProjectPath"       : "" , 
+									"MaxFileSize"	    : `uf.$instances[i].paddingFileSizeCfg` ,
+									"Failsafe"	        : `uf.$instances[i].failSafeCfg` ,
+									"Secure"	        : `uf.$instances[i].secureCfg` ,
+									"Static"            : `uf.$instances[i].staticCfg` ,
+									"Vendor"	        : `uf.$instances[i].vendorCfg` ,
+									"Token"	            : "`uf.$instances[i].fileTokenCfg`" ,
+									"PublicWrite"	    : `uf.$instances[i].publicWriteCfg` ,
+									"PublicRead"	    : `uf.$instances[i].publicReadCfg` ,
+									"NoSecurityTest"	: `uf.$instances[i].noSignatureTestCfg` ,
+									% //"SimpleMode"        : `uf.$instances[i].KeySelect == "SIMPLE"`,
+									"SimpleMode"        : false,
+									"PrivateKey"	    : "`user_priv_file_name`" ,
+									"Certificate"       : "`user_cert_file_name`" ,
+									"IncludeOTA"        : `uf.$instances[i].includeOTA`
+								  }
+		% if (i < uf.$instances.length -1) {
+		,
+		% }
+		% }
+		% }	
+
+
+	}
+}
+
+

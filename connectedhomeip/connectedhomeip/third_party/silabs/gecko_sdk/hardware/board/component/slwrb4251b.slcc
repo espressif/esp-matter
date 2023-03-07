@@ -1,0 +1,23 @@
+!!omap
+- id: slwrb4251b
+- label: SLWRB4251B
+- package: platform
+- description: Kit BSP support for the EFR32FG 2400/434 MHz 10 dBm Dual Band Radio
+    Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4251b
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4251B"'
+  - name: SL_KIT_REV
+    value: '"A01"'
+- tag:
+  - kit:opn:SLWRB4251B
+  - kit:pn:WRB4251
+  - kit:variant:B
+  - kit:revision:A01

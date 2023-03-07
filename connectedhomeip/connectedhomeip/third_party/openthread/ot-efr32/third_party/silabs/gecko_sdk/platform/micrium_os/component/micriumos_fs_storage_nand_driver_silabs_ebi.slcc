@@ -1,0 +1,18 @@
+id: micriumos_fs_storage_nand_driver_silabs_ebi
+package: micrium-fsxx
+description: Micrium OS File System NAND Driver for Silicon Labs EBI
+category: Services|Micrium|File System
+quality: production
+component_root_path: platform/micrium_os/drivers/fs
+source:
+  - path: source/fs_nand_ctrlr_drv_silabs_ebi.c
+include:
+  - path: include
+    file_list:
+      - path: fs_nand_ctrlr_drv.h
+provides:
+  - name: fs_storage_nand_driver_silabs_ebi
+  - name: fs_storage_nand_driver
+requires:
+  - name: fs_storage_nand
+  - name: emlib_ebi

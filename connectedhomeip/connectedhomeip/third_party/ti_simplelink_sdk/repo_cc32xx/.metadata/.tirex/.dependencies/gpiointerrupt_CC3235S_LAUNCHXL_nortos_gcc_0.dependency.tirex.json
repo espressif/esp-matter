@@ -1,0 +1,15 @@
+[
+    {
+        "files": [
+            "+../gpiointerrupt.c -> gpiointerrupt.c",
+            "+../README.md -> README.md",
+            "+../README.html -> README.html",
+            "+../main_nortos.c -> main_nortos.c",
+            "+../gpiointerrupt.syscfg -> gpiointerrupt.syscfg",
+            "+../../../../../../source/ti/boards/CC3235S_LAUNCHXL/Board.html -> Board.html",
+            "+cc32xxs_nortos.lds -> cc32xxs_nortos.lds",
+            "+../image.syscfg -> image.syscfg",
+            "+../userFiles/dummy-root-ca-cert -> userFiles/dummy-root-ca-cert"
+        ]
+    }
+]

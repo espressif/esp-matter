@@ -1,0 +1,7 @@
+{ "expected-missing-functions":
+  [
+
+  ],
+  "proof-name": "xInitializePKCS11",
+  "proof-root": "test/cbmc/proofs"
+}

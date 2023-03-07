@@ -1,0 +1,7 @@
+
+***************
+
+.. toctree::
+   :maxdepth: 2
+
+   如何用命令行生成ota文件 <ota/ota>

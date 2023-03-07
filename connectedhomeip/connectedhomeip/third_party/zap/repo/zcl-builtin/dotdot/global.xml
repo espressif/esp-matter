@@ -1,0 +1,301 @@
+<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:global
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:type="http://zigbee.org/zcl/types" 
+	xmlns:zcl="http://zigbee.org/zcl/clusters"
+	xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd">
+
+	<type:type short="anyType" name="Any Type" id="ff" inheritsFrom="unk">
+		<restriction>
+			<type:sequence>
+				<field name="Type" type="zclType" />
+				<field name="Value" type="unk" />
+			</type:sequence>
+		</restriction>
+	</type:type>
+
+	<type:type id="ff" short="readAttributeResponseRecord" name="Read Attributes Status Record">
+		<restriction>
+			<type:sequence>
+				<field name="AttributeIdentifier" type="attribId" />
+				<field name="Status" type="zclStatus" />
+				<field name="Atttribute" type="anyType" presentIf="Status=0" />
+			</type:sequence>
+		</restriction>
+	</type:type>
+	
+	<type:type id="ff" short="writeAttributeRecord" name="Write Attribute Record">
+		<restriction>
+			<type:sequence>
+				<field name="AttributeIdentifier" type="attribId" />
+				<field name="Attribute" type="anyType" />
+			</type:sequence>
+		</restriction>
+	</type:type>
+	
+	<type:type id="ff" short="writeAttributeResponseRecord" name="Write Attribute Status Record">
+		<restriction>
+			<type:sequence>
+				<field name="Status" type="zclStatus" />
+				<field name="AttributeIdentifier" type="attribId" presentIf="Status != 0" />
+			</type:sequence>
+		</restriction>
+	</type:type>
+	
+	<type:type id="30" short="reportingRole" name="Reporting Destination" inheritsFrom="enum8">
+		<restriction>
+			<type:enumeration name="Generator" value="00" />
+			<type:enumeration name="Recipient" value="01" />
+		</restriction>
+	</type:type>
+	
+	<type:type id="ff" short="configureReportingRecord" name="Attribute Reporting Configuration Record">
+		<restriction>
+			<type:sequence>
+				<field name="Direction" type="reportingRole" />
+				<field name="AttributeIdentifier" type="attribId" />
+				<field name="AttributeType" type="zclType" presentIf="Direction = 0" />
+				<field name="MinimumReportingInterval" type="uint16" presentIf="Direction = 0" />
+				<field name="MaximumReportingInterval" type="uint16" presentIf="Direction = 0" />
+				<field name="ReportableChange" type="unk" presentIf="Direction = 0" />
+				<field name="Timeout" type="uint16" presentIf="Direction = 1" />
+			</type:sequence>
+		</restriction>
+	</type:type>
+	
+	<type:type id="ff" short="configureReportingResponseRecord" name="Attribute Reporting Configuration Status Record">
+		<restriction>
+			<type:sequence>
+				<field name="Status" type="zclStatus" />
+				<field name="Direction" type="reportingRole" presentIf="Status != 0" />
+				<field name="AttributeIdentifier" type="attribId" presentIf="Status != 0" />
+			</type:sequence>
+		</restriction>
+	</type:type>
+	
+	<type:type id="ff" short="readReportingConfigurationRecord" name="Read Reporting Configuration Record">
+		<restriction>
+			<type:sequence>
+				<field name="Direction" type="reportingRole" />
+				<field name="AttributeIdentifier" type="attribId" />
+			</type:sequence>
+		</restriction>	
+	</type:type>
+	
+	<type:type id="ff" short="readReportingConfigurationResponseRecord" name="Read Reporting Configuration Response Record">
+		<restriction>
+			<type:sequence>
+				<field name="Direction" type="reportingRole" />
+				<field name="AttributeIdentifier" type="attribId" />
+				<field name="AttributeType" type="zclType" presentIf="Direction = 0" />
+				<field name="MinimumReportingInterval" type="uint16" presentIf="Direction = 0" />
+				<field name="MaximumReportingInterval" type="uint16" presentIf="Direction = 0" />
+				<field name="ReportableChange" type="unk" presentIf="Direction = 0" />
+				<field name="Timeout" type="uint16" presentIf="Direction = 1" />
+			</type:sequence>
+		</restriction>	
+	</type:type>
+	
+	<type:type id="ff" short="attributeReportRecord" name="Atttribute Report Record">
+		<restriction>
+			<type:sequence>
+				<field name="AttributeIdentifier" type="attribId" />
+				<field name="Attribute" type="anyType" />
+			</type:sequence>
+		</restriction>
+	</type:type>
+	
+	<type:type id="ff" short="discoverAtttributesResponseRecord" name="Discover Attributes Response Record">
+		<restriction>
+			<type:sequence>
+				<field name="AttributeIdentifier" type="attribId" />
+				<field name="AttributeType" type="zclType" />
+			</type:sequence>
+		</restriction>
+	</type:type>
+	
+	<type:type id="ff" short="readStructuredRecord" name="Read Atttributes Structured Record">
+		<restriction>
+			<type:sequence>
+				<field name="AttributeIdentifier" type="attribId" />
+				<field name="Index" type="uint16" array="true" arrayLengthSize="0" /><!--  The Array Length Is Specified Here -->
+			</type:sequence>
+		</restriction>
+	</type:type>
+	
+	<type:type id="ff" short="writeStructuredRecord" name="Write Structured Attribute Record">
+		<restriction>
+			<type:sequence>
+				<field name="AttributeIdentifier" type="attribId" />
+				<field name="Selector" type="uint16" array="true" arrayLengthSize="1" /><!--  The Array Length Is Specified Here -->
+				<field name="Attribute" type="anyType" />
+			</type:sequence>
+		</restriction>
+	</type:type>
+	
+	<type:type id="ff" short="writeStructuredResponseRecord" name="Write Structured Attribute Status Record">
+		<restriction>
+			<type:sequence>
+				<field name="Status" type="zclStatus" />
+				<field name="AttributeIdentifier" type="attribId" presentIf="Status != 0" />
+				<field name="Selector" type="uint16" array="true" arrayLengthSize="1" presentIf="Status != 0" /><!--  The Array Length Is Specified Here -->
+			</type:sequence>
+		</restriction>
+	</type:type>
+	
+	<type:type id="ff" short="discoverAtttributesExtendedResponseRecord" name="Discover Attributes Extended Response Record">
+		<restriction>
+			<type:sequence>
+				<field name="AttributeIdentifier" type="attribId" />
+				<!-- TODO: Attribute Data Type -->
+				<field name="AccessControl" type="map8" />
+			</type:sequence>
+		</restriction>
+	</type:type>
+
+	<attributes>
+		<attribute id="fffd" name="ClusterRevision" type="uint16"
+			min="1" max="65534" required="true" default="revision()" />
+		<attribute id="fffe" name="AttributeReportingStatus" type="enum8">
+			<restriction>
+				<type:enumeration value="00" name="Pending" />
+				<type:enumeration value="01" name="Attribute Reporting Complete" />
+			</restriction>
+		</attribute>
+	</attributes> 
+	
+	<commands>
+		<command id="00" name="ReadAttributes" required="true">
+			<fields>
+				<field name="AttributeIdentifier" type="attribId" array="true" arrayLengthSize="0" />
+			</fields>
+		</command>
+		<command id="01" name="ReadAttributesResponse" required="true">
+			<fields>
+				<field name="ReadAttributeRecord" type="readAttributeResponseRecord" array="true" arrayLengthSize="0" />
+			</fields>
+		</command>
+		<command id="02" name="WriteAttributes" required="true">
+			<fields>
+				<field name="WriteAttributeRecord" type="writeAttributeRecord" array="true" arrayLengthSize="0" />
+			</fields>
+		</command>
+		<command id="03" name="WriteAttributesUndivided" required="true">
+			<fields>
+				<field name="WriteAttributeRecord" type="writeAttributeRecord" array="true" arrayLengthSize="0" />
+			</fields>
+		</command>
+		<command id="04" name="WriteAttributesResponse" required="true">
+			<fields>
+				<field name="WriteAttributeRecord" type="writeAttributeResponseRecord" array="true" arrayLengthSize="0" />
+			</fields>		
+		</command>
+		<command id="05" name="WriteAttributesNoResponse" required="true">
+			<fields>
+				<field name="WriteAttributeRecord" type="writeAttributeRecord" array="true" arrayLengthSize="0" />
+			</fields>		
+		</command>
+		<command id="06" name="ConfigureReporting" required="false">
+			<fields>
+				<field name="ConfigureReportingRecord" type="configureReportingRecord" array="true" arrayLengthSize="0" />
+			</fields>
+		</command>
+		<command id="07" name="ConfigureReportingResponse" required="false">
+			<fields>
+				<field name="ConfigureReportingResponseRecord" type="configureReportingResponseRecord" array="true" arrayLengthSize="0" />
+			</fields>
+		</command>
+		<command id="08" name="ReadReportingConfiguration" required="false">
+			<fields>
+				<field name="ReadReportingConfigurationRecord" type="readReportingConfigurationRecord" array="true" arrayLengthSize="0"></field>
+			</fields>
+		</command>
+		<command id="09" name="ReadReportingConfigurationResponse" required="false">
+			<fields>
+				<field name="ReadReportingConfigurationResponseRecord" type="readReportingConfigurationResponseRecord" array="true" arrayLengthSize="0" />
+			</fields>
+		</command>
+		<command id="0a" name="ReportAttributes" required="false">
+			<fields>
+				<field name="AttributeReportRecord" type="attributeReportRecord" array="true" arrayLengthSize="0" />
+			</fields>
+		</command>
+		<command id="0b" name="DefaultResponse" required="true">
+			<fields>
+				<field name="CommandIdentifier" type="uint8" />
+				<field name="StatusCode" type="zclStatus" />
+			</fields>
+		</command>
+		<command id="0c" name="DiscoverAttributes" required="true">
+			<fields>
+				<field name="StartAttributeIdentifier" type="attribId" />
+				<field name="MaximumAttributeIdentifiers" type="uint8" />
+			</fields>
+		</command>
+		<command id="0d" name="DiscoverAttributesResponse" required="true">
+			<fields>
+				<field name="DiscoveryComplete" type="bool" />
+				<field name="AttributeRecord" type="discoverAtttributesResponseRecord" array="true" arrayLengthSize="0" />
+			</fields>
+		</command>
+		<command id="0e" name="ReadAttributesStructured" required="false">
+			<fields>
+				<field name="AttributeRecord" type="readStructuredRecord" array="true" arrayLengthSize="0" />
+			</fields>
+		</command>
+		<command id="0f" name="WriteAttributesStructured" required="false">
+			<fields>
+				<field name="AttributeRecord" type="writeStructuredRecord" array="true" arrayLengthSize="0" />
+			</fields>
+		</command>
+		<command id="10" name="WriteAttributesStructuredResponse" required="false">
+			<fields>
+				<field name="AttributeRecord" type="writeStructuredResponseRecord" array="true" arrayLengthSize="0" />
+			</fields>
+		</command>
+		<command id="11" name="DiscoverCommandsReceived" required="false">
+			<fields>
+				<field name="StartCommandIdentifier" type="uint8" />
+				<field name="MaximumCommandIdentifiers" type="uint8" />
+			</fields>
+		</command>
+		<command id="12" name="DiscoverCommandsReceivedResponse" required="false">
+			<fields>
+				<field name="DiscoveryComplete" type="bool" />
+				<field name="CommandIdentifier" type="uint8" array="true" arrayLengthSize="0" />
+			</fields>
+		</command>
+		<command id="13" name="DiscoverCommandsGenerated" required="false">
+			<fields>
+				<field name="StartCommandIdentifier" type="uint8" />
+				<field name="MaximumCommandIdentifiers" type="uint8" />
+			</fields>
+		</command>
+		<command id="14" name="DiscoverCommandsGeneratedResponse" required="false">
+			<fields>
+				<field name="DiscoveryComplete" type="bool" />
+				<field name="CommandIdentifier" type="uint8" array="true" arrayLengthSize="0" />
+			</fields>			
+		</command>
+		<command id="15" name="DiscoveAttributesExtended" required="false">
+			<fields>
+				<field name="StartAttributeIdentifier" type="attribId" />
+				<field name="MaximumAttributeIdentifiers" type="uint8" />
+			</fields>
+		</command>
+		<command id="16" name="DiscoverAttributesExtendedResponse" required="false">
+			<fields>
+				<field name="DiscoveryComplete" type="bool" />
+				<field name="AttributeRecord" type="discoverAtttributesExtendedResponseRecord" array="true" arrayLengthSize="0" />
+			</fields>
+		</command>
+	</commands>
+</zcl:global>

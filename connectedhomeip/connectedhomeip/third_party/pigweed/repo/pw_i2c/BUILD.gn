@@ -1,0 +1,143 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_chrono/backend.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+}
+
+pw_source_set("address") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_i2c/address.h" ]
+  deps = [ "$dir_pw_assert" ]
+  sources = [ "address.cc" ]
+}
+
+pw_source_set("initiator") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_i2c/initiator.h" ]
+  public_deps = [
+    ":address",
+    "$dir_pw_bytes",
+    "$dir_pw_chrono:system_clock",
+    "$dir_pw_status",
+  ]
+}
+
+pw_source_set("device") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_i2c/device.h" ]
+  public_deps = [
+    ":address",
+    ":initiator",
+    "$dir_pw_bytes",
+    "$dir_pw_chrono:system_clock",
+    "$dir_pw_status",
+    dir_pw_span,
+  ]
+}
+
+pw_source_set("register_device") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_i2c/register_device.h" ]
+  public_deps = [
+    ":address",
+    ":device",
+    ":initiator",
+    "$dir_pw_bytes",
+    "$dir_pw_chrono:system_clock",
+    "$dir_pw_result",
+    "$dir_pw_status",
+  ]
+  sources = [ "register_device.cc" ]
+  deps = [ "$dir_pw_assert" ]
+}
+
+pw_source_set("mock") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_i2c/initiator_mock.h" ]
+  sources = [ "initiator_mock.cc" ]
+  public_deps = [
+    ":initiator",
+    "$dir_pw_bytes",
+    "$dir_pw_containers",
+    "$dir_pw_containers:to_array",
+  ]
+  deps = [
+    "$dir_pw_assert",
+    "$dir_pw_unit_test",
+  ]
+}
+
+pw_source_set("gmock") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    ":initiator",
+    "$dir_pw_third_party/googletest",
+  ]
+  public = [ "public/pw_i2c/initiator_gmock.h" ]
+}
+
+# TODO: add mock_test here once chrono backend is supported for stm32f429i-disc1
+pw_test_group("tests") {
+  tests = [
+    ":address_test",
+    ":device_test",
+    ":initiator_mock_test",
+    ":register_device_test",
+  ]
+}
+
+pw_test("address_test") {
+  sources = [ "address_test.cc" ]
+  deps = [ ":address" ]
+}
+
+pw_test("device_test") {
+  enable_if = pw_chrono_SYSTEM_CLOCK_BACKEND != ""
+  sources = [ "device_test.cc" ]
+  deps = [
+    ":device",
+    ":mock",
+    "$dir_pw_containers",
+  ]
+}
+
+pw_test("register_device_test") {
+  enable_if = pw_chrono_SYSTEM_CLOCK_BACKEND != ""
+  sources = [ "register_device_test.cc" ]
+  deps = [
+    ":register_device",
+    "$dir_pw_assert",
+  ]
+}
+
+pw_test("initiator_mock_test") {
+  enable_if = pw_chrono_SYSTEM_CLOCK_BACKEND != ""
+  sources = [ "initiator_mock_test.cc" ]
+  deps = [
+    ":mock",
+    "$dir_pw_containers",
+  ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}

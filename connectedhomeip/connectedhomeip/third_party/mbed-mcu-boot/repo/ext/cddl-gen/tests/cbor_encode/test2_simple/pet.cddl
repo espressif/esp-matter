@@ -1,0 +1,14 @@
+;
+; Copyright (c) 2020 Nordic Semiconductor ASA
+;
+; SPDX-License-Identifier: Apache-2.0
+;
+
+Timestamp = bstr .size 8
+
+; Comments are denoted with a semicolon
+Pet = [
+    name: [ +tstr ],
+    birthday: Timestamp,
+    species: ((cat: 1) / (dog: 2) / (other: 3)),
+]

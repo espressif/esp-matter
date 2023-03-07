@@ -1,0 +1,71 @@
+!!omap
+- id: brd4173a
+- label: BRD4173A
+- package: platform
+- description: Board support for BRD4173A.
+- category: Platform|Board|Radio Board
+- quality: production
+- requires:
+  - name: efr32mg12p433f1024gm48
+  - name: brd4173a_config
+  - name: hardware_board_mainboard
+- provides:
+  - name: brd4173a
+  - name: hardware_board
+  - name: hardware_board_rb
+  - name: hardware_board_from_stk
+  - name: hardware_board_from_slwrb4173a
+  - name: hardware_board_from_slwstk6008a
+  - name: hardware_board_has_si70xx
+  - name: hardware_board_has_tempsensor
+  - name: hardware_board_has_vcom
+  - name: hardware_board_has_spiflash
+  - name: hardware_board_has_hfxo
+  - name: hardware_board_has_lfxo
+  - name: hardware_board_supports_rf_band_2400
+  - name: hardware_board_supports_rf_band_434
+  - name: hardware_board_supports_2_rf_bands
+  - name: hardware_board_default_rf_band
+  - name: hardware_board_default_rf_band_434
+- recommends:
+  - id: brd4001a
+  - id: iostream_usart
+    instance:
+    - vcom
+  - id: bootloader_uart_driver
+  - id: i2cspm
+    instance:
+    - sensor
+  - id: ls013b7dh03
+  - id: memlcd_usart
+  - id: simple_led
+    instance:
+    - led0
+    - led1
+  - id: simple_button
+    instance:
+    - btn0
+    - btn1
+  - id: mx25_flash_shutdown_usart
+  - id: bootloader_spi_controller_usart_driver
+  - id: bootloader_spi_peripheral_usart_driver
+- template_contribution:
+  - name: board_default_init
+    value: sl_board_disable_vcom()
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD4173A"'
+  - name: SL_BOARD_REV
+    value: '"A00"'
+- tag:
+  - board:pn:BRD4173
+  - board:variant:A
+  - board:revision:A00
+  - board:device:efr32mg12p433f1024gm48
+  - hardware:has:vcom
+  - hardware:has:pti
+  - hardware:has:sensor:si7021
+  - hardware:has:display:ls013b7dh03
+  - hardware:has:led:2
+  - hardware:has:button:2
+  - hardware:has:memory:spi:mx25r8035f

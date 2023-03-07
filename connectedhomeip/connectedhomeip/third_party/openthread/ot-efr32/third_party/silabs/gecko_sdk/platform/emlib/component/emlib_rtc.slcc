@@ -1,0 +1,40 @@
+id: emlib_rtc
+label: RTC
+package: platform
+description: >
+  Real Time Counter (RTC) peripheral API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_rtc.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_rtc.h"
+provides:
+  - name: emlib_rtc
+requires:
+  - name: device
+  - name: device_has_rtc
+  - name: emlib_common
+  - name: cmsis_core
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efm32g/group-rtc
+      condition: [device_sdid_71]
+    - page: emlib/api/efm32gg/group-rtc
+      condition: [device_sdid_72]
+    - page: emlib/api/efm32tg/group-rtc
+      condition: [device_sdid_73]
+    - page: emlib/api/efm32lg/group-rtc
+      condition: [device_sdid_74]
+    - page: emlib/api/efm32zg/group-rtc
+      condition: [device_sdid_76]
+    - page: emlib/api/efm32hg/group-rtc
+      condition: [device_sdid_77]
+    - page: emlib/api/efm32gg11/group-rtc
+      condition: [device_sdid_100]
+    - page: emlib/api/efm32gg12/group-rtc
+      condition: [device_sdid_106]

@@ -1,0 +1,246 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_protobuf_compiler/proto.gni")
+import("$dir_pw_third_party/nanopb/nanopb.gni")
+import("$dir_pw_unit_test/test.gni")
+import("config.gni")
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+config("backend_config") {
+  include_dirs = [ "public_overrides" ]
+}
+
+pw_source_set("config") {
+  public_deps = [ pw_trace_CONFIG ]
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_trace_tokenized/config.h" ]
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":trace_tokenized_test",
+    ":tokenized_trace_buffer_test",
+    ":tokenized_trace_buffer_log_test",
+  ]
+}
+
+pw_source_set("pw_trace_tokenized") {
+  public_configs = [
+    ":backend_config",
+    ":public_include_path",
+  ]
+  public_deps = [
+    ":config",
+    ":core",
+    "$dir_pw_tokenizer",
+  ]
+  if (pw_trace_tokenizer_time != "") {
+    deps = [ "$pw_trace_tokenizer_time" ]
+  }
+
+  public = [ "public_overrides/pw_trace_backend/trace_backend.h" ]
+}
+
+pw_test("trace_tokenized_test") {
+  enable_if = pw_trace_tokenizer_time != ""
+  deps = [
+    ":core",
+    "$dir_pw_trace",
+  ]
+
+  sources = [ "trace_test.cc" ]
+}
+
+config("trace_buffer_size") {
+  defines = [ "PW_TRACE_BUFFER_SIZE_BYTES=${pw_trace_tokenized_BUFFER_SIZE}" ]
+}
+
+pw_proto_library("protos") {
+  sources = [
+    "pw_trace_protos/trace.proto",
+    "pw_trace_protos/trace_rpc.proto",
+  ]
+  inputs = [ "pw_trace_protos/trace_rpc.options" ]
+}
+
+pw_source_set("trace_rpc_service") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ ":protos.nanopb_rpc" ]
+  deps = [
+    ":core",
+    ":tokenized_trace_buffer",
+    "$dir_pw_log",
+    "$dir_pw_trace",
+  ]
+  sources = [
+    "public/pw_trace_tokenized/trace_rpc_service_nanopb.h",
+    "trace_rpc_service_nanopb.cc",
+  ]
+}
+
+pw_source_set("tokenized_trace_buffer") {
+  deps = [ ":core" ]
+  public_deps = [
+    ":config",
+    "$dir_pw_bytes",
+    "$dir_pw_ring_buffer",
+    "$dir_pw_tokenizer",
+    "$dir_pw_varint",
+    dir_pw_span,
+  ]
+  sources = [ "trace_buffer.cc" ]
+  public_configs = [
+    ":public_include_path",
+    ":trace_buffer_size",
+  ]
+  public = [ "public/pw_trace_tokenized/trace_buffer.h" ]
+}
+
+pw_test("tokenized_trace_buffer_test") {
+  enable_if = pw_trace_tokenizer_time != ""
+  deps = [
+    ":tokenized_trace_buffer",
+    "$dir_pw_trace",
+  ]
+
+  sources = [ "trace_buffer_test.cc" ]
+}
+
+pw_source_set("tokenized_trace_buffer_log") {
+  deps = [
+    "$dir_pw_base64",
+    "$dir_pw_log",
+    "$dir_pw_string",
+  ]
+  public_deps = [ ":tokenized_trace_buffer" ]
+  sources = [ "trace_buffer_log.cc" ]
+  public = [ "public/pw_trace_tokenized/trace_buffer_log.h" ]
+}
+
+pw_test("tokenized_trace_buffer_log_test") {
+  enable_if = pw_trace_tokenizer_time != ""
+  deps = [
+    ":tokenized_trace_buffer_log",
+    "$dir_pw_trace",
+  ]
+  sources = [ "trace_buffer_log_test.cc" ]
+}
+
+pw_source_set("fake_trace_time") {
+  deps = [ ":core" ]
+  sources = [ "fake_trace_time.cc" ]
+}
+
+pw_source_set("host_trace_time") {
+  deps = [ ":core" ]
+  sources = [ "host_trace_time.cc" ]
+}
+
+pw_source_set("core") {
+  public_configs = [
+    ":backend_config",
+    ":public_include_path",
+  ]
+  public_deps = [
+    "$dir_pw_status",
+    "$dir_pw_tokenizer",
+    dir_pw_span,
+  ]
+  deps = [
+    ":config",
+    "$dir_pw_assert",
+    "$dir_pw_ring_buffer",
+    "$dir_pw_trace:facade",
+    "$dir_pw_varint",
+  ]
+  public = [
+    "public/pw_trace_tokenized/internal/trace_tokenized_internal.h",
+    "public/pw_trace_tokenized/trace_callback.h",
+    "public/pw_trace_tokenized/trace_tokenized.h",
+  ]
+  sources = [ "trace.cc" ]
+  visibility = [ ":*" ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}
+
+config("trace_example_config") {
+  include_dirs = [ "example/public" ]
+}
+
+pw_source_set("trace_example_to_file") {
+  deps = [ ":pw_trace_tokenized" ]
+  public_configs = [ ":trace_example_config" ]
+  public = [ "example/public/pw_trace_tokenized/example/trace_to_file.h" ]
+}
+
+# Builds trace examples
+pw_executable("trace_tokenized_example_basic") {
+  deps = [
+    ":trace_example_to_file",
+    "$dir_pw_log",
+    "$dir_pw_trace",
+    "$dir_pw_trace:trace_sample_app",
+  ]
+  sources = [ "example/basic.cc" ]
+}
+
+pw_executable("trace_tokenized_example_trigger") {
+  deps = [
+    ":trace_example_to_file",
+    "$dir_pw_log",
+    "$dir_pw_trace",
+    "$dir_pw_trace:trace_sample_app",
+  ]
+  sources = [ "example/trigger.cc" ]
+}
+
+pw_executable("trace_tokenized_example_filter") {
+  deps = [
+    ":trace_example_to_file",
+    "$dir_pw_log",
+    "$dir_pw_trace",
+    "$dir_pw_trace:trace_sample_app",
+  ]
+  sources = [ "example/filter.cc" ]
+}
+
+if (dir_pw_third_party_nanopb == "") {
+  group("trace_tokenized_example_rpc") {
+  }
+} else {
+  pw_executable("trace_tokenized_example_rpc") {
+    sources = [ "example/rpc.cc" ]
+    deps = [
+      ":trace_rpc_service",
+      "$dir_pw_hdlc",
+      "$dir_pw_log",
+      "$dir_pw_rpc:server",
+      "$dir_pw_rpc/system_server",
+      "$dir_pw_trace",
+      "$dir_pw_trace:trace_sample_app",
+    ]
+  }
+}

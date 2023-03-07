@@ -1,0 +1,52 @@
+id: "wisun_stack"
+label: "Wi-SUN Stack"
+description: "Wi-SUN stack"
+package: "wisun"
+category: "Wi-SUN"
+quality: "production"
+root_path: "protocol/wisun/stack"
+
+requires:
+  - name: "device_supports_wisun"
+  - name: "rail_lib_singleprotocol"
+  - name: "rail_util_pa"
+  - name: "rail_util_pti"
+  - name: "cmsis_rtos2"
+  - name: "nvm3"
+  - name: "slist"
+  - name: "sl_common"
+  - name: "wisun_implementation"
+  - name: "wisun_crypto"
+  - name: "sl_wisun_trace_util"
+  - name: "sl_wisun_ns_list"
+
+recommends:
+  - id: "wisun_stack_library"
+
+provides:
+  - name: "wisun_stack"
+
+template_contribution:
+  - name: "event_handler"
+    value:
+      event: "stack_init"
+      include: "sl_wisun_stack.h"
+      handler: "sl_wisun_stack_init"
+
+include:
+  - path: "inc/"
+    file_list:
+      - path: "sl_wisun_api.h"
+      - path: "sl_wisun_events.h"
+      - path: "sl_wisun_stack.h"
+      - path: "sl_wisun_types.h"
+      - path: "sl_wisun_version.h"
+      - path: "sl_wisun_common.h"
+      - path: "sli_wisun_internal_api.h"
+
+documentation:
+  docset: wisun
+  document: wisun-stack-api/sl-wisun-api
+
+other_file:
+  - path: "../LICENSE"

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project>
+    <fileVersion>3</fileVersion>
+    <configuration>
+        <name>Debug</name>
+        <toolchain>
+            <name>ARM</name>
+        </toolchain>
+        <debug>1</debug>
+        <settings>
+            <name>C-SPY</name>
+            <archiveVersion>2</archiveVersion>
+            <data>
+                <version>32</version>
+                <wantNonLocal>1</wantNonLocal>
+                <debug>1</debug>
+                <option>
+                    <name>OCDynDriverList</name>
+                    <state>XDS100_ID</state>
+                </option>
+            </data>
+        </settings>
+        <settings>
+            <name>XDS100_ID</name>
+            <archiveVersion>2</archiveVersion>
+            <data>
+                <version>8</version>
+                <wantNonLocal>1</wantNonLocal>
+                <debug>1</debug>
+                <option>
+                    <name>CCXds100ProbeList</name>
+                    <version>0</version>
+                    <state>3</state>
+                </option>
+                <option>
+                    <name>CCXds100InterfaceRadio</name>
+                    <state>2</state>
+                </option>
+            </data>
+        </settings>
+    </configuration>
+</project>

@@ -1,0 +1,29 @@
+!!omap
+- id: brd4503a_a00
+- label: BRD4503A rev A00
+- package: platform
+- description: Board support for BRD4503A.
+- category: Platform|Board|Radio Board
+- quality: production
+- requires:
+  - name: ezr32lg230f256r68
+  - name: brd4503a_config
+  - name: hardware_board_mainboard
+- provides:
+  - name: brd4503a_revision
+  - name: brd4503a_a00
+  - name: hardware_board
+  - name: hardware_board_rb
+- recommends:
+  - id: brd4001a
+- template_contribution: []
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD4503A"'
+  - name: SL_BOARD_REV
+    value: '"A00"'
+- tag:
+  - board:pn:BRD4503
+  - board:variant:A
+  - board:revision:A00
+  - board:device:ezr32lg230f256r68

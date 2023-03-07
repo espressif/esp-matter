@@ -1,0 +1,35 @@
+{
+  "description": "Unit Test Meta-data",
+  "version": 1,
+  "xmlRoot": ".",
+  "xmlFile": ["types.xml", "test1.xml", "access.xml"],
+  "zclSchema": "../../../zcl-builtin/shared/schema/zcl.xsd",
+  "supportCustomZclDevice": true,
+  "manufacturersXml": "../../../zcl-builtin/shared/manufacturers.xml",
+  "options": {
+    "text": {
+      "defaultResponsePolicy": ["Always", "Conditional", "Never"]
+    },
+    "bool": ["commandDiscovery"]
+  },
+  "defaults": {
+    "text": {
+      "manufacturerCodes": "0x1002",
+      "defaultResponsePolicy": "always"
+    },
+    "bool": {
+      "commandDiscovery": true
+    }
+  },
+  "uiOptions": {
+    "events": true,
+    "header": "Header text"
+  },
+  "fabricHandling": {
+    "automaticallyCreateFields": true,
+    "indexFieldId": 666,
+    "indexFieldName": "IndexForFabricField",
+    "indexType": "int8u"
+  },
+  "ZCLDataTypes": ["ARRAY", "BITMAP", "ENUM", "NUMBER", "STRING", "STRUCT"]
+}

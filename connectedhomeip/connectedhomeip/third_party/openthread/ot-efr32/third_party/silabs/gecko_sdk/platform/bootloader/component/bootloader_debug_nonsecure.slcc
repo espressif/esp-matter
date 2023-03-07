@@ -1,0 +1,18 @@
+id: bootloader_debug_nonsecure
+label: Debug (Non-Secure)
+package: bootloader
+description: >
+  Build debug instrumentation into the bootloader.
+category: Platform|Bootloader|TrustZone NonSecure|Utils
+quality: beta
+source:
+  - path: platform/bootloader/debug/btl_debug_ns.c
+include:
+  - path: platform/bootloader/debug
+    file_list:
+    - path: btl_debug.h
+provides:
+  - name: bootloader_debug
+  - name: bootloader_debug_nonsecure
+config_file:
+  - path: platform/bootloader/debug/config/s2/btl_debug_cfg.h

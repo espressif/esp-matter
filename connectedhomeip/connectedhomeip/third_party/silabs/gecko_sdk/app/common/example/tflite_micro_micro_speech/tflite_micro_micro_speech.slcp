@@ -1,0 +1,89 @@
+project_name: tflite_micro_micro_speech
+package: platform
+quality: production
+label: Machine Learning - TensorFlow Lite Micro - Micro Speech
+description: >
+  This application demonstrates a model trained to recognise the words "yes" and
+  "no" from speech data recorded from the microphone. The detected keywords are
+  transmitted over VCOM.
+category: Example|Machine Learning
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+  - name: "Capability"
+    value: ["Machine Learning"]
+include:
+  - path: .
+    file_list:
+      - path: app.h
+      - path: tflite_micro_micro_speech.h
+  - path: micro_speech/
+    file_list:
+      - path: audio_provider.h
+      - path: feature_provider.h
+      - path: command_responder.h
+      - path: main_functions.h
+      - path: audio_provider.h
+      - path: recognize_commands.h
+      - path: micro_features/micro_features_generator.h
+      - path: micro_features/micro_model_settings.h
+      - path: micro_speech_model_data.h
+source:
+  - path: main.c
+  - path: app.c
+  - path: tflite_micro_micro_speech.c
+  - path: micro_speech/sl_audio_provider.cc
+  - path: micro_speech/sl_command_responder.cc
+  - path: micro_speech/micro_features/micro_features_generator.cc
+  - path: micro_speech/micro_features/micro_model_settings.cc
+  - path: micro_speech/micro_speech_model_data.cc
+  - path: micro_speech/feature_provider.cc
+  - path: micro_speech/main_functions.cc
+  - path: micro_speech/recognize_commands.cc
+other_file:
+  - path: micro_speech/micro_features/micro_speech.tflite
+component:
+  - id: sl_system
+  - id: device_init
+  - id: tensorflow_lite_micro
+  - id: ml_audio_feature_generation
+  - id: mic_driver
+  - id: iostream_recommended_stream
+  - id: simple_led
+    instance: [led0]
+define:
+  - name: DEBUG_EFM
+  - name: TF_LITE_STATIC_MEMORY
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+  - name: SL_IOSTREAM_USART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "1"
+    condition: [iostream_usart]
+  - name: SL_IOSTREAM_UART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "1"
+    condition: [iostream_uart]
+  - name: SL_HEAP_SIZE
+    value: "0x3000"
+  - name: SL_ML_AUDIO_FEATURE_GENERATION_MANUAL_CONFIG_ENABLE
+    value: 1
+  - name: SL_ML_FRONTEND_FFT_LENGTH
+    value: 512
+toolchain_settings:
+  - option: gcc_compiler_option
+    value: "-Wno-unused-parameter"
+  - option: gcc_compiler_option
+    value: "-Wno-missing-field-initializers"
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+tag:
+  - hardware:component:led:1+
+  - hardware:component:microphone
+  - hardware:device:ram:40
+  - hardware:device:flash:100

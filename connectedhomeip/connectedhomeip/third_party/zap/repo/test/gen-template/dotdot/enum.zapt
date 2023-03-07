@@ -1,0 +1,6 @@
+{{#zcl_enums}}
+{{label}}
+{{#zcl_enum_items}}
+   - {{label}}
+{{/zcl_enum_items}}
+{{/zcl_enums}}

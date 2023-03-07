@@ -1,0 +1,100 @@
+id: bluetooth_controller
+label: Bluetooth Low Energy Controller Only
+package: Bluetooth
+description: |-
+  BLE controller to be used by external Bluetooth stack
+
+category: Bluetooth|Controller
+quality: production
+root_path: protocol/bluetooth/bgstack/ll
+config_file:
+  - path: inc/sl_bt_ll_config.h
+  - path: config/sl_btctrl_config.h
+  - path: config/sl_btctrl_acceptance_list_config.h
+provides:
+  - name: bluetooth_controller
+  - name: wireless_stack
+    allow_multiple: true
+template_file:
+  - path: src/sl_bluetooth_controller.c.jinja
+include:
+  - path: inc
+    file_list:
+      - path: sl_btctrl_callbacks.h
+      - path: sl_btctrl_linklayer.h
+      - path: sl_btctrl_packets.h
+library:
+  - path: lib/libbluetooth_controller_efr32xg1_gcc_release.a
+    condition: [device_sdid_80, toolchain_gcc]
+  - path: lib/libbluetooth_controller_efr32xg12_gcc_release.a
+    condition: [device_sdid_84, toolchain_gcc]
+  - path: lib/libbluetooth_controller_efr32xg13_gcc_release.a
+    condition: [device_sdid_89, toolchain_gcc]
+  - path: lib/libbluetooth_controller_efr32xg14_gcc_release.a
+    condition: [device_sdid_95, toolchain_gcc]
+  - path: lib/libbluetooth_controller_efr32xg21_gcc_release.a
+    condition: [device_sdid_200, toolchain_gcc]
+  - path: lib/libbluetooth_controller_efr32xg22_gcc_release.a
+    condition: [device_sdid_205, toolchain_gcc]
+  - path: lib/libbluetooth_controller_efr32xg24_gcc_release.a
+    condition: [device_sdid_215, toolchain_gcc]
+  - path: lib/libbluetooth_controller_efr32xg27_gcc_release.a
+    condition: [device_sdid_230, toolchain_gcc]
+  - path: lib/libbluetooth_controller_efr32xg1_iar_release.a
+    condition: [device_sdid_80, toolchain_iar]
+  - path: lib/libbluetooth_controller_efr32xg12_iar_release.a
+    condition: [device_sdid_84, toolchain_iar]
+  - path: lib/libbluetooth_controller_efr32xg13_iar_release.a
+    condition: [device_sdid_89, toolchain_iar]
+  - path: lib/libbluetooth_controller_efr32xg14_iar_release.a
+    condition: [device_sdid_95, toolchain_iar]
+  - path: lib/libbluetooth_controller_efr32xg21_iar_release.a
+    condition: [device_sdid_200, toolchain_iar]
+  - path: lib/libbluetooth_controller_efr32xg22_iar_release.a
+    condition: [device_sdid_205, toolchain_iar]
+  - path: lib/libbluetooth_controller_efr32xg24_iar_release.a
+    condition: [device_sdid_215, toolchain_iar]
+  - path: lib/libbluetooth_controller_efr32xg27_iar_release.a
+    condition: [device_sdid_230, toolchain_iar]
+requires:
+  - name: bluetooth_common
+  - name: bluetooth_crypto
+  - name: device_supports_bluetooth
+  - name: emlib
+  - name: rail_lib
+  - name: rail_util_pa
+  - name: bluetooth_controller_rtos_adaptation
+    condition:
+      - kernel
+  - name: cmsis_rtos2
+    condition:
+      - kernel
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_controller_only
+  - name: event_handler
+    value:
+      event: stack_init
+      include: sl_btctrl_linklayer.h
+      handler: sl_bt_controller_init
+    priority: 0
+  - name: bluetooth_controller_init
+    value:
+      function: sl_btctrl_init_multiprotocol()
+    condition:
+      - rail_lib_multiprotocol
+    priority: 10
+  - name: bluetooth_controller_init
+    value:
+      function: sl_btctrl_init_basic(SL_BT_CONFIG_MAX_CONNECTIONS, SL_BT_CONFIG_USER_ADVERTISERS, SL_BT_CONFIG_ACCEPT_LIST_SIZE)
+      deinit: sl_bt_ll_deinit()
+    priority: 9
+  - name: bluetooth_controller_init
+    value:
+      function: sl_bt_init_coex_hal()
+      include: coexistence-ble.h
+    priority: 10
+    condition:
+      - rail_util_coex
+  - name: application_type
+    value: APPLICATION_TYPE_BLUETOOTH_APP

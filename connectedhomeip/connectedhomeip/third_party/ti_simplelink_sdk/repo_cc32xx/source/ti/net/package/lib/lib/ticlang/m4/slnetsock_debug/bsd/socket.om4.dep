@@ -1,0 +1,12 @@
+package/lib/lib/ticlang/m4/slnetsock_debug/bsd/socket.om4: bsd/socket.c /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/errno.h bsd/sys/socket.h bsd/arpa/inet.h bsd/errnoutil.h slnetsock.h slnetutils.h slneterr.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/types.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/time.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/_internal.h 
+bsd/socket.c:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/errno.h:
+bsd/sys/socket.h:
+bsd/arpa/inet.h:
+bsd/errnoutil.h:
+slnetsock.h:
+slnetutils.h:
+slneterr.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/types.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/time.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/_internal.h:

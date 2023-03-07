@@ -1,0 +1,220 @@
+{#-
+  Device specific sizes and addresses. These variables describes the physical
+  memory of the device.
+#}
+{%- set sram_addr = device_ram_addr | first | default(536870912, true) %}
+{%- set sram_size = device_ram_size | first %}
+{%- set flash_addr = device_flash_addr | first | default(0, true) %}
+{%- set flash_size = device_flash_size | first %}
+{%- set flash_page_size = device_flash_page_size | first %}
+
+{%- if bootloader_enable %}
+  {%- set bootloader_flash_size = bootloader_main_size | sum %}
+  {%- set bootloader_flash_startaddr = bootloader_flash_addr | sum %}
+{%- endif %}
+
+{#-
+  Application specific sizes. Here we start to calculate the application view
+  of the physical memory.
+#}
+{%- if memory_ram_start is defined %}
+{%-   set app_ram_start = memory_ram_start | first %}
+{%- else %}
+{%-   set app_ram_start = sram_addr %}
+{%- endif %}
+
+{%- if memory_ram_size is defined %}
+{%-   set app_ram_size = memory_ram_size | first %}
+{%- else %}
+{%-   set app_ram_size = sram_size %}
+{%- endif %}
+
+{%- if memory_flash_start is defined %}
+{%-   set app_flash_start = memory_flash_start | first %}
+{%- else %}
+{%-   set app_flash_start = flash_addr %}
+{#-
+  Reserve space for the bootloader at the beginning of flash. Note that
+  bootloader_size > 0 only for devices that place the bootloader in main flash.
+  On devices where the bootloader is placed in the dedicated bootloader flash
+  the bootloader_size value is 0.
+#}
+{%-   set app_bootloader_size = bootloader_size | sum %}
+{%-   if app_bootloader_size > 0 %}
+{%-     set app_flash_start = app_flash_start + app_bootloader_size %}
+{%-   endif %}
+{%- endif %}
+
+{%- if memory_flash_size is defined %}
+{%-   set app_flash_size = memory_flash_size | first %}
+{%- else %}
+{%-   set app_flash_size = flash_size %}
+
+{%-   if app_bootloader_size > 0 %}
+{%-     set app_flash_size = app_flash_size - app_bootloader_size %}
+{%-   endif %}
+
+{#-
+  On series-2 devices we reserve the last flash page for tokens and key storage
+#}
+{%-   if (device_series | first) == 2 %}
+{%-     set app_flash_size = app_flash_size - flash_page_size %}
+{%-   endif %}
+{%- endif %}
+
+/*###ICF### Section handled by ICF editor, don't touch! ****/
+/*-Editor annotation file-*/
+/* IcfEditorFile="$TOOLKIT_DIR$\config\ide\IcfEditor\cortex_v1_0.xml" */
+/* Version 4.1.1 */
+
+/*-Memory Regions*/
+{%- if bootloader_enable %}
+  define symbol __ICFEDIT_region_ROM_start__ = 0x{{ '%0x' % bootloader_flash_startaddr }};
+  {%- if (device_series | first) == 2 %}
+  define symbol __ICFEDIT_region_ROM_end__   = (0x{{ '%0x' % bootloader_flash_startaddr }}+0x{{ '%0x' % bootloader_flash_size }}-0x40-0x{{ '%0x' % (app_rollback_protection_size | sum) }}-1);
+  {%- else %}
+  define symbol __ICFEDIT_region_ROM_end__   = (0x{{ '%0x' % bootloader_flash_startaddr }}+0x{{ '%0x' % bootloader_flash_size }}-0x4-0x{{ '%0x' % (app_rollback_protection_size | sum) }}-1);
+  {%- endif %}
+  define symbol __ICFEDIT_region_RAM_start__ = 0x{{ '%0x' % app_ram_start }};
+  define symbol __ICFEDIT_region_RAM_end__   = (0x{{ '%0x' % app_ram_start }}+0x{{ '%0x' % app_ram_size }}-1);
+{%- else %}
+  define symbol __ICFEDIT_region_ROM_start__ = 0x{{ '%0x' % app_flash_start }};
+  define symbol __ICFEDIT_region_ROM_end__   = (0x{{ '%0x' % app_flash_start }}+0x{{ '%0x' % app_flash_size }}-1);
+  define symbol __ICFEDIT_region_RAM_start__ = 0x{{ '%0x' % app_ram_start }};
+  define symbol __ICFEDIT_region_RAM_end__   = (0x{{ '%0x' % app_ram_start }}+0x{{ '%0x' % app_ram_size }}-1);
+{%- endif %}
+
+/**** End of ICF editor section. ###ICF###*/
+
+define memory mem with size = 4G;
+define region ROM_region   = mem:[from __ICFEDIT_region_ROM_start__   to __ICFEDIT_region_ROM_end__];
+define region RAM_region   = mem:[from __ICFEDIT_region_RAM_start__   to __ICFEDIT_region_RAM_end__];
+define region MAIN_FLASH_region   = mem:[from 0x{{ '%0x' % app_flash_start }}   to (0x{{ '%0x' % app_flash_start }}+0x{{ '%0x' % app_flash_size }}-1)];
+
+{%- if trustzone_secure %}
+define symbol STACK_SEAL_SIZE = 8;
+{%- endif %}
+
+define block CSTACK with alignment = 8
+{
+  section .stack
+};
+
+{%-   if trustzone_secure %}
+define block STACKSEAL with size = STACK_SEAL_SIZE
+{
+  section .stackseal
+};
+{%- endif %}
+
+/* Note that "expanding size" is not used yet due to failures in 8.30.1 */
+define block HEAP with alignment = 8
+{
+  section .heap
+};
+
+{%- if apploader_enable %}
+define block apploader with alignment = {{ flash_page_size }}
+{
+  readonly section .binapploader
+};
+keep { section .binapploader };
+{%- endif %}
+
+{#-
+  Exclude the NVM3 region for the TZ secure applications
+#}
+{% if trustzone_secure is not defined %}
+{%- if linker_zwave_nvm is defined %}
+define block zwavenvm with alignment = {{ flash_page_size }}
+{
+  section ZWAVENVM,
+};
+keep { block zwavenvm };
+{%- endif %}
+
+define block nvm with alignment = {{ flash_page_size }}
+{
+  section SIMEE,
+};
+keep { block nvm };
+{%- endif %} {#- trustzone_secure #}
+{%- if trustzone_secure %}
+define block Veneer$$CMSE with alignment = {{ 32 }}
+{
+  section Veneer$$CMSE,
+};
+keep { block Veneer$$CMSE };
+{%- endif %}
+
+define block storage with alignment = {{ flash_page_size }}
+{
+  section INTERNAL_STORAGE,
+};
+keep { block storage };
+
+
+{%- if bootloader_enable %}
+define block ROM_CONTENT with fixed order { readonly, readonly section ROM_SIZE};
+{%- else %}
+define block application with fixed order
+{
+  readonly section .intvec,
+  readonly
+};
+{%- endif %}
+
+define block application_ram with fixed order
+{
+  block CSTACK,
+{%- if trustzone_secure %}
+  block STACKSEAL,
+{%- endif %}
+  readwrite,
+  block HEAP
+};
+
+initialize by copy { readwrite };
+
+do not initialize
+{
+ section .noinit,
+ section .stack,
+{%- if trustzone_secure %}
+ section .stackseal,
+{%- endif %}
+ section .heap
+};
+
+keep { section .intvec };
+
+{%- if bootloader_enable %}
+place in ROM_region   { block ROM_CONTENT };
+{%- else %}
+{%- if apploader_enable %}
+".text_apploader":
+place at start of ROM_region  { block apploader };
+"application":
+place in ROM_region { block application };
+{%- else %}
+"application":
+place at start of ROM_region { block application };
+{%- endif %}
+{%- endif %}
+
+"storage_regions":
+place at end of MAIN_FLASH_region {
+  block storage,
+{% if trustzone_secure is not defined %}
+{%- if linker_zwave_nvm is defined %}
+  block zwavenvm,
+{%- endif %}
+  block nvm,
+{%- endif %} {#- trustzone_secure #}
+{%- if trustzone_secure %}
+  block Veneer$$CMSE
+{%- endif %}
+};
+
+"application_ram":
+place at start of RAM_region { block application_ram };

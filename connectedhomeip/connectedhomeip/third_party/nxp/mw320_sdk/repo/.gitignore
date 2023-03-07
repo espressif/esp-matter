@@ -1,0 +1,111 @@
+#
+# NOTE! Don't add files that are generated in specific
+# subdirectories here. Add them in the ".gitignore" file
+# in that subdirectory instead.
+#
+# NOTE! Please use 'git ls-files -i --exclude-standard'
+# command after changing this file, to see if there are
+# any tracked files which get ignored after the change.
+#
+# Normal rules
+#
+*.o
+*.o.*
+*.a
+*.ko
+*.so
+*.so.dbg
+*.mod.c
+*.i
+*.lst
+*.symtypes
+*.order
+*.elf
+*.bin
+*.gz
+._*
+.DS_Store
+*.swp
+*.tmp
+
+#
+# Top-level generic files
+#
+release
+*_release
+tags
+TAGS
+vmlinux
+System.map
+Module.markers
+Module.symvers
+!.gitignore
+!.mailmap
+SW-Content-Register*
+
+#
+# Generated include files
+#
+
+# stgit generated dirs
+patches-*
+
+# quilt's files
+patches
+series
+*.patch
+
+# cscope files
+cscope.*
+ncscope.*
+
+*.orig
+*~
+\#*#
+workspace
+.BUILD*
+~*
+
+# Windows project stuff
+*.suo
+*.sdf
+*.opensdf
+
+# Xcode user state
+*.xcbkptlist
+*.xcuserstate
+
+# Python bytecode
+*.pyc
+__pycache__
+
+# IAR temp files
+EW*.tmp
+
+# Generated tool-based project directories
+armgcc
+iar
+kds
+mdk
+dsmdk
+lpcx
+xcc
+xtensa
+
+bin/helper.cfg
+*.tags*
+/lib
+armgcc
+atl
+kds
+iar
+mdk
+lpcx
+mcux
+xtensa
+xcc
+tags
+!rtos/freertos/Source/portable/IAR
+*.json
+bin/helper.cfg
+*.cmake

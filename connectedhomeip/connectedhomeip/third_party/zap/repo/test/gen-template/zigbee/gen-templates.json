@@ -1,0 +1,281 @@
+{
+  "name": "Test templates",
+  "version": "test-v1",
+  "requiredFeatureLevel": 2,
+  "options": {
+    "testOption": {
+      "code1": "label1",
+      "code2": "label2",
+      "code3": "label3",
+      "code4": "label4",
+      "code5": "label5"
+    },
+    "externalOption": "externalOptions.json",
+    "cli": "cli.json",
+    "types": {
+      "bacnet_oid": "bacnet_type_t"
+    },
+    "generator": {
+      "shareClusterStatesAcrossEndpoints": "true"
+    }
+  },
+  "zcl": {
+    "cluster": {
+      "testClusterExtension": {
+        "type": "text",
+        "configurability": "hidden",
+        "globalDefault": null,
+        "label": "Test cluster extension",
+        "defaults": [
+          {
+            "clusterCode": "0x0000",
+            "value": "Extension to basic cluster"
+          },
+          {
+            "clusterCode": "0x0001",
+            "role": "server",
+            "value": "Extension to power cluster"
+          },
+          {
+            "clusterCode": "0x0002",
+            "value": "Extension to temperature config cluster"
+          }
+        ]
+      },
+      "testClusterExtension1": {
+        "type": "text",
+        "configurability": "hidden",
+        "globalDefault": null,
+        "label": "Test cluster extension with external defaults values",
+        "defaults": "externalDefaults.json"
+      }
+    },
+    "command": {
+      "implementedCommands": {
+        "type": "boolean",
+        "configurability": "hidden",
+        "globalDefault": false,
+        "label": "List of commands that are implemented by the SDK",
+        "defaults": "implementedCommands.json"
+      },
+      "testCommandExtension": {
+        "type": "boolean",
+        "configurability": "hidden",
+        "globalDefault": false,
+        "label": "Test command extension",
+        "defaults": [
+          {
+            "clusterCode": "0x0000",
+            "commandCode": "0x00",
+            "value": true
+          }
+        ]
+      }
+    },
+    "attribute": {
+      "testAttributeExtension1": {
+        "type": "integer",
+        "configurability": "hidden",
+        "globalDefault": 0,
+        "label": "Test attribute extension 1",
+        "defaults": [
+          {
+            "clusterCode": "0x0000",
+            "attributeCode": "0x0000",
+            "value": 42
+          },
+          {
+            "clusterCode": "0x0000",
+            "attributeCode": "0x0001",
+            "value": 77
+          }
+        ]
+      },
+      "testAttributeExtension2": {
+        "type": "integer",
+        "configurability": "hidden",
+        "globalDefault": 1,
+        "label": "Test attribute extension 2",
+        "defaults": [
+          {
+            "clusterCode": "0x0000",
+            "attributeCode": "0x0000",
+            "value": 99
+          }
+        ]
+      }
+    },
+    "attributeType": {
+      "simpleTypeExtension": {
+        "type": "integer",
+        "configurability": "hidden",
+        "globalDefault": 22,
+        "label": "Extension for the attribute type",
+        "defaults": [
+          {
+            "type": "int8u",
+            "value": 666
+          }
+        ]
+      }
+    },
+    "deviceType": {
+      "testDeviceTypeExtension": {
+        "type": "path",
+        "configurability": "hidden",
+        "globalDefault": null,
+        "defaults": [
+          {
+            "device": "HA-remote",
+            "value": "path/to/remote.c"
+          }
+        ]
+      }
+    }
+  },
+  "override": "addon-override.js",
+  "helpers": ["addon-helper.js"],
+  "templates": [
+    {
+      "path": "simple-test.zapt",
+      "name": "Test template",
+      "output": "simple-test.out"
+    },
+    {
+      "path": "zcl-test.zapt",
+      "name": "Test ZCL template",
+      "output": "zcl-test.out"
+    },
+    {
+      "path": "accumulator.zapt",
+      "name": "Test accumulator template",
+      "output": "accumulator.out"
+    },
+    {
+      "path": "zap-id.zapt",
+      "name": "Various ZCL ids",
+      "output": "zap-id.h"
+    },
+    {
+      "path": "zap-type.zapt",
+      "name": "ZCL types",
+      "output": "zap-type.h"
+    },
+    {
+      "path": "zap-cli.zapt",
+      "name": "ZCL command-line contribution",
+      "output": "zap-cli.c"
+    },
+    {
+      "path": "zap-command-parser.zapt",
+      "name": "ZCL command parsers",
+      "output": "zap-command-parser.c"
+    },
+    {
+      "ignore": true,
+      "path": "zap-command-parser-2.zapt",
+      "name": "ZCL command parsers, v2",
+      "output": "zap-command-parser-2.c"
+    },
+    {
+      "path": "zap-command-parser-ver-3.c.zapt",
+      "name": "Version 3 of zap command parser c file",
+      "output": "zap-command-parser-ver-3.c"
+    },
+    {
+      "path": "zap-command-parser-ver-4.c.zapt",
+      "name": "Version 4 of zap command parser c file",
+      "output": "zap-command-parser-ver-4.c"
+    },
+    {
+      "path": "zap-command-parser-ver-5.c.zapt",
+      "name": "Version 5 of zap command parser c file",
+      "output": "zap-command-parser-ver-5.c"
+    },
+    {
+      "path": "zap-command.zapt",
+      "name": "ZCL command APIs",
+      "output": "zap-command.h"
+    },
+    {
+      "path": "zap-command-ver-2.zapt",
+      "name": "ZCL command APIs version 2",
+      "output": "zap-command-ver-2.h"
+    },
+    {
+      "path": "zap-outgoing-command.zapt",
+      "name": "ZCL outgoing command",
+      "output": "zap-outgoing-command.out"
+    },
+    {
+      "path": "zap-config.zapt",
+      "name": "ZCL endpoint configuration",
+      "output": "zap-config.h"
+    },
+    {
+      "path": "zap-config-version-2.zapt",
+      "name": "ZCL endpoint configuration Version 2",
+      "output": "zap-config-version-2.h"
+    },
+    {
+      "path": "zap-config-version-3.zapt",
+      "name": "ZCL endpoint configuration Version 3",
+      "output": "zap-config-version-3.h"
+    },
+    {
+      "path": "zap-reporting.zapt",
+      "name": "ZCL reporting configuration",
+      "output": "zap-reporting.h"
+    },
+    {
+      "path": "zap-print.zapt",
+      "name": "ZCL human readable strings",
+      "output": "zap-print.h"
+    },
+    {
+      "path": "zap-event.h.zapt",
+      "name": "Generated events header",
+      "output": "zap-event.h"
+    },
+    {
+      "path": "zap-event.c.zapt",
+      "name": "Generated events",
+      "output": "zap-event.c"
+    },
+    {
+      "path": "zap-tokens.zapt",
+      "name": "ZCL tokens",
+      "output": "zap-tokens.h"
+    },
+    {
+      "path": "atomics.zapt",
+      "name": "ZCL Atomics",
+      "output": "atomics.out"
+    },
+    {
+      "path": "zap-command-structs.zapt",
+      "name": "Command structs",
+      "output": "zap-command-structs.h"
+    },
+    {
+      "path": "zap-cluster-command-parser.c.zapt",
+      "name": "Command struct parser functions",
+      "output": "zap-cluster-command-parser.c"
+    },
+    {
+      "path": "zap-cluster-command-parser-2.c.zapt",
+      "name": "Command struct parser functions, ver 2",
+      "output": "zap-cluster-command-parser-2.c"
+    },
+    {
+      "path": "zap-cluster-command-parser.h.zapt",
+      "name": "Command struct parser prototypes",
+      "output": "zap-cluster-command-parser.h"
+    },
+    {
+      "path": "sdk-extension.zapt",
+      "name": "SDK Extension",
+      "output": "sdk-extension.out"
+    }
+  ]
+}

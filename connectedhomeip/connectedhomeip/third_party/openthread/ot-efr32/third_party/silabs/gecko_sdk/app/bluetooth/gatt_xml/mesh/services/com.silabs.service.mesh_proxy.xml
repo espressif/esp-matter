@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2016 Silicon Labs, http://www.silabs.com -->
+<Service xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Mesh Proxy Service" type="com.silabs.service.mesh_proxy" uuid="1828" last-modified="2018-01-15">
+    <InformativeText>
+        <Abstract>The Mesh Proxy Service is used to enable a server to send and receive Proxy PDUs with a client.</Abstract>
+    </InformativeText>
+    <Dependencies>
+        <Dependency>This service has no dependencies on other GATT-based services.</Dependency>
+    </Dependencies>
+    <GATTRequirements>
+		<Requirement subProcedure="Write Without Response">Mandatory</Requirement>
+		<Requirement subProcedure="Notifications">Mandatory</Requirement>
+    </GATTRequirements>
+    <Transports>
+        <LowEnergy>true</LowEnergy>
+    </Transports>
+    <Characteristics>
+        <Characteristic name="Mesh Proxy Data In" type="com.silabs.characteristic.mesh_proxy_data_in">
+            <Requirement>Mandatory</Requirement>
+            <Properties>
+                <Read>Excluded</Read>
+                <Write>Excluded</Write>
+                <WriteWithoutResponse>Mandatory</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+            </Properties>
+        </Characteristic>
+        <Characteristic name="Mesh Proxy Data Out" type="com.silabs.characteristic.mesh_proxy_data_out">
+            <Requirement>Mandatory</Requirement>
+            <Properties>
+                <Read>Excluded</Read>
+                <Write>Excluded</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Mandatory</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+            </Properties>
+        </Characteristic>
+    </Characteristics>
+</Service>

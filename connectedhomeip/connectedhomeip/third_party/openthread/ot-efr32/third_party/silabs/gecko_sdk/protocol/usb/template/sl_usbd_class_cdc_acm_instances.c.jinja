@@ -1,0 +1,156 @@
+//****************************************************************************
+// Includes.
+
+#include "sl_status.h"
+#include "sl_usbd_core.h"
+#include "sl_usbd_class_cdc_acm.h"
+
+/* template headers */
+#include "sl_usbd_configuration_instances.h"
+#include "sl_usbd_class_cdc_acm_instances.h"
+
+/* include config file for the instances */
+{% for instance in usb_cdc_acm_instances %}
+#include "sl_usbd_class_{{ instance }}_config.h"
+{% endfor %}
+
+//****************************************************************************
+// Function declarations.
+
+{# Generate callback function prototypes for all instances #}
+{% for instance in usb_cdc_acm_instances %}
+
+/* callback prototypes for {{ instance }} instance */
+
+void sli_usbd_cdc_acm_{{ instance }}_enable(uint8_t subclass_nbr);
+
+void sli_usbd_cdc_acm_{{ instance }}_disable(uint8_t subclass_nbr);
+
+void sli_usbd_cdc_acm_{{ instance }}_line_control_changed(uint8_t subclass_nbr,
+                                                          uint8_t event,
+                                                          uint8_t event_chngd);
+
+bool sli_usbd_cdc_acm_{{ instance }}_line_coding_changed(uint8_t subclass_nbr,
+                                                         sl_usbd_cdc_acm_line_coding_t *p_line_coding);
+
+{% endfor %}
+
+//****************************************************************************
+// Global variables.
+
+{# Generate variables for all instances #}
+{% for instance in usb_cdc_acm_instances %}
+
+/* variables for {{ instance }} instance */
+
+uint8_t sl_usbd_cdc_acm_{{ instance }}_number = 0;
+
+sl_usbd_cdc_acm_callbacks_t sli_usbd_cdc_acm_{{ instance }}_callbacks = {
+  sli_usbd_cdc_acm_{{ instance }}_enable,
+  sli_usbd_cdc_acm_{{ instance }}_disable,
+  sli_usbd_cdc_acm_{{ instance }}_line_control_changed,
+  sli_usbd_cdc_acm_{{ instance }}_line_coding_changed,
+};
+
+{% endfor %}
+
+//****************************************************************************
+// Callback functions.
+
+{# Generate callback functions for all instances #}
+{% for instance in usb_cdc_acm_instances %}
+/* callback functions for {{ instance }} instance */
+void sli_usbd_cdc_acm_{{ instance }}_enable(uint8_t subclass_nbr)
+{
+  (void)&subclass_nbr;
+  sl_usbd_cdc_acm_{{ instance }}_on_enable_event();
+  return;
+}
+
+void sli_usbd_cdc_acm_{{ instance }}_disable(uint8_t subclass_nbr)
+{
+  (void)&subclass_nbr;
+  sl_usbd_cdc_acm_{{ instance }}_on_disable_event();
+  return;
+}
+
+void sli_usbd_cdc_acm_{{ instance }}_line_control_changed(uint8_t subclass_nbr,
+                                                          uint8_t event,
+                                                          uint8_t event_chngd)
+{
+  (void)&subclass_nbr;
+  (void)&event;
+  (void)&event_chngd;
+  sl_usbd_cdc_acm_{{ instance }}_on_line_control_event();
+  return;
+}
+
+bool sli_usbd_cdc_acm_{{ instance }}_line_coding_changed(uint8_t subclass_nbr,
+                                                         sl_usbd_cdc_acm_line_coding_t *p_line_coding)
+{
+  (void)&subclass_nbr;
+  (void)&p_line_coding;
+  sl_usbd_cdc_acm_{{ instance }}_on_line_coding_event();
+  return true;
+}
+{% endfor %}
+
+//****************************************************************************
+// Global functions.
+
+{# Generate initialization functions for all configurations #}
+{% for instance in usb_cdc_acm_instances %}
+/* initialize {{ instance }} instance */
+void sli_usbd_cdc_acm_{{ instance }}_init()
+{
+  uint16_t  interval      = 0;
+  uint16_t  capabilities  = 0;
+  uint8_t   class_number  = 0;
+  uint8_t   config_number = 0;
+  char     *configs       = NULL;
+  char     *token         = NULL;
+
+  /* configs to attach the class instance to */
+  configs = SL_USBD_CDC_ACM_{{ instance | upper }}_CONFIGURATIONS;
+
+  /* line state notification interval for that instance */
+  interval = SL_USBD_CDC_ACM_{{ instance | upper }}_NOTIFY_INTERVAL;
+
+  /* call management capabilities */
+  if (SL_USBD_CDC_ACM_{{ instance | upper }}_CALL_MGMT_ENABLE == 1) {
+    capabilities |= SL_USBD_CDC_ACM_CALL_MGMT_DEV;
+  }
+
+  /* call management DCI interface */
+  if (SL_USBD_CDC_ACM_{{ instance | upper }}_CALL_MGMT_DCI == 1) {
+    capabilities |= SL_USBD_CDC_ACM_CALL_MGMT_DATA_CCI_DCI;
+  }
+
+
+  /* create CDC ACM instance */
+  sl_usbd_cdc_acm_create_instance(interval,
+                                  capabilities,
+                                  &sli_usbd_cdc_acm_{{ instance }}_callbacks,
+                                  &class_number);
+
+  /* store class number globally */
+  sl_usbd_cdc_acm_{{ instance }}_number = class_number;
+
+  /* tokenize configs by "," and spaces */
+  token = strtok(configs, ", ");
+
+  /* loop over tokens */
+  while (token != NULL) {
+    {% for cfg in usb_configuration_instances %}
+    /* add to {{ cfg }}? */
+    if (!strcmp(token, "{{ cfg }}") || !strcmp(token, "all")) {
+      config_number = sl_usbd_configuration_{{ cfg }}_number;
+      sl_usbd_cdc_acm_add_to_configuration(class_number, config_number);
+    }
+    {% endfor %}
+
+    /* next token */
+    token = strtok(NULL, ", ");
+  }
+}
+{% endfor %}

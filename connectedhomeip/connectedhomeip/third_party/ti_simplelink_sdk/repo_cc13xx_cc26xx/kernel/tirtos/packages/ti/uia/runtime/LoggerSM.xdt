@@ -1,0 +1,692 @@
+%%{
+/*
+ * Copyright (c) 2015-2018, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * */
+
+    var LoggerSM = xdc.module("ti.uia.runtime.LoggerSM");
+    var Program = xdc.module('xdc.cfg.Program');
+    var Text = xdc.module('xdc.runtime.Text');
+
+    var bitsPerChar = Program.build.target.bitsPerChar;
+    var mausPerInt = Program.build.target.stdTypes.t_Int.size;
+    var mausPerInt32 = Program.build.target.stdTypes.t_Int32.size;
+
+    var LoggerSM_module = "ti_uia_runtime_LoggerSM_Module__state__V";
+    var SERIALTIMESIZE = 29;
+    var SERIALSIZE = 10;
+    var STRINGFLAG =  " S:";
+    var STRINGFLAGSIZE = 3;
+
+    /*
+     * Conditionally set the format string depending on the width of data
+     * primitives. This should be removed once System_printf supports
+     * 32-bit format strings
+     */
+    if (bitsPerChar * mausPerInt == 32) {
+        var SERIALTIME = "#:%05u T:%0.8x%0.8x M:";
+        var SERIAL = "#:%05u M:";
+    }
+    else {
+        var SERIALTIME = "#:%05lu T:%0.8lx%0.8lx M:";
+        var SERIAL = "#:%05lu M:";
+    }
+
+    /* 8 byte Event header + 8 byte timestamp, if timestamp enabled */
+    var BITS8_IN_HEADER = (LoggerSM.isTimestampEnabled) ? 16 : 8;
+    var BITS8_IN_ARGS_0  = 0;
+    var BITS8_IN_ARGS_1  = 4;
+    var BITS8_IN_ARGS_2  = 8;
+    var BITS8_IN_ARGS_4  = 16;
+    var BITS8_IN_ARGS_8  = 32;
+
+    var bits8Write0 = BITS8_IN_HEADER + BITS8_IN_ARGS_0;
+    var bits8Write1 = BITS8_IN_HEADER + BITS8_IN_ARGS_1;
+    var bits8Write2 = BITS8_IN_HEADER + BITS8_IN_ARGS_2;
+    var bits8Write4 = BITS8_IN_HEADER + BITS8_IN_ARGS_4;
+    var bits8Write8 = BITS8_IN_HEADER + BITS8_IN_ARGS_8;
+
+    var mausWrite0 = (bits8Write0 / 4) * mausPerInt32;
+    var mausWrite1 = (bits8Write1 / 4) * mausPerInt32;
+    var mausWrite2 = (bits8Write2 / 4) * mausPerInt32;
+    var mausWrite4 = (bits8Write4 / 4) * mausPerInt32;
+    var mausWrite8 = (bits8Write8 / 4) * mausPerInt32;
+
+    var TEMPARRAYSIZE = 220;
+
+%%}
+%/*
+% *  ======== LoggerSM.xdt ========
+% */
+
+#include <xdc/std.h>
+#include <xdc/runtime/Assert.h>
+#include <xdc/runtime/Error.h>
+#include <xdc/runtime/Diags.h>
+#include <xdc/runtime/System.h>
+#include <xdc/runtime/Text.h>
+#include <xdc/runtime/Gate.h>
+#include <xdc/runtime/Log.h>
+#include <xdc/runtime/Memory.h>
+#include <xdc/runtime/Startup.h>
+#include <xdc/runtime/Types.h>
+#include <xdc/runtime/Diags.h>
+#include <xdc/runtime/Timestamp.h>
+
+#include <ti/uia/runtime/EventHdr.h>
+
+#ifdef xdc_target__isaCompatible_64P
+#include <c6x.h>
+#endif
+
+#include <stdlib.h>
+#include <string.h>
+
+% if (!LoggerSM.decode) {
+% if (LoggerSM.isTimestampEnabled) {
+% if (LoggerSM.userTimestamp) {
+#define _ti_uia_runtime_LoggerSM_userTimestamp 1
+% }
+
+/*
+ *  ======== LoggerSM_fillInTimestamp =========
+ */
+static inline UInt32 *ti_uia_runtime_LoggerSM_fillInTimestamp(UInt32 *writePtr)
+{
+% if (LoggerSM.userTimestamp) {
+    xdc_runtime_Types_Timestamp64 tstamp;
+
+    xdc_runtime_Timestamp_get64(&tstamp);
+    *(writePtr++) = tstamp.lo;
+    *(writePtr++) = tstamp.hi;
+% } else {
+#if !(xdc_target__isaCompatible_64P)
+    xdc_runtime_Types_Timestamp64 tstamp;
+
+    xdc_runtime_Timestamp_get64(&tstamp);
+    *(writePtr++) = tstamp.lo;
+    *(writePtr++) = tstamp.hi;
+#else
+    *(writePtr++) = TSCL;
+    *(writePtr++) = TSCH;
+#endif
+% }
+    return (writePtr);
+}
+% }
+% }
+
+% if (!LoggerSM.decode) {
+/*
+ *  ======== LoggerSM_fillInEventHdr =========
+ */
+static inline UInt32 *ti_uia_runtime_LoggerSM_fillInEventHdr(UInt32 *writePtr,
+        SizeT numBits8ToWrite, xdc_Bits32 serial)
+{
+% if (LoggerSM.isTimestampEnabled) {
+    *(writePtr++) = ti_uia_runtime_EventHdr_genEventHdrWord1(numBits8ToWrite,
+            serial, ti_uia_runtime_EventHdr_HdrType_EventWithTimestamp);
+    writePtr = ti_uia_runtime_LoggerSM_fillInTimestamp(writePtr);
+%} else {
+    *(writePtr++) = ti_uia_runtime_EventHdr_genEventHdrWord1(numBits8ToWrite,
+            serial, ti_uia_runtime_EventHdr_HdrType_Event);
+%}
+    return (writePtr);
+}
+
+% }
+% if (!LoggerSM.decode) {
+/*
+ *  ======== LoggerSM_getFreeSize =========
+ */
+static SizeT ti_uia_runtime_LoggerSM_getFreeSize()
+{
+    register Bits32 reader = (Bits32)`LoggerSM_module`.sharedObj->readPtr;
+    register Bits32 writer = (Bits32)`LoggerSM_module`.sharedObj->writePtr;
+
+    if (reader > writer) {
+        return (reader - writer);
+    }
+
+    return (`LoggerSM_module`.sharedObj->bufferSizeMAU - (writer - reader));
+}
+
+% }
+% if (LoggerSM.overwrite && !LoggerSM.decode) {
+/*
+ *  ======== LoggerSM_eraseRecords =========
+ */
+static Void ti_uia_runtime_LoggerSM_eraseRecords(SizeT numMAUToWrite)
+{
+    SizeT freeSizeMAU = ti_uia_runtime_LoggerSM_getFreeSize();
+    SizeT numMAUInEvent = 0;
+    Bits32 endPtr = (Bits32)`LoggerSM_module`.sharedObj->endPtr;
+    volatile Char *readPtr = `LoggerSM_module`.sharedObj->readPtr;
+
+    while (freeSizeMAU <= numMAUToWrite) {
+        /*
+         *  - Get the size of the event record
+         *  - Update the running count
+         *  - adjust the temp read pointer
+         */
+        numMAUInEvent = ti_uia_runtime_EventHdr_getLength(*(Int32 *)readPtr);
+        freeSizeMAU += numMAUInEvent;
+        readPtr = (Ptr)(readPtr + numMAUInEvent);
+
+        /* check for wrap condition */
+        if ((Bits32)readPtr >= endPtr) {
+            readPtr = (Ptr)(`LoggerSM_module`.sharedObj->buffer +
+                              ((Bits32)readPtr - endPtr));
+        }
+    }
+    `LoggerSM_module`.sharedObj->readPtr = readPtr;
+}
+
+% }
+% if (!LoggerSM.decode) {
+/*
+ *  ======== LoggerSM_updateWritePtrByValue ========
+ *  updates the current write pointer, wrapping if necessary
+ */
+static inline Void ti_uia_runtime_LoggerSM_updateWritePtrByValue(Ptr newWrPtr)
+{
+    Bits32 temp;
+    Char *endPtr = `LoggerSM_module`.sharedObj->endPtr;
+
+    /* Did not write in the padded area. Just set the new writePtr and return */
+    if ((Char *)newWrPtr < endPtr) {
+        `LoggerSM_module`.sharedObj->writePtr = newWrPtr;
+        return;
+    }
+
+    /*
+     *  Determine how much is in the padded region. Move that data
+     *  back to the start.
+     */
+    temp = (Bits32)newWrPtr - (Bits32)endPtr;
+    if (temp > 0) {
+        memcpy(`LoggerSM_module`.sharedObj->buffer, endPtr, temp);
+    }
+
+    /*
+     *  NOTE: Must only update obj->writePtr after it is safe for the reader to
+     *  read the data for the message from the buffer and update the readPtr.
+     */
+    `LoggerSM_module`.sharedObj->writePtr =
+            `LoggerSM_module`.sharedObj->buffer + temp;
+
+    return;
+}
+
+% }
+% if (LoggerSM.overwrite) {
+/*
+ *  ======== LoggerSM_overwriteDecoded ========
+ */
+Void ti_uia_runtime_LoggerSM_overwriteDecoded(Char *tempArray, SizeT len)
+{
+    Char *buffer = `LoggerSM_module`.sharedObj->buffer;
+    Char *writePtr = `LoggerSM_module`.sharedObj->writePtr;
+    Char *endPtr = `LoggerSM_module`.sharedObj->endPtr;
+    SizeT end;
+
+    /*
+     * Case 1: overwrite does not wrap
+     * Case 2: overwrite does wrap
+     */
+     if (len + (Bits32)writePtr < (Bits32)endPtr) {
+         memcpy(writePtr, tempArray, len);
+         writePtr += len;
+     }
+     else {
+         end = (SizeT)((Bits32)endPtr - (Bits32)writePtr);
+         memcpy(writePtr, tempArray, end);
+         memcpy(buffer, &(tempArray[end]), len - end);
+         writePtr = buffer + (len - end);
+     }
+
+     if ((writePtr + 1) == endPtr) {
+         `LoggerSM_module`.sharedObj->readPtr = buffer;
+     }
+     else {
+         `LoggerSM_module`.sharedObj->readPtr = writePtr + 1;
+     }
+     `LoggerSM_module`.sharedObj->writePtr = writePtr;
+}
+
+% }
+% if (LoggerSM.decode) {
+/*
+ *  ======== LoggerSM_write =========
+ */
+static Void ti_uia_runtime_LoggerSM_write(ti_uia_runtime_LoggerSM_Object *obj,
+        xdc_runtime_Log_Event evt, xdc_runtime_Types_ModuleId mid,
+        IArg a1, IArg a2, IArg a3, IArg a4,
+        IArg a5, IArg a6, IArg a7, IArg a8)
+{
+% if (LoggerSM.isTimestampEnabled) {
+    Bits32 hi, lo;
+% }
+    Char *tempStr;
+    volatile Char *readPtr;
+    Char *writePtr;
+    Char tempArray[`TEMPARRAYSIZE`];
+    SizeT len = 0;
+    IArg key;
+    xdc_runtime_Text_RopeId rope;
+    CString fmt;
+    SizeT end;
+    Bits16 serial;
+
+    key = xdc_runtime_Gate_enterSystem();
+    serial = `LoggerSM_module`.serial++;
+
+    /* If disabled, simply increment the serial counter */
+    if (`LoggerSM_module`.enabled == FALSE) {
+        `LoggerSM_module`.sharedObj->droppedEvents++;
+        xdc_runtime_Gate_leaveSystem(key);
+        return;
+    }
+    xdc_runtime_Gate_leaveSystem(key);
+
+% if (LoggerSM.isTimestampEnabled) {
+% if (LoggerSM.userTimestamp) {
+    xdc_runtime_Types_Timestamp64 tstamp;
+
+    xdc_runtime_Timestamp_get64(&tstamp);
+    lo = tstamp.lo;
+    hi = tstamp.hi;
+% } else {
+#if !defined(xdc_target__isaCompatible_64P)
+    xdc_runtime_Types_Timestamp64 tstamp;
+
+    xdc_runtime_Timestamp_get64(&tstamp);
+    lo = tstamp.lo;
+    hi = tstamp.hi;
+#else
+    lo = TSCL;
+    hi = TSCH;
+#endif
+% }
+    key = xdc_runtime_Gate_enterSystem();
+    xdc_runtime_System_sprintf(tempArray, "`SERIALTIME`", serial, hi, lo);
+    xdc_runtime_Gate_leaveSystem(key);
+    len = `SERIALTIMESIZE`;
+% }
+% else {
+    key = xdc_runtime_Gate_enterSystem();
+    xdc_runtime_System_sprintf(tempArray, "`SERIAL`", serial);
+    xdc_runtime_Gate_leaveSystem(key);
+    len = `SERIALSIZE`;
+% }
+
+    /* pointer to memory after the serial num and timestamp */
+    tempStr = &(tempArray[len]);
+
+    /* Put in the module name */
+    xdc_runtime_Text_putMod(mid, &tempStr, `TEMPARRAYSIZE` - len);
+
+    /* Put the string delimitor in */
+    xdc_runtime_System_sprintf(tempStr, "`STRINGFLAG`");
+    tempStr += `STRINGFLAGSIZE`;
+
+    rope = xdc_runtime_Log_getEventId(evt);   /* the event id is the message rope */
+    if (rope == 0) {
+        /* Log_print() event */
+        key = xdc_runtime_Gate_enterSystem();
+        xdc_runtime_System_asprintf(tempStr, (String)iargToPtr(a1),
+            a2, a3, a4, a5, a6, a7, a8,  0);
+        xdc_runtime_Gate_leaveSystem(key);
+    }
+    else {
+        fmt = xdc_runtime_Text_ropeText(rope);
+        key = xdc_runtime_Gate_enterSystem();
+% if (Text.isLoaded) {
+        xdc_runtime_System_asprintf(tempStr, fmt, a1, a2, a3, a4, a5,
+                a6, a7, a8);
+% }
+% else {
+        xdc_runtime_System_asprintf(tempStr,
+                "{evt: fmt=%p, args=[0x%x, 0x%x ...]}",  fmt, a1, a2);
+% }
+        xdc_runtime_Gate_leaveSystem(key);
+    }
+
+    len = strlen(tempArray);
+    tempArray[len] = '\n';
+    len++;
+
+    key = xdc_runtime_Gate_enterSystem();
+
+    readPtr = `LoggerSM_module`.sharedObj->readPtr;
+    writePtr = `LoggerSM_module`.sharedObj->writePtr;
+
+    if (writePtr < readPtr) {
+        if (len < (Bits32)readPtr - (Bits32)writePtr) {
+            /* Case 1 */
+            memcpy(writePtr, tempArray, len);
+            `LoggerSM_module`.sharedObj->writePtr += len;
+        }
+        else {
+% if (LoggerSM.overwrite) {
+            ti_uia_runtime_LoggerSM_overwriteDecoded(tempArray, len);
+% }
+% else {
+            `LoggerSM_module`.sharedObj->droppedEvents++;
+% }
+        }
+    }
+    else {
+        if (len < (`LoggerSM_module`.sharedObj->bufferSizeMAU -
+            (SizeT)((Bits32)writePtr - (Bits32)readPtr))) {
+            end = (SizeT)((Bits32)`LoggerSM_module`.sharedObj->endPtr -
+                    (Bits32)writePtr);
+            if (end > len) {
+                /* Case 2 */
+                memcpy(writePtr, tempArray, len);
+                `LoggerSM_module`.sharedObj->writePtr += len;
+            }
+            else {
+                /* Case 3 */
+                memcpy(writePtr, tempArray, end);
+                memcpy(`LoggerSM_module`.sharedObj->buffer,
+                    &(tempArray[end]), len - end);
+                `LoggerSM_module`.sharedObj->writePtr =
+                    `LoggerSM_module`.sharedObj->buffer + len - end;
+            }
+        }
+        else {
+% if (LoggerSM.overwrite) {
+            ti_uia_runtime_LoggerSM_overwriteDecoded(tempArray, len);
+% }
+% else {
+            `LoggerSM_module`.sharedObj->droppedEvents++;
+% }
+        }
+    }
+
+    xdc_runtime_Gate_leaveSystem(key);
+}
+% }
+
+/*
+ *  ======== write0 =========
+ *  Log an event with 0 parameters and the calling address
+ */
+Void ti_uia_runtime_LoggerSM_write0__E(ti_uia_runtime_LoggerSM_Object *obj,
+        xdc_runtime_Log_Event evt, xdc_runtime_Types_ModuleId mid)
+{
+% if (!LoggerSM.decode) {
+    IArg key;
+    Bits32 *myWrPtr;
+    SizeT numBits8ToWrite;
+
+% }
+    /* Do not do any work if there is no shared object yet */
+    if (`LoggerSM_module`.sharedObj == NULL) {
+        return;
+    }
+
+% if (LoggerSM.decode) {
+    ti_uia_runtime_LoggerSM_write(obj, evt, mid, 0, 0, 0, 0, 0, 0, 0, 0);
+% }
+% else {
+    /* Figure out big the write will be */
+    numBits8ToWrite = `bits8Write0`;
+
+    key = xdc_runtime_Gate_enterSystem();
+    if (ti_uia_runtime_LoggerSM_getFreeSize() <= `mausWrite0`) {
+% if (!LoggerSM.overwrite) {
+        `LoggerSM_module`.serial++;
+        `LoggerSM_module`.sharedObj->droppedEvents++;
+        xdc_runtime_Gate_leaveSystem(key);
+        return;
+% }
+% else {
+        ti_uia_runtime_LoggerSM_eraseRecords(`mausWrite0`);
+% }
+    }
+    myWrPtr = (Bits32 *)ti_uia_runtime_LoggerSM_fillInEventHdr(
+            (UInt32 *)(`LoggerSM_module`.sharedObj->writePtr),
+            numBits8ToWrite, `LoggerSM_module`.serial++);
+    *(myWrPtr++) = ((evt) & 0xffff0000) | mid;
+    ti_uia_runtime_LoggerSM_updateWritePtrByValue(myWrPtr);
+
+    xdc_runtime_Gate_leaveSystem(key);
+% }
+}
+
+/*
+ *  ======== write1 =========
+ *  Log an event with 1 parameter and the calling address
+ */
+Void ti_uia_runtime_LoggerSM_write1__E(ti_uia_runtime_LoggerSM_Object *obj,
+        xdc_runtime_Log_Event evt, xdc_runtime_Types_ModuleId mid, IArg a1)
+{
+% if (!LoggerSM.decode) {
+    IArg key;
+    Bits32 *myWrPtr;
+    SizeT numBits8ToWrite;
+
+% }
+    /* Do not do any work if there is no shared object yet */
+    if (`LoggerSM_module`.sharedObj == NULL) {
+        return;
+    }
+
+% if (LoggerSM.decode) {
+    ti_uia_runtime_LoggerSM_write(obj, evt, mid, a1, 0, 0, 0, 0, 0, 0, 0);
+% }
+% else {
+    /* Figure out big the write will be */
+    numBits8ToWrite = `bits8Write1`;
+
+    key = xdc_runtime_Gate_enterSystem();
+
+    if (ti_uia_runtime_LoggerSM_getFreeSize() <= `mausWrite1`) {
+% if (!LoggerSM.overwrite) {
+        `LoggerSM_module`.serial++;
+        `LoggerSM_module`.sharedObj->droppedEvents++;
+        xdc_runtime_Gate_leaveSystem(key);
+        return;
+% }
+% else {
+        ti_uia_runtime_LoggerSM_eraseRecords(`mausWrite1`);
+% }
+    }
+
+    myWrPtr = (Bits32 *)ti_uia_runtime_LoggerSM_fillInEventHdr(
+            (UInt32 *)(`LoggerSM_module`.sharedObj->writePtr),
+            numBits8ToWrite, `LoggerSM_module`.serial++);
+    *(myWrPtr++) = ((evt) & 0xffff0000) | mid;
+    *(myWrPtr++) = a1;
+    ti_uia_runtime_LoggerSM_updateWritePtrByValue(myWrPtr);
+
+    xdc_runtime_Gate_leaveSystem(key);
+% }
+}
+
+/*
+ *  ======== write2 =========
+ *  Log an event with 2 parameter and the calling address
+ */
+Void ti_uia_runtime_LoggerSM_write2__E(ti_uia_runtime_LoggerSM_Object *obj,
+        xdc_runtime_Log_Event evt, xdc_runtime_Types_ModuleId mid,
+        IArg a1, IArg a2)
+{
+% if (!LoggerSM.decode) {
+    IArg key;
+    Bits32 *myWrPtr;
+    SizeT numBits8ToWrite;
+
+% }
+    /* Do not do any work if there is no shared object yet */
+    if (`LoggerSM_module`.sharedObj == NULL) {
+        return;
+    }
+
+% if (LoggerSM.decode) {
+    ti_uia_runtime_LoggerSM_write(obj, evt, mid, a1, a2, 0, 0, 0, 0, 0, 0);
+% }
+% else {
+    /* Figure out big the write will be */
+    numBits8ToWrite = `bits8Write2`;
+
+    key = xdc_runtime_Gate_enterSystem();
+    if (ti_uia_runtime_LoggerSM_getFreeSize() <= `mausWrite2`) {
+% if (!LoggerSM.overwrite) {
+        `LoggerSM_module`.serial++;
+        `LoggerSM_module`.sharedObj->droppedEvents++;
+        xdc_runtime_Gate_leaveSystem(key);
+        return;
+% }
+% else {
+        ti_uia_runtime_LoggerSM_eraseRecords(`mausWrite2`);
+% }
+    }
+    myWrPtr = (Bits32 *)ti_uia_runtime_LoggerSM_fillInEventHdr(
+            (UInt32 *)(`LoggerSM_module`.sharedObj->writePtr),
+            numBits8ToWrite, `LoggerSM_module`.serial++);
+    *(myWrPtr++) = ((evt) & 0xffff0000) | mid;
+    *(myWrPtr++) = a1;
+    *(myWrPtr++) = a2;
+    ti_uia_runtime_LoggerSM_updateWritePtrByValue(myWrPtr);
+
+    xdc_runtime_Gate_leaveSystem(key);
+% }
+}
+
+/*
+ *  ======== write4 =========
+ *  Log an event with 4 parameters and the calling address
+ */
+Void ti_uia_runtime_LoggerSM_write4__E(ti_uia_runtime_LoggerSM_Object *obj,
+        xdc_runtime_Log_Event evt, xdc_runtime_Types_ModuleId mid,
+        IArg a1, IArg a2, IArg a3, IArg a4)
+{
+% if (!LoggerSM.decode) {
+    IArg key;
+    Bits32 *myWrPtr;
+    SizeT numBits8ToWrite;
+
+% }
+    /* Do not do any work if there is no shared object yet */
+    if (`LoggerSM_module`.sharedObj == NULL) {
+        return;
+    }
+
+% if (LoggerSM.decode) {
+    ti_uia_runtime_LoggerSM_write(obj, evt, mid, a1, a2, a3, a4, 0, 0, 0, 0);
+% }
+% else {
+    /* Figure out big the write will be */
+    numBits8ToWrite = `bits8Write4`;
+
+    key = xdc_runtime_Gate_enterSystem();
+    if (ti_uia_runtime_LoggerSM_getFreeSize() <= `mausWrite4`) {
+% if (!LoggerSM.overwrite) {
+        `LoggerSM_module`.serial++;
+        `LoggerSM_module`.sharedObj->droppedEvents++;
+        xdc_runtime_Gate_leaveSystem(key);
+        return;
+% }
+% else {
+        ti_uia_runtime_LoggerSM_eraseRecords(`mausWrite4`);
+% }
+    }
+    myWrPtr = (Bits32 *)ti_uia_runtime_LoggerSM_fillInEventHdr(
+            (UInt32 *)(`LoggerSM_module`.sharedObj->writePtr),
+            numBits8ToWrite, `LoggerSM_module`.serial++);
+    *(myWrPtr++) = ((evt) & 0xffff0000) | mid;
+    *(myWrPtr++) = a1;
+    *(myWrPtr++) = a2;
+    *(myWrPtr++) = a3;
+    *(myWrPtr++) = a4;
+    ti_uia_runtime_LoggerSM_updateWritePtrByValue(myWrPtr);
+
+    xdc_runtime_Gate_leaveSystem(key);
+% }
+}
+
+/*
+ *  ======== write8 =========
+ *  Log an event with 8 parameters and the calling address
+ */
+Void ti_uia_runtime_LoggerSM_write8__E(ti_uia_runtime_LoggerSM_Object *obj,
+        xdc_runtime_Log_Event evt, xdc_runtime_Types_ModuleId mid,
+        IArg a1, IArg a2, IArg a3, IArg a4, IArg a5, IArg a6,
+        IArg a7, IArg a8)
+{
+% if (!LoggerSM.decode) {
+    IArg key;
+    Bits32 *myWrPtr;
+    SizeT numBits8ToWrite;
+
+% }
+    /* Do not do any work if there is no shared object yet */
+    if (`LoggerSM_module`.sharedObj == NULL) {
+        return;
+    }
+
+% if (LoggerSM.decode) {
+    ti_uia_runtime_LoggerSM_write(obj, evt, mid, a1, a2, a3, a4,
+            a5, a6, a7, a8);
+% }
+% else {
+    /* Figure out big the write will be */
+    numBits8ToWrite = `bits8Write8`;
+
+    key = xdc_runtime_Gate_enterSystem();
+    if (ti_uia_runtime_LoggerSM_getFreeSize() <= `mausWrite8`) {
+% if (!LoggerSM.overwrite) {
+        `LoggerSM_module`.serial++;
+        `LoggerSM_module`.sharedObj->droppedEvents++;
+        xdc_runtime_Gate_leaveSystem(key);
+        return;
+% }
+% else {
+        ti_uia_runtime_LoggerSM_eraseRecords(`mausWrite8`);
+% }
+    }
+    myWrPtr = (Bits32 *)ti_uia_runtime_LoggerSM_fillInEventHdr(
+            (UInt32 *)(`LoggerSM_module`.sharedObj->writePtr),
+            numBits8ToWrite, `LoggerSM_module`.serial++);
+    *(myWrPtr++) = ((evt) & 0xffff0000) | mid;
+    *(myWrPtr++) = a1;
+    *(myWrPtr++) = a2;
+    *(myWrPtr++) = a3;
+    *(myWrPtr++) = a4;
+    *(myWrPtr++) = a5;
+    *(myWrPtr++) = a6;
+    *(myWrPtr++) = a7;
+    *(myWrPtr++) = a8;
+    ti_uia_runtime_LoggerSM_updateWritePtrByValue(myWrPtr);
+
+    xdc_runtime_Gate_leaveSystem(key);
+% }
+}

@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<cli>
+  <group id="plugin-antenna" name="Plugin Commands: Antenna">
+    <description>
+      The antenna commands allow you run-time reconfiguration of the antenna plugin
+    </description>
+  </group>
+  <command cli="plugin antenna get-antenna-tx-mode" functionName="emberAfPluginAntennaGetAntennaTxMode" group="plugin-antenna">
+    <description>
+      Get the TX antenna mode
+    </description>
+  </command>
+  <command cli="plugin antenna set-antenna-tx-mode" functionName="emberAfPluginAntennaSetAntennaTxMode" group="plugin-antenna">
+    <description>
+      Set the TX antenna mode
+    </description>
+	<arg name="mode" type="INT8U" description="Configure the TX antenna mode(0-don't switch,1-primary,2-secondary,3-TX antenna diversity)." />
+  </command>
+  <command cli="plugin antenna get-antenna-rx-mode" functionName="emberAfPluginAntennaGetAntennaRxMode" group="plugin-antenna">
+    <description>
+      Get the RX antenna mode
+    </description>
+  </command>
+  <command cli="plugin antenna set-antenna-rx-mode" functionName="emberAfPluginAntennaSetAntennaRxMode" group="plugin-antenna">
+    <description>
+      Set the RX antenna mode
+    </description>
+	<arg name="mode" type="INT8U" description="Configure the RX antenna mode(0-don't switch,1-primary,2-secondary,3-RX antenna diversity)." />
+  </command>
+  <command cli="plugin antenna get-active-phy" functionName="emberAfPluginAntennaGetActivePhy" group="plugin-antenna">
+    <description>
+      Get the active RAIL PHY
+    </description>
+  </command>  
+</cli>

@@ -1,0 +1,245 @@
+# Copyright (c) 2020-2021 Project CHIP Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build_overrides/build.gni")
+import("//build_overrides/chip.gni")
+import("//build_overrides/nlassert.gni")
+import("//build_overrides/nlfaultinjection.gni")
+import("//build_overrides/nlio.gni")
+import("//build_overrides/nlunit_test.gni")
+
+import("${chip_root}/build/chip/chip_version.gni")
+import("${chip_root}/build/chip/java/config.gni")
+import("${chip_root}/build/chip/tests.gni")
+import("${chip_root}/src/lib/core/core.gni")
+
+declare_args() {
+  # Set to true to run the PersistentStorageDelegate API compliance audit
+  chip_support_enable_storage_api_audit = false
+
+  # Set to true to run the PersistentStorageDelegate load test audit
+  chip_support_enable_storage_load_test_audit = false
+}
+
+config("storage_audit_config") {
+  defines = []
+
+  if (chip_support_enable_storage_api_audit) {
+    defines += [ "CHIP_SUPPORT_ENABLE_STORAGE_API_AUDIT" ]
+  }
+
+  if (chip_support_enable_storage_load_test_audit) {
+    defines += [ "CHIP_SUPPORT_ENABLE_STORAGE_LOAD_TEST_AUDIT" ]
+  }
+}
+
+if (chip_pw_tokenizer_logging) {
+  import("//build_overrides/pigweed.gni")
+}
+
+action("gen_chip_version") {
+  script = "${chip_root}/scripts/gen_chip_version.py"
+
+  version_file = "${root_gen_dir}/include/CHIPVersion.h"
+  outputs = [ version_file ]
+  args = [
+    "--output_file=" + rebase_path(version_file, root_build_dir),
+    "--chip_major=${chip_version_major}",
+    "--chip_minor=${chip_version_minor}",
+    "--chip_patch=${chip_version_patch}",
+    "--chip_extra=${chip_version_extra}",
+  ]
+}
+
+source_set("logging_constants") {
+  sources = [ "logging/Constants.h" ]
+}
+
+source_set("attributes") {
+  sources = [
+    "DLLUtil.h",
+    "EnforceFormat.h",
+  ]
+}
+
+source_set("chip_version_header") {
+  sources = get_target_outputs(":gen_chip_version")
+
+  deps = [ ":gen_chip_version" ]
+}
+
+static_library("support") {
+  output_name = "libSupportLayer"
+
+  sources = [
+    "Base64.cpp",
+    "Base64.h",
+    "BitFlags.h",
+    "BitMask.h",
+    "BufferReader.cpp",
+    "BufferReader.h",
+    "BufferWriter.cpp",
+    "BufferWriter.h",
+    "BytesCircularBuffer.cpp",
+    "BytesCircularBuffer.h",
+    "BytesToHex.cpp",
+    "BytesToHex.h",
+    "CHIPArgParser.cpp",
+    "CHIPCounter.h",
+    "CHIPMem.cpp",
+    "CHIPMem.h",
+    "CHIPMemString.h",
+    "CHIPPlatformMemory.cpp",
+    "CHIPPlatformMemory.h",
+    "CodeUtils.h",
+    "DLLUtil.h",
+    "DefaultStorageKeyAllocator.h",
+    "Defer.h",
+    "ErrorStr.cpp",
+    "ErrorStr.h",
+    "FibonacciUtils.cpp",
+    "FibonacciUtils.h",
+    "FixedBufferAllocator.cpp",
+    "FixedBufferAllocator.h",
+    "IniEscaping.cpp",
+    "IniEscaping.h",
+    "Iterators.h",
+    "LifetimePersistedCounter.h",
+    "ObjectLifeCycle.h",
+    "PersistedCounter.h",
+    "PersistentStorageAudit.cpp",
+    "PersistentStorageAudit.h",
+    "PersistentStorageMacros.h",
+    "Pool.cpp",
+    "Pool.h",
+    "PrivateHeap.cpp",
+    "PrivateHeap.h",
+    "ReferenceCountedHandle.h",
+    "SafeInt.h",
+    "SerializableIntegerSet.cpp",
+    "SerializableIntegerSet.h",
+    "SetupDiscriminator.h",
+    "SortUtils.h",
+    "StateMachine.h",
+    "ThreadOperationalDataset.cpp",
+    "ThreadOperationalDataset.h",
+    "TimeUtils.cpp",
+    "TimeUtils.h",
+    "Variant.h",
+    "ZclString.cpp",
+    "ZclString.h",
+    "logging/CHIPLogging.cpp",
+    "logging/CHIPLogging.h",
+    "verhoeff/Verhoeff.cpp",
+    "verhoeff/Verhoeff.h",
+    "verhoeff/Verhoeff10.cpp",
+    "verhoeff/Verhoeff16.cpp",
+    "verhoeff/Verhoeff32.cpp",
+    "verhoeff/Verhoeff36.cpp",
+  ]
+
+  if (current_os == "android" || build_java_matter_controller) {
+    if (build_java_matter_controller) {
+      include_dirs = java_matter_controller_dependent_paths
+    }
+
+    # added JNI helper on android
+    sources += [
+      "CHIPJNIError.h",
+      "JniReferences.cpp",
+      "JniReferences.h",
+      "JniTypeWrappers.h",
+    ]
+  }
+
+  libs = []
+
+  cflags = [ "-Wconversion" ]
+
+  public_deps = [
+    ":attributes",
+    ":chip_version_header",
+    ":logging_constants",
+    "${chip_root}/src/lib/core:chip_config_header",
+    "${chip_root}/src/platform:platform_buildconfig",
+    "${chip_root}/src/platform/logging:headers",
+    "${nlassert_root}:nlassert",
+    "${nlio_root}:nlio",
+  ]
+
+  # These are needed because we include CHIPCore.h, which uses config
+  # options for src/ble and src/inet, however we cannot depend on those
+  # directly as such a dependency is cyclic.
+  public_deps += [
+    "${chip_root}/src/ble:ble_config_header",
+    "${chip_root}/src/inet:inet_config_header",
+  ]
+
+  # Android has no 'platform' that provides logging
+  if (current_os == "android") {
+    public_deps += [ "${chip_root}/src/platform/logging:android" ]
+  }
+
+  if (current_os == "mac" || current_os == "ios") {
+    public_deps += [ "${chip_root}/src/platform/Darwin:logging" ]
+  }
+
+  public_configs = [
+    "${chip_root}/src:includes",
+    "${chip_root}/src/system:system_config",
+    ":storage_audit_config",
+  ]
+
+  if (chip_config_memory_management == "simple") {
+    sources += [ "CHIPMem-Simple.cpp" ]
+  }
+  if (chip_config_memory_management == "malloc") {
+    sources += [ "CHIPMem-Malloc.cpp" ]
+  }
+  if (chip_with_nlfaultinjection) {
+    sources += [
+      "CHIPFaultInjection.cpp",
+      "CHIPFaultInjection.h",
+    ]
+    public_deps += [ "${nlfaultinjection_root}:nlfaultinjection" ]
+  }
+
+  if (chip_pw_tokenizer_logging) {
+    public_deps += [ "${dir_pw_tokenizer}:global_handler_with_payload" ]
+  }
+
+  if (chip_config_memory_debug_dmalloc) {
+    libs += [ "dmallocthcxx" ]
+  }
+}
+
+static_library("testing") {
+  output_name = "libSupportTesting"
+  output_dir = "${root_out_dir}/lib"
+
+  sources = [
+    "UnitTestExtendedAssertions.h",
+    "UnitTestRegistration.cpp",
+    "UnitTestRegistration.h",
+    "UnitTestUtils.cpp",
+    "UnitTestUtils.h",
+  ]
+
+  public_deps = [
+    ":support",
+    "${chip_root}/src/lib/core",
+    "${nlassert_root}:nlassert",
+    "${nlunit_test_root}:nlunit-test",
+  ]
+}

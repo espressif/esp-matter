@@ -1,0 +1,73 @@
+================ Revision history ============================================
+5.6.0:
+ - Ported emWin to SLSTK3702A
+ - Added I2CSPM_INIT_DEFAULT for series-1 devices in i2cspm.h.
+ - Added config folders for MGM and BGM module OPNs on radio boards.
+ - Added support for boot sectored norflash architecture in norflash.c
+
+5.5.0:
+ - Added default LFXO tuning in hal-config-board.h files.
+ - Added support for new boards.
+ - Added RETARGET_SerialFlush() to retargetserial.c.
+
+5.4.0:
+ - Adding support for dynamic charge redistribution in the segmentlcd driver.
+ - Added support for EFM32TG11.
+ - Added a RETARGET_SerialEnableFlowControl() function for using hardware flow
+   control (CTS/RTS) with the retargetserial driver.
+ - Adding the INCLUDE_PAL_GPIO_PIN_AUTO_TOGGLE_HW_ONLY define on radio boards
+   that have support for this feature.
+ - Removed the BSP_TraceProfilerEnable() function.
+ - Deprecating the BSP_TraceProfilerSetup(). The magic word in the USER_PAGE
+   will no longer be checked to see if SWO tracing should be enabled. Calling
+   BSP_TraceProfilerSetup() will have the same effect as calling
+   BSP_TraceSwoSetup() unconditionally.
+
+5.3.5:
+ - No changes.
+
+5.3.4:
+ - No changes.
+
+5.3.3:
+ - Added kit headers
+
+5.3.2:
+ - hal config files added
+
+5.3.1:
+ - Added Si72xx driver for use with Silicon Labs Si72xx Hall Sensors.
+
+5.3.0:
+ - Thunderboard BSP updated.
+ - Fixed support for RETARGET_VCOM on STK3700, STK3600 and STK3800.
+ - Fixed bug in displaypalls013b7dh06config.h for SLSTK3701A_EFM32GG11 when
+   setting up PRS location.
+
+5.2.2:
+ - No changes.
+
+5.2.1:
+ - No changes.
+
+5.1.3:
+ - Removed compiler warnings from Thunderboard Sense BSP.
+
+5.1.2:
+ - Minor changes.
+
+5.1.1:
+ - First release were kit examples are moved to a separate directory.
+   Kit examples are now in app/mcu_example folder.
+ - Added support for new radio boards:
+   EFR32BG12_BRD4103A, EFR32MG12_BRD4161A, EFR32MG12_BRD4162A,
+   EFR32MG12_BRD4163A, EFR32MG12_BRD4164A, EFR32MG13_BRD4165B.
+
+5.1.0:
+ - Added SLSTK3402A_EFM32PG12 kit support.
+ - Added support for new radio boards EFR32MG13_BRD4158A and EFR32MG13_BRD4165A.
+
+5.0.0:
+ - kits/common/drivers/rtcdrv.c/h removed. Please use RTCDRV instead.
+ - retargetswo: BSP_TraceSwoSetup updated to calculate SWO frequency based on
+   debug clock.

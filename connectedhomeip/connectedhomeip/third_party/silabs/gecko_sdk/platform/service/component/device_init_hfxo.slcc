@@ -1,0 +1,116 @@
+id: device_init_hfxo
+label: "Device Init: HFXO"
+package: platform
+description: >
+  Device initialization for HFXO - High Frequency Crystal Oscillator
+category: Services|Device Initialization
+quality: production
+root_path: platform/service/device_init/
+config_file:
+  - path: config/s0/efm32g/sl_device_init_hfxo_config.h
+    condition: [device_sdid_71]
+    file_id: device_init_hfxo_config
+  - path: config/s0/efm32g/sl_device_init_hfxo_config.h
+    condition: [device_sdid_73]
+    file_id: device_init_hfxo_config
+  - path: config/s0/efm32gg/sl_device_init_hfxo_config.h
+    condition: [device_sdid_72]
+    file_id: device_init_hfxo_config
+  - path: config/s0/efm32gg/sl_device_init_hfxo_config.h
+    condition: [device_sdid_74]
+    file_id: device_init_hfxo_config
+  - path: config/s0/efm32zg/sl_device_init_hfxo_config.h
+    condition: [device_sdid_76]
+    file_id: device_init_hfxo_config
+  - path: config/s0/efm32zg/sl_device_init_hfxo_config.h
+    condition: [device_sdid_77]
+    file_id: device_init_hfxo_config
+  - path: config/s1/efr32/sl_device_init_hfxo_config.h
+    condition: [device_sdid_80, device_has_radio]
+    file_id: device_init_hfxo_config
+  - path: config/s1/efr32/sl_device_init_hfxo_config.h
+    condition: [device_sdid_84, device_has_radio]
+    file_id: device_init_hfxo_config
+  - path: config/s1/efr32/sl_device_init_hfxo_config.h
+    condition: [device_sdid_89]
+    unless: [device_supports_zwave]
+    file_id: device_init_hfxo_config
+  - path: config/s1/efr32/sl_device_init_hfxo_config.h
+    condition: [device_sdid_95]
+    unless: [device_supports_zwave]
+    file_id: device_init_hfxo_config
+  - path: config/s1/efm32pg/sl_device_init_hfxo_config.h
+    condition: [device_sdid_80]
+    unless: [device_has_radio]
+    file_id: device_init_hfxo_config
+  - path: config/s1/efm32pg/sl_device_init_hfxo_config.h
+    condition: [device_sdid_84]
+    unless: [device_has_radio]
+    file_id: device_init_hfxo_config
+  - path: config/s1/efr32zg/sl_device_init_hfxo_config.h
+    condition: [device_sdid_89, device_supports_zwave]
+    file_id: device_init_hfxo_config
+  - path: config/s1/efr32zg/sl_device_init_hfxo_config.h
+    condition: [device_sdid_95, device_supports_zwave]
+    file_id: device_init_hfxo_config
+  - path: config/s1/efm32gg/sl_device_init_hfxo_config.h
+    condition: [device_sdid_100]
+    file_id: device_init_hfxo_config
+  - path: config/s1/efm32gg/sl_device_init_hfxo_config.h
+    condition: [device_sdid_106]
+    file_id: device_init_hfxo_config
+  - path: config/s1/efm32tg/sl_device_init_hfxo_config.h
+    condition: [device_sdid_103]
+    file_id: device_init_hfxo_config
+  - path: config/s2/sdid200/sl_device_init_hfxo_config.h
+    condition: [device_sdid_200]
+    file_id: device_init_hfxo_config
+  - path: config/s2/sdid205/sl_device_init_hfxo_config.h
+    condition: [device_sdid_205]
+    file_id: device_init_hfxo_config
+  - path: config/s2/sdid210/sl_device_init_hfxo_config.h
+    condition: [device_sdid_210]
+    file_id: device_init_hfxo_config
+  - path: config/s2/sdid215/sl_device_init_hfxo_config.h
+    condition: [device_sdid_215]
+    file_id: device_init_hfxo_config
+  - path: config/s2/sdid220/sl_device_init_hfxo_config.h
+    condition: [device_sdid_220]
+    file_id: device_init_hfxo_config
+  - path: config/s2/sdid230/sl_device_init_hfxo_config.h
+    condition: [device_sdid_230]
+    file_id: device_init_hfxo_config
+include:
+  - path: inc
+    file_list:
+      - path: sl_device_init_hfxo.h
+source:
+  - path: src/sl_device_init_hfxo_s0.c
+    condition: [device_series_0]
+  - path: src/sl_device_init_hfxo_s1.c
+    condition: [device_series_1]
+  - path: src/sl_device_init_hfxo_s2.c
+    condition: [device_series_2]
+    unless: [device_family_mgm24]
+  - path: src/sl_device_init_hfxo_mgm24.c
+    condition: [device_family_mgm24]
+
+provides:
+  - name: device_init_hfxo
+requires:
+  - name: emlib_cmu
+  - name: status
+  - name: component_catalog
+    condition: [device_series_2]
+template_contribution:
+  - name: event_handler
+    value:
+      event: platform_init
+      include: sl_device_init_hfxo.h
+      handler: sl_device_init_hfxo
+    priority: -9700
+  - name: device_init_clocks_present
+    value: hfxo
+documentation:
+    docset: gecko-platform
+    document: service/api/group-device-init-hfxo

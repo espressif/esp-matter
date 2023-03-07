@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Created with Liquid XML Studio Developer Edition 8.1.7.2743 (http://www.liquid-technologies.com) -->
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Tx Power Level" type="org.bluetooth.characteristic.tx_power_level" uuid="2A07">
+  <InformativeText>
+    <Abstract>
+      The Transmit Power Level characteristic represents the current transmit power level in dBm, and the level ranges from -100 dBm to +20 dBm to a resolution of 1 dBm.            
+		</Abstract>
+    <Summary>
+    The value of the characteristic is a signed 8 bit integer that has a fixed point exponent of 0.            
+		</Summary>
+  <Examples>
+    <Example>The value 0x12 is interpreted as +18dBm</Example>
+    <Example>The value 0xEE is interpreted as -18dBm</Example>
+  </Examples>
+    </InformativeText>
+  <Value>
+    <Field name="Tx Power">
+      <Requirement>Mandatory</Requirement>
+      <Format>sint8</Format>
+      <Unit>org.bluetooth.unit.logarithmic_radio_quantity.decibel</Unit>
+      <Minimum>-100</Minimum>
+      <Maximum>20</Maximum>
+    </Field>
+  </Value>
+</Characteristic>

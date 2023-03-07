@@ -1,0 +1,166 @@
+#Generated from:
+# $(BASEDIR)/../../../Libraries/Qorvo/mbedtls_alt/qpg6105_mbedtls_alt.py
+
+ifndef BASEDIR
+BASEDIR:=$(abspath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
+endif
+# Global vars
+MBEDTLS_REPO_DIR ?= $(BASEDIR)/../../../Components/ThirdParty/ARM/mbedtls/v2.28
+OS_USED?=LINUX
+GPHUB_ROOT?=/builds/291/0/depot/gpHub
+ROOTDIR?=$(BASEDIR)/../../..
+WORKDIR?=$(BASEDIR)/../../../Work/mbedtls_alt_qpg6105
+ENV_PATH?=$(BASEDIR)/../../..
+PYTHON_BIN?=/usr/bin/python3
+CURRENT_CONF:=qpg6105_mbedtls_alt.py
+EXTRA_CONF:=
+
+CONFIG_HEADER:=$(BASEDIR)/../../../Libraries/Qorvo/mbedtls_alt/gen/mbedtls_alt_qpg6105/qorvo_config.h
+INTERNALS_HEADER:=$(BASEDIR)/../../../Libraries/Qorvo/mbedtls_alt/gen/mbedtls_alt_qpg6105/qorvo_internals.h
+PREINCLUDE_HEADER:=$(BASEDIR)/../../../Libraries/Qorvo/mbedtls_alt/gen/mbedtls_alt_qpg6105/qorvo_config.h
+
+PREBUILD_SCRIPT:=
+
+POSTBUILD_SCRIPT:=
+
+FLAGS=
+# Build variables
+ARMCHIP=
+MCU=cortex-m4
+
+# Main target file
+APPLIB:=$(WORKDIR)/libmbedtls_alt_qpg6105.a
+
+
+# Compiler specifics
+COMPILER?=armgccemb
+COMPILER_VERSION:=9_2019-q4-major
+TOOLCHAIN?=/usr
+PROGRAMMER?=
+PROGRAM_EXT:=a
+LIB_EXT:=a
+
+SRC=
+SRC_NOWARNING=
+ASRC=
+INC=
+AINC=
+LIB=
+
+# Application defines
+APPNAME:=mbedtls_alt_qpg6105
+SRC_APP:=
+SRC_APP+=$(BASEDIR)/../../../Components/ThirdParty/Silex/cryptosoc/mbedtls_alt/aes_alt.c
+SRC_APP+=$(BASEDIR)/../../../Components/ThirdParty/Silex/cryptosoc/mbedtls_alt/ccm_alt.c
+SRC_APP+=$(BASEDIR)/../../../Components/ThirdParty/Silex/cryptosoc/mbedtls_alt/dhm_alt.c
+SRC_APP+=$(BASEDIR)/../../../Components/ThirdParty/Silex/cryptosoc/mbedtls_alt/ecdh_alt_qorvo.c
+SRC_APP+=$(BASEDIR)/../../../Components/ThirdParty/Silex/cryptosoc/mbedtls_alt/ecjpake_alt.c
+SRC_APP+=$(BASEDIR)/../../../Components/ThirdParty/Silex/cryptosoc/mbedtls_alt/ecp_alt.c
+SRC_APP+=$(BASEDIR)/../../../Components/ThirdParty/Silex/cryptosoc/mbedtls_alt/ecp_alt_qorvo.c
+SRC_APP+=$(BASEDIR)/../../../Components/ThirdParty/Silex/cryptosoc/mbedtls_alt/gcm_alt.c
+SRC_APP+=$(BASEDIR)/../../../Components/ThirdParty/Silex/cryptosoc/mbedtls_alt/rsa_alt.c
+SRC_APP+=$(BASEDIR)/../../../Components/ThirdParty/Silex/cryptosoc/mbedtls_alt/sha1_alt.c
+SRC_APP+=$(BASEDIR)/../../../Components/ThirdParty/Silex/cryptosoc/mbedtls_alt/sha256_alt.c
+SRC_APP+=$(BASEDIR)/../../../Components/ThirdParty/Silex/cryptosoc/mbedtls_alt/sha512_alt.c
+SRC+=$(SRC_APP)
+INC_APP:=
+INC_APP+=-I$(BASEDIR)/../../../Components/Qorvo/HAL_PLATFORM/inc
+INC_APP+=-I$(BASEDIR)/../../../Components/Qorvo/HAL_PLATFORM/inc/compiler/ARMGCCEMB
+INC_APP+=-I$(MBEDTLS_REPO_DIR)/include
+INC_APP+=-I$(BASEDIR)/../../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/include
+INC_APP+=-I$(BASEDIR)/../../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src
+INC_APP+=-I$(BASEDIR)/../../../Components/ThirdParty/Silex/cryptosoc/mbedtls_alt
+INC_APP+=-I$(BASEDIR)/../../../Libraries/Qorvo/mbedtls_alt/gen/mbedtls_alt_qpg6105
+INC_APP+=-I$(BASEDIR)/../../../Libraries/Qorvo/mbedtls_alt/inc
+INC+=$(INC_APP)
+AINC_APP:=
+AINC_APP+=-I$(BASEDIR)/../../../Libraries/Qorvo/mbedtls_alt/gen/mbedtls_alt_qpg6105
+AINC+=$(AINC_APP)
+
+#Compilation flags are defined in $(BASEDIR)/../../../Libraries/Qorvo/mbedtls_alt/gen/mbedtls_alt_qpg6105/qorvo_config.h
+FLAGS+=-DGP_CONFIG_HEADER
+APPFIRMWARE:=
+
+COMPS:=
+
+#Component sources
+#Depends on:
+# src: gpLog
+COMPS+=gpAssert
+INC_gpAssert:=
+INC_gpAssert+=-I$(BASEDIR)/../../../Components/Qorvo/OS/gpAssert/inc
+INC+=$(INC_gpAssert)
+
+#Depends on:
+# src: 
+COMPS+=gpBsp
+INC_gpBsp:=
+INC_gpBsp+=-I$(BASEDIR)/../../../Components/Qorvo/BSP/gpBsp/inc
+INC_gpBsp+=-I$(BASEDIR)/../../../Components/Qorvo/BSP/gpBsp/inc/BLE
+INC_gpBsp+=-I$(BASEDIR)/../../../Components/Qorvo/BSP/gpBsp/inc/FTS
+INC_gpBsp+=-I$(BASEDIR)/../../../Components/Qorvo/BSP/gpBsp/inc/FoundationAndSilicon
+INC_gpBsp+=-I$(BASEDIR)/../../../Components/Qorvo/BSP/gpBsp/inc/Gateway
+INC_gpBsp+=-I$(BASEDIR)/../../../Components/Qorvo/BSP/gpBsp/inc/PTC
+INC_gpBsp+=-I$(BASEDIR)/../../../Components/Qorvo/BSP/gpBsp/inc/PeripheralExamples
+INC_gpBsp+=-I$(BASEDIR)/../../../Components/Qorvo/BSP/gpBsp/inc/RemoteControl
+INC_gpBsp+=-I$(BASEDIR)/../../../Components/Qorvo/BSP/gpBsp/inc/SmartHomeAndLighting
+INC+=$(INC_gpBsp)
+
+#Depends on:
+# src: gpAssert
+COMPS+=gpLog
+INC_gpLog:=
+INC_gpLog+=-I$(BASEDIR)/../../../Components/Qorvo/OS/gpLog/inc
+INC+=$(INC_gpLog)
+
+#Depends on:
+# src: 
+COMPS+=gpReset
+INC_gpReset:=
+INC_gpReset+=-I$(BASEDIR)/../../../Components/Qorvo/OS/gpReset/inc
+INC+=$(INC_gpReset)
+
+#Depends on:
+# src: gpAssert, gpLog, gpUtils
+COMPS+=gpSched
+INC_gpSched:=
+INC_gpSched+=-I$(BASEDIR)/../../../Components/Qorvo/OS/gpSched/inc
+INC_gpSched+=-I$(BASEDIR)/../../../Components/Qorvo/OS/gpSched/src
+INC+=$(INC_gpSched)
+
+#Depends on:
+# src: gpLog, gpAssert
+COMPS+=gpStat
+INC_gpStat:=
+INC_gpStat+=-I$(BASEDIR)/../../../Components/Qorvo/BaseUtils/gpStat/inc
+INC+=$(INC_gpStat)
+
+#Depends on:
+# src: gpAssert, gpLog
+COMPS+=gpUtils
+INC_gpUtils:=
+INC_gpUtils+=-I$(BASEDIR)/../../../Components/Qorvo/BaseUtils/gpUtils/inc
+INC+=$(INC_gpUtils)
+
+#Depends on:
+# src: gpAssert, gpReset, gpSched
+# inc: gpStat, gpBsp
+COMPS+=gphal
+INC_gphal:=
+INC_gphal+=-I$(BASEDIR)/../../../Components/Qorvo/HAL_RF/gphal/inc
+INC_gphal+=-I$(BASEDIR)/../../../Components/Qorvo/HAL_RF/gphal/inc/gen
+INC_gphal+=-I$(BASEDIR)/../../../Components/Qorvo/HAL_RF/gphal/src
+INC+=$(INC_gphal)
+
+#Depends on:
+# src: gpAssert, gphal
+# inc: gpBsp
+COMPS+=halCortexM4
+INC_halCortexM4:=
+INC_halCortexM4+=-I$(BASEDIR)/../../../Components/Qorvo/HAL_PLATFORM/halCortexM4/inc
+INC_halCortexM4+=-I$(BASEDIR)/../../../Components/ThirdParty/TOOL_CMSIS/CMSIS/Core/Include
+INC+=$(INC_halCortexM4)
+
+
+-include $(BASEDIR)/custom.mk
+include $(ENV_PATH)/make/gpcommon.mk

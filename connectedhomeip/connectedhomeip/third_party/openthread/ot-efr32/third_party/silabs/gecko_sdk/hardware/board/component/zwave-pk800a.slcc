@@ -1,0 +1,22 @@
+!!omap
+- id: zwave_pk800a
+- label: ZWAVE-PK800A
+- package: platform
+- description: Kit BSP support for the ZWAVE-PK800A.
+- category: Platform|Board|Kit|Pro Kit
+- quality: production
+- requires:
+  - name: hardware_board_from_zwave-pk800a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_pk
+- define:
+  - name: SL_KIT_NAME
+    value: '"ZWAVE-PK800A"'
+  - name: SL_KIT_REV
+    value: '"A00"'
+- tag:
+  - kit:opn:ZWAVE-PK800A
+  - kit:pn:PK800
+  - kit:variant:A
+  - kit:revision:A00

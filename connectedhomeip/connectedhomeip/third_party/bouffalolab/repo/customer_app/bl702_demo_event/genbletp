@@ -1,0 +1,4 @@
+#!/bin/sh
+#Please modify __EM_SIZE to 16K in ld file. For example,__EM_SIZE = DEFINED(ble_controller_init) ? 16K : 0K; in components\platform\soc\bl702\bl702\evb\ld\flash.ld.
+make CONFIG_BT=1 CONFIG_BLECONTROLLER_LIB=m16s1 CONFIG_USB_CDC=1 CONFIG_COEX_ENABLE=0 CONFIG_BT_GATT_CLIENT=1 CONFIG_BLE_TP_SERVER=1 CONFIG_BLE_TP_TEST=1 -j
+exit $?

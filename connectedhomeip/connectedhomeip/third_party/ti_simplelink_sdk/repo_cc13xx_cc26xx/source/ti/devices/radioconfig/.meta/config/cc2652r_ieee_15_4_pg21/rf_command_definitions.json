@@ -1,0 +1,2903 @@
+{
+    "CommandGroups": {
+        "CommandGroup": [
+            {
+                "_name": "Radio Operation",
+                "Command": [
+                    {
+                        "_name": "CMD_NOP",
+                        "id": "0x0801",
+                        "Description": "No Operation Command",
+                        "Field": [
+                            {
+                                "_name": "commandNo",
+                                "ByteIndex": "0..1",
+                                "Description": "The command ID number 0x0801",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "status",
+                                "ByteIndex": "2..3",
+                                "Description": "An integer telling the status of the command. This value is\n  updated by the radio CPU during operation and may be read by the\n  system CPU at any time.",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "pNextOp",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "nopNextOp",
+                                "ByteIndex": "4..7",
+                                "Description": "Pointer to the next operation to run after this operation is done",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTime",
+                                "ByteIndex": "8..11",
+                                "Description": "Absolute or relative start time (depending on the value of <code>startTrigger<\/code>)",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTrigger",
+                                "ByteIndex": "12..12",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Identification of the trigger that starts the operation",
+                                "Access": []
+                            },
+                            {
+                                "_name": "condition",
+                                "ByteIndex": "13..13",
+                                "BitField": [
+                                    {
+                                        "_name": "rule",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Condition for running next command: Rule for how to proceed",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "nSkip",
+                                        "BitIndex": "4..7",
+                                        "BitDescription": "Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            }
+                        ]
+                    },
+                    {
+                        "_name": "CMD_RADIO_SETUP",
+                        "id": "0x0802",
+                        "Description": "Radio Setup Command for Pre-Defined Schemes",
+                        "Field": [
+                            {
+                                "_name": "commandNo",
+                                "ByteIndex": "0..1",
+                                "Description": "The command ID number 0x0802",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "status",
+                                "ByteIndex": "2..3",
+                                "Description": "An integer telling the status of the command. This value is\n  updated by the radio CPU during operation and may be read by the\n  system CPU at any time.",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "pNextOp",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "radioSetupNextOp",
+                                "ByteIndex": "4..7",
+                                "Description": "Pointer to the next operation to run after this operation is done",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTime",
+                                "ByteIndex": "8..11",
+                                "Description": "Absolute or relative start time (depending on the value of <code>startTrigger<\/code>)",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTrigger",
+                                "ByteIndex": "12..12",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Identification of the trigger that starts the operation",
+                                "Access": []
+                            },
+                            {
+                                "_name": "condition",
+                                "ByteIndex": "13..13",
+                                "BitField": [
+                                    {
+                                        "_name": "rule",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Condition for running next command: Rule for how to proceed",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "nSkip",
+                                        "BitIndex": "4..7",
+                                        "BitDescription": "Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "mode",
+                                "ByteIndex": "14..14",
+                                "Description": "The main mode to use<br>\n  0x00: BLE<br>\n  0x01: IEEE 802.15.4<br>\n  0x02: 2 Mbps GFSK<br>\n  0x05: 5 Mbps coded 8-FSK<br>\n  0xFF: Keep existing mode; update overrides only<br>\n  Others: <i>Reserved<\/i>",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "loDivider",
+                                "ByteIndex": "15..15",
+                                "Description": "LO divider setting to use. Supported values: 0, 2, 4,\n  5, 6, 10, 12, 15, and 30.",
+                                "Access": []
+                            },
+                            {
+                                "_name": "config",
+                                "ByteIndex": "16..17",
+                                "BitField": [
+                                    {
+                                        "_name": "frontEndMode",
+                                        "BitIndex": "0..2",
+                                        "BitDescription": "0x00: Differential mode<br>\n  0x01: Single-ended mode RFP<br>\n  0x02: Single-ended mode RFN<br>\n  0x05 Single-ended mode RFP with external frontend control on RF pins (RFN and RXTX)<br>\n  0x06 Single-ended mode RFN with external frontend control on RF pins (RFP and RXTX)<br>\n  Others: <i>Reserved<\/i>",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "biasMode",
+                                        "BitIndex": "3..3",
+                                        "BitDescription": "0: Internal bias<br>\n  1: External bias",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "analogCfgMode",
+                                        "BitIndex": "4..9",
+                                        "BitDescription": "0x00: Write analog configuration.<br>\n  Required first time after boot and when changing frequency band\n  or front-end configuration<br>\n  0x2D: Keep analog configuration.<br>\n  May be used after standby or when changing mode with the same frequency\n  band and front-end configuration<br>\n  Others: <i>Reserved<\/i>",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bNoFsPowerUp",
+                                        "BitIndex": "10..10",
+                                        "BitDescription": "0: Power up frequency synth<br>\n  1: Do not power up frequency synth",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bSynthNarrowBand",
+                                        "BitIndex": "12..12",
+                                        "BitDescription": "0: Normal synth mode<br>\n  1: Narrow-band synth mode",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Configuration options",
+                                "Access": []
+                            },
+                            {
+                                "_name": "txPower",
+                                "ByteIndex": "18..19",
+                                "Description": "Transmit power",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "pRegOverride",
+                                "_type": "pointer",
+                                "PtrType": "uint32_t*",
+                                "PtrName": "radioSetupRegOverride",
+                                "ByteIndex": "20..23",
+                                "Description": "Pointer to a list of hardware and configuration registers to override. If NULL, no\n  override is used.",
+                                "Access": "W"
+                            }
+                        ]
+                    },
+                    {
+                        "_name": "CMD_FS",
+                        "id": "0x0803",
+                        "Description": "Frequency Synthesizer Programming Command",
+                        "Field": [
+                            {
+                                "_name": "commandNo",
+                                "ByteIndex": "0..1",
+                                "Description": "The command ID number 0x0803",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "status",
+                                "ByteIndex": "2..3",
+                                "Description": "An integer telling the status of the command. This value is\n  updated by the radio CPU during operation and may be read by the\n  system CPU at any time.",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "pNextOp",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "fsNextOp",
+                                "ByteIndex": "4..7",
+                                "Description": "Pointer to the next operation to run after this operation is done",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTime",
+                                "ByteIndex": "8..11",
+                                "Description": "Absolute or relative start time (depending on the value of <code>startTrigger<\/code>)",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTrigger",
+                                "ByteIndex": "12..12",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Identification of the trigger that starts the operation",
+                                "Access": []
+                            },
+                            {
+                                "_name": "condition",
+                                "ByteIndex": "13..13",
+                                "BitField": [
+                                    {
+                                        "_name": "rule",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Condition for running next command: Rule for how to proceed",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "nSkip",
+                                        "BitIndex": "4..7",
+                                        "BitDescription": "Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "frequency",
+                                "ByteIndex": "14..15",
+                                "Description": "The frequency in MHz to tune to",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "fractFreq",
+                                "ByteIndex": "16..17",
+                                "Description": "Fractional part of the frequency to tune to",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "synthConf",
+                                "ByteIndex": "18..18",
+                                "BitField": [
+                                    {
+                                        "_name": "bTxMode",
+                                        "BitIndex": "0..0",
+                                        "BitDescription": "0: Start synth in RX mode<br>\n  1: Start synth in TX mode",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "refFreq",
+                                        "BitIndex": "1..6",
+                                        "BitDescription": "0: Use default reference frequency<br>\n  Others: Use reference frequency 48 MHz\/<code>refFreq<\/code>",
+                                        "BitAccess": []
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "__dummy0",
+                                "ByteIndex": "19..19",
+                                "Description": "<i>Reserved<\/i>, always write 0",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "__dummy1",
+                                "ByteIndex": "20..20",
+                                "Description": "<i>Reserved<\/i>",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "__dummy2",
+                                "ByteIndex": "21..21",
+                                "Description": "<i>Reserved<\/i>",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "__dummy3",
+                                "ByteIndex": "22..23",
+                                "Description": "<i>Reserved<\/i>",
+                                "Access": "W"
+                            }
+                        ]
+                    },
+                    {
+                        "_name": "CMD_FS_OFF",
+                        "id": "0x0804",
+                        "Description": "Command for Turning off Frequency Synthesizer",
+                        "Field": [
+                            {
+                                "_name": "commandNo",
+                                "ByteIndex": "0..1",
+                                "Description": "The command ID number 0x0804",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "status",
+                                "ByteIndex": "2..3",
+                                "Description": "An integer telling the status of the command. This value is\n  updated by the radio CPU during operation and may be read by the\n  system CPU at any time.",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "pNextOp",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "fsOffNextOp",
+                                "ByteIndex": "4..7",
+                                "Description": "Pointer to the next operation to run after this operation is done",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTime",
+                                "ByteIndex": "8..11",
+                                "Description": "Absolute or relative start time (depending on the value of <code>startTrigger<\/code>)",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTrigger",
+                                "ByteIndex": "12..12",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Identification of the trigger that starts the operation",
+                                "Access": []
+                            },
+                            {
+                                "_name": "condition",
+                                "ByteIndex": "13..13",
+                                "BitField": [
+                                    {
+                                        "_name": "rule",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Condition for running next command: Rule for how to proceed",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "nSkip",
+                                        "BitIndex": "4..7",
+                                        "BitDescription": "Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            }
+                        ]
+                    },
+                    {
+                        "_name": "CMD_RX_TEST",
+                        "id": "0x0807",
+                        "Description": "Receiver Test Command",
+                        "Field": [
+                            {
+                                "_name": "commandNo",
+                                "ByteIndex": "0..1",
+                                "Description": "The command ID number 0x0807",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "status",
+                                "ByteIndex": "2..3",
+                                "Description": "An integer telling the status of the command. This value is\n  updated by the radio CPU during operation and may be read by the\n  system CPU at any time.",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "pNextOp",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "rxTestNextOp",
+                                "ByteIndex": "4..7",
+                                "Description": "Pointer to the next operation to run after this operation is done",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTime",
+                                "ByteIndex": "8..11",
+                                "Description": "Absolute or relative start time (depending on the value of <code>startTrigger<\/code>)",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTrigger",
+                                "ByteIndex": "12..12",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Identification of the trigger that starts the operation",
+                                "Access": []
+                            },
+                            {
+                                "_name": "condition",
+                                "ByteIndex": "13..13",
+                                "BitField": [
+                                    {
+                                        "_name": "rule",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Condition for running next command: Rule for how to proceed",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "nSkip",
+                                        "BitIndex": "4..7",
+                                        "BitDescription": "Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "config",
+                                "ByteIndex": "14..14",
+                                "BitField": [
+                                    {
+                                        "_name": "bEnaFifo",
+                                        "BitIndex": "0..0",
+                                        "BitDescription": "0: Do not enable FIFO in modem, so that received data is not available<br>\n  1: Enable FIFO in modem &ndash; the data must be read out by the application",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bFsOff",
+                                        "BitIndex": "1..1",
+                                        "BitDescription": "0: Keep frequency synth on after command<br>\n  1: Turn frequency synth off after command",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bNoSync",
+                                        "BitIndex": "2..2",
+                                        "BitDescription": "0: Run sync search as normal for the configured mode<br>\n  1: Write correlation thresholds to the maximum value to avoid getting sync",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "endTrigger",
+                                "ByteIndex": "15..15",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Trigger classifier for ending the operation",
+                                "Access": []
+                            },
+                            {
+                                "_name": "syncWord",
+                                "ByteIndex": "16..19",
+                                "Description": "Sync word to use for receiver",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "endTime",
+                                "ByteIndex": "20..23",
+                                "Description": "Time to end the operation",
+                                "Access": "W"
+                            }
+                        ]
+                    },
+                    {
+                        "_name": "CMD_TX_TEST",
+                        "id": "0x0808",
+                        "Description": "Transmitter Test Command",
+                        "Field": [
+                            {
+                                "_name": "commandNo",
+                                "ByteIndex": "0..1",
+                                "Description": "The command ID number 0x0808",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "status",
+                                "ByteIndex": "2..3",
+                                "Description": "An integer telling the status of the command. This value is\n  updated by the radio CPU during operation and may be read by the\n  system CPU at any time.",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "pNextOp",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "txTestNextOp",
+                                "ByteIndex": "4..7",
+                                "Description": "Pointer to the next operation to run after this operation is done",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTime",
+                                "ByteIndex": "8..11",
+                                "Description": "Absolute or relative start time (depending on the value of <code>startTrigger<\/code>)",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTrigger",
+                                "ByteIndex": "12..12",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Identification of the trigger that starts the operation",
+                                "Access": []
+                            },
+                            {
+                                "_name": "condition",
+                                "ByteIndex": "13..13",
+                                "BitField": [
+                                    {
+                                        "_name": "rule",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Condition for running next command: Rule for how to proceed",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "nSkip",
+                                        "BitIndex": "4..7",
+                                        "BitDescription": "Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "config",
+                                "ByteIndex": "14..14",
+                                "BitField": [
+                                    {
+                                        "_name": "bUseCw",
+                                        "BitIndex": "0..0",
+                                        "BitDescription": "0: Send modulated signal<br>\n  1: Send continuous wave",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bFsOff",
+                                        "BitIndex": "1..1",
+                                        "BitDescription": "0: Keep frequency synth on after command<br>\n  1: Turn frequency synth off after command",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "whitenMode",
+                                        "BitIndex": "2..3",
+                                        "BitDescription": "0: No whitening<br>\n  1: Default whitening<br>\n  2: PRBS-15<br>\n  3: PRBS-32",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "__dummy0",
+                                "ByteIndex": "15..15"
+                            },
+                            {
+                                "_name": "txWord",
+                                "ByteIndex": "16..17",
+                                "Description": "Value to send to the modem before whitening",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "__dummy1",
+                                "ByteIndex": "18..18"
+                            },
+                            {
+                                "_name": "endTrigger",
+                                "ByteIndex": "19..19",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Trigger classifier for ending the operation",
+                                "Access": []
+                            },
+                            {
+                                "_name": "syncWord",
+                                "ByteIndex": "20..23",
+                                "Description": "Sync word to use for transmitter",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "endTime",
+                                "ByteIndex": "24..27",
+                                "Description": "Time to end the operation",
+                                "Access": "W"
+                            }
+                        ]
+                    },
+                    {
+                        "_name": "CMD_SYNC_STOP_RAT",
+                        "id": "0x0809",
+                        "Description": "Synchronize and Stop Radio Timer Command",
+                        "Field": [
+                            {
+                                "_name": "commandNo",
+                                "ByteIndex": "0..1",
+                                "Description": "The command ID number 0x0809",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "status",
+                                "ByteIndex": "2..3",
+                                "Description": "An integer telling the status of the command. This value is\n  updated by the radio CPU during operation and may be read by the\n  system CPU at any time.",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "pNextOp",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "syncStopRatNextOp",
+                                "ByteIndex": "4..7",
+                                "Description": "Pointer to the next operation to run after this operation is done",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTime",
+                                "ByteIndex": "8..11",
+                                "Description": "Absolute or relative start time (depending on the value of <code>startTrigger<\/code>)",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTrigger",
+                                "ByteIndex": "12..12",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Identification of the trigger that starts the operation",
+                                "Access": []
+                            },
+                            {
+                                "_name": "condition",
+                                "ByteIndex": "13..13",
+                                "BitField": [
+                                    {
+                                        "_name": "rule",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Condition for running next command: Rule for how to proceed",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "nSkip",
+                                        "BitIndex": "4..7",
+                                        "BitDescription": "Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "__dummy0",
+                                "ByteIndex": "14..15"
+                            },
+                            {
+                                "_name": "rat0",
+                                "ByteIndex": "16..19",
+                                "Description": "The returned RAT timer value corresponding to the value the RAT would have had when the\n  RTC was zero",
+                                "Access": "R"
+                            }
+                        ]
+                    },
+                    {
+                        "_name": "CMD_SYNC_START_RAT",
+                        "id": "0x080A",
+                        "Description": "Synchrously Start Radio Timer Command",
+                        "Field": [
+                            {
+                                "_name": "commandNo",
+                                "ByteIndex": "0..1",
+                                "Description": "The command ID number 0x080A",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "status",
+                                "ByteIndex": "2..3",
+                                "Description": "An integer telling the status of the command. This value is\n  updated by the radio CPU during operation and may be read by the\n  system CPU at any time.",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "pNextOp",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "syncStartRatNextOp",
+                                "ByteIndex": "4..7",
+                                "Description": "Pointer to the next operation to run after this operation is done",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTime",
+                                "ByteIndex": "8..11",
+                                "Description": "Absolute or relative start time (depending on the value of <code>startTrigger<\/code>)",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTrigger",
+                                "ByteIndex": "12..12",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Identification of the trigger that starts the operation",
+                                "Access": []
+                            },
+                            {
+                                "_name": "condition",
+                                "ByteIndex": "13..13",
+                                "BitField": [
+                                    {
+                                        "_name": "rule",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Condition for running next command: Rule for how to proceed",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "nSkip",
+                                        "BitIndex": "4..7",
+                                        "BitDescription": "Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "__dummy0",
+                                "ByteIndex": "14..15"
+                            },
+                            {
+                                "_name": "rat0",
+                                "ByteIndex": "16..19",
+                                "Description": "The desired RAT timer value corresponding to the value the RAT would have had when the\n  RTC was zero. This parameter is returned by CMD_SYNC_STOP_RAT",
+                                "Access": "W"
+                            }
+                        ]
+                    },
+                    {
+                        "_name": "CMD_RESYNC_RAT",
+                        "id": "0x0816",
+                        "Description": "Re-calculate rat0 value while RAT is running",
+                        "Field": [
+                            {
+                                "_name": "commandNo",
+                                "ByteIndex": "0..1",
+                                "Description": "The command ID number 0x0816",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "status",
+                                "ByteIndex": "2..3",
+                                "Description": "An integer telling the status of the command. This value is\n  updated by the radio CPU during operation and may be read by the\n  system CPU at any time.",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "pNextOp",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "resyncRatNextOp",
+                                "ByteIndex": "4..7",
+                                "Description": "Pointer to the next operation to run after this operation is done",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTime",
+                                "ByteIndex": "8..11",
+                                "Description": "Absolute or relative start time (depending on the value of <code>startTrigger<\/code>)",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTrigger",
+                                "ByteIndex": "12..12",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Identification of the trigger that starts the operation",
+                                "Access": []
+                            },
+                            {
+                                "_name": "condition",
+                                "ByteIndex": "13..13",
+                                "BitField": [
+                                    {
+                                        "_name": "rule",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Condition for running next command: Rule for how to proceed",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "nSkip",
+                                        "BitIndex": "4..7",
+                                        "BitDescription": "Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "__dummy0",
+                                "ByteIndex": "14..15"
+                            },
+                            {
+                                "_name": "rat0",
+                                "ByteIndex": "16..19",
+                                "Description": "The desired RAT timer value corresponding to the value the RAT would have had when the\n  RTC was zero",
+                                "Access": "W"
+                            }
+                        ]
+                    },
+                    {
+                        "_name": "CMD_COUNT",
+                        "id": "0x080B",
+                        "Description": "Counter Command",
+                        "Field": [
+                            {
+                                "_name": "commandNo",
+                                "ByteIndex": "0..1",
+                                "Description": "The command ID number 0x080B",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "status",
+                                "ByteIndex": "2..3",
+                                "Description": "An integer telling the status of the command. This value is\n  updated by the radio CPU during operation and may be read by the\n  system CPU at any time.",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "pNextOp",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "countNextOp",
+                                "ByteIndex": "4..7",
+                                "Description": "Pointer to the next operation to run after this operation is done",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTime",
+                                "ByteIndex": "8..11",
+                                "Description": "Absolute or relative start time (depending on the value of <code>startTrigger<\/code>)",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTrigger",
+                                "ByteIndex": "12..12",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Identification of the trigger that starts the operation",
+                                "Access": []
+                            },
+                            {
+                                "_name": "condition",
+                                "ByteIndex": "13..13",
+                                "BitField": [
+                                    {
+                                        "_name": "rule",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Condition for running next command: Rule for how to proceed",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "nSkip",
+                                        "BitIndex": "4..7",
+                                        "BitDescription": "Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "counter",
+                                "ByteIndex": "14..15",
+                                "Description": "Counter. On start, the radio CPU decrements the value, and the end status of the operation\n  differs if the result is zero",
+                                "Access": "RW"
+                            }
+                        ]
+                    },
+                    {
+                        "_name": "CMD_FS_POWERUP",
+                        "id": "0x080C",
+                        "Description": "Power up Frequency Syntheszier Command",
+                        "Field": [
+                            {
+                                "_name": "commandNo",
+                                "ByteIndex": "0..1",
+                                "Description": "The command ID number 0x080C",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "status",
+                                "ByteIndex": "2..3",
+                                "Description": "An integer telling the status of the command. This value is\n  updated by the radio CPU during operation and may be read by the\n  system CPU at any time.",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "pNextOp",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "fsPowerupNextOp",
+                                "ByteIndex": "4..7",
+                                "Description": "Pointer to the next operation to run after this operation is done",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTime",
+                                "ByteIndex": "8..11",
+                                "Description": "Absolute or relative start time (depending on the value of <code>startTrigger<\/code>)",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTrigger",
+                                "ByteIndex": "12..12",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Identification of the trigger that starts the operation",
+                                "Access": []
+                            },
+                            {
+                                "_name": "condition",
+                                "ByteIndex": "13..13",
+                                "BitField": [
+                                    {
+                                        "_name": "rule",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Condition for running next command: Rule for how to proceed",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "nSkip",
+                                        "BitIndex": "4..7",
+                                        "BitDescription": "Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "__dummy0",
+                                "ByteIndex": "14..15"
+                            },
+                            {
+                                "_name": "pRegOverride",
+                                "_type": "pointer",
+                                "PtrType": "uint32_t*",
+                                "PtrName": "fsPowerupRegOverride",
+                                "ByteIndex": "16..19",
+                                "Description": "Pointer to a list of hardware and configuration registers to override. If NULL, no override is used.",
+                                "Access": "W"
+                            }
+                        ]
+                    },
+                    {
+                        "_name": "CMD_FS_POWERDOWN",
+                        "id": "0x080D",
+                        "Description": "Power down Frequency Syntheszier Command",
+                        "Field": [
+                            {
+                                "_name": "commandNo",
+                                "ByteIndex": "0..1",
+                                "Description": "The command ID number 0x080D",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "status",
+                                "ByteIndex": "2..3",
+                                "Description": "An integer telling the status of the command. This value is\n  updated by the radio CPU during operation and may be read by the\n  system CPU at any time.",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "pNextOp",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "fsPowerdownNextOp",
+                                "ByteIndex": "4..7",
+                                "Description": "Pointer to the next operation to run after this operation is done",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTime",
+                                "ByteIndex": "8..11",
+                                "Description": "Absolute or relative start time (depending on the value of <code>startTrigger<\/code>)",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTrigger",
+                                "ByteIndex": "12..12",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Identification of the trigger that starts the operation",
+                                "Access": []
+                            },
+                            {
+                                "_name": "condition",
+                                "ByteIndex": "13..13",
+                                "BitField": [
+                                    {
+                                        "_name": "rule",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Condition for running next command: Rule for how to proceed",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "nSkip",
+                                        "BitIndex": "4..7",
+                                        "BitDescription": "Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            }
+                        ]
+                    },
+                    {
+                        "_name": "CMD_SCH_IMM",
+                        "id": "0x0810",
+                        "Description": "Run Immidiate Command as Radio Operation Command",
+                        "Field": [
+                            {
+                                "_name": "commandNo",
+                                "ByteIndex": "0..1",
+                                "Description": "The command ID number 0x0810",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "status",
+                                "ByteIndex": "2..3",
+                                "Description": "An integer telling the status of the command. This value is\n  updated by the radio CPU during operation and may be read by the\n  system CPU at any time.",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "pNextOp",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "schImmNextOp",
+                                "ByteIndex": "4..7",
+                                "Description": "Pointer to the next operation to run after this operation is done",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTime",
+                                "ByteIndex": "8..11",
+                                "Description": "Absolute or relative start time (depending on the value of <code>startTrigger<\/code>)",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTrigger",
+                                "ByteIndex": "12..12",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Identification of the trigger that starts the operation",
+                                "Access": []
+                            },
+                            {
+                                "_name": "condition",
+                                "ByteIndex": "13..13",
+                                "BitField": [
+                                    {
+                                        "_name": "rule",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Condition for running next command: Rule for how to proceed",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "nSkip",
+                                        "BitIndex": "4..7",
+                                        "BitDescription": "Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "__dummy0",
+                                "ByteIndex": "14..15"
+                            },
+                            {
+                                "_name": "cmdrVal",
+                                "ByteIndex": "16..19",
+                                "Description": "Value as would be written to CMDR",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "cmdstaVal",
+                                "ByteIndex": "20..23",
+                                "Description": "Value as would be returned in CMDSTA",
+                                "Access": "R"
+                            }
+                        ]
+                    },
+                    {
+                        "_name": "CMD_COUNT_BRANCH",
+                        "id": "0x0812",
+                        "Description": "Counter Command with Branch of Command Chain",
+                        "Field": [
+                            {
+                                "_name": "commandNo",
+                                "ByteIndex": "0..1",
+                                "Description": "The command ID number 0x0812",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "status",
+                                "ByteIndex": "2..3",
+                                "Description": "An integer telling the status of the command. This value is\n  updated by the radio CPU during operation and may be read by the\n  system CPU at any time.",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "pNextOp",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "countBranchNextOp",
+                                "ByteIndex": "4..7",
+                                "Description": "Pointer to the next operation to run after this operation is done",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTime",
+                                "ByteIndex": "8..11",
+                                "Description": "Absolute or relative start time (depending on the value of <code>startTrigger<\/code>)",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTrigger",
+                                "ByteIndex": "12..12",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Identification of the trigger that starts the operation",
+                                "Access": []
+                            },
+                            {
+                                "_name": "condition",
+                                "ByteIndex": "13..13",
+                                "BitField": [
+                                    {
+                                        "_name": "rule",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Condition for running next command: Rule for how to proceed",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "nSkip",
+                                        "BitIndex": "4..7",
+                                        "BitDescription": "Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "counter",
+                                "ByteIndex": "14..15",
+                                "Description": "Counter. On start, the radio CPU decrements the value, and the end status of the operation\n  differs if the result is zero",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "pNextOpIfOk",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "countBranchNextOpIfOk",
+                                "ByteIndex": "16..19",
+                                "Description": "Pointer to next operation if counter did not expire",
+                                "Access": "W"
+                            }
+                        ]
+                    },
+                    {
+                        "_name": "CMD_PATTERN_CHECK",
+                        "id": "0x0813",
+                        "Description": "Command for Checking a Value in Memory aginst a Pattern",
+                        "Field": [
+                            {
+                                "_name": "commandNo",
+                                "ByteIndex": "0..1",
+                                "Description": "The command ID number 0x0813",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "status",
+                                "ByteIndex": "2..3",
+                                "Description": "An integer telling the status of the command. This value is\n  updated by the radio CPU during operation and may be read by the\n  system CPU at any time.",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "pNextOp",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "patternCheckNextOp",
+                                "ByteIndex": "4..7",
+                                "Description": "Pointer to the next operation to run after this operation is done",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTime",
+                                "ByteIndex": "8..11",
+                                "Description": "Absolute or relative start time (depending on the value of <code>startTrigger<\/code>)",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTrigger",
+                                "ByteIndex": "12..12",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Identification of the trigger that starts the operation",
+                                "Access": []
+                            },
+                            {
+                                "_name": "condition",
+                                "ByteIndex": "13..13",
+                                "BitField": [
+                                    {
+                                        "_name": "rule",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Condition for running next command: Rule for how to proceed",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "nSkip",
+                                        "BitIndex": "4..7",
+                                        "BitDescription": "Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "patternOpt",
+                                "ByteIndex": "14..15",
+                                "BitField": [
+                                    {
+                                        "_name": "operation",
+                                        "BitIndex": "0..1",
+                                        "BitDescription": "Operation to perform<br>\n  0: True if value == <code>compareVal<\/code><br>\n  1: True if value < <code>compareVal<\/code><br>\n  2: True if value > <code>compareVal<\/code><br>\n  3: <i>Reserved<\/i>",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bByteRev",
+                                        "BitIndex": "2..2",
+                                        "BitDescription": "If 1, interchange the four bytes of the value, so that they are read\n  most-significant-byte-first.",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bBitRev",
+                                        "BitIndex": "3..3",
+                                        "BitDescription": "If 1, perform bit reversal of the value",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "signExtend",
+                                        "BitIndex": "4..8",
+                                        "BitDescription": "0: Treat value and <code>compareVal<\/code> as unsigned<br>\n  1&ndash;31: Treat value and <code>compareVal<\/code> as signed, where the value\n  gives the number of the most significant bit in the signed number.",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bRxVal",
+                                        "BitIndex": "9..9",
+                                        "BitDescription": "0: Use <code>pValue<\/code> as a pointer<br>\n  1: Use <code>pValue<\/code> as a signed offset to the start of the last\n  committed RX entry element",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Options for comparison",
+                                "Access": []
+                            },
+                            {
+                                "_name": "pNextOpIfOk",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "patternCheckNextOpIfOk",
+                                "ByteIndex": "16..19",
+                                "Description": "Pointer to next operation if comparison result was true",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "pValue",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "patternCheckValue",
+                                "ByteIndex": "20..23",
+                                "Description": "Pointer to read from, or offset from last RX entry if <code>patternOpt.bRxVal<\/code> == 1",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "mask",
+                                "ByteIndex": "24..27",
+                                "Description": "Bit mask to apply before comparison",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "compareVal",
+                                "ByteIndex": "28..31",
+                                "Description": "Value to compare to",
+                                "Access": "W"
+                            }
+                        ]
+                    },
+                    {
+                        "_name": "CMD_IEEE_RX",
+                        "id": "0x2801",
+                        "Description": "IEEE 802.15.4 Receive Command",
+                        "Field": [
+                            {
+                                "_name": "commandNo",
+                                "ByteIndex": "0..1",
+                                "Description": "The command ID number 0x2801",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "status",
+                                "ByteIndex": "2..3",
+                                "Description": "An integer telling the status of the command. This value is\n  updated by the radio CPU during operation and may be read by the\n  system CPU at any time.",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "pNextOp",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "ieeeRxNextOp",
+                                "ByteIndex": "4..7",
+                                "Description": "Pointer to the next operation to run after this operation is done",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTime",
+                                "ByteIndex": "8..11",
+                                "Description": "Absolute or relative start time (depending on the value of <code>startTrigger<\/code>)",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTrigger",
+                                "ByteIndex": "12..12",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Identification of the trigger that starts the operation",
+                                "Access": []
+                            },
+                            {
+                                "_name": "condition",
+                                "ByteIndex": "13..13",
+                                "BitField": [
+                                    {
+                                        "_name": "rule",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Condition for running next command: Rule for how to proceed",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "nSkip",
+                                        "BitIndex": "4..7",
+                                        "BitDescription": "Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "channel",
+                                "ByteIndex": "14..14",
+                                "Description": "Channel to tune to in the start of the operation<br>\n  0: Use existing channel<br>\n  11&ndash;26: Use as IEEE 802.15.4 channel, i.e. frequency is (2405 + 5 &times; (channel - 11)) MHz<br>\n  60&ndash;207: Frequency is  (2300 + channel) MHz<br>\n  Others: <i>Reserved<\/i>",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "rxConfig",
+                                "ByteIndex": "15..15",
+                                "BitField": [
+                                    {
+                                        "_name": "bAutoFlushCrc",
+                                        "BitIndex": "0..0",
+                                        "BitDescription": "If 1, automatically remove packets with CRC error from Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAutoFlushIgn",
+                                        "BitIndex": "1..1",
+                                        "BitDescription": "If 1, automatically remove packets that can be ignored according to frame filtering from Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bIncludePhyHdr",
+                                        "BitIndex": "2..2",
+                                        "BitDescription": "If 1, include the received PHY header field in the stored packet; otherwise discard it",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bIncludeCrc",
+                                        "BitIndex": "3..3",
+                                        "BitDescription": "If 1, include the received CRC field in the stored packet; otherwise discard it",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAppendRssi",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "If 1, append an RSSI byte to the packet in the Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAppendCorrCrc",
+                                        "BitIndex": "5..5",
+                                        "BitDescription": "If 1, append a correlation value and CRC result byte to the packet in the Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAppendSrcInd",
+                                        "BitIndex": "6..6",
+                                        "BitDescription": "If 1, append an index from the source matching algorithm",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAppendTimestamp",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "If 1, append a timestamp to the packet in the Rx queue",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "pRxQ",
+                                "_type": "pointer",
+                                "PtrType": "dataQueue_t*",
+                                "PtrName": "ieeeRxRxQ",
+                                "ByteIndex": "16..19",
+                                "Description": "Pointer to receive queue",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "pOutput",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "ieeeRxOutput",
+                                "ByteIndex": "20..23",
+                                "Description": "Pointer to output structure (NULL: Do not store results)",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "frameFiltOpt",
+                                "ByteIndex": "24..25",
+                                "BitField": [
+                                    {
+                                        "_name": "frameFiltEn",
+                                        "BitIndex": "0..0",
+                                        "BitDescription": "0: Disable frame filtering<br>\n  1: Enable frame filtering",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "frameFiltStop",
+                                        "BitIndex": "1..1",
+                                        "BitDescription": "0: Receive all packets to the end<br>\n  1: Stop receiving frame once frame filtering has caused the frame to be rejected.",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "autoAckEn",
+                                        "BitIndex": "2..2",
+                                        "BitDescription": "0: Disable auto ACK<br>\n  1: Enable auto ACK.",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "slottedAckEn",
+                                        "BitIndex": "3..3",
+                                        "BitDescription": "0: Non-slotted ACK<br>\n  1: Slotted ACK.",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "autoPendEn",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: Auto-pend disabled<br>\n  1: Auto-pend enabled",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "defaultPend",
+                                        "BitIndex": "5..5",
+                                        "BitDescription": "The value of the pending data bit in auto ACK packets that are not subject to auto-pend",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bPendDataReqOnly",
+                                        "BitIndex": "6..6",
+                                        "BitDescription": "0: Use auto-pend for any packet<br>\n  1: Use auto-pend for data request packets only",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bPanCoord",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: Device is not PAN coordinator<br>\n  1: Device is PAN coordinator",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "maxFrameVersion",
+                                        "BitIndex": "8..9",
+                                        "BitDescription": "Reject frames where the frame version field in the FCF is greater than this value",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "fcfReservedMask",
+                                        "BitIndex": "10..12",
+                                        "BitDescription": "Value to be AND-ed with the reserved part of the FCF; frame rejected if result is non-zero",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "modifyFtFilter",
+                                        "BitIndex": "13..14",
+                                        "BitDescription": "Treatment of MSB of frame type field before frame-type filtering:<br>\n  0: No modification<br>\n  1: Invert MSB<br>\n  2: Set MSB to 0<br>\n  3: Set MSB to 1",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bStrictLenFilter",
+                                        "BitIndex": "15..15",
+                                        "BitDescription": "0: Accept acknowledgement frames of any length >= 5<br>\n  1: Accept only acknowledgement frames of length 5",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Frame filtering options",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "frameTypes",
+                                "ByteIndex": "26..26",
+                                "BitField": [
+                                    {
+                                        "_name": "bAcceptFt0Beacon",
+                                        "BitIndex": "0..0",
+                                        "BitDescription": "Treatment of frames with frame type 000 (beacon):<br>\n  0: Reject<br>\n  1: Accept",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAcceptFt1Data",
+                                        "BitIndex": "1..1",
+                                        "BitDescription": "Treatment of frames with frame type 001 (data):<br>\n  0: Reject<br>\n  1: Accept",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAcceptFt2Ack",
+                                        "BitIndex": "2..2",
+                                        "BitDescription": "Treatment of frames with frame type 010 (ACK):<br>\n  0: Reject, unless running ACK receive command<br>\n  1: Always accept",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAcceptFt3MacCmd",
+                                        "BitIndex": "3..3",
+                                        "BitDescription": "Treatment of frames with frame type 011 (MAC command):<br>\n  0: Reject<br>\n  1: Accept",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAcceptFt4Reserved",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "Treatment of frames with frame type 100 (reserved):<br>\n  0: Reject<br>\n  1: Accept",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAcceptFt5Reserved",
+                                        "BitIndex": "5..5",
+                                        "BitDescription": "Treatment of frames with frame type 101 (reserved):<br>\n  0: Reject<br>\n  1: Accept",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAcceptFt6Reserved",
+                                        "BitIndex": "6..6",
+                                        "BitDescription": "Treatment of frames with frame type 110 (reserved):<br>\n  0: Reject<br>\n  1: Accept",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAcceptFt7Reserved",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "Treatment of frames with frame type 111 (reserved):<br>\n  0: Reject<br>\n  1: Accept",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Frame types to receive in frame filtering",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "ccaOpt",
+                                "ByteIndex": "27..27",
+                                "BitField": [
+                                    {
+                                        "_name": "ccaEnEnergy",
+                                        "BitIndex": "0..0",
+                                        "BitDescription": "Enable energy scan as CCA source",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "ccaEnCorr",
+                                        "BitIndex": "1..1",
+                                        "BitDescription": "Enable correlator based carrier sense as CCA source",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "ccaEnSync",
+                                        "BitIndex": "2..2",
+                                        "BitDescription": "Enable sync found based carrier sense as CCA source",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "ccaCorrOp",
+                                        "BitIndex": "3..3",
+                                        "BitDescription": "Operator to use between energy based and correlator based CCA<br>\n  0: Report busy channel if either ccaEnergy or ccaCorr are busy<br>\n  1: Report busy channel if both ccaEnergy and ccaCorr are busy",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "ccaSyncOp",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "Operator to use between sync found based CCA and the others<br>\n  0: Always report busy channel if ccaSync is busy<br>\n  1: Always report idle channel if ccaSync is idle",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "ccaCorrThr",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "Threshold for number of correlation peaks in correlator based carrier sense",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "CCA options",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "ccaRssiThr",
+                                "ByteIndex": "28..28",
+                                "Description": "RSSI threshold for CCA",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "__dummy0",
+                                "ByteIndex": "29..29"
+                            },
+                            {
+                                "_name": "numExtEntries",
+                                "ByteIndex": "30..30",
+                                "Description": "Number of extended address entries",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "numShortEntries",
+                                "ByteIndex": "31..31",
+                                "Description": "Number of short address entries",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "pExtEntryList",
+                                "_type": "pointer",
+                                "PtrType": "uint32_t*",
+                                "PtrName": "ieeeRxExtEntryList",
+                                "ByteIndex": "32..35",
+                                "Description": "Pointer to list of extended address entries",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "pShortEntryList",
+                                "_type": "pointer",
+                                "PtrType": "uint32_t*",
+                                "PtrName": "ieeeRxShortEntryList",
+                                "ByteIndex": "36..39",
+                                "Description": "Pointer to list of short address entries",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "localExtAddr",
+                                "ByteIndex": "40..47",
+                                "Description": "The extended address of the local device",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "localShortAddr",
+                                "ByteIndex": "48..49",
+                                "Description": "The short address of the local device",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "localPanID",
+                                "ByteIndex": "50..51",
+                                "Description": "The PAN ID of the local device",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "__dummy1",
+                                "ByteIndex": "52..54"
+                            },
+                            {
+                                "_name": "endTrigger",
+                                "ByteIndex": "55..55",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Trigger that causes the device to end the Rx operation",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "endTime",
+                                "ByteIndex": "56..59",
+                                "Description": "Time used together with <code>endTrigger<\/code> that causes the device to end the Rx\n  operation",
+                                "Access": "W"
+                            }
+                        ]
+                    },
+                    {
+                        "_name": "CMD_IEEE_ED_SCAN",
+                        "id": "0x2802",
+                        "Description": "IEEE 802.15.4 Energy Detect Scan Command",
+                        "Field": [
+                            {
+                                "_name": "commandNo",
+                                "ByteIndex": "0..1",
+                                "Description": "The command ID number 0x2802",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "status",
+                                "ByteIndex": "2..3",
+                                "Description": "An integer telling the status of the command. This value is\n  updated by the radio CPU during operation and may be read by the\n  system CPU at any time.",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "pNextOp",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "ieeeEdScanNextOp",
+                                "ByteIndex": "4..7",
+                                "Description": "Pointer to the next operation to run after this operation is done",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTime",
+                                "ByteIndex": "8..11",
+                                "Description": "Absolute or relative start time (depending on the value of <code>startTrigger<\/code>)",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTrigger",
+                                "ByteIndex": "12..12",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Identification of the trigger that starts the operation",
+                                "Access": []
+                            },
+                            {
+                                "_name": "condition",
+                                "ByteIndex": "13..13",
+                                "BitField": [
+                                    {
+                                        "_name": "rule",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Condition for running next command: Rule for how to proceed",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "nSkip",
+                                        "BitIndex": "4..7",
+                                        "BitDescription": "Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "channel",
+                                "ByteIndex": "14..14",
+                                "Description": "Channel to tune to in the start of the operation<br>\n  0: Use existing channel<br>\n  11&ndash;26: Use as IEEE 802.15.4 channel, i.e. frequency is (2405 + 5 &times; (channel - 11)) MHz<br>\n  60&ndash;207: Frequency is  (2300 + channel) MHz<br>\n  Others: <i>Reserved<\/i>",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "ccaOpt",
+                                "ByteIndex": "15..15",
+                                "BitField": [
+                                    {
+                                        "_name": "ccaEnEnergy",
+                                        "BitIndex": "0..0",
+                                        "BitDescription": "Enable energy scan as CCA source",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "ccaEnCorr",
+                                        "BitIndex": "1..1",
+                                        "BitDescription": "Enable correlator based carrier sense as CCA source",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "ccaEnSync",
+                                        "BitIndex": "2..2",
+                                        "BitDescription": "Enable sync found based carrier sense as CCA source",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "ccaCorrOp",
+                                        "BitIndex": "3..3",
+                                        "BitDescription": "Operator to use between energy based and correlator based CCA<br>\n  0: Report busy channel if either ccaEnergy or ccaCorr are busy<br>\n  1: Report busy channel if both ccaEnergy and ccaCorr are busy",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "ccaSyncOp",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "Operator to use between sync found based CCA and the others<br>\n  0: Always report busy channel if ccaSync is busy<br>\n  1: Always report idle channel if ccaSync is idle",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "ccaCorrThr",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "Threshold for number of correlation peaks in correlator based carrier sense",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "CCA options",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "ccaRssiThr",
+                                "ByteIndex": "16..16",
+                                "Description": "RSSI threshold for CCA",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "__dummy0",
+                                "ByteIndex": "17..17"
+                            },
+                            {
+                                "_name": "maxRssi",
+                                "ByteIndex": "18..18",
+                                "Description": "The maximum RSSI recorded during the ED scan",
+                                "Access": "R"
+                            },
+                            {
+                                "_name": "endTrigger",
+                                "ByteIndex": "19..19",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Trigger that causes the device to end the Rx operation",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "endTime",
+                                "ByteIndex": "20..23",
+                                "Description": "Time used together with <code>endTrigger<\/code> that causes the device to end the Rx\n  operation",
+                                "Access": "W"
+                            }
+                        ]
+                    },
+                    {
+                        "_name": "CMD_IEEE_TX",
+                        "id": "0x2C01",
+                        "Description": "IEEE 802.15.4 Transmit Command",
+                        "Field": [
+                            {
+                                "_name": "commandNo",
+                                "ByteIndex": "0..1",
+                                "Description": "The command ID number 0x2C01",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "status",
+                                "ByteIndex": "2..3",
+                                "Description": "An integer telling the status of the command. This value is\n  updated by the radio CPU during operation and may be read by the\n  system CPU at any time.",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "pNextOp",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "ieeeTxNextOp",
+                                "ByteIndex": "4..7",
+                                "Description": "Pointer to the next operation to run after this operation is done",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTime",
+                                "ByteIndex": "8..11",
+                                "Description": "Absolute or relative start time (depending on the value of <code>startTrigger<\/code>)",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTrigger",
+                                "ByteIndex": "12..12",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Identification of the trigger that starts the operation",
+                                "Access": []
+                            },
+                            {
+                                "_name": "condition",
+                                "ByteIndex": "13..13",
+                                "BitField": [
+                                    {
+                                        "_name": "rule",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Condition for running next command: Rule for how to proceed",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "nSkip",
+                                        "BitIndex": "4..7",
+                                        "BitDescription": "Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "txOpt",
+                                "ByteIndex": "14..14",
+                                "BitField": [
+                                    {
+                                        "_name": "bIncludePhyHdr",
+                                        "BitIndex": "0..0",
+                                        "BitDescription": "0: Find PHY header automatically<br>\n  1: Insert PHY header from the buffer",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bIncludeCrc",
+                                        "BitIndex": "1..1",
+                                        "BitDescription": "0: Append automatically calculated CRC<br>\n  1: Insert FCS (CRC) from the buffer",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "payloadLenMsb",
+                                        "BitIndex": "3..7",
+                                        "BitDescription": "Most significant bits of payload length. Should only be non-zero to create long\n  non-standard packets for test purposes",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "payloadLen",
+                                "ByteIndex": "15..15",
+                                "Description": "Number of bytes in the payload",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "pPayload",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "ieeeTxPayload",
+                                "ByteIndex": "16..19",
+                                "Description": "Pointer to payload buffer of size <code>payloadLen<\/code>",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "timeStamp",
+                                "ByteIndex": "20..23",
+                                "Description": "Time stamp of transmitted frame",
+                                "Access": "R"
+                            }
+                        ]
+                    },
+                    {
+                        "_name": "CMD_IEEE_CSMA",
+                        "id": "0x2C02",
+                        "Description": "IEEE 802.15.4 CSMA-CA Command",
+                        "Field": [
+                            {
+                                "_name": "commandNo",
+                                "ByteIndex": "0..1",
+                                "Description": "The command ID number 0x2C02",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "status",
+                                "ByteIndex": "2..3",
+                                "Description": "An integer telling the status of the command. This value is\n  updated by the radio CPU during operation and may be read by the\n  system CPU at any time.",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "pNextOp",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "ieeeCsmaNextOp",
+                                "ByteIndex": "4..7",
+                                "Description": "Pointer to the next operation to run after this operation is done",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTime",
+                                "ByteIndex": "8..11",
+                                "Description": "Absolute or relative start time (depending on the value of <code>startTrigger<\/code>)",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTrigger",
+                                "ByteIndex": "12..12",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Identification of the trigger that starts the operation",
+                                "Access": []
+                            },
+                            {
+                                "_name": "condition",
+                                "ByteIndex": "13..13",
+                                "BitField": [
+                                    {
+                                        "_name": "rule",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Condition for running next command: Rule for how to proceed",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "nSkip",
+                                        "BitIndex": "4..7",
+                                        "BitDescription": "Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "randomState",
+                                "ByteIndex": "14..15",
+                                "Description": "The state of the pseudo-random generator",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "macMaxBE",
+                                "ByteIndex": "16..16",
+                                "Description": "The IEEE 802.15.4 MAC parameter <i>macMaxBE<\/i>",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "macMaxCSMABackoffs",
+                                "ByteIndex": "17..17",
+                                "Description": "The IEEE 802.15.4 MAC parameter <i>macMaxCSMABackoffs<\/i>",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "csmaConfig",
+                                "ByteIndex": "18..18",
+                                "BitField": [
+                                    {
+                                        "_name": "initCW",
+                                        "BitIndex": "0..4",
+                                        "BitDescription": "The initialization value for the CW parameter",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bSlotted",
+                                        "BitIndex": "5..5",
+                                        "BitDescription": "0:  non-slotted CSMA<br>\n  1: slotted CSMA",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "rxOffMode",
+                                        "BitIndex": "6..7",
+                                        "BitDescription": "0: RX stays on during CSMA backoffs<br>\n  1: The CSMA-CA algorithm will suspend the receiver if no frame is being received<br>\n  2: The CSMA-CA algorithm will suspend the receiver if no frame is being received,\n  or after finishing it (including auto ACK) otherwise<br>\n  3: The CSMA-CA algorithm will suspend the receiver immediately during back-offs",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "NB",
+                                "ByteIndex": "19..19",
+                                "Description": "The NB parameter from the IEEE 802.15.4 CSMA-CA algorithm",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "BE",
+                                "ByteIndex": "20..20",
+                                "Description": "The BE parameter from the IEEE 802.15.4 CSMA-CA algorithm",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "remainingPeriods",
+                                "ByteIndex": "21..21",
+                                "Description": "The number of remaining periods from a paused backoff countdown",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "lastRssi",
+                                "ByteIndex": "22..22",
+                                "Description": "RSSI measured at the last CCA operation",
+                                "Access": "R"
+                            },
+                            {
+                                "_name": "endTrigger",
+                                "ByteIndex": "23..23",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Trigger that causes the device to end the CSMA-CA operation",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "lastTimeStamp",
+                                "ByteIndex": "24..27",
+                                "Description": "Time of the last CCA operation",
+                                "Access": "R"
+                            },
+                            {
+                                "_name": "endTime",
+                                "ByteIndex": "28..31",
+                                "Description": "Time used together with <code>endTrigger<\/code> that causes the device to end the\n  CSMA-CA operation",
+                                "Access": "W"
+                            }
+                        ]
+                    },
+                    {
+                        "_name": "CMD_IEEE_RX_ACK",
+                        "id": "0x2C03",
+                        "Description": "IEEE 802.15.4 Receive Acknowledgement Command",
+                        "Field": [
+                            {
+                                "_name": "commandNo",
+                                "ByteIndex": "0..1",
+                                "Description": "The command ID number 0x2C03",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "status",
+                                "ByteIndex": "2..3",
+                                "Description": "An integer telling the status of the command. This value is\n  updated by the radio CPU during operation and may be read by the\n  system CPU at any time.",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "pNextOp",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "ieeeRxAckNextOp",
+                                "ByteIndex": "4..7",
+                                "Description": "Pointer to the next operation to run after this operation is done",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTime",
+                                "ByteIndex": "8..11",
+                                "Description": "Absolute or relative start time (depending on the value of <code>startTrigger<\/code>)",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTrigger",
+                                "ByteIndex": "12..12",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Identification of the trigger that starts the operation",
+                                "Access": []
+                            },
+                            {
+                                "_name": "condition",
+                                "ByteIndex": "13..13",
+                                "BitField": [
+                                    {
+                                        "_name": "rule",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Condition for running next command: Rule for how to proceed",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "nSkip",
+                                        "BitIndex": "4..7",
+                                        "BitDescription": "Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "seqNo",
+                                "ByteIndex": "14..14",
+                                "Description": "Sequence number to expect",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "endTrigger",
+                                "ByteIndex": "15..15",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Trigger that causes the device to give up acknowledgement reception",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "endTime",
+                                "ByteIndex": "16..19",
+                                "Description": "Time used together with <code>endTrigger<\/code> that causes the device to give up\n  acknowledgement reception",
+                                "Access": "W"
+                            }
+                        ]
+                    },
+                    {
+                        "_name": "CMD_IEEE_ABORT_BG",
+                        "id": "0x2C04",
+                        "Description": "IEEE 802.15.4 Abort Background Level Command",
+                        "Field": [
+                            {
+                                "_name": "commandNo",
+                                "ByteIndex": "0..1",
+                                "Description": "The command ID number 0x2C04",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "status",
+                                "ByteIndex": "2..3",
+                                "Description": "An integer telling the status of the command. This value is\n  updated by the radio CPU during operation and may be read by the\n  system CPU at any time.",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "pNextOp",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "ieeeAbortBgNextOp",
+                                "ByteIndex": "4..7",
+                                "Description": "Pointer to the next operation to run after this operation is done",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTime",
+                                "ByteIndex": "8..11",
+                                "Description": "Absolute or relative start time (depending on the value of <code>startTrigger<\/code>)",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTrigger",
+                                "ByteIndex": "12..12",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Identification of the trigger that starts the operation",
+                                "Access": []
+                            },
+                            {
+                                "_name": "condition",
+                                "ByteIndex": "13..13",
+                                "BitField": [
+                                    {
+                                        "_name": "rule",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Condition for running next command: Rule for how to proceed",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "nSkip",
+                                        "BitIndex": "4..7",
+                                        "BitDescription": "Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "_name": "Direct",
+                "Command": [
+                    {
+                        "_name": "CMD_ABORT",
+                        "id": "0x0401",
+                        "Description": "Abort Command",
+                        "Field": {
+                            "_name": "commandNo",
+                            "ByteIndex": "0..1"
+                        }
+                    },
+                    {
+                        "_name": "CMD_STOP",
+                        "id": "0x0402",
+                        "Description": "Stop Command",
+                        "Field": {
+                            "_name": "commandNo",
+                            "ByteIndex": "0..1"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}

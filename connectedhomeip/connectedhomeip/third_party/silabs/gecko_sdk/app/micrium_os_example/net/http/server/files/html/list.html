@@ -1,0 +1,326 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+        "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <title>&micro;C/HTTPs</title>
+    <meta name="generator" content="BBEdit 9.3">
+    <link rel="stylesheet" type="text/css" href="uc_style.css">
+
+    <!--<link rel="stylesheet" href="jquery-ui.min.css">
+    <script type="text/javascript" src="jquery.min.js"> </script>
+    <script type="text/javascript" src="jquery-ui.min.js"></script>-->
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/ui-lightness/jquery-ui.min.css">
+    <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
+
+</head>
+<body>
+
+<div id="pagewrapper">
+
+    <div id="topbanner">
+        <img src="logo.gif" alt="" width="212" height="41">
+    </div>
+
+    <div id="pagebody">
+
+        <div>
+            <h2>USER LIST</h2>
+        </div>
+
+        <br>
+
+        <div id="add_user">
+        <form id = "add_form">
+            <p>First Name: <input id="firstname1" type="text" name="firstname"> Last name: <input id="lastname1" type="text" name="lastname"> <input id="add" type="submit" value="Add" class="bluebutton"> </p>
+        </form>
+        </div>
+
+        <hr color="#fa9500">
+        <br>
+
+        <div id="refresh">
+            <p><button class="bluebutton">Refresh List</button></p>
+        </div>
+
+        <br>
+
+        <div id="list">
+        </div>
+
+        <div id="right_align">
+            <br> <br>
+            <p><a href="index.html"><button class="bluebutton">Return to Main Page</button></a></p>
+        </div>
+
+        <div id="clear">
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+var UserCtr = 0;
+
+$(document).ready(function(){
+
+    // AJAX FUNCTION TO GET USERS LIST WHEN PAGE IS READY.
+    $.ajax({
+        type: 'GET',
+        url: '/users',
+        dataType: 'json',
+        success: function(data) {
+            JSON_ParseUserList(data);
+        }
+     });
+
+    // AJAX FUNCTION TO GET USERS LIST WHEN 'REFRESH' BUTTON IS CLICK.
+    $('#refresh').on('click', function() {
+        $.ajax({
+            type: 'GET',
+            url: '/users',
+            dataType: 'json',
+            success: function(data) {
+                JSON_ParseUserList(data);
+            }
+        });
+    });
+
+    // AJAX FUNCTION TO SEND FORM DATA AND RETRIEVE USERS LIST WHEN 'ADD' BUTTON IS CLICK
+    $('#add_form').on('submit', function(event) {
+            $.ajax({
+                url: "/users",
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify( { "First Name": $('#firstname1').val(), "Last Name": $('#lastname1').val() } ),
+                processData: false,
+                success: function(data, textStatus, xhr){
+                    if (xhr.status == 201) {
+                        UserCtr++;
+                    }
+                    JSON_ParseUser(data);
+                },
+                error: function( jqXhr, textStatus, errorThrown ){
+                    console.log( errorThrown );
+                }
+            });
+            $('input[type="text"],textarea').val('');
+            event.preventDefault();
+    });
+
+    //AJAX FUNCTION TO SEND GET REQUEST FOR USER INFO AND PUBLISH IT INSIDE A DIALOG BOX
+    $('#list').on('click', 'a.user', function(event) {
+        var href = $(this).attr('href');
+        var user_id = $(this).closest('div.user').attr('id');
+        $.ajax({
+            url: href,
+            type : 'GET',
+            dataType: 'json',
+            success: function(data, textStatus, xhr){
+                var selector = "#" + user_id + " .dialog";
+                $(selector).empty();
+                $.each(data, function(key, value) {
+                    $(selector).append("<p class=\"user\">" + key + ": " + value + "</p>");
+                });
+                $(selector ).dialog({appendTo: "#"+user_id});
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                console.log(textStatus, errorThrown);
+            }
+        });
+        event.preventDefault();
+    });
+
+    // AJAX FUNCTION TO SHOW FORM INSIDE DIALOG BOX TO SET THE USER INFO
+    $('#list').on('click', 'input.bluebutton[value="Set Info"]', function(event) {
+        var user_id  = $(this).closest('div.user').attr('id');
+        var href = "/users/" + user_id;
+        var selector = "#" + user_id + " .dialog";
+        var firstname = "";
+        var lastname = "";
+        var gender = "";
+        var age = "";
+        var job = "";
+        var check_male = "";
+        var check_female = "";
+        $.ajax({
+            url: href,
+            type : 'GET',
+            dataType: 'json',
+            success: function(data, textStatus, xhr){
+                $.each(data, function(key, value) {
+                    if (key == "First Name") {
+                        firstname = value;
+                    }
+                    if (key == "Last Name") {
+                        lastname = value;
+                    }
+                    if (key == "Gender") {
+                        gender = value;
+                    }
+                    if (key == "Age") {
+                        age = value;
+                    }
+                    if (key == "Job Title") {
+                        job = value;
+                    }
+                });
+                if (gender == "Female") {
+                    check_female = "checked";
+                    check_male   = "";
+                } else {
+                    check_female = "";
+                    check_male   = "checked";
+                }
+                $(selector).empty();
+                $(selector).html("<form id=\"info_form\">" +
+                         "<p class=\"user\"><label for=\"firstname\">First Name:</label> <input id=\"firstname2\" type=\"text\" onClick=\"this.select();\" name=\"firstname\" value=\"" + firstname + "\"></p>" +
+                         "<p class=\"user\"><label for=\"lastname\">Last Name:</label> <input id=\"lastname2\" type=\"text\" onClick=\"this.select();\" name=\"lastname\" value=\"" + lastname + "\"></p>" +
+                         "<p class=\"user\"><label for=\"male\">Male</label><input type=\"radio\" name=\"gender\" value=\"Male\" " + check_male + "></p>" +
+                         "<p class=\"user\"><label for=\"female\">Female</label><input type=\"radio\" name=\"gender\" value=\"Female\" " + check_female + "></p>" +
+                         "<p class=\"user\"><label for=\"age\">Age:</label> <input id=\"age\" type=\"text\" onClick=\"this.select();\" name=\"age\" value=\"" + age + "\"></p>" +
+                         "<p class=\"user\"><label for=\"job\">Job Title:</label> <input id=\"job\" type=\"text\" onClick=\"this.select();\" name=\"job\" value=\"" + job + "\"></p>" +
+                         "<p class=\"user\"><label for=\"info_submit\"></label><input id=\"info_submit\" type=\"submit\" value=\"Update\" class=\"bluebutton\"></p>" +
+                         "</form>");
+                $(selector).dialog({appendTo: "#"+user_id});
+            }
+        });
+        event.preventDefault();
+    });
+
+    // AJAX FUNCTION TO SEND A DELETE REQUEST ON A USER
+    $('#list').on('click', 'input.bluebutton[value="Delete"]', function(event) {
+        var user_id  = $(this).closest('div.user').attr('id');
+        $.ajax({
+            url: "/users/" + user_id,
+            type: 'DELETE',
+            success: function(data, textStatus, xhr) {
+                if (xhr.status == 204) {
+                    UserCtr--;
+                    $('div').remove("#"+user_id);
+                    $('#list:not(:has(div))').append("<p>List is empty.</p>");;
+                }
+            },
+            error: function(jqXhr, textStatus, errorThrown) {
+                alert("Delete user failed.");
+                console.log( errorThrown );
+            }
+        });
+        event.preventDefault();
+    });
+
+    // AJAX FUNCTION TO SEND THE PUT REQUEST WITH THE USER INFO THAT WAS SUBMIT IN THE FORM DIALOG BOX
+    $('#list').on('click', '#info_submit', function(event) {
+        var user_id  = $(this).closest('div.user').attr('id');
+        var name     = "";
+        var lastname = "";
+        var link     = "";
+        $.ajax({
+            url: "/users/" + user_id,
+            type: 'PUT',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify( { "First Name": $('#firstname2').val(), "Last Name": $('#lastname2').val(), "Gender": $('input:checked').val(), "Age": $('#age').val(), "Job Title": $('#job').val() } ),
+            processData: false,
+            success: function(data, textStatus, xhr){
+                 $.each(data, function(key, value) {
+                    if (key == "User ID") {
+                        user_id = value;
+                    }
+                    if (key == "First Name") {
+                        name = value;
+                    }
+                    if (key == "Last Name") {
+                        lastname = value;
+                    }
+                    if (key == "Link") {
+                        link = value;
+                    }
+                });
+                $("#" + user_id).empty();
+                $("#" + user_id).html("<div class=\"user\" id=\"" + user_id +"\">" +
+                                      "<p class=\"user\"><a class=\"user\" href=\"" + link + "\">" + name + " " + lastname + "</a> " +
+                                      "<input type=\"submit\" value=\"Set Info\" class=\"bluebutton\"> " +
+                                      "<input type=\"submit\" value=\"Delete\" class=\"bluebutton\"></p>" +
+                                      "<div class=\"dialog\" title=\"User Info\"> </div> </div>");
+            },
+            error: function( jqXhr, textStatus, errorThrown ){
+                console.log( errorThrown );
+            }
+        });
+        event.preventDefault();
+    });
+
+});
+
+// FUNCTION TO PUBLISH THE USER LIST
+function  JSON_ParseUserList(data) {
+    var user_id  = "";
+    var name     = "";
+    var lastname = "";
+    var link     = "";
+    // write users list to html
+    $('#list').empty();
+    $.each(data, function(users, tbl) {
+        $.each(tbl, function(user, obj) {
+            $.each(obj, function(key, value) {
+                if (key == "User ID") {
+                    user_id = value;
+                }
+                if (key == "First Name") {
+                    name = value;
+                }
+                if (key == "Last Name") {
+                    lastname = value;
+                }
+                if (key == "Link") {
+                    link = value;
+                }
+            });
+            $('#list').append("<div class=\"user\" id=\"" + user_id +"\">" +
+                              "<p class=\"user\"><a class=\"user\" href=\"" + link + "\">" + name + " " + lastname + "</a> " +
+                              "<input type=\"submit\" value=\"Set Info\" class=\"bluebutton\"> " +
+                              "<input type=\"submit\" value=\"Delete\" class=\"bluebutton\"></p>" +
+                              "<div class=\"dialog\" title=\"User Info\"> </div> </div>");
+        });
+        if (tbl.length == 0) {
+            $('#list').append("<p>List is empty.</p>");
+        }
+    });
+}
+
+// FUNCTION TO PUBLISH THE NEW USER TO THE LIST
+function  JSON_ParseUser(data) {
+    var user_id  = "";
+    var name     = "";
+    var lastname = "";
+    var link     = "";
+    $.each(data, function(key, value) {
+        if (key == "User ID") {
+            user_id = value;
+        }
+        if (key == "First Name") {
+            name = value;
+        }
+        if (key == "Last Name") {
+            lastname = value;
+        }
+        if (key == "Link") {
+            link = value;
+        }
+    });
+    $('#list:not(:has(div))').empty();
+    $('#list').append("<div class=\"user\" id=\"" + user_id +"\">" +
+                  "<p class=\"user\"><a class=\"user\" href=\"" + link + "\">" + name + " " + lastname + "</a> " +
+                  "<input type=\"submit\" value=\"Set Info\" class=\"bluebutton\"> " +
+                  "<input type=\"submit\" value=\"Delete\" class=\"bluebutton\"></p>" +
+                  "<div class=\"dialog\" title=\"User Info\"> </div> </div>");
+}
+
+</script>
+
+</body>
+</html>

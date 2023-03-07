@@ -1,0 +1,32 @@
+#---test0
+#-f U:/BGA_SDK_DEMO/mt7933cv_xip_bga_al_scatter.ini -o burn
+#-f U:/BGA_SDK_DEMO/mt7933cv_xip_bga_al_scatter.ini -o rdback
+#---test1:reduce erase time
+#-f whole_flash.ini -o erase
+#-f mt7933_bga_evb_scatter.ini -o burn_o
+#---test2
+#-f Y:/mtk-14/out/mt7933_hdk/bga_sdk_demo/mt7933cv_xip_bga_al_scatter.ini -o burn
+#-f Y:/mtk-14/out/mt7933_hdk/bga_sdk_demo/mt7933cv_xip_bga_al_scatter.ini -o rdefuse -s 0x30405190
+#-o customer -s cyberon_license.exe  -k Y:/mtk-14/out/mt7933_hdk/bga_sdk_demo/hrid.bin
+
+#-f Y:/mtk_19/out/mt7933_hdk/bga_sdk_demo/mt7933cv_xip_bga_al_scatter.ini -o burn
+#-f Y:/mtk_21_1/out/mt7933_hdk/bga_sdk_demo/mt7933cv_xip_bga_al_scatter.ini -o rdback_s
+
+#-f Y:/mtk-14/out/mt7933_hdk/bga_sdk_demo/mt7933cv_xip_bga_al_scatter.ini -o rdback
+#-o rdefuse -e Y:/mtk-14/out/mt7933_hdk/bga_sdk_demo/customer_my_apply_ef_tbl.txt
+#-o wrefuse -f Y:/mtk-14/out/mt7933_hdk/bga_sdk_demo/mt7933cv_xip_bga_al_scatter.ini -e Y:/mtk-14/out/mt7933_hdk/bga_sdk_demo/customer_my_apply_ef_tbl.txt
+#-o rdefuse_c -e Y:/mtk-14/out/mt7933_hdk/bga_sdk_demo/customer_my_apply_ef_tbl.txt -f Y:/mtk-14/out/mt7933_hdk/bga_sdk_demo/mt7933cv_xip_bga_al_scatter.ini
+#-e Y:/mtk-14/out/mt7933_hdk/bga_sdk_demo/customer_my_apply_ef_tbl.txt  -f Y:/mtk-14/out/mt7933_hdk/bga_sdk_demo/mt7933cv_xip_bga_al_scatter.ini -o wrefuse
+#-e Y:/mtk-14/out/mt7933_hdk/bga_sdk_demo/customer_my_apply_ef_tbl.txt -o rdefuse_c -f Y:/mtk-14/out/mt7933_edk/bga_sdk_demo/mt7933cv_xip_bga_al_scatter.ini
+#---test3:all default
+#-o burn
+#-o rdback
+#---test4(linux:relative path)
+-f  burn_files/scatter.ini -o erase
+-f  burn_files/scatter.ini -o burn 
+-f  burn_files/scatter.ini -o rdback  
+
+-f  burn_files/scatter.ini -o rdback_s
+-e  burn_files/customer_my_apply_ef_tbl.txt -o rdefuse
+-e  burn_files/customer_my_apply_ef_tbl.txt -o wrefuse
+-e  burn_files/customer_my_apply_ef_tbl.txt -o rdefuse_c

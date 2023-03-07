@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<demos xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://www.silabs.com/ss/Studio.ecore" xsi:noNamespaceSchemaLocation="http://www.silabs.com/ss/Demo.ecore">
+  <demo name="brd4202a.demo.zwave_ncp_zniffer_pti.eu" label="Z-Wave - NCP Zniffer PTI (EU Region)">
+    <model:description>Prebuilt ZnifferPTI binary for EU Region. NOTE that this region is only used if MFG_ZWAVE_COUNTRY_FREQ is not set. The Z-Wave Zniffer PTI application.</model:description>
+    <property key="demos.blurb" value="Z-Wave - NCP Zniffer PTI (EU Region)"/>
+    <property key="core.partCompatibility" value=".*zgm130s037hgn.*"/>
+    <property key="core.boardCompatibility" value="brd4202a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/demos/zwave_ncp_zniffer_pti/zwave_ncp_zniffer_pti-brd4202a-eu.hex"/>
+    <property key="core.readmeFiles" value=""/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Z-Wave"/>
+    <property key="core.quality" value="TEST"/>
+  </demo>
+  <demo name="brd4204c.demo.zwave_ncp_zniffer_pti.eu" label="Z-Wave - NCP Zniffer PTI (EU Region)">
+    <model:description>Prebuilt ZnifferPTI binary for EU Region. NOTE that this region is only used if MFG_ZWAVE_COUNTRY_FREQ is not set. The Z-Wave Zniffer PTI application.</model:description>
+    <property key="demos.blurb" value="Z-Wave - NCP Zniffer PTI (EU Region)"/>
+    <property key="core.partCompatibility" value=".*efr32zg23b010f512im48.*"/>
+    <property key="core.boardCompatibility" value="brd4204c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/demos/zwave_ncp_zniffer_pti/zwave_ncp_zniffer_pti-brd4204c-eu.hex"/>
+    <property key="core.readmeFiles" value=""/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Z-Wave"/>
+    <property key="core.quality" value="TEST"/>
+  </demo>
+  <demo name="brd4204d.demo.zwave_ncp_zniffer_pti.eu" label="Z-Wave - NCP Zniffer PTI (EU Region)">
+    <model:description>Prebuilt ZnifferPTI binary for EU Region. NOTE that this region is only used if MFG_ZWAVE_COUNTRY_FREQ is not set. The Z-Wave Zniffer PTI application.</model:description>
+    <property key="demos.blurb" value="Z-Wave - NCP Zniffer PTI (EU Region)"/>
+    <property key="core.partCompatibility" value=".*efr32zg23b010f512im48.*"/>
+    <property key="core.boardCompatibility" value="brd4204d"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/demos/zwave_ncp_zniffer_pti/zwave_ncp_zniffer_pti-brd4204d-eu.hex"/>
+    <property key="core.readmeFiles" value=""/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Z-Wave"/>
+    <property key="core.quality" value="TEST"/>
+  </demo>
+  <demo name="brd4205a.demo.zwave_ncp_zniffer_pti.eu" label="Z-Wave - NCP Zniffer PTI (EU Region)">
+    <model:description>Prebuilt ZnifferPTI binary for EU Region. NOTE that this region is only used if MFG_ZWAVE_COUNTRY_FREQ is not set. The Z-Wave Zniffer PTI application.</model:description>
+    <property key="demos.blurb" value="Z-Wave - NCP Zniffer PTI (EU Region)"/>
+    <property key="core.partCompatibility" value=".*zgm230sa27hnn.*"/>
+    <property key="core.boardCompatibility" value="brd4205a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/demos/zwave_ncp_zniffer_pti/zwave_ncp_zniffer_pti-brd4205a-eu.hex"/>
+    <property key="core.readmeFiles" value=""/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Z-Wave"/>
+    <property key="core.quality" value="TEST"/>
+  </demo>
+  <demo name="brd4205b.demo.zwave_ncp_zniffer_pti.eu" label="Z-Wave - NCP Zniffer PTI (EU Region)">
+    <model:description>Prebuilt ZnifferPTI binary for EU Region. NOTE that this region is only used if MFG_ZWAVE_COUNTRY_FREQ is not set. The Z-Wave Zniffer PTI application.</model:description>
+    <property key="demos.blurb" value="Z-Wave - NCP Zniffer PTI (EU Region)"/>
+    <property key="core.partCompatibility" value=".*zgm230sb27hgn.*"/>
+    <property key="core.boardCompatibility" value="brd4205b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/demos/zwave_ncp_zniffer_pti/zwave_ncp_zniffer_pti-brd4205b-eu.hex"/>
+    <property key="core.readmeFiles" value=""/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Z-Wave"/>
+    <property key="core.quality" value="TEST"/>
+  </demo>
+  <demo name="brd4207a.demo.zwave_ncp_zniffer_pti.eu" label="Z-Wave - NCP Zniffer PTI (EU Region)">
+    <model:description>Prebuilt ZnifferPTI binary for EU Region. NOTE that this region is only used if MFG_ZWAVE_COUNTRY_FREQ is not set. The Z-Wave Zniffer PTI application.</model:description>
+    <property key="demos.blurb" value="Z-Wave - NCP Zniffer PTI (EU Region)"/>
+    <property key="core.partCompatibility" value=".*zgm130s037hgn.*"/>
+    <property key="core.boardCompatibility" value="brd4207a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/demos/zwave_ncp_zniffer_pti/zwave_ncp_zniffer_pti-brd4207a-eu.hex"/>
+    <property key="core.readmeFiles" value=""/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Z-Wave"/>
+    <property key="core.quality" value="TEST"/>
+  </demo>
+  <demo name="brd4202a.demo.zwave_ncp_zniffer_pti.us" label="Z-Wave - NCP Zniffer PTI (US Region)">
+    <model:description>Prebuilt ZnifferPTI binary for US Region. NOTE that this region is only used if MFG_ZWAVE_COUNTRY_FREQ is not set. The Z-Wave Zniffer PTI application.</model:description>
+    <property key="demos.blurb" value="Z-Wave - NCP Zniffer PTI (US Region)"/>
+    <property key="core.partCompatibility" value=".*zgm130s037hgn.*"/>
+    <property key="core.boardCompatibility" value="brd4202a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/demos/zwave_ncp_zniffer_pti/zwave_ncp_zniffer_pti-brd4202a-us.hex"/>
+    <property key="core.readmeFiles" value=""/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Z-Wave"/>
+    <property key="core.quality" value="TEST"/>
+  </demo>
+  <demo name="brd4204c.demo.zwave_ncp_zniffer_pti.us" label="Z-Wave - NCP Zniffer PTI (US Region)">
+    <model:description>Prebuilt ZnifferPTI binary for US Region. NOTE that this region is only used if MFG_ZWAVE_COUNTRY_FREQ is not set. The Z-Wave Zniffer PTI application.</model:description>
+    <property key="demos.blurb" value="Z-Wave - NCP Zniffer PTI (US Region)"/>
+    <property key="core.partCompatibility" value=".*efr32zg23b010f512im48.*"/>
+    <property key="core.boardCompatibility" value="brd4204c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/demos/zwave_ncp_zniffer_pti/zwave_ncp_zniffer_pti-brd4204c-us.hex"/>
+    <property key="core.readmeFiles" value=""/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Z-Wave"/>
+    <property key="core.quality" value="TEST"/>
+  </demo>
+  <demo name="brd4204d.demo.zwave_ncp_zniffer_pti.us" label="Z-Wave - NCP Zniffer PTI (US Region)">
+    <model:description>Prebuilt ZnifferPTI binary for US Region. NOTE that this region is only used if MFG_ZWAVE_COUNTRY_FREQ is not set. The Z-Wave Zniffer PTI application.</model:description>
+    <property key="demos.blurb" value="Z-Wave - NCP Zniffer PTI (US Region)"/>
+    <property key="core.partCompatibility" value=".*efr32zg23b010f512im48.*"/>
+    <property key="core.boardCompatibility" value="brd4204d"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/demos/zwave_ncp_zniffer_pti/zwave_ncp_zniffer_pti-brd4204d-us.hex"/>
+    <property key="core.readmeFiles" value=""/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Z-Wave"/>
+    <property key="core.quality" value="TEST"/>
+  </demo>
+  <demo name="brd4205a.demo.zwave_ncp_zniffer_pti.us" label="Z-Wave - NCP Zniffer PTI (US Region)">
+    <model:description>Prebuilt ZnifferPTI binary for US Region. NOTE that this region is only used if MFG_ZWAVE_COUNTRY_FREQ is not set. The Z-Wave Zniffer PTI application.</model:description>
+    <property key="demos.blurb" value="Z-Wave - NCP Zniffer PTI (US Region)"/>
+    <property key="core.partCompatibility" value=".*zgm230sa27hnn.*"/>
+    <property key="core.boardCompatibility" value="brd4205a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/demos/zwave_ncp_zniffer_pti/zwave_ncp_zniffer_pti-brd4205a-us.hex"/>
+    <property key="core.readmeFiles" value=""/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Z-Wave"/>
+    <property key="core.quality" value="TEST"/>
+  </demo>
+  <demo name="brd4205b.demo.zwave_ncp_zniffer_pti.us" label="Z-Wave - NCP Zniffer PTI (US Region)">
+    <model:description>Prebuilt ZnifferPTI binary for US Region. NOTE that this region is only used if MFG_ZWAVE_COUNTRY_FREQ is not set. The Z-Wave Zniffer PTI application.</model:description>
+    <property key="demos.blurb" value="Z-Wave - NCP Zniffer PTI (US Region)"/>
+    <property key="core.partCompatibility" value=".*zgm230sb27hgn.*"/>
+    <property key="core.boardCompatibility" value="brd4205b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/demos/zwave_ncp_zniffer_pti/zwave_ncp_zniffer_pti-brd4205b-us.hex"/>
+    <property key="core.readmeFiles" value=""/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Z-Wave"/>
+    <property key="core.quality" value="TEST"/>
+  </demo>
+  <demo name="brd4207a.demo.zwave_ncp_zniffer_pti.us" label="Z-Wave - NCP Zniffer PTI (US Region)">
+    <model:description>Prebuilt ZnifferPTI binary for US Region. NOTE that this region is only used if MFG_ZWAVE_COUNTRY_FREQ is not set. The Z-Wave Zniffer PTI application.</model:description>
+    <property key="demos.blurb" value="Z-Wave - NCP Zniffer PTI (US Region)"/>
+    <property key="core.partCompatibility" value=".*zgm130s037hgn.*"/>
+    <property key="core.boardCompatibility" value="brd4207a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/demos/zwave_ncp_zniffer_pti/zwave_ncp_zniffer_pti-brd4207a-us.hex"/>
+    <property key="core.readmeFiles" value=""/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Z-Wave"/>
+    <property key="core.quality" value="TEST"/>
+  </demo>
+  <demo name="brd4202a.demo.zwave_ncp_zniffer_pti.us_lr" label="Z-Wave - NCP Zniffer PTI (US_LR Region)">
+    <model:description>Prebuilt ZnifferPTI binary for US_LR Region. NOTE that this region is only used if MFG_ZWAVE_COUNTRY_FREQ is not set. The Z-Wave Zniffer PTI application.</model:description>
+    <property key="demos.blurb" value="Z-Wave - NCP Zniffer PTI (US_LR Region)"/>
+    <property key="core.partCompatibility" value=".*zgm130s037hgn.*"/>
+    <property key="core.boardCompatibility" value="brd4202a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/demos/zwave_ncp_zniffer_pti/zwave_ncp_zniffer_pti-brd4202a-us_lr.hex"/>
+    <property key="core.readmeFiles" value=""/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Z-Wave"/>
+    <property key="core.quality" value="TEST"/>
+  </demo>
+  <demo name="brd4204c.demo.zwave_ncp_zniffer_pti.us_lr" label="Z-Wave - NCP Zniffer PTI (US_LR Region)">
+    <model:description>Prebuilt ZnifferPTI binary for US_LR Region. NOTE that this region is only used if MFG_ZWAVE_COUNTRY_FREQ is not set. The Z-Wave Zniffer PTI application.</model:description>
+    <property key="demos.blurb" value="Z-Wave - NCP Zniffer PTI (US_LR Region)"/>
+    <property key="core.partCompatibility" value=".*efr32zg23b010f512im48.*"/>
+    <property key="core.boardCompatibility" value="brd4204c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/demos/zwave_ncp_zniffer_pti/zwave_ncp_zniffer_pti-brd4204c-us_lr.hex"/>
+    <property key="core.readmeFiles" value=""/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Z-Wave"/>
+    <property key="core.quality" value="TEST"/>
+  </demo>
+  <demo name="brd4204d.demo.zwave_ncp_zniffer_pti.us_lr" label="Z-Wave - NCP Zniffer PTI (US_LR Region)">
+    <model:description>Prebuilt ZnifferPTI binary for US_LR Region. NOTE that this region is only used if MFG_ZWAVE_COUNTRY_FREQ is not set. The Z-Wave Zniffer PTI application.</model:description>
+    <property key="demos.blurb" value="Z-Wave - NCP Zniffer PTI (US_LR Region)"/>
+    <property key="core.partCompatibility" value=".*efr32zg23b010f512im48.*"/>
+    <property key="core.boardCompatibility" value="brd4204d"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/demos/zwave_ncp_zniffer_pti/zwave_ncp_zniffer_pti-brd4204d-us_lr.hex"/>
+    <property key="core.readmeFiles" value=""/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Z-Wave"/>
+    <property key="core.quality" value="TEST"/>
+  </demo>
+  <demo name="brd4205a.demo.zwave_ncp_zniffer_pti.us_lr" label="Z-Wave - NCP Zniffer PTI (US_LR Region)">
+    <model:description>Prebuilt ZnifferPTI binary for US_LR Region. NOTE that this region is only used if MFG_ZWAVE_COUNTRY_FREQ is not set. The Z-Wave Zniffer PTI application.</model:description>
+    <property key="demos.blurb" value="Z-Wave - NCP Zniffer PTI (US_LR Region)"/>
+    <property key="core.partCompatibility" value=".*zgm230sa27hnn.*"/>
+    <property key="core.boardCompatibility" value="brd4205a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/demos/zwave_ncp_zniffer_pti/zwave_ncp_zniffer_pti-brd4205a-us_lr.hex"/>
+    <property key="core.readmeFiles" value=""/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Z-Wave"/>
+    <property key="core.quality" value="TEST"/>
+  </demo>
+  <demo name="brd4205b.demo.zwave_ncp_zniffer_pti.us_lr" label="Z-Wave - NCP Zniffer PTI (US_LR Region)">
+    <model:description>Prebuilt ZnifferPTI binary for US_LR Region. NOTE that this region is only used if MFG_ZWAVE_COUNTRY_FREQ is not set. The Z-Wave Zniffer PTI application.</model:description>
+    <property key="demos.blurb" value="Z-Wave - NCP Zniffer PTI (US_LR Region)"/>
+    <property key="core.partCompatibility" value=".*zgm230sb27hgn.*"/>
+    <property key="core.boardCompatibility" value="brd4205b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/demos/zwave_ncp_zniffer_pti/zwave_ncp_zniffer_pti-brd4205b-us_lr.hex"/>
+    <property key="core.readmeFiles" value=""/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Z-Wave"/>
+    <property key="core.quality" value="TEST"/>
+  </demo>
+  <demo name="brd4207a.demo.zwave_ncp_zniffer_pti.us_lr" label="Z-Wave - NCP Zniffer PTI (US_LR Region)">
+    <model:description>Prebuilt ZnifferPTI binary for US_LR Region. NOTE that this region is only used if MFG_ZWAVE_COUNTRY_FREQ is not set. The Z-Wave Zniffer PTI application.</model:description>
+    <property key="demos.blurb" value="Z-Wave - NCP Zniffer PTI (US_LR Region)"/>
+    <property key="core.partCompatibility" value=".*zgm130s037hgn.*"/>
+    <property key="core.boardCompatibility" value="brd4207a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/demos/zwave_ncp_zniffer_pti/zwave_ncp_zniffer_pti-brd4207a-us_lr.hex"/>
+    <property key="core.readmeFiles" value=""/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Z-Wave"/>
+    <property key="core.quality" value="TEST"/>
+  </demo>
+  <demo name="brd4209a.demo.zwave_ncp_zniffer_pti.us_lr" label="Z-Wave - NCP Zniffer PTI (US_LR Region)">
+    <model:description>Prebuilt ZnifferPTI binary for US_LR Region. NOTE that this region is only used if MFG_ZWAVE_COUNTRY_FREQ is not set. The Z-Wave Zniffer PTI application.</model:description>
+    <property key="demos.blurb" value="Z-Wave - NCP Zniffer PTI (US_LR Region)"/>
+    <property key="core.partCompatibility" value=".*efr32zg13p531f512gm48.*"/>
+    <property key="core.boardCompatibility" value="brd4209a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/demos/zwave_ncp_zniffer_pti/zwave_ncp_zniffer_pti-brd4209a-us_lr.hex"/>
+    <property key="core.readmeFiles" value=""/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Z-Wave"/>
+    <property key="core.quality" value="TEST"/>
+  </demo>
+  <demo name="brd4210a.demo.zwave_ncp_zniffer_pti.us_lr" label="Z-Wave - NCP Zniffer PTI (US_LR Region)">
+    <model:description>Prebuilt ZnifferPTI binary for US_LR Region. NOTE that this region is only used if MFG_ZWAVE_COUNTRY_FREQ is not set. The Z-Wave Zniffer PTI application.</model:description>
+    <property key="demos.blurb" value="Z-Wave - NCP Zniffer PTI (US_LR Region)"/>
+    <property key="core.partCompatibility" value=".*efr32zg23b020f512im48.*"/>
+    <property key="core.boardCompatibility" value="brd4210a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/demos/zwave_ncp_zniffer_pti/zwave_ncp_zniffer_pti-brd4210a-us_lr.hex"/>
+    <property key="core.readmeFiles" value=""/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Z-Wave"/>
+    <property key="core.quality" value="TEST"/>
+  </demo>
+</demos>

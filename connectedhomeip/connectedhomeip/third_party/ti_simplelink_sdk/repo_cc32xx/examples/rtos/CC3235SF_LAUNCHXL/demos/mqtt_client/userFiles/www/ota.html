@@ -1,0 +1,347 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Local OTA 2.0</title>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/scripts.js"></script>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+
+
+<script type="text/javascript">
+var currentVer = "";
+var currentStatus = "0";
+var currentStatusText = "";
+
+var otaProgressInterval;
+$(document).ready(function() {
+    
+    getDeviceStatus();	
+    
+// OTA
+    $("#updateSWButton").click(function(){
+        $("#softWareStatus").hide(500);
+        $("#uploadProgress").show(500);
+    });
+    $("#removeFile").click(function(){
+        $("#putfile").val("");
+        $("#dataFile").hide(500);
+        $("#uploadFile").hide(500);
+        $("#chooseFile").show(500);
+    });
+    $( "#chooseFile" ).click(function() {
+        $(".sameFile").hide();
+        $("#putfile").trigger('click')
+    });
+    $("#putfile").change(function(){
+        
+        var file = this.value;
+        var fileName = file.split("\\");
+        
+        $("#dataFile").show(500);
+        $("#choosenFile").text(fileName[fileName.length-1]);
+        $("#chooseFile").hide(500);
+        if(currentVer != fileName[fileName.length-1].substring(0,14)){
+            $("#uploadFile").show(500);
+        } else {
+            $(".sameFile").show(500);
+        }
+    });
+    
+    $( "#uploadFile" ).click(function() {
+    	if(currentStatus == "1") {
+	        $("#progressEnd").hide();
+	        $("#uploadFile").hide(500);
+	        $("#dataFile").hide(500);
+	        $("#progressBarUpload").show(500);
+	        startUpload();
+	    }
+    });
+    
+    $( "#progressEnd" ).click(function() {
+        window.location.href = "ota.html";
+    });
+
+    getOtaStatus();
+    // otaProgressInterval = setInterval(otaProgressUpdate, 100);
+    // document.body.addEventListener('click', otaProgressUpdate); 
+});
+
+
+
+function ajaxCall(uri, method, qdata, callback, nextFunc) {
+    $.ajax({
+        url: uri,
+        type: method,
+        data: qdata,
+        cache: true,
+        dataType:'text',
+        success: function(data) {
+            callback(data);
+        },
+        error: function(e) {
+        	window.location.href = "ota.html";        
+        },
+        complete: function (e){
+            if($.isFunction(nextFunc)){
+                nextFunc();
+            }
+        }
+    });
+}
+
+// getDeviceStatus
+
+function getDeviceStatus(){
+    ajaxCall('/device', "GET", "macaddress&ipaddress&ssid", respDeviceStatus);
+}
+function respDeviceStatus(dr){
+    var data = dr;
+    var characters = data.split("&");	
+    for (var i=0; i < characters.length; i++)
+    {
+        var values = characters[i].split("=");
+        $("#"+values[0]).text(values[1]);
+        if(values[0] == "macaddress") {
+            // $("#cloudLink").text(values[1]);
+        }					
+    }
+}
+
+function getOtaStatus(){
+    console.log("Getting OTA status");
+    ajaxCall('ota', "GET", "status&version", respOtaStatus);
+}
+
+
+function respOtaStatus(dr){
+    var data = dr;
+    console.log(data);
+    var characters = data.split("&");	
+    for (var i=0; i < characters.length; i++)
+    {
+        var values = characters[i].split("=");
+        if(values[0] == "version") {
+        	$("#version").text(values[1]);
+            currentVer = values[1].substring(0,14);
+        }					
+        if(values[0] == "status") {
+            currentStatus = values[1];
+           	console.log("status = " + currentStatus);
+            if (currentStatus == "0") {
+                currentStatusText = "Not ready (please enable the local OTA)";
+           	} else if (currentStatus == "1") {
+                currentStatusText = "Ready to upload";
+            } else if (currentStatus == "2") {
+                currentStatusText = "Uploading OTA image";
+            } else if (currentStatus == "3") {
+                currentStatusText = "Reseting";
+            } else if (currentStatus == "4") {
+                currentStatusText = "Testing new image";
+            } else if(currentStatus == "5") {
+                currentStatusText = "Update Complete";
+            } else if (currentStatus == "6") {
+                currentStatusText = "Error";
+            }
+            $("#status").text(currentStatusText);
+            console.log(currentStatusText);
+            if (currentStatus == "0") {
+                setTimeout(getOtaStatus, 3000);
+            } else if(currentStatus == "5") {
+                setProgressBar("100");
+                processCompleted();
+            } else if (currentStatus == "6") {
+               	processFailed();
+            }
+        }
+    }
+}
+
+function processCompleted(){
+    $(".successToUpdate").show(500);
+    $("#progressEnd").show(500);
+}
+
+function processFailed(){
+    $(".faildToUpdate").show(500);
+    $("#progressEnd").show(500);
+}
+
+//// upload file ///////
+
+// var funcExec;
+// var otaGetIpExec;
+
+var otaReportExec;
+var deviceIpAddr;
+
+function startUpload(){
+    ajaxCall('device', "GET", "ipaddress", respIPAdress);
+}
+
+function respIPAdress(dr) {
+    
+    deviceIpAddr = dr;
+    var values = deviceIpAddr.split("=");
+    deviceIpAddr = values[1];
+        
+    if(typeof(deviceIpAddr) === 'undefined') {
+        getDeviceIpAddress();
+    } else {
+        $("#status").text("Uploading OTA image");
+        console.log("uploading");
+        otaPut();
+    }
+}
+
+
+function otaPut() {
+    console.log("calling otaPut");
+    h = new XMLHttpRequest();
+
+    h.upload.addEventListener("progress", function(evt){
+        if (evt.lengthComputable) {
+            console.log("progress: " + evt.loaded + "/" + evt.total);
+            setProgressBar(Math.round(evt.loaded * 70 / evt.total));
+        }
+    }, false);
+    
+    h.onreadystatechange = function(h) {
+        return function() {
+            console.log(h);
+            if(h.readyState == XMLHttpRequest.DONE){
+                setProgressBar("90");
+                setTimeout(getOtaStatus, 10000);
+            }
+            if ((h.readyState == XMLHttpRequest.DONE) && ((h.status == 200) || (h.status == 204))) {
+            }
+        }
+    } (h);
+
+    var put_uri = "ota?filename="+$("#choosenFile").text();
+    var file = document.getElementById("putfile").files[0];
+    
+    h.open("PUT", put_uri, true);
+    h.send(file);
+    console.log("started sending");
+    
+}
+
+function setProgressBar(data) {
+    console.log(data);
+
+    $("#progressPrecent").text(data);
+    $("#progressBar").val(data);
+
+    let idata = parseInt(data);
+
+    if(idata < 70){
+    } else if(idata <= 70){
+        $("#status").text("Device extracting .tar file");
+    } else if(idata <= 90){
+        $("#status").text("Device installing and testing new update");
+    } 
+}
+
+
+</script>
+<style>
+body  {
+    background-color:#fff;
+}
+.wrong {
+    font-size:16px;
+    color:#cc0000;
+    font-weight:bold;
+    display:none;
+}
+.faildToUpdate {
+    font-size:16px;
+    color:#cc0000;
+    font-weight:bold;
+    display:none;
+}
+.successToUpdate {
+    font-size:16px;
+    color:#0C0;
+    font-weight:bold;
+    display:none;
+}
+
+.afterProgressCompleted {
+    display:none;
+}
+.sameFile {
+    display:none;
+    margin-top:10px;
+    font-size:12px;
+    color:#cc0000;
+}
+</style>
+</head>
+
+<body>
+<div id="popUpcontainer"></div>
+<div id="wrapPopBox"><div id="popUpcontainerBoxIn">
+    <a id="popUpcontainerClose">X</a>	
+    <div id="popUpcontentBox"></div>
+</div>
+</div>
+<!-- wrapper -->
+<div class="wrapper">
+    <nav class="tmenuNav">
+        <ul class="mMenu">
+            <li><a href="ota.html">OTA</a></li>
+            <li><a href="settings.html">Settings</a></li>
+        </ul>
+    </nav>
+    <div class="headerIn"><div class="menuTop"></div><h1>Local OTA 2.0</h1></div>
+    <div class="headerInSub"><div id="wireless" class="wirelessFullSignal"></div><a href="help.html" id="help"></a><div class="subTitle">OTA</div></div>
+    <div class="demoMain">
+    <fieldset class="wrapSection">
+            <legend>Device info</legend>
+            <div class="dataFS">SSID: <span class="inWrapSec" id="ssid"></span></div>
+            <div class="dataFS">MAC Address: <span class="inWrapSec" id="macaddress"></span></div>
+            <div class="dataFS">IP Address: <span class="inWrapSec" id="ipaddress"></span></div>
+            <div class="dataFS">OTA Status: <span id="status"></span></div>
+            <div class="dataFS">OTA Version: <span id="version"></span></div>
+        </fieldset>
+    <form method="PUT"  action="putfile" enctype="multipart/form-data">
+        <fieldset class="wrapSection" id="softWareStatus">
+            <legend>Software Status</legend>
+            <div class="regButton" id="updateSWButton">Update</div>
+        </fieldset>
+        
+        <fieldset class="wrapSection" id="uploadProgress">
+            <legend>Upload Progress</legend>
+            <div class="regButton" id="chooseFile">Choose file</div>
+            <div id="dataFile">
+                <div id="choosenFile"></div><div id="removeFile">remove</div>
+                <div class="clear"></div>
+                <div class="sameFile">The choosen file is updated already</div>
+            </div>
+            <div class="regButton" id="uploadFile">Upload file</div>
+            <div id="progressBarUpload">
+                <div class="inProgressText">Upload in progress <span id="progressPrecent">0</span>%</div>
+                <progress id="progressBar" value="0" max="100"></progress>
+
+                <div class="wrong">OTA Update failed</div>
+                <div class="successToUpdate">CC32xx is successfully updated</div>
+                <div class="faildToUpdate">CC32xx failed to update</div>
+                <div id="progressEnd" class="regButton">Finalize</div>
+            </div>
+        </fieldset>
+        <input id="putfile" type="file" name="filename" >
+       </form>
+    </div>
+    
+    
+   
+<!--end wrapper -->
+</div>
+<div class="clear"></div>
+
+
+</body>
+</html>

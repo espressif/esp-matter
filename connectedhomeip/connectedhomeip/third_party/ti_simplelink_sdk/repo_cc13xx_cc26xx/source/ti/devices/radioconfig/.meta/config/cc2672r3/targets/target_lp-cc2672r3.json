@@ -1,0 +1,13 @@
+{
+    "target": {
+        "Name": "LP_CC2672R3",
+        "Revision": [],
+        "Description": "CC2672R3 LaunchPad. 7x7 VQFN48 package. External bias, differential output. 770-930 MHz.",
+        "DeviceName": "CC2672R3",
+        "DevicePackage": "VQFN 7x7",
+        "FrontEnd": "XD",
+        "PaSettings": "pasettings.json",
+        "RfDesign": "CC1352EM-XD7793-XD24",
+        "DefaultCategory": "Settings for 779 - 930 MHz band"
+    }
+}

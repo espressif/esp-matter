@@ -1,0 +1,15 @@
+id: "ecode"
+label: "EMDRV Common Headers"
+package: "platform"
+description: |-
+  Common headers for emdrv components.
+category: "Platform|Driver"
+quality: "production"
+include:
+  - path: "platform/emdrv/common/inc"
+    file_list: ["path": "ecode.h"]
+provides:
+  - name: "ecode"
+documentation:
+    docset: gecko-platform
+    document: driver/api/group-ecode

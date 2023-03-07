@@ -1,0 +1,69 @@
+project_name: si72xx_wheeldemo
+package: mcu
+quality: production
+label: MCU Example - Si72xx Wheeldemo
+description: Hall effect demo code for the Si72xx-WD-Kit using a Silicon Labs
+  SLSTK3400A-EFM32HG Starter Kit.
+
+  You must have the Hall Effect Evaluation kit, Si72xx-WD-Kit, to make use of
+  this demo. The Si72xx-WD-Kit includes two Si7210 sensors mounted on an
+  expansion board (Si72xx-EXP) plus each of the six base part types mounted on
+  small postage-stamp-sized (PS) boards. You must use the Silicon Labs
+  SLSTK3400A-EFM32HG Starter Kit which is included in the Si72xx-WD-Kit.
+
+category: Example|MCU Example
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+component:
+  - id: si72xx_driver
+  - id: sleeptimer
+  - id: board_control
+  - id: sl_system
+  - id: device_init
+  - id: dmd_memlcd
+  - id: glib
+  - id: emlib_pcnt
+  - id: emlib_prs
+  - id: emlib_adc
+  - id: emlib_timer
+  - id: emlib_msc
+  - id: i2cspm
+    instance: [sensor]
+  - id: simple_button
+    instance: [btn0, btn1]
+source:
+  - path: wheel.c
+  - path: exp_si72xx.c
+  - path: exp_si72xx_cal.c
+  - path: ps_si7210.c
+  - path: ps_si7211.c
+  - path: ps_si7212.c
+  - path: ps_si7213.c
+  - path: graphics.c
+include:
+  - path: .
+    file_list:
+    - path: graphics.h
+    - path: wheel.h
+    - path: exp_si72xx.h
+    - path: exp_si72xx_cal.h
+    - path: ps_si7210.h
+    - path: ps_si7211.h
+    - path: ps_si7212.h
+    - path: ps_si7213.h
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+configuration:
+  - name: SL_BOARD_ENABLE_DISPLAY
+    value: 1
+define:
+  - name: DEBUG_EFM 
+tag:
+  - prebuilt_demo

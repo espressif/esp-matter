@@ -1,0 +1,136 @@
+{
+    "mapping": {
+        "settings": {
+            "name": "PROP",
+            "parameters": {
+                "parameter": [
+                    {
+                        "_names": "SYMBOLRATE",
+                        "rfCommand": "CMD_PROP_RADIO_DIV_SETUP_PA"
+                    },
+                    {
+                        "_names": "RXFILTERBW",
+                        "rfCommand": "CMD_PROP_RADIO_DIV_SETUP_PA"
+                    },
+                    {
+                        "_names": "DEVIATION",
+                        "rfCommand": "CMD_PROP_RADIO_DIV_SETUP_PA"
+                    },
+                    {
+                        "_names": "MODULATION",
+                        "rfCommand": "CMD_PROP_RADIO_DIV_SETUP_PA"
+                    },
+                    {
+                        "_names": "WHITENING",
+                        "rfCommand": "CMD_PROP_RADIO_DIV_SETUP_PA"
+                    },
+                    {
+                        "_names": "PREAMBLEMODE",
+                        "rfCommand": "CMD_PROP_RADIO_DIV_SETUP_PA"
+                    },
+                    {
+                        "_names": "PREAMBLECOUNT",
+                        "rfCommand": "CMD_PROP_RADIO_DIV_SETUP_PA"
+                    },
+                    {
+                        "_names": "SYNCWORDLENGTH",
+                        "rfCommand": "CMD_PROP_RADIO_DIV_SETUP_PA"
+                    },
+                    {
+                        "_names": "SYNCWORDMSBFIRST",
+                        "rfCommand": "CMD_PROP_RADIO_DIV_SETUP_PA"
+                    },
+                    {
+                        "_names": "TXPOWER",
+                        "rfCommand": "CMD_PROP_RADIO_DIV_SETUP_PA"
+                    },
+                    {
+                        "_names": "CARRIER_FREQUENCY",
+                        "rfCommand": [
+                            "CMD_PROP_RADIO_DIV_SETUP_PA",
+                            "CMD_FS"
+                        ]
+                    },
+                    {
+                        "_names": "LODIVIDER",
+                        "rfCommand": "CMD_PROP_RADIO_DIV_SETUP_PA"
+                    },
+                    {
+                        "_names": "SYNCWORD",
+                        "rfCommand": [
+                            "CMD_PROP_TX",
+                            "CMD_PROP_TX_ADV",
+                            "CMD_PROP_RX",
+                            "CMD_PROP_RX_ADV",
+                            "CMD_RX_TEST",
+                            "CMD_TX_TEST"
+                        ]
+                    },
+                    {
+                        "_names": "MODULATED",
+                        "rfCommand": "CMD_TX_TEST"
+                    },
+                    {
+                        "_names": "PACKETLENGTHCONFIG",
+                        "rfCommand": [
+                            "CMD_PROP_TX",
+                            "CMD_PROP_TX_ADV",
+                            "CMD_PROP_RX",
+                            "CMD_PROP_RX_ADV"
+                        ]
+                    },
+                    {
+                        "_names": "PACKETLENGTHTX",
+                        "rfCommand": [
+                            "CMD_PROP_TX",
+                            "CMD_PROP_TX_ADV"
+                        ]
+                    },
+                    {
+                        "_names": "PACKETLENGTHRX",
+                        "rfCommand": [
+                            "CMD_PROP_RX",
+                            "CMD_PROP_RX_ADV"
+                        ]
+                    },
+                    {
+                        "_names": "FIXEDPACKETLENGTH",
+                        "rfCommand": [
+                            "CMD_PROP_TX",
+                            "CMD_PROP_TX_ADV"
+                        ]
+                    },
+                    {
+                        "_names": "ADDRESSMODE",
+                        "rfCommand": [
+                            "CMD_PROP_RX",
+                            "CMD_PROP_RX_ADV"
+                        ]
+                    },
+                    {
+                        "_names": "ADDRESS0",
+                        "rfCommand": [
+                            "CMD_PROP_RX",
+                            "CMD_PROP_RX_ADV"
+                        ]
+                    },
+                    {
+                        "_names": "ADDRESS1",
+                        "rfCommand": [
+                            "CMD_PROP_RX",
+                            "CMD_PROP_RX_ADV"
+                        ]
+                    },
+                    {
+                        "_names": "MODULATED",
+                        "rfCommand": "CMD_TX_TEST"
+                    },
+                    {
+                        "_names": "IEEE154GPKTLEN",
+                        "rfCommand": "CMD_PROP_TX_ADV"
+                    }
+                ]
+            }
+        }
+    }
+}

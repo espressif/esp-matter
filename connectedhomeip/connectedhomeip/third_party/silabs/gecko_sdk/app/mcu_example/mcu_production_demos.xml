@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<demos xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://www.silabs.com/ss/Studio.ecore" xsi:noNamespaceSchemaLocation="http://www.silabs.com/ss/Demo.ecore">
+  <demo name="brd2102a.demo.factory_demo" label="MCU Example - Factory Demo (Previously known as 'helges_demo')">
+    <model:description>This example project demonstrates a wide range of features of the EFM32TG11 MCU and the SLSTK3301A Starter Kit.</model:description>
+    <property key="demos.blurb" value="MCU Example - Factory Demo (Previously known as 'helges_demo')"/>
+    <property key="core.partCompatibility" value=".*efm32tg11b520f128gm80.*"/>
+    <property key="core.boardCompatibility" value="brd2102a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/mcu_example/demos/factory_demo/factory_demo-brd2102a.s37"/>
+    <property key="core.readmeFiles" value="factory_demo/brd2102a/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC MCU|32-bit\ MCU Project\ Difficulty|Advanced"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd2204a.demo.factory_demo" label="MCU Example - Factory Demo (Previously known as 'helges_demo')">
+    <model:description>This example project demonstrates a wide range of features of the EFM32GG11 MCU and the SLSTK3701A Starter Kit.
+</model:description>
+    <property key="demos.blurb" value="MCU Example - Factory Demo (Previously known as 'helges_demo')"/>
+    <property key="core.partCompatibility" value=".*efm32gg11b820f2048gl192.*"/>
+    <property key="core.boardCompatibility" value="brd2204a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/mcu_example/demos/factory_demo/factory_demo-brd2204a.s37"/>
+    <property key="core.readmeFiles" value="factory_demo/brd2204a/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC MCU|32-bit\ MCU Project\ Difficulty|Advanced"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd2204a.demo.micriumos_canopen" label="MCU Example - Micrium OS CANopen">
+    <model:description>This example shows how to use the Micrium OS CANopen stack. It uses the EFM32GG11B starter kit's two CAN peripherals in external loopback mode.  It requires CAN expansion board ISO-CAN-EXP REV 1.0 or REV 2.0. This example  will, upon the user pressing either push buttons (BTN0, BTN1), update one entry  in the CANopen object dictionary of node 1 on the 'can0' bus with a predefined  value for each button. Upon changing the value, a PDO message will be triggered, which will be caught by node 2 on the 'can1' bus. Node 2 will in turn update its object dictionary with the received value. The value of the object of both nodes is continuously displayed on the LCD.
+</model:description>
+    <property key="demos.blurb" value="MCU Example - Micrium OS CANopen"/>
+    <property key="core.partCompatibility" value=".*efm32gg11b820f2048gl192.*"/>
+    <property key="core.boardCompatibility" value="brd2204a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/mcu_example/demos/micriumos_canopen/micriumos_canopen-brd2204a.s37"/>
+    <property key="core.readmeFiles" value="micriumos_canopen/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC MCU|32-bit\ MCU Project\ Difficulty|Advanced"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd2204a.demo.micriumos_net" label="MCU Example - Micrium OS Network">
+    <model:description>MicriumOS Network example.
+This example shows how to use the Micrium OS network stack with the ETH  peripheral on the EFM32GG11B starter kit. This example will initialize  the RMII interface to the external PHY and setup a 100 Mbit connection.
+</model:description>
+    <property key="demos.blurb" value="MCU Example - Micrium OS Network"/>
+    <property key="core.partCompatibility" value=".*efm32gg11b820f2048gl192.*"/>
+    <property key="core.boardCompatibility" value="brd2204a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/mcu_example/demos/micriumos_net/micriumos_net-brd2204a.s37"/>
+    <property key="core.readmeFiles" value="micriumos_net/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC MCU|32-bit\ MCU Project\ Difficulty|Advanced"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd2012a.demo.si72xx_wheeldemo" label="MCU Example - Si72xx Wheeldemo">
+    <model:description>Hall effect demo code for the Si72xx-WD-Kit using a Silicon Labs SLSTK3400A-EFM32HG Starter Kit.
+You must have the Hall Effect Evaluation kit, Si72xx-WD-Kit, to make use of this demo. The Si72xx-WD-Kit includes two Si7210 sensors mounted on an expansion board (Si72xx-EXP) plus each of the six base part types mounted on small postage-stamp-sized (PS) boards. You must use the Silicon Labs SLSTK3400A-EFM32HG Starter Kit which is included in the Si72xx-WD-Kit.</model:description>
+    <property key="demos.blurb" value="MCU Example - Si72xx Wheeldemo"/>
+    <property key="core.partCompatibility" value=".*efm32hg322f64.*"/>
+    <property key="core.boardCompatibility" value="brd2012a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/mcu_example/demos/si72xx_wheeldemo/si72xx_wheeldemo-brd2012a.s37"/>
+    <property key="core.readmeFiles" value="si72xx_wheeldemo/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC MCU|32-bit\ MCU Project\ Difficulty|Advanced"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+</demos>

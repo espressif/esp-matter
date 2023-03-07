@@ -1,0 +1,6 @@
+#!/bin/sh
+#CONFIG_LMAC154_CASE: 0: normal tx & rx, 1: throughput test, 2: range test
+#CONFIG_LMAC154_TXRX: 1: tx, 0: rx
+#CONFIG_LMAC154_TX_RATE: 0: 250K, 1: 500K, 2: 1M, 3: 2M
+make CONFIG_BT=0 CONFIG_LMAC154_CASE=2 CONFIG_LMAC154_TXRX=$1 CONFIG_LMAC154_TX_RATE=$2 -j4
+exit $?

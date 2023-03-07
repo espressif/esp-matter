@@ -1,0 +1,47 @@
+project_name: uartdrv_baremetal
+package: platform
+quality: production
+label: Platform - UARTDRV LEUART Bare-metal
+description: > 
+  This example project uses the UARTDRV driver running in a bare-metal configuration 
+  to demonstrate the use of LEUART communication over the virtual COM port (VCOM). The 
+  application will echo back any characters it receives over the serial connection.
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+source:
+  - path: app.c
+  - path: main.c
+  - path: uartdrv_app.c
+include:
+  - path: .
+    file_list:
+    - path: app.h
+    - path: uartdrv_app.h
+component:
+  - id: sl_system
+  - id: device_init
+  - id: power_manager
+  - id: uartdrv_leuart
+    instance: [vcom]
+define:
+  - name: DEBUG_EFM
+  - name: "LEUART_USE_LFXO"
+configuration:
+  - name: SL_UARTDRV_LEUART_VCOM_BAUDRATE
+    value: 9600
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: UARTDRV_RESTRICT_ENERGY_MODE_TO_ALLOW_RECEPTION
+    value: 0
+readme:
+  - path: readme.md
+tag:
+  - hardware:component:vcom
+ui_hints:
+  highlight: readme.md

@@ -1,0 +1,111 @@
+#!/bin/bash
+#
+#  Copyright (c) 2021, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+#   Description:
+#       This script sets up border routing configurations.
+#
+
+readonly INFRA_IF_NAME="${INFRA_IF_NAME:-wlan0}"
+readonly SYSCTL_ACCEPT_RA_FILE="/etc/sysctl.d/60-otbr-accept-ra.conf"
+readonly DHCPCD_CONF_FILE="/etc/dhcpcd.conf"
+readonly DHCPCD_CONF_BACKUP_FILE="$DHCPCD_CONF_FILE.orig"
+
+accept_ra_install()
+{
+    sudo tee $SYSCTL_ACCEPT_RA_FILE <<EOF
+net.ipv6.conf.${INFRA_IF_NAME}.accept_ra = 2
+net.ipv6.conf.${INFRA_IF_NAME}.accept_ra_rt_info_max_plen = 64
+EOF
+}
+
+accept_ra_uninstall()
+{
+    test ! -f $SYSCTL_ACCEPT_RA_FILE || sudo rm -v $SYSCTL_ACCEPT_RA_FILE
+}
+
+accept_ra_enable()
+{
+    with BORDER_ROUTING || return 0
+
+    if [ -f /proc/sys/net/ipv6/conf/"${INFRA_IF_NAME}"/accept_ra ]; then
+        echo 2 | sudo tee /proc/sys/net/ipv6/conf/"${INFRA_IF_NAME}"/accept_ra || die 'Failed to enable IPv6 RA!'
+    fi
+
+    if [ -f /proc/sys/net/ipv6/conf/"${INFRA_IF_NAME}"/accept_ra_rt_info_max_plen ]; then
+        echo 64 | sudo tee /proc/sys/net/ipv6/conf/"${INFRA_IF_NAME}"/accept_ra_rt_info_max_plen || die 'Failed to enable IPv6 RIO!'
+    fi
+}
+
+# This function disables IPv6 support in dhcpcd.
+#
+# dhcpcd on raspberry Pi enables IPv6 support by default. The problem with
+# dhcpcd is that it does't support Route Information Option (RIO), so we need
+# to rely on the kernel implementation. dhcpcd will force set accept_ra to 0
+# for all interfaces it is currently running on, if IPv6 is enabled. This
+# conflicts with our accept_ra* configurations.
+#
+dhcpcd_disable_ipv6()
+{
+    if [ -f $DHCPCD_CONF_FILE ]; then
+        sudo cp $DHCPCD_CONF_FILE $DHCPCD_CONF_BACKUP_FILE
+        sudo tee -a $DHCPCD_CONF_FILE <<EOF
+noipv6
+noipv6rs
+EOF
+    fi
+}
+
+# This function enables IPv6 support in dhcpcd.
+dhcpcd_enable_ipv6()
+{
+    if [ -f $DHCPCD_CONF_BACKUP_FILE ]; then
+        sudo cp $DHCPCD_CONF_BACKUP_FILE $DHCPCD_CONF_FILE
+    fi
+}
+
+border_routing_uninstall()
+{
+    with BORDER_ROUTING || return 0
+
+    accept_ra_uninstall
+    dhcpcd_enable_ipv6
+}
+
+border_routing_install()
+{
+    with BORDER_ROUTING || return 0
+
+    dhcpcd_disable_ipv6
+    accept_ra_install
+
+    # /proc/sys/net/ipv6/conf/* files are read-only in docker
+    # when building the image.
+    if without DOCKER; then
+        accept_ra_enable
+    fi
+}

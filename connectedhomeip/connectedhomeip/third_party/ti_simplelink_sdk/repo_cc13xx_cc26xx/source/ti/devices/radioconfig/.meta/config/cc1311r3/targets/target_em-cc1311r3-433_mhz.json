@@ -1,0 +1,13 @@
+{
+    "target": {
+        "Name": "CC1311-R3EM-7XD433",
+        "Revision": [],
+        "Description": "LP_CC1311R3 LP. 7XD: 7x7 VQFN48 package, external bias, differential output: 431-527 MHz band.",
+        "DeviceName": "CC1311R3",
+        "DevicePackage": "VQFN 7x7",
+        "FrontEnd": "XD",
+        "PaSettings": "pasettings.json",
+        "RfDesign": "CC1311-R3EM-7XD433",
+        "DefaultCategory": "Settings for Proprietary 431 - 527 MHz"
+    }
+}

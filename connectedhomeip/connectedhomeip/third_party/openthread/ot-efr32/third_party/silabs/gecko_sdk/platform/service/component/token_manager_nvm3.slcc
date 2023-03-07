@@ -1,0 +1,21 @@
+id: token_manager_nvm3
+label: Token Manager using NVM3
+package: platform
+description: Token Manager using NVM3 for storage.
+category: Services|Token Manager
+quality: production
+provides:
+  - name: token_manager_nvm3
+  - name: token_manager_storage
+requires:
+  - name: nvm3_lib
+  - name: nvm3_default
+  - name: token_manager
+define:
+  - name: USE_NVM3
+template_contribution:
+  - name: component_catalog
+    value: token_manager_nvm3
+documentation:
+    docset: gecko-platform
+    document: service/api/group-token-manager

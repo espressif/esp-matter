@@ -1,0 +1,22 @@
+!!omap
+- id: slwrb4306b
+- label: SLWRB4306B
+- package: platform
+- description: Kit BSP support for the BGM13P32 Blue Gecko Module Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4306b
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4306B"'
+  - name: SL_KIT_REV
+    value: '"A01"'
+- tag:
+  - kit:opn:SLWRB4306B
+  - kit:pn:WRB4306
+  - kit:variant:B
+  - kit:revision:A01

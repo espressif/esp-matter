@@ -1,0 +1,73 @@
+id: se_manager
+label: SE Manager
+package: platform
+description: >-
+  Driver for interacting with the SE or Root Code on Series 2 devices. The
+  available functionality varies accross parts: device management utilities
+  are available on all parts; on parts with the SE subsystem, a low level
+  crypto API is available; finally, Vault High devices also include key storage
+  functionality.
+category: Platform|Security|SE Manager
+quality: production
+component_root_path: util/third_party/crypto/sl_component/se_manager
+
+source:
+  - path: src/sl_se_manager.c
+  - path: src/sl_se_manager_util.c
+    unless: [trustzone_nonsecure]
+
+include:
+  - path: inc
+    file_list:
+      - path: sl_se_manager.h
+      - path: sl_se_manager_defines.h
+      - path: sl_se_manager_types.h
+      - path: sl_se_manager_util.h
+
+  # Internals.
+  - path: inc
+    unless: [trustzone_nonsecure]
+    file_list:
+      - path: sl_se_manager_internal_keys.h
+      - path: sli_se_manager_internal.h
+
+requires:
+  - name: device
+  - name: emlib_common
+  - name: emlib_core
+  - name: emlib_se
+  - name: emlib_system
+  - name: status
+  
+  - name: se_manager_osal
+  
+  - name: se_manager_config
+    condition: [trustzone_unaware]
+  - name: se_manager_config
+    condition: [trustzone_secure]
+
+  # Not implemented for the TZ SE Manager Service (but used by the PSA drivers).
+  - name: se_manager_crypto
+    condition: [trustzone_unaware]
+  - name: se_manager_crypto
+    condition: [trustzone_secure]
+
+  # Inclusion of source and config components depends on which TZ state we are
+  # targeting. For apps that do not make active use of TZ, a dummy state
+  # (trustzone_unaware) should be used. 
+  - name: trustzone_security_state
+
+provides:
+  - name: se_manager
+
+recommends:
+  # Assume that projects are TZ unaware unless a state is explicitly included.
+  - id: trustzone_unaware
+
+documentation:
+    docset: gecko-platform
+    document: service/api/group-sl-se-manager
+
+template_contribution:
+  - name: component_catalog
+    value: se_manager

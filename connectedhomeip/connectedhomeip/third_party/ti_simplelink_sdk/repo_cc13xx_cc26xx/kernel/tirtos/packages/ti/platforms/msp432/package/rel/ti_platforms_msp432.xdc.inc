@@ -1,0 +1,9 @@
+package/package.bld.xml
+package/build.cfg
+package/package.xdc.inc
+linkcmd.xdt
+linkcmd_gnu.xdt
+linkcmd_iar.xdt
+include
+include_gnu
+package/package.cfg.xdc.inc

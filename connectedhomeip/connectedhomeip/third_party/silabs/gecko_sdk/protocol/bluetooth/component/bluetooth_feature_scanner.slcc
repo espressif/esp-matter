@@ -1,0 +1,42 @@
+id: "bluetooth_feature_scanner"
+label: "Scanner Base Feature"
+package: "Bluetooth"
+description: >
+  The Bluetooth scanning component, corresponding to the "scanner" class
+  in Bluetooth APIs, is the base of legacy and extended scannings and it
+  provides functionalities that are common in legacy and extended scannings.
+
+  The <bluetooth_feature_legacy_scanner> component enables scanning the advertisements
+  using legacy advertising PDUs. The <bluetooth_feature_extended_scanner> component
+  enables scanning the advertisements using legacy or extended advertising PDUs.
+  When the <bluetooth_feature_legacy_scanner>, or <bluetooth_feature_extended_scanner>
+  is included by the application, some superseded commands of the "scanner" class
+  are not available to use. See the Bluetooth API reference for more details. When none
+  of these two components is included, all commands of the "scanner" class are
+  functional for providing the backwards compatibility.
+category: "Bluetooth|Feature"
+quality: "production"
+root_path: "protocol/bluetooth"
+requires:
+  - name: "bluetooth_controller"
+provides:
+  - name: "bluetooth_feature_scanner"
+  - name: "bluetooth_feature_central_connection"
+    allow_multiple: true
+  - name: "bluetooth_feature_connection_creation"
+    allow_multiple: true
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_scanner
+  - name: component_catalog
+    value: bluetooth_extended_scanning_incompatible
+    condition:
+      - "device_sdid_80"
+  - name: bluetooth_controller_init
+    value:
+      function: sl_btctrl_init_scan()
+    priority: 4
+  - name: bluetooth_controller_init
+    value:
+      function: sl_btctrl_init_scan_ext()
+    priority: 8

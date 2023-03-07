@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <gatt generic_attribute_service="true" header="gatt_db.h" name="Custom BLE GATT" out="gatt_db.c" prefix="gattdb_">
+    <service advertise="false" name="Generic Access" requirement="mandatory" sourceId="org.bluetooth.service.generic_access" type="primary" uuid="1800">
+      <informativeText>Abstract: The generic_access service contains generic information about the device. All available Characteristics are readonly. </informativeText>
+      <characteristic id="device_name" name="Device Name" sourceId="org.bluetooth.characteristic.gap.device_name" uuid="2A00">
+        <informativeText/>
+        <value length="8" type="utf-8" variable_length="false">VoBLE Ex</value>
+        <properties read="true" read_requirement="optional" write="true" write_requirement="optional"/>
+      </characteristic>
+      <characteristic name="Appearance" sourceId="org.bluetooth.characteristic.gap.appearance" uuid="2A01">
+        <informativeText>Abstract: The external appearance of this device. The values are composed of a category (10-bits) and sub-categories (6-bits). </informativeText>
+        <value length="2" type="hex" variable_length="false">0000</value>
+        <properties const="true" const_requirement="optional" read="true" read_requirement="optional"/>
+      </characteristic>
+    </service>
+    <service advertise="false" id="device_information" name="Device Information" requirement="mandatory" sourceId="org.bluetooth.service.device_information" type="primary" uuid="180A">
+      <informativeText>Abstract:  The Device Information Service exposes manufacturer and/or vendor information about a device.  Summary:  This service exposes manufacturer information about a device. The Device Information Service is instantiated as a Primary Service. Only one instance of the Device Information Service is exposed on a device.  </informativeText>
+      <characteristic const="true" id="manufacturer_name_string" name="Manufacturer Name String" sourceId="org.bluetooth.characteristic.manufacturer_name_string" uuid="2A29">
+        <informativeText>Abstract:  The value of this characteristic is a UTF-8 string representing the name of the manufacturer of the device.  </informativeText>
+        <value length="12" type="utf-8" variable_length="false">Silicon Labs</value>
+        <properties const="true" read="true">
+          <read authenticated="false" bonded="false" encrypted="false"/>
+        </properties>
+      </characteristic>
+      <characteristic name="Model Number String" sourceId="org.bluetooth.characteristic.model_number_string" uuid="2A24">
+        <informativeText>Abstract: The value of this characteristic is a UTF-8 string representing the model number assigned by the device vendor. </informativeText>
+        <value length="10" type="utf-8" variable_length="false">Blue Gecko</value>
+        <properties const="true" const_requirement="optional" read="true" read_requirement="optional"/>
+      </characteristic>
+      <characteristic const="false" id="system_id" name="System ID" sourceId="org.bluetooth.characteristic.system_id" uuid="2A23">
+        <informativeText>Abstract:  The SYSTEM ID characteristic consists of a structure with two fields. The first field are the LSOs and the second field contains the MSOs.       This is a 64-bit structure which consists of a 40-bit manufacturer-defined identifier concatenated with a 24 bit unique Organizationally Unique Identifier (OUI). The OUI is issued by the IEEE Registration Authority (http://standards.ieee.org/regauth/index.html) and is required to be used in accordance with IEEE Standard 802-2001.6 while the least significant 40 bits are manufacturer defined.       If System ID generated based on a Bluetooth Device Address, it is required to be done as follows. System ID and the Bluetooth Device Address have a very similar structure: a Bluetooth Device Address is 48 bits in length and consists of a 24 bit Company Assigned Identifier (manufacturer defined identifier) concatenated with a 24 bit Company Identifier (OUI). In order to encapsulate a Bluetooth Device Address as System ID, the Company Identifier is concatenated with 0xFFFE followed by the Company Assigned Identifier of the Bluetooth Address. For more guidelines related to EUI-64, refer to http://standards.ieee.org/develop/regauth/tut/eui64.pdf.  Examples:  If the system ID is based of a Bluetooth Device Address with a Company Identifier (OUI) is 0x123456 and the Company Assigned Identifier is 0x9ABCDE, then the System Identifier is required to be 0x123456FFFE9ABCDE.  </informativeText>
+        <value length="8" type="hex" variable_length="false">0000000000000000</value>
+        <properties read="true">
+          <read authenticated="false" bonded="false" encrypted="false"/>
+        </properties>
+      </characteristic>
+    </service>
+    <service advertise="true" id="voble_service" name="Voice over Bluetooth Low Energy" requirement="mandatory" sourceId="custom.type" type="primary" uuid="b7ef1193-dc2e-4362-93d3-df429eb3ad10">
+      <informativeText>Custom service</informativeText>
+      <characteristic id="audio_data" name="Audio Data" sourceId="custom.type" uuid="00ce7a72-ec08-473d-943e-81ec27fdc5f2">
+        <informativeText>Custom characteristic</informativeText>
+        <value length="255" type="hex" variable_length="true"/>
+        <properties notify="true" notify_requirement="optional"/>
+      </characteristic>
+      <characteristic id="sample_rate" name="Sample Rate" sourceId="custom.type" uuid="00ce7a72-ec08-473d-943e-81ec27fdc601">
+        <informativeText>Custom characteristic</informativeText>
+        <value length="1" type="user" variable_length="false"/>
+        <properties write="true" write_requirement="optional"/>
+      </characteristic>
+      <characteristic id="filter_enable" name="Filter Enable" sourceId="custom.type" uuid="00ce7a72-ec08-473d-943e-81ec27fdc602">
+        <informativeText>Custom characteristic</informativeText>
+        <value length="1" type="user" variable_length="false"/>
+        <properties write="true" write_requirement="optional"/>
+      </characteristic>
+      <characteristic id="encoding_enable" name="Encoding Enable" sourceId="custom.type" uuid="00ce7a72-ec08-473d-943e-81ec27fdc603">
+        <informativeText>Custom characteristic</informativeText>
+        <value length="1" type="user" variable_length="false"/>
+        <properties write="true" write_requirement="optional"/>
+      </characteristic>
+      <characteristic id="transfer_status" name="Transfer Status" sourceId="custom.type" uuid="00ce7a72-ec08-473d-943e-81ec27fdc604">
+        <informativeText>Custom characteristic</informativeText>
+        <value length="1" type="user" variable_length="false"/>
+        <properties notify="true" notify_requirement="optional"/>
+      </characteristic>
+      <characteristic id="audio_channels" name="Audio Channels" sourceId="custom.type" uuid="00ce7a72-ec08-473d-943e-81ec27fdc605">
+        <informativeText>Custom characteristic</informativeText>
+        <value length="1" type="user" variable_length="false"/>
+        <properties write="true" write_requirement="optional"/>
+      </characteristic>
+    </service>
+  </gatt>
+</project>

@@ -1,0 +1,14 @@
+# Wi-SUN Config Advanced Configurator Adapter Pack Definition
+
+# Is used for SetupId
+id=wisunConfig
+label=WiSUN Configurator
+
+# Trigger file extension. No period.
+uc.triggerExtension=wisunconf
+
+# Standard generation function
+function(uc_generate) {
+  # Should get an input and output path, the following variables can be used to determine the locations inside a UC project
+  cmd=$(python) wisun_generator.py ${contentFolder} -o ${generationOutput}
+}

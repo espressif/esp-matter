@@ -1,0 +1,26 @@
+id: "spinel_host_interface_cpc"
+label: "Implements host CPC interface to CPC daemon"
+version: 1
+package: platform
+category: Radio|Mac
+quality: "production"
+description: "Implements the socket interface needed to connect host apps to CPC daemon. This layer is parallel to HDLC and SPI interfaces provided by Openthread. Designed for use with zigbeed."
+provides:
+  - name: "spinel_host_interface_implementation"
+
+requires:
+  - name: "lower_mac_spinel"
+
+library:
+  # needs to be built, and available separately
+  - system: "cpc"
+    
+include:
+  - path: "platform/service/cpc/daemon/lib"
+
+source:
+  - path: "util/third_party/openthread/src/posix/platform/cpc_interface.cpp"
+
+define:
+  - name: "OPENTHREAD_POSIX_CONFIG_RCP_BUS"
+    value: OT_POSIX_RCP_BUS_CPC

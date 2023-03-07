@@ -1,0 +1,316 @@
+id: radio_config_simple_rail_multiphy
+label: Custom Radio Configuration for simple rail multiphy application
+package: platform
+description: Triggers Radio Configurator UI for setting a proper (Application - Die
+  - RF Band) Custom Radio Configurator
+category: Platform|Radio Configuration
+quality: production
+provides:
+- name: radio_config_simple_rail_multiphy
+- name: a_radio_config
+  allow_multiple: true
+ui_hints:
+  visibility: never
+template_contribution:
+- name: component_catalog
+  value: radio_config_simple_rail_multiphy
+config_file:
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_210/rf_band_868/subGHz/rf_band_914/radio_settings.radioconf
+  directory: rail
+  condition:
+  - device_has_radio_subghz
+  - device_sdid_210
+  unless:
+  - device_has_radio_2g4hz
+  - device_has_radio_dualband
+  - hardware_board_rb
+  - hardware_board_tb
+  - hardware_board_stk
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_80/rf_band_868/2p4GHz/radio_settings.radioconf
+  directory: rail
+  condition:
+  - device_has_radio_dualband
+  - device_sdid_80
+  unless:
+  - hardware_board_rb
+  - hardware_board_tb
+  - hardware_board_stk
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_84/rf_band_868/2p4GHz/radio_settings.radioconf
+  directory: rail
+  condition:
+  - device_has_radio_dualband
+  - device_sdid_84
+  unless:
+  - hardware_board_rb
+  - hardware_board_tb
+  - hardware_board_stk
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_89/rf_band_868/2p4GHz/radio_settings.radioconf
+  directory: rail
+  condition:
+  - device_has_radio_dualband
+  - device_sdid_89
+  unless:
+  - hardware_board_rb
+  - hardware_board_tb
+  - hardware_board_stk
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_89/rf_band_868/subGHz/rf_band_914/radio_settings.radioconf
+  directory: rail
+  condition:
+  - device_has_radio_subghz
+  - device_sdid_89
+  unless:
+  - device_has_radio_2g4hz
+  - device_has_radio_dualband
+  - hardware_board_rb
+  - hardware_board_tb
+  - hardware_board_stk
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_95/rf_band_868/2p4GHz/radio_settings.radioconf
+  directory: rail
+  condition:
+  - device_has_radio_dualband
+  - device_sdid_95
+  unless:
+  - hardware_board_rb
+  - hardware_board_tb
+  - hardware_board_stk
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_95/rf_band_868/subGHz/rf_band_914/radio_settings.radioconf
+  directory: rail
+  condition:
+  - device_has_radio_subghz
+  - device_sdid_95
+  unless:
+  - device_has_radio_2g4hz
+  - device_has_radio_dualband
+  - hardware_board_rb
+  - hardware_board_tb
+  - hardware_board_stk
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_210/rf_band_868/subGHz/rf_band_914/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_868
+  - device_sdid_210
+  - hardware_board_supports_rf_band_914
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_210/rf_band_868/subGHz/rf_band_915/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_868
+  - device_sdid_210
+  - hardware_board_supports_rf_band_915
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_80/rf_band_169/2p4GHz/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_169
+  - device_sdid_80
+  - hardware_board_supports_rf_band_2400
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_80/rf_band_434/2p4GHz/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_434
+  - device_sdid_80
+  - hardware_board_supports_rf_band_2400
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_80/rf_band_490/2p4GHz/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_490
+  - device_sdid_80
+  - hardware_board_supports_rf_band_2400
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_80/rf_band_868/2p4GHz/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_868
+  - device_sdid_80
+  - hardware_board_supports_rf_band_2400
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_80/rf_band_915/2p4GHz/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_915
+  - device_sdid_80
+  - hardware_board_supports_rf_band_2400
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_84/rf_band_169/2p4GHz/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_169
+  - device_sdid_84
+  - hardware_board_supports_rf_band_2400
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_84/rf_band_434/2p4GHz/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_434
+  - device_sdid_84
+  - hardware_board_supports_rf_band_2400
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_84/rf_band_490/2p4GHz/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_490
+  - device_sdid_84
+  - hardware_board_supports_rf_band_2400
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_84/rf_band_868/2p4GHz/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_868
+  - device_sdid_84
+  - hardware_board_supports_rf_band_2400
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_84/rf_band_915/2p4GHz/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_915
+  - device_sdid_84
+  - hardware_board_supports_rf_band_2400
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_89/rf_band_169/2p4GHz/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_169
+  - device_sdid_89
+  - hardware_board_supports_rf_band_2400
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_89/rf_band_434/2p4GHz/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_434
+  - device_sdid_89
+  - hardware_board_supports_rf_band_2400
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_89/rf_band_490/2p4GHz/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_490
+  - device_sdid_89
+  - hardware_board_supports_rf_band_2400
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_89/rf_band_868/2p4GHz/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_868
+  - device_sdid_89
+  - hardware_board_supports_rf_band_2400
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_89/rf_band_868/subGHz/rf_band_914/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_868
+  - device_sdid_89
+  - hardware_board_supports_rf_band_914
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_89/rf_band_915/2p4GHz/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_915
+  - device_sdid_89
+  - hardware_board_supports_rf_band_2400
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_95/rf_band_169/2p4GHz/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_169
+  - device_sdid_95
+  - hardware_board_supports_rf_band_2400
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_95/rf_band_434/2p4GHz/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_434
+  - device_sdid_95
+  - hardware_board_supports_rf_band_2400
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_95/rf_band_490/2p4GHz/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_490
+  - device_sdid_95
+  - hardware_board_supports_rf_band_2400
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_95/rf_band_868/2p4GHz/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_868
+  - device_sdid_95
+  - hardware_board_supports_rf_band_2400
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_95/rf_band_868/subGHz/rf_band_914/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_868
+  - device_sdid_95
+  - hardware_board_supports_rf_band_914
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Base/simple_rail_multiphy/device_sdid_95/rf_band_915/2p4GHz/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_915
+  - device_sdid_95
+  - hardware_board_supports_rf_band_2400
+  unless:
+  - device_is_module
+  - device_sdid_200

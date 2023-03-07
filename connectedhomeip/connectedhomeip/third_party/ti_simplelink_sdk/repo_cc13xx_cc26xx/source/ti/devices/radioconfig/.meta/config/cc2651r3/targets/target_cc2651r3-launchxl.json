@@ -1,0 +1,16 @@
+{
+    "target": {
+        "Name": "LP_CC2651R3",
+        "Revision": [],
+        "Description": "CC2651R3 LP. 7x7 VQFN48 package. Internal bias, differential output. 2.4 GHz frequency band.",
+        "DeviceName": "CC2651R3",
+        "DevicePackage": "VQFN 7x7",
+        "FrontEnd": "ID",
+        "PaSettings": "pasettings.json",
+        "RfDesign": "CC26x1-R3EM-7ID",
+        "DefaultCategory": "Settings",
+        "IoSettingsIdle": [],
+        "IoSettingsRx": [],
+        "IoSettingsTx": []
+    }
+}

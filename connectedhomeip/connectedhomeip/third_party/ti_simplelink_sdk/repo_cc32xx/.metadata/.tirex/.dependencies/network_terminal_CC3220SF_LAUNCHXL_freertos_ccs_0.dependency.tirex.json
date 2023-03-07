@@ -1,0 +1,32 @@
+[
+    {
+        "files": [
+            "+../../netapp_cmd.c -> netapp_cmd.c",
+            "+../../netapp_cmd.h -> netapp_cmd.h",
+            "+../../network_terminal.c -> network_terminal.c",
+            "+../../network_terminal.h -> network_terminal.h",
+            "+../../radio_tool.c -> radio_tool.c",
+            "+../../radio_tool.h -> radio_tool.h",
+            "+../../socket_cmd.c -> socket_cmd.c",
+            "+../../socket_cmd.h -> socket_cmd.h",
+            "+../../str.c -> str.c",
+            "+../../str.h -> str.h",
+            "+../../transceiver_cmd.c -> transceiver_cmd.c",
+            "+../../transceiver_cmd.h -> transceiver_cmd.h",
+            "+../../wlan_cmd.c -> wlan_cmd.c",
+            "+../../wlan_cmd.h -> wlan_cmd.h",
+            "+../../cmd_parser.c -> cmd_parser.c",
+            "+../../cmd_parser.h -> cmd_parser.h",
+            "+../../README.md -> README.md",
+            "+../../README.html -> README.html",
+            "+../../uart_term.c -> uart_term.c",
+            "+../../uart_term.h -> uart_term.h",
+            "+../main_freertos.c -> main_freertos.c",
+            "+../common.syscfg -> common.syscfg",
+            "+../../../../../../../source/ti/boards/CC3220SF_LAUNCHXL/Board.html -> Board.html",
+            "+cc32xxsf_freertos.cmd -> cc32xxsf_freertos.cmd",
+            "+../../image.syscfg -> image.syscfg",
+            "+../../userFiles/dummy-root-ca-cert -> userFiles/dummy-root-ca-cert"
+        ]
+    }
+]

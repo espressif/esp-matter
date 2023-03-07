@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="com.silabs.sdk.exx32.external.Si114xHRM" label="Si114x Heart Rate Monitor" contentRoot="$(sdkInstallationPath:default())/util/silicon_labs/sensor_si114xhrm">
+  <property key="category" value="efm32|Middleware"/>
+  <includePath uri="inc" />
+  <libraryPath uri="lib" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.gnu.*" />
+  <libraryFile name="si114xHRM_GCC_CM0PLUS" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.gnu.*" />
+  <libraryFile name="si114xHRM_GCC_CM3" partCompatibility="::ARMCore==CORTEX_M3" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.gnu.*" />
+  <libraryFile name="si114xHRM_GCC_CM4F" partCompatibility="::ARMCore==CORTEX_M4F" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.gnu.*" />
+  <libraryFile uri="lib/libsi114xHRM_IAR_CM0PLUS.a" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.iar.*" />
+  <libraryFile uri="lib/libsi114xHRM_IAR_CM3.a" partCompatibility="::ARMCore==CORTEX_M3" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.iar.*" />
+  <libraryFile uri="lib/libsi114xHRM_IAR_CM4F.a" partCompatibility="::ARMCore==CORTEX_M4F" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.iar.*" />
+</project>

@@ -1,0 +1,24 @@
+id: "bluetooth_feature_afh"
+label:  "AFH"
+package: "Bluetooth"
+description: >
+  Bluetooth Adaptive Frequency Hopping (AFH) feature
+category: "Bluetooth|Feature"
+quality: "production"
+root_path: "protocol/bluetooth"
+requires:
+  - name: "bluetooth_controller"
+config_file:
+  - path: "config/sl_bluetooth_afh_config.h"
+    unless:
+      - "bluetooth_stack" #Configuration not supported through stack yet
+provides:
+  - name: "bluetooth_feature_afh"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_afh
+  - name: bluetooth_controller_init
+    value:
+      include: "sl_bluetooth_afh_config.h"
+      function: "sli_btctrl_enable_afh()"
+    priority: 10    

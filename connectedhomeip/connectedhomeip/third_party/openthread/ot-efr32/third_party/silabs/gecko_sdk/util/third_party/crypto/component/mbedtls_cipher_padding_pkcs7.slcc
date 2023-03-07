@@ -1,0 +1,17 @@
+id: mbedtls_cipher_padding_pkcs7
+package: platform
+label: PKCS#7 Padding
+description: >-
+  This component provides support for PKCS#7 padding for cipher modes. Currently only CBC is supported.
+category: Platform|Security|Mbed TLS|Encryption
+quality: production
+provides:
+  - name: mbedtls_cipher_padding_pkcs7
+requires:
+  - name: mbedtls_cipher_cbc
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_CIPHER_PADDING_PKCS7
+documentation:
+  docset: mbed-tls
+  document: group-encdec-module

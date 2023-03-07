@@ -1,0 +1,19 @@
+id: status_string
+label: "Status Code Strings"
+package: platform
+description: Common status code string functions and components
+category: Platform|Utilities|Status Code
+quality: production
+root_path: platform/common
+config_file:
+  - path: config/sl_status_string_config.h
+source:
+  - path: src/sl_status.c
+requires:
+  - name: status
+  - name: sl_string
+provides:
+  - name: status_string
+documentation:
+  docset: gecko-platform
+  document: common/api/group-status

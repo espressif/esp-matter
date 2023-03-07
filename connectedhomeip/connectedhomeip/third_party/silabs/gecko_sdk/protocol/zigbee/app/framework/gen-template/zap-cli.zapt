@@ -1,0 +1,195 @@
+/***************************************************************************//**
+ * @file  zap-cli.c
+ * @brief Generated file for zcl cli using ZAP. Do not update file manually.
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2020 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * The licensor of this software is Silicon Laboratories Inc. Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement. This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
+ *
+ ******************************************************************************/
+
+#include "sl_component_catalog.h"
+
+#ifdef SL_CATALOG_ZIGBEE_ZCL_CLI_PRESENT
+
+#include <stdlib.h>
+#include "sl_cli_config.h"
+#include "sl_cli_command.h"
+#include "sl_cli.h"
+#include "zcl-cli.h"
+#ifdef SL_CATALOG_ZIGBEE_DEBUG_PRINT_PRESENT
+#include "sl_zigbee_debug_print.h"
+#endif // SL_CATALOG_ZIGBEE_DEBUG_PRINT_PRESENT
+#include "zap-type.h"
+#include "zap-id.h"
+#include "af.h"
+#include "zap-config.h"
+
+extern void sli_zigbee_zcl_simple_command(uint8_t frameControl,
+                        uint16_t clusterId,
+                        uint8_t commandId,
+                        sl_cli_command_arg_t *arguments,
+                        uint8_t *argumentTypes);
+extern sl_cli_command_info_t cli_cmd_zcl_global_group;
+extern sl_cli_command_info_t cli_cmd_zcl_mfg_code_command;
+extern sl_cli_command_info_t cli_cmd_zcl_time_command;
+extern sl_cli_command_info_t cli_cmd_zcl_use_next_sequence_command;
+extern sl_cli_command_info_t cli_cmd_zcl_x_default_resp_command;
+extern sl_cli_command_info_t cli_cmd_zcl_test_response_on_command;
+extern sl_cli_command_info_t cli_cmd_zcl_test_response_off_command;
+#if defined(ZCL_USING_IDENTIFY_CLUSTER_SERVER) || defined(ZCL_USING_IDENTIFY_CLUSTER_CLIENT)
+extern sl_cli_command_info_t cli_cmd_zcl_identify_on_command;
+extern sl_cli_command_info_t cli_cmd_zcl_identify_off_command;
+#endif
+#if defined(ZCL_USING_BACNET_PROTOCOL_TUNNEL_CLUSTER_CLIENT) || defined(ZCL_USING_BACNET_PROTOCOL_TUNNEL_CLUSTER_SERVER)
+extern sl_cli_command_info_t cli_cmd_zcl_bacnet_transfer_whois_command;
+#endif
+#if defined(ZCL_USING_TUNNELING_CLUSTER_CLIENT) || defined(ZCL_USING_TUNNELING_CLUSTER_SERVER)
+extern sl_cli_command_info_t cli_cmd_zcl_tunneling_random_to_server_command;
+extern sl_cli_command_info_t cli_cmd_zcl_tunneling_transfer_to_server_command;
+extern sl_cli_command_info_t cli_cmd_zcl_tunneling_random_to_client_command;
+extern sl_cli_command_info_t cli_cmd_zcl_tunneling_transfer_to_client_command;
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// Provide function declarations
+  {{#all_cli_commands_for_user_enabled_clusters}}
+      {{#template_options category="cli"}}
+        {{#if (is_equal this.optionCode ../name)}}
+void sli_zigbee_cli_zcl_{{cleanse_label ../clusterName}}_{{cleanse_label (as_last_word this.optionLabel)}}_command(sl_cli_command_arg_t *arguments);
+        {{/if}}
+      {{/template_options}}
+  {{/all_cli_commands_for_user_enabled_clusters}}
+
+// Command structs. Names are command names prefixed by cli_cmd_zcl_[cluster name]_cluster
+{{#all_cli_commands_for_user_enabled_clusters}}
+      {{#template_options category="cli"}}
+        {{#if (is_equal this.optionCode ../name)}}
+static const sl_cli_command_info_t cli_cmd_zcl_{{cleanse_label ../clusterName}}_cluster_{{as_underscore_lowercase ../name}} = \
+SL_CLI_COMMAND(sli_zigbee_cli_zcl_{{cleanse_label ../clusterName}}_{{cleanse_label (as_last_word this.optionLabel)}}_command,
+        {{/if}}
+      {{/template_options}}
+            "{{trim_string description}}",
+            {{#zcl_command_arguments}}"{{as_spaced_lowercase label}}" SL_CLI_UNIT_SEPARATOR {{#last}},{{/last}}{{/zcl_command_arguments}}
+            {{~#if (is_number_greater_than commandArgCount 0)}}{{else}}"",{{/if}}
+            {
+              {{#zcl_command_arguments}}
+                {{zcl_command_argument_type_to_cli_data_type type struct="SL_CLI_ARG_HEX"}},
+              {{/zcl_command_arguments}}
+                SL_CLI_ARG_END,
+            });
+
+{{/all_cli_commands_for_user_enabled_clusters}}
+
+// Create group command tables and structs if cli_groups given
+// in template. Group name is suffixed with [cluster name]_[cluster_side]_cluster_group_table for tables
+// and group commands are cli_cmd_( group name )_group
+{{#all_user_clusters_irrespective_of_side}}
+  {{#user_cluster_commands_with_cli}}
+  {{#first}}
+static const sl_cli_command_entry_t zcl_{{cleanse_label ../name}}_cluster_command_table[] = {
+  {{/first}}    
+          {{#template_options category="cli"}}
+            {{#if (is_equal this.optionCode ../name)}}
+    { "{{as_last_word optionLabel}}", &cli_cmd_zcl_{{cleanse_label ../../name}}_cluster_{{as_underscore_lowercase ../name}}, false },
+            {{/if}}
+          {{/template_options}}
+  {{#last}}
+  {{~#if (is_lowercase_equal ../name "identify")~}}
+    {{~indent 2}}{ "on", &cli_cmd_zcl_identify_on_command, false},
+    { "off", &cli_cmd_zcl_identify_off_command, false},
+  {{/if}}
+  {{~#if (is_lowercase_equal ../name "tunneling")~}}
+    {{~indent 2}}{ "random-to-server", &cli_cmd_zcl_tunneling_random_to_server_command, false},
+    { "transfer-to-server", &cli_cmd_zcl_tunneling_transfer_to_server_command, false},
+    { "random-to-client", &cli_cmd_zcl_tunneling_random_to_client_command, false},
+    { "transfer-to-client", &cli_cmd_zcl_tunneling_transfer_to_client_command, false},
+  {{/if}}
+  {{~#if (is_lowercase_equal ../name "bacnet protocol tunnel")~}}
+    {{~indent 2}}{ "transfer-npdu-whois", &cli_cmd_zcl_bacnet_transfer_whois_command, false},
+  {{/if}}
+    { NULL, NULL, false },
+};
+  {{/last}}
+  {{/user_cluster_commands_with_cli}}
+{{/all_user_clusters_irrespective_of_side}}
+
+// ZCL cluster commands
+{{#all_user_clusters_irrespective_of_side}}
+  {{#user_cluster_commands_with_cli}}
+  {{#first}}
+static const sl_cli_command_info_t cli_cmd_{{cleanse_label ../name}}_group = \
+  SL_CLI_COMMAND_GROUP(zcl_{{cleanse_label ../name}}_cluster_command_table, "ZCL {{cleanse_label ../name}} cluster commands");
+  {{/first}}
+  {{/user_cluster_commands_with_cli}}
+{{/all_user_clusters_irrespective_of_side}}
+
+static const sl_cli_command_entry_t zcl_group_table[] = {
+{{#all_user_clusters_irrespective_of_side}}
+  {{#user_cluster_commands_with_cli}}
+  {{#first}}
+  { "{{cleanse_label_as_kebab_case (replace_string ../define '_CLUSTER' '')}}", &cli_cmd_{{cleanse_label ../name}}_group, false },
+  {{/first}}
+  {{/user_cluster_commands_with_cli}}
+{{/all_user_clusters_irrespective_of_side}}
+  { "global", &cli_cmd_zcl_global_group, false },
+  { "mfg-code", &cli_cmd_zcl_mfg_code_command, false},
+  { "time", &cli_cmd_zcl_time_command, false},
+  { "use-next-sequence", &cli_cmd_zcl_use_next_sequence_command, false},
+  { "x-default-resp", &cli_cmd_zcl_x_default_resp_command, false},
+  { "test-response-on", &cli_cmd_zcl_test_response_on_command, false},
+  { "test-response-off", &cli_cmd_zcl_test_response_off_command, false},
+  { NULL, NULL, false },
+};
+
+sl_cli_command_info_t cli_cmd_zcl_group = \
+  SL_CLI_COMMAND_GROUP(zcl_group_table, "ZCL commands");
+
+// Create root command table
+const sl_cli_command_entry_t sl_cli_zcl_command_table[] = {
+  { "zcl", &cli_cmd_zcl_group, false },
+  { NULL, NULL, false },
+};
+
+sl_cli_command_group_t sl_cli_zcl_command_group =
+{
+  { NULL },
+  false,
+  sl_cli_zcl_command_table
+};
+
+
+{{#all_cli_commands_for_user_enabled_clusters}}
+      {{#template_options category="cli"}}
+        {{#if (is_equal this.optionCode ../name)}}
+WEAK(void sli_zigbee_cli_zcl_{{cleanse_label ../clusterName}}_{{cleanse_label (as_last_word this.optionLabel)}}_command(sl_cli_command_arg_t *arguments)) {
+        {{/if}}
+      {{/template_options}}
+      {{~#zcl_command_arguments~}}
+        {{~#first~}}{{~indent 1}}uint8_t argumentTypes[{{zcl_command_arguments_count parent.id}}] =  { {{new_line 1}}{{/first}}
+                 {{~indent 2}}{{zcl_command_argument_type_to_zcl_cli_data_type type}}{{~#not_last~}},{{/not_last}}
+       {{~#last~}}{{new_line 1}}  }; {{/last}}
+      {{/zcl_command_arguments}}
+  {{~indent 1}}sli_zigbee_zcl_simple_command(
+    ZCL_CLUSTER_SPECIFIC_COMMAND | {{#if (is_client commandSource)}}ZCL_FRAME_CONTROL_CLIENT_TO_SERVER{{else}}ZCL_FRAME_CONTROL_SERVER_TO_CLIENT{{/if}},  \
+    ZCL_{{clusterDefine}}_ID,                                                       \
+    {{code}}, \
+    arguments, \
+    {{#if (is_number_greater_than commandArgCount 0)}}argumentTypes{{else}}NULL{{/if}});
+}
+
+{{/all_cli_commands_for_user_enabled_clusters}}
+#ifdef __cplusplus
+}
+#endif
+#endif

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<contentItems
+xmlns="http://www.silabs.com/ss/ContentItem.ecore"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.silabs.com/ss/ContentItem.ecore file:/C:/Users/CAOWENS/Documents/ssv4/contentItems.xsd">
+  <contentItemData
+    priority="6"
+    category="API References"
+    itemURI="https://docs.silabs.com/micrium/latest/micrium-network-api/"
+    label="Network API Reference"
+    description="API Reference for Micrium OS Network"
+  ></contentItemData>
+</contentItems>

@@ -1,0 +1,61 @@
+{{zap_header}}
+
+// ZCL attribute types
+enum {
+{{#zcl_atomics}}
+{{ident}}ZCL_{{asDelimitedMacro name}}_ATTRIBUTE_TYPE = {{asHex atomicId 2}}, // {{description}}
+{{/zcl_atomics}}
+};
+
+// ZCL attribute sizes
+#define ZAP_GENERATED_ATTRIBUTE_SIZES { \
+{{#zcl_atomics}}
+{{#if size}}
+{{ident}}ZCL_{{asDelimitedMacro name}}_ATTRIBUTE_TYPE, {{size}}, \
+{{/if}}
+{{/zcl_atomics}}
+}
+
+// ZCL enums
+
+{{#zcl_enums}}
+
+// Enum for {{label}}
+typedef enum {
+{{#zcl_enum_items}}
+{{ident}}EMBER_ZCL_{{asDelimitedMacro parent.label}}_{{asDelimitedMacro label}} = {{value}},
+{{/zcl_enum_items}}
+} EmberAf{{asType label}};
+{{/zcl_enums}}
+
+// ZCL bitmaps
+
+{{#zcl_bitmaps}}
+{{#zcl_bitmap_items}}
+#define EMBER_AF_{{asDelimitedMacro parent.label}}_{{asDelimitedMacro label}} ({{mask}})
+#define EMBER_AF_{{asDelimitedMacro parent.label}}_{{asDelimitedMacro label}}_OFFSET ({{asOffset mask}})
+{{/zcl_bitmap_items}}
+{{/zcl_bitmaps}}
+
+// ZCL Structs
+
+{{#zcl_structs}}
+{{#zcl_struct_items}}
+{{#first}}
+// Struct for {{parent.label}}
+typedef struct _{{asType parent.label}} {
+{{/first}}
+{{ident}}{{asUnderlyingType type}} {{asSymbol label}};
+{{#last}}
+} {{asType parent.label}};
+
+{{/last}}
+{{else}}
+// Void typedef for {{asType parent.label}} which is empty.
+// this will result in all the references to the data being as uint8_t *
+typedef uint8_t {{asType parent.label}};
+
+{{/zcl_struct_items}}
+{{/zcl_structs}}
+
+#endif

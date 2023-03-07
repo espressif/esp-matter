@@ -1,0 +1,19 @@
+[
+    {
+        "files": [
+            "+../../provisioning.c -> provisioning.c",
+            "+../../external_provisioning_conf.c -> external_provisioning_conf.c",
+            "+../../external_provisioning_conf.h -> external_provisioning_conf.h",
+            "+../../README.md -> README.md",
+            "+../../README.html -> README.html",
+            "+../../uart_term.c -> uart_term.c",
+            "+../../uart_term.h -> uart_term.h",
+            "+../main_freertos.c -> main_freertos.c",
+            "+../common.syscfg -> common.syscfg",
+            "+../../../../../../../source/ti/boards/CC3235SF_LAUNCHXL/Board.html -> Board.html",
+            "+cc32xxsf_freertos.lds -> cc32xxsf_freertos.lds",
+            "+../../image.syscfg -> image.syscfg",
+            "+../../userFiles/dummy-root-ca-cert -> userFiles/dummy-root-ca-cert"
+        ]
+    }
+]

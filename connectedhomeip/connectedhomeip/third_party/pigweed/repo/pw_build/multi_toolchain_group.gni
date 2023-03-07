@@ -1,0 +1,51 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+# Declares a group that builds a list of dependencies using multiple toolchains.
+#
+# In a multi-toolchain group, each dependency is built with each of the provided
+# toolchains. This results in M x N targets being built, where M is the number
+# of toolchains, and N is the number of targets listed in the `deps` variable.
+#
+# This template is useful for simplifying cases where you have multiple
+# applications you would like to build under different toolchain contexts.
+#
+# Args:
+#   deps: (required) List of GN targets to build under each listed toolchain.
+#   toolchains: (required) A list of toolchain labels to build the dependencies
+#     with.
+template("pw_multi_toolchain_group") {
+  assert(!defined(invoker.public_deps),
+         "Use `deps` for pw_multi_toolchain_group targets")
+  assert(defined(invoker.deps), "`deps` must be defined to use this template")
+  assert(defined(invoker.toolchains),
+         "`toolchains` must be defined to use this template")
+  group(target_name) {
+    deps = []
+    public_deps = []
+    foreach(tc, invoker.toolchains) {
+      foreach(item, invoker.deps) {
+        # Make sure targets don't explicitly reference a toolchain in their
+        # target label. If we poison any instances of "(", we can see a mismatch
+        # against the original string, indicating a toolchain was explicitly
+        # specified.
+        _poisioned_label = string_replace(item, "(", "!")
+        assert(item == _poisioned_label,
+               "$item can't explicitly specify a toolchain as part of " +
+                   "a multi-toolchain group")
+        deps += [ "$item($tc)" ]
+      }
+    }
+  }
+}

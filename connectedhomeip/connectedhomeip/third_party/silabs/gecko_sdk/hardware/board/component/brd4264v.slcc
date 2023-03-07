@@ -1,0 +1,64 @@
+!!omap
+- id: brd4264v
+- label: BRD4264V
+- package: platform
+- description: Board support for BRD4264V.
+- category: Platform|Board|Radio Board
+- quality: production
+- requires:
+  - name: efr32fg23
+  - name: brd4264v_config
+  - name: hardware_board_mainboard
+- provides:
+  - name: brd4264v
+  - name: hardware_board
+  - name: hardware_board_rb
+  - name: hardware_board_from_stk
+  - name: hardware_board_has_si70xx
+  - name: hardware_board_has_tempsensor
+  - name: hardware_board_has_vcom
+  - name: hardware_board_has_spiflash
+  - name: hardware_board_has_rfswitch
+  - name: hardware_board_has_hfxo
+  - name: hardware_board_has_lfxo
+  - name: hardware_board_supports_rf_band_2400
+  - name: hardware_board_supports_rf_band_868
+  - name: hardware_board_supports_rf_band_915
+  - name: hardware_board_supports_3_rf_bands
+  - name: hardware_board_default_rf_band
+  - name: hardware_board_default_rf_band_868
+- recommends:
+  - id: brd4001a
+  - id: i2cspm
+    instance:
+    - sensor
+  - id: ls013b7dh03
+  - id: simple_led
+    instance:
+    - led0
+    - led1
+  - id: simple_button
+    instance:
+    - btn0
+    - btn1
+- template_contribution:
+  - name: board_default_init
+    value: sl_board_disable_vcom()
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD4264V"'
+  - name: SL_BOARD_REV
+    value: '"A00"'
+- tag:
+  - board:pn:BRD4264
+  - board:variant:V
+  - board:revision:A00
+  - board:device:efr32fg23
+  - hardware:has:vcom
+  - hardware:has:pti
+  - hardware:has:sensor:si7021
+  - hardware:has:display:ls013b7dh03
+  - hardware:has:led:2
+  - hardware:has:button:2
+  - hardware:has:memory:spi:mx25r8035f
+  - hardware:shares:button:led

@@ -1,0 +1,61 @@
+/***************************************************************************//**
+ * @file zigbee_common_callback_dispatcher.c
+ * @brief ZigBee common dispatcher definitions.
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2020 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * The licensor of this software is Silicon Laboratories Inc. Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement. This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
+ *
+ ******************************************************************************/
+
+#include PLATFORM_HEADER
+#include "stack/include/ember.h"
+#include "zigbee_app_framework_common.h"
+#include "zigbee_common_callback_dispatcher.h"
+
+{# EVENT INIT -#}
+void emAfEventInit(void)
+{
+{%- for cb in zigbee_af_callback %}
+{%- if cb['callback_type'] == "event_init" or cb['callback_type'] == "init" %}
+  {{ cb['function_name'] }}(SL_ZIGBEE_INIT_LEVEL_EVENT);
+{%- endif %}
+{%- endfor %}
+}
+
+{# LOCAL DATA INIT -#}
+void emAfLocalDataInit(void)
+{
+{%- for cb in zigbee_af_callback %}
+{%- if cb['callback_type'] == "local_data_init" %}
+  {{ cb['function_name'] }}(SL_ZIGBEE_INIT_LEVEL_LOCAL_DATA);
+{%- endif %}
+{%- endfor %}
+}
+
+{# INIT DONE -#}
+void emAfInitDone(void)
+{
+{%- for cb in zigbee_af_callback %}
+{%- if cb['callback_type'] == "init_done" %}
+  {{ cb['function_name'] }}(SL_ZIGBEE_INIT_LEVEL_DONE);
+{%- endif %}
+{%- endfor %}
+}
+
+{# TICK #}
+void emAfTick(void)
+{
+{%- for cb in zigbee_af_callback %}
+{%- if cb['callback_type'] == "tick" %}
+  {{ cb['function_name'] }}();
+{%- endif %}
+{%- endfor %}
+}

@@ -1,0 +1,586 @@
+{
+    "RadioParDefs": {
+        "RadioPar": [
+            {
+                "_name": "radioPar",
+                "field": [
+                    {
+                        "_name": "maxFutureTime",
+                        "position": "0"
+                    },
+                    {
+                        "_name": "numSwBits",
+                        "position": "2"
+                    },
+                    {
+                        "_name": "preamCtrl",
+                        "position": "3"
+                    },
+                    {
+                        "_name": "preamPattern",
+                        "position": "4"
+                    },
+                    {
+                        "_name": "bNoPtrCheck",
+                        "position": "6"
+                    },
+                    {
+                        "_name": "rssiOverride",
+                        "position": "7"
+                    },
+                    {
+                        "_name": "modIsfCfgVal",
+                        "position": "8"
+                    },
+                    {
+                        "_name": "pModIsfShape",
+                        "position": "12"
+                    },
+                    {
+                        "_name": "crcWhConfig",
+                        "position": "16"
+                    },
+                    {
+                        "_name": "numCrcBits",
+                        "position": "17"
+                    },
+                    {
+                        "_name": "introduceCrcErr",
+                        "position": "18"
+                    },
+                    {
+                        "_name": "crcInit",
+                        "position": "20"
+                    },
+                    {
+                        "_name": "crcXor",
+                        "position": "24"
+                    },
+                    {
+                        "_name": "whInit",
+                        "position": "28"
+                    },
+                    {
+                        "_name": "startToTxRatOffset",
+                        "position": "32"
+                    },
+                    {
+                        "_name": "startToRxRatOffset",
+                        "position": "34"
+                    },
+                    {
+                        "_name": "startToSynthRatOffset",
+                        "position": "36"
+                    },
+                    {
+                        "_name": "txToRxRatOffset",
+                        "position": "38"
+                    },
+                    {
+                        "_name": "rxToTxRatOffset",
+                        "position": "40"
+                    },
+                    {
+                        "_name": "syncTimeAdjust",
+                        "position": "42"
+                    },
+                    {
+                        "_name": "rxFifoThrSleep",
+                        "position": "44"
+                    },
+                    {
+                        "_name": "txFifoThrSleep",
+                        "position": "45"
+                    },
+                    {
+                        "_name": "ratTicksPerBit",
+                        "position": "46"
+                    },
+                    {
+                        "_name": "mdmFreqWordOvr",
+                        "position": "48"
+                    },
+                    {
+                        "_name": "mdmRxIntFreq",
+                        "position": "50"
+                    },
+                    {
+                        "_name": "mdmTxIntFreq",
+                        "position": "52"
+                    },
+                    {
+                        "_name": "mdmPShift",
+                        "position": "54"
+                    },
+                    {
+                        "_name": "mdmQShift",
+                        "position": "55"
+                    },
+                    {
+                        "_name": "txFreqBase",
+                        "position": "56"
+                    },
+                    {
+                        "_name": "freqOffset",
+                        "position": "58"
+                    },
+                    {
+                        "_name": "bawConfig",
+                        "position": "60"
+                    }
+                ]
+            },
+            {
+                "_name": "synthPar",
+                "field": [
+                    {
+                        "_name": "config",
+                        "position": "64"
+                    },
+                    {
+                        "_name": "ktAvgOffset",
+                        "position": "66"
+                    },
+                    {
+                        "_name": "tdcFactor",
+                        "position": "67"
+                    },
+                    {
+                        "_name": "tdcOffset1",
+                        "position": "68"
+                    },
+                    {
+                        "_name": "tdcOffset2",
+                        "position": "69"
+                    },
+                    {
+                        "_name": "peThreshFactor",
+                        "position": "70"
+                    },
+                    {
+                        "_name": "peThreshOffset",
+                        "position": "71"
+                    },
+                    {
+                        "_name": "tdcSubtractFactor",
+                        "position": "72"
+                    },
+                    {
+                        "_name": "tdcSubtractOffset",
+                        "position": "73"
+                    },
+                    {
+                        "_name": "defaultPreDivRatio24",
+                        "position": "74"
+                    },
+                    {
+                        "_name": "fXtalInv",
+                        "position": "76"
+                    },
+                    {
+                        "_name": "K1",
+                        "position": "80"
+                    },
+                    {
+                        "_name": "K2BL16",
+                        "position": "84"
+                    },
+                    {
+                        "_name": "K2AL16",
+                        "position": "88"
+                    },
+                    {
+                        "_name": "K3BL",
+                        "position": "92"
+                    },
+                    {
+                        "_name": "K3AL",
+                        "position": "96"
+                    },
+                    {
+                        "_name": "K5",
+                        "position": "100"
+                    },
+                    {
+                        "_name": "M2K",
+                        "position": "104"
+                    },
+                    {
+                        "_name": "M3K",
+                        "position": "105"
+                    },
+                    {
+                        "_name": "M4K",
+                        "position": "106"
+                    },
+                    {
+                        "_name": "synthRegAnaDivLsbFsOnly",
+                        "position": "107"
+                    },
+                    {
+                        "_name": "synthRegAnaDivLsbRx",
+                        "position": "108"
+                    },
+                    {
+                        "_name": "synthRegAnaDivLsbTx",
+                        "position": "109"
+                    },
+                    {
+                        "_name": "ktPrecal",
+                        "position": "110"
+                    },
+                    {
+                        "_name": "ktPrecal0",
+                        "position": "110"
+                    },
+                    {
+                        "_name": "ktPrecal1",
+                        "position": "111"
+                    },
+                    {
+                        "_name": "tdcPrecal",
+                        "position": "112"
+                    },
+                    {
+                        "_name": "tdcPrecal0",
+                        "position": "112"
+                    },
+                    {
+                        "_name": "tdcPrecal1",
+                        "position": "114"
+                    },
+                    {
+                        "_name": "coarsePrecal",
+                        "position": "116"
+                    },
+                    {
+                        "_name": "coarsePrecal0",
+                        "position": "116"
+                    },
+                    {
+                        "_name": "coarsePrecal1",
+                        "position": "117"
+                    },
+                    {
+                        "_name": "coarsePrecal2",
+                        "position": "118"
+                    },
+                    {
+                        "_name": "coarsePrecal3",
+                        "position": "119"
+                    },
+                    {
+                        "_name": "midPrecal",
+                        "position": "120"
+                    },
+                    {
+                        "_name": "midPrecal00",
+                        "position": "120"
+                    },
+                    {
+                        "_name": "midPrecal01",
+                        "position": "121"
+                    },
+                    {
+                        "_name": "midPrecal02",
+                        "position": "122"
+                    },
+                    {
+                        "_name": "midPrecal03",
+                        "position": "123"
+                    },
+                    {
+                        "_name": "midPrecal04",
+                        "position": "124"
+                    },
+                    {
+                        "_name": "midPrecal05",
+                        "position": "125"
+                    },
+                    {
+                        "_name": "midPrecal06",
+                        "position": "126"
+                    },
+                    {
+                        "_name": "midPrecal07",
+                        "position": "127"
+                    },
+                    {
+                        "_name": "midPrecal08",
+                        "position": "128"
+                    },
+                    {
+                        "_name": "midPrecal09",
+                        "position": "129"
+                    },
+                    {
+                        "_name": "midPrecal10",
+                        "position": "130"
+                    },
+                    {
+                        "_name": "midPrecal11",
+                        "position": "131"
+                    },
+                    {
+                        "_name": "midPrecal12",
+                        "position": "132"
+                    },
+                    {
+                        "_name": "midPrecal13",
+                        "position": "133"
+                    },
+                    {
+                        "_name": "midPrecal14",
+                        "position": "134"
+                    },
+                    {
+                        "_name": "midPrecal15",
+                        "position": "135"
+                    }
+                ]
+            },
+            {
+                "_name": "frontEndPar",
+                "field": [
+                    {
+                        "_name": "lnaIbOffset",
+                        "position": "136"
+                    },
+                    {
+                        "_name": "ifAmpTrimOffset",
+                        "position": "137"
+                    },
+                    {
+                        "_name": "rssiOffset",
+                        "position": "138"
+                    },
+                    {
+                        "_name": "gpoControl",
+                        "position": "139"
+                    }
+                ]
+            },
+            {
+                "_name": "bleRadioPar",
+                "field": [
+                    {
+                        "_name": "advSyncWord",
+                        "position": "144"
+                    },
+                    {
+                        "_name": "maxCrcErr",
+                        "position": "148"
+                    },
+                    {
+                        "_name": "numDfBytes",
+                        "position": "149"
+                    },
+                    {
+                        "_name": "dataHeaderAnd",
+                        "position": "150"
+                    },
+                    {
+                        "_name": "dataAutoEmptyHdr",
+                        "position": "151"
+                    },
+                    {
+                        "_name": "advIndHdr",
+                        "position": "152"
+                    },
+                    {
+                        "_name": "advDirIndHdr",
+                        "position": "153"
+                    },
+                    {
+                        "_name": "advNcIndHdr",
+                        "position": "154"
+                    },
+                    {
+                        "_name": "advScanIndHdr",
+                        "position": "155"
+                    },
+                    {
+                        "_name": "scanReqHdr",
+                        "position": "156"
+                    },
+                    {
+                        "_name": "connectReqHdr",
+                        "position": "157"
+                    },
+                    {
+                        "_name": "scanRspHdr",
+                        "position": "158"
+                    },
+                    {
+                        "_name": "dataLengthOr",
+                        "position": "160"
+                    },
+                    {
+                        "_name": "advLengthOr",
+                        "position": "161"
+                    },
+                    {
+                        "_name": "dataLenMask",
+                        "position": "162"
+                    },
+                    {
+                        "_name": "maxDataLen",
+                        "position": "163"
+                    },
+                    {
+                        "_name": "advLenMask",
+                        "position": "164"
+                    },
+                    {
+                        "_name": "maxAdvLen",
+                        "position": "165"
+                    },
+                    {
+                        "_name": "rxIfsTimeout",
+                        "position": "166"
+                    },
+                    {
+                        "_name": "minLogUpperLimit",
+                        "position": "168"
+                    },
+                    {
+                        "_name": "maxLogUpperLimit",
+                        "position": "169"
+                    },
+                    {
+                        "_name": "winOffsetMargin",
+                        "position": "170"
+                    },
+                    {
+                        "_name": "extraWinSzLimit",
+                        "position": "172"
+                    },
+                    {
+                        "_name": "minWinSz",
+                        "position": "174"
+                    },
+                    {
+                        "_name": "bWinOffsetNotZero",
+                        "position": "175"
+                    },
+                    {
+                        "_name": "ticksPerConnIntStep",
+                        "position": "176"
+                    }
+                ]
+            },
+            {
+                "_name": "ieeeRadioPar",
+                "field": [
+                    {
+                        "_name": "numPreambleNibbles",
+                        "position": "144"
+                    },
+                    {
+                        "_name": "phyLenMask",
+                        "position": "145"
+                    },
+                    {
+                        "_name": "preambleWord",
+                        "position": "146"
+                    },
+                    {
+                        "_name": "ackMacHdr",
+                        "position": "148"
+                    },
+                    {
+                        "_name": "frameCtrlAnd",
+                        "position": "150"
+                    },
+                    {
+                        "_name": "frameCtrlAndBeacon",
+                        "position": "150"
+                    },
+                    {
+                        "_name": "frameCtrlAndData",
+                        "position": "152"
+                    },
+                    {
+                        "_name": "frameCtrlAndAck",
+                        "position": "154"
+                    },
+                    {
+                        "_name": "frameCtrlAndMacCmd",
+                        "position": "156"
+                    },
+                    {
+                        "_name": "frameCtrlAndFt4",
+                        "position": "158"
+                    },
+                    {
+                        "_name": "frameCtrlAndFt5",
+                        "position": "160"
+                    },
+                    {
+                        "_name": "frameCtrlAndFt6",
+                        "position": "162"
+                    },
+                    {
+                        "_name": "frameCtrlAndFt7",
+                        "position": "164"
+                    },
+                    {
+                        "_name": "rxFrameEndOffset",
+                        "position": "166"
+                    },
+                    {
+                        "_name": "txFrameEndOffset",
+                        "position": "168"
+                    },
+                    {
+                        "_name": "backoffPeriod",
+                        "position": "170"
+                    },
+                    {
+                        "_name": "csmaSlottedWaitBeforeCca",
+                        "position": "172"
+                    },
+                    {
+                        "_name": "csmaUnslottedWaitBeforeCca",
+                        "position": "174"
+                    },
+                    {
+                        "_name": "csmaUnslottedWaitAfterCca",
+                        "position": "176"
+                    },
+                    {
+                        "_name": "csmaUnslottedWait0Cca",
+                        "position": "178"
+                    },
+                    {
+                        "_name": "csmaRxWakeupTime",
+                        "position": "180"
+                    },
+                    {
+                        "_name": "csmaRxWakeupMargin",
+                        "position": "182"
+                    },
+                    {
+                        "_name": "ccaCorrWindow",
+                        "position": "184"
+                    },
+                    {
+                        "_name": "rxCcaCorrValidTime",
+                        "position": "186"
+                    },
+                    {
+                        "_name": "broadcastAckMode",
+                        "position": "188"
+                    }
+                ]
+            },
+            {
+                "_name": "hsRadioPar",
+                "field": {
+                    "_name": "syncWord",
+                    "position": "144"
+                }
+            }
+        ]
+    }
+}

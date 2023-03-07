@@ -1,0 +1,56 @@
+<%-
+	local ubus = require "ubus"
+	local sys = require "luci.sys"
+	local utl = require "luci.util"
+
+	function getnetworkkey()
+		local k, v, result
+
+		local conn = ubus.connect()
+		if not conn then
+			error("Failed to connect to ubusd")
+		end
+
+		result = conn:call("otbr", "networkkey", {}).Networkkey
+
+		return result
+	end
+-%>
+<%+header%>
+
+<h2><%:Join Network: %><%=luci.http.formvalue("NetworkName")%></h2>
+<br />
+
+<br/><br/>
+
+<form class="inline" action="<%=url('admin/network/thread_attach')%>" method="post" onsubmit="return validateForm()" name="networkkeyForm">
+<div style="width:80%;margin-left:20%;">
+	<span><strong><%:Network Key %></strong></span>
+	<span style="margin-left:3%;"></span>
+	<input type="text" name="networkkey" value="<%=getnetworkkey()%>" style="width:50%;"/>
+	<div style="margin-left:13%;margin-top:1%;">
+		<span><img src="<%=resource .. "/cbi/help.gif"%>"/><%:Please  input your network key to ensure you join the right network.%></span>
+	</div>
+</div>
+<br/><br/><br/>
+<div class="cbi-page-actions right">
+	<input class="cbi-button cbi-button-neutral" style="float:left;" type="button" onclick="window.location.href='thread_scan'" value="<%:Back to scan result%>" />
+	<input type="hidden" name="token" value="<%=token%>" />
+	<input type="hidden" name="panid" value="<%=luci.http.formvalue("PanId")%>" />
+	<input type="hidden" name="channel" value="<%=luci.http.formvalue("Channel")%>" />
+	<input class="cbi-button cbi-button-add important" type="submit" value="<%:Attach%>" />
+</div>
+</form>
+
+<%+footer%>
+<script type="text/javascript">//<![CDATA[
+	function validateForm()
+	{
+		var networkkey = document.forms["networkkeyForm"]["networkkey"].value;
+		if(networkkey.length != 32)
+		{
+			alert("Networkkey length must be 16 bytes");
+			return false;
+		}
+	}
+//]]></script>

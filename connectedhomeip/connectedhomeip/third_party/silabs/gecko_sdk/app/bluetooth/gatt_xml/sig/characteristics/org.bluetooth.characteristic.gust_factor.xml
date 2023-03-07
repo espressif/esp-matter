@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Liquid XML Studio Designer Edition 9.1.10.3537 (http://www.liquid-technologies.com) -->
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+name="Gust Factor" type="org.bluetooth.characteristic.gust_factor" uuid="2A74" last-modified="2014-11-20" approved="Yes">
+    <Value>
+    <Field name="Gust Factor">
+        <InformativeText>The factor has a fixed-point representation, where the actual factor is (attribute value * 0.1)</InformativeText>
+        <Requirement>Mandatory</Requirement>
+        <Format>uint8</Format>
+        <Unit>org.bluetooth.unit.unitless</Unit>
+        <DecimalExponent>-1</DecimalExponent>
+	</Field>
+	</Value>
+</Characteristic>

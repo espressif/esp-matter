@@ -1,0 +1,183 @@
+// Copyright 2021 The Pigweed Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not
+// use this file except in compliance with the License. You may obtain a copy of
+// the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations under
+// the License.
+syntax = "proto3";
+
+package pw.software_update;
+
+import "pw_protobuf_protos/common.proto";
+import "pw_tokenizer/proto/options.proto";
+import "google/protobuf/any.proto";
+
+message BundledUpdateState {
+  enum Enum {
+    UNKNOWN = 0;  // Not an expected state in the OTA system; only for proto.
+
+    // Valid methods in this state: Start()
+    //
+    // Transition:
+    //   Start() succeeds --> TRANSFERRING
+    //   Start() fails    --> FINISHED
+    INACTIVE = 1;
+
+    // Valid methods in this state: GetStatus(), Abort().
+    //
+    // Transitions:
+    //   Transfer completes --> TRANSFERRED
+    //   Transfer fails     --> FINISHED
+    //   Abort() called     --> ABORTING
+    TRANSFERRING = 2;
+
+    // Valid methods in this state: GetStatus(), Abort(), Verify().
+    //
+    // Transitions:
+    //   Verify() called    --> VERIFYING
+    //   Apply() called     --> VERIFYING
+    //   Abort() called     --> ABORTING
+    TRANSFERRED = 3;
+
+    // Valid methods in this state: GetStatus(), Abort().
+    //
+    // Transitions:
+    //   Verifying finished --> VERIFIED
+    //   Verifying failed   --> FINISHED
+    //   Abort() called     --> ABORTING
+    VERIFYING = 4;
+
+    // Valid methods in this state: GetStatus(), Abort(), Apply().
+    //
+    // Transitions:
+    //   Apply() called --> APPLYING
+    //   Abort() called --> ABORTING
+    VERIFIED = 5;
+
+    // Valid methods in this state: GetStatus().
+    //
+    // Transitions:
+    //   Apply() finished --> FINISHED; may require persisting across a reboot.
+    //   Apply() failed   --> FINISHED; with error set.
+    APPLYING = 6;
+
+    // Valid methods in this state: GetStatus().
+    //
+    // Transitions:
+    //   Abort finishes --> FINISHED
+    //   Abort fails    --> FINISHED
+    ABORTING = 7;
+
+    // Valid methods in this state: GetStatus(), Reset().
+    //
+    // Terminal state indicating a finished update; whether successful or
+    // not. Additional termination information available in completion_state
+    // and possibly note.
+    //
+    // Transitions:
+    //   Reset() succeeds --> INACTIVE
+    //   Reset() fails    --> FINISHED
+    FINISHED = 8;
+  }
+}
+
+message BundledUpdateResult {
+  enum Enum {
+    UNKNOWN = 0;
+    SUCCESS = 1;
+    UNKNOWN_ERROR = 2;
+    ABORTED = 3;
+    TRANSFER_FAILED = 4;
+    VERIFY_FAILED = 5;
+    APPLY_FAILED = 6;
+  }
+}
+
+message BundledUpdateStatus {
+  BundledUpdateState.Enum state = 1;
+
+  optional BundledUpdateResult.Enum result = 2;
+
+  // This is the percentage of estimated progress for the current update
+  // state in hundreths of a percent. (e.g. 5.00% = 500u)
+  optional uint32 current_state_progress_hundreth_percent = 3;
+
+  // If present, the active transfer ID for the update.
+  optional uint32 transfer_id = 4;
+
+  // The name of the update bundle. Not present when in INACTIVE state. This is
+  // useful for enabling resuming of transfers across reboots or disconnects,
+  // without transferring an expensive manifest.
+  optional string bundle_filename = 5;
+
+  // Additional information related to the state may be provided here.
+  // Examples: "Failed verifying: ml_model.bin", "Flash partition couldn't be
+  // acquired and was busy", etc. Can provide more granular information than
+  // just the completion result.
+  optional bytes note = 6 [(tokenizer.format) = TOKENIZATION_OPTIONAL];
+
+  // Custom application data.
+  optional google.protobuf.Any extended_status = 7;
+}
+
+message StartRequest {
+  // If present, the filename for the staged file. This should persist across
+  // reboots, and will be returned from GetStatus() until either the update
+  // applies or is aborted.
+  optional string bundle_filename = 1;
+}
+
+// TODO(b/235273688): Add documentation and details of the API contract.
+service BundledUpdate {
+  // TODO(keir): Offer GetCurrentManifest & GetStagedManifest() methods that
+  // leverage pw_transfer to upload the manifest off the device, to enable host
+  // logic.
+
+  // Get current status of software update.
+  rpc GetStatus(pw.protobuf.Empty) returns (BundledUpdateStatus);
+
+  // Start a software update. Do any device-specific tasks needed to be ready
+  // for update. Open pw_transfer channel used for staging bundle.
+  // Returned status includes the transfer ID to use for bundle transfer.
+  //
+  // Precondition: Device update state must be INACTIVE.
+  rpc Start(StartRequest) returns (BundledUpdateStatus);
+
+  // Manually set the bundle status as transferred. It can be used to recover
+  // a previously finished transfer or used when transfer happens on a side
+  // channel without involvement of pw_transfer
+  //
+  // Precondition: Device update state must be INACTIVE or TRANSFERRING
+  rpc SetTransferred(pw.protobuf.Empty) returns (BundledUpdateStatus);
+
+  // Verify the bundle in the staging area. Returns immediately, but
+  // verification runs asynchronously. Poll for completion with GetStatus().
+  //
+  // Precondition: Device update state must be TRANSFERRED.
+  rpc Verify(pw.protobuf.Empty) returns (BundledUpdateStatus);
+
+  // Apply the staged update. The update process will verify the staged bundle
+  // or ensure that it was verified, apply the bundle, and in some cases reboot
+  // the device. During this process, the device may be slow to respond.
+  //
+  // The RPC is async; callers must fetch status with GetStatus().
+  //
+  // Precondition: Device update state must be TRANSFERRED or VERIFIED.
+  rpc Apply(pw.protobuf.Empty) returns (BundledUpdateStatus);
+
+  // Abort any current software update in progress.
+  // Precondition: Device update state must not be INACTIVE or FINISHED.
+  rpc Abort(pw.protobuf.Empty) returns (BundledUpdateStatus);
+
+  // Reset after a finished update. Device goes into INACTIVE state after.
+  //
+  // Precondition: Device update state must be FINISHED.
+  rpc Reset(pw.protobuf.Empty) returns (BundledUpdateStatus);
+}

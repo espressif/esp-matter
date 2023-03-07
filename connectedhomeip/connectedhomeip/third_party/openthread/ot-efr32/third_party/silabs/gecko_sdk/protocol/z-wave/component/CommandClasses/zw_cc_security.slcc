@@ -1,0 +1,13 @@
+id: zw_cc_security
+label: Security Command Class
+category: Z-Wave|Command Classes
+description: >
+  Security Command Class is a framework for allowing nodes
+  to communicate securely in a Z-Wave network.
+package: Z-Wave
+quality: production
+source:
+  - path: protocol/z-wave/ZAF/CommandClasses/Security/CC_Security.c
+provides:
+  - name: zw_cc_security
+

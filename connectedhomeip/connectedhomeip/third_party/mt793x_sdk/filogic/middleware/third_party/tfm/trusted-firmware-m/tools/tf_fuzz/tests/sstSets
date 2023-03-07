@@ -1,0 +1,59 @@
+purpose to beat the heck out of set sst template lines;
+
+//set sst name passwords data "Very short data set";
+
+//set sst uid 15 41 data "self-destruct using top secret corbomite device" expect pass;
+
+//set sst uid 38 data "So long, and thanks for all the fish!" expect nothing;
+
+//set sst uid * data * expect pass;
+
+set sst name CCnumbers data *;
+
+//set sst name CCnumbers securityAnswers passwords data *;
+
+//set sst uid 17 41 19 31 10 53 data *;
+
+//3 of {set sst name * data "The trick to flying is to throw yourself at the ground, and miss.";}
+
+//5 of {set sst name snortwaggle data *;}
+
+//4 of set sst uid * data "that's one small step for [a] man;  one giant leap for mankind";
+
+//5 of set sst uid * data *;  // should have different data each time!
+
+/*
+4 of {
+    set sst name passwords data "Very short data set";
+    set sst name CCnumbers data "Beam me up, Scotty!";
+    set sst uid 1941 data "December 7th 1941:  A day that will live in infamy";
+    set sst name snortwaggle data * expect pass;
+    set sst name gurgleflurtz data "If you're going through hell, keep going.";
+    set sst name Picard data *;
+} */
+
+/*
+2 to 6 of {
+    set sst name passwords data "Very short data set";
+    set sst name CCnumbers data "Ask rather what you can do for your country.";
+    set sst name * data *;
+    set sst uid * data * expect pass;
+} */
+
+/*
+shuffle {
+    set sst name passwords data "Very short data set";
+    set sst name CCnumbers data *;
+    set sst name Kirk data "Beam me up.";
+    set sst uid 42 data "Don't panic.";
+    set sst name Spock data "Fascinating." expect pass;
+    set sst name McCoy data "I'm a doctor, not a bricklayer." expect pass;
+    set sst name Scotty data "I'm giving her all she's got!" expect pass;
+} */
+
+/*
+set sst name neil buzz mike data *;
+remove sst *active expect pass;  // zap a random currently-active SST asset
+remove sst *deleted;  // delete an already-deleted asset
+*/
+//set sst *deleted data "a over-ripe banana walks into a bar..." expect pass;

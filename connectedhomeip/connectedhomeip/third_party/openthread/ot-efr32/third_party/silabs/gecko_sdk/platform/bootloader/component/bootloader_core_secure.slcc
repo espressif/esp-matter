@@ -1,0 +1,193 @@
+id: bootloader_core_secure
+label: Bootloader Core (Secure)
+package: bootloader
+description: Secure Core library for Gecko bootloader.
+category: Platform|Bootloader|TrustZone Secure|Core
+quality: beta
+source:
+  - path: platform/bootloader/driver/btl_driver_util.c
+  - path: platform/bootloader/core/btl_bootload.c
+  - path: platform/bootloader/core/btl_core.c
+  - path: platform/bootloader/core/btl_main_s.c
+  - path: platform/bootloader/core/flash/btl_internal_flash.c
+  - path: platform/bootloader/core/btl_parse.c
+  - path: platform/bootloader/core/btl_reset.c
+
+  # Veneers
+  - path: platform/bootloader/core/btl_reset_veneers.c
+  - path: platform/bootloader/core/btl_bootload_veneers.c
+
+define:
+  - name: BOOTLOADER_ENABLE
+    value: 1
+  - name: SL_RAMFUNC_DISABLE
+    value: 1
+  - name: __START
+    value: main
+  - name: __STARTUP_CLEAR_BSS
+    value: 1
+  - name: BOOTLOADER_SECOND_STAGE
+    value: 1
+  - name: SL_STACK_SIZE
+    value: 2048
+  - name: SL_HEAP_SIZE
+    value: 0
+
+  # Non-Secure Memory layout
+  - name: NS_FLASH_OFFSET
+    value: 0x5000
+
+  - name: NS_RAM_OFFSET
+    value: 0x2000
+    condition:
+      - bootloader_apploader
+  - name: NS_RAM_OFFSET
+    value: 0x6000
+    unless:
+      - bootloader_apploader
+
+include:
+  - path: platform/bootloader
+    file_list:
+      - path: api/btl_interface.h
+      - path: config/btl_config.h
+      - path: core/btl_core.h
+      - path: core/btl_reset.h
+      - path: core/btl_parse.h
+      - path: core/btl_bootload.h
+      - path: core/btl_upgrade.h
+      - path: core/btl_util.h
+      - path: driver/btl_driver_util.h
+      - path: core/flash/btl_internal_flash.h
+      - path: debug/btl_debug.h
+
+provides:
+  - name: bootloader_core
+  - name: bootloader_core_secure
+
+    # Used to force conflict during SLC dependency resolution
+    # if other NonSecure incompatible components are being added.
+  - name: bootloader_secure_incompatible
+
+requires:
+  - name: device_init
+    condition: [bootloader_apploader]
+  - name: emlib
+  - name: tz_service_syscfg
+  - name: bootloader_tz_secure
+  - name: bootloader_tz_utils
+
+recommends:
+  - id: bootloader_delay_driver
+  - id: bootloader_ezsp_spi
+  - id: bootloader_debug
+  - id: bootloader_image_parser
+  - id: bootloader_spi_peripheral_driver
+  - id: bootloader_crc
+  - id: bootloader_serial_driver
+  - id: bootloader_include_parser
+  - id: bootloader_uart_xmodem
+  - id: bootloader_xmodem_parser
+  - id: bootloader_bgapi_uartdfu
+
+config_file:
+  # xG22
+  - path: platform/bootloader/config/s2/device_sdid_205/btl_core_s_cfg.h
+    file_id: btl_core_config
+    condition:
+      - device_sdid_205
+    unless:
+      - bootloader_apploader
+  - path: platform/bootloader/config/s2/device_sdid_205/apploader/btl_core_s_cfg.h
+    file_id: btl_core_config
+    condition:
+      - device_sdid_205
+      - bootloader_apploader
+
+  # Series-2
+  - path: platform/bootloader/config/s2/device_series_2/btl_core_s_cfg.h
+    file_id: btl_core_config
+    unless:
+      - device_sdid_205
+      - bootloader_apploader
+  - path: platform/bootloader/config/s2/device_series_2/apploader/btl_core_s_cfg.h
+    file_id: btl_core_config
+    condition:
+      - bootloader_apploader
+    unless:
+      - device_sdid_205
+
+template_contribution:
+  - name: bootloader_enable
+    value: 1
+  - name: app_rollback_protection_size
+    value: 0x20
+  - name: memory_ram_start
+    value: 0x20000000
+  - name: memory_ram_size
+    value: 0x6000
+    unless:
+      - bootloader_apploader
+  - name: memory_ram_size
+    value: 0x2000
+    condition:
+      - bootloader_apploader
+
+  - name: bootloader_flash_addr
+    value: 0x0
+    condition:
+      - device_sdid_200 # xG21
+  - name: bootloader_flash_addr
+    value: 0x0
+    condition:
+      - device_sdid_205 # xG22
+  - name: bootloader_flash_addr
+    value: 0x8000000
+    condition:
+      - device_sdid_210 # xG23
+  - name: bootloader_flash_addr
+    value: 0x8000000
+    condition:
+      - device_sdid_215 # xG24
+  - name: bootloader_flash_addr
+    value: 0x8000000
+    condition:
+      - device_sdid_220 # xG25
+  - name: bootloader_flash_addr
+    value: 0x08000000
+    condition:
+      - device_sdid_230 # XG27
+
+  # Bootloader size
+  - name: bootloader_main_size
+    value: 0x5000
+
+toolchain_settings:
+  - option: gcc_compiler_option
+    value: -std=gnu99
+  - option: optimize
+    value: size
+  - option: gcc_linker_option
+    value: -Xlinker --cmse-implib
+  - option: gcc_linker_option
+    value: -Xlinker --out-implib=bootloader_secure_lib_xg21.o
+    condition: [device_sdid_200]
+  - option: gcc_linker_option
+    value: -Xlinker --out-implib=bootloader_secure_lib_xg22.o
+    condition: [device_sdid_205]
+  - option: gcc_linker_option
+    value: -Xlinker --out-implib=bootloader_secure_lib_xg23.o
+    condition: [device_sdid_210]
+  - option: gcc_linker_option
+    value: -Xlinker --out-implib=bootloader_secure_lib_xg24.o
+    condition: [device_sdid_215]
+  - option: gcc_linker_option
+    value: -Xlinker --out-implib=bootloader_secure_lib_xg25.o
+    condition: [device_sdid_220]
+  - option: gcc_linker_option
+    value: -Xlinker --out-implib=bootloader_secure_lib_xg27.o
+    condition: [device_sdid_230]
+
+validation_helper:
+  - path: platform/bootloader/component/scripts/bootloader_core_validation.lua
+

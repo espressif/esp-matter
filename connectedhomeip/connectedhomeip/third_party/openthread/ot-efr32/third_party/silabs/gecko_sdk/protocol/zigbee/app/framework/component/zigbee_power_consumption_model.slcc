@@ -1,0 +1,43 @@
+package: Zigbee
+description: This component implements the lightbulb electrical measurement server cluster.
+id: zigbee_power_consumption_model
+label: Power Consumption Model
+category: Zigbee|Cluster Library|Home Automation
+quality: production
+provides:
+   - name: "zigbee_power_consumption_model"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/power-consumption-model/config/power-consumption-model-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/power-consumption-model/power-consumption-model.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/power-consumption-model
+    file_list:
+      - path: power-consumption-model.h  
+template_contribution:
+  - name: component_catalog
+    value: zigbee_power_consumption_model
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emberAfPluginPowerConsumptionModelInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: local_data_init
+      function_name: emberAfPluginPowerConsumptionModelInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: init_done
+      function_name: emberAfPluginPowerConsumptionModelInitCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: power-consumption-model
+      help: power-consumption-model related commands.
+  - name: cli_command
+    value:
+      group: power-consumption-model
+      name: read-all
+      handler: emberAfPowerConsumptionModelPrintAttributesCommand
+      help: Reads all power attributes.
+

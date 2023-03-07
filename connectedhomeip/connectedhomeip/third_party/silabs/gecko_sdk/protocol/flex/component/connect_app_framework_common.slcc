@@ -1,0 +1,94 @@
+id: "connect_app_framework_common"
+label: "Application Framework Common"
+package: "Flex"
+category: "Connect"
+quality: "production"
+description: "Declares all the required application framework globals, initializes the Connect stack and dispatches stack callbacks calls as needed to the application components."
+provides:
+  - name: "connect_app_framework_common"
+requires:
+  - name: "sl_system"
+  - name: "device_init"
+  - name: "connect_stack_common"
+  - name: "sleeptimer"
+source:
+  - path: "protocol/flex/app-framework-common/app_framework_common.c"
+  - path: "protocol/flex/app-framework-common/app_framework_common_cb.c"
+  - path: "protocol/flex/app-framework-common/app_framework_stack_cb.c"
+  - path: "protocol/flex/app-framework-common/app_framework_sleep.c"
+include:
+  - path: "protocol/flex/app-framework-common"
+    file_list:
+      - path: "app_framework_common.h"
+      - path: "app_framework_callback.h"
+template_file:
+  - path: "protocol/flex/app-framework-common/template/callback_dispatcher.h.jinja"
+  - path: "protocol/flex/app-framework-common/template/callback_dispatcher.c.jinja"
+  - path: "protocol/flex/app-framework-common/template/app_framework_event_table.c.jinja"
+template_contribution:
+  - name: component_catalog
+    value: connect_app_framework_common
+  - name: power_manager_handler
+    value:
+      event: is_ok_to_sleep
+      include: "app_framework_common.h"
+      handler: connect_is_ok_to_sleep
+  - name: event_handler
+    value:
+      event: stack_init
+      include: "app_framework_common.h"
+      handler: connect_standard_phy_2_4g
+    priority: -9000
+    condition:
+      - device_is_module
+      - device_has_radio_2g4hz
+  - name: event_handler
+    value:
+      event: stack_init
+      include: "app_framework_common.h"
+      handler: connect_standard_phy_2_4g
+    priority: -9000
+    condition:
+      - device_sdid_200
+  - name: event_handler
+    value:
+      event: stack_init
+      include: "app_framework_common.h"
+      handler: connect_stack_init
+    priority: -8999
+    unless:
+      - cmsis_rtos2
+  - name: event_handler
+    value:
+      event: stack_init
+      include: "app_framework_common.h"
+      handler: connect_app_framework_init
+    priority: -8998
+    unless:
+      - cmsis_rtos2
+  - name: event_handler
+    value:
+      event: stack_init
+      include: "app_framework_common.h"
+      handler: connect_sleep_init
+    priority: -8997
+    unless:
+      - cmsis_rtos2
+  - name: event_handler
+    value:
+      event: stack_process_action
+      include: "app_framework_common.h"
+      handler: connect_stack_tick
+    unless:
+      - cmsis_rtos2
+  - name: event_handler
+    value:
+      event: stack_process_action
+      include: "app_framework_common.h"
+      handler: connect_app_framework_tick
+    unless:
+      - cmsis_rtos2
+
+documentation:
+  docset: connect-stack
+  document: group-app-framework-common

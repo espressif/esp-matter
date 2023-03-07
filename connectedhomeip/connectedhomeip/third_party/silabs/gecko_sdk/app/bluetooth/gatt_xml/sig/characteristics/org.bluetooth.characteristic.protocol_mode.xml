@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.protocol_mode" uuid="2A4E" name="Protocol Mode" last-modified="2011-11-21" approved="Yes">
+    <InformativeText>
+        <Summary>
+             The Protocol Mode characteristic is used to expose the current protocol mode of the HID Service with which it is associated, or to set the desired protocol mode of the HID Service.
+		</Summary>
+    </InformativeText>
+    <Value>
+        <Field name="Protocol Mode Value">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+            <Enumerations>
+                <Enumeration key="0" value="Boot Protocol Mode" />
+                <Enumeration key="1" value="Report Protocol Mode" />
+                <ReservedForFutureUse start="2" end="255" />
+			</Enumerations>
+        </Field>
+    </Value>
+</Characteristic>

@@ -1,0 +1,185 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/linker_script.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_third_party/stm32cube/stm32cube.gni")
+
+if (dir_pw_third_party_stm32cube == "") {
+  group("linker_script_template") {
+  }
+  group("core_init_template") {
+  }
+  group("cmsis_init_template") {
+  }
+  group("hal_config_template") {
+  }
+  group("stm32cube_headers") {
+  }
+  group("stm32cube") {
+  }
+} else {
+  stm32cube_builder_script =
+      "$dir_pw_stm32cube_build/py/pw_stm32cube_build/__main__.py"
+
+  rebased_dir_pw_third_party_stm32cube =
+      rebase_path(dir_pw_third_party_stm32cube)
+
+  find_files_args = [
+    "find_files",
+    rebased_dir_pw_third_party_stm32cube,
+    pw_third_party_stm32cube_PRODUCT,
+  ]
+  if (pw_third_party_stm32cube_CORE_INIT ==
+      "$dir_pw_third_party/stm32cube:core_init_template") {
+    find_files_args += [ "--init" ]
+  }
+
+  # This script finds the files relavent for the current product.
+  files = exec_script(stm32cube_builder_script,
+                      find_files_args,
+                      "scope",
+                      [ "$rebased_dir_pw_third_party_stm32cube/files.txt" ])
+
+  if (pw_third_party_stm32cube_CORE_INIT ==
+      "$dir_pw_third_party/stm32cube:core_init_template") {
+    assert(files.gcc_linker != "" || files.iar_linker != "",
+           "No linker file found")
+
+    gcc_linker = files.gcc_linker
+    if (gcc_linker == "") {
+      gcc_linker = "$target_gen_dir/linker.ld"
+      gcc_linker_str = exec_script(stm32cube_builder_script,
+                                   [
+                                     "icf_to_ld",
+                                     files.iar_linker,
+                                   ],
+                                   "string",
+                                   [ files.iar_linker ])
+      write_file(gcc_linker, gcc_linker_str)
+    }
+
+    startup_file = "$target_gen_dir/startup.s"
+    startup_file_str = exec_script(stm32cube_builder_script,
+                                   [
+                                     "inject_init",
+                                     files.startup,
+                                   ],
+                                   "string",
+                                   [ files.startup ])
+    write_file(startup_file, startup_file_str)
+
+    pw_linker_script("linker_script_template") {
+      linker_script = gcc_linker
+    }
+
+    pw_source_set("core_init_template") {
+      deps = [ ":linker_script_template" ]
+      sources = [ startup_file ]
+    }
+  }
+
+  pw_source_set("hal_timebase_template") {
+    deps = [ ":stm32cube_headers" ]
+    sources = [ "$dir_pw_third_party_stm32cube/hal_driver/Src/${files.family}_hal_timebase_tim_template.c" ]
+  }
+
+  pw_source_set("cmsis_init_template") {
+    deps = [ ":stm32cube_headers" ]
+    sources = [ "$dir_pw_third_party_stm32cube/cmsis_device/Source/Templates/system_${files.family}.c" ]
+  }
+
+  # Generate a stub config header that points to the correct template.
+  write_file("$target_gen_dir/template_config/${files.family}_hal_conf.h",
+             "#include \"${files.family}_hal_conf_template.h\"")
+  config("hal_config_template_includes") {
+    include_dirs = [ "$target_gen_dir/template_config" ]
+  }
+  pw_source_set("hal_config_template") {
+    public_configs = [ ":hal_config_template_includes" ]
+
+    # This is to make sure GN properly detects changes to these files. The
+    # generated file shouldn't change, but the file it redirects to might.
+    public = [ "$target_gen_dir/template_config/${files.family}_hal_conf.h" ]
+    inputs = [ "$dir_pw_third_party_stm32cube/hal_driver/Inc/${files.family}_hal_conf_template.h" ]
+  }
+
+  config("flags") {
+    cflags = [ "-Wno-unused-parameter" ]
+    cflags_c = [
+      "-Wno-redundant-decls",
+      "-Wno-sign-compare",
+      "-Wno-undef",
+      "-Wno-implicit-function-declaration",
+      "-Wno-switch-enum",
+    ]
+    if (get_path_info(pw_toolchain_SCOPE.cc, "file") == "clang") {
+      cflags += [ "-Wno-deprecated-volatile" ]
+      cflags_c += [ "-Wno-parentheses-equality" ]
+    } else {
+      cflags_c += [
+        "-Wno-old-style-declaration",
+        "-Wno-maybe-uninitialized",
+      ]
+      cflags_cc = [ "-Wno-volatile" ]
+    }
+
+    defines = [
+      "USE_HAL_DRIVER",
+      files.product_define,
+      "STM32CUBE_HEADER=\"${files.family}.h\"",
+      "__ARMCC_VERSION=0",  # workaround for bug at stm32l552xx.h:1303
+    ]
+    visibility = [ ":*" ]
+  }
+
+  config("public_include_paths") {
+    include_dirs = files.include_dirs
+    include_dirs += [ "public" ]
+    visibility = [ ":*" ]
+  }
+
+  # Only libraries that implement parts of the stm32cube hal should depend on
+  # this. If you just want to depend on the hal, depend on stm32cube directly.
+  pw_source_set("stm32cube_headers") {
+    public_configs = [
+      ":flags",
+      ":public_include_paths",
+    ]
+    public = [
+      "public/stm32cube/init.h",
+      "public/stm32cube/stm32cube.h",
+    ]
+    public += files.headers
+    public_deps = [ pw_third_party_stm32cube_CONFIG ]
+    visibility = [ ":*" ]
+    if (pw_third_party_stm32cube_CORE_INIT != "") {
+      visibility += [ pw_third_party_stm32cube_CORE_INIT ]
+    }
+  }
+
+  pw_source_set("stm32cube") {
+    public_deps = [ ":stm32cube_headers" ]
+    sources = files.sources
+    deps = [
+      pw_third_party_stm32cube_CMSIS_INIT,
+      pw_third_party_stm32cube_TIMEBASE,
+    ]
+    if (pw_third_party_stm32cube_CORE_INIT != "") {
+      deps += [ pw_third_party_stm32cube_CORE_INIT ]
+    }
+  }
+}

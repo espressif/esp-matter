@@ -1,0 +1,22 @@
+!!omap
+- id: slwrb4545a
+- label: SLWRB4545A
+- package: platform
+- description: Kit BSP support for the EZR32HG 490 MHz 20 dBm Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4545a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4545A"'
+  - name: SL_KIT_REV
+    value: '"A00"'
+- tag:
+  - kit:opn:SLWRB4545A
+  - kit:pn:WRB4545
+  - kit:variant:A
+  - kit:revision:A00

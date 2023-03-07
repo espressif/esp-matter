@@ -1,0 +1,145 @@
+# Copyright (c) 2021 Project CHIP Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build_overrides/chip.gni")
+import("//build_overrides/nlassert.gni")
+
+import("${chip_root}/src/platform/device.gni")
+
+assert(chip_device_platform == "darwin")
+
+config("darwin_config") {
+  frameworks = [
+    "CoreData.framework",
+    "CoreFoundation.framework",
+    "CoreBluetooth.framework",
+    "Foundation.framework",
+    "Network.framework",
+  ]
+
+  if (current_os == "mac") {
+    frameworks += [
+      "SystemConfiguration.framework",
+      "CoreWLAN.framework",
+      "IOKit.framework",
+    ]
+  }
+
+  cflags = [ "-fobjc-arc" ]
+}
+
+static_library("Darwin") {
+  sources = [
+    "../DeviceSafeQueue.cpp",
+    "../DeviceSafeQueue.h",
+    "../SingletonConfigurationManager.cpp",
+    "BLEManagerImpl.cpp",
+    "BLEManagerImpl.h",
+    "BlePlatformConfig.h",
+    "CHIPDevicePlatformConfig.h",
+    "CHIPDevicePlatformEvent.h",
+    "CHIPPlatformConfig.h",
+    "ConfigurationManagerImpl.cpp",
+    "ConfigurationManagerImpl.h",
+    "ConnectivityManagerImpl.cpp",
+    "ConnectivityManagerImpl.h",
+    "DiagnosticDataProviderImpl.cpp",
+    "DiagnosticDataProviderImpl.h",
+    "DnssdContexts.cpp",
+    "DnssdHostNameRegistrar.cpp",
+    "DnssdImpl.cpp",
+    "DnssdImpl.h",
+    "InetPlatformConfig.h",
+    "LoggingImpl.cpp",
+    "MdnsError.cpp",
+    "MdnsError.h",
+    "NetworkCommissioningDriver.h",
+    "PlatformManagerImpl.cpp",
+    "PlatformManagerImpl.h",
+    "PosixConfig.cpp",
+    "PosixConfig.h",
+    "SystemPlatformConfig.h",
+    "SystemTimeSupport.cpp",
+  ]
+
+  if (chip_enable_wifi) {
+    sources += [
+      "WiFi/ConfigurationManagerImplWiFi.cpp",
+      "WiFi/ConnectivityManagerImplWiFi.mm",
+      "WiFi/NetworkCommissioningWiFiDriver.h",
+      "WiFi/NetworkCommissioningWiFiDriver.mm",
+    ]
+  }
+
+  if (!chip_disable_platform_kvs) {
+    sources += [
+      "DeviceInstanceInfoProviderImpl.cpp",
+      "DeviceInstanceInfoProviderImpl.h",
+      "KeyValueStoreManagerImpl.h",
+      "KeyValueStoreManagerImpl.mm",
+    ]
+  }
+
+  deps = [
+    ":logging",
+    "${chip_root}/src/lib/dnssd:platform_header",
+    "${chip_root}/src/setup_payload",
+  ]
+
+  public_deps = [
+    "${chip_root}/src/app:app_config",
+    "${chip_root}/src/platform:platform_base",
+  ]
+
+  public_configs = [ ":darwin_config" ]
+
+  if (chip_enable_ota_requestor) {
+    sources += [
+      # using the implements from Linux platform
+      "../Linux/OTAImageProcessorImpl.cpp",
+      "../Linux/OTAImageProcessorImpl.h",
+    ]
+  }
+
+  if (chip_enable_ble) {
+    sources += [
+      "BleApplicationDelegate.h",
+      "BleApplicationDelegateImpl.mm",
+      "BleConnectionDelegate.h",
+      "BleConnectionDelegateImpl.mm",
+      "BlePlatformDelegate.h",
+      "BlePlatformDelegateImpl.mm",
+      "UUIDHelper.h",
+      "UUIDHelperImpl.mm",
+    ]
+  }
+}
+
+static_library("logging") {
+  sources = [
+    "Logging.h",
+    "Logging.mm",
+  ]
+
+  deps = [
+    "${chip_root}/src/lib/core:chip_config_header",  # for lib/support/Span.h
+    "${chip_root}/src/lib/support:attributes",
+    "${chip_root}/src/lib/support:logging_constants",
+    "${nlassert_root}:nlassert",  # for lib/support/Span.h
+  ]
+
+  configs += [ "${chip_root}/src:includes" ]
+  cflags = [ "-fobjc-arc" ]
+  frameworks = [ "Foundation.framework" ]
+}

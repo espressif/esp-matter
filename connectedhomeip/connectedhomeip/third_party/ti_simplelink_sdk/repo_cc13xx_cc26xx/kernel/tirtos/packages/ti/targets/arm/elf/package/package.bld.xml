@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/build.dtd -->
+<package name="ti.targets.arm.elf" version="1, 0, 0" producerId="undefined">
+    <units>
+        <interface name="IArm"/>
+        <interface name="IR4"/>
+        <interface name="IR5"/>
+        <interface name="IM0"/>
+        <interface name="IM3"/>
+        <interface name="IM4"/>
+        <module name="Arm9"/>
+        <module name="M0"/>
+        <module name="M3"/>
+        <module name="M4"/>
+        <module name="M4F"/>
+        <module name="R4F"/>
+        <module name="R4Ft"/>
+        <module name="R5F"/>
+        <module name="R5Ft"/>
+    </units>
+    <sources>
+        <srcFile name="linkcmd.xdt"/>
+        <srcFile name="linkUtils.xs"/>
+        <srcFile name="std.h"/>
+    </sources>
+    <configscripts>
+    </configscripts>
+    <makefiles>
+        <srcFile name="package.mak" src="package.bld"/>
+        <srcFile name="package/package.xdc.dep" src="package.xdc"/>
+        <srcFile name="package/package.cfg.dep" src="package.xdc"/>
+        <srcFile name="package/rel/ti_targets_arm_elf.tar.dep" src="package/rel/ti_targets_arm_elf.xdc.inc"/>
+    </makefiles>
+    <targets>
+    </targets>
+    <libraries>
+    </libraries>
+    <configurations>
+    </configurations>
+    <executables>
+    </executables>
+    <tests>
+    </tests>
+    <releases relDir="package/rel/">
+    <release name="ti_targets_arm_elf"
+        pname="ti_targets_arm_elf.tar"
+        label="default"
+    >
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+        <file name="linkcmd.xdt"/>
+        <file name="linkUtils.xs"/>
+        <file name="std.h"/>
+        <file name="package/package.cfg.xdc.inc"/>
+    </release>
+    </releases>
+    <repositories>
+    </repositories>
+</package>

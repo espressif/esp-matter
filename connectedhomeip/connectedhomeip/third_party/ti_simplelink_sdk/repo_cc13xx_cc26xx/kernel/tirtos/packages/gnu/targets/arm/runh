@@ -1,0 +1,92 @@
+#!/usr/bin/ksh
+#
+# Run 'cmd arg ...' on another host
+#
+# usage: runh [-p prefix-cmd] [-h host] cmd arg ...
+#
+# -p prefix-cmd - command(s) to run on the remote host _before_ switching
+#                 to the remote directory
+#
+# -h host       - use 'host' instead of $REMOTEHOST
+#
+# The default host is $REMOTEHOST
+#
+
+#
+#  qargs - quote arguments to ensure that single arguments with embedded
+#          spaces are passed to remote host as a single argument
+#
+function qargs {
+    _tmp=""
+    for a in "$@"; do
+        _tmp="$_tmp "\'$a\';
+    done
+    print $_tmp
+}
+
+#
+# determine the name of the remote host
+#
+host=$REMOTEHOST
+prefix=""
+
+if [ "$1" = "-p" ]; then
+    prefix=$2
+    shift 2;
+fi
+if [ "$1" = "-h" ]; then
+    host=$2;
+    shift 2;
+fi
+
+#
+# compute the directory containing the command to run; this is added to the
+# remote path; some compiler shells require that this is the case.
+#
+SRC="${1%/*}"
+if [ "$SRC" = "$1" ]; then
+    SRC="./"
+fi
+
+#
+#  Set the PATH to include ssh, rm and cat
+#
+PATH=/bin:/usr/bin:$PATH
+export PATH
+
+#
+#  create a temporary error log file and a file that signals that the exit
+#  status of the command is not 0; ensure that both files are removed when this
+#  script exits normally (with the status 0)
+#
+elog=.tmp$$
+exitfile=.tmpex$$
+trap "rm -f $elog $exitfile" 0
+
+#
+#  run the specified command on the remote host
+#  test -d package is there to prevent "Stale NFS handle" errors
+#
+ssh $host ksh <<ENDCMD 2> $elog
+        PATH=$PATH:\$PATH:$SRC:/usr/bin:/bin; export PATH; \
+        LD_LIBRARY_PATH=$LD_LIBRARY_PATH:\$LD_LIBRARY_PATH; \
+        export LD_LIBRARY_PATH; $prefix ; \
+        cd `/bin/pwd` && (test -d package || true) && \
+        `qargs "$@"` || echo "1" > $exitfile
+ENDCMD
+
+#
+# if the error log is non-empty, print it
+#
+if [ -s $elog ]; then
+    cat $elog;
+fi
+
+#
+# if remote command status is not 0, it is saved in $exitfile, but for now
+# we just exit with 1, instead of reading that status
+#
+if [ -e $exitfile ]; then
+    exit 1
+fi
+exit 0

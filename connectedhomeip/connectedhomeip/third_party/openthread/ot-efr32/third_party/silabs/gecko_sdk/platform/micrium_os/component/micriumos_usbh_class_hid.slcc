@@ -1,0 +1,23 @@
+id: micriumos_usbh_class_hid
+label: Micrium-USB Host Class - HID
+package: micrium-usbh
+description: Micrium OS USB Host HID Class
+category: Services|Micrium|USB
+quality: deprecated
+source:
+  - path: platform/micrium_os/usb/source/host/class/usbh_hid.c
+  - path: platform/micrium_os/usb/source/host/class/usbh_hid_parser.c
+include:
+  - path: platform/micrium_os
+    file_list:
+      - path: usb/source/host/class/usbh_hid_priv.h
+      - path: usb/include/host/usbh_hid.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: USB_HOST_HID
+provides:
+  - name: usbh_class_hid
+  - name: usbh_class
+    allow_multiple: true
+requires:
+  - name: usbh

@@ -1,0 +1,72 @@
+!!omap
+- id: brd2601b
+- label: BRD2601B
+- package: platform
+- description: Board support for BRD2601B.
+- category: Platform|Board|Starter Kit
+- quality: production
+- requires:
+  - name: efr32mg24b310f1536im48
+  - name: brd2601b_config
+- provides:
+  - name: brd2601b
+  - name: hardware_board
+  - name: hardware_board_stk
+  - name: hardware_board_from_stk
+  - name: hardware_board_from_xg24-dk2601b
+  - name: hardware_board_has_si70xx
+  - name: hardware_board_has_tempsensor
+  - name: hardware_board_has_vcom
+  - name: hardware_board_has_spiflash
+  - name: hardware_board_has_hfxo
+  - name: hardware_board_has_lfxo
+  - name: hardware_board_supports_rf_band_2400
+  - name: hardware_board_supports_1_rf_band
+  - name: hardware_board_default_rf_band
+  - name: hardware_board_default_rf_band_2400
+- recommends:
+  - id: iostream_eusart
+    instance:
+    - vcom
+  - id: bootloader_uart_driver
+  - id: i2cspm
+    instance:
+    - sensor
+  - id: pressure_driver_bmp3xx
+  - id: mic_i2s_driver
+  - id: simple_led
+    instance:
+    - led0
+    - led1
+    - led2
+  - id: simple_button
+    instance:
+    - btn0
+    - btn1
+  - id: mx25_flash_shutdown_eusart
+  - id: bootloader_spi_controller_usart_driver
+  - id: bootloader_spi_peripheral_usart_driver
+  - id: imu_driver_icm20689
+- template_contribution: []
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD2601B"'
+  - name: SL_BOARD_REV
+    value: '"A01"'
+- tag:
+  - board:pn:BRD2601
+  - board:variant:B
+  - board:revision:A01
+  - board:device:efr32mg24b310f1536im48
+  - hardware:has:vcom
+  - hardware:has:pti
+  - hardware:has:sensor:si7021
+  - hardware:has:sensor:si7210
+  - hardware:has:sensor:bmp384
+  - hardware:has:sensor:veml6035
+  - hardware:has:sensor:ics-43434
+  - hardware:has:microphone
+  - hardware:has:led:3
+  - hardware:has:button:2
+  - hardware:has:memory:spi:mx25r3235f
+  - hardware:has:imu

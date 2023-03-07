@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Email Address" type="org.bluetooth.characteristic.email_address" uuid="2A87" last-modified="2014-06-10" approved="Yes">
+    <InformativeText>
+        <Abstract>Email address of the user. See Note below.</Abstract>
+	</InformativeText>
+    <Value>
+    <Field name="Email Address">
+        <Requirement>Mandatory</Requirement>
+        <Format>utf8s</Format>
+        <Unit>org.bluetooth.unit.unitless</Unit>
+    </Field>
+	</Value>
+    <Note>The length of the utf8s-based UDS Characteristic is variable and may exceed the default ATT_MTU defined in the Core Specification.</Note>
+</Characteristic>

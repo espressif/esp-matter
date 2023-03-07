@@ -1,0 +1,68 @@
+%%{
+/*
+ * Copyright (c) 2020 Texas Instruments Incorporated - http://www.ti.com
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+
+/*
+ *  ======== Task_config_h.xdt ========
+ */
+    /* passed by /ti/sysbios/BIOS_config.c.xdt */
+    let Task = args[0];
+
+    /* instrumentation */
+    let BIOS = system.modules["/ti/sysbios/BIOS"];
+    let logD = 0; // BIOS.$static.taskLogs.map(x => "#define Task_log" + x + "_D");
+%%}
+/* Task module definitions */
+% if (Task.$static.allBlockedFunc != "NULL") {
+extern void `Task.$static.allBlockedFunc`(void);
+% }
+
+#define Task_allBlockedFunc_D `Task.$static.allBlockedFunc`
+#define Task_numPriorities_D `Task.$static.numPriorities`
+#define Task_defaultStackSize_D `Task.$static.defaultStackSize`
+#define Task_idleTaskStackSize_D `Task.$static.idleTaskStackSize`
+#define Task_idleTaskVitalTaskFlag_D `Task.$static.idleTaskVitalTaskFlag.toString()`
+#define Task_initStackFlag_D `Task.$static.initStackFlag.toString()`
+#define Task_checkStackFlag_D `Task.$static.checkStackFlag.toString()`
+#define Task_deleteTerminatedTasks_D `Task.$static.deleteTerminatedTasks.toString()`
+#define Task_numVitalTasks_D 0
+#define Task_minimizeLatency_D `Task.$static.minimizeLatency.toString()`
+#define Task_enableIdleTask_D `Task.$static.enableIdleTask.toString()`
+%
+% if (logD.length > 0) {
+
+#define Task_log_D
+% for (let i = 0; i < logD.length; i++) {
+`logD[i]`
+% }
+% }

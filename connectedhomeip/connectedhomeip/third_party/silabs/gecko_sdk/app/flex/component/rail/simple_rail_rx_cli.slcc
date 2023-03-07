@@ -1,0 +1,45 @@
+id: "simple_rail_rx_cli"
+label: "Simple RAIL Rx CLI"
+package: "Flex"
+description: "Adds RAIL transmit functionality via cli - it triggers the state machine of Simple RAIL Rx component with a cli event.
+              The component can be used with Blink and Flex (RAIL) - Empty Example applications only."
+category: "Flex|RAIL|Utility"
+quality: "production"
+root_path: "app/flex/component/rail/simple_rail_rx_cli"
+
+provides:
+  - name: "simple_rail_rx_cli"
+requires:
+  - name: "simple_rail_rx"
+  - name: "cli"
+source:
+  - path: "simple_rail_rx_cli.c"
+include:
+  - path: "."
+    file_list:
+    - "path": "simple_rail_rx_cli.h"
+
+template_contribution:
+  - name: cli_command
+    value:
+      name: receive
+      handler: cli_receive_packet
+      help: "Turn ON/OFF received message forwarding on CLI"
+      argument:
+      - type: uint8
+        help: "ON/OFF"
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: "simple_rail_rx_cli.h"
+      handler: "sl_simple_rail_rx_cli_init"
+    priority: 1000
+  - name: event_handler
+    value:
+      event: internal_app_process_action
+      include: "simple_rail_rx_cli.h"
+      handler: "sl_simple_rail_rx_cli_tick"
+    priority: 0
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: simple_rail_rx_cli

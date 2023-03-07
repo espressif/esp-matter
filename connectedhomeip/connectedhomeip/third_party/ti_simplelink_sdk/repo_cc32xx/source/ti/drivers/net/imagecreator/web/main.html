@@ -1,0 +1,98 @@
+<html>
+<head><title>SimpleLink™ Image Creator</title>
+<link rel='icon' type='img/png' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAABfVBMVEWgn6Cgn6CWlZaQj5CQj4+Ih4iJh4mBgICAgIB4d3h4eHhvb3Bwb3BnZ2dfX19fXl9XV1dXVlZPT09OTk5HR0dHR0hBQEFBQUE2NjY2Njacm5ucmpybm5ycm5ybmpyWlZaRkJH///+NjI2Qj4+Li4vp6enR0dGLiouPj5CIh4iJh4h7entdXV1dXV5eXV17enyBgIF9fH3x8fFhYGHNzc18fH15eHhwcHBaWlvh4eFeXl7+/v7Ozs5aWlppaWj8/Pzu7u5UU1T7+/vn5+e6urrKysppaGlnZ2hhYWFNTU3c3NxNTE35+fnX19fU1NS0tLRNTU5fXl9ZWFn19fXm5uZHR0fZ2dmhoaGQkJCVlZWcnJz09PTExMRZWVlXVlZSUVJBQEHv7+9DQ0Q+Pj42NjZEQ0RBQEBPT09MTU0/QD/g4ODr6+vt7e3CwsI/QEBAQEA1NTYxMTGfn581NTU/Pz87Ojs1NDUxMDE7Ozs5OTk2Nzc3Nzc3Njc4OTkAAAAHPxKVAAAAGnRSTlO08fLx8fHx8fHx8fHx8fHx8fHx8fHx8vK08VgwZIsAAAABYktHRH4/uEFzAAAACXBIWXMAAAsSAAALEgHS3X78AAAA7klEQVQY02NgYEQBDAxSUtIyUlJSsnJSctJysjLSDEzyQKCgqASECkAWEwOzsrKKoqKqGhAqKqprsDCwamppK+ro6uno6ego6muxMbAbGCoaGSuCgLGiiSkHA6eZuYWllTUQ2FhZ25pzMXCb29k7ONo7OTm7ODq5uvEw8Lp7eHp5+zj4+vkH+Hh68DLwBQYFh4SGhUdERoVGx8TyMwjExSckJiWnpKQkpyamxQsyCKVnZGZl5yQCYXZunqcwg0hoaH5BYREYFueHijKIJSSUlJYVFpaXF5aVlqSJM1SAQGVVdXVNdS2QVcogIYkCJACkSTrhkQlw3QAAAABJRU5ErkJggg=='>
+<link href="fonts/open-sans/open-sans.css" rel="stylesheet" type="text/css">
+<link href="fonts/roboto/roboto.css" rel="stylesheet" type="text/css">
+<style>
+iframe {
+    border: none;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+}
+
+</style>
+</head>
+<body>
+<div hidden id="header" class="header" style="height:40px;width:100%;background-color:#cc0000;line-height:38px;font-size:20px;font-weight:600;font-family:'Open Sans';">
+	<span style="color:#fff;padding:0 15px;cursor:pointer;" onclick="goHome()">UniFlash</span>
+</div>
+<iframe id="main" src="/Welcome.htm?" + new Date().getTime()></iframe>
+</body>
+
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet prefetch" href="/css/magnific-popup.css">
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/jquery.magnific-popup.min.js"></script>
+
+<script>
+
+window.addEventListener('keydown', function (e) { if (e.which == 116) e.preventDefault() });
+
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+function goHome() {
+    // go back to the very first page (which should be the UniFlash home page
+    window.history.go(-window.history.length+1);
+}
+
+function resize(event) {
+    var height = $("body")[0].clientHeight - $("div#header").height();
+    $("iframe").height(height);
+}
+
+var isIE = /*@cc_on!@*/false || !!document.documentMode;
+var isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+
+if (isOpera) // || isSafari)
+{
+    document.body.innerHTML = "Browser is not supported in the current ImageCreator version."
+}
+else
+{
+    var main = document.getElementById("main");
+    main.contentWindow.location.href = main.src;
+}
+
+var port = getParameterByName("p");
+var uf = getParameterByName("u");
+
+var ws = new WebSocket("ws://127.0.0.1:" + port);
+ws.onclose = function() {
+    var html='<div class="white-popup-small">'
+    html +='	<div class="wrapPopup">';
+    html +='		<div class="center-block"><span id="progStatus">'+"Main process closed, please close this window"+'<span></div>';
+    html +='	</div>';
+    html +='	<div class="clear" />';
+    html +='</div>';
+    
+    $.magnificPopup.open({
+        items: {
+        src:html,
+        type: 'inline',
+        },
+        
+        modal: true,
+    });
+}
+
+if (uf) {
+    $("div#header")[0].hidden = false;
+    resize();
+    window.addEventListener("resize", resize);
+}
+
+</script>
+</html>

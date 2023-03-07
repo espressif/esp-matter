@@ -1,0 +1,155 @@
+project_name: gpd-sensor
+label: "Zigbee - SoC GPD Sensor"
+package: "Zigbee"
+category: "Zigbee Application"
+quality: production
+
+description: >
+  This is a Green Power Sensor Device that pairs with a GP Combo or Sink device and sends gpd reports periodically.
+author: "Silicon Laboratories, Inc."
+
+# Silicon Labs Project Configuration Tools: slcp, v0, Component selection file.
+include:
+- path: .
+  file_list:
+  - path: app_init.h
+  - path: app_process.h
+
+component:
+#---------------- UC/UP components -------------------
+- id: sl_system
+- id: device_init
+- id: sleeptimer
+- id: rail_util_recommended
+- id: rail_util_init
+  instance:
+  - gpdrail
+#---------------- User Buttons -----------------------
+- id: simple_button
+  instance:
+  - btn0
+  - btn1
+#---------------- User LEDs --------------------------
+- id: simple_led
+  instance:
+  - led0
+  - led1
+#---------------- mbedTLS ----------------------------
+- id: mbedtls_ccm
+#---------------- NVM3 -------------------------------
+- id: nvm3_default
+#---------------- CLI --------------------------------
+- id: "cli"
+  instance:
+  - gpdCli
+- id: "zigbee_debug_print"
+- id: "iostream_usart"
+  instance:
+  - vcom
+#---------------- GPD Componenets --------------------
+- id: "zigbee_gpd_af_cli"
+- id: "zigbee_gpd_application_support"
+- id: "zigbee_gpd_network_support"
+
+configuration:
+  - name: SL_RAIL_UTIL_INIT_GPDRAIL_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_INIT_COMPLETE_CALLBACK_GPDRAIL_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_PROTOCOLS_GPDRAIL_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_PROTOCOL_GPDRAIL_DEFAULT
+    value: "SL_RAIL_UTIL_PROTOCOL_IEEE802154_2P4GHZ"
+  - name: SL_RAIL_UTIL_INIT_CALIBRATIONS_GPDRAIL_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_CALIBRATION_TEMPERATURE_NOTIFY_GPDRAIL_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_CALIBRATION_ONETIME_NOTIFY_GPDRAIL_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_TRANSITIONS_GPDRAIL_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENTS_GPDRAIL_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_PACKET_RECEIVED_GPDRAIL_ENABLE
+    value: "1"
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+    condition:
+      - iostream_usart
+  - name: SL_CLI_LOCAL_ECHO
+    value: "true"
+  - name: SL_IOSTREAM_USART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "true"
+  - name: SL_IOSTREAM_USART_VCOM_FLOW_CONTROL_TYPE
+    value: "usartHwFlowControlNone"
+    condition:
+      - iostream_usart
+  - name: EMBER_AF_PLUGIN_APPS_RX_WINDOW
+    value: "8"
+  - name: EMBER_AF_PLUGIN_APPS_APP_INFO
+    value: "true"
+  - name: EMBER_AF_PLUGIN_APPS_APPS_GPD_MANUFACTURE_ID_PRESENT
+    value: "true"
+  - name: EMBER_AF_PLUGIN_APPS_APPS_GPD_MODEL_ID_PRESENT
+    value: "true"
+  - name: EMBER_AF_PLUGIN_APPS_GPD_SWITCH_INFO_PRESENT
+    value: "false"
+  - name: EMBER_AF_PLUGIN_APPS_GPD_APP_DESCRIPTION_FOLLOWS
+    value: "true"
+  - name: EMBER_AF_PLUGIN_APPS_APP_DEVICE_ID
+    value: "0x12"
+  - name: EMBER_AF_PLUGIN_APPS_SRC_ID
+    value: "0x11223344"
+  - name: NVM3_DEFAULT_NVM_SIZE
+    value: 36864
+    condition:
+      - device_series_1
+  - name: NVM3_DEFAULT_NVM_SIZE
+    value: 32768
+    condition:
+      - device_series_2
+
+source:
+  - path: main.c
+  - path: app_init.c
+  - path: app_process.c
+  - path: app_cli.c
+
+define:
+  - name: "UC_BUILD"
+  
+#-------------- Template Contribution ----------------
+template_contribution:
+#------------------ CLI commands ---------------------
+  - name: cli_group
+    value:
+      name: sensor
+      help: "sensor related commands"
+  - name: cli_command
+    value:
+      name: report
+      group: sensor
+      handler: emberGpdAfCliSensorReport
+      help: Sends a report out.
+  - name: cli_command
+    value:
+      name: sleep
+      group: sensor
+      handler: emberGpdAfCliSensorSleep
+      help: sets gpd as a sleepy device.
+
+readme:
+  - path: ./readme.html
+
+ui_hints:
+  highlight:
+    - path: readme.html
+      focus: false
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Zigbee"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]

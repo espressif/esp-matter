@@ -1,0 +1,12 @@
+id: zw_dcdc_override
+label: Z-Wave dcdc Override Component
+category: Z-Wave
+description: Z-Wave dcdc Override Component
+package: Z-Wave
+quality: production
+include:
+  - path: "protocol/z-wave/platform/SiliconLabs/PAL/inc/"
+    file_list:
+      - path: "sl_dcdc.h"
+provides:
+  - name: zw_dcdc_override

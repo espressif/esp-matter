@@ -1,0 +1,81 @@
+id: sl_system
+label: System Setup
+package: platform
+category: Services|System Setup
+quality: production
+provides:
+  - name: sl_system
+requires:
+  - name: device_init_core
+  - name: sl_system_init
+  - name: sl_system_process_action
+  - name: component_catalog
+documentation:
+    docset: gecko-platform
+    document: service/api/group-system
+description: |
+  The System component provides a set of events that can be used by
+  other components to register handlers that should be run when the system
+  is initialized and is running. Handlers can be registered for the following
+  events using the Event Handler API provided by the Event Handler component:
+
+  * platform_init
+  * driver_init
+  * service_init
+  * stack_init
+  * internal_app_init
+  * kernel_start
+  * platform_process_action
+  * service_process_action
+  * stack_process_action
+  * internal_app_process_action
+
+  These events are fired in the order listed above when `sl_system_init()` and
+  sl_system_kernel_start() or app_process_action() is called.
+
+  Usage example:
+
+  ```c
+  \#include sl_component_catalog.h
+  \#include sl_system_init.h
+  \#include sl_power_manager.h
+  \#include app.h
+  \#if defined(SL_CATALOG_POWER_MANAGER_PRESENT)
+  \#include sl_power_manager.h
+  \#endif
+  \#if defined(SL_CATALOG_KERNEL_PRESENT)
+  \#include sl_system_kernel.h
+  \#else // SL_CATALOG_KERNEL_PRESENT
+  \#include sl_system_process_action.h
+  \#endif // SL_CATALOG_KERNEL_PRESENT
+
+  int main(void)
+  {
+    // Initialize Silicon Labs device, system, service(s) and protocol stack(s).
+    // Note that if the kernel is present, processing task(s) will be created by
+    // this call.
+    sl_system_init();
+
+    // Initialize the application.
+    app_init();
+
+  \#if defined(SL_CATALOG_KERNEL_PRESENT)
+    // Start the kernel. Task(s) created in app_init() will start running.
+    sl_system_kernel_start();
+  \#else // SL_CATALOG_KERNEL_PRESENT
+    while (1) {
+      // Do not remove this call: Silicon Labs components process action routine
+      // must be called from the super loop.
+      sl_system_process_action();
+
+      // Application process.
+      app_process_action();
+
+  \#if defined(SL_CATALOG_POWER_MANAGER_PRESENT)
+      // Let the CPU go to sleep if the system allows it.
+      sl_power_manager_sleep();
+  \#endif
+    }
+  \#endif // SL_CATALOG_KERNEL_PRESENT
+  }
+  ```

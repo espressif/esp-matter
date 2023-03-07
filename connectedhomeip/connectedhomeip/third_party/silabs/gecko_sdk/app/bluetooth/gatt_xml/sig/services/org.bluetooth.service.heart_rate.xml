@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Service xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.service.heart_rate" uuid="180D" name="Heart Rate">
+  <InformativeText>
+    <Abstract>This service exposes heart rate and other data from a Heart Rate Sensor intended for fitness applications.</Abstract>
+    <Summary>The HEART RATE Service exposes heart rate and other data related to a heart rate sensor intended for fitness applications.</Summary>
+  </InformativeText>
+  <Dependencies>
+    <Dependency>This service is not dependent upon any other services.</Dependency>
+  </Dependencies>
+  <GATTRequirements>
+    <Requirement subProcedure="Write Characteristic Value">Mandatory if the Heart Rate Control Point characteristic is supported, otherwise excluded for this service.</Requirement>
+    <Requirement subProcedure="Notifications">Mandatory</Requirement>
+    <Requirement subProcedure="Read Characteristic Descriptors">Mandatory</Requirement>
+    <Requirement subProcedure="Write Characteristic Descriptors">Mandatory</Requirement>
+  </GATTRequirements>
+  <Transports>
+    <Classic>false</Classic>
+    <LowEnergy>true</LowEnergy>
+  </Transports>
+  <ErrorCodes>
+     <ErrorCode name="Heart Rate Control Point Not Supported" code="0x80">Heart rate Control Point value not supported.</ErrorCode>
+  </ErrorCodes>
+  <Characteristics>
+    <Characteristic name="Heart Rate Measurement" type="org.bluetooth.characteristic.heart_rate_measurement">
+      <InformativeText>This characteristic is used to send a heart rate measurement.</InformativeText>
+      <Requirement>Mandatory</Requirement>
+      <Properties>
+        <Read>Excluded</Read>
+        <Write>Excluded</Write>
+        <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Excluded</ReliableWrite>
+        <Notify>Mandatory</Notify>
+        <Indicate>Excluded</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Excluded</Broadcast>
+      </Properties>
+        <Descriptors>
+        <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+          <Requirement>Mandatory</Requirement>
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Mandatory</Write>
+          </Properties>
+        </Descriptor>
+      </Descriptors>
+    </Characteristic>
+    <Characteristic name="Body Sensor Location" type="org.bluetooth.characteristic.body_sensor_location">
+      <InformativeText>The Body Sensor Location characteristic of the device is used to describe the intended location of the heart rate measurement for the device.</InformativeText>
+      <Requirement>Optional</Requirement>
+      <Properties>
+        <Read>Mandatory</Read>
+        <Write>Excluded</Write>
+        <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Excluded</ReliableWrite>
+        <Notify>Excluded</Notify>
+        <Indicate>Excluded</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Excluded</Broadcast>
+      </Properties>
+    </Characteristic>
+    <Characteristic name="Heart Rate Control Point" type="org.bluetooth.characteristic.heart_rate_control_point">
+      <InformativeText>
+            The Heart Rate Control Point characteristic is used to enable a Client to write control points to a Server to control behavior.
+            Note: This characteristic is conditional. The charactersitic is Mandatory if the Energy Expended feature is supported, otherwise excluded.
+          </InformativeText>
+      <Requirement>Conditional</Requirement>
+      <Properties>
+        <Read>Excluded</Read>
+        <Write>Mandatory</Write>
+        <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Excluded</ReliableWrite>
+        <Notify>Excluded</Notify>
+        <Indicate>Excluded</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Excluded</Broadcast>
+      </Properties>
+    </Characteristic>
+  </Characteristics>
+  </Service>

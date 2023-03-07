@@ -1,0 +1,15 @@
+id: micriumos_common_lib
+label: Micrium OS Common Libraries Module
+package: micrium-krnx
+description: Micrium OS Extension to Common libraries provide additional libraries that are not essential to the kernel
+category: Services|Micrium|Common
+quality: production
+component_root_path: platform/micrium_os/common
+source:
+  - path: source/common/common.c
+  - path: source/lib/lib_math.c
+provides:
+  - name: common_lib
+requires:
+  - name: common_core
+  - name: common_platform_manager

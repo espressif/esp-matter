@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/build.dtd -->
+<package name="ti.loggers.utils" version="1, 0, 0" producerId="undefined">
+    <units>
+    </units>
+    <sources>
+        <srcFile name="package/package_ti.loggers.utils.c"/>
+        <srcFile name="LoggerBuf.c"/>
+    </sources>
+    <configscripts>
+    </configscripts>
+    <makefiles>
+        <srcFile name="package.mak" src="package.bld"/>
+        <srcFile name="package/package.xdc.dep" src="package.xdc"/>
+        <srcFile name="package/package.cfg.dep" src="package.xdc"/>
+        <srcFile name="lib/iar/m0/loggers_debug.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/iar/m0/loggers_debug/package/package_ti.loggers.utils.orm0.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/iar/m0/loggers_debug/LoggerBuf.orm0.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/iar/m0/loggers_release.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/iar/m0/loggers_release/package/package_ti.loggers.utils.orm0.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/iar/m0/loggers_release/LoggerBuf.orm0.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/gcc/m0/loggers_debug.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/gcc/m0/loggers_debug/package/package_ti.loggers.utils.om0g.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/gcc/m0/loggers_debug/LoggerBuf.om0g.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/gcc/m0/loggers_release.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/gcc/m0/loggers_release/package/package_ti.loggers.utils.om0g.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/gcc/m0/loggers_release/LoggerBuf.om0g.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/ticlang/m0/loggers_debug.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/ticlang/m0/loggers_debug/package/package_ti.loggers.utils.om0.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/ticlang/m0/loggers_debug/LoggerBuf.om0.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/ticlang/m0/loggers_release.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/ticlang/m0/loggers_release/package/package_ti.loggers.utils.om0.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/ticlang/m0/loggers_release/LoggerBuf.om0.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/ccs/m4/loggers_debug.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/ccs/m4/loggers_debug/package/package_ti.loggers.utils.oem4.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/ccs/m4/loggers_debug/LoggerBuf.oem4.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/ccs/m4/loggers_release.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/ccs/m4/loggers_release/package/package_ti.loggers.utils.oem4.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/ccs/m4/loggers_release/LoggerBuf.oem4.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/iar/m4/loggers_debug.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/iar/m4/loggers_debug/package/package_ti.loggers.utils.orm4.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/iar/m4/loggers_debug/LoggerBuf.orm4.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/iar/m4/loggers_release.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/iar/m4/loggers_release/package/package_ti.loggers.utils.orm4.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/iar/m4/loggers_release/LoggerBuf.orm4.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/gcc/m4/loggers_debug.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/gcc/m4/loggers_debug/package/package_ti.loggers.utils.om4g.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/gcc/m4/loggers_debug/LoggerBuf.om4g.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/gcc/m4/loggers_release.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/gcc/m4/loggers_release/package/package_ti.loggers.utils.om4g.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/gcc/m4/loggers_release/LoggerBuf.om4g.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/ticlang/m4/loggers_debug.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/ticlang/m4/loggers_debug/package/package_ti.loggers.utils.om4.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/ticlang/m4/loggers_debug/LoggerBuf.om4.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/ticlang/m4/loggers_release.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/ticlang/m4/loggers_release/package/package_ti.loggers.utils.om4.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/ticlang/m4/loggers_release/LoggerBuf.om4.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/ccs/m4f/loggers_debug.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/ccs/m4f/loggers_debug/package/package_ti.loggers.utils.oem4f.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/ccs/m4f/loggers_debug/LoggerBuf.oem4f.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/ccs/m4f/loggers_release.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/ccs/m4f/loggers_release/package/package_ti.loggers.utils.oem4f.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/ccs/m4f/loggers_release/LoggerBuf.oem4f.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/iar/m4f/loggers_debug.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/iar/m4f/loggers_debug/package/package_ti.loggers.utils.orm4f.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/iar/m4f/loggers_debug/LoggerBuf.orm4f.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/iar/m4f/loggers_release.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/iar/m4f/loggers_release/package/package_ti.loggers.utils.orm4f.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/iar/m4f/loggers_release/LoggerBuf.orm4f.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/gcc/m4f/loggers_debug.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/gcc/m4f/loggers_debug/package/package_ti.loggers.utils.om4fg.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/gcc/m4f/loggers_debug/LoggerBuf.om4fg.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/gcc/m4f/loggers_release.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/gcc/m4f/loggers_release/package/package_ti.loggers.utils.om4fg.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/gcc/m4f/loggers_release/LoggerBuf.om4fg.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/ticlang/m4f/loggers_debug.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/ticlang/m4f/loggers_debug/package/package_ti.loggers.utils.om4f.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/ticlang/m4f/loggers_debug/LoggerBuf.om4f.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/ticlang/m4f/loggers_release.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/ticlang/m4f/loggers_release/package/package_ti.loggers.utils.om4f.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/ticlang/m4f/loggers_release/LoggerBuf.om4f.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/iar/m33f/loggers_debug.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/iar/m33f/loggers_debug/package/package_ti.loggers.utils.orm33f.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/iar/m33f/loggers_debug/LoggerBuf.orm33f.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/iar/m33f/loggers_release.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/iar/m33f/loggers_release/package/package_ti.loggers.utils.orm33f.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/iar/m33f/loggers_release/LoggerBuf.orm33f.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/gcc/m33f/loggers_debug.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/gcc/m33f/loggers_debug/package/package_ti.loggers.utils.om33fg.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/gcc/m33f/loggers_debug/LoggerBuf.om33fg.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/gcc/m33f/loggers_release.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/gcc/m33f/loggers_release/package/package_ti.loggers.utils.om33fg.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/gcc/m33f/loggers_release/LoggerBuf.om33fg.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/ticlang/m33f/loggers_debug.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/ticlang/m33f/loggers_debug/package/package_ti.loggers.utils.om33f.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/ticlang/m33f/loggers_debug/LoggerBuf.om33f.dep" src="LoggerBuf.c"/>
+        <srcFile name="lib/ticlang/m33f/loggers_release.a.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/ticlang/m33f/loggers_release/package/package_ti.loggers.utils.om33f.dep" src="package/package_ti.loggers.utils.c"/>
+        <srcFile name="package/lib/lib/ticlang/m33f/loggers_release/LoggerBuf.om33f.dep" src="LoggerBuf.c"/>
+        <srcFile name="package/rel/ti_loggers_utils.zip.dep" src="package/rel/ti_loggers_utils.xdc.inc"/>
+    </makefiles>
+    <targets>
+        <target name="iar.targets.arm.M0"
+            version="iar.targets.arm.M0{1,0,8.50,1"
+            rawVersion="8.50.1.245"
+            platform="ti.platforms.simCM3"
+            isa="v6M"
+            suffix="rm0"
+            rootDir="/scratch/xlibrary/.conan/data/iarcodegen/8.50.1.245-3/library-msp/ga/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9"
+            os="undefined"
+            rts="iar.targets.arm.rts">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="gnu.targets.arm.M0"
+            version="gnu.targets.arm.M0{1,0,9.2,1"
+            rawVersion="9.2.1"
+            platform="ti.platforms.simCM3"
+            isa="v6M"
+            suffix="m0g"
+            rootDir="/scratch/xlibrary/.conan/data/arm-none-eabi-gcc/9.2019.q4.major-0/library-msp/ga/package/44fcf6b9a7fb86b2586303e3db40189d3b511830"
+            os="undefined"
+            rts="gnu.targets.arm.rtsv7M">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="ti.targets.arm.clang.M0"
+            version="ti.targets.arm.clang.M0{1,0,1.3,1"
+            rawVersion="TI Arm Clang Compiler 1.3.1.LTSTarget: arm-ti-none-eabi
+Thread model: posix
+InstalledDir: /scratch/xlibrary/.conan/data/tiarmllvm/1.3.1.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c/bin
+"
+            platform="ti.platforms.CM3"
+            isa="v6M"
+            suffix="m0"
+            rootDir="/scratch/xlibrary/.conan/data/tiarmllvm/1.3.1.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c"
+            os="undefined"
+            rts="ti.targets.arm.rtsarm">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="ti.targets.arm.elf.M4"
+            version="ti.targets.arm.elf.M4{1,0,20.2,5"
+            rawVersion="20.2.5"
+            platform="ti.platforms.tiva:TM4C1294NCPDT:1"
+            isa="v7M4"
+            suffix="em4"
+            rootDir="/scratch/xlibrary/.conan/data/ticodegen/20.2.5.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c"
+            os="undefined"
+            rts="ti.targets.arm.rtsarm">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="iar.targets.arm.M4"
+            version="iar.targets.arm.M4{1,0,8.50,1"
+            rawVersion="8.50.1.245"
+            platform="ti.platforms.tiva:TM4C1294NCPDT:1"
+            isa="v7M4"
+            suffix="rm4"
+            rootDir="/scratch/xlibrary/.conan/data/iarcodegen/8.50.1.245-3/library-msp/ga/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9"
+            os="undefined"
+            rts="iar.targets.arm.rts">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="gnu.targets.arm.M4"
+            version="gnu.targets.arm.M4{1,0,9.2,1"
+            rawVersion="9.2.1"
+            platform="ti.platforms.tiva:TM4C1294NCPDT"
+            isa="v7M4"
+            suffix="m4g"
+            rootDir="/scratch/xlibrary/.conan/data/arm-none-eabi-gcc/9.2019.q4.major-0/library-msp/ga/package/44fcf6b9a7fb86b2586303e3db40189d3b511830"
+            os="undefined"
+            rts="gnu.targets.arm.rtsv7M">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="ti.targets.arm.clang.M4"
+            version="ti.targets.arm.clang.M4{1,0,1.3,1"
+            rawVersion="TI Arm Clang Compiler 1.3.1.LTSTarget: arm-ti-none-eabi
+Thread model: posix
+InstalledDir: /scratch/xlibrary/.conan/data/tiarmllvm/1.3.1.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c/bin
+"
+            platform="ti.platforms.tiva:TM4C1294NCPDT:1"
+            isa="v7M4"
+            suffix="m4"
+            rootDir="/scratch/xlibrary/.conan/data/tiarmllvm/1.3.1.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c"
+            os="undefined"
+            rts="ti.targets.arm.rtsarm">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="ti.targets.arm.elf.M4F"
+            version="ti.targets.arm.elf.M4F{1,0,20.2,5"
+            rawVersion="20.2.5"
+            platform="ti.platforms.tiva:TM4C1294NCPDT:1"
+            isa="v7M4"
+            suffix="em4f"
+            rootDir="/scratch/xlibrary/.conan/data/ticodegen/20.2.5.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c"
+            os="undefined"
+            rts="ti.targets.arm.rtsarm">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="iar.targets.arm.M4F"
+            version="iar.targets.arm.M4F{1,0,8.50,1"
+            rawVersion="8.50.1.245"
+            platform="ti.platforms.tiva:TM4C1294NCPDT:1"
+            isa="v7M4"
+            suffix="rm4f"
+            rootDir="/scratch/xlibrary/.conan/data/iarcodegen/8.50.1.245-3/library-msp/ga/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9"
+            os="undefined"
+            rts="iar.targets.arm.rts">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="gnu.targets.arm.M4F"
+            version="gnu.targets.arm.M4F{1,0,9.2,1"
+            rawVersion="9.2.1"
+            platform="ti.platforms.tiva:TM4C1294NCPDT"
+            isa="v7M4"
+            suffix="m4fg"
+            rootDir="/scratch/xlibrary/.conan/data/arm-none-eabi-gcc/9.2019.q4.major-0/library-msp/ga/package/44fcf6b9a7fb86b2586303e3db40189d3b511830"
+            os="undefined"
+            rts="gnu.targets.arm.rtsv7M">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="ti.targets.arm.clang.M4F"
+            version="ti.targets.arm.clang.M4F{1,0,1.3,1"
+            rawVersion="TI Arm Clang Compiler 1.3.1.LTSTarget: arm-ti-none-eabi
+Thread model: posix
+InstalledDir: /scratch/xlibrary/.conan/data/tiarmllvm/1.3.1.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c/bin
+"
+            platform="ti.platforms.cortexM:MTL1_VSOC:1"
+            isa="v7M4"
+            suffix="m4f"
+            rootDir="/scratch/xlibrary/.conan/data/tiarmllvm/1.3.1.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c"
+            os="undefined"
+            rts="ti.targets.arm.rtsarm">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="iar.targets.arm.M33F"
+            version="iar.targets.arm.M33F{1,0,8.50,1"
+            rawVersion="8.50.1.245"
+            platform="ti.platforms.cortexM:FVP_MPS2:2"
+            isa="v8M"
+            suffix="rm33f"
+            rootDir="/scratch/xlibrary/.conan/data/iarcodegen/8.50.1.245-3/library-msp/ga/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9"
+            os="undefined"
+            rts="iar.targets.arm.rts">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="gnu.targets.arm.M33F"
+            version="gnu.targets.arm.M33F{1,0,9.2,1"
+            rawVersion="9.2.1"
+            platform="ti.platforms.cortexM:FVP_MPS2"
+            isa="v8M"
+            suffix="m33fg"
+            rootDir="/scratch/xlibrary/.conan/data/arm-none-eabi-gcc/9.2019.q4.major-0/library-msp/ga/package/44fcf6b9a7fb86b2586303e3db40189d3b511830"
+            os="undefined"
+            rts="gnu.targets.arm.rtsv8M">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="ti.targets.arm.clang.M33F"
+            version="ti.targets.arm.clang.M33F{1,0,1.3,1"
+            rawVersion="TI Arm Clang Compiler 1.3.1.LTSTarget: arm-ti-none-eabi
+Thread model: posix
+InstalledDir: /scratch/xlibrary/.conan/data/tiarmllvm/1.3.1.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c/bin
+"
+            platform="ti.platforms.cortexM:MTL1_VSOC:1"
+            isa="v8M"
+            suffix="m33f"
+            rootDir="/scratch/xlibrary/.conan/data/tiarmllvm/1.3.1.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c"
+            os="undefined"
+            rts="ti.targets.arm.rtsarm">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+    </targets>
+    <libraries>
+    <library name="lib/iar/m0/loggers_debug"
+        pname="lib/iar/m0/loggers_debug.a"
+        profile="debug"
+        target="iar.targets.arm.M0"/>
+    <library name="lib/iar/m0/loggers_release"
+        pname="lib/iar/m0/loggers_release.a"
+        profile="release"
+        target="iar.targets.arm.M0"/>
+    <library name="lib/gcc/m0/loggers_debug"
+        pname="lib/gcc/m0/loggers_debug.a"
+        profile="debug"
+        target="gnu.targets.arm.M0"/>
+    <library name="lib/gcc/m0/loggers_release"
+        pname="lib/gcc/m0/loggers_release.a"
+        profile="release"
+        target="gnu.targets.arm.M0"/>
+    <library name="lib/ticlang/m0/loggers_debug"
+        pname="lib/ticlang/m0/loggers_debug.a"
+        profile="debug"
+        target="ti.targets.arm.clang.M0"/>
+    <library name="lib/ticlang/m0/loggers_release"
+        pname="lib/ticlang/m0/loggers_release.a"
+        profile="release"
+        target="ti.targets.arm.clang.M0"/>
+    <library name="lib/ccs/m4/loggers_debug"
+        pname="lib/ccs/m4/loggers_debug.a"
+        profile="debug"
+        target="ti.targets.arm.elf.M4"/>
+    <library name="lib/ccs/m4/loggers_release"
+        pname="lib/ccs/m4/loggers_release.a"
+        profile="release"
+        target="ti.targets.arm.elf.M4"/>
+    <library name="lib/iar/m4/loggers_debug"
+        pname="lib/iar/m4/loggers_debug.a"
+        profile="debug"
+        target="iar.targets.arm.M4"/>
+    <library name="lib/iar/m4/loggers_release"
+        pname="lib/iar/m4/loggers_release.a"
+        profile="release"
+        target="iar.targets.arm.M4"/>
+    <library name="lib/gcc/m4/loggers_debug"
+        pname="lib/gcc/m4/loggers_debug.a"
+        profile="debug"
+        target="gnu.targets.arm.M4"/>
+    <library name="lib/gcc/m4/loggers_release"
+        pname="lib/gcc/m4/loggers_release.a"
+        profile="release"
+        target="gnu.targets.arm.M4"/>
+    <library name="lib/ticlang/m4/loggers_debug"
+        pname="lib/ticlang/m4/loggers_debug.a"
+        profile="debug"
+        target="ti.targets.arm.clang.M4"/>
+    <library name="lib/ticlang/m4/loggers_release"
+        pname="lib/ticlang/m4/loggers_release.a"
+        profile="release"
+        target="ti.targets.arm.clang.M4"/>
+    <library name="lib/ccs/m4f/loggers_debug"
+        pname="lib/ccs/m4f/loggers_debug.a"
+        profile="debug"
+        target="ti.targets.arm.elf.M4F"/>
+    <library name="lib/ccs/m4f/loggers_release"
+        pname="lib/ccs/m4f/loggers_release.a"
+        profile="release"
+        target="ti.targets.arm.elf.M4F"/>
+    <library name="lib/iar/m4f/loggers_debug"
+        pname="lib/iar/m4f/loggers_debug.a"
+        profile="debug"
+        target="iar.targets.arm.M4F"/>
+    <library name="lib/iar/m4f/loggers_release"
+        pname="lib/iar/m4f/loggers_release.a"
+        profile="release"
+        target="iar.targets.arm.M4F"/>
+    <library name="lib/gcc/m4f/loggers_debug"
+        pname="lib/gcc/m4f/loggers_debug.a"
+        profile="debug"
+        target="gnu.targets.arm.M4F"/>
+    <library name="lib/gcc/m4f/loggers_release"
+        pname="lib/gcc/m4f/loggers_release.a"
+        profile="release"
+        target="gnu.targets.arm.M4F"/>
+    <library name="lib/ticlang/m4f/loggers_debug"
+        pname="lib/ticlang/m4f/loggers_debug.a"
+        profile="debug"
+        target="ti.targets.arm.clang.M4F"/>
+    <library name="lib/ticlang/m4f/loggers_release"
+        pname="lib/ticlang/m4f/loggers_release.a"
+        profile="release"
+        target="ti.targets.arm.clang.M4F"/>
+    <library name="lib/iar/m33f/loggers_debug"
+        pname="lib/iar/m33f/loggers_debug.a"
+        profile="debug"
+        target="iar.targets.arm.M33F"/>
+    <library name="lib/iar/m33f/loggers_release"
+        pname="lib/iar/m33f/loggers_release.a"
+        profile="release"
+        target="iar.targets.arm.M33F"/>
+    <library name="lib/gcc/m33f/loggers_debug"
+        pname="lib/gcc/m33f/loggers_debug.a"
+        profile="debug"
+        target="gnu.targets.arm.M33F"/>
+    <library name="lib/gcc/m33f/loggers_release"
+        pname="lib/gcc/m33f/loggers_release.a"
+        profile="release"
+        target="gnu.targets.arm.M33F"/>
+    <library name="lib/ticlang/m33f/loggers_debug"
+        pname="lib/ticlang/m33f/loggers_debug.a"
+        profile="debug"
+        target="ti.targets.arm.clang.M33F"/>
+    <library name="lib/ticlang/m33f/loggers_release"
+        pname="lib/ticlang/m33f/loggers_release.a"
+        profile="release"
+        target="ti.targets.arm.clang.M33F"/>
+    </libraries>
+    <configurations>
+    </configurations>
+    <executables>
+    </executables>
+    <tests>
+    </tests>
+    <releases relDir="package/rel/">
+    <release name="ti_loggers_utils"
+        pname="../../../../exports/ti_loggers_utils.zip"
+        label="default"
+    >
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+        <file name="LoggerBuf.h"/>
+        <file name="LoggerBuf.rov.js"/>
+        <file name=".meta/Config.c.xdt"/>
+        <file name=".meta/Config.h.xdt"/>
+        <file name=".meta/ExGr_LoggerBuf.syscfg.js"/>
+        <file name=".meta/GetLibs.syscfg.js"/>
+        <file name=".meta/LoggerBuf.Config.c.xdt"/>
+        <file name=".meta/LoggerBuf.Config.h.xdt"/>
+        <file name=".meta/LoggerBuf.rov.js.xdt"/>
+        <file name=".meta/LoggerBuf.syscfg.js"/>
+        <file name=".meta/utils.component.js"/>
+        <file name="makefile"/>
+        <file name="package.bld"/>
+        <file name="package/package.cfg.xdc.inc"/>
+        <file name="lib/iar/m0/loggers_debug.a"/>
+        <file name="package/package_ti.loggers.utils.c"/>
+        <file name="LoggerBuf.c"/>
+        <file name="lib/iar/m0/loggers_release.a"/>
+        <file name="lib/gcc/m0/loggers_debug.a"/>
+        <file name="lib/gcc/m0/loggers_release.a"/>
+        <file name="lib/ticlang/m0/loggers_debug.a"/>
+        <file name="lib/ticlang/m0/loggers_release.a"/>
+        <file name="lib/ccs/m4/loggers_debug.a"/>
+        <file name="lib/ccs/m4/loggers_release.a"/>
+        <file name="lib/iar/m4/loggers_debug.a"/>
+        <file name="lib/iar/m4/loggers_release.a"/>
+        <file name="lib/gcc/m4/loggers_debug.a"/>
+        <file name="lib/gcc/m4/loggers_release.a"/>
+        <file name="lib/ticlang/m4/loggers_debug.a"/>
+        <file name="lib/ticlang/m4/loggers_release.a"/>
+        <file name="lib/ccs/m4f/loggers_debug.a"/>
+        <file name="lib/ccs/m4f/loggers_release.a"/>
+        <file name="lib/iar/m4f/loggers_debug.a"/>
+        <file name="lib/iar/m4f/loggers_release.a"/>
+        <file name="lib/gcc/m4f/loggers_debug.a"/>
+        <file name="lib/gcc/m4f/loggers_release.a"/>
+        <file name="lib/ticlang/m4f/loggers_debug.a"/>
+        <file name="lib/ticlang/m4f/loggers_release.a"/>
+        <file name="lib/iar/m33f/loggers_debug.a"/>
+        <file name="lib/iar/m33f/loggers_release.a"/>
+        <file name="lib/gcc/m33f/loggers_debug.a"/>
+        <file name="lib/gcc/m33f/loggers_release.a"/>
+        <file name="lib/ticlang/m33f/loggers_debug.a"/>
+        <file name="lib/ticlang/m33f/loggers_release.a"/>
+    </release>
+    </releases>
+    <repositories>
+    </repositories>
+</package>

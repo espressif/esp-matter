@@ -1,0 +1,53 @@
+id: util_eeprom
+package: platform
+label: EEPROM
+description: |-
+  This component manages the state of the EEPROM so that it will be correctly initialized before operations are executed. This is important, for example, when sleeping/waking the chip. The SPI or I2C bus must often be reinitialized. It also handles partial writes (less than the word size of the part), caching that partial word for writing later when a call to write is made that is at the next address to the partial word. If this component is not enabled or similar functionality is not implemented, deep sleep may not be possible. This component must be disabled if the module it is being used for does not have EEPROM.
+category: Platform|Utilities
+quality: production
+provides:
+  - name: util_eeprom
+  - name: util_eeprom_print
+config_file:
+  - path: util/plugin/plugin-common/eeprom/config/eeprom-config.h
+include:
+  - path: util/plugin/plugin-common/eeprom
+    file_list: 
+      - path: eeprom.h
+  - path: util/plugin/plugin-afv6/eeprom/
+    file_list: 
+      - path: eeprom-print.h
+source:
+  - path: util/plugin/plugin-common/eeprom/eeprom.c
+  - path: util/plugin/plugin-common/eeprom/eeprom-cb.c
+  - path: util/plugin/plugin-common/eeprom/eeprom-cli.c
+template_contribution:
+  - name: component_catalog
+    value: util_eeprom
+  - name: event_handler
+    value:
+      event: driver_init
+      include: eeprom.h
+      handler: emberAfPluginEepromInit
+  - name: cli_group
+    value:
+      name: eeprom
+      help: eeprom utility related commands
+  - name: cli_command
+    value:
+      group: eeprom
+      name: data-print
+      handler: emAfEepromDataPrintCommand
+      argument:
+      - type: uint32
+        help: offset
+  - name: cli_command
+    value:
+      group: eeprom
+      name: status
+      handler: emAfEepromStatusCommand
+  - name: cli_command
+    value:
+      group: eeprom
+      name: info
+      handler: emAfEepromInfoCommand

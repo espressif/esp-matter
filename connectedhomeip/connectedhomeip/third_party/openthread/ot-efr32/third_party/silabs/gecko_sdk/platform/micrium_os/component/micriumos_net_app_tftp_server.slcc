@@ -1,0 +1,22 @@
+id: micriumos_net_app_tftp_server
+label: Network Suite - TFTP server
+package: micrium-tcpx
+description: Micrium OS Network TFTP server
+category: Services|Micrium|Network Suite
+quality: production
+component_root_path: platform/micrium_os/net
+source:
+  - path: source/tftp/tftp_server.c
+include:
+  - path: include
+    file_list:
+      - path: tftp_server.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: NET_TFTP_SERVER
+provides:
+  - name: net_app_tftp_server
+requires:
+  - name: net
+  - name: fs
+  - name: common_auth

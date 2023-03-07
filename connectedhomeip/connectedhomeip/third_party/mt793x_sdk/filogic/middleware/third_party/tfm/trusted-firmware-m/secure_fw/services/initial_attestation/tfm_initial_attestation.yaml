@@ -1,0 +1,67 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2018-2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+{
+  "psa_framework_version": 1.0,
+  "name": "TFM_SP_INITIAL_ATTESTATION",
+  "type": "PSA-ROT",
+  "priority": "NORMAL",
+  "entry_point": "attest_partition_init",
+  "stack_size": "0x0A80",
+  "secure_functions": [
+    {
+      "name": "TFM_ATTEST_GET_TOKEN",
+      "signal": "INITIAL_ATTEST_GET_TOKEN",
+      "sid": "0x00000020",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_ATTEST_GET_TOKEN_SIZE",
+      "signal": "INITIAL_ATTEST_GET_TOKEN_SIZE",
+      "sid": "0x00000021",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_ATTEST_GET_PUBLIC_KEY",
+      "signal": "INITIAL_ATTEST_GET_PUBLIC_KEY",
+      "sid": "0x00000022",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    }
+  ],
+  "services": [
+    {
+      "name": "TFM_ATTEST_GET_TOKEN",
+      "sid": "0x00000020",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_ATTEST_GET_TOKEN_SIZE",
+      "sid": "0x00000021",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_ATTEST_GET_PUBLIC_KEY",
+      "sid": "0x00000022",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    }
+  ],
+  "dependencies": [
+    "TFM_CRYPTO"
+  ]
+}

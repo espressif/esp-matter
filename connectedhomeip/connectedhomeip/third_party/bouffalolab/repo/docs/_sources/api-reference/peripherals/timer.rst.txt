@@ -1,0 +1,24 @@
+timer
+====
+
+概述
+--------
+
+通用定时器，用于定时，当时间到达我们所设置的定时时间会产生定时中断，可以用来完成定时任务。
+
+.. note::
+
+    timer更多资料请参考 `BL602参考手册 <https://dev.bouffalolab.com/media/doc/602/open/reference_manual/zh/html/content/TIMER.html>`_ 。
+
+应用实例
+----------
+
+串口实例： ``customer_app/peripheral/demo_timer`` 。
+
+API参考
+----------
+
+.. include:: /_build/inc/hosal_timer.inc
+
+
+

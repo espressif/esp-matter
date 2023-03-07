@@ -1,0 +1,187 @@
+id: "sl_range_test_cli"
+label: "Flex - Range Test CLI"
+package: "Flex"
+description: "Adds Range test sample applications a CLI interface."
+category: "Flex|RAIL|Core"
+quality: "production"
+root_path: "app/flex/component/rail/sl_range_test_cli"
+
+provides:
+  - name: "range_test_cli"
+requires:
+  - name: "cli"
+  - name: "device_has_radio"
+source:
+  - path: "range_test_cli.c"
+
+#-------- Hides Component for user in Studio ---------
+ui_hints:
+  visibility: never
+
+template_contribution:
+#-------------------- CLI Commands -------------------
+  - name: cli_command
+    value:
+      name: info
+      handler: cli_info
+      help: "Information about all configuration"
+  - name: cli_command
+    value:
+      name: list_phys
+      handler: cli_list_phys
+      help: "List all available phys with phy number"
+  - name: cli_command
+    value:
+      name: get_mode
+      handler: cli_get_mode
+      help: "Information about mode"
+  - name: cli_command
+    value:
+      name: get_phy
+      handler: cli_get_phy
+      help: "Information about phy"
+  - name: cli_command
+    value:
+      name: get_power
+      handler: cli_get_power
+      help: "Information about power"
+  - name: cli_command
+    value:
+      name: get_frequency
+      handler: cli_get_frequency
+      help: "Information about frequency"
+  - name: cli_command
+    value:
+      name: get_channel_number
+      handler: cli_get_channel_number
+      help: "Information about channel number"
+  - name: cli_command
+    value:
+      name: get_payload_length
+      handler: cli_get_payload_length
+      help: "Information about payload length"
+  - name: cli_command
+    value:
+      name: get_packet_count
+      handler: cli_get_packet_count
+      help: "Information about packet count"
+  - name: cli_command
+    value:
+      name: get_remote_id
+      handler: cli_get_remote_id
+      help: "Information about remote id"
+  - name: cli_command
+    value:
+      name: get_self_id
+      handler: cli_get_self_id
+      help: "Information about self id"
+  - name: cli_command
+    value:
+      name: get_ma_window_size
+      handler: cli_get_ma_window_size
+      help: "Information about MA window size"
+  - name: cli_command
+    value:
+      name: get_usart_log_enable
+      handler: cli_get_usart_log_enable
+      help: "Information about uart log enable"
+  - name: cli_command
+    value:
+      name: set_mode
+      argument:
+      - type: uint8
+        help: "RX/TX"
+      handler: cli_set_mode
+      help: "Set the device mode"
+  - name: cli_command
+    value:
+      name: set_phy
+      argument:
+      - type: uint8
+        help: "Number of the phy starting from 0"
+      handler: cli_set_phy
+      help: "Set the device phy"
+  - name: cli_command
+    value:
+      name: set_power
+      argument:
+      - type: int16
+        help: "TX power level in deci-dBm"
+      handler: cli_set_power
+      help: "Set the device power"
+  - name: cli_command
+    value:
+      name: set_channel_number
+      argument:
+      - type: uint16
+        help: "Channel number"
+      handler: cli_set_channel_number
+      help: "Set the device channel"
+  - name: cli_command
+    value:
+      name: set_payload_length
+      argument:
+      - type: uint8
+        help: "Payload length"
+      handler: cli_set_payload_length
+      help: "Set the device payload length"
+  - name: cli_command
+    value:
+      name: set_packet_count
+      argument:
+      - type: uint8
+        help: "Packet count : 0:500, 1:1000, 2:2500, 3:5000, 4:10000, 5:25000, 6:50000, 7:Repeat"
+      handler: cli_set_packet_count
+      help: "Set the device packet count"
+  - name: cli_command
+    value:
+      name: set_remote_id
+      argument:
+      - type: uint8
+        help: "Remote id , 0 - 32"
+      handler: cli_set_remote_id
+      help: "Set the device remote id"
+  - name: cli_command
+    value:
+      name: set_self_id
+      argument:
+      - type: uint8
+        help: "Self id , 0 - 32"
+      handler: cli_set_self_id
+      help: "Set the device self id"
+  - name: cli_command
+    value:
+      name: set_ma_window_size
+      argument:
+      - type: uint8
+        help: "MA window size: 32, 64 or 128"
+      handler: cli_set_ma_window_size
+      help: "Set the device MA window size"
+  - name: cli_command
+    value:
+      name: set_usart_log_enable
+      argument:
+      - type: uint8
+        help: "0:OFF / 1:ON"
+      handler: cli_set_usart_log_enable
+      help: "Set the device uast log enable"
+  - name: cli_command
+    value:
+      name: start_measurement
+      handler: cli_start_measurement
+      help: "Start measurement with configured values"
+  - name: cli_command
+    value:
+      name: stop_measurement
+      handler: cli_stop_measurement
+      help: "Stop measurement"
+  - name: cli_command
+    value:
+      name: is_ble_connected
+      handler: cli_is_ble_connected
+      help: "Get BLE connection state"
+    condition:
+      - range_test_dmp_component
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: range_test_cli

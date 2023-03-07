@@ -1,0 +1,71 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pi_pico.gni")
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+
+# TODO(amontanez): This can go away if the GN build can be upstreamed to the
+# Pi Pico repo.
+_CWD = "${PICO_SRC_DIR}/src/rp2040/hardware_structs"
+
+config("public_include_dirs") {
+  include_dirs = [ "${_CWD}/include" ]
+}
+
+pw_source_set("hardware_structs") {
+  public_configs = [
+    ":public_include_dirs",
+    "${PICO_ROOT}/gn:disable_warnings",
+  ]
+  public_deps = [
+    "${PICO_ROOT}/src/rp2040/hardware_regs",
+    "${PICO_ROOT}/src/rp2040/hardware_regs:platform_defs",
+    "${PICO_ROOT}/src/rp2_common/hardware_base",
+  ]
+  public = [
+    "${_CWD}/include/hardware/structs/adc.h",
+    "${_CWD}/include/hardware/structs/bus_ctrl.h",
+    "${_CWD}/include/hardware/structs/clocks.h",
+    "${_CWD}/include/hardware/structs/dma.h",
+    "${_CWD}/include/hardware/structs/i2c.h",
+    "${_CWD}/include/hardware/structs/interp.h",
+    "${_CWD}/include/hardware/structs/iobank0.h",
+    "${_CWD}/include/hardware/structs/ioqspi.h",
+    "${_CWD}/include/hardware/structs/mpu.h",
+    "${_CWD}/include/hardware/structs/pads_qspi.h",
+    "${_CWD}/include/hardware/structs/padsbank0.h",
+    "${_CWD}/include/hardware/structs/pio.h",
+    "${_CWD}/include/hardware/structs/pll.h",
+    "${_CWD}/include/hardware/structs/psm.h",
+    "${_CWD}/include/hardware/structs/pwm.h",
+    "${_CWD}/include/hardware/structs/resets.h",
+    "${_CWD}/include/hardware/structs/rosc.h",
+    "${_CWD}/include/hardware/structs/rtc.h",
+    "${_CWD}/include/hardware/structs/scb.h",
+    "${_CWD}/include/hardware/structs/sio.h",
+    "${_CWD}/include/hardware/structs/spi.h",
+    "${_CWD}/include/hardware/structs/ssi.h",
+    "${_CWD}/include/hardware/structs/syscfg.h",
+    "${_CWD}/include/hardware/structs/systick.h",
+    "${_CWD}/include/hardware/structs/timer.h",
+    "${_CWD}/include/hardware/structs/uart.h",
+    "${_CWD}/include/hardware/structs/usb.h",
+    "${_CWD}/include/hardware/structs/vreg_and_chip_reset.h",
+    "${_CWD}/include/hardware/structs/watchdog.h",
+    "${_CWD}/include/hardware/structs/xip_ctrl.h",
+    "${_CWD}/include/hardware/structs/xosc.h",
+  ]
+}

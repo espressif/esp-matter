@@ -1,0 +1,44 @@
+#include "sl_cli_handles.h"
+#include "sl_cli_storage_ram_instances.h"
+
+{% for instance in cli_storage_ram_instances %}#include "sl_cli_storage_ram_config_{{ instance }}.h"
+{% endfor %}
+
+//****************************************************************************
+// Variables
+{# Generate cli handle and context variable(s) #}
+// The default handle is used for cli commands that do not specify instances.
+static cli_storage_ram_handle_t default_handle = NULL;
+
+{% for instance in cli_storage_ram_instances %}// Instance variables for {{ instance }}
+static cli_storage_ram_t {{ instance }}_instance;
+static char {{ instance }}_ram_buffer[SL_CLI_STORAGE_RAM_{{ instance | upper }}_LINES][SL_CLI_INPUT_BUFFER_SIZE];
+{% endfor %}
+
+//****************************************************************************
+// Global functions
+
+cli_storage_ram_handle_t sl_cli_storage_ram_instances_convert_handle(sl_cli_handle_t cli_handle)
+{
+  {% for instance in cli_storage_ram_instances %}
+  if ({{ instance }}_instance.cli_handle == cli_handle) {
+    return &{{ instance }}_instance;
+  }
+  {% endfor %}
+  return default_handle;
+}
+
+void sl_cli_storage_ram_instances_init(void)
+{
+  {% for instance in cli_storage_ram_instances %}// Initialize {{ instance }}
+  default_handle = &{{ instance }}_instance;
+  {{ instance }}_instance.cli_handle           = SL_CLI_STORAGE_RAM_{{ instance | upper }}_CLI_HANDLE;
+  {{ instance }}_instance.ram_size             = SL_CLI_STORAGE_RAM_{{ instance | upper }}_LINES;
+  {{ instance }}_instance.ram_buffer           = (char *){{ instance }}_ram_buffer;
+  {{ instance }}_instance.end_string           = SL_CLI_STORAGE_RAM_{{ instance | upper }}_END_STRING;
+  {{ instance }}_instance.prompt               = SL_CLI_STORAGE_RAM_{{ instance | upper }}_PROMPT;
+  {{ instance }}_instance.execute_while_define = SL_CLI_STORAGE_RAM_{{ instance | upper }}_EXECUTE;
+  // Initialize the instance.
+  sl_cli_storage_ram_init(&{{ instance }}_instance);
+  {% endfor %}
+}

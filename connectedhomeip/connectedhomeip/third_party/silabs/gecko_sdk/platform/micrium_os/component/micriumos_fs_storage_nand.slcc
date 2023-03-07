@@ -1,0 +1,35 @@
+id: micriumos_fs_storage_nand
+package: micrium-fsxx
+description: Micrium OS File System NAND Storage
+category: Services|Micrium|File System
+quality: production
+component_root_path: platform/micrium_os/fs
+source:
+  - path: source/storage/nand/fs_nand.c
+  - path: source/storage/nand/fs_nand_ctrlr_gen.c
+  - path: source/storage/nand/fs_nand_ctrlr_gen_ext_soft_ecc.c
+  - path: source/storage/nand/fs_nand_ftl.c
+  - path: source/storage/nand/fs_nand_part_onfi.c
+  - path: source/storage/nand/fs_nand_part_static.c
+include:
+  - path: source
+    file_list:
+      - path: storage/nand/fs_nand_ctrlr_gen_priv.h
+      - path: storage/nand/fs_nand_ftl_priv.h
+      - path: storage/nand/fs_nand_priv.h
+  - path: include
+    file_list:
+      - path: fs_nand.h
+      - path: fs_nand_ctrlr_gen.h
+      - path: fs_nand_ctrlr_gen_ext_soft_ecc.h
+      - path: fs_nand_ftl.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: FS_STORAGE_NAND
+provides:
+  - name: fs_storage_nand
+  - name: fs_storage
+    allow_multiple: true
+requires:
+  - name: fs
+  - name: fs_storage_nand_driver

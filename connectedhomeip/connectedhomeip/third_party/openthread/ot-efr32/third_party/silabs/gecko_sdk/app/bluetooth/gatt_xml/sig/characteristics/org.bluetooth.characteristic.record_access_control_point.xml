@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Liquid XML Studio Designer Edition 9.1.10.3537 (http://www.liquid-technologies.com) -->
+<!--Copyright 2011 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Record Access Control Point" type="org.bluetooth.characteristic.record_access_control_point" uuid="2A52" last-modified="2011-12-06" approved="Yes">
+    <InformativeText>
+        <Summary>This control point is used with a service to provide basic management functionality for the Glucose Sensor patient record database. This enables functions including counting records, transmitting records and clearing records based on filter criterion. The filter criterion in the Operand field is defined by the service that references this characteristic as is the format of a record (which may be comprised of one or more characteristics) and the sequence of transferred records.</Summary>
+    </InformativeText>
+    <Value>
+        <Field name="Op Code">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+            <Enumerations>
+                <Enumeration key="0" value="Reserved for future use (Operator:N/A)" />
+                <Enumeration key="1" value="Report stored records (Operator: Value from Operator Table)" />
+                <Enumeration key="2" value="Delete stored records (Operator: Value from Operator Table)" />
+                <Enumeration key="3" value="Abort operation (Operator: Null 'value of 0x00 from Operator Table')" />
+                <Enumeration key="4" value="Report number of stored records (Operator: Value from Operator Table)" />
+                <Enumeration key="5" value="Number of stored records response (Operator: Null 'value of 0x00 from Operator Table')" />
+                <Enumeration key="6" value="Response Code (Operator: Null 'value of 0x00 from Operator Table')" />
+                <ReservedForFutureUse start="7" end="255" />
+            </Enumerations>
+        </Field>
+        <Field name="Operator">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+            <Enumerations>
+                <Enumeration key="0" value="Null" />
+                <Enumeration key="1" value="All records" />
+                <Enumeration key="2" value="Less than or equal to" />
+                <Enumeration key="3" value="Greater than or equal to" />
+                <Enumeration key="4" value="Within range of (inclusive)" />
+                <Enumeration key="5" value="First record(i.e. oldest record)" />
+                <Enumeration key="6" value="Last record (i.e. most recent record)" />
+                <ReservedForFutureUse start="7" end="255" />
+            </Enumerations>
+        </Field>
+        
+         <Field name="Operand">
+            <InformativeText>The operands correspond to the Op Code values (Keys 0 to 255) defined in the Op Code Field above</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>variable</Format>
+            
+            <Enumerations>
+                <InformativeText>Op Code / Operand Value Correspondence</InformativeText>
+                <Enumeration key="0" value="N/A" />
+                <Enumeration key="1" value="Filter parameters (as appropriate to Operator and Service)" />
+                <Enumeration key="2" value="Filter parameters (as appropriate to Operator and Service)" />
+                <Enumeration key="3" value="Not included" />
+                <Enumeration key="4" value="Filter parameters (as appropriate to Operator and Service)" />
+                <Enumeration key="5" value="Number of Records (Field size defined per service)" />
+                <Enumeration key="6" value="Request Op Code, Response Code Value" />
+                <ReservedForFutureUse start="7" end="255" />
+            </Enumerations>
+            <AdditionalValues>
+                <InformativeText>Response Code Values</InformativeText>
+                <Enumeration key="0" value="Reserved For Future Use" description="N/A" />
+                <Enumeration key="1" value="Success" description="Normal response for successful operation" />
+                <Enumeration key="2" value="Op Code not supported" description="Normal response if unsupported Op Code is received" />
+                <Enumeration key="3" value="Invalid Operator" description="Normal response if Operator received does not meet the requirements of the service (e.g. Null was expected)" />
+                <Enumeration key="4" value="Operator not supported" description="Normal response if unsupported Operator is received" />
+                <Enumeration key="5" value="Invalid Operand" description="Normal response if Operand received does not meet the requirements of the service" />
+                <Enumeration key="6" value="No records found" description="Normal response if request to report stored records or request to delete stored records resulted in no records meeting criteria." />
+                <Enumeration key="7" value="Abort unsuccessful" description="Normal response if request for Abort cannot be completed" />
+                <Enumeration key="8" value="Procedure not completed" description="Normal response if unable to complete a procedure for any reason" />
+                <Enumeration key="9" value="Operand not supported" description="Normal response if unsupported Operand is received" />
+                <ReservedForFutureUse start="10" end="255" />
+            </AdditionalValues>
+        </Field>
+    </Value>
+    <Note>
+        The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet.
+    </Note>
+</Characteristic>

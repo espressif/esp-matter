@@ -1,0 +1,199 @@
+<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster xmlns:zcl="http://zigbee.org/zcl/clusters"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:type="http://zigbee.org/zcl/types"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd"
+  id="0501" revision="1" name="IASACE">
+  <classification role="application" picsCode="IASACE" primaryTransaction="1" />
+
+   <type:type short="IasaceAudibleNotification" name="IasaceAudibleNotification" id="30" inheritsFrom="enum8">
+    <restriction>
+      <type:enumeration name="Mute" value="00"/>
+      <type:enumeration name="DefaultSound" value="01"/>
+      <type:enumeratedRange name="ManufacturerSpecific" min="80" max="FF"/>
+    </restriction>
+  </type:type>
+  <type:type short="IasaceAlarmStatus" name="IasaceAlarmStatus" id="30" inheritsFrom="enum8">
+    <restriction>
+      <type:enumeration name="NoAlarm" value="00"/>
+      <type:enumeration name="Burgler" value="01"/>
+      <type:enumeration name="Fire" value="02"/>
+      <type:enumeration name="Emergency" value="03"/>
+      <type:enumeration name="PolicePanic" value="04"/>
+      <type:enumeration name="FirePanic" value="05"/>
+      <type:enumeration name="EmergencyPanic" value="06"/>
+    </restriction>
+  </type:type>
+  <type:type short="IasacPanelStatus" name="IasacePanelStatus" id="30" inheritsFrom="enum8">
+    <restriction>
+      <type:enumeration name="PanelDisarmedReadyToArm" value="00"/>
+      <type:enumeration name="ArmedStay" value="01"/>
+      <type:enumeration name="ArmedNight" value="02"/>
+      <type:enumeration name="ArmedAway" value="03"/>
+      <type:enumeration name="ExitDelay" value="04"/>
+      <type:enumeration name="EntryDelay" value="05"/>
+      <type:enumeration name="NotReadyToArm" value="06"/>
+      <type:enumeration name="InAlarm" value="07"/>
+      <type:enumeration name="ArmingStay" value="08"/>
+      <type:enumeration name="ArmingNight" value="09"/>
+      <type:enumeration name="ArmingAway" value="0A"/>
+    </restriction>
+  </type:type>
+  <type:type short="IasaceZoneStatusRecord" name="IasaceZoneStatusRecord" id="FF">
+    <restriction>
+      <type:sequence>
+        <field name="ZoneID" type="uint8" />
+        <field name="ZoneStatus" type="IasZoneStatus" />
+      </type:sequence>
+    </restriction>
+  </type:type>
+
+  <server>
+    <!-- This cluster defines no attributes.  -->
+    <commands>
+      <command id="00" name="Arm" required="true" >
+        <fields>
+          <field name="ArmMode" type="enum8">
+            <restriction>
+              <type:enumeration name="Disarm" value="00"/>
+              <type:enumeration name="ArmDayHomeZonesOnly" value="01"/>
+              <type:enumeration name="ArmNightSleepZonesOnly" value="02"/>
+              <type:enumeration name="ArmAllZones" value="03"/>
+            </restriction>
+          </field>
+          <field name="ArmDisarmCode" type="string" />
+          <field name="ZoneID" type="uint8" />
+        </fields>
+      </command>
+      <command id="01" name="Bypass" required="true" >
+         <fields>
+          <field name="ZoneID" type="uint8" array="true" />
+          <field name="ArmDisarmCode" type="string" />
+         </fields>
+      </command>
+      <command id="02" name="Emergency" required="true" />
+      <command id="03" name="Fire" required="true" />
+      <command id="04" name="Panic" required="true" />
+      <command id="05" name="GetZoneIDMap" required="true" />
+      <command id="06" name="GetZoneInformation" required="true" >
+        <fields>
+            <field name="ZoneID" type="uint8" />
+        </fields>
+      </command>
+      <command id="07" name="GetPanelStatus" required="true" />
+      <command id="08" name="GetBypassedZoneList" required="true" />
+      <command id="09" name="GetZoneStatus" required="true" >
+        <fields>
+          <field name="StartingZoneID" type="uint8" />
+          <field name="MaxNumberOfZoneIDs" type="uint8" />
+          <field name="ZoneStatusMaskFlag" type="bool" />
+          <field name="ZoneStatusMask" type="IasZoneStatus" />
+        </fields>
+      </command>
+    </commands>
+  </server>
+  <client>
+    <commands>
+      <command id="00" name="ArmResponse" required="true" >
+        <fields>
+          <field name="ArmNotification" type="enum8" >
+            <restriction>
+              <type:enumeration name="AllZonesDisarmed" value="00"/>
+              <type:enumeration name="OnlyDayHomeZonesArmed" value="01"/>
+              <type:enumeration name="OnlyNightSleepZonesArmed" value="02"/>
+              <type:enumeration name="AllZonesArmed" value="03"/>
+              <type:enumeration name="InvalidArmDisarmCode" value="04"/>
+              <type:enumeration name="NotReadyToArm" value="05"/>
+              <type:enumeration name="AlreadyDisarmed" value="06"/>
+            </restriction>
+          </field>
+        </fields>
+      </command>
+      <command id="01" name="GetZoneIDMapResponse" required="true" >
+        <fields>
+          <field name="ZoneIDMapSection00" type="map16" />
+          <field name="ZoneIDMapSection01" type="map16" />
+          <field name="ZoneIDMapSection02" type="map16" />
+          <field name="ZoneIDMapSection03" type="map16" />
+          <field name="ZoneIDMapSection04" type="map16" />
+          <field name="ZoneIDMapSection05" type="map16" />
+          <field name="ZoneIDMapSection06" type="map16" />
+          <field name="ZoneIDMapSection07" type="map16" />
+          <field name="ZoneIDMapSection08" type="map16" />
+          <field name="ZoneIDMapSection09" type="map16" />
+          <field name="ZoneIDMapSection10" type="map16" />
+          <field name="ZoneIDMapSection11" type="map16" />
+          <field name="ZoneIDMapSection12" type="map16" />
+          <field name="ZoneIDMapSection13" type="map16" />
+          <field name="ZoneIDMapSection14" type="map16" />
+          <field name="ZoneIDMapSection15" type="map16" />
+        </fields>
+      </command>
+      <command id="02" name="GetZoneInformationResponse" required="true" >
+        <fields>
+          <field name="ZoneID" type="uint8" />
+          <field name="ZoneType" type="IasZoneType" />
+          <field name="IEEEAddress" type="EUI64" />
+          <field name="ZoneLabel" type="string" />
+        </fields>
+      </command>
+      <command id="03" name="ZoneStatusChanged" required="true" >
+        <fields>
+          <field name="ZoneID" type="uint8" />
+          <field name="ZoneStatus" type="IasZoneStatus" />
+          <field name="AudibleNotification" type="IasaceAudibleNotification" />
+          <field name="ZoneLabel" type="string" />
+        </fields>
+      </command>
+      <command id="04" name="PanelStatusChanged" required="true" >
+        <fields>
+          <field name="PanelStatus" type="IasacPanelStatus" />
+          <field name="SecondsRemaining" type="uint8" />
+          <field name="AudibleNotification" type="IasaceAudibleNotification" />
+          <field name="AlarmStatus" type="IasaceAlarmStatus" />
+        </fields>
+      </command>
+      <command id="05" name="GetPanelStatusResponse" required="true" >
+        <fields>
+          <field name="PanelStatus" type="IasacPanelStatus" />
+          <field name="SecondsRemaining" type="uint8" />
+          <field name="AudibleNotification" type="IasaceAudibleNotification" />
+          <field name="AlarmStatus" type="IasaceAlarmStatus" />
+        </fields>
+      </command>
+      <command id="06" name="SetBypassedZoneList" required="true" >
+        <fields>
+          <field name="ZoneID" type="uint8" array="true" />
+        </fields>
+      </command>
+      <command id="07" name="BypassResponse" required="true" >
+        <fields>
+          <field name="ZoneIDBypassResult" type="uint8" array="true" >
+            <restriction>
+              <type:enumeration name="ZoneBypassed" value="00"/>
+              <type:enumeration name="ZoneNotBypassed" value="01"/>
+              <type:enumeration name="NotAllowed" value="02"/>
+              <type:enumeration name="InvalidZoneID" value="03"/>
+              <type:enumeration name="UnknownZoneID" value="04"/>
+              <type:enumeration name="InvalidArmDisarmCode" value="05"/>
+            </restriction>
+          </field>
+        </fields>
+      </command>
+      <command id="08" name="GetZoneStatusResponse" required="true" >
+        <fields>
+          <field name="ZoneStatusComplete" type="bool" />
+          <field name="ZoneStatusRecord" type="IasaceZoneStatusRecord" array="true" />
+        </fields>
+      </command>
+    </commands>
+  </client>
+</zcl:cluster>

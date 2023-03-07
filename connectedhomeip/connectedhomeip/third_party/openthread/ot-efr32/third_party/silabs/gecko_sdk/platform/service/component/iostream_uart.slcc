@@ -1,0 +1,44 @@
+id: iostream_uart
+label: "IO Stream: UART"
+package: platform
+description: IO Stream over Universal Asynchronous Receiver Transceiver (UART) communication protocol.
+category: Services|IO Stream
+quality: production
+instantiable:
+  prefix: inst
+root_path: platform/service/iostream
+config_file:
+  - path: "config/s0/sl_iostream_uart_{{instance}}_config.h"
+    file_id: iostream_uart_config
+    condition: [device_series_0]
+  - path: "config/s1/sl_iostream_uart_{{instance}}_config.h"
+    file_id: iostream_uart_config
+    condition: [device_series_1]
+provides:
+  - name: iostream_uart
+    allow_multiple: true
+  - name: iostream_transport
+    allow_multiple: true
+requires:
+  - name: iostream_uart_core
+  - name: device_series_0
+template_contribution:
+  - name: iostream_uart_instances
+    value: "{{instance}}"
+  - name: event_handler
+    value:
+      event: iostream_instance_init
+      include: sl_iostream_init_uart_instances.h
+      handler: sl_iostream_uart_init_instances
+  - name: iostream_instance_info
+    value:
+      include: sl_iostream_init_uart_instances.h
+      handler: "sl_iostream_instance_{{instance}}_info"
+  - name: power_manager_handler
+    value:
+      event: sleep_on_isr_exit
+      include: sl_iostream_init_uart_instances.h
+      handler: "sl_iostream_uart_{{instance}}_sleep_on_isr_exit"
+documentation:
+    docset: gecko-platform
+    document: service/api/group-iostream-usart

@@ -1,0 +1,26 @@
+id: psa_crypto_ecc_secp224r1
+package: platform
+label: secp224r1
+description: >-
+  This component adds support for the secp224r1 elliptic curve,
+  a 224-bit prime field Weierstrass curve, in PSA Crypto.
+category: Platform|Security|PSA Crypto|Elliptic Curves
+quality: production
+provides:
+  - name: psa_crypto_ecc_secp224r1
+  - name: psa_crypto_ecc_curve
+    allow_multiple: true
+requires:
+  - name: psa_crypto_ecc
+  - name: mbedtls_ecc_secp224r1
+    condition: [device_series_0]
+  - name: mbedtls_ecc_secp224r1
+    condition: [device_series_1]
+  - name: mbedtls_ecc_secp224r1
+    condition: [device_sdid_200]    
+template_contribution:
+  - name: psa_crypto_config
+    value: PSA_WANT_ECC_SECP_R1_224
+  - name: psa_crypto_config
+    value: "MBEDTLS_PSA_BUILTIN_ECC_SECP_R1_224 1"
+    condition: [mbedtls_ecc_secp224r1]

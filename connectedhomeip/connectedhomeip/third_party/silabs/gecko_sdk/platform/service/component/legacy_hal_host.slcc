@@ -1,0 +1,57 @@
+id: legacy_hal_host
+label: Legacy HAL Host
+package: platform
+category: Services
+quality: production
+ui_hints:
+  visibility: never
+description: Legacy Ember HAL for Linux/Mac/Windows host machines.
+provides:
+  - name: legacy_hal_host
+requires:
+  - name: component_catalog
+  - name: emlib_core
+source:
+  - path: "platform/service/legacy_hal/src/micro_host.c"
+    unless:
+      - zigbee_host_simulation
+  - path: "platform/service/legacy_hal/src/system-timer.c"
+    unless:
+      - zigbee_host_simulation
+  - path: "platform/service/legacy_hal/src/random.c"
+    unless:
+      - zigbee_host_simulation
+  - path: "platform/service/legacy_hal/src/crc.c"
+include:
+  - path: "platform/service/legacy_hal/inc/"
+    file_list:
+      - path: micro_host.h
+      - path: ember-printf-convert.h
+      - path: crc.h
+      - path: random.h
+      - path: platform-header.h
+      - path: hal.h
+      - path: hal/hal.h
+      - path: micro-common.h
+      - path: micro-types.h
+      - path: micro.h
+      - path: serial.h
+      - path: serial/serial.h
+      - path: led.h
+      - path: button.h
+      - path: em2xx-reset-defs.h
+define:
+  - name: "PLATFORM_HEADER"
+    value: "\"platform-header.h\""
+    unless:
+      - zigbee_host_simulation
+template_contribution:
+  # This should be included here but right now Zigbee seems to be hardcoding
+  # a call to halInit() so let's not do this twice.
+  # - name: event_handler
+  #   value:
+  #     event: platform_init
+  #     include: hal.h
+  #     handler: halInit
+  - name: component_catalog
+    value: legacy_hal_host

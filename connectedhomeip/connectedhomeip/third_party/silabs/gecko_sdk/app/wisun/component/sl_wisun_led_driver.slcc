@@ -1,0 +1,33 @@
+id: "sl_wisun_led_driver"
+label: "LED driver"
+package: "wisun"
+description: "Provides thread safe messageque based LED driver with periodical signals"
+category: "Wi-SUN"
+quality: "production"
+root_path: "app/wisun/component/led_driver"
+provides:
+  - name: sl_wisun_led_driver
+
+source:
+  - path: "sl_wisun_led_driver.c"
+
+include:
+  - path: "."
+    file_list:
+    - "path": "sl_wisun_led_driver.h"
+
+requires:
+  - name: simple_led
+
+ui_hints:
+  visibility: never
+#-------------- Template Contribution ----------------
+template_contribution:
+  - name: "event_handler"
+    value:
+      event: "internal_app_init"
+      include: "sl_wisun_led_driver.h"
+      handler: "sl_wisun_led_driver_init"
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: wisun_led_driver

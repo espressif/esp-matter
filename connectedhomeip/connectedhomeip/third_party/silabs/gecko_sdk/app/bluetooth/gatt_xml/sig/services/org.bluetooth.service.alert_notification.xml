@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Service xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Alert Notification Service" type="org.bluetooth.service.alert_notification" uuid="1811">
+	<InformativeText>
+     <Abstract>
+            Alert Notification service exposes:
+            - The different types of alerts with the short text messages.
+            - The information how many count of new alert messages.
+            - The information how many count of unread alerts.
+		</Abstract>
+        <Summary>            
+            The Alert Notification service exposes alert information in a device.  This information includes the following:
+            - Type of alert occuring in a device.
+            - Additional text information such as caller ID or sender ID
+            - Count of new alerts.
+            - Count of unread alert items.
+        </Summary>
+	</InformativeText>
+	<Dependencies>
+		<Dependency>This service has no dependencies on other GATT-based services.</Dependency>
+	</Dependencies>
+	<GATTRequirements>
+		<Requirement subProcedure="Write Characteristic Value">Mandatory</Requirement>
+        <Requirement subProcedure="Notification">Mandatory</Requirement>
+        <Requirement subProcedure="Read Characteristic Descriptors">Mandatory</Requirement>
+        <Requirement subProcedure="Write Characteristic Descriptors">Mandatory</Requirement>
+	</GATTRequirements>
+	<Transports>
+		<Classic>false</Classic>
+		<LowEnergy>true</LowEnergy>
+	</Transports>
+	<ErrorCodes>
+        <ErrorCode code="0xA0" name="Command not supported"></ErrorCode>
+	</ErrorCodes>
+	<Characteristics>
+		<Characteristic name="Supported New Alert Category" type="org.bluetooth.characteristic.supported_new_alert_category">
+            <InformativeText>This characteristic exposes what categories of new alert are supported in the server.</InformativeText>
+			<Requirement>Mandatory</Requirement>
+			<Properties>
+				<Read>Mandatory</Read>
+				<Write>Excluded</Write>
+				<WriteWithoutResponse>Excluded</WriteWithoutResponse>
+				<SignedWrite>Excluded</SignedWrite>
+				<ReliableWrite>Excluded</ReliableWrite>
+				<Notify>Excluded</Notify>
+				<Indicate>Excluded</Indicate>
+				<WritableAuxiliaries>Excluded</WritableAuxiliaries>
+				<Broadcast>Excluded</Broadcast>
+			</Properties>
+         </Characteristic>
+        
+        <Characteristic name="New Alert" type="org.bluetooth.characteristic.new_alert">
+			<InformativeText>This characteristic exposes information about the count of new alerts (for a given category).</InformativeText>	
+			<Requirement>Mandatory</Requirement>
+			<Properties>
+				<Read>Excluded</Read>
+				<Write>Excluded</Write>
+				<WriteWithoutResponse>Excluded</WriteWithoutResponse>
+				<SignedWrite>Excluded</SignedWrite>
+				<ReliableWrite>Excluded</ReliableWrite>
+				<Notify>Mandatory</Notify>
+				<Indicate>Excluded</Indicate>
+				<WritableAuxiliaries>Excluded</WritableAuxiliaries>
+				<Broadcast>Excluded</Broadcast>
+			</Properties>
+            <Descriptors>
+                <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+                    <Requirement>Mandatory</Requirement>
+                    <Properties>
+                    <Read>Mandatory</Read>
+                    <Write>Mandatory</Write>
+                    </Properties>
+                </Descriptor>
+           </Descriptors>
+		</Characteristic>
+        
+         <Characteristic name="Supported Unread Alert Category" type="org.bluetooth.characteristic.supported_unread_alert_category">
+			<InformativeText>This characteristic exposes what categories of unread alert are supported in the server.</InformativeText>
+			<Requirement>Mandatory</Requirement>
+			<Properties>
+				<Read>Mandatory</Read>
+				<Write>Excluded</Write>
+				<WriteWithoutResponse>Excluded</WriteWithoutResponse>
+				<SignedWrite>Excluded</SignedWrite>
+				<ReliableWrite>Excluded</ReliableWrite>
+				<Notify>Excluded</Notify>
+				<Indicate>Excluded</Indicate>
+				<WritableAuxiliaries>Excluded</WritableAuxiliaries>
+				<Broadcast>Excluded</Broadcast>
+			</Properties>
+            
+         </Characteristic>
+        
+         <Characteristic name="Unread Alert Status" type="org.bluetooth.characteristic.unread_alert_status">
+			<InformativeText>This characteristic exposes the count of unread alert events existing in the server</InformativeText>
+			<Requirement>Mandatory</Requirement>
+			<Properties>
+				<Read>Excluded</Read>
+				<Write>Excluded</Write>
+				<WriteWithoutResponse>Excluded</WriteWithoutResponse>
+				<SignedWrite>Excluded</SignedWrite>
+				<ReliableWrite>Excluded</ReliableWrite>
+				<Notify>Mandatory</Notify>
+				<Indicate>Excluded</Indicate>
+				<WritableAuxiliaries>Excluded</WritableAuxiliaries>
+				<Broadcast>Excluded</Broadcast>
+			</Properties>
+            <Descriptors>
+                <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+                    <Requirement>Mandatory</Requirement>
+                    <Properties>
+                    <Read>Mandatory</Read>
+                    <Write>Mandatory</Write>
+                    </Properties>
+                </Descriptor>
+           </Descriptors>
+         </Characteristic>
+        
+        <Characteristic name="Alert Notification Control Point" type="org.bluetooth.characteristic.alert_notification_control_point">
+			<InformativeText>This characteristic allows the peer device to enable/disable the alert notification of new alert and unread event more selectively than can be done by setting or clearing the notification bit in the Client Characteristic Configuration for each alert characteristic.</InformativeText>
+			<Requirement>Mandatory</Requirement>
+			<Properties>
+				<Read>Excluded</Read>
+				<Write>Mandatory</Write>
+				<WriteWithoutResponse>Excluded</WriteWithoutResponse>
+				<SignedWrite>Excluded</SignedWrite>
+				<ReliableWrite>Excluded</ReliableWrite>
+				<Notify>Excluded</Notify>
+				<Indicate>Excluded</Indicate>
+				<WritableAuxiliaries>Excluded</WritableAuxiliaries>
+				<Broadcast>Excluded</Broadcast>
+			</Properties>
+         </Characteristic>
+	</Characteristics>
+</Service>

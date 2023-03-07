@@ -1,0 +1,29 @@
+id: cslib_acmp
+label: "ACMP Capacitive Sensing Framework"
+package: platform
+description: "Capacitive sensing using CSLIB and ACMP peripheral"
+category: Platform|Middleware
+quality: production
+root_path: platform/middleware/cslib
+source:
+  - path: src/device_ACMP/hardware_config.c
+  - path: src/device_ACMP/hardware_routines.c
+  - path: src/device_ACMP/low_power_config.c
+  - path: src/app/cslib_config.c
+include:
+  - path: inc
+    file_list:
+    - path: cslib.h
+  - path: src/device_ACMP
+    file_list:
+    - path: hardware_routines.h
+    - path: low_power_config.h
+  - path: src/config_ACMP
+    file_list:
+    - path: cslib_hwconfig.h
+config_file:
+  - path: src/config_ACMP/cslib_config.h
+requires:
+  - name: cslib
+  - name: device_has_acmp
+

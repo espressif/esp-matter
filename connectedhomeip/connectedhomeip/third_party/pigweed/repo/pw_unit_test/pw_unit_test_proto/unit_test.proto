@@ -1,0 +1,92 @@
+// Copyright 2020 The Pigweed Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not
+// use this file except in compliance with the License. You may obtain a copy of
+// the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations under
+// the License.
+
+syntax = "proto3";
+
+package pw.unit_test;
+
+message TestCaseDescriptor {
+  // Name of the test suite to which this test case belongs.
+  string suite_name = 1;
+
+  // Name of the test case.
+  string test_name = 2;
+
+  // Path to the file in which the test case is defined.
+  string file_name = 3;
+}
+
+message TestCaseExpectation {
+  // The source code for the expression which was run.
+  string expression = 1;
+
+  // The expression with arguments evaluated.
+  string evaluated_expression = 2;
+
+  // Line number at which the expectation is located.
+  uint32 line_number = 3;
+
+  // Whether the expectation succeeded.
+  bool success = 4;
+}
+
+enum TestCaseResult {
+  SUCCESS = 0;
+  FAILURE = 1;
+  SKIPPED = 2;
+}
+
+message TestRunStart {}
+
+message TestRunEnd {
+  uint32 passed = 1;
+  uint32 failed = 2;
+  uint32 skipped = 3;
+  uint32 disabled = 4;
+}
+
+message Event {
+  oneof type {
+    // Unit test run has started.
+    TestRunStart test_run_start = 1;
+
+    // Unit test run has ended.
+    TestRunEnd test_run_end = 2;
+
+    // Start of a test case.
+    TestCaseDescriptor test_case_start = 3;
+
+    // End of a test case.
+    TestCaseResult test_case_end = 4;
+
+    // Encountered a disabled test case.
+    TestCaseDescriptor test_case_disabled = 5;
+
+    // Expectation statement within a test case.
+    TestCaseExpectation test_case_expectation = 6;
+  }
+};
+
+message TestRunRequest {
+  // Whether to send expectation events for successful checks.
+  bool report_passed_expectations = 1;
+
+  // Optional list of test suites to run.
+  repeated string test_suite = 2;
+}
+
+service UnitTest {
+  // Runs registered unit tests, streaming back test events as they occur.
+  rpc Run(TestRunRequest) returns (stream Event) {}
+}

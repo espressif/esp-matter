@@ -1,0 +1,103 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_malloc/backend.gni")
+import("$dir_pw_system/system_target.gni")
+import("$dir_pw_third_party/stm32cube/stm32cube.gni")
+import("$dir_pw_tokenizer/backend.gni")
+import("$dir_pw_toolchain/generate_toolchain.gni")
+
+config("pw_malloc_active") {
+  if (pw_malloc_BACKEND != "") {
+    defines = [ "PW_MALLOC_ACTIVE=1" ]
+  }
+}
+
+if (current_toolchain != default_toolchain) {
+  pw_source_set("pre_init") {
+    configs = [ ":pw_malloc_active" ]
+    deps = [
+      "$dir_pw_boot",
+      "$dir_pw_boot_cortex_m",
+      "$dir_pw_malloc",
+      "$dir_pw_preprocessor",
+      "$dir_pw_string",
+      "$dir_pw_sys_io_stm32cube",
+      "$dir_pw_system",
+      "$dir_pw_third_party/freertos",
+      "$dir_pw_third_party/stm32cube",
+    ]
+    sources = [
+      "boot.cc",
+      "vector_table.c",
+    ]
+  }
+
+  config("config_includes") {
+    include_dirs = [ "config" ]
+  }
+
+  pw_source_set("stm32f4xx_hal_config") {
+    public_configs = [ ":config_includes" ]
+    public = [ "config/stm32f4xx_hal_conf.h" ]
+  }
+
+  pw_source_set("stm32f4xx_freertos_config") {
+    public_configs = [ ":config_includes" ]
+    public_deps = [ "$dir_pw_third_party/freertos:config_assert" ]
+    public = [ "config/FreeRTOSConfig.h" ]
+  }
+}
+
+pw_system_target("stm32f429i_disc1_stm32cube") {
+  cpu = PW_SYSTEM_CPU.CORTEX_M4F
+  scheduler = PW_SYSTEM_SCHEDULER.FREERTOS
+
+  link_deps = [ "$dir_pigweed/targets/stm32f429i_disc1_stm32cube:pre_init" ]
+  build_args = {
+    pw_log_BACKEND = dir_pw_log_tokenized
+    pw_tokenizer_GLOBAL_HANDLER_WITH_PAYLOAD_BACKEND =
+        "$dir_pw_system:log_backend.impl"
+    pw_third_party_freertos_CONFIG = "$dir_pigweed/targets/stm32f429i_disc1_stm32cube:stm32f4xx_freertos_config"
+    pw_third_party_freertos_PORT = "$dir_pw_third_party/freertos:arm_cm4f"
+    pw_sys_io_BACKEND = dir_pw_sys_io_stm32cube
+    dir_pw_third_party_stm32cube = dir_pw_third_party_stm32cube_f4
+    pw_third_party_stm32cube_PRODUCT = "STM32F429xx"
+    pw_third_party_stm32cube_CONFIG =
+        "$dir_pigweed/targets/stm32f429i_disc1_stm32cube:stm32f4xx_hal_config"
+    pw_third_party_stm32cube_CORE_INIT = ""
+    pw_boot_cortex_m_LINK_CONFIG_DEFINES = [
+      "PW_BOOT_FLASH_BEGIN=0x08000200",
+      "PW_BOOT_FLASH_SIZE=2048K",
+
+      # TODO(b/235348465): Currently "pw_tokenizer/detokenize_test" requires at
+      # least 6K bytes in heap when using pw_malloc_freelist. The heap size
+      # required for tests should be investigated.
+      "PW_BOOT_HEAP_SIZE=7K",
+      "PW_BOOT_MIN_STACK_SIZE=1K",
+      "PW_BOOT_RAM_BEGIN=0x20000000",
+      "PW_BOOT_RAM_SIZE=192K",
+      "PW_BOOT_VECTOR_TABLE_BEGIN=0x08000000",
+      "PW_BOOT_VECTOR_TABLE_SIZE=512",
+    ]
+  }
+}
+
+pw_doc_group("target_docs") {
+  sources = [ "target_docs.rst" ]
+}

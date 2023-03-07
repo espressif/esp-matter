@@ -1,0 +1,18 @@
+id: iot_default_root_certificates
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|C SDK
+label: IoT Default Root Certificates
+description: C SDK Default Root Certificates Headers.
+
+package: amazon_platform
+quality: production
+
+provides:
+  - name: iot_default_root_certificates
+
+root_path: util/third_party/aws_iot_libs
+
+include:
+  - path: libraries/c_sdk/standard/common/include/private
+    file_list:
+      - path: iot_default_root_certificates.h

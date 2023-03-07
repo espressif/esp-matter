@@ -1,0 +1,129 @@
+#include "em_device.h"
+#include "sl_iostream.h"
+#include "sl_iostream_uart.h"
+#include "sl_iostream_eusart.h"
+// Include instance config {# Include instance config #}
+{% for instance in iostream_eusart_instances %} #include "sl_iostream_eusart_{{ instance }}_config.h"
+{% endfor %}
+// MACROs for generating name and IRQ handler function  {# MACROs for generating name and IRQ handler function #}
+#define SL_IOSTREAM_EUSART_CONCAT_PASTER(first, second, third)        first ##  second ## third
+#if defined(EUART_COUNT) && (EUART_COUNT > 0)
+#define SL_IOSTREAM_EUSART_TX_IRQ_NUMBER(periph_nbr)     SL_IOSTREAM_EUSART_CONCAT_PASTER(EUART, periph_nbr, _TX_IRQn)   {# Create IRQ number #}
+#define SL_IOSTREAM_EUSART_RX_IRQ_NUMBER(periph_nbr)     SL_IOSTREAM_EUSART_CONCAT_PASTER(EUART, periph_nbr, _RX_IRQn)   {# Create IRQ number #}
+#define SL_IOSTREAM_EUSART_TX_IRQ_HANDLER(periph_nbr)    SL_IOSTREAM_EUSART_CONCAT_PASTER(EUART, periph_nbr, _TX_IRQHandler)  {# Create IRQ Handler function name#}
+#define SL_IOSTREAM_EUSART_RX_IRQ_HANDLER(periph_nbr)    SL_IOSTREAM_EUSART_CONCAT_PASTER(EUART, periph_nbr, _RX_IRQHandler)  {# Create IRQ Handler function name#}
+#else
+#define SL_IOSTREAM_EUSART_TX_IRQ_NUMBER(periph_nbr)     SL_IOSTREAM_EUSART_CONCAT_PASTER(EUSART, periph_nbr, _TX_IRQn)   {# Create IRQ number #}
+#define SL_IOSTREAM_EUSART_RX_IRQ_NUMBER(periph_nbr)     SL_IOSTREAM_EUSART_CONCAT_PASTER(EUSART, periph_nbr, _RX_IRQn)   {# Create IRQ number #}
+#define SL_IOSTREAM_EUSART_TX_IRQ_HANDLER(periph_nbr)    SL_IOSTREAM_EUSART_CONCAT_PASTER(EUSART, periph_nbr, _TX_IRQHandler)  {# Create IRQ Handler function name#}
+#define SL_IOSTREAM_EUSART_RX_IRQ_HANDLER(periph_nbr)    SL_IOSTREAM_EUSART_CONCAT_PASTER(EUSART, periph_nbr, _RX_IRQHandler)  {# Create IRQ Handler function name#}
+#endif
+
+#if defined(EUART_COUNT) && (EUART_COUNT > 0)
+#define SL_IOSTREAM_EUSART_CLOCK_REF(periph_nbr)         SL_IOSTREAM_EUSART_CONCAT_PASTER(cmuClock_, EUART, periph_nbr)  {# Create clock reference #}
+#else
+#define SL_IOSTREAM_EUSART_CLOCK_REF(periph_nbr)         SL_IOSTREAM_EUSART_CONCAT_PASTER(cmuClock_, EUSART, periph_nbr)  {# Create clock reference #}
+#endif
+
+{% for instance in iostream_eusart_instances %}
+sl_status_t sl_iostream_eusart_init_{{ instance }}(void);
+{% endfor %}
+
+// Instance(s) handle and context variable {# Generate iostream handle and context variable(s) #}
+{% for instance in iostream_eusart_instances %}static sl_iostream_uart_t sl_iostream_{{ instance }};
+sl_iostream_t *sl_iostream_{{ instance }}_handle = &sl_iostream_{{ instance }}.stream;
+sl_iostream_uart_t *sl_iostream_uart_{{ instance }}_handle = &sl_iostream_{{ instance }};
+static sl_iostream_eusart_context_t  context_{{ instance }};
+static uint8_t  rx_buffer_{{ instance }}[SL_IOSTREAM_EUSART_{{ instance | upper }}_RX_BUFFER_SIZE];
+sl_iostream_instance_info_t sl_iostream_instance_{{ instance }}_info = {
+  .handle = &sl_iostream_{{ instance }}.stream,
+  .name = "{{ instance }}",
+  .type = SL_IOSTREAM_TYPE_UART,
+  .periph_id = SL_IOSTREAM_EUSART_{{ instance | upper }}_PERIPHERAL_NO,
+  .init = sl_iostream_eusart_init_{{ instance }},
+};
+{% endfor %}
+
+{% for instance in iostream_eusart_instances %}
+sl_status_t sl_iostream_eusart_init_{{ instance }}(void)
+{
+  sl_status_t status;
+#if (SL_IOSTREAM_EUSART_{{ instance | upper }}_ENABLE_HIGH_FREQUENCY == 0)
+  EUSART_UartInit_TypeDef init_{{ instance }} = EUSART_UART_INIT_DEFAULT_LF;
+#else
+  EUSART_UartInit_TypeDef init_{{ instance }} = EUSART_UART_INIT_DEFAULT_HF;
+#endif
+  init_{{ instance }}.baudrate = SL_IOSTREAM_EUSART_{{ instance | upper }}_BAUDRATE;
+  init_{{ instance }}.parity = SL_IOSTREAM_EUSART_{{ instance | upper }}_PARITY;
+  init_{{ instance }}.stopbits = SL_IOSTREAM_EUSART_{{ instance | upper }}_STOP_BITS;
+
+  sl_iostream_eusart_config_t config_{{ instance }} = { {# create init struct #}
+    .eusart = SL_IOSTREAM_EUSART_{{ instance | upper }}_PERIPHERAL,
+    .flow_control = SL_IOSTREAM_EUSART_{{ instance | upper }}_FLOW_CONTROL_TYPE,
+    .enable_high_frequency = SL_IOSTREAM_EUSART_{{ instance | upper }}_ENABLE_HIGH_FREQUENCY,
+    .clock = SL_IOSTREAM_EUSART_CLOCK_REF(SL_IOSTREAM_EUSART_{{ instance | upper }}_PERIPHERAL_NO),
+#if defined(EUSART_COUNT) && (EUSART_COUNT > 1)
+    .port_index = SL_IOSTREAM_EUSART_{{ instance | upper }}_PERIPHERAL_NO,
+#endif
+    .tx_port = SL_IOSTREAM_EUSART_{{ instance | upper }}_TX_PORT,
+    .tx_pin = SL_IOSTREAM_EUSART_{{ instance | upper }}_TX_PIN,
+    .rx_port = SL_IOSTREAM_EUSART_{{ instance | upper }}_RX_PORT,
+    .rx_pin = SL_IOSTREAM_EUSART_{{ instance | upper }}_RX_PIN,
+#if defined(SL_IOSTREAM_EUSART_{{ instance | upper }}_CTS_PORT)
+    .cts_port = SL_IOSTREAM_EUSART_{{ instance | upper }}_CTS_PORT,
+    .cts_pin = SL_IOSTREAM_EUSART_{{ instance | upper }}_CTS_PIN,
+#endif
+#if defined(SL_IOSTREAM_EUSART_{{ instance | upper }}_RTS_PORT)
+    .rts_port = SL_IOSTREAM_EUSART_{{ instance | upper }}_RTS_PORT,
+    .rts_pin = SL_IOSTREAM_EUSART_{{ instance | upper }}_RTS_PIN,
+#endif
+  };
+  sl_iostream_uart_config_t uart_config_{{ instance }} = {
+    .tx_irq_number = SL_IOSTREAM_EUSART_TX_IRQ_NUMBER(SL_IOSTREAM_EUSART_{{ instance | upper }}_PERIPHERAL_NO),
+    .rx_irq_number = SL_IOSTREAM_EUSART_RX_IRQ_NUMBER(SL_IOSTREAM_EUSART_{{ instance | upper }}_PERIPHERAL_NO),
+    .rx_buffer = rx_buffer_{{ instance }},
+    .rx_buffer_length = SL_IOSTREAM_EUSART_{{ instance | upper }}_RX_BUFFER_SIZE,
+    .lf_to_crlf = SL_IOSTREAM_EUSART_{{ instance | upper }}_CONVERT_BY_DEFAULT_LF_TO_CRLF,
+    .rx_when_sleeping = SL_IOSTREAM_EUSART_{{ instance | upper }}_RESTRICT_ENERGY_MODE_TO_ALLOW_RECEPTION,
+  };
+
+  // Instantiate eusart instance {# Initialize eusart instance #}
+  status = sl_iostream_eusart_init(&sl_iostream_{{ instance }},
+                                  &uart_config_{{ instance }},
+                                  &init_{{ instance }},
+                                  &config_{{ instance }},
+                                  &context_{{ instance }});
+  EFM_ASSERT(status == SL_STATUS_OK);
+
+  return status;
+}
+{% endfor %}
+
+{# Init function #}
+void sl_iostream_eusart_init_instances(void)
+{
+  // Instantiate eusart instance(s) {# Initialize eusart instance(s) #}
+  {% for instance in iostream_eusart_instances %}
+  sl_iostream_eusart_init_{{ instance }}();
+  {% endfor %}
+}
+
+{% for instance in iostream_eusart_instances %}
+void SL_IOSTREAM_EUSART_TX_IRQ_HANDLER(SL_IOSTREAM_EUSART_{{ instance | upper }}_PERIPHERAL_NO)(void)
+{
+  sl_iostream_eusart_irq_handler(sl_iostream_{{ instance }}.stream.context);
+}
+
+void SL_IOSTREAM_EUSART_RX_IRQ_HANDLER(SL_IOSTREAM_EUSART_{{ instance | upper }}_PERIPHERAL_NO)(void)
+{
+  sl_iostream_eusart_irq_handler(sl_iostream_{{ instance }}.stream.context);
+}{% endfor %}
+
+#if defined(SL_CATALOG_POWER_MANAGER_PRESENT) && !defined(SL_CATALOG_KERNEL_PRESENT)
+{% for instance in iostream_eusart_instances %} {# Create IRQ Handler(s) #}
+sl_power_manager_on_isr_exit_t sl_iostream_eusart_{{ instance }}_sleep_on_isr_exit(void)
+{
+  return sl_iostream_uart_sleep_on_isr_exit(&sl_iostream_{{ instance }});
+}
+{% endfor %}
+#endif

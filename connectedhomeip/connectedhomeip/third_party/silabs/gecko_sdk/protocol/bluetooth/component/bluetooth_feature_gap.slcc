@@ -1,0 +1,20 @@
+id: "bluetooth_feature_gap"
+label: "GAP"
+package: "Bluetooth"
+description: >
+  This component provides commands for users to set data channel
+  classification, enable or disable the privacy mode and accept list filtering
+  features. In the privacy mode, the address resolving functionality is provided
+  by the Bluetooth host. As a result, the accept list filtering does not work
+  with advertisers that use resolvable private addresses (RPA). RPA addresses
+  may be rejected by the filtering since they are unknown to the controller.
+category: "Bluetooth|Stack"
+quality: "production"
+root_path: "protocol/bluetooth"
+requires:
+  - name: "bluetooth_stack"
+provides:
+  - name: "bluetooth_feature_gap"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_gap

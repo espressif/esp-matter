@@ -1,0 +1,130 @@
+%%{
+/*
+ * Copyright (c) 2018-2021, Texas Instruments Incorporated - http://www.ti.com
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+
+/*
+ *  ======== I2CCC26XX.Board.c.xdt ========
+ */
+
+    /* passed by /ti/drivers/templates/Board.c.xdt */
+    let I2C = args[0];
+    let instances = I2C.$instances;
+    if (instances.length == 0) return;
+
+    /* get ti/drivers common utility functions */
+    let Common = system.getScript("/ti/drivers/Common.js");
+
+    let declarations = Common.genBoardDeclarations(instances);
+
+    /* CONFIG_XXXCOUNT string, derived from defaultInstanceName */
+    let countDef = I2C.defaultInstanceName + "COUNT";
+%%}
+/*
+ *  =============================== I2C ===============================
+ */
+
+#include <ti/drivers/I2C.h>
+#include <ti/drivers/i2c/I2CCC26XX.h>
+#include <ti/drivers/power/PowerCC26XX.h>
+
+#include <ti/devices/DeviceFamily.h>
+#include DeviceFamily_constructPath(inc/hw_ints.h)
+#include DeviceFamily_constructPath(inc/hw_memmap.h)
+#include DeviceFamily_constructPath(driverlib/ioc.h)
+
+#define `countDef` `instances.length`
+
+/*
+ *  ======== i2cCC26xxObjects ========
+ */
+I2CCC26XX_Object i2cCC26xxObjects[`countDef`];
+
+/*
+ *  ======== i2cCC26xxHWAttrs ========
+ */
+const I2CCC26XX_HWAttrsV1 i2cCC26xxHWAttrs[`countDef`] = {
+% for (let i = 0; i < instances.length; i++) {
+    % let inst = instances[i];
+    % let hwName = inst.i2c.$solution.peripheralName;
+    % let peripheral = system.deviceData.peripherals[hwName];
+    % /* Get the index of the instance by extracting the last character */
+    % let index = peripheral.name.slice(peripheral.name.length - 1);
+    %
+    % let mux_name;
+    % if (index == 0) {
+    %    mux_name = "IOC_PORT_MCU_I2C";
+    % } else {
+    %    mux_name = "IOC_PORT_MCU_I2C" + index;
+    % }
+    %
+    /* `inst.$name` */
+    % if (inst.$hardware) {
+    %    if (inst.$hardware.displayName) {
+    /* `inst.$hardware.displayName` */
+    %    }
+    % }
+    {
+        .baseAddr    = `hwName`_BASE,
+        .powerMngrId = PowerCC26XX_PERIPH_`hwName`,
+        .intNum      = INT_I2C_IRQ,
+        .intPriority = `Common.intPriority2Hex(inst.interruptPriority)`,
+        .swiPriority = `Common.swiPriority2Int(inst.softwareInterruptPriority)`,
+        .sclPin      = `inst.sclPinInstance.$name`,
+        .sclPinMux   = `mux_name`_MSSCL,
+        .sdaPin      = `inst.sdaPinInstance.$name`,
+        .sdaPinMux   = `mux_name`_MSSDA
+    },
+% }
+};
+
+/*
+ *  ======== I2C_config ========
+ */
+const I2C_Config I2C_config[`countDef`] = {
+% for (let i = 0; i < instances.length; i++) {
+    % let inst = instances[i];
+    /* `inst.$name` */
+    % if (inst.$hardware) {
+    %    if (inst.$hardware.displayName) {
+    /* `inst.$hardware.displayName` */
+    %    }
+    % }
+    {
+        .object      = &i2cCC26xxObjects[`inst.$name`],
+        .hwAttrs     = &i2cCC26xxHWAttrs[`inst.$name`]
+    },
+% }
+};
+
+`declarations`
+const uint_least8_t I2C_count = `countDef`;

@@ -1,0 +1,93 @@
+digraph Model
+{
+    graph[rankdir=LR]
+
+    // mod.$name=/ti/devices/DriverLib
+
+    // mod.$name=/ti/display/Display
+    CONFIG_Display_0 -> ti_drivers_Board
+    CONFIG_Display_0 -> CONFIG_UART_0
+
+    // mod.$name=/ti/dpl/Settings
+
+    // mod.$name=/ti/drivers/Board
+    ti_drivers_Board -> ti_drivers_GPIO
+    ti_drivers_Board -> ti_devices_DriverLib
+    ti_drivers_Board -> ti_dpl_Settings
+
+    // mod.$name=/ti/drivers/Crypto
+    CONFIG_Crypto_0 -> ti_drivers_Power
+    CONFIG_Crypto_0 -> ti_drivers_Board
+
+    // mod.$name=/ti/drivers/DMA
+    ti_drivers_DMA -> ti_drivers_Board
+
+    // mod.$name=/ti/drivers/GPIO
+
+    // mod.$name=/ti/drivers/Power
+    ti_drivers_Power -> ti_drivers_Board
+    ti_drivers_Power -> ti_drivers_power_PowerCC32XXPins0
+
+    // mod.$name=/ti/drivers/SPI
+    ti_drivers_SPI -> ti_drivers_DMA
+    ti_drivers_SPI -> ti_drivers_Power
+    ti_drivers_SPI -> ti_drivers_Board
+    ti_drivers_SPI -> CONFIG_NWP_SPI
+    CONFIG_SPI_0 -> ti_drivers_DMA
+    CONFIG_SPI_0 -> ti_drivers_Power
+    CONFIG_SPI_0 -> ti_drivers_Board
+
+    // mod.$name=/ti/drivers/Timer
+    CONFIG_TIMER_0 -> ti_drivers_Power
+    CONFIG_TIMER_0 -> ti_drivers_Board
+    CONFIG_TIMER_1 -> ti_drivers_Power
+    CONFIG_TIMER_1 -> ti_drivers_Board
+    CONFIG_TIMER_2 -> ti_drivers_Power
+    CONFIG_TIMER_2 -> ti_drivers_Board
+
+    // mod.$name=/ti/drivers/UART
+    CONFIG_UART_0 -> ti_drivers_DMA
+    CONFIG_UART_0 -> ti_drivers_Power
+    CONFIG_UART_0 -> ti_drivers_Board
+
+    // mod.$name=/ti/drivers/Watchdog
+    CONFIG_WATCHDOG_0 -> ti_drivers_Power
+    CONFIG_WATCHDOG_0 -> ti_drivers_Board
+
+    // mod.$name=/ti/drivers/net/wifi/SimpleLinkWifi
+
+    // mod.$name=/ti/drivers/net/wifi/atcmd
+    CONFIG_ATCMD_0 -> ti_drivers_net_wifi_atcmd
+    CONFIG_ATCMD_0 -> ti_utils_runtime_GetLibs
+
+    // mod.$name=/ti/drivers/net/wifi/net_utils
+    CONFIG_NET_UTILS_0 -> ti_drivers_net_wifi_net_utils
+    CONFIG_NET_UTILS_0 -> ti_utils_runtime_GetLibs
+
+    // mod.$name=/ti/drivers/net/wifi/ota
+    CONFIG_OTALib_0 -> ti_drivers_net_wifi_ota
+    CONFIG_OTALib_0 -> ti_utils_runtime_GetLibs
+
+    // mod.$name=/ti/drivers/power/PowerCC32XXPins
+
+    // mod.$name=/ti/drivers/spi/SPICC32XXNWP
+
+    // mod.$name=/ti/net/MQTT
+    CONFIG_MQTT_0 -> ti_net_SlNet
+    CONFIG_MQTT_0 -> ti_utils_runtime_GetLibs
+
+    // mod.$name=/ti/net/SNTP
+    ti_net_SNTP -> ti_net_SlNet
+    ti_net_SNTP -> ti_utils_runtime_GetLibs
+
+    // mod.$name=/ti/net/SlNet
+    CONFIG_SLNET -> ti_utils_runtime_GetLibs
+
+    // mod.$name=/ti/utils/JSON
+    ti_utils_JSON -> ti_utils_runtime_GetLibs
+
+    // mod.$name=/ti/utils/build/GenLibs
+
+    // mod.$name=/ti/utils/runtime/GetLibs
+    ti_utils_runtime_GetLibs -> ti_utils_build_GenLibs
+}

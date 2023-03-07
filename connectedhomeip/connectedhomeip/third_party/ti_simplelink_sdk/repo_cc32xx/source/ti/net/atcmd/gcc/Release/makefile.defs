@@ -1,0 +1,66 @@
+
+SIMPLELINK_CC32XX_SDK_INSTALL_DIR ?= $(abspath ../../../../../..)
+
+include $(SIMPLELINK_CC32XX_SDK_INSTALL_DIR)/imports.mak
+
+ROOT=$(SIMPLELINK_CC32XX_SDK_INSTALL_DIR)/source/ti/net/atcmd
+
+#
+# Source path
+#
+VPATH = $(ROOT)
+
+CC = "$(GCC_ARMCOMPILER)/bin/arm-none-eabi-gcc"
+AR = "$(GCC_ARMCOMPILER)/bin/arm-none-eabi-ar"
+
+STDINC = "$(GCC_ARMCOMPILER)/include"
+
+#
+# Include path
+#
+IPATH  = -I$(ROOT)
+IPATH += -I$(ROOT)/../../../
+IPATH += -I$(ROOT)/../../drivers/net/wifi
+IPATH += -I$(SIMPLELINK_CC32XX_SDK_INSTALL_DIR)/source/ti/posix/gcc
+ifdef COM_TI_SIMPLELINK_MSP432_SDK_INSTALL_DIR
+IPATH += -I$(COM_TI_SIMPLELINK_MSP432_SDK_INSTALL_DIR)/source
+endif
+IPATH += -I$(STDINC)
+
+CFLAGS = -O2 -std=c99 -c -Wunused -Wunknown-pragmas -ffunction-sections -fdata-sections -mcpu=cortex-m4 -mthumb -mabi=aapcs $(IPATH)
+ifdef COM_TI_SIMPLELINK_MSP432_SDK_INSTALL_DIR
+CFLAGS += -mfloat-abi=hard
+else
+CFLAGS += -mfloat-abi=soft
+endif
+
+CFILES = \
+    atcmd_defs.c \
+    atcmd_device.c \
+    atcmd_wlan.c \
+    atcmd_socket.c \
+    atcmd_file.c \
+    atcmd_netapp.c \
+    atcmd_netcfg.c \
+    atcmd_netutil.c \
+    atcmd_event.c \
+    atcmd_gen.c \
+    atcmd.c \
+    atcmd_mqtt.c \
+    atcmd_http.c
+
+OBJCFILES = $(CFILES:.c=.obj)
+
+atcmd.a: $(OBJCFILES)
+	@ echo ar $@ ...
+	@ $(RM) $@ > $(DEVNULL) 2>&1
+	@ $(AR) -cr $@ $(OBJCFILES)
+
+%.obj:%.c
+	@ echo cc $@ ...
+	@ $(CC) $(CFLAGS) $< -o $@
+
+clean:
+	@ echo cleaning ...
+	@ $(RM) *.obj > $(DEVNULL) 2>&1
+	@ $(RM) *.a > $(DEVNULL) 2>&1

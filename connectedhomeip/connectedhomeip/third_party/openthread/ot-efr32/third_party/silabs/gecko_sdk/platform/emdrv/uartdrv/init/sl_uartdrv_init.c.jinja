@@ -1,0 +1,200 @@
+#include "uartdrv.h"
+#include "sl_uartdrv_instances.h"
+#include <stddef.h>
+
+{# Include instance configs #}
+{%- for instance in uartdrv_usart_instances %}#include "sl_uartdrv_usart_{{instance}}_config.h"
+{% endfor -%}
+{%- for instance in uartdrv_leuart_instances %}#include "sl_uartdrv_leuart_{{instance}}_config.h"
+{% endfor -%}
+{%- for instance in uartdrv_eusart_instances %}#include "sl_uartdrv_eusart_{{instance}}_config.h"
+{% endfor -%}
+
+{%- for instance in uartdrv_usart_instances %}
+UARTDRV_HandleData_t sl_uartdrv_usart_{{instance}}_handle_data;
+UARTDRV_Handle_t sl_uartdrv_usart_{{instance}}_handle = &sl_uartdrv_usart_{{instance}}_handle_data;
+{%- endfor %}
+
+{%- for instance in uartdrv_leuart_instances %}
+UARTDRV_HandleData_t sl_uartdrv_leuart_{{instance}}_handle_data;
+UARTDRV_Handle_t sl_uartdrv_leuart_{{instance}}_handle = &sl_uartdrv_leuart_{{instance}}_handle_data;
+{% endfor %}
+
+{%- for instance in uartdrv_eusart_instances %}
+UARTDRV_HandleData_t sl_uartdrv_eusart_{{instance}}_handle_data;
+UARTDRV_Handle_t sl_uartdrv_eusart_{{instance}}_handle = &sl_uartdrv_eusart_{{instance}}_handle_data;
+{% endfor %}
+
+static UARTDRV_Handle_t sli_uartdrv_default_handle = NULL;
+
+/* If CTS and RTS not defined, define a default value to avoid errors {{'*/'}}
+{%- for instance in uartdrv_usart_instances %}
+#ifndef SL_UARTDRV_USART_{{instance | upper }}_CTS_PORT
+#define SL_UARTDRV_USART_{{instance | upper }}_CTS_PORT  gpioPortA
+#define SL_UARTDRV_USART_{{instance | upper }}_CTS_PIN   0
+#if defined(_USART_ROUTELOC1_MASK)
+#define SL_UARTDRV_USART_{{instance | upper }}_CTS_LOC   0
+#endif
+#endif
+
+#ifndef SL_UARTDRV_USART_{{instance | upper }}_RTS_PORT
+#define SL_UARTDRV_USART_{{instance | upper }}_RTS_PORT  gpioPortA
+#define SL_UARTDRV_USART_{{instance | upper }}_RTS_PIN   0
+#if defined(_USART_ROUTELOC1_MASK)
+#define SL_UARTDRV_USART_{{instance | upper }}_RTS_LOC   0
+#endif
+#endif
+{% endfor %}
+{%- for instance in uartdrv_leuart_instances %}
+#ifndef SL_UARTDRV_LEUART_{{instance | upper }}_CTS_PORT
+#define SL_UARTDRV_LEUART_{{instance | upper }}_CTS_PORT  gpioPortA
+#define SL_UARTDRV_LEUART_{{instance | upper }}_CTS_PIN   0
+#endif
+
+#ifndef SL_UARTDRV_LEUART_{{instance | upper }}_RTS_PORT
+#define SL_UARTDRV_LEUART_{{instance | upper }}_RTS_PORT  gpioPortA
+#define SL_UARTDRV_LEUART_{{instance | upper }}_RTS_PIN   0
+#endif
+{% endfor %}
+{%- for instance in uartdrv_eusart_instances %}
+#ifndef SL_UARTDRV_EUSART_{{instance | upper }}_CTS_PORT
+#define SL_UARTDRV_EUSART_{{instance | upper }}_CTS_PORT  gpioPortA
+#define SL_UARTDRV_EUSART_{{instance | upper }}_CTS_PIN   0
+#endif
+
+#ifndef SL_UARTDRV_EUSART_{{instance | upper }}_RTS_PORT
+#define SL_UARTDRV_EUSART_{{instance | upper }}_RTS_PORT  gpioPortA
+#define SL_UARTDRV_EUSART_{{instance | upper }}_RTS_PIN   0
+#endif
+{% endfor %}
+
+/* Define RX and TX buffer queues {{'*/'}}
+{%- for instance in uartdrv_usart_instances %}
+DEFINE_BUF_QUEUE(SL_UARTDRV_USART_{{instance | upper}}_RX_BUFFER_SIZE, sl_uartdrv_usart_{{instance}}_rx_buffer);
+DEFINE_BUF_QUEUE(SL_UARTDRV_USART_{{instance | upper}}_TX_BUFFER_SIZE, sl_uartdrv_usart_{{instance}}_tx_buffer);
+{% endfor %}
+
+{%- for instance in uartdrv_leuart_instances %}
+DEFINE_BUF_QUEUE(SL_UARTDRV_LEUART_{{instance | upper}}_RX_BUFFER_SIZE, sl_uartdrv_leuart_{{instance}}_rx_buffer);
+DEFINE_BUF_QUEUE(SL_UARTDRV_LEUART_{{instance | upper}}_TX_BUFFER_SIZE, sl_uartdrv_leuart_{{instance}}_tx_buffer);
+{% endfor %}
+
+{%- for instance in uartdrv_eusart_instances %}
+DEFINE_BUF_QUEUE(SL_UARTDRV_EUSART_{{instance | upper}}_RX_BUFFER_SIZE, sl_uartdrv_eusart_{{instance}}_rx_buffer);
+DEFINE_BUF_QUEUE(SL_UARTDRV_EUSART_{{instance | upper}}_TX_BUFFER_SIZE, sl_uartdrv_eusart_{{instance}}_tx_buffer);
+{% endfor %}
+
+/* Create uartdrv initialization structs {{'*/'}}
+{%- for instance in uartdrv_usart_instances %}
+UARTDRV_InitUart_t sl_uartdrv_usart_init_{{instance}} = { {# Create USART init struct #}
+  .port = SL_UARTDRV_USART_{{instance | upper}}_PERIPHERAL,
+  .baudRate = SL_UARTDRV_USART_{{instance | upper}}_BAUDRATE,
+#if defined(_USART_ROUTELOC0_MASK)
+  .portLocationTx = SL_UARTDRV_USART_{{instance | upper}}_TX_LOC,
+  .portLocationRx = SL_UARTDRV_USART_{{instance | upper}}_RX_LOC,
+#elif defined(_USART_ROUTE_MASK)
+  .portLocation = SL_UARTDRV_USART_{{instance | upper}}_ROUTE_LOC,
+#elif defined(_GPIO_USART_ROUTEEN_MASK)
+  .txPort = SL_UARTDRV_USART_{{instance | upper}}_TX_PORT,
+  .rxPort = SL_UARTDRV_USART_{{instance | upper}}_RX_PORT,
+  .txPin = SL_UARTDRV_USART_{{instance | upper}}_TX_PIN,
+  .rxPin = SL_UARTDRV_USART_{{instance | upper}}_RX_PIN,
+  .uartNum = SL_UARTDRV_USART_{{instance | upper}}_PERIPHERAL_NO,
+#endif
+  .stopBits = SL_UARTDRV_USART_{{instance | upper}}_STOP_BITS,
+  .parity = SL_UARTDRV_USART_{{instance | upper }}_PARITY,
+  .oversampling = SL_UARTDRV_USART_{{instance | upper }}_OVERSAMPLING,
+#if defined(USART_CTRL_MVDIS)
+  .mvdis = SL_UARTDRV_USART_{{instance | upper }}_MVDIS,
+#endif
+  .fcType = SL_UARTDRV_USART_{{instance | upper}}_FLOW_CONTROL_TYPE,
+  .ctsPort = SL_UARTDRV_USART_{{instance | upper}}_CTS_PORT,
+  .rtsPort = SL_UARTDRV_USART_{{instance | upper}}_RTS_PORT,
+  .ctsPin = SL_UARTDRV_USART_{{instance | upper}}_CTS_PIN,
+  .rtsPin = SL_UARTDRV_USART_{{instance | upper}}_RTS_PIN,
+  .rxQueue = (UARTDRV_Buffer_FifoQueue_t {{'*'}})&sl_uartdrv_usart_{{instance}}_rx_buffer,
+  .txQueue = (UARTDRV_Buffer_FifoQueue_t {{'*'}})&sl_uartdrv_usart_{{instance}}_tx_buffer,
+#if defined(_USART_ROUTELOC1_MASK)
+  .portLocationCts = SL_UARTDRV_USART_{{instance | upper}}_CTS_LOC,
+  .portLocationRts = SL_UARTDRV_USART_{{instance | upper}}_RTS_LOC,
+#endif
+};
+{% endfor %}
+
+{%- for instance in uartdrv_leuart_instances %}
+UARTDRV_InitLeuart_t sl_uartdrv_leuart_init_{{instance}} = {  {# Create LEUART init struct #}
+  .port = SL_UARTDRV_LEUART_{{instance | upper}}_PERIPHERAL,
+  .baudRate = SL_UARTDRV_LEUART_{{instance | upper}}_BAUDRATE,
+#if defined(_LEUART_ROUTELOC0_MASK)
+  .portLocationTx = SL_UARTDRV_LEUART_{{instance | upper}}_TX_LOC,
+  .portLocationRx = SL_UARTDRV_LEUART_{{instance | upper}}_RX_LOC,
+#else
+  .portLocation = SL_UARTDRV_LEUART_{{instance | upper}}_ROUTE_LOC,
+#endif
+  .stopBits = SL_UARTDRV_LEUART_{{instance | upper}}_STOP_BITS,
+  .parity = SL_UARTDRV_LEUART_{{instance | upper}}_PARITY,
+  .fcType = SL_UARTDRV_LEUART_{{instance | upper}}_FLOW_CONTROL_TYPE,
+  .ctsPort = SL_UARTDRV_LEUART_{{instance | upper}}_CTS_PORT,
+  .ctsPin = SL_UARTDRV_LEUART_{{instance | upper}}_CTS_PIN,
+  .rtsPort = SL_UARTDRV_LEUART_{{instance | upper}}_RTS_PORT,
+  .rtsPin = SL_UARTDRV_LEUART_{{instance | upper}}_RTS_PIN,
+  .rxQueue = (UARTDRV_Buffer_FifoQueue_t {{'*'}})&sl_uartdrv_leuart_{{instance}}_rx_buffer,
+  .txQueue = (UARTDRV_Buffer_FifoQueue_t {{'*'}})&sl_uartdrv_leuart_{{instance}}_tx_buffer,
+};
+{% endfor %}
+
+{%- for instance in uartdrv_eusart_instances %}
+UARTDRV_InitEuart_t sl_uartdrv_eusart_init_{{instance}} = {   {# Create EUSART init struct #}
+  .port = SL_UARTDRV_EUSART_{{instance | upper}}_PERIPHERAL,
+  .useLowFrequencyMode = SL_UARTDRV_EUSART_{{instance | upper}}_LF_MODE,
+  .baudRate = SL_UARTDRV_EUSART_{{instance | upper}}_BAUDRATE,
+  .txPort = SL_UARTDRV_EUSART_{{instance | upper}}_TX_PORT,
+  .rxPort = SL_UARTDRV_EUSART_{{instance | upper}}_RX_PORT,
+  .txPin = SL_UARTDRV_EUSART_{{instance | upper}}_TX_PIN,
+  .rxPin = SL_UARTDRV_EUSART_{{instance | upper}}_RX_PIN,
+  .uartNum = SL_UARTDRV_EUSART_{{instance | upper}}_PERIPHERAL_NO,
+  .stopBits = SL_UARTDRV_EUSART_{{instance | upper}}_STOP_BITS,
+  .parity = SL_UARTDRV_EUSART_{{instance | upper}}_PARITY,
+  .oversampling = SL_UARTDRV_EUSART_{{instance | upper}}_OVERSAMPLING,
+  .mvdis = SL_UARTDRV_EUSART_{{instance | upper}}_MVDIS,
+  .fcType = SL_UARTDRV_EUSART_{{instance | upper}}_FLOW_CONTROL_TYPE,
+  .ctsPort = SL_UARTDRV_EUSART_{{instance | upper}}_CTS_PORT,
+  .ctsPin = SL_UARTDRV_EUSART_{{instance | upper}}_CTS_PIN,
+  .rtsPort = SL_UARTDRV_EUSART_{{instance | upper}}_RTS_PORT,
+  .rtsPin = SL_UARTDRV_EUSART_{{instance | upper}}_RTS_PIN,
+  .rxQueue = (UARTDRV_Buffer_FifoQueue_t {{'*'}})&sl_uartdrv_eusart_{{instance}}_rx_buffer,
+  .txQueue = (UARTDRV_Buffer_FifoQueue_t {{'*'}})&sl_uartdrv_eusart_{{instance}}_tx_buffer,
+};
+{% endfor %}
+
+void sl_uartdrv_init_instances(void){
+  {%- for instance in uartdrv_usart_instances %}
+  UARTDRV_InitUart(sl_uartdrv_usart_{{instance}}_handle, &sl_uartdrv_usart_init_{{instance}});
+  sl_uartdrv_set_default(sl_uartdrv_usart_{{instance}}_handle);
+  {%- endfor %}
+  {%- for instance in uartdrv_leuart_instances %}
+  UARTDRV_InitLeuart(sl_uartdrv_leuart_{{instance}}_handle, &sl_uartdrv_leuart_init_{{instance}});
+  sl_uartdrv_set_default(sl_uartdrv_leuart_{{instance}}_handle);
+  {%- endfor %}
+  {%- for instance in uartdrv_eusart_instances %}
+  UARTDRV_InitEuart(sl_uartdrv_eusart_{{instance}}_handle, &sl_uartdrv_eusart_init_{{instance}});
+  sl_uartdrv_set_default(sl_uartdrv_eusart_{{instance}}_handle);
+  {%- endfor %}
+}
+
+sl_status_t sl_uartdrv_set_default(UARTDRV_Handle_t handle)
+{
+  sl_status_t status = SL_STATUS_INVALID_HANDLE;
+
+  if (handle != NULL) {
+    sli_uartdrv_default_handle = handle;
+    status = SL_STATUS_OK;
+  }
+
+  return status;
+}
+
+UARTDRV_Handle_t sl_uartdrv_get_default(void)
+{
+  return sli_uartdrv_default_handle;
+}

@@ -1,0 +1,19 @@
+id: silabs_core_response_print
+label: Response Print
+package: platform
+description: Silabs core utility to format text using response print syntax.
+category: Platform|Utilities
+quality: production
+include:
+  - path: util/silicon_labs/silabs_core/response_print
+    file_list:
+      - path: response_print.h
+config_file:
+  - path: util/silicon_labs/silabs_core/response_print/config/response_print_config.h
+source:
+  - path: util/silicon_labs/silabs_core/response_print/response_print.c
+provides:
+  - name: silabs_core_response_print
+define:
+  - name: RESPONSE_PRINT_USE_LOCAL_CONFIG_HEADER
+    value: "1"

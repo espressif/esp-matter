@@ -1,0 +1,47 @@
+!!omap
+- id: brd4314a
+- label: BRD4314A
+- package: platform
+- description: Board support for BRD4314A.
+- category: Platform|Board|Thunderboard
+- quality: production
+- requires:
+  - name: bgm220pc22hna
+  - name: brd4314a_config
+- provides:
+  - name: brd4314a
+  - name: hardware_board
+  - name: hardware_board_tb
+  - name: hardware_board_from_tb
+  - name: hardware_board_from_bgm220-ek4314a
+  - name: hardware_board_has_vcom
+  - name: hardware_board_supports_rf_band_2400
+  - name: hardware_board_supports_1_rf_band
+  - name: hardware_board_default_rf_band
+  - name: hardware_board_default_rf_band_2400
+- recommends:
+  - id: iostream_eusart
+    instance:
+    - vcom
+  - id: bootloader_uart_driver
+  - id: simple_led
+    instance:
+    - led0
+  - id: simple_button
+    instance:
+    - btn0
+- template_contribution: []
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD4314A"'
+  - name: SL_BOARD_REV
+    value: '"A02"'
+- tag:
+  - board:pn:BRD4314
+  - board:variant:A
+  - board:revision:A02
+  - board:device:bgm220pc22hna
+  - hardware:has:vcom
+  - hardware:has:pti
+  - hardware:has:led:1
+  - hardware:has:button:1

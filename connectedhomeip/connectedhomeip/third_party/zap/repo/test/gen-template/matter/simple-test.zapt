@@ -1,0 +1,16 @@
+{{#all_user_clusters}}
+{{#if (isEnable enabled)}}
+{{#all_user_cluster_commands}}
+{{#if (isStrEqual clusterName parent.name)}}
+{{#if (isCommandAvailable parent.side incoming outcoming)}}
+{{#if (zcl_command_arguments_count this.id)}}
+Cluster Name : {{asCamelCased parent.name false}}+Command Name : {{asCamelCased name false}}+{{#zcl_command_arguments}}Type Name : {{asUnderlyingType type}}+Argument Name : {{asSymbol label}}{{#unless (isLastElement index count)}},{{/unless}}{{/zcl_command_arguments}}
+{{else}}
+Cluster Name : {{asCamelCased parent.name false}}+Command Name : {{asCamelCased name false}}
+{{/if}}
+{{/if}}
+{{/if}}
+{{/all_user_cluster_commands}}
+{{/if}}
+{{/all_user_clusters}}
+

@@ -1,0 +1,27 @@
+id: psa_crypto_pbkdf2
+package: platform
+label: PBKDF2
+description: >-
+  This component provides support for key derivation using PBKDF2 through a Silicon
+  Labs custom API integrated into PSA Crypto. PBKDF2 based on AES_CMAC_PRF_128 is only
+  supported on EFRxG23/EFMxG23 and newer devices. The builtin PBKDF2 implementation of
+  PSA Crypto is not yet available.
+category: Platform|Security|PSA Crypto|Key Derivation
+quality: production
+provides:
+  - name: psa_crypto_pbkdf2
+requires:
+  - name: psa_crypto
+  - name: device_security_vault
+template_contribution:
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_PBKDF2_HMAC
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_PBKDF2_AES_CMAC_PRF_128
+    condition: [device_sdid_210]
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_PBKDF2_AES_CMAC_PRF_128
+    condition: [device_sdid_215]
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_PBKDF2_AES_CMAC_PRF_128
+    condition: [device_sdid_220]

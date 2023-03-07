@@ -1,0 +1,469 @@
+/*
+ * Copyright (c) 2017-2020 Arm Limited. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * This file is derivative of ../armclang/tfm_common_s.sct.template
+ */
+
+{{utilities.donotedit_warning}}
+
+#include "region_defs.h"
+
+define memory mem with size = 4G;
+
+define region S_CODE_region     = mem:[from S_CODE_START size S_CODE_SIZE];
+
+define region S_RAM_region      = mem:[from S_DATA_START size S_DATA_SIZE];
+
+define block ER_TFM_CODE          with fixed order, alignment = 8 {readonly section .intvec, readonly};
+
+define block TFM_UNPRIV_CODE with alignment = 32 {
+       ro object tfm_spm_services.o,
+       ro object platform_retarget_dev.o,
+       ro object device_definition.o,
+       section SFN,
+       ro section .rodata object tfm_*_secure_api.o,
+       ro object *6M_tl*.a,
+       ro object *7M_tl*.a,
+       ro object *libtfmsprt.a
+       };
+
+    /**** PSA RoT RO part (CODE + RODATA) start here */
+    /*
+     * This empty, zero long execution region is here to mark the start address
+     * of PSA RoT code.
+     */
+define block TFM_PSA_CODE_START with alignment = 32, size = 0 { };
+
+{% for manifest in manifests %}
+    {% if manifest.manifest.type == 'PSA-ROT' %}
+    {% if manifest.attr.conditional %}
+#ifdef {{manifest.attr.conditional}}
+    {% endif %}
+define block {{manifest.manifest.name}}_LINKER with alignment = 32 {
+    {% if manifest.attr.linker_pattern.library_list %}
+        {% for pattern in manifest.attr.linker_pattern.library_list %}
+        ro object {{pattern}},
+        {% endfor %}
+    {% endif %}
+    {% if manifest.attr.linker_pattern.object_list %}
+        {% for pattern in manifest.attr.linker_pattern.object_list %}
+        ro object {{pattern}},
+        {% endfor %}
+    {% endif %}
+        section {{manifest.manifest.name}}_ATTR_FN
+    };
+    {% if manifest.attr.conditional %}
+#endif /* {{manifest.attr.conditional}} */
+    {% endif %}
+
+    {% endif %}
+{% endfor %}
+    /*
+     * This empty, zero long execution region is here to mark the end address
+     * of PSA RoT code.
+     */
+define block TFM_PSA_CODE_END with alignment = 32, size = 0 { };
+
+    /**** APPLICATION RoT RO part (CODE + RODATA) start here */
+    /*
+     * This empty, zero long execution region is here to mark the start address
+     * of APP RoT code.
+     */
+define block TFM_APP_CODE_START with alignment = 32, size = 0 { };
+
+{% for manifest in manifests %}
+    {% if manifest.manifest.type == 'APPLICATION-ROT' %}
+    {% if manifest.attr.conditional %}
+#ifdef {{manifest.attr.conditional}}
+    {% endif %}
+define block {{manifest.manifest.name}}_LINKER with alignment = 32 {
+    {% if manifest.attr.linker_pattern.library_list %}
+        {% for pattern in manifest.attr.linker_pattern.library_list %}
+        ro object {{pattern}},
+        {% endfor %}
+    {% endif %}
+    {% if manifest.attr.linker_pattern.object_list %}
+        {% for pattern in manifest.attr.linker_pattern.object_list %}
+        ro object {{pattern}},
+        {% endfor %}
+    {% endif %}
+    };
+    {% if manifest.attr.conditional %}
+#endif /* {{manifest.attr.conditional}} */
+    {% endif %}
+
+    {% endif %}
+{% endfor %}
+    /*
+     * This empty, zero long execution region is here to mark the end address
+     * of APP RoT code.
+     */
+define block TFM_APP_CODE_END with alignment = 32, size = 0 { };
+
+    /**** Base address of secure data area */
+define block TFM_SECURE_DATA_START with size = 0 { };
+
+#if !TFM_MULTI_CORE_TOPOLOGY
+    /* Shared area between BL2 and runtime to exchange data */
+define block TFM_SHARED_DATA with alignment = 32, size = BOOT_TFM_SHARED_DATA_SIZE { };
+define block ARM_LIB_STACK_MSP with alignment = 32, size = S_MSP_STACK_SIZE { };
+define overlay STACK_DATA {block TFM_SHARED_DATA};
+define overlay STACK_DATA {block ARM_LIB_STACK_MSP};
+
+define block ARM_LIB_STACK with alignment = 32, size = S_PSP_STACK_SIZE { };
+#endif
+
+#if !defined(TFM_PSA_API)
+define block TFM_SECURE_STACK   with size = 0x2000, alignment = 128 {};
+#endif /* !defined(TFM_PSA_API) */
+
+define block TFM_UNPRIV_DATA with alignment = 32 {
+       rw object tfm_spm_services.o,
+       rw object platform_retarget_dev.o,
+       rw object device_definition.o,
+       };
+
+define block TFM_APP_RW_STACK_START with alignment = 32, size = 0 { };
+
+{% for manifest in manifests %}
+    {% if manifest.manifest.type == 'APPLICATION-ROT' %}
+    {% if manifest.attr.conditional %}
+#ifdef {{manifest.attr.conditional}}
+    {% endif %}
+define block {{manifest.manifest.name}}_LINKER_DATA with alignment = 32 {
+    {% if manifest.attr.linker_pattern.library_list %}
+        {% for pattern in manifest.attr.linker_pattern.library_list %}
+        rw object {{pattern}},
+        {% endfor %}
+    {% endif %}
+    {% if manifest.attr.linker_pattern.object_list %}
+        {% for pattern in manifest.attr.linker_pattern.object_list %}
+        rw object {{pattern}},
+        {% endfor %}
+    {% endif %}
+    };
+
+    {% if manifest.attr.tfm_partition_ipc %}
+#if defined (TFM_PSA_API)
+define block {{manifest.manifest.name}}_LINKER_STACK with alignment = 128, size = {{manifest.manifest.stack_size}} { };
+#endif
+    {% else %}
+#if defined (TFM_PSA_API)
+define block {{manifest.manifest.name}}_LINKER_STACK with alignment =  128 { };
+#endif
+    {% endif %}
+    {% if manifest.attr.conditional %}
+#endif /* {{manifest.attr.conditional}} */
+    {% endif %}
+
+    {% endif %}
+{% endfor %}
+
+    /*
+     * This empty, zero long execution region is here to mark the end address
+     * of APP RoT RW and Stack.
+     */
+define block TFM_APP_RW_STACK_END with alignment = 32, size = 0 { };
+
+#if TFM_MULTI_CORE_TOPOLOGY && defined(S_DATA_PRIV_START)
+    /**** Privileged data area base address specified by multi-core platform */
+define block TFM_SECURE_PRIV_DATA_BOUNDARY with size = 0 { };
+#endif
+
+#if TFM_MULTI_CORE_TOPOLOGY
+    /*
+     * Move BL2 shared area and MSP stack to the beginning of privileged data
+     * area in multi-core topology.
+     */
+    /* Shared area between BL2 and runtime to exchange data */
+define block TFM_SHARED_DATA with alignment = 32, size = BOOT_TFM_SHARED_DATA_SIZE { };
+
+    /* MSP */
+define block ARM_LIB_STACK_MSP with alignment = 32, size = S_MSP_STACK_SIZE { };
+
+define overlay STACK_DATA {block TFM_SHARED_DATA};
+define overlay STACK_DATA {block ARM_LIB_STACK_MSP};
+
+    /* PSP is privileged in multi-core topology */
+define block ARM_LIB_STACK with alignment = 32, size = S_PSP_STACK_SIZE { };
+#endif
+
+define block HEAP         with alignment = 8, size = S_HEAP_SIZE { };
+define block ARM_LIB_HEAP with alignment = 8, size = S_HEAP_SIZE { };
+define overlay HEAP_OVL {block HEAP};
+define overlay HEAP_OVL {block ARM_LIB_HEAP};
+
+define block ER_TFM_DATA          with alignment = 8 {readwrite};
+
+    /**** PSA RoT DATA start here */
+    /*
+     * This empty, zero long execution region is here to mark the start address
+     * of PSA RoT RW and Stack.
+     */
+define block TFM_PSA_RW_STACK_START with alignment = 32, size = 0 { };
+
+{% for manifest in manifests %}
+    {% if manifest.manifest.type == 'PSA-ROT' %}
+    {% if manifest.attr.conditional %}
+#ifdef {{manifest.attr.conditional}}
+    {% endif %}
+define block {{manifest.manifest.name}}_LINKER_DATA with alignment = 32 {
+    {% if manifest.attr.linker_pattern.library_list %}
+        {% for pattern in manifest.attr.linker_pattern.library_list %}
+        rw object {{pattern}},
+        {% endfor %}
+    {% endif %}
+    {% if manifest.attr.linker_pattern.object_list %}
+        {% for pattern in manifest.attr.linker_pattern.object_list %}
+        rw object {{pattern}},
+        {% endfor %}
+    {% endif %}
+    };
+
+    {% if manifest.attr.tfm_partition_ipc %}
+#if defined (TFM_PSA_API)
+define block {{manifest.manifest.name}}_LINKER_STACK with alignment = 128, size = {{manifest.manifest.stack_size}} { };
+#endif
+    {% else %}
+#if defined (TFM_PSA_API)
+define block {{manifest.manifest.name}}_LINKER_STACK with alignment = 128, size = 0 { };
+#endif
+    {% endif %}
+    {% if manifest.attr.conditional %}
+#endif /* {{manifest.attr.conditional}} */
+    {% endif %}
+
+    {% endif %}
+{% endfor %}
+
+    /*
+     * This empty, zero long execution region is here to mark the end address
+     * of PSA RoT RW and Stack.
+     */
+define block TFM_PSA_RW_STACK_END with alignment = 32, size = 0x0 { };
+
+    /* This empty, zero long execution region is here to mark the limit address
+     * of the last execution region that is allocated in SRAM.
+     */
+define block SRAM_WATERMARK with size = 0 { };
+
+define block LR_CODE with fixed order {
+       block ER_TFM_CODE,
+       block TFM_UNPRIV_CODE,
+       block TFM_PSA_CODE_START,
+
+{% for manifest in manifests %}
+    {% if manifest.manifest.type == 'PSA-ROT' %}
+    {% if manifest.attr.conditional %}
+#ifdef {{manifest.attr.conditional}}
+    {% endif %}
+       block {{manifest.manifest.name}}_LINKER,
+    {% if manifest.attr.conditional %}
+#endif /* {{manifest.attr.conditional}} */
+    {% endif %}
+    {% endif %}
+{% endfor %}
+
+       block TFM_PSA_CODE_END,
+
+/**** APPLICATION RoT RO part (CODE + RODATA) start here */
+    /*
+     * This empty, zero long execution region is here to mark the start address
+     * of APP RoT code.
+     */
+       block TFM_APP_CODE_START,
+{% for manifest in manifests %}
+    {% if manifest.manifest.type == 'APPLICATION-ROT' %}
+    {% if manifest.attr.conditional %}
+#ifdef {{manifest.attr.conditional}}
+    {% endif %}
+       block {{manifest.manifest.name}}_LINKER,
+    {% if manifest.attr.conditional %}
+#endif /* {{manifest.attr.conditional}} */
+    {% endif %}
+
+    {% endif %}
+{% endfor %}
+    /*
+     * This empty, zero long execution region is here to mark the end address
+     * of APP RoT code.
+     */
+       block TFM_APP_CODE_END,
+       };
+
+do not initialize  { section .noinit };
+initialize by copy { readwrite };
+if (isdefinedsymbol(__USE_DLIB_PERTHREAD))
+{
+  // Required in a multi-threaded application
+  initialize by copy { section __DLIB_PERTHREAD };
+}
+
+place in S_CODE_region         { block LR_CODE };
+
+define block DATA with fixed order {
+    /**** Base address of secure data area */
+   block  TFM_SECURE_DATA_START,
+
+    /*
+     * MPU on Armv6-M/v7-M core in multi-core topology may require more strict
+     * alignment that MPU region base address must align with the MPU region
+     * size.
+     * As a result, in multi-core topology, to save memory resource and MPU
+     * regions, unprivileged data sections and privileged data sections are
+     * separated and gathered in unprivileged/privileged data area respectively.
+     * Keep BL2 shared data and MSP stack at the beginning of the secure data
+     * area in single Armv8-M topology, while move the two areas to the
+     * beginning of privileged data region in multi-core topology.
+     */
+#ifndef TFM_MULTI_CORE_TOPOLOGY
+    /* Shared area between BL2 and runtime to exchange data */
+    overlay STACK_DATA,
+    /* PSP is unprivileged in single-core topology */
+    block ARM_LIB_STACK,
+#endif
+
+#if !defined(TFM_PSA_API)
+    block TFM_SECURE_STACK,
+#endif /* !defined(TFM_PSA_API) */
+
+    block TFM_UNPRIV_DATA,
+
+    /**** APP RoT DATA start here */
+    /*
+     * This empty, zero long execution region is here to mark the start address
+     * of APP RoT RW and Stack.
+     */
+    block TFM_APP_RW_STACK_START,
+
+{% for manifest in manifests %}
+    {% if manifest.manifest.type == 'APPLICATION-ROT' %}
+    {% if manifest.attr.conditional %}
+#ifdef {{manifest.attr.conditional}}
+    {% endif %}
+    block {{manifest.manifest.name}}_LINKER_DATA,
+
+#if defined (TFM_PSA_API)
+    block {{manifest.manifest.name}}_LINKER_STACK,
+#endif
+    {% if manifest.attr.conditional %}
+#endif /* {{manifest.attr.conditional}} */
+    {% endif %}
+
+    {% endif %}
+{% endfor %}
+    /*
+     * This empty, zero long execution region is here to mark the end address
+     * of APP RoT RW and Stack.
+     */
+    block TFM_APP_RW_STACK_END,
+
+#ifdef TFM_MULTI_CORE_TOPOLOGY
+#ifdef S_DATA_PRIV_START
+    /**** Privileged data area base address specified by multi-core platform */
+    block TFM_SECURE_PRIV_DATA_BOUNDARY,
+ #endif
+
+    /*
+     * Move BL2 shared area and MSP stack to the beginning of privileged data
+     * area in multi-core topology.
+     */
+    /* Shared area between BL2 and runtime to exchange data */
+    overlay STACK_DATA,
+    /* PSP is privileged in multi-core topology */
+    block ARM_LIB_STACK,
+#endif
+
+    overlay HEAP_OVL,
+
+    block ER_TFM_DATA,
+
+    /**** PSA RoT DATA start here */
+    /*
+     * This empty, zero long execution region is here to mark the start address
+     * of PSA RoT RW and Stack.
+     */
+    block TFM_PSA_RW_STACK_START,
+
+{% for manifest in manifests %}
+    {% if manifest.manifest.type == 'PSA-ROT' %}
+    {% if manifest.attr.conditional %}
+#ifdef {{manifest.attr.conditional}}
+    {% endif %}
+    block {{manifest.manifest.name}}_LINKER_DATA,
+
+#if defined (TFM_PSA_API)
+    block {{manifest.manifest.name}}_LINKER_STACK,
+#endif
+    {% if manifest.attr.conditional %}
+#endif /* {{manifest.attr.conditional}} */
+    {% endif %}
+
+    {% endif %}
+{% endfor %}
+    /*
+     * This empty, zero long execution region is here to mark the end address
+     * of PSA RoT RW and Stack.
+     */
+    block TFM_PSA_RW_STACK_END,
+
+#if 0
+#if defined (S_RAM_CODE_START)
+    /* Executable code allocated in RAM */
+    TFM_RAM_CODE S_RAM_CODE_START {
+        * (.ramfunc)
+    }
+#endif
+#endif
+
+    /* This empty, zero long execution region is here to mark the limit address
+     * of the last execution region that is allocated in SRAM.
+     */
+    block SRAM_WATERMARK,
+
+    /* Make sure that the sections allocated in the SRAM does not exceed the
+     * size of the SRAM available.
+     */
+};
+
+#ifndef TFM_MULTI_CORE_TOPOLOGY
+    /*
+     * Place the CMSE Veneers (containing the SG instruction) in a separate
+     * 32 bytes aligned region so that the SAU can be programmed to
+     * just set this region as Non-Secure Callable.
+     */
+define block LR_VENEER with alignment = 0x20, size = CMSE_VENEER_REGION_SIZE {section Veneer$$CMSE};
+place at address CMSE_VENEER_REGION_START {block LR_VENEER};
+#endif
+
+    /* Reserved place for NS application.
+     * No code will be placed here, just address of this region is used in the
+     * secure code to configure certain HW components. This generates an empty
+     * execution region description warning during linking.
+     */
+define block LR_NS_PARTITION with size = NS_PARTITION_SIZE { };
+place at address NS_PARTITION_START { block LR_NS_PARTITION };
+
+#ifdef BL2
+    /* Reserved place for new image in case of firmware upgrade.
+     * No code will be placed here, just address of this region is used in the
+     * secure code to configure certain HW components. This generates an empty
+     * execution region description warning during linking.
+     */
+define block LR_SECONDARY_PARTITION with size = SECONDARY_PARTITION_SIZE { };
+place at address SECONDARY_PARTITION_START { block LR_SECONDARY_PARTITION };
+#endif /* BL2 */
+
+place in S_RAM_region          { block DATA };

@@ -1,0 +1,49 @@
+#include "sl_cli.h"
+
+/*******************************************************************************
+ *****************************   TEMPLATED FILE   ******************************
+ ******************************************************************************/
+
+/*******************************************************************************
+ * Example syntax (.slcc or .slcp) for populating this file:
+ *
+ *   template_contribution:
+ *    - name: cli_hook              # Register a hook
+ *      value:
+ *        pre_hook:                 # Register a pre command execution hook
+ *          handler: test_pre_hook  # Name of the C hook function
+ *        post_hook:                # Register a post command execution hook
+ *          handler: test_post_hook # Name of the C hook function
+ *
+ ******************************************************************************/
+{% for hook in cli_hook %}
+{%- if hook.pre_hook %}
+void {{ hook.pre_hook.handler }}(sl_cli_command_arg_t* arguments);
+{%- endif %}
+{% endfor %}
+
+{% for hook in cli_hook %}
+{%- if hook.pre_hook %}
+void {{ hook.post_hook.handler }}(sl_cli_command_arg_t* arguments);
+{%- endif %}
+{% endfor %}
+
+{% if cli_hook %}
+void sli_cli_pre_cmd_hook(sl_cli_command_arg_t* arguments)
+{
+{%- for hook in cli_hook %}
+{%- if hook.pre_hook %}
+  {{ hook.pre_hook.handler }}(arguments);
+{%- endif %}
+{%- endfor %}
+}
+
+void sli_cli_post_cmd_hook(sl_cli_command_arg_t* arguments)
+{
+{%- for hook in cli_hook %}
+{%- if hook.post_hook %}
+  {{ hook.post_hook.handler }}(arguments);
+{%- endif %}
+{%- endfor %}
+}
+{%- endif %}

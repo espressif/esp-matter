@@ -1,0 +1,25 @@
+#include "sl_event_handler.h"
+
+{# Ensure list of event handlers to suppress exists -#}
+{% if event_handler_suppress is not defined -%}
+{% set event_handler_suppress = [] -%}
+{% endif -%}
+{# Deduplicate includes before printing #include statements -#}
+{% set includes = [] -%}
+{% for eh in event_handler -%}
+  {% if 'include' in eh and eh['include'] not in includes and eh['handler'] not in event_handler_suppress -%}
+    {% if includes.append(eh['include']) %}{% endif -%}
+  {% endif -%}
+{% endfor -%}
+{%- for include in includes -%}
+#include "{{include}}"
+{% endfor %}
+{% for e in event -%}
+{{ e['function']['return'] }} {{ e['function']['name'] }}(void)
+{
+{%- for eh in event_handler %}{% if eh['event'] == e['id'] and eh['handler'] not in event_handler_suppress %}
+  {{ eh['handler'] }}();
+{%- endif %}{% endfor %}
+}
+
+{% endfor -%}

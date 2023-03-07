@@ -1,0 +1,4 @@
+.SH SEE ALSO
+mxmldoc(1), Mini-XML Programmers Manual, http://www.minixml.org/
+.SH COPYRIGHT
+Copyright 2003-2011 by Michael Sweet.

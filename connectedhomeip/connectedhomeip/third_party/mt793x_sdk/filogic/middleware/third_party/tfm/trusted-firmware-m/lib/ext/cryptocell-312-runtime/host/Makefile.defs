@@ -1,0 +1,368 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2001-2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+# Makefile definitions common to all Host components build
+# This file should be included at the start of a Makefile
+
+# Note: The caller (or environment) should provide the following variables:
+# ARCH = Target architectore, e.g., powerpc
+# OS = Target OS, e.g., linux
+# HOST_PROJ_ROOT = The root of the host domain tree (where this file is located)
+
+# LOGFILE = log file name. Default is makelog.txt in the current dir.
+
+### Determine host environment
+_UNAME_OS=$(shell uname -o)
+
+ifeq (Cygwin,$(_UNAME_OS))
+  HOST=WINDOWS
+  HOST_OS=CYGWIN
+else ifeq (Msys,$(_UNAME_OS))
+  HOST=WINDOWS
+  HOST_OS=MSYS
+else ifeq (GNU/Linux,$(_UNAME_OS))
+  HOST=LINUX
+  HOST_OS=LINUX
+else
+  HOST=UNKNOWN
+  HOST_OS=UNKNOWN
+endif
+
+
+### Build platform commands (Currently assumes Linux/Unix/Cygwin machine)
+SHELL = /bin/bash -o pipefail
+RM = rm -f
+ECHO = echo
+MKDIR = mkdir -p
+RMDIR = rm -rf
+CP = cp -P
+CP_DEREF = cp -L
+SYMLINK = ln -s
+MAKE = make
+
+LOGFILE ?= ./makelog.txt
+
+### Build environment setup ###
+
+#On windows when running from an emulated POSIX environment we have
+#to deal with three different kind of paths. The native windows path
+#i.e. c:\foo\bar, the POSIX path i.e. /c/foo/bar or
+#/cygdrive/c/foo/bar and the mixed path which is the native path but
+#with forward slashes (i.e. c:/foo/bar).
+#Executables compiled in the POSIX environment understand the
+#POSIX and the mixed path. Native windows executables (i.e. compilers
+#understand the native and the mixed path.
+#To avoid path issues the best is to use the mixed path. Use the
+#cygpath tool to do the conversion.
+#Note: the pwd command provided by the shell must not be used in the
+#      makefiles!
+
+ifneq (,$(filter ${HOST_OS},CYGWIN MSYS))
+	PWD := $(shell cygpath -am . |  tr -d '\r\n')
+else
+	PWD := $(shell readlink -f .)
+endif
+
+ifndef HOST_PROJ_ROOT
+$(error HOST_PROJ_ROOT is undefined)
+endif
+
+# Host domain root converted to absolut path
+ifneq (,$(filter ${HOST_OS},CYGWIN MSYS))
+	HOST_PROJ_ROOT := $(shell cygpath -am $(HOST_PROJ_ROOT) |  tr -d '\r\n')
+else
+	HOST_PROJ_ROOT := $(shell readlink -f $(HOST_PROJ_ROOT))
+endif
+HOST_SRCDIR := $(HOST_PROJ_ROOT)/src
+SHARED_DIR := $(HOST_PROJ_ROOT)/../shared
+SHARED_INCDIR := $(SHARED_DIR)/include
+SHARED_SRCDIR := $(SHARED_DIR)/src
+CODESAFE_DIR := $(HOST_PROJ_ROOT)/../codesafe
+CODESAFE_SRCDIR := $(CODESAFE_DIR)/src
+UTILS_DIR := $(HOST_PROJ_ROOT)/../utils
+UTILS_SRCDIR := $(UTILS_DIR)/src
+#Note: on windows GCC seems to ignore ./ as an include path with:
+#  ignoring nonexistent directory. Using . seems to work.
+INCDIRS = . $(INCDIRS_EXTRA)
+INCDIRS += $(SHARED_INCDIR) $(SHARED_INCDIR)/proj/$(PROJ_PRD)
+# $(SHARED_INCDIR)/pal $(SHARED_INCDIR)/pal/$(TEE_OS) $(SHARED_INCDIR)/pal/$(TEE_OS)/include
+INCDIRS +=  $(HOST_PROJ_ROOT)/include
+LIBDIRS = . $(LIBDIRS_EXTRA) $(HOST_PROJ_ROOT)/lib
+
+HOST_LIBDIR = $(HOST_SRCDIR)/$(HOST_LIBNAME)
+
+# Release directories
+RELEASE_INCDIR = $(HOST_PROJ_ROOT)/include
+RELEASE_LIBDIR = $(HOST_PROJ_ROOT)/lib
+RELEASE_EXEDIR = $(HOST_PROJ_ROOT)/bin
+# SCRDIR for scripts
+RELEASE_SCRDIR = $(HOST_PROJ_ROOT)/bin
+# DATDIR for data/binary files
+RELEASE_DATDIR = $(HOST_PROJ_ROOT)/dat
+
+#Test directories
+ifeq ($(TEE_OS),freertos)
+KERNEL_LIB_DIR  := $(KERNEL_DIR)/lib
+KERNEL_TEST_DIR := $(KERNEL_DIR)/lib/tests
+endif
+
+### Toolchain setup ###
+ARCH_SUPPORTED = powerpc arm arm64 i686 x86 x86_64 x86win
+# i686 or x86_64 - compilation for i686(x86)/x86_64 Linux using native toolchain.
+# x86win - compilation for x86 Windows, using MinGW toolchain.
+
+# default ARCH
+ARCH ?= powerpc
+export ARCH
+#$(info ARCH=$(ARCH))
+
+ifeq ($(filter $(ARCH),$(ARCH_SUPPORTED)),)
+  $(error Unsupported ARCH==$(ARCH))
+endif
+
+#initiate variable to avoid concatinatation at every target level
+CFLAGS =
+
+# The following statements would be executed only if ARCH is one of the supported ones.
+ifeq ($(ARCH),powerpc)
+	CROSS_COMPILE := ppc_4xx-
+	ARCH_ENDIAN = BIG
+	CFLAGS += -isystem /opt/eldk/ppc_4xx/usr/include
+endif
+
+ifeq ($(ARCH),arm)
+	# For android NDK must define -ffreestanding to be able to build with Bionic library, etc.
+	CFLAGS += $(if $(filter arm-linux-androideabi-,$(CROSS_COMPILE)),-ffreestanding)
+	# Same requirement for arm-eabi (bare metal) due to use of RTOS (private) libc implementation
+	CFLAGS += $(if $(filter arm-eabi-,$(CROSS_COMPILE)),-ffreestanding)
+	ARCH_ENDIAN = LITTLE
+    ifeq ($(CROSS_COMPILE),arm-bcm2708hardfp-linux-gnueabi-)
+        # RaspberryPi (ARM11/ARMv6) support
+        $(info Assuming build for RaspberryPi)
+        CFLAGS += -mfpu=vfp -mfloat-abi=hard -march=armv6zk -mtune=arm1176jzf-s
+    else ifeq ($(CROSS_COMPILE),arm-none-eabi-)
+        ifeq ($(ARM_CPU), cortex-m33)
+            CFLAGS += -march=armv8-m.main
+            CFLAGS += -mcmse
+            CFLAGS += -DARCH_V8M
+        else
+            # For arm-none-eabi assume cortex-m3
+            ARM_CPU ?= cortex-m3
+            CFLAGS += -mcpu=$(ARM_CPU)
+        endif
+        CFLAGS += -mthumb
+        TEE_OS = no_os
+    else ifeq ($(CROSS_COMPILE),armcc)
+        ARM_CPU ?= cortex-m3
+        CFLAGS += --cpu $(ARM_CPU) --littleend
+        CFLAGS += --thumb
+    else ifeq ($(CROSS_COMPILE),armclang)
+        ifeq ($(ARM_CPU), cortex-m33)
+            CFLAGS += -march=armv8-m.main
+            CFLAGS += -mcmse
+            CFLAGS += -mfpu=none
+            CFLAGS += -DARCH_V8M
+        else
+            ARM_CPU ?= cortex-m3
+            CFLAGS += -mcpu=$(ARM_CPU)
+        endif
+        CFLAGS += --target=arm-arm-none-eabi -mlittle-endian
+        CFLAGS += -mthumb
+        CFLAGS += -DCC_TEE -DDX_PLAT_MPS2_PLUS
+    endif
+    # For arm-eabi- assume a15, otherwise assume a9 (zynq7000)
+    ARM_CPU ?= $(if $(filter arm-eabi-,$(CROSS_COMPILE)),cortex-a15,cortex-a9)
+    ifeq ($(filter arm ,$(CROSS_COMPILE)),$(CROSS_COMPILE))
+        CFLAGS += --cpu $(ARM_CPU) --littleend
+    endif
+    CFLAGS += $(if $(filter arm-eabi-,$(CROSS_COMPILE)),-DARCH_ARM -DARM_CPU_CORTEX_A15=1)
+    # for optee_os
+    ifeq ($(CROSS_COMPILE),arm-linux-gnueabihf-)
+        CFLAGS += -mfloat-abi=soft
+    endif #arm-linux-gnueabihf-
+
+    export CORTEX
+    export ARM_CPU
+endif #arm
+
+ifeq ($(ARCH),arm64)
+	# aarch64-linux-gnu-
+	CROSS_COMPILE := $(if $(filter aarch64-%,$(CROSS_COMPILE)),$(CROSS_COMPILE),aarch64-linux-gnu-)
+	ARCH_ENDIAN = LITTLE
+endif
+
+ifneq ($(filter i686 x86 x86win x86_64,$(ARCH)),) # x86* Arch.
+	ARCH_ENDIAN = LITTLE
+endif
+
+ifeq ($(ARCH),x86win)
+	# Compiling for x86-windows - using MinGW toolchain.
+	CROSS_COMPILE ?= i586-mingw32msvc-
+endif
+
+ifeq ($(filter arm arm-dsm- armcc ,$(CROSS_COMPILE)),$(CROSS_COMPILE))
+CC_DEF = 1
+CC = armcc
+LD = armcc
+AR = armar
+ifneq ($(CROSS_COMPILE),armcc)
+override TEE_OS = no_os
+endif
+endif
+
+ifeq ($(filter armclang ,$(CROSS_COMPILE)),$(CROSS_COMPILE))
+CC_DEF = 1
+CC = armclang
+LD = armlink
+AR = armar
+endif
+
+# subfolder for compilation/generation outcome/objects/binaries
+BUILDDIR = $(PWD)/build-$(CROSS_COMPILE:%-=%)
+
+# Object file suffix
+OBJEXT = .o
+
+# Library prefix
+LIBPRE = lib
+
+# In Unix/Linux there is no extension to executables. Set to ".exe" for Windows.
+EXEEXT =
+
+
+ifeq ($(CC_DEF),)
+CC = $(CROSS_COMPILE)gcc
+CPP = $(CROSS_COMPILE)g++
+LD = $(CROSS_COMPILE)gcc
+AR = $(CROSS_COMPILE)ar
+RANLIB = $(CROSS_COMPILE)ranlib
+endif
+
+# Helper variables for complex string definitions
+comma := ,
+
+############
+# Logged execution "function". To be used with make's $(call...).
+# Its "parameter is the command to execute
+# The "function" puts all stdout into LOGFILE. The stderr is output to both terminal and a tmp file, than appends
+# the error to the LOGFILE.
+# This complexity is required because of pipe's nature which prevents appending while piping into the log file.
+ifeq ($(LOGFILE),-)
+	exec_logged = $(1)
+	exec_logged_evaled = $(1)
+else
+	exec_logged = ( $(ECHO) $(shell date): "$(1)"  >> $(LOGFILE) ; ( $(1) ) >>$(LOGFILE) 2>logerr.tmp ; err=$$? ; cat logerr.tmp ; cat logerr.tmp >> $(LOGFILE) ; rm logerr.tmp ; exit $$err)
+	# nested version is to be $(call)ed from within another $(eval)
+	exec_logged_evaled = ( $(ECHO) $$(shell date): "$(1)"  >> $(LOGFILE) ; ( $(1) ) >>$(LOGFILE) 2>logerr.tmp ; err=$$$$? ; cat logerr.tmp ; cat logerr.tmp >> $(LOGFILE) ; rm logerr.tmp ; exit $$$$err)
+endif
+
+exec_logged_and_echo = $(ECHO) $(1) ; $(exec_logged)
+############
+
+
+# Generate dependency on existence only (i.e., don't care if newer).
+# To be used primarily for directories creation
+DEPENDENCY_ON_EXISTENCE_OF = $(filter-out $(wildcard $(1)),$(1))
+
+
+################################################
+### Handle project configuration definitions ###
+################################################
+
+PROJ_CFG_FNAME = proj.cfg
+PROJ_EXT_CFG_FNAME = proj.ext.cfg
+PROJ_CFG_PATH = $(HOST_PROJ_ROOT)/$(PROJ_CFG_FNAME)
+PROJ_EXT_CFG_PATH = $(HOST_PROJ_ROOT)/../$(PROJ_EXT_CFG_FNAME)
+CONFIGS_PATH = src/configs
+PROJ_CONFIGS_DIR = $(HOST_PROJ_ROOT)/$(CONFIGS_PATH)
+
+############ Special rules for project configuration selection ##############
+ifneq ($(wildcard $(PROJ_CFG_PATH)),$(PROJ_CFG_PATH)) # No proj.cfg linked
+
+all: # default in case there is no proj.cfg and setconfig_ was not used
+	$(info Invoke 'make setconfig_<config. name>' to select project configuration )
+	$(error 'proj.cfg' not found)
+
+setconfig_%: $(PROJ_CONFIGS_DIR)/proj-%.cfg
+	@$(info [CFG] $(CONFIGS_PATH)/proj-$*.cfg --> proj.cfg)
+	@cd $(HOST_PROJ_ROOT) && ln -s $(CONFIGS_PATH)/proj-$*.cfg $(PROJ_CFG_FNAME)
+	@$(if $(findstring cc312,$<), $(if $(findstring integration_tests,$<),,$(if $(or $(findstring devel,$<), $(findstring llhw,$<)), make -C tests copy_infra_suite,)),)
+
+$(PROJ_CONFIGS_DIR)/proj-%.cfg:
+	@$(error Unknown project configuration. $@ does not exist.)
+
+clrconfig:
+	$(info [CFG-CLN] No active configuration )
+
+.PHONY: all setconfig_% clrconfig
+
+else
+### proj.cfg exists. Include it to get project configuration definitions ###
+
+# The includes order is important here:
+# External configurations in proj.ext.cfg may be overriden by those in host proj.cfg
+include $(PROJ_EXT_CFG_PATH)
+include $(PROJ_CFG_PATH)
+
+# default TEE_OS
+REE_OS ?= linux
+TEE_OS ?= cc_linux
+export REE_OS
+export TEE_OS
+#$(info REE_OS=$(REE_OS))
+#$(info TEE_OS=$(TEE_OS))
+
+#TestAL defs
+TESTAL_PATH_PAL = $(HOST_SRCDIR)/tests/infrastructure_suite/pal/lib
+TESTAL_PATH_HAL = $(HOST_SRCDIR)/tests/infrastructure_suite/hal/lib
+ifeq ($(ARM_CPU),cortex-a9)
+TESTAL_PAL_ARCH = ca9
+endif
+ifeq ($(ARM_CPU),cortex-m3)
+TESTAL_PAL_ARCH = cm3
+endif
+ifeq ($(ARM_CPU),cortex-m33)
+TESTAL_PAL_ARCH = cm33
+endif
+ifeq ($(ARCH),arm64)
+TESTAL_PAL_ARCH = ca72.ca53
+endif
+TESTAL_PAL_OS = $(subst cc_,,$(TEE_OS))
+
+TESTAL_PAL_LIB = *PAL*$(TESTAL_PAL_OS)*$(CROSS_COMPILE)*$(TESTAL_PAL_ARCH)*.a
+TESTAL_HAL_LIB = *HAL*$(TESTAL_PAL_OS)*$(CROSS_COMPILE)*$(TESTAL_PAL_ARCH)*.a
+
+#Tests PAL HAL defs
+TESTS_PAL_LIB_NAME = libtests_pal.a
+TESTS_HAL_LIB_NAME = libtests_hal.a
+
+
+all: default
+
+# setconfig_/clrconfig are available only if $(PROJ_CONFIGS_DIR) exists
+# (i.e., eliminated on release trees)
+ifeq ($(wildcard $(PROJ_CONFIGS_DIR)),$(PROJ_CONFIGS_DIR))
+# Configuration rules
+setconfig_%:
+	$(if $(filter $(CONFIGS_PATH)/proj-$*.cfg,$(shell readlink $(PROJ_CFG_PATH))),$(info $* configuration is already set.),$(error Before changing configuration invoke 'make clrconfig'))
+
+clrconfig:
+	@$(ECHO) [CFG-CLN] X $(shell readlink $(PROJ_CFG_PATH))
+	@rm -f $(PROJ_CFG_PATH)
+	@$(ECHO) PROJ_NAME is $(PROJ_NAME)
+	@$(if $(findstring devel,$(PROJ_NAME)), echo calling clean_infra_suite && make -C tests clean_infra_suite, echo ff$(PROJ_NAME)ff clrconfig )
+endif
+
+endif
+
+# Provide lsconfig to list available configurations
+configs_list = $(foreach cfg_file,$(wildcard $(PROJ_CONFIGS_DIR)/proj-*.cfg),$(patsubst $(PROJ_CONFIGS_DIR)/proj-%.cfg,%,$(cfg_file)))
+lsconfig:
+	@$(info Available project configurations:)
+	@$(foreach cfg_file,$(configs_list),$(info $(cfg_file)))
+
+.PHONY: all setconfig_% clrconfig lsconfig

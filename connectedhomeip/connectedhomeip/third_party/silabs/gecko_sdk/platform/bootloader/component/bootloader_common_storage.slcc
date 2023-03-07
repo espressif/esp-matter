@@ -1,0 +1,28 @@
+id: bootloader_common_storage
+label: Common storage
+package: bootloader
+description: >
+  Common functionality for storage components.
+category: Platform|Bootloader|Storage
+quality: production
+source:
+  - path: platform/bootloader/storage/btl_storage.c
+  - path: platform/bootloader/storage/btl_storage_library.c
+  - path: platform/bootloader/storage/bootloadinfo/btl_storage_bootloadinfo.c
+include:
+  - path: platform/bootloader
+    file_list:
+    - path: storage/btl_storage.h
+    - path: storage/internal_flash/btl_storage_internal_flash.h
+    - path: storage/btl_storage_internal.h
+    - path: storage/bootloadinfo/btl_storage_bootloadinfo.h
+provides:
+  - name: bootloader_common_storage
+  - name: bootloader_nonsecure_incompatible
+    condition: [bootloader_core_nonsecure]
+requires:
+  - name: bootloader_storage_slots
+  - name: bootloader_debug
+config_file:
+  - path: platform/bootloader/config/btl_storage_cfg.h
+    file_id: btl_storage_config

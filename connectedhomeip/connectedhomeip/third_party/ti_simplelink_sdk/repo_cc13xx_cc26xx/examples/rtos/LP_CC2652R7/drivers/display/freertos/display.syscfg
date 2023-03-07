@@ -1,0 +1,82 @@
+/*
+ * Copyright (c) 2018-2021, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+// @cliArgs --board /ti/boards/LP_CC2652R7 --rtos freertos
+
+/*
+ *  display.syscfg
+ */
+
+/* ======== Board ======== */
+var board = system.deviceData.board.name;
+
+/* ======== BOOSTXL SHARP128 ======== */
+var SharpLCD = scripting.addHardware("/ti/boards/boosterpacks/BOOSTXL-SHARP128");
+var SharpLCD_96 = scripting.addHardware("/ti/boards/boosterpacks/MSP430BOOST-SHARP96");
+
+/* ======== TIRTOS7 ======== */
+if (system.getRTOS() === "tirtos7") {
+    const tirtos7_release_syscfg_js = system.getScript("tirtos7_release.syscfg.js");
+}
+
+/* ======== Display ======== */
+var Display = scripting.addModule("/ti/display/Display");
+var displayUART = Display.addInstance();
+displayUART.$hardware = system.deviceData.board.components.XDS110UART;
+displayUART.enableANSI = true;
+
+var displayLCD  = Display.addInstance();
+displayLCD.displayType = "LCD";
+if (board.match(/CC32/)) {
+    /* lcdSS is aliased to device pin 3, because the hardware pin (6 by default) is NC for CC32XX Launchpads
+     * See the SHARP compatibility note in Board.html for these boards
+     */
+    displayLCD.lcdSSPin.$assign = "P03";
+
+    /* We need to assign these pins on top of hardware so they match the board header */
+    displayLCD.lcdEnablePin.$assign = "boosterpack.5";
+    displayLCD.lcdPowerPin.$assign  = "boosterpack.2";
+
+    /* That means we also need to suppress the relevant warnings (this pin is connected to hardware) */
+    scripting.suppress("@@@.+?@@@", displayLCD, "lcdEnablePin");
+    scripting.suppress("@@@.+?@@@", displayLCD, "lcdPowerPin");
+
+    displayLCD.spi.$hardware = SharpLCD.components.SHARP_LCD_DISPLAY.subComponents.SPI;
+}
+else {
+    displayLCD.$hardware = SharpLCD.components.SHARP_LCD_DISPLAY;
+}
+
+/* ======== GPIO ======== */
+var GPIO = scripting.addModule("/ti/drivers/GPIO");
+var gpio = GPIO.addInstance();
+gpio.$hardware = system.deviceData.board.components.LED0;
+gpio.$name = "CONFIG_GPIO_LED_0";

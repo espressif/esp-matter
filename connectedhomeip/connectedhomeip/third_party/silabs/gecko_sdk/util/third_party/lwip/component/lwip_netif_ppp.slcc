@@ -1,0 +1,79 @@
+id: lwip_netif_ppp
+label: "PPP"
+pretty_name : "LWIP generic network interface device drivers for PPP"
+package: platform
+description: >
+    The lwIP PPP support is based from pppd (http://ppp.samba.org) with
+    huge changes to match code size and memory requirements for embedded
+    devices. Please read /doc/ppp.txt and ppp/PPPD_FOLLOWUP for a detailed
+    explanation.
+category: LwIP|netif
+quality: production
+provides:
+  - name: lwip_netif
+    allow_multiple: true
+  - name: lwip_netif_ppp
+requires:
+  - name: lwip_core
+source:
+  - path: util/third_party/lwip/lwip/src/netif/ppp/polarssl/arc4.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/polarssl/des.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/polarssl/md4.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/polarssl/md5.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/polarssl/sha1.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/auth.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/ccp.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/chap_ms.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/chap-md5.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/chap-new.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/demand.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/eap.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/ecp.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/eui64.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/fsm.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/ipcp.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/ipv6cp.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/lcp.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/magic.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/mppe.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/multilink.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/ppp.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/pppapi.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/pppcrypt.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/pppoe.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/pppol2tp.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/pppos.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/upap.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/utils.c
+  - path: util/third_party/lwip/lwip/src/netif/ppp/vj.c
+
+include:  
+  - path: util/third_party/lwip/lwip/src/include
+    file_list:
+    - path: netif/ppp/polarssl/arc4.h
+    - path: netif/ppp/polarssl/des.h
+    - path: netif/ppp/polarssl/md4.h
+    - path: netif/ppp/polarssl/md5.h
+    - path: netif/ppp/polarssl/sha1.h
+    - path: netif/ppp/ccp.h
+    - path: netif/ppp/chap_ms.h
+    - path: netif/ppp/chap-md5.h
+    - path: netif/ppp/chap-new.h
+    - path: netif/ppp/eap.h
+    - path: netif/ppp/ecp.h
+    - path: netif/ppp/eui64.h
+    - path: netif/ppp/fsm.h
+    - path: netif/ppp/ipcp.h
+    - path: netif/ppp/ipv6cp.h
+    - path: netif/ppp/lcp.h
+    - path: netif/ppp/magic.h
+    - path: netif/ppp/mppe.h
+    - path: netif/ppp/ppp.h
+    - path: netif/ppp/pppapi.h
+    - path: netif/ppp/pppcrypt.h
+    - path: netif/ppp/pppdebug.h
+    - path: netif/ppp/pppoe.h
+    - path: netif/ppp/pppol2tp.h
+    - path: netif/ppp/pppos.h
+    - path: netif/ppp/upap.h
+    - path: netif/ppp/vj.h

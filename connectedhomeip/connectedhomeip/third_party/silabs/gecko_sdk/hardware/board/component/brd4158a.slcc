@@ -1,0 +1,70 @@
+!!omap
+- id: brd4158a
+- label: BRD4158A
+- package: platform
+- description: Board support for BRD4158A.
+- category: Platform|Board|Radio Board
+- quality: production
+- requires:
+  - name: efr32mg13p733f512gm48
+  - name: brd4158a_config
+  - name: hardware_board_mainboard
+- provides:
+  - name: brd4158a
+  - name: hardware_board
+  - name: hardware_board_rb
+  - name: hardware_board_from_stk
+  - name: hardware_board_from_slwrb4158a
+  - name: hardware_board_has_si70xx
+  - name: hardware_board_has_tempsensor
+  - name: hardware_board_has_vcom
+  - name: hardware_board_has_spiflash
+  - name: hardware_board_has_hfxo
+  - name: hardware_board_has_lfxo
+  - name: hardware_board_supports_rf_band_2400
+  - name: hardware_board_supports_rf_band_915
+  - name: hardware_board_supports_2_rf_bands
+  - name: hardware_board_default_rf_band
+  - name: hardware_board_default_rf_band_915
+- recommends:
+  - id: brd4001a
+  - id: iostream_usart
+    instance:
+    - vcom
+  - id: bootloader_uart_driver
+  - id: i2cspm
+    instance:
+    - sensor
+  - id: ls013b7dh03
+  - id: memlcd_usart
+  - id: simple_led
+    instance:
+    - led0
+    - led1
+  - id: simple_button
+    instance:
+    - btn0
+    - btn1
+  - id: mx25_flash_shutdown_usart
+  - id: bootloader_spi_controller_usart_driver
+  - id: bootloader_spi_peripheral_usart_driver
+- template_contribution:
+  - name: board_default_init
+    value: sl_board_disable_vcom()
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD4158A"'
+  - name: SL_BOARD_REV
+    value: '"A03"'
+- tag:
+  - board:pn:BRD4158
+  - board:variant:A
+  - board:revision:A03
+  - board:device:efr32mg13p733f512gm48
+  - hardware:has:vcom
+  - hardware:has:pti
+  - hardware:has:sensor:si7021
+  - hardware:has:display:ls013b7dh03
+  - hardware:has:led:2
+  - hardware:has:button:2
+  - hardware:has:memory:spi:mx25r8035f

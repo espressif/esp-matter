@@ -1,0 +1,30 @@
+id: restrictions_profile_sun
+label: Restrictions - SUN Profile
+package: platform
+description: Component provides sun_profile.restriction configuration files by logic
+category: Platform|Radio Configuration
+quality: production
+root_path: platform/radio/radio_configuration/restrictions
+requires:
+  - name: "rail_lib"
+  - name: "device_has_radio"
+
+#------- Set provided component name
+provides:
+  - name: restrictions_profile_sun
+
+#-------- Include restriction config json file --------
+#
+# SUN profile RAIL restrictions
+#
+config_file:
+  - path: profile_sun.restriction
+    directory: rail
+    condition:
+      - device_sdid_220
+
+#-------- Hides Component for user in Studio ---------
+ui_hints:
+  visibility: never
+
+

@@ -1,0 +1,87 @@
+purpose to beat the heck out of read sst template lines;
+
+read sst name nonexistent check "XYZ PDQ";  // fail
+
+/*
+set sst name passwords data "Very short data set";
+read sst name passwords check "Very short data set";
+read sst name passwords check greeble;
+//read sst name passwords assign dorf;
+//read sst name passwords print;
+*/
+
+/*
+set sst uid 1234 data *;
+read sst uid 1234 check "Very short data set";
+//read sst uid 1234 check greeble;
+//read sst uid 1234 assign dorf;
+*/
+
+/*
+set sst name moe curly larry data *;
+remove sst *active;
+read sst *active assign shemp;
+read sst *active print;
+*/
+
+//read sst uid 205 assign aVariable;
+
+//read sst uid 15 41 check "self-destruct using top secret corbomite device" expect pass;
+
+//read sst uid 17 41 19 31 10 53 data *;
+
+/*
+set sst name apollo_11 data *;
+read sst name apollo_11 hash;
+*/
+
+/*
+set sst name jim lovell gemini_7 gemini_12 apollo_8 apollo_13 data *;
+read sst name jim lovell gemini_7 gemini_12 apollo_8 apollo_13 hash;
+secure hash neq jim lovell gemini_7 gemini_12 apollo_8 apollo_13;
+*/
+
+/*
+set sst name friendship_7 apollo_14 data *;
+read sst name friendship_7 apollo_14 hash;
+secure hash neq friendship_7 apollo_14;
+*/
+
+// /*
+set sst name astp data *;
+read sst name astp hash;
+secure hash neq astp;
+// */
+
+/*
+set sst name chapman cleese gilliam idle jones palin data *;
+4 of {
+    set sst name cleveland data *;
+    read sst *active check "totally wrong data";
+    remove sst *active;
+} */
+
+/*
+2 to 6 of {
+    read sst name passwords check "Very short data set";
+    read sst name CCnumbers check "Ask not what your country can do for you.";
+    read sst name * data *;
+    read sst uid * data * expect pass;
+} */
+
+/*
+shuffle {
+    read sst name passwords check "Very short data set";
+    read sst name CCnumbers data *;
+    read sst name Kirk check "Beam me up.";
+    read sst uid 42 check "Don't panic.";
+    read sst name Spock check "Fascinating." expect pass;
+    read sst name McCoy check "I'm a doctor, not a bricklayer." expect pass;
+    read sst name Scotty check "I'm giving her all she's got!" expect pass;
+} */
+
+/*
+read sst name neil buzz mike data *;
+remove sst *active expect pass;  // zap a random currently-active SST asset
+remove sst *deleted;  // delete an already-deleted asset
+*/

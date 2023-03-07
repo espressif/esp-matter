@@ -1,0 +1,39 @@
+id: "connect_aes_security_library"
+label: "AES Security (Library)"
+package: "Flex"
+category: "Connect"
+quality: "production"
+ui_hints:
+  visibility: never
+description: "Provides the Connect AES Security library."
+provides:
+  - name: "connect_aes_security_implementation"
+requires:
+  - name: "connect_aes_security"
+library:
+  - path: "protocol/flex/libs/libconnect-aes-security-library-efr32xg1-iar.a"
+    condition:
+      - "toolchain_iar"
+      - device_series_1
+      - device_sdid_80
+  - path: "protocol/flex/libs/libconnect-aes-security-library-efr32xg1x-iar.a"
+    condition:
+      - "toolchain_iar"
+      - device_series_1
+  - path: "protocol/flex/libs/libconnect-aes-security-library-efr32xg2x-iar.a"
+    condition:
+      - "toolchain_iar"
+      - device_series_2
+  - path: "protocol/flex/libs/libconnect-aes-security-library-efr32xg1-gcc.a"
+    condition:
+      - "toolchain_gcc"
+      - device_series_1
+      - device_sdid_80
+  - path: "protocol/flex/libs/libconnect-aes-security-library-efr32xg1x-gcc.a"
+    condition:
+      - "toolchain_gcc"
+      - device_series_1
+  - path: "protocol/flex/libs/libconnect-aes-security-library-efr32xg2x-gcc.a"
+    condition:
+      - "toolchain_gcc"
+      - device_series_2

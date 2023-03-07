@@ -1,0 +1,186 @@
+# Copyright 2019 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/error.gni")
+import("$dir_pw_build/target_types.gni")
+
+# Declare a facade.
+#
+# A Pigweed facade is an API layer that has a single implementation it must
+# link against. Typically this will be done by pointing a build arg like
+# `pw_[module]_BACKEND` at a backend implementation for that module.
+#
+# pw_facade creates two targets:
+#
+#   $target_name: The public-facing pw_source_set that provides the API and
+#     implementation (backend). Users of the facade should depend on this.
+#   $target_name.facade: A private source_set that provides ONLY the API. ONLY
+#     backends should depend on this.
+#
+# If the target name matches the directory name (e.g. //foo:foo), a ":facade"
+# alias of the facade target (e.g. //foo:facade) is also provided. This avoids
+# the need to repeat the directory name, for consistency with the main target.
+#
+# The facade's headers are split out into the *.facade target to avoid circular
+# dependencies. Here's a concrete example to illustrate why this is needed:
+#
+#   foo_BACKEND = "//foo:foo_backend_bar"
+#
+#   pw_facade("foo") {
+#     backend = foo_BACKEND
+#     public = [ "foo.h" ]
+#     sources = [ "foo.cc" ]
+#   }
+#
+#   pw_source_set("foo_backend_bar") {
+#     deps = [ ":foo.facade" ]
+#     sources = [ "bar.cc" ]
+#   }
+#
+# This creates the following dependency graph:
+#
+#   foo.facade  <-.
+#    ^             \
+#    |              \
+#    |               \
+#   foo  ---------->  foo_backend_bar
+#
+# This allows foo_backend_bar to include "foo.h". If you tried to directly
+# depend on `foo` from `foo_backend_bar`, you'd get a dependency cycle error in
+# GN.
+#
+# Accepts the standard pw_source_set args with the following additions:
+#
+# Args:
+#  backend: (required) The dependency that implements this facade (a GN
+#    variable)
+#  public: (required) The headers exposed by this facade. A facade acts as a
+#    tool to break dependency cycles that come from the backend trying to
+#    include headers from the facade itself. If the facade doesn't expose any
+#    headers, it's basically the same as just depending directly on the build
+#    arg that `backend` is set to.
+#  require_link_deps: A list of build targets that must be included in
+#    pw_build_LINK_DEPS if this facade is used. This mechanism is used to
+#    avoid circular dependencies in low-level facades like pw_assert.
+#
+template("pw_facade") {
+  assert(defined(invoker.backend),
+         "pw_facade requires a reference to a backend variable for the facade")
+  assert(defined(invoker.public),
+         "If your facade does not explicitly expose an API that a backend " +
+             "must depend on, you can just directly depend on the build arg " +
+             "that the `backend` template argument would have been set to.")
+
+  _facade_name = "$target_name.facade"
+
+  if (get_path_info(get_label_info(":$target_name", "dir"), "name") ==
+      get_label_info(":$target_name", "name")) {
+    group("facade") {
+      public_deps = [ ":$_facade_name" ]
+    }
+  }
+
+  _facade_vars = [
+    # allow_circular_includes_from should very rarely be used, but when it is,
+    # it only applies to headers, so should be in the .facade target.
+    "allow_circular_includes_from",
+    "public_configs",
+    "public_deps",
+    "public",
+  ]
+  pw_source_set(_facade_name) {
+    forward_variables_from(invoker, _facade_vars, [ "require_link_deps" ])
+  }
+
+  if (invoker.backend == "") {
+    # Try to guess the name of the facade's backend variable.
+    _dir = get_path_info(get_label_info(":$target_name", "dir"), "name")
+    if (target_name == _dir) {
+      _varname = target_name + "_BACKEND"
+    } else {
+      # There is no way to capitalize this string in GN, so use <FACADE_NAME>
+      # instead of the lowercase target name.
+      _varname = _dir + "_<FACADE_NAME>_BACKEND"
+    }
+
+    # If backend is not set to anything, create a script that emits an error.
+    # This will be added as a data dependency to the actual target, so that
+    # attempting to build the facade without a backend fails with a relevant
+    # error message.
+    pw_error(target_name + ".NO_BACKEND_SET") {
+      _label = get_label_info(":${invoker.target_name}", "label_no_toolchain")
+      message_lines = [
+        "Attempted to build the $_label facade with no backend.",
+        "",
+        "If you are using this facade, ensure you have configured a backend ",
+        "properly. The build arg for the facade must be set to a valid ",
+        "backend in the toolchain. For example, you may need to add a line ",
+        "like the following to the toolchain's .gni file:",
+        "",
+        "  $_varname = \"//path/to/the:backend\"",
+        "",
+        "If you are NOT using this facade, this error may have been triggered ",
+        "by trying to build all targets.",
+      ]
+    }
+  }
+
+  # Create a target that defines the main facade library. Always emit this
+  # target, even if the backend isn't defined, so that the dependency graph is
+  # correctly expressed for gn check.
+  pw_source_set(target_name) {
+    # The main library contains everything else specified in the template.
+    _ignore_vars = _facade_vars + [
+                     "backend",
+                     "require_link_deps",
+                   ]
+    forward_variables_from(invoker, "*", _ignore_vars)
+
+    public_deps = [ ":$_facade_name" ]
+
+    # If the backend is set, inject it as a dependency.
+    if (invoker.backend != "") {
+      public_deps += [ invoker.backend ]
+    } else {
+      # If the backend is not set, depend on the *.NO_BACKEND_SET target.
+      public_deps += [ ":$target_name.NO_BACKEND_SET" ]
+    }
+  }
+
+  if (defined(invoker.require_link_deps) && invoker.backend != "") {
+    # Check that the specified labels are listed in pw_build_LINK_DEPS. This
+    # ensures these dependencies are available during linking, even if nothing
+    # else in the build depends on them.
+    foreach(label, invoker.require_link_deps) {
+      _required_dep = get_label_info(label, "label_no_toolchain")
+      _dep_is_in_link_dependencies = false
+
+      foreach(link_dep, pw_build_LINK_DEPS) {
+        if (get_label_info(link_dep, "label_no_toolchain") == _required_dep) {
+          _dep_is_in_link_dependencies = true
+        }
+      }
+
+      _facade_name = get_label_info(":$target_name", "label_no_toolchain")
+      assert(_dep_is_in_link_dependencies,
+             "$_required_dep must be listed in the pw_build_LINK_DEPS build " +
+                 "arg when the $_facade_name facade is in use. Please update " +
+                 "your toolchain configuration.")
+    }
+  } else {
+    not_needed(invoker, [ "require_link_deps" ])
+  }
+}

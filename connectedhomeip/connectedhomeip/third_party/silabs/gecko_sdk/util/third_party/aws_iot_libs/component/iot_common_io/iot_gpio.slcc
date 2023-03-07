@@ -1,0 +1,43 @@
+id: iot_gpio
+category: Third Party|Amazon FreeRTOS - AWS Libraries|Common I/O
+label: IoT GPIO
+description: >
+  Silicon Labs' Implementation of Amazon Common I/O GPIO API
+  Doc: https://docs.aws.amazon.com/freertos/latest/lib-ref/common-io/files.html
+package: amazon_platform
+quality: production
+instantiable:
+  prefix: inst
+provides:
+  - name: iot_gpio
+    allow_multiple: true
+requires:
+  - name: gpiointerrupt
+  - name: emlib_cmu
+  - name: emlib_gpio
+  - name: freertos
+  - name: device_init
+  - name: status
+root_path: util/third_party/aws_iot_libs
+config_file:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_gpio/config/iot_gpio_cfg_{{instance}}.h
+    file_id: iot_gpio_cfg
+
+source:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_gpio/source/iot_gpio_hal.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_gpio/test/iot_gpio_test.c
+    condition: ["aws_tests_defs"]
+
+include:
+  - path: libraries/abstractions/common_io/include
+    file_list:
+      - path: iot_gpio.h
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_gpio/include
+    file_list:
+      - path: iot_gpio_desc.h
+
+template_file:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_gpio/template/iot_gpio_desc.c.jinja
+template_contribution:
+  - name: iot_gpio_instances
+    value: "{{instance}}"

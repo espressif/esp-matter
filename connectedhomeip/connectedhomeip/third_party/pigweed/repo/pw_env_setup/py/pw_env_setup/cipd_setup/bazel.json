@@ -1,0 +1,29 @@
+{
+  "included_files": [
+    "buildifier.json"
+  ],
+  "packages": [
+    {
+      "path": "fuchsia/third_party/bazel/${platform}",
+      "platforms": [
+        "linux-amd64",
+        "mac-amd64"
+      ],
+      "tags": [
+        "version:2@5.3.2.2"
+      ],
+      "version_file": ".versions/bazel.cipd_version"
+    },
+    {
+      "path": "fuchsia/third_party/bazel/${platform}",
+      "platforms": [
+        "windows-amd64"
+      ],
+      "tags": [
+        "version:2@5.3.2"
+      ],
+      "_comment": "The Fuchsia 3pp package adds a patch_version to Linux and Mac, but not Windows",
+      "version_file": ".versions/bazel.cipd_version"
+    }
+  ]
+}

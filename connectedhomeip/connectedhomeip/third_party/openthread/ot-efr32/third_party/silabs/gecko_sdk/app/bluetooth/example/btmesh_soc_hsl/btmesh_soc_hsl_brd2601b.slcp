@@ -1,0 +1,174 @@
+project_name: btmesh_soc_hsl
+package: Btmesh
+label: Bluetooth Mesh - SoC HSL Light
+description: >
+  An out-of-the-box software demo where the LEDs of the mainboard can be
+  switched on and off, and their lighting intensity, hue, and saturation
+  can be set. The example also tries to establish friendship as a Friend node.
+
+category: Bluetooth Mesh Examples
+quality: production
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Bluetooth Mesh"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+
+component:
+  - id: app_assert
+  - id: app_log
+  - id: bluetooth_feature_system
+  - id: bootloader_interface
+  - id: brd2601b
+  - id: btmesh_event_log
+  - id: btmesh_factory_reset
+  - id: btmesh_feature_gatt_prov_bearer
+  - id: btmesh_feature_relay
+  - id: btmesh_friend
+  - id: btmesh_generic_base
+  - id: btmesh_hsl_server
+  - id: btmesh_lc_server
+  - id: btmesh_lighting_server
+  - id: btmesh_provisioning_decorator
+  - id: btmesh_proxy
+  - id: btmesh_scene_server
+  - id: btmesh_scheduler_server
+  - id: btmesh_stack
+  - id: btmesh_time_server
+  - id: cli
+    instance:
+    - example
+  - id: iostream_usart
+    instance:
+      - vcom
+  - id: mpu
+  - id: in_place_ota_dfu
+  - id: rail_util_pti
+  - id: simple_button
+    instance:
+      - btn0
+      - btn1
+  - id: simple_rgb_pwm_led
+    instance:
+      - rgb_led0
+  - id: simple_timer
+
+source:
+  - path: app.c
+  - path: app_led_rgb.c
+  - path: app_out_log.c
+  - path: local_cli_commands.c
+  - path: main.c
+  - path: rgbled_brd2601.c
+
+include:
+  - path: .
+    file_list:
+    - path: app.h
+    - path: app_led.h
+    - path: rgbled_brd2601.h
+
+config_file:
+  - override:
+      component: gatt_configuration
+      file_id: gatt_configuration_file_id
+    path: gatt_configuration.btconf
+    directory: btconf
+  - override:
+      component: btmesh_dcd_configuration
+      file_id: dcd_configuration_file_id
+    path: dcd_config.btmeshconf
+    directory: btmeshconf
+
+readme:
+  - path: ../../documentation/example/btmesh_soc_hsl/readme.md
+
+other_file:
+  - path: ../../script/create_bl_files.bat
+  - path: ../../script/create_bl_files.sh
+  - path: ../../documentation/example/btmesh_soc_hsl/readme_img0.png
+    folder: images
+  - path: ../../documentation/example/btmesh_soc_hsl/readme_img1.png
+    folder: images
+  - path: ../../documentation/example/btmesh_soc_hsl/readme_img2.png
+    folder: images
+  - path: ../../documentation/example/btmesh_soc_hsl/readme_img3.png
+    folder: images
+  - path: ../../documentation/example/btmesh_soc_hsl/readme_img4.png
+    folder: images
+  - path: ../../documentation/example/btmesh_soc_hsl/readme_img5.png
+    folder: images
+  - path: ../../documentation/example/btmesh_soc_hsl/readme_img6.png
+    folder: images
+  - path: ../../documentation/example/btmesh_soc_hsl/readme_img7.png
+    folder: images
+  - path: ../../documentation/example/btmesh_soc_hsl/readme_img8.png
+    folder: images
+
+configuration:
+  - name: APP_LOG_LEVEL
+    value: "APP_LOG_LEVEL_INFO"
+  - name: SL_BTMESH_LC_SERVER_PROPERTY_STATE_DEFAULT_ENABLE_CFG_VAL
+    value: "1"
+  - name: SL_BTMESH_LC_SERVER_TIME_RUN_ON_DEFAULT_CFG_VAL
+    value: "2000"
+  - name: SL_BTMESH_LC_SERVER_TIME_PROLONG_DEFAULT_CFG_VAL
+    value: "500"
+  - name: SL_BTMESH_LC_SERVER_LIGHTNESS_ON_DEFAULT_CFG_VAL
+    value: "65535"
+  - name: SL_BTMESH_LC_SERVER_LIGHTNESS_PROLONG_DEFAULT_CFG_VAL
+    value: "32767"
+  - name: SL_BTMESH_LC_SERVER_LIGHTNESS_STANDBY_DEFAULT_CFG_VAL
+    value: "2000"
+  - name: SL_BTMESH_LC_SERVER_AMBIENT_LUX_LEVEL_ON_DEFAULT_CFG_VAL
+    value: "1000"
+  - name: SL_BTMESH_LC_SERVER_AMBIENT_LUX_LEVEL_PROLONG_DEFAULT_CFG_VAL
+    value: "500"
+  - name: SL_BTMESH_LC_SERVER_AMBIENT_LUX_LEVEL_STANDBY_DEFAULT_CFG_VAL
+    value: "20"
+  - name: SL_BOARD_ENABLE_DISPLAY
+    value: "1"
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+    condition:
+      - "iostream_usart"
+  - name: SL_HEAP_SIZE
+    value: "0x5000"
+  - name: SL_PSA_KEY_USER_SLOT_COUNT
+    value: "0"
+    condition:
+      - psa_crypto
+  - name: SL_STACK_SIZE
+    value: "0x1500"
+
+define:
+  - name: SL_BTMESH_HSL_RGB_BRD2601
+
+template_contribution:
+  - name: cli_command
+    value:
+      name: info
+      handler: info
+      help: "Prints info about BT address and mesh UUID"
+    condition:
+      - cli
+
+tag:
+  - hardware:board_only
+  - hardware:device:sdid:!205
+  - hardware:component:button:2+
+  - hardware:component:led:2+
+  - hardware:rf:band:2400
+  - prebuilt_demo
+
+ui_hints:
+  highlight:
+    - path: config/btconf/gatt_configuration.btconf
+      focus: false
+    - path: config/btmeshconf/dcd_config.btmeshconf
+      focus: false
+    - path: readme.md
+      focus: true

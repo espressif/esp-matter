@@ -1,0 +1,131 @@
+package: Zigbee
+description: A component implementing the server-side functionality of the Smart Energy
+  1.2 Events cluster. Once the event log is full, new events will start overwriting
+  old events at the beginning of the table.
+label: Events Server
+quality: production
+id: zigbee_events_server
+category: Zigbee|Cluster Library|Smart Energy
+provides:
+   - name: "zigbee_events_server"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/events-server/config/events-server-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/events-server/events-server.c
+  - path: protocol/zigbee/app/framework/plugin/events-server/events-server-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/events-server/events-server-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/events-server
+    file_list:
+      - path: events-server.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_events_server
+  - name: cluster_service
+    value:
+       cluster_id: "0x0709"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "SERVER"
+       service_function: "emberAfEventsClusterServerCommandParse"    
+  - name: cli_group
+    value:
+      group: plugin
+      name: events-server
+      help: events-server related commands.
+  - name: cli_command
+    value:
+      group: events-server
+      name: clear
+      handler: emAfEventsServerCliClear
+      help: Clears out the specified event log for the provided endpoint.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint8
+        help: The log to be cleared
+  - name: cli_command
+    value:
+      group: events-server
+      name: print
+      handler: emAfEventsServerCliPrint
+      help: Prints the specified event log for the provided endpoint.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint8
+        help: The log to be printed
+  - name: cli_command
+    value:
+      group: events-server
+      name: eprint
+      handler: emAfEventsServerCliPrintEvent
+      help: Prints the event at the given index in the specified event log for the provided endpoint.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint8
+        help: The relevant log
+      - type: uint8
+        help: The index within the event log to print
+  - name: cli_command
+    value:
+      group: events-server
+      name: set
+      handler: emAfEventsServerCliSet
+      help: Sets the event at the specified index in the event log for the provided endpoint.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint8
+        help: The relevant log
+      - type: uint8
+        help: The index within the event log to set
+      - type: uint16
+        help: The event ID
+      - type: uint32
+        help: The event time
+      - type: string
+        help: Additional event data
+  - name: cli_command
+    value:
+      group: events-server
+      name: add
+      handler: emAfEventsServerCliAdd
+      help: Appends the event to the event log for the provided endpoint. Once the event      log is full, new events will start overwriting old events at the beginning of the table.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint8
+        help: The relevant log
+      - type: uint16
+        help: The event id
+      - type: uint32
+        help: The event time
+      - type: string
+        help: Additional event data
+  - name: cli_command
+    value:
+      group: events-server
+      name: publish
+      handler: emAfEventsServerCliPublish
+      help: Publishes an event.
+      argument:
+      - type: uint16
+        help: The destination node ID
+      - type: uint8
+        help: The source endpoint
+      - type: uint8
+        help: The destination endpoint
+      - type: uint8
+  - name: cluster_functions
+    value:
+      cluster_name: Events
+      cluster_id: 0x709
+      cluster_type: server
+      init_function: emberAfEventsClusterServerInitCallback     
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/events-server

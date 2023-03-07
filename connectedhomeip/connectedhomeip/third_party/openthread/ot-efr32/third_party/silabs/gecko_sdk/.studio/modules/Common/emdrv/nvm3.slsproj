@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="com.silabs.sdk.exx32.common.emdrv.nvm3" label="NVM3" contentRoot="$(sdkInstallationPath:default())/platform/emdrv">
+  <property key="category" value="efm32|Common"/>
+  <includePath uri="common/inc" />
+  <includePath uri="nvm3/inc" />
+
+  <!-- IAR library files-->
+  <libraryFile uri="nvm3/lib/libnvm3_CM0P_iar.a" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.iar.*" />
+  <libraryFile uri="nvm3/lib/libnvm3_CM3_iar.a"  partCompatibility="::ARMCore==CORTEX_M3"  toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.iar.*" />
+  <libraryFile uri="nvm3/lib/libnvm3_CM4_iar.a"  partCompatibility="::ARMCore==CORTEX_M4F" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.iar.*" />
+
+  <!-- gcc library files -->
+  <libraryPath uri="nvm3/lib" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.gnu.*" />
+  <libraryFile name="nvm3_CM0P_gcc" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.gnu.*" />
+  <libraryFile name="nvm3_CM3_gcc"  partCompatibility="::ARMCore==CORTEX_M3"  toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.gnu.*" />
+  <libraryFile name="nvm3_CM4_gcc"  partCompatibility="::ARMCore==CORTEX_M4F" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.gnu.*" />
+
+  <folder name="nvm3/src" uri="nvm3/src" />
+</project>

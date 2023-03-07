@@ -1,0 +1,26 @@
+id: zigbee_ecc_283k1_stub
+label: ECC 283k1 Stub Support
+package: Zigbee
+category: Zigbee|Stack
+quality: production
+
+description: Provides the 283k1 Elliptic Curve Cryptography stub support. Download the EmberZnet-Smart-Energy.zip side package for real version of library.
+
+provides:
+  - name: zigbee_ecc_283k1 # Purposely has non stub 'provides'.
+
+include:
+  - path: protocol/zigbee/stack/security/ecc
+    file_list:
+      - path: eccapi-283k1.h
+
+source:
+  - path: protocol/zigbee/stack/security/ecc/eccapi-283k1-stub.c
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_ecc_283k1_stub
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/ecc-283k1

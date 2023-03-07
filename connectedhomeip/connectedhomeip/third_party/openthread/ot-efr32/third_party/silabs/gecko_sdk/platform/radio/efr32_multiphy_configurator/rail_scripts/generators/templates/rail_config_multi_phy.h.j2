@@ -1,0 +1,70 @@
+{% extends "base.j2" %}
+{% block filename %}{{filename}}.h{% endblock %}
+{% block title %}{{title}} Header{% endblock %}
+{% block content %}
+#ifndef __{{filename|upper}}_H__
+#define __{{filename|upper}}_H__
+
+#include <stdint.h>
+#include "rail_types.h"
+{%- if multiPhyConfig.commonStructures.modeSwitchPhyModeIds|length %}
+#include "rail_ieee802154.h"
+{%- endif %}
+{%- if rail_internal %}
+#include "timing_state.h"
+{%- endif %}
+
+#define {{protocol|upper}}_ACCELERATION_BUFFER {{protocol}}AccelerationBuffer
+extern uint32_t {{protocol}}AccelerationBuffer[];
+{%- if multiPhyConfig.commonStructures.convDecodeBufferSize > 0 %}
+// NOTE: This buffer is to be used exclusively by hardware
+extern uint8_t convDecodeBuffer[];
+{%- endif %}
+{%- if rail_internal %}
+{%- if multiPhyConfig.commonStructures.modemConfigEntriesBase|length > 0 %}
+{% for modemConfigName, modemConfig in multiPhyConfig.commonStructures.modemConfigEntriesBase.items() %}
+extern const uint32_t {{modemConfigName}}[];
+{%- endfor %}
+{%- endif %}
+{%- if multiPhyConfig.commonStructures.modemConfigEntries|length > 0 %}
+{% for modemConfigName, modemConfig in multiPhyConfig.commonStructures.modemConfigEntries.items() %}
+extern const uint32_t {{modemConfigName}}[];
+{%- endfor %}
+{%- endif %}
+{%- for multiPhyConfigEntryName, multiPhyConfigEntry in multiPhyConfig.multiPhyConfigEntries.items() %}
+{% if multiPhyConfigEntry.phyName %}
+#define RAIL0_{{multiPhyConfigEntryName|upper}}_{{multiPhyConfigEntry.phyName|upper}}
+{% endif %}
+{%- if multiPhyConfigEntry.profile -%}
+#define RAIL0_{{multiPhyConfigEntryName|upper}}_PROFILE_{{multiPhyConfigEntry.profile|upper}}
+{%- endif %}
+extern const RAIL_ChannelConfig_t {{multiPhyConfigEntryName}}_channelConfig;
+extern const RAIL_ChannelConfigEntry_t {{multiPhyConfigEntryName}}_channels[];
+{%- endfor %}
+{%- else %}
+{%- set firstMultiPhyConfigEntryName, firstMultiPhyConfigEntryValue = multiPhyConfig.multiPhyConfigEntries|firstElement %}
+{%- set firstPhyConfigEntryName, firstPhyConfigEntryValue = firstMultiPhyConfigEntryValue.phyConfigEntries|firstElement %}
+#define RADIO_CONFIG_XTAL_FREQUENCY {{firstPhyConfigEntryValue.xtalFrequency}}UL
+{% if firstMultiPhyConfigEntryValue.phyName %}
+#define RAIL0_{{firstPhyConfigEntryName|upper}}_{{firstMultiPhyConfigEntryValue.phyName|upper}}
+{% endif %}
+{%- if firstMultiPhyConfigEntryValue.profile -%}
+#define RAIL0_{{firstPhyConfigEntryName|upper}}_PROFILE_{{firstMultiPhyConfigEntryValue.profile|upper}}
+{%- endif %}
+extern const RAIL_ChannelConfig_t *channelConfigs[];
+{%- endif %}
+
+{%- if multiPhyConfig.commonStructures.modeSwitchPhyModeIds|length %}
+#define WISUN_MODESWITCHPHRS_ARRAY_SIZE {{multiPhyConfig.commonStructures.modeSwitchPhyModeIds|length}}
+extern const uint8_t wisun_modeSwitchPhrsLength;
+extern const RAIL_IEEE802154_ModeSwitchPhr_t wisun_modeSwitchPhrs[WISUN_MODESWITCHPHRS_ARRAY_SIZE];
+{%- endif %}
+
+#ifdef RADIO_CONFIG_ENABLE_STACK_INFO
+{% for stackName, stackInfoEntry in multiPhyConfig.commonStructures.stackInfoEntries.items() -%}
+extern const uint8_t {{stackName}}[{{stackInfoEntry|length}}];
+{% endfor -%}
+#endif // RADIO_CONFIG_ENABLE_STACK_INFO
+
+#endif // __{{filename|upper}}_H__
+{% endblock %}

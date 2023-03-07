@@ -1,0 +1,26 @@
+id: micriumos_usbh_class_cdc_acm
+label: Micrium-USB Host Class - CDC ACM
+package: micrium-usbh
+description: Micrium OS USB Host CDC ACM Class
+category: Services|Micrium|USB
+quality: deprecated
+source:
+  - path: platform/micrium_os/usb/source/host/class/usbh_cdc.c
+  - path: platform/micrium_os/usb/source/host/class/usbh_acm.c
+include:
+  - path: platform/micrium_os
+    file_list:
+      - path: usb/source/host/class/usbh_cdc_subclass_priv.h
+      - path: usb/include/host/usbh_cdc.h
+      - path: usb/include/host/usbh_acm.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: USB_HOST_CDC
+  - name: micriumos_component_avails
+    value: USB_HOST_ACM
+provides:
+  - name: usbh_class_cdc_acm
+  - name: usbh_class
+    allow_multiple: true
+requires:
+  - name: usbh

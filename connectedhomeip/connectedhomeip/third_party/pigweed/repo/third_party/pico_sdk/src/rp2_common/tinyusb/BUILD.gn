@@ -1,0 +1,109 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pi_pico.gni")
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+
+config("public_include_dirs") {
+  include_dirs = [ "${PICO_SRC_DIR}/lib/tinyusb/src" ]
+}
+
+config("tinyusb_defines") {
+  defines = [
+    "CFG_TUSB_DEBUG=0",
+    "CFG_TUSB_MCU=OPT_MCU_RP2040",
+    "CFG_TUSB_OS=OPT_OS_PICO",
+  ]
+}
+
+config("silence_errors") {
+  cflags = [
+    "-Wno-cast-qual",
+    "-Wno-strict-prototypes",
+  ]
+}
+
+# This creates a circular dependency on pico_stdlib, so we have to be messy
+# about grabbing the right dependencies.
+pw_source_set("bsp") {
+  remove_configs = [ "$dir_pw_build:strict_warnings" ]
+  configs = [
+    ":public_include_dirs",
+    "${PICO_ROOT}/src/common/pico_stdlib:public_include_dirs",
+    "${PICO_ROOT}/src/rp2_common/pico_stdio_usb:public_include_dirs",
+  ]
+  include_dirs = [ "${PICO_SRC_DIR}/lib/tinyusb/hw" ]
+  deps = [
+    "${PICO_ROOT}/src/common/pico_base",
+    "${PICO_ROOT}/src/common/pico_binary_info",
+    "${PICO_ROOT}/src/common/pico_time",
+    "${PICO_ROOT}/src/rp2_common/hardware_gpio",
+    "${PICO_ROOT}/src/rp2_common/hardware_sync",
+    "${PICO_ROOT}/src/rp2_common/hardware_uart",
+    "${PICO_ROOT}/src/rp2_common/pico_stdio:headers",
+  ]
+  sources = [
+    "${PICO_SRC_DIR}/lib/tinyusb/hw/bsp/board.h",
+    "${PICO_SRC_DIR}/lib/tinyusb/hw/bsp/rp2040/family.c",
+  ]
+  visibility = [
+    ":tinyusb",
+    "${PICO_ROOT}/src/common/pico_stdlib:headers",
+  ]
+}
+
+pw_source_set("tinyusb") {
+  configs = [
+    "${PICO_ROOT}/gn:disable_warnings",
+    ":silence_errors",
+  ]
+  public_configs = [
+    ":public_include_dirs",
+    ":tinyusb_defines",
+  ]
+  public_deps = [
+    "${PICO_ROOT}/src/common/pico_sync",
+    "${PICO_ROOT}/src/common/pico_time:headers",
+    "${PICO_ROOT}/src/rp2_common/hardware_irq",
+    "${PICO_ROOT}/src/rp2_common/hardware_resets",
+    "${PICO_ROOT}/src/rp2_common/pico_fix/rp2040_usb_device_enumeration",
+    "${PICO_ROOT}/src/rp2_common/pico_stdio:headers",
+    "${PICO_ROOT}/src/rp2_common/pico_stdio_usb:tusb_config",
+  ]
+  deps = [ ":bsp" ]
+  public = [ "${PICO_SRC_DIR}/lib/tinyusb/src/tusb.h" ]
+  sources = [
+    "${PICO_SRC_DIR}/lib/tinyusb/src/class/audio/audio_device.c",
+    "${PICO_SRC_DIR}/lib/tinyusb/src/class/cdc/cdc_device.c",
+    "${PICO_SRC_DIR}/lib/tinyusb/src/class/dfu/dfu_device.c",
+    "${PICO_SRC_DIR}/lib/tinyusb/src/class/dfu/dfu_rt_device.c",
+    "${PICO_SRC_DIR}/lib/tinyusb/src/class/hid/hid_device.c",
+    "${PICO_SRC_DIR}/lib/tinyusb/src/class/midi/midi_device.c",
+    "${PICO_SRC_DIR}/lib/tinyusb/src/class/msc/msc_device.c",
+    "${PICO_SRC_DIR}/lib/tinyusb/src/class/net/ecm_rndis_device.c",
+    "${PICO_SRC_DIR}/lib/tinyusb/src/class/net/ncm_device.c",
+    "${PICO_SRC_DIR}/lib/tinyusb/src/class/usbtmc/usbtmc_device.c",
+    "${PICO_SRC_DIR}/lib/tinyusb/src/class/vendor/vendor_device.c",
+    "${PICO_SRC_DIR}/lib/tinyusb/src/class/video/video_device.c",
+    "${PICO_SRC_DIR}/lib/tinyusb/src/common/tusb_fifo.c",
+    "${PICO_SRC_DIR}/lib/tinyusb/src/device/usbd.c",
+    "${PICO_SRC_DIR}/lib/tinyusb/src/device/usbd_control.c",
+    "${PICO_SRC_DIR}/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c",
+    "${PICO_SRC_DIR}/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c",
+    "${PICO_SRC_DIR}/lib/tinyusb/src/tusb.c",
+  ]
+  allow_circular_includes_from = [ ":bsp" ]
+}

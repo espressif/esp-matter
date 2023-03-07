@@ -1,0 +1,156 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load("@rules_python//python:defs.bzl", "py_binary")
+
+package(default_visibility = ["//visibility:public"])
+
+py_library(
+    name = "pw_tokenizer",
+    srcs = [
+        "pw_tokenizer/__init__.py",
+        "pw_tokenizer/database.py",
+        "pw_tokenizer/decode.py",
+        "pw_tokenizer/detokenize.py",
+        "pw_tokenizer/elf_reader.py",
+        "pw_tokenizer/encode.py",
+        "pw_tokenizer/parse_message.py",
+        "pw_tokenizer/proto/__init__.py",
+        "pw_tokenizer/serial_detokenizer.py",
+        "pw_tokenizer/tokens.py",
+    ],
+    deps = [
+        "//pw_cli/py:pw_cli",
+    ],
+)
+
+py_binary(
+    name = "detokenize",
+    srcs = [
+        "pw_tokenizer/__main__.py",
+    ],
+    main = "pw_tokenizer/__main__.py",
+    deps = [":pw_tokenizer"],
+)
+
+# This test attempts to directly access files in the source tree, which is
+# incompatible with sandboxing.
+# TODO(b/241307309): Fix this test.
+filegroup(
+    name = "database_test",
+    srcs = ["database_test.py"],
+    # deps = [":pw_tokenizer"],
+)
+
+py_test(
+    name = "decode_test",
+    srcs = [
+        "decode_test.py",
+        "tokenized_string_decoding_test_data.py",
+        "varint_test_data.py",
+    ],
+    deps = [":pw_tokenizer"],
+)
+
+# This test can't be built in bazel because it depends on detokenize_proto_test_pb2.
+filegroup(
+    name = "detokenize_proto_test",
+    srcs = [
+        "detokenize_proto_test.py",
+    ],
+    # deps = [
+    #   ":pw_tokenizer",
+    #   ":detokenize_proto_test_pb2",
+    # ],
+)
+
+proto_library(
+    name = "detokenize_proto_test_proto",
+    srcs = ["detokenize_proto_test.proto"],
+    deps = [
+        "//pw_tokenizer:tokenizer_proto",
+    ],
+)
+
+# TODO(b/241456982): This target can't be built due to limitations of
+# py_proto_library.
+# py_proto_library(
+#  name = "detokenize_proto_test_pb2",
+#  srcs = ["detokenize_proto_test.proto"],
+#  deps = [
+#    "//pw_tokenizer:tokenizer_pb2",
+#  ],
+#)
+
+py_test(
+    name = "detokenize_test",
+    srcs = ["detokenize_test.py"],
+    data = [
+        "example_binary_with_tokenized_strings.elf",
+    ],
+    deps = [
+        ":pw_tokenizer",
+        "@rules_python//python/runfiles",
+    ],
+)
+
+py_test(
+    name = "elf_reader_test",
+    srcs = ["elf_reader_test.py"],
+    data = [
+        "elf_reader_test_binary.elf",
+    ],
+    deps = [
+        ":pw_tokenizer",
+        "@rules_python//python/runfiles",
+    ],
+)
+
+# Executable for generating a test ELF file for elf_reader_test.py. A host
+# version of this binary is checked in for use in elf_reader_test.py.
+# Commented out because it fails to compile with bazel, with the error
+# ld.lld: error: symbol 'main' has no type. Instead use a filegroup to
+# keep pw_presubmit happy.
+# cc_binary(
+#     name = "elf_reader_test_binary",
+#     srcs = [
+#         "py/elf_reader_test_binary.c",
+#     ],
+#     linkopts = ["-Wl,--unresolved-symbols=ignore-all"],  # main is not defined
+#     deps = [
+#         ":pw_tokenizer",
+#         "//pw_varint",
+#     ],
+# )
+filegroup(
+    name = "elf_reader_test_binary",
+    srcs = [
+        "elf_reader_test_binary.c",
+    ],
+)
+
+py_test(
+    name = "encode_test",
+    srcs = [
+        "encode_test.py",
+        "varint_test_data.py",
+    ],
+    deps = [":pw_tokenizer"],
+)
+
+py_test(
+    name = "tokens_test",
+    srcs = ["tokens_test.py"],
+    deps = [":pw_tokenizer"],
+)

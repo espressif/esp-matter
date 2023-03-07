@@ -1,0 +1,64 @@
+id: uartdrv_core
+package: "platform"
+label: "UARTDRV Core"
+description: >
+  The UART driver supports the UART capabilities of the USART, UART, and LEUART
+  peripherals. The driver is fully reentrant and supports multiple driver instances.
+  Both blocking and non-blocking transfer functions are available. The non-blocking
+  transfer functions use DMA to transfer data and report transfer completion with
+  callback functions. Note that the blocking functions are not suitable for low
+  energy applications because they use CPU polling.
+
+
+  This component includes only the UART driver core. To configure and create
+  instances of this driver, one or more of the UARTDRV EUART/LEUART/USART components 
+  should be included in the project.
+category: "Platform|Driver|UART"
+quality: "production"
+root_path: "platform/emdrv/uartdrv"
+provides:
+  - name: "uartdrv_core"
+requires:
+  - name: "device"
+  - name: "emlib_usart"
+    condition:
+      - "device_has_uart"
+  - name: "emlib_leuart"
+    condition:
+      - "device_has_leuart"
+  - name: "emlib_eusart"
+    condition:
+      - "device_has_euart"
+  - name: "emlib_gpio"
+  - name: "gpiointerrupt"
+  - name: "emlib_cmu"
+  - name: "emlib_core"
+  - name: "ecode"
+  - name: "dmadrv"
+  - name: "enum"
+  - name: "sleeptimer"
+  - name: "status"
+    condition: [uartdrv_instance]      
+include:
+  - path: "inc"
+    file_list:
+      - path: "uartdrv.h"
+source:
+  - path: "src/uartdrv.c"
+config_file:
+  - path: config/uartdrv_config.h
+template_file:
+  - path: "init/sl_uartdrv_init.c.jinja"
+    condition: [uartdrv_instance]
+  - path: "init/sl_uartdrv_instances.h.jinja"
+    condition: [uartdrv_instance]
+template_contribution:
+  - name: event_handler
+    condition: [uartdrv_instance]
+    value:
+      event: driver_init
+      include: "sl_uartdrv_instances.h"
+      handler: "sl_uartdrv_init_instances"
+documentation:
+    docset: gecko-platform
+    document: driver/api/group-uartdrv

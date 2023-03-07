@@ -1,0 +1,20 @@
+id: micriumos_io_serial_driver_silabs_gecko_sdk
+label: Micrium OS Input-Output Silicon Labs Serial Driver
+package: micrium-ioxx
+description: Micrium OS IO Silicon Labs Serial Driver
+category: Services|Micrium|IO
+quality: production
+component_root_path: platform/micrium_os/drivers/io
+source:
+  - path: source/serial/serial_ctrlr_drv_siliconlabs_gecko_sdk.c
+include:
+  - path: include
+    file_list:
+      - path: serial_drv.h
+provides:
+  - name: io_serial_driver_silabs_gecko_sdk
+  - name: io_serial_driver
+requires:
+  - name: io_serial
+  - name: spidrv
+  - name: common_collections

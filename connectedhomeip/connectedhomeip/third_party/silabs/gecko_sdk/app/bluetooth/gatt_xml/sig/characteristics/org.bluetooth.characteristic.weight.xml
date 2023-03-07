@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Weight" type="org.bluetooth.characteristic.weight" uuid="2A98" last-modified="2014-06-10" approved="Yes">
+    <InformativeText>
+        <Abstract>Weight of the User</Abstract>
+	</InformativeText>
+    <Value>
+    <Field name="Weight">
+        <InformativeText>
+            Unit is in kilograms with a resolution of 0.005.
+		</InformativeText>
+        <Requirement>Mandatory</Requirement>
+        <Format>uint16</Format>
+        <Unit>org.bluetooth.unit.mass.kilogram</Unit>
+        <DecimalExponent>-3</DecimalExponent>
+        <Multiplier>5</Multiplier>
+    </Field>
+	</Value>
+</Characteristic>

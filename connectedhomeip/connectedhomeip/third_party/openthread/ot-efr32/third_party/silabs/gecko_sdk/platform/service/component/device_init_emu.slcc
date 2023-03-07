@@ -1,0 +1,44 @@
+id: device_init_emu
+label: "Device Init: EMU"
+package: platform
+description: >
+  Device initialization for the Energy Managament Unit (EMU). This component
+  provides configuration for available EM4 voltage scaling levels, and EMU state
+  and retention settings for devices which support these features.
+category: Services|Device Initialization
+quality: production
+root_path: platform/service/device_init
+config_file:
+  - path: config/s1/sl_device_init_emu_config.h
+    condition: [device_series_1]
+    unless: [device_sdid_80]
+  - path: config/s1/sdid80/sl_device_init_emu_config.h
+    condition: [device_sdid_80]
+  - path: config/s2/sl_device_init_emu_config.h
+    condition: [device_series_2]
+include:
+  - path: inc
+    file_list:
+      - path: sl_device_init_emu.h
+source:
+  - path: src/sl_device_init_emu_s0.c
+    condition: [device_series_0]
+  - path: src/sl_device_init_emu_s1.c
+    condition: [device_series_1]
+  - path: src/sl_device_init_emu_s2.c
+    condition: [device_series_2]
+provides:
+  - name: device_init_emu
+requires:
+  - name: emlib_emu
+  - name: status
+template_contribution:
+  - name: event_handler
+    value:
+      event: platform_init
+      include: sl_device_init_emu.h
+      handler: sl_device_init_emu
+    priority: -9400
+documentation:
+    docset: gecko-platform
+    document: service/api/group-device-init-emu

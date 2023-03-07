@@ -1,0 +1,216 @@
+package: Zigbee
+description: Silicon Labs implementation of the Messaging server cluster.  This component serves up messages
+  in its table to clients that request them. This component requires extending to populate the
+  message table with messages.
+label: Messaging Server Cluster
+quality: extend
+id: zigbee_messaging_server
+category: Zigbee|Cluster Library|Smart Energy
+provides:
+   - name: "zigbee_messaging_server"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/messaging-server/config/messaging-server-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/messaging-server/messaging-server.c
+  - path: protocol/zigbee/app/framework/plugin/messaging-server/messaging-server-cli.c
+    condition:
+      - "cli"
+include:
+  - path: protocol/zigbee/app/framework/plugin/messaging-server
+    file_list:
+      - path: messaging-server.h  
+template_contribution:
+  - name: component_catalog
+    value: zigbee_messaging_server
+  - name: cluster_service
+    value:
+       cluster_id: "0x0703"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "SERVER"
+       service_function: "emberAfMessagingClusterServerCommandParse"
+  - name: cli_group
+    value:
+      group: plugin
+      name: messaging-server
+      help: messaging-server related commands.
+  - name: cli_command
+    value:
+      group: messaging-server
+      name: message
+      handler: emAfMessagingServerCliMsg
+      help: Set the message used by the message plugin.
+      argument:
+      - type: string
+        help: The message to set
+  - name: cli_command
+    value:
+      group: messaging-server
+      name: append
+      handler: emAfMessagingServerCliAppend
+      help: Appends an additional string to the message contained in the message component.
+      argument:
+      - type: string
+        help: The string to append to the current message
+  - name: cli_command
+    value:
+      group: messaging-server
+      name: id
+      handler: emAfMessagingServerCliId
+      help: Sets the message ID for the message contained in the messaging component.
+      argument:
+      - type: uint32
+        help: Message ID
+  - name: cli_command
+    value:
+      group: messaging-server
+      name: time
+      handler: emAfMessagingServerCliTime
+      help: Sets the start time and duration for the message used by the message component.
+      argument:
+      - type: uint32
+        help: Start time
+      - type: uint16
+        help: Duration
+  - name: cli_command
+    value:
+      group: messaging-server
+      name: relative-time
+      handler: emAfMessagingServerCliRelativeTime
+      help: Sets the relative time on the message.
+      argument:
+      - type: uint32
+        help: Number of minutes to add to the message time above the current time
+      - type: uint32
+        help: Duration in minutes for the message to be valid
+  - name: cli_group
+    value:
+      group: messaging-server
+      name: transmission
+      help: transmission related commands.
+  - name: cli_command
+    value:
+      group: transmission
+      name: normal
+      handler: emAfMessagingServerCliTransmission
+      help: Sets the message control bit mask to normal transmission.
+  - name: cli_command
+    value:
+      group: transmission
+      name: ipan
+      handler: emAfMessagingServerCliTransmission
+      help: Sets the message control bit mask in the message to anonymous.
+  - name: cli_command
+    value:
+      group: transmission
+      name: both
+      handler: emAfMessagingServerCliTransmission
+      help: Sets the message control bit mask in the message to normal and anonymous.
+  - name: cli_group
+    value:
+      group: messaging-server
+      name: importance
+      help: importance related commands
+  - name: cli_command
+    value:
+      group: importance
+      name: low
+      handler: emAfMessagingServerCliImportance
+      help: Sets the message importance to low.
+  - name: cli_command
+    value:
+      group: importance
+      name: medium
+      handler: emAfMessagingServerCliImportance
+      help: Sets the message importance to medium.
+  - name: cli_command
+    value:
+      group: importance
+      name: high
+      handler: emAfMessagingServerCliImportance
+      help: Sets the message importance to high.
+  - name: cli_command
+    value:
+      group: importance
+      name: critical
+      handler: emAfMessagingServerCliImportance
+      help: Sets the message importance to critical.
+  - name: cli_group
+    value:
+      group: messaging-server
+      name: confirm
+      help: confirm related commands.
+  - name: cli_command
+    value:
+      group: confirm
+      name: not
+      handler: emAfMessagingServerCliConfirm
+      help: Sets the message confirmation to not used.
+  - name: cli_command
+    value:
+      group: confirm
+      name: req
+      handler: emAfMessagingServerCliConfirm
+      help: Sets message confirmation to required.
+  - name: cli_command
+    value:
+      group: messaging-server
+      name: valid
+      handler: emAfMessagingServerCliValid
+      help: Sets the message validity to valid.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cli_command
+    value:
+      group: messaging-server
+      name: invalid
+      handler: emAfMessagingServerCliValid
+      help: Sets the message validity to invalid.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cli_command
+    value:
+      group: messaging-server
+      name: display
+      handler: emAfMessagingServerCliDisplay
+      help: Displays the message.
+      argument:
+      - type: uint16
+        help: The destination of the message
+      - type: uint8
+        help: The source endpoint of the message
+      - type: uint8
+        help: The destination endpoint of the message
+  - name: cli_command
+    value:
+      group: messaging-server
+      name: cancel
+      handler: emAfMessagingServerCliCancel
+      help: Cancels the message.
+      argument:
+      - type: uint16
+        help: The destination of the message
+      - type: uint8
+        help: The source endpoint of the message
+      - type: uint8
+        help: The destination endpoint of the message
+  - name: cli_command
+    value:
+      group: messaging-server
+      name: print
+      handler: emAfMessagingServerCliPrint
+      help: Prints the message info.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cluster_functions
+    value:
+      cluster_name: Messaging
+      cluster_id: 0x703
+      cluster_type: server
+      init_function: emberAfMessagingClusterServerInitCallback
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/messaging-server

@@ -1,0 +1,13 @@
+[
+    {
+        "files": [
+            "+../../../../../../../source/ti/boards/CC3235S_LAUNCHXL/Board.html -> Board.html",
+            "+cc32xxs_freertos.icf -> cc32xxs_freertos.icf",
+            "+../../json.c -> json.c",
+            "+../json.syscfg -> json.syscfg",
+            "+../main_freertos.c -> main_freertos.c",
+            "+../../README.html -> README.html",
+            "+../../README.md -> README.md"
+        ]
+    }
+]

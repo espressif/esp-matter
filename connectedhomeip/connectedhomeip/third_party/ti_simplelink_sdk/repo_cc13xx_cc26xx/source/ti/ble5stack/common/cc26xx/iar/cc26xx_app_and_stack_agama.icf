@@ -1,0 +1,248 @@
+/******************************************************************************
+
+ @file  cc26xx_app_and_stack_agama.icf
+
+ @brief IAR ARM Linker Configuration File - BLE Application and Stack together
+
+        Imported Symbols
+        Note: Linker defines are located in the IAR IDE project using
+        --config_def in Options->Linker->Extra Options.
+
+        CCxxxx:             Device Name (e.g. CC2650). In order to define this
+                            symbol, the tool chain requires that it be set to
+                            a specific value, but in fact, the actual value does
+                            not matter as it is not used in the linker control
+                            file. The only way this symbol is used is based on
+                            whether it is defined or not, not its actual value.
+                            There are other linker symbols that do specifically
+                            set their value to 1 to indicate R1, and 2 to
+                            indicate R2, and these values are checked and do make
+                            a difference. However, it would appear confusing if
+                            the device name's value did not correspond to the
+                            value set in other linker symbols. In order to avoid
+                            this confusion, when the symbol is defined, it should
+                            be set to the value of the device's ROM that it
+                            corresponds so as to look and feel consistent. Please
+                            note that a device name symbol should always be
+                            defined to avoid side effects from default values
+                            that may not be correct for the device being used.
+        FLASH_ROM_BUILD:    Build Flash portion of BLE stack to work with ROM
+                            code. =1 for CC26X2_V1 devices, =2 for CC26X2_V2
+                            devices.
+
+        Exported Symbols
+        Note: Can be used as externs in C code.
+
+        PAGE_SIZE:            Size of Flash sector, in bytes.
+        STACK_TOP: Location of the top of RAM.
+
+ Group: WCS, BTS
+ Target Device: cc13xx_cc26xx
+
+ ******************************************************************************
+ 
+ Copyright (c) 2018-2022, Texas Instruments Incorporated
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+
+ *  Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+
+ *  Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+
+ *  Neither the name of Texas Instruments Incorporated nor the names of
+    its contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ ******************************************************************************
+ 
+ 
+ *****************************************************************************/
+
+////////////////////////////////////////////////////////////////////////////////
+// Memory Sizes
+////////////////////////////////////////////////////////////////////////////////
+define symbol FLASH_BASE            = 0x00000000;
+define symbol RAM_BASE              = 0x20000000;
+define symbol ROM_BASE              = 0x10000000;
+
+define symbol RAM_SIZE            = 0x00014000; // 80K
+define symbol FLASH_SIZE          = 0x00058000; // 352K
+define symbol ROM_SIZE            = 0x00040000; // 256K
+
+////////////////////////////////////////////////////////////////////////////////
+// Memory Definitions
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// CM3 FW
+//
+define symbol FW_START              = 0x10000000;
+define symbol FW_END                = 0x10004BFF;
+
+////////////////////////////////////////////////////////////////////////////////
+// RAM
+//
+if ( isdefinedsymbol(FLASH_ROM_BUILD) )
+{
+  if ( FLASH_ROM_BUILD == 1 ) // R1
+  {
+    define symbol RESERVED_RAM_SIZE = 0x00000B08;
+    define symbol RAM_START         = RAM_BASE;
+    define symbol RAM_END           = RAM_START+RAM_SIZE-RESERVED_RAM_SIZE-1;
+  }
+  else // default to FLASH_ROM_BUILD == 2 // For CC26X2_V2 PG 2.0 ROM Build
+  {
+    define symbol RESERVED_RAM_SIZE = 0x00000EB3;
+    define symbol RAM_START         = RAM_BASE + 0x0000012C + RESERVED_RAM_SIZE; // PG 2.0 Agama RAM_START
+    define symbol RAM_END           = RAM_BASE+RAM_SIZE-1;
+  }
+}
+else // FlashOnly build
+{
+  define symbol RAM_START = RAM_BASE;
+  // No RAM reserve is needed for source builds of the BLESTACK
+  define symbol RAM_END = RAM_START+RAM_SIZE-1;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Flash
+//
+define symbol WORD_SIZE = 4;
+
+define symbol PAGE_SIZE = 0x2000;
+export symbol PAGE_SIZE;
+
+if (isdefinedsymbol(PAGE_ALIGN))
+{
+  define symbol FLASH_MEM_ALIGN     = PAGE_SIZE;
+}
+else
+{
+  define symbol FLASH_MEM_ALIGN     = WORD_SIZE;
+}
+
+define symbol FLASH_START           = FLASH_BASE;
+
+define symbol PAGE_MASK           = 0xFFFFE000;
+
+define symbol NUM_RESERVED_PAGES    = 1;  /*last page i define in FLASH_LAST_PAGE */
+
+define symbol RESERVED_SIZE         = (NUM_RESERVED_PAGES * PAGE_SIZE);
+
+define symbol FLASH_END             = FLASH_SIZE - RESERVED_SIZE - 1;
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Stack
+//
+
+define symbol STACK_SIZE          = 0x400;
+define symbol STACK_START         = RAM_END + 1;
+define symbol STACK_END           = STACK_START - STACK_SIZE;
+//
+define symbol STACK_TOP           = RAM_END + 1;
+export symbol STACK_TOP;
+
+////////////////////////////////////////////////////////////////////////////////
+// Flash Interrupt Vector Table
+//
+
+define symbol INTVEC_NUM_ENTRIES  = 50 + 1; // first entry is stack location
+define symbol INTVEC_SIZE         = INTVEC_NUM_ENTRIES + 4;
+
+////////////////////////////////////////////////////////////////////////////////
+// Memory Regions
+////////////////////////////////////////////////////////////////////////////////
+
+define memory mem with size = 4G;
+
+define region RAM                 = mem:[from RAM_START   to RAM_END];
+define region FLASH_LAST_PAGE     = mem:[from(FLASH_SIZE) - PAGE_SIZE to FLASH_SIZE-1];
+define region FLASH               = mem:[from FLASH_START to FLASH_END];
+define region FLASH_ALL           = mem:[from FLASH_START to FLASH_END] |
+                                         FLASH_LAST_PAGE;
+
+////////////////////////////////////////////////////////////////////////////////
+// Memory Placement
+////////////////////////////////////////////////////////////////////////////////
+
+// CCFG
+place at end of FLASH_LAST_PAGE { readonly section .ccfg };
+keep { section .ccfg };
+
+// Interrupt Vector Table
+place at address mem:FLASH_START { readonly section .intvec };
+keep                             { readonly section .intvec };
+
+// All other pieces of code:
+place in FLASH_ALL { readonly };
+
+// RAM Vector Table
+place at start of RAM { section .vtable_ram };
+
+// Runtime Stack
+define block CSTACK with alignment = 8, size = STACK_SIZE { section .stack };
+
+define block RWDATA with alignment = 8 { rw };
+
+define section .heap_start            { public heapStart: };
+define section .heap_end              { public heapEnd: };
+define block   HEAP_END with size = 1 { section .heap_end };
+
+define block END_OF_RAM with fixed order {
+                                        block HEAP_END,
+                                        block CSTACK
+                                      };
+
+place at end of RAM { block END_OF_RAM };
+
+place in RAM { block RWDATA,
+               last section .heap_start};
+
+////////////////////////////////////////////////////////////////////////////////
+// Initialization
+////////////////////////////////////////////////////////////////////////////////
+
+initialize by copy { readwrite };
+
+do not initialize
+{
+  section .noinit,
+  section .stack,
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// The USE_TIRTOS_ROM symbol is defined internally in the build flow (using
+// --config_def USE_TIRTOS_ROM=1) for TI-RTOS applications whose appBLE.cfg file
+// specifies to use the ROM.
+//
+if (isdefinedsymbol(USE_TIRTOS_ROM)) {
+     include "TIRTOS_ROM.icf";
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// The following is used to Enable IAR to display RTOS ROV when auto-size heap
+// is being used. it will disable the check on teh validity of the RAM address.
+// if One wants to keep this check, and does not whish to use auto-size heap,
+// he may comments the lines bellow.
+define exported symbol __ROV_VALID_RANGE0_end__ =   RAM_BASE + RAM_SIZE;
+define exported symbol __ROV_VALID_RANGE0_start__ = RAM_BASE;

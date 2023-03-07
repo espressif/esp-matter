@@ -1,0 +1,312 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Dev Cube 简介 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Examples/index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Dev Cube 简介</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/get-started/Developer_Environment_BL702/BLFlashEnv/Burning_process.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="dev-cube">
+<h1>Dev Cube 简介<a class="headerlink" href="#dev-cube" title="永久链接至标题"></a></h1>
+<p>Dev Cube 是博流提供的芯片集成开发工具，下载网址为<code class="docutils literal notranslate"><span class="pre">https://dev.bouffalolab.com/download</span></code>，其包含IOT程序下载、MCU程序下载和RF性能测试三种功能。本文档主要介绍IOT程序下载相关配置。</p>
+<p>Dev Cube 提供用户下载程序的功能，并且支持时钟、flash等参数配置，用户可根据自身需求决定是否对程序进行加密、添加签名、更换程序启动时的信息文件、用户资源文件、分区表等功能配置。</p>
+<p>用户可以通过 <a class="reference external" href="https://dev.bouffalolab.com/download">Bouffalo Lab Dev Cube</a>，获取最新版本的Dev Cube。
+双击解压后文件夹中的<code class="docutils literal notranslate"><span class="pre">BLDevCube.exe</span></code>，在<code class="docutils literal notranslate"><span class="pre">Chip</span> <span class="pre">Selection</span></code>对话框中选择对应的芯片型号，点击<code class="docutils literal notranslate"><span class="pre">Finish</span></code>进入Dev Cube主界面。</p>
+<div class="figure align-center" id="id4">
+<img alt="../../../_images/chipselection.png" src="../../../_images/chipselection.png" />
+<p class="caption"><span class="caption-text">芯片选择</span></p>
+</div>
+</div>
+<div class="section" id="iot">
+<h1>IOT程序下载<a class="headerlink" href="#iot" title="永久链接至标题"></a></h1>
+<p>在<code class="docutils literal notranslate"><span class="pre">View</span></code>菜单中选择IOT选项，会进入IOT程序下载界面，主要分为程序下载方式的配置和下载参数的配置。</p>
+</div>
+<div class="section" id="id1">
+<h1>配置程序下载方式<a class="headerlink" href="#id1" title="永久链接至标题"></a></h1>
+<ul>
+<li><p class="first">配置参数包括：</p>
+<blockquote>
+<div><ul class="simple">
+<li>Interface：用于选择烧录的通信接口，这里选择 Uart 进行下载</li>
+<li>COM Port: 当选择 UART 进行下载的时候这里选择与芯片连接的 COM 口号，可以点击 Refresh 按钮进行 COM 号的刷新</li>
+<li>Uart Rate：当选择 UART 进行下载的时候，填写波特率，下载频率500Khz</li>
+<li>Board：选择所使用的板子型号，这里选择 IoTKitA，当板子选定后，Xtal 会自动更新成与板子匹配的默认值，当然用户也是可以再次更改的</li>
+<li>Xtal:选择下载时的晶振频率，如果电路板没有焊接晶振，此处应当选内部RC32M时钟源</li>
+<li>Chip Erase 默认设置为False，即下载时不擦除整片Flash</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<div class="figure align-center" id="id5">
+<img alt="../../../_images/tool5.png" src="../../../_images/tool5.png" />
+<p class="caption"><span class="caption-text">IOT程序下载方式选择界面</span></p>
+</div>
+</div>
+<div class="section" id="id2">
+<h1>配置下载参数<a class="headerlink" href="#id2" title="永久链接至标题"></a></h1>
+<ul>
+<li><p class="first">配置参数包括：</p>
+<blockquote>
+<div><ul class="simple">
+<li>Partition Table：使用Dev Cube目录下对应芯片型号 partition 文件夹中的分区表，默认选择2M的文件</li>
+<li>Boot2 Bin:它是系统启动后运行的第一个Flash程序，负责建立BLSP安全环境，并引导主程序运行，使用Dev Cube目录下对应芯片型号 builtin_imgs 文件夹中的 Boot2 文件，BL702不需要勾选Boot2 Bin</li>
+<li>Firmware Bin：用户编译生成的bin文件路径</li>
+<li>Media/Romfs：Media和Romfs二选一，如果勾选 Media，选择的是文件，如果勾选 Romfs，则选择的是文件夹</li>
+<li>MFG Bin：选择MFG文件</li>
+<li>AES-Encrypt：如果使用加密功能，需要将AES-Encrypt选项选中，并在旁边的文本框中输入加密所使用的Key和IV。输入的是十六进制对应的“0”~“F”，一个Byte由两个字符构成，所以Key和IV分别要求输入32个字符，从左到右，是高字节到低字节。需要注意的是IV的最后8个字符（即4Bytes）必须全为0</li>
+<li>Single Download Config：勾选Enable后可下载单个文件，在左侧文本框填写下载的起始地址，以0x打头</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<div class="figure align-center" id="id6">
+<img alt="../../../_images/iot2.png" src="../../../_images/iot2.png" />
+<p class="caption"><span class="caption-text">下载参数选择界面</span></p>
+</div>
+</div>
+<div class="section" id="id3">
+<h1>下载程序<a class="headerlink" href="#id3" title="永久链接至标题"></a></h1>
+<ul>
+<li><p class="first">设备可以通过USB连接电脑，用户可以使用其中任意一个USB口，但不可两个USB口同时连接；下载前，硬件先进入Boot模式，先长按图标号1中的按键(boot键)不释放，再短按标号2中的按键(Reset键)并释放，最后释放图标1中的按键</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image147.png" />
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">点击<code class="docutils literal notranslate"><span class="pre">Create&amp;download</span></code>，出现如下图所示表明下载成功：</p>
+</li>
+</ul>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image1212.png" />
+</div>
+</div></blockquote>
+<div class="admonition note">
+<p class="first admonition-title">注解</p>
+<p class="last">若没有连接板子，只需生成应用程序镜像和启动参数配置文件，也是点击<code class="docutils literal notranslate"><span class="pre">Creat&amp;Download</span></code>按钮</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

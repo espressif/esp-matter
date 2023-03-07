@@ -1,0 +1,119 @@
+stages:
+  - scc
+  - genLicense
+  - checkLicense
+  - build_ide
+  - cov
+  - fossid
+  - plainPW_check
+
+scc:
+  stage: scc 
+  script:
+    - echo "Enter scc stage"
+    - scc | tee scc.txt
+    - bash /usr/bin/scc_calc.sh
+    - echo "The End SCC result:"
+    - cat scc.txt
+  artifacts:
+    paths:
+    - scc.txt
+
+genLicense:
+  variables:
+    CODE_COMPILE_ARCH: 'EAGLE_ANDES'
+    COV_PF_CATALOG: 'BLE'
+  stage: genLicense
+  before_script:
+  script:
+    - date
+    - generat_license_list
+    - date
+  artifacts:
+    paths:
+    - "license_list_gen.txt"
+    - "no_license_list_gen.txt"
+    - "mismatch_license_file_gen.txt"
+  when: manual
+
+checkLicense:
+  variables:
+    CODE_COMPILE_ARCH: 'EAGLE_ANDES'
+    COV_PF_CATALOG: 'BLE'
+  stage: checkLicense
+  allow_failure: yes
+  before_script:
+  script:
+    - date
+    - check_license
+    #- generat_license_list # For no license files
+    - date
+
+  artifacts:
+    when: always
+    paths:
+    - "mismatch_license.txt"
+    - "no_license*.txt"
+    - "unknow_type_file.txt"
+    
+build_ide:
+  variables:
+    CODE_COMPILE_ARCH: 'EAGLE_ANDES'
+    COV_PF_CATALOG: 'BLE'
+  stage: build_ide
+  before_script:
+  script:
+    - ls
+    - pwd
+    - date
+    - echo "--------------- Will build Demo -----------------"
+    - echo #$ECLIPSE_PROJECT/$ECLIPSE_BUILD_TARGET
+    - $ANDESRISCV_ECLIPSE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import ./eagle_ble_sdk -cleanBuild eagle_ble_sdk/B91_ble_sample
+    #- bash $ANDESRISCV_ECLIPSE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import ./eagle_ble_sdk -cleanBuild all
+    - date
+#when: manual
+
+  artifacts:
+    paths:
+    - "eagle_ble_sdk/B91_ble_sample/output/*.bin"
+    - "eagle_ble_sdk/B91_ble_sample/*.elf"
+    #- "eagle_ble_sdk/B91_ble_sample/*.lst"
+
+# The cov job definition
+cov:
+  variables:
+    CODE_COMPILE_ARCH: 'EAGLE_ANDES'
+    COV_PF_CATALOG: 'BLE'
+  stage: cov
+  tags:
+    - COV
+  before_script:
+  script:
+    - $COV_B COV_$CI_PROJECT_NAME $COV_B_TEMPLATE/$CODE_COMPILE_ARCH $ANDESRISCV_ECLIPSE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import ./eagle_ble_sdk -cleanBuild eagle_ble_sdk/B91_ble_sample
+    - $COV_A COV_$CI_PROJECT_NAME
+    - cov_add_commit_steam_project_2_platform.sh
+  when: manual
+
+fossid:
+  tags:
+    - FOSSID
+  stage: fossid
+  script:
+    - fossid_check.sh
+  artifacts:
+    paths:
+    - fossid*.txt
+  when: manual
+
+plainPW_check:
+  stage: plainPW_check 
+  script:
+    - echo "Enter Plain Password checking stage"
+    - check_plain_weak_password | tee result.txt
+    - ls -l result.txt
+    - echo "Error List:"
+    - cat result.txt
+  artifacts:
+    paths:
+    - result.txt
+  when: manual

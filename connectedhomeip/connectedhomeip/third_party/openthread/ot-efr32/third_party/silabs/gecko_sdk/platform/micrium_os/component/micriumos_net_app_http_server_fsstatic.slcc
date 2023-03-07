@@ -1,0 +1,19 @@
+id: micriumos_net_app_http_server_fsstatic
+label: Network Suite - HTTP Server Static File System
+package: micrium-tcpx
+description: Micrium OS Network HTTP Server Static File System
+category: Services|Micrium|Network Suite
+quality: production
+component_root_path: platform/micrium_os/net
+config_file:
+  - path: ../cfg/http_server_fs_port_static_cfg.h
+source:
+  - path: source/http/server/http_server_fs_port_static.c
+include:
+  - path: include
+    file_list:
+      - path: http_server_fs_port_static.h
+provides:
+  - name: net_app_http_server_fsstatic
+requires:
+  - name: net_app_http_server

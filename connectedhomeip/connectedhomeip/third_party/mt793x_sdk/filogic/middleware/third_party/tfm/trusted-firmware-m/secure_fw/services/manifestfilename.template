@@ -1,0 +1,61 @@
+/*
+ * Copyright (c) 2019, Arm Limited. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ *
+ */
+
+{{utilities.donotedit_warning}}
+
+#ifndef __PSA_MANIFEST_{{file_name.upper()}}_H__
+#define __PSA_MANIFEST_{{file_name.upper()}}_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+{% if attr.tfm_partition_ipc %}
+    {% set ns = namespace(iterator_counter=0) %}
+    {% if manifest.services %}
+        {% for service in manifest.services %}
+#define {{"%-55s"|format(service.name + "_SIGNAL")}} (1U << ({{"%d"|format(ns.iterator_counter)}} + 4))
+            {% set ns.iterator_counter = ns.iterator_counter + 1 %}
+        {% endfor %}
+    {% endif %}
+    {% if ns.iterator_counter > 28 %}
+
+#error "Too many signals!"
+    {% endif %}
+{% endif %}
+{% if manifest.irqs %}
+
+    {% set irq_ns = namespace(irq_iterator_counter=27) %}
+    {% for irq in manifest.irqs %}
+#define {{"%-55s"|format(irq.signal)}} (1U << ({{"%d"|format(irq_ns.irq_iterator_counter)}} + 4))
+        {% set irq_ns.irq_iterator_counter = irq_ns.irq_iterator_counter - 1 %}
+    {% endfor %}
+    {% if attr.tfm_partition_ipc %}
+        {% if (ns.iterator_counter - 1) >= (irq_ns.irq_iterator_counter + 1) %}
+
+#error "Secure service and IRQ signal values overlap!"
+        {% endif %}
+    {% else %}
+        {% if (irq_ns.irq_iterator_counter + 1) < 0 %}
+
+#error "Too many IRQ signals!"
+        {% endif %}
+    {% endif %}
+{% else %}
+    {# If no RoT Service is defined in the services attribute, then at least one IRQ must be declared. #}
+    {% if attr.tfm_partition_ipc %}
+        {% if (manifest.services is not defined) or ((manifest.services | length()) == 0) %}
+#error "At least one IRQ must be declared!"
+        {% endif %}
+    {% endif %}
+{% endif %}
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __PSA_MANIFEST_{{file_name.upper()}}_H__ */

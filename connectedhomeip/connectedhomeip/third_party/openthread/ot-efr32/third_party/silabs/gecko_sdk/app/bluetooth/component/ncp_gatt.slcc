@@ -1,0 +1,25 @@
+id: ncp_gatt
+label: NCP GATT
+package: Bluetooth
+description: >
+  Composes the GATT database on the NCP target using the Dynamic GATT API.
+category: Bluetooth|NCP|Host
+quality: production
+root_path: app/bluetooth/common/ncp_gatt
+include:
+  - path: .
+    file_list:
+      - path: sl_ncp_gatt.h
+source:
+  - path: sl_ncp_gatt.c
+requires:
+  - name: "gatt_configuration"
+  - name: "app_assert"
+provides:
+  - name: ncp_gatt
+template_contribution:
+  - name: bluetooth_on_event
+    value:
+      include: sl_ncp_gatt.h
+      function: sl_ncp_gatt_on_event
+    priority: -9000

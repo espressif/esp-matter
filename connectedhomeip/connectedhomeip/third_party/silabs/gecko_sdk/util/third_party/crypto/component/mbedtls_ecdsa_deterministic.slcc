@@ -1,0 +1,23 @@
+id: mbedtls_ecdsa_deterministic
+package: platform
+label: Deterministic ECDSA
+description:
+  "This component provides support for signature generation and verification with \
+  deterministic ECDSA using Mbed TLS.\n
+
+  WARNING: Adding support for deterministic ECDSA through Mbed TLS will preclude \
+  regular ECDSA operations using the Mbed TLS API from being accelerated on Series-2 \
+  devices. ECDSA operations on those devices using the corresponding PSA API are \
+  unaffected."
+category: Platform|Security|Mbed TLS|Signatures
+quality: alpha
+provides:
+  - name: mbedtls_ecdsa_deterministic
+requires:
+  - name: mbedtls_ecdsa
+  - name: mbedtls_hash
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_ECDSA_DETERMINISTIC
+  - name: mbedtls_config
+    value: MBEDTLS_HMAC_DRBG_C

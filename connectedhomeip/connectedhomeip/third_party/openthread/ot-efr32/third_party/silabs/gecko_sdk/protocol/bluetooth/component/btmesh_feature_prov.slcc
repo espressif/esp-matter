@@ -1,0 +1,19 @@
+id: "btmesh_feature_prov"
+label: "Provisioner"
+package: "Btmesh"
+description: "Enables Bluetooth mesh embedded Provisioner functionality."
+category: "Bluetooth Mesh|Stack Classes"
+quality: "production"
+root_path: "protocol/bluetooth"
+
+requires:
+  - name: "btmesh_stack"
+provides:
+  - name: "btmesh_feature_prov"
+  - name: "btmesh_core"
+    allow_multiple: true
+template_contribution:
+  - name: btmesh_bgapi_class
+    value:
+      class: "prov"
+    priority: 1

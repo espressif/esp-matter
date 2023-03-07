@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="SDK.HAL.SERIAL.COMMON">
+  <folder name="serial">
+    <file name="retargetserial.c" partCompatibility="mcu.arm.efm32.* mcu.arm.ezr32.* mcu.arm.efr32.*" uri="$(sdkInstallationPath)/hardware/kit/common/drivers/retargetserial.c"/>
+    <file name="retargetio.c" partCompatibility="mcu.arm.efm32.* mcu.arm.ezr32.* mcu.arm.efr32.*" uri="$(sdkInstallationPath)/hardware/kit/common/drivers/retargetio.c"/>
+  </folder>
+  <includePath languageCompatibility="c asm" uri="$(sdkInstallationPath)/hardware/kit/common/drivers/"/>
+</project>

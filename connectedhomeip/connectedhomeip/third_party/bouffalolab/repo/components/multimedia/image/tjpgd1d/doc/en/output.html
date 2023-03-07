@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="up" title="TJpgDec" href="../00index.html">
+<link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
+<title>TJpgDec - Output Function</title>
+</head>
+
+<body>
+
+<div class="para func">
+<h2>Output Function</h2>
+<p>User defined output function to write decompressed pixels to the output device.</p>
+<pre>
+int out_func (
+  JDEC* <em>jdec</em>,    <span class="c">/* Pointer to the decompression object */</span>
+  void* <em>bitmap</em>,  <span class="c">/* RGB bitmap to be output */</span>
+  JRECT* <em>rect</em>    <span class="c">/* Rectangular region to output */</span>
+);
+</pre>
+</div>
+
+<div class="para arg">
+<h4>Parameters</h4>
+<dl class="par">
+<dt>jdec</dt>
+<dd>Specifies the decompression object of the session.</dd>
+<dt>bitmap</dt>
+<dd>Specifies the RGB bitmap to be output.</dd>
+<dt>rect</dt>
+<dd>Specifies rectangular region in the image to output the RGB bitmap.</dd>
+</dl>
+</div>
+
+
+<div class="para ret">
+<h4>Return Values</h4>
+<p>Normally returns 1. It lets TJpgDec to continue the decompressing process. When a 0 is returned, the jd_decomp() function aborts with JDR_INTR. This is useful to interrupt the decompression process.</p>
+</div>
+
+
+<div class="para desc">
+<h4>Description</h4>
+<p>This function is the data output interface of the TJpgDec module. The corresponding decompression session can be identified by the pointer to the device identifier <tt>jdec->device</tt> passed to the 5th argument of jd_prepare function.</p>
+<p>The bitmap is sent to the frame buffer or display device in this function. The first pixel in the bitmap is the left-top of the rectangular, the second one is next right and last pixel is the bottom-right of the rectangular. The size of rectangular varies from 1x1 to 16x16 depends on clipping, scaling and sampling factor of the image. If the rectangular is out of the frame buffer, it should be clipped in this function.</p>
+<p>The pixel format is defined by <tt>JD_FORMAT</tt> parameter in the configuration option. When it is configured to RGB888, the bitmap is a uint8_t array holds the RGB data in 3 items per pixel: <tt>RRRRRRRR, GGGGGGGG, BBBBBBBB, ...</tt> When it is configured to RGB565, the bitmap is a uint16_t array holds the RGB data in 1 item per pixel: <tt>RRRRR-GGGGGG-BBBBB, ...</tt></p>
+</div>
+
+
+<p class="foot"><a href="../00index.html">Return</a></p>
+</body>
+</html>

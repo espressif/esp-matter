@@ -1,0 +1,21 @@
+id: freertos_heap_1
+label: FreeRTOS Heap 1
+package: platform
+description: >
+  A heap implementation for FreeRTOS.
+
+  The simplest possible implementation of pvPortMalloc().  Note that this
+  implementation does NOT allow allocated memory to be freed again.
+category: RTOS|FreeRTOS
+quality: production
+source:
+  - path: util/third_party/freertos/kernel/portable/MemMang/heap_1.c
+provides:
+  - name: freertos_heap
+  - name: freertos_heap_1
+requires:
+  - name: cmsis_core
+  - name: freertos
+template_contribution:
+  - name: rte_components
+    value: RTE_RTOS_FreeRTOS_HEAP_1

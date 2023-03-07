@@ -1,0 +1,19 @@
+<gatt>
+  <!--Environment Sensing-->
+  <service advertise="false" id="environment_sensing" name="Environment Sensing" requirement="mandatory" type="primary" uuid="181a" instance_id="es_s1">
+    
+    <!--UV Index-->
+    <characteristic id="es_uvindex" name="UV Index" uuid="2a76">
+      <informativeText/>
+      <value length="1" type="user" variable_length="false"/>
+      <properties read="true" read_requirement="optional"/>
+    </characteristic>
+    
+    <!--Ambient Light-->
+    <characteristic id="es_ambient_light" name="Ambient Light" uuid="c8546913-bfd9-45eb-8dde-9f8754f4a32e">
+      <informativeText/>
+      <value length="4" type="user" variable_length="false"/>
+      <properties read="true" read_requirement="optional"/>
+    </characteristic>
+  </service>
+</gatt>

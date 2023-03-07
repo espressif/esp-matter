@@ -1,0 +1,28 @@
+id: bootloader_serial_driver
+label: Bootloader Serial Driver
+package: bootloader
+description: >
+  DMA-driven Serial driver.
+category: Platform|Bootloader|Drivers
+quality: production
+recommends:
+  - id: bootloader_uart_driver
+    condition: [device_series_1]
+    unless:
+      - bootloader_serial_transport
+  - id: bootloader_uart_driver
+    condition: [device_series_2]
+    unless:
+      - bootloader_serial_transport
+      - device_sdid_220
+  - id: bootloader_euart_driver
+    condition: [device_sdid_220]
+source:
+  - path: platform/bootloader/driver/btl_serial_driver_veneers.c
+    condition: [bootloader_core_secure]
+provides:
+  - name: bootloader_serial_driver
+  - name: bootloader_nonsecure_incompatible
+    condition: [bootloader_core_nonsecure]
+requires:
+  - name: bootloader_serial_transport

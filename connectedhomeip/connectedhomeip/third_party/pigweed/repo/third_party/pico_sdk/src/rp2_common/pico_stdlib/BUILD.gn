@@ -1,0 +1,51 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pi_pico.gni")
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+
+# TODO(amontanez): This can go away if the GN build can be upstreamed to the
+# Pi Pico repo.
+_CWD = "${PICO_SRC_DIR}/src/rp2_common/pico_stdlib"
+
+import("${PICO_ROOT}/src/common/pico_stdlib/pico_stdio.gni")
+
+pw_source_set("pico_stdlib") {
+  public_configs = [ "${PICO_ROOT}/gn:disable_warnings" ]
+  deps = [
+    "${PICO_ROOT}/src/common/pico_stdlib:headers",
+    "${PICO_ROOT}/src/rp2_common/hardware_clocks",
+    "${PICO_ROOT}/src/rp2_common/hardware_pll",
+  ]
+
+  # These libraries must be linked in for this to work, even though this does
+  # not #include anything from these:
+  deps += [
+    "${PICO_ROOT}/src/common/pico_time",
+    "${PICO_ROOT}/src/rp2_common/pico_platform",
+    "${PICO_ROOT}/src/rp2_common/pico_runtime",
+    "${PICO_ROOT}/src/rp2_common/pico_standard_link",
+    "${PICO_ROOT}/src/rp2_common/pico_stdio",
+  ]
+
+  if (PICO_STDIO == ENUM_LIB_PICO_STDIO.UART) {
+    deps += [ "${PICO_ROOT}/src/rp2_common/pico_stdio_uart" ]
+  } else {
+    deps += [ "${PICO_ROOT}/src/common/pico_binary_info" ]
+  }
+
+  sources = [ "${_CWD}/stdlib.c" ]
+}

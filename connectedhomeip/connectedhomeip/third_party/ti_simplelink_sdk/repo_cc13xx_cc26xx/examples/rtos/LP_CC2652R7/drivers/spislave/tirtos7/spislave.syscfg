@@ -1,0 +1,99 @@
+/*
+ * Copyright (c) 2018-2021, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+// @cliArgs --board /ti/boards/LP_CC2652R7 --rtos tirtos7
+
+/*
+ *  spislave.syscfg
+ */
+
+/* ======== TIRTOS7 ======== */
+if (system.getRTOS() === "tirtos7") {
+    const tirtos7_release_syscfg_js = system.getScript("tirtos7_release.syscfg.js");
+}
+
+/* ======== Board ======== */
+var board = system.deviceData.board.name;
+
+/* ======== Display ======== */
+var Display = scripting.addModule("/ti/display/Display");
+var display = Display.addInstance();
+display.$hardware = system.deviceData.board.components.XDS110UART;
+
+/* ======== GPIO ======== */
+var GPIO = scripting.addModule("/ti/drivers/GPIO");
+
+var gpio0 = GPIO.addInstance();
+gpio0.$hardware = system.deviceData.board.components.LED0;
+gpio0.$name = "CONFIG_GPIO_LED_0";
+
+var gpio1 = GPIO.addInstance();
+gpio1.$hardware = system.deviceData.board.components.LED1;
+gpio1.$name = "CONFIG_GPIO_LED_1";
+
+var gpio2 = GPIO.addInstance();
+gpio2.$name = "CONFIG_SPI_MASTER_READY";
+
+var gpio3 = GPIO.addInstance();
+gpio3.$name = "CONFIG_SPI_SLAVE_READY";
+
+/* ======== SPI ======== */
+var SPI = scripting.addModule("/ti/drivers/SPI");
+
+var spi0 = SPI.addInstance();
+spi0.$name = "CONFIG_SPI_SLAVE";
+spi0.mode = "Four Pin SS Active Low";
+
+if (board.match(/CC13|CC26/)) {
+    if (board.match(/CC1352[PR]|CC2652[PR]SIP|CC2651P|CC1311|CC1354|CC1314|CC2653/)) {
+        gpio2.$hardware = system.deviceData.board.components.BUTTON0;
+    }
+    else {
+        gpio2.gpioPin.$assign = "DIO15";
+    }
+    gpio3.gpioPin.$assign = "DIO21";
+
+    spi0.$hardware = system.deviceData.board.components.SPI_FLASH;
+    spi0.defaultTxBufferValue = "0xFF";
+}
+else if (board.match(/CC32/)) {
+    gpio2.gpioPin.$assign = "P18";
+    gpio3.gpioPin.$assign = "P03";
+
+    spi0.turboMode = false;
+    spi0.spi.dmaTxChannel.$assign = "UDMA_CH31";
+    spi0.spi.dmaRxChannel.$assign = "UDMA_CH30";
+    spi0.spi.sclkPin.$assign = "P05";
+    spi0.spi.misoPin.$assign = "P06";
+    spi0.spi.mosiPin.$assign = "P07";
+    spi0.spi.ssPin.$assign = "P08";
+
+}

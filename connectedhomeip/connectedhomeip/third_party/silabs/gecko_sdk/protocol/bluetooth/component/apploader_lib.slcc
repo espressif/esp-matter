@@ -1,0 +1,102 @@
+id: "apploader_lib"
+label: "AppLoader library for Gecko Bootloader"
+package: "Bluetooth"
+description: >
+  Bluetooth AppLoader library for Gecko Bootloader with AppLoader OTA DFU plugin for series 2 devices and above.
+
+  AppLoader is a minimal version of the Bluetooth stack designed to enable device firmware updates over BLE connections
+  It allows to update application using in-place update where the old application is directly overwritten with the new one.
+category: "Bluetooth|OTA"
+quality: "production"
+root_path: "protocol/bluetooth"
+include:
+  - path: "inc/"
+    file_list:
+      - path: "sl_apploader_lib_api.h"
+source: []
+requires:
+  - name: device_supports_bluetooth
+  - name: emlib
+  - name: rail_lib
+  - name: device_init
+  - name: device_init_hfxo
+
+conflicts:
+  - name: "device_series_1"
+provides:
+  - name: "apploader_lib"
+  - name: "wireless_stack"
+template_contribution:
+  - name: component_catalog
+    value: apploader_lib
+library:
+#EFR32BG21
+  - path: "lib/EFR32BG21/GCC/libapploader.a"
+    condition: ["toolchain_gcc", "device_family_efr32bg21"]
+  - path: "lib/EFR32BG21/IAR/libapploader.a"
+    condition: ["toolchain_iar", "device_family_efr32bg21"]
+#BGM21
+  - path: "lib/EFR32BG21/GCC/libapploader.a"
+    condition: ["toolchain_gcc", "device_family_bgm21"]
+  - path: "lib/EFR32BG21/IAR/libapploader.a"
+    condition: ["toolchain_iar", "device_family_bgm21"]
+#EFR32MG21
+  - path: "lib/EFR32MG21/GCC/libapploader.a"
+    condition: ["toolchain_gcc", "device_family_efr32mg21"]
+  - path: "lib/EFR32MG21/IAR/libapploader.a"
+    condition: ["toolchain_iar", "device_family_efr32mg21"]
+#MGM21
+  - path: "lib/EFR32MG21/GCC/libapploader.a"
+    condition: ["toolchain_gcc", "device_family_mgm21"]
+  - path: "lib/EFR32MG21/IAR/libapploader.a"
+    condition: ["toolchain_iar", "device_family_mgm21"]
+#EFR32BG22
+  - path: "lib/EFR32BG22/GCC/libapploader.a"
+    condition: ["toolchain_gcc", "device_family_efr32bg22"]
+  - path: "lib/EFR32BG22/IAR/libapploader.a"
+    condition: ["toolchain_iar", "device_family_efr32bg22"]
+#BGM22
+  - path: "lib/EFR32BG22/GCC/libapploader.a"
+    condition: ["toolchain_gcc", "device_family_bgm22"]
+  - path: "lib/EFR32BG22/IAR/libapploader.a"
+    condition: ["toolchain_iar", "device_family_bgm22"]
+#EFR32MG22
+  - path: "lib/EFR32MG22/GCC/libapploader.a"
+    condition: ["toolchain_gcc", "device_family_efr32mg22"]
+  - path: "lib/EFR32MG22/IAR/libapploader.a"
+    condition: ["toolchain_iar", "device_family_efr32mg22"]
+#MGM22
+  - path: "lib/EFR32MG22/GCC/libapploader.a"
+    condition: ["toolchain_gcc", "device_family_mgm22"]
+  - path: "lib/EFR32MG22/IAR/libapploader.a"
+    condition: ["toolchain_iar", "device_family_mgm22"]
+#EFR32MG24
+  - path: "lib/EFR32MG24/GCC/libapploader.a"
+    condition: ["toolchain_gcc", "device_family_efr32mg24"]
+  - path: "lib/EFR32MG24/IAR/libapploader.a"
+    condition: ["toolchain_iar", "device_family_efr32mg24"]
+#EFR32xG24
+  - path: "lib/EFR32BG24/GCC/libapploader.a"
+    condition: ["toolchain_gcc", "device_family_efr32xg24"]
+  - path: "lib/EFR32BG24/IAR/libapploader.a"
+    condition: ["toolchain_iar", "device_family_efr32xg24"]
+#MGM24
+  - path: "lib/EFR32MG24/GCC/libapploader.a"
+    condition: ["toolchain_gcc", "device_family_mgm24"]
+  - path: "lib/EFR32MG24/IAR/libapploader.a"
+    condition: ["toolchain_iar", "device_family_mgm24"]
+#BGM24
+  - path: "lib/EFR32BG24/GCC/libapploader.a"
+    condition: ["toolchain_gcc", "device_family_bgm24"]
+  - path: "lib/EFR32BG24/IAR/libapploader.a"
+    condition: ["toolchain_iar", "device_family_bgm24"]
+#EFR32MG27
+  - path: "lib/EFR32MG27/GCC/libapploader.a"
+    condition: ["toolchain_gcc", "device_family_efr32mg27"]
+  - path: "lib/EFR32MG27/IAR/libapploader.a"
+    condition: ["toolchain_iar", "device_family_efr32mg27"]
+#EFR32xG27
+  - path: "lib/EFR32BG27/GCC/libapploader.a"
+    condition: ["toolchain_gcc", "device_family_efr32xg27"]
+  - path: "lib/EFR32BG27/IAR/libapploader.a"
+    condition: ["toolchain_iar", "device_family_efr32xg27"]

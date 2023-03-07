@@ -1,0 +1,30 @@
+﻿<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:derivedCluster
+  xmlns:zcl="http://zigbee.org/zcl/clusters"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:type="http://zigbee.org/zcl/types"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd"
+  id="0008" revision="2" name="LevelControlForLighting" inheritsFrom="Level">
+  <classification picsCode="LC" />
+  <server>
+    <attributes>
+      <attribute ref="CurrentLevel">
+        <restriction>
+          <type:minInclusive value="01" />
+          <type:maxInclusive value="fe" />
+        </restriction>
+      </attribute>
+      <attribute ref="MinFrequency" requiredIf="implements(CurrentFrequency)" />
+      <attribute ref="MaxFrequency" requiredIf="implements(CurrentFrequency)" />
+      <attribute ref="Options" required="true" />
+    </attributes>
+  </server>
+</zcl:derivedCluster>

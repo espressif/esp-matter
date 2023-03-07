@@ -1,0 +1,236 @@
+"*********Silicon Labs RSIA7 PCB antenna*********"
+//Antenna gain - 2.4GHz : 0.71dBi
+//Antenna gain -  5GHz  : 1.25dBi
+
+CC0_CC1_1P3_WLAN_2.4GHz_20MHz = {
+3,//NUM_OF_REGIONS
+    FCC, 0xB,//NUM_OF_CHANNELS
+//   rate,  11b, 11g, 11n
+        1,  32,  28,  26,
+        2,  32,  30,  28,
+        3,  32,  32,  32,
+        4,  32,  34,  34,
+        5,  32,  34,  34,
+        6,  32,  34,  34,
+        7,  32,  34,  34,
+        8,  32,  34,  34,
+        9,  32,  28,  28,
+        10, 32,  24,  24,
+        11, 32,  22,  20,
+    ETSI,0x11,
+       255, 32,  32, 32,
+    TELEC,0x11,
+       255, 30,  30, 30,
+};
+
+// 20MHz 5G power table for different rates and regions
+CC0_CC1_1P3_WLAN_5GHz_20MHz = {
+3,
+FCC, 0x6,
+    1,  11, 11, //band 1
+    2,  11, 11, //band 2  
+  100,  12, 10, //band 3  
+    3,  13, 13, //band 3  
+  149,  14, 13, //band 4  
+    4,  14, 14, //band 4  
+TELEC, 0x4,
+    1,  10,   9, //band 1 
+    2,  11,   9, //band 2 
+    3,  11,  10, //band 3 
+    4,  11,  10, //band 4  
+ETSI, 0x4,
+    1,  11,  11, //band 1
+    2,  11,  11, //band 2 
+    3,  12,  12, //band 3 
+    4,  12,  12, //band 4
+};
+
+CC0_CC1_1P3_BT_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+FCC,         9,
+ETSI,        5,
+TELEC,      17,
+WORLDWIDE,  11,
+};
+
+CC0_CC1_BT_OFFSET = {
+4,//NUM_OF_REGIONS
+FCC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power_offset
+     255,     0,
+       0,       0,
+      39,       0,
+      78,       1,
+ETSI,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+     255,   0,
+       0,       0,
+      39,       0,
+      78,       0,
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,    0,
+        0,       0,
+       39,       0,
+       78,       0,
+WORLDWIDE,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+     255,     0,
+        0,      0,
+       39,      0,
+       78,      0,
+};
+
+CC0_CC1_1P3_BLE_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+FCC,        11,
+ETSI,        5,
+TELEC,       8,
+WORLDWIDE,  20,
+};
+
+CC0_CC1_BLE_OFFSET = {
+4,//NUM_OF_REGIONS
+FCC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power_offset
+      255,      0,
+       0,       0,
+      20,       0,
+      39,       0,
+ETSI,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+       0,       0,
+      20,       0,
+      39,       0,
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+        0,       0,
+       19,       0,
+       39,       0,
+WORLDWIDE,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,       0,
+        0,       0,
+       20,       0,
+       39,       0,
+};
+
+
+
+
+"*********TAOGLAS GW.71.5153 Dipole antenna*********"
+////Antenna Gain - 2.4GHz : (Straight)3.3dBi , (Bent)3.8dBi ////						
+////Antenna Gain -  5GHz  : (Straight)4.9dBi , (Bent)5.5dBi ////						
+
+CC0_CC1_1P3_WLAN_2.4GHz_20MHz = {
+2,//NUM_OF_REGIONS
+    FCC, 0xB,//NUM_OF_CHANNELS
+//   rate,  11b, 11g, 11n
+        1,  30,  24,  18,
+        2,  30,  28,  22,
+        3,  30,  30,  26,
+        4,  30,  32,  30,
+        5,  30,  34,  34,
+        6,  30,  34,  34,
+        7,  30,  34,  34,
+        8,  30,  30,  30,
+        9,  30,  26,  26,
+        10, 30,  22,  22,
+        11, 30,  16,  14,
+    TELEC,0x11,
+       255, 30,  30, 30,
+};
+
+// 20MHz 5G power table for different rates and regions
+CC0_CC1_1P3_WLAN_5GHz_20MHz = {
+2,
+FCC, 0x6,
+    1,  11, 11, //band 1
+    2,  12, 11, //band 2  
+  100,  12, 12, //band 3  
+    3,  13, 13, //band 3  
+  149,  13, 13, //band 4  
+    4,  13, 13, //band 4  
+TELEC, 0x4,
+    1,  10,   9, //band 1 
+    2,  11,   9, //band 2 
+    3,  11,  10, //band 3 
+    4,  11,  10, //band 4  
+};
+
+CC0_CC1_1P3_BT_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+FCC,         8,
+TELEC,      17,
+};
+
+CC0_CC1_BT_OFFSET = {
+2,//NUM_OF_REGIONS
+FCC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power_offset
+     255,       0,
+       0,       0,
+      39,       0,
+      78,       0,
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+        0,      0,
+       39,      0,
+       78,      0,
+};
+
+CC0_CC1_1P3_BLE_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+FCC,        9,
+TELEC,      8,
+};
+
+CC0_CC1_BLE_OFFSET = {
+2,//NUM_OF_REGIONS
+FCC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power_offset
+      255,      0,
+       0,       0,
+      20,       0,
+      39,       0,
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,       0,
+        0,       0,
+       19,       0,
+       39,       0,
+};
+
+
+
+
+Use Same TELEC Power tables(used for RSIA7/GW.71.5153) for following Antennas:
+1)AEM6P-100000  :  Dipole Antenna   :: 2 dBi
+2)AEM6P-100001  :  Dipole Antenna   :: 2 dBi
+3)AEEE0-000000  :  Multilayer ceramic Antenna   :: 2.13 dBi
+4)AEEE0-000001  :  Chip Antenna   :: 4 dBi
+5)AEEE0-000002  :  Chip Antenna   :: 4 dBi
+6)AEP6P-100006X :  PIFA Antenna   :: 3 dBi
+7)AEP6P-100008X :  PIFA Antenna   :: 3 dBi
+
+
+
+
+
+
+

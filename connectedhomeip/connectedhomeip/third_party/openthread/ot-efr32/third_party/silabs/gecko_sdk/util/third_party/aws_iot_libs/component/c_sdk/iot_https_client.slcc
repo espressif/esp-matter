@@ -1,0 +1,58 @@
+id: iot_https_client
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|C SDK
+label: IoT HTTPS Client
+description: C SDK HTTPS client library
+
+package: amazon_platform
+quality: production
+
+provides:
+  - name: iot_https_client
+
+requires:
+  - name: core_http
+  - name: iot_network
+  - name: iot_config_common
+
+root_path: util/third_party/aws_iot_libs
+
+source:
+  - path: libraries/c_sdk/standard/https/src/iot_https_client.c
+  - path: libraries/c_sdk/standard/https/src/iot_https_utils.c
+
+  # Test related files
+  - path: libraries/c_sdk/standard/https/test/unit/iot_tests_https_client.c
+    condition: ["aws_tests_defs"]
+  - path: libraries/c_sdk/standard/https/test/unit/iot_tests_https_common.c
+    condition: ["aws_tests_defs"]
+  - path: libraries/c_sdk/standard/https/test/unit/iot_tests_https_async.c
+    condition: ["aws_tests_defs"]
+  - path: libraries/c_sdk/standard/https/test/unit/iot_tests_https_sync.c
+    condition: ["aws_tests_defs"]
+  - path: libraries/c_sdk/standard/https/test/unit/iot_tests_https_utils.c
+    condition: ["aws_tests_defs"]
+  - path: libraries/c_sdk/standard/https/test/system/iot_tests_https_system.c
+    condition: ["aws_tests_defs"]
+
+include:
+  - path: libraries/c_sdk/standard/https/src
+    file_list:
+      - path: private/iot_https_internal.h
+  - path: libraries/c_sdk/standard/https/include
+    file_list:
+      - path: iot_https_utils.h
+      - path: iot_https_client.h
+      - path: types/iot_https_types.h
+
+  # Test access APIs
+  - path: libraries/c_sdk/standard/https/test/access
+    file_list:
+      - path: iot_test_access_https.h
+      - path: iot_test_access_https_client.h
+
+  # Test-related files
+  - path: libraries/c_sdk/standard/https/test/unit
+    file_list:
+      - path: iot_tests_https_common.h
+    condition: ["aws_tests_defs"]

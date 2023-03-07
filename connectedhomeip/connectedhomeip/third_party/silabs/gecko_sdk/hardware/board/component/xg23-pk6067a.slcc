@@ -1,0 +1,22 @@
+!!omap
+- id: xg23_pk6067a
+- label: XG23-PK6067A
+- package: platform
+- description: Kit BSP support for the xG23 868-915 MHz +14 dBm Pro Kit.
+- category: Platform|Board|Kit|Pro Kit
+- quality: production
+- requires:
+  - name: hardware_board_from_xg23-pk6067a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_pk
+- define:
+  - name: SL_KIT_NAME
+    value: '"XG23-PK6067A"'
+  - name: SL_KIT_REV
+    value: '"A00"'
+- tag:
+  - kit:opn:xG23-PK6067A
+  - kit:pn:PK6067
+  - kit:variant:A
+  - kit:revision:A00

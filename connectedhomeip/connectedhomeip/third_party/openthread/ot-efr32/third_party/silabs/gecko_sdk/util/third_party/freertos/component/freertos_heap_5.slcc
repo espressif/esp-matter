@@ -1,0 +1,22 @@
+id: freertos_heap_5
+label: FreeRTOS Heap 5
+package: platform
+description: >
+  A heap implementation for FreeRTOS.
+
+  A sample implementation of pvPortMalloc() that allows the heap to be defined
+  across multiple non-contigous blocks and combines (coalescences) adjacent
+  memory blocks as they are freed.
+category: RTOS|FreeRTOS
+quality: production
+source:
+  - path: util/third_party/freertos/kernel/portable/MemMang/heap_5.c
+provides:
+  - name: freertos_heap
+  - name: freertos_heap_5
+requires:
+  - name: cmsis_core
+  - name: freertos
+template_contribution:
+  - name: rte_components
+    value: RTE_RTOS_FreeRTOS_HEAP_5

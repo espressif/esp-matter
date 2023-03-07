@@ -1,0 +1,133 @@
+id: rail_util_coex_ieee802154_cli
+label: RAIL Utility, Coexistence CLI
+description: Coexistence CLI
+package: platform
+category: Platform|Radio
+quality: production
+requires:
+  - name: cli
+  - name: rail_util_coex
+  - name: silabs_core_response_print
+provides:
+  - name: rail_util_coex_ieee802154_cli
+source:
+  - path: platform/radio/rail_lib/plugin/coexistence/protocol/ieee802154_uc/coexistence-802154-cli.c
+template_contribution:
+  - name: cli_command
+    value:
+      name: coex_154_get_options
+      handler: cli_coex_154_get_options
+      help: " Get 15.4 coexistence options"
+  - name: cli_command
+    value:
+      name: coex_154_set_options
+      handler: cli_coex_154_set_options
+      help: " Set 15.4 coexistence options"
+      argument:
+      - type: uint32
+        help: "options"
+  - name: cli_command
+    value:
+      name: coex_154_set_enable
+      handler: cli_coex_154_set_enable
+      help: "Enable/disable 15.4 coexistence"
+      argument:
+      - type: uint8
+        help: "0=Disable 1=Enable"
+  - name: cli_command
+    value:
+      name: coex_154_is_enabled
+      handler: cli_coex_154_is_enabled
+      help: "Check 15.4 coexistence: 0=Disabled 1=Enabled"
+  - name: cli_command
+    value:
+      name: coex_154_set_tx_request
+      handler: cli_coex_154_set_tx_request
+      help: " Configure 15.4 coexistence TX request"
+      argument:
+      - type: uint8
+        help: "request mode"
+  - name: cli_command
+    value:
+      name: coex_154_set_rx_request
+      handler: cli_coex_154_set_rx_request
+      help: " Set 15.4 rx request"
+      argument:
+      - type: uint8
+        help: "request mode"
+  - name: cli_command
+    value:
+      name: coex_154_set_request_pwm
+      handler: cli_coex_154_set_request_pwm
+      help: " Configure 15.4 request PWM"
+      argument:
+      - type: uint8
+        help: "request mode"
+      - type: uint8
+        help: "dutyCycle"
+      - type: uint8
+        help: "periodHalfMs"
+  - name: cli_command
+    value:
+      name: coex_154_get_request_pwm_args
+      handler: cli_coex_154_get_request_pwm_args
+      help: " Get 15.4 PWM request configuration"
+  - name: cli_command
+    value:
+      name: coex_154_set_dp_pulse_width
+      handler: cli_coex_154_set_dp_pulse_width
+      help: " Set directional priority pulse width(us)"
+      argument:
+      - type: uint8
+        help: "pulse width(us)"
+  - name: cli_command
+    value:
+      name: coex_154_get_dp_pulse_width
+      handler: cli_coex_154_get_dp_pulse_width
+      help: " Get directional priority pulse width(us)"
+  - name: cli_command
+    value:
+      name: coex_154_set_phy_select_timeout
+      handler: cli_coex_154_set_phy_select_timeout
+      help: " Set coexistence PHY select timeout"
+      argument:
+        - type: uint8
+          help: "timeout(ms)"
+  - name: cli_command
+    value:
+      name: coex_154_get_phy_select_timeout
+      handler: cli_coex_154_get_phy_select_timeout
+      help: " Get coexistence PHY select timeout(ms)"
+  - name: cli_command
+    value:
+      name: coex_154_is_coex_phy_selected
+      handler: cli_coex_154_is_coex_phy_selected
+      help: " Check if coexistence optimized PHY is selected"
+  - name: cli_command
+    value:
+      name: coex_154_get_gpio_input_override
+      handler: cli_coex_154_get_gpio_input_override
+      help: " Get 15.4 GPIO input override"
+      argument:
+        - type: uint8
+          help: "GPIO index"
+  - name: cli_command
+    value:
+      name: coex_154_set_gpio_input_override
+      handler: cli_coex_154_set_gpio_input_override
+      help: " Enable/disable 15.4 GPIO input override"
+      argument:
+        - type: uint8
+          help: "GPIO index"
+        - type: uint8
+          help: "0=Disable 1=Enable"
+  - name: cli_command
+    value:
+      name: coex_154_print_counters
+      handler: cli_coex_154_print_counters
+      help: " Print coexistence specific counters"
+  - name: cli_command
+    value:
+      name: coex_154_clear_counters
+      handler: cli_coex_154_clear_counters
+      help: " Reset coexistence specific counters"

@@ -1,0 +1,61 @@
+id: device_init_hfrco
+label: "Device Init: HFRCO"
+package: platform
+description: >
+  Device init for HFRCO configures the frequency band of the main HFRCO oscillator. 
+  This oscillator can be used for the core and high-frequency peripherals, as configured by clock init.
+category: Services|Device Initialization
+quality: production
+root_path: platform/service/device_init/
+config_file:
+  - path: config/s0/sl_device_init_hfrco_config.h
+    file_id: device_init_hfrco_config
+    condition: [device_series_0]
+    unless: [device_sdid_76, device_sdid_77]
+  - path: config/s0/efm32zg/sl_device_init_hfrco_config.h
+    file_id: device_init_hfrco_config
+    condition: [device_sdid_76]
+  - path: config/s0/efm32zg/sl_device_init_hfrco_config.h
+    file_id: device_init_hfrco_config
+    condition: [device_sdid_77]
+
+  - path: config/s1/sl_device_init_hfrco_config.h
+    file_id: device_init_hfrco_config
+    condition: [device_series_1]
+    unless: [device_sdid_100, device_sdid_103, device_sdid_106]
+  - path: config/s1/efm32gg/sl_device_init_hfrco_config.h
+    file_id: device_init_hfrco_config
+    condition: [device_sdid_100]
+  - path: config/s1/efm32tg/sl_device_init_hfrco_config.h
+    file_id: device_init_hfrco_config
+    condition: [device_sdid_103]
+  - path: config/s1/efm32gg/sl_device_init_hfrco_config.h
+    file_id: device_init_hfrco_config
+    condition: [device_sdid_106]
+
+  - path: config/s2/sl_device_init_hfrco_config.h
+    file_id: device_init_hfrco_config
+    condition: [device_series_2]
+include:
+  - path: inc
+    file_list:
+      - path: sl_device_init_hfrco.h
+source:
+  - path: src/sl_device_init_hfrco.c
+provides:
+  - name: device_init_hfrco
+requires:
+  - name: emlib_cmu
+  - name: status
+template_contribution:
+  - name: event_handler
+    value:
+      event: platform_init
+      include: sl_device_init_hfrco.h
+      handler: sl_device_init_hfrco
+    priority: -9750
+  - name: device_init_clocks_present
+    value: hfrco
+documentation:
+    docset: gecko-platform
+    document: service/api/group-device-init-hfrco

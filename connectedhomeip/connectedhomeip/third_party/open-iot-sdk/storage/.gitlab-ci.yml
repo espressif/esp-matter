@@ -1,0 +1,79 @@
+# Copyright (c) 2021 Arm Limited and Contributors. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+include:
+  - project: '${OPEN_IOT_SDK_BASE_GROUP}/tools/developer-tools'
+    ref: 2dca7c7467676667e6fd69b1e0a6840b81a9a7b7
+    file:
+      - '/templates/pipeline-baseline-sdk.yml'
+      - '/templates/sync-public/pipeline-sync-public.yml'
+
+variables:
+  GIT_CLONE_PATH: /builds/workspace
+  GIT_SUBMODULE_STRATEGY: recursive
+
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_REF_NAME =~ /^release-.*/
+    - if: $CI_PIPELINE_SOURCE == "web"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+
+stages:
+  - quality_check
+  - build_and_test
+  - publish
+
+unit-tests:
+  tags:
+    - iotmsw-amd64
+  image: ${OPEN_IOT_SDK_DOCKER_REGISTRY}/sanity:v1
+  stage: quality_check
+  script:
+    - cmake -S . -B __build -GNinja -DENABLE_DEVELOPER_MODE=ON -DOPT_ENABLE_DOXYGEN=ON -DOPT_ENABLE_SANITIZER_LEAK=ON
+    - cmake --build __build
+    - ctest --test-dir __build --output-on-failure
+    - cmake --build __build --target covreport
+  coverage: /^\s*lines:\s*\d+.\d+\%/
+  artifacts:
+    name: ${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHA}
+    expire_in: 7 days
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: __build/coverage.xml
+    paths:
+      - __build/html/
+
+build gcc10:
+  stage: build_and_test
+  trigger:
+    include: .gitlab/ci/pipeline/build-gcc.yml
+    strategy: depend
+
+build armc6:
+  stage: build_and_test
+  trigger:
+    include: .gitlab/ci/pipeline/build-armclang.yml
+    strategy: depend
+
+# deploy doxygen to GitLab Pages
+pages:
+  tags:
+    - iotmsw-amd64
+  image: ${OPEN_IOT_SDK_DOCKER_REGISTRY}/sanity:v1
+  stage: publish
+  script:
+    - echo 'Publishing doxygen docs to Gitlab pages'
+    - mv __build/html/ public/
+  artifacts:
+    paths:
+      - public/
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+mirror:
+  extends: .sync-public
+  stage: .post
+  variables:
+    SYNC_DESTINATION : 'https://${GITLAB_USER_ID}:${PUBLIC_SDK_TOKEN}@git.gitlab.arm.com/iot/open-iot-sdk/${CI_PROJECT_NAME}.git'

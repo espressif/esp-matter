@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="com.silabs.sdk.exx32.external.glib" label="GLib" contentRoot="$(sdkInstallationPath:default())/platform/middleware/glib">
+  <property key="category" value="efm32|Middleware"/>
+  <includePath uri="." />
+  <includePath uri="glib" />
+  <includePath uri="dmd" />
+  <includePath uri="dmd/ssd2119" />
+  <folder name="Graphics" uri="." includeAllFiles="true" includeAllFolders="false" />
+  <folder name="Graphics" uri="glib" includeAllFiles="true" includeAllFolders="false" />
+  <folder name="Graphics" uri="dmd/ssd2119" includeAllFiles="true" includeAllFolders="false" />
+  <folder name="Graphics" uri="dmd/display" includeAllFiles="true" includeAllFolders="false" />
+</project>

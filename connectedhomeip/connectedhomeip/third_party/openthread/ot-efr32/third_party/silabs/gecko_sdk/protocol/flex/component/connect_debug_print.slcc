@@ -1,0 +1,20 @@
+id: "connect_debug_print"
+label: "Debug Print"
+package: "Flex"
+category: "Connect"
+quality: "production"
+description: "Provides APIs for adding serial debugging capability."
+provides:
+  - name: "connect_debug_print"
+requires:
+  - name: "printf"
+  - name: "device_supports_connect"
+include:
+  - path: "protocol/flex/debug-print"
+    file_list:
+      - path: "debug_print.h"
+config_file:
+  - path: "protocol/flex/debug-print/config/debug_print_config.h"
+template_contribution:
+  - name: component_catalog
+    value: connect_debug_print

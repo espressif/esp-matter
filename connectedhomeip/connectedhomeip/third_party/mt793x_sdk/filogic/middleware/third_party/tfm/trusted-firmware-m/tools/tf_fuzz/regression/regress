@@ -1,0 +1,18 @@
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+echo
+echo TF-Fuzz Regression Testing
+echo
+for reg_test in `ls -F | grep \/$ | grep -v add_these_tests | grep -v regress_lib`; do
+    echo Running "$reg_test"...
+    cd $reg_test
+    rm -f test.c stdout_stderr
+    ../../tfz -v ./template test.c >stdout_stderr 2>&1
+    rm -f diff_stdout_stderr diff_test.c
+    diff stdout_stderr exp_stdout_stderr >diff_stdout_stderr
+    diff test.c exp_test.c >diff_test.c
+    python ./check.py diff_stdout_stderr diff_test.c stdout_stderr
+    cd ..
+done

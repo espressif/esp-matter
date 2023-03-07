@@ -1,0 +1,15 @@
+[
+    {
+        "files": [
+            "+../../../../../../../source/ti/boards/CC3235S_LAUNCHXL/Board.html -> Board.html",
+            "+cc32xxs_tirtos7.icf -> cc32xxs_tirtos7.icf",
+            "+../../console.c -> console.c",
+            "+../main_tirtos.c -> main_tirtos.c",
+            "+../../overview.rov.json -> overview.rov.json",
+            "+../portable.syscfg -> portable.syscfg",
+            "+../../README.html -> README.html",
+            "+../../README.md -> README.md",
+            "+../../temperature.c -> temperature.c"
+        ]
+    }
+]

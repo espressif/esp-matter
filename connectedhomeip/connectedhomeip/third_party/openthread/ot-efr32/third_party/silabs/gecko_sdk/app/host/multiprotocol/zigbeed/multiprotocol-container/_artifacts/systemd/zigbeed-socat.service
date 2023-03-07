@@ -1,0 +1,18 @@
+[Unit]
+Description=Zigbeed socat helper service
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=root
+ExecStart=/usr/bin/socat -v pty,link=/dev/ttyZigbeeNCP pty,link=/tmp/ttyZigbeeNCP
+ExecStop=/bin/kill -WINCH ${MAINPID}
+PIDFile=/run/zigbeed-socat.pid
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=zigbeed-socat
+
+[Install]
+WantedBy=multi-user.target

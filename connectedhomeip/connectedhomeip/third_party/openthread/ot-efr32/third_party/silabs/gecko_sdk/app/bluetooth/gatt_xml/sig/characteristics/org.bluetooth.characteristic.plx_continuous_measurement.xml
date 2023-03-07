@@ -1,0 +1,294 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2015 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+name="PLX Continuous Measurement" type="org.bluetooth.characteristic.plx_continuous_measurement" uuid="2A5F" last-modified="2015-07-14" approved="Yes">
+    <InformativeText>
+        <Summary>The PLX Continuous Measurement characteristic, if supported, is used to send periodic pulse oximetry measurements. This characteristic is a variable length structure containing the Flags field (to indicate presence of optional fields), the SpO2PR-Normal field, and depending on the contents of the Flags field, the SpO2PR-Fast field, the SpO2PR-Slow field, the Measurement Status field, the Device and Sensor Status field, and/or the Pulse Amplitude Index field.</Summary>
+	</InformativeText>
+    <Value>
+        <Field name="Flags">
+            <Requirement>Mandatory</Requirement>
+            <Format>8bit</Format>
+            <BitField>
+                <Bit name="SpO2PR–Fast field is present" index="0" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" requires="C1" />
+					</Enumerations>
+				</Bit>
+                <Bit name="SpO2PR-Slow field is present" index="1" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" requires="C2" />
+					</Enumerations>
+				</Bit>
+                <Bit name="Measurement Status field is present" index="2" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" requires="C3" />
+					</Enumerations>
+				</Bit>
+                <Bit name="Device and Sensor Status field is present" index="3" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" requires="C4" />
+					</Enumerations>
+				</Bit>
+                <Bit name="Pulse Amplitude Index field is present"
+                     index="4"
+                     size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" requires="C5" />
+                                     
+					</Enumerations>
+				</Bit>
+                <ReservedForFutureUse index="5" size="3"/>
+			</BitField>
+		</Field>
+        <Field name="SpO2PR-Normal - SpO2">
+            <InformativeText>
+                Unit is percentage with a resolution of 1
+			</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>SFLOAT</Format>
+            <Unit>org.bluetooth.unit.percentage</Unit>
+            <DecimalExponent>0</DecimalExponent>
+		</Field>
+        <Field name="SpO2PR-Normal - PR">
+            <InformativeText>
+                Unit is beats per minute with a resolution of 1
+			</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>SFLOAT</Format>
+            <Unit>org.bluetooth.unit.period.beats_per_minute</Unit>
+            <DecimalExponent>0</DecimalExponent>
+		</Field>
+        <Field name="SpO2PR-Fast - SpO2">
+            <InformativeText>
+                Unit is percentage with a resolution of 1
+			</InformativeText>
+            <Requirement>C1</Requirement>
+            <Format>SFLOAT</Format>
+            <Unit>org.bluetooth.unit.percentage</Unit>
+            <DecimalExponent>0</DecimalExponent>
+		</Field>
+        <Field name="SpO2PR-Fast - PR">
+            <InformativeText>
+                Unit is beats per minute with a resolution of 1
+			</InformativeText>
+            <Requirement>C1</Requirement>
+            <Format>SFLOAT</Format>
+            <Unit>org.bluetooth.unit.period.beats_per_minute</Unit>
+            <DecimalExponent>0</DecimalExponent>
+		</Field>
+        <Field name="SpO2PR-Slow - SpO2">
+            <InformativeText>
+                Unit is percentage with a resolution of 1
+			</InformativeText>
+            <Requirement>C2</Requirement>
+            <Format>SFLOAT</Format>
+            <Unit>org.bluetooth.unit.percentage</Unit>
+            <DecimalExponent>0</DecimalExponent>
+		</Field>
+        <Field name="SpO2PR-Slow - PR">
+            <InformativeText>
+                Unit is beats per minute with a resolution of 1
+			</InformativeText>
+            <Requirement>C2</Requirement>
+            <Format>SFLOAT</Format>
+            <Unit>org.bluetooth.unit.period.beats_per_minute</Unit>
+            <DecimalExponent>0</DecimalExponent>
+		</Field>
+        <Field name="Measurement Status">
+            <Requirement>C3</Requirement>
+            <Format>16bit</Format>
+            <BitField>
+                <Bit name="Measurement Ongoing" index="5" size="1">
+                    <Enumerations>
+                            <Enumeration key="0" value="False"/>
+                            <Enumeration key="1" value="True"/>
+					</Enumerations>
+				</Bit>
+                <Bit name="Early Estimated Data" index="6" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>
+					</Enumerations>
+				</Bit>
+                <Bit name="Validated Data" index="7" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>
+					</Enumerations>
+				</Bit>
+                <Bit name="Fully Qualified Data" index="8" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>
+					</Enumerations>
+				</Bit>
+                <Bit name="Data from Measurement Storage" index="9" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>
+					</Enumerations>
+				</Bit>
+                <Bit name="Data for Demonstration" index="10" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>                     
+					</Enumerations>
+				</Bit>
+                <Bit name="Data for Testing" index="11" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>
+					</Enumerations>
+				</Bit>
+                <Bit name="Calibration Ongoing" index="12" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>
+					</Enumerations>
+				</Bit>
+                <Bit name="Measurement Unavailable" index="13" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>
+					</Enumerations>
+				</Bit>
+                <Bit name="Questionable Measurement Detected" index="14" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>
+					</Enumerations>
+				</Bit>
+                <Bit name="Invalid Measurement Detected" index="15" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>
+                    </Enumerations>
+				</Bit>
+                <ReservedForFutureUse index="0" size="5"/>
+           
+			</BitField>
+		</Field>
+		
+        <Field name="Device and Sensor Status">
+            
+            <Requirement>C4</Requirement>
+            <Format>24bit</Format>
+            <BitField>
+                <Bit name="Extended Display Update Ongoing bit supported" index="0" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>
+					</Enumerations>
+				</Bit>
+                <Bit name="Equipment Malfunction Detected bit supported" index="1" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>
+				    </Enumerations>
+				</Bit>
+                <Bit name="Signal Processing Irregularity Detected bit supported" index="2" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>
+					</Enumerations>
+				</Bit>
+                <Bit name="Inadequite Signal Detected bit supported" index="3" size="1">
+                    <Enumerations>
+                         <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>
+					</Enumerations>
+				</Bit>
+                <Bit name="Poor Signal Detected bit supported" index="4" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>
+					</Enumerations>
+				</Bit>
+                <Bit name="Low Perfusion Detected bit supported" index="5" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>
+					</Enumerations>
+				</Bit>
+                <Bit name="Erratic Signal Detected bit supported" index="6" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>
+					</Enumerations>
+				</Bit>
+                <Bit name="Nonpulsatile Signal Detected bit supported" index="7" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>
+					</Enumerations>
+				</Bit>
+                <Bit name="Questionable Pulse Detected bit supported" index="8" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>
+					</Enumerations>
+				</Bit>
+                <Bit name="Signal Analysis Ongoing bit supported" index="9" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>
+					</Enumerations>
+				</Bit>
+                <Bit name="Sensor Interference Detected bit supported" index="10" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>
+					</Enumerations>
+				</Bit>
+                <Bit name="Sensor Unconnected to User bit supported" index="11" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>
+					</Enumerations>
+				</Bit>
+                <Bit name="Unknown Sensor Connected bit supported" index="12" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>
+					</Enumerations>
+				</Bit>
+                <Bit name="Sensor Displaced bit supported" index="13" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>
+					</Enumerations>
+				</Bit>
+                <Bit name="Sensor Malfunctioning bit supported" index="14" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>
+					</Enumerations>
+				</Bit>
+                <Bit name="Sensor Disconnected bit supported" index="15" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="False"/>
+                        <Enumeration key="1" value="True"/>
+					</Enumerations>
+				</Bit>
+                <ReservedForFutureUse index="16" size="8" />
+                                      
+			</BitField>
+		</Field>
+        <Field name="Pulse Amplitude Index">
+            <InformativeText>
+                Unit is percentage with a resolution of 1
+			</InformativeText>
+            <Requirement>C5</Requirement>
+            <Format>SFLOAT</Format>
+            <Unit>org.bluetooth.unit.percentage</Unit>
+            <DecimalExponent>0</DecimalExponent>
+		</Field>
+     </Value>
+    <Note>The fields in the above table, reading from top to bottom, are shown in the order of LSO to MSO, where LSO = Least Significant Octet and MSO = Most Significant Octet.</Note>
+    </Characteristic>

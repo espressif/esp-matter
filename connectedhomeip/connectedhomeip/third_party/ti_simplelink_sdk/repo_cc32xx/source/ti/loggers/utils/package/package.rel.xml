@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/release.dtd -->
+<release name="ti_loggers_utils" label="default" date="1646222102013" buildCount="1" producerId="undefined">
+<package name="ti.loggers.utils"
+    version="1, 0, 0"/>
+<imports>
+</imports>
+<references>
+    <package name="xdc"
+        version="1, 1, 1, 1601763860975"
+        providerId="/scratch/xlibrary/.conan/data/xdctools/3.62.01.15/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c/packages">
+        <file name="IPackage.xdc"/>
+        <file name="IPackage.xs"/>
+        <file name="Warnings.xs"/>
+        <file name="om2.xs"/>
+        <file name="package.xs"/>
+        <file name="template.xs"/>
+        <file name="utils.js"/>
+        <file name="xdc.tci"/>
+        <file name="xmlgen.xs"/>
+        <file name="xmlgen2.xs"/>
+    </package>
+    <package name="xdc.services.global"
+        version="1, 0, 0, 1601763907358"
+        providerId="/scratch/xlibrary/.conan/data/xdctools/3.62.01.15/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c/packages">
+        <file name="Clock.xs"/>
+        <file name="Trace.xs"/>
+        <file name="java/package.jar"/>
+    </package>
+    <package name="xdc.bld"
+        version="1, 0, 2, 1601763865498"
+        providerId="/scratch/xlibrary/.conan/data/xdctools/3.62.01.15/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c/packages">
+        <file name="BuildEnvironment.xs"/>
+        <file name="Configuration.xs"/>
+        <file name="Executable.xs"/>
+        <file name="ITarget.xs"/>
+        <file name="ITarget2.xs"/>
+        <file name="ITarget3.xs"/>
+        <file name="ITargetFilter.xs"/>
+        <file name="Library.xs"/>
+        <file name="Manifest.xs"/>
+        <file name="PackageContents.xs"/>
+        <file name="Repository.xs"/>
+        <file name="Script.xs"/>
+        <file name="Utils.xs"/>
+        <file name="_gen.xs"/>
+        <file name="bld.js"/>
+        <file name="package.xs"/>
+    </package>
+    <package name="iar.targets.arm"
+        version="1, 0, 0, 1627480655543"
+        providerId="/scratch/xlibrary/.conan/data/sysbios/6.81.04.02/library-sb/ga/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/kernel/tirtos/packages">
+        <file name="ITarget.xs"/>
+        <file name="package.xs"/>
+    </package>
+    <package name="gnu.targets.arm"
+        version="1, 0, 0, 1627480650338"
+        providerId="/scratch/xlibrary/.conan/data/sysbios/6.81.04.02/library-sb/ga/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/kernel/tirtos/packages">
+        <file name="A15F.xs"/>
+        <file name="A53F.xs"/>
+        <file name="A72F.xs"/>
+        <file name="A8F.xs"/>
+        <file name="A9F.xs"/>
+        <file name="GCArmv6.xs"/>
+        <file name="GCArmv7A.xs"/>
+        <file name="IM.xs"/>
+        <file name="ITarget.xs"/>
+        <file name="M0.xs"/>
+        <file name="M3.xs"/>
+        <file name="_utils.xs"/>
+        <file name="libs/install-native/arm-none-eabi/include/_ansi.h"/>
+        <file name="libs/install-native/arm-none-eabi/include/_newlib_version.h"/>
+        <file name="libs/install-native/arm-none-eabi/include/machine/_default_types.h"/>
+        <file name="libs/install-native/arm-none-eabi/include/machine/_types.h"/>
+        <file name="libs/install-native/arm-none-eabi/include/machine/ieeefp.h"/>
+        <file name="libs/install-native/arm-none-eabi/include/machine/types.h"/>
+        <file name="libs/install-native/arm-none-eabi/include/newlib-nano/newlib.h"/>
+        <file name="libs/install-native/arm-none-eabi/include/stdint.h"/>
+        <file name="libs/install-native/arm-none-eabi/include/stdio.h"/>
+        <file name="libs/install-native/arm-none-eabi/include/string.h"/>
+        <file name="libs/install-native/arm-none-eabi/include/sys/_intsup.h"/>
+        <file name="libs/install-native/arm-none-eabi/include/sys/_pthreadtypes.h"/>
+        <file name="libs/install-native/arm-none-eabi/include/sys/_stdint.h"/>
+        <file name="libs/install-native/arm-none-eabi/include/sys/_types.h"/>
+        <file name="libs/install-native/arm-none-eabi/include/sys/cdefs.h"/>
+        <file name="libs/install-native/arm-none-eabi/include/sys/features.h"/>
+        <file name="libs/install-native/arm-none-eabi/include/sys/lock.h"/>
+        <file name="libs/install-native/arm-none-eabi/include/sys/reent.h"/>
+        <file name="libs/install-native/arm-none-eabi/include/sys/stdio.h"/>
+        <file name="libs/install-native/arm-none-eabi/include/sys/string.h"/>
+        <file name="libs/install-native/arm-none-eabi/include/sys/types.h"/>
+        <file name="package.xs"/>
+    </package>
+    <package name="ti.targets"
+        version="1, 0, 3, 1627480657801"
+        providerId="/scratch/xlibrary/.conan/data/sysbios/6.81.04.02/library-sb/ga/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/kernel/tirtos/packages">
+        <file name="C28_float.xs"/>
+        <file name="C28_large.xs"/>
+        <file name="ITarget.xs"/>
+        <file name="package.xs"/>
+    </package>
+    <package name="ti.targets.arm.elf"
+        version="1, 0, 0, 1627480660277"
+        providerId="/scratch/xlibrary/.conan/data/sysbios/6.81.04.02/library-sb/ga/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/kernel/tirtos/packages">
+        <file name="IArm.xs"/>
+        <file name="package.xs"/>
+    </package>
+    <package name="ti.targets.arm.clang"
+        version="1, 0, 0, 1627480669652"
+        providerId="/scratch/xlibrary/.conan/data/sysbios/6.81.04.02/library-sb/ga/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/kernel/tirtos/packages">
+        <file name="ITarget.xs"/>
+        <file name="package.xs"/>
+    </package>
+    <package name="xdc.shelf"
+        version="1, 0, 0, 1601763947085"
+        providerId="/scratch/xlibrary/.conan/data/xdctools/3.62.01.15/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c/packages">
+        <file name="java/antlr.jar"/>
+        <file name="java/ecj.jar"/>
+        <file name="java/js.jar"/>
+        <file name="java/tar.jar"/>
+    </package>
+    <package name="xdc.services.intern.cmd"
+        version="1, 0, 0, 1601763919130"
+        providerId="/scratch/xlibrary/.conan/data/xdctools/3.62.01.15/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c/packages">
+        <file name="java/package.jar"/>
+    </package>
+    <package name="xdc.services.intern.gen"
+        version="1, 0, 0, 1601763921211"
+        providerId="/scratch/xlibrary/.conan/data/xdctools/3.62.01.15/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c/packages">
+        <file name="java/package.jar"/>
+    </package>
+    <package name="xdc.services.intern.xsr"
+        version="1, 0, 0, 1601763923273"
+        providerId="/scratch/xlibrary/.conan/data/xdctools/3.62.01.15/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c/packages">
+        <file name="java/package.jar"/>
+    </package>
+    <package name="xdc.services.spec"
+        version="1, 0, 0, 1601763932623"
+        providerId="/scratch/xlibrary/.conan/data/xdctools/3.62.01.15/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c/packages">
+        <file name="java/package.jar"/>
+    </package>
+    <targetRoot base="/scratch/xlibrary/.conan/data/arm-none-eabi-gcc/9.2019.q4.major-0/library-msp/ga/package/44fcf6b9a7fb86b2586303e3db40189d3b511830/"
+        trgs="gnu.targets.arm.M0,gnu.targets.arm.M4,gnu.targets.arm.M4F,gnu.targets.arm.M33F">
+        <file name="arm-none-eabi/include/sys/config.h"/>
+        <file name="lib/gcc/arm-none-eabi/9.2.1/include/stdarg.h"/>
+        <file name="lib/gcc/arm-none-eabi/9.2.1/include/stdbool.h"/>
+        <file name="lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"/>
+    </targetRoot>
+    <package name="ti.utils.osal"
+        version="1, 0, 0, 1646222040000"
+        providerId="/scratch/xlibrary/.conan/data/tiutils/1.35.00.01/library-sb/ga/build/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/source">
+        <file name="Interrupt.h"/>
+        <file name="Timestamp.h"/>
+    </package>
+    <package name="ti.utils.runtime"
+        version="1, 0, 0, 1646222040000"
+        providerId="/scratch/xlibrary/.conan/data/tiutils/1.35.00.01/library-sb/ga/build/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/source">
+        <file name="ILogger.h"/>
+    </package>
+    <package name="ti.loggers.utils"
+        version="1, 0, 0"
+        providerId="/scratch/xlibrary/.conan/data/tiutils/1.35.00.01/library-sb/ga/build/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/source">
+        <file name="LoggerBuf.h"/>
+    </package>
+    <targetRoot base="/scratch/xlibrary/.conan/data/ticodegen/20.2.5.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c/"
+        trgs="ti.targets.arm.elf.M4,ti.targets.arm.elf.M4F">
+        <file name="include/_stdint40.h"/>
+        <file name="include/_ti_config.h"/>
+        <file name="include/linkage.h"/>
+        <file name="include/machine/_limits.h"/>
+        <file name="include/machine/_stdint.h"/>
+        <file name="include/machine/_types.h"/>
+        <file name="include/stdarg.h"/>
+        <file name="include/stdbool.h"/>
+        <file name="include/stddef.h"/>
+        <file name="include/stdint.h"/>
+        <file name="include/stdio.h"/>
+        <file name="include/string.h"/>
+        <file name="include/sys/_stdint.h"/>
+        <file name="include/sys/_types.h"/>
+        <file name="include/sys/cdefs.h"/>
+        <file name="include/sys/stdint.h"/>
+        <file name="include/xlocale/_stdio.h"/>
+        <file name="include/xlocale/_string.h"/>
+    </targetRoot>
+    <xdcRoot base="/scratch/xlibrary/.conan/data/xdctools/3.62.01.15/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c/">
+        <file name="/packages/xdc/package.xdc"/>
+        <xdcCorePkg version="16, 0, 2, 1601763875727" producerId="/db/ztree/library/trees/xdc/xdc-K04/src/packages" buildCount="1" releaseName="xdc_corevers" label="default" date="1601763875727"/>
+    </xdcRoot>
+</references>
+<orphans>
+    <file name="/scratch/xlibrary/.conan/data/tiutils/1.35.00.01/library-sb/ga/build/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/tiutils.bld"/>
+    <file name="/scratch/xlibrary/.conan/data/tirtos/7.00.00.47/library-sb/ga/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/kernel/tirtos7/packages/xdc/std.h"/>
+</orphans>
+</release>

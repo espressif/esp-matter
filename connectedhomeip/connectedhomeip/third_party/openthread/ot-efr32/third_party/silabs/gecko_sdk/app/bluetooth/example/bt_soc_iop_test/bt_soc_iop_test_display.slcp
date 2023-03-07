@@ -1,0 +1,121 @@
+project_name: bt_soc_iop_test_display
+package: Bluetooth
+label: Bluetooth - SoC Interoperability Test
+description: >
+  This is a test procedure containing several test cases for Bluetooth Low
+  Energy communication. This demo is meant to be used with the EFR Connect
+  mobile app, through the "Interoperability Test" tile on the Develop view of
+  the app.
+category: Bluetooth Examples
+quality: production
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Bluetooth"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]
+
+component:
+  - id: bluetooth_stack
+  - id: gatt_configuration
+  - id: bluetooth_feature_legacy_advertiser
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_gatt_server
+  - id: bluetooth_feature_sm
+  - id: bluetooth_feature_system
+  - id: in_place_ota_dfu
+  - id: bootloader_interface
+  - id: apploader_util
+  - id: rail_util_pti
+  - id: app_assert
+  - id: component_catalog
+  - id: mpu
+  - id: simple_timer
+  - id: iostream_usart
+    instance:
+      - vcom
+  - id: app_log
+  - id: dmd_memlcd
+  - id: glib
+
+source:
+  - path: main.c
+  - path: app.c
+  - path: app_iop.c
+  - path: app_memlcd.c
+
+include:
+  - path: .
+    file_list:
+      - path: app.h
+      - path: app_iop.h
+      - path: app_memlcd.h
+
+config_file:
+  - override:
+      component: gatt_configuration
+      file_id: gatt_configuration_file_id
+    path: gatt_configuration.btconf
+    directory: btconf
+
+readme:
+  - path: ../../documentation/example/soc_iop_test/readme.md
+
+other_file:
+  - path: iop_create_bl_files.sh
+  - path: iop_create_bl_files.ps1
+  - path: ../../script/create_bl_files.sh
+  - path: ../../script/create_bl_files.bat
+  - path: ../../documentation/example/soc_iop_test/readme_img0.png
+    folder: images
+  - path: ../../documentation/example/soc_iop_test/readme_img1.png
+    folder: images
+  - path: ../../documentation/example/soc_iop_test/readme_img2.png
+    folder: images
+  - path: ../../documentation/example/soc_iop_test/readme_img3.png
+    folder: images
+  - path: ../../documentation/example/soc_iop_test/readme_img4.png
+    folder: images
+  - path: ../../documentation/example/soc_iop_test/readme_img5.png
+    folder: images
+  - path: ../../documentation/example/soc_iop_test/readme_img6.png
+    folder: images
+  - path: ../../documentation/example/soc_iop_test/readme_img7.png
+    folder: images
+  - path: ../../documentation/example/soc_iop_test/readme_img8.png
+    folder: images
+  - path: ../../documentation/example/soc_iop_test/readme_img9.png
+    folder: images
+  - path: ../../documentation/example/soc_iop_test/readme_img10.png
+    folder: images
+  - path: ../../documentation/example/soc_iop_test/readme_img11.png
+    folder: images
+
+configuration:
+  - name: SL_STACK_SIZE
+    value: "2752"
+  - name: SL_HEAP_SIZE
+    value: "9200"
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+    condition:
+      - iostream_usart
+  - name: SL_BOARD_ENABLE_DISPLAY
+    value: "1"
+    contidtion:
+      - glib
+
+define:
+  - name: BOARD_MEMLCD_PRESENT
+
+tag:
+  - hardware:rf:band:2400
+  - hardware:component:display:ls013b7dh03
+
+ui_hints:
+  highlight:
+    - path: config/btconf/gatt_configuration.btconf
+    - path: readme.md
+      focus: true

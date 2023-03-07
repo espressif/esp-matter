@@ -1,0 +1,44 @@
+id: zigbee_pro_stack
+label: Pro Stack
+package: Zigbee
+category: Zigbee|Stack|Pro Core
+quality: production
+
+description: The main Zigbee PRO Stack component for parsing, processing, generating and managing the Zigbee PRO stack messages and functionality.
+
+provides:
+  - name: zigbee_pro_stack
+  - name: zigbee_pro_stack_support
+  - name: 802_15_4_stack
+
+requires:
+  - name: zigbee_pro_stack_implementation
+  - name: zigbee_pro_stack_library
+    condition:
+     - zigbee_force_libraries
+  - name: zigbee_stack_common
+  - name: lower_mac_spinel
+    condition:
+      - zigbee_stack_unix
+
+recommends:
+  - id: zigbee_pro_stack_source
+
+config_file:
+  - path: protocol/zigbee/stack/config/component_config/sl_zigbee_pro_stack_config.h
+
+validation_helper:
+  # NCP doesn't have DEVICE_TYPE before it connects to Host
+  # so we don't run the validation script for NCP
+  - path: protocol/zigbee/component/scripts/zigbee_pro_stack_validation.lua
+    unless:
+      - zigbee_ncp
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_pro_stack
+
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/pro-stack

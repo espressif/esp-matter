@@ -1,0 +1,35 @@
+package: Zigbee
+description: Silicon Labs implementation of the feedback component of the Identify cluster. During
+  identification, the host prints an identification message for the identifying
+  endpoint. If the requisite options are enabled, a device may also use either its
+  LEDs, its buzzer, or both for feedback mechanisms. This component is only useful for
+  dev boards.
+label: Identify Feedback
+quality: production
+id: zigbee_identify_feedback
+category: Zigbee|Cluster Library|Common
+provides:
+   - name: "zigbee_identify_feedback"
+requires:
+   - name: "zigbee_identify"
+   - name: simple_led_recommended_instance
+   # Adding this only for non-host apps
+     condition:
+      - "zigbee_stack_common"
+recommends:
+  - id: simple_led_recommended_instance
+  # Adding this only for non-host apps
+    condition:
+      - "zigbee_stack_common"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/identify-feedback/config/identify-feedback-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/identify-feedback/identify-feedback.c
+template_contribution:
+  - name: component_catalog
+    value: zigbee_identify_feedback
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emAfPluginIdentifyInitCallback
+

@@ -1,0 +1,17 @@
+id: bootloader_app_upgrade_version
+label: Application upgrade version check
+package: bootloader
+description: Check the version number and product ID of the application upgrade before applying. If the version number of the running application can not be determined, this implementation will assume that it is OK to apply the new image. If secure downgrade protection is required, an alternative implementation that stores the information about the running image in a dedicated location must be implemented. For secure downgrade protection, consider enabling rollback-protection from the Bootloader Core Component
+category: Platform|Bootloader
+quality: production
+source:
+  - path: platform/bootloader/app_version/btl_parser_app_version_check.c
+define:
+  - name: "PARSER_HAS_APPLICATION_UPGRADE_VALIDATION_CALLBACK"
+    value: 1
+provides:
+  - name: bootloader_app_upgrade_version
+  - name: bootloader_nonsecure_incompatible
+    condition: [bootloader_core_nonsecure]
+requires:
+  - name: bootloader_image_parser

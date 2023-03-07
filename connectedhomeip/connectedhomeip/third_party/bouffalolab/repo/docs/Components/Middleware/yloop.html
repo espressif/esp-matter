@@ -1,0 +1,532 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>yloop &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../index.html"/>
+        <link rel="up" title="&lt;no title&gt;" href="index.html"/>
+        <link rel="next" title="AOS VFS" href="vfs.html"/>
+        <link rel="prev" title="&lt;no title&gt;" href="index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Examples/index.html">Example</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Components</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../System/Coredump.html">Coredump</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../System/Libc.html">Libc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../System/Start.html">Start</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">yloop</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Yloop概要</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Yloop上下文</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Yloop调度</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Yloop实现原理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#api">主要api介绍</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">示例代码</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id6">事件注册、通知、回调、取消流程</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#poll">poll事件的注册取消</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#action">延迟执行一个action</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id7">安排一次回调</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">注意事项</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="vfs.html">vfs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devicetree.html">dts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="blog.html">blog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../BLE/ble_stack.html">ble_stack</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Components</a> &raquo;</li>
+        
+          <li><a href="index.html">&lt;no title&gt;</a> &raquo;</li>
+        
+      <li>yloop</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/Components/Middleware/yloop.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="yloop">
+<h1>yloop<a class="headerlink" href="#yloop" title="永久链接至标题"></a></h1>
+<hr class="docutils" />
+<ul class="simple">
+<li><a class="reference internal" href="#id1">Yloop概要</a></li>
+<li><a class="reference internal" href="#id2">Yloop上下文</a></li>
+<li><a class="reference internal" href="#id3">Yloop调度</a></li>
+<li><a class="reference internal" href="#id4">Yloop实现原理</a></li>
+<li><a class="reference internal" href="#api">主要api介绍</a></li>
+<li><a class="reference internal" href="#id5">示例代码</a></li>
+<li><a class="reference internal" href="#id8">注意事项</a></li>
+</ul>
+<div class="section" id="id1">
+<h2>Yloop概要<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<p>Yloop 是AliOS
+Things的异步事件框架。Yloop借鉴了，libuv及嵌入式业界常见的event
+loop，综合考虑使用复杂性，性能，及footprint，实现了一个适合于MCU的事件调度机制。我们移植了相关的插件。其主要优势是所有的处理都是在主任务中执行的，不需要额外的创建任务，从而节省内存使用。同时，由于所有处理都是在主任务进行，不需要复杂的互斥操作。</p>
+</div>
+<div class="section" id="id2">
+<h2>Yloop上下文<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<p>每个Yloop实例（aos_loop_t）与特定的任务上下文绑定，AliOS
+Things的程序入口application_start
+所在的上下文与系统的主Yloop实例绑定，该上下文也称为主任务。主任务以外的任务也可以创建自己的Yloop实例。</p>
+</div>
+<div class="section" id="id3">
+<h2>Yloop调度<a class="headerlink" href="#id3" title="永久链接至标题"></a></h2>
+<p>Yloop实现了对IO，timer，callback，event的统一调度管理：</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">IO</span></code>：最常见的是Socket，也可以是AliOS Things的vfs管理的设备</li>
+<li><code class="docutils literal notranslate"><span class="pre">timer</span></code>：即常见的定时器</li>
+<li><code class="docutils literal notranslate"><span class="pre">callback</span></code>：特定的执行函数</li>
+<li><code class="docutils literal notranslate"><span class="pre">event</span></code>：包括系统事件，用户自定义事件
+当调用aos_loop_run后，当前任务将会等待上述的各类事件发生。</li>
+</ul>
+</div>
+<div class="section" id="id4">
+<h2>Yloop实现原理<a class="headerlink" href="#id4" title="永久链接至标题"></a></h2>
+<p>Yloop利用协议栈的select接口实现了对IO及timer的调度。AliOS
+Things自带的协议栈又暴露一个特殊的eventfd接口，Yloop利用此接口把VFS的设备文件，和eventfd关联起来，实现了对整个系统的事件的统一调度。</p>
+</div>
+<div class="section" id="api">
+<h2>主要api介绍<a class="headerlink" href="#api" title="永久链接至标题"></a></h2>
+<ul class="simple">
+<li>注册事件监听函数</li>
+</ul>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/**</span>
+ <span class="o">*</span> <span class="n">Register</span> <span class="n">system</span> <span class="n">event</span> <span class="nb">filter</span> <span class="n">callback</span><span class="o">.</span>
+ <span class="o">*</span>
+ <span class="nd">@param</span><span class="p">[</span><span class="ow">in</span><span class="p">]</span>  <span class="nb">type</span>  <span class="n">event</span> <span class="nb">type</span> <span class="n">interested</span><span class="o">.</span>
+ <span class="o">*</span> <span class="nd">@param</span><span class="p">[</span><span class="ow">in</span><span class="p">]</span>  <span class="n">cb</span>    <span class="n">system</span> <span class="n">event</span> <span class="n">callback</span><span class="o">.</span>
+ <span class="o">*</span> <span class="nd">@param</span><span class="p">[</span><span class="ow">in</span><span class="p">]</span>  <span class="n">priv</span>  <span class="n">private</span> <span class="n">data</span> <span class="n">past</span> <span class="n">to</span> <span class="n">cb</span><span class="o">.</span>
+ <span class="o">*</span>
+ <span class="o">*</span> <span class="nd">@return</span>  <span class="n">the</span> <span class="n">operation</span> <span class="n">status</span><span class="p">,</span> <span class="mi">0</span> <span class="ow">is</span> <span class="n">OK</span><span class="p">,</span> <span class="n">others</span> <span class="ow">is</span> <span class="n">error</span><span class="o">.</span>
+ <span class="o">*/</span>
+<span class="nb">int</span> <span class="n">aos_register_event_filter</span><span class="p">(</span><span class="n">uint16_t</span> <span class="nb">type</span><span class="p">,</span> <span class="n">aos_event_cb</span> <span class="n">cb</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">priv</span><span class="p">);</span>
+
+<span class="o">/**</span>
+ <span class="o">*</span> <span class="n">Unregister</span> <span class="n">native</span> <span class="n">event</span> <span class="n">callback</span><span class="o">.</span>
+ <span class="o">*</span>
+ <span class="o">*</span> <span class="nd">@param</span><span class="p">[</span><span class="ow">in</span><span class="p">]</span>  <span class="nb">type</span>  <span class="n">event</span> <span class="nb">type</span> <span class="n">interested</span><span class="o">.</span>
+ <span class="o">*</span> <span class="nd">@param</span><span class="p">[</span><span class="ow">in</span><span class="p">]</span>  <span class="n">cb</span>    <span class="n">system</span> <span class="n">event</span> <span class="n">callback</span><span class="o">.</span>
+ <span class="o">*</span> <span class="nd">@param</span><span class="p">[</span><span class="ow">in</span><span class="p">]</span>  <span class="n">priv</span>  <span class="n">private</span> <span class="n">data</span> <span class="n">past</span> <span class="n">to</span> <span class="n">cb</span><span class="o">.</span>
+ <span class="o">*</span>
+ <span class="o">*</span> <span class="nd">@return</span>  <span class="n">the</span> <span class="n">operation</span> <span class="n">status</span><span class="p">,</span> <span class="mi">0</span> <span class="ow">is</span> <span class="n">OK</span><span class="p">,</span> <span class="n">others</span> <span class="ow">is</span> <span class="n">error</span><span class="o">.</span>
+ <span class="o">*/</span>
+<span class="nb">int</span> <span class="n">aos_unregister_event_filter</span><span class="p">(</span><span class="n">uint16_t</span> <span class="nb">type</span><span class="p">,</span> <span class="n">aos_event_cb</span> <span class="n">cb</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">priv</span><span class="p">);</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>发布一个 event</li>
+</ul>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/**</span>
+ <span class="o">*</span> <span class="n">Post</span> <span class="n">local</span> <span class="n">event</span><span class="o">.</span>
+ <span class="o">*</span>
+ <span class="o">*</span> <span class="nd">@param</span><span class="p">[</span><span class="ow">in</span><span class="p">]</span>  <span class="nb">type</span>   <span class="n">event</span> <span class="nb">type</span><span class="o">.</span>
+ <span class="o">*</span> <span class="nd">@param</span><span class="p">[</span><span class="ow">in</span><span class="p">]</span>  <span class="n">code</span>   <span class="n">event</span> <span class="n">code</span><span class="o">.</span>
+ <span class="o">*</span> <span class="nd">@param</span><span class="p">[</span><span class="ow">in</span><span class="p">]</span>  <span class="n">value</span>  <span class="n">event</span> <span class="n">value</span><span class="o">.</span>
+ <span class="o">*</span>
+ <span class="o">*</span> <span class="nd">@return</span>  <span class="n">the</span> <span class="n">operation</span> <span class="n">status</span><span class="p">,</span> <span class="mi">0</span> <span class="ow">is</span> <span class="n">OK</span><span class="p">,</span><span class="n">others</span> <span class="ow">is</span> <span class="n">error</span><span class="o">.</span>
+ <span class="o">*/</span>
+<span class="nb">int</span> <span class="n">aos_post_event</span><span class="p">(</span><span class="n">uint16_t</span> <span class="nb">type</span><span class="p">,</span> <span class="n">uint16_t</span> <span class="n">code</span><span class="p">,</span> <span class="n">unsigned</span> <span class="n">long</span>  <span class="n">value</span><span class="p">);</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>注册和取消一个 poll event</li>
+</ul>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/**</span>
+ <span class="o">*</span> <span class="n">Register</span> <span class="n">a</span> <span class="n">poll</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">main</span> <span class="n">loop</span><span class="o">.</span>
+ <span class="o">*</span>
+ <span class="o">*</span> <span class="nd">@param</span><span class="p">[</span><span class="ow">in</span><span class="p">]</span>  <span class="n">fd</span>      <span class="n">poll</span> <span class="n">fd</span><span class="o">.</span>
+ <span class="o">*</span> <span class="nd">@param</span><span class="p">[</span><span class="ow">in</span><span class="p">]</span>  <span class="n">action</span>  <span class="n">action</span> <span class="n">to</span> <span class="n">be</span> <span class="n">executed</span><span class="o">.</span>
+ <span class="o">*</span> <span class="nd">@param</span><span class="p">[</span><span class="ow">in</span><span class="p">]</span>  <span class="n">param</span>   <span class="n">private</span> <span class="n">data</span> <span class="n">past</span> <span class="n">to</span> <span class="n">action</span><span class="o">.</span>
+ <span class="o">*</span>
+ <span class="o">*</span> <span class="nd">@return</span>  <span class="n">the</span> <span class="n">operation</span> <span class="n">status</span><span class="p">,</span> <span class="mi">0</span> <span class="ow">is</span> <span class="n">OK</span><span class="p">,</span><span class="n">others</span> <span class="ow">is</span> <span class="n">error</span><span class="o">.</span>
+ <span class="o">*/</span>
+<span class="nb">int</span> <span class="n">aos_poll_read_fd</span><span class="p">(</span><span class="nb">int</span> <span class="n">fd</span><span class="p">,</span> <span class="n">aos_poll_call_t</span> <span class="n">action</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">param</span><span class="p">);</span>
+
+<span class="o">/**</span>
+ <span class="o">*</span> <span class="n">Cancel</span> <span class="n">a</span> <span class="n">poll</span> <span class="n">event</span> <span class="n">to</span> <span class="n">be</span> <span class="n">executed</span> <span class="ow">in</span> <span class="n">main</span> <span class="n">loop</span><span class="o">.</span>
+ <span class="o">*</span>
+ <span class="o">*</span> <span class="nd">@param</span><span class="p">[</span><span class="ow">in</span><span class="p">]</span>  <span class="n">fd</span>      <span class="n">poll</span> <span class="n">fd</span><span class="o">.</span>
+ <span class="o">*</span> <span class="nd">@param</span><span class="p">[</span><span class="ow">in</span><span class="p">]</span>  <span class="n">action</span>  <span class="n">action</span> <span class="n">to</span> <span class="n">be</span> <span class="n">executed</span><span class="o">.</span>
+ <span class="o">*</span> <span class="nd">@param</span><span class="p">[</span><span class="ow">in</span><span class="p">]</span>  <span class="n">param</span>   <span class="n">private</span> <span class="n">data</span> <span class="n">past</span> <span class="n">to</span> <span class="n">action</span><span class="o">.</span>
+ <span class="o">*/</span>
+<span class="n">void</span> <span class="n">aos_cancel_poll_read_fd</span><span class="p">(</span><span class="nb">int</span> <span class="n">fd</span><span class="p">,</span> <span class="n">aos_poll_call_t</span> <span class="n">action</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">param</span><span class="p">);</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>发布和取消一个延迟执行的 action</li>
+</ul>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/**</span><span class="n">static</span> <span class="n">void</span> <span class="n">adc_cb_read</span><span class="p">(</span><span class="nb">int</span> <span class="n">fd</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">param</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">aos_post_event</span><span class="p">(</span><span class="n">EV_ADCKEY</span><span class="p">,</span> <span class="n">CODE_ADCKEY_INT_TRIGGER</span><span class="p">,</span> <span class="n">fd</span><span class="p">);</span>
+<span class="p">}</span>
+ <span class="o">*</span> <span class="n">Post</span> <span class="n">a</span> <span class="n">delayed</span> <span class="n">action</span> <span class="n">to</span> <span class="n">be</span> <span class="n">executed</span> <span class="ow">in</span> <span class="n">main</span> <span class="n">loop</span><span class="o">.</span>
+ <span class="o">*</span>
+ <span class="o">*</span> <span class="nd">@param</span><span class="p">[</span><span class="ow">in</span><span class="p">]</span>  <span class="n">ms</span>      <span class="n">milliseconds</span> <span class="n">to</span> <span class="n">wait</span><span class="o">.</span>
+ <span class="o">*</span> <span class="nd">@param</span><span class="p">[</span><span class="ow">in</span><span class="p">]</span>  <span class="n">action</span>  <span class="n">action</span> <span class="n">to</span> <span class="n">be</span> <span class="n">executed</span><span class="o">.</span>
+ <span class="o">*</span> <span class="nd">@param</span><span class="p">[</span><span class="ow">in</span><span class="p">]</span>  <span class="n">arg</span>     <span class="n">private</span> <span class="n">data</span> <span class="n">past</span> <span class="n">to</span> <span class="n">action</span><span class="o">.</span>
+ <span class="o">*</span>
+ <span class="o">*</span> <span class="nd">@return</span>  <span class="n">the</span> <span class="n">operation</span> <span class="n">status</span><span class="p">,</span> <span class="mi">0</span> <span class="ow">is</span> <span class="n">OK</span><span class="p">,</span><span class="n">others</span> <span class="ow">is</span> <span class="n">error</span><span class="o">.</span>
+ <span class="o">*/</span>
+<span class="nb">int</span> <span class="n">aos_post_delayed_action</span><span class="p">(</span><span class="nb">int</span> <span class="n">ms</span><span class="p">,</span> <span class="n">aos_call_t</span> <span class="n">action</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
+
+<span class="o">/**</span>
+ <span class="o">*</span> <span class="n">Cancel</span> <span class="n">a</span> <span class="n">delayed</span> <span class="n">action</span> <span class="n">to</span> <span class="n">be</span> <span class="n">executed</span> <span class="ow">in</span> <span class="n">main</span> <span class="n">loop</span><span class="o">.</span>
+ <span class="o">*</span>
+ <span class="o">*</span> <span class="nd">@param</span><span class="p">[</span><span class="ow">in</span><span class="p">]</span>  <span class="n">ms</span>      <span class="n">milliseconds</span> <span class="n">to</span> <span class="n">wait</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="n">means</span> <span class="n">don</span><span class="s1">&#39;t care.</span>
+ <span class="o">*</span> <span class="nd">@param</span><span class="p">[</span><span class="ow">in</span><span class="p">]</span>  <span class="n">action</span>  <span class="n">action</span> <span class="n">to</span> <span class="n">be</span> <span class="n">executed</span><span class="o">.</span>
+ <span class="o">*</span> <span class="nd">@param</span><span class="p">[</span><span class="ow">in</span><span class="p">]</span>  <span class="n">arg</span>     <span class="n">private</span> <span class="n">data</span> <span class="n">past</span> <span class="n">to</span> <span class="n">action</span><span class="o">.</span>
+ <span class="o">*/</span>
+<span class="n">void</span> <span class="n">aos_cancel_delayed_action</span><span class="p">(</span><span class="nb">int</span> <span class="n">ms</span><span class="p">,</span> <span class="n">aos_call_t</span> <span class="n">action</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>安排一次回调</li>
+</ul>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/**</span>
+ <span class="o">*</span> <span class="n">Schedule</span> <span class="n">a</span> <span class="n">callback</span> <span class="ow">in</span> <span class="nb">next</span> <span class="n">event</span> <span class="n">loop</span><span class="o">.</span>
+ <span class="o">*</span> <span class="n">Unlike</span> <span class="n">aos_post_delayed_action</span><span class="p">,</span>
+ <span class="o">*</span> <span class="n">this</span> <span class="n">function</span> <span class="n">can</span> <span class="n">be</span> <span class="n">called</span> <span class="kn">from</span> <span class="nn">non</span><span class="o">-</span><span class="n">aos</span><span class="o">-</span><span class="n">main</span><span class="o">-</span><span class="n">loop</span> <span class="n">context</span><span class="o">.</span>
+
+ <span class="o">*</span> <span class="nd">@param</span><span class="p">[</span><span class="ow">in</span><span class="p">]</span>  <span class="n">action</span>  <span class="n">action</span> <span class="n">to</span> <span class="n">be</span> <span class="n">executed</span><span class="o">.</span>
+ <span class="o">*</span> <span class="nd">@param</span><span class="p">[</span><span class="ow">in</span><span class="p">]</span>  <span class="n">arg</span>     <span class="n">private</span> <span class="n">data</span> <span class="n">past</span> <span class="n">to</span> <span class="n">action</span><span class="o">.</span>
+ <span class="o">*</span>
+ <span class="o">*</span> <span class="nd">@return</span>  <span class="n">the</span> <span class="n">operation</span> <span class="n">status</span><span class="p">,</span> <span class="o">&lt;</span><span class="mi">0</span> <span class="ow">is</span> <span class="n">error</span><span class="p">,</span><span class="n">others</span> <span class="ow">is</span> <span class="n">OK</span><span class="o">.</span>
+ <span class="o">*/</span>
+<span class="nb">int</span> <span class="n">aos_schedule_call</span><span class="p">(</span><span class="n">aos_call_t</span> <span class="n">action</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id5">
+<h2>示例代码<a class="headerlink" href="#id5" title="永久链接至标题"></a></h2>
+<p>这里会介绍<a class="reference external" href="#事件注册、通知、回调、取消流程">事件注册、通知、回调、取消流程</a>、<a class="reference external" href="#poll事件的注册取消">poll事件的注册取消</a>、<a class="reference external" href="#延迟执行一个action">延迟执行一个actio</a>)以及<a class="reference external" href="#安排一次回调">安排一次回调</a>的使用方法</p>
+<div class="section" id="id6">
+<h3>事件注册、通知、回调、取消流程<a class="headerlink" href="#id6" title="永久链接至标题"></a></h3>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aos_register_event_filter</span><span class="p">(</span><span class="n">EV_WIFI</span><span class="p">,</span> <span class="n">event_cb_wifi_event</span><span class="p">,</span> <span class="n">NULL</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>用户首先调用<code class="docutils literal notranslate"><span class="pre">aos_register_event_filter</span></code>注册事件监听函数，例如首先显注册一个<code class="docutils literal notranslate"><span class="pre">EV_WIFI</span></code>事件的监听函数<code class="docutils literal notranslate"><span class="pre">event_cb_wifi_event</span></code></p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aos_post_event</span><span class="p">(</span><span class="n">EV_WIFI</span><span class="p">,</span> <span class="n">CODE_WIFI_ON_INIT_DONE</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>当有任务调用<code class="docutils literal notranslate"><span class="pre">aos_post_event</span></code>接口，发布<code class="docutils literal notranslate"><span class="pre">CODE_WIFI_ON_INIT_DONE</span></code>事件之后</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">static</span> <span class="n">void</span> <span class="n">event_cb_wifi_event</span><span class="p">(</span><span class="n">input_event_t</span> <span class="o">*</span><span class="n">event</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">private_data</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">switch</span> <span class="p">(</span>
+        <span class="n">case</span> <span class="n">CODE_WIFI_ON_INIT_DONE</span><span class="p">:</span>
+        <span class="p">{</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;[APP] [EVT] CODE_WIFI_ON_INIT_DONE %lld</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">aos_now_ms</span><span class="p">());</span>
+        <span class="p">}</span>
+        <span class="k">break</span><span class="p">;</span>
+        <span class="n">case</span> <span class="n">CODE_WIFI_ON_PRE_GOT_IP</span><span class="p">:</span>
+        <span class="p">{</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;[APP] [EVT] connected %lld</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">aos_now_ms</span><span class="p">());</span>
+        <span class="p">}</span>
+        <span class="k">break</span><span class="p">;</span>
+        <span class="n">case</span> <span class="n">CODE_WIFI_ON_GOT_IP</span><span class="p">:</span>
+        <span class="p">{</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;[APP] [EVT] GOT IP %lld</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">aos_now_ms</span><span class="p">());</span>
+        <span class="p">}</span>
+        <span class="k">break</span><span class="p">;</span>
+        <span class="n">default</span><span class="p">:</span>
+        <span class="p">{</span>
+            <span class="o">/*</span><span class="n">nothing</span><span class="o">*/</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">event_cb_wifi_event</span></code>会被调用，并进入case<code class="docutils literal notranslate"><span class="pre">CODE_WIFI_ON_INIT_DONE</span></code>分支</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aos_unregister_event_filter</span><span class="p">(</span><span class="n">EV_WIFI</span><span class="p">,</span> <span class="n">event_cb_wifi_event</span><span class="p">,</span> <span class="n">NULL</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>如果用户不需要事件的监听，用户可以主动调用<code class="docutils literal notranslate"><span class="pre">aos_unregister_event_filter</span></code>取消监听</p>
+</div>
+<div class="section" id="poll">
+<h3>poll事件的注册取消<a class="headerlink" href="#poll" title="永久链接至标题"></a></h3>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/*</span><span class="n">uart</span><span class="o">*/</span>
+<span class="n">fd_console</span> <span class="o">=</span> <span class="n">aos_open</span><span class="p">(</span><span class="s2">&quot;/dev/ttyS0&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">fd_console</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;Init CLI with event Driven</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">);</span>
+    <span class="n">aos_cli_init</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="n">aos_poll_read_fd</span><span class="p">(</span><span class="n">fd_console</span><span class="p">,</span> <span class="n">aos_cli_event_cb_read_get</span><span class="p">(),</span> <span class="p">(</span><span class="n">void</span><span class="o">*</span><span class="p">)</span><span class="mh">0x12345678</span><span class="p">);</span>
+    <span class="n">_cli_init</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>这里以 <code class="docutils literal notranslate"><span class="pre">uart0</span></code> 为例，用户首先注册一个<code class="docutils literal notranslate"><span class="pre">aos_poll_read_fd</span></code>poll事件</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aos_cancel_poll_read_fd</span><span class="p">(</span><span class="n">fd_console</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="p">(</span><span class="n">void</span><span class="o">*</span><span class="p">)</span><span class="mh">0x12345678</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>如果用户不需要事件的poll，用户可以调用<code class="docutils literal notranslate"><span class="pre">aos_cancel_poll_read_fd</span></code> 取消poll</p>
+</div>
+<div class="section" id="action">
+<h3>延迟执行一个action<a class="headerlink" href="#action" title="永久链接至标题"></a></h3>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aos_post_delayed_action</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="n">app_delayed_action_print</span><span class="p">,</span> <span class="n">NULL</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>用户可以调用<code class="docutils literal notranslate"><span class="pre">aos_post_delayed_action</span></code>做一个延迟<code class="docutils literal notranslate"><span class="pre">1s</span></code>执行的事件</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">static</span> <span class="n">void</span> <span class="n">app_delayed_action_print</span><span class="p">(</span><span class="n">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;test.</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>那过<code class="docutils literal notranslate"><span class="pre">1s</span></code>之后会主动调用<code class="docutils literal notranslate"><span class="pre">app_delayed_action_print</span></code>函数</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aos_cancel_delayed_action</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="n">app_delayed_action_print</span><span class="p">,</span> <span class="n">NULL</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>当用户想直接取消一个延迟动作可以调用<code class="docutils literal notranslate"><span class="pre">aos_cancel_delayed_action</span></code>，其第一个<code class="docutils literal notranslate"><span class="pre">ms</span></code>参数,
+当<code class="docutils literal notranslate"><span class="pre">ms</span> <span class="pre">==</span> <span class="pre">-1</span></code>时，表示无需关心时间是否一致</p>
+</div>
+<div class="section" id="id7">
+<h3>安排一次回调<a class="headerlink" href="#id7" title="永久链接至标题"></a></h3>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aos_schedule_call</span><span class="p">(</span><span class="n">app_action_print</span><span class="p">,</span> <span class="n">NULL</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>用户主动调用<code class="docutils literal notranslate"><span class="pre">aos_schedule_call</span></code>函数</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">static</span> <span class="n">app_action_print</span><span class="p">(</span><span class="n">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;test</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>那么会在下一次循环中主动调用<code class="docutils literal notranslate"><span class="pre">app_action_print</span></code>函数</p>
+</div>
+</div>
+<div class="section" id="id8">
+<h2>注意事项<a class="headerlink" href="#id8" title="永久链接至标题"></a></h2>
+<p>Yloop的API(include/aos/yloop.h)除了下述API，都必须在Yloop实例所绑定的任务的上下文执行：</p>
+<ul class="simple">
+<li>aos_schedule_call</li>
+<li>aos_loop_schedule_call</li>
+<li>aos_loop_schedule_work</li>
+<li>aos_cancel_work</li>
+<li>aos_post_event</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="vfs.html" class="btn btn-neutral float-right" title="AOS VFS" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="&lt;no title&gt;" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

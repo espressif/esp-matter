@@ -1,0 +1,12 @@
+id: zw_release
+label: Z-Wave Release
+category: Z-Wave
+description: defines and paths used for z-wave release build
+package: Z-Wave
+quality: production
+provides:
+- name: zw_release
+- name: zw_build_mode
+define:
+- name: NO_DEBUGPRINT
+- name: NDEBUG

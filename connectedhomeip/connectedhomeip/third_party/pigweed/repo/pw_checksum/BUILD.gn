@@ -1,0 +1,158 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_bloat/bloat.gni")
+import("$dir_pw_build/module_config.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_perf_test/perf_test.gni")
+import("$dir_pw_unit_test/test.gni")
+
+declare_args() {
+  # The build target that overrides the default configuration options for this
+  # module. This should point to a source set that provides defines through a
+  # public config (which may -include a file or add defines directly).
+  pw_checksum_CONFIG = pw_build_DEFAULT_MODULE_CONFIG
+}
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+}
+
+pw_source_set("config") {
+  sources = [ "public/pw_checksum/internal/config.h" ]
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ pw_checksum_CONFIG ]
+  visibility = [ ":*" ]  # Only allow this module to depend on ":config"
+  friend = [ ":*" ]  # Allow this module to access the config.h header.
+}
+
+pw_source_set("pw_checksum") {
+  public_configs = [ ":public_include_path" ]
+  public = [
+    "public/pw_checksum/crc16_ccitt.h",
+    "public/pw_checksum/crc32.h",
+  ]
+  sources = [
+    "crc16_ccitt.cc",
+    "crc32.cc",
+  ]
+  public_deps = [
+    ":config",
+    dir_pw_bytes,
+    dir_pw_span,
+  ]
+
+  # TODO(b/259746255): Remove this when everything compiles with -Wconversion.
+  configs = [ "$dir_pw_build:conversion_warnings" ]
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":crc16_ccitt_test",
+    ":crc32_test",
+  ]
+}
+
+pw_test("crc16_ccitt_test") {
+  deps = [
+    ":pw_checksum",
+    dir_pw_bytes,
+  ]
+  sources = [
+    "crc16_ccitt_test.cc",
+    "crc16_ccitt_test_c.c",
+  ]
+
+  # TODO(b/259746255): Remove this when everything compiles with -Wconversion.
+  configs = [ "$dir_pw_build:conversion_warnings" ]
+}
+
+pw_test("crc32_test") {
+  deps = [
+    ":pw_checksum",
+    dir_pw_bytes,
+  ]
+  sources = [
+    "crc32_test.cc",
+    "crc32_test_c.c",
+  ]
+
+  # TODO(b/259746255): Remove this when everything compiles with -Wconversion.
+  configs = [ "$dir_pw_build:conversion_warnings" ]
+}
+
+pw_perf_test("crc32_perf_tests") {
+  enable_if = pw_perf_test_TIMER_INTERFACE_BACKEND != ""
+  deps = [
+    ":pw_checksum",
+    dir_pw_bytes,
+  ]
+  sources = [ "crc32_perf_test.cc" ]
+}
+
+pw_perf_test("crc16_perf_tests") {
+  enable_if = pw_perf_test_TIMER_INTERFACE_BACKEND != ""
+  deps = [
+    ":pw_checksum",
+    dir_pw_bytes,
+  ]
+  sources = [ "crc16_ccitt_perf_test.cc" ]
+}
+
+group("perf_tests") {
+  deps = [
+    ":crc16_perf_tests",
+    ":crc32_perf_tests",
+  ]
+}
+
+pw_size_diff("size_report") {
+  title = "Checksum sizes"
+
+  binaries = [
+    {
+      target = "size_report:crc16_checksum"
+      base = "size_report:noop_checksum"
+      label = "CRC16 with 256-entry table"
+    },
+    {
+      target = "size_report:crc32_8bit_checksum"
+      base = "size_report:noop_checksum"
+      label = "CRC32: 8 bits per iteration, 256-entry table"
+    },
+    {
+      target = "size_report:crc32_4bit_checksum"
+      base = "size_report:noop_checksum"
+      label = "CRC32: 4 bits per iteration, 16-entry table"
+    },
+    {
+      target = "size_report:crc32_1bit_checksum"
+      base = "size_report:noop_checksum"
+      label = "CRC32: 1 bit per iteration, no table"
+    },
+    {
+      target = "size_report:fletcher16_checksum"
+      base = "size_report:noop_checksum"
+      label = "Fletcher16 (illustrative only)"
+    },
+  ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+  report_deps = [ ":size_report" ]
+}

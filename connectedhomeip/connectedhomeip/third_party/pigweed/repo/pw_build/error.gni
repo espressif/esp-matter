@@ -1,0 +1,95 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("python_action.gni")
+
+# Prints an error message and exits the build unsuccessfully. Either 'message'
+# or 'message_lines' must be specified, but not both.
+#
+# Args:
+#
+#   message: The message to print. Use \n for newlines.
+#   message_lines: List of lines to use for the message.
+#   visibility: GN visibility to apply to the underlying target.
+#
+template("pw_error") {
+  assert(
+      defined(invoker.message) != defined(invoker.message_lines),
+      "pw_error requires either a 'message' string or a 'message_lines' list")
+
+  if (defined(invoker.message_lines)) {
+    _message = string_join("\n", invoker.message_lines)
+  } else {
+    _message = invoker.message
+  }
+  assert(_message != "", "The message cannot be empty")
+
+  action(target_name) {
+    script = "$dir_pw_build/py/pw_build/error.py"
+    args = [
+      "--target",
+      get_label_info(":$target_name", "label_with_toolchain"),
+      "--message",
+      _message,
+      "--root",
+      rebase_path("//", root_build_dir),
+      "--out",
+      ".",
+    ]
+
+    # This output file is never created.
+    outputs = [ "$target_gen_dir/$target_name.build_error" ]
+
+    forward_variables_from(invoker, [ "visibility" ])
+  }
+}
+
+# An assert that is evaluated at build time. The assertion is only checked if
+# this target is depended on by another target. If the assertion passes, nothing
+# happens. If it fails, the target prints an error message with pw_error.
+#
+# To enforce a pw_build_assert, targets add a dependency on a pw_build_assert.
+# Multiple targets may depend on the same pw_build_assert if the same assertion
+# applies.
+#
+# Args:
+#
+#   condition: The assertion to verify.
+#   message: The message to print. Use \n for newlines.
+#   message_lines: List of lines to use for the message.
+#   visibility: GN visibility to apply to the underlying target.
+#
+template("pw_build_assert") {
+  assert(defined(invoker.condition),
+         "pw_build_assert requires a boolean condition")
+  assert(defined(invoker.message) != defined(invoker.message_lines),
+         "pw_build_assert requires either 'message' or 'message_lines'")
+
+  _pw_error_variables = [
+    "message",
+    "message_lines",
+    "visibility",
+  ]
+
+  if (invoker.condition) {
+    not_needed(invoker, _pw_error_variables)
+    group(target_name) {
+      forward_variables_from(invoker, [ "visibility" ])
+    }
+  } else {
+    pw_error(target_name) {
+      forward_variables_from(invoker, _pw_error_variables)
+    }
+  }
+}

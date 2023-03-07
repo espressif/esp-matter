@@ -1,0 +1,126 @@
+package: Zigbee
+description: Silicon Labs implementation of the Simple Metering client cluster.  This component is
+  a sample that implements the simple metering client callbacks and prints the
+  results.
+label: Simple Metering Client
+quality: production
+id: zigbee_simple_metering_client
+category: Zigbee|Cluster Library|Smart Energy
+provides:
+   - name: "zigbee_simple_metering_client"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/simple-metering-client/config/simple-metering-client-config.h
+include:
+  - path: protocol/zigbee/app/framework/plugin/simple-metering-client
+    file_list:
+      - path: simple-metering-client.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/simple-metering-client/simple-metering-client.c
+  - path: protocol/zigbee/app/framework/plugin/simple-metering-client/simple-metering-client-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/simple-metering-client/simple-metering-client-cb.c
+template_contribution:
+  - name: component_catalog
+    value: zigbee_simple_metering_client
+  - name: cluster_service
+    value:
+       cluster_id: "0x0702"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "CLIENT"       
+       service_function: "emberAfSimpleMeteringClusterClientCommandParse"    
+  - name: cli_group
+    value:
+      group: plugin
+      name: simple-metering-client
+      help: simple-metering-client related commands.
+  - name: cli_command
+    value:
+      group: simple-metering-client
+      name: sch-snapshot
+      handler: emAfPluginSimpleMeteringClientCliSchSnapshot
+      help: Schedules a snapshot.
+      argument:
+      - type: uint16
+        help: The network address of the server to which the request will be sent
+      - type: uint8
+        help: The local endpoint from which the request will be sent
+      - type: uint8
+        help: The remote endpoint to which the request will be sent
+      - type: uint32
+        help: The issuerId
+      - type: uint8
+        help: The commandIndex
+      - type: uint8
+        help: The total number of commands
+      - type: uint8
+        help: The snapshot schedule Id
+      - type: uint32
+        help: The start time
+      - type: uint32
+        help: The snapshot schedule. 3 bytes
+      - type: uint8
+        help: The snapshot Type
+      - type: uint32
+        help: The snapshot schedule cause
+  - name: cli_command
+    value:
+      group: simple-metering-client
+      name: start-sampling
+      handler: emAfPluginSimpleMeteringClientCliStartSampling
+      help: Sends a start sampling command to a metering server.
+      argument:
+      - type: uint16
+        help: The network address of the server to which the request will be sent
+      - type: uint8
+        help: The local endpoint from which the request will be sent
+      - type: uint8
+        help: The remote endpoint to which the request will be sent
+      - type: uint32
+        help: The issuerId
+      - type: uint32
+        help: The time to start sampling
+      - type: uint8
+        help: An 8-bit enumeration that identifies the type of data being sampled
+      - type: uint16
+        help: An unsigned 16-bit field representing the interval or time in seconds between samples
+      - type: uint16
+        help: A 16-bit unsigned integer that represents the number of samples to be taken
+  - name: cli_command
+    value:
+      group: simple-metering-client
+      name: get-sampled-data
+      handler: emAfPluginSimpleMeteringClientCliGetSampledData
+      help: Sends a start sampling command to a metering server.
+      argument:
+      - type: uint16
+        help: The network address of the server to which the request will be sent
+      - type: uint8
+        help: The local endpoint from which the request will be sent
+      - type: uint8
+        help: The remote endpoint to which the request will be sent
+      - type: uint16
+        help: The sample ID as received in a previous startSamplingResponse
+      - type: uint32
+        help: The earliest start time sampling
+      - type: uint8
+        help: An 8-bit enumeration that identifies the required type of sampled data
+      - type: uint16
+        help: The total number of samples
+  - name: cli_command
+    value:
+      group: simple-metering-client
+      name: local-change-supply
+      handler: emAfPluginSimpleMeteringClientCliLocalChangeSupply
+      help: Sends a start sampling command to a metering server.
+      argument:
+      - type: uint16
+        help: The network address of the server to which the request will be sent
+      - type: uint8
+        help: The local endpoint from which the request will be sent
+      - type: uint8
+        help: The remote endpoint to which the request will be sent
+      - type: uint8
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/simple-metering-client

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Personality id="20x19_swd" name="SWD" version="1.0" path="Digital Functions" xmlns="http://cypress.com/xsd/cyhwpersonality_v1">
+  <Dependencies>
+    <IpBlock name="20x19_swd" />
+    <Resource name="swd" />
+  </Dependencies>
+  <ExposedMembers />
+  <Parameters>
+    <ParamSignal port="ck[0]" name="Clock" group="Pins" visible="true" desc="SWD CK signal." canBeEmpty="false" />
+    <ParamSignal port="io[0]" name="Data" group="Pins" visible="true" desc="SWD IO signal." canBeEmpty="false" />
+
+    <ParamString id="instNum" name="" group="" default="`${getInstNumber(&quot;swd&quot;)}`" visible="false" editable="false" desc="" />
+  </Parameters>
+
+  <DRCs/>
+
+  <ConfigFirmware>
+
+  </ConfigFirmware>
+</Personality>

@@ -1,0 +1,45 @@
+backtrace工具使用
+----------------------------
+使用场景：
+                 - 程序发生exception
+                 - 使用GDB调试代码
+
+程序异常时，通过addr2line定位异常代码位置
+=============
+
+- 当程序异常时，会输出错误现场的函数调用栈和其他所有task的函数调用栈，我们可以通过这些信息分析程序异常原因，并且可以配合addr2line工具精确定位问题代码位置，addr2line是我们sdk中自带的工具链工具，可以根据exception输出的backtrace地址具体定位到我们的代码的哪一行，命令格式为
+``riscv64-unknown-elf-addr2line -e customer_app/bl602_demo_event/build_out/****.elf -a -f 程序地址（可加多个地址空格分开）``
+ - 示例如下
+
+.. figure:: imgs/img1.png
+   :alt: 
+
+.. figure:: imgs/img2.png
+   :alt: 
+
+gdb 下bts命令查看所有线程的堆栈信息
+==============
+
+- 从命令行启动OpenOCD调试代理，其默认在3333端口等待GDB连接
+``./tools/ide/openocd/linux64/bin/openocd -f tools/debug/if_bflb_link.cfg -f tools/debug/tgt_602_xip_attach.cfg``
+
+
+.. figure:: imgs/img3.png
+   :alt: 
+
+- 启动GDB
+``riscv64-unknown-elf-gdb -x tools/debug/602.init -se customer_app/bl602_demo_event/build_out/bl602_demo_event.elf``
+
+.. figure:: imgs/img4.png
+   :alt: 
+   
+- 连接OpenOCD
+在GDB命令行中输入 ``target remote：3333``
+
+.. figure:: imgs/img5.png
+   :alt: 
+   
+- 输入命令 ``bts`` 查看所有线程堆栈信息, ``bts`` 是我们的自定义命令，当然gdb的其他调试命令都是可以正常使用的，如设置断点b，单步调试n，查看backtrace命令bt等
+
+.. figure:: imgs/img6.png
+   :alt: 

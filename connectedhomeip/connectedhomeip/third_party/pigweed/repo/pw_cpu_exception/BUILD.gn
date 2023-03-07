@@ -1,0 +1,124 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/facade.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+import("backend.gni")
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+}
+
+group("pw_cpu_exception") {
+  public_deps = [
+    ":entry",
+    ":handler",
+  ]
+}
+
+# This module has three facades, each of whose backends are set with a
+# different GN variable.
+#
+# - entry: This is the library that handles early exception entry and prepares
+#   any CPU state that must be available to the exception handler via the
+#   pw_cpu_exception_State object. The backend for this facade is
+#   architecture-specific.
+#   Set this facade's backend via `pw_cpu_exception_ENTRY_BACKEND`
+#
+# - handler: This facade is backed by an application-specific handler that
+#   determines what to do when an exception is encountered. This may be
+#   capturing a crash report before resetting the device, or in some cases
+#   handling the exception to allow execution to continue.
+#   Set this facade's backend via `pw_cpu_exception_HANDLER_BACKEND`
+#
+# - support: This facade provides architecture-independent functions that may be
+#   helpful for dumping CPU state in various forms. This allows an application
+#   to create an application-specific handler that is portable across multiple
+#   architectures.
+#   Set this facade's backend via `pw_cpu_exception_SUPPORT_BACKEND`
+
+pw_facade("entry") {
+  backend = pw_cpu_exception_ENTRY_BACKEND
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ "$dir_pw_preprocessor" ]
+  public = [
+    "public/pw_cpu_exception/entry.h",
+    "public/pw_cpu_exception/state.h",
+  ]
+}
+
+# The entry facade is hard tied to the definition of the pw_cpu_exception_State,
+# so spliting them into separate facades would require extra configurations
+# along with extra compatibility checks to ensure they are never mismatched.
+#
+# Instead, this ":entry_impl" target collects the entry implementation from the
+# backend that depends on the handler which in turn depends on ":entry" to avoid
+# circular deps.
+#
+# This group ("$dir_pw_cpu_exception:entry_impl") must listed in
+# pw_build_LINK_DEPS if pw_cpu_exception_ENTRY_BACKEND is set.
+#
+# Entry backends must provide their own "*.impl" target that collects their
+# entry implementation.
+group("entry_impl") {
+  public_deps = []
+
+  if (pw_cpu_exception_ENTRY_BACKEND != "") {
+    public_deps += [ get_label_info(pw_cpu_exception_ENTRY_BACKEND,
+                                    "label_no_toolchain") + ".impl" ]
+  }
+}
+
+pw_facade("handler") {
+  backend = pw_cpu_exception_HANDLER_BACKEND
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    ":entry",
+    "$dir_pw_preprocessor",
+  ]
+  sources = [ "start_exception_handler.cc" ]
+  public = [ "public/pw_cpu_exception/handler.h" ]
+}
+
+# This library is technically optional. It is recommended to use `support` when
+# doing basic dumps of CPU state. As an alternative, projects may choose to
+# directly depend on the entry backend if they require direct access to
+# pw_cpu_exception_State members.
+pw_facade("support") {
+  backend = pw_cpu_exception_SUPPORT_BACKEND
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    ":entry",
+    dir_pw_span,
+  ]
+  public = [ "public/pw_cpu_exception/support.h" ]
+}
+
+pw_source_set("basic_handler") {
+  deps = [
+    ":handler.facade",
+    dir_pw_log,
+  ]
+  sources = [ "basic_handler.cc" ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}
+
+pw_test_group("tests") {
+}

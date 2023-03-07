@@ -1,0 +1,265 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2015 Bluetooth SIG, Inc. All rights reserved. -->
+<Service xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Indoor Positioning" type="org.bluetooth.service.indoor_positioning" uuid="1821" last-modified="2015-05-19" approved="Yes">
+  <InformativeText>
+    <Abstract>The Indoor Positioning Service exposes location information to support e.g. mobile handsets to position themselves in an environment where GPS signal is not available, like indoor premises.</Abstract>
+    <Summary>The service shall be either a Primary Service or Secondary Service and the service UUID set to Indoor Positioning Service.</Summary>
+  </InformativeText>
+  <Dependencies>
+    <Dependency>This service has no dependencies on other GATT-based services.</Dependency>
+  </Dependencies>
+  <GATTRequirements>
+	<Requirement subProcedure="Read Multiple Characteristic Value">Mandatory</Requirement>
+    <Requirement subProcedure="Read Characteristic Descriptors">Mandatory</Requirement>
+    <Requirement subProcedure="Write Characteristic Value">Mandatory</Requirement>
+    <Requirement subProcedure="Read Long Characteristic Descriptors">C1</Requirement>
+  </GATTRequirements>
+  <Note>C1: Mandatory if location name size greater than ATT_MTU-1 is supported by the device</Note>
+  <Note>C2: Mandatory: If Characteristic is configurable via an ATT bearer, else optional</Note>
+  <Transports>
+    <Classic>false</Classic>
+    <LowEnergy>true</LowEnergy>
+  </Transports>
+  <ErrorCodes>
+    <ErrorCode name="Write Request Rejected" code="0x80">An attempt was made to write a value to the descriptor that is invalid (e.g. out of range) or not supported by this Server.</ErrorCode>
+  </ErrorCodes>
+  <Characteristics>
+    <Characteristic name="Indoor Positioning Configuration" type="org.bluetooth.characteristic.indoor_positioning_configuration">
+      <InformativeText>The Indoor Positioning Configuration characteristic describes the set of characteristic values included in the Indoor Positioning Service AD type.</InformativeText>
+      <Requirement>Mandatory</Requirement>
+      <Properties>
+        <Read>Mandatory</Read>
+        <Write>C2</Write>
+        <WriteWithoutResponse>Optional</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Optional</ReliableWrite>
+        <Notify>Excluded</Notify>
+        <Indicate>Excluded</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Excluded</Broadcast>
+      </Properties>
+	  <SecuritySettings>
+      <Security>Writable With Authentication</Security>
+      </SecuritySettings>
+    </Characteristic>
+    <Characteristic name="Latitude" type="org.bluetooth.characteristic.latitude">
+      <InformativeText>The Latitude characteristic describes the WGS84 North coordinate of the device.</InformativeText>
+      <Requirement>Mandatory</Requirement>
+      <Properties>
+		<Read>Mandatory</Read>
+        <Write>C2</Write>
+        <WriteWithoutResponse>Optional</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Optional</ReliableWrite>
+        <Notify>Excluded</Notify>
+        <Indicate>Excluded</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Optional</Broadcast>
+      </Properties>
+	  <SecuritySettings>
+      <Security>Writable With Authentication</Security>
+      </SecuritySettings>
+	  <Descriptors>
+        <Descriptor name="Server Characteristic Configuration" type="org.bluetooth.descriptor.gatt.server_characteristic_configuration">
+          <Requirement>if_broadcast_supported</Requirement>
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Mandatory</Write>
+          </Properties>
+        </Descriptor>
+      </Descriptors>
+    </Characteristic>
+    <Characteristic name="Longitude" type="org.bluetooth.characteristic.longitude">
+      <InformativeText>The Longitude characteristic describes the WGS84 East coordinate of the device.</InformativeText>
+      <Requirement>Mandatory</Requirement>
+      <Properties>
+		<Read>Mandatory</Read>
+        <Write>C2</Write>
+        <WriteWithoutResponse>Optional</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Optional</ReliableWrite>
+        <Notify>Excluded</Notify>
+        <Indicate>Excluded</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Optional</Broadcast>
+      </Properties>
+	  <SecuritySettings>
+      <Security>Writable With Authentication</Security>
+      </SecuritySettings>
+      <Descriptors>
+        <Descriptor name="Server Characteristic Configuration" type="org.bluetooth.descriptor.gatt.server_characteristic_configuration">
+          <Requirement>if_broadcast_supported</Requirement>
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Mandatory</Write>
+          </Properties>
+        </Descriptor>
+      </Descriptors>
+    </Characteristic>
+    <Characteristic name="Local North Coordinate" type="org.bluetooth.characteristic.local_north_coordinate">
+      <InformativeText>The Local North Coordinate characteristic describes the North coordinate of the device using local coordinate system.</InformativeText>
+      <Requirement>Optional</Requirement>
+      <Properties>
+		<Read>Mandatory</Read>
+        <Write>C2</Write>
+        <WriteWithoutResponse>Optional</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Optional</ReliableWrite>
+        <Notify>Excluded</Notify>
+        <Indicate>Excluded</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Optional</Broadcast>
+      </Properties>
+      <SecuritySettings>
+        <Security>Writable With Authentication</Security>
+      </SecuritySettings>
+      <Descriptors>
+        <Descriptor name="Server Characteristic Configuration" type="org.bluetooth.descriptor.gatt.server_characteristic_configuration">
+          <Requirement>if_broadcast_supported</Requirement>
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Mandatory</Write>
+          </Properties>
+        </Descriptor>
+      </Descriptors>
+    </Characteristic>
+	<Characteristic name="Local East Coordinate" type="org.bluetooth.characteristic.local_east_coordinate">
+      <InformativeText>
+        The Local East Coordinate characteristic describes the East coordinate of the device using local coordinate system.
+        C3: Mandatory if Local North is present else excluded.
+      </InformativeText>
+      <Requirement>C3</Requirement>
+      <Properties>
+		<Read>Mandatory</Read>
+        <Write>C2</Write>
+        <WriteWithoutResponse>Optional</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Optional</ReliableWrite>
+        <Notify>Excluded</Notify>
+        <Indicate>Excluded</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Optional</Broadcast>
+      </Properties>
+      <SecuritySettings>
+        <Security>Writable With Authentication</Security>
+      </SecuritySettings>
+      <Descriptors>
+        <Descriptor name="Server Characteristic Configuration" type="org.bluetooth.descriptor.gatt.server_characteristic_configuration">
+          <Requirement>if_broadcast_supported</Requirement>
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Mandatory</Write>
+          </Properties>
+        </Descriptor>
+      </Descriptors>
+    </Characteristic>
+	<Characteristic name="Floor Number" type="org.bluetooth.characteristic.floor_number">
+      <InformativeText>The Floor Number characteristic describes in which floor the device is installed in.</InformativeText>
+      <Requirement>Optional</Requirement>
+      <Properties>
+		<Read>Mandatory</Read>
+        <Write>C2</Write>
+        <WriteWithoutResponse>Optional</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Optional</ReliableWrite>
+        <Notify>Excluded</Notify>
+        <Indicate>Excluded</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Optional</Broadcast>
+      </Properties>
+      <SecuritySettings>
+        <Security>Writable With Authentication</Security>
+      </SecuritySettings>
+      <Descriptors>
+        <Descriptor name="Server Characteristic Configuration" type="org.bluetooth.descriptor.gatt.server_characteristic_configuration">
+          <Requirement>if_broadcast_supported</Requirement>
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Mandatory</Write>
+          </Properties>
+        </Descriptor>
+      </Descriptors>
+    </Characteristic>
+	<Characteristic name="Altitude" type="org.bluetooth.characteristic.altitude">
+      <InformativeText>The Altitude characteristic describes the altitude of the device.</InformativeText>
+      <Requirement>Optional</Requirement>
+      <Properties>
+		<Read>Mandatory</Read>
+        <Write>C2</Write>
+        <WriteWithoutResponse>Optional</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Optional</ReliableWrite>
+        <Notify>Excluded</Notify>
+        <Indicate>Excluded</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Optional</Broadcast>
+      </Properties>
+      <SecuritySettings>
+        <Security>Writable With Authentication</Security>
+      </SecuritySettings>
+      <Descriptors>
+        <Descriptor name="Server Characteristic Configuration" type="org.bluetooth.descriptor.gatt.server_characteristic_configuration">
+          <Requirement>if_broadcast_supported</Requirement>
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Mandatory</Write>
+          </Properties>
+        </Descriptor>
+      </Descriptors>
+    </Characteristic>
+	<Characteristic name="Uncertainty" type="org.bluetooth.characteristic.uncertainty">
+      <InformativeText>The Uncertainty characteristic describes the uncertainty of the location information the device exposes.</InformativeText>
+      <Requirement>Optional</Requirement>
+      <Properties>
+		<Read>Mandatory</Read>
+        <Write>C2</Write>
+        <WriteWithoutResponse>Optional</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Optional</ReliableWrite>
+        <Notify>Excluded</Notify>
+        <Indicate>Excluded</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Optional</Broadcast>
+      </Properties>
+      <SecuritySettings>
+        <Security>Writable With Authentication</Security>
+      </SecuritySettings>
+      <Descriptors>
+        <Descriptor name="Server Characteristic Configuration" type="org.bluetooth.descriptor.gatt.server_characteristic_configuration">
+          <Requirement>if_broadcast_supported</Requirement>
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Mandatory</Write>
+          </Properties>
+        </Descriptor>
+      </Descriptors>
+    </Characteristic>
+	<Characteristic name="Location Name" type="org.bluetooth.characteristic.location_name">
+      <InformativeText>The Location Name characteristic describes the name of the location the device is installed in.</InformativeText>
+      <Requirement>Optional</Requirement>
+      <Properties>
+		<Read>Mandatory</Read>
+        <Write>C2</Write>
+        <WriteWithoutResponse>Optional</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Optional</ReliableWrite>
+        <Notify>Excluded</Notify>
+        <Indicate>Excluded</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Optional</Broadcast>
+      </Properties>
+	  <SecuritySettings>
+      <Security>Writable With Authentication</Security>
+      </SecuritySettings>
+      <Descriptors>
+        <Descriptor name="Server Characteristic Configuration" type="org.bluetooth.descriptor.gatt.server_characteristic_configuration">
+          <Requirement>if_broadcast_supported</Requirement>
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Mandatory</Write>
+          </Properties>
+        </Descriptor>
+      </Descriptors>
+    </Characteristic>
+  </Characteristics>
+</Service>

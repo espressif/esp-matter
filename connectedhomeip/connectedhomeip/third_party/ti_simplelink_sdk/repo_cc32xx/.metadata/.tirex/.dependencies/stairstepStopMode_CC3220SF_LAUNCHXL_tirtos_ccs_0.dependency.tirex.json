@@ -1,0 +1,17 @@
+[
+    {
+        "files": [
+            "+../../stairstep.c -> stairstep.c",
+            "+../../README.md -> README.md",
+            "+../../README.html -> README.html",
+            "+../../stairstep.syscfg -> stairstep.syscfg",
+            "+../../performance.rov.json -> performance.rov.json",
+            "+../stairstep.cfg -> stairstep.cfg",
+            "+../../../../../../../source/ti/boards/CC3220SF_LAUNCHXL/Board.html -> Board.html",
+            "+cc32xxsf_tirtos.cmd -> cc32xxsf_tirtos.cmd",
+            "+../makefile.defs -> makefile.defs",
+            "+../../image.syscfg -> image.syscfg",
+            "+../../userFiles/dummy-root-ca-cert -> userFiles/dummy-root-ca-cert"
+        ]
+    }
+]

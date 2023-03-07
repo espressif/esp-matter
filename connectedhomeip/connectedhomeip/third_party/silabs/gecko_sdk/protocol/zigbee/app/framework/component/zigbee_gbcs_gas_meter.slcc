@@ -1,0 +1,61 @@
+package: Zigbee
+description: Silicon Labs implementation of Gas Smart Metering Equipment (GSME).
+label: GBCS Gas Smart Metering Equipment (GSME)
+quality: production
+id: zigbee_gbcs_gas_meter
+category: Zigbee|Great Britain Companion Specification
+provides:
+   - name: "zigbee_gbcs_gas_meter"
+requires:
+   - name: "zigbee_key_establishment"
+   - name: "zigbee_tunneling_client"
+   - name: "zigbee_gbcs_compatibility"
+   - name: "zigbee_gbcs_device_log"
+   - name: "zigbee_gbz_message_controller"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/gbcs-gas-meter/config/gbcs-gas-meter-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/gbcs-gas-meter/gbcs-gas-meter.c
+  - path: protocol/zigbee/app/framework/plugin/gbcs-gas-meter/gbcs-gas-meter-cli.c
+    condition:
+      - "cli"
+include:
+  - path: protocol/zigbee/app/framework/plugin/gbcs-gas-meter
+    file_list:
+      - path: gbcs-gas-meter.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_gbcs_gas_meter
+  - name: cluster_service
+    value:
+       cluster_id: "0x0702"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "SERVER"
+       service_function: "emAfGbcsGasMeterSimpleMeteringClusterServerCommandParse"
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emberAfPluginGbcsGasMeterInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: local_data_init
+      function_name: emberAfPluginGbcsGasMeterInitCallback
+  - name: zigbee_app_framework_cluster
+    value:
+      cluster_name: Simple Metering
+      function: emberAfSimpleMeteringClusterMirrorRemovedCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: gbcs-gas-meter
+      help: gbcs-gas-meter related commands.
+  - name: cli_command
+    value:
+      group: gbcs-gas-meter
+      name: report-attributes
+      handler: emAfPluginGbcsGasMeterCliReportAttributes
+      help: Reports the gas meter attributes to the mirror.
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/gbcs-gas-meter

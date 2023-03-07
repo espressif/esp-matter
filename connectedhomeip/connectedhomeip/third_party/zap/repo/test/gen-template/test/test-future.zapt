@@ -1,0 +1,19 @@
+{{future name="x"}}
+{{future name="y"}}
+{{future name="z" timeout="1000"}}
+
+{{#if_future name="x" value="1"}}
+x=1
+{{/if_future}}
+
+{{#if_future name="y" value="1"}}
+y=1
+{{/if_future}}
+
+{{#if_future name="z" value="1"}}
+z=1
+{{/if_future}}
+
+
+{{set_future name="x" value="1"}}
+{{set_future name="y" value="2"}}

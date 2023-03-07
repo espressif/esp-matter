@@ -1,0 +1,42 @@
+id: glib
+label: GLIB Graphics Library
+package: platform
+description: GLIB graphics library.
+category: Platform|Driver
+quality: production
+root_path: platform/middleware/glib
+source:
+  - path: glib/bmp.c
+  - path: glib/glib.c
+  - path: glib/glib_bitmap.c
+  - path: glib/glib_circle.c
+  - path: glib/glib_font_narrow_6x8.c
+  - path: glib/glib_font_normal_8x8.c
+  - path: glib/glib_font_number_16x20.c
+  - path: glib/glib_line.c
+  - path: glib/glib_polygon.c
+  - path: glib/glib_rectangle.c
+  - path: glib/glib_string.c
+include:
+  - path: .
+    file_list:
+      - path: bmp_conf.h
+      - path: bpmfont.h
+      - path: em_types.h
+  - path: glib
+    file_list:
+      - path: bmp.h
+      - path: glib.h
+      - path: glib_color.h
+requires:
+  - name: dmd_driver
+recommends:
+  - id: dmd_memlcd
+provides:
+  - name: glib
+template_contribution:
+  - name: component_catalog
+    value: glib
+documentation:
+    docset: gecko-platform
+    document: middleware/api/group-glib

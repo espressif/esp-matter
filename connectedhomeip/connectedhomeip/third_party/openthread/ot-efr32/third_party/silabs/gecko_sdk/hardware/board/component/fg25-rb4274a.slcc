@@ -1,0 +1,22 @@
+!!omap
+- id: fg25_rb4274a
+- label: FG25-RB4274A
+- package: platform
+- description: Kit BSP support for the EFR32FG25+EFF01 863-870 MHz +30 dBm Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_fg25-rb4274a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"FG25-RB4274A"'
+  - name: SL_KIT_REV
+    value: '"A01"'
+- tag:
+  - kit:opn:FG25-RB4274A
+  - kit:pn:RB4274
+  - kit:variant:A
+  - kit:revision:A01

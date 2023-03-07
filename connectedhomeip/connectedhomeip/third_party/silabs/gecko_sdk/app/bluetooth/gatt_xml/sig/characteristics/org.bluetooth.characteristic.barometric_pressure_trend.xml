@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Barometric Pressure Trend" type="org.bluetooth.characteristic.barometric_pressure_trend" 
+uuid="2AA3" last-modified="2014-11-20" approved="Yes">
+    <Value>
+        <Field name="Barometric Pressure Trend">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+            <Unit>org.bluetooth.unit.unitless</Unit>
+            <Enumerations>
+                <Enumeration key="0" value="Unknown" />
+                <Enumeration key="1" value="Continuously falling" />
+                <Enumeration key="2" value="Continuously rising" />
+                <Enumeration key="3" value="Falling, then steady" />
+                <Enumeration key="4" value="Rising, then steady" />
+                <Enumeration key="5" value="Falling before a lesser rise" />
+                <Enumeration key="6" value="Falling before a greater rise" />
+                <Enumeration key="7" value="Rising before a greater fall" />
+                <Enumeration key="8" value="Rising before a lesser fall" />
+                <Enumeration key="9" value="Steady" />
+                <ReservedForFutureUse start="10" end="255" />
+            </Enumerations>
+        </Field>
+    </Value>
+</Characteristic>

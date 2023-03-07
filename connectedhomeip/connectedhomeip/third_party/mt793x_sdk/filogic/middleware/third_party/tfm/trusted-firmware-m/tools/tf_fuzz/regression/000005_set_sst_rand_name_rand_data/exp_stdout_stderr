@@ -1,0 +1,16 @@
+Trusted Firmware Fuzzer (TF-Fuzz) starting...
+
+Info:  random seed was not specified.
+
+Using seed value of \d+ \(0x[a-f\d]+\).
+Purpose line:  to show how to randomize name and data
+SST-asset random identifier:  "*"
+SST-create from random data
+Set SST command:  "*"
+Set command:  "*"
+Command with no expect:  ";"
+Lines:  Line number 3.
+Lines:  Line number 3.
+Writing test file, test.c.
+
+TF-Fuzz test generation complete.

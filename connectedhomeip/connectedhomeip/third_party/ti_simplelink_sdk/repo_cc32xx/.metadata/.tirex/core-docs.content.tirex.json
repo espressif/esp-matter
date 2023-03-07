@@ -1,0 +1,222 @@
+[
+    {
+        "categories": [
+            [
+                "Documents"
+            ]
+        ],
+        "location": "../../release_notes_simplelink_cc32xx_sdk_6_10_00_05.html",
+        "name": "SimpleLink CC32xx SDK 6.10.00.05 Release Notes",
+        "resourceType": "file"
+    },
+    {
+        "categories": [
+            [
+                "Documents"
+            ]
+        ],
+        "location": "../../docs/Documentation_Overview.html",
+        "name": "Documentation Overview for SimpleLink CC32xx SDK",
+        "resourceType": "file"
+    },
+    {
+        "name": "Quick Start Guide for SimpleLink CC32xx SDK",
+        "resourceType": "file",
+        "location": "../../docs/simplelink_mcu_sdk/Quick_Start_Guide.html",
+        "categories": [
+            [
+                "Documents"
+            ]
+        ]
+    },
+    {
+        "resourceType": "file",
+        "location": "../../docs/simplelink_mcu_sdk/release_notes_coresdk_cc32xx_6_10_00_13.html",
+        "name": "SimpleLink MCU Release Notes",
+        "categories": [
+            [
+                "Documents"
+            ]
+        ]
+    },
+    {
+        "name": "SimpleLink MCU SDK User's Guide",
+        "resourceType": "file",
+        "location": "../../docs/simplelink_mcu_sdk/Users_Guide.html",
+        "categories": [
+            [
+                "Documents"
+            ]
+        ]
+    },
+    {
+        "name": "Introduction to SysConfig ImageCreator",
+        "resourceType": "file",
+        "location": "../../docs/simplelink_mcu_sdk/sysconfig_imagecreator.html",
+        "categories": [
+            [
+                "Documents"
+            ]
+        ]
+    },
+    {
+        "name": "Migration Guide",
+        "resourceType": "file",
+        "location": "../../docs/simplelink_mcu_sdk/SimpleLink_Gen1_to_Gen2_SDK_Migration_Guide.html",
+        "categories": [
+            [
+                "Documents"
+            ]
+        ]
+    },
+    {
+        "name": "Host Driver Release Notes",
+        "resourceType": "file",
+        "location": "../../docs/wifi_host_driver_api/host_driver_release_notes_3_0_1_71.html",
+        "categories": [
+            [
+                "Documents",
+                "Host Driver"
+            ]
+        ]
+    },
+    {
+        "name": "Host Driver APIs (doxygen)",
+        "resourceType": "file",
+        "location": "../../docs/wifi_host_driver_api/index.html",
+        "categories": [
+            [
+                "Documents",
+                "Host Driver"
+            ]
+        ]
+    },
+    {
+        "categories": [
+            [
+                "Documents",
+                "ROM Services"
+            ]
+        ],
+        "location": "../../docs/cc32xx/CC32xx_ROM_services.html",
+        "name": "CC32xx ROM services",
+        "resourceType": "file"
+    },
+    {
+        "name": "Core SDK Power Management: MSP432, CC13xx/CC26xx, and CC32xx SimpleLink MCUs",
+        "resourceType": "file",
+        "location": "../../docs/drivers/Power_Management.pdf",
+        "categories": [
+            "Documents",
+            "TI Drivers"
+        ]
+    },
+    {
+        "name": "TI-Drivers API Documentation",
+        "resourceType": "file",
+        "location": "../../docs/drivers/tidriversAPIs.html",
+        "categories": [
+            "Documents",
+            "TI Drivers"
+        ]
+    },
+    {
+        "name": "TI-RTOS Kernel Release Notes",
+        "resourceType": "file",
+        "location": "../../docs/tirtos/sysbios/release_notes_bios_6_81_04_02.html",
+        "categories": [
+            "Documents",
+            "TI-RTOS Kernel (SYS_BIOS)"
+        ]
+    },
+    {
+        "name": "TI-RTOS Kernel User`s Guide",
+        "resourceType": "file",
+        "location": "../../docs/tirtos/sysbios/docs/Bios_User_Guide.pdf",
+        "categories": [
+            "Documents",
+            "TI-RTOS Kernel (SYS_BIOS)"
+        ]
+    },
+    {
+        "name": "TI-RTOS Kernel Runtime APIs and Configuration (cdoc)",
+        "resourceType": "file",
+        "location": "../../docs/tirtos/sysbios/docs/cdoc/index.html",
+        "categories": [
+            "Documents",
+            "TI-RTOS Kernel (SYS_BIOS)"
+        ]
+    },
+    {
+        "name": "TI-RTOS Instrumentation Release Notes",
+        "resourceType": "file",
+        "location": "../../docs/tirtos/uia/release_notes_uia_2_41_00_01.html",
+        "categories": [
+            "Documents",
+            "Instrumentation"
+        ]
+    },
+    {
+        "name": "TI-RTOS Instrumentation User`s Guide",
+        "resourceType": "file",
+        "location": "../../docs/tirtos/uia/docs/spruh43f.pdf",
+        "categories": [
+            "Documents",
+            "Instrumentation"
+        ]
+    },
+    {
+        "name": "TI-RTOS Instrumentation Runtime APIs and Configuration (cdoc)",
+        "resourceType": "file",
+        "location": "../../docs/tirtos/uia/docs/cdoc/index.html",
+        "categories": [
+            "Documents",
+            "Instrumentation"
+        ]
+    },
+    {
+        "name": "FreeRTOS",
+        "resourceType": "web.page",
+        "location": "http://www.freertos.org",
+        "categories": [
+            "Documents",
+            "Third Party"
+        ]
+    },
+    {
+        "name": "FatFS",
+        "resourceType": "web.page",
+        "location": "http://elm-chan.org/fsw/ff/00index_e.html",
+        "categories": [
+            "Documents",
+            "Third Party"
+        ]
+    },
+    {
+        "name": "Network Services (NS) Release Notes",
+        "resourceType": "file",
+        "location": "../../docs/ns/release_notes_ns_2_80_00_17.html",
+        "categories": [
+            "Documents",
+            "Network Services"
+        ]
+    },
+    {
+        "name": "Network Services (NS) User's Guide",
+        "resourceType": "file",
+        "location": "../../docs/ns/NS_Users_Guide.html",
+        "categories": [
+            "Documents",
+            "Network Services"
+        ]
+    },
+    {
+        "name": "Network Services (NS) API Reference Guide",
+        "resourceType": "file",
+        "location": "../../docs/ns/NS_API_Reference.html",
+        "categories": [
+            "Documents",
+            "Network Services"
+        ]
+    }
+]

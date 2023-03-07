@@ -1,0 +1,504 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>BL IOT SDK 开发指南 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../about.html"/>
+        <link rel="index" title="索引"
+              href="../genindex.html"/>
+        <link rel="search" title="搜索" href="../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../index.html"/>
+        <link rel="next" title="BL602 API 参考" href="../api-reference/index.html"/>
+        <link rel="prev" title="快速入门" href="index_602.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">BL702快速入门</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">概述</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">准备工作</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">硬件连接</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#usb">USB 连接</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#uart">UART 连接</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#jtag">JTAG 连接</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">软件安装</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">编译工程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">烧录固件</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id8">1. 芯片进入烧写模式</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">2. 使用BLDevCube下载固件</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">3. 运行固件</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id11">调试软件</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Examples/index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>BL IOT SDK 开发指南</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/get-started/index_702.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="bl-iot-sdk">
+<h1>BL IOT SDK 开发指南<a class="headerlink" href="#bl-iot-sdk" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<h2>概述<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<blockquote>
+<div><p><a class="reference external" href="https://www.bouffalolab.com/bl70X">BL70X</a> 系列芯片是博流智能科技有限公司开发的，基于 SiFive E24 Core <a class="reference external" href="https://en.wikipedia.org/wiki/RISC-V">RISC-V</a> 处理器的通用微控制器，具有高达144M Hz的主频以及丰富的外设，同时支持BLE 5.0、Zigbee3.0 和以太网等网络功能，可被广泛应用于 <a class="reference external" href="https://en.wikipedia.org/wiki/Internet_of_things">IoT</a> 和其他低功耗领域中。</p>
+<p><a class="reference external" href="https://github.com/bouffalolab/bl_iot_sdk">BL IOT SDK</a> 是博流团队专为BL60X, BL70X 以及后续芯片提供的 IOT 软件开发包。</p>
+<p>本文通过一个简单的示例展示如何在Windows环境下，搭建开发环境，编译示例代码、烧录固件以及查看输出，旨在指导用户搭建一套完整的BL70X IOT应用开发环境。</p>
+</div></blockquote>
+</div>
+<div class="section" id="id3">
+<h2>准备工作<a class="headerlink" href="#id3" title="永久链接至标题"></a></h2>
+<blockquote>
+<div><p>在开始本示例前，必须具备的开发环境包括：</p>
+<blockquote>
+<div><ul>
+<li><p class="first">硬件</p>
+<ul class="simple">
+<li><strong>BL70x开发板</strong></li>
+<li><strong>USB数据线</strong>  (Type-C)</li>
+<li><strong>电脑</strong> (Windows系统)</li>
+</ul>
+</li>
+<li><p class="first">软件</p>
+<ul class="simple">
+<li><strong>MSYS2</strong>           (Windows 编译工具)</li>
+<li><strong>Freedom Studio</strong>  (Windows 调试工具)</li>
+<li><strong>BLDevCube</strong>       (BL702 固件烧写工具)</li>
+</ul>
+<div class="figure align-center">
+<img alt="../_images/bl706_iot.png" src="../_images/bl706_iot.png" />
+</div>
+</li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="id4">
+<h2>硬件连接<a class="headerlink" href="#id4" title="永久链接至标题"></a></h2>
+<blockquote>
+<div>BL70x_IOT 开发板为芯片保留了丰富的通信接口，支持通过USB, UART以及JTAG等多种连接方式烧录固件以及调试软件。</div></blockquote>
+<div class="section" id="usb">
+<h3>USB 连接<a class="headerlink" href="#usb" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><p>BL70X 系列芯片均包含一个USB2.0 IP,  在软件中使能了USB虚拟 CDC-UART 串口以后，可方便的通过开发板上的 Type-C USB 接口完成软件烧录、串口通信等功能。</p>
+<blockquote>
+<div><div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/index-10.jpg"><img alt="../_images/index-10.jpg" src="../_images/index-10.jpg" style="width: 4.5in; height: 5in;" /></a>
+</div>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="uart">
+<h3>UART 连接<a class="headerlink" href="#uart" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><p>BL70X IOT 开发板引出 UART0 TX/RX 引脚, 芯片默认都使能 UART0 功能, 当 CDC-UART 未连接时，自动使用UART0 通信，实现软件的烧录、通信等功能</p>
+<blockquote>
+<div><div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/index-12.jpg"><img alt="../_images/index-12.jpg" src="../_images/index-12.jpg" style="width: 4.5in; height: 5in;" /></a>
+</div>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="jtag">
+<h3>JTAG 连接<a class="headerlink" href="#jtag" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><p>BL70X 开发底板引出 JTAG 接口, 通过 Sipeed RV-Debugger Plus 调试器连接至 PC, 可方便的实现芯片的在线调试功能</p>
+<blockquote>
+<div><div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/index-11.jpg"><img alt="../_images/index-11.jpg" src="../_images/index-11.jpg" style="width: 4.5in; height: 5in;" /></a>
+</div>
+<div class="admonition important">
+<p class="first admonition-title">重要</p>
+<p class="last">Sipeed RV-Debugger Plus 调试器安装使用参考 <a class="reference external" href="./Developer_Environment_BL702/Sipeed-RV-Debugger-Plus/sipeed-rv-debugger-plus.html">Sipeed RV-Debugger Plus 安装</a></p>
+</div>
+</div></blockquote>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="id5">
+<h2>软件安装<a class="headerlink" href="#id5" title="永久链接至标题"></a></h2>
+<blockquote>
+<div><p>在正式开始编译工程前，请先正确完成以下所有工具的安装，具体步骤以及环境变量设置如下:</p>
+<blockquote>
+<div><blockquote>
+<div><ul class="simple">
+<li><strong>MSYS2</strong>  <a class="reference external" href="./Developer_Environment_BL702/Windows-BL702/Quickstart_Windows_msys.html">MSYS32 Windows平台安装与编译</a></li>
+<li><strong>Freedom Studio</strong> <a class="reference external" href="./Developer_Environment_BL702/freedom_studio/freedom_studio.html">Freedom Studio + OpenOCD安装与工程调试</a></li>
+<li><strong>BLDevCube</strong> <a class="reference external" href="./Developer_Environment_BL702/BLFlashEnv/Burning_process.html">BLDevCube 固件烧录</a></li>
+</ul>
+</div></blockquote>
+<div class="admonition important">
+<p class="first admonition-title">重要</p>
+<p class="last">请您留意文档中，关于环境变量, 驱动等信息的设置，这将避免后续操作的异常错误</p>
+</div>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="id6">
+<h2>编译工程<a class="headerlink" href="#id6" title="永久链接至标题"></a></h2>
+<blockquote>
+<div><p>本部分介绍如何编译 get-start 目录下的 helloworld 工程。</p>
+<ol class="arabic simple">
+<li>打开MSYS2平台, 进入本地 <strong>bl_iot_sdk/customer_app/get-start/helloworld</strong> 文件夹</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li>命令：<code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">../bl_iot_sdk_bl702/customer_app/set-start/helloworld</span></code></li>
+</ul>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/image163.png"><img alt="../_images/image163.png" src="../_images/image163.png" style="width: 6in; height: 3.5in;" /></a>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li>执行脚本 <strong>genromap</strong> 开始编译工程<ul>
+<li>命令： <code class="docutils literal notranslate"><span class="pre">./genromap</span></code></li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<div><div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/image173.png"><img alt="../_images/image173.png" src="../_images/image173.png" style="width: 6in; height: 3.5in;" /></a>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li>编译完成后，当前目录新增 <code class="docutils literal notranslate"><span class="pre">build_out</span></code> 文件夹以及以下文件：</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><strong>helloworld.bin：</strong> 二进制固件，用于烧录入芯片</li>
+<li><strong>helloworld.elf：</strong> 可执行与链接文件，用于调试软件</li>
+<li><dl class="first docutils">
+<dt><strong>helloworld.map：</strong> 映射文件，用于函数以及内存占用等分析。</dt>
+<dd><a class="reference external" href="https://dev.bouffalolab.com/download">Bouffalo Lab Parse Tool For Windows</a> 是博流团队提供的 map 文件解析软件，可用于内存文件分析。</dd>
+</dl>
+</li>
+</ul>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/image183.png"><img alt="../_images/image183.png" src="../_images/image183.png" style="width: 6in; height: 3.8in;" /></a>
+</div>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="id7">
+<h2>烧录固件<a class="headerlink" href="#id7" title="永久链接至标题"></a></h2>
+<blockquote>
+<div>本部分介绍如何使用 <strong>BLDevCube</strong>  集成开发工具将固件烧写入 BL70X开发板，更多详情请参考 <a class="reference external" href="https://dev.bouffalolab.com/media/upload/doc/DevCube%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8Cv1.2.pdf">BLDevCube 用户手册</a></div></blockquote>
+<div class="section" id="id8">
+<h3>1. 芯片进入烧写模式<a class="headerlink" href="#id8" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><p>1.1 使用 <code class="docutils literal notranslate"><span class="pre">Type-C</span> <span class="pre">USB</span></code> 数据线 or <code class="docutils literal notranslate"><span class="pre">串口转接板</span></code> 连接BL70X开发板以后</p>
+<blockquote>
+<div><ul class="simple">
+<li>先按下开发板上的 <code class="docutils literal notranslate"><span class="pre">Boot</span></code> 键，不要释放</li>
+<li>再按下开发板上的 <code class="docutils literal notranslate"><span class="pre">RST</span></code> 键，并释放； 此时芯片进入 <code class="docutils literal notranslate"><span class="pre">UART/USB</span> <span class="pre">烧写模式</span></code></li>
+<li>最后释放 <code class="docutils literal notranslate"><span class="pre">Boot</span></code> 按键</li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<div class="line-block">
+<div class="line">芯片成功进入``UART/USB 烧写模式`` 后，您可通过电脑的 <strong>Windows设备管理器</strong> 确认开发板的CDC-UART已成功识别</div>
+</div>
+<blockquote>
+<div><div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/sipeed_rv_debugger_11.png"><img alt="../_images/sipeed_rv_debugger_11.png" src="../_images/sipeed_rv_debugger_11.png" style="width: 2.5in; height: 4in;" /></a>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="id9">
+<h3>2. 使用BLDevCube下载固件<a class="headerlink" href="#id9" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><p>2.1 打开 <code class="docutils literal notranslate"><span class="pre">BLDevCube.exe</span></code>, 在 <code class="docutils literal notranslate"><span class="pre">Chip</span> <span class="pre">Type</span></code> 的下拉框中选择 <code class="docutils literal notranslate"><span class="pre">BL702\4\6</span></code>，点击 <code class="docutils literal notranslate"><span class="pre">Finish</span></code> 进入 <code class="docutils literal notranslate"><span class="pre">Dev</span> <span class="pre">Cube</span></code> 主界面</p>
+<blockquote>
+<div><div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/chipselection1.png"><img alt="../_images/chipselection1.png" src="../_images/chipselection1.png" style="width: 2.5in; height: 4in;" /></a>
+</div>
+</div></blockquote>
+<p>2.2 进入主界面后在上方的菜单栏 <code class="docutils literal notranslate"><span class="pre">View</span></code> 标签下选择 <code class="docutils literal notranslate"><span class="pre">IOT</span></code> 下载方式，进入程序下载主界面</p>
+<blockquote>
+<div><div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/image203.png"><img alt="../_images/image203.png" src="../_images/image203.png" style="width: 9in; height: 4.8in;" /></a>
+</div>
+</div></blockquote>
+<p>2.3  配置BLDevCube</p>
+<blockquote>
+<div><ul>
+<li><p class="first">配置信息包括：</p>
+<ul class="simple">
+<li><strong>Interface</strong>： 用于选择烧录的通信接口，这里选择 Uart 进行下载</li>
+<li><strong>COM Port</strong>: 选择 UART 进行下载的时候, 这里选择与芯片连接的 COM 口号，可以点击下方 Refresh 按钮进行 COM 号的刷新</li>
+<li><strong>Uart Rate</strong>： 当选择 UART 进行下载的时候，填写波特率，默认下载频率2Mhz</li>
+<li><strong>Xtal</strong>: 选择下载时的晶振频率，如果电路板没有焊接晶振，此处应当选内部RC32M时钟源</li>
+<li><strong>Chip Erase</strong>: 选择下载前是否擦除整片Flash, 默认设置为不擦除</li>
+</ul>
+</li>
+<li><p class="first">固件信息包括：</p>
+<ul class="simple">
+<li><strong>Factory Params</strong>: 使用Dev Cube目录下对应芯片型号 device_tree 文件夹中的分区表，默认选择
+<code class="docutils literal notranslate"><span class="pre">....\chips\bl702\device_tree\bl_factory_params_IoTKitA_32M.dts</span></code></li>
+<li><strong>Partition Table</strong>：使用Dev Cube目录下对应芯片型号 partition 文件夹中的分区表，默认选择
+<code class="docutils literal notranslate"><span class="pre">....\chips\bl702\partition\partition_cfg_1M.toml</span></code></li>
+<li><strong>Firmware Bin</strong>：用户编译生成的bin文件路径
+<code class="docutils literal notranslate"><span class="pre">....\bl_iot_sdk_bl702\customer_app\bl702_demo_event\build_out\helloworld.bin</span></code></li>
+</ul>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/image2111.png"><img alt="../_images/image2111.png" src="../_images/image2111.png" style="width: 9in; height: 4.8in;" /></a>
+</div>
+</li>
+</ul>
+</div></blockquote>
+<p>2.4  在正确完成上述配置后，点击 <code class="docutils literal notranslate"><span class="pre">Create&amp;Program</span></code> 按钮进行下载, 下载成功后即可看到状态栏变成绿色并显示 <code class="docutils literal notranslate"><span class="pre">Success</span></code></p>
+<blockquote>
+<div><div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/image2211.png"><img alt="../_images/image2211.png" src="../_images/image2211.png" style="width: 9in; height: 6.9in;" /></a>
+</div>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="id10">
+<h3>3. 运行固件<a class="headerlink" href="#id10" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><blockquote>
+<div><ul class="simple">
+<li>打开PC上安装的串口工具</li>
+<li>按下开发板上的 <code class="docutils literal notranslate"><span class="pre">RST</span></code> 键</li>
+<li>程序正确执行，PC端串口工具将看到如下打印 <code class="docutils literal notranslate"><span class="pre">helloworld</span>&#160; <span class="pre">end</span></code></li>
+</ul>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/image240.png"><img alt="../_images/image240.png" src="../_images/image240.png" style="width: 3in; height: 2in;" /></a>
+</div>
+</div></blockquote>
+<div class="admonition note">
+<p class="first admonition-title">注解</p>
+<p class="last">烧录中如出现无法烧录，烧录失败，烧录成功以后无打印等异常，可查看 <a class="reference external" href="https://dev.bouffalolab.com/media/doc/faq/702/html/content/FAQ.html#bl702">BL702常见问题汇总</a></p>
+</div>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="id11">
+<h2>调试软件<a class="headerlink" href="#id11" title="永久链接至标题"></a></h2>
+<p>选择 <code class="docutils literal notranslate"><span class="pre">Freedom</span> <span class="pre">Studio</span> <span class="pre">+</span> <span class="pre">OpenOCD</span></code> 方式进行debug。具体调试方法参考 <a class="reference external" href="./Developer_Environment_BL702/freedom_studio/freedom_studio.html">Freedom Studio</a> 。</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../api-reference/index.html" class="btn btn-neutral float-right" title="BL602 API 参考" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index_602.html" class="btn btn-neutral" title="快速入门" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

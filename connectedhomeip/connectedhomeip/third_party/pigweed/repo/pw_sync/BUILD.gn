@@ -1,0 +1,360 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/facade.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_chrono/backend.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+import("backend.gni")
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+config("backend_config") {
+  include_dirs = [ "public_overrides" ]
+  visibility = [ ":*" ]
+}
+
+pw_facade("binary_semaphore") {
+  backend = pw_sync_BINARY_SEMAPHORE_BACKEND
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_sync/binary_semaphore.h" ]
+  public_deps = [
+    "$dir_pw_chrono:system_clock",
+    "$dir_pw_preprocessor",
+  ]
+  sources = [ "binary_semaphore.cc" ]
+}
+
+pw_facade("counting_semaphore") {
+  backend = pw_sync_COUNTING_SEMAPHORE_BACKEND
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_sync/counting_semaphore.h" ]
+  public_deps = [
+    "$dir_pw_chrono:system_clock",
+    "$dir_pw_preprocessor",
+  ]
+  sources = [ "counting_semaphore.cc" ]
+}
+
+pw_source_set("lock_annotations") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_sync/lock_annotations.h" ]
+  public_deps = [ "$dir_pw_preprocessor" ]
+}
+
+pw_source_set("borrow") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_sync/borrow.h" ]
+  public_deps = [
+    ":lock_annotations",
+    ":virtual_basic_lockable",
+    dir_pw_assert,
+  ]
+}
+
+pw_source_set("inline_borrowable") {
+  public = [
+    "public/pw_sync/inline_borrowable.h",
+    "public/pw_sync/internal/borrowable_storage.h",
+  ]
+  public_deps = [
+    ":borrow",
+    ":mutex",
+    ":virtual_basic_lockable",
+  ]
+  public_configs = [ ":public_include_path" ]
+}
+
+pw_source_set("virtual_basic_lockable") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_sync/virtual_basic_lockable.h" ]
+  public_deps = [
+    ":lock_annotations",
+    dir_pw_polyfill,
+  ]
+}
+
+pw_facade("mutex") {
+  backend = pw_sync_MUTEX_BACKEND
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_sync/mutex.h" ]
+  public_deps = [
+    ":lock_annotations",
+    ":virtual_basic_lockable",
+    "$dir_pw_preprocessor",
+  ]
+  sources = [ "mutex.cc" ]
+}
+
+pw_facade("timed_mutex") {
+  backend = pw_sync_TIMED_MUTEX_BACKEND
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_sync/timed_mutex.h" ]
+  public_deps = [
+    ":mutex",
+    ":virtual_basic_lockable",
+    "$dir_pw_chrono:system_clock",
+    "$dir_pw_preprocessor",
+  ]
+  sources = [ "timed_mutex.cc" ]
+}
+
+pw_facade("recursive_mutex") {
+  backend = pw_sync_RECURSIVE_MUTEX_BACKEND
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_sync/recursive_mutex.h" ]
+  public_deps = [
+    ":lock_annotations",
+    "$dir_pw_preprocessor",
+  ]
+  sources = [ "recursive_mutex.cc" ]
+  visibility = [ ":*" ]
+}
+
+pw_facade("interrupt_spin_lock") {
+  backend = pw_sync_INTERRUPT_SPIN_LOCK_BACKEND
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_sync/interrupt_spin_lock.h" ]
+  public_deps = [
+    ":lock_annotations",
+    ":virtual_basic_lockable",
+    "$dir_pw_preprocessor",
+  ]
+  sources = [ "interrupt_spin_lock.cc" ]
+}
+
+pw_facade("thread_notification") {
+  backend = pw_sync_THREAD_NOTIFICATION_BACKEND
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_sync/thread_notification.h" ]
+}
+
+pw_facade("timed_thread_notification") {
+  backend = pw_sync_TIMED_THREAD_NOTIFICATION_BACKEND
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_sync/timed_thread_notification.h" ]
+  public_deps = [
+    ":thread_notification",
+    "$dir_pw_chrono:system_clock",
+  ]
+}
+
+# This target provides the backend for pw::sync::ThreadNotification based on
+# pw::sync::BinarySemaphore.
+pw_source_set("binary_semaphore_thread_notification_backend") {
+  public_configs = [
+    ":public_include_path",
+    ":backend_config",
+  ]
+  public = [
+    "public/pw_sync/backends/binary_semaphore_thread_notification_inline.h",
+    "public/pw_sync/backends/binary_semaphore_thread_notification_native.h",
+    "public_overrides/pw_sync_backend/thread_notification_inline.h",
+    "public_overrides/pw_sync_backend/thread_notification_native.h",
+  ]
+  public_deps = [
+    ":binary_semaphore",
+    ":thread_notification.facade",
+  ]
+}
+
+# This target provides the backend for pw::sync::TimedThreadNotification based
+# on pw::sync::BinarySemaphore.
+pw_source_set("binary_semaphore_timed_thread_notification_backend") {
+  public_configs = [
+    ":public_include_path",
+    ":backend_config",
+  ]
+  public = [
+    "public/pw_sync/backends/binary_semaphore_timed_thread_notification_inline.h",
+    "public_overrides/pw_sync_backend/timed_thread_notification_inline.h",
+  ]
+  public_deps = [
+    ":binary_semaphore_thread_notification_backend",
+    ":timed_thread_notification.facade",
+    "$dir_pw_chrono:system_clock",
+  ]
+}
+
+pw_source_set("yield_core") {
+  public = [ "public/pw_sync/yield_core.h" ]
+  public_configs = [ ":public_include_path" ]
+}
+
+pw_facade("condition_variable") {
+  backend = pw_sync_CONDITION_VARIABLE_BACKEND
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_sync/condition_variable.h" ]
+  public_deps = [
+    "$dir_pw_chrono:system_clock",
+    "$dir_pw_sync:mutex",
+  ]
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":borrow_test",
+    ":binary_semaphore_facade_test",
+    ":counting_semaphore_facade_test",
+    ":mutex_facade_test",
+    ":timed_mutex_facade_test",
+    ":recursive_mutex_facade_test",
+    ":interrupt_spin_lock_facade_test",
+    ":thread_notification_facade_test",
+    ":timed_thread_notification_facade_test",
+    ":inline_borrowable_test",
+  ]
+}
+
+pw_test("borrow_test") {
+  sources = [ "borrow_test.cc" ]
+  deps = [
+    ":borrow",
+    ":virtual_basic_lockable",
+    dir_pw_assert,
+  ]
+}
+
+pw_test("inline_borrowable_test") {
+  sources = [ "inline_borrowable_test.cc" ]
+  deps = [
+    ":inline_borrowable",
+    ":interrupt_spin_lock",
+    ":lock_annotations",
+    ":mutex",
+  ]
+}
+
+pw_test("binary_semaphore_facade_test") {
+  enable_if = pw_sync_BINARY_SEMAPHORE_BACKEND != ""
+  sources = [
+    "binary_semaphore_facade_test.cc",
+    "binary_semaphore_facade_test_c.c",
+  ]
+  deps = [
+    ":binary_semaphore",
+    "$dir_pw_preprocessor",
+    pw_sync_BINARY_SEMAPHORE_BACKEND,
+  ]
+}
+
+pw_test("counting_semaphore_facade_test") {
+  enable_if = pw_sync_COUNTING_SEMAPHORE_BACKEND != ""
+  sources = [
+    "counting_semaphore_facade_test.cc",
+    "counting_semaphore_facade_test_c.c",
+  ]
+  deps = [
+    ":counting_semaphore",
+    "$dir_pw_preprocessor",
+    pw_sync_COUNTING_SEMAPHORE_BACKEND,
+  ]
+}
+
+pw_test("mutex_facade_test") {
+  enable_if = pw_sync_MUTEX_BACKEND != ""
+  sources = [
+    "mutex_facade_test.cc",
+    "mutex_facade_test_c.c",
+  ]
+  deps = [
+    ":mutex",
+    "$dir_pw_preprocessor",
+    pw_sync_MUTEX_BACKEND,
+  ]
+}
+
+pw_test("timed_mutex_facade_test") {
+  enable_if = pw_sync_TIMED_MUTEX_BACKEND != ""
+  sources = [
+    "timed_mutex_facade_test.cc",
+    "timed_mutex_facade_test_c.c",
+  ]
+  deps = [
+    ":timed_mutex",
+    "$dir_pw_preprocessor",
+    pw_sync_TIMED_MUTEX_BACKEND,
+  ]
+}
+
+pw_test("recursive_mutex_facade_test") {
+  enable_if = pw_sync_RECURSIVE_MUTEX_BACKEND != ""
+  sources = [
+    "recursive_mutex_facade_test.cc",
+    "recursive_mutex_facade_test_c.c",
+  ]
+  deps = [
+    ":recursive_mutex",
+    "$dir_pw_preprocessor",
+    pw_sync_RECURSIVE_MUTEX_BACKEND,
+  ]
+}
+
+pw_test("interrupt_spin_lock_facade_test") {
+  enable_if = pw_sync_INTERRUPT_SPIN_LOCK_BACKEND != ""
+  sources = [
+    "interrupt_spin_lock_facade_test.cc",
+    "interrupt_spin_lock_facade_test_c.c",
+  ]
+  deps = [
+    ":interrupt_spin_lock",
+    "$dir_pw_preprocessor",
+    pw_sync_INTERRUPT_SPIN_LOCK_BACKEND,
+  ]
+}
+
+pw_test("thread_notification_facade_test") {
+  enable_if = pw_sync_THREAD_NOTIFICATION_BACKEND != ""
+  sources = [ "thread_notification_facade_test.cc" ]
+  deps = [
+    ":thread_notification",
+    pw_sync_THREAD_NOTIFICATION_BACKEND,
+  ]
+}
+
+pw_test("timed_thread_notification_facade_test") {
+  enable_if = pw_sync_TIMED_THREAD_NOTIFICATION_BACKEND != ""
+  sources = [ "timed_thread_notification_facade_test.cc" ]
+  deps = [
+    ":timed_thread_notification",
+    pw_sync_TIMED_THREAD_NOTIFICATION_BACKEND,
+  ]
+}
+
+# This needs to be instantiated per platform that provides
+# an implementation of $dir_pw_thread:test_threads and
+# $dir_pw_sync:condition_variable.
+pw_source_set("condition_variable_test") {
+  sources = [ "condition_variable_test.cc" ]
+  deps = [
+    ":condition_variable",
+    "$dir_pw_containers:vector",
+    "$dir_pw_sync:mutex",
+    "$dir_pw_sync:timed_thread_notification",
+    "$dir_pw_thread:sleep",
+    "$dir_pw_thread:test_threads",
+    "$dir_pw_thread:thread",
+    "$dir_pw_unit_test",
+  ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}

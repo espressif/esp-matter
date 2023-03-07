@@ -1,0 +1,13 @@
+id: zw_controller
+label: Z-Wave Central Static Controller
+category: Z-Wave|Role Types
+description: Central Static Controller (CSC) Role Type is intended for always powered devices which are capable of operating as a central controller. The CSC is typically a router, central gateway or some sort of central communication panel.
+package: Z-Wave
+quality: production
+define:
+  - name: ZW_CONTROLLER
+  - name: ZW_CONTROLLER_STATIC
+  - name: ZW_CONTROLLER_BRIDGE
+provides:
+  - name: zw_controller
+  - name: zw_role_type

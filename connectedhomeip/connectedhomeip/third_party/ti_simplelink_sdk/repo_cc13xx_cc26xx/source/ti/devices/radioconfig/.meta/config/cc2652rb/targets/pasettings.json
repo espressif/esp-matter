@@ -1,0 +1,81 @@
+{
+    "patables": {
+        "RfDesign": {
+            "_name": "CC2652REM-7ID",
+            "FrequencyRange": {
+                "Min": "2400",
+                "Max": "2484",
+                "PaSettingTable": {
+                    "PaSetting": [
+                        {
+                            "_text": "5",
+                            "Value": "7217"
+                        },
+                        {
+                            "_text": "4",
+                            "Value": "4E63"
+                        },
+                        {
+                            "_text": "3",
+                            "Value": "385D"
+                        },
+                        {
+                            "_text": "2",
+                            "Value": "3259"
+                        },
+                        {
+                            "_text": "1",
+                            "Value": "2856"
+                        },
+                        {
+                            "_text": "0",
+                            "Value": "2853"
+                        },
+                        {
+                            "_text": "-3",
+                            "Value": "1893"
+                        },
+                        {
+                            "_text": "-5",
+                            "Value": "12D6"
+                        },
+                        {
+                            "_text": "-6",
+                            "Value": "10D4"
+                        },
+                        {
+                            "_text": "-9",
+                            "Value": "0AD0"
+                        },
+                        {
+                            "_text": "-10",
+                            "Value": "0ACF"
+                        },
+                        {
+                            "_text": "-12",
+                            "Value": "0ACC"
+                        },
+                        {
+                            "_text": "-15",
+                            "Value": "06CA"
+                        },
+                        {
+                            "_text": "-18",
+                            "Value": "06C8"
+                        },
+                        {
+                            "_text": "-20",
+                            "Value": "04C6"
+                        }
+                    ]
+                }
+            }
+        },
+        "DefaultPaTable": {
+            "PaSetting": {
+                "_text": "Unknown",
+                "Value": "0xFFFF"
+            }
+        }
+    }
+}

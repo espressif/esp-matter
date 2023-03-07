@@ -1,0 +1,24 @@
+/***************************************************************************//**
+ * @file  zap-enabled-incoming-commands.h
+ * @brief This file contains a set of macros for all the cluster commands which
+ have incoming enabled.
+ * This file is generated. Do not update file manually.
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2020 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * The licensor of this software is Silicon Laboratories Inc. Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement. This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
+ *
+ ******************************************************************************/
+{{~new_line 1~}}
+{{~#all_user_clusters_with_incoming_commands~}}
+    {{~#all_incoming_commands_for_cluster clusterName clusterSide~}}
+#define ZCL_CLUSTER_{{as_delimited_macro ../clusterName}}_{{as_delimited_macro ../clusterSide}}_INCOMING_COMMAND_{{as_delimited_macro commandName}}_ENABLED{{~new_line 1~}}
+    {{/all_incoming_commands_for_cluster}}
+{{~/all_user_clusters_with_incoming_commands~}}

@@ -1,0 +1,153 @@
+package: Zigbee
+description: This component provides support both for generating traffic when doing coexistence
+  testing, and for measuring network throughput. Packets are sent periodically on
+  a CLI-programmable interval unless the packets-in-flight limit is exceeded.
+id: zigbee_throughput
+label: Throughput
+category: Zigbee|Utility
+quality: production
+provides:
+   - name: "zigbee_throughput"
+requires:
+   - name: "zigbee_counters"
+source:
+  - path: protocol/zigbee/app/framework/plugin/throughput/throughput.c  
+template_contribution:
+  - name: component_catalog
+    value: zigbee_throughput
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emAfPluginThroughputInitCallback  
+  - name: zigbee_stack_callback
+    value:
+      callback_type: message_sent
+      function_name: emAfPluginThroughputMessageSentCallback  
+  - name: cli_group
+    value:
+      group: plugin
+      name: throughput
+      help: throughput related commands
+  - name: cli_command
+    value:
+      group: throughput
+      name: start
+      handler: emAfPluginThroughputCliStartTest
+      help: Start the throughput test.
+  - name: cli_command
+    value:
+      group: throughput
+      name: stop
+      handler: emAfPluginThroughputCliStopTest
+      help: Abort the test while running.
+  - name: cli_command
+    value:
+      group: throughput
+      name: print-result
+      handler: emAfPluginThroughputCliPrintResult
+      help: Show the results of the last test.
+  - name: cli_command
+    value:
+      group: throughput
+      name: set-destination
+      handler: emAfPluginThroughputCliSetDestination
+      help: Set the destination nodeId
+      argument:
+      - type: uint16
+        help: Destination nodeId
+  - name: cli_command
+    value:
+      group: throughput
+      name: set-interval
+      handler: emAfPluginThroughputCliSetInterval
+      help: Set the interval
+      argument:
+      - type: uint16
+        help: Interval in ms
+  - name: cli_command
+    value:
+      group: throughput
+      name: set-timeout
+      handler: emAfPluginThroughputCliSetTestTimeout
+      help: Set the test timeout
+      argument:
+      - type: uint32
+        help: Timeout in ms
+  - name: cli_command
+    value:
+      group: throughput
+      name: set-count
+      handler: emAfPluginThroughputCliSetTestCount
+      help: Set the number of packets to send
+      argument:
+      - type: uint16
+        help: Packets to send
+  - name: cli_command
+    value:
+      group: throughput
+      name: set-inflight
+      handler: emAfPluginThroughputCliSetInFlightCount
+      help: Set the number of packets in flight during the test.
+      argument:
+      - type: uint8
+        help: Packets in flight
+  - name: cli_command
+    value:
+      group: throughput
+      name: set-packet-size
+      handler: emAfPluginThroughputCliSetPacketSize
+      help: Set the packet length
+      argument:
+      - type: uint8
+        help: Packet length in bytes
+  - name: cli_command
+    value:
+      group: throughput
+      name: set-all
+      handler: emAfPluginThroughputCliSetAllParameters
+      help: Set all parameters Destination Count Interval packetLength maxInFlight testTimeout
+      argument:
+      - type: uint16
+        help: Destination nodeId
+      - type: uint16
+        help: Packets to send
+      - type: uint16
+        help: Interval in ms
+      - type: uint8
+        help: Packet length in bytes
+      - type: uint8
+        help: Packets in flight
+      - type: uint16
+        help: APS Options
+      - type: uint32
+        help: Timeout in ms
+  - name: cli_command
+    value:
+      group: throughput
+      name: set-aps-ack-off
+      handler: emAfPluginThroughputCliSetApsAckOff
+      help: Turn off APS acks
+  - name: cli_command
+    value:
+      group: throughput
+      name: set-aps-ack-on
+      handler: emAfPluginThroughputCliSetApsAckOn
+      help: Turn on APS acks
+  - name: cli_command
+    value:
+      group: throughput
+      name: print-parameters
+      handler: emAfPluginThroughputCliPrintParameters
+      help: Print all the test parameters
+  - name: cli_command
+    value:
+      group: throughput
+      name: print-counters
+      handler: emAfPluginThroughputCliPrintCounters
+      help: Print the stack counters
+  - name: cli_command
+    value:
+      group: throughput
+      name: clear-counters
+      handler: emAfPluginThroughputCliClearCounters
+      help: Clear all the stack counters

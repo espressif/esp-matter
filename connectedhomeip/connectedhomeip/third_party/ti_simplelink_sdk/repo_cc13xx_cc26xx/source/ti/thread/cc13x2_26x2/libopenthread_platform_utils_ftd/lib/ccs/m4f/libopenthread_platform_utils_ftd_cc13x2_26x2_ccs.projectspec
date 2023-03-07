@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectSpec>
+    <applicability>
+        <when>
+            <context
+                deviceFamily="ARM"
+                deviceId="com.ti.ccstudio.deviceModel.TMS470.GenericCortexM4Device"
+            />
+        </when>
+    </applicability>
+
+    <project
+        title="libopenthread_platform_utils_ftd_cc13x2_26x2"
+        name="libopenthread_platform_utils_ftd_cc13x2_26x2_ccs"
+        configurations="OptimizeSize"
+        toolChain="TI"
+        outputType="staticLibrary"
+        artifactName="libopenthread_platform_utils_ftd"
+        artifactExtension="a"
+        endianness="little"
+        device="com.ti.ccstudio.deviceModel.TMS470.GenericCortexM4Device"
+        ignoreDefaultDeviceSettings="true"
+        ignoreDefaultCCSSettings="true"
+        products="com.ti.SIMPLELINK_CC13XX_CC26XX_SDK"
+        compilerBuildOptions="
+            -I${PROJECT_ROOT}
+            -O4
+            --opt_for_speed=0
+            -mv7M4
+            --abi=eabi
+            -me
+            --c99
+            --gcc
+            --float_operations_allowed=none
+            --printf_support=nofloat
+            --gen_func_subsections=on
+            --embedded_constants=on
+            --wchar_t=16
+            --enum_type=packed
+            --gen_data_subsections=on
+            --common=on
+            --plain_char=unsigned
+            --diag_suppress=23000
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/examples/platforms
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/third_party/mbedtls
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/third_party/mbedtls/repo/include
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/include
+            -DDeviceFamily_CC13X2_CC26X2
+            -DHAVE_CONFIG_H
+            -D_BSD_SOURCE=1
+            -D_DEFAULT_SOURCE=1
+            -DMBEDTLS_CONFIG_FILE=&apos;&quot;mbedtls-config-cc13x2_26x2.h&quot;&apos;
+            -I${WorkspaceDirPath}/libmbedcrypto_cc13x2_26x2_ccs/config
+            -DOPENTHREAD_FTD=1
+            -DOPENTHREAD_PROJECT_CORE_CONFIG_FILE=&apos;&quot;openthread-core-cc13x2_26x2-config.h&quot;&apos;
+            -DOPENTHREAD_CONFIG_FILE=&apos;&quot;openthread-config-cc13x2_26x2-ftd.h&quot;&apos;
+            -I${WorkspaceDirPath}/libopenthread_ftd_cc13x2_26x2_ccs/config
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/core
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src
+            --silicon_version=7M4
+            --code_state=16
+            --little_endian
+            --display_error_number
+            --diag_warning=255
+            --diag_wrap=off
+            --float_support=FPv4SPD16
+            --symdebug:dwarf
+            -I${CG_TOOL_ROOT}/include
+        "
+        description="this is the openthread platform utils library">
+
+        <property name="isHybrid" value="true"/>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/examples/platforms/utils/code_utils.h" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="examples/platforms/utils">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/examples/platforms/utils/encoding.h" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="examples/platforms/utils">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/examples/platforms/utils/mac_frame.h" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="examples/platforms/utils">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/examples/platforms/utils/debug_uart.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="examples/platforms/utils">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/examples/platforms/utils/mac_frame.cpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="examples/platforms/utils">
+        </file>
+    </project>
+</projectSpec>

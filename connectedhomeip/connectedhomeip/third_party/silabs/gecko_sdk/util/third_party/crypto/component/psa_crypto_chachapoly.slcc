@@ -1,0 +1,38 @@
+id: psa_crypto_chachapoly
+package: platform
+label: ChachaPoly
+description:
+  "This component provides support for authenticated encryption and decryption \
+  with ChaChaPoly in the PSA Crypto AEAD APIs.\n
+
+  NOTE: There exists a special case which Silicon Labs' crypto acceleration driver \
+  cannot handle: that is the case where both the message- and additional authenticated \
+  data lengths are equal to zero. If the user needs zero data length, they will \
+  need to include the 'ChaChaPoly' component under the Platform|Security|\
+  Mbed TLS|Authenticated Encryption category in order to include fallback to the \ 
+  software implementation in the Mbed TLS library."
+category: Platform|Security|PSA Crypto|Authenticated Encryption
+quality: production
+provides:
+  - name: psa_crypto_chachapoly
+requires:
+  - name: psa_crypto
+  - name: mbedtls_chachapoly
+    condition: [device_series_0]
+  - name: mbedtls_chachapoly
+    condition: [device_series_1]
+  - name: mbedtls_chachapoly
+    condition: [device_security_se]
+  - name: mbedtls_chachapoly
+    condition: [device_security_rot]
+template_contribution:
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_CHACHA20_POLY1305
+  - name: psa_crypto_config
+    value: "MBEDTLS_PSA_BUILTIN_ALG_CHACHA20_POLY1305 1"
+    condition: [mbedtls_chachapoly]
+  - name: psa_crypto_config
+    value: PSA_WANT_KEY_TYPE_CHACHA20
+  - name: psa_crypto_config
+    value: "MBEDTLS_PSA_BUILTIN_KEY_TYPE_CHACHA20 1"
+    condition: [mbedtls_chachapoly]

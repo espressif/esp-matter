@@ -1,0 +1,14 @@
+package: 'Zigbee'
+description: This is a placeholder component that activates the ZCL advanced configurator. 
+id: zcl_activator
+label: ZCL Activator
+category: Zigbee|Utility
+toolchain_settings: []
+ui_hints: {}
+quality: production
+template_file: []
+provides:
+   - name: "zigbee_zcl_activator"
+config_file:
+  - path: "protocol/zigbee/app/framework/common/zcl_config.zap"
+    directory: zcl

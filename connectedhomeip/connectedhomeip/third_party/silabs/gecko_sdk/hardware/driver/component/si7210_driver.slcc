@@ -1,0 +1,25 @@
+id: si7210_driver
+package: platform
+label: Si7210 - Hall Effect Sensor
+description: >
+  Driver for the Silicon Labs Si7210 Hall effect sensor
+category: Platform|Board Drivers
+quality: production
+root_path: hardware/driver/si7210
+provides:
+  - name: si7210_driver
+requires:
+  - name: i2cspm
+  - name: udelay
+  - name: status
+  - name: sleeptimer
+include:
+  - path: inc
+    file_list:
+      - path: sl_si7210.h
+      - path: sl_si7210_regs.h
+source:
+  - path: src/sl_si7210.c
+documentation:
+    docset: gecko-platform
+    document: hardware-driver/api/group-si7210

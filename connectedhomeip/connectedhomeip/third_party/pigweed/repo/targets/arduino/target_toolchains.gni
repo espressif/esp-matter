@@ -1,0 +1,125 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_sys_io/backend.gni")
+import("$dir_pw_toolchain/arm_gcc/toolchains.gni")
+
+declare_args() {
+  # Enable the pw_target_runner for on-device testing.
+  pw_arduino_use_test_server = false
+}
+_target_config = {
+  # Use the logging main.
+  pw_unit_test_MAIN = "$dir_pw_unit_test:simple_printing_main"
+
+  # Configuration options for Pigweed executable targets.
+  pw_build_EXECUTABLE_TARGET_TYPE = "arduino_executable"
+
+  pw_build_EXECUTABLE_TARGET_TYPE_FILE =
+      get_path_info("arduino_executable.gni", "abspath")
+
+  # Path to the bloaty config file for the output binaries.
+  pw_bloat_BLOATY_CONFIG = "$dir_pw_boot_cortex_m/bloaty_config.bloaty"
+
+  if (pw_arduino_use_test_server) {
+    _test_runner_script =
+        "$dir_pw_arduino_build/py/pw_arduino_build/unit_test_client.py"
+    pw_unit_test_AUTOMATIC_RUNNER =
+        get_path_info(_test_runner_script, "abspath")
+  }
+
+  # Facade backends
+  pw_assert_BACKEND = dir_pw_assert_basic
+  pw_log_BACKEND = dir_pw_log_basic
+  pw_sync_INTERRUPT_SPIN_LOCK_BACKEND =
+      "$dir_pw_sync_baremetal:interrupt_spin_lock"
+  pw_sync_MUTEX_BACKEND = "$dir_pw_sync_baremetal:mutex"
+  pw_sys_io_BACKEND = dir_pw_sys_io_arduino
+  pw_rpc_system_server_BACKEND = "$dir_pw_hdlc:hdlc_sys_io_system_server"
+  pw_arduino_build_INIT_BACKEND = "$dir_pigweed/targets/arduino:pre_init"
+
+  pw_build_LINK_DEPS = [
+    "$dir_pw_assert:impl",
+    "$dir_pw_log:impl",
+  ]
+
+  current_cpu = "arm"
+  current_os = ""
+}
+
+_toolchain_properties = {
+  final_binary_extension = ".elf"
+}
+
+_target_default_configs = [
+  "$dir_pw_toolchain/arm_gcc:enable_float_printf",
+  "$dir_pigweed/targets/arduino:arduino_build",
+]
+
+pw_target_toolchain_arduino = {
+  _excluded_members = [
+    "defaults",
+    "name",
+  ]
+
+  debug = {
+    name = "arduino_debug"
+    _toolchain_base = pw_toolchain_arm_gcc.cortex_m4f_debug
+    forward_variables_from(_toolchain_base, "*", _excluded_members)
+    forward_variables_from(_toolchain_properties, "*")
+    defaults = {
+      forward_variables_from(_toolchain_base.defaults, "*")
+      forward_variables_from(_target_config, "*")
+      default_configs = []
+      default_configs = _target_default_configs
+    }
+  }
+
+  speed_optimized = {
+    name = "arduino_speed_optimized"
+    _toolchain_base = pw_toolchain_arm_gcc.cortex_m4f_speed_optimized
+    forward_variables_from(_toolchain_base, "*", _excluded_members)
+    forward_variables_from(_toolchain_properties, "*")
+    defaults = {
+      forward_variables_from(_toolchain_base.defaults, "*")
+      forward_variables_from(_target_config, "*")
+      default_configs = []
+      default_configs = _target_default_configs
+    }
+  }
+
+  size_optimized = {
+    name = "arduino_size_optimized"
+    _toolchain_base = pw_toolchain_arm_gcc.cortex_m4f_size_optimized
+    forward_variables_from(_toolchain_base, "*", _excluded_members)
+    forward_variables_from(_toolchain_properties, "*")
+    defaults = {
+      forward_variables_from(_toolchain_base.defaults, "*")
+      forward_variables_from(_target_config, "*")
+      default_configs = []
+      default_configs = _target_default_configs
+    }
+  }
+}
+
+# This list just contains the members of the above scope for convenience to make
+# it trivial to generate all the toolchains in this file via a
+# `generate_toolchains` target.
+pw_target_toolchain_arduino_list = [
+  pw_target_toolchain_arduino.debug,
+  pw_target_toolchain_arduino.speed_optimized,
+  pw_target_toolchain_arduino.size_optimized,
+]

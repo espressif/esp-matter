@@ -1,0 +1,109 @@
+# Copyright 2019 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load(
+    "//pw_build:pigweed.bzl",
+    "pw_cc_binary",
+)
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+# TODO(keir): Figure out why sharing deps doesn't work. Switching the hardcoded
+# deps to this shared variable breaks with a confusing error message;
+#
+#   ERROR: /Users/keir/wrk/pigweed/pw_checksum/size_report/BUILD.bazel:46:13:
+#     Label '//pw_assert:pw_assert' is duplicated in the 'deps'
+#     attribute of rule 'crc16_checksum'
+#   ERROR: package contains errors: pw_checksum/size_report
+#
+
+pw_cc_binary(
+    name = "noop_checksum",
+    srcs = ["run_checksum.cc"],
+    copts = ["-DUSE_NOOP_CHECKSUM=1"],
+    deps = [
+        "//pw_bloat:bloat_this_binary",
+        "//pw_checksum",
+        "//pw_log",
+        "//pw_preprocessor",
+        "//pw_span",
+    ],
+)
+
+pw_cc_binary(
+    name = "crc16_checksum",
+    srcs = ["run_checksum.cc"],
+    copts = ["-DUSE_CRC16_CHECKSUM=1"],
+    deps = [
+        "//pw_bloat:bloat_this_binary",
+        "//pw_checksum",
+        "//pw_log",
+        "//pw_preprocessor",
+        "//pw_span",
+    ],
+)
+
+pw_cc_binary(
+    name = "crc32_8bit_checksum",
+    srcs = ["run_checksum.cc"],
+    copts = ["-DUSE_CRC32_8BIT_CHECKSUM=1"],
+    deps = [
+        "//pw_bloat:bloat_this_binary",
+        "//pw_checksum",
+        "//pw_log",
+        "//pw_preprocessor",
+        "//pw_span",
+    ],
+)
+
+pw_cc_binary(
+    name = "crc32_4bit_checksum",
+    srcs = ["run_checksum.cc"],
+    copts = ["-DUSE_CRC32_4BIT_CHECKSUM=1"],
+    deps = [
+        "//pw_bloat:bloat_this_binary",
+        "//pw_checksum",
+        "//pw_log",
+        "//pw_preprocessor",
+        "//pw_span",
+    ],
+)
+
+pw_cc_binary(
+    name = "crc32_1bit_checksum",
+    srcs = ["run_checksum.cc"],
+    copts = ["-DUSE_CRC32_1BIT_CHECKSUM=1"],
+    deps = [
+        "//pw_bloat:bloat_this_binary",
+        "//pw_checksum",
+        "//pw_log",
+        "//pw_preprocessor",
+        "//pw_span",
+    ],
+)
+
+pw_cc_binary(
+    name = "fletcher16_checksum",
+    srcs = ["run_checksum.cc"],
+    copts = ["-DUSE_FLETCHER16_CHECKSUM=1"],
+    deps = [
+        "//pw_bloat:bloat_this_binary",
+        "//pw_checksum",
+        "//pw_log",
+        "//pw_preprocessor",
+        "//pw_span",
+    ],
+)

@@ -1,0 +1,15 @@
+id: zw_series
+label: Z-Wave Series
+category: Z-Wave
+description: Series Component
+package: Z-Wave
+quality: production
+define:
+  - name: ZWAVE_SERIES_700
+    condition: [device_supports_zwave, device_sdid_89]
+  - name: ZWAVE_SERIES_700
+    condition: [device_supports_zwave, device_sdid_95]
+  - name: ZWAVE_SERIES_800
+    condition: [device_supports_zwave, device_sdid_210]
+provides:
+  - name: zw_series

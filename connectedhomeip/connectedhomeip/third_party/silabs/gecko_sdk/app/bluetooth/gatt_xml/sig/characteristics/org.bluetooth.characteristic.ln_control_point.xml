@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--<?xml-stylesheet type="text/xsl" href="FieldBasedDisplay.xslt"?>-->
+<!-- Created with Liquid XML Studio Designer Edition 9.1.10.3537 (http://www.liquid-technologies.com) -->
+<!--Copyright 2011 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="LN Control Point" type="org.bluetooth.characteristic.ln_control_point" uuid="2A6B" last-modified="2013-05-13" approved="Yes">
+  <InformativeText>
+    <Summary>The LN Control Point characteristic is used to request a specific function to be executed on the receiving device.</Summary>
+  </InformativeText>
+  <Value>
+    <Field name="Op Codes">
+      <Requirement>Mandatory</Requirement>
+      <Format>uint8</Format>
+      <Enumerations>
+        <Enumeration key="1" value="Set Cumulative Value" description="Initiate the procedure to set the cumulative value.The new value is sent as a parameter following op code. The response to this control point is Op Code 0x20 followed by the appropriate Response Value." />
+        <Enumeration key="2" value="Mask Location and Speed Characteristic Content" description="Initiate the procedure to set the content of Location and Speed Characteristic. The response to this control point is Op Code 0x20 followed by the appropriate Response Value." />
+        <Enumeration key="3" value="Navigation Control" description="Initiate the procedure to control navigation. The response to this control point is Op Code 0x20 followed by the appropriate Response Value." />
+        <Enumeration key="4" value="Request Number of Routes" description="Initiate the procedure to request the number of routes stored into the Sensor. The response to this control point is Op Code 0x20 followed by the appropriate Response Value, including the number of routes in the Response Parameter." />
+        <Enumeration key="5" value="Request Name of Route" description="Initiate the procedure to request the name of wanted route stored into the Sensor. The response to this control point is Op Code 0x20 followed by the appropriate Response Value,including the name of the route in the Response Parameter." />
+        <Enumeration key="6" value="Select Route" description="Initiate the procedure to select certain route to be used for navigation performed by the Sensor. The response to this control point is Op Code 0x20 followed by the appropriate Response Value. " />
+        <Enumeration key="7" value="Set Fix Rate" description="Initiate the procedure to set the Sensor fix rate. The response to this control point is Op Code 0x20 followed by the appropriate Response Value." />
+        <Enumeration key="8" value="Set Elevation" description="Initiate the procedure to set the elevation value of the sensor (usually this procedure needed if barometric air pressure is used for elevation calculation and elevation needs calibration). The response to this control point is Op Code 0x20 followed by the appropriate Response Value." />
+        <Enumeration key="32" value="Response Code" description="The Response Code is followed by the Request Op Code, the Response Value and optionally, the Response Parameter." />
+        <ReservedForFutureUse start="0" end="0" />
+        <ReservedForFutureUse start="9" end="31" />
+        <ReservedForFutureUse start="33" end="255" />
+      </Enumerations>
+    </Field>
+    <Field name="Parameter Value">
+      <!--<InformativeText>Parameter Value for the Op Code defined above.</InformativeText>-->
+      <Requirement>Optional</Requirement>
+      <Format>variable</Format>
+      <Description>Defined per Service specification.</Description>
+    </Field>
+    <Field name="Request Op Code">
+      <InformativeText>
+	  The Request Op Code is a sub field of the Parameter Value for "Response Code" Op Code.
+      C1: This Field is Mandatory for "Response Code" Op Code, otherwise this field is Excluded.
+      </InformativeText>
+      <Requirement>C1</Requirement>
+      <Format>uint8</Format>
+      <Description>Refer to the Op Code table above for additional information on the possible values for this field.</Description>
+    </Field>
+    <Field name="Response Value">
+      <InformativeText>
+	  The Response Value is a sub field of the Parameter Value for "Response Code" Op Code
+      C1: This Field is Mandatory for "Response Code" Op Code, otherwise this field is Excluded.
+      </InformativeText>
+      <Requirement>C1</Requirement>
+      <Format>uint8</Format>
+          <Enumerations>
+            <Enumeration key="1" value="Success" description="Response for successful operation. "/>
+            <Enumeration key="2" value="Op Code not Supported" description="Response if unsupported Op Code is received."/>
+            <Enumeration key="3" value="Invalid Parameter" description="Response if Parameter received does not meet the requirements of the service or is outside of the supported range of the Sensor."/>
+            <Enumeration key="4" value="Operation Failed" description="Response if the requested procedure failed."/>
+            <ReservedForFutureUse start="0" end="0"/>
+            <ReservedForFutureUse start="5" end="255"/>
+          </Enumerations>
+    </Field>
+    <Field name="Response Parameter">
+      <InformativeText>
+	  The Response Parameter is a sub field of the Parameter Value for "Response Code" Op Code.
+	  C2:This Field is Optional for "Response Code" Op Code, otherwise this field is Excluded.
+      </InformativeText>
+      <Requirement>C2</Requirement>
+      <Format>variable</Format>
+      <Description>Note: The Response Parameter Value of the response to the Control Point is a variable length field to allow a list of different values defined by the Service Specification.</Description>
+    </Field>
+  </Value>
+  <Note>The fields in the above table, reading from top to bottom, are shown in the order of LSO to MSO, where LSO = Least Significant Octet and MSO = Most Significant Octet. The Least Significant Octet represents the eight bits numbered 0 to 7.</Note>
+</Characteristic>

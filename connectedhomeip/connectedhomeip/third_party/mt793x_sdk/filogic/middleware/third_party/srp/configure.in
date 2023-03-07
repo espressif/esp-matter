@@ -1,0 +1,138 @@
+dnl Process this file with autoconf to produce a configure script.
+
+AC_INIT(t_pwd.h)
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(libsrp, 2.0.0)
+
+test "$CFLAGS" = "" && CFLAGS="-O"
+
+dnl Checks for programs.
+
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_RANLIB
+AC_ARG_PROGRAM
+
+dnl Checks for libraries.
+
+AC_CHECK_LIB(socket, socket)
+AC_CHECK_LIB(nsl, gethostbyname)
+AC_CHECK_LIB(dl, dlopen)
+
+dnl Checks for header files.
+
+AC_HEADER_STDC
+AC_CHECK_HEADERS(sgtty.h sys/ioctl.h sys/time.h termio.h termios.h unistd.h)
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+
+AC_C_CONST
+AC_C_INLINE
+AC_HEADER_TIME
+AC_C_BIGENDIAN
+AC_CHECK_SIZEOF(short)
+AC_CHECK_SIZEOF(int)
+AC_CHECK_SIZEOF(long)
+AC_TRY_COMPILE(, [volatile int i;], , AC_DEFINE(volatile, ))
+
+dnl Checks for library functions.
+
+AC_CHECK_FUNCS(sigaction strchr memcpy)
+AC_TYPE_SIGNAL
+AC_HEADER_CHECK(termios.h,AC_FUNC_CHECK(cfsetispeed,AC_DEFINE(POSIX_TERMIOS)))
+
+dnl User options
+
+AC_ARG_WITH(openssl, [  --with-openssl=DIR		compile to use OpenSSL ], OPENSSLDIR=$withval)
+AC_ARG_WITH(cryptolib, [  --with-cryptolib=DIR		compile to use cryptolib ], CRYPTOLIBDIR=$withval, with_cryptolib=no)
+AC_ARG_WITH(gmp, [  --with-gmp=DIR		compile to use GNU MP ], GMPDIR=$withval, with_gmp=no)
+AC_ARG_WITH(gcrypt, [  --with-gcrypt=DIR		compile to use libgcrypt ], GCRYPTDIR=$withval, with_gcrypt=no)
+AC_ARG_WITH(mpi, [  --with-mpi=DIR		compile to use MPI ], MPIDIR=$withval, with_mpi=no)
+AC_ARG_WITH(tomcrypt, [  --with-tomcrypt=DIR	compile to use libtomcrypt ], TOMCRYPTDIR=$withval, with_tomcrypt=no)
+AC_ARG_WITH(tommath, [  --with-tommath=DIR	compile to use libtommath ], TOMMATHDIR=$withval, with_tommath=no)
+if test "$with_gmp" != "no"
+then
+	AC_DEFINE(GNU_MP)
+	LIBS="-lgmp $LIBS"
+	if test "$GMPDIR" != "yes"; then
+		LIBS="-L$GMPDIR/.libs -L$GMPDIR $LIBS"
+		CPPFLAGS="-I$GMPDIR $CPPFLAGS"
+	fi
+elif test "$with_gcrypt" != "no"
+then
+	AC_DEFINE(GCRYPT)
+	LIBS="-lgcrypt $LIBS"
+	if test "$GCRYPTDIR" != "yes"; then
+		LIBS="-L$GCRYPTDIR/src/.libs -L$GCRYPTDIR $LIBS"
+		CPPFLAGS="-I$GCRYPTDIR $CPPFLAGS"
+	fi
+elif test "$with_mpi" != "no"
+then
+	AC_DEFINE(MPI)
+	LIBS="-lmpi $LIBS"
+	if test "$MPIDIR" != "yes"; then
+		LIBS="-L$MPIDIR $LIBS"
+		CPPFLAGS="-I$MPIDIR $CPPFLAGS"
+	fi
+elif test "$with_tomcrypt" != "no"
+then
+	AC_DEFINE(TOMCRYPT)
+	AC_DEFINE(TOMMATH)
+	LIBS="-ltomcrypt $LIBS"
+	if test "$TOMCRYPTDIR" != "yes"; then
+		LIBS="-L$TOMCRYPTDIR $LIBS"
+		CPPFLAGS="-I$TOMCRYPTDIR/src/headers $CPPFLAGS"
+	fi
+elif test "$with_tommath" != "no"
+then
+	AC_DEFINE(TOMMATH)
+	LIBS="-ltommath $LIBS"
+	if test "$TOMMATHDIR" != "yes"; then
+		LIBS="-L$TOMMATHDIR $LIBS"
+		CPPFLAGS="-I$TOMMATHDIR $CPPFLAGS"
+	fi
+elif test "$with_cryptolib" != "no"
+then
+	AC_DEFINE(CRYPTOLIB)
+	LIBS="-lcrypt $LIBS"
+	if test "$CRYPTOLIBDIR" != "yes"; then
+		LIBS="-L$CRYPTOLIBDIR/cryptolib/lib $LIBS"
+		CPPFLAGS="-I$CRYPTOLIBDIR/cryptolib/include $CPPFLAGS"
+	fi
+else
+	AC_DEFINE(OPENSSL)
+	LIBS="-lcrypto $LIBS"
+	if test -n "$OPENSSLDIR" -a "$OPENSSLDIR" != "yes"; then
+		LIBS="-L$OPENSSLDIR/lib -L$OPENSSLDIR $LIBS"
+		CPPFLAGS="-I$OPENSSLDIR/include $CPPFLAGS"
+	fi
+fi
+AC_ARG_WITH(engine, [  --with-engine     		compile with ENGINE support in OpenSSL ], AC_DEFINE(OPENSSL_ENGINE))
+
+AC_ARG_WITH(nis,       [  --with-nis			compile with NIS/YP support])
+if test "$with_nis" = "yes"
+then
+	AC_DEFINE(ENABLE_YP)
+fi
+
+dnl Some platforms want PIC-compiled libsrp in a PAM module
+
+AC_SUBST(PICFLAG)
+AC_SUBST(SHAREDFLAG)
+if test "$GCC" = "yes"
+then
+	PICFLAG="-fPIC"
+	SHAREDFLAG="--shared"
+else
+	dnl TODO: let user specify PICFLAG...
+	PICFLAG=""
+	SHAREDFLAG="-G"
+fi
+
+dnl Some defines for now.
+
+AC_DEFINE(HIGHFIRST)
+AC_DEFINE(SHA1HANDSOFF)
+
+AC_OUTPUT(Makefile)

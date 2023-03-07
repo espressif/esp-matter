@@ -1,0 +1,15 @@
+[
+    {
+        "files": [
+            "+../../README.md -> README.md",
+            "+../../README.html -> README.html",
+            "+../../log.c -> log.c",
+            "+../main_tirtos.c -> main_tirtos.c",
+            "+../log.syscfg -> log.syscfg",
+            "+../../../../../../../source/ti/boards/CC3235SF_LAUNCHXL/Board.html -> Board.html",
+            "+cc32xxsf_tirtos.lds -> cc32xxsf_tirtos.lds",
+            "+../../image.syscfg -> image.syscfg",
+            "+../../userFiles/dummy-root-ca-cert -> userFiles/dummy-root-ca-cert"
+        ]
+    }
+]

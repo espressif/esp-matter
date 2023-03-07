@@ -1,0 +1,50 @@
+id: usb_device_class_cdc_acm
+category: Protocol|USB|Device
+label: USB CDC ACM Class
+description: >
+  This module allows you to create instances of the USB CDC ACM class.
+package: usb
+quality: production
+instantiable:
+  prefix: cdc_acm
+component_root_path: protocol/usb
+config_file:
+  - path: "config/sl_usbd_class_{{instance}}_config.h"
+source:
+  - path: src/sl_usbd_class_cdc_acm.c
+  - path: src/sl_usbd_class_cdc.c
+include:
+  - path: inc
+    file_list:
+      - path: sl_usbd_class_cdc_acm.h
+      - path: sl_usbd_class_cdc.h
+provides:
+  - name: usb_device_class_cdc_acm
+  - name: usb_device_class
+    allow_multiple: true
+requires:
+  - name: usb_device_configuration
+  - name: usb_device_core
+  - name: usb_device
+template_file:
+  - path: template/sl_usbd_class_cdc_acm_instances.h.jinja
+  - path: template/sl_usbd_class_cdc_acm_instances.c.jinja
+template_contribution:
+  - name: component_catalog
+    value: usb_device_cdc
+  - name: component_catalog
+    value: usb_device_cdc_acm
+  - name: usbd_init
+    value: usb_device_cdc
+  - name: usbd_init
+    value: usb_device_cdc_acm
+  - name: usb_cdc_acm_instances
+    value: "{{instance}}"
+  - name: event_handler
+    value:
+      event: stack_init
+      include: sl_usbd_class_cdc_acm_instances.h
+      handler: "sli_usbd_cdc_acm_{{instance}}_init"
+    priority: 10
+validation_helper:
+  - path: script/sl_usbd_class_cdc_acm_validation.lua

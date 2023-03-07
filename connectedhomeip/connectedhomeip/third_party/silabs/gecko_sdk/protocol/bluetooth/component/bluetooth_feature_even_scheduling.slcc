@@ -1,0 +1,33 @@
+id: "bluetooth_feature_ll_even_scheduling"
+label:  "Even Connection Scheduling Algorithm"
+package: "Bluetooth"
+description: >
+  The component provides Even Connection Distribution algorithm which has been
+  designed to be used especially with applications involving several concurrent
+  connections. The algorithm tries to distribute the connections such a way
+  they are distributed over the time as evenly as possible without overlapping,
+  and all connections should get equal, fair share of the air interface resource.
+  For optimal performance the algorithm user should
+  * initiate the first connection with the longest connection interval if
+    all connections do not have the same interval.
+  * set the connection intervals of the other connections such that they are, or
+    allow (via min-max range), integer fractions of the first interval.
+  * make the first interval long enough such that all connections would fit within
+    the interval with reasonable transmission time.
+  Despite of the above recommendations the algorithm, and the connections, can be
+  expected to work with different parameterization but performance is not likely
+  optimal.
+category: "Bluetooth|Feature"
+quality: "production"
+root_path: "protocol/bluetooth"
+requires:
+  - name: "bluetooth_controller"
+provides:
+  - name: "bluetooth_feature_even_scheduling"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_even_scheduling
+  - name: bluetooth_controller_init
+    value:
+      function: "sl_btctrl_enable_even_connsch()"
+    priority: 10    

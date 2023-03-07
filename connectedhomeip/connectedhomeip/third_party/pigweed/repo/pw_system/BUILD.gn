@@ -1,0 +1,267 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pigweed/third_party/freertos/freertos.gni")
+import("$dir_pigweed/third_party/nanopb/nanopb.gni")
+import("$dir_pigweed/third_party/pico_sdk/pi_pico.gni")
+import("$dir_pigweed/third_party/smartfusion_mss/mss.gni")
+import("$dir_pigweed/third_party/stm32cube/stm32cube.gni")
+import("$dir_pw_build/error.gni")
+import("$dir_pw_build/facade.gni")
+import("$dir_pw_build/module_config.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+import("backend.gni")
+
+declare_args() {
+  # The build target that overrides the default configuration options for this
+  # module. This should point to a source set that provides defines through a
+  # public config (which may -include a file or add defines directly).
+  pw_system_CONFIG = pw_build_DEFAULT_MODULE_CONFIG
+}
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+}
+
+pw_source_set("config") {
+  sources = [ "public/pw_system/config.h" ]
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ pw_system_CONFIG ]
+  visibility = [ "./*" ]
+  friend = [ "./*" ]
+}
+
+pw_source_set("log") {
+  public_configs = [ ":public_include_path" ]
+  sources = [
+    "log.cc",
+    "pw_system_private/log.h",
+  ]
+  public_deps = [
+    "$dir_pw_log_rpc:log_service",
+    "$dir_pw_log_rpc:rpc_log_drain_thread",
+    "$dir_pw_multisink",
+  ]
+  deps = [
+    ":config",
+    ":rpc_server",
+    "$dir_pw_log_rpc:rpc_log_drain",
+    "$dir_pw_sync:lock_annotations",
+    "$dir_pw_sync:mutex",
+  ]
+}
+
+# There is no public part to this backend which does not cause circular
+# dependencies, there is only the pw_build_LINK_DEPS "log_backend.impl".
+pw_source_set("log_backend") {
+}
+
+pw_source_set("log_backend.impl") {
+  sources = [ "log_backend.cc" ]
+  deps = [
+    ":config",
+    ":log",
+    "$dir_pw_bytes",
+    "$dir_pw_chrono:system_clock",
+    "$dir_pw_log:proto_utils",
+    "$dir_pw_log:pw_log.facade",
+    "$dir_pw_log_string:handler.facade",
+    "$dir_pw_log_tokenized:metadata",
+    "$dir_pw_metric:global",
+    "$dir_pw_multisink",
+    "$dir_pw_result",
+    "$dir_pw_string",
+    "$dir_pw_sync:interrupt_spin_lock",
+    "$dir_pw_sync:lock_annotations",
+    "$dir_pw_tokenizer",
+    "$dir_pw_tokenizer:global_handler_with_payload.facade",
+  ]
+}
+
+pw_facade("rpc_server") {
+  backend = pw_system_RPC_SERVER_BACKEND
+  public = [ "public/pw_system/rpc_server.h" ]
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    ":config",
+    "$dir_pw_rpc:server",
+    "$dir_pw_thread:thread_core",
+  ]
+}
+
+pw_facade("io") {
+  backend = pw_system_IO_BACKEND
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_system/io.h" ]
+  public_deps = [ "$dir_pw_stream" ]
+}
+
+pw_source_set("init") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_system/init.h" ]
+  sources = [ "init.cc" ]
+  deps = [
+    ":log",
+    ":rpc_server",
+    ":target_hooks.facade",
+    ":thread_snapshot_service",
+    ":work_queue",
+    "$dir_pw_metric:global",
+    "$dir_pw_metric:metric_service_pwpb",
+    "$dir_pw_rpc/pwpb:echo_service",
+    "$dir_pw_thread:thread",
+  ]
+}
+
+pw_source_set("hdlc_rpc_server") {
+  sources = [ "hdlc_rpc_server.cc" ]
+  deps = [
+    ":config",
+    ":io",
+    ":rpc_server.facade",
+    "$dir_pw_assert",
+    "$dir_pw_hdlc:pw_rpc",
+    "$dir_pw_hdlc:rpc_channel_output",
+    "$dir_pw_log",
+    "$dir_pw_sync:mutex",
+  ]
+}
+
+pw_source_set("work_queue") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_system/work_queue.h" ]
+  sources = [ "work_queue.cc" ]
+  public_deps = [ "$dir_pw_work_queue" ]
+  deps = [ ":config" ]
+}
+
+pw_source_set("sys_io_target_io") {
+  sources = [ "target_io.cc" ]
+  deps = [
+    ":io.facade",
+    "$dir_pw_stream",
+    "$dir_pw_stream:sys_io_stream",
+  ]
+}
+
+pw_source_set("socket_target_io") {
+  sources = [ "socket_target_io.cc" ]
+  deps = [
+    ":config",
+    ":io.facade",
+    "$dir_pw_assert",
+    "$dir_pw_stream",
+    "$dir_pw_stream:socket_stream",
+  ]
+}
+
+pw_source_set("thread_snapshot_service") {
+  public = [ "public/pw_system/thread_snapshot_service.h" ]
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ "$dir_pw_rpc:server" ]
+  sources = [ "thread_snapshot_service.cc" ]
+  deps = [ "$dir_pw_thread:thread_snapshot_service" ]
+}
+
+pw_facade("target_hooks") {
+  backend = pw_system_TARGET_HOOKS_BACKEND
+  public = [ "public/pw_system/target_hooks.h" ]
+  public_deps = [ "$dir_pw_thread:thread" ]
+  public_configs = [ ":public_include_path" ]
+}
+
+if (pw_system_TARGET_HOOKS_BACKEND == "") {
+  # Do nothing, prevents errors from trying to parse pw_system_TARGET_HOOKS_BACKEND as a
+  # build target when it's unset.
+} else if (get_label_info(pw_system_TARGET_HOOKS_BACKEND,
+                          "label_no_toolchain") ==
+           get_label_info(":stl_target_hooks", "label_no_toolchain")) {
+  pw_source_set("stl_target_hooks") {
+    deps = [
+      "$dir_pw_thread:thread",
+      "$dir_pw_thread_stl:thread",
+    ]
+    sources = [ "stl_target_hooks.cc" ]
+  }
+} else if (get_label_info(pw_system_TARGET_HOOKS_BACKEND,
+                          "label_no_toolchain") ==
+           get_label_info(":freertos_target_hooks", "label_no_toolchain")) {
+  pw_source_set("freertos_target_hooks") {
+    deps = [
+      ":init",
+      "$dir_pw_third_party/freertos",
+      "$dir_pw_thread:thread",
+      "$dir_pw_thread_freertos:thread",
+    ]
+    sources = [ "freertos_target_hooks.cc" ]
+  }
+}
+
+group("pw_system") {
+  public_deps = [
+    ":init",
+    ":io",
+    ":log",
+    ":rpc_server",
+    ":work_queue",
+  ]
+  deps = [ ":target_hooks" ]
+}
+
+pw_executable("system_example") {
+  sources = [ "example_user_app_init.cc" ]
+  deps = [
+    ":pw_system",
+    "$dir_pw_log",
+    "$dir_pw_thread:sleep",
+    "$dir_pw_unit_test:rpc_service",
+
+    # Adds a test that the test server can run.
+    "$dir_pw_status:status_test.lib",
+    "$dir_pw_string:string_builder_test.lib",
+  ]
+}
+
+group("system_examples") {
+  deps = [ ":system_example($dir_pigweed/targets/host_device_simulator:host_device_simulator.speed_optimized)" ]
+  if (dir_pw_third_party_stm32cube_f4 != "" &&
+      dir_pw_third_party_freertos != "") {
+    deps += [ ":system_example($dir_pigweed/targets/stm32f429i_disc1_stm32cube:stm32f429i_disc1_stm32cube.size_optimized)" ]
+  }
+  if (dir_pw_third_party_smartfusion_mss != "" &&
+      dir_pw_third_party_freertos != "") {
+    deps += [
+      ":system_example($dir_pigweed/targets/emcraft_sf2_som:emcraft_sf2_som.size_optimized)",
+      ":system_example($dir_pigweed/targets/emcraft_sf2_som:emcraft_sf2_som.speed_optimized)",
+      ":system_example($dir_pigweed/targets/emcraft_sf2_som:emcraft_sf2_som_debug.debug)",
+    ]
+  }
+  if (PICO_SRC_DIR != "" && dir_pw_third_party_freertos != "") {
+    deps += [
+      ":system_example($dir_pigweed/targets/rp2040_pw_system:rp2040_pw_system.debug)",
+      ":system_example($dir_pigweed/targets/rp2040_pw_system:rp2040_pw_system.size_optimized)",
+    ]
+  }
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}
+
+pw_test_group("tests") {
+}

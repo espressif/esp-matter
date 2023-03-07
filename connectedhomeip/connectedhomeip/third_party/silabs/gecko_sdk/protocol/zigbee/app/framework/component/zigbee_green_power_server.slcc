@@ -1,0 +1,110 @@
+package: Zigbee
+description: A component implementing the server-side functionality of the Green Power cluster.
+label: Green Power Server
+quality: production
+id: zigbee_green_power_server
+category: Zigbee|Green Power
+provides:
+   - name: "zigbee_green_power_server"
+requires:
+   - name: "zigbee_gp"
+   - name: "zigbee_gp_util"
+   - name: "zigbee_green_power_common"
+
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/green-power-server/config/green-power-server-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/green-power-server/green-power-server.c
+  - path: protocol/zigbee/app/framework/plugin/green-power-server/green-power-server-gpd-cmd-maps.c
+  - path: protocol/zigbee/app/framework/plugin/green-power-server/green-power-server-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/green-power-server/green-power-security.c
+  - path: protocol/zigbee/app/framework/plugin/green-power-server/green-power-server-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/green-power-server
+    file_list:
+      - path: green-power-server.h
+      - path: green-power-server-tokens.h
+  - path: protocol/zigbee/stack/gp
+    file_list:
+      - path: gp-sink-table.h
+  # The green power server is capable of a pre-defined default translation and
+  # forwarding of GPDF commands without the support of the translation table
+  # component. This path is needed to ensure the structure definitions are
+  # available in absence of the translation table component.
+  - path: protocol/zigbee/app/framework/plugin/green-power-translation-table
+    file_list:
+      - path: green-power-translation-table.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_green_power_server
+  - name: cluster_service
+    value:
+       cluster_id: "0x0021"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "SERVER"
+       service_function: "emberAfGreenPowerClusterServerCommandParse"    
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emberAfPluginGreenPowerServerInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: local_data_init
+      function_name: emberAfPluginGreenPowerServerInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: retrieve_attribute_and_craft_response
+      function_name: emAfPluginGreenPowerServerRetrieveAttributeAndCraftResponse
+  - name: zigbee_stack_callback
+    value:
+      callback_type: stack_status
+      function_name: emberAfPluginGreenPowerServerStackStatusCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: green-power-server
+      help: green-power-server related commands.
+  - name: cli_command
+    value:
+      group: green-power-server
+      name: commission
+      handler: emberAfPluginGreenPowerServerCommissioningMode
+      help: Puts the GPS in commissioning mode.
+      argument:
+      - type: uint8
+        help: 1 to enter, 0 to leave
+      - type: uint16
+        help: Green Power Manager (GPM) address for security
+      - type: uint16
+        help: Green Power Manager (GPM) address for pairing
+      - type: uint8
+        help: Sink endpoint
+  - name: cli_command
+    value:
+      group: green-power-server
+      name: extend-comm
+      handler: emberAfGreenPowerClusterGpSinkCliCommissioningWindowExtend
+      help: Extends commissioning window.
+      argument:
+      - type: uint16
+        help: Time in milliseconds
+  - name: cli_command
+    value:
+      group: green-power-server
+      name: sink-table-print
+      handler: emberAfPluginGreenPowerServerCliSinkTablePrint
+      help: Prints all entries of the sink table.
+  - name: cli_command
+    value:
+      group: green-power-server
+      name: sink-table-clear
+      handler: emberAfPluginGreenPowerServerCliClearSinkTable
+      help: Clears sink table.
+  - name: token_header
+    value: app/framework/plugin/green-power-server/green-power-server-tokens.h
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/green-power-server

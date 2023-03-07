@@ -1,0 +1,104 @@
+%%{
+/*
+ * Copyright (c) 2020 Texas Instruments Incorporated - http://www.ti.com
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+ *  ======== LogSite.cmd.xdt ========
+ */
+%%}
+%%{
+    let LogSite = system.modules["/ti/utils/runtime/LogSite"];
+
+    /* map SysConfig compiler setting to a vendor name */
+    let c2tc = { ccs: "TI", gcc: "GCC", iar: "IAR", ticlang: "TICLANG" };
+    let GenLibs = system.getScript("/ti/utils/build/GenLibs.syscfg.js");
+    let scc = GenLibs.getToolchainDir();
+    let vendor = c2tc[scc];
+
+    function eventFxn(inst)
+    {
+        return (inst.loggerMod.slice(1).replace(/\//g, "_") + "_event");
+    }
+
+    function printfFxn(inst)
+    {
+        return (inst.loggerMod.slice(1).replace(/\//g, "_") + "_printf");
+    }
+
+    function bufFxn(inst)
+    {
+        return (inst.loggerMod.slice(1).replace(/\//g, "_") + "_buf");
+    }
+%%}
+/*
+ *  ======== ti_utils_runtime/LogSite ========
+ *  `vendor` C/C++ toolchain
+ */
+
+% switch (scc) {
+%
+% case "ccs":
+% for (let i = 0; i < LogSite.$instances.length; i++) {
+% let inst = LogSite.$instances[i];
+--symbol_map=`inst.$name`_event=`eventFxn(inst)`
+--symbol_map=`inst.$name`_printf=`printfFxn(inst)`
+--symbol_map=`inst.$name`_buf=`bufFxn(inst)`
+% }
+% break;
+%
+% case "gcc":
+% for (let i = 0; i < LogSite.$instances.length; i++) {
+% let inst = LogSite.$instances[i];
+`inst.$name`_event = `eventFxn(inst)`;
+`inst.$name`_printf = `printfFxn(inst)`;
+`inst.$name`_buf = `bufFxn(inst)`;
+% }
+% break;
+%
+% case "iar":
+% for (let i = 0; i < LogSite.$instances.length; i++) {
+% let inst = LogSite.$instances[i];
+--redirect `inst.$name`_event=`eventFxn(inst)`
+--redirect `inst.$name`_printf=`printfFxn(inst)`
+--redirect `inst.$name`_buf=`bufFxn(inst)`
+% }
+% break;
+%
+% case "ticlang":
+% for (let i = 0; i < LogSite.$instances.length; i++) {
+% let inst = LogSite.$instances[i];
+--symbol_map=`inst.$name`_event=`eventFxn(inst)`
+--symbol_map=`inst.$name`_printf=`printfFxn(inst)`
+--symbol_map=`inst.$name`_buf=`bufFxn(inst)`
+% }
+% break;
+% }

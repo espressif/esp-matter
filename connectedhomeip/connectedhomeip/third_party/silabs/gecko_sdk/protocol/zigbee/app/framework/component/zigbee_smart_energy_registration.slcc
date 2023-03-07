@@ -1,0 +1,56 @@
+package: Zigbee
+description: Silicon Labs implementation of Smart Energy Registration. The component performs
+  key establishment with the trust center when the node joins a network. If the application
+  implements Messaging, Price, or DRLC client clusters, the component also discovers
+  ESIs on the network and performs partner link key exchange and binding with each
+  ESI it discovers. ESI discovery requires the ESI Management component, in which the
+  number of supported ESIs can be configured. The frequency with which ESIs are rediscovered
+  is configurable. These options are ignored if the application does not implement
+  Messaging, Price, or DRLC client clusters. Registration is not required for trust
+  centers, so this component should be disabled if the device is acting as the trust
+  center.
+label: Smart Energy Registration
+quality: production
+id: zigbee_smart_energy_registration
+category: Zigbee|Cluster Library|Smart Energy
+provides:
+   - name: "zigbee_smart_energy_registration"
+requires:
+   - name: "zigbee_address_table"
+   - name: "zigbee_esi_management"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/smart-energy-registration/config/smart-energy-registration-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/smart-energy-registration/smart-energy-registration.c
+  - path: protocol/zigbee/app/framework/plugin/smart-energy-registration/smart-energy-registration-cli.c
+    condition:
+      - "cli"
+include:
+  - path: protocol/zigbee/app/framework/plugin/smart-energy-registration
+    file_list:
+      - path: smart-energy-registration.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_smart_energy_registration
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emAfPluginSmartEnergyRegistrationInitCallback  
+  - name: cli_group
+    value:
+      group: plugin
+      name: smart-energy-registration
+      help: smart-energy-registration related commands.
+  - name: cli_command
+    value:
+      group: smart-energy-registration
+      name: set-period
+      handler: setRegistrationDelayPeriod
+      help: Sets the discovery period (in seconds).
+      argument:
+      - type: uint32
+        help: The discovery period (in seconds)
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/smart-energy-registration

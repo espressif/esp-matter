@@ -1,0 +1,63 @@
+id: cpc_core
+label: CPC Core
+package: platform
+description: Co-Processor Communication (CPC) Core
+category: Services|Co-Processor Communication
+quality: production
+ui_hints:
+  visibility: never
+root_path: platform/service/cpc
+source:
+  - path: src/sl_cpc.c
+  - path: src/sl_cpc_hdlc.c
+  - path: src/sl_cpc_crc.c
+  - path: src/sl_cpc_memory.c
+  - path: src/sl_cpc_dispatcher.c
+include:
+  - path: inc
+    file_list:
+      - path: sl_cpc.h
+      - path: sli_cpc.h
+      - path: sli_cpc_system_common.h      
+      - path: sli_cpc_drv.h
+      - path: sli_cpc_hdlc.h
+      - path: sli_cpc_crc.h
+      - path: sli_cpc_debug.h
+provides:
+  - name: cpc_core
+requires:
+  - name: sleeptimer
+  - name: status
+  - name: slist
+  - name: emlib_core
+  - name: emlib_gpcrc
+  - name: component_catalog
+  - name: mem_pool
+  - name: sl_assert
+documentation:
+    docset: gecko-platform
+    document: service/api/group-cpc
+template_contribution:
+  - name: component_catalog
+    value: cpc
+  - name: event_handler
+    value:
+      event: service_init
+      include: sl_cpc.h
+      handler: sl_cpc_init
+      priority: -1
+  - name: event_handler
+    value:
+      event: service_process_action
+      include: sl_cpc.h
+      handler: sl_cpc_process_action
+  - name: power_manager_handler
+    value:
+      event: is_ok_to_sleep
+      include: sl_cpc.h
+      handler: sl_cpc_is_ok_to_sleep
+  - name: power_manager_handler
+    value:
+      event: sleep_on_isr_exit
+      include: sl_cpc.h
+      handler: sl_cpc_sleep_on_isr_exit

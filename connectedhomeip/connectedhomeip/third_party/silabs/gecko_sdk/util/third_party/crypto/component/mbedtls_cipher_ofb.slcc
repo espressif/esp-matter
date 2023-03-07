@@ -1,0 +1,19 @@
+id: mbedtls_cipher_ofb
+package: platform
+label: OFB Mode
+description: >-
+  This component provides support for OFB cipher modes in mbed TLS.
+category: Platform|Security|Mbed TLS|Encryption
+quality: production
+provides:
+  - name: mbedtls_cipher_ofb
+requires:
+  - name: mbedtls_block_cipher
+recommends:
+  - id: mbedtls_aes
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_CIPHER_MODE_OFB
+documentation:
+  docset: mbed-tls
+  document: group-encdec-module

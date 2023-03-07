@@ -1,0 +1,24 @@
+id: "wisun_stack_mode_switch"
+label: "Wi-SUN stack mode switch"
+description: "Wi-SUN stack mode switch"
+package: "wisun"
+category: "Wi-SUN"
+quality: "production"
+root_path: "protocol/wisun/stack"
+
+ui_hints:
+  visibility: never
+
+requires:
+  - name: "wisun_stack"
+
+provides:
+  - name: "wisun_stack_mode_switch"
+
+include:
+- path: "inc/"
+  file_list:
+    - path: "sl_wisun_mode_switch_api.h"
+
+other_file:
+- path: "../LICENSE"

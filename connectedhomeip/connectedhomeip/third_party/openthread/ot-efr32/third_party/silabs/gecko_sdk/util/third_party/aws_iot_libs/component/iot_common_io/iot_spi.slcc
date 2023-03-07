@@ -1,0 +1,47 @@
+id: iot_spi
+category: Third Party|Amazon FreeRTOS - AWS Libraries|Common I/O
+label: IoT SPI
+description: >
+  Silicon Labs' Implementation of Amazon Common I/O SPI API
+  Doc: https://docs.aws.amazon.com/freertos/latest/lib-ref/common-io/files.html
+package: amazon_platform
+quality: production
+instantiable:
+  prefix: inst
+provides:
+  - name: iot_spi
+    allow_multiple: true
+requires:
+  - name: spidrv_core
+  - name: freertos
+  - name: device_init
+  - name: status
+  - name: common_io_validation_lib
+root_path: util/third_party/aws_iot_libs
+config_file:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_spi/config/iot_spi_cfg_{{instance}}.h
+    file_id: iot_spi_cfg
+
+source:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_spi/source/iot_spi_drv.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_spi/source/iot_spi_hal.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_spi/test/iot_spi_test.c
+    condition: ["aws_tests_defs"]
+
+include:
+  - path: libraries/abstractions/common_io/include
+    file_list:
+      - path: iot_spi.h
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_spi/include
+    file_list:
+      - path: iot_spi_cb.h
+      - path: iot_spi_desc.h
+      - path: iot_spi_drv.h
+
+template_file:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_spi/template/iot_spi_desc.c.jinja
+template_contribution:
+  - name: iot_spi_instances
+    value: "{{instance}}"
+validation_helper:
+  - path: script/iot_spi_validation.lua

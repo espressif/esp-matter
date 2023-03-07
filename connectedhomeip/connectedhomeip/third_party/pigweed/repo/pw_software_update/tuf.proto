@@ -1,0 +1,332 @@
+// Copyright 2021 The Pigweed Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not
+// use this file except in compliance with the License. You may obtain a copy of
+// the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations under
+// the License.
+//
+// Implementation of metadata formats specified in TUF Specification.
+// See https://theupdateframework.github.io/specification/latest/
+
+syntax = "proto3";
+
+package pw.software_update;
+
+import "google/protobuf/timestamp.proto";
+
+// Metadata for a particular TUF role (e.g. targets metadata).
+// Was TufMetadata
+message SignedRootMetadata {
+  // Serialized RootMetadata message that is the data portion of the metadata.
+  bytes serialized_root_metadata = 1;
+
+  // Signature of the canonical form of the role's serialized metadata
+  // (serialized_root_metadata).
+  repeated Signature signatures = 2;
+}
+
+message SignedTimestampMetadata {
+  // Serialized TimestampMetadata message that is the data portion of the
+  // metadata.
+  bytes serialized_timestamp_metadata = 1;
+
+  // Signature of the canonical form of the role's serialized metadata
+  // (serialized_timestamp_metadata).
+  repeated Signature signatures = 2;
+}
+
+message SignedSnapshotMetadata {
+  // Serialized SnapshotMetadata message that is the data portion of the
+  // metadata.
+  bytes serialized_snapshot_metadata = 1;
+
+  // Signature of the canonical form of the role's serialized metadata
+  // (serialized_snapshot_metadata).
+  repeated Signature signatures = 2;
+}
+
+message SignedTargetsMetadata {
+  // Serialized TargetsMetadata message that is the data portion of the
+  // metadata.
+  bytes serialized_targets_metadata = 1;
+
+  // Signature of the canonical form of the role's serialized metadata
+  // (serialized_targets_metadata).
+  repeated Signature signatures = 2;
+}
+
+message CommonMetadata {
+  // Version number of the TUF Specification.
+  // Follows the Semantic Versioning 2.0.0 (semver) format. Metadata is
+  // written according to this version, and clients MUST verify that
+  // "spec_version" matches the expected version number.
+  // E.g. "1.0.0".
+  string spec_version = 1;
+
+  // Metadata file version.
+  // Clients MUST NOT replace a metadata file with a version number less than
+  // the one currently trusted.
+  uint32 version = 2;
+
+  // Expiration time for the metadata.
+  // Indicates when this metadata should be considered expired and no longer
+  // trusted by clients. Notice the TUF Specification defines this as a JSON
+  // string following the ISO 8601 standard. The expected format of the date and
+  // time string is "YYYY-MM-DDTHH:MM:SSZ". Time is always in UTC, and the "Z"
+  // time zone designator is attached to indicate a zero UTC offset.
+  // E.g. "2030-08-26T16:48:27Z".
+  optional google.protobuf.Timestamp expires = 3;
+
+  // Role type for the metadata.
+  // Indicates the type of the metadata. Valid values are 'root', 'targets',
+  // 'snapshot' and 'timestamp' as defined in the TUF spec, though we don't
+  // plan to support 'mirrors'.
+  //
+  // This field serves as a "magic code" that identifies a particular type of
+  // a metadata. During verification, the client is expected to check this
+  // field against the expected role type immediately after verifying the
+  // signatures of a metadata. This can be considered a "confidence booster"
+  // in the absence of canonical protobuf -- i.e. it makes the various
+  // `serialized_x_metadata` fields more tamper resistant.
+  optional string role = 4;
+}
+
+// This content is signed.
+message RootMetadata {
+  CommonMetadata common_metadata = 1;
+
+  // Whether the repo supports consistent snapshots. If the repo has frequent
+  // updates, you should set this to true.
+  bool consistent_snapshot = 2;
+
+  // Map from Keyid to Key.
+  // Keyid is a unique identifier that identifies a cryptographic key.
+  // Contains all of cryptographic keys used by this repository.
+  repeated KeyMapping keys = 3;
+
+  // KeyConfig is the list of keys use for a particular role and the threshold.
+  // Threshold is number of keys of that role whose signatures are required in
+  // order to consider a file as being properly signed by that role.
+  SignatureRequirement root_signature_requirement = 4;
+  SignatureRequirement timestamp_signature_requirement = 5;
+  SignatureRequirement snapshot_signature_requirement = 6;
+  SignatureRequirement targets_signature_requirement = 7;
+
+  // This is NOT a part of the TUF Specification.
+  reserved 8 to 31;  // Reserved for TUF Specification changes.
+
+  reserved 32 to 64;  // Reserved for future Pigweed usage.
+
+  reserved 65 to 255;  // Reserved for project-specific usage.
+}
+
+// The timestamp role is used for freshness check of the snapshot. Any
+// project-specific update metadata should go in the top-level targets_metadata
+// or with the TargetFile information
+message TimestampMetadata {
+  CommonMetadata common_metadata = 1;
+
+  // Only one snapshot_metadata is used per timestamp.
+  MetadataFile snapshot_metadata = 2;
+
+  // This is NOT a part of the TUF Specification.
+  reserved 3 to 31;  // Reserved for TUF Specification changes.
+
+  reserved 32 to 64;  // Reserved for future Pigweed usage.
+
+  reserved 65 to 255;  // Reserved for project-specific usage.
+}
+
+// The snapshot role is used to ensure that the collection of targets_metadata
+// files is securely consistent (no target metadata mix and match). Any
+// project-specific update metadata should go in the top-level targets_metadata
+// or with the TargetFile information
+message SnapshotMetadata {
+  CommonMetadata common_metadata = 1;
+
+  // Map from Target metadata file name to MetadataFile.
+  // File name can be an arbitrary name or a full file name with relative path.
+  // This map should contain an entry for the top level targets role and all
+  // delegated roles.
+  repeated MetadataFile targets_metadata = 2;
+
+  // This is NOT a part of the TUF Specification.
+  reserved 3 to 31;  // Reserved for TUF Specification changes.
+
+  reserved 32 to 64;  // Reserved for future Pigweed usage.
+
+  reserved 65 to 255;  // Reserved for project-specific usage.
+}
+
+// The targets role describes the target files that comprise the software
+// update. Targets metadata is organized in to a top-level targets metadata file
+// and optional multiple deligated targets metadata files
+//
+// The top-level targets metatdata is the correct place to put any
+// project-specific build version information, including build ID, hardware rev,
+// etc.
+message TargetsMetadata {
+  CommonMetadata common_metadata = 1;
+
+  // Collection of target file information
+  repeated TargetFile target_files = 2;
+  // Target file name can be an arbitrary name or a path that describes where
+  // the file lives relative to the base directory of the repository, e.g.
+  // "path/to/amber_tools/0".
+
+  // TODO(davidrogers): When it is time to support delegation, add delegation
+  // information here.
+
+  // This is NOT a part of the TUF Specification.
+  reserved 9 to 31;  // Reserved for TUF Specification changes.
+
+  reserved 32 to 64;  // Reserved for future Pigweed usage.
+
+  reserved 65 to 255;  // Reserved for project-specific usage.
+}
+
+message Signature {
+  // Identifier of the key, which is bytes of the SHA-256 hash of the
+  // canonical form of the key.
+  bytes key_id = 1;
+
+  // The signature of the canonical form of the role's serialized metadata
+  // (serialized_{root,timestamp,snapshot,targets}_metadata).
+  bytes sig = 2;
+}
+
+message KeyMapping {
+  // Identifier of the key, which is bytes of the SHA-256 hash of the
+  // canonical form of the key.
+  bytes key_id = 1;
+
+  // Cryptographic key
+  Key key = 2;
+}
+
+// Identifies an asymmetric cryptographic key.
+message Key {
+  // Denotes a public key signature system, such as RSA or ECDSA.
+  KeyType key_type = 1;
+
+  // Denotes the signature scheme corresponding to the key type. For example:
+  // "rsassa-pss-sha256" or "ecdsa-sha2-nistp256".
+  KeyScheme scheme = 2;
+
+  // Stores the serialized public key for this cryptographic algorithm.
+  bytes keyval = 3;
+}
+
+// The set of cryptographic keys used by a specific role. For example, list of
+// key_ids used by the top level role "root".
+message SignatureRequirement {
+  // Set of Keyid's.
+  // Keyid is a unique identifier that identifies a cryptographic key.
+  // E.g. "f2d5020d08aea06a0a9192eb6a4f549e17032ebefa1aa9ac167c1e3e727930d6".
+  repeated bytes key_ids = 1;
+
+  // Threshold of signatures required to trust given file.
+  // In other words; the number of keys of that role whose signatures are
+  // required in order to consider a file as being properly signed by that role.
+  uint32 threshold = 2;
+}
+
+enum HashFunction {
+  // Never use this in any TUF metadata.
+  UNKNOWN_HASH_FUNCTION = 0;
+
+  SHA256 = 1;
+}
+
+message Hash {
+  HashFunction function = 1;
+  // Digest of the cryptographic hash function computed on the target file.
+  bytes hash = 2;
+}
+
+// Descriptor for a file stored in this repository. Linked to from target
+// metadata.
+message TargetFile {
+  // Target file name can be an arbitrary name or a path that describes where
+  // the file lives relative to the base directory of the repository, e.g.
+  // "path/to/amber_tools/0".
+  string file_name = 1;
+
+  // Size of the target file (element payload) in bytes. This the size as stored
+  // in the bundle. The final applied size can be different due to optional
+  // compression.
+  uint64 length = 2;
+
+  // Map from algorithm name to Hash.
+  // Algorithm name is the name of a cryptographic hash function. E.g. "sha256".
+  // The Hash string is the hex digest of the cryptographic function computed on
+  // the target file. E.g.
+  // "65b8c67f51c993d898250f40aa57a317d854900b3a04895464313e48785440da".
+  repeated Hash hashes = 3;
+
+  // This is NOT a part of the TUF Specification.
+  reserved 4 to 15;  // Reserved for TUF Specification changes.
+
+  reserved 16 to 31;  // Reserved for future Pigweed usage.
+
+  reserved 32 to 255;  // Reserved for future project-specific usage.
+}
+
+message MetadataFile {
+  // Target file name can be an arbitrary name or a path that describes where
+  // the file lives relative to the base directory of the repository, e.g.
+  // "path/to/target/0".
+  optional string file_name = 1;
+
+  // Metadata file version. E.g. 3.
+  uint32 version = 2;
+
+  // Size of the target file in bytes.
+  optional uint64 length = 3;
+
+  // Map from algorithm name to Hash.
+  // Algorithm name is the name of a cryptographic hash function. E.g. "sha256".
+  // The Hash is the hex digest of the cryptographic function computed on the
+  // target file. E.g.
+  // "65b8c67f51c993d898250f40aa57a317d854900b3a04895464313e48785440da".
+  repeated Hash hashes = 4;
+}
+
+enum KeyType {
+  // Never use this in any TUF metadata.
+  UNKNOWN_KEY_TYPE = 0;
+
+  RSA = 1;
+
+  ED25519 = 2;
+
+  ECDSA_SHA2_NISTP256 = 3;
+}
+
+enum KeyScheme {
+  // Never use this in any TUF metadata.
+  UNKNOWN_KEY_SCHEME = 0;
+
+  // RSA Probabilistic signature scheme with appendix.
+  // The underlying hash function is SHA256.
+  // In TUF Specification, this is referred to as "rsassa-pss-sha256".
+  RSASSA_PSS_SHA256_SCHEME = 1;
+
+  // Elliptic Curve digital signature algorithm based on Twisted Edwards curves.
+  // See https://ed25519.cr.yp.to/.
+  // In TUF Specification, it is referred to as "ed25519".
+  ED25519_SCHEME = 2;
+
+  // Elliptic Curve Digital Signature Algorithm with NIST P-256 curve signing
+  // and SHA-256 hashing. See
+  // https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm In
+  // TUF Specification, it is referred to as "ecdsa-sha2-nistp256".
+  ECDSA_SHA2_NISTP256_SCHEME = 3;
+}

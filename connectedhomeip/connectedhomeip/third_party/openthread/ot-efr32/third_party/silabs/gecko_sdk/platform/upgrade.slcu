@@ -1,0 +1,10 @@
+upgrade:
+  - sdk:
+      id: gecko_sdk
+      version: "4.1.0"
+    component:
+      - trigger: cmsis_core
+        description: >
+          In CMSIS 5.8, the arm_math.h header has moved from CMSIS-Core to CMSIS-DSP. If arm_math.h isn't used in your project, you do not need to keep the CMSIS-DSP component.
+        add:
+          - cmsis_dsp

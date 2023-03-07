@@ -1,0 +1,25 @@
+id: iot_system_init
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|FreeRTOS Plus
+label: IoT System Init
+description: FreeRTOS Plus Utilities - System Initialization
+
+package: amazon_platform
+quality: production
+
+provides:
+  - name: iot_system_init
+
+requires:
+  - name: iot_crypto
+  - name: iot_tls
+
+root_path: util/third_party/aws_iot_libs/libraries/freertos_plus/standard/utils
+
+source:
+  - path: src/iot_system_init.c
+
+include:
+  - path: include
+    file_list:
+      - path: iot_system_init.h

@@ -1,0 +1,256 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/input_group.gni")
+import("$dir_pw_build/module_config.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_fuzzer/fuzzer.gni")
+import("$dir_pw_protobuf_compiler/proto.gni")
+import("$dir_pw_unit_test/facade_test.gni")
+import("$dir_pw_unit_test/test.gni")
+
+declare_args() {
+  # The build target that overrides the default configuration options for this
+  # module. This should point to a source set that provides defines through a
+  # public config (which may -include a file or add defines directly).
+  pw_protobuf_CONFIG = pw_build_DEFAULT_MODULE_CONFIG
+}
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+}
+
+pw_source_set("config") {
+  public = [ "public/pw_protobuf/config.h" ]
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ pw_protobuf_CONFIG ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("pw_protobuf") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    ":config",
+    "$dir_pw_bytes:bit",
+    "$dir_pw_containers:vector",
+    "$dir_pw_stream:interval_reader",
+    "$dir_pw_varint:stream",
+    dir_pw_assert,
+    dir_pw_bytes,
+    dir_pw_function,
+    dir_pw_log,
+    dir_pw_result,
+    dir_pw_span,
+    dir_pw_status,
+    dir_pw_stream,
+    dir_pw_varint,
+  ]
+  public = [
+    "public/pw_protobuf/decoder.h",
+    "public/pw_protobuf/encoder.h",
+    "public/pw_protobuf/find.h",
+    "public/pw_protobuf/internal/codegen.h",
+    "public/pw_protobuf/internal/proto_integer_base.h",
+    "public/pw_protobuf/map_utils.h",
+    "public/pw_protobuf/message.h",
+    "public/pw_protobuf/serialized_size.h",
+    "public/pw_protobuf/stream_decoder.h",
+    "public/pw_protobuf/wire_format.h",
+  ]
+  sources = [
+    "decoder.cc",
+    "encoder.cc",
+    "find.cc",
+    "map_utils.cc",
+    "message.cc",
+    "stream_decoder.cc",
+  ]
+  deps = [ "$dir_pw_string:string" ]
+}
+
+pw_source_set("bytes_utils") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_protobuf/bytes_utils.h" ]
+  public_deps = [
+    ":pw_protobuf",
+    dir_pw_bytes,
+    dir_pw_result,
+    dir_pw_status,
+  ]
+}
+
+pw_doc_group("docs") {
+  sources = [
+    "docs.rst",
+    "size_report.rst",
+  ]
+  inputs = [
+    "pw_protobuf_test_protos/size_report.options",
+    "pw_protobuf_test_protos/size_report.proto",
+  ]
+  report_deps = [
+    "size_report:decoder_incremental",
+    "size_report:decoder_partial",
+    "size_report:oneof_codegen_size_comparison",
+    "size_report:protobuf_overview",
+    "size_report:simple_codegen_size_comparison",
+  ]
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":codegen_decoder_test",
+    ":codegen_encoder_test",
+    ":codegen_message_test",
+    ":decoder_test",
+    ":encoder_test",
+    ":encoder_fuzzer",
+    ":decoder_fuzzer",
+    ":find_test",
+    ":map_utils_test",
+    ":message_test",
+    ":serialized_size_test",
+    ":stream_decoder_test",
+    ":varint_size_test",
+  ]
+}
+
+pw_test("decoder_test") {
+  deps = [ ":pw_protobuf" ]
+  sources = [ "decoder_test.cc" ]
+}
+
+pw_test("encoder_test") {
+  deps = [ ":pw_protobuf" ]
+  sources = [ "encoder_test.cc" ]
+}
+
+pw_test("find_test") {
+  deps = [ ":pw_protobuf" ]
+  sources = [ "find_test.cc" ]
+}
+
+pw_test("codegen_decoder_test") {
+  deps = [ ":codegen_test_protos.pwpb" ]
+  sources = [ "codegen_decoder_test.cc" ]
+}
+
+pw_test("codegen_encoder_test") {
+  deps = [ ":codegen_test_protos.pwpb" ]
+  sources = [ "codegen_encoder_test.cc" ]
+}
+
+pw_test("codegen_message_test") {
+  deps = [
+    ":codegen_test_protos.pwpb",
+    dir_pw_string,
+  ]
+  sources = [ "codegen_message_test.cc" ]
+}
+
+pw_test("serialized_size_test") {
+  deps = [ ":pw_protobuf" ]
+  sources = [ "serialized_size_test.cc" ]
+}
+
+pw_test("stream_decoder_test") {
+  deps = [ ":pw_protobuf" ]
+  sources = [ "stream_decoder_test.cc" ]
+}
+
+pw_test("map_utils_test") {
+  deps = [ ":pw_protobuf" ]
+  sources = [ "map_utils_test.cc" ]
+}
+
+pw_test("message_test") {
+  deps = [ ":pw_protobuf" ]
+  sources = [ "message_test.cc" ]
+}
+
+config("one_byte_varint") {
+  defines = [ "PW_PROTOBUF_CFG_MAX_VARINT_SIZE=1" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("varint_size_test_config") {
+  public_configs = [ ":one_byte_varint" ]
+  visibility = [ ":*" ]
+}
+
+pw_facade_test("varint_size_test") {
+  build_args = {
+    pw_protobuf_CONFIG = ":varint_size_test_config"
+  }
+  deps = [ ":pw_protobuf" ]
+  sources = [ "varint_size_test.cc" ]
+}
+
+pw_proto_library("codegen_protos") {
+  sources = [ "pw_protobuf_codegen_protos/options.proto" ]
+}
+
+pw_proto_library("common_protos") {
+  sources = [
+    "pw_protobuf_protos/common.proto",
+    "pw_protobuf_protos/status.proto",
+  ]
+}
+
+pw_proto_library("codegen_test_deps_protos") {
+  sources = [ "pw_protobuf_test_deps_protos/imported.proto" ]
+  inputs = [ "pw_protobuf_test_deps_protos/imported.options" ]
+}
+
+pw_proto_library("codegen_test_protos") {
+  sources = [
+    "pw_protobuf_test_protos/full_test.proto",
+    "pw_protobuf_test_protos/imported.proto",
+    "pw_protobuf_test_protos/importer.proto",
+    "pw_protobuf_test_protos/non_pw_package.proto",
+    "pw_protobuf_test_protos/optional.proto",
+    "pw_protobuf_test_protos/proto2.proto",
+    "pw_protobuf_test_protos/repeated.proto",
+    "pw_protobuf_test_protos/size_report.proto",
+  ]
+  inputs = [
+    "pw_protobuf_test_protos/full_test.options",
+    "pw_protobuf_test_protos/optional.options",
+    "pw_protobuf_test_protos/imported.options",
+    "pw_protobuf_test_protos/repeated.options",
+  ]
+  deps = [
+    ":codegen_test_deps_protos",
+    ":common_protos",
+  ]
+}
+
+pw_fuzzer("encoder_fuzzer") {
+  sources = [
+    "encoder_fuzzer.cc",
+    "fuzz.h",
+  ]
+  deps = [ ":pw_protobuf" ]
+}
+
+pw_fuzzer("decoder_fuzzer") {
+  sources = [
+    "decoder_fuzzer.cc",
+    "fuzz.h",
+  ]
+  deps = [ ":pw_protobuf" ]
+}

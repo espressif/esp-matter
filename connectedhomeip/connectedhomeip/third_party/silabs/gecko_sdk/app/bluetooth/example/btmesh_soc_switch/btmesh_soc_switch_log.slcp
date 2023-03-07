@@ -1,0 +1,154 @@
+project_name: btmesh_soc_switch
+package: Btmesh
+label: Bluetooth Mesh - SoC Switch
+description: >
+  An out-of-the-box Software Demo where the device acts as a switch.
+  Push Button presses or CLI commands can control the state, lightness,
+  and color temperature of the LEDs and scenes on a remote device.
+
+category: Bluetooth Mesh Examples
+quality: production
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Bluetooth Mesh"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+
+component:
+  - id: app_assert
+  - id: app_log
+  - id: bluetooth_feature_system
+  - id: bootloader_interface
+  - id: app_button_press
+  - id: btmesh_ctl_client
+  - id: btmesh_event_log
+  - id: btmesh_factory_reset
+  - id: btmesh_feature_gatt_prov_bearer
+  - id: btmesh_feature_relay
+  - id: btmesh_lighting_client
+  - id: btmesh_lpn
+  - id: btmesh_provisioning_decorator
+  - id: btmesh_proxy
+  - id: btmesh_scene_client
+  - id: btmesh_stack
+  - id: cli
+    instance:
+    - example
+  - id: iostream_usart
+    instance:
+      - vcom
+  - id: mpu
+  - id: in_place_ota_dfu
+  - id: rail_util_pti
+  - id: simple_button
+    instance:
+      - btn0
+      - btn1
+  - id: simple_led
+    instance:
+      - led0
+      - led1
+  - id: simple_timer
+
+source:
+  - path: app.c
+  - path: app_out_log.c
+  - path: local_cli_commands.c
+  - path: main.c
+
+include:
+  - path: .
+    file_list:
+    - path: app.h
+
+config_file:
+  - override:
+      component: gatt_configuration
+      file_id: gatt_configuration_file_id
+    path: gatt_configuration.btconf
+    directory: btconf
+  - override:
+      component: btmesh_dcd_configuration
+      file_id: dcd_configuration_file_id
+    path: dcd_config.btmeshconf
+    directory: btmeshconf
+
+readme:
+  - path: ../../documentation/example/btmesh_soc_switch/readme.md
+
+other_file:
+  - path: ../../script/create_bl_files.bat
+  - path: ../../script/create_bl_files.sh
+  - path: ../../documentation/example/btmesh_soc_switch/readme_img0.png
+    folder: images
+  - path: ../../documentation/example/btmesh_soc_switch/readme_img1.png
+    folder: images
+  - path: ../../documentation/example/btmesh_soc_switch/readme_img2.png
+    folder: images
+  - path: ../../documentation/example/btmesh_soc_switch/readme_img3.png
+    folder: images
+  - path: ../../documentation/example/btmesh_soc_switch/readme_img4.png
+    folder: images
+  - path: ../../documentation/example/btmesh_soc_switch/readme_img5.png
+    folder: images
+  - path: ../../documentation/example/btmesh_soc_switch/readme_img6.png
+    folder: images
+  - path: ../../documentation/example/btmesh_soc_switch/readme_img7.png
+    folder: images
+  - path: ../../documentation/example/btmesh_soc_switch/readme_img8.png
+    folder: images
+
+configuration:
+  - name: APP_LOG_LEVEL
+    value: "APP_LOG_LEVEL_INFO"
+  - name: NVM3_DEFAULT_CACHE_SIZE
+    value: 100
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+    condition:
+      - "iostream_usart"
+  - name: SL_CLI_NUM_HISTORY_BYTES
+    value: "0"
+    condition:
+      - "device_sdid_205"
+  - name: SL_HEAP_SIZE
+    value: "0x4100"
+  - name: SL_PSA_KEY_USER_SLOT_COUNT
+    value: "0"
+    condition:
+      - psa_crypto
+  - name: SL_SIMPLE_BUTTON_ALLOW_LED_CONFLICT
+    value: "1"
+  - name: SL_STACK_SIZE
+    value: "0x1200"
+
+template_contribution:
+  - name: cli_command
+    value:
+      name: info
+      handler: info
+      help: "Prints info about BT address and mesh UUID"
+    condition:
+      - cli
+
+tag:
+  - hardware:board_only
+  - hardware:component:button:2+
+  - hardware:component:display:!ls013b7dh03
+  - hardware:component:led:2+
+  - hardware:device:flash:512
+  - hardware:device:ram:32
+  - hardware:rf:band:2400
+  - prebuilt_demo
+
+ui_hints:
+  highlight:
+    - path: config/btconf/gatt_configuration.btconf
+      focus: false
+    - path: config/btmeshconf/dcd_config.btmeshconf
+      focus: false
+    - path: readme.md
+      focus: true

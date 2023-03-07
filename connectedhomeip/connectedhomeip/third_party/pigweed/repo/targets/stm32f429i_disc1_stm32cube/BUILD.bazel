@@ -1,0 +1,62 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load(
+    "//pw_build:pigweed.bzl",
+    "pw_cc_binary",
+    "pw_cc_library",
+)
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+pw_cc_library(
+    name = "pre_init",
+    srcs = [
+        "boot.cc",
+        "vector_table.c",
+    ],
+    hdrs = [
+        "config/FreeRTOSConfig.h",
+        "config/stm32f4xx_hal_conf.h",
+    ],
+    # TODO(b/261506064): Get this to build. Requires FreeRTOS.
+    tags = ["manual"],
+    deps = [
+        "//pw_boot",
+        "//pw_boot_cortex_m",
+        "//pw_malloc",
+        "//pw_preprocessor",
+        "//pw_string",
+        "//pw_sys_io_stm32cube",
+        "//third_party/freertos",
+        "//third_party/stm32cube",
+    ],
+)
+
+pw_cc_binary(
+    name = "demo",
+    srcs = [
+        "main.cc",
+    ],
+    # TODO(b/261506064): Get this to build. Requires FreeRTOS.
+    tags = ["manual"],
+    deps = [
+        "//pw_thread:thread",
+        "//pw_thread:thread_core",
+        "//pw_thread_freertos:thread",
+        "//third_party/freertos",
+    ],
+)

@@ -1,0 +1,23 @@
+!!omap
+- id: ZGM130S037HGN1_config
+- label: ZGM130S037HGN1 config
+- description: Configuration files for ZGM130S037HGN1
+- package: platform
+- category: Platform|Device|ZGM13|Config
+- quality: production
+- ui_hints:
+    visibility: never
+- root_path: hardware/module/config
+- requires:
+  - name: zgm130s037hgn1
+- provides:
+  - name: ZGM130S037HGN1_config
+- config_file:
+  - override:
+      component: rail_util_pa
+      file_id: rail_util_pa_config
+    path: ZGM130S037HGN1/sl_rail_util_pa_config.h
+  - override:
+      component: device_init_hfxo
+      file_id: device_init_hfxo_config
+    path: ZGM130S037HGN1/sl_device_init_hfxo_config.h

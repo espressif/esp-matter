@@ -1,0 +1,22 @@
+id: lwip_netif_slipif
+label: "slipif"
+pretty_name : "LWIP generic network interface device drivers for slipif"
+package: platform
+description: >
+    LWIP generic network interface device drivers for slipif. A generic
+    implementation of the SLIP (Serial Line IP) protocol. It requires a
+    sio (serial I/O) module to work.
+category: LwIP|netif
+quality: production
+provides:
+  - name: lwip_netif
+    allow_multiple: true
+  - name: lwip_netif_slipif
+requires:
+  - name: lwip_core
+source:
+  - path: util/third_party/lwip/lwip/src/netif/slipif.c
+include:  
+  - path: util/third_party/lwip/lwip/src/include
+    file_list:
+    - path: netif/slipif.h

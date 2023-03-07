@@ -1,0 +1,13 @@
+[Unit]
+Description=TestHarness Discovery Service
+ConditionPathExists=@CMAKE_INSTALL_FULL_SBINDIR@/testharness-discovery
+
+[Service]
+ExecStart=@CMAKE_INSTALL_FULL_SBINDIR@/testharness-discovery
+Restart=on-failure
+RestartSec=5
+RestartPreventExitStatus=SIGKILL
+
+[Install]
+WantedBy=multi-user.target
+Alias=testharness-discovery.service

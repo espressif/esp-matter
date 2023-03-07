@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Profile xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/profile.xsd" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    type="org.bluetooth.profile.running_speed_and_cadence"
+    name="Running Speed and Cadence">
+    <InformativeText>
+        <Abstract>This profile enables a Collector device to connect and interact with a Runners Speed and Cadence Sensor for use in sports and fitness applications.</Abstract>
+        <Summary>The Running Speed and Cadence Profile is used to enable a data collection device to obtain data from a Runners Speed and Cadence Sensor (RSC Sensor) that exposes the Speed and Cadence Service.</Summary>
+	</InformativeText>
+    
+	<Role name="RSC Sensor ">
+		<Service type="org.bluetooth.service.running_speed_and_cadence">
+			<Declaration>PrimarySingleInstance</Declaration>
+			<Requirement>Mandatory</Requirement>
+		</Service>
+        <Service type="org.bluetooth.service.device_information">
+            <Declaration>Primary</Declaration>
+            <Requirement>Optional</Requirement>
+            <Characteristic type="org.bluetooth.characteristic.manufacturer_name_string">
+                <Requirement>Optional</Requirement>
+            </Characteristic>
+            <Characteristic type="org.bluetooth.characteristic.model_number_string">
+                <Requirement>Optional</Requirement>
+            </Characteristic>
+        </Service>
+		
+	</Role>
+	<Role name="Collector">
+		<Client type="org.bluetooth.service.running_speed_and_cadence">
+			<Requirement>Mandatory</Requirement>
+		</Client>
+        <Client type="org.bluetooth.service.device_information">
+            <Requirement>Optional</Requirement>
+		</Client>
+	</Role>
+</Profile>

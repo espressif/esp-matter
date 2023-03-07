@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="User Index" type="org.bluetooth.characteristic.user_index" uuid="2A9A" last-modified="2014-06-10" approved="Yes">
+    <Value>
+        <Field name="User Index">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+            <Enumerations>
+                <InformativeText>The special value of 0xFF is used for "Unknown User".</InformativeText>
+                <Enumeration key="255" value="Unknown User"></Enumeration>
+            </Enumerations>
+		</Field>
+	</Value>
+</Characteristic>

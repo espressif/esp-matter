@@ -1,0 +1,14 @@
+id: memory_layout_legacy_hal
+label: "Toolchain: Legacy HAL Compatible Memory Layout"
+package: platform
+description: >
+  This component is meant to be used only in cases where an application
+  specifically needs to have a memory layout which matches the previous
+  releases of the flex/zigbee/connect sdk memory layout. This affects
+  the placement of the nvm storage section when using an internal storage
+  bootloader.
+category: Platform|Toolchain
+quality: production
+root_path: platform/common
+provides:
+  - name: memory_layout_legacy_hal

@@ -1,0 +1,688 @@
+{
+    "configs": [
+        {
+            "name": "freqBand",
+            "displayName": "Frequency Band",
+            "description": "Select the frequency band",
+            "hidden": false,
+            "options": [
+                {
+                    "name": "2400",
+                    "displayName": "2400 - 2480 MHz"
+                }
+            ],
+            "default": "2400"
+        },
+        {
+            "name": "phyType2400",
+            "displayName": "PHY Type",
+            "description": "Selects the PHY setting",
+            "hidden": false,
+            "options": [
+                {
+                    "name": "2gfsk100kbps",
+                    "displayName": "100 kbps, 50 kHz Deviation, 2-GFSK, 311 kHz RX Bandwidth (Preview)"
+                },
+                {
+                    "name": "2gfsk250kbps",
+                    "displayName": "250 kpbs, 125 kHz Deviation, 2-GFSK, 471 kHz RX Bandwidth (Preview)"
+                },
+                {
+                    "name": "custom2400",
+                    "displayName": "Custom PHY Setting, 2400 Mhz band"
+                }
+            ],
+            "default": "2gfsk100kbps"
+        },
+        {
+            "name": "parent",
+            "displayName": "Parent",
+            "default": "Stack",
+            "hidden": true
+        },
+        {
+            "name": "permission",
+            "displayName": "Permission",
+            "default": "None",
+            "hidden": true,
+            "options": [
+                {
+                    "name": "None"
+                },
+                {
+                    "name": "ReadWrite"
+                },
+                {
+                    "name": "ReadOnly"
+                }
+            ]
+        },
+        {
+            "displayName": "PHY Properties",
+            "collapsed": true,
+            "config": [
+                {
+                    "name": "carrierFrequency",
+                    "displayName": "Frequency (MHz)",
+                    "description": "Frequency.",
+                    "default": 2440,
+                    "displayFormat": {
+                        "radix": "dec",
+                        "fixedPoint": 4
+                    }
+                },
+                {
+                    "name": "symbolRate",
+                    "displayName": "Symbol Rate (kBaud)",
+                    "description": "Symbol Rate.",
+                    "default": 38,
+                    "displayFormat": {
+                        "radix": "dec",
+                        "fixedPoint": 3
+                    }
+                },
+                {
+                    "name": "deviation",
+                    "displayName": "Deviation (kHz)",
+                    "description": "Deviation.",
+                    "default": 25,
+                    "displayFormat": {
+                        "radix": "dec",
+                        "fixedPoint": 1
+                    }
+                },
+                {
+                    "name": "rxFilterBw",
+                    "displayName": "RX Filter BW (kHz)",
+                    "description": "RX Filter BW",
+                    "default": "98.0",
+                    "options": [
+                        {
+                            "name": "4.3",
+                            "key": 64
+                        },
+                        {
+                            "name": "4.9",
+                            "key": 65
+                        },
+                        {
+                            "name": "6.1",
+                            "key": 66
+                        },
+                        {
+                            "name": "7.4",
+                            "key": 67
+                        },
+                        {
+                            "name": "8.5",
+                            "key": 68
+                        },
+                        {
+                            "name": "9.7",
+                            "key": 69
+                        },
+                        {
+                            "name": "12.2",
+                            "key": 70
+                        },
+                        {
+                            "name": "14.7",
+                            "key": 71
+                        },
+                        {
+                            "name": "17.1",
+                            "key": 72
+                        },
+                        {
+                            "name": "19.4",
+                            "key": 73
+                        },
+                        {
+                            "name": "24.5",
+                            "key": 74
+                        },
+                        {
+                            "name": "29.4",
+                            "key": 75
+                        },
+                        {
+                            "name": "34.1",
+                            "key": 76
+                        },
+                        {
+                            "name": "38.9",
+                            "key": 77
+                        },
+                        {
+                            "name": "49.0",
+                            "key": 78
+                        },
+                        {
+                            "name": "58.9",
+                            "key": 79
+                        },
+                        {
+                            "name": "68.3",
+                            "key": 80
+                        },
+                        {
+                            "name": "77.7",
+                            "key": 81
+                        },
+                        {
+                            "name": "98.0",
+                            "key": 82
+                        },
+                        {
+                            "name": "117.7",
+                            "key": 83
+                        },
+                        {
+                            "name": "136.6",
+                            "key": 84
+                        },
+                        {
+                            "name": "155.4",
+                            "key": 85
+                        },
+                        {
+                            "name": "195.9",
+                            "key": 86
+                        },
+                        {
+                            "name": "235.5",
+                            "key": 87
+                        },
+                        {
+                            "name": "273.1",
+                            "key": 88
+                        },
+                        {
+                            "name": "310.8",
+                            "key": 89
+                        },
+                        {
+                            "name": "391.8",
+                            "key": 90
+                        },
+                        {
+                            "name": "470.9",
+                            "key": 91
+                        },
+                        {
+                            "name": "546.3",
+                            "key": 92
+                        },
+                        {
+                            "name": "621.6",
+                            "key": 93
+                        },
+                        {
+                            "name": "783.6",
+                            "key": 94
+                        },
+                        {
+                            "name": "941.8",
+                            "key": 95
+                        },
+                        {
+                            "name": "1092.5",
+                            "key": 96
+                        },
+                        {
+                            "name": "1243.2",
+                            "key": 97
+                        },
+                        {
+                            "name": "1567.2",
+                            "key": 98
+                        },
+                        {
+                            "name": "1883.7",
+                            "key": 99
+                        },
+                        {
+                            "name": "2185.1",
+                            "key": 100
+                        },
+                        {
+                            "name": "2486.5",
+                            "key": 101
+                        },
+                        {
+                            "name": "3134.4",
+                            "key": 102
+                        },
+                        {
+                            "name": "3767.4",
+                            "key": 103
+                        }
+                    ]
+                },
+                {
+                    "name": "txPower",
+                    "displayName": "TX Power (dBm)",
+                    "description": "TX Power",
+                    "default": "14",
+                    "longDescription": ""
+                },
+                {
+                    "name": "txPower2400",
+                    "displayName": "TX Power (dBm)",
+                    "description": "TX Power",
+                    "default": "5",
+                    "hidden": true
+                },
+                {
+                    "name": "whitening",
+                    "displayName": "Whitening",
+                    "description": "Whitening",
+                    "default": "No whitening",
+                    "options": [
+                        {
+                            "name": "No whitening",
+                            "key": 0
+                        },
+                        {
+                            "name": "CC1101\/CC2500 compatible",
+                            "key": 1
+                        },
+                        {
+                            "name": "PN9 Whitening",
+                            "key": 2
+                        },
+                        {
+                            "name": "No whitener, 32-bit IEEE 802.15.4g compatible CRC",
+                            "key": 4
+                        },
+                        {
+                            "name": "IEEE 802.15.4g compatible whitener and 32-bit CRC",
+                            "key": 5
+                        },
+                        {
+                            "name": "No whitener, dynamically IEEE 802.15.4g compatible 16\/32-bit CRC",
+                            "key": 6
+                        },
+                        {
+                            "name": "Dynamically IEEE 802.15.4g compatible whitener and 16\/32-bit CRC",
+                            "key": 7
+                        }
+                    ]
+                },
+                {
+                    "name": "loDivider",
+                    "displayName": "loDivider",
+                    "description": "loDivider",
+                    "default": "0",
+                    "hidden": true
+                },
+                {
+                    "name": "modulation",
+                    "displayName": "modulation",
+                    "description": "modulation",
+                    "default": "FSK",
+                    "hidden": true,
+                    "options": [
+                        {
+                            "name": "FSK",
+                            "key": 0
+                        },
+                        {
+                            "name": "GFSK",
+                            "key": 1
+                        },
+                        {
+                            "name": "OOK",
+                            "key": 2
+                        }
+                    ]
+                },
+                {
+                    "name": "preambleCount",
+                    "displayName": "Preamble Count",
+                    "description": "Preamble Count",
+                    "default": "3 Bytes",
+                    "options": [
+                        {
+                            "name": "1 Bit",
+                            "key": 0
+                        },
+                        {
+                            "name": "1 Byte",
+                            "key": 1
+                        },
+                        {
+                            "name": "2 Bytes",
+                            "key": 2
+                        },
+                        {
+                            "name": "3 Bytes",
+                            "key": 3
+                        },
+                        {
+                            "name": "4 Bytes",
+                            "key": 4
+                        },
+                        {
+                            "name": "5 Bytes",
+                            "key": 5
+                        },
+                        {
+                            "name": "6 Bytes",
+                            "key": 6
+                        },
+                        {
+                            "name": "7 Bytes",
+                            "key": 7
+                        },
+                        {
+                            "name": "8 Bytes",
+                            "key": 8
+                        },
+                        {
+                            "name": "9 Bytes",
+                            "key": 9
+                        },
+                        {
+                            "name": "10 Bytes",
+                            "key": 10
+                        },
+                        {
+                            "name": "11 Bytes",
+                            "key": 11
+                        },
+                        {
+                            "name": "12 Bytes",
+                            "key": 12
+                        },
+                        {
+                            "name": "13 Bytes",
+                            "key": 13
+                        },
+                        {
+                            "name": "14 Bytes",
+                            "key": 14
+                        },
+                        {
+                            "name": "15 Bytes",
+                            "key": 15
+                        },
+                        {
+                            "name": "16 Bytes",
+                            "key": 16
+                        },
+                        {
+                            "name": "18 Bytes",
+                            "key": 18
+                        },
+                        {
+                            "name": "20 Bytes",
+                            "key": 20
+                        },
+                        {
+                            "name": "22 Bytes",
+                            "key": 22
+                        },
+                        {
+                            "name": "24 Bytes",
+                            "key": 24
+                        },
+                        {
+                            "name": "26 Bytes",
+                            "key": 26
+                        },
+                        {
+                            "name": "28 Bytes",
+                            "key": 28
+                        },
+                        {
+                            "name": "30 Bytes",
+                            "key": 30
+                        },
+                        {
+                            "name": "4 Bits",
+                            "key": 31
+                        },
+                        {
+                            "name": "32 Bytes",
+                            "key": 32
+                        }
+                    ]
+                },
+                {
+                    "name": "preambleMode",
+                    "displayName": "Preamble Mode",
+                    "description": "Preamble mode.",
+                    "default": "Send 0 as the first preamble bit",
+                    "options": [
+                        {
+                            "name": "Send 0 as the first preamble bit",
+                            "key": 0
+                        },
+                        {
+                            "name": "Send 1 as the first preamble bit",
+                            "key": 1
+                        },
+                        {
+                            "name": "Send same first preamble bit in preamble and sync word",
+                            "key": 2
+                        },
+                        {
+                            "name": "Send different first preamble bit in preamble and sync word",
+                            "key": 3
+                        }
+                    ]
+                },
+                {
+                    "name": "syncWordLength",
+                    "displayName": "Sync Word Length",
+                    "description": "Number of bits in Sync Word.",
+                    "default": "32 Bits",
+                    "options": [
+                        {
+                            "name": "8 Bits",
+                            "key": 8
+                        },
+                        {
+                            "name": "9 Bits",
+                            "key": 9
+                        },
+                        {
+                            "name": "10 Bits",
+                            "key": 10
+                        },
+                        {
+                            "name": "11 Bits",
+                            "key": 11
+                        },
+                        {
+                            "name": "12 Bits",
+                            "key": 12
+                        },
+                        {
+                            "name": "13 Bits",
+                            "key": 13
+                        },
+                        {
+                            "name": "14 Bits",
+                            "key": 14
+                        },
+                        {
+                            "name": "15 Bits",
+                            "key": 15
+                        },
+                        {
+                            "name": "16 Bits",
+                            "key": 16
+                        },
+                        {
+                            "name": "17 Bits",
+                            "key": 17
+                        },
+                        {
+                            "name": "18 Bits",
+                            "key": 18
+                        },
+                        {
+                            "name": "19 Bits",
+                            "key": 19
+                        },
+                        {
+                            "name": "20 Bits",
+                            "key": 20
+                        },
+                        {
+                            "name": "21 Bits",
+                            "key": 21
+                        },
+                        {
+                            "name": "22 Bits",
+                            "key": 22
+                        },
+                        {
+                            "name": "23 Bits",
+                            "key": 23
+                        },
+                        {
+                            "name": "24 Bits",
+                            "key": 24
+                        },
+                        {
+                            "name": "25 Bits",
+                            "key": 25
+                        },
+                        {
+                            "name": "26 Bits",
+                            "key": 26
+                        },
+                        {
+                            "name": "27 Bits",
+                            "key": 27
+                        },
+                        {
+                            "name": "28 Bits",
+                            "key": 28
+                        },
+                        {
+                            "name": "29 Bits",
+                            "key": 29
+                        },
+                        {
+                            "name": "30 Bits",
+                            "key": 30
+                        },
+                        {
+                            "name": "31 Bits",
+                            "key": 31
+                        },
+                        {
+                            "name": "32 Bits",
+                            "key": 32
+                        }
+                    ]
+                },
+                {
+                    "name": "syncWord",
+                    "displayName": "Sync Word",
+                    "description": "Complete Sync Word. Number of bits that is checked is determined by the Sync word length field.\\n The bit order is determined by formatConf.bMsbFirst.",
+                    "default": 0,
+                    "displayFormat": {
+                        "radix": "hex",
+                        "bitSize": 32
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Link Layer",
+            "collapsed": true,
+            "config": [
+                {
+                    "name": "packetLengthConfig",
+                    "displayName": "Packet Length Config",
+                    "description": "Packet Length Configuration",
+                    "default": "Variable",
+                    "options": [
+                        {
+                            "name": "Fixed",
+                            "key": 0
+                        },
+                        {
+                            "name": "Variable",
+                            "key": 1
+                        }
+                    ]
+                },
+                {
+                    "name": "fixedPacketLength",
+                    "displayName": "Fixed Packet Length",
+                    "description": "The fixed packet length will not be part of the packet data.",
+                    "default": "20"
+                },
+                {
+                    "name": "packetLengthRx",
+                    "displayName": "Max Packet Length",
+                    "description": "Packet Length",
+                    "default": 0
+                },
+                {
+                    "name": "addressMode",
+                    "displayName": "RX Address Mode",
+                    "description": "Select the address check mode.",
+                    "default": "No address check",
+                    "options": [
+                        {
+                            "name": "No address check",
+                            "key": 0
+                        },
+                        {
+                            "name": "Address check",
+                            "key": 1
+                        }
+                    ]
+                },
+                {
+                    "name": "address0",
+                    "displayName": "RX Address0",
+                    "description": "First allowed address. SmartRF Studio can support up to two addresses.",
+                    "default": 0,
+                    "displayFormat": {
+                        "radix": "hex",
+                        "bitSize": 8
+                    },
+                    "hidden": true
+                },
+                {
+                    "name": "address1",
+                    "displayName": "RX Address1",
+                    "description": "Second allowed address. SmartRF Studio can support up to two addresses.",
+                    "default": 0,
+                    "displayFormat": {
+                        "radix": "hex",
+                        "bitSize": 8
+                    },
+                    "hidden": true
+                }
+            ]
+        }
+    ],
+    "phys": {
+        "prop2400": [
+            {
+                "file": "setting_tc900.json",
+                "name": "2gfsk100kbps",
+                "description": "100 kbps, 50 kHz Deviation, 2-GFSK, 311 kHz RX Bandwidth (Preview)"
+            },
+            {
+                "file": "setting_tc901.json",
+                "name": "2gfsk250kbps",
+                "description": "250 kpbs, 125 kHz Deviation, 2-GFSK, 471 kHz RX Bandwidth (Preview)"
+            },
+            {
+                "file": "setting_tc900_custom.json",
+                "name": "custom2400",
+                "description": "Custom PHY Setting, 2400 Mhz band"
+            }
+        ]
+    }
+}

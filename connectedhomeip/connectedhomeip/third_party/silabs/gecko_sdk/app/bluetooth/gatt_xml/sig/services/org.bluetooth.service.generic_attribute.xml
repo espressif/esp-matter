@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Service xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Generic Attribute" last-modified="2012-12-04"  type="org.bluetooth.service.generic_attribute" uuid="1801">
+    <InformativeText>
+    </InformativeText>
+    <Characteristics>
+        <Characteristic name="Service Changed" type="org.bluetooth.characteristic.gatt.service_changed">
+            <Requirement>Optional</Requirement>
+            <Properties>
+				<Read>Excluded</Read>
+				<Write>Excluded</Write>
+				<WriteWithoutResponse>Excluded</WriteWithoutResponse>
+				<SignedWrite>Excluded</SignedWrite>
+				<ReliableWrite>Excluded</ReliableWrite>
+				<Notify>Excluded</Notify>
+				<Indicate>Mandatory</Indicate>
+				<WritableAuxiliaries>Excluded</WritableAuxiliaries>
+				<Broadcast>Excluded</Broadcast>
+            </Properties>
+		    <Descriptors>
+              <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+                <Requirement>Mandatory</Requirement>
+                <Properties>
+                  <Read>Mandatory</Read>
+                  <Write>Mandatory</Write>
+                </Properties>
+              </Descriptor>
+            </Descriptors>
+        </Characteristic>
+    </Characteristics>
+</Service>

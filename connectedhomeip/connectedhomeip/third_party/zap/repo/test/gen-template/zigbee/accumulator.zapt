@@ -1,0 +1,16 @@
+This template tests the accumulator logic.
+
+{{#iterate count="20"}}
+Iteration: {{index}} out of {{count}}
+{{/iterate}}
+
+{{#zcl_atomics}}
+{{addToAccumulator "cumulativeSize" size}}Atomic: {{atomicId}} / {{name}} / {{description}} / {{size}}
+{{/zcl_atomics}}
+
+
+{{#after}}
+{{#iterateAccumulator accumulator="cumulativeSize"}}
+Cumulative size: {{value}} / {{sum}}
+{{/iterateAccumulator}}
+{{/after}}

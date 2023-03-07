@@ -1,0 +1,109 @@
+{
+    "configFiles": {
+        "path": [
+            {
+                "_file": "device_definition.json",
+                "$": ".\/..\/config\/cc2652r"
+            },
+            {
+                "_file": "device_description.json",
+                "$": ".\/..\/config\/cc2642r"
+            },
+            {
+                "_file": "device_description.json",
+                "_phy": "prop",
+                "$": ".\/..\/config\/cc2652r_prop_pg21"
+            },
+            {
+                "_file": "io_register_definition.json",
+                "$": ".\/..\/config\/cc2642r"
+            },
+            {
+                "_file": "ui_translation.json",
+                "$": ".\/..\/config\/cc2642r"
+            },
+            {
+                "_file": "targets.json",
+                "$": ".\/..\/config\/cc2642r\/targets"
+            },
+            {
+                "_file": "pasettings.json",
+                "$": ".\/..\/config\/cc2652r\/targets"
+            },
+            {
+                "_file": "io_pin_definition.json",
+                "$": ".\/..\/config\/cc2642r\/targets"
+            },
+            {
+                "_file": "param_definition.json",
+                "$": ".\/..\/config\/cc2652r_ble_pg21"
+            },
+            {
+                "_file": "param_definition.json",
+                "_phy": "prop",
+                "$": ".\/..\/config\/cc2652r_prop_pg21"
+            },
+            {
+                "_file": "param_cmd_mapping.json",
+                "$": ".\/..\/config\/cc2652r_ble_pg21"
+            },
+            {
+                "_file": "param_cmd_mapping.json",
+                "_phy": "prop",
+                "$": ".\/..\/config\/cc2652r_prop_pg21"
+            },
+            {
+                "_file": "easymode_settings.json",
+                "$": ".\/..\/config\/cc2652r"
+            },
+            {
+                "_file": "radio_par_definitions.json",
+                "$": ".\/..\/config\/cc2652r"
+            },
+            {
+                "_file": "register_definition.json",
+                "$": ".\/..\/config\/cc2652r"
+            },
+            {
+                "_file": "rf_command_definitions.json",
+                "$": ".\/..\/config\/cc2652r_ble_pg21"
+            },
+            {
+                "_file": "rf_command_definitions.json",
+                "_phy": "prop",
+                "$": ".\/..\/config\/cc2652r_prop_pg21"
+            },
+            {
+                "_file": "status_definition.json",
+                "$": ".\/..\/config\/cc2652r"
+            },
+            {
+                "_file": "categories.json",
+                "$": ".\/..\/config\/cc2642r_ble_pg21\/cmd_settings"
+            },
+            {
+                "_file": "categories.json",
+                "_phy": "prop",
+                "$": ".\/..\/config\/cc2642r_prop_pg21\/cmd_settings"
+            },
+            {
+                "_file": "frontend_settings.json",
+                "$": ".\/..\/config\/cc2642r_ble_pg21\/cmd_settings"
+            },
+            {
+                "_file": "frontend_settings.json",
+                "_phy": "prop",
+                "$": ".\/..\/config\/cc2642r_prop_pg21\/cmd_settings"
+            },
+            {
+                "_file": "dummy_file_overrides.json",
+                "$": ".\/..\/config\/cc2642r_ble_pg21\/overrides"
+            },
+            {
+                "_file": "dummy_file_overrides.json",
+                "_phy": "prop",
+                "$": ".\/..\/config\/cc2642r_prop_pg21\/overrides"
+            }
+        ]
+    }
+}

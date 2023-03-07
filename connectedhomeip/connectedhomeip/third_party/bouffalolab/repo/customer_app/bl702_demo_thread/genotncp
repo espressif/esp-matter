@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# build for demo image
+# build options,
+#   CONFIG_NCP, for NCP mode
+#       1, works as NCP, and CONFIG_FTD is valid to configure to FTD/MTD
+#       0, works as RCP, and CONFIG_FTD is not valid
+#   CONFIG_FTD, for thread device type, if CONFIG_NCP = 1
+#       1, build for thread FTD image,
+#       0, build for thread MTD image
+CONFIG_NCP=0
+CONFIG_FTD=1
+
+jobs=4
+if (( $1 -eq "" )); then
+jobs=$1
+fi
+
+if [ ! -d build_out ]; then
+mkdir build_out
+fi
+
+
+
+if [ "$CONFIG_NCP" == "1" ]; then
+make CONFIG_NCP=1 CONFIG_FTD=$CONFIG_FTD  -j $jobs 2>&1 | tee build_out/make.log
+else
+make CONFIG_NCP=0 -j $jobs 2>&1 | tee build_out/make.log
+fi
+
+exit $?

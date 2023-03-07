@@ -1,0 +1,142 @@
+id: tensorflow_lite_micro_reference_kernels
+package: platform
+label: Reference Kernels
+description: >
+  This component includes the available reference kernel implementations used
+  with TensorFlow Lite for Microcontrollers. The reference kernels are pure C/C++
+  implementations, and do not include any platform-specific optimizations.
+
+  If any other kernel implementation components are included in the project,
+  each included kernel will replace the corresponding reference kernel implementation.
+
+category: Machine Learning|TensorFlow|Kernels
+quality: production
+provides:
+  - name: tensorflow_lite_micro_reference_kernels
+  - name: tensorflow_kernel_implementation
+    allow_multiple: true
+requires:
+  - name: tensorflow_lite_micro
+root_path: util/third_party/tflite-micro
+include:
+  - path: .
+source:
+  - path: tensorflow/lite/micro/kernels/activations.cc
+  - path: tensorflow/lite/micro/kernels/activations_common.cc
+  - path: tensorflow/lite/micro/kernels/add.cc
+    unless:
+      - tensorflow_kernel_accelerated_add
+      - tensorflow_kernel_optimized_add
+  - path: tensorflow/lite/micro/kernels/add_common.cc
+  - path: tensorflow/lite/micro/kernels/add_n.cc
+  - path: tensorflow/lite/micro/kernels/arg_min_max.cc
+  - path: tensorflow/lite/micro/kernels/assign_variable.cc
+  - path: tensorflow/lite/micro/kernels/batch_to_space_nd.cc
+  - path: tensorflow/lite/micro/kernels/broadcast_args.cc
+  - path: tensorflow/lite/micro/kernels/broadcast_to.cc
+  - path: tensorflow/lite/micro/kernels/call_once.cc
+  - path: tensorflow/lite/micro/kernels/cast.cc
+  - path: tensorflow/lite/micro/kernels/ceil.cc
+  - path: tensorflow/lite/micro/kernels/circular_buffer.cc
+  - path: tensorflow/lite/micro/kernels/circular_buffer_common.cc
+  - path: tensorflow/lite/micro/kernels/comparisons.cc
+  - path: tensorflow/lite/micro/kernels/concatenation.cc
+  - path: tensorflow/lite/micro/kernels/conv.cc
+    unless:
+      - tensorflow_kernel_accelerated_conv
+      - tensorflow_kernel_optimized_conv
+  - path: tensorflow/lite/micro/kernels/conv_common.cc
+  - path: tensorflow/lite/micro/kernels/cumsum.cc
+  - path: tensorflow/lite/micro/kernels/depth_to_space.cc
+  - path: tensorflow/lite/micro/kernels/depthwise_conv.cc
+    unless:
+      - tensorflow_kernel_accelerated_depthwise_conv
+      - tensorflow_kernel_optimized_depthwise_conv
+  - path: tensorflow/lite/micro/kernels/depthwise_conv_common.cc
+  - path: tensorflow/lite/micro/kernels/dequantize.cc
+  - path: tensorflow/lite/micro/kernels/dequantize_common.cc
+  - path: tensorflow/lite/micro/kernels/detection_postprocess.cc
+  - path: tensorflow/lite/micro/kernels/elementwise.cc
+  - path: tensorflow/lite/micro/kernels/elu.cc
+  - path: tensorflow/lite/micro/kernels/ethosu.cc
+  - path: tensorflow/lite/micro/kernels/exp.cc
+  - path: tensorflow/lite/micro/kernels/expand_dims.cc
+  - path: tensorflow/lite/micro/kernels/fill.cc
+  - path: tensorflow/lite/micro/kernels/floor.cc
+  - path: tensorflow/lite/micro/kernels/floor_div.cc
+  - path: tensorflow/lite/micro/kernels/floor_mod.cc
+  - path: tensorflow/lite/micro/kernels/fully_connected.cc
+    unless:
+      - tensorflow_kernel_accelerated_fully_connected
+      - tensorflow_kernel_optimized_fully_connected
+  - path: tensorflow/lite/micro/kernels/fully_connected_common.cc
+  - path: tensorflow/lite/micro/kernels/gather.cc
+  - path: tensorflow/lite/micro/kernels/gather_nd.cc
+  - path: tensorflow/lite/micro/kernels/hard_swish.cc
+  - path: tensorflow/lite/micro/kernels/hard_swish_common.cc
+  - path: tensorflow/lite/micro/kernels/if.cc
+  - path: tensorflow/lite/micro/kernels/kernel_runner.cc
+  - path: tensorflow/lite/micro/kernels/kernel_util.cc
+  - path: tensorflow/lite/micro/kernels/l2_pool_2d.cc
+  - path: tensorflow/lite/micro/kernels/l2norm.cc
+  - path: tensorflow/lite/micro/kernels/leaky_relu.cc
+  - path: tensorflow/lite/micro/kernels/leaky_relu_common.cc
+  - path: tensorflow/lite/micro/kernels/log_softmax.cc
+  - path: tensorflow/lite/micro/kernels/logical.cc
+  - path: tensorflow/lite/micro/kernels/logical_common.cc
+  - path: tensorflow/lite/micro/kernels/logistic.cc
+  - path: tensorflow/lite/micro/kernels/logistic_common.cc
+  - path: tensorflow/lite/micro/kernels/lstm_eval.cc
+  - path: tensorflow/lite/micro/kernels/maximum_minimum.cc
+  - path: tensorflow/lite/micro/kernels/micro_tensor_utils.cc
+  - path: tensorflow/lite/micro/kernels/mirror_pad.cc
+  - path: tensorflow/lite/micro/kernels/mul.cc
+    unless:
+      - tensorflow_kernel_optimized_mul
+  - path: tensorflow/lite/micro/kernels/mul_common.cc
+  - path: tensorflow/lite/micro/kernels/neg.cc
+  - path: tensorflow/lite/micro/kernels/pack.cc
+  - path: tensorflow/lite/micro/kernels/pad.cc
+  - path: tensorflow/lite/micro/kernels/pooling.cc
+    unless:
+      - tensorflow_kernel_accelerated_pooling
+      - tensorflow_kernel_optimized_pooling
+  - path: tensorflow/lite/micro/kernels/pooling_common.cc
+  - path: tensorflow/lite/micro/kernels/prelu.cc
+  - path: tensorflow/lite/micro/kernels/prelu_common.cc
+  - path: tensorflow/lite/micro/kernels/quantize.cc
+  - path: tensorflow/lite/micro/kernels/quantize_common.cc
+  - path: tensorflow/lite/micro/kernels/read_variable.cc
+  - path: tensorflow/lite/micro/kernels/reduce.cc
+  - path: tensorflow/lite/micro/kernels/reshape.cc
+  - path: tensorflow/lite/micro/kernels/resize_bilinear.cc
+  - path: tensorflow/lite/micro/kernels/resize_nearest_neighbor.cc
+  - path: tensorflow/lite/micro/kernels/round.cc
+  - path: tensorflow/lite/micro/kernels/shape.cc
+  - path: tensorflow/lite/micro/kernels/slice.cc
+  - path: tensorflow/lite/micro/kernels/softmax.cc
+    unless:
+      - tensorflow_kernel_optimized_softmax
+  - path: tensorflow/lite/micro/kernels/softmax_common.cc
+  - path: tensorflow/lite/micro/kernels/space_to_batch_nd.cc
+  - path: tensorflow/lite/micro/kernels/space_to_depth.cc
+  - path: tensorflow/lite/micro/kernels/split.cc
+  - path: tensorflow/lite/micro/kernels/split_v.cc
+  - path: tensorflow/lite/micro/kernels/squeeze.cc
+  - path: tensorflow/lite/micro/kernels/strided_slice.cc
+  - path: tensorflow/lite/micro/kernels/sub.cc
+  - path: tensorflow/lite/micro/kernels/sub_common.cc
+  - path: tensorflow/lite/micro/kernels/svdf.cc
+    unless:
+      - tensorflow_kernel_optimized_svdf
+  - path: tensorflow/lite/micro/kernels/svdf_common.cc
+  - path: tensorflow/lite/micro/kernels/tanh.cc
+  - path: tensorflow/lite/micro/kernels/transpose.cc
+  - path: tensorflow/lite/micro/kernels/transpose_conv.cc
+    unless:
+      - tensorflow_kernel_accelerated_transpose_conv
+  - path: tensorflow/lite/micro/kernels/unidirectional_sequence_lstm.cc
+  - path: tensorflow/lite/micro/kernels/unpack.cc
+  - path: tensorflow/lite/micro/kernels/var_handle.cc
+  - path: tensorflow/lite/micro/kernels/while.cc
+  - path: tensorflow/lite/micro/kernels/zeros_like.cc

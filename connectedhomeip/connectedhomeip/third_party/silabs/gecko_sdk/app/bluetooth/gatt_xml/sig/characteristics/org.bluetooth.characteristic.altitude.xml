@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2015 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.altitude"
+uuid="2AB3" name="Altitude" last-modified="2015-05-19" approved="Yes">
+	<InformativeText>
+		<Abstract>The Altitude characteristic describes the altitude of the device.</Abstract>
+	</InformativeText>
+	<Value>
+		<Field name="Altitude">
+			<Requirement>Mandatory</Requirement>
+			<Format>uint16</Format>
+		</Field>
+	</Value>
+</Characteristic>

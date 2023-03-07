@@ -1,0 +1,50 @@
+README.speed - SRP-6 performance benchmarks
+-------------------------------------------
+
+Hardware /
+  crypto library              1024-bit    2048-bit    4096-bit
+----------------              --------    --------    --------
+
+Athlon MP (1533 MHz)
+  gmp-4.1.2                    210          63.3        17.9
+  openssl-0.9.7a               149          45.0        12.5
+  tommath-0.16 (gcc2)          111          34.4         5.63
+
+Pentium 4 (2000 MHz)
+  gmp-4.1.2                    185          55.6        14.6
+  openssl-0.9.7a                91.8        26.2         7.25
+  tommath-0.17 (gcc2)           41.7        11.3         3.12
+  tommath-0.17 (msvc6)          30.0         8.43        2.32
+
+Itanium (733 MHz)
+  gmp-4.1.2                    172          65.4        21.9
+  openssl-0.9.7a               141          54.1        17.4
+  tommath-0.17 (gcc2)           11.9         3.18        0.893
+
+Pentium 4 (1700 MHz)
+  gmp-4.1.2                    155          48.2        12.5
+  openssl-0.9.7b                70.5        20.4         5.67
+
+Pentium III (1125 MHz)
+  gmp-4.1.2                     97.8        28.7         8.00
+  openssl-0.9.7a                83.4        24.5         6.93
+  tommath-0.17 (gcc3)           48.3        14.6         4.04
+  cryptolib_1.2                 18.7         5.00        ---
+  mpi-1.8.6                      8.76        2.37        0.612
+
+Pentium III (750 MHz)
+  gmp-4.1.2                     66.0        19.4         5.42
+  openssl-0.9.7a                56.8        16.7         4.70
+
+UltraSparc IIe (500 MHz)
+  gmp-4.1.2 (64-bit,WS5)        56.5        18.6         5.57
+  openssl-0.9.7a (32-bit,gcc2)  17.2         4.82        1.30
+
+PPC G3 750 (400 MHz)
+  gmp-4.1.2                     19.9         5.97        1.89
+  openssl-0.9.7a                15.2         4.36        1.20
+  tommath-0.16 (gcc2)           10.4         2.87        0.828
+
+HP PA-RISC (? MHz)
+  gmp-4.1.2                     13.7         4.06        1.15
+  openssl-0.9.7a                 8.07        2.35        0.655

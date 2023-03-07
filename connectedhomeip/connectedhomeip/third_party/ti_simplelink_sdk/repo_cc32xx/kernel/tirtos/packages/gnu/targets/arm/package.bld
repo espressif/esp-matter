@@ -1,0 +1,14 @@
+/*
+ *  Copyright 2021 by Texas Instruments Incorporated.
+ *
+ */
+
+Pkg.otherFiles = ["runh", "_utils.xs", "linkcmd.xdt", "linkcmd_bm_v7a.xdt",
+                  "linkUtils.xs", "std.h", "select.h"];
+Pkg.otherSrcs = ["linkcmd.xdt", "linkcmd_bm_v7a.xdt", "linkUtils.xs", "std.h",
+                 "select.h"];
+/*
+ *  @(#) gnu.targets.arm; 1, 0, 0,; 7-28-2021 06:57:32; /db/ztree/library/trees/xdctargets/xdctargets-w20/src/ xlibrary
+
+ */
+

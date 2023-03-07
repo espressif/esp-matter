@@ -1,0 +1,126 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_boot/backend.gni")
+import("$dir_pw_log/backend.gni")
+import("$dir_pw_rpc/system_server/backend.gni")
+import("$dir_pw_sync/backend.gni")
+import("$dir_pw_sys_io/backend.gni")
+import("$dir_pw_toolchain/arm_gcc/toolchains.gni")
+
+_target_config = {
+  # Use the logging main.
+  pw_unit_test_MAIN = "$dir_pw_unit_test:logging_main"
+
+  # Configuration options for Pigweed executable targets.
+  pw_build_EXECUTABLE_TARGET_TYPE = "mimxrt595_executable"
+
+  pw_build_EXECUTABLE_TARGET_TYPE_FILE =
+      get_path_info("mimxrt595_executable.gni", "abspath")
+
+  # Facade backends
+  pw_assert_BACKEND = dir_pw_assert_basic
+  pw_boot_BACKEND = "$dir_pw_boot_cortex_m"
+  pw_sync_INTERRUPT_SPIN_LOCK_BACKEND =
+      "$dir_pw_sync_baremetal:interrupt_spin_lock"
+  pw_sync_MUTEX_BACKEND = "$dir_pw_sync_baremetal:mutex"
+  pw_log_BACKEND = dir_pw_log_basic
+  pw_sys_io_BACKEND = "$dir_pw_sys_io_mcuxpresso"
+  pw_rpc_system_server_BACKEND = "$dir_pw_hdlc:hdlc_sys_io_system_server"
+
+  # Override the default pw_boot_cortex_m linker script and set the memory
+  # regions for the target.
+  pw_boot_cortex_m_LINKER_SCRIPT = "//targets/mimxrt595_evk:flash_linker_script"
+  pw_target_mimxrt595_evk_LINK_CONFIG_DEFINES = [
+    "PW_BOOT_FLASH_BEGIN=0x08001180",
+    "PW_BOOT_FLASH_SIZE=0x001FEE80",
+    "PW_BOOT_HEAP_SIZE=200K",
+    "PW_BOOT_MIN_STACK_SIZE=1K",
+    "PW_BOOT_RAM_BEGIN=0x20080000",
+    "PW_BOOT_RAM_SIZE=0x00280000",
+    "PW_BOOT_VECTOR_TABLE_BEGIN=0x08001000",
+    "PW_BOOT_VECTOR_TABLE_SIZE=0x00000180",
+  ]
+
+  pw_build_LINK_DEPS = [
+    "$dir_pw_assert:impl",
+    "$dir_pw_log:impl",
+  ]
+
+  current_cpu = "arm"
+  current_os = ""
+}
+
+_toolchain_properties = {
+  final_binary_extension = ".elf"
+}
+
+_target_default_configs = [
+  "$dir_pw_build:extra_strict_warnings",
+  "$dir_pw_toolchain/arm_gcc:enable_float_printf",
+]
+
+pw_target_toolchain_mimxrt595_evk = {
+  _excluded_members = [
+    "defaults",
+    "name",
+  ]
+
+  debug = {
+    name = "mimxrt595_evk_debug"
+    _toolchain_base = pw_toolchain_arm_gcc.cortex_m33f_debug
+    forward_variables_from(_toolchain_base, "*", _excluded_members)
+    forward_variables_from(_toolchain_properties, "*")
+    defaults = {
+      forward_variables_from(_toolchain_base.defaults, "*")
+      forward_variables_from(_target_config, "*")
+      default_configs += _target_default_configs
+    }
+  }
+
+  speed_optimized = {
+    name = "mimxrt595_evk_speed_optimized"
+    _toolchain_base = pw_toolchain_arm_gcc.cortex_m33f_speed_optimized
+    forward_variables_from(_toolchain_base, "*", _excluded_members)
+    forward_variables_from(_toolchain_properties, "*")
+    defaults = {
+      forward_variables_from(_toolchain_base.defaults, "*")
+      forward_variables_from(_target_config, "*")
+      default_configs += _target_default_configs
+    }
+  }
+
+  size_optimized = {
+    name = "mimxrt595_evk_size_optimized"
+    _toolchain_base = pw_toolchain_arm_gcc.cortex_m33f_size_optimized
+    forward_variables_from(_toolchain_base, "*", _excluded_members)
+    forward_variables_from(_toolchain_properties, "*")
+    defaults = {
+      forward_variables_from(_toolchain_base.defaults, "*")
+      forward_variables_from(_target_config, "*")
+      default_configs += _target_default_configs
+    }
+  }
+}
+
+# This list just contains the members of the above scope for convenience to make
+# it trivial to generate all the toolchains in this file via a
+# `generate_toolchains` target.
+pw_target_toolchain_mimxrt595_evk_list = [
+  pw_target_toolchain_mimxrt595_evk.debug,
+  pw_target_toolchain_mimxrt595_evk.speed_optimized,
+  pw_target_toolchain_mimxrt595_evk.size_optimized,
+]

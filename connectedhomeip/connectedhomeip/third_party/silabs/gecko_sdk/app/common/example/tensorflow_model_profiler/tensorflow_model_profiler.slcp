@@ -1,0 +1,70 @@
+project_name: tensorflow_model_profiler
+package: platform
+quality: production
+label: Machine Learning - Model Profiler
+description: >
+  This application profiles a ML model. The ML model is loaded as a byte array
+  which is generated from a Tensorflow tflite model file. Profiling is performed
+  by running one inference with the model.
+category: Example|Machine Learning
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+  - name: "Capability"
+    value: ["Machine Learning"]
+include:
+  - path: .
+    file_list:
+      - path: app.h
+      - path: model_profiler.h
+source:
+  - path: app.c
+  - path: main.c
+  - path: model_profiler.cc
+component:
+  - id: emlib_cmu
+  - id: sl_memory
+  - id: sl_system
+  - id: device_init
+  - id: component_catalog
+  - id: tensorflow_lite_micro
+  - id: iostream_retarget_stdio
+  - id: iostream_recommended_stream
+config_file:
+  - path: config/tflite/model.tflite
+    directory: tflite
+define:
+  - name: TF_LITE_STATIC_MEMORY
+  - name: NDEBUG
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+  - name: SL_IOSTREAM_USART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "1"
+  - name: SL_IOSTREAM_EUSART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "1"
+  - name: SL_HEAP_SIZE
+    value: "0x3000"
+  - name: SL_TFLITE_MICRO_INTERPRETER_INIT_ENABLE
+    value: "0"
+toolchain_settings:
+  - option: gcc_compiler_option
+    value: "-Wno-unused-parameter"
+  - option: gcc_compiler_option
+    value: "-Wno-missing-field-initializers"
+  - option: gcc_linker_option
+    value: "-u _printf_float"
+  - option: optimize
+#   "value": "none"
+    "value": "speed"
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+tag:
+  - hardware:device:ram:64
+  - hardware:device:flash:400

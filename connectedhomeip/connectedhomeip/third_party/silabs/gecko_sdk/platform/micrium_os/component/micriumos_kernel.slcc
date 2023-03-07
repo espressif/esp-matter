@@ -1,0 +1,80 @@
+id: micriumos_kernel
+label: Micrium OS Kernel
+package: micrium-krnx
+description: Micrium OS Kernel
+category: RTOS|Micrium OS|Kernel
+quality: production
+config_file:
+  - path: ../cfg/os_cfg.h
+component_root_path: platform/micrium_os/kernel
+source:
+  - path: source/os_core.c
+  - path: source/os_cfg_app.c
+  - path: source/os_dbg.c
+  - path: source/os_flag.c
+  - path: source/os_mon.c
+  - path: source/os_msg.c
+  - path: source/os_mutex.c
+  - path: source/os_prio.c
+  - path: source/os_q.c
+  - path: source/os_sem.c
+  - path: source/os_stat.c
+  - path: source/os_task.c
+  - path: source/os_time.c
+  - path: source/os_tmr.c
+  - path: source/os_var.c
+  - path: source/cmsis_os2.c
+include:
+  - path: ../
+  - path: source
+    file_list:
+      - path: os_priv.h
+  - path: include
+    file_list:
+      - path: os.h
+      - path: os_port_sel.h
+      - path: os_trace.h
+      - path: os_type.h
+provides:
+  - name: kernel
+  - name: micriumos
+  - name: micriumos_kernel
+  - name: cmsis_rtos2
+  - name: cmsis_rtos2_port
+requires:
+  - name: sleeptimer
+  - name: rtos_description
+  - name: cmsis_core
+  - name: cmsis_common
+  - name: cmsis_rtos2_headers
+  - name: cmsis_rtos2_tick
+  - name: cmsis_rtos2_init
+    condition: [sl_system_init]
+  - name: device
+  - name: cpu
+  - name: common_core
+  - name: slist
+  - name: kernel_port_armv6m
+    condition:
+      - cortexm0plus
+  - name: kernel_port_armv7m
+    condition:
+      - cortexm3
+  - name: kernel_port_armv7m
+    condition:
+      - cortexm4
+  - name: kernel_port_armv8m
+    condition:
+      - cortexm33
+  - name: kernel_port_win32
+    condition:
+      - win32
+validation_helper:
+  - path: kernel_sleeptimer_enable_validation.lua
+template_contribution:
+  - name: micriumos_component_avails
+    value: KERNEL
+  - name: component_catalog
+    value: kernel
+  - name: component_catalog
+    value: micriumos_kernel

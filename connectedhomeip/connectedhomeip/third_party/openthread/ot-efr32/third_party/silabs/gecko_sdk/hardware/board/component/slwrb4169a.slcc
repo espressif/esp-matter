@@ -1,0 +1,23 @@
+!!omap
+- id: slwrb4169a
+- label: SLWRB4169A
+- package: platform
+- description: Kit BSP support for the EFR32MG14 2400/868 MHz 13 dBm Dual Band Radio
+    Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4169a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4169A"'
+  - name: SL_KIT_REV
+    value: '"A01"'
+- tag:
+  - kit:opn:SLWRB4169A
+  - kit:pn:WRB4169
+  - kit:variant:A
+  - kit:revision:A01

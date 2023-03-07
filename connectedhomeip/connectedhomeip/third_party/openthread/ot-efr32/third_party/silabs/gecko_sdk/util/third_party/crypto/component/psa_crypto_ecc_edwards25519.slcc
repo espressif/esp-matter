@@ -1,0 +1,20 @@
+id: psa_crypto_ecc_edwards25519
+package: platform
+label: edwards25519
+description: >-
+  This component adds support for the Twisted Edwards 255-bit
+  ECC curve in PSA Crypto. This curve is only supported on HSE devices.
+category: Platform|Security|PSA Crypto|Elliptic Curves
+quality: production
+provides:
+  - name: psa_crypto_ecc_edwards25519
+  - name: psa_crypto_ecc_curve
+    allow_multiple: true
+  - name: psa_crypto_ecc_edwards_curve
+    allow_multiple: true
+requires:
+  - name: device_has_semailbox
+  - name: psa_crypto_ecc
+template_contribution:
+  - name: psa_crypto_config
+    value: PSA_WANT_ECC_TWISTED_EDWARDS_255

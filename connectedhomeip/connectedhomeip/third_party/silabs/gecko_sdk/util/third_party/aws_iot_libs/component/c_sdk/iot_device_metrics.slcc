@@ -1,0 +1,21 @@
+id: iot_device_metrics
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|C SDK
+label: IoT Device Metrics
+description: C SDK Device Metrics Utility.
+
+package: amazon_platform
+quality: production
+
+provides:
+  - name: iot_device_metrics
+
+requires:
+  - name: iot_clock
+  - name: iot_atomic
+  - name: iot_config_common
+
+root_path: util/third_party/aws_iot_libs
+
+source:
+  - path: libraries/c_sdk/standard/common/iot_device_metrics.c

@@ -1,0 +1,18 @@
+/*
+ * Copyright (c) 2018-2019, Arm Limited. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ *
+ */
+
+//This file holds description for the current directory. This documentation
+//will be included in the Doxygen output.
+
+/*!
+\dir
+\brief Source code for secure services.
+\details The source code of each service lives in a sub-directory. In addition
+this directory holds source files defining partitioning information. These are
+generated from the templates in this directory, and partition manifest files.
+
+*/

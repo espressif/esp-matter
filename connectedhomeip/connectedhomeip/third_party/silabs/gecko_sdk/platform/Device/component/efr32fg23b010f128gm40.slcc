@@ -1,0 +1,234 @@
+!!omap
+- id: EFR32FG23B010F128GM40
+- package: platform
+- description: Silicon Labs CMSIS-Device part headers for EFR32FG23B010F128GM40.
+- category: Platform|Device|EFR32FG23
+- quality: production
+- define:
+  - name: EFR32FG23B010F128GM40
+    unless:
+    - device_content_override
+- source:
+  - path: platform/Device/SiliconLabs/EFR32FG23/Source/system_efr32fg23.c
+    unless:
+    - device_content_override
+  - path: platform/Device/SiliconLabs/EFR32FG23/Source/startup_efr32fg23.c
+    unless:
+    - device_content_override
+- include:
+  - file_list:
+    - path: efr32fg23b010f128gm40.h
+    - path: efr32fg23_acmp.h
+    - path: efr32fg23_aes.h
+    - path: efr32fg23_amuxcp.h
+    - path: efr32fg23_buram.h
+    - path: efr32fg23_burtc.h
+    - path: efr32fg23_cmu.h
+    - path: efr32fg23_dcdc.h
+    - path: efr32fg23_devinfo.h
+    - path: efr32fg23_dma_descriptor.h
+    - path: efr32fg23_dpll.h
+    - path: efr32fg23_emu.h
+    - path: efr32fg23_eusart.h
+    - path: efr32fg23_fsrco.h
+    - path: efr32fg23_gpcrc.h
+    - path: efr32fg23_gpio.h
+    - path: efr32fg23_gpio_port.h
+    - path: efr32fg23_hfrco.h
+    - path: efr32fg23_hfxo.h
+    - path: efr32fg23_i2c.h
+    - path: efr32fg23_iadc.h
+    - path: efr32fg23_icache.h
+    - path: efr32fg23_keyscan.h
+    - path: efr32fg23_lcd.h
+    - path: efr32fg23_lcdrf.h
+    - path: efr32fg23_ldma.h
+    - path: efr32fg23_ldmaxbar.h
+    - path: efr32fg23_ldmaxbar_defines.h
+    - path: efr32fg23_lesense.h
+    - path: efr32fg23_letimer.h
+    - path: efr32fg23_lfrco.h
+    - path: efr32fg23_lfxo.h
+    - path: efr32fg23_mailbox.h
+    - path: efr32fg23_mpahbram.h
+    - path: efr32fg23_msc.h
+    - path: efr32fg23_pcnt.h
+    - path: efr32fg23_pfmxpprf.h
+    - path: efr32fg23_prs.h
+    - path: efr32fg23_prs_signals.h
+    - path: efr32fg23_scratchpad.h
+    - path: efr32fg23_semailbox.h
+    - path: efr32fg23_smu.h
+    - path: efr32fg23_syscfg.h
+    - path: efr32fg23_sysrtc.h
+    - path: efr32fg23_timer.h
+    - path: efr32fg23_ulfrco.h
+    - path: efr32fg23_usart.h
+    - path: efr32fg23_vdac.h
+    - path: efr32fg23_wdog.h
+    - path: em_device.h
+    - path: system_efr32fg23.h
+    path: platform/Device/SiliconLabs/EFR32FG23/Include/
+    unless:
+    - device_content_override
+- provides:
+  - name: efr32fg23b010f128gm40
+  - name: device
+  - name: device_series_2
+  - name: device_sdid_210
+  - name: device_generic_family_efr32xg23
+  - name: device_family_efr32fg23
+  - name: device_cortexm
+  - name: device_arm
+  - name: cortexm33
+  - name: armv8m.main
+  - name: device_security_vault
+  - name: device_dcdc_buck
+  - name: device_pa_14dbm
+  - name: device_has_acmp
+  - name: device_has_acmp0
+  - name: device_has_acmp1
+  - name: device_has_amuxcp
+  - name: device_has_amuxcp0
+  - name: device_has_buram
+  - name: device_has_burtc
+  - name: device_has_cmu
+  - name: device_has_dcdc
+  - name: device_has_devinfo
+  - name: device_has_dmem
+  - name: device_has_dpll
+  - name: device_has_dpll0
+  - name: device_has_emu
+  - name: device_has_euart
+  - name: device_has_eusart
+  - name: device_has_eusart0
+  - name: device_has_eusart1
+  - name: device_has_eusart2
+  - name: device_has_fsrco
+  - name: device_has_gpcrc
+  - name: device_has_gpio
+  - name: device_has_hfrco
+  - name: device_has_hfrco0
+  - name: device_has_hfrcoem2
+  - name: device_has_hfrcoem23
+  - name: device_has_hfxo
+  - name: device_has_hfxo0
+  - name: device_has_hostmailbox
+  - name: device_has_i2c
+  - name: device_has_i2c0
+  - name: device_has_i2c1
+  - name: device_has_iadc
+  - name: device_has_iadc0
+  - name: device_has_icache
+  - name: device_has_icache0
+  - name: device_has_keyscan
+  - name: device_has_ldma
+  - name: device_has_ldmaxbar
+  - name: device_has_lesense
+  - name: device_has_letimer
+  - name: device_has_letimer0
+  - name: device_has_lfrco
+  - name: device_has_lfxo
+  - name: device_has_msc
+  - name: device_has_pcnt
+  - name: device_has_pcnt0
+  - name: device_has_pfmxpprf
+  - name: device_has_prs
+  - name: device_has_radioaes
+  - name: device_has_scratchpad
+  - name: device_has_semailbox
+  - name: device_has_smu
+  - name: device_has_syscfg
+  - name: device_has_sysrtc
+  - name: device_has_sysrtc0
+  - name: device_has_timer
+  - name: device_has_timer0
+  - name: device_has_timer1
+  - name: device_has_timer2
+  - name: device_has_timer3
+  - name: device_has_timer4
+  - name: device_has_uart
+  - name: device_has_ulfrco
+  - name: device_has_usart
+  - name: device_has_usart0
+  - name: device_has_vdac
+  - name: device_has_vdac0
+  - name: device_has_wdog
+  - name: device_has_wdog0
+  - name: device_has_wdog1
+  - name: device_has_dwt
+  - name: device_has_emu_temp_sensor
+  - name: device_has_fpu
+  - name: device_has_mpu
+  - name: device_has_radio
+  - name: device_has_radio_subghz
+  - name: device_supports_rail
+  - name: device_supports_rail_stack
+  - name: device_supports_connect
+  - name: device_compute_basic
+- recommends:
+  - id: trustzone_unaware
+- requires:
+  - name: cmsis_core
+- template_contribution:
+  - name: device_opn
+    value: EFR32FG23B010F128GM40
+  - name: device_arch
+    value: armv8m.main
+  - name: device_cpu
+    value: cortexm33
+  - name: device_series
+    value: 2
+  - name: device_family
+    value: efr32fg23
+  - name: device_flash_addr
+    value: 134217728
+  - name: device_flash_size
+    value: 131072
+  - name: device_flash_page_size
+    value: 8192
+  - name: device_ram_addr
+    value: 536870912
+  - name: device_ram_size
+    value: 32768
+  - name: device_fpu
+    value: true
+  - name: device_mpu
+    value: true
+  - name: default_stack_size
+    value: 4096
+  - name: default_heap_size
+    value: 2048
+- tag:
+  - device:opn:efr32fg23b010f128gm40
+- toolchain_settings:
+  - option: device_opn
+    value: efr32fg23b010f128gm40
+  - option: architecture
+    value: armv8-mml
+  - option: cpu
+    value: cortex-m33
+  - option: fpu
+    value: fpv5-sp
+  - option: cmse
+    unless:
+    - trustzone_nonsecure
+    value: enabled
+- config_file:
+  - condition:
+    - custom_radio_config
+    directory: rail
+    path: platform/Device/config/210/device.yaml
+- metadata:
+    device:
+      memory:
+      - name: Main Flash
+        page_size: 8192
+        size: 131072
+        start: 134217728
+        type: non-volatile
+      - name: RAM
+        size: 32768
+        start: 536870912
+        type: volatile
+      opn: efr32fg23b010f128gm40

@@ -1,0 +1,423 @@
+<?xml version='1.0' encoding='ASCII'?>
+<model:MDescriptors xmlns:model="http://www.silabs.com/ss/Studio.ecore">
+  <descriptors name="connect_bt_dmp_soc_empty" label="Connect Bluetooth DMP - SoC Empty" description="The Connect Empty DMP example is an RTOS-based project that provides a skeleton for Connect but not functions, beside a BLE Task with a basic CLI interface.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/connect/connect_bt_dmp_soc_empty/connect_bt_dmp_soc_empty.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/connect/connect_bt_dmp_soc_empty/readme.md"/>
+    <properties key="boardCompatibility" value="brd4103a brd4104a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4190a brd4195a brd4196a brd4304a brd4305d brd4305e brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4316a brd4317a brd4319a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*(?!efr32bg14)efr32[mb]g1[0-9]?p.* .*efr32[mb]g21.* .*(?!efr32bg22c112)efr32[mb]g22.* .*mgm.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Connect Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth Wireless\ Technology|Connect"/>
+  </descriptors>
+  <descriptors name="connect_soc_direct_mode_device" label="Connect - SoC Direct Mode Device" description="This sample app allows direct commissioning of nodes and exchange data between them via CLI commands.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/connect/connect_soc_direct_mode_device/connect_soc_direct_mode_device.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/connect/connect_soc_direct_mode_device/readme.md"/>
+    <properties key="boardCompatibility" value="brd2600a brd4100a brd4101a brd4101b brd4103a brd4104a brd4108a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183c brd4184a brd4184b brd4185a brd4190a brd4191a brd4195a brd4196a brd4204a brd4204b brd4204c brd4204d brd4210a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4300b brd4304a brd4305d brd4305e brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4311b brd4316a brd4317a brd4319a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg1v.* .*(?!efr32bg14)efr32[fmb]g1[0-9]?p.* .*efr32[mb]g21.* .*(?!efr32bg22c112)efr32[fmb]g22.* .*efr32[fmz]g23.* .*mgm.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Connect Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Connect"/>
+  </descriptors>
+  <descriptors name="connect_soc_ecdh_key_exchange" label="Connect - SoC ECDH Key Exchange" description="This sample application illustrates how we could share the network key between multiple devices in a secure way (using Elliptic-curve Diffie-Hellman (ECDH) key agreement protocol).">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/connect/connect_soc_ecdh_key_exchange/connect_soc_ecdh_key_exchange.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/connect/connect_soc_ecdh_key_exchange/readme.md"/>
+    <properties key="boardCompatibility" value="brd2600a brd4100a brd4101a brd4101b brd4103a brd4104a brd4108a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183c brd4184a brd4184b brd4185a brd4190a brd4191a brd4195a brd4196a brd4204a brd4204b brd4204c brd4204d brd4210a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4300b brd4304a brd4305d brd4305e brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4311b brd4316a brd4317a brd4319a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg1v.* .*(?!efr32bg14)efr32[fmb]g1[0-9]?p.* .*efr32[mb]g21.* .*(?!efr32bg22c112)efr32[fmb]g22.* .*efr32[fmz]g23.* .*mgm.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Connect Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Connect"/>
+  </descriptors>
+  <descriptors name="connect_soc_empty" label="Connect - SoC Empty" description="The Connect Empty project is a barebone Connect app that can be a basis of streamlined proprietary solutions.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/connect/connect_soc_empty/connect_soc_empty.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/connect/connect_soc_empty/readme.md"/>
+    <properties key="boardCompatibility" value="brd2600a brd4100a brd4101a brd4101b brd4103a brd4104a brd4108a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183c brd4184a brd4184b brd4185a brd4190a brd4191a brd4195a brd4196a brd4204a brd4204b brd4204c brd4204d brd4210a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4300b brd4304a brd4305d brd4305e brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4311b brd4316a brd4317a brd4319a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg1v.* .*(?!efr32bg14)efr32[fmb]g1[0-9]?p.* .*efr32[mb]g21.* .*(?!efr32bg22c112)efr32[fmb]g22.* .*efr32[fmz]g23.* .*mgm.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Connect Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Connect"/>
+  </descriptors>
+  <descriptors name="connect_soc_mac_mode_device" label="Connect - SoC MAC Mode Device" description="A 802.15.4 sample app that provides CLI commands to form a network or join an existing network, send data to another node based on short or long addresses.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/connect/connect_soc_mac_mode_device/connect_soc_mac_mode_device.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/connect/connect_soc_mac_mode_device/readme.md"/>
+    <properties key="boardCompatibility" value="brd2600a brd4100a brd4101a brd4101b brd4103a brd4104a brd4108a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183c brd4184a brd4184b brd4185a brd4190a brd4191a brd4195a brd4196a brd4204a brd4204b brd4204c brd4204d brd4210a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4300b brd4304a brd4305d brd4305e brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4311b brd4316a brd4317a brd4319a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg1v.* .*(?!efr32bg14)efr32[fmb]g1[0-9]?p.* .*efr32[mb]g21.* .*(?!efr32bg22c112)efr32[fmb]g22.* .*efr32[fmz]g23.* .*mgm.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Connect Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Connect"/>
+  </descriptors>
+  <descriptors name="connect_bt_dmp_soc_light" label="Connect Bluetooth DMP - SoC Light" description="The purpose of the application is to demonstrate a simple wireless communication between two or more boards, using the connect SDK. In combination with the Connect-Switch sample application, it creates a basic light functionality, where the LEDs can be toggled on the Light node. After power up, the Light (network coordinator) create its own local network, and the Switch modules (low power end-nodes) can join to this network, and control the Light node. If a local network is established with the - form - CLI command, the Switch nodes can join with the - join - CLI command. After that point, the Light can be controlled with pushing the PB1 button on any connected Switch node.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/connect/light_switch/connect_bt_dmp_soc_light/connect_bt_dmp_soc_light.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/connect/connect_dmp_light_switch/readme.md"/>
+    <properties key="boardCompatibility" value="brd4103a brd4104a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4170a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4190a brd4304a brd4305d brd4305e brd4306c brd4306d com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*(?!efr32bg14)efr32[mb]g1[0-9]?p.* .*(?!efr32bg22c112)efr32[mb]g22.* .*(?!mgm21)mgm.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Connect Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Connect"/>
+  </descriptors>
+  <descriptors name="connect_soc_switch" label="Connect - SoC Switch" description="The purpose of the application is to demonstrate a simple wireless communication between two or more boards, using the connect SDK. In combination with the Connect Light DMP sample application it creates a basic switch functionality, where the LEDs can be toggled in the Light node. After power up, the Light (network coordinator) create its own local network, and the Switch modules (low power end-nodes) can join to this network, and control the Light node. If a local network is established with the - form - CLI command, the Switch nodes can join with the - join - CLI command. After that point, the Light can be controlled with pushing the PB1 button on any connected Switch node.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/connect/light_switch/connect_soc_switch/connect_soc_switch.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/connect/connect_dmp_light_switch/readme.md"/>
+    <properties key="boardCompatibility" value="brd4100a brd4101a brd4101b brd4103a brd4104a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4182a brd4185a brd4190a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4300b brd4304a brd4305d brd4305e brd4306c brd4306d brd4308a brd4311b brd4316a brd4317a brd4319a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg1v.* .*(?!efr32bg14)efr32[fmb]g1[0-9]?p.* .*(?!efr32bg22c112)efr32[fmb]g22.* .*efr32[fmz]g23.* .*mgm.* .*mgm(?!21).*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Connect Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Connect"/>
+  </descriptors>
+  <descriptors name="connect_soc_sensor" label="Connect - SoC Sensor" description="Demonstrates how to properly setup a star network topology in which communication occurs in both directions between the Sink and the Sensor(s) nodes. The PB0 pushbutton can be used to enable or disable sleep, combined with changing the VCOM option 'Enable reception when sleeping'.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/connect/sensor_sink/connect_soc_sensor/connect_soc_sensor.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/connect/connect_sink_sensor/readme.md"/>
+    <properties key="boardCompatibility" value="brd2600a brd4100a brd4103a brd4104a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4182a brd4184a brd4184b brd4190a brd4204a brd4204b brd4204c brd4204d brd4210a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4305d brd4305e com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg1v.* .*(?!efr32bg14)efr32[fmb]g1[0-9]?p.* .*efr32[mb]g21.* .*(?!efr32bg22c112)efr32[fmb]g22.* .*efr32[fmz]g23.* .*mgm.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Connect Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Connect"/>
+  </descriptors>
+  <descriptors name="connect_soc_sink" label="Connect - SoC Sink" description="The Sink example is the counterpart of the Sensor example. It receives reports of Sensor nodes joining to its network.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/connect/sensor_sink/connect_soc_sink/connect_soc_sink.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/connect/connect_sink_sensor/readme.md"/>
+    <properties key="boardCompatibility" value="brd2600a brd4100a brd4103a brd4104a brd4108a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183c brd4184a brd4184b brd4185a brd4190a brd4195a brd4196a brd4204a brd4204b brd4204c brd4204d brd4210a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4300b brd4304a brd4305d brd4305e brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4311b brd4316a brd4317a brd4319a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg1v.* .*(?!efr32bg14)efr32[fmb]g1[0-9]?p.* .*efr32[mb]g21.* .*(?!efr32bg22c112)efr32[fmb]g22.* .*efr32[fmz]g23.* .*mgm.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Connect Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Connect"/>
+  </descriptors>
+  <descriptors name="rail_bt_dmp_soc_range_test" label="RAIL Bluetooth DMP - SoC Range Test" description="Range Test with Bluetooth connectivity. It runs on top of Micrium OS RTOS and multiprotocol RAIL. This is a customizable application that demonstrates over the air range of the EFR32. This sample app can act as a Transmitter and a Receiver. The role can be selected in the LCD menu. Flashing this app into two separate boards makes it possible to test the features and specification of the radio. The sample also provides an example how the RAIL API can be used. A menu is displayed in the LCD, which allows the user to see the most important information about the settings and also change some of them. The left button navigates in the menu and the right button selects or changes options. The bottom line always shows what the buttons do in the particular context. In Tx Mode, the user can send packets. Packet length (7..64 bytes) and the number of packets to transmit (from 500 up to continuous) can be set. Output power can be set in the LCD menu, in 0.5dBm steps (power setpoint), between -15..+20dBm. Actual minimum and maximum power may vary in different frequencies as well as the power that is actually set by RAIL. The LCD menu informs the user about the setpoint and the actual power. In the LCD menu, the Power item displays the setpoint first, then actual value. In Rx Mode, the radio listens on the given channel and inspects the packets received. Only packets that are sent with the expected device ID, will be processed. Packet Error Rate, Bit Error Rate and RSSI of the packets is displayed to inform about the quality of the transmission. For both modes, the channel on which the Tx/Rx radio will operate and the device IDs of the transmitters and receiver radio, can be set. Radio related events can be logged on UART on demand. CLI can be used for setting and starting/stoping the application as well, to start with CLI interface send 'help' over terminal. Wireless Gecko mobile app can also be used to control this application over Bluetooth. Currently MicriumOS and FreeRTOS is supported by this sample app. NOTE: Due to the higher current consumption of the continuous radio usage (especially in Rx Mode), it is not recommended to power the boards from a coin cell. Instead, an USB power bank can be used if portability is needed.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/rail/rail_bt_dmp_soc_range_test/rail_bt_dmp_soc_range_test.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/rail/rail_soc_range_test/readme.md"/>
+    <properties key="boardCompatibility" value="brd4103a brd4104a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4167a brd4168a brd4170a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*(?!efr32bg14)efr32[mb]g1[0-9]?p.* .*(?!efr32bg22c112)efr32[mb]g2[24].*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="RAIL Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|RAIL"/>
+  </descriptors>
+  <descriptors name="rail_bt_dmp_soc_range_test_std" label="RAIL Bluetooth DMP - SoC Range Test BLE and IEEE802.15.4" description="Range Test BLE and IEEE802.15.4 with Bluetooth connectivity. It runs on top of Micrium OS RTOS and multiprotocol RAIL. This application demonstrates over the air range of the Silicon Labs boards. 5 predefined PHYs can be used for this: BLE: 125kbps, BLE: 500kbps, BLE: 1Mbps, BLE: 2Mbps, IEEE80215.4: 250kbps. This sample app can act as a Transmitter and a Receiver. The role can be selected in the LCD menu. Flashing this app into two separate boards makes it possible to test the features and specification of the radio. The sample also provides an example how the RAIL API can be used. A menu is displayed in the LCD, which allows the user to see the most important information about the settings and also change some of them. The left button navigates in the menu and the right button selects or changes options. The bottom line always shows what the buttons do in the particular context. In Tx Mode, the user can send packets. Packet length defined by the PHY and the number of packets to transmit (from 500 up to continuous) can be set. Output power can be set in the LCD menu, in 0.5dBm steps (power setpoint), between -15..+20dBm. Actual minimum and maximum power may vary in different frequencies as well as the power that is actually set by RAIL. The LCD menu informs the user about the setpoint and the actual power. In the LCD menu, the Power item displays the setpoint first, then actual value. In Rx Mode, the radio listens on the given predefined PHY and inspects the packets received. Packet Error Rate, Bit Error Rate and RSSI of the packets is displayed to inform about the quality of the transmission. Radio related events can be logged on UART on demand. CLI can be used to set and get configuration of the app, and to start and stop it. To get started with CLI please send 'help' with a terminal. Wireless Gecko mobile app can also be used to control this application over Bluetooth. Currently MicriumOS and FreeRTOS is supported by this sample app. NOTE: Due to the higher current consumption of the continuous radio usage (especially in Rx Mode), it is not recommended to power the boards from a coin cell. Instead, an USB power bank can be used if portability is needed.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/rail/rail_bt_dmp_soc_range_test_std/rail_bt_dmp_soc_range_test_std.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/rail/rail_soc_range_test/readme.md"/>
+    <properties key="boardCompatibility" value="brd4103a brd4104a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4180a brd4180b brd4181a brd4181b brd4181c brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4195a brd4196a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*(?!efr32bg14)efr32[mb]g1[0-9]?p.* .*(?!efr32bg22c112)efr32[mb]g2[1-24].* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="RAIL Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|RAIL"/>
+  </descriptors>
+  <descriptors name="rail_soc_burst_duty_cycle" label="RAIL - SoC Burst Duty Cycle" description="The example sends a burst in Master Mode (sending a burst long enough to be received by a Slave) and listens in Duty Cycle mode in Slave mode. The app checks the time of the burst and tells the user if the Slave ON time is too short for reliable reception. With one click this baremetal sample app can be run on an OS, currently MicriumOS and FreeRTOS is supported">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/rail/rail_soc_burst_duty_cycle/rail_soc_burst_duty_cycle.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/rail/rail_soc_burst_duty_cycle/readme.md"/>
+    <properties key="boardCompatibility" value="brd4103a brd4104a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4167a brd4168a brd4169a brd4169b brd4170a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4182a brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4190a brd4204a brd4204b brd4204c brd4204d brd4210a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4328a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg1v.* .*(?!efr32bg14)efr32[fmb]g1[0-9]?p.* .*(?!efr32bg22c112)efr32[fmb]g2[2-4].* .*efr32[fmz]g23.* .*fgm230s.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="RAIL Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|RAIL"/>
+  </descriptors>
+  <descriptors name="rail_soc_emode" label="RAIL - SoC Energy Mode" description="This is a customizable Energy Mode sample application. To control the sample app please use the CLI interface over UART. Through CLI you can change the energy mode during different task of the sample app, like idle, sending or receiving. To get started send the 'help' command over CLI. To enter in Idle mode with different energy levels send 'idle x' where x stand for a number corresponding for an energy mode (0:empty loop, 1:EM1, 2:EM2, 3:EM3). To test the TX function you can use 'cw x', this will set the radio into Continuous Wave mode with selected energy level. 'periodic_tx us x' command also useful to test TX function with packets, it will send packets with us microseconds delays, and return into selected x energy mode after it. To test RX functions use 'rx x' or 'periodic_rx us_delay us_rx x' where x is the energy level, us_delay is the periodic delay between RX in microseconds, and us_rx is the length of the RX on in microseconds. To set or get TX power level use 'set_power d_dbm' or 'get_power' where d_dbm stands for the deci-dBm value to set the power level to. With one click this baremetal sample app can be run on an OS, currently MicriumOS and FreeRTOS is supported. Note: Due to the higher current consumption of the continuous radio usage, it is recommended to power the board over USB instead of coin cell.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/rail/rail_soc_emode/rail_soc_emode.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/rail/rail_soc_emode/readme.md"/>
+    <properties key="boardCompatibility" value="brd2600a brd2601a brd2601b brd4100a brd4101a brd4101b brd4103a brd4104a brd4108a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4182a brd4183a brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4204a brd4204b brd4204c brd4204d brd4210a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4328a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg1v.* .*(?!efr32bg14)efr32[fmb]g1[0-9]?p.* .*(?!efr32bg22c112)efr32[fmb]g2[2-4].* .*efr32[fmz]g23.* .*fgm230s.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="RAIL Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|RAIL"/>
+  </descriptors>
+  <descriptors name="rail_soc_empty" label="RAIL - SoC Empty" description="The RAIL Empty project is a barebone RAIL app that can be a basis of a proprietary solutions. This comes prepared with a Single PHY radio configurator and a basic callback function for RAIL. With one click this baremetal sample app can be run on an OS, currently MicriumOS and FreeRTOS is supported.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/rail/rail_soc_empty/rail_soc_empty.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/rail/rail_soc_empty/readme.md"/>
+    <properties key="boardCompatibility" value="brd2600a brd2601a brd2601b brd4100a brd4101a brd4101b brd4103a brd4104a brd4108a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4182a brd4183a brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4204a brd4204b brd4204c brd4204d brd4210a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4328a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg1v.* .*(?!efr32bg14)efr32[fmb]g1[0-9]?p.* .*(?!efr32bg22c112)efr32[fmb]g2[2-5].* .*efr32[fmz]g23.* .*fgm230s.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="RAIL Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|RAIL"/>
+  </descriptors>
+  <descriptors name="rail_soc_light" label="RAIL - SoC Light" description="The purpose of the application is to demonstrate  a simple wireless communication between two or more boards. In combination with the Switch sample application it creates a basic light functionality, where the light can be toggled in the Light node. After power up, the node is in ADVERTISE state. It means broadcast messages are sent periodically. After pushing PB1 button, the node is connected, and ready for toggling the light. This is called the READY state. If the Switch module has done the same procedure, light can be toggled from all the boards with pushing BP0 button">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/rail/rail_soc_light/rail_soc_light.slcp"/>
+    <properties key="readmeFiles" value=""/>
+    <properties key="boardCompatibility" value="brd4100a brd4103a brd4104a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4167a brd4168a brd4169a brd4169b brd4170a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4182a brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4190a brd4204a brd4204b brd4204c brd4204d brd4210a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4328a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg1v.* .*(?!efr32bg14)efr32[fmb]g1[0-9]?p.* .*(?!efr32bg22c112)efr32[fmb]g2[2-4].* .*efr32[fmz]g23.* .*fgm230s.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="RAIL Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|RAIL"/>
+  </descriptors>
+  <descriptors name="rail_soc_light_std" label="RAIL - SoC Light Standards" description="The purpose of the application is to demonstrate  a simple wireless communication between two or more boards. In combination with the Switch sample application it creates a basic light functionality, where the light can be toggled in the Light node. After power up, the node is in ADVERTISE state. It means broadcast messages are sent periodically. After pushing PB1 button, the node is connected, and ready for toggling the light. This is called the READY state. If the Switch module has done the same procedure, light can be toggled from all the boards with pushing BP0 button">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/rail/rail_soc_light_std/rail_soc_light_std.slcp"/>
+    <properties key="readmeFiles" value=""/>
+    <properties key="boardCompatibility" value="brd4100a brd4103a brd4104a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4167a brd4168a brd4169a brd4169b brd4170a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4190a brd4195a brd4196a brd4204a brd4204b brd4204c brd4204d brd4210a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4328a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg1v.* .*(?!efr32bg14)efr32[fmb]g1[0-9]?p.* .*(?!efr32bg22c112)efr32[fmb]g2[1-4].* .*efr32[fmz]g23.* .*fgm230s.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="RAIL Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|RAIL"/>
+  </descriptors>
+  <descriptors name="rail_soc_long_preamble_duty_cycle" label="RAIL - SoC Long Preamble Duty Cycle" description="This Long Preamble Duty Cycle shows how can 2 radios communicate with as less energy used as possible. For this propose this sample app uses the Preamble detect function of the radio. The receiving radio is only in RX for the shortest time needed to detect any part of a preamble, if there was no preamble detection it goes back to EM1, sender radio send a longer preamble to be sure that the receiver will detect it. If there was a detection it will stay in RX mode and receive the packet. The sample app can be used for sending and receiving also, to send a packet press a button PB0 or PB1, when sent LED1 will be toggled and when received LED0 will be toggled. The statistic is printed on the screen of the LCD and the received packets data will be written out on the terminal. Sample app can be also managed through CLI, for more info please send 'help' through terminal. The given PHY can be modified, but if it is modified please check the duty_cycle_config.h file to maintain the correct settings for on and off time. Energy profiler should be used to look at energy consumption. With one click this baremetal sample app can be run on an OS, currently MicriumOS and FreeRTOS is supported. NOTE: Due to the higher current consumption of the continuous radio usage (especially in Rx Mode), it is not recommended to power the boards from a coin cell. Instead, a USB power bank can be used if portability is needed.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/rail/rail_soc_long_preamble_duty_cycle/rail_soc_long_preamble_duty_cycle.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/rail/rail_soc_long_preamble_duty_cycle/readme.md"/>
+    <properties key="boardCompatibility" value="brd4103a brd4104a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4167a brd4168a brd4169a brd4169b brd4170a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4182a brd4185a brd4190a brd4204a brd4204b brd4204c brd4204d brd4210a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4328a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg1v.* .*(?!efr32bg14)efr32[fmb]g1[0-9]?p.* .*(?!efr32bg22c112)efr32[fmb]g2[23].* .*(?!efr32bg22c112)efr32[fmb]g2[5].* .*efr32[fmz]g23.* .*fgm230s.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="RAIL Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|RAIL"/>
+  </descriptors>
+  <descriptors name="rail_soc_long_preamble_duty_cycle_legacy" label="RAIL - SoC Long Preamble Duty Cycle (Legacy)" description="This Long Preamble Duty Cycle shows how can 2 radios communicate with as less energy used as possible. For this propose this sample app uses the Preamble detect function of the radio. The receiving radio is only in RX for the shortest time needed to detect any part of a preamble, if there was no preamble detection it goes back to EM1, sender radio send a longer preamble to be sure that the receiver will detect it. If there was a detection it will stay in RX mode and receive the packet. The sample app can be used for sending and receiving also, to send a packet press a button PB0 or PB1, when sent LED1 will be toggled and when received LED0 will be toggled. The statistic is printed on the screen of the LCD and the received packets data will be written out on the terminal. Sample app can be also managed through CLI, for more info please send 'help' through terminal. The given PHY can be modified, but if it is modified please check the duty_cycle_config.h file to maintain the correct settings for on and off time. Energy profiler should be used to look at energy consumption. With one click this baremetal sample app can be run on an OS, currently MicriumOS and FreeRTOS is supported. NOTE: Due to the higher current consumption of the continuous radio usage (especially in Rx Mode), it is not recommended to power the boards from a coin cell. Instead, a USB power bank can be used if portability is needed.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/rail/rail_soc_long_preamble_duty_cycle_legacy/rail_soc_long_preamble_duty_cycle_legacy.slcp"/>
+    <properties key="readmeFiles" value=""/>
+    <properties key="boardCompatibility" value="brd4100a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4155a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg1v.* .*efr32[fmb]g1p.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="RAIL Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|RAIL"/>
+  </descriptors>
+  <descriptors name="rail_soc_railtest" label="RAIL - SoC RAILtest" description="The RAILtest application (RAILtest) provides a simple tool for testing the radio and the functionality of the RAIL library via CLI. For more advanced usage, developers must write software against the RAIL library and create a custom radio configuration.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/rail/rail_soc_railtest/rail_soc_railtest.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/rail/rail_soc_railtest/readme.md"/>
+    <properties key="boardCompatibility" value="brd2600a brd2601a brd2601b brd2603a brd4100a brd4101a brd4101b brd4103a brd4104a brd4108a brd4111a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4195a brd4196a brd4200a brd4201a brd4201c brd4201d brd4202a brd4203a brd4204a brd4204b brd4204c brd4204d brd4205a brd4205b brd4206a brd4207a brd4208a brd4209a brd4210a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4328a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32[zfmb]g.* .*zgm.* .*fgm230s.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="RAIL Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|RAIL"/>
+  </descriptors>
+  <descriptors name="rail_soc_range_test" label="RAIL - SoC Range Test" description="This is a customizable Range Test Sample Application that demonstrates over the air range of the EFR32. This sample app can act as a Transmitter and a Receiver. The role can be selected in the LCD menu. Flashing this app into two separate boards makes it possible to test the features and specification of the radio. The sample also provides an example how the RAIL API can be used. A menu is displayed in the LCD, which allows the user to see the most important information about the settings and also change some of them. The left button navigates in the menu and the right button selects or changes options. The bottom line always shows what the buttons do in the particular context. In Tx Mode, the user can send packets. Packet length (7..64 bytes) and the number of packets to transmit (from 500 up to continuous) can be set. Output power can be set in the LCD menu, in 0.5dBm steps (power setpoint), between -15..+20dBm. Actual minimum and maximum power may vary in different frequencies as well as the power that is actually set by RAIL. The LCD menu informs the user about the setpoint and the actual power. In the LCD menu, the Power item displays the setpoint first, then actual value. In Rx Mode, the radio listens on the given channel and inspects the packets received. Only packets that are sent with the expected device ID, will be processed. Packet Error Rate, Bit Error Rate and RSSI of the packets is displayed to inform about the quality of the transmission. For both modes, the channel on which the Tx/Rx radio will operate and the device IDs of the transmitters and receiver radio, can be set. Radio related events can be logged on UART on demand. CLI can be used for setting and starting/stoping the application as well, to start with CLI interface send 'help' over terminal. NOTE: Due to the higher current consumption of the continuous radio usage (especially in Rx Mode), it is not recommended to power the boards from a coin cell. Instead, an USB power bank can be used if portability is needed.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/rail/rail_soc_range_test/rail_soc_range_test.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/rail/rail_soc_range_test/readme.md"/>
+    <properties key="boardCompatibility" value="brd4100a brd4101a brd4101b brd4103a brd4104a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4167a brd4168a brd4169a brd4169b brd4170a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4182a brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4204a brd4204b brd4204c brd4204d brd4210a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4328a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg1v.* .*(?!efr32bg14)efr32[fmb]g1[0-9]?p.* .*(?!efr32bg22c112)efr32[fmb]g2[2-5].* .*efr32[fmz]g23.* .*fgm230s.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="RAIL Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|RAIL"/>
+  </descriptors>
+  <descriptors name="rail_soc_range_test_std" label="RAIL - SoC Range Test BLE and IEEE802.15.4" description="This is the Range Test Sample Application that demonstrates over the air range of the Silicon Labs boards. 5 predefined PHYs can be used for this: BLE: 125kbps, BLE: 500kbps, BLE: 1Mbps, BLE: 2Mbps, IEEE80215.4: 250kbps. This sample app can act as a Transmitter and a Receiver. The role can be selected in the LCD menu. Flashing this app into two separate boards makes it possible to test the features and specification of the radio. The sample also provides an example how the RAIL API can be used. A menu is displayed in the LCD, which allows the user to see the most important information about the settings and also change some of them. The left button navigates in the menu and the right button selects or changes options. The bottom line always shows what the buttons do in the particular context. In Tx Mode, the user can send packets. Packet length defined by the PHY and the number of packets to transmit (from 500 up to continuous) can be set. Output power can be set in the LCD menu, in 0.5dBm steps (power setpoint), between -15..+20dBm. Actual minimum and maximum power may vary in different frequencies as well as the power that is actually set by RAIL. The LCD menu informs the user about the setpoint and the actual power. In the LCD menu, the Power item displays the setpoint first, then actual value. In Rx Mode, the radio listens on the given predefined PHY and inspects the packets received. Packet Error Rate, Bit Error Rate and RSSI of the packets is displayed to inform about the quality of the transmission. Radio related events can be logged on UART on demand. CLI can be used to set and get configuration of the app, and to start and stop it. To get started with CLI please send 'help' with a terminal. NOTE: Due to the higher current consumption of the continuous radio usage (especially in Rx Mode), it is not recommended to power the boards from a coin cell. Instead, an USB power bank can be used if portability is needed.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/rail/rail_soc_range_test_std/rail_soc_range_test_std.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/rail/rail_soc_range_test/readme.md"/>
+    <properties key="boardCompatibility" value="brd4100a brd4101a brd4101b brd4103a brd4104a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4195a brd4196a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg1v.* .*(?!efr32bg14)efr32[fmb]g1[0-9]?p.* .*(?!efr32bg22c112)efr32[fmb]g2[124].* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="RAIL Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|RAIL"/>
+  </descriptors>
+  <descriptors name="rail_soc_simple_trx" label="RAIL - SoC Simple TRX" description="This application demonstrates the simplest exchange of transmit and receive operation between two nodes. Both nodes are capable of sending and receiving messages. On the WSTK, any button press (PB0/PB1) will send a message. LED0 will toggle on message send and LED1 will toggle on message receive. CLI can also be used for sending and showing received messages. To send enter 'tx' or 'send'. By default the received packets will be printed out in terminal, to enable or disable print enter 'rx 1' ('receive 1') or 'rx 0' ('receive 0') in terminal. With one click this baremetal sample app can be run on an OS, currently MicriumOS and FreeRTOS is supported.&#10;NOTE: Due to the higher current consumption of the continuous radio usage (especially in Rx Mode), it is not recommended to power the boards from a coin cell. Instead, an USB power bank can be used if portability is needed.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/rail/rail_soc_simple_trx/rail_soc_simple_trx.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/rail/rail_soc_simple_trx/readme.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd4100a brd4103a brd4104a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4182a brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4190a brd4204a brd4204b brd4204c brd4204d brd4210a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4328a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg1v.* .*(?!efr32bg14)efr32[fmb]g1[0-9]?p.* .*(?!efr32bg22c112)efr32[fmb]g2[2-5].* .*efr32[fmz]g23.* .*fgm230s.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="RAIL Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|RAIL"/>
+  </descriptors>
+  <descriptors name="rail_soc_simple_trx_auto_ack" label="RAIL - SoC Simple TRX with Auto-ACK" description="This application demonstrates the simplest exchange of TX and ACK (software based) operation between two nodes. Both nodes are capable of sending messages and receiving ACKs. On the WSTK, any button press (PB0/PB1) will send a message. LED0 will toggle on message send and LED1 will toggle on ACK receive. With one click this baremetal sample app can be run on an OS, currently MicriumOS and FreeRTOS is supported.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/rail/rail_soc_simple_trx_auto_ack/rail_soc_simple_trx_auto_ack.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/rail/rail_soc_simple_trx_auto_ack/readme.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd4100a brd4103a brd4104a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4182a brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4190a brd4204a brd4204b brd4204c brd4204d brd4210a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4328a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg1v.* .*(?!efr32bg14)efr32[fmb]g1[0-9]?p.* .*(?!efr32bg22c112)efr32[fmb]g2[2-4].* .*efr32[fmz]g23.* .*fgm230s.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="RAIL Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|RAIL"/>
+  </descriptors>
+  <descriptors name="rail_soc_simple_trx_multiphy" label="RAIL - SoC Simple TRX Multi-PHY" description="This application demonstrates the usage of multiple phys selectable by channels. By default there are 2 channels, one sub-GHz and a 2.4GHz. Pressing PB0 will transmit on channel 0, while pressing PB1 will transmit on channel 1. Both transmission and reception is reported on serial terminal and on LED0/LED1 (for channel 0/1, respectively). To send using CLI, enter 'send 0' ('rx 0') or 'send 1' ('tx 1'). By default all received packet will be printed out in terminal. To select only one channel to receive, enter 'rx_channel 0' ('rx 0') or 'rx_channel 1' ('rx 1'). To switch back to scanning mode send 'rx_scan'. Modifying the phys are possible, but it can break the scanning feature. If modifying the phys please update also the defines in the app_init.h file. With one click this baremetal sample app can be run on an OS, currently MicriumOS and FreeRTOS is supported. NOTE: Due to the higher current consumption of the continuous radio usage (especially in Rx Mode), it is not recommended to power the boards from a coin cell. Instead, an USB power bank can be used if portability is needed.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/rail/rail_soc_simple_trx_multiphy/rail_soc_simple_trx_multiphy.slcp"/>
+    <properties key="readmeFiles" value=""/>
+    <properties key="boardCompatibility" value="brd4150a brd4150b brd4150c brd4152a brd4155a brd4158a brd4163a brd4164a brd4167a brd4169a brd4169b brd4170a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4190a brd4250a brd4250b brd4251a brd4251b brd4251d brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg1v.* .*(?!efr32bg14)efr32[fmb]g1[0-9]?p.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="RAIL Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|RAIL"/>
+  </descriptors>
+  <descriptors name="rail_soc_simple_trx_one_led" label="RAIL - SoC Simple TRX" description="This application demonstrates the simplest exchange of transmit and receive operation between two nodes. Both nodes are capable of sending and receiving messages. On the WSTK, any button press (PB0/PB1) will send a message. LED0 will toggle on message send and LED1 will toggle on message receive. CLI can also be used for sending and showing received messages. To send enter 'tx' or 'send'. By default the received packets will be printed out in terminal, to enable or disable print enter 'rx 1' ('receive 1') or 'rx 0' ('receive 0') in terminal. With one click this baremetal sample app can be run on an OS, currently MicriumOS and FreeRTOS is supported. NOTE: Due to the higher current consumption of the continuous radio usage (especially in Rx Mode), it is not recommended to power the boards from a coin cell. Instead, an USB power bank can be used if portability is needed.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/rail/rail_soc_simple_trx_one_led/rail_soc_simple_trx_one_led.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/rail/rail_soc_simple_trx/readme.md"/>
+    <properties key="boardCompatibility" value="brd2600a brd4108a brd4183a brd4183c brd4184a brd4184b com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg1v.* .*(?!efr32bg14)efr32[fmb]g1[0-9]?p.* .*(?!efr32bg22c112)efr32[fmb]g2[2-5].* .*efr32[fmz]g23.* .*fgm230s.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="RAIL Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|RAIL"/>
+  </descriptors>
+  <descriptors name="rail_soc_simple_trx_std" label="RAIL - SoC Simple TRX Standards" description="This application demonstrates the simplest exchange of transmit and receive operation between two nodes using IEEE Std. 802.15.4 and IEEE Std. 802.15.4g and BLE. Both nodes can send and receive IEEE Std. 802.15.4 and IEEE Std. 802.15.4g or BLE advertising frames. With IEEE Std. 802.15.4 the frame can be sent and received with CSMA/CA, auto-ACK, address filtering and setable Frame Control Frame (available settings broadcast or unicast). With IEEE Std. 802.15.4g the frame can be sent and received with auto-ACK, address filtering and setable Frame Control Frame (available settings broadcast or unicast). On the WSTK, any button press (PB0/PB1) will send a message. LED0 will toggle on message send and LED1 will toggle on message receive. CLI can also be used for sending and showing received messages. To send enter 'send'. By default the received packets will be printed out in terminal. To change standard to BLE, the Flex - RAIL BLE support software component shall be installed under Flex/RAIL/Utilility. With one click this baremetal sample app can be run on an OS, currently MicriumOS and FreeRTOS is supported. NOTE: Due to the higher current consumption of the continuous radio usage (especially in Rx Mode), it is not recommended to power the boards from a coin cell. Instead, an USB power bank can be used if portability is needed.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/rail/rail_soc_simple_trx_std/rail_soc_simple_trx_std.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/rail/rail_soc_simple_trx_std/readme.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd4100a brd4103a brd4104a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4190a brd4195a brd4196a brd4204a brd4204b brd4204c brd4204d brd4210a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4328a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg1v.* .*(?!efr32bg14)efr32[fmb]g1[0-9]?p.* .*(?!efr32bg22c112)efr32[fmb]g2[1-4].* .*efr32[fmz]g23.* .*fgm230s.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="RAIL Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|RAIL"/>
+  </descriptors>
+  <descriptors name="rail_soc_switch" label="RAIL - SoC Switch" description="The purpose of the application is to demonstrate a simple wireless communication between two or more boards. In combination with the Light sample application it creates a basic switch functionality, where the light can be toggled in the Light node. After power up, the node is in SCAN state. It means the broadcast messages of the light modules can be captured. After pushing PB1 button, the closest Light module will be connected. This is called the LINK state. If the Light module has done the same procedure, light can be toggled from all the boards with pushing BP0 button">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/rail/rail_soc_switch/rail_soc_switch.slcp"/>
+    <properties key="readmeFiles" value=""/>
+    <properties key="boardCompatibility" value="brd4100a brd4103a brd4104a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4167a brd4168a brd4169a brd4169b brd4170a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4182a brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4190a brd4204a brd4204b brd4204c brd4204d brd4210a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4328a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg1v.* .*(?!efr32bg14)efr32[fmb]g1[0-9]?p.* .*(?!efr32bg22c112)efr32[fmb]g2[2-4].* .*efr32[fmz]g23.* .*fgm230s.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="RAIL Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|RAIL"/>
+  </descriptors>
+  <descriptors name="rail_soc_switch_std" label="RAIL - SoC Switch Standards" description="The purpose of the application is to demonstrate a simple wireless communication between two or more boards. In combination with the Light sample application it creates a basic switch functionality, where the light can be toggled in the Light node. After power up, the node is in SCAN state. It means the broadcast messages of the light modules can be captured. After pushing PB1 button, the closest Light module will be connected. This is called the LINK state. If the Light module has done the same procedure, light can be toggled from all the boards with pushing BP0 button">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/rail/rail_soc_switch_std/rail_soc_switch_std.slcp"/>
+    <properties key="readmeFiles" value=""/>
+    <properties key="boardCompatibility" value="brd4100a brd4103a brd4104a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4167a brd4168a brd4169a brd4169b brd4170a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4190a brd4195a brd4196a brd4204a brd4204b brd4204c brd4204d brd4210a brd4250a brd4250b brd4251a brd4251b brd4251d brd4252a brd4253a brd4254a brd4255a brd4256a brd4257a brd4257b brd4258a brd4258b brd4259a brd4261a brd4262a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4328a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg1v.* .*(?!efr32bg14)efr32[fmb]g1[0-9]?p.* .*(?!efr32bg22c112)efr32[fmb]g2[1-4].* .*efr32[fmz]g23.* .*fgm230s.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="RAIL Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|RAIL"/>
+  </descriptors>
+  <descriptors name="rail_soc_wmbus_collector" label="RAIL - SoC Wireless M-bus Collector" description="Implements a Wireless M-Bus collector application. Uses the multi-PHY configurator. For details, see AN1119. With one click this baremetal sample app can be run on an OS, currently MicriumOS and FreeRTOS is supported. NOTE: Due to the higher current consumption of the continuous radio usage (especially in Rx Mode), it is not recommended to power the boards from a coin cell. Instead, an USB power bank can be used if portability is needed.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/rail/rail_soc_wmbus_collector/rail_soc_wmbus_collector.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/rail/wmbus/readme.md"/>
+    <properties key="boardCompatibility" value="brd4150a brd4150c brd4152a brd4155a brd4163a brd4167a brd4169a brd4170a brd4172b brd4173a brd4174b brd4175a brd4190a brd4204a brd4204b brd4204c brd4204d brd4210a brd4250b brd4251b brd4251d brd4254a brd4256a brd4257b brd4258b brd4259a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4328a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg1v.* .*(?!efr32bg14)efr32[fmb]g1[0-9]?p.* .*(?!efr32bg22c112)efr32[fmbz]g23.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="RAIL Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|RAIL"/>
+  </descriptors>
+  <descriptors name="rail_soc_wmbus_meter" label="RAIL - SoC Wireless M-bus Meter " description="Implements a Wireless M-Bus collector application. Uses the multi-PHY configurator and capable of limited multi-PHY features, like asymmetric bidirectional modes. For details, see AN1119. With one click this baremetal sample app can be run on an OS, currently MicriumOS and FreeRTOS is supported. NOTE: Due to the higher current consumption of the continuous radio usage (especially in Rx Mode), it is not recommended to power the boards from a coin cell. Instead, an USB power bank can be used if portability is needed.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/rail/rail_soc_wmbus_meter/rail_soc_wmbus_meter.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/rail/wmbus/readme.md"/>
+    <properties key="boardCompatibility" value="brd4150a brd4150c brd4152a brd4155a brd4163a brd4167a brd4169a brd4170a brd4172b brd4173a brd4174b brd4175a brd4190a brd4204a brd4204b brd4204c brd4204d brd4210a brd4250b brd4251b brd4251d brd4254a brd4256a brd4257b brd4258b brd4259a brd4262b brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4328a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg1v.* .*(?!efr32bg14)efr32[fmb]g1[0-9]?p.* .*(?!efr32bg22c112)efr32[fmbz]g23.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="RAIL Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|RAIL"/>
+  </descriptors>
+</model:MDescriptors>

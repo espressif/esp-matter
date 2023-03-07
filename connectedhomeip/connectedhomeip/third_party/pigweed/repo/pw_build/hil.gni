@@ -1,0 +1,70 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/python.gni")
+
+# A hardware-in-the-loop (HIL) test.
+#
+# Use this template to declare an executable that implements a test requiring
+# exclusive access to a hardware device. The template ensures that all such
+# tests are executed serially.
+
+# The arguments to pass to this template largely depend on the specified
+# target_type . The only currently supported  target_type  is "python", which
+# causes this template to behave simlarly to a  pw_python_script . Aside from
+# the arguments explicitly listed below, refer to the  pw_python_script
+# template for information on what arguments are required or available.
+#
+# Args:
+#   action_args: Forwarded to the action.
+#   action_outputs: Forwarded to the action.
+#   target_type: The type of underlying target that implements the HIL
+#     test. Currently "python" is the only supported value, producing a
+#     "py_python_script". Support for other languages will be added in the
+#     future.
+template("pw_hil_test") {
+  assert(!defined(invoker.action), "Can't specify an action for a pw_hil_test")
+  assert(defined(invoker.target_type),
+         "pw_hil_test must specify the 'target_type'")
+  _args = []
+  if (defined(invoker.action_args)) {
+    _args += invoker.action_args
+  }
+  _outputs = []
+  if (defined(invoker.action_outputs)) {
+    _outputs += invoker.action_outputs
+  }
+
+  if (invoker.target_type == "python") {
+    pw_python_script(target_name) {
+      action = {
+        args = _args
+        pool = "$dir_pw_build/pool:pw_hil_test($default_toolchain)"
+        stamp = true
+        outputs = _outputs
+
+        # We want the test stdout to be saved.
+        capture_output = false
+      }
+      forward_variables_from(invoker,
+                             "*",
+                             [
+                               "target_type",
+                               "action_args",
+                             ])
+    }
+  }
+}

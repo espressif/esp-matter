@@ -1,0 +1,25 @@
+id: cli_delay
+label: "CLI: Delay"
+package: platform
+description: A non-blocking delay function for the CLI.
+category: Services|CLI
+quality: production
+root_path: platform/service/cli/
+include:
+  - path: inc
+    file_list:
+      - path: sl_cli_delay.h
+source:
+  - path: src/sl_cli_delay.c
+provides:
+  - name: cli_delay
+requires:
+  - name: cli
+  - name: sleeptimer
+  - name: status
+template_contribution:
+  - name: component_catalog
+    value: cli_delay
+documentation:
+    docset: gecko-platform
+    document: service/api/group-cli-delay

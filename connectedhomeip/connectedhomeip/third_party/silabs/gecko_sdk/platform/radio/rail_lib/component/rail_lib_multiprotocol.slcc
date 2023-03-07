@@ -1,0 +1,245 @@
+id: rail_lib_multiprotocol
+label: RAIL Library, Multiprotocol
+description: Multiprotocol RAIL Library Support
+package: platform
+category: Platform|Radio
+quality: production
+requires:
+  - name: rail_lib
+provides:
+  - name: rail_lib_multiprotocol # specific tag
+  - name: rail_lib_Xprotocol # generic tag
+documentation:
+  docset: rail
+  document: rail-lib
+define:
+  - name: SL_RAIL_LIB_MULTIPROTOCOL_SUPPORT
+    value: '1'
+library:
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_efr32xg1_iar_release.a
+    condition:
+      - toolchain_iar
+      - device_sdid_80
+    unless:
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_efr32xg1_gcc_release.a
+    condition:
+      - toolchain_gcc
+      - device_sdid_80
+    unless:
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_module_efr32xg1_iar_release.a
+    condition:
+      - toolchain_iar
+      - device_sdid_80
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_module_efr32xg1_gcc_release.a
+    condition:
+      - toolchain_gcc
+      - device_sdid_80
+      - device_is_module
+
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_efr32xg12_iar_release.a
+    condition:
+      - toolchain_iar
+      - device_sdid_84
+    unless:
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_efr32xg12_gcc_release.a
+    condition:
+      - toolchain_gcc
+      - device_sdid_84
+    unless:
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_module_efr32xg12_iar_release.a
+    condition:
+      - toolchain_iar
+      - device_sdid_84
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_module_efr32xg12_gcc_release.a
+    condition:
+      - toolchain_gcc
+      - device_sdid_84
+      - device_is_module
+
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_efr32xg13_iar_release.a
+    condition:
+      - toolchain_iar
+      - device_sdid_89
+    unless:
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_efr32xg13_gcc_release.a
+    condition:
+      - toolchain_gcc
+      - device_sdid_89
+    unless:
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_module_efr32xg13_iar_release.a
+    condition:
+      - toolchain_iar
+      - device_sdid_89
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_module_efr32xg13_gcc_release.a
+    condition:
+      - toolchain_gcc
+      - device_sdid_89
+      - device_is_module
+
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_efr32xg14_iar_release.a
+    condition:
+      - toolchain_iar
+      - device_sdid_95
+    unless:
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_efr32xg14_gcc_release.a
+    condition:
+      - toolchain_gcc
+      - device_sdid_95
+    unless:
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_module_efr32xg14_iar_release.a
+    condition:
+      - toolchain_iar
+      - device_sdid_95
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_module_efr32xg14_gcc_release.a
+    condition:
+      - toolchain_gcc
+      - device_sdid_95
+      - device_is_module
+
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_efr32xg21_iar_release.a
+    condition:
+      - toolchain_iar
+      - device_sdid_200
+    unless:
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_efr32xg21_gcc_release.a
+    condition:
+      - toolchain_gcc
+      - device_sdid_200
+    unless:
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_module_efr32xg21_iar_release.a
+    condition:
+      - toolchain_iar
+      - device_sdid_200
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_module_efr32xg21_gcc_release.a
+    condition:
+      - toolchain_gcc
+      - device_sdid_200
+      - device_is_module
+
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_efr32xg22_iar_release.a
+    condition:
+      - toolchain_iar
+      - device_sdid_205
+    unless:
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_efr32xg22_gcc_release.a
+    condition:
+      - toolchain_gcc
+      - device_sdid_205
+    unless:
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_module_efr32xg22_iar_release.a
+    condition:
+      - toolchain_iar
+      - device_sdid_205
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_module_efr32xg22_gcc_release.a
+    condition:
+      - toolchain_gcc
+      - device_sdid_205
+      - device_is_module
+
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_efr32xg23_iar_release.a
+    condition:
+      - toolchain_iar
+      - device_sdid_210
+    unless:
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_efr32xg23_gcc_release.a
+    condition:
+      - toolchain_gcc
+      - device_sdid_210
+    unless:
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_module_efr32xg23_iar_release.a
+    condition:
+      - toolchain_iar
+      - device_sdid_210
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_module_efr32xg23_gcc_release.a
+    condition:
+      - toolchain_gcc
+      - device_sdid_210
+      - device_is_module
+
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_efr32xg24_iar_release.a
+    condition:
+      - toolchain_iar
+      - device_sdid_215
+    unless:
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_efr32xg24_gcc_release.a
+    condition:
+      - toolchain_gcc
+      - device_sdid_215
+    unless:
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_module_efr32xg24_iar_release.a
+    condition:
+      - toolchain_iar
+      - device_sdid_215
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_module_efr32xg24_gcc_release.a
+    condition:
+      - toolchain_gcc
+      - device_sdid_215
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_efr32xg25_iar_release.a
+    condition:
+      - toolchain_iar
+      - device_sdid_220
+    unless:
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_efr32xg25_gcc_release.a
+    condition:
+      - toolchain_gcc
+      - device_sdid_220
+    unless:
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_module_efr32xg25_iar_release.a
+    condition:
+      - toolchain_iar
+      - device_sdid_220
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_module_efr32xg25_gcc_release.a
+    condition:
+      - toolchain_gcc
+      - device_sdid_220
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_efr32xg27_iar_release.a
+    condition:
+      - toolchain_iar
+      - device_sdid_230
+    unless:
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_efr32xg27_gcc_release.a
+    condition:
+      - toolchain_gcc
+      - device_sdid_230
+    unless:
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_module_efr32xg27_iar_release.a
+    condition:
+      - toolchain_iar
+      - device_sdid_230
+      - device_is_module
+  - path: platform/radio/rail_lib/autogen/librail_release/librail_multiprotocol_module_efr32xg27_gcc_release.a
+    condition:
+      - toolchain_gcc
+      - device_sdid_230
+      - device_is_module

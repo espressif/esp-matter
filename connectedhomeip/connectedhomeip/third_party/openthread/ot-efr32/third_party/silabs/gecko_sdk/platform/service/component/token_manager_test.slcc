@@ -1,0 +1,9 @@
+id: token_manager_test
+label: Token Manager Test
+package: platform
+description: Tester component to satisfy the required compatible stack.
+category: Services|Token Manager
+quality: production
+provides:
+  - name: "wireless_stack"
+    allow_multiple: true

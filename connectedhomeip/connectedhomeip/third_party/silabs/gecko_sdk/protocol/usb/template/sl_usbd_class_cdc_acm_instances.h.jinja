@@ -1,0 +1,24 @@
+#ifndef SL_USBD_CLASS_CDC_ACM_INSTANCES_INIT
+#define SL_USBD_CLASS_CDC_ACM_INSTANCES_INIT
+
+#include "sl_usbd_class_cdc_acm.h"
+
+/* class numbers assigned by the USB stack after init */
+{% for instance in usb_cdc_acm_instances %}
+extern uint8_t sl_usbd_cdc_acm_{{ instance }}_number;
+{% endfor %}
+
+/* event handlers for all CDC ACM instances */
+{% for instance in usb_cdc_acm_instances %}
+__WEAK void sl_usbd_cdc_acm_{{ instance }}_on_enable_event(void);
+__WEAK void sl_usbd_cdc_acm_{{ instance }}_on_disable_event(void);
+__WEAK void sl_usbd_cdc_acm_{{ instance }}_on_line_control_event(void);
+__WEAK void sl_usbd_cdc_acm_{{ instance }}_on_line_coding_event(void);
+{% endfor %}
+
+/* init functions for all CDC ACM instances */
+{% for instance in usb_cdc_acm_instances %}
+void sli_usbd_cdc_acm_{{ instance }}_init(void);
+{% endfor %}
+
+#endif

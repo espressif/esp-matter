@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<workspace>
+    <project>
+        <path>$WS_DIR$/timerled_LP_CC2652R7_tirtos_iar.ewp</path>
+    </project>
+    <project>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/kernel/tirtos/builds/cc13x2x7_cc26x2x7/release/iar/tirtos_builds_cc13x2x7_cc26x2x7_release.ewp</path>
+    </project>
+    <batchBuild/>
+</workspace>

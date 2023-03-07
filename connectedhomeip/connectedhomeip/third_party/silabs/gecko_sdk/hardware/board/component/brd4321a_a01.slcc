@@ -1,0 +1,61 @@
+!!omap
+- id: brd4321a_a01
+- label: BRD4321A rev A01
+- package: platform
+- description: Board support for BRD4321A.
+- category: Platform|Board|Radio Board
+- quality: production
+- requires:
+  - name: wgm240axhv1
+  - name: brd4321a_config
+  - name: hardware_board_mainboard
+- provides:
+  - name: brd4321a_revision
+  - name: brd4321a_a01
+  - name: hardware_board_wfx
+  - name: hardware_board
+  - name: hardware_board_rb
+  - name: hardware_board_has_si70xx
+  - name: hardware_board_has_tempsensor
+  - name: hardware_board_has_vcom
+  - name: hardware_board_has_hfxo
+  - name: hardware_board_supports_rf_band_2400
+  - name: hardware_board_supports_1_rf_band
+  - name: hardware_board_default_rf_band
+  - name: hardware_board_default_rf_band_2400
+- recommends:
+  - id: brd4001a
+  - id: i2cspm
+    instance:
+    - sensor
+  - id: ls013b7dh03
+  - id: simple_led
+    instance:
+    - led0
+    - led1
+  - id: simple_button
+    instance:
+    - btn0
+    - btn1
+  - id: usb_device_driver_dwc_otg_fs
+- template_contribution:
+  - name: component_catalog
+    value: wfx_board
+  - name: board_default_init
+    value: sl_board_disable_vcom()
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD4321A"'
+  - name: SL_BOARD_REV
+    value: '"A01"'
+- tag:
+  - board:pn:BRD4321
+  - board:variant:A
+  - board:revision:A01
+  - board:device:wgm240axhv1
+  - hardware:has:vcom
+  - hardware:has:sensor:si7021
+  - hardware:has:display:ls013b7dh03
+  - hardware:has:led:2
+  - hardware:has:button:2
+  - hardware:has:usb

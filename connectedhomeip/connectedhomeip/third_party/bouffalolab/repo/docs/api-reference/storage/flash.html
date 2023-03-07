@@ -1,0 +1,592 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Flash &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../index.html"/>
+        <link rel="up" title="存储 API" href="index.html"/>
+        <link rel="next" title="系统 API" href="../system/index.html"/>
+        <link rel="prev" title="存储 API" href="index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">BL602 API 参考</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../ble/index.html">蓝牙</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../network/index.html">连网</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../peripherals/index.html">外设</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../protocols/index.html">协议</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">存储</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Flash分区 API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">概述</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">应用实例</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#api">API参考</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../system/index.html">系统</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../Examples/index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">BL602 API 参考</a> &raquo;</li>
+        
+          <li><a href="index.html">存储 API</a> &raquo;</li>
+        
+      <li>Flash</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/api-reference/storage/flash.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="flash">
+<h1>Flash<a class="headerlink" href="#flash" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<h2>概述<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<p>SDK中使用分区表保存flash各区的信息，包括引导程序、各种应用程序二进制文件、数据及文件系统等。</p>
+</div>
+<div class="section" id="id2">
+<h2>应用实例<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<p>flash实例： <code class="docutils literal notranslate"><span class="pre">customer_app/peripheral/demo_flash</span></code> 。</p>
+</div>
+<div class="section" id="api">
+<h2>API参考<a class="headerlink" href="#api" title="永久链接至标题"></a></h2>
+<div class="section" id="header-file">
+<h3>Header File<a class="headerlink" href="#header-file" title="永久链接至标题"></a></h3>
+<ul class="simple">
+<li><span class="xref std std-doc">components/platform/hosal/include/hosal_flash.h</span></li>
+</ul>
+</div>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="永久链接至标题"></a></h3>
+<dl class="function">
+<dt id="_CPPv416hosal_flash_openPKcj">
+<span id="_CPPv316hosal_flash_openPKcj"></span><span id="_CPPv216hosal_flash_openPKcj"></span><span id="hosal_flash_open__cCP.unsigned-i"></span><span class="target" id="group__hosal__flash_1ga0213aff66201bbecfe60bf6a654d4a66"></span><a class="reference internal" href="#_CPPv417hosal_flash_dev_t" title="hosal_flash_dev_t">hosal_flash_dev_t</a> *<code class="descname">hosal_flash_open</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>name</em>, unsigned int <em>flags</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416hosal_flash_openPKcj" title="永久链接至目标"></a><br /></dt>
+<dd><p>Open a flash partition device. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>NULL flash open error</li>
+<li>otherwise is flash partition device </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">name</span></code>: flash partition name </li>
+<li><code class="docutils literal notranslate"><span class="pre">flags</span></code>: flash flags<ul>
+<li>HOSAL_FLASH_FLAG_ADDR_0</li>
+<li>HOSAL_FLASH_FLAG_ADDR_1</li>
+<li>HOSAL_FLASH_FLAG_BUSADDR</li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv420hosal_flash_info_getP17hosal_flash_dev_tP23hosal_logic_partition_t">
+<span id="_CPPv320hosal_flash_info_getP17hosal_flash_dev_tP23hosal_logic_partition_t"></span><span id="_CPPv220hosal_flash_info_getP17hosal_flash_dev_tP23hosal_logic_partition_t"></span><span id="hosal_flash_info_get__hosal_flash_dev_tP.hosal_logic_partition_tP"></span><span class="target" id="group__hosal__flash_1ga02e94d3c02755e936afe95c04ae45a2a"></span>int <code class="descname">hosal_flash_info_get</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv417hosal_flash_dev_t" title="hosal_flash_dev_t">hosal_flash_dev_t</a> *<em>p_dev</em>, <a class="reference internal" href="#_CPPv423hosal_logic_partition_t" title="hosal_logic_partition_t">hosal_logic_partition_t</a> *<em>partition</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420hosal_flash_info_getP17hosal_flash_dev_tP23hosal_logic_partition_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Get the information of the specified flash area. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 On success</li>
+<li>otherwise is error </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">p_dev</span></code>: The target flash logical partition device </li>
+<li><code class="docutils literal notranslate"><span class="pre">partition</span></code>: The buffer to store partition info</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv417hosal_flash_eraseP17hosal_flash_dev_t8uint32_t8uint32_t">
+<span id="_CPPv317hosal_flash_eraseP17hosal_flash_dev_t8uint32_t8uint32_t"></span><span id="_CPPv217hosal_flash_eraseP17hosal_flash_dev_t8uint32_t8uint32_t"></span><span id="hosal_flash_erase__hosal_flash_dev_tP.uint32_t.uint32_t"></span><span class="target" id="group__hosal__flash_1ga9b5b80c01e553b0b2ae4d15039694a0c"></span>int <code class="descname">hosal_flash_erase</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv417hosal_flash_dev_t" title="hosal_flash_dev_t">hosal_flash_dev_t</a> *<em>p_dev</em>, uint32_t <em>off_set</em>, uint32_t <em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417hosal_flash_eraseP17hosal_flash_dev_t8uint32_t8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Erase an area on a Flash logical partition. </p>
+<p><dl class="docutils">
+<dt><strong>Note</strong></dt>
+<dd>Erase on an address will erase all data on a sector that the address is belonged to, this function does not save data that beyond the address area but in the affected sector, the data will be lost.</dd>
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 On success</li>
+<li>otherwise is error </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">p_dev</span></code>: The target flash logical partition which should be erased </li>
+<li><code class="docutils literal notranslate"><span class="pre">off_set</span></code>: Start address of the erased flash area </li>
+<li><code class="docutils literal notranslate"><span class="pre">size</span></code>: Size of the erased flash area</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv417hosal_flash_writeP17hosal_flash_dev_tP8uint32_tPKv8uint32_t">
+<span id="_CPPv317hosal_flash_writeP17hosal_flash_dev_tP8uint32_tPKv8uint32_t"></span><span id="_CPPv217hosal_flash_writeP17hosal_flash_dev_tP8uint32_tPKv8uint32_t"></span><span id="hosal_flash_write__hosal_flash_dev_tP.uint32_tP.voidCP.uint32_t"></span><span class="target" id="group__hosal__flash_1ga2d8bd99a34de7f0c4aafded53fc3faef"></span>int <code class="descname">hosal_flash_write</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv417hosal_flash_dev_t" title="hosal_flash_dev_t">hosal_flash_dev_t</a> *<em>p_dev</em>, uint32_t *<em>off_set</em>, <em class="property">const</em> void *<em>in_buf</em>, uint32_t <em>in_buf_size</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417hosal_flash_writeP17hosal_flash_dev_tP8uint32_tPKv8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Write data to an area on a flash logical partition without erase. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 On success</li>
+<li>otherwise is error </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">p_dev</span></code>: The target flash logical partition which should be read which should be written </li>
+<li><code class="docutils literal notranslate"><span class="pre">[in/out]</span></code>: off_set Point to the start address that the data is written to, and point to the last unwritten address after this function is returned, so you can call this function serval times without update this start address. </li>
+<li><code class="docutils literal notranslate"><span class="pre">in_buf</span></code>: point to the data buffer that will be written to flash </li>
+<li><code class="docutils literal notranslate"><span class="pre">in_buf_size</span></code>: The size of the buffer</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv423hosal_flash_erase_writeP17hosal_flash_dev_tP8uint32_tPKv8uint32_t">
+<span id="_CPPv323hosal_flash_erase_writeP17hosal_flash_dev_tP8uint32_tPKv8uint32_t"></span><span id="_CPPv223hosal_flash_erase_writeP17hosal_flash_dev_tP8uint32_tPKv8uint32_t"></span><span id="hosal_flash_erase_write__hosal_flash_dev_tP.uint32_tP.voidCP.uint32_t"></span><span class="target" id="group__hosal__flash_1ga55870098ee5025b701250547ee25cf8f"></span>int <code class="descname">hosal_flash_erase_write</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv417hosal_flash_dev_t" title="hosal_flash_dev_t">hosal_flash_dev_t</a> *<em>p_dev</em>, uint32_t *<em>off_set</em>, <em class="property">const</em> void *<em>in_buf</em>, uint32_t <em>in_buf_size</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv423hosal_flash_erase_writeP17hosal_flash_dev_tP8uint32_tPKv8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Write data to an area on a flash logical partition with erase first. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 On success</li>
+<li>otherwise is error </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">p_dev</span></code>: The target flash logical partition which should be read which should be written </li>
+<li><code class="docutils literal notranslate"><span class="pre">[in/out]</span></code>: off_set Point to the start address that the data is written to, and point to the last unwritten address after this function is returned, so you can call this function serval times without update this start address. </li>
+<li><code class="docutils literal notranslate"><span class="pre">in_buf</span></code>: point to the data buffer that will be written to flash </li>
+<li><code class="docutils literal notranslate"><span class="pre">in_buf_size</span></code>: The length of the buffer</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv416hosal_flash_readP17hosal_flash_dev_tP8uint32_tPv8uint32_t">
+<span id="_CPPv316hosal_flash_readP17hosal_flash_dev_tP8uint32_tPv8uint32_t"></span><span id="_CPPv216hosal_flash_readP17hosal_flash_dev_tP8uint32_tPv8uint32_t"></span><span id="hosal_flash_read__hosal_flash_dev_tP.uint32_tP.voidP.uint32_t"></span><span class="target" id="group__hosal__flash_1ga7467922647d1b016b8d4cf332afa2f91"></span>int <code class="descname">hosal_flash_read</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv417hosal_flash_dev_t" title="hosal_flash_dev_t">hosal_flash_dev_t</a> *<em>p_dev</em>, uint32_t *<em>off_set</em>, void *<em>out_buf</em>, uint32_t <em>out_buf_size</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416hosal_flash_readP17hosal_flash_dev_tP8uint32_tPv8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Read data from an area on a Flash to data buffer in RAM. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 On success</li>
+<li>otherwise is error </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">p_dev</span></code>: The target flash logical partition which should be read </li>
+<li><code class="docutils literal notranslate"><span class="pre">[in/out]</span></code>: off_set Point to the start address that the data is read, and point to the last unread address after this function is returned, so you can call this function serval times without update this start address. </li>
+<li><code class="docutils literal notranslate"><span class="pre">out_buf</span></code>: Point to the data buffer that stores the data read from flash </li>
+<li><code class="docutils literal notranslate"><span class="pre">out_buf_size</span></code>: The length of the buffer</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv417hosal_flash_closeP17hosal_flash_dev_t">
+<span id="_CPPv317hosal_flash_closeP17hosal_flash_dev_t"></span><span id="_CPPv217hosal_flash_closeP17hosal_flash_dev_t"></span><span id="hosal_flash_close__hosal_flash_dev_tP"></span><span class="target" id="group__hosal__flash_1ga1d036d383806466e2a14085d7800d78e"></span>int <code class="descname">hosal_flash_close</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv417hosal_flash_dev_t" title="hosal_flash_dev_t">hosal_flash_dev_t</a> *<em>p_dev</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417hosal_flash_closeP17hosal_flash_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Close a flash partition device. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 On success</li>
+<li>otherwise is error </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">p_dev</span></code>: flash partition device</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv420hosal_flash_raw_readPv8uint32_t8uint32_t">
+<span id="_CPPv320hosal_flash_raw_readPv8uint32_t8uint32_t"></span><span id="_CPPv220hosal_flash_raw_readPv8uint32_t8uint32_t"></span><span id="hosal_flash_raw_read__voidP.uint32_t.uint32_t"></span><span class="target" id="group__hosal__flash_1ga1d0c39c3391029515e57a69273a15fc7"></span>int <code class="descname">hosal_flash_raw_read</code><span class="sig-paren">(</span>void *<em>buffer</em>, uint32_t <em>address</em>, uint32_t <em>length</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420hosal_flash_raw_readPv8uint32_t8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Read data from a row address on a Flash to data buffer in RAM. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 On success</li>
+<li>otherwise is error </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">buffer</span></code>: Point to the data buffer that stores the data read from flash </li>
+<li><code class="docutils literal notranslate"><span class="pre">address</span></code>: Address on flash to read from </li>
+<li><code class="docutils literal notranslate"><span class="pre">length</span></code>: Length (in bytes) of data to read</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv421hosal_flash_raw_writePv8uint32_t8uint32_t">
+<span id="_CPPv321hosal_flash_raw_writePv8uint32_t8uint32_t"></span><span id="_CPPv221hosal_flash_raw_writePv8uint32_t8uint32_t"></span><span id="hosal_flash_raw_write__voidP.uint32_t.uint32_t"></span><span class="target" id="group__hosal__flash_1ga4c5147d3d826815105a23bcbc9db854e"></span>int <code class="descname">hosal_flash_raw_write</code><span class="sig-paren">(</span>void *<em>buffer</em>, uint32_t <em>address</em>, uint32_t <em>length</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421hosal_flash_raw_writePv8uint32_t8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Write data to a row address on a Flash. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 On success</li>
+<li>otherwise is error </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">buffer</span></code>: Point to the data buffer that will be written to flash </li>
+<li><code class="docutils literal notranslate"><span class="pre">address</span></code>: Address on flash to write to </li>
+<li><code class="docutils literal notranslate"><span class="pre">length</span></code>: Length (in bytes) of data to write</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv421hosal_flash_raw_erase8uint32_t8uint32_t">
+<span id="_CPPv321hosal_flash_raw_erase8uint32_t8uint32_t"></span><span id="_CPPv221hosal_flash_raw_erase8uint32_t8uint32_t"></span><span id="hosal_flash_raw_erase__uint32_t.uint32_t"></span><span class="target" id="group__hosal__flash_1ga49a618e0373ea6555a596031bf34a21a"></span>int <code class="descname">hosal_flash_raw_erase</code><span class="sig-paren">(</span>uint32_t <em>start_addr</em>, uint32_t <em>length</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421hosal_flash_raw_erase8uint32_t8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Erase a region of the flash. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 On success</li>
+<li>otherwise is error </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">start_addr</span></code>: Address to start erasing flash. </li>
+<li><code class="docutils literal notranslate"><span class="pre">length</span></code>: Length of region to erase.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="structures">
+<h3>Structures<a class="headerlink" href="#structures" title="永久链接至标题"></a></h3>
+<dl class="class">
+<dt id="_CPPv415hosal_flash_dev">
+<span id="_CPPv315hosal_flash_dev"></span><span id="_CPPv215hosal_flash_dev"></span><span id="hosal_flash_dev"></span><span class="target" id="structhosal__flash__dev"></span><em class="property">struct </em><code class="descname">hosal_flash_dev</code><a class="headerlink" href="#_CPPv415hosal_flash_dev" title="永久链接至目标"></a><br /></dt>
+<dd><p>Hal flash partition device. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N15hosal_flash_dev9flash_devE">
+<span id="_CPPv3N15hosal_flash_dev9flash_devE"></span><span id="_CPPv2N15hosal_flash_dev9flash_devE"></span><span id="hosal_flash_dev::flash_dev__voidP"></span><span class="target" id="structhosal__flash__dev_1ae8a7fed497abdc2c6af1c350d6cd73ff"></span>void *<code class="descname">flash_dev</code><a class="headerlink" href="#_CPPv4N15hosal_flash_dev9flash_devE" title="永久链接至目标"></a><br /></dt>
+<dd><p>flash device </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv423hosal_logic_partition_t">
+<span id="_CPPv323hosal_logic_partition_t"></span><span id="_CPPv223hosal_logic_partition_t"></span><span id="hosal_logic_partition_t"></span><span class="target" id="structhosal__logic__partition__t"></span><em class="property">struct </em><code class="descname">hosal_logic_partition_t</code><a class="headerlink" href="#_CPPv423hosal_logic_partition_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Hal flash partition manage struct. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N23hosal_logic_partition_t21partition_descriptionE">
+<span id="_CPPv3N23hosal_logic_partition_t21partition_descriptionE"></span><span id="_CPPv2N23hosal_logic_partition_t21partition_descriptionE"></span><span id="hosal_logic_partition_t::partition_description__cCP"></span><span class="target" id="structhosal__logic__partition__t_1a20131c4e661d76244247668f1ddfccde"></span><em class="property">const</em> char *<code class="descname">partition_description</code><a class="headerlink" href="#_CPPv4N23hosal_logic_partition_t21partition_descriptionE" title="永久链接至目标"></a><br /></dt>
+<dd><p>name </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N23hosal_logic_partition_t20partition_start_addrE">
+<span id="_CPPv3N23hosal_logic_partition_t20partition_start_addrE"></span><span id="_CPPv2N23hosal_logic_partition_t20partition_start_addrE"></span><span id="hosal_logic_partition_t::partition_start_addr__uint32_t"></span><span class="target" id="structhosal__logic__partition__t_1a8e6cd07b689102212e3815fec089073e"></span>uint32_t <code class="descname">partition_start_addr</code><a class="headerlink" href="#_CPPv4N23hosal_logic_partition_t20partition_start_addrE" title="永久链接至目标"></a><br /></dt>
+<dd><p>start addr </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N23hosal_logic_partition_t16partition_lengthE">
+<span id="_CPPv3N23hosal_logic_partition_t16partition_lengthE"></span><span id="_CPPv2N23hosal_logic_partition_t16partition_lengthE"></span><span id="hosal_logic_partition_t::partition_length__uint32_t"></span><span class="target" id="structhosal__logic__partition__t_1a3da4ea64428f2b7b36be575521b9d013"></span>uint32_t <code class="descname">partition_length</code><a class="headerlink" href="#_CPPv4N23hosal_logic_partition_t16partition_lengthE" title="永久链接至目标"></a><br /></dt>
+<dd><p>length </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N23hosal_logic_partition_t17partition_optionsE">
+<span id="_CPPv3N23hosal_logic_partition_t17partition_optionsE"></span><span id="_CPPv2N23hosal_logic_partition_t17partition_optionsE"></span><span id="hosal_logic_partition_t::partition_options__uint32_t"></span><span class="target" id="structhosal__logic__partition__t_1a3c5a8463abdbf43085c2eff54f9967ae"></span>uint32_t <code class="descname">partition_options</code><a class="headerlink" href="#_CPPv4N23hosal_logic_partition_t17partition_optionsE" title="永久链接至目标"></a><br /></dt>
+<dd><p>options </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="macros">
+<h3>Macros<a class="headerlink" href="#macros" title="永久链接至标题"></a></h3>
+<dl class="macro">
+<dt id="c.HOSAL_FLASH_FLAG_ADDR_0">
+<span class="target" id="group__hosal__flash_1ga16fbf0547315af60948d61ac7b2d9de6"></span><code class="descname">HOSAL_FLASH_FLAG_ADDR_0</code><a class="headerlink" href="#c.HOSAL_FLASH_FLAG_ADDR_0" title="永久链接至目标"></a></dt>
+<dd><p>Open flash prtition address 0 in prtition table. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_FLASH_FLAG_ADDR_1">
+<span class="target" id="group__hosal__flash_1ga69b21687853fb95bda8f283fca3fb3ca"></span><code class="descname">HOSAL_FLASH_FLAG_ADDR_1</code><a class="headerlink" href="#c.HOSAL_FLASH_FLAG_ADDR_1" title="永久链接至目标"></a></dt>
+<dd><p>Open flash prtition address 1 in prtition table. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_FLASH_FLAG_BUSADDR">
+<span class="target" id="group__hosal__flash_1gaab42bc0c6cccd7d7256d74941fb9ee61"></span><code class="descname">HOSAL_FLASH_FLAG_BUSADDR</code><a class="headerlink" href="#c.HOSAL_FLASH_FLAG_BUSADDR" title="永久链接至目标"></a></dt>
+<dd><p>Open the partition table and use the bus physical address of flash. (If it is not set, the offset address set in the partition table is used by default.) </p>
+</dd></dl>
+
+</div>
+<div class="section" id="type-definitions">
+<h3>Type Definitions<a class="headerlink" href="#type-definitions" title="永久链接至标题"></a></h3>
+<dl class="type">
+<dt id="_CPPv417hosal_flash_dev_t">
+<span id="_CPPv317hosal_flash_dev_t"></span><span id="_CPPv217hosal_flash_dev_t"></span><span id="hosal_flash_dev_t"></span><span class="target" id="group__hosal__flash_1gab26b7f2910537f5236e5f19c8fbf2e34"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv415hosal_flash_dev" title="hosal_flash_dev">hosal_flash_dev</a> <code class="descname">hosal_flash_dev_t</code><a class="headerlink" href="#_CPPv417hosal_flash_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Hal flash partition device. </p>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../system/index.html" class="btn btn-neutral float-right" title="系统 API" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="存储 API" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,23 @@
+!!omap
+- id: slwstk6000b
+- label: SLWSTK6000B
+- package: platform
+- description: Kit BSP support for the EFR32MG12 2.4 GHz Mesh Networking Kit.
+- category: Platform|Board|Kit|Wireless Starter Kit
+- quality: production
+- requires:
+  - name: brd4001a
+  - name: hardware_board_from_slwstk6000b
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_stk
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWSTK6000B"'
+  - name: SL_KIT_REV
+    value: '"B05"'
+- tag:
+  - kit:opn:SLWSTK6000B
+  - kit:pn:WSTK6000
+  - kit:variant:B
+  - kit:revision:B05

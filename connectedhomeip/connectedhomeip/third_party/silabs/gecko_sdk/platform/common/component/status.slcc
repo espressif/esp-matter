@@ -1,0 +1,16 @@
+id: status
+label: "Status Codes Definitions"
+package: platform
+description: Common status codes
+category: Platform|Utilities|Status Code
+quality: production
+root_path: platform/common
+include:
+  - path: inc
+    file_list:
+      - path: sl_status.h
+provides:
+  - name: status
+documentation:
+  docset: gecko-platform
+  document: common/api/group-status

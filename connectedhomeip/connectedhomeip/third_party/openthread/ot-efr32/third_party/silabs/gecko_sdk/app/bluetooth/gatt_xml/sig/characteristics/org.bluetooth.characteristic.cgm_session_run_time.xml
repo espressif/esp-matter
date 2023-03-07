@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                name="CGM Session Run Time" type="org.bluetooth.characteristic.cgm_session_run_time" uuid="2AAB" last-modified="2014-11-17" approved="Yes">
+    <Value>
+        <Field name="CGM Session Run Time">
+            <InformativeText>Typically the CGM Sensors have a limited run time where they are approved for by regulatory bodies. However this characteristic should enable a prediction of the run time depending on physiological effects in future devices.</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>uint16</Format>
+            <Unit>org.bluetooth.unit.time.hour</Unit>
+        </Field>
+        <Field name="E2E-CRC">
+            <InformativeText>If the device supports E2E-safety (E2E-CRC-Supported bit is set in CGM Feature), the session run time is secured by a CRC calculated over all fields.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Format>uint16</Format>
+        </Field>
+	</Value>
+    <Note>
+        C1:	Mandatory if device supports E2E-CRC (Bit 12 is set in CGM Feature) otherwise excluded.
+        The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet
+	</Note>
+</Characteristic>

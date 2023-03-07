@@ -1,0 +1,39 @@
+id: mbedtls_asn1
+package: platform
+label: ASN.1 Parsing
+description: >-
+  This component provides support for ASN.1 parsing and writing using Mbed TLS.
+category: Platform|Security|Mbed TLS|Upper Layer
+quality: production
+source:
+  - path: util/third_party/crypto/mbedtls/library/asn1parse.c
+    unless: [tz_secure_key_library_ns]
+  - path: util/third_party/crypto/mbedtls/library/asn1write.c
+    unless: [tz_secure_key_library_ns]
+  - path: util/third_party/crypto/mbedtls/library/asn1parse.c
+    condition: [test_tz_ns_psa_crypto_config]
+  - path: util/third_party/crypto/mbedtls/library/asn1write.c
+    condition: [test_tz_ns_psa_crypto_config]
+include:
+  - path: util/third_party/crypto/mbedtls/include
+    unless: [tz_secure_key_library_ns]
+    file_list:
+      - path: mbedtls/asn1.h
+      - path: mbedtls/asn1write.h
+  - path: util/third_party/crypto/mbedtls/include
+    condition: [test_tz_ns_psa_crypto_config]
+    file_list:
+      - path: mbedtls/asn1.h
+      - path: mbedtls/asn1write.h
+provides:
+  - name: mbedtls_asn1
+requires:
+  - name: mbedtls_core
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_ASN1_PARSE_C
+  - name: mbedtls_config
+    value: MBEDTLS_ASN1_WRITE_C
+documentation:
+  docset: mbed-tls
+  document: group-asn1-module

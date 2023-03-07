@@ -1,0 +1,80 @@
+project_name: tz_se_manager_key_provisioning
+package: platform
+quality: beta
+label: Platform - SE Manager Key Provisioning (TrustZone)
+description: >
+  This example project demonstrates the key provisioning API of SE Manager in a TrustZone Non-secure application.
+category: Example|Platform
+source:
+  - path: main.c
+  - path: app_init.c
+  - path: app_process.c
+  - path: app_se_manager_key_provisioning.c
+include:
+  - path: .
+    file_list:
+    - path: app_init.h
+    - path: app_process.h
+    - path: app_se_manager_macro.h
+    - path: app_se_manager_key_provisioning.h
+readme:
+  - path: readme.md
+ui_hints:
+  highlight:
+    - path: readme.md
+      focus: true
+component:
+  - id: sl_string
+  - id: status_string
+  - id: se_manager
+  - id: sl_system
+  - id: device_init
+  - id: device_init_hfrco
+  - id: printf
+  - id: iostream_retarget_stdio
+  - id: iostream_recommended_stream
+requires:
+  - name: device_series_2
+configuration:
+  - name: SL_STATUS_STRING_ENABLE_BLUETOOTH
+    value: 0
+  - name: SL_STATUS_STRING_ENABLE_WIFI
+    value: 0
+  - name: SL_DEVICE_INIT_HFRCO_BAND
+    value: cmuHFRCODPLLFreq_38M0Hz
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+template_contribution:
+  - name: memory_flash_start
+    value: 0x28000
+    condition: [device_sdid_200, trustzone_nonsecure]
+  - name: memory_flash_start
+    value: 0x28000
+    condition: [device_sdid_205, trustzone_nonsecure]
+  - name: memory_flash_start
+    value: 0x08028000
+    condition: [device_sdid_210, trustzone_nonsecure]
+  - name: memory_flash_start
+    value: 0x08028000
+    condition: [device_sdid_215, trustzone_nonsecure]
+  - name: memory_flash_start
+    value: 0x08028000
+    condition: [device_sdid_220, trustzone_nonsecure]
+  - name: memory_flash_size
+    value: 0x58000
+    condition: [trustzone_nonsecure]
+  - name: memory_ram_start
+    value: 0x20003000
+    condition: [trustzone_nonsecure]
+  - name: memory_ram_size
+    value: 20480
+    condition: [trustzone_nonsecure]
+define:
+  - name: DEBUG_EFM
+  - name: SE_MANAGER_PRINT
+toolchain_settings:
+  - option: optimize
+    value: debug
+tag:
+  - level:advanced
+  - "companion:../tz_platform_example_s/tz_platform_example_s.slcp"

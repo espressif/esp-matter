@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ASCII"?>
+<device:XMLDevice xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:device="http://www.silabs.com/ss/hwconfig/document/device.ecore" name="EFR32MG1P732F256IM32" partId="mcu.arm.efr32.mg1.efr32mg1p732f256im32">
+  <mode name="DefaultMode">
+    <property object="BULBPWM" propertyId="ABPeripheral.included" value="true"/>
+    <property object="BULBPWM" propertyId="BULBPWM.HAL_BULBPWM_LOWTEMP_ENABLE.BOOL" value="1"/>
+    <property object="BULBPWM" propertyId="BULBPWM.HAL_BULBPWM_STATUS_ENABLE.BOOL" value="1"/>
+    <property object="BULBPWM" propertyId="BULBPWM.HAL_BULBPWM_WHITE_ENABLE.BOOL" value="1"/>
+    <property object="BULBPWM_COLOR" propertyId="ABPeripheral.included" value="true"/>
+    <property object="BULBPWM_COLOR" propertyId="BULBPWM_COLOR.HAL_BULBPWM_BLUE_ENABLE.BOOL" value="1"/>
+    <property object="BULBPWM_COLOR" propertyId="BULBPWM_COLOR.HAL_BULBPWM_GREEN_ENABLE.BOOL" value="1"/>
+    <property object="BULBPWM_COLOR" propertyId="BULBPWM_COLOR.HAL_BULBPWM_RED_ENABLE.BOOL" value="1"/>
+    <property object="CMU" propertyId="ABPeripheral.included" value="true"/>
+    <property object="CMU" propertyId="CMU.BSP_CLK_HFXO_CTUNE.INT" value="322"/>
+    <property object="CMU" propertyId="CMU.BSP_CLK_HFXO_PRESENT.BOOL" value="1"/>
+    <property object="CMU" propertyId="CMU.HAL_CLK_HFCLK_SOURCE.ENUM" value="HAL_CLK_HFCLK_SOURCE_HFXO"/>
+    <property object="CMU" propertyId="CMU.HAL_CLK_LFACLK_SOURCE.ENUM" value="HAL_CLK_LFCLK_SOURCE_LFRCO"/>
+    <property object="CMU" propertyId="CMU.HAL_CLK_LFBCLK_SOURCE.ENUM" value="HAL_CLK_LFCLK_SOURCE_LFRCO"/>
+    <property object="CMU" propertyId="CMU.HAL_CLK_LFECLK_SOURCE.ENUM" value="HAL_CLK_LFCLK_SOURCE_LFRCO"/>
+    <property object="DefaultMode" propertyId="mode.diagramLocation" value="100, 100"/>
+    <property object="LEUART0" propertyId="LEUART.HAL_LEUART_BAUD_RATE.INT" value="115200"/>
+    <property object="PA" propertyId="ABPeripheral.included" value="true"/>
+    <property object="PORTIO" propertyId="portio.pti.enable.dframe" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.pti.enable.dout" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.pti.location.frc_dframeloc" value="6"/>
+    <property object="PORTIO" propertyId="portio.pti.location.frc_doutloc" value="6"/>
+    <property object="PORTIO" propertyId="portio.timer0.enable.cc0" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.timer0.enable.cc1" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.timer0.enable.cc2" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.timer0.location.timer0_cc0loc" value="9"/>
+    <property object="PORTIO" propertyId="portio.timer0.location.timer0_cc1loc" value="9"/>
+    <property object="PORTIO" propertyId="portio.timer1.enable.cc0" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.timer1.enable.cc1" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.timer1.enable.cc2" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.timer1.location.timer1_cc0loc" value="15"/>
+    <property object="PORTIO" propertyId="portio.timer1.location.timer1_cc1loc" value="22"/>
+    <property object="PORTIO" propertyId="portio.timer1.location.timer1_cc2loc" value="14"/>
+    <property object="PORTIO" propertyId="portio.timer1.location.timer1_cc3loc" value="24"/>
+    <property object="PORTIO" propertyId="portio.usart0.enable.rx" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.usart0.enable.tx" value="Enabled"/>
+    <property object="PTI" propertyId="ABPeripheral.included" value="true"/>
+    <property object="PTI" propertyId="PTI.BSP_PTI_DFRAME.PIN" value="PB13"/>
+    <property object="PTI" propertyId="PTI.BSP_PTI_DOUT.PIN" value="PB12"/>
+    <property object="SERIAL" propertyId="ABPeripheral.included" value="true"/>
+    <property object="SERIAL" propertyId="SERIAL.BSP_SERIAL_APP_PORT.MOD" value="USART0"/>
+    <property object="SERIAL" propertyId="SERIAL.HAL_SERIAL_USART0_ENABLE.BOOL" value="1"/>
+    <property object="TIMER0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="TIMER0" propertyId="TIMER.BSP_TIMER_CC0.PIN" value="PB14"/>
+    <property object="TIMER0" propertyId="TIMER.BSP_TIMER_CC1.PIN" value="PB15"/>
+    <property object="TIMER0" propertyId="TIMER.BSP_TIMER_CC2.PIN" value="PB11"/>
+    <property object="TIMER1" propertyId="ABPeripheral.included" value="true"/>
+    <property object="TIMER1" propertyId="TIMER.BSP_TIMER_CC0.PIN" value="PC10"/>
+    <property object="TIMER1" propertyId="TIMER.BSP_TIMER_CC1.PIN" value="PD15"/>
+    <property object="TIMER1" propertyId="TIMER.BSP_TIMER_CC2.PIN" value="PC11"/>
+    <property object="USART0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="USART0" propertyId="USART.BSP_USART_MISO.PIN" value="PA1"/>
+    <property object="USART0" propertyId="USART.BSP_USART_MOSI.PIN" value="PA0"/>
+    <property object="USART0" propertyId="USART.BSP_USART_RX.PIN" value="PA1"/>
+    <property object="USART0" propertyId="USART.BSP_USART_TX.PIN" value="PA0"/>
+    <property object="USART0" propertyId="USART.HAL_USART_RXSTART.INT" value="16"/>
+    <property object="USART0" propertyId="USART.HAL_USART_RXSTOP.INT" value="16"/>
+    <property object="USART0" propertyId="USART.HAL_USART_RX_QUEUE_SIZE.INT" value="128"/>
+    <property object="USART0" propertyId="USART.HAL_USART_TX_QUEUE_SIZE.INT" value="128"/>
+    <property object="USART1" propertyId="USART.HAL_USART_RXSTART.INT" value="16"/>
+    <property object="USART1" propertyId="USART.HAL_USART_RXSTOP.INT" value="16"/>
+    <property object="USART1" propertyId="USART.HAL_USART_RX_QUEUE_SIZE.INT" value="128"/>
+    <property object="USART1" propertyId="USART.HAL_USART_TX_QUEUE_SIZE.INT" value="128"/>
+    <property object="VCOM" propertyId="ABPeripheral.included" value="true"/>
+    <property object="VCOM" propertyId="VCOM.BSP_VCOM_ENABLE.PIN" value="PD13"/>
+  </mode>
+  <modeTransition>
+    <property object="RESET &#x2192; DefaultMode" propertyId="modeTransition.source" value="RESET"/>
+    <property object="RESET &#x2192; DefaultMode" propertyId="modeTransition.target" value="DefaultMode"/>
+  </modeTransition>
+</device:XMLDevice>

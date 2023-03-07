@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="SDK.HAL.LED.BSP">
+  <folder name="led">
+    <file name="bsp_stk_leds.c" partCompatibility="mcu.arm.efm32.* mcu.arm.ezr32.* mcu.arm.efr32.*" uri="$(sdkInstallationPath)/hardware/kit/common/bsp/bsp_stk_leds.c"/>
+  </folder>
+  <includePath languageCompatibility="c asm" uri="$(sdkInstallationPath)/hardware/kit/common/"/>
+</project>

@@ -1,0 +1,10 @@
+[
+      {
+        "name": "Main",
+        "location": "0x0000",
+        "sig_models" : [
+          {"mid":"0x1100", "name":"Sensor Server"},
+          {"mid":"0x1101", "name":"Sensor Setup Server"}
+        ]
+      }
+]

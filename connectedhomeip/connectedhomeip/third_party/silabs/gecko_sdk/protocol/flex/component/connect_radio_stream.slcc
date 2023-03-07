@@ -1,0 +1,20 @@
+id: "connect_radio_stream"
+label: "Radio Stream"
+package: "Flex"
+category: "Connect"
+quality: "production"
+description: "Implements radio stream function for RF validation."
+provides:
+  - name: "connect_radio_stream"
+requires:
+  - name: "connect_stack_common"
+  - name: "connect_radio_stream_implementation"
+recommends:
+  - id: "connect_radio_stream_source"
+template_contribution:
+  - name: component_catalog
+    value: connect_radio_stream
+
+documentation:
+  docset: connect-stack
+  document: group-radio_stream

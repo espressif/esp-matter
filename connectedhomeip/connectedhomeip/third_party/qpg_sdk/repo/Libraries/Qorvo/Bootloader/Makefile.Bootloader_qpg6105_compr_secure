@@ -1,0 +1,77 @@
+#Generated from:
+# $(BASEDIR)/../../../Libraries/Qorvo/Bootloader/UserModeBootloader_QPG6105DK_B01_compr_secure_armgccemb_lib.py
+
+
+SHELL = /bin/bash
+
+ifndef BASEDIR
+BASEDIR:=$(abspath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
+endif
+
+ROOTDIR?=$(BASEDIR)/../../..
+
+WORKDIR ?= $(BASEDIR)/../../../Work/Bootloader_qpg6105_compr_secure
+
+LIBBOOTLOADER_QPG6105_COMPR_SECURE_A := $(WORKDIR)/libBootloader_qpg6105_compr_secure.a
+
+TOOLCHAIN ?= /usr
+ifeq (,$(TOOLCHAIN))
+# Will use the path variable to find the compiler
+Q_TOOLCHAIN_PREFIX=
+else
+# Use an absolute path, add bin, path separator
+Q_TOOLCHAIN_PREFIX= $(TOOLCHAIN)/bin/
+endif
+
+
+QPG_SDK_ROOT ?= $(ROOTDIR)
+QPG_SDK_LIB_DIR ?= Work
+QPG_TARGET_IC ?= qpg6105_compr_secure
+QPG_SDK_INCLUDE_PLATFORM_LIBS ?=  false
+
+
+
+OBJCOPY ?= $(Q_TOOLCHAIN_PREFIX)arm-none-eabi-objcopy -I binary -O elf32-littlearm -B armv7e-m
+AR ?= $(Q_TOOLCHAIN_PREFIX)arm-none-eabi-ar
+HEX2BIN ?= $(BASEDIR)/../../../Tools/Ota/hex2bin.py
+UMB_WORKDIR ?= $(BASEDIR)/../../../Work/UMB_QPG6105DK_B01_nrt_flash_compr_secure
+INPUT_HEXFILE_PATH ?= $(UMB_WORKDIR)/UMB_QPG6105DK_B01_nrt_flash_compr_secure.hex
+
+
+
+
+.PHONY:all
+all: $(LIBBOOTLOADER_QPG6105_COMPR_SECURE_A)
+
+.PRECIOUS: $(LIBBOOTLOADER_QPG6105_COMPR_SECURE_A)
+$(LIBBOOTLOADER_QPG6105_COMPR_SECURE_A): $(INPUT_HEXFILE_PATH)
+	mkdir -p $(WORKDIR) && \
+	python3 $(HEX2BIN) -p 0x00 -r 0x04000010:0x040001ff $(INPUT_HEXFILE_PATH) $(WORKDIR)/bl_userlicense.bin && \
+	python3 $(HEX2BIN) -p 0x00 -r 0x04001800:0x04003cff $(INPUT_HEXFILE_PATH) $(WORKDIR)/bootloader.bin && \
+	cd $(WORKDIR) && \
+	$(OBJCOPY) --prefix-sections=bl_user_license bl_userlicense.bin userlicense.o && \
+	$(OBJCOPY) --prefix-sections=bootloader bootloader.bin bootloader.o && \
+	cd - && \
+	$(AR) rcs $(LIBBOOTLOADER_QPG6105_COMPR_SECURE_A) $(WORKDIR)/userlicense.o $(WORKDIR)/bootloader.o
+
+export_prerequisites: $(LIBBOOTLOADER_QPG6105_COMPR_SECURE_A)
+
+applib: $(LIBBOOTLOADER_QPG6105_COMPR_SECURE_A)
+
+.PRECIOUS:default_target_makefile
+.PHONY:default_target_makefile
+default_target_makefile:  \
+$(BASEDIR)/../../../Work/UMB_QPG6105DK_B01_nrt_flash_compr_secure/UMB_QPG6105DK_B01_nrt_flash_compr_secure.hex \
+applib
+
+PREREQ_HEADER_GENERATION_TARGETS =  \
+$(BASEDIR)/../../../Work/UMB_QPG6105DK_B01_nrt_flash_compr_secure/UMB_QPG6105DK_B01_nrt_flash_compr_secure.hex
+
+.PRECIOUS: $(INPUT_HEXFILE_PATH)
+.PHONY: $(INPUT_HEXFILE_PATH)
+$(INPUT_HEXFILE_PATH):
+	$(MAKE) -f $(BASEDIR)/../../../Applications/Bootloader/Makefile.UMB_QPG6105DK_B01_nrt_flash_compr_secure WORKDIR=$(UMB_WORKDIR)
+
+.PHONY:clean
+clean:
+	-rm -r $(WORKDIR)

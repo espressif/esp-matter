@@ -1,0 +1,22 @@
+!!omap
+- id: bgm220_ek4314a
+- label: BGM220-EK4314A
+- package: platform
+- description: Kit BSP support for the BGM220 Explorer Kit.
+- category: Platform|Board|Kit|Explorer Kit
+- quality: production
+- requires:
+  - name: hardware_board_from_bgm220-ek4314a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_ek
+- define:
+  - name: SL_KIT_NAME
+    value: '"BGM220-EK4314A"'
+  - name: SL_KIT_REV
+    value: '"A03"'
+- tag:
+  - kit:opn:BGM220-EK4314A
+  - kit:pn:EK4314
+  - kit:variant:A
+  - kit:revision:A03

@@ -1,0 +1,43 @@
+id: mbedtls_core
+label: Mbed TLS
+package: platform
+quality: production
+category: Platform|Security|Mbed TLS
+
+description:
+  "This component contains the core files needed for any project using Mbed TLS, \
+  as well as common header and source files.\n
+
+  Algorithms need to be enabled in order to be supported. This is done by \
+  including the components corresponding to the wanted primitives, key types, \
+  functionality, etc. that live in the different 'Platform|Security|Mbed TLS' \
+  subcategories.\n
+
+  Based on the selected sub-components, the Mbed TLS configuration file will be \
+  auto-generated and included where necessary."
+
+provides:
+  - name: mbedtls_core
+
+requires:
+  - name: mbedtls_source
+    condition: [trustzone_unaware]
+  - name: mbedtls_source
+    condition: [trustzone_secure]
+  - name: mbedtls_config
+
+  # Inclusion of source and config components depends on which TZ state we are
+  # targeting. For apps that do not make active use of TZ, a dummy state
+  # (trustzone_unaware) should be used.
+  - name: trustzone_security_state
+
+recommends:
+  # Assume that projects are TZ unaware unless a state is explicitly included.
+  # The condtion on device ensures that the recommendation does not exist before
+  # the device selection is completely resolved.
+  - id: trustzone_unaware
+    condition: [device]
+
+documentation:
+  docset: mbed-tls
+  document: index

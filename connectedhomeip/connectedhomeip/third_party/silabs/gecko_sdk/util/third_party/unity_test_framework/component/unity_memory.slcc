@@ -1,0 +1,18 @@
+id: test_framwork_unity_memory
+label: Unity test framework memory component
+package: platform
+description: Unity test framework - memory component
+category: Third Party|Unity
+quality: production
+component_root_path: "util/third_party/unity_test_framework/extras/memory"
+source:
+  - path: "src/unity_memory.c"
+include:
+  - path: "src"
+    file_list:
+      - path: "unity_memory.h"
+provides:
+  - name: test_framwork_unity_memory
+  - name: test_framework_unity_memory
+requires:
+  - name: test_framework_unity

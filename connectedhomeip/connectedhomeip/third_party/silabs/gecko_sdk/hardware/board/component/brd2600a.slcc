@@ -1,0 +1,17 @@
+!!omap
+- id: brd2600a
+- label: BRD2600A
+- package: platform
+- description: Board support for BRD2600A.
+- category: Platform|Board|Starter Kit
+- quality: production
+- requires:
+  - name: brd2600a_revision
+- provides:
+  - name: brd2600a
+  - name: hardware_board_from_stk
+  - name: hardware_board_from_fg23-dk2600a
+- recommends:
+  - id: brd2600a_a03
+- ui_hints:
+    visibility: never

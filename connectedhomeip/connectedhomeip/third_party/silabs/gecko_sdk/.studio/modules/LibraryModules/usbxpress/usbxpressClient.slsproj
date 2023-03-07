@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="com.silabs.sdk.exx32.external.usbxpress" label="USBXpress" contentRoot="$(sdkInstallationPath:default())/platform/middleware/usbxpress">
+  <property key="category" value="efm32|Middleware"/>
+  <includePath uri="inc" />
+  <folder name="USBXpress" uri="src" includeAllFiles="true" includeAllFolders="false" /> 
+</project>

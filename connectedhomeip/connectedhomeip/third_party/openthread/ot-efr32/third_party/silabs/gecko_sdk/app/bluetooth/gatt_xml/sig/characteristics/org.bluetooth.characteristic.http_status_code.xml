@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2015 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+last-modified="2015-05-18" name="HTTP Status Code" type="org.bluetooth.characteristic.http_status_code" uuid="2AB8" approved="Yes">
+    <InformativeText>
+        <Abstract>
+            The HTTP Status Code characteristic contains the Status-Code from the Status-Line of the first line of the HTTP Response Message, followed by one octet indicating the Data Status Bit Field indicating the status of the data received.
+        </Abstract>
+    </InformativeText>
+    <Value>
+        <Field name="Status Code">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint16</Format>
+        </Field>
+        <Field name="Data Status">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+            <BitField>
+                <Bit index="0" size="1" name="Headers Received">
+                    <Enumerations>
+                        <Enumeration key="0" value="The response-header and entity-header fields were not received in the HTTP response or stored in the HTTP Headers characteristic." />
+                        <Enumeration key="1" value="The response-header and entity-header fields were received in the HTTP response and stored in the HTTP Headers characteristic for the Client to read." />
+                    </Enumerations>
+                </Bit>
+                <Bit index="1" size="1" name="Headers Truncated">
+                    <Enumerations>
+                        <Enumeration key="0" value="Any received response-header and entity-header fields did not exceed 512 octets in length." />
+                        <Enumeration key="1" value="The response-header and entity-header fields exceeded 512 octets in length and the first 512 octets were saved in the HTTP Headers characteristic." />
+                    </Enumerations>
+                </Bit>
+                <Bit index="2" size="1" name="Body Received">
+                    <Enumerations>
+                        <Enumeration key="0" value="The entity-body field was not received in the HTTP response or stored in the HTTP Entity Body characteristic." />
+                        <Enumeration key="1" value="The entity-body field was received in the HTTP response and stored in the HTTP Entity Body characteristic for the Client to read." />
+                    </Enumerations>
+                </Bit>
+                <Bit index="3" size="1" name="Body Truncated">
+                    <Enumerations>
+                        <Enumeration key="0" value="Any received entity-body field did not exceed 512 octets in length." />
+                        <Enumeration key="1" value="The entity-body field exceeded 512 octets in length and the first 512 octets were saved in the HTTP Headers characteristic" />
+                    </Enumerations>
+                </Bit>
+                <ReservedForFutureUse index="4" size="4" />
+            </BitField>
+        </Field>
+    </Value>
+</Characteristic>

@@ -1,0 +1,1 @@
+ATTRS{idVendor}=="1618", ATTRS{idProduct}=="9116", ENV{ID_MM_DEVICE_IGNORE}="1"

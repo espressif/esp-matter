@@ -1,0 +1,115 @@
+/**
+@page rtos_log RTOS Change Log
+
+@section FreeRTOS FreeRTOS for MCUXpresso SDK.
+The current version is Amazon-FreeRTOS 202007.00 Original package is available at <a href="https://github.com/aws/amazon-freertos">github.com/aws/amazon-freertos</a>.
+
+  - 202007.00_rev0
+      - update amazon freertos version.
+
+  - 202002.00_rev2
+      - updated aws_iot_ota_agent.c for enabling OTA canceling (new state transition from eOTA_AgentState_WaitingForFileBlock to eOTA_AgentEvent_ReceivedJobDocument)
+
+  - 202002.00_rev1
+      - updated iot_tls.c as per latest SSS stack v2.14. All SSS/SE05x code under conditional compilation.
+      - fix "#pragma weak"" issue caused by IAR update to version 8.50.5. Use __weak definition of vPortSetupTimerInterrupt instead of "#pragma weak" declaration.
+
+  - 202002.00_rev0
+      - update aws_iot_network_manager
+      - enable lowpower tickless for CA9, CM33
+
+  - 201908.00_rev0
+      - update amazon freertos version
+      - Fix freertos_tasks_c_additions.h - fix IAR build fail
+      - update queue.c - add definition for pvBuffer necessary for segger sysview
+      - iot_crypto.c - change include file to be possible include mbedtls config file defined by MBEDTLS_CONFIG_FILE macro
+      - iot_mqtt_agent.h - extend MQTTAgentConnectParams_t structure - required by se_hostlib examples
+      - Fixed build warnings:
+          - aws_dev_mode_key_provisioning.c - some variables were declared but never referenced
+          - aws_iot_network_manager.c - some functions were declared but never referenced
+          - iot_device_metrics.c - add include
+          - iot_pkcs11_mbedtls.c - incompatible pointer type, unused variable
+          - iot_demo_freertos.c -  macro expansion producing 'defined' has undefined behavior
+          - iot_pkcs11_mbedtls.c - comparison of address not equal to a null pointer is always true
+          - pkcs11.h - '__PASTE' macro redefined
+      - changes required for se_hostlib examples
+          - iot_default_root_certificates.h  tlsCombi_ROOT_CERTIFICATE_PEM added for se_hostlib cloud demos
+          - iot_mqtt_agent.h modified structure to support for clouds which use usename and password
+          - iot_mqtt_agent.c assigning structure to support for clouds which use usename and password
+          - iot_crypto.c threading alt under MBEDTLS_THREADING_ALT
+          - iot_tls.c Supoort for secure element handling
+          - aws_pkcs11_pal.c pkcs11 handling for SE050
+      - Introduced aws_ota_pal.c for RT1060 supporting ota_bootloader (mcu-boot)
+      - updated lwIP template with options for core locking
+
+  - 1.4.9_rev0
+      - Remove 3rd party libraries lwip, mbedtls (use MCUXpresso SDK versions).
+      - Add missing comments to heap_useNewlib.c.
+
+  - 1.4.7_rev0
+    - New features:
+      - Add optional allocation scheme heap_useNewlib.c by D. Nadler.
+      - Enable task aware debugging for cm33 platforms
+      - Move tickless implementation to application layer
+    - Other changes:
+      - Fix other build warnings, errors
+
+  - 1.4.6_rev0
+    - New features:
+      - Update support of CM33 port with Trustzone, MPU, FPU support
+      - Add support for AWS test for Cypress WiFi
+      - Use lwip netif api to avoid lwIP raw API calls outside of tcpip thread in aws_wifi.c
+    - Other changes:
+      - Fix issues with mflash driver
+      - Fix other build warnings, errors
+
+  - 1.4.0_rev1
+    - New features:
+      - Add implementation of vTaskEndScheduler for CM0 GCC port.
+      - Support for CM33, CM33F architectures based on CM3, CM4F ports
+
+  - 1.4.0_rev0
+    - New features:
+      - Support for pkcs11 for several platforms, secure element host library under pkcs11/portable/nxp folder
+      - Lwip, wifi_qca support for secure_sockets in secure_sockets/portable/nxp folder
+      - Flash driver support for several platforms in third_party/mcu_vendor/nxp folder
+      - Generic support for aws_wifi under wifi/portable/nxp/common folder
+    - Other changes:
+      - Fix several build warnings, errors
+
+Updates applied to FreeRTOS kernel up to version 10.0.0 (up to Amazon - FreeRTOS merge).
+New kernel related changes will be described in section above as part of AWS package.
+
+  - 9.0.0_rev3
+    - New features:
+      - Tickless idle mode support for Cortex-A7. Add fsl_tickless_epit.c and fsl_tickless_generic.h in portable/IAR/ARM_CA9 folder.
+      - Enabled float context saving in IAR for Cortex-A7. Added configUSE_TASK_FPU_SUPPORT macros. Modified port.c and portmacro.h in portable/IAR/ARM_CA9 folder.
+    - Other changes:
+      - Transformed ARM_CM core specific tickless low power support into generic form under freertos/Source/portable/low_power_tickless/.
+
+  - 9.0.0_rev2
+    - New features:
+      - Enabled MCUXpresso thread aware debugging. Add freertos_tasks_c_additions.h and configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H and configFRTOS_MEMORY_SCHEME macros.
+
+  - 9.0.0_rev1
+    - New features:
+      - Enabled -flto optimization in GCC by adding __attribute__((used)) for vTaskSwitchContext.
+      - Enabled KDS Task Aware Debugger. Apply FreeRTOS patch to enable configRECORD_STACK_HIGH_ADDRESS macro. Modified files are task.c and FreeRTOS.h.
+
+  - 9.0.0_rev0
+    - New features:
+      - Example freertos_sem_static.
+      - Static allocation support RTOS driver wrappers.
+    - Other changes:
+      - Tickless idle rework. Support for different timers is in separated files (fsl_tickless_systick.c, fsl_tickless_lptmr.c).
+      - Removed configuration option configSYSTICK_USE_LOW_POWER_TIMER. Low power timer is now selected by linking of apropriate file fsl_tickless_lptmr.c.
+      - Removed configOVERRIDE_DEFAULT_TICK_CONFIGURATION in RVDS port. Use of __attribute__((weak)) is the preferred solution. Not same as _weak!
+
+  - 8.2.3
+    - New features:
+      - Tickless idle mode support.
+      - Added template application for Kinetis Expert (KEx) tool (template_application).
+    - Other changes:
+      - Folder structure reduction. Keep only Kinetis related parts.
+
+*/

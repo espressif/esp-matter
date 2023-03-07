@@ -1,0 +1,25 @@
+id: simple_timer_freertos_static
+label: Simple timer service for FreeRTOS with static memory allocation
+package: Bluetooth
+description: Simple timer service for applications with less strict timing requirements. It uses FreeRTOS with static memory allocation.
+category: Application|Service
+quality: production
+root_path: app/bluetooth/common/simple_timer_freertos_static
+source:
+  - path: sl_simple_timer_freertos_static.c
+include:
+  - path: .
+    file_list:
+      - path: sl_simple_timer.h
+provides:
+  - name: simple_timer
+requires:
+  - name: freertos
+template_contribution:
+  - name: component_catalog
+    value: simple_timer_freertos_static
+validation_library:
+  - path: ../../../common/validation/autonumber_common.lua
+    name: autonumber_common
+validation_helper:
+  - path: simple_timer_freertos_static_validation.lua

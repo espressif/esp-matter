@@ -1,0 +1,125 @@
+package: Zigbee
+description: This component provides the test code for the simple metering server. 
+  It enables the code that pretends it is a meter and also supports meter error along with CLI 
+  implementation. It should be only used for testing purposes.
+label: Simple Metering Server Test Meter
+quality: production
+id: zigbee_simple_metering_server_test_meter
+category: Zigbee|Cluster Library|Smart Energy
+provides:
+   - name: "zigbee_simple_metering_server_test_meter"
+requires:
+    - name: "zigbee_simple_metering_server"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/simple-metering-server/config/simple-metering-server-test-meter-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/simple-metering-server/simple-metering-test.c
+  - path: protocol/zigbee/app/framework/plugin/simple-metering-server/simple-metering-server-test-meter-cli.c
+    condition:
+      - "cli"
+include:
+  - path: protocol/zigbee/app/framework/plugin/simple-metering-server
+    file_list:
+      - path: simple-metering-test.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_simple_metering_server_test_meter
+  - name: cli_group
+    value:
+      group: plugin
+      name: simple-metering-server
+      help: simple-metering-server related commands.
+  - name: cli_command
+    value:
+      group: simple-metering-server
+      name: print
+      handler: emAfPluginSimpleMeteringServerCliPrint
+      help: Prints the test meters.
+  - name: cli_command
+    value:
+      group: simple-metering-server
+      name: rate
+      handler: emAfPluginSimpleMeteringServerCliRate
+      help: Changes the rate argument.
+      argument:
+      - type: uint16
+        help: The rate at which the test meter generates test data
+      - type: uint8
+        help: The endpoint
+  - name: cli_command
+    value:
+      group: simple-metering-server
+      name: variance
+      handler: emAfPluginSimpleMeteringServerCliVariance
+      help: Change the variance in the test data created by the test meter.
+      argument:
+      - type: uint16
+  - name: cli_command
+    value:
+      group: simple-metering-server
+      name: adjust
+      handler: emAfPluginSimpleMeteringServerCliAdjust
+      help: Adjusts the test meter.
+      argument:
+      - type: uint8
+        help: The endpoint of the test meter
+  - name: cli_command
+    value:
+      group: simple-metering-server
+      name: "off"
+      handler: emAfPluginSimpleMeteringServerCliOff
+      help: Turns off output from the test meter.
+      argument:
+      - type: uint8
+        help: The endpoint of the test meter
+  - name: cli_command
+    value:
+      group: simple-metering-server
+      name: electric
+      handler: emAfPluginSimpleMeteringServerCliElectric
+      help: Turns test meter into an electric meter.
+      argument:
+      - type: uint8
+        help: The endpoint of the test meter
+  - name: cli_command
+    value:
+      group: simple-metering-server
+      name: gas
+      handler: emAfPluginSimpleMeteringServerCliGas
+      help: Turns test meter into a gas meter.
+      argument:
+      - type: uint8
+        help: The endpoint of the test meter
+  - name: cli_command
+    value:
+      group: simple-metering-server
+      name: rnd_error
+      handler: emAfPluginSimpleMeteringServerCliRandomError
+      help: Sets the random error to the value provided, which is the chance in 256 of an error occurring.
+      argument:
+      - type: uint8
+        help: The chance of an error occurring in 255
+  - name: cli_command
+    value:
+      group: simple-metering-server
+      name: set_error
+      handler: emAfPluginSimpleMeteringServerCliSetError
+      help: Sets the meters status attribute ID to the passed error value.
+      argument:
+      - type: uint8
+        help: The chance of an error occurring in 255
+      - type: uint8
+        help: The endpoint affected
+  - name: cli_command
+    value:
+      group: simple-metering-server
+      name: profiles
+      handler: emAfPluginSimpleMeteringServerCliProfiles
+      help: Turns on and off profiles on the test meter server.
+      argument:
+      - type: uint8
+        help: The profile to set     
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/simple-metering-server

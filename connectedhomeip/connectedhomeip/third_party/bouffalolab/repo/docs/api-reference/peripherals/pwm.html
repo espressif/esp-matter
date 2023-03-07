@@ -1,0 +1,542 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PWM &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../index.html"/>
+        <link rel="up" title="外设 API" href="index.html"/>
+        <link rel="next" title="RNG" href="rng.html"/>
+        <link rel="prev" title="I2C" href="i2c.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">BL602 API 参考</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../ble/index.html">蓝牙</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../network/index.html">连网</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">外设</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="dac.html">DAC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="i2c.html">I2C</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">PWM</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">概述</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">应用实例</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#api">API参考</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="rng.html">RNG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rtc.html">RTC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spi.html">SPI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="uart.html">UART</a></li>
+<li class="toctree-l3"><a class="reference internal" href="timer.html">TIMER</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wdg.html">WDG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gpio.html">GPIO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adc.html">ADC</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../protocols/index.html">协议</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../storage/index.html">存储</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../system/index.html">系统</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../Examples/index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">BL602 API 参考</a> &raquo;</li>
+        
+          <li><a href="index.html">外设 API</a> &raquo;</li>
+        
+      <li>PWM</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/api-reference/peripherals/pwm.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pwm">
+<h1>PWM<a class="headerlink" href="#pwm" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<h2>概述<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<p>脉冲宽度调制（Pulse width modulation，简称PWM）是一种模拟控制方式，根据相应载荷的变化来调制晶体管基极或MOS管栅极的偏置，来实现晶体管或MOS管导通时间的改变，从而实现开关稳定电源输出的改变。这种方式能使电源的输出电压在工作条件变化时保持恒定，是利用微处理器的数字信号对模拟电路进行控制的一种非常有效的技术，广泛应用在从测量、通信到功率控制与变换的许多领域中。</p>
+<div class="admonition note">
+<p class="first admonition-title">注解</p>
+<p class="last">pwm更多资料请参考 <a class="reference external" href="https://dev.bouffalolab.com/media/doc/602/reference_manual/zh/html/content/PWM.html">BL602参考手册</a> 。</p>
+</div>
+</div>
+<div class="section" id="id2">
+<h2>应用实例<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<p>DAC实例： <code class="docutils literal notranslate"><span class="pre">customer_app/peripheral/demo_pwm</span></code> 。</p>
+</div>
+<div class="section" id="api">
+<h2>API参考<a class="headerlink" href="#api" title="永久链接至标题"></a></h2>
+<div class="section" id="header-file">
+<h3>Header File<a class="headerlink" href="#header-file" title="永久链接至标题"></a></h3>
+<ul class="simple">
+<li><span class="xref std std-doc">components/platform/hosal/include/hosal_pwm.h</span></li>
+</ul>
+</div>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="永久链接至标题"></a></h3>
+<dl class="function">
+<dt id="_CPPv414hosal_pwm_initP15hosal_pwm_dev_t">
+<span id="_CPPv314hosal_pwm_initP15hosal_pwm_dev_t"></span><span id="_CPPv214hosal_pwm_initP15hosal_pwm_dev_t"></span><span id="hosal_pwm_init__hosal_pwm_dev_tP"></span><span class="target" id="group__hosal__pwm_1gab2cba39f7947e3b61247610a98025fbc"></span>int <code class="descname">hosal_pwm_init</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_pwm_dev_t" title="hosal_pwm_dev_t">hosal_pwm_dev_t</a> *<em>pwm</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414hosal_pwm_initP15hosal_pwm_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Initialises a PWM pin. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 : success</li>
+<li>other: fail </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">pwm</span></code>: the PWM device</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv415hosal_pwm_startP15hosal_pwm_dev_t">
+<span id="_CPPv315hosal_pwm_startP15hosal_pwm_dev_t"></span><span id="_CPPv215hosal_pwm_startP15hosal_pwm_dev_t"></span><span id="hosal_pwm_start__hosal_pwm_dev_tP"></span><span class="target" id="group__hosal__pwm_1ga520e6e793264c417f1cf30b8e16c2693"></span>int <code class="descname">hosal_pwm_start</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_pwm_dev_t" title="hosal_pwm_dev_t">hosal_pwm_dev_t</a> *<em>pwm</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415hosal_pwm_startP15hosal_pwm_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Starts Pulse-Width Modulation signal output on a PWM pin. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 : success</li>
+<li>other : fail </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">pwm</span></code>: the PWM device</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv414hosal_pwm_stopP15hosal_pwm_dev_t">
+<span id="_CPPv314hosal_pwm_stopP15hosal_pwm_dev_t"></span><span id="_CPPv214hosal_pwm_stopP15hosal_pwm_dev_t"></span><span id="hosal_pwm_stop__hosal_pwm_dev_tP"></span><span class="target" id="group__hosal__pwm_1ga76e18a469a3a1e02c914f1ab1301d598"></span>int <code class="descname">hosal_pwm_stop</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_pwm_dev_t" title="hosal_pwm_dev_t">hosal_pwm_dev_t</a> *<em>pwm</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414hosal_pwm_stopP15hosal_pwm_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Stops output on a PWM pin. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 : success</li>
+<li>other: fail </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">pwm</span></code>: the PWM device</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv418hosal_pwm_para_chgP15hosal_pwm_dev_t18hosal_pwm_config_t">
+<span id="_CPPv318hosal_pwm_para_chgP15hosal_pwm_dev_t18hosal_pwm_config_t"></span><span id="_CPPv218hosal_pwm_para_chgP15hosal_pwm_dev_t18hosal_pwm_config_t"></span><span id="hosal_pwm_para_chg__hosal_pwm_dev_tP.hosal_pwm_config_t"></span><span class="target" id="group__hosal__pwm_1ga1bebd8e9c4326f0fd5b9ca0c3ad94083"></span>int <code class="descname">hosal_pwm_para_chg</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_pwm_dev_t" title="hosal_pwm_dev_t">hosal_pwm_dev_t</a> *<em>pwm</em>, <a class="reference internal" href="#_CPPv418hosal_pwm_config_t" title="hosal_pwm_config_t">hosal_pwm_config_t</a> <em>para</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418hosal_pwm_para_chgP15hosal_pwm_dev_t18hosal_pwm_config_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>&#64;change the para of pwm</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 : success</li>
+<li>other: fail </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">pwm</span></code>: the PWM device </li>
+<li><code class="docutils literal notranslate"><span class="pre">para</span></code>: the para of pwm</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv418hosal_pwm_freq_setP15hosal_pwm_dev_t8uint32_t">
+<span id="_CPPv318hosal_pwm_freq_setP15hosal_pwm_dev_t8uint32_t"></span><span id="_CPPv218hosal_pwm_freq_setP15hosal_pwm_dev_t8uint32_t"></span><span id="hosal_pwm_freq_set__hosal_pwm_dev_tP.uint32_t"></span><span class="target" id="group__hosal__pwm_1ga20d050b6e7e041f906929c67d7772863"></span>int <code class="descname">hosal_pwm_freq_set</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_pwm_dev_t" title="hosal_pwm_dev_t">hosal_pwm_dev_t</a> *<em>pwm</em>, uint32_t <em>freq</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418hosal_pwm_freq_setP15hosal_pwm_dev_t8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>update PWM frequency </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 : success</li>
+<li>other: fail </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">pwm</span></code>: the PWM device </li>
+<li><code class="docutils literal notranslate"><span class="pre">freq</span></code>: the PWM frequency (0~40M under limited duty)</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv418hosal_pwm_freq_getP15hosal_pwm_dev_tP8uint32_t">
+<span id="_CPPv318hosal_pwm_freq_getP15hosal_pwm_dev_tP8uint32_t"></span><span id="_CPPv218hosal_pwm_freq_getP15hosal_pwm_dev_tP8uint32_t"></span><span id="hosal_pwm_freq_get__hosal_pwm_dev_tP.uint32_tP"></span><span class="target" id="group__hosal__pwm_1ga25c11beb01f128e1f43b34debdb92a29"></span>int <code class="descname">hosal_pwm_freq_get</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_pwm_dev_t" title="hosal_pwm_dev_t">hosal_pwm_dev_t</a> *<em>pwm</em>, uint32_t *<em>p_freq</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418hosal_pwm_freq_getP15hosal_pwm_dev_tP8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>get PWM frequency </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 : success</li>
+<li>other: fail </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">pwm</span></code>: the PWM device </li>
+<li><code class="docutils literal notranslate"><span class="pre">p_freq</span></code>: the pointer to memory frequency</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv418hosal_pwm_duty_setP15hosal_pwm_dev_t8uint32_t">
+<span id="_CPPv318hosal_pwm_duty_setP15hosal_pwm_dev_t8uint32_t"></span><span id="_CPPv218hosal_pwm_duty_setP15hosal_pwm_dev_t8uint32_t"></span><span id="hosal_pwm_duty_set__hosal_pwm_dev_tP.uint32_t"></span><span class="target" id="group__hosal__pwm_1ga0c938d9ac0dd3428517aa013ac5e1e23"></span>int <code class="descname">hosal_pwm_duty_set</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_pwm_dev_t" title="hosal_pwm_dev_t">hosal_pwm_dev_t</a> *<em>pwm</em>, uint32_t <em>duty</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418hosal_pwm_duty_setP15hosal_pwm_dev_t8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>set PWM duty </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 : success</li>
+<li>other: fail </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">pwm</span></code>: the PWM device </li>
+<li><code class="docutils literal notranslate"><span class="pre">duty</span></code>: the PWM duty (original duty * 100)</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv418hosal_pwm_duty_getP15hosal_pwm_dev_tP8uint32_t">
+<span id="_CPPv318hosal_pwm_duty_getP15hosal_pwm_dev_tP8uint32_t"></span><span id="_CPPv218hosal_pwm_duty_getP15hosal_pwm_dev_tP8uint32_t"></span><span id="hosal_pwm_duty_get__hosal_pwm_dev_tP.uint32_tP"></span><span class="target" id="group__hosal__pwm_1gac9363857457e7e606c375c5e7154b5c1"></span>int <code class="descname">hosal_pwm_duty_get</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_pwm_dev_t" title="hosal_pwm_dev_t">hosal_pwm_dev_t</a> *<em>pwm</em>, uint32_t *<em>p_duty</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418hosal_pwm_duty_getP15hosal_pwm_dev_tP8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>get PWM duty </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 : success</li>
+<li>other: fail </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">pwm</span></code>: the PWM device </li>
+<li><code class="docutils literal notranslate"><span class="pre">p_duty</span></code>: the pointer to memory duty(original duty * 100)</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv418hosal_pwm_finalizeP15hosal_pwm_dev_t">
+<span id="_CPPv318hosal_pwm_finalizeP15hosal_pwm_dev_t"></span><span id="_CPPv218hosal_pwm_finalizeP15hosal_pwm_dev_t"></span><span id="hosal_pwm_finalize__hosal_pwm_dev_tP"></span><span class="target" id="group__hosal__pwm_1ga50d3a9dffb3871f2e26e5c37b4c2d72c"></span>int <code class="descname">hosal_pwm_finalize</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_pwm_dev_t" title="hosal_pwm_dev_t">hosal_pwm_dev_t</a> *<em>pwm</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418hosal_pwm_finalizeP15hosal_pwm_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>De-initialises an PWM interface, Turns off an PWM hardware interface. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 : success</li>
+<li>other: fail </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">pwm</span></code>: the interface which should be de-initialised</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="structures">
+<h3>Structures<a class="headerlink" href="#structures" title="永久链接至标题"></a></h3>
+<dl class="class">
+<dt id="_CPPv418hosal_pwm_config_t">
+<span id="_CPPv318hosal_pwm_config_t"></span><span id="_CPPv218hosal_pwm_config_t"></span><span id="hosal_pwm_config_t"></span><span class="target" id="structhosal__pwm__config__t"></span><em class="property">struct </em><code class="descname">hosal_pwm_config_t</code><a class="headerlink" href="#_CPPv418hosal_pwm_config_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>pwm config struct </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N18hosal_pwm_config_t3pinE">
+<span id="_CPPv3N18hosal_pwm_config_t3pinE"></span><span id="_CPPv2N18hosal_pwm_config_t3pinE"></span><span id="hosal_pwm_config_t::pin__uint8_t"></span><span class="target" id="structhosal__pwm__config__t_1acf76e325e295fe7b86495eda5cdd210b"></span>uint8_t <code class="descname">pin</code><a class="headerlink" href="#_CPPv4N18hosal_pwm_config_t3pinE" title="永久链接至目标"></a><br /></dt>
+<dd><p>pwm pin </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N18hosal_pwm_config_t10duty_cycleE">
+<span id="_CPPv3N18hosal_pwm_config_t10duty_cycleE"></span><span id="_CPPv2N18hosal_pwm_config_t10duty_cycleE"></span><span id="hosal_pwm_config_t::duty_cycle__uint32_t"></span><span class="target" id="structhosal__pwm__config__t_1a6b2ff7895b5a3aeab6e5766ea4ed5b7d"></span>uint32_t <code class="descname">duty_cycle</code><a class="headerlink" href="#_CPPv4N18hosal_pwm_config_t10duty_cycleE" title="永久链接至目标"></a><br /></dt>
+<dd><p>the pwm duty_cycle 0 ~ 10000(0 ~ 100%) </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N18hosal_pwm_config_t4freqE">
+<span id="_CPPv3N18hosal_pwm_config_t4freqE"></span><span id="_CPPv2N18hosal_pwm_config_t4freqE"></span><span id="hosal_pwm_config_t::freq__uint32_t"></span><span class="target" id="structhosal__pwm__config__t_1a5d9a0ef6711d4f9e7c21dabd7793d337"></span>uint32_t <code class="descname">freq</code><a class="headerlink" href="#_CPPv4N18hosal_pwm_config_t4freqE" title="永久链接至目标"></a><br /></dt>
+<dd><p>the pwm freq,range is between 0 and 40M </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv415hosal_pwm_dev_t">
+<span id="_CPPv315hosal_pwm_dev_t"></span><span id="_CPPv215hosal_pwm_dev_t"></span><span id="hosal_pwm_dev_t"></span><span class="target" id="structhosal__pwm__dev__t"></span><em class="property">struct </em><code class="descname">hosal_pwm_dev_t</code><a class="headerlink" href="#_CPPv415hosal_pwm_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>pwm dev struct </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N15hosal_pwm_dev_t4portE">
+<span id="_CPPv3N15hosal_pwm_dev_t4portE"></span><span id="_CPPv2N15hosal_pwm_dev_t4portE"></span><span id="hosal_pwm_dev_t::port__uint8_t"></span><span class="target" id="structhosal__pwm__dev__t_1ad5f514d41a9ea14a42698864bad20838"></span>uint8_t <code class="descname">port</code><a class="headerlink" href="#_CPPv4N15hosal_pwm_dev_t4portE" title="永久链接至目标"></a><br /></dt>
+<dd><p>pwm port </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15hosal_pwm_dev_t6configE">
+<span id="_CPPv3N15hosal_pwm_dev_t6configE"></span><span id="_CPPv2N15hosal_pwm_dev_t6configE"></span><span id="hosal_pwm_dev_t::config__hosal_pwm_config_t"></span><span class="target" id="structhosal__pwm__dev__t_1ab365c695e35fb7eda869812efc57c96e"></span><a class="reference internal" href="#_CPPv418hosal_pwm_config_t" title="hosal_pwm_config_t">hosal_pwm_config_t</a> <code class="descname">config</code><a class="headerlink" href="#_CPPv4N15hosal_pwm_dev_t6configE" title="永久链接至目标"></a><br /></dt>
+<dd><p>pwm config </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15hosal_pwm_dev_t4privE">
+<span id="_CPPv3N15hosal_pwm_dev_t4privE"></span><span id="_CPPv2N15hosal_pwm_dev_t4privE"></span><span id="hosal_pwm_dev_t::priv__voidP"></span><span class="target" id="structhosal__pwm__dev__t_1ad987b8ac8f27266920fb553a558631ef"></span>void *<code class="descname">priv</code><a class="headerlink" href="#_CPPv4N15hosal_pwm_dev_t4privE" title="永久链接至目标"></a><br /></dt>
+<dd><p>priv data </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="rng.html" class="btn btn-neutral float-right" title="RNG" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="i2c.html" class="btn btn-neutral" title="I2C" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

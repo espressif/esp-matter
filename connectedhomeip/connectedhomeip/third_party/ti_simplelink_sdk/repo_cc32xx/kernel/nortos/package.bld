@@ -1,0 +1,265 @@
+/*
+ * Copyright (c) 2017-2022, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+/*
+ *  ======== package.bld ========
+ */
+
+var dplFiles = [
+    "dpl/posix_sleep.c",
+    "dpl/DebugP_nortos.c",
+    "dpl/MutexP_nortos.c",
+    "./NoRTOS.c",
+    "dpl/QueueP_nortos.c",
+    "dpl/SemaphoreP_nortos.c",
+    "dpl/SwiP_nortos.c",
+    "dpl/SystemP_nortos.c",
+];
+
+var cc26xxSrcList = [
+    "dpl/ClockPTimer_nortos.c",
+    "dpl/TimerPCC26XX_nortos.c",
+    "dpl/HwiPCC26XX_nortos.c",
+    "dpl/PowerCC26XX_nortos.c"
+];
+
+var cc26x2SrcList = [
+    "dpl/ClockPTimer_nortos.c",
+    "dpl/TimerPCC26XX_nortos.c",
+    "dpl/HwiPCC26XX_nortos.c",
+    "dpl/PowerCC26X2_nortos.c"
+];
+
+var cc32xxSrcList = [
+    "dpl/ClockPSysTick_nortos.c",
+    "dpl/HwiPCC32XX_nortos.c",
+    "dpl/PowerCC32XX_nortos.c"
+];
+
+var tiFilesCC26X2 = [
+    "startup/startup_cc13x2_cc26x2_ccs.c"
+];
+var ticlangFilesCC26X2 = [
+    "startup/startup_cc13x2_cc26x2_ticlang.c"
+];
+var gccFilesCC26X2 = [
+    "startup/startup_cc13x2_cc26x2_gcc.c"
+];
+var iarFilesCC26X2 = [
+    "startup/startup_cc13x2_cc26x2_iar.c"
+];
+
+var tiFilesCC26X1 = [
+    "startup/startup_cc13x1_cc26x1_ccs.c"
+];
+var ticlangFilesCC26X1 = [
+    "startup/startup_cc13x1_cc26x1_ticlang.c"
+];
+var gccFilesCC26X1 = [
+    "startup/startup_cc13x1_cc26x1_gcc.c"
+];
+var iarFilesCC26X1 = [
+    "startup/startup_cc13x1_cc26x1_iar.c"
+];
+
+
+var tiFilesCC32xx = [
+    "startup/startup_cc32xx_ccs.c"
+];
+var ticlangFilesCC32xx = [
+    "startup/startup_cc32xx_ticlang.c"
+];
+var gccFilesCC32xx = [
+    "startup/startup_cc32xx_gcc.c"
+];
+var iarFilesCC32xx = [
+    "startup/startup_cc32xx_iar.c"
+];
+
+/* Get deviceWare directories from XDCARGS */
+var xdcArgs = java.lang.System.getenv("XDCARGS");
+var deviceWareOpts =
+    xdc.loadCapsule("ti/drivers/xdcArgParser.xs").getDeviceWareOpts(xdcArgs);
+var libBuilder = xdc.loadCapsule("ti/drivers/libBuilder.xs");
+
+/* List of files (besides *.c files) which need to be packaged with drivers */
+var packageFiles = [];
+
+/* NoRTOS not supported on CC23XX yet */
+if (deviceWareOpts.cc26xxware || deviceWareOpts.cc32xxware) {
+    packageFiles.push("package.bld");
+    packageFiles.push("./dpl");
+    packageFiles.push("./startup");
+    packageFiles.push("./posix");
+    packageFiles.push("./NoRTOS.h");
+}
+
+/* Generate libraries for products which have been defined */
+if (deviceWareOpts.cc26xxware) {
+
+    var targets = libBuilder.cc26xxTargets;
+
+    /* loop through each target and add right target src file list */
+    for each (var target in targets) {
+
+        var sources = dplFiles.concat(cc26x2SrcList);
+
+        if (target.match(/clang/)) {
+            sources = sources.concat(ticlangFilesCC26X2);
+        }
+        else if (target.match(/ti/)) {
+            sources = sources.concat(tiFilesCC26X2);
+        }
+        else if (target.match(/gnu/)) {
+            sources = sources.concat(gccFilesCC26X2);
+        }
+        else if (target.match(/iar/)) {
+            sources = sources.concat(iarFilesCC26X2);
+        }
+        else {
+            throw ("target not recognized: " + target);
+        }
+
+        libBuilder.makeLibs("nortos_cc13x2", [target],
+            sources, " -DDeviceFamily_CC13X2");
+
+        libBuilder.makeLibs("nortos_cc26x2", [target],
+            sources, " -DDeviceFamily_CC26X2");
+
+        libBuilder.makeLibs("nortos_cc13x2x7", [target],
+            sources, " -DDeviceFamily_CC13X2X7");
+
+        libBuilder.makeLibs("nortos_cc26x2x7", [target],
+            sources, " -DDeviceFamily_CC26X2X7");
+    }
+
+    /* Re-assign to M4 targets, overwrite sources */
+    targets = libBuilder.cc26x1Targets;
+
+    /* loop through each target and add right target src file list */
+    for each (var target in targets) {
+
+        /* CC26X1 and CC26X2 share the same nortos source list */
+        sources = dplFiles.concat(cc26x2SrcList);
+
+        if (target.match(/clang/)) {
+            sources = sources.concat(ticlangFilesCC26X1);
+        }
+        else if (target.match(/ti/)) {
+            sources = sources.concat(tiFilesCC26X1);
+        }
+        else if (target.match(/gnu/)) {
+            sources = sources.concat(gccFilesCC26X1);
+        }
+        else if (target.match(/iar/)) {
+            sources = sources.concat(iarFilesCC26X1);
+        }
+        else {
+            throw ("target not recognized: " + target);
+        }
+
+        libBuilder.makeLibs("nortos_cc13x1", [target],
+            sources, " -DDeviceFamily_CC13X1");
+
+        libBuilder.makeLibs("nortos_cc26x1", [target],
+            sources, " -DDeviceFamily_CC26X1");
+    }
+
+    var targets = libBuilder.cc26x4Targets;
+
+    /* loop through each target and add right target src file list */
+    for each (var target in targets) {
+
+        var sources = dplFiles.concat(cc26x2SrcList);
+
+        if (target.match(/clang/)) {
+            sources = sources.concat(ticlangFilesCC26X2);
+        }
+        else if (target.match(/gnu/)) {
+            sources = sources.concat(gccFilesCC26X2);
+        }
+        else if (target.match(/iar/)) {
+            sources = sources.concat(iarFilesCC26X2);
+        }
+        else {
+            throw ("target not recognized: " + target);
+        }
+
+        libBuilder.makeLibs("nortos_cc13x4", [target],
+            sources, " -DDeviceFamily_CC13X4");
+
+        libBuilder.makeLibs("nortos_cc26x4", [target],
+            sources, " -DDeviceFamily_CC26X4");
+    }
+}
+
+if (deviceWareOpts.cc23xxware) {
+
+    /* Do nothing for now */
+}
+
+if (deviceWareOpts.cc32xxware) {
+    var copts = " -DUSE_CC3220_ROM_DRV_API -DDeviceFamily_CC3220";
+
+    var targets;
+    var sources;
+
+    targets = libBuilder.cc32xxTargets;
+    sources = dplFiles.concat(cc32xxSrcList);
+
+    /* loop through each target and add right target src file list */
+    for each (var target in targets) {
+        var srcs = sources;
+
+        if (target.match(/clang/)) {
+            srcs = srcs.concat(ticlangFilesCC32xx);
+        }
+        else if (target.match(/ti/)) {
+            srcs = srcs.concat(tiFilesCC32xx);
+        }
+        else if (target.match(/gnu/)) {
+            srcs = srcs.concat(gccFilesCC32xx);
+        }
+        else if (target.match(/iar/)) {
+            srcs = srcs.concat(iarFilesCC32xx);
+        }
+        else {
+            throw ("target not recognized: " + target);
+        }
+
+        libBuilder.makeLibs("nortos_cc32xx", [target], srcs, copts);
+    }
+}
+
+/* Include source files in the release package */
+Pkg.otherFiles = packageFiles;
+Pkg.attrs.exportSrc = true;
+Pkg.releasePrefix = ("." + Pkg.name).replace(/[^\.]+/g, "./") + "../exports/";

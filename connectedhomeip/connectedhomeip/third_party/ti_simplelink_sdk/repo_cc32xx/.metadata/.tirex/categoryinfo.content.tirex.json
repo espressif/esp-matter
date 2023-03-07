@@ -1,0 +1,43 @@
+[
+  {
+    "name": "Host Driver",
+    "mainCategories": [
+      [
+        "Documents"
+      ]
+    ],
+    "subCategories": [],
+    "resourceType": "categoryInfo",
+    "description": "<p>The Core driver, which is a generic NWP driver for the CC31xx/CC32xx SimpleLink products. The other is platform abstraction layer, which provides a means to communicate with the host platform hardware and operating system services.</p>"
+  },
+  {
+    "name": "ROM Services",
+    "mainCategories": [
+      [
+        "Documents"
+      ]
+    ],
+    "subCategories": [],
+    "resourceType": "categoryInfo",
+    "description": "<p>The CC32xx ROM hosts the bootloader and peripheral driver library. The peripheral driver library is a collection of routines that abstracts the peripheral programming.</p>"
+  },
+  {
+    "name": "Examples",
+    "mainCategories": [
+      []
+    ],
+    "subCategories": [],
+    "resourceType": "categoryInfo",
+    "description": "<p>TI's SimpleLink CC32xx SDK provides a comprehensive set of examples to help developers get started with the SimpleLink CC32xx MCU. The SimpleLink CC32xx SDK provides examples that cover how to use TI-Drivers, TI-RTOS, and networking demo applications.</p>"
+  },
+  {
+    "name": "Documents",
+    "mainCategories": [
+      []
+    ],
+    "subCategories": [],
+    "resourceType": "categoryInfo",
+    "description": "<p>The SimpleLink CC32xx SDK comes with documentation for all of the supported software libraries included in the SDK. For a good overview of what documentation is available in the SimpleLink CC32xx SDK, go to \"Documentation Overview\". To get started quickly with the SimpleLink CC32xx SDK, go to \"Quick Start Guide\".</p>"
+  }
+]
+

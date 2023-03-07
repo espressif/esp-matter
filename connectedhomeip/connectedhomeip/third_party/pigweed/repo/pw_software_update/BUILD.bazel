@@ -1,0 +1,225 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load("//pw_build/bazel_internal:py_proto_library.bzl", "py_proto_library")
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load(
+    "//pw_build:pigweed.bzl",
+    "pw_cc_library",
+    "pw_cc_test",
+)
+load("//pw_protobuf_compiler:proto.bzl", "pw_proto_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+proto_library(
+    name = "tuf_proto",
+    srcs = [
+        "tuf.proto",
+    ],
+    deps = [
+        "@com_google_protobuf//:timestamp_proto",
+    ],
+)
+
+proto_library(
+    name = "update_bundle_proto",
+    srcs = [
+        "update_bundle.proto",
+    ],
+    deps = [
+        ":tuf_proto",
+    ],
+)
+
+pw_proto_library(
+    name = "update_bundle_proto_cc",
+    deps = [":update_bundle_proto"],
+)
+
+proto_library(
+    name = "bundled_update_proto",
+    srcs = [
+        "bundled_update.proto",
+    ],
+    deps = [
+        "//pw_protobuf:common_proto",
+        "//pw_tokenizer:tokenizer_proto",
+        "@com_google_protobuf//:any_proto",
+    ],
+)
+
+# TODO(b/241456982): Not expected to build yet.
+py_proto_library(
+    name = "bundled_update_py_pb2",
+    srcs = ["bundled_update.proto"],
+    tags = ["manual"],
+)
+
+# TODO(b/258074401): Depends on the `any` proto, which doesn't build under
+# nanopb.
+# pw_proto_library(
+#     name = "bundled_update_proto_cc",
+#     # TODO(b/258074760): Adding this tag breaks the pw_proto_library rule.
+#     tags = ["manual"],
+#     deps = [":bundled_update_proto"],
+# )
+
+pw_cc_library(
+    name = "openable_reader",
+    hdrs = [
+        "public/pw_software_update/openable_reader.h",
+    ],
+    deps = [
+        "//pw_stream",
+    ],
+)
+
+pw_cc_library(
+    name = "blob_store_openable_reader",
+    hdrs = [
+        "public/pw_software_update/blob_store_openable_reader.h",
+    ],
+    deps = [
+        ":openable_reader",
+    ],
+)
+
+pw_cc_library(
+    name = "update_bundle",
+    srcs = [
+        "manifest_accessor.cc",
+        "update_bundle_accessor.cc",
+    ],
+    hdrs = [
+        "public/pw_software_update/bundled_update_backend.h",
+        "public/pw_software_update/config.h",
+        "public/pw_software_update/manifest_accessor.h",
+        "public/pw_software_update/update_bundle_accessor.h",
+    ],
+    includes = ["public"],
+    tags = ["manual"],  # TODO(b/236321905): Depends on pw_crypto.
+    deps = [
+        ":blob_store_openable_reader",
+        ":openable_reader",
+        ":update_bundle_proto_cc.pwpb",
+        "//pw_blob_store",
+        "//pw_crypto:ecdsa_facade",
+        "//pw_crypto:sha256_facade",
+        "//pw_kvs",
+        "//pw_log",
+        "//pw_protobuf",
+        "//pw_status",
+        "//pw_stream",
+        "//pw_string",
+    ],
+)
+
+# TODO(b/258074401): Depends on bundled_update_proto_cc.nanopb_rpc, which
+# doesn't build yet.
+pw_cc_library(
+    name = "bundled_update_service",
+    srcs = ["bundled_update_service.cc"],
+    hdrs = ["public/pw_software_update/bundled_update_service.h"],
+    includes = ["public"],
+    tags = ["manual"],
+    deps = [
+        # ":bundled_update_proto_cc.nanopb_rpc",
+        # ":bundled_update_proto_cc.pwpb",
+        ":update_bundle",
+        # ":update_bundle_proto_cc.nanopb_rpc",
+        # ":update_bundle_proto_cc.pwpb",
+        "//pw_log",
+        "//pw_result",
+        "//pw_status",
+        "//pw_sync:borrow",
+        "//pw_sync:lock_annotations",
+        "//pw_sync:mutex",
+        "//pw_tokenizer",
+        "//pw_work_queue",
+    ],
+)
+
+# TODO(b/258074401): Depends on bundled_update_proto_cc.nanopb_rpc, which
+# doesn't build yet.
+pw_cc_library(
+    name = "bundled_update_service_pwpb",
+    srcs = ["bundled_update_service_pwpb.cc"],
+    hdrs = ["public/pw_software_update/bundled_update_service_pwpb.h"],
+    includes = ["public"],
+    tags = ["manual"],
+    deps = [
+        # ":bundled_update_proto_cc.pwpb",
+        # ":bundled_update_proto_cc.pwpb_rpc",
+        ":update_bundle",
+        # ":update_bundle_proto_cc.pwpb",
+        # ":update_bundle_proto_cc.pwpb_rpc",
+        "//pw_log",
+        "//pw_result",
+        "//pw_status",
+        "//pw_string:util",
+        "//pw_sync:borrow",
+        "//pw_sync:lock_annotations",
+        "//pw_sync:mutex",
+        "//pw_tokenizer",
+        "//pw_work_queue",
+    ],
+)
+
+# TODO(b/258222107): pw_python_action doesn't exist yet.
+# pw_python_action(
+#     name = "generate_test_bundle",
+#     outputs = ["$target_gen_dir/generate_test_bundle/test_bundles.h"],
+#     script = "py/pw_software_update/generate_test_bundle.py",
+#     deps = [
+#         ":bundled_update_py_pb2",
+#         "py",
+#     ],
+#     args = [ "$target_gen_dir/generate_test_bundle/test_bundles.h" ],
+# )
+
+pw_cc_test(
+    name = "update_bundle_test",
+    srcs = ["update_bundle_test.cc"],
+    tags = ["manual"],
+    deps = [
+        # This dependency is needed, but doesn't exist yet.
+        # "generate_test_bundle",
+        ":update_bundle",
+        "//pw_kvs:fake_flash_test_key_value_store",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "bundled_update_service_test",
+    srcs = ["bundled_update_service_test.cc"],
+    tags = ["manual"],  # bundled_update_service doesn't work yet.
+    deps = [
+        ":bundled_update_service",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "bundled_update_service_pwpb_test",
+    srcs = ["bundled_update_service_pwpb_test.cc"],
+    tags = ["manual"],  # bundled_update_service_pwpb doesn't work yet.
+    deps = [
+        ":bundled_update_service_pwpb",
+        "//pw_unit_test",
+    ],
+)

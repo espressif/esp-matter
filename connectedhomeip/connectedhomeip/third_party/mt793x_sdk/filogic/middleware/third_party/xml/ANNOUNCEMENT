@@ -1,0 +1,11 @@
+Mini-XML 2.8 is now available for download from:
+
+    http://www.msweet.org/downloads.php/Mini-XML
+
+Mini-XML 2.8 fixes some minor platform and XML issues. Changes include:
+
+- Now call docsetutil using xcrun on OS X (Bug #458)
+- mxmldoc did not escape special HTML characters inside @code foo@ comments.
+- Fixed a memory leak in mxmlElementDeleteAttr (Bug #452)
+- Added MXML_MAJOR/MINOR_VERSION definitions to mxml.h (Bug $461)
+- Fixed a bug reading UTF-16 characters from a file (Bug #454)

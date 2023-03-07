@@ -1,0 +1,7 @@
+{ "expected-missing-functions":
+  [
+
+  ],
+  "proof-name": "C_FindObjects",
+  "proof-root": "test/cbmc/proofs"
+}

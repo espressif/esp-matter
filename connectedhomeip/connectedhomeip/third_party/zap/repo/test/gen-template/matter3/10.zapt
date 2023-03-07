@@ -1,0 +1,77 @@
+{{> header}}
+{{#if (chip_has_client_clusters)}}
+{{#chip_server_global_responses}}
+{{! TODO: Add support for struct-typed attributes }}
+{{#unless (isStrEqual chipCallback.name "Unsupported")}}
+
+CHIP{{chipCallback.name}}AttributeCallback::CHIP{{chipCallback.name}}AttributeCallback(jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<{{chipCallback.name}}AttributeCallback>(CallbackFn, this), keepAlive(keepAlive)
+
+CHIP{{chipCallback.name}}AttributeCallback::~CHIP{{chipCallback.name}}AttributeCallback() {
+}
+
+void CHIP{{chipCallback.name}}AttributeCallback::CallbackFn(void * context, {{chipCallback.type}} value)
+{
+
+    std::unique_ptr<CHIP{{chipCallback.name}}AttributeCallback, decltype(&maybeDestroy)> cppCallback(reinterpret_cast<CHIP{{chipCallback.name}}AttributeCallback *>(context), maybeDestroy);
+
+    jmethodID javaMethod;
+    {{#unless (isStrEqual chipCallback.name "OctetString")}}
+    {{#unless (isStrEqual chipCallback.name "CharString")}}
+    "({{convertCTypeToJniSignature chipCallback.type false}})V"
+    <{{convertBasicCTypeToJniType chipCallback.type}}>
+    {{/unless}}
+    {{/unless}}
+
+    {{#if (isStrEqual chipCallback.name "OctetString")}}
+    X
+    {{/if}}
+
+    {{#if (isStrEqual chipCallback.name "CharString")}}
+    Y
+    {{/if}}
+}
+{{/unless}}
+{{/chip_server_global_responses}}
+
+{{#chip_client_clusters}}
+{{#chip_server_cluster_attributes}}
+{{! TODO: Add support for struct-typed attributes }}
+{{#unless (isStrEqual chipCallback.name "Unsupported")}}
+
+{{#if_basic_global_response}}
+{{else}}
+CHIP{{asUpperCamelCase parent.name}}{{asUpperCamelCase name}}AttributeCallback::CHIP{{asUpperCamelCase parent.name}}{{asUpperCamelCase name}}AttributeCallback(jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIP{{asUpperCamelCase parent.name}}Cluster{{asUpperCamelCase name}}AttributeCallbackType>(CallbackFn, this), keepAlive(keepAlive)
+A
+
+CHIP{{asUpperCamelCase parent.name}}{{asUpperCamelCase name}}AttributeCallback::~CHIP{{asUpperCamelCase parent.name}}{{asUpperCamelCase name}}AttributeCallback() {
+B
+{{/if_basic_global_response}}
+
+{{#if isArray}}
+void CHIP{{asUpperCamelCase parent.name}}{{asUpperCamelCase name}}AttributeCallback::CallbackFn(void * context, {{zapTypeToDecodableClusterObjectType type ns=parent.name isArgument=true}} list)
+{
+
+    std::unique_ptr<CHIP{{asUpperCamelCase parent.name}}{{asUpperCamelCase name}}AttributeCallback, decltype(&maybeDestroy)> cppCallback(reinterpret_cast<CHIP{{asUpperCamelCase parent.name}}{{asUpperCamelCase name}}AttributeCallback *>(context), maybeDestroy);
+
+    {{>decode_value source="list" target="arrayListObj" cluster=(asUpperCamelCase parent.name) depth=0}}
+}
+{{else}}
+  {{#if_basic_global_response}}
+  {{else}}
+    void CHIP{{asUpperCamelCase parent.name}}{{asUpperCamelCase name}}AttributeCallback::CallbackFn(void * context, {{zapTypeToDecodableClusterObjectType type ns=parent.name isArgument=true}} value)
+    {
+        std::unique_ptr<CHIP{{asUpperCamelCase parent.name}}{{asUpperCamelCase name}}AttributeCallback, decltype(&maybeDestroy)> cppCallback(reinterpret_cast<CHIP{{asUpperCamelCase parent.name}}{{asUpperCamelCase name}}AttributeCallback *>(context), maybeDestroy);
+
+        err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "({{#if isArray}}{{else if isStruct}}{{else if isOptional}}Ljava/util/Optional;{{else if (isOctetString type)}}[B{{else if (isCharString type)}}Ljava/lang/String;{{else}}{{asJniSignatureBasic type true}}{{/if}})V", &javaMethod);
+
+        {{>decode_value source="value" target="javaValue" cluster=(asUpperCamelCase parent.name) depth=0}}
+    }
+  {{/if_basic_global_response}}
+{{/if}}
+{{/unless}}
+{{/chip_server_cluster_attributes}}
+{{/chip_client_clusters}}
+
+{{/if}}

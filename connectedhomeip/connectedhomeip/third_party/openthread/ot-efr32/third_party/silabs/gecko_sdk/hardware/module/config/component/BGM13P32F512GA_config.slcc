@@ -1,0 +1,27 @@
+!!omap
+- id: BGM13P32F512GA_config
+- label: BGM13P32F512GA config
+- description: Configuration files for BGM13P32F512GA
+- package: platform
+- category: Platform|Device|BGM13|Config
+- quality: production
+- ui_hints:
+    visibility: never
+- root_path: hardware/module/config
+- requires:
+  - name: bgm13p32f512ga
+- provides:
+  - name: BGM13P32F512GA_config
+- config_file:
+  - override:
+      component: rail_util_pa
+      file_id: rail_util_pa_config
+    path: BGM13P32F512GA/sl_rail_util_pa_config.h
+  - override:
+      component: device_init_hfxo
+      file_id: device_init_hfxo_config
+    path: BGM13P32F512GA/sl_device_init_hfxo_config.h
+  - override:
+      component: device_init_lfxo
+      file_id: device_init_lfxo_config
+    path: BGM13P32F512GA/sl_device_init_lfxo_config.h

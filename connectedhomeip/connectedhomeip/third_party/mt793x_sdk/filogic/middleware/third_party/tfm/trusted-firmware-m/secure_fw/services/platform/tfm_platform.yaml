@@ -1,0 +1,150 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2018-2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+{
+  "psa_framework_version": 1.0,
+  "name": "TFM_SP_PLATFORM",
+  "type": "PSA-ROT",
+  "priority": "NORMAL",
+  "entry_point": "platform_sp_init",
+  "stack_size": "0x0400",
+  "services": [
+    {
+      "name": "TFM_SP_PLATFORM_SYSTEM_RESET",
+      "signal": "PLATFORM_SP_SYSTEM_RESET_SIG",
+      "sid": "0x00000040",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_SP_PLATFORM_IOCTL",
+      "signal": "PLATFORM_SP_IOCTL_SIG",
+      "sid": "0x00000041",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+     },
+     {
+       "name": "TFM_SP_PLATFORM_NV_COUNTER",
+       "signal": "PLATFORM_SP_NV_COUNTER_SIG",
+       "sid": "0x00000042",
+       "non_secure_clients": false,
+       "version": 1,
+       "version_policy": "STRICT"
+     }
+  ],
+  "secure_functions": [
+    {
+      "name": "TFM_SP_PLATFORM_SYSTEM_RESET",
+      "signal": "PLATFORM_SP_SYSTEM_RESET",
+      "sid": "0x00000040",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_SP_PLATFORM_IOCTL",
+      "signal": "PLATFORM_SP_IOCTL",
+      "sid": "0x00000041",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_SP_PLATFORM_NV_COUNTER_READ",
+      "signal": "PLATFORM_SP_NV_COUNTER_READ",
+      "non_secure_clients": false,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_SP_PLATFORM_NV_COUNTER_INCREMENT",
+      "signal": "PLATFORM_SP_NV_COUNTER_INCREMENT",
+      "non_secure_clients": false,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_SP_PLATFORM_SLP_PLATFORM_SYS_INIT",
+      "signal": "PLATFORM_SLP_INTERNAL_SYS_INIT",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_SP_PLATFORM_SLP_PLATFORM_INIT",
+      "signal": "PLATFORM_SLP_PLATFORM_SYS_INIT",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_SP_PLATFORM_SLP_CONN_BUS_BACKUP",
+      "signal": "PLATFORM_SLP_CONN_BUS_BACKUP",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_SP_PLATFORM_SLP_SYSTEM_SLEEP_WAKEUP",
+      "signal": "PLATFORM_SLP_SYSTEM_SLEEP_WAKEUP",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_SP_PLATFORM_SLP_CONN_BUS_SUSPEND",
+      "signal": "PLATFORM_SLP_CONN_BUS_SUSPEND",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_SP_PLATFORM_SLP_CONN_BUS_RESUME",
+      "signal": "PLATFORM_SLP_CONN_BUS_RESUME",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_SP_PLATFORM_SLP_ENTER_WFI_SYS",
+      "signal": "PLATFORM_SLP_ENTER_WFI_SYS",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_SP_PLATFORM_SPM_SPM_SUSPEND_MODULE_LOCK",
+      "signal": "PLATFORM_SPM_SPM_SUSPEND_MODULE_LOCK",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_SP_PLATFORM_SPM_SPM_CTRL",
+      "signal": "PLATFORM_SPM_SPM_CTRL",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_SP_PLATFORM_SPM_SPM_MTCMOS",
+      "signal": "PLATFORM_SPM_SPM_MTCMOS",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_SP_PLATFORM_SPM_HAL_SPM_INIT",
+      "signal": "PLATFORM_SPM_HAL_SPM_INIT",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+  ]
+}

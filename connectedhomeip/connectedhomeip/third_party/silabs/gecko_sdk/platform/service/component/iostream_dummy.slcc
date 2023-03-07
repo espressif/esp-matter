@@ -1,0 +1,34 @@
+id: iostream_dummy
+label: "IO Stream: DUMMY"
+package: platform
+description: IO Stream DUMMY
+category: Services|IO Stream
+quality: alpha
+instantiable:
+  prefix: inst
+root_path: platform/service/iostream
+provides:
+  - name: iostream_dummy
+  - name: iostream_transport_core
+    allow_multiple: true
+  - name: iostream_transport
+    allow_multiple: true
+template_file:
+  - path: init/sl_iostream_init_dummy_instances.c.jinja
+  - path: init/sl_iostream_init_dummy_instances.h.jinja
+template_contribution:
+  - name: iostream_dummy_instances
+    value: "{{instance}}"
+  - name: event_handler
+    value:
+      event: iostream_instance_init
+      include: sl_iostream_init_dummy_instances.h
+      handler: sl_iostream_dummy_init_instances
+  - name: iostream_instance_info
+    value:
+      include: sl_iostream_init_dummy_instances.h
+      handler: "sl_iostream_instance_dummy_{{instance}}_info"
+requires:
+  - name: iostream
+ui_hints:
+  visibility: never

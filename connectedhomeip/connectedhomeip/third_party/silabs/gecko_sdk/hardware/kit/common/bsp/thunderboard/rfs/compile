@@ -1,0 +1,17 @@
+#!/bin/bash
+#
+#
+clear
+echo "Compiling the RFS file system create utility"
+gcc -c -I../../.. -I../.. -I.. -Wformat-security rfs_create.c -o rfs_create.o
+gcc -o rfs_create rfs_create.o
+
+echo "Creating RFS file system header file"
+./rfs_create rfs_files.h testfiles/test.txt testfiles/1.bmp testfiles/2.bmp testfiles/3.bmp testfiles/4.bmp
+
+echo "Compiling the RFS file system test application"
+gcc -c -I../../.. -I../.. -I.. -Wformat-security rfs.c -o rfs.o
+gcc -c -I../../.. -I../.. -I.. -Wformat-security rfs_test.c -o rfs_test.o
+gcc -o rfs_test rfs.o rfs_test.o
+
+rm -fr *.o

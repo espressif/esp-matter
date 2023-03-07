@@ -1,0 +1,445 @@
+{
+    "devicelist": {
+        "version": "2.24.0",
+        "DeviceGroup": [
+            {
+                "Name": "Sub-1 GHz",
+                "Description": "Texas Instruments RF devices for the Sub 1 GHz ISM band.",
+                "Device": [
+                    {
+                        "DeviceName": {
+                            "_family": "Thor",
+                            "$": "CC1354R10"
+                        },
+                        "Brief": "Dual Band",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Thor",
+                            "$": "CC1354P10"
+                        },
+                        "Brief": "Dual Band",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Thor",
+                            "$": "CC1314R10"
+                        },
+                        "Brief": "Sub-1GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Agama",
+                            "$": "CC1352P7"
+                        },
+                        "Brief": "Dual Band",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Agama",
+                            "$": "CC1312R7"
+                        },
+                        "Brief": "Sub-1GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Agama",
+                            "$": "CC1311R3"
+                        },
+                        "Brief": "Sub-1GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Agama",
+                            "$": "CC1311P3"
+                        },
+                        "Brief": "Sub-1GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Agama",
+                            "$": "CC1352P"
+                        },
+                        "Brief": "Dual Band, High PA",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Agama",
+                            "$": "CC1352R"
+                        },
+                        "Brief": "Dual Band",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Agama",
+                            "$": "CC1312R"
+                        },
+                        "Brief": "Sub-1GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Chameleon",
+                            "$": "CC1350"
+                        },
+                        "Brief": "Dual Band",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Chameleon",
+                            "$": "CC1310"
+                        },
+                        "Brief": "Sub-1GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": "CC1201",
+                        "Brief": "Sub-1GHz",
+                        "DeviceType": "Transceiver"
+                    },
+                    {
+                        "DeviceName": "CC1200",
+                        "Brief": "Sub-1GHz",
+                        "DeviceType": "Transceiver"
+                    },
+                    {
+                        "DeviceName": "CC1175",
+                        "Brief": "Sub-1GHz",
+                        "DeviceType": "Transmitter"
+                    },
+                    {
+                        "DeviceName": "CC1125",
+                        "Brief": "Sub-1GHz",
+                        "DeviceType": "Transceiver"
+                    },
+                    {
+                        "DeviceName": "CC1121",
+                        "Brief": "Sub-1GHz",
+                        "DeviceType": "Transceiver"
+                    },
+                    {
+                        "DeviceName": "CC1120",
+                        "Brief": "Sub-1GHz",
+                        "DeviceType": "Transceiver"
+                    },
+                    {
+                        "DeviceName": "CC115L",
+                        "Brief": "Sub-1GHz",
+                        "DeviceType": "Transmitter"
+                    },
+                    {
+                        "DeviceName": "CC113L",
+                        "Brief": "Sub-1GHz",
+                        "DeviceType": "Receiver"
+                    },
+                    {
+                        "DeviceName": "CC110L",
+                        "Brief": "Sub-1GHz",
+                        "DeviceType": "Transceiver"
+                    },
+                    {
+                        "DeviceName": "CC1150",
+                        "Brief": "Sub-1GHz",
+                        "DeviceType": "Transmitter"
+                    },
+                    {
+                        "DeviceName": "CC1101",
+                        "Brief": "Sub-1GHz",
+                        "DeviceType": "Transceiver"
+                    },
+                    {
+                        "DeviceName": "CC1100E",
+                        "Brief": "Sub-1GHz",
+                        "DeviceType": "Transceiver"
+                    },
+                    {
+                        "DeviceName": "CC1100",
+                        "Brief": "Sub-1GHz",
+                        "DeviceType": "Transceiver"
+                    },
+                    {
+                        "DeviceName": "CC1111",
+                        "Brief": "Sub-1GHz USB",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": "CC1110",
+                        "Brief": "Sub-1GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": "CC430",
+                        "Brief": "Sub-1GHz",
+                        "DeviceType": "Wireless MCU"
+                    }
+                ]
+            },
+            {
+                "Name": "2.4 GHz",
+                "Description": "Texas Instruments RF devices for the 2.4 GHz band.",
+                "Device": [
+                    {
+                        "DeviceName": {
+                            "_family": "Thor",
+                            "$": "CC2674R10"
+                        },
+                        "Brief": "2.4 GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Thor",
+                            "$": "CC2674P10"
+                        },
+                        "Brief": "2.4 GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Agama",
+                            "$": "CC2652R7"
+                        },
+                        "Brief": "2.4 GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Agama",
+                            "$": "CC2652P7"
+                        },
+                        "Brief": "2.4 GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Agama",
+                            "$": "CC2651R3"
+                        },
+                        "Brief": "2.4 GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Agama",
+                            "$": "CC2651P3"
+                        },
+                        "Brief": "2.4 GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Agama",
+                            "$": "CC2672P3"
+                        },
+                        "Brief": "Dual Band",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Agama",
+                            "$": "CC2672R3"
+                        },
+                        "Brief": "Dual Band",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Agama",
+                            "$": "CC2652RSIP"
+                        },
+                        "Brief": "2.4 GHz (SIP)",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Agama",
+                            "$": "CC2652PSIP"
+                        },
+                        "Brief": "2.4 GHz, High PA (SIP)",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Agama",
+                            "$": "CC2652P"
+                        },
+                        "Brief": "2.4 GHz, High PA",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Agama",
+                            "$": "CC2652RB"
+                        },
+                        "Brief": "2.4 GHz (BAW)",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Agama",
+                            "$": "CC2652R"
+                        },
+                        "Brief": "2.4 GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Agama",
+                            "$": "CC2642R"
+                        },
+                        "Brief": "2.4 GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Chameleon",
+                            "$": "CC2640R2F"
+                        },
+                        "Brief": "2.4 GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Chameleon",
+                            "$": "CC2640R2L"
+                        },
+                        "Brief": "2.4 GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Chameleon",
+                            "$": "CC2650"
+                        },
+                        "Brief": "2.4 GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Chameleon",
+                            "$": "CC2640"
+                        },
+                        "Brief": "2.4 GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Chameleon",
+                            "$": "CC2630"
+                        },
+                        "Brief": "2.4 GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Chameleon",
+                            "$": "CC2620"
+                        },
+                        "Brief": "2.4 GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": "CC2538",
+                        "Brief": "2.4 GHz USB",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": "CC2533",
+                        "Brief": "2.4 GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": "CC2531",
+                        "Brief": "2.4 GHz USB",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": "CC2530",
+                        "Brief": "2.4 GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": "CC2545",
+                        "Brief": "2.4 GHz (31 IO)",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": "CC2544",
+                        "Brief": "2.4 GHz USB",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": "CC2543",
+                        "Brief": "2.4 GHz (16 IO)",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": "CC2541",
+                        "Brief": "2.4 GHz + BLE",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": "CC2540",
+                        "Brief": "2.4 GHz BLE USB",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": "CC2431",
+                        "Brief": "2.4 GHz LOC",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": "CC2430",
+                        "Brief": "2.4 GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": "CC2520",
+                        "Brief": "2.4 GHz",
+                        "DeviceType": "Transceiver"
+                    },
+                    {
+                        "DeviceName": "CC2500",
+                        "Brief": "2.4 GHz",
+                        "DeviceType": "Transceiver"
+                    },
+                    {
+                        "DeviceName": "CC2511",
+                        "Brief": "2.4 GHz USB",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": "CC2510",
+                        "Brief": "2.4 GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": "CC2550",
+                        "Brief": "2.4 GHz",
+                        "DeviceType": "Transmitter"
+                    },
+                    {
+                        "DeviceName": "CC3200",
+                        "Brief": "Wi-Fi 802.11b\/g\/n",
+                        "DeviceType": "ARM CM4 MCU"
+                    },
+                    {
+                        "DeviceName": "CC3100",
+                        "Brief": "Wi-Fi 802.11b\/g\/n",
+                        "DeviceType": "Netw. Processor"
+                    }
+                ]
+            }
+        ]
+    }
+}

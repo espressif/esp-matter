@@ -1,0 +1,40 @@
+id: gatt_service_imu
+label: Inertial Measurement Unit GATT Service
+package: Bluetooth
+description: >
+  Provides inertial measurement unit sensor data in GATT characteristics.
+  Designed for the Thunderboard smartphone app.
+category: Bluetooth|GATT
+quality: production
+root_path: app/bluetooth/common/gatt_service_imu
+config_file:
+  - path: config/sl_gatt_service_imu_config.h
+  - path: gatt_service_imu.xml
+    directory: btconf
+source:
+  - path: sl_gatt_service_imu.c
+include:
+  - path: .
+    file_list:
+      - path: sl_gatt_service_imu.h
+provides:
+  - name: gatt_service_imu
+requires:
+  - name: bluetooth_stack
+  - name: gatt_configuration
+  - name: bluetooth_feature_connection
+  - name: bluetooth_feature_gatt_server
+  - name: app_assert
+  - name: app_log
+template_contribution:
+  - name: bluetooth_on_event
+    value:
+      include: sl_gatt_service_imu.h
+      function: sl_gatt_service_imu_on_event
+  - name: event_handler
+    value:
+      event: internal_app_process_action
+      include: sl_gatt_service_imu.h
+      handler: sl_gatt_service_imu_step
+  - name: component_catalog
+    value: gatt_service_imu

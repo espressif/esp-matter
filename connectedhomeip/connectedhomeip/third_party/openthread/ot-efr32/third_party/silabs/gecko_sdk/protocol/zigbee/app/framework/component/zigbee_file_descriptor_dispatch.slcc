@@ -1,0 +1,30 @@
+package: Zigbee
+description: This component provides an API for registering a file descriptor and a callback
+  that will be called when the select() function notifies the component there is data
+  on that file descriptor.
+id: zigbee_file_descriptor_dispatch
+label: File Descriptor Dispatch
+category: Zigbee|Unix Host
+toolchain_settings: []
+ui_hints: {}
+quality: production
+template_file: []
+provides:
+   - name: "zigbee_file_descriptor_dispatch"
+requires:
+   - name: "device_host"
+   - name: "cli_threaded_host"
+include:
+  - path: protocol/zigbee/app/framework/plugin-host/file-descriptor-dispatch
+    file_list:
+      - path: file-descriptor-dispatch.h
+source:
+  - path: "protocol/zigbee/app/framework/plugin-host/file-descriptor-dispatch/file-descriptor-dispatch.c"
+  - path: "protocol/zigbee/app/framework/plugin-host/file-descriptor-dispatch/file-descriptor-dispatch-cb.c"
+template_contribution:
+  - name: component_catalog
+    value: zigbee_file_descriptor_dispatch
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/file-descriptor-dispatch

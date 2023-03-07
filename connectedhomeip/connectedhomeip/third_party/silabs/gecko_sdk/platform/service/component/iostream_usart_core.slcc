@@ -1,0 +1,39 @@
+id: iostream_usart_core
+package: platform
+label: "IO Stream: USART Core"
+description: Core of IO Stream USART.
+category: Services|IO Stream
+quality: production
+ui_hints:
+  visibility: never
+provides:
+  - name: iostream_usart_core
+  - name: iostream_transport_core
+    allow_multiple: true
+root_path: platform/service/iostream
+include:
+  - path: inc
+    file_list:
+      - path: sl_iostream_usart.h
+source:
+  - path: src/sl_iostream_usart.c
+template_file:
+  - path: init/sl_iostream_init_usart_instances.c.jinja
+    condition: [iostream_usart]
+  - path: init/sl_iostream_init_usart_instances.h.jinja
+    condition: [iostream_usart]
+template_contribution:
+  - name: component_catalog
+    value: iostream_usart
+  - name: iostream_usart_shared_irq
+    value: irq
+    condition:
+      - device_family_efm32tg11b
+requires:
+  - name: iostream
+  - name: iostream_uart_common
+  - name: status
+  - name: emlib_cmu
+  - name: emlib_gpio
+  - name: emlib_usart
+  - name: atomic

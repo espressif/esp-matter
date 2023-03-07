@@ -1,0 +1,25 @@
+package: Zigbee
+description: Provides APIs for generating cryptographically-strong random numbers using PSA Crypto integration.
+label: Strong Random Api (PSA)
+id: zigbee_strong_random_api_psa
+category: Zigbee|Utility
+quality: production
+
+provides:
+   - name: "zigbee_strong_random"
+   - name: "zigbee_strong_random_api_psa"
+
+requires:
+   - name: "psa_crypto"
+
+source:
+  - path: protocol/zigbee/stack/framework/strong-random-api.c
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_strong_random_api_psa
+
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/strong-random-api-psa

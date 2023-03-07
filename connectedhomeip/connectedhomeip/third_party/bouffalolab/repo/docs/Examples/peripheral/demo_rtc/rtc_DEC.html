@@ -1,0 +1,425 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>rtc DEC格式 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../../index.html"/>
+        <link rel="up" title="Peripherals" href="../index.html"/>
+        <link rel="next" title="SPI" href="../demo_spi/spi_dma.html"/>
+        <link rel="prev" title="rtc BCD格式" href="rtc_BCD.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Example</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../ble/index.html">Bluetooth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../network/index.html">Ethernet (BL702)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zigbee/index.html">Zigbee (BL702)</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Peripherals</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../demo_gpio/gpio.html">GPIO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../demo_dac/dac.html">DAC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../demo_dac/dac_dma.html">DAC_DMA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../demo_flash/flash.html">Flash</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../demo_flash/flash_busaddr.html">Flash_BUS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../demo_i2c/i2c_master.html">I2C_Master</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../demo_i2c/i2c_master_mem.html">I2C_Master_Mem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../demo_pwm/pwm.html">PWM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../demo_rng/rng.html">RNG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rtc_BCD.html">RTC_BCD</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">RTC_DEC</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">总览</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">准备及使用步骤</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">应用实例</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../demo_spi/spi_dma.html">SPI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../demo_uart/uart_dma.html">UART_DMA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../demo_uart/uart_echo.html">UART_echo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../demo_uart/uart_int.html">UART_int</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../demo_uart/uart_abr.html">UART_abr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../demo_wdg/wdg.html">WDG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../demo_timer/timer.html">TIMER</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../storage/index.html">Storage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../system/index.html">System</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Example</a> &raquo;</li>
+        
+          <li><a href="../index.html">Peripherals</a> &raquo;</li>
+        
+      <li>rtc DEC格式</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Examples/peripheral/demo_rtc/rtc_DEC.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="rtc-dec">
+<span id="rtc-dec-index"></span><h1>rtc DEC格式<a class="headerlink" href="#rtc-dec" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<h2>总览<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<p>本示例主要介绍rtc DEC格式的使用方法。</p>
+</div>
+<div class="section" id="id2">
+<h2>准备及使用步骤<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<ul class="simple">
+<li>使用步骤：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>插入将板子的USB电源线；</li>
+<li>编译 <code class="docutils literal notranslate"><span class="pre">customer_app/periperal/demo_rtc</span></code> 工程并下载工程；</li>
+<li>打开一个串口终端窗口（波特率为2000000，用于接收和发送uart消息）。</li>
+<li>串口终端输入 <code class="docutils literal notranslate"><span class="pre">demo_hosal_rtc_DEC</span></code> ，启动rtc DEC的demo。</li>
+<li>此时串口会先打印设置的rtc时间，然后等待10s，会打印当前的时间，应为设置的时间加上10s</li>
+</ul>
+<div class="figure">
+<img alt="" src="../../../_images/image123.png" />
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="id3">
+<h2>应用实例<a class="headerlink" href="#id3" title="永久链接至标题"></a></h2>
+<ul class="simple">
+<li>示例代码</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#include &lt;stdio.h&gt;</span>
+<span class="c1">#include &lt;cli.h&gt;</span>
+<span class="c1">#include &lt;hosal_rtc.h&gt;</span>
+<span class="c1">#include &lt;blog.h&gt;</span>
+
+
+<span class="n">void</span> <span class="n">demo_hosal_rtc_DEC</span><span class="p">(</span><span class="n">void</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nb">int</span> <span class="n">ret1</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="nb">int</span> <span class="n">ret2</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="o">/*</span> <span class="n">init</span> <span class="n">rtc</span> <span class="n">DEC</span> <span class="nb">format</span><span class="o">*/</span>
+    <span class="n">hosal_rtc_dev_t</span> <span class="n">rtc</span><span class="p">;</span>
+    <span class="n">rtc</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">rtc</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="n">HOSAL_RTC_FORMAT_DEC</span><span class="p">;</span>
+    <span class="n">hosal_rtc_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rtc</span><span class="p">);</span>
+
+    <span class="o">/*</span> <span class="nb">set</span> <span class="n">rtc</span> <span class="n">time</span> <span class="o">*/</span>
+    <span class="n">hosal_rtc_time_t</span> <span class="n">time_buf</span><span class="p">;</span>
+    <span class="n">time_buf</span><span class="o">.</span><span class="n">sec</span>     <span class="o">=</span> <span class="mi">59</span><span class="p">;</span>
+    <span class="n">time_buf</span><span class="o">.</span><span class="n">min</span>     <span class="o">=</span> <span class="mi">59</span><span class="p">;</span>
+    <span class="n">time_buf</span><span class="o">.</span><span class="n">hr</span>      <span class="o">=</span> <span class="mi">23</span><span class="p">;</span>
+    <span class="n">time_buf</span><span class="o">.</span><span class="n">date</span>    <span class="o">=</span> <span class="mi">31</span><span class="p">;</span>
+    <span class="n">time_buf</span><span class="o">.</span><span class="n">month</span>   <span class="o">=</span> <span class="mi">12</span><span class="p">;</span>
+    <span class="n">time_buf</span><span class="o">.</span><span class="n">year</span>    <span class="o">=</span> <span class="mi">37</span><span class="p">;</span>
+    <span class="n">ret1</span> <span class="o">=</span> <span class="n">hosal_rtc_set_time</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rtc</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">time_buf</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">ret1</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">blog_error</span><span class="p">(</span><span class="s2">&quot;set error</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">blog_info</span><span class="p">(</span> <span class="s2">&quot;set time sec     = </span><span class="si">%d</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">time_buf</span><span class="o">.</span><span class="n">sec</span><span class="p">);</span>
+    <span class="n">blog_info</span><span class="p">(</span> <span class="s2">&quot;set time min     = </span><span class="si">%d</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">time_buf</span><span class="o">.</span><span class="n">min</span><span class="p">);</span>
+    <span class="n">blog_info</span><span class="p">(</span> <span class="s2">&quot;set time hr      = </span><span class="si">%d</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">time_buf</span><span class="o">.</span><span class="n">hr</span><span class="p">);</span>
+    <span class="n">blog_info</span><span class="p">(</span> <span class="s2">&quot;set time date    = </span><span class="si">%d</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">time_buf</span><span class="o">.</span><span class="n">date</span><span class="p">);</span>
+    <span class="n">blog_info</span><span class="p">(</span> <span class="s2">&quot;set time month   = </span><span class="si">%d</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">time_buf</span><span class="o">.</span><span class="n">month</span><span class="p">);</span>
+    <span class="n">blog_info</span><span class="p">(</span> <span class="s2">&quot;set time year    = </span><span class="si">%d</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">time_buf</span><span class="o">.</span><span class="n">year</span> <span class="o">+</span> <span class="mi">2000</span><span class="p">);</span>
+
+    <span class="o">/*</span> <span class="n">clear</span> <span class="n">time</span> <span class="n">buf</span> <span class="ow">and</span> <span class="n">delay</span> <span class="mi">10</span><span class="n">s</span> <span class="o">*/</span>
+    <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">time_buf</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">hosal_rtc_time_t</span><span class="p">));</span>
+    <span class="n">vTaskDelay</span><span class="p">(</span><span class="mi">10000</span><span class="p">);</span>
+
+    <span class="o">/*</span> <span class="n">get</span> <span class="n">rtc</span> <span class="n">time</span> <span class="o">*/</span>
+    <span class="n">ret2</span> <span class="o">=</span> <span class="n">hosal_rtc_get_time</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rtc</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">time_buf</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">ret2</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">blog_error</span><span class="p">(</span><span class="s2">&quot;set error</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">blog_info</span><span class="p">(</span> <span class="s2">&quot;get time sec     = </span><span class="si">%d</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">time_buf</span><span class="o">.</span><span class="n">sec</span><span class="p">);</span>
+    <span class="n">blog_info</span><span class="p">(</span> <span class="s2">&quot;get time min     = </span><span class="si">%d</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">time_buf</span><span class="o">.</span><span class="n">min</span><span class="p">);</span>
+    <span class="n">blog_info</span><span class="p">(</span> <span class="s2">&quot;get time hr      = </span><span class="si">%d</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">time_buf</span><span class="o">.</span><span class="n">hr</span><span class="p">);</span>
+    <span class="n">blog_info</span><span class="p">(</span> <span class="s2">&quot;get time date    = </span><span class="si">%d</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">time_buf</span><span class="o">.</span><span class="n">date</span><span class="p">);</span>
+    <span class="n">blog_info</span><span class="p">(</span> <span class="s2">&quot;get time month   = </span><span class="si">%d</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">time_buf</span><span class="o">.</span><span class="n">month</span><span class="p">);</span>
+    <span class="n">blog_info</span><span class="p">(</span> <span class="s2">&quot;get time year    = </span><span class="si">%d</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">time_buf</span><span class="o">.</span><span class="n">year</span> <span class="o">+</span> <span class="mi">2000</span><span class="p">);</span>
+
+    <span class="n">hosal_rtc_finalize</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rtc</span><span class="p">);</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>通过 <code class="docutils literal notranslate"><span class="pre">hosal_rtc_dev_t</span></code> 定义一个rtc设备，并设置port，格式设置为DEC格式。</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">int</span> <span class="n">ret</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">hosal_rtc_dev_t</span> <span class="n">rtc</span><span class="p">;</span>
+<span class="n">rtc</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">rtc</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span><span class="n">HOSAL_RTC_FORMAT_DEC</span><span class="p">;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>调用 <code class="docutils literal notranslate"><span class="pre">hosal_rtc_init</span></code> 初始化rtc。</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ret</span> <span class="o">=</span> <span class="n">hosal_rtc_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rtc</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">blog_error</span><span class="p">(</span><span class="s2">&quot;init rtc error</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>通过 <code class="docutils literal notranslate"><span class="pre">hosal_rtc_set_time</span></code> 来设置rtc时间，此时按照DEC格式设置。</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">int</span> <span class="n">ret</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="n">hosal_rtc_time_t</span> <span class="n">time1</span><span class="p">;</span>
+<span class="n">time1</span><span class="o">.</span><span class="n">sec</span>   <span class="o">=</span> <span class="mi">59</span><span class="p">;</span>
+<span class="n">time1</span><span class="o">.</span><span class="n">min</span>   <span class="o">=</span> <span class="mi">59</span><span class="p">;</span>
+<span class="n">time1</span><span class="o">.</span><span class="n">hr</span>    <span class="o">=</span> <span class="mi">23</span><span class="p">;</span>
+<span class="n">time1</span><span class="o">.</span><span class="n">data</span>  <span class="o">=</span> <span class="mi">31</span><span class="p">;</span>
+<span class="n">time1</span><span class="o">.</span><span class="n">month</span> <span class="o">=</span> <span class="mi">12</span><span class="p">;</span>
+<span class="n">time1</span><span class="o">.</span><span class="n">year</span>  <span class="o">=</span> <span class="mi">37</span><span class="p">;</span>
+<span class="n">ret</span> <span class="o">=</span> <span class="n">hosal_rtc_set_time</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rtc</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">time1</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">blog_error</span><span class="p">(</span><span class="s2">&quot;set rtc time error</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>通过 <code class="docutils literal notranslate"><span class="pre">hosal_rtc_get_time</span></code> 接口来获取rtc时间, 注意获取到的时间也是DEC格式的</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">hosal_rtc_time_t</span> <span class="n">time2</span><span class="p">;</span>
+<span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">time</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">hosal_rtc_time_t</span><span class="p">));</span>
+<span class="n">ret</span> <span class="o">=</span> <span class="n">hosal_rtc_get_time</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rtc</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">time2</span><span class="p">);</span>
+<span class="k">if</span><span class="p">(</span><span class="n">ret</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">blog_error</span><span class="p">(</span><span class="s2">&quot;get rtc time error</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="n">blog_info</span><span class="p">(</span><span class="s2">&quot; get time sec     = </span><span class="si">%d</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">time2</span><span class="o">.</span><span class="n">sec</span><span class="p">);</span>
+<span class="n">blog_info</span><span class="p">(</span><span class="s2">&quot; get time min     = </span><span class="si">%d</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">time2</span><span class="o">.</span><span class="n">min</span><span class="p">);</span>
+<span class="n">blog_info</span><span class="p">(</span><span class="s2">&quot; get time hr      = </span><span class="si">%d</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">time2</span><span class="o">.</span><span class="n">hr</span><span class="p">);</span>
+<span class="n">blog_info</span><span class="p">(</span><span class="s2">&quot; get time data    = </span><span class="si">%d</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">time2</span><span class="o">.</span><span class="n">data</span><span class="p">);</span>
+<span class="n">blog_info</span><span class="p">(</span><span class="s2">&quot; get time month   = </span><span class="si">%d</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">time2</span><span class="o">.</span><span class="n">month</span><span class="p">);</span>
+<span class="n">blog_info</span><span class="p">(</span><span class="s2">&quot; get time year    = </span><span class="si">%d</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">time2</span><span class="o">.</span><span class="n">year</span><span class="p">);</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>通过使用 <code class="docutils literal notranslate"><span class="pre">hosal_rtc_finalize</span></code> 接口结束此rtc的使用</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">hosal_rtc_finalize</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rtc</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../demo_spi/spi_dma.html" class="btn btn-neutral float-right" title="SPI" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="rtc_BCD.html" class="btn btn-neutral" title="rtc BCD格式" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

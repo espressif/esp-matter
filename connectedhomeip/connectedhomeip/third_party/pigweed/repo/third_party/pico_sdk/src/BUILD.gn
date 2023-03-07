@@ -1,0 +1,45 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pi_pico.gni")
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+
+# TODO(amontanez): If a successor to the RP2040 comes out, this might need to
+# be a little smarter about what code is pulled in.
+group("pico_sdk") {
+  public_deps = [
+    "common",
+    "rp2040",
+    "rp2_common",
+  ]
+}
+
+config("elf2uf2_configs") {
+  include_dirs = [ "$PICO_SRC_DIR/src/common/boot_uf2/include" ]
+  cflags_cc = [ "-std=gnu++14" ]
+  cflags = [
+    "-Wno-reorder-ctor",
+    "-Wno-unused-variable",
+  ]
+}
+
+pw_executable("elf2uf2") {
+  configs = [
+    ":elf2uf2_configs",
+    "${PICO_ROOT}/gn:disable_warnings",
+  ]
+  sources = [ "$PICO_SRC_DIR/tools/elf2uf2/main.cpp" ]
+}

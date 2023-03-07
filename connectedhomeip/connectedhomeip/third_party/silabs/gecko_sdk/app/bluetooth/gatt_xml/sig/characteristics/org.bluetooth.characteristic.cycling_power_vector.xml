@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright 2011 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Cycling Power Vector" type="org.bluetooth.characteristic.cycling_power_vector" uuid="2A64" last-modified="2014-07-02" approved="Yes">
+  <InformativeText>
+    <Summary>The Cycling Power Vector characteristic is a variable length structure containing a Flags fieldand based on the contents of the Flags field, may contain one or more additional fields as shown in the table below.</Summary>
+  </InformativeText>
+  <Value>
+    <Field name="Flags">
+      <Requirement>Mandatory</Requirement>
+      <Format>8bit</Format>
+      <BitField>
+        <Bit index="0" size="1" name="Crank Revolution Data Present">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="1" size="1" name="First Crank Measurement Angle Present">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="2" size="1" name="Instantaneous Force Magnitude Array Present">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="3" size="1" name="Instantaneous Torque Magnitude Array Present">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="4" size="2" name="Instantaneous Measurement Direction">
+          <Enumerations>
+            <Enumeration key="0" value="Unknown" />
+            <Enumeration key="1" value="Tangential Component" />
+            <Enumeration key="2" value="Radial Component" />
+            <Enumeration key="3" value="Lateral Component" />
+          </Enumerations>
+        </Bit>
+        <ReservedForFutureUse index="6" size="2" />
+      </BitField>
+    </Field>
+    <Field name="Crank Revolution Data - Cumulative Crank Revolutions">
+      <InformativeText>
+        Unitless
+        C1:When present, these fields are always present as a pair.
+      </InformativeText>
+      <Requirement>C1</Requirement>
+      <Format>uint16</Format>
+      <Unit>org.bluetooth.unit.unitless</Unit>
+      <DecimalExponent>0</DecimalExponent>
+    </Field>
+    <Field name="Crank Revolution Data - Last Crank Event Time">
+      <InformativeText>
+        Unit is in seconds with a resolution of 1/1024.
+        C1:When present, these fields are always present as a pair.
+      </InformativeText>
+      <Requirement>C1</Requirement>
+      <Format>uint16</Format>
+      <Unit>org.bluetooth.unit.time.second</Unit>
+      <BinaryExponent>-10</BinaryExponent>
+    </Field>
+    <Field name="First Crank Measurement Angle ">
+      <InformativeText>Unit is in degrees with a resolution of 1.</InformativeText>
+      <Requirement>Optional</Requirement>
+      <Format>uint16</Format>
+      <Unit>org.bluetooth.unit.plane_angle.degree</Unit>
+      <!-- 2014-07-02 - Added the Description tag to show the informational text per request from SF WG -->
+      <Description>When observed with the front wheel to the right of the pedals, a value of 0 degrees represents the angle when the crank is in the 12 o'clock position and a value of 90 degrees represents the angle, measured clockwise, when the crank points towards the front wheel in a 3 o'clock position. The left crank sensor (if fitted) detects the 0° when the crank it is attached to is in the 12 o'clock position and the right sensor (if fitted) detects the 0° when the crank it is attached to is in its 12 o'clock position; thus, there is a constant 180° difference between the right crank and the left crank position signals.</Description>
+      <DecimalExponent>0</DecimalExponent>
+    </Field>
+    <Field name="Instantaneous Force Magnitude Array">
+      <InformativeText>
+        The unit is in newtons with a resolution of 1
+        Array Order - Older is towards the LSO and Newer is towards the MSO
+        C2: These fields are mutually exclusive. When this field is present, the presence of the Instantaneous Torque Magnitude Array is excluded.
+      </InformativeText>
+      <Requirement>C2</Requirement>
+      <Format>sint16</Format>
+        
+      <Unit>org.bluetooth.unit.force.newton</Unit>
+      <DecimalExponent>0</DecimalExponent>
+      <Repeated>1</Repeated>
+    </Field>
+    <Field name="Instantaneous Torque Magnitude Array">
+      <InformativeText>
+        Unit is in newton/meter with a resolution of 1/32
+        Array Order - Older is towards the LSO and Newer is towards the MSO
+        C2: These fields are mutually exclusive. When this field is present, the presence of the Instantaneous Force Magnitude Array is excluded.
+      </InformativeText>
+      <Requirement>C2</Requirement>
+      <Format>sint16</Format>
+      <Unit>org.bluetooth.unit.moment_of_force.newton_metre</Unit>
+      <BinaryExponent>-5</BinaryExponent>
+      <Repeated>1</Repeated>
+    </Field>
+  </Value>
+  <Note>The fields in the above table, reading from top to bottom, are shown in the order of LSO to MSO, where LSO = Least Significant Octet and MSO = Most Significant Octet. The Least Significant Octet represents the eight bits numbered 0 to 7.</Note>
+</Characteristic>

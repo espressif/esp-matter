@@ -1,0 +1,29 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2001-2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+ifeq ($(TEE_OS), freertos)
+INCDIRS_EXTRA += $(KERNEL_DIR)/OS/FreeRTOS/Source/include
+INCDIRS_EXTRA += $(KERNEL_DIR)/OS/FreeRTOS-Plus-CLI
+INCDIRS_EXTRA += $(KERNEL_DIR)/OS/FreeRTOS-Plus-TCP/include
+INCDIRS_EXTRA += $(KERNEL_DIR)/boards/MPS2+
+INCDIRS_EXTRA += $(KERNEL_DIR)/lib/main
+INCDIRS_EXTRA += $(KERNEL_DIR)/InterruptCtrl
+
+COMPILER_TYPE_DIR = $(shell echo $(COMPILER_TYPE) | tr a-z A-Z)
+
+INCDIRS_EXTRA += $(KERNEL_DIR)/OS/FreeRTOS-Plus-TCP/portable/Compiler/$(COMPILER_TYPE_DIR)
+
+ifeq ($(ARM_CPU), cortex-m33)
+CFLAGS += -DSSE_200
+INCDIRS_EXTRA += $(KERNEL_DIR)/OS/FreeRTOS/Source/portable/$(COMPILER_TYPE_DIR)/ARM_CM33
+else
+CFLAGS += -DARMCM3
+INCDIRS_EXTRA += $(KERNEL_DIR)/OS/FreeRTOS/Source/portable/$(COMPILER_TYPE_DIR)/ARM_CM3
+endif
+
+endif
+

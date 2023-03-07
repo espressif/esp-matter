@@ -1,0 +1,34 @@
+id: ot_ncp_spidrv
+label: NCP SPIDRV
+package: OpenThread
+category: OpenThread
+quality: production
+description: This component provides SPIDRV (SPI) support for the OpenThread stack. It requires that the OpenThread NCP component be included with the project. Currently only the OpenThread RCP stack is supported.
+provides:
+  - name: ot_ncp_spidrv
+requires:
+  - name: ot_stack
+  - name: ot_ncp
+  - name: gpiointerrupt
+  - name: emlib_ldma
+  - name: spidrv_core
+include:
+  - path: util/third_party/openthread/include/openthread/platform
+    file_list:
+      - path: spi-slave.h
+source:
+  - path: protocol/openthread/platform-abstraction/efr32/spidrv_usart.c
+config_file:
+  - path: protocol/openthread/config/ot_ncp_spidrv/s1/sl_ncp_spidrv_usart_config.h
+    file_id: sl_ncp_spidrv_usart_config
+    condition: [device_series_1]
+  - path: protocol/openthread/config/ot_ncp_spidrv/s2/sl_ncp_spidrv_usart_config.h
+    file_id: sl_ncp_spidrv_usart_config
+    condition: [device_series_2]
+recommends:
+  - id: ot_stack_rcp
+define:
+  - name: OPENTHREAD_CONFIG_NCP_HDLC_ENABLE
+    value: 0
+  - name: OPENTHREAD_CONFIG_NCP_SPI_ENABLE
+    value: 1

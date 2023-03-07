@@ -1,0 +1,7 @@
+<clusters>
+{{#zcl_clusters}}
+  <cluster code="{{asHex code 4}}" revision="{{revision}}">
+      {{label}}
+  </cluster>
+{{/zcl_clusters}}
+</clusters>

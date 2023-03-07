@@ -1,0 +1,4 @@
+package/lib/lib/ticlang/m4/drivers_cc32xx/./utils/RingBuf.om4: utils/RingBuf.c /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/HwiP.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/utils/RingBuf.h 
+utils/RingBuf.c:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/HwiP.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/utils/RingBuf.h:

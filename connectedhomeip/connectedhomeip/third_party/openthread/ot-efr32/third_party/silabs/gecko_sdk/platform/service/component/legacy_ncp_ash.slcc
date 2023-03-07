@@ -1,0 +1,25 @@
+id: legacy_ncp_ash
+label: Legacy NCP ASH
+package: platform
+category: Services
+description: Legacy Ember ASH implementation for NCP.
+quality: production
+root_path: platform/service/legacy_ncp_ash
+provides:
+  - name: legacy_ncp_ash
+requires:
+  - name: component_catalog
+  - name: legacy_common_ash
+  - name: device
+  - name: silabs_core_buffer_manager
+  - name: token_manager
+  - name: zigbee_debug_basic
+source:
+  - path: src/ash-ncp.c
+include:
+  - path: inc
+    file_list:
+    - path: ash-ncp.h
+template_contribution:
+  - name: component_catalog
+    value: legacy_ncp_ash

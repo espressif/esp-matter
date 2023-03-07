@@ -1,0 +1,93 @@
+package: Zigbee
+description: Silicon Labs implementation of polling for end devices.  Note that the Poll
+  Control Server component sets the long and short poll intervals at startup.  If both
+  components are enabled, the long and short poll intervals set here will not be used.
+label: End Device Support
+quality: production
+id: zigbee_end_device_support
+category: Zigbee|Utility
+provides:
+   - name: zigbee_end_device_support
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/end-device-support/config/end-device-support-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/end-device-support/end-device-support.c
+  - path: protocol/zigbee/app/framework/plugin/end-device-support/end-device-move.c
+  - path: protocol/zigbee/app/framework/plugin/end-device-support/end-device-support-cli.c
+    condition:
+      - cli
+  - path: protocol/zigbee/app/framework/plugin/end-device-support/polling-common.c
+  - path: protocol/zigbee/app/framework/plugin/end-device-support/polling-host.c
+    condition:
+      - zigbee_ezsp
+  - path: protocol/zigbee/app/framework/plugin/end-device-support/polling-soc.c
+    condition:
+      - zigbee_stack_common
+  - path: protocol/zigbee/app/framework/plugin/end-device-support/end-device-support-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/end-device-support
+    file_list:
+      - path: end-device-support.h
+      - path: end-device-move.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_end_device_support
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emAfPluginEndDeviceSupportMoveInit
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emAfPluginEndDeviceSupportPollingInit
+    unless:
+      - zigbee_ezsp
+  - name: zigbee_af_callback
+    value:
+      callback_type: local_data_init
+      function_name: emberAfPluginEndDeviceSupportInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: tick
+      function_name: emberAfPluginEndDeviceSupportTickCallback      
+  - name: zigbee_stack_callback
+    value:
+      callback_type: stack_status
+      function_name: emberAfPluginEndDeviceSupportStackStatusCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: poll_complete
+      function_name: emAfPluginEndDeviceSupportPollCompleteCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: end-device-support
+      help: end-device-support related commands.
+  - name: cli_command
+    value:
+      group: end-device-support
+      name: status
+      handler: emberAfPluginEndDeviceSupportStatusCommand
+      help: Displays the status of the End Devices polling.
+  - name: cli_command
+    value:
+      group: end-device-support
+      name: poll-completed-callback
+      handler: emberAfPluginEndDeviceSupportPollCompletedCallbackCommand
+      help: Sets whether the devices poll completed callback function is enabled.
+      argument:
+      - type: int8
+        help: The value indicating whether the devices poll completed callback function is enabled
+  - name: cli_command
+    value:
+      group: end-device-support
+      name: force-short-poll
+      handler: emberAfPluginEndDeviceSupportForceShortPollCommand
+      help: Sets whether the CLI forces the device to short poll.
+      argument:
+      - type: int8
+        help: The value indicating whether the device should short poll
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/end-device-support

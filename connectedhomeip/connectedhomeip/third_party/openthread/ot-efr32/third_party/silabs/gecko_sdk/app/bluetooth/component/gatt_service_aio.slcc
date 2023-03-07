@@ -1,0 +1,45 @@
+id: gatt_service_aio
+label: Automation IO GATT Service
+package: Bluetooth
+description: >
+  Provides the LEDs and buttons in GATT characteristics.
+  Designed for the Thunderboard smartphone app.
+category: Bluetooth|GATT
+quality: production
+root_path: app/bluetooth/common/gatt_service_aio
+config_file:
+  - path: gatt_service_aio.xml
+    directory: btconf
+source:
+  - path: sl_gatt_service_aio.c
+  - path: sl_gatt_service_aio_digital_in.c
+    condition:
+      - simple_button
+  - path: sl_gatt_service_aio_digital_out.c
+    condition:
+      - simple_led
+include:
+  - path: .
+    file_list:
+      - path: sl_gatt_service_aio.h
+      - path: sli_gatt_service_aio.h
+provides:
+  - name: gatt_service_aio
+requires:
+  - name: bluetooth_stack
+  - name: gatt_configuration
+  - name: bluetooth_feature_gatt_server
+  - name: app_assert
+  - name: app_log
+template_contribution:
+  - name: bluetooth_on_event
+    value:
+      include: sl_gatt_service_aio.h
+      function: sl_gatt_service_aio_on_event
+  - name: event_handler
+    value:
+      event: internal_app_process_action
+      include: sl_gatt_service_aio.h
+      handler: sl_gatt_service_aio_step
+  - name: component_catalog
+    value: gatt_service_aio

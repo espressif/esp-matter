@@ -1,0 +1,88 @@
+.DS_Store
+.thumbs.db
+node_modules
+
+generated-html
+
+# Temp generation file
+docs/zap-schema.dot
+
+# Quasar core related directories
+.quasar
+/dist
+
+#We don't save the coverage within 
+#this repo. 
+test/jest/coverage
+test/jest/__tests__/data/zap.sqlite
+test/.zap
+junit.xml
+
+# Cordova related directories and files
+/src-cordova/node_modules
+/src-cordova/platforms
+/src-cordova/plugins
+/src-cordova/www
+
+# Capacitor related directories and files
+/src-capacitor/www
+/src-capacitor/node_modules
+
+# BEX related directories and files
+/src-bex/www
+/src-bex/js/core
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Random test file that I keep using for the JSON output.
+test.json
+test.log
+test.zap
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Sonarqube stuff
+.scannerwork
+test-report.xml
+
+# Temporary place for handlebars stuff.
+src-electron/handlebars/out/
+
+# Temporary place for generation
+tmp/
+spa/
+
+# Version file
+.version.json
+
+# Generated packaging file.
+apack_zap.package
+
+# Backup files
+*~
+
+# Cypress screenshots and videos
+cypress/screenshots/**
+cypress/videos/**
+
+# Cypress / Jest code coverage files
+jest-coverage
+.nyc_output
+coverage
+cypress-coverage
+reports
+
+# Downloaded artifacts from Nexus / Github / etc via download-artifact script
+artifacts
+**/zap-*.zip
+**/zap-*zip.json
+**/zap-*.zip.download

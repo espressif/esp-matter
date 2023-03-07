@@ -1,0 +1,119 @@
+package: Zigbee
+description: Silicon Labs implementation of the Demand Response Load Control (DRLC) cluster server.
+  For more information about the component code, see the comments in app/framework/plugin/drlc-server/drlc-server.h.  This
+  component requires extending in order to manage the event table (adding/removing events).  It simply
+  serves up the events that are entered into the table.
+label: Demand Response Load Control Cluster Server
+quality: extend
+id: zigbee_drlc_server
+category: Zigbee|Cluster Library|Smart Energy
+provides:
+   - name: "zigbee_drlc_server"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/drlc-server/config/drlc-server-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/drlc-server/drlc-server.c
+  - path: protocol/zigbee/app/framework/plugin/drlc-server/drlc-server-cli.c
+    condition:
+      - "cli"
+include:
+  - path: protocol/zigbee/app/framework/plugin/drlc-server
+    file_list:
+      - path: drlc-server.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_drlc_server
+  - name: cluster_service
+    value:
+       cluster_id: "0x0701"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "SERVER"       
+       service_function: "emberAfDemandResponseLoadControlClusterServerCommandParse"
+  - name: cli_group
+    value:
+      group: plugin
+      name: drlc-server
+      help: drlc-server related commands.
+  - name: cli_command
+    value:
+      group: drlc-server
+      name: print
+      handler: emberAfPluginDrlcServerPrintCommand
+      help: Prints the Demand Response Load Control Table.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cli_command
+    value:
+      group: drlc-server
+      name: slce
+      handler: emberAfPluginDrlcServerSlceCommand
+      help: Schedules a load control event in the load control event table on a load control server.      load control event bytes are expected as 23 raw bytes in the form      {<eventId:4> <deviceClass:2> <ueg:1> <startTime4> <duration:2> <criticalityLevel:1> <coolingTempOffset:1> <heatingTempOffset:1> <coolingTempSetPoint:2> <heatingTempSetPoint:2> <afgLoadPercentage:1> <dutyCycle:1> <eventControl:1> } all multibyte values should be      little endian as though they were coming over the air.      Example plugin drlc-server slce 0 23 { ab 00 00 00 ff 0f 00 00 00 00 00 01 00 01 00 00 09 1a 09 1a 0a 00 }
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint8
+        help: Location in the load control event table for the event to be scheduled
+      - type: uint8
+        help: The length in the number of bytes
+      - type: hex
+        help: Byte array value for the load control event
+  - name: cli_command
+    value:
+      group: drlc-server
+      name: lce-schedule-mand
+      handler: emberAfPluginDrlcServerScheduleMandatoryLce
+      help: Schedules a load control event on the server.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint8
+        help: Index of the load control event table that will be configured
+      - type: uint32
+        help: The issuer event ID for this load control event
+      - type: uint16
+        help: The device class bitfield this event applies to
+      - type: uint8
+        help: The UEG of the load control event
+      - type: uint32
+        help: Time when the load control event should start
+      - type: uint16
+        help: Duration, in minutes, of the event
+      - type: uint8
+        help: The level of criticality of the event - higher values are more critical
+      - type: uint8
+        help: Bitmask that identifies other control options for the event
+  - name: cli_command
+    value:
+      group: drlc-server
+      name: sslce
+      handler: emberAfPluginDrlcServerSslceCommand
+      help: Command used on a DRLC server to send a scheduled load control event out of the load control event table.
+      argument:
+      - type: uint16
+        help: The destination node ID
+      - type: uint8
+        help: The source endpoint
+      - type: uint8
+        help: The destination endpoint
+      - type: uint8
+        help: Index of the load control event in the servers load control event table
+  - name: cli_command
+    value:
+      group: drlc-server
+      name: cslce
+      handler: emberAfPluginDrlcServerCslceCommand
+      help: Clears the scheduled load control events table.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cluster_functions
+    value:
+      cluster_name: DemandResponseLoadControl
+      cluster_id: 0x0701
+      cluster_type: server
+      init_function: emberAfDemandResponseLoadControlClusterServerInitCallback
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/drlc-server

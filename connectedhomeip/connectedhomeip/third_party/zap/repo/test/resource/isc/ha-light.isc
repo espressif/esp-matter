@@ -1,0 +1,88 @@
+#ISD afv6
+{setupId:zclAfv2
+intMap:ManufacturingCode = 43690
+intMap:ReportTableSize = 5
+intMap:Endpoint = 10
+intMap:DeviceVersion = 0
+intMap:DefaultDestinationEndpoint = 10
+intMap:ProfileId = -1
+intMap:DeviceId = -1
+intMap:DefaultResponsePolicy = 0
+boolMap:EnableStandardReporting = true
+boolMap:EnableInterPanSend = false
+boolMap:EnableInterPanReceive = false
+boolMap:SupportCommandDiscovery = true
+boolMap:EnableKeySwitch = false
+boolMap:LowRamConcentrator = true
+boolMap:EnableAttributeRangeChecking = false
+boolMap:ReceiveSupportedZdoRequests = false
+boolMap:HandleUnsupportedZdoRequests = false
+boolMap:HandleEndpointZdoRequests = false
+boolMap:HandleBindingZdoRequests = false
+boolMap:LegacyCli = false
+boolMap:AddCustomCli = true
+boolMap:IncludeCommandDescriptions = true
+boolMap:GenerateCallbacksFile = true
+beginAttrList:OPTIONAL
+  cl:0x000A, at:0x0002, di:server, mf:0x0000
+  cl:0x0008, at:0x000F, di:server, mf:0x0000
+  cl:0x0008, at:0x0010, di:server, mf:0x0000
+  cl:0x0008, at:0x0011, di:server, mf:0x0000
+  cl:0x0000, at:0x0004, di:server, mf:0x0000
+  cl:0x0000, at:0x0005, di:server, mf:0x0000
+  cl:0x0000, at:0x0006, di:server, mf:0x0000
+  cl:0x0000, at:0x4000, di:server, mf:0x0000
+endAttrList:OPTIONAL
+beginAttrList:BOUNDED
+  cl:0x0000, at:0x0007, di:server, mf:0x0000
+  cl:0x0000, at:0x0000, di:server, mf:0x0000
+  cl:0x0003, at:0x0000, di:server, mf:0x0000
+  cl:0x0004, at:0x0000, di:server, mf:0x0000
+  cl:0x0005, at:0x0004, di:server, mf:0x0000
+  cl:0x0005, at:0x0003, di:server, mf:0x0000
+  cl:0x0005, at:0x0001, di:server, mf:0x0000
+  cl:0x0005, at:0x0000, di:server, mf:0x0000
+  cl:0x0005, at:0x0002, di:server, mf:0x0000
+  cl:0x0006, at:0x0000, di:server, mf:0x0000
+  cl:0x0008, at:0x0010, di:server, mf:0x0000
+  cl:0x0008, at:0x0011, di:server, mf:0x0000
+  cl:0x0008, at:0x0000, di:server, mf:0x0000
+endAttrList:BOUNDED
+configuredNetwork:*type:ZIGBEE_PRO, name:Primary
+beginEndpointType:Primary
+device:HA-onofflight
+deviceId:256
+profileId:260
+endEndpointType
+beginEndpointType:zigbee custom
+device:zcustom
+deviceId:-1
+profileId:-1
+overrideServerCluster:0x0000,yes
+overrideServerCluster:0x000A,yes
+endEndpointType
+beginEndpointType:ha-light
+device:HA-levelcontrollableoutput
+deviceId:3
+profileId:260
+overrideClientCluster:0x0009,no
+overrideClientCluster:0x0020,yes
+endEndpointType
+configuredEndpoint:*ep:6,pi: -1,di:-1,dv:1,ept:ha-light,nwk:Primary
+configuredEndpoint:ep:12,pi: 260,di:1911,dv:3,ept:zigbee custom,nwk:Primary
+callbacks:emberAfOnOffClusterServerAttributeChangedCallback
+callbacks:emberAfPluginButtonJoiningButtonEventCallback
+callbacks:emberAfPluginConcentratorBroadcastSentCallback
+callbacks:emberAfPluginNetworkFindGetRadioPowerForChannelCallback
+callbacks:emberAfPluginNetworkFindJoinCallback
+callbacks:emberAfPluginEzmodeCommissioningClientCompleteCallback
+callbacks:emberAfPluginGroupsServerGetGroupNameCallback
+callbacks:emberAfPluginGroupsServerSetGroupNameCallback
+callbacks:emberAfPluginGroupsServerGroupNamesSupportedCallback
+callbacks:emberAfPluginNetworkFindFinishedCallback
+callbacks:emberAfPluginReportingConfiguredCallback
+callbacks:emberIncomingNetworkStatusHandler
+callbacks:ezspIncomingNetworkStatusHandler
+}
+{setupId:zclCustomizer
+}

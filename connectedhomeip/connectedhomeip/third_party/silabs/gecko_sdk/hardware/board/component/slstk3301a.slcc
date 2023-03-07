@@ -1,0 +1,22 @@
+!!omap
+- id: slstk3301a
+- label: SLSTK3301A
+- package: platform
+- description: Kit BSP support for the EFM32TG11 Tiny Gecko Starter Kit.
+- category: Platform|Board|Kit|Starter Kit
+- quality: production
+- requires:
+  - name: hardware_board_from_slstk3301a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_stk
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLSTK3301A"'
+  - name: SL_KIT_REV
+    value: '"A02"'
+- tag:
+  - kit:opn:SLSTK3301A
+  - kit:pn:STK3301
+  - kit:variant:A
+  - kit:revision:A02

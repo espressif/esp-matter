@@ -1,0 +1,60 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+{
+  "psa_framework_version": 1.0,
+  "name": "TFM_IRQ_TEST_1",
+  "type": "APPLICATION-ROT",
+  "priority": "NORMAL",
+  "entry_point": "tfm_irq_test_1_init",
+  "stack_size": "0x0400",
+  "mmio_regions": [
+    {
+      "name": "TFM_PERIPHERAL_TIMER0",
+      "permission": "READ-WRITE"
+    }
+  ],
+  "secure_functions": [
+    {
+      "name": "SPM_IRQ_TEST_1_PREPARE_TEST_SCENARIO",
+      "signal": "SPM_IRQ_TEST_1_PREPARE_TEST_SCENARIO",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "SPM_IRQ_TEST_1_EXECUTE_TEST_SCENARIO",
+      "signal": "SPM_IRQ_TEST_1_EXECUTE_TEST_SCENARIO",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    }
+  ],
+  "irqs": [
+    {
+      "source": "TFM_TIMER0_IRQ",
+      "signal": "SPM_CORE_IRQ_TEST_1_SIGNAL_TIMER_0_IRQ",
+      "tfm_irq_priority": 64,
+    }
+  ],
+  "services": [
+    {
+      "name": "SPM_CORE_IRQ_TEST_1_PREPARE_TEST_SCENARIO",
+      "sid": "0x0000F0A0",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "SPM_CORE_IRQ_TEST_1_EXECUTE_TEST_SCENARIO",
+      "sid": "0x0000F0A1",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+  ]
+}

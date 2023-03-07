@@ -1,0 +1,4 @@
+package/lib/lib/ticlang/m4/drivers_cc32xx/./cryptoutils/utils/CryptoUtils.om4: cryptoutils/utils/CryptoUtils.c /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/DebugP.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/cryptoutils/utils/CryptoUtils.h 
+cryptoutils/utils/CryptoUtils.c:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/DebugP.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/cryptoutils/utils/CryptoUtils.h:

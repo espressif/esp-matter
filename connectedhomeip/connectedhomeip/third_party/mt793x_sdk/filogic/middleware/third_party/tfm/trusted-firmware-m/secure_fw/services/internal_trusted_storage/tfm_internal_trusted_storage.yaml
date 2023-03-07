@@ -1,0 +1,74 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+{
+  "psa_framework_version": 1.0,
+  "name": "TFM_SP_ITS",
+  "type": "PSA-ROT",
+  "priority": "NORMAL",
+  "entry_point": "tfm_its_req_mngr_init",
+  "stack_size": "0x680",
+  "secure_functions": [
+    {
+      "sfid": "TFM_ITS_SET",
+      "signal": "TFM_ITS_SET_REQ",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "sfid": "TFM_ITS_GET",
+      "signal": "TFM_ITS_GET_REQ",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "sfid": "TFM_ITS_GET_INFO",
+      "signal": "TFM_ITS_GET_INFO_REQ",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "sfid": "TFM_ITS_REMOVE",
+      "signal": "TFM_ITS_REMOVE_REQ",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    }
+  ],
+  "services" : [{
+    "name": "TFM_ITS_SET",
+    "sid": "0x00000070",
+    "non_secure_clients": true,
+    "version": 1,
+    "version_policy": "STRICT"
+   },
+   {
+    "name": "TFM_ITS_GET",
+    "sid": "0x00000071",
+    "non_secure_clients": true,
+    "version": 1,
+    "version_policy": "STRICT"
+   },
+   {
+    "name": "TFM_ITS_GET_INFO",
+    "sid": "0x00000072",
+    "non_secure_clients": true,
+    "version": 1,
+    "version_policy": "STRICT"
+   },
+   {
+    "name": "TFM_ITS_REMOVE",
+    "sid": "0x00000073",
+    "non_secure_clients": true,
+    "version": 1,
+    "version_policy": "STRICT"
+   }
+  ]
+}

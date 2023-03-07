@@ -1,0 +1,15 @@
+ %%{
+
+const aoa = system.modules["/ti/ble5stack/aoa/aoa"].$static;
+
+%%}
+
+-DAOA_SYSCFG
+% if(aoa.enableAoa)
+% {
+-DRTLS_CTE
+% }
+% else
+% {
+-DxRTLS_CTE
+% }

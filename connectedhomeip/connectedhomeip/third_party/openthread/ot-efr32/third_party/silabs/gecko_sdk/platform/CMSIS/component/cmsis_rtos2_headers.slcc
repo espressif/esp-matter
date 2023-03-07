@@ -1,0 +1,13 @@
+id: cmsis_rtos2_headers
+label: CMSIS-RTOS2 Headers
+package: platform
+description: CMSIS RTOS2 include path, with OS Tick API (headers only).
+category: Platform|CMSIS
+quality: production
+include:
+  - path: platform/CMSIS/RTOS2/Include
+    file_list:
+    - path: cmsis_os2.h
+    - path: os_tick.h
+provides:
+  - name: cmsis_rtos2_headers

@@ -1,0 +1,149 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+#
+# The file is auto-generated when chromium verifier is installed from pw_package.
+# See //pw_package/py/pw_package/packages/boringssl.py for more detail.
+
+# The list only includes sources that implement core verifier logic.
+chromium_verifier_sources_minimal = [
+  "base/location.cc",
+  "base/memory/ref_counted.cc",
+  "base/strings/string_number_conversions.cc",
+  "base/strings/string_split.cc",
+  "base/strings/string_util.cc",
+  "base/strings/stringprintf.cc",
+  "base/strings/utf_string_conversion_utils.cc",
+  "base/strings/utf_string_conversions.cc",
+  "base/supports_user_data.cc",
+  "base/time/time.cc",
+  "crypto/openssl_util.cc",
+  "net/base/ip_address.cc",
+  "net/cert/internal/cert_error_id.cc",
+  "net/cert/internal/cert_error_params.cc",
+  "net/cert/internal/cert_errors.cc",
+  "net/cert/internal/cert_issuer_source_static.cc",
+  "net/cert/internal/certificate_policies.cc",
+  "net/cert/internal/common_cert_errors.cc",
+  "net/cert/internal/extended_key_usage.cc",
+  "net/cert/internal/general_names.cc",
+  "net/cert/internal/name_constraints.cc",
+  "net/cert/internal/parse_certificate.cc",
+  "net/cert/internal/parse_name.cc",
+  "net/cert/internal/parsed_certificate.cc",
+  "net/cert/internal/path_builder.cc",
+  "net/cert/internal/signature_algorithm.cc",
+  "net/cert/internal/simple_path_builder_delegate.cc",
+  "net/cert/internal/trust_store.cc",
+  "net/cert/internal/trust_store_collection.cc",
+  "net/cert/internal/trust_store_in_memory.cc",
+  "net/cert/internal/verify_certificate_chain.cc",
+  "net/cert/internal/verify_name_match.cc",
+  "net/cert/internal/verify_signed_data.cc",
+  "net/der/encode_values.cc",
+  "net/der/input.cc",
+  "net/der/parse_values.cc",
+  "net/der/parser.cc",
+  "net/der/tag.cc",
+]
+
+# Chromium verifier has some metric feature that records iteration count.
+# It is only used for test. However, compiling the feature requires to bring in
+# a significant amount of additional sources and also many system dependencies
+# including threading, file system, memory mapping management (sys/mman.h) etc. It's
+# too complicated to accomodate for embedded target. Thus for now, we'll only build
+# it on host for running native unittests, as a criterion for rolling. The following
+# is the list of sources that need to be built for running the test in
+# "net/cert/internal/path_builder_unittest.cc"
+chromium_verifier_sources_extended = [
+  "base/at_exit.cc",
+  "base/base64.cc",
+  "base/base_paths.cc",
+  "base/base_paths_posix.cc",
+  "base/base_switches.cc",
+  "base/callback_internal.cc",
+  "base/command_line.cc",
+  "base/debug/activity_tracker.cc",
+  "base/debug/alias.cc",
+  "base/debug/stack_trace.cc",
+  "base/debug/stack_trace_posix.cc",
+  "base/deferred_sequenced_task_runner.cc",
+  "base/environment.cc",
+  "base/files/file.cc",
+  "base/files/file_path.cc",
+  "base/files/file_path_constants.cc",
+  "base/files/file_posix.cc",
+  "base/files/file_tracing.cc",
+  "base/files/file_util.cc",
+  "base/files/file_util_posix.cc",
+  "base/files/memory_mapped_file.cc",
+  "base/files/memory_mapped_file_posix.cc",
+  "base/files/scoped_file.cc",
+  "base/files/scoped_file_linux.cc",
+  "base/hash/md5_boringssl.cc",
+  "base/lazy_instance_helpers.cc",
+  "base/memory/page_size_posix.cc",
+  "base/memory/shared_memory_mapping.cc",
+  "base/memory/shared_memory_security_policy.cc",
+  "base/memory/shared_memory_tracker.cc",
+  "base/metrics/bucket_ranges.cc",
+  "base/metrics/crc32.cc",
+  "base/metrics/dummy_histogram.cc",  # inclusive-language: disable
+  "base/metrics/histogram.cc",
+  "base/metrics/histogram_base.cc",
+  "base/metrics/histogram_functions.cc",
+  "base/metrics/histogram_samples.cc",
+  "base/metrics/metrics_hashes.cc",
+  "base/metrics/persistent_histogram_allocator.cc",
+  "base/metrics/persistent_memory_allocator.cc",
+  "base/metrics/persistent_sample_map.cc",
+  "base/metrics/sample_map.cc",
+  "base/metrics/sample_vector.cc",
+  "base/metrics/sparse_histogram.cc",
+  "base/metrics/statistics_recorder.cc",
+  "base/nix/xdg_util.cc",
+  "base/observer_list_threadsafe.cc",
+  "base/path_service.cc",
+  "base/pickle.cc",
+  "base/posix/can_lower_nice_to.cc",
+  "base/process/process_handle_posix.cc",
+  "base/process/process_metrics_linux.cc",
+  "base/strings/strcat.cc",
+  "base/strings/string_piece.cc",
+  "base/strings/string_util_constants.cc",
+  "base/synchronization/lock_impl_posix.cc",
+  "base/task/scoped_set_task_priority_for_current_thread.cc",
+  "base/task/thread_pool.cc",
+  "base/task/thread_pool/environment_config.cc",
+  "base/task/thread_pool/thread_pool_instance.cc",
+  "base/task_runner.cc",
+  "base/test/metrics/histogram_tester.cc",
+  "base/third_party/xdg_user_dirs/xdg_user_dir_lookup.cc",
+  "base/threading/platform_thread_internal_posix.cc",
+  "base/threading/platform_thread_linux.cc",
+  "base/threading/platform_thread_posix.cc",
+  "base/threading/scoped_blocking_call.cc",
+  "base/threading/scoped_blocking_call_internal.cc",
+  "base/threading/thread_id_name_manager.cc",
+  "base/threading/thread_local_storage.cc",
+  "base/threading/thread_local_storage_posix.cc",
+  "base/trace_event/trace_event_stub.cc",
+  "base/values.cc",
+  "net/cert/internal/test_helpers.cc",
+  "net/cert/pem.cc",
+  "third_party/modp_b64/modp_b64.cc",
+]
+
+# Unittest sources.
+chromium_verifier_unittest_sources =
+    [ "net/cert/internal/path_builder_unittest.cc" ]

@@ -1,0 +1,46 @@
+id: iostream_cpc
+package: platform
+label: "IO Stream: CPC"
+description: IO Stream over Co-Processor Communication (CPC) communication protocol.
+category: Services|IO Stream
+quality: production
+root_path: platform/service/iostream
+provides:
+  - name: iostream_cpc
+  - name: iostream_transport_core
+    allow_multiple: true
+  - name: iostream_transport
+    allow_multiple: true
+requires:
+  - name: cpc_secondary
+  - name: iostream
+  - name: sleeptimer
+  - name: emlib_common
+  - name: emlib_core
+config_file:
+  - path: config/sl_iostream_cpc_config.h
+include:
+  - path: inc
+    file_list:
+      - path: sl_iostream_cpc.h
+source:
+  - path: src/sl_iostream_cpc.c
+template_contribution:
+  - name: component_catalog
+    value: cli_ncp
+  - name: iostream_instances
+    value: cpc
+  - name: iostream_handles
+    value: cpc
+  - name: event_handler
+    value:
+      event: iostream_instance_init
+      include: sl_iostream_cpc.h
+      handler: sl_iostream_cpc_init
+  - name: iostream_instance_info
+    value:
+      include: sl_iostream_cpc.h
+      handler: sl_iostream_instance_cpc_info
+documentation:
+    docset: gecko-platform
+    document: service/api/group-iostream-cpc

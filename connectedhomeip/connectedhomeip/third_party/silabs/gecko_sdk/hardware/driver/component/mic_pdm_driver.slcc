@@ -1,0 +1,33 @@
+id: mic_pdm_driver
+package: platform
+label: PDM Microphone
+description: >
+  Sound level PDM microphone driver
+category: Platform|Board Drivers
+quality: production
+root_path: hardware/driver/mic
+provides:
+  - name: mic_driver_implementation
+  - name: mic_pdm_driver
+requires:
+  - name: emlib_cmu
+  - name: emlib_pdm
+  - name: emlib_ldma
+  - name: dmadrv
+  - name: sleeptimer
+include:
+  - path: inc
+    file_list:
+      - path: sl_mic.h
+source:
+  - path: src/sl_mic_pdm.c
+config_file:
+  - path: config/s1/sl_mic_pdm_config.h
+    file_id: mic_pdm_config
+    condition: [device_series_1]
+  - path: config/s2/sl_mic_pdm_config.h
+    file_id: mic_pdm_config
+    condition: [device_series_2]
+documentation:
+    docset: gecko-platform
+    document: hardware-driver/api/group-mic

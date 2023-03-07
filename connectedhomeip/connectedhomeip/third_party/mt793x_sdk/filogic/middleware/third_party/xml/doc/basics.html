@@ -1,0 +1,606 @@
+<html>
+<body>
+
+<h1 align='right'><a name='BASICS'><img src="2.gif" align="right"
+hspace="10" width="100" height="100" alt="2"></a>Getting Started
+with Mini-XML</h1>
+
+<p>This chapter describes how to write programs that use Mini-XML to
+access data in an XML file. Mini-XML provides the following
+functionality:</p>
+
+<ul>
+
+	<li>Functions for creating and managing XML documents
+	in memory.</li>
+
+	<li>Reading of UTF-8 and UTF-16 encoded XML files and
+	strings.</li>
+
+	<li>Writing of UTF-8 encoded XML files and strings.</li>
+
+	<li>Support for arbitrary element names, attributes, and
+	attribute values with no preset limits, just available
+	memory.</li>
+
+	<li>Support for integer, real, opaque ("CDATA"), and text
+	data types in "leaf" nodes.</li>
+
+	<li>"Find", "index", and "walk" functions for easily
+	accessing data in an XML document.</li>
+
+</ul>
+
+<p>Mini-XML doesn't do validation or other types of processing
+on the data based upon schema files or other sources of
+definition information, nor does it support character entities
+other than those required by the XML specification.</p>
+
+
+<h2>The Basics</h2>
+
+<p>Mini-XML provides a single header file which you include:</p>
+
+<pre>
+    #include &lt;mxml.h&gt;
+</pre>
+
+<p>The Mini-XML library is included with your program using the
+<kbd>-lmxml</kbd> option:</p>
+
+<pre>
+    <kbd>gcc -o myprogram myprogram.c -lmxml ENTER</kbd>
+</pre>
+
+<p>If you have the <tt>pkg-config(1)</tt> software installed,
+you can use it to determine the proper compiler and linker options
+for your installation:</p>
+
+<pre>
+    <kbd>pkg-config --cflags mxml ENTER</kbd>
+    <kbd>pkg-config --libs mxml ENTER</kbd>
+</pre>
+
+<h2>Nodes</h2>
+
+<p>Every piece of information in an XML file is stored in memory in "nodes".
+Nodes are defined by the <a href='#mxml_node_t'><tt>mxml_node_t</tt></a>
+structure. Each node has a typed value, optional user data, a parent node,
+sibling nodes (previous and next), and potentially child nodes.</p>
+
+<p>For example, if you have an XML file like the following:</p>
+
+<pre>
+    &lt;?xml version="1.0" encoding="utf-8"?&gt;
+    &lt;data&gt;
+        &lt;node&gt;val1&lt;/node&gt;
+        &lt;node&gt;val2&lt;/node&gt;
+        &lt;node&gt;val3&lt;/node&gt;
+        &lt;group&gt;
+            &lt;node&gt;val4&lt;/node&gt;
+            &lt;node&gt;val5&lt;/node&gt;
+            &lt;node&gt;val6&lt;/node&gt;
+        &lt;/group&gt;
+        &lt;node&gt;val7&lt;/node&gt;
+        &lt;node&gt;val8&lt;/node&gt;
+    &lt;/data&gt;
+</pre>
+
+<p>the node tree for the file would look like the following in memory:</p>
+
+<pre>
+    ?xml version="1.0" encoding="utf-8"?
+      |
+    data
+      |
+    node - node - node - group - node - node
+      |      |      |      |       |      |
+    val1   val2   val3     |     val7   val8
+                           |
+                         node - node - node
+                           |      |      |
+                         val4   val5   val6
+</pre>
+
+<p>where "-" is a pointer to the sibling node and "|" is a pointer
+to the first child or parent node.</p>
+
+<p>The <a href="#mxmlGetType"><tt>mxmlGetType</tt></a> function gets the type of
+a node, one of <tt>MXML_CUSTOM</tt>, <tt>MXML_ELEMENT</tt>,
+<tt>MXML_INTEGER</tt>, <tt>MXML_OPAQUE</tt>, <tt>MXML_REAL</tt>, or
+<tt>MXML_TEXT</tt>. The parent and sibling nodes are accessed using the
+<a href="#mxmlGetParent"><tt>mxmlGetParent</tt></a>,
+<a href="#mxmlGetNext"><tt>mxmlGetNext</tt></a>, and
+<a href="#mxmlGetPrevious"><tt>mxmlGetPrevious</tt></a> functions. The
+<a href="#mxmlGetUserData"><tt>mxmlGetUserData</tt></a> function gets any user
+data associated with the node.</p>
+
+<h3>CDATA Nodes</h3>
+
+<p>CDATA (<tt>MXML_ELEMENT</tt>) nodes are created using the
+<a href="#mxmlNewCDATA"><tt>mxmlNewCDATA</tt></a> function. The
+<a href="#mxmlGetCDATA"><tt>mxmlGetCDATA</tt></a> function retrieves the
+CDATA string pointer for a node.</p>
+
+<blockquote><b>Note:</b>
+
+<p>CDATA nodes are currently stored in memory as special elements. This will
+be changed in a future major release of Mini-XML.</p>
+</blockquote>
+
+<h3>Custom Nodes</h3>
+
+<p>Custom (<tt>MXML_CUSTOM</tt>) nodes are created using the
+<a href="#mxmlNewCustom"><tt>mxmlNewCustom</tt></a> function or using a custom
+load callback specified using the
+<a href="#mxmlSetCustomHandlers"><tt>mxmlSetCustomHandlers</tt></a> function.
+The <a href="#mxmlGetCustom"><tt>mxmlGetCustom</tt></a> function retrieves the
+custom value pointer for a node.</p>
+
+<h3>Comment Nodes</h3>
+
+<p>Comment (<tt>MXML_ELEMENT</tt>) nodes are created using the
+<a href="#mxmlNewElement"><tt>mxmlNewElement</tt></a> function. The
+<a href="#mxmlGetElement"><tt>mxmlGetElement</tt></a> function retrieves the
+comment string pointer for a node, including the surrounding "!--" and "--"
+characters.</p>
+
+<blockquote><b>Note:</b>
+
+<p>Comment nodes are currently stored in memory as special elements. This will
+be changed in a future major release of Mini-XML.</p>
+</blockquote>
+
+<h3>Element Nodes</h3>
+
+<p>Element (<tt>MXML_ELEMENT</tt>) nodes are created using the
+<a href="#mxmlNewElement"><tt>mxmlNewElement</tt></a> function. The
+<a href="#mxmlGetElement"><tt>mxmlGetElement</tt></a> function retrieves the
+element name, the
+<a href="#mxmlElementGetAttr"><tt>mxmlElementGetAttr</tt></a> function retrieves
+the value string for a named attribute associated with the element, and the
+<a href="#mxmlGetFirstChild"><tt>mxmlGetFirstChild</tt></a> and
+<a href="#mxmlGetLastChild"><tt>mxmlGetLastChild</tt></a> functions retrieve the
+first and last child nodes for the element, respectively.</p>
+
+<h3>Integer Nodes</h3>
+
+<p>Integer (<tt>MXML_INTEGER</tt>) nodes are created using the
+<a href="#mxmlNewInteger"><tt>mxmlNewInteger</tt></a> function. The
+<a href="#mxmlGetInteger"><tt>mxmlGetInteger</tt></a> function retrieves the
+integer value for a node.</p>
+
+<h3>Opaque Nodes</h3>
+
+<p>Opaque (<tt>MXML_OPAQUE</tt>) nodes are created using the
+<a href="#mxmlNewOpaque"><tt>mxmlNewOpaque</tt></a> function. The
+<a href="#mxmlGetOpaque"><tt>mxmlGetOpaque</tt></a> function retrieves the
+opaque string pointer for a node. Opaque nodes are like string nodes but
+preserve all whitespace between nodes.</p>
+
+<h3>Text Nodes</h3>
+
+<p>Text (<tt>MXML_TEXT</tt>) nodes are created using the
+<a href="#mxmlNewText"><tt>mxmlNewText</tt></a> and
+<a href="#mxmlNewTextf"><tt>mxmlNewTextf</tt></a> functions. Each text node
+consists of a text string and (leading) whitespace value - the
+<a href="#mxmlGetText"><tt>mxmlGetText</tt></a> function retrieves the
+text string pointer and whitespace value for a node.</p>
+
+<!-- NEED 12 -->
+<h3>Processing Instruction Nodes</h3>
+
+<p>Processing instruction (<tt>MXML_ELEMENT</tt>) nodes are created using the
+<a href="#mxmlNewElement"><tt>mxmlNewElement</tt></a> function. The
+<a href="#mxmlGetElement"><tt>mxmlGetElement</tt></a> function retrieves the
+processing instruction string for a node, including the surrounding "?"
+characters.</p>
+
+<blockquote><b>Note:</b>
+
+<p>Processing instruction nodes are currently stored in memory as special
+elements. This will be changed in a future major release of Mini-XML.</p>
+</blockquote>
+
+<h3>Real Number Nodes</h3>
+
+<p>Real number (<tt>MXML_REAL</tt>) nodes are created using the
+<a href="#mxmlNewReal"><tt>mxmlNewReal</tt></a> function. The
+<a href="#mxmlGetReal"><tt>mxmlGetReal</tt></a> function retrieves the
+CDATA string pointer for a node.</p>
+
+<!-- NEED 15 -->
+<h3>XML Declaration Nodes</h3>
+
+<p>XML declaration (<tt>MXML_ELEMENT</tt>) nodes are created using the
+<a href="#mxmlNewXML"><tt>mxmlNewXML</tt></a> function. The
+<a href="#mxmlGetElement"><tt>mxmlGetElement</tt></a> function retrieves the
+XML declaration string for a node, including the surrounding "?" characters.</p>
+
+<blockquote><b>Note:</b>
+
+<p>XML declaration nodes are currently stored in memory as special elements.
+This will be changed in a future major release of Mini-XML.</p>
+</blockquote>
+
+
+<!-- NEW PAGE -->
+<h2>Creating XML Documents</h2>
+
+<p>You can create and update XML documents in memory using the
+various <tt>mxmlNew</tt> functions. The following code will
+create the XML document described in the previous section:</p>
+
+<pre>
+    mxml_node_t *xml;    /* &lt;?xml ... ?&gt; */
+    mxml_node_t *data;   /* &lt;data&gt; */
+    mxml_node_t *node;   /* &lt;node&gt; */
+    mxml_node_t *group;  /* &lt;group&gt; */
+
+    xml = mxmlNewXML("1.0");
+
+    data = mxmlNewElement(xml, "data");
+
+        node = mxmlNewElement(data, "node");
+        mxmlNewText(node, 0, "val1");
+        node = mxmlNewElement(data, "node");
+        mxmlNewText(node, 0, "val2");
+        node = mxmlNewElement(data, "node");
+        mxmlNewText(node, 0, "val3");
+
+        group = mxmlNewElement(data, "group");
+
+            node = mxmlNewElement(group, "node");
+            mxmlNewText(node, 0, "val4");
+            node = mxmlNewElement(group, "node");
+            mxmlNewText(node, 0, "val5");
+            node = mxmlNewElement(group, "node");
+            mxmlNewText(node, 0, "val6");
+
+        node = mxmlNewElement(data, "node");
+        mxmlNewText(node, 0, "val7");
+        node = mxmlNewElement(data, "node");
+        mxmlNewText(node, 0, "val8");
+</pre>
+
+<!-- NEED 6 -->
+<p>We start by creating the declaration node common to all XML files using the
+<a href="#mxmlNewXML"><tt>mxmlNewXML</tt></a> function:</p>
+
+<pre>
+    xml = mxmlNewXML("1.0");
+</pre>
+
+<p>We then create the <tt>&lt;data&gt;</tt> node used for this document using
+the <a href="#mxmlNewElement"><tt>mxmlNewElement</tt></a> function. The first
+argument specifies the parent node (<tt>xml</tt>) while the second specifies the
+element name (<tt>data</tt>):</p>
+
+<pre>
+    data = mxmlNewElement(xml, "data");
+</pre>
+
+<p>Each <tt>&lt;node&gt;...&lt;/node&gt;</tt> in the file is created using the
+<tt>mxmlNewElement</tt> and <a href="#mxmlNewText"><tt>mxmlNewText</tt></a>
+functions. The first argument of <tt>mxmlNewText</tt> specifies the parent node
+(<tt>node</tt>). The second argument specifies whether whitespace appears before
+the text - 0 or false in this case. The last argument specifies the actual text
+to add:</p>
+
+<pre>
+    node = mxmlNewElement(data, "node");
+    mxmlNewText(node, 0, "val1");
+</pre>
+
+<p>The resulting in-memory XML document can then be saved or processed just like
+one loaded from disk or a string.</p>
+
+<!-- NEED 15 -->
+<h2>Loading XML</h2>
+
+<p>You load an XML file using the <a
+href='#mxmlLoadFile'><tt>mxmlLoadFile</tt></a>
+function:</p>
+
+<pre>
+    FILE *fp;
+    mxml_node_t *tree;
+
+    fp = fopen("filename.xml", "r");
+    tree = mxmlLoadFile(NULL, fp,
+                        MXML_TEXT_CALLBACK);
+    fclose(fp);
+</pre>
+
+<p>The first argument specifies an existing XML parent node, if
+any. Normally you will pass <tt>NULL</tt> for this argument
+unless you are combining multiple XML sources. The XML file must
+contain a complete XML document including the <tt>?xml</tt>
+element if the parent node is <tt>NULL</tt>.</p>
+
+<p>The second argument specifies the stdio file to read from, as
+opened by <tt>fopen()</tt> or <tt>popen()</tt>. You can also use
+<tt>stdin</tt> if you are implementing an XML filter
+program.</p>
+
+<p>The third argument specifies a callback function which returns
+the value type of the immediate children for a new element node:
+<tt>MXML_CUSTOM</tt>, <tt>MXML_IGNORE</tt>,
+<tt>MXML_INTEGER</tt>, <tt>MXML_OPAQUE</tt>, <tt>MXML_REAL</tt>,
+or <tt>MXML_TEXT</tt>. Load callbacks are described in detail in
+<a href='#LOAD_CALLBACKS'>Chapter 3</a>. The example code uses
+the <tt>MXML_TEXT_CALLBACK</tt> constant which specifies that all
+data nodes in the document contain whitespace-separated text
+values. Other standard callbacks include
+<tt>MXML_IGNORE_CALLBACK</tt>, <tt>MXML_INTEGER_CALLBACK</tt>,
+<tt>MXML_OPAQUE_CALLBACK</tt>, and 
+<tt>MXML_REAL_CALLBACK</tt>.</p>
+
+<p>The <a href='#mxmlLoadString'><tt>mxmlLoadString</tt></a>
+function loads XML node trees from a string:</p>
+
+<!-- NEED 10 -->
+<pre>
+    char buffer[8192];
+    mxml_node_t *tree;
+
+    ...
+    tree = mxmlLoadString(NULL, buffer,
+                          MXML_TEXT_CALLBACK);
+</pre>
+
+<p>The first and third arguments are the same as used for
+<tt>mxmlLoadFile()</tt>. The second argument specifies the
+string or character buffer to load and must be a complete XML
+document including the <tt>?xml</tt> element if the parent node
+is <tt>NULL</tt>.</p>
+
+
+<!-- NEED 15 -->
+<h2>Saving XML</h2>
+
+<p>You save an XML file using the <a
+href='#mxmlSaveFile'><tt>mxmlSaveFile</tt></a> function:</p>
+
+<pre>
+    FILE *fp;
+    mxml_node_t *tree;
+
+    fp = fopen("filename.xml", "w");
+    mxmlSaveFile(tree, fp, MXML_NO_CALLBACK);
+    fclose(fp);
+</pre>
+
+<p>The first argument is the XML node tree to save. It should
+normally be a pointer to the top-level <tt>?xml</tt> node in
+your XML document.</p>
+
+<p>The second argument is the stdio file to write to, as opened
+by <tt>fopen()</tt> or <tt>popen()</tt>. You can also use
+<tt>stdout</tt> if you are implementing an XML filter
+program.</p>
+
+<p>The third argument is the whitespace callback to use when
+saving the file. Whitespace callbacks are covered in detail in <a
+href='SAVE_CALLBACKS'>Chapter 3</a>. The previous example code
+uses the <tt>MXML_NO_CALLBACK</tt> constant to specify that no
+special whitespace handling is required.</p>
+
+<p>The <a
+href='#mxmlSaveAllocString'><tt>mxmlSaveAllocString</tt></a>,
+and <a href='#mxmlSaveString'><tt>mxmlSaveString</tt></a>
+functions save XML node trees to strings:</p>
+
+<pre>
+    char buffer[8192];
+    char *ptr;
+    mxml_node_t *tree;
+
+    ...
+    mxmlSaveString(tree, buffer, sizeof(buffer),
+                   MXML_NO_CALLBACK);
+
+    ...
+    ptr = mxmlSaveAllocString(tree, MXML_NO_CALLBACK);
+</pre>
+
+<p>The first and last arguments are the same as used for
+<tt>mxmlSaveFile()</tt>. The <tt>mxmlSaveString</tt> function
+takes pointer and size arguments for saving the XML document to
+a fixed-size buffer, while <tt>mxmlSaveAllocString()</tt>
+returns a string buffer that was allocated using
+<tt>malloc()</tt>.</p>
+
+<!-- NEED 15 -->
+<h3>Controlling Line Wrapping</h3>
+
+<p>When saving XML documents, Mini-XML normally wraps output
+lines at column 75 so that the text is readable in terminal
+windows. The <a
+href='#mxmlSetWrapMargin'><tt>mxmlSetWrapMargin</tt></a> function
+overrides the default wrap margin:</p>
+
+<pre>
+    /* Set the margin to 132 columns */
+    mxmlSetWrapMargin(132);
+
+    /* Disable wrapping */
+    mxmlSetWrapMargin(0);
+</pre>
+
+<h2>Memory Management</h2>
+
+<p>Once you are done with the XML data, use the <a
+href="#mxmlDelete"><tt>mxmlDelete</tt></a> function to recursively
+free the memory that is used for a particular node or the entire
+tree:</p>
+
+<pre>
+    mxmlDelete(tree);
+</pre>
+
+<p>You can also use reference counting to manage memory usage. The
+<a href="#mxmlRetain"><tt>mxmlRetain</tt></a> and
+<a href="#mxmlRelease"><tt>mxmlRelease</tt></a> functions increment and
+decrement a node's use count, respectively. When the use count goes to 0,
+<tt>mxmlRelease</tt> will automatically call <tt>mxmlDelete</tt> to actually
+free the memory used by the node tree. New nodes automatically start with a
+use count of 1.</p>
+
+
+<!-- NEW PAGE-->
+<h2>Finding and Iterating Nodes</h2>
+
+<p>The <a
+href='#mxmlWalkPrev'><tt>mxmlWalkPrev</tt></a>
+and <a
+href='#mxmlWalkNext'><tt>mxmlWalkNext</tt></a>functions
+can be used to iterate through the XML node tree:</p>
+
+<pre>
+    mxml_node_t *node;
+    
+    node = mxmlWalkPrev(current, tree,
+                        MXML_DESCEND);
+
+    node = mxmlWalkNext(current, tree,
+                        MXML_DESCEND);
+</pre>
+
+<p>In addition, you can find a named element/node using the <a
+href='#mxmlFindElement'><tt>mxmlFindElement</tt></a>
+function:</p>
+
+<pre>
+    mxml_node_t *node;
+    
+    node = mxmlFindElement(tree, tree, "name",
+                           "attr", "value",
+                           MXML_DESCEND);
+</pre>
+
+<p>The <tt>name</tt>, <tt>attr</tt>, and <tt>value</tt>
+arguments can be passed as <tt>NULL</tt> to act as wildcards,
+e.g.:</p>
+
+<!-- NEED 4 -->
+<pre>
+    /* Find the first "a" element */
+    node = mxmlFindElement(tree, tree, "a",
+                           NULL, NULL,
+                           MXML_DESCEND);
+</pre>
+<!-- NEED 5 -->
+<pre>
+    /* Find the first "a" element with "href"
+       attribute */
+    node = mxmlFindElement(tree, tree, "a",
+                           "href", NULL,
+                           MXML_DESCEND);
+</pre>
+<!-- NEED 6 -->
+<pre>
+    /* Find the first "a" element with "href"
+       to a URL */
+    node = mxmlFindElement(tree, tree, "a",
+                           "href",
+                           "http://www.easysw.com/",
+                           MXML_DESCEND);
+</pre>
+<!-- NEED 5 -->
+<pre>
+    /* Find the first element with a "src"
+       attribute */
+    node = mxmlFindElement(tree, tree, NULL,
+                           "src", NULL,
+                           MXML_DESCEND);
+</pre>
+<!-- NEED 5 -->
+<pre>
+    /* Find the first element with a "src"
+       = "foo.jpg" */
+    node = mxmlFindElement(tree, tree, NULL,
+                           "src", "foo.jpg",
+                           MXML_DESCEND);
+</pre>
+
+<p>You can also iterate with the same function:</p>
+
+<pre>
+    mxml_node_t *node;
+
+    for (node = mxmlFindElement(tree, tree,
+                                "name",
+                                NULL, NULL,
+                                MXML_DESCEND);
+         node != NULL;
+         node = mxmlFindElement(node, tree,
+                                "name",
+                                NULL, NULL,
+                                MXML_DESCEND))
+    {
+      ... do something ...
+    }
+</pre>
+
+<!-- NEED 10 -->
+<p>The <tt>MXML_DESCEND</tt> argument can actually be one of
+three constants:</p>
+
+<ul>
+
+	<li><tt>MXML_NO_DESCEND</tt> means to not to look at any
+	child nodes in the element hierarchy, just look at
+	siblings at the same level or parent nodes until the top
+	node or top-of-tree is reached.
+
+        <p>The previous node from "group" would be the "node"
+        element to the left, while the next node from "group" would
+        be the "node" element to the right.<br><br></p></li>
+
+        <li><tt>MXML_DESCEND_FIRST</tt> means that it is OK to
+        descend to the first child of a node, but not to descend
+        further when searching. You'll normally use this when
+        iterating through direct children of a parent node, e.g. all
+        of the "node" and "group" elements under the "?xml" parent
+        node in the example above.
+
+        <p>This mode is only applicable to the search function; the
+        walk functions treat this as <tt>MXML_DESCEND</tt> since
+        every call is a first time.<br><br></p></li>
+
+        <li><tt>MXML_DESCEND</tt> means to keep descending until
+        you hit the bottom of the tree. The previous node from
+        "group" would be the "val3" node and the next node would
+        be the first node element under "group".
+
+        <p>If you were to walk from the root node "?xml" to the end
+        of the tree with <tt>mxmlWalkNext()</tt>, the order would
+        be:</p>
+
+        <p><tt>?xml data node val1 node val2 node val3 group node
+        val4 node val5 node val6 node val7 node val8</tt></p>
+
+	<p>If you started at "val8" and walked using
+	<tt>mxmlWalkPrev()</tt>, the order would be reversed,
+	ending at "?xml".</p></li>
+
+</ul>
+
+<h2>Finding Specific Nodes</h2>
+
+<p>You can find specific nodes in the tree using the <a
+href='#mxmlFindValue'><tt>mxmlFindPath</tt></a>, for example:
+
+<pre>
+    mxml_node_t *value;
+
+    value = mxmlFindPath(tree, "path/to/*/foo/bar");
+</pre>
+
+<p>The second argument is a "path" to the parent node. Each component of the
+path is separated by a slash (/) and represents a named element in the document
+tree or a wildcard (*) path representing 0 or more intervening nodes.</p>
+
+</body>
+</html>

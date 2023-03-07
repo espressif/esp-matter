@@ -1,0 +1,95 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/facade.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+import("backend.gni")
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+config("backend_config") {
+  include_dirs = [ "public_overrides" ]
+  visibility = [ ":*" ]
+}
+
+pw_facade("handler") {
+  backend = pw_assert_basic_HANDLER_BACKEND
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ "$dir_pw_preprocessor" ]
+  public = [ "public/pw_assert_basic/handler.h" ]
+}
+
+# TODO(b/235149326): This backend implements pw_assert's check backend and the
+# temporary compatibility C ABI (pw_assert_HandleFailure()).
+#
+# pw_assert_basic only provides the backend's interface. The implementation is
+# pulled in through pw_build_LINK_DEPS.
+pw_source_set("pw_assert_basic") {
+  public_configs = [
+    ":backend_config",
+    ":public_include_path",
+  ]
+  public = [
+    "public/pw_assert_basic/assert_basic.h",
+    "public_overrides/pw_assert_backend/check_backend.h",
+  ]
+  public_deps = [ ":handler.facade" ]
+}
+
+# The assert backend deps that might cause circular dependencies, since
+# pw_assert is so ubiquitous. These deps are kept separate so they can be
+# depended on from elsewhere.
+pw_source_set("pw_assert_basic.impl") {
+  deps = [
+    ":handler",
+    "$dir_pw_assert:assert_compatibility_backend",
+    "$dir_pw_assert:config",
+  ]
+  sources = [ "assert_basic.cc" ]
+}
+
+# A basic handler backend using pw_sys_io.
+pw_source_set("basic_handler") {
+  # Turn off GN check since this target intentionally leaves out deps to avoid
+  # circular dependencies.
+  check_includes = false
+
+  # Depend on the include path instead of the library to avoid circular deps.
+  configs = [
+    "$dir_pw_string:public_include_path",
+    "$dir_pw_result:public_include_path",
+  ]
+  deps = [
+    ":handler.facade",
+    "$dir_pw_assert:config",
+    "$dir_pw_preprocessor",
+    "$dir_pw_string:builder",
+    "$dir_pw_sys_io",
+  ]
+  sources = [ "basic_handler.cc" ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}
+
+pw_test_group("tests") {
+}

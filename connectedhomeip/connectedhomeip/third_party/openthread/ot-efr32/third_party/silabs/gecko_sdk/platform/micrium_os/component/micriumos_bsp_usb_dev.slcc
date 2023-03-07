@@ -1,0 +1,15 @@
+id: micriumos_bsp_usb_dev
+label: Micrium OS USB Device BSP
+package: micrium-usbd
+description: "Board Support Package for Micrium OS USB Device"
+category: Services|Micrium|BSP
+quality: production
+ui_hints:
+  visibility: never
+component_root_path: platform/micrium_os/bsp/siliconlabs/generic/
+source:
+  - path: source/bsp_usb_dev.c
+provides:
+  - name: micriumos_bsp_usb_dev
+requires:
+  - name: device_has_usb

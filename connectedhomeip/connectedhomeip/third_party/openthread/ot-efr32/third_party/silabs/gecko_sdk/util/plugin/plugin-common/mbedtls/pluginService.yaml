@@ -1,0 +1,132 @@
+# This file contains metadata for the plugin service.
+# File must be yaml map.
+# Special key 'include' allows you to add a list of included sub-yaml file.
+# Other keys are plugin service identifiers.
+#
+# Plugins should put following in their plugin.properties:
+# setup(pluginService) {
+#   requires:mbedtls/aes
+#   requires:mbedtls/ccm
+# }
+---
+mbedtls: {
+  description: Mbedtls security services.,
+  generatedFile: mbedtls-config-generated.h,
+  template: mbedtls.template,
+  enablingPlugin: mbedtls,
+  features: {
+    aes: {
+      name: AES,
+      macro: MBEDTLS_AES_C,
+    },
+    bignum: {
+      name: Bignum - Multi-precision integer library,
+      macro: MBEDTLS_BIGNUM_C,
+    },
+    ccm: {
+      name: CCM,
+      macro: MBEDTLS_CCM_C,
+      requires: cipher
+    },
+    cipher: {
+      name: Cipher,
+      macro: MBEDTLS_CIPHER_C,
+    },
+    cipher-mode-ctr: {
+      name: Cipher Mode CTR - Counter Block Cipher mode (CTR) for symmetric ciphers,
+      macro: MBEDTLS_CIPHER_MODE_CTR,
+      requires: cipher
+    },
+    cmac: {
+      name: CMAC,
+      macro: MBEDTLS_CMAC_C,
+    },
+    ctr-drbg: {
+      name: CTR-DRBG,
+      macro: MBEDTLS_CTR_DRBG_C,
+      requires: aes
+    },
+    crypto-device-preemption: {
+      name: Crypto Device Preemption,
+      macro: CRYPTO_DEVICE_PREEMPTION,
+    },
+    ecp: {
+      name: ECP,
+      macro: MBEDTLS_ECP_C,
+    },
+    ecp-dp-secp256r1: {
+      name: ECP - Domain parameters for 256-bit NIST curve,
+      macro: MBEDTLS_ECP_DP_SECP256R1_ENABLED,
+      requires: ecp
+    },
+    ecp-no-fallback: {
+      name: ECP - No fallback to SW ECP,
+      macro: MBEDTLS_ECP_NO_FALLBACK,
+      requires: ecp
+    },
+    ecdh: {
+      name: ECDH,
+      macro: MBEDTLS_ECDH_C,
+    },
+    entropy: {
+      name: Entropy,
+      macro: MBEDTLS_ENTROPY_C,
+      requires: sha256
+    },
+    md: {
+      name: Message digest wrapper,
+      macro: MBEDTLS_MD_C,
+    },
+    platform: {
+      name: Platform Abstraction,
+      macro: MBEDTLS_PLATFORM_C,
+    },
+    platform-memory: {
+      name: Platform - Static memory allocation,
+      macro: MBEDTLS_PLATFORM_MEMORY,
+      requires: platform
+    },
+    psa: {
+      name: PSA Crypto,
+      macro: MBEDTLS_PSA_CRYPTO_C,
+      requires: ctr-drbg,
+      requires: entropy,
+      requires: md
+    },
+    psa-storage: {
+      name: PSA Crypto Storage,
+      macro: MBEDTLS_PSA_CRYPTO_STORAGE_C,
+      requires: psa
+    },
+    sha256: {
+      name: SHA256,
+      macro: MBEDTLS_SHA256_C,
+    },
+    threading: {
+      name: Threading,
+      macro: MBEDTLS_THREADING_C,
+    },
+    threading-alt: {
+      name: Alternate threading,
+      macro: MBEDTLS_THREADING_ALT,
+      requires: threading
+    },
+  },
+  options: {
+    entropy-max-source: {
+      name: Entropy - Max number of entropy sources,
+      macro: MBEDTLS_ENTROPY_MAX_SOURCES,
+      requires: entropy
+    },
+    platform-calloc-macro: {
+      name: Platform - Calloc macro,
+      macro: MBEDTLS_PLATFORM_CALLOC_MACRO,
+      requires: platform
+    },
+    platform-free-macro: {
+      name: Platform - Free macro,
+      macro: MBEDTLS_PLATFORM_FREE_MACRO,
+      requires: platform
+    },
+  }
+}

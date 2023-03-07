@@ -1,0 +1,211 @@
+%%{
+/*
+ * Copyright (c) 2015-2020, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+%%}
+%/*
+% *  ======== Hwi.xdt ========
+% */
+%
+%var Hwi = xdc.module("ti.sysbios.family.arm.m3.Hwi");
+%
+%/*
+% * M3 Exception Vector table
+% */
+extern Void `String(Hwi.resetFunc).substr(1)`(Void);
+%if (Hwi.nmiFunc !== undefined) {
+extern Void `String(Hwi.nmiFunc).substr(1)`(Void);
+%}
+%if (Hwi.hardFaultFunc !== undefined) {
+extern Void `String(Hwi.hardFaultFunc).substr(1)`(Void);
+%}
+%if (Hwi.memFaultFunc !== undefined) {
+extern Void `String(Hwi.memFaultFunc).substr(1)`(Void);
+%}
+%if (Hwi.busFaultFunc !== undefined) {
+extern Void `String(Hwi.busFaultFunc).substr(1)`(Void);
+%}
+%if (Hwi.usageFaultFunc !== undefined) {
+extern Void `String(Hwi.usageFaultFunc).substr(1)`(Void);
+%}
+%if (Hwi.svCallFunc !== undefined) {
+extern Void `String(Hwi.svCallFunc).substr(1)`(Void);
+%}
+%if (Hwi.debugMonFunc !== undefined) {
+extern Void `String(Hwi.debugMonFunc).substr(1)`(Void);
+%}
+%if (Hwi.reservedFunc !== undefined) {
+extern Void `String(Hwi.reservedFunc).substr(1)`(Void);
+%}
+%   if (Hwi.numSparseInterrupts) {
+extern UInt32 ti_sysbios_family_arm_m3_Hwi_dispatchTable[];
+%   }
+
+%if (Program.build.target.$name.match(/iar/)) {
+    extern Void *CSTACK$$Base;
+    extern Void *CSTACK$$Limit;
+%}
+
+%if (Program.build.target.$name.match(/gnu/)) {
+%   if (Hwi.isTiva == true) {
+Ptr _intvecs_base_address;
+const UInt32 ti_sysbios_family_arm_m3_Hwi_resetVectors[] __attribute__ ((section (".intvecs"))) = {
+%   }
+%   else {
+const UInt32 ti_sysbios_family_arm_m3_Hwi_resetVectors[] __attribute__ ((section (".resetVecs"))) = {
+%   }
+    (UInt32)(&__TI_STACK_BASE),
+%}
+%else if (Program.build.target.$name.match(/iar/)) {
+#pragma segment="CSTACK"
+typedef union {UInt32 __uint32; void * __ptr;} intvec_elem;
+
+#pragma location = ".intvec"
+const intvec_elem __vector_table[] =
+{
+    (UInt32)(&CSTACK$$Limit),
+
+%}
+%else {
+%    if (Program.build.target.$name.match(/clang/)) {
+/* const because it is meant to be placed in ROM */
+const UInt32 ti_sysbios_family_arm_m3_Hwi_resetVectors[] __attribute__ ((section (".resetVecs"))) = {
+%    }
+%    else {
+#pragma DATA_SECTION(ti_sysbios_family_arm_m3_Hwi_resetVectors, ".resetVecs");
+
+/* const because it is meant to be placed in ROM */
+const UInt32 ti_sysbios_family_arm_m3_Hwi_resetVectors[] = {
+%    }
+    (UInt32)(&__TI_STACK_BASE),
+%}
+    (UInt32)(`String(Hwi.resetFunc)`),
+    (UInt32)(`String(Hwi.nmiFunc)`),            /* NMI */
+    (UInt32)(`String(Hwi.hardFaultFunc)`),      /* Hard Fault */
+    (UInt32)(`String(Hwi.memFaultFunc)`),       /* Mem Fault */
+    (UInt32)(`String(Hwi.busFaultFunc)`),       /* Bus Fault */
+    (UInt32)(`String(Hwi.usageFaultFunc)`),     /* Usage Fault */
+    (UInt32)(`String(Hwi.reservedFunc)`),       /* reserved */
+    (UInt32)(`String(Hwi.reservedFunc)`),       /* reserved */
+    (UInt32)(`String(Hwi.reservedFunc)`),       /* reserved */
+    (UInt32)(`String(Hwi.reservedFunc)`),       /* reserved */
+    (UInt32)(`String(Hwi.svCallFunc)`),         /* SVCall */
+    (UInt32)(`String(Hwi.debugMonFunc)`),       /* Debug Mon */
+    (UInt32)(`String(Hwi.reservedFunc)`),       /* reserved */
+    (UInt32)(&ti_sysbios_family_arm_m3_Hwi_pendSV__I),  /* pendSV */
+%if (Hwi.vectorTableAddress == Hwi.resetVectorAddress) {
+%   var len = Hwi.interrupt.length;
+%   var cname, iname, sparseIdx;
+%   sparseIdx = 0;
+%   for (var i = 15; i < len; i++) {
+%       if (Hwi.interrupt[i].useDispatcher) {
+%           if (Hwi.numSparseInterrupts) {
+%               cname = "&ti_sysbios_family_arm_m3_Hwi_dispatchTable[" + sparseIdx + "]";
+    (UInt32)(`cname`) + 1,  /* intNum = `i` */
+%               sparseIdx += 3;
+%           }
+%           else {
+%               cname = "ti_sysbios_family_arm_m3_Hwi_dispatch__I";
+    (UInt32)(`cname`),  /* intNum = `i` */
+%           }
+%       }
+%       else {
+%           cname = String(Hwi.interrupt[i].fxn);
+%           if (cname == "null")  {
+%               cname = String(Hwi.nullIsrFunc);
+%           }
+    (UInt32)(`cname`),  /* intNum = `i` */
+%       }
+%   }
+%}
+};
+
+%if ((Hwi.vectorTableAddress != Hwi.resetVectorAddress) || (Hwi.placeVectorTables == false)) {
+% if (Program.build.target.$name.match(/gnu/)) {
+%     if (Hwi.isTiva == true) {
+Ptr _vtable_base_address;
+/* place holder for RAM vector table */
+UInt32 ti_sysbios_family_arm_m3_Hwi_ramVectors[`Hwi.NUM_INTERRUPTS`] __attribute__((section(".vtable")));
+%     }
+%     else {
+/* place holder for RAM vector table */
+UInt32 ti_sysbios_family_arm_m3_Hwi_ramVectors[`Hwi.NUM_INTERRUPTS`] __attribute__((section(".vecs")));
+%     }
+% }
+%else if (Program.build.target.$name.match(/iar/)) {
+%if (Hwi.placeVectorTables) {
+
+/* explicitly place RAM vector table */
+#pragma location=`Hwi.vectorTableAddress`
+% }
+% else {
+/* place RAM vector table in a section */
+#pragma location = ".vecs"
+% }
+__root __no_init UInt32 ti_sysbios_family_arm_m3_Hwi_ramVectors[`Hwi.NUM_INTERRUPTS`];
+%}
+% else {
+%    if (Program.build.target.$name.match(/clang/)) {
+/* place holder for RAM vector table */
+UInt32 ti_sysbios_family_arm_m3_Hwi_ramVectors[`Hwi.NUM_INTERRUPTS`] __attribute__((section(".vecs"), used));
+%    }
+%    else {
+#pragma DATA_SECTION(ti_sysbios_family_arm_m3_Hwi_ramVectors, ".vecs");
+
+/* place holder for RAM vector table */
+UInt32 ti_sysbios_family_arm_m3_Hwi_ramVectors[`Hwi.NUM_INTERRUPTS`];
+%    }
+% }
+%}
+
+%if (Hwi.numSparseInterrupts) {
+UInt32 ti_sysbios_family_arm_m3_Hwi_dispatchTable[] = {
+%   for (var i = Hwi.numSparseInterrupts; i > 0; i--) {
+0xf8df4b01,                     /*    ldr   r3, hwiObjAddr */
+0xf000 + `i` * 0xc - 4,         /*    ldr   pc, Hwi_dispatchAddr */
+0,                              /*hwiObjAddr .word 0 */
+%   }
+(UInt32)ti_sysbios_family_arm_m3_Hwi_dispatch__I
+};
+%}
+%else {
+UInt32 ti_sysbios_family_arm_m3_Hwi_dispatchTable[`Hwi.NUM_INTERRUPTS`];
+%}
+
+#if defined(__IAR_SYSTEMS_ICC__)
+Void ti_sysbios_family_arm_m3_Hwi_initIsrStackSize()
+{
+    #pragma section = "CSTACK"
+    ti_sysbios_family_arm_m3_Hwi_Module__state__V.isrStackBase = (Void *)__section_begin("CSTACK");
+    size_t size = (uint8_t *)__section_end("CSTACK") - (uint8_t *)__section_begin("CSTACK");
+    ti_sysbios_family_arm_m3_Hwi_Module__state__V.isrStackSize = (Void *)size;
+}
+#endif

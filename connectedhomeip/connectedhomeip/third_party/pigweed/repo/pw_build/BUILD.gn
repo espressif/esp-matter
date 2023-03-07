@@ -1,0 +1,295 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/cc_blob_library.gni")
+import("$dir_pw_build/python.gni")
+import("$dir_pw_build/relative_source_file_names.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_toolchain/traits.gni")
+import("$dir_pw_unit_test/test.gni")
+import("target_types.gni")
+
+# IMPORTANT: The compilation flags in this file must be kept in sync with
+#            the CMake flags pw_build/CMakeLists.txt.
+
+config("colorize_output") {
+  cflags = [
+    # Colorize output. Ninja's Clang invocation disables color by default.
+    "-fdiagnostics-color",
+  ]
+  ldflags = cflags
+}
+
+config("debugging") {
+  # Enable debug symbol generation. This has no effect on final code size.
+  cflags = [ "-g" ]
+}
+
+config("extra_debugging") {
+  # Include things like macro expansion in debug info.
+  cflags = [ "-g3" ]
+}
+
+# Optimization levels
+config("optimize_debugging") {
+  cflags = [ "-Og" ]
+  ldflags = cflags
+}
+
+config("optimize_speed") {
+  cflags = [ "-O2" ]
+  ldflags = cflags
+}
+
+config("optimize_more_speed") {
+  cflags = [ "-O3" ]
+  ldflags = cflags
+}
+
+config("optimize_size") {
+  cflags = [ "-Os" ]
+  ldflags = cflags
+}
+
+config("optimize_size_clang") {
+  cflags = [ "-Oz" ]
+  ldflags = cflags
+}
+
+# Standard compiler flags to reduce output binary size.
+config("reduced_size") {
+  cflags = [
+    "-fno-common",
+    "-fno-exceptions",
+    "-ffunction-sections",
+    "-fdata-sections",
+  ]
+  cflags_cc = [ "-fno-rtti" ]
+
+  if (current_os == "mac" || current_os == "ios") {
+    # Delete unreferenced sections. Helpful with -ffunction-sections.
+    ldflags = [ "-Wl,-dead_strip" ]
+  } else {
+    # Delete unreferenced sections. Helpful with -ffunction-sections.
+    ldflags = [ "-Wl,--gc-sections" ]
+  }
+}
+
+config("strict_warnings") {
+  cflags = [
+    "-Wall",
+    "-Wextra",
+    "-Wimplicit-fallthrough",
+    "-Wcast-qual",
+    "-Wundef",
+    "-Wpointer-arith",
+
+    # Make all warnings errors, except for the exemptions below.
+    "-Werror",
+    "-Wno-error=cpp",  # preprocessor #warning statement
+    "-Wno-error=deprecated-declarations",  # [[deprecated]] attribute
+  ]
+  cflags_cc = [ "-Wnon-virtual-dtor" ]
+}
+
+# Thread safety warnings are only supported by Clang.
+config("clang_thread_safety_warnings") {
+  cflags = [ "-Wthread-safety" ]
+  defines = [ "_LIBCPP_ENABLE_THREAD_SAFETY_ANNOTATIONS=1" ]
+}
+
+# This config contains warnings that we don't necessarily recommend projects
+# enable, but are enabled for upstream Pigweed for maximum project
+# compatibility.
+config("extra_strict_warnings") {
+  cflags = [
+    "-Wshadow",
+    "-Wredundant-decls",
+  ]
+  cflags_c = [ "-Wstrict-prototypes" ]
+}
+
+# This config contains warnings that are enabled for upstream Pigweed.
+# This config MUST NOT be used downstream to allow for warnings to be
+# added in the future without breaking downstream.
+config("internal_strict_warnings") {
+  cflags = [ "-Wswitch-enum" ]
+  cflags_cc = [ "-Wextra-semi" ]
+
+  # TODO(b/243069432): Enable pedantic warnings on Windows when they pass.
+  if (host_os != "win") {
+    configs = [ ":pedantic_warnings" ]
+  }
+}
+
+config("pedantic_warnings") {
+  cflags = [
+    # Enable -Wpedantic, but disable a few warnings.
+    "-Wpedantic",
+
+    # Allow designated initializers, which were added in C++20 but widely
+    # supported prior and permitted by the Google style guide.
+    "-Wno-c++20-designator",
+
+    # Allow empty ... arguments in macros, which are permitted in C++20 but
+    # widely supported prior.
+    "-Wno-gnu-zero-variadic-macro-arguments",
+  ]
+
+  if (pw_toolchain_CXX_STANDARD < pw_toolchain_STANDARD.CXX17) {
+    # Allow C++17 attributes in C++14, since Pigweed targets C++17 or newer.
+    cflags += [ "-Wno-c++17-attribute-extensions" ]
+  }
+}
+
+# Numeric conversion warnings.
+#
+# Originally Pigweed didn't enable this, but we ultimately decided to turn it
+# on since it caused issues with downstream project that enable this warning.
+#
+# b/259746255 tracks converting everything to build with this warning.
+config("conversion_warnings") {
+  # TODO(b/260629756): Remove Windows restriction once fixed for Windows + GCC.
+  if (host_os != "win") {
+    cflags = [ "-Wconversion" ]
+  }
+}
+
+config("cpp14") {
+  cflags_cc = [ "-std=c++14" ]
+}
+
+config("cpp17") {
+  cflags_cc = [
+    "-std=c++17",
+
+    # Allow uses of the register keyword, which may appear in C headers.
+    "-Wno-register",
+  ]
+}
+
+config("cpp20") {
+  cflags_cc = [
+    "-std=c++20",
+    "-Wno-register",
+  ]
+}
+
+# Selects the C++ standard to used based on the pw_toolchain_CXX_STANDARD
+# toolchain trait.
+config("toolchain_cpp_standard") {
+  if (pw_toolchain_CXX_STANDARD == pw_toolchain_STANDARD.CXX14) {
+    configs = [ ":cpp14" ]
+  } else if (pw_toolchain_CXX_STANDARD == pw_toolchain_STANDARD.CXX17) {
+    configs = [ ":cpp17" ]
+  } else if (pw_toolchain_CXX_STANDARD == pw_toolchain_STANDARD.CXX20) {
+    configs = [ ":cpp20" ]
+  } else {
+    assert(false,
+           "Unexpected pw_toolchain_CXX_STANDARD value: " +
+               pw_toolchain_CXX_STANDARD)
+  }
+}
+
+# Removes system-dependent prefixes from macros like __FILE__ and debug symbols.
+config("relative_paths") {
+  _transformations = [
+    # Remap absolute paths to the build directory to "out", in case absolute
+    # paths to files in the build directory are created.
+    #
+    # Clang and GCC apply these flags in opposite order. The build directory is
+    # often nested under //. To ensure that both compilers removed it before
+    # removing the absolute path to //, apply the option both first and last.
+    rebase_path(root_build_dir) + "=out",
+
+    # Remove absolute paths to the repo root.
+    rebase_path("//") + "=",
+
+    # Remove relative paths from the build directory to the source tree.
+    rebase_path("//", root_build_dir) + "=",
+
+    # Repeat option to remap absolute paths to the build directory.
+    rebase_path(root_build_dir) + "=out",
+  ]
+  cflags = []
+
+  foreach(transform, _transformations) {
+    cflags += [ "-ffile-prefix-map=" + transform ]
+  }
+
+  # Write the transformations to a well known path so that other utilities
+  # that need to present file names that match the compiler's __FILE__
+  # macro can apply the same transformation.
+  write_file(pw_build_RELATIVE_PATH_TRANSFORM_JSON, _transformations, "json")
+}
+
+# This group is linked into all pw_executable, pw_static_library, and
+# pw_shared_library targets. This makes it possible to ensure symbols are
+# defined without a dependency on them.
+#
+# pw_build_LINK_DEPS should only be used when necessary. For example,
+# pw_assert relies on pw_build_LINK_DEPS to avoid circular dependencies
+# in GN. In almost all other cases, build targets should explicitly depend on
+# the other targets they use.
+group("link_deps") {
+  deps = pw_build_LINK_DEPS
+}
+
+# This empty target is used as the default value for module configurations.
+# Projects may set pw_build_DEFAULT_MODULE_CONFIG to a different GN target that
+# overrides modules' configuration options via macro definitions or a header
+# forcibly included with `-include`.
+group("empty") {
+}
+
+pw_doc_group("docs") {
+  sources = [
+    "docs.rst",
+    "python.rst",
+  ]
+}
+
+# Pigweed upstream does not use the default toolchain, but other projects may
+# use it. To support using pw_build from the default toolchain without fully
+# configuring the Pigweed build, only instantiate the pw_build tests for a
+# non-default toolchain.
+if (current_toolchain != default_toolchain) {
+  pw_test("cc_blob_library_test") {
+    sources = [ "cc_blob_library_test.cc" ]
+    deps = [ ":test_blob" ]
+  }
+
+  pw_cc_blob_library("test_blob") {
+    out_header = "pw_build/test_blob.h"
+    namespace = "test::ns"
+    blobs = [
+      {
+        file_path = "test_blob_0123.bin"
+        symbol_name = "kFirstBlob0123"
+        alignas = 512
+      },
+      {
+        file_path = "test_blob_0123.bin"
+        symbol_name = "kSecondBlob0123"
+      },
+    ]
+    visibility = [ ":*" ]
+  }
+
+  pw_test_group("tests") {
+    tests = [ ":cc_blob_library_test" ]
+  }
+}

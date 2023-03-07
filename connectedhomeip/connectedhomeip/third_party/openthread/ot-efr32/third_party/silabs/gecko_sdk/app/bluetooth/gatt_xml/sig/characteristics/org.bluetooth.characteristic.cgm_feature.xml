@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" 
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="CGM Feature" type="org.bluetooth.characteristic.cgm_feature" 
+                uuid="2AA8" last-modified="2014-11-17" approved="Yes">
+    <Value>
+        <Field name="CGM Feature">
+            <InformativeText>Byte Order - LSO...MSO</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>24bit</Format>
+            <DecimalExponent>0</DecimalExponent>
+            <BitField>
+                <Bit index="0" size="1" name="Calibration Supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="1" size="1" name="Patient High/Low Alerts supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="2" size="1" name="Hypo Alerts supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="3" size="1" name="Hyper Alerts supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="4" size="1" name="Rate of Increase/Decrease Alerts supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="5" size="1" name="Device Specific Alert supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="6" size="1" name="Sensor Malfunction Detection supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="7" size="1" name="Sensor Temperature High-Low Detection supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="8" size="1" name="Sensor Result High-Low Detection supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="9" size="1" name="Low Battery Detection supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="10" size="1" name="Sensor Type Error Detection supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="11" size="1" name="General Device Fault supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="12" size="1" name="E2E-CRC supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="13" size="1" name="Multiple Bond supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="14" size="1" name="Multiple Sessions supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="15" size="1" name="CGM Trend Information supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="16" size="1" name="CGM Quality supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <ReservedForFutureUse index="17" size="7" />
+			</BitField>
+        </Field>
+        <Field name="CGM Type">
+            <InformativeText>See Note number 2 below. </InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>4bit</Format>
+                    <Enumerations>
+                        <Enumeration key="0" value="Reserved for future use" />
+                        <Enumeration key="1" value="Capillary Whole blood" />
+                        <Enumeration key="2" value="Capillary Plasma" />
+                        <Enumeration key="3" value="Capillary Whole blood" />
+                        <Enumeration key="4" value="Venous Plasma" />
+                        <Enumeration key="5" value="Arterial Whole blood" />
+                        <Enumeration key="6" value="Arterial Plasma" />
+                        <Enumeration key="7" value="Undetermined Whole blood" />
+                        <Enumeration key="8" value="Undetermined Plasma" />
+                        <Enumeration key="9" value="Interstitial Fluid (ISF)" />
+                        <Enumeration key="10" value="Control Solution" />
+                        <ReservedForFutureUse start="11" end="15" />
+                    </Enumerations>
+              
+            </Field>
+        <Field name="CGM Sample Location">
+            <InformativeText>See Note number 2 below. </InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>4bit</Format>
+                     <Enumerations>
+                        <Enumeration key="0" value="Reserved for future use" />
+                        <Enumeration key="1" value="Finger" />
+                        <Enumeration key="2" value="Alternate Site Test (AST)" />
+                        <Enumeration key="3" value="Earlobe" />
+                        <Enumeration key="4" value="Control solution" />
+                        <Enumeration key="5" value="Subcutaneous tissue" />
+                        <Enumeration key="15" value="Sample Location value not available" />
+                        <ReservedForFutureUse start="6" end="14" />
+                    </Enumerations>
+        </Field>
+        <Field name="E2E-CRC">
+            <InformativeText>If the device supports E2E-safety (E2E-CRC Supported bit is set in CGM Feature), the feature are secured by a CRC calculated over all data. This field is mandatory in this characteristic. If the device doesn´t support E2E-safety the value of the field shall be set to 0xFFFF.</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>uint16</Format>
+            <DecimalExponent>0</DecimalExponent>
+		</Field>
+	</Value>
+    <Note>
+        1. The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet
+        2. The CGM Type and CGM Sample Location Fields are each a nibble (4bit), where the least significant nibble contains the Type and the most significant nibble contains the Sample Location. These two nibbles are packed as one single octet, the Least Significant Nibble means the four bits numbered 0, 1, 2 and 3 of the octet and the Most Significant Nibble means the four bits numbered 4, 5, 6 and 7 of that octet
+    </Note>
+</Characteristic>

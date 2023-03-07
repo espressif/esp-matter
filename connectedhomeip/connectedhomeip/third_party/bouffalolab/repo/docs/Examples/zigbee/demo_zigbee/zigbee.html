@@ -1,0 +1,1455 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Zigbee &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../../index.html"/>
+        <link rel="up" title="(BL702)" href="../index.html"/>
+        <link rel="next" title="Peripherals" href="../../peripheral/index.html"/>
+        <link rel="prev" title="(BL702)" href="../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Example</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../ble/index.html">Bluetooth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../network/index.html">Ethernet (BL702)</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Zigbee (BL702)</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">zigbee</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">总览</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">使用步骤</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cli">Cli命令介绍</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ota">OTA使用说明</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../peripheral/index.html">Peripherals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../storage/index.html">Storage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../system/index.html">System</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Example</a> &raquo;</li>
+        
+          <li><a href="../index.html">(BL702)</a> &raquo;</li>
+        
+      <li>Zigbee</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Examples/zigbee/demo_zigbee/zigbee.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="zigbee">
+<span id="zigbee-index"></span><h1>Zigbee<a class="headerlink" href="#zigbee" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<h2>总览<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<p>本示例主要介绍如何使用zigbee。</p>
+</div>
+<div class="section" id="id2">
+<h2>使用步骤<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<ul>
+<li><p class="first">进入 <code class="docutils literal notranslate"><span class="pre">customer_app/bl702_demo_event</span></code> 工程并通过 <code class="docutils literal notranslate"><span class="pre">genzb</span></code> 脚本命令编译，完成后下载Bin文件；</p>
+</li>
+<li><ol class="first arabic simple">
+<li>Device1 使用 <code class="docutils literal notranslate"><span class="pre">zb_register_dev</span> <span class="pre">1</span> <span class="pre">0x0104</span> <span class="pre">0x0007</span> <span class="pre">0x00</span> <span class="pre">0x07</span> <span class="pre">0x0000</span> <span class="pre">0x0003</span> <span class="pre">0x0004</span> <span class="pre">0x0005</span> <span class="pre">0x0006</span> <span class="pre">0x0008</span> <span class="pre">0x0300</span></code> 命令注册 endpoint 1, profile id 为0x0104, device id为0x0007, input cluster 0个, output cluster 7个</li>
+</ol>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/ZC-RegisterEP.png" />
+</div>
+</div></blockquote>
+</li>
+<li><ol class="first arabic simple" start="2">
+<li>Device1 使用 <code class="docutils literal notranslate"><span class="pre">zb_set_role</span> <span class="pre">0</span></code> 命令设置设备类型ZC; 使用 <code class="docutils literal notranslate"><span class="pre">zb_form</span> <span class="pre">15</span> <span class="pre">0xaaaa</span></code> 创建信道15，PANID 0xaaaa的ZHA网络 ,打印的部分log如下。</li>
+</ol>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/ZC-Startup.png" />
+</div>
+</div></blockquote>
+</li>
+<li><ol class="first arabic simple" start="3">
+<li>Device1 使用 <code class="docutils literal notranslate"><span class="pre">zb_nwk_permit_join</span> <span class="pre">120</span></code> 开放网络120秒；</li>
+</ol>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_nwk_permit_join.png" />
+</div>
+</div></blockquote>
+</li>
+<li><ol class="first arabic simple" start="4">
+<li>Device2 使用 <code class="docutils literal notranslate"><span class="pre">zb_register_dev</span> <span class="pre">1</span> <span class="pre">0x0104</span> <span class="pre">0x0102</span> <span class="pre">0x07</span> <span class="pre">0x0000</span> <span class="pre">0x0003</span> <span class="pre">0x0004</span> <span class="pre">0x0005</span> <span class="pre">0x0006</span> <span class="pre">0x0008</span> <span class="pre">0x0300</span> <span class="pre">0x00</span></code> 命令注册 endpoint 1, profile id 为0x0104, device id为0x0102, input cluster 7个, output cluster 0个; 如果Device2要做touchlink target，input cluster中需要注册touchlink cluster, touchlink cluster id 为0x1000，例如zb_register_dev 1 0x0104 0x0102 0x08 0x0000 0x0003 0x0004 0x0005 0x0006 0x0008 0x0300 0x1000 0x00。</li>
+</ol>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/ZR-RegisterEP.png" />
+</div>
+</div></blockquote>
+</li>
+<li><ol class="first arabic simple" start="5">
+<li>Device2 使用 <code class="docutils literal notranslate"><span class="pre">zb_set_role</span> <span class="pre">1</span></code> 命令设置设备类型ZR， 使用 <code class="docutils literal notranslate"><span class="pre">zb_start</span></code> 自动搜索zigbee网络，找到网络后打印的部分log如下。</li>
+</ol>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/ZR-Startup.png" />
+</div>
+</div></blockquote>
+</li>
+<li><ol class="first arabic simple" start="6">
+<li>Device1 使用 <code class="docutils literal notranslate"><span class="pre">zb_zcl_onoff</span> <span class="pre">2</span> <span class="pre">0x6d4e</span> <span class="pre">1</span> <span class="pre">1</span> <span class="pre">2</span></code> 命令向Device2 ep1 发送zcl:toggle 命令,地址模式为短地址</li>
+</ol>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/ZC-SendOnOff.png" />
+</div>
+</div></blockquote>
+</li>
+<li><ol class="first arabic simple" start="7">
+<li>Device1/2 使用 <code class="docutils literal notranslate"><span class="pre">zb_reset</span></code>, 擦除zigbee flash存储内容。</li>
+</ol>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/Device_reset.png" />
+</div>
+</div></blockquote>
+</li>
+<li><ol class="first arabic simple" start="8">
+<li>Device1/2 使用 <code class="docutils literal notranslate"><span class="pre">zb_reboot</span></code>, 重启程序。</li>
+</ol>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/Device_reboot.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="cli">
+<h2>Cli命令介绍<a class="headerlink" href="#cli" title="永久链接至标题"></a></h2>
+<div class="section" id="zb-register-dev">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_register_dev</span></code><a class="headerlink" href="#zb-register-dev" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：注册设备信息</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint8_t&gt;类型，设备的endpoint</li>
+<li>参数2：&lt;uint16_t&gt;类型，设备的profile ID</li>
+<li>参数3：&lt;uint16_t&gt;类型，设备的device id/type</li>
+<li>参数4：&lt;uint8_t&gt;类型，设备的Input cluster 数量</li>
+<li>参数5：&lt;uint16_t&gt;类型，设备的Input clusterID列表，该参数的个数要和总Input cluster 数量保持一致</li>
+<li>参数6：&lt;uint8_t&gt;类型，设备的Output cluster 数量</li>
+<li>参数7：&lt;uint16_t&gt;类型，设备的Output clusterID列表，该参数的个数要和Output cluster 数量保持一致</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li>示例：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">&quot;zb_register_dev</span> <span class="pre">&lt;ep_num&gt;</span> <span class="pre">&lt;profile_id&gt;</span> <span class="pre">&lt;device_id&gt;</span> <span class="pre">&lt;inputClsNum&gt;</span> <span class="pre">&lt;inputCls1&gt;</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">&lt;inputClsN...&gt;</span> <span class="pre">&lt;outputClsNum&gt;</span> <span class="pre">&lt;outputCls1&gt;</span> <span class="pre">&lt;outputClsN...&gt;\r\n&quot;</span></code></li>
+</ul>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_register_dev.png" />
+</div>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="zb-set-role">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_set_role</span></code><a class="headerlink" href="#zb-set-role" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：设置设备类型为协调器，路由器或是终端设备</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint8_t&gt;类型，设备类型标识，0(ZC)|1(ZR)|2(ZNSED none sleepy end device)</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_set_role</span> <span class="pre">&lt;nDeviceRole&gt;\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_set_role.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-change-role">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_change_role</span></code><a class="headerlink" href="#zb-change-role" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：更改已在网设备的设备类型, 主要用于ZR和ZNSED设备之间的转换</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint8_t&gt;类型，设备类型标识，1(ZR)|2(ZNSED)</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_change_role</span> <span class="pre">&lt;nDeviceRole&gt;\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_change_role.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-set-channel">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_set_channel</span></code><a class="headerlink" href="#zb-set-channel" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：设置Zigbee的网络信道</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt; uint8_t &gt;类型，待设置的Zigbee网络信道，范围11-26</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_set_channel</span> <span class="pre">&lt;channel&gt;\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_set_channel.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-form">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_form</span></code><a class="headerlink" href="#zb-form" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：设置Zigbee协调器或路由器组网时使用的信道Channel和网络标识PANID</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint8_t&gt;类型，Channel标号，范围 11-26</li>
+<li>参数2：&lt;uint16_t&gt;类型，网络PANID</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_form</span> <span class="pre">&lt;channel&gt;</span> <span class="pre">&lt;PANID&gt;\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_form.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-nwk-permit-join">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_nwk_permit_join</span></code><a class="headerlink" href="#zb-nwk-permit-join" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：开放网络(允许设备加入网络)</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint8_t&gt;类型，开放网络的时间长度。0：关闭网络，255：永远开放网络，1-254：开放网络的秒数</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_nwk_permit_join</span> <span class="pre">&lt;duration&gt;\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_nwk_permit_join.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-start">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_start</span></code><a class="headerlink" href="#zb-start" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">功能：启动zigbee网络功能，ZC 调用该命令前，需配置Channel和PANID</p>
+</li>
+<li><p class="first">参数：无</p>
+</li>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_start\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_start.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-reset">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_reset</span></code><a class="headerlink" href="#zb-reset" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">功能：复位Zigbee设备到出厂设置（网络信息等均复位）</p>
+</li>
+<li><p class="first">参数：无</p>
+</li>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_reset\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_reset.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-reboot">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_reboot</span></code><a class="headerlink" href="#zb-reboot" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">功能：重启Zigbee设备</p>
+</li>
+<li><p class="first">参数：无</p>
+</li>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_reboot\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_reboot.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-get-mac">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_get_mac</span></code><a class="headerlink" href="#zb-get-mac" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">功能：获取设备的MAC地址, 地址显示小端模式，例如图中MAC地址为 0xb4e8420008640000</p>
+</li>
+<li><p class="first">参数：无</p>
+</li>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_get_mac\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_get_mac.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-set-tx-power">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_set_tx_power</span></code><a class="headerlink" href="#zb-set-tx-power" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：设置设备的发射功率</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint8_t&gt;类型，可选值为 0-14</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_set_tx_power</span> <span class="pre">&lt;power&gt;\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_set_tx_power.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-zdp-node-desc-req">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_zdp_node_desc_req</span></code><a class="headerlink" href="#zb-zdp-node-desc-req" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：请求远端设备的节点描述</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint16_t&gt;类型，远端设备的短地址</li>
+<li>参数2：&lt;uint16_t&gt;类型，Node Descriptor请求的网络地址</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zdp_node_desc_req</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;nwk_addr&gt;\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_zdp_node_desc_req.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-zdp-nwk-addr-req">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_zdp_nwk_addr_req</span></code><a class="headerlink" href="#zb-zdp-nwk-addr-req" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：请求远端设备的网络地址</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt; uint8_t*&gt;类型，低字节在前。远端设备的IEEE地址, 显示为小端模式，例如图中地址为 0xb4e8420008640000</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zdp_nwk_addr_req</span> <span class="pre">&lt;ieeeAddr&gt;\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_zdp_nwk_addr_req.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-zdp-ieee-addr-req">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_zdp_ieee_addr_req</span></code><a class="headerlink" href="#zb-zdp-ieee-addr-req" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：请求远端设备的节点描述</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint16_t&gt;类型，远端设备的短地址</li>
+<li>参数2：&lt;uint16_t&gt;类型，IEEE匹配的网络地址</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zdp_ieee_addr_req</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;nwk_addr&gt;\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_zdp_ieee_addr_req.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-zdp-power-desc-req">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_zdp_power_desc_req</span></code><a class="headerlink" href="#zb-zdp-power-desc-req" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：请求远端设备的电源描述</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint16_t&gt;类型，远端设备的短地址</li>
+<li>参数2：&lt;uint16_t&gt;类型，远端设备的Power Descriptor请求的网络地址</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zdp_power_desc_req</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;nwk_addr&gt;\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_zdp_power_desc_req.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-zdp-simple-des-req">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_zdp_simple_des_req</span></code><a class="headerlink" href="#zb-zdp-simple-des-req" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：请求远端设备上指定endpoint的简单描述</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint16_t&gt;类型，远端设备的短地址</li>
+<li>参数2：&lt;uint16_t&gt;类型，远端Simple Descriptor请求的网络地址</li>
+<li>参数3：&lt;uint8_t&gt;类型，远端设备的endpoint</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zdp_simple_des_req</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;nwk_addr&gt;</span> <span class="pre">&lt;dst_ep&gt;\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_zdp_simple_des_req.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-zdp-active-ep-req">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_zdp_active_ep_req</span></code><a class="headerlink" href="#zb-zdp-active-ep-req" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：用于请求远端设备上的端点列表，并带有相应的简单描述</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint16_t&gt;类型，远端设备的短地址</li>
+<li>参数2：&lt;uint16_t&gt;类型，Active EndPoint请求的网络地址</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zdp_active_ep_req</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;nwk_addr&gt;\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_zdp_active_ep_req.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-zdp-bind">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_zdp_bind</span></code><a class="headerlink" href="#zb-zdp-bind" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：用于请求为指定的源地址信息和目标地址信息创建绑定表条目</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint16_t&gt;类型，远端设备的短地址</li>
+<li>参数2：&lt;uint16_t&gt;类型，与目标设备绑定的源设备上的 clusterID</li>
+<li>参数3：&lt;uint8_t&gt;类型，待绑定的源endpoint</li>
+<li>参数4：&lt;uint8_t*&gt;类型，待绑定的源设备的MAC地址（64-bit IEEE address, 0000ac080042e8b4 即 0xb4e8420008ac0000）</li>
+<li>参数5：&lt;uint8_t&gt;类型，待绑定的目标endpoint</li>
+<li>参数6：&lt;uint8_t*&gt;类型，待绑定的目标设备的MAC地址（64-bit IEEE address, 000064080042e8b4 即 0xb4e8420008640000）</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zdp_bind</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;clusterID&gt;</span> <span class="pre">&lt;src_ep&gt;</span> <span class="pre">&lt;src_mac&gt;</span> <span class="pre">&lt;dst_ep&gt;</span> <span class="pre">&lt;dst_mac&gt;\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_zdp_bind.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-zdp-unbind">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_zdp_unbind</span></code><a class="headerlink" href="#zb-zdp-unbind" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：用于请求删除为指定的源地址信息和目标地址信息创建的绑定表条目</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint16_t&gt;类型，远端设备的短地址</li>
+<li>参数2：&lt;uint16_t&gt;类型，与目标设备解除绑定的源设备上的 clusterID</li>
+<li>参数3：&lt;uint8_t&gt;类型，待删除的endpoint</li>
+<li>参数4：&lt;uint8_t*&gt;类型，待删除的源设备的MAC地址（64-bit IEEE address, 0000ac080042e8b4 即 0xb4e8420008ac0000）</li>
+<li>参数5：&lt;uint8_t&gt;类型，待删除的目标endpoint</li>
+<li>参数6：&lt;uint8_t*&gt;类型，待删除的目标设备的MAC地址（64-bit IEEE address, 000064080042e8b4 即 0xb4e8420008640000）</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zdp_unbind</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;clusterID&gt;</span> <span class="pre">&lt;src_ep&gt;</span> <span class="pre">&lt;src_mac&gt;</span> <span class="pre">&lt;dst_ep&gt;</span> <span class="pre">&lt;dst_mac&gt;\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_zdp_unbind.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-zcl-set-dir">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_set_dir</span></code><a class="headerlink" href="#zb-zcl-set-dir" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：设置ZCL Frame direction</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint8_t&gt;类型, 0x00(从Client到Server)， 0x01(从Server到Client)</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zcl_set_dir</span> <span class="pre">&lt;dir&gt;\r\n&quot;</span></code></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-get-local-attr">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_get_local_attr</span></code><a class="headerlink" href="#zb-get-local-attr" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：用于获取当前设备指定的cluster属性值</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint8_t&gt;类型，当前设备的endpoint</li>
+<li>参数2：&lt;uint8_t&gt;类型，cluster属性是在server端(0)，还是client端(1)</li>
+<li>参数3：&lt;uint16_t&gt;类型，当前设备的clusterID</li>
+<li>参数4：&lt;uint16_t&gt;类型，标识要读取的属性标识符</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_get_local_attr</span> <span class="pre">&lt;ep&gt;</span> <span class="pre">&lt;dir&gt;</span> <span class="pre">&lt;clusterId&gt;</span> <span class="pre">&lt;attrId&gt;&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_get_local_attr.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-set-local-attr">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_set_local_attr</span></code><a class="headerlink" href="#zb-set-local-attr" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：用于设置当前设备指定的cluster属性值</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint8_t&gt;类型，当前设备的endpoint</li>
+<li>参数2：&lt;uint8_t&gt;类型，cluster属性是在server端(0)，还是client端(1)</li>
+<li>参数3：&lt;uint16_t&gt;类型，当前设备的clusterID</li>
+<li>参数4：&lt;uint16_t&gt;类型，标识要写入的属性标识符</li>
+<li>参数5：&lt;uint8_t&gt;类型，待写入属性的数据类型</li>
+<li>参数6：&lt;octstr&gt;类型，待写入的属性数据，不包含数据长度</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li>示例：</li>
+</ul>
+<blockquote>
+<div><ul>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">&quot;zb_set_local_attr</span> <span class="pre">&lt;ep&gt;</span> <span class="pre">&lt;dir&gt;</span> <span class="pre">&lt;clusterId&gt;</span> <span class="pre">&lt;attrId&gt;</span> <span class="pre">&lt;type&gt;</span> <span class="pre">&lt;octstr&gt;&quot;</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">&quot;例如，设置identify</span> <span class="pre">time为15s:</span> <span class="pre">#</span> <span class="pre">zb_set_local_attr</span> <span class="pre">1</span> <span class="pre">0</span> <span class="pre">0x0003</span> <span class="pre">0x0000</span> <span class="pre">0x21</span> <span class="pre">0f00&quot;</span></code></p>
+<div class="figure">
+<img alt="" src="../../../_images/zb_set_local_attr.png" />
+</div>
+</li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="zb-zcl-read">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_read</span></code><a class="headerlink" href="#zb-zcl-read" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：读取指定设备的一个或多个属性</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint16_t&gt;类型，待读取设备的短地址</li>
+<li>参数2：&lt;uint8_t&gt;类型，当前设备的endpoint</li>
+<li>参数3：&lt;uint8_t&gt;类型，目标设备的endpoint</li>
+<li>参数4：&lt;uint16_t&gt;类型，目标设备的clusterID</li>
+<li>参数5,6,7…：&lt;uint16_t&gt;类型，标识要读取的属性标识符</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zcl_read</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;src_ep&gt;</span> <span class="pre">&lt;dst_ep&gt;</span> <span class="pre">&lt;cluster&gt;</span> <span class="pre">[attr1]</span> <span class="pre">[attr2]</span> <span class="pre">[...]\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_zcl_read.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-zcl-write">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_write</span></code><a class="headerlink" href="#zb-zcl-write" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：对指定设备写入一个或多个属性</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint16_t&gt;类型，目标设备的短地址</li>
+<li>参数2：&lt;uint8_t&gt;类型，当前设备的endpoint</li>
+<li>参数3：&lt;uint8_t&gt;类型，目标设备的endpoint</li>
+<li>参数4：&lt;uint16_t&gt;类型，目标设备的clusterID</li>
+<li>参数5：&lt;uint16_t&gt;类型，待写入的Attribute ID</li>
+<li>参数6：&lt;uint8_t&gt;类型，待写入属性的数据类型</li>
+<li>参数7：&lt;octstr&gt;类型，待写入的属性数据，不包含数据长度</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zcl_write</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;src_ep&gt;</span> <span class="pre">&lt;dst_ep&gt;</span> <span class="pre">&lt;cluster&gt;</span> <span class="pre">&lt;attr&gt;</span> <span class="pre">&lt;type&gt;</span> <span class="pre">&lt;octstr&gt;\r\n&quot;</span></code></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">&quot;例如，把目标设备的identify</span> <span class="pre">time为设置为15s:</span> <span class="pre">#</span> <span class="pre">zb_zcl_write</span> <span class="pre">0x8d93</span> <span class="pre">1</span> <span class="pre">1</span> <span class="pre">0x0003</span> <span class="pre">0x0000</span> <span class="pre">0x21</span> <span class="pre">0f00&quot;</span></code></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="zb-zcl-cfg-report">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_cfg_report</span></code><a class="headerlink" href="#zb-zcl-cfg-report" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：配置设备自动发送报告的机制</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint16_t&gt;类型，目标设备的短地址</li>
+<li>参数2：&lt;uint8_t&gt;类型，当前设备的endpoint</li>
+<li>参数3：&lt;uint8_t&gt;类型，目标设备的endpoint</li>
+<li>参数4：&lt;uint16_t&gt;类型，目标设备的clusterID</li>
+<li>参数5：&lt;uint8_t&gt;类型，配置报告方向，用于指定配置是作用于报告发送端还是接收端，0x00表示报告发送端，0x01表示报告接收端</li>
+<li>参数6：&lt;uint16_t&gt;类型，目标设备的Attribute ID</li>
+<li>参数7：&lt;uint8_t&gt;类型，目标设备属性的数据类型，当报告方向为0x00时需要配置该参数</li>
+<li>参数8：&lt;uint16_t&gt;类型，待设置的最小报告间隔，单位为“秒， 当报告方向为0x00时需要配置该参数”</li>
+<li>参数9：&lt;uint16_t&gt;类型，待设置的最大报告间隔，单位为“秒， 当报告方向为0x00时需要配置该参数”</li>
+<li>参数10：&lt;uint8_t []&gt;类型，待设置的导致Report的最小更改， 当报告方向为0x00时需要配置该参数</li>
+<li>参数11：&lt;uint16_t&gt;类型，接收端的报告超时时间，单位为“秒”， 当报告方向为0x01时需要配置该参数</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li>示例：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">&quot;配置报告发送端：zb_zcl_cfg_report</span> <span class="pre">&lt;dst16&gt;</span> <span class="pre">&lt;src_ep&gt;</span> <span class="pre">&lt;dst_ep&gt;</span> <span class="pre">&lt;cluster&gt;</span> <span class="pre">&lt;direction&gt;</span> <span class="pre">&lt;attr&gt;</span> <span class="pre">&lt;type&gt;</span> <span class="pre">&lt;min&gt;</span> <span class="pre">&lt;max&gt;</span> <span class="pre">&lt;reportChange&gt;&quot;</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">&quot;例如，希望配置Level</span> <span class="pre">Control</span> <span class="pre">Cluster中的CurrentLevel属性,</span> <span class="pre">最小报告间隔为30s,</span> <span class="pre">最大报告间隔为300s,</span> <span class="pre">产生报告的最小更改为30，</span> <span class="pre">配置命令为：</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">zb_zcl_cfg_report</span> <span class="pre">0xac89</span> <span class="pre">1</span> <span class="pre">1</span> <span class="pre">0x0008</span> <span class="pre">0</span> <span class="pre">0x0000</span> <span class="pre">0x20</span> <span class="pre">0x001E</span> <span class="pre">0x0x012C</span> <span class="pre">1E&quot;</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">&quot;配置报告接收端：zb_zcl_cfg_report</span> <span class="pre">&lt;dst16&gt;</span> <span class="pre">&lt;src_ep&gt;</span> <span class="pre">&lt;dst_ep&gt;</span> <span class="pre">&lt;cluster&gt;</span> <span class="pre">&lt;direction&gt;</span> <span class="pre">&lt;timeout&gt;&quot;</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">&quot;例如，对于Level</span> <span class="pre">Control</span> <span class="pre">Cluster中的CurrentLevel属性,</span> <span class="pre">要配置接收端报告超时时间为600s，</span> <span class="pre">则配置命令为：</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">zb_zcl_cfg_report</span> <span class="pre">0xac89</span> <span class="pre">1</span> <span class="pre">1</span> <span class="pre">0x0008</span> <span class="pre">1</span> <span class="pre">0x0000</span> <span class="pre">0x0258&quot;</span></code></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="zb-zcl-read-report-cfg">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_read_report_cfg</span></code><a class="headerlink" href="#zb-zcl-read-report-cfg" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：用于读取指定cluster属性的报告机制配置细节</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint16_t&gt;类型，目标设备的短地址</li>
+<li>参数2：&lt;uint8_t&gt;类型，当前设备的endpoint</li>
+<li>参数3：&lt;uint8_t&gt;类型，目标设备的endpoint</li>
+<li>参数4：&lt;uint16_t&gt;类型，目标设备的clusterID</li>
+<li>参数5：&lt;uint8_t&gt;类型，配置的direction，即读取发送端还是接收端的配置，0x00表示报告发送端，0x01表示报告接收端</li>
+<li>参数6：&lt;uint16_t&gt;类型，属性发现的起始Attribute ID</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li>示例：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">&quot;zb_zcl_read_report_cfg</span>&#160; <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;src_ep&gt;</span> <span class="pre">&lt;dst_ep&gt;</span> <span class="pre">&lt;cluster&gt;</span> <span class="pre">&lt;dir&gt;</span> <span class="pre">&lt;attr&gt;&quot;</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">&quot;例如，读取Level</span> <span class="pre">Control</span> <span class="pre">Cluster中的CurrentLevel属性的报告配置细节：</span> <span class="pre">zb_zcl_read_report_cfg</span> <span class="pre">0xac89</span> <span class="pre">1</span> <span class="pre">1</span> <span class="pre">0x0008</span> <span class="pre">0</span> <span class="pre">0x0000&quot;</span></code></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="zb-zcl-disc-attr">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_disc_attr</span></code><a class="headerlink" href="#zb-zcl-disc-attr" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：用于发现指定cluster上的设备的属性标识符和属性类型</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint16_t&gt;类型，目标设备的短地址</li>
+<li>参数2：&lt;uint8_t&gt;类型，当前设备的endpoint</li>
+<li>参数3：&lt;uint8_t&gt;类型，目标设备的endpoint</li>
+<li>参数4：&lt;uint16_t&gt;类型，目标设备的clusterID</li>
+<li>参数5：&lt;uint16_t&gt;类型，属性发现的起始Attribute ID</li>
+<li>参数6：&lt;uint8_t&gt;类型，指定Response中Attribute ID数最大值</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li>示例：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">&quot;zb_zcl_disc_attr</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;src_ep&gt;</span> <span class="pre">&lt;dst_ep&gt;</span> <span class="pre">&lt;cls_id&gt;</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">&lt;start_attr_id&gt;</span> <span class="pre">&lt;attr</span> <span class="pre">num</span> <span class="pre">to</span> <span class="pre">read&gt;\r\n&quot;</span></code></li>
+</ul>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_zcl_disc_attr.png" />
+</div>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="zb-zcl-identify">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_identify</span></code><a class="headerlink" href="#zb-zcl-identify" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：发送识别命令以查找或停止查找指定设备</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint16_t&gt;类型，目标设备的短地址</li>
+<li>参数2：&lt;uint8_t&gt;类型，当前设备的endpoint</li>
+<li>参数3：&lt;uint8_t&gt;类型，目标设备的endpoint</li>
+<li>参数4：&lt;uint16_t&gt;类型，识别时间的长度，单位为“秒”</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zcl_identify</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;src_ep&gt;</span> <span class="pre">&lt;dst_ep&gt;</span> <span class="pre">&lt;identify_time&gt;\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_zcl_identify.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-zcl-identify-query">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_identify_query</span></code><a class="headerlink" href="#zb-zcl-identify-query" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：该命令用于请求指定的设备返回当前的identify_time</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint16_t&gt;类型，目标设备的短地址</li>
+<li>参数2：&lt;uint8_t&gt;类型，当前设备的endpoint</li>
+<li>参数3：&lt;uint8_t&gt;类型，目标设备的endpoint</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zcl_identify_query</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;src_ep&gt;</span> <span class="pre">&lt;dst_ep&gt;\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_zcl_identify_query.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-zcl-group-add">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_group_add</span></code><a class="headerlink" href="#zb-zcl-group-add" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：通知目标设备上的某个endpoint去添加指定的组成员到特定的组中</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint8_t&gt;类型，源设备endpoint</li>
+<li>参数2：&lt;uint8_t&gt;类型，目标设备endpoint</li>
+<li>参数3：&lt;uint16_t&gt;类型，目标设备的短地址</li>
+<li>参数4：&lt;uint16_t&gt;类型，待添加的groupID</li>
+<li>参数5：&lt;string&gt;类型，0-16个字符，待添加的组名</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zcl_group_add</span> <span class="pre">&lt;src_ep&gt;</span> <span class="pre">&lt;dst_ep&gt;</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;groupid&gt;</span> <span class="pre">&lt;grp_name&gt;\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_zcl_group_add.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-zcl-group-remove">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_group_remove</span></code><a class="headerlink" href="#zb-zcl-group-remove" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：通知目标设备上的某个endpoint去移除指定的组成员</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint8_t&gt;类型，源设备endpoint</li>
+<li>参数2：&lt;uint8_t&gt;类型，目标设备endpoint</li>
+<li>参数3：&lt;uint16_t&gt;类型，目标设备的短地址</li>
+<li>参数4：&lt;uint16_t&gt;类型，待移除的groupID</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zcl_group_remove</span> <span class="pre">&lt;src_ep&gt;</span> <span class="pre">&lt;dst_ep&gt;</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;groupid&gt;\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_zcl_group_remove.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-zcl-group-removeall">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_group_removeAll</span></code><a class="headerlink" href="#zb-zcl-group-removeall" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：通知目标设备上的某个endpoint去移除所有的组成员</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint8_t&gt;类型，源设备endpoint</li>
+<li>参数2：&lt;uint8_t&gt;类型，目标设备endpoint</li>
+<li>参数3：&lt;uint16_t&gt;类型，目标设备的短地址</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zcl_group_removeAll</span> <span class="pre">&lt;src_ep&gt;</span> <span class="pre">&lt;dst_ep&gt;</span> <span class="pre">&lt;dst_addr&gt;\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_zcl_group_removeAll.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-zcl-onoff">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_onoff</span></code><a class="headerlink" href="#zb-zcl-onoff" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：向目标设备发送on/off控制命令</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint8_t&gt;类型，选择寻址模式，1=group|2=short</li>
+<li>参数2：&lt;uint16_t&gt;类型，目标设备短地址</li>
+<li>参数3：&lt;uint8_t&gt;类型，源设备endpoint</li>
+<li>参数4：&lt;uint8_t&gt;类型，目标设备endpoint</li>
+<li>参数5：&lt;uint8_t&gt;类型，开关类型选择，0=off|1=on|2=toggle</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zcl_onoff</span> <span class="pre">&lt;addr_mode&gt;</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;src_ep&gt;</span> <span class="pre">&lt;dst_ep&gt;</span> <span class="pre">&lt;cmd_id&gt;\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_zcl_onoff.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-zcl-move-to-level-with-onoff">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_move_to_level_with_onoff</span></code><a class="headerlink" href="#zb-zcl-move-to-level-with-onoff" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：向目标设备发送Move to Level (with On/Off)控制命令</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint16_t&gt;类型，目标设备短地址</li>
+<li>参数2：&lt;uint8_t&gt;类型，源设备endpoint</li>
+<li>参数3：&lt;uint8_t&gt;类型，目标设备endpoint</li>
+<li>参数4：&lt;uint8_t&gt;类型，Level值</li>
+<li>参数5：&lt;uint16_t&gt;类型，变化时间(单位:秒)</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li>示例：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">&quot;zb_zcl_move_to_level_with_onoff</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;src_ep&gt;</span> <span class="pre">&lt;dst_ep&gt;</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">&lt;level&gt;</span> <span class="pre">&lt;transition_time&gt;\r\n&quot;</span></code></li>
+</ul>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_zcl_move_to_level_with_onoff.png" />
+</div>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="zb-zdp-leave-req">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_zdp_leave_req</span></code><a class="headerlink" href="#zb-zdp-leave-req" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：请求远端设备离开当前网络</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt;uint16_t&gt;类型，目标设备短地址</li>
+<li>参数2：&lt;uint8_t*&gt;类型，目标设备的MAC地址, 例如下图 00007c040042e8b4 代表 0xb4e84200047c0000</li>
+<li>参数3：&lt; bool &gt;类型，删除子设备</li>
+<li>参数4：&lt; bool &gt;类型，离开后执行Rejoin</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zdp_leave_req</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;uint8_t</span> <span class="pre">array[8]&gt;</span> <span class="pre">&lt;removeChildren&gt;</span> <span class="pre">&lt;rejoin&gt;\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_zdp_leave_req.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="zb-rejoin">
+<h3><code class="docutils literal notranslate"><span class="pre">zb_rejoin</span></code><a class="headerlink" href="#zb-rejoin" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>功能：请求重新加入网络</li>
+<li>参数：</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>参数1：&lt; bool &gt;类型，0：TC rejoin，1：Secure Rejoin</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_rejoin</span> <span class="pre">&lt;bRejoinSecured&gt;\r\n&quot;</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/zb_rejoin.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="ota">
+<h2>OTA使用说明<a class="headerlink" href="#ota" title="永久链接至标题"></a></h2>
+<p>本文介绍如何对Zigbee设备进行OTA升级，具体包含以下内容：</p>
+<ul class="simple">
+<li><a class="reference internal" href="#id3">OTA升级流程介绍</a></li>
+<li><a class="reference internal" href="#id4">制作OTA升级文件</a></li>
+<li><a class="reference internal" href="#ota-server">配置OTA Server</a></li>
+<li><a class="reference internal" href="#id5">OTA升级过程演示</a></li>
+</ul>
+<p>文中，使用BL706 ZR作为OTA Client，使用BL706 ZC作为OTA Server。</p>
+<div class="section" id="id3">
+<h3>OTA升级流程介绍<a class="headerlink" href="#id3" title="永久链接至标题"></a></h3>
+<p>Zigbee OTA升级流程如下如所示：</p>
+<blockquote>
+<div><div class="figure">
+<img alt="../../../_images/ota-flow.png" src="../../../_images/ota-flow.png" />
+</div>
+</div></blockquote>
+<ol class="arabic">
+<li><p class="first">Image Notify: OTA Server发送Image Notify通知OTA Client可以开始OTA升级</p>
+</li>
+<li><p class="first">Query Next Image Request: OTA Client收到通知后，发送Query Next Image Request询问是否有可用的升级文件。</p>
+<p>该请求数据包中携带了OTA Client设备的当前运行的固件信息，包括厂商ID(Manufacture Code), 镜像类型(Image Type)，当前版本号(Current File Version)，以及硬件版本号(Hardware Version，可选字段)。</p>
+</li>
+<li><p class="first">Query Next Image Response: OTA Server根据Query Next Image Request中的信息查找是否有匹配的升级文件，并通过回复Query Next Image Response告知OTA Client。</p>
+<ol class="loweralpha simple">
+<li>如果找到匹配的OTA文件，Query Next Image Response中会包含新版固件信息，如新的固件版本号。</li>
+<li>如果没有找到匹配的文件，则会在该响应数据包中告知Client端没有可用的升级文件(status=NO_IMAGE_AVAILABLE)。</li>
+</ol>
+</li>
+<li><p class="first">Image Block Request &amp; Image Block Response： OTA Server和OTA Client之间传输OTA文件。</p>
+<p>OTA Header部分会首先传输，如果升级过程中发现OTA Client设备在接收了1个或少数几个Image Block Response后，OTA过程便终止了(Client设备发送Upgrad End Request， status=INVALID_IMAGE),
+一般是因为收到的OTA Header数据有误或者不符合要求，可以通过以下几点查找原因</p>
+<ol class="loweralpha simple">
+<li>检查Image Block Response中的数据，是否是OTA文件中的header数据。</li>
+<li>检查Header中的相关版本信息是否正确。</li>
+<li>检查Header中文件大小是否超出Client设备的存储空间。</li>
+</ol>
+</li>
+<li><p class="first">Upgrade End Request: OTA Client发送该请求告知OTA Server升级过程已结束。</p>
+</li>
+</ol>
+<blockquote>
+<div>在发送该请求之前，OTA Client设备会对收到的OTA文件进行校验(如SHA256 hash, ESCDA签名)，如果校验失败，Upgrade End Request中status字段值为&quot;INVALID IMAGE&quot;，如果校验成功，则status=SUCCESS。</div></blockquote>
+<ol class="arabic simple" start="6">
+<li>Upgrade End Response: OTA Server通过回复Upgrade End Reqeust告知OTA Client设备可以切换到新镜像并指定切换时间。</li>
+</ol>
+</div>
+<div class="section" id="id4">
+<h3>制作OTA升级文件<a class="headerlink" href="#id4" title="永久链接至标题"></a></h3>
+<ul>
+<li><p class="first">OTA 文件格式</p>
+<blockquote>
+<div><div class="figure">
+<img alt="../../../_images/ota-file-format.png" src="../../../_images/ota-file-format.png" />
+</div>
+</div></blockquote>
+<p>OTA 文件格式如上图所示，通常OTA文件只需要包含OTA Header和Upgrade Image两部分。</p>
+</li>
+</ul>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li>OTA Header: BL Zigbee设备OTA Header包含以下内容</li>
+</ol>
+<blockquote>
+<div><div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">_zclOtaHeader</span><span class="p">{</span>
+ <span class="n">uint32_t</span>    <span class="n">fileIdentifier</span><span class="p">;</span>
+ <span class="n">uint16_t</span>    <span class="n">headerVersion</span><span class="p">;</span>
+ <span class="n">uint16_t</span>    <span class="n">headerSize</span><span class="p">;</span>
+ <span class="n">uint16_t</span>    <span class="n">headerFieldControl</span><span class="p">;</span>
+ <span class="n">uint16_t</span>    <span class="n">manufacturerID</span><span class="p">;</span>
+ <span class="n">uint16_t</span>    <span class="n">imageType</span><span class="p">;</span>
+ <span class="n">uint32_t</span>    <span class="n">fileVersion</span><span class="p">;</span>
+ <span class="n">uint16_t</span>    <span class="n">zigBeeStackVersion</span><span class="p">;</span>
+ <span class="n">char</span>        <span class="n">headerStr</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span>
+ <span class="n">uint32_t</span>    <span class="n">imageSize</span><span class="p">;</span>
+ <span class="n">uint16_t</span>    <span class="n">minHWVersion</span><span class="p">;</span>
+ <span class="n">uint16_t</span>    <span class="n">maxHWVersion</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="loweralpha simple" start="2">
+<li>Upgrade Image: Zigbee设备固件</li>
+</ol>
+<blockquote>
+<div>制作BL Zigbee OTA文件时，Upgrade Image使用压缩后的固件(FW_OTA.bin.xz.hash)，该固件可以使用Bouffalo Lab Dev Cube生成。
+生成方法和烧写Zigbee设备固件方法一致(但不需要连接BL702/706开发板, 可忽略download失败提示)，
+生成好的压缩固件在Dev Cube的安装目录下可以找到(E.g. D:\BouffaloLabDevCube-1.6.2-win32\chipsbl702ota\FW_OTA.bin.xz.hash)。</div></blockquote>
+</div></blockquote>
+<ul>
+<li><p class="first">生成OTA文件</p>
+<p>可以使用Bouffalo Lab提供的OTA文件生成工具（ota-image-builder.exe）来生成OTA文件，命令行参数如下：</p>
+<div class="figure">
+<img alt="../../../_images/ota-image-builder.png" src="../../../_images/ota-image-builder.png" />
+</div>
+<p>示例</p>
+<div class="figure">
+<img alt="../../../_images/ota-build-example.png" src="../../../_images/ota-build-example.png" />
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="ota-server">
+<h3>配置OTA Server<a class="headerlink" href="#ota-server" title="永久链接至标题"></a></h3>
+<p>这里介绍使用BL706开发板作为OTA Server的使用方法。</p>
+<ul>
+<li><p class="first">烧写OTA文件到MFG分区</p>
+<blockquote>
+<div><div class="figure">
+<img alt="../../../_images/ota-upload.png" src="../../../_images/ota-upload.png" />
+</div>
+<ul class="simple">
+<li>Chip Erase选择False</li>
+<li>Factory Param选择bl_factory_params_IoTKitA_32M.dts</li>
+<li>Partition Table根据flash大小选择partition_cfg_1M.toml或partition_cfg_2M.toml</li>
+<li><strong>Firmware Bin 取消勾选</strong></li>
+<li>MFG Bin选择生成好的OTA文件FW_OTA.bin</li>
+<li>点击&quot;Create&amp;Download&quot;</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">加载OTA文件</p>
+</li>
+<li><div class="first figure">
+<img alt="../../../_images/ota-load.png" src="../../../_images/ota-load.png" />
+</div>
+<p>如上图所示，在开发板上输入&quot;zb_zcl_ota_load_ota_image&quot; CLI命令加载OTA文件。</p>
+</li>
+</ul>
+</div>
+<div class="section" id="id5">
+<h3>OTA升级过程演示<a class="headerlink" href="#id5" title="永久链接至标题"></a></h3>
+<ul>
+<li><p class="first">第一步：生成OTA文件</p>
+</li>
+<li><p class="first">第二步：配置OTA Server</p>
+</li>
+<li><p class="first">第三步：发送Image Notify通知Client设备开始升级</p>
+<div class="figure">
+<img alt="../../../_images/ota-notify.png" src="../../../_images/ota-notify.png" />
+</div>
+<p>OTA Server端输入&quot;zb_zcl_ota_image_notify 0x89b5 1 1 0x00 10&quot; CLI命令来发送Image Notify， 其中0x89b5为OTA Client短地址。</p>
+</li>
+<li><p class="first">第四步：OTA Client询问OTA Server是否有可升级的OTA文件</p>
+</li>
+</ul>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li>OTA Server端串口会打印收到的Query Next Image Request请求：</li>
+</ol>
+<blockquote>
+<div>ImageQueryReq: srcAddr=0x89b5, fileVersion=0x00000001, imageType=0x0000, manufactureCode=0x130d</div></blockquote>
+<ol class="loweralpha simple" start="2">
+<li>OTA Server端串口会打印OTA文件匹配结果并发送Query Next Image Response，如果没有匹配的ota文件，则status=0x98(NO_IMAGE_AVALIABLE)：</li>
+</ol>
+<blockquote>
+<div>ImageQueryResp: srcAddr=0x89b5, status=0x00</div></blockquote>
+</div></blockquote>
+<ul class="simple">
+<li>第五步：传输OTA文件</li>
+</ul>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li>OTA Server端串口会打印收到的Image Block Reqeust</li>
+</ol>
+<blockquote>
+<div><div class="figure">
+<img alt="../../../_images/ota-srv-progress.png" src="../../../_images/ota-srv-progress.png" />
+</div>
+</div></blockquote>
+<ol class="loweralpha" start="2">
+<li><p class="first">OTA Client端串口会打印OTA升级进度</p>
+<blockquote>
+<div><div class="figure">
+<img alt="../../../_images/ota-client-progress.png" src="../../../_images/ota-client-progress.png" />
+</div>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+<ul>
+<li><p class="first">第六步：OTA文件传输完毕后，OTA Client会对OTA文件进行SHA256 hash校验，校验成功会切换到新image</p>
+<div class="figure">
+<img alt="../../../_images/ota-succ.png" src="../../../_images/ota-succ.png" />
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../peripheral/index.html" class="btn btn-neutral float-right" title="Peripherals" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral" title="(BL702)" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

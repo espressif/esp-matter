@@ -1,0 +1,3 @@
+config_title: pw_ide
+
+default_target: pw_strict_host_clang_debug

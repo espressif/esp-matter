@@ -1,0 +1,14 @@
+id: ot_remote_cli
+label: Remote CLI
+package: OpenThread
+category: OpenThread
+quality: production
+description: This component provides the remote CLI support for OpenThread coprocessors
+provides:
+  - name: ot_cli
+  - name: ot_remote_cli
+requires:
+  - name: ot_stack
+define:
+  - name: OPENTHREAD_CONFIG_COPROCESSOR_RPC_ENABLE
+    value: 1

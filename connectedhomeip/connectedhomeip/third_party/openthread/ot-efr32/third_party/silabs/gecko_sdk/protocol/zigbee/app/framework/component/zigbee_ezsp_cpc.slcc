@@ -1,0 +1,42 @@
+package: Zigbee
+label: EZSP CPC
+quality: production
+id: zigbee_ezsp_cpc
+category: Zigbee|Utility
+
+description: This component is used to tranfer EZSP frames over a Co-Processor Communication (CPC) link. This component is meant only for the host application, not the Network Co-Processor (NCP) image.
+
+provides:
+   - name: "zigbee_ezsp_serial_interface"
+   - name: "zigbee_ezsp_cpc"
+
+requires:
+   - name: "zigbee_ezsp"
+   - name: "device_host"
+   # cli_threaded_host component is required to correctly read I/O in a nonblocking fashion
+   - name: "cli_threaded_host"
+     condition:
+      - cli
+
+define:
+   - name: "EZSP_CPC"
+
+source:
+  - path: "protocol/zigbee/app/util/ezsp/serial-interface-cpc.c"
+  - path: "protocol/zigbee/app/ezsp-host/cpc/cpc-host-ui.c"
+  - path: "protocol/zigbee/app/ezsp-host/cpc/cpc-host.c"
+
+library:
+  # Add -lcpc to the build command, so that libcpc.so can be linked with the project
+  # The CPC user guide explains how to build CPCd and libcpc.so, as well as how to place them into the user library path on disk
+  - system: "cpc"
+
+include:
+  - path: protocol/zigbee/app/ezsp-host/cpc
+    file_list:
+      - path: cpc-host.h
+      - path: cpc-host-ui.h
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_ezsp_cpc

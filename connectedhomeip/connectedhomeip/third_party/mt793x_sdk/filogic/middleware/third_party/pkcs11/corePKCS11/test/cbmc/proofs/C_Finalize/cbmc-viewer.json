@@ -1,0 +1,7 @@
+{ "expected-missing-functions":
+  [
+
+  ],
+  "proof-name": "C_Finalize",
+  "proof-root": "test/cbmc/proofs"
+}

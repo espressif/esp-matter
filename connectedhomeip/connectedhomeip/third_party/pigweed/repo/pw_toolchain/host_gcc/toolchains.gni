@@ -1,0 +1,63 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+# Specifies the tools used by host GCC toolchains.
+_host_gcc_toolchain = {
+  ar = "ar"
+  cc = "gcc"
+  cxx = "g++"
+
+  is_host_toolchain = true
+}
+
+# Common configs shared by all host GCC toolchains.
+_configs = [
+  "$dir_pw_toolchain/host_gcc:disable_psabi_warning",
+  "$dir_pw_toolchain/host_gcc:mingw_z_format",
+]
+
+pw_toolchain_host_gcc = {
+  debug = {
+    name = "host_gcc_debug"
+    forward_variables_from(_host_gcc_toolchain, "*")
+    defaults = {
+      default_configs = _configs + [ "$dir_pw_build:optimize_debugging" ]
+    }
+  }
+
+  speed_optimized = {
+    name = "host_gcc_speed_optimized"
+    forward_variables_from(_host_gcc_toolchain, "*")
+    defaults = {
+      default_configs = _configs + [ "$dir_pw_build:optimize_speed" ]
+    }
+  }
+
+  size_optimized = {
+    name = "host_gcc_size_optimized"
+    forward_variables_from(_host_gcc_toolchain, "*")
+    defaults = {
+      default_configs = _configs + [ "$dir_pw_build:optimize_size" ]
+    }
+  }
+}
+
+# Describes host Linux GCC toolchains.
+pw_toolchain_host_gcc_list = [
+  pw_toolchain_host_gcc.debug,
+  pw_toolchain_host_gcc.speed_optimized,
+  pw_toolchain_host_gcc.size_optimized,
+]

@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Database Change Increment" type="org.bluetooth.characteristic.database_change_increment" uuid="2A99" last-modified="2014-06-10" approved="Yes">
+    <Value>
+        <Field name="Database Change Increment">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint32</Format>
+		</Field>
+	</Value>
+</Characteristic>

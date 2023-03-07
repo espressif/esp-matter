@@ -1,0 +1,34 @@
+id: mx25_flash_shutdown_eusart
+package: platform
+label: MX25 Flash Shutdown with eusart 
+description: >
+  Provides a function to put the MX25 SPI flash into deep power down mode in order to reduce power consumption using the EUSART SPI.
+category: Platform|Board Drivers
+quality: production
+root_path: hardware/driver/mx25_flash_shutdown
+provides:
+  - name: mx25_flash_shutdown_eusart
+  - name: mx25_flash_shutdown_driver
+requires:
+  - name: emlib_cmu
+  - name: emlib_eusart
+  - name: emlib_gpio
+  - name: udelay
+  - name: device
+  - name: device_has_eusart
+include:
+  - path: inc/sl_mx25_flash_shutdown_eusart
+    file_list:
+      - path: sl_mx25_flash_shutdown.h
+source:
+  - path: src/sl_mx25_flash_shutdown_eusart/sl_mx25_flash_shutdown.c
+config_file:
+  - path: config/s2/mx25_flash_shutdown_eusart/sl_mx25_flash_shutdown_eusart_config.h
+    file_id: mx25_flash_shutdown_eusart_config
+    condition: [device_series_2]
+template_contribution:
+  - name: component_catalog
+    value: mx25_flash_shutdown_eusart
+documentation:
+    docset: gecko-platform
+    document: hardware-driver/api/group-mx25-flash-shutdown

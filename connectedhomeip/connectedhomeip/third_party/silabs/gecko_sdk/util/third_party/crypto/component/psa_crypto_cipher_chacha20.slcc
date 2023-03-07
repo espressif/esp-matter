@@ -1,0 +1,30 @@
+id: psa_crypto_cipher_chacha20
+package: platform
+label: Chacha20 Stream Cipher
+description: >-
+  This component provides support for the ChaCha20 stream cipher in PSA Crypto.
+category: Platform|Security|PSA Crypto|Encryption
+quality: production
+provides:
+  - name: psa_crypto_cipher_chacha20
+requires:
+  - name: psa_crypto
+  - name: mbedtls_chachapoly
+    condition: [device_series_0]
+  - name: mbedtls_chachapoly
+    condition: [device_series_1]
+  - name: mbedtls_chachapoly
+    condition: [device_security_se]
+  - name: mbedtls_chachapoly
+    condition: [device_security_rot]
+template_contribution:
+  - name: psa_crypto_config
+    value: PSA_WANT_KEY_TYPE_CHACHA20
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_STREAM_CIPHER
+  - name: psa_crypto_config
+    value: "MBEDTLS_PSA_BUILTIN_KEY_TYPE_CHACHA20 1"
+    condition: [mbedtls_chachapoly]
+  - name: psa_crypto_config
+    value: "MBEDTLS_PSA_BUILTIN_ALG_STREAM_CIPHER 1"
+    condition: [mbedtls_chachapoly]

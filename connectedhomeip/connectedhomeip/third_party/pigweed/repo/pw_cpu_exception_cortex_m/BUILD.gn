@@ -1,0 +1,241 @@
+# Copyright 2019 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/module_config.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_cpu_exception/backend.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_protobuf_compiler/proto.gni")
+import("$dir_pw_unit_test/test.gni")
+
+declare_args() {
+  # The build target that overrides the default configuration options for this
+  # module. This should point to a source set that provides defines through a
+  # public config (which may -include a file or add defines directly).
+  pw_cpu_exception_cortex_m_CONFIG = pw_build_DEFAULT_MODULE_CONFIG
+}
+
+pw_source_set("config") {
+  public_deps = [
+    "$dir_pw_preprocessor:arch",
+    pw_cpu_exception_cortex_m_CONFIG,
+  ]
+  public = [ "pw_cpu_exception_cortex_m_private/config.h" ]
+  visibility = [ ":*" ]
+}
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+config("backend_config") {
+  include_dirs = [ "public_overrides" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("support") {
+  deps = [
+    ":config",
+    ":cortex_m_constants",
+    ":util",
+    "$dir_pw_cpu_exception:support.facade",
+    "$dir_pw_preprocessor:arch",
+    dir_pw_log,
+    dir_pw_span,
+    dir_pw_string,
+  ]
+  sources = [ "support.cc" ]
+}
+
+# The following targets are deprecated, use ":support" instead.
+group("support_armv7m") {
+  public_deps = [ ":support" ]
+}
+group("support_armv8m") {
+  public_deps = [ ":support" ]
+}
+
+pw_source_set("util") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_cpu_exception_cortex_m/util.h" ]
+  public_deps = [ ":cpu_state" ]
+  deps = [
+    ":config",
+    ":cortex_m_constants",
+    "$dir_pw_preprocessor:arch",
+    dir_pw_log,
+  ]
+  sources = [ "util.cc" ]
+}
+
+pw_source_set("proto_dump") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    ":cpu_exception_armv7m",
+    dir_pw_protobuf,
+    dir_pw_status,
+    dir_pw_stream,
+  ]
+  public = [ "public/pw_cpu_exception_cortex_m/proto_dump.h" ]
+  deps = [
+    ":config",
+    ":cpu_state_protos.pwpb",
+  ]
+  sources = [ "proto_dump.cc" ]
+}
+
+# The following targets are deprecated, use ":proto_dump" instead.
+group("proto_dump_armv7m") {
+  public_deps = [ ":proto_dump" ]
+}
+group("proto_dump_armv8m") {
+  public_deps = [ ":proto_dump" ]
+}
+
+pw_proto_library("cpu_state_protos") {
+  sources = [ "pw_cpu_exception_cortex_m_protos/cpu_state.proto" ]
+}
+
+pw_source_set("cpu_state") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_cpu_exception_cortex_m/cpu_state.h" ]
+  public_deps = [
+    "$dir_pw_preprocessor",
+    "$dir_pw_preprocessor:arch",
+  ]
+}
+
+pw_source_set("cpu_exception") {
+  public_configs = [
+    ":backend_config",
+    ":public_include_path",
+  ]
+  public = [ "public_overrides/pw_cpu_exception_backend/state.h" ]
+  public_deps = [
+    ":cpu_state",
+    "$dir_pw_preprocessor",
+    "$dir_pw_preprocessor:arch",
+  ]
+}
+
+# The following targets are deprecated, use ":cpu_exception" instead.
+group("cpu_exception_armv7m") {
+  public_deps = [ ":cpu_exception" ]
+}
+group("cpu_exception_armv8m") {
+  public_deps = [ ":cpu_exception" ]
+}
+
+pw_source_set("cpu_exception.impl") {
+  sources = [ "entry.cc" ]
+  deps = [
+    ":config",
+    ":cortex_m_constants",
+    ":cpu_state",
+    ":util",
+    "$dir_pw_cpu_exception:entry.facade",
+    "$dir_pw_cpu_exception:handler",
+    "$dir_pw_preprocessor:arch",
+  ]
+}
+
+# The following targets are deprecated, use ":cpu_exception.impl" instead.
+group("cpu_exception_armv7m.impl") {
+  public_deps = [ ":cpu_exception.impl" ]
+}
+group("cpu_exception_armv8m.impl") {
+  public_deps = [ ":cpu_exception.impl" ]
+}
+
+pw_source_set("snapshot") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    ":cpu_state",
+    ":cpu_state_protos.pwpb",
+    "$dir_pw_thread:protos.pwpb",
+    "$dir_pw_thread:snapshot",
+    dir_pw_protobuf,
+    dir_pw_status,
+  ]
+  public = [ "public/pw_cpu_exception_cortex_m/snapshot.h" ]
+  sources = [ "snapshot.cc" ]
+  deps = [
+    ":config",
+    ":cortex_m_constants",
+    ":proto_dump",
+    ":util",
+    dir_pw_log,
+  ]
+}
+
+# The following targets are deprecated, use ":snapshot" instead.
+group("snapshot_armv7m") {
+  public_deps = [ ":snapshot" ]
+}
+group("snapshot_armv8m") {
+  public_deps = [ ":snapshot" ]
+}
+
+pw_source_set("cortex_m_constants") {
+  public = [ "pw_cpu_exception_cortex_m_private/cortex_m_constants.h" ]
+  public_deps = [ "$dir_pw_preprocessor:arch" ]
+  visibility = [ ":*" ]
+}
+
+# The following targets are deprecated, use ":cortex_m_constants" instead.
+group("cortex_m_constants_armv7m") {
+  public_deps = [ ":cortex_m_constants" ]
+  visibility = [ ":*" ]
+}
+group("cortex_m_constants_armv8m") {
+  public_deps = [ ":cortex_m_constants" ]
+  visibility = [ ":*" ]
+}
+
+pw_test_group("tests") {
+  tests = [ ":cpu_exception_entry_test" ]
+}
+
+# TODO(b/234888156): Add ARMv8-M mainline coverage.
+pw_test("cpu_exception_entry_test") {
+  enable_if = pw_cpu_exception_ENTRY_BACKEND ==
+              "$dir_pw_cpu_exception_cortex_m:cpu_exception"
+  deps = [
+    ":cortex_m_constants",
+    ":cpu_exception",
+    ":cpu_state",
+    "$dir_pw_cpu_exception:entry",
+    "$dir_pw_cpu_exception:handler",
+    "$dir_pw_cpu_exception:support",
+    dir_pw_span,
+  ]
+  sources = [ "exception_entry_test.cc" ]
+}
+
+pw_test("util_test") {
+  enable_if = pw_cpu_exception_ENTRY_BACKEND ==
+              "$dir_pw_cpu_exception_cortex_m:cpu_exception"
+  deps = [
+    ":cpu_state",
+    ":util",
+  ]
+  sources = [ "util_test.cc" ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}

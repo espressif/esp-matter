@@ -1,0 +1,29 @@
+id: cli_storage_ram
+label: "CLI: Storage in RAM"
+package: platform
+description: A component that let the application store cli commands in RAM.
+category: Services|CLI
+quality: production
+instantiable:
+  prefix: inst
+root_path: platform/service/cli_storage
+config_file:
+  - path: "config/sl_cli_storage_ram_config_{{instance}}.h"
+    file_id: sl_cli_storage_ram_config
+include:
+  - path: inc
+    file_list:
+      - path: sl_cli_storage_ram.h
+requires:
+  - name: cli_core
+  - name: cli_storage_ram_core
+  - name: sl_string
+provides:
+  - name: cli_storage_ram_instances
+    allow_multiple: true
+template_contribution:
+  - name: cli_storage_ram_instances
+    value: "{{instance}}"
+documentation:
+    docset: gecko-platform
+    document: service/api/group-cli-storage-ram

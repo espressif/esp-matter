@@ -1,0 +1,26 @@
+id: micriumos_io_serial_spi
+label: Micrium OS Input-Output Serial SPI Module
+package: micrium-ioxx
+description: Micrium OS IO Serial
+category: Services|Micrium|IO
+quality: production
+component_root_path: platform/micrium_os/io
+source:
+  - path: source/serial/spi/spi.c
+  - path: source/serial/spi/spi_bus.c
+  - path: source/serial/spi/spi_slave.c
+include:
+  - path: source
+    file_list:
+      - path: serial/spi/spi_priv.h
+  - path: include
+    file_list:
+      - path: spi.h
+      - path: spi_slave.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: IO_SERIAL_SPI
+provides:
+  - name: io_serial_spi
+requires:
+  - name: io_serial

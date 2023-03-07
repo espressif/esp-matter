@@ -1,0 +1,44 @@
+id: "connect_ota_unicast_bootloader_client"
+label: "OTA Unicast Bootloader Client"
+package: "Flex"
+category: "Connect|OTA"
+quality: "production"
+description: "Implements the client side of the Connect OTA Unicast Bootloader protocol. The OTA Unicast Bootloader Client component should be used to receive an image from an OTA Unicast Bootloader server, to be instructed by a server to perform a bootload at a certain time in the future."
+provides:
+  - name: "connect_ota_unicast_bootloader_client"
+requires:
+  - name: "connect_stack_common"
+source:
+      - path: "protocol/flex/ota-unicast-bootloader/ota-unicast-bootloader-client/ota-unicast-bootloader-client.c"
+      - path: "protocol/flex/ota-unicast-bootloader/ota-unicast-bootloader-client/ota-unicast-bootloader-client-cb.c"
+include:
+  - path: "protocol/flex/ota-unicast-bootloader"
+    file_list:
+      - path: "ota-unicast-bootloader-common-internal.h"
+      - path: "ota-unicast-bootloader-protocol.h"
+      - path: "ota-unicast-bootloader-types.h"
+  - path: "protocol/flex/ota-unicast-bootloader/ota-unicast-bootloader-client"
+    file_list:
+      - path: "ota-unicast-bootloader-client.h"
+      - path: "ota-unicast-bootloader-client-internal.h"
+config_file:
+  - path: "protocol/flex/ota-unicast-bootloader/ota-unicast-bootloader-client/config/ota-unicast-bootloader-client-config.h"
+template_contribution:
+  - name: stack_callback
+    value:
+      callback_type: "init"
+      function_name: "emAfPluginOtaUnicastBootloaderClientInitCallback"
+  - name: stack_callback
+    value:
+      callback_type: "incoming_message"
+      function_name: "emAfPluginOtaUnicastBootloaderClientIncomingMessageCallback"
+  - name: event_system
+    value:
+      event_control: "emAfPluginOtaUnicastBootloaderClientEventControl"
+      event_handler: "emAfPluginOtaUnicastBootloaderClientEventHandler"
+  - name: component_catalog
+    value: connect_ota_unicast_bootloader_client
+
+documentation:
+  docset: connect-stack
+  document: group-ota-unicast-bootloader-client

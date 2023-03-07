@@ -1,0 +1,11 @@
+id: zw_role_type_sleeping_reporting
+label: Z-Wave Role Type Listening Reporting
+category: Z-Wave|Role Types
+description: The Reporting Sleeping Slave Role Type (RSS) is intended for battery-powered devices that only wake up and communicates when an event has occurred
+package: Z-Wave
+quality: production
+requires:
+  - name: zw_end_device
+provides:
+  - name: zw_role_type_sleeping_reporting
+  - name: zw_role_type

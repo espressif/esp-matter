@@ -1,0 +1,20 @@
+id: "bluetooth_feature_aoa_transmitter"
+label: "AoA Transmitter"
+package: "Bluetooth"
+description: >
+  The Bluetooth Angle of Arrival (AoA) Constant Tone Extension (CTE) transmission feature
+category: "Bluetooth|Stack|Direction Finding"
+quality: "production"
+root_path: "protocol/bluetooth"
+requires:
+  - name: bluetooth_controller
+  - name: device_supports_bluetooth_cte
+provides:
+  - name: "bluetooth_feature_aoa_transmitter"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_aoa_transmitter
+  - name: bluetooth_controller_init
+    value:
+      function: "sl_btctrl_init_cte()"
+    priority: 10

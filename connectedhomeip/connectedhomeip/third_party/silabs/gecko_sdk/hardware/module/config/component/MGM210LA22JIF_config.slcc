@@ -1,0 +1,28 @@
+!!omap
+- id: MGM210LA22JIF_config
+- label: MGM210LA22JIF config
+- description: Configuration files for MGM210LA22JIF
+- package: platform
+- category: Platform|Device|MGM21|Config
+- quality: production
+- ui_hints:
+    visibility: never
+- root_path: hardware/module/config
+- requires:
+  - name: mgm210la22jif
+- provides:
+  - name: MGM210LA22JIF_config
+- config_file:
+  - override:
+      component: rail_util_pa
+      file_id: rail_util_pa_config
+    path: MGM210LA22JIF/sl_rail_util_pa_config.h
+  - override:
+      component: device_init_hfxo
+      file_id: device_init_hfxo_config
+    path: MGM210LA22JIF/sl_device_init_hfxo_config.h
+  - override:
+      component: iot_flash
+      file_id: iot_flash_cfg
+      instance: msc
+    path: MGM210LA22JIF/iot_flash_cfg_msc.h

@@ -1,0 +1,16 @@
+id: "bluetooth_feature_builtin_bonding_database"
+label: "Built-in Bluetooth bonding database"
+package: "Bluetooth"
+description: >
+  Configures the Bluetooth stack to include a built-in bonding database. In this
+  configuration the Bluetooth stack stores the bonding data in the local
+  non-volatile memory.
+category: "Bluetooth|Feature"
+quality: "production"
+root_path: "protocol/bluetooth"
+provides:
+  - name: "bluetooth_feature_builtin_bonding_database"
+  - name: "bluetooth_feature_bonding_database"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_builtin_bonding_database

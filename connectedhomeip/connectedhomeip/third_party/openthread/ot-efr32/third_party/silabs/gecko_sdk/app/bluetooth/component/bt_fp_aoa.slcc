@@ -1,0 +1,22 @@
+id: bt_fp_aoa
+label: Bluetooth Feature Pack - AoA
+package: Bluetooth
+description: >
+  Includes selection of Bluetooth stack AoA features.
+category: Bluetooth|Application
+quality: production
+root_path: app/bluetooth
+requires:
+  - name: bluetooth_stack
+  - name: gatt_configuration
+  - name: bluetooth_feature_aoa_transmitter
+    condition:
+      - device_supports_bluetooth_cte
+  - name: bluetooth_feature_aoa_receiver
+    condition:
+      - device_supports_bluetooth_cte
+      - device_supports_bluetooth_iq_sampling
+      - device_supports_bluetooth_antenna_switching
+      - hardware_board_has_rfswitch
+ui_hints:
+  visibility: never

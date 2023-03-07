@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Personality id="20x19_amplifiers" name="Amplifiers" version="1.0" path="" xmlns="http://cypress.com/xsd/cyhwpersonality_v1">
+  <Dependencies>
+    <IpBlock name="20x19_amplifiers" />
+    <Resource name="amplifiers" />
+  </Dependencies>
+  <ExposedMembers />
+  <Parameters>
+    <ParamSignal port="pa_ramp[0]" name="PA Ramp" group="Pins" visible="`${hasVisibleOption(&quot;pa_ramp[0]&quot;)}`" desc="Power ramp signal." canBeEmpty="true" />
+    <ParamSignal port="tx_fsm[0]" name="TX FSM" group="Pins" visible="`${hasVisibleOption(&quot;tx_fsm[0]&quot;)}`" desc="Debug signal for internal debugging." canBeEmpty="true" />
+    <ParamSignal port="rx_fsm[0]" name="RX FSM" group="Pins" visible="`${hasVisibleOption(&quot;rx_fsm[0]&quot;)}`" desc="Debug signal for internal debugging." canBeEmpty="true" />
+    <ParamSignal port="rx_pu[0]" name="RX PU" group="Pins" visible="`${hasVisibleOption(&quot;rx_pu[0]&quot;)}`" desc="Asserted on RX, to be connected to EPA." canBeEmpty="true" />
+    <ParamSignal port="tx_pu[0]" name="TX PU" group="Pins" visible="`${hasVisibleOption(&quot;tx_pu[0]&quot;)}`" desc="Asserted on TX, to be connected to EPA." canBeEmpty="true" />
+
+    <ParamString id="instNum" name="" group="" default="`${getInstNumber(&quot;amplifiers&quot;)}`" visible="false" editable="false" desc="" />
+    <ParamBool id="hasAmpMinConnection" name="" group="Hidden" default="`${hasConnection(&quot;pa_ramp&quot;, 0) || hasConnection(&quot;tx_fsm&quot;, 0) || hasConnection(&quot;rx_fsm&quot;, 0) || hasConnection(&quot;rx_pu&quot;, 0) || hasConnection(&quot;tx_pu&quot;, 0)}`" visible="false" editable="false" desc="" />
+  </Parameters>
+
+  <DRCs>
+    <DRC type="ERROR" text="At least one amp signal must be connected if Amplifiers peripheral is active" condition="`${!hasAmpMinConnection}`" />
+  </DRCs>
+
+  <ConfigFirmware>
+
+  </ConfigFirmware>
+</Personality>

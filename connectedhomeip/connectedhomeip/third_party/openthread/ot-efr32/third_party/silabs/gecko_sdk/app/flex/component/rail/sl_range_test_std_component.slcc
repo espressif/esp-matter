@@ -1,0 +1,27 @@
+id: "sl_range_test_std_component"
+label: "Flex - Standard phys for Range Test"
+package: "Flex"
+description: "Adds Standard phy measurement support to Range Test."
+category: "Flex|RAIL|Extension"
+quality: "production"
+root_path: "app/flex/component/rail/sl_range_test_std_component"
+
+requires:
+  - name: "device_has_radio"
+
+source:
+  - path: "app_measurement_standard.c"
+include:
+  - path: "."
+    file_list:
+    - "path": "app_measurement_standard.h"
+
+#-------- Hides Component for user in Studio ---------
+ui_hints:
+  visibility: never
+
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: range_test_std_component

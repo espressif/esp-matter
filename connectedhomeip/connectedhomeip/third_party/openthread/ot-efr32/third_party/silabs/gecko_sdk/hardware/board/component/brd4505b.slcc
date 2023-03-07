@@ -1,0 +1,31 @@
+!!omap
+- id: brd4505b
+- label: BRD4505B
+- package: platform
+- description: Board support for BRD4505B.
+- category: Platform|Board|Radio Board
+- quality: production
+- requires:
+  - name: ezr32wg330f256r63
+  - name: brd4505b_config
+  - name: hardware_board_mainboard
+- provides:
+  - name: brd4505b
+  - name: hardware_board
+  - name: hardware_board_rb
+  - name: hardware_board_from_stk
+  - name: hardware_board_from_slwrb4505b
+  - name: hardware_board_from_slwstk6223a
+- recommends:
+  - id: brd4001a
+- template_contribution: []
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD4505B"'
+  - name: SL_BOARD_REV
+    value: '"A01"'
+- tag:
+  - board:pn:BRD4505
+  - board:variant:B
+  - board:revision:A01
+  - board:device:ezr32wg330f256r63

@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Service xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Cycling Speed and Cadence" type="org.bluetooth.service.cycling_speed_and_cadence" uuid="1816" last-modified="2012-04-05" approved="Yes">
+    <InformativeText>
+        <Abstract>This service exposes speed-related and cadence-related data from a Cycling Speed and Cadence sensor intended for fitness applications.</Abstract>
+        <Summary>The Cycling Speed and Cadence (CSC) Service exposes speed-related data and/or cadence-related data while using the Cycling Speed and Cadence sensor (Server).</Summary>
+    </InformativeText>
+    <Dependencies>
+        <Dependency>This service is not dependent upon any other services.</Dependency>
+    </Dependencies>
+    <GATTRequirements>
+        <Requirement subProcedure="Write Characteristic Values">C1</Requirement>
+        <Requirement subProcedure="Notifications">Mandatory</Requirement>
+        <Requirement subProcedure="Indications">C1</Requirement>
+        <Requirement subProcedure="Read Characteristic Descriptors">Mandatory</Requirement>
+        <Requirement subProcedure="Write Characteristic Descriptors">Mandatory</Requirement>
+    </GATTRequirements>
+    <Note>C1: Mandatory if the SC Control Point characteristic is supported, otherwise excluded for this service.</Note>
+    <Transports>
+        <Classic>true</Classic>
+        <LowEnergy>true</LowEnergy>
+    </Transports>
+    <ErrorCodes>
+        <ErrorCode name="Procedure Already in Progress" code="0x80">A SC Control Point request cannot be serviced because a previously triggered SC Control Point operation is still in progress.</ErrorCode>
+        <ErrorCode name="Client Characteristic Configuration descriptor improperly configured" code="0x81">The Client Characteristic Configuration descriptor is not configured according to the requirements of the service.</ErrorCode>
+    </ErrorCodes>
+    <Characteristics>
+        <Characteristic name="CSC Measurement" type="org.bluetooth.characteristic.csc_measurement">
+            <InformativeText>The CSC Measurement characteristic is used to send speed-related data and/or cadence-related data.</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Properties>
+                <Read>Excluded</Read>
+                <Write>Excluded</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Mandatory</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+            </Properties>
+            <Descriptors>
+                <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+                    <Requirement>Mandatory</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>Mandatory</Write>
+                    </Properties>
+                </Descriptor>
+            </Descriptors>
+        </Characteristic>
+        <Characteristic name="CSC Feature" type="org.bluetooth.characteristic.csc_feature">
+            <InformativeText>The CSC Feature characteristic is used to describe the supported features of the Server. Reserved for Future Use (RFU) bits in the CSC Feature characteristic value are set to 0.</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Excluded</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+            </Properties>
+        </Characteristic>
+        <Characteristic name="Sensor Location" type="org.bluetooth.characteristic.sensor_location">
+            <InformativeText>
+                The Sensor Location characteristic of the device is used to describe the physical location of the Server when correctly fitted.
+                C1: Mandatory if the Multiple Sensor Location feature is supported, otherwise optional.
+            </InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Excluded</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+            </Properties>
+        </Characteristic>
+        <Characteristic name="SC Control Point" type="org.bluetooth.characteristic.sc_control_point">
+            <InformativeText>
+                If the SC Control Point is supported, profiles utilizing this service are required to ensure that the Client configures the SC Control Point characteristic for indications (i.e. via the Client Characteristic Configuration descriptor) at the first connection.
+                Support for this characteristic is mandatory if the Server supports Wheel Revolution Data or Multiple Sensor Locations features, otherwise it is excluded.
+                C2: Mandatory if at least one SC Control Point procedure is supported, otherwise excluded.
+            </InformativeText>
+            <Requirement>C2</Requirement>
+            <Properties>
+                <Read>Excluded</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Mandatory</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+            </Properties>
+            
+            <Descriptors>
+                <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+                    <Requirement>if_characteristic_supported</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>Mandatory</Write>
+                    </Properties>
+                </Descriptor>
+            </Descriptors>
+        </Characteristic>
+    </Characteristics>
+</Service>

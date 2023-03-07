@@ -1,0 +1,83 @@
+id: cslib_lib
+label: "CSLIB Libraries"
+package: platform
+description: "CSLIB Libraries"
+category: Platform|Middleware
+quality: production
+root_path: platform/middleware/cslib
+include:
+  - path: inc
+    file_list:
+      - path: cslib.h
+library:
+  - path: lib/libCSLIB_M0_CSEN_gcc.a
+    condition:
+      - toolchain_gcc
+      - cortexm0plus
+      - device_has_csen
+  - path: lib/libCSLIB_M3_4_CSEN_gcc.a
+    condition:
+      - toolchain_gcc
+      - cortexm3
+      - device_has_csen
+  - path: lib/libCSLIB_M3_4_CSEN_gcc.a
+    condition:
+      - toolchain_gcc
+      - cortexm4
+      - device_has_csen
+  - path: lib/libCSLIB_M0_CSEN_iar.a
+    condition:
+      - toolchain_iar
+      - cortexm0plus
+      - device_has_csen
+  - path: lib/libCSLIB_M3_4_CSEN_iar.a
+    condition:
+      - toolchain_iar
+      - cortexm3
+      - device_has_csen
+  - path: lib/libCSLIB_M3_4_CSEN_iar.a
+    condition:
+      - toolchain_iar
+      - cortexm4
+      - device_has_csen
+  - path: lib/libCSLIB_M0_gcc.a
+    condition:
+      - toolchain_gcc
+      - cortexm0plus
+    unless:
+      - device_has_csen
+  - path: lib/libCSLIB_M3_4_gcc.a
+    condition:
+      - toolchain_gcc
+      - cortexm3
+    unless:
+      - device_has_csen
+  - path: lib/libCSLIB_M3_4_gcc.a
+    condition:
+      - toolchain_gcc
+      - cortexm4
+    unless:
+      - device_has_csen
+  - path: lib/libCSLIB_M0_iar.a
+    condition:
+      - toolchain_iar
+      - cortexm0plus
+    unless:
+      - device_has_csen
+  - path: lib/libCSLIB_M3_4_iar.a
+    condition:
+      - toolchain_iar
+      - cortexm3
+    unless:
+      - device_has_csen
+  - path: lib/libCSLIB_M3_4_iar.a
+    condition:
+      - toolchain_iar
+      - cortexm4
+    unless:
+      - device_has_csen
+provides:
+  - name: cslib_lib
+documentation:
+    docset: gecko-platform
+    document: driver/api/group-cslib

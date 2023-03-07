@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/build.dtd -->
+<package name="ti.sysbios.rts.gnu" version="2, 0, 0, 0" producerId="undefined">
+    <units>
+        <module name="ReentSupport"/>
+        <module name="SemiHostSupport"/>
+    </units>
+    <sources>
+        <srcFile name="package/package_ti.sysbios.rts.gnu.c"/>
+        <srcFile name="ReentSupport.c"/>
+        <srcFile name="SemiHostSupport.c"/>
+    </sources>
+    <configscripts>
+    </configscripts>
+    <makefiles>
+        <srcFile name="package.mak" src="package.bld"/>
+        <srcFile name="package/package.xdc.dep" src="package.xdc"/>
+        <srcFile name="package/package.cfg.dep" src="package.xdc"/>
+        <srcFile name="lib/debug/ti.sysbios.rts.gnu.am4g.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.rts.gnu/package/package_ti.sysbios.rts.gnu.om4g.dep" src="package/package_ti.sysbios.rts.gnu.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.rts.gnu/ReentSupport.om4g.dep" src="ReentSupport.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.rts.gnu/SemiHostSupport.om4g.dep" src="SemiHostSupport.c"/>
+        <srcFile name="package/rel/ti_sysbios_rts_gnu.tar.dep" src="package/rel/ti_sysbios_rts_gnu.xdc.inc"/>
+    </makefiles>
+    <targets>
+        <target name="gnu.targets.arm.M4"
+            version="gnu.targets.arm.M4{1,0,9.2,1"
+            rawVersion="9.2.1"
+            platform="ti.platforms.tiva:TM4C1294NCPDT"
+            isa="v7M4"
+            suffix="m4g"
+            rootDir="/scratch/xlibrary/.conan/data/arm-none-eabi-gcc/9.2019.q4.major-0/library-msp/ga/package/44fcf6b9a7fb86b2586303e3db40189d3b511830"
+            os="undefined"
+            rts="gnu.targets.arm.rtsv7M">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+    </targets>
+    <libraries>
+    <library name="lib/debug/ti.sysbios.rts.gnu"
+        pname="lib/debug/ti.sysbios.rts.gnu.am4g"
+        profile="debug"
+        target="gnu.targets.arm.M4"/>
+    </libraries>
+    <configurations>
+    </configurations>
+    <executables>
+    </executables>
+    <tests>
+    </tests>
+    <releases relDir="package/rel/">
+    <release name="ti_sysbios_rts_gnu"
+        pname="ti_sysbios_rts_gnu.tar"
+        label="default"
+        relScript="ti/sysbios/libFilter.xs">
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+        <file name="package.bld"/>
+        <file name="ReentSupport_stub.c"/>
+        <file name="SemiHostSupport.xml"/>
+        <file name="package/package.cfg.xdc.inc"/>
+        <file name="lib/debug/ti.sysbios.rts.gnu.am4g"/>
+        <file name="package/package_ti.sysbios.rts.gnu.c"/>
+        <file name="ReentSupport.c"/>
+        <file name="SemiHostSupport.c"/>
+    </release>
+    </releases>
+    <repositories>
+    </repositories>
+</package>

@@ -1,0 +1,33 @@
+id: "printf"
+package: platform
+label: "Tiny printf"
+description: >
+  Tiny printf, sprintf and (v)snprintf implementation, optimized for speed on
+  embedded systems with a very limited resources.
+category: Third Party
+quality: "production"
+root_path: "util/third_party/printf"
+provides:
+  - name: "printf"
+  - name: "printf_integration"
+    allow_multiple: true
+requires:
+  - name: "iostream"
+include:
+  - path: ""
+    file_list:
+      - path: "printf.h"
+  - path: "inc"
+    file_list:
+      - path: "iostream_printf.h"
+template_contribution:
+  - name: component_catalog
+    value: printf
+source:
+  - path: "printf.c"
+  - path: "src/iostream_printf.c"
+toolchain_settings:
+  - option: no_builtin_printf
+    value: "enabled"
+  - option: no_builtin_sprintf
+    value: "enabled"

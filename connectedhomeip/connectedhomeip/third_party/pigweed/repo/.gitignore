@@ -1,0 +1,66 @@
+# Build
+compile_commands.json
+out/
+bazel-*
+.presubmit/
+docs/_build
+
+# Editors
+.pw_ide/
+.vscode/*
+!.vscode/OWNERS
+!.vscode/pw_project_*.json
+.idea/
+.ijwb/
+.project
+.cproject
+# Clangd directories
+.clangd/
+/.cache/clangd/
+# Vim
+*.swp
+*.swo
+# Emacs
+*flycheck_*
+*_flymake.*
+.#*
+
+# Python
+*.pyc
+*.egg/
+*.eggs/
+*.egg-info/
+.cache/
+.mypy_cache/
+__pycache__/
+build/
+dist/
+
+# PyOxidizer
+pw_env_setup/py/oxidizer/build
+
+# Mac
+.DS_Store
+
+# GDB
+.gdb_history
+
+# Git
+*.orig
+*.BACKUP.*
+*.BASE.*
+*.LOCAL.*
+*.REMOTE.*
+*_BACKUP_*.txt
+*_BASE_*.txt
+*_LOCAL_*.txt
+*_REMOTE_*.txt
+
+# Env Setup
+environment
+.environment
+build_overrides/pigweed_environment.gni
+
+# Web Tools
+node_modules
+yarn-error.log

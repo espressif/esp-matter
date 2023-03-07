@@ -1,0 +1,544 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/error.gni")
+import("$dir_pw_build/python.gni")
+import("$dir_pw_build/python_action.gni")
+import("$dir_pw_build/python_gn_args.gni")
+import("$dir_pw_build/zip.gni")
+
+# Builds a directory containing a collection of Python wheels.
+#
+# Given one or more pw_python_package targets, this target will build their
+# .wheel sub-targets along with the .wheel sub-targets of all dependencies,
+# direct and indirect, as understood by GN. The resulting .whl files will be
+# collected into a single directory called 'python_wheels'.
+#
+# Args:
+#   packages: A list of pw_python_package targets whose wheels should be
+#       included; their dependencies will be pulled in as wheels also.
+#   directory: output directory for the wheels; defaults to
+#       $target_out_dir/$target_name
+#   deps: additional dependencies
+#
+template("pw_python_wheels") {
+  _wheel_paths_path = "${target_gen_dir}/${target_name}_wheel_paths.txt"
+
+  _deps = []
+  if (defined(invoker.deps)) {
+    _deps = invoker.deps
+  }
+
+  if (defined(invoker.directory)) {
+    _directory = invoker.directory
+  } else {
+    _directory = "$target_out_dir/$target_name"
+  }
+
+  _packages = []
+  foreach(_pkg, invoker.packages) {
+    _pkg_name = get_label_info(_pkg, "label_no_toolchain")
+    _pkg_toolchain = get_label_info(_pkg, "toolchain")
+    _packages += [ "${_pkg_name}.wheel(${_pkg_toolchain})" ]
+  }
+
+  # Build a list of relative paths containing all the wheels we depend on.
+  generated_file("${target_name}._wheel_paths") {
+    data_keys = [ "pw_python_package_wheels" ]
+    rebase = root_build_dir
+    deps = _packages
+    outputs = [ _wheel_paths_path ]
+  }
+
+  pw_python_action(target_name) {
+    forward_variables_from(invoker, [ "public_deps" ])
+    deps = _deps + [ ":$target_name._wheel_paths" ]
+    module = "pw_build.collect_wheels"
+    python_deps = [ "$dir_pw_build/py" ]
+
+    args = [
+      "--prefix",
+      rebase_path(root_build_dir, root_build_dir),
+      "--suffix",
+      rebase_path(_wheel_paths_path, root_build_dir),
+      "--out_dir",
+      rebase_path(_directory, root_build_dir),
+    ]
+
+    stamp = true
+  }
+}
+
+# Builds a .zip containing Python wheels and setup scripts.
+#
+# The resulting .zip archive will contain a directory with Python wheels for
+# all pw_python_package targets listed in 'packages', plus wheels for any
+# pw_python_package targets those packages depend on, directly or indirectly,
+# as understood by GN.
+#
+# In addition to Python wheels, the resulting .zip will also contain simple
+# setup scripts for Linux, MacOS, and Windows that take care of creating a
+# Python venv and installing all the included wheels into it, and a README.md
+# file with setup and usage instructions.
+#
+# Args:
+#   packages: A list of pw_python_package targets whose wheels should be
+#       included; their dependencies will be pulled in as wheels also.
+#   inputs: An optional list of extra files to include in the generated .zip,
+#       formatted the same was as the 'inputs' argument to pw_zip targets.
+#   dirs: An optional list of directories to include in the generated .zip,
+#       formatted the same way as the 'dirs' argument to pw_zip targets.
+template("pw_python_zip_with_setup") {
+  _outer_name = target_name
+  _zip_path = "${target_out_dir}/${target_name}.zip"
+
+  _inputs = []
+  if (defined(invoker.inputs)) {
+    _inputs = invoker.inputs
+  }
+  _dirs = []
+  if (defined(invoker.dirs)) {
+    _dirs = invoker.dirs
+  }
+  _public_deps = []
+  if (defined(invoker.public_deps)) {
+    _public_deps = invoker.public_deps
+  }
+
+  pw_python_wheels("$target_name.wheels") {
+    packages = invoker.packages
+    forward_variables_from(invoker, [ "deps" ])
+  }
+
+  pw_zip(target_name) {
+    forward_variables_from(invoker, [ "deps" ])
+    inputs = _inputs + [
+               "$dir_pw_build/python_dist/setup.bat > /${target_name}/",
+               "$dir_pw_build/python_dist/setup.sh > /${target_name}/",
+             ]
+
+    dirs = _dirs + [ "$target_out_dir/$target_name.wheels/ > /$target_name/python_wheels/" ]
+
+    output = _zip_path
+
+    # TODO(b/235245034): Remove the plumbing-through of invoker's public_deps.
+    public_deps = _public_deps + [ ":${_outer_name}.wheels" ]
+  }
+}
+
+# Generates a directory of Python packages from source files suitable for
+# deployment outside of the project developer environment.
+#
+# The resulting directory contains only files mentioned in each package's
+# setup.cfg file. This is useful for bundling multiple Python packages up
+# into a single package for distribution to other locations like
+# http://pypi.org.
+#
+# Args:
+#   packages: A list of pw_python_package targets to be installed into the build
+#     directory. Their dependencies will be pulled in as wheels also.
+#
+#   include_tests: If true, copy Python package tests to a `tests` subdir.
+#
+#   extra_files: A list of extra files that should be included in the output. The
+#     format of each item in this list follows this convention:
+#       //some/nested/source_file > nested/destination_file
+#
+#   generate_setup_cfg: A scope containing either common_config_file or 'name'
+#     and 'version' If included this creates a merged setup.cfg for all python
+#     Packages using either a common_config_file as a base or name and version
+#     strings. This scope can optionally include: 'append_git_sha_to_version' or
+#     'append_date_to_version' whic append the current git SHA or date to the
+#     package version string after a + sign.
+#
+template("pw_python_distribution") {
+  _metadata_path_list_suffix = "_pw_python_distribution_metadata_path_list.txt"
+  _output_dir = "${target_out_dir}/${target_name}/"
+  _metadata_json_file_list =
+      "${target_gen_dir}/${target_name}${_metadata_path_list_suffix}"
+
+  # If generating a setup.cfg file a common base file must be provided.
+  if (defined(invoker.generate_setup_cfg)) {
+    generate_setup_cfg = invoker.generate_setup_cfg
+    assert(
+        defined(generate_setup_cfg.common_config_file) ||
+            (defined(generate_setup_cfg.name) &&
+                 defined(generate_setup_cfg.version)),
+        "Either 'common_config_file' or ('name' + 'version') are required in generate_setup_cfg")
+  }
+
+  _extra_file_inputs = []
+  _extra_file_args = []
+
+  # Convert extra_file strings to input, outputs and create_python_tree.py args.
+  if (defined(invoker.extra_files)) {
+    _delimiter = ">"
+    _extra_file_outputs = []
+    foreach(input, invoker.extra_files) {
+      # Remove spaces before and after the delimiter
+      input = string_replace(input, " $_delimiter", _delimiter)
+      input = string_replace(input, "$_delimiter ", _delimiter)
+
+      input_list = []
+      input_list = string_split(input, _delimiter)
+
+      # Save the input file
+      _extra_file_inputs += [ input_list[0] ]
+
+      # Save the output file
+      _this_output = _output_dir + "/" + input_list[1]
+      _extra_file_outputs += [ _this_output ]
+
+      # Compose an arg for passing to create_python_tree.py with properly
+      # rebased paths.
+      _extra_file_args +=
+          [ string_join(" $_delimiter ",
+                        [
+                          rebase_path(input_list[0], root_build_dir),
+                          rebase_path(_this_output, root_build_dir),
+                        ]) ]
+    }
+  }
+
+  _include_tests = defined(invoker.include_tests) && invoker.include_tests
+
+  _public_deps = []
+  if (defined(invoker.public_deps)) {
+    _public_deps += invoker.public_deps
+  }
+
+  # Set source files for the Python package metadata json file.
+  _sources = []
+  _setup_sources = [
+    "$_output_dir/pyproject.toml",
+    "$_output_dir/setup.cfg",
+  ]
+  _test_sources = []
+
+  # Create the Python package_metadata.json file so this can be used as a
+  # Python dependency.
+  _package_metadata_json_file =
+      "$target_gen_dir/$target_name/package_metadata.json"
+
+  # Get Python package metadata and write to disk as JSON.
+  _package_metadata = {
+    gn_target_name =
+        get_label_info(":${invoker.target_name}", "label_no_toolchain")
+
+    # Get package source files
+    sources = rebase_path(_sources, root_build_dir)
+
+    # Get setup.cfg, pyproject.toml, or setup.py file
+    setup_sources = rebase_path(_setup_sources, root_build_dir)
+
+    # Get test source files
+    tests = rebase_path(_test_sources, root_build_dir)
+
+    # Get package input files (package data)
+    inputs = []
+    if (defined(invoker.inputs)) {
+      inputs = rebase_path(invoker.inputs, root_build_dir)
+    }
+    inputs += rebase_path(_extra_file_inputs, root_build_dir)
+  }
+
+  # Finally, write out the json
+  write_file(_package_metadata_json_file, _package_metadata, "json")
+
+  group("$target_name._package_metadata") {
+    metadata = {
+      pw_python_package_metadata_json = [ _package_metadata_json_file ]
+    }
+  }
+
+  _package_metadata_targets = []
+  foreach(pkg, invoker.packages) {
+    _package_metadata_targets +=
+        [ get_label_info(pkg, "label_no_toolchain") +
+          "._package_metadata($pw_build_PYTHON_TOOLCHAIN)" ]
+  }
+
+  # Build a list of relative paths containing all the python
+  # package_metadata.json files we depend on.
+  generated_file("${target_name}.${_metadata_path_list_suffix}") {
+    data_keys = [ "pw_python_package_metadata_json" ]
+    rebase = root_build_dir
+    deps = _package_metadata_targets
+    outputs = [ _metadata_json_file_list ]
+  }
+
+  # Run the python action on the metadata_path_list.txt file
+  pw_python_action(target_name) {
+    # Save the Python package metadata so this can be installed using
+    # pw_internal_pip_install.
+    metadata = {
+      pw_python_package_metadata_json = [ _package_metadata_json_file ]
+    }
+
+    deps = invoker.packages +
+           [ ":${invoker.target_name}.${_metadata_path_list_suffix}" ]
+
+    script = "$dir_pw_build/py/pw_build/create_python_tree.py"
+    inputs = _extra_file_inputs
+    public_deps = _public_deps
+    _pw_internal_run_in_venv = false
+
+    args = [
+      "--repo-root",
+      rebase_path("//", root_build_dir),
+      "--tree-destination-dir",
+      rebase_path(_output_dir, root_build_dir),
+      "--input-list-files",
+      rebase_path(_metadata_json_file_list, root_build_dir),
+    ]
+
+    # Add required setup.cfg args if we are generating a merged config.
+    if (defined(generate_setup_cfg)) {
+      if (defined(generate_setup_cfg.common_config_file)) {
+        args += [
+          "--setupcfg-common-file",
+          rebase_path(generate_setup_cfg.common_config_file, root_build_dir),
+        ]
+      }
+      if (defined(generate_setup_cfg.append_git_sha_to_version)) {
+        args += [ "--setupcfg-version-append-git-sha" ]
+      }
+      if (defined(generate_setup_cfg.append_date_to_version)) {
+        args += [ "--setupcfg-version-append-date" ]
+      }
+      if (defined(generate_setup_cfg.name)) {
+        args += [
+          "--setupcfg-override-name",
+          generate_setup_cfg.name,
+        ]
+      }
+      if (defined(generate_setup_cfg.version)) {
+        args += [
+          "--setupcfg-override-version",
+          generate_setup_cfg.version,
+        ]
+      }
+      if (defined(generate_setup_cfg.include_default_pyproject_file) &&
+          generate_setup_cfg.include_default_pyproject_file == true) {
+        args += [ "--create-default-pyproject-toml" ]
+      }
+    }
+
+    if (_extra_file_args == []) {
+      # No known output files - stamp instead.
+      stamp = true
+    } else {
+      args += [ "--extra-files" ]
+      args += _extra_file_args
+
+      # Include extra_files as outputs
+      outputs = _extra_file_outputs
+    }
+
+    if (_include_tests) {
+      args += [ "--include-tests" ]
+    }
+  }
+
+  # Template to build a bundled Python package wheel.
+  pw_python_action("$target_name._build_wheel") {
+    metadata = {
+      pw_python_package_wheels = [ "$target_out_dir/$target_name" ]
+    }
+    module = "build"
+    args = [
+             rebase_path(_output_dir, root_build_dir),
+             "--wheel",
+             "--no-isolation",
+             "--outdir",
+           ] + rebase_path(metadata.pw_python_package_wheels, root_build_dir)
+
+    public_deps = []
+    if (defined(invoker.public_deps)) {
+      public_deps += invoker.public_deps
+    }
+    public_deps += [ ":${invoker.target_name}" ]
+
+    stamp = true
+  }
+  group("$target_name.wheel") {
+    public_deps = [ ":${invoker.target_name}._build_wheel" ]
+  }
+
+  # Allow using pw_python_distribution targets as a python_dep in
+  # pw_python_group. To do this, create a pw_python_group with the relevant
+  # packages and create wrappers for each subtarget, except those that are
+  # actually implemented by this template.
+  #
+  # This is an ugly workaround that will be removed when the Python build is
+  # refactored (b/235278298).
+  pw_python_group("$target_name._pw_python_group") {
+    python_deps = invoker.packages
+  }
+
+  wrapped_subtargets = pw_python_package_subtargets - [
+                         "wheel",
+                         "_build_wheel",
+                       ]
+
+  foreach(subtarget, wrapped_subtargets) {
+    group("$target_name.$subtarget") {
+      public_deps = [ ":${invoker.target_name}._pw_python_group.$subtarget" ]
+    }
+  }
+}
+
+# TODO(b/232800695): Remove this template when all projects no longer use it.
+template("pw_create_python_source_tree") {
+  pw_python_distribution("$target_name") {
+    forward_variables_from(invoker, "*")
+  }
+}
+
+# Runs pip install on a set of pw_python_packages. This will install
+# pw_python_packages into the user's developer environment.
+#
+# Args:
+#   packages: A list of pw_python_package targets to be pip installed.
+#     These will be installed one at a time.
+#
+#   editable: If true, --editable is passed to the pip install command.
+#
+#   force_reinstall: If true, --force-reinstall is passed to the pip install
+#     command.
+template("pw_python_pip_install") {
+  if (current_toolchain == pw_build_PYTHON_TOOLCHAIN) {
+    # Create a target group for the Python package metadata only.
+    group("$target_name._package_metadata") {
+      # Forward the package_metadata subtarget for all python_deps.
+      public_deps = []
+      if (defined(invoker.packages)) {
+        foreach(dep, invoker.packages) {
+          public_deps += [ get_label_info(dep, "label_no_toolchain") +
+                           "._package_metadata($pw_build_PYTHON_TOOLCHAIN)" ]
+        }
+      }
+    }
+
+    pw_python_action("$target_name") {
+      script = "$dir_pw_build/py/pw_build/pip_install_python_deps.py"
+
+      assert(
+          defined(invoker.packages),
+          "packages = [ 'python_package' ] is required by pw_internal_pip_install")
+
+      public_deps = []
+      if (defined(invoker.public_deps)) {
+        public_deps += invoker.public_deps
+      }
+
+      python_deps = []
+      python_metadata_deps = []
+      if (defined(invoker.packages)) {
+        public_deps += invoker.packages
+        python_deps += invoker.packages
+        python_metadata_deps += invoker.packages
+      }
+
+      python_deps = []
+      if (defined(invoker.python_deps)) {
+        python_deps += invoker.python_deps
+      }
+
+      _pw_internal_run_in_venv = false
+      _forward_python_metadata_deps = true
+
+      _editable_install = false
+      if (defined(invoker.editable)) {
+        _editable_install = invoker.editable
+      }
+
+      _pkg_gn_labels = []
+      foreach(pkg, invoker.packages) {
+        _pkg_gn_labels += [ get_label_info(pkg, "label_no_toolchain") ]
+      }
+
+      args = [
+        "--gn-packages",
+        string_join(",", _pkg_gn_labels),
+      ]
+
+      if (_editable_install) {
+        args += [ "--editable-pip-install" ]
+      }
+
+      args += [
+        "install",
+        "--no-build-isolation",
+      ]
+
+      _force_reinstall = false
+      if (defined(invoker.force_reinstall)) {
+        _force_reinstall = true
+      }
+      if (_force_reinstall) {
+        args += [ "--force-reinstall" ]
+      }
+
+      inputs = pw_build_PIP_CONSTRAINTS
+      foreach(_constraints_file, pw_build_PIP_CONSTRAINTS) {
+        args += [
+          "--constraint",
+          rebase_path(_constraints_file, root_build_dir),
+        ]
+      }
+
+      stamp = true
+
+      # Parallel pip installations don't work, so serialize pip invocations.
+      pool = "$dir_pw_build/pool:pip($default_toolchain)"
+    }
+  } else {
+    group("$target_name") {
+      deps = [ ":$target_name($pw_build_PYTHON_TOOLCHAIN)" ]
+    }
+    not_needed("*")
+    not_needed(invoker, "*")
+  }
+
+  group("$target_name.install") {
+    public_deps = [ ":${invoker.target_name}" ]
+  }
+
+  # Allow using pw_internal_pip_install targets as a python_dep in
+  # pw_python_group. To do this, create a pw_python_group with the relevant
+  # packages and create wrappers for each subtarget, except those that are
+  # actually implemented by this template.
+  #
+  # This is an ugly workaround that will be removed when the Python build is
+  # refactored (b/235278298).
+  pw_python_group("$target_name._pw_python_group") {
+    python_deps = invoker.packages
+  }
+
+  foreach(subtarget, pw_python_package_subtargets - [ "install" ]) {
+    group("$target_name.$subtarget") {
+      public_deps = [ ":${invoker.target_name}._pw_python_group.$subtarget" ]
+    }
+  }
+}
+
+# TODO(b/232800695): Remove this template when all projects no longer use it.
+template("pw_internal_pip_install") {
+  pw_python_pip_install("$target_name") {
+    forward_variables_from(invoker, "*")
+  }
+}

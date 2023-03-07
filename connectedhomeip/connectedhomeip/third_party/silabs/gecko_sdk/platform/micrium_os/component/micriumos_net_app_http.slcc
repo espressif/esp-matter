@@ -1,0 +1,23 @@
+id: micriumos_net_app_http
+label: Network Suite - HTTP core code
+package: micrium-tcpx
+description: Micrium OS Network HTTP core code
+category: Services|Micrium|Network Suite
+quality: production
+component_root_path: platform/micrium_os/net
+source:
+  - path: source/http/http.c
+  - path: source/http/http_dict.c
+include:
+  - path: source
+    file_list:
+      - path: http/http_priv.h
+      - path: http/http_dict_priv.h
+  - path: include
+    file_list:
+      - path: http.h
+provides:
+  - name: net_app_http
+requires:
+  - name: net
+  - name: sleeptimer

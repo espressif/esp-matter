@@ -1,0 +1,101 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+
+pw_executable("pointer_simple") {
+  sources = [ "pointer_simple.cc" ]
+  deps = [
+    "..",
+    dir_pw_log,
+  ]
+}
+
+pw_executable("result_simple") {
+  sources = [ "result_simple.cc" ]
+  deps = [
+    "..",
+    dir_pw_log,
+  ]
+}
+
+pw_executable("pointer_noinline") {
+  sources = [ "pointer_noinline.cc" ]
+  deps = [
+    "..",
+    dir_pw_log,
+    dir_pw_preprocessor,
+  ]
+}
+
+pw_executable("result_noinline") {
+  sources = [ "result_noinline.cc" ]
+  deps = [
+    "..",
+    dir_pw_log,
+    dir_pw_preprocessor,
+  ]
+}
+
+pw_executable("pointer_read") {
+  sources = [ "pointer_read.cc" ]
+  deps = [
+    "..",
+    dir_pw_bytes,
+    dir_pw_log,
+    dir_pw_preprocessor,
+  ]
+}
+
+pw_executable("result_read") {
+  sources = [ "result_read.cc" ]
+  deps = [
+    "..",
+    dir_pw_bytes,
+    dir_pw_log,
+    dir_pw_preprocessor,
+  ]
+}
+
+pw_executable("ladder_and_then") {
+  sources = [ "ladder_and_then.cc" ]
+  deps = [ ".." ]
+}
+
+pw_executable("monadic_and_then") {
+  sources = [ "monadic_and_then.cc" ]
+  deps = [ ".." ]
+}
+
+pw_executable("ladder_or_else") {
+  sources = [ "ladder_or_else.cc" ]
+  deps = [ ".." ]
+}
+
+pw_executable("monadic_or_else") {
+  sources = [ "monadic_or_else.cc" ]
+  deps = [ ".." ]
+}
+
+pw_executable("ladder_transform") {
+  sources = [ "ladder_transform.cc" ]
+  deps = [ ".." ]
+}
+
+pw_executable("monadic_transform") {
+  sources = [ "monadic_transform.cc" ]
+  deps = [ ".." ]
+}

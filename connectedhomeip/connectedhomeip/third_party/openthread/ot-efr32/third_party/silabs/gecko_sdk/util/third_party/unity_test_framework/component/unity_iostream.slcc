@@ -1,0 +1,22 @@
+id: test_framework_unity_iostream
+label: Unity test framework with IOStream
+package: platform
+description: Unity test framework with IOStream
+category: Third Party|Unity
+quality: production
+component_root_path: 'util/third_party/unity_test_framework'
+provides:
+  - name: test_framework_unity_stream
+requires:
+  - name: iostream
+  - name: test_framework_unity
+source:
+  - path: 'src/unity_iostream.c'
+include:
+  - path: 'src'
+    file_list:
+      - path: unity_iostream.h
+define:
+  - name: UNITY_INCLUDE_IOSTREAM_H
+  - name: UNITY_OUTPUT_CHAR
+    value: unity_iostream_putchar

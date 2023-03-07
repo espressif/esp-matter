@@ -1,0 +1,582 @@
+%%{
+let serviceMod  = system.modules['/ti/ble5stack/gatt_services/Service'];
+const Common = system.getScript("/ti/ble5stack/ble_common.js");
+
+function listOr(list) {
+	if (list.length == 0) { return '0'; }
+	return list.join('|');
+}
+%%}
+% if(serviceMod){
+/*******************************************************************************
+* Filename:    ble_gatt_service.c
+*
+* Description:    This file contains the implementation of the service.
+*
+* Copyright (c) 2015-2019, Texas Instruments Incorporated
+* All rights reserved.
+*
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions
+* are met:
+*
+* *  Redistributions of source code must retain the above copyright
+*    notice, this list of conditions and the following disclaimer.
+*
+* *  Redistributions in binary form must reproduce the above copyright
+*    notice, this list of conditions and the following disclaimer in the
+*    documentation and/or other materials provided with the distribution.
+*
+* *  Neither the name of Texas Instruments Incorporated nor the names of
+*    its contributors may be used to endorse or promote products derived
+*    from this software without specific prior written permission.
+*
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+* THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+* PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+* CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+* EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+* PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+* OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+* WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+* OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+* EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+******************************************************************************/
+
+/*********************************************************************
+* INCLUDES
+*********************************************************************/
+#include <string.h>
+#include <icall.h>
+#include "util.h"
+/* This Header file contains all BLE API and icall structure definition */
+#include "icall_ble_api.h"
+#include "ti_ble_gatt_service.h"
+
+#ifdef SYSCFG
+#include "ti_ble_config.h"
+#endif
+/*********************************************************************
+* MACROS
+*********************************************************************/
+
+/*********************************************************************
+* CONSTANTS
+*********************************************************************/
+
+/*********************************************************************
+* TYPEDEFS
+*********************************************************************/
+
+/*********************************************************************
+* GLOBAL VARIABLES
+*********************************************************************/
+% for (let i = 0; i < serviceMod.$instances.length; i++) {
+
+// `serviceMod.$instances[i].name` Service UUID
+% if (serviceMod.$instances[i].uuidSize == '16-bit') {
+CONST uint8 `serviceMod.$instances[i].name`ServUUID[ATT_BT_UUID_SIZE] =
+{
+  LO_UINT16(`serviceMod.$instances[i].name.toUpperCase()`_SERV_UUID), HI_UINT16(`serviceMod.$instances[i].name.toUpperCase()`_SERV_UUID)
+};
+% }
+% else {
+CONST uint8 `serviceMod.$instances[i].name`UUID[ATT_UUID_SIZE] =
+{
+  TI_BASE_UUID_128(`serviceMod.$instances[i].name.toUpperCase()`_SERV_UUID)
+};
+% }
+
+% // Characteristic Loop
+% for (let cidx = 0; cidx < serviceMod.$instances[i].characteristics.length; ++ cidx) {
+%    let char        = serviceMod.$instances[i].characteristics[cidx];
+%    let charName    = char.name;
+%    let combo_Name   = serviceMod.$instances[i].name + '_' + charName;
+%    let comboName   = serviceMod.$instances[i].name + charName;
+%    let capComboName= combo_Name.toUpperCase();
+
+// `charName` UUID
+% if (char.uuidSize == '16-bit') {
+CONST uint8 `comboName`UUID[ATT_BT_UUID_SIZE] =
+{
+  LO_UINT16(`capComboName`_UUID), HI_UINT16(`capComboName`_UUID)
+};
+% } else {
+CONST uint8 `comboName`UUID[ATT_UUID_SIZE] =
+{
+  TI_BASE_UUID_128(`capComboName`_UUID)
+};
+% }
+% }
+% }
+
+/*********************************************************************
+* LOCAL VARIABLES
+*********************************************************************/
+% for (let i = 0; i < serviceMod.$instances.length; i++) {
+`serviceMod.$instances[i].name`CBs_t *`serviceMod.$instances[i].name`_AppCBs = NULL;
+% }
+
+/*********************************************************************
+* Profile Attributes - variables
+*********************************************************************/
+
+% for (let i = 0; i < serviceMod.$instances.length; i++) {
+// Service declaration
+% if (serviceMod.$instances[i].uuidSize == '16-bit') {
+static CONST gattAttrType_t `serviceMod.$instances[i].name`Service = { ATT_BT_UUID_SIZE, `serviceMod.$instances[i].name`ServUUID };
+% } else {
+static CONST gattAttrType_t `serviceMod.$instances[i].name`Service = { ATT_UUID_SIZE, `serviceMod.$instances[i].name`ServUUID };
+% }
+% // Characteristic Loop
+% for (let cidx = 0; cidx < serviceMod.$instances[i].characteristics.length; ++ cidx) {
+%    let char        = serviceMod.$instances[i].characteristics[cidx];
+%    let charName    = char.name;
+%    let comboName   = serviceMod.$instances[i].name + charName;
+%    let combo_Name   = serviceMod.$instances[i].name + '_' + charName;
+%    let capComboName= comboName.toUpperCase();
+%    let cap_Combo_Name= combo_Name.toUpperCase();
+
+// Characteristic "`charName`" Properties (for declaration)
+static uint8 `comboName`Props = `listOr(char.properties)`;
+// Characteristic "`charName`" Value variable
+%let res = [];
+%let val;
+%if(char.bytes > char.value)
+%{
+%val = char.value.toString().split(",");
+%}
+%else{
+%val = char.value.toString().split(",", char.bytes);
+%}
+%for(let i = 0; i < val.length; i++)
+%{
+%  let currVal = val[i];
+%  if(currVal.length > 2){
+%    res.push('0x' + currVal.slice(0,2));
+%  }
+%
+%else{
+%	res.push('0x' + currVal);
+%}
+%}
+%if(char.bytes > 1)
+%{
+uint8 `comboName`[`cap_Combo_Name`_LEN] = { `res` };
+%}
+%else if(char.bytes == 1)
+%{
+uint8 `comboName` =  `res[0]` ;
+%}
+// Characteristic "`charName`" User Description
+static uint8 `comboName`UserDesp[] = "`serviceMod.$instances[i].characteristics[cidx].description`";
+% if (char.properties.includes('GATT_PROP_NOTIFY')) {
+// Characteristic "`charName`" CCCD
+static gattCharCfg_t *`comboName`Config;
+%}
+%}
+%}
+/*********************************************************************
+* Profile Attributes - Table
+*********************************************************************/
+% for (let i = 0; i < serviceMod.$instances.length; i++) {
+% let servType = (serviceMod.$instances[i].serviceType == "Primary Service" ? "primaryServiceUUID" : "secondaryServiceUUID");
+static gattAttribute_t `serviceMod.$instances[i].name`AttrTbl[] =
+{
+  {
+    { ATT_BT_UUID_SIZE, `servType` },
+    GATT_PERMIT_READ,
+    `i`,
+    (uint8 *)&`serviceMod.$instances[i].name`Service
+  },
+% // Characteristic Loop
+% for (let cidx = 0; cidx < serviceMod.$instances[i].characteristics.length; ++ cidx) {
+%    let char        = serviceMod.$instances[i].characteristics[cidx];
+%    let charName    = char.name;
+%    let comboName   = serviceMod.$instances[i].name + charName;
+
+  // `charName` Characteristic Declaration
+  {
+    { ATT_BT_UUID_SIZE, characterUUID },
+    GATT_PERMIT_READ,
+    0,
+    &`comboName`Props
+  },
+
+  // `charName` Characteristic Value
+  {
+    { ATT_BT_UUID_SIZE, `comboName`UUID },
+    `listOr(char.permissions)`,
+    0,
+% if(char.bytes > 1)
+%{
+    `comboName`
+%}
+% else
+%{
+    &`comboName`
+%}
+  },
+
+  // Characteristic `charName` User Description
+  {
+    { ATT_BT_UUID_SIZE, charUserDescUUID },
+    GATT_PERMIT_READ,
+    0,
+    `comboName`UserDesp
+  },
+
+%   if (char.properties.includes('GATT_PROP_NOTIFY')) {
+  // `charName` configuration
+  {
+    { ATT_BT_UUID_SIZE, clientCharCfgUUID },
+    GATT_PERMIT_READ | GATT_PERMIT_WRITE,
+    0,
+    (uint8 *)&`comboName`Config
+  },
+%}
+%}
+};
+%}
+
+/*********************************************************************
+* LOCAL FUNCTIONS
+*********************************************************************/
+% for (let i = 0; i < serviceMod.$instances.length; i++) {
+static bStatus_t gatt_`serviceMod.$instances[i].name`_ReadAttrCB(uint16_t connHandle,
+                                                          gattAttribute_t *pAttr,
+                                                          uint8_t *pValue, uint16_t *pLen,
+                                                          uint16_t offset, uint16_t maxLen,
+                                                          uint8_t method);
+static bStatus_t gatt_`serviceMod.$instances[i].name`_WriteAttrCB(uint16_t connHandle,
+                                                          gattAttribute_t *pAttr,
+                                                          uint8_t *pValue, uint16_t len,
+                                                          uint16_t offset, uint8_t method);
+static bStatus_t gatt_`serviceMod.$instances[i].name`_AuthorizationCB(uint16_t connHandle,
+                                                          gattAttribute_t *pAttr, uint8_t opcode);
+% }
+
+% let readCbFuncArrayNoDuplicate = [];
+% let WriteCbFuncArrayNoDuplicate = [];
+% let AuthoCbFuncArrayNoDuplicate = [];
+% for (let jRead = 0; jRead < serviceMod.$instances.length; jRead++) {
+  % if(readCbFuncArrayNoDuplicate.indexOf(serviceMod.$instances[jRead].userReadCBfunc) < 0){
+    % readCbFuncArrayNoDuplicate.push(serviceMod.$instances[jRead].userReadCBfunc);
+  % }
+% }
+
+% for (let jWrite = 0; jWrite < serviceMod.$instances.length; jWrite++) {
+  % if(WriteCbFuncArrayNoDuplicate.indexOf(serviceMod.$instances[jWrite].userWriteCBfunc) < 0){
+    % WriteCbFuncArrayNoDuplicate.push(serviceMod.$instances[jWrite].userWriteCBfunc);
+  % }
+% }
+
+% for (let jAutho = 0; jAutho < serviceMod.$instances.length; jAutho++) {
+  % if(AuthoCbFuncArrayNoDuplicate.indexOf(serviceMod.$instances[jAutho].userAuthorizationCBfunc) < 0){
+    % AuthoCbFuncArrayNoDuplicate.push(serviceMod.$instances[jAutho].userAuthorizationCBfunc);
+  % }
+% }
+
+% for (let kRead = 0; kRead < readCbFuncArrayNoDuplicate.length; kRead++) {
+%if(readCbFuncArrayNoDuplicate[kRead] != ""){
+extern bStatus_t `readCbFuncArrayNoDuplicate[kRead]`(uint16_t connHandle,
+                                                          gattAttribute_t *pAttr,
+                                                          uint8_t *pValue, uint16_t *pLen,
+                                                          uint16_t offset, uint16_t maxLen,
+                                                          uint8_t method);
+% }
+%}
+% for (let kWrite = 0; kWrite < WriteCbFuncArrayNoDuplicate.length; kWrite++) {
+%if(WriteCbFuncArrayNoDuplicate[kWrite] != ""){
+extern bStatus_t `WriteCbFuncArrayNoDuplicate[kWrite]`(uint16_t connHandle,
+                                                          gattAttribute_t *pAttr,
+                                                          uint8_t *pValue, uint16_t len,
+                                                          uint16_t offset, uint8_t method);
+% }
+%}
+
+% for (let kAutho = 0; kAutho < AuthoCbFuncArrayNoDuplicate.length; kAutho++) {
+%if(AuthoCbFuncArrayNoDuplicate[kAutho] != ""){
+extern bStatus_t `AuthoCbFuncArrayNoDuplicate[kAutho]`(uint16_t connHandle,
+                                                                    gattAttribute_t *pAttr, uint8_t opcode);
+%}
+% }
+
+/*********************************************************************
+* PROFILE CALLBACKS
+*********************************************************************/
+% for (let i = 0; i < serviceMod.$instances.length; i++) {
+// `serviceMod.$instances[i].name` Service Callbacks
+CONST gattServiceCBs_t `serviceMod.$instances[i].name`CBs =
+{
+  gatt_`serviceMod.$instances[i].name`_ReadAttrCB,  // Read callback function pointer
+  gatt_`serviceMod.$instances[i].name`_WriteAttrCB, // Write callback function pointer
+  gatt_`serviceMod.$instances[i].name`_AuthorizationCB  // Authorization callback function pointer
+};
+% }
+
+/*********************************************************************
+* PUBLIC FUNCTIONS
+*********************************************************************/
+/*
+* AddService - Initializes the services by registering
+* GATT attributes with the GATT server.
+*
+*/
+% for (let i = 0; i < serviceMod.$instances.length; i++) {
+bStatus_t `serviceMod.$instances[i].name`_AddService( uint32 services )
+{
+  uint8 status;
+% // Characteristic Loop
+% for (let cidx = 0; cidx < serviceMod.$instances[i].characteristics.length; ++ cidx) {
+%    let char        = serviceMod.$instances[i].characteristics[cidx];
+%    let charName    = char.name;
+%    let comboName   = serviceMod.$instances[i].name + charName;
+%    if (char.properties.includes('GATT_PROP_NOTIFY')) {
+
+  // Allocate Client Characteristic Configuration table
+  `comboName`Config = (gattCharCfg_t *)ICall_malloc( sizeof(gattCharCfg_t) * MAX_NUM_BLE_CONNS );
+  if ( `comboName`Config == NULL )
+  {
+    return ( bleMemAllocError );
+  }
+  // Initialize Client Characteristic Configuration attributes
+  GATTServApp_InitCharCfg( LINKDB_CONNHANDLE_INVALID, `comboName`Config );
+%	}
+%}
+  if ( services )
+  {
+    // Register GATT attribute list and CBs with GATT Server App
+    status = GATTServApp_RegisterService( `serviceMod.$instances[i].name`AttrTbl,
+								GATT_NUM_ATTRS( `serviceMod.$instances[i].name`AttrTbl ),
+								GATT_MAX_ENCRYPT_KEY_SIZE,
+								&`serviceMod.$instances[i].name`CBs );
+  }
+  else
+  {
+    status = SUCCESS;
+  }
+  return ( status );
+}
+% }
+
+/***************************************************************
+* RegisterAppCBs - Registers the application callback function.
+*                  Only call this function once.
+*
+* appCallbacks - pointer to application callbacks.
+***************************************************************/
+
+% for (let i = 0; i < serviceMod.$instances.length; i++) {
+bStatus_t `serviceMod.$instances[i].name`_RegisterAppCBs( `serviceMod.$instances[i].name`CBs_t *appCallbacks )
+{
+  if ( appCallbacks )
+  {
+    `serviceMod.$instances[i].name`_AppCBs = appCallbacks;
+    return ( SUCCESS );
+  }
+  else
+  {
+    return ( bleAlreadyInRequestedMode );
+  }
+}
+% }
+
+/*******************************************************************
+* SetParameter - Set a service parameter.
+*
+*    param - Profile parameter ID
+*    len - length of data to right
+*    value - pointer to data to write.  This is dependent on
+*          the parameter ID and WILL be cast to the appropriate
+*          data type (example: data type of uint16 will be cast to
+*          uint16 pointer).
+********************************************************************/
+% for (let i = 0; i < serviceMod.$instances.length; i++) {
+bStatus_t `serviceMod.$instances[i].name`_SetParameter( uint8 param, uint8 len, void *value )
+{
+  bStatus_t ret = SUCCESS;
+  switch ( param )
+  {
+% // Characteristic Loop
+% for (let cidx = 0; cidx < serviceMod.$instances[i].characteristics.length; ++ cidx) {
+%    let char        = serviceMod.$instances[i].characteristics[cidx];
+%    let charName    = char.name;
+%    let combo_Name   = serviceMod.$instances[i].name+ '_' + charName;
+%    let comboName   = serviceMod.$instances[i].name + charName;
+%    let capComboName = combo_Name.toUpperCase();
+
+  case `capComboName`:
+    if ( len == sizeof ( uint8 ) )
+    {
+    % if(char.bytes > 1)
+    %{
+      memcpy(`comboName`, value, len);
+    %}
+    %else
+    %{
+      memcpy(&`comboName`, value, len);
+    %}
+    %if(char.properties.includes('GATT_PROP_NOTIFY')){
+    // Try to send notification.
+    GATTServApp_ProcessCharCfg( `comboName`Config, (uint8 *)&`comboName`, FALSE,
+                                `serviceMod.$instances[i].name`AttrTbl, GATT_NUM_ATTRS( `serviceMod.$instances[i].name`AttrTbl ),
+                                INVALID_TASK_ID, gatt_`serviceMod.$instances[i].name`_ReadAttrCB);
+    %}
+    }
+    else
+    {
+      ret = bleInvalidRange;
+    }
+    break;
+
+%}
+    default:
+      ret = INVALIDPARAMETER;
+      break;
+  }
+  return ret;
+}
+% }
+
+
+/******************************************************************
+* GetParameter - Get a service parameter.
+*
+* param - Profile parameter ID
+* value - pointer to data to write.  This is dependent on
+*         the parameter ID and WILL be cast to the appropriate
+*         data type (example: data type of uint16 will be cast to
+*         uint16 pointer).
+******************************************************************/
+% for (let i = 0; i < serviceMod.$instances.length; i++) {
+bStatus_t `serviceMod.$instances[i].name`_GetParameter( uint8 param, void *value )
+{
+  bStatus_t ret = SUCCESS;
+  switch ( param )
+  {
+% // Characteristic Loop
+% for (let cidx = 0; cidx < serviceMod.$instances[i].characteristics.length; ++ cidx) {
+%    let char        = serviceMod.$instances[i].characteristics[cidx];
+%    if (char.permissions.includes('GATT_PERMIT_READ')) {
+%    let charName    = char.name;
+%    let combo_Name   = serviceMod.$instances[i].name+ '_' + charName;
+%    let comboName   = serviceMod.$instances[i].name + charName;
+%    let capComboName = comboName.toUpperCase();
+%    let cap_Combo_Name = combo_Name.toUpperCase();
+    case `cap_Combo_Name`:
+    {
+      %if(char.bytes > 1)
+	  %{
+      memcpy(value, `comboName`, `cap_Combo_Name`_LEN);
+	  %}
+	  %else
+	  %{
+      memcpy(value, &`comboName`, `cap_Combo_Name`_LEN);
+	  %}
+      break;
+    }
+
+%}
+%}
+    default:
+    {
+      ret = INVALIDPARAMETER;
+      break;
+    }
+  }
+  return ret;
+}
+% }
+/*********************************************************************
+* @fn          ReadAttrCB
+*
+* @brief       Read an attribute.
+*
+* @param       connHandle - connection message was received on
+* @param       pAttr - pointer to attribute
+* @param       pValue - pointer to data to be read
+* @param       pLen - length of data to be read
+* @param       offset - offset of the first octet to be read
+* @param       maxLen - maximum length of data to be read
+* @param       method - type of read message
+*
+* @return      SUCCESS, blePending or Failure
+********************************************************************/
+% for (let i = 0; i < serviceMod.$instances.length; i++) {
+static bStatus_t gatt_`serviceMod.$instances[i].name`_ReadAttrCB(uint16_t connHandle,
+                                                                gattAttribute_t *pAttr,
+                                                                uint8_t *pValue, uint16_t *pLen,
+                                                                uint16_t offset, uint16_t maxLen,
+                                                                uint8_t method)
+{
+  %if(!(serviceMod.$instances[i].userReadCBfunc.localeCompare("") == 0)){
+  return `serviceMod.$instances[i].userReadCBfunc`(connHandle, pAttr,
+                                                   pValue, pLen,
+                                                   offset,  maxLen,
+                                                   method);
+%}
+%else{
+  return SUCCESS;
+%}
+  }
+%}
+
+/*********************************************************************
+* @fn      WriteAttrCB
+*
+* @brief   Validate attribute data prior to a write operation
+*
+* @param   connHandle - connection message was received on
+* @param   pAttr - pointer to attribute
+* @param   pValue - pointer to data to be written
+* @param   len - length of data
+* @param   offset - offset of the first octet to be written
+* @param   method - type of write message
+*
+* @return  SUCCESS, blePending or Failure
+********************************************************************/
+% for (let i = 0; i < serviceMod.$instances.length; i++) {
+static bStatus_t gatt_`serviceMod.$instances[i].name`_WriteAttrCB(uint16_t connHandle,
+                                                                 gattAttribute_t *pAttr,
+                                                                 uint8_t *pValue, uint16_t len,
+                                                                 uint16_t offset, uint8_t method)
+{
+%if(!(serviceMod.$instances[i].userWriteCBfunc.localeCompare("") == 0)){
+  return `serviceMod.$instances[i].userWriteCBfunc`(connHandle,
+                                                    pAttr,
+                                                    pValue, len,
+                                                    offset, method);
+%}
+%else{
+  return SUCCESS;
+%}
+}
+% }
+/*********************************************************************
+* @fn      AuthorizationCB
+*
+* @brief   Validate attribute data prior to a write operation
+*
+* @param   connHandle - connection message was received on
+* @param   pAttr - pointer to attribute
+* @param   opcode
+*
+* @return  SUCCESS, blePending or Failure
+********************************************************************/
+% for (let i = 0; i < serviceMod.$instances.length; i++) {
+static bStatus_t gatt_`serviceMod.$instances[i].name`_AuthorizationCB(uint16_t connHandle,
+                                                                 gattAttribute_t *pAttr,
+                                                                 uint8_t opcode)
+{
+%if(!(serviceMod.$instances[i].userAuthorizationCBfunc.localeCompare("") == 0)){
+  return `serviceMod.$instances[i].userAuthorizationCBfunc`(connHandle, pAttr, opcode);
+%}
+%else{
+  return SUCCESS;
+%}
+}
+% }
+% }

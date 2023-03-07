@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                name="CGM Specific Ops Control Point" type="org.bluetooth.characteristic.cgm_specific_ops_control_point" uuid="2AAC" last-modified="2014-11-17" approved="Yes">
+<InformativeText>
+    <Summary>The CGM Specific Ops Control Point encapsulates all functionality and mechanisms that are unique to a CGM-device. 
+             This control point is used with a service to provide CGM specific functionality and the ability to change CGM specific settings of the device. This includes functions like setting the CGM Communication Interval or the sending a calibration value to the device. The criterion in the Operand field is defined by the service that references this characteristic.</Summary>
+</InformativeText>
+    <Value>
+        <Field name="Op Code">
+            <InformativeText>
+               
+			</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+            <Enumerations>
+                <Enumeration key="0" value="Reserved for future use" description="N/A"/>
+                <Enumeration key="1" value="Set CGM Communication Interval" description="The response to this control point is Response Code (Op Code 0x0F)" />
+                <Enumeration key="2" value="Get CGM Communication Interval" description="The normal response to this control point is Op Code 0x03. For error conditions, the response is defined in the Op Code - Response Codes field" />
+                <Enumeration key="3" value="CGM Communication Interval response" description="This is the normal response to Op Code 0x02" />
+                <Enumeration key="4" value="Set Glucose Calibration Value" description="The response to this control point is defined in Op Code - Response Codes field" />
+                <Enumeration key="5" value="Get Glucose Calibration Value" description="The normal response to this control point is Op Code 0x06. for error conditions, the response is defined in the Op Code - Response Codes field" />
+                <Enumeration key="6" value="Glucose Calibration Value response" description="Glucose Calibration Value response" />
+                <Enumeration key="7" value="Set Patient High Alert Level" description="The response to this control point is defined in Op Code - Response Codes field" />
+                <Enumeration key="8" value="Get Patient High Alert Level" description="The normal response to this control point is Op Code 0x09. For error conditions, the response is defined in the Op Code - Response Codes field" />
+                <Enumeration key="9" value="Patient High Alert Level Response" description="This is the normal response to Op Code 0x08" />
+                <Enumeration key="10" value="Set Patient Low Alert Level" description="The response to this control point is defined in Op Code - Response Codes field" />
+                <Enumeration key="11" value="Get Patient Low Alert Level" description="The normal response to this control point is Op Code 0x0C. the response is defined in the Op Code - Response Codes field" />
+                <Enumeration key="12" value="Patient Low Alert Level Response" description="This is the normal response to Op Code 0x0B" />
+                <Enumeration key="13" value="Set Hypo Alert Level" description="The response to this control point is defined in Op Code - Response Codes field" />
+                <Enumeration key="14" value="Get Hypo Alert Level" description="The normal response to this control point is Op Code 0x0F. the response is defined in the Op Code - Response Codes field" />
+                <Enumeration key="15" value="Hypo Alert Level Response" description="This is the normal response to Op Code 0x0E" />
+                <Enumeration key="16" value="Set Hyper Alert Level" description="The response to this control point is defined in Op Code - Response Codes field" />
+                <Enumeration key="17" value="Get Hyper Alert Level" description="The normal response to this control point is Op Code 0x12. The response is defined in the Op Code - Response Codes field" />
+                <Enumeration key="18" value="Hyper Alert Level Response" description="This is the normal response to Op Code 0x11" />
+                <Enumeration key="19" value="Set Rate of Decrease Alert Level" description="The response to this control point is defined in Op Code - Response Codes field" />
+                <Enumeration key="20" value="Get Rate of Decrease Alert Level" description="The normal response to this control point is Op Code 0x15. For error conditions, the response is Response Code" />
+                <Enumeration key="21" value="Rate of Decrease Alert Level Response" description="This is the normal response to Op Code 0x14" />
+                <Enumeration key="22" value="Set Rate of Increase Alert Level" description="The response to this control point is defined in Op Code - Response Codes field" />
+                <Enumeration key="23" value="Get Rate of Increase Alert Level" description="The normal response to this control point is Op Code 0x18. For error conditions, the response is Response Code" />
+                <Enumeration key="24" value="Rate of Increase Alert Level Response" description="This is the normal response to Op Code 0x17" />
+                <Enumeration key="25" value="Reset Device Specific Alert" description="The response to this control point is defined in Op Code - Response Codes field" />
+                <Enumeration key="26" value="Start the Session" description="The response to this control point is defined in Op Code - Response Codes field" />
+                <Enumeration key="27" value="Stop the Session" description="The response to this control point is defined in Op Code - Response Codes field" />
+                <Enumeration key="28" value="Response Code" description="see Op Code - Response Codes field" />
+                <ReservedForFutureUse start="29" end="255" />
+			</Enumerations>
+            </Field>
+        <Field name="Op Code - Response Codes">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+            <Enumerations>
+                <Enumeration key="0" value="Reserved for Future Use" description="N/A" />
+                <Enumeration key="1" value="Success" description="Normal response for successful operation. " />
+                <Enumeration key="2" value="Op Code not supported" description="Normal response if unsupported Op Code is received." />
+                <Enumeration key="3" value="Invalid Operand" description="Normal response if Operand received does not meet the requirements of the service." />
+                <Enumeration key="4" value="Procedure not completed" description="Normal response if unable to complete a procedure for any reason." />
+                <Enumeration key="5" value="Parameter out of range" description="Normal response if Operand received does not meet the range requirements " />
+                <ReservedForFutureUse start="6" end="255" />
+			</Enumerations>
+		</Field>
+        <Field name="Operand">
+            <InformativeText>Value defined per Service</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>variable</Format>
+            <Description>Defined by the Service Specification</Description>
+            <Enumerations>
+                <Enumeration key="0" value="Reserved for future use"/>
+                <Enumeration key="1" value="Communication interval in minutes"/>
+                <Enumeration key="2" value="N/A"/>
+                <Enumeration key="3" value="Communication Interval in minutes"/>
+                <Enumeration key="4" value="Operand value as defined in the Calibration Value Fields."/>
+                <Enumeration key="5" value="Calibration Data Record Number" />
+                <Enumeration key="6" value="Calibration Data"/>
+                <Enumeration key="7" value="Patient High bG value in mg/dL"/>
+                <Enumeration key="8" value="N/A"/>
+                <Enumeration key="9" value="Patient High bG value in mg/dL"/>
+                <Enumeration key="10" value="Patient Low bG value in mg/dL"/>
+                <Enumeration key="11" value="N/A"/>
+                <Enumeration key="12" value="Patient Low bG value in mg/dL"/>
+                <Enumeration key="13" value="Hypo Alert Level value in mg/dL"/>
+                <Enumeration key="14" value="N/A"/>
+                <Enumeration key="15" value="Hypo Alert Level value in mg/dL"/>
+                <Enumeration key="16" value="Hyper Alert Level value in mg/dL"/>
+                <Enumeration key="17" value="N/A"/>
+                <Enumeration key="18" value="Hyper Alert Level value in mg/dL"/>
+                <Enumeration key="19" value="Rate of Decrease Alert Level value in mg/dL/min"/>
+                <Enumeration key="20" value="N/A"/>
+                <Enumeration key="21" value="Rate of Decrease Alert Level value in mg/dL/min"/>
+                <Enumeration key="22" value="Rate of Increase Alert Level value in mg/dL/min"/>
+                <Enumeration key="23" value="N/A"/>
+                <Enumeration key="24" value="Rate of Increase Alert Level value in mg/dL/min"/>
+                <Enumeration key="25" value="N/A"/>
+                <Enumeration key="26" value="N/A"/>
+                <Enumeration key="27" value="N/A"/>
+                <Enumeration key="28" value="Request Op Code, Response Code Value"/>
+                <ReservedForFutureUse start="29" end="255" />
+			</Enumerations>
+		</Field>
+        <Field name="E2E-CRC">
+            <InformativeText>If the device supports E2E-safety (E2E-CRC-Supported bit is set in CGM Feature), the specific ops control point is secured by a CRC calculated over all fields. Refer to CGM Service specification.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Format>uint16</Format>
+        </Field>
+        <Field name="Calibration Value - Glucose Concentration of Calibration">
+            <InformativeText>See Note number 2 below.</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>SFLOAT</Format>
+            <Unit>org.bluetooth.unit.mass_density.milligram_per_decilitre</Unit>
+            <DecimalExponent>0</DecimalExponent>
+		</Field>
+        <Field name="Calibration Value - Calibration Time">
+            <InformativeText>See Note number 2 below.</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>uint16</Format>
+            <Unit>org.bluetooth.unit.time.minute</Unit>
+            <Description> Calibration Time in minutes as offset to the Session Start Time. Value: 0x0000-0xFFFF</Description>
+            <DecimalExponent>0</DecimalExponent>
+            
+		</Field>
+        <Field name="Calibration Value - Calibration Type">
+            <InformativeText>See Note number 2 below.</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>4bit</Format>
+           
+		</Field>
+        <Field name="Calibration Value - Calibration Sample Location">
+            <InformativeText>See Note number 2 below.</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>4bit</Format>
+           
+		</Field>
+        <Field name="Calibration Value - Next Calibration Time">
+            <InformativeText>See Note number 2 below.</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>uint16</Format>
+            <Unit>org.bluetooth.unit.time.minute</Unit>
+            <Description> Next Calibration Time in minutes as offset to the Session Start Time. Value: 0x0000-0xFFFF</Description>
+            <DecimalExponent>0</DecimalExponent>
+		</Field>
+        <Field name="Calibration Value - Calibration Data Record Number">
+            <InformativeText>See Note number 2 below.</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>uint16</Format>
+		</Field>
+        <Field name="Calibration Value - Calibration Status">
+            <InformativeText>See Note number 2 below.</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>8bit</Format>
+            <BitField>
+                <Bit index="0" size="1" name="Calibration Data rejected (Calibration failed)">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="1" size="1" name="Calibration Data out of range">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="2" size="1" name="Calibration Process Pending">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <ReservedForFutureUse index="3" size="5" />
+			</BitField>
+		</Field>
+	</Value>
+   
+    <Note>
+        1. C1: Mandatory if device supports E2E-CRC (Bit 12 is set in CGM Feature) otherwise excluded
+        2. Describes the Operand which is used for setting and getting the calibration value
+        3. The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet
+	</Note>
+    
+</Characteristic>

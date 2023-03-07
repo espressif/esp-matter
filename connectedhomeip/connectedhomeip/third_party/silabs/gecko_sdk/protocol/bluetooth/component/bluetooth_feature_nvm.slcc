@@ -1,0 +1,18 @@
+id: "bluetooth_feature_nvm"
+label: "NVM Support"
+package: "Bluetooth"
+description: >
+  NonVolatile Memory  (nvm) feature
+
+  Provides commands that can be used to manage the user data in the flash memory.
+  This component uses the PS Store or NVM3 data storage driver.
+category: "Bluetooth|NVM"
+quality: "production"
+root_path: "protocol/bluetooth"
+requires:
+  - name: "bluetooth_stack"
+provides:
+  - name: "bluetooth_feature_nvm"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_nvm

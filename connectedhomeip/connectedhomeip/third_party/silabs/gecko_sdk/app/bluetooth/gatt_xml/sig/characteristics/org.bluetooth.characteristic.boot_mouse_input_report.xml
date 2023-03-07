@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.boot_mouse_input_report" name="Boot Mouse Input Report" uuid="2A33" last-modified="2011-11-14" approved="Yes">
+    <InformativeText>
+        <Summary>
+            The Boot Mouse Input Report characteristic is used to transfer fixed format and length Input Report data between a HID Host operating in Boot Protocol Mode and a HID Service corresponding to a boot mouse.
+        </Summary>
+    </InformativeText>
+    <Value>
+        <Field name="Boot Mouse Input Report Value">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+            <Repeated>true</Repeated>
+        </Field>
+    </Value>
+</Characteristic>

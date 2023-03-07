@@ -1,0 +1,129 @@
+%%{
+/*
+ * Copyright (c) 2020 Texas Instruments Incorporated - http://www.ti.com
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+
+/*
+ *  ======== Startup_config_c.xdt ========
+ */
+
+    /* passed by /ti/sysbios/BIOS_config.c.xdt */
+    let Startup = args[0];
+    let instances = Startup.$instances;
+    let resetFxns = new Array();
+    let firstFxns = new Array();
+    let moduleInitFxns = new Array();
+    let startupFxns = new Array();
+    let lastFxns = new Array();
+
+    let maxPri = 0;
+
+    /* Sort all the startup functions, ignoring type */    
+    for (let i = 0; i < instances.length; i++) {
+        let inst = instances[i];
+        if (maxPri <= inst.priority) {
+            maxPri = inst.priority + 1;
+        }
+    }
+    instances.sort(function(a,b) {
+        var ap = a.priority == null ? maxPri : a.priority;
+        var bp = b.priority == null ? maxPri : b.priority;
+        return (ap - bp);
+    });
+
+    /* put each startup function in its appropriate list (in order already) */
+    for (let i = 0; i < instances.length; i++) {
+        let inst = instances[i];
+        switch (inst.functionType) {
+            case "Reset Function":
+                resetFxns.push(inst);
+                break;
+            case "First Function":
+                firstFxns.push(inst);
+                break;
+            case "Module Init Function":
+                moduleInitFxns.push(inst);
+                break;
+            case "Last Function":
+                lastFxns.push(inst);
+                break;
+        }
+    }
+%%}
+% if (instances.length) {
+/* Startup module definitions */
+
+/* Startup reset functions */
+void Startup_reset()
+{
+%   if (resetFxns.length != 0) {
+%       for (let i = 0; i < resetFxns.length; i++) {
+%           let inst = resetFxns[i];
+    `inst.startupFxn`();
+%       }
+%   }
+}
+
+/*
+ * Startup first functions
+ * Module init functions
+ * Startup last functions
+ */
+void Startup_exec()
+{
+%   if (firstFxns.length != 0) {
+    /* Startup first functions */
+%       for (let i = 0; i < firstFxns.length; i++) {
+%           let inst = firstFxns[i];
+    `inst.startupFxn`();
+%       }
+%   }
+%   if (moduleInitFxns.length != 0) {
+
+    /* Module init functions */
+%       for (let i = 0; i < moduleInitFxns.length; i++) {
+%           let inst = moduleInitFxns[i];
+    `inst.startupFxn`();
+%       }
+%   }
+%   if (lastFxns.length != 0) {
+
+    /* Startup last functions */
+%       for (let i = 0; i < lastFxns.length; i++) {
+%           let inst = lastFxns[i];
+    `inst.startupFxn`();
+%       }
+%   }
+
+    Startup_done = true;
+}
+% }

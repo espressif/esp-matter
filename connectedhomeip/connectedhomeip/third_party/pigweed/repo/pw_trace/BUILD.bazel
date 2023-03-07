@@ -1,0 +1,153 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load(
+    "//pw_build:pigweed.bzl",
+    "pw_cc_binary",
+    "pw_cc_facade",
+    "pw_cc_library",
+    "pw_cc_test",
+)
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+pw_cc_facade(
+    name = "facade",
+    hdrs = [
+        "public/pw_trace/internal/trace_internal.h",
+        "public/pw_trace/trace.h",
+    ],
+    includes = ["public"],
+    deps = [
+        "//pw_preprocessor",
+    ],
+)
+
+pw_cc_library(
+    name = "pw_trace",
+    deps = [
+        ":facade",
+        "@pigweed_config//:pw_trace_backend",
+    ],
+)
+
+pw_cc_library(
+    name = "backend_multiplexer",
+    visibility = ["@pigweed_config//:__pkg__"],
+    deps = ["//pw_trace:null"],
+)
+
+pw_cc_library(
+    name = "null",
+    hdrs = [
+        "public/pw_trace/internal/null.h",
+        "public_overrides/pw_trace_backend/trace_backend.h",
+    ],
+    includes = [
+        "public",
+        "public_overrides",
+    ],
+    deps = [
+        "//pw_preprocessor",
+        "//pw_trace:facade",
+    ],
+)
+
+pw_cc_test(
+    name = "trace_backend_compile_test",
+    srcs = [
+        "trace_backend_compile_test.cc",
+        "trace_backend_compile_test_c.c",
+    ],
+    deps = [
+        ":pw_trace",
+        "//pw_preprocessor",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "trace_facade_test",
+    srcs = [
+        "pw_trace_test/fake_backend.h",
+        "pw_trace_test/public_overrides/pw_trace_backend/trace_backend.h",
+        "trace_facade_test.cc",
+    ],
+    includes = [
+        "pw_trace_test",
+        "pw_trace_test/public_overrides",
+    ],
+    deps = [
+        ":pw_trace",
+        "//pw_preprocessor",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "trace_zero_facade_test",
+    srcs = [
+        "pw_trace_zero/public_overrides/pw_trace_backend/trace_backend.h",
+        "trace_backend_compile_test.cc",
+        "trace_backend_compile_test_c.c",
+    ],
+    includes = [
+        "pw_trace_zero",
+        "pw_trace_zero/public_overrides",
+    ],
+    deps = [
+        ":facade",
+        "//pw_preprocessor",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_library(
+    name = "trace_null_test",
+    srcs = [
+        "trace_null_test.cc",
+        "trace_null_test_c.c",
+    ],
+    deps = [
+        ":pw_trace",
+        "//pw_preprocessor",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_library(
+    name = "pw_trace_sample_app",
+    srcs = ["example/sample_app.cc"],
+    hdrs = ["example/public/pw_trace/example/sample_app.h"],
+    includes = ["example/public"],
+    # TODO(b/258071921): Fix puzzling compiler errors
+    tags = ["manual"],
+    deps = [
+        "//pw_ring_buffer",
+        "//pw_trace",
+    ],
+)
+
+pw_cc_binary(
+    name = "trace_example_basic",
+    srcs = ["example/basic.cc"],
+    # TODO(b/258071921): Fix puzzling compiler errors
+    tags = ["manual"],
+    deps = [
+        ":pw_trace_sample_app",
+        "//pw_log",
+    ],
+)

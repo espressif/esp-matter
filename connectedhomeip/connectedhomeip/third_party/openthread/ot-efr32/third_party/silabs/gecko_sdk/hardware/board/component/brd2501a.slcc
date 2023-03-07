@@ -1,0 +1,57 @@
+!!omap
+- id: brd2501a
+- label: BRD2501A
+- package: platform
+- description: Board support for BRD2501A.
+- category: Platform|Board|Starter Kit
+- quality: production
+- requires:
+  - name: efm32pg12b500f1024gl125
+  - name: brd2501a_config
+- provides:
+  - name: brd2501a
+  - name: hardware_board
+  - name: hardware_board_stk
+  - name: hardware_board_from_stk
+  - name: hardware_board_from_slstk3402a
+  - name: hardware_board_has_si70xx
+  - name: hardware_board_has_tempsensor
+  - name: hardware_board_has_vcom
+  - name: hardware_board_has_hfxo
+  - name: hardware_board_has_lfxo
+- recommends:
+  - id: iostream_usart
+    instance:
+    - vcom
+  - id: bootloader_uart_driver
+  - id: i2cspm
+    instance:
+    - sensor
+  - id: ls013b7dh03
+  - id: memlcd_usart
+  - id: simple_led
+    instance:
+    - led0
+    - led1
+  - id: simple_button
+    instance:
+    - btn0
+    - btn1
+  - id: bootloader_spi_peripheral_usart_driver
+- template_contribution: []
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD2501A"'
+  - name: SL_BOARD_REV
+    value: '"A02"'
+- tag:
+  - board:pn:BRD2501
+  - board:variant:A
+  - board:revision:A02
+  - board:device:efm32pg12b500f1024gl125
+  - hardware:has:vcom
+  - hardware:has:sensor:si7021
+  - hardware:has:display:ls013b7dh03
+  - hardware:has:led:2
+  - hardware:has:button:2
+  - hardware:has:touch

@@ -1,0 +1,455 @@
+id: zigbee_stack_common
+label: Stack Common
+package: Zigbee
+category: Zigbee|Stack|Pro Core
+quality: production
+ui_hints:
+  visibility: never
+
+description: This component provides common header and source files for the Zigbee PRO stack to both SoC and NCP apps.
+
+provides:
+  - name: zigbee_stack_common
+
+requires:
+  - name: device_supports_zigbee
+    condition:
+      - device_cortexm
+  - name: rail_util_ieee802154_phy_select
+    condition:
+      - device_has_radio
+  - name: rail_util_ieee802154_stack_event
+    condition:
+      - device_has_radio
+  - name: zigbee_pro_stack_support
+  - name: legacy_hal
+  - name: rail_lib
+    condition:
+      - device_cortexm
+  - name: rail_lib
+    condition:
+      - zigbee_simulation
+  - name: zigbee_app_framework_common
+  - name: component_catalog
+  - name: token_manager
+  - name: status
+  - name: endianness
+  # AES
+  - name: zigbee_aes
+  - name: zigbee_aes_software
+    condition:
+      - operating_system
+  - name: zigbee_aes_software
+    condition:
+      - native
+  - name: zigbee_aes_software
+    condition:
+      - zigbee_simulation_or_zigbee_stack_unix
+  # CCM
+  - name: zigbee_ccm_star
+  - name: zigbee_ccm_software
+    condition:
+      - operating_system
+  - name: zigbee_ccm_software
+    condition:
+      - native
+  - name: zigbee_ccm_software
+    condition:
+      - zigbee_simulation_or_zigbee_stack_unix
+  # Randomness
+  - name: zigbee_strong_random
+
+recommends:
+  - id: rail_lib_singleprotocol
+  - id: zigbee_aes_psa
+  - id: zigbee_ccm_psa
+  - id: zigbee_strong_random_api_radio
+
+include:
+  - path: platform/radio/rail_lib/plugin
+    file_list:
+      - path: coexistence/common/coexistence.h
+      - path: coexistence/protocol/ieee802154_uc/coexistence-802154.h
+      - path: rail_util_ant_div/sl_rail_util_ant_div.h
+  - path: protocol/zigbee
+    file_list:
+      - path: stack/platform/micro/aes.h
+      - path: stack/include/source-route.h
+  - path: protocol/zigbee/stack/
+    file_list:
+      - path: config/config.h
+      - path: config/token-stack.h
+      - path: config/token-phy.h
+      - path: config/ember-configuration-defaults.h
+      - path: zll/zll-token-config.h
+  - path: protocol/zigbee/stack/include/
+    file_list:
+      - path: ember-types.h
+      - path: zll-types.h
+      - path: ember-types-internal.h
+      - path: ember.h
+      - path: ember-debug.h
+      - path: error-def.h
+      - path: error.h
+      - path: child.h
+      - path: ember-alternate-mac.h
+      - path: ember-duty-cycle.h
+      - path: ember-static-struct.h
+      - path: message.h
+      - path: multi-network.h
+      - path: multi-phy.h
+      - path: network-formation.h
+      - path: security.h
+      - path: stack-info.h
+      - path: trust-center.h
+      - path: zigbee-device-stack.h
+      - path: raw-message.h
+      - path: aes-mmo.h
+      - path: byte-utilities.h
+      - path: ember-random-api.h
+      - path: library.h
+      - path: mac-layer.h
+      - path: bootload.h
+      - path: cbke-crypto-engine.h
+      - path: zigbee-event-logger-gen.h
+      - path: mfglib.h
+      - path: gp-types.h
+      - path: zll-api.h
+      - path: binding-table.h
+  - path: protocol/zigbee/stack/gp/
+    file_list:
+      - path: gp-token-config.h
+  - path: protocol/zigbee/stack/zigbee/
+    file_list:
+      - path: source-route-table-update.h
+  - path: platform/radio/mac/rail_mux
+    file_list:
+      - path: sl_rail_mux_rename.h
+      - path: sl_rail_mux.h      
+  #ToDo: These should be treated as internal headers: as such, we should clean up
+  #our released code so that we no longer need to release these (EMZIGBEE-6706)
+  - path: platform/radio/mac
+    file_list:
+      - path: indirect-queue.h
+      - path: lower-mac.h
+      - path: lower-mac-debug.h
+      - path: mac-child.h
+      - path: mac-command.h
+      - path: mac-flat-header.h
+      - path: mac-header.h
+      - path: mac-packet-header.h
+      - path: mac-phy.h
+      - path: mac-types.h
+      - path: multi-mac.h
+      - path: mac-multi-network.h
+      - path: scan.h
+      - path: upper-mac.h
+  - path: util/silicon_labs/silabs_core/
+    file_list:
+      - path: buffer_manager/legacy-packet-buffer.h
+      - path: buffer_manager/buffer-queue.h
+      - path: buffer_manager/buffer-management.h
+      - path: event_queue/event-queue.h
+  - path: protocol/zigbee/stack/core/
+    file_list:
+      - path: ember-multi-network.h
+      - path: multi-pan-token-config.h
+      - path: multi-pan.h
+  - path: protocol/zigbee/stack/mac/
+    file_list:
+      - path: multi-mac.h
+  - path: protocol/zigbee/app/em260/
+    file_list:
+      - path: command-handlers-zll.h
+        condition:
+          - zigbee_ncp
+      - path: command-handlers-security.h
+        condition:
+          - zigbee_ncp
+      - path: command-handlers-zigbee-pro.h
+        condition:
+          - zigbee_ncp
+
+source:
+  - path: platform/radio/rail_lib/plugin/rail_util_ant_div/sl_rail_util_ant_div.c
+    unless:
+      - rail_util_ant_div
+  - path: platform/radio/rail_lib/plugin/coexistence/protocol/ieee802154_uc/coexistence-802154.c
+    unless:
+      - rail_util_coex
+  - path: protocol/zigbee/stack/config/ember-configuration.c
+  - path: protocol/zigbee/app/em260/command-handlers-messaging-generated.c
+    condition:
+      - zigbee_ncp
+  - path: protocol/zigbee/app/em260/command-handlers-networking-generated.c
+    condition:
+      - zigbee_ncp
+  - path: protocol/zigbee/app/em260/command-handlers-security-generated.c
+    condition:
+      - zigbee_ncp
+  - path: protocol/zigbee/app/em260/command-handlers-trust-center-generated.c
+    condition:
+      - zigbee_ncp
+  # Stubs
+  - path: protocol/zigbee/stack/framework/debug-stub.c
+    unless:
+      - zigbee_debug_basic 
+  - path: protocol/zigbee/stack/security/cbke-crypto-engine-stub.c
+    unless:
+      - zigbee_cbke_core
+  - path: protocol/zigbee/stack/security/cbke-crypto-engine-163k1-stub.c
+    unless:
+      - zigbee_cbke_163k1
+  - path: protocol/zigbee/stack/security/cbke-crypto-engine-283k1-stub.c
+    unless:
+      - zigbee_cbke_283k1
+  - path: protocol/zigbee/stack/security/cbke-crypto-engine-dsa-verify-stub.c
+    unless:
+      - zigbee_cbke_dsa_verify
+  - path: protocol/zigbee/stack/security/cbke-crypto-engine-dsa-sign-stub.c
+    unless:
+      - zigbee_cbke_dsa_sign
+  - path: protocol/zigbee/stack/security/cbke-crypto-engine-dsa-verify-283k1-stub.c
+    unless:
+      - zigbee_cbke_dsa_verify_283k1
+  - path: protocol/zigbee/stack/security/install-code-stub.c
+    unless:
+      - zigbee_install_code
+  - path: protocol/zigbee/stack/zigbee/binding-table-stub.c
+    unless:
+      - zigbee_binding_table
+  - path: protocol/zigbee/stack/framework/debug-extended-stub.c
+    unless:
+      - zigbee_debug_extended
+  - path: protocol/zigbee/stack/zigbee/end-device-bind-stub.c
+    unless:
+      - zigbee_end_device_bind
+  - path: protocol/zigbee/stack/gp/gp-stub.c
+    unless:
+      - zigbee_gp
+  - path: protocol/zigbee/stack/core/ember-multi-network-stub.c
+    unless:
+      - zigbee_multi_network
+  - path: protocol/zigbee/stack/core/multi-pan-stub.c
+    unless:
+      - zigbee_multi_pan
+  - path: protocol/zigbee/stack/core/multi-pan-common.c
+  - path: protocol/zigbee/stack/security/packet-validate-stub.c
+    unless:
+      - zigbee_packet_validate
+  - path: protocol/zigbee/stack/zigbee/aps-keys-full-stub.c
+    unless:
+      - zigbee_security_link_keys
+  - path: protocol/zigbee/stack/zll/zll-stubs.c
+    unless:
+      - zigbee_zll
+  - path: protocol/zigbee/stack/zigbee/source-route-stub.c
+    unless:
+      - zigbee_source_route
+  - path: protocol/zigbee/stack/zigbee/zdo-r22-stub.c
+    unless:
+      - zigbee_r22_support
+  - path: protocol/zigbee/stack/routing/zigbee/enhanced-beacon-request-stub.c
+    unless:
+      - zigbee_r22_support
+  - path: protocol/zigbee/stack/mac/mac-info-element-parsing-stub.c
+    unless:
+      - zigbee_r22_support
+  - path: protocol/zigbee/stack/framework/zigbee-event-logger-stub-gen.c
+    unless:
+      - zigbee_event_logger
+
+validation_helper:
+  # NCP doesn't have DEVICE_TYPE before it connects to Host
+  # so we don't run the validation script for NCP
+  - path: protocol/zigbee/component/scripts/zigbee_soc_stack_config_validation.lua
+    unless:
+      - zigbee_ncp
+
+define:
+  - name: SL_ZIGBEE_PHY_SELECT_STACK_SUPPORT
+    value: 1
+    condition:
+      - rail_util_ieee802154_phy_select
+  - name: EMBER_MULTI_NETWORK_STRIPPED
+    unless:
+      - zigbee_multi_network
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_stack_common
+  - name: application_type
+    value: "APPLICATION_TYPE_ZIGBEE"
+    condition:
+      - bootloader_app_properties
+  # These callbacks are consumed by zigbee pro NCP command handlers.
+  - name: rail_util_ieee802154_phy_select_callbacks
+    value:
+      runtime_phy_select_stack_support: SL_ZIGBEE_PHY_SELECT_STACK_SUPPORT
+      update_active_radio_config: sl_mac_lower_mac_update_active_radio_config
+    priority: -9020
+    unless:
+      - rail_mux
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: set_configuration_value
+      function_name: emberAfPluginEzspZigbeeProSetConfigurationValueCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: get_policy
+      function_name: emberAfPluginEzspZigbeeProPolicyCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: set_policy
+      function_name: emberAfPluginEzspZigbeeProPolicyCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: get_configuration_value
+      function_name: emberAfPluginEzspZigbeeProGetConfigurationValueCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: modify_memory_allocation
+      function_name: emberAfPluginEzspZigbeeProModifyMemoryAllocationCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: get_extended_value
+      function_name: emberAfPluginEzspZigbeeProGetExtendedValueCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: set_value
+      function_name: emberAfPluginEzspZigbeeProSetValueCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: get_value
+      function_name: emberAfPluginEzspZigbeeProGetValueCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: set_configuration_value
+      function_name: emberAfPluginEzspSecuritySetConfigurationValueCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: get_policy
+      function_name: emberAfPluginEzspSecurityPolicyCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: set_policy
+      function_name: emberAfPluginEzspSecurityPolicyCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: get_configuration_value
+      function_name: emberAfPluginEzspSecurityGetConfigurationValueCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: set_value
+      function_name: emberAfPluginEzspSecuritySetValueCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: get_value
+      function_name: emberAfPluginEzspSecurityGetValueCommandCallback
+
+  - name: zigbee_stack_callback
+    value:
+      callback_type: mac_filter_match_message
+      function_name: emAfMacFilterMatchMessageCallback
+    condition:
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: bootload_transmit_complete
+      function_name: emAfBootloadTransmitCompleteCallback
+    condition:
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: incoming_bootload_message
+      function_name: emAfIncomingBootloadMessageCallback
+    condition:
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: raw_transmit_complete
+      function_name: emAfRawTransmitCompleteCallback
+    condition:
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: mac_passthrough_message
+      function_name: emAfMacPassthroughMessageCallback
+    condition:
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: id_conflict
+      function_name: emAfIdConflictCallback
+    condition:
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: incoming_network_status
+      function_name: emAfIncomingNetworkStatusCallback
+    condition:
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: incoming_route_error
+      function_name: emAfIncomingRouteErrorCallback
+    condition:
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: incoming_many_to_one_route_request
+      function_name: emAfIncomingManyToOneRouteRequestCallback
+    condition:
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: duty_cycle
+      function_name: emAfDutyCycleCallback
+    condition:
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: child_join
+      function_name: emAfChildJoinCallback
+    condition:
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: network_found
+      function_name: emAfNetworkFoundCallback
+    condition:
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: scan_complete
+      function_name: emAfScanCompleteCallback
+    condition:
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: incoming_message
+      function_name: emAfIncomingMessageCallback
+    condition:
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: message_sent
+      function_name:  emAfMessageSentCallback
+    condition:
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: switch_network_key
+      function_name: emAfSwitchNetworkKeyCallback
+    condition:
+      - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: zigbee_key_establishment
+      function_name: emAfZigbeeKeyEstablishmentCallback
+    condition:
+      - zigbee_ncp
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/stack-common

@@ -1,0 +1,71 @@
+project_name: "wisun_rcp"
+label: "Wi-SUN - RCP"
+description: "The Wi-SUN RCP (radio coprocessor) application provides a radio interface to a Linux host.
+ It is meant to be paired with wsbrd (Wi-SUN Network implementation for Linux) to run as a Linux border router device."
+package: "wisun"
+category: "Wi-SUN Examples"
+quality: "production"
+
+
+component:
+  - id: "device_init"
+  - id: "micriumos_kernel"
+  - id: "sleeptimer"
+  - id: "nvm3_default"
+  - id: "iostream_rtt"
+  - id: "iostream_retarget_stdio"
+  - id: "iostream_stdlib_config"
+  - id: "wisun_full_radioconf"
+  - id: "wisun_rcp"
+  - id: "wisun_config"
+
+define:
+  - name: "DEBUG_EFM_USER"
+
+requires:
+  - name: freertos_heap_3
+    condition: [freertos]
+
+configuration:
+  - name: "SL_BOARD_ENABLE_VCOM"
+    value: "1"
+  - name: "OS_CFG_APP_HOOKS_EN"
+    value: "1"
+    condition: [micriumos_kernel]
+  - name: "SL_HEAP_SIZE"
+    value: "0xD000"
+  - name: CPU_CFG_TS_32_EN
+    value: "1"
+  - name: OS_CFG_DBG_EN
+    value: "1"
+  - name: OS_CFG_TS_EN
+    value: "1"
+  - name: OS_CFG_SCHED_ROUND_ROBIN_EN
+    value: "1"
+  - name: OS_CFG_STAT_TASK_EN
+    value: "1"
+  - name: OS_CFG_TASK_PROFILE_EN
+    value: "1"
+
+readme:
+  - path: ../../../../app/wisun/documentation/example/wisun_rcp/readme.md
+
+other_file:
+  - path: ../../../../app/wisun/documentation/example/wisun_rcp/readme_img0.png
+  - path: ../../../../app/wisun/documentation/example/wisun_rcp/readme_img1.png
+
+ui_hints:
+  highlight:
+    - path: readme.md
+      focus: true
+
+tag:
+  - prebuilt_demo
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Wi-SUN"]
+  - name: "Device Type"
+    value: ["RCP"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+name="Irradiance" type="org.bluetooth.characteristic.irradiance" uuid="2A77" last-modified="2014-11-20" approved="Yes">
+<Value>
+    <Field name="Irradiance">
+        <InformativeText>Unit is in watt per square meter with a resolution of 0.1 W/m^2</InformativeText>
+        <Requirement>Mandatory</Requirement>
+        <Format>uint16</Format>
+        <Unit>org.bluetooth.unit.irradiance.watt_per_square_metre</Unit>
+        <DecimalExponent>-1</DecimalExponent>
+	</Field>
+</Value>
+</Characteristic>

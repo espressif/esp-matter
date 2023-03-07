@@ -1,0 +1,78 @@
+id: "connect_stack_common"
+label: "Stack Common"
+package: "Flex"
+category: "Connect"
+quality: "production"
+description: "Provides Connect Stack common functionalities such
+as 15.4-like MAC layer, events system, dynamic memory allocation, and other
+required infrastracture functions. It also provides the stack configuration
+file, which allocates all the sizable RAM data structures."
+provides:
+  - name: "connect_stack_common"
+  - name: "wireless_stack"
+    allow_multiple: true
+requires:
+  - name: "device_supports_connect"
+  - name: "connect_stack_common_implementation"
+  - name: "connect_app_framework_common"
+  - name: "legacy_hal"
+  - name: "token_manager"
+  - name: "rail_lib"
+  - name: "rail_util_pa"
+  - name: "a_radio_config"
+  - name: "component_catalog"
+  - name: "connect_cmsis_stack_ipc"
+    condition:
+      - "cmsis_rtos2"
+  - name: "connect_cmsis_stack_ipc"
+    condition:
+      - "bluetooth_stack"
+  - name: "rail_lib_multiprotocol"
+    condition:
+      - "bluetooth_stack"
+recommends:
+  - id: "connect_stack_common_source"
+  - id: "rail_lib_singleprotocol"
+root_path: "protocol/flex"
+include:
+  - path: "./"
+  - path: "stack/"
+    file_list:
+      - path: "config/config.h"
+      - path: "config/token-stack.h"
+      - path: "config/ember-configuration-defaults.h"
+  - path: "stack/include/"
+    file_list:
+      - path: "api-rename.h"
+      - path: "api-rename-undef.h"
+      - path: "byte-utilities.h"
+      - path: "ember-types.h"
+      - path: "ember.h"
+      - path: "error-def.h"
+      - path: "error.h"
+      - path: "event.h"
+      - path: "memory-buffer.h"
+      - path: "message.h"
+      - path: "network-management.h"
+      - path: "packet-buffer.h"
+      - path: "stack-info.h"
+      - path: "radio-stream.h"
+source:
+      - path: "stack/config/ember-configuration.c"
+      - path: "stack/config/stack-stubs.c"
+      - path: "stack/config/stack-callback-stubs.c"
+config_file:
+  - path: "stack/config/component_config/stack-common-config.h"
+define:
+  - name: "EMBER_STACK_CONNECT"
+template_contribution:
+  - name: component_catalog
+    value: connect_stack_common
+  - name: application_type
+    value: "APPLICATION_TYPE_FLEX"
+    condition:
+      - bootloader_interface
+
+documentation:
+  docset: connect-stack
+  document: group-silabs-connect-stack

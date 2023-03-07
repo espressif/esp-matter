@@ -1,0 +1,19 @@
+id: zigbee_phy_2_4
+label: Zigbee 2.4GHz Device
+package: Zigbee
+category: Zigbee|Stack|PHY support
+quality: production
+
+description: Standard Zigbee 2.4GHz physical layer.
+
+provides:
+  - name: zigbee_phy
+  - name: zigbee_phy_2_4
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_phy_2_4
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/phy-2-4

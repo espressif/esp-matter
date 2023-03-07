@@ -1,0 +1,23 @@
+id: si1133_driver
+package: platform
+label: Si1133 - Light/UV Sensor
+description: >
+  Driver for the Silicon Labs Si1133 ambient light and UV sensor
+category: Platform|Board Drivers
+quality: production
+root_path: hardware/driver/si1133
+provides:
+  - name: si1133_driver
+requires:
+  - name: i2cspm
+  - name: sleeptimer
+  - name: status
+include:
+  - path: inc
+    file_list:
+      - path: sl_si1133.h
+source:
+  - path: src/sl_si1133.c
+documentation:
+    docset: gecko-platform
+    document: hardware-driver/api/group-si1133

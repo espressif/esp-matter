@@ -1,0 +1,28 @@
+package: Zigbee
+description: This sample implementation shows how to define the policies of the
+  Zigbee Over-the-air bootload cluster client (a multi-hop, application bootloader). It
+  allows the implementor to decide what manufacturer ID, image type ID, and file version
+  information is used when querying the server. It also defines callbacks, 
+  such as download complete and ready to bootload.
+label: OTA Bootload Cluster Client Policy
+quality: production
+id: zigbee_ota_client_policy
+category: Zigbee|Over-The-Air Bootloading
+provides:
+   - name: "zigbee_ota_client_policy"
+requires:
+   - name: "zigbee_ota_client"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/ota-client-policy/config/ota-client-policy-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/ota-client-policy/ota-client-policy.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/ota-client-policy
+    file_list:
+      - path: ota-client-policy.h  
+template_contribution:
+  - name: component_catalog
+    value: zigbee_ota_client_policy
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/ota-client-policy

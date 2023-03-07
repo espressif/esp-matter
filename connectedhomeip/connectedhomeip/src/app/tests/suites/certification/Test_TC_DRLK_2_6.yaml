@@ -1,0 +1,156 @@
+# Copyright (c) 2021 Project CHIP Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name:
+    111.2.7. [TC-DRLK-2.6] Verification for the following Commands - Set Year
+    Schedule, Get Year Schedule, Get Year Day Schedule Response and Clear Year
+    Day Schedule[DUT-Server]
+
+PICS:
+    - DRLK.S
+
+config:
+    nodeId: 0x12344321
+    cluster: "Door Lock"
+    endpoint: 1
+
+tests:
+    - label: "Wait for commissionee"
+      cluster: "DelayCommands"
+      command: "WaitForCommissionee"
+      arguments:
+          values:
+              - name: "nodeId"
+                value: nodeId
+
+    - label:
+          "TH reads NumberOfHoliday SchedulesSupported and saves for future use."
+      PICS: DRLK.S.F0b && DRLK.S.A0016
+      command: "readAttribute"
+      attribute: "NumberOfHolidaySchedulesSupported"
+      response:
+          saveAs: NumberOfHolidaySchedulesSupported
+          constraints:
+              minValue: 0
+              maxValue: 255
+
+    - label: "Create Holiday schedule with 1 index"
+      PICS: DRLK.S.F0b && DRLK.S.C11.Rsp
+      command: "SetHolidaySchedule"
+      arguments:
+          values:
+              - name: "holidayIndex"
+                value: 1
+              - name: "localStartTime"
+                value: 20
+              - name: "localEndTime"
+                value: 30
+              - name: "operatingMode"
+                value: 0
+
+    - label: "Get Holiday Schedule with HolidayIndex as 1"
+      PICS: DRLK.S.F0b && DRLK.S.C12.Rsp && DRLK.S.C12.Tx
+      command: "GetHolidaySchedule"
+      arguments:
+          values:
+              - name: "holidayIndex"
+                value: 1
+      response:
+          values:
+              - name: "holidayIndex"
+                value: 1
+              - name: "status"
+                value: 0x0
+              - name: "localStartTime"
+                value: 20
+              - name: "localEndTime"
+                value: 30
+                constraints:
+                    minValue: 21
+              - name: "operatingMode"
+                value: 0
+
+    - label: "Create Holiday schedule with invalid operating mode"
+      PICS: DRLK.S.C11.Rsp
+      command: "SetHolidaySchedule"
+      arguments:
+          values:
+              - name: "holidayIndex"
+                value: 1
+              - name: "localStartTime"
+                value: 20
+              - name: "localEndTime"
+                value: 30
+              - name: "operatingMode"
+                value: 5
+      response:
+          error: INVALID_COMMAND
+
+    - label: "Get Holiday Schedule with Invalid HolidayIndex 15."
+      PICS: DRLK.S.F0b && DRLK.S.C12.Rsp && DRLK.S.C12.Tx
+      command: "GetHolidaySchedule"
+      arguments:
+          values:
+              - name: "holidayIndex"
+                value: 15
+      response:
+          values:
+              - name: "holidayIndex"
+                value: 15
+              - name: "status"
+                value: 133
+
+    - label: "Get Holiday Schedule with the Non-scheduled HolidayIndex"
+      PICS: DRLK.S.F0b && DRLK.S.C12.Rsp && DRLK.S.C12.Tx
+      command: "GetHolidaySchedule"
+      arguments:
+          values:
+              - name: "holidayIndex"
+                value: 10
+      response:
+          values:
+              - name: "holidayIndex"
+                value: 10
+              - name: "status"
+                value: 139
+
+    - label: "Clear Holiday schedule with 1 index"
+      PICS: DRLK.S.F0b && DRLK.S.C13.Rsp
+      command: "ClearHolidaySchedule"
+      arguments:
+          values:
+              - name: "holidayIndex"
+                value: 1
+
+    - label: "Make sure that holiday schedule was deleted"
+      PICS: DRLK.S.F0b && DRLK.S.C12.Rsp && DRLK.S.C12.Tx
+      command: "GetHolidaySchedule"
+      arguments:
+          values:
+              - name: "holidayIndex"
+                value: 1
+      response:
+          values:
+              - name: "holidayIndex"
+                value: 1
+              - name: "status"
+                value: 139
+
+    - label: "Cleanup the created user"
+      command: "ClearUser"
+      timedInteractionTimeoutMs: 10000
+      arguments:
+          values:
+              - name: "userIndex"
+                value: 1

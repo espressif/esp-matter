@@ -1,0 +1,18 @@
+[Unit]
+Description=Attach BlueZ to cpc-hci-bridge
+StartLimitIntervalSec=0
+BindsTo=cpc-hci-bridge.service bluetooth.service
+After=cpc-hci-bridge.service bluetooth.service
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/usr/bin/hciattach /dev/pts_hci any 115200 noflow
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=hciattach
+# This service shall be considered active after start
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

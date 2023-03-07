@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Parameters xml_version="1" xmlns="http://cypress.com/xsd/cydatawounding_v1">
+  <Param name="PartNumber" value="AW-BT321W" />
+  <Param name="PartAvailability" value="Active" />
+  <Param name="DeviceDie" value="30739A0" />
+  <Param name="Silicon_Revision" value="PRODUCTION" />
+  <Param name="Package" value="81-LGA" />
+  <Param name="CPU" value="ARM CM4" />
+  <Param name="DeviceSeries" value="30739" />
+  <Param name="Speed_MHz" value="96" />
+  <Param name="Flash_KB" value="1024" />
+  <Param name="ROM_KB" value="2048" />
+  <Param name="SRAM_KB" value="512" />
+  <Param name="Bluetooth" value="5" />
+  <Param name="Vddmin_volts" value="1.76" />
+  <Param name="Vddmax_volts" value="3.63" />
+  <Param name="TempMin_Celsius" value="-30" />
+  <Param name="TempMax_Celsius" value="85" />
+  <Param name="SiliconID" value="0x00000000" />
+  <Param name="Module" value="Yes" />
+  <Param name="REQUIRED_KITS" value="None" />
+  <Param name="Next_Best_Alt_Part" value="None" />
+  <Param name="DATASHEET" value="https://www.azurewave.com/img/cypress/AW-BT315W_DS_DF_A_STD.pdf" />
+</Parameters>

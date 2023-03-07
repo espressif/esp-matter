@@ -1,0 +1,16 @@
+id: atomic
+label: "Atomic Operations Library"
+package: platform
+description: Library of different operations performed atomically
+category: Platform|Utilities
+quality: production
+root_path: platform/common
+include:
+  - path: inc
+    file_list:
+      - path: sl_atomic.h
+provides:
+  - name: atomic
+documentation:
+  docset: gecko-platform
+  document: common/api/group-atomic

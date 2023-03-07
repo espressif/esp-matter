@@ -1,0 +1,18 @@
+id: imu_driver_icm20689
+package: platform
+label: IMU - Device driver for InvenSense ICM-20689
+description: >
+  Intertial Measurement Unit driver for InvenSense ICM-20689
+category: Platform|Board Drivers
+quality: production
+root_path: hardware/driver/imu
+provides:
+  - name: imu_device_driver
+requires:
+  - name: imu_driver_core
+  - name: icm20689_driver
+source:
+  - path: src/sl_imu_icm20689.c
+documentation:
+    docset: gecko-platform
+    document: hardware-driver/api/group-imu

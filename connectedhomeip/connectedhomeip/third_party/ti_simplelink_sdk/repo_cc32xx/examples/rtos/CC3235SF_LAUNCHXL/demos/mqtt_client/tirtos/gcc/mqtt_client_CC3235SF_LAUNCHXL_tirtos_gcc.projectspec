@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectSpec>
+    <applicability>
+        <when>
+            <context
+                deviceFamily="ARM"
+                deviceId="Cortex M.CC3235SF"
+            />
+        </when>
+    </applicability>
+
+    <import spec="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/kernel/tirtos/builds/cc32xx/release/gcc/tirtos_builds_cc32xx_release_gcc.projectspec"/>
+
+    <project
+        title="MQTT Client App"
+        name="mqtt_client_CC3235SF_LAUNCHXL_tirtos_gcc"
+		configurations="MCU+Image, Debug"
+        toolChain="GNU"
+        connection="TIXDS110_Connection.xml"
+        device="Cortex M.CC3235SF"
+        ignoreDefaultDeviceSettings="true"
+        ignoreDefaultCCSSettings="true"
+        references="tirtos_builds_cc32xx_release_gcc"
+        products="sysconfig"
+        compilerBuildOptions="
+            -I${PROJECT_ROOT}
+            -I${PROJECT_ROOT}/${ConfigName}
+             
+            -DDeviceFamily_CC3220
+            -I${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source
+            -I${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source/ti/posix/gcc
+            -mcpu=cortex-m4
+            -march=armv7e-m
+            -mthumb
+            -std=c99
+            -std=c++11
+            -mfloat-abi=soft
+            -ffunction-sections
+            -fdata-sections
+            -g
+            -gstrict-dwarf
+            -Wall
+            -I${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/kernel/tirtos/packages/gnu/targets/arm/libs/install-native/arm-none-eabi/include/newlib-nano
+            -I${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/kernel/tirtos/packages/gnu/targets/arm/libs/install-native/arm-none-eabi/include
+            -I${CG_TOOL_ROOT}/arm-none-eabi/include
+        "
+        linkerBuildOptions="
+            -L${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source/ti/net/mqtt/lib
+            -L${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source/ti/net/lib
+            -L${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source/ti/net/ota
+            -L${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source/ti/net/http/http_lib_for_OTA
+            -l:gcc/m4/httpclient_release.a
+            -L${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source/ti/utils/json/lib
+            -L${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source/ti/drivers/net/wifi/slnetif
+            -L${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source
+            -L${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source/ti/drivers/net/wifi
+            -L${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/kernel/tirtos/packages
+            -L${PROJECT_BUILD_DIR}/syscfg
+            -lti_utils_build_linker.cmd.genlibs
+            -l${GENERATED_LIBRARIES}
+            -l:ti/devices/cc32xx/driverlib/gcc/Release/driverlib.a
+            -march=armv7e-m
+            -mthumb
+            -nostartfiles
+            -static
+            -Wl,--gc-sections
+            -L${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/kernel/tirtos/packages/gnu/targets/arm/libs/install-native/arm-none-eabi/lib/thumb/v7e-m/nofp
+            -lgcc
+            -lc
+            -lm
+            -lnosys
+            --specs=nano.specs
+        "
+        enableHexTool="true"
+        hexBuildOptions="-O binary"
+        enableSysConfigTool="true"
+        sysConfigBuildOptions="
+            --product ${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/.metadata/product.json
+            --compiler gcc
+        "
+        description="MQTT Client demo application">
+
+
+        <customPostBuildTool
+            name="Image Creator"
+            command="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source/ti/drivers/net/imagecreator/bin/SLImageCreator.exe"
+            flags="
+                syscfg create_image
+                --sdk_path &quot;${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}&quot;
+                --json &quot;${BuildDirectory}/syscfg/ti_drivers_net_wifi_config.json&quot;
+                --file &quot;${BuildDirectory}/syscfg/${BuildArtifactFileBaseName}.sli&quot;
+                --mcu &quot;${BuildDirectory}/${BuildArtifactFileBaseName}.bin&quot;
+            "
+            inputFiles="${BuildArtifactFileBaseName}.bin, syscfg/ti_drivers_net_wifi_config.json"
+            outputFiles="syscfg/${BuildArtifactFileBaseName}.sli"
+            applicableConfigurations="MCU+Image">
+        </customPostBuildTool>
+    
+        <property name="buildProfile" value="release"/>
+        <property name="isHybrid" value="true"/>
+        <file path="../../mqtt_client_app.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../README.md" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../README.html" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../debug_settings.h" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../wifi_settings.h" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../ota_settings.h" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../common/ifmod/mqtt_if.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="ifmod">
+        </file>
+        <file path="../../../../../common/ifmod/mqtt_if.h" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="ifmod">
+        </file>
+        <file path="../../../../../common/ifmod/debug_if.h" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="ifmod">
+        </file>
+        <file path="../../../../../common/ifmod/wifi_if.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="ifmod">
+        </file>
+        <file path="../../../../../common/ifmod/wifi_if.h" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="ifmod">
+        </file>
+        <file path="../../../../../common/ifmod/httpsrv_if.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="ifmod">
+        </file>
+        <file path="../../../../../common/ifmod/httpsrv_if.h" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="ifmod">
+        </file>
+        <file path="../../../../../common/ifmod/utils_if.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="ifmod">
+        </file>
+        <file path="../../../../../common/ifmod/utils_if.h" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="ifmod">
+        </file>
+        <file path="../../../../../common/ifmod/uart_if.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="ifmod">
+        </file>
+        <file path="../../../../../common/ifmod/uart_if.h" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="ifmod">
+        </file>
+        <file path="../../../../../common/ifmod/ota_if.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="ifmod">
+        </file>
+        <file path="../../../../../common/ifmod/ota_if.h" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="ifmod">
+        </file>
+        <file path="../../../../../common/ifmod/ota_vendors.h" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="ifmod">
+        </file>
+        <file path="../../../../../common/ifmod/ota_vendor_github.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="ifmod">
+        </file>
+        <file path="../../../../../common/ifmod/ota_vendor_dropbox.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="ifmod">
+        </file>
+        <file path="../../tirtos/main_tirtos.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../tirtos/mqtt_client.syscfg" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source/ti/boards/CC3235SF_LAUNCHXL/Board.html" openOnCreation="false" excludeFromBuild="false" action="link">
+        </file>
+        <file path="../../tirtos/gcc/cc32xxsf_tirtos.lds" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+	<file path="../../image.syscfg" openOnCreation="false" excludeFromBuild="false" action="copy">
+	</file>
+	<file path="../../userFiles/dummy-root-ca-cert-key" targetDirectory="./userFiles/" openOnCreation="false" excludeFromBuild="false" action="copy">
+	</file>
+	<file path="../../userFiles/RootCACerts.pem" targetDirectory="./userFiles/" openOnCreation="false" excludeFromBuild="false" action="copy">
+	</file>
+	<file path="../../userFiles/DigiCert_High_Assurance_CA.der" targetDirectory="./userFiles/" openOnCreation="false" excludeFromBuild="false" action="copy">
+	</file>
+	<file path="../../userFiles/ota.dat" targetDirectory="./userFiles/" openOnCreation="false" excludeFromBuild="false" action="copy">
+	</file>
+	<file path="../../userFiles/dummy_ota_vendor_cert.der" targetDirectory="./userFiles/" openOnCreation="false" excludeFromBuild="false" action="copy">
+	</file>
+	<file path="../../userFiles/www/index.html" targetDirectory="./userFiles/www/" openOnCreation="false" excludeFromBuild="false" action="copy">
+	</file>
+	<file path="../../userFiles/www/settings.html" targetDirectory="./userFiles/www/" openOnCreation="false" excludeFromBuild="false" action="copy">
+	</file>
+	<file path="../../userFiles/www/ota.html" targetDirectory="./userFiles/www/" openOnCreation="false" excludeFromBuild="false" action="copy">
+	</file>
+	<file path="../../userFiles/www/help.html" targetDirectory="./userFiles/www/" openOnCreation="false" excludeFromBuild="false" action="copy">
+	</file>
+	<file path="../../userFiles/www/css/style.css" targetDirectory="./userFiles/www/css/" openOnCreation="false" excludeFromBuild="false" action="copy">
+	</file>
+	<file path="../../userFiles/www/js/jquery.min.js" targetDirectory="./userFiles/www/js/" openOnCreation="false" excludeFromBuild="false" action="copy">
+	</file>
+	<file path="../../userFiles/www/js/scripts.js" targetDirectory="./userFiles/www/js/" openOnCreation="false" excludeFromBuild="false" action="copy">
+	</file>
+	<file path="../../userFiles/www/images/tilogo.gif" targetDirectory="./userFiles/www/images/" openOnCreation="false" excludeFromBuild="false" action="copy">
+	</file>
+	<file path="../../userFiles/www/images/icons/help.png" targetDirectory="./userFiles/www/images/icons/" openOnCreation="false" excludeFromBuild="false" action="copy">
+	</file>
+	<file path="../../userFiles/www/images/icons/wirelessfull.png" targetDirectory="./userFiles/www/images/icons/" openOnCreation="false" excludeFromBuild="false" action="copy">
+	</file>
+	<file path="../../userFiles/www/images/icons/wireless.png" targetDirectory="./userFiles/www/images/icons/" openOnCreation="false" excludeFromBuild="false" action="copy">
+	</file>
+	<file path="../../userFiles/www/images/icons/menu.png" targetDirectory="./userFiles/www/images/icons/" openOnCreation="false" excludeFromBuild="false" action="copy">
+	</file>
+	<file path="../../userFiles/sys/mcubootinfo.bin" targetDirectory="./userFiles/sys/" openOnCreation="false" excludeFromBuild="false" action="copy">
+	</file>
+	<file path="../../userFiles/dummy-root-ca-cert" targetDirectory="./userFiles/" openOnCreation="false" excludeFromBuild="false" action="copy">
+	</file>
+    </project>
+</projectSpec>

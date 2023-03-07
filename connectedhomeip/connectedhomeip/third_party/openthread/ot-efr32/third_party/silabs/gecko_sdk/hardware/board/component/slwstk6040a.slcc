@@ -1,0 +1,23 @@
+!!omap
+- id: slwstk6040a
+- label: SLWSTK6040A
+- package: platform
+- description: Kit BSP support for the Wireless Starter Kit main board 10x bundle.
+- category: Platform|Board|Kit|Wireless Starter Kit
+- quality: production
+- requires:
+  - name: brd4001a
+  - name: hardware_board_from_slwstk6040a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_stk
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWSTK6040A"'
+  - name: SL_KIT_REV
+    value: '"A01"'
+- tag:
+  - kit:opn:SLWSTK6040A
+  - kit:pn:WSTK6040
+  - kit:variant:A
+  - kit:revision:A01

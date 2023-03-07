@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2011 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="SC Control Point" type="org.bluetooth.characteristic.sc_control_point" uuid="2A55" last-modified="2012-05-29" approved="Yes">
+    <InformativeText>
+        <Summary>
+            The SC Control Point characteristic is used to request a specific function to be executed on the receiving device.
+        </Summary>
+    </InformativeText>
+    <Value>
+        <Field name="Op Code">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+            <Enumerations>
+                <Enumeration key="0" value="Reserved for future use" />
+                <Enumeration key="1" value="Set Cumulative Value" requires="C3" description="Initiate the procedure to set a cumulative value. The new value is sent as parameter following op code (parameter defined per service). The response to this control point is Op Code 16 or 0x10 in Hex followed by the Request Op Code and the appropriate Response Value" />
+                <Enumeration key="2" value="Start Sensor Calibration" requires="N/A" description="Starts the calibration of the RSC Sensor. The response to this control point is Op Code 16 or 0x10 in Hex followed by the Request Op Code and the appropriate Response Value" />
+                <Enumeration key="3" value="Update Sensor Location" requires="C1" description="Update to the location of the sensor with the value sent as parameter to this op code. The response to this control point is Op Code 16 or 0x10 in Hex followed by the Request Op Code and the appropriate Response Value" />
+                <Enumeration key="4" value="Request Supported Sensor Locations" requires="N/A" description="Request a list of supported locations where the sensor can be attached. The response to this control point is Op Code 16 or 0x10 in Hex followed by the Request Op Code and the appropriate Response Value, including a list of supported sensor locations in the Response Parameter" />
+                <Enumeration key="16" value="Response Code" requires="C2" />
+                <ReservedForFutureUse start="5" end="15" />
+                <ReservedForFutureUse start="17" end="255" />
+            </Enumerations>
+            
+        </Field>
+        
+        <Field name="Cumulative Value">
+            <InformativeText>Parameter Value for "Set Cumulative Value" Op Code</InformativeText>
+            <Requirement>C3</Requirement>
+            <Format>variable</Format>
+        </Field>
+        
+        <Field name="Sensor Location Value">
+            <InformativeText>Parameter Value for "Update Sensor Location" Op Code</InformativeText>
+            <Requirement>C1</Requirement>
+            <Format>uint8</Format>
+            <Description>Refer to the Sensor Location characteristic (org.bluetooth.characteristic.sensor_location) for additional information on the possible values for this field.</Description>
+            
+        </Field>
+        
+         <Field name="Request Op Code">
+            <InformativeText>Parameter Value for "Response Code" Op Code</InformativeText>
+            <Requirement>C2</Requirement>
+            <Format>uint8</Format>
+            <Description>Refer to the Op Code table above for additional information on the possible values for this field.</Description>
+        </Field>
+        
+        <Field name="Response Value">
+            <InformativeText>Parameter Value for "Response Code" Op Code</InformativeText>
+            <Requirement>C2</Requirement>
+            <Format>uint8</Format>
+            <Enumerations>
+                <InformativeText>Response Values</InformativeText>
+                <Enumeration key="0" value="Reserved For Future Use (Response Parameter: N/A)" description="N/A" />
+                <Enumeration key="1" value="Success (Response Parameter: None, except for Op Code 0x04, see Note below)" description="Response for successful operation" />
+                <Enumeration key="2" value="Op Code not supported (Response Parameter: N/A)" description="Response if unsupported Op Code is received" />
+                <Enumeration key="3" value="Invalid Parameter (Response Parameter: None)" description="Response if Parameter received does not meet the requirements of the service" />
+                <Enumeration key="4" value="Operation Failed (Response Parameter: None)" description="Response if the requested procedure failed" />
+                <ReservedForFutureUse start="5" end="255" />
+            </Enumerations>
+            
+        </Field>
+        
+        
+        <Field name="Response Parameter">
+            <InformativeText>Parameter Value for "Response Code" Op Code</InformativeText>
+            <Requirement>C2</Requirement>
+            <Format>variable</Format>
+            <Description>Note: Response Parameter for Op Code 4 or 0x04 in Hex: The Parameter Value of the response to the Control Point 0x04 (Request Supported Sensor Locations) is a variable length to allow a list of different sensor locations as defined by the Service Specification.</Description>
+            
+           
+        </Field>
+    </Value>
+    
+    <Note>        
+        The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet.
+    </Note>
+</Characteristic>

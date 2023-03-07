@@ -1,0 +1,34 @@
+.. _ota-index:
+
+Ethernet_IP
+==================
+
+- **第一步：编译**
+
+	- 进入 ``customer_app/bl702_demo_event`` 目录下，使用 ``./geneth`` 编译脚本进行编译，编译生成文件在build_out目录下, ``build_out/bl702_demo_event.bin`` 是烧录需要使用的文件；
+
+- **第二步：烧录**
+
+	- 使用 \ `Bouffalo Lab Dev Cube <https://dev.bouffalolab.com/download>`__ 下载最新的工具并进行烧录，烧录方法可参考快速入门下载章节；
+
+- **第三步：运行**
+
+	- 在开始之前，需要把模块通过网线与路由器连接，用 USB 给模块供电，串口用来打印log。在烧录好固件之后，重启模块。
+
+		.. figure:: imgs/image1.png
+		   :alt: 
+
+	- 模块自动启动 ethernet、开启 dhcp。获取到 IP 之后会打印出获取到的 IP 地址。
+
+		.. figure:: imgs/image2.png
+			:alt: 
+
+	- 接下来可以使用 ping 命令查看与路由器的网络连接状态。
+
+		.. figure:: imgs/image3.png
+			:alt: 
+
+	- 可以使用 help 命令查看支持的 iperf 命令。
+
+		.. figure:: imgs/image4.png
+			:alt: 

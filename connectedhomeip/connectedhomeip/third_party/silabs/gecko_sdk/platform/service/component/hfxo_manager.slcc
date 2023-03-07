@@ -1,0 +1,40 @@
+id: hfxo_manager
+label: "HFXO Manager"
+package: platform
+description: HFXO Manager - Manager for the High Frequency Crystal Oscillator
+category: Services
+quality: production
+config_file:
+  - path: platform/service/hfxo_manager/config/sl_hfxo_manager_config.h
+source:
+  - path: platform/service/hfxo_manager/src/sl_hfxo_manager.c
+  - path: platform/service/hfxo_manager/src/sl_hfxo_manager_hal_s2.c
+    condition: [device_series_2]
+  - path: platform/service/hfxo_manager/src/sli_hfxo_manager_internal.h
+include:
+  - path: platform/service/hfxo_manager/inc
+    file_list:
+      - path: sl_hfxo_manager.h
+      - path: sli_hfxo_manager.h
+provides:
+  - name: hfxo_manager
+requires:
+  - name: status
+  - name: sleeptimer
+  - name: sl_assert
+template_contribution:
+  - name: event_handler
+    value:
+      event: platform_init
+      include: sl_hfxo_manager.h
+      handler: sl_hfxo_manager_init_hardware
+    priority: -9725
+  - name: event_handler
+    value:
+      event: service_init
+      include: sl_hfxo_manager.h
+      handler: sl_hfxo_manager_init
+    priority: -5
+documentation:
+  docset: gecko-platform
+  document: service/api/group-hfxo-manager

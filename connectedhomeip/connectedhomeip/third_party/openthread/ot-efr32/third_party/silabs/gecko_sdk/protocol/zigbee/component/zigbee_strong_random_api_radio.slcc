@@ -1,0 +1,22 @@
+package: Zigbee
+description: Provides APIs for generating cryptographically-strong random numbers using radio hardware.
+label: Strong Random Api (Radio)
+id: zigbee_strong_random_api_radio
+category: Zigbee|Utility
+quality: production
+
+provides:
+   - name: "zigbee_strong_random"
+   - name: "zigbee_strong_random_api_radio"
+
+source:
+  - path: protocol/zigbee/stack/framework/strong-random-api.c
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_strong_random_api_radio
+
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/strong-random-api-radio

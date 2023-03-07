@@ -1,0 +1,30 @@
+{{#zcl_structs checkForDoubleNestedArray="true"}}
+// Struct name: {{label}}
+// Struct contains array: {{struct_contains_array}}
+// Struct contains array of structs containing an array: {{struct_contains_nested_array}}
+// Number of structs struct is associated with: {{struct_cluster_count}}
+// Fabric scoped: {{isFabricScoped}}
+{{#if struct_contains_nested_array}}
+// {{label}} <- contains nested array
+{{/if}}
+{{#if isFabricScoped}}
+// Struct is fabric-scoped
+{{/if}}
+{{#zcl_struct_items checkForDoubleNestedArray="true"}}
+{{#first}}
+// Struct for {{parent.label}}
+typedef struct _{{asType parent.label}} {
+{{/first}}
+{{ident}}{{asUnderlyingType type}} {{asSymbol label}};{{#if struct_item_contains_nested_array}}// <- has nested array{{/if}} {{#if isNullable}}// NULLABLE {{/if}} {{#if isFabricSensitive}}// FABRIC SENSITIVE {{/if}}
+{{#last}}
+} {{asType parent.label}};
+
+{{/last}}
+{{else}}
+// Void typedef for {{asType parent.label}} which is empty.
+// this will result in all the references to the data being as uint8_t *
+typedef uint8_t {{asType parent.label}};
+
+{{/zcl_struct_items}}
+{{/zcl_structs}}
+

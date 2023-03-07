@@ -1,0 +1,37 @@
+id: psa_crypto_ecdsa
+package: platform
+label: ECDSA
+description: >-
+  This component provides support for signature generation and verification
+  with ECDSA in PSA Crypto.
+category: Platform|Security|PSA Crypto|Signatures
+quality: production
+provides:
+  - name: psa_crypto_ecdsa
+requires:
+  - name: psa_crypto_ecc
+  - name: psa_crypto_ecc_curve
+  - name: mbedtls_ecdsa
+    condition: [device_series_0]
+  - name: mbedtls_ecdsa
+    condition: [device_series_1]
+  # EFR32xG21 (SDID:200) does not support acceleration of the SECP224R1 curve.
+  - name: mbedtls_ecdsa
+    condition: [device_sdid_200, psa_crypto_ecc_secp224r1]
+  - name: mbedtls_ecdsa
+    condition: [device_security_se, psa_crypto_ecc_secp384r1]
+  - name: mbedtls_ecdsa
+    condition: [device_security_se, psa_crypto_ecc_secp521r1]
+  - name: mbedtls_ecdsa
+    condition: [device_security_rot, psa_crypto_ecc_secp384r1]
+  - name: mbedtls_ecdsa
+    condition: [device_security_rot, psa_crypto_ecc_secp521r1]
+template_contribution:
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_ECDSA
+  - name: psa_crypto_config
+    value: "MBEDTLS_PSA_BUILTIN_ALG_ECDSA 1"
+    condition: [mbedtls_ecdsa]
+  - name: psa_crypto_config
+    value: "MBEDTLS_PSA_BUILTIN_ALG_DETERMINISTIC_ECDSA 1"
+    condition: [mbedtls_ecdsa_deterministic]

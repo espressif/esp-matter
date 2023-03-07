@@ -1,0 +1,9 @@
+id: cpc_security_secondary_none
+label: CPC SECURITY NONE
+package: platform
+description: Co-Processor Communication (CPC) - Disabled security to reduce memory footprint - not recommended
+category: Services|Co-Processor Communication
+quality: production
+root_path: platform/service/cpc
+provides:
+  - name: cpc_security_secondary

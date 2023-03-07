@@ -1,0 +1,268 @@
+%%{
+/* 
+ *  Copyright (c) 2009 Texas Instruments and others.
+ *  All rights reserved. This program and the accompanying materials
+ *  are made available under the terms of the Eclipse Public License v1.0
+ *  which accompanies this distribution, and is available at
+ *  http://www.eclipse.org/legal/epl-v10.html
+ *
+ *  Contributors:
+ *      Texas Instruments - initial implementation
+ *
+ * */
+%%}
+%%{
+    /* this .xdt template generates project spec files that
+     * should adhere to the schema defined by
+     * ccsv6/eclipse/plugins/com.ti.ccstudio.project.templates_xxx/schema/projectSpec.xsd
+     */
+    var template = $args[0];
+    var descriptionArr = $args[1];
+    var productId = $args[2];
+    var templateGroupArr = $args[3];
+    var examplesTemplate = $args[4];
+
+    /*
+     *  ======== lsr ========
+     *  Find all files, recursively, in the directory named by root.
+     */
+    function lsr(root)
+    {
+        var dirArray = [];
+
+        /*
+         *  ======== myFilter ========
+         *  Return true if file does not begin with '.' and is not a
+         *  directory; otherwise, return false.
+         */
+        function myFilter(dir, file)
+        {
+            if (String(file)[0] == '.') {
+                return (false);
+            }
+
+            var tmp = new java.io.File(root + "/" + file);
+            if (tmp.isDirectory()) {
+                dirArray[dirArray.length] = tmp;
+                return (false);
+            }
+
+            return (true);
+        }
+
+        /* create an object that implements java.io.FilenameFilter */
+        var filter = java.io.FilenameFilter({accept : myFilter});
+
+        /* create a java.io.File object */
+        var file = new java.io.File(root);
+
+        /* get all files in root and construct path names for this list */
+        var result = [];
+        var list = file.list(filter);
+        if (list != null) {
+            for (var i = 0; i < list.length; i++) {
+                result[i] = root + java.io.File.separator + list[i];
+            }
+        }
+
+        /* recurse into any sub-directories found in root */
+        for (var i = 0; i < dirArray.length; i++) {
+            result = result.concat(lsr(dirArray[i]));
+        }
+
+        return (result);
+    }
+%%}
+<?xml version="1.0" encoding="UTF-8"?>
+<projectSpec>
+%    var index = 0;
+%    var toolChain;
+%    for each (var filter in template.filterArr) {
+    <applicability>
+%        var appl = descriptionArr.applicabilityArr.pop();
+%        if (appl != undefined && appl.whenArr.length > 0) {
+        <when>
+            <context
+%           for each (var w in appl.whenArr)  {
+%               if (w.key == "toolChain") {
+%                   toolChain = w.value;
+%               }
+%               if (w.key.match(/^device/)) {
+                `w.key`="`w.value`"
+%               }
+%           }
+            />
+        </when>
+%        }
+%        if (appl != undefined && appl.exceptArr.length > 0) {
+        <except>
+            <context
+%           for each (var ex in appl.exceptArr)  {
+                `ex.key`="`ex.value`"
+%           }
+            />
+        </except>
+%        }
+    </applicability>
+%    }
+
+    <project
+        title="`template.title`"
+%    if (template.name != undefined) {
+        name="`template.name`"
+%    }
+%    if (toolChain != undefined) {
+        toolChain="`toolChain`"
+%    }
+%    if (template.linkerCommandFile != undefined) {
+        linkerCommandFile="`template.linkerCommandFile`"
+%    }
+%    if (template.compilerBuildOptions != undefined) {
+        compilerBuildOptions="`template.compilerBuildOptions`"
+%    }
+%    if (template.linkerBuildOptions != undefined) {
+        linkerBuildOptions="`template.linkerBuildOptions`"
+%    }
+%    if (template.buildCommandFlags != undefined) {
+        buildCommandFlags="`template.buildCommandFlags`"
+%    }
+%    if (template.endianness != undefined) {
+        endianness="`template.endianness`"
+%    }
+%    if (template.outputFormat != undefined) {
+        outputFormat="`template.outputFormat`"
+%    }
+%    if (template.ignoreDefaults != undefined) {
+        ignoreDefaultDeviceSettings="`template.ignoreDefaults`"
+%    }
+%    if (template.launchWizard != undefined) {
+        launchWizard="`template.launchWizard`"
+%    }
+%    if (template.preBuildStep != undefined) {
+        preBuildStep="`template.preBuildStep`"
+%    }
+%    if (template.postBuildStep != undefined) {
+        postBuildStep="`template.postBuildStep`"
+%    }
+%    if (template.references != undefined) {
+        references="`template.references`"
+%    }
+        description="`template.description`">
+
+%    var configOnlyProject = (template.configOnly != undefined) ?
+%                                        template.configOnly : false;
+%    var projectType = configOnlyProject ? "rtscConfiguration" : "rtsc";
+%    if (template.legacyTcf) {
+%        projectType = "bios5"
+%    }
+        <property name="type" value="`projectType`"/>
+%    var reqProdString = productId;
+%    for each (var prod in template.requiredProducts) {
+%        reqProdString =  reqProdString + ";" + prod;
+%    }
+        <property name="products" value="`reqProdString`"/>
+%    if (template.xdcToolsVersion != undefined) {
+        <property name="xdcToolsVersion" value="`template.xdcToolsVersion`"/>
+%    }
+%    if (template.target != undefined) {
+        <property name="target" value="`template.target`"/>
+%    }
+%    if (template.platform != undefined) {
+        <property name="platform" value="`template.platform`"/>
+%    }
+%    if (template.buildProfile != undefined) {
+        <property name="buildProfile" value="`template.buildProfile`"/>
+%    }
+%    if (template.isHybrid != undefined) {
+        <property name="isHybrid" value="`template.isHybrid`"/>
+%    }
+%    if (template.configuroOptions != null) { /* should we use encodeURI() to encode the string ? */
+        <property name="configuroOptions" value="`template.configuroOptions`"/>
+%    }
+%    if (template.groups != undefined) {
+%        for each (var g in template.groups) {
+        <group id="`g`"/>
+%        }
+%    }
+%    /* Refer to default group if no groups are defined by the template provider */
+%    if (templateGroupArr.length == 0)  {
+        <group id="`this.productSchema.id`.templates"/>
+%    }
+%    var index = examplesTemplate.lastIndexOf('.');
+%    var pkgDir = examplesTemplate.substring(0, index).replace(/\./g, '\\').trim();
+%    var exTemplate = xdc.useModule(examplesTemplate);
+%    var fullDir =  exTemplate.$package.$spec.getBaseDir().trim();
+%    var length = fullDir.length();
+%    var length2 = pkgDir.length;
+%    fullDir = fullDir.substring(0, length - length2);
+%
+%    for each (var f in template.fileList) {
+%       var bldExclude =
+%            (f.excludeFromBuild != undefined)? f.excludeFromBuild:false;
+%       var openFile =
+%            (f.openOnCreation != undefined)? f.openOnCreation:false;
+%       var action = "copy";
+%       if (f.action != undefined && f.action == "LINK") {
+%            action = "link";
+%       }
+%       var fpath = xdc.findFile(fullDir + f.path);
+%       if (fpath == null) {
+%           fpath = xdc.findFile(f.path);
+%           if (fpath == null) {
+%               throw new Error("'" +  fullDir + f.path
+%                            + "' does not exist and can't find '" + f.path
+%                            + "' along the path " + xdc.curPath());
+%           }
+%       }
+%       var file =  new java.io.File(fpath);
+%       if (file.exists()) {
+%           if (file.isFile()) {
+%               if(f.targetDirectory != undefined) {
+        <file path="`f.path`" openOnCreation="`openFile`" excludeFromBuild="`bldExclude`" action="`action`" targetDirectory="`f.targetDirectory`" >
+%               } else {
+        <file path="`f.path`" openOnCreation="`openFile`" excludeFromBuild="`bldExclude`" action="`action`" >
+%               }
+%               if  (f.copyIntoConfiguration != undefined) {
+            <property name="copyIntoConfiguration" value="`f.copyIntoConfiguration`"/>
+%               }
+        </file>
+%           } else
+%           {
+%               var list = lsr(file.path);
+%               for each(var fa in list) {
+%                   var subpath = fa.substring(fullDir.length());
+%                   subpath = subpath.replace(/\\/g, "/");
+%                   var subDir = subpath.substring(pkgDir.length, subpath.lastIndexOf("/"));
+%                   var targetDir = f.targetDirectory;
+%                   if (targetDir != undefined) {
+%                       if (targetDir.indexOf("/") == 0) {
+%                           targetDir = targetDir.replace("/", "");
+%                       }
+        <file path="`subpath`" openOnCreation="`openFile`" excludeFromBuild="`bldExclude`" action="`action`" targetDirectory="`targetDir+subDir`" >
+%                   } else {
+%                       if (subDir.length != 0) {
+%                           if (subDir.indexOf("/") == 0) {
+%                               subDir = subDir.replace("/","");
+%                           }
+        <file path="`subpath`" openOnCreation="`openFile`" excludeFromBuild="`bldExclude`" action="`action`" targetDirectory="`subDir`" >
+%                       } else {
+        <file path="`subpath`" openOnCreation="`openFile`" excludeFromBuild="`bldExclude`" action="`action`">
+%                       }
+%                   }
+%                   if  (f.copyIntoConfiguration != undefined) {
+            <property name="copyIntoConfiguration" value="`f.copyIntoConfiguration`"/>
+%                   }
+        </file>
+%               }
+%           }
+%       }
+%    }
+    </project>
+</projectSpec>
+
+%%{
+/*
+ * @(#) xdc.tools.product.trexgen; 1, 0, 0,3; 2-18-2019 11:04:07; /db/ztree/library/trees/xdctools/xdctools-h03/src/
+ */
+
+%%}

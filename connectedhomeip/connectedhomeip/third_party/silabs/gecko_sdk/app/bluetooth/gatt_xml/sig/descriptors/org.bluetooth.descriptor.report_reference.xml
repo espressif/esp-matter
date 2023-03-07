@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Descriptor xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/descriptor.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.descriptor.report_reference" uuid="2908" name="Report Reference">
+  <InformativeText>
+    <Summary>
+        Mapping information in the form of a Report ID and Report Type which maps the current parent characteristic to the Report ID(s) and Report Type (s) defined within the Report Map characteristic.  
+	</Summary>
+  </InformativeText>
+  <Value>
+    <Field name="Report ID">
+      <Requirement>Mandatory</Requirement>
+      <Format>uint8</Format>    
+      <Minimum>0</Minimum>
+      <Maximum>255</Maximum>
+    </Field>
+    <Field name="Report Type">
+      <Requirement>Mandatory</Requirement>
+      <Format>uint8</Format>
+      <Minimum>1</Minimum>
+      <Maximum>3</Maximum>
+      <Enumerations>
+        <Enumeration value="Input Report" key="1"/>
+        <Enumeration value="Output report" key="2"/>
+        <Enumeration value="Feature Report" key="3"/>
+        <ReservedForFutureUse start="4" end="255" />
+        <ReservedForFutureUse1 start1="0" end1="0"  />
+      </Enumerations>      
+    </Field>
+  </Value>
+</Descriptor>

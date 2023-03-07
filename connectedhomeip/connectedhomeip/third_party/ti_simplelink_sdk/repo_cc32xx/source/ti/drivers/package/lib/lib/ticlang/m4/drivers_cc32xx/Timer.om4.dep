@@ -1,0 +1,9 @@
+package/lib/lib/ticlang/m4/drivers_cc32xx/Timer.om4: Timer.c /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/HwiP.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/SemaphoreP.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/ClockP.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/Timer.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/timer/TimerSupport.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/Power.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/utils/List.h 
+Timer.c:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/HwiP.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/SemaphoreP.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/ClockP.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/Timer.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/timer/TimerSupport.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/Power.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/utils/List.h:

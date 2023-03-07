@@ -1,0 +1,3 @@
+[submodule "developer-tools"]
+	path = developer-tools
+	url = https://gitlab.arm.com/iot/open-iot-sdk/tools/developer-tools

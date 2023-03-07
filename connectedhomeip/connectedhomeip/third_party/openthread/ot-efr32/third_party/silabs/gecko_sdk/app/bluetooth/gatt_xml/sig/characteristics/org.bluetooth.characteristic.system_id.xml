@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.system_id" uuid="2A23" name="System ID" last-modified="2011-05-24" approved="Yes">
+  <InformativeText>
+    <Abstract>
+      The SYSTEM ID characteristic consists of a structure with two fields. The first field are the LSOs and the second field contains the MSOs.
+      This is a 64-bit structure which consists of a 40-bit manufacturer-defined identifier concatenated with a 24 bit unique Organizationally Unique Identifier (OUI). The OUI is issued by the IEEE Registration Authority (http://standards.ieee.org/regauth/index.html) and is required to be used in accordance with IEEE Standard 802-2001.6 while the least significant 40 bits are manufacturer defined.
+      If System ID generated based on a Bluetooth Device Address, it is required to be done as follows. System ID and the Bluetooth Device Address have a very similar structure: a Bluetooth Device Address is 48 bits in length and consists of a 24 bit Company Assigned Identifier (manufacturer defined identifier) concatenated with a 24 bit Company Identifier (OUI). In order to encapsulate a Bluetooth Device Address as System ID, the Company Identifier is concatenated with 0xFFFE followed by the Company Assigned Identifier of the Bluetooth Address. For more guidelines related to EUI-64, refer to http://standards.ieee.org/develop/regauth/tut/eui64.pdf.
+    </Abstract>
+    <Examples>
+      <Example>If the system ID is based of a Bluetooth Device Address with a Company Identifier (OUI) is 0x123456 and the Company Assigned Identifier is 0x9ABCDE, then the System Identifier is required to be 0x123456FFFE9ABCDE.</Example>
+    </Examples>
+  </InformativeText>
+  <Value>
+    <Field name="Manufacturer Identifier">
+      <InformativeText>	</InformativeText>
+      <Requirement>Mandatory</Requirement>
+      <Format>uint40</Format>
+      <Minimum>0</Minimum>
+      <Maximum>
+        1099511627775
+      </Maximum>
+    </Field>
+    <Field name="Organizationally Unique Identifier">
+      <InformativeText>
+            
+		</InformativeText>
+      <Requirement>Mandatory</Requirement>
+      <Format>uint24</Format>
+      <Minimum>0</Minimum>
+      <Maximum>16777215</Maximum>
+    </Field>
+  </Value>
+  
+    <Note>The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet.</Note>
+ 
+</Characteristic>

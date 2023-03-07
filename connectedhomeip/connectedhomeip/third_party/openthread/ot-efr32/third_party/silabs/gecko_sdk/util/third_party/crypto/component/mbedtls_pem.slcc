@@ -1,0 +1,32 @@
+id: mbedtls_pem
+package: platform
+label: PEM Parsing
+description: >-
+  This component provides support for reading PEM formatted keys and certificates in Mbed TLS.
+category: Platform|Security|Mbed TLS|Upper Layer
+quality: production
+source:
+  - path: util/third_party/crypto/mbedtls/library/pem.c
+include:
+  - path: util/third_party/crypto/mbedtls/include
+    file_list:
+      - path: mbedtls/pem.h
+      - path: mbedtls/des.h
+      - path: mbedtls/md5.h
+provides:
+  - name: mbedtls_pem
+  # This component will not become compatible with the SiliconLabs TrustZone Secure
+  # Key Library until the upper layer TLS code fully supports use of PSA APIs. For
+  # more details, please refer to the documentation of MBEDTLS_USE_PSA_CRYPTO in
+  # mbedtls/include/mbedtls/mbedtls_config.h.
+  - name: tz_ns_incompatible
+    condition: [tz_secure_key_library_ns]
+requires:
+  - name: mbedtls_cipher
+  - name: mbedtls_base64
+  - name: mbedtls_core
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_PEM_PARSE_C
+  - name: mbedtls_config
+    value: MBEDTLS_PEM_WRITE_C

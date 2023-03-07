@@ -1,0 +1,35 @@
+project_name: bootloader-spi-ezsp
+package: bootloader
+quality: production
+label: Bootloader - NCP EZSP SPI
+description: >
+  Standalone Bootloader using the EZSP protocol over SPI. This is the recommended SPI bootloader for the EmberZNet and Connect protocol stacks.
+
+category: Example|Bootloader
+filter:
+  - name: "Device Type"
+    value: ["NCP"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+  - name: "MCU"
+    value: ["Bootloader"]
+
+
+component:
+  - id: bootloader_core
+  - id: bootloader_crc
+  - id: bootloader_aes_sha_ecdsa
+  - id: bootloader_delay_driver
+  - id: bootloader_ezsp_spi
+  - id: bootloader_ezsp_gpio_activation
+  - id: bootloader_image_parser
+  - id: bootloader_token_management
+  - id: bootloader_xmodem_parser
+  - id: bootloader_spi_peripheral_driver
+  - id: bootloader_debug
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+other_file:
+  - path: ../../script/postbuild/postbuild.sh

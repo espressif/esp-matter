@@ -1,0 +1,50 @@
+
+{
+    "name": "simplelink_cc32xx_sdk",
+    "displayName": "SimpleLink CC32XX SDK",
+    "version": "6.10.00.05",
+    "documentationPath": "../docs",
+    "includePaths": [
+        "../source",
+        "../kernel",
+        "../kernel/tirtos/packages",
+        "../kernel/tirtos7/builds",
+        "../kernel/tirtos7/packages"
+    ],
+    "components": [
+        "/ti/drivers/drivers.component.js",
+        "/ti/loggers/drivers/drivers.component.js",
+        "/ti/loggers/utils/utils.component.js",
+        "/ti/net/ns.component.js",
+        "/ti/posix/tiposix.component.js",
+        "/ti/utils/tiutils.component.js",
+        "/ti/utils/build/build.component.js",
+        "/ti/utils/osal/osal.component.js",
+        "/ti/utils/rov/rov.component.js",
+        "/ti/utils/runtime/runtime.component.js",
+        "/ti/sysbios/sysbios.component.js",
+        "/ti/drivers/net/wifi/product.syscfg.js",
+        "/ti/drivers/net/imagecreator/image.component.js"
+    ],
+    "devices": [
+        "CC3220S",
+        "CC3220SF",
+        "CC3120R",
+        "CC3230S",
+        "CC3230SF",
+        "CC3130R",
+        "CC3235S",
+        "CC3235SF",
+        "CC3135R"
+    ],
+    "rtos": [
+        "freertos",
+        "none",
+        "nortos",
+        "tirtos",
+        "tirtos7"
+    ],
+    "minToolVersion": "1.12.0",
+    "templates": [],
+    "includesCCXXImageComponents": true
+}

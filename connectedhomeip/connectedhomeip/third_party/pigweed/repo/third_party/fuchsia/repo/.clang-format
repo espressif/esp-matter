@@ -1,0 +1,32 @@
+# http://clang.llvm.org/docs/ClangFormatStyleOptions.html
+BasedOnStyle: Google
+# This defaults to 'Auto'. Explicitly set it for a while, so that
+# 'vector<vector<int> >' in existing files gets formatted to
+# 'vector<vector<int>>'. ('Auto' means that clang-format will only use
+# 'int>>' if the file already contains at least one such instance.)
+Standard: Cpp11
+SortIncludes: true
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+DerivePointerAlignment: true
+PointerAlignment: Left
+ColumnLimit: 100
+ForEachMacros: ['list_for_every_entry','list_for_every_entry_safe']
+IncludeBlocks: Regroup
+IncludeCategories:
+  # This specific header must come last in kernel source files.  Its
+  # matching rule must come first so the lower-priority rules don't match.
+  - Regex:           '^<ktl/enforce\.h>'
+    Priority:        1000
+  # C Header: <foo.h>, <net/foo.h>, etc
+  - Regex:           '^(<((zircon/|lib/|fuchsia/|arpa/|net/|netinet/|sys/|fidl/)[a-zA-Z0-9_/\.-]+\.h|[a-zA-Z0-9_-]+\.h)>)'
+    Priority:        1
+  # Cpp Header: <foo> and <experimental/foo>
+  - Regex:           '^(<(experimental/)*[a-zA-Z0-9_-]+>)'
+    Priority:        2
+  # Libraries: <foo/bar.h>
+  - Regex:           '^(<[a-zA-Z0-9_/-]+\.h>)'
+    Priority:        3
+  # Local headers: "foo/bar.h"
+  - Regex:           '^("[.a-zA-Z0-9_/-]+\.h")'
+    Priority:        4

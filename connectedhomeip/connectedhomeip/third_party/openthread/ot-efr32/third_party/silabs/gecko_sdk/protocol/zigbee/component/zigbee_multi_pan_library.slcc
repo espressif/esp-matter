@@ -1,0 +1,241 @@
+#WARNING: This is a generated file. Do not modify.
+#WARNING: Run python3 zigbee_library_slcc_gen.py under zigbee folder to generate
+
+id: zigbee_multi_pan_library
+label: Multi PAN (Library)
+package: Zigbee
+category: Zigbee|Stack
+quality: production
+ui_hints:
+  visibility: never
+
+description: Provides Multi PAN (Library)
+
+provides:
+  - name: zigbee_multi_pan_implementation
+  - name: zigbee_multi_pan_library
+
+requires:
+  - name: zigbee_multi_pan
+
+library:
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-iar-efr32mg12p-rail/multi-pan-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg12p
+      - zigbee_phy_2_4
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-iar-efr32mg12p-rail-stack_protection/multi-pan-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg12p
+      - zigbee_phy_2_4
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-iar-efr32mg13p-rail/multi-pan-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg13p
+      - zigbee_phy_2_4
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-iar-efr32mg13p-rail-stack_protection/multi-pan-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg13p
+      - zigbee_phy_2_4
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-iar-efr32mg21-rail/multi-pan-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg21
+      - zigbee_phy_2_4
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-iar-efr32mg21-rail-stack_protection/multi-pan-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg21
+      - zigbee_phy_2_4
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-iar-efr32mg22-rail/multi-pan-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg22
+      - zigbee_phy_2_4
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-iar-efr32mg22-rail-stack_protection/multi-pan-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg22
+      - zigbee_phy_2_4
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-iar-efr32mg24-rail/multi-pan-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg24
+      - zigbee_phy_2_4
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-iar-efr32mg24-rail-stack_protection/multi-pan-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg24
+      - zigbee_phy_2_4
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-iar-efr32mg27-rail/multi-pan-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg27
+      - zigbee_phy_2_4
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-iar-efr32mg27-rail-stack_protection/multi-pan-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg27
+      - zigbee_phy_2_4
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-iar-mgm12-rail/multi-pan-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm12
+      - zigbee_phy_2_4
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-iar-mgm12-rail-stack_protection/multi-pan-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm12
+      - zigbee_phy_2_4
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-iar-mgm13-rail/multi-pan-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm13
+      - zigbee_phy_2_4
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-iar-mgm13-rail-stack_protection/multi-pan-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm13
+      - zigbee_phy_2_4
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-iar-mgm21-rail/multi-pan-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm21
+      - zigbee_phy_2_4
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-iar-mgm21-rail-stack_protection/multi-pan-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm21
+      - zigbee_phy_2_4
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-iar-mgm22-rail/multi-pan-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm22
+      - zigbee_phy_2_4
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-iar-mgm22-rail-stack_protection/multi-pan-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm22
+      - zigbee_phy_2_4
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-iar-mgm24-rail/multi-pan-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm24
+      - zigbee_phy_2_4
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-iar-mgm24-rail-stack_protection/multi-pan-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm24
+      - zigbee_phy_2_4
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-gcc-efr32mg12p-rail/multi-pan-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_efr32mg12p
+      - zigbee_phy_2_4
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-gcc-efr32mg13p-rail/multi-pan-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_efr32mg13p
+      - zigbee_phy_2_4
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-gcc-efr32mg21-rail/multi-pan-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_efr32mg21
+      - zigbee_phy_2_4
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-gcc-efr32mg22-rail/multi-pan-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_efr32mg22
+      - zigbee_phy_2_4
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-gcc-efr32mg24-rail/multi-pan-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_efr32mg24
+      - zigbee_phy_2_4
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-gcc-efr32mg27-rail/multi-pan-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_efr32mg27
+      - zigbee_phy_2_4
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-gcc-mgm12-rail/multi-pan-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_mgm12
+      - zigbee_phy_2_4
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-gcc-mgm13-rail/multi-pan-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_mgm13
+      - zigbee_phy_2_4
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-gcc-mgm21-rail/multi-pan-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_mgm21
+      - zigbee_phy_2_4
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-gcc-mgm22-rail/multi-pan-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_mgm22
+      - zigbee_phy_2_4
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/multi-pan-library-cortexm3-gcc-mgm24-rail/multi-pan-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_mgm24
+      - zigbee_phy_2_4
+    unless:
+      - stack_protection_iar

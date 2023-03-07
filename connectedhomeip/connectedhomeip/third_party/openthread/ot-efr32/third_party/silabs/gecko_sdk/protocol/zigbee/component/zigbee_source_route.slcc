@@ -1,0 +1,62 @@
+id: zigbee_source_route
+label: Source route
+package: Zigbee
+category: Zigbee|Stack
+quality: production
+
+description: Provides support for Source Route table maintenance and update functionality.
+
+provides:
+  - name: zigbee_source_route
+
+requires:
+  - name: zigbee_source_route_implementation
+  - name: zigbee_source_route_library
+    condition:
+     - zigbee_force_libraries
+
+recommends:
+  - id: zigbee_source_route_source
+
+include:
+  - path: protocol/zigbee/stack/include
+    file_list:
+      - path: source-route.h
+
+config_file:
+  - path: protocol/zigbee/stack/config/component_config/sl_zigbee_source_route_config.h
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_source_route
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: set_configuration_value
+      function_name: emberAfPluginEzspSourceRouteSetConfigurationValueCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: get_configuration_value
+      function_name: emberAfPluginEzspSourceRouteGetConfigurationValueCommandCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: incoming_route_record
+      function_name: emAfIncomingRouteRecordCallback
+    condition:  
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: override_furthur_index_for_source_route_add_entry
+      function_name: emAfOverrideFurthurIndexForSourceRouteAddEntryCallback
+    condition:  
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: override_incoming_route_record
+      function_name: emAfOverrideIncomingRouteRecordCallback
+    condition:  
+       - zigbee_ncp
+
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/source-route

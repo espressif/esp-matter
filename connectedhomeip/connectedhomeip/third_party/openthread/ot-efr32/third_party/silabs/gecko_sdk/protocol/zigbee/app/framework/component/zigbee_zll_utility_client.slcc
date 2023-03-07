@@ -1,0 +1,23 @@
+package: Zigbee
+description: Silicon Labs implementation of the ZLL Utility client cluster. The component
+  is only intended to assist with debugging, as the implemented callbacks simply parse
+  responses from the ZLL Utility server and print the results. Before production,
+  this component should be replaced with code that acts on the responses in an appropriate
+  way.
+id: zigbee_zll_utility_client
+label: ZLL Utility Client Cluster
+category: Zigbee|Zigbee Light Link
+quality: production
+provides:
+   - name: "zigbee_zll_utility_client"
+source:
+  - path: protocol/zigbee/app/framework/plugin/zll-utility-client/zll-utility-client.c
+template_contribution:
+  - name: component_catalog
+    value: zigbee_zll_utility_client
+  - name: cluster_service
+    value:
+       cluster_id: "0x1000"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "CLIENT"
+       service_function: "emberAfZllCommissioningClusterClientCommandParse"

@@ -1,0 +1,18 @@
+[
+    {
+        "files": [
+            "+../../display.c -> display.c",
+            "+../../splash_image.c -> splash_image.c",
+            "+../../splash_image.h -> splash_image.h",
+            "+../../README.md -> README.md",
+            "+../../README.html -> README.html",
+            "+../../overview.rov.json -> overview.rov.json",
+            "+../main_tirtos.c -> main_tirtos.c",
+            "+../display.syscfg -> display.syscfg",
+            "+../../../../../../../source/ti/boards/CC3220SF_LAUNCHXL/Board.html -> Board.html",
+            "+cc32xxsf_tirtos.cmd -> cc32xxsf_tirtos.cmd",
+            "+../../image.syscfg -> image.syscfg",
+            "+../../userFiles/dummy-root-ca-cert -> userFiles/dummy-root-ca-cert"
+        ]
+    }
+]

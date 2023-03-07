@@ -1,0 +1,24 @@
+id: legacy_common_ash
+label: Legacy Common ASH
+package: platform
+category: Services
+description: Legacy Ember ASH implementation common to both NCP and Host.
+quality: production
+root_path: platform/service/legacy_common_ash
+provides:
+  - name: legacy_common_ash
+requires:
+  - name: component_catalog
+  - name: legacy_hal
+source:
+  - path: src/ash-common.c
+include:
+  - path: inc
+    file_list:
+    - path: ash-common.h
+    - path: ash-protocol.h
+config_file:
+  - path: config/legacy_common_ash_config.h
+template_contribution:
+  - name: component_catalog
+    value: legacy_common_ash

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/build.dtd -->
+<package name="ti.sysbios.family.arm.lm4" version="1, 0, 0, 0" producerId="undefined">
+    <units>
+        <module name="Seconds"/>
+        <module name="TimestampProvider"/>
+        <module name="Timer"/>
+    </units>
+    <sources>
+        <srcFile name="package/package_ti.sysbios.family.arm.lm4.c"/>
+        <srcFile name="Seconds.c"/>
+        <srcFile name="Timer.c"/>
+        <srcFile name="TimestampProvider.c"/>
+    </sources>
+    <configscripts>
+    </configscripts>
+    <makefiles>
+        <srcFile name="package.mak" src="package.bld"/>
+        <srcFile name="package/package.xdc.dep" src="package.xdc"/>
+        <srcFile name="package/package.cfg.dep" src="package.xdc"/>
+        <srcFile name="lib/debug/ti.sysbios.family.arm.lm4.aem4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.family.arm.lm4/package/package_ti.sysbios.family.arm.lm4.oem4.dep" src="package/package_ti.sysbios.family.arm.lm4.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.family.arm.lm4/Seconds.oem4.dep" src="Seconds.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.family.arm.lm4/Timer.oem4.dep" src="Timer.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.family.arm.lm4/TimestampProvider.oem4.dep" src="TimestampProvider.c"/>
+        <srcFile name="lib/debug/ti.sysbios.family.arm.lm4.am4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.family.arm.lm4/package/package_ti.sysbios.family.arm.lm4.om4.dep" src="package/package_ti.sysbios.family.arm.lm4.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.family.arm.lm4/Seconds.om4.dep" src="Seconds.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.family.arm.lm4/Timer.om4.dep" src="Timer.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.family.arm.lm4/TimestampProvider.om4.dep" src="TimestampProvider.c"/>
+        <srcFile name="lib/debug/ti.sysbios.family.arm.lm4.am4g.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.family.arm.lm4/package/package_ti.sysbios.family.arm.lm4.om4g.dep" src="package/package_ti.sysbios.family.arm.lm4.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.family.arm.lm4/Seconds.om4g.dep" src="Seconds.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.family.arm.lm4/Timer.om4g.dep" src="Timer.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.family.arm.lm4/TimestampProvider.om4g.dep" src="TimestampProvider.c"/>
+        <srcFile name="lib/debug/ti.sysbios.family.arm.lm4.arm4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.family.arm.lm4/package/package_ti.sysbios.family.arm.lm4.orm4.dep" src="package/package_ti.sysbios.family.arm.lm4.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.family.arm.lm4/Seconds.orm4.dep" src="Seconds.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.family.arm.lm4/Timer.orm4.dep" src="Timer.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.family.arm.lm4/TimestampProvider.orm4.dep" src="TimestampProvider.c"/>
+        <srcFile name="package/rel/ti_sysbios_family_arm_lm4.tar.dep" src="package/rel/ti_sysbios_family_arm_lm4.xdc.inc"/>
+    </makefiles>
+    <targets>
+        <target name="ti.targets.arm.elf.M4"
+            version="ti.targets.arm.elf.M4{1,0,20.2,5"
+            rawVersion="20.2.5"
+            platform="ti.platforms.tiva:TM4C1294NCPDT:1"
+            isa="v7M4"
+            suffix="em4"
+            rootDir="/scratch/xlibrary/.conan/data/ticodegen/20.2.5.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c"
+            os="undefined"
+            rts="ti.targets.arm.rtsarm">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="ti.targets.arm.clang.M4"
+            version="ti.targets.arm.clang.M4{1,0,1.3,1"
+            rawVersion="TI Arm Clang Compiler 1.3.1.LTSTarget: arm-ti-none-eabi
+Thread model: posix
+InstalledDir: /scratch/xlibrary/.conan/data/tiarmllvm/1.3.1.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c/bin
+"
+            platform="ti.platforms.tiva:TM4C1294NCPDT:1"
+            isa="v7M4"
+            suffix="m4"
+            rootDir="/scratch/xlibrary/.conan/data/tiarmllvm/1.3.1.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c"
+            os="undefined"
+            rts="ti.targets.arm.rtsarm">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="gnu.targets.arm.M4"
+            version="gnu.targets.arm.M4{1,0,9.2,1"
+            rawVersion="9.2.1"
+            platform="ti.platforms.tiva:TM4C1294NCPDT"
+            isa="v7M4"
+            suffix="m4g"
+            rootDir="/scratch/xlibrary/.conan/data/arm-none-eabi-gcc/9.2019.q4.major-0/library-msp/ga/package/44fcf6b9a7fb86b2586303e3db40189d3b511830"
+            os="undefined"
+            rts="gnu.targets.arm.rtsv7M">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="iar.targets.arm.M4"
+            version="iar.targets.arm.M4{1,0,8.50,1"
+            rawVersion="8.50.1.245"
+            platform="ti.platforms.tiva:TM4C1294NCPDT:1"
+            isa="v7M4"
+            suffix="rm4"
+            rootDir="/scratch/xlibrary/.conan/data/iarcodegen/8.50.1.245-3/library-msp/ga/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9"
+            os="undefined"
+            rts="iar.targets.arm.rts">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+    </targets>
+    <libraries>
+    <library name="lib/debug/ti.sysbios.family.arm.lm4"
+        pname="lib/debug/ti.sysbios.family.arm.lm4.aem4"
+        profile="debug"
+        target="ti.targets.arm.elf.M4"/>
+    <library name="lib/debug/ti.sysbios.family.arm.lm4"
+        pname="lib/debug/ti.sysbios.family.arm.lm4.am4"
+        profile="debug"
+        target="ti.targets.arm.clang.M4"/>
+    <library name="lib/debug/ti.sysbios.family.arm.lm4"
+        pname="lib/debug/ti.sysbios.family.arm.lm4.am4g"
+        profile="debug"
+        target="gnu.targets.arm.M4"/>
+    <library name="lib/debug/ti.sysbios.family.arm.lm4"
+        pname="lib/debug/ti.sysbios.family.arm.lm4.arm4"
+        profile="debug"
+        target="iar.targets.arm.M4"/>
+    </libraries>
+    <configurations>
+    </configurations>
+    <executables>
+    </executables>
+    <tests>
+    </tests>
+    <releases relDir="package/rel/">
+    <release name="ti_sysbios_family_arm_lm4"
+        pname="ti_sysbios_family_arm_lm4.tar"
+        label="default"
+        relScript="ti/sysbios/libFilter.xs">
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+        <file name="package.bld"/>
+        <file name="Timer.xml"/>
+        <file name="TimestampProvider.xml"/>
+        <file name="package/package.cfg.xdc.inc"/>
+        <file name="lib/debug/ti.sysbios.family.arm.lm4.aem4"/>
+        <file name="package/package_ti.sysbios.family.arm.lm4.c"/>
+        <file name="Seconds.c"/>
+        <file name="Timer.c"/>
+        <file name="TimestampProvider.c"/>
+        <file name="lib/debug/ti.sysbios.family.arm.lm4.am4"/>
+        <file name="lib/debug/ti.sysbios.family.arm.lm4.am4g"/>
+        <file name="lib/debug/ti.sysbios.family.arm.lm4.arm4"/>
+    </release>
+    </releases>
+    <repositories>
+    </repositories>
+</package>

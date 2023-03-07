@@ -1,0 +1,28 @@
+id: iostream_uart_common
+package: platform
+label: "IO Stream: Common code for UART-type streams"
+description: Common code for UART-type streams.
+category: Services|IO Stream
+quality: production
+ui_hints:
+  visibility: never
+provides:
+  - name: iostream_uart_common
+root_path: platform/service/iostream
+include:
+  - path: inc
+    file_list:
+      - path: sl_iostream_uart.h
+      - path: sli_iostream_uart.h
+source:
+  - path: src/sl_iostream_uart.c
+template_contribution:
+  - name: component_catalog
+    value: iostream_uart_common
+requires:
+  - name: iostream
+  - name: status
+  - name: atomic
+documentation:
+    docset: gecko-platform
+    document: service/api/group-iostream-uart

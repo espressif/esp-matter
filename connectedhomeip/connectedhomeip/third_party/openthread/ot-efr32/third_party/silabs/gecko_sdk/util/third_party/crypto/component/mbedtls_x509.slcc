@@ -1,0 +1,50 @@
+id: mbedtls_x509
+package: platform
+label: X.509
+description: >-
+  This component provides full support for handling X.509 standard-
+  based certificates in Mbed TLS.
+category: Platform|Security|Mbed TLS|Upper Layer
+quality: production
+source:
+  - path: util/third_party/crypto/mbedtls/library/oid.c
+  - path: util/third_party/crypto/mbedtls/library/x509.c
+  - path: util/third_party/crypto/mbedtls/library/x509_create.c
+  - path: util/third_party/crypto/mbedtls/library/x509_crl.c
+  - path: util/third_party/crypto/mbedtls/library/x509_crt.c
+  - path: util/third_party/crypto/mbedtls/library/x509_csr.c
+  - path: util/third_party/crypto/mbedtls/library/x509write_crt.c
+  - path: util/third_party/crypto/mbedtls/library/x509write_csr.c
+  - path: util/third_party/crypto/mbedtls/library/des.c
+provides:
+  - name: mbedtls_x509
+  # This component will not become compatible with the SiliconLabs TrustZone Secure
+  # Key Library until the upper layer TLS code fully supports use of PSA APIs. For
+  # more details, please refer to the documentation of MBEDTLS_USE_PSA_CRYPTO in
+  # mbedtls/include/mbedtls/mbedtls_config.h.
+  - name: tz_ns_incompatible
+    condition: [tz_secure_key_library_ns]
+requires:
+  - name: mbedtls_pki
+  - name: mbedtls_pem
+  - name: mbedtls_core
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_X509_USE_C
+  - name: mbedtls_config
+    value: MBEDTLS_X509_CREATE_C
+  - name: mbedtls_config
+    value: MBEDTLS_X509_CRT_PARSE_C
+  - name: mbedtls_config
+    value: MBEDTLS_X509_CRT_WRITE_C
+  - name: mbedtls_config
+    value: MBEDTLS_X509_CRL_PARSE_C
+  - name: mbedtls_config
+    value: MBEDTLS_X509_CSR_PARSE_C
+  - name: mbedtls_config
+    value: MBEDTLS_X509_CSR_WRITE_C
+  - name: mbedtls_config
+    value: MBEDTLS_OID_C
+documentation:
+  docset: mbed-tls
+  document: group-x509-module

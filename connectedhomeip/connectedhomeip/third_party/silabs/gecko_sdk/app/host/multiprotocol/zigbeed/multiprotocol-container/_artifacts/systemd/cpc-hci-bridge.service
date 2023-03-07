@@ -1,0 +1,22 @@
+[Unit]
+Description=CPC BLE-HCI Bridge
+StartLimitIntervalSec=0
+BindsTo=cpcd.service
+After=cpcd.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=root
+# This will create the hci_pts file in /dev
+WorkingDirectory=/dev
+ExecStart=/usr/bin/stdbuf -o0 /usr/local/bin/cpc-hci-bridge
+ExecStop=/bin/kill -WINCH ${MAINPID}
+PIDFile=/run/cpc-hci-bridge.pid
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=cpc-hci-bridge
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,21 @@
+id: micriumos_fs_storage_nor_driver_spidrv
+package: micrium-fsxx
+description: Micrium OS File System NOR SPIDRV Driver for Silicon Labs
+category: Services|Micrium|File System
+quality: production
+component_root_path: platform/micrium_os/drivers/fs
+source:
+  - path: source/fs_nor_spidrv.c
+include:
+  - path: include
+    file_list:
+      - path: fs_nor_spidrv.h
+provides:
+  - name: fs_storage_nor_driver_spidrv
+requires:
+  - name: fs_storage_nor
+  - name: spidrv_core
+  - name: fs_storage_nor_phy_driver
+config_file:
+  - path: config/sl_mx25_flash_shutdown_usart_config.h
+    unless: [mx25_flash_shutdown_usart]

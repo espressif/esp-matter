@@ -1,0 +1,20 @@
+id: micriumos_io_core
+label: Micrium OS Input-Output Module
+package: micrium-ioxx
+description: Micrium OS IO module. Can be required by File System or Network suite.
+category: Services|Micrium|IO
+quality: production
+component_root_path: platform/micrium_os/io
+source:
+  - path: source/io.c
+include:
+  - path: include
+    file_list:
+      - path: io.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: IO
+provides:
+  - name: io_core
+requires:
+  - name: micriumos_kernel

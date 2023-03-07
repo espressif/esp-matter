@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="com.silabs.sdk.exx32.common.bsp" label="Board Support Package" partCompatibility="mcu.arm.*" contentRoot="$(sdkInstallationPath:default())/hardware/kit/common">
+  <property key="category" value="efm32|common"/>
+  <includePath uri="bsp" />
+  <folder name="BSP">
+    <file name="bsp_bcc.c" uri="bsp/bsp_bcc.c" />
+    <file name="bsp_dk_3200.c" uri="bsp/bsp_dk_3200.c" />
+    <file name="bsp_dk_3201.c" uri="bsp/bsp_dk_3201.c" />
+    <file name="bsp_dk_leds.c" uri="bsp/bsp_dk_leds.c" />
+    <file name="bsp_dk_mcuboard.c" uri="bsp/bsp_dk_mcuboard.c" />
+    <file name="bsp_stk.c" uri="bsp/bsp_stk.c" />
+    <file name="bsp_stk_leds.c" uri="bsp/bsp_stk_leds.c" />
+    <file name="bsp_trace.c" uri="bsp/bsp_trace.c" />
+  </folder>
+</project>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="Diagnostics" title="Diagnostics" version="1">
+
+<page name="Diagnostics" title="Runtime Diagnostics Options">
+<html><body><table>
+  <tr><td>
+      <h1>Event Logging</h1>
+        <table>
+        <tr>
+          <td><control type="label" label="Logger" align="left"/></td>
+          <td><control type="editbox" 
+               enabled="value:this.$used"
+               value="value:this.common$.logger" 
+               tooltip="logger used for this module's events"/></td>
+        </tr>
+      </table>
+      <h5>Generic Event Logging</h5>
+      <table>
+        <tr>
+          <td><control type="label" label="Function entry" align="left"/></td>
+          <td><control type="droplist"
+               enabled="value:this.$used"
+               value="value:this.common$.diags_ENTRY" 
+               tooltip="control how function entry events are handled"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Function exit" align="left"/></td>
+          <td><control type="droplist"
+               enabled="value:this.$used"
+               value="value:this.common$.diags_EXIT" 
+               tooltip="control how function exit events are handled"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Instance lifecycle" align="left"/></td>
+          <td><control type="droplist"
+               enabled="value:this.$used"
+               value="value:this.common$.diags_LIFECYCLE" 
+               tooltip="control how instace create/delete events are handled"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Errors and warnings" align="left"/></td>
+          <td><control type="droplist"
+               enabled="value:this.$used"
+               value="value:this.common$.diags_STATUS" 
+               tooltip="control how error and warning events are handled"/></td>
+        </tr>
+      </table>
+      <h5>SYS/BIOS Event Logging</h5>
+      <table>
+        <tr>
+          <td><control type="label" label="Basic state changes" align="left"/></td>
+          <td><control type="droplist"
+               enabled="value:this.$used"
+               value="value:this.common$.diags_USER1" 
+               tooltip="enable basic SYS/BIOS state transition events"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Additional info" align="left"/></td>
+          <td><control type="droplist"
+               enabled="value:this.$used"
+               value="value:this.common$.diags_USER2" 
+               tooltip="enable additional state transition events"/></td>
+        </tr>
+      </table>
+    </td>
+    <td>
+      <h1>Assertion Checking</h1>
+        <table>
+        <tr>
+          <td><control type="label" label="Assert"/></td>
+          <td><control type="droplist"
+               enabled="value:this.$used"
+               value="value:this.common$.diags_ASSERT" 
+               tooltip="control how Assert events are handled"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Internal Asserts"/></td>
+          <td><control type="droplist"
+               enabled="value:this.$used"
+               value="value:this.common$.diags_INTERNAL" 
+               tooltip="control how NULL Assert events are handled"/></td>
+        </tr>
+      </table>
+      <form><p>Assertion events are either "named" or "internal":</p>
+
+            <li bindent="10">Named asserts are controlled by the "Named Asserts" settings above and are provided in production libraries as a means to validate an application's use of the library.</li>
+            <li  bindent="10">Internal asserts are active only when <b>both</b> internal and named asserts are enabled.  These assertions are used during early development and are generally compiled out of production libraries.</li>
+      </form>
+    </td>
+  </tr>
+
+</table></body></html>
+</page>
+
+</gep>

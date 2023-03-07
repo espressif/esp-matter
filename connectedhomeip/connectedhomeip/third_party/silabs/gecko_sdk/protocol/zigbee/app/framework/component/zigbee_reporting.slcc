@@ -1,0 +1,116 @@
+package: Zigbee
+description: "Silicon Labs implementation of reporting. Reports are asynchronous messages
+  sent out when a ZCL attribute has changed. This component supports both requesting
+  reports from another device and sending out attribute reports when the device has
+  been configured to do so. If the application will receive reports from multiple
+  sources, Silicon Labs recommends configuring it as a concentrator. Note: This component only
+  supports the binding-based interpretation of reporting in which reports are sent
+  to corresponding entries in the binding table. Either the node sending the reports,
+  the node receiving the reports, or another third-party configuration device may
+  create the binding table entry(s) on the reporting node. For more details, 
+  refer to the Application Framework Developers Guide for the current SDK version."
+label: Reporting
+quality: production
+id: zigbee_reporting
+category: Zigbee|Cluster Library|Common
+provides:
+   - name: "zigbee_reporting"
+requires:
+   - name: "zigbee_binding"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/reporting/config/reporting-config.h
+validation_helper:
+  - path: protocol/zigbee/component/scripts/zigbee_reporting_validation.lua
+source:
+  - path: protocol/zigbee/app/framework/plugin/reporting/reporting.c
+  - path: protocol/zigbee/app/framework/plugin/reporting/reporting-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/reporting/reporting-default-configuration.c
+  - path: protocol/zigbee/app/framework/plugin/reporting/reporting-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/reporting
+    file_list:
+      - path: reporting.h
+      - path: reporting-tokens.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_reporting
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emberAfPluginReportingInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: init_done
+      function_name: emberAfPluginReportingInitCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: stack_status
+      function_name: emAfPluginReportingStackStatusCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: reporting
+      help: reporting related commands.
+  - name: cli_command
+    value:
+      group: reporting
+      name: print
+      handler: emAfPluginReportingCliPrint
+      help: Prints the report table.
+  - name: cli_command
+    value:
+      group: reporting
+      name: clear
+      handler: emAfPluginReportingCliClear
+      help: Clears all entries from the report table.
+  - name: cli_command
+    value:
+      group: reporting
+      name: remove
+      handler: emAfPluginReportingCliRemove
+      help: Removes an entry from the report table.
+      argument:
+      - type: uint8
+        help: The index of the report to be removed
+  - name: cli_command
+    value:
+      group: reporting
+      name: add
+      handler: emAfPluginReportingCliAdd
+      help: Adds a new entry to the report table.
+      argument:
+      - type: uint8
+        help: The local endpoint from which the attribute is reported
+      - type: uint16
+        help: The cluster where the attribute is located
+      - type: uint16
+        help: The ID of the attribute being reported
+      - type: uint8
+        help: 0 for client-side attributes or 1 for server-side attributes
+      - type: uint16
+        help: The minimum reporting interval, measured in seconds.
+      - type: uint16
+        help: The maximum reporting interval, measured in seconds.
+      - type: uint32
+        help: The minimum change to the attribute that will result in a report being sent.
+  - name: cli_command
+    value:
+      group: reporting
+      name: clear-last-report-time
+      handler: emAfPluginReportingCliClearLastReportTime
+      help: Clears the last report time of attributes.
+  - name: cli_command
+    value:
+      group: reporting
+      name: test-timing
+      handler: emAfPluginReportingCliTestTiming
+      help: FOR TESTING PURPOSES - gather timing metrics for reporting table operations.
+  - name: token_header
+    value: app/framework/plugin/reporting/reporting-tokens.h
+      
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/reporting

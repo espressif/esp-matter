@@ -1,0 +1,5 @@
+openocd link configure
+
+if_bflb_link.cfg                  "绿色板卡的602"
+if_bflb_link_DVK.cfg             "loT DVK 3S-MB V1.2"
+if_bflb_link_HWC.cfg             "BLpHWC-G1"

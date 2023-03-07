@@ -1,0 +1,29 @@
+package: Zigbee
+description: This component provides support for security, such as random number generation,
+  on the Host.
+id: zigbee_security_support
+label: Security Support
+category: Zigbee|Utility
+toolchain_settings: []
+ui_hints: {}
+quality: production
+template_file: []
+provides:
+  - name: zigbee_security_support
+requires:
+  - name: device_host
+  - name: zigbee_ezsp
+
+source:
+  - path: protocol/zigbee/app/framework/plugin-host/security-support/security-support.c
+  - path: protocol/zigbee/tool/random/random-linux.c
+
+include:
+  - path: protocol/zigbee/tool/random/
+    file_list:
+      - path: random-number-generation.h
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_security_support
+

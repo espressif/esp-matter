@@ -1,0 +1,168 @@
+# Copyright 2019 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load(
+    "//pw_build:pigweed.bzl",
+    "pw_cc_library",
+    "pw_cc_test",
+)
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+pw_cc_library(
+    name = "config",
+    hdrs = ["public/pw_string/internal/config.h"],
+    includes = ["public"],
+)
+
+pw_cc_library(
+    name = "pw_string",
+    deps = [
+        ":builder",
+        ":format",
+        ":to_string",
+        ":util",
+    ],
+)
+
+pw_cc_library(
+    name = "builder",
+    srcs = ["string_builder.cc"],
+    hdrs = ["public/pw_string/string_builder.h"],
+    includes = ["public"],
+    deps = [
+        ":format",
+        ":string",
+        ":to_string",
+        ":util",
+        "//pw_preprocessor",
+        "//pw_status",
+    ],
+)
+
+pw_cc_library(
+    name = "format",
+    srcs = ["format.cc"],
+    hdrs = ["public/pw_string/format.h"],
+    includes = ["public"],
+    deps = [
+        "//pw_preprocessor",
+        "//pw_span",
+        "//pw_status",
+    ],
+)
+
+pw_cc_library(
+    name = "string",
+    srcs = [
+        "public/pw_string/internal/string_common_functions.inc",
+        "public/pw_string/internal/string_impl.h",
+    ],
+    hdrs = ["public/pw_string/string.h"],
+    includes = ["public"],
+    deps = [
+        "//pw_assert:facade",
+        "//pw_polyfill",
+    ],
+)
+
+pw_cc_library(
+    name = "to_string",
+    srcs = ["type_to_string.cc"],
+    hdrs = [
+        "public/pw_string/to_string.h",
+        "public/pw_string/type_to_string.h",
+    ],
+    includes = ["public"],
+    deps = [
+        ":config",
+        ":format",
+        ":util",
+        "//pw_status",
+    ],
+)
+
+pw_cc_library(
+    name = "util",
+    srcs = ["public/pw_string/internal/length.h"],
+    hdrs = ["public/pw_string/util.h"],
+    includes = ["public"],
+    deps = [
+        ":string",
+        "//pw_assert:facade",
+        "//pw_result",
+        "//pw_span",
+        "//pw_status",
+    ],
+)
+
+pw_cc_test(
+    name = "format_test",
+    srcs = ["format_test.cc"],
+    deps = [
+        ":format",
+        "//pw_span",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "string_test",
+    srcs = ["string_test.cc"],
+    deps = [
+        ":string",
+        "//pw_compilation_testing:negative_compilation_testing",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "type_to_string_test",
+    srcs = ["type_to_string_test.cc"],
+    deps = [
+        ":to_string",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "string_builder_test",
+    srcs = ["string_builder_test.cc"],
+    deps = [
+        ":builder",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "to_string_test",
+    srcs = ["to_string_test.cc"],
+    deps = [
+        ":config",
+        ":to_string",
+        "//pw_status",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "util_test",
+    srcs = ["util_test.cc"],
+    deps = [
+        ":util",
+        "//pw_unit_test",
+    ],
+)

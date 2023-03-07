@@ -1,0 +1,12 @@
+Pin Configurations:
+-------------------
+1.Connect  RS9116 SDIO header J4_PIN-1 to NXP_RT595 M2_SD1_DATA3(R506)(PIO3_13) for DATA 3
+2.Connect  RS9116 SDIO header J4_PIN-2 to NXP_RT595 M2_SD1_CMD(R502) (PIO3_9)   for CMD
+3.Connect  RS9116 SDIO header J4_PIN-3 to NXP_RT595 JP26 -PIN5 for GND
+4.Connect  RS9116 SDIO header J4_PIN-4 to NXP_RT595 JP26 -PIN6 for VCC
+5.Connect  RS9116 SDIO header J4_PIN-5 to NXP_RT595 M2_SD1_CLK(R501) (PIO3_8)for clock
+6.Connect  RS9116 SDIO header J4_PIN-7 to NXP_RT595 M2_SD1_DATA0(R503)(PIO3_10) for DATA0
+7.Connect  RS9116 SDIO header J4_PIN-8 to NXP_RT595 M2_SD1_DATA1(R504)(PIO3_11) for DATA1
+8.Connect  RS9116 SDIO header J4_PIN-9 to NXP_RT595 M2_SD1_DATA2(R505)(PIO3_12) for DATA2
+
+

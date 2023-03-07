@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="SDK.HAL.FEM.FLEX">
+  <folder name="fem-control">
+    <file name="fem-control.c" partCompatibility="mcu.arm.efr32.*"/>
+  </folder>
+</project>

@@ -1,0 +1,96 @@
+project_name: psa_crypto_mac
+package: platform
+quality: production
+label: Platform - PSA Crypto MAC
+description: >
+  This example project demonstrates the Message Authentication Code (MAC) API.
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+source:
+  - path: main.c
+  - path: app_init.c
+  - path: app_process.c
+  - path: app_psa_crypto_mac.c
+  - path: app_psa_crypto_key.c
+include:
+  - path: .
+    file_list:
+    - path: app_init.h
+    - path: app_process.h
+    - path: app_psa_crypto_mac.h
+    - path: app_psa_crypto_key.h
+    - path: app_psa_crypto_macro.h
+readme:
+  - path: readme.md
+ui_hints:
+  highlight:
+    - path: readme.md
+      focus: true
+component:
+  - id: psa_crypto_cmac
+  - id: psa_crypto_hmac
+  - id: psa_crypto_sha1
+  - id: psa_crypto_sha224
+  - id: psa_crypto_sha256
+  - id: psa_crypto_sha384
+  - id: psa_crypto_sha512
+  - id: psa_its
+  - id: sl_system
+  - id: device_init
+  - id: printf
+  - id: iostream_retarget_stdio
+  - id: iostream_recommended_stream
+requires:
+  - name: device_init_hfrco
+    condition: [device_sdid_84]
+  - name: device_init_hfrco
+    condition: [device_sdid_89]
+  - name: device_init_hfrco
+    condition: [device_sdid_100]
+  - name: device_init_hfrco
+    condition: [device_sdid_103]
+  - name: device_init_hfrco
+    condition: [device_sdid_106]
+  - name: device_init_hfrco
+    condition: [device_sdid_200]
+  - name: device_init_hfrco
+    condition: [device_sdid_205]
+  - name: device_init_hfrco
+    condition: [device_sdid_210]
+  - name: device_init_hfrco
+    condition: [device_sdid_215]
+  - name: device_init_hfrco
+    condition: [device_sdid_220]
+  - name: device_init_hfxo
+    condition: [device_sdid_80, device_has_radio]
+  - name: device_init_hfxo
+    condition: [device_sdid_95, device_has_radio]
+  - name: radio_config_simple_connect_singlephy
+    condition: [device_sdid_80, device_has_radio]
+  - name: radio_config_simple_connect_singlephy
+    condition: [device_sdid_95, device_has_radio]
+  - name: connect_app_framework_common
+    condition: [device_sdid_80, device_has_radio]
+  - name: connect_app_framework_common
+    condition: [device_sdid_95, device_has_radio]
+configuration:
+  - name: SL_DEVICE_INIT_HFRCO_BAND
+    value: cmuHFRCOFreq_38M0Hz
+    condition: [device_series_1]
+  - name: SL_DEVICE_INIT_HFRCO_BAND
+    value: cmuHFRCODPLLFreq_38M0Hz
+    condition: [device_series_2]
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+define:
+  - name: DEBUG_EFM
+  - name: PSA_CRYPTO_PRINT
+toolchain_settings:
+  - option: optimize
+    value: debug

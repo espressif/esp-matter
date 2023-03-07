@@ -1,0 +1,134 @@
+package: Zigbee
+description: This component performs the necessary steps to join the network of any
+  Zigbee Profile.  It tries first to perform a join using an install code on the
+  primary channel mask, and then the secondary channel mask. If that does not work
+  it then tries to use the default well-known link key (ZigbeeAlliance09) to join
+  on the primary channel mask, and then the secondary channel mask. Finally, if the
+  previous two key types fail, the component tries to use the distributed security link
+  key (D0D1D2...) to join on the primary channel mask, and then the
+  secondary channel mask.
+label: Network Steering
+quality: production
+id: zigbee_network_steering
+category: Zigbee|Zigbee 3.0
+provides:
+   - name: zigbee_network_steering
+requires:
+   - name: zigbee_scan_dispatch
+   - name: zigbee_update_tc_link_key
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/network-steering/config/network-steering-config.h
+validation_helper:
+  - path: protocol/zigbee/app/framework/component/scripts/zigbee_radio_power_value_validation.lua
+source:
+  - path: protocol/zigbee/app/framework/plugin/network-steering/network-steering.c
+  - path: protocol/zigbee/app/framework/plugin/network-steering/network-steering-cli.c
+    condition:
+      - cli
+  - path: protocol/zigbee/app/framework/plugin/network-steering/network-steering-v2.c
+  - path: protocol/zigbee/app/framework/plugin/network-steering/network-steering-host.c
+    condition:
+      - zigbee_ezsp
+  - path: protocol/zigbee/app/framework/plugin/network-steering/network-steering-soc.c
+    condition:
+      - zigbee_stack_common
+  - path: protocol/zigbee/app/framework/plugin/network-steering/network-steering-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/network-steering
+    file_list:
+      - path: network-steering.h
+      - path: network-steering-internal.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_network_steering
+  - name: zigbee_stack_callback
+    value:
+      callback_type: stack_status
+      function_name: emAfPluginNetworkSteeringStackStatusCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: mark_buffers
+      function_name: emberAfPluginNetworkSteeringMarker
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emAfPluginNetworkSteeringInitCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: network-steering
+      help: network-steering related commands.
+  - name: cli_command
+    value:
+      group: network-steering
+      name: status
+      handler: emberAfPluginNetworkSteeringStatusCommand
+      help: Displays the current status of the network steering process.
+  - name: cli_command
+    value:
+      group: network-steering
+      name: start
+      handler: emberAfPluginNetworkSteeringStartCommand
+      help: Starts the network steering process.
+      argument:
+      - type: uint8
+        help: A mask of options for indicating specific behavior within the network-steering process.
+  - name: cli_command
+    value:
+      group: network-steering
+      name: stop
+      handler: emberAfPluginNetworkSteeringStopCommand
+      help: Stops the network steering process.
+  - name: cli_command
+    value:
+      group: network-steering
+      name: pre-configured-key-set
+      handler: emberAfPluginNetworkSteeringSetPreconfiguredKeyCommand
+      help: Sets the pre-configured key so that the joining device can enter the network.
+      argument:
+      - type: hex
+        help: Sets the preconfigured key    
+  - name: cli_group
+    value:
+      group: network-steering
+      name: mask
+      id: shell_mask_1  
+      help: mask related command.
+  - name: cli_command
+    value:
+      group: shell_mask_1
+      name: set
+      handler: emberAfPluginNetworkSteeringChannelSetCommand
+      help: Sets either the primary or secondary channel mask.
+      argument:
+      - type: uint8
+        help: The channel mask to subtract the channel from
+      - type: uint32
+        help: The value to set the channel mask to.
+  - name: cli_command
+    value:
+      group: shell_mask_1
+      name: add
+      handler: emberAfPluginNetworkSteeringChannelAddOrSubtractCommand
+      help: Adds a channel to either the primary or secondary channel mask of the network-steering component.
+      argument:
+      - type: uint8
+        help: The channel mask to add a channel to
+      - type: uint8
+        help: The channel to add to the mask
+  - name: cli_command
+    value:
+      group: shell_mask_1
+      name: subtract
+      handler: emberAfPluginNetworkSteeringChannelAddOrSubtractCommand
+      help: Subtracts a channel from either the primary or secondary channel mask of the network-steering component.
+      argument:
+      - type: uint8
+        help: The channel mask to subtract the channel from
+      - type: uint8
+        help: The channel to subtract the mask from     
+  
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/network-steering

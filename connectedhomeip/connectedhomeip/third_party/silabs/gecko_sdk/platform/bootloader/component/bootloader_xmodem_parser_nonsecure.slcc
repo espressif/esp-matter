@@ -1,0 +1,17 @@
+id: bootloader_xmodem_parser_nonsecure
+label: "XMODEM Parser (Non-Secure)"
+package: bootloader
+description: XMODEM parser implementation.
+category: Platform|Bootloader|TrustZone NonSecure|Communication
+quality: beta
+source:
+  - path: platform/bootloader/communication/xmodem-parser/btl_xmodem.c
+include:
+  - path: platform/bootloader/communication/xmodem-parser
+    file_list:
+    - path: btl_xmodem.h
+provides:
+  - name: bootloader_xmodem_parser
+  - name: bootloader_xmodem_parser_nonsecure
+requires:
+  - name: bootloader_crc

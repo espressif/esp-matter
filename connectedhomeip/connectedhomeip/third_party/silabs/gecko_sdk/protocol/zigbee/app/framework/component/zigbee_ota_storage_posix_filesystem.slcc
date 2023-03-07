@@ -1,0 +1,39 @@
+package: Zigbee
+description: Silicon Labs implementation of a multi-file storage module for Over-the-air
+  Bootload protocols, which is used by either the Zigbee Over-the-air cluster or the
+  legacy Ember standalone bootloader protocol. It uses a POSIX filesystem as the underlying
+  storage device, and therefore can store any number of files.  It can be used by
+  either the OTA client or OTA server.
+id: zigbee_ota_storage_posix_filesystem
+label: OTA POSIX Filesystem Storage Module
+category: Zigbee|Over-The-Air Bootloading
+quality: production
+provides:
+   - name: "zigbee_ota_storage_posix_filesystem"
+   - name: "zigbee_ota_storage_simple"
+requires:
+   - name: "zigbee_ota_storage_common"
+source:
+  - path: protocol/zigbee/app/framework/plugin/ota-storage-posix-filesystem/ota-storage-linux.c
+    unless:
+      - zigbee_host_simulation
+  - path: protocol/zigbee/app/framework/plugin/ota-storage-posix-filesystem/ota-storage-linux-simulation.c
+    condition:
+      - zigbee_host_simulation
+include:
+  - path: protocol/zigbee/app/framework/plugin/ota-storage-posix-filesystem
+    file_list:
+      - path: ota-storage-linux.h
+      - path: ota-storage-linux-config.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_ota_storage_posix_filesystem
+  - name: zigbee_af_callback
+    value:
+      callback_type: init_done
+      function_name: emAfPluginOtaStoragePosixFilesystemInitCallback    
+    unless:
+      - zigbee_host_simulation
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/ota-storage-linux

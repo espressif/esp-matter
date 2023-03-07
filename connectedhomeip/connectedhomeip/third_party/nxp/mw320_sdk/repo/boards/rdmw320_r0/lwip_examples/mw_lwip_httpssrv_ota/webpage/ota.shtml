@@ -1,0 +1,37 @@
+<!DOCTYPE HTML SYSTEM>
+<html>
+
+<head>
+<title>KSDK HTTP Server Example</title>
+    <style type="text/css">
+    <!--
+    @import"httpsrv.css";
+    -->
+    </style>
+
+    <script src="request.js" type="text/javascript"></script>
+</head>
+
+<body>
+    <h2>OTA update</h2>
+    <p>
+        This page demonstrates OTA update functionality.
+    </p>
+    <p>
+        <%ota_status%>
+    </p>
+
+    <div style="text-align: left;">
+        <form name="ex_form" action="upload.cgi" method="POST" enctype="multipart/form-data">
+            <input type="submit" value="Upload">
+            <input id="update_file" type="file" name="update_file">
+        </form>
+        <form name="ex_form" action="reboot.cgi" method="get">
+            <input type="submit" value="Reboot">
+        </form>
+        <form name="ex_form" action="accept.cgi" method="get">
+            <input type="submit" value="Accept update" <%disabled_input:accept%>>
+        </form>
+    </div>
+</body>
+</html>

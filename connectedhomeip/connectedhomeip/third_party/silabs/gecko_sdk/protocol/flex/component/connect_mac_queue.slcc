@@ -1,0 +1,18 @@
+id: "connect_mac_queue"
+label: "MAC Queue"
+package: "Flex"
+category: "Connect"
+quality: "production"
+description: "Provides MAC queue functionality. If this plugin is enabled, the application is able to send multiple packets in bursts, whereas if this plugin is not included, only one packet at the time can be submitted to the Connect Stack."
+provides:
+  - name: "connect_mac_queue"
+requires:
+  - name: "connect_stack_common"
+  - name: "connect_mac_queue_implementation"
+recommends:
+  - id: "connect_mac_queue_source"
+config_file:
+  - path: "protocol/flex/stack/config/component_config/mac-queue-config.h"
+template_contribution:
+  - name: component_catalog
+    value: connect_mac_queue

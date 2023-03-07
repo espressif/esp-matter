@@ -1,0 +1,39 @@
+#include PLATFORM_HEADER
+#include CONFIGURATION_HEADER
+#include EMBER_AF_API_TRANSPORT_MQTT
+
+/** @brief MQTT client state is changed.
+ *
+ * This function is called when the state of the MQTT client changes.
+ *
+ * @param state Contains the new and current EmberAfPluginTransportMqttState
+ * state.
+ */
+void emberAfPluginTransportMqttStateChangedCallback(EmberAfPluginTransportMqttState state)
+{
+}
+
+/** @brief MQTT message arrived.
+ *
+ * This function is called when the MQTT client for the gateway receives
+ * an incoming message on a topic. If the message is processed by the application,
+ * return true. If the message is not processed, return false. This
+ * function is called on a separate thread, so no stack calls should be made
+ * within the implementation of this function. Instead, use a global variable in
+ * that function to communicate the message arrival to a stack event or timer
+ * running from the main loop.
+ *
+ * @param topic A string containing the topic for the message that arrived. While
+ * the underlying MQTT libraries allow NULL characters in a topic, NULL characters
+ * are not supported in this implementation so the `topic` parameter can be
+ * assumed to be NULL terminated.
+ * @param payload A string containing the payload for the message that arrived.
+ */
+bool emberAfPluginTransportMqttMessageArrivedCallback(const char* topic,
+                                                      const char* payload)
+{
+  // Return true, this tells the MQTT client we have handled the incoming message
+  // Even though this is a stub function we still need to let Paho MQTT know that
+  // the message was received
+  return true;
+}

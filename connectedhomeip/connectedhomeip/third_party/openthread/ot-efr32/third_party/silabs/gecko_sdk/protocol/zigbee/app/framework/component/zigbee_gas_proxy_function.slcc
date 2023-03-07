@@ -1,0 +1,163 @@
+package: Zigbee
+description: Silicon Labs implementation of the Gas Proxy Function (GPF). This component receives and processes 
+  GBZ Top Off Messages. NOTE This component uses malloc
+  and should only be used in a non-SoC setup.
+label: Gas Proxy Function (GPF)
+quality: production
+id: zigbee_gas_proxy_function
+category: Zigbee|Great Britain Companion Specification
+provides:
+   - name: "zigbee_gas_proxy_function"
+requires:
+   - name: "zigbee_key_establishment"
+   - name: "zigbee_gbz_message_controller"
+   - name: "zigbee_meter_mirror"
+   - name: "zigbee_events_server"
+   - name: "zigbee_gbcs_compatibility"
+   - name: "zigbee_price_server"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/gas-proxy-function/config/gas-proxy-function-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/gas-proxy-function/gas-proxy-function.c
+  - path: protocol/zigbee/app/framework/plugin/gas-proxy-function/gas-proxy-function-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/gas-proxy-function/gpf-structured-data.c
+  - path: protocol/zigbee/app/framework/plugin/gas-proxy-function/gas-proxy-function-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/gas-proxy-function
+    file_list:
+      - path: gas-proxy-function.h
+      - path: gpf-structured-data.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_gas_proxy_function
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emberAfPluginGasProxyFunctionInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: local_data_init
+      function_name: emberAfPluginGasProxyFunctionInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: init_done
+      function_name: emberAfPluginGasProxyFunctionInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: pre_command_received
+      function_name: emAfPluginGasProxyFunctionPreCommandReceivedCallback
+  - name: cluster_service
+    value:
+      cluster_id: "0x0708"
+      mfg_id: "NOT_MFG_SPECIFIC"
+      side: "CLIENT"
+      service_function: "emAfGasProxyFunctionDeviceManagementClusterClientCommandParse"
+  - name: cluster_service
+    value:
+      cluster_id: "0x0707"
+      mfg_id: "NOT_MFG_SPECIFIC"
+      side: "CLIENT"
+      service_function: "emAfGasProxyFunctionCalendarClusterClientCommandParse"
+  - name: cluster_service
+    value:
+      cluster_id: "0x0700"
+      mfg_id: "NOT_MFG_SPECIFIC"
+      side: "CLIENT"
+      service_function: "emAfGasProxyFunctionPriceClusterClientCommandParse"
+  - name: cluster_service
+    value:
+      cluster_id: "0x0703"
+      mfg_id: "NOT_MFG_SPECIFIC"
+      side: "CLIENT"
+      service_function: "emAfGasProxyFunctionMessagingClusterClientCommandParse"
+  - name: cluster_service
+    value:
+      cluster_id: "0x0702"
+      mfg_id: "NOT_MFG_SPECIFIC"
+      side: "CLIENT"
+      service_function: "emAfGasProxyFunctionSimpleMeteringClusterClientCommandParse"
+  - name: cluster_service
+    value:
+      cluster_id: "0x0702"
+      mfg_id: "NOT_MFG_SPECIFIC"
+      side: "SERVER"
+      service_function: "emAfGasProxyFunctionSimpleMeteringClusterServerCommandParse"
+  - name: cluster_service
+    value:
+      cluster_id: "0x0705"
+      mfg_id: "NOT_MFG_SPECIFIC"
+      side: "CLIENT"
+      service_function: "emAfGasProxyFunctionPrepaymentClusterClientCommandParse"
+  - name: cluster_service
+    value:
+      cluster_id: "0x0705"
+      mfg_id: "NOT_MFG_SPECIFIC"
+      side: "SERVER"
+      service_function: "emAfGasProxyFunctionPrepaymentClusterServerCommandParse"
+  - name: cli_group
+    value:
+      group: plugin
+      name: gas-proxy-function
+      help: gas-proxy-function related commands
+  - name: cli_command
+    value:
+      group: gas-proxy-function
+      name: simulate-gbz-msg
+      handler: emAfPluginGasProxyFunctionCliSimulateGbzMsg
+      help: Simulates transmission of a GBZ message to the Gas Proxy Function.
+      argument:
+      - type: uint16
+  - name: cli_command
+    value:
+      group: gas-proxy-function
+      name: simulate-gbz-msg-creation
+      handler: emAfPluginGasProxyFunctionCliSimulateGbzMsgCreation
+      help: Tests the GBZ message controller API.
+  - name: cli_command
+    value:
+      group: gas-proxy-function
+      name: print-supported-use-cases
+      handler: emAfPluginGasProxyFunctionCliPrintSupportedUseCases
+      help: Prints the list of supported use cases.  The message code printed should be used with the simulate-gbz-msg command.
+  - name: cli_command
+    value:
+      group: gas-proxy-function
+      name: print-log-catchups-in-progress
+      handler: emAfPrintLogCatchupsInProgress
+      help: Prints the number of logs that are currently catching up with missed entries.
+  - name: cli_command
+    value:
+      group: gas-proxy-function
+      name: simulate-future-dated-msg
+      handler: emAfPluginGasProxyFunctionCliSimulateFutureDatedMsg
+      help: Simulates transmission of a GBZ message to the Gas Proxy Function.
+  - name: cluster_functions
+    value:
+       cluster_name: SimpleMetering
+       cluster_id: 0x702
+       cluster_type: client
+       default_response_function: emberAfSimpleMeteringClusterClientDefaultResponseCallback
+  - name: cluster_functions
+    value:
+      cluster_name: SimpleMetering
+      cluster_id: 0x702
+      cluster_type: server     
+      attribute_changed_function: emberAfSimpleMeteringClusterServerAttributeChangedCallback     
+  - name: cluster_functions
+    value:
+       cluster_name: Prepayment
+       cluster_id: 0x705
+       cluster_type: client
+       default_response_function: emberAfPrepaymentClusterClientDefaultResponseCallback
+  - name: cluster_functions
+    value:
+      cluster_name: Prepayment
+      cluster_id: 0x705
+      cluster_type: server
+      attribute_changed_function: emberAfPrepaymentClusterServerAttributeChangedCallback
+      
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/gas-proxy-function

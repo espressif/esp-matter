@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Service xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.service.link_loss" uuid="1803" name="Link Loss">
+	<InformativeText>
+        <Abstract>This service defines behavior when a link is lost between two devices.</Abstract>
+        <Summary>            
+    The LINK LOSS Service is instantiated as a Primary Service.
+    There is only one instance of the Link Loss Service on a device.
+    There is only one instance of the Alert Level characteristic in a Link Loss Service.
+    This alert continues until one of following conditions occurs:
+    - An implementation specific timeout
+    - User interaction on this device
+    - A new alert level is written
+    - The physical link is disconnected
+		</Summary>
+	<Examples>
+		<Example>If the current link loss alert level is "No Alert", no alerting is done on this device.</Example>
+		<Example>If the current link loss alert level is "Mild Alert", the device alerts.</Example>
+		<Example>If the current link loss alert level is "High Alert", the device alerts in the strongest possible way.</Example>
+	</Examples>
+    </InformativeText>
+	<Dependencies>
+		<Dependency>This service has no dependencies on other GATT-based services.</Dependency>
+	</Dependencies>
+	<GATTRequirements>
+		<Requirement subProcedure="Write Characteristic Value">Mandatory</Requirement>
+	</GATTRequirements>
+	<Transports>
+		<Classic>true</Classic>
+		<LowEnergy>true</LowEnergy>
+	</Transports>
+	
+	<Characteristics>
+		<Characteristic name="Alert Level" type="org.bluetooth.characteristic.alert_level">
+			<InformativeText>The Alert Level characteristic is used to expose the current link loss alert level that is used to determine how the device alerts when the link is lost.</InformativeText>
+			<Requirement>Mandatory</Requirement>
+			<Properties>
+				<Read>Mandatory</Read>
+				<Write>Mandatory</Write>
+				<WriteWithoutResponse>Excluded</WriteWithoutResponse>
+				<SignedWrite>Excluded</SignedWrite>
+				<ReliableWrite>Excluded</ReliableWrite>
+				<Notify>Excluded</Notify>
+				<Indicate>Excluded</Indicate>
+				<WritableAuxiliaries>Excluded</WritableAuxiliaries>
+				<Broadcast>Excluded</Broadcast>
+			</Properties>
+		</Characteristic>
+	</Characteristics>
+</Service>

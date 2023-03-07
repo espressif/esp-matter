@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Descriptor xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/descriptor.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+type="org.bluetooth.descriptor.number_of_digitals" uuid="2909" name="Number of Digitals" last-modified="2015-07-14" approved="Yes">
+    <InformativeText>
+        <Abstract>The Characteristic Number of Digitals descriptor is used for defining the number of digitals in a characteristic.</Abstract>
+    </InformativeText>
+    <Value>
+        <Field name="No of Digitals">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+        </Field>
+    </Value>
+</Descriptor>

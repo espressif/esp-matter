@@ -1,0 +1,18 @@
+id: "bluetooth_feature_sm"
+label: "Security Manager"
+package: "Bluetooth"
+description: >
+  Bluetooth security manager (SM) feature
+category: "Bluetooth|Stack"
+quality: "production"
+root_path: "protocol/bluetooth"
+requires:
+  - name: "bluetooth_stack"
+  - name: "bluetooth_feature_bonding_database"
+recommends:
+  - id: "bluetooth_feature_builtin_bonding_database"
+provides:
+  - name: "bluetooth_feature_sm"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_sm

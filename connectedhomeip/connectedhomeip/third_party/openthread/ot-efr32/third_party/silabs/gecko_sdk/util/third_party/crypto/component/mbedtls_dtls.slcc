@@ -1,0 +1,26 @@
+id: mbedtls_dtls
+package: platform
+label: DTLS
+description: >-
+  This component provides support for the DTLS protocol using Mbed TLS.
+category: Platform|Security|Mbed TLS|Upper Layer
+quality: production
+provides:
+  - name: mbedtls_dtls
+  # Will not become compatible until upper layer TLS code only uses PSA APIs.
+  - name: tz_ns_incompatible
+    condition: [tz_secure_key_library_ns]
+requires:
+  - name: mbedtls_tls
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_SSL_PROTO_DTLS
+  - name: mbedtls_config
+    value: MBEDTLS_SSL_DTLS_ANTI_REPLAY
+  - name: mbedtls_config
+    value: MBEDTLS_SSL_DTLS_HELLO_VERIFY
+  - name: mbedtls_config
+    value: MBEDTLS_SSL_COOKIE_C
+documentation:
+  docset: mbed-tls
+  document: group-ssltls-communication-module

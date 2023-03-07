@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Personality id="20x19_i2s" name="Audio" version="1.0" path="Communication" xmlns="http://cypress.com/xsd/cyhwpersonality_v1">
+  <Dependencies>
+    <IpBlock name="20x19_audio">
+	  <Param name="I2S" value="1" />
+	</IpBlock>
+    <Resource name="audio" />
+  </Dependencies>
+  <ExposedMembers />
+  <Parameters>
+    <ParamSignal port="clk[0]" name="Clock" group="Pins" visible="true" desc="Clock signal." canBeEmpty="false" />
+    <ParamSignal port="ws_sync[0]" name="WS/Sync" group="Pins" visible="true" desc="I2S WS signal or PCM Sycn signal." canBeEmpty="false" />
+    <ParamSignal port="do_out[0]" name="DO/Out" group="Pins" visible="true" desc="I2S Output signal or PCM Out signal." canBeEmpty="false" />
+    <ParamSignal port="di_in[0]" name="DI/In" group="Pins" visible="true" desc="I2S Input signal or PCM In signal." canBeEmpty="false" />
+
+    <ParamString id="instNum" name="" group="" default="`${getInstNumber(&quot;audio&quot;)}`" visible="false" editable="false" desc="" />
+  </Parameters>
+
+  <DRCs/>
+
+  <ConfigFirmware>
+
+  </ConfigFirmware>
+</Personality>

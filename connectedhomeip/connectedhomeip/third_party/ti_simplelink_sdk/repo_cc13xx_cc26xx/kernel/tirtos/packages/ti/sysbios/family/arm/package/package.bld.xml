@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/build.dtd -->
+<package name="ti.sysbios.family.arm" version="2, 0, 0, 0" producerId="undefined">
+    <units>
+        <module name="MPU"/>
+        <module name="Settings"/>
+    </units>
+    <sources>
+        <srcFile name="package/package_ti.sysbios.family.arm.c"/>
+        <srcFile name="MPU.c"/>
+    </sources>
+    <configscripts>
+    </configscripts>
+    <makefiles>
+        <srcFile name="package.mak" src="package.bld"/>
+        <srcFile name="package/package.xdc.dep" src="package.xdc"/>
+        <srcFile name="package/package.cfg.dep" src="package.xdc"/>
+        <srcFile name="lib/debug/ti.sysbios.family.arm.aem4f.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.family.arm/package/package_ti.sysbios.family.arm.oem4f.dep" src="package/package_ti.sysbios.family.arm.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.family.arm/MPU.oem4f.dep" src="MPU.c"/>
+        <srcFile name="lib/debug/ti.sysbios.family.arm.am4fg.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.family.arm/package/package_ti.sysbios.family.arm.om4fg.dep" src="package/package_ti.sysbios.family.arm.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.family.arm/MPU.om4fg.dep" src="MPU.c"/>
+        <srcFile name="lib/debug/ti.sysbios.family.arm.arm4f.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.family.arm/package/package_ti.sysbios.family.arm.orm4f.dep" src="package/package_ti.sysbios.family.arm.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.family.arm/MPU.orm4f.dep" src="MPU.c"/>
+        <srcFile name="package/rel/ti_sysbios_family_arm.tar.dep" src="package/rel/ti_sysbios_family_arm.xdc.inc"/>
+    </makefiles>
+    <targets>
+        <target name="ti.targets.arm.elf.M4F"
+            version="ti.targets.arm.elf.M4F{1,0,20.2,5"
+            rawVersion="20.2.5"
+            platform="ti.platforms.tiva:TM4C1294NCPDT:1"
+            isa="v7M4"
+            suffix="em4f"
+            rootDir="/scratch/xlibrary/.conan/data/ticodegen/20.2.5.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c"
+            os="undefined"
+            rts="ti.targets.arm.rtsarm">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="gnu.targets.arm.M4F"
+            version="gnu.targets.arm.M4F{1,0,9.2,1"
+            rawVersion="9.2.1"
+            platform="ti.platforms.tiva:TM4C1294NCPDT"
+            isa="v7M4"
+            suffix="m4fg"
+            rootDir="/scratch/xlibrary/.conan/data/arm-none-eabi-gcc/9.2019.q4.major-0/library-msp/ga/package/44fcf6b9a7fb86b2586303e3db40189d3b511830"
+            os="undefined"
+            rts="gnu.targets.arm.rtsv7M">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="iar.targets.arm.M4F"
+            version="iar.targets.arm.M4F{1,0,8.50,1"
+            rawVersion="8.50.1.245"
+            platform="ti.platforms.tiva:TM4C1294NCPDT:1"
+            isa="v7M4"
+            suffix="rm4f"
+            rootDir="/scratch/xlibrary/.conan/data/iarcodegen/8.50.1.245-2/library-msp/ga/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9"
+            os="undefined"
+            rts="iar.targets.arm.rts">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+    </targets>
+    <libraries>
+    <library name="lib/debug/ti.sysbios.family.arm"
+        pname="lib/debug/ti.sysbios.family.arm.aem4f"
+        profile="debug"
+        target="ti.targets.arm.elf.M4F"/>
+    <library name="lib/debug/ti.sysbios.family.arm"
+        pname="lib/debug/ti.sysbios.family.arm.am4fg"
+        profile="debug"
+        target="gnu.targets.arm.M4F"/>
+    <library name="lib/debug/ti.sysbios.family.arm"
+        pname="lib/debug/ti.sysbios.family.arm.arm4f"
+        profile="debug"
+        target="iar.targets.arm.M4F"/>
+    </libraries>
+    <configurations>
+    </configurations>
+    <executables>
+    </executables>
+    <tests>
+    </tests>
+    <releases relDir="package/rel/">
+    <release name="ti_sysbios_family_arm"
+        pname="ti_sysbios_family_arm.tar"
+        label="default"
+        relScript="ti/sysbios/libFilter.xs">
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+        <file name="package.bld"/>
+        <file name="linkcmd.xdt"/>
+        <file name="Hwi_link.xdt"/>
+        <file name="doc-files"/>
+        <file name="armSettings.xs"/>
+        <file name="Settings.xml"/>
+        <file name="MPU.xml"/>
+        <file name="MPU_link.xdt"/>
+        <file name="AsmMacros.h"/>
+        <file name="package/package.cfg.xdc.inc"/>
+        <file name="lib/debug/ti.sysbios.family.arm.aem4f"/>
+        <file name="package/package_ti.sysbios.family.arm.c"/>
+        <file name="MPU.c"/>
+        <file name="lib/debug/ti.sysbios.family.arm.am4fg"/>
+        <file name="lib/debug/ti.sysbios.family.arm.arm4f"/>
+    </release>
+    </releases>
+    <repositories>
+    </repositories>
+</package>

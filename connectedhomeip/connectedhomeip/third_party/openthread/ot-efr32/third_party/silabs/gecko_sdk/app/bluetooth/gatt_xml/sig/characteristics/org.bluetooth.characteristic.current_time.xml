@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2011 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Current Time" type="org.bluetooth.characteristic.current_time" uuid="2A2B">
+	<InformativeText>
+	</InformativeText>
+	<Value>
+		<Field name="Exact Time 256">
+			<Requirement>Mandatory</Requirement>
+			<Reference>org.bluetooth.characteristic.exact_time_256</Reference>
+		</Field>
+		<Field name="Adjust Reason">
+			<Requirement>Mandatory</Requirement>
+			<Format>8bit</Format>
+			<BitField>
+				<Bit index="0" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="No manual time update" />
+                        <Enumeration key="1" value="Manual time update" />
+					</Enumerations>
+				</Bit>
+				<Bit index="1" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="No external reference time update" />
+                        <Enumeration key="1" value="External reference time update" />
+					</Enumerations>
+				</Bit>
+				<Bit index="2" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="No change of time zone" />
+                        <Enumeration key="1" value="Change of time zone" />
+					</Enumerations>
+				</Bit>
+				<Bit index="3" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="No change of DST (daylight savings time)" />
+                        <Enumeration key="1" value="Change of DST (daylight savings time)" />
+					</Enumerations>
+				</Bit>
+			</BitField>
+		</Field>
+	</Value>
+    <Note>
+    The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet.
+   </Note>
+</Characteristic>

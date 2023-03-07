@@ -1,0 +1,39 @@
+{
+    "target": {
+        "Name": "LP_CC2672P3",
+        "Revision": [],
+        "Description": "CC2672P3 Launchpad. 7x7 VQFN48 package. External bias, differential output. 770-930 MHz.",
+        "DeviceName": "CC2672P3",
+        "DevicePackage": "VQFN 7x7",
+        "FrontEnd": "XD",
+        "PaSettings": "pasettings.json",
+        "RfDesign": "CC1352PEM-XD7793-XD24",
+        "DefaultCategory": "Settings for 779 - 930 MHz band",
+        "IoSettings": {
+            "_name": "RF Switch",
+            "IoPin": [
+                {
+                    "_name": "DIO28",
+                    "ControlFunction": "Input\/Output",
+                    "Idle": "Input tristate (Default)",
+                    "Tx": "Output low",
+                    "Rx": "Output low"
+                },
+                {
+                    "_name": "DIO29",
+                    "ControlFunction": "Input\/Output",
+                    "Idle": "Input tristate (Default)",
+                    "Tx": "Output low",
+                    "Rx": "Output low"
+                },
+                {
+                    "_name": "DIO30",
+                    "ControlFunction": "Input\/Output",
+                    "Idle": "Input tristate (Default)",
+                    "Tx": "Output high",
+                    "Rx": "Output high"
+                }
+            ]
+        }
+    }
+}

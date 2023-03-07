@@ -1,0 +1,381 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>快速入门 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Examples/index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+      <li>快速入门</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/get-started/Developer_Environment_BL602/get_started_3S_windows/get_started_3S_windows.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="id1">
+<h1>快速入门<a class="headerlink" href="#id1" title="永久链接至标题"></a></h1>
+<p>本文档旨在指导用户搭建 BL602 ((BL602-IoT-DVK-3S))硬件开发的windows软件环境，通过一个简单的示例展示如何编译、下载固件至 BL602 开发板等步骤。</p>
+<div class="admonition note">
+<p class="first admonition-title">注解</p>
+<p class="last">BL-HWC-G1模组windows环境搭建请参考 <a class="reference external" href="../get_started_hw_windows/get_started_hw_windows.html">BL-HWC-G1模组windows环境搭建</a></p>
+</div>
+<div class="section" id="id2">
+<h2>概述<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<p>BL602 是一款Wi-Fi + BLE组合的芯片组，用于低功耗和高性能应用开发。无线子系统包含2.4G无线电，Wi-Fi 802.11b/g/n和BLE 5.0基带/MAC设计。微控制器子系统包含一个低功耗的32位RISC-V CPU，高速缓存和存储器。电源管理单元控制低功耗模式。此外，还支持各种安全性能。</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-118.png" />
+</div>
+</div>
+<div class="section" id="id3">
+<h2>准备工作<a class="headerlink" href="#id3" title="永久链接至标题"></a></h2>
+<p>硬件：</p>
+<ul class="simple">
+<li>一款 <strong>BL602</strong> 开发板</li>
+<li><strong>USB 数据线</strong> （usb转type-c）</li>
+<li>电脑（<a class="reference external" href="../get_started_3S_linux/get_started_3S_linux.html">Linux环境搭建</a> ）</li>
+</ul>
+</div>
+<div class="section" id="id4">
+<h2>开发板实物图<a class="headerlink" href="#id4" title="永久链接至标题"></a></h2>
+<div class="figure">
+<img alt="" src="../../../_images/image-214.png" />
+</div>
+</div>
+<div class="section" id="id5">
+<h2>详细安装步骤<a class="headerlink" href="#id5" title="永久链接至标题"></a></h2>
+<p>请根据下方详细步骤，完成安装过程。</p>
+<div class="section" id="id6">
+<h3>编译环境的建立及代码的获取<a class="headerlink" href="#id6" title="永久链接至标题"></a></h3>
+<ul class="simple">
+<li>安装驱动jtag转usb驱动（驱动安装前先将设备连接电脑可以自动识别到相关设备），驱动下载网站：<a class="reference external" href="https://zadig.akeo.ie/">https://zadig.akeo.ie/</a></li>
+</ul>
+<div class="figure">
+<img alt="" src="../../../_images/驱动安装1.png" />
+</div>
+<ul>
+<li><p class="first">安装串口工具，网上搜索串口工具 <code class="docutils literal notranslate"><span class="pre">sscom5.13.1</span></code>下载使用</p>
+</li>
+<li><p class="first">获取MSYS2安装包<a class="reference external" href="https://sourceforge.net/projects/msys2/files/Base/x86_64/">https://sourceforge.net/projects/msys2/files/Base/x86_64/</a></p>
+</li>
+<li><p class="first">安装步骤 <a class="reference external" href="https://www.msys2.org/">https://www.msys2.org/</a></p>
+</li>
+<li><p class="first">打开MSYS2并安装git，输入命令：<code class="docutils literal notranslate"><span class="pre">pacman</span> <span class="pre">-S</span> <span class="pre">git</span></code></p>
+</li>
+<li><div class="first line-block">
+<div class="line">打开MSYS2并安装make，输入命令：<code class="docutils literal notranslate"><span class="pre">pacman</span> <span class="pre">-S</span> <span class="pre">make</span></code></div>
+<div class="line">后回车，并根据提示直到安装完成，当前我的安装路径是C盘。</div>
+</div>
+</li>
+</ul>
+<div class="figure">
+<img alt="" src="../../../_images/image-36.png" />
+</div>
+<div class="figure">
+<img alt="" src="../../../_images/image-45.png" />
+</div>
+<p>安装成功后会在相应的<code class="docutils literal notranslate"><span class="pre">usr-&gt;bin</span></code>路径下看到安装的工具。</p>
+</div>
+<div class="section" id="id7">
+<h3>配置系统环境变量<a class="headerlink" href="#id7" title="永久链接至标题"></a></h3>
+<p>在windows的搜索中，搜索系统环境变量，打开</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-55.png" />
+</div>
+<p>然后选择<code class="docutils literal notranslate"><span class="pre">高级-&gt;环境变量</span></code>，打开新的界面，操作如下图：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-75.png" />
+</div>
+<p>双击<code class="docutils literal notranslate"><span class="pre">PATH</span></code>新添系统环境变量，此过程操作是通过界面进行操作的，还可以直接通过Windows终端命令行直接进行添加，在这就不介绍了。</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-85.png" />
+</div>
+<p>将安装的<code class="docutils literal notranslate"><span class="pre">msys64</span></code>的路径下的<code class="docutils literal notranslate"><span class="pre">usr/bin</span></code>添加到Path中，添加完成后一路确定退出便可，操作如下：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-95.png" />
+</div>
+<div class="figure">
+<img alt="" src="../../../_images/image-104.png" />
+</div>
+<div class="figure">
+<img alt="" src="../../../_images/image-119.png" />
+</div>
+<p>然后在命令终端输入path便可以查看到新添的环境变量了，现象如下：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-125.png" />
+</div>
+</div>
+</div>
+<div class="section" id="id8">
+<h2>下载代码进行编译<a class="headerlink" href="#id8" title="永久链接至标题"></a></h2>
+<p>打开编译工具，切换到您要保存代码的工作目录，操作如下：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-135.png" />
+</div>
+<p>下载代码，使用 <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:bouffalolab/bl_iot_sdk.git</span></code>
+命令克隆远程仓库(如果)</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-145.png" />
+</div>
+<p>成功后，使用命令 <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">bl_iot_sdk/</span></code>进入到下载的代码目录，使用命令
+<code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">update</span> <span class="pre">--init</span> <span class="pre">--recursive</span></code>进行子仓库同步，操作如下显示：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-154.png" />
+</div>
+<p>同步完成后，便可以进入到对应的app目录进行编译了，操作如下：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-165.png" />
+</div>
+<p>成功现象如下：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-174.png" />
+</div>
+<div class="admonition note">
+<p class="first admonition-title">注解</p>
+<p class="last">如果编译失败，需要将编译工具链加入环境变量，如msys安装在C:msys64目录下，用户名是：admin，SDK在/d/bl_iot_sdk目录下，那么修改环境变量，在C：msys64homeadmin.bashrc中添加
+<code class="docutils literal notranslate"><span class="pre">PATH=/d/bl_iot_sdk/toolchain/riscv/MSYS/bin:$PATH</span></code> 并重启电脑。</p>
+</div>
+</div>
+<div class="section" id="id9">
+<h2>下载编译好的程序到板卡<a class="headerlink" href="#id9" title="永久链接至标题"></a></h2>
+<p>打开 <code class="docutils literal notranslate"><span class="pre">bl_iot_sdk/tools/flash_tool</span></code> 文件中的 <code class="docutils literal notranslate"><span class="pre">BLDevCube.exe</span></code>\程序</p>
+<p><code class="docutils literal notranslate"><span class="pre">chip</span> <span class="pre">type</span></code> 选择 <code class="docutils literal notranslate"><span class="pre">BL602/604</span></code> ，打开后界面参数参考下图配置：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-183.png" />
+</div>
+<p>成功后会有log打印信息，现象如下：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-192.png" />
+</div>
+</div>
+<div class="section" id="id10">
+<h2>使用串口工具查看<a class="headerlink" href="#id10" title="永久链接至标题"></a></h2>
+<p>针对与loT DVK
+3S-MB和BL-HWC-G1两个板卡需要对串口的流控进行设置，既RTS和DTR两个引脚设置如下图：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-203.png" />
+</div>
+<p>设置成功打开如下显示：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-215.png" />
+</div>
+<p><strong>恭喜，您已完成BL602的入门学习！</strong>
+现在，您可以尝试使用 <a class="reference external" href="../eclipse_windows/eclipse_windows.html">Eclipse</a> 或 <a class="reference external" href="../freedom_windows/freedom_windows.html">Freedom studio</a> <a class="reference external" href="../cdk_windows/cdk_windows.html">CDK</a> 进行debug。</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,29 @@
+id: "sl_display"
+label: "Display driver"
+package: "wisun"
+description: "The component provides a display driver on WSTK boards with renderer thread. 
+The application threads can create renderer functions add it to the message queue"
+category: "Wi-SUN|Application"
+quality: "production"
+root_path: "app/wisun/component/display"
+provides:
+  - name: sl_display
+
+source:
+  - path: "sl_display.c"
+
+include:
+  - path: "."
+    file_list:
+    - "path": "sl_display.h"
+
+requires:
+  - name: glib
+
+ui_hints:
+  visibility: never
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: display

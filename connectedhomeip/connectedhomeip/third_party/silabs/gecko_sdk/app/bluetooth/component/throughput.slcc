@@ -1,0 +1,18 @@
+id: throughput
+package: Bluetooth
+label: Throughput Test helper
+description: |-
+  Helper for throughput tests
+category: Bluetooth|Application|Throughput
+quality: production
+root_path: app/bluetooth/common/throughput
+include:
+  - path: .
+    file_list: 
+      - path: throughput_types.h
+      - path: throughput_common.h
+requires:
+  - name: "bluetooth_stack"
+provides:
+  - name: throughput_types
+  - name: throughput

@@ -1,0 +1,217 @@
+// Copyright 2019 The Pigweed Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not
+// use this file except in compliance with the License. You may obtain a copy of
+// the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations under
+// the License.
+syntax = "proto3";
+
+// This is a test .proto file for pw_protobuf's codegen implementation.
+
+package pw.protobuf.test;
+
+// Top-level enum definition.
+enum Bool {
+  TRUE = 0;
+  FALSE = 1;
+  FILE_NOT_FOUND = 2;
+}
+
+// Prefixed enum
+enum Error {
+  ERROR_NONE = 0;
+  ERROR_NOT_FOUND = 1;
+  ERROR_UNKNOWN = 2;
+}
+
+// Single-value enum
+enum AlwaysBlue {
+  BLUE = 0;
+}
+
+// A message!
+message Pigweed {
+  // Nested messages and enums.
+  message Pigweed {
+    enum Binary {
+      ZERO = 0;
+      ONE = 1;
+    }
+
+    Bool status = 1;
+  }
+
+  message Protobuf {
+    enum Binary {
+      ONE = 0;
+      ZERO = 1;
+    }
+
+    // We must go deeper.
+    message Compiler {
+      enum Status {
+        OK = 0;
+        ERROR = 1;
+        FUBAR = 2;
+      }
+
+      string file_name = 1;
+      Status status = 2;
+      Binary protobuf_bin = 3;
+      Pigweed.Binary pigweed_bin = 4;
+    }
+
+    Binary binary_value = 1;
+  }
+
+  // Regular types.
+  uint32 magic_number = 1;
+  sint32 ziggy = 2;
+  fixed64 cycles = 3;
+  float ratio = 4;
+  string error_message = 5;
+
+  DeviceInfo device_info = 6;
+
+  // Nested messages and enums as fields.
+  Pigweed pigweed = 7;
+  Protobuf.Binary bin = 8;
+
+  Proto proto = 9;
+  repeated Proto.ID id = 10;
+
+  // Fixed-length bytes field, a string with no maximum size specified in
+  // full_test.options, and a scalar with a forced callback.
+  bytes data = 11;
+  string description = 12;
+  uint32 special_property = 13;
+  int32 bungle = 14;
+}
+
+// Another message.
+message Proto {
+  enum Binary {
+    OFF = 0;
+    ON = 1;
+  }
+
+  message ID {
+    uint32 id = 1;
+  }
+
+  // Circular dependency with Pigweed.
+  Pigweed pigweed = 1;
+
+  // Same name, different namespace.
+  Binary bin = 2;
+  Pigweed.Pigweed.Binary pigweed_pigweed_bin = 3;
+  Pigweed.Protobuf.Binary pigweed_protobuf_bin = 4;
+
+  Pigweed.Protobuf.Compiler meta = 5;
+}
+
+// Yet another message.
+message DeviceInfo {
+  enum DeviceStatus {
+    OK = 0;
+    ASSERT = 1;
+    FAULT = 2;
+    PANIC = 3;
+  }
+
+  string device_name = 1;
+  fixed32 device_id = 2;
+  DeviceStatus status = 3;
+
+  repeated KeyValuePair attributes = 4;
+}
+
+// Ensure recursive submessages work.
+message Crate {
+  string name = 1;
+  repeated Crate smaller_crates = 2;
+}
+
+// Two messages that should properly overlay without collisions.
+message BaseMessage {
+  uint32 length = 1;
+  reserved 2;
+}
+
+message Overlay {
+  reserved 1;
+  uint32 height = 2;
+}
+
+// Ensure that reserved words are suffixed with underscores.
+message IntegerMetadata {
+  int32 bits = 1;
+  // `signed` should become `signed_` in the C++ code.
+  bool signed = 2;
+  // The field name `null` shouldn't be modified in the C++ code, but the enum
+  // value used for internally referring to the field should be generated as
+  // `IntegerMetadata::Fields::NULL_` to avoid conflicting with `NULL`.
+  bool null = 3;
+}
+
+// Enum values are handled differently from normal identifiers because they are
+// automatically case-converted in the generated code. Therefore, we append an
+// underscore if the output format exactly matches a reserved word or a
+// standard-library macro. This enum tests that underscores are appended in
+// cases where they're actually necessary but not when they can be skipped due
+// to case conversion.
+enum ReservedWord {
+  NULL = 0;
+  int = 1;
+  return = 2;
+  break = 3;
+  for  // The linter wants a line break here.
+    = 4;
+  do  // The linter wants a line break here.
+    = 5;
+  // Note: This obviously isn't anywhere near a complete list of C++ keywords
+  //       and standard-library macros.
+}
+
+// Messages and enums named either `Message` or `Fields` should be appended with
+// underscores in generated C++ code so that they don't conflict with the
+// codegen internals. This is only a problem if such types are defined within
+// the scopes of other messages, as generated message structs automatically have
+// nested types `struct Message` and `enum class Fields`. However, we simply
+// apply the transformation in all contexts for consistency and simplicity.
+message Function {
+  message Message {
+    string content = 1;
+  }
+
+  enum Fields {
+    NONE = 0;
+    COMPLEX_NUMBERS = 1;
+    INTEGERS_MOD_5 = 2;
+    MEROMORPHIC_FUNCTIONS_ON_COMPLEX_PLANE = 3;
+    OTHER = 4;
+  }
+
+  Message description = 1;
+  Fields domain_field = 2;
+  Fields codomain_field = 3;
+}
+
+// This might be useful.
+message KeyValuePair {
+  string key = 1;
+  string value = 2;
+}
+
+// Corner cases of code generation.
+message CornerCases {
+  // Generates ReadUint32() and WriteUint32() that call the parent definition.
+  uint32 _uint32 = 1;
+}

@@ -1,0 +1,123 @@
+id: tz_service_psa_crypto
+package: platform
+label: PSA Crypto core support for TrustZone secure library
+description: >-
+  This component includes the PSA Crypto core support for TrustZone secure library.
+category: Platform|Security|TrustZone
+quality: beta
+component_root_path: util/third_party/crypto/trusted-firmware-m
+
+provides:
+  - name: tz_service_psa_crypto
+
+requires:
+  - name: tz_service_common
+    condition: [trustzone_secure]
+
+  # We need to include all of these components since they contain the source
+  # files that could possible be required for software fallback. Since the
+  # config is created based on the components included for the NS app, this does
+  # not add any unnecessary code size.
+  - name: mbedtls_aes
+    condition: [trustzone_secure]
+  - name: mbedtls_asn1
+    condition: [trustzone_secure]
+  - name: mbedtls_base64
+    condition: [trustzone_secure]
+  - name: mbedtls_ccm
+    condition: [trustzone_secure]
+  - name: mbedtls_cipher
+    condition: [trustzone_secure]
+  - name: mbedtls_cmac
+    condition: [trustzone_secure]
+  - name: mbedtls_ecc
+    condition: [trustzone_secure]
+  - name: mbedtls_entropy_hardware
+    condition: [trustzone_secure]
+  - name: mbedtls_gcm
+    condition: [trustzone_secure]
+  - name: mbedtls_hash
+    condition: [trustzone_secure]
+  - name: mbedtls_hkdf
+    condition: [trustzone_secure]
+  - name: mbedtls_jpake
+    condition: [trustzone_secure]
+  - name: mbedtls_md5
+    condition: [trustzone_secure]
+  - name: mbedtls_mpi
+    condition: [trustzone_secure]
+  - name: mbedtls_sha
+    condition: [trustzone_secure]
+  - name: mbedtls_version
+    condition: [trustzone_secure]
+  - name: mbedtls_chachapoly
+    condition: [trustzone_secure]
+
+include:
+  # Add super/util/third_party/crypto as include path in order to redirect
+  # inclusion of the PSA Crypto headers to the mbedtls submodule (when the
+  # corresponding headers in trusted-firmware-m/interface/include are used).
+  - path: ..
+
+  - path: ../sl_component/sl_trustzone/inc/common
+    file_list:
+      - path: sli_tz_service_psa_crypto.h
+
+  - path: interface/include
+    condition: [trustzone_secure]
+    file_list:
+      - path: tfm_crypto_defs.h
+
+  - path: secure_fw/partitions/crypto
+    condition: [trustzone_secure]
+    file_list:
+      - path: tfm_mbedcrypto_include.h
+      - path: tfm_crypto_api.h
+      - path: tfm_crypto_private.h
+
+  - path: secure_fw/spm/include
+    condition: [trustzone_secure]
+    file_list:
+      - path: tfm_memory_utils.h
+
+  - path: ../sl_component/sl_trustzone/inc/nonsecure
+    condition: [trustzone_nonsecure]
+    file_list:
+      - path: sli_psa_crypto.h
+
+source:
+  # Core sources
+  - path: secure_fw/partitions/crypto/crypto_init_sl.c
+    condition: [trustzone_secure]
+  - path: secure_fw/partitions/crypto/crypto_alloc.c
+    condition: [trustzone_secure]
+  - path: secure_fw/partitions/crypto/crypto_key.c
+    condition: [trustzone_secure]
+
+  # Function specific sources
+  - path: secure_fw/partitions/crypto/crypto_aead.c
+    condition: [trustzone_secure]
+  - path: secure_fw/partitions/crypto/crypto_asymmetric.c
+    condition: [trustzone_secure]
+  - path: secure_fw/partitions/crypto/crypto_cipher.c
+    condition: [trustzone_secure]
+  - path: secure_fw/partitions/crypto/crypto_hash.c
+    condition: [trustzone_secure]
+  - path: secure_fw/partitions/crypto/crypto_key_derivation.c
+    condition: [trustzone_secure]
+  - path: secure_fw/partitions/crypto/crypto_key_management.c
+    condition: [trustzone_secure]
+  - path: secure_fw/partitions/crypto/crypto_mac.c
+    condition: [trustzone_secure]
+  - path: secure_fw/partitions/crypto/crypto_rng.c
+    condition: [trustzone_secure]
+
+  # Service interface (NS)
+  - path: interface/src/tfm_crypto_func_api.c
+    condition: [trustzone_nonsecure]
+  - path: interface/src/sli_tfm_crypto_func_api.c
+    condition: [trustzone_nonsecure]
+
+define:
+  - name: TFM_PARTITION_CRYPTO
+    condition: [trustzone_secure]

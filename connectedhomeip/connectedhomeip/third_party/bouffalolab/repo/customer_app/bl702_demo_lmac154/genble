@@ -1,0 +1,3 @@
+#!/bin/sh
+make CONFIG_BT=1 CONFIG_BLE_TP_SERVER=1 -j
+exit $?

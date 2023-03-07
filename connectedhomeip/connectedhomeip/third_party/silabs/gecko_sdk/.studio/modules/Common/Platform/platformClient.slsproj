@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="com.silabs.sdk.exx32.common.platform" label="Platform" contentRoot="$(sdkInstallationPath:default())/platform/common">
+  <property key="category" value="efm32|Common"/>
+  <includePath uri="inc" />
+  <folder name="src" uri="src" />
+</project>

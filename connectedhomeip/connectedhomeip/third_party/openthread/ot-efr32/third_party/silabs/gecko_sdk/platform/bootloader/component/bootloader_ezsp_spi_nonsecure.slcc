@@ -1,0 +1,20 @@
+id: bootloader_ezsp_spi_nonsecure
+label: "EZSP-SPI (Non-Secure)"
+package: bootloader
+description: Firmware upgrade over SPI using the EZSP protocol. Configure pinout in the SPI Peripheral component
+category: Platform|Bootloader|TrustZone NonSecure|Communication
+quality: beta
+source:
+  - path: platform/bootloader/communication/ezsp-spi/btl_ezsp_spi_ns.c
+  - path: platform/bootloader/communication/ezsp-spi/btl_ezsp_spi_common.c
+include:
+  - path: platform/bootloader/communication
+    file_list:
+    - path: ezsp-spi/btl_ezsp_spi.h
+    - path: btl_communication.h
+define:
+  - name: BOOTLOADER_SUPPORT_COMMUNICATION
+    value: 1
+provides:
+  - name: bootloader_ezsp_spi
+  - name: bootloader_ezsp_spi_nonsecure

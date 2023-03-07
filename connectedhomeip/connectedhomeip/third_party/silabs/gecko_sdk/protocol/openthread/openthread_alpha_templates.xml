@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ASCII"?>
+<model:MDescriptors xmlns:model="http://www.silabs.com/ss/Studio.ecore">
+  <descriptors name="rcp-spi-802154-blehci" label="Multiprotocol (OpenThread+Zigbee+BLE) - RCP (SPI)" description="This multiprotocol radio co-processor (RCP) application supports running OpenThread, Zigbee, and Bluetooth stacks simultaneously on a host processor. It uses concurrent multiprotocol (CMP) / multi-PAN functionality to run the 802.15.4 networks simultaneously on the same channel, and dynamic multiprotocol (DMP) to run the Bluetooth Link Layer simultaneously. The host stacks and the RCP communicate using the Co-Processor Communication protocol (CPC), which acts as a protocol multiplexer and serial transport layer. The host applications connect to the CPC daemon, which in turn connects to the EFR via a SPI link. Refer to *AN1333: Running Zigbee, OpenThread, and Bluetooth Concurrently on a Linux Host with a Multiprotocol Co-processor* for more information on running the multiprotocol RCP with different host applications.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.openthread.sample-apps.ot-ncp.rcp-spi-802154-blehci.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/ot-ncp/rcp-spi-802154-blehci.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/ot-ncp/README-MP-DMP-RCP.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd2703a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4195a brd4196a brd4197a brd4304a brd4305d brd4305e brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4316a brd4317a brd4318a brd4319a brd4329a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg21.* .*efr32mg24.* .*efr32mr21.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm24.* .*efr32mr21.*"/>
+    <properties key="ideCompatibility" value="makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc"/>
+    <properties key="category" value="OpenThread Examples"/>
+    <properties key="quality" value="ALPHA"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Capability|Multiprotocol Device\ Type|RCP Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Thread"/>
+  </descriptors>
+  <descriptors name="rcp-uart-802154-blehci" label="Multiprotocol (OpenThread+Zigbee+BLE) - RCP (UART)" description="This multiprotocol radio co-processor (RCP) application supports running OpenThread, Zigbee, and Bluetooth stacks simultaneously on a host processor. It uses concurrent multiprotocol (CMP) / multi-PAN functionality to run the 802.15.4 networks simultaneously on the same channel, and dynamic multiprotocol (DMP) to run the Bluetooth Link Layer simultaneously. The host stacks and the RCP communicate using the Co-Processor Communication protocol (CPC), which acts as a protocol multiplexer and serial transport layer. The host applications connect to the CPC daemon, which in turn connects to the EFR via a UART link. Refer to *AN1333: Running Zigbee, OpenThread, and Bluetooth Concurrently on a Linux Host with a Multiprotocol Co-processor* for more information on running the multiprotocol RCP with different host applications.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.openthread.sample-apps.ot-ncp.rcp-uart-802154-blehci.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/ot-ncp/rcp-uart-802154-blehci.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/ot-ncp/README-MP-DMP-RCP.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd2703a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4195a brd4196a brd4197a brd4304a brd4305d brd4305e brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4316a brd4317a brd4318a brd4319a brd4329a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg21.* .*efr32mg24.* .*efr32mr21.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm24.* .*efr32mr21.*"/>
+    <properties key="ideCompatibility" value="makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc"/>
+    <properties key="category" value="OpenThread Examples"/>
+    <properties key="quality" value="ALPHA"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Capability|Multiprotocol Device\ Type|RCP Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Thread"/>
+  </descriptors>
+</model:MDescriptors>

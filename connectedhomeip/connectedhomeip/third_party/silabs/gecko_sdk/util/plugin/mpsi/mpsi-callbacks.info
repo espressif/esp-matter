@@ -1,0 +1,84 @@
+/**************************************************************************//**
+ * Copyright 2017 Silicon Laboratories, Inc.
+ *
+ *****************************************************************************/
+
+#include "mpsi.h"
+#include "mpsi-message-ids.h"
+
+// MPSI message callback: Get Apps Info
+uint8_t mpsiHandleMessageGetAppsInfo(MpsiMessage_t* mpsiMessage)
+{
+  (void)mpsiMessage;
+  return MPSI_SUCCESS;
+}
+
+// MPSI message callback: Apps Info
+uint8_t mpsiHandleMessageAppsInfo(MpsiMessage_t* mpsiMessage)
+{
+  (void)mpsiMessage;
+  return MPSI_SUCCESS;
+}
+
+// MPSI message callback: Bootload Slot
+uint8_t mpsiHandleMessageBootloadSlot(MpsiMessage_t* mpsiMessage)
+{
+  (void)mpsiMessage;
+  return MPSI_SUCCESS;
+}
+
+// MPSI message callback: Error
+uint8_t mpsiHandleMessageError(MpsiMessage_t* mpsiMessage)
+{
+  (void)mpsiMessage;
+  return MPSI_SUCCESS;
+}
+
+// MPSI message callback: Initiate Joining
+uint8_t mpsiHandleMessageInitiateJoining(MpsiMessage_t* mpsiMessage)
+{
+  (void)mpsiMessage;
+  return MPSI_SUCCESS;
+}
+
+// MPSI message callback: Get Zigbee Joining Device Info
+uint8_t mpsiHandleMessageGetZigbeeJoiningDeviceInfo(MpsiMessage_t* mpsiMessage)
+{
+  (void)mpsiMessage;
+  return MPSI_SUCCESS;
+}
+
+// MPSI message callback: Zigbee Joining Device Info
+uint8_t mpsiHandleMessageZigbeeJoiningDeviceInfo(MpsiMessage_t* mpsiMessage)
+{
+  (void)mpsiMessage;
+  return MPSI_SUCCESS;
+}
+
+// MPSI message callback: Set Zigbee Joining Device Info
+uint8_t mpsiHandleMessageSetZigbeeJoiningDeviceInfo(MpsiMessage_t* mpsiMessage)
+{
+  (void)mpsiMessage;
+  return MPSI_SUCCESS;
+}
+
+// MPSI message callback: Get Zigbee Joining Device Info
+uint8_t mpsiHandleMessageGetZigbeeTrustCenterJoiningCredentials(MpsiMessage_t* mpsiMessage)
+{
+  (void)mpsiMessage;
+  return MPSI_SUCCESS;
+}
+
+// MPSI message callback: Zigbee Joining Device Info
+uint8_t mpsiHandleMessageZigbeeTrustCenterJoiningCredentials(MpsiMessage_t* mpsiMessage)
+{
+  (void)mpsiMessage;
+  return MPSI_SUCCESS;
+}
+
+// MPSI message callback: Set Zigbee Joining Device Info
+uint8_t mpsiHandleMessageSetZigbeeTrustCenterJoiningCredentials(MpsiMessage_t* mpsiMessage)
+{
+  (void)mpsiMessage;
+  return MPSI_SUCCESS;
+}

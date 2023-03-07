@@ -1,0 +1,38 @@
+project_name: cpc_secondary_spi_security_device_recovery
+package: platform
+quality: production
+label: Platform - CPC Secondary Device Recovery - SPI
+description: > 
+  This simple example project implements the function sl_cpc_security_on_unbind_request(),
+  allowing the secondary device to be unbound from the host.
+category: Example|Platform
+source:
+  - path: app.c
+  - path: main.c
+  - path: cpc_app.c
+include:
+  - path: .
+    file_list:
+    - path: app.h
+    - path: cpc_app.h
+component:
+  - id: sl_system
+  - id: device_init
+  - id: cpc_secondary
+  - id: cpc_security_secondary
+  - id: cpc_secondary_driver_spi_usart
+    instance:
+    - exp    
+define:
+  - name: DEBUG_EFM
+configuration:
+  - name: SL_CPC_SECURITY_ENABLED
+    value: 1
+  - name: SL_CPC_SECURITY_BINDING_KEY_METHOD
+    value: SL_CPC_SECURITY_BINDING_KEY_ECDH
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+tag:
+  - hardware:device:ram:40

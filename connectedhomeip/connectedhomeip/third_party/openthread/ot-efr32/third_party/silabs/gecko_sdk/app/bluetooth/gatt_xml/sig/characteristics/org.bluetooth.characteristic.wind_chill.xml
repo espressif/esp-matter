@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Wind Chill" type="org.bluetooth.characteristic.wind_chill" 
+uuid="2A79" last-modified="2013-11-20" approved="Yes">
+<Value>
+    <Field name="Wind Chill">
+        <InformativeText>Unit is in degrees Celsius with a resolution of 1 degree Celsius</InformativeText>
+        <Requirement>Mandatory</Requirement>
+        <Format>sint8</Format>
+        <Unit>org.bluetooth.unit.thermodynamic_temperature.degree_celsius</Unit>
+        <DecimalExponent>0</DecimalExponent>
+	</Field>
+</Value>
+</Characteristic>

@@ -1,0 +1,23 @@
+!!omap
+- id: slwrb4172a
+- label: SLWRB4172A
+- package: platform
+- description: Kit BSP support for the EFR32MG12 2400/490 MHz 19 dBm Dual Band Radio
+    Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4172a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4172A"'
+  - name: SL_KIT_REV
+    value: '"A00"'
+- tag:
+  - kit:opn:SLWRB4172A
+  - kit:pn:WRB4172
+  - kit:variant:A
+  - kit:revision:A00

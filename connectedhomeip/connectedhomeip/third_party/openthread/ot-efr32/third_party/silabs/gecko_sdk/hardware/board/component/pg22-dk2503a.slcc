@@ -1,0 +1,22 @@
+!!omap
+- id: pg22_dk2503a
+- label: PG22-DK2503A
+- package: platform
+- description: Kit BSP support for the PG22 Dev Kit.
+- category: Platform|Board|Kit|Development Kit
+- quality: production
+- requires:
+  - name: hardware_board_from_pg22-dk2503a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_dk
+- define:
+  - name: SL_KIT_NAME
+    value: '"PG22-DK2503A"'
+  - name: SL_KIT_REV
+    value: '"A02"'
+- tag:
+  - kit:opn:PG22-DK2503A
+  - kit:pn:DK2503
+  - kit:variant:A
+  - kit:revision:A02

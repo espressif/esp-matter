@@ -1,0 +1,157 @@
+project_name: btmesh_ncp_empty
+package: Btmesh
+label: Bluetooth Mesh - NCP Empty
+description: >
+  Demonstrates the bare minimum needed for an NCP Target C application. 
+  This example is recommended for EFR32xG22, which has limited RAM and flash,
+  and therefore some of the stack classes are disabled by default.
+
+category: Bluetooth Mesh Examples
+quality: production
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Bluetooth Mesh"]
+  - name: "Device Type"
+    value: ["NCP"]
+  - name: "Project Difficulty"
+    value: ["Beginner"] 
+
+component:
+  - id: app_assert
+  - id: gatt_configuration
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_gatt
+  - id: bluetooth_feature_gatt_server
+  - id: bluetooth_feature_nvm
+  - id: bootloader_interface
+  - id: btmesh_dcd_configuration
+  - id: btmesh_feature_gatt_prov_bearer
+  - id: btmesh_feature_generic_server
+  - id: btmesh_feature_health_server
+  - id: btmesh_feature_relay
+  - id: btmesh_proxy
+  - id: btmesh_stack
+  - id: mpu
+  - id: ncp
+  - id: rail_util_pti
+  - id: uartdrv_usart
+    instance:
+      - vcom
+
+source:
+  - path: app.c
+  - path: main.c
+
+include:
+  - path: .
+    file_list:
+    - path: app.h
+
+config_file:
+  - override:
+      component: btmesh_dcd_configuration
+      file_id: dcd_configuration_file_id
+    path: dcd_config_xg22.btmeshconf
+    directory: "btmeshconf"
+
+readme:
+  - path: ../../documentation/example/btmesh_ncp_empty/readme.md
+
+other_file:
+  - path: ../../script/create_bl_files.bat
+  - path: ../../script/create_bl_files.sh
+  - path: ../../documentation/example/btmesh_ncp_empty/readme_img0.png
+    folder: images
+  - path: ../../documentation/example/btmesh_ncp_empty/readme_img1.png
+    folder: images
+  - path: ../../documentation/example/btmesh_ncp_empty/readme_img2.png
+    folder: images
+  - path: ../../documentation/example/btmesh_ncp_empty/readme_img3.png
+    folder: images
+  - path: ../../documentation/example/btmesh_ncp_empty/readme_img4.png
+    folder: images
+  - path: ../../documentation/example/btmesh_ncp_empty/readme_img5.png
+    folder: images
+  - path: ../../documentation/example/btmesh_ncp_empty/readme_img6.png
+    folder: images
+  - path: ../../documentation/example/btmesh_ncp_empty/readme_img7.png
+    folder: images
+  - path: ../../documentation/example/btmesh_ncp_empty/readme_img8.png
+    folder: images
+  - path: ../../documentation/example/btmesh_ncp_empty/readme_img9.png
+    folder: images
+
+configuration:
+  - name: NVM3_DEFAULT_CACHE_SIZE
+    value: 80
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: SL_BTMESH_CONFIG_FRIEND_MAX_SUBS_LIST
+    value: "0"
+  - name: SL_BTMESH_CONFIG_FRIEND_MAX_TOTAL_CACHE
+    value: "0"
+  - name: SL_BTMESH_CONFIG_FRIEND_MAX_SINGLE_CACHE
+    value: "0"
+  - name: SL_BTMESH_CONFIG_MAX_APPKEYS
+    value: "2"
+  - name: SL_BTMESH_CONFIG_MAX_APP_BINDS
+    value: "2"
+  - name: SL_BTMESH_CONFIG_MAX_FOUNDATION_CLIENT_CMDS
+    value: "0"
+  - name: SL_BTMESH_CONFIG_MAX_FRIENDSHIPS
+    value: "0"
+  - name: SL_BTMESH_CONFIG_MAX_NETKEYS
+    value: "1"
+  - name: SL_BTMESH_CONFIG_MAX_PROVISIONED_DEVICES
+    value: "0"
+  - name: SL_BTMESH_CONFIG_MAX_PROVISIONED_DEVICE_APPKEYS
+    value: "0"
+  - name: SL_BTMESH_CONFIG_MAX_PROVISIONED_DEVICE_NETKEYS
+    value: "0"
+  - name: SL_BTMESH_CONFIG_MAX_SEND_SEGS
+    value: "2"
+  - name: SL_BTMESH_CONFIG_MAX_SUBSCRIPTIONS
+    value: "2"
+  - name: SL_BTMESH_CONFIG_MAX_VAS
+    value: "0"
+  - name: SL_BTMESH_CONFIG_NET_CACHE_SIZE
+    value: "8"
+  - name: SL_BTMESH_CONFIG_RPL_SIZE
+    value: "16"
+  - name: SL_BT_CONFIG_MAX_CONNECTIONS
+    value: "2"
+  - name: SL_HEAP_SIZE
+    value: "0x3800"
+  - name: SL_BT_CONFIG_BUFFER_SIZE
+    value: 3280
+  - name: SL_NCP_EVT_BUF_SIZE
+    value: "768"
+  - name: SL_PSA_KEY_USER_SLOT_COUNT
+    value: "0"
+    condition:
+      - psa_crypto
+  - name: SL_SIMPLE_COM_TX_BUF_SIZE
+    value: "768"
+  - name: SL_STACK_SIZE
+    value: "0xE00"
+  - name: SL_UARTDRV_USART_VCOM_FLOW_CONTROL_TYPE
+    value: uartdrvFlowControlNone
+    condition:
+      - hardware_board_tb
+
+tag:
+  - hardware:device:sdid:205
+  - hardware:device:flash:512
+  - hardware:device:ram:32
+  - hardware:rf:band:2400
+  - prebuilt_demo
+
+ui_hints:
+  highlight:
+    - path: config/btconf/gatt_configuration.btconf
+      focus: false
+    - path: config/btmeshconf/dcd_config.btmeshconf
+      focus: false
+    - path: readme.md
+      focus: true

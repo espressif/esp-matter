@@ -1,0 +1,27 @@
+id: power_manager_handler_implementation
+label: "Power Manager: Handler"
+package: platform
+category: Services|Power Manager
+ui_hints:
+  visibility: never
+quality: production
+root_path: platform/service/power_manager
+provides:
+  - name: power_manager_handler_implementation
+  - name: power_manager_handler
+template_file:
+  - path: template/sl_power_manager_handler.c.jinja
+    unless: [kernel]
+description: |
+  The Power Manager Handler component provides a set of events that can be
+  used by other components to register handlers that must be called in the
+  power manager hooks function. Handlers can be registered for the following
+  events using the Event Handler API provided by the Event Handler component:
+
+  * is_ok_to_sleep
+  * sleep_on_isr_exit
+
+  Note that the registered function MUST NOT have any side effects. It is not
+  guaranteed that all registred callbacks will be called each time the system
+  wakeup, i.e. if a previous callback says to wakeup then the following
+  callbacks are not called as we want to wake up as fast as possible.

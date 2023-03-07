@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="Timer" title="Portable Timer Management" version="1">
+
+<page name="Module" title="Module Settings">
+<html><body><table>
+  <tr>
+      <td><form>
+        <p>The Timer module allows you to create one or more run-to-completion threads that are run in the context of a timer hardware interrupt service routine.</p>
+        <p></p>
+      </form></td>
+  </tr>
+  <tr>
+    <td><control type="checkbox" label="Add the portable Timer management module to my configuration" value="value:this.$used" bold="true"/></td>
+  </tr>
+  <tr></tr>
+  <tr>
+    <td><control type="hyperlink" link="value:ti.sysbios.family.Settings.timerDelegate" label="Device-specific Timer support"/></td>
+  </tr>
+</table></body></html>
+</page>
+
+<page name="Instance" title="Instance Settings" DPI="10">
+<html><body><table>
+  <tr>
+    <td>
+      <h1>Portable Timers</h1>
+      <table><tr>
+        <td><control type="listbox" sort="true" id="master" text="value:this.$activeInstance" width="10" height="15" align="fill" labels="value:this"/></td>
+        <td>
+          <control type="pushbutton" label="Add ..." align="fill" link="action:New"/>
+          <control type="pushbutton" label="Remove" align="fill" link="action:Delete" context="value:widget.master.selection"/>
+        </td>
+      </tr></table>
+    </td>
+    <td context="value:widget.master.selection">
+      <h1>Required Settings</h1>
+      <table>
+        <tr>
+          <td><control type="label" label="Handle" align="left"/></td>
+          <td><control type="editbox" 
+               value="value:this.instance.name"
+               tooltip="Handle name"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Timer ISR function" align="left"/></td>
+          <td colspan="2"><control type="editbox" align="fill"
+               value="value:this.create.tickFxn"
+               tooltip="value:this.create.tickFxn.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Timer Id" align="left"/></td>
+          <td><control type="droplist"
+               labels="ANY;0;1;2;3;4;5;6;7;8"
+               values="-1;0;1;2;3;4;5;6;7;8"
+               text="value:this.create.id"
+               tooltip="Supported range of Timer Ids is device specific"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Period" align="left"/></td>
+          <td><control type="editbox" 
+             value="value:this.period"
+             tooltip="value:this.period.$summary"/></td>
+          <td><control type="droplist" 
+             value="value:this.periodType"
+             tooltip="value:this.periodType.$summary"/></td>
+        </tr>
+      </table>
+      <h1>Additional Settings</h1>
+      <table>
+        <tr>
+          <td><control type="label" label="Argument passed to the Timer ISR function" align="left"/></td>
+          <td><control type="editbox" 
+             value="value:this.arg"
+             tooltip="value:this.arg.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Start mode" align="left"/></td>
+          <td colspan="2"><control type="droplist" 
+             value="value:this.startMode"
+             tooltip="value:this.startMode.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Run mode" align="left"/></td>
+          <td colspan="2"><control type="droplist" 
+             value="value:this.runMode"
+             tooltip="value:this.runMode.$summary"/></td>
+        </tr>
+      </table>
+      <h1 style="visibility:collapsed">Advanced Settings</h1>
+      <h2 style="visibility:collapsed">Clocking</h2>
+      <table>
+        <tr><td><form><p>Specify the timer input frequency if it has elsewhere been set to something other than the platform default.</p></form></td></tr>
+        <tr>
+          <td><control type="label" label="External input clock frequency (in Hz)" align="left"/></td>
+          <td><control type="editbox" 
+               value="value:this.extFreq.lo"
+               tooltip="0 implies that the default platform timer frequency will be used"/></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table></body></html>
+</page>
+<properties name="Advanced" title="All Options" enabled="true" visible="true" link="this"/>
+</gep>
+

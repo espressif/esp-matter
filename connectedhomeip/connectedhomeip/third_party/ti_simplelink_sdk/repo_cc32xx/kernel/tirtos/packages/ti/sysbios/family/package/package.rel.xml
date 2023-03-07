@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/release.dtd -->
+<release name="ti_sysbios_family" label="default" date="1631190797787" buildCount="2" producerId="undefined">
+<package name="ti.sysbios.family"
+    version="2, 0, 0, 0"/>
+<imports>
+    <package name="ti.sysbios.interfaces"
+        version=""/>
+</imports>
+<references>
+    <package name="xdc"
+        version="1, 1, 1, 1601763860975"
+        providerId="/db/rtree/library/trees/xdcprod/xdcprod-D16/product/xdccore/Linux/xdctools_3_62_01_15_core/packages">
+        <file name="IPackage.xdc"/>
+        <file name="IPackage.xs"/>
+        <file name="Warnings.xs"/>
+        <file name="om2.xs"/>
+        <file name="package.xs"/>
+        <file name="template.xs"/>
+        <file name="utils.js"/>
+        <file name="xdc.tci"/>
+        <file name="xmlgen.xs"/>
+        <file name="xmlgen2.xs"/>
+    </package>
+    <package name="xdc.services.global"
+        version="1, 0, 0, 1601763907358"
+        providerId="/db/rtree/library/trees/xdcprod/xdcprod-D16/product/xdccore/Linux/xdctools_3_62_01_15_core/packages">
+        <file name="Clock.xs"/>
+        <file name="Trace.xs"/>
+        <file name="java/package.jar"/>
+    </package>
+    <package name="xdc.bld"
+        version="1, 0, 2, 1601763865498"
+        providerId="/db/rtree/library/trees/xdcprod/xdcprod-D16/product/xdccore/Linux/xdctools_3_62_01_15_core/packages">
+        <file name="BuildEnvironment.xs"/>
+        <file name="Configuration.xs"/>
+        <file name="Executable.xs"/>
+        <file name="ITarget.xs"/>
+        <file name="ITarget2.xs"/>
+        <file name="ITarget3.xs"/>
+        <file name="ITargetFilter.xs"/>
+        <file name="Library.xs"/>
+        <file name="Manifest.xs"/>
+        <file name="PackageContents.xs"/>
+        <file name="Repository.xs"/>
+        <file name="Script.xs"/>
+        <file name="Utils.xs"/>
+        <file name="_gen.xs"/>
+        <file name="bld.js"/>
+        <file name="package.xs"/>
+    </package>
+    <package name="ti.targets"
+        version="1, 0, 3, 1599169865067"
+        providerId="/db/rtree/library/trees/platformprod/platformprod-w30/exports/packages">
+        <file name="C28_float.xs"/>
+        <file name="C28_large.xs"/>
+        <file name="ITarget.xs"/>
+        <file name="package.xs"/>
+    </package>
+    <package name="ti.targets.arm.elf"
+        version="1, 0, 0, 1599169867739"
+        providerId="/db/rtree/library/trees/platformprod/platformprod-w30/exports/packages">
+        <file name="IArm.xs"/>
+        <file name="package.xs"/>
+    </package>
+    <package name="ti.targets.arm.clang"
+        version="1, 0, 0, 1599169878684"
+        providerId="/db/rtree/library/trees/platformprod/platformprod-w30/exports/packages">
+        <file name="ITarget.xs"/>
+        <file name="package.xs"/>
+    </package>
+    <package name="gnu.targets.arm"
+        version="1, 0, 0, 1599169857633"
+        providerId="/db/rtree/library/trees/platformprod/platformprod-w30/exports/packages">
+        <file name="A15F.xs"/>
+        <file name="A53F.xs"/>
+        <file name="A72F.xs"/>
+        <file name="A8F.xs"/>
+        <file name="A9F.xs"/>
+        <file name="GCArmv6.xs"/>
+        <file name="GCArmv7A.xs"/>
+        <file name="IM.xs"/>
+        <file name="ITarget.xs"/>
+        <file name="M0.xs"/>
+        <file name="M3.xs"/>
+        <file name="_utils.xs"/>
+        <file name="package.xs"/>
+    </package>
+    <package name="iar.targets.arm"
+        version="1, 0, 0, 1599169862691"
+        providerId="/db/rtree/library/trees/platformprod/platformprod-w30/exports/packages">
+        <file name="ITarget.xs"/>
+        <file name="package.xs"/>
+    </package>
+    <package name="ti.sysbios.family.arm"
+        version="2, 0, 0, 0, 1631187939000"
+        providerId="/db/vtree/library/trees/avala/avala-6.81.04.01/src">
+        <file name="Settings.xs"/>
+        <file name="armSettings.xs"/>
+    </package>
+    <package name="xdc.platform"
+        version="1, 0, 1, 1601763878095"
+        providerId="/db/rtree/library/trees/xdcprod/xdcprod-D16/product/xdccore/Linux/xdctools_3_62_01_15_core/packages">
+        <file name="ExeContext.xs"/>
+        <file name="IPeripheral.xs"/>
+        <file name="IPlatform.xs"/>
+        <file name="Utils.xs"/>
+        <file name="package.xs"/>
+    </package>
+    <package name="ti.catalog.arm"
+        version="1, 0, 1, 1602171164923"
+        providerId="/db/rtree/library/trees/platformprod/platformprod-w30/exports/packages">
+        <file name="CortexM3.xs"/>
+        <file name="IOMAP2x3x.xs"/>
+        <file name="IOMAP3xxx.xs"/>
+        <file name="ITMS320DA8xx.xs"/>
+        <file name="TMS320C1030.xs"/>
+        <file name="TMS320C5912.xs"/>
+        <file name="TMS320CDM510.xs"/>
+        <file name="TMS320CDM6446.xs"/>
+        <file name="TMS320CDM6467.xs"/>
+        <file name="TMS320CDM730.xs"/>
+        <file name="TMS320CDM740.xs"/>
+        <file name="TMS320DM355.xs"/>
+        <file name="TMS320DM357.xs"/>
+        <file name="TMS320DM365.xs"/>
+        <file name="TMS470R10.xs"/>
+        <file name="TMS570LS20216.xs"/>
+        <file name="TMS570PSF762.xs"/>
+        <file name="TNETV107X.xs"/>
+        <file name="package.xs"/>
+    </package>
+    <package name="ti.catalog.arm.cortexm3"
+        version="1, 0, 0, 1602171165212"
+        providerId="/db/rtree/library/trees/platformprod/platformprod-w30/exports/packages">
+        <file name="CC13xx.xs"/>
+        <file name="CC26xx.xs"/>
+        <file name="CortexM.xs"/>
+        <file name="CortexM3.xs"/>
+        <file name="F28M35x.xs"/>
+        <file name="ITI811X.xs"/>
+        <file name="ITI813X.xs"/>
+        <file name="ITI8148.xs"/>
+        <file name="ITI8168.xs"/>
+        <file name="OMAP4430.xs"/>
+        <file name="Tiva.xs"/>
+    </package>
+    <package name="ti.catalog.arm.cortexm4"
+        version="1, 0, 0, 1602171170489"
+        providerId="/db/rtree/library/trees/platformprod/platformprod-w30/exports/packages">
+        <file name="CC13xx.xs"/>
+        <file name="CC26xx.xs"/>
+        <file name="CC32xx.xs"/>
+        <file name="CortexM.xs"/>
+        <file name="DRA7XX.xs"/>
+        <file name="MSP432.xs"/>
+        <file name="MSP432E.xs"/>
+        <file name="OMAP5430.xs"/>
+        <file name="TDA3XX.xs"/>
+        <file name="Tiva.xs"/>
+        <file name="Vayu.xs"/>
+    </package>
+    <package name="ti.sysbios.interfaces"
+        version="2, 0, 0, 0, 1631187940000"
+        providerId="/db/vtree/library/trees/avala/avala-6.81.04.01/src">
+        <file name="ISettings.xdc"/>
+    </package>
+    <package name="xdc.services.intern.xsr"
+        version="1, 0, 0, 1601763923273"
+        providerId="/db/rtree/library/trees/xdcprod/xdcprod-D16/product/xdccore/Linux/xdctools_3_62_01_15_core/packages">
+        <file name="java/package.jar"/>
+    </package>
+    <package name="xdc.shelf"
+        version="1, 0, 0, 1601763947085"
+        providerId="/db/rtree/library/trees/xdcprod/xdcprod-D16/product/xdccore/Linux/xdctools_3_62_01_15_core/packages">
+        <file name="java/antlr.jar"/>
+        <file name="java/ecj.jar"/>
+        <file name="java/js.jar"/>
+        <file name="java/tar.jar"/>
+    </package>
+    <package name="xdc.services.intern.gen"
+        version="1, 0, 0, 1601763921211"
+        providerId="/db/rtree/library/trees/xdcprod/xdcprod-D16/product/xdccore/Linux/xdctools_3_62_01_15_core/packages">
+        <file name="java/package.jar"/>
+    </package>
+    <package name="xdc.services.intern.cmd"
+        version="1, 0, 0, 1601763919130"
+        providerId="/db/rtree/library/trees/xdcprod/xdcprod-D16/product/xdccore/Linux/xdctools_3_62_01_15_core/packages">
+        <file name="java/package.jar"/>
+    </package>
+    <package name="xdc.services.spec"
+        version="1, 0, 0, 1601763932623"
+        providerId="/db/rtree/library/trees/xdcprod/xdcprod-D16/product/xdccore/Linux/xdctools_3_62_01_15_core/packages">
+        <file name="java/package.jar"/>
+    </package>
+    <xdcRoot base="/db/rtree/library/trees/xdcprod/xdcprod-D16/product/xdccore/Linux/xdctools_3_62_01_15_core/">
+        <file name="/packages/xdc/package.xdc"/>
+        <xdcCorePkg version="16, 0, 2, 1601763875727" producerId="/db/ztree/library/trees/xdc/xdc-K04/src/packages" buildCount="1" releaseName="xdc_corevers" label="default" date="1601763875727"/>
+    </xdcRoot>
+</references>
+<orphans>
+    <file name="/db/vtree/library/trees/avala/avala-6.81.04.01/src/config.bld"/>
+</orphans>
+</release>

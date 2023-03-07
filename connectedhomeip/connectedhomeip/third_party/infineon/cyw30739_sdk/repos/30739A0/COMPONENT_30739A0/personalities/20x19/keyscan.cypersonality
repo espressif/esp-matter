@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Personality id="20x19_keyscan" name="Keyboard Scanner" version="1.0" path="Digital Functions" xmlns="http://cypress.com/xsd/cyhwpersonality_v1">
+  <Dependencies>
+    <IpBlock name="20x19_keyscan" />
+    <Resource name="keyscan" />
+  </Dependencies>
+  <ExposedMembers />
+  <Parameters>
+    <ParamDoc id="apiDoc" name="Configuration Help" group="Peripheral Documentation" default="file:///`${cy_libs_path()}`/docs/group__keyscan.html" linkText="Open Keyscan Documentation" visible="true" desc="Opens the Hardware Driver Documentation" />
+
+    <!-- Basic GPIO config settings -->
+    <ParamRange id="Inputs" name="Input Count" group="General" default="1" min="1" max="`${INPUTS}`" resolution="1" visible="true" editable="true" desc="" />
+    <ParamRange id="Outputs" name="Output Count" group="General" default="1" min="1" max="`${OUTPUTS}`" resolution="1" visible="true" editable="true" desc="" />
+
+    <Repeat count="15">
+      <ParamSignal port="ksi[$idx]" name="KSI$idx" group="Input Pins" visible="`${$idx &lt; Inputs &amp;&amp; hasVisibleOption(&quot;ksi[$idx]&quot;)}`" desc="Keyboard input $idx." canBeEmpty="`${$idx &gt;= Inputs}`" />
+	</Repeat>
+    <Repeat count="30">
+      <ParamSignal port="kso[$idx]" name="KSO$idx" group="Output Pins" visible="`${$idx &lt; Outputs &amp;&amp; hasVisibleOption(&quot;kso[$idx]&quot;)}`" desc="Keyboard output $idx." canBeEmpty="`${$idx &gt;= Outputs}`" />
+	</Repeat>
+
+    <ParamString id="instNum" name="" group="" default="`${getInstNumber(&quot;keyscan&quot;)}`" visible="false" editable="false" desc="" />
+  </Parameters>
+
+  <DRCs/>
+
+  <ConfigFirmware>
+    <ConfigDefine name="keyscan_`${instNum}`_ksi_$idx_TRIGGER_IN" value="WICED_GPIO" public="true" include="`${$idx &lt; Inputs}`" repeatCount="15"/>
+    <!-- the keyscan init function -->
+    <ConfigInstruction value="wiced_hal_gpio_configure_pin(platform_gpio_pins[PLATFORM_GPIO_$idx].gpio_pin, GPIO_PULL_UP | GPIO_INPUT_ENABLE, GPIO_PIN_OUTPUT_LOW);" include="`${isBlockUsed(getBlockFromSignal(&quot;ksi[$idx]&quot;))}`" repeatCount="15" />
+  </ConfigFirmware>
+</Personality>

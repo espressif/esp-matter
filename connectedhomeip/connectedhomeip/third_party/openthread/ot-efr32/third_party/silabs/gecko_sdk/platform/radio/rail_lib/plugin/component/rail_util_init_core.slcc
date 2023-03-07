@@ -1,0 +1,23 @@
+id: rail_util_init_core
+label: RAIL Utility, Initialization Core
+description: Utility to aid with RAIL Initialization Core Support
+package: platform
+category: Platform|Radio
+quality: production
+ui_hints:
+  visibility: never
+requires:
+  - name: rail_lib
+  - name: rail_util_init
+provides:
+  - name: rail_util_init_core
+template_file:
+  - path: platform/radio/rail_lib/plugin/rail_util_init/sl_rail_util_init.c.jinja
+  - path: platform/radio/rail_lib/plugin/rail_util_init/sl_rail_util_init.h.jinja
+template_contribution:
+  - name: event_handler
+    value:
+      event: stack_init
+      include: sl_rail_util_init.h
+      handler: sl_rail_util_init
+    priority: -9000

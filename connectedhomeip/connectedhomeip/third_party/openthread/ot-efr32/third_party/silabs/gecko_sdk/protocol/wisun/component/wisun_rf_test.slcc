@@ -1,0 +1,25 @@
+id: "wisun_rf_test"
+label: "RF Test Plugin"
+package: "wisun"
+category: "Wi-SUN|Wi-SUN Plugin"
+quality: "production"
+description: "Provide Wi-SUN RF Test APIs"
+root_path: "protocol/wisun"
+
+requires:
+  - name: "wisun_stack"
+
+provides:
+  - name: "wisun_rf_test"
+
+source:
+  # Nanostack source files
+  - path: "plugin/sl_wisun_rf_test.c"
+  - path: "stack/inc/sl_wisun_rf_test.h"
+
+include:
+  - path: "stack/inc"
+
+documentation:
+  docset: wisun
+  document: wisun-stack-api/sl-wisun-rf-test

@@ -1,0 +1,20 @@
+[Unit]
+Description=Zigbeed service
+StartLimitIntervalSec=0
+BindsTo=cpcd.service zigbeed-socat.service
+After=cpcd.service zigbeed-socat.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=root
+ExecStart=/usr/bin/stdbuf -o0 /usr/local/bin/zigbeed
+ExecStop=/bin/kill -WINCH ${MAINPID}
+PIDFile=/run/zigbeed.pid
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=zigbeed
+
+[Install]
+WantedBy=multi-user.target

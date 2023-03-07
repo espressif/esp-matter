@@ -1,0 +1,26 @@
+id: cmsis_rtos2_init
+label: CMSIS-RTOS2 Initialization
+package: platform
+description: CMSIS RTOS2 Initialization Hooks.
+category: Platform|CMSIS
+quality: production
+source:
+  - path: platform/CMSIS/RTOS2/Source/os_systick.c
+provides:
+  - name: cmsis_rtos2_init
+requires:
+  - name: cmsis_rtos2_headers
+  - name: cmsis_core
+template_contribution:
+  - name: event_handler
+    value:
+      event: platform_init
+      include: cmsis_os2.h
+      handler: osKernelInitialize
+    priority: 4
+  - name: event_handler
+    value:
+      event: kernel_start
+      include: cmsis_os2.h
+      handler: osKernelStart
+    priority: 5    

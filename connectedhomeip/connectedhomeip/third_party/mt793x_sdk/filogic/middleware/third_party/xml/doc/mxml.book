@@ -1,0 +1,11 @@
+#HTMLDOC 1.8.27.1
+-t pdf14 -f "mxml.pdf" --book --toclevels 3 --no-numbered --toctitle "Table of Contents" --title --titleimage "title.html" --linkstyle plain --size 4.25x6.875in --left 0.750in --right 0.50in --top 0.50in --bottom 0.50in --header .t. --header1 ... --footer h.1 --nup 1 --tocheader .t. --tocfooter ..i --duplex --portrait --color --no-pscommands --no-xrxcomments --compression=9 --jpeg=95 --fontsize 9.0 --fontspacing 1.2 --headingfont Helvetica --bodyfont Helvetica --headfootsize 8.0 --headfootfont Helvetica-Oblique --charset iso-8859-1 --links --embedfonts --pagemode outline --pagelayout single --firstpage c1 --pageeffect none --pageduration 10 --effectduration 1.0 --no-encryption --permissions all  --owner-password ""  --user-password "" --browserwidth 300 --no-strict --no-overflow
+intro.html
+install.html
+basics.html
+advanced.html
+mxmldoc.html
+license.html
+relnotes.html
+reference.html
+schema.html

@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="up" title="FatFs" href="../00index_j.html">
+<link rel="alternate" hreflang="en" title="English" href="../en/printf.html">
+<link rel="stylesheet" href="../css_j.css" type="text/css" media="screen" title="ELM Default">
+<title>FatFs - f_printf</title>
+</head>
+
+<body>
+
+<div class="para">
+<h2>f_printf</h2>
+<p>ファイルに書式化文字列を書き込みます。</p>
+<pre>
+int f_printf (
+  FIL* <em>FileObject</em>,      <span>/* ファイル・オブジェクト */</span>
+  const TCHAR* <em>Foramt</em>,  <span>/* 書式制御文字列 */</span>
+  ...
+);
+</pre>
+</div>
+
+<div class="para">
+<h4>引数</h4>
+<dl class="par">
+<dt>FileObject</dt>
+<dd>ファイル・オブジェクト構造体へのポインタを指定します。</dd>
+<dt>Format</dt>
+<dd>'\0'で終わる書式制御文字列を指すポインタを指定します。'\0'は書き込まれません。</dd>
+<dt>...</dt>
+<dd>オプションの引数。</dd>
+
+</dl>
+</div>
+
+
+<div class="para">
+<h4>戻り値</h4>
+<p>文字列が正常に書き込まれると書き込まれた文字数が返されます。ディスクが満杯またはその他エラーにより正常に書き込まれなかったときは関数は失敗し<tt>EOF (-1)</tt>が返されます。</p>
+</div>
+
+
+<div class="para">
+<h4>解説</h4>
+<p>この関数は<a href="putc.html">f_putc()</a>および<a href="puts.html">f_puts()</a>のラッパー関数です。書式制御機能はサブセットとなっていて、書式制御文字は次に示すものが使用可能です。</p>
+<ul>
+<li>タイプ: <tt>c C s S d D u U x X b B</tt></li>
+<li>精度指定: <tt>l L</tt></li>
+<li>フラグ: <tt>0</tt></li>
+</ul>
+</div>
+
+
+<div class="para">
+<h4>対応情報</h4>
+<p><tt>_FS_READONLY == 0</tt>で、且つ<tt>_USE_STRFUNC</tt>が 1または 2のとき使用可能になります。2の時は、出力に含まれる<tt>'\n'</tt>が<tt>"\r\n"</tt>に展開されてファイルに書き込まれます。</p>
+<p>APIにUnicodeが選択されている(<tt>_LFN_UNICODE</tt>が1)ときは、UTF-8エンコードでファイルに書き込みます。それ以外の時は無変換(1文字1バイト)で書き込みます。</p>
+</div>
+
+
+<div class="para">
+<h4>使用例</h4>
+<pre>
+    f_printf(&amp;fil, "%6d", -200);         <span>/* "  -200" */</span>
+    f_printf(&amp;fil, "%02u", 5);           <span>/* "05" */</span>
+    f_printf(&amp;fil, "%ld", 12345678L);    <span>/* "12345678" */</span>
+    f_printf(&amp;fil, "%08lX", 1194684UL);  <span>/* "00123ABC" */</span>
+    f_printf(&amp;fil, "%s", "String");      <span>/* "String" */</span>
+    f_printf(&amp;fil, "%c", 'a');           <span>/* "a" */</span>
+</pre>
+</div>
+
+
+<div class="para">
+<h4>参照</h4>
+<p><tt><a href="open.html">f_open</a>, <a href="putc.html">f_putc</a>, <a href="puts.html">f_puts</a>, <a href="gets.html">f_gets</a>, <a href="close.html">f_close</a>, <a href="sfile.html">FIL</a></tt></p>
+</div>
+
+<p class="foot"><a href="../00index_j.html">戻る</a></p>
+</body>
+</html>

@@ -1,0 +1,18 @@
+#!/usr/bin/bash
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+clear
+cat $1
+#sleep 5
+echo
+echo
+echo
+echo
+echo
+echo
+echo --------------------------------------------------
+echo
+echo $ ../tfz -v $1 tossThis2
+../tfz -v $1 tossThis2

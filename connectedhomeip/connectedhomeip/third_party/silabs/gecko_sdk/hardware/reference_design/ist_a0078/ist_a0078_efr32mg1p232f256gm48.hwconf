@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="ASCII"?>
+<device:XMLDevice xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:device="http://www.silabs.com/ss/hwconfig/document/device.ecore" name="EFR32MG1P232F256GM48" partId="mcu.arm.efr32.mg1.efr32mg1p232f256gm48">
+  <mode name="DefaultMode">
+    <property object="BATTERYMON" propertyId="ABPeripheral.included" value="true"/>
+    <property object="BATTERYMON" propertyId="BATTERYMON.BSP_BATTERYMON_TX_ACTIVE3.PIN" value="PD15"/>
+    <property object="BATTERYMON" propertyId="BATTERYMON.BSP_BATTERYMON_TX_ACTIVE_CHANNEL.ENUM" value="3"/>
+    <property object="BUTTON" propertyId="ABPeripheral.included" value="true"/>
+    <property object="BUTTON" propertyId="BUTTON.BSP_BUTTON0.PIN" value="PA3"/>
+    <property object="BUTTON" propertyId="BUTTON.BSP_BUTTON1.PIN" value="PC10"/>
+    <property object="BUTTON" propertyId="BUTTON.HAL_BUTTON_COUNT.INT" value="2"/>
+    <property object="CMU" propertyId="ABPeripheral.included" value="true"/>
+    <property object="CMU" propertyId="CMU.BSP_CLK_HFXO_CTUNE.INT" value="322"/>
+    <property object="CMU" propertyId="CMU.BSP_CLK_HFXO_PRESENT.BOOL" value="1"/>
+    <property object="CMU" propertyId="CMU.BSP_CLK_LFXO_PRESENT.BOOL" value="1"/>
+    <property object="CMU" propertyId="CMU.HAL_CLK_HFCLK_SOURCE.ENUM" value="HAL_CLK_HFCLK_SOURCE_HFXO"/>
+    <property object="CMU" propertyId="CMU.HAL_CLK_LFACLK_SOURCE.ENUM" value="HAL_CLK_LFCLK_SOURCE_LFRCO"/>
+    <property object="CMU" propertyId="CMU.HAL_CLK_LFBCLK_SOURCE.ENUM" value="HAL_CLK_LFCLK_SOURCE_LFRCO"/>
+    <property object="CMU" propertyId="CMU.HAL_CLK_LFECLK_SOURCE.ENUM" value="HAL_CLK_LFCLK_SOURCE_LFRCO"/>
+    <property object="DCDC" propertyId="ABPeripheral.included" value="true"/>
+    <property object="DefaultMode" propertyId="mode.diagramLocation" value="100, 100"/>
+    <property object="EXTFLASH" propertyId="ABPeripheral.included" value="true"/>
+    <property object="EXTFLASH" propertyId="EXTFLASH.BSP_EXTFLASH_CS.PIN" value="PA4"/>
+    <property object="EXTFLASH" propertyId="EXTFLASH.BSP_EXTFLASH_USART.MOD" value="USART1"/>
+    <property object="I2C0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="I2C0" propertyId="I2C.BSP_I2C_SCL.PIN" value="PF5"/>
+    <property object="I2C0" propertyId="I2C.BSP_I2C_SDA.PIN" value="PF6"/>
+    <property object="I2C0" propertyId="I2C.HAL_I2C_MAX_BUS_FREQ.INT" value="100000"/>
+    <property object="I2CSENSOR" propertyId="ABPeripheral.included" value="true"/>
+    <property object="I2CSENSOR" propertyId="I2CSENSOR.BSP_I2CSENSOR_PERIPHERAL.MOD" value="I2C0"/>
+    <property object="LED" propertyId="ABPeripheral.included" value="true"/>
+    <property object="LED" propertyId="LED.BSP_LED0.PIN" value="PA5"/>
+    <property object="LED" propertyId="LED.BSP_LED_COUNT.INT" value="1"/>
+    <property object="LED" propertyId="LED.HAL_LED_COUNT.INT" value="1"/>
+    <property object="LED" propertyId="LED.HAL_LED_ENABLE.ARRAY" value="0"/>
+    <property object="LEUART0" propertyId="LEUART.HAL_LEUART_BAUD_RATE.INT" value="115200"/>
+    <property object="LEUART0" propertyId="LEUART.HAL_LEUART_RXSTART.INT" value="16"/>
+    <property object="LEUART0" propertyId="LEUART.HAL_LEUART_RXSTOP.INT" value="16"/>
+    <property object="LEUART0" propertyId="LEUART.HAL_LEUART_RX_QUEUE_SIZE.INT" value="128"/>
+    <property object="LEUART0" propertyId="LEUART.HAL_LEUART_TX_QUEUE_SIZE.INT" value="128"/>
+    <property object="PA" propertyId="ABPeripheral.included" value="true"/>
+    <property object="PORTIO" propertyId="portio.i2c0.enable.scl" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.i2c0.enable.sda" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.i2c0.location.i2c0_sclloc" value="28"/>
+    <property object="PORTIO" propertyId="portio.i2c0.location.i2c0_sdaloc" value="30"/>
+    <property object="PORTIO" propertyId="portio.prs.enable.ch3" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.prs.location.prs_ch3loc" value="14"/>
+    <property object="PORTIO" propertyId="portio.pti.enable.dframe" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.pti.enable.dout" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.pti.location.frc_dframeloc" value="6"/>
+    <property object="PORTIO" propertyId="portio.pti.location.frc_doutloc" value="6"/>
+    <property object="PORTIO" propertyId="portio.usart0.enable.rx" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.usart0.enable.tx" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.usart1.enable.clk" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.usart1.enable.rx" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.usart1.enable.tx" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.usart1.location.usart1_clkloc" value="11"/>
+    <property object="PORTIO" propertyId="portio.usart1.location.usart1_csloc" value="1"/>
+    <property object="PORTIO" propertyId="portio.usart1.location.usart1_rxloc" value="11"/>
+    <property object="PORTIO" propertyId="portio.usart1.location.usart1_txloc" value="11"/>
+    <property object="PRS" propertyId="PRS.custom_name_CH3.STRING" value="BATTERYMON_TX_ACTIVE"/>
+    <property object="PTI" propertyId="ABPeripheral.included" value="true"/>
+    <property object="PTI" propertyId="PTI.BSP_PTI_DFRAME.PIN" value="PB13"/>
+    <property object="PTI" propertyId="PTI.BSP_PTI_DOUT.PIN" value="PB12"/>
+    <property object="PYD1698" propertyId="ABPeripheral.included" value="true"/>
+    <property object="PYD1698" propertyId="PYD1698.BSP_PYD1698_DLINK.PIN" value="PF7"/>
+    <property object="PYD1698" propertyId="PYD1698.BSP_PYD1698_INSTALLATION_JP.PIN" value="PB11"/>
+    <property object="PYD1698" propertyId="PYD1698.BSP_PYD1698_SERIN.PIN" value="PF4"/>
+    <property object="SERIAL" propertyId="ABPeripheral.included" value="true"/>
+    <property object="SERIAL" propertyId="SERIAL.BSP_SERIAL_APP_PORT.MOD" value="USART0"/>
+    <property object="SERIAL" propertyId="SERIAL.HAL_SERIAL_USART0_ENABLE.BOOL" value="1"/>
+    <property object="SPIDISPLAY" propertyId="SPIDISPLAY.BSP_SPIDISPLAY_EXTCOMIN3.PIN" value="PD15"/>
+    <property object="USART0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="USART0" propertyId="USART.BSP_USART_MISO.PIN" value="PA1"/>
+    <property object="USART0" propertyId="USART.BSP_USART_MOSI.PIN" value="PA0"/>
+    <property object="USART0" propertyId="USART.BSP_USART_RX.PIN" value="PA1"/>
+    <property object="USART0" propertyId="USART.BSP_USART_TX.PIN" value="PA0"/>
+    <property object="USART0" propertyId="USART.HAL_USART_RXSTART.INT" value="16"/>
+    <property object="USART0" propertyId="USART.HAL_USART_RXSTOP.INT" value="16"/>
+    <property object="USART0" propertyId="USART.HAL_USART_RX_QUEUE_SIZE.INT" value="128"/>
+    <property object="USART0" propertyId="USART.HAL_USART_TX_QUEUE_SIZE.INT" value="128"/>
+    <property object="USART1" propertyId="ABPeripheral.included" value="true"/>
+    <property object="USART1" propertyId="USART.BSP_USART_CLK.PIN" value="PC8"/>
+    <property object="USART1" propertyId="USART.BSP_USART_MISO.PIN" value="PC7"/>
+    <property object="USART1" propertyId="USART.BSP_USART_MOSI.PIN" value="PC6"/>
+    <property object="USART1" propertyId="USART.BSP_USART_RX.PIN" value="PC7"/>
+    <property object="USART1" propertyId="USART.BSP_USART_TX.PIN" value="PC6"/>
+    <property object="USART1" propertyId="USART.HAL_USART_FREQUENCY.INT" value="6400000"/>
+    <property object="USART1" propertyId="USART.HAL_USART_RXSTART.INT" value="16"/>
+    <property object="USART1" propertyId="USART.HAL_USART_RXSTOP.INT" value="16"/>
+    <property object="USART1" propertyId="USART.HAL_USART_RX_QUEUE_SIZE.INT" value="128"/>
+    <property object="USART1" propertyId="USART.HAL_USART_TX_QUEUE_SIZE.INT" value="128"/>
+    <property object="USART1" propertyId="USART.hal_usart_mode.ENUM" value="spi"/>
+    <property object="VCOM" propertyId="ABPeripheral.included" value="true"/>
+    <property object="VCOM" propertyId="VCOM.BSP_VCOM_ENABLE.PIN" value="PA5"/>
+  </mode>
+  <modeTransition>
+    <property object="RESET &#x2192; DefaultMode" propertyId="modeTransition.source" value="RESET"/>
+    <property object="RESET &#x2192; DefaultMode" propertyId="modeTransition.target" value="DefaultMode"/>
+  </modeTransition>
+</device:XMLDevice>

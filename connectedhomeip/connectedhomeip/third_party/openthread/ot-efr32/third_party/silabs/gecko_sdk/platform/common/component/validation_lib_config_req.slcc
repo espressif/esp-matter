@@ -1,0 +1,13 @@
+id: validation_lib_config_req
+label: Configuration Requirements Validation Lib
+package: platform
+description: UC Validation library to check if project configuration is valid and the required components are provided
+category: Common
+quality: production
+root_path: platform/common/component/validation_lib
+provides:
+  - name: validation_lib_config_req
+validation_library:
+  - path: validation_config_req.py
+ui_hints:
+  visibility: never

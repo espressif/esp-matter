@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2015 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Analog" type="org.bluetooth.characteristic.analog" uuid="2A58" last-modified="2015-07-14" approved="Yes">
+    <InformativeText>
+        <Summary>The Analog characteristic is used to read or write the value of one of the IO Module's analog signals.</Summary>
+    </InformativeText>
+    <Value>
+        <Field name="Analog">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint16</Format>
+        </Field>
+    </Value>
+    <Note>The Octet Order in the above table is in the order of LSO to MSO, where LSO = Least Significant Octet and MSO = Most Significant Octet.</Note>
+</Characteristic>

@@ -1,0 +1,29 @@
+id: micriumos_usbd_class_hid
+label: USB Device Class - HID
+package: micrium-usbd
+description: Micrium OS USB Device HID Class
+category: Services|Micrium|USB
+quality: deprecated
+component_root_path: platform/micrium_os/usb
+source:
+  - path: source/device/class/usbd_hid.c
+  - path: source/device/class/usbd_hid_os.c
+  - path: source/device/class/usbd_hid_report.c
+include:
+  - path: source
+    file_list:
+      - path: device/class/usbd_hid_os_priv.h
+      - path: device/class/usbd_hid_priv.h
+  - path: include
+    file_list:
+      - path: device/usbd_hid.h
+      - path: device/usbd_hid_report.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: USB_DEV_HID
+provides:
+  - name: usbd_class_hid
+  - name: usbd_class
+    allow_multiple: true
+requires:
+  - name: usbd

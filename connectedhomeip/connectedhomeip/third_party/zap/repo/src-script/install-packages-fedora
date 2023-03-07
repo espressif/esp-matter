@@ -1,0 +1,6 @@
+#!/bin/bash
+#
+# Packages you have to install on Fedora or other dnf based distributions
+# to get source build to compile via npm install or npm ci
+#
+dnf install libjpeg-devel giflib-devel pixman-devel cairo-devel pango-devel

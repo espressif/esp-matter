@@ -1,0 +1,13 @@
+{
+    "target": {
+        "Name": "LAUNCHXL-CC1312R1",
+        "Revision": [],
+        "Description": "CC1312LP. 7XD: 7x7 VQFN48 package, external bias, differential output. 7793: 770-930MHz band.",
+        "DeviceName": "CC1312R",
+        "DevicePackage": "VQFN 7x7",
+        "FrontEnd": "XD",
+        "PaSettings": "pasettings.json",
+        "RfDesign": "CC1352EM-XD7793-XD24",
+        "DefaultCategory": "Settings for 779 - 930 MHz band"
+    }
+}

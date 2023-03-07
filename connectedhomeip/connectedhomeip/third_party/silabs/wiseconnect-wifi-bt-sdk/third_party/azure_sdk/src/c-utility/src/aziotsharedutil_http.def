@@ -1,0 +1,34 @@
+    HTTPHeaders_AddHeaderNameValuePair
+    HTTPHeaders_Alloc
+    HTTPHeaders_Clone
+    HTTPHeaders_FindHeaderValue
+    HTTPHeaders_Free
+    HTTPHeaders_GetHeader
+    HTTPHeaders_GetHeaderCount
+    HTTPHeaders_ReplaceHeaderNameValuePair
+    HTTP_HEADERS_RESULTStringStorage
+    HTTP_HEADERS_RESULTStrings
+    HTTP_HEADERS_RESULT_FromString
+
+    HTTPAPIEX_Create
+    HTTPAPIEX_Destroy
+    HTTPAPIEX_ExecuteRequest
+    HTTPAPIEX_RESULTStringStorage
+    HTTPAPIEX_RESULTStrings
+    HTTPAPIEX_RESULT_FromString
+    HTTPAPIEX_SAS_Create
+    HTTPAPIEX_SAS_Create_From_String
+    HTTPAPIEX_SAS_Destroy
+    HTTPAPIEX_SAS_ExecuteRequest
+    HTTPAPIEX_SetOption
+
+    HTTPAPI_CloneOption
+    HTTPAPI_CloseConnection
+    HTTPAPI_CreateConnection
+    HTTPAPI_Deinit
+    HTTPAPI_ExecuteRequest
+    HTTPAPI_Init
+    HTTPAPI_RESULTStringStorage
+    HTTPAPI_RESULTStrings
+    HTTPAPI_RESULT_FromString
+    HTTPAPI_SetOption

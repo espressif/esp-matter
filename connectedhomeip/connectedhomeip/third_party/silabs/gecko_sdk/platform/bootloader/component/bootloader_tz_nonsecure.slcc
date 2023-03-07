@@ -1,0 +1,14 @@
+id: bootloader_tz_nonsecure
+label: "Bootloader TrustZone Non-Secure"
+description: >
+   Set up bootloader configuration to create TrustZone Non-Secure bootloader.
+package: platform
+category: Platform|Bootloader|TrustZone NonSecure
+quality: beta
+define:
+  - name: BOOTLOADER_NONSECURE
+    value: 1
+provides:
+  - name: bootloader_tz_nonsecure
+requires:
+  - name: trustzone_nonsecure

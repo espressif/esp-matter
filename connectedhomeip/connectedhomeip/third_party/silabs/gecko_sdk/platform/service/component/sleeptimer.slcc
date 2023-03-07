@@ -1,0 +1,61 @@
+id: sleeptimer
+label: Sleep Timer
+package: platform
+description: Low-frequency timer utilities (timer, delays and time keeping).
+category: Services
+quality: production
+config_file:
+  - path: platform/service/sleeptimer/config/sl_sleeptimer_config.h
+    file_id: sleeptimer_config
+source:
+  - path: platform/service/sleeptimer/src/sl_sleeptimer.c
+  - path: platform/service/sleeptimer/src/sl_sleeptimer_hal_rtcc.c
+    condition: [device_has_rtcc]
+  - path: platform/service/sleeptimer/src/sl_sleeptimer_hal_rtc.c
+    condition: [device_has_rtc]
+  - path: platform/service/sleeptimer/src/sl_sleeptimer_hal_prortc.c
+    condition: [device_has_prortc]
+  - path: platform/service/sleeptimer/src/sl_sleeptimer_hal_sysrtc.c
+    condition: [device_has_sysrtc]
+  - path: platform/service/sleeptimer/src/sl_sleeptimer_hal_burtc.c
+    condition: [device_has_burtc]
+    unless: [device_series_0]
+  - path: platform/service/sleeptimer/src/sli_sleeptimer_hal.h
+include:
+  - path: platform/service/sleeptimer/inc
+    file_list:
+      - path: sl_sleeptimer.h
+      - path: sli_sleeptimer.h
+provides:
+  - name: sleeptimer
+requires:
+  - name: emlib_cmu
+  - name: emlib_common
+  - name: emlib_core
+  - name: atomic
+  - name: status
+  - name: sl_assert
+  - name: emlib_rtcc
+    condition: [device_has_rtcc]
+  - name: emlib_rtc
+    condition: [device_has_rtc]
+  - name: peripheral_sysrtc
+    condition: [device_has_sysrtc]
+  - name: emlib_burtc
+    condition: [device_has_burtc]
+  - name: hostbased_sleeptimer
+    condition: [win32]
+template_contribution:
+  - name: event_handler
+    value:
+      event: service_init
+      include: sl_sleeptimer.h
+      handler: sl_sleeptimer_init
+    priority: -10
+  - name: component_catalog
+    value: sleeptimer
+validation_helper:
+  - path: platform/service/sleeptimer/sleeptimer_peripheral_validation.lua
+documentation:
+    docset: gecko-platform
+    document: service/api/group-sleeptimer

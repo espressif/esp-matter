@@ -1,0 +1,115 @@
+[
+  {
+    "name": "TI Drivers",
+    "mainCategories": [
+      [
+        "Documents"
+      ],
+      [
+        "Examples",
+        "Development Tools"
+      ]
+    ],
+    "subCategories": [],
+    "devtools": [
+        "CC3220S-LAUNCHXL",
+        "CC3220SF-LAUNCHXL",
+        "CC3235S-LAUNCHXL",
+        "CC3235SF-LAUNCHXL"
+    ],
+    "resourceType": "categoryInfo",
+    "description": "<p>The TI Drivers API exposes the functionality of the hardware-specific drivers in the same way across all TI SimpleLink devices, giving developers portable, feature-rich access to a variety of peripherals. TI Drivers are open source [Berkeley Software Distribution license (BSD)] and built on the hardware abstraction layer, offering full access to the device’s complete capability. This device-agnostic approach provides easy portability of the application code across SimpleLink devices now and into the future. Other peripherals exposed through these intuitive and consistent TI driver APIs include analog-to-digital converter (ADC), SPI, PWM and GPIO, among many others. With full access to the hardware abstraction layer through the TI Drivers, developers can further optimize their applications by leveraging the Hardware Abstraction Layer (HAL) or directly accessing the microcontroller with register-level programming. TI Drivers allow customers to make the application exactly what it needs to be.</p>"
+  },
+  {
+    "name": "TI-RTOS Kernel (SYS_BIOS)",
+    "mainCategories": [
+      [
+        "Documents"
+      ],
+      [
+        "Examples",
+        "Development Tools"
+      ]
+    ],
+    "subCategories": [],
+    "devtools": [
+        "CC3220S-LAUNCHXL",
+        "CC3220SF-LAUNCHXL",
+        "CC3235S-LAUNCHXL",
+        "CC3235SF-LAUNCHXL"
+    ],
+    "resourceType": "categoryInfo",
+    "description": "<p>TI-RTOS Kernel is also known as SYS_BIOS. SYS_BIOS is a scalable real-time kernel that is designed for applications that require real-time scheduling and synchronization or real-time instrumentation. SYS_BIOS provides preemptive multi-threading, hardware abstraction, real-time analysis, and configuration tools. SYS_BIOS helps minimize memory and CPU requirements on the target.</p>"
+  },
+  {
+    "name": "Instrumentation",
+    "mainCategories": [
+      [
+        "Documents"
+      ]
+    ],
+    "subCategories": [],
+    "resourceType": "categoryInfo",
+    "description": "<p>The Unified Instrumentation Architecture (UIA) defines a set of tools, APIs, transports, interfaces and guidelines that enable developers to instrument embedded software in a way that is portable and flexible, and enables the creation of advanced tooling features that can be used both in the lab and in the field.</p>"
+  },
+  {
+    "name": "Demos",
+    "mainCategories": [
+      [
+        "Examples",
+        "Development Tools"
+      ]
+    ],
+    "subCategories": [],
+    "devtools": [
+        "CC3220S-LAUNCHXL"
+    ],
+    "resourceType": "categoryInfo",
+    "description": "<p>The SimpleLink CC3220S SDK comes with demo applications that are built to run on the SimpleLink CC3220S MCU that utilize the built-in Wi-Fi.</p>"
+  },
+  {
+    "name": "Demos",
+    "mainCategories": [
+      [
+        "Examples",
+        "Development Tools"
+      ]
+    ],
+    "subCategories": [],
+    "devtools": [
+        "CC3220SF-LAUNCHXL"
+    ],
+    "resourceType": "categoryInfo",
+    "description": "<p>The SimpleLink CC3220SF SDK comes with demo applications that are built to run on the SimpleLink CC3220SF MCU that utilize the built-in Wi-Fi.</p>"
+  },
+  {
+    "name": "Demos",
+    "mainCategories": [
+      [
+        "Examples",
+        "Development Tools"
+      ]
+    ],
+    "subCategories": [],
+    "devtools": [
+        "CC3235S-LAUNCHXL"
+    ],
+    "resourceType": "categoryInfo",
+    "description": "<p>The SimpleLink CC3235S SDK comes with demo applications that are built to run on the SimpleLink CC3235S MCU that utilize the built-in Wi-Fi.</p>"
+  },
+  {
+    "name": "Demos",
+    "mainCategories": [
+      [
+        "Examples",
+        "Development Tools"
+      ]
+    ],
+    "subCategories": [],
+    "devtools": [
+        "CC3235SF-LAUNCHXL"
+    ],
+    "resourceType": "categoryInfo",
+    "description": "<p>The SimpleLink CC3235SF SDK comes with demo applications that are built to run on the SimpleLink CC3235SF MCU that utilize the built-in Wi-Fi.</p>"
+  }
+]

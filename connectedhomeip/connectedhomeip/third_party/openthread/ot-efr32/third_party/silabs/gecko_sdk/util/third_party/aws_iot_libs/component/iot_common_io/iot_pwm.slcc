@@ -1,0 +1,47 @@
+id: iot_pwm
+category: Third Party|Amazon FreeRTOS - AWS Libraries|Common I/O
+label: IoT PWM
+description: >
+  Silicon Labs' Implementation of Amazon Common I/O PWM API
+  Doc: https://docs.aws.amazon.com/freertos/latest/lib-ref/common-io/files.html
+package: amazon_platform
+quality: production
+instantiable:
+  prefix: inst
+provides:
+  - name: iot_pwm
+    allow_multiple: true
+requires:
+  - name: freertos
+  - name: power_manager
+  - name: device_init
+  - name: emlib_timer
+  - name: status
+  - name: common_io_validation_lib
+root_path: util/third_party/aws_iot_libs
+config_file:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_pwm/config/iot_pwm_cfg_{{instance}}.h
+    file_id: iot_pwm_cfg
+
+source:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_pwm/source/iot_pwm_drv.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_pwm/source/iot_pwm_hal.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_pwm/test/iot_pwm_test.c
+    condition: ["aws_tests_defs"]
+
+include:
+  - path: libraries/abstractions/common_io/include
+    file_list:
+      - path: iot_pwm.h
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_pwm/include
+    file_list:
+      - path: iot_pwm_desc.h
+      - path: iot_pwm_drv.h
+
+template_file:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_pwm/template/iot_pwm_desc.c.jinja
+template_contribution:
+  - name: iot_pwm_instances
+    value: "{{instance}}"
+validation_helper:
+  - path: script/iot_pwm_validation.lua

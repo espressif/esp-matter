@@ -1,0 +1,86 @@
+#!/bin/bash
+#
+#  Copyright (c) 2022, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+
+set -euxo pipefail
+
+readonly SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+readonly ABS_TOP_BUILDDIR="$(cd "${top_builddir:-"${SCRIPT_DIR}"/../../}" && pwd)"
+readonly OTBR_AGENT="${ABS_TOP_BUILDDIR}/src/agent/otbr-agent"
+readonly OT_CTL="${ABS_TOP_BUILDDIR}/third_party/openthread/repo/src/posix/ot-ctl"
+readonly OT_RCP=$(command -v ot-rcp)
+
+at_exit()
+{
+    EXIT_CODE=$?
+
+    sudo killall otbr-agent || true
+
+    exit $EXIT_CODE
+}
+
+trap at_exit INT TERM EXIT
+
+sudo "${OTBR_AGENT}" -I wpan0 -v -d 6 "spinel+hdlc+forkpty://${OT_RCP}?forkpty-arg=1" --auto-attach=invalid && exit 1
+sudo "${OTBR_AGENT}" -I wpan0 -v -d 6 "spinel+hdlc+forkpty://${OT_RCP}?forkpty-arg=1" --auto-attach= && exit 1
+sudo "${OTBR_AGENT}" -I wpan0 -v -d 6 "spinel+hdlc+forkpty://${OT_RCP}?forkpty-arg=1" --auto-attach=99999999999999999999999999999999999 && exit 1
+
+sudo cp "${ABS_TOP_BUILDDIR}/src/agent/otbr-agent.conf" /etc/dbus-1/system.d/
+sudo chmod +r /etc/dbus-1/system.d/otbr-agent.conf
+sudo systemctl reload dbus
+
+sudo "${OTBR_AGENT}" -I wpan0 -v -d 6 "spinel+hdlc+forkpty://${OT_RCP}?forkpty-arg=1" &
+sleep 10
+sudo "${OT_CTL}" factoryreset
+sleep 1
+sudo "${OT_CTL}" dataset init new
+sudo "${OT_CTL}" dataset commit active
+sudo "${OT_CTL}" ifconfig up
+sudo "${OT_CTL}" thread start
+sleep 10
+sudo "${OT_CTL}" state | grep "leader"
+
+sudo killall otbr-agent
+sleep 10
+sudo "${OTBR_AGENT}" -I wpan0 -v -d 6 "spinel+hdlc+forkpty://${OT_RCP}?forkpty-arg=1" --auto-attach=0 &
+sleep 10
+sudo "${OT_CTL}" state | grep "disabled"
+
+sudo killall otbr-agent
+sleep 10
+sudo "${OTBR_AGENT}" -I wpan0 -v -d 6 "spinel+hdlc+forkpty://${OT_RCP}?forkpty-arg=1" --auto-attach=1 &
+sleep 10
+sudo "${OT_CTL}" state | grep "leader"
+
+sudo killall otbr-agent
+sleep 10
+sudo "${OTBR_AGENT}" -I wpan0 -v -d 6 "spinel+hdlc+forkpty://${OT_RCP}?forkpty-arg=1" --auto-attach &
+sleep 10
+sudo "${OT_CTL}" state | grep "leader"
+sudo "${OT_CTL}" reset
+sleep 1
+sudo "${OT_CTL}" state | grep "disabled"

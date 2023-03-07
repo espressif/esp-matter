@@ -1,0 +1,381 @@
+/***************************************************************************//**
+ * GCC Linker script for Silicon Labs devices
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2020 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ ******************************************************************************/
+
+{#-
+  Device specific sizes and addresses. These variables describes the physical
+  memory of the device.
+#}
+{%- set sram_addr = device_ram_addr | first | default(536870912, true) %}
+{%- set sram_size = device_ram_size | first %}
+{%- set flash_addr = device_flash_addr | first | default(0, true) %}
+{%- set flash_size = device_flash_size | first %}
+{%- set flash_page_size = device_flash_page_size | first %}
+
+{%- if bootloader_enable %}
+  {%- set bootloader_flash_size = bootloader_main_size | sum %}
+  {%- set bootloader_flash_startaddr = bootloader_flash_addr | sum %}
+{%- endif %}
+
+{#-
+  Application specific sizes. Here we start to calculate the application view
+  of the physical memory.
+#}
+{%- if memory_ram_start is defined %}
+{%-   set app_ram_start = memory_ram_start | first %}
+{%- else %}
+{%-   set app_ram_start = sram_addr %}
+{%- endif %}
+
+{%- if memory_ram_size is defined %}
+{%-   set app_ram_size = memory_ram_size | first %}
+{%- else %}
+{%-   set app_ram_size = sram_size %}
+{%- endif %}
+
+{%- if memory_flash_start is defined %}
+{%-   set app_flash_start = memory_flash_start | first %}
+{%- else %}
+{%-   set app_flash_start = flash_addr %}
+{#-
+  Reserve space for the bootloader at the beginning of flash. Note that
+  bootloader_size > 0 only for devices that place the bootloader in main flash.
+  On devices where the bootloader is placed in the dedicated bootloader flash
+  the bootloader_size value is 0.
+#}
+{%-   set app_bootloader_size = bootloader_size | sum %}
+{%-   if app_bootloader_size > 0 %}
+{%-     set app_flash_start = app_flash_start + app_bootloader_size %}
+{%-   endif %}
+{%- endif %}
+
+{%- if memory_flash_size is defined %}
+{%-   set app_flash_size = memory_flash_size | first %}
+{%- else %}
+{%-   set app_flash_size = flash_size %}
+
+{%-   if app_bootloader_size > 0 %}
+{%-     set app_flash_size = app_flash_size - app_bootloader_size %}
+{%-   endif %}
+
+{#-
+  On series-2 devices we reserve the last flash page for tokens and key storage
+#}
+{%-   if (device_series | first) == 2 %}
+{%-     set app_flash_size = app_flash_size - flash_page_size %}
+{%-   endif %}
+{%- endif %}
+
+{%- set rtt = 0 %}
+{%- if linker_rtt_section is defined %}
+{%-   set rtt = 1 %}
+{%- endif %}
+
+{%- if bootloader_enable %}
+ MEMORY
+ {
+   FLASH   (rx)  : ORIGIN = 0x{{ '%0x' % bootloader_flash_startaddr }}, LENGTH = 0x{{ '%0x' % bootloader_flash_size }}
+   RAM     (rwx) : ORIGIN = 0x{{ '%0x' % app_ram_start }}, LENGTH = 0x{{ '%0x' % app_ram_size }}
+ }
+{%- else %}
+ MEMORY
+ {
+   FLASH   (rx)  : ORIGIN = 0x{{ '%0x' % app_flash_start }}, LENGTH = 0x{{ '%0x' % app_flash_size }}
+   RAM     (rwx) : ORIGIN = 0x{{ '%0x' % app_ram_start }}, LENGTH = 0x{{ '%0x' % app_ram_size }}
+ }
+{%- endif %}
+
+ENTRY(Reset_Handler)
+
+SECTIONS
+{
+
+{%- if apploader_enable %}
+  .text_apploader :
+  {
+    KEEP(*(.binapploader*))
+  } > FLASH
+  .text_signature :
+  {
+    . = ALIGN({{ flash_page_size }});
+  } > FLASH
+{%- endif %}
+
+  .text :
+  {
+    linker_vectors_begin = .;
+    KEEP(*(.vectors))
+    linker_vectors_end = .;
+
+    __Vectors_End = .;
+    __Vectors_Size = __Vectors_End - __Vectors;
+
+    linker_code_begin = .;
+    *(.text*)
+    linker_code_end = .;
+
+    KEEP(*(.init))
+    KEEP(*(.fini))
+
+    /* .ctors */
+    *crtbegin.o(.ctors)
+    *crtbegin?.o(.ctors)
+    *(EXCLUDE_FILE(*crtend?.o *crtend.o) .ctors)
+    *(SORT(.ctors.*))
+    *(.ctors)
+
+    /* .dtors */
+    *crtbegin.o(.dtors)
+    *crtbegin?.o(.dtors)
+    *(EXCLUDE_FILE(*crtend?.o *crtend.o) .dtors)
+    *(SORT(.dtors.*))
+    *(.dtors)
+
+    *(.rodata*)
+    *(.eh_frame*)
+  } > FLASH
+{%- if trustzone_secure %}
+  .gnu.sgstubs : ALIGN(32)
+  {
+    . = ALIGN(32);
+    linker_sg_begin = .;
+    KEEP(*(.gnu.sgstubs*))
+    . = ALIGN(32);
+  } > FLASH
+  linker_sg_end = linker_sg_begin + SIZEOF(.gnu.sgstubs);
+{%- endif %}
+
+  .ARM.extab :
+  {
+    *(.ARM.extab* .gnu.linkonce.armextab.*)
+  } > FLASH
+
+  __exidx_start = .;
+  .ARM.exidx :
+  {
+    *(.ARM.exidx* .gnu.linkonce.armexidx.*)
+  } > FLASH
+  __exidx_end = .;
+
+    .copy.table :
+  {
+    . = ALIGN(4);
+    __copy_table_start__ = .;
+
+    LONG (__etext)
+    LONG (__data_start__)
+    LONG ((__data_end__ - __data_start__) / 4)
+
+    /* Add each additional data section here */
+/*
+    LONG (__etext2)
+    LONG (__data2_start__)
+    LONG ((__data2_end__ - __data2_start__) / 4)
+*/
+    __copy_table_end__ = .;
+  } > FLASH
+
+    .zero.table :
+  {
+    . = ALIGN(4);
+    __zero_table_start__ = .;
+    /* Add each additional bss section here */
+/*
+    LONG (__bss2_start__)
+    LONG ((__bss2_end__ - __bss2_start__) / 4)
+*/
+    __zero_table_end__ = .;
+  } > FLASH
+
+  __etext = .;
+
+  /* Start placing output sections which are loaded into RAM */
+  . = ORIGIN(RAM);
+
+  .stack ALIGN(8) (NOLOAD):
+  {
+    __StackLimit = .;
+    KEEP(*(.stack*))
+    . = ALIGN(4);
+    __StackTop = .;
+    PROVIDE(__stack = __StackTop);
+  } > RAM
+
+
+{%- if trustzone_secure %}
+  /* ARMv8-M stack sealing:
+     to use ARMv8-M stack sealing uncomment '.stackseal' section
+   */
+  .stackseal (COPY):
+  {
+    __StackSeal = .;
+    . = . + 8;
+    . = ALIGN(8);
+  } > RAM
+{%- endif %}
+
+
+  .noinit . (NOLOAD):
+  {
+    *(.noinit*);
+  } > RAM
+
+  .data . : AT (__etext)
+  {
+    . = ALIGN(4);
+    __data_start__ = .;
+    *(vtable)
+    *(.data*)
+    . = ALIGN (4);
+
+    PROVIDE(__ram_func_section_start = .);
+    *(.ram)
+    PROVIDE(__ram_func_section_end = .);
+
+    . = ALIGN(4);
+    /* preinit data */
+    PROVIDE_HIDDEN (__preinit_array_start = .);
+    KEEP(*(.preinit_array))
+    PROVIDE_HIDDEN (__preinit_array_end = .);
+
+    . = ALIGN(4);
+    /* init data */
+    PROVIDE_HIDDEN (__init_array_start = .);
+    KEEP(*(SORT(.init_array.*)))
+    KEEP(*(.init_array))
+    PROVIDE_HIDDEN (__init_array_end = .);
+
+    . = ALIGN(4);
+    /* finit data */
+    PROVIDE_HIDDEN (__fini_array_start = .);
+    KEEP(*(SORT(.fini_array.*)))
+    KEEP(*(.fini_array))
+    PROVIDE_HIDDEN (__fini_array_end = .);
+
+    . = ALIGN(4);
+    /* All data end */
+    __data_end__ = .;
+
+  } > RAM
+
+{%- if bootloader_enable %}
+  __rom_end__ = __etext + SIZEOF(.data);
+{%- endif %}
+
+  .bss . :
+  {
+    . = ALIGN(4);
+    __bss_start__ = .;
+{%- if rtt == 1 %}
+    *(SEGGER_RTT)
+{%- endif %}
+    *(.bss*)
+    *(COMMON)
+    . = ALIGN(4);
+    __bss_end__ = .;
+  } > RAM
+
+  .heap (COPY):
+  {
+    __HeapBase = .;
+    __end__ = .;
+    end = __end__;
+    _end = __end__;
+    KEEP(*(.heap*))
+    . = ORIGIN(RAM) + LENGTH(RAM);
+    __HeapLimit = .;
+  } > RAM
+
+  __heap_size = __HeapLimit - __HeapBase;
+  __main_flash_end__ = 0x{{ '%0x' % app_flash_start }} + 0x{{ '%0x' % app_flash_size }};
+
+   /* This is where we handle flash storage blocks. We use dummy sections for finding the configured
+   * block sizes and then "place" them at the end of flash when the size is known. */
+  .internal_storage (DSECT) : {
+    KEEP(*(.internal_storage*))
+  } > FLASH
+
+  {#-
+    Exclude the NVM3 region for the TZ secure applications
+  #}
+  {% if trustzone_secure is not defined %}
+  {%- if linker_zwave_nvm is defined %}
+  .zwave_nvm (DSECT) : {
+    KEEP(*(.zwavenvm*))
+  } > FLASH
+  {%- endif %}
+
+  .nvm (DSECT) : {
+    KEEP(*(.simee*))
+  } > FLASH
+
+  linker_nvm_end = __main_flash_end__;
+  linker_nvm_begin = linker_nvm_end - SIZEOF(.nvm);
+  linker_nvm_size = SIZEOF(.nvm);
+  {%- if linker_zwave_nvm is defined %}
+  linker_zwave_nvm_end = linker_nvm_begin;
+  linker_zwave_nvm_begin = linker_zwave_nvm_end - SIZEOF(.zwave_nvm);
+  linker_zwave_nvm_size = SIZEOF(.zwave_nvm);
+  linker_storage_end = linker_zwave_nvm_begin;
+  {%- else %}
+  linker_storage_end = linker_nvm_begin;
+  {%- endif %}
+  __nvm3Base = linker_nvm_begin;
+  {%- else %} {#- trustzone_secure #}
+  linker_storage_end = __main_flash_end__;
+  {%- endif %} {#- trustzone_secure #}
+
+  linker_storage_begin = linker_storage_end - SIZEOF(.internal_storage);
+  linker_storage_size = SIZEOF(.internal_storage);
+
+{%- if bootloader_enable %}
+  _app_rollback_protection_size = 0x{{ '%0x' % (app_rollback_protection_size | sum) }};
+  {%- if (device_series | first) == 2 %}
+    ASSERT( ((ORIGIN(FLASH) + LENGTH(FLASH)) - 0x40 - _app_rollback_protection_size) >= (__etext + SIZEOF(.data)), "FLASH memory overflowed !")
+  {%- else %}
+    ASSERT( ((ORIGIN(FLASH) + LENGTH(FLASH)) - 0x4 - _app_rollback_protection_size) >= (__etext + SIZEOF(.data)), "FLASH memory overflowed !")
+  {%- endif %}
+{%- else %}
+  ASSERT((linker_storage_begin >= (__etext + SIZEOF(.data))), "FLASH memory overflowed !")
+{%- endif %}
+
+{% if trustzone_secure is not defined %}
+{%- if app_flash_start and app_flash_size %}
+  app_flash_end = 0x{{ '%0x' % (app_flash_start) }} + 0x{{ '%0x' % (app_flash_size) }};
+  ASSERT( (linker_nvm_begin + SIZEOF(.nvm)) <= app_flash_end, "NVM3 is excessing the flash size !")
+{%- endif %}
+{%- endif %} {#- trustzone_secure #}
+
+{%- if (memory_ram_start and not memory_ram_size) or (memory_ram_size and not memory_ram_start)  %}
+  ASSERT( 0, "memory_ram_start and memory_ram_size, Should define/undefine both!")
+{%- endif %}
+
+{%- if (memory_flash_start and not memory_flash_size) or (memory_flash_size and not memory_flash_start) %}
+  ASSERT( 0, "memory_flash_start and memory_flash_size, Should define/undefine both!")
+{%- endif %}
+}

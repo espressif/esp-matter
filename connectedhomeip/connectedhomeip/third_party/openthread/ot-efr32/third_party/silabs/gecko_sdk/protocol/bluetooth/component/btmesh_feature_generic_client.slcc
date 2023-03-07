@@ -1,0 +1,20 @@
+id: "btmesh_feature_generic_client"
+label: "Generic Client Models"
+package: "Btmesh"
+description: "Enables Bluetooth Mesh Generic Client model."
+category: "Bluetooth Mesh|Stack Classes"
+quality: "production"
+root_path: "protocol/bluetooth"
+
+requires:
+  - name: "btmesh_stack"
+  - name: "btmesh_core"
+provides:
+  - name: "btmesh_feature_generic_client"
+  - name: "btmesh_generic_model"
+    allow_multiple: true
+template_contribution:
+  - name: btmesh_bgapi_class
+    value:
+      class: "generic_client"
+    priority: 1

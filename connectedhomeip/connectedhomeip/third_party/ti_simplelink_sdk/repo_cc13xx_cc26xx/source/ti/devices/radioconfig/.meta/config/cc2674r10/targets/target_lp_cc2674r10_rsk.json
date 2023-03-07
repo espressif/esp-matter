@@ -1,0 +1,13 @@
+{
+    "target": {
+        "Name": "LP_CC2674R10_RSK",
+        "Revision": [],
+        "Description": "CC2674R10 RSK on CC1354P10 LaunchPad.",
+        "DeviceName": "CC2674R10",
+        "DevicePackage": "RSK 8x8",
+        "FrontEnd": "XD",
+        "PaSettings": "pasettings.json",
+        "RfDesign": "LP-CC1354P-8x8-XD7793-XD24-PA24",
+        "DefaultCategory": "Settings"
+    }
+}

@@ -1,0 +1,23 @@
+!!omap
+- id: BGM220PC22WGA_config
+- label: BGM220PC22WGA config
+- description: Configuration files for BGM220PC22WGA
+- package: platform
+- category: Platform|Device|BGM22|Config
+- quality: production
+- ui_hints:
+    visibility: never
+- root_path: hardware/module/config
+- requires:
+  - name: bgm220pc22wga
+- provides:
+  - name: BGM220PC22WGA_config
+- config_file:
+  - override:
+      component: rail_util_pa
+      file_id: rail_util_pa_config
+    path: BGM220PC22WGA/sl_rail_util_pa_config.h
+  - override:
+      component: device_init_hfxo
+      file_id: device_init_hfxo_config
+    path: BGM220PC22WGA/sl_device_init_hfxo_config.h

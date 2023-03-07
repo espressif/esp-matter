@@ -1,0 +1,105 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_chrono/backend.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+config("backend_config") {
+  include_dirs = [ "public_overrides" ]
+  visibility = [ ":*" ]
+}
+
+# This target provides the backend for pw::sync::InterruptSpinLock.
+# The provided implementation makes a single attempt to acquire the lock and
+# asserts if it is unavailable. It does not perform interrupt masking or disable
+# global interrupts, so this implementation does not support simultaneous
+# multi-threaded environments including IRQs, and is only meant to prevent
+# data corruption. This implementation is not yet set up to support hardware
+# multi-threading (SMP, SMT, etc).
+pw_source_set("interrupt_spin_lock") {
+  public_configs = [
+    ":public_include_path",
+    ":backend_config",
+  ]
+  public = [
+    "public/pw_sync_baremetal/interrupt_spin_lock_inline.h",
+    "public/pw_sync_baremetal/interrupt_spin_lock_native.h",
+    "public_overrides/pw_sync_backend/interrupt_spin_lock_inline.h",
+    "public_overrides/pw_sync_backend/interrupt_spin_lock_native.h",
+  ]
+  public_deps = [
+    "$dir_pw_assert",
+    "$dir_pw_sync:interrupt_spin_lock.facade",
+    "$dir_pw_sync:yield_core",
+  ]
+}
+
+# This target provides the backend for pw::sync::Mutex.
+# The provided implementation makes a single attempt to acquire the lock and
+# asserts if it is unavailable. This implementation is not yet set up to support
+# hardware multi-threading (SMP, SMT, etc).
+pw_source_set("mutex") {
+  public_configs = [
+    ":public_include_path",
+    ":backend_config",
+  ]
+  public = [
+    "public/pw_sync_baremetal/mutex_inline.h",
+    "public/pw_sync_baremetal/mutex_native.h",
+    "public_overrides/pw_sync_backend/mutex_inline.h",
+    "public_overrides/pw_sync_backend/mutex_native.h",
+  ]
+  public_deps = [
+    "$dir_pw_assert",
+    "$dir_pw_sync:mutex.facade",
+  ]
+}
+
+# This target provides the backend for pw::sync::RecursiveMutex.
+# The provided implementation makes a single attempt to acquire the lock and
+# asserts if it is unavailable. This implementation is not yet set up to support
+# hardware multi-threading (SMP, SMT, etc).
+pw_source_set("recursive_mutex") {
+  public_configs = [
+    ":public_include_path",
+    ":backend_config",
+  ]
+  public = [
+    "public/pw_sync_baremetal/recursive_mutex_inline.h",
+    "public/pw_sync_baremetal/recursive_mutex_native.h",
+    "public_overrides/pw_sync_backend/recursive_mutex_inline.h",
+    "public_overrides/pw_sync_backend/recursive_mutex_native.h",
+  ]
+  public_deps = [
+    "$dir_pw_assert",
+    "$dir_pw_sync:recursive_mutex.facade",
+  ]
+  visibility = [ "$dir_pw_sync:*" ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}
+
+pw_test_group("tests") {
+}

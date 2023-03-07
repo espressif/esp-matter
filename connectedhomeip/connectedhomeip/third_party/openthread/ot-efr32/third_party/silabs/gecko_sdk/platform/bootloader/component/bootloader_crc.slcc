@@ -1,0 +1,23 @@
+id: bootloader_crc
+label: Cyclic Redundancy Check
+package: bootloader
+description: >
+  Software implementations of 16- and 32-bit CRC
+category: Platform|Bootloader|Utils
+quality: production
+source:
+  - path: platform/bootloader/security/btl_crc16.c
+  - path: platform/bootloader/security/btl_crc32.c
+  - path: platform/bootloader/security/btl_crc16_veneers.c
+    condition: [bootloader_core_secure]
+  - path: platform/bootloader/security/btl_crc32_veneers.c
+    condition: [bootloader_core_secure]
+include:
+  - path: platform/bootloader
+    file_list:
+      - path: security/btl_crc32.h
+      - path: security/btl_crc16.h
+provides:
+  - name: bootloader_crc
+  - name: bootloader_nonsecure_incompatible
+    condition: [bootloader_core_nonsecure]

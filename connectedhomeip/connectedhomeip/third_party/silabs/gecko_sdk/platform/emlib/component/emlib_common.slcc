@@ -1,0 +1,61 @@
+id: emlib_common
+label: Common Headers
+package: platform
+description: >
+  Common headers for EMLIB, providing atomic bit access, macros for alignment,
+  min/max/ceil/floor, ramfunc, pack, section, weak, noreturn, fallthrough and versioning.
+category: Platform|Peripheral
+quality: production
+component_root_path: platform/emlib
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_assert.h"
+    - path: "em_bus.h"
+    - path: "em_common.h"
+    - path: "em_ramfunc.h"
+    - path: "em_version.h"
+provides:
+  - name: "emlib_common"
+requires:
+  - name: "cmsis_core"
+  - name: "device"
+  - name: "sl_common"
+  - name: "sl_assert"
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efm32g/group-common
+      condition: [device_sdid_71]
+    - page: emlib/api/efm32gg/group-common
+      condition: [device_sdid_72]
+    - page: emlib/api/efm32tg/group-common
+      condition: [device_sdid_73]
+    - page: emlib/api/efm32lg/group-common
+      condition: [device_sdid_74]
+    - page: emlib/api/efm32zg/group-common
+      condition: [device_sdid_76]
+    - page: emlib/api/efm32hg/group-common
+      condition: [device_sdid_77]
+    - page: emlib/api/efr32xg1/group-common
+      condition: [device_sdid_80]
+    - page: emlib/api/efr32xg12/group-common
+      condition: [device_sdid_84]
+    - page: emlib/api/efr32xg13/group-common
+      condition: [device_sdid_89]
+    - page: emlib/api/efr32xg14/group-common
+      condition: [device_sdid_95]
+    - page: emlib/api/efm32gg11/group-common
+      condition: [device_sdid_100]
+    - page: emlib/api/efm32tg11/group-common
+      condition: [device_sdid_103]
+    - page: emlib/api/efm32gg12/group-common
+      condition: [device_sdid_106]
+    - page: emlib/api/efr32xg21/group-common
+      condition: [device_sdid_200]
+    - page: emlib/api/efr32xg22/group-common
+      condition: [device_sdid_205]
+    - page: emlib/api/efr32xg23/group-common
+      condition: [device_sdid_210]
+    - page: emlib/api/efr32xg24/group-common
+      condition: [device_sdid_215]

@@ -1,0 +1,206 @@
+BL IOT SDK 开发指南
+========================
+  
+概述  
+-----------
+
+  `BL70X <https://www.bouffalolab.com/bl70X>`_ 系列芯片是博流智能科技有限公司开发的，基于 SiFive E24 Core `RISC-V <https://en.wikipedia.org/wiki/RISC-V>`_ 处理器的通用微控制器，具有高达144M Hz的主频以及丰富的外设，同时支持BLE 5.0、Zigbee3.0 和以太网等网络功能，可被广泛应用于 `IoT <https://en.wikipedia.org/wiki/Internet_of_things>`_ 和其他低功耗领域中。  
+
+  `BL IOT SDK <https://github.com/bouffalolab/bl_iot_sdk>`_ 是博流团队专为BL60X, BL70X 以及后续芯片提供的 IOT 软件开发包。
+  
+  本文通过一个简单的示例展示如何在Windows环境下，搭建开发环境，编译示例代码、烧录固件以及查看输出，旨在指导用户搭建一套完整的BL70X IOT应用开发环境。  
+  
+
+准备工作
+-----------
+
+ 在开始本示例前，必须具备的开发环境包括：
+
+  * 硬件
+       
+    * **BL70x开发板**   
+    * **USB数据线**  (Type-C)
+    * **电脑** (Windows系统)
+    
+  * 软件                           
+ 
+    * **MSYS2**           (Windows 编译工具)
+    * **Freedom Studio**  (Windows 调试工具)
+    * **BLDevCube**       (BL702 固件烧写工具)
+  
+    .. figure:: ./imgs/bl706_iot.png  
+      :align: center
+
+硬件连接
+------------
+ 
+  BL70x_IOT 开发板为芯片保留了丰富的通信接口，支持通过USB, UART以及JTAG等多种连接方式烧录固件以及调试软件。
+
+USB 连接
+>>>>>>>>>>>>>>>>>
+  
+  BL70X 系列芯片均包含一个USB2.0 IP,  在软件中使能了USB虚拟 CDC-UART 串口以后，可方便的通过开发板上的 Type-C USB 接口完成软件烧录、串口通信等功能。    
+     
+    .. figure:: ./imgs/index-10.jpg   
+     :align: center
+     :width: 4.5in
+     :height: 5in
+
+UART 连接
+>>>>>>>>>>>>>>>>>>
+    
+  BL70X IOT 开发板引出 UART0 TX/RX 引脚, 芯片默认都使能 UART0 功能, 当 CDC-UART 未连接时，自动使用UART0 通信，实现软件的烧录、通信等功能
+
+    .. figure:: ./imgs/index-12.jpg  
+     :align: center
+     :width: 4.5in
+     :height: 5in
+    
+JTAG 连接
+>>>>>>>>>>>>>>>>>>
+
+  BL70X 开发底板引出 JTAG 接口, 通过 Sipeed RV-Debugger Plus 调试器连接至 PC, 可方便的实现芯片的在线调试功能  
+
+    .. figure:: ./imgs/index-11.jpg  
+     :align: center
+     :width: 4.5in
+     :height: 5in
+
+    .. important:: Sipeed RV-Debugger Plus 调试器安装使用参考 `Sipeed RV-Debugger Plus 安装 <./Developer_Environment_BL702/Sipeed-RV-Debugger-Plus/sipeed-rv-debugger-plus.html>`__  
+
+软件安装
+-----------
+    
+  在正式开始编译工程前，请先正确完成以下所有工具的安装，具体步骤以及环境变量设置如下: 
+
+     - **MSYS2**  `MSYS32 Windows平台安装与编译 <./Developer_Environment_BL702/Windows-BL702/Quickstart_Windows_msys.html>`__   
+     - **Freedom Studio** `Freedom Studio + OpenOCD安装与工程调试  <./Developer_Environment_BL702/freedom_studio/freedom_studio.html>`__   
+     - **BLDevCube** `BLDevCube 固件烧录 <./Developer_Environment_BL702/BLFlashEnv/Burning_process.html>`__ 
+
+    .. important::  请您留意文档中，关于环境变量, 驱动等信息的设置，这将避免后续操作的异常错误
+
+编译工程
+-----------
+  
+  本部分介绍如何编译 get-start 目录下的 helloworld 工程。
+ 
+  1. 打开MSYS2平台, 进入本地 **bl_iot_sdk/customer_app/get-start/helloworld** 文件夹
+    
+    - 命令：\ ``cd ../bl_iot_sdk_bl702/customer_app/set-start/helloworld``  
+    
+    .. figure:: ./Developer_Environment_BL702/Windows-BL702/imgs/image16.png    
+     :align: center
+     :width:  6in
+     :height: 3.5in
+
+  2. 执行脚本 **genromap** 开始编译工程  
+     
+     - 命令： ``./genromap``  
+
+    .. figure:: ./Developer_Environment_BL702/Windows-BL702/imgs/image17.png
+      :align: center
+      :width:  6in
+      :height: 3.5in
+
+  3. 编译完成后，当前目录新增 ``build_out`` 文件夹以及以下文件：
+    
+    * **helloworld.bin：** 二进制固件，用于烧录入芯片
+
+    * **helloworld.elf：** 可执行与链接文件，用于调试软件
+
+    * **helloworld.map：** 映射文件，用于函数以及内存占用等分析。
+       `Bouffalo Lab Parse Tool For Windows <https://dev.bouffalolab.com/download>`_ 是博流团队提供的 map 文件解析软件，可用于内存文件分析。   
+            
+    .. figure:: ./Developer_Environment_BL702/Windows-BL702/imgs/image18.png
+      :align: center
+      :width:  6in
+      :height: 3.8in
+
+烧录固件
+---------
+    
+  本部分介绍如何使用 **BLDevCube**  集成开发工具将固件烧写入 BL70X开发板，更多详情请参考 `BLDevCube 用户手册 <https://dev.bouffalolab.com/media/upload/doc/DevCube%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8Cv1.2.pdf>`_ 
+
+1. 芯片进入烧写模式 
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    1.1 使用 ``Type-C USB`` 数据线 or ``串口转接板`` 连接BL70X开发板以后  
+
+      -  先按下开发板上的 ``Boot`` 键，不要释放 
+      -  再按下开发板上的 ``RST`` 键，并释放； 此时芯片进入 ``UART/USB 烧写模式`` 
+      -  最后释放 ``Boot`` 按键 
+  
+|    芯片成功进入``UART/USB 烧写模式`` 后，您可通过电脑的 **Windows设备管理器** 确认开发板的CDC-UART已成功识别  
+
+      .. figure:: ./imgs/sipeed_rv_debugger_1.png
+        :align: center
+        :width: 2.5in
+        :height: 4in  
+
+2. 使用BLDevCube下载固件 
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    2.1 打开 ``BLDevCube.exe``, 在 ``Chip Type`` 的下拉框中选择 ``BL702\4\6``，点击 ``Finish`` 进入 ``Dev Cube`` 主界面  
+      
+      .. figure:: ./Developer_Environment_BL702/BLFlashEnv/picture/chipselection.png 
+       :align: center
+       :width: 2.5in
+       :height: 4in 
+      
+    2.2 进入主界面后在上方的菜单栏 ``View`` 标签下选择 ``IOT`` 下载方式，进入程序下载主界面  
+      
+      .. figure:: ./Developer_Environment_BL702/BLFlashEnv/picture/image20.png 
+        :align: center
+        :width: 9in
+        :height: 4.8in 
+
+    2.3  配置BLDevCube
+
+      - 配置信息包括：
+        
+        * **Interface**： 用于选择烧录的通信接口，这里选择 Uart 进行下载  
+        * **COM Port**: 选择 UART 进行下载的时候, 这里选择与芯片连接的 COM 口号，可以点击下方 Refresh 按钮进行 COM 号的刷新
+        * **Uart Rate**： 当选择 UART 进行下载的时候，填写波特率，默认下载频率2Mhz
+        * **Xtal**: 选择下载时的晶振频率，如果电路板没有焊接晶振，此处应当选内部RC32M时钟源
+        * **Chip Erase**: 选择下载前是否擦除整片Flash, 默认设置为不擦除
+
+      - 固件信息包括：
+        
+        * **Factory Params**: 使用Dev Cube目录下对应芯片型号 device_tree 文件夹中的分区表，默认选择
+          ``....\chips\bl702\device_tree\bl_factory_params_IoTKitA_32M.dts``
+        * **Partition Table**：使用Dev Cube目录下对应芯片型号 partition 文件夹中的分区表，默认选择
+          ``....\chips\bl702\partition\partition_cfg_1M.toml``
+        * **Firmware Bin**：用户编译生成的bin文件路径
+          ``....\bl_iot_sdk_bl702\customer_app\bl702_demo_event\build_out\helloworld.bin``  
+         
+        .. figure:: ./Developer_Environment_BL702/BLFlashEnv/picture/image21.png 
+          :align: center
+          :width: 9in
+          :height: 4.8in 
+
+    2.4  在正确完成上述配置后，点击 ``Create&Program`` 按钮进行下载, 下载成功后即可看到状态栏变成绿色并显示 ``Success``  
+
+        .. figure:: ./Developer_Environment_BL702/BLFlashEnv/picture/image22.png 
+          :align: center
+          :width: 9in
+          :height: 6.9in 
+
+3. 运行固件
+>>>>>>>>>>>>>>>>>>
+ 
+    -  打开PC上安装的串口工具
+    -  按下开发板上的 ``RST`` 键
+    -  程序正确执行，PC端串口工具将看到如下打印 ``helloworld  end``  
+    
+    .. figure:: ../Examples/helloworld/imgs/image2.png  
+     :align: center
+     :width: 3in
+     :height: 2in
+
+ .. note::  烧录中如出现无法烧录，烧录失败，烧录成功以后无打印等异常，可查看 `BL702常见问题汇总 <https://dev.bouffalolab.com/media/doc/faq/702/html/content/FAQ.html#bl702>`__ 
+
+调试软件
+---------
+
+选择 ``Freedom Studio + OpenOCD`` 方式进行debug。具体调试方法参考 `Freedom Studio <./Developer_Environment_BL702/freedom_studio/freedom_studio.html>`__ 。
+

@@ -1,0 +1,110 @@
+/***************************************************************************//**
+ * @file zigbee_ncp_callback_dispatcher.c
+ * @brief ZigBee ncp dispatcher definitions.
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2020 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * The licensor of this software is Silicon Laboratories Inc. Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement. This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
+ *
+ ******************************************************************************/
+
+#include PLATFORM_HEADER
+#include "stack/include/ember.h"
+#include "zigbee_ncp_callback_dispatcher.h"
+
+{# GET_VALUE #}
+void emberAfEzspGetValueCommandCallback(EmberAfPluginEzspValueCommandContext* context)
+{
+{%- for cb in zigbee_ncp_callback %}
+{%- if cb['callback_type'] == "get_value" %}
+  {{ cb['function_name'] }}(context);
+{%- endif %}
+{%- endfor %}
+}
+
+{# GET_EXTENDED_VALUE #}
+void emberAfEzspGetExtendedValueCommandCallback(EmberAfPluginEzspValueCommandContext* context)
+{
+{%- for cb in zigbee_ncp_callback %}
+{%- if cb['callback_type'] == "get_extended_value" %}
+  {{ cb['function_name'] }}(context);
+{%- endif %}
+{%- endfor %}
+}
+
+{# SET_VALUE #}
+void emberAfEzspSetValueCommandCallback(EmberAfPluginEzspValueCommandContext* context)
+{
+{%- for cb in zigbee_ncp_callback %}
+{%- if cb['callback_type'] == "set_value" %}
+  {{ cb['function_name'] }}(context);
+{%- endif %}
+{%- endfor %}
+}
+
+{# GET_POLICY #}
+void emberAfEzspGetPolicyCommandCallback(EmberAfPluginEzspPolicyCommandContext* context)
+{
+{%- for cb in zigbee_ncp_callback %}
+{%- if cb['callback_type'] == "get_policy" %}
+  {{ cb['function_name'] }}(context);
+{%- endif %}
+{%- endfor %}
+}
+
+{# SET_POLICY #}
+void emberAfEzspSetPolicyCommandCallback(EmberAfPluginEzspPolicyCommandContext* context)
+{
+{%- for cb in zigbee_ncp_callback %}
+{%- if cb['callback_type'] == "set_policy" %}
+  {{ cb['function_name'] }}(context);
+{%- endif %}
+{%- endfor %}
+}
+
+{# GET_CONFIGURATION_VALUE #}
+void emberAfEzspGetConfigurationValueCommandCallback(EmberAfPluginEzspConfigurationValueCommandContext* context)
+{
+{%- for cb in zigbee_ncp_callback %}
+{%- if cb['callback_type'] == "get_configuration_value" %}
+  {{ cb['function_name'] }}(context);
+{%- endif %}
+{%- endfor %}
+}
+
+{# SET_CONFIGURATION_VALUE #}
+void emberAfEzspSetConfigurationValueCommandCallback(EmberAfPluginEzspConfigurationValueCommandContext* context)
+{
+{%- for cb in zigbee_ncp_callback %}
+{%- if cb['callback_type'] == "set_configuration_value" %}
+  {{ cb['function_name'] }}(context);
+{%- endif %}
+{%- endfor %}
+}
+
+{# MODIFY_MEMORY_ALLOCATION #}
+void emberAfPluginEzspModifyMemoryAllocationCallback(void)
+{
+{%- for cb in zigbee_ncp_callback %}
+{%- if cb['callback_type'] == "modify_memory_allocation" %}
+  {{ cb['function_name'] }}();
+{%- endif %}
+{%- endfor %}
+}
+
+{# PERMIT_HOST_TO_NCP_FRAME #}
+void emberAfPluginEzspPermitHostToNcpFrameCallback(bool* permit)
+{
+{%- for cb in zigbee_ncp_callback %}
+{%- if cb['callback_type'] == "permit_host_to_ncp_frame" %}
+  {{ cb['function_name'] }}(permit);
+{%- endif %}
+{%- endfor %}
+}

@@ -1,0 +1,212 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load(
+    "//pw_build:pigweed.bzl",
+    "pw_cc_facade",
+    "pw_cc_library",
+    "pw_cc_perf_test",
+    "pw_cc_test",
+)
+load(
+    "//pw_build:selects.bzl",
+    "TARGET_COMPATIBLE_WITH_HOST_SELECT",
+)
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+pw_cc_library(
+    name = "duration_unit",
+    hdrs = [
+        "public/pw_perf_test/internal/duration_unit.h",
+    ],
+    includes = ["public"],
+    visibility = ["//visibility:private"],
+)
+
+pw_cc_facade(
+    name = "timer_interface_facade",
+    hdrs = [
+        "public/pw_perf_test/internal/timer.h",
+    ],
+    includes = ["public"],
+    visibility = ["//visibility:private"],
+    deps = [
+        ":duration_unit",
+    ],
+)
+
+pw_cc_library(
+    name = "timer",
+    deps = [
+        ":timer_interface_facade",
+        "@pigweed_config//:pw_perf_test_timer_backend",
+    ],
+)
+
+pw_cc_library(
+    name = "timer_multiplexer",
+    visibility = ["@pigweed_config//:__pkg__"],
+    deps = select({
+        "//conditions:default": [":chrono_timer"],
+    }),
+)
+
+# EventHandler Configuraitions
+
+pw_cc_library(
+    name = "event_handler",
+    hdrs = ["public/pw_perf_test/event_handler.h"],
+    includes = ["public"],
+    deps = [":timer"],
+)
+
+pw_cc_library(
+    name = "pw_perf_test",
+    srcs = ["perf_test.cc"],
+    hdrs = ["public/pw_perf_test/perf_test.h"],
+    includes = ["public"],
+    deps = [
+        ":event_handler",
+        ":timer",
+        "//pw_assert",
+        "//pw_log",
+    ],
+)
+
+pw_cc_library(
+    name = "google_test_style_event_strings",
+    hdrs = ["public/pw_perf_test/googletest_style_event_handler.h"],
+)
+
+pw_cc_library(
+    name = "log_main_handler",
+    srcs = ["log_perf_handler.cc"],
+    hdrs = ["public/pw_perf_test/log_perf_handler.h"],
+    includes = [
+        "public",
+    ],
+    deps = [
+        ":event_handler",
+        ":google_test_style_event_strings",
+        "//pw_log",
+    ],
+)
+
+pw_cc_library(
+    name = "logging_main",
+    srcs = ["log_perf_handler_main.cc"],
+    deps = [
+        ":log_main_handler",
+        ":pw_perf_test",
+    ],
+)
+
+pw_cc_perf_test(
+    name = "generic_test",
+    srcs = ["performance_test_generic.cc"],
+)
+
+# Test Declarations
+
+pw_cc_test(
+    name = "perf_test_test",
+    srcs = ["perf_test_test.cc"],
+    deps = [":pw_perf_test"],
+)
+
+pw_cc_test(
+    name = "timer_test",
+    srcs = ["timer_test.cc"],
+    deps = [
+        ":timer",
+        "//pw_chrono:system_clock",
+        "//pw_thread:sleep",
+    ],
+)
+
+pw_cc_test(
+    name = "chrono_timer_test",
+    srcs = ["chrono_test.cc"],
+    deps = [
+        ":chrono_timer",
+        "//pw_chrono:system_clock",
+        "//pw_thread:sleep",
+    ],
+)
+
+pw_cc_test(
+    name = "state_test",
+    srcs = ["state_test.cc"],
+    deps = [":pw_perf_test"],
+)
+
+# Bazel does not yet support building docs.
+filegroup(
+    name = "docs",
+    srcs = ["docs.rst"],
+)
+
+# Chrono Implementation
+
+pw_cc_library(
+    name = "chrono_timer_headers",
+    hdrs = [
+        "chrono_public_overrides/pw_perf_test_timer_backend/timer.h",
+        "public/pw_perf_test/internal/chrono_timer_interface.h",
+    ],
+    includes = [
+        "chrono_public_overrides",
+        "public",
+    ],
+    deps = [
+        ":duration_unit",
+        "//pw_chrono:system_clock",
+    ],
+)
+
+pw_cc_library(
+    name = "chrono_timer",
+    target_compatible_with = select(TARGET_COMPATIBLE_WITH_HOST_SELECT),
+    deps = [
+        ":chrono_timer_headers",
+        ":timer_interface_facade",
+    ],
+)
+
+# ARM Cortex Implementation
+
+pw_cc_library(
+    name = "arm_cortex_timer_headers",
+    hdrs = [
+        "arm_cortex_cyccnt_public_overrides/pw_perf_test_timer_backend/timer.h",
+        "public/pw_perf_test/internal/cyccnt_timer_interface.h",
+    ],
+    includes = [
+        "arm_cortex_cyccnt_public_overrides",
+        "public",
+    ],
+    deps = [":duration_unit"],
+)
+
+pw_cc_library(
+    name = "arm_cortex_timer",
+    target_compatible_with = select(TARGET_COMPATIBLE_WITH_HOST_SELECT),
+    deps = [
+        ":arm_cortex_timer_headers",
+        ":timer_interface_facade",
+    ],
+)

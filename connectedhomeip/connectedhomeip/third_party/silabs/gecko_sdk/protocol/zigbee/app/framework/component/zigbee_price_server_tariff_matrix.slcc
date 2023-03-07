@@ -1,0 +1,433 @@
+package: Zigbee
+description: This component provides an implementation of a Smart Energy price server 
+  tariff matrix.
+label: Price Server Tariff Matrix
+quality: production
+id: zigbee_price_server_tariff_matrix
+category: Zigbee|Cluster Library|Smart Energy
+provides:
+   - name: "zigbee_price_server_tariff_matrix"
+requires:
+   - name: "zigbee_price_server"
+source:
+  - path: protocol/zigbee/app/framework/plugin/price-server/price-server-tariff-matrix.c
+  - path: protocol/zigbee/app/framework/plugin/price-server/price-server-tariff-matrix-cli.c
+    condition:
+      - "cli"
+include:
+  - path: protocol/zigbee/app/framework/plugin/price-server
+    file_list:
+      - path: price-server.h
+      - path: price-server-tick.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_price_server_tariff_matrix
+  - name: cli_group
+    value:
+      group: price-server
+      name: tariff
+      help: tariff related commands.
+  - name: cli_command
+    value:
+      group: tariff
+      name: print
+      handler: emAfPriceServerCliTPrint
+      help: Prints the tariff table for the provided endpoint.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cli_command
+    value:
+      group: tariff
+      name: clear
+      handler: emAfPriceServerCliTClear
+      help: Clears out the currently set tariff for the supplied endpoint.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cli_command
+    value:
+      group: tariff
+      name: who
+      handler: emAfPriceServerCliTWho
+      help: Sets identifying information about the tariff.
+      argument:
+      - type: uint32
+        help: Provider ID
+      - type: string
+        help: Tariff label
+      - type: uint32
+        help: Issuer event ID
+      - type: uint32
+        help: Issuer tariff ID
+  - name: cli_command
+    value:
+      group: tariff
+      name: what
+      handler: emAfPriceServerCliTWhat
+      help: Indicates what units the tariff is presented in.
+      argument:
+      - type: uint8
+        help: Tariff type or charging scheme
+      - type: uint8
+        help: Unit of measure
+      - type: uint16
+        help: Currency
+      - type: uint8
+        help: Price trailing digit
+      - type: uint8
+        help: Number of price tiers in use
+      - type: uint8
+        help: Number of block thresholds in use
+      - type: uint8
+        help: Tier block mode
+  - name: cli_command
+    value:
+      group: tariff
+      name: when
+      handler: emAfPriceServerCliTWhen
+      help: Sets start time for the tariff.
+      argument:
+      - type: uint32
+        help: Start time for the tariff
+  - name: cli_command
+    value:
+      group: tariff
+      name: set
+      handler: emAfPriceServerCliTariff
+      help: Sets the single tariff held within the price plugin server.
+      argument:
+      - type: uint32
+        help: Standing charge
+      - type: uint32
+        help: Block threshold multiplier
+      - type: uint32
+        help: Block threshold divisor
+  - name: cli_command
+    value:
+      group: tariff
+      name: invalid
+      handler: emAfPriceServerCliValid
+      help: Makes a tariff at a given index invalid.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint8
+        help: Index in the tariff table
+  - name: cli_command
+    value:
+      group: tariff
+      name: add
+      handler: emAfPriceServerCliTAdd
+      help: Adds currently configured tariff to table. Status - (0 for current, 1 for future).
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint8
+        help: Tariff status
+  - name: cli_command
+    value:
+      group: tariff
+      name: update
+      handler: emAfPriceServerCliTSet
+      help: Updates the specified tariff information entry.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint8
+        help: Index of entry to modify
+      - type: uint8
+        help: Tariff status
+  - name: cli_command
+    value:
+      group: tariff
+      name: get
+      handler: emAfPriceServerCliTGet
+      help: Retrieves a price from a given index in to the tariff buffer for editing.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint8
+        help: Index of the tariff to retrieve
+  - name: cli_command
+    value:
+      group: tariff
+      name: sprint
+      handler: emAfPriceServerCliTSPrint
+      help: Prints the contents of the tariff buffer.
+  - name: cli_group
+    value:
+      group: price-server
+      name: pm
+      help: pm related commands.
+  - name: cli_command
+    value:
+      group: pm
+      name: print
+      handler: emAfPriceServerCliPmPrint
+      help: Prints the price matrix table for the provided endpoint.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cli_command
+    value:
+      group: pm
+      name: clear
+      handler: emAfPriceServerCliPmClear
+      help: Clears out the price matrix table for the supplied endpoint.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cli_command
+    value:
+      group: pm
+      name: set-metadata
+      handler: emAfPriceServerCliPmSetMetadata
+      help: Sets the metadata (wholesale) associated with the price matrix in the edit buffer. NOTE the issuer tariff ID MUST correspond to a valid tariff in the tariff table.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint32
+        help: The commodity provider id
+      - type: uint32
+        help: The issuer event id
+      - type: uint32
+        help: The issuer tariff id
+      - type: uint32
+        help: The start time
+      - type: uint8
+        help: The status of the price matrix (1 for current, 2 for future)
+  - name: cli_command
+    value:
+      group: pm
+      name: set-provider
+      handler: emAfPriceServerCliPmSetProvider
+      help: Sets the provider ID associated with the price matrix in the edit buffer.
+      argument:
+      - type: uint32
+        help: The commodity provider id
+  - name: cli_command
+    value:
+      group: pm
+      name: set-event
+      handler: emAfPriceServerCliPmSetEvent
+      help: Sets the issuer event ID associated with the price matrix in the edit buffer.
+      argument:
+      - type: uint32
+        help: The issuer event id
+  - name: cli_command
+    value:
+      group: pm
+      name: set-tariff
+      handler: emAfPriceServerCliPmSetTariff
+      help: Sets the issuer tariff ID associated with the price matrix in the edit buffer.
+      argument:
+      - type: uint32
+        help: The issuer tariff id
+  - name: cli_command
+    value:
+      group: pm
+      name: set-time
+      handler: emAfPriceServerCliPmSetTime
+      help: Sets the start time associated with the price matrix in the edit buffer.
+      argument:
+      - type: uint32
+        help: The start time
+  - name: cli_command
+    value:
+      group: pm
+      name: set-status
+      handler: emAfPriceServerCliPmSetStatus
+      help: Sets the status of the price matrix in the edit buffer (1 for current, 2 for future).
+      argument:
+      - type: uint8
+        help: The status of the price matrix (1 for current, 2 for future)
+  - name: cli_command
+    value:
+      group: pm
+      name: get
+      handler: emAfPriceServerCliPmGet
+      help: Retrieves an entry from the price matrix table and places it in the edit buffer.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint8
+        help: The index into the price matrix table
+  - name: cli_command
+    value:
+      group: pm
+      name: add
+      handler: emAfPriceServerCliPmAdd
+      help: Adds the pre-configured price matrix information as an entry to the price matrix table.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cli_command
+    value:
+      group: pm
+      name: put
+      handler: emAfPriceServerCliPmPut
+      help: Populates an individual element of the price matrix with the provided price. The issuer tariff ID MUST be set and must correspond to a valid tariff in the tariff table before this command is invoked. If the charging type of the associated tariff is TOU only, or Block only, the second index is unused. If an out-of-bounds index is provided, the index will be clamped to the maximum index.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint8
+        help: The price tier
+      - type: uint8
+        help: The price block
+      - type: uint32
+        help: The price
+  - name: cli_command
+    value:
+      group: pm
+      name: fill-tier
+      handler: emAfPriceServerCliPmFillTier
+      help: Convenience method to fill an entire tier with a given price.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint8
+        help: The price tier
+      - type: uint32
+        help: The price
+  - name: cli_command
+    value:
+      group: pm
+      name: fill-block
+      handler: emAfPriceServerCliPmFillBlock
+      help: Convenience method to fill a specified block within each tier with a given price.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint8
+        help: The price block
+      - type: uint32
+        help: The price
+  - name: cli_group
+    value:
+      group: price-server
+      name: bt
+      help: bt related commands.
+  - name: cli_command
+    value:
+      group: bt
+      name: print
+      handler: emAfPriceServerCliBtPrint
+      help: Prints the block thresholds for the provided endpoint.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cli_command
+    value:
+      group: bt
+      name: clear
+      handler: emAfPriceServerCliBtClear
+      help: Clears out the block thresholds for the supplied endpoint.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cli_command
+    value:
+      group: bt
+      name: set-metadata
+      handler: emAfPriceServerCliBtSetMetadata
+      help: Sets the metadata (wholesale) associated with the block thresholds in the edit buffer. NOTE the issuer tariff ID MUST correspond to a valid tariff in the tariff table.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint32
+        help: The commodity provider id
+      - type: uint32
+        help: The issuer event id
+      - type: uint32
+        help: The issuer tariff id
+      - type: uint32
+        help: The start time
+      - type: uint8
+        help: The status of the block thresholds (1 for current, 2 for future)
+  - name: cli_command
+    value:
+      group: bt
+      name: set-provider
+      handler: emAfPriceServerCliBtSetProvider
+      help: Sets the provider ID associated with the block thresholds in the edit buffer.
+      argument:
+      - type: uint32
+        help: The commodity provider id
+  - name: cli_command
+    value:
+      group: bt
+      name: set-event
+      handler: emAfPriceServerCliBtSetEvent
+      help: Sets the issuer event ID associated with the block thresholds in the edit buffer.
+      argument:
+      - type: uint32
+        help: The issuer event id
+  - name: cli_command
+    value:
+      group: bt
+      name: set-tariff
+      handler: emAfPriceServerCliBtSetTariff
+      help: Sets the issuer tariff ID associated with the block thresholds in the edit buffer.
+      argument:
+      - type: uint32
+        help: The issuer tariff id
+  - name: cli_command
+    value:
+      group: bt
+      name: set-time
+      handler: emAfPriceServerCliBtSetTime
+      help: Sets the start time associated with the block thresholds in the edit buffer.
+      argument:
+      - type: uint32
+        help: The start time
+  - name: cli_command
+    value:
+      group: bt
+      name: set-status
+      handler: emAfPriceServerCliBtSetStatus
+      help: Sets the status of the block thresholds in the edit buffer (1 for current, 2 for future).
+      argument:
+      - type: uint8
+        help: The status of the block thresholds (1 for current, 2 for future)
+  - name: cli_command
+    value:
+      group: bt
+      name: get
+      handler: emAfPriceServerCliBtGet
+      help: Retrieves an entry from the block thresholds table and places it in the edit buffer.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint8
+        help: The index into the block thresholds table
+  - name: cli_command
+    value:
+      group: bt
+      name: set
+      handler: emAfPriceServerCliBtSet
+      help: Publishes the block thresholds buffer to the specified entry in the block thresholds table.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint8
+        help: The index in the block thresholds table
+  - name: cli_command
+    value:
+      group: bt
+      name: put
+      handler: emAfPriceServerCliBtPut
+      help: Populates an individual entry in the block thresholds table with the provided threshold. The issuer tariff ID MUST be set and must correspond to a valid tariff in the tariff table before this command is invoked. If the tier block mode of the associated tariff is ActiveBlock (0x00) or ActiveBlockPriceTier (0x01), the first index is unused. If an out-of-bounds index is provided, the index will be clamped to the maximum index.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint8
+        help: The tier
+      - type: uint8
+        help: The block (sets threshold between given block and next higher block)
+      - type: string
+        help: The threshold (int48u entered as octet string in big endian) 
+  
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/price-server

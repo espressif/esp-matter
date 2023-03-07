@@ -1,0 +1,536 @@
+/*
+ * Copyright (c) 2018-2021 Texas Instruments Incorporated - http://www.ti.com
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+
+/*
+ *  ======== LPSTK_CC1352R.syscfg.json ========
+ *  Board schematic: http://www.ti.com/lit/zip/swrr170.zip
+ */
+
+{
+    "name": "LPSTK-CC1352R LaunchPad SensorTag",
+    "displayName": "LPSTK-CC1352R Sensors",
+    "description": "LaunchPad SensorTag (LPSTK-CC1352R) Multi-band CC1352R wireless MCU Launchpad and Sensors",
+    "longDescription": "The [__LaunchPad SensorTag__](http://www.ti.com/tool/LPSTK-CC1352R)",
+    "device"      : "CC1352R1F3RGZ",
+    "part"        : "Default",
+    "package"     : "RGZ",
+    "headers"     : [
+        {
+            "type": "BoosterPack 40 pin",
+            "default": true,
+            "name": "boosterpack",
+            "displayName": "BoosterPack Standard Header",
+            "dimensions": {
+                "columns": [
+                    { "top":  1, "bottom": 10 },
+                    { "top": 21, "bottom": 30 },
+
+                    { "blank": true },
+
+                    { "top": 40, "bottom": 31 },
+                    { "top": 20, "bottom": 11 }
+                ]
+            },
+            "pins": [
+                {
+                    "number" : 1,
+                    "name"   : "3V3"
+                },
+                {
+                    "number" : 2,
+                    "ball"   : "36",
+                    "name"   : "DIO23",
+                    "preferredType" : ["AIN"]
+                },
+                {
+                    "number" : 3,
+                    "ball"   : "18",
+                    "name"   : "DIO12"
+                },
+                {
+                    "number" : 4,
+                    "ball"   : "19",
+                    "name"   : "DIO13"
+                },
+                {
+                    "number" : 5,
+                    "ball"   : "32",
+                    "name"   : "DIO22"
+                },
+                {
+                    "number" : 6,
+                    "ball"   : "37",
+                    "name"   : "DIO24",
+                    "preferredType" : ["AIN"]
+                },
+                {
+                    "number" : 7,
+                    "ball"   : "16",
+                    "name"   : "DIO10",
+                    "preferredType": ["SPI_SCLK"]
+                },
+                {
+                    "number" : 8,
+                    "ball"   : "31",
+                    "name"   : "DIO21"
+                },
+                {
+                    "number" : 9,
+                    "ball"   : "9",
+                    "name"   : "DIO4",
+                    "preferredType": ["I2C_SCL"]
+                },
+                {
+                    "number" : 10,
+                    "ball"   : "10",
+                    "name"   : "DIO5",
+                    "preferredType": ["I2C_SDA"]
+                },
+
+                {
+                    "number" : 21,
+                    "name"   : "5V"
+                },
+                {
+                    "number" : 22,
+                    "name"   : "GND"
+                },
+                {
+                    "number" : 23,
+                    "ball"   : "38",
+                    "name"   : "DIO25"
+                },
+                {
+                    "number" : 24,
+                    "ball"   : "39",
+                    "name"   : "DIO26"
+                },
+                {
+                    "number" : 25,
+                    "ball"   : "40",
+                    "name"   : "DIO27"
+                },
+                {
+                    "number" : 26,
+                    "ball"   : "41",
+                    "name"   : "DIO28"
+                },
+                {
+                    "number" : 27,
+                    "ball"   : "42",
+                    "name"   : "DIO29"
+                },
+                {
+                    "number" : 28,
+                    "ball"   : "43",
+                    "name"   : "DIO30"
+                },
+                {
+                    "number" : 29,
+                    "name"   : "NC"
+                },
+                {
+                    "number" : 30,
+                    "name"   : "NC"
+                },
+
+                {
+                    "number" : 40,
+                    "ball"   : "12",
+                    "name"   : "DIO7"
+                },
+                {
+                    "number" : 39,
+                    "ball"   : "11",
+                    "name"   : "DIO6"
+                },
+                {
+                    "number" : 38,
+                    "ball"   : "30",
+                    "name"   : "DIO20"
+                },
+                {
+                    "number" : 37,
+                    "ball"   : "29",
+                    "name"   : "DIO19"
+                },
+                {
+                    "number" : 36,
+                    "ball"   : "28",
+                    "name"   : "DIO18"
+                },
+                {
+                    "number" : 35,
+                    "name"   : "BPRST"
+                },
+                {
+                    "number" : 34,
+                    "ball"   : "24",
+                    "name"   : "TMS"
+                },
+                {
+                    "number" : 33,
+                    "ball"   : "25",
+                    "name"   : "TCK"
+                },
+                {
+                    "number" : 32,
+                    "ball"   : "26",
+                    "name"   : "DIO16"
+                },
+                {
+                    "number" : 31,
+                    "ball"   : "27",
+                    "name"   : "DIO17"
+                },
+
+                {
+                    "number" : 20,
+                    "name"   : "GND"
+                },
+                {
+                    "number" : 19,
+                    "ball"   : "8",
+                    "name"   : "DIO3"
+                },
+                {
+                    "number" : 18,
+                    "ball"   : "17",
+                    "name"   : "DIO11"
+                },
+                {
+                    "number" : 17,
+                    "name"   : "NC"
+                },
+                {
+                    "number" : 16,
+                    "name"   : "LPRST"
+                },
+                {
+                    "number" : 15,
+                    "ball"   : "15",
+                    "name"   : "DIO9",
+                    "preferredType" : ["SPI_MOSI"]
+                },
+                {
+                    "number" : 14,
+                    "ball"   : "14",
+                    "name"   : "DIO8",
+                    "preferredType" : ["SPI_MISO"]
+                },
+                {
+                    "number" : 13,
+                    "ball"   : "21",
+                    "name"   : "DIO15"
+                },
+                {
+                    "number" : 12,
+                    "ball"   : "20",
+                    "name"   : "DIO14"
+                },
+                {
+                    "number" : 11,
+                    "name"   : "NC"
+                }
+            ]
+        }
+    ],
+
+    "components": {
+        "LED_RED": {
+            "displayName" : "LaunchPad LED Red",
+            "definition"  : "/ti/boards/components/led_dimmable.json",
+            "connections" : {
+                "OUTPUT": "11"
+            }
+        },
+        "LED_GREEN": {
+            "displayName" : "LaunchPad LED Green",
+            "definition"  : "/ti/boards/components/led_dimmable.json",
+            "connections" : {
+                "OUTPUT": "12"
+            }
+        },
+
+        /* symbolic links/aliases for LED portability between LaunchPads */
+        "LED": {
+            "link" : "LED_RED"
+        },
+        "LED_DIMMABLE": {
+            "link" : "LED_GREEN"
+        },
+        "LED0": {
+            "link": "LED_RED"
+        },
+        "LED1": {
+            "link": "LED_GREEN"
+        },
+        "LED0_PWM" : {
+            "link" : "LED0"
+        },
+        "LED1_PWM" : {
+            "link" : "LED1"
+        },
+
+        "BTN-1": {
+            "displayName" : "LaunchPad Button BTN-1 (Left)",
+            "longDescription" : "BTN-1 (Left) LaunchPad button with no external pull.",
+            "definition"  : "/ti/boards/components/button.json",
+            /* See schematic linked at top of file */
+            "settings": {
+                "DIN": {
+                    "pull": "Internal",
+                    "polarity": "Active Low"
+                }
+            },
+            "connections" : {
+                "INPUT": "21"
+            }
+        },
+        "BTN-2": {
+            "displayName" : "LaunchPad Button BTN-2 (Right)",
+            "longDescription" : "BTN-2 (Right) LaunchPad button with no external pull.",
+            "definition"  : "/ti/boards/components/button.json",
+            /* See schematic linked at top of file */
+            "settings": {
+                "DIN": {
+                    "pull": "Internal",
+                    "polarity": "Active Low"
+                }
+            },
+            "connections" : {
+                "INPUT": "20"
+            }
+        },
+
+        /* symbolic links/aliases for BUTTON portability between LaunchPads */
+        "BUTTON0": {
+            "link": "BTN-1"
+        },
+        "BUTTON1": {
+            "link": "BTN-2"
+        },
+
+        "LP_SPI": {
+            "displayName" : "LaunchPad SPI Bus",
+            "description" : "Standard BoosterPack header SPI",
+            "longDescription" : "Standard BoosterPack header SPI",
+            "definition"  : "/ti/boards/components/spiBus.json",
+            "connections" : {
+                "SCLK"    : "16",
+                "MOSI"    : "15",
+                "MISO"    : "14"
+            }
+        },
+
+        "MX25R8035F": {
+            "displayName" : "MX25R8035F SPI Flash",
+            "description" : "MX25R8035F ultra low power, 8Mb CMOS serial multi I/O SPI flash memory",
+            "longDescription": "[__MX25R8035F__](https://www.macronix.com/en-us/products/NOR-Flash/Serial-NOR-Flash/Pages/spec.aspx?p=MX25R8035F&m=Serial+NOR+Flash&n=PM2164) is a 8Mb serial NOR flash memory, which is configured as 1,048,576 x 8 internally. When it is in four I/O mode, the structure becomes 2,097,152 bits x 4 or 4,194,304 bits x 2.",
+            "definition"  : "/ti/boards/components/spi25xFlash.json",
+            "settings" : {
+                "capacity" : 1048576
+            },
+            "subComponents": {
+                "SPI": {
+                    "link": "LP_SPI"
+                },
+                "SELECT": {
+                    "displayName" : "MX25R8035F SPI Flash Slave Select",
+                    "description" : "MX25R8035F SPI Flash slave select",
+                    "longDescription" : "MX25R8035F SPI flash slave select",
+                    "definition"  : "/ti/boards/components/spiSelect.json",
+                    "connections" : {
+                        "SS": 30
+                    }
+                }
+            }
+        },
+
+        "SPI_FLASH" : {
+            "link": "MX25R8035F"
+        },
+
+        "XDS110UART": {
+            "definition"  : "/ti/boards/components/xds110Uart.json",
+            "connections" : {
+                "RXD" : "18",
+                "TXD" : "19"
+            }
+        },
+
+        "LPSTK_I2C": {
+            "displayName": "LaunchPad SensorTag I2C bus",
+            "description": "LaunchPad SensorTag I2C bus",
+            "longDescription": "LaunchPad SensorTag I2C bus",
+            "definition": "/ti/boards/components/i2c.json",
+            "connections": {
+                "SDA": 10,
+                "SCL": 9
+            }
+        },
+
+        "LPSTK_SPI": {
+            "displayName": "LaunchPad SensorTag SPI Bus",
+            "description": "LaunchPad SensorTag SPI Bus",
+            "longDescription": "LaunchPad SensorTag SPI Bus",
+            "definition"  : "/ti/boards/components/spiBus.json",
+            "connections": {
+                /* 7:  BoosterPack standard: SPI CLK */
+                "SCLK"    : 7,
+                /* 15: BoosterPack standard: SPI MOSI */
+                "MOSI"   : 15,
+                /* 14: BoosterPack standard: SPI MISO */
+                "MISO"   : 14
+            }
+        },
+
+        "LED_B": {
+            "displayName": "Blue LED",
+            "definition": "/ti/boards/components/led_dimmable.json",
+            "connections": { "OUTPUT": 8 }
+        },
+
+        "OPT3001": {
+            "type": "OPT3001",
+            "displayName": "OPT3001 Sensor",
+            "description": "Digital ambient light sensor (ALS) with high-precision human-eye response",
+            "longDescription": "The [__OPT3001__](http://www.ti.com/product/OPT3001) is a sensor that measures the intensity of visible light. The spectral response of the sensor tightly matches the photopic response of the human eye and includes significant infrared rejection.",
+            "settings": {
+                "address":  68,   /* 0x44 */
+                "maxSpeed": 2600  /* 2600 kbit/s */
+            },
+            "subComponents": {
+                "I2C": {
+                    "link": "LPSTK_I2C"
+                },
+                "ALERT": {
+                    "type": "SENSOR_INT",
+                    "displayName": "OPT3001 Interrupt",
+                    "description": "OPT3001 interrupt pin",
+                    "longDescription": "OPT3001 interrupt pin",
+                    "signals": {
+                        "INTERRUPT": {
+                            "type": "DIN",
+                            "settings": {
+                                "pull": "Pull Up"
+                            },
+                            "connection": 40 /* DIO_27 */
+                        }
+                    }
+                }
+            }
+        },
+
+        "HDC2080": {
+            "type": "HDC2080",
+            "displayName": "HDC2080 Humidity & Temperature Sensor",
+            "description": "Ultra-low-power, digital humidity sensor with temperature sensor in WCSP",
+            "longDescription": "The [__HDC2080__](http://www.ti.com/product/HDC2080) is an integrated humidity and temperature sensor that provides high accuracy measurements with very low power consumption, in a small DFN package.",
+            "settings": {
+                "address":  65,  /* 0x41 */
+                "maxSpeed": 400  /* 400 kbit/s */
+            },
+            "subComponents": {
+                "I2C": {
+                    "link": "LPSTK_I2C"
+                },
+                "ALERT": {
+                    "type": "SENSOR_INT",
+                    "displayName": "HDC2080 Interrupt",
+                    "description": "HDC2080 interrupt pin",
+                    "longDescription": "HDC2080 interrupt pin",
+                    "signals": {
+                        "INTERRUPT": {
+                            "type": "DIN",
+                            "settings": {
+                                "pull": "None"
+                            },
+                            "connection": 38 /* DIO_25 */
+                        }
+                    }
+                }
+            }
+        },
+
+        "DRV5055": {
+            "type": "DRV5055",
+            "displayName": "DRV5055 Analog Hall Effect Sensor",
+            "description": "High accuracy 3.3 V or 5 V ratio-metric bipolar hall effect sensor",
+            "longDescription": "The [__DRV5055__](http://www.ti.com/product/DRV5055) device is a high accuracy 3.3 V or 5 V ratio-metric bipolar hall effect sensor that responds proportionally to magnetic flux density. The device can be used for accurate position sensing in a  wide range of applications.",
+            "subComponents": {
+                "OUTPUT": {
+                    "definition": "/ti/boards/components/analogInput.json",
+                    "displayName": "DRV5055 Analog Output",
+                    "description": "DRV5055 analog output",
+                    "longDescription": "DRV5055 analog output",
+                    "connections" : { "INPUT": 2 }
+                }
+            }
+        },
+
+        "ADXL362": {
+            "type": "ADXL362",
+            "displayName": "ADXL362 Accelerometer",
+            "description": "ADXL362 Digital Output MEMS Accelerometer",
+            "longDescription": "The [__ADXL362__](https://www.analog.com/en/products/adxl362.html) is an ultralow power, 3-axis MEMS accelerometer that consumes less than 2 μA at a 100 Hz output data rate and 270 nA when in motion triggered wake-up mode.",
+            "subComponents": {
+                "SPI": {
+                    "link": "LPSTK_SPI"
+                },
+                "SELECT": {
+                    "displayName": "ADXL362 Accelerometer SPI Chip Select",
+                    "description": "ADXL362 Accelerometer SPI chip select",
+                    "longDescription": "ADXL362 Accelerometer SPI chip select",
+                    "definition"  : "/ti/boards/components/spiSelect.json",
+                    "connections" : { "SS": 18 }
+                },
+                "ACC_INT1": {
+                    "type": "SENSOR_INT",
+                    "displayName": "ADXL362 Interrupt 1",
+                    "description": "ADXL362 interrupt 1 pin",
+                    "longDescription": "ADXL362 interrupt 1 pin ",
+                    "signals": {
+                        "INTERRUPT": {
+                            "type": "DIN",
+                            "settings": {
+                                "pull": "None"
+                            },
+                            "connection": 43 /* DIO_30 */
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

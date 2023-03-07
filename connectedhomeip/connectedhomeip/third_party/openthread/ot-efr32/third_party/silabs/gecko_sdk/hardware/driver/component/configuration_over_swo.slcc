@@ -1,0 +1,32 @@
+id: configuration_over_swo
+package: platform
+label: "Configuration Over SWO"
+description: Configuration over SWO (COS) Component.
+             Note that installing of this component would consume ~0.3ms additional startup time.
+category: Platform|Board Drivers
+quality: production
+root_path: "hardware/driver/configuration_over_swo"
+provides:
+  - name: configuration_over_swo
+requires:
+  - name: status
+  - name: enum
+  - name: debug_swo
+include:
+  - path: inc
+    file_list:
+      - path: sl_cos.h
+source:
+  - path: src/sl_cos.c
+template_contribution:
+  - name: event_handler
+    value:
+      event: driver_init
+      include: sl_cos.h
+      handler: sl_cos_send_config
+    priority: 9999
+documentation:
+    docset: gecko-platform
+    document: hardware-driver/api/group-cos
+
+    

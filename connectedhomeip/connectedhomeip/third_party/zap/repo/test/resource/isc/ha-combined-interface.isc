@@ -1,0 +1,60 @@
+#ISD afv6
+{setupId:zclAfv2
+intMap:ManufacturingCode = 48059
+intMap:ReportTableSize = 5
+intMap:Endpoint = 10
+intMap:DeviceVersion = 0
+intMap:DefaultDestinationEndpoint = 10
+intMap:ProfileId = -1
+intMap:DeviceId = -1
+intMap:DefaultResponsePolicy = 1
+boolMap:EnableStandardReporting = false
+boolMap:EnableInterPanSend = false
+boolMap:EnableInterPanReceive = false
+boolMap:SupportCommandDiscovery = true
+boolMap:EnableKeySwitch = false
+boolMap:LowRamConcentrator = true
+boolMap:EnableAttributeRangeChecking = false
+boolMap:ReceiveSupportedZdoRequests = false
+boolMap:HandleUnsupportedZdoRequests = false
+boolMap:HandleEndpointZdoRequests = false
+boolMap:HandleBindingZdoRequests = false
+boolMap:LegacyCli = false
+boolMap:AddCustomCli = false
+boolMap:IncludeCommandDescriptions = true
+boolMap:GenerateCallbacksFile = true
+boolMap:ManufacturerCodeDefaultIsZero = true
+beginAttrList:OPTIONAL
+  cl:0x000A, at:0x0002, di:server, mf:0x0000
+  cl:0x000A, at:0x0007, di:server, mf:0x0000
+endAttrList:OPTIONAL
+beginAttrList:BOUNDED
+  cl:0x0000, at:0x0000, di:server, mf:0x0000
+  cl:0x0000, at:0x0007, di:server, mf:0x0000
+  cl:0x0003, at:0x0000, di:server, mf:0x0000
+endAttrList:BOUNDED
+configuredNetwork:*type:ZIGBEE_PRO, name:Primary
+beginEndpointType:Primary
+device:HA-combinedinterface
+deviceId:7
+profileId:260
+overrideClientCluster:0x0006,yes
+endEndpointType
+beginEndpointType:door lock controller
+device:HA-doorlockcontroller
+deviceId:11
+profileId:260
+endEndpointType
+configuredEndpoint:*ep:1,pi: -1,di:-1,dv:0,ept:Primary,nwk:Primary
+callbacks:emberAfMainTickCallback
+callbacks:emberAfConfigureReportingResponseCallback
+callbacks:emberAfReadReportingConfigurationResponseCallback
+callbacks:emberAfReportAttributesCallback
+callbacks:emberAfPluginButtonJoiningButtonEventCallback
+callbacks:emberAfPluginConcentratorBroadcastSentCallback
+callbacks:emberAfPluginNetworkFindFinishedCallback
+callbacks:emberAfPluginNetworkFindGetRadioPowerForChannelCallback
+callbacks:emberAfPluginNetworkFindJoinCallback
+}
+{setupId:zclCustomizer
+}

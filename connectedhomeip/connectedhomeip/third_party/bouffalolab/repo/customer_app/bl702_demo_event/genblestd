@@ -1,0 +1,3 @@
+#!/bin/sh
+make CONFIG_BT=1 CONFIG_BLECONTROLLER_LIB=std -j
+exit $?

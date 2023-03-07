@@ -1,0 +1,69 @@
+# Copyright (c) 2022 Arm Limited
+# SPDX-License-Identifier: Apache-2.0
+
+workflow:
+  rules:
+    - when: always
+
+include:
+  - local: .gitlab/ci/pipeline/.job_templates.yml
+
+stages:
+  - build
+  - run
+
+Build GCC10:
+  image: ${OPEN_IOT_SDK_DOCKER_REGISTRY}/gcc-arm:10.3-2021.10
+  tags:
+    - iotmsw-amd64
+  stage: build
+  variables:
+    TOOLCHAIN: toolchains/toolchain-arm-none-eabi-gcc.cmake
+  parallel:
+    matrix:
+      - TARGET: [ARM_AN547_MPS3, ARM_AN552_MPS3]
+        VARIANT: [FVP, FPGA]
+        PROCESSOR: [cortex-m55]
+        HTRUN_ARGUMENTS: ["--micro=FVP_CS300_U55;--fm=MPS3;--sync=0;--baud-rate=115200"]
+      - TARGET: [ARM_AN555_MPS3]
+        VARIANT: [FVP]
+        PROCESSOR: [cortex-m55]
+        HTRUN_ARGUMENTS: ["--micro=FVP_CS310;--fm=Corstone_310;--sync=0;--baud-rate=115200"]
+
+  extends: .build
+
+Run GCC10 FVP AN547:
+  image: ${OPEN_IOT_SDK_DOCKER_REGISTRY}/fvp-corstone300:11.15
+  tags:
+    - iotmsw-amd64
+  stage: run
+  parallel:
+    matrix:
+      - TARGET: [ARM_AN547_MPS3]
+        VARIANT: [FVP]
+
+  extends: .run_fvp
+
+Run GCC10 FVP AN552:
+  image: ${OPEN_IOT_SDK_DOCKER_REGISTRY}/fvp-corstone300:11.16
+  tags:
+    - iotmsw-amd64
+  stage: run
+  parallel:
+    matrix:
+      - TARGET: [ARM_AN552_MPS3]
+        VARIANT: [FVP]
+
+  extends: .run_fvp
+
+Run GCC10 FVP AN555:
+  image: ${OPEN_IOT_SDK_DOCKER_REGISTRY}/fvp-corstone310:11.17-internal
+  tags:
+    - iotmsw-amd64
+  stage: run
+  parallel:
+    matrix:
+      - TARGET: [ARM_AN555_MPS3]
+        VARIANT: [FVP]
+
+  extends: .run_fvp

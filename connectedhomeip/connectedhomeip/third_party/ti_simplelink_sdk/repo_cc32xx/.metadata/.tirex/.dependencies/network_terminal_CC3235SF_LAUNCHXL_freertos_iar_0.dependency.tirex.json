@@ -1,0 +1,30 @@
+[
+    {
+        "files": [
+            "+../../../../../../../source/ti/boards/CC3235SF_LAUNCHXL/Board.html -> Board.html",
+            "+cc32xxsf_freertos.icf -> cc32xxsf_freertos.icf",
+            "+../../cmd_parser.c -> cmd_parser.c",
+            "+../../cmd_parser.h -> cmd_parser.h",
+            "+../common.syscfg -> common.syscfg",
+            "+../main_freertos.c -> main_freertos.c",
+            "+../../netapp_cmd.c -> netapp_cmd.c",
+            "+../../netapp_cmd.h -> netapp_cmd.h",
+            "+../../network_terminal.c -> network_terminal.c",
+            "+../../network_terminal.h -> network_terminal.h",
+            "+../../radio_tool.c -> radio_tool.c",
+            "+../../radio_tool.h -> radio_tool.h",
+            "+../../README.html -> README.html",
+            "+../../README.md -> README.md",
+            "+../../socket_cmd.c -> socket_cmd.c",
+            "+../../socket_cmd.h -> socket_cmd.h",
+            "+../../str.c -> str.c",
+            "+../../str.h -> str.h",
+            "+../../transceiver_cmd.c -> transceiver_cmd.c",
+            "+../../transceiver_cmd.h -> transceiver_cmd.h",
+            "+../../uart_term.c -> uart_term.c",
+            "+../../uart_term.h -> uart_term.h",
+            "+../../wlan_cmd.c -> wlan_cmd.c",
+            "+../../wlan_cmd.h -> wlan_cmd.h"
+        ]
+    }
+]

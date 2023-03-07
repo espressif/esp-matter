@@ -1,0 +1,51 @@
+id: bluetooth_api_ncp_host
+label: NCP Host API and Adaptation
+package: Bluetooth
+description: >
+  Bluetooth API for NCP host and the adaptation between host application and
+  SL_BT_API protocol
+
+  This component does not require Bluetooth core or other Bluetooth features.
+category: Bluetooth|NCP|Host
+quality: production
+root_path: protocol/bluetooth
+include:
+  - path: inc
+    file_list:
+      - path: sl_bgapi.h
+      - path: sl_bt_api.h
+      - path: sl_bt_api_compatibility.h
+      - path: sl_bt_types.h
+      - path: sli_bt_api.h
+      - path: sl_bt_version.h
+      - path: sl_bt_ncp_host.h
+source:
+  - path: src/sl_bt_ncp_host_api.c
+  - path: src/sl_bt_ncp_host.c
+template_file:
+  - path: "src/sl_bluetooth.c.jinja"
+  - path: "src/sl_bluetooth.h.jinja"
+requires:
+  - name: sl_system
+  - name: device_init
+  - name: device_supports_bluetooth
+provides:
+  - name: bluetooth_api_ncp_host
+  - name: bluetooth_api
+
+template_contribution:
+  - name: event_handler
+    value:
+      event: stack_init
+      include: sl_bluetooth.h
+      handler: sl_bt_init
+    unless:
+      - kernel
+    priority: 0
+  - name: event_handler
+    value:
+      event: stack_process_action
+      include: sl_bluetooth.h
+      handler: sl_bt_step
+  - name: bluetooth_api_ncp_host
+    value: 1

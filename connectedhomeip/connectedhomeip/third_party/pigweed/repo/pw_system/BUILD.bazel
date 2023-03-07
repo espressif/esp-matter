@@ -1,0 +1,278 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load(
+    "//pw_build:pigweed.bzl",
+    "pw_cc_binary",
+    "pw_cc_library",
+)
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+pw_cc_library(
+    name = "config",
+    hdrs = [
+        "public/pw_system/config.h",
+    ],
+)
+
+pw_cc_library(
+    name = "log",
+    srcs = [
+        "log.cc",
+    ],
+    hdrs = [
+        "pw_system_private/log.h",
+    ],
+    deps = [
+        ":config",
+        ":rpc_server",
+        "//pw_log_rpc:log_service",
+        "//pw_log_rpc:rpc_log_drain",
+        "//pw_log_rpc:rpc_log_drain_thread",
+        "//pw_multisink",
+        "//pw_sync:lock_annotations",
+        "//pw_sync:mutex",
+    ],
+)
+
+pw_cc_library(
+    name = "log_backend",
+    srcs = [
+        "log_backend.cc",
+    ],
+    deps = [
+        ":config",
+        ":log",
+        "//pw_bytes",
+        "//pw_chrono:system_clock",
+        "//pw_log:facade",
+        "//pw_log:proto_utils",
+        "//pw_log_string:handler_facade",
+        "//pw_log_tokenized:headers",
+        "//pw_metric:global",
+        "//pw_multisink",
+        "//pw_result",
+        "//pw_string",
+        "//pw_sync:interrupt_spin_lock",
+        "//pw_sync:lock_annotations",
+        "//pw_tokenizer",
+    ],
+)
+
+pw_cc_library(
+    name = "rpc_server_headers",
+    hdrs = [
+        "public/pw_system/rpc_server.h",
+    ],
+    includes = ["public"],
+    deps = [
+        ":config",
+    ],
+)
+
+pw_cc_library(
+    name = "rpc_server",
+    deps = [
+        ":config",
+        ":hdlc_rpc_server",
+        ":rpc_server_headers",
+    ],
+)
+
+pw_cc_library(
+    name = "hdlc_rpc_server",
+    srcs = [
+        "hdlc_rpc_server.cc",
+    ],
+    includes = ["public"],
+    deps = [
+        ":io",
+        ":rpc_server_headers",
+        ":target_io",
+        "//pw_assert",
+        "//pw_hdlc:pw_rpc",
+        "//pw_hdlc:rpc_channel_output",
+        "//pw_sync:mutex",
+        "//pw_thread:thread_core",
+    ],
+)
+
+pw_cc_library(
+    name = "thread_snapshot_service",
+    srcs = [
+        "thread_snapshot_service.cc",
+    ],
+    hdrs = [
+        "public/pw_system/thread_snapshot_service.h",
+    ],
+    includes = ["public"],
+    deps = [
+        "//pw_rpc",
+        "//pw_thread:thread_snapshot_service",
+    ],
+)
+
+pw_cc_library(
+    name = "io",
+    hdrs = [
+        "public/pw_system/io.h",
+    ],
+    deps = [
+        "//pw_stream",
+    ],
+)
+
+pw_cc_library(
+    name = "init",
+    srcs = [
+        "init.cc",
+    ],
+    hdrs = [
+        "public/pw_system/init.h",
+    ],
+    includes = ["public"],
+    deps = [
+        ":log",
+        ":rpc_server",
+        ":target_hooks_headers",
+        ":thread_snapshot_service",
+        ":work_queue",
+        "//pw_metric:global",
+        "//pw_metric:metric_service_pwpb",
+        "//pw_rpc/pwpb:echo_service",
+        "//pw_thread:thread",
+    ],
+)
+
+pw_cc_library(
+    name = "work_queue",
+    srcs = [
+        "work_queue.cc",
+    ],
+    hdrs = [
+        "public/pw_system/work_queue.h",
+    ],
+    includes = ["public"],
+    deps = [
+        ":config",
+        "//pw_work_queue",
+    ],
+)
+
+pw_cc_library(
+    name = "target_io",
+    srcs = [
+        "target_io.cc",
+    ],
+    includes = ["public"],
+    deps = [
+        ":io",
+        "//pw_stream",
+        "//pw_stream:sys_io_stream",
+    ],
+)
+
+pw_cc_library(
+    name = "socket_target_io",
+    srcs = [
+        "socket_target_io.cc",
+    ],
+    includes = ["public"],
+    deps = [
+        ":config",
+        ":io",
+        "//pw_assert",
+        "//pw_stream",
+        "//pw_stream:socket_stream",
+    ],
+)
+
+pw_cc_library(
+    name = "target_hooks_headers",
+    hdrs = [
+        "public/pw_system/target_hooks.h",
+    ],
+    includes = ["public"],
+    deps = [
+        "//pw_thread:thread",
+    ],
+)
+
+pw_cc_library(
+    name = "target_hooks",
+    hdrs = [
+        "public/pw_system/target_hooks.h",
+    ],
+    includes = ["public"],
+    deps = [
+        "//pw_thread:thread",
+        "@pigweed_config//:pw_system_target_hooks_backend",
+    ],
+)
+
+# This isn't the best solution, but it's close enough for now. Target hooks are
+# not generically related to an OS, and should be inject-able by downstream
+# projects. For now, assume the pre-baked OS-specific hooks are good enough.
+pw_cc_library(
+    name = "target_hooks_multiplexer",
+    visibility = ["@pigweed_config//:__pkg__"],
+    deps = select({
+        "//pw_build/constraints/rtos:freertos": [":freertos_target_hooks"],
+        "//conditions:default": [
+            ":stl_target_hooks",
+            "//targets/host_device_simulator:boot",
+        ],
+    }),
+)
+
+pw_cc_library(
+    name = "stl_target_hooks",
+    srcs = [
+        "stl_target_hooks.cc",
+    ],
+    deps = [
+        "//pw_thread:thread",
+        "//pw_thread_stl:thread",
+    ],
+)
+
+pw_cc_library(
+    name = "freertos_target_hooks",
+    srcs = [
+        "freertos_target_hooks.cc",
+    ],
+    target_compatible_with = [
+        "//pw_build/constraints/rtos:freertos",
+    ],
+    deps = [
+        "//pw_thread:thread",
+        "//pw_thread_freertos:thread",
+    ],
+)
+
+pw_cc_binary(
+    name = "system_example",
+    srcs = ["example_user_app_init.cc"],
+    deps = [
+        ":init",
+        ":io",
+        ":target_hooks",
+        "//pw_stream",
+        "//pw_stream:sys_io_stream",
+        "//pw_unit_test:rpc_service",
+    ],
+)

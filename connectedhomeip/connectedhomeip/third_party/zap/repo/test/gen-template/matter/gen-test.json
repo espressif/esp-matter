@@ -1,0 +1,70 @@
+{
+  "name": "Matter test template",
+  "version": "test-matter",
+  "options": {
+    "testOption": {
+      "code1": "label1",
+      "code2": "label2",
+      "code3": "label3",
+      "code4": "label4",
+      "code5": "label5"
+    },
+    "externalOption": "externalOptions.json",
+    "cli": "cli.json"
+  },
+  "zcl": {
+    "event": {
+      "testEventExtension1": {
+        "type": "text",
+        "configurability": "hidden",
+        "globalDefault": "defGlob",
+        "label": "Test event extensions",
+        "defaults": [
+          {
+            "clusterCode": "0x9999",
+            "eventCode": "0x0001",
+            "value": "defHello"
+          }
+        ]
+      }
+    }
+  },
+  "helpers": ["helper-chip.js"],
+  "templates": [
+    {
+      "path": "simple-test.zapt",
+      "name": "Simple test template",
+      "output": "simple-test.h"
+    },
+    {
+      "path": "sdk-ext.zapt",
+      "name": "SDK extension test",
+      "output": "sdk-ext.txt"
+    },
+    {
+      "path": "feature-map.zapt",
+      "name": "Feature map test template",
+      "output": "feature-map.h"
+    },
+    {
+      "path": "device-types.zapt",
+      "name": "Device types",
+      "output": "device-types.txt"
+    },
+    {
+      "path": "endpoint-config.zapt",
+      "name": "Endpoint Configuration",
+      "output": "endpoint-config.c"
+    },
+    {
+      "path": "events.zapt",
+      "name": "Events",
+      "output": "events.out"
+    },
+    {
+      "path": "endpoints.zapt",
+      "name": "Endpoints",
+      "output": "endpoints.out"
+    }
+  ]
+}

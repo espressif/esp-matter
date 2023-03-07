@@ -1,0 +1,24 @@
+!!omap
+- id: slwstk6008a
+- label: SLWSTK6008A
+- package: platform
+- description: Kit BSP support for the Wi-SUN Wireless Starter Kit with 433 MHz Radio
+    Boards.
+- category: Platform|Board|Kit|Wireless Starter Kit
+- quality: production
+- requires:
+  - name: brd4001a
+  - name: hardware_board_from_slwstk6008a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_stk
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWSTK6008A"'
+  - name: SL_KIT_REV
+    value: '"A00"'
+- tag:
+  - kit:opn:SLWSTK6008A
+  - kit:pn:WSTK6008
+  - kit:variant:A
+  - kit:revision:A00

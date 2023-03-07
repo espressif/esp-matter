@@ -1,0 +1,322 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/error.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("tinyusb.gni")
+
+# List of targets defined by this module.
+_tinyusb_targets = [
+  "device",
+  "device_audio",
+  "device_bth",
+  "device_cdc",
+  "device_dfu",
+  "device_hid",
+  "device_midi",
+  "device_msc",
+  "device_net",
+  "device_usbtmc",
+  "device_vendor",
+  "device_video",
+  "host",
+  "host_cdc",
+  "host_hid",
+  "host_msc",
+  "host_vendor",
+]
+
+# This file defines multiple GN source_set for using tinyusb and its different
+# parts. See docs.rst for the configuration details.
+if (pw_third_party_tinyusb_SOURCE == "") {
+  group("tinyusb") {
+  }
+  foreach(tinyusb_target, _tinyusb_targets) {
+    group("${tinyusb_target}") {
+    }
+  }
+} else if (pw_third_party_tinyusb_PORT == "") {
+  pw_error("tinyusb") {
+    message_lines = [
+      "tinyusb is being used by $current_toolchain, but pw_third_party_tinyusb_PORT is not set.",
+      "If this toolchain is intentionally using tinyusb, ensure your toolchain configuration for this target sets pw_third_party_tinyusb_PORT.",
+    ]
+  }
+  foreach(tinyusb_target, _tinyusb_targets) {
+    group("${tinyusb_target}") {
+      deps = [ ":tinyusb" ]
+    }
+  }
+} else if (pw_third_party_tinyusb_CONFIG == "") {
+  pw_error("tinyusb") {
+    message_lines = [
+      "tinyusb is being used by $current_toolchain, but pw_third_party_tinyusb_CONFIG is not set.",
+      "If this toolchain is intentionally using tinyusb, ensure your toolchain configuration for this target sets pw_third_party_tinyusb_CONFIG.",
+    ]
+  }
+  foreach(tinyusb_target, _tinyusb_targets) {
+    group("${tinyusb_target}") {
+      deps = [ ":tinyusb" ]
+    }
+  }
+} else {
+  not_needed([ "_tinyusb_targets" ])
+
+  config("public_includes") {
+    include_dirs = [ "$pw_third_party_tinyusb_SOURCE/src" ]
+    visibility = [ ":*" ]
+  }
+
+  pw_source_set("tinyusb") {
+    public_configs = [ ":public_includes" ]
+
+    # tinyusb depends on headers provided by the other modules in this file
+    # conditional to the features enabled by the config, so ignore those include
+    # checks.
+    check_includes = false
+    allow_circular_includes_from = [ pw_third_party_tinyusb_PORT ]
+    public_deps = [
+      pw_third_party_tinyusb_CONFIG,
+      pw_third_party_tinyusb_PORT,
+    ]
+    public = [
+      "$pw_third_party_tinyusb_SOURCE/src/common/tusb_common.h",
+      "$pw_third_party_tinyusb_SOURCE/src/common/tusb_compiler.h",
+      "$pw_third_party_tinyusb_SOURCE/src/common/tusb_error.h",
+      "$pw_third_party_tinyusb_SOURCE/src/common/tusb_fifo.h",
+      "$pw_third_party_tinyusb_SOURCE/src/common/tusb_timeout.h",
+      "$pw_third_party_tinyusb_SOURCE/src/common/tusb_types.h",
+      "$pw_third_party_tinyusb_SOURCE/src/common/tusb_verify.h",
+      "$pw_third_party_tinyusb_SOURCE/src/tusb.h",
+      "$pw_third_party_tinyusb_SOURCE/src/tusb_option.h",
+    ]
+    sources = [
+      "$pw_third_party_tinyusb_SOURCE/src/common/tusb_fifo.c",
+      "$pw_third_party_tinyusb_SOURCE/src/tusb.c",
+    ]
+  }
+
+  ##############################################################################
+  # Device side.
+  pw_source_set("device") {
+    public_configs = [ ":public_includes" ]
+    public_deps = [
+      ":tinyusb",
+      pw_third_party_tinyusb_PORT,
+    ]
+
+    # Ports may need to include the device headers.
+    allow_circular_includes_from = [ pw_third_party_tinyusb_PORT ]
+    sources = [
+      "$pw_third_party_tinyusb_SOURCE/src/device/usbd.c",
+      "$pw_third_party_tinyusb_SOURCE/src/device/usbd_control.c",
+    ]
+    public = [
+      "$pw_third_party_tinyusb_SOURCE/src/device/dcd.h",
+      "$pw_third_party_tinyusb_SOURCE/src/device/usbd.h",
+      "$pw_third_party_tinyusb_SOURCE/src/device/usbd_pvt.h",
+    ]
+  }
+
+  pw_source_set("device_audio") {
+    public_configs = [ ":public_includes" ]
+    public_deps = [ ":device" ]
+    sources =
+        [ "$pw_third_party_tinyusb_SOURCE/src/class/audio/audio_device.c" ]
+    public = [
+      "$pw_third_party_tinyusb_SOURCE/src/class/audio/audio.h",
+      "$pw_third_party_tinyusb_SOURCE/src/class/audio/audio_device.h",
+    ]
+  }
+
+  pw_source_set("device_bth") {
+    public_configs = [ ":public_includes" ]
+    public_deps = [ ":device" ]
+    sources = [ "$pw_third_party_tinyusb_SOURCE/src/class/bth/bth_device.c" ]
+    public = [ "$pw_third_party_tinyusb_SOURCE/src/class/bth/bth_device.h" ]
+  }
+
+  pw_source_set("device_cdc") {
+    public_configs = [ ":public_includes" ]
+    public_deps = [ ":device" ]
+    sources = [ "$pw_third_party_tinyusb_SOURCE/src/class/cdc/cdc_device.c" ]
+    public = [
+      "$pw_third_party_tinyusb_SOURCE/src/class/cdc/cdc.h",
+      "$pw_third_party_tinyusb_SOURCE/src/class/cdc/cdc_device.h",
+    ]
+  }
+
+  pw_source_set("device_dfu") {
+    public_configs = [ ":public_includes" ]
+    public_deps = [ ":device" ]
+    sources = [
+      "$pw_third_party_tinyusb_SOURCE/src/class/dfu/dfu_device.c",
+      "$pw_third_party_tinyusb_SOURCE/src/class/dfu/dfu_rt_device.c",
+    ]
+    public = [
+      "$pw_third_party_tinyusb_SOURCE/src/class/dfu/dfu.h",
+      "$pw_third_party_tinyusb_SOURCE/src/class/dfu/dfu_device.h",
+      "$pw_third_party_tinyusb_SOURCE/src/class/dfu/dfu_rt_device.h",
+    ]
+  }
+
+  pw_source_set("device_hid") {
+    public_configs = [ ":public_includes" ]
+    public_deps = [ ":device" ]
+    sources = [ "$pw_third_party_tinyusb_SOURCE/src/class/hid/hid_device.c" ]
+    public = [
+      "$pw_third_party_tinyusb_SOURCE/src/class/hid/hid.h",
+      "$pw_third_party_tinyusb_SOURCE/src/class/hid/hid_device.h",
+    ]
+  }
+
+  pw_source_set("device_midi") {
+    public_configs = [ ":public_includes" ]
+    public_deps = [ ":device" ]
+    sources = [ "$pw_third_party_tinyusb_SOURCE/src/class/midi/midi_device.c" ]
+    public = [
+      "$pw_third_party_tinyusb_SOURCE/src/class/midi/midi.h",
+      "$pw_third_party_tinyusb_SOURCE/src/class/midi/midi_device.h",
+    ]
+  }
+
+  pw_source_set("device_msc") {
+    public_configs = [ ":public_includes" ]
+    public_deps = [ ":device" ]
+    sources = [ "$pw_third_party_tinyusb_SOURCE/src/class/msc/msc_device.c" ]
+    public = [
+      "$pw_third_party_tinyusb_SOURCE/src/class/msc/msc.h",
+      "$pw_third_party_tinyusb_SOURCE/src/class/msc/msc_device.h",
+    ]
+  }
+
+  pw_source_set("device_net") {
+    public_configs = [ ":public_includes" ]
+    public_deps = [ ":device" ]
+    sources = [
+      "$pw_third_party_tinyusb_SOURCE/src/class/net/ecm_rndis_device.c",
+      "$pw_third_party_tinyusb_SOURCE/src/class/net/ncm_device.c",
+    ]
+    public = [
+      "$pw_third_party_tinyusb_SOURCE/src/class/net/ncm.h",
+      "$pw_third_party_tinyusb_SOURCE/src/class/net/net_device.h",
+    ]
+  }
+
+  pw_source_set("device_usbtmc") {
+    public_configs = [ ":public_includes" ]
+    public_deps = [ ":device" ]
+    sources =
+        [ "$pw_third_party_tinyusb_SOURCE/src/class/usbtmc/usbtmc_device.c" ]
+    public = [
+      "$pw_third_party_tinyusb_SOURCE/src/class/usbtmc/usbtmc.h",
+      "$pw_third_party_tinyusb_SOURCE/src/class/usbtmc/usbtmc_device.h",
+    ]
+  }
+
+  pw_source_set("device_vendor") {
+    public_configs = [ ":public_includes" ]
+    public_deps = [ ":device" ]
+    sources =
+        [ "$pw_third_party_tinyusb_SOURCE/src/class/vendor/vendor_device.c" ]
+    public =
+        [ "$pw_third_party_tinyusb_SOURCE/src/class/vendor/vendor_device.h" ]
+  }
+
+  pw_source_set("device_video") {
+    public_configs = [ ":public_includes" ]
+    public_deps = [ ":common" ]
+    sources =
+        [ "$pw_third_party_tinyusb_SOURCE/src/class/video/video_device.c" ]
+    public = [
+      "$pw_third_party_tinyusb_SOURCE/src/class/video/video.h",
+      "$pw_third_party_tinyusb_SOURCE/src/class/video/video_device.h",
+    ]
+  }
+
+  ##############################################################################
+  # Host side.
+  pw_source_set("host") {
+    public_configs = [ ":public_includes" ]
+    public_deps = [
+      ":tinyusb",
+      pw_third_party_tinyusb_PORT,
+    ]
+
+    # Ports may need to include the host headers.
+    allow_circular_includes_from = [ pw_third_party_tinyusb_PORT ]
+    sources = [
+      "$pw_third_party_tinyusb_SOURCE/src/host/hub.c",
+      "$pw_third_party_tinyusb_SOURCE/src/host/usbh.c",
+      "$pw_third_party_tinyusb_SOURCE/src/host/usbh_control.c",
+    ]
+    public = [
+      "$pw_third_party_tinyusb_SOURCE/src/host/hcd.h",
+      "$pw_third_party_tinyusb_SOURCE/src/host/hcd_attr.h",
+      "$pw_third_party_tinyusb_SOURCE/src/host/hub.h",
+      "$pw_third_party_tinyusb_SOURCE/src/host/usbh.h",
+      "$pw_third_party_tinyusb_SOURCE/src/host/usbh_classdriver.h",
+    ]
+  }
+
+  pw_source_set("host_cdc") {
+    public_configs = [ ":public_includes" ]
+    public_deps = [ ":host" ]
+    sources = [
+      "$pw_third_party_tinyusb_SOURCE/src/class/cdc/cdc_host.c",
+      "$pw_third_party_tinyusb_SOURCE/src/class/cdc/cdc_rndis_host.c",
+    ]
+    public = [
+      "$pw_third_party_tinyusb_SOURCE/src/class/cdc/cdc.h",
+      "$pw_third_party_tinyusb_SOURCE/src/class/cdc/cdc_host.h",
+      "$pw_third_party_tinyusb_SOURCE/src/class/cdc/cdc_rndis.h",
+      "$pw_third_party_tinyusb_SOURCE/src/class/cdc/cdc_rndis_host.h",
+    ]
+  }
+
+  pw_source_set("host_hid") {
+    public_configs = [ ":public_includes" ]
+    public_deps = [ ":host" ]
+    sources = [ "$pw_third_party_tinyusb_SOURCE/src/class/hid/hid_host.c" ]
+    public = [
+      "$pw_third_party_tinyusb_SOURCE/src/class/hid/hid.h",
+      "$pw_third_party_tinyusb_SOURCE/src/class/hid/hid_host.h",
+    ]
+  }
+
+  pw_source_set("host_msc") {
+    public_configs = [ ":public_includes" ]
+    public_deps = [ ":host" ]
+    sources = [ "$pw_third_party_tinyusb_SOURCE/src/class/msc/msc_host.c" ]
+    public = [
+      "$pw_third_party_tinyusb_SOURCE/src/class/msc/msc.h",
+      "$pw_third_party_tinyusb_SOURCE/src/class/msc/msc_host.h",
+    ]
+  }
+
+  pw_source_set("host_vendor") {
+    public_configs = [ ":public_includes" ]
+    public_deps = [ ":host" ]
+    sources =
+        [ "$pw_third_party_tinyusb_SOURCE/src/class/vendor/vendor_host.c" ]
+    public = [ "$pw_third_party_tinyusb_SOURCE/src/class/vendor/vendor_host.h" ]
+  }
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}

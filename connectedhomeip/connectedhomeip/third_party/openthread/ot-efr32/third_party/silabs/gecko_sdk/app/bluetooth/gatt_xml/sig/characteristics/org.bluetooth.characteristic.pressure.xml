@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+name="Pressure" type="org.bluetooth.characteristic.pressure" uuid="2A6D" last-modified="2014-11-20" approved="Yes">
+    <Value>
+    <Field name="Pressure">
+        <InformativeText>Unit is in pascals with a resolution of 0.1 Pa</InformativeText>
+        <Requirement>Mandatory</Requirement>
+        <Format>uint32</Format>
+        <Unit>org.bluetooth.unit.pressure.pascal</Unit>
+        <DecimalExponent>-1</DecimalExponent>
+	</Field>
+</Value>
+</Characteristic>

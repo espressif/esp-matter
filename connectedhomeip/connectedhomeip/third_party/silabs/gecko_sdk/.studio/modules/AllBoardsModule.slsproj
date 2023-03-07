@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="com.silabs.sdk.exx32.board" label="General Kit Support" boardCompatibility="brd.*" contentRoot=".">
+  <property key="category" value="efm32|common"/>
+  <!-- EFM32G DK3550 -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFM32G_DK3550/config" boardCompatibility="brd3302a" />
+  <!-- EFM32G DKxxx -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFM32_Gxxx_DK/config" boardCompatibility="brd3300a brd3300b" />
+  <!-- EFM32G STKxxx -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFM32_Gxxx_STK/config" boardCompatibility="brd2001a" />
+  <!-- EFM32GG DK3750 -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFM32GG_DK3750/config" boardCompatibility="brd3600a" />
+  <!-- EFM32GG STK3700 -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFM32GG_STK3700/config" boardCompatibility="brd2200a" />
+  <!-- EFM32LG DK3650 -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFM32LG_DK3650/config" boardCompatibility="brd3601a" />
+  <!-- EFM32LG STK3600 -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFM32LG_STK3600/config" boardCompatibility="brd2201a" />
+  <!-- EFM32TG STK3300 -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFM32TG_STK3300/config" boardCompatibility="brd2100a" />
+  <!-- EFM32WG DK3850 -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFM32WG_DK3850/config" boardCompatibility="brd3800a" />
+  <!-- EFM32WG STK3800 -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFM32WG_STK3800/config" boardCompatibility="brd2400a" />
+  <!-- EFM32ZG STK3200 -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFM32ZG_STK3200/config" boardCompatibility="brd2010a" />
+  <!-- EFM32TG11 SLSTK3301A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/SLSTK3301A_EFM32TG11/config" boardCompatibility="brd2102a" />
+  <!-- EFM32HG SLSTK3400A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/SLSTK3400A_EFM32HG/config" boardCompatibility="brd2012a" />
+  <!-- EFM32PG SLSTK3401A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/SLSTK3401A_EFM32PG/config" boardCompatibility="brd2500a" />
+  <!-- EFM32PG12 SLSTK3402A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/SLSTK3402A_EFM32PG12/config" boardCompatibility="brd2501a" />
+  <!-- EFM32GG11 SLSTK3701A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/SLSTK3701A_EFM32GG11/config" boardCompatibility="brd2204a" />
+  <!-- SLTB009A_EFM32GG12-->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/SLTB009A_EFM32GG12/config" boardCompatibility="brd2207a" />
+  <!-- EZR32LG SLSTK6200A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/SLWSTK6200A_EZR32LG/config" boardCompatibility="brd4502a" />
+  <!-- EZR32LG SLSTK6201A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/SLWSTK6201A_EZR32LG/config" boardCompatibility="brd4502b" />
+  <!-- EZR32LG SLSTK6202A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/SLWSTK6202A_EZR32LG/config" boardCompatibility="brd4503a" />
+  <!-- EZR32WG SLSTK6220A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/SLWSTK6220A_EZR32WG/config" boardCompatibility="brd4502c" />
+  <!-- EZR32WG SLSTK6221A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/SLWSTK6221A_EZR32WG/config" boardCompatibility="brd4502d" />
+  <!-- EZR32WG SLSTK6222A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/SLWSTK6222A_EZR32WG/config" boardCompatibility="brd4503b" />
+  <!-- EZR32WG SLSTK6223A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/SLWSTK6223A_EZR32WG/config" boardCompatibility="brd4505b" />
+  <!-- EZR32WG SLSTK6224A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/SLWSTK6224A_EZR32WG/config" boardCompatibility="brd4504b" />
+  <!-- EZR32HG SLSTK6240A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/SLWSTK6240A_EZR32HG/config" boardCompatibility="brd4546a" />
+  <!-- EZR32HG SLSTK6241A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/SLWSTK6241A_EZR32HG/config" boardCompatibility="brd4542b" />
+  <!-- EZR32HG SLSTK6242A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/SLWSTK6242A_EZR32HG/config" boardCompatibility="brd4543b" />
+  <!-- EZR32HG SLSTK6243A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/SLWSTK6243A_EZR32HG/config" boardCompatibility="brd4545a" />
+  <!-- EZR32HG SLSTK6244A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/SLWSTK6244A_EZR32HG/config" boardCompatibility="brd4544a" />
+  <!-- EFM32G SLSENSORPUCK -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/SLSENSORPUCK_EFM32G/config" boardCompatibility="slsensorpuck.efm32g" />
+  <!-- BGM11_BRD4300A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/BGM11_BRD4300A/config" boardCompatibility="brd4300a" />
+  <!-- BGM11_BRD4301A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/BGM11_BRD4301A/config" boardCompatibility="brd4301a" />
+  <!-- BGM11_BRD4302A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/BGM11_BRD4302A/config" boardCompatibility="brd4302a" />
+  <!-- BGM11_BRD4303A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/BGM11_BRD4303A/config" boardCompatibility="brd4303a" />
+  <!-- BGM13_BRD4305A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/BGM13_BRD4305A/config" boardCompatibility="brd4305a" />
+  <!-- BGM13_BRD4305C -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/BGM13_BRD4305C/config" boardCompatibility="brd4305c" />
+  <!-- BGM13_BRD4306A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/BGM13_BRD4306A/config" boardCompatibility="brd4306a" />
+  <!-- BGM13_BRD4306B -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/BGM13_BRD4306B/config" boardCompatibility="brd4306b" />
+  <!-- BGM22_BRD4310A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/BGM22_BRD4310A/config" boardCompatibility="brd4310a" />
+  <!-- BGM22_BRD4311A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/BGM22_BRD4311A/config" boardCompatibility="brd4311a" />
+  <!-- EFR32BG12_BRD4103A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32BG12_BRD4103A/config" boardCompatibility="brd4103a" />
+  <!-- EFR32BG13_BRD4104A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32BG13_BRD4104A/config" boardCompatibility="brd4104a" />
+  <!-- EFR32BG14_BRD4105A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32BG14_BRD4105A/config" boardCompatibility="brd4105a" />
+  <!-- EFR32BG1_BRD4100A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32BG1_BRD4100A/config" boardCompatibility="brd4100a" />
+  <!-- EFR32BG1_BRD4101B -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32BG1_BRD4101B/config" boardCompatibility="brd4101b" />
+  <!-- EFR32BG22_BRD4184A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32BG22_BRD4184A/config" boardCompatibility="brd4184a" />
+  <!-- EFR32FG12_BRD4253A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32FG12_BRD4253A/config" boardCompatibility="brd4253a" />
+  <!-- EFR32FG12_BRD4254A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32FG12_BRD4254A/config" boardCompatibility="brd4254a" />
+  <!-- EFR32FG13_BRD4255A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32FG13_BRD4255A/config" boardCompatibility="brd4255a" />
+  <!-- EFR32FG13_BRD4256A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32FG13_BRD4256A/config" boardCompatibility="brd4256a" />
+  <!-- EFR32FG14_BRD4257A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32FG14_BRD4257A/config" boardCompatibility="brd4257a" />
+  <!-- EFR32FG14_BRD4257B -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32FG14_BRD4257B/config" boardCompatibility="brd4257b" />
+  <!-- EFR32FG14_BRD4258A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32FG14_BRD4258A/config" boardCompatibility="brd4258a" />
+  <!-- EFR32FG14_BRD4258B -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32FG14_BRD4258B/config" boardCompatibility="brd4258b" />
+  <!-- EFR32FG14_BRD4259A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32FG14_BRD4259A/config" boardCompatibility="brd4259a" />
+  <!-- EFR32FG1_BRD4250A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32FG1_BRD4250A/config" boardCompatibility="brd4250a" />
+  <!-- EFR32FG1_BRD4250B -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32FG1_BRD4250B/config" boardCompatibility="brd4250b" />
+  <!-- EFR32FG1_BRD4251A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32FG1_BRD4251A/config" boardCompatibility="brd4251a" />
+  <!-- EFR32FG1_BRD4251B -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32FG1_BRD4251B/config" boardCompatibility="brd4251b" />
+  <!-- EFR32FG1_BRD4251D -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32FG1_BRD4251D/config" boardCompatibility="brd4251d" />
+  <!-- EFR32FG1_BRD4252A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32FG1_BRD4252A/config" boardCompatibility="brd4252a" />
+  <!-- EFR32FG23_BRD4263A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32FG23_BRD4263A/config" boardCompatibility="brd4263a" />
+  <!-- EFR32FG23_BRD4263B -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32FG23_BRD4263B/config" boardCompatibility="brd4263b" />
+  <!-- EFR32FG23_BRD4264B -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32FG23_BRD4264B/config" boardCompatibility="brd4264b" />
+  <!-- EFR32FG23_BRD4265A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32FG23_BRD4265A/config" boardCompatibility="brd4265a" />
+  <!-- EFR32MG12_BRD4161A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG12_BRD4161A/config" boardCompatibility="brd4161a" />
+  <!-- EFR32MG12_BRD4162A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG12_BRD4162A/config" boardCompatibility="brd4162a" />
+  <!-- EFR32MG12_BRD4163A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG12_BRD4163A/config" boardCompatibility="brd4163a" />
+  <!-- EFR32MG12_BRD4164A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG12_BRD4164A/config" boardCompatibility="brd4164a" />
+  <!-- EFR32MG12_BRD4166A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG12_BRD4166A/config" boardCompatibility="brd4166a" />
+  <!-- EFR32MG12_BRD4170A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG12_BRD4170A/config" boardCompatibility="brd4170a" />
+  <!-- EFR32MG12_BRD4172A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG12_BRD4172A/config" boardCompatibility="brd4172a" />
+  <!-- EFR32MG12_BRD4172B -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG12_BRD4172B/config" boardCompatibility="brd4172b" />
+  <!-- EFR32MG12_BRD4173A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG12_BRD4173A/config" boardCompatibility="brd4173a" />
+  <!-- EFR32MG13_BRD4158A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG13_BRD4158A/config" boardCompatibility="brd4158a" />
+  <!-- EFR32MG13_BRD4159A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG13_BRD4159A/config" boardCompatibility="brd4159a" />
+  <!-- EFR32MG13_BRD4165B -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG13_BRD4165B/config" boardCompatibility="brd4165b" />
+  <!-- EFR32MG13_BRD4167A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG13_BRD4167A/config" boardCompatibility="brd4167a" />
+  <!-- EFR32MG13_BRD4168A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG13_BRD4168A/config" boardCompatibility="brd4168a" />
+  <!-- EFR32MG13_BRD4174A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG13_BRD4174A/config" boardCompatibility="brd4174a" />
+  <!-- EFR32MG13_BRD4174B -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG13_BRD4174B/config" boardCompatibility="brd4174b" />
+  <!-- EFR32MG13_BRD4175A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG13_BRD4175A/config" boardCompatibility="brd4175a" />
+  <!-- EFR32MG13_BRD4178A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG13_BRD4178A/config" boardCompatibility="brd4178a" />
+  <!-- EFR32MG14_BRD4169A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG14_BRD4169A/config" boardCompatibility="brd4169a" />
+  <!-- EFR32MG14_BRD4169B -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG14_BRD4169B/config" boardCompatibility="brd4169b" />
+  <!-- EFR32MG1_BRD4150A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG1_BRD4150A/config" boardCompatibility="brd4150a" />
+  <!-- EFR32MG1_BRD4150B -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG1_BRD4150B/config" boardCompatibility="brd4150b" />
+  <!-- EFR32MG1_BRD4150C -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG1_BRD4150C/config" boardCompatibility="brd4150c" />
+  <!-- EFR32MG1_BRD4151A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG1_BRD4151A/config" boardCompatibility="brd4151a" />
+  <!-- EFR32MG1_BRD4152A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG1_BRD4152A/config" boardCompatibility="brd4152a" />
+  <!-- EFR32MG1_BRD4153A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG1_BRD4153A/config" boardCompatibility="brd4153a" />
+  <!-- EFR32MG1_BRD4154A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG1_BRD4154A/config" boardCompatibility="brd4154a" />
+  <!-- EFR32MG1_BRD4155A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG1_BRD4155A/config" boardCompatibility="brd4155a" />
+  <!-- EFR32MG1_BRD4160A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG1_BRD4160A/config" boardCompatibility="brd4160a" />
+  <!-- EFR32MG21_BRD4171A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG21_BRD4171A/config" boardCompatibility="brd4171a" />
+  <!-- EFR32MG21_BRD4176A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG21_BRD4176A/config" boardCompatibility="brd4176a" />
+  <!-- EFR32MG21_BRD4179B -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG21_BRD4179B/config" boardCompatibility="brd4179b" />
+  <!-- EFR32MG21_BRD4180A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG21_BRD4180A/config" boardCompatibility="brd4180a" />
+  <!-- EFR32MG21_BRD4180B -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG21_BRD4180B/config" boardCompatibility="brd4180b" />
+  <!-- EFR32MG21_BRD4181A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG21_BRD4181A/config" boardCompatibility="brd4181a" />
+  <!-- EFR32MG21_BRD4181B -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG21_BRD4181B/config" boardCompatibility="brd4181b" />
+  <!-- EFR32MG22_BRD4182A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG22_BRD4182A/config" boardCompatibility="brd4182a" />
+  <!-- EFR32MG22_BRD4183A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG22_BRD4183A/config" boardCompatibility="brd4183a" />
+  <!-- EFR32ZG13_BRD4201B -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32ZG13_BRD4201B/config" boardCompatibility="brd4201b" />
+  <!-- EFR32ZG13_BRD4203A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32ZG13_BRD4203A/config" boardCompatibility="brd4203a" />
+  <!-- EFR32ZG14_BRD4201A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32ZG14_BRD4201A/config" boardCompatibility="brd4201a" />
+  <!-- MGM11_BRD4300B -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/MGM11_BRD4300B/config" boardCompatibility="brd4300b" />
+  <!-- MGM12_BRD4304A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/MGM12_BRD4304A/config" boardCompatibility="brd4304a" />
+  <!-- MGM13_BRD4305D -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/MGM13_BRD4305D/config" boardCompatibility="brd4305d" />
+  <!-- MGM13_BRD4305E -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/MGM13_BRD4305E/config" boardCompatibility="brd4305e" />
+  <!-- MGM13_BRD4306C -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/MGM13_BRD4306C/config" boardCompatibility="brd4306c" />
+  <!-- MGM13_BRD4306D -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/MGM13_BRD4306D/config" boardCompatibility="brd4306d" />
+  <!-- MGM21_BRD4308A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/MGM21_BRD4308A/config" boardCompatibility="brd4308a" />
+  <!-- MGM21_BRD4308B -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/MGM21_BRD4308B/config" boardCompatibility="brd4308b" />
+  <!-- MGM21_BRD4309A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/MGM21_BRD4309A/config" boardCompatibility="brd4309a" />
+  <!-- ZGM13_BRD4200A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/ZGM13_BRD4200A/config" boardCompatibility="brd4200a" />
+  <!-- ZGM13_BRD4202A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/ZGM13_BRD4202A/config" boardCompatibility="brd4202a" />
+  <!-- PG22_DK2503A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFM32PG22_DK2503A/config" boardCompatibility="brd2503a" />
+  <!-- FG23_BRD4263B -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32FG23_BRD4263B/config" boardCompatibility="brd4263b" />
+  <!-- FG23_BRD4263C -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32FG23_BRD4263C/config" boardCompatibility="brd4263c" />
+  <!-- MG24_BRD4186A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG24_BRD4186A/config" boardCompatibility="brd4186a" />
+  <!-- MG24_BRD4187A -->
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/EFR32MG24_BRD4187A/config" boardCompatibility="brd4187a" />
+</project>

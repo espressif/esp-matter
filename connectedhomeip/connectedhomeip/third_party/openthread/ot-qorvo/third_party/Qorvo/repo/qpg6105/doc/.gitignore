@@ -1,0 +1,15 @@
+# Ignore everything in this directory
+*
+
+# Except this file
+!.gitignore
+# Except pdf files
+!*.pdf
+# Except markdown files
+!*.md
+# Except images in ./imgs
+!imgs/
+imgs/*
+!imgs/*.png
+!imgs/*.jpg
+!imgs/*.jpeg

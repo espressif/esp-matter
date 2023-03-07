@@ -1,0 +1,249 @@
+diff --git newlib_original/newlib/libc/sys/tirtos/include/sys/fcntl.h newlib/newlib/libc/sys/tirtos/include/sys/fcntl.h
+--- /dev/null
++++ b/src/gcc-arm-none-eabi-9-2019-q4-major/src/newlib/newlib/libc/sys/tirtos/include/sys/fcntl.h
+@@ -0,0 +1,14 @@
++#ifndef _SYS_FCNTL_H_
++#define _SYS_FCNTL_H_
++
++#include <sys/_default_fcntl.h>
++
++#if defined (__ARM_ARCH_7A__) || defined(__ARM_ARCH_8A) || defined(__ARM_ARCH_8A__)
++/* We want to support O_BINARY for the open syscall.
++   For example, the Demon debug monitor has a separate
++   flag value for "rb" vs "r". */
++#define _FBINARY        0x10000
++#define O_BINARY        _FBINARY
++#endif
++
++#endif /* _SYS_FCNTL_H_ */
+diff -rupN newlib_original/libgloss/aarch64/configure newlib/libgloss/aarch64/configure
+--- newlib_original/libgloss/aarch64/configure
++++ newlib/libgloss/aarch64/configure
+@@ -2521,7 +2521,7 @@ test "${CCASFLAGS+set}" = set || CCASFLAGS=$CFLAGS
+
+
+ case "${target}" in
+-  *-*-elf)
++  *-*-elf | *-*-tirtos*)
+        objtype=elf-
+        ;;
+ esac
+diff -rupN newlib_original/libgloss/aarch64/configure.in newlib/libgloss/aarch64/configure.in
+--- newlib_original/libgloss/aarch64/configure.in
++++ newlib/libgloss/aarch64/configure.in
+@@ -2521,7 +2521,7 @@ test "${CCASFLAGS+set}" = set || CCASFLAGS=$CFLAGS
+@@ -29,7 +29,7 @@ AC_PROG_RANLIB
+ LIB_AM_PROG_AS
+
+ case "${target}" in
+-  *-*-elf)
++  *-*-elf | *-*-tirtos*)
+        objtype=elf-
+        ;;
+ esac
+diff -rupN newlib_original/configure.ac newlib/configure.ac
+--- newlib_original/configure.ac	2016-06-24 10:07:42.000000000 -0700
++++ newlib/configure.ac	2017-04-03 14:51:25.004917000 -0700
+@@ -337,7 +337,7 @@ case "${ENABLE_GOLD}" in
+       *-*-elf* | *-*-sysv4* | *-*-unixware* | *-*-eabi* | hppa*64*-*-hpux* \
+       | *-*-linux* | *-*-gnu* | frv-*-uclinux* | *-*-irix5* | *-*-irix6* \
+       | *-*-netbsd* | *-*-openbsd* | *-*-freebsd* | *-*-dragonfly* \
+-      | *-*-solaris2* | *-*-nto* | *-*-nacl*)
++      | *-*-solaris2* | *-*-nto* | *-*-nacl* | *-*-tirtos*)
+         case "${target}" in
+           *-*-linux*aout* | *-*-linux*oldld*)
+             ;;
+diff -rupN newlib_original/libgloss/arm/syscalls.c newlib/libgloss/arm/syscalls.c
+--- newlib_original/libgloss/arm/syscalls.c	2015-06-03 22:33:57.000000000 -0700
++++ newlib/libgloss/arm/syscalls.c	2017-04-26 21:24:14.006133000 -0700
+@@ -12,7 +12,6 @@
+ #include <sys/time.h>
+ #include <sys/times.h>
+ #include <errno.h>
+-#include <reent.h>
+ #include <unistd.h>
+ #include <sys/wait.h>
+ #include "swi.h"
+@@ -80,17 +79,6 @@ static int		newslot		_PARAMS ((void));
+ /* Register name faking - works in collusion with the linker.  */
+ register char * stack_ptr asm ("sp");
+ 
+-
+-/* following is copied from libc/stdio/local.h to check std streams */
+-extern void   _EXFUN(__sinit,(struct _reent *));
+-#define CHECK_INIT(ptr) \
+-  do						\
+-    {						\
+-      if ((ptr) && !(ptr)->__sdidinit)		\
+-	__sinit (ptr);				\
+-    }						\
+-  while (0)
+-
+ static int monitor_stdin;
+ static int monitor_stdout;
+ static int monitor_stderr;
+@@ -100,8 +88,6 @@ static int monitor_stderr;
+ static struct fdent*
+ findslot (int fd)
+ {
+-  CHECK_INIT(_REENT);
+-
+   /* User file descriptor is out of range. */
+   if ((unsigned int)fd >= MAX_OPEN_FILES)
+     return NULL;
+diff -rupN newlib_original/newlib/configure.host newlib/newlib/configure.host
+--- newlib_original/newlib/configure.host	2016-05-10 10:08:01.000000000 -0700
++++ newlib/newlib/configure.host	2017-04-03 16:19:20.001903000 -0700
+@@ -613,6 +613,7 @@ case "${host}" in
+ # TIRTOS supplies its own version of malloc
+   *-*-tirtos*)
+ 	newlib_cflags="${newlib_cflags} -D__DYNAMIC_REENT__ -DMALLOC_PROVIDED"
++	syscall_dir=syscalls
+ 	;;
+ # UDI doesn't have exec, so system() should fail the right way
+   a29k-amd-udi)
+diff -rupN newlib_original/newlib/libc/sys/tirtos/aeabi_atexit.c newlib/newlib/libc/sys/tirtos/aeabi_atexit.c
+--- newlib_original/newlib/libc/sys/tirtos/aeabi_atexit.c	1969-12-31 16:00:00.000000000 -0800
++++ newlib/newlib/libc/sys/tirtos/aeabi_atexit.c	2017-04-03 16:20:09.015071000 -0700
+@@ -0,0 +1,41 @@
++/*
++ * Copyright (c) 2017, Texas Instruments Incorporated
++ * All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ *
++ * *  Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ *
++ * *  Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in the
++ *    documentation and/or other materials provided with the distribution.
++ *
++ * *  Neither the name of Texas Instruments Incorporated nor the names of
++ *    its contributors may be used to endorse or promote products derived
++ *    from this software without specific prior written permission.
++ *
++ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
++ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
++ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
++ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
++ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
++ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
++ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
++ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
++ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
++ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
++ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ */
++/*
++ *  ======== aeabi_atexit.c ========
++ */
++#include <stdlib.h>
++
++/* Implementation of atexit function defined by ARM EABI. */
++int __aeabi_atexit (void *arg, void (*fn) (void *), void *d)
++{
++    return __cxa_atexit (fn, arg, d);
++}
+diff -rupN newlib_original/newlib/libc/sys/tirtos/Makefile.am newlib/newlib/libc/sys/tirtos/Makefile.am
+--- newlib_original/newlib/libc/sys/tirtos/Makefile.am	2015-06-03 22:33:58.000000000 -0700
++++ newlib/newlib/libc/sys/tirtos/Makefile.am	2017-04-03 16:21:40.004498000 -0700
+@@ -8,7 +8,7 @@ AM_CCASFLAGS = $(INCLUDES)
+ 
+ noinst_LIBRARIES = lib.a
+ 
+-lib_a_SOURCES = lock.c 
++lib_a_SOURCES = lock.c tirtos_validate.c aeabi_atexit.c
+ lib_a_CCASFLAGS = $(AM_CCASFLAGS)
+ lib_a_CFLAGS = $(AM_CFLAGS)
+ 
+diff -rupN newlib_original/newlib/libc/sys/tirtos/Makefile.in newlib/newlib/libc/sys/tirtos/Makefile.in
+--- newlib_original/newlib/libc/sys/tirtos/Makefile.in	2015-06-03 22:33:58.000000000 -0700
++++ newlib/newlib/libc/sys/tirtos/Makefile.in	2017-04-03 16:25:08.004113000 -0700
+@@ -69,7 +69,8 @@ LIBRARIES = $(noinst_LIBRARIES)
+ ARFLAGS = cru
+ lib_a_AR = $(AR) $(ARFLAGS)
+ lib_a_LIBADD =
+-am_lib_a_OBJECTS = lib_a-lock.$(OBJEXT)
++am_lib_a_OBJECTS = lib_a-lock.$(OBJEXT) lib_a-tirtos_validate.$(OBJEXT) \
++                   lib_a-aeabi_atexit.$(OBJEXT)
+ lib_a_OBJECTS = $(am_lib_a_OBJECTS)
+ DEFAULT_INCLUDES = -I.@am__isrc@
+ depcomp =
+@@ -193,7 +194,7 @@ AUTOMAKE_OPTIONS = cygnus
+ INCLUDES = $(NEWLIB_CFLAGS) $(CROSS_CFLAGS) $(TARGET_CFLAGS)
+ AM_CCASFLAGS = $(INCLUDES)
+ noinst_LIBRARIES = lib.a
+-lib_a_SOURCES = lock.c 
++lib_a_SOURCES = lock.c tirtos_validate.c aeabi_atexit.c
+ lib_a_CCASFLAGS = $(AM_CCASFLAGS)
+ lib_a_CFLAGS = $(AM_CFLAGS)
+ ACLOCAL_AMFLAGS = -I ../../.. -I ../../../..
+@@ -262,6 +263,18 @@ lib_a-lock.o: lock.c
+ lib_a-lock.obj: lock.c
+ 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-lock.obj `if test -f 'lock.c'; then $(CYGPATH_W) 'lock.c'; else $(CYGPATH_W) '$(srcdir)/lock.c'; fi`
+ 
++lib_a-tirtos_validate.o: tirtos_validate.c
++	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-tirtos_validate.o `test -f 'tirtos_validate.c' || echo '$(srcdir)/'`tirtos_validate.c
++
++lib_a-tirtos_validate.obj: tirtos_validate.c
++	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-tirtos_validate.obj `if test -f 'tirtos_validate.c'; then $(CYGPATH_W) 'tirtos_validate.c'; else $(CYGPATH_W) '$(srcdir)/tirtos_validate.c'; fi`
++
++lib_a-aeabi_atexit.o: aeabi_atexit.c
++	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-aeabi_atexit.o `test -f 'aeabi_atexit.c' || echo '$(srcdir)/'`aeabi_atexit.c
++
++lib_a-aeabi_atexit.obj: aeabi_atexit.c
++	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-aeabi_atexit.obj `if test -f 'aeabi_atexit.c'; then $(CYGPATH_W) 'aeabi_atexit.c'; else $(CYGPATH_W) '$(srcdir)/aeabi_atexit.c'; fi`
++
+ ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
+ 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
+ 	unique=`for i in $$list; do \
+diff -rupN newlib_original/newlib/libc/sys/tirtos/tirtos_validate.c newlib/newlib/libc/sys/tirtos/tirtos_validate.c
+--- newlib_original/newlib/libc/sys/tirtos/tirtos_validate.c	1969-12-31 16:00:00.000000000 -0800
++++ newlib/newlib/libc/sys/tirtos/tirtos_validate.c	2017-04-03 16:20:36.002798000 -0700
+@@ -0,0 +1,43 @@
++/*
++ * Copyright (c) 2016, Texas Instruments Incorporated
++ * All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ *
++ * *  Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ *
++ * *  Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in the
++ *    documentation and/or other materials provided with the distribution.
++ *
++ * *  Neither the name of Texas Instruments Incorporated nor the names of
++ *    its contributors may be used to endorse or promote products derived
++ *    from this software without specific prior written permission.
++ *
++ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
++ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
++ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
++ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
++ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
++ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
++ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
++ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
++ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
++ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
++ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ */
++/*
++ *  ======== tirtos_validate.c ========
++ *  This source file adds a special function to the libc library that a TI-RTOS
++ *  application will attempt to link to. If the function is found, it indicates
++ *  that the application is being linked with the correct library. Otherwise,
++ *  the link will fail, thereby indicating to the user that the application
++ *  is attempting to link with the wrong library.
++ */
++
++void ti_sysbios_rts_gnu_ReentSupport_checkIfCorrectLibrary()
++{
++}

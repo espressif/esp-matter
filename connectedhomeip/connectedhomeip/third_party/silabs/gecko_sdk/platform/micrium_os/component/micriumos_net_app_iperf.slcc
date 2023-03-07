@@ -1,0 +1,30 @@
+id: micriumos_net_app_iperf
+label: Network Suite - IPerf
+package: micrium-tcpx
+description: Micrium OS Network IPerf
+category: Services|Micrium|Network Suite
+quality: production
+component_root_path: platform/micrium_os/net
+config_file:
+  - path: ../cfg/iperf_cfg.h
+source:
+  - path: source/iperf/iperf_client.c
+  - path: source/iperf/iperf_rep.c
+  - path: source/iperf/iperf_server.c
+  - path: source/iperf/iperf_shell.c
+  - path: source/iperf/iperf.c
+include:
+  - path: source
+    file_list:
+      - path: iperf/iperf_priv.h
+  - path: include
+    file_list:
+      - path: iperf.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: NET_IPERF
+provides:
+  - name: net_app_iperf
+requires:
+  - name: net
+  - name: sleeptimer

@@ -1,0 +1,13 @@
+id: tensorflow_debug_log_none 
+package: platform
+label: Debug Logging Disabled
+description: >
+  This component disables debug logging in TensorFlow Lite Micro.
+category: Machine Learning|TensorFlow|Debug
+quality: production
+provides:
+  - name: tensorflow_debug_log_none
+  - name: tensorflow_debug_log_implementation
+define: 
+  - name: TF_LITE_STRIP_ERROR_STRINGS
+  - name: NDEBUG

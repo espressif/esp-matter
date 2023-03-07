@@ -1,0 +1,38 @@
+id: iot_efuse
+category: Third Party|Amazon FreeRTOS - AWS Libraries|Common I/O
+label: IoT eFUSE
+description: >
+  Silicon Labs' Implementation of Amazon Common I/O eFUSE API
+  Doc: https://docs.aws.amazon.com/freertos/latest/lib-ref/common-io/files.html
+package: amazon_platform
+quality: production
+provides:
+  - name: iot_efuse
+requires:
+  - name: nvm3_default
+  - name: freertos
+  - name: device_init
+  - name: status
+root_path: util/third_party/aws_iot_libs
+config_file:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_efuse/config/iot_efuse_cfg.h
+    file_id: iot_efuse_cfg
+
+source:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_efuse/source/iot_efuse_drv_tok.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_efuse/source/iot_efuse_drv_nvm.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_efuse/source/iot_efuse_drv_ram.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_efuse/source/iot_efuse_hal.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_efuse/test/iot_efuse_test.c
+    condition: ["aws_tests_defs"]
+
+include:
+  - path: libraries/abstractions/common_io/include
+    file_list:
+      - path: iot_efuse.h
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_efuse/include
+    file_list:
+      - path: iot_efuse_drv_tok.h
+      - path: iot_efuse_drv_nvm.h
+      - path: iot_efuse_drv_ram.h
+      - path: iot_efuse_drv.h

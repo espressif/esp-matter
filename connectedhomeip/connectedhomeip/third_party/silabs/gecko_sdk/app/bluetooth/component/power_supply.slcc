@@ -1,0 +1,30 @@
+id: power_supply
+label: Power supply measurement
+package: Bluetooth
+description: Power supply measurement HW abstraction designed for Thunderboard.
+category: Application|Sensor
+quality: production
+root_path: app/bluetooth/common/power_supply
+source:
+  - path: sl_power_supply.c
+include:
+  - path: .
+    file_list:
+      - path: sl_power_supply.h
+provides:
+  - name: power_supply
+requires:
+  - name: app_assert
+  - name: app_log
+  - name: sensor_select
+  - name: si70xx_driver
+  - name: i2cspm
+  - name: emlib_adc
+    condition:
+      - device_has_adc
+  - name: emlib_iadc
+    condition:
+      - device_has_iadc
+template_contribution:
+  - name: component_catalog
+    value: power_supply

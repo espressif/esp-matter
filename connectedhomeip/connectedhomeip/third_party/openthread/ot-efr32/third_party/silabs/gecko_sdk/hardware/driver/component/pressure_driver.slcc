@@ -1,0 +1,15 @@
+id: pressure_driver
+package: platform
+label: Pressure sensor
+description: >
+  Pressure sensor driver
+category: Platform|Board Drivers
+quality: production
+root_path: hardware/driver/pressure
+provides:
+  - name: pressure_driver
+requires:
+  - name: pressure_device_driver
+documentation:
+    docset: gecko-platform
+    document: hardware-driver/api/group-pressure

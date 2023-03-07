@@ -1,0 +1,54 @@
+id: tz_secure_key_library_s
+package: platform
+description: >-
+  This component provides a TrustZone secure library for PSA services
+category: Platform|Security|TrustZone
+quality: beta
+component_root_path: util/third_party/crypto/sl_component/sl_trustzone
+
+provides:
+  - name: tz_secure_key_library_s
+
+requires:
+  # Must know how peripherals are configured.
+  - name: tz_secure_config
+
+  # Secure PSA Crypto service is always included as part of the SKL.
+  - name: tz_service_psa_crypto
+
+  # MPU setup is only done if Gecko Bootloader is used.
+  - name: mpu
+    condition: [bootloader_interface]
+
+  - name: tz_common
+  # The following EMLIB services are commonly required for very basic
+  # functionality. We have chosen to include these for all SKL builds, in order
+  # to simplify things.
+  - name: tz_service_syscfg
+  - name: tz_service_msc
+
+  # We must include the PSA ITS implementation in case it is requested by the NS
+  # application. No extra code will be linked in unless the NS PSA config says
+  # that ITS should be used.
+  - name: psa_its
+
+  - name: sl_assert
+
+source:
+  - path: src/sli_tz_secure_main.c
+  - path: src/sli_tz_s_interface.c
+
+template_contribution:
+  - name: linker_no_token_page
+    priority: 0
+    value: true
+
+  - name: component_catalog
+    value: tz_secure_key_library_s
+
+define:
+  # Use Silabs Secure Library configuration of TF-M.
+  - name: TFM_CONFIG_SL_SECURE_LIBRARY
+
+  # ITS should be encrypted when used in the SKL
+  - name: SLI_PSA_ITS_ENCRYPTED

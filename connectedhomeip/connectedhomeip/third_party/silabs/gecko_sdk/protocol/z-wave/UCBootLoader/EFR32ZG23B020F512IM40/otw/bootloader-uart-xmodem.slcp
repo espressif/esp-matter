@@ -1,0 +1,81 @@
+# Silicon Labs Project Configuration Tools: slcp, v0, Component selection file.
+project_name: bootloader-uart-xmodem
+label: bootloader-uart-xmodem
+description: |
+  Standalone Bootloader using XMODEM-CRC over UART. The bootloader shows a menu, where an XMODEM transfer can be started by sending ASCII '1', or the application can be started by sending ASCII '2'. This is the recommended UART bootloader for the EmberZNet and Connect protocol stacks.
+category: Example|Bootloader
+package: bootloader
+quality: production
+toolchain_settings: []
+component:
+  - { id: bootloader_token_management }
+  - { id: bootloader_serial_driver }
+  - { id: bootloader_crc }
+  - { id: bootloader_aes_sha_ecdsa }
+  - { id: bootloader_uart_xmodem }
+  - { id: bootloader_app_upgrade_version }
+  - { id: bootloader_xmodem_parser }
+  - { id: bootloader_compression_lzma }
+  - { id: bootloader_uart_driver }
+  - { id: EFR32ZG23B020F512IM40 }
+  - { id: bootloader_delay_driver }
+  - { id: bootloader_debug }
+  - { id: bootloader_image_parser }
+  - { id: bootloader_core }
+other_file:
+  - { path: postbuild.sh }
+configuration:
+  # btl_core_cfg.h
+  - name: BOOTLOADER_ENFORCE_SIGNED_UPGRADE
+    value: 1
+  - name: BOOTLOADER_WRITE_DISABLE
+    value: 1
+  - name: BOOTLOADER_VERSION_MAIN_CUSTOMER
+    value: 1
+  # btl_uart_driver_cfg.h
+  - name: SL_SERIAL_UART_PERIPHERAL
+    value: USART0
+  - name: SL_SERIAL_UART_PERIPHERAL_NO
+    value: 0
+  - name: SL_SERIAL_UART_TX_PORT
+    value: gpioPortA
+  - name: SL_SERIAL_UART_TX_PIN
+    value: 8
+  - name: SL_SERIAL_UART_RX_PORT
+    value: gpioPortA
+  - name: SL_SERIAL_UART_RX_PIN
+    value: 7
+  - name: SL_SERIAL_UART_CTS_PORT
+    value: gpioPortA
+  - name: SL_SERIAL_UART_CTS_PIN
+    value: 6
+  - name: SL_SERIAL_UART_RTS_PORT
+    value: gpioPortA
+  - name: SL_SERIAL_UART_RTS_PIN
+    value: 0
+  - name: SL_VCOM_ENABLE_PORT
+    value: gpioPortB
+  - name: SL_VCOM_ENABLE_PIN
+    value: 0
+define:
+  # USART0 CTS on PA06
+  - name: USART0_CTS_PORT
+    value: gpioPortA
+  - name: USART0_CTS_PIN
+    value: 6
+  # USART0 RTS on PA00
+  - name: USART0_RTS_PORT
+    value: gpioPortA
+  - name: USART0_RTS_PIN
+    value: 0
+  # USART0 RX on PA07
+  - name: USART0_RX_PORT
+    value: gpioPortA
+  - name: USART0_RX_PIN
+    value: 7
+  # USART0 TX on PA08
+  - name: USART0_TX_PORT
+    value: gpioPortA
+  - name: USART0_TX_PIN
+    value: 8
+ui_hints: {}

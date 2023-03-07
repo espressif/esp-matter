@@ -1,0 +1,16 @@
+# List of files and extensions to be ignored
+
+# Eclipse
+*.project
+*.cproject
+.pydevproject
+.settings/
+
+# Visual Studio Code
+.vscode/
+
+# Garbage files
+build*/
+*.orig
+**/__pycache__
+*.pyc

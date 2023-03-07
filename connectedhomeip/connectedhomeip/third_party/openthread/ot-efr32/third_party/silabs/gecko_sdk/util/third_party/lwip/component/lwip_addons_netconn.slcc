@@ -1,0 +1,17 @@
+id: lwip_addons_netconn
+label: "netconn"
+package: platform
+description: >
+  netconn addon.
+category: LwIP|Addons
+quality: production
+provides:
+  - name: lwip_addons_netconn
+requires:
+  - name: lwip_core
+source:
+  - path: util/third_party/lwip/lwip-contrib/addons/netconn/external_resolve/dnssd.c
+include:
+  - path: util/third_party/lwip/lwip-contrib/addons/netconn/external_resolve
+    file_list:
+    - path: dnssd.h

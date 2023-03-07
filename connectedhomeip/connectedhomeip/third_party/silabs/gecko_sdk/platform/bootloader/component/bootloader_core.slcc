@@ -1,0 +1,420 @@
+id: bootloader_core
+label: Bootloader Core
+package: bootloader
+description: Core library for Gecko bootloader.
+category: Platform|Bootloader|Core
+quality: production
+source:
+  - path: platform/bootloader/driver/btl_driver_util.c
+  - path: platform/bootloader/core/btl_bootload.c
+  - path: platform/bootloader/core/btl_core.c
+  - path: platform/bootloader/core/btl_main.c
+  - path: platform/bootloader/core/flash/btl_internal_flash.c
+  - path: platform/bootloader/core/btl_parse.c
+  - path: platform/bootloader/core/btl_reset.c
+define:
+  - name: BOOTLOADER_ENABLE
+    value: 1
+  - name: SL_RAMFUNC_DISABLE
+    value: 1
+  - name: __START
+    value: main
+  - name: __STARTUP_CLEAR_BSS
+    value: 1
+  - name: BOOTLOADER_SECOND_STAGE
+    value: 1
+
+include:
+  - path: platform/bootloader
+    file_list:
+      - path: api/btl_interface.h
+      - path: config/btl_config.h
+      - path: core/btl_core.h
+      - path: core/btl_reset.h
+      - path: core/btl_parse.h
+      - path: core/btl_bootload.h
+      - path: core/btl_upgrade.h
+      - path: core/btl_util.h
+      - path: driver/btl_driver_util.h
+      - path: core/flash/btl_internal_flash.h
+
+provides:
+  - name: bootloader_core
+
+requires:
+  - name: emlib
+  - name: trustzone_secure
+    condition: [device_series_2, bootloader_ezsp_spi]
+  - name: trustzone_secure
+    condition: [device_series_2, bootloader_internal_storage]
+  - name: trustzone_secure
+    condition: [device_series_2, bootloader_spiflash_storage]
+  - name: trustzone_secure
+    condition: [device_series_2, bootloader_bgapi_uartdfu]
+  - name: trustzone_secure
+    condition: [device_series_2, bootloader_uart_xmodem]
+  - name: trustzone_secure
+    condition: [device_series_2, bootloader_spiflash_storage_sfdp]
+
+recommends:
+  - id: bootloader_include_parser
+  - id: bootloader_uart_xmodem
+  - id: bootloader_xmodem_parser
+  - id: bootloader_bgapi_uartdfu
+  - id: bootloader_delay_driver
+  - id: bootloader_ezsp_spi
+  - id: bootloader_debug
+  - id: bootloader_image_parser
+  - id: bootloader_spi_peripheral_driver
+  - id: bootloader_crc
+  - id: bootloader_serial_driver
+
+config_file:
+  # Series-1
+  - path: platform/bootloader/config/s1/device_series_1/btl_core_cfg.h
+    file_id: btl_core_config
+    condition:
+      - device_series_1
+    unless:
+      - device_sdid_80
+  - path: platform/bootloader/config/s1/device_sdid_80/btl_core_cfg.h
+    file_id: btl_core_config
+    condition:
+      - device_sdid_80
+    unless:
+      - device_has_radio
+  - path: platform/bootloader/config/s1/device_sdid_80/device_has_radio/btl_core_cfg.h
+    file_id: btl_core_config
+    condition:
+      - device_sdid_80
+      - device_has_radio
+
+  # Series-2
+  - path: platform/bootloader/config/s2/device_series_2/btl_core_cfg.h
+    file_id: btl_core_config
+    condition:
+      - device_series_2
+    unless:
+      - device_sdid_205
+      - bootloader_tz_secure
+      - bootloader_apploader
+  - path: platform/bootloader/config/s2/device_sdid_205/btl_core_cfg.h
+    file_id: btl_core_config
+    condition:
+      - device_sdid_205
+    unless:
+      - bootloader_tz_secure
+      - bootloader_apploader
+  - path: platform/bootloader/config/s2/device_series_2/btl_core_s_cfg.h
+    file_id: btl_core_config
+    condition:
+      - device_series_2
+      - bootloader_tz_secure
+    unless:
+      - device_sdid_205
+      - bootloader_apploader
+  - path: platform/bootloader/config/s2/device_sdid_205/btl_core_s_cfg.h
+    file_id: btl_core_config
+    condition:
+      - device_sdid_205
+      - bootloader_tz_secure
+    unless:
+      - bootloader_apploader
+
+  - path: platform/bootloader/config/s2/device_sdid_205/apploader/btl_core_cfg.h
+    file_id: btl_core_config
+    condition:
+      - device_sdid_205
+      - bootloader_apploader
+  - path: platform/bootloader/config/s2/device_series_2/apploader/btl_core_cfg.h
+    file_id: btl_core_config
+    condition:
+      - device_series_2
+      - bootloader_apploader
+    unless:
+      - device_sdid_205
+
+template_contribution:
+  - name: bootloader_enable
+    value: 1
+  - name: app_rollback_protection_size
+    value: 0x20
+
+  # Series-1 devices
+  - name: bootloader_flash_addr
+    value: 0x800
+    condition:
+    - device_sdid_80
+  - name: bootloader_main_size
+    value: 0x3800
+    condition:
+    - device_sdid_80
+  - name: bootloader_flash_addr
+    value: 0x0FE10800
+    condition:
+    - device_sdid_84
+  - name: bootloader_main_size
+    value: 0x9000
+    condition:
+    - device_sdid_84
+  - name: bootloader_flash_addr
+    value: 0x0FE10800
+    condition:
+    - device_sdid_89
+    unless:
+    - bootloader_in_main_flash
+  - name: bootloader_main_size
+    value: 0x3800
+    condition:
+    - device_sdid_89
+    unless:
+    - bootloader_in_main_flash
+  - name: bootloader_flash_addr
+    value: 0x00
+    condition:
+    - device_sdid_89
+    - bootloader_in_main_flash
+  - name: bootloader_main_size
+    value: 0x4800
+    condition:
+    - device_sdid_89
+    - bootloader_in_main_flash
+  - name: bootloader_flash_addr
+    value: 0x0FE10800
+    condition:
+    - device_sdid_95
+    unless:
+    - bootloader_in_main_flash
+  - name: bootloader_main_size
+    value: 0x4000
+    condition:
+    - device_sdid_95
+    unless:
+    - bootloader_in_main_flash
+  - name: bootloader_flash_addr
+    value: 0x00
+    condition:
+    - device_sdid_95
+    - bootloader_in_main_flash
+  - name: bootloader_main_size
+    value: 0x4800
+    condition:
+    - device_sdid_95
+    - bootloader_in_main_flash
+  - name: bootloader_flash_addr
+    value: 0x0FE11000
+    condition:
+    - device_sdid_100
+  - name: bootloader_main_size
+    value: 0x7000
+    condition:
+    - device_sdid_100
+  - name: bootloader_flash_addr
+    value: 0x0FE10800
+    condition:
+    - device_sdid_103
+  - name: bootloader_main_size
+    value: 0x4000
+    condition:
+    - device_sdid_103
+  - name: bootloader_flash_addr
+    value: 0x0FE10800
+    condition:
+    - device_sdid_106
+  - name: bootloader_main_size
+    value: 0x7800
+    condition:
+    - device_sdid_106
+
+  # Series-2 devices
+  - name: bootloader_flash_addr
+    value: 0x0
+    condition:
+    - device_sdid_200
+  - name: bootloader_main_size
+    value: 0x4000
+    condition:
+      - device_sdid_200
+    unless:
+      - bootloader_apploader
+  - name: bootloader_flash_addr
+    value: 0x0
+    condition:
+      - device_sdid_205
+  - name: bootloader_main_size
+    value: 0x6000
+    condition:
+      - device_sdid_205
+    unless:
+      - bootloader_apploader
+  - name: bootloader_flash_addr
+    value: 0x8000000
+    condition:
+      - device_sdid_210
+  - name: bootloader_main_size
+    value: 0x6000
+    condition:
+      - device_sdid_210
+    unless:
+      - bootloader_apploader
+  - name: bootloader_flash_addr
+    value: 0x8000000
+    condition:
+      - device_sdid_215
+  - name: bootloader_main_size
+    value: 0x6000
+    condition:
+      - device_sdid_215
+    unless:
+      - bootloader_apploader
+  - name: bootloader_flash_addr
+    value: 0x8000000
+    condition:
+      - device_sdid_220
+  - name: bootloader_main_size
+    value: 0x6000
+    condition:
+      - device_sdid_220
+    unless:
+      - bootloader_apploader
+  - name: bootloader_flash_addr
+    value: 0x8000000
+    condition:
+      - device_sdid_230
+  - name: bootloader_main_size
+    value: 0x6000
+    condition:
+      - device_sdid_230
+    unless:
+      - bootloader_apploader
+  - name: bootloader_main_size
+    value: 0x12000
+    condition:
+      - bootloader_apploader
+validation_helper:
+  - path: platform/bootloader/component/scripts/bootloader_core_validation.lua
+
+template_file:
+  - path: platform/bootloader/build/first_stage/gcc/first_stage_btl_efm32gg12b.s37
+    condition:
+    - device_sdid_106
+    - cortexm4
+    - toolchain_gcc
+  - path: platform/bootloader/build/first_stage/gcc/first_stage_btl_efx32xg11.s37
+    condition:
+    - device_sdid_80
+    - cortexm4
+    - toolchain_gcc
+  - path: platform/bootloader/build/first_stage/gcc/first_stage_btl_efx32xg12.s37
+    condition:
+    - device_sdid_84
+    - cortexm4
+    - toolchain_gcc
+  - path: platform/bootloader/build/first_stage/gcc/first_stage_btl_efx32xg13.s37
+    condition:
+    - device_sdid_89
+    - cortexm4
+    - toolchain_gcc
+    unless:
+    - bootloader_in_main_flash
+  - path: platform/bootloader/build/first_stage/gcc/first_stage_btl_efx32xg13_second_btl_in_main.s37
+    condition:
+    - device_sdid_89
+    - cortexm4
+    - toolchain_gcc
+    - bootloader_in_main_flash
+  - path: platform/bootloader/build/first_stage/gcc/first_stage_btl_efx32xg14.s37
+    condition:
+    - device_sdid_95
+    - cortexm4
+    - toolchain_gcc
+    unless:
+    - bootloader_in_main_flash
+  - path: platform/bootloader/build/first_stage/gcc/first_stage_btl_efx32xg14_second_btl_in_main.s37
+    condition:
+    - device_sdid_95
+    - cortexm4
+    - toolchain_gcc
+    - bootloader_in_main_flash
+  - path: platform/bootloader/build/first_stage/gcc/first_stage_btl_efm32jg1b.s37
+    condition:
+    - device_sdid_80
+    - cortexm3
+    - toolchain_gcc
+  - path: platform/bootloader/build/first_stage/gcc/first_stage_btl_efm32jg12b.s37
+    condition:
+    - device_sdid_84
+    - cortexm3
+    - toolchain_gcc
+  - path: platform/bootloader/build/first_stage/gcc/first_stage_btl_efm32gg11b.s37
+    condition:
+    - device_sdid_100
+    - cortexm4
+    - toolchain_gcc
+  - path: platform/bootloader/build/first_stage/gcc/first_stage_btl_efm32tg11b.s37
+    condition:
+    - device_sdid_103
+    - toolchain_gcc
+  - path: platform/bootloader/build/first_stage/iar/first_stage_btl_efm32gg12b.s37
+    condition:
+    - device_sdid_106
+    - cortexm4
+    - toolchain_iar
+  - path: platform/bootloader/build/first_stage/iar/first_stage_btl_efx32xg11.s37
+    condition:
+    - device_sdid_80
+    - cortexm4
+    - toolchain_iar
+  - path: platform/bootloader/build/first_stage/iar/first_stage_btl_efx32xg12.s37
+    condition:
+    - device_sdid_84
+    - cortexm4
+    - toolchain_iar
+  - path: platform/bootloader/build/first_stage/iar/first_stage_btl_efx32xg13_second_btl_in_main.s37
+    condition:
+    - device_sdid_89
+    - cortexm4
+    - toolchain_iar
+    - bootloader_in_main_flash
+  - path: platform/bootloader/build/first_stage/iar/first_stage_btl_efx32xg13.s37
+    condition:
+    - device_sdid_89
+    - cortexm4
+    - toolchain_iar
+    unless:
+    - bootloader_in_main_flash
+  - path: platform/bootloader/build/first_stage/iar/first_stage_btl_efx32xg14_second_btl_in_main.s37
+    condition:
+    - device_sdid_95
+    - cortexm4
+    - toolchain_iar
+    - bootloader_in_main_flash
+  - path: platform/bootloader/build/first_stage/iar/first_stage_btl_efx32xg14.s37
+    condition:
+    - device_sdid_95
+    - cortexm4
+    - toolchain_iar
+    unless:
+    - bootloader_in_main_flash
+  - path: platform/bootloader/build/first_stage/iar/first_stage_btl_efm32jg1b.s37
+    condition:
+    - device_sdid_80
+    - cortexm3
+    - toolchain_iar
+  - path: platform/bootloader/build/first_stage/iar/first_stage_btl_efm32jg12b.s37
+    condition:
+    - device_sdid_84
+    - cortexm3
+    - toolchain_iar
+  - path: platform/bootloader/build/first_stage/iar/first_stage_btl_efm32gg11b.s37
+    condition:
+    - device_sdid_100
+    - cortexm4
+    - toolchain_iar
+  - path: platform/bootloader/build/first_stage/iar/first_stage_btl_efm32tg11b.s37
+    condition:
+    - device_sdid_103
+    - toolchain_iar
+toolchain_settings:
+  - option: optimize
+    value: size

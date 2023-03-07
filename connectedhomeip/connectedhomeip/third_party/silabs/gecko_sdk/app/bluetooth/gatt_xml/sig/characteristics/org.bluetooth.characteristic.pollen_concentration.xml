@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+name="Pollen Concentration" type="org.bluetooth.characteristic.pollen_concentration" uuid="2A75" last-modified="2014-11-20" approved="Yes">
+    <Value>
+    <Field name="Pollen Concentration">
+        <InformativeText>Unit is in concentration count per cubic meter with a resolution of 1/m^3</InformativeText>
+        <Requirement>Mandatory</Requirement>
+        <Format>uint24</Format>
+        <Unit>org.bluetooth.unit.concentration.count_per_cubic_metre</Unit>
+        <DecimalExponent>0</DecimalExponent>
+	</Field>
+	</Value>
+    </Characteristic>

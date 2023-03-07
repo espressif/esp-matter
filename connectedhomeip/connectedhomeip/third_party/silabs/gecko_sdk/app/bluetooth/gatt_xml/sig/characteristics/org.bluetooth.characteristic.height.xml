@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Height" type="org.bluetooth.characteristic.height" uuid="2A8E" last-modified="2014-06-10" approved="Yes">
+    <InformativeText>
+        <Abstract>Height of the User</Abstract>
+	</InformativeText>
+    <Value>
+    <Field name="Height">
+        <InformativeText>
+            Unit is in meters with a resolution of 0.01 .
+		</InformativeText>
+        <Requirement>Mandatory</Requirement>
+        <Format>uint16</Format>
+        <Unit>org.bluetooth.unit.length.meter</Unit>
+        <DecimalExponent>-2</DecimalExponent>
+    </Field>
+	</Value>
+</Characteristic>

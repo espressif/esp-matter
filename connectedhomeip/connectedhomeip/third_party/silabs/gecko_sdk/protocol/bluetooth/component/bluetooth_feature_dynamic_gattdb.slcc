@@ -1,0 +1,32 @@
+id: "bluetooth_feature_dynamic_gattdb"
+label:  "Dynamic GATT Database"
+package: "Bluetooth"
+description: >
+  Bluetooth dynamic GATT database feature
+
+  This component enables dynamically creating a GATT database with Bluetooth APIs.
+
+  Dynamically-created GATT attributes could coexist with a static database that
+  is generated from a GATT XML file. When a static database is configured to be
+  included (by the SL_BT_GATTDB_INCLUDE_STATIC_DATABASE configuration), its
+  attributes are added at the beginning of the attribute table when Bluetooth
+  stack starts. New services and characteristics created dynamically are appended
+  into the attribute table after the static ones.
+
+  Dynamically-created services and characteristics do not support the capability
+  feature (Polymorphic GATT) that was designed for the static database solution.
+
+  See the configuration of this component and the Bluetooth API reference manual
+  section "GATT Database" for more details.
+category: "Bluetooth|Stack"
+quality: "production"
+root_path: "protocol/bluetooth"
+config_file:
+  - path: "config/sl_bt_dynamic_gattdb_config.h"
+requires:
+  - name: "bluetooth_stack"
+provides:
+  - name: "bluetooth_feature_dynamic_gattdb"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_dynamic_gattdb

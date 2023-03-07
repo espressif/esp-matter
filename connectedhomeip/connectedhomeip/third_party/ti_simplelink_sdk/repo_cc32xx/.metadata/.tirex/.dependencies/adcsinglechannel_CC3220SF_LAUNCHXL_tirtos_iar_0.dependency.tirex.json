@@ -1,0 +1,14 @@
+[
+    {
+        "files": [
+            "+../../adcsinglechannel.c -> adcsinglechannel.c",
+            "+../adcsinglechannel.syscfg -> adcsinglechannel.syscfg",
+            "+../../../../../../../source/ti/boards/CC3220SF_LAUNCHXL/Board.html -> Board.html",
+            "+cc32xxsf_tirtos.icf -> cc32xxsf_tirtos.icf",
+            "+../main_tirtos.c -> main_tirtos.c",
+            "+../../overview.rov.json -> overview.rov.json",
+            "+../../README.html -> README.html",
+            "+../../README.md -> README.md"
+        ]
+    }
+]

@@ -1,0 +1,32 @@
+package: Zigbee
+description: This is a Trust Center component that handles updating
+  the Network Key by UNICASTING that key to each device encrypted with their link
+  key. It is intended for use in Smart Energy networks. It will traverse the Trust
+  Center's local key table and sends the new NWK key to each non-sleepy device with
+  an authorized link key (a device that has successfully performed key establishment). The
+  new network key will be randomly generated. After all messages have been sent,
+  it will broadcast a key switch message.
+label: Trust Center Network Key Update Unicast
+quality: production
+id: zigbee_trust_center_nwk_key_update_unicast
+category: Zigbee|Trust Center
+provides:
+   - name: "zigbee_trust_center_nwk_key_update_unicast"
+requires:
+   - name: "zigbee_concentrator"
+source:
+  - path: protocol/zigbee/app/framework/plugin/trust-center-nwk-key-update-unicast/trust-center-nwk-key-update-unicast.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/trust-center-nwk-key-update-unicast
+    file_list:
+      - path: trust-center-nwk-key-update-unicast.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_trust_center_nwk_key_update_unicast
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emAfPluginTrustCenterNwkKeyUpdateUnicastInitCallback     
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/trust-center-nwk-key-update-unicast

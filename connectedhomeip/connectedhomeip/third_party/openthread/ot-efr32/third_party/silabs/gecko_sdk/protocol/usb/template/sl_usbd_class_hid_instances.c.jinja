@@ -1,0 +1,293 @@
+//****************************************************************************
+// Includes.
+
+#include "sl_status.h"
+#include "sl_usbd_core.h"
+#include "sl_usbd_class_hid.h"
+
+/* template headers */
+#include "sl_usbd_configuration_instances.h"
+#include "sl_usbd_class_hid_instances.h"
+
+/* include config file for the instances */
+{% for instance in usb_hid_instances %}
+#include "sl_usbd_class_{{ instance }}_config.h"
+{% endfor %}
+
+//****************************************************************************
+// Function declarations.
+
+{# Generate callback function prototypes for all instances #}
+{% for instance in usb_hid_instances %}
+/* callback prototypes for {{ instance }} instance */
+void sli_usbd_hid_{{ instance }}_enable(uint8_t class_nbr);
+
+void sli_usbd_hid_{{ instance }}_disable(uint8_t class_nbr);
+
+void sli_usbd_hid_{{ instance }}_get_report_desc(uint8_t         class_nbr,
+                                                 const uint8_t **p_report_ptr,
+                                                 uint16_t       *p_report_len);
+
+void sli_usbd_hid_{{ instance }}_get_phy_desc(uint8_t         class_nbr,
+                                              const uint8_t **p_report_ptr,
+                                              uint16_t       *p_report_len);
+
+void sli_usbd_hid_{{ instance }}_set_output_report(uint8_t   class_nbr,
+                                                   uint8_t   report_id,
+                                                   uint8_t  *p_report_buf,
+                                                   uint16_t  report_len);
+
+void sli_usbd_hid_{{ instance }}_get_feature_report(uint8_t   class_nbr,
+                                                    uint8_t   report_id,
+                                                    uint8_t  *p_report_buf,
+                                                    uint16_t  report_len);
+
+void sli_usbd_hid_{{ instance }}_set_feature_report(uint8_t   class_nbr,
+                                                    uint8_t   report_id,
+                                                    uint8_t  *p_report_buf,
+                                                    uint16_t  report_len);
+
+void sli_usbd_hid_{{ instance }}_get_protocol(uint8_t  class_nbr,
+                                              uint8_t *p_protocol);
+
+void sli_usbd_hid_{{ instance }}_set_protocol(uint8_t  class_nbr,
+                                              uint8_t  protocol);
+{% endfor %}
+
+//****************************************************************************
+// Global variables.
+
+{# Generate variables for all instances #}
+{% for instance in usb_hid_instances %}
+
+/* variables for {{ instance }} instance */
+
+uint8_t sl_usbd_hid_{{ instance }}_number = 0;
+
+uint8_t sl_usbd_hid_{{ instance }}_default_protocol = 0;
+
+static const uint8_t sli_usbd_hid_{{ instance }}_default_desc[] = {
+  SL_USBD_HID_GLOBAL_USAGE_PAGE   + 1, SL_USBD_HID_USAGE_PAGE_GENERIC_DESKTOP_CONTROLS,
+  SL_USBD_HID_LOCAL_USAGE         + 1, SL_USBD_HID_CA_MOUSE,
+  SL_USBD_HID_MAIN_COLLECTION     + 1, SL_USBD_HID_COLLECTION_APPLICATION,
+  SL_USBD_HID_LOCAL_USAGE         + 1, SL_USBD_HID_CP_POINTER,
+  SL_USBD_HID_MAIN_COLLECTION     + 1, SL_USBD_HID_COLLECTION_PHYSICAL,
+  SL_USBD_HID_GLOBAL_USAGE_PAGE   + 1, SL_USBD_HID_USAGE_PAGE_BUTTON,
+  SL_USBD_HID_LOCAL_USAGE_MIN     + 1, 0x01,
+  SL_USBD_HID_LOCAL_USAGE_MAX     + 1, 0x03,
+  SL_USBD_HID_GLOBAL_LOG_MIN      + 1, 0x00,
+  SL_USBD_HID_GLOBAL_LOG_MAX      + 1, 0x01,
+  SL_USBD_HID_GLOBAL_REPORT_COUNT + 1, 0x03,
+  SL_USBD_HID_GLOBAL_REPORT_SIZE  + 1, 0x01,
+  SL_USBD_HID_MAIN_INPUT          + 1, SL_USBD_HID_MAIN_DATA | SL_USBD_HID_MAIN_VARIABLE | SL_USBD_HID_MAIN_ABSOLUTE,
+  SL_USBD_HID_GLOBAL_REPORT_COUNT + 1, 0x01,
+  SL_USBD_HID_GLOBAL_REPORT_SIZE  + 1, 0x0D,
+  SL_USBD_HID_MAIN_INPUT          + 1, SL_USBD_HID_MAIN_CONSTANT,
+  SL_USBD_HID_GLOBAL_USAGE_PAGE   + 1, SL_USBD_HID_USAGE_PAGE_GENERIC_DESKTOP_CONTROLS,
+  SL_USBD_HID_LOCAL_USAGE         + 1, SL_USBD_HID_DV_X,
+  SL_USBD_HID_LOCAL_USAGE         + 1, SL_USBD_HID_DV_Y,
+  SL_USBD_HID_GLOBAL_LOG_MIN      + 1, 0x81,
+  SL_USBD_HID_GLOBAL_LOG_MAX      + 1, 0x7F,
+  SL_USBD_HID_GLOBAL_REPORT_SIZE  + 1, 0x08,
+  SL_USBD_HID_GLOBAL_REPORT_COUNT + 1, 0x02,
+  SL_USBD_HID_MAIN_INPUT          + 1, SL_USBD_HID_MAIN_DATA | SL_USBD_HID_MAIN_VARIABLE | SL_USBD_HID_MAIN_RELATIVE,
+  SL_USBD_HID_MAIN_ENDCOLLECTION,
+  SL_USBD_HID_MAIN_ENDCOLLECTION
+};
+
+sl_usbd_hid_callbacks_t sli_usbd_hid_{{ instance }}_callbacks = {
+  sli_usbd_hid_{{ instance }}_enable,
+  sli_usbd_hid_{{ instance }}_disable,
+  sli_usbd_hid_{{ instance }}_get_report_desc,
+  sli_usbd_hid_{{ instance }}_get_phy_desc,
+  sli_usbd_hid_{{ instance }}_set_output_report,
+  sli_usbd_hid_{{ instance }}_get_feature_report,
+  sli_usbd_hid_{{ instance }}_set_feature_report,
+  sli_usbd_hid_{{ instance }}_get_protocol,
+  sli_usbd_hid_{{ instance }}_set_protocol,
+};
+
+{% endfor %}
+
+//****************************************************************************
+// Callback functions.
+
+{# Generate callback functions for all instances #}
+{% for instance in usb_hid_instances %}
+/* callback functions for {{ instance }} instance */
+void sli_usbd_hid_{{ instance }}_enable(uint8_t class_nbr)
+{
+  (void)&class_nbr;
+
+  sl_usbd_hid_{{ instance }}_on_enable_event();
+
+  return;
+}
+
+void sli_usbd_hid_{{ instance }}_disable(uint8_t class_nbr)
+{
+  (void)&class_nbr;
+
+  sl_usbd_hid_{{ instance }}_on_disable_event();
+
+  return;
+}
+
+void sli_usbd_hid_{{ instance }}_get_report_desc(uint8_t         class_nbr,
+                                                 const uint8_t **p_report_ptr,
+                                                 uint16_t       *p_report_len)
+{
+  (void)&class_nbr;
+
+  *p_report_ptr = sli_usbd_hid_{{ instance }}_default_desc;
+  *p_report_len = sizeof(sli_usbd_hid_{{ instance }}_default_desc);
+
+  sl_usbd_hid_{{ instance }}_on_get_report_desc_event(p_report_ptr, p_report_len);
+
+  return;
+}
+
+void sli_usbd_hid_{{ instance }}_get_phy_desc(uint8_t         class_nbr,
+                                              const uint8_t **p_report_ptr,
+                                              uint16_t       *p_report_len)
+{
+  (void)&class_nbr;
+
+  *p_report_ptr = NULL;
+  *p_report_len = 0;
+
+  sl_usbd_hid_{{ instance }}_on_get_phy_desc_event(p_report_ptr, p_report_len);
+
+  return;
+}
+
+void sli_usbd_hid_{{ instance }}_set_output_report(uint8_t   class_nbr,
+                                                    uint8_t   report_id,
+                                                    uint8_t  *p_report_buf,
+                                                    uint16_t  report_len)
+{
+  (void)&class_nbr;
+
+  sl_usbd_hid_{{ instance }}_on_set_output_report_event(report_id, p_report_buf, report_len);
+
+  return;
+}
+
+
+void sli_usbd_hid_{{ instance }}_get_feature_report(uint8_t   class_nbr,
+                                                    uint8_t   report_id,
+                                                    uint8_t  *p_report_buf,
+                                                    uint16_t  report_len)
+{
+  (void)&class_nbr;
+
+  memset(p_report_buf, 0, report_len);
+
+  sl_usbd_hid_{{ instance }}_on_get_feature_report_event(report_id, p_report_buf, report_len);
+
+  return;
+}
+
+void sli_usbd_hid_{{ instance }}_set_feature_report(uint8_t   class_nbr,
+                                                    uint8_t   report_id,
+                                                    uint8_t  *p_report_buf,
+                                                    uint16_t  report_len)
+{
+  (void)&class_nbr;
+
+  sl_usbd_hid_{{ instance }}_on_set_feature_report_event(report_id, p_report_buf, report_len);
+
+  return;
+}
+
+void sli_usbd_hid_{{ instance }}_get_protocol(uint8_t  class_nbr,
+                                              uint8_t *p_protocol)
+{
+  (void)&class_nbr;
+
+  *p_protocol = sl_usbd_hid_{{ instance }}_default_protocol;
+
+  sl_usbd_hid_{{ instance }}_on_get_protocol_event(p_protocol);
+
+  return;
+}
+
+void sli_usbd_hid_{{ instance }}_set_protocol(uint8_t  class_nbr,
+                                              uint8_t  protocol)
+{
+  (void)&class_nbr;
+
+  sl_usbd_hid_{{ instance }}_default_protocol = protocol;
+
+  sl_usbd_hid_{{ instance }}_on_set_protocol_event(protocol);
+
+  return;
+}
+{% endfor %}
+
+//****************************************************************************
+// Global functions.
+
+{# Generate initialization functions for all configurations #}
+{% for instance in usb_hid_instances %}
+/* initialize {{ instance }} instance */
+void sli_usbd_hid_{{ instance }}_init()
+{
+  sl_usbd_hid_country_code_t country = SL_USBD_HID_COUNTRY_CODE_NOT_SUPPORTED;
+
+  uint8_t   subclass        = 0;
+  uint8_t   protocol        = 0;
+
+  uint16_t  interval_in     = 0;
+  uint16_t  interval_out    = 0;
+  bool      ctrl_rd_en      = true;
+
+  uint8_t   class_number    = 0;
+  uint8_t   config_number   = 0;
+  char     *configs         = NULL;
+  char     *token           = NULL;
+
+  /* configs to attach the class instance to */
+  configs = SL_USBD_HID_{{ instance | upper }}_CONFIGURATIONS;
+
+  /* read subclass, protocol, and country codes */
+  subclass = SL_USBD_HID_{{ instance | upper }}_SUBCLASS;
+  protocol = SL_USBD_HID_{{ instance | upper }}_PROTOCOL;
+  country  = SL_USBD_HID_{{ instance | upper }}_COUNTRY_CODE;
+
+  /* read endpoint parameters */
+  interval_in  = SL_USBD_HID_{{ instance | upper }}_INTERVAL_IN;
+  interval_out = SL_USBD_HID_{{ instance | upper }}_INTERVAL_OUT;
+  ctrl_rd_en   = SL_USBD_HID_{{ instance | upper }}_ENABLE_CTRL_RD;
+
+  /* create HID instance */
+  sl_usbd_hid_create_instance(subclass,
+                              protocol,
+                              country,
+                              interval_in,
+                              interval_out,
+                              ctrl_rd_en,
+                              &sli_usbd_hid_{{ instance }}_callbacks,
+                              &class_number);
+
+  /* store class number globally */
+  sl_usbd_hid_{{ instance }}_number = class_number;
+
+  /* tokenize configs by "," and spaces */
+  token = strtok(configs, ", ");
+
+  /* loop over tokens */
+  while (token != NULL) {
+    {% for cfg in usb_configuration_instances %}
+    /* add to {{ cfg }}? */
+    if (!strcmp(token, "{{ cfg }}") || !strcmp(token, "all")) {
+      config_number = sl_usbd_configuration_{{ cfg }}_number;
+      sl_usbd_hid_add_to_configuration(class_number, config_number);
+    }
+    {% endfor %}
+
+    /* next token */
+    token = strtok(NULL, ", ");
+  }
+}
+{% endfor %}

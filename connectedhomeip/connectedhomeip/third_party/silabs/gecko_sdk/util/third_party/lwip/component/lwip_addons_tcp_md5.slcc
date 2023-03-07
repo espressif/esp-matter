@@ -1,0 +1,18 @@
+id: lwip_addons_tcp_md5
+label: "TCP MD5"
+pretty_name : "TCP md5"
+package: platform
+description: >
+  TCP md5 addon.
+category: LwIP|Addons
+quality: production
+provides:
+  - name: lwip_addons_tcp_md5
+requires:
+  - name: lwip_core
+source:
+  - path: util/third_party/lwip/lwip-contrib/addons/tcp_md5/tcp_md5.c
+include:
+  - path: util/third_party/lwip/lwip-contrib/addons/tcp_md5
+    file_list:
+    - path: tcp_md5.h

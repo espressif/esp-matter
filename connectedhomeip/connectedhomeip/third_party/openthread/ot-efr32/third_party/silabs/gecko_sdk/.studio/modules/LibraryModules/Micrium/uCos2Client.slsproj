@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="com.silabs.sdk.exx32.external.uCos2" label="Micrium uC/OS II" contentRoot="$(sdkInstallationPath:default())/util/third_party/micrium/uCOS-II">
+  <property key="category" value="efm32|Third party"/>
+  <includePath uri="uC-CPU" />
+  <includePath uri="uC-LIB" />
+  <includePath uri="uCOS-II/Source" />
+
+  <folder name="uC-CPU" uri="uC-CPU" includeAllFiles="true" includeAllFolders="false" />
+  <!-- uC/CPU ARM-Cortex-M0+ -->
+  <!-- GCC -->
+  <includePath uri="uC-CPU/ARM-Cortex-M0/GNU" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="com.silabs.ide.si32.gcc" />
+  <folder name="uC-CPU/ARM-Cortex-M0/GNU" uri="uC-CPU/ARM-Cortex-M0/GNU" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="com.silabs.ide.si32.gcc" />
+  <!-- IAR -->
+  <includePath uri="uC-CPU/ARM-Cortex-M0/IAR" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="com.silabs.ide.si32.iar" />
+  <folder name="uC-CPU/ARM-Cortex-M0/IAR" uri="uC-CPU/ARM-Cortex-M0/IAR" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="com.silabs.ide.si32.iar" />
+  <!-- uC/CPU ARM-Cortex-M3 -->
+  <!-- GCC -->
+  <includePath uri="uC-CPU/ARM-Cortex-M3/GNU" partCompatibility="::ARMCore==CORTEX_M3" toolchainCompatibility="com.silabs.ide.si32.gcc" />
+  <folder name="uC-CPU/ARM-Cortex-M3/GNU" uri="uC-CPU/ARM-Cortex-M3/GNU" partCompatibility="::ARMCore==CORTEX_M3" toolchainCompatibility="com.silabs.ide.si32.gcc" />
+  <!-- IAR -->
+  <includePath uri="uC-CPU/ARM-Cortex-M3/IAR" partCompatibility="::ARMCore==CORTEX_M3" toolchainCompatibility="com.silabs.ide.si32.iar" />
+  <folder name="uC-CPU/ARM-Cortex-M3/IAR" uri="uC-CPU/ARM-Cortex-M3/IAR" partCompatibility="::ARMCore==CORTEX_M3" toolchainCompatibility="com.silabs.ide.si32.iar" />
+  <!-- uC/CPU ARM-Cortex-M4 -->
+  <!-- GCC -->
+  <includePath uri="uC-CPU/ARM-Cortex-M4/GNU" partCompatibility="::ARMCore==CORTEX_M4F" toolchainCompatibility="com.silabs.ide.si32.gcc" />
+  <folder name="uC-CPU/ARM-Cortex-M4/GNU" uri="uC-CPU/ARM-Cortex-M4/GNU" partCompatibility="::ARMCore==CORTEX_M4F" toolchainCompatibility="com.silabs.ide.si32.gcc" />
+  <!-- IAR -->
+  <includePath uri="uC-CPU/ARM-Cortex-M4/IAR" partCompatibility="::ARMCore==CORTEX_M4F" toolchainCompatibility="com.silabs.ide.si32.iar" />
+  <folder name="uC-CPU/ARM-Cortex-M4/IAR" uri="uC-CPU/ARM-Cortex-M4/IAR" partCompatibility="::ARMCore==CORTEX_M4F" toolchainCompatibility="com.silabs.ide.si32.iar" />
+  
+  <folder name="uC-LIB" uri="uC-LIB" includeAllFiles="true" includeAllFolders="false" />
+  <!-- uC/LIB ARM-Cortex-M0+ -->
+  <!-- GCC -->
+  <folder name="uC-LIB/Ports/ARM-Cortex-M0/GNU" uri="uC-LIB/Ports/ARM-Cortex-M0/GNU" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="com.silabs.ide.si32.gcc" />
+  <!-- IAR -->
+  <folder name="uC-LIB/Ports/ARM-Cortex-M0/IAR" uri="uC-LIB/Ports/ARM-Cortex-M0/IAR" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="com.silabs.ide.si32.iar" />
+  <!-- uC/LIB ARM-Cortex-M3 -->
+  <!-- GCC -->
+  <folder name="uC-LIB/Ports/ARM-Cortex-M3/GNU" uri="uC-LIB/Ports/ARM-Cortex-M3/GNU" partCompatibility="::ARMCore==CORTEX_M3" toolchainCompatibility="com.silabs.ide.si32.gcc" />
+  <!-- IAR -->
+  <folder name="uC-LIB/Ports/ARM-Cortex-M3/IAR" uri="uC-LIB/Ports/ARM-Cortex-M3/IAR" partCompatibility="::ARMCore==CORTEX_M3" toolchainCompatibility="com.silabs.ide.si32.iar" />
+  <!-- uC/LIB ARM-Cortex-M4 -->
+  <!-- GCC -->
+  <folder name="uC-LIB/Ports/ARM-Cortex-M4/GNU" uri="uC-LIB/Ports/ARM-Cortex-M4/GNU" partCompatibility="::ARMCore==CORTEX_M4F" toolchainCompatibility="com.silabs.ide.si32.gcc" />
+  <!-- IAR -->
+  <folder name="uC-LIB/Ports/ARM-Cortex-M4/IAR" uri="uC-LIB/Ports/ARM-Cortex-M4/IAR" partCompatibility="::ARMCore==CORTEX_M4F" toolchainCompatibility="com.silabs.ide.si32.iar" />
+
+  <folder name="uCOS-II" uri="uCOS-II/Source" includeAllFiles="true" includeAllFolders="false" />
+  <!-- uC/OS-II ARM-Cortex-M0+ -->
+  <!-- GCC -->
+  <includePath uri="uCOS-II/Ports/ARM-Cortex-M0/Generic/GNU" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="com.silabs.ide.si32.gcc" />
+  <folder name="uCOS-II/Ports/ARM-Cortex-M0/Generic/GNU" uri="uCOS-II/Ports/ARM-Cortex-M0/Generic/GNU" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="com.silabs.ide.si32.gcc" />
+  <!-- IAR -->
+  <includePath uri="uCOS-II/Ports/ARM-Cortex-M0/Generic/IAR" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="com.silabs.ide.si32.iar" />
+  <folder name="uCOS-II/Ports/ARM-Cortex-M0/Generic/IAR" uri="uCOS-II/Ports/ARM-Cortex-M0/Generic/IAR" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="com.silabs.ide.si32.iar" />
+  <!-- uC/OS-II ARM-Cortex-M3 -->
+  <!-- GCC -->
+  <includePath uri="uCOS-II/Ports/ARM-Cortex-M3/Generic/GNU" partCompatibility="::ARMCore==CORTEX_M3" toolchainCompatibility="com.silabs.ide.si32.gcc" />
+  <folder name="uCOS-II/Ports/ARM-Cortex-M3/Generic/GNU" uri="uCOS-II/Ports/ARM-Cortex-M3/Generic/GNU" partCompatibility="::ARMCore==CORTEX_M3" toolchainCompatibility="com.silabs.ide.si32.gcc" />
+  <!-- IAR -->
+  <includePath uri="uCOS-II/Ports/ARM-Cortex-M3/Generic/IAR" partCompatibility="::ARMCore==CORTEX_M3" toolchainCompatibility="com.silabs.ide.si32.iar" />
+  <folder name="uCOS-II/Ports/ARM-Cortex-M3/Generic/IAR" uri="uCOS-II/Ports/ARM-Cortex-M3/Generic/IAR" partCompatibility="::ARMCore==CORTEX_M3" toolchainCompatibility="com.silabs.ide.si32.iar" />
+  <!-- uC/OS-III ARM-Cortex-M4 -->
+  <!-- GCC -->
+  <includePath uri="uCOS-II/Ports/ARM-Cortex-M/ARMv7-M/GNU" partCompatibility="::ARMCore==CORTEX_M4F" toolchainCompatibility="com.silabs.ide.si32.gcc" />
+  <folder name="uCOS-II/Ports/ARM-Cortex-M/ARMv7-M/GNU" uri="uCOS-II/Ports/ARM-Cortex-M/ARMv7-M/GNU" partCompatibility="::ARMCore==CORTEX_M4F" toolchainCompatibility="com.silabs.ide.si32.gcc" />
+  <!-- IAR -->
+  <includePath uri="uCOS-II/Ports/ARM-Cortex-M/ARMv7-M/IAR" partCompatibility="::ARMCore==CORTEX_M4F" toolchainCompatibility="com.silabs.ide.si32.iar" />
+  <folder name="uCOS-II/Ports/ARM-Cortex-M/ARMv7-M/IAR" uri="uCOS-II/Ports/ARM-Cortex-M/ARMv7-M/IAR" partCompatibility="::ARMCore==CORTEX_M4F" toolchainCompatibility="com.silabs.ide.si32.iar" />
+  
+</project>

@@ -1,0 +1,78 @@
+# Copyright (c) 2020 Project CHIP Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build_overrides/build.gni")
+import("//build_overrides/chip.gni")
+import("//build_overrides/nlunit_test.gni")
+
+import("${chip_root}/build/chip/chip_test_suite.gni")
+
+chip_test_suite("tests") {
+  output_name = "libSupportTests"
+
+  test_sources = [
+    "TestBitMask.cpp",
+    "TestBufferReader.cpp",
+    "TestBufferWriter.cpp",
+    "TestBytesCircularBuffer.cpp",
+    "TestBytesToHex.cpp",
+    "TestCHIPCounter.cpp",
+    "TestCHIPMem.cpp",
+    "TestCHIPMemString.cpp",
+    "TestDefer.cpp",
+    "TestErrorStr.cpp",
+    "TestFixedBufferAllocator.cpp",
+    "TestFold.cpp",
+    "TestIniEscaping.cpp",
+    "TestIntrusiveList.cpp",
+    "TestOwnerOf.cpp",
+    "TestPersistedCounter.cpp",
+    "TestPool.cpp",
+    "TestPrivateHeap.cpp",
+    "TestSafeInt.cpp",
+    "TestSafeString.cpp",
+    "TestScopedBuffer.cpp",
+    "TestSerializableIntegerSet.cpp",
+    "TestSpan.cpp",
+    "TestStateMachine.cpp",
+    "TestStringBuilder.cpp",
+    "TestTestPersistentStorageDelegate.cpp",
+    "TestThreadOperationalDataset.cpp",
+    "TestTimeUtils.cpp",
+    "TestTlvToJson.cpp",
+    "TestVariant.cpp",
+    "TestZclString.cpp",
+  ]
+  sources = []
+
+  if (current_os != "mbed") {
+    test_sources += [ "TestCHIPArgParser.cpp" ]
+  }
+
+  cflags = [
+    "-Wconversion",
+
+    # TODO(#21255): work-around for SimpleStateMachine constructor issue.
+    "-Wno-uninitialized",
+  ]
+
+  public_deps = [
+    "${chip_root}/src/credentials",
+    "${chip_root}/src/lib/core",
+    "${chip_root}/src/lib/support:testing",
+    "${chip_root}/src/lib/support/jsontlv",
+    "${chip_root}/src/platform",
+    "${nlunit_test_root}:nlunit-test",
+  ]
+}

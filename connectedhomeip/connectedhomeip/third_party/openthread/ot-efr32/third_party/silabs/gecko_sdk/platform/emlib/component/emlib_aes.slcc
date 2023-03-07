@@ -1,0 +1,37 @@
+id: emlib_aes
+label: AES
+package: platform
+description: >
+  AES Accelerator Peripheral API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_aes.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_aes.h"
+    - path: "em_aes_compat.h"
+provides:
+  - name: emlib_aes
+requires:
+  - name: device
+  - name: device_has_aes
+  - name: emlib_common
+  - name: cmsis_core
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efm32g/group-aes
+      condition: [device_sdid_71]
+    - page: emlib/api/efm32gg/group-aes
+      condition: [device_sdid_72]
+    - page: emlib/api/efm32tg/group-aes
+      condition: [device_sdid_73]
+    - page: emlib/api/efm32lg/group-aes
+      condition: [device_sdid_74]
+    - page: emlib/api/efm32zg/group-aes
+      condition: [device_sdid_76]
+    - page: emlib/api/efm32hg/group-aes
+      condition: [device_sdid_77]

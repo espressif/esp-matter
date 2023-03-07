@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectSpec>
+    <applicability>
+        <when>
+            <context
+                deviceFamily="ARM"
+                deviceId="Cortex M.CC1352R1F3"
+            />
+        </when>
+    </applicability>
+
+
+    <project
+        title="FreeRTOS Library"
+        name="freertos_builds_CC1352R1_LAUNCHXL_release_gcc"
+        configurations="
+        Debug,
+        "
+        toolChain="GNU"
+        cgtVersion="GNU_9.0"
+        outputType="staticLibrary"
+        artifactName="freertos_builds_CC1352R1_LAUNCHXL_release_gcc"
+        artifactExtension="a"
+        device="Cortex M.CC1352R1F3"
+        ignoreDefaultDeviceSettings="true"
+        ignoreDefaultCCSSettings="true"
+        products="com.ti.SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV;com.ti.rtsc.XDCtools;"
+        xdcToolsVersion="3.62.00.08"
+        compilerBuildOptions="
+            -I${PROJECT_ROOT}
+            -I${PROJECT_ROOT}/${ConfigName}
+            -DCC13XX
+            -DCC13X2
+            -DCC13X2R1_LAUNCHXL
+            -DDeviceFamily_CC13X2
+            -DFREERTOS
+            -mcpu=cortex-m4
+            -march=armv7e-m
+            -mthumb
+            -std=c99
+            -mfloat-abi=hard
+            -mfpu=fpv4-sp-d16
+            -ffunction-sections
+            -fdata-sections
+            -fno-builtin-malloc
+            -g
+            -gstrict-dwarf
+            -Wall
+            --specs=nano.specs
+            -I${FREERTOS_INSTALL_DIR}/FreeRTOS/Source/include
+            -I${FREERTOS_INSTALL_DIR}/FreeRTOS/Source/portable/GCC/ARM_CM4F
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/posix/gcc
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/dmm/apps/common/freertos/
+            -I${CG_TOOL_ROOT}/arm-none-eabi/include/newlib-nano
+            -I${CG_TOOL_ROOT}/arm-none-eabi/include
+            -I${WORKSPACE_LOC}/
+        "
+        compilerBuildOptions_c="-std=c99"
+        compilerBuildOptions_cpp="-std=c++11"
+        linkerBuildOptions="
+             -L${WORKSPACE_LOC}//Debug
+             -l:lib.a
+             -march=armv7e-m
+             -mthumb
+             -mfloat-abi=hard
+             -mfpu=fpv4-sp-d16
+             -nostartfiles
+             -static
+             -Wl,--gc-sections
+             -L${CG_TOOL_ROOT}/arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard
+             -lgcc
+             -lc
+             -lm
+             -lnosys
+             --specs=nano.specs
+        "
+        preBuildStep="
+        "
+        postBuildStep="
+            
+        "
+        enableSysConfigTool="true"
+        sysConfigBuildOptions="--product ${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/.metadata/product.json --compiler gcc"
+        description="FreeRTOS Library">
+
+        <property name="buildProfile" value="release"/>
+        <property name="isHybrid" value="true"/>
+        <group id="freertos_builds.SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV.CC1352R1_LAUNCHXL.dmm.GCC"/>
+        <file path="${FREERTOS_INSTALL_DIR}/FreeRTOS/Source/portable/GCC/ARM_CM4F/portmacro.h" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="freertos/portable/GCC/ARM_CM4F/">
+        </file>
+        <file path="${FREERTOS_INSTALL_DIR}/FreeRTOS/Source/portable/GCC/ARM_CM4F/port.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="freertos/portable/GCC/ARM_CM4F/">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/boards/CC1352R1_LAUNCHXL/../../../../kernel/freertos/startup/startup_cc13x2_cc26x2_gcc.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="freertos/startup">
+        </file>
+        <file path="${FREERTOS_INSTALL_DIR}/FreeRTOS/Source/croutine.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="freertos">
+        </file>
+        <file path="${FREERTOS_INSTALL_DIR}/FreeRTOS/Source/event_groups.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="freertos">
+        </file>
+        <file path="${FREERTOS_INSTALL_DIR}/FreeRTOS/Source/list.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="freertos">
+        </file>
+        <file path="${FREERTOS_INSTALL_DIR}/FreeRTOS/Source/queue.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="freertos">
+        </file>
+        <file path="${FREERTOS_INSTALL_DIR}/FreeRTOS/Source/stream_buffer.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="freertos">
+        </file>
+        <file path="${FREERTOS_INSTALL_DIR}/FreeRTOS/Source/tasks.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="freertos">
+        </file>
+        <file path="${FREERTOS_INSTALL_DIR}/FreeRTOS/Source/timers.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="freertos">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/dmm/apps/../../../../source/ti/posix/freertos/clock.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="posix">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/dmm/apps/../../../../source/ti/posix/freertos/sleep.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="posix">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/dmm/apps/../../../../source/ti/posix/freertos/memory.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="posix">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/dmm/apps/../../../../source/ti/posix/freertos/mqueue.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="posix">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/dmm/apps/../../../../source/ti/posix/freertos/pthread_barrier.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="posix">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/dmm/apps/../../../../source/ti/posix/freertos/pthread_cond.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="posix">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/dmm/apps/../../../../source/ti/posix/freertos/pthread.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="posix">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/dmm/apps/../../../../source/ti/posix/freertos/pthread_mutex.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="posix">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/dmm/apps/../../../../source/ti/posix/freertos/pthread_rwlock.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="posix">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/dmm/apps/../../../../source/ti/posix/freertos/semaphore.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="posix">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/dmm/apps/../../../../source/ti/posix/freertos/timer.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="posix">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/dmm/apps/../../../../kernel/freertos/dpl/ClockPCC26X2_freertos.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="dpl">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/dmm/apps/../../../../kernel/freertos/dpl/DebugP_freertos.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="dpl">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/dmm/apps/../../../../kernel/freertos/dpl/MutexP_freertos.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="dpl">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/dmm/apps/../../../../kernel/freertos/dpl/SemaphoreP_freertos.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="dpl">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/dmm/apps/../../../../kernel/freertos/dpl/SystemP_freertos.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="dpl">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/dmm/apps/../../../../kernel/freertos/dpl/HwiPCC26X2_freertos.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="dpl">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/dmm/apps/../../../../kernel/freertos/dpl/PowerCC26X2_freertos.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="dpl">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/dmm/apps/../../../../kernel/freertos/dpl/QueueP_freertos.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="dpl">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/dmm/apps/../../../../kernel/freertos/dpl/StaticAllocs_freertos.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="dpl">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/dmm/apps/../../../../kernel/freertos/dpl/SwiP_freertos.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="dpl">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/dmm/apps/../../../../kernel/freertos/dpl/TimerPCC26XX_freertos.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="dpl">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_DMM_DEV_INSTALL_DIR}/source/ti/dmm/apps/../../../../source/ti/dmm/apps/common/freertos/FreeRTOSConfig.h" openOnCreation="false" excludeFromBuild="false" action="link">
+        </file>
+    </project>
+</projectSpec>
+

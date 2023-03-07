@@ -1,0 +1,9 @@
+package/lib/lib/ticlang/m4/drivers_cc32xx/UART2.om4: UART2.c /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/DebugP.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/HwiP.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/UART2.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/uart2/UART2Support.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/ClockP.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/SemaphoreP.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/utils/RingBuf.h 
+UART2.c:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/DebugP.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/HwiP.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/UART2.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/uart2/UART2Support.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/ClockP.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/SemaphoreP.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/utils/RingBuf.h:

@@ -1,0 +1,25 @@
+id: psa_crypto_sha384
+package: platform
+label: SHA-384
+description: >-
+  This component provides support for the SHA-384 hash algorithm in PSA Crypto.
+category: Platform|Security|PSA Crypto|Hashing
+quality: production
+provides:
+  - name: psa_crypto_sha384
+requires:
+  - name: psa_crypto
+  - name: mbedtls_sha512
+    condition: [device_series_0]
+  - name: mbedtls_sha512
+    condition: [device_series_1]
+  - name: mbedtls_sha512
+    condition: [device_security_se]
+  - name: mbedtls_sha512
+    condition: [device_security_rot]
+template_contribution:
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_SHA_384
+  - name: psa_crypto_config
+    value: "MBEDTLS_PSA_BUILTIN_ALG_SHA_384 1"
+    condition: [mbedtls_sha512]

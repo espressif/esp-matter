@@ -1,0 +1,251 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/python.gni")
+import("$dir_pw_build/python_action.gni")
+
+# Defines and creates a Python virtualenv. This template is used by Pigweed in
+# https://cs.pigweed.dev/pigweed/+/main:pw_env_setup/BUILD.gn to
+# create a virtualenv for use within the GN build that all Python actions will
+# run in.
+#
+# Example:
+#
+#   pw_python_venv("test_venv") {
+#     path = "test-venv"
+#     constraints = [ "//tools/constraints.list" ]
+#     requirements = [ "//tools/requirements.txt" ]
+#     source_packages = [
+#       "$dir_pw_cli/py",
+#       "$dir_pw_console/py",
+#       "//tools:another_pw_python_package",
+#     ]
+#   }
+#
+# Args:
+#   path: The directory where the virtualenv will be created. This is relative
+#     to the GN root and must begin with "$root_build_dir/" if it lives in the
+#     output directory or "//" if it lives in elsewhere.
+#
+#   constraints: A list of constraint files used when performing pip install
+#     into this virtualenv. By default this is set to pw_build_PIP_CONSTRAINTS
+#
+#   requirements: A list of requirements files to install into this virtualenv
+#     on creation. By default this is set to pw_build_PIP_REQUIREMENTS
+#
+#   source_packages: A list of in-tree pw_python_package targets that will be
+#     checked for external third_party pip dependencies to install into this
+#     virtualenv. Note this list of targets isn't actually installed into the
+#     virtualenv. Only packages defined inside the [options] install_requires
+#     section of each pw_python_package's setup.cfg will be pip installed. See
+#     this page for a setup.cfg example:
+#     https://setuptools.pypa.io/en/latest/userguide/declarative_config.html
+#
+template("pw_python_venv") {
+  assert(defined(invoker.path), "pw_python_venv requires a 'path'")
+
+  _path = invoker.path
+
+  _generated_requirements_file =
+      "$target_gen_dir/$target_name/generated_requirements.txt"
+
+  _source_packages = []
+  if (defined(invoker.source_packages)) {
+    _source_packages += invoker.source_packages
+  } else {
+    not_needed([
+                 "_source_packages",
+                 "_generated_requirements_file",
+               ])
+  }
+
+  _source_package_labels = []
+  foreach(pkg, _source_packages) {
+    _source_package_labels += [ get_label_info(pkg, "label_no_toolchain") ]
+  }
+
+  if (defined(invoker.requirements)) {
+    _requirements = invoker.requirements
+  } else {
+    _requirements = pw_build_PIP_REQUIREMENTS
+  }
+
+  if (defined(invoker.constraints)) {
+    _constraints = invoker.constraints
+  } else {
+    _constraints = pw_build_PIP_CONSTRAINTS
+  }
+
+  _python_interpreter = _path + "/bin/python"
+  if (host_os == "win") {
+    _python_interpreter = _path + "/Scripts/python.exe"
+  }
+
+  _venv_metadata_json_file = "$target_gen_dir/$target_name/venv_metadata.json"
+  _venv_metadata = {
+    gn_target_name =
+        get_label_info(":${invoker.target_name}", "label_no_toolchain")
+    path = rebase_path(_path, root_build_dir)
+    generated_requirements =
+        rebase_path(_generated_requirements_file, root_build_dir)
+    requirements = rebase_path(_requirements, root_build_dir)
+    constraints = rebase_path(_constraints, root_build_dir)
+    interpreter = rebase_path(_python_interpreter, root_build_dir)
+    source_packages = _source_package_labels
+  }
+  write_file(_venv_metadata_json_file, _venv_metadata, "json")
+
+  pw_python_action("${target_name}._create_virtualenv") {
+    _pw_internal_run_in_venv = false
+
+    # Note: The if the venv isn't in the out dir then we can't declare
+    # outputs and must stamp instead.
+    stamp = true
+
+    script = "$dir_pw_build/py/pw_build/create_gn_venv.py"
+    args = [
+      "--destination-dir",
+      rebase_path(_path, root_build_dir),
+    ]
+  }
+
+  if (defined(invoker.source_packages) &&
+      current_toolchain == pw_build_PYTHON_TOOLCHAIN) {
+    pw_python_action("${target_name}._generate_3p_requirements") {
+      inputs = _requirements + _constraints
+
+      _pw_internal_run_in_venv = false
+      _forward_python_metadata_deps = true
+
+      script = "$dir_pw_build/py/pw_build/generate_python_requirements.py"
+
+      _pkg_gn_labels = []
+      foreach(pkg, _source_packages) {
+        _pkg_gn_labels += [ get_label_info(pkg, "label_no_toolchain") +
+                            "($pw_build_PYTHON_TOOLCHAIN)" ]
+      }
+
+      # pw_build/py is always needed for venv creation and Python lint checks.
+      python_metadata_deps =
+          [ get_label_info("$dir_pw_build/py", "label_no_toolchain") +
+            "($pw_build_PYTHON_TOOLCHAIN)" ]
+      python_metadata_deps += _pkg_gn_labels
+
+      args = [
+        "--requirement",
+        rebase_path(_generated_requirements_file, root_build_dir),
+      ]
+      args += [
+        "--gn-packages",
+        string_join(",", _pkg_gn_labels),
+      ]
+
+      outputs = [ _generated_requirements_file ]
+      deps = [ ":${invoker.target_name}._create_virtualenv($pw_build_PYTHON_TOOLCHAIN)" ]
+    }
+  } else {
+    group("${target_name}._generate_3p_requirements") {
+    }
+  }
+
+  if (defined(invoker.source_packages) || defined(invoker.requirements)) {
+    if (current_toolchain == pw_build_PYTHON_TOOLCHAIN) {
+      # This target will run 'pip install wheel' in the venv. This is purposely
+      # run before further pip installs so packages that run bdist_wheel as part
+      # of their install process will succeed. Packages that run native compiles
+      # typically do this.
+      pw_python_action("${target_name}._install_base_3p_deps") {
+        module = "pip"
+        _pw_internal_run_in_venv = true
+        _skip_installing_external_python_deps = true
+        args = [
+          "install",
+          "wheel",
+        ]
+        inputs = _constraints
+
+        foreach(_constraints_file, _constraints) {
+          args += [
+            "--constraint",
+            rebase_path(_constraints_file, root_build_dir),
+          ]
+        }
+
+        deps = [ ":${invoker.target_name}._create_virtualenv($pw_build_PYTHON_TOOLCHAIN)" ]
+        stamp = true
+        pool = "$dir_pw_build/pool:pip($default_toolchain)"
+      }
+
+      # Install all 3rd party Python dependencies.
+      pw_python_action("${target_name}._install_3p_deps") {
+        module = "pip"
+        _pw_internal_run_in_venv = true
+        _skip_installing_external_python_deps = true
+        args = [ "install" ]
+
+        # Note: --no-build-isolation should be avoided for installing 3rd party
+        # Python packages that use C/C++ extension modules.
+        # https://setuptools.pypa.io/en/latest/userguide/ext_modules.html
+        inputs = _constraints + _requirements
+
+        # Constraints
+        foreach(_constraints_file, _constraints) {
+          args += [
+            "--constraint",
+            rebase_path(_constraints_file, root_build_dir),
+          ]
+        }
+
+        # Extra requirements files
+        foreach(_requirements_file, _requirements) {
+          args += [
+            "--requirement",
+            rebase_path(_requirements_file, root_build_dir),
+          ]
+        }
+
+        # Generated Python requirements file.
+        if (defined(invoker.source_packages)) {
+          inputs += [ _generated_requirements_file ]
+          args += [
+            "--requirement",
+            rebase_path(_generated_requirements_file, root_build_dir),
+          ]
+        }
+
+        deps = [
+          ":${invoker.target_name}._generate_3p_requirements($pw_build_PYTHON_TOOLCHAIN)",
+          ":${invoker.target_name}._install_base_3p_deps($pw_build_PYTHON_TOOLCHAIN)",
+        ]
+        stamp = true
+        pool = "$dir_pw_build/pool:pip($default_toolchain)"
+      }
+    } else {
+      group("${target_name}._install_3p_deps") {
+        public_deps = [ ":${target_name}($pw_build_PYTHON_TOOLCHAIN)" ]
+      }
+    }
+  } else {
+    group("${target_name}._install_3p_deps") {
+    }
+  }
+
+  # Have this target directly depend on _install_3p_deps
+  group("$target_name") {
+    public_deps =
+        [ ":${target_name}._install_3p_deps($pw_build_PYTHON_TOOLCHAIN)" ]
+  }
+}

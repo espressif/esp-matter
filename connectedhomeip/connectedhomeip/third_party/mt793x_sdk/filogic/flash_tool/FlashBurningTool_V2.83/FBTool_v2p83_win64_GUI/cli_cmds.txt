@@ -1,0 +1,14 @@
+;(1)command format:[command]:[timeout of command],[pass string],[fail string]
+;(2)pass/fail string can be assigned or not(as empty)
+;(3)if pass/fail string be assigned both,pass/fail judge depend on which string be found 1st.
+;(4)if command running time is short and user no want to assign pass/fail string ,it can write as [command] only
+;(5)delay commad is special command for cli_cmds.txt,it can add delay time (ms) between each command.
+rr 0x30030220:20,0x45020011,
+en
+back
+rr 0x30030224:20,0x0,
+?:30,cli cmd,
+ver:30,SDK_2.0.2,
+thermal init:100,,
+reboot:5800,msg: done,
+;delay:4000,,

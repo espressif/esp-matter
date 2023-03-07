@@ -1,0 +1,110 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_protobuf_compiler/proto.gni")
+import("$dir_pw_unit_test/test.gni")
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("uuid") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_snapshot/uuid.h" ]
+  public_deps = [
+    dir_pw_bytes,
+    dir_pw_result,
+    dir_pw_span,
+    dir_pw_status,
+  ]
+  deps = [
+    ":metadata_proto.pwpb",
+    dir_pw_protobuf,
+  ]
+  sources = [ "uuid.cc" ]
+}
+
+group("pw_snapshot") {
+  deps = [
+    ":metadata_proto",
+    ":snapshot_proto",
+  ]
+}
+
+# This proto library only contains the snapshot_metadata.proto. Typically this
+# should be a dependency of snapshot-like protos.
+pw_proto_library("metadata_proto") {
+  sources = [ "pw_snapshot_protos/snapshot_metadata.proto" ]
+  strip_prefix = "pw_snapshot_protos"
+  prefix = "pw_snapshot_metadata_proto"
+  deps = [ "$dir_pw_tokenizer:proto" ]
+}
+
+# This proto provides the complete "Snapshot" proto, which depends on various
+# proto libraries throughout Pigweed. This is the proto library to use when
+# building/reading snapshots.
+pw_proto_library("snapshot_proto") {
+  sources = [ "pw_snapshot_protos/snapshot.proto" ]
+  deps = [
+    ":metadata_proto",
+    "$dir_pw_chrono:protos",
+    "$dir_pw_cpu_exception_cortex_m:cpu_state_protos",
+    "$dir_pw_log:protos",
+    "$dir_pw_thread:protos",
+  ]
+}
+
+pw_doc_group("docs") {
+  inputs = [ "images/generic_crash_flow.svg" ]
+  sources = [
+    "design_discussion.rst",
+    "docs.rst",
+    "module_usage.rst",
+    "proto_format.rst",
+    "setup.rst",
+  ]
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":cpp_compile_test",
+    ":uuid_test",
+  ]
+}
+
+# An empty test to ensure the proto libraries compile correctly.
+pw_test("cpp_compile_test") {
+  sources = [ "cpp_compile_test.cc" ]
+  deps = [
+    ":snapshot_proto.pwpb",
+    dir_pw_protobuf,
+  ]
+}
+
+pw_test("uuid_test") {
+  sources = [ "uuid_test.cc" ]
+  deps = [
+    ":metadata_proto.pwpb",
+    ":uuid",
+    dir_pw_bytes,
+    dir_pw_protobuf,
+    dir_pw_result,
+    dir_pw_status,
+  ]
+}

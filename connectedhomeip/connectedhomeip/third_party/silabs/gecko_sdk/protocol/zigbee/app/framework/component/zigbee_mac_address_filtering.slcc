@@ -1,0 +1,191 @@
+package: Zigbee
+description: This component artificially limits what the stack hears by filtering
+  the packets just above the lower MAC. The component can be configured on the fly via
+  CLI with the short or long address of devices whose packets will be dropped or allowed. There
+  are two lists, a short address list (2-byte node ID) and a long address list (8-byte
+  IEEE address). Each list may be configured as either an allow list or deny list. The
+  default is a deny list with no addresses configured (accept all packets normally). There
+  is also a separate option to allow or drop packets with no address information (e.g.
+  Beacon Requests). NOTE The radio will still generate and process MAC Acks for
+  packets. This component cannot be used to effect the behavior of MAC Acks, which are
+  handled by the RAIL library and radio hardware.
+label: MAC Address Filtering
+quality: production
+id: zigbee_mac_address_filtering
+category: Zigbee|Utility
+provides:
+   - name: "zigbee_mac_address_filtering"
+requires:
+   - name: "zigbee_packet_handoff"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin-soc/mac-address-filtering/config/mac-address-filtering-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin-soc/mac-address-filtering/mac-address-filtering.c
+include:
+  - path: protocol/zigbee/app/framework/plugin-soc/mac-address-filtering
+    file_list:
+      - path: mac-address-filtering.h  
+template_contribution:
+  - name: component_catalog
+    value: zigbee_mac_address_filtering
+  - name: zigbee_af_callback
+    value:
+      callback_type: local_data_init
+      function_name: emberAfPluginMacAddressFilteringInitCallback
+  - name: cli_group
+    value:
+      name: mac-address-filtering
+      group: plugin
+      help: Mac address filtering related commands.
+  - name: cli_group
+    value:
+      name: long-address-list
+      group: mac-address-filtering
+      help: Mac address filtering related commands for long address.
+  - name: cli_group
+    value:
+      name: pan-id-list
+      group: mac-address-filtering
+      help: Mac address filtering related commands for PAN ID.
+  - name: cli_group
+    value:
+      name: short-address-list
+      group: mac-address-filtering
+      help: Mac address filtering related commands for short address.
+  - name: cli_group
+    value:
+      name: set-config
+      group: mac-address-filtering
+      help: Mac address filtering config commands.
+  - name: cli_command
+    value:
+      name: clear-stats
+      group: mac-address-filtering
+      handler: emberAfPluginMacAddressFilteringClearStats
+      help: Clears all packet counts for all modes.
+  - name: cli_command
+    value:
+      name: print-config
+      group: mac-address-filtering
+      handler: emberAfPluginMacAddressFilteringPrintConfigCommand
+      help: Prints the current filtering config and statistics.
+  - name: cli_command
+    value:
+      name: reset
+      group: mac-address-filtering
+      handler: emberAfPluginMacAddressFilteringReset
+      help: Resets the state of the component to the default of no filtering.
+  - name: cli_command
+    value:
+      name: no-address-filter
+      group: set-config
+      handler: emberAfPluginMacAddressFilteringFilterNoAddressCommand
+      help: Enables/disables filtering of no-address messages.
+      argument:
+      - type: uint8
+  - name: cli_command
+    value:
+      name: add
+      group: long-address-list
+      handler: emberAfPluginMacAddressFilteringAddLongAddressCommand
+      help: Adds a long address to the long address filter.
+      argument:
+      - type: hex
+  - name: cli_command
+    value:
+      name: add
+      group: pan-id-list
+      handler: emberAfPluginMacAddressFilteringAddPanIdCommand
+      help: Adds a PAN ID to the filter.
+      argument:
+      - type: uint16
+  - name: cli_command
+    value:
+      name: add
+      group: short-address-list
+      handler: emberAfPluginMacAddressFilteringAddShortAddressCommand
+      help: Adds an address to the short address list.
+      argument:
+      - type: uint16
+  - name: cli_command
+    value:
+      name: clear
+      group: long-address-list
+      handler: emberAfPluginMacAddressFilteringClearLongAddressList
+      help: Clears the long address list filter.
+  - name: cli_command
+    value:
+      name: clear
+      group: pan-id-list
+      handler: emberAfPluginMacAddressFilteringClearPanIdList
+      help: Clears the PAN ID list filter.
+  - name: cli_command
+    value:
+      name: clear
+      group: short-address-list
+      handler: emberAfPluginMacAddressFilteringClearShortAddressList
+      help: Clears the short address list filter.
+  - name: cli_command
+    value:
+      name: delete
+      group: long-address-list
+      handler: emberAfPluginMacAddressFilteringLongAddressDeleteEntry
+      help: Deletes an entry in the long address list filter.
+      argument:
+      - type: uint8
+  - name: cli_command
+    value:
+      name: delete
+      group: pan-id-list
+      handler: emberAfPluginMacAddressFilteringPanIdDeleteEntry
+      help: Deletes an entry in the PAN ID list filter.
+      argument:
+      - type: uint8
+  - name: cli_command
+    value:
+      name: delete
+      group: short-address-list
+      handler: emberAfPluginMacAddressFilteringShortAddressDeleteEntry
+      help: Deletes an entry in the short address list filter.
+      argument:
+      - type: uint8
+  - name: cli_command
+    value:
+      name: set-blacklist
+      group: long-address-list
+      handler: emberAfPluginMacAddressFilteringSetLongAddressListType
+      help: Sets the long address list filter to a deny list.
+  - name: cli_command
+    value:
+      name: set-blacklist
+      group: pan-id-list
+      handler: emberAfPluginMacAddressFilteringSetPanIdListType
+      help: Sets the PAN_ID list filter to a deny list.
+  - name: cli_command
+    value:
+      name: set-blacklist
+      group: short-address-list
+      handler: emberAfPluginMacAddressFilteringSetShortAddressListType
+      help: Sets the short address list filter to a deny list.
+  - name: cli_command
+    value:
+      name: set-whitelist
+      group: long-address-list
+      handler: emberAfPluginMacAddressFilteringSetLongAddressListType
+      help: Sets the long address list filter to an allow list.
+  - name: cli_command
+    value:
+      name: set-whitelist
+      group: pan-id-list
+      handler: emberAfPluginMacAddressFilteringSetPanIdListType
+      help: Sets the PAN-ID list filter to an allow list.
+  - name: cli_command
+    value:
+      name: set-whitelist
+      group: short-address-list
+      handler: emberAfPluginMacAddressFilteringSetShortAddressListType
+      help: Sets the short address list filter to an allow list.
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/mac-address-filtering

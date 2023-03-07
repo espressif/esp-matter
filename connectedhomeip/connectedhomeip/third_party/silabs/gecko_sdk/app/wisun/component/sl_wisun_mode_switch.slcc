@@ -1,0 +1,41 @@
+id: "sl_wisun_mode_switch"
+label: "Mode Switch"
+package: "wisun"
+description: "Mode switch component for using mode switch functionality."
+category: "Wi-SUN|Application"
+quality: "production"
+root_path: "app/wisun/component/mode_switch"
+provides:
+  - name: sl_wisun_mode_switch
+
+source:
+  - path: "sl_wisun_mode_switch_cli.c"
+
+ui_hints:
+  visibility: never
+#-------------- Template Contribution ----------------
+template_contribution:
+  - name: "cli_group"
+    value:
+      name: "wisun"
+      help: "Wi-SUN commands"
+      shortcuts:
+        - name: "w"
+
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "mode_switch"
+      handler: "app_mode_switch"
+      help: "configure mode witch: w ms"
+      shortcuts:
+        - name: "ms"
+      argument:
+        - type: uint8
+          help: "mode: 0=disabled, 1=unicast, 2=always"
+        - type: uint8
+          help: "PhyModeId"
+
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: wisun_mode_switch

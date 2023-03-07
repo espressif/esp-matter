@@ -1,0 +1,78 @@
+{
+    "mapping": {
+        "settings": {
+            "name": "Bluetooth low energy PHY",
+            "parameters": {
+                "parameter": [
+                    {
+                        "_names": "channel,whitening",
+                        "rfCommand": [
+                            "CMD_BLE5_MASTER",
+                            "CMD_BLE5_SLAVE",
+                            "CMD_BLE5_ADV_EXT",
+                            "CMD_BLE5_ADV_AUX",
+                            "CMD_BLE5_SCANNER",
+                            "CMD_BLE5_INITIATOR",
+                            "CMD_BLE5_GENERIC_RX",
+                            "CMD_BLE5_TX_TEST",
+                            "CMD_BLE5_ADV_NC",
+                            "CMD_BLE5_ADV_DIR",
+                            "CMD_BLE5_ADV_SCAN",
+                            "CMD_BLE5_ADV",
+                            "CMD_BLE_ADV",
+                            "CMD_BLE_ADV_NC",
+                            "CMD_BLE_ADV_DIR",
+                            "CMD_BLE_ADV_SCAN",
+                            "CMD_BLE_SCANNER",
+                            "CMD_BLE_INITIATOR",
+                            "CMD_BLE_GENERIC_RX",
+                            "CMD_BLE_TX_TEST",
+                            "CMD_BLE_MASTER",
+                            "CMD_BLE_SLAVE"
+                        ]
+                    },
+                    {
+                        "_names": "frequency",
+                        "rfCommand": "CMD_FS"
+                    },
+                    {
+                        "_names": "txPower",
+                        "rfCommand": [
+                            "CMD_BLE5_RADIO_SETUP",
+                            "CMD_RADIO_SETUP"
+                        ]
+                    },
+                    {
+                        "_names": "packetLengthBle",
+                        "rfCommand": [
+                            "CMD_BLE_ADV_NC",
+                            "CMD_PROP_TX_ADV"
+                        ]
+                    },
+                    {
+                        "_names": "accessAddress",
+                        "rfCommand": [
+                            "CMD_BLE5_GENERIC_RX",
+                            "CMD_BLE_GENERIC_RX"
+                        ]
+                    },
+                    {
+                        "_names": "modulated",
+                        "rfCommand": "CMD_TX_TEST"
+                    },
+                    {
+                        "_names": "packetLengthTx",
+                        "rfCommand": "CMD_PROP_TX_ADV"
+                    },
+                    {
+                        "_names": "syncWord",
+                        "rfCommand": [
+                            "CMD_PROP_TX_ADV",
+                            "CMD_PROP_RX_ADV"
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+}

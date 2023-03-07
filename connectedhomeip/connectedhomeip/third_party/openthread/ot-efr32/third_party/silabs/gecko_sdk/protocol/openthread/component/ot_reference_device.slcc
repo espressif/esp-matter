@@ -1,0 +1,22 @@
+id: ot_reference_device
+label: OpenThread Reference Device configuration
+package: OpenThread
+category: OpenThread
+quality: production
+description: Includes OpenThread Reference Device configuration
+provides:
+  - name: ot_reference_device
+
+config_file:
+  - path: protocol/openthread/config/sl_openthread_reference_device_config.h
+    file_id: openthread_features
+    # Projects can either have reference device configuration or certification
+    # configuration (or none). This condition enforces mutual exclusivity.
+    unless: [ot_cert_libs]
+
+define:
+  - name: SL_OPENTHREAD_STACK_FEATURES_CONFIG_FILE
+    value: "\"sl_openthread_reference_device_config.h\""
+    # Projects can either have reference device configuration or certification
+    # configuration (or none). This condition enforces mutual exclusivity.
+    unless: [ot_cert_libs]

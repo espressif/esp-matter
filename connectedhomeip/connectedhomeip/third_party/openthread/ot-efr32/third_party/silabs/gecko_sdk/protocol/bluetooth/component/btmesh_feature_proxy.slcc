@@ -1,0 +1,28 @@
+id: "btmesh_feature_proxy"
+label: "Proxy"
+package: "Btmesh"
+description: "Enables Bluetooth Mesh GATT proxy connections."
+category: "Bluetooth Mesh|Stack Classes"
+quality: "production"
+root_path: "protocol/bluetooth/component"
+
+requires:
+  - name: "btmesh_stack"
+  - name: "btmesh_core"
+  - name: component_catalog
+provides:
+  - name: "btmesh_feature_proxy"
+template_contribution:
+  - name: btmesh_bgapi_class
+    value:
+      class: "proxy"
+    priority: 1
+  - name: btmesh_feature_bitmask
+    value:
+      count: 2
+  - name: btmesh_feature_proxy
+    value: 1
+  - name: component_catalog
+    value: btmesh_feature_proxy
+validation_helper:
+  - path: proxy_validation.lua

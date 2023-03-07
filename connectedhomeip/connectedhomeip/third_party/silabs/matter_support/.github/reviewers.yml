@@ -1,0 +1,8 @@
+reviewers:
+  # The default reviewers
+  defaults:
+    - repository-owners # group
+    
+options:
+  ignore_draft: true
+  enable_group_assignment: false

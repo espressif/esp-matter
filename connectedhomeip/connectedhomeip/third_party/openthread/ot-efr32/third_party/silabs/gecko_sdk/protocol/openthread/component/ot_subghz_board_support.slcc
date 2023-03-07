@@ -1,0 +1,18 @@
+id: ot_subghz_board_support
+label: OT Sub-GHz Board Support
+package: OpenThread
+category: OpenThread
+quality: alpha
+description: This component filters hardware boards that support (proprietary) Sub-GHz PHY in 915 MHz band with OpenThread.
+ui_hints:
+  visibility: never
+provides:
+  - name: ot_subghz_board_support
+  - name: hardware_board_supports_ot_subghz
+    condition:
+    - hardware_board_supports_rf_band_915
+    - device_family_efr32mg13p
+  - name: hardware_board_supports_ot_subghz
+    condition:
+    - hardware_board_supports_rf_band_915
+    - device_family_efr32mg12p

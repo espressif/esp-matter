@@ -1,0 +1,35 @@
+project_name: bootloader-uart-bgapi-nonsecure
+package: bootloader
+quality: beta
+label: Bootloader - NCP BGAPI UART DFU Non-Secure part of Bootloader using TrustZone
+description: >
+  TrustZone is used to split into a Secure and Non-Secure bootloader. This is the non-secure part of the bootloader. The secure part of the bootloader, which contains the core functionalities needs to be built separately and used together with the non-secure part of the bootloader.
+
+category: Example|Bootloader
+filter:
+  - name: "Device Type"
+    value: ["NCP"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+  - name: "MCU"
+    value: ["Bootloader"]
+
+
+component:
+  - id: bootloader_core_nonsecure
+  - id: bootloader_serial_driver_nonsecure
+  - id: bootloader_image_parser_nonsecure
+  - id: bootloader_delay_driver_nonsecure
+  - id: bootloader_debug_nonsecure
+  - id: bootloader_bgapi_uartdfu_nonsecure
+  - id: bootloader_include_parser_nonsecure
+
+requires:
+  - name: device_series_2
+
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+tag:
+  - "companion:bootloader-uart-bgapi-secure.slcp"

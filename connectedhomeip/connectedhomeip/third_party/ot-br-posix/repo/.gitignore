@@ -1,0 +1,126 @@
+
+# Emacs lock/links on linux
+.[#]*
+# Emacs backups (windows)
+[#]*[#]
+# emacs backups
+*~
+# Generic editor backups
+*.bak
+# Objects & libraries
+*.[ao]
+*.l[ao]
+*.so
+*.swp
+
+# Autoconf
+m4
+aclocal.m4
+autom4te.cache
+config.h.in
+config.log
+config.status
+configure
+libtool
+Makefile
+Makefile.in
+
+# Build inside border router
+._build
+
+
+# Build bi-products.
+.local-version
+.deps
+.libs
+.dirstamp
+stamp-h1
+.stamp-h1
+build
+
+# Border Router Docs
+doc/Doxyfile
+doc/html
+
+# Debugger stuff.
+.gdb_history
+.gdbinit
+
+
+# Configure results for border router
+include/otbr-config.h
+include/otbr-config.h.in
+
+
+# VIM swap files
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+
+
+# Border router agent
+src/agent/otbr-agent
+src/agent/otbr-agent.service
+src/agent/otbr-agent.init
+src/agent/otbr-agent.conf
+
+# Border router web service
+src/web/otbr-web
+src/web/otbr-web.service
+src/web/otbr-web.init
+
+# Test code.
+tests/mdns/otbr-test-mdns
+tests/testdriver
+tests/dbus/otbr-test-dbus-server
+tests/dbus/otbr-test-dbus-client
+
+# all things here.
+third_party/mbedtls/repo
+
+# Tools
+tools/pskc
+tools/steering-data
+
+# dbus
+src/dbus/dbus-server-test
+src/dbus/dbus-message-test
+
+# Test logs
+tests/unit/unittest
+*.log
+*.trs
+
+# Vim auto complete helper
+.ycm_extra_conf.py
+
+# openthread build
+third_party/openthread/build/
+third_party/openthread/output/
+
+# Test logs
+tests/unit/unittest
+*.log
+*.trs
+
+# Vim auto complete helper
+.ycm_extra_conf.py
+
+# CLion
+.idea/**
+cmake-build-*/**
+
+# Thread local storage
+./tmp/
+*.data
+*.flash
+
+src/client/dbus/dbus-client-test
+
+*.gcno
+NONE
+*.gcda
+
+autoconf-config.h
+autoconf-config.h.in
+
+introspect.hpp

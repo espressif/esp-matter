@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<gep name="CC26xx/Boot" title="CC26xx Boot" version="1">
+<page name="Basic" title="Boot/Startup Options">
+<html><body><table>
+  <tr><td colspan="2">
+    <control type="checkbox" label="Add CC26xx Boot management to my configuration" value="value:this.$used" bold="true"/></td>
+  </tr>
+  <tr></tr>
+  <tr>
+    <td>
+      <h1>Boot Configuration</h1>
+        <table>
+        <tr>
+          <td><control type="checkbox" 
+                       label="Trim device" 
+                       value="value:this.trimDevice" 
+                       tooltip="value:this.trimDevice.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="checkbox" 
+                       label="Include default Customer Configuration data"
+                       value="value:this.customerConfig" 
+                       tooltip="value:this.customerConfig.$summary"/></td>
+        </tr>
+        <tr>
+		<td><control type="label" label="PG version of driverlib to compile/link with"/></td>	  
+          <td><control type="editbox" 
+                       value="value:this.driverlibVersion" 
+		       tooltip="value:this.driverlibVersion.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="checkbox" 
+                       label="Boot module should provide local copy of driverlib"
+                       value="value:this.provideDriverlib" 
+                       tooltip="value:this.provideDriverlib.$summary"/></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table></body></html>
+</page>
+
+<properties name="Advanced" title="All Options" enabled="true" visible="true" link="this"/>
+
+</gep>

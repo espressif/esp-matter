@@ -1,0 +1,14 @@
+id: bootloader_apploader_secure
+label: "Bluetooth AppLoader OTA DFU (Secure)"
+package: bootloader
+description: AppLoader provides Bluetooth OTA updates for applications.
+category: Platform|Bootloader|TrustZone Secure|Communication
+quality: beta
+define:
+  - name: BOOTLOADER_SUPPORT_COMMUNICATION
+    value: 1
+  - name: BOOTLOADER_APPLOADER
+    value: 1
+provides:
+  - name: bootloader_apploader
+  - name: bootloader_apploader_secure

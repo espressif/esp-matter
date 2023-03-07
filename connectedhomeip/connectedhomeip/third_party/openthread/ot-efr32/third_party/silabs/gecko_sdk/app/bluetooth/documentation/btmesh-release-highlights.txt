@@ -1,0 +1,2 @@
+Bluetooth Mesh SDK 3.0.1.0
+- Targeted quality improvements and bug fixes

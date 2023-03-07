@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- IAR Project Connection File -->
+
+<iarProjectConnection version="1.2" name="OAD Version of OpenThread DoorLock application" oneShot="true"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="IarProjectConnection_1.2.xsd">
+
+    <device>
+        <name>CC2652R7</name>
+    </device>
+
+    <asmIncludePath>
+        <path>$PROJ_DIR$</path>
+    </asmIncludePath>
+
+    <includePath>
+        <path>$PROJ_DIR$</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/thread/cc13x2_26x2/libmbedcrypto/lib/iar/m4f/libmbedcrypto_cc13x2_26x2/../../../../config</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/examples/platforms</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/include</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/include</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source</path>
+        <path>$XDCROOT$/packages</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/thread/cc13x2_26x2/libopenthread_mtd/lib/iar/m4f/libopenthread_mtd_cc13x2_26x2/../../../../config</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/devices/cc13x2_cc26x2</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/posix/iar</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/kernel/tirtos/packages</path>
+    </includePath>
+
+    <defines>
+        <define>HAVE_CONFIG_H</define>
+        <define>Board_EXCLUDE_NVS_EXTERNAL_FLASH</define>
+        <define>NVOCMP_POSIX_MUTEX</define>
+        <define>NVOCMP_NVPAGES=2</define>
+        <define>NDEBUG</define>
+        <define>BOARD_DISPLAY_USE_UART=1</define>
+        <define>MBEDTLS_CONFIG_FILE="mbedtls-config-cc13x2_26x2.h"</define>
+        <define>OPENTHREAD_MTD=1</define>
+        <define>OPENTHREAD_CONFIG_FILE="openthread-config-cc13x2_26x2-mtd.h"</define>
+        <define>OPENTHREAD_PROJECT_CORE_CONFIG_FILE="openthread-core-cc13x2_26x2-config.h"</define>
+        <define>ENABLE_OAD=1</define>
+        <define>SECURITY</define>
+        <define>TIOP_ENABLE_UART=1</define>
+        <define>BOARD_DISPLAY_USE_LCD=0</define>
+        <define>CC13X2</define>
+        <define>TIOP_OAD=1</define>
+        <define>DeviceFamily_CC26X2X7</define>
+        <define>SET_CCFG_IMAGE_VALID_CONF_IMAGE_VALID=0x100</define>
+    </defines>
+
+    <extraOptions>
+        <args>
+            <arg>-f$PROJ_DIR$/configPkg/compiler.opt.defs</arg>
+            <arg>--debug</arg>
+            <arg>--silent</arg>
+            <arg>-e</arg>
+            <arg>--aeabi</arg>
+            <arg>--thumb</arg>
+            <arg>--diag_suppress=Pa050</arg>
+        </args>
+    </extraOptions>
+
+    <linkerFile>
+        <override>true</override>
+        <path>$PROJ_DIR$/cc13x2_cc26x2_tirtos_oad.icf</path>
+    </linkerFile>
+
+    <linkerExtraOptions>
+        <args>
+            <arg>-f$PROJ_DIR$/configPkg/linker.cmd</arg>
+            <arg>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/thread/cc13x2_26x2/libopenthread_mtd/lib/iar/m4f/libopenthread_mtd_cc13x2_26x2/OptimizeSize/libopenthread_mtd.a</arg>
+            <arg>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/thread/cc13x2_26x2/libopenthread_platform_utils_mtd/lib/iar/m4f/libopenthread_platform_utils_mtd_cc13x2_26x2/OptimizeSize/libopenthread_platform_utils_mtd.a</arg>
+            <arg>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/thread/cc13x2_26x2/libmbedcrypto/lib/iar/m4f/libmbedcrypto_cc13x2_26x2/OptimizeSize/libmbedcrypto.a</arg>
+            <arg>-f$PROJ_DIR$/ti_utils_build_linker.cmd.genlibs</arg>
+            <arg> -L$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source</arg>
+            <arg> -L$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source</arg>
+            <arg> -L$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/kernel/tirtos/packages</arg>
+            <arg>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/devices/cc13x2x7_cc26x2x7/driverlib/bin/iar/driverlib.lib</arg>
+            <arg>--silent</arg>
+            <arg>--cpu=Cortex-M4F</arg>
+        </args>
+    </linkerExtraOptions>
+
+    <customBuildTools>
+        <customBuildTool atRoot="true" name="SysConfig"> <!-- Custom build tool for entire project-->
+            <fileExtensions>.syscfg</fileExtensions>
+            <command>$SYSCONFIG_ROOT$/sysconfig_cli.bat -o $PROJ_DIR$ -s "$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/.metadata/product.json" --compiler iar $FILE_PATH$
+            </command>
+            <output>
+                <path>SysConfig_Generated_Files.ipcf</path>
+            </output>
+            <hasPrio>true</hasPrio> <!-- true: run this tool before all other tools-->
+        </customBuildTool>
+        <customBuildTool name="configuro">  <!-- Custom build tool that will be assigned to a file group -->
+            <fileExtensions>.cfg</fileExtensions>
+            <command>"$XDCROOT$/bin/stderr"</command>
+            <output>
+                <path>$PROJ_DIR$/configPkg/package.mak</path>
+            </output>
+        </customBuildTool>
+    </customBuildTools>
+
+    <heaps>
+        <heap> <!-- If omitted, id="0" -->
+            <size>0</size>
+        </heap>
+        <heap id="1">
+            <size>0</size>
+        </heap>
+    </heaps>
+    <stacks>
+        <stack> <!-- If omitted, id="0" -->
+            <size>512</size>
+        </stack>
+    </stacks>
+
+    <preBuild>
+        <command>"$XDCROOT$/xs" --xdcpath="$XDCPATH$" iar.tools.configuro -c "$TOOLKIT_DIR$" --cc "$COMPILER_PATH$" --device "$DEVICE$" --compileOptions $COMPILER_ARGS_ROOT_QUOTED$ --linkOptions $LINKER_ARGS_QUOTED$ --profile release --projFile "$PROJ_PATH$"</command>
+    </preBuild>
+
+    <postBuild>
+        <command>$PROJ_DIR$/post_build.bat $PROJ_FNAME$ $CONFIG_NAME$ $TARGET_BPATH$ $PROJ_DIR$ $COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$</command>
+    </postBuild>
+
+    <files>
+        <path copyTo="$PROJ_DIR$/bim_oad_debug_image_bin.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/bim_oad_debug_image_bin.c</path>
+        <path copyTo="$PROJ_DIR$/bim_oad_debug_image_bin.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/bim_oad_debug_image_bin.h</path>
+        <path reference="$PROJ_DIR$/Board.html">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/boards/LP_CC2652R7/Board.html</path>
+        <path copyTo="$PROJ_DIR$/cc13x2_cc26x2_tirtos_oad.icf">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/tirtos/iar/cc13x2_cc26x2_tirtos_oad.icf</path>
+        <path copyTo="$PROJ_DIR$/disp_utils.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/disp_utils.c</path>
+        <path copyTo="$PROJ_DIR$/disp_utils.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/disp_utils.h</path>
+        <path copyTo="$PROJ_DIR$/doorlock.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/doorlock.c</path>
+        <path copyTo="$PROJ_DIR$/doorlock.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/doorlock.h</path>
+        <path copyTo="$PROJ_DIR$/doorlock_oad.syscfg">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/doorlock_oad.syscfg</path>
+        <path copyTo="$PROJ_DIR$/images.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/images.c</path>
+        <path copyTo="$PROJ_DIR$/images.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/images.h</path>
+        <path copyTo="$PROJ_DIR$/keys_utils.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/keys_utils.c</path>
+        <path copyTo="$PROJ_DIR$/keys_utils.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/keys_utils.h</path>
+        <path copyTo="$PROJ_DIR$/main.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/main.c</path>
+        <path copyTo="$PROJ_DIR$/oad_image_header.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/oad_image_header.c</path>
+        <path copyTo="$PROJ_DIR$/oad_image_header.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/oad_image_header.h</path>
+        <path copyTo="$PROJ_DIR$/otstack.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/otstack.c</path>
+        <path copyTo="$PROJ_DIR$/otstack.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/otstack.h</path>
+        <path copyTo="$PROJ_DIR$/post_build.bat">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/post_build.bat</path>
+        <path copyTo="$PROJ_DIR$/README.html">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/README.html</path>
+        <path copyTo="$PROJ_DIR$/README.md">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/README.md</path>
+        <path copyTo="$PROJ_DIR$/release_oad.cfg">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/release_oad.cfg</path>
+        <path copyTo="$PROJ_DIR$/task_config.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/task_config.h</path>
+        <group name="oad" build="true">
+            <path copyTo="$PROJ_DIR$/oad/crc32.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/oad/crc32.c</path>
+            <path copyTo="$PROJ_DIR$/oad/crc32.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/oad/crc32.h</path>
+            <path copyTo="$PROJ_DIR$/oad/ext_flash_layout.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/oad/ext_flash_layout.h</path>
+            <path copyTo="$PROJ_DIR$/oad/flash_interface.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/oad/flash_interface.h</path>
+            <path copyTo="$PROJ_DIR$/oad/flash_interface_ext_rtos_NVS.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/oad/flash_interface_ext_rtos_NVS.c</path>
+            <path copyTo="$PROJ_DIR$/oad/oad.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/oad/oad.c</path>
+            <path copyTo="$PROJ_DIR$/oad/oad.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/oad/oad.h</path>
+            <path copyTo="$PROJ_DIR$/oad/oad_storage.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/oad/oad_storage.c</path>
+            <path copyTo="$PROJ_DIR$/oad/oad_storage.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/oad/oad_storage.h</path>
+        </group>
+        <group name="otsupport" build="true">
+            <path copyTo="$PROJ_DIR$/otsupport/otinstance.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/otsupport/otinstance.h</path>
+            <path copyTo="$PROJ_DIR$/otsupport/otrtosapi.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/otsupport/otrtosapi.c</path>
+            <path copyTo="$PROJ_DIR$/otsupport/otrtosapi.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/otsupport/otrtosapi.h</path>
+        </group>
+        <group name="platform" build="true">
+            <path copyTo="$PROJ_DIR$/platform/alarm.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/platform/alarm.c</path>
+            <path copyTo="$PROJ_DIR$/platform/alarm_micro.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/platform/alarm_micro.c</path>
+            <path copyTo="$PROJ_DIR$/platform/debug_uart.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/platform/debug_uart.c</path>
+            <path copyTo="$PROJ_DIR$/platform/diag.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/platform/diag.c</path>
+            <path copyTo="$PROJ_DIR$/platform/DIAG.md">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/platform/DIAG.md</path>
+            <path copyTo="$PROJ_DIR$/platform/entropy.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/platform/entropy.c</path>
+            <path copyTo="$PROJ_DIR$/platform/misc.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/platform/misc.c</path>
+            <path copyTo="$PROJ_DIR$/platform/radio.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/platform/radio.c</path>
+            <path copyTo="$PROJ_DIR$/platform/radio.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/platform/radio.h</path>
+            <path copyTo="$PROJ_DIR$/platform/settings.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/platform/settings.c</path>
+            <path copyTo="$PROJ_DIR$/platform/system.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/platform/system.c</path>
+            <path copyTo="$PROJ_DIR$/platform/system.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/platform/system.h</path>
+            <path copyTo="$PROJ_DIR$/platform/uart.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/platform/uart.c</path>
+        </group>
+        <group name="platform/crypto" build="true">
+            <path copyTo="$PROJ_DIR$/platform/crypto/aes_alt.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/platform/crypto/aes_alt.c</path>
+            <path copyTo="$PROJ_DIR$/platform/crypto/crypto_misc.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/platform/crypto/crypto_misc.c</path>
+            <path copyTo="$PROJ_DIR$/platform/crypto/ecjpake_alt.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/platform/crypto/ecjpake_alt.c</path>
+            <path copyTo="$PROJ_DIR$/platform/crypto/sha256_alt.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/platform/crypto/sha256_alt.c</path>
+        </group>
+        <group name="platform/nv" build="true">
+            <path copyTo="$PROJ_DIR$/platform/nv/crc.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/platform/nv/crc.c</path>
+            <path copyTo="$PROJ_DIR$/platform/nv/crc.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/platform/nv/crc.h</path>
+            <path copyTo="$PROJ_DIR$/platform/nv/nvintf.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/platform/nv/nvintf.h</path>
+            <path copyTo="$PROJ_DIR$/platform/nv/nvocmp.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/platform/nv/nvocmp.c</path>
+            <path copyTo="$PROJ_DIR$/platform/nv/nvocmp.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/thread/doorlock_oad_secure/platform/nv/nvocmp.h</path>
+        </group>
+    </files>
+</iarProjectConnection>

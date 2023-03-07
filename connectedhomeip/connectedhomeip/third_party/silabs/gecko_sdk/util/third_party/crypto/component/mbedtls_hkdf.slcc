@@ -1,0 +1,22 @@
+id: mbedtls_hkdf
+package: platform
+label: HKDF
+description: >-
+  This component provides support for key derivation using HKDF in Mbed TLS.
+category: Platform|Security|Mbed TLS|Key Derivation
+quality: production
+source:
+  - path: util/third_party/crypto/mbedtls/library/hkdf.c
+    unless: [trustzone_nonsecure]
+include:
+  - path: util/third_party/crypto/mbedtls/include
+    file_list:
+      - path: mbedtls/hkdf.h
+    unless: [trustzone_nonsecure]
+provides:
+  - name: mbedtls_hkdf
+requires:
+  - name: mbedtls_hmac
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_HKDF_C

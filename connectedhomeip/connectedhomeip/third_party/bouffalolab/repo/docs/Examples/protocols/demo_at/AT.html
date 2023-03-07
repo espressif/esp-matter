@@ -1,0 +1,1143 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>简介 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+      <li>简介</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Examples/protocols/demo_at/AT.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="id1">
+<h1>简介<a class="headerlink" href="#id1" title="永久链接至标题"></a></h1>
+<p>本文主要介绍博流 AT指令集以及使用方法。指令集包含：基础 AT 指令、Wi-Fi 功能 AT 指令、TCP/IP ⼯具箱 AT 指令、BLE 相关 AT 指令。</p>
+<table border="1" class="docutils" id="id7">
+<caption><span class="caption-text">指令类型</span><a class="headerlink" href="#id7" title="永久链接至表格"></a></caption>
+<colgroup>
+<col width="17%" />
+<col width="22%" />
+<col width="61%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>类型</td>
+<td>格式</td>
+<td>描述</td>
+</tr>
+<tr class="row-even"><td>查询指令</td>
+<td>AT+&lt;x&gt;?</td>
+<td>该指令用于返回当前参数的值</td>
+</tr>
+<tr class="row-odd"><td>设置指令</td>
+<td>AT+&lt;x&gt;=&lt;···&gt;</td>
+<td>该指令用于设置用户自定义的参数</td>
+</tr>
+<tr class="row-even"><td>执行指令</td>
+<td>AT+&lt;x&gt;</td>
+<td>该指令用于执行模块内部变参数不可变的功能</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="at">
+<h1>基础AT指令<a class="headerlink" href="#at" title="永久链接至标题"></a></h1>
+<div class="section" id="id2">
+<h2>基础AT指令总览<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<table border="1" class="docutils" id="id8">
+<caption><span class="caption-text">指令列表</span><a class="headerlink" href="#id8" title="永久链接至表格"></a></caption>
+<colgroup>
+<col width="34%" />
+<col width="66%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>指令</td>
+<td>描述</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#at-uart">AT+UART</a></td>
+<td>设置 UART 配置</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#at-gmr">AT+GMR</a></td>
+<td>查看版本信息</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#at-s-help">AT+S.HELP</a></td>
+<td>查看AT帮助信息</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#at-rst">AT+RST</a></td>
+<td>重启模块</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#at-restore">AT+RESTORE</a></td>
+<td>恢复出厂设置</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#at-gslp">AT+GSLP</a></td>
+<td>进入 Deep-sleep 模式</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id3">
+<h2>基础AT指令描述<a class="headerlink" href="#id3" title="永久链接至标题"></a></h2>
+<div class="section" id="at-uart">
+<h3>AT+UART<a class="headerlink" href="#at-uart" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="47%" />
+<col width="46%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="2">指令</td>
+<td rowspan="2"><p class="first">查询指令</p>
+<p class="last">AT+UART?</p>
+</td>
+<td rowspan="2"><p class="first">设置指令</p>
+<p class="last">AT+UART=&lt;baudrate&gt;,&lt;databits&gt;,&lt;stopbits&gt;,&lt;parity&gt;,&lt;flow control&gt;</p>
+</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">响应</td>
+<td colspan="2" rowspan="2"><p class="first">+UART_CUR:&lt;baudrate&gt;,&lt;databits&gt;,&lt;stopbits&gt;,&lt;parity&gt;,&lt;flow control&gt; | OK</p>
+<p class="last">OK                                                                 |</p>
+</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="19">参数说明</td>
+<td colspan="2" rowspan="19"><ul class="first last simple">
+<li>&lt;baudrate&gt;: UART 波特率</li>
+<li>&lt;databits&gt;: 数据位<ul>
+<li>5: 5-bit 数据位</li>
+<li>6: 6-bit 数据位</li>
+<li>7: 7-bit 数据位</li>
+<li>8: 8-bit 数据位</li>
+</ul>
+</li>
+<li>&lt;stopbits&gt;: 停止位<ul>
+<li>1: 1-bit 停⽌位</li>
+<li>2: 1.5-bit 停⽌位</li>
+<li>3: 2-bit 停⽌位</li>
+</ul>
+</li>
+<li>&lt;parity&gt;: 校验位<ul>
+<li>0: None</li>
+<li>1: Odd</li>
+<li>2: Even</li>
+</ul>
+</li>
+<li>&lt;flow control&gt;: 流控<ul>
+<li>0: 不使能流控</li>
+<li>1: 使能 RTS</li>
+<li>2: 使能 CTS</li>
+<li>3: 同时使能 RTS 和 CTS</li>
+</ul>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="at-gmr">
+<h3>AT+GMR<a class="headerlink" href="#at-gmr" title="永久链接至标题"></a></h3>
+<blockquote>
+<div></div></blockquote>
+</div>
+<div class="section" id="at-rst">
+<h3>AT+RST<a class="headerlink" href="#at-rst" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="61%" />
+<col width="39%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>执行指令</td>
+<td>AT+RST</td>
+</tr>
+<tr class="row-even"><td>响应</td>
+<td>OK</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="at-restore">
+<h3>AT+RESTORE<a class="headerlink" href="#at-restore" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="61%" />
+<col width="39%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>执行指令</td>
+<td>AT+RESTORE</td>
+</tr>
+<tr class="row-even"><td>响应</td>
+<td>OK</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="at-s-help">
+<h3>AT+S.HELP<a class="headerlink" href="#at-s-help" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="61%" />
+<col width="39%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>执行指令</td>
+<td>AT+S.HELP</td>
+</tr>
+<tr class="row-even"><td>响应</td>
+<td>OK</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="at-gslp">
+<h3>AT+GSLP<a class="headerlink" href="#at-gslp" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="89%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="2">指令</td>
+<td rowspan="2"><p class="first">设置指令：</p>
+<p class="last">AT+GSLP=&lt;time&gt;</p>
+</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">响应</td>
+<td rowspan="2"><p class="first">&lt;time&gt;</p>
+<p class="last">OK</p>
+</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td>参数说明</td>
+<td><ul class="first last simple">
+<li>&lt;time&gt;: 设置 BL602 的睡眠时长，单位：秒。 BL602 会在休眠设定时长后唤醒</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+</div>
+</div>
+<div class="section" id="wi-fi-at">
+<h1>Wi-Fi 功能 AT 指令<a class="headerlink" href="#wi-fi-at" title="永久链接至标题"></a></h1>
+<table border="1" class="docutils" id="id9">
+<caption><span class="caption-text">指令列表</span><a class="headerlink" href="#id9" title="永久链接至表格"></a></caption>
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>指令</td>
+<td>描述</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#at-cwmode">AT+CWMODE</a></td>
+<td>设置 Wi-Fi 模式 (STA/AP/STA+AP)</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#at-cwlap">AT+CWLAP</a></td>
+<td>扫描附近AP</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#at-cwjap">AT+CWJAP</a></td>
+<td>连接AP</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#at-cwqap">AT+CWQAP</a></td>
+<td>断开AP</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#at-cwautoconn">AT+CWAUTOCONN</a></td>
+<td>设置自动重连</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#at-softap">AT+SOFTAP</a></td>
+<td>开启AP</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id4">
+<h2>基础AT指令描述<a class="headerlink" href="#id4" title="永久链接至标题"></a></h2>
+<div class="section" id="at-cwmode">
+<h3>AT+CWMODE<a class="headerlink" href="#at-cwmode" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="9%" />
+<col width="27%" />
+<col width="64%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="3">指令</td>
+<td rowspan="3"><p class="first">查询指令</p>
+<p>AT+CWMODE?</p>
+<p class="last">功能：查询BL602 Wi-Fi 模式</p>
+</td>
+<td rowspan="3"><p class="first">设置指令</p>
+<p>AT+CWMODE=&lt;mode&gt;</p>
+<p class="last">功能：设置BL602 Wi-Fi 模式</p>
+</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"><td>响应</td>
+<td>+CWMODE:&lt;mode&gt;</td>
+<td>OK</td>
+</tr>
+<tr class="row-odd"><td rowspan="5">参数说明</td>
+<td colspan="2" rowspan="5"><ul class="first last">
+<li><p class="first">&lt;mode&gt;:</p>
+<blockquote>
+<div><ul class="simple">
+<li>0: 无 Wi-Fi 模式，并且关闭 Wi-Fi RF</li>
+<li>1: Station 模式</li>
+<li>2: SoftAP 模式</li>
+<li>3: SoftAP+Station 模式</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="at-cwlap">
+<h3>AT+CWLAP<a class="headerlink" href="#at-cwlap" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="9%" />
+<col width="91%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="3">指令</td>
+<td rowspan="3"><p class="first">查询指令</p>
+<p>AT+CWLAP</p>
+<p class="last">功能：扫描附近的AP热点。</p>
+</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"><td rowspan="3">响应</td>
+<td rowspan="3"><p class="first">+CWLAP:</p>
+<p>&lt;ap list&gt;...</p>
+<p class="last">OK</p>
+</td>
+</tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td>响应说明</td>
+<td><ul class="first last simple">
+<li>&lt;序号&gt;,&lt;SSID&gt;,&lt;BSSID&gt;,&lt;信道&gt;,&lt;信号强度&gt;,&lt;加密方式&gt;</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="at-cwautoconn">
+<h3>AT+CWAUTOCONN<a class="headerlink" href="#at-cwautoconn" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="9%" />
+<col width="28%" />
+<col width="62%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="3">指令</td>
+<td rowspan="3"><p class="first">查询指令</p>
+<p>AT+CWAUTOCONN?</p>
+<p class="last">功能：查询BL602 Wi-Fi 自动重连</p>
+</td>
+<td rowspan="3"><p class="first">设置指令</p>
+<p>AT+CWAUTOCONN=&lt;auto_connect&gt;</p>
+<p class="last">功能：设置BL602 Wi-Fi 自动重连</p>
+</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"><td>响应</td>
+<td>+CWAUTOCONN:&lt;mode&gt;</td>
+<td>OK</td>
+</tr>
+<tr class="row-odd"><td rowspan="3">参数说明</td>
+<td colspan="2" rowspan="3"><ul class="first last">
+<li><p class="first">&lt;auto_connect&gt;:</p>
+<blockquote>
+<div><ul class="simple">
+<li>0: 当WiFi模式变成Station或SoftAP+Station时，不连接WiFi</li>
+<li>1: 当WiFi模式变成Station或SoftAP+Station(默认配置)时，连接WiFi</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="at-cwjap">
+<h3>AT+CWJAP<a class="headerlink" href="#at-cwjap" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="5%" />
+<col width="47%" />
+<col width="48%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="3">指令</td>
+<td rowspan="3"><p class="first">查询指令</p>
+<p>AT+CWJAP?</p>
+<p class="last">功能：查询 BL602 Station 已连接的 AP 信息。</p>
+</td>
+<td rowspan="3"><p class="first">设置指令</p>
+<p>AT+CWJAP=&lt;ssid&gt;,&lt;pwd&gt;</p>
+<p class="last">功能：设置 BL602 Station 需连接的 AP。</p>
+</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"><td rowspan="2">响应</td>
+<td rowspan="2"><p class="first">+CWJAP:&lt;ssid&gt;,&lt;ip&gt;</p>
+<p class="last">OK</p>
+</td>
+<td rowspan="2"><p class="first">OK</p>
+<p class="last">+EVT:0:wifi connected</p>
+</td>
+</tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"><td rowspan="3">参数说明</td>
+<td rowspan="3"><ul class="first last simple">
+<li>&lt;ssid&gt;: 字符串串参数，AP 的 SSID</li>
+<li>&lt;ip&gt;: 当前获取到的ip地址</li>
+</ul>
+</td>
+<td rowspan="3"><ul class="first last simple">
+<li>&lt;ssid&gt;: 目标 AP 的 SSID</li>
+<li>&lt;pwd&gt;: 目标 AP 的 密码<ul>
+<li>若SSID或密码包含任何特殊字符，例如&quot;或者，则需要转义</li>
+</ul>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"></tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="at-cwqap">
+<h3>AT+CWQAP<a class="headerlink" href="#at-cwqap" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="89%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="2">指令</td>
+<td rowspan="2"><p class="first">设置指令：</p>
+<p class="last">AT+CWQAP=&lt;link id&gt;</p>
+</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td>响应</td>
+<td>OK</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="at-softap">
+<h3>AT+SOFTAP<a class="headerlink" href="#at-softap" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="5%" />
+<col width="47%" />
+<col width="48%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="3">指令</td>
+<td rowspan="3"><p class="first">查询指令</p>
+<p>AT+SOFTAP?</p>
+<p class="last">功能：查看开启的AP热点信息。</p>
+</td>
+<td rowspan="3"><p class="first">设置指令</p>
+<p>AT+SOFTAP=&lt;ssid&gt;,[pwd]</p>
+<p class="last">功能：开启一个AP热点。</p>
+</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"><td rowspan="2">响应</td>
+<td rowspan="2"><p class="first">+SOFTAP:&lt;ip&gt;,&lt;bssid&gt;</p>
+<p class="last">OK</p>
+</td>
+<td rowspan="2">OK</td>
+</tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"><td rowspan="3">参数说明</td>
+<td rowspan="3"><ul class="first last simple">
+<li>&lt;ip&gt;: 开启的AP热点的IP地址</li>
+<li>&lt;bssid&gt;: 当前开启的AP热点的MAC地址</li>
+</ul>
+</td>
+<td rowspan="3"><ul class="first last simple">
+<li>&lt;ssid&gt;: 设置AP 的 SSID</li>
+<li>[pwd]: 设置 AP 的 密码，若没有此参数，则该AP为开放式AP<ul>
+<li>若SSID或密码包含任何特殊字符，例如&quot;或者，则需要转义</li>
+</ul>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"></tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+</div>
+</div>
+<div class="section" id="tcp-ip-at">
+<h1>TCP/IP 相关 AT 指令<a class="headerlink" href="#tcp-ip-at" title="永久链接至标题"></a></h1>
+<table border="1" class="docutils" id="id10">
+<caption><span class="caption-text">指令列表</span><a class="headerlink" href="#id10" title="永久链接至表格"></a></caption>
+<colgroup>
+<col width="29%" />
+<col width="71%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>指令</td>
+<td>描述</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#at-cipstart">AT+CIPSTART</a></td>
+<td>建立 TCP 连接，UDP 传输</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#at-cipclose">AT+CIPCLOSE</a></td>
+<td>关闭 TCP 连接，UDP 传输</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#at-cipserver">AT+CIPSERVER</a></td>
+<td>删除或创建TCP服务器</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#at-cipsend">AT+CIPSEND</a></td>
+<td>发送TCP/IP数据</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#ipd">+IPD</a></td>
+<td>收到TCP/IP数据</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id5">
+<h2>基础AT指令描述<a class="headerlink" href="#id5" title="永久链接至标题"></a></h2>
+<div class="section" id="at-cipstart">
+<h3>AT+CIPSTART<a class="headerlink" href="#at-cipstart" title="永久链接至标题"></a></h3>
+<table border="1" class="docutils" id="id11">
+<caption><span class="caption-text">建立 TCP/UDP 连接</span><a class="headerlink" href="#id11" title="永久链接至表格"></a></caption>
+<colgroup>
+<col width="7%" />
+<col width="93%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>设置指令</td>
+<td>AT+CIPSTART=&lt;link id&gt;,&lt;type&gt;,&lt;remote IP&gt;,&lt;remote port&gt;</td>
+</tr>
+<tr class="row-even"><td rowspan="2">响应</td>
+<td rowspan="2"><p class="first">OK</p>
+<p class="last">或者已经建立TCP连接,响应:ALREADY CONNECTTED ERROR</p>
+</td>
+</tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"><td rowspan="4">参数说明</td>
+<td rowspan="4"><ul class="first last simple">
+<li>&lt;link id&gt;: 需要设置的连接ID</li>
+<li>&lt;type&gt;: 字符串串参数，连接类型，&quot;TCP&quot;，&quot;UDP&quot;</li>
+<li>&lt;remote IP&gt;: 字符串串参数，远端 IP 地址</li>
+<li>&lt;remote port&gt;: 远端端口号</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"><td rowspan="2">示例</td>
+<td rowspan="2"><p class="first">AT+CIPSTART=0,TCP,192.168.101,8000</p>
+<p class="last">AT+CIPSTART=1,UDP,192.168.101,5000</p>
+</td>
+</tr>
+<tr class="row-odd"></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="at-cipclose">
+<h3>AT+CIPCLOSE<a class="headerlink" href="#at-cipclose" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="87%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="2">指令</td>
+<td rowspan="2"><p class="first">设置指令：</p>
+<p class="last">AT+CIPCLOSE=&lt;link id&gt;</p>
+</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td>响应</td>
+<td>OK</td>
+</tr>
+<tr class="row-even"><td>参数说明</td>
+<td><ul class="first last simple">
+<li>&lt;link id&gt;: 需要关闭的ID</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="at-cipserver">
+<h3>AT+CIPSERVER<a class="headerlink" href="#at-cipserver" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="87%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="2">指令</td>
+<td rowspan="2"><p class="first">设置指令：</p>
+<p class="last">AT+CIPSERVER=&lt;mode&gt;[,&lt;port&gt;]</p>
+</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td>响应</td>
+<td>OK</td>
+</tr>
+<tr class="row-even"><td rowspan="5">参数说明</td>
+<td rowspan="5"><ul class="first last">
+<li><p class="first">&lt;mode&gt;:</p>
+<blockquote>
+<div><ul class="simple">
+<li>0: 关闭服务器器</li>
+<li>1: 建立服务器器</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">&lt;port&gt;: 端口号，默认为 333</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="3">示例</td>
+<td rowspan="3"><p class="first">// 建立 TCP 服务器器</p>
+<blockquote class="last">
+<div>AT+CIPSERVER=1,80</div></blockquote>
+</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="at-cipsend">
+<h3>AT+CIPSEND<a class="headerlink" href="#at-cipsend" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="87%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="2">指令</td>
+<td rowspan="2"><p class="first">设置指令：</p>
+<p class="last">AT+CIPSEND=&lt;link id&gt;,&lt;data len&gt;</p>
+</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td>响应</td>
+<td>OK</td>
+</tr>
+<tr class="row-even"><td rowspan="3">参数说明</td>
+<td rowspan="3"><ul class="first last simple">
+<li>&lt;link id&gt;:    连接ID</li>
+<li>&lt;data len&gt;: 需要传输的数据长度（单位：byte）</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="3">示例</td>
+<td rowspan="3"><p class="first">AT+CIPSEND=0,20</p>
+<blockquote class="last">
+<div>表示即将向id为0的连接发送20字节的数据</div></blockquote>
+</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="ipd">
+<h3>+IPD<a class="headerlink" href="#ipd" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="87%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="3">说明</td>
+<td rowspan="3"><p class="first">+IPD为收到TCP/UDP对端连接数据时的响应</p>
+<p>+IPD:&lt;link id&gt;,&lt;data len&gt;</p>
+<p class="last">&lt;data&gt;</p>
+</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"><td rowspan="3">参数说明</td>
+<td rowspan="3"><ul class="first last simple">
+<li>&lt;link id&gt;:发送数据的ID</li>
+<li>&lt;data len&gt;:即将接收的数据长度（单位：byte）</li>
+<li>&lt;data&gt;:接收数据</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"></tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+</div>
+</div>
+<div class="section" id="ble-at">
+<h1>BLE 相关 AT 指令<a class="headerlink" href="#ble-at" title="永久链接至标题"></a></h1>
+<table border="1" class="docutils" id="id12">
+<caption><span class="caption-text">指令列表</span><a class="headerlink" href="#id12" title="永久链接至表格"></a></caption>
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>指令</td>
+<td>描述</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#at-bledatalen">AT+BLEDATALEN</a></td>
+<td>设置 BLE 数据包⻓度</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#at-blename">AT+BLENAME</a></td>
+<td>设置 BLE 设备名称</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#at-bleaddr">AT+BLEADDR</a></td>
+<td>设置 BLE 设备地址</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id6">
+<h2>基础AT指令描述<a class="headerlink" href="#id6" title="永久链接至标题"></a></h2>
+<div class="section" id="at-bledatalen">
+<h3>AT+BLEDATALEN<a class="headerlink" href="#at-bledatalen" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="87%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="3">指令</td>
+<td rowspan="3"><p class="first">设置指令：</p>
+<p>AT+BLEDATALEN=&lt;conn_index&gt;,&lt;pkt_data_len&gt;</p>
+<p class="last">功能：设置 BLE 数据包⻓度。</p>
+</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"><td>响应</td>
+<td>OK</td>
+</tr>
+<tr class="row-odd"><td rowspan="2">参数说明</td>
+<td rowspan="2"><ul class="first last simple">
+<li>&lt;conn_index&gt;: BLE 连接号, 范围 [0~2].</li>
+<li>&lt;pkt_data_len&gt;: 数据包长度，取值范围: 0x001b ~ 0x00fb</li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td>注意</td>
+<td><ul class="first last simple">
+<li>需要先建立 BLE 连接，才能设置数据包长度</li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td rowspan="3">示例</td>
+<td rowspan="3"><p class="first">AT+BLEINIT=1   // 初始化为 client</p>
+<blockquote class="last">
+<div><blockquote>
+<div>AT+BLECONN=0,&quot;24:0a:c4:09:34:23&quot;</div></blockquote>
+<p>AT+BLEDATALEN=0,30</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"></tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="at-blename">
+<h3>AT+BLENAME<a class="headerlink" href="#at-blename" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="37%" />
+<col width="51%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="3">指令</td>
+<td rowspan="3"><p class="first">查询指令</p>
+<p>AT+BLENAME?</p>
+<p class="last">功能：查询 BLE 设备名称。</p>
+</td>
+<td rowspan="3"><p class="first">设置指令</p>
+<p>AT+BLENAME=&lt;device_name&gt;</p>
+<p class="last">功能：设置 BLE 设备名称，最大长度为32</p>
+</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"><td rowspan="2">响应</td>
+<td rowspan="2"><p class="first">+BLENAME:&lt;device_name&gt;</p>
+<p class="last">OK</p>
+</td>
+<td rowspan="2">OK</td>
+</tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"><td>参数说明</td>
+<td colspan="2"><ul class="first last simple">
+<li>&lt;device_name&gt;: BLE 设备名称</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="at-bleaddr">
+<h3>AT+BLEADDR<a class="headerlink" href="#at-bleaddr" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="46%" />
+<col width="43%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="3">指令</td>
+<td rowspan="3"><p class="first">查询指令</p>
+<p>AT+BLEADDR?</p>
+<p class="last">功能：查询 BLE 设备的 public address。</p>
+</td>
+<td rowspan="3"><p class="first">设置指令</p>
+<p>AT+BLEADDR=&lt;addr_type&gt;[,&lt;random_addr&gt;]</p>
+<p class="last">功能：设置 BLE 设备的地址。</p>
+</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"><td rowspan="2">响应</td>
+<td rowspan="2"><p class="first">+BLEADDR:&lt;BLE_public_addr&gt;</p>
+<p class="last">OK</p>
+</td>
+<td rowspan="2">OK</td>
+</tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"><td rowspan="3">参数说明</td>
+<td colspan="2" rowspan="3"><ul class="first last">
+<li><p class="first">&lt;addr_type&gt;:</p>
+<blockquote>
+<div><ul class="simple">
+<li>0: public address</li>
+<li>1: random address</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"></tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

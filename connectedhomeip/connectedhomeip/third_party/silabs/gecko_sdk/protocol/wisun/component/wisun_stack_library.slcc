@@ -1,0 +1,124 @@
+id: "wisun_stack_library"
+label: "Wi-SUN Stack  (Library)"
+package: "wisun"
+category: "Wi-SUN"
+quality: "production"
+description: "Provide Wi-SUN stack library"
+root_path: "protocol/wisun/stack"
+
+ui_hints:
+  visibility: never
+
+requires: 
+  - name: "wisun_stack"
+
+provides:
+  - name: "wisun_implementation"
+
+library:
+  - path: "libwisun_router_efr32xg1x_micriumos_gcc_debug.a"
+    condition:
+      - "toolchain_gcc"
+      - "micriumos_kernel"
+      - "device_sdid_84"
+      - "wisun_stack_debug"
+  - path: "libwisun_router_efr32xg1x_freertos_gcc_debug.a"
+    condition:
+      - "toolchain_gcc"
+      - "freertos"
+      - "device_sdid_84"
+      - "wisun_stack_debug"
+  - path: "libwisun_router_efr32xg1x_micriumos_iar_debug.a"
+    condition:
+      - "toolchain_iar"
+      - "micriumos_kernel"
+      - "device_sdid_84"
+      - "wisun_stack_debug"
+  - path: "libwisun_router_efr32xg1x_freertos_iar_debug.a"
+    condition:
+      - "toolchain_iar"
+      - "freertos"
+      - "device_sdid_84"
+      - "wisun_stack_debug"
+  - path: "libwisun_router_efr32xg2x_micriumos_gcc_debug.a"
+    condition:
+      - "toolchain_gcc"
+      - "micriumos_kernel"
+      - "device_sdid_220"
+      - "wisun_stack_debug"
+  - path: "libwisun_router_efr32xg2x_freertos_gcc_debug.a"
+    condition:
+      - "toolchain_gcc"
+      - "freertos"
+      - "device_sdid_220"
+      - "wisun_stack_debug"
+  - path: "libwisun_router_efr32xg2x_micriumos_iar_debug.a"
+    condition:
+      - "toolchain_iar"
+      - "micriumos_kernel"
+      - "device_sdid_220"
+      - "wisun_stack_debug"
+  - path: "libwisun_router_efr32xg2x_freertos_iar_debug.a"
+    condition:
+      - "toolchain_iar"
+      - "freertos"
+      - "device_sdid_220"
+      - "wisun_stack_debug"
+
+
+  - path: "libwisun_router_efr32xg1x_micriumos_gcc_release.a"
+    condition:
+      - "toolchain_gcc"
+      - "micriumos_kernel"
+      - "device_sdid_84"
+    unless:
+      - "wisun_stack_debug"
+  - path: "libwisun_router_efr32xg1x_freertos_gcc_release.a"
+    condition:
+      - "toolchain_gcc"
+      - "freertos"
+      - "device_sdid_84"
+    unless:
+      - "wisun_stack_debug"
+  - path: "libwisun_router_efr32xg1x_micriumos_iar_release.a"
+    condition:
+      - "toolchain_iar"
+      - "micriumos_kernel"
+      - "device_sdid_84"
+    unless:
+      - "wisun_stack_debug"
+  - path: "libwisun_router_efr32xg1x_freertos_iar_release.a"
+    condition:
+      - "toolchain_iar"
+      - "freertos"
+      - "device_sdid_84"
+    unless:
+      - "wisun_stack_debug"
+  - path: "libwisun_router_efr32xg2x_micriumos_gcc_release.a"
+    condition:
+      - "toolchain_gcc"
+      - "micriumos_kernel"
+      - "device_sdid_220"
+    unless:
+      - "wisun_stack_debug"
+  - path: "libwisun_router_efr32xg2x_freertos_gcc_release.a"
+    condition:
+      - "toolchain_gcc"
+      - "freertos"
+      - "device_sdid_220"
+    unless:
+      - "wisun_stack_debug"
+  - path: "libwisun_router_efr32xg2x_micriumos_iar_release.a"
+    condition:
+      - "toolchain_iar"
+      - "micriumos_kernel"
+      - "device_sdid_220"
+    unless:
+      - "wisun_stack_debug"
+  - path: "libwisun_router_efr32xg2x_freertos_iar_release.a"
+    condition:
+      - "toolchain_iar"
+      - "freertos"
+      - "device_sdid_220"
+    unless:
+      - "wisun_stack_debug"

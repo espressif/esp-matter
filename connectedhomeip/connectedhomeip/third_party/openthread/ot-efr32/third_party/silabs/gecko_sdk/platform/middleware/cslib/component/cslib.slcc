@@ -1,0 +1,16 @@
+id: cslib
+label: "Capacitive Sensing Core"
+package: platform
+description: "CSLIB Core"
+category: Platform|Middleware
+quality: production
+include:
+  - path: platform/middleware/cslib/inc
+    file_list:
+    - path: cslib.h
+requires:
+  - name: cslib_lib
+  - name: cmsis_core
+  - name: emlib
+provides:
+  - name: cslib

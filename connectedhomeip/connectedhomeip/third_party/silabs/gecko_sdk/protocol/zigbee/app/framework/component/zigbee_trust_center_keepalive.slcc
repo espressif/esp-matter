@@ -1,0 +1,54 @@
+package: Zigbee
+description: Silicon Labs implementation of Trust Center Keepalive for SE 1.2b. The component
+  periodically sends keepalive signals to the trust center to verify that it is
+  accessible. If the trust center fails to acknowledge a series of keepalive signals,
+  the component searches for another instance of the trust center on a different channel
+  or short PAN ID. The frequency with which the component sends the keepalive signals
+  has a default, but is ultimately determined by the attributes on the Trust Center. This
+  component periodically reads the "TC Keep-Alive Base" and "TC Keep-Alive Jitter"
+  to determine the rate that it will send future keepalives. Trust Center Keepalive
+  is part of the optional Trust Center Swap-Out feature of Smart Energy 1.1. Devices
+  are not required to implement this functionality. The trust center does not send
+  keepalives, so this component should be disabled if the device is acting as the trust
+  center.
+label: Trust Center Keepalive
+quality: production
+id: zigbee_trust_center_keepalive
+category: Zigbee|Trust Center
+provides:
+   - name: "zigbee_tc_connectivity"
+   - name: "zigbee_trust_center_keepalive"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/trust-center-keepalive/config/trust-center-keepalive-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/trust-center-keepalive/trust-center-keepalive.c
+  - path: protocol/zigbee/app/framework/plugin/trust-center-keepalive/trust-center-keepalive-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/trust-center-keepalive
+    file_list:
+      - path: trust-center-keepalive.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_trust_center_keepalive
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emberAfPluginTrustCenterKeepaliveInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: local_data_init
+      function_name: emberAfPluginTrustCenterKeepaliveInitCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: stack_status
+      function_name: emberAfPluginTrustCenterKeepaliveStackStatusCallback
+  - name: cluster_functions
+    value:
+      cluster_name: Keepalive
+      cluster_id: 0x0025
+      cluster_type: client
+      default_response_function: emberAfKeepaliveClusterClientDefaultResponseCallback
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/trust-center-keepalive

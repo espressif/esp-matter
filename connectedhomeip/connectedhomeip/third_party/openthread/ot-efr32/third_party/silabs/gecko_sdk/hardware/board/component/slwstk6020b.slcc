@@ -1,0 +1,23 @@
+!!omap
+- id: slwstk6020b
+- label: SLWSTK6020B
+- package: platform
+- description: Kit BSP support for the EFR32 Blue Gecko Bluetooth Starter Kit.
+- category: Platform|Board|Kit|Wireless Starter Kit
+- quality: production
+- requires:
+  - name: brd4001a
+  - name: hardware_board_from_slwstk6020b
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_stk
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWSTK6020B"'
+  - name: SL_KIT_REV
+    value: '"A05"'
+- tag:
+  - kit:opn:SLWSTK6020B
+  - kit:pn:WSTK6020
+  - kit:variant:B
+  - kit:revision:A05

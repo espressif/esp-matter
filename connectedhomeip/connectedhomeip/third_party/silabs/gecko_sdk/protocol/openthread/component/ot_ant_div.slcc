@@ -1,0 +1,44 @@
+id: ot_ant_div
+label: Antenna Diversity
+package: OpenThread
+category: OpenThread
+quality: production
+description: This component provides support for Antenna Diversity with OpenThread
+provides:
+  - name: ot_ant_div
+requires:
+  - name: ot_platform_abstraction
+  - name: rail_util_ant_div
+  - name: rail_util_ieee802154_stack_event
+  - name: rail_util_ieee802154_phy_select
+  - name: sl_ot_custom_cli
+    condition: [ot_cli]
+config_file:
+  - path: protocol/openthread/config/sl_openthread_ant_div_cli_config.h
+    condition: [ot_cli]
+toolchain_settings:
+  - option: preinclude
+    value: sl_openthread_ant_div_cli_config.h
+    condition: [ot_cli]
+template_contribution:
+  - name: rail_util_ieee802154_phy_select_callbacks
+    value:
+      include: sl_ot_phy_select.h
+      runtime_phy_select_stack_support: SL_OPENTHREAD_PHY_SELECT_STACK_SUPPORT
+      update_active_radio_config: sl_ot_update_active_radio_config
+    priority: -9020
+    unless:
+      - ot_coex
+  - name: sl_ot_cli_command
+    value:
+      name: "antenna"
+      handler: "antennaCommand"
+      macro: "SL_OPENTHREAD_ANT_DIV_CLI_ENABLE"
+
+include:
+  - path: protocol/openthread/include
+    file_list:
+      - path: sl_ot_phy_select.h
+source:
+  - path: protocol/openthread/src/cli/antenna_diversity_cli.c
+    condition: [ot_cli]

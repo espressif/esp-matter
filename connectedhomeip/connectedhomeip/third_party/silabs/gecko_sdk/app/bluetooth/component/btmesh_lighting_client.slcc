@@ -1,0 +1,39 @@
+id: "btmesh_lighting_client"
+label: "Lightness Client"
+package: "Btmesh"
+description: >
+  Used to support the functionality of a node that can set the dim level of a
+  light source (Lightness Server) on another node.
+  
+  This component integrates the Generic OnOff Client functionality, for ease of
+  use. It provides functions to change the dim value by, or set the dim value to
+  a certain percentage, and a function for getting the current lightness level.
+category: "Bluetooth Mesh|Models|Lighting"
+quality: "production"
+root_path: "app/bluetooth/common/btmesh_lighting_client"
+config_file:
+  - path: btmesh_lighting_client.dcd
+    directory: btmeshconf
+  - path: "config/sl_btmesh_lighting_client_config.h"
+source:
+  - path: "sl_btmesh_lighting_client.c"
+include:
+  - path: ""
+    file_list:
+      - path: "sl_btmesh_lighting_client.h"
+provides:
+  - name: "btmesh_lighting_client"
+requires:
+  - name: "app_assert"
+  - name: "app_btmesh_util"
+  - name: "btmesh_feature_generic_client"
+  - name: "btmesh_feature_node"
+  - name: "btmesh_generic_client"
+  - name: "btmesh_stack"
+  - name: "simple_timer"
+recommends:
+  - id: "simple_timer"
+
+template_contribution:
+  - name: component_catalog
+    value: btmesh_lighting_client

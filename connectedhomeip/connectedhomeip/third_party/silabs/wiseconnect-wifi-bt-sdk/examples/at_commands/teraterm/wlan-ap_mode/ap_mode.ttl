@@ -1,0 +1,133 @@
+TRUE = 1
+FALSE = 0
+
+
+; User must configure this.
+
+message = 'This example demonstrates AP mode functionality 1. Run this demo 2. Run TCP client on your PC '
+
+messagebox message ''
+
+send '|'
+wait 'U'
+sendln 'U'
+mpause 200
+sendln '1'
+wait 'Loading Done'
+message = 'Firmware Loading Done Successfully' 
+messagebox message ''
+
+sendln 'at+rsi_opermode=6,1,18,0'
+wait 'OK' 'ERROR'
+if result == 2 then
+    goto error
+else 
+    messagebox 'Opermode Successful' ''
+endif
+
+inputbox 'Enter the band value 0 - 2.4GHz, 1 - 5GHz' 'BAND' 
+BAND = inputstr
+
+sendln 'at+rsi_band='BAND
+wait 'OK' 'ERROR'
+if result == 2 then
+    goto error
+else 
+    messagebox 'Band Successful' ''
+endif
+
+sendln 'at+rsi_init'
+setdebug 2     ; output is in binary, so best to display in hex format
+wait '4F 4B' '45 52' ; 'OK' or 'ER'
+setdebug 0
+if result == 2 then
+    goto error
+else 
+    messagebox 'Init Successful' ''
+endif
+
+sendln 'at+rsi_ipconf=0,192.168.0.30,255.255.255.0,192.168.0.30'
+wait 'OK' 'ERROR'
+if result == 2 then
+    goto error
+else 
+    messagebox 'IP configuration Successful' ''
+endif
+
+inputbox 'Enter the channel to Configure AP' 'CH' 
+CH = inputstr
+
+inputbox 'Enter the SSID of AP(max 34 bytes):' 'SSID' 
+SSID = inputstr
+
+inputbox 'Enter the Security mode of AP 0-OPEN,  2-WPA2' 'Security' 
+SEC = inputstr
+
+strcompare SEC '0'
+if result=0 then
+    sendln 'at+rsi_apconf='CH','SSID',0,0,0,100,3,3'
+    wait 'OK' 'ERROR'
+    if result == 2 then
+        goto error
+    else 
+        messagebox 'Apconfig Successful' ''
+    endif
+    sendln 'at+rsi_join='SSID',0,2,0'
+    wait 'OKG' 'ERROR'
+    if result == 2 then
+        goto error
+	else 
+        messagebox 'AP Configured Successfully' ''  
+    endif
+
+endif
+
+strcompare SEC '2'
+if result=0 then
+
+    inputbox 'Enter the password(min 8 and max 63 bytes):' 'PSWD' 
+    PSWD = inputstr
+
+    sendln 'at+rsi_apconf='CH','SSID',2,2,'PSWD',100,3,3'
+    wait 'OK' 'ERROR'
+    if result == 2 then
+        goto error
+    else 
+        messagebox 'Apconfig Successful' ''
+    endif
+
+    sendln 'at+rsi_join='SSID',0,2,6' 
+    wait 'OKG' 'ERROR'
+    if result == 2 then
+        goto error
+    else 
+        messagebox 'AP Configured Successfully' ''
+    endif
+
+endif
+
+messagebox 'Wating for Station to Connect' ''
+
+wait 'AT+RSI_CLIENT_CONNECTED' 'ERROR'
+if result == 2 then
+    goto error
+endif
+
+pause 2
+sendln 'at+rsi_ltcp=5001'
+wait 'OK' 'ERROR'
+if result == 2 then
+    goto error
+endif
+
+message = 'Device is now listening for TCP Connections on address '
+strconcat message '192.168.0.30'
+strconcat message ' port 5001'
+messagebox message 'SUCCESS'
+goto endscript
+
+:error
+messagebox 'An error occurred, Please check your configuration and try again' 'ERROR'
+
+:endscript
+end

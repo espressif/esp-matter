@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<gep name="MSP432E/Boot" title="MSP432E Boot" version="1">
+<page name="Basic" title="Clocking Options">
+<html><body><table>
+  <tr><td colspan="2">
+    <control type="checkbox" label="Add MSP432E device Boot clocking management to my configuration" value="value:this.$used" bold="true"/></td>
+  </tr>
+  <tr></tr>
+  <tr>
+    <td>
+      <h1>Clock Configuration</h1>
+        <table>
+        <tr>
+          <td><control type="checkbox" 
+                       label="Automatically configure clock" 
+                       value="value:this.configureClock" 
+                       tooltip="value:this.configureClock.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Desired CPU clock frequency (Hz)" align="left"
+                       visible="value:this.configureClock"/></td>
+          <td><control type="editbox" 
+                       value="value:this.cpuFrequency" 
+                       tooltip="value:this.cpufrequency.$summary"
+                       width="60"
+                       align="left"
+                       bold="true" 
+                       visible="value:this.configureClock"/></td>
+        </tr>
+        </table>
+        <table>
+        <tr>
+          <td><control type="label" label="Computed CPU clock frequency (Hz) " align="left"/></td> 
+          <td><control type="label" label="value:this.computedCpuFrequency" bold="true"/></td> 
+        </tr>
+        <tr>
+        </tr>
+        <tr>
+          <td><control type="label" 
+                       label="Oscillator source" 
+                       align="left"/></td>
+          <td><control type="droplist"
+                       value="value:this.oscSrc" 
+                       tooltip="value:this.oscSrc.$summary"
+                       enabled="value:this.configureClock"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" 
+                       label="Crystal value"
+                       align="left"/></td>
+          <td><control type="droplist"
+                       value="value:this.xtal" 
+                       tooltip="value:this.xtal.$summary"
+                       enabled="value:this.configureClock"/></td>
+        </tr>        
+        <tr>
+          <td><control type="label" 
+                       label="VCO Frequency" 
+                       align="left"/></td>
+          <td><control type="droplist"
+                       value="value:this.vcoFreq" 
+                       tooltip="value:this.vcoFreq.$summary"
+                       enabled="value:this.configureClock"/></td>
+        </tr>
+        <tr>
+          <td><control type="checkbox" 
+                       label="Bypass PLL" 
+                       value="value:this.pllBypass"
+                       tooltip="value:this.pllBypass.$summary"
+                       enabled="value:this.configureClock"/></td>
+        </tr>
+        <tr>
+          <td><control type="checkbox" 
+                       label="Disable internal oscillator" 
+                       value="value:this.ioscDisable"
+                       tooltip="value:this.ioscDisable.$summary"
+                       enabled="value:this.configureClock"/></td>
+        </tr>
+        <tr>
+          <td><control type="checkbox" 
+                       label="Disable main oscillator" 
+                       value="value:this.moscDisable"
+                       tooltip="value:this.moscDisable.$summary"
+                       enabled="value:this.configureClock"/></td>
+        </tr>
+        <tr>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table></body></html>
+</page>
+
+<properties name="Advanced" title="All Options" enabled="true" visible="true" link="this"/>
+
+</gep>

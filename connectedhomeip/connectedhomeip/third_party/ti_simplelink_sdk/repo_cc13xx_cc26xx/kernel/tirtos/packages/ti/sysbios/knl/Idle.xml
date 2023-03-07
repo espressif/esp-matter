@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="Idle" title="SYS/BIOS Idle" version="1">
+
+<page name="Basic" title="Basic Options">
+<html><body><table>
+  <tr>
+    <td>
+      <form>
+        <p>The Idle module allows you specify one or more functions that are to be run whenever the system has no other threads that are ready to run.</p>
+        <p> </p>
+      </form>
+    </td>
+  </tr>
+  <tr><td colspan="2">
+    <control type="checkbox" label="Add the Idle function management module to my configuration" value="value:this.$used" bold="true"/></td>
+  </tr>
+  <tr></tr>
+  <tr><td>
+    <h1>User Defined Idle Functions</h1>
+    <form><p>The functions below are added to the list of functions executed whenever there is no other thread in the system that is ready to run and the CPU is not idled.
+      To reference a function defined by</p>
+        <li bindent="15">your application: type its C name.  For example, _c_int00.</li>
+        <li bindent="15">an existing module: you must type its fully '.' qualified name.  For example, ti.sysbios.utils.Load.idleFxn</li>
+    <p></p>
+    </form>
+    <table>
+      <tr>
+        <td><control type="label" label="User idle function 0" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.idleFxns[0]" 
+             tooltip="idle function 0"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="User idle function 1" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.idleFxns[1]" 
+             tooltip="idle function 1"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="User idle function 2" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.idleFxns[2]" 
+             tooltip="idle function 2"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="User idle function 3" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.idleFxns[3]" 
+             tooltip="idle function 3"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="User idle function 4" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.idleFxns[4]" 
+             tooltip="idle function 4"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="User idle function 5" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.idleFxns[5]" 
+             tooltip="idle function 5"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="User idle function 6" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.idleFxns[6]" 
+             tooltip="idle function 6"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="User idle function 7" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.idleFxns[7]" 
+             tooltip="idle function 7"/></td>
+      </tr>
+    </table>
+  </td></tr>
+  <tr><td>
+    <h1>All Idle Functions</h1>
+    <form><p>The table of functions below are executed repeatedly (from 0 to the last defined element) whenever there is no other thread in the system that is ready to run and the CPU is not idled.  This table displays both the user defined functions above as well as those added by other modules in the system.</p></form>
+    <table>
+      <tr>
+        <td><control type="label" label="Idle function 0" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.funcList[0]" 
+             enabled="false"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="Idle function 1" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.funcList[1]" 
+             enabled="false"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="Idle function 2" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.funcList[2]" 
+             enabled="false"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="Idle function 3" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.funcList[3]" 
+             enabled="false"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="Idle function 4" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.funcList[4]" 
+             enabled="false"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="Idle function 5" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.funcList[5]" 
+             enabled="false"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="Idle function 6" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.funcList[6]" 
+             enabled="false"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="Idle function 7" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.funcList[7]" 
+             enabled="false"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="Idle function 8" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.funcList[8]" 
+             enabled="false"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="Idle function 9" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.funcList[9]" 
+             enabled="false"/></td>
+      </tr>
+    </table>
+  </td></tr>
+</table></body></html>
+
+</page>
+
+<properties name="Advanced" title="All Options" enabled="true" visible="true" link="this"/>
+</gep>

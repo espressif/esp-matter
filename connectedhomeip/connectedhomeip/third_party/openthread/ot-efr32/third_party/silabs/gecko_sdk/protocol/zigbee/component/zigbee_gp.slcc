@@ -1,0 +1,61 @@
+id: zigbee_gp
+label: Green Power
+package: Zigbee
+category: Zigbee|Stack
+quality: production
+
+description: Provides functionality for Green Power infrastructure devices.
+
+provides:
+  - name: zigbee_gp
+  - name: zigbee_gp_for_exclusivity
+
+requires:
+  - name: zigbee_gp_implementation
+  - name: zigbee_gp_library
+    condition:
+     - zigbee_force_libraries
+
+recommends:
+  - id: zigbee_gp_source
+
+include:
+  - path: protocol/zigbee/stack/include
+    file_list:
+      - path: gp-types.h
+  - path: protocol/zigbee/stack/gp
+    file_list:
+      - path: gp-token-config.h
+      - path: gp-proxy-table.h
+      - path: gp-sink-table.h
+
+source:
+  - path: protocol/zigbee/app/em260/command-handlers-green-power-generated.c
+    condition:
+      - zigbee_ncp
+
+config_file:
+  - path: protocol/zigbee/stack/config/component_config/sl_zigbee_green_power_config.h
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_green_power
+  - name: zigbee_stack_callback
+    value:
+      callback_type: d_gp_sent
+      function_name: emAfDGpSentCallback
+    condition:  
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: gpep_incoming_message
+      function_name: emAfGpepIncomingMessageCallback
+    condition:  
+       - zigbee_ncp
+  
+    
+
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/gp

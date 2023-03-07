@@ -1,0 +1,318 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/python_gn_args.gni")
+
+# Defines an action that runs a Python script.
+#
+# This wraps a regular Python script GN action with an invocation of a script-
+# runner script that adds useful features. pw_python_action() uses the same
+# actions as GN's action(), with the following additions or changes:
+#
+#   module          May be used in place of the script argument to run the
+#                   provided Python module with `python -m` instead of a script.
+#                   Either script or module must be provided.
+#
+#   capture_output  If true, script output is hidden unless the script fails
+#                   with an error. Defaults to true.
+#
+#   stamp           File to touch if the script is successful. Actions that
+#                   don't create output files can use this stamp file instead of
+#                   creating their own placeholder file. If true, a generic file
+#                   is used. If false or not set, no file is touched.
+#
+#   environment     Environment variables to set, passed as a list of NAME=VALUE
+#                   strings.
+#
+#   args            Same as the standard action args, except special expressions
+#                   may be used to extract information not normally accessible
+#                   in GN. These include the following:
+#
+#                     <TARGET_FILE(//some/label:here)> - expands to the
+#                         output file (such as a .a or .elf) from a GN target
+#                     <TARGET_FILE_IF_EXISTS(//some/label:here)> - expands to
+#                         the output file if the target exists, or nothing
+#                     <TARGET_OBJECTS(//some/label:here)> - expands to the
+#                         object files produced by the provided GN target
+#
+#   python_deps     Dependencies on pw_python_package or related Python targets.
+#
+#   working_directory  Switch to the provided working directory before running
+#                      the Python script or action.
+#
+#   venv            Optional gn target of the pw_python_venv that should be used
+#                   to run this action.
+#
+template("pw_python_action") {
+  assert(defined(invoker.script) != defined(invoker.module),
+         "pw_python_action requires either 'script' or 'module'")
+
+  _script_args = [
+    # GN root directory relative to the build directory (in which the runner
+    # script is invoked).
+    "--gn-root",
+    rebase_path("//", root_build_dir),
+
+    # Current directory, used to resolve relative paths.
+    "--current-path",
+    rebase_path(".", root_build_dir),
+
+    "--default-toolchain=$default_toolchain",
+    "--current-toolchain=$current_toolchain",
+  ]
+
+  _use_build_dir_virtualenv = true
+
+  if (defined(invoker.environment)) {
+    foreach(variable, invoker.environment) {
+      _script_args += [ "--env=$variable" ]
+    }
+  }
+
+  if (defined(invoker.inputs)) {
+    _inputs = invoker.inputs
+  } else {
+    _inputs = []
+  }
+
+  # List the script to run as an input so that the action is re-run when it is
+  # modified.
+  if (defined(invoker.script)) {
+    _inputs += [ invoker.script ]
+  }
+
+  if (defined(invoker.outputs)) {
+    _outputs = invoker.outputs
+  } else {
+    _outputs = []
+  }
+
+  # If a stamp file is requested, add it as an output of the runner script.
+  if (defined(invoker.stamp) && invoker.stamp != false) {
+    if (invoker.stamp == true) {
+      _stamp_file = "$target_gen_dir/$target_name.pw_pystamp"
+    } else {
+      _stamp_file = invoker.stamp
+    }
+
+    _outputs += [ _stamp_file ]
+    _script_args += [
+      "--touch",
+      rebase_path(_stamp_file, root_build_dir),
+    ]
+  }
+
+  # Capture output or not (defaults to true).
+  if (!defined(invoker.capture_output) || invoker.capture_output) {
+    _script_args += [ "--capture-output" ]
+  }
+
+  if (defined(invoker.module)) {
+    _script_args += [
+      "--module",
+      invoker.module,
+    ]
+
+    # Pip installs should only ever need to occur in the Pigweed
+    # environment. For these actions do not use the build_dir virtualenv.
+    if (invoker.module == "pip") {
+      _use_build_dir_virtualenv = false
+    }
+  }
+
+  # Override to force using or not using the venv.
+  if (defined(invoker._pw_internal_run_in_venv)) {
+    _use_build_dir_virtualenv = invoker._pw_internal_run_in_venv
+  }
+
+  if (defined(invoker.working_directory)) {
+    _script_args += [
+      "--working-directory",
+      invoker.working_directory,
+    ]
+  }
+
+  if (defined(invoker._pw_action_type)) {
+    _action_type = invoker._pw_action_type
+  } else {
+    _action_type = "action"
+  }
+
+  if (defined(invoker.deps)) {
+    _deps = invoker.deps
+  } else {
+    _deps = []
+  }
+
+  _py_metadata_deps = []
+
+  if (defined(invoker.python_deps)) {
+    foreach(dep, invoker.python_deps) {
+      _deps += [ get_label_info(dep, "label_no_toolchain") + ".install(" +
+                 get_label_info(dep, "toolchain") + ")" ]
+
+      # Ensure each python_dep is added to the PYTHONPATH by depinding on the
+      # ._package_metadata subtarget.
+      _py_metadata_deps += [ get_label_info(dep, "label_no_toolchain") +
+                             "._package_metadata($pw_build_PYTHON_TOOLCHAIN)" ]
+    }
+
+    # Add the base target as a dep so the action reruns when any source files
+    # change, even if the package does not have to be reinstalled.
+    _deps += invoker.python_deps
+    _deps += _py_metadata_deps
+  }
+
+  # Check for additional PYTHONPATH dependencies.
+  _extra_python_metadata_deps = []
+  if (defined(invoker.python_metadata_deps)) {
+    foreach(dep, invoker.python_metadata_deps) {
+      _extra_python_metadata_deps +=
+          [ get_label_info(dep, "label_no_toolchain") +
+            "._package_metadata($pw_build_PYTHON_TOOLCHAIN)" ]
+    }
+  }
+
+  _metadata_path_list_file =
+      "${target_gen_dir}/${target_name}_metadata_path_list.txt"
+
+  # GN metadata only dependencies used for setting PYTHONPATH.
+  _metadata_deps = _py_metadata_deps + _extra_python_metadata_deps
+
+  # Build a list of relative paths containing all the python
+  # package_metadata.json files we depend on.
+  _metadata_path_list_target = "${target_name}._metadata_path_list.txt"
+  generated_file(_metadata_path_list_target) {
+    data_keys = [ "pw_python_package_metadata_json" ]
+    rebase = root_build_dir
+    deps = _metadata_deps
+    outputs = [ _metadata_path_list_file ]
+  }
+  _deps += [ ":${_metadata_path_list_target}" ]
+
+  # Set venv options if needed.
+  if (_use_build_dir_virtualenv) {
+    _venv_target_label = pw_build_PYTHON_BUILD_VENV
+    if (defined(invoker.venv)) {
+      _venv_target_label = invoker.venv
+    }
+    _venv_target_label =
+        get_label_info(_venv_target_label, "label_no_toolchain") +
+        "($pw_build_PYTHON_TOOLCHAIN)"
+
+    _venv_json =
+        get_label_info(_venv_target_label, "target_gen_dir") + "/" +
+        get_label_info(_venv_target_label, "name") + "/venv_metadata.json"
+    _script_args += [
+      "--python-virtualenv-config",
+      rebase_path(_venv_json, root_build_dir),
+    ]
+  }
+  _script_args += [
+    "--python-dep-list-files",
+    rebase_path(_metadata_path_list_file, root_build_dir),
+  ]
+
+  # "--" indicates the end of arguments to the runner script.
+  # Everything beyond this point is interpreted as the command and arguments
+  # of the Python script to run.
+  _script_args += [ "--" ]
+
+  if (defined(invoker.script)) {
+    _script_args += [ rebase_path(invoker.script, root_build_dir) ]
+  }
+
+  _forward_python_metadata_deps = false
+  if (defined(invoker._forward_python_metadata_deps)) {
+    _forward_python_metadata_deps = true
+  }
+  if (_forward_python_metadata_deps) {
+    _script_args += [
+      "--python-dep-list-files",
+      rebase_path(_metadata_path_list_file, root_build_dir),
+    ]
+  }
+
+  if (defined(invoker.args)) {
+    _script_args += invoker.args
+  }
+
+  # Assume third party PyPI deps should be available in the build_dir virtualenv.
+  _install_venv_3p_deps = true
+  if (!_use_build_dir_virtualenv ||
+      (defined(invoker._skip_installing_external_python_deps) &&
+       invoker._skip_installing_external_python_deps)) {
+    _install_venv_3p_deps = false
+  }
+
+  # Check that script or module is a present and not a no-op.
+  _run_script_or_module = false
+  if (defined(invoker.script) || defined(invoker.module)) {
+    _run_script_or_module = true
+  }
+
+  target(_action_type, target_name) {
+    _ignore_vars = [
+      "script",
+      "args",
+      "deps",
+      "inputs",
+      "outputs",
+    ]
+    forward_variables_from(invoker, "*", _ignore_vars)
+
+    script = "$dir_pw_build/py/pw_build/python_runner.py"
+    args = _script_args
+    inputs = _inputs
+    outputs = _outputs
+    deps = _deps
+
+    if (_install_venv_3p_deps && _run_script_or_module) {
+      deps += [ get_label_info(_venv_target_label, "label_no_toolchain") +
+                "._install_3p_deps($pw_build_PYTHON_TOOLCHAIN)" ]
+    }
+  }
+}
+
+# Runs pw_python_action once per file over a set of sources.
+#
+# This template brings pw_python_action's features to action_foreach. Usage is
+# the same as pw_python_action, except that sources must be provided and source
+# expansion (e.g. "{{source}}") may be used in args and outputs.
+#
+# See the pw_python_action and action_foreach documentation for full details.
+template("pw_python_action_foreach") {
+  assert(defined(invoker.sources) && invoker.sources != [],
+         "pw_python_action_foreach requires a list of one or more sources")
+
+  pw_python_action(target_name) {
+    if (defined(invoker.stamp) && invoker.stamp != false) {
+      if (invoker.stamp == true) {
+        # Use source file names in the generated stamp file path so they are
+        # unique for each source.
+        stamp = "$target_gen_dir/{{source_file_part}}.pw_pystamp"
+      } else {
+        stamp = invoker.stamp
+      }
+    } else {
+      stamp = false
+    }
+
+    forward_variables_from(invoker, "*", [ "stamp" ])
+
+    _pw_action_type = "action_foreach"
+  }
+}

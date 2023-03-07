@@ -1,0 +1,33 @@
+package: Zigbee
+description: This is a Trust Center component that periodically initiates a NWK
+  key update based on the parameters defined below.  It uses either a broadcast-based
+  method or a unicast-based method, depending on whether the 'Trust Center NWK Key
+  Update Broadcast' or 'Trust Center NWK Key Update Unicast' component has been included.  NOTE
+  The default value of 30 minutes for Key Update Period/Units is to ensure that the
+  network key update operation is observed and verified during development and test.  This
+  value should be changed for production deployment; Zigbee R22 recommends a period
+  of no less than 30 days. The upper bound of 45 days reflects a constraint of this
+  component's timing implementation. If support for longer periods is required, the
+  timing implementation and option ranges of this component must be modified.
+label: Trust Center Network Key Update Periodic
+quality: production
+id: zigbee_trust_center_nwk_key_update_periodic
+category: Zigbee|Trust Center
+provides:
+   - name: "zigbee_trust_center_nwk_key_update_periodic"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/trust-center-nwk-key-update-periodic/config/trust-center-nwk-key-update-periodic-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/trust-center-nwk-key-update-periodic/trust-center-nwk-key-update-periodic.c
+template_contribution:
+  - name: component_catalog
+    value: zigbee_trust_center_nwk_key_update_periodic
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emberAfPluginTrustCenterNwkKeyUpdatePeriodicInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: init_done
+      function_name: emberAfPluginTrustCenterNwkKeyUpdatePeriodicInitCallback
+

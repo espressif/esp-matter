@@ -1,0 +1,41 @@
+--------------------
+CC26xx PG2 Patch Log
+--------------------
+
+hci_PATCH.c:
+- rev. 38999 (new: LL_EXT_GetNumConns)
+-- HCI_EXT_GetNumConns
+
+hci_event_PATCH.c
+- rev. 38699 (V4.1 L2CAP)
+-- HCI_NumOfCompletedPacketsEvent_PATCH
+- rev. 38892 (V4.1 Remote Feature Exchange)
+-- LL_ReadRemoteUsedFeaturesCompleteCback_PATCH
+
+ble_PATCH.c
+- rev. 38892 (V4.1 Remote Feature Exchange)
+-- llProcessSlaveControlPacket_PATCH
+-- llProcessMasterControlPacket_PATCH
+
+ll_PATCH.c
+- rev. 39000 (new: LL_EXT_GetNumConns)
+-- LL_EXT_GetNumConns
+- rev. 38892 (V4.1 Remote Feature Exchange)
+-- LL_StartEncrypt_PATCH
+-- LL_ReadRemoteUsedFeatures_PATCH
+-- LL_EXT_SetLocalSupportedFeatures_PATCH
+
+ll_common_PATCH.c
+- rev. 38892 (V4.1 Remote Feature Exchange)
+-- llInitFeatureSet_PATCH
+-- llSetupFeatureSetReq_PATCH
+-- llSetupFeatureSetRsp_PATCH
+-- llAllocConnId_PATCH
+
+ll_masterEndCauses_PATCH.c
+- rev. 38892 (V4.1 Remote Feature Exchange)
+-- llProcessMasterControlProcedures_PATCH
+
+ll_slaveEndCauses_PATCH.c
+- rev. 38892 (V4.1 Remote Feature Exchange)
+-- llProcessSlaveControlProcedures_PATCH

@@ -1,0 +1,593 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<demos xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://www.silabs.com/ss/Studio.ecore" xsi:noNamespaceSchemaLocation="http://www.silabs.com/ss/Demo.ecore">
+  <demo name="brd4158a.demo.ncp-spi" label="Zigbee - NCP ncp-spi">
+    <model:description>This network coprocessor (NCP) application supports communication with a host application over a SPI interface.  This NCP application can be built as configured, or optionally can be augmented with customized extensions for initialization, main loop processing, event definition/handling, and messaging with the host.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - NCP ncp-spi"/>
+    <property key="core.partCompatibility" value=".*efr32mg13p733f512gm48.*"/>
+    <property key="core.boardCompatibility" value="brd4158a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/ncp-spi/ncp-spi-brd4158a.s37"/>
+    <property key="core.readmeFiles" value="app/ncp/sample-app/ncp-spi/readme.html"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4161a.demo.ncp-spi" label="Zigbee - NCP ncp-spi">
+    <model:description>This network coprocessor (NCP) application supports communication with a host application over a SPI interface.  This NCP application can be built as configured, or optionally can be augmented with customized extensions for initialization, main loop processing, event definition/handling, and messaging with the host.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - NCP ncp-spi"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p432f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4161a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/ncp-spi/ncp-spi-brd4161a.s37"/>
+    <property key="core.readmeFiles" value="app/ncp/sample-app/ncp-spi/readme.html"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4162a.demo.ncp-spi" label="Zigbee - NCP ncp-spi">
+    <model:description>This network coprocessor (NCP) application supports communication with a host application over a SPI interface.  This NCP application can be built as configured, or optionally can be augmented with customized extensions for initialization, main loop processing, event definition/handling, and messaging with the host.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - NCP ncp-spi"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p332f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4162a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/ncp-spi/ncp-spi-brd4162a.s37"/>
+    <property key="core.readmeFiles" value="app/ncp/sample-app/ncp-spi/readme.html"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4163a.demo.ncp-spi" label="Zigbee - NCP ncp-spi">
+    <model:description>This network coprocessor (NCP) application supports communication with a host application over a SPI interface.  This NCP application can be built as configured, or optionally can be augmented with customized extensions for initialization, main loop processing, event definition/handling, and messaging with the host.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - NCP ncp-spi"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p433f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4163a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/ncp-spi/ncp-spi-brd4163a.s37"/>
+    <property key="core.readmeFiles" value="app/ncp/sample-app/ncp-spi/readme.html"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4164a.demo.ncp-spi" label="Zigbee - NCP ncp-spi">
+    <model:description>This network coprocessor (NCP) application supports communication with a host application over a SPI interface.  This NCP application can be built as configured, or optionally can be augmented with customized extensions for initialization, main loop processing, event definition/handling, and messaging with the host.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - NCP ncp-spi"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p433f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4164a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/ncp-spi/ncp-spi-brd4164a.s37"/>
+    <property key="core.readmeFiles" value="app/ncp/sample-app/ncp-spi/readme.html"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4170a.demo.ncp-spi" label="Zigbee - NCP ncp-spi">
+    <model:description>This network coprocessor (NCP) application supports communication with a host application over a SPI interface.  This NCP application can be built as configured, or optionally can be augmented with customized extensions for initialization, main loop processing, event definition/handling, and messaging with the host.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - NCP ncp-spi"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p433f1024gm68.*"/>
+    <property key="core.boardCompatibility" value="brd4170a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/ncp-spi/ncp-spi-brd4170a.s37"/>
+    <property key="core.readmeFiles" value="app/ncp/sample-app/ncp-spi/readme.html"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4180a.demo.ncp-spi" label="Zigbee - NCP ncp-spi">
+    <model:description>This network coprocessor (NCP) application supports communication with a host application over a SPI interface.  This NCP application can be built as configured, or optionally can be augmented with customized extensions for initialization, main loop processing, event definition/handling, and messaging with the host.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - NCP ncp-spi"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a020f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4180a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/ncp-spi/ncp-spi-brd4180a.s37"/>
+    <property key="core.readmeFiles" value="app/ncp/sample-app/ncp-spi/readme.html"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4158a.demo.ncp-uart-hw" label="Zigbee - NCP ncp-uart-hw">
+    <model:description>This network coprocessor (NCP) application supports communication with a host application over a UART interface with hardware flow control. This NCP application can be built as configured, or optionally can be augmented with customized extensions for initialization, main loop processing, event definition/handling, and messaging with the host.
+Steps to create a ECC enabled application for Smart Energy Profile application: 1) Download the side package 'EmberZnet-Smart-Energy.zip' 2) Extract the side package over installed SDK. 3) Enable 'CBKE 163k1' and/or 'CBKE 283k1' components depending on the use case. 4) Build the application.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - NCP ncp-uart-hw"/>
+    <property key="core.partCompatibility" value=".*efr32mg13p733f512gm48.*"/>
+    <property key="core.boardCompatibility" value="brd4158a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/ncp-uart-hw/ncp-uart-hw-brd4158a.s37"/>
+    <property key="core.readmeFiles" value="app/ncp/sample-app/ncp-uart-hw/readme.html"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Advanced Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4161a.demo.ncp-uart-hw" label="Zigbee - NCP ncp-uart-hw">
+    <model:description>This network coprocessor (NCP) application supports communication with a host application over a UART interface with hardware flow control. This NCP application can be built as configured, or optionally can be augmented with customized extensions for initialization, main loop processing, event definition/handling, and messaging with the host.
+Steps to create a ECC enabled application for Smart Energy Profile application: 1) Download the side package 'EmberZnet-Smart-Energy.zip' 2) Extract the side package over installed SDK. 3) Enable 'CBKE 163k1' and/or 'CBKE 283k1' components depending on the use case. 4) Build the application.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - NCP ncp-uart-hw"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p432f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4161a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/ncp-uart-hw/ncp-uart-hw-brd4161a.s37"/>
+    <property key="core.readmeFiles" value="app/ncp/sample-app/ncp-uart-hw/readme.html"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Advanced Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4162a.demo.ncp-uart-hw" label="Zigbee - NCP ncp-uart-hw">
+    <model:description>This network coprocessor (NCP) application supports communication with a host application over a UART interface with hardware flow control. This NCP application can be built as configured, or optionally can be augmented with customized extensions for initialization, main loop processing, event definition/handling, and messaging with the host.
+Steps to create a ECC enabled application for Smart Energy Profile application: 1) Download the side package 'EmberZnet-Smart-Energy.zip' 2) Extract the side package over installed SDK. 3) Enable 'CBKE 163k1' and/or 'CBKE 283k1' components depending on the use case. 4) Build the application.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - NCP ncp-uart-hw"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p332f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4162a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/ncp-uart-hw/ncp-uart-hw-brd4162a.s37"/>
+    <property key="core.readmeFiles" value="app/ncp/sample-app/ncp-uart-hw/readme.html"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Advanced Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4163a.demo.ncp-uart-hw" label="Zigbee - NCP ncp-uart-hw">
+    <model:description>This network coprocessor (NCP) application supports communication with a host application over a UART interface with hardware flow control. This NCP application can be built as configured, or optionally can be augmented with customized extensions for initialization, main loop processing, event definition/handling, and messaging with the host.
+Steps to create a ECC enabled application for Smart Energy Profile application: 1) Download the side package 'EmberZnet-Smart-Energy.zip' 2) Extract the side package over installed SDK. 3) Enable 'CBKE 163k1' and/or 'CBKE 283k1' components depending on the use case. 4) Build the application.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - NCP ncp-uart-hw"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p433f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4163a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/ncp-uart-hw/ncp-uart-hw-brd4163a.s37"/>
+    <property key="core.readmeFiles" value="app/ncp/sample-app/ncp-uart-hw/readme.html"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Advanced Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4164a.demo.ncp-uart-hw" label="Zigbee - NCP ncp-uart-hw">
+    <model:description>This network coprocessor (NCP) application supports communication with a host application over a UART interface with hardware flow control. This NCP application can be built as configured, or optionally can be augmented with customized extensions for initialization, main loop processing, event definition/handling, and messaging with the host.
+Steps to create a ECC enabled application for Smart Energy Profile application: 1) Download the side package 'EmberZnet-Smart-Energy.zip' 2) Extract the side package over installed SDK. 3) Enable 'CBKE 163k1' and/or 'CBKE 283k1' components depending on the use case. 4) Build the application.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - NCP ncp-uart-hw"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p433f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4164a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/ncp-uart-hw/ncp-uart-hw-brd4164a.s37"/>
+    <property key="core.readmeFiles" value="app/ncp/sample-app/ncp-uart-hw/readme.html"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Advanced Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4170a.demo.ncp-uart-hw" label="Zigbee - NCP ncp-uart-hw">
+    <model:description>This network coprocessor (NCP) application supports communication with a host application over a UART interface with hardware flow control. This NCP application can be built as configured, or optionally can be augmented with customized extensions for initialization, main loop processing, event definition/handling, and messaging with the host.
+Steps to create a ECC enabled application for Smart Energy Profile application: 1) Download the side package 'EmberZnet-Smart-Energy.zip' 2) Extract the side package over installed SDK. 3) Enable 'CBKE 163k1' and/or 'CBKE 283k1' components depending on the use case. 4) Build the application.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - NCP ncp-uart-hw"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p433f1024gm68.*"/>
+    <property key="core.boardCompatibility" value="brd4170a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/ncp-uart-hw/ncp-uart-hw-brd4170a.s37"/>
+    <property key="core.readmeFiles" value="app/ncp/sample-app/ncp-uart-hw/readme.html"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Advanced Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4180a.demo.ncp-uart-hw" label="Zigbee - NCP ncp-uart-hw">
+    <model:description>This network coprocessor (NCP) application supports communication with a host application over a UART interface with hardware flow control. This NCP application can be built as configured, or optionally can be augmented with customized extensions for initialization, main loop processing, event definition/handling, and messaging with the host.
+Steps to create a ECC enabled application for Smart Energy Profile application: 1) Download the side package 'EmberZnet-Smart-Energy.zip' 2) Extract the side package over installed SDK. 3) Enable 'CBKE 163k1' and/or 'CBKE 283k1' components depending on the use case. 4) Build the application.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - NCP ncp-uart-hw"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a020f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4180a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/ncp-uart-hw/ncp-uart-hw-brd4180a.s37"/>
+    <property key="core.readmeFiles" value="app/ncp/sample-app/ncp-uart-hw/readme.html"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Advanced Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4188a.demo.DynamicMultiprotocolLightMinimal" label="Zigbee - SoC DynamicMultiprotocolLightMinimal">
+    <model:description>This is a sample application demonstrating a light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LED or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightMinimal"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b020f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4188a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightMinimal/DynamicMultiprotocolLightMinimal-brd4188a.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLight/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4188b.demo.DynamicMultiprotocolLightMinimal" label="Zigbee - SoC DynamicMultiprotocolLightMinimal">
+    <model:description>This is a sample application demonstrating a light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LED or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightMinimal"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b220f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4188b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightMinimal/DynamicMultiprotocolLightMinimal-brd4188b.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLight/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4304a.demo.DynamicMultiprotocolLightMinimal" label="Zigbee - SoC DynamicMultiprotocolLightMinimal">
+    <model:description>This is a sample application demonstrating a light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LED or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightMinimal"/>
+    <property key="core.partCompatibility" value=".*mgm12p32f1024ga.*"/>
+    <property key="core.boardCompatibility" value="brd4304a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightMinimal/DynamicMultiprotocolLightMinimal-brd4304a.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLight/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4306c.demo.DynamicMultiprotocolLightMinimal" label="Zigbee - SoC DynamicMultiprotocolLightMinimal">
+    <model:description>This is a sample application demonstrating a light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LED or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightMinimal"/>
+    <property key="core.partCompatibility" value=".*mgm13p02f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4306c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightMinimal/DynamicMultiprotocolLightMinimal-brd4306c.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLight/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4306d.demo.DynamicMultiprotocolLightMinimal" label="Zigbee - SoC DynamicMultiprotocolLightMinimal">
+    <model:description>This is a sample application demonstrating a light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LED or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightMinimal"/>
+    <property key="core.partCompatibility" value=".*mgm13p12f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4306d"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightMinimal/DynamicMultiprotocolLightMinimal-brd4306d.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLight/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4308a.demo.DynamicMultiprotocolLightMinimal" label="Zigbee - SoC DynamicMultiprotocolLightMinimal">
+    <model:description>This is a sample application demonstrating a light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LED or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightMinimal"/>
+    <property key="core.partCompatibility" value=".*mgm210pa32jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightMinimal/DynamicMultiprotocolLightMinimal-brd4308a.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLight/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4308b.demo.DynamicMultiprotocolLightMinimal" label="Zigbee - SoC DynamicMultiprotocolLightMinimal">
+    <model:description>This is a sample application demonstrating a light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LED or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightMinimal"/>
+    <property key="core.partCompatibility" value=".*mgm210pa22jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightMinimal/DynamicMultiprotocolLightMinimal-brd4308b.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLight/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4308c.demo.DynamicMultiprotocolLightMinimal" label="Zigbee - SoC DynamicMultiprotocolLightMinimal">
+    <model:description>This is a sample application demonstrating a light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LED or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightMinimal"/>
+    <property key="core.partCompatibility" value=".*mgm210pb32jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightMinimal/DynamicMultiprotocolLightMinimal-brd4308c.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLight/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4308d.demo.DynamicMultiprotocolLightMinimal" label="Zigbee - SoC DynamicMultiprotocolLightMinimal">
+    <model:description>This is a sample application demonstrating a light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LED or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightMinimal"/>
+    <property key="core.partCompatibility" value=".*mgm210pb22jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308d"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightMinimal/DynamicMultiprotocolLightMinimal-brd4308d.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLight/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4309a.demo.DynamicMultiprotocolLightMinimal" label="Zigbee - SoC DynamicMultiprotocolLightMinimal">
+    <model:description>This is a sample application demonstrating a light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LED or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightMinimal"/>
+    <property key="core.partCompatibility" value=".*mgm210l022jif.*"/>
+    <property key="core.boardCompatibility" value="brd4309a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightMinimal/DynamicMultiprotocolLightMinimal-brd4309a.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLight/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4309b.demo.DynamicMultiprotocolLightMinimal" label="Zigbee - SoC DynamicMultiprotocolLightMinimal">
+    <model:description>This is a sample application demonstrating a light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LED or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightMinimal"/>
+    <property key="core.partCompatibility" value=".*mgm210la22jif.*"/>
+    <property key="core.boardCompatibility" value="brd4309b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightMinimal/DynamicMultiprotocolLightMinimal-brd4309b.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLight/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4316a.demo.DynamicMultiprotocolLightMinimal" label="Zigbee - SoC DynamicMultiprotocolLightMinimal">
+    <model:description>This is a sample application demonstrating a light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LED or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightMinimal"/>
+    <property key="core.partCompatibility" value=".*mgm240pb22vna.*"/>
+    <property key="core.boardCompatibility" value="brd4316a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightMinimal/DynamicMultiprotocolLightMinimal-brd4316a.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLight/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4317a.demo.DynamicMultiprotocolLightMinimal" label="Zigbee - SoC DynamicMultiprotocolLightMinimal">
+    <model:description>This is a sample application demonstrating a light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LED or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightMinimal"/>
+    <property key="core.partCompatibility" value=".*mgm240pb32vna.*"/>
+    <property key="core.boardCompatibility" value="brd4317a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightMinimal/DynamicMultiprotocolLightMinimal-brd4317a.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLight/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4319a.demo.DynamicMultiprotocolLightMinimal" label="Zigbee - SoC DynamicMultiprotocolLightMinimal">
+    <model:description>This is a sample application demonstrating a light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LED or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightMinimal"/>
+    <property key="core.partCompatibility" value=".*mgm240l022rnf.*"/>
+    <property key="core.boardCompatibility" value="brd4319a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightMinimal/DynamicMultiprotocolLightMinimal-brd4319a.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLight/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4188a.demo.DynamicMultiprotocolLightSedMinimal" label="Zigbee - SoC DynamicMultiprotocolLightSedMinimal">
+    <model:description>This is a sample application demonstrating a sleepy light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LEDs or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightSedMinimal"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b020f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4188a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightSedMinimal/DynamicMultiprotocolLightSedMinimal-brd4188a.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLightSed/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4188b.demo.DynamicMultiprotocolLightSedMinimal" label="Zigbee - SoC DynamicMultiprotocolLightSedMinimal">
+    <model:description>This is a sample application demonstrating a sleepy light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LEDs or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightSedMinimal"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b220f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4188b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightSedMinimal/DynamicMultiprotocolLightSedMinimal-brd4188b.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLightSed/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4304a.demo.DynamicMultiprotocolLightSedMinimal" label="Zigbee - SoC DynamicMultiprotocolLightSedMinimal">
+    <model:description>This is a sample application demonstrating a sleepy light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LEDs or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightSedMinimal"/>
+    <property key="core.partCompatibility" value=".*mgm12p32f1024ga.*"/>
+    <property key="core.boardCompatibility" value="brd4304a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightSedMinimal/DynamicMultiprotocolLightSedMinimal-brd4304a.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLightSed/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4306c.demo.DynamicMultiprotocolLightSedMinimal" label="Zigbee - SoC DynamicMultiprotocolLightSedMinimal">
+    <model:description>This is a sample application demonstrating a sleepy light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LEDs or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightSedMinimal"/>
+    <property key="core.partCompatibility" value=".*mgm13p02f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4306c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightSedMinimal/DynamicMultiprotocolLightSedMinimal-brd4306c.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLightSed/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4306d.demo.DynamicMultiprotocolLightSedMinimal" label="Zigbee - SoC DynamicMultiprotocolLightSedMinimal">
+    <model:description>This is a sample application demonstrating a sleepy light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LEDs or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightSedMinimal"/>
+    <property key="core.partCompatibility" value=".*mgm13p12f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4306d"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightSedMinimal/DynamicMultiprotocolLightSedMinimal-brd4306d.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLightSed/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4308a.demo.DynamicMultiprotocolLightSedMinimal" label="Zigbee - SoC DynamicMultiprotocolLightSedMinimal">
+    <model:description>This is a sample application demonstrating a sleepy light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LEDs or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightSedMinimal"/>
+    <property key="core.partCompatibility" value=".*mgm210pa32jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightSedMinimal/DynamicMultiprotocolLightSedMinimal-brd4308a.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLightSed/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4308b.demo.DynamicMultiprotocolLightSedMinimal" label="Zigbee - SoC DynamicMultiprotocolLightSedMinimal">
+    <model:description>This is a sample application demonstrating a sleepy light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LEDs or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightSedMinimal"/>
+    <property key="core.partCompatibility" value=".*mgm210pa22jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightSedMinimal/DynamicMultiprotocolLightSedMinimal-brd4308b.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLightSed/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4308c.demo.DynamicMultiprotocolLightSedMinimal" label="Zigbee - SoC DynamicMultiprotocolLightSedMinimal">
+    <model:description>This is a sample application demonstrating a sleepy light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LEDs or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightSedMinimal"/>
+    <property key="core.partCompatibility" value=".*mgm210pb32jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightSedMinimal/DynamicMultiprotocolLightSedMinimal-brd4308c.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLightSed/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4308d.demo.DynamicMultiprotocolLightSedMinimal" label="Zigbee - SoC DynamicMultiprotocolLightSedMinimal">
+    <model:description>This is a sample application demonstrating a sleepy light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LEDs or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightSedMinimal"/>
+    <property key="core.partCompatibility" value=".*mgm210pb22jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308d"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightSedMinimal/DynamicMultiprotocolLightSedMinimal-brd4308d.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLightSed/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4309a.demo.DynamicMultiprotocolLightSedMinimal" label="Zigbee - SoC DynamicMultiprotocolLightSedMinimal">
+    <model:description>This is a sample application demonstrating a sleepy light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LEDs or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightSedMinimal"/>
+    <property key="core.partCompatibility" value=".*mgm210l022jif.*"/>
+    <property key="core.boardCompatibility" value="brd4309a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightSedMinimal/DynamicMultiprotocolLightSedMinimal-brd4309a.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLightSed/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4309b.demo.DynamicMultiprotocolLightSedMinimal" label="Zigbee - SoC DynamicMultiprotocolLightSedMinimal">
+    <model:description>This is a sample application demonstrating a sleepy light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LEDs or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightSedMinimal"/>
+    <property key="core.partCompatibility" value=".*mgm210la22jif.*"/>
+    <property key="core.boardCompatibility" value="brd4309b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightSedMinimal/DynamicMultiprotocolLightSedMinimal-brd4309b.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLightSed/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4316a.demo.DynamicMultiprotocolLightSedMinimal" label="Zigbee - SoC DynamicMultiprotocolLightSedMinimal">
+    <model:description>This is a sample application demonstrating a sleepy light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LEDs or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightSedMinimal"/>
+    <property key="core.partCompatibility" value=".*mgm240pb22vna.*"/>
+    <property key="core.boardCompatibility" value="brd4316a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightSedMinimal/DynamicMultiprotocolLightSedMinimal-brd4316a.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLightSed/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4317a.demo.DynamicMultiprotocolLightSedMinimal" label="Zigbee - SoC DynamicMultiprotocolLightSedMinimal">
+    <model:description>This is a sample application demonstrating a sleepy light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LEDs or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightSedMinimal"/>
+    <property key="core.partCompatibility" value=".*mgm240pb32vna.*"/>
+    <property key="core.boardCompatibility" value="brd4317a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightSedMinimal/DynamicMultiprotocolLightSedMinimal-brd4317a.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLightSed/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4319a.demo.DynamicMultiprotocolLightSedMinimal" label="Zigbee - SoC DynamicMultiprotocolLightSedMinimal">
+    <model:description>This is a sample application demonstrating a sleepy light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LEDs or buttons.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightSedMinimal"/>
+    <property key="core.partCompatibility" value=".*mgm240l022rnf.*"/>
+    <property key="core.boardCompatibility" value="brd4319a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightSedMinimal/DynamicMultiprotocolLightSedMinimal-brd4319a.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLightSed/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4161a.demo.DynamicMultiprotocolLightSed" label="Zigbee - SoC DynamicMultiprotocolLightSed">
+    <model:description>This is a sample application demonstrating a sleepy light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightSed"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p432f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4161a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightSed/DynamicMultiprotocolLightSed-brd4161a.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLightSed/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4162a.demo.DynamicMultiprotocolLightSed" label="Zigbee - SoC DynamicMultiprotocolLightSed">
+    <model:description>This is a sample application demonstrating a sleepy light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLightSed"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p332f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4162a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLightSed/DynamicMultiprotocolLightSed-brd4162a.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLightSed/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4161a.demo.DynamicMultiprotocolLight" label="Zigbee - SoC DynamicMultiprotocolLight">
+    <model:description>This is a sample application demonstrating a light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLight"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p432f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4161a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLight/DynamicMultiprotocolLight-brd4161a.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLight/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4162a.demo.DynamicMultiprotocolLight" label="Zigbee - SoC DynamicMultiprotocolLight">
+    <model:description>This is a sample application demonstrating a light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC DynamicMultiprotocolLight"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p332f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4162a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/DynamicMultiprotocolLight/DynamicMultiprotocolLight-brd4162a.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLight/readme.html"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4161a.demo.Z3Light" label="Zigbee - SoC Light">
+    <model:description>This is a Zigbee 3.0 light application using NVM3 as the persistent storage.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC Light"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p432f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4161a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/Z3Light/Z3Light-brd4161a.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/z3/Z3Light/readme.html"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4162a.demo.Z3Light" label="Zigbee - SoC Light">
+    <model:description>This is a Zigbee 3.0 light application using NVM3 as the persistent storage.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC Light"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p332f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4162a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/Z3Light/Z3Light-brd4162a.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/z3/Z3Light/readme.html"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4180a.demo.Z3Light" label="Zigbee - SoC Light">
+    <model:description>This is a Zigbee 3.0 light application using NVM3 as the persistent storage.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC Light"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a020f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4180a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/Z3Light/Z3Light-brd4180a.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/z3/Z3Light/readme.html"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd2601b.demo.Z3SwitchWithVoice" label="Zigbee - SoC SwitchWithVoice">
+    <model:description>Zigbee 3.0 Switch with Voice
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC SwitchWithVoice"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b310f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd2601b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/Z3SwitchWithVoice/Z3SwitchWithVoice-brd2601b.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/z3/Z3SwitchWithVoice/readme.html"/>
+    <property key="filters" value="Capability|Machine\ Learning Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4161a.demo.Z3Switch" label="Zigbee - SoC Switch">
+    <model:description>This is a Zigbee 3.0 switch application using NVM3 as the persistent storage.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p432f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4161a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/Z3Switch/Z3Switch-brd4161a.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/z3/Z3Switch/readme.html"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4162a.demo.Z3Switch" label="Zigbee - SoC Switch">
+    <model:description>This is a Zigbee 3.0 switch application using NVM3 as the persistent storage.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p332f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4162a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/Z3Switch/Z3Switch-brd4162a.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/z3/Z3Switch/readme.html"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+  <demo name="brd4180a.demo.Z3Switch" label="Zigbee - SoC Switch">
+    <model:description>This is a Zigbee 3.0 switch application using NVM3 as the persistent storage.
+</model:description>
+    <property key="demos.blurb" value="Zigbee - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a020f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4180a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/zigbee/demos/Z3Switch/Z3Switch-brd4180a.s37"/>
+    <property key="core.readmeFiles" value="app/framework/scenarios/z3/Z3Switch/readme.html"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Zigbee"/>
+    <property key="core.quality" value="PRODUCTION"/>
+  </demo>
+</demos>

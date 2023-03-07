@@ -1,0 +1,116 @@
+project_name: bt_soc_csr_generator
+package: Bluetooth
+label: Bluetooth - SoC CSR Generator
+description: >
+  Certificate generating firmware example. Software is generating the device
+  EC key pair, the signing request for the device certificate, and other related
+  data. The generated data can be read out by the Central Authority.
+
+category: Bluetooth Examples
+quality: production
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Bluetooth"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+
+component:
+  - id: app_assert
+  - id: app_log
+  - id: bootloader_interface
+  - id: component_catalog
+  - id: device_init
+  - id: emlib_cmu
+  - id: iostream_usart
+    instance:
+      - vcom
+  - id: mpu
+  - id: nvm3_lib
+  - id: nvm3_default
+  - id: psa_crypto
+  - id: psa_crypto_cmac
+  - id: psa_crypto_ccm
+  - id: psa_crypto_cipher_ecb
+  - id: psa_crypto_common
+  - id: psa_crypto_ecdh
+  - id: psa_crypto_ecdsa
+  - id: psa_crypto_ecc_secp256r1
+  - id: psa_its
+  - id: psa_crypto_hmac
+  - id: psa_crypto_sha256
+  - id: psa_crypto_sha1
+  - id: sl_system
+  - id: sleeptimer
+
+source:
+  - path: app.c
+  - path: main.c
+  - path: csr_generator.c
+  - path: der.c
+
+include:
+  - path: .
+    file_list:
+      - path: app.h
+      - path: csr_generator.h
+      - path: der.h
+
+config_file:
+  - path: config/csr_generator_config.h
+
+readme:
+  - path: ../../documentation/example/soc_csr_generator/readme.md
+
+other_file:
+  - path: ../../script/create_bl_files.bat
+  - path: ../../script/create_bl_files.sh
+  - path: ../../documentation/example/soc_csr_generator/readme_img0.png
+    folder: images
+  - path: ../../documentation/example/soc_csr_generator/readme_img1.png
+    folder: images
+  - path: ../../documentation/example/soc_csr_generator/readme_img2.png
+    folder: images
+
+configuration:
+  - name: SL_STACK_SIZE
+    value: "6200"
+  - name: SL_HEAP_SIZE
+    value: "15000"
+  - name: APP_LOG_LEVEL
+    value: "APP_LOG_LEVEL_INFO"
+  - name: CSR_GENERATOR_NVM3_REGION
+    value: "0x40000"
+  - name: CSR_GENERATOR_CSR_RAM_ADDRESS
+    value: "0x20000000"
+    condition:
+      - "device_generic_family_efr32xg22"
+  - name: CSR_GENERATOR_KEY_LOCATION
+    value: "PSA_KEY_LOCATION_SLI_SE_OPAQUE"
+    condition:
+      - "device_security_vault"
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+    condition:
+      - iostream_usart
+  - name: SL_IOSTREAM_USART_VCOM_RESTRICT_ENERGY_MODE_TO_ALLOW_RECEPTION
+    value: "0"
+  - name: SL_PSA_KEY_USER_SLOT_COUNT
+    value: "1"
+    condition:
+      - psa_crypto
+
+requires:
+  - name: device_supports_bluetooth
+  - name: device_security_vault
+
+tag:
+  - hardware:device:flash:512
+  - hardware:device:ram:32
+
+ui_hints:
+  highlight:
+    - path: readme.md
+      focus: true

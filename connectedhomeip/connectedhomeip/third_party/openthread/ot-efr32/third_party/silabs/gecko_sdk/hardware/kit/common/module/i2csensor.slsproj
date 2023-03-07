@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="SDK.HAL.I2CSENSOR.COMMON">
+  <module id="SDK.HAL.I2CSPM.COMMON"/>
+</project>

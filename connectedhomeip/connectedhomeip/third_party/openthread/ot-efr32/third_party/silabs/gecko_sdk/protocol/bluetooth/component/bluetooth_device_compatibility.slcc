@@ -1,0 +1,50 @@
+id: "bluetooth_device_compatibility"
+label: "Device compatibility defines for Bluetooth features"
+package: "Bluetooth"
+description: >
+  This component defines device compatibilities for Bluetooth features.
+  A feature is supported by all device families if no compatibility is defined
+  for the feature.
+
+category: "Bluetooth|Stack"
+quality: "production"
+root_path: "protocol/bluetooth"
+provides:
+  - name: bluetooth_device_compatibility
+  - name: device_supports_bluetooth_advertising_extensions
+    condition: ["device_sdid_84"]
+  - name: device_supports_bluetooth_advertising_extensions
+    condition: ["device_sdid_89"]
+  - name: device_supports_bluetooth_advertising_extensions
+    condition: ["device_sdid_95"]
+  - name: device_supports_bluetooth_advertising_extensions
+    condition: ["device_sdid_200"]
+  - name: device_supports_bluetooth_advertising_extensions
+    condition: ["device_sdid_205"]
+  - name: device_supports_bluetooth_advertising_extensions
+    condition: ["device_sdid_215"]
+  - name: device_supports_bluetooth_advertising_extensions
+    condition: ["device_sdid_230"]
+  - name: device_supports_bluetooth_connection_phy_update
+    condition: ["device_sdid_84"]
+  - name: device_supports_bluetooth_connection_phy_update
+    condition: ["device_sdid_89"]
+  - name: device_supports_bluetooth_connection_phy_update
+    condition: ["device_sdid_95"]
+  - name: device_supports_bluetooth_connection_phy_update
+    condition: ["device_sdid_200"]
+  - name: device_supports_bluetooth_connection_phy_update
+    condition: ["device_sdid_205"]
+  - name: device_supports_bluetooth_connection_phy_update
+    condition: ["device_sdid_215"]
+  - name: device_supports_bluetooth_connection_phy_update
+    condition: ["device_sdid_230"]
+
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_cte_support
+    condition:
+      - "device_supports_bluetooth_cte"
+
+ui_hints:
+  visibility: never

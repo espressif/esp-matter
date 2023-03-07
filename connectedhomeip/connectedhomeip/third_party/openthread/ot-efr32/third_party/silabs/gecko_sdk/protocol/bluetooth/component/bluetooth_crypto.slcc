@@ -1,0 +1,58 @@
+id: "bluetooth_crypto"
+label: "Bluetooth Core Crypto Configuration"
+package: "Bluetooth"
+description: >
+  Bluetooth Low Energy stack crypto configurations
+
+  This component includes the crypto configration needed by the Bluetooth stack
+  and should not be included directly by the application.
+category: "Bluetooth|Stack"
+quality: "production"
+template_contribution:
+  - name: psa_key_slots
+    value:
+      name: psa_key_slots_bluetooth_stack
+      count: 2
+    condition:
+      - psa_crypto
+requires:
+  - name: "mbedtls_cmac"
+    condition:
+      - "device_series_1"
+  - name: "mbedtls_ecdh"
+    condition:
+      - "device_series_1"
+  - name: "mbedtls_ecc"
+    condition:
+      - "device_series_1"
+  - name: "mbedtls_ecc_secp256r1"
+    condition:
+      - "device_series_1"
+  - name: "mbedtls_random"
+    condition:
+      - "device_series_1"
+  - name: "psa_crypto"
+    condition:
+      - "device_series_2"
+  - name: "psa_crypto_cmac"
+    condition:
+      - "device_series_2"
+  - name: "psa_crypto_cipher_ecb"
+    condition:
+      - "device_series_2"
+  - name: "psa_crypto_ecdh"
+    condition:
+      - "device_series_2"
+  - name: "psa_crypto_ecc_secp256r1"
+    condition:
+      - "device_series_2"
+  - name: "psa_its"
+    condition:
+      - "device_series_2"
+      - "bluetooth_stack"
+  - name: "sli_protocol_crypto"
+provides:
+  - name: "bluetooth_crypto"
+
+ui_hints:
+  visibility: never

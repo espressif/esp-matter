@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<View xml_version="1" xmlns="http://cypress.com/xsd/cystudiouddviewdie_v1">
+  <Files>
+    <Clocks visPath="clocks.cyvis" semPath="clocks.cysem" ipPath="clocksResourceMap.txt" />
+    <Analog visPath="analog.cyvis" semPath="analog.cysem" ipPath="analogResourceMap.txt" />
+    <SmartIO visPath="smartio.cyvis" semPath="smartio.cysem" ipPath="smartioResourceMap.txt"  />
+    <Module name="72-SMT" path="modules/module_72-SMT.cydata" />
+    <Module name="28-SMT" path="modules/module_28-SMT.cydata" />
+    <Module name="30-SMT" path="modules/module_30-SMT.cydata" />
+    <Module name="34-SMT" path="modules/module_34-SMT.cydata" />
+    <Module name="81-LGA" path="modules/module_81-LGA.cydata" />
+    <Module name="84-LGA" path="modules/module_84-LGA.cydata" />
+    <Svd path="svd/psoc6_01.svd"/>
+  </Files>
+  <HasUserControllableMcu value="true" />
+</View>

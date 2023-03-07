@@ -1,0 +1,56 @@
+{
+    "target": {
+        "Name": "LP_CC1352P7-2_4GHZ",
+        "Revision": [],
+        "Description": {
+            "p": [
+                "CC1352P7 LP. 7x7 VQFN48 package. External bias, differential output, 2.4 GHz band.",
+                "The different Launchpads for the CC1352P7 device are optimized to support different frequency bands and TX output power values.\n            See the description below for details:",
+                {
+                    "p": "The RF match network on the 20 dBm output port is optimized for the 868\/915 MHz frequency band. The RF output ports \n            for standard TX output power is designed with RF matching for the 868\/915 MHz band (14 dBm) and the 2.4 GHz band (5 dBm).",
+                    "$": "LAUNCHXL-CC1352P7-1:"
+                },
+                {
+                    "p": "The RF match network on the 20 dBm output port is optimized for the 2.4 GHz frequency band. The RF output ports \n            for standard TX output power is designed with RF matching for the 868\/915 MHz band (14 dBm) and the 2.4 GHz band (5 dBm).",
+                    "$": "LAUNCHXL-CC1352P7-2:"
+                },
+                {
+                    "p": "The RF match network on the 20 dBm output port is optimized for the 2.4 GHz frequency band. The RF output ports \n            for standard TX output power is designed with RF matching for the 433 MHz band (14 dBm) and the 2.4 GHz band (5 dBm).",
+                    "$": "LAUNCHXL-CC1352P7-4:"
+                }
+            ]
+        },
+        "DeviceName": "CC1352P7",
+        "DevicePackage": "VQFN 7x7",
+        "FrontEnd": "XD",
+        "PaSettings": "pasettings.json",
+        "RfDesign": "LP-CC1352P7-2",
+        "DefaultCategory": "Settings",
+        "IoSettings": {
+            "_name": "RF Switch",
+            "IoPin": [
+                {
+                    "_name": "DIO28",
+                    "ControlFunction": "Input\/Output",
+                    "Idle": "Input tristate (Default)",
+                    "Tx": "Output high",
+                    "Rx": "Output high"
+                },
+                {
+                    "_name": "DIO29",
+                    "ControlFunction": "Input\/Output",
+                    "Idle": "Input tristate (Default)",
+                    "Tx": "Output low",
+                    "Rx": "Output low"
+                },
+                {
+                    "_name": "DIO30",
+                    "ControlFunction": "Input\/Output",
+                    "Idle": "Input tristate (Default)",
+                    "Tx": "Output low",
+                    "Rx": "Output low"
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Alert Level" type="org.bluetooth.characteristic.alert_level" uuid="2A06">
+  <InformativeText>
+    <Abstract>The level of an alert a device is to sound. If this level is changed while the alert is being sounded, the new level should take effect.</Abstract>
+    <Summary>            
+    The value of the characteristic shall be an unsigned 8 bit integer that has a fixed point exponent of 0.
+    The Alert Level characteristic defines the level of alert, and is one of the following three values:
+    - Value 0, meaning "No Alert"
+    - Value 1, meaning "Mild Alert"
+    - Value 2, meaning "High Alert"
+    </Summary>
+    <Examples>
+      <Example>The value 0x01 is interpreted as "Mild Alert"</Example>
+    </Examples>
+  </InformativeText>
+  <Value>
+    <Field name="Alert Level">
+      <Requirement>Mandatory</Requirement>
+      <Format>uint8</Format>
+      <Minimum>0</Minimum>
+      <Maximum>2</Maximum>
+      <Enumerations>
+        <Enumeration key="0" value="No Alert" />
+        <Enumeration key="1" value="Mild Alert" />
+        <Enumeration key="2" value="High Alert" />
+        <Reserved start="3" end="255" />
+      </Enumerations>
+    </Field>
+  </Value>
+</Characteristic>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<?xml-stylesheet type="text/xsl" href="FieldBasedDisplay.xslt"?>-->
+<!-- Created with Liquid XML Studio Designer Edition 9.1.10.3537 (http://www.liquid-technologies.com) -->
+<!--Copyright 2011 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Location and Speed Characteristic" type="org.bluetooth.characteristic.location_and_speed" uuid="2A67" last-modified="2013-05-13" approved="Yes">
+  <InformativeText>
+    <Summary>The Location and Speed characteristic is a variable length structure containing a Flags field and, based on the contents of the Flags field, may contain a combination of data fields listed below. Note that it is possible for this characteristic to exceed the default LE MTU size.</Summary>
+  </InformativeText>
+  <Value>
+    <Field name="Flags">
+      <Requirement>Mandatory</Requirement>
+      <Format>16bit</Format>
+      <BitField>
+        <Bit index="0" size="1" name="Instantaneous Speed Present">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="1" size="1" name="Total Distance Present">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="2" size="1" name="Location Present">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="3" size="1" name="Elevation Present">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="4" size="1" name="Heading Present">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="5" size="1" name="Rolling Time Present">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="6" size="1" name="UTC Time Present">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="7" size="2" name="Position Status">
+          <Enumerations>
+            <Enumeration key="0" value="No Position" />
+            <Enumeration key="1" value="Position Ok" />
+            <Enumeration key="2" value="Estimated Position" />
+            <Enumeration key="3" value="Last Known Position" />
+          </Enumerations>
+        </Bit>
+        <Bit index="9" size="1" name="Speed and Distance format">
+          <Enumerations>
+            <Enumeration key="0" value="2D" />
+            <Enumeration key="1" value="3D" />
+          </Enumerations>
+        </Bit>
+        <Bit index="10" size="2" name="Elevation Source">
+          <Enumerations>
+            <Enumeration key="0" value="Positioning System" />
+            <Enumeration key="1" value="Barometric Air Pressure" />
+            <Enumeration key="2" value="Database Service (or similiar)" />
+            <Enumeration key="3" value="Other" />
+          </Enumerations>
+        </Bit>
+        <Bit index="12" size="1" name="Heading Source">
+          <Enumerations>
+            <Enumeration key="0" value="Heading based on movement" />
+            <Enumeration key="1" value="Heading based on magnetic compass" />
+          </Enumerations>
+        </Bit>
+        <ReservedForFutureUse index="13" size="3" />
+      </BitField>
+    </Field>
+    <Field name="Instantaneous Speed">
+      <InformativeText>
+            Unit is in meters per second with a resolution of 1/100
+            </InformativeText>
+      <Requirement>Optional</Requirement>
+      <Format>uint16</Format>
+      <Unit>org.bluetooth.unit.velocity.metres_per_second</Unit>
+      <DecimalExponent>-2</DecimalExponent>
+    </Field>
+    <Field name="Total Distance">
+      <InformativeText>Unit is in meters with a resolution of 1/10</InformativeText>
+      <Requirement>Optional</Requirement>
+      <Format>uint24</Format>
+      <Unit>org.bluetooth.unit.length.meter</Unit>
+      <DecimalExponent>-1</DecimalExponent>
+    </Field>
+    <Field name="Location - Latitude">
+      <InformativeText>Unit is in degrees with a resolution of 1/(10^7)
+         C1: When present, these fields are always present as a pair.
+      </InformativeText>
+      <Requirement>C1</Requirement>
+      <Format>sint32</Format>
+      <Unit>org.bluetooth.unit.plane_angle.degree</Unit>
+      <DecimalExponent>-7</DecimalExponent>
+    </Field>
+    <Field name="Location - Longitude">
+      <InformativeText>Unit is in degrees with a resolution of 1/(10^7)
+         C1:When present, these fields are always present as a pair.
+      </InformativeText>
+      <Requirement>C1</Requirement>
+      <Format>sint32</Format>
+      <Unit>org.bluetooth.unit.plane_angle.degree</Unit>
+      <DecimalExponent>-7</DecimalExponent>
+    </Field>
+    <Field name="Elevation">
+      <InformativeText>Unit is in meters with a resolution of 1/100</InformativeText>
+      <Requirement>Optional</Requirement>
+      <Format>sint24</Format>
+      <Unit>org.bluetooth.unit.length.meter</Unit>
+      <DecimalExponent>-2</DecimalExponent>
+    </Field>
+    <Field name="Heading">
+      <InformativeText>Unit is in degrees with a resolution of 1/100</InformativeText>
+      <Requirement>Optional</Requirement>
+      <Format>uint16</Format>
+      <Unit>org.bluetooth.unit.plane_angle.degree</Unit>
+      <DecimalExponent>-2</DecimalExponent>
+    </Field>
+    <Field name="Rolling Time">
+      <InformativeText>Unit is in seconds with a resolution of 1 second</InformativeText>
+      <Requirement>Optional</Requirement>
+      <Format>uint8</Format>
+      <Unit>org.bluetooth.unit.time.second</Unit>
+      <DecimalExponent>0</DecimalExponent>
+    </Field>
+    <Field name="UTC Time">
+      <InformativeText>Smallest units in seconds</InformativeText>
+      <Requirement>Optional</Requirement>
+      <Reference>org.bluetooth.characteristic.date_time</Reference>
+    </Field>
+  </Value>
+  <Note>The fields in the above table, reading from top to bottom, are shown in the order of LSO to MSO, where LSO = Least Significant Octet and MSO = Most Significant Octet. The Least Significant Octet represents the eight bits numbered 0 to 7.
+    </Note>
+</Characteristic>

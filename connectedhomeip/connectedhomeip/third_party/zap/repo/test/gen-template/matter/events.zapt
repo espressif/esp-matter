@@ -1,0 +1,8 @@
+List of all events.
+
+{{#zcl_events}}
+>> Event: {{name}}
+{{#zcl_event_fields}}
+    > Field: {{name}} {{#if_is_enum type}}[ENUM]{{/if_is_enum}}{{#if_is_bitmap type}}[BITMAP]{{/if_is_bitmap}}
+{{/zcl_event_fields}}
+{{/zcl_events}}

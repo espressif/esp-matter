@@ -1,0 +1,18 @@
+id: zw_cc_colorswitch
+label: Color Switch Command Class
+category: Z-Wave|Command Classes
+description: >
+  Color Switch Command Class is used to control color capable devices.
+  Color Switch Command Class manipulates the color components of a device.
+  Each color component is scaled by the brightness level previously set by
+  Multilevel Switch Set, Binary Switch Set or Basic Set Command.
+package: Z-Wave
+quality: production
+source:
+  - path: protocol/z-wave/ZAF/CommandClasses/ColorSwitch/CC_ColorSwitch.c
+include:
+  - path: protocol/z-wave/ZAF/CommandClasses/ColorSwitch/
+    file_list:
+    - path: CC_ColorSwitch.h
+provides:
+  - name: zw_cc_colorswitch

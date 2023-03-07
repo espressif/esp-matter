@@ -1,0 +1,44 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+config ZEPHYR_PIGWEED_MODULE
+    select LIB_CPLUSPLUS
+    depends on STD_CPP17 || STD_CPP2A || STD_CPP20 || STD_CPP2B
+
+if ZEPHYR_PIGWEED_MODULE
+
+rsource "pw_assert_zephyr/Kconfig"
+rsource "pw_bytes/Kconfig"
+rsource "pw_checksum/Kconfig"
+rsource "pw_chrono_zephyr/Kconfig"
+rsource "pw_containers/Kconfig"
+rsource "pw_function/Kconfig"
+rsource "pw_hdlc/Kconfig"
+rsource "pw_interrupt_zephyr/Kconfig"
+rsource "pw_log_zephyr/Kconfig"
+rsource "pw_polyfill/Kconfig"
+rsource "pw_preprocessor/Kconfig"
+rsource "pw_result/Kconfig"
+rsource "pw_router/Kconfig"
+rsource "pw_rpc/Kconfig"
+rsource "pw_span/Kconfig"
+rsource "pw_status/Kconfig"
+rsource "pw_stream/Kconfig"
+rsource "pw_string/Kconfig"
+rsource "pw_sync_zephyr/Kconfig"
+rsource "pw_sys_io_zephyr/Kconfig"
+rsource "pw_tokenizer/Kconfig"
+rsource "pw_varint/Kconfig"
+
+endif # ZEPHYR_PIGWEED_MODULE

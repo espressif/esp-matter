@@ -1,0 +1,239 @@
+id: zigbee_app_framework_common
+label: Application Framework Common
+package: Zigbee
+category: Zigbee|Utility
+quality: production
+
+description: This component declares all the required application framework globals, initializes the Zigbee stack and dispatches stack callbacks calls as needed to the application components.
+
+provides:
+  - name: zigbee_app_framework_common
+  - name: wireless_stack
+    allow_multiple: true
+config_file:
+  - path: protocol/zigbee/app/framework/common/config/zigbee_sleep_config.h
+  - path: protocol/zigbee/app/framework/common/config/zigbee_rtos_task_config.h
+    condition: 
+      - cmsis_rtos2
+requires:
+  - name: sl_system
+  - name: zigbee_pro_stack_support
+  - name: zigbee_phy
+  - name: cmsis_rtos2
+    condition:
+      - bluetooth_stack
+  - name: gatt_configuration
+    condition:
+      - bluetooth_stack
+  - name: rail_lib_multiprotocol
+    condition:
+      - bluetooth_stack
+  - name: nvm3_lib
+    condition:
+      - bluetooth_stack
+  - name: rail_util_pti
+    condition:
+      - device_cortexm
+  - name: power_manager
+    condition:
+      - device_cortexm
+  - name: cmsis_rtos2
+    condition: 
+      - ot_stack
+  - name: rail_mux
+    condition: 
+      - ot_stack
+
+recommends:
+  - id: zigbee_phy_2_4
+  - id: micriumos_kernel
+    condition:
+      - bluetooth_stack
+  - id: micriumos_kernel
+    condition:
+      - ot_stack
+source:
+  - path: protocol/zigbee/app/framework/common/zigbee_app_framework_common.c
+  - path: protocol/zigbee/app/framework/common/zigbee_app_framework_stack_cb.c
+  - path: protocol/zigbee/app/framework/common/zigbee_app_framework_sleep.c
+  - path: protocol/zigbee/app/framework/common/zigbee_app_framework_sleep_cli.c
+    condition:
+      - cli
+  # Unique file present in SoC, Host and NCP apps, hence added it here.
+  # For host app, this will be included from zigbee_zcl_framework_core component.
+  - path: protocol/zigbee/app/util/security/security-address-cache.c
+  - path: protocol/zigbee/app/framework/common/zigbee_app_framework_common_rtos.c
+    condition:
+      - cmsis_rtos2
+
+include:
+  - path: protocol/zigbee/app/framework/common
+    file_list:
+      - path: zigbee_app_framework_common.h
+      - path: zigbee_app_framework_event.h
+      - path: zigbee_app_framework_callback.h
+  # PLATFORM_MTL-5145 : Temporary workaround until Platform Montreal incorporates this into their repo
+  # This file is required in order to set LIB_MEM_CFG_HEAP_SIZE to 0
+  # This also requires a project define symbol OS_CFG_COMPAT_INIT
+  # When this symbol is defined, this file os_cfg_app.h is required
+  - path: protocol/zigbee/app/framework/common
+    file_list:
+      - path: os_cfg_app.h
+    condition:
+      - cmsis_rtos2
+
+define:
+  # TEMPORARY define that can be used in the C code to keep the code building
+  # for app builder while we make changes to make it work within UC.
+  - name: UC_BUILD
+
+# NOTE: Some cflags come in via platform/common/toolchain/toolchains.slct
+# Example: -Wall, -Wextra. So there is no need to explicitly add them
+toolchain_settings:
+  - option: gcc_compiler_option
+    value: "-Wno-unused-parameter"
+  - option: gcc_compiler_option
+    value: "-Wno-missing-field-initializers"
+  - option: gcc_compiler_option
+    value: "-Wno-missing-braces"
+    # turn on warnings as errors only when compiling from source
+  - option: gcc_compiler_option
+    value: "-Werror"
+    condition:
+      - zigbee_pro_stack_common_source
+
+# TODO: EMZIGBEE-6659    
+  - option: gcc_compiler_option
+    value: "-Wno-format"
+
+template_file:
+  - path: protocol/zigbee/app/framework/common/template/zigbee_stack_callback_dispatcher.h.jinja
+  - path: protocol/zigbee/app/framework/common/template/zigbee_stack_callback_dispatcher.c.jinja
+  - path: protocol/zigbee/app/framework/common/template/zigbee_common_callback_dispatcher.h.jinja
+  - path: protocol/zigbee/app/framework/common/template/zigbee_common_callback_dispatcher.c.jinja
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_app_framework_common
+  - name: event_handler
+    value:
+      event: stack_init
+      include: "zigbee_app_framework_common.h"
+      handler: sli_zigbee_stack_init_callback
+    priority: -8999
+    unless:
+      - cmsis_rtos2    
+  - name: event_handler
+    value:
+      event: stack_init
+      include: "zigbee_app_framework_common.h"
+      handler: sli_zigbee_app_framework_init_callback
+    priority: -8998
+    unless:
+      - cmsis_rtos2    
+  - name: event_handler
+    value:
+      event: stack_init
+      include: "zigbee_app_framework_common.h"
+      handler: sli_zigbee_common_rtos_init_callback
+    condition:
+      - cmsis_rtos2
+  - name: event_handler
+    value:
+      event: stack_process_action
+      include: "zigbee_app_framework_common.h"
+      handler: sli_zigbee_stack_tick_callback
+    unless:
+      - cmsis_rtos2
+  - name: event_handler
+    value:
+      event: stack_process_action
+      include: "zigbee_app_framework_common.h"
+      handler: sli_zigbee_app_framework_tick_callback
+    unless:
+      - cmsis_rtos2
+  - name: event_handler
+    value:
+      event: stack_init
+      include: "zigbee_app_framework_common.h"
+      handler: sli_zigbee_app_framework_sleep_init
+    priority: -8997
+  - name: power_manager_handler
+    value:
+      event: is_ok_to_sleep
+      include: "zigbee_app_framework_common.h"
+      handler: sli_zigbee_app_framework_is_ok_to_sleep
+  - name: zigbee_stack_callback
+    value:
+      callback_type: rtos_stack_wakeup_isr
+      function_name: sli_zigbee_common_rtos_wakeup_isr_callback
+    condition:
+      - cmsis_rtos2
+  - name: power_manager_handler
+    value:
+      event: sleep_on_isr_exit
+      include: "zigbee_app_framework_common.h"
+      handler: sli_zigbee_sleep_on_isr_exit
+    unless:
+      - zigbee_pro_compliance
+
+  - name: cli_group
+    value:
+      group: plugin
+      name: idle-sleep
+      help: "Commands to control idling/sleeping of the device"
+    unless:
+      - zigbee_pro_compliance
+    condition:
+      - power_manager
+  
+  - name: cli_command
+    value:
+      group: idle-sleep
+      name: status
+      handler: emberAfPluginIdleSleepStatusCommand
+      help: "Display the sleep status"
+    unless:
+      - zigbee_pro_compliance
+    condition:
+      - power_manager
+
+  - name: cli_command
+    value:
+      group: idle-sleep
+      name: force-awake
+      handler: emberAfPluginIdleSleepStayAwakeCommand
+      help: "Set or clear force awake"
+      argument:
+      - type: uint8
+    unless:
+      - zigbee_pro_compliance
+    condition:
+      - power_manager
+
+  - name: cli_command
+    value:
+      group: idle-sleep
+      name: awake-when-not-joined
+      handler: emberAfPluginIdleSleepAwakeWhenNotJoinedCommand
+      help: "Set or clear stay awake when not joined"
+      argument:
+      - type: uint8
+    unless:
+      - zigbee_pro_compliance
+    condition:
+      - power_manager
+      
+tag:
+  - "idle-sleep"
+  - "rtos"
+  - "priority"
+  - "stack-size"
+  - "stay-awake-when-not-joined"
+  - "minimum-sleep-duration"
+  - "sleep-backoff"
+  - "button-stay-awake"
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/app-framework-common

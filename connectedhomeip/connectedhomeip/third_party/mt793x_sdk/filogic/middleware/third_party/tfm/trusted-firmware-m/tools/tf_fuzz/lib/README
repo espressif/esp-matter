@@ -1,0 +1,12 @@
+.../tf_fuzz/lib directory contents:
+
+tfm_boilerplate.txt
+
+--------------------------------------------------------------------------------
+
+This directory contains the customizable "boilerplate" code snippets used to
+write out C source code.
+
+--------------
+
+*Copyright (c) 2019-2020, Arm Limited. All rights reserved.*

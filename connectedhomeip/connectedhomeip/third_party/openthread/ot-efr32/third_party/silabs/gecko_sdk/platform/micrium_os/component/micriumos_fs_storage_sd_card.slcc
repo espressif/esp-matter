@@ -1,0 +1,21 @@
+id: micriumos_fs_storage_sd_card
+package: micrium-fsxx
+description: Micrium OS File System SD Card Storage
+category: Services|Micrium|File System
+quality: production
+component_root_path: platform/micrium_os/fs
+source:
+  - path: source/storage/sd/fs_sd_card.c
+include:
+  - path: include
+    file_list:
+      - path: fs_sd_card.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: FS_STORAGE_SD_CARD
+provides:
+  - name: fs_storage_sd_card
+  - name: fs_storage_sd_impl
+    allow_multiple: true
+requires:
+  - name: fs

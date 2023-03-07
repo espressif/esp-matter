@@ -1,0 +1,189 @@
+# YAML
+---
+RAILModel:
+  name: RAIL_Model
+  version: 2.3
+  RAILModelObjectArray:
+    name: phyConfigEntries
+    # autoInit: 1  # optional, we can "automagically" instantiate a number of objects of this type
+    _elements:
+
+      - RAILModelObjectCollection:
+          name: phyConfigEntry
+          _elements:
+
+            - RAILModelInfo:
+                name: xtalFrequency
+            - RAILModelInfo:
+                name: baseFrequency
+            - RAILModelInfo:
+                name: bitrate
+            - RAILModelInfo:
+                name: modType
+            - RAILModelInfo:
+                name: deviation
+            - RAILModelInfo:
+                name: synthResolution
+            - RAILModelInfo:
+                name: fecEnabled
+            - RAILModelInfo:
+                name: convDecodeBufferSize
+
+            - RAILModelSimpleArray:
+                name: irCalConfig
+                dataType: FieldDataType.UINT8_T
+
+            - RAILModelObjectArray:
+                name: modemConfigEntries
+                _elements:
+                  - RAILModelStruct:
+                          name: modemConfigEntry
+                          _fields:
+                            - name: encodedAction
+                              dataType: FieldDataType.UINT32_T
+                            - name: encodedValues
+                              dataType: FieldDataType.UINT32_T
+                              isArray: True
+
+            - RAILModelStruct:
+                name: railChannelConfigEntryAttr
+                _fields:
+                  - name: calValues
+                    dataType: FieldDataType.UINT32_T
+                    isPtr: False
+                    isArray: True
+
+            - RAILModelObjectArray:
+                name: channelConfigEntries
+                _elements:
+                  - RAILModelStruct:
+                      name: channelConfigEntry
+                      _fields:
+                        - name: modemConfigDeltaAdd
+                          dataType: FieldDataType.UINT32_T
+                          isPtr: True
+                        - name: baseFrequency
+                          dataType: FieldDataType.UINT32_T
+                          isPtr: False
+                        - name: channelSpacing
+                          dataType: FieldDataType.UINT32_T
+                          isPtr: False
+                        - name: physicalChannelOffset
+                          dataType: FieldDataType.UINT16_T
+                          isPtr: False
+                        - name: channelNumberStart
+                          dataType: FieldDataType.UINT16_T
+                          isPtr: False
+                        - name: channelNumberEnd
+                          dataType: FieldDataType.UINT16_T
+                          isPtr: False
+                        - name: maxPower
+                          dataType: FieldDataType.INT16_T
+                          isPtr: False
+                        - name: attr
+                          dataType: FieldDataType.UINT32_T
+                          isPtr: True
+                          value: ;model.railChannelConfigEntryAttr
+
+            - RAILModelStruct:
+                name: channelConfig
+                _fields:
+                  - name: modemConfigBase
+                    dataType: FieldDataType.UINT32_T
+                    isPtr: True
+                  - name: modemConfigDeltaSubtract
+                    dataType: FieldDataType.UINT32_T
+                    isPtr: True
+                  - name: channelConfigEntries
+                    dataType: FieldDataType.UINT32_T
+                    isPtr: True
+                    value: ;model.channelConfigEntries
+                  - name: length
+                    dataType: FieldDataType.UINT32_T
+                    isPtr: False
+                    value: ;len(model.channelConfigEntries._elements)
+
+            - RAILModelSimpleArray:
+                name: frameLengthList
+                dataType: FieldDataType.UINT16_T
+
+            - RAILModelSimpleArray:
+                name: frameValidList
+                dataType: FieldDataType.UINT8_T
+
+            - RAILModelSimpleArray:
+                name: frameFilterList
+                dataType: FieldDataType.UINT8_T
+
+            - RAILModelSimpleArray:
+                name: frameCodingTable
+                dataType: FieldDataType.UINT32_T
+
+            - RAILModelObjectArray:
+                name: dynamicSlicerConfigEntries
+                _elements:
+                  - RAILModelStruct:
+                      name: dynamicSlicerConfig
+                      _fields:
+                        - name: threshold
+                          dataType: FieldDataType.UINT16_T
+                          isPtr: False
+                        - name: level
+                          dataType: FieldDataType.UINT16_T
+                          isPtr: False
+                        - name: next
+                          dataType: FieldDataType.UINT32_T
+                          isPtr: True
+
+            - RAILModelStruct:
+                name: frameType
+                _fields:
+                  - name: offset
+                    dataType: FieldDataType.UINT8_T
+                    isPtr: False
+                  - name: mask
+                    dataType: FieldDataType.UINT8_T
+                    isPtr: False
+                  - name: frameLen
+                    dataType: FieldDataType.UINT16_T
+                    isPtr: True
+                  - name: isValid
+                    dataType: FieldDataType.UINT8_T
+                    isPtr: True
+                  - name: addressFilter
+                    dataType: FieldDataType.UINT8_T
+                    isPtr: True
+                  - name: variableAddrLoc
+                    dataType: FieldDataType.BOOL
+                    isPtr: False
+
+            - RAILModelObjectCollection:
+                name: phyInfo
+                _elements:
+                  - RAILModelStruct:
+                      name: phyInfoData
+                      _fields:
+                        - name: version
+                          dataType: FieldDataType.UINT32_T
+                        - name: freqOffsetFactor
+                          dataType: FieldDataType.UINT32_T
+                        - name: freqOffsetFactor_fxp
+                          dataType: FieldDataType.UINT32_T
+                        - name: frameTypeConfig
+                          dataType: FieldDataType.UINT8_T
+                          isPtr: True
+                          value: ;model.frameType
+                        - name: antDivRxAutoConfig
+                          dataType: FieldDataType.UINT32_T
+                        - name: src1Denominator
+                          dataType: FieldDataType.UINT32_T
+                        - name: src2Denominator
+                          dataType: FieldDataType.UINT32_T
+                        - name: txBaudRate
+                          dataType: FieldDataType.UINT32_T
+                        - name: baudPerSymbol
+                          dataType: FieldDataType.UINT8_T
+                        - name: bitsPerSymbol
+                          dataType: FieldDataType.UINT8_T
+                        - name: synthCache
+                          dataType: FieldDataType.UINT32_T

@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2015 Bluetooth SIG, Inc. All rights reserved. -->
+<Profile xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/profile.xsd" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    type="org.bluetooth.profile.continuous_glucose_monitoring"
+    name="Continuous Glucose Monitoring">
+    <InformativeText>
+        <Abstract>This profile enables a device to connect and interact with a Continuous Glucose Monitoring (CGM) Sensor for use in consumer healthcare applications.</Abstract>
+        <Summary>The CGM Profile is used to enable a device to obtain glucose measurement and other data from a CGM Sensor that exposes the CGM Service.</Summary>
+	</InformativeText>
+	<Role name="CGM Sensor">
+		<Service type="org.bluetooth.service.continuous_glucose_monitoring">
+			<Declaration>PrimarySingleInstance</Declaration>
+			<Requirement>Mandatory</Requirement>
+		</Service>
+		<Service type="org.bluetooth.service.bond_management">
+			<Declaration>Primary</Declaration>
+			<Requirement>Optional</Requirement>
+			<Characteristic type="org.bluetooth.characteristic.bond_management_control_point">
+				<Requirement>Mandatory</Requirement>
+			</Characteristic>
+			<Characteristic type="org.bluetooth.characteristic.bond_management_feature">
+				<Requirement>Mandatory</Requirement>
+			</Characteristic>
+		</Service>
+		<Service type="org.bluetooth.service.device_information">
+			<Declaration>Primary</Declaration>
+			<Requirement>Mandatory</Requirement>
+			<Characteristic type="org.bluetooth.characteristic.manufacturer_name_string">
+				<Requirement>Mandatory</Requirement>
+			</Characteristic>
+			<Characteristic type="org.bluetooth.characteristic.model_number_string">
+				<Requirement>Mandatory</Requirement>
+			</Characteristic>
+			<Characteristic type="org.bluetooth.characteristic.system_id">
+				<Requirement>Mandatory</Requirement>
+			</Characteristic>
+		</Service>
+	</Role>
+    <Role name="Collector">
+        <Client type="org.bluetooth.service.continuous_glucose_monitoring">
+			<Requirement>Mandatory</Requirement>
+		</Client>
+        <Client type="org.bluetooth.service.bond_management">
+			<Requirement>Optional</Requirement>
+		</Client>
+        <Client type="org.bluetooth.service.device_information">
+			<Requirement>Optional</Requirement>
+		</Client>
+	</Role>
+</Profile>

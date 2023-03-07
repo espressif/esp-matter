@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/build.dtd -->
+<package name="ti.catalog.arm.cortexm3" version="1, 0, 0" producerId="undefined">
+    <units>
+        <interface name="ITI8168"/>
+        <interface name="ITI8148"/>
+        <interface name="ITI813X"/>
+        <interface name="ITI811X"/>
+        <module name="OMAP4430"/>
+        <module name="TMS320DM8168"/>
+        <module name="TMS320TI816X"/>
+        <module name="TMS320C6A8168"/>
+        <module name="TMS320DM8148"/>
+        <module name="TMS320TI814X"/>
+        <module name="CC13xx"/>
+        <module name="CC26xx"/>
+        <module name="F28M35x"/>
+        <module name="Tiva"/>
+        <module name="CortexM"/>
+        <module name="CortexM3"/>
+        <module name="TMS320TI813X"/>
+        <module name="TMS320TI811X"/>
+        <module name="TMS320C6A8149"/>
+    </units>
+    <sources>
+    </sources>
+    <configscripts>
+    </configscripts>
+    <makefiles>
+        <srcFile name="package.mak" src="package.bld"/>
+        <srcFile name="package/package.xdc.dep" src="package.xdc"/>
+        <srcFile name="package/package.cfg.dep" src="package.xdc"/>
+        <srcFile name="package/rel/ti_catalog_arm_cortexm3.tar.dep" src="package/rel/ti_catalog_arm_cortexm3.xdc.inc"/>
+    </makefiles>
+    <targets>
+    </targets>
+    <libraries>
+    </libraries>
+    <configurations>
+    </configurations>
+    <executables>
+    </executables>
+    <tests>
+    </tests>
+    <releases relDir="package/rel/">
+    <release name="ti_catalog_arm_cortexm3"
+        pname="ti_catalog_arm_cortexm3.tar"
+        label="default"
+    >
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+        <file name="package/package.cfg.xdc.inc"/>
+    </release>
+    </releases>
+    <repositories>
+    </repositories>
+</package>

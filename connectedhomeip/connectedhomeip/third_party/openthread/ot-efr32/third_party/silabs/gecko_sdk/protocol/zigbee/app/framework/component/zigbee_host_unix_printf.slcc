@@ -1,0 +1,27 @@
+package: Zigbee
+description: This component provides the wrapper for the C Standard I/O function printf.
+  It enables the user to use the emberAfPrintXXX functions
+  as they would with any other architecture. This component is NOT compatible with a
+  system-on-a-chip (SoC) platform.
+id: zigbee_host_unix_printf
+label: Unix Printf
+category: Zigbee|Unix Host
+toolchain_settings: []
+ui_hints: {}
+quality: production
+template_file: []
+provides:
+   - name: "zigbee_emberSerialPrintf"
+   - name: "zigbee_host_unix_printf"
+requires:
+   - name: "device_host"
+include:
+  - path: platform/service/legacy_printf/inc
+    file_list:
+      - path: sl_legacy_printf.h
+source:
+  - path: "platform/service/legacy_hal/src/ember-printf-convert.c"
+  - path: "protocol/zigbee/app/util/serial/linux-serial.c"
+template_contribution:
+  - name: component_catalog
+    value: zigbee_host_unix_printf

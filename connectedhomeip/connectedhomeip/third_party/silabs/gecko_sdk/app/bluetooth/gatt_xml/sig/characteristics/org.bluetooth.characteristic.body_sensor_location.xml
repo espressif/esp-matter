@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.body_sensor_location" uuid="2A38" name="Body Sensor Location">
+	<InformativeText>
+	</InformativeText>
+	<Value>
+		<Field name="Body Sensor Location">
+			<Requirement>Mandatory</Requirement>
+			<Format>8bit</Format>
+			
+			<Enumerations>
+				<Enumeration key="0" value="Other" />
+                <Enumeration key="1" value="Chest" />
+				<Enumeration key="2" value="Wrist" />
+				<Enumeration key="3" value="Finger" />
+				<Enumeration key="4" value="Hand" />
+				<Enumeration key="5" value="Ear Lobe" />
+				<Enumeration key="6" value="Foot" />
+				<ReservedForFutureUse start="7" end="255"/>
+			</Enumerations>
+		</Field>
+	</Value>
+</Characteristic>

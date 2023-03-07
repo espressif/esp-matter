@@ -1,0 +1,6 @@
+[submodule "openthread"]
+	path = openthread
+	url = https://github.com/SiliconLabs/openthread.git
+[submodule "third_party/silabs/gecko_sdk"]
+	path = third_party/silabs/gecko_sdk
+	url = https://github.com/SiliconLabs/gecko_sdk.git

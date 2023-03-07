@@ -1,0 +1,56 @@
+id: ots_client
+label: Object Client
+package: Bluetooth
+description: >
+  The Object Transfer Service (OTS) Object Client provides an API for
+  managing objects on the remote Object Server.
+category: Bluetooth|Middleware|OTS
+quality: alpha
+root_path:  app/bluetooth/common/ots
+source:
+  - path: src/sl_bt_ots_client.c
+  - path: src/sl_bt_ots_common.c
+include:
+  - path: inc
+    file_list:
+      - path: sl_bt_ots_client.h
+      - path: sl_bt_ots_datatypes.h
+      - path: sli_bt_ots_datatypes.h
+config_file:
+  - path: config/sl_bt_ots_client_config.h
+provides:
+  - name: ots_client
+requires:
+  - name: bluetooth_stack
+  - name: bluetooth_feature_gatt
+  - name: bluetooth_feature_connection
+  - name: bluetooth_feature_sm
+  - name: l2cap_transfer
+  - name: slist
+  - name: app_queue
+template_contribution:
+  - name: bluetooth_on_event
+    value:
+      include: sl_bt_ots_client.h
+      function: sli_bt_ots_client_on_bt_event
+    priority: 0
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: sl_bt_ots_client.h
+      handler: sli_bt_ots_client_init
+  - name: event_handler
+    value:
+      event: internal_app_process_action
+      include: sl_bt_ots_client.h
+      handler: sli_bt_ots_client_step
+  - name: power_manager_handler
+    value:
+      event: is_ok_to_sleep
+      include: sl_bt_ots_client.h
+      handler: sli_bt_ots_client_is_ok_to_sleep
+  - name: power_manager_handler
+    value:
+      event: sleep_on_isr_exit
+      include: sl_bt_ots_client.h
+      handler: sli_bt_ots_client_sleep_on_isr_exit

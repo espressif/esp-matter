@@ -1,0 +1,17 @@
+id: "sl_wisun_empty"
+label: "Empty"
+package: "wisun"
+description: "Indicator for empty application"
+category: "Wi-SUN|Application"
+quality: "production"
+root_path: ""
+provides:
+  - name: sl_wisun_empty
+
+ui_hints:
+  visibility: never
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: wisun_empty

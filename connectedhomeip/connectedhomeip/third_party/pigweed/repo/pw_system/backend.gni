@@ -1,0 +1,36 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+declare_args() {
+  # The pw_system backend that provides thread options for the appropriate
+  # scheduler.
+  #
+  # There's no default backend as this is target/os specific. pw_system_target
+  # can automatically configure this for your project.
+  pw_system_TARGET_HOOKS_BACKEND = ""
+
+  # The pw_system backend that provides read/write streams for RPC and logging.
+  #
+  # There's no default backend as this is target specific. pw_system_target
+  # can automatically configure this for your project.
+  pw_system_IO_BACKEND = ""
+
+  # The pw_system backend that provides the system RPC server.
+  #
+  # This defaults to a single-channel HDLC server provided by pw_system
+  # when using a pw_system_target.
+  pw_system_RPC_SERVER_BACKEND = ""
+}

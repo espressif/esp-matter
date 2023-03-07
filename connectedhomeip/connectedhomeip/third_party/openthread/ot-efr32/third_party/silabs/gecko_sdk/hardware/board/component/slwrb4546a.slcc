@@ -1,0 +1,22 @@
+!!omap
+- id: slwrb4546a
+- label: SLWRB4546A
+- package: platform
+- description: Kit BSP support for the EZR32HG 868 MHz 16 dBm Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4546a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4546A"'
+  - name: SL_KIT_REV
+    value: '"A00"'
+- tag:
+  - kit:opn:SLWRB4546A
+  - kit:pn:WRB4546
+  - kit:variant:A
+  - kit:revision:A00

@@ -1,0 +1,38 @@
+id: "simple_rail_heartbeat"
+label: "Simple RAIL Heartbeat"
+package: "Flex"
+description: "Adds a heartbeat functionality with the Radio, i.e.
+              messages are sent over the air continuously with a
+              configurable time period.
+              The component can be used with Blink and Flex (RAIL) - Empty Example applications only."
+category: "Flex|RAIL|Utility"
+quality: "production"
+root_path: "app/flex/component/rail/simple_rail_heartbeat"
+
+provides:
+  - name: "simple_rail_heartbeat"
+requires:
+  - name: "simple_rail_tx"
+  - name: "sleeptimer"
+  - name: "device_has_radio"
+  - name: "app_log"
+  - name: "app_assert"
+  - name: "iostream_transport"
+source:
+  - path: "simple_rail_heartbeat.c"
+include:
+  - path: "."
+    file_list:
+    - "path": "simple_rail_heartbeat.h"
+config_file:
+  - path: "config/simple_rail_heartbeat_config.h"
+template_contribution:
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: "simple_rail_heartbeat.h"
+      handler: "sl_simple_rail_heartbeat_init"
+    priority: 1
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: simple_rail_heartbeat

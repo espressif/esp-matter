@@ -1,0 +1,58 @@
+package: Zigbee
+description: This component requires the Network Creator Security + the Network Creator or the Network Steering
+  component to function correctly in Zigbee 3.0 networks.  Else, the Network Find component is
+  strongly recommended but not mandatory.) This code hooks up button 0 to have
+  specific behavior based on the current network state. The behavior is as follows.
+  If the device is not joined to a network, it forms a Zigbee 3.0 network (via
+  the Network Creator component) if it is configured as a coordinator, or joins a Zigbee 3.0
+  or ZHA legacy network (via the Network Steering component) if it is configured as a router.
+  If the device is joined to a network, then pressing the button broadcasts a ZDO
+  permit join to allow new devices to join.  Holding the button for 5 seconds and
+  releasing causes the device to leave the network.  Button 1 is not used and
+  a callback is provided to another module wishing to use it.
+label: Button Form/Join Code
+quality: extend
+id: zigbee_button_joining
+category: Zigbee|Utility
+provides:
+   - name: "zigbee_button_joining"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/button-joining/config/button-joining-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/button-joining/button-joining.c
+  - path: protocol/zigbee/app/framework/plugin/button-joining/button-joining-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/button-joining/button-joining-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/button-joining
+    file_list:
+      - path: button-joining.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_button_joining
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emAfPluginButtonJoiningInitCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: button-joining
+      help: button-joining related commands.
+  - name: cli_command
+    value:
+      group: button-joining
+      name: button0
+      handler: emberAfPluginButtonJoiningButton0Command
+      help: Simulates a depression of button 0.
+  - name: cli_command
+    value:
+      group: button-joining
+      name: button1
+      handler: emberAfPluginButtonJoiningButton1Command
+      help: Simulate a depression of button 1.
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/button-joining

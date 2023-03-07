@@ -1,0 +1,27 @@
+# ignore GCC output folder
+[Bb]uild/
+[Oo]ut/
+
+# ignore GCC compiler generated files
+*.gcno
+*.gcda
+*.gcov
+gmon.out
+
+#ignore gdb files
+*.gdb_history
+
+# ignore IAR setting folder
+settings/*.crun
+settings/*.dbgdt
+settings/*.dni
+settings/*.wspos
+settings/*.bat
+settings/*.xcl
+settings/*.wsdt
+*.ewt
+
+# ignore KEIL misc files
+*.uvoptx.*
+*.uvguix.*
+

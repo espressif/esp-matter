@@ -1,0 +1,1211 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>BLE &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../../index.html"/>
+        <link rel="up" title="Bluetooth" href="../index.html"/>
+        <link rel="next" title="Mesh" href="../demo_mesh/mesh.html"/>
+        <link rel="prev" title="Bluetooth" href="../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Example</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Bluetooth</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">BLE</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">总览</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">使用步骤</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ota">OTA使用流程</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cli">Cli命令介绍</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../demo_mesh/mesh.html">Mesh</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../network/index.html">Ethernet (BL702)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zigbee/index.html">Zigbee (BL702)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../peripheral/index.html">Peripherals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../storage/index.html">Storage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../system/index.html">System</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Example</a> &raquo;</li>
+        
+          <li><a href="../index.html">Bluetooth</a> &raquo;</li>
+        
+      <li>BLE</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Examples/ble/demo_ble/ble.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ble">
+<span id="ble-index"></span><h1>BLE<a class="headerlink" href="#ble" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<h2>总览<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<p>本示例主要介绍如何使用ble。</p>
+</div>
+<div class="section" id="id2">
+<h2>使用步骤<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<ul>
+<li><p class="first">进入 <code class="docutils literal notranslate"><span class="pre">customer_app/bl602_demo_event</span></code> 或 <code class="docutils literal notranslate"><span class="pre">customer_app/bl702_demo_event</span></code> 工程中，BL602用脚本 <code class="docutils literal notranslate"><span class="pre">genromap</span></code> 编译，BL702用脚本 <code class="docutils literal notranslate"><span class="pre">genblestd</span></code> 编译，完成后下载Bin文件；</p>
+</li>
+<li><p class="first">BL602使用 <code class="docutils literal notranslate"><span class="pre">stack_ble</span></code> 命令初始化ble，打印的部分log如下，BL702不需要输入该命令。</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image12.png" />
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">依次使用 <code class="docutils literal notranslate"><span class="pre">ble_init</span></code> 、 <code class="docutils literal notranslate"><span class="pre">ble_auth</span></code> 进行相关的初始化；</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image21.png" />
+</div>
+<div class="figure">
+<img alt="" src="../../../_images/image3.png" />
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">使用 <code class="docutils literal notranslate"><span class="pre">ble_start_adv</span> <span class="pre">0</span> <span class="pre">0</span> <span class="pre">0x80</span> <span class="pre">0x80</span></code> 命令开启ble。</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image4.png" />
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">用户可以通过手机app <code class="docutils literal notranslate"><span class="pre">BLE调试助手</span></code> scan附近的蓝牙，找到我们的设备并连接。</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image5.png" />
+</div>
+<div class="figure">
+<img alt="" src="../../../_images/image6.png" />
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">使用 <code class="docutils literal notranslate"><span class="pre">ble_conn_update</span> <span class="pre">0x6</span> <span class="pre">0x6</span> <span class="pre">0x0</span> <span class="pre">0x1f4</span></code> 更新连接参数。</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image7.png" />
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">SMP配对过程，由于security level不同，调用的命令也不相同，下面介绍level为2或者3的情况</p>
+</li>
+</ul>
+<blockquote>
+<div><ul>
+<li><p class="first">连接成功后使用 <code class="docutils literal notranslate"><span class="pre">ble_security</span> <span class="pre">2</span></code> 进行SMP过程。</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image8.png" />
+</div>
+</div></blockquote>
+<ul>
+<li><p class="first">在串口打印出 <code class="docutils literal notranslate"><span class="pre">Confirm</span> <span class="pre">passkey</span> <span class="pre">for</span> <span class="pre">xx:xx:xx:xx:xx:xx</span> <span class="pre">(public)：xxxxxx</span></code> ,输入 <code class="docutils literal notranslate"><span class="pre">ble_auth_passkey_confirm</span></code> 命令进行配对回复，打印的部分log如下。</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image37.png" />
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">在串口打印出 <code class="docutils literal notranslate"><span class="pre">Bonded</span> <span class="pre">with</span> <span class="pre">xx:xx:xx:xx:xx:xx</span> <span class="pre">(public)</span></code> ,表明SMP配对成功。</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image10.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</li>
+<li><p class="first">连接成功后使用 <code class="docutils literal notranslate"><span class="pre">ble_security</span> <span class="pre">3</span></code> 进行SMP过程。</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image36.png" />
+</div>
+</div></blockquote>
+<ul>
+<li><p class="first">在串口打印出 <code class="docutils literal notranslate"><span class="pre">Confirm</span> <span class="pre">passkey</span> <span class="pre">for</span> <span class="pre">xx:xx:xx:xx:xx:xx</span> <span class="pre">(public)：xxxxxx</span></code> ,输入 <code class="docutils literal notranslate"><span class="pre">ble_auth_passkey_confirm</span></code> 命令进行配对回复，打印的部分log如下。</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image37.png" />
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">在串口打印出 <code class="docutils literal notranslate"><span class="pre">Bonded</span> <span class="pre">with</span> <span class="pre">xx:xx:xx:xx:xx:xx</span> <span class="pre">(public)</span></code> ,表明SMP配对成功。</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image38.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ota">
+<h2>OTA使用流程<a class="headerlink" href="#ota" title="永久链接至标题"></a></h2>
+<blockquote>
+<div><ul>
+<li><p class="first"><strong>第一步：安装APP</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li>下载 <a class="reference external" href="https://dev.bouffalolab.com/download">Bouffalo Lab BLE general apk</a> (目前仅支持安卓系统)并安装；</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><strong>第二步：下载使能OAD服务的固件</strong></p>
+<blockquote>
+<div><ul>
+<li><p class="first">以工程bl702_demo_event为例，编译脚本为 <code class="docutils literal notranslate"><span class="pre">genblestd</span></code> ，使能OAD服务 <code class="docutils literal notranslate"><span class="pre">CONFIG_BT_OAD_SERVER=1</span></code> ，使能后的编译参数为 <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">CONFIG_BT=1</span> <span class="pre">CONFIG_BLECONTROLLER_LIB=std</span>
+<span class="pre">CONFIG_BT_OAD_SERVER=1</span> <span class="pre">-j</span></code> ；通过该参数编译生成带有OAD服务的Bin文件；并将该文件下载至BL702板子上；</p>
+</li>
+<li><p class="first">通过串口，输入以下命令发ADV；</p>
+<p><code class="docutils literal notranslate"><span class="pre">ble_init</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">ble_start_adv</span> <span class="pre">0</span> <span class="pre">0</span> <span class="pre">0xa0</span> <span class="pre">0xa0</span></code></p>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><strong>第三步：生成OTA文件</strong></p>
+<blockquote>
+<div><ul>
+<li><p class="first">同样以工程bl702_demo_event为例，在cli.c文件中的version_cmd函数添加打印信息，用来测试OTA升级成功；编译参数同样为 <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">CONFIG_BT=1</span> <span class="pre">CONFIG_BLECONTROLLER_LIB=std</span>
+<span class="pre">CONFIG_BT_OAD_SERVER=1</span> <span class="pre">-j</span></code> ，编译生成Bin文件；</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image41.png" />
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">打开Dev Cube下载工具，选择相应的参数，其中Firmware Bin选择为需要OTA升级的文件；本例选择上一步添加打印信息的Bin文件，Partition Table选择1M flash对应的文件 <code class="docutils literal notranslate"><span class="pre">partition_cfg_1M.toml</span></code> ，Factory Params选择 <code class="docutils literal notranslate"><span class="pre">bl_factory_params_IoTKitA_32M.dts</span></code>,
+然后点击 <code class="docutils literal notranslate"><span class="pre">Creat</span> <span class="pre">&amp;</span> <span class="pre">Download</span></code> 选项，（该步骤目的是create OTA镜像，不做实际download，不需要连接硬件板子，download失败提示可忽略）；查看log中有提示 <code class="docutils literal notranslate"><span class="pre">FW</span> <span class="pre">OTA</span> <span class="pre">bin</span> <span class="pre">is</span> <span class="pre">Done</span></code> 与 <code class="docutils literal notranslate"><span class="pre">FW</span> <span class="pre">OTA</span> <span class="pre">xz</span> <span class="pre">is</span> <span class="pre">Done</span></code> ,则生成对应的OTA文件成功；</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image40.png" />
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">在Dev cube的文件目录下找到生成的OTA文件；其中 <code class="docutils literal notranslate"><span class="pre">FW_OTA.bin.hash</span></code> 为不带压缩文件；<code class="docutils literal notranslate"><span class="pre">FW_OTA.bin.xz.hash</span></code> 为带压缩文件；本例以 <code class="docutils literal notranslate"><span class="pre">FW_OTA.bin.xz.hash</span></code> 进行OTA升级，将其拷贝至手机中；</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image39.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><strong>第四步：OTA升级</strong></p>
+<blockquote>
+<div><ul>
+<li><p class="first">打开 APP 进行设置选择相应的服务，并 scan 设备（默认开启自动 scan）；</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image42.png" />
+</div>
+<div class="figure">
+<img alt="" src="../../../_images/image43.png" />
+</div>
+<div class="figure">
+<img alt="" src="../../../_images/image44.png" />
+</div>
+<div class="figure">
+<img alt="" src="../../../_images/image45.png" />
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">选择 scan 到的设备并连接，设备名为 <code class="docutils literal notranslate"><span class="pre">BL702-BLE-DEV</span></code>；</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image46.png" />
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">在 APP 中选择     <code class="docutils literal notranslate"><span class="pre">设备升级</span></code> 选项；</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image47.png" />
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">在文件目录里面选择需要升级的文件 <code class="docutils literal notranslate"><span class="pre">FW_OTA.bin.xz.hash</span></code>；</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image48.png" />
+</div>
+<div class="figure">
+<img alt="" src="../../../_images/image49.png" />
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">在APP中点击 <code class="docutils literal notranslate"><span class="pre">SEND</span> <span class="pre">VER</span> <span class="pre">REQ</span></code>      选项发送版本请求，用来获取当前Bin文件的相关信息；</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image50.png" />
+</div>
+<div class="figure">
+<img alt="" src="../../../_images/image51.png" />
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">在APP中点击 <code class="docutils literal notranslate"><span class="pre">START</span> <span class="pre">OTA</span></code> 选项进行升级；</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image52.png" />
+</div>
+<div class="figure">
+<img alt="" src="../../../_images/image53.png" />
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">BL702设备进行复位，然后在串口中输入命令 <code class="docutils literal notranslate"><span class="pre">sysver</span></code> ,并且在串口log中查找到添加的打印信息，说明OTA升级成功；</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image54.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="cli">
+<h2>Cli命令介绍<a class="headerlink" href="#cli" title="永久链接至标题"></a></h2>
+<div class="section" id="ble-init">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_init</span></code><a class="headerlink" href="#ble-init" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">命令功能：ble通用初始化，在所有ble cli操作前，需要先输入该命令</p>
+</li>
+<li><p class="first">参数：无</p>
+</li>
+<li><p class="first">示例：输入命令 <code class="docutils literal notranslate"><span class="pre">ble_init</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image21.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-auth">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_auth</span></code><a class="headerlink" href="#ble-auth" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">命令功能：注册SMP接口函数</p>
+</li>
+<li><p class="first">参数：无</p>
+</li>
+<li><p class="first">示例：输入命令 <code class="docutils literal notranslate"><span class="pre">ble_auth</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image3.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-unpair">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_unpair</span></code><a class="headerlink" href="#ble-unpair" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>命令功能：清除配对key</li>
+<li>第一个参数表示设备地址类型</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>0：设备表示public地址类型</li>
+<li>1：表示设备地址为random类型</li>
+<li>2：表示设备地址为可解析的地址或者Public地址</li>
+<li>3：表示设备地址为可解析的地址或者random地址</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">第二个参数代表设备地址，高字节在前低字节在后，如果为0，代表清除所有设备的key</p>
+</li>
+<li><p class="first">示例：输入命令 <code class="docutils literal notranslate"><span class="pre">ble_unpair</span> <span class="pre">0</span> <span class="pre">0</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image211.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-start-adv">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_start_adv</span></code><a class="headerlink" href="#ble-start-adv" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>命令功能表示：开启广播</li>
+<li>第一个参数表示广播类型</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>0：adv_ind 可连接可被扫描;</li>
+<li>1：adv_scan_ind 不可被连接可被扫描;</li>
+<li>2：adv_nonconn_ind 不可被连接不可被扫描;</li>
+<li>3：adv_direct_ind 可被指定的设备连接不可被扫描</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li>第二个参数表示广播模式</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>0：General discoverable;</li>
+<li>1：non discoverable;</li>
+<li>2：limit discoverable;</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">第三个参数表示广播间隙最小值,其计算方式为 0.625ms * N,范围应在20 ms to 10.24 s之间</p>
+</li>
+<li><p class="first">第四个参数表示广播间隙最大值,其计算方式为 0.625ms * N,范围应在20 ms to 10.24 s之间</p>
+</li>
+<li><p class="first">示例：输入命令 <code class="docutils literal notranslate"><span class="pre">ble_start_adv</span> <span class="pre">0</span> <span class="pre">0</span> <span class="pre">0x80</span> <span class="pre">0x80</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image4.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-stop-adv">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_stop_adv</span></code><a class="headerlink" href="#ble-stop-adv" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">命令功能：停止ADV广播</p>
+</li>
+<li><p class="first">参数：无</p>
+</li>
+<li><p class="first">示例：输入命令 <code class="docutils literal notranslate"><span class="pre">ble_stop_adv</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image17.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-start-scan">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_start_scan</span></code><a class="headerlink" href="#ble-start-scan" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>命令功能：表示扫描广播设备</li>
+<li>第一个参数表示扫描类型</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>0：表示scan passive type只监听广播数据</li>
+<li>1：表示scan active,不仅监听当满足条件还会发scan_req包</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li>第二个参数表示过滤设备广播包</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>0：表示不启用重复过滤</li>
+<li>1：表示启用重复过滤</li>
+<li>2：仅仅接收白名单列表发起的广播和scan response包，除了指定连接地址不是自己的adv_direct_ind广播包</li>
+<li>4：使用扩展过滤策略，过滤设备</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">第三个参数表示扫描间隙,其计算方式为 0.625ms * N,范围在2.5 ms to 10.24 s之间,其应该大于等于扫描窗口</p>
+</li>
+<li><p class="first">第四个参数表示扫描窗口,其计算方式为 0.625ms * N,范围在2.5 ms to 10.24 s之间,其应该小于等于扫描间隙</p>
+</li>
+<li><p class="first">示例：输入命令 <code class="docutils literal notranslate"><span class="pre">ble_start_scan</span> <span class="pre">0</span> <span class="pre">0</span> <span class="pre">0x80</span> <span class="pre">0x40</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image111.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-stop-scan">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_stop_scan</span></code><a class="headerlink" href="#ble-stop-scan" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">命令功能：停止扫描</p>
+</li>
+<li><p class="first">参数：无</p>
+</li>
+<li><p class="first">示例：系统进入SCAN后，输入命令 <code class="docutils literal notranslate"><span class="pre">ble_stop_scan</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image14.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-conn-update">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_conn_update</span></code><a class="headerlink" href="#ble-conn-update" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">命令功能：表示更新连接参数</p>
+</li>
+<li><p class="first">第一个参数表示连接间隙的最小值,其计算方式为 N * 1.25 ms,其范围在7.5 ms to 4 s</p>
+</li>
+<li><p class="first">第二个参数表示连接间隙的最大值,其计算方式为 N * 1.25 ms,其范围在7.5 ms to 4 s</p>
+</li>
+<li><p class="first">第三个参数表示从设备时延多少个连接事件范围是0~499,比如：该值设置为1，表明延时一个事件的时间进行数据交互，作用是降低交互频率更省电</p>
+</li>
+<li><p class="first">第四个参数表示连接超时时间，计算方式 N * 10 ms,范围是100 ms to 32 s</p>
+</li>
+<li><p class="first">示例：连接成功后，输入命令 <code class="docutils literal notranslate"><span class="pre">ble_conn_update</span> <span class="pre">0x28</span> <span class="pre">0x28</span> <span class="pre">0x0</span> <span class="pre">0xf4</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image7.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-security">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_security</span></code><a class="headerlink" href="#ble-security" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>命令功能：设置SMP的加密等级</li>
+<li>第一个参数表示加密等级，总共有5个等级</li>
+</ul>
+<blockquote>
+<div><ul>
+<li><p class="first">0：仅用于BR/EDR，比如SDP服务;</p>
+</li>
+<li><p class="first">1：表示不需要加密不需要认证的过程;</p>
+</li>
+<li><p class="first">2：表示需要加密不需要认证的过程</p>
+</li>
+<li><p class="first">3：表示需要加密和认证，比如双方需要输入PIN码</p>
+</li>
+<li><p class="first">4：表示需要加密和认证，通过128bit的key</p>
+</li>
+<li><p class="first">示例：连接成功后，输入命令 <code class="docutils literal notranslate"><span class="pre">ble_security</span> <span class="pre">2</span></code></p>
+<div class="figure">
+<img alt="" src="../../../_images/image8.png" />
+</div>
+</li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="ble-get-device-name">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_get_device_name</span></code><a class="headerlink" href="#ble-get-device-name" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">命令功能：获取本地设备名称</p>
+</li>
+<li><p class="first">参数：无</p>
+</li>
+<li><p class="first">示例：输入命令 <code class="docutils literal notranslate"><span class="pre">ble_get_device_name</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image121.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-set-device-name">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_set_device_name</span></code><a class="headerlink" href="#ble-set-device-name" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">命令功能：设置本地设备名称</p>
+</li>
+<li><p class="first">参数：需要设置的设备名字</p>
+</li>
+<li><p class="first">参数：无</p>
+</li>
+<li><p class="first">示例：输入命令 <code class="docutils literal notranslate"><span class="pre">ble_set_device_name</span> <span class="pre">bl602</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image13.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-read-local-address">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_read_local_address</span></code><a class="headerlink" href="#ble-read-local-address" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">命令功能：读取本地设备地址</p>
+</li>
+<li><p class="first">参数：无</p>
+</li>
+<li><p class="first">示例：输入命令 <code class="docutils literal notranslate"><span class="pre">ble_read_local_address</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image15.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-set-adv-channel">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_set_adv_channel</span></code><a class="headerlink" href="#ble-set-adv-channel" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">命令功能：设置ADV通道</p>
+</li>
+<li><p class="first">参数：需要设定的ADV通道数，其值范围为1-7，参数大小为1byte，bit0代表通道37，bit1代表通道38，bit2代表通道39</p>
+</li>
+<li><p class="first">示例：输入命令 <code class="docutils literal notranslate"><span class="pre">ble_set_adv_channel</span> <span class="pre">4</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image16.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-connect">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_connect</span></code><a class="headerlink" href="#ble-connect" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>命令功能：连接指定地址的设备</li>
+<li>第一个参数表示设备地址类型</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>0：设备表示public地址类型</li>
+<li>1：表示设备地址为random类型</li>
+<li>2：表示设备地址为可解析的地址或者Public地址</li>
+<li>3：表示设备地址为可解析的地址或者random地址</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">第二个参数代表设备地址，高字节在前低字节在后</p>
+</li>
+<li><p class="first">示例：输入命令 <code class="docutils literal notranslate"><span class="pre">ble_connect</span> <span class="pre">0</span> <span class="pre">18B905DE96E0</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image18.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-disconnect">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_disconnect</span></code><a class="headerlink" href="#ble-disconnect" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>命令功能：断开指定地址的设备的连接</li>
+<li>第一个参数表示设备地址类型</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>0：设备表示public地址类型</li>
+<li>1：表示设备地址为random类型</li>
+<li>2：表示设备地址为可解析的地址或者Public地址</li>
+<li>3：表示设备地址为可解析的地址或者random地址</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">第二个参数代表设备地址，高字节在前低字节在后</p>
+</li>
+<li><p class="first">示例：连接成功后，输入命令 <code class="docutils literal notranslate"><span class="pre">ble_disconnect</span> <span class="pre">0</span> <span class="pre">18B905DE96E0</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image19.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-select-conn">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_select_conn</span></code><a class="headerlink" href="#ble-select-conn" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>命令功能：多个连接中，将某一个连接对象设置为当前连接对象</li>
+<li>第一个参数表示设备地址类型</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>0：设备表示public地址类型</li>
+<li>1：表示设备地址为random类型</li>
+<li>2：表示设备地址为可解析的地址或者Public地址</li>
+<li>3：表示设备地址为可解析的地址或者random地址</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">第二个参数代表设备地址，高字节在前低字节在后</p>
+</li>
+<li><p class="first">示例：多个设备连接成功后，输入命令 <code class="docutils literal notranslate"><span class="pre">ble_select_conn</span> <span class="pre">1</span> <span class="pre">5F10546C8D83</span></code>，将选定的连接对象设置为当前连接对象，后续的ble_read等操作将会作用在该连接上</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image20.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-auth-cancel">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_auth_cancel</span></code><a class="headerlink" href="#ble-auth-cancel" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">命令功能：取消加密认证过程</p>
+</li>
+<li><p class="first">参数：无</p>
+</li>
+<li><p class="first">示例：当在SMP过程中，输入命令 <code class="docutils literal notranslate"><span class="pre">ble_auth_cancel</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image22.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-auth-passkey-confirm">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_auth_passkey_confirm</span></code><a class="headerlink" href="#ble-auth-passkey-confirm" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">命令功能：接收到passkey后回复远端，并且对端设备在配对过程中也有显示该passkey； 例如：配对过程本地打印 Confirm passkey for 48:95:E6:73:1C:1A (random): 745491
+；可发送该函数进行回复</p>
+</li>
+<li><p class="first">参数：无</p>
+</li>
+<li><p class="first">示例：当在SMP过程中，对应security level为3，需要输入命令 <code class="docutils literal notranslate"><span class="pre">ble_auth_passkey_confirm</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image9.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-auth-pairing-confirm">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_auth_pairing_confirm</span></code><a class="headerlink" href="#ble-auth-pairing-confirm" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">命令功能：接收到远端配对请求，用此函数回复远端配对请求，例如：配对过程本地打印 Confirm pairing for 00:1B:DC:F2:20:E9 (public)
+；可发送该函数进行回复</p>
+</li>
+<li><p class="first">参数：无</p>
+</li>
+<li><p class="first">示例：当在SMP过程中，对应的security level为2，输入命令 <code class="docutils literal notranslate"><span class="pre">ble_auth_pairing_confirm</span></code>，</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image23.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-auth-passkey">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_auth_passkey</span></code><a class="headerlink" href="#ble-auth-passkey" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">命令功能：请求输入passkey</p>
+</li>
+<li><p class="first">参数：passkey值，其范围为0-999999</p>
+</li>
+<li><p class="first">示例：当用ble_security 3命令进行配对，且SMP配对方法为PASSKEY_INPUT（代码中实现方法：用ble_auth注册smp接口函数时，在数据结构bt_conn_auth_cb中将函数passkey_entry填充，passkey_display与passkey_confirm不填充，其它接口函数默认即可），串口将打印出Enter passkey for XX:XX:XX:XX:XX:XX (public)，此时输入命令 <code class="docutils literal notranslate"><span class="pre">ble_auth_passkey</span> <span class="pre">111111</span></code> 完成配对</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image24.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-exchange-mtu">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_exchange_mtu</span></code><a class="headerlink" href="#ble-exchange-mtu" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">命令功能：交换mtu大小</p>
+</li>
+<li><p class="first">参数： 无</p>
+</li>
+<li><p class="first">示例：连接成功后，输入命令 <code class="docutils literal notranslate"><span class="pre">ble_exchange_mtu</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image25.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-discover">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_discover</span></code><a class="headerlink" href="#ble-discover" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>命令功能：查询指定的服务或特性</li>
+<li>第一个参数表示需要查询的类型</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>0：primary</li>
+<li>1：secondary</li>
+<li>2：include</li>
+<li>3：Characteristic</li>
+<li>4：Descriptor</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">第二个参数表示2BYTES的uuid</p>
+</li>
+<li><p class="first">第三个参数表示起始句柄，占2BYTES</p>
+</li>
+<li><p class="first">第四个参数表示结束句柄，占2BYTES</p>
+</li>
+<li><p class="first">示例：连接成功后，输入命令 <code class="docutils literal notranslate"><span class="pre">ble_discover</span> <span class="pre">0</span> <span class="pre">0x1800</span> <span class="pre">0x1</span> <span class="pre">0xffff</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image26.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-read">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_read</span></code><a class="headerlink" href="#ble-read" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">命令功能：读取指定句柄的数据</p>
+</li>
+<li><p class="first">第一个参数表示句柄</p>
+</li>
+<li><p class="first">第二个参数表示偏移量</p>
+</li>
+<li><p class="first">示例：连接成功后，输入命令 <code class="docutils literal notranslate"><span class="pre">ble_read</span> <span class="pre">0x5</span> <span class="pre">0</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image27.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-write">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_write</span></code><a class="headerlink" href="#ble-write" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">命令功能：指定句柄写入相应的数据</p>
+</li>
+<li><p class="first">第一个参数表示句柄，占2bytes</p>
+</li>
+<li><p class="first">第二个参数表示偏移量，占2bytes</p>
+</li>
+<li><p class="first">第三个参数表示数据长度，占2bytes,最大不超过512</p>
+</li>
+<li><p class="first">第四个参数表示需要写入的数据</p>
+</li>
+<li><p class="first">示例：连接成功后，写入2个字节的数据，命令为 <code class="docutils literal notranslate"><span class="pre">ble_write</span> <span class="pre">0xf</span> <span class="pre">0</span> <span class="pre">2</span> <span class="pre">0102</span></code>,其中01为一个byte，02为一个byte</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image28.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-write-without-rsp">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_write_without_rsp</span></code><a class="headerlink" href="#ble-write-without-rsp" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>命令功能：指定句柄写入相应的数据并且不需要回复</li>
+<li>第一参数表示是否启动sign write命令</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>0：不使能sign write命令</li>
+<li>1：使能sign write命令</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">第二个参数表示句柄，占2bytes，</p>
+</li>
+<li><p class="first">第三个参数表示数据的长度，占2bytes，最大不超过512</p>
+</li>
+<li><p class="first">第四个参数表示写入的数据</p>
+</li>
+<li><p class="first">示例：连接成功后，写入2个字节的数据，命令为 <code class="docutils literal notranslate"><span class="pre">ble_write_without_rsp</span> <span class="pre">0</span> <span class="pre">0xf</span> <span class="pre">2</span> <span class="pre">0102</span></code>，其中01为一个byte，02为一个byte</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image29.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-subscribe">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_subscribe</span></code><a class="headerlink" href="#ble-subscribe" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>命令功能：订阅CCC</li>
+<li>第一个参数表示CCC句柄</li>
+<li>第二个参数表示订阅值的句柄</li>
+<li>第三个参数表示订阅类型</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>1：表示notification</li>
+<li>2：表示indication</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">示例：连接成功后，输入命令 <code class="docutils literal notranslate"><span class="pre">ble_subscribe</span> <span class="pre">0xf</span> <span class="pre">0xd</span> <span class="pre">0x1</span></code>，表示使能CCC的notification</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image30.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-unsubscribe">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_unsubscribe</span></code><a class="headerlink" href="#ble-unsubscribe" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">命令功能：取消订阅CCC</p>
+</li>
+<li><p class="first">参数：无</p>
+</li>
+<li><p class="first">示例：输入命令 <code class="docutils literal notranslate"><span class="pre">ble_unsubscribe</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image31.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-set-data-len">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_set_data_len</span></code><a class="headerlink" href="#ble-set-data-len" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">命令功能：设置pdu数据长度</p>
+</li>
+<li><p class="first">第一个参数表示有效荷载传输的最大值,范围为0x001B - 0x00FB</p>
+</li>
+<li><p class="first">第二个参数表示有效荷载传输的最大时间,范围值为0x0148 - 0x4290</p>
+</li>
+<li><p class="first">示例：当连接成功后，发送命令 <code class="docutils literal notranslate"><span class="pre">ble_set_data_len</span> <span class="pre">0xfb</span> <span class="pre">0x0848</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image32.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-conn-info">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_conn_info</span></code><a class="headerlink" href="#ble-conn-info" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">命令功能：获取所有的连接信息</p>
+</li>
+<li><p class="first">参数：无</p>
+</li>
+<li><p class="first">示例：当连接成功后，发送命令 <code class="docutils literal notranslate"><span class="pre">ble_conn_info</span></code> ，获取已连接的设备</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image33.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-disable">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_disable</span></code><a class="headerlink" href="#ble-disable" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">命令功能：注销BLE</p>
+</li>
+<li><p class="first">参数：无</p>
+</li>
+<li><p class="first">示例：当无scan/adv/connect事件，发送命令 <code class="docutils literal notranslate"><span class="pre">ble_disable</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image34.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ble-set-tx-pwr">
+<h3><code class="docutils literal notranslate"><span class="pre">ble_set_tx_pwr</span></code><a class="headerlink" href="#ble-set-tx-pwr" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">命令功能：设置发送功率</p>
+</li>
+<li><p class="first">第一个参数表示设置功率值</p>
+</li>
+<li><p class="first">示例：发送命令 <code class="docutils literal notranslate"><span class="pre">ble_set_tx_pwr</span> <span class="pre">0xa</span></code></p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image35.png" />
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../demo_mesh/mesh.html" class="btn btn-neutral float-right" title="Mesh" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral" title="Bluetooth" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

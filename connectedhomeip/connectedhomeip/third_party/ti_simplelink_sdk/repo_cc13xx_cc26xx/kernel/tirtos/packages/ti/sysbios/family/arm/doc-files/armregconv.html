@@ -1,0 +1,1223 @@
+<!--
+ *  Copyright (c) 2012, Texas Instruments Incorporated
+ *  All rights reserved.
+ * 
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions
+ *  are met:
+ * 
+ *  *  Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ * 
+ *  *  Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ * 
+ *  *  Neither the name of Texas Instruments Incorporated nor the names of
+ *     its contributors may be used to endorse or promote products derived
+ *     from this software without specific prior written permission.
+ * 
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ *  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ *  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ *  PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ *  CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ *  EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ *  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ *  OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ *  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ *  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * -->
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 11">
+<meta name=Originator content="Microsoft Word 11">
+<link rel=File-List href="armregconv_files/filelist.xml">
+<link rel=Edit-Time-Data href="armregconv_files/editdata.mso">
+<!--[if !mso]>
+<style>
+v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style>
+<![endif]-->
+<title>C6000 DSP/BIOS Register Usage</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Alan DeMars</o:Author>
+  <o:LastAuthor>Alan DeMars</o:LastAuthor>
+  <o:Revision>8</o:Revision>
+  <o:TotalTime>139</o:TotalTime>
+  <o:Created>2008-07-23T19:03:00Z</o:Created>
+  <o:LastSaved>2008-07-23T20:07:00Z</o:LastSaved>
+  <o:Pages>1</o:Pages>
+  <o:Words>470</o:Words>
+  <o:Characters>2684</o:Characters>
+  <o:Company>Texas Instruments</o:Company>
+  <o:Lines>22</o:Lines>
+  <o:Paragraphs>6</o:Paragraphs>
+  <o:CharactersWithSpaces>3148</o:CharactersWithSpaces>
+  <o:Version>11.9999</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:Zoom>90</w:Zoom>
+  <w:SpellingState>Clean</w:SpellingState>
+  <w:GrammarState>Clean</w:GrammarState>
+  <w:ValidateAgainstSchemas/>
+  <w:SaveIfXMLInvalid>false</w:SaveIfXMLInvalid>
+  <w:IgnoreMixedContent>false</w:IgnoreMixedContent>
+  <w:AlwaysShowPlaceholderText>false</w:AlwaysShowPlaceholderText>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:LatentStyles DefLockedState="false" LatentStyleCount="156">
+ </w:LatentStyles>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	color:black;}
+h2
+	{mso-margin-top-alt:auto;
+	margin-right:0in;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:2;
+	font-size:18.0pt;
+	font-family:"Times New Roman";
+	color:black;
+	font-weight:bold;}
+h3
+	{mso-margin-top-alt:auto;
+	margin-right:0in;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:3;
+	font-size:13.5pt;
+	font-family:"Times New Roman";
+	color:black;
+	font-weight:bold;}
+a:link, span.MsoHyperlink
+	{color:#3366CC;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:#9999CC;
+	text-decoration:underline;
+	text-underline:single;}
+p
+	{mso-margin-top-alt:auto;
+	margin-right:0in;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	color:black;}
+span.SpellE
+	{mso-style-name:"";
+	mso-spl-e:yes;}
+span.GramE
+	{mso-style-name:"";
+	mso-gram-e:yes;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ @list l0
+	{mso-list-id:778450621;
+	mso-list-template-ids:1095674156;}
+@list l0:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l1
+	{mso-list-id:1404184282;
+	mso-list-template-ids:-1986916856;}
+@list l1:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l1:level2
+	{mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l1:level3
+	{mso-level-tab-stop:1.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l1:level4
+	{mso-level-tab-stop:2.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l1:level5
+	{mso-level-tab-stop:2.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l1:level6
+	{mso-level-tab-stop:3.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l1:level7
+	{mso-level-tab-stop:3.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l1:level8
+	{mso-level-tab-stop:4.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l1:level9
+	{mso-level-tab-stop:4.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-ansi-language:#0400;
+	mso-fareast-language:#0400;
+	mso-bidi-language:#0400;}
+</style>
+<![endif]-->
+<meta name=TEMPLATEBASE content="Simple HTML">
+<meta name=LASTUPDATED content="01/10/08 13:41:44">
+<!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="3074"/>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+ </o:shapelayout></xml><![endif]-->
+</head>
+
+<body bgcolor=white lang=EN-US link="#3366CC" vlink="#9999CC" style='tab-interval:
+.5in' alink="#0000CC">
+
+<div class=Section1>
+
+<div>
+
+<div class=MsoNormal>
+
+<hr size=2 width="100%" align=left>
+
+</div>
+
+</div>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<div>
+
+<p class=MsoNormal align=right style='text-align:right'><a name=wp1094266></a><b><span
+style='font-size:10.0pt;font-family:Arial;color:white'>C6x Register Usage </span></b></p>
+
+</div>
+
+<h2><a name=wp1094268></a><span style='font-size:13.5pt;font-family:Arial;
+color:#666666'>Arm9 DSP/BIOS Register Usage </span></h2>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><a
+name=wp1094269></a><span style='font-size:10.0pt;font-family:Arial'>This
+document provides a table describing the various Arm9 targets register conventions
+in terms of preservation across multi-threaded context switching and
+preconditions.</span></p>
+
+<h3><span style='font-size:12.0pt;font-family:Arial;color:#666666'>Overview </span></h3>
+
+<p><a name=wp1091699></a><span style='font-size:10.0pt;font-family:Arial'>In a
+multi-threaded application using DSP/BIOS, it is necessary to know which
+registers can or cannot be modified. Furthermore, users need to understand
+which registers need to be <span class=GramE>saved/restored</span> across a
+function call or an interrupt. </span></p>
+
+<p><a name=wp1091705></a><span style='font-size:10.0pt;font-family:Arial'>The
+following definitions describe the various possible register handling
+behaviors: </span></p>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l1 level1 lfo3;tab-stops:list .5in'><a name=wp1091670></a><b><span
+     style='font-size:10.0pt;font-family:Arial'>Scratch register.</span></b><span
+     style='font-size:10.0pt;font-family:Arial'> These registers are <span
+     class=GramE>saved/restored</span> by the <span class=SpellE>Hwi</span>
+     dispatcher with temporary register bit masks.</span></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l1 level1 lfo3;tab-stops:list .5in'><a name=wp1091671></a><b><span
+     style='font-size:10.0pt;font-family:Arial'>Preserved register.</span></b><span
+     style='font-size:10.0pt;font-family:Arial'> These registers are <span
+     class=GramE>saved/restored</span> during a Task context switch.</span></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l1 level1 lfo3;tab-stops:list .5in'><a name=wp1091672></a><b><span
+     style='font-size:10.0pt;font-family:Arial'>Initialized register.</span></b><span
+     style='font-size:10.0pt;font-family:Arial'> These registers are set to a
+     particular value during <span class=SpellE>Hwi</span> processing and
+     restored to their incoming value upon exiting from the interrupt routine.</span></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l1 level1 lfo3;tab-stops:list .5in'><a name=wp1091673></a><b><span
+     style='font-size:10.0pt;font-family:Arial'>Read-Only register.</span></b><span
+     style='font-size:10.0pt;font-family:Arial'> These registers may be read
+     but must not be modified.</span></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l1 level1 lfo3;tab-stops:list .5in'><a name=wp1091692></a><b><span
+     style='font-size:10.0pt;font-family:Arial'>Global register.</span></b><span
+     style='font-size:10.0pt;font-family:Arial'> These registers are shared
+     across all threads in the system. To make a temporary change, save the
+     register, make the change, and then restore it.</span></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l1 level1 lfo3;tab-stops:list .5in'><a name=wp1091693></a><b><span
+     style='font-size:10.0pt;font-family:Arial'>Other.</span></b><span
+     style='font-size:10.0pt;font-family:Arial'> These registers do not fit
+     into one of the categories above.</span></li>
+</ul>
+
+<h3><a name=wp1090525></a><span style='font-size:12.0pt;font-family:Arial;
+color:#666666'>Register Conventions </span></h3>
+
+<div>
+
+<p class=MsoNormal><a name=wp1092768></a><i><span style='font-size:10.0pt;
+font-family:Arial'>Table 1 Register and Status Bit Handling</span></i></p>
+
+</div>
+
+<div align=right>
+
+<table class=MsoNormalTable border=1 cellpadding=0 style='mso-cellspacing:1.5pt;
+ mso-padding-alt:0in 5.4pt 0in 5.4pt'>
+ <tr style='mso-yfti-irow:0;mso-yfti-firstrow:yes'>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal align=center style='text-align:center'><a name=wp1091888></a><b><span
+  style='font-size:10.0pt;font-family:Arial'>Register </span><o:p></o:p></b></p>
+  </div>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal align=center style='text-align:center'><a name=wp1091890></a><b><span
+  style='font-size:10.0pt;font-family:Arial'>Status Bit </span><o:p></o:p></b></p>
+  </div>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal align=center style='text-align:center'><a name=wp1091892></a><b><span
+  style='font-size:10.0pt;font-family:Arial'>Register or Status Bit Name </span><o:p></o:p></b></p>
+  </div>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal align=center style='text-align:center'><a name=wp1091894></a><b><span
+  style='font-size:10.0pt;font-family:Arial'>Type </span><o:p></o:p></b></p>
+  </div>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal align=center style='text-align:center'><a name=wp1091896></a><b><span
+  style='font-size:10.0pt;font-family:Arial'>Notes </span><o:p></o:p></b></p>
+  </div>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:1'>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091898></a><span style='font-size:10.0pt;
+  font-family:Arial'>R0-R3, R12 </span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091900></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp; </span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091902></a><span style='font-size:10.0pt;
+  font-family:Arial'>General purpose registers </span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091904></a><span style='font-size:10.0pt;
+  font-family:Arial'>Scratch </span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091906></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp; </span></p>
+  </div>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:2'>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091908></a><span style='font-size:10.0pt;
+  font-family:Arial'>R4-R11 </span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091910></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp; </span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091912></a><span style='font-size:10.0pt;
+  font-family:Arial'>General purpose registers </span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091914></a><span style='font-size:10.0pt;
+  font-family:Arial'>Preserved </span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091916></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp; </span></p>
+  </div>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:3'>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091918></a><span style='font-size:10.0pt;
+  font-family:Arial'>R13 (SP)</span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091920></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp; </span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091922></a><span style='font-size:10.0pt;
+  font-family:Arial'>Stack pointer </span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091924></a><span style='font-size:10.0pt;
+  font-family:Arial'>Initialized</span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091926></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp;<span class=SpellE>Hwi</span> dispatcher sets to <span
+  class=SpellE>Hwi</span> stack before calling ISR</span></p>
+  </div>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:4'>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091928></a><span style='font-size:10.0pt;
+  font-family:Arial'>R14 (LR)</span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091930></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp; </span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091932></a><span style='font-size:10.0pt;
+  font-family:Arial'>Link Register</span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091934></a><span style='font-size:10.0pt;
+  font-family:Arial'>Preserved</span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'><a
+  name=wp1091936></a>
+  <div>
+  <p class=MsoNormal><o:p>&nbsp;</o:p></p>
+  </div>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:5'>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091938></a><a name=wp1091958></a><span
+  style='font-size:10.0pt;font-family:Arial'>PSR</span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'><a
+  name=wp1091960></a>
+  <div>
+  <p class=MsoNormal><o:p>&nbsp;</o:p></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><a name=wp1091962></a><span style='font-size:10.0pt;
+  font-family:Arial'>Program Status Register </span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'><a
+  name=wp1091964></a>
+  <div>
+  <p class=MsoNormal><o:p>&nbsp;</o:p></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'><a
+  name=wp1091966></a>
+  <div>
+  <p class=MsoNormal><o:p>&nbsp;</o:p></p>
+  </div>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:6'>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'><a
+  name=wp1091968></a>
+  <div>
+  <p class=MsoNormal><o:p>&nbsp;</o:p></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091970></a><span style='font-size:10.0pt;
+  font-family:Arial'>N,Z,C,V</span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091972></a><span style='font-size:10.0pt;
+  font-family:Arial'>Condition Codes </span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091974></a><span style='font-size:10.0pt;
+  font-family:Arial'>Preserved </span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091976></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp; </span></p>
+  </div>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:7'>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091978></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp; </span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091980></a><span style='font-size:10.0pt;
+  font-family:Arial'>Q </span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091982></a><span style='font-size:10.0pt;
+  font-family:Arial'>Overflow </span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091984></a><span style='font-size:10.0pt;
+  font-family:Arial'>Preserved</span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091986></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp; </span></p>
+  </div>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:8'>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091988></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp; </span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091990></a><span style='font-size:10.0pt;
+  font-family:Arial'>GE[3:0] </span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091992></a><span style='font-size:10.0pt;
+  font-family:Arial'>Condition Codes</span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091994></a><span style='font-size:10.0pt;
+  font-family:Arial'>Preserved </span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091996></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp; </span></p>
+  </div>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:9'>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1091998></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp; </span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092000></a><span style='font-size:10.0pt;
+  font-family:Arial'>E </span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><a name=wp1092002></a><span class=SpellE><span
+  style='font-size:10.0pt;font-family:Arial'>Endian</span></span><span
+  style='font-size:10.0pt;font-family:Arial'> bit </span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Preserved
+  </span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092006></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp; Untouched</span></p>
+  </div>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:10'>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092008></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp; </span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092010></a><span style='font-size:10.0pt;
+  font-family:Arial'>A</span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092012></a><span style='font-size:10.0pt;
+  font-family:Arial'>Imprecise Abort Disable</span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092014></a><span style='font-size:10.0pt;
+  font-family:Arial'>Preserved</span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092016></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp; Untouched</span></p>
+  </div>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:11'>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092018></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp; </span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092020></a><span style='font-size:10.0pt;
+  font-family:Arial'>I </span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092022></a><span style='font-size:10.0pt;
+  font-family:Arial'>IRQ Disable</span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092024></a><span style='font-size:10.0pt;
+  font-family:Arial'>Global </span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092026></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp; <span class=SpellE>Hwi_enable</span>/disable/restore
+  operate on this bit</span></p>
+  </div>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:12'>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092028></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp; </span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092030></a><span style='font-size:10.0pt;
+  font-family:Arial'>F </span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092032></a><span style='font-size:10.0pt;
+  font-family:Arial'>FIQ Disable </span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092034></a><span style='font-size:10.0pt;
+  font-family:Arial'>Preserved </span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092036></a><span style='font-size:10.0pt;
+  font-family:Arial'><span style='mso-spacerun:yes'>?</span>The FIQ bit is preserved
+  and untouched by BIOS</span></p>
+  </div>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:13'>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092038></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp; </span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092040></a><span style='font-size:10.0pt;
+  font-family:Arial'>M[4:0] </span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092042></a><span style='font-size:10.0pt;
+  font-family:Arial'>Mode bits </span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092044></a><span style='font-size:10.0pt;
+  font-family:Arial'>Other</span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092046></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp; <span class=GramE>BIOS sets</span> the mode bits to
+  System Mode (0b11111) during startup and prior to invoking a <span
+  class=SpellE>Hwi</span> thread.</span></p>
+  </div>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:14'>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092048></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp; </span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092050></a><span style='font-size:10.0pt;
+  font-family:Arial'>T </span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092052></a><span style='font-size:10.0pt;
+  font-family:Arial'>Thumb</span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092054></a><span style='font-size:10.0pt;
+  font-family:Arial'>Global</span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092056></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp; <span class=GramE>BIOS fully supports</span>
+  Arm/Thumb inter-working.</span></p>
+  </div>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:15'>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'><a
+  name=wp1092058></a>
+  <div>
+  <p class=MsoNormal><o:p>&nbsp;</o:p></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092060></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp;J</span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092062></a><span class=SpellE><span
+  style='font-size:10.0pt;font-family:Arial'>Jazelle</span></span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092064></a><span style='font-size:10.0pt;
+  font-family:Arial'>Preserved</span></p>
+  </div>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092066></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp; Untouched</span></p>
+  </div>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:16'>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092068></a><span style='font-size:10.0pt;
+  font-family:Arial'>R13_svc</span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092070></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp; </span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092072></a><span style='font-size:10.0pt;
+  font-family:Arial'>Supervisor mode R13</span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092074></a><span style='font-size:10.0pt;
+  font-family:Arial'>Other </span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092076></a><span style='font-size:10.0pt;
+  font-family:Arial'><span style='mso-spacerun:yes'>? </span>Untouched</span></p>
+  </div>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:17'>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><a name=wp1092078></a><span style='font-size:10.0pt;
+  font-family:Arial'>R14_svc</span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp; </span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Supervisor
+  mode R14</span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Other </span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'><span
+  style='mso-spacerun:yes'>? </span>Untouched</span><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:18'>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><a name=wp1092088></a><span class=SpellE><span
+  style='font-size:10.0pt;font-family:Arial'>SPSR_svc</span></span><o:p></o:p></p>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp; </span><o:p></o:p></p>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Supervisor
+  mode SPSR</span><o:p></o:p></p>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Other </span><o:p></o:p></p>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'><span
+  style='mso-spacerun:yes'>? </span>Untouched</span><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:19'>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><a name=wp1092098></a><span style='font-size:10.0pt;
+  font-family:Arial'>R13_abt</span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp; </span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Abort
+  mode R13</span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Other </span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'><span
+  style='mso-spacerun:yes'>? </span>Untouched</span><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:20'>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><a name=wp1092108></a><span style='font-size:10.0pt;
+  font-family:Arial'>R14_abt</span><o:p></o:p></p>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp; </span><o:p></o:p></p>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Abort
+  mode R14</span><o:p></o:p></p>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Other </span><o:p></o:p></p>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'><span
+  style='mso-spacerun:yes'>? </span>Untouched</span><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:21'>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><a name=wp1092118></a><span class=SpellE><span
+  style='font-size:10.0pt;font-family:Arial'>SPSR_abt</span></span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp; </span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Abort
+  mode SPSR</span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Other </span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'><span
+  style='mso-spacerun:yes'>? </span>Untouched</span><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:22'>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><a name=wp1092128></a><span style='font-size:10.0pt;
+  font-family:Arial'>R13_und</span><o:p></o:p></p>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp; </span><o:p></o:p></p>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Undefined
+  mode R13</span><o:p></o:p></p>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Other </span><o:p></o:p></p>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'><span
+  style='mso-spacerun:yes'>? </span>Untouched</span><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:23'>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><a name=wp1092138></a><span style='font-size:10.0pt;
+  font-family:Arial'>R14_und</span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp; </span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Undefined
+  mode R14</span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Other </span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'><span
+  style='mso-spacerun:yes'>? </span>Untouched</span><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:24'>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><a name=wp1092148></a><span class=SpellE><span
+  style='font-size:10.0pt;font-family:Arial'>SPSR_und</span></span><o:p></o:p></p>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp; </span><o:p></o:p></p>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Undefined
+  mode SPSR</span><o:p></o:p></p>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Other </span><o:p></o:p></p>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'><span
+  style='mso-spacerun:yes'>? </span>Untouched</span><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:25'>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><a name=wp1092158></a><span style='font-size:10.0pt;
+  font-family:Arial'>R13_irq</span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp; </span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Interrupt
+  mode R13</span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Initialized</span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'><span
+  style='mso-spacerun:yes'>? </span>BIOS sets to top of IRQ stack buffer (<span
+  class=SpellE>Hwi.irqStack</span>)</span><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:26'>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><a name=wp1092168></a><span style='font-size:10.0pt;
+  font-family:Arial'>R14_irq</span><o:p></o:p></p>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp; </span><o:p></o:p></p>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Interrupt
+  mode R14</span><o:p></o:p></p>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Other </span><o:p></o:p></p>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'><span
+  style='mso-spacerun:yes'>? </span>During ISR, points to interrupt return
+  address</span><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:27'>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><a name=wp1092178></a><span class=SpellE><span
+  style='font-size:10.0pt;font-family:Arial'>SPSR_iq</span></span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp; </span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Interrupt
+  mode SPSR</span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Other </span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'><span
+  style='mso-spacerun:yes'>? </span>Untouched</span><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:28'>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092188></a><span style='font-size:10.0pt;
+  font-family:Arial'>R8_fiq-R12_fiq</span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'><a
+  name=wp1092190></a>
+  <div>
+  <p class=MsoNormal><o:p>&nbsp;</o:p></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092192></a><span style='font-size:10.0pt;
+  font-family:Arial'>FIQ banked registers </span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092194></a><span style='font-size:10.0pt;
+  font-family:Arial'>Other</span></p>
+  </div>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <div>
+  <p class=MsoNormal><a name=wp1092196></a><span style='font-size:10.0pt;
+  font-family:Arial'>&nbsp; Untouched</span></p>
+  </div>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:29'>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><a name=wp1092198></a><span style='font-size:10.0pt;
+  font-family:Arial'>R13_fiq</span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp; </span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>FIQ mode
+  R13</span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Initialized</span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'><span
+  style='mso-spacerun:yes'>? </span>BIOS sets to top of FIQ stack buffer (<span
+  class=SpellE>Hwi.fiqStack</span>)</span><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:30'>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><a name=wp1092208></a><span style='font-size:10.0pt;
+  font-family:Arial'>R14_fiq</span><o:p></o:p></p>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp; </span><o:p></o:p></p>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>FIQ mode
+  R14</span><o:p></o:p></p>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Other </span><o:p></o:p></p>
+  </td>
+  <td style='background:#CCCCCC;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'><span
+  style='mso-spacerun:yes'>? </span>Untouched</span><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:31;mso-yfti-lastrow:yes'>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><a name=wp1092218></a><span class=SpellE><span
+  style='font-size:10.0pt;font-family:Arial'>SPSR_fiq</span></span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp; </span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>FIQ mode SPSR</span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Other </span><o:p></o:p></p>
+  </td>
+  <td style='background:white;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'><span
+  style='mso-spacerun:yes'>? </span>Untouched</span><o:p></o:p></p>
+  </td>
+ </tr>
+</table>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><a name=wp1092228></a><a name=wp1091840></a><b><span
+style='font-size:10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>Notes: </span></b></p>
+
+</div>
+
+<p><a name=wp1091841></a><span style='font-size:10.0pt;font-family:Arial'>. </span></p>
+
+</blockquote>
+
+<div class=MsoNormal align=center style='text-align:center'>
+
+<hr size=2 width="100%" align=center>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

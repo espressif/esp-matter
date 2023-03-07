@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Service xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.service.continuous_glucose_monitoring" 
+uuid="181F" name="Continuous Glucose Monitoring" last-modified="2014-11-17" approved="Yes">
+	<InformativeText>
+        <Abstract>This service exposes glucose and other data from a personal Continuous Glucose Monitoring (CGM) sensor for use in consumer healthcare applications.</Abstract>
+        <Summary>The Continuous Glucose Monitoring (CGM) Service exposes glucose measurement and other data related to a personal CGM sensor for healthcare applications.</Summary>
+	</InformativeText>
+    <Dependencies>
+        <Dependency>This Service has no dependencies to other GATT-based services.</Dependency>
+	</Dependencies>
+    <GATTRequirements>
+        <Requirement subProcedure="Write Characteristic Values">Mandatory</Requirement>
+        <Requirement subProcedure="Notifications">Mandatory</Requirement>
+		<Requirement subProcedure="Indications">Mandatory</Requirement>
+		<Requirement subProcedure="Read Characteristic Descriptors">Mandatory</Requirement>
+		<Requirement subProcedure="Write Characteristic Descriptors">Mandatory</Requirement>
+	</GATTRequirements>
+	<Transports>
+        <Classic>true</Classic>
+        <LowEnergy>true</LowEnergy>
+        <HighSpeed>true</HighSpeed>
+	</Transports>
+	<ErrorCodes>
+        <ErrorCode name="Missing CRC" code="0x80" Description="If E2E-CRC is supported and a Write procedure is processed without CRC attached "/>
+        <ErrorCode name="Invalid CRC" code="0x81" Description="If E2E-CRC is supported and a Write procedure is processed with incorrect or invalid CRC value attached"/>
+	</ErrorCodes>
+	<Characteristics>
+        <Characteristic type="org.bluetooth.characteristic.cgm_measurement" name="CGM Measurement">
+            <Requirement>Mandatory</Requirement>
+            <Properties>
+                <Read>Excluded</Read>
+                <Write>Excluded</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Mandatory</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+                <ExtendedProperties>Excluded</ExtendedProperties>
+			</Properties>
+            <SecuritySettings>
+                <Security>Authentication</Security>
+			</SecuritySettings>
+		<Descriptors>
+                <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+                    <InformativeText>Read Property: Readable with no authentication or authorization already defined in Bluetooth Core Specification v4.0 as amended by CSA3 and CSS v2 or later </InformativeText>
+                    <Requirement>Mandatory</Requirement>
+                    <Properties>
+                    <Read>Mandatory</Read>
+                    <Write>Mandatory</Write>
+                    </Properties>
+                </Descriptor>
+           </Descriptors>
+ 
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.cgm_feature" name="CGM Feature">
+            <Requirement>Mandatory</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Excluded</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+                <ExtendedProperties>Excluded</ExtendedProperties>
+			</Properties>
+            <SecuritySettings>
+                <Security>Authentication</Security>
+			</SecuritySettings>
+		</Characteristic>
+       
+        
+         <Characteristic type="org.bluetooth.characteristic.cgm_status" name="CGM Status">
+            <Requirement>Mandatory</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Excluded</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+                <ExtendedProperties>Excluded</ExtendedProperties>
+			</Properties>
+            <SecuritySettings>
+                <Security>Authentication</Security>
+			</SecuritySettings>
+		</Characteristic>
+        
+        
+        <Characteristic type="org.bluetooth.characteristic.cgm_session_start_time" name="CGM Session Start Time">
+            <Requirement>Mandatory</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+                <ExtendedProperties>Excluded</ExtendedProperties>
+			</Properties>
+            <SecuritySettings>
+                <Security>Authentication</Security>
+			</SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.cgm_session_run_time" name="CGM Session Run Time">
+            <Requirement>Mandatory</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Excluded</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+                <ExtendedProperties>Excluded</ExtendedProperties>
+			</Properties>
+            <SecuritySettings>
+                <Security>Authentication</Security>
+			</SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.record_access_control_point" name="Record Access Control Point">
+            <Requirement>Mandatory</Requirement>
+            <Properties>
+                <Read>Excluded</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Mandatory</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+                <ExtendedProperties>Excluded</ExtendedProperties>
+			</Properties>
+            <SecuritySettings>
+                <Security>Authentication</Security>
+			</SecuritySettings>
+            
+            <Descriptors>
+                <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+                    <InformativeText>Read Property: Readable with no authentication or authorization already defined in Bluetooth Core Specification v4.0 as amended by CSA3 and CSS v2 or later </InformativeText>
+                    <Requirement>Mandatory</Requirement>
+                    <Properties>
+                    <Read>Mandatory</Read>
+                    <Write>Mandatory</Write>
+                    </Properties>
+                </Descriptor>
+           </Descriptors>           
+		</Characteristic>
+        
+        <Characteristic type="org.bluetooth.characteristic.cgm_specific_ops_control_point" name="CGM Specific Ops Control Point">
+            <Requirement>Mandatory</Requirement>
+            <Properties>
+                <Read>Excluded</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Mandatory</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+                <ExtendedProperties>Excluded</ExtendedProperties>
+			</Properties>
+            <SecuritySettings>
+                <Security>Authentication</Security>
+			</SecuritySettings>
+
+            <Descriptors>
+                <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+                    <InformativeText>Read Property: Readable with no authentication or authorization already defined in Bluetooth Core Specification v4.0 as amended by CSA3 and CSS v2 or later </InformativeText>
+                    <Requirement>Mandatory</Requirement>
+                    <Properties>
+                    <Read>Mandatory</Read>
+                    <Write>Mandatory</Write>
+                    </Properties>
+                </Descriptor>
+           </Descriptors>
+		</Characteristic>
+       
+	</Characteristics>
+</Service>

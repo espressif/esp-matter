@@ -1,0 +1,135 @@
+#if defined(SL_COMPONENT_CATALOG_PRESENT)
+#include "sl_component_catalog.h"
+#endif
+#if defined(SL_CATALOG_POWER_MANAGER_PRESENT)
+#include "sl_power_manager.h"
+#endif
+#include "em_device.h"
+#include "sl_iostream.h"
+#include "sl_iostream_uart.h"
+#include "sl_iostream_usart.h"
+// Include instance config {# Include instance config #}
+{% for instance in iostream_uart_instances %} #include "sl_iostream_uart_{{ instance }}_config.h"
+{% endfor %}
+// MACROs for generating name and IRQ handler function  {# MACROs for generating name and IRQ handler function #}
+#define SL_IOSTREAM_UART_CONCAT_PASTER(first, second, third)        first ##  second ## third
+{# Set IRQ suffixes #} 
+{% set tx_irq_number_suffix = '_TX_IRQn' %}
+{% set tx_irq_handler_suffix = '_TX_IRQHandler' %}
+{% set rx_irq_number_suffix = '_RX_IRQn' %}
+{% set rx_irq_handler_suffix = '_RX_IRQHandler' %}
+#define SL_IOSTREAM_UART_TX_IRQ_NUMBER(periph_nbr)     SL_IOSTREAM_UART_CONCAT_PASTER(UART, periph_nbr, {{ tx_irq_number_suffix }})        {# Create IRQ number #}
+#define SL_IOSTREAM_UART_RX_IRQ_NUMBER(periph_nbr)     SL_IOSTREAM_UART_CONCAT_PASTER(UART, periph_nbr, {{ rx_irq_number_suffix }})        {# Create IRQ number #}
+#define SL_IOSTREAM_UART_TX_IRQ_HANDLER(periph_nbr)    SL_IOSTREAM_UART_CONCAT_PASTER(UART, periph_nbr, {{ tx_irq_handler_suffix }})  {# Create IRQ Handler function name#}
+#define SL_IOSTREAM_UART_RX_IRQ_HANDLER(periph_nbr)    SL_IOSTREAM_UART_CONCAT_PASTER(UART, periph_nbr, {{ rx_irq_handler_suffix }})  {# Create IRQ Handler function name#}
+#define SL_IOSTREAM_UART_CLOCK_REF(periph_nbr)         SL_IOSTREAM_UART_CONCAT_PASTER(cmuClock_, UART, periph_nbr)       {# Create clock reference #}
+
+{% for instance in iostream_uart_instances %}
+sl_status_t sl_iostream_uart_init_{{ instance }}(void);
+{% endfor %}
+
+// Instance(s) handle and context variable {# Generate iostream handle and context variable(s) #}
+{% for instance in iostream_uart_instances %}static sl_iostream_uart_t sl_iostream_{{ instance }};
+sl_iostream_t *sl_iostream_{{ instance }}_handle = &sl_iostream_{{ instance }}.stream;
+sl_iostream_uart_t *sl_iostream_uart_{{ instance }}_handle = &sl_iostream_{{ instance }};
+static sl_iostream_usart_context_t  context_{{ instance }};
+static uint8_t  rx_buffer_{{ instance }}[SL_IOSTREAM_UART_{{ instance | upper }}_RX_BUFFER_SIZE];
+sl_iostream_instance_info_t sl_iostream_instance_{{ instance }}_info = {
+  .handle = &sl_iostream_{{ instance }}.stream,
+  .name = "{{ instance }}",
+  .type = SL_IOSTREAM_TYPE_UART,
+  .periph_id = SL_IOSTREAM_UART_{{ instance | upper }}_PERIPHERAL_NO,
+  .init = sl_iostream_uart_init_{{ instance }},
+};
+{% endfor %}
+
+{% for instance in iostream_uart_instances %}
+sl_status_t sl_iostream_uart_init_{{ instance }}(void)
+{
+  sl_status_t status;
+  USART_InitAsync_TypeDef init_{{ instance }} = USART_INITASYNC_DEFAULT;
+  init_{{ instance }}.baudrate = SL_IOSTREAM_UART_{{ instance | upper }}_BAUDRATE;
+  init_{{ instance }}.parity = SL_IOSTREAM_UART_{{ instance | upper }}_PARITY;
+  init_{{ instance }}.stopbits = SL_IOSTREAM_UART_{{ instance | upper }}_STOP_BITS;
+
+  sl_iostream_usart_config_t config_{{ instance }} = { {# create init struct #}
+    .usart = SL_IOSTREAM_UART_{{ instance | upper }}_PERIPHERAL,
+    .clock = SL_IOSTREAM_UART_CLOCK_REF(SL_IOSTREAM_UART_{{ instance | upper }}_PERIPHERAL_NO),
+    .tx_port = SL_IOSTREAM_UART_{{ instance | upper }}_TX_PORT,
+    .tx_pin = SL_IOSTREAM_UART_{{ instance | upper }}_TX_PIN,
+    .rx_port = SL_IOSTREAM_UART_{{ instance | upper }}_RX_PORT,
+    .rx_pin = SL_IOSTREAM_UART_{{ instance | upper }}_RX_PIN,
+#if defined(GPIO_USART_ROUTEEN_TXPEN)
+    .usart_index = SL_IOSTREAM_UART_{{ instance | upper }}_PERIPHERAL_NO,
+#elif defined(USART_ROUTEPEN_RXPEN)
+    .usart_tx_location = SL_IOSTREAM_UART_{{ instance | upper }}_TX_LOC,
+    .usart_rx_location = SL_IOSTREAM_UART_{{ instance | upper }}_RX_LOC,
+#if defined(SL_IOSTREAM_UART_{{ instance | upper }}_CTS_PORT)
+    .usart_cts_location = SL_IOSTREAM_USART_{{ instance | upper }}_CTS_LOC,
+#endif
+#if defined(SL_IOSTREAM_UART_{{ instance | upper }}_RTS_PORT)
+    .usart_rts_location = SL_IOSTREAM_UART_{{ instance | upper }}_RTS_LOC,
+#endif
+#else
+    .usart_location = SL_IOSTREAM_UART_{{ instance | upper }}_ROUTE_LOC,
+#endif
+  };
+  sl_iostream_uart_config_t uart_config_{{ instance }} = {
+    .tx_irq_number = SL_IOSTREAM_UART_TX_IRQ_NUMBER(SL_IOSTREAM_UART_{{ instance | upper }}_PERIPHERAL_NO),
+    .rx_irq_number = SL_IOSTREAM_UART_RX_IRQ_NUMBER(SL_IOSTREAM_UART_{{ instance | upper }}_PERIPHERAL_NO),
+    .rx_buffer = rx_buffer_{{ instance }},
+    .rx_buffer_length = SL_IOSTREAM_UART_{{ instance | upper }}_RX_BUFFER_SIZE,
+    .lf_to_crlf = SL_IOSTREAM_UART_{{ instance | upper }}_CONVERT_BY_DEFAULT_LF_TO_CRLF,
+    .rx_when_sleeping = SL_IOSTREAM_UART_{{ instance | upper }}_RESTRICT_ENERGY_MODE_TO_ALLOW_RECEPTION,
+#if defined(SL_IOSTREAM_UART_{{ instance | upper }}_FLOW_CONTROL_TYPE)
+#if (SL_IOSTREAM_UART_{{ instance | upper }}_FLOW_CONTROL_TYPE == uartFlowControlSoftware)
+    .sw_flow_control = true,
+#else
+    .sw_flow_control = false,
+#endif
+#else
+    .sw_flow_control = false,
+#endif
+  };
+  // Instantiate usart instance {# Initialize usart instance #}
+  status = sl_iostream_usart_init(&sl_iostream_{{ instance }},
+                                  &uart_config_{{ instance }},
+                                  &init_{{ instance }},
+                                  &config_{{ instance }},
+                                  &context_{{ instance }});
+  EFM_ASSERT(status == SL_STATUS_OK);
+
+  return status;
+}
+{% endfor %}
+
+{# Init function #}
+void sl_iostream_uart_init_instances(void)
+{
+  // Instantiate uart instance(s) {# Initialize uart instance(s) #}
+  {% for instance in iostream_uart_instances %}
+  sl_iostream_uart_init_{{ instance }}();
+  {% endfor %}
+}
+
+{% for instance in iostream_uart_instances %} {# Create IRQ Handler(s) #}
+// {{ instance | upper }} IRQ Handler
+void SL_IOSTREAM_UART_TX_IRQ_HANDLER(SL_IOSTREAM_UART_{{ instance | upper }}_PERIPHERAL_NO)(void)
+{
+  sl_iostream_usart_irq_handler(sl_iostream_{{ instance }}.stream.context);
+}
+
+void SL_IOSTREAM_UART_RX_IRQ_HANDLER(SL_IOSTREAM_UART_{{ instance | upper }}_PERIPHERAL_NO)(void)
+{
+  sl_iostream_usart_irq_handler(sl_iostream_{{ instance }}.stream.context);
+}
+{% endfor %}
+
+#if defined(SL_CATALOG_POWER_MANAGER_PRESENT) && !defined(SL_CATALOG_KERNEL_PRESENT)
+{% for instance in iostream_uart_instances %} {# Create IRQ Handler(s) #}
+sl_power_manager_on_isr_exit_t sl_iostream_uart_{{ instance }}_sleep_on_isr_exit(void)
+{
+  return sl_iostream_uart_sleep_on_isr_exit(&sl_iostream_{{ instance }});
+}
+{% endfor %}
+#endif

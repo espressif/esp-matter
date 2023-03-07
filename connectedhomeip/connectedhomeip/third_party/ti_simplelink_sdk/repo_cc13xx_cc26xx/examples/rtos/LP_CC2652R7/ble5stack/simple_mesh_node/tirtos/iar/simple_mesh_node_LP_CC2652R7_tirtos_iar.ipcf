@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- IAR Project Connection File -->
+
+<iarProjectConnection version="1.2" name="simple_mesh_node app" oneShot="true"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="IarProjectConnection_1.2.xsd">
+
+    <device>
+        <name>CC2652R7</name>
+    </device>
+
+    <asmIncludePath>
+        <path>$PROJ_DIR$</path>
+    </asmIncludePath>
+
+    <includePath>
+        <path>$PROJ_DIR$</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/controller/cc26xx/inc</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/inc</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/rom</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/common/cc26xx</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/icall/inc</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/hal/src/target/_common</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/hal/src/target/_common/cc26xx</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/hal/src/inc</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/heapmgr</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/profiles/dev_info</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/profiles/simple_profile</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/icall/src/inc</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/osal/src/inc</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/services/src/saddr</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/services/src/sdata</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/common/nv</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/common/cc26xx</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/profiles/simple_profile/cc26xx</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/hal/src/target/cc2650/rom</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/devices/cc13x2x7_cc26x2x7</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/posix/iar</path>
+    </includePath>
+
+    <defines>
+        <define>CONFIG_ARM</define>
+        <define>ICALL_NO_APP_EVENTS</define>
+        <define>DeviceFamily_CC26X2X7</define>
+        <define>FLASH_ROM_BUILD</define>
+        <define>NVOCMP_NWSAMEITEM=1</define>
+    </defines>
+
+    <extraOptions>
+        <args>
+            <arg>-f$PROJ_DIR$/configPkg/compiler.opt.defs</arg>
+            <arg> -f$PROJ_DIR$/ti_ble_app_config.opt</arg>
+            <arg> -f$PROJ_DIR$/ti_build_config.opt</arg>
+            <arg> -f$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/config/build_components.opt</arg>
+            <arg> -f$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/config/factory_config.opt</arg>
+            <arg> -I$PROJ_DIR$/${ConfigName}/syscfg</arg>
+            <arg> -I$PROJ_DIR$/Application</arg>
+            <arg> -I$PROJ_DIR$/Profiles</arg>
+            <arg> -I$PROJ_DIR$</arg>
+            <arg> --preinclude $PROJ_DIR$/autoconf.h</arg>
+            <arg> -I$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh</arg>
+            <arg> -I$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/ti/ble_wrapper</arg>
+            <arg> -I$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/ti/kernel</arg>
+            <arg> -I$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr</arg>
+            <arg> -I$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include</arg>
+            <arg> -I$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys</arg>
+            <arg> -I$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/settings/include</arg>
+            <arg> -I$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth</arg>
+            <arg> -I$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh</arg>
+            <arg> -I$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include</arg>
+            <arg> -I$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/mesh</arg>
+            <arg> -I$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/rpc/output</arg>
+            <arg> -I$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/rpc/wrappers</arg>
+            <arg> -I$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/erpc</arg>
+            <arg> -I$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/erpc/erpc_c/infra</arg>
+            <arg> -I$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/erpc/erpc_c/port</arg>
+            <arg> -I$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/erpc/erpc_c/setup</arg>
+            <arg> -I$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/erpc/erpc_c/transports</arg>
+            <arg> -I$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/erpc/ti/tirtos</arg>
+            <arg>--debug</arg>
+            <arg>--silent</arg>
+            <arg>-e</arg>
+            <arg>--aeabi</arg>
+            <arg>--thumb</arg>
+            <arg>--diag_suppress=Pa050</arg>
+        </args>
+    </extraOptions>
+
+    <linkerFile>
+        <override>true</override>
+        <path>$PROJ_DIR$/cc26x2x7_app_and_stack_agama.icf</path>
+    </linkerFile>
+
+    <linkerExtraOptions>
+        <args>
+            <arg>-f$PROJ_DIR$/configPkg/linker.cmd</arg>
+            <arg>--keep __vector_table</arg>
+            <arg>--config_def DCC2642=1</arg>
+            <arg>--config_def PAGE_ALIGN=-1</arg>
+            <arg>--diag_suppress=Li026</arg>
+            <arg>-L$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source</arg>
+            <arg>--config_def CC2642=1</arg>
+            <arg>--config_def FLASH_ROM_BUILD=2</arg>
+            <arg>-L$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/kernel/tirtos/packages</arg>
+            <arg>-f$PROJ_DIR$/ti_utils_build_linker.cmd.genlibs</arg>
+            <arg>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/devices/cc13x2x7_cc26x2x7/driverlib/bin/iar/driverlib.lib</arg>
+            <arg>--silent</arg>
+            <arg>--cpu=Cortex-M4F</arg>
+        </args>
+    </linkerExtraOptions>
+
+    <customBuildTools>
+        <customBuildTool atRoot="true" name="SysConfig"> <!-- Custom build tool for entire project-->
+            <fileExtensions>.syscfg</fileExtensions>
+            <command>$SYSCONFIG_ROOT$/sysconfig_cli.bat -o $PROJ_DIR$ -s "$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/.metadata/product.json" --compiler iar $FILE_PATH$
+            </command>
+            <output>
+                <path>SysConfig_Generated_Files.ipcf</path>
+            </output>
+            <hasPrio>true</hasPrio> <!-- true: run this tool before all other tools-->
+        </customBuildTool>
+        <customBuildTool name="configuro">  <!-- Custom build tool that will be assigned to a file group -->
+            <fileExtensions>.cfg</fileExtensions>
+            <command>"$XDCROOT$/bin/stderr"</command>
+            <output>
+                <path>$PROJ_DIR$/configPkg/package.mak</path>
+            </output>
+        </customBuildTool>
+    </customBuildTools>
+
+    <heaps>
+        <heap> <!-- If omitted, id="0" -->
+            <size>0</size>
+        </heap>
+        <heap id="1">
+            <size>0</size>
+        </heap>
+    </heaps>
+    <stacks>
+        <stack> <!-- If omitted, id="0" -->
+            <size>512</size>
+        </stack>
+    </stacks>
+
+    <preBuild>
+        <command>"$XDCROOT$/xs" --xdcpath="$XDCPATH$" iar.tools.configuro -c "$TOOLKIT_DIR$" --cc "$COMPILER_PATH$" --device "$DEVICE$" --compileOptions $COMPILER_ARGS_ROOT_QUOTED$ --linkOptions $LINKER_ARGS_QUOTED$ --profile release --projFile "$PROJ_PATH$" -o $PROJ_DIR$/configPkg $SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/ble5stack/simple_mesh_node/Tools/ble_$CONFIG_NAME$.xscfg</command>
+    </preBuild>
+
+    <postBuild>
+        <command>ielftool --ihex --verbose $TARGET_BPATH$.out $TARGET_BPATH$.hex</command>
+    </postBuild>
+
+    <files>
+        <path copyTo="$PROJ_DIR$/autoconf.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/ble5stack/simple_mesh_node/autoconf.h</path>
+        <path reference="$PROJ_DIR$/Board.html">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/boards/LP_CC2652R7/Board.html</path>
+        <path copyTo="$PROJ_DIR$/cc26x2x7_app_and_stack_agama.icf">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/ble5stack/simple_mesh_node/tirtos/iar/cc26x2x7_app_and_stack_agama.icf</path>
+        <path copyTo="$PROJ_DIR$/README.html">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/ble5stack/simple_mesh_node/README.html</path>
+        <path copyTo="$PROJ_DIR$/simple_mesh_node.syscfg">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/ble5stack/simple_mesh_node/simple_mesh_node.syscfg</path>
+        <path copyTo="$PROJ_DIR$/simple_mesh_node_app.cfg">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/ble5stack/simple_mesh_node/Tools/simple_mesh_node_app.cfg</path>
+        <group name="Application" build="true">
+            <path reference="$PROJ_DIR$/Application/board_key.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/common/cc26xx/board_key.c</path>
+            <path reference="$PROJ_DIR$/Application/board_key.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/common/cc26xx/board_key.h</path>
+            <path copyTo="$PROJ_DIR$/Application/simple_mesh_node.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/ble5stack/simple_mesh_node/Application/simple_mesh_node.c</path>
+            <path copyTo="$PROJ_DIR$/Application/simple_mesh_node.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/ble5stack/simple_mesh_node/Application/simple_mesh_node.h</path>
+            <path copyTo="$PROJ_DIR$/Application/simple_mesh_node_menu.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/ble5stack/simple_mesh_node/Application/simple_mesh_node_menu.c</path>
+            <path copyTo="$PROJ_DIR$/Application/simple_mesh_node_menu.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/ble5stack/simple_mesh_node/Application/simple_mesh_node_menu.h</path>
+            <path copyTo="$PROJ_DIR$/Application/static_prov.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/ble5stack/simple_mesh_node/Application/static_prov.c</path>
+            <path copyTo="$PROJ_DIR$/Application/static_prov.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/ble5stack/simple_mesh_node/Application/static_prov.h</path>
+            <path reference="$PROJ_DIR$/Application/two_btn_menu.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/common/cc26xx/menu/two_btn_menu.c</path>
+            <path reference="$PROJ_DIR$/Application/two_btn_menu.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/common/cc26xx/menu/two_btn_menu.h</path>
+            <path reference="$PROJ_DIR$/Application/util.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/common/cc26xx/util.c</path>
+            <path reference="$PROJ_DIR$/Application/util.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/common/cc26xx/util.h</path>
+        </group>
+        <group name="Drivers/NV" build="true">
+            <path reference="$PROJ_DIR$/Drivers/NV/crc.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/common/nv/crc.c</path>
+            <path reference="$PROJ_DIR$/Drivers/NV/crc.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/common/nv/crc.h</path>
+            <path reference="$PROJ_DIR$/Drivers/NV/nvintf.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/common/nv/nvintf.h</path>
+            <path reference="$PROJ_DIR$/Drivers/NV/nvocmp.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/common/nv/nvocmp.c</path>
+            <path reference="$PROJ_DIR$/Drivers/NV/nvocmp.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/common/nv/nvocmp.h</path>
+        </group>
+        <group name="eRPC" build="true">
+            <path reference="$PROJ_DIR$/eRPC/erpc_lprf_server_setup.cpp">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/rpc/output/erpc_lprf_server_setup.cpp</path>
+            <path reference="$PROJ_DIR$/eRPC/lprf_api.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/rpc/output/lprf_api.h</path>
+            <path reference="$PROJ_DIR$/eRPC/lprf_api_server.cpp">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/rpc/output/lprf_api_server.cpp</path>
+            <path reference="$PROJ_DIR$/eRPC/lprf_api_server.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/rpc/output/lprf_api_server.h</path>
+            <path reference="$PROJ_DIR$/eRPC/lprf_cbk.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/rpc/output/lprf_cbk.h</path>
+            <path reference="$PROJ_DIR$/eRPC/lprf_cbk_client.cpp">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/rpc/output/lprf_cbk_client.cpp</path>
+        </group>
+        <group name="eRPC/erpc_wrappers" build="true">
+            <path reference="$PROJ_DIR$/eRPC/erpc_wrappers/mesh_erpc_wrapper.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/rpc/wrappers/mesh_erpc_wrapper.c</path>
+            <path reference="$PROJ_DIR$/eRPC/erpc_wrappers/mesh_erpc_wrapper.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/rpc/wrappers/mesh_erpc_wrapper.h</path>
+        </group>
+        <group name="iCall" build="true">
+            <path reference="$PROJ_DIR$/iCall/icall.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/icall/src/icall.c</path>
+            <path reference="$PROJ_DIR$/iCall/icall.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/icall/src/inc/icall.h</path>
+            <path reference="$PROJ_DIR$/iCall/icall_addrs.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/icall/inc/icall_addrs.h</path>
+            <path reference="$PROJ_DIR$/iCall/icall_cc2650.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/icall/src/icall_cc2650.c</path>
+            <path reference="$PROJ_DIR$/iCall/icall_platform.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/icall/src/icall_platform.h</path>
+            <path reference="$PROJ_DIR$/iCall/icall_user_config.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/icall/src/icall_user_config.c</path>
+            <path reference="$PROJ_DIR$/iCall/icall_user_config.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/icall/src/inc/icall_user_config.h</path>
+        </group>
+        <group name="iCallBLE" build="true">
+            <path reference="$PROJ_DIR$/iCallBLE/ble_stack_api.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/icall/app/ble_stack_api.c</path>
+            <path reference="$PROJ_DIR$/iCallBLE/ble_stack_api.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/icall/inc/ble_stack_api.h</path>
+            <path reference="$PROJ_DIR$/iCallBLE/ble_user_config.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/icall/app/ble_user_config.c</path>
+            <path reference="$PROJ_DIR$/iCallBLE/ble_user_config.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/icall/inc/ble_user_config.h</path>
+            <path reference="$PROJ_DIR$/iCallBLE/ble_user_config_stack.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/icall/stack/ble_user_config_stack.c</path>
+            <path reference="$PROJ_DIR$/iCallBLE/icall_api_lite.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/icall/app/icall_api_lite.c</path>
+            <path reference="$PROJ_DIR$/iCallBLE/icall_ble_apimsg.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/icall/inc/icall_ble_apimsg.h</path>
+        </group>
+        <group name="Include" build="true">
+            <path reference="$PROJ_DIR$/Include/gap.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/inc/gap.h</path>
+            <path reference="$PROJ_DIR$/Include/gapbondmgr.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/inc/gapbondmgr.h</path>
+            <path reference="$PROJ_DIR$/Include/gapgattserver.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/inc/gapgattserver.h</path>
+            <path reference="$PROJ_DIR$/Include/gatt.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/inc/gatt.h</path>
+            <path reference="$PROJ_DIR$/Include/hci.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/inc/hci.h</path>
+            <path reference="$PROJ_DIR$/Include/osal_snv.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/osal/src/inc/osal_snv.h</path>
+        </group>
+        <group name="Mesh/ti/ble" build="true">
+            <path reference="$PROJ_DIR$/Mesh/ti/ble/bt.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/ti/ble_wrapper/bt.c</path>
+            <path reference="$PROJ_DIR$/Mesh/ti/ble/bt_le_convert.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/ti/ble_wrapper/bt_le_convert.c</path>
+            <path reference="$PROJ_DIR$/Mesh/ti/ble/bt_le_porting_layer.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/ti/ble_wrapper/bt_le_porting_layer.h</path>
+        </group>
+        <group name="Mesh/ti/crypto" build="true">
+            <path reference="$PROJ_DIR$/Mesh/ti/crypto/simplelink_crypto.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/ti/ble_wrapper/simplelink_crypto.c</path>
+        </group>
+        <group name="Mesh/ti/models" build="true">
+            <path reference="$PROJ_DIR$/Mesh/ti/models/generic_models.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/mesh/generic_models.c</path>
+            <path reference="$PROJ_DIR$/Mesh/ti/models/generic_models.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/mesh/generic_models.h</path>
+            <path reference="$PROJ_DIR$/Mesh/ti/models/health_model.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/mesh/health_model.c</path>
+            <path reference="$PROJ_DIR$/Mesh/ti/models/health_model.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/mesh/health_model.h</path>
+            <path reference="$PROJ_DIR$/Mesh/ti/models/sensor_models.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/mesh/sensor_models.c</path>
+            <path reference="$PROJ_DIR$/Mesh/ti/models/sensor_models.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/mesh/sensor_models.h</path>
+            <path reference="$PROJ_DIR$/Mesh/ti/models/sensor_temperature8.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/mesh/sensor_temperature8.c</path>
+            <path reference="$PROJ_DIR$/Mesh/ti/models/sensor_temperature8.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/mesh/sensor_temperature8.h</path>
+        </group>
+        <group name="Mesh/ti/nv" build="true">
+            <path reference="$PROJ_DIR$/Mesh/ti/nv/nvs.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/ti/nv_wrapper/nvs.c</path>
+        </group>
+        <group name="Mesh/zephyr/include" build="true">
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/atomic.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/atomic.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/device.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/device.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/init.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/init.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/kernel.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/kernel.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/sys_clock.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/sys_clock.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/toolchain.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/toolchain.h</path>
+        </group>
+        <group name="Mesh/zephyr/include/arch" build="true">
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/arch/cpu.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/arch/cpu.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/arch/ffs.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/arch/common/ffs.h</path>
+        </group>
+        <group name="Mesh/zephyr/include/bluetooth" build="true">
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/bluetooth/addr.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/bluetooth/addr.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/bluetooth/att.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/bluetooth/att.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/bluetooth/bluetooth.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/bluetooth/bluetooth.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/bluetooth/conn.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/bluetooth/conn.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/bluetooth/crypto.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/bluetooth/crypto.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/bluetooth/gap.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/bluetooth/gap.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/bluetooth/gatt.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/bluetooth/gatt.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/bluetooth/hci.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/bluetooth/hci.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/bluetooth/hci_err.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/bluetooth/hci_err.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/bluetooth/mesh.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/bluetooth/mesh.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/bluetooth/uuid.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/bluetooth/uuid.h</path>
+        </group>
+        <group name="Mesh/zephyr/include/bluetooth/mesh" build="true">
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/bluetooth/mesh/access.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/bluetooth/mesh/access.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/bluetooth/mesh/cdb.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/bluetooth/mesh/cdb.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/bluetooth/mesh/cfg_cli.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/bluetooth/mesh/cfg_cli.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/bluetooth/mesh/cfg_srv.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/bluetooth/mesh/cfg_srv.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/bluetooth/mesh/health_cli.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/bluetooth/mesh/health_cli.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/bluetooth/mesh/health_faults.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/bluetooth/mesh/health_faults.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/bluetooth/mesh/health_srv.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/bluetooth/mesh/health_srv.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/bluetooth/mesh/main.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/bluetooth/mesh/main.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/bluetooth/mesh/proxy.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/bluetooth/mesh/proxy.h</path>
+        </group>
+        <group name="Mesh/zephyr/include/drivers" build="true">
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/drivers/flash.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/drivers/flash.h</path>
+        </group>
+        <group name="Mesh/zephyr/include/fs" build="true">
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/fs/nvs.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/fs/nvs.h</path>
+        </group>
+        <group name="Mesh/zephyr/include/linker" build="true">
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/linker/sections.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/linker/sections.h</path>
+        </group>
+        <group name="Mesh/zephyr/include/logging" build="true">
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/logging/log.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/logging/log.h</path>
+        </group>
+        <group name="Mesh/zephyr/include/net" build="true">
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/net/buf.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/net/buf.h</path>
+        </group>
+        <group name="Mesh/zephyr/include/settings" build="true">
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/settings/settings.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/settings/settings.h</path>
+        </group>
+        <group name="Mesh/zephyr/include/storage" build="true">
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/storage/flash_map.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/storage/flash_map.h</path>
+        </group>
+        <group name="Mesh/zephyr/include/sys" build="true">
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/sys/__assert.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/sys/__assert.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/sys/atomic.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/sys/atomic.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/sys/byteorder.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/sys/byteorder.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/sys/dlist.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/sys/dlist.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/sys/list_gen.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/sys/list_gen.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/sys/printk.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/sys/printk.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/sys/slist.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/sys/slist.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/sys/util.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/sys/util.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/sys/util_internal.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/sys/util_internal.h</path>
+        </group>
+        <group name="Mesh/zephyr/include/toolchain" build="true">
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/toolchain/ccs.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/toolchain/ccs.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/toolchain/common.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/toolchain/common.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/toolchain/gcc.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/toolchain/gcc.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/toolchain/xcc.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/toolchain/xcc.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/toolchain/xcc_missing_defs.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/toolchain/xcc_missing_defs.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/toolchain/zephyr_stdint.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/toolchain/zephyr_stdint.h</path>
+        </group>
+        <group name="Mesh/zephyr/include/zephyr" build="true">
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/zephyr/types.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/zephyr/types.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/include/zephyr/zephyr.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/include/zephyr.h</path>
+        </group>
+        <group name="Mesh/zephyr/subsys/bluetooth/common" build="true">
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/common/log.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/common/log.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/common/log.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/common/log.h</path>
+        </group>
+        <group name="Mesh/zephyr/subsys/bluetooth/host" build="true">
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/host/aes_ccm.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/host/aes_ccm.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/host/conn_internal.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/host/conn_internal.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/host/ecc.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/host/ecc.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/host/hci_core.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/host/hci_core.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/host/testing.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/host/testing.h</path>
+        </group>
+        <group name="Mesh/zephyr/subsys/bluetooth/mesh" build="true">
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/access.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/access.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/access.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/access.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/adv.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/adv.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/adv.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/adv.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/adv_ext.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/adv_ext.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/adv_legacy.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/adv_legacy.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/app_keys.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/app_keys.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/app_keys.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/app_keys.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/beacon.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/beacon.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/beacon.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/beacon.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/buf.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/buf.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/cdb.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/cdb.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/cfg.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/cfg.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/cfg.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/cfg.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/cfg_cli.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/cfg_cli.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/cfg_srv.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/cfg_srv.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/crypto.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/crypto.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/crypto.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/crypto.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/foundation.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/foundation.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/friend.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/friend.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/friend.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/friend.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/health_cli.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/health_cli.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/health_srv.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/health_srv.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/heartbeat.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/heartbeat.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/heartbeat.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/heartbeat.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/lpn.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/lpn.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/lpn.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/lpn.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/main_mesh.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/main_mesh.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/mesh.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/mesh.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/mesh_settings.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/mesh_settings.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/net.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/net.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/net.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/net.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/nodes.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/nodes.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/pb_adv.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/pb_adv.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/pb_gatt.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/pb_gatt.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/prov.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/prov.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/prov.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/prov.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/prov_bearer.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/prov_bearer.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/prov_device.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/prov_device.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/provisioner.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/provisioner.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/provisioner.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/provisioner.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/proxy.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/proxy.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/proxy.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/proxy.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/rpl.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/rpl.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/rpl.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/rpl.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/settings.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/settings.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/subnet.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/subnet.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/subnet.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/subnet.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/test.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/test.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/transport.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/transport.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/transport.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/transport.h</path>
+        </group>
+        <group name="Mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt" build="true">
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/aes.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/aes.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/cbc_mode.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/cbc_mode.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/ccm_mode.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/ccm_mode.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/cmac_mode.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/cmac_mode.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/constants.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/constants.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/ctr_mode.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/ctr_mode.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/ctr_prng.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/ctr_prng.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/ecc.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/ecc.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/ecc_dh.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/ecc_dh.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/ecc_dsa.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/ecc_dsa.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/ecc_platform_specific.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/ecc_platform_specific.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/hmac.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/hmac.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/hmac_prng.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/hmac_prng.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/sha256.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/sha256.h</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/utils.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/include/tinycrypt/utils.h</path>
+        </group>
+        <group name="Mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/source" build="true">
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/source/cmac_mode.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/source/cmac_mode.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/source/utils.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/bluetooth/mesh/tinycrypt/source/utils.c</path>
+        </group>
+        <group name="Mesh/zephyr/subsys/settings/include/settings" build="true">
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/settings/include/settings/settings_nvs.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/settings/include/settings/settings_nvs.h</path>
+        </group>
+        <group name="Mesh/zephyr/subsys/settings/src" build="true">
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/settings/src/settings.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/settings/src/settings.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/settings/src/settings_init.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/settings/src/settings_init.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/settings/src/settings_nvs.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/settings/src/settings_nvs.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/settings/src/settings_store.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/settings/src/settings_store.c</path>
+        </group>
+        <group name="Mesh/zephyr/subsys/storage/flash_map" build="true">
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/storage/flash_map/flash_map.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/storage/flash_map/flash_map.c</path>
+            <path reference="$PROJ_DIR$/Mesh/zephyr/subsys/storage/flash_map/flash_map_default.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/mesh/zephyr/subsys/storage/flash_map/flash_map_default.c</path>
+        </group>
+        <group name="Profiles" build="true">
+            <path reference="$PROJ_DIR$/Profiles/devinfoservice.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/profiles/dev_info/cc26xx/devinfoservice.c</path>
+            <path reference="$PROJ_DIR$/Profiles/devinfoservice.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/profiles/dev_info/devinfoservice.h</path>
+            <path reference="$PROJ_DIR$/Profiles/gatt_profile_uuid.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/inc/gatt_profile_uuid.h</path>
+            <path reference="$PROJ_DIR$/Profiles/gatt_uuid.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/host/gatt_uuid.c</path>
+            <path reference="$PROJ_DIR$/Profiles/gatt_uuid.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/inc/gatt_uuid.h</path>
+            <path reference="$PROJ_DIR$/Profiles/gattservapp_util.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/host/gattservapp_util.c</path>
+            <path reference="$PROJ_DIR$/Profiles/simple_gatt_profile.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/profiles/simple_profile/cc26xx/simple_gatt_profile.c</path>
+            <path reference="$PROJ_DIR$/Profiles/simple_gatt_profile.h">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/profiles/simple_profile/simple_gatt_profile.h</path>
+        </group>
+        <group name="Startup" build="true">
+            <path copyTo="$PROJ_DIR$/Startup/main.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/ble5stack/simple_mesh_node/Startup/main.c</path>
+            <path copyTo="$PROJ_DIR$/Startup/osal_icall_ble.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/ble5stack/simple_mesh_node/Startup/osal_icall_ble.c</path>
+            <path reference="$PROJ_DIR$/Startup/rom_init.c">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/ble5stack/rom/agama_r1/rom_init.c</path>
+        </group>
+        <group name="Tools" build="true">
+            <path copyTo="$PROJ_DIR$/Tools/ble_Debug.xscfg">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/ble5stack/simple_mesh_node/Tools/ble_Debug.xscfg</path>
+            <path copyTo="$PROJ_DIR$/Tools/ble_Release.xscfg">$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/examples/rtos/LP_CC2652R7/ble5stack/simple_mesh_node/Tools/ble_Release.xscfg</path>
+        </group>
+    </files>
+</iarProjectConnection>

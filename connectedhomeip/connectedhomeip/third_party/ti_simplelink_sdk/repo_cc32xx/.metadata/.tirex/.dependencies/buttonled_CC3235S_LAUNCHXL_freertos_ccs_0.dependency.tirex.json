@@ -1,0 +1,15 @@
+[
+    {
+        "files": [
+            "+../../buttonled.c -> buttonled.c",
+            "+../../README.md -> README.md",
+            "+../../README.html -> README.html",
+            "+../main_freertos.c -> main_freertos.c",
+            "+../buttonled.syscfg -> buttonled.syscfg",
+            "+../../../../../../../source/ti/boards/CC3235S_LAUNCHXL/Board.html -> Board.html",
+            "+cc32xxs_freertos.cmd -> cc32xxs_freertos.cmd",
+            "+../../image.syscfg -> image.syscfg",
+            "+../../userFiles/dummy-root-ca-cert -> userFiles/dummy-root-ca-cert"
+        ]
+    }
+]

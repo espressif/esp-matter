@@ -1,0 +1,704 @@
+package: Zigbee
+description: This component provides an implementation of a Smart Energy price server.  The
+  price server holds a table of prices locally and answers requests to retrieve
+  the list of commodity prices.  It requires extension to add / remove prices from
+  the table and to send out new prices to those devices that have subscribed to the
+  ESI for price updates.
+label: Price Server
+quality: production
+id: zigbee_price_server
+category: Zigbee|Cluster Library|Smart Energy
+provides:
+   - name: "zigbee_price_server"
+requires:
+   - name: "zigbee_price_common"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/price-server/config/price-server-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/price-server/price-server.c
+  - path: protocol/zigbee/app/framework/plugin/price-server/price-server-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/price-server/price-server-tick.c
+  - path: protocol/zigbee/app/framework/plugin/price-server/price-server-cb.c
+  - path: protocol/zigbee/app/framework/plugin/price-server/price-server-tariff-matrix-stub.c
+    unless:
+    - zigbee_price_server_tariff_matrix
+include:
+  - path: protocol/zigbee/app/framework/plugin/price-server
+    file_list:
+      - path: price-server.h
+      - path: price-server-tick.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_price_server
+  - name: cluster_service
+    value:
+       cluster_id: "0x0700"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "SERVER"       
+       service_function: "emberAfPriceClusterServerCommandParse"
+  - name: cli_group
+    value:
+      group: plugin
+      name: price-server
+      help: price-server related commands.
+  - name: cli_command
+    value:
+      group: price-server
+      name: init
+      handler: emAfPriceServerCliInit
+      help: Initializes the price info for the provided endpoint.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cli_command
+    value:
+      group: price-server
+      name: print
+      handler: emAfPriceServerCliPrint
+      help: Prints the price info for the provided endpoint.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cli_command
+    value:
+      group: price-server
+      name: clear
+      handler: emAfPriceServerCliClear
+      help: Clears out the currently set price for the supplied endpoint.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cli_command
+    value:
+      group: price-server
+      name: who
+      handler: emAfPriceServerCliWho
+      help: Sets identifying information about the price.
+      argument:
+      - type: uint32
+        help: Provider ID
+      - type: string
+        help: Rate label
+      - type: uint32
+        help: Issuer event ID
+  - name: cli_command
+    value:
+      group: price-server
+      name: what
+      handler: emAfPriceServerCliWhat
+      help: Indicates what units the price is presented in.
+      argument:
+      - type: uint8
+        help: Unit of measure
+      - type: uint16
+        help: Currency
+      - type: uint8
+        help: Price trailing digit and tier
+      - type: uint8
+        help: Number of price tiers and tier
+      - type: uint8
+        help: Number of block thresholds
+  - name: cli_command
+    value:
+      group: price-server
+      name: when
+      handler: emAfPriceServerCliWhen
+      help: Sets start time and duration for the price.
+      argument:
+      - type: uint32
+      - type: uint16
+  - name: cli_command
+    value:
+      group: price-server
+      name: price
+      handler: emAfPriceServerCliPrice
+      help: Sets the single price held within the price server component.
+      argument:
+      - type: uint32
+        help: Price
+      - type: uint8
+        help: Ratio
+      - type: uint32
+        help: Generation price
+      - type: uint8
+        help: Generation price ratio
+  - name: cli_command
+    value:
+      group: price-server
+      name: alternate
+      handler: emAfPriceServerCliAlternate
+      help: Sets the alternate values for the price.
+      argument:
+      - type: uint32
+        help: Alternate cost delivered
+      - type: uint8
+        help: Alternate cost unit
+      - type: uint8
+        help: Alternate cost trailing digit
+  - name: cli_command
+    value:
+      group: price-server
+      name: ack
+      handler: emAfPriceServerCliAck
+      help: Turns price acknowledgement on or off depending on passed boolean value.
+      argument:
+      - type: uint8
+        help: Bool acknowledgement required
+  - name: cli_command
+    value:
+      group: price-server
+      name: valid
+      handler: emAfPriceServerCliValid
+      help: Makes a price at a given index valid.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint8
+        help: Index in the price table
+  - name: cli_command
+    value:
+      group: price-server
+      name: invalid
+      handler: emAfPriceServerCliValid
+      help: Makes a price at a given index invalid.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint8
+        help: Index in the price table
+  - name: cli_command
+    value:
+      group: price-server
+      name: get
+      handler: emAfPriceServerCliGet
+      help: Retrieves a price from a given index into the price buffer for editing.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint8
+        help: Index of the price to retrieve
+  - name: cli_command
+    value:
+      group: price-server
+      name: sprint
+      handler: emAfPriceServerCliSprint
+      help: Prints the contents of the price buffer for the provided endpoint.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cli_command
+    value:
+      group: price-server
+      name: publish
+      handler: emAfPriceServerCliPublish
+      help: Publishes the current price.
+      argument:
+      - type: uint16
+        help: The destination node ID
+      - type: uint8
+        help: The source endpoint
+      - type: uint8
+        help: The destination endpoint
+      - type: uint8
+        help: Index of the price to publish
+  - name: cli_command
+    value:
+      group: price-server
+      name: pub-tariff-info
+      handler: emAfPriceServerCliPubTariffInfo
+      help: Publishes the tariff info.
+      argument:
+      - type: uint16
+        help: The destination node ID
+      - type: uint8
+        help: The source endpoint
+      - type: uint8
+        help: The destination endpoint
+      - type: uint8
+        help: Index of the tariff to publish
+  - name: cli_group
+    value:
+      group: price-server
+      name: conversion-factor
+      help: conversion-factor related commands.
+  - name: cli_command
+    value:
+      group: conversion-factor
+      name: add
+      handler: emAfPriceServerCliConversionFactorAdd
+      help: Sets the conversion factor information in the conversion factor table.
+      argument:
+      - type: uint8
+      - type: uint32
+      - type: uint32
+      - type: uint32
+      - type: uint8
+  - name: cli_command
+    value:
+      group: conversion-factor
+      name: clear
+      handler: emAfPriceServerCliConversionFactorClear
+      help: Clears the conversion factor table.
+      argument:
+      - type: uint8
+  - name: cli_command
+    value:
+      group: conversion-factor
+      name: print
+      handler: emAfPriceServerCliConversionFactorPrint
+      help: Prints the conversion factor table.
+      argument:
+      - type: uint8
+  - name: cli_command
+    value:
+      group: conversion-factor
+      name: pub
+      handler: emAfPriceServerCliConversionFactorPub
+      help: Publishes the specified conversion factor entry.
+      argument:
+      - type: uint8
+        help: The network address of the server to which the request will be sent
+      - type: uint16
+        help: The network address of the server to which the request will be sent
+      - type: uint8
+        help: The local endpoint from which the request will be sent
+      - type: uint8
+        help: The remote endpoint to which the request will be sent
+  - name: cli_group
+    value:
+      group: price-server
+      name: calorific-value
+      help: calorific-value related commands.
+  - name: cli_command
+    value:
+      group: calorific-value
+      name: add
+      handler: emAfPriceServerCliCalorificValueAdd
+      help: Sets the calorific value in table.
+      argument:
+      - type: uint8
+      - type: uint32
+      - type: uint32
+      - type: uint32
+      - type: uint8
+      - type: uint8
+  - name: cli_command
+    value:
+      group: calorific-value
+      name: clear
+      handler: emAfPriceServerCliCalorificValueClear
+      help: Clears the table.
+      argument:
+      - type: uint8
+  - name: cli_command
+    value:
+      group: calorific-value
+      name: print
+      handler: emAfPriceServerCliCalorificValuePrint
+      help: Prints the table.
+      argument:
+      - type: uint8
+  - name: cli_group
+    value:
+      group: price-server
+      name: block-period
+      help: block-period related commands.
+  - name: cli_command
+    value:
+      group: block-period
+      name: print
+      handler: emAfPriceServerCliBlockPeriodPrint
+      help: Prints the block period table.
+      argument:
+      - type: uint8
+      - type: uint8
+  - name: cli_command
+    value:
+      group: block-period
+      name: add
+      handler: emAfPriceServerCliBlockPeriodAdd
+      help: Sets the block period value in the table.
+      argument:
+      - type: uint8
+      - type: uint32
+      - type: uint32
+      - type: uint32
+      - type: uint32
+      - type: uint8
+      - type: uint8
+      - type: uint32
+      - type: uint32
+      - type: uint8
+      - type: uint8
+  - name: cli_command
+    value:
+      group: block-period
+      name: pub
+      handler: emAfPriceServerCliBlockPeriodPub
+      help: Sends a Publish Block Period command.
+      argument:
+      - type: uint16
+      - type: uint8
+      - type: uint8
+      - type: uint8
+  - name: cli_command
+    value:
+      group: block-period
+      name: clear
+      handler: emAfPriceServerCliBlockPeriodClear
+      help: Clears the local Block Period table.
+      argument:
+      - type: uint8
+  - name: cli_group
+    value:
+      group: price-server
+      name: co2-val
+      help: co2-val related commands.
+  - name: cli_command
+    value:
+      group: co2-val
+      name: add
+      handler: emAfPriceServerCliCo2ValueAdd
+      help: Sets the CO2 value in table.
+      argument:
+      - type: uint8
+      - type: uint32
+      - type: uint32
+      - type: uint32
+      - type: uint8
+      - type: uint32
+      - type: uint8
+      - type: uint8
+  - name: cli_command
+    value:
+      group: co2-val
+      name: clear
+      handler: emAfPriceServerCliCo2ValueClear
+      help: Clears the table.
+      argument:
+      - type: uint8
+  - name: cli_command
+    value:
+      group: co2-val
+      name: print
+      handler: emAfPriceServerCliCo2ValuePrint
+      help: Prints the table.
+      argument:
+      - type: uint8
+  - name: cli_command
+    value:
+      group: co2-val
+      name: pub
+      handler: emAfPriceServerCliCo2ValuePub
+      help: Publishes a table entry.
+      argument:
+      - type: uint16
+        help: the destination node id
+      - type: uint8
+        help: the source endpoint
+      - type: uint8
+        help: the destination endpoint
+      - type: uint8
+        help: index of the tariff to publish
+  - name: cli_group
+    value:
+      group: price-server
+      name: tier-label
+      help: tier-label related commands.
+  - name: cli_command
+    value:
+      group: tier-label
+      name: set
+      handler: emAfPriceServerCliTierLabelSet
+      help: Sets specific info for the tier label.
+      argument:
+      - type: uint8
+      - type: uint8
+      - type: uint8
+      - type: uint32
+      - type: uint32
+      - type: uint32
+      - type: uint8
+      - type: string
+  - name: cli_command
+    value:
+      group: tier-label
+      name: add-label
+      handler: emAfPriceServerCliTierLabelAddLabel
+      help: Adds additional tier labels to a given tier.
+      argument:
+      - type: uint8
+      - type: uint32
+      - type: uint8
+      - type: string
+  - name: cli_command
+    value:
+      group: tier-label
+      name: print
+      handler: emAfPriceServerCliTierLabelPrint
+      help: Prints the table.
+      argument:
+      - type: uint8
+  - name: cli_command
+    value:
+      group: tier-label
+      name: pub
+      handler: emAfPriceServerCliTierLabelPub
+      help: Publishes the table.
+      argument:
+      - type: uint16
+        help: The destination node ID
+      - type: uint8
+        help: The source endpoint
+      - type: uint8
+        help: The destination endpoint
+      - type: uint8
+        help: Index of the tariff to publish
+  - name: cli_group
+    value:
+      group: price-server
+      name: billing-period
+      help: billing-period related commands.
+  - name: cli_command
+    value:
+      group: billing-period
+      name: add
+      handler: emAfPriceServerCliBillingPeriodAdd
+      help: Sets specific info for the billing period.
+      argument:
+      - type: uint8
+      - type: uint32
+      - type: uint32
+      - type: uint32
+      - type: uint32
+      - type: uint8
+      - type: uint8
+  - name: cli_command
+    value:
+      group: billing-period
+      name: print
+      handler: emAfPriceServerCliBillingPeriodPrint
+      help: Prints the table.
+      argument:
+      - type: uint8
+  - name: cli_command
+    value:
+      group: billing-period
+      name: pub
+      handler: emAfPriceServerCliBillingPeriodPub
+      help: Publishes a billing period entry.
+      argument:
+      - type: uint16
+        help: The destination node ID
+      - type: uint8
+        help: The source endpoint
+      - type: uint8
+        help: The destination endpoint
+      - type: uint8
+        help: Index of the billing period entry to publish
+  - name: cli_command
+    value:
+      group: billing-period
+      name: repeat
+      handler: emAfPriceServerCliBillingPeriodRepeat
+      help: Sets whether or not a billing period should repeat after it finishes. Per the SE spec, the billing period is supposed to repeat, but this command can be used to turn that feature off for debugging.
+      argument:
+      - type: uint8
+        help: Whether or not a billing period should repeat. 0 stops all billing periods from repeating.
+  - name: cli_group
+    value:
+      group: price-server
+      name: consol-bill
+      help: consol-bill related commands.
+  - name: cli_command
+    value:
+      group: consol-bill
+      name: add
+      handler: emAfPriceServerCliConsolidatedBillAdd
+      help: Sets specific info for the consolidated bill.
+      argument:
+      - type: uint8
+      - type: uint32
+      - type: uint32
+      - type: uint32
+      - type: uint32
+      - type: uint8
+      - type: uint8
+      - type: uint32
+      - type: uint16
+      - type: uint8
+  - name: cli_command
+    value:
+      group: consol-bill
+      name: print
+      handler: emAfPriceServerCliConsolidatedBillPrint
+      help: Prints the consolidated bills table.
+      argument:
+      - type: uint8
+      - type: uint8
+  - name: cli_command
+    value:
+      group: consol-bill
+      name: pub
+      handler: emAfPriceServerCliConsolidatedBillPub
+      help: Publishes a billing period entry.
+      argument:
+      - type: uint16
+        help: The destination node ID
+      - type: uint8
+        help: The source endpoint
+      - type: uint8
+        help: The destination endpoint
+      - type: uint8
+        help: Index of the consolidated bill entry to publish
+  - name: cli_group
+    value:
+      group: price-server
+      name: cpp-event
+      help: cpp-event related commands.
+  - name: cli_command
+    value:
+      group: cpp-event
+      name: set
+      handler: emAfPriceServerCliCppEventSet
+      help: Configures values for a CPP event.
+      argument:
+      - type: uint8
+      - type: uint8
+      - type: uint32
+      - type: uint32
+      - type: uint32
+      - type: uint16
+      - type: uint8
+      - type: uint8
+      - type: uint8
+  - name: cli_command
+    value:
+      group: cpp-event
+      name: pub
+      handler: emAfPriceServerCliCppEventPub
+      help: Publishes a CPP event command using the configured values for the CPP event.
+      argument:
+      - type: uint16
+      - type: uint8
+      - type: uint8
+  - name: cli_command
+    value:
+      group: cpp-event
+      name: print
+      handler: emAfPriceServerCliCppEventPrint
+      help: Prints the current CPP event values.
+      argument:
+      - type: uint8
+  - name: cli_group
+    value:
+      group: price-server
+      name: credit-pmt
+      help: credit-pmt related commands.
+  - name: cli_command
+    value:
+      group: credit-pmt
+      name: pub
+      handler: emAfPriceServerCliCreditPaymentPub
+      help: Publishes Credit Payment command.
+      argument:
+      - type: uint16
+        help: The destination node ID
+      - type: uint8
+        help: The source endpoint
+      - type: uint8
+        help: The destination endpoint
+      - type: uint8
+        help: Index of the credit payment table entry to publish
+  - name: cli_command
+    value:
+      group: credit-pmt
+      name: set
+      handler: emAfPriceServerCliCreditPaymentSet
+      help: Sets specific info for a credit payment.
+      argument:
+      - type: uint8
+      - type: uint8
+      - type: uint8
+      - type: uint32
+      - type: uint32
+      - type: uint32
+      - type: uint32
+      - type: uint8
+      - type: uint32
+      - type: uint32
+      - type: string
+  - name: cli_group
+    value:
+      group: price-server
+      name: currency-conv
+      help: currency-conv related commands
+  - name: cli_command
+    value:
+      group: currency-conv
+      name: pub
+      handler: emAfPriceServerCliCurrencyConversionPub
+      help: Publishes the currency conversion command.
+      argument:
+      - type: uint16
+        help: The destination node ID
+      - type: uint8
+        help: The source endpoint
+      - type: uint8
+        help: The destination endpoint
+  - name: cli_command
+    value:
+      group: currency-conv
+      name: set
+      handler: emAfPriceServerCliCurrencyConversionSet
+      help: Configures the currency conversion settings.
+      argument:
+      - type: uint8
+      - type: uint8
+      - type: uint32
+      - type: uint32
+      - type: uint32
+      - type: uint16
+      - type: uint16
+      - type: uint32
+      - type: uint8
+      - type: uint32
+  - name: cli_group
+    value:
+      group: price-server
+      name: tariff-cancel
+      help: tariff-cancel related commands.
+  - name: cli_command
+    value:
+      group: tariff-cancel
+      name: set
+      handler: emAfPriceServerCliTariffCancellationSet
+      help: Sets the values of the Tariff Cancellation structure.
+      argument:
+      - type: uint8
+      - type: uint8
+      - type: uint32
+      - type: uint32
+      - type: uint8
+  - name: cli_command
+    value:
+      group: tariff-cancel
+      name: pub
+      handler: emAfPriceServerCliTariffCancellationPub
+      help: Sends a Tariff Cancellation command using the values of the Tariff Cancellation structure.
+      argument:
+      - type: uint16
+      - type: uint8
+      - type: uint8
+  - name: cluster_functions
+    value:
+      cluster_name: Price
+      cluster_id: 0x700
+      cluster_type: server
+      init_function: emberAfPriceClusterServerInitCallback    
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/price-server

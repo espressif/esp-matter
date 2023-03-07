@@ -1,0 +1,85 @@
+project_name: bt_ncp_host
+package: Bluetooth
+label: Bluetooth - NCP Host
+description: >
+  Reference implementation of an NCP (Network Co-Processor) host, which
+  typically runs on a central MCU without radio. It can connect to an NCP target
+  running the NCP Example via UART to access the Bluetooth stack on the target
+  and to control it using BGAPI.
+category: Bluetooth Examples
+quality: production
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Bluetooth"]
+  - name: "Device Type"
+    value: ["Host"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]
+
+component:
+  - id: bluetooth_api_ncp_host
+  - id: gatt_configuration
+  - id: ncp_gatt
+  - id: ram_interrupt_vector_init
+  - id: ncp_host_com
+  - id: uartdrv_usart
+    instance:
+      - exp
+  - id: mpu
+  - id: bootloader_interface
+
+source:
+  - path: main.c
+  - path: app.c
+
+include:
+  - path: .
+    file_list:
+      - path: app.h
+
+config_file:
+  - override:
+      component: gatt_configuration
+      file_id: gatt_configuration_file_id
+    path: gatt_configuration.btconf
+    directory: btconf
+
+readme:
+  - path: ../../documentation/example/ncp_host/readme.md
+
+other_file:
+  - path: ../../script/create_bl_files.bat
+  - path: ../../script/create_bl_files.sh
+  - path: ../../documentation/example/ncp_host/readme_img0.png
+    folder: images
+  - path: ../../documentation/example/ncp_host/readme_img1.png
+    folder: images
+  - path: ../../documentation/example/ncp_host/readme_img2.png
+    folder: images
+  - path: ../../documentation/example/ncp_host/readme_img3.png
+    folder: images
+
+configuration:
+  - name: SL_STACK_SIZE
+    value: "2752"
+  - name: SL_HEAP_SIZE
+    value: "9200"
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 0
+  - name: SL_UARTDRV_USART_EXP_FLOW_CONTROL_TYPE
+    value: uartdrvFlowControlNone
+  - name: EMDRV_UARTDRV_FLOW_CONTROL_ENABLE
+    value: 0
+  - name: SL_SIMPLE_COM_UARTDRV_INSTANCE
+    value: SL_SIMPLE_COM_UARTDRV_INSTANCE_EXP
+  - name: SL_PSA_KEY_USER_SLOT_COUNT
+    value: "0"
+    condition:
+      - psa_crypto
+
+ui_hints:
+  highlight:
+    - path: config/btconf/gatt_configuration.btconf
+    - path: readme.md
+      focus: true

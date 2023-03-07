@@ -1,0 +1,17 @@
+id: "bluetooth_feature_gatt_server"
+label: "GATT Server"
+package: "Bluetooth"
+description: >
+  GATT Server feature
+
+  Enables the ability to browse and manage attributes in a local GATT database. 
+category: "Bluetooth|Stack"
+quality: "production"
+root_path: "protocol/bluetooth"
+requires:
+  - name: "bluetooth_stack"
+provides:
+  - name: "bluetooth_feature_gatt_server"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_gatt_server

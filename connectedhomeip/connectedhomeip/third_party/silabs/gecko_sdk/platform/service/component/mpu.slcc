@@ -1,0 +1,31 @@
+id: mpu
+label: Simple MPU
+package: platform
+description: Simple driver that configures the MPU to detect code injection attacks.
+category: Services
+quality: production
+source:
+  - path: platform/service/mpu/src/sl_mpu.c
+include:
+  - path: platform/service/mpu/inc
+    file_list:
+      - path: sl_mpu.h
+provides:
+  - name: mpu
+requires:
+  - name: emlib_common
+  - name: emlib_core
+  - name: status
+  - name: device_has_mpu
+template_contribution:
+  - name: component_catalog
+    value: mpu
+  - name: event_handler
+    value:
+      event: service_init
+      include: sl_mpu.h
+      handler: sl_mpu_disable_execute_from_ram
+      priority: -1
+documentation:
+    docset: gecko-platform
+    document: service/api/group-mpu

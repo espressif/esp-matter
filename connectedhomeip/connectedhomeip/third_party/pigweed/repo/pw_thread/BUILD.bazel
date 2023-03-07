@@ -1,0 +1,397 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load(
+    "//pw_build:pigweed.bzl",
+    "pw_cc_facade",
+    "pw_cc_library",
+    "pw_cc_test",
+)
+load("//pw_build/bazel_internal:py_proto_library.bzl", "py_proto_library")
+load("//pw_protobuf_compiler:proto.bzl", "pw_proto_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+pw_cc_facade(
+    name = "id_facade",
+    hdrs = [
+        "public/pw_thread/id.h",
+    ],
+    includes = ["public"],
+)
+
+pw_cc_library(
+    name = "id",
+    deps = [
+        ":id_facade",
+        "@pigweed_config//:pw_thread_id_backend",
+    ],
+)
+
+pw_cc_library(
+    name = "id_backend_multiplexer",
+    visibility = ["@pigweed_config//:__pkg__"],
+    deps = select({
+        "//pw_build/constraints/rtos:embos": ["//pw_thread_embos:id"],
+        "//pw_build/constraints/rtos:freertos": ["//pw_thread_freertos:id"],
+        "//pw_build/constraints/rtos:threadx": ["//pw_thread_threadx:id"],
+        "//conditions:default": ["//pw_thread_stl:id"],
+    }),
+)
+
+pw_cc_library(
+    name = "config",
+    hdrs = ["public/pw_thread/config.h"],
+    includes = ["public"],
+)
+
+pw_cc_library(
+    name = "thread_info",
+    hdrs = ["public/pw_thread/thread_info.h"],
+    includes = ["public"],
+    deps = ["//pw_span"],
+)
+
+pw_cc_facade(
+    name = "thread_iteration_facade",
+    hdrs = [
+        "public/pw_thread/thread_iteration.h",
+    ],
+    includes = ["public"],
+    deps = [
+        ":thread_info",
+        "//pw_function",
+        "//pw_status",
+    ],
+)
+
+pw_cc_library(
+    name = "thread_iteration",
+    deps = [
+        ":thread_iteration_facade",
+        "@pigweed_config//:pw_thread_iteration_backend",
+    ],
+)
+
+pw_cc_library(
+    name = "iteration_backend_multiplexer",
+    visibility = ["@pigweed_config//:__pkg__"],
+    deps = select({
+        "//pw_build/constraints/rtos:embos": ["//pw_thread_embos:thread_iteration"],
+        "//pw_build/constraints/rtos:freertos": ["//pw_thread_freertos:thread_iteration"],
+        "//pw_build/constraints/rtos:threadx": ["//pw_thread_threadx:thread_iteration"],
+        "//conditions:default": ["//pw_thread_stl:thread_iteration"],
+    }),
+)
+
+pw_cc_facade(
+    name = "sleep_facade",
+    hdrs = [
+        "public/pw_thread/sleep.h",
+    ],
+    includes = ["public"],
+    deps = [
+        "//pw_chrono:system_clock",
+        "//pw_preprocessor",
+    ],
+)
+
+pw_cc_library(
+    name = "sleep",
+    srcs = [
+        "sleep.cc",
+    ],
+    deps = [
+        ":id",
+        ":sleep_facade",
+        "@pigweed_config//:pw_thread_sleep_backend",
+    ],
+)
+
+pw_cc_library(
+    name = "sleep_backend_multiplexer",
+    visibility = ["@pigweed_config//:__pkg__"],
+    deps = select({
+        "//pw_build/constraints/rtos:embos": ["//pw_thread_embos:sleep"],
+        "//pw_build/constraints/rtos:freertos": ["//pw_thread_freertos:sleep"],
+        "//pw_build/constraints/rtos:threadx": ["//pw_thread_threadx:sleep"],
+        "//conditions:default": ["//pw_thread_stl:sleep"],
+    }),
+)
+
+pw_cc_facade(
+    name = "thread_facade",
+    hdrs = [
+        "public/pw_thread/detached_thread.h",
+        "public/pw_thread/thread.h",
+    ],
+    includes = ["public"],
+    deps = [
+        ":id_facade",
+    ],
+)
+
+pw_cc_library(
+    name = "thread",
+    srcs = [
+        "thread.cc",
+    ],
+    hdrs = ["public/pw_thread/config.h"],
+    includes = ["public"],
+    deps = [
+        ":id",
+        ":thread_core",
+        ":thread_facade",
+        "@pigweed_config//:pw_thread_thread_backend",
+    ],
+)
+
+pw_cc_library(
+    name = "thread_backend_multiplexer",
+    visibility = ["@pigweed_config//:__pkg__"],
+    deps = select({
+        "//pw_build/constraints/rtos:embos": ["//pw_thread_embos:thread"],
+        "//pw_build/constraints/rtos:freertos": ["//pw_thread_freertos:thread"],
+        "//pw_build/constraints/rtos:threadx": ["//pw_thread_threadx:thread"],
+        "//conditions:default": ["//pw_thread_stl:thread"],
+    }),
+)
+
+pw_cc_library(
+    name = "thread_core",
+    hdrs = [
+        "public/pw_thread/thread_core.h",
+    ],
+    includes = ["public"],
+    deps = [
+        "//pw_log",
+        "//pw_status",
+    ],
+)
+
+pw_cc_library(
+    name = "thread_snapshot_service",
+    srcs = [
+        "pw_thread_private/thread_snapshot_service.h",
+        "thread_snapshot_service.cc",
+    ],
+    hdrs = ["public/pw_thread/thread_snapshot_service.h"],
+    includes = ["public"],
+    deps = [
+        "//pw_protobuf",
+        "//pw_rpc/raw:server_api",
+        "//pw_span",
+        "//pw_status",
+        ":config",
+        ":thread_cc.pwpb",
+        ":thread_info",
+        ":thread_iteration",
+        ":thread_snapshot_service_cc.pwpb",
+        ":thread_snapshot_service_cc.raw_rpc",
+        # TODO(amontanez): This should depend on FreeRTOS but our third parties
+        # currently do not have Bazel support.
+    ],
+)
+
+pw_cc_facade(
+    name = "yield_facade",
+    hdrs = [
+        "public/pw_thread/yield.h",
+    ],
+    includes = ["public"],
+    deps = [
+        "//pw_preprocessor",
+    ],
+)
+
+pw_cc_library(
+    name = "yield",
+    srcs = [
+        "yield.cc",
+    ],
+    deps = [
+        ":id",
+        ":yield_facade",
+        "@pigweed_config//:pw_thread_yield_backend",
+    ],
+)
+
+pw_cc_library(
+    name = "yield_backend_multiplexer",
+    visibility = ["@pigweed_config//:__pkg__"],
+    deps = select({
+        "//pw_build/constraints/rtos:embos": ["//pw_thread_embos:yield"],
+        "//pw_build/constraints/rtos:freertos": ["//pw_thread_freertos:yield"],
+        "//pw_build/constraints/rtos:threadx": ["//pw_thread_threadx:yield"],
+        "//conditions:default": ["//pw_thread_stl:yield"],
+    }),
+)
+
+pw_cc_library(
+    name = "snapshot",
+    srcs = [
+        "snapshot.cc",
+    ],
+    hdrs = [
+        "public/pw_thread/snapshot.h",
+    ],
+    deps = [
+        ":thread",
+        ":thread_cc.pwpb",
+        "//pw_bytes",
+        "//pw_function",
+        "//pw_log",
+        "//pw_protobuf",
+        "//pw_status",
+    ],
+)
+
+pw_cc_library(
+    name = "test_threads_header",
+    hdrs = [
+        "public/pw_thread/test_threads.h",
+    ],
+    deps = [
+        ":thread",
+    ],
+)
+
+# To instantiate this as a pw_cc_test, depend on this pw_cc_library and the
+# pw_cc_library which implements the backend for test_threads_header. See
+# //pw_thread:thread_backend_test as an example.
+pw_cc_library(
+    name = "thread_facade_test",
+    srcs = [
+        "thread_facade_test.cc",
+    ],
+    deps = [
+        ":id",
+        ":test_threads_header",
+        ":thread",
+        "//pw_chrono:system_clock",
+        "//pw_sync:binary_semaphore",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "id_facade_test",
+    srcs = [
+        "id_facade_test.cc",
+    ],
+    deps = [
+        ":id",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "sleep_facade_test",
+    srcs = [
+        "sleep_facade_test.cc",
+        "sleep_facade_test_c.c",
+    ],
+    deps = [
+        ":sleep",
+        "//pw_chrono:system_clock",
+        "//pw_preprocessor",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "thread_info_test",
+    srcs = [
+        "thread_info_test.cc",
+    ],
+    deps = [
+        ":thread_info",
+        "//pw_span",
+    ],
+)
+
+pw_cc_test(
+    name = "thread_snapshot_service_test",
+    srcs = [
+        "pw_thread_private/thread_snapshot_service.h",
+        "thread_snapshot_service_test.cc",
+    ],
+    deps = [
+        ":thread_cc.pwpb",
+        ":thread_info",
+        ":thread_iteration",
+        ":thread_snapshot_service",
+        ":thread_snapshot_service_cc.pwpb",
+        "//pw_protobuf",
+        "//pw_span",
+        "//pw_sync:thread_notification",
+    ],
+)
+
+pw_cc_test(
+    name = "yield_facade_test",
+    srcs = [
+        "yield_facade_test.cc",
+        "yield_facade_test_c.c",
+    ],
+    deps = [
+        ":yield",
+        "//pw_preprocessor",
+        "//pw_unit_test",
+    ],
+)
+
+proto_library(
+    name = "thread_proto",
+    srcs = ["pw_thread_protos/thread.proto"],
+    strip_import_prefix = "//pw_thread",
+    deps = [
+        "//pw_tokenizer:tokenizer_proto",
+    ],
+)
+
+# TODO(b/241456982): Not expected to build yet.
+py_proto_library(
+    name = "thread_proto_py_pb2",
+    tags = ["manual"],
+    deps = [":thread_proto"],
+)
+
+proto_library(
+    name = "thread_snapshot_service_proto",
+    srcs = ["pw_thread_protos/thread_snapshot_service.proto"],
+    strip_import_prefix = "//pw_thread",
+    deps = [
+        ":thread_proto",
+    ],
+)
+
+pw_proto_library(
+    name = "thread_snapshot_service_cc",
+    deps = [":thread_snapshot_service_proto"],
+)
+
+# TODO(b/241456982): Not expected to build yet.
+py_proto_library(
+    name = "thread_snapshot_service_py_pb2",
+    tags = ["manual"],
+    deps = [":thread_snapshot_service_proto"],
+)
+
+pw_proto_library(
+    name = "thread_cc",
+    deps = [":thread_proto"],
+)

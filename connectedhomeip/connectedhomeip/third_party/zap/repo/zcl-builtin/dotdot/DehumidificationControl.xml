@@ -1,0 +1,50 @@
+﻿<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster xmlns:zcl="http://zigbee.org/zcl/clusters"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:type="http://zigbee.org/zcl/types"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd"
+  id="0203" revision="1" name="DehumidificationControl">
+  <classification role="application" picsCode="DHUM" primaryTransaction="1" />
+  <server>
+    <attributes>
+      <!-- Dehumidification Information -->
+      <attribute id="0000" name="RelativeHumidity" type="uint8" max="100" />
+      <attribute id="0001" name="DehumidificationCooling" type="uint8" required="true" reportRequired="true">
+        <restriction>
+          <type:maxInclusiveRef ref="DehumidificationMaxCool"/>
+        </restriction>
+      </attribute>
+      
+      <!-- Dehumidification Settings -->
+      <attribute id="0010" name="RHDehumidificationSetpoint" type="uint8" writable="true" required="true" min="30" max="100" default="50" />
+      <attribute id="0011" name="RelativeHumidityMode" type="enum8" writable="true" default="0">
+        <restriction>
+          <type:enumeration value="00" name="MeasuredLocally" />
+          <type:enumeration value="01" name="UpdatedOverTheNetwork" />
+        </restriction>
+      </attribute>
+      <attribute id="0012" name="DehumidificationLockout" type="enum8" writable="true" default="1">
+        <restriction>
+          <type:enumeration value="00" name="DehumidificationNotAllowed." />
+          <type:enumeration value="01" name="DehumidificationAllowed." />
+        </restriction>
+      </attribute>
+      <attribute id="0013" name="DehumidificationHysteresis" type="uint8" writable="true" required="true" min="2" max="20" default="2" />
+      <attribute id="0014" name="DehumidificationMaxCool" type="uint8" writable="true" required="true" min="20" max="100" default="20" />
+      <attribute id="0015" name="RelativeHumidityDisplay" type="enum8" writable="true" default="0">
+        <restriction>
+          <type:enumeration value="00" name="NotDisplayed" />
+          <type:enumeration value="01" name="Displayed" />
+        </restriction>
+      </attribute>
+    </attributes>
+  </server>
+</zcl:cluster>

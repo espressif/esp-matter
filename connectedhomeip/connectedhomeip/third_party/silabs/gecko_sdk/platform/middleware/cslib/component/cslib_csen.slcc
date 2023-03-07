@@ -1,0 +1,29 @@
+id: cslib_csen
+label: "CSEN Capacitive Sensing Framework"
+package: platform
+description: "Capacitive sensing using CSLIB and CSEN peripheral"
+category: Platform|Middleware
+quality: production
+root_path: platform/middleware/cslib
+source:
+  - path: src/device_CSEN/hardware_config.c
+  - path: src/device_CSEN/hardware_routines.c
+  - path: src/device_CSEN/low_power_config.c
+  - path: src/app/cslib_config.c
+include:
+  - path: inc
+    file_list:
+    - path: cslib.h
+  - path: src/device_CSEN
+    file_list:
+    - path: hardware_routines.h
+    - path: low_power_config.h
+  - path: src/config_CSEN
+    file_list:
+    - path: cslib_hwconfig.h
+config_file:
+  - path: src/config_CSEN/cslib_config.h
+requires:
+  - name: cslib
+  - name: device_has_csen
+  - name: dmadrv

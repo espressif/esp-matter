@@ -1,0 +1,72 @@
+/***************************************************************************//**
+ * @file
+ * @brief EFP Driver Instances
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2021 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * The licensor of this software is Silicon Laboratories Inc.  Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement.  This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
+ *
+ ******************************************************************************/
+
+#include "sl_efp_instances.h"
+
+{% for inst in efp_instances %}
+sl_efp_init_data_t sl_efp_{{ inst | lower }}_init = {
+    .reset_to_default = SL_EFP_{{ inst | upper }}_RESET_TO_DEFAULT, /* Reset EFP to out-of-reset defaults during initialization */
+    .config_size = 0,                                 /* No initial config */
+    .config_data = NULL,                              /* No config data */
+    .handoff_size = 0,                                /* No initial DCDC handoff configuration config */
+    .handoff_parameters = NULL,                       /* No initial DCDC handoff configuration parameters */
+    .is_host_efp = SL_EFP_{{ inst | upper }}_POWERS_HOST,           /* This EFP powers host */
+    .em_transition_mode = SL_EFP_{{ inst | upper }}_EM_CTRL_MODE,   /* EFP EM transition mode */
+    .irq_pin_mode = SL_EFP_{{ inst | upper }}_IRQ_MODE,             /* Init EFP IRQ mode */
+    .irq_port = SL_EFP_{{ inst | upper }}_IRQ_PORT,                 /* EFP IRQ port */
+    .irq_pin = SL_EFP_{{ inst | upper }}_IRQ_PIN,                   /* EFP IRQ pin */
+    .i2c_peripheral = SL_EFP_{{ inst | upper }}_I2C_PERIPHERAL,     /* I2C port instance */
+    .i2c_scl_port = SL_EFP_{{ inst | upper }}_I2C_SCL_PORT,         /* SCL port */
+    .i2c_scl_pin = SL_EFP_{{ inst | upper }}_I2C_SCL_PIN,           /* SCL pin */
+    .i2c_sda_port = SL_EFP_{{ inst | upper }}_I2C_SDA_PORT,         /* SDA port */
+    .i2c_sda_pin = SL_EFP_{{ inst | upper }}_I2C_SDA_PIN,           /* SDA pin */
+#if defined(SL_EFP_{{ inst | upper }}_I2C_ROUTE_LOC)
+    .i2c_port_location = SL_EFP_{{ inst | upper }}_I2C_ROUTE_LOC,   /* I2C location number */
+#endif
+#if defined(SL_EFP_{{ inst | upper }}_I2C_SCL_LOC)
+    .i2c_scl_port_location = SL_EFP_{{ inst | upper }}_I2C_SCL_LOC, /* SCL port location */
+    .i2c_sda_port_location = SL_EFP_{{ inst | upper }}_I2C_SDA_LOC, /* SDA port location */
+#endif
+};
+
+sl_efp_handle_data_t efp_handle_data;
+sl_efp_handle_t      sl_efp_{{ inst | lower }} = &efp_handle_data;
+{% endfor %}
+
+void sl_efp_init_instances(void)
+{
+{% for inst in efp_instances %}
+
+  // Handoff parameters should be defined using EFP Configurator in Simplicity Studio.
+  // EFP Configurator generates a header file that can be included in the project.
+#if defined(SL_EFP_GEN_SIZE)
+  // Pass array of custom settings to init function.
+  sl_efp_{{ inst | lower }}_init.config_size        = SL_EFP_GEN_SIZE;
+  uint8_t efp_settings[SL_EFP_GEN_SIZE][2] = SL_EFP_GEN;
+  sl_efp_{{ inst | lower }}_init.config_data        = efp_settings[0];
+#endif
+
+#if defined(SL_EFP_DECOUPLE_HANDOFF_ARGS_SIZE)
+  // Make EFP powers MCU Decouple.
+  sl_efp_{{ inst | lower }}_init.handoff_size = SL_EFP_DECOUPLE_HANDOFF_ARGS_SIZE;
+  uint8_t handoffParameters[SL_EFP_DECOUPLE_HANDOFF_ARGS_SIZE] = SL_DECOUPLE_HANDOFF_ARGS;
+  sl_efp_{{ inst | lower }}_init.handoff_parameters = handoffParameters;
+#endif
+
+  sl_efp_init(sl_efp_{{ inst | lower }}, &sl_efp_{{ inst | lower }}_init);
+{% endfor %}
+}

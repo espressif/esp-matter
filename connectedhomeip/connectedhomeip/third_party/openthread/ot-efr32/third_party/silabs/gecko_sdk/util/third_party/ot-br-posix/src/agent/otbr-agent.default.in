@@ -1,0 +1,5 @@
+# Default settings for otbr-agent. This file is sourced by systemd
+
+# Options to pass to otbr-agent
+OTBR_AGENT_OPTS="-I wpan0 -B @OTBR_INFRA_IF_NAME@ spinel+hdlc+uart:///dev/ttyACM0 trel://@OTBR_INFRA_IF_NAME@"
+OTBR_NO_AUTO_ATTACH=@OTBR_NO_AUTO_ATTACH@

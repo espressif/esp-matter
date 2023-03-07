@@ -1,0 +1,47 @@
+package: Zigbee
+description: (NOTE This component is deprecated as it is not compliant with Zigbee 3.0
+  requirements. See Network Creator and Network Steering components instead for Zigbee
+  3.0-compliant implementations of this behavior.) Provides legacy Zigbee Light Link
+  1.0 implementation of routines for finding and joining any viable network via scanning,
+  rather than joining a specific network.
+label: ZLL Commissioning Network
+quality: production
+id: zigbee_zll_commissioning_network
+category: Zigbee|Zigbee Light Link
+provides:
+   - name: "zigbee_zll_commissioning_network"
+requires:
+   - name: "zigbee_zll"
+   - name: "zigbee_form_and_join"
+   - name: "zigbee_zll_commissioning_common"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/zll-commissioning-network/config/zll-commissioning-network-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/zll-commissioning-network/zll-commissioning-network.c
+  - path: protocol/zigbee/app/framework/plugin/zll-commissioning-network/zll-commissioning-network-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/zll-commissioning-network
+    file_list:
+      - path: zll-commissioning-network.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_zll_commissioning_network
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emAfPluginZllCommissioningNetworkInitCallback  
+  - name: zigbee_stack_callback
+    value:
+      callback_type: stack_status
+      function_name: emAfPluginZllCommissioningNetworkStackStatusCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: unused_pan_id_found
+      function_name: emAfPluginZllCommissioningNetworkUnusedPanIdFoundCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: scan_error
+      function_name: emAfPluginZllCommissioningNetworkScanErrorCallback
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/zll-commissioning-network

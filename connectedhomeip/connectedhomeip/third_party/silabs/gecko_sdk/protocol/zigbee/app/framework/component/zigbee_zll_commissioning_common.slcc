@@ -1,0 +1,257 @@
+package: Zigbee
+description: Common code for the Zigbee 3.0 Touchlink commissioning mechanism. This
+  component is required for both server and client side implementations.
+label: ZLL Commissioning Common
+quality: production
+id: zigbee_zll_commissioning_common
+category: Zigbee|Zigbee Light Link
+provides:
+   - name: "zigbee_zll_profile"
+   - name: "zigbee_zll_commissioning_common"
+requires:
+   - name: "zigbee_zll"
+   - name: "zigbee_interpan"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/zll-commissioning-common/config/zll-commissioning-common-config.h
+validation_helper:
+  - path: protocol/zigbee/component/scripts/zigbee_zll_commissioning_validation.lua
+  - path: protocol/zigbee/app/framework/component/scripts/zigbee_radio_power_value_validation.lua
+source:
+  - path: protocol/zigbee/app/framework/plugin/zll-commissioning-common/zll-commissioning-common.c
+  - path: protocol/zigbee/app/framework/plugin/zll-commissioning-common/zll-commissioning-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/zll-commissioning-common/zll-commissioning-common-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/zll-commissioning-common
+    file_list:
+      - path: zll-commissioning-common.h
+      - path: zll-commissioning.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_zll_commissioning_common
+  - name: zigbee_af_callback
+    value:
+      callback_type: init_done
+      function_name: emberAfPluginZllCommissioningCommonInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: ncp_init
+      function_name: emberAfPluginZllCommissioningCommonNcpInitCallback
+    condition:
+      - zigbee_ezsp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: stack_status
+      function_name: emAfPluginZllCommissioningCommonStackStatusCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: zll-commissioning
+      help: zll-commissioning related commands
+  - name: cli_command
+    value:
+      group: zll-commissioning
+      name: form
+      handler: formNetwork
+      help: Forms a ZLL network.
+      argument:
+      - type: uint8
+        help: The channel on which to form the network
+      - type: int8
+        help: The power setting for network transmissions
+      - type: uint16
+        help: The PAN identifier for the network
+  - name: cli_group
+    value:
+      group: zll-commissioning
+      name: scan
+      help: scan related commands
+  - name: cli_command
+    value:
+      group: scan
+      name: device
+      handler: scanTouchLink
+      help: Initiates a Touchlink for the purpose of retrieving information about a target device.
+  - name: cli_command
+    value:
+      group: scan
+      name: identify
+      handler: scanTouchLink
+      help: Initiates a Touchlink for the purpose of causing a target device to identify itself.
+  - name: cli_command
+    value:
+      group: scan
+      name: reset
+      handler: scanTouchLink
+      help: Initiates a Touchlink for the purpose of resetting a target device.
+  - name: cli_command
+    value:
+      group: zll-commissioning
+      name: abort
+      handler: abortTouchLink
+      help: Aborts the Touchlink procedure.
+  - name: cli_command
+    value:
+      group: zll-commissioning
+      name: link
+      handler: initiateTouchLink
+      help: Initiates the Touchlink procedure.
+  - name: cli_command
+    value:
+      group: zll-commissioning
+      name: identify
+      handler: setIdentifyDuration
+      help: Sets the duration that a target device should remain in identify mode during touchlinking.
+      argument:
+      - type: uint16
+        help: The duration (in tenths of a second) of identify mode or 0xFFFF to indicate that the target should use its own application-specific duration.
+  - name: cli_command
+    value:
+      group: zll-commissioning
+      name: info
+      handler: endpointInformation
+      help: Sends an EndpointInformationRequest to a client.
+      argument:
+      - type: uint16
+        help: The network address of the device to which the request will be sent
+      - type: uint8
+        help: The source endpoint from which the request will be sent
+      - type: uint8
+        help: The destination endpoint to which the request will be sent
+  - name: cli_command
+    value:
+      group: zll-commissioning
+      name: groups
+      handler: getGroupIdentifiersRequest
+      help: Sends a GroupIdentifiersRequest to a server.
+      argument:
+      - type: uint16
+        help: The network address of the device to which the request will be sent
+      - type: uint8
+        help: The source endpoint from which the request will be sent
+      - type: uint8
+        help: The destination endpoint to which the request will be sent
+      - type: uint8
+        help: The group table index at which to start retrieving data
+  - name: cli_command
+    value:
+      group: zll-commissioning
+      name: endpoints
+      handler: getEndpointListRequest
+      help: Sends a GetEndpointListRequest to a server.
+      argument:
+      - type: uint16
+        help: The network address of the device to which the request will be sent
+      - type: uint8
+        help: The source endpoint from which the request will be sent
+      - type: uint8
+        help: The destination endpoint to which the request will be sent
+      - type: uint8
+        help: The endpoint index at which to start retrieving data
+  - name: cli_command
+    value:
+      group: zll-commissioning
+      name: tokens
+      handler: printZllTokens
+      help: Print the ZLL tokens.
+  - name: cli_command
+    value:
+      group: zll-commissioning
+      name: channel
+      handler: setScanChannel
+      help: Sets the scan channel used by the ZLL Commissioning plugin.
+      argument:
+      - type: uint8
+        help: The primary channel to be used
+  - name: cli_command
+    value:
+      group: zll-commissioning
+      name: secondary-channel
+      handler: setSecondaryScanChannel
+      help: Sets the scan channel used by the ZLL Commissioning plugin.
+      argument:
+      - type: uint8
+        help: The secondary channel to be used
+  - name: cli_command
+    value:
+      group: zll-commissioning
+      name: mask
+      handler: setScanMask
+      help: Sets the scan channel set used by the ZLL Commissioning component. An index of 0 sets the primary ZLL channel set, 1 is the +1 channel set, 2 is the +2 channel set, 3 is the +3 channel set, and 4 is all Zigbee channels.
+      argument:
+      - type: uint8
+        help: The index of the channel mask to be used
+  - name: cli_command
+    value:
+      group: zll-commissioning
+      name: status
+      handler: statusCommand
+      help: Prints the ZLL channel set and tokens
+  - name: cli_command
+    value:
+      group: zll-commissioning
+      name: joinable
+      handler: joinable
+      help: Scans for joinable networks and attempts to join if a network is found.
+  - name: cli_command
+    value:
+      group: zll-commissioning
+      name: unused
+      handler: unused
+      help: Scans for an unused PAN identifier and forms a new ZLL network.
+  - name: cli_command
+    value:
+      group: zll-commissioning
+      name: reset
+      handler: emberAfZllResetToFactoryNew
+      help: Resets the local device to factory new.
+  - name: cli_command
+    value:
+      group: zll-commissioning
+      name: notouchlink-nfn
+      handler: noTouchlinkForNFN
+      help: Disables Touchlinking (stealing) for an NFN device.
+  - name: cli_command
+    value:
+      group: zll-commissioning
+      name: noreset-nfn
+      handler: noResetForNFN
+      help: Disables reset for an NFN device on a centralized security network.
+  - name: cli_command
+    value:
+      group: zll-commissioning
+      name: disable
+      handler: disable
+      help: Disables Touchlinking. This overrides the notouchlink-nfn and noreset-nfn commands.
+  - name: cli_command
+    value:
+      group: zll-commissioning
+      name: enable
+      handler: enable
+      help: Enables Touchlinking. This overrides the notouchlink-nfn and noreset-nfn commands.
+  - name: cli_command
+    value:
+      group: zll-commissioning
+      name: set-rx-on
+      handler: setRxOn
+      help: Sets Rx On When Idle duration.
+      argument:
+      - type: uint32
+        help: The duration for the Rx On period
+  - name: cli_command
+    value:
+      group: zll-commissioning
+      name: cancel-rx-on
+      handler: cancelRxOn
+      help: Cancels Rx On When Idle.
+  - name: cli_command
+    value:
+      group: zll-commissioning
+      name: rx-on-active
+      handler: rxOnStatus
+      help: Gets Rx On When Idle status.
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/zll-commissioning-common

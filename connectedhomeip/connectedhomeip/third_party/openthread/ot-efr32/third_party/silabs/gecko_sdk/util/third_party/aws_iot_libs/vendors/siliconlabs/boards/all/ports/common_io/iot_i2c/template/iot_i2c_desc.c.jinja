@@ -1,0 +1,128 @@
+/***************************************************************************//**
+ * @file    iot_i2c_desc.c.jinja
+ * @brief   I2C instance descriptors - auto-generated file.
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2021 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ ******************************************************************************/
+
+/*******************************************************************************
+ *                               INCLUDES
+ ******************************************************************************/
+
+/* standard C */
+#include "stddef.h"
+
+/* I2C driver layer */
+#include "iot_i2c_desc.h"
+
+{% for instance in iot_i2c_instances %}
+/* instance {{ instance }} config */
+#include "iot_i2c_cfg_{{ instance }}.h"
+{% endfor %}
+
+/*******************************************************************************
+ *                            DESCRIPTOR LIST
+ ******************************************************************************/
+
+IotI2CDescriptor_t iot_i2c_desc[] = {
+
+{% for instance in iot_i2c_instances %}
+  /* instance {{ instance }} config */
+  {
+    /* instance number */
+    .lInstNum          = IOT_I2C_CFG_{{ instance | upper }}_INST_NUM,
+
+    /* default configs */
+    .ulDefaultTimeout  = IOT_I2C_CFG_{{ instance | upper }}_DEFAULT_TIMEOUT,
+    .ulDefaultFreq     = IOT_I2C_CFG_{{ instance | upper }}_DEFAULT_FREQ,
+
+    /* driver options */
+    .ucAcceptNack      = IOT_I2C_CFG_{{ instance | upper }}_ACCEPT_NACK,
+
+    /* selected peripheral */
+    .pxPeripheral      = IOT_I2C_CFG_{{ instance | upper }}_PERIPHERAL,
+    .ucPeripheralNo    = IOT_I2C_CFG_{{ instance | upper }}_PERIPHERAL_NO,
+
+    /* SCL port/pin */
+    .xSclPort          = IOT_I2C_CFG_{{ instance | upper }}_SCL_PORT,
+    .ucSclPin          = IOT_I2C_CFG_{{ instance | upper }}_SCL_PIN,
+#if (_SILICON_LABS_32B_SERIES < 2)
+    .ucSclLoc          = IOT_I2C_CFG_{{ instance | upper }}_SCL_LOC,
+#endif
+
+    /* SDA port/pin */
+    .xSdaPort          = IOT_I2C_CFG_{{ instance | upper }}_SDA_PORT,
+    .ucSdaPin          = IOT_I2C_CFG_{{ instance | upper }}_SDA_PIN,
+#if (_SILICON_LABS_32B_SERIES < 2)
+    .ucSdaLoc          = IOT_I2C_CFG_{{ instance | upper }}_SDA_LOC,
+#endif
+
+    /* EN port/pin */
+#ifdef IOT_I2C_CFG_{{ instance | upper }}_EN_PORT
+    .ucEnMode          = 1,
+    .xEnPort           = IOT_I2C_CFG_{{ instance | upper }}_EN_PORT,
+    .ucEnPin           = IOT_I2C_CFG_{{ instance | upper }}_EN_PIN,
+#endif
+
+    /* clocks and IRQ lines (I2C0) */
+#if (IOT_I2C_CFG_{{ instance | upper }}_PERIPHERAL_NO == 0)
+    .xClock            = cmuClock_I2C0,
+    .xIRQn             = I2C0_IRQn,
+#endif
+
+    /* clocks and IRQ lines (I2C1) */
+#if (IOT_I2C_CFG_{{ instance | upper }}_PERIPHERAL_NO == 1)
+    .xClock            = cmuClock_I2C1,
+    .xIRQn             = I2C2_IRQn,
+#endif
+
+    /* clocks and IRQ lines (I2C2) */
+#if (IOT_I2C_CFG_{{ instance | upper }}_PERIPHERAL_NO == 2)
+    .xClock            = cmuClock_I2C1,
+    .xIRQn             = I2C2_IRQn,
+#endif
+  },
+{% endfor %}
+
+};
+
+/*******************************************************************************
+ *                           iot_i2c_desc_get
+ ******************************************************************************/
+
+IotI2CDescriptor_t *iot_i2c_desc_get(int32_t lInstNum)
+{
+  int32_t lInstCount = sizeof(iot_i2c_desc)/sizeof(IotI2CDescriptor_t);
+  int32_t lInstCur   = 0;
+
+  for (lInstCur = 0; lInstCur < lInstCount; lInstCur++) {
+    if (iot_i2c_desc[lInstCur].lInstNum == lInstNum) {
+      return &iot_i2c_desc[lInstCur];
+    }
+  }
+
+  return NULL;
+}

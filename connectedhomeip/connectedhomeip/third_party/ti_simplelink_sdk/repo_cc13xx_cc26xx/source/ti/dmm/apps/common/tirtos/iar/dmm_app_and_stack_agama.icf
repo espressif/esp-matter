@@ -1,0 +1,6 @@
+include "cc26xx_app_and_stack_agama.icf";
+
+if (isdefinedsymbol(ROM_TIMACDataAddr)) {
+    place at address mem:ROM_TIMACDataAddr {section .data_RAM_BASE_ADDR };
+}
+

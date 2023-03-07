@@ -1,0 +1,77 @@
+// Copyright 2021 The Pigweed Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not
+// use this file except in compliance with the License. You may obtain a copy of
+// the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations under
+// the License.
+
+syntax = "proto3";
+
+package pw.software_update;
+
+import "pw_software_update/tuf.proto";
+
+message UpdateBundle {
+  // The timestamp role is used for freshness check of the snapshot. Any
+  // project-specific update metadata should go in the top-level
+  // targets_metadata or with the TargetFile information
+  optional SignedTimestampMetadata timestamp_metadata = 1;
+
+  // The snapshot role is used to ensure that the collection of targets_metadata
+  // files is securely consistent (no target metadata mix and match). Any
+  // project-specific update metadata should go in the top-level
+  // targets_metadata or with the TargetFile information
+  optional SignedSnapshotMetadata snapshot_metadata = 2;
+
+  // Map of target metadata name to target metadata.
+  // Target metadata name can be an arbitrary name or a path that describes
+  // where the file lives relative to the base directory of the repository, as
+  // described in the snapshot metadata. e.g. "path/to/target/0".
+  map<string, SignedTargetsMetadata> targets_metadata = 3;
+
+  // Map of target file name to target payload bytes.
+  // Target file name can be an arbitrary name or a path that describes where
+  // the file lives relative to the base directory of the repository, as
+  // described in the target metadata. e.g. "path/to/amber_tools/0".
+  map<string, bytes> target_payloads = 4;
+
+  // If present, a client will attempt to upgrade its on-device trusted root
+  // metadata to the root metadata included in the bundle, following the
+  // standard "Update the root role" flow specified in the TUF spec, but
+  // without "version climbing".
+  //
+  // The exact steps are:
+  // 1. Check if there is a root metadata in the bundle.
+  // 2. If the root metadata IS NOT included, assume on-device root metadata
+  //    is up-to-date and continue with the rest of metadata verification.
+  // 3. If the root metadata IS included, verify the new root metadata using
+  //    the on-device root metadata.
+  // 4. If the verification is successful, persist new root metadata and
+  //    continue with the rest of metadata verification. Otherwise abort the
+  //    update session.
+  //
+  // The key deviation from standard flow is the client assumes it can always
+  // directly upgrade to the single new root metadata in the update bundle,
+  // without any step-stone history root metadata. This works only because
+  // we are not supporting (more than 1) root key rotations.
+  optional SignedRootMetadata root_metadata = 5;
+}
+
+// Update bundle metadata
+// Designed to inform the update server what the device currently has in-place.
+// Also used to persist the TUF metadata for use in the verification process.
+// Stored manifest is only written/erased by the update service. In all other
+// contexts the stored manifest is considered read-only.
+message Manifest {
+  map<string, TargetsMetadata> targets_metadata = 1;
+
+  // Insert user manifest target file content here
+  optional bytes user_manifest = 2;
+}

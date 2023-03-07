@@ -1,0 +1,33 @@
+Trusted Firmware Fuzzer (TF-Fuzz) starting...
+
+Info:  random seed was not specified.
+
+Using seed value of \d+ \(0x[a-f\d]+\).
+Purpose line:  to dump to a variable or to the log
+ASSET_IDENTIFIER:  "greebledorf"
+SST-asset identifier list:  "data"
+SST-create from random data
+Set SST command:  "*"
+Set command:  "*"
+Command with no expect:  ";"
+ASSET_IDENTIFIER:  "greebledorf"
+SST-asset identifier list:  "check"
+IDENTIFIER:  "a_variable"
+SST-read-arguments variable name:  "a_variable"
+SST-read check against variable:  "a_variable"
+Read SST command:  "a_variable"
+Read command:  "a_variable"
+Command with no expect:  ";"
+ASSET_IDENTIFIER:  "greebledorf"
+SST-asset identifier list:  "print"
+SST-read log to test log:  "print"
+Read SST command:  "print"
+Read command:  "print"
+Command with no expect:  ";"
+Lines:  Line number 5.
+Lines:  Line number 5.
+Lines:  Line number 5.
+Lines:  Line number 5.
+Writing test file, test.c.
+
+TF-Fuzz test generation complete.

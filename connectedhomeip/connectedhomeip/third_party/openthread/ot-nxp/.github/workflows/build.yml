@@ -1,0 +1,129 @@
+#
+#  Copyright (c) 2020, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+
+name: Build
+
+on:
+  push:
+    branches-ignore:
+      - 'dependabot/**'
+  pull_request:
+    branches:
+      - 'main'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || (github.repository == 'openthread/ot-nxp' && github.run_id) || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pretty:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+    - name: Bootstrap
+      run: |
+        sudo rm /etc/apt/sources.list.d/* && sudo apt-get update
+        sudo apt-get --no-install-recommends install -y clang-format-9 shellcheck
+        python3 -m pip install yapf==0.29.0
+        sudo snap install shfmt
+    - name: Check
+      run: |
+        script/make-pretty check
+
+  arm-gcc:
+    name: arm-gcc-${{ matrix.gcc_ver }}
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        include:
+          - gcc_ver: 5
+            gcc_download_url: https://developer.arm.com/-/media/Files/downloads/gnu-rm/5_4-2016q3/gcc-arm-none-eabi-5_4-2016q3-20160926-linux.tar.bz2
+            gcc_extract_dir: gcc-arm-none-eabi-5_4-2016q3
+          - gcc_ver: 6
+            gcc_download_url: https://developer.arm.com/-/media/Files/downloads/gnu-rm/6-2017q2/gcc-arm-none-eabi-6-2017-q2-update-linux.tar.bz2
+            gcc_extract_dir: gcc-arm-none-eabi-6-2017-q2-update
+          - gcc_ver: 7
+            gcc_download_url: https://developer.arm.com/-/media/Files/downloads/gnu-rm/7-2018q2/gcc-arm-none-eabi-7-2018-q2-update-linux.tar.bz2
+            gcc_extract_dir: gcc-arm-none-eabi-7-2018-q2-update
+          - gcc_ver: 9
+            gcc_download_url: https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2019q4/RC2.1/gcc-arm-none-eabi-9-2019-q4-major-x86_64-linux.tar.bz2
+            gcc_extract_dir: gcc-arm-none-eabi-9-2019-q4-major
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+    - name: Bootstrap
+      run: |
+        cd /tmp
+        sudo rm /etc/apt/sources.list.d/* && sudo apt-get update
+        sudo apt-get --no-install-recommends install -y lib32z1 ninja-build python3-setuptools
+        wget --tries 4 --no-check-certificate --quiet ${{ matrix.gcc_download_url }} -O gcc-arm.tar.bz2
+        tar xjf gcc-arm.tar.bz2
+        # use the minimal required cmake version
+        sudo pip3 install -U scikit-build
+        sudo pip3 install -U cmake==3.10.3
+        cmake --version | grep 3.10.3
+        sudo pip3 install pycrypto
+        sudo pip3 install pycryptodome
+        wget https://cache.nxp.com/lgfiles/bsps/SDK_2_6_7_K32W061DK6.zip
+        unzip SDK_2_6_7_K32W061DK6.zip
+        rm -rf SDK_2_6_7_K32W061DK6.zip
+        mv -f SDK_2_6_7_K32W061DK6 sdk_k32w061
+        cd /tmp
+        mkdir -p sdk_jn5189
+        cd sdk_jn5189
+        wget https://mcuxpresso.nxp.com/eclipse/sdk/2.6.4/plugins/com.nxp.mcuxpresso.sdk.sdk_2.x_jn5189dk6_2.6.4.201911251446.jar
+        unzip com.nxp.mcuxpresso.sdk.sdk_2.x_jn5189dk6_2.6.4.201911251446.jar
+        rm -rf com.nxp.mcuxpresso.sdk.sdk_2.x_jn5189dk6_2.6.4.201911251446.jar
+        cd sdks
+        unzip 02acef84909cb653e56c7d331710a9d8.zip
+        rm -rf 02acef84909cb653e56c7d331710a9d8.zip
+        cd /tmp
+        mkdir -p sdk_rt1060
+        cd sdk_rt1060
+        wget https://mcuxpresso.nxp.com/eclipse/sdk/2.10.1/plugins/com.nxp.mcuxpresso.sdk.sdk_2.x_evk-mimxrt1060_2.10.1.201911251446.jar
+        unzip com.nxp.mcuxpresso.sdk.sdk_2.x_evk-mimxrt1060_2.10.1.201911251446.jar
+        rm -rf com.nxp.mcuxpresso.sdk.sdk_2.x_evk-mimxrt1060_2.10.1.201911251446.jar
+        cd sdks
+        unzip 1e658d5d02bf56581ebcb1bc782b7d67.zip
+        rm -rf 1e658d5d02bf56581ebcb1bc782b7d67.zip
+        cd /tmp
+        git clone https://github.com/NXPmicro/mcux-sdk.git
+        cp -r mcux-sdk/devices/MIMXRT1062/gcc sdk_rt1060/sdks/devices/MIMXRT1062/
+         
+    - name: Build
+      run: |
+        export PATH=/tmp/${{ matrix.gcc_extract_dir }}/bin:$PATH
+        export NXP_K32W0_SDK_ROOT=/tmp/sdk_k32w061/
+        export NXP_JN5189_SDK_ROOT=/tmp/sdk_jn5189/sdks/
+        export NXP_RT1060_SDK_ROOT=/tmp/sdk_rt1060/sdks/
+        chmod +x $NXP_K32W0_SDK_ROOT/tools/imagetool/sign_images.sh
+        chmod +x $NXP_JN5189_SDK_ROOT/tools/imagetool/sign_images.sh
+        script/test

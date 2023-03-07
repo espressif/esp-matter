@@ -1,0 +1,177 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_sys_io/backend.gni")
+import("$dir_pw_toolchain/arm_clang/toolchains.gni")
+import("$dir_pw_toolchain/arm_gcc/toolchains.gni")
+
+_test_runner_script = "py/lm3s6965evb_qemu_utils/unit_test_runner.py"
+
+_target_config = {
+  # Use the logging main.
+  pw_unit_test_MAIN = "$dir_pw_unit_test:logging_main"
+
+  # Configuration options for Pigweed executable targets.
+  pw_build_EXECUTABLE_TARGET_TYPE = "lm3s6965evb_executable"
+
+  pw_build_EXECUTABLE_TARGET_TYPE_FILE =
+      get_path_info("lm3s6965evb_executable.gni", "abspath")
+
+  # Path to the bloaty config file for the output binaries.
+  pw_bloat_BLOATY_CONFIG = "$dir_pw_boot_cortex_m/bloaty_config.bloaty"
+
+  pw_unit_test_AUTOMATIC_RUNNER = get_path_info(_test_runner_script, "abspath")
+
+  # Facade backends
+  pw_assert_BACKEND = dir_pw_assert_basic
+  pw_boot_BACKEND = "$dir_pw_boot_cortex_m"
+  pw_log_BACKEND = dir_pw_log_basic
+  pw_sys_io_BACKEND = dir_pw_sys_io_baremetal_lm3s6965evb
+  pw_rpc_system_server_BACKEND = "$dir_pw_hdlc:hdlc_sys_io_system_server"
+  pw_sync_INTERRUPT_SPIN_LOCK_BACKEND =
+      "$dir_pw_sync_baremetal:interrupt_spin_lock"
+  pw_sync_MUTEX_BACKEND = "$dir_pw_sync_baremetal:mutex"
+
+  # pw_cpu_exception_armv7m tests do not work as expected in QEMU. It does not
+  # appear the divide-by-zero traps as expected when enabled, which prevents the
+  # module from triggering a recoverable exception. Since pw_cpu_exception is
+  # not fully set up on this target, disable it for now.
+  # pw_cpu_exception_ENTRY_BACKEND =
+  #     "$dir_pw_cpu_exception_cortex_m:cpu_exception_armv7m
+
+  pw_boot_cortex_m_LINK_CONFIG_DEFINES = [
+    "PW_BOOT_FLASH_BEGIN=0x00000200",
+    "PW_BOOT_FLASH_SIZE=255K",
+    "PW_BOOT_HEAP_SIZE=0",
+    "PW_BOOT_MIN_STACK_SIZE=1K",
+    "PW_BOOT_RAM_BEGIN=0x20000000",
+    "PW_BOOT_RAM_SIZE=64K",
+    "PW_BOOT_VECTOR_TABLE_BEGIN=0x00000000",
+    "PW_BOOT_VECTOR_TABLE_SIZE=512",
+  ]
+
+  pw_build_LINK_DEPS = [
+    "$dir_pw_assert:impl",
+    "$dir_pw_log:impl",
+  ]
+
+  current_cpu = "arm"
+  current_os = ""
+}
+
+_gcc_target_default_configs = [
+  "$dir_pw_build:extra_strict_warnings",
+  "$dir_pw_toolchain/arm_gcc:enable_float_printf",
+]
+
+_clang_target_default_configs = [
+  "$dir_pw_build:clang_thread_safety_warnings",
+  "$dir_pw_build:extra_strict_warnings",
+  "$dir_pw_toolchain/arm_clang:enable_float_printf",
+
+  # TODO(b/232587313): Disable lock annotations for this target because the
+  # clang toolchain currently relies on the standard library headers provided by
+  # arm-none-eabi-gcc, and thus do not have thread safety lock annotations on
+  # things like std::lock_guard. Thread safety checks will not work until
+  # the clang-based ARM toolchain uses a C++ standard library that has these
+  # annotations set up.
+  "$dir_pigweed/targets/lm3s6965evb_qemu:disable_lock_annotations",
+]
+
+pw_target_toolchain_lm3s6965evb_qemu = {
+  _excluded_members = [
+    "defaults",
+    "name",
+  ]
+
+  debug = {
+    name = "lm3s6965evb_qemu_gcc_debug"
+    _toolchain_base = pw_toolchain_arm_gcc.cortex_m3_debug
+    forward_variables_from(_toolchain_base, "*", _excluded_members)
+    defaults = {
+      forward_variables_from(_toolchain_base.defaults, "*")
+      forward_variables_from(_target_config, "*")
+      default_configs += _gcc_target_default_configs
+    }
+  }
+
+  speed_optimized = {
+    name = "lm3s6965evb_qemu_gcc_speed_optimized"
+    _toolchain_base = pw_toolchain_arm_gcc.cortex_m3_speed_optimized
+    forward_variables_from(_toolchain_base, "*", _excluded_members)
+    defaults = {
+      forward_variables_from(_toolchain_base.defaults, "*")
+      forward_variables_from(_target_config, "*")
+      default_configs += _gcc_target_default_configs
+    }
+  }
+
+  size_optimized = {
+    name = "lm3s6965evb_qemu_gcc_size_optimized"
+    _toolchain_base = pw_toolchain_arm_gcc.cortex_m3_size_optimized
+    forward_variables_from(_toolchain_base, "*", _excluded_members)
+    defaults = {
+      forward_variables_from(_toolchain_base.defaults, "*")
+      forward_variables_from(_target_config, "*")
+      default_configs += _gcc_target_default_configs
+    }
+  }
+
+  debug_clang = {
+    name = "lm3s6965evb_qemu_clang_debug"
+    _toolchain_base = pw_toolchain_arm_clang.cortex_m3_debug
+    forward_variables_from(_toolchain_base, "*", _excluded_members)
+    defaults = {
+      forward_variables_from(_toolchain_base.defaults, "*")
+      forward_variables_from(_target_config, "*")
+      default_configs += _clang_target_default_configs
+    }
+  }
+
+  speed_optimized_clang = {
+    name = "lm3s6965evb_qemu_clang_speed_optimized"
+    _toolchain_base = pw_toolchain_arm_clang.cortex_m3_speed_optimized
+    forward_variables_from(_toolchain_base, "*", _excluded_members)
+    defaults = {
+      forward_variables_from(_toolchain_base.defaults, "*")
+      forward_variables_from(_target_config, "*")
+      default_configs += _clang_target_default_configs
+    }
+  }
+
+  size_optimized_clang = {
+    name = "lm3s6965evb_qemu_clang_size_optimized"
+    _toolchain_base = pw_toolchain_arm_clang.cortex_m3_size_optimized
+    forward_variables_from(_toolchain_base, "*", _excluded_members)
+    defaults = {
+      forward_variables_from(_toolchain_base.defaults, "*")
+      forward_variables_from(_target_config, "*")
+      default_configs += _clang_target_default_configs
+    }
+  }
+}
+
+# This list just contains the members of the above scope for convenience to make
+# it trivial to generate all the toolchains in this file via a
+# `generate_toolchains` target.
+pw_target_toolchain_lm3s6965evb_qemu_list = [
+  pw_target_toolchain_lm3s6965evb_qemu.debug,
+  pw_target_toolchain_lm3s6965evb_qemu.speed_optimized,
+  pw_target_toolchain_lm3s6965evb_qemu.size_optimized,
+  pw_target_toolchain_lm3s6965evb_qemu.debug_clang,
+  pw_target_toolchain_lm3s6965evb_qemu.speed_optimized_clang,
+  pw_target_toolchain_lm3s6965evb_qemu.size_optimized_clang,
+]

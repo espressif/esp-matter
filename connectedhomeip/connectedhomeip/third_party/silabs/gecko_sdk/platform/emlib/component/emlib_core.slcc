@@ -1,0 +1,74 @@
+id: emlib_core
+label: CORE
+package: platform
+description: >
+  API for critical and atomic sections
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_core.c"
+    unless: [device_host]
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_core.h"
+      unless: [device_host]
+  - path: "host/inc"
+    condition: [device_host]
+    file_list:
+    - path: "em_core.h"
+      condition: [device_host]
+config_file:
+  - path: "config/emlib_core_debug_config.h"
+validation_helper:
+  - path: emlib_core_validation.lua
+provides:
+  - name: emlib_core
+requires:
+  - name: device
+    unless: [device_host]
+  - name: emlib_common
+    unless: [device_host]
+  - name: cmsis_core
+    unless: [device_host]
+template_contribution:
+  - name: component_catalog
+    value: emlib_core_debug_config
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efm32g/group-core
+      condition: [device_sdid_71]
+    - page: emlib/api/efm32gg/group-core
+      condition: [device_sdid_72]
+    - page: emlib/api/efm32tg/group-core
+      condition: [device_sdid_73]
+    - page: emlib/api/efm32lg/group-core
+      condition: [device_sdid_74]
+    - page: emlib/api/efm32zg/group-core
+      condition: [device_sdid_76]
+    - page: emlib/api/efm32hg/group-core
+      condition: [device_sdid_77]
+    - page: emlib/api/efr32xg1/group-core
+      condition: [device_sdid_80]
+    - page: emlib/api/efr32xg12/group-core
+      condition: [device_sdid_84]
+    - page: emlib/api/efr32xg13/group-core
+      condition: [device_sdid_89]
+    - page: emlib/api/efr32xg14/group-core
+      condition: [device_sdid_95]
+    - page: emlib/api/efm32gg11/group-core
+      condition: [device_sdid_100]
+    - page: emlib/api/efm32tg11/group-core
+      condition: [device_sdid_103]
+    - page: emlib/api/efm32gg12/group-core
+      condition: [device_sdid_106]
+    - page: emlib/api/efr32xg21/group-core
+      condition: [device_sdid_200]
+    - page: emlib/api/efr32xg22/group-core
+      condition: [device_sdid_205]
+    - page: emlib/api/efr32xg23/group-core
+      condition: [device_sdid_210]
+    - page: emlib/api/efr32xg24/group-core
+      condition: [device_sdid_215]

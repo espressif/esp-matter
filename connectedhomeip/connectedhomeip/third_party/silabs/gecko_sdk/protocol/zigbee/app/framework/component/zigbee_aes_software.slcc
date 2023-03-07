@@ -1,0 +1,34 @@
+package: Zigbee
+description: Software AES wrapper using the mbed TLS.
+label: AES (Software)
+quality: production
+id: zigbee_aes_software
+category: Zigbee|Utility
+provides:
+   - name: "zigbee_aes"
+   - name: "zigbee_aes_software"
+requires:
+   - name: "mbedtls_aes"
+
+include:
+  - path: protocol/zigbee/stack/platform/micro
+    file_list:
+      - path: aes.h
+  - path: protocol/zigbee/stack/include
+    file_list:
+      - path: security.h
+
+source:
+  - path: protocol/zigbee/stack/framework/aes-ecb.c
+
+define:
+  - name: "MBEDTLS_PLATFORM_FREE_MACRO"
+    value: "free"
+    unless: [lower_mac_spinel]
+  - name: "MBEDTLS_PLATFORM_CALLOC_MACRO"
+    value: "calloc"
+    unless: [lower_mac_spinel]
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_aes_software

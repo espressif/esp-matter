@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Service xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Battery Service" type="org.bluetooth.service.battery_service" uuid="180F" last-modified="2011-12-12">
+	<InformativeText>
+     <Abstract>The Battery Service exposes the state of a battery within a device.</Abstract>
+        <Summary>The Battery Service exposes the Battery State and Battery Level of a single battery or set of batteries in a device.</Summary>
+	</InformativeText>
+	<Dependencies>
+		<Dependency>This service has no dependencies on other GATT-based services.</Dependency>
+	</Dependencies>
+	<GATTRequirements>
+		<Requirement subProcedure="Read Characteristic Descriptors">Mandatory</Requirement>
+        <Requirement subProcedure="Notifications">C1: Mandatory if the Battery Level characteristic properties supports notification, otherwise excluded.</Requirement>
+        <Requirement subProcedure="Write Characteristic Descriptors">C1: Mandatory if the Battery Level characteristic properties supports notification, otherwise excluded.</Requirement>
+	</GATTRequirements>
+	<Transports>
+		<Classic>true</Classic>
+		<LowEnergy>true</LowEnergy>
+	</Transports>
+	<Characteristics>
+		<Characteristic name="Battery Level" type="org.bluetooth.characteristic.battery_level">
+			<InformativeText>The Battery Level characteristic is read using the GATT Read Characteristic Value sub-procedure and returns the current battery level as a percentage from 0% to 100%; 0% represents a battery that is fully discharged, 100% represents a battery that is fully charged.</InformativeText>		
+			<Requirement>Mandatory</Requirement>
+			<Properties>
+				<Read>Mandatory</Read>
+				<Write>Excluded</Write>
+				<WriteWithoutResponse>Excluded</WriteWithoutResponse>
+				<SignedWrite>Excluded</SignedWrite>
+				<ReliableWrite>Excluded</ReliableWrite>
+				<Notify>Optional</Notify>
+				<Indicate>Excluded</Indicate>
+				<WritableAuxiliaries>Excluded</WritableAuxiliaries>
+				<Broadcast>Excluded</Broadcast>
+			</Properties>
+            <Descriptors>
+                <Descriptor name="Characteristic Presentation Format" type="org.bluetooth.descriptor.gatt.characteristic_presentation_format">
+                    <Requirement>if_multiple_service_instances</Requirement>
+                    <Properties>
+                    <Read>Mandatory</Read>
+                    <Write>Excluded</Write>
+                    </Properties>
+                </Descriptor>
+                <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+                    <Requirement>if_notify_or_indicate_supported</Requirement>
+                    <Properties>
+                    <Read>Mandatory</Read>
+                    <Write>Mandatory</Write>
+                    </Properties>
+                </Descriptor>
+           </Descriptors>
+		</Characteristic>
+	</Characteristics>
+</Service>

@@ -1,0 +1,150 @@
+package: Zigbee
+description: Silicon Labs implementation of the Smart Energy Key Establishment cluster. The
+  key establishment cluster is used by the Smart Energy profile to perform certificate-
+  based key establishment (CBKE), which performs mutual authentication and establishes
+  a symmetric APS link key. Direct CBKE between any two non-Trust Center devices is supported
+  once the two devices have completed partner link key exchange via Trust Center.
+  This component defaults to using CBKE functions
+  with the 163k ECC curve support, but users can also choose the 283k1 ECC curve by selecting
+  'CBKE 283k1' component.
+label: Key Establishment
+quality: production
+id: zigbee_key_establishment
+category: Zigbee|Cluster Library|Smart Energy
+provides:
+  - name: "zigbee_key_establishment"
+requires:
+  - name: "zigbee_ecc_curve_support"
+  - name: "zigbee_fragmentation"
+    condition:
+      - zigbee_cbke_283k1
+recommends:
+  - id: "zigbee_cbke_163k1"
+source:
+  - path: protocol/zigbee/app/framework/plugin/key-establishment/key-establishment.c
+  - path: protocol/zigbee/app/framework/plugin/key-establishment/key-establishment-cb.c
+  - path: protocol/zigbee/app/framework/plugin/key-establishment/key-establishment-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/key-establishment/key-establishment-curve-support.c
+  - path: protocol/zigbee/app/framework/plugin/key-establishment/key-establishment-storage-static.c
+    condition:
+      - zigbee_ezsp
+  - path: protocol/zigbee/app/framework/plugin/key-establishment/key-establishment-storage-buffers.c
+    condition:
+      - zigbee_stack_common
+include:
+  - path: protocol/zigbee/app/framework/plugin/key-establishment
+    file_list:
+      - path: key-establishment.h
+      - path: key-establishment-storage.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_key_establishment
+  - name: cluster_service
+    value:
+       cluster_id: "0x0800"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "SERVER"
+       service_function: "emberAfKeyEstablishmentClusterServerCommandParse"    
+  - name: cluster_service
+    value:
+       cluster_id: "0x0800"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "CLIENT"
+       service_function: "emberAfKeyEstablishmentClusterClientCommandParse"    
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emAfPluginKeyEstablishmentInitCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: key-establishment
+      help: key-establishment related commands.
+  - name: cli_command
+    value:
+      group: key-establishment
+      name: start
+      handler: emAfKeyEstablishmentStartCommand
+      help: Initiates key establishment with the target node ID.
+      argument:
+      - type: uint16
+        help: Target node ID
+      - type: uint8
+        help: Target nodes endpoint
+  - name: cli_command
+    value:
+      group: key-establishment
+      name: interpan
+      handler: emAfKeyEstablishmentInterpanCommand
+      help: Initiates key establishment with the target device over inter-PAN.
+      argument:
+      - type: uint16
+        help: The PAN ID that the target is located on
+      - type: hex
+        help: The targets EUI64 (big endian)
+  - name: cluster_functions
+    value:
+       cluster_name: KeyEstablishment
+       cluster_id: 0x800
+       cluster_type: client
+       message_sent_function: emberAfKeyEstablishmentClusterClientMessageSentCallback
+  - name: cluster_functions
+    value:
+       cluster_name: KeyEstablishment
+       cluster_id: 0x800
+       cluster_type: client
+       default_response_function: emberAfKeyEstablishmentClusterClientDefaultResponseCallback
+  - name: cluster_functions
+    value:
+       cluster_name: KeyEstablishment
+       cluster_id: 0x800
+       cluster_type: client
+       pre_attribute_changed_function: emberAfKeyEstablishmentClusterClientPreAttributeChangedCallback
+  - name: cluster_functions
+    value:
+       cluster_name: KeyEstablishment
+       cluster_id: 0x800
+       cluster_type: client
+       attribute_changed_function: emberAfKeyEstablishmentClusterClientAttributeChangedCallback       
+  - name: cluster_functions
+    value:
+       cluster_name: KeyEstablishment
+       cluster_id: 0x800
+       cluster_type: server
+       init_function: emberAfKeyEstablishmentClusterServerInitCallback
+  - name: cluster_functions
+    value:
+       cluster_name: KeyEstablishment
+       cluster_id: 0x800
+       cluster_type: server
+       command_received_function: emberAfKeyEstablishmentClusterServerCommandReceivedCallback      
+  - name: cluster_functions
+    value:
+       cluster_name: KeyEstablishment
+       cluster_id: 0x800
+       cluster_type: server  
+       message_sent_function: emberAfKeyEstablishmentClusterServerMessageSentCallback      
+  - name: cluster_functions
+    value:
+       cluster_name: KeyEstablishment
+       cluster_id: 0x800
+       cluster_type: server
+       default_response_function: emberAfKeyEstablishmentClusterServerDefaultResponseCallback 
+  - name: cluster_functions
+    value:
+       cluster_name: KeyEstablishment
+       cluster_id: 0x800
+       cluster_type: server
+       pre_attribute_changed_function: emberAfKeyEstablishmentClusterServerPreAttributeChangedCallback
+  - name: cluster_functions
+    value:
+       cluster_name: KeyEstablishment
+       cluster_id: 0x800
+       cluster_type: server
+       attribute_changed_function: emberAfKeyEstablishmentClusterServerAttributeChangedCallback       
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/key-establishment

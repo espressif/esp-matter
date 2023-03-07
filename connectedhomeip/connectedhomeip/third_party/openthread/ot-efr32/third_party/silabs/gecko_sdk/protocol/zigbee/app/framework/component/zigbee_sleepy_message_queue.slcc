@@ -1,0 +1,133 @@
+package: Zigbee
+description: This component is a message buffering system used to store messages until they are retrieved
+  or a settable message timeout expires.
+id: zigbee_sleepy_message_queue
+label: Sleepy Message Queue
+category: Zigbee|Utility
+quality: production
+provides:
+   - name: "zigbee_sleepy_message_queue"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/sleepy-message-queue/config/sleepy-message-queue-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/sleepy-message-queue/sleepy-message-queue.c
+  - path: protocol/zigbee/app/framework/plugin/sleepy-message-queue/sleepy-message-queue-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/sleepy-message-queue/sleepy-message-queue-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/sleepy-message-queue
+    file_list:
+      - path: sleepy-message-queue.h  
+template_contribution:
+  - name: component_catalog
+    value: zigbee_sleepy_message_queue
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emberAfPluginSleepyMessageQueueInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: local_data_init
+      function_name: emberAfPluginSleepyMessageQueueInitCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: sleepy-message-queue
+      help: sleepy-message-queue related commands.
+  - name: cli_command
+    value:
+      group: sleepy-message-queue
+      name: init
+      handler: emberAfPluginSleepyMessageQueueInitCallback
+      help: Initializes the sleepy message queue.
+      argument:
+      - type: uint8
+        help: Initialize EVENT (0x00) or LOCAL_DATA (0x01)
+  - name: cli_command
+    value:
+      group: sleepy-message-queue
+      name: store
+      handler: emAfSleepyMessageQueueCliStore
+      help: Stores a message into the sleepy message queue.
+      argument:
+      - type: uint32
+        help: Message timeout, in seconds
+      - type: uint32
+        help: Pointer to (address of) the message payload
+      - type: uint16
+        help: The length of the message payload
+      - type: uint16
+        help: The payload ID of this message
+      - type: hex
+        help: The EUI64 of the device to which the message is being sent
+  - name: cli_command
+    value:
+      group: sleepy-message-queue
+      name: getPendingMsgId
+      handler: emAfSleepyMessageQueueCliGetPendingMsgId
+      help: Gets the first pending message ID for a given destination EUI64.
+      argument:
+      - type: hex
+        help: The EUI64 of the device for which the first pending message ID is being queried
+  - name: cli_command
+    value:
+      group: sleepy-message-queue
+      name: getPendingMsg
+      handler: emAfSleepyMessageQueueCliGetPendingMsg
+      help: Gets the first pending message ID for a given destination EUI64.
+      argument:
+      - type: uint8
+        help: The messageID of the message to be retrieved
+  - name: cli_command
+    value:
+      group: sleepy-message-queue
+      name: getNumMsg
+      handler: emAfSleepyMessageQueueCliGetNumPendingMsg
+      help: Gets the number of pending messages for a given destination EUI64.
+      argument:
+      - type: hex
+        help: The EUI64 of the device for which the number of pending messages is being queried
+  - name: cli_command
+    value:
+      group: sleepy-message-queue
+      name: remove
+      handler: emAfSleepyMessageQueueCliRemoveMsgId
+      help: Removes the message from the queue with the given messageID.
+      argument:
+      - type: uint8
+        help: The messageID of the message to be removed
+  - name: cli_command
+    value:
+      group: sleepy-message-queue
+      name: removeAll
+      handler: emAfSleepyMessageQueueCliRemoveAllMsg
+      help: Removes all messages from the queue with the given EUI64.
+      argument:
+      - type: hex
+        help: The EUI64 of the device whose messages should be removed
+  - name: cli_command
+    value:
+      group: sleepy-message-queue
+      name: unusedCnt
+      handler: emAfSleepyMessageQueueCliGetNumUnusedEntries
+      help: Reads the number of unused queue entries.
+  - name: cli_command
+    value:
+      group: sleepy-message-queue
+      name: remainTime
+      handler: emAfSleepyMessageQueueCliGetNextMessageEventTimeoutMs
+      help: Reports the remaining timeout on the message specified by the message ID.
+      argument:
+      - type: uint8
+        help: The messageID of the message whose remaining time will be reported
+  - name: cli_command
+    value:
+      group: sleepy-message-queue
+      name: timestamp
+      handler: emAfSleepyMessageQueueCliGetCurrentInt32uMillisecondTick
+      help: Retrieves the current value of halCommonGetInt32uMillisecondTick().
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/sleepy-message-queue

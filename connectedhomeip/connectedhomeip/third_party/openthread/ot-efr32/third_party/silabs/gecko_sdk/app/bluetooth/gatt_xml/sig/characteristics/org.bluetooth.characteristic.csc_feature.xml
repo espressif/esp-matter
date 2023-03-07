@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2011 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="CSC Feature" 
+type="org.bluetooth.characteristic.csc_feature" uuid="2A5C" last-modified="2012-04-05" approved="Yes">
+    <InformativeText>
+        <Summary>
+            The CSC (Cycling Speed and Cadence) Feature characteristic is used to describe the supported features of the Server.
+        </Summary>
+    </InformativeText>
+    <Value>
+        <Field name="CSC Feature">
+            <Requirement>Mandatory</Requirement>
+            <Format>16bit</Format>
+            <BitField>
+                <Bit index="0" size="1" name="Wheel Revolution Data Supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="1" size="1" name="Crank Revolution Data Supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="2" size="1" name="Multiple Sensor Locations Supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <ReservedForFutureUse index="3" size="13" />
+            </BitField>
+        </Field>
+    </Value>
+</Characteristic>

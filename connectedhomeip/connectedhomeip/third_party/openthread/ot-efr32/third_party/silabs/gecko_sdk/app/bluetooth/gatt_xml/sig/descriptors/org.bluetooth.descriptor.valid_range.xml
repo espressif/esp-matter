@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Created with Liquid XML Studio Developer Edition 8.1.7.2743 (http://www.liquid-technologies.com) -->
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Descriptor xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/descriptor.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.descriptor.valid_range" uuid="2906" name="Valid Range" last-modified="2013-11-22">
+  <InformativeText>
+    <Abstract>
+    The Characteristic Valid Range descriptor is used for defining the range of a characteristics. Two mandatory fields are contained (upper and lower bounds) which define the range.            
+		</Abstract>
+    <Summary>
+    If the Characteristic Value to which this descriptor is attached has a fixed exponent, then the values in this descriptor have the same exponent.
+    The first value in the Valid Range descriptor represents the lower inclusive value of the range. The second value represents the higher inclusive value of the range.
+    The data type and units for lower inclusive value and the upper inclusive value are identical to the data type and units of the characteristic for which it is used.            
+		</Summary>
+    <Examples>
+      <Example>
+When used with the Measurement Interval characteristic, the Valid Range descriptor is formatted using a uint16. If the valid range has a Minimum Value of 10 minutes (600 seconds) and a Maximum Value of 2 hours (7200 seconds) the value of the Valid Range descriptor would be expressed as: 0x58 0x02 0x20 0x1C
+            </Example>
+      <Example>
+      A characteristic that is formatted using a nibble with a fixed decimal-exponent that has a Valid Range of 2 to 13 has a Valid Range descriptor defined as: 0x02 0x0D
+            </Example>
+      <Example>
+      A characteristic value that is formatted using an sint16 with a fixed exponent of -1 that has a Valid Range of -40 to +85 is expressed as: 0x70 0xFE 0x52 0x03
+            </Example>
+    </Examples>
+  </InformativeText>
+  <Value>
+    <Field name="Lower inclusive value">
+      <InformativeText>The lower bound is the same format as the characteristic the descriptor describes.</InformativeText>
+      <Requirement>Mandatory</Requirement>
+      <Format>characteristic</Format>
+    </Field>
+    <Field name="Upper inclusive value">
+      <InformativeText>The upper bound is the same format as the characteristic the descriptor describes.</InformativeText>
+      <Requirement>Mandatory</Requirement>
+      <Format>characteristic</Format>
+    </Field>
+  </Value>
+</Descriptor>

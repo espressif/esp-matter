@@ -1,0 +1,50 @@
+id: nvm3_default
+label: NVM3 Default Instance
+package: platform
+description: >
+  This component provides functions to initialize/deinitialize the default NVM3
+  instance. The instance can be accessed with the NVM3 API by using the
+  nvm3_defaultHandle provided in nvm3_default.h as the nvm3_Handle_t pointer.
+
+
+  If the Services->Runtime->System Setup component is included in a
+  project, the default instance will be initialized automatically, using
+  the default instance configuration, during the sl_system_init() call in main.c.
+
+
+  Selecting this component will also include the NVM3 Core component, which is
+  the implementation of the NVM3 driver itself.
+category: Services|NVM3
+quality: production
+config_file:
+  - path: platform/emdrv/nvm3/config/s0/nvm3_default_config.h
+    condition: [device_series_0]
+  - path: platform/emdrv/nvm3/config/s1/nvm3_default_config.h
+    condition: [device_series_1]
+  - path: platform/emdrv/nvm3/config/s2/nvm3_default_config.h
+    condition: [device_series_2]
+    unless: [trustzone_secure]
+source:
+  - path: platform/emdrv/nvm3/src/nvm3_default_common_linker.c
+    unless: [trustzone_nonsecure, trustzone_secure]
+include:
+  - path: platform/emdrv/nvm3/inc
+    file_list:
+      - path: nvm3_default.h
+    unless: [trustzone_nonsecure]
+provides:
+  - name: nvm3_default
+requires:
+  - name: nvm3
+recommends:
+  - id: nvm3_lib
+template_contribution:
+  - name: event_handler
+    value:
+      event: platform_init
+      include: nvm3_default.h
+      handler: nvm3_initDefault
+    unless: [trustzone_secure]
+documentation:
+    docset: gecko-platform
+    document: driver/api/group-nvm3default

@@ -1,0 +1,32 @@
+/* Copyright (c) 2021-2022 Arm Limited
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#ifndef IOTSDK_MEMORY_MANAGER_H
+#define IOTSDK_MEMORY_MANAGER_H
+
+#include "hal/network_stack_memory_manager.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+mdh_network_stack_memory_manager_t *iotsdk_memory_manager_get_instance(void);
+
+#ifdef __cplusplus
+} // extern "C"
+#endif
+
+#endif // IOTSDK_MEMORY_MANAGER_H

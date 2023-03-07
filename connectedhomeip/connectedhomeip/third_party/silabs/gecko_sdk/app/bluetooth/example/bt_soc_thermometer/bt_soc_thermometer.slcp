@@ -1,0 +1,136 @@
+project_name: bt_soc_thermometer
+package: Bluetooth
+label: Bluetooth - SoC Thermometer
+description: >
+  Implements a GATT Server with the Health Thermometer Profile, which enables a
+  Client device to connect and get temperature data. Temperature is read from
+  the Si7021 digital relative humidity and temperature sensor of the WSTK or of
+  the Thunderboard.
+category: Bluetooth Examples
+quality: production
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Bluetooth"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]
+
+component:
+  - id: bluetooth_stack
+  - id: gatt_configuration
+  - id: bluetooth_feature_legacy_advertiser
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_gatt_server
+  - id: bluetooth_feature_sm
+  - id: bluetooth_feature_system
+  - id: bluetooth_feature_power_control
+  - id: in_place_ota_dfu
+  - id: bootloader_interface
+  - id: rail_util_pti
+  - id: cli
+    instance:
+      - example
+  - id: app_log
+  - id: app_assert
+  - id: component_catalog
+  - id: iostream_usart
+    instance:
+      - vcom
+  - id: iostream_retarget_stdio
+  - id: printf
+  - id: simple_timer
+  - id: health_thermometer
+  - id: i2cspm
+    instance:
+      - sensor
+  - id: sensor_rht
+  - id: simple_button
+    instance:
+      - btn0
+  - id: mpu
+
+source:
+  - path: main.c
+  - path: app.c
+
+include:
+  - path: .
+    file_list:
+      - path: app.h
+
+readme:
+  - path: ../../documentation/example/soc_thermometer/readme.md
+
+config_file:
+  - override:
+      component: gatt_configuration
+      file_id: gatt_configuration_file_id
+    path: gatt_configuration.btconf
+    directory: btconf
+
+other_file:
+  - path: ../../script/create_bl_files.bat
+  - path: ../../script/create_bl_files.sh
+  - path: ../../documentation/example/soc_thermometer/readme_img0.png
+    folder: images
+  - path: ../../documentation/example/soc_thermometer/readme_img1.png
+    folder: images
+  - path: ../../documentation/example/soc_thermometer/readme_img2.png
+    folder: images
+  - path: ../../documentation/example/soc_thermometer/readme_img3.png
+    folder: images
+  - path: ../../documentation/example/soc_thermometer/readme_img4.png
+    folder: images
+  - path: ../../documentation/example/soc_thermometer/readme_img5.png
+    folder: images
+  - path: ../../documentation/example/soc_thermometer/readme_img6.png
+    folder: images
+  - path: ../../documentation/example/soc_thermometer/readme_img7.png
+    folder: images
+  - path: ../../documentation/example/soc_thermometer/readme_img8.png
+    folder: images
+
+configuration:
+  - name: SL_STACK_SIZE
+    value: "2752"
+  - name: SL_HEAP_SIZE
+    value: "9200"
+
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+    condition:
+      - iostream_usart
+
+  - name: SL_BOARD_ENABLE_SENSOR_RHT
+    value: "1"
+    condition:
+      - si70xx_driver
+      - i2cspm
+
+  - name: SL_PSA_KEY_USER_SLOT_COUNT
+    value: "0"
+    condition:
+      - psa_crypto
+
+template_contribution:
+  - name: cli_command
+    value:
+      name: hello
+      handler: hello
+      help: "hello"
+    condition:
+      - cli
+
+tag:
+  - prebuilt_demo
+  - hardware:rf:band:2400
+  - hardware:component:sensor:si7021
+  - hardware:component:button:1+
+
+ui_hints:
+  highlight:
+    - path: config/btconf/gatt_configuration.btconf
+    - path: readme.md
+      focus: true

@@ -1,0 +1,83 @@
+project_name: micriumos_canopen
+package: mcu
+quality: production
+label: MCU Example - Micrium OS CANopen
+description: >
+  This example shows how to use the Micrium OS CANopen stack. It uses the
+  EFM32GG11B starter kit's two CAN peripherals in external loopback mode. 
+  It requires CAN expansion board ISO-CAN-EXP REV 1.0 or REV 2.0. This example 
+  will, upon the user pressing either push buttons (BTN0, BTN1), update one entry 
+  in the CANopen object dictionary of node 1 on the 'can0' bus with a predefined 
+  value for each button. Upon changing the value, a PDO message will be
+  triggered, which will be caught by node 2 on the 'can1' bus. Node 2 will
+  in turn update its object dictionary with the received value. The value of
+  the object of both nodes is continuously displayed on the LCD.
+category: Example|MCU Example
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+component:
+  - id: glib
+  - id: micriumos_canopen
+  - id: segger_systemview
+  - id: gpiointerrupt
+  - id: board_control
+  - id: micriumos_bsp
+  - id: micriumos_bsp_can
+  - id: micriumos_common_lib
+  - id: micriumos_common_platform_manager
+  - id: sl_system
+  - id: device_init
+  - id: "iostream_usart"
+    instance: [vcom]
+  - id: iostream_retarget_stdio
+  - id: iostream_stdlib_config
+  - id: simple_led
+    instance: [led0]
+  - id: simple_button
+    instance: [btn0, btn1]
+source:
+  - path: ex_canopen.c
+  - path: ex_main.c
+include:
+  - path: .
+    file_list:
+    - path: ex_canopen.h
+readme:
+    - path: readme.md
+ui_hints:
+  highlight: readme.md
+define:
+  - name: "DEBUG_EFM"
+configuration:
+#------------- Micrium OS / SystemView --------------------
+  - name: CPU_CFG_TS_32_EN
+    value: "1"
+  - name: OS_CFG_DBG_EN
+    value: "1"
+  - name: OS_CFG_TS_EN
+    value: "1"
+  - name: OS_CFG_SCHED_ROUND_ROBIN_EN
+    value: "1"
+  - name: OS_CFG_STAT_TASK_EN
+    value: "1"
+  - name: OS_CFG_TASK_PROFILE_EN
+    value: "1"
+  - name: CANOPEN_RPDO_MAX_QTY
+    value: 1
+  - name: CANOPEN_RPDO_MAX_MAP_QTY
+    value: 2
+  - name: CANOPEN_TPDO_MAX_QTY
+    value: 1
+  - name: CANOPEN_TPDO_MAX_MAP_QTY
+    value: 2
+  - name: SL_BOARD_ENABLE_DISPLAY
+    value: 1
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+tag:
+  - prebuilt_demo

@@ -1,0 +1,15 @@
+[
+    {
+        "files": [
+            "+../sdraw.c -> sdraw.c",
+            "+../README.md -> README.md",
+            "+../README.html -> README.html",
+            "+../main_nortos.c -> main_nortos.c",
+            "+../sdraw.syscfg -> sdraw.syscfg",
+            "+../../../../../../source/ti/boards/CC3220SF_LAUNCHXL/Board.html -> Board.html",
+            "+cc32xxsf_nortos.cmd -> cc32xxsf_nortos.cmd",
+            "+../image.syscfg -> image.syscfg",
+            "+../userFiles/dummy-root-ca-cert -> userFiles/dummy-root-ca-cert"
+        ]
+    }
+]

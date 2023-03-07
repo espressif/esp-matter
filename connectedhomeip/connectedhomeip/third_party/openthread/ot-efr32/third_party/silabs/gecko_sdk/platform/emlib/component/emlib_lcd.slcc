@@ -1,0 +1,40 @@
+id: emlib_lcd
+label: LCD
+package: platform
+description: >
+  Liquid Crystal Display (LCD) peripheral API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_lcd.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_lcd.h"
+provides:
+  - name: emlib_lcd
+requires:
+  - name: device
+  - name: device_has_lcd
+  - name: emlib_common
+  - name: cmsis_core
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efm32g/group-lcd
+      condition: [device_sdid_71]
+    - page: emlib/api/efm32gg/group-lcd
+      condition: [device_sdid_72]
+    - page: emlib/api/efm32tg/group-lcd
+      condition: [device_sdid_73]
+    - page: emlib/api/efm32lg/group-lcd
+      condition: [device_sdid_74]
+    - page: emlib/api/efm32gg11/group-lcd
+      condition: [device_sdid_100]
+    - page: emlib/api/efm32tg11/group-lcd
+      condition: [device_sdid_103]
+    - page: emlib/api/efm32gg12/group-lcd
+      condition: [device_sdid_106]
+    - page: emlib/api/efr32xg23/group-lcd
+      condition: [device_sdid_210]

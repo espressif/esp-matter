@@ -1,0 +1,184 @@
+DEVICE_NAME = 'RS9116W_BLE'
+
+errorcode = 'Unknown' ; used in error reports
+
+;User must configure this.
+
+
+message = 'This example demonstrates BLE central functionality'
+messagebox message ''
+
+send '|'
+wait 'U'
+sendln 'U'
+mpause 200
+sendln '1'
+wait 'Loading Done'
+message = 'Firmware Loading Done Successfully' 
+messagebox message ''
+
+sendln 'at+rsi_fwversion?'
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+      errorcode = groupmatchstr1
+      goto error
+endif
+
+
+sendln 'at+rsi_opermode=851968,0,1,2147483648,2150629376,3221225472,0,1075773440'
+wait 'bt_loaded' 'ERROR'
+if result == 2 then
+     goto error
+endif
+
+strlen DEVICE_NAME
+int2str device_name_length result
+sendln 'at+rsibt_setlocalname='device_name_length','DEVICE_NAME
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+      errorcode = groupmatchstr1
+      goto error
+endif
+
+sendln 'at+rsibt_getlocalbdaddr?'
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+      errorcode = groupmatchstr1
+      goto error
+endif
+
+sendln 'at+rsibt_addservice=2,180A,3,30'
+waitregex 'OK (.+),' 'ERROR (\w{4})'
+if result == 1 then
+    service_id = groupmatchstr1
+else
+    errorcode = groupmatchstr1
+    goto error
+endif
+
+
+sendln 'at+rsibt_addattribute='service_id',B,2,2803,2,6,0,8,0,0C,00,00,2A'
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+    errorcode = groupmatchstr1
+    goto error
+endif
+
+sendln 'at+rsibt_addattribute='service_id',C,2,2A00,8,a,0,1,1,2,3,4,5,6,7,8,9,0'
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+    errorcode = groupmatchstr1
+    goto error
+endif
+
+sendln 'at+rsibt_addattribute='service_id',F,2,2902,A,2,0,0,0'
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+    errorcode = groupmatchstr1
+    goto error
+endif
+
+
+sendln 'at+rsibt_scan=1,0,0,0,100,10'
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+      errorcode = groupmatchstr1
+      goto error
+else
+	messagebox 'BLE Scan Enabled, Check BD Address' ''
+endif
+
+inputbox 'Enter 0 to Disable BLE Scan' 'scan_disable'
+scan_disable= inputstr
+
+strcompare scan_disable '0'
+if result = 0 then
+	sendln 'at+rsibt_scan=0,0,0,0,100,10'
+	waitregex 'OK' 'ERROR (\w{4})'
+	if result == 2 then
+		errorcode = groupmatchstr1
+		goto error
+	else
+		messagebox 'BLE Scan disabled' ''	
+	endif
+endif	
+
+
+inputbox 'Enter the Remote client BD address type: 0 ->Public & 1->Random address' 'addr_type'
+addr_type= inputstr
+
+inputbox 'Enter the remote device BD address to whom you want to connect in XX-XX-XX-XX-XX -XX format' 'bd_addr'
+bd_addr = inputstr
+
+
+sendln 'at+rsibt_connect='addr_type','bd_addr',96,32,160,160,0,32000'
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+      errorcode = groupmatchstr1
+      goto error
+endif
+
+;waitregex 'AT+RSIBT_LE_DEVICE_ENHANCE_CONNECTED' 'ERROR'
+
+;if result == 1 then
+ ;  messagebox 'Remote device connected to module successfully:'
+  ; goto endscript
+;else
+ ;  go to error
+;endif 
+
+waitln 'AT+RSIBT_LE_DEVICE_ENHANCE_CONNECTED' 
+if result == 1 then
+	messagebox 'Remote device connected to module successfully:'  ''
+	;goto endscript
+else
+    goto error
+endif
+
+;messagebox inputstr "str"
+strsplit inputstr ',' 
+
+;messagebox groupmatchstr2 "groupmatchstr2" ; ''
+
+mpause 1000
+
+
+sendln 'at+rsibt_getallprofiles='groupmatchstr2',1,65535'
+wait 'OK' 'ERROR (\w{4})'
+if result == 2 then
+	errorcode = groupmatchstr1
+    goto error
+endif
+
+sendln 'at+rsibt_getcharservices='groupmatchstr2',1,65535'
+wait 'OK' 'ERROR (\w{4})'
+if result == 2 then
+	errorcode = groupmatchstr1
+    goto error
+endif
+
+inputbox 'To read the attribute value Enter Handle' 'handle'
+handle = inputstr
+
+sendln 'at+rsibt_readvalue='groupmatchstr2','handle''
+wait 'OK' 'ERROR (\w{4})'
+if result == 2 then
+	errorcode = groupmatchstr1
+    goto error
+endif
+
+
+goto endscript
+;mpause 1000
+   
+
+:error
+errormsg = 'Error '
+strconcat errormsg errorcode
+strconcat errormsg '. Please check your configuration and try again.'
+messagebox errormsg 'ERROR'
+
+
+
+:endscript
+exit

@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2013 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+name="Body Composition Feature" type="org.bluetooth.characteristic.body_composition_feature" uuid="2A9B" last-modified="2014-10-17" approved="Yes">
+    <Value>
+        <Field name="Body Composition Feature">
+            <Requirement>Mandatory</Requirement>
+            <Format>32bit</Format>
+            <BitField>
+                <Bit index="0" size="1" name="Time Stamp Supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="1" size="1" name="Multiple Users Supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="2" size="1" name="Basal Metabolism Supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="3" size="1" name="Muscle Percentage Supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="4" size="1" name="Muscle Mass Supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="5" size="1" name="Fat Free Mass Supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="6" size="1" name="Soft Lean Mass Supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="7" size="1" name="Body Water Mass Supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="8" size="1" name="Impedance Supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="9" size="1" name="Weight Supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="10" size="1" name="Height Supported">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                
+                 <Bit index="11" size="4" name="Mass Measurement Resolution">
+                    <Enumerations>
+                        <Enumeration key="0" value="Not Specified" />
+                        <Enumeration key="1" value="Resolution of 0.5 kg or 1 lb" />
+                        <Enumeration key="2" value="Resolution of 0.2 kg or 0.5 lb" />
+                        <Enumeration key="3" value="Resolution of 0.1 kg or 0.2 lb" />
+                        <Enumeration key="4" value="Resolution of 0.05 kg or 0.1 lb" />
+                        <Enumeration key="5" value="Resolution of 0.02 kg or 0.05 lb" />
+                        <Enumeration key="6" value="Resolution of 0.01 kg or 0.02 lb" />
+                        <Enumeration key="7" value="Resolution of 0.005 kg or 0.01 lb" />
+                        <ReservedForFutureUse start="8" end="15" />
+                    </Enumerations>
+                </Bit>
+            
+            <Bit index="15" size="3" name="Height Measurement Resolution">
+                <Enumerations>
+                    <Enumeration key="0" value="Not Specified" />
+                    <Enumeration key="1" value="Resolution of 0.01 meter or 1 inch" />
+                    <Enumeration key="2" value="Resolution of 0.005 meter or 0.5 inch" />
+                    <Enumeration key="3" value="Resolution of 0.001 meter or 0.1 inch" />
+                    <ReservedForFutureUse start="4" end="7" />
+                </Enumerations>
+            </Bit>              
+                
+                <ReservedForFutureUse index="18" size="14"/>
+			</BitField>
+		</Field>
+	</Value>
+</Characteristic>

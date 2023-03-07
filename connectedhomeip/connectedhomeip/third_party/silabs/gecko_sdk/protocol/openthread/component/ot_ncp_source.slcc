@@ -1,0 +1,67 @@
+id: ot_ncp_source
+label: NCP
+package: OpenThread
+category: OpenThread
+quality: production
+description: This component provides the NCP support for the OpenThread stack. It requires that an OpenThread stack component be included with the project. If no OpenThread stack component is chosen, it will default to using the OpenThread stack for a Full Thread Device (FTD).
+provides:
+  - name: ot_ncp
+requires:
+  - name: ot_stack
+recommends:
+  - id: ot_stack_ftd
+root_path: util/third_party/openthread/src
+include:
+  - path: .
+  - path: ncp
+    file_list:
+      - path: changed_props_set.hpp
+      - path: ncp_base.hpp
+      - path: ncp_config.h
+      - path: ncp_hdlc.hpp
+      - path: ncp_spi.hpp
+  - path: lib/spinel
+    file_list:
+      - path: radio_spinel.hpp
+      - path: radio_spinel_impl.hpp
+      - path: radio_spinel_metrics.h
+      - path: spinel.h
+      - path: spinel_buffer.hpp
+      - path: spinel_decoder.hpp
+      - path: spinel_encoder.hpp
+      - path: spinel_encrypter.hpp
+      - path: spinel_interface.hpp
+      - path: spinel_platform.h
+      - path: openthread-spinel-config.h
+  - path: lib/hdlc
+    file_list:
+      - path: hdlc.hpp
+source:
+      - path: ../examples/apps/ncp/ncp.c
+        unless:
+          - ot_ncp_cpc
+      - path: ncp/changed_props_set.cpp
+      - path: ncp/ncp_base.cpp
+      - path: ncp/ncp_base_dispatcher.cpp
+      - path: ncp/ncp_base_ftd.cpp
+      - path: ncp/ncp_base_mtd.cpp
+      - path: ncp/ncp_base_radio.cpp
+      - path: ncp/ncp_hdlc.cpp
+      - path: ncp/ncp_spi.cpp
+      - path: lib/spinel/spinel.c
+      - path: lib/spinel/spinel_buffer.cpp
+      - path: lib/spinel/spinel_decoder.cpp
+      - path: lib/spinel/spinel_encoder.cpp
+      - path: lib/hdlc/hdlc.cpp
+define:
+  - name: SPINEL_PLATFORM_HEADER
+    value: "\"spinel_platform.h\""
+  - name: _GNU_SOURCE
+  - name: OPENTHREAD_COPROCESSOR
+    value: 1
+template_contribution:
+  - name: component_catalog
+    value: openthread_ncp
+  - name: ot_init
+    value: sl_ot_ncp_init
+    priority: 5

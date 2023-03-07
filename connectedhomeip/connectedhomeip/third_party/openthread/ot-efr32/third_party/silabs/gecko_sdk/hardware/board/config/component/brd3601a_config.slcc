@@ -1,0 +1,15 @@
+!!omap
+- id: brd3601a_config
+- label: brd3601a config
+- description: Configuration files for BRD3601A
+- package: platform
+- category: Platform|Board|Config
+- quality: production
+- ui_hints:
+    visibility: never
+- root_path: hardware/board/config
+- requires:
+  - name: brd3601a
+- provides:
+  - name: brd3601a_config
+- config_file: []

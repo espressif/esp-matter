@@ -1,0 +1,21 @@
+id: lwip_app_smtp
+label: "smtp"
+pretty_name : "LWIP smtp high layer application"
+package: platform
+description: >
+    LWIP smtp high layer application specifically programmed with the lwIP low-level raw API.
+category: LwIP|apps
+quality: production
+provides:
+  - name: lwip_apps
+    allow_multiple: true
+  - name: lwip_app_smtp
+requires:
+  - name: lwip_core
+source:
+  - path: util/third_party/lwip/lwip/src/apps/smtp/smtp.c
+include:  
+  - path: util/third_party/lwip/lwip/src/include
+    file_list:
+    - path: lwip/apps/smtp.h
+    - path: lwip/apps/smtp_opts.h

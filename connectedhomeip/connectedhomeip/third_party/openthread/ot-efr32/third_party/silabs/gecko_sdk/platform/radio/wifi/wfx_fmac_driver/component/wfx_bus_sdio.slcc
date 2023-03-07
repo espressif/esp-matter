@@ -1,0 +1,35 @@
+id: "wfx_bus_sdio"
+label: "WFx Bus SDIO"
+package: "platform"
+category: "Wi-Fi"
+quality: "production"
+description: "SDIO bus support"
+provides:
+  - name: "wfx_bus_sdio"
+  - name: "wfx_bus_interface"
+requires:
+  - name: "wfx_fmac_driver"
+  - name: "io_sd_driver_sdhc_arasan"
+  - name: "device_init_hfrco"
+  - name: "device_has_sdio"
+root_path: "platform/radio/wifi/wfx_fmac_driver"
+include:
+  - path: "wfx_host/sdio/"
+    file_list:
+      - path: "sl_wfx_host_sdio_fnct.h"
+source:
+  - path: "bus/sl_wfx_bus_sdio.c"
+  - path: "wfx_host/sdio/sl_wfx_host_sdio_fnct.c"
+  - path: "wfx_host/sdio/sl_wfx_host_sdio_io.c"
+  - path: "wfx_host/sdio/bsp_sd_hc.c"
+config_file:
+  - path: "config/sl_wfx_bus_sdio_configuration.h"
+    file_id: "sl_wfx_bus_sdio_configuration"
+define:
+  - name: "IO_SD_ASYNC_TASK_PRIO_DFLT"
+    value: "16"
+  - name: "BSP_SD_ROUTE_SEL"
+    value: "0"
+template_contribution:
+  - name: component_catalog
+    value: wfx_bus_sdio

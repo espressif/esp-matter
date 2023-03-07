@@ -1,0 +1,15 @@
+id: trustzone_nonsecure
+label: "TrustZone Non-Secure"
+description: >
+   Set up application configuration to create TrustZone Non-Secure application.
+package: platform
+category: Platform|Common
+quality: production
+root_path: platform/common
+define:
+  - name: SL_TRUSTZONE_NONSECURE
+provides:
+  - name: trustzone_nonsecure
+  - name: trustzone_security_state
+requires:
+  - name: cortexm33

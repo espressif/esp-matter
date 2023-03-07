@@ -1,0 +1,42 @@
+id: fem_util
+label: Radio Utility, FEM
+description: Utility to aid with Device-external Front End Module (FEM) Support
+package: platform
+category: Platform|Radio
+quality: production
+requires:
+  - name: device
+  - name: emlib_common
+  - name: emlib_gpio
+  - name: emlib_cmu
+  - name: emlib_prs
+provides:
+  - name: fem_util
+conflicts:
+  - name: rail_util_eff
+documentation:
+  docset: rail
+  document: fem-util
+config_file:
+  - path: platform/radio/rail_lib/plugin/fem_util/config/sl_fem_util_config.h
+    file_id: fem_util_config
+include:
+  - path: platform/radio/rail_lib/plugin/fem_util
+    file_list:
+      - path: sl_fem_util.h
+source:
+  - path: platform/radio/rail_lib/plugin/fem_util/sl_fem_util.c
+template_contribution:
+  - name: event_handler
+    value:
+      event: stack_init
+      include: sl_fem_util.h
+      handler: sl_fem_util_init
+    priority: -9010
+  - name: rail_util_ieee802154_phy_select_callbacks
+    value:
+      include: sl_fem_util.h
+      runtime_phy_select: SL_FEM_UTIL_RUNTIME_PHY_SELECT
+      get_phy_select: sl_fem_util_get_phy_select
+      radio_config: SL_RAIL_UTIL_RADIO_CONFIG_154_2P4_FEM
+    priority: -9010

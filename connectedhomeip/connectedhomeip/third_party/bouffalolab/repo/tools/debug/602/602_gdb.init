@@ -1,0 +1,254 @@
+set architecture riscv:rv32
+
+#if eclipse rm 3333
+target remote :3333
+
+#set disassemble-next-line on
+set mem inaccessible-by-default off
+set print pretty on
+set logging on
+set logging file 602evb_gdb_run.log
+#mon gdb_breakpoint_override [hard|soft|disable]
+
+mem 0x22008000 0x22014000 rw
+mem 0x42008000 0x42014000 rw
+mem 0x22014000 0x22020000 rw
+mem 0x42014000 0x42020000 rw
+mem 0x22020000 0x22030000 rw
+mem 0x42020000 0x42030000 rw
+mem 0x22030000 0x2204C000 rw
+mem 0x42030000 0x4204C000 rw
+mem 0x23000000 0x23400000 ro
+
+def iterList
+     set $itemNum = $arg0.uxNumberOfItems
+     set $index = $arg0.pxIndex
+     set $next = $index->pxNext
+
+     while $itemNum
+          set $tcb = (TCB_t *) $next->pvOwner
+          set $taskName = $tcb->pcTaskName
+          set $pxTopOfStack = $tcb->pxTopOfStack
+
+          if $pxTopOfStack != 0
+               printf "task name is: %s\r\n", $taskName
+               set $sp = $pxTopOfStack + 64
+               set $ra = $pxTopOfStack[35]
+               set $pc = $pxTopOfStack[0]
+               bt
+
+               set $itemNum = $itemNum - 1
+          end
+
+          set $next = $next->pxNext
+          printf "\r\n"
+     end
+end
+
+define dump_freertostask
+     set $spTemp = $sp
+     set $raTemp = $ra
+     set $pcTemp = $pc
+
+     printf "Current Task:\r\n"
+     if TrapNetCounter == 0
+          bt
+     else 
+          set $taskName = pxCurrentTCB->pcTaskName
+          set $pxTopOfStack = pxCurrentTCB->pxTopOfStack
+
+          if $pxTopOfStack != 0
+               printf "task name is: %s\r\n", $taskName
+               set $sp = $pxTopOfStack + 64
+               set $ra = $pxTopOfStack[35]
+               set $pc = $pxTopOfStack[0]
+               bt
+          end
+     end
+     printf "\r\n\r\n"
+
+     printf "Ready Tasks:\r\n"
+     set $uxTopPriority = 0
+     while $uxTopPriority < 32
+          set $item = pxReadyTasksLists[ $uxTopPriority ]
+          iterList $item
+          set $uxTopPriority = $uxTopPriority + 1
+     end  
+     printf "\r\n\r\n"
+
+     printf "Delayed Tasks:\r\n"
+     iterList xDelayedTaskList1
+     iterList xDelayedTaskList2
+     printf "\r\n\r\n"
+
+     printf "Pending Ready Tasks:\r\n"
+     iterList xPendingReadyList
+     printf "\r\n\r\n"
+
+     set $sp = $spTemp
+     set $ra = $raTemp
+     set $pc = $pcTemp
+end
+
+define dump_aliostask
+  # fix "for more, q to quit, c to continue without paging"
+  set pagination off
+  # print current info
+  i r
+  p *g_active_task[0]
+  bt
+
+  # store the register
+  # TODO: how about float register
+  set $gdb_x1  = $ra
+  set $gdb_x5  = $t0
+  set $gdb_x6  = $t1
+  set $gdb_x7  = $t2
+  set $gdb_x8  = $s0
+  set $gdb_x9  = $s1
+  set $gdb_x10 = $a0
+  set $gdb_x11 = $a1
+  set $gdb_x12 = $a2
+  set $gdb_x13 = $a3
+  set $gdb_x14 = $a4
+  set $gdb_x15 = $a5
+  set $gdb_x16 = $a6
+  set $gdb_x17 = $a7
+  set $gdb_x18 = $s2
+  set $gdb_x19 = $s3
+  set $gdb_x20 = $s4
+  set $gdb_x21 = $s5
+  set $gdb_x22 = $s6
+  set $gdb_x23 = $s7
+  set $gdb_x24 = $s8
+  set $gdb_x25 = $s9
+  set $gdb_x26 = $s10
+  set $gdb_x27 = $s11
+  set $gdb_x28 = $t3
+  set $gdb_x29 = $t4
+  set $gdb_x30 = $t5
+  set $gdb_x31 = $t6
+  set $gdb_psr = $mstatus
+  set $gdb_pc  = $pc
+
+  # get list offset
+  set $gdb_offset = (int)((int)&g_active_task[0]->task_stats_item - (int)g_active_task[0])
+
+  # get tcb addr
+  set $gdb_tcb_addr = (ktask_t *)((int)(klist_t *)(&g_kobj_list.task_head)->next - $gdb_offset)
+
+  # get task name
+  set $gdb_task_name = ((ktask_t *)($gdb_tcb_addr))->task_name
+  set $gdb_i = 0
+
+  while (&($gdb_tcb_addr->task_stats_item) != &g_kobj_list.task_head)
+
+    # print the task info
+    p $gdb_i
+    p $gdb_task_name
+    p *$gdb_tcb_addr
+
+    # set register to restore the task
+    set $mstatus  = *(int *)((int)$gdb_tcb_addr->task_stack + 0)
+    set $pc  = *(int *)((int)$gdb_tcb_addr->task_stack + 4)
+    set $ra  = *(int *)((int)$gdb_tcb_addr->task_stack + 8)
+    set $t0  = *(int *)((int)$gdb_tcb_addr->task_stack + 12)
+    set $t1  = *(int *)((int)$gdb_tcb_addr->task_stack + 16)
+    set $t2  = *(int *)((int)$gdb_tcb_addr->task_stack + 20)
+    set $s0  = *(int *)((int)$gdb_tcb_addr->task_stack + 24)
+    set $s1  = *(int *)((int)$gdb_tcb_addr->task_stack + 28)
+    set $a0  = *(int *)((int)$gdb_tcb_addr->task_stack + 32)
+    set $a1  = *(int *)((int)$gdb_tcb_addr->task_stack + 36)
+    set $a2 = *(int *)((int)$gdb_tcb_addr->task_stack + 40)
+    set $a3 = *(int *)((int)$gdb_tcb_addr->task_stack + 44)
+    set $a4 = *(int *)((int)$gdb_tcb_addr->task_stack + 48)
+    set $a5 = *(int *)((int)$gdb_tcb_addr->task_stack + 52)
+    set $a6 = *(int *)((int)$gdb_tcb_addr->task_stack + 56)
+    set $a7 = *(int *)((int)$gdb_tcb_addr->task_stack + 60)
+    set $s2  = *(int *)((int)$gdb_tcb_addr->task_stack + 64)
+    set $s3  = *(int *)((int)$gdb_tcb_addr->task_stack + 68)
+    set $s4  = *(int *)((int)$gdb_tcb_addr->task_stack + 72)
+    set $s5  = *(int *)((int)$gdb_tcb_addr->task_stack + 76)
+    set $s6  = *(int *)((int)$gdb_tcb_addr->task_stack + 80)
+    set $s7  = *(int *)((int)$gdb_tcb_addr->task_stack + 84)
+    set $s8  = *(int *)((int)$gdb_tcb_addr->task_stack + 88)
+    set $s9  = *(int *)((int)$gdb_tcb_addr->task_stack + 92)
+    set $s10 = *(int *)((int)$gdb_tcb_addr->task_stack + 96)
+    set $s11 = *(int *)((int)$gdb_tcb_addr->task_stack + 100)
+    set $t3  = *(int *)((int)$gdb_tcb_addr->task_stack + 104)
+    set $t4  = *(int *)((int)$gdb_tcb_addr->task_stack + 108)
+    set $t5  = *(int *)((int)$gdb_tcb_addr->task_stack + 112)
+    set $t6  = *(int *)((int)$gdb_tcb_addr->task_stack + 116)
+    set $sp = (int)($gdb_tcb_addr->task_stack) + 256
+
+    # print the task stack backtrace
+    bt
+
+    # go to next task
+    set $gdb_i = $gdb_i + 1
+    set $gdb_tcb_addr = (ktask_t *) ((int)$gdb_tcb_addr->task_stats_item - $gdb_offset)
+    set $gdb_task_name = ((ktask_t *)($gdb_tcb_addr))->task_name
+  end
+
+  # restore the register
+  set $ra   = $gdb_x1
+  set $t0   = $gdb_x5
+  set $t1   = $gdb_x6
+  set $t2   = $gdb_x7
+  set $s0   = $gdb_x8
+  set $s1   = $gdb_x9
+  set $a0   = $gdb_x10
+  set $a1   = $gdb_x11
+  set $a2   = $gdb_x12
+  set $a3   = $gdb_x13
+  set $a4   = $gdb_x14
+  set $a5   = $gdb_x15
+  set $a6   = $gdb_x16
+  set $a7   = $gdb_x17
+  set $s2   = $gdb_x18
+  set $s3   = $gdb_x19
+  set $s4   = $gdb_x20
+  set $s5   = $gdb_x21
+  set $s6   = $gdb_x22
+  set $s7   = $gdb_x23
+  set $s8   = $gdb_x24
+  set $s9   = $gdb_x25
+  set $s10  = $gdb_x26
+  set $s11  = $gdb_x27
+  set $t3   = $gdb_x28
+  set $t4   = $gdb_x29
+  set $t5   = $gdb_x30
+  set $t6   = $gdb_x31
+  set $mstatus = $gdb_psr
+  set $pc   =$gdb_pc
+  set pagination on
+end
+
+define dump_ram
+  dump binary memory ./602evb_gdb_ram.bin 0x42000000 0x42000000+0x80000
+end
+
+define chip_reset
+  mon reset init
+  set $pc=0x21000000
+  set $mie=0
+  set $mstatus=0x1880
+end
+
+document dump_aliostask
+  show info of all Rhino tasks
+end
+
+document dump_freertostask
+     dump all thread stacks
+     usage: bts
+end
+
+document dump_ram
+  dump binary memory ./602evb_gdb_ram.bin 0x42000000 0x42000000+0x80000
+end
+
+document chip_reset
+  chip reboot
+end
+

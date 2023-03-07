@@ -1,0 +1,7 @@
+(BL702)
+***************
+
+.. toctree::
+   :maxdepth: 2
+
+   zigbee <demo_zigbee/zigbee>

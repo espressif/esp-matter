@@ -1,0 +1,39 @@
+project_name: bootloader-uart-bgapi
+package: bootloader
+quality: production
+label: Bootloader - NCP BGAPI UART DFU
+description: >
+  Standalone Bootloader using the BGAPI protocol for UART DFU. This is the recommended UART bootloader for the BLE protocol stack.
+
+category: Example|Bootloader
+filter:
+  - name: "Device Type"
+    value: ["NCP"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+  - name: "MCU"
+    value: ["Bootloader"]
+
+
+component:
+  - id: bootloader_core
+  - id: bootloader_bgapi_uartdfu
+  - id: bootloader_crc
+  - id: bootloader_aes_sha_ecdsa
+  - id: bootloader_delay_driver
+  - id: bootloader_gpio_activation
+  - id: bootloader_image_parser
+  - id: bootloader_token_management
+  - id: bootloader_serial_driver
+  - id: bootloader_debug
+
+configuration:
+  - name: SL_VCOM_ENABLE
+    value: 1
+
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+other_file:
+  - path: ../../script/postbuild/postbuild.sh

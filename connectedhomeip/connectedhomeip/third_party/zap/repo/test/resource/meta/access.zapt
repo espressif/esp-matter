@@ -1,0 +1,47 @@
+{{#zcl_clusters}}
+Cluster: {{name}} [{{code}}]
+{{#zcl_attributes}}
+  - attribute: {{name}} [{{code}}]
+  {{#access entity="attribute"}}
+    * Op: {{operation}} / Role: {{role}} / Modifier: {{accessModifier}}   ({{hasOperation}}/{{hasRole}}/{{hasAccessModifier}})
+  {{/access}}
+  {{#access_aggregate entity="attribute"}}
+    * Aggregates [{{count}}]: fScope={{fabric-scoped}}/fSensitive={{fabric-sensitive}}/read={{readLowest}}/write=[{{writeLowest}} - {{writeHighest}}]/invoke={{invokeLowest}}
+  {{/access_aggregate}}
+  {{#default_access entity="attribute"}}
+    * Default: {{operation}} / Role: {{role}} / Modifier: {{accessModifier}}   ({{hasOperation}}/{{hasRole}}/{{hasAccessModifier}})
+  {{/default_access}}
+{{/zcl_attributes}}
+{{#zcl_commands}}
+  - command: {{name}} [{{code}}]
+  {{#access entity="command"}}
+    * Op: {{operation}} / Role: {{role}} / Modifier: {{accessModifier}}
+  {{/access}}
+  {{#access_aggregate entity="command"}}
+    * Aggregates [{{count}}]: fScope={{fabric-scoped}}/fSensitive={{fabric-sensitive}}/read={{readLowest}}/write={{writeLowest}}/invoke={{invokeLowest}}
+  {{/access_aggregate}}
+  {{#default_access entity="command"}}
+    * Default: {{operation}} / Role: {{role}} / Modifier: {{accessModifier}}
+  {{/default_access}}
+{{/zcl_commands}}
+{{#zcl_events}}
+  - event: {{name}} [{{code}}]
+  {{#access entity="event"}}
+    * Op: {{operation}} / Role: {{role}} / Modifier: {{accessModifier}}
+  {{/access}}
+  {{#access_aggregate entity="event" ignoreEmpty="true"}}
+    * Aggregates [{{count}}]: fScope={{fabric-scoped}}/fSensitive={{fabric-sensitive}}/read={{readLowest}}/write={{writeLowest}}/invoke={{invokeLowest}}
+  {{/access_aggregate}}
+  {{#default_access entity="event"}}
+    * Default: {{operation}} / Role: {{role}} / Modifier: {{accessModifier}}
+  {{/default_access}}
+  {{#if isFabricSensitive}}
+    * {{name}} is a fabric-sensitive event
+  {{/if}}
+    * Items
+  {{#zcl_event_fields}}
+      - {{name}}
+  {{/zcl_event_fields}}
+{{/zcl_events}}
+
+{{/zcl_clusters}}

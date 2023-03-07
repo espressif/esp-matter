@@ -1,0 +1,28 @@
+id: psa_crypto_ecc_secp384r1
+package: platform
+label: secp384r1
+description: >-
+  This component adds support for the secp384r1 elliptic curve,
+  a 384-bit prime field Weierstrass curve, in PSA Crypto.
+category: Platform|Security|PSA Crypto|Elliptic Curves
+quality: production
+provides:
+  - name: psa_crypto_ecc_secp384r1
+  - name: psa_crypto_ecc_curve
+    allow_multiple: true
+requires:
+  - name: psa_crypto_ecc
+  - name: mbedtls_ecc_secp384r1
+    condition: [device_series_0]
+  - name: mbedtls_ecc_secp384r1
+    condition: [device_series_1]
+  - name: mbedtls_ecc_secp384r1
+    condition: [device_security_se]
+  - name: mbedtls_ecc_secp384r1
+    condition: [device_security_rot]
+template_contribution:
+  - name: psa_crypto_config
+    value: PSA_WANT_ECC_SECP_R1_384
+  - name: psa_crypto_config
+    value: "MBEDTLS_PSA_BUILTIN_ECC_SECP_R1_384 1"
+    condition: [mbedtls_ecc_secp384r1]

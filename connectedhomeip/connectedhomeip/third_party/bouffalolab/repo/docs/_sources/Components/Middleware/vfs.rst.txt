@@ -1,0 +1,396 @@
+AOS VFS
+====
+
+-  `概要`_
+
+-  `VFS提供的标准接口`_
+
+-  `VFS的数据结构`_
+
+-  `以aos\_open为例介绍其文件打开方式`_
+
+-  `将驱动文件或者文件系统加载到VFS当中`_
+
+-  `示例代码`_
+
+-  `总结`_
+
+概要
+----
+
+VFS存在的意义，屏蔽掉底层文件系统的差异，为应用层提供标准的系统调用接口。
+
+VFS提供的标准接口
+-----------------
+
+基本通用的UNIX接口都已经实现了。之所以具有前缀\ ``aos_``\ 。是因为这些都是对外的接口，在AliOS
+Things的代码命名规则中规定：所有的对外接口都需要加上前缀\ ``aos_``
+
+aos\_open
+
+aos\_close
+
+aos\_read
+
+aos\_write
+
+aos\_ioctl
+
+aos\_poll
+
+aos\_fcnt
+
+aos\_lseek
+
+aos\_sync
+
+aos\_stat
+
+aos\_unlink
+
+aos\_rename
+
+aos\_opendir
+
+aos\_closedir
+
+aos\_readdir
+
+aos\_mkdir
+
+VFS的数据结构
+-------------
+
+``inode_t``\ 数据结构
+
+.. code:: c
+
+    /* this structure represents inode for driver and fs*/
+    typedef struct {
+        union inode_ops_t ops;     /* inode operations */
+        void             *i_arg;   /* per inode private data */
+        char             *i_name;  /* name of inode */
+        int               i_flags; /* flags for inode */
+        uint8_t           type;    /* type for inode */
+        uint8_t           refs;    /* refs for inode */
+    } inode_t;
+
+因为VFS虚拟文件系统将文件和目录都当做文件来看待，上述的数据结构是索引节点类型，其具有节点具有的操作方法、节点的数据存放指针、节点的名称（即节点路径名/dev/null）、节点类型、节点被引用的次数。
+
+在\ ``inode_t``\ 结构体当中，ops是针对索引节点的操作方法，具体如下：
+
+.. code:: c
+
+    union inode_ops_t {
+
+        const file_ops_t *i_ops;  /* char driver operations */
+
+        const fs_ops_t   *i_fops; /* FS operations */
+
+    };
+    typedef const struct file_ops file_ops_t; /* 针对文件的操作方法 */
+    typedef const struct fs_ops   fs_ops_t;   /* 针对目录的操作方法 */
+    struct file_ops {
+        int     (*open)  (inode_t *node, file_t *fp);
+        int     (*close) (file_t *fp);
+        ssize_t (*read)  (file_t *fp, void *buf, size_t nbytes);
+        ssize_t (*write) (file_t *fp, const void *buf, size_t nbytes);
+        int     (*ioctl) (file_t *fp, int cmd, unsigned long arg);
+    #ifdef AOS_CONFIG_VFS_POLL_SUPPORT
+        int     (*poll)  (file_t *fp, bool flag, poll_notify_t notify, struct pollfd *fd, void *arg);
+    #endif
+    };
+    struct fs_ops {
+        int             (*open)     (file_t *fp, const char *path, int flags);
+        int             (*close)    (file_t *fp);
+        ssize_t         (*read)     (file_t *fp, char *buf, size_t len);
+        ssize_t         (*write)    (file_t *fp, const char *buf, size_t len);
+        off_t           (*lseek)    (file_t *fp, off_t off, int whence);
+        int             (*sync)     (file_t *fp);
+        int             (*stat)     (file_t *fp, const char *path, struct stat *st);
+        int             (*unlink)   (file_t *fp, const char *path);
+        int             (*rename)   (file_t *fp, const char *oldpath, const char *newpath);
+        aos_dir_t      *(*opendir)  (file_t *fp, const char *path);
+        aos_dirent_t   *(*readdir)  (file_t *fp, aos_dir_t *dir);
+        int             (*closedir) (file_t *fp, aos_dir_t *dir);
+        int             (*mkdir)    (file_t *fp, const char *path);
+        int             (*rmdir)    (file_t *fp, const char *path);
+        void            (*rewinddir)(file_t *fp, aos_dir_t *dir);
+        long            (*telldir)  (file_t *fp, aos_dir_t *dir);
+        void            (*seekdir)  (file_t *fp, aos_dir_t *dir, long loc);
+        int             (*ioctl)    (file_t *fp, int cmd, unsigned long arg);
+        int             (*statfs)   (file_t *fp, const char *path, struct statfs *suf);
+        int             (*access)   (file_t *fp, const char *path, int amode);
+    };
+
+``file_t``\ 数据结构
+
+.. code:: c
+
+    typedef struct {
+        inode_t    *node;   /* node for file */
+        void       *f_arg;  /* f_arg for file */
+        size_t     offset; /* offset for file */
+    } file_t;
+
+上述的\ ``file_t``\ 数据结构用于描述一个被打开的文件，因为系统当中同一个系统当中，同一个文件可能被多个程序打开，但是打开的每一个文件都会唯一的执行特定的索引节点，即最终的物理文件只有一份。
+
+以aos\_open为例介绍其文件打开方式
+---------------------------------
+
+``aos_open``\ 是对外的接口，外部函数可以直接使用该接口实现对于文件的打开操作，而不用去关心底层文件系统的实现细节。其代码如下所示：
+
+其输入参数为：
+
+::
+
+    const char *path; 即文件路径名
+    int flags; 即操作标志 比如只读 只写 读写等
+
+.. code:: c
+
+    int aos_open(const char *path, int flags)
+    {
+        file_t  *file;
+        inode_t *node;
+        size_t len = 0;
+        int ret = VFS_SUCCESS;
+
+        if (path == NULL) {
+            return -EINVAL;
+        }
+
+        len = strlen(path);
+        if (len > PATH_MAX) { /* 文件路径名不允许超过256个字节 */
+            return -ENAMETOOLONG;
+        }
+        /* 获取互斥锁，该互斥锁在vfs_init函数中创建 */
+        if ((ret = krhino_mutex_lock(&g_vfs_mutex, RHINO_WAIT_FOREVER)) != 0) {
+            return ret;
+        }
+        /* 根据路径名传参，打开索引节点，具体函数实现会在下文介绍 */
+        node = inode_open(path);
+
+        if (node == NULL) {
+            krhino_mutex_unlock(&g_vfs_mutex);
+
+    #ifdef IO_NEED_TRAP
+            return trap_open(path, flags);
+    #else
+            return -ENOENT;
+    #endif
+        }
+
+        node->i_flags = flags;
+        /*因为用户操作的文件都是在内存中新建立的文件（文件对象会反过来指向索引节点
+            即一个文件可能被多个程序打开）。所以需要根据索引接点对象新建立一个文件对象
+        */
+        file = new_file(node);
+        /* 释放互斥锁 */
+        krhino_mutex_unlock(&g_vfs_mutex);
+
+        if (file == NULL) {
+            return -ENFILE;
+        }
+        /* 根据节点类型判断该路径名指向是一个文件还是一个目录，因为文件对象和目录对象虽然都是节点
+        但是其操作方法有些差别，见前文中的目录和文件操作方法 */
+        if (INODE_IS_FS(node)) {
+            if ((node->ops.i_fops->open) != NULL) {
+                ret = (node->ops.i_fops->open)(file, path, flags);
+            }
+
+        } else {
+            if ((node->ops.i_ops->open) != NULL) {
+                ret = (node->ops.i_ops->open)(node, file);
+            }
+        }
+
+        if (ret != VFS_SUCCESS) {
+            del_file(file);
+            return ret;
+        }
+        /* 获得文件句柄 */
+        return get_fd(file);
+    }
+
+-  inode\_open 在inode\_open函数用于根据文件路径名打开对应的节点。
+   其输入参数为： ``const char * path; 文件路径名`` 输出参数为：
+   ``inode_t; 对应的节点``
+
+.. code:: c
+
+    static inode_t g_vfs_dev_nodes[AOS_CONFIG_VFS_DEV_NODES];
+    inode_t *inode_open(const char *path)
+    {
+        int e = 0;
+        inode_t *node;
+        /*AOS_CONFIG_VFS_DEV_NODES该宏定义为25.
+            即在保存节点的数组g_vfs_dev_nodes中仅仅会保存25个节点
+        */
+        for (e = 0; e < AOS_CONFIG_VFS_DEV_NODES; e++) {
+            node = &g_vfs_dev_nodes[e];
+
+            if (node->i_name == NULL) {
+                continue;
+            }
+            /* 判断该节点是一个目录还是一个文件 */
+            if (INODE_IS_TYPE(node, VFS_TYPE_FS_DEV)) {
+                if ((strncmp(node->i_name, path, strlen(node->i_name)) == 0) &&
+                    (*(path + strlen(node->i_name)) == '/')) {
+                    return node;
+                }
+            }
+            if (strcmp(node->i_name, path) == 0) {
+                return node;
+            }
+        }
+
+        return NULL;
+    }
+
+-  new\_file
+   在new\_file()函数中，完成的主要功能就是新建立一个file\_t的结构体定义和初始化。
+   其输入参数是： inode\_t \*node; 上个函数中得到的节点 输出参数是：
+   file\_t 类型。用于后续获取文件句柄
+
+.. code:: c
+
+    static file_t files[MAX_FILE_NUM];
+    #define MAX_FILE_NUM (AOS_CONFIG_VFS_DEV_NODES * 2)
+    file_t *new_file(inode_t *node)
+    {
+        file_t *f;
+        int idx;
+        /* 在file数组当中新建立一个数据项。且保证该数组未满。即打开的文件数量是有限的 */
+        for (idx = 0; idx < MAX_FILE_NUM; idx++) {
+            f = &files[idx];
+
+            if (f->node == NULL) {
+                goto got_file;
+            }
+        }
+
+        return NULL;
+
+    got_file:
+        f->node = node;
+        f->f_arg = NULL;
+        f->offset = 0;
+        inode_ref(node);
+        return f;
+    }
+
+所有的系统调用函数（类似于aos\_open）都位于vfs.c文件中。
+
+将驱动文件或者文件系统加载到VFS当中
+-----------------------------------
+
+在vfs\_register.c文件中定义的函数：
+
+.. code:: c
+
+    int aos_register_driver(const char *path, file_ops_t *ops, void *arg)
+    int aos_register_fs(const char *path, fs_ops_t *ops, void *arg)
+
+上述两个函数分别是将驱动文件或者是文件系统类型装载到VFS当中的函数。外部程序（例如sensor驱动程序）可以调用这两个接口将驱动文件加载的VFS当中去。
+
+以aos\_register\_driver为例进行介绍：
+
+其输入参数为： 驱动文件路径名 const char \* path （/dev/null）
+
+驱动操作方法 file\_ops\_t \*ops
+（不需要实现全部的方法，实现必要的方法，其余置NULL即可）
+
+.. code:: c
+
+    int aos_register_driver(const char *path, file_ops_t *ops, void *arg)
+    {
+        inode_t *node = NULL;
+        int err, ret;
+
+        err = krhino_mutex_lock(&g_vfs_mutex, RHINO_WAIT_FOREVER);
+        if (err != 0) {
+            return err;
+        }
+    //在g_vfs_dev_nodes数组中寻找一个空的数组项，返回其指针给node，并将path的路径名赋给node-->name
+        ret = inode_reserve(path, &node);
+        if (ret == VFS_SUCCESS) {
+            /* now populate it with char specific information */
+            INODE_SET_CHAR(node);
+
+            node->ops.i_ops = ops;
+            node->i_arg     = arg;
+        }
+
+        /* step out critical area for type is allocated */
+        err = krhino_mutex_unlock(&g_vfs_mutex);
+        if (err != 0) {
+            if (node->i_name != NULL) {
+                krhino_mm_free(node->i_name);
+            }
+
+            memset(node, 0, sizeof(inode_t));
+            return err;
+        }
+
+        return ret;
+    }
+
+示例代码
+--------
+
+vfs的操作类linux中操作，
+这里举例\ ``aos_open``\ 、\ ``aos_close``\ 、\ ``aos_read``\ 、\ ``aos_write``
+
+.. code:: c
+
+    void bl_test_uart0(void)
+    {
+        int fd;
+        int length;
+        char buf_recv[128];
+
+        /* 首先打开相关文件，对应到UART0 */
+        fd = aos_open("/dev/ttyS0", 0);
+        if (fd < 0) {
+            log_error("open err.\r\n");
+            return;
+        }
+
+        while (1) {
+            /* 读取UART0中的数据 */
+            length = aos_read(fd, buf_recv, sizeof(buf_recv));
+            if (length > 0) {
+
+                log_info("recv len = %d\r\n", length);
+
+                /* 直到收到'exit'才会主动结束循环，并close相关文件 */
+                if (memcmp(buf_recv, "exit", 5) == 0) {
+                    aos_close(fd);
+                    break;
+                }
+
+                /* UART0将收到的数据回传过去 */
+                aos_write(fd, buf_recv, length);
+            }
+            vTaskDelay(100);
+        }
+    }
+
+总结
+----
+
+-  VFS的一把重要的互斥锁 对VFS的相关操作都需要获取该互斥锁才能够进行。
+   ``kmutex_t g_vfs_mutex;``
+
+-  VFS的两个重要的数组结构 如下所示：第一个数组是保存节点的数组结构。
+   第二个数组是保存文件对象的数组结构。和用户直接相关的是第二个数组结构
+
+.. code:: c
+
+    static inode_t g_vfs_dev_nodes[AOS_CONFIG_VFS_DEV_NODES];
+    static file_t files[MAX_FILE_NUM];
+
+-  使用者只需关心的文件 vfs\_register.c文件用于注册 vfs.c
+   文件用于各种标准操作。
+

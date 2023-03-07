@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2011 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="New Alert" type="org.bluetooth.characteristic.new_alert" 
+uuid="2A46">
+	<InformativeText>
+        <Abstract>            
+       This characteristic defines the category of the alert and how many new alerts of that category have occurred in the server device. Brief text information may also be included for the last alert in the category. 
+        </Abstract>
+        <Summary>
+            This characteristic consists of "Category ID", "uint8", and "UTF-8 string" fields. The size of this characteristic is dynamic because of the variable length text ("UTF-8") field. The minimum length of "UTF-8 string" is 0 octets and maximum length of "UTF-8 string" is 18 octets. 
+         </Summary>
+        <Examples> 
+            <Example>The value 0x03, 0x04, 0x52, 0x69, 0x63, 0x68, 0x61, 0x72, 0x64 are interpreted that the server has 4 new email messages and the last message was sent by "Richard".</Example>
+		</Examples>
+	</InformativeText>
+	<Value>
+        <Field name="Category ID">
+            <InformativeText>This field shows the category of the new alert.</InformativeText>
+            <Requirement>Mandatory</Requirement>
+			<Reference>org.bluetooth.characteristic.alert_category_id</Reference>
+        </Field>
+        
+        <Field name="Number of New Alert">
+            <InformativeText>This field provides the number of new alerts in the server.</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+        </Field>
+        
+        <Field name="Text String Information">
+            <InformativeText>The field provides brief text information for the last alert.</InformativeText>
+            <Requirement>Optional</Requirement>
+            <Format>utf8s</Format>
+        </Field>
+	</Value>
+
+     <Note>
+        The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet.
+	</Note>
+    
+    <Note>
+        Recommended Usage for Text String Information Field in New Incoming Alert:
+        The usage of this text is up to the implementation, but the recommended text for the category is defined as following for best user experience:
+        Category: Simple Alert - The title of the alert
+        Category: Email - Sender name
+        Category: News - Title of the news feed
+        Category: Call - Caller name or caller ID
+        Category: Missed call - Caller name or caller ID
+        Category: SMS - Sender name or caller ID
+        Category: Voice mail - Sender name or caller ID
+        Category: Schedule - Title of the schedule
+        Category Hig:h Prioritized Aler - Title of the alert
+        Category: Instant Messaging - Sender name
+	</Note>
+</Characteristic>

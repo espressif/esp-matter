@@ -1,0 +1,8 @@
+ifeq ("$(wildcard ${BL60X_SDK_PATH}/version.mk)","")
+BL_SDK_STDDRV_VER := $(shell cd ${BL60X_SDK_PATH}/components/platform/soc/bl702/bl702_std/BSP_Driver && git describe --always --tags --dirty)
+BL_SDK_STDCOM_VER := $(shell cd ${BL60X_SDK_PATH}/components/platform/soc/bl702/bl702_std/BSP_Common && git describe --always --tags --dirty)
+BL_SDK_RF_VER := $(shell cd ${BL60X_SDK_PATH}/components/platform/soc/bl702/bl702_rf && git describe --always --tags --dirty)
+EXTRA_CPPFLAGS += -D BL_SDK_STDDRV_VER=\"$(BL_SDK_STDDRV_VER)\"
+EXTRA_CPPFLAGS += -D BL_SDK_STDCOM_VER=\"$(BL_SDK_STDCOM_VER)\"
+EXTRA_CPPFLAGS += -D BL_SDK_RF_VER=\"$(BL_SDK_RF_VER)\"
+endif

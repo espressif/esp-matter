@@ -1,0 +1,14 @@
+id: zw_true_status
+label: True Status Engine
+category: Z-Wave
+description: True Status Engine used by application framework. This module is used to notify the Lifeline (or any other association groups) of state changes for any Command Class.
+package: Z-Wave
+quality: production
+source:
+  - path: protocol/z-wave/ZAF/ApplicationUtilities/TrueStatusEngine/ZAF_TSE.c
+provides:
+  - name: zw_true_status
+
+config_file:
+  - path: protocol/z-wave/ZAF/ApplicationUtilities/TrueStatusEngine/config/zaf_tse_config.h
+    file_id: zaf_tse_config

@@ -1,0 +1,24 @@
+id: "bluetooth_feature_connection_phy_update"
+label: "Bluetooth Connection Phy Update"
+package: "Bluetooth"
+description: >
+  This component is used to enable configuring the connection phy to a value other than the default 1M.
+  For example, use this component to change the preferred phy to 2M or coded.
+
+category: "Bluetooth|Feature"
+quality: "production"
+root_path: "protocol/bluetooth"
+provides:
+  - name: bluetooth_feature_connection_phy_update
+requires:
+  - name: bluetooth_controller
+  - name: device_supports_bluetooth_connection_phy_update
+
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_connection_phy_update
+  - name: bluetooth_controller_init
+    value:
+      include: "sl_btctrl_linklayer.h"
+      function: "sl_btctrl_init_phy()"
+    priority: 6

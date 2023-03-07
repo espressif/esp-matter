@@ -1,0 +1,87 @@
+project_name: tflite_micro_magic_wand
+package: platform
+quality: production
+label: Machine Learning - TensorFlow Lite Micro - Magic Wand
+description: >
+  This application demonstrates a model trained to recognize various hand gestures with an accelerometer. The detected gestures are printed to the serial port. 
+category: Example|Machine Learning
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+  - name: "Capability"
+    value: ["Machine Learning"]
+include:
+  - path: .
+    file_list:
+      - path: app.h
+  - path: magic_wand/
+    file_list:
+      - path: accelerometer_handler.h
+      - path: constants.h
+      - path: gesture_predictor.h
+      - path: main_functions.h
+      - path: output_handler.h
+      - path: ring_micro_features_data.h
+      - path: slope_micro_features_data.h
+      - path: output_handler.h
+source:
+  - path: main.c
+  - path: app.c
+  - path: magic_wand/sl_accelerometer_handler.cc
+  - path: magic_wand/sl_output_handler.cc
+  - path: magic_wand/sl_main_functions.cc
+  - path: magic_wand/sl_gesture_predictor.cc
+  - path: magic_wand/ring_micro_features_data.cc
+  - path: magic_wand/slope_micro_features_data.cc
+component:
+  - id: sl_system
+  - id: device_init
+  - id: tensorflow_lite_micro
+  - id: imu_driver
+  - id: component_catalog
+  - id: iostream_recommended_stream
+  - id: simple_led
+    instance: [led0, led1]
+  - id: gpiointerrupt
+  - id: sleeptimer
+  - id: iostream_retarget_stdio
+define:
+  - name: DEBUG_EFM
+  - name: TF_LITE_STATIC_MEMORY
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+  - name: SL_BOARD_ENABLE_SENSOR_IMU
+    value: "1"
+  - name: SL_IOSTREAM_USART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "1"
+    condition: [iostream_usart]
+  - name: SL_IOSTREAM_UART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "1"
+    condition: [iostream_uart]
+  - name: SL_HEAP_SIZE
+    value: "0x3000"
+  - name: SL_TFLITE_MICRO_INTERPRETER_INIT_ENABLE
+    value: "0"
+toolchain_settings:
+  - option: gcc_compiler_option
+    value: "-Wno-unused-parameter"
+  - option: gcc_compiler_option
+    value: "-Wno-missing-field-initializers"
+tag:
+  - hardware:component:led:2+
+  - hardware:component:imu
+  - hardware:device:ram:40
+  - hardware:device:flash:100
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+config_file:
+  - path: "config/tflite/magic_wand_model.tflite"
+    file_id: flatbuffer_file_id
+    directory: "tflite"

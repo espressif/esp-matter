@@ -1,0 +1,18 @@
+id: demo_ui
+package: platform
+label: UI Demo Functions
+description: |-
+  Utility for drawing graphics for demo applications.
+category: Platform|Utilities
+quality: production
+include:
+  - path: util/plugin/plugin-common/demo-ui
+    file_list: 
+      - path: demo-ui.h
+      - path: demo-ui-bitmaps.h
+source:
+  - path: util/plugin/plugin-common/demo-ui/demo-ui.c
+requires:
+  - name: glib
+provides:
+  - name: demo_ui

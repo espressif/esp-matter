@@ -1,0 +1,111 @@
+id: micriumos_fs
+label: Micrium OS File System Module
+package: micrium-fsxx
+description: Micrium OS File System
+category: Services|Micrium|File System
+quality: production
+component_root_path: platform/micrium_os/fs
+config_file:
+  - path: ../cfg/fs_core_cfg.h
+  - path: ../cfg/fs_storage_cfg.h
+source:
+  - path: source/cmd/fs_shell.c
+    condition:
+      - common_shell
+  - path: source/core/fs_core.c
+  - path: source/core/fs_core_buddy_alloc.c
+  - path: source/core/fs_core_cache.c
+  - path: source/core/fs_core_dir.c
+  - path: source/core/fs_core_entry.c
+  - path: source/core/fs_core_file.c
+  - path: source/core/fs_core_job_sched.c
+  - path: source/core/fs_core_list.c
+  - path: source/core/fs_core_op.c
+  - path: source/core/fs_core_partition.c
+  - path: source/core/fs_core_posix.c
+  - path: source/core/fs_core_unicode.c
+  - path: source/core/fs_core_vol.c
+  - path: source/core/fs_core_working_dir.c
+  - path: source/shared/fs_obj.c
+  - path: source/shared/fs_utils.c
+  - path: source/shared/crc/crc_utils.c
+  - path: source/shared/crc/crc_utils.h
+  - path: source/shared/crc/ecc_hamming.c
+  - path: source/shared/crc/ecc_hamming.h
+  - path: source/shared/crc/edc_crc.c
+  - path: source/shared/crc/edc_crc.h
+  - path: source/storage/fs_blk_dev.c
+  - path: source/storage/fs_media.c
+  - path: source/storage/fs_storage.c
+  - path: source/sys/fs_sys.c
+  - path: source/sys/fat/fs_fat.c
+  - path: source/sys/fat/fs_fat_dir.c
+  - path: source/sys/fat/fs_fat_entry.c
+  - path: source/sys/fat/fs_fat_fatxx.c
+  - path: source/sys/fat/fs_fat_file.c
+  - path: source/sys/fat/fs_fat_journal.c
+  - path: source/sys/fat/fs_fat_lfn.c
+  - path: source/sys/fat/fs_fat_vol.c
+include:
+  - path: source
+    file_list:
+      - path: cmd/fs_shell_priv.h
+        condition:
+          - common_shell
+      - path: core/fs_core_buddy_alloc_priv.h
+      - path: core/fs_core_cache_priv.h
+      - path: core/fs_core_dir_priv.h
+      - path: core/fs_core_entry_priv.h
+      - path: core/fs_core_file_priv.h
+      - path: core/fs_core_job_sched_priv.h
+      - path: core/fs_core_list_priv.h
+      - path: core/fs_core_op_priv.h
+      - path: core/fs_core_partition_priv.h
+      - path: core/fs_core_posix_priv.h
+      - path: core/fs_core_priv.h
+      - path: core/fs_core_unicode_priv.h
+      - path: core/fs_core_vol_priv.h
+      - path: core/fs_core_working_dir_priv.h
+      - path: shared/fs_obj_priv.h
+      - path: shared/fs_utils_priv.h
+      - path: shared/cleanup/cleanup_mgmt_priv.h
+      - path: storage/fs_blk_dev_priv.h
+      - path: storage/fs_media_priv.h
+      - path: storage/fs_storage_priv.h
+      - path: sys/fs_sys_priv.h
+      - path: sys/fat/fs_fat_dir_priv.h
+      - path: sys/fat/fs_fat_dirent_priv.h
+      - path: sys/fat/fs_fat_entry_priv.h
+      - path: sys/fat/fs_fat_fatxx_priv.h
+      - path: sys/fat/fs_fat_file_priv.h
+      - path: sys/fat/fs_fat_journal_priv.h
+      - path: sys/fat/fs_fat_priv.h
+      - path: sys/fat/fs_fat_type_priv.h
+      - path: sys/fat/fs_fat_vol_priv.h
+      - path: sys/fat/fs_fat_xfn_priv.h
+  - path: include
+    file_list:
+      - path: ecc.h
+      - path: fs_blk_dev.h
+      - path: fs_core.h
+      - path: fs_core_cache.h
+      - path: fs_core_dir.h
+      - path: fs_core_entry.h
+      - path: fs_core_file.h
+      - path: fs_core_partition.h
+      - path: fs_core_posix.h
+      - path: fs_core_vol.h
+      - path: fs_core_working_dir.h
+      - path: fs_fat.h
+      - path: fs_media.h
+      - path: fs_obj.h
+      - path: fs_storage.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: FS
+provides:
+  - name: fs
+requires:
+  - name: micriumos_kernel
+  - name: common_platform_manager
+  - name: common_oplock

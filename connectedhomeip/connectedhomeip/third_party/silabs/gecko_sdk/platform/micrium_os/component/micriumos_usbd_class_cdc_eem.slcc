@@ -1,0 +1,21 @@
+id: micriumos_usbd_class_cdc_eem
+label: USB Device Class - CDC EEM
+package: micrium-usbd
+description: Micrium OS USB Device CDC EEM Class
+category: Services|Micrium|USB
+quality: deprecated
+source:
+  - path: platform/micrium_os/usb/source/device/class/usbd_cdc_eem.c
+include:
+  - path: platform/micrium_os
+    file_list:
+      - path: usb/include/device/usbd_cdc_eem.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: USB_DEV_EEM
+provides:
+  - name: usbd_class_cdc_eem
+  - name: usbd_class
+    allow_multiple: true
+requires:
+  - name: usbd

@@ -1,0 +1,55 @@
+{
+    "name": "CHIP Ubuntu Development Environment",
+    "runArgs": [
+        "--cap-add=SYS_PTRACE",
+        "--security-opt",
+        "seccomp=unconfined",
+        "--network=host",
+        "--privileged",
+        "-v",
+        "/dev/bus/usb:/dev/bus/usb:ro",
+        "--device-cgroup-rule=a 189:* rmw",
+        "--add-host=host.docker.internal:host-gateway"
+    ],
+    "mounts": [
+        "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+    ],
+    "build": {
+        "dockerfile": "Dockerfile",
+        "args": {
+            "BUILD_VERSION": "0.6.18"
+        }
+    },
+    "remoteUser": "vscode",
+    // Add the IDs of extensions you want installed when the container is created in the array below.
+    "extensions": [
+        "aaron-bond.better-comments",
+        "augustocdias.tasks-shell-input",
+        "christian-kohler.path-intellisense",
+        "eamodio.gitlens",
+        "editorconfig.editorconfig",
+        "esbenp.prettier-vscode",
+        "foxundermoon.shell-format",
+        "github.vscode-pull-request-github",
+        "maelvalais.autoconf",
+        "marus25.cortex-debug",
+        "ms-azuretools.vscode-docker",
+        "msedge-dev.gnls",
+        "redhat.vscode-yaml",
+        "vadimcn.vscode-lldb",
+        "xaver.clang-format",
+        "yuichinukiyama.vscode-preview-server",
+        "yzhang.markdown-all-in-one"
+    ],
+    // Use 'settings' to set *default* container specific settings.json values on container create.
+    // You can edit these settings after create using File > Preferences > Settings > Remote.
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+    },
+    "remoteEnv": {
+        "GIT_PS1_SHOWDIRTYSTATE": "1",
+        "GIT_PS1_SHOWSTASHSTATE": "1",
+        "GIT_PS1_SHOWCOLORHINTS": "true",
+        "PROMPT_COMMAND": "${localEnv:PROMPT_COMMAND}"
+    }
+}

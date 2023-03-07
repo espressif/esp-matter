@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2014 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Central Address Resolution" type="org.bluetooth.characteristic.gap.central_address_resolution"  uuid="2AA6" last-modified="2014-11-26" approved="Yes">
+    <InformativeText>
+        <Abstract />
+        <InformativeDisclaimer />
+        <Summary>The Peripheral checks if the peer device supports address resolution by reading the Central Address Resolution characteristic before using directed advertisement where the initiator address is set to a Resolvable Private Address (RPA).</Summary>
+    </InformativeText>
+    <Value>
+        <Field name="Central Address Resolution Support">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+            <Enumerations>
+                <Enumeration key="0" value="address resolution is not supported in this device" />
+                <Enumeration key="1" value="address resolution is supported in this device" />
+                <ReservedForFutureUse start="2" end="255" />
+            </Enumerations>
+        </Field>
+    </Value>
+    <Note>A device has only one instance of the Central Address Resolution characteristic. If the Central Address Resolution characteristic is not present, then it is assumed that Central Address Resolution is not supported.</Note>
+</Characteristic>

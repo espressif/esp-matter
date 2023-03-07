@@ -1,0 +1,475 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>windows下eclipse调试记录 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Examples/index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+      <li>windows下eclipse调试记录</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/get-started/Developer_Environment_BL602/eclipse_windows/eclipse_windows.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="windowseclipse">
+<h1>windows下eclipse调试记录<a class="headerlink" href="#windowseclipse" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<h2>硬件准备工作<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<ul class="simple">
+<li>安装jtag转usb驱动（驱动安装前先将设备连接电脑可以自动识别到相关设备），驱动下载网站：<a class="reference external" href="https://zadig.akeo.ie/">https://zadig.akeo.ie/</a></li>
+</ul>
+<div class="figure">
+<img alt="" src="../../../_images/驱动安装.png" />
+</div>
+</div>
+<div class="section" id="eclipse">
+<h2>1.下载安装eclipse<a class="headerlink" href="#eclipse" title="永久链接至标题"></a></h2>
+<p>下载地址: <a class="reference external" href="https://www.eclipse.org/downloads/">https://www.eclipse.org/downloads/</a></p>
+<p>下载后双击安装就行,配置如下:</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-112.png" />
+</div>
+<p>选择安装的jdk版本和要安装的路径,点击install安装.</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-27.png" />
+</div>
+</div>
+<div class="section" id="id2">
+<span id="id3"></span><h2>2. 加载工作代码<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<p>新建makefile的project文件，操作如下：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-32.png" />
+</div>
+<p>选择路径和设置新的工程名字，点击<code class="docutils literal notranslate"><span class="pre">Finish</span></code>，工程便导入到了工作空间。</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-42.png" />
+</div>
+<p>成功后，现象如下:</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-52.png" />
+</div>
+</div>
+<div class="section" id="id4">
+<span id="id5"></span><h2>3. 配置编译环境<a class="headerlink" href="#id4" title="永久链接至标题"></a></h2>
+<p>1.下载windows环境下编译linux的工具包</p>
+<p>工具地址：<a class="reference external" href="https://sourceforge.net/projects/msys2/files/Base/x86_64/">https://sourceforge.net/projects/msys2/files/Base/x86_64/</a></p>
+<p>安装步骤: <a class="reference external" href="https://www.msys2.org/">https://www.msys2.org/</a></p>
+<p>打开MSYS2并安装make，输入命令：
+<code class="docutils literal notranslate"><span class="pre">pacman</span> <span class="pre">-S</span> <span class="pre">make</span></code>后回车，并根据提示直到安装完成，当前我的安装路径是C盘。</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-62.png" />
+</div>
+<div class="figure">
+<img alt="" src="../../../_images/image-72.png" />
+</div>
+<p>安装成功后会在相应的<code class="docutils literal notranslate"><span class="pre">usr-&gt;bin</span></code>路径下看到安装的工具。</p>
+<p>2.打开eclipse，选择标签<code class="docutils literal notranslate"><span class="pre">window-&gt;</span> <span class="pre">Preferences</span></code>，操作如下：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-82.png" />
+</div>
+<p>打开之后如下现象：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-92.png" />
+</div>
+<p>3.配置编译开发编译和调试工具的相关路径</p>
+<p>主要配置的选项如下</p>
+<ul class="simple">
+<li>Build Tools
+Path：是编译工具，可以根据需要选择，此处选择的是make工具；</li>
+<li>OpenOcd
+Path：是一个开源的片上调试器，旨在提供针对嵌入式设备的调试、系统编程和边界扫描功能；</li>
+<li>ToolsChains Path：构建工具，根据硬件选择不同的硬件选项工具;</li>
+</ul>
+<div class="figure">
+<img alt="" src="../../../_images/image-102.png" />
+</div>
+<p>1）配置<code class="docutils literal notranslate"><span class="pre">Build</span> <span class="pre">Tools</span> <span class="pre">Path</span></code></p>
+<p>添加build
+Tools是编译工具路径，就是最初安装没有sys2的路径，此处我的路径是:<code class="docutils literal notranslate"><span class="pre">C:\msys64\usr\bin</span></code>。</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-113.png" />
+</div>
+<p>配置完成后点击Apply，点击Apply and Close。</p>
+<p>2）配置<code class="docutils literal notranslate"><span class="pre">OpenOcd</span> <span class="pre">Path</span></code></p>
+<ul class="simple">
+<li>选择的自己要安装的版本，下载，配置相关环境变量openocd</li>
+</ul>
+<p>下载地址:<a class="reference external" href="https://github.com/xpack-dev-tools/openocd-xpack/releases/">Releases · xpack-dev-tools/openocd-xpack ·
+GitHub</a></p>
+<ul class="simple">
+<li>下载后，解压，在系统环境变量配置相关的安装路径，这样在windows的终端命令行就可以使用openocd了</li>
+</ul>
+<p>D:Program
+FilesEclipseembedcpp-2021-06eclipseopenocdxpack-openocd-0.11.0-1bin</p>
+<ul>
+<li><p class="first">eclipse配置openocd的开发路径</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-122.png" />
+</div>
+<p>配置完成后点击Apply，点击Apply and Close。</p>
+</li>
+</ul>
+<p>2）配置<code class="docutils literal notranslate"><span class="pre">Riscv</span> <span class="pre">ToolsChains</span> <span class="pre">Path</span></code></p>
+<div class="figure">
+<img alt="" src="../../../_images/image-132.png" />
+</div>
+<p>配置完成后点击Apply，点击Apply and Close。</p>
+</div>
+<div class="section" id="build">
+<span id="id6"></span><h2>4.配置build编译标签<a class="headerlink" href="#build" title="永久链接至标题"></a></h2>
+<p>配置build的选项</p>
+<ol class="arabic simple">
+<li>右键工程，选择<code class="docutils literal notranslate"><span class="pre">Properties-&gt;C/C++Build-&gt;Manage</span> <span class="pre">Configuration</span></code></li>
+</ol>
+<div class="figure">
+<img alt="" src="../../../_images/image-142.png" />
+</div>
+<ol class="arabic simple">
+<li>在<code class="docutils literal notranslate"><span class="pre">Manage</span> <span class="pre">Configuration</span></code>下新建一个配置标签，这样以后就不用再进行配置，直接选择标签进行编译就行了。</li>
+</ol>
+<div class="figure">
+<img alt="" src="../../../_images/image-152.png" />
+</div>
+<div class="figure">
+<img alt="" src="../../../_images/image-162.png" />
+</div>
+<ol class="arabic simple">
+<li>点击OK，退出界面，再点击OK退出界面。</li>
+<li>选择新建的标签</li>
+</ol>
+<div class="figure">
+<img alt="" src="../../../_images/image-171.png" />
+</div>
+<ol class="arabic simple">
+<li>配置该标签的<code class="docutils literal notranslate"><span class="pre">Builder</span> <span class="pre">Settings</span></code>，其中Build
+directory选择你要编译的工程，此处选的是bl602_demo_event。</li>
+</ol>
+<div class="figure">
+<img alt="" src="../../../_images/image-181.png" />
+</div>
+<ol class="arabic simple">
+<li>配置Behavior。</li>
+</ol>
+<p>其中<code class="docutils literal notranslate"><span class="pre">Build</span> <span class="pre">arguments</span></code>:填写为<code class="docutils literal notranslate"><span class="pre">CONFIG_CHIP_NAME=BL602</span> <span class="pre">CONFIG_LINK_ROM=1</span> <span class="pre">-j4</span></code></p>
+<div class="figure">
+<img alt="" src="../../../_images/image-191.png" />
+</div>
+<ol class="arabic simple">
+<li>配置Refresh Policy</li>
+</ol>
+<div class="figure">
+<img alt="" src="../../../_images/image-202.png" />
+</div>
+<ol class="arabic simple">
+<li>配置完成后点击Apply，点击Apply and Close。</li>
+<li>配置完成后，在主页面的小锤子下面就有自己配置的标签了，就可以选择自己需要的标签进行编译了。</li>
+</ol>
+<div class="figure">
+<img alt="" src="../../../_images/image-212.png" />
+</div>
+</div>
+<div class="section" id="debug">
+<span id="id7"></span><h2>5.配置debug调试环境<a class="headerlink" href="#debug" title="永久链接至标题"></a></h2>
+<p>右键工程，选择<code class="docutils literal notranslate"><span class="pre">Debug</span> <span class="pre">As</span> <span class="pre">&gt;Debug</span> <span class="pre">Configurations...</span></code>操作界面如下：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-221.png" />
+</div>
+<p>打开后新建一个调试平台，点击<code class="docutils literal notranslate"><span class="pre">New</span> <span class="pre">launch</span> <span class="pre">configuration</span></code>，新建debug标签，然后配置，请按照下面所示图进行配置，大致如下：</p>
+<p>main界面配置</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-231.png" />
+</div>
+<p>Debugger配置</p>
+<ul class="simple">
+<li>openocd工具相关路径（选择上面安装的openocd路径）</li>
+<li>gdb等协议的端口号</li>
+<li>openocd配置文件和调试硬件配置相关文件（<code class="docutils literal notranslate"><span class="pre">-f</span> <span class="pre">tools/debug/openocd_cfg/if_bflb_link_DVK.cfg</span></code>
+和<code class="docutils literal notranslate"><span class="pre">-f</span> <span class="pre">tools/debug/602/tgt_602_xip.cfg</span></code>）</li>
+<li>gdb调试工具（<code class="docutils literal notranslate"><span class="pre">${project_loc}\toolchain\riscv\MSYS\bin\riscv64-unknown-elf-gdb.exe</span></code>）</li>
+<li>调试硬件初始化文件配置（<code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">tools/debug/602/602.init</span></code>）</li>
+</ul>
+<div class="figure">
+<img alt="" src="../../../_images/image-241.png" />
+</div>
+<p>Startup配置</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-251.png" />
+</div>
+<p>Common配置</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-261.png" />
+</div>
+<p>SVD Path配置</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-271.png" />
+</div>
+<p>配置完成后点击Apply。</p>
+</div>
+<div class="section" id="id8">
+<span id="id9"></span><h2>6.debug<a class="headerlink" href="#id8" title="永久链接至标题"></a></h2>
+<div class="figure">
+<img alt="" src="../../../_images/image-28.png" />
+</div>
+<ul class="simple">
+<li>按钮 <code class="docutils literal notranslate"><span class="pre">Resume</span></code>（ F8）一下，如果Debug
+congfiguration中有配置,可以看到程序停在 bfl_main()
+主函数处，此时可以点击下图中的3个按钮</li>
+<li>按钮<code class="docutils literal notranslate"><span class="pre">Suspend</span></code>是暂停调试，当想让调试，查看代码某个数据信息时，可以点击该按钮，暂停调试；</li>
+<li>按钮<code class="docutils literal notranslate"><span class="pre">Terminate</span></code>（Ctrl + F2），点击此按钮可以终止退出调试；</li>
+<li>按钮<code class="docutils literal notranslate"><span class="pre">Step</span> <span class="pre">Into</span></code>（F5）
+单步执行，遇到子函数就进入并且继续单步执行；</li>
+<li>按钮<code class="docutils literal notranslate"><span class="pre">Step</span> <span class="pre">Over</span></code>
+（F6）在单步执行时，在函数内遇到子函数时不会进入子函数内单步执行，而是将子函数整个执行完在停止，也就是把子函数整个作为一步；</li>
+<li>按钮<code class="docutils literal notranslate"><span class="pre">Step</span> <span class="pre">Return</span></code>（F7）在单步执行到子函数内时，用Step
+Return就可以执行完子函数余下部分，并返回上一层函数。</li>
+</ul>
+<p>2号功能区</p>
+<p>Registers：该标签是对cpu通用寄存器的显示，pc，sp等寄存器；</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-29.png" />
+</div>
+<p>3号功能介绍，标签从左向右</p>
+<ul class="simple">
+<li>标签<code class="docutils literal notranslate"><span class="pre">Breakp</span></code>是对断点的显示，全局有多少断点都会显示在此处；</li>
+</ul>
+<div class="figure">
+<img alt="" src="../../../_images/image-30.png" />
+</div>
+<ul class="simple">
+<li>标签<code class="docutils literal notranslate"><span class="pre">Variable</span></code>是对环境变量的显示，当调试暂停时，你的鼠标暂停在某变量时，该标签便会显示相关参数的数据信息；</li>
+</ul>
+<div class="figure">
+<img alt="" src="../../../_images/image-311.png" />
+</div>
+<ul class="simple">
+<li>标签<code class="docutils literal notranslate"><span class="pre">Express</span></code>
+可以添加相关想要查看到变量，该标签添加完变量时，变量的信息会实时的变化；</li>
+</ul>
+<div class="figure">
+<img alt="" src="../../../_images/image-321.png" />
+</div>
+<p>4号功能区</p>
+<p>Memory该标签是对硬件内存的查看，可以添加相关硬件地址，可以看到该地区数据的变化。</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-33.png" />
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

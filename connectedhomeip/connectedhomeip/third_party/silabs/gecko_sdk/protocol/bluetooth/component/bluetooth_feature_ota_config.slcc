@@ -1,0 +1,26 @@
+id: "bluetooth_feature_ota_config"
+label: "OTA Configuration"
+package: "Bluetooth"
+description: >
+  OTA configuration
+
+  Provides commands to configure OTA device name, address and flags etc. This
+  configuration is used by the Apploader binary application for OTA DFU on EFR
+  series 1 devices. Configurations are stored in the NVM and the Apploader reads
+  them when the device is booted in the OTA mode.
+
+  This configuration is not available to the Apploader on series 2 devices.
+  On series 2, the Apploader runs in the Bootloader as a communication plugin,
+  and the configuration can be implemented in the Apploader application directly.
+category: "Bluetooth|OTA"
+quality: "production"
+root_path: "protocol/bluetooth"
+requires:
+  - name: "bluetooth_stack"
+  - name: "apploader"
+  - name: "device_series_1"
+provides:
+  - name: "bluetooth_feature_ota_config"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_ota_config

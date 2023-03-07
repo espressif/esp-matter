@@ -1,0 +1,237 @@
+project_name: rail_soc_simple_trx_multiphy
+label: "RAIL - SoC Simple TRX Multi-PHY"
+package: Flex
+description: "This application demonstrates the usage of multiple phys selectable by channels. By default there are 2 channels, one sub-GHz and a 2.4GHz.
+Pressing PB0 will transmit on channel 0, while pressing PB1 will transmit on channel 1. Both transmission and reception is reported on serial terminal and on LED0/LED1 (for channel 0/1, respectively).
+To send using CLI, enter 'send 0' ('rx 0') or 'send 1' ('tx 1'). By default all received packet will be printed out in terminal.
+To select only one channel to receive, enter 'rx_channel 0' ('rx 0') or 'rx_channel 1' ('rx 1').
+To switch back to scanning mode send 'rx_scan'.
+Modifying the phys are possible, but it can break the scanning feature. If modifying the phys please update also the defines in the app_init.h file.
+With one click this baremetal sample app can be run on an OS, currently MicriumOS and FreeRTOS is supported.
+NOTE: Due to the higher current consumption of the continuous radio usage (especially in Rx Mode), it is not recommended to power the boards from a coin cell. Instead, an USB power bank can be used if portability is needed."
+category: RAIL Examples
+quality: production
+
+#---------------- UC/UP components -------------------
+component:
+  - id: radio_config_simple_rail_multiphy
+  - id: sl_system
+  - id: device_init
+  - id: sl_simple_rail_stub
+  - id: rail_util_init
+    instance:
+      - inst0
+  - id: rail_util_recommended
+  - id: app_log
+  - id: app_assert
+  - id: simple_button
+    instance:
+      - btn0
+      - btn1
+  - id: simple_led
+    instance:
+      - led0
+      - led1
+#------------Memory Protection Unit-------------------
+  - id: mpu
+
+#---------------------- CLI --------------------------
+  - id: cli
+    instance:
+    - example
+  - id: printf
+  - id: iostream_recommended_stream
+  - id: iostream_retarget_stdio
+
+#-------------- Restriction rules -------------------
+  - id: restrictions_profile_base
+  - id: restrictions_profile_connect
+  - id: restrictions_profile_long_range
+
+#----------------- Require list ----------------------
+requires:
+  - name: a_radio_config
+  - name: sl_simple_rail_os
+    condition:
+      - "kernel"
+# Added for Safety for the EFF, but the sample app doesn't support it yet.
+  - name: rail_util_eff
+    condition: [hardware_board_has_eff]
+  - name: radio_config_singlephy_device_family_fgm23
+    condition:
+      - "device_family_fgm23"
+
+#----------------- Project files ---------------------
+include:
+  - path: .
+    file_list:
+    - path: app_init.h
+    - path: app_process.h
+
+source:
+  - path: ../common/main/main.c
+  - path: app_init.c
+  - path: app_process.c
+  - path: app_cli.c
+    condition:
+      - cli
+
+other_file:
+  - path: "hw_filter_tags.yaml"
+    condition:
+      - "add_hw_filter_to_project"
+
+#------------ Configuration overrides ----------------
+configuration:
+  - name: SL_STACK_SIZE
+    value: "2048"
+  - name: SL_HEAP_SIZE
+    value: "2048"
+#------------- FreeRTOS OS        --------------------
+  - name: configMINIMAL_STACK_SIZE
+    value: "1024"
+#------------- Micrium OS / SystemView --------------------
+  - name: CPU_CFG_TS_32_EN
+    value: "1"
+  - name: OS_CFG_DBG_EN
+    value: "1"
+  - name: OS_CFG_TS_EN
+    value: "1"
+  - name: OS_CFG_SCHED_ROUND_ROBIN_EN
+    value: "1"
+  - name: OS_CFG_STAT_TASK_EN
+    value: "1"
+  - name: OS_CFG_TASK_PROFILE_EN
+    value: "1"
+#------------- RAIL init, Project --------------------
+  - name: SL_RAIL_UTIL_INIT_INIT_COMPLETE_CALLBACK_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_RADIO_CONFIG_SUPPORT_INST0_ENABLE
+    value: "1"
+#------------- RAIL init, Protocol -------------------
+  - name: SL_RAIL_UTIL_INIT_PROTOCOLS_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_PROTOCOL_INST0_DEFAULT
+    value: "SL_RAIL_UTIL_PROTOCOL_PROPRIETARY"
+#------------- RAIL init, Calibrations ---------------
+  - name: SL_RAIL_UTIL_INIT_CALIBRATIONS_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_CALIBRATION_TEMPERATURE_NOTIFY_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_CALIBRATION_ONETIME_NOTIFY_INST0_ENABLE
+    value: "1"
+#------------- RAIL init, Auto Transitions -----------
+  - name: SL_RAIL_UTIL_INIT_TRANSITIONS_INST0_ENABLE
+    value: "1"
+#------------- RAIL init, Data Format ----------------
+  - name: SL_RAIL_UTIL_INIT_DATA_FORMATS_INST0_ENABLE
+    value: "1"
+#------------- RAIL init, Radio Events ---------------
+  - name: SL_RAIL_UTIL_INIT_EVENTS_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_PREAMBLE_LOST_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_PACKET_RECEIVED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_ADDRESS_FILTERED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_FRAME_ERROR_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_PACKET_ABORTED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TX_PACKET_SENT_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TX_ABORTED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TX_BLOCKED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_FIFO_OVERFLOW_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TX_UNDERFLOW_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TX_CHANNEL_BUSY_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_TX_SCHEDULED_RX_TX_STARTED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_SCHEDULED_RX_MISSED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TX_SCHEDULED_TX_MISSED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_CONFIG_UNSCHEDULED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_CONFIG_SCHEDULED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_SCHEDULER_STATUS_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_CAL_NEEDED_INST0_ENABLE
+    value: "1"
+#------------- RAIL init, PA for EFF ---------------
+  - name: SL_RAIL_UTIL_PA_SELECTION_SUBGHZ
+    value: "RAIL_TX_POWER_MODE_SUBGIG_EFF_25DBM"
+    condition: [hardware_board_has_eff]
+  - name: SL_RAIL_UTIL_PA_CALIBRATION_ENABLE
+    value: "1"
+    condition: [hardware_board_has_eff] 
+#------------- Other project settings ----------------
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+  - name: SL_CLI_LOCAL_ECHO
+    value: "(1)"
+  - name: SL_IOSTREAM_USART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "(1)"
+  - name: SL_IOSTREAM_USART_VCOM_FLOW_CONTROL_TYPE
+    value: "usartHwFlowControlNone"
+  - name: SL_IOSTREAM_EUSART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "(1)"
+  - name: SL_IOSTREAM_EUSART_VCOM_FLOW_CONTROL_TYPE
+    value: "eusartHwFlowControlNone"
+  - name: APP_LOG_PREFIX_ENABLE
+    value: "0"
+
+#-------------- Template Contribution ----------------
+template_contribution:
+#------------------ CLI commands ---------------------
+  - name: cli_command
+    value:
+      name: info
+      handler: cli_info
+      help: Unique ID of the MCU
+  - name: cli_command
+    value:
+      name: send
+      handler: cli_send_packet
+      help: Send a packet
+      argument:
+      - type: uint8
+        help: Select channel to send
+  - name: cli_command
+    value:
+      name: rx_channel
+      handler: cli_rx_channel
+      help: Receive on a specified radio channel
+      argument:
+      - type: uint8
+        help: Select channel to receive
+  - name: cli_command
+    value:
+      name: rx_scan
+      handler: cli_rx_scan
+      help: Receive on both radio channel (time sharing)
+
+#--------------------- Toolchain ------------------------
+toolchain_settings:
+  - option: optimize
+    value: debug
+
+ui_hints:
+  highlight:
+    - path: "config/rail/radio_settings.radioconf"
+      focus: true
+
+filter:
+  - name: "Wireless Technology"
+    value: ["RAIL"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]

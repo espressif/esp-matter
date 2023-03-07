@@ -1,0 +1,170 @@
+***********
+快速入门
+***********
+
+.. 请保证 README.md 文件与该文件保持同步
+
+本文档旨在指导用户搭建 BL602 (BL602-IoT-DVK-3S)硬件开发的linux软件环境，通过一个简单的示例展示如何编译、下载固件至 BL602 开发板等步骤。
+
+.. note::
+	BL-HWC-G1模组linux环境搭建请参考 `BL-HWC-G1模组linux环境搭建 <../../index_602.html>`__ 
+	
+概述
+============
+
+BL602 是一款Wi-Fi + BLE组合的芯片组，用于低功耗和高性能应用开发。无线子系统包含2.4G无线电，Wi-Fi 802.11b/g/n和BLE 5.0 基带/MAC设计。微控制器子系统包含一个低功耗的32位RISC-V CPU，高速缓存和存储器。电源管理单元控制低功耗模式。此外，还支持各种安全性能。
+
+.. figure:: imgs/index-1.png
+    :alt: 
+
+准备工作
+=============
+
+硬件：
+
+* 一款 **BL602** 开发板
+* **USB 数据线** （usb转type-c）
+* 电脑（\ `windows环境搭建 <../get_started_3S_windows/get_started_3S_windows.html>`__ \）
+
+开发板简介
+===========================
+
+开发板实物图如下所示：
+
+.. figure:: imgs/HW_loT_DVK_3S.png
+    :alt: 
+
+
+.. _get-started-step-by-step:
+
+详细安装步骤
+=========================
+
+请根据下方详细步骤，完成安装过程。
+
+设置开发环境
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* :ref:`get-started-get-prerequisites` 
+* :ref:`get-started-get-code`
+
+开始您的第一个工程
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* :ref:`get-started-connect`
+* :ref:`get-started-build`
+* :ref:`get-started-flash`
+* :ref:`get-started-build-monitor`
+
+.. _get-started-get-prerequisites:
+
+第一步：安装准备
+=============================
+
+在正式开始创建工程前，请先完成工具的安装，具体步骤见下：
+
+-  打开终端，安装make，命令：\ ``sudo apt-get update``\ 、\ ``sudo apt-get install make``
+-  安装git工具，命令：\ ``sudo apt-get update``\ 、\ ``sudo apt-get install git``
+-  安装串口工具此处选用的\ ``Gtkterm``
+   可以执行命令：\ ``sudo apt-get install gtkterm``
+
+.. _get-started-get-code:
+
+第二步：获取软件
+=================================
+
+获取 BL-IOT 的本地副本：打开终端，切换到您要保存代码的工作目录，使用 ``git clone git@github.com:bouffalolab/bl_iot_sdk.git`` 命令克隆远程仓库。
+
+.. _get-started-connect:
+
+第三步：连接设备
+==========================================
+
+现在，请将您的 BL602 开发板连接到 PC，使用命令： \ ``ls /dev/tty*`` 查看开发板使用的串口。
+
+.. note::
+
+    请记住串口名，您会在下面的步骤中用到。
+
+.. _get-started-build:
+
+
+第四步：编译工程
+=========================
+
+- 进入需要编译的工程目录，如进入bl602_demo_event工程，命令：\ ``cd customer_app/bl602_demo_event``\ ，进行编译，命令\ ``./genromap``
+
+-  查看编译生成的build\_out文件夹，命令：\ ``ls build_out``
+
+如果一切正常，编译完成后将生成 ``bl602_demo_event.bin`` 文件。
+
+
+.. _get-started-flash:
+
+第五步：烧录到设备
+=============================
+
+**软件烧录**
+
+-  进入\ ``/bl_iot_sdk/tools/flash_tool``\ 目录下，双击名为 ``BLDevCube`` 的可执行文件。
+
+-  ``chip type``\ 选择BL602/604。
+
+   .. figure:: imgs/index-5.1.png
+      :alt:
+
+-  打开后界面，进行参数配置，点击\ ``Create & Download``\ :参考如下图：
+
+   .. figure:: imgs/index-5.2.png
+      :alt:
+
+- 出现如下图所示表明下载成功:
+
+   .. figure:: imgs/index-5.4.png
+      :alt:
+
+如果一切顺利，烧录完成后，手动复位开发板，应用程序 "bl602_demo_event" 开始运行。
+
+
+**命令行烧录 (仅支持Linux)**
+
+- 进入需要烧录的工程目录，如进入bl602_demo_event工程，命令：\ ``cd customer_app/bl602_demo_event``\, 执行烧录命令 \ ``make flash_only``,出现如下图所示表明下载成功。
+
+  .. figure:: imgs/index-5.5.png
+     :alt:
+     
+.. note::
+         利用tools/flash_tool/目录下的bflb_iot_tool工具，我们也可以自定义烧录命令，详情请参考 `bflb_iot_tool使用方法 <../bflb_iot_tool_guide/bflb_iot_tool_guide.html>`__
+
+.. _get-started-build-monitor:
+
+第六步：监视器
+===============
+下载完成后，执行命令‘sudo gtkterm’，打开串口终端软件Gtkterm，显示如下图：
+
+.. figure:: imgs/index-6.3.png
+   :alt:
+
+选择 `配置（C）下的Port`，如下图：
+
+.. figure:: imgs/index-6.4.png
+   :alt:
+
+
+配置如下，其中 `/dev/ttyUSB1` 可能需要根据上面查看的串口号修改：
+
+.. figure:: imgs/index-6.5.png
+   :alt:
+
+上面配置完成后，要使用F7和F8来控制uart的控制信号线，保证DTR为黑，RTS为灰色,如下图所示：
+
+.. figure:: imgs/index-6.6.png
+   :alt:
+
+连接上后，执行reboot，然后向上查找串口打印记录，便可以查看到相关logo，大致如下：
+
+.. figure:: imgs/index-6.7.png
+   :alt:
+   
+**恭喜，您已完成BL602的入门学习！**                                                                 
+现在，您可以尝试使用 `Eclipse <../eclipse_linux/eclipse_linux.html>`__ 或 `Freedom studio <../freedom_linux/freedom_linux.html>`__ 进行debug。

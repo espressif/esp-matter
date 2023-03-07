@@ -1,0 +1,141 @@
+id: "psstore"
+label: "PSStore"
+package: "Bluetooth"
+description: >
+  PS Store data storage driver
+
+  PS Store is a Bluetooth specific NVM solution.
+category: "Bluetooth|NVM"
+quality: "production"
+root_path: "protocol/bluetooth"
+include: []
+source: []
+ui_hints:
+  visibility: never
+library:
+#EFR32BG1B
+  - path: "lib/EFR32BG1B/GCC/libpsstore.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32bg1b"
+  - path: "lib/EFR32BG1B/IAR/libpsstore.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32bg1b"
+#EFR32BG1P
+  - path: "lib/EFR32BG1P/GCC/libpsstore.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32bg1p"
+  - path: "lib/EFR32BG1P/IAR/libpsstore.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32bg1p"
+#BGM1
+  - path: "lib/EFR32BG1P/GCC/libpsstore.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_bgm1"
+  - path: "lib/EFR32BG1P/IAR/libpsstore.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_bgm1"
+#EFR32MG1P
+  - path: "lib/EFR32MG1P/GCC/libpsstore.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32mg1p"
+  - path: "lib/EFR32MG1P/IAR/libpsstore.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32mg1p"
+#MGM1
+  - path: "lib/EFR32MG1P/GCC/libpsstore.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_mgm1"
+  - path: "lib/EFR32MG1P/IAR/libpsstore.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_mgm1"
+#EFR32BG12P
+  - path: "lib/EFR32BG12P/GCC/libpsstore.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32bg12p"
+  - path: "lib/EFR32BG12P/IAR/libpsstore.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32bg12p"
+#EFR32MG12P
+  - path: "lib/EFR32MG12P/GCC/libpsstore.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32mg12p"
+  - path: "lib/EFR32MG12P/IAR/libpsstore.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32mg12p"
+#MGM12
+  - path: "lib/EFR32MG12P/GCC/libpsstore.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_mgm12"
+  - path: "lib/EFR32MG12P/IAR/libpsstore.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_mgm12"
+#EFR32BG13P
+  - path: "lib/EFR32BG13P/GCC/libpsstore.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32bg13p"
+  - path: "lib/EFR32BG13P/IAR/libpsstore.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32bg13p"
+#BGM13
+  - path: "lib/EFR32BG13P/GCC/libpsstore.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_bgm13"
+  - path: "lib/EFR32BG13P/IAR/libpsstore.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_bgm13"
+#EFR32MG13P
+  - path: "lib/EFR32MG13P/GCC/libpsstore.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32mg13p"
+  - path: "lib/EFR32MG13P/IAR/libpsstore.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32mg13p"
+#MGM13
+  - path: "lib/EFR32MG13P/GCC/libpsstore.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_mgm13"
+  - path: "lib/EFR32MG13P/IAR/libpsstore.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_mgm13"
+#EFR32MG14P
+  - path: "lib/EFR32MG14P/GCC/libpsstore.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32mg14p"
+  - path: "lib/EFR32MG14P/IAR/libpsstore.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32mg14p"
+requires:
+  - name: "emlib_msc"
+provides:
+  - name: "nvm_system"
+    condition:
+      - "bluetooth_stack"
+template_contribution:
+  - name: "nvm_flash_reserve"
+    value: 4096

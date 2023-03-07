@@ -1,0 +1,125 @@
+package: Zigbee
+description: An IAS Server implementation that reports notifications to the client
+  that has configured it.  This requires extending to trigger alarms. The component must
+  store the client IEEE address attribute to flash. This means, for the IAS CIE address
+  attribute (0x0010) of the IAS Zone cluster (0x500), the user must select the checkbox
+  that stores that attribute to flash.
+label: IAS Zone Server
+quality: extend
+id: zigbee_ias_zone_server
+category: Zigbee|Cluster Library|Home Automation
+provides:
+   - name: "zigbee_critical_message_queue"
+   - name: "zigbee_ias_zone_server"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/ias-zone-server/config/ias-zone-server-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/ias-zone-server/ias-zone-server.c
+  - path: protocol/zigbee/app/framework/plugin/ias-zone-server/ias-zone-server-cli.c
+    condition:
+      - "cli"
+include:
+  - path: protocol/zigbee/app/framework/plugin/ias-zone-server
+    file_list:
+      - path: ias-zone-server.h
+      - path: ias-zone-server-tokens.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_ias_zone_server
+  - name: cluster_service
+    value:
+       cluster_id: "0x0500"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "SERVER"
+       service_function: "emberAfIasZoneClusterServerCommandParse"    
+  - name: cli_group
+    value:
+      group: plugin
+      name: ias-zone-server
+      help: ias-zone-server related commands.
+  - name: cli_command
+    value:
+      group: ias-zone-server
+      name: info
+      handler: emberAfPluginIasZoneServerInfoCommand
+      help: Prints the current value of the following cluster attributes - zone type, zone state, zone status, zone ID.
+      argument:
+      - type: uint8
+        help: The endpoint whose IAS Zone Cluster information is to be printed
+  - name: cli_command
+    value:
+      group: ias-zone-server
+      name: changeStatus
+      handler: emberAfPluginIasZoneServerChangeStatusCommand
+      help: Updates the zone status attribute of a given endpoints IAS Zone cluster to the given value.
+      argument:
+      - type: uint16
+        help: The new status to be written
+      - type: uint8
+        help: The amount of time since the last update occurred (seconds)
+      - type: uint8
+        help: The endpoint whose zone status attribute is to be updated
+  - name: cli_command
+    value:
+      group: ias-zone-server
+      name: set-enrollment-mode
+      handler: emberAfPluginIasZoneServerSetEnrollmentMethodCommand
+      help: Updates the IAS Zone servers enrollment method to the specified value.
+      argument:
+      - type: uint8
+        help: The endpoint whose enrollment mode is to be updated
+      - type: uint8
+        help: The new enrollment mode
+  - name: cli_command
+    value:
+      group: ias-zone-server
+      name: change-backoff-config
+      handler: emberAfPluginIasZoneServerChangeBackoffConfiguration
+      help: Updates the IAS Zone servers backoff configuration parameters.
+      argument:
+      - type: uint8
+        help: First backoff time in seconds
+      - type: uint8
+        help: Backoff increase common ratio
+      - type: uint32
+        help: Maximum backoff time in seconds
+      - type: int8
+        help: Unlimited retires
+      - type: uint16
+        help: Maximum retry attempts
+  - name: cli_command
+    value:
+      group: ias-zone-server
+      name: print-queue
+      handler: emberAfPluginIasZoneServerCliPrintQueue
+      help: Prints information on the status queue.
+  - name: cli_command
+    value:
+      group: ias-zone-server
+      name: print-queue-config
+      handler: emberAfPluginIasZoneServerCliPrintQueueConfig
+      help: Prints the status queue config.
+  - name: token_header
+    value: app/framework/plugin/ias-zone-server/ias-zone-server-tokens.h
+  - name: cluster_functions
+    value:
+      cluster_name: IasZone
+      cluster_id: 0x500
+      cluster_type: server
+      init_function: emberAfIasZoneClusterServerInitCallback
+  - name: cluster_functions
+    value:
+      cluster_name: IasZone
+      cluster_id: 0x500
+      cluster_type: server
+      pre_attribute_changed_function: emberAfIasZoneClusterServerPreAttributeChangedCallback
+  - name: cluster_functions
+    value:
+      cluster_name: IasZone
+      cluster_id: 0x500
+      cluster_type: server
+      message_sent_function: emberAfIasZoneClusterServerMessageSentCallback      
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/ias-zone-server

@@ -1,0 +1,42 @@
+{
+  "name": "webconsole",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@codemirror/autocomplete": "^6.1.0",
+    "@codemirror/lang-javascript": "^6.0.2",
+    "@codemirror/language": "^6.2.1",
+    "@codemirror/theme-one-dark": "^6.0.0",
+    "@emotion/react": "^11.10.0",
+    "@emotion/styled": "^11.10.0",
+    "@mui/material": "^5.9.3",
+    "codemirror": "^6.0.1",
+    "next": "12.2.3",
+    "object-path": "^0.11.8",
+    "pigweedjs": "file:../../",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-virtualized": "^9.22.3",
+    "react-virtualized-auto-sizer": "^1.0.6",
+    "react-window": "^1.8.7",
+    "xterm": "^4.19.0",
+    "xterm-addon-fit": "^0.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "18.6.3",
+    "@types/react": "18.0.15",
+    "@types/react-dom": "18.0.6",
+    "@types/react-virtualized": "^9.21.21",
+    "@types/react-window": "^1.8.5",
+    "eslint": "8.21.0",
+    "eslint-config-next": "12.2.3",
+    "sass": "^1.54.0",
+    "typescript": "4.7.4"
+  }
+}

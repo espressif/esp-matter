@@ -1,0 +1,21 @@
+id: errno
+label: "errno support"
+description: >
+   This component provides "errno.h" header file. 
+   It also provides support for threadsafe errno usage along with support for errno usage in ISR context.
+package: platform
+category: Platform|Toolchain
+quality: production
+root_path: platform/common
+include:
+  - path: errno/inc
+    file_list:
+      - path: "errno.h"
+source:
+  - path: errno/src/sl_errno.c
+provides:
+  - name: errno
+requires:
+  - name: emlib_core
+validation_helper:
+  - path: script/sl_errno_validation.lua  

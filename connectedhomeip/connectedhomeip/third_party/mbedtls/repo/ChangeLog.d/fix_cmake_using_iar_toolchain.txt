@@ -1,0 +1,3 @@
+Bugfix
+   * Fix a compilation error when using CMake with an IAR toolchain.
+     Fixes #5964.

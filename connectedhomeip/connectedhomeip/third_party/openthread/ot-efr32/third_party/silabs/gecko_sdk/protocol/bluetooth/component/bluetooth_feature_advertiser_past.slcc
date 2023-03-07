@@ -1,0 +1,27 @@
+id: "bluetooth_feature_advertiser_past"
+label: "Transfer periodic synchronization information for a local advertising set"
+package: "Bluetooth"
+description: >
+  Transfer the synchronization information of a local active periodic
+  advertising set to a remote device using Periodic Advertising Synchronization
+  Transfer (PAST) over a connection.
+
+  Use this component on the device that needs to initiate PAST to a remote
+  device. To receive PAST from a remote device, use
+  <bluetooth_feature_past_receiver>.
+category: "Bluetooth|Feature"
+quality: "alpha"
+root_path: "protocol/bluetooth"
+requires:
+  - name: "bluetooth_controller"
+  - name: "bluetooth_feature_connection"
+  - name: "device_supports_bluetooth_advertising_extensions"
+provides:
+  - name: "bluetooth_feature_advertiser_past"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_advertiser_past
+  - name: bluetooth_controller_init
+    value:
+      function: sl_btctrl_init_past_local_sync_transfer()
+    priority: 11

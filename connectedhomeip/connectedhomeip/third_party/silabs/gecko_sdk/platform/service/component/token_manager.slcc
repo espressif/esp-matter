@@ -1,0 +1,44 @@
+id: token_manager
+label: Token Manager
+package: platform
+description: Token Manager. This component requires a compatible stack which are ZigBee or Connect.
+category: Services|Token Manager
+quality: production
+requires:
+  - name: token_manager_storage
+  - name: component_catalog
+  - name: se_manager
+    condition: [device_series_2]
+  - name: wireless_stack
+recommends:
+  - id: token_manager_nvm3
+provides:
+  - name: token_manager
+root_path: ./
+config_file:
+  - path: platform/service/token_manager/config/sl_token_manager_config.h
+  - path: platform/service/token_manager/config/sl_custom_token_header.h
+  - path: platform/service/token_manager/config/sl_custom_manufacturing_token_header.h
+define:
+  - name: CUSTOM_TOKEN_HEADER
+    value: '"sl_token_manager_af_token_header.h"'
+source:
+  - path: platform/service/token_manager/src/sl_token_def.c
+  - path: platform/service/token_manager/src/sl_token_manager.c
+  - path: platform/service/token_manager/src/sl_token_manufacturing.c
+include:
+  - path: platform/service/token_manager/inc
+    file_list:
+      - path: sl_token_api.h
+      - path: sl_token_manager.h
+      - path: sl_token_manager_af_token_header.h
+      - path: sl_token_manufacturing.h
+      - path: sl_token_manufacturing_api.h
+      - path: sl_token_manufacturing_series_1.h
+      - path: sl_token_manufacturing_series_2.h
+template_contribution:
+  - name: component_catalog
+    value: token_manager
+documentation:
+    docset: gecko-platform
+    document: service/api/group-token-manager

@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="CGM Status" 
+                type="org.bluetooth.characteristic.cgm_status" uuid="2AA9" last-modified="2014-11-17" approved="Yes">
+    <InformativeText>
+        <Summary>The CGM Status allows the Collector to actively request the current status from the CGM Sensor, particularly when the CGM measurement is not running and the status cannot be given in the measurement result in the Status Annunciation.</Summary>
+	</InformativeText>
+    <Value>
+        <Field name="Time Offset">
+            <InformativeText>The Time Offset Field specifies the actual relative time difference to the session start time.</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>uint16</Format> 
+            <Unit>org.bluetooth.unit.time.minute</Unit>
+            <DecimalExponent>0</DecimalExponent>
+        </Field>
+        <Field name="CGM Status">
+            <InformativeText>The structure of the CGM Status Field shall be identical to the structure of the Status Annunciation Field, as defined in the CGM Measurement Characteristic "Sensor Status Annunciation Field". It always consists of three octets regardless the value.</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>24bit</Format>
+          </Field>
+        <Field name="E2E-CRC">
+            <InformativeText>If the device supports E2E-safety (E2E-CRC Supported bit is set in CGM Feature), the status is secured by a CRC calculated over all fields.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Format>uint16</Format>
+		</Field>
+	</Value>
+    <Note>
+        C1: Mandatory if device supports E2E-CRC (Bit 12 is set in CGM Feature) otherwise excluded.
+        The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet
+    </Note>
+</Characteristic>

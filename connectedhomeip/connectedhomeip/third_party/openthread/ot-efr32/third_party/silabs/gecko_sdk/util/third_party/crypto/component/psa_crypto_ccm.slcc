@@ -1,0 +1,20 @@
+id: psa_crypto_ccm
+package: platform
+label: CCM Mode
+description: >-
+  This component provides support for the CCM authenticated encryption
+  algorithm in PSA Crypto.
+category: Platform|Security|PSA Crypto|Authenticated Encryption
+quality: production
+provides:
+  - name: psa_crypto_ccm
+requires:
+  - name: psa_crypto_aes
+  - name: mbedtls_ccm
+    condition: [device_series_0]
+template_contribution:
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_CCM
+  - name: psa_crypto_config
+    value: "MBEDTLS_PSA_BUILTIN_ALG_CCM 1"
+    condition: [mbedtls_ccm]

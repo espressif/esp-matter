@@ -1,0 +1,19 @@
+id: mem_pool
+label: Memory Pool
+package: platform
+description: Basic implementation of memory pool.
+category: Services
+quality: production
+ui_hints:
+  visibility: never
+source:
+  - path: platform/service/mem_pool/src/sl_mem_pool.c
+include:
+  - path: platform/service/mem_pool/inc
+    file_list:
+      - path: sli_mem_pool.h
+provides:
+  - name: mem_pool
+requires:
+  - name: emlib_core
+

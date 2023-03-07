@@ -1,0 +1,612 @@
+%%{
+/*
+ * Copyright (c) 2020, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+ *  ======== RF.Board.c.xdt ========
+ */
+
+/* RF module passed in args[] */
+const RF = args[0];
+const rfStatic = RF.$static
+
+/* get ti/drivers common utility functions */
+const Common = system.getScript("/ti/drivers/Common.js");
+
+/* Resolve selected RF configuration */
+const {
+    interruptPriority: hwiPriority,
+    softwareInterruptPriority: swiPriority,
+    xoscNeeded: xoscNeeded,
+    globalEventMask: eventMask,
+    globalCallbackFunction: callbackFxn,
+    pinSelectionAntenna: nAntennaPins,
+    coexEnable: coexEnable,
+    coexPhy: coexPhy,
+    coexMode: coexMode,
+    coexPinRequest: pinRequest,
+    coexPinPriority: pinPriority,
+    coexPinGrant: pinGrant
+} = rfStatic;
+
+/* Internal option */
+const internal = (!!RF.internal && rfStatic[RF.internal.option.name]);
+
+/* GPIO module for pin instance DIO functions */
+const GPIO = system.getScript("/ti/drivers/GPIO");
+
+/* Create an array of info objects from the selected antenna pins */
+const rfAntennaPins = [];
+for(let i = 0; i < nAntennaPins; i++) {
+    rfAntennaPins.push({
+        symbol: rfStatic[`rfAntennaPinSymbol${i}`],
+        dio: "DIO" + GPIO.getDioForInst(RF.$static[`rfAntennaPin${i}Instance`])
+    });
+}
+
+/* Generate display name from pin symbol define */
+function symbolToDisplayName(symbol) {
+    let name = symbol.replace("CONFIG_RF_", "").split("_").join(" ");
+    return name.replace("GHZ", " GHZ").replace("24", "2.4");
+}
+
+/* Determine active coex pins */
+const useRequestPin = (coexEnable && (coexMode !== "coexMode1WireGrant"));
+const usePriorityPin = (coexEnable && (coexMode === "coexMode3Wire"));
+const useGrantPin = (coexEnable && (coexMode !== "coexMode1WireRequest"));
+
+/* Define active coex pins as array of DIOs */
+const rfCoexPinSymbols = [
+    useRequestPin ? "CONFIG_RF_COEX_REQUEST" : null,
+    usePriorityPin ? "CONFIG_RF_COEX_PRIORITY" : null,
+    useGrantPin ? "CONFIG_RF_COEX_GRANT" : null
+].filter(sym => sym !== null);
+
+/* Determine if to generate any RF Driver callback function (top-level) */
+const generateRfCallback = ( (callbackFxn.length !== 0) && (callbackFxn.toLowerCase() !== "null") );
+
+/* Determine if to generate specific callback for antenna switching */
+const generateRfAntennaCallback = ( generateRfCallback && nAntennaPins > 0 );
+const hardware = RF.getRfHardware(rfStatic);
+const antennaSwitchName = (hardware !== null) ?  hardware.name : undefined;
+const hwSupported = [
+    "SKY13317-373LF",
+    "XMSSJJ3G0PA-054",
+    "RTC6608OU"
+];
+const useAntennaSwitchHW = !!hwSupported.includes(antennaSwitchName);
+
+/* Determine if to generate specific callback for coex */
+const generateRfCoexCallback = ( generateRfCallback && coexEnable );
+
+/* Object to store antenna path pin info for cc13x1_cc26x1 antenna switch */
+let antennaPathSupport = {};
+
+%%}
+
+/*
+ *  =============================== RF Driver ===============================
+ */
+#include <ti/drivers/GPIO.h>
+#include <ti/devices/DeviceFamily.h>
+#include DeviceFamily_constructPath(driverlib/ioc.h)
+#include <ti/drivers/rf/RF.h>
+%   if (generateRfCoexCallback) {
+#include <ti/devices/DeviceFamily.h>
+%   if (coexPhy.includes("ieee_15_4")) {
+#include DeviceFamily_constructPath(driverlib/rf_ieee_coex.h)
+%   } // End: if (coexPhy.includes("ieee_15_4"))
+%   if (coexPhy.includes("ble")) {
+#include DeviceFamily_constructPath(driverlib/rf_bt5_coex.h)
+%   } // End: if (coexPhy.includes("ble"))
+%   } // End: if (generateRfCoexCallback)
+%   if (generateRfCallback) {
+
+/*
+ * RF driver callback function, called by the driver on global driver events.
+ */
+static void RF_globalCallbackFunction (RF_Handle client, RF_GlobalEvent events, void* arg);
+
+/*
+ * Callback function to handle custom / application specific behavior
+ */
+extern void __attribute__((weak)) `callbackFxn` (RF_Handle client, RF_GlobalEvent events, void *arg);
+%   if (internal) {
+
+`RF.internal.option.template.code.function.comment`
+extern void __attribute__((weak)) `RF.internal.option.template.code.function.name` (RF_Handle client, RF_GlobalEvent events, void *arg);
+%   } // End: if (internal)
+%   if (generateRfCoexCallback) {
+
+/*
+ * Callback function to handle coexistence feature
+ */
+extern void __attribute__((weak)) `callbackFxn`Coex (RF_Handle client, RF_GlobalEvent events, void *arg);
+%   } // End: if (generateRfCoexCallback)
+%   if (generateRfAntennaCallback) {
+
+/*
+ * Callback function to handle antenna switching
+ */
+extern void __attribute__((weak)) `callbackFxn`AntennaSwitching (RF_Handle client, RF_GlobalEvent events, void *arg);
+%   } // End: if (generateRfAntennaCallback)
+%   } // End: if (generateRfCallback)
+
+/*
+ * Platform-specific driver configuration
+ */
+const RFCC26XX_HWAttrsV2 RFCC26XX_hwAttrs = {
+    .hwiPriority        = `Common.intPriority2Hex(hwiPriority)`,
+    .swiPriority        = (uint8_t)`Common.swiPriority2Int(swiPriority)`,
+    .xoscHfAlwaysNeeded = `xoscNeeded`,
+    .globalCallback     = `generateRfCallback ? "&RF_globalCallbackFunction" : "NULL"`,
+    .globalEventMask    = `eventMask.length > 0 ? eventMask.join(" | ") : 0`
+};
+
+%   if (generateRfCallback) {
+/*
+ *  ======== RF_globalCallbackFunction ========
+ *  This function is called by the driver on global driver events.
+ *  It will call specific callback functions to further handle the triggering events.
+ */
+static void RF_globalCallbackFunction(RF_Handle client, RF_GlobalEvent events, void *arg)
+{
+%   if (internal) {
+    `RF.internal.option.template.code.function.name`(client, events, arg);
+%   } // End: if (internal)
+    `callbackFxn`(client, events, arg);
+%   if (generateRfCoexCallback) {
+    `callbackFxn`Coex(client, events, arg);
+%   } // End: if (generateRfCoexCallback)
+%   if (generateRfAntennaCallback) {
+    `callbackFxn`AntennaSwitching(client, events, arg);
+%   } // End: if (generateRfAntennaCallback)
+}
+
+/*
+ *  ======== `callbackFxn` ========
+ *  Handle events triggered by the RF driver for custom / application specific behavior.
+ */
+void __attribute__((weak)) `callbackFxn`(RF_Handle client, RF_GlobalEvent events, void *arg)
+{
+    /* ======== PLEASE READ THIS ========
+    *
+    * This function is declared weak for the application to override it.
+    * A new definition of '`callbackFxn`' is required if you want to
+    * handle the events listed in '.globalEventMask'.
+    *
+    * Please copy this function definition to create your own, but make
+    * sure to remove '__attribute__((weak))' for your definition.
+    *
+    * According to '.globalEventMask', this function will be triggered by:
+%   eventMask.forEach(event => {
+    *   - `event`
+%   });
+    *
+    * An example of how to handle these events would be:
+    *
+    *   --- Code snippet begin ---
+    *
+%   eventMask.forEach((event, i) => {
+%   if (i === 0) {
+    *   if(events & `event`) {
+%   } else {
+    *   else if (events & `event`) {
+%   }
+    *       // Perform action for this event
+    *   }
+%   });
+    *
+    *   --- Code snippet end ---
+    */
+}
+
+%   if (internal) {
+`RF.internal.option.template.code.function.definition`
+%   } // End: if (internal)
+
+%   if (generateRfCoexCallback) {
+%   const staticConf = RF.$static;
+%   const {coexPinRequestIdleLevel: reqIdleLvl, coexPinPriorityIdleLevel: priIdleLvl, coexPinGrantIdleLevel: grantIdleLvl} = RF.$static;
+%   const coexPinConfig = {
+%       CONFIG_RF_COEX_REQUEST: {
+%           pinMask: `PIN_GPIO_OUTPUT_EN | PIN_PUSHPULL | PIN_DRVSTR_MAX | ${reqIdleLvl ? "PIN_GPIO_LOW | PIN_INV_INOUT" : "PIN_GPIO_LOW"}`,
+%           rfCoreMux: "IOC_PORT_RFC_GPO1"
+%       },
+%       CONFIG_RF_COEX_PRIORITY: {
+%           pinMask: `PIN_GPIO_OUTPUT_EN | PIN_PUSHPULL | PIN_DRVSTR_MAX | ${priIdleLvl ? "PIN_GPIO_LOW | PIN_INV_INOUT" : "PIN_GPIO_LOW"}`,
+%           rfCoreMux: "IOC_PORT_RFC_GPO2"
+%       },
+%       CONFIG_RF_COEX_GRANT: {
+%           pinMask: `PIN_INPUT_EN${grantIdleLvl ? "" : " | PIN_INV_INOUT"}`,
+%           rfCoreMux: "IOC_PORT_RFC_GPI1"
+%       }
+%   }
+/*
+ * ========= Coexistence =========
+ */
+%   if (useGrantPin) {
+
+/*
+ * RF coex pin ISR during service of RF command chain.
+ *
+ * The ISR is enabled within events RF_GlobalEventCmdStart and
+ * RF_GlobalEventCmdStop, and is triggered by de-assertion of the GRANT signal.
+ * This is to abort any ongoing RF command chain if GRANT is revoked.
+ *
+ * Look in this file for rfDriverCoexPinsHwi for the definition of this function
+*/
+%   } // End: if (useGrantPin)
+
+/*
+ * CoEx configuration structure.
+ *
+ * This structure controls the configuration options for the coexistence feature.
+ * The radio core override list will have a pointer to this structure, and
+ * act according to the settings specified in this structure.
+ */
+%   if (coexPhy.includes("ieee_15_4")) {
+extern rfc_ieeeCoExConfig_t coexConfig;
+%   } // End: if (coexPhy.includes("ieee_15_4"))
+%   if (coexPhy.includes("ble")) {
+extern rfCoreHal_bleCoExConfig_t coexConfig;
+
+/*
+ * CoEx use case configuration structure for BLE.
+ */
+% const {bleInitiator: bleIni, bleConnected: bleCon, bleBroadcaster: bleBro, bleObserver: bleObs} = RF.getCoexConfigBle();
+RF_CoexOverride_BLEUseCases coexConfigBle = {
+    .bleInitiator = {
+        .priority = `bleIni.defaultPriority`,
+        .request = `bleIni.assertRequestForRx`
+    },
+    .bleConnected = {
+        .priority = `bleCon.defaultPriority`,
+        .request = `bleCon.assertRequestForRx`
+    },
+    .bleBroadcaster = {
+        .priority = `bleBro.defaultPriority`,
+        .request = `bleBro.assertRequestForRx`
+    },
+    .bleObserver = {
+        .priority = `bleObs.defaultPriority`,
+        .request = `bleObs.assertRequestForRx`
+    }
+};
+%   } // End: if (coexPhy.includes("ble"))
+
+/* Static variables */
+static RF_Cmd* pCurrentCmd;
+
+/*
+ * ======== `callbackFxn`Coex ========
+ * Set up the IOMUX with RF Core coex signals.
+ *
+ * Signal   | Radio Core
+ * =========|============
+%   rfCoexPinSymbols.forEach(pin => {
+ * `pin.split("_").pop().padEnd(8)` | `coexPinConfig[pin].rfCoreMux.split("IOC_PORT_").pop()`
+%   });
+ * This is the default implementation for handling of coexistence.
+ */
+void __attribute__((weak)) `callbackFxn`Coex(RF_Handle client, RF_GlobalEvent events, void *arg)
+{
+    // Protect against repeated RF_init
+    static bool initialized = false;
+
+    pCurrentCmd = (RF_Cmd*)arg;
+
+    if (!initialized && events & RF_GlobalEventInit) {
+        // Don't do it again
+        initialized = true;
+
+        // Configure default coex pin muxing
+%   rfCoexPinSymbols.forEach(pin => {
+        GPIO_setMux(`pin`, `coexPinConfig[pin].rfCoreMux`);
+%   });
+    }
+    else if (events & RF_GlobalEventCmdStart) {
+%   if (usePriorityPin) {
+        if (pCurrentCmd->coexPriority != RF_PriorityCoexDefault){
+            // Override CoEx PRIORITY value
+            coexConfig.overrideConfig.bUseOverridePriority = 1;
+            coexConfig.overrideConfig.overridePriority = (uint8_t)(pCurrentCmd->coexPriority == RF_PriorityCoexHigh);
+        }
+
+%   } // End: if (usePriorityPin)
+%   if (useRequestPin) {
+        if ((pCurrentCmd->coexRequest != RF_RequestCoexDefault) &&
+            (coexConfig.coExEnable.bRequestForChain == 0)){
+            // Override CoEx REQUEST behavior in RX
+            coexConfig.overrideConfig.bUseOverrideRequestForRx = 1;
+            coexConfig.overrideConfig.overrideRequestForRx = (uint8_t)(pCurrentCmd->coexRequest == RF_RequestCoexAssertRx);
+        }
+
+%   } // End: if (useRequestPin)
+%   if (useGrantPin) {
+        // Enable interrupt on GRANT pin deasserted
+        GPIO_enableInt(CONFIG_RF_COEX_GRANT);
+
+%   } // End: if (useGrantPin)
+    }
+    else if (events & RF_GlobalEventCmdStop) {
+%   if (usePriorityPin) {
+        if (pCurrentCmd->coexPriority != RF_PriorityCoexDefault) {
+            // Clear use of CoEx PRIORITY override value
+            coexConfig.overrideConfig.bUseOverridePriority = 0;
+        }
+
+%   } // End: if (usePriorityPin)
+%   if (useRequestPin) {
+        if ((pCurrentCmd->coexRequest != RF_RequestCoexDefault) &&
+            (coexConfig.coExEnable.bRequestForChain == 0)){
+            // Clear use of override value for CoEx REQUEST behavior in RX
+            coexConfig.overrideConfig.bUseOverrideRequestForRx = 0;
+        }
+
+%   } // End: if (useRequestPin)
+%   if (useGrantPin) {
+        // Disable interrupt on GRANT pin
+        GPIO_disableInt(CONFIG_RF_COEX_GRANT);
+
+%   } // End: if (useGrantPin)
+    }
+    else if (events & RF_GlobalEventCoexControl) {
+        coexConfig.coExEnable.bCoExEnable = *(uint8_t *)arg;
+    }
+}
+
+%   if (useGrantPin) {
+void rfDriverCoexPinsHwi(uint_least8_t index)
+{
+    if ((index == CONFIG_RF_COEX_GRANT) && (coexConfig.rfCoreCoExStatus.bRequestAsserted == 1) &&
+        (coexConfig.rfCoreCoExStatus.bIgnoreGrantInRxAsserted == 0)) {
+        // Abort current cmd
+        RF_cancelCmd(pCurrentCmd->pClient, pCurrentCmd->ch, 0);
+    }
+}
+%   } // End: if (useGrantPin)
+%   } // End: if (generateRfCoexCallback)
+%   if (generateRfAntennaCallback) {
+
+/*
+ * ======== Antenna switching ========
+ */
+/*
+ * ======== `callbackFxn`AntennaSwitching ========
+% if (antennaSwitchName === "SKY13317-373LF") {
+ * Sets up the antenna switch depending on the current PHY configuration.
+% } else if (antennaSwitchName === "XMSSJJ3G0PA-054") {
+ * Sets up the antenna switch according to the TX power table PA type.
+% } else if (antennaSwitchName === "RTC6608OU") {
+%       const isSub1 = rfAntennaPins.map(p => p.symbol).includes("CONFIG_RF_SUB1GHZ");
+%       antennaPathSupport = {
+%           displayName: isSub1 ? "Sub-1 GHz" : "2.4 GHz  ",
+%           pinSymbol: isSub1 ? "CONFIG_RF_SUB1GHZ" : "CONFIG_RF_24GHZ",
+%       };
+ * Sets up the antenna switch according to the TX power table PA type.
+% } else { // else not supported HW
+ * Function to handle antenna switching.
+% } // End: if/else (antennaSwitchName = "...")
+% if (useAntennaSwitchHW) {
+% const pinStates = Array(rfAntennaPins.length).fill(0);
+% const padLength = 10;
+ *
+ * Truth table:
+ *
+ * `"Path".padEnd(padLength)` `rfAntennaPins.map(pin => pin.dio.padEnd(5)).join(" ")`
+ * `"".padEnd(padLength, "=")` `"===== ".repeat(rfAntennaPins.length)`
+ * `"Off".padEnd(padLength)` `pinStates.join("     ")`
+ %  rfAntennaPins.forEach((pin, index) => {
+ * `symbolToDisplayName(pin.symbol).padEnd(padLength)` `pinStates.map((_, i) => Number(i == index)).join("     ")`
+ %  })
+% } // End: if (useAntennaSwitchHW)
+ */
+void __attribute__((weak)) `callbackFxn`AntennaSwitching(RF_Handle client, RF_GlobalEvent events, void *arg)
+{
+% if (useAntennaSwitchHW) {
+
+    if (events & RF_GlobalEventRadioSetup) {
+% if (antennaSwitchName === "SKY13317-373LF") {
+        bool    sub1GHz   = false;
+        uint8_t loDivider = 0;
+
+        /* Switch off all paths. */
+        GPIO_write(CONFIG_RF_24GHZ, 0);
+        GPIO_write(CONFIG_RF_HIGH_PA, 0);
+        GPIO_write(CONFIG_RF_SUB1GHZ, 0);
+
+        /* Decode the current PA configuration. */
+        RF_TxPowerTable_PAType paType = (RF_TxPowerTable_PAType)RF_getTxPower(client).paType;
+
+        /* Decode the generic argument as a setup command. */
+        RF_RadioSetup* setupCommand = (RF_RadioSetup*)arg;
+
+        switch (setupCommand->common.commandNo) {
+            case (CMD_RADIO_SETUP):
+            case (CMD_BLE5_RADIO_SETUP):
+                    loDivider = RF_LODIVIDER_MASK & setupCommand->common.loDivider;
+
+                    /* Sub-1GHz front-end. */
+                    if (loDivider != 0) {
+                        sub1GHz = true;
+                    }
+                    break;
+            case (CMD_PROP_RADIO_DIV_SETUP):
+                    loDivider = RF_LODIVIDER_MASK & setupCommand->prop_div.loDivider;
+
+                    /* Sub-1GHz front-end. */
+                    if (loDivider != 0) {
+                        sub1GHz = true;
+                    }
+                    break;
+            default:break;
+        }
+
+        if (sub1GHz) {
+            /* Sub-1 GHz */
+            if (paType == RF_TxPowerTable_HighPA) {
+                /* PA enable --> HIGH PA
+                 * LNA enable --> Sub-1 GHz
+                 */
+                GPIO_setMux(CONFIG_RF_24GHZ, IOC_PORT_GPIO);
+                /* Note: RFC_GPO3 is a work-around because the RFC_GPO1 (PA enable signal) is sometimes not
+                         de-asserted on CC1352 Rev A. */
+                GPIO_setMux(CONFIG_RF_HIGH_PA, IOC_PORT_RFC_GPO3);
+                GPIO_setMux(CONFIG_RF_SUB1GHZ, IOC_PORT_RFC_GPO0);
+            } else {
+                /* RF core active --> Sub-1 GHz */
+                GPIO_setMux(CONFIG_RF_24GHZ, IOC_PORT_GPIO);
+                GPIO_setMux(CONFIG_RF_HIGH_PA, IOC_PORT_GPIO);
+                GPIO_setMux(CONFIG_RF_SUB1GHZ, IOC_PORT_GPIO);
+                GPIO_write(CONFIG_RF_SUB1GHZ, 1);
+            }
+        } else {
+            /* 2.4 GHz */
+            if (paType == RF_TxPowerTable_HighPA)
+            {
+                /* PA enable --> HIGH PA
+                 * LNA enable --> 2.4 GHz
+                 */
+                GPIO_setMux(CONFIG_RF_24GHZ, IOC_PORT_RFC_GPO0);
+                /* Note: RFC_GPO3 is a work-around because the RFC_GPO1 (PA enable signal) is sometimes not
+                         de-asserted on CC1352 Rev A. */
+                GPIO_setMux(CONFIG_RF_HIGH_PA, IOC_PORT_RFC_GPO3);
+                GPIO_setMux(CONFIG_RF_SUB1GHZ, IOC_PORT_GPIO);
+            } else {
+                /* RF core active --> 2.4 GHz */
+                GPIO_setMux(CONFIG_RF_24GHZ, IOC_PORT_GPIO);
+                GPIO_setMux(CONFIG_RF_HIGH_PA, IOC_PORT_GPIO);
+                GPIO_setMux(CONFIG_RF_SUB1GHZ, IOC_PORT_GPIO);
+                GPIO_write(CONFIG_RF_24GHZ, 1);
+            }
+        }
+% } else if (antennaSwitchName === "XMSSJJ3G0PA-054") {
+        /* Switch off all paths. */
+        GPIO_write(CONFIG_RF_5_DBM_PA, 0);
+        GPIO_write(CONFIG_RF_10_DBM_PA, 0);
+
+        /* Decode the current PA configuration. */
+        RF_TxPowerTable_PAType paType = (RF_TxPowerTable_PAType)RF_getTxPower(client).paType;
+
+        if (paType == RF_TxPowerTable_HighPA) {
+            /*
+            * Mux GPIOs to RF Core signals:
+            * - High PA    --> 10_DBM_PA
+            * - LNA enable --> 5_DBM_PA
+            */
+            GPIO_setMux(CONFIG_RF_5_DBM_PA, IOC_PORT_RFC_GPO0);
+            GPIO_setMux(CONFIG_RF_10_DBM_PA, IOC_PORT_RFC_GPO3);
+        } else {
+            /* RF Core active --> 5_DBM */
+            GPIO_write(CONFIG_RF_5_DBM_PA, 1);
+        }
+% } else if (antennaSwitchName === "RTC6608OU") {
+        /* Switch off all paths. */
+        GPIO_write(CONFIG_RF_HIGH_PA, 0);
+        GPIO_write(`antennaPathSupport.pinSymbol`, 0);
+
+        /* Decode the current PA configuration. */
+        RF_TxPowerTable_PAType paType = (RF_TxPowerTable_PAType)RF_getTxPower(client).paType;
+
+        if (paType == RF_TxPowerTable_HighPA) {
+            /*
+            * Mux GPIOs to RF Core signals:
+            * - High PA    --> HIGH PA
+            * - LNA enable --> `antennaPathSupport.displayName`
+            */
+            GPIO_setMux(CONFIG_RF_HIGH_PA, IOC_PORT_RFC_GPO3);
+            GPIO_setMux(`antennaPathSupport.pinSymbol`, IOC_PORT_RFC_GPO0);
+        } else {
+            /* RF Core active --> `antennaPathSupport.displayName` */
+            GPIO_write(`antennaPathSupport.pinSymbol`, 1);
+        }
+% } else {
+        /* No support implemented for antenna switch '`antennaSwitchName`' */
+% } // End: if/else (antennaSwitchName = "...")
+    }
+    else if (events & RF_GlobalEventRadioPowerDown) {
+        /* Switch off all paths. */
+%   for (let i = 0; i < rfAntennaPins.length; i++) {
+        GPIO_write(`rfAntennaPins[i].symbol`, 0);
+%   }
+
+        /* Reset the IO multiplexer to GPIO functionality */
+%   for (let i = 0; i < rfAntennaPins.length; i++) {
+        GPIO_setMux(`rfAntennaPins[i].symbol`, IOC_PORT_GPIO);
+%   }
+    }
+% } else { // else not supported HW
+    /* ======== PLEASE READ THIS ========
+    *
+    * This function is declared weak for the application to override it,
+    * and the undefined function call below is intended to catch the
+    * developer's attention at link time.
+    * A new definition of '`callbackFxn`AntennaSwitching' is required.
+    *
+    * Please copy this function definition to create your own, but make
+    * sure to remove '__attribute__((weak))' for your definition and
+    * remove the below function declaration and function call.
+    *
+    * To handle the events listed in '.globalEventMask', please see the
+    * help text provided in '`callbackFxn`' above.
+    *
+    * For an example on how to interact with the selected antenna pins,
+    * please see the code snippet below:
+    *
+    *   --- Code snippet begin ---
+    *
+    * // > This assumes antenna switch pins have been added to GPIO via
+    * // > sysconfig with the following properties:
+    * // >     mode: Output
+    * // >     initialOutputState: Low
+    * // >     outputStrength: High
+    *
+    * // > Set pin output value manually
+    * GPIO_write(`rfAntennaPins[0].symbol`, 0); // Low
+    * GPIO_write(`rfAntennaPins[0].symbol`, 1); // High
+    *
+    * // > Mux pin to be driven/controlled by the RF Core
+    * // > (RFC GPIO0 is here only used as an example)
+    * GPIO_setMux(`rfAntennaPins[0].symbol`, IOC_PORT_RFC_GPO0);
+    *
+    * // > Mux pin to be controlled manually (i.e. release RF Core control)
+    * GPIO_setMux(`rfAntennaPins[0].symbol`, IOC_PORT_GPIO);
+    *
+    *   --- Code snippet end ---
+    */
+    extern void you_must_implement_`callbackFxn`AntennaSwitching_see_generated_ti_drivers_config_c_in_debug_folder_or_sysconfig_preview(void);
+    you_must_implement_`callbackFxn`AntennaSwitching_see_generated_ti_drivers_config_c_in_debug_folder_or_sysconfig_preview();
+% } // End: if/else (antennaSwitchName = "...")
+}
+%   } // End: if (generateRfAntennaCallback)
+%   } // End: if (generateRfCallback)

@@ -1,0 +1,49 @@
+id: simple_rgb_pwm_led
+label: Simple RGB PWM LED
+package: platform
+description: >
+  The Simple RGB PWM LED Driver provides an implementation of the Generic LED 
+  API. This driver supports controlling Red/Green/Blue LED sets and uses 
+  Pulse Width Modulation (PWM) to set the intensity of each LED.
+
+
+  This component is instantiable, meaning that several named instances can be 
+  created. For each instance a configuration is generated along with an 
+  initialization struct set according to this configuration. These instances,
+  defines, and variables are available in a generated header file,
+  sl_simple_rgb_pwm_led_instances.h.
+
+
+  If the Services->Runtime->System Setup->System Init component is included in
+  a project, the driver instances will be initialized automatically, using the
+  instance configurations, during the sl_system_init() call in main.c.
+
+
+  Selecting this component will also include the Simple LED Core component, which is 
+  the implementation of the Simple RGB PWM LED driver itself.
+category: Platform|Driver|LED
+quality: production
+root_path: platform/driver/leddrv/
+instantiable:
+  prefix: inst
+config_file:
+  - path: "config/s0/sl_simple_rgb_pwm_led_{{instance}}_config.h"
+    file_id: simple_rgb_pwm_led_config
+    condition: [device_series_0]
+  - path: "config/s1/sl_simple_rgb_pwm_led_{{instance}}_config.h"
+    file_id: simple_rgb_pwm_led_config
+    condition: [device_series_1]
+  - path: "config/s2/sl_simple_rgb_pwm_led_{{instance}}_config.h"
+    file_id: simple_rgb_pwm_led_config
+    condition: [device_series_2]
+provides:
+  - name: simple_rgb_pwm_led
+    allow_multiple: true
+requires:
+  - name: simple_rgb_pwm_led_core
+template_contribution:
+  - name: simple_rgb_pwm_led_instance
+    value: "{{instance}}"
+documentation:
+    docset: gecko-platform
+    document: driver/api/group-simple-rgb-pwm-led

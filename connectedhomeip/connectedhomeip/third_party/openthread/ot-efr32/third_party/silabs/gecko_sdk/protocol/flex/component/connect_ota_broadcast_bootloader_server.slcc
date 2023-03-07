@@ -1,0 +1,48 @@
+id: "connect_ota_broadcast_bootloader_server"
+label: "OTA Broadcast Bootloader Server"
+package: "Flex"
+category: "Connect|OTA"
+quality: "production"
+description: "Implements the server side of the Connect OTA Broadcast Bootloader protocol. The OTA Broadcast Bootloader Server component should be used to distribute an image from the server to a set of target devices (clients) in a reliable broadcast fashion, to retrieve the status of a set of target devices and to instruct a set of target devices to initiate a bootload."
+provides:
+  - name: "connect_ota_broadcast_bootloader_server"
+requires:
+  - name: "connect_stack_common"
+source:
+      - path: "protocol/flex/ota-broadcast-bootloader/ota-broadcast-bootloader-server/ota-broadcast-bootloader-server.c"
+      - path: "protocol/flex/ota-broadcast-bootloader/ota-broadcast-bootloader-server/ota-broadcast-bootloader-server-cb.c"
+include:
+  - path: "protocol/flex/ota-broadcast-bootloader"
+    file_list:
+      - path: "ota-broadcast-bootloader-common-internal.h"
+      - path: "ota-broadcast-bootloader-protocol.h"
+      - path: "ota-broadcast-bootloader-types.h"
+  - path: "protocol/flex/ota-broadcast-bootloader/ota-broadcast-bootloader-server"
+    file_list:
+      - path: "ota-broadcast-bootloader-server.h"
+      - path: "ota-broadcast-bootloader-server-internal.h"
+config_file:
+  - path: "protocol/flex/ota-broadcast-bootloader/ota-broadcast-bootloader-server/config/ota-broadcast-bootloader-server-config.h"
+template_contribution:
+  - name: stack_callback
+    value:
+      callback_type: "incoming_message"
+      function_name: "emAfPluginOtaBootloaderServerIncomingMessageCallback"
+  - name: stack_callback
+    value:
+      callback_type: "message_sent"
+      function_name: "emAfPluginOtaBootloaderServerMessageSentCallback"
+  - name: stack_callback
+    value:
+      callback_type: "mark_application_buffers"
+      function_name: "emAfPluginOtaBootloaderServerMarkBuffersCallback"
+  - name: event_system
+    value:
+      event_control: "emAfPluginOtaBootloaderServerEventControl"
+      event_handler: "emAfPluginOtaBootloaderServerEventHandler"
+  - name: component_catalog
+    value: connect_ota_broadcast_bootloader_server
+
+documentation:
+  docset: connect-stack
+  document: group-ota-bootloader-server

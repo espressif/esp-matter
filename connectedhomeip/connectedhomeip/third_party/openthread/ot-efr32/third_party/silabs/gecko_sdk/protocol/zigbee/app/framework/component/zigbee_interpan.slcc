@@ -1,0 +1,140 @@
+package: Zigbee
+description: A component used to handle sending and receiving inter-PAN messages, which are messages
+  that are sent by unjoined devices 1-hop away.
+label: Interpan
+quality: production
+id: zigbee_interpan
+category: Zigbee|Utility
+provides:
+   - name: zigbee_interpan
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/interpan/config/interpan-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/interpan/interpan.c
+  - path: protocol/zigbee/app/framework/plugin/interpan/interpan-cli.c
+    condition:
+      - cli
+  - path: protocol/zigbee/app/framework/plugin/interpan/interpan-host.c
+    condition:
+      - zigbee_ezsp
+  - path: protocol/zigbee/app/framework/plugin/interpan/interpan-soc.c
+    condition:
+      - zigbee_stack_common
+  - path: protocol/zigbee/app/framework/plugin/interpan/interpan-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/interpan
+    file_list:
+      - path: interpan.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_interpan
+  - name: zigbee_stack_callback
+    value:
+      callback_type: mac_filter_match_message
+      function_name: emAfPluginInterpanMacFilterMatchMessageCallback
+    unless:
+      - zigbee_ezsp
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emberAfPluginInterpanInitCallback
+    unless:
+      - zigbee_ezsp
+  - name: zigbee_af_callback
+    value:
+      callback_type: local_data_init
+      function_name: emberAfPluginInterpanInitCallback
+    unless:
+      - zigbee_ezsp
+  - name: zigbee_af_callback
+    value:
+      callback_type: ncp_init
+      function_name: emberAfPluginInterpanNcpInitCallback
+    condition:
+      - zigbee_ezsp    
+  - name: cli_group
+    value:
+      group: plugin
+      name: interpan
+      help: interpan related commands.
+  - name: cli_command
+    value:
+      group: interpan
+      name: enable
+      handler: emAfInterpanEnableCommand
+      help: Enables inter-PAN globally.
+  - name: cli_command
+    value:
+      group: interpan
+      name: disable
+      handler: emAfInterpanDisableCommand
+      help: Disables inter-PAN globally.
+  - name: cli_command
+    value:
+      group: interpan
+      name: fragment-test
+      handler: emAfInterpanFragmentTestCommand
+      help: Sends a message of specified length of random values to target device over inter-PAN.
+      argument:
+      - type: uint16
+        help: The PAN ID that the target is located on
+      - type: hex
+        help: The targets EUI64 (big endian)
+      - type: uint16
+        help: The cluster ID that the sample message should contain
+      - type: uint16
+        help: The length of the randomly-filled message to be sent across inter-PAN
+  - name: cli_command
+    value:
+      group: interpan
+      name: set-msg-timeout
+      handler: emAfInterpanSetMessageTimeoutCommand
+      help: Sets the timeout for inter-PAN messages sent and received.
+      argument:
+      - type: uint8
+        help: Message timeout in seconds
+  - name: cli_command
+    value:
+      group: interpan
+      name: group
+      handler: emAfInterpanGroupShortCommand
+      help: Send an interpan message to a group id.
+      argument:
+      - type: uint16
+        help: Group ID
+      - type: uint16
+        help: Destination PAN ID
+      - type: uint16
+        help: Destination Profile ID
+  - name: cli_command
+    value:
+      group: interpan
+      name: short
+      handler: emAfInterpanGroupShortCommand
+      help: Send an interpan message to a short id.
+      argument:
+      - type: uint16
+        help: Short ID
+      - type: uint16
+        help: Destination PAN ID
+      - type: uint16
+        help: Destination Profile ID
+  - name: cli_command
+    value:
+      group: interpan
+      name: long
+      handler: emAfInterpanLongCommand
+      help: Send an interpan message to an 8-byte EUI64.
+      argument:
+      - type: hex
+        help: Long ID
+      - type: uint16
+        help: Destination PAN ID
+      - type: uint16
+        help: Destination Profile ID
+      - type: uint16
+        help: Encrypt Options
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/interpan

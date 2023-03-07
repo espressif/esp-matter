@@ -1,0 +1,15 @@
+*.swp
+__pycache__
+tmp/
+*.pyc
+.eggs/
+.vimrc
+bazel-bin
+bazel-cirque
+bazel-out
+bazel-testlogs
+bazel-cirque-core
+venv*
+build
+dist
+cirque.egg-info

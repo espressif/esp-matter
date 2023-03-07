@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Three Zone Heart Rate Limits" type="org.bluetooth.characteristic.three_zone_heart_rate_limits" uuid="2A94" last-modified="2014-06-10" approved="Yes">
+    <InformativeText>
+        <Abstract>Data structure containing the limits between the heart rate zones for the 3-zone heart rate definition (Hard, Moderate and Light).</Abstract>
+	</InformativeText>
+    <Value>
+    <Field name="Three zone Heart Rate Limits - Light (Fat burn) / Moderate (Aerobic) Limit">
+        <InformativeText>Unit is in beats per minute with a resolution of 1</InformativeText>
+        <Requirement>Mandatory</Requirement>
+        <Format>uint8</Format>
+        <Unit>org.bluetooth.unit.period.beats_per_minute</Unit>
+        <DecimalExponent>0</DecimalExponent>
+       
+    </Field>
+        <Field name="Three zone Heart Rate Limits - Moderate (Aerobic) / Hard (Anaerobic) Limit">
+        <InformativeText>Unit is in beats per minute with a resolution of 1</InformativeText>
+        <Requirement>Mandatory</Requirement>
+        <Format>uint8</Format>
+        <Unit>org.bluetooth.unit.period.beats_per_minute</Unit>
+        <DecimalExponent>0</DecimalExponent>
+        
+    </Field>
+	</Value>
+    <Note>The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet.</Note>
+   
+</Characteristic>

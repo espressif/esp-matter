@@ -1,0 +1,52 @@
+
+SIMPLELINK_CC32XX_SDK_INSTALL_DIR ?= $(abspath ../../../../../..)
+
+include $(SIMPLELINK_CC32XX_SDK_INSTALL_DIR)/imports.mak
+
+ROOT=$(SIMPLELINK_CC32XX_SDK_INSTALL_DIR)/source/ti/net/utils
+
+#
+# Source path
+#
+VPATH = $(ROOT)
+
+CC = "$(CCS_ARMCOMPILER)/bin/armcl"
+AR = "$(CCS_ARMCOMPILER)/bin/armar"
+
+STDINC = "$(CCS_ARMCOMPILER)/include"
+
+#
+# Include path
+#
+IPATH  = -I$(ROOT)
+IPATH += -I$(ROOT)/../../../
+IPATH += -I$(ROOT)/../../drivers/net/wifi
+IPATH += -I$(ROOT)/../../posix/ccs
+ifdef COM_TI_SIMPLELINK_MSP432_SDK_INSTALL_DIR
+IPATH += -I$(COM_TI_SIMPLELINK_MSP432_SDK_INSTALL_DIR)/source
+endif
+IPATH += -I$(STDINC)
+
+CFLAGS = -c -qq -pdsw225 -ms -g --endian=little -mv7M4 --float_support=vfplib --symdebug:dwarf $(IPATH)
+
+CFILES = \
+    str_mpl.c \
+    map_util.c \
+    clock_sync.c \
+    clock_syncCC32XX.c
+
+OBJCFILES = $(CFILES:.c=.obj)
+
+net_utils.a: $(OBJCFILES)
+	@ echo ar $@ ...
+	@ $(RM) $@ > $(DEVNULL) 2>&1
+	@ $(AR) rq $@ $(OBJCFILES)
+
+%.obj:%.c
+	@ echo cc $@ ...
+	@ $(CC) $(CFLAGS) $<
+
+clean:
+	@ echo cleaning ...
+	@ $(RM) *.obj > $(DEVNULL) 2>&1
+	@ $(RM) *.a > $(DEVNULL) 2>&1

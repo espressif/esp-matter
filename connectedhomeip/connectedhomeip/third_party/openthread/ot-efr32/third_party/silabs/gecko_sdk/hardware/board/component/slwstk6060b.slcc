@@ -1,0 +1,23 @@
+!!omap
+- id: slwstk6060b
+- label: SLWSTK6060B
+- package: platform
+- description: Kit BSP support for the EFR32FG14 2400/915 MHz Wireless Starter Kit.
+- category: Platform|Board|Kit|Wireless Starter Kit
+- quality: production
+- requires:
+  - name: brd4001a
+  - name: hardware_board_from_slwstk6060b
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_stk
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWSTK6060B"'
+  - name: SL_KIT_REV
+    value: '"A04"'
+- tag:
+  - kit:opn:SLWSTK6060B
+  - kit:pn:WSTK6060
+  - kit:variant:B
+  - kit:revision:A04

@@ -1,0 +1,18 @@
+id: trustzone_secure
+label: "TrustZone Secure"
+description: >
+   Set up application configuration to create TrustZone Secure application.
+package: platform
+category: Platform|Common
+quality: production
+root_path: platform/common
+define:
+  - name: SL_TRUSTZONE_SECURE
+provides:
+  - name: trustzone_secure
+  - name: trustzone_security_state
+requires:
+  - name: cortexm33
+template_contribution:
+  - name: trustzone_secure
+    value: 1

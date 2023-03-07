@@ -1,0 +1,12 @@
+{
+    "targets": {
+        "Default": "target_launchxl-cc2652psip.json:LP_CC2652PSIP",
+        "VirtualTarget": {
+            "_name": "LP_CC2652PSIP",
+            "Target": [
+                "target_launchxl-cc2652psip.json",
+                "target_launchxl-cc2652psip_highPA.json"
+            ]
+        }
+    }
+}

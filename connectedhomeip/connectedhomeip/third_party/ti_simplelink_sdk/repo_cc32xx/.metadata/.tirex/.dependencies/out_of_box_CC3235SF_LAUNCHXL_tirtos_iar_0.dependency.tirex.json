@@ -1,0 +1,32 @@
+[
+    {
+        "files": [
+            "+../../bma2xxdrv.c -> bma2xxdrv.c",
+            "+../../bma2xxdrv.h -> bma2xxdrv.h",
+            "+../../../../../../../source/ti/boards/CC3235SF_LAUNCHXL/Board.html -> Board.html",
+            "+cc32xxsf_tirtos.icf -> cc32xxsf_tirtos.icf",
+            "+../../link_local_task.c -> link_local_task.c",
+            "+../../link_local_task.h -> link_local_task.h",
+            "+../main_tirtos.c -> main_tirtos.c",
+            "+../../ota_archive.c -> ota_archive.c",
+            "+../../ota_archive.h -> ota_archive.h",
+            "+../../ota_json.c -> ota_json.c",
+            "+../../ota_json.h -> ota_json.h",
+            "+../../ota_task.c -> ota_task.c",
+            "+../../ota_task.h -> ota_task.h",
+            "+../../out_of_box.c -> out_of_box.c",
+            "+../../out_of_box.h -> out_of_box.h",
+            "+../out_of_box.syscfg -> out_of_box.syscfg",
+            "+../../platform.c -> platform.c",
+            "+../../platform.h -> platform.h",
+            "+../../provisioning_task.c -> provisioning_task.c",
+            "+../../provisioning_task.h -> provisioning_task.h",
+            "+../../README.html -> README.html",
+            "+../../README.md -> README.md",
+            "+../../tmpdrv.c -> tmpdrv.c",
+            "+../../tmpdrv.h -> tmpdrv.h",
+            "+../../uart_term.c -> uart_term.c",
+            "+../../uart_term.h -> uart_term.h"
+        ]
+    }
+]

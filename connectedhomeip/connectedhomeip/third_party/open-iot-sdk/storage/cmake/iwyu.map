@@ -1,0 +1,22 @@
+[
+    {include: [
+        "<__algorithm/max.h>", private,
+        "<algorithm>", public,
+    ]},
+    {include: [
+        "<__algorithm/min.h>", private,
+        "<algorithm>", public,
+    ]},
+    {include: [
+        "<__algorithm/search.h>", private,
+        "<algorithm>", public,
+    ]},
+    {include: [
+        "<__functional/function.h>", private,
+        "<utility>", public,
+    ]},
+    {include: [
+        "<__memory/unique_ptr.h>", private,
+        "<memory>", public,
+    ]},
+]

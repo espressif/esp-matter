@@ -1,0 +1,63 @@
+id: ml_audio_feature_generation
+package: platform
+label: Audio Feature Generator
+description: >
+  The audio feature generator can be used to extract mel-flterbank features from an audio
+  signal for use with machine learning audio classification applications. The microphone
+  is used as an audio source and the features are calculated in real time.
+category: Machine Learning|Feature Generator
+quality: production
+provides:
+  - name: ml_audio_feature_generation
+requires:
+  - name: toolchain_gcc
+  - name: cpp_support
+  - name: frontend_fft_implementation
+  - name: component_catalog
+  - name: mic_driver
+  - name: sl_common
+recommends:
+  - id: ml_cmsis_dsp_rfft_q15
+root_path: util/third_party/tensorflow_extra
+config_file:
+  - path: config/sl_ml_audio_feature_generation_config.h
+include:
+  - path: inc/
+    file_list:
+      - path: sl_ml_audio_feature_generation.h
+  - path: .
+    file_list:
+      - path: microfrontend/lib/bits.h
+      - path: microfrontend/sl_ml_fft.h
+      - path: microfrontend/lib/filterbank.h
+      - path: microfrontend/lib/filterbank_util.h
+      - path: microfrontend/lib/frontend.h
+      - path: microfrontend/lib/frontend_util.h
+      - path: microfrontend/lib/log_lut.h
+      - path: microfrontend/lib/log_scale.h
+      - path: microfrontend/lib/log_scale_util.h
+      - path: microfrontend/lib/noise_reduction.h
+      - path: microfrontend/lib/noise_reduction_util.h
+      - path: microfrontend/lib/pcan_gain_control.h
+      - path: microfrontend/lib/pcan_gain_control_util.h
+      - path: microfrontend/lib/window.h
+      - path: microfrontend/lib/window_util.h
+source:
+  - path: src/sl_ml_audio_feature_generation.c
+  - path: src/sl_ml_audio_feature_generation_init.c
+  - path: microfrontend/lib/filterbank.c
+  - path: microfrontend/lib/filterbank_util.c
+  - path: microfrontend/lib/frontend.c
+  - path: microfrontend/lib/frontend_util.c
+  - path: microfrontend/lib/log_lut.c
+  - path: microfrontend/lib/log_scale.c
+  - path: microfrontend/lib/log_scale_util.c
+  - path: microfrontend/lib/noise_reduction.c
+  - path: microfrontend/lib/noise_reduction_util.c
+  - path: microfrontend/lib/pcan_gain_control.c
+  - path: microfrontend/lib/pcan_gain_control_util.c
+  - path: microfrontend/lib/window.c
+  - path: microfrontend/lib/window_util.c
+documentation:
+  docset: gecko-platform
+  document: machine-learning/api/group-ml-audio-feature-generation

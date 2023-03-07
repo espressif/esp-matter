@@ -1,0 +1,142 @@
+id: lwip_core
+label: "LwIP Core"
+pretty_name : "LightWeight IP (LWIP) core stack"
+package: platform
+description: >
+    lwIP (lightweight IP) is a widely used open-source TCP/IP stack designed for embedded systems.
+    lwIP was originally developed by Adam Dunkels at the Swedish Institute of Computer Science and
+    is now developed and maintained by a worldwide network of developers.
+category: LwIP
+quality: production
+provides:
+  - name: lwip_core
+requires:
+  - name: lwip_netif
+  - name: lwip_port_freertos
+    condition:
+    - freertos
+  - name: lwip_port_micriumos
+    condition:
+    - micriumos
+  - name: kernel
+recommends:
+  - id: lwip_netif_ppp
+  - id: freertos
+source:
+  - path: util/third_party/lwip/lwip/src/core/altcp.c
+  - path: util/third_party/lwip/lwip/src/core/altcp_alloc.c
+  - path: util/third_party/lwip/lwip/src/core/altcp_tcp.c
+  - path: util/third_party/lwip/lwip/src/core/def.c
+  - path: util/third_party/lwip/lwip/src/core/dns.c
+  - path: util/third_party/lwip/lwip/src/core/inet_chksum.c
+  - path: util/third_party/lwip/lwip/src/core/init.c
+  - path: util/third_party/lwip/lwip/src/core/ip.c
+  - path: util/third_party/lwip/lwip/src/core/ipv4/autoip.c
+  - path: util/third_party/lwip/lwip/src/core/ipv4/dhcp.c
+  - path: util/third_party/lwip/lwip/src/core/ipv4/etharp.c
+  - path: util/third_party/lwip/lwip/src/core/ipv4/icmp.c
+  - path: util/third_party/lwip/lwip/src/core/ipv4/igmp.c
+  - path: util/third_party/lwip/lwip/src/core/ipv4/ip4.c
+  - path: util/third_party/lwip/lwip/src/core/ipv4/ip4_addr.c
+  - path: util/third_party/lwip/lwip/src/core/ipv4/ip4_frag.c
+  - path: util/third_party/lwip/lwip/src/core/mem.c
+  - path: util/third_party/lwip/lwip/src/core/memp.c
+  - path: util/third_party/lwip/lwip/src/core/netif.c
+  - path: util/third_party/lwip/lwip/src/core/pbuf.c
+  - path: util/third_party/lwip/lwip/src/core/raw.c
+  - path: util/third_party/lwip/lwip/src/core/stats.c
+  - path: util/third_party/lwip/lwip/src/core/sys.c
+  - path: util/third_party/lwip/lwip/src/core/tcp.c
+  - path: util/third_party/lwip/lwip/src/core/tcp_in.c
+  - path: util/third_party/lwip/lwip/src/core/tcp_out.c
+  - path: util/third_party/lwip/lwip/src/core/timeouts.c
+  - path: util/third_party/lwip/lwip/src/core/udp.c
+include:
+  - path: util/third_party/lwip/lwip/src/include
+    file_list:
+    - path: lwip/apps/fs.h
+      condition:
+      - lwip_apps
+    - path: lwip/altcp.h
+    - path: lwip/altcp_tcp.h
+    - path: lwip/altcp_tls.h
+    - path: lwip/api.h
+    - path: lwip/arch.h
+    - path: lwip/autoip.h
+    - path: lwip/debug.h
+    - path: lwip/def.h
+    - path: lwip/dhcp6.h
+    - path: lwip/dhcp.h
+    - path: lwip/dns.h
+    - path: lwip/err.h
+    - path: lwip/errno.h
+    - path: lwip/etharp.h
+    - path: lwip/ethip6.h
+    - path: lwip/icmp6.h
+    - path: lwip/icmp.h
+    - path: lwip/if_api.h
+    - path: lwip/igmp.h
+    - path: lwip/inet_chksum.h
+    - path: lwip/inet.h
+    - path: lwip/init.h
+    - path: lwip/init.h.cmake.in
+    - path: lwip/ip4_addr.h
+    - path: lwip/ip4_frag.h
+    - path: lwip/ip4.h
+    - path: lwip/ip6_addr.h
+    - path: lwip/ip6_frag.h
+    - path: lwip/ip6.h
+    - path: lwip/ip6_zone.h
+    - path: lwip/ip_addr.h
+    - path: lwip/ip.h
+    - path: lwip/mem.h
+    - path: lwip/memp.h
+    - path: lwip/mld6.h
+    - path: lwip/nd6.h
+    - path: lwip/netbuf.h
+    - path: lwip/netdb.h
+    - path: lwip/netifapi.h
+    - path: lwip/netif.h
+    - path: lwip/opt.h
+    - path: lwip/pbuf.h
+    - path: lwip/raw.h
+    - path: lwip/sio.h
+    - path: lwip/snmp.h
+    - path: lwip/sockets.h
+    - path: lwip/stats.h
+    - path: lwip/sys.h
+    - path: lwip/tcpbase.h
+    - path: lwip/tcp.h
+    - path: lwip/tcpip.h
+    - path: lwip/timeouts.h
+    - path: lwip/udp.h
+    - path: lwip/priv/altcp_priv.h
+    - path: lwip/priv/api_msg.h
+    - path: lwip/priv/memp_priv.h
+    - path: lwip/priv/memp_std.h
+    - path: lwip/priv/mem_priv.h
+    - path: lwip/priv/nd6_priv.h
+    - path: lwip/priv/raw_priv.h
+    - path: lwip/priv/sockets_priv.h
+    - path: lwip/priv/tcpip_priv.h
+    - path: lwip/priv/tcp_priv.h
+    - path: lwip/prot/autoip.h
+    - path: lwip/prot/dhcp.h
+    - path: lwip/prot/dhcp6.h
+    - path: lwip/prot/dns.h
+    - path: lwip/prot/etharp.h
+    - path: lwip/prot/ethernet.h
+    - path: lwip/prot/iana.h
+    - path: lwip/prot/icmp.h
+    - path: lwip/prot/icmp6.h
+    - path: lwip/prot/ieee.h
+    - path: lwip/prot/igmp.h
+    - path: lwip/prot/ip.h
+    - path: lwip/prot/ip4.h
+    - path: lwip/prot/ip6.h
+    - path: lwip/prot/mld6.h
+    - path: lwip/prot/nd6.h
+    - path: lwip/prot/tcp.h
+    - path: lwip/prot/udp.h
+    - path: netif/ppp/ppp_opts.h
+    - path: netif/ppp/ppp_impl.h

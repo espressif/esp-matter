@@ -1,0 +1,96 @@
+// Copyright 2021 The Pigweed Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not
+// use this file except in compliance with the License. You may obtain a copy of
+// the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations under
+// the License.
+syntax = "proto3";
+
+package pw.snapshot;
+
+option java_package = "pw.snapshot.proto";
+option java_outer_classname = "Snapshot";
+
+import "pw_chrono_protos/chrono.proto";
+import "pw_cpu_exception_cortex_m_protos/cpu_state.proto";
+import "pw_log/proto/log.proto";
+import "pw_thread_protos/thread.proto";
+import "pw_snapshot_metadata_proto/snapshot_metadata.proto";
+
+// The Snapshot proto is a list that dictates field numbers that should
+// be used when serializing proto messages into a "Snapshot" that can be
+// ingested by Pigweed's upstream tooling.
+//
+// There are various field number ranges that are marked for "upstream" use,
+// and others that are marked for "pigweed users". This allows a user to
+// define a parallel proto that defines product-specific messages using mutually
+// exclusive field numbers:
+//
+//   MySnapshot {
+//     // Use a project-specific logging proto format.
+//     repeated MyLogFormat = 8;
+//
+//     // Pigweed's snapshot doesn't support my custom RTOS, so write that to
+//     // a field number reserved for downstream projects.
+//     MyCustomRtosInfo = 22;
+//   }
+//
+// Writing both proto messages to the same proto encoder is valid because the
+// field nubmers are mutually exclusive. This prevents collisions that would
+// break a proto decode. The final message will have to be decoded twice; once
+// as a pw.snapshot.Snapshot and once as the project-specific message.
+message Snapshot {
+  repeated pw.log.LogEntry logs = 1;
+
+  // RESERVED FOR PIGWEED. These field numbers are reserved strictly for things
+  // that are very generally useful and high in count. Downstream projects may
+  // NOT write to these fields.
+  // Encodes to a single byte of tag overhead.
+  reserved 2 to 7;
+
+  // RESERVED FOR USERS. These field numbers should be used for writing
+  // project-specific proto messages that repeat in high quantity to reduce
+  // proto encoding overhead. Pigweed must not write to these fields.
+  // Encodes to a single byte of tag overhead.
+  reserved 8 to 15;
+
+  // Note: Proto tags 16-2047 encode with two bytes of overhead.
+  Metadata metadata = 16;
+
+  // Other data that should be highlighted in this crash. This field may have
+  // entries added to it during a decode.
+  map<string, string> tags = 17;
+
+  repeated pw.thread.proto.Thread threads = 18;
+
+  // If a device has multiple cores, it may be useful to collect an associated
+  // snapshot for attached cores when a snapshot collection is triggered on one
+  // core. By embedding one or more snapshots into a snapshot, the snapshots are
+  // considered associated.
+  repeated Snapshot related_snapshots = 19;
+
+  pw.cpu_exception.cortex_m.ArmV7mCpuState armv7m_cpu_state = 20;
+
+  // Platform-specific binary trace data region. Binary trace data is using
+  // pw_trace_tokenized buffer format for stored data.
+  bytes trace_data = 21;
+
+  // Timestamps that mark when this snapshot occurred. This field is repeated
+  // to accommodate wall-clock time, time since boot, and/or the raw system
+  // clock value.
+  repeated pw.chrono.TimePoint timestamps = 22;
+
+  // RESERVED FOR PIGWEED. Downstream projects may NOT write to these fields.
+  // Encodes to two bytes of tag overhead.
+  reserved 23 to 1031;
+
+  // RESERVED FOR USERS. Encodes to two or more bytes of tag overhead.
+  reserved 1032 to max;
+}

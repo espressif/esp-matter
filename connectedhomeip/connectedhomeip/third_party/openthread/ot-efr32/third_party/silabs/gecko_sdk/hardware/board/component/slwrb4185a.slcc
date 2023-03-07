@@ -1,0 +1,22 @@
+!!omap
+- id: slwrb4185a
+- label: SLWRB4185A
+- package: platform
+- description: Kit BSP support for the EFR32BG22 Direction Finding Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4185a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4185A"'
+  - name: SL_KIT_REV
+    value: '"A01"'
+- tag:
+  - kit:opn:SLWRB4185A
+  - kit:pn:WRB4185
+  - kit:variant:A
+  - kit:revision:A01

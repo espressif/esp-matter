@@ -1,0 +1,227 @@
+%%{
+/*
+ * Copyright (c) 2016-2017 Texas Instruments Incorporated - http://www.ti.com
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+%%}
+%%{
+    var Utils = xdc.module('xdc.bld.Utils');
+    var File = xdc.module("xdc.services.io.File");
+    var BIOS = xdc.module("ti.sysbios.BIOS");
+    var Build = xdc.module("ti.sysbios.Build");
+    var ROM = xdc.module("ti.sysbios.rom.ROM");
+
+    var TARGET = $args[0];
+    var targetIncs = Utils.expandString(TARGET.includeOpts, TARGET);
+
+    var XDCROOT = String(environment['xdc.rootDir'] + '/packages/').replace(/\\/g, "/");
+
+    /* collect xdc include paths */
+    var xdcpath =  String(environment['xdc.path'] + '/packages/').replace(/\\/g, "/");
+    var xdcincs = xdcpath.split(';');
+    var XDC_PATH_INCS = "";
+    for each (var inc in xdcincs) {
+        XDC_PATH_INCS += "-I\"" + inc + "/\" ";
+    }
+
+    var annexIncs = "";
+    for (var a = 0; a < Build.annex.length; a++) {
+        for (var p = 0; p < Build.annex[a].incs.length; p++) {
+            annexIncs += " -I" + Build.annex[a].incs[p];
+        }
+    }
+
+    var XDCRUNTIME = xdc.loadPackage('xdc.runtime').packageRepository;
+
+    var binDir = Utils.expandString(TARGET.binDir, TARGET).replace(/\\/g, "/");
+
+    var BIOSROOT = File.getDOSPath(BIOS.$package.packageRepository) + "ti/sysbios/"
+
+    var sourcesLIB = Build.getCFiles(TARGET.$name).split(' ');
+
+    function baseName(path) {
+        return (path.substr(path.lastIndexOf('/') + 1).replace(/\.[^\.]+$/, ""));
+    }
+
+    function packageName(path) {
+        var dirpath = path.substring(0, path.lastIndexOf('/'));
+        var begin = dirpath.substring(0, dirpath.lastIndexOf('/'));
+        if (begin.length != 0) {
+            dirpath = begin + "_" + dirpath.substr(dirpath.lastIndexOf('/')+1);
+        }
+        return (dirpath.substr(dirpath.lastIndexOf('/') + 1));
+    }
+
+    function packageDir(path) {
+        return (path.substring(0, path.lastIndexOf('/')));
+    }
+
+    function copy(src, dst) {
+        var ins = new java.io.FileInputStream(src);
+        var outs = new java.io.FileOutputStream(dst);
+        if (ins != null && outs != null) {
+            var inc = ins.getChannel();
+            var outc = outs.getChannel();
+            inc.transferTo(0, inc.size(), outc);
+            inc.close();
+            outc.close();
+        }
+        ins.close();
+        outs.close();
+    }
+
+    function fileToString(filename) {
+        var line, idx = 0;
+        var lineArr = new Array();
+
+        /* Open file */
+        var file = new java.io.BufferedReader(new java.io.FileReader(filename));
+
+        /* Read file */
+        while ((line = file.readLine()) != null) {
+            lineArr[idx++] = line;
+        }
+
+        return String(lineArr.join("|"));
+    }
+
+    var LIBASMOBJS = [];
+
+    var TestName = xdc.module("xdc.cfg.Program").name.substring(0, Program.name.lastIndexOf('.'));
+
+    var RomModule = this;
+    var romModuleDir = File.getDOSPath(RomModule.$package.packageBase);
+    var modName = RomModule.$name.match(/[^\.]+$/);
+    var goldenDir = File.getDOSPath(RomModule.$package.packageBase) + "golden/" + modName + "/";
+
+    var BIOSROOT = File.getDOSPath(BIOS.$package.packageRepository) + "ti/sysbios/"
+
+    /* determine IAR lib config header type: normal or full */
+    var profile = Program.build.profile;
+    var POPTS = Utils.expandString(TARGET.profiles[profile].compileOpts.copts, TARGET);
+    POPTS = POPTS.replace(/-O[hml][sz ]/, "");
+    POPTS = POPTS.replace(/--debug/, "");
+
+    var CMDPREFIX = TARGET.cmdPrefix;
+
+    copy(goldenDir+"romFuncs.txt", Build.$private.outputDir+"/romInternFuncs.txt");
+%%}
+#  This is a generated file.
+#
+#  Do not edit this file. Any modifications to this file
+#  will be overwritten whenever makefiles are re-generated.
+#
+#  template: `this.$package.$name`/CC26xx_custom_makefile_iar.xdt
+#  target: `TARGET.$name`
+
+MAKEFLAGS = -j8
+
+XOPTS = `'-I"' + XDCRUNTIME + '" ' + '-I"' + XDCROOT + '"' + " -Dxdc_target_types__=" + File.getDOSPath(TARGET.$package.packageRepository) + TARGET.stdInclude + " -Dxdc_target_name__=" + TARGET.name`
+
+vpath % `File.getDOSPath(this.$package.packageRepository) + "ti/sysbios/"`
+vpath %.c `XDCROOT`
+%for (var i = 0; i < Build.annex.length; i++) {
+vpath %.c `Build.annex[i].repo`
+%}
+
+XDC_ROOT = `XDCROOT`
+BIOS_ROOT = `BIOSROOT`
+
+BIOS_DEFS = `Build.getDefs() + ROM.getConfigDefs()`
+
+ASM_DEFS = `(Build.getDefs() + ROM.getConfigDefs()).replace(Build.getCommandLineDefs(), '')`
+
+CCOPTS = `BIOS.getCCOpts(TARGET.name)` `POPTS`
+
+BIOS_INC = -I"`File.getDOSPath(this.$package.packageRepository)`"
+ANNEX_INCS = `annexIncs`
+INCS = $(BIOS_INC) $(ANNEX_INCS) `XDC_PATH_INCS` `targetIncs`
+
+INTERN_FUNCS = `fileToString(goldenDir+"romFuncs.txt")`
+
+CC = `CMDPREFIX` `binDir``TARGET.cc.cmd` $(CCOPTS)
+ASM = `CMDPREFIX` `binDir``TARGET.asm.cmd` `TARGET.asm.opts` -S
+AR = `CMDPREFIX` `binDir``TARGET.ar.cmd` `TARGET.ar.opts`
+
+%var CCOPTS_PP = BIOS.getCCOpts(TARGET.name);
+%CCOPTS_PP = CCOPTS_PP.replace(/\-Oh./,"");
+%CCOPTS_PP = CCOPTS_PP.replace("-Dti_sysbios_family_arm_m3_Hwi_enableException__D=FALSE","");
+%CCOPTS_PP = CCOPTS_PP.replace("-Dti_sysbios_family_arm_m3_Hwi_disablePriority__D=32U","");
+CC_PP = `binDir``TARGET.cc.cmd` `CCOPTS_PP` `POPTS`
+
+%if (environment["os.name"].match(/Windows.*/i)) {
+DEL = `XDCROOT`../bin/rm -f
+CP = `XDCROOT`../bin/cp -f
+%}
+%else {
+DEL = rm -f
+CP = cp -f
+%}
+
+define RM
+	$(if $(wildcard $1),$(DEL) $1,:)
+endef
+
+%var LIB = "rom_sysbios.a" + TARGET.suffix;
+%var ROM_EXEC = "rtos_rom.x" + TARGET.suffix;
+%var CFG_OBJ = "rom_sysbios_config.obj";
+%var SYMBOL_MAP_FILE = "symbolMapFile.mak";
+
+all: `LIB`
+
+include `goldenDir``SYMBOL_MAP_FILE`
+
+%var asmSources = Build.getAsmFiles(TARGET.$name);
+%/*
+% * pull in ALL ASM files
+% * and mangle the names of the ROM'd APIs in the non-ROM lib.
+% */
+%for each (var s in asmSources) {
+%   var libAsmObj = "rom_" + packageName(s) + "_" + baseName(s) + "_lib.obj";
+%   var libAsmFile ="rom_" + packageName(s) + "_" + baseName(s) + "_lib.asm";
+%   var asmDir = packageDir(s);
+%   LIBASMOBJS.push(libAsmObj)
+`libAsmObj`: `s` makefile
+	@$(XDC_ROOT)/../xs -c `romModuleDir`mangleAsmFile.xs $(BIOS_ROOT)`s` `libAsmFile` romInternFuncs.txt
+	@$(ASM) -o `libAsmObj` -I$(BIOS_ROOT)`asmDir` $(ASM_DEFS) $(XOPTS) $(INCS) `libAsmFile`
+
+%}
+
+rom_sysbios.obj: `Build.getCFiles(TARGET.$name)` makefile
+	@echo Creating the SYS/BIOS library that contains the APIs not included in the ROM ...
+	@$(CC) -o rom_sysbios.obj $(BIOS_DEFS) $(XOPTS) $(INCS) --make_all_definitions_weak $(subst makefile,,$^)
+
+`LIB`: rom_sysbios.obj `LIBASMOBJS.join(" ")`
+	@-$(call RM, $@)
+	@$(AR) $@ $^
+	@echo Library build complete.
+
+clean:
+	@-$(call RM, *)

@@ -1,0 +1,57 @@
+id: ot_radio_source
+label: Radio
+package: OpenThread
+category: OpenThread
+quality: production
+description: This component provides the OpenThread radio only support
+provides:
+  - name: ot_radio
+requires:
+  - name: cpp_support
+ui_hints:
+  visibility: never
+root_path: util/third_party/openthread/src/core
+source:
+      - path: api/coprocessor_rpc_api.cpp
+      - path: api/diags_api.cpp
+      - path: api/error_api.cpp
+      - path: api/instance_api.cpp
+      - path: api/link_raw_api.cpp
+      - path: api/logging_api.cpp
+      - path: api/multi_radio_api.cpp
+      - path: api/random_noncrypto_api.cpp
+      - path: api/tasklet_api.cpp
+      - path: common/appender.cpp
+      - path: common/binary_search.cpp
+      - path: common/data.cpp
+      - path: common/error.cpp
+      - path: common/instance.cpp
+      - path: common/log.cpp
+      - path: common/random.cpp
+      - path: common/string.cpp
+      - path: common/tasklet.cpp
+      - path: common/timer.cpp
+      - path: common/uptime.cpp
+      - path: coprocessor/rpc.cpp
+      - path: crypto/aes_ccm.cpp
+      - path: crypto/aes_ecb.cpp
+      - path: crypto/crypto_platform.cpp
+      - path: crypto/storage.cpp
+      - path: diags/factory_diags.cpp
+      - path: mac/link_raw.cpp
+      - path: mac/mac_frame.cpp
+      - path: mac/mac_types.cpp
+      - path: mac/sub_mac.cpp
+      - path: mac/sub_mac_callbacks.cpp
+      - path: radio/radio.cpp
+      - path: radio/radio_callbacks.cpp
+      - path: radio/radio_platform.cpp
+      - path: radio/trel_interface.cpp
+      - path: radio/trel_link.cpp
+      - path: radio/trel_packet.cpp
+      - path: thread/link_quality.cpp
+      - path: thread/radio_selector.cpp
+      - path: utils/parse_cmdline.cpp
+template_contribution:
+  - name: application_type
+    value: "APPLICATION_TYPE_THREAD"

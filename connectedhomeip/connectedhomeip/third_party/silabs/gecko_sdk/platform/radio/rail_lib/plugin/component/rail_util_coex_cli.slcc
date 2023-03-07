@@ -1,0 +1,51 @@
+id: rail_util_coex_cli
+label: RAIL Utility, Coexistence CLI
+description: Coexistence CLI
+package: platform
+category: Platform|Radio
+quality: production
+requires:
+  - name: cli
+  - name: rail_util_coex
+  - name: silabs_core_response_print
+  - name: rail_util_coex_ieee802154_cli
+    condition:
+      - ot_stack
+  - name: rail_util_coex_ieee802154_cli
+    condition:
+      - rail_test_core
+  - name: rail_util_coex_ieee802154_cli
+    condition:
+      - zigbee_pro_stack_support
+provides:
+  - name: rail_util_coex_cli
+source:
+  - path: platform/radio/rail_lib/plugin/coexistence/common/rail_util_coex_cli.c
+template_contribution:
+  - name: cli_command
+    value:
+      name: coex_get_gpio_config
+      handler: cli_coex_get_gpio_config
+      help: "Display the GPIO configuration for coexistence GPIOs"
+  - name: cli_command
+    value:
+      name: coex_set_gpio_config
+      handler: cli_coex_set_gpio_config
+      help: "Configure radio coexistence request GPIO.  Use coex_get_gpio_config to see GPIO configuration options"
+      argument:
+        - type: uint8
+          help: "GPIO index"
+        - type: uint8
+          help: "port"
+        - type: uint8
+          help: "pin"
+        - type: uint8
+          help: "polarity"
+  - name: cli_command
+    value:
+      name: coex_set_software_request
+      handler: cli_coex_set_software_request
+      help: "Set coexistence software request."
+      argument:
+        - type: uint8
+          help: "requestMode"

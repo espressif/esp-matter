@@ -1,0 +1,33 @@
+{
+  "name": "Dotdot templates",
+  "version": "test-dotdot-v1",
+  "requiredFeatureLevel": 2,
+  "helpers": ["addon-helper.js"],
+  "templates": [
+    {
+      "path": "test1.zapt",
+      "name": "DotDot test 1",
+      "output": "test1.h"
+    },
+    {
+      "path": "mqtt.zapt",
+      "name": "MQTT test for dotdot",
+      "output": "mqtt.cpp"
+    },
+    {
+      "path": "dotdot-type.zapt",
+      "name": "Dot dot types",
+      "output": "dotdot-type.h"
+    },
+    {
+      "path": "cluster.zapt",
+      "name": "Dot dot clusters",
+      "output": "dotdot-cluster.xml"
+    },
+    {
+      "path": "enum.zapt",
+      "name": "Enums",
+      "output": "enum.h"
+    }
+  ]
+}

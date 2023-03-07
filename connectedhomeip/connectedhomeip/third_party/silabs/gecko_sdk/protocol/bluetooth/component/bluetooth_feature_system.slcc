@@ -1,0 +1,16 @@
+id: "bluetooth_feature_system"
+label: "System"
+package: "Bluetooth"
+description: >
+  Local device configruation and software timers
+
+category: "Bluetooth|Stack"
+quality: "production"
+root_path: "protocol/bluetooth"
+requires:
+  - name: "bluetooth_stack"
+provides:
+  - name: "bluetooth_feature_system"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_system

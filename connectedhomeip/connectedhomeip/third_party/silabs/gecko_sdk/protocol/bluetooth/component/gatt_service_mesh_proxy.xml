@@ -1,0 +1,20 @@
+<gatt>
+  <!--Mesh Proxy Service-->
+  <service advertise="false" name="Mesh Proxy Service" requirement="mandatory" sourceId="com.silabs.service.mesh_proxy" type="primary" uuid="1828">
+    <informativeText>Abstract:  The Mesh Proxy Service is used to enable a server to send and receive Proxy PDUs with a client.  </informativeText>
+
+    <!--Mesh Proxy Data In-->
+    <characteristic name="Mesh Proxy Data In" sourceId="com.silabs.characteristic.mesh_proxy_data_in" uuid="2add">
+      <informativeText>Abstract:  The Mesh Proxy Data In characteristic is used by the client to send Proxy PDUs to the server  </informativeText>
+      <value length="0" type="user" variable_length="false"/>
+      <properties write_no_response="true" write_no_response_requirement="mandatory"/>
+    </characteristic>
+    
+    <!--Mesh Proxy Data Out-->
+    <characteristic name="Mesh Proxy Data Out" sourceId="com.silabs.characteristic.mesh_proxy_data_out" uuid="2ade">
+      <informativeText>Abstract:  The Mesh Proxy Data Out characteristic is used by the server to send Proxy PDUs to the client.  </informativeText>
+      <value length="0" type="user" variable_length="false"/>
+      <properties notify="true" notify_requirement="mandatory"/>
+    </characteristic>
+  </service>
+</gatt>

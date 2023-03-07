@@ -1,0 +1,120 @@
+package: Zigbee
+description: Silicon Labs implementation of the GBCS Device Log. Note that, although this supports
+  populating the device log with a set of devices, this
+  is only intended for testing purposes and should not be thought of as a complete
+  provisioning solution. The real provisioning solution should use the API provided
+  by this component to add and remove items from the device log.
+label: GBCS Device Log
+quality: production
+id: zigbee_gbcs_device_log
+category: Zigbee|Great Britain Companion Specification
+provides:
+   - name: "zigbee_gbcs_device_log"
+requires:
+   - name: "zigbee_gbcs_compatibility"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/gbcs-device-log/config/gbcs-device-log-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/gbcs-device-log/gbcs-device-log.c
+  - path: protocol/zigbee/app/framework/plugin/gbcs-device-log/gbcs-device-log-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/gbcs-device-log/gbcs-device-log-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/gbcs-device-log
+    file_list:
+      - path: gbcs-device-log.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_gbcs_device_log
+  - name: zigbee_af_callback
+    value:
+      callback_type: local_data_init
+      function_name: emberAfPluginGbcsDeviceLogInitCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: gbcs-device-log
+      help: gbcs-device-log related commands.
+  - name: cli_command
+    value:
+      group: gbcs-device-log
+      name: clear
+      handler: emAfPluginGbcsDeviceLogCliClear
+      help: Clears all entries from the GBCS Device Log.
+  - name: cli_command
+    value:
+      group: gbcs-device-log
+      name: reset
+      handler: emAfPluginGbcsDeviceLogCliReset
+      help: Resets the GBCS Device Log to include just those entries configured with the component.
+  - name: cli_command
+    value:
+      group: gbcs-device-log
+      name: count
+      handler: emAfPluginGbcsDeviceLogCliCount
+      help: Gets the number of entries in the GBCS Device Log.
+  - name: cli_command
+    value:
+      group: gbcs-device-log
+      name: store
+      handler: emAfPluginGbcsDeviceLogCliStore
+      help: Adds or updates an entry within the GBCS Device Log.
+      argument:
+      - type: hex
+        help: The EUI64 of the device to be added or updated
+      - type: uint8
+        help: The GBCS device type of the device to be added or updated
+  - name: cli_command
+    value:
+      group: gbcs-device-log
+      name: remove
+      handler: emAfPluginGbcsDeviceLogCliRemove
+      help: Removes an entry from the GBCS Device Log.
+      argument:
+      - type: hex
+        help: The EUI64 of the device to be removed
+  - name: cli_command
+    value:
+      group: gbcs-device-log
+      name: get
+      handler: emAfPluginGbcsDeviceLogCliGet
+      help: Gets device info about an entry in the GBCS Device Log.
+      argument:
+      - type: hex
+        help: The EUI64 of the device for which information is requested
+  - name: cli_command
+    value:
+      group: gbcs-device-log
+      name: exists
+      handler: emAfPluginGbcsDeviceLogCliExists
+      help: Checks to see if a device exists in the GBCS Device Log.
+      argument:
+      - type: hex
+        help: The EUI64 of the device in question
+      - type: uint8
+        help: The GBCS device type of the device in question
+  - name: cli_command
+    value:
+      group: gbcs-device-log
+      name: print
+      handler: emAfPluginGbcsDeviceLogCliPrint
+      help: Prints all entries in the GBCS Device log.
+  - name: cli_command
+    value:
+      group: gbcs-device-log
+      name: is-sleepy
+      handler: emAfPluginGbcsDeviceLogCliIsSleepy
+      help: Checks if the given device type is a sleepy device.
+      argument:
+      - type: uint8
+        help: The GBCS device type to be checked
+  - name: cli_command
+    value:
+      group: gbcs-device-log
+      name: fill
+      handler: emAfPluginGbcsDeviceLogCliFill
+      help: Helper command to fill the GBCS Device Log with random info.
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/gbcs-device-log

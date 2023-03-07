@@ -1,0 +1,25 @@
+id: ot_mbedtls
+label: mbedTLS
+package: OpenThread
+category: OpenThread
+quality: production
+description: This component references to all the third party support needed by the OpenThread stack
+ui_hints:
+  visibility: never
+provides:
+  - name: ot_mbedtls
+requires:
+  - name: mbedtls_dtls
+  - name: mbedtls_ecdsa_deterministic
+  - name: mbedtls_jpake
+  - name: mbedtls_ecc_secp256r1
+  - name: mbedtls_cmac
+  - name: mbedtls_tls_server
+template_contribution:
+  - name: mbedtls_ssl_content_len_in_requirement
+    value: 900
+  - name: mbedtls_ssl_content_len_out_requirement
+    value: 900
+define:
+  - name: OPENTHREAD_CONFIG_ENABLE_BUILTIN_MBEDTLS
+    value: 0

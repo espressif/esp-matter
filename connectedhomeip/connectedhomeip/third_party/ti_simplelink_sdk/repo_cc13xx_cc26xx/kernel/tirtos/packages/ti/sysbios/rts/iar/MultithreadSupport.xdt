@@ -1,0 +1,148 @@
+%%{
+/*
+ * Copyright (c) 2017 Texas Instruments Incorporated - http://www.ti.com
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+%%}
+%%{
+/*
+ *  ======== MultithreadSupport.xdt ========
+ */
+%%}
+% if (Program.build.target.$name.match(/iar\.targets\.arm/)) {
+#include <yvals.h>
+#include <DLib_Threads.h>
+
+#include <ti/sysbios/rts/iar/package/internal/MultithreadSupport.xdc.h>
+
+% if (this.$private.ROM) {
+
+#if xdc_target__sizeof_Ptr == xdc_target__sizeof_Int
+
+#define MTS_get(t) (Ptr)t->curCoreId
+#define MTS_set(t,b) t->curCoreId = (UInt)b
+
+#elif xdc_target__sizeof_Ptr == (2 * xdc_target__sizeof_Int)
+
+#define nb (xdc_target__sizeof_Int * xdc_target__bitsPerChar)
+#define MTS_get(t) (Ptr)((((IArg)t->curCoreId) << nb) | (IArg)t->affinity)
+#define MTS_set(t,b) t->curCoreId = (UInt)((IArg)b >> nb), t->affinity = (UInt)b
+
+#else
+#error unable to store TLS pointer
+#endif
+
+% }
+
+/*
+ *  ======== MultithreadSupport_getTlsAddr ========
+ */
+#pragma section="__iar_tls$$DATA"
+void *ti_sysbios_rts_iar_MultithreadSupport_getTlsAddr__I()
+{
+    ti_sysbios_knl_Task_Handle task;
+% if (!this.$private.ROM) {
+    xdc_Int hookId;
+% }
+    xdc_Ptr buf;
+    xdc_runtime_IHeap_Handle heap;
+
+    task = ti_sysbios_knl_Task_self();
+
+% if (this.$private.ROM) {
+    /*  All ROM builds of SYS/BIOS have SMP mode disabled. This leaves
+     *  two unused words in the task object: curCoreId and affinity.
+     *  Use one of these (curCoreId) to store the address of the TLS
+     *  block. NB: Internal access to the task object is enabled
+     *  in template code.
+     *
+     *  On some architectures, a pointer is twice as large as an integer.
+     *  In this case, use both curCoreId and affinity to store the address.
+     */
+    buf = MTS_get(task);
+
+    if (buf == NULL) {
+        /* In case memory alloc fails, the heap proxy's alloc function will
+         * internally call Error_raise(). Error_raise() logs the error message
+         * and if the System proxy is SysStd, it will call this function.
+         *
+         * In order to prevent an infinite call loop, assign the global
+         * TLS area pointer to the current task. If allocation fails
+         * and the System proxy is SysStd, it will let Error_raise()
+         * print the error message.
+         */
+        buf = (Ptr)__section_begin("__iar_tls$$DATA");
+        MTS_set(task, buf);
+
+        /* Memory_alloc will never return on failure because eb == NULL */
+        heap = ti_sysbios_knl_Task_Object_heap();
+        buf = xdc_runtime_Memory_alloc(heap, __iar_tls_size(), 0, NULL);
+        __iar_tls_init((char *)buf);
+        MTS_set(task, buf);
+    }
+
+% } else {
+    /* use the task hook context pointer to store the TLS address */
+    hookId = MultithreadSupport_module->taskHId;
+    buf = ti_sysbios_knl_Task_getHookContext(task, hookId);
+
+    if (buf == NULL) {
+        /* In case memory alloc fails, the heap proxy's alloc function will
+         * internally call Error_raise(). Error_raise() logs the error message
+         * and if the System proxy is SysStd, it will call this function.
+         *
+         * In order to prevent an infinite call loop, assign the global
+         * TLS area pointer to the current task. If allocation fails
+         * and the System proxy is SysStd, it will let Error_raise()
+         * print the error message.
+         */
+        buf = (Ptr)__section_begin("__iar_tls$$DATA");
+        ti_sysbios_knl_Task_setHookContext(task, hookId, buf);
+
+        /* Memory_alloc will never return on failure because eb == NULL */
+        heap = ti_sysbios_knl_Task_Object_heap();
+        buf = xdc_runtime_Memory_alloc(heap, __iar_tls_size(), 0, NULL);
+        __iar_tls_init((char *)buf);
+        ti_sysbios_knl_Task_setHookContext(task, hookId, buf);
+    }
+% }
+
+    return ((void *)buf);
+}
+% if (this.$private.ROM) {
+
+#ifdef nb
+#undef nb
+#endif
+#undef MTS_get
+#undef MTS_set
+% }
+% } /* IAR ARM compiler */

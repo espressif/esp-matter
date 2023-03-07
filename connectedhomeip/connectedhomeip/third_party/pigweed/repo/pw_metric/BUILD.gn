@@ -1,0 +1,188 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_bloat/bloat.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_protobuf_compiler/proto.gni")
+import("$dir_pw_third_party/nanopb/nanopb.gni")
+import("$dir_pw_unit_test/test.gni")
+
+config("default_config") {
+  include_dirs = [ "public" ]
+}
+
+pw_source_set("pw_metric") {
+  public_configs = [ ":default_config" ]
+  public = [ "public/pw_metric/metric.h" ]
+  sources = [ "metric.cc" ]
+  public_deps = [
+    "$dir_pw_tokenizer:base64",
+    dir_pw_assert,
+    dir_pw_containers,
+    dir_pw_log,
+    dir_pw_tokenizer,
+  ]
+  deps = [ dir_pw_span ]
+}
+
+# This gives access to the "PW_METRIC_GLOBAL()" macros, for globally-registered
+# metric definitions.
+pw_source_set("global") {
+  public_configs = [ ":default_config" ]
+  public = [ "public/pw_metric/global.h" ]
+  sources = [ "global.cc" ]
+  public_deps = [
+    ":pw_metric",
+    dir_pw_tokenizer,
+  ]
+  deps = [ dir_pw_polyfill ]
+}
+
+################################################################################
+# Service
+pw_proto_library("metric_service_proto") {
+  sources = [ "pw_metric_proto/metric_service.proto" ]
+  inputs = [ "pw_metric_proto/metric_service.options" ]
+}
+
+# TODO(keir): Consider moving the nanopb service into the nanopb/ directory
+# instead of having it directly inside pw_metric/.
+
+# Common MetricWalker/MetricWriter used by RPC service.
+pw_source_set("metric_walker") {
+  visibility = [ ":*" ]
+  public = [ "pw_metric_private/metric_walker.h" ]
+  deps = [
+    ":pw_metric",
+    "$dir_pw_assert:assert",
+    "$dir_pw_containers",
+    "$dir_pw_status",
+    "$dir_pw_tokenizer",
+  ]
+}
+
+if (dir_pw_third_party_nanopb != "") {
+  pw_source_set("metric_service_nanopb") {
+    public_configs = [ ":default_config" ]
+    public_deps = [
+      ":metric_service_proto.nanopb_rpc",
+      ":pw_metric",
+      dir_pw_span,
+    ]
+    public = [ "public/pw_metric/metric_service_nanopb.h" ]
+    deps = [
+      ":metric_service_proto.nanopb_rpc",
+      ":metric_walker",
+      "$dir_pw_containers:vector",
+      dir_pw_tokenizer,
+    ]
+    sources = [ "metric_service_nanopb.cc" ]
+  }
+
+  pw_test("metric_service_nanopb_test") {
+    deps = [
+      ":global",
+      ":metric_service_nanopb",
+      "$dir_pw_rpc/nanopb:test_method_context",
+    ]
+    sources = [ "metric_service_nanopb_test.cc" ]
+  }
+}
+
+pw_source_set("metric_service_pwpb") {
+  public_configs = [ ":default_config" ]
+  public_deps = [
+    ":metric_service_proto.pwpb_rpc",
+    ":metric_service_proto.raw_rpc",
+    ":metric_walker",
+    ":pw_metric",
+    "$dir_pw_bytes",
+    "$dir_pw_containers",
+    "$dir_pw_rpc/raw:server_api",
+  ]
+  public = [ "public/pw_metric/metric_service_pwpb.h" ]
+  deps = [
+    ":metric_service_proto.pwpb",
+    ":metric_service_proto.raw_rpc",
+    "$dir_pw_assert",
+    "$dir_pw_containers:vector",
+    "$dir_pw_preprocessor",
+    "$dir_pw_span",
+    "$dir_pw_status",
+  ]
+  sources = [ "metric_service_pwpb.cc" ]
+}
+
+pw_test("metric_service_pwpb_test") {
+  deps = [
+    ":global",
+    ":metric_service_pwpb",
+    "$dir_pw_rpc/pwpb:test_method_context",
+    "$dir_pw_rpc/raw:test_method_context",
+  ]
+  sources = [ "metric_service_pwpb_test.cc" ]
+}
+
+################################################################################
+
+pw_test_group("tests") {
+  tests = [
+    ":metric_test",
+    ":global_test",
+    ":metric_service_pwpb_test",
+  ]
+  if (dir_pw_third_party_nanopb != "") {
+    tests += [ ":metric_service_nanopb_test" ]
+  }
+}
+
+pw_test("metric_test") {
+  sources = [ "metric_test.cc" ]
+  deps = [ ":pw_metric" ]
+}
+
+pw_test("global_test") {
+  sources = [ "global_test.cc" ]
+  deps = [ ":global" ]
+}
+
+pw_size_diff("metric_size_report") {
+  title = "Typical pw_metric use (no RPC service)"
+
+  binaries = [
+    {
+      target = "size_report:one_metric"
+      base = "size_report:base"
+      label = "1 metric and 1 group no dump or export"
+    },
+    {
+      target = "size_report:dump"
+      base = "size_report:base"
+      label = "(+) dump group and metrics to log"
+    },
+    {
+      target = "size_report:more_metrics"
+      base = "size_report:dump"
+      label = "(+) 1 group (+) 4 metrics"
+    },
+  ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+  report_deps = [ ":metric_size_report" ]
+}

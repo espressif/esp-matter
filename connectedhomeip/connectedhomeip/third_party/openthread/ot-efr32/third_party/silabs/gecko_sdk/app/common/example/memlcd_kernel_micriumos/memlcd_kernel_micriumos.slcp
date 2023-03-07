@@ -1,0 +1,44 @@
+project_name: memlcd_kernel_micriumos
+package: platform
+quality: production
+label: Platform - MEMLCD Kernel on Micrium OS kernel
+description: > 
+  This example project demonstrates use of the Memory Liquid Crystal Display (LCD) 
+  module in a Micrium OS kernel task, using Silicon Labs Graphics Library (glib).
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]
+source:
+  - path: app.c
+  - path: main.c
+  - path: memlcd_app.c
+include:
+  - path: .
+    file_list:
+    - path: app.h
+    - path: memlcd_app.h
+component:
+  - id: sl_system
+  - id: device_init
+  - id: micriumos_kernel
+  - id: board_control
+  - id: dmd_memlcd
+  - id: glib
+  - id: simple_button
+    instance:
+      - btn0
+      - btn1
+define:
+  - name: DEBUG_EFM
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+tag:
+  - hardware:component:display
+  - hardware:device:ram:16

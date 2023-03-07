@@ -1,0 +1,94 @@
+.. _flash-index:
+
+FLASH
+==================
+
+总览
+----------------
+
+本示例主要介绍读写flah "DATA"分区的的方法。
+
+准备及使用步骤
+----------------
+- 使用步骤：
+ - 插入将板子的USB电源线，USB电源线默认连接UART0；
+ - 编译 ``customer_app/periperal/demo_flash`` 工程并下载工程，编译命令： ``genromap <chip name>``，<chip name>可选择 ``BL602`` , ``BL702``；
+ - 打开一个串口终端窗口（波特率为2000000，用于接收和发送uart消息）；
+ - 串口终端输入 ``demo_hosal_flash`` ，表示启动 flash_busaddr的demo；
+ - 此时会打印flash DATA分区的信息并对该分区进行读写操作，如果读写成功，表示该demo成功运行。
+
+.. figure:: imgs/image2.png
+   :alt: 
+
+应用实例
+----------------
+
+- 通过 ``hosal_flash_open`` 打开"DATA"分区。
+
+::
+
+    hosal_flash_dev_t *p_flash;
+
+    /* flash partition open use address 0 */
+    p_flash = hosal_flash_open("DATA", HOSAL_FLASH_FLAG_ADDR_0);
+    if (p_flash == NULL) {
+        blog_error("no partition name DATA!\r\n");
+        return;
+    }
+
+- 通过 ``hosal_flash_info_get`` 获取分区信息，并打印出来。
+
+::
+
+    hosal_logic_partition_t part;
+    
+    /* get flash partition info */
+    hosal_flash_info_get(p_flash, &part);
+    blog_info("partition name         : %s\r\n", part.partition_description);
+    blog_info("partition start address: 0x%08x\r\n", part.partition_start_addr);
+    blog_info("partition length       : %d\r\n", part.partition_length);
+
+- 通过 ``hosal_flash_erase_write`` 接口对分区的offset=0地址处进行1024 bytes先擦除再写数据，然后使用 ``hosal_flash_read`` 读取刚写的地址，最后对比读写数据正确则打印"successful"。
+
+::
+
+    p_wbuf = malloc(DEMO_HOSAL_FLASH_TEST_BLOCK);
+    if (p_wbuf == NULL) {
+        blog_error("no memory!\r\n");
+        return;
+    }
+
+    p_rbuf = malloc(DEMO_HOSAL_FLASH_TEST_BLOCK);
+    if (p_rbuf == NULL) {
+        blog_error("no memory!\r\n");
+        return;
+    }
+
+    for (i = 0; i < DEMO_HOSAL_FLASH_TEST_BLOCK; i++) {
+        p_wbuf[i] = i & 0xff;
+    }
+
+    /* erase flash partition and write data */
+    offset = 0;
+    hosal_flash_erase_write(p_flash, &offset, p_wbuf, DEMO_HOSAL_FLASH_TEST_BLOCK);
+    
+    /* read flash partition data */
+    offset = 0;
+    hosal_flash_read(p_flash, &offset, p_rbuf, DEMO_HOSAL_FLASH_TEST_BLOCK);
+    
+    /* check flash read data */
+    if (memcmp(p_rbuf, p_wbuf, DEMO_HOSAL_FLASH_TEST_BLOCK) != 0) {
+        blog_error("hal flash R/W failed!\r\n");
+    } else {
+        blog_info("hal flash R/W successful!\r\n");
+    }
+   
+- 通过 ``hosal_flash_close`` 接口关闭。
+
+::
+
+    /* close the flash partition and free buf */
+    hosal_flash_close(p_flash);
+    free(p_wbuf);
+    free(p_rbuf);
+

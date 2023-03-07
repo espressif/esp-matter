@@ -1,0 +1,27 @@
+id: iot_init
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|C SDK
+label: IoT Init
+description: C SDK Init Helper
+
+package: amazon_platform
+quality: production
+
+root_path: util/third_party/aws_iot_libs
+
+provides:
+  - name: iot_init
+
+requires:
+  - name: iot_config_common
+  - name: iot_taskpool
+  - name: iot_atomic
+  - name: iot_static_memory
+
+source:
+  - path: libraries/c_sdk/standard/common/iot_init.c
+
+include:
+  - path: libraries/c_sdk/standard/common/include
+    file_list:
+      - path: iot_init.h

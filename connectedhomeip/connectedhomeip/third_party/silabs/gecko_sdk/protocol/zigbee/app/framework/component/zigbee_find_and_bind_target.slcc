@@ -1,0 +1,42 @@
+package: Zigbee
+description: This component provides the functionality for a target device to start identifying
+  on user-defined endpoints. The target device can then act as a target for a finding
+  and binding initiator.
+label: Find and Bind Target
+quality: production
+id: zigbee_find_and_bind_target
+category: Zigbee|Zigbee 3.0
+provides:
+   - name: "zigbee_find_and_bind_target"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/find-and-bind-target/config/find-and-bind-target-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/find-and-bind-target/find-and-bind-target.c
+  - path: protocol/zigbee/app/framework/plugin/find-and-bind-target/find-and-bind-target-cli.c
+    condition:
+      - "cli"
+include:
+  - path: protocol/zigbee/app/framework/plugin/find-and-bind-target
+    file_list:
+      - path: find-and-bind-target.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_find_and_bind_target
+  - name: cli_group
+    value:
+      name: find_and_bind
+      group: plugin
+      help: "Find and bind related commands."
+  - name: cli_command
+    value:
+      name: target
+      group: find_and_bind
+      handler: emberAfPluginFindAndBindTargetStartCommand
+      help: Makes this node start identifying as a target for binding with an initiator node.
+      argument:
+      - type: uint8
+        help: The endpoint on which to begin the Finding and Binding target process
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/find-and-bind-target

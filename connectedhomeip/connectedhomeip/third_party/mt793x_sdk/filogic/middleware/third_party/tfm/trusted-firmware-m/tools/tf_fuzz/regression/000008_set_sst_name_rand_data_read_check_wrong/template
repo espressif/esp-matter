@@ -1,0 +1,3 @@
+purpose to create and show an asset;
+set sst name snortwaggle data *;
+read sst name snortwaggle check "almost certainly not *this*";

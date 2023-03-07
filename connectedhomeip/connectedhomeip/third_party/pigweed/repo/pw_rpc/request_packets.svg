@@ -1,0 +1,42 @@
+<!-- Originally created with blockdiag. See the Git history for the source. -->
+<svg height="280" viewBox="0 0 640 280" width="640" xmlns="http://www.w3.org/2000/svg" xmlns:inkspace="http://www.inkscape.org/namespaces/inkscape" xmlns:xlink="http://www.w3.org/1999/xlink" style="background-color:white">
+<defs id="defs_block">
+<filter height="1.504" id="filter_blur" inkspace:collect="always" width="1.1575" x="-0.07875" y="-0.252">
+<feGaussianBlur id="feGaussianBlur3780" inkspace:collect="always" stdDeviation="4.2"></feGaussianBlur>
+</filter>
+</defs>
+<title>pw_rpc Requests</title>
+<desc></desc>
+<rect fill="rgb(243,152,0)" height="60" style="filter:url(#filter_blur)" width="528" x="56" y="110"></rect>
+<ellipse cx="131" cy="66" fill="rgb(0,0,0)" rx="8.0" ry="8.0" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1"></ellipse>
+<rect fill="rgb(0,0,0)" height="40" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1" width="128" x="67" y="126"></rect>
+<rect fill="rgb(0,0,0)" height="40" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1" width="128" x="259" y="126"></rect>
+<rect fill="rgb(0,0,0)" height="40" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1" width="128" x="451" y="126"></rect>
+<ellipse cx="131" cy="226" fill="rgb(0,0,0)" rx="64.0" ry="20.0" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1"></ellipse>
+<path d="M 267 206 L 379 206 A8,8 0 0 1 387 214 L 387 238 A8,8 0 0 1 379 246 L 267 246 A8,8 0 0 1 259 238 L 259 214 A8,8 0 0 1 267 206" fill="rgb(0,0,0)" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1"></path>
+<ellipse cx="128" cy="60" fill="rgb(0,0,0)" rx="8.0" ry="8.0" stroke="rgb(0,0,0)"></ellipse>
+<text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="42" x="157.0" y="56">packets</text>
+<rect fill="rgb(255,255,255)" height="40" stroke="rgb(0,0,0)" width="128" x="64" y="120"></rect>
+<text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="36" x="128.0" y="146">Server</text>
+<rect fill="rgb(255,255,255)" height="40" stroke="rgb(0,0,0)" width="128" x="256" y="120"></rect>
+<text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="42" x="320.0" y="146">Service</text>
+<rect fill="rgb(255,255,255)" height="40" stroke="rgb(0,0,0)" width="128" x="448" y="120"></rect>
+<text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="96" x="512.0" y="146">internal::Method</text>
+<ellipse cx="128" cy="220" fill="rgb(255,255,255)" rx="64.0" ry="20.0" stroke="rgb(0,0,0)"></ellipse>
+<text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="108" x="128.0" y="226">generated services</text>
+<path d="M 264 200 L 376 200 A8,8 0 0 1 384 208 L 384 232 A8,8 0 0 1 376 240 L 264 240 A8,8 0 0 1 256 232 L 256 208 A8,8 0 0 1 264 200" fill="rgb(255,255,255)" stroke="rgb(0,0,0)"></path>
+<text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="102" x="320.0" y="226">user-defined RPCs</text>
+<path d="M 128 68 L 128 112" fill="none" stroke="rgb(0,0,0)"></path>
+<polygon fill="rgb(0,0,0)" points="128,119 124,112 132,112 128,119" stroke="rgb(0,0,0)"></polygon>
+<path d="M 192 220 L 248 220" fill="none" stroke="rgb(0,0,0)"></path>
+<polygon fill="rgb(0,0,0)" points="255,220 248,216 248,224 255,220" stroke="rgb(0,0,0)"></polygon>
+<path d="M 192 140 L 248 140" fill="none" stroke="rgb(0,0,0)"></path>
+<polygon fill="rgb(0,0,0)" points="255,140 248,136 248,144 255,140" stroke="rgb(0,0,0)"></polygon>
+<path d="M 384 140 L 440 140" fill="none" stroke="rgb(0,0,0)"></path>
+<polygon fill="rgb(0,0,0)" points="447,140 440,136 440,144 447,140" stroke="rgb(0,0,0)"></polygon>
+<path d="M 512 160 L 512 180" fill="none" stroke="rgb(0,0,0)"></path>
+<path d="M 128 180 L 512 180" fill="none" stroke="rgb(0,0,0)"></path>
+<path d="M 128 180 L 128 192" fill="none" stroke="rgb(0,0,0)"></path>
+<polygon fill="rgb(0,0,0)" points="128,199 124,192 132,192 128,199" stroke="rgb(0,0,0)"></polygon>
+<rect class="highlighted" width="68.9688" x="285.766" y="106" height="12"></rect><text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="84" x="320.0" y="116"><tspan>pw_rpc</tspan> library</text>
+</svg>

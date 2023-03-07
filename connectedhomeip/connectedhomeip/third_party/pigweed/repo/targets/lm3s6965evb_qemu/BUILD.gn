@@ -1,0 +1,49 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_toolchain/generate_toolchain.gni")
+import("target_toolchains.gni")
+
+generate_toolchains("target_toolchains") {
+  toolchains = pw_target_toolchain_lm3s6965evb_qemu_list
+}
+
+# TODO(b/232587313): This config is only used in the clang build for this
+# target, see target_toolchains.gni or the associated bug for more details.
+config("disable_lock_annotations") {
+  cflags = [ "-Wno-thread-safety-analysis" ]
+}
+
+if (current_toolchain != default_toolchain) {
+  pw_source_set("pre_init") {
+    public_deps = [
+      "$dir_pw_boot",
+      "$dir_pw_boot_cortex_m",
+      "$dir_pw_sys_io_baremetal_lm3s6965evb",
+    ]
+    deps = [ "$dir_pw_preprocessor" ]
+    sources = [
+      "boot.cc",
+      "vector_table.c",
+    ]
+  }
+}
+
+pw_doc_group("target_docs") {
+  sources = [ "target_docs.rst" ]
+}

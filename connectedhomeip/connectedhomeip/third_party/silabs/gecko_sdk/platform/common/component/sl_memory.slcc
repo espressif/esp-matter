@@ -1,0 +1,34 @@
+id: sl_memory
+label: "Memory Configuration"
+package: platform
+description: >
+  This component provides configuration of the stack and
+  heap for supported toolchains. For gcc it also adds support for _sbrk()
+  for heap allocation. This is used in the newlib version of malloc().
+category: Platform|Toolchain
+quality: production
+root_path: platform/common
+config_file:
+  - path: toolchain/config/standard/sl_memory_config.h
+    unless: [device_sdid_73, device_sdid_76, device_sdid_77]
+  - path: toolchain/config/small/sl_memory_config.h
+    condition: [device_sdid_73]
+  - path: toolchain/config/small/sl_memory_config.h
+    condition: [device_sdid_76]
+  - path: toolchain/config/small/sl_memory_config.h
+    condition: [device_sdid_77]
+source:
+  - path: toolchain/src/sl_memory.c
+include:
+  - path: toolchain/inc
+    file_list:
+      - path: sl_memory_region.h
+      - path: sl_memory.h
+      - path: sl_gcc_preinclude.h
+        condition: [toolchain_gcc]
+provides:
+  - name: sl_memory
+toolchain_settings:
+  - option: preinclude
+    value: sl_gcc_preinclude.h
+    condition: [toolchain_gcc]

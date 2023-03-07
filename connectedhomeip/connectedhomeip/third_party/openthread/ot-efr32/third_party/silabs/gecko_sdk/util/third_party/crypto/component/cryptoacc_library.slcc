@@ -1,0 +1,100 @@
+id: cryptoacc_library
+package: platform
+label: Crypto library for EFR32xG22
+description: >-
+  Hardware acceleration library for the CRYPTOACC hardware peripheral.
+category: Platform|Security|Libcryptosoc
+quality: production
+ui_hints:
+  visibility: never
+component_root_path: util/third_party/crypto/sl_component/sl_cryptoacc_library
+source:
+  # - path: src/ba411e_config.c
+  # - path: src/ba413_config.c
+  - path: src/ba414ep_config.c
+  - path: src/ba431_config.c
+  - path: src/cryptodma_internal.c
+  - path: src/cryptolib_types.c
+  # - path: src/padding.c
+  - path: src/sx_aes.c
+  - path: src/sx_blk_cipher.c
+  # - path: src/sx_cryptosoc.c
+  # - path: src/sx_derive_key_alg.c
+  - path: src/sx_dh_alg.c
+  # - path: src/sx_dh_keygen_alg.c
+  # - path: src/sx_drbg_ctr.c
+  # - path: src/sx_drbg_hash.c
+  # - path: src/sx_dsa_alg.c
+  - path: src/sx_ecc_curves.c
+  - path: src/sx_ecc_keygen_alg.c
+  - path: src/sx_ecdsa_alg.c
+  # - path: src/sx_ecies_alg.c
+  # - path: src/sx_errors.c
+  - path: src/sx_hash.c
+  # - path: src/sx_jpake_alg.c
+  - path: src/sx_math.c
+  - path: src/sx_memcmp.c
+  - path: src/sx_memcpy.c
+  # - path: src/sx_mr.c
+  # - path: src/pk_hw_config.c
+  # - path: src/pk_interface.c
+  # - path: src/sx_prime_alg.c
+  - path: src/sx_primitives.c
+  - path: src/sx_rng.c
+  # - path: src/sx_rsa_alg.c
+  # - path: src/sx_rsa_pad.c
+  # - path: src/sx_srp_alg.c
+  - path: src/sx_trng.c
+include:
+  - path: include
+    file_list:
+      - path: compiler_extentions.h
+      - path: cryptolib_def.h
+      - path: cryptolib_types.h
+      - path: sx_aes.h
+      - path: sx_blk_cipher_common.h
+      # - path: sx_cryptosoc.h
+      # - path: sx_derive_key_alg.h
+      - path: sx_dh_alg.h
+      # - path: dh_keygen_alg.h
+      - path: sx_dma.h
+      # - path: sx_drbg_ctr.h
+      # - path: sx_drbg_hash.h
+      # - path: sx_dsa_alg.h
+      - path: sx_ecc_curves.h
+      - path: sx_ecc_keygen_alg.h
+      - path: sx_ecdsa_alg.h
+      # - path: sx_ecies_alg.h
+      - path: sx_errors.h
+      - path: sx_hash.h
+      - path: sx_hw_cfg.h
+      # - path: sx_jpake_alg.h
+      - path: sx_math.h
+      - path: sx_memcmp.h
+      - path: sx_memcpy.h
+      # - path: sx_mr.h
+      # - path: sx_pk_hw_cfg.h
+      # - path: sx_pk_interface.h
+      # - path: sx_prime_alg.h
+      - path: sx_primitives.h
+      - path: sx_rng.h
+      # - path: sx_rsa_alg.h
+      # - path: sx_srp_alg.h
+      - path: sx_trng.h
+  - path: src
+    file_list:
+      - path: ba411e_config.h
+      - path: ba413_config.h
+      - path: ba414ep_config.h
+      - path: ba431_config.h
+      - path: cryptodma_internal.h
+      - path: padding.h
+      - path: sx_blk_cipher.h
+      # - path: sx_rsa_pad.h
+      - path: sxregs.h
+requires:
+  - name: device_has_cryptoacc
+provides:
+  - name: cryptoacc_library
+  - name: tz_ns_incompatible
+    condition: [tz_secure_key_library_ns]

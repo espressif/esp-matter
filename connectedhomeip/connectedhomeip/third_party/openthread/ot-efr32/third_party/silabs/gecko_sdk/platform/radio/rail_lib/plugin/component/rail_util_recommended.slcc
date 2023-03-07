@@ -1,0 +1,45 @@
+id: rail_util_recommended
+label: RAIL Utility, Recommended
+description: Recommended selection of common RAIL utilities
+package: platform
+category: Platform|Radio
+quality: production
+documentation:
+  docset: rail
+  document: rail-util-recommended
+provides:
+  - name: rail_util_recommended
+requires:
+  # RAIL utilities
+  - name: rail_util_init
+  - name: rail_util_protocol # included as dependency of rail_util_init too
+  - name: rail_util_callbacks # included as dependency of rail_util_init too
+  - name: rail_util_built_in_phys
+  - name: rail_util_pa
+  - name: rail_util_pti
+  - name: rail_util_rssi
+  - name: rail_util_dma
+    condition:
+      - rail_lib_multiprotocol
+  # - name: rail_util_coex
+  # - name: rail_util_aox
+  # - name: rail_util_rf_path
+
+  # Other utilities
+  # - name: fem_util
+
+  # RAIL libraries
+  # Use RAIL Multiprotocol library when multiple stacks are detected:
+  # Bluetooth, Connect, Open Thread
+  - name: rail_lib_multiprotocol
+    condition:
+      - bluetooth_stack
+      - connect_stack_common
+  - name: rail_lib_multiprotocol
+    condition:
+      - bluetooth_stack
+      - ot_stack_common
+  - name: rail_lib_multiprotocol
+    condition:
+      - connect_stack_common
+      - ot_stack_common

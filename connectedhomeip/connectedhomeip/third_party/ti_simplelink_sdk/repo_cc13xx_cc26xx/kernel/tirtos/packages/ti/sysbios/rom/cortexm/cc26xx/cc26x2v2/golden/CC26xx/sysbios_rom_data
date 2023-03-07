@@ -1,0 +1,3 @@
+20000104 g     O .sysbios_rom_data	00000004 .hidden xdcRomExternFuncPtr
+20000108 g     O .sysbios_rom_data	00000004 .hidden xdcRomStatePtr
+20000100 g     O .sysbios_rom_data	00000004 .hidden xdcRomConstPtr

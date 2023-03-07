@@ -1,0 +1,22 @@
+!!omap
+- id: fg23_rb4265b
+- label: FG23-RB4265B
+- package: platform
+- description: Kit BSP support for the FG23B 433 MHz 10 dBm Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_fg23-rb4265b
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"FG23-RB4265B"'
+  - name: SL_KIT_REV
+    value: '"A01"'
+- tag:
+  - kit:opn:FG23-RB4265B
+  - kit:pn:RB4265
+  - kit:variant:B
+  - kit:revision:A01

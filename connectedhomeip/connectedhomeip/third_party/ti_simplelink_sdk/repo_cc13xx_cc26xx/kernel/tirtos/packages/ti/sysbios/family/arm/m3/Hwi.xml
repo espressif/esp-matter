@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="M3/Hwi" title="M3 Hardware Interrupts" version="1">
+
+<page name="Module" title="Module Settings">
+<html><body><table>
+  <tr>
+      <td><form>
+        <p>The Hwi module provides M3-specific interrupt management services that extend those provided by the generic ti.sysbios.hal.Hwi module.</p>
+        <p> </p>
+      </form></td>
+  </tr>
+  <tr>
+    <td><control type="checkbox" label="Add M3-specific Hardware Interrupt to my configuration" value="value:this.$used" bold="true"/></td>
+  </tr>
+  <tr></tr>
+  <tr><td>
+      <h1>Interrupt Handling</h1>
+      <table>
+        <tr>
+          <td><control type="label" label="Priority threshold for Hwi_disable()" align="left"/></td>
+          <td><control type="editbox" 
+               enabled="value:this.$used"
+               value="value:this.disablePriority" 
+               tooltip="value:this.disablePriority"/></td>
+        </tr>
+      </table>    
+    </td>
+    <td>
+      <h1>Stack Management</h1>
+      <table>
+        <tr>
+          <td><control type="label" label="System (Hwi and Swi) stack size" align="left"/></td>
+          <td><control type="editbox"
+               enabled="value:this.$used"
+               value="value:xdc.cfg.Program.stack"
+               tooltip="value:xdc.cfg.Program.stack.$summary"/></td>
+        </tr>      
+        <tr>
+          <td><control type="checkbox" 
+               enabled="value:this.$used"
+               label="Initialize stack"
+               value="value:ti.sysbios.hal.Hwi.initStackFlag" 
+               tooltip="value:ti.sysbios.hal.Hwi.initStackFlag.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="checkbox" 
+               label="Check for stack overflow"
+               enabled="value:ti.sysbios.hal.Hwi.initStackFlag" 
+               value="value:ti.sysbios.hal.Hwi.checkStackFlag" 
+               tooltip="value:ti.sysbios.hal.Hwi.checkStackFlag.$summary"/></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <h1>Exception Handling</h1>
+      <table>
+        <tr>
+          <td><control type="checkbox"
+			   label="Enable full exception decoding" 
+               enabled="value:this.$used"
+               value="value:this.enableException"
+               tooltip="value:this.enableException.$summary"/></td>
+        </tr>
+	<tr>
+	  <td>
+	    <form>
+<p>When enabled, a function that does a complete exception decode and register context dump using System_printf() is installed.
+This setting provides the maximum amount of exception information but at a cost of code memory consumption.</p>
+<p>When disabled, a function that simply raises an Error is installed.
+This setting provides minimal exception information but uses a lot less code memory.</p>
+<p>With either setting, the complete register context, exception decode, and a stack back
+trace can be seen using the Hwi module's ROV Exception view.</p>
+            </form>
+	  </td>
+	</tr>
+        <tr></tr>
+      </table>
+      <h5>Advanced</h5>
+      <table>
+        <tr>
+          <td><control type="checkbox" 
+			   label="value:this.nvicCCR.STKALIGN.$summary" 
+               enabled="value:this.$used"
+               value="value:this.nvicCCR.STKALIGN" 
+               tooltip="value:this.nvicCCR.STKALIGN.$summary"/></td>
+        </tr>
+        <tr>
+         <td><control type="checkbox"
+          	   label="value:this.nvicCCR.BFHFNMIGN.$summary"  
+               enabled="value:this.$used"
+               value="value:this.nvicCCR.BFHFNMIGN" 
+               tooltip="value:this.nvicCCR.BFHFNMIGN.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="checkbox"
+			   label="value:this.nvicCCR.DIV_0_TRP.$summary"            
+               enabled="value:this.$used"
+               value="value:this.nvicCCR.DIV_0_TRP" 
+               tooltip="value:this.nvicCCR.DIV_0_TRP.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="checkbox" 
+               label="value:this.nvicCCR.UNALIGN_TRP.$summary" 
+               enabled="value:this.$used"
+               value="value:this.nvicCCR.UNALIGN_TRP" 
+               tooltip="value:this.nvicCCR.UNALIGN_TRP.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="User exception context buffer address" align="left"/></td>
+          <td><control type="editbox"
+               display="hex"          
+               enabled="value:this.$used"
+               value="value:this.excContextBuffer" 
+               tooltip="value:this.excContextBuffer.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="User exception stack buffer address" align="left"/></td>
+          <td><control type="editbox"
+               display="hex"          
+               enabled="value:this.$used"
+               value="value:this.excStackBuffer" 
+               tooltip="value:this.excStackBuffer.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="User exception hook function" align="left"/></td>
+          <td><control type="editbox" 
+               enabled="value:this.$used"
+               value="value:this.excHookFunc" 
+               tooltip="value:this.excHookFunc.$summary"/></td>
+        </tr>
+      </table>
+      <h5>Override</h5>
+      <table>
+        <tr><td><form>
+<p>The user can override the default exception handling behavior by providing their own function (ie '&amp;myExcHandler'):</p>
+        </form></td></tr>
+        <tr>
+          <td><control type="label" label="Exception handler" align="left"/></td>
+          <td><control type="editbox" 
+               enabled="value:this.$used"
+               value="value:this.excHandlerFunc" 
+               tooltip="value:this.excHandlerFunc.$summary"/></td>
+        </tr>
+        <tr>
+	  <td>
+	    <form>
+<p>By default, an exception handler corresponding to the "Enable full exception decoding" selection will be installed.</p>
+<p>If set to 'null', low level code will simply loop forever when an exception occurs.
+Setting the handler to 'null' also results in the least amount of code and data memory being consumed.</p>
+<p>No ROV exception information is available when a user exception handler is configured.
+Neither will any of the above "User exception ..." settings be functional.</p>
+            </form>
+	  </td>
+	</tr>
+      </table>
+    </td>
+    <td> 
+      <h1>Vector Tables</h1>
+        <table>
+        <tr>
+          <td><control type="label" label="Reset Vector Table address" align="left"/></td>
+          <td><control type="editbox"
+               display="hex"          
+               enabled="value:this.$used"
+               value="value:this.resetVectorAddress" 
+               tooltip="value:this.resetVectorAddress.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Runtime Vector Table address" align="left"/></td>
+          <td><control type="editbox"
+               display="hex"          
+               enabled="value:this.$used"
+               value="value:this.vectorTableAddress" 
+               tooltip="value:this.vectorTableAddress.$summary"/></td>
+        </tr>
+	<tr>
+	    <td>
+		<form>
+                <p>If both vector table addresses are set to the same value, a single const vector table will be generated and placed at that address.</p>
+                </form>
+	    </td>
+	</tr>
+        </table>
+      <h1>Dispatcher</h1>
+        <table>
+          <tr>
+            <td><control type="checkbox" 
+                 enabled="value:this.$used"
+                 label="Enable interrupt nesting"
+                 value="value:this.dispatcherAutoNestingSupport" 
+                 tooltip="value:this.dispatcherAutoNestingSupport.$summary"/></td>
+          </tr>
+          <tr>
+            <td><control type="checkbox" 
+                 enabled="value:this.$used"
+                 label="Enable software interrupt support"
+                 value="value:this.dispatcherSwiSupport" 
+                 tooltip="value:this.dispatcherSwiSupport.$summary"/></td>
+          </tr>
+          <tr>
+            <td><control type="checkbox" 
+                 enabled="value:this.$used"
+                 label="Enable Task support"
+                 value="value:this.dispatcherTaskSupport" 
+                 tooltip="value:this.dispatcherTaskSupport.$summary"/></td>
+          </tr>
+          <tr>
+            <td><control type="checkbox" 
+                 enabled="value:this.$used"
+                 label="Enable Irp tracking"
+                 value="value:this.dispatcherIrpTrackingSupport" 
+                 tooltip="value:this.dispatcherIrpTrackingSupport.$summary"/></td>
+          </tr>
+          <tr>
+            <td><control type="label" label="Number of interrupts supported by the device" align="left"/></td>
+            <td><control type="editbox"
+                 enabled="value:this.$used"
+                 value="value:this.NUM_INTERRUPTS"
+                 tooltip="value:this.NUM_INTERRUPTS.$summary"/></td>
+          </tr>      
+          <tr>
+            <td><control type="label" label="Hwi dispatch table size" align="left"/></td>
+            <td><control type="editbox"
+                 enabled="value:this.$used"
+                 value="value:this.dispatchTableSize"
+                 tooltip="value:this.dispatchTableSize.$summary"/></td>
+          </tr>      
+	  <tr>
+	    <td>
+		<form>
+<p>When the Hwi dispatch table size is equal to the number of interrupts supported by the device, a linear-indexed dispatch table mechanism is used that will consume 4 bytes of RAM for each interrupt supported.</p>
+<p>If the dispatch table size is set to a number less than the number of interrupts supported by the device, then a non linear-indexed dispatch table mechanism is employed that uses 12 bytes of RAM for each interrupt supported.</p>
+<p>Consequently, for applications that use less than 1/3 of the total number of interrupts supported by the device, setting this parameter to the number of interrupts ACTUALLY USED will result in less RAM memory being used than otherwise.</p>
+<p>For applications that use very few interrupts, this can be a significant RAM memory savings.</p>
+                </form>
+	    </td>
+	  </tr>
+        </table>
+  </td></tr>
+</table></body></html>
+</page>
+
+<page name="Instance" title="Instance Settings" DPI="10">
+<html><body><table>
+  <tr>
+    <td>
+      <h1>Hwis</h1>
+      <table><tr>
+        <td><control type="listbox" sort="true" id="master" text="value:this.$activeInstance" width="10" height="15" align="fill" labels="value:this"/></td>
+        <td>
+          <control type="pushbutton" label="Add ..." align="fill" link="action:New"/>
+          <control type="pushbutton" label="Remove" align="fill" link="action:Delete" context="value:widget.master.selection"/>
+        </td>
+      </tr></table>
+    </td>
+    <td context="value:widget.master.selection">
+      <h1>Required Settings</h1>
+      <table>
+        <tr>
+          <td><control type="label" label="Handle" align="left"/></td>
+          <td><control type="editbox" 
+               value="value:this.instance.name"
+               tooltip="Handle name"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="ISR function" align="left"/></td>
+          <td><control type="editbox" 
+               value="value:this.create.hwiFxn"
+               tooltip="value:this.create.hwiFxn.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Interrupt number" align="left"/></td>
+          <td><control type="editbox" 
+               value="value:this.create.intNum"
+               tooltip="value:this.create.intNum.$summary"/></td>
+        </tr>
+      </table>
+      <h1>Additional Settings</h1>
+      <table>
+        <tr>
+          <td><control type="label" label="Argument passed to ISR function" align="left"/></td>
+          <td><control type="editbox"
+               value="value:this.arg"
+               tooltip="value:this.arg.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Interrupt priority" align="left"/></td>
+          <td><control type="editbox"
+               value="value:this.priority"
+               tooltip="value:this.priority.$summary"/></td>
+        </tr>
+        <tr>
+          <td colspan="2"><control type="checkbox" align="left"
+             label="Enable at startup"
+             value="value:this.enableInt" 
+             tooltip="value:this.enableInt.$summary"/></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table></body></html>
+</page>
+<properties name="Advanced" title="All Options" enabled="true" visible="true" link="this"/>
+</gep>
+

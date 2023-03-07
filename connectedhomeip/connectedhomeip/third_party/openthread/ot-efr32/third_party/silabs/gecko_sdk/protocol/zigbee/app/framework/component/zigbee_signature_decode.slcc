@@ -1,0 +1,20 @@
+id: "zigbee_signature_decode"
+label: "Zigbee Signature Decode"
+package: "Zigbee"
+category: "Zigbee|Utility"
+quality: production
+description: "This component provides the ZCL decoding functionality."
+provides:
+  - name: "zigbee_signature_decode"
+
+include:
+  - path: protocol/zigbee/app/framework/signature-decode
+    file_list:
+      - path: sl_signature_decode.h    
+
+source:
+  - path: "protocol/zigbee/app/framework/signature-decode/sl_signature_decode.c"
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_signature_decode

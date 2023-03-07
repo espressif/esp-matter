@@ -1,0 +1,74 @@
+/*
+ * Copyright (c) 2016-2022 Bouffalolab.
+ *
+ * This file is part of
+ *     *** Bouffalolab Software Dev Kit ***
+ *      (see www.bouffalolab.com).
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *   1. Redistributions of source code must retain the above copyright notice,
+ *      this list of conditions and the following disclaimer.
+ *   2. Redistributions in binary form must reproduce the above copyright notice,
+ *      this list of conditions and the following disclaimer in the documentation
+ *      and/or other materials provided with the distribution.
+ *   3. Neither the name of Bouffalo Lab nor the names of its contributors
+ *      may be used to endorse or promote products derived from this software
+ *      without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+#include <stdio.h>
+#include <aos/kernel.h>
+
+#include <blog.h>
+
+#define BLOG_HARD_DECLARE_DISABLE 1
+BLOG_DECLARE(blog_testc1);
+
+void blog_testc1_entry(void *arg)
+{
+    aos_msleep(5000);
+
+    blog_debug("blog_testc1 debug\r\n");
+    blog_info("blog_testc1 info\r\n");
+    blog_warn("blog_testc1 warn\r\n");
+    blog_error("blog_testc1 error\r\n");
+
+    blog_debug_user(blog_testc1,"blog_testc1 debug user\r\n");
+    blog_info_user(blog_testc1,"blog_testc1 info user\r\n");
+    blog_warn_user(blog_testc1,"blog_testc1 warn user\r\n");
+    blog_error_user(blog_testc1,"blog_testc1 error user\r\n");
+    blog_assert_user(blog_testc1,"blog_testc1 assert user\r\n");
+
+    while (1) {
+        aos_msleep(5000);
+        blog_debug("blog_testc1 debug\r\n");
+        blog_info("blog_testc1 info\r\n");
+        blog_warn("blog_testc1 warn\r\n");
+        blog_error("blog_testc1 error\r\n");
+
+        blog_debug_user(blog_testc1,"blog_testc1 debug user\r\n");
+        blog_info_user(blog_testc1,"blog_testc1 info user\r\n");
+        blog_warn_user(blog_testc1,"blog_testc1 warn user\r\n");
+        blog_error_user(blog_testc1,"blog_testc1 error user\r\n");
+        blog_assert_user(blog_testc1,"blog_testc1 assert user\r\n");
+    }
+}
+
+int blog_testc1_init(void)
+{
+    aos_task_new("blog_testc1", blog_testc1_entry, NULL, 2048);
+
+    return 0;
+}

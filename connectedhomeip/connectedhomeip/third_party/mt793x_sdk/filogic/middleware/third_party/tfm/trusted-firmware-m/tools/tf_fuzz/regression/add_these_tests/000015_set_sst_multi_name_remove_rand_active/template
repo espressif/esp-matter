@@ -1,0 +1,3 @@
+purpose to show a more-interesting removal case;
+set sst name president george herbert walker bush data "read my lips";
+remove sst *active;  // remove *some* active asset

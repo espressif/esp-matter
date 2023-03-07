@@ -1,0 +1,55 @@
+/***************************************************************************//**
+ * @file  zap-cluster-command-parser.c
+ * @brief This file contains a set of generated functions that parse the
+ * incomming zcl command messages.
+ * This file is generated. Do not update file manually.
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2020 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * The licensor of this software is Silicon Laboratories Inc. Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement. This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
+ *
+ ******************************************************************************/
+
+#ifndef __ZAP_CLUSTER_COMMAND_PARSER_H__
+#define __ZAP_CLUSTER_COMMAND_PARSER_H__ 1
+
+/**
+ * @defgroup zcl_command_parser ZCL Command Parsers
+ * @ingroup command
+ * @brief Application Framework command parsing functions reference
+ * 
+ * This document describes the generated parsing functions that 
+ * are used to parse over-the-air payload into the corresponding structs.
+ */
+
+/**
+ *
+ * @addtogroup zcl_command_parser
+ * @{
+ */
+
+#include "sl_component_catalog.h"
+#ifdef SL_CATALOG_ZIGBEE_ZCL_FRAMEWORK_CORE_PRESENT
+
+#include "af.h"
+#include "zap-command-structs.h"
+
+{{#zcl_commands_with_arguments}}
+  {{#if argCount}}
+/** @brief Parser function for "{{name}}" ZCL command from "{{clusterName}}" cluster
+ */
+EmberAfStatus zcl_decode_{{as_underscore_lowercase clusterName}}_cluster_{{as_underscore_lowercase name}}_command (EmberAfClusterCommand * cmd, sl_zcl_{{as_underscore_lowercase clusterName}}_cluster_{{as_underscore_lowercase name}}_command_t *cmd_struct);
+  {{/if}}
+{{/zcl_commands_with_arguments}}
+
+#endif //End of SL_CATALOG_ZIGBEE_ZCL_FRAMEWORK_CORE_PRESENT
+
+/** @} END addtogroup */
+#endif // __ZAP_CLUSTER_COMMAND_PARSER_H__

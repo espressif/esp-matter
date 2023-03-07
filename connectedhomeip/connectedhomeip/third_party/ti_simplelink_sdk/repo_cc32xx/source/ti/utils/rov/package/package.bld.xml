@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/build.dtd -->
+<package name="ti.utils.rov" version="1, 0, 0" producerId="undefined">
+    <units>
+    </units>
+    <sources>
+    </sources>
+    <configscripts>
+    </configscripts>
+    <makefiles>
+        <srcFile name="package.mak" src="package.bld"/>
+        <srcFile name="package/package.xdc.dep" src="package.xdc"/>
+        <srcFile name="package/package.cfg.dep" src="package.xdc"/>
+        <srcFile name="package/rel/ti_utils_rov.zip.dep" src="package/rel/ti_utils_rov.xdc.inc"/>
+    </makefiles>
+    <targets>
+    </targets>
+    <libraries>
+    </libraries>
+    <configurations>
+    </configurations>
+    <executables>
+    </executables>
+    <tests>
+    </tests>
+    <releases relDir="package/rel/">
+    <release name="ti_utils_rov"
+        pname="../../../../exports/ti_utils_rov.zip"
+        label="default"
+    >
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+        <file name=".meta/rov.component.js"/>
+        <file name=".meta/syscfg_c.rov.xs.xdt"/>
+        <file name="addons/execution_graph/ExecGraph.js"/>
+        <file name="addons/execution_graph/Users_Guide.md"/>
+        <file name="addons/execution_graph/execution_graph.html"/>
+        <file name="addons/execution_graph/execution_graph.js"/>
+        <file name="addons.json"/>
+        <file name="package/package.cfg.xdc.inc"/>
+    </release>
+    </releases>
+    <repositories>
+    </repositories>
+</package>

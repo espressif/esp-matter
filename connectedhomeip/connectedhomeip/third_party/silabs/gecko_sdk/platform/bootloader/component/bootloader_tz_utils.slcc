@@ -1,0 +1,17 @@
+id: bootloader_tz_utils
+label: Bootloader TZ utilities
+package: bootloader
+description: >
+  Provides the TZ utilities
+category: Platform|Bootloader|TrustZone Secure|Utils
+quality: production
+source:
+  - path: platform/bootloader/core/btl_tz_utils.c
+include:
+  - path: platform/bootloader
+    file_list:
+      - path: core/btl_tz_utils.h
+provides:
+  - name: bootloader_tz_utils
+  - name: bootloader_nonsecure_incompatible
+    condition: [bootloader_core_nonsecure]

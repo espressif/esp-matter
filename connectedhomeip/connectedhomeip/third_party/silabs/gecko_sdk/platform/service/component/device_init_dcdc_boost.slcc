@@ -1,0 +1,39 @@
+id: device_init_dcdc_boost
+label: "Device Init: DC-DC Boost"
+package: platform
+description: >
+  Device initialization for DC-DC Boost converter
+category: Services|Device Initialization
+quality: production
+root_path: platform/service/device_init/
+config_file:
+  - path: config/s2/sl_device_init_dcdc_boost_config.h
+    file_id: device_init_dcdc_boost_config
+    condition: [device_series_2]
+include:
+  - path: inc
+    file_list:
+      - path: sl_device_init_dcdc_boost.h
+source:
+  - path: src/sl_device_init_dcdc_boost_s2.c
+    condition: [device_series_2]
+provides:
+  - name: device_init_dcdc_boost
+requires:
+  - name: emlib_emu
+  - name: device_has_dcdc
+  - name: device_dcdc_boost
+    condition: [device_series_2]
+  - name: status
+template_contribution:
+  - name: event_handler
+    value:
+      event: platform_init
+      include: sl_device_init_dcdc_boost.h
+      handler: sl_device_init_dcdc_boost
+    # The priority has been set to -9850 here because
+    # Boost regulator must be initialised before Buck
+    priority: -9850
+documentation:
+    docset: gecko-platform
+    document: service/api/group-device-init-dcdc-boost

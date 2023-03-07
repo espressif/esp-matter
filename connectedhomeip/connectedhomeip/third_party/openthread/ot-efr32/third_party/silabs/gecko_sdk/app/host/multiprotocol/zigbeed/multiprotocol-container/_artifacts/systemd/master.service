@@ -1,0 +1,13 @@
+[Unit]
+Description=Master service that runs the other components
+BindsTo=zigbeed.service otbr.service hciattach.service
+After=zigbeed.service otbr.service hciattach.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/true
+# This service shall be considered active after start
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

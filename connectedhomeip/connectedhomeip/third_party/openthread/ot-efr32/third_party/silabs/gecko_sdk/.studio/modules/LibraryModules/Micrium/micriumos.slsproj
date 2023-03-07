@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="com.silabs.sdk.exx32.external.micriumos" label="Micrium OS" contentRoot="$(sdkInstallationPath:default())/platform/micrium_os">
+  <property key="category" value="efm32|Middleware"/>
+  <includePath uri="." />
+
+  <!-- ARMv7-M Port files GCC-->
+  <file name="ports/source/gnu/armv7m_cpu_a.S" uri="ports/source/gnu/armv7m_cpu_a.S" partCompatibility="-::ARMCore==CORTEX_M0+" toolchainCompatibility="gcc" />
+  <file name="ports/source/gnu/armv7m_cpu_c.c" uri="ports/source/gnu/armv7m_cpu_c.c" partCompatibility="-::ARMCore==CORTEX_M0+" toolchainCompatibility="gcc" />
+  <file name="ports/source/gnu/armv7m_os_cpu_a.S" uri="ports/source/gnu/armv7m_os_cpu_a.S" partCompatibility="-::ARMCore==CORTEX_M0+" toolchainCompatibility="gcc" />
+  <file name="ports/source/gnu/armv7m_os_cpu_c.c" uri="ports/source/gnu/armv7m_os_cpu_c.c" partCompatibility="-::ARMCore==CORTEX_M0+" toolchainCompatibility="gcc" />
+  <file name="ports/source/gnu/armv7m_os_cpu.h" uri="ports/source/gnu/armv7m_os_cpu.h" partCompatibility="-::ARMCore==CORTEX_M0+" toolchainCompatibility="gcc" />
+  <file name="ports/source/gnu/armv7m_cpu_port.h" uri="ports/source/gnu/armv7m_cpu_port.h" partCompatibility="-::ARMCore==CORTEX_M0+" toolchainCompatibility="gcc" />
+  <!-- ARMv7-M Port files IAR-->
+  <file name="ports/source/iar/armv7m_cpu_a.asm" uri="ports/source/iar/armv7m_cpu_a.asm" partCompatibility="-::ARMCore==CORTEX_M0+" toolchainCompatibility="iar" />
+  <file name="ports/source/iar/armv7m_cpu_c.c" uri="ports/source/iar/armv7m_cpu_c.c" partCompatibility="-::ARMCore==CORTEX_M0+" toolchainCompatibility="iar" />
+  <file name="ports/source/iar/armv7m_os_cpu_a.asm" uri="ports/source/iar/armv7m_os_cpu_a.asm" partCompatibility="-::ARMCore==CORTEX_M0+" toolchainCompatibility="iar" />
+  <file name="ports/source/iar/armv7m_os_cpu_c.c" uri="ports/source/iar/armv7m_os_cpu_c.c" partCompatibility="-::ARMCore==CORTEX_M0+" toolchainCompatibility="iar" />
+  <file name="ports/source/iar/armv7m_os_cpu.h" uri="ports/source/iar/armv7m_os_cpu.h" partCompatibility="-::ARMCore==CORTEX_M0+" toolchainCompatibility="iar" />
+  <file name="ports/source/iar/armv7m_cpu_port.h" uri="ports/source/iar/armv7m_cpu_port.h" partCompatibility="-::ARMCore==CORTEX_M0+" toolchainCompatibility="iar" />
+
+  <!-- ARMv6-M Port files GCC -->
+  <file name="ports/source/gnu/armv6m_cpu_a.S" uri="ports/source/gnu/armv6m_cpu_a.S" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="gcc" />
+  <file name="ports/source/gnu/armv6m_os_cpu_a.S" uri="ports/source/gnu/armv6m_os_cpu_a.S" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="gcc" />
+  <file name="ports/source/gnu/armv6m_os_cpu_c.c" uri="ports/source/gnu/armv6m_os_cpu_c.c" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="gcc" />
+  <file name="ports/source/gnu/armv6m_os_cpu.h" uri="ports/source/gnu/armv6m_os_cpu.h" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="gcc" />
+  <file name="ports/source/gnu/armv6m_cpu_port.h" uri="ports/source/gnu/armv6m_cpu_port.h" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="gcc" />
+  <!-- ARMv6-M Port files IAR -->
+  <file name="ports/source/iar/armv6m_cpu_a.asm" uri="ports/source/iar/armv6m_cpu_a.asm" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="iar" />
+  <file name="ports/source/iar/armv6m_os_cpu_a.asm" uri="ports/source/iar/armv6m_os_cpu_a.asm" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="iar" />
+  <file name="ports/source/iar/armv6m_os_cpu_c.c" uri="ports/source/iar/armv6m_os_cpu_c.c" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="iar" />
+  <file name="ports/source/iar/armv6m_os_cpu.h" uri="ports/source/iar/armv6m_os_cpu.h" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="iar" />
+  <file name="ports/source/iar/armv6m_cpu_port.h" uri="ports/source/iar/armv6m_cpu_port.h" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="iar" />
+
+  <!-- Toolchain independent port files -->
+  <file name="ports/source/generic/arm_cpu_dwt_ts.c" uri="ports/source/generic/arm_cpu_dwt_ts.c" />
+
+  <folder name="common" uri="common" />
+  <folder name="cpu/include" uri="cpu/include" />
+  <folder name="cpu/source" uri="cpu/source" includeAllFiles="true" includeAllFolders="false" />
+  <folder name="kernel/include" uri="kernel/include" />
+  <folder name="kernel/source" includeAllFiles="true" includeAllFolders="false" />
+
+  <!-- BSP -->
+  <includePath uri="bsp/siliconlabs/generic/include" />
+  <folder name="bsp/siliconlabs/generic/source" uri="bsp/siliconlabs/generic/source" />
+
+</project>

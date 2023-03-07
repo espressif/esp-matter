@@ -1,0 +1,58 @@
+package: Zigbee
+description: This is the original Form and Join library (given as source code) that
+  provides a simple approach to form on an unused pan ID, or find any open network
+  that can be joined to.  This functionality can be paired with the network-find plugin.  However
+  both are superseded by the Network Steering component, which provides a more robust and
+  complete solution.
+id: zigbee_form_and_join
+label: Form and Join Library
+category: Zigbee|Network Form and Join
+quality: production
+provides:
+   - name: "zigbee_form_and_join"
+source:
+  - path: protocol/zigbee/app/framework/plugin/form-and-join/form-and-join-afv2.c
+  - path: protocol/zigbee/app/util/common/form-and-join.c
+  - path: protocol/zigbee/app/util/common/form-and-join-host-adapter.c
+    condition:
+      - zigbee_ezsp
+  - path: protocol/zigbee/app/util/common/form-and-join-node-adapter.c
+    condition:
+      - zigbee_stack_common
+  - path: protocol/zigbee/app/framework/plugin/form-and-join/form-and-join-cb.c
+include:
+  - path: protocol/zigbee/app/util/common
+    file_list:
+      - path: form-and-join.h
+      - path: form-and-join-adapter.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_form_and_join
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emAfPluginFormAndJoinInitCallback  
+  - name: zigbee_stack_callback
+    value:
+      callback_type: mark_buffers
+      function_name: emberAfPluginFormAndJoinMarker
+  - name: zigbee_stack_callback
+    value:
+      callback_type: scan_complete
+      function_name: emAfPluginFormAndJoinScanCompleteCallback
+    priority: -10
+  - name: zigbee_stack_callback
+    value:
+      callback_type: energy_scan_result
+      function_name: emAfPluginFormAndJoinEnergyScanResultCallback
+    priority: -10
+  - name: zigbee_stack_callback
+    value:
+      callback_type: unused_pan_id_found
+      function_name: emAfPluginFormAndJoinUnusedPanIdFoundCallback
+    priority: -10
+  - name: zigbee_stack_callback
+    value:
+      callback_type: network_found
+      function_name: emAfPluginFormAndJoinNetworkFoundCallback
+    priority: -10

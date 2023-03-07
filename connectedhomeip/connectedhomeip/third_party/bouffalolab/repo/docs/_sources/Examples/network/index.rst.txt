@@ -1,0 +1,7 @@
+(BL702)
+***************
+
+.. toctree::
+   :maxdepth: 2
+
+   ethernet <demo_ethernet_ota/ota>

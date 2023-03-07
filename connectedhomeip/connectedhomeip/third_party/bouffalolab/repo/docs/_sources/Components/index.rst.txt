@@ -1,0 +1,10 @@
+********
+Components
+********
+
+.. toctree::
+   :maxdepth: 2
+
+   System <System/index>
+   Middleware <Middleware/index>
+   BLE <BLE/index>

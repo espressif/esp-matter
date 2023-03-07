@@ -1,0 +1,135 @@
+<?xml version="1.0" ?>
+<contentItems>
+	<contentItemData category="Application Notes" description="Provides an overview and hyperlinks to all packaged documentation." itemURI="file:slOpenthread-index.html" label="Documentation Index" priority="9"/>
+	<contentItemData category="Application Notes" description="Provides details on developing Dynamic Multiprotocol applications using Bluetooth and OpenThread.
+" itemURI="file:an1265-openthread-bluetooth-dynamic-multiprotocol-gsdk-v3x.pdf" label="AN1265: Dynamic Multiprotocol Development with Bluetooth and OpenThread in GSDK v3.x" priority="25"/>
+	<contentItemData category="User's Guides" description="Includes a brief background on the emergence of Thread, provides a technology overview,  and describes some key features of Thread to consider when implementing a Thread solution.
+" itemURI="file:ug103-11-fundamentals-thread.pdf" label="UG103.11: Thread Fundamentals" priority="10"/>
+	<contentItemData category="User's Guides" description="Describes the four multiprotocol modes, discusses considerations when selecting protocols for  multiprotocol implementations, and reviews the Radio Scheduler, a required component of a  dynamic multiprotocol solution.
+" itemURI="file:ug103-16-multiprotocol-fundamentals.pdf" label="UG103.16: Multiprotocol Fundamentals" priority="25">
+		<property key="sdkAndProtocolTags" value="Bluetooth Zigbee Proprietary Thread HomeKit"/>
+	</contentItemData>
+	<contentItemData category="Application Notes" description="How to program, provision, and configure the anti-tamper module on EFR32 Series 2 devices with  Secure Vault.
+        
+" itemURI="file:an1247-efr32-secure-vault-tamper.pdf" label="AN1247:  Anti-Tamper Protection Configuration and Use" priority="50">
+		<property key="sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Proprietary Thread HomeKit"/>
+	</contentItemData>
+	<contentItemData category="User's Guides" description="Describes methods to improve the coexistence of 2.4 GHz IEEE 802.11b/g/n Wi-Fi and other 2.4 GHz radios such as Bluetooth, Bluetooth Mesh, Bluetooth Low Energy, and IEEE 802.15.4-based radios such as Zigbee and OpenThread
+" itemURI="file:ug103-17-wi-fi-coexistence-fundamentals.pdf" label="UG103.17: Wi-Fi Coexistence Fundamentals" priority="40">
+		<property key="sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Thread"/>
+	</contentItemData>
+	<contentItemData category="Application Notes" description="Describes the impact of Wi-Fi on Zigbee and Thread, and methods to improve coexistence. First, methods to improve coexistence without direct  interaction between Zigbee/Thread and Wi-Fi radios are described. Second, Silicon Labs's Packet Traffic  Arbitration (PTA) support to coordinate 2.5 GHz RF traffic for co-located Zigbee/Thread and Wi-Fi radios is described (for the EFR32MG only).
+" itemURI="file:an1017-coexistence-with-WiFi.pdf" label="AN1017: Zigbee and Thread Coexistence with WiFi" priority="40">
+		<property key="sdkAndProtocolTags" value="Zigbee Thread"/>
+	</contentItemData>
+	<contentItemData category="Application Notes" description="Describes how to integrate crypto functionality into applications using PSA Crypto  compared to Mbed TLS. 
+        
+" itemURI="file:an1311-mbedtls-psa-crypto-porting-guide.pdf" label="AN1311:  Integrating Crypto Functionality Using PSA Crypto Compared to Mbed TLS" priority="50">
+		<property key="sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Proprietary Thread HomeKit Wi-SUN"/>
+	</contentItemData>
+	<contentItemData category="Application Notes" description="Contains detailed information on configuring and using the Secure Boot with hardware Root of Trust and Secure Loader on  Series 2 devices, including how to provision the signing key. This is a companion document to UG489: Silicon Labs Gecko  Bootloader User's Guide for GSDK 4.0 and Higher.
+" itemURI="file:an1218-secure-boot-with-rtsl.pdf" label="AN1218: Series 2 Secure Boot with RTSL" priority="15">
+		<property key="sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Proprietary Thread HomeKit"/>
+	</contentItemData>
+	<contentItemData category="User's Guides" description="Introduces non-volatile data storage using flash and the three different storage implementations offered  for Silicon Labs microcontrollers and SoCs: Simulated EEPROM, PS Store, and NVM3.  
+" itemURI="file:ug103-07-non-volatile-data-storage-fundamentals.pdf" label="UG103.07: Non-Volatile Data Storage Fundamentals" priority="20">
+		<property key="sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Proprietary Thread HomeKit Wi-SUN"/>
+	</contentItemData>
+	<contentItemData category="User's Guides" description="Describes how and when to use Simplicity Commander's Command-Line Interface. 
+" itemURI="file:ug162-simplicity-commander-reference-guide.pdf" label="UG162: Simplicity Commander Reference Guide" priority="12">
+		<property key="sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Proprietary Thread HomeKit Wi-SUN"/>
+	</contentItemData>
+	<contentItemData category="Application Notes" description="Gecko Bootloader v2.x, introduced in GSDK 4.0, contains a number of changes compared to Gecko Bootloader v1.x. This document describes the differences between the versions, including how to configure the new Gecko Bootloader in Simplicity Studio 5.     
+" itemURI="file:an1326-gecko-bootloader-transitioning-guide.pdf" label="AN1326: Transitioning to the Updated Gecko Bootloader in GSDK 4.0 and Higher" priority="3">
+		<property key="sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Proprietary Thread 32-bit\ MCU HomeKit Wi-SUN"/>
+	</contentItemData>
+	<contentItemData category="Application Notes" description="How to securely &quot;wrap&quot; keys in EFR32 Series 2 devices with Secure Vault, so they can be stored in  non-volatile storage.
+" itemURI="file:an1271-efr32-secure-key-storage.pdf" label="AN1271:  Secure Key Storage" priority="50">
+		<property key="sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Proprietary Thread HomeKit"/>
+	</contentItemData>
+	<contentItemData category="Application Notes" description="Describes how to lock and unlock the debug access of EFR32 Gecko Series 2  devices. Many aspects of the debug access, including the secure debug unlock are described. The Debug  Challenge Interface (DCI) and Secure Engine (SE) Mailbox Interface for locking and unlocking debug  access are also included.
+" itemURI="file:an1190-efr32-secure-debug.pdf" label="AN1190:  Series 2 Secure Debug" priority="50">
+		<property key="sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Proprietary Thread HomeKit"/>
+	</contentItemData>
+	<contentItemData category="Quick Start Guides" description="Provides basic information on configuring, building, and installing applications using the Silicon Labs OpenThread stack.
+" itemURI="file:qsg170-openthread-sdk-quick-start-guide.pdf" label="QSG170: Silicon Labs OpenThread Quick Start Guide" priority="1"/>
+	<contentItemData category="Application Notes" description="Explains how NVM3 can be used as non-volatile data storage in various protocol implementations.
+" itemURI="file:an1135-using-third-generation-nonvolatile-memory.pdf" label="AN1135: Using Third Generation Non-Volatile Memory (NVM3) Data Storage" priority="20">
+		<property key="sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Proprietary Thread HomeKit Wi-SUN"/>
+	</contentItemData>
+	<contentItemData category="Application Notes" description="Provides a high-level description of the different options for integrating RF testing and characterization into standard  test flows. It is intended for customers who are moving from the early prototype development stage to the manufacturing production environment  and need assistance with manufacturing test. 
+" itemURI="file:an718-mfg-test-overview.pdf" label="AN718: Manufacturing Test Overview" priority="30">
+		<property key="sdkAndProtocolTags" value="Zigbee Thread"/>
+	</contentItemData>
+	<contentItemData category="Application Notes" description="Describes how to run any combination of Zigbee EmberZNet, OpenThread, and Bluetooth networking stacks on a  Linux host processor, interfacing with a single EFR32 radio co-processor (RCP) with multiprotocol and multi-PAN  support, as well as how to run the Zigbee stack on the EFR32 as a network co-processor (NCP) alongside the  OpenThread RCP. 
+" itemURI="file:an1333-concurrent-protocols-with-802-15-4-rcp.pdf" label="AN1333: Running  Zigbee, OpenThread, and Bluetooth Concurrently on a Linux Host with a Multiprotocol Co-Processor" priority="9">
+		<property key="sdkAndProtocolTags" value="Zigbee Thread Bluetooth"/>
+	</contentItemData>
+	<contentItemData category="Application Notes" description="Details on programming, provisioning, and configuring Series 2 devices in production environments.  Covers Secure Engine Subsystem of Series 2 devices, which runs easily upgradeable Secure Engine (SE) or Virtual Secure Engine (VSE) firmware.
+  
+" itemURI="file:an1222-efr32xg2x-production-programming.pdf" label="AN1222:  Production Programming of Series 2 Devices" priority="50">
+		<property key="sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Proprietary Thread HomeKit"/>
+	</contentItemData>
+	<contentItemData category="Release Notes" description="Lists compatibility requirements and sources for all software components  in the development environment. Discusses the latest changes to the Silicon  Labs OpenThread stack (and associated utilities) including added/deleted/deprecated  features/API, and lists bugs that have been fixed  since the last release and any pending ones.
+" itemURI="file:OpenThread_Release_Notes.pdf" label="Silicon Labs OpenThread Release Notes" priority="1"/>
+	<contentItemData category="Application Notes" description="Describes how to configure OpenThread applications to operate on a proprietary sub-GHz band using the  Silicon Labs OpenThread SDK and Simplicity Studio 5 with a compatible wireless starter kit (WSTK). It  also provides details on the proprietary radio PHY supported with this feature.
+" itemURI="file:an1350-openthread-single-band-proprietary-sub-ghz.pdf" label="AN1350: Single-Band Proprietary Sub-GHz Support with OpenThread" priority="12"/>
+	<contentItemData category="User's Guides" description="Introduces bootloading for Silicon Labs networking devices. Discusses the Gecko Bootloader as well  as legacy Ember and Bluetooth bootloaders, and describes the file formats used by each. 
+" itemURI="file:ug103-06-fundamentals-bootloading.pdf" label="UG103.06: Bootloader Fundamentals" priority="15">
+		<property key="sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Proprietary Thread HomeKit Wi-SUN"/>
+	</contentItemData>
+	<contentItemData category="Application Notes" description="Describes how to provision and configure Series 2 devices through the DCI and SWD.  
+" itemURI="file:an1303-efr32-dci-swd-programming.pdf" label="AN1303:  Programming Series 2 Devices Using the Debug Challenge Interface (DCI) and Serial Wire Debug (SWD)" priority="50">
+		<property key="sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Proprietary Thread HomeKit"/>
+	</contentItemData>
+	<contentItemData category="Reference Manuals" description="Contains a comprehensive list of APIs used to interface to the Silicon Labs OpenThread stack.
+" itemURI="file:OpenThread-Doxygen/index.html" label="Silicon Labs OpenThread API Reference Guide" priority="1"/>
+	<contentItemData category="Application Notes" description="Summarizes the results of simultaneous Thread and Zigbee throughput performance testing for the concurrent  multiprotocol / multi-PAN RCP, running both OpenThread and Zigbee on the host processor. 
+" itemURI="file:an1385-multi-pan-rcp-performance-test.pdf" label="AN1385: Performance Results for Multi-PAN RCP for OpenThread and Zigbee" priority="30">
+		<property key="sdkAndProtocolTags" value="Zigbee Thread"/>
+	</contentItemData>
+	<contentItemData category="Application Notes" description="Provides instructions for configuring OpenThread SoC and Border Router applications to use Thread 1.3 features.  
+" itemURI="file:an1372-configuring-for-thread-1-3.pdf" label="AN1372: Configuring OpenThread Applications for Thread 1.3" priority="12"/>
+	<contentItemData category="User's Guides" description="Describes the high-level implementation of the Silicon Labs Gecko Bootloader for EFR32 SoCs and NCPs,  and provides information on how to get started using the Gecko Bootloader with Silicon Labs wireless protocol stacks in GSDK 4.0 and higher. 
+" itemURI="file:ug489-gecko-bootloader-user-guide-gsdk-4.pdf" label="UG489: Silicon Labs Gecko Bootloader User's Guide for GSDK 4.0 and Higher" priority="9">
+		<property key="sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Proprietary Thread HomeKit Wi-SUN"/>
+	</contentItemData>
+	<contentItemData category="User's Guides" description="Introduces the security concepts that must be considered when implementing an Internet of Things (IoT)  system. Using the ioXt Alliance's eight security principles as a structure, it clearly delineates  the solutions Silicon Labs provides to support endpoint security and what you must do outside of  the Silicon Labs framework. 
+" itemURI="file:ug103-05-fundamentals-security.pdf" label="UG103.05: IoT Endpoint Security Fundamentals" priority="50">
+		<property key="sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Proprietary Thread Z-Wave HomeKit Wi-SUN"/>
+	</contentItemData>
+	<contentItemData category="Application Notes" description="How to authenticate an EFR32 Series 2 device with Secure Vault, using secure device certificates  and signatures.
+" itemURI="file:an1268-efr32-secure-identity.pdf" label="AN1268:  Authenticating Silicon Labs Devices using Device Certificates" priority="50">
+		<property key="sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Proprietary Thread HomeKit"/>
+	</contentItemData>
+	<contentItemData category="User's Guides" description="Describes how to implement a dynamic multiprotocol solution. 
+" itemURI="file:ug305-dynamic-multiprotocol-users-guide.pdf" label="UG305: Dynamic Multiprotocol User's Guide" priority="25">
+		<property key="sdkAndProtocolTags" value="Bluetooth Zigbee Proprietary Thread HomeKit"/>
+	</contentItemData>
+	<contentItemData category="User's Guides" description="Introduces some fundamental concepts of wireless networking. These concepts are referred to in other Fundamentals documents. If you are new to wireless networking, you should read this document first. 
+" itemURI="file:ug103-01-fundamentals-wireless-network.pdf" label="UG103.01: Wireless Networking Fundamentals" priority="10">
+		<property key="sdkAndProtocolTags" value="Zigbee Proprietary Thread HomeKit Wi-SUN"/>
+	</contentItemData>
+	<contentItemData category="Application Notes" description="Reviews the Zigbee, Thread, and Bluetooth mesh networks to evaluate their differences in performance and behavior.
+" itemURI="file:an1142-mesh-network-performance-comparison.pdf" label="AN1142: Mesh Network Performance Comparison" priority="35">
+		<property key="sdkAndProtocolTags" value="Bluetooth\ Mesh Zigbee Thread HomeKit"/>
+	</contentItemData>
+	<contentItemData category="Application Notes" description="Details the different options for integrating RF testing and characterization into standard test flows.
+" itemURI="file:an700-1-mfg-test-guidelines-efr32.pdf" label="AN700.1: Manufacturing Test Guidelines for the EFR32" priority="30">
+		<property key="sdkAndProtocolTags" value="Zigbee Thread"/>
+	</contentItemData>
+	<contentItemData category="Application Notes" description="Describes how to build OpenThread applications with FreeRTOS.
+" itemURI="file:an1264-openthread-with-free-rtos.pdf" label="AN1264: Using OpenThread with Free RTOS" priority="12"/>
+	<contentItemData category="Application Notes" description="Describes how Secure Vault features are leveraged in OpenThread applications. It focuses on specific PSA features and emphasizes how these are integrated into the OpenThread stack.   
+" itemURI="file:an1329-using-secure-vault-openthread.pdf" label="AN1329:  Using Silicon Labs Secure Vault Features with OpenThread" priority="50"/>
+	<contentItemData category="Application Notes" description="Describes using the OpenThread Border Router GitHub repository and the Silicon Labs OpenThread  Radio Co-Processor (RCP) application to create a Thread Border Router.
+" itemURI="file:an1256-using-sl-rcp-with-openthread-border-router.pdf" label="AN1256: Using the Silicon Labs RCP with the OpenThread Border Router" priority="12"/>
+	<contentItemData category="Application Notes" description="Details methods for testing Thread mesh network performance; results are intended to provide guidance  on design practices and principles as well as expected field performance results.
+" itemURI="file:an1141-thread-mesh-network-performance.pdf" label="AN1141: Thread Mesh Network Performance" priority="35"/>
+	<contentItemData category="Release Notes" description="A detailed overview of all the changes, additions, and fixes in the Gecko Platform components.  The Gecko Platform includes: EMLIB, EMDRV, RAIL Library, NVM3, and the component-based infrastructure.
+" itemURI="file:gecko-platform-release-notes.pdf" label="Gecko Platform Release Notes" priority="3">
+		<property key="sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Proprietary Thread Z-Wave 32-bit\ MCU HomeKit Wi-SUN"/>
+	</contentItemData>
+	<contentItemData category="Application Notes" description="Describes how to use Project Configurator and Component Editor in Simplicity Studio 5 to configure antenna diversity in OpenThread applications.
+" itemURI="file:an1294-configuring-antenna-diversity-for-openthread.pdf" label="AN1294: Configuring Antenna Diversity for OpenThread" priority="40"/>
+</contentItems>

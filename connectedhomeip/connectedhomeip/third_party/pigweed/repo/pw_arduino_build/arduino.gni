@@ -1,0 +1,102 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+import("//build_overrides/pigweed_environment.gni")
+
+declare_args() {
+  # Enable/disable Arduino builds via group("arduino").
+  # Set to the full path of where cores are installed.
+  pw_arduino_build_CORE_PATH = ""
+
+  # Expected args for an Arduino build:
+  pw_arduino_build_CORE_NAME = ""
+
+  # TODO(tonymd): "teensy/avr" here should match the folders in this dir:
+  # "../third_party/arduino/cores/$pw_arduino_build_CORE_NAME/hardware/*")
+  # For teensy: "teensy/avr", for adafruit-samd: "samd/1.6.2"
+  pw_arduino_build_PACKAGE_NAME = ""
+  pw_arduino_build_BOARD = ""
+
+  # Menu options should be a list of strings.
+  pw_arduino_build_MENU_OPTIONS = []
+}
+
+if (pw_arduino_build_CORE_PATH != "") {
+  # Check that enough pw_arduino_build_* args are set to find and use a core.
+  _required_args_message =
+      "The following build args must all be set: " +
+      "pw_arduino_build_CORE_PATH, pw_arduino_build_CORE_NAME, " +
+      "pw_arduino_build_PACKAGE_NAME."
+  assert(pw_arduino_build_CORE_NAME != "",
+         "Missing 'pw_arduino_build_CORE_NAME' build arg. " +
+             _required_args_message)
+  assert(pw_arduino_build_PACKAGE_NAME != "",
+         "Missing 'pw_arduino_build_PACKAGE_NAME' build arg. " +
+             _required_args_message)
+
+  _arduino_selected_core_path =
+      rebase_path("$pw_arduino_build_CORE_PATH/$pw_arduino_build_CORE_NAME",
+                  root_build_dir)
+
+  arduino_builder_script =
+      get_path_info("py/pw_arduino_build/__main__.py", "abspath")
+
+  # Check pw_arduino_build_BOARD is set
+  assert(pw_arduino_build_BOARD != "",
+         "pw_arduino_build_BOARD build arg not set. " +
+             "To see supported boards run: " +
+             "arduino_builder --arduino-package-path " +
+             _arduino_selected_core_path + " --arduino-package-name " +
+             pw_arduino_build_PACKAGE_NAME + " list-boards")
+
+  _compiler_path_override =
+      rebase_path(pw_env_setup_CIPD_PIGWEED + "/bin", root_build_dir)
+
+  arduino_core_library_path = "$_arduino_selected_core_path/hardware/" +
+                              "$pw_arduino_build_PACKAGE_NAME/libraries"
+
+  arduino_global_args = [
+    "--arduino-package-path",
+    _arduino_selected_core_path,
+    "--arduino-package-name",
+    pw_arduino_build_PACKAGE_NAME,
+    "--compiler-path-override",
+    _compiler_path_override,
+
+    # Save config files to "out/arduino_debug/gen/arduino_builder_config.json"
+    "--config-file",
+    rebase_path(root_gen_dir, root_build_dir) + "/arduino_builder_config.json",
+    "--save-config",
+  ]
+
+  arduino_board_args = [
+    "--build-path",
+    ".",
+    "--board",
+    pw_arduino_build_BOARD,
+  ]
+  if (pw_arduino_build_MENU_OPTIONS != []) {
+    arduino_board_args += [ "--menu-options" ]
+    arduino_board_args += pw_arduino_build_MENU_OPTIONS
+  }
+
+  arduino_show_command_args = arduino_global_args + [
+                                "show",
+                                "--delimit-with-newlines",
+                              ] + arduino_board_args
+
+  arduino_run_command_args =
+      arduino_global_args + [ "run" ] + arduino_board_args
+}

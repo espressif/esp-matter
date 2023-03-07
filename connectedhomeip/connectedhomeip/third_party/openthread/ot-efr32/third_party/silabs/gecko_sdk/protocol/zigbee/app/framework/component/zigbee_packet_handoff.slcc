@@ -1,0 +1,19 @@
+package: Zigbee
+description: This component hooks directly into the stack and provides a mechanism to
+  intercept packets and hand them off to other components as a flat buffer.  Required
+  for components and applications implementing emberAfIncomingPacketFilterCallback/emberAfOutgoingPacketFilterCallback.
+label: Packet Handoff
+quality: production
+id: zigbee_packet_handoff
+category: Zigbee|Utility
+provides:
+   - name: "zigbee_packet_handoff"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin-soc/packet-handoff/config/packet-handoff-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin-soc/packet-handoff/packet-handoff.c  
+  - path: protocol/zigbee/app/framework/plugin-soc/packet-handoff/packet-handoff-cb.c  
+template_contribution:
+  - name: component_catalog
+    value: zigbee_packet_handoff
+

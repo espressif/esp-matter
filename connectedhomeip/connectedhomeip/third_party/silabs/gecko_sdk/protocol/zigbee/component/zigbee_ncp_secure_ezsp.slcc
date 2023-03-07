@@ -1,0 +1,39 @@
+id: zigbee_ncp_secure_ezsp
+label: Zigbee NCP Secure EZSP
+package: Zigbee
+category: Zigbee|NCP
+quality: production
+description: Provides the functionality for an NCP application to securely communicate with a Host.
+
+provides:
+  - name: zigbee_ncp_secure_ezsp
+
+requires:
+  - name: zigbee_ncp
+  - name: zigbee_ccm_star
+
+include:
+  - path: protocol/zigbee/app/util/ezsp
+    file_list:
+      - path: secure-ezsp-token.h
+  - path: protocol/zigbee/app/util/secure-ezsp
+    file_list:
+      - path: aes.h
+      - path: 802-15-4-ccm.h
+      - path: hmac.h
+
+source:
+  - path: protocol/zigbee/app/util/ezsp/secure-ezsp.c
+  - path: protocol/zigbee/app/util/ezsp/secure-ezsp-ncp.c
+  - path: protocol/zigbee/app/em260/command-handlers-secure-ezsp.c
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_ncp_secure_ezsp
+  - name: token_header
+    value: app/util/ezsp/secure-ezsp-token.h
+
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/ncp-secure-ezsp

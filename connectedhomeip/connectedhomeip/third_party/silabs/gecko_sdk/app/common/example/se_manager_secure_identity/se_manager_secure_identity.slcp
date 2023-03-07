@@ -1,0 +1,69 @@
+project_name: se_manager_secure_identity
+package: platform
+quality: production
+label: Platform - SE Manager Secure Identity
+description: >
+  This example project demonstrates the secure identity of Secure Vault High device.
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+source:
+  - path: main.c
+  - path: app_init.c
+  - path: app_process.c
+  - path: app_mbedtls_x509.c
+  - path: app_se_manager_secure_identity.c
+include:
+  - path: .
+    file_list:
+    - path: app_init.h
+    - path: app_process.h
+    - path: app_mbedtls_x509.h
+    - path: app_se_manager_macro.h
+    - path: app_se_manager_secure_identity.h
+readme:
+  - path: readme.md
+ui_hints:
+  highlight:
+    - path: readme.md
+      focus: true
+component:
+  - id: sl_string
+  - id: status_string
+  - id: se_manager
+  - id: sl_system
+  - id: device_init
+  - id: device_init_hfrco
+  - id: printf
+  - id: iostream_retarget_stdio
+  - id: iostream_recommended_stream
+  - id: mbedtls_core
+  - id: mbedtls_ccm
+  - id: mbedtls_ecdsa
+  - id: mbedtls_x509
+  - id: mbedtls_slcrypto
+requires:
+  - name: device_security_vault
+configuration:
+  - name: SL_STATUS_STRING_ENABLE_BLUETOOTH
+    value: 0
+  - name: SL_STATUS_STRING_ENABLE_WIFI
+    value: 0
+  - name: SL_DEVICE_INIT_HFRCO_BAND
+    value: cmuHFRCODPLLFreq_38M0Hz
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: SL_HEAP_SIZE
+    value: "5504"
+define:
+  - name: DEBUG_EFM
+  - name: SE_MANAGER_PRINT
+  - name: SE_MANAGER_PRINT_CERT
+toolchain_settings:
+  - option: optimize
+    value: debug

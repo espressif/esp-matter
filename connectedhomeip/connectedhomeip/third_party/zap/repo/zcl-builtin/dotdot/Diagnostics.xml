@@ -1,0 +1,53 @@
+﻿<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster
+	xmlns:zcl="http://zigbee.org/zcl/clusters"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:type="http://zigbee.org/zcl/types"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd"
+	id="0B05" revision="2" name="Diagnostics">
+  <classification role="utility" picsCode="DIAG" />
+  <server>
+    <attributes>
+      <attribute id="0000" name="NumberOfResets" type="uint16" max="65535" default="0" />
+      <attribute id="0001" name="PersistentMemoryWrites" type="uint16" max="65535" default="0" />
+      <attribute id="0100" name="MacRxBcast" type="uint32" max="4294967295" default="0" />
+      <attribute id="0101" name="MacTxBcast" type="uint32" max="4294967295" default="0" />
+      <attribute id="0102" name="MacRxUcast" type="uint32" max="4294967295" default="0" />
+      <attribute id="0103" name="MacTxUcast" type="uint32" max="4294967295" default="0" />
+      <attribute id="0104" name="MacTxUcastRetry" type="uint16" max="65535" default="0" />
+      <attribute id="0105" name="MacTxUcastFail" type="uint16" max="65535" default="0" />
+      <attribute id="0106" name="APSRxBcast" type="uint16" max="65535" default="0" />
+      <attribute id="0107" name="APSTxBcast" type="uint16" max="65535" default="0" />
+      <attribute id="0108" name="APSRxUcast" type="uint16" max="65535" default="0" />
+      <attribute id="0109" name="APSTxUcastSuccess" type="uint16" max="65535" default="0" />
+      <attribute id="010A" name="APSTxUcastRetry" type="uint16" max="65535" default="0" />
+      <attribute id="010B" name="APSTxUcastFail" type="uint16" max="65535" default="0" />
+      <attribute id="010C" name="RouteDiscInitiated" type="uint16" max="65535" default="0" />
+      <attribute id="010D" name="NeighborAdded" type="uint16" max="65535" default="0" />
+      <attribute id="010E" name="NeighborRemoved" type="uint16" max="65535" default="0" />
+      <attribute id="010F" name="NeighborStale" type="uint16" max="65535" default="0" />
+      <attribute id="0110" name="JoinIndication" type="uint16" max="65535" default="0" />
+      <attribute id="0111" name="ChildMoved" type="uint16" max="65535" default="0" />
+      <attribute id="0112" name="NWKFCFailure" type="uint16" max="65535" default="0" />
+      <attribute id="0113" name="APSFCFailure" type="uint16" max="65535" default="0" />
+      <attribute id="0114" name="APSUnauthorizedKey" type="uint16" max="65535" default="0" />
+      <attribute id="0115" name="NWKDecryptFailures" type="uint16" max="65535" default="0" />
+      <attribute id="0116" name="APSDecryptFailures" type="uint16" max="65535" default="0" />
+      <attribute id="0117" name="PacketBufferAllocateFailures" type="uint16" max="65535" default="0" />
+      <attribute id="0118" name="RelayedUcast" type="uint16" max="65535" default="0" />
+      <attribute id="0119" name="PHYToMACQueueLimitReached" type="uint16" max="65535" default="0" />
+      <attribute id="011A" name="PacketValidateDropCount" type="uint16" max="65535" default="0" />
+      <attribute id="011B" name="AverageMACRetryPerAPSMessageSent" type="uint16" max="65535" default="0" />
+      <attribute id="011C" name="LastMessageLQI" type="uint8" max="255" default="0" />
+      <attribute id="011D" name="LastMessageRSSI" type="int8" min="-127" max="127" default="0" />
+    </attributes>
+  </server>
+</zcl:cluster>

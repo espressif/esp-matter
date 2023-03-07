@@ -1,0 +1,322 @@
+menu "Example Connection Configuration"
+
+    config EXAMPLE_GPIO_RANGE_MIN
+        int
+        default 0
+
+    config EXAMPLE_GPIO_RANGE_MAX
+        int
+        default 33 if IDF_TARGET_ESP32
+        default 46 if IDF_TARGET_ESP32S2
+        default 19 if IDF_TARGET_ESP32C3
+        default 48 if IDF_TARGET_ESP32S3
+
+    config EXAMPLE_CONNECT_WIFI
+        bool "connect using WiFi interface"
+        default y
+        help
+            Protocol examples can use Wi-Fi and/or Ethernet to connect to the network.
+            Choose this option to connect with WiFi
+
+    if EXAMPLE_CONNECT_WIFI
+        config EXAMPLE_WIFI_SSID
+            string "WiFi SSID"
+            default "myssid"
+            help
+                SSID (network name) for the example to connect to.
+
+        config EXAMPLE_WIFI_PASSWORD
+            string "WiFi Password"
+            default "mypassword"
+            help
+                WiFi password (WPA or WPA2) for the example to use.
+                Can be left blank if the network has no security set.
+
+        choice EXAMPLE_WIFI_SCAN_METHOD
+            prompt "WiFi Scan Method"
+            default EXAMPLE_WIFI_SCAN_METHOD_ALL_CHANNEL
+            help
+                WiFi scan method:
+
+                If "Fast" is selected, scan will end after find SSID match AP.
+
+                If "All Channel" is selected, scan will end after scan all the channel.
+
+            config EXAMPLE_WIFI_SCAN_METHOD_FAST
+                bool "Fast"
+            config EXAMPLE_WIFI_SCAN_METHOD_ALL_CHANNEL
+                bool "All Channel"
+        endchoice
+
+        menu "WiFi Scan threshold"
+            config EXAMPLE_WIFI_SCAN_RSSI_THRESHOLD
+                int "WiFi minimum rssi"
+                range -127 0
+
+                default -127
+                help
+                    The minimum rssi to accept in the scan mode.
+
+            choice EXAMPLE_WIFI_SCAN_AUTH_MODE_THRESHOLD
+                prompt "WiFi Scan auth mode threshold"
+                default EXAMPLE_WIFI_AUTH_OPEN
+                help
+                    The weakest authmode to accept in the scan mode.
+
+                config EXAMPLE_WIFI_AUTH_OPEN
+                    bool "OPEN"
+                config EXAMPLE_WIFI_AUTH_WEP
+                    bool "WEP"
+                config EXAMPLE_WIFI_AUTH_WPA_PSK
+                    bool "WPA PSK"
+                config EXAMPLE_WIFI_AUTH_WPA2_PSK
+                    bool "WPA2 PSK"
+                config EXAMPLE_WIFI_AUTH_WPA_WPA2_PSK
+                    bool "WPA WPA2 PSK"
+                config EXAMPLE_WIFI_AUTH_WPA2_ENTERPRISE
+                    bool "WPA2 ENTERPRISE"
+                config EXAMPLE_WIFI_AUTH_WPA3_PSK
+                    bool "WPA3 PSK"
+                config EXAMPLE_WIFI_AUTH_WPA2_WPA3_PSK
+                    bool "WPA2 WPA3 PSK"
+                config EXAMPLE_WIFI_AUTH_WAPI_PSK
+                    bool "WAPI PSK"
+            endchoice
+        endmenu
+
+        choice EXAMPLE_WIFI_CONNECT_AP_SORT_METHOD
+            prompt "WiFi Connect AP Sort Method"
+            default EXAMPLE_WIFI_CONNECT_AP_BY_SIGNAL
+            help
+                WiFi connect AP sort method:
+
+                If "Signal" is selected, Sort matched APs in scan list by RSSI.
+
+                If "Security" is selected, Sort matched APs in scan list by security mode.
+
+            config EXAMPLE_WIFI_CONNECT_AP_BY_SIGNAL
+                bool "Signal"
+            config EXAMPLE_WIFI_CONNECT_AP_BY_SECURITY
+                bool "Security"
+        endchoice
+    endif
+
+    config EXAMPLE_CONNECT_ETHERNET
+        bool "connect using Ethernet interface"
+        default n
+        help
+            Protocol examples can use Wi-Fi and/or Ethernet to connect to the network.
+            Choose this option to connect with Ethernet
+
+    if EXAMPLE_CONNECT_ETHERNET
+        config EXAMPLE_USE_SPI_ETHERNET
+            bool
+
+        choice EXAMPLE_ETHERNET_TYPE
+            prompt "Ethernet Type"
+            default EXAMPLE_USE_INTERNAL_ETHERNET if IDF_TARGET_ESP32
+            default EXAMPLE_USE_W5500
+            help
+                Select which kind of Ethernet will be used in the example.
+
+            config EXAMPLE_USE_INTERNAL_ETHERNET
+                depends on IDF_TARGET_ESP32
+                select ETH_USE_ESP32_EMAC
+                bool "Internal EMAC"
+                help
+                    Select internal Ethernet MAC controller.
+
+            config EXAMPLE_USE_DM9051
+                bool "DM9051 Module"
+                select EXAMPLE_USE_SPI_ETHERNET
+                select ETH_USE_SPI_ETHERNET
+                select ETH_SPI_ETHERNET_DM9051
+                help
+                    Select external SPI-Ethernet module.
+
+            config EXAMPLE_USE_W5500
+                bool "W5500 Module"
+                select EXAMPLE_USE_SPI_ETHERNET
+                select ETH_USE_SPI_ETHERNET
+                select ETH_SPI_ETHERNET_W5500
+                help
+                    Select external SPI-Ethernet module (W5500).
+
+            config EXAMPLE_USE_OPENETH
+                bool "OpenCores Ethernet MAC (EXPERIMENTAL)"
+                select ETH_USE_OPENETH
+                help
+                    When this option is enabled, the example is built with support for
+                    OpenCores Ethernet MAC, which allows testing the example in QEMU.
+                    Note that this option is used for internal testing purposes, and
+                    not officially supported. Examples built with this option enabled
+                    will not run on a real ESP32 chip.
+
+        endchoice # EXAMPLE_ETHERNET_TYPE
+
+        if EXAMPLE_USE_INTERNAL_ETHERNET
+            choice EXAMPLE_ETH_PHY_MODEL
+                prompt "Ethernet PHY Device"
+                default EXAMPLE_ETH_PHY_IP101
+                help
+                    Select the Ethernet PHY device to use in the example.
+
+                config EXAMPLE_ETH_PHY_IP101
+                    bool "IP101"
+                    help
+                        IP101 is a single port 10/100 MII/RMII/TP/Fiber Fast Ethernet Transceiver.
+                        Goto http://www.icplus.com.tw/pp-IP101G.html for more information about it.
+
+                config EXAMPLE_ETH_PHY_RTL8201
+                    bool "RTL8201/SR8201"
+                    help
+                        RTL8201F/SR8201F is a single port 10/100Mb Ethernet Transceiver with auto MDIX.
+                        Goto http://www.corechip-sz.com/productsview.asp?id=22 for more information about it.
+
+                config EXAMPLE_ETH_PHY_LAN87XX
+                    bool "LAN87xx"
+                    help
+                        Below chips are supported:
+                        LAN8710A is a small footprint MII/RMII 10/100 Ethernet Transceiver with HP Auto-MDIX and
+                            flexPWR® Technology.
+                        LAN8720A is a small footprint RMII 10/100 Ethernet Transceiver with HP Auto-MDIX Support.
+                        LAN8740A/LAN8741A is a small footprint MII/RMII 10/100 Energy Efficient Ethernet Transceiver
+                            with HP Auto-MDIX and flexPWR® Technology.
+                        LAN8742A is a small footprint RMII 10/100 Ethernet Transceiver with HP Auto-MDIX and
+                            flexPWR® Technology.
+                        Goto https://www.microchip.com for more information about them.
+
+                config EXAMPLE_ETH_PHY_DP83848
+                    bool "DP83848"
+                    help
+                        DP83848 is a single port 10/100Mb/s Ethernet Physical Layer Transceiver.
+                        Goto http://www.ti.com/product/DP83848J for more information about it.
+            endchoice
+
+            config EXAMPLE_ETH_MDC_GPIO
+                int "SMI MDC GPIO number"
+                range EXAMPLE_GPIO_RANGE_MIN EXAMPLE_GPIO_RANGE_MAX
+                default 23
+                help
+                    Set the GPIO number used by SMI MDC.
+
+            config EXAMPLE_ETH_MDIO_GPIO
+                int "SMI MDIO GPIO number"
+                range EXAMPLE_GPIO_RANGE_MIN EXAMPLE_GPIO_RANGE_MAX
+                default 18
+                help
+                    Set the GPIO number used by SMI MDIO.
+        endif
+
+        if EXAMPLE_USE_SPI_ETHERNET
+            config EXAMPLE_ETH_SPI_HOST
+                int "SPI Host Number"
+                range 0 2
+                default 1
+                help
+                    Set the SPI host used to communicate with the SPI Ethernet Controller.
+
+            config EXAMPLE_ETH_SPI_SCLK_GPIO
+                int "SPI SCLK GPIO number"
+                range EXAMPLE_GPIO_RANGE_MIN EXAMPLE_GPIO_RANGE_MAX
+                default 14
+                help
+                    Set the GPIO number used by SPI SCLK.
+
+            config EXAMPLE_ETH_SPI_MOSI_GPIO
+                int "SPI MOSI GPIO number"
+                range EXAMPLE_GPIO_RANGE_MIN EXAMPLE_GPIO_RANGE_MAX
+                default 13
+                help
+                    Set the GPIO number used by SPI MOSI.
+
+            config EXAMPLE_ETH_SPI_MISO_GPIO
+                int "SPI MISO GPIO number"
+                range EXAMPLE_GPIO_RANGE_MIN EXAMPLE_GPIO_RANGE_MAX
+                default 12
+                help
+                    Set the GPIO number used by SPI MISO.
+
+            config EXAMPLE_ETH_SPI_CS_GPIO
+                int "SPI CS GPIO number"
+                range EXAMPLE_GPIO_RANGE_MIN EXAMPLE_GPIO_RANGE_MAX
+                default 15
+                help
+                    Set the GPIO number used by SPI CS.
+
+            config EXAMPLE_ETH_SPI_CLOCK_MHZ
+                int "SPI clock speed (MHz)"
+                range 5 80
+                default 36
+                help
+                    Set the clock speed (MHz) of SPI interface.
+
+            config EXAMPLE_ETH_SPI_INT_GPIO
+                int "Interrupt GPIO number"
+                range EXAMPLE_GPIO_RANGE_MIN EXAMPLE_GPIO_RANGE_MAX
+                default 4
+                help
+                    Set the GPIO number used by the SPI Ethernet module interrupt line.
+        endif # EXAMPLE_USE_SPI_ETHERNET
+
+        config EXAMPLE_ETH_PHY_RST_GPIO
+            int "PHY Reset GPIO number"
+            range -1 EXAMPLE_GPIO_RANGE_MAX
+            default 5
+            help
+                Set the GPIO number used to reset PHY chip.
+                Set to -1 to disable PHY chip hardware reset.
+
+        config EXAMPLE_ETH_PHY_ADDR
+            int "PHY Address"
+            range 0 31 if EXAMPLE_USE_INTERNAL_ETHERNET
+            default 1
+            help
+                Set PHY address according your board schematic.
+    endif # EXAMPLE_CONNECT_ETHERNET
+
+    config EXAMPLE_CONNECT_IPV6
+        bool "Obtain IPv6 address"
+        default y
+        depends on EXAMPLE_CONNECT_WIFI || EXAMPLE_CONNECT_ETHERNET
+        select LWIP_IPV6
+        help
+            By default, examples will wait until IPv4 and IPv6 local link addresses are obtained.
+            Disable this option if the network does not support IPv6.
+            Choose the preferred IPv6 address type if the connection code should wait until other than
+            the local link address gets assigned.
+            Consider enabling IPv6 stateless address autoconfiguration (SLAAC) in the LWIP component.
+
+    if EXAMPLE_CONNECT_IPV6
+        choice EXAMPLE_CONNECT_PREFERRED_IPV6
+            prompt "Preferred IPv6 Type"
+            default EXAMPLE_CONNECT_IPV6_PREF_LOCAL_LINK
+            help
+                Select which kind of IPv6 address the connect logic waits for.
+
+            config EXAMPLE_CONNECT_IPV6_PREF_LOCAL_LINK
+                bool "Local Link Address"
+                help
+                    Blocks until Local link address assigned.
+
+            config EXAMPLE_CONNECT_IPV6_PREF_GLOBAL
+                bool "Global Address"
+                help
+                    Blocks until Global address assigned.
+
+            config EXAMPLE_CONNECT_IPV6_PREF_SITE_LOCAL
+                bool "Site Local Address"
+                help
+                    Blocks until Site link address assigned.
+
+            config EXAMPLE_CONNECT_IPV6_PREF_UNIQUE_LOCAL
+                bool "Unique Local Link Address"
+                help
+                    Blocks until Unique local address assigned.
+
+        endchoice
+
+    endif
+
+
+endmenu

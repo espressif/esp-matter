@@ -1,0 +1,38 @@
+id: emlib_cryotimer
+label: CRYOTIMER
+package: platform
+description: >
+  Ultra Low Energy Timer/Counter (CRYOTIMER) peripheral API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_cryotimer.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_cryotimer.h"
+provides:
+  - name: emlib_cryotimer
+requires:
+  - name: device
+  - name: device_has_cryotimer
+  - name: emlib_common
+  - name: cmsis_core
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efr32xg1/group-cryotimer
+      condition: [device_sdid_80]
+    - page: emlib/api/efr32xg12/group-cryotimer
+      condition: [device_sdid_84]
+    - page: emlib/api/efr32xg13/group-cryotimer
+      condition: [device_sdid_89]
+    - page: emlib/api/efr32xg14/group-cryotimer
+      condition: [device_sdid_95]
+    - page: emlib/api/efm32gg11/group-cryotimer
+      condition: [device_sdid_100]
+    - page: emlib/api/efm32tg11/group-cryotimer
+      condition: [device_sdid_103]
+    - page: emlib/api/efm32gg12/group-cryotimer
+      condition: [device_sdid_106]

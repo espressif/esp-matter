@@ -1,0 +1,57 @@
+
+html { height:100%; }
+
+body { background:#666666; color:#0a0a0a; font-family:Arial, sans-serif; font-size:14px; line-height:21px; height:100%; }
+   * { font-size:1em; margin:0; padding:0; }
+
+ul, ol { padding-left:1.6em; }
+
+option { min-width: 1.5em; }
+
+input            { font-size:12px; }
+input.bluebutton { background:#dde2e6; border:2px solid #000000; color:#223d50; font-weight:bold; padding:3px 5px 3px 5px; }
+
+button            { font-size:12px; }
+button.bluebutton { background:#dde2e6; border:2px solid #000000; color:#223d50; font-weight:bold; padding:3px 5px 3px 5px; }
+
+table, td { border:none; margin:0; padding:0; }
+
+p.user { color:#223d50 !important; }
+
+#controls      { float:right; margin:0 30px 0 0; width:370px; }
+#controls .img { float:left; }
+
+#pagewrapper { background:#666666; margin:0 auto 0 auto; width:800px; }
+
+#topbanner   { background:#dde2e6; padding:20px; }
+#topbanner p { color:#223d50; }
+
+#pagebody            { background:#214f90; padding:20px 20px 20px 20px; }
+#pagebody h2         { color:#ffffff; font-size:18px; font-weight:bold; padding:5px 10px 5px 10px; }
+#pagebody p          { color:#ffffff; padding:5px 10px 5px 10px;}
+#pagebody p.alertbox { background:#fa9500; padding:5px 10px 5px 10px; }
+#pagebody a:link     { color:#cccccc; }
+#pagebody a:visited  { color:#cccccc; }
+#pagebody a:hover    { color:#fa9500; }
+#pagebody a:active   { color:#fa9500; }
+
+#info_form form   { display: table; }
+#info_form p      { display: table-row; color: #223d50; }
+#info_form label  { display: table-cell; padding-top: 5px; padding-bottom: 5px;}
+#info_form input  { width: 90%; padding: 5px; display: table-cell; padding-top: 5px; padding-bottom: 5px;}
+
+#list            { float:left; margin:0 30px 0 0; width:500px; }
+#list a:link     { color:#cccccc; }
+#list a:visited  { color:#cccccc; }
+#list a:hover    { color:#fa9500; }
+#list a:active   { color:#fa9500; }
+
+#column1 { float:left; width: 50%; box-sizing: border-box; padding:0px 10px 0px 0px;}
+#column2 { float:left; width: 50%; box-sizing: border-box; padding:0px 0px 0px 10px;}
+
+#token { font-weight:bold; }
+
+#right_align  {text-align:right}
+
+#refresh { clear:both; text-align:left; margin: 0 0 0 0; }
+#clear { clear:both; text-align:left; margin: 0 0 0 0; }

@@ -1,0 +1,158 @@
+%%{
+/*
+ * Copyright (c) 2013-2016, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+%%}
+%%{
+    var BIOS = xdc.module("ti.sysbios.BIOS");
+    var Load = xdc.module("ti.sysbios.utils.Load");
+    //print("ti.sysbios.utils.Load.xdt: power enabled = " + Load.powerEnabled);
+
+    var threadLoadEnabled = (Load.taskEnabled || Load.swiEnabled ||
+            Load.hwiEnabled);
+%%}
+%/*
+% *  ======== Load.xdt ========
+% */
+%
+#include <ti/sysbios/utils/Load.h>
+#include <ti/sysbios/hal/Core.h>
+
+/*
+ *  ======== Load_update ========
+ */
+Void ti_sysbios_utils_Load_update__E()
+{
+% if (Load.powerEnabled) {
+% if (threadLoadEnabled) {
+    ti_sysbios_utils_Load_updateCurrentThreadTime();
+%   /*
+%    *  Call this function before Load_updateCPULoad() since
+%    *  Load_updateCPULoad() calls the postUpdate function.
+%    */
+    ti_sysbios_utils_Load_updateThreadContexts();
+% }
+    ti_sysbios_utils_Load_updateCPULoad();
+% }
+% else {
+% if (Load.enableCPULoadCalc) {
+    /* Update and Log CPU load, Task, Swi, and Hwi loads (if enabled). */
+    ti_sysbios_utils_Load_updateLoads();
+% }
+% else {
+    /* Update thread contexts and call post update function. */
+    ti_sysbios_utils_Load_updateContextsAndPost();
+% }
+% }
+}
+
+% if (Load.powerEnabled || Load.hwiEnabled) {
+/*
+ *  ======== Load_hwiBeginHook ========
+ */
+Void ti_sysbios_utils_Load_hwiBeginHook__E(ti_sysbios_interfaces_IHwi_Handle hwi)
+{
+% if (Load.taskEnabled) {
+    ti_sysbios_utils_Load_HookContext *pTaskEnv;
+% }
+% if (Load.hwiEnabled) {
+    UInt32 delta;
+    UInt coreId;
+% }
+    UInt key;
+
+% if (Load.hwiEnabled) {
+%     if (BIOS.smpEnabled) {
+    coreId = ti_sysbios_hal_Core_getId();
+%     }
+%     else {
+    coreId = 0;
+%     }
+% }
+
+    key = ti_sysbios_hal_Hwi_disable();
+
+% if (Load.hwiEnabled) {
+    if (++(ti_sysbios_utils_Load_Module__state__V.hwiCnt) == 1) {   /* If first Hwi */
+
+        /* Get the interrupt time */
+        UInt32 intrTime = xdc_runtime_Timestamp_get32();
+
+        if (ti_sysbios_utils_Load_Module__state__V.swiCnt == 0) {  /* we were in a Task */
+            /* Update the total time the task has run */
+            delta = intrTime - ti_sysbios_utils_Load_Module__state__V.taskStartTime[coreId];
+
+% if (Load.taskEnabled) {
+            /*
+             * may be NULL if interrupt happened early before first task
+             * switch, or if task monitoring is disabled.
+             */
+            if (ti_sysbios_utils_Load_Module__state__V.runningTask[coreId] != NULL) {
+                pTaskEnv = (ti_sysbios_utils_Load_HookContext *)ti_sysbios_knl_Task_getHookContext(
+                    ti_sysbios_utils_Load_Module__state__V.runningTask[coreId],
+                    ti_sysbios_utils_Load_Module__state__V.taskHId);
+
+                /* record time, if task has been registered */
+                if (pTaskEnv != NULL) {
+                    pTaskEnv->nextTotalTime += delta;
+                }
+            }
+% } // Load.taskEnabled
+        }
+        else {  /* we were in a Swi */
+            /* Update the total time the task has run */
+            delta = intrTime - ti_sysbios_utils_Load_Module__state__V.swiStartTime;
+
+            /* record it */
+            ti_sysbios_utils_Load_Module__state__V.swiEnv.nextTotalTime += delta;
+        }
+
+        /* Update the start time for next hwi */
+        ti_sysbios_utils_Load_Module__state__V.hwiStartTime = intrTime;
+% if (Load.powerEnabled) {
+        if (ti_sysbios_utils_Load_Module__state__V.busyStartTime == 0) {
+            ti_sysbios_utils_Load_Module__state__V.busyStartTime = intrTime;
+        }
+% }
+    }
+% }
+% else {
+%     if (Load.powerEnabled) {
+    if (ti_sysbios_utils_Load_Module__state__V.busyStartTime == 0) {
+        UInt32 intrTime = xdc_runtime_Timestamp_get32();
+        ti_sysbios_utils_Load_Module__state__V.busyStartTime = intrTime;
+    }
+%     }
+% }
+
+    ti_sysbios_hal_Hwi_restore(key);
+}
+% }

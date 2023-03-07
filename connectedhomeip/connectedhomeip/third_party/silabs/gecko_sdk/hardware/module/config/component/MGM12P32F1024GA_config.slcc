@@ -1,0 +1,31 @@
+!!omap
+- id: MGM12P32F1024GA_config
+- label: MGM12P32F1024GA config
+- description: Configuration files for MGM12P32F1024GA
+- package: platform
+- category: Platform|Device|MGM12|Config
+- quality: production
+- ui_hints:
+    visibility: never
+- root_path: hardware/module/config
+- requires:
+  - name: mgm12p32f1024ga
+- provides:
+  - name: MGM12P32F1024GA_config
+- config_file:
+  - override:
+      component: rail_util_pa
+      file_id: rail_util_pa_config
+    path: MGM12P32F1024GA/sl_rail_util_pa_config.h
+  - override:
+      component: fem_util
+      file_id: fem_util_config
+    path: MGM12P32F1024GA/sl_fem_util_config.h
+  - override:
+      component: device_init_hfxo
+      file_id: device_init_hfxo_config
+    path: MGM12P32F1024GA/sl_device_init_hfxo_config.h
+  - override:
+      component: device_init_lfxo
+      file_id: device_init_lfxo_config
+    path: MGM12P32F1024GA/sl_device_init_lfxo_config.h

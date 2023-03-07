@@ -1,0 +1,37 @@
+id: "btmesh_scene_client"
+label: "Scene Client"
+package: "Btmesh"
+description: >
+  Used to support the functionality of a node that can configure scenes on a
+  network and trigger a state transition to a scene on another node.
+  
+  This component provides a function to recall a scene identified by its number.
+category: "Bluetooth Mesh|Models|Time and Scenes"
+quality: "production"
+root_path: "app/bluetooth/common/btmesh_scene_client"
+config_file:
+  - path: btmesh_scene_client.dcd
+    directory: btmeshconf
+  - path: "config/sl_btmesh_scene_client_config.h"
+source:
+  - path: "sl_btmesh_scene_client.c"
+include:
+  - path: ""
+    file_list:
+      - path: "sl_btmesh_scene_client.h"
+provides:
+  - name: "btmesh_scene_client"
+requires:
+  - name: "app_assert"
+  - name: "app_btmesh_util"
+  - name: "btmesh_feature_scene_client"
+  - name: "btmesh_stack"
+  - name: "simple_timer"
+recommends:
+  - id: "simple_timer"
+
+template_contribution:
+  - name: "btmesh_on_event"
+    value:
+      include: "sl_btmesh_scene_client.h"
+      function: "sl_btmesh_handle_scene_client_on_event"

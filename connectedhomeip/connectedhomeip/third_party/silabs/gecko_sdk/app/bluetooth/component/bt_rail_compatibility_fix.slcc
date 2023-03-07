@@ -1,0 +1,16 @@
+id: bt_rail_compatibility_fix
+label: Bluetooth - RAIL Compatibility Fix
+package: Bluetooth
+description: >
+  Ensures that certified modules are incompatible with examples that include
+  this component. This is specifically in place so that only our protocol
+  stacks can be run on certified modules to meet FCC regulations. Direct RAIL
+  API calls will not work.
+  
+  Fixes among others: BG-9961, BG-9489
+category: Bluetooth|Application
+quality: production
+conflicts:
+  - name: device_no_rail_api
+ui_hints:
+  visibility: never

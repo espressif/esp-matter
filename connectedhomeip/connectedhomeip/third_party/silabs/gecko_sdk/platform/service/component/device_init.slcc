@@ -1,0 +1,42 @@
+id: device_init
+label: Device Init
+package: platform
+description: >
+  Device initialization wrapper. Depends on specific device initialization
+  components depending on the selected hardware.
+category: Services|Device Initialization
+quality: production
+root_path: platform/service/device_init/
+provides:
+  - name: device_init
+requires:
+  - name: device_init_dcdc
+    condition: [device_series_1, device_has_dcdc]
+  - name: device_init_dcdc
+    condition: [device_series_2, device_has_dcdc, device_dcdc_buck]
+  - name: device_init_dcdc_boost
+    condition: [device_series_2, device_has_dcdc, device_dcdc_boost]
+  - name: device_init_hfrco
+    condition: [device_sdid_200]
+  - name: device_init_lfrco
+    condition: [device_sdid_205, bluetooth_stack]
+  - name: device_init_lfrco
+    condition: [device_sdid_215, bluetooth_stack]
+  - name: device_init_hfxo
+    condition: [hardware_board_has_hfxo]
+  - name: device_init_usbpll
+    condition: [device_has_usbpll]
+  - name: device_init_lfxo
+    condition: [hardware_board_has_lfxo]
+  - name: device_init_clocks
+  - name: device_init_emu
+  - name: device_init_nvic
+  - name: board_control
+    condition: [hardware_board]
+recommends:
+  - id: device_init_hfrco
+validation_helper:
+  - path: device_init_validation.lua
+documentation:
+    docset: gecko-platform
+    document: service/api/group-device-init

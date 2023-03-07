@@ -1,0 +1,77 @@
+id: "zigbee_debug_print"
+label: "Debug Print"
+package: "Zigbee"
+category: "Zigbee|Utility"
+quality: "production"
+description: "Provides APIs for adding serial debugging capability."
+provides:
+  - name: "zigbee_debug_print"
+requires:
+  - name: "printf"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/debug-print/config/sl_zigbee_debug_print_config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/debug-print/sl_zigbee_debug_print.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/debug-print
+    file_list:
+      - path: sl_zigbee_debug_print.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_debug_print
+  - name: cli_group
+    value:
+      name: zigbee_print
+  - name: cli_group
+    value:
+      name: enable_type
+      group: zigbee_print
+  - name: cli_command
+    value:
+      name: stack
+      group: enable_type
+      handler: sli_zigbee_debug_print_enable_stack_type_command
+      help: "Enable/disable debug `stack` print type."
+      argument:
+      - type: uint8
+        help: "Enable/disable"
+  - name: cli_command
+    value:
+      name: core
+      group: enable_type
+      handler: sli_zigbee_debug_print_enable_core_type_command
+      help: "Enable/disable debug `core` print type."
+      argument:
+      - type: uint8
+        help: "Enable/disable"
+  - name: cli_command
+    value:
+      name: app
+      group: enable_type
+      handler: sli_zigbee_debug_print_enable_app_type_command
+      help: "Enable/disable debug `app` print type."
+      argument:
+      - type: uint8
+        help: "Enable/disable"
+  - name: cli_command
+    value:
+      name: zcl
+      group: enable_type
+      handler: sli_zigbee_debug_print_enable_zcl_type_command
+      help: "Enable/disable debug `zcl` print type."
+      argument:
+      - type: uint8
+        help: "Enable/disable"
+  - name: cli_command
+    value:
+      name: legacy_af_debug
+      group: enable_type
+      handler: sli_zigbee_debug_print_enable_legacy_af_debug_type_command
+      help: "Enable/disable debug `legacy app framework debug` print type."
+      argument:
+      - type: uint8
+        help: "Enable/disable"
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/debug-print

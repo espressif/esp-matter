@@ -1,0 +1,357 @@
+{
+    "setting": {
+        "Name": "IEEE 802.15.4-2006, 250 kbps, OQPSK, DSSS = 1:8",
+        "Description": "IEEE 802.15.4 O-QPSK DSSS PHY (250 kbps) at 2450 MHz band",
+        "Frequency": "2405",
+        "Patch": {
+            "Define": "RF_MODE_AUTO",
+            "Cpe": "rf_patch_cpe_ieee_802_15_4",
+            "Mce": [],
+            "Rfe": []
+        },
+        "Command": [
+            {
+                "_name": "CMD_RADIO_SETUP",
+                "Field": [
+                    {
+                        "_name": "commandNo",
+                        "$": "CMD_RADIO_SETUP"
+                    },
+                    {
+                        "_name": "status",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pNextOp",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTime",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerType",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.bEnaCmd",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerNo",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.pastTrig",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "condition.rule",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "condition.nSkip",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "mode",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "loDivider",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "config.frontEndMode",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "config.biasMode",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "config.analogCfgMode",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "config.bNoFsPowerUp",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "txPower",
+                        "$": "0x001F"
+                    },
+                    {
+                        "_name": "pRegOverride",
+                        "$": "0"
+                    }
+                ],
+                "OverrideField": {
+                    "_name": "pRegOverride",
+                    "Block": [
+                        {
+                            "_name": "override_ieee_802_15_4.json",
+                            "Element32b": [
+                                {
+                                    "_type": "ELEMENT",
+                                    "_comment": "DC\/DC regulator: In Tx, use DCDCCTL5[3:0]=0x3 (DITHER_EN=0 and IPEAK=3).",
+                                    "$": "0x00F388D3"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "_comment": "Rx: Set LNA bias current offset to +15 to saturate trim to max (default: 0)",
+                                    "$": "0x000F8883"
+                                }
+                            ]
+                        },
+                        {
+                            "_name": "override_ieee_coex.json",
+                            "Element32b": [
+                                {
+                                    "_type": "HW_REG_OVERRIDE",
+                                    "_comment": "CoEx: set the radio IOMUX to enable coex signals",
+                                    "$": "0x1110,0xCE30"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "_comment": "CoEx: Enable CoEx",
+                                    "$": "0x000188f3"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "_comment": "CoEx: Enable 32 bit write for the pointer",
+                                    "$": "0xc0040371"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "_comment": "CoEx: Place the pointer to the configuration struct at byte index 220",
+                                    "$": "&coexConfig"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "_name": "CMD_FS",
+                "Field": [
+                    {
+                        "_name": "commandNo",
+                        "$": "CMD_FS"
+                    },
+                    {
+                        "_name": "status",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pNextOp",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTime",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerType",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.bEnaCmd",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerNo",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.pastTrig",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "condition.rule",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "condition.nSkip",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "frequency",
+                        "$": "2405"
+                    },
+                    {
+                        "_name": "fractFreq",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "synthConf.bTxMode",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "synthConf.refFreq",
+                        "$": "0"
+                    }
+                ]
+            },
+            {
+                "_name": "CMD_IEEE_TX",
+                "_function": "SendPacket",
+                "Field": [
+                    {
+                        "_name": "commandNo",
+                        "$": "CMD_IEEE_TX"
+                    },
+                    {
+                        "_name": "status",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pNextOp",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTime",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerType",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.bEnaCmd",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerNo",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.pastTrig",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "condition.rule",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "condition.nSkip",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "txOpt",
+                        "$": "0x00"
+                    },
+                    {
+                        "_name": "payloadLen",
+                        "$": "0x1e"
+                    },
+                    {
+                        "_name": "timeStamp",
+                        "$": "0x00000000"
+                    }
+                ]
+            },
+            {
+                "_name": "CMD_IEEE_RX",
+                "Field": [
+                    {
+                        "_name": "commandNo",
+                        "$": "CMD_IEEE_RX"
+                    },
+                    {
+                        "_name": "status",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pNextOp",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTime",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerType",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.bEnaCmd",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerNo",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.pastTrig",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "condition.rule",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "condition.nSkip",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "condition.nSkip",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "rxConfig",
+                        "$": "0x30"
+                    },
+                    {
+                        "_name": "frameFiltOpt",
+                        "$": "0x300"
+                    },
+                    {
+                        "_name": "frameTypes",
+                        "$": "0xFF"
+                    },
+                    {
+                        "_name": "ccaOpt",
+                        "$": "0x18"
+                    },
+                    {
+                        "_name": "ccaRssiThr",
+                        "$": "100"
+                    },
+                    {
+                        "_name": "numExtEntries",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "numShortEntries",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pExtEntryList",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pShortEntryList",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "localExtAddr",
+                        "$": "0x12345678"
+                    },
+                    {
+                        "_name": "localShortAddr",
+                        "$": "0xABBA"
+                    },
+                    {
+                        "_name": "endTrigger",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "endTime",
+                        "$": "0"
+                    }
+                ]
+            }
+        ]
+    }
+}

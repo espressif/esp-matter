@@ -1,0 +1,43 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+
+_deps = [
+  "$dir_pw_bloat:bloat_this_binary",
+  "$dir_pw_kvs:fake_flash_12_byte_partition",
+  "$dir_pw_kvs:flash_test_partition",
+  "$dir_pw_sync:borrow",
+  "$dir_pw_sync:virtual_basic_lockable",
+  dir_pw_assert,
+  dir_pw_kvs,
+  dir_pw_log,
+]
+
+pw_executable("base") {
+  sources = [ "base.cc" ]
+  deps = _deps
+}
+
+pw_executable("basic_blob") {
+  sources = [ "basic_blob.cc" ]
+  deps = _deps + [ dir_pw_blob_store ]
+}
+
+pw_executable("deferred_write_blob") {
+  sources = [ "deferred_write_blob.cc" ]
+  deps = _deps + [ dir_pw_blob_store ]
+}

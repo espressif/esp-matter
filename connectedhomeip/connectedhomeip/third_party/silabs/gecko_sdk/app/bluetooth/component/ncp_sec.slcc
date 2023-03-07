@@ -1,0 +1,51 @@
+id: ncp_sec
+label: NCP Security Interface
+package: Bluetooth
+description: >
+  Component that provides secure Bluetooth Network Co-Processor (NCP) communication interface.
+category: Bluetooth|NCP|Target
+quality: production
+root_path: app/bluetooth/common/ncp_sec
+source:
+  - path: sl_ncp_sec.c
+    condition:
+      - "device_series_2"
+  - path: sl_ncp_sec_legacy.c
+    condition:
+      - "device_series_1"
+include:
+  - path: .
+    file_list:
+      - path: sl_ncp_sec.h
+provides:
+  - name: ncp_sec
+requires:
+  - name: component_catalog
+  - name: mbedtls_ccm
+    condition:
+      - "device_series_1"
+  - name: mbedtls_ecc
+    condition:
+      - "device_series_1"
+  - name: mbedtls_slcrypto
+    condition:
+      - "device_series_1"
+  - name: mbedtls_sha
+    condition:
+      - "device_series_1"
+  - name: ncp
+  - name: psa_crypto
+    condition:
+      - "device_series_2"
+  - name: psa_crypto_sha256
+    condition:
+      - "device_series_2"
+template_contribution:
+  - name: component_catalog
+    value: ncp_sec
+  - name: psa_key_slots
+    value:
+      name: psa_key_slots_ncp_sec
+      count: 1
+    condition:
+      - psa_crypto

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ASCII"?>
+<device:XMLDevice xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:device="http://www.silabs.com/ss/hwconfig/document/device.ecore" name="EFM32PG23B310F512IM48" partId="mcu.arm.efm32.pg23.efm32pg23b310f512im48" contextId="com.silabs.sdk.stack.super">
+  <mode name="DefaultMode">
+    <property object="BTL_BUTTON" propertyId="BTL_BUTTON.BSP_BTL_BUTTON.PIN" value="PA05"/>
+
+    <property object="BUTTON" propertyId="BUTTON.BSP_BUTTON0.PIN" value="PA05"/>
+    <property object="BUTTON" propertyId="BUTTON.BSP_BUTTON1.PIN" value="PB04"/>
+    <property object="BUTTON" propertyId="BUTTON.BSP_BUTTON_COUNT.INT" value="2"/>
+    <property object="BUTTON" propertyId="BUTTON.BSP_BUTTON_ENABLE.ARRAY" value="0, 1"/>
+
+    <property object="CMU" propertyId="ABPeripheral.included" value="true"/>
+    <property object="CMU" propertyId="CMU.BSP_CLK_HFXO_CTUNE.INT" value="140"/>
+    <property object="CMU" propertyId="CMU.BSP_CLK_HFXO_PRESENT.BOOL" value="1"/>
+    <property object="CMU" propertyId="CMU.BSP_CLK_LFXO_CTUNE.INT" value="63"/>
+    <property object="CMU" propertyId="CMU.BSP_CLK_LFXO_PRESENT.BOOL" value="1"/>
+    <property object="CMU" propertyId="CMU.HAL_CLK_LFXO_PRECISION.INT" value="100"/>
+
+    <property object="DCDC" propertyId="ABPeripheral.included" value="true"/>
+    <property object="DefaultMode" propertyId="mode.diagramLocation" value="100, 100"/>
+
+    <property object="I2C0" propertyId="I2C.BSP_I2C_SCL.PIN" value="PA08"/>
+    <property object="I2C0" propertyId="I2C.BSP_I2C_SDA.PIN" value="PA07"/>
+
+    <property object="GPIO" propertyId="GPIO.BSP_TRACE_SWO.PIN" value="PA04"/>
+
+    <property object="LED" propertyId="LED.BSP_LED0.PIN" value="PC08"/>
+    <property object="LED" propertyId="LED.BSP_LED1.PIN" value="PC09"/>
+    <property object="LED" propertyId="LED.BSP_LED_COUNT.INT" value="2"/>
+    <property object="LED" propertyId="LED.BSP_LED_ENABLE.ARRAY" value="0, 1"/>
+
+    <property object="PA" propertyId="PA.HAL_PA_SELECTION.ENUM" value="HAL_PA_SELECTION_HP"/>
+    <property object="PA" propertyId="PA.BSP_PA_VOLTAGE.INT" value="1800"/>
+
+    <property object="SERIAL" propertyId="SERIAL.BSP_SERIAL_APP_PORT.MOD" value="USART0"/>
+
+    <property object="USART0" propertyId="USART.BSP_USART_TX.PIN" value="PB05"/>
+    <property object="USART0" propertyId="USART.BSP_USART_RX.PIN" value="PB06"/>>
+
+    <property object="EUART0" propertyId="EUART.BSP_EUART_TX.PIN" value="PB05"/>
+    <property object="EUART0" propertyId="EUART.BSP_EUART_RX.PIN" value="PB06"/>
+
+    <property object="VCOM" propertyId="VCOM.BSP_VCOM_ENABLE.PIN" value="PB01"/>
+  </mode>
+  <modeTransition>
+    <property object="RESET &#x2192; DefaultMode" propertyId="modeTransition.source" value="RESET"/>
+    <property object="RESET &#x2192; DefaultMode" propertyId="modeTransition.target" value="DefaultMode"/>
+  </modeTransition>
+</device:XMLDevice>

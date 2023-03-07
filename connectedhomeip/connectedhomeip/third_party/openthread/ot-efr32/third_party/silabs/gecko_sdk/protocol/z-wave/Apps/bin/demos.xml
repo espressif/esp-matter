@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<demos xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://www.silabs.com/ss/Studio.ecore" xsi:noNamespaceSchemaLocation="http://www.silabs.com/ss/Demo.ecore">
+  <demo name="ota-ZGM230S_BRD2603A-crc.s37" label="Z-Wave ota BRD2603A Bootloader">
+    <model:description> ota Bootloader for BRD2603A board </model:description>
+    <property key="demos.blurb" value="Z-Wave ota BRD2603A Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd2603a"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/ota-ZGM230S_BRD2603A-crc.s37"/>
+  </demo>
+  <demo name="ota-ZGM13_BRD4200A-combined.s37" label="Z-Wave ota BRD4200A Bootloader">
+    <model:description> ota Bootloader for BRD4200A board </model:description>
+    <property key="demos.blurb" value="Z-Wave ota BRD4200A Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4200a"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/ota-ZGM13_BRD4200A-combined.s37"/>
+  </demo>
+  <demo name="ota-EFR32ZG13L_BRD4201C-combined.s37" label="Z-Wave ota BRD4201C Bootloader">
+    <model:description> ota Bootloader for BRD4201C board </model:description>
+    <property key="demos.blurb" value="Z-Wave ota BRD4201C Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4201c"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/ota-EFR32ZG13L_BRD4201C-combined.s37"/>
+  </demo>
+  <demo name="ota-EFR32ZG13S_BRD4201D-combined.s37" label="Z-Wave ota BRD4201D Bootloader">
+    <model:description> ota Bootloader for BRD4201D board </model:description>
+    <property key="demos.blurb" value="Z-Wave ota BRD4201D Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4201d"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/ota-EFR32ZG13S_BRD4201D-combined.s37"/>
+  </demo>
+  <demo name="ota-ZGM130S_BRD4202A-combined.s37" label="Z-Wave ota BRD4202A Bootloader">
+    <model:description> ota Bootloader for BRD4202A board </model:description>
+    <property key="demos.blurb" value="Z-Wave ota BRD4202A Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4202a"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/ota-ZGM130S_BRD4202A-combined.s37"/>
+  </demo>
+  <demo name="ota-EFR32ZG23_BRD4204A-crc.s37" label="Z-Wave ota BRD4204A Bootloader">
+    <model:description> ota Bootloader for BRD4204A board </model:description>
+    <property key="demos.blurb" value="Z-Wave ota BRD4204A Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4204a"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/ota-EFR32ZG23_BRD4204A-crc.s37"/>
+  </demo>
+  <demo name="ota-EFR32ZG23_BRD4204B-crc.s37" label="Z-Wave ota BRD4204B Bootloader">
+    <model:description> ota Bootloader for BRD4204B board </model:description>
+    <property key="demos.blurb" value="Z-Wave ota BRD4204B Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4204b"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/ota-EFR32ZG23_BRD4204B-crc.s37"/>
+  </demo>
+  <demo name="ota-EFR32ZG23_BRD4204C-crc.s37" label="Z-Wave ota BRD4204C Bootloader">
+    <model:description> ota Bootloader for BRD4204C board </model:description>
+    <property key="demos.blurb" value="Z-Wave ota BRD4204C Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4204c"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/ota-EFR32ZG23_BRD4204C-crc.s37"/>
+  </demo>
+  <demo name="ota-EFR32ZG23_BRD4204D-crc.s37" label="Z-Wave ota BRD4204D Bootloader">
+    <model:description> ota Bootloader for BRD4204D board </model:description>
+    <property key="demos.blurb" value="Z-Wave ota BRD4204D Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4204d"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/ota-EFR32ZG23_BRD4204D-crc.s37"/>
+  </demo>
+  <demo name="ota-ZGM230S_BRD4205A-crc.s37" label="Z-Wave ota BRD4205A Bootloader">
+    <model:description> ota Bootloader for BRD4205A board </model:description>
+    <property key="demos.blurb" value="Z-Wave ota BRD4205A Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4205a"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/ota-ZGM230S_BRD4205A-crc.s37"/>
+  </demo>
+  <demo name="ota-ZGM230S_BRD4205B-crc.s37" label="Z-Wave ota BRD4205B Bootloader">
+    <model:description> ota Bootloader for BRD4205B board </model:description>
+    <property key="demos.blurb" value="Z-Wave ota BRD4205B Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4205b"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/ota-ZGM230S_BRD4205B-crc.s37"/>
+  </demo>
+  <demo name="ota-ZGM130S_BRD4207A-combined.s37" label="Z-Wave ota BRD4207A Bootloader">
+    <model:description> ota Bootloader for BRD4207A board </model:description>
+    <property key="demos.blurb" value="Z-Wave ota BRD4207A Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4207a"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/ota-ZGM130S_BRD4207A-combined.s37"/>
+  </demo>
+  <demo name="ota-EFR32RZ13_BRD4209A-combined.s37" label="Z-Wave ota BRD4209A Bootloader">
+    <model:description> ota Bootloader for BRD4209A board </model:description>
+    <property key="demos.blurb" value="Z-Wave ota BRD4209A Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4209a"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/ota-EFR32RZ13_BRD4209A-combined.s37"/>
+  </demo>
+  <demo name="ota-EFR32ZG23_BRD4210A-crc.s37" label="Z-Wave ota BRD4210A Bootloader">
+    <model:description> ota Bootloader for BRD4210A board </model:description>
+    <property key="demos.blurb" value="Z-Wave ota BRD4210A Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4210a"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/ota-EFR32ZG23_BRD4210A-crc.s37"/>
+  </demo>
+  <demo name="otw-ZGM230S_BRD2603A-crc.s37" label="Z-Wave otw BRD2603A Bootloader">
+    <model:description> otw Bootloader for BRD2603A board </model:description>
+    <property key="demos.blurb" value="Z-Wave otw BRD2603A Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd2603a"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/otw-ZGM230S_BRD2603A-crc.s37"/>
+  </demo>
+  <demo name="otw-ZGM13_BRD4200A-combined.s37" label="Z-Wave otw BRD4200A Bootloader">
+    <model:description> otw Bootloader for BRD4200A board </model:description>
+    <property key="demos.blurb" value="Z-Wave otw BRD4200A Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4200a"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/otw-ZGM13_BRD4200A-combined.s37"/>
+  </demo>
+  <demo name="otw-EFR32ZG14_BRD4201A-combined.s37" label="Z-Wave otw BRD4201A Bootloader">
+    <model:description> otw Bootloader for BRD4201A board </model:description>
+    <property key="demos.blurb" value="Z-Wave otw BRD4201A Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4201a"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/otw-EFR32ZG14_BRD4201A-combined.s37"/>
+  </demo>
+  <demo name="otw-ZGM130S_BRD4202A-combined.s37" label="Z-Wave otw BRD4202A Bootloader">
+    <model:description> otw Bootloader for BRD4202A board </model:description>
+    <property key="demos.blurb" value="Z-Wave otw BRD4202A Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4202a"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/otw-ZGM130S_BRD4202A-combined.s37"/>
+  </demo>
+  <demo name="otw-EFR32ZG23_BRD4204A-crc.s37" label="Z-Wave otw BRD4204A Bootloader">
+    <model:description> otw Bootloader for BRD4204A board </model:description>
+    <property key="demos.blurb" value="Z-Wave otw BRD4204A Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4204a"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/otw-EFR32ZG23_BRD4204A-crc.s37"/>
+  </demo>
+  <demo name="otw-EFR32ZG23_BRD4204B-crc.s37" label="Z-Wave otw BRD4204B Bootloader">
+    <model:description> otw Bootloader for BRD4204B board </model:description>
+    <property key="demos.blurb" value="Z-Wave otw BRD4204B Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4204b"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/otw-EFR32ZG23_BRD4204B-crc.s37"/>
+  </demo>
+  <demo name="otw-EFR32ZG23_BRD4204C-crc.s37" label="Z-Wave otw BRD4204C Bootloader">
+    <model:description> otw Bootloader for BRD4204C board </model:description>
+    <property key="demos.blurb" value="Z-Wave otw BRD4204C Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4204c"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/otw-EFR32ZG23_BRD4204C-crc.s37"/>
+  </demo>
+  <demo name="otw-EFR32ZG23_BRD4204D-crc.s37" label="Z-Wave otw BRD4204D Bootloader">
+    <model:description> otw Bootloader for BRD4204D board </model:description>
+    <property key="demos.blurb" value="Z-Wave otw BRD4204D Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4204d"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/otw-EFR32ZG23_BRD4204D-crc.s37"/>
+  </demo>
+  <demo name="otw-ZGM230S_BRD4205A-crc.s37" label="Z-Wave otw BRD4205A Bootloader">
+    <model:description> otw Bootloader for BRD4205A board </model:description>
+    <property key="demos.blurb" value="Z-Wave otw BRD4205A Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4205a"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/otw-ZGM230S_BRD4205A-crc.s37"/>
+  </demo>
+  <demo name="otw-ZGM230S_BRD4205B-crc.s37" label="Z-Wave otw BRD4205B Bootloader">
+    <model:description> otw Bootloader for BRD4205B board </model:description>
+    <property key="demos.blurb" value="Z-Wave otw BRD4205B Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4205b"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/otw-ZGM230S_BRD4205B-crc.s37"/>
+  </demo>
+  <demo name="otw-EFR32ZG14_BRD4206A-combined.s37" label="Z-Wave otw BRD4206A Bootloader">
+    <model:description> otw Bootloader for BRD4206A board </model:description>
+    <property key="demos.blurb" value="Z-Wave otw BRD4206A Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4206a"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/otw-EFR32ZG14_BRD4206A-combined.s37"/>
+  </demo>
+  <demo name="otw-ZGM130S_BRD4207A-combined.s37" label="Z-Wave otw BRD4207A Bootloader">
+    <model:description> otw Bootloader for BRD4207A board </model:description>
+    <property key="demos.blurb" value="Z-Wave otw BRD4207A Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4207a"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/otw-ZGM130S_BRD4207A-combined.s37"/>
+  </demo>
+  <demo name="otw-EFR32ZG14_BRD4208A-combined.s37" label="Z-Wave otw BRD4208A Bootloader">
+    <model:description> otw Bootloader for BRD4208A board </model:description>
+    <property key="demos.blurb" value="Z-Wave otw BRD4208A Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4208a"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/otw-EFR32ZG14_BRD4208A-combined.s37"/>
+  </demo>
+  <demo name="otw-EFR32RZ13_BRD4209A-combined.s37" label="Z-Wave otw BRD4209A Bootloader">
+    <model:description> otw Bootloader for BRD4209A board </model:description>
+    <property key="demos.blurb" value="Z-Wave otw BRD4209A Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4209a"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/otw-EFR32RZ13_BRD4209A-combined.s37"/>
+  </demo>
+  <demo name="otw-EFR32ZG23_BRD4210A-crc.s37" label="Z-Wave otw BRD4210A Bootloader">
+    <model:description> otw Bootloader for BRD4210A board </model:description>
+    <property key="demos.blurb" value="Z-Wave otw BRD4210A Bootloader"/>
+    <property key="core.category" value="Bootloader"/>
+    <property key="core.priority" value="2"/>
+    <property key="core.boardCompatibility" value="brd4210a"/>
+    <property key="filters" value="Wireless\ Technology|Z-Wave"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/z-wave/Apps/bin/otw-EFR32ZG23_BRD4210A-crc.s37"/>
+  </demo>
+</demos>

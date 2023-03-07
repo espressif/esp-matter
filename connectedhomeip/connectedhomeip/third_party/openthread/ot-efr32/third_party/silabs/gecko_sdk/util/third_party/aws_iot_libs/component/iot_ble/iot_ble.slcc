@@ -1,0 +1,145 @@
+id: iot_ble
+label: IoT BLE
+package: amazon_bluetooth
+description: Silicon Labs' HAL Implementation of FreeRTOS Bluetooth Low Energy API
+category: Third Party|Amazon FreeRTOS - AWS Libraries|Bluetooth Low Energy
+quality: alpha
+source:
+  - path: util/third_party/aws_iot_libs/vendors/siliconlabs/boards/all/ports/ble/source/sl_bt_hal_common.c
+  - path: util/third_party/aws_iot_libs/vendors/siliconlabs/boards/all/ports/ble/source/sl_bt_hal_manager.c
+  - path: util/third_party/aws_iot_libs/vendors/siliconlabs/boards/all/ports/ble/source/sl_bt_hal_manager_adapter_ble.c
+  - path: util/third_party/aws_iot_libs/vendors/siliconlabs/boards/all/ports/ble/source/sl_bt_hal_gatt_client.c
+  - path: util/third_party/aws_iot_libs/vendors/siliconlabs/boards/all/ports/ble/source/sl_bt_hal_gatt_server.c
+
+  # Test related sources
+  - path: util/third_party/aws_iot_libs/libraries/abstractions/ble_hal/test/src/iot_test_ble_hal_afqp.c
+    condition: ["aws_tests_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/abstractions/ble_hal/test/src/iot_test_ble_hal_common.c
+    condition: ["aws_tests_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/abstractions/ble_hal/test/src/iot_test_ble_hal_integration.c
+    condition: ["aws_tests_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/abstractions/ble_hal/test/src/iot_test_ble_hal_kpi.c
+    condition: ["aws_tests_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/abstractions/ble_hal/test/src/iot_test_ble_hal_stress_test.c
+    condition: ["aws_tests_defs"]
+  # Test scripts
+  - path: util/third_party/aws_iot_libs/libraries/abstractions/ble_hal/test/ble_test_scipts/attributesCommon.py
+    condition: ["aws_tests_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/abstractions/ble_hal/test/ble_test_scipts/bleAdapter.py
+    condition: ["aws_tests_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/abstractions/ble_hal/test/ble_test_scipts/gattClient.py
+    condition: ["aws_tests_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/abstractions/ble_hal/test/ble_test_scipts/runPI.sh
+    condition: ["aws_tests_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/abstractions/ble_hal/test/ble_test_scipts/securityAgent.py
+    condition: ["aws_tests_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/abstractions/ble_hal/test/ble_test_scipts/startTests_afqp.py
+    condition: ["aws_tests_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/abstractions/ble_hal/test/ble_test_scipts/startTests_integration.py
+    condition: ["aws_tests_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/abstractions/ble_hal/test/ble_test_scipts/startTests_kpi.py
+    condition: ["aws_tests_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/abstractions/ble_hal/test/ble_test_scipts/startTests_stress.py
+    condition: ["aws_tests_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/abstractions/ble_hal/test/ble_test_scipts/test1.py
+    condition: ["aws_tests_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/abstractions/ble_hal/test/ble_test_scipts/testClass.py
+    condition: ["aws_tests_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/abstractions/ble_hal/test/ble_test_scipts/testutils.py
+    condition: ["aws_tests_defs"]
+
+
+  # Demo related sources
+  - path: util/third_party/aws_iot_libs/libraries/c_sdk/standard/ble/src/iot_ble_gap.c
+    condition: ["aws_demos_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/c_sdk/standard/ble/src/iot_ble_gatt.c
+    condition: ["aws_demos_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/c_sdk/standard/ble/src/services/device_information/iot_ble_device_information.c
+    condition: ["aws_demos_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/c_sdk/standard/ble/src/services/data_transfer/iot_ble_data_transfer.c
+    condition: ["aws_demos_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/c_sdk/standard/ble/src/services/mqtt_ble/iot_network_ble.c
+    condition: ["aws_demos_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/c_sdk/standard/ble/src/services/mqtt_ble/iot_ble_mqtt_transport.c
+    condition: ["aws_demos_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/c_sdk/standard/ble/src/services/mqtt_ble/iot_ble_mqtt_serialize.c
+    condition: ["aws_demos_defs"]
+
+include:
+  - path: util/third_party/aws_iot_libs/vendors/siliconlabs/boards/all/ports/ble/include
+    file_list:
+      - path: sl_bt_hal_common.h
+      - path: sl_bt_hal_manager.h
+      - path: sl_bt_hal_manager_adapter_ble.h
+      - path: sl_bt_hal_gatt_client.h
+      - path: sl_bt_hal_gatt_server.h
+      - path: sl_bt_hal_event_handler.h
+
+  # Test related includes
+  - path: util/third_party/aws_iot_libs/libraries/abstractions/ble_hal/test/include
+    file_list:
+      - path: iot_test_ble_hal_afqp.h
+      - path: iot_test_ble_hal_common.h
+      - path: iot_test_ble_hal_config_defaults.h
+      - path: iot_test_ble_hal_integration.h
+      - path: iot_test_ble_hal_kpi.h
+      - path: iot_test_ble_hal_stress_test.h
+    condition: ["aws_tests_defs"]
+
+  # Demo related includes
+  - path: util/third_party/aws_iot_libs/libraries/abstractions/ble_hal/include
+    file_list:
+      - path: bt_hal_avsrc_profile.h
+      - path: bt_hal_gatt_client.h
+      - path: bt_hal_gatt_server.h
+      - path: bt_hal_gatt_types.h
+      - path: bt_hal_manager.h
+      - path: bt_hal_manager_adapter_ble.h
+      - path: bt_hal_manager_adapter_classic.h
+      - path: bt_hal_manager_types.h
+  - path: util/third_party/aws_iot_libs/libraries/c_sdk/standard/ble/include
+    file_list:
+      - path: iot_ble.h
+      - path: iot_ble_data_transfer.h
+      - path: iot_ble_device_information.h
+      - path: iot_ble_mqtt_serialize.h
+      - path: iot_ble_mqtt_transport.h
+    condition: ["aws_demos_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/c_sdk/standard/ble/src
+    file_list:
+      - path: iot_ble_internal.h
+    condition: ["aws_demos_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/c_sdk/standard/serializer/include
+    file_list:
+      - path: iot_serializer.h
+      - path: iot_json_utils.h
+    condition: ["aws_demos_defs"]
+    
+
+config_file:
+  - path: util/third_party/aws_iot_libs/vendors/siliconlabs/boards/all/ports/ble/config/sl_bt_hal_config.h
+    file_id: sl_bt_hal_config
+    # Test related configs
+  - path: util/third_party/aws_iot_libs/vendors/siliconlabs/boards/all/aws_tests/config_files/iot_ble_config.h
+    condition: ["aws_tests_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/c_sdk/standard/ble/include/iot_ble_config_defaults.h 
+    condition: ["aws_tests_defs"]
+  # Demo related configs
+  - path: util/third_party/aws_iot_libs/vendors/siliconlabs/boards/all/aws_demos/config_files/iot_ble_config.h
+    condition: ["aws_demos_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/c_sdk/standard/ble/include/iot_ble_mqtt_transport_config.h 
+    condition: ["aws_demos_defs"]
+  - path: util/third_party/aws_iot_libs/libraries/c_sdk/standard/ble/include/iot_ble_config_defaults.h 
+    condition: ["aws_demos_defs"]
+
+provides:
+  - name: iot_ble
+requires:
+  - name: silabs_core_sl_malloc
+  - name: bluetooth_api
+  - name: bluetooth_on_demand_start
+template_contribution:
+  - name: bluetooth_on_event
+    value:
+      include: sl_bt_hal_event_handler.h
+      function: sl_bt_hal_on_event

@@ -1,0 +1,13 @@
+id: simple_led_recommended_instance
+label: Simple LED Recommended Instance(s)
+package: platform
+description: Simple Led Recommended Instance(s)
+category: Platform|Driver|LED
+quality: production
+ui_hints:
+  visibility: never
+root_path: platform/driver/leddrv/
+provides:
+  - name: simple_led_recommended_instance
+requires:
+  - name: simple_led

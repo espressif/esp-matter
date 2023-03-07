@@ -1,0 +1,42 @@
+diff --git a/teensy4/eeprom.c b/teensy4/eeprom.c
+index dde1809..9cdfcd0 100644
+--- a/teensy4/eeprom.c
++++ b/teensy4/eeprom.c
+@@ -54,8 +54,8 @@
+ // Conversation about how this code works & what the upper limits are
+ // https://forum.pjrc.com/threads/57377?p=214566&viewfull=1#post214566
+ 
+-static void flash_write(void *addr, const void *data, uint32_t len);
+-static void flash_erase_sector(void *addr);
++void flash_write(void *addr, const void *data, uint32_t len);
++void flash_erase_sector(void *addr);
+ 
+ static uint8_t initialized=0;
+ static uint16_t sector_index[FLASH_SECTORS];
+@@ -217,7 +217,7 @@ void eeprom_write_block(const void *buf, void *addr, uint32_t len)
+ #define PINS1           FLEXSPI_LUT_NUM_PADS_1
+ #define PINS4           FLEXSPI_LUT_NUM_PADS_4
+ 
+-static void flash_wait()
++void flash_wait()
+ {
+ 	FLEXSPI_LUT60 = LUT0(CMD_SDR, PINS1, 0x05) | LUT1(READ_SDR, PINS1, 1); // 05 = read status
+ 	FLEXSPI_LUT61 = 0;
+@@ -239,7 +239,7 @@ static void flash_wait()
+ }
+ 
+ // write bytes into flash memory (which is already erased to 0xFF)
+-static void flash_write(void *addr, const void *data, uint32_t len)
++void flash_write(void *addr, const void *data, uint32_t len)
+ {
+ 	__disable_irq();
+ 	FLEXSPI_LUTKEY = FLEXSPI_LUTKEY_VALUE;
+@@ -279,7 +279,7 @@ static void flash_write(void *addr, const void *data, uint32_t len)
+ }
+ 
+ // erase a 4K sector
+-static void flash_erase_sector(void *addr)
++void flash_erase_sector(void *addr)
+ {
+ 	__disable_irq();
+ 	FLEXSPI_LUTKEY = FLEXSPI_LUTKEY_VALUE;

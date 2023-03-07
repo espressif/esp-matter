@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2015 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Aggregate" type="org.bluetooth.characteristic.aggregate" uuid="2A5A" last-modified="2015-07-14" approved="Yes">
+    <InformativeText>
+        <Summary>The Aggregate Input is an aggregate of the Digital Input Characteristic value (if available) and ALL Analog Inputs available.</Summary>
+    </InformativeText>
+    <Value>
+        <Field name="Input Bits">
+            <Requirement>Mandatory</Requirement>
+            <Reference>org.bluetooth.characteristic.digital</Reference>
+            <Repeated>true</Repeated>
+        </Field>
+        <Field name="Analog Input">
+            <Requirement>Mandatory</Requirement>
+            <Reference>org.bluetooth.characteristic.analog</Reference>
+            <Repeated>true</Repeated>
+        </Field>
+    </Value>
+    <Note>The fields in the above table, reading from top to bottom, are shown in the order of LSO to MSO, where LSO = Least Significant Octet and MSO = Most Significant Octet.</Note>
+</Characteristic>

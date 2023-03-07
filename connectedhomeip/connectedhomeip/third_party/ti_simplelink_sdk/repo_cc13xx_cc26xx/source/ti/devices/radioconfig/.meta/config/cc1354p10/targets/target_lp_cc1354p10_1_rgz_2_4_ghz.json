@@ -1,0 +1,39 @@
+{
+    "target": {
+        "Name": "LP_CC1354P10_1_RGZ-2_4GHZ",
+        "Revision": [],
+        "Description": "CC1354P10 RGZ on CC1352P1_LAUNCHXL",
+        "DeviceName": "CC1354P10",
+        "DevicePackage": "RGZ 7x7",
+        "FrontEnd": "XD",
+        "PaSettings": "pasettings.json",
+        "RfDesign": "CC1354P10-7x7-XD7793-XD24-PA24",
+        "DefaultCategory": "Settings",
+        "IoSettings": {
+            "_name": "RF Switch",
+            "IoPin": [
+                {
+                    "_name": "DIO28",
+                    "ControlFunction": "Input\/Output",
+                    "Idle": "Input tristate (Default)",
+                    "Tx": "Output high",
+                    "Rx": "Output high"
+                },
+                {
+                    "_name": "DIO29",
+                    "ControlFunction": "Input\/Output",
+                    "Idle": "Input tristate (Default)",
+                    "Tx": "Output low",
+                    "Rx": "Output low"
+                },
+                {
+                    "_name": "DIO30",
+                    "ControlFunction": "Input\/Output",
+                    "Idle": "Input tristate (Default)",
+                    "Tx": "Output low",
+                    "Rx": "Output low"
+                }
+            ]
+        }
+    }
+}

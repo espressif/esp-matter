@@ -1,0 +1,69 @@
+# Copyright 2019 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/python.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_protobuf_compiler/proto.gni")
+import("$dir_pw_third_party/nanopb/nanopb.gni")
+import("$dir_pw_unit_test/test.gni")
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":nanopb_test",
+    ":pwpb_test",
+    ":nested_packages_test",
+  ]
+}
+
+pw_test("nanopb_test") {
+  deps = [ ":nanopb_test_protos.nanopb" ]
+  sources = [ "nanopb_test.cc" ]
+  enable_if = dir_pw_third_party_nanopb != ""
+}
+
+pw_proto_library("nanopb_test_protos") {
+  sources = [ "pw_protobuf_compiler_nanopb_protos/nanopb_test.proto" ]
+
+  if (dir_pw_third_party_nanopb != "") {
+    deps = [ "$dir_pw_third_party/nanopb:proto" ]
+  }
+}
+
+pw_test("pwpb_test") {
+  deps = [ ":pwpb_test_protos.pwpb" ]
+  sources = [ "pwpb_test.cc" ]
+}
+
+pw_proto_library("pwpb_test_protos") {
+  sources = [ "pw_protobuf_compiler_pwpb_protos/pwpb_test.proto" ]
+  inputs = [ "pw_protobuf_compiler_pwpb_protos/pwpb_test.options" ]
+}
+
+pw_proto_library("test_protos") {
+  sources = [
+    "pw_protobuf_compiler_protos/nested/more_nesting/test.proto",
+    "pw_protobuf_compiler_protos/test.proto",
+  ]
+}
+
+pw_test("nested_packages_test") {
+  deps = [ "pw_nested_packages:aggregate_wrapper.pwpb" ]
+  sources = [ "nested_packages_test.cc" ]
+}

@@ -1,0 +1,67 @@
+id: "sl_wisun_network_measurement"
+label: "Network measurement"
+package: "wisun"
+description: "The component provides network measurement service"
+category: "Wi-SUN|Application"
+quality: "production"
+root_path: "app/wisun/component/network_measurement"
+provides:
+  - name: sl_wisun_network_measurement
+source:
+  - path: "sl_wisun_network_measurement.c"
+  - path: "sl_wisun_network_measurement_stat.c"
+  - path: "sl_wisun_network_measurement_gui.c"
+  - path: "sl_wisun_network_measurement_cli.c"
+  - path: "silabs_wisun_logo.c"
+include:
+  - path: "."
+    file_list:
+    - "path": "sl_wisun_network_measurement.h"
+    - "path": "sl_wisun_network_measurement_stat.h"
+    - "path": "sl_wisun_network_measurement_gui.h"
+    - "path": "silabs_wisun_logo.h"
+config_file:
+  - path: "config/sl_wisun_network_measurement_config.h"
+  
+requires:
+  - name: "sl_wisun_app_core"
+  - name: "sl_wisun_ping"
+  - name: "sl_gui"
+
+ui_hints:
+  visibility: never
+
+#-------------- Template Contribution ----------------
+template_contribution:
+  - name: "event_handler"
+    value:
+      event: "internal_app_init"
+      include: "sl_wisun_network_measurement_stat.h"
+      handler: "sl_wisun_nwm_stat_storage_init"
+
+  - name: "cli_group"
+    value:
+      name: "wisun"
+      help: "Wi-SUN commands"
+      shortcuts:
+        - name: "w"
+
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "measure"
+      handler: "app_measure"
+      help: "Measure a remote host or quick measurement"
+      shortcuts:
+        - name: "m"
+      argument:
+        - type: string
+          help: "Remote address or 'all' or 'parent' or 'br'"
+        - type: uint16
+          help: "Count of measurement packets"
+        - type: uint16
+          help: "Measurement packet length"
+
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: wisun_network_measurement

@@ -1,0 +1,19 @@
+{
+    "targets": {
+        "Default": "target_launchxl-cc1312r7.json:LP_CC1312R7",
+        "VirtualTarget": [
+            {
+                "_name": "LP_CC1312R7",
+                "Target": "target_launchxl-cc1312r7.json"
+            },
+            {
+                "_name": "CC1352EM-XS169-XS24, 10 dBm",
+                "Target": "..\/..\/cc1352r\/targets\/target_refdesign_cc1352r1_169_mhz.json"
+            },
+            {
+                "_name": "LP_CC1352P7-4",
+                "Target": "..\/..\/cc1352p7\/targets\/target_launchxl-cc1352p7-4.json"
+            }
+        ]
+    }
+}

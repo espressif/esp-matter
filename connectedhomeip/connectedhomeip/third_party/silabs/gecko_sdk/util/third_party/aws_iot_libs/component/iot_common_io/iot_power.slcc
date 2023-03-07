@@ -1,0 +1,33 @@
+id: iot_power
+category: Third Party|Amazon FreeRTOS - AWS Libraries|Common I/O
+label: IoT Power
+description: >
+  Silicon Labs' Implementation of Amazon Common I/O Power API
+  Doc: https://docs.aws.amazon.com/freertos/latest/lib-ref/common-io/files.html
+package: amazon_platform
+quality: production
+provides:
+  - name: iot_power
+requires:
+  - name: freertos
+  - name: device_init
+  - name: power_manager
+  - name: status
+root_path: util/third_party/aws_iot_libs
+config_file:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_power/config/iot_power_cfg.h
+    file_id: iot_power_cfg
+
+source:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_power/source/iot_power_drv.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_power/source/iot_power_hal.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_power/test/iot_power_test.c
+    condition: ["aws_tests_defs"]
+
+include:
+  - path: libraries/abstractions/common_io/include
+    file_list:
+      - path: iot_power.h
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_power/include
+    file_list:
+      - path: iot_power_drv.h

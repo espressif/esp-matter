@@ -1,0 +1,24 @@
+id: psa_crypto_hmac
+package: platform
+label: HMAC
+description: >-
+  This component provides support for hash-based message authentication codes
+  (HMACs) in PSA Crypto.
+category: Platform|Security|PSA Crypto|Message Authentication Codes
+quality: production
+provides:
+  - name: psa_crypto_hmac
+requires:
+  - name: psa_crypto
+  - name: mbedtls_hmac
+    condition: [device_series_0]
+  - name: mbedtls_hmac
+    condition: [device_series_1]
+template_contribution:
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_HMAC
+  - name: psa_crypto_config
+    value: PSA_WANT_KEY_TYPE_HMAC
+  - name: psa_crypto_config
+    value: "MBEDTLS_PSA_BUILTIN_ALG_HMAC 1"
+    condition: [mbedtls_hmac]

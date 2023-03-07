@@ -1,0 +1,13 @@
+id: bootloader_gbl_version_dependency_tag
+label: GBL Version Dependency Tag
+package: bootloader
+description: Support version dependency tags in the GBL parser (available to Series 2 devices only).
+category: Platform|Bootloader|Core
+quality: production
+define:
+  - name: BTL_PARSER_SUPPORT_VERSION_DEPENDENCY_TAG
+    value: 1
+requires:
+  - name: device_series_2
+provides:
+  - name: bootloader_gbl_version_dependency_tag

@@ -1,0 +1,18 @@
+!!omap
+- id: brd4251b
+- label: BRD4251B
+- package: platform
+- description: Board support for BRD4251B.
+- category: Platform|Board|Radio Board
+- quality: production
+- requires:
+  - name: brd4251b_revision
+- provides:
+  - name: brd4251b
+  - name: hardware_board_from_stk
+  - name: hardware_board_from_slwrb4251b
+  - name: hardware_board_from_slwstk6063a
+- recommends:
+  - id: brd4251b_b01
+- ui_hints:
+    visibility: never

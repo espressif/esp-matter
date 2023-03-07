@@ -1,0 +1,30 @@
+language: c
+
+env:
+  matrix:
+    - rws_env_matrix=default
+    
+os:
+  - linux
+  - osx
+
+compiler:
+  - gcc
+  - clang
+
+before_script:
+  - mkdir build
+  - cd build
+  - cmake -DCMAKE_INSTALL_PREFIX:PATH=~/librws-install-dir -DCMAKE_BUILD_TYPE=Release ..
+  - cd ..
+
+script:
+  - cd build
+  - make
+  - make test
+  - make install
+
+branches:
+  only:
+    - master
+    - dev

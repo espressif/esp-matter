@@ -1,0 +1,9 @@
+/** @brief Called whenever the GPIO sensor detects a change in state.
+ *
+ * @param newSensorState The new state of the sensor based alarm
+ * (EMBER_AF_PLUGIN_GPIO_SENSOR_ACTIVE or
+ * EMBER_AF_PLUGIN_GPIO_SENSOR_NOT_ACTIVE)  Ver.: always
+ */
+void emberAfPluginGpioSensorStateChangedCallback(uint8_t newSensorState)
+{
+}

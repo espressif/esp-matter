@@ -1,0 +1,15 @@
+id: "bluetooth_feature_dfu"
+label: "DFU"
+package: "Bluetooth"
+description: >
+  Device firmware upgrade (dfu) feature
+category: "Bluetooth|Stack"
+quality: "production"
+root_path: "protocol/bluetooth"
+requires:
+  - name: "bluetooth_stack"
+provides:
+  - name: "bluetooth_feature_dfu"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_dfu

@@ -1,0 +1,27 @@
+id: "bluetooth_rtos_adaptation"
+label: "Bluetooth RTOS Adaptation"
+package: "Bluetooth"
+description: >
+  Bluetooth RTOS adaptation for running Bluetooth stack in a kernel.
+category: "Bluetooth|RTOS"
+quality: "production"
+root_path: "protocol/bluetooth"
+config_file:
+  - path: "config/sl_bt_rtos_config.h"
+include:
+  - path: "inc/"
+    file_list:
+      - path: "sl_bt_rtos_adaptation.h"
+source:
+  - path: "src/sl_bt_rtos_adaptation.c"
+requires:
+  - name: bluetooth_stack
+template_contribution:
+  - name: event_handler
+    value:
+      event: stack_init
+      include: "sl_bt_rtos_adaptation.h"
+      handler: "sl_bt_rtos_init"
+    priority: -1000
+provides:
+  - name: "bluetooth_rtos_adaptation"

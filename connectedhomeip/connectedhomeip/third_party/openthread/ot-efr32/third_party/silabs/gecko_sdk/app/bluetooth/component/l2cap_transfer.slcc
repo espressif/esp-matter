@@ -1,0 +1,50 @@
+id: l2cap_transfer
+label: L2CAP transfer
+package: Bluetooth
+description: >
+  The L2CAP data channel component is used to transfer data through the
+  link layer. The component serves as an API to access the L2CAP data
+  transfer functionalites.
+category: Bluetooth|Middleware|L2CAP
+quality: alpha
+root_path: app/bluetooth/common/l2cap_transfer
+source:
+  - path: src/sl_bt_l2cap_transfer.c
+include:
+  - path: inc
+    file_list: 
+      - path: sl_bt_l2cap_transfer.h
+provides:
+  - name: l2cap_transfer
+requires:
+  - name: bluetooth_stack
+  - name: bluetooth_feature_l2cap
+  - name: component_catalog 
+  - name: power_manager  
+  - name: slist
+ 
+template_contribution:
+  - name: bluetooth_on_event
+    value:
+      include: sl_bt_l2cap_transfer.h
+      function: sli_bt_l2cap_transfer_on_bt_event
+  - name: event_handler
+    value:
+      event: service_process_action
+      include: sl_bt_l2cap_transfer.h
+      handler: sli_bt_l2cap_transfer_process_action 
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: sl_bt_l2cap_transfer.h
+      handler: sli_bt_l2cap_transfer_init
+  - name: power_manager_handler
+    value:
+      event: is_ok_to_sleep
+      include: sl_bt_l2cap_transfer.h
+      handler: sli_bt_l2cap_transfer_is_ok_to_sleep
+  - name: power_manager_handler
+    value:
+      event: sleep_on_isr_exit
+      include: sl_bt_l2cap_transfer.h
+      handler: sli_bt_l2cap_transfer_sleep_on_isr_exit

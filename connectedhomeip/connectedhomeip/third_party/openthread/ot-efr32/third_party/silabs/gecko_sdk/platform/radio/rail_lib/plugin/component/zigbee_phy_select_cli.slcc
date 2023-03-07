@@ -1,0 +1,28 @@
+id: zigbee_phy_select_cli
+label: Zigbee Utility, PHY Select CLI
+description: Zigbee PHY select CLI
+package: platform
+category: Platform|Radio
+quality: production
+requires:
+  - name: rail_util_ieee802154_phy_select
+  - name: cli
+  - name: zigbee_debug_print
+provides:
+  - name: zigbee_phy_select_cli
+source:
+  - path: platform/radio/rail_lib/plugin/rail_util_ieee802154/sl_zigbee_phy_select_cli.c
+template_contribution:
+# CLI Commands < plugin phy-select >
+  - name: cli_group
+    value:
+      group: plugin
+      name: phy-select
+      help: The phy-select commands allow you to get information on the active radio configuration
+# CLI Commands < plugin phy-select get-active-phy >
+  - name: cli_command
+    value:
+      group: phy-select
+      name: get-active-phy
+      handler: emberAfPluginGetActiveRadioPhy
+      help: Get the active radio configuration

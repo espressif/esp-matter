@@ -1,0 +1,55 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+# Required for new toolchain resolution API.
+build --incompatible_enable_cc_toolchain_resolution
+
+# Required for combined code coverage reports.
+coverage --experimental_generate_llvm_lcov
+coverage --combined_report=lcov
+
+# Suppress the DEBUG: log messages from bazel. We get lots of spammy DEBUG:
+# messages from our third-party dependencies.
+build --ui_event_filters=-debug
+
+# Enforces consistent action environment variables. This is important to
+# address Protobuf's rebuild sensitivity on changes to the environment
+# variables.
+build --incompatible_strict_action_env
+
+# This leaks the PATH variable into the Bazel build environment, which
+# enables the Python pw_protobuf plugins to find the Python version
+# via CIPD and pw_env_setup. This is a partial fix for pwbug/437,
+# however this does not provide a fix for downstream projects that
+# use system Python < 3.6. This approach is problematic because of the
+# Protobuf rebuild sensitivity to environment variable changes.
+# TODO(pwbug/437): Remove this once pwbug/437 is completely resolved.
+build --action_env=PATH
+
+# Define the --config=asan-libfuzzer configuration.
+build:asan-libfuzzer \
+    --@rules_fuzzing//fuzzing:cc_engine=@rules_fuzzing//fuzzing/engines:libfuzzer
+build:asan-libfuzzer \
+    --@rules_fuzzing//fuzzing:cc_engine_instrumentation=libfuzzer
+build:asan-libfuzzer --@rules_fuzzing//fuzzing:cc_engine_sanitizer=asan
+
+# Specifies desired output mode for running tests.
+# Valid values are
+#   'summary' to output only test status summary
+#   'errors' to also print test logs for failed tests
+#   'all' to print logs for all tests
+#   'streamed' to output logs for all tests in real time
+#     (this will force tests to be executed locally one at a time regardless
+#     of --test_strategy value).
+test --test_output=errors

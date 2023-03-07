@@ -1,0 +1,8 @@
+purpose to try some more-complex randomization;
+set sst name neil buzz mike data *;
+2 to 5 of {
+    set sst name neil data "that's one small step for [a] man";
+    remove sst *active;
+    set sst name chris kraft data "wear the helmet";
+    remove sst name neil;
+}

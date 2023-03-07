@@ -1,0 +1,93 @@
+project_name: "ncp-spi"
+label: "Zigbee - NCP ncp-spi"
+package: "Zigbee"
+category: "Zigbee Application"
+quality: "production"
+
+description: >
+  This network coprocessor (NCP) application supports communication with a host
+  application over a SPI interface.  This NCP application can be built as
+  configured, or optionally can be augmented with customized extensions for
+  initialization, main loop processing, event definition/handling, and
+  messaging with the host.
+author: "Silicon Laboratories, Inc."
+
+component:
+  - id: "iostream_usart"
+    instance:
+      - vcom
+  - id: "zigbee_debug_print"
+  - id: "token_manager"
+  - id: "zigbee_pro_stack"
+  - id: "zigbee_source_route"
+  - id: "zigbee_binding_table"
+  - id: "zigbee_end_device_bind"
+  - id: "zigbee_packet_validate"
+  - id: "zigbee_gp"
+  - id: "zigbee_r22_support"
+  - id: "zigbee_security_link_keys"
+  - id: "zigbee_zll"
+  - id: "zigbee_install_code"
+  - id: "zigbee_app_framework_common"
+  - id: "zigbee_ncp_spi"
+  - id: "zigbee_debug_basic"
+  - id: "zigbee_debug_extended"
+
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: SL_IOSTREAM_USART_VCOM_FLOW_CONTROL_TYPE
+    value: usartHwFlowControlCtsAndRts
+  - name: SL_CLI_MAX_INPUT_ARGUMENTS
+    value: 16
+  - name: EMBER_BINDING_TABLE_SIZE
+    value: 32
+  - name: EMBER_MAX_END_DEVICE_CHILDREN
+    value: 32
+  - name: EMBER_PACKET_BUFFER_COUNT
+    value: 255
+  - name: EMBER_AF_PLUGIN_ZIGBEE_PRO_STACK_CHILD_TABLE_SIZE
+    value: 32
+  - name:  EMBER_KEY_TABLE_SIZE
+    value: 12
+  - name: NVM3_DEFAULT_CACHE_SIZE
+    value: 300
+  - name: NVM3_DEFAULT_NVM_SIZE
+    value: 36864
+    condition:
+      - device_series_1
+  - name: NVM3_DEFAULT_NVM_SIZE
+    value: 32768
+    condition:
+      - device_series_2
+
+include:
+  - path: "./"
+
+source:
+  - path: "main.c"
+  - path: "app.c"
+  
+define:
+  - name: RESERVED_AVAILABLE_MEMORY
+    value: 1000
+
+tag:
+  - prebuilt_demo
+
+readme:
+  - path: ./readme.html
+
+ui_hints:
+  highlight:
+    - path: readme.html
+      focus: false
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Zigbee"]
+  - name: "Device Type"
+    value: ["NCP"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]
+

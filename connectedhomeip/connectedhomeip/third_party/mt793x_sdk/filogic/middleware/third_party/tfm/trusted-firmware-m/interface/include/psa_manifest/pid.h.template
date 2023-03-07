@@ -1,0 +1,31 @@
+/*
+ * Copyright (c) 2019, Arm Limited. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ *
+ */
+
+{{utilities.donotedit_warning}}
+
+#ifndef __PSA_MANIFEST_PID_H__
+#define __PSA_MANIFEST_PID_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+{% for manifest in manifests %}
+    {% if manifest.attr.pid - 256 < 0 %}
+#error "Partition ID for '{{manifest.manifest.name}}' have to be at least TFM_SP_BASE"
+    {% else %}
+#define {{"%-62s"|format(manifest.manifest.name)}} ({{manifest.attr.pid}})
+    {% endif %}
+{% endfor %}
+
+#define {{"%-62s"|format("TFM_MAX_USER_PARTITIONS")}} ({{manifests | length()}})
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __PSA_MANIFEST_PID_H__ */

@@ -1,0 +1,40 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+declare_args() {
+  # If compiling backends with freertos, this variable is set to the path to the
+  # freertos installation. When set, a pw_source_set for the freertos library is
+  # created at "$dir_pw_third_party/freertos".
+  dir_pw_third_party_freertos = ""
+
+  # The pw_source_set which provides the FreeRTOS config header.
+  pw_third_party_freertos_CONFIG = ""
+
+  # The pw_source_set which provides the port specific includes and sources.
+  pw_third_party_freertos_PORT = ""
+
+  # In order to link against internal kernel data structures through the use of
+  # extern "C", statics can be optionally disabled for the tasks.c source file
+  # to enable use of things like pw_thread_freertos/util.h's ForEachThread.
+  #
+  # WARNING: If you use this, make sure that your FreeRTOSConfig.h and port
+  # does not rely on any statics inside of tasks.c. For example, you cannot use
+  # PW_CHECK for configASSERT when this is enabled.
+  #
+  # As a helper PW_THIRD_PARTY_FREERTOS_NO_STATICS=1 is defined when statics are
+  # disabled to help manage conditional configuration. In addition a helper
+  # pw_third_party_freertos/assert_config.h header is provided which correctly
+  # sets configASSERT to use PW_CHECK or PW_ASSERT for you.
+  pw_third_party_freertos_DISABLE_TASKS_STATICS = false
+}

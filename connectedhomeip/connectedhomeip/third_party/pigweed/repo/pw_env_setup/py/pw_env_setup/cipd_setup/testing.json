@@ -1,0 +1,14 @@
+{
+    "packages": [
+      {
+        "_comment": "Binaries used for pw_transfer backwards-compatibility testing",
+        "path": "pigweed/pw_transfer_test_binaries/${platform}",
+        "platforms": [
+            "linux-amd64"
+        ],
+        "tags": [
+          "version:pw_transfer_test_binaries_528098d588f307881af83f769207b8e6e1b57520-linux-amd64-cipd.cipd"
+        ]
+      }
+    ]
+  }

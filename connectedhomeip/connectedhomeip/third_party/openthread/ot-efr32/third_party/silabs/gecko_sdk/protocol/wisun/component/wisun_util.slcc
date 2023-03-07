@@ -1,0 +1,25 @@
+id: "wisun_util"
+label: "Utilities"
+package: "wisun"
+category: "Wi-SUN|Wi-SUN Services"
+quality: "production"
+description: "Provide tools for Wi-SUN stack"
+root_path: "protocol/wisun"
+
+requires:
+  - name: "wisun_stack"
+  - name: "segger_rtt_printf"
+
+provides:
+  - name: "wisun_util"
+
+source:
+  - path: "plugin/sl_wisun_util.c"
+  - path: "stack/inc/sl_wisun_util.h"
+
+include:
+  - path: "stack/inc"
+
+documentation:
+  docset: wisun
+  document: wisun-stack-api/sl-wisun-util

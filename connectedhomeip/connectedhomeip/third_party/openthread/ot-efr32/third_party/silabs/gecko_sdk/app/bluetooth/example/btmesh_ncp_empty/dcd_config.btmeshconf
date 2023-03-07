@@ -1,0 +1,94 @@
+{
+  "composition_data": {
+    "cid": "0x02ff",
+    "pid": "0x0000",
+    "vid": "0x0301",
+    "elements": [
+      {
+        "name": "Primary Element",
+        "location": "0x0000",
+        "sig_models": [
+          { "mid": "0x0000", "name": "Configuration Server" },
+          { "mid": "0x0001", "name": "Configuration Client" },
+          { "mid": "0x0002", "name": "Health Server" },
+          { "mid": "0x0003", "name": "Health Client" },
+          { "mid": "0x1000", "name": "Generic OnOff Server" },
+          { "mid": "0x1001", "name": "Generic OnOff Client" },
+          { "mid": "0x1002", "name": "Generic Level Server" },
+          { "mid": "0x1003", "name": "Generic Level Client" },
+          { "mid": "0x1004", "name": "Generic Default Transition Time Server" },
+          { "mid": "0x1005", "name": "Generic Default Transition Time Client" },
+          { "mid": "0x1006", "name": "Generic Power OnOff Server" },
+          { "mid": "0x1007", "name": "Generic Power OnOff Setup Server" },
+          { "mid": "0x1008", "name": "Generic Power OnOff Client" },
+          { "mid": "0x1009", "name": "Generic Power Level Server" },
+          { "mid": "0x100a", "name": "Generic Power Level Setup Server" },
+          { "mid": "0x100b", "name": "Generic Power Level Client" },
+          { "mid": "0x100c", "name": "Generic Battery Server" },
+          { "mid": "0x100d", "name": "Generic Battery Client" },
+          { "mid": "0x100e", "name": "Generic Location Server" },
+          { "mid": "0x100f", "name": "Generic Location Setup Server" },
+          { "mid": "0x1010", "name": "Generic Location Client" },
+          { "mid": "0x1011", "name": "Generic Admin Property Server" },
+          { "mid": "0x1012", "name": "Generic Manufacturer Property Server" },
+          { "mid": "0x1013", "name": "Generic User Property Server" },
+          { "mid": "0x1014", "name": "Generic Client Property Server" },
+          { "mid": "0x1015", "name": "Generic Property Client" },
+          { "mid": "0x1100", "name": "Sensor Server" },
+          { "mid": "0x1101", "name": "Sensor Setup Server" },
+          { "mid": "0x1102", "name": "Sensor Client" },
+          { "mid": "0x1200", "name": "Time Server" },
+          { "mid": "0x1201", "name": "Time Setup Server" },
+          { "mid": "0x1202", "name": "Time Client" },
+          { "mid": "0x1203", "name": "Scene Server" },
+          { "mid": "0x1204", "name": "Scene Setup Server" },
+          { "mid": "0x1205", "name": "Scene Client" },
+          { "mid": "0x1206", "name": "Scheduler Server" },
+          { "mid": "0x1207", "name": "Scheduler Setup Server" },
+          { "mid": "0x1208", "name": "Scheduler Client" },
+          { "mid": "0x1300", "name": "Light Lightness Server" },
+          { "mid": "0x1301", "name": "Light Lightness Setup Server" },
+          { "mid": "0x1302", "name": "Light Lightness Client" },
+          { "mid": "0x1303", "name": "Light CTL Server" },
+          { "mid": "0x1304", "name": "Light CTL Setup Server" },
+          { "mid": "0x1305", "name": "Light CTL Client" },
+          { "mid": "0x1307", "name": "Light HSL Server" },
+          { "mid": "0x1308", "name": "Light HSL Setup Server" },
+          { "mid": "0x1309", "name": "Light HSL Client" },
+          { "mid": "0x1311", "name": "Light LC Client" }
+        ],
+        "vendor_models": []
+      },
+      {
+        "name": "Secondary Element",
+        "location": "0x0000",
+        "sig_models": [
+          { "mid": "0x1306", "name": "Light CTL Temperature Server" },
+          { "mid": "0x1002", "name": "Generic Level Server" },
+          { "mid": "0x130f", "name": "Light LC Server" },
+          { "mid": "0x1310", "name": "Light LC Setup Server" },
+          { "mid": "0x1000", "name": "Generic OnOff Server" }
+        ],
+        "vendor_models": []
+      },
+      {
+        "name": "HSL Hue",
+        "location": "0x0000",
+        "sig_models": [
+          { "mid": "0x130a", "name": "Light HSL Hue Server" },
+          { "mid": "0x1002", "name": "Generic Level Server" }
+        ],
+        "vendor_models": []
+      },
+      {
+        "name": "HSL Saturation",
+        "location": "0x0000",
+        "sig_models": [
+          { "mid": "0x130b", "name": "Light HSL Saturation Server" },
+          { "mid": "0x1002", "name": "Generic Level Server" }
+        ],
+        "vendor_models": []
+      }
+    ]
+  }
+}

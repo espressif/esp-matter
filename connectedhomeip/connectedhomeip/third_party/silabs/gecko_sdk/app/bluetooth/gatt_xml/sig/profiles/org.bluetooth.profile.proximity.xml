@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Profile xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/profile.xsd" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    type="org.bluetooth.profile.proximity"
+    name="Proximity">
+    <InformativeText>
+        <Abstract>The Proximity profile enables proximity monitoring between two devices.</Abstract>
+        <Summary>
+		The Proximity profile defines the behavior when a device moves away from a peer device so that the connection is dropped or the path loss increases above a preset level, causing an immediate alert. This alert can be used to notify the user that the devices have become separated. As a consequence of this alert, a device may take further action, for example to lock one of the devices so that it is no longer usable.
+		The Proximity profile can also be used to define the behavior when the two devices come closer together such that a connection is made or the path loss decreases below a preset level.
+		</Summary>
+	</InformativeText>
+	<Role name="Proximity Reporter">
+		<Service type="org.bluetooth.service.link_loss">
+			<Declaration>Primary</Declaration>
+			<Requirement>Mandatory</Requirement>
+		</Service>
+		<Service type="org.bluetooth.service.immediate_alert">
+			<Declaration>Primary</Declaration>
+			<Requirement>Optional</Requirement>
+		</Service>
+		<Service type="org.bluetooth.service.tx_power">
+			<Declaration>Primary</Declaration>
+			<Requirement>Optional</Requirement>
+		</Service>
+		<Conditional condition="if_any_supported_all_must_be_supported">
+			<Type>org.bluetooth.service.immediate_alert</Type>
+			<Type>org.bluetooth.service.tx_power</Type>
+		</Conditional>
+	</Role>
+	<Role name="Proximity Monitor">
+		<Client type="org.bluetooth.service.link_loss">
+			<Requirement>Mandatory</Requirement>
+		</Client>
+		<Client type="org.bluetooth.service.immediate_alert">
+			<Requirement>Mandatory</Requirement>
+		</Client>
+		<Client type="org.bluetooth.service.tx_power">
+			<Requirement>Mandatory</Requirement>
+		</Client>
+	</Role>
+</Profile>

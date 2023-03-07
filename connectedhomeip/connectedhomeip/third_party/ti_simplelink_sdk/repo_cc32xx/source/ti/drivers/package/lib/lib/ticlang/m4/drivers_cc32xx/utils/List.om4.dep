@@ -1,0 +1,4 @@
+package/lib/lib/ticlang/m4/drivers_cc32xx/./utils/List.om4: utils/List.c /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/HwiP.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/utils/List.h 
+utils/List.c:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/HwiP.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/utils/List.h:

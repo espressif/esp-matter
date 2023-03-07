@@ -1,0 +1,189 @@
+!!omap
+- id: BGM121A256V2
+- package: platform
+- description: Silicon Labs CMSIS-Device part headers for BGM121A256V2.
+- category: Platform|Device|BGM1
+- quality: production
+- define:
+  - name: BGM121A256V2
+    unless:
+    - device_content_override
+- source:
+  - path: platform/Device/SiliconLabs/BGM1/Source/system_bgm1.c
+    unless:
+    - device_content_override
+  - path: platform/Device/SiliconLabs/BGM1/Source/startup_bgm1.c
+    unless:
+    - device_content_override
+  - condition:
+    - toolchain_arm
+    path: platform/Device/SiliconLabs/BGM1/Source/ARM/startup_bgm1.s
+    unless:
+    - device_content_override
+- include:
+  - file_list:
+    - path: bgm121a256v2.h
+    - path: bgm1_acmp.h
+    - path: bgm1_adc.h
+    - path: bgm1_af_pins.h
+    - path: bgm1_af_ports.h
+    - path: bgm1_cmu.h
+    - path: bgm1_cryotimer.h
+    - path: bgm1_crypto.h
+    - path: bgm1_devinfo.h
+    - path: bgm1_dma_descriptor.h
+    - path: bgm1_dmareq.h
+    - path: bgm1_emu.h
+    - path: bgm1_fpueh.h
+    - path: bgm1_gpcrc.h
+    - path: bgm1_gpio.h
+    - path: bgm1_gpio_p.h
+    - path: bgm1_i2c.h
+    - path: bgm1_idac.h
+    - path: bgm1_ldma.h
+    - path: bgm1_ldma_ch.h
+    - path: bgm1_letimer.h
+    - path: bgm1_leuart.h
+    - path: bgm1_msc.h
+    - path: bgm1_pcnt.h
+    - path: bgm1_prs.h
+    - path: bgm1_prs_ch.h
+    - path: bgm1_prs_signals.h
+    - path: bgm1_rmu.h
+    - path: bgm1_romtable.h
+    - path: bgm1_rtcc.h
+    - path: bgm1_rtcc_cc.h
+    - path: bgm1_rtcc_ret.h
+    - path: bgm1_timer.h
+    - path: bgm1_timer_cc.h
+    - path: bgm1_usart.h
+    - path: bgm1_wdog.h
+    - path: bgm1_wdog_pch.h
+    - path: em_device.h
+    - path: system_bgm1.h
+    path: platform/Device/SiliconLabs/BGM1/Include/
+    unless:
+    - device_content_override
+- provides:
+  - name: bgm121a256v2
+  - name: device
+  - name: device_series_1
+  - name: device_sdid_80
+  - name: device_generic_family_efr32xg11
+  - name: device_family_bgm1
+  - name: device_cortexm
+  - name: device_arm
+  - name: cortexm4
+  - name: armv7em
+  - name: device_is_module
+  - name: hardware_board_has_hfxo
+  - name: hardware_board_has_lfxo
+  - name: device_has_acmp
+  - name: device_has_acmp0
+  - name: device_has_acmp1
+  - name: device_has_adc
+  - name: device_has_adc0
+  - name: device_has_cmu
+  - name: device_has_cryotimer
+  - name: device_has_crypto
+  - name: device_has_dcdc
+  - name: device_has_devinfo
+  - name: device_has_emu
+  - name: device_has_fpueh
+  - name: device_has_gpcrc
+  - name: device_has_gpio
+  - name: device_has_i2c
+  - name: device_has_i2c0
+  - name: device_has_idac
+  - name: device_has_idac0
+  - name: device_has_ldma
+  - name: device_has_letimer
+  - name: device_has_letimer0
+  - name: device_has_leuart
+  - name: device_has_leuart0
+  - name: device_has_msc
+  - name: device_has_pcnt
+  - name: device_has_pcnt0
+  - name: device_has_prs
+  - name: device_has_rmu
+  - name: device_has_romtable
+  - name: device_has_rtcc
+  - name: device_has_timer
+  - name: device_has_timer0
+  - name: device_has_timer1
+  - name: device_has_uart
+  - name: device_has_usart
+  - name: device_has_usart0
+  - name: device_has_usart1
+  - name: device_has_wdog
+  - name: device_has_wdog0
+  - name: device_has_dwt
+  - name: device_has_emu_temp_sensor
+  - name: device_has_fpu
+  - name: device_has_mpu
+  - name: device_has_radio
+  - name: device_has_radio_2g4hz
+  - name: device_supports_rail
+  - name: device_no_rail_api
+  - name: device_supports_bluetooth
+- requires:
+  - name: cmsis_core
+  - name: BGM121A256V2_config
+- template_contribution:
+  - name: device_opn
+    value: BGM121A256V2
+  - name: device_arch
+    value: armv7em
+  - name: device_cpu
+    value: cortexm4
+  - name: device_series
+    value: 1
+  - name: device_family
+    value: bgm1
+  - name: device_flash_addr
+    value: 0
+  - name: device_flash_size
+    value: 262144
+  - name: device_flash_page_size
+    value: 2048
+  - name: device_ram_addr
+    value: 536870912
+  - name: device_ram_size
+    value: 31744
+  - name: device_fpu
+    value: true
+  - name: device_mpu
+    value: true
+  - name: default_stack_size
+    value: 4096
+  - name: default_heap_size
+    value: 2048
+- tag:
+  - device:opn:bgm121a256v2
+- toolchain_settings:
+  - option: device_opn
+    value: bgm121a256v2
+  - option: architecture
+    value: armv7e-m
+  - option: cpu
+    value: cortex-m4
+  - option: fpu
+    value: fpv4-sp
+- config_file:
+  - condition:
+    - custom_radio_config
+    directory: rail
+    path: platform/Device/config/80/device.yaml
+- metadata:
+    device:
+      memory:
+      - name: Main Flash
+        page_size: 2048
+        size: 262144
+        start: 0
+        type: non-volatile
+      - name: RAM
+        size: 31744
+        start: 536870912
+        type: volatile
+      opn: bgm121a256v2

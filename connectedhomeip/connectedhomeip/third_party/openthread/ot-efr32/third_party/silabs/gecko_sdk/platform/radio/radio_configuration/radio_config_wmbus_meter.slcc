@@ -1,0 +1,192 @@
+id: radio_config_wmbus_meter
+label: Custom Radio Configuration for wmbus meter application
+package: platform
+description: Triggers Radio Configurator UI for setting a proper (Application - Die
+  - RF Band) Custom Radio Configurator
+category: Platform|Radio Configuration
+quality: production
+provides:
+- name: radio_config_wmbus_meter
+- name: a_radio_config
+  allow_multiple: true
+ui_hints:
+  visibility: never
+template_contribution:
+- name: component_catalog
+  value: radio_config_wmbus_meter
+config_file:
+- path: platform/radio/radio_configuration/Mbus/wmbus_meter_868/device_sdid_210/rf_band_868/radio_settings.radioconf
+  directory: rail
+  condition:
+  - device_has_radio_subghz
+  - device_sdid_210
+  unless:
+  - hardware_board_rb
+  - hardware_board_tb
+  - hardware_board_stk
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Mbus/wmbus_meter_868/device_sdid_80/rf_band_868/radio_settings.radioconf
+  directory: rail
+  condition:
+  - device_has_radio_subghz
+  - device_sdid_80
+  unless:
+  - hardware_board_rb
+  - hardware_board_tb
+  - hardware_board_stk
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Mbus/wmbus_meter_868/device_sdid_84/rf_band_868/radio_settings.radioconf
+  directory: rail
+  condition:
+  - device_has_radio_subghz
+  - device_sdid_84
+  unless:
+  - hardware_board_rb
+  - hardware_board_tb
+  - hardware_board_stk
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Mbus/wmbus_meter_868/device_sdid_89/rf_band_868/radio_settings.radioconf
+  directory: rail
+  condition:
+  - device_has_radio_subghz
+  - device_sdid_89
+  unless:
+  - hardware_board_rb
+  - hardware_board_tb
+  - hardware_board_stk
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Mbus/wmbus_meter_868/device_sdid_95/rf_band_868/radio_settings.radioconf
+  directory: rail
+  condition:
+  - device_has_radio_subghz
+  - device_sdid_95
+  unless:
+  - hardware_board_rb
+  - hardware_board_tb
+  - hardware_board_stk
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Mbus/wmbus_169/device_sdid_210/rf_band_169/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_169
+  - device_sdid_210
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Mbus/wmbus_434/device_sdid_210/rf_band_434/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_434
+  - device_sdid_210
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Mbus/wmbus_meter_868/device_sdid_210/rf_band_868/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_868
+  - device_sdid_210
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Mbus/wmbus_169/device_sdid_80/rf_band_169/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_169
+  - device_sdid_80
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Mbus/wmbus_434/device_sdid_80/rf_band_434/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_434
+  - device_sdid_80
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Mbus/wmbus_meter_868/device_sdid_80/rf_band_868/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_868
+  - device_sdid_80
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Mbus/wmbus_169/device_sdid_84/rf_band_169/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_169
+  - device_sdid_84
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Mbus/wmbus_434/device_sdid_84/rf_band_434/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_434
+  - device_sdid_84
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Mbus/wmbus_meter_868/device_sdid_84/rf_band_868/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_868
+  - device_sdid_84
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Mbus/wmbus_169/device_sdid_89/rf_band_169/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_169
+  - device_sdid_89
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Mbus/wmbus_434/device_sdid_89/rf_band_434/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_434
+  - device_sdid_89
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Mbus/wmbus_meter_868/device_sdid_89/rf_band_868/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_868
+  - device_sdid_89
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Mbus/wmbus_169/device_sdid_95/rf_band_169/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_169
+  - device_sdid_95
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Mbus/wmbus_434/device_sdid_95/rf_band_434/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_434
+  - device_sdid_95
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Mbus/wmbus_meter_868/device_sdid_95/rf_band_868/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_default_rf_band_868
+  - device_sdid_95
+  unless:
+  - device_is_module
+  - device_sdid_200

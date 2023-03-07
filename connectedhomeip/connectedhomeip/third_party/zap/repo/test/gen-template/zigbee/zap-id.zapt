@@ -1,0 +1,41 @@
+{{zap_header}}
+
+// Global, non-cluster-specific things
+{{#zcl_global_commands}}
+#define ZCL_{{asDelimitedMacro label}}_COMMAND_ID ({{asHex code 2}})
+{{/zcl_global_commands}}
+
+{{#zcl_clusters}}
+
+// Definitions for cluster: {{label}}
+#define ZCL_{{asDelimitedMacro define}}_ID ({{asHex code 4}})
+
+// Client attributes for cluster: {{label}}
+{{#zcl_attributes_client}}
+#define ZCL_{{asDelimitedMacro define}}_ATTRIBUTE_ID ({{asHex code 4}})
+{{/zcl_attributes_client}}
+
+// Server attributes for cluster: {{label}}
+{{#zcl_attributes_server}}
+#define ZCL_{{asDelimitedMacro define}}_ATTRIBUTE_ID ({{asHex code 4}})
+{{/zcl_attributes_server}}
+
+// Commands for cluster: {{label}}
+{{#zcl_commands}}
+#define ZCL_{{asDelimitedMacro label}}_COMMAND_ID ({{asHex code 2}})
+{{/zcl_commands}}
+
+// Client Commands for cluster: {{label}}
+{{#zcl_commands_source_client}}
+#define ZCL_{{asDelimitedMacro parent.label}}_C_TO_S_{{asDelimitedMacro label}}_COMMAND_ID ({{asHex code 2}})
+{{/zcl_commands_source_client}}
+
+// Server Commands for cluster: {{label}}
+{{#zcl_commands_source_server}}
+#define ZCL_{{asDelimitedMacro parent.label}}_S_TO_C_{{asDelimitedMacro label}}_COMMAND_ID ({{asHex code 2}})
+{{/zcl_commands_source_server}}
+
+// End of cluster: {{label}}
+{{/zcl_clusters}}
+
+#endif // __ZAP_GEN_ID__

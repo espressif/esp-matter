@@ -1,0 +1,19 @@
+id: silabs_core_sl_malloc
+package: platform
+label: Malloc Wrapper
+description: |-
+  This component provides a thread safe wrapper on top of the standard c memory allocation functions.
+  The component can be used in an environment where Micrium OS or FreeRTOS is used in order to safely
+  allocate and free memory in multiple tasks from a shared heap.
+
+  The wrapper functions are called sl_malloc(), sl_calloc, sl_realloc() and sl_free().
+category: Platform|Utilities
+quality: production
+include:
+  - path: util/silicon_labs/silabs_core/memory_manager
+    file_list:
+      - path: sl_malloc.h
+source:
+  - path: util/silicon_labs/silabs_core/memory_manager/sl_malloc.c
+provides:
+  - name: silabs_core_sl_malloc

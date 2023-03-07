@@ -1,0 +1,26 @@
+id: "sl_flex_rail_ble_support"
+label: "Flex - RAIL BLE support"
+package: "Flex"
+description: "Adds minimalist BLE support for coding, decoding packets and using basic functionalities."
+category: "Flex|RAIL|Utility"
+quality: "production"
+root_path: "app/flex/component/rail"
+provides:
+  - name: sl_flex_rail_ble_support
+  - name: sl_flex_rail_protocol
+    allow_multiple: false
+  - name: rail_util_init
+    allow_multiple: false
+
+requires:
+  - name: sl_flex_util_ble_init
+  - name: sl_flex_rail_packet_asm
+  - name: device_has_radio_2g4hz
+  - name: device_has_radio
+
+
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: flex_ble_support

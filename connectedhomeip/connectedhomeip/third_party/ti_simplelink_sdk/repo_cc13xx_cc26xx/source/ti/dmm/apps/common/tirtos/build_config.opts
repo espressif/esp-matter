@@ -1,0 +1,104 @@
+/******************************************************************************
+
+ @file  build_config.opt
+
+ @brief This file contains the Bluetooth Low Energy (BLE) build config options.
+
+ Group: WCS, BTS
+ $Target Device: DEVICES $
+
+ ******************************************************************************
+ $License: BSD3 2011 $
+ ******************************************************************************
+ $Release Name: PACKAGE NAME $
+ $Release Date: PACKAGE RELEASE DATE $
+ *****************************************************************************/
+
+/*
+    The following is a list of all possible build defines and corresponding options
+    that can be set for each define:
+
+    GATT_DB_OFF_CHIP        - Indicates that the GATT database is maintained off the chip on the
+                              Application Processor (AP).
+
+    GAP_BOND_MGR            - Used to include the Bond Manager
+
+    HOST_CONFIG             (BLE Host Build Configurations) Possible Options:
+        PERIPHERAL_CFG      - Used to include the GAP Peripheral Role support
+        CENTRAL_CFG         - Used to include the GAP Central Role support
+        BROADCASTER_CFG     - Used to include the GAP Broadcaster Role support
+        OBSERVER_CFG        - Used to include the GAP Observer Role support
+
+    BLE_V41_FEATURES        Configure the stack to use features from the BLE 4.1 Specification
+        L2CAP_COC_CFG       - Enable L2CAP Connection Oriented Channels
+
+    BLE_V50_FEATURES        Configure the stack to use features from the BLE 5.0 Specification
+                            The following BLE 5.0 features are enabled by default and cannot
+                            be disabled.
+        PHY_2MBPS_CFG       - Enable 2 Mbps data rate in the Controller
+        HDC_NC_ADV_CFG      - Enable High Duty Cycle Non-Connectable Advertising
+        CHAN_ALGO2_CFG      - Enable Channel Selection Algorithm 2
+
+    HCI_TL_FULL             - All supported HCI commands are available via the Tranport Layer's NPI.
+                            - Intended for NP solution.
+    HCI_TL_PTM              - Only those HCI commands needed for Production Test Mode are available
+                            via the Transport Layer's NPI
+                            - Intended for SOC solutions where, during production, accesss is temporarily
+                              needed (e.g. for PHY testing using Direct Test Mode, etc.).
+    HCI_TL_NONE             - No supported HCI commands are available via the Transport Layer's NPI.
+                            - Intended for SOC solutions.
+
+    Below is general information for using and/or changing this configuration option file:
+
+    Combo Roles:        Combo roles can be set by defining multiple roles for HOST_CONFIG. The possible
+                        combo roles and HOST_CONFIG defines are:
+                        Peripheral + Observer  :    PERIPHERAL_CFG+OBSERVER_CFG
+                        Central + Broadcaster  :    CENTRAL_CFG+BROADCASTER_CFG
+                        Peripheral + Central   :    PERIPHERAL_CFG+CENTRAL_CFG
+
+    lib_search tool:    There is a pre build action for every stack project that runs a tool
+                        lib_search.exe. This tool aims to automatically import the correct library
+                        files into your project based on the defines in this file.
+
+                        The locations of all library files and their correspond options are
+                        <install dir>/ble_core/ble_[host,ctrl]_lib/<device> for stack libs
+                        and at <install dir>/ble_core/hci_tl_lib/<device> for
+                        HCI Transport Layer libs
+
+                        If an library is found that was built with matching options, it will be
+                        copied into the project local directory at <App ewp dir>/../../lib/ and
+                        subsequently linked with the stack.
+
+                        If you experience a build error with lib_search.exe, expand the build error
+                        message by clicking Tools->Options->Messages->Show build messages:->All.
+                        The error messages printed out by the lib_search tool should now appear in
+                        your Build Message window.
+
+*/
+
+/* BLE Host Build Configurations */
+-DHOST_CONFIG=PERIPHERAL_CFG
+/* -DHOST_CONFIG=CENTRAL_CFG */
+/* -DHOST_CONFIG=BROADCASTER_CFG */
+/* -DHOST_CONFIG=OBSERVER_CFG */
+/* -DHOST_CONFIG=PERIPHERAL_CFG+OBSERVER_CFG */
+/* -DHOST_CONFIG=CENTRAL_CFG+BROADCASTER_CFG */
+/* -DHOST_CONFIG=PERIPHERAL_CFG+CENTRAL_CFG */
+
+/* GATT Database being off chip */
+/* -DGATT_DB_OFF_CHIP */
+
+/* Include GAP Bond Manager */
+-DGAP_BOND_MGR
+
+/* BLE v4.1 Features */
+/* -DV41_FEATURES=L2CAP_COC_CFG */
+
+/* BLE v5.0 Features
+ * Note: The Long Range feature is for evaluation only.
+ */
+
+/* Include Transport Layer (Full or PTM) */
+-DHCI_TL_NONE
+/* -DHCI_TL_PTM */
+/* -DHCI_TL_FULL */

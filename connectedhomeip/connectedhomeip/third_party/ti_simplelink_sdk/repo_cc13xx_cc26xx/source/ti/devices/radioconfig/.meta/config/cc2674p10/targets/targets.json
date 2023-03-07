@@ -1,0 +1,13 @@
+{
+    "targets": {
+        "Default": "..\/..\/cc1354p10\/targets\/target_lp_cc1354p10_6.json:LP_EM_CC1354P10_6",
+        "VirtualTarget": {
+            "_name": "LP_EM_CC1354P10_6",
+            "Target": [
+                "..\/..\/cc1354p10\/targets\/target_lp_cc1354p10_6.json",
+                "..\/..\/cc1354p10\/targets\/target_lp_cc1354p10_6_highPA.json",
+                "..\/..\/cc1354p10\/targets\/target_lp_cc1354p10_6_2_4_ghz.json"
+            ]
+        }
+    }
+}

@@ -1,0 +1,7 @@
+#!/bin/bash
+#
+# Packages you have to install on Ubunty or other apt-get based distributions
+# to get source build to compile via npm install or npm ci
+#
+apt-get update
+apt-get install --fix-missing libpixman-1-dev libcairo-dev libsdl-pango-dev libjpeg-dev libgif-dev

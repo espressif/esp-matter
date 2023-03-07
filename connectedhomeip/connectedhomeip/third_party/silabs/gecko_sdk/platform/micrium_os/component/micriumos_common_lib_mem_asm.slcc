@@ -1,0 +1,18 @@
+id: micriumos_common_lib_mem_asm
+label: Micrium OS Common Libraries Optimized Mem Copy
+package: micrium-krnx
+description: Use an optimized Mem_Copy in assembly
+category: Services|Micrium|Common
+quality: production
+component_root_path: platform/micrium_os/ports
+provides:
+  - name: common_lib_mem_asm
+requires:
+  - name: lib_mem_port_armv6m
+    condition: [armv6m]
+  - name: lib_mem_port_armv7m
+    condition: [armv7em]
+  - name: lib_mem_port_armv7m
+    condition: [armv7m]
+  - name: lib_mem_port_armv8m
+    condition: [armv8m.main]

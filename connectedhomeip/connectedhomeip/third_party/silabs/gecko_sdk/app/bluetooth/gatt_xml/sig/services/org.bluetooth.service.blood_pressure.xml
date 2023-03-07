@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Service xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Blood Pressure" type="org.bluetooth.service.blood_pressure" uuid="1810">
+	<InformativeText>
+     <Abstract>This service exposes blood pressure and other data from a blood pressure monitor intended for healthcare applications.</Abstract>
+        <Summary>The BLOOD PRESSURE Service exposes blood pressure and other data related to a blood pressure monitor.</Summary>
+	</InformativeText>
+	<Dependencies>
+		<Dependency>This service has no dependencies on other GATT-based services.</Dependency>
+	</Dependencies>
+	<GATTRequirements>
+        <Requirement subProcedure="Notifications">Mandatory if the Intermediate Cuff Pressure characteristic is supported, otherwise excluded for this service.</Requirement>
+        <Requirement subProcedure="Indications">Mandatory</Requirement>
+		<Requirement subProcedure="Read Characteristic Descriptors">Mandatory</Requirement>
+        <Requirement subProcedure="Write Characteristic Descriptors">Mandatory</Requirement>
+	</GATTRequirements>
+	<Transports>
+		<Classic>false</Classic>
+		<LowEnergy>true</LowEnergy>
+	</Transports>
+	
+	<Characteristics>
+		<Characteristic name="Blood Pressure Measurement" type="org.bluetooth.characteristic.blood_pressure_measurement">
+			<InformativeText>The BLOOD PRESSURE MEASUREMENT characteristic is used to send a Blood Pressure measurement.</InformativeText>		
+			<Requirement>Mandatory</Requirement>
+			<Properties>
+				<Read>Excluded</Read>
+				<Write>Excluded</Write>
+				<WriteWithoutResponse>Excluded</WriteWithoutResponse>
+				<SignedWrite>Excluded</SignedWrite>
+				<ReliableWrite>Excluded</ReliableWrite>
+				<Notify>Excluded</Notify>
+				<Indicate>Mandatory</Indicate>
+				<WritableAuxiliaries>Excluded</WritableAuxiliaries>
+				<Broadcast>Excluded</Broadcast>
+			</Properties>
+            <Descriptors>
+               <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+                    <Requirement>Mandatory</Requirement>
+                    <Properties>
+                    <Read>Mandatory</Read>
+                    <Write>Mandatory</Write>
+                    </Properties>
+               </Descriptor>
+            </Descriptors>
+         </Characteristic>
+        
+        <Characteristic name="Intermediate Cuff Pressure" type="org.bluetooth.characteristic.intermediate_cuff_pressure">
+			<InformativeText>The INTERMEDIATE CUFF PRESSURE characteristic is used to send intermediate Cuff Pressure values to a device for display purposes while the measurement is in progress.</InformativeText>		
+			<Requirement>Optional</Requirement>
+			<Properties>
+				<Read>Excluded</Read>
+				<Write>Excluded</Write>
+				<WriteWithoutResponse>Excluded</WriteWithoutResponse>
+				<SignedWrite>Excluded</SignedWrite>
+				<ReliableWrite>Excluded</ReliableWrite>
+				<Notify>Mandatory</Notify>
+				<Indicate>Excluded</Indicate>
+				<WritableAuxiliaries>Excluded</WritableAuxiliaries>
+				<Broadcast>Excluded</Broadcast>
+			</Properties>
+            <Descriptors>
+               <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+                    <Requirement>Mandatory</Requirement>
+                    <Properties>
+                    <Read>Mandatory</Read>
+                    <Write>Mandatory</Write>
+                    </Properties>
+               </Descriptor>
+            </Descriptors>
+        </Characteristic>
+                
+       <Characteristic name="Blood Pressure Feature" type="org.bluetooth.characteristic.blood_pressure_feature">
+			<InformativeText>The Blood Pressure Feature characteristic is used to describe the supported features of the Blood Pressure Sensor.</InformativeText>		
+			<Requirement>Mandatory</Requirement>
+			<Properties>
+				<Read>Mandatory</Read>
+				<Write>Excluded</Write>
+				<WriteWithoutResponse>Excluded</WriteWithoutResponse>
+				<SignedWrite>Excluded</SignedWrite>
+				<ReliableWrite>Excluded</ReliableWrite>
+				<Notify>Excluded</Notify>
+				<Indicate>Excluded</Indicate>
+				<WritableAuxiliaries>Excluded</WritableAuxiliaries>
+				<Broadcast>Excluded</Broadcast>
+			</Properties>
+       </Characteristic>       
+	</Characteristics>
+</Service>

@@ -1,0 +1,43 @@
+id: "bluetooth_configuration"
+label: "Instantiation of Bluetooth configuration"
+package: "Bluetooth"
+description: >
+  This component populates the internal Bluetooth component configuration
+  structures based on the included components and their configuration. This
+  component is automatically included when required and should not be included
+  directly by the application.
+category: "Bluetooth|Stack"
+quality: "production"
+provides:
+  - name: "bluetooth_configuration"
+requires:
+  - name: "component_catalog"
+root_path: "protocol/bluetooth"
+include:
+  - path: "inc/"
+    file_list:
+      - path: "sli_bt_config_defs.h"
+      - path: "sli_bt_advertiser_config.h"
+      - path: "sli_bt_connection_config.h"
+      - path: "sli_bt_dynamic_gattdb_config.h"
+      - path: "sli_bt_l2cap_config.h"
+      - path: "sli_bt_pawr_advertiser_config.h"
+      - path: "sli_bt_periodic_adv_config.h"
+      - path: "sli_bt_periodic_advertiser_config.h"
+      - path: "sli_bt_sync_config.h"
+      - path: "sli_bt_channel_sounding_config.h"
+source:
+  - path: "src/sli_bt_advertiser_config.c"
+  - path: "src/sli_bt_connection_config.c"
+  - path: "src/sli_bt_dynamic_gattdb_config.c"
+  - path: "src/sli_bt_l2cap_config.c"
+  - path: "src/sli_bt_pawr_advertiser_config.c"
+  - path: "src/sli_bt_periodic_adv_config.c"
+  - path: "src/sli_bt_periodic_advertiser_config.c"
+  - path: "src/sli_bt_sync_config.c"
+  - path: "src/sli_bt_channel_sounding_config.c"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_configuration
+ui_hints:
+  visibility: never

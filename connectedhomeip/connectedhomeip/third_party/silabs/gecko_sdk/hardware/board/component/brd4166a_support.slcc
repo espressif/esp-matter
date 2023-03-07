@@ -1,0 +1,24 @@
+id: brd4166a_support
+label: Thunderboard Sense 2 support
+description: >
+  Board support for Thunderboard Sense 2
+
+  Includes an I2C bus select feature, which is required when multiple I2C sensor
+  groups (Environmental, Hall, Gas) are used on the Thunderboard Sense 2.
+package: platform
+category: Platform|Board
+quality: production
+root_path: hardware/board
+provides:
+  - name: brd4166a_support
+requires:
+  - name: i2cspm
+source:
+  - path: src/brd4166a_support.c
+include:
+  - path: inc
+    file_list:
+      - path: brd4166a_support.h
+documentation:
+    docset: gecko-platform
+    document: hardware-board/api/group-brd4166a-support

@@ -1,0 +1,30 @@
+# Copyright (c) 2013-2022, Arm  Limited and Contributors. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+---
+BasedOnStyle : LLVM
+AccessModifierOffset: -4
+AlignConsecutiveMacros: true
+AlignEscapedNewlinesLeft: true
+AllowShortFunctionsOnASingleLine: false
+AllowShortLoopsOnASingleLine: true
+BinPackArguments : false
+BinPackParameters : false
+BraceWrapping:
+  AfterFunction: true
+BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeBraces: Custom
+ColumnLimit: 120
+IncludeCategories:
+  - Regex:           '^"'
+    Priority:        2
+  - Regex:           '^<'
+    Priority:        3
+  - Regex:           '.*'
+    Priority:        1
+IncludeIsMainRegex: '$'
+IndentCaseLabels: true
+IndentWidth: 4
+SortIncludes: false
+TabWidth: 4
+...

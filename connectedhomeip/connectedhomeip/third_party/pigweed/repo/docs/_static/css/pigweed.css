@@ -1,0 +1,127 @@
+/*
+ * Copyright 2021 The Pigweed Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
+/********** Top left logo & search bar ***********/
+
+/* Make the "Pigweed" logo text. One day, this will be an image. */
+.sidebar-brand {
+  font-size: 2em;
+  font-family: 'Inconsolata', monospace;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.sidebar-brand-text {
+  font-size: 2.5rem;
+}
+
+/********** General document coloring ***********/
+
+/* Code blocks inside block quotes end up getting italicized. */
+blockquote {
+  font-style: normal;
+}
+
+/* Update description list (dl) > description titles (dt) styles for autodoc */
+
+/* Function signatures are gray */
+dl.c>dt, dl.cpp>dt, dl.js>dt, dl.py>dt {
+  border: none;
+  border-left: 3px solid var(--color-api-function-border);
+  background: var(--color-api-function-background);
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-left: 0.5em;
+  font-family: var(--font-stack--monospace);
+}
+
+/* Adjust indentation for all list types */
+dl.class>dt, dl.enum-class>dt, dl.enum-struct>dt, dl.enum>dt, dl.exception>dt, dl.function>dt, dl.method>dt, dl.type>dt {
+  padding-left: 3em;
+  text-indent: -2.5em;
+}
+
+/* Class and describe signatures are blue */
+dl.class>dt, dl.describe>dt {
+  background: var(--color-api-class-background);
+  color: var(--color-api-class-foreground);
+  border: none;
+  border-top: 3px solid var(--color-api-class-border);
+  font-family: var(--font-stack--monospace);
+}
+
+/* Adjust .. describe:: block padding */
+dl.describe>dt {
+  display: table;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+/* Function signature unindent */
+.sig {
+    text-indent: 0em;
+}
+
+/* Diagram backgrounds should always be light */
+div>svg {
+  background: #ffffff;
+}
+
+/* Make inline code standout more */
+code.literal {
+  border: 1px solid var(--color-inline-code-border);
+}
+
+/* Make sure text selection colors are readable */
+::selection {
+  color: var(--color-text-selection-foreground);
+  background: var(--color-text-selection-background);
+}
+
+
+/* Make dark mode 'code-block:: :emphasize-lines:' background color readable. */
+body[data-theme="dark"] .highlight .hll {
+  background-color: var(--color-code-hll-background);
+}
+
+body[data-theme="light"] .highlight .hll {
+  background-color: var(--color-code-hll-background);
+}
+
+/* Use normal mixed-case for h4, h5, and h6 */
+h4, h5, h6 {
+    text-transform: none;
+}
+
+:root {
+  /* SVGs from: https://octicons-git-v2-primer.vercel.app/octicons/ */
+  --icon--check-circle: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path fill-rule="evenodd" d="M1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0zM0 8a8 8 0 1116 0A8 8 0 010 8zm11.78-1.72a.75.75 0 00-1.06-1.06L6.75 9.19 5.28 7.72a.75.75 0 00-1.06 1.06l2 2a.75.75 0 001.06 0l4.5-4.5z"></path></svg>');
+  --icon--check-circle-fill: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path fill-rule="evenodd" d="M8 16A8 8 0 108 0a8 8 0 000 16zm3.78-9.72a.75.75 0 00-1.06-1.06L6.75 9.19 5.28 7.72a.75.75 0 00-1.06 1.06l2 2a.75.75 0 001.06 0l4.5-4.5z"></path></svg>');
+}
+
+.admonition.checkmark {
+  border-color: var(--color-admonition-title--tip);
+}
+.admonition.checkmark > .admonition-title {
+  background-color: var(--color-admonition-title-background--tip);
+}
+.admonition.checkmark > .admonition-title::before {
+  background-color: var(--color-admonition-title--tip);
+  -webkit-mask-image: var(--icon--check-circle-fill);
+          mask-image: var(--icon--check-circle-fill);
+}

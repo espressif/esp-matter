@@ -1,0 +1,23 @@
+package: Zigbee
+description: A component implementing the client-side functionality of the Smart Energy
+  1.2 Events cluster. The component is only intended to assist with debugging as the
+  implemented callbacks simply parse responses from the Events server and print the
+  results.  Before production, this component should be replaced with code that acts
+  on the responses in an appropriate way.
+id: zigbee_events_client
+label: Events Client
+category: Zigbee|Cluster Library|Smart Energy
+quality: production
+provides:
+   - name: "zigbee_events_client"
+source:
+  - path: protocol/zigbee/app/framework/plugin/events-client/events-client.c
+template_contribution:
+  - name: component_catalog
+    value: zigbee_events_client
+  - name: cluster_service
+    value:
+       cluster_id: "0x0709"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "CLIENT"
+       service_function: "emberAfEventsClusterClientCommandParse"     

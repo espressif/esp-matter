@@ -1,0 +1,17 @@
+id: zw_cc_configuration
+label: Configuration Command Class
+category: Z-Wave|Command Classes
+description: >
+  Configuration Command Class allows product specific configuration parameters to be changed.
+  One example could be the default dimming rate of a light dimmer.
+package: Z-Wave
+quality: production
+source:
+  - path: protocol/z-wave/ZAF/CommandClasses/Configuration/CC_Configuration.c
+include:
+  - path: protocol/z-wave/ZAF/CommandClasses/Configuration/
+    file_list:
+     - path: CC_Configuration.h
+     - path: CC_Configuration_Configuration.h
+provides:
+  - name: zw_cc_configuration

@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+name="Descriptor Value Changed" type="org.bluetooth.characteristic.descriptor_value_changed" uuid="2A7D" last-modified="2014-11-20" approved="Yes">
+<InformativeText>This definition is shown in the Environmental Sensing Service Section 3.2 and its subsections.</InformativeText>
+</Characteristic>

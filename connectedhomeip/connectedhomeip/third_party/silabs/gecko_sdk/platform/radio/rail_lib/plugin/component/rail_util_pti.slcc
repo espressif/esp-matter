@@ -1,0 +1,34 @@
+id: rail_util_pti
+label: RAIL Utility, PTI
+description: Utility to aid with RAIL Packet Trace Interface (PTI) Support
+package: platform
+category: Platform|Radio
+quality: production
+requires:
+  - name: rail_lib
+  - name: emlib_gpio
+provides:
+  - name: rail_util_pti
+documentation:
+  docset: rail
+  document: rail-util-pti
+config_file:
+  - path: platform/radio/rail_lib/plugin/rail_util_pti/config/sl_rail_util_pti_config.h
+    file_id: rail_util_pti_config
+include:
+  - path: platform/radio/rail_lib/plugin/rail_util_pti
+    file_list:
+      - path: sl_rail_util_pti.h
+source:
+  - path: platform/radio/rail_lib/plugin/rail_util_pti/sl_rail_util_pti.c
+template_contribution:
+  - name: event_handler
+    value:
+      event: stack_init
+      include: sl_rail_util_pti.h
+      handler: sl_rail_util_pti_init
+    priority: -9010
+  - name: component_catalog
+    value: rail_util_pti
+validation_helper:
+  - path: platform/radio/rail_lib/plugin/rail_util_pti/pti_validation.lua

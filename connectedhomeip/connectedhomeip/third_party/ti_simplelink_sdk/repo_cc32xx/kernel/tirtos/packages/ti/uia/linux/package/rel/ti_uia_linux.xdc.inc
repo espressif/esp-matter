@@ -1,0 +1,13 @@
+package/package.bld.xml
+package/build.cfg
+package/package.xdc.inc
+package.bld
+Makefile
+LoggerSM.c
+LoggerSM.h
+ServiceMgr.c
+ServiceMgr.h
+UIAPacket.h
+lib/loggersm.a
+lib/servicemgr.a
+package/package.cfg.xdc.inc

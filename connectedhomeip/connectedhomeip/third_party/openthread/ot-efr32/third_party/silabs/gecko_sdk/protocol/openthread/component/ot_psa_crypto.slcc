@@ -1,0 +1,28 @@
+id: ot_psa_crypto
+label: PSA Crypto
+package: OpenThread
+category: OpenThread
+quality: production
+description: This component references to all the third party support needed by the OpenThread stack
+ui_hints:
+  visibility: never
+provides:
+  - name: ot_psa_crypto
+requires:
+  - name: psa_crypto
+  - name: psa_its  
+  - name: psa_crypto_hkdf
+  - name: psa_crypto_cmac
+  - name: psa_crypto_hmac
+  - name: psa_crypto_ecdh
+  - name: psa_crypto_ecdsa
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_USE_PSA_CRYPTO 
+  - name: psa_key_slots
+    value:
+      name: psa_key_slots_openthread
+      count: 15
+define:
+  - name: PSA_WANT_ALG_TLS12_PRF
+    value: 1

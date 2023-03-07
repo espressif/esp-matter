@@ -1,0 +1,99 @@
+project_name: bt_soc_cbap
+package: Bluetooth
+label: Bluetooth - SoC Certificate Based Authentication and Pairing
+description: >
+  Demonstrates Certificate Based Authentication and Pairing over BLE.
+category: Bluetooth Examples
+quality: production
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Bluetooth"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+
+component:
+  - id: bluetooth_stack
+  - id: gatt_configuration
+  - id: bluetooth_feature_legacy_advertiser
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_gatt
+  - id: bluetooth_feature_gatt_server
+  - id: bluetooth_feature_legacy_scanner
+  - id: bluetooth_feature_sm
+  - id: bluetooth_feature_system
+  - id: in_place_ota_dfu
+  - id: bootloader_interface
+  - id: rail_util_pti
+  - id: mpu
+  - id: app_log
+  - id: app_assert
+  - id: iostream_recommended_stream
+  - id: simple_led
+    instance:
+      - led0
+  - id: simple_timer
+  - id: cbap
+
+source:
+  - path: main.c
+  - path: app.c
+
+include:
+  - path: .
+    file_list:
+      - path: app.h
+
+config_file:
+  - path: config/cbap_config.h
+  - override:
+      component: gatt_configuration
+      file_id: gatt_configuration_file_id
+    path: gatt_configuration.btconf
+    directory: btconf
+
+readme:
+  - path: ../../documentation/example/soc_cbap/readme.md
+
+other_file:
+  - path: ../../script/create_bl_files.bat
+  - path: ../../script/create_bl_files.sh
+  - path: ../../documentation/example/soc_cbap/readme_img0.png
+    folder: images
+  - path: ../../documentation/example/soc_cbap/readme_img1.png
+    folder: images
+  - path: ../../documentation/example/soc_cbap/readme_img2.png
+    folder: images
+
+configuration:
+  - name: SL_STACK_SIZE
+    value: "6200"
+  - name: SL_HEAP_SIZE
+    value: "15000"
+  - name: SL_PSA_KEY_USER_SLOT_COUNT
+    value: "1"
+    condition:
+      - psa_crypto
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+  - name: SL_BT_CBAP_LOG
+    value: "1"
+  - name: APP_LOG_LEVEL_FILTER_THRESHOLD
+    value: APP_LOG_LEVEL_INFO
+
+requires:
+  - name: device_security_vault
+
+tag:
+  - hardware:rf:band:2400
+  - hardware:device:flash:512
+  - hardware:device:ram:32
+  - hardware:component:led:1+
+
+ui_hints:
+  highlight:
+    - path: config/btconf/gatt_configuration.btconf
+    - path: readme.md
+      focus: true

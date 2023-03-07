@@ -1,0 +1,231 @@
+ %%{
+
+const ble = system.modules["/ti/ble5stack/ble"].$static;
+const ccfg = system.modules["/ti/devices/CCFG"].$static;
+const rf = system.modules["/ti/drivers/RF"].$static;
+const Common = system.getScript("/ti/ble5stack/ble_common.js");
+const rfDesign = system.modules["/ti/devices/radioconfig/rfdesign"].$static;
+const devFamily = Common.device2DeviceFamily(system.deviceData.deviceId);
+const LPName = rfDesign.rfDesign;
+
+%%}
+
+-DSYSCFG
+% if(LPName == "LAUNCHXL-CC1352R1" || LPName == "LAUNCHXL-CC1352R1-2_4GHZ")
+% {
+-DCC13X2R1_LAUNCHXL
+% }
+% else if(LPName == "LAUNCHXL-CC1352P1")
+% {
+-DCC13X2P1_LAUNCHXL
+% }
+% else if(LPName == "LAUNCHXL-CC1352P-2")
+% {
+-DCC13X2P_2_LAUNCHXL
+% }
+% else if(LPName == "LAUNCHXL-CC1352P-4")
+% {
+-DCC13X2P_4_LAUNCHXL
+% }
+% else if(LPName == "LP_CC2652RB")
+% {
+-DCC2652RB_LAUNCHXL
+% }
+% else if(LPName == "LAUNCHXL-CC26X2R1")
+% {
+-DCC26X2R1_LAUNCHXL
+% }
+% else if(LPName == "LP_CC2652PSIP")
+% {
+-DCC2652PSIP_LP
+% }
+% else if(LPName == "LP_CC2652RSIP")
+% {
+-DCC2652RSIP_LP
+% }
+% else if(LPName == "LP_CC2652R7")
+% {
+-DCC2652R7_LP
+% }
+% else if(LPName == "LP_CC1352P7-1")
+% {
+-DCC1352P7_1_LP
+% }
+% else if(LPName == "LP_CC1352P7-4")
+% {
+-DCC1352P7_4_LP
+% }
+% else if(LPName == "LP_CC2651P3")
+% {
+-DCC2651P3_LP
+% }
+% else if(LPName == "LP_CC2651R3")
+% {
+-DCC2651R3_LP
+% }
+% if((devFamily == "DeviceFamily_CC26X2" && LPName != "LP_CC2652PSIP") || LPName == "LP_CC2652R7" || LPName == "LP_CC2651R3")
+% {
+-DCC26X2
+-DCC26XX
+% }
+% else if((devFamily == "DeviceFamily_CC13X2" && (LPName == "LAUNCHXL-CC1352P-2" || LPName == "LAUNCHXL-CC1352P-4")) || ((LPName == "LP_CC2652PSIP") || (LPName == "LP_CC1352P7-4") || (LPName == "LP_CC2651P3")))
+% {
+-DCC13X2P
+-DCC13XX
+% }
+% else if((devFamily == "DeviceFamily_CC13X2" && (LPName == "LAUNCHXL-CC1352R1" || LPName == "LAUNCHXL-CC1352P1")) || (LPName == "LP_CC1352P7-1"))
+% {
+-DCC13X2
+-DCC13XX
+% }
+%
+% if(ble.disableDisplayModule)
+% {
+-DDisplay_DISABLE_ALL
+% }
+%
+% if(ble.powerMamagement)
+% {
+-DPOWER_SAVING
+% }
+%
+% if(ble.halAssert)
+% {
+-DEXT_HAL_ASSERT
+% }
+%
+% if(ble.tbmActiveItemsOnly)
+% {
+-DTBM_ACTIVE_ITEMS_ONLY
+% }
+%
+% if(ble.stackLibrary)
+% {
+-DSTACK_LIBRARY
+% }
+%
+% if(ble.dontTransmitNewRpa)
+% {
+-DDONT_TRANSMIT_NEW_RPA
+% }
+%
+-DEXTENDED_STACK_SETTINGS=`ble.extendedStackSettings`
+% if(ble.peerConnParamUpdateRejectInd)
+% {
+-DNOTIFY_PARAM_UPDATE_RJCT
+% }
+%
+% if(ble.noOsalSnv)
+% {
+-DNO_OSAL_SNV
+% }
+%
+% if(ccfg.srcClkLF == "LF RCOSC" || ble.useRcosc)
+% {
+
+-DUSE_RCOSC
+% }
+%
+% if(ccfg.disableCache)
+% {
+
+-DCACHE_AS_RAM
+% }
+%
+
+% if(ble.uartLog)
+% {
+-DUARTLOG_ENABLE
+% }
+
+% if(ble.ptm)
+% {
+-DPTM_MODE
+% }
+% if (_.isEqual(ble.deviceRole, "PERIPHERAL_CFG"))
+% {
+
+-DNPI_USE_UART
+% }
+%
+% if(ble.ptm)
+% {
+-DNPI_FLOW_CTRL=`ble.flowControl == "0" ? 0 : 1`
+% }
+
+%
+% if(ble.icallEvents)
+% {
+-DICALL_EVENTS
+% }
+%
+% if(ble.icallJT)
+% {
+-DICALL_JT
+% }
+%
+% if(ble.icallLite)
+% {
+-DICALL_LITE
+% }
+%
+% if(ble.icallStackAddress)
+% {
+-DICALL_STACK0_ADDR
+% }
+%
+% if(ble.useIcall)
+% {
+-DUSE_ICALL
+% }
+%
+-DICALL_MAX_NUM_ENTITIES=`ble.maxNumEntIcall`
+-DICALL_MAX_NUM_TASKS=`ble.maxNumIcallEnabledTasks`
+-DOSAL_CBTIMER_NUM_TASKS=1
+% if(ble.oneLibSizeOpt)
+% {
+-DONE_BLE_LIB_SIZE_OPTIMIZATION
+% }
+% if(rf.coexEnable == true)
+% {
+-DUSE_COEX
+% }
+
+% if(ble.ledDebug)
+% {
+-DLED_DEBUG
+% }
+%
+% if(ble.oadDebug)
+% {
+-DOAD_DEBUG
+% }
+%
+% if(ble.oadFeature)
+% {
+-DFEATURE_OAD
+% }
+%
+% if(ble.oadBleSecurity)
+% {
+-DOAD_BLE_SECURITY
+% }
+
+% if(ble.mesh)
+% {
+%
+% if(ble.meshApp == "meshAndPeri" || ble.meshApp == "meshAndPeriOadOffchip" || ble.meshApp == "meshAndPeriOadOnchip")
+% {
+-DADD_SIMPLE_PERIPHERAL
+% }
+% if(ble.meshApp == "meshAndPeriOadOffchip")
+% {
+-DOAD_SUPPORT
+-DOAD_SUPPORT_OFFCHIP
+% }
+% if(ble.meshApp == "meshAndPeriOadOnchip")
+% {
+-DOAD_SUPPORT
+-DOAD_SUPPORT_ONCHIP
+% }
+% }

@@ -1,0 +1,98 @@
+#
+# Manually specify the path of the Filogic SDK.
+#
+declare_args() {
+  _sdk_root = getenv("MTK_MT793X_SDK_ROOT")
+  mt793x_project_name = "matter_sdk"
+}
+
+#
+# Determine the final path of the Filogic SDK.
+#
+declare_args() {
+  if (_sdk_root == "") {
+    mt793x_sdk_root =
+        "//third_party/connectedhomeip/third_party/mt793x_sdk/filogic"
+  } else {
+    mt793x_sdk_root = _sdk_root
+  }
+}
+
+import("${mt793x_sdk_root}/project/mt7933_hdk/apps/matter_sdk/mt793x_config.gni")
+
+template("matter_sdk") {
+  assert(mt793x_sdk_root != "", "mt793x_sdk_root must be specified")
+
+  sdk_target_name = target_name
+
+  config("${sdk_target_name}_config") {
+    forward_variables_from(invoker, "*")
+    include_dirs = []
+    if (defined(invoker.include_dirs)) {
+      include_dirs += invoker.include_dirs
+    }
+
+    if (!defined(defines)) {
+      defines = []
+    }
+    
+    defines += mt793x_sdk_defines
+
+    if (defined(invoker.defines)) {
+      defines += invoker.defines
+    }
+
+    if (!defined(cflags)) {
+      cflags = []
+    }
+    # Now add our "system-header" include dirs
+    foreach(include_dir, mt793x_sdk_include_dirs) {
+      cflags += [ "-isystem" + rebase_path(include_dir, root_build_dir) ]
+    }
+
+    foreach(include_dir, include_dirs) {
+      cflags += [ "-isystem" + rebase_path(include_dir, root_build_dir) ]
+    }
+
+    cflags += mt793x_sdk_cflags
+  }
+
+  # TODO - Break up this monolith and make it configurable.
+  source_set(sdk_target_name) {
+    forward_variables_from(invoker, "*")
+
+    libs = [
+      "${mt793x_sdk_root}/prebuilt/middleware/MTK/nvdm/lib/libnvdm_CM4_GCC.a",
+    ]
+
+    libs += ["${mt793x_sdk_root}/project/mt7933_hdk/apps/matter_sdk/lib/matter_sdk.a"]
+
+    libs += [
+      "${mt793x_sdk_root}/prebuilt/driver/chip/mt7933/lib/lib_gcpu.a",
+      "${mt793x_sdk_root}/prebuilt/driver/chip/mt7933/lib/libefuse.a",
+      "${mt793x_sdk_root}/prebuilt/driver/chip/mt7933/lib/libhal_core_CM33_GCC.a",
+    ]
+
+    # Wi-Fi
+    libs += [
+      "${mt793x_sdk_root}/prebuilt/middleware/MTK/connectivity/wlan/lib/libwifi.a",
+      "${mt793x_sdk_root}/prebuilt/middleware/MTK/minisupp/lib/libminisupp.a",
+    ]
+
+    # BLE - Libs
+    libs += [
+      "${mt793x_sdk_root}/prebuilt/middleware/MTK/bluetooth/lib/mt7933/libbledriver_7933_release.a",
+      "${mt793x_sdk_root}/prebuilt/middleware/MTK/bluetooth/lib/mt7933/libble_la_release.a",
+    ]
+    
+    if (!defined(sources)) {
+      sources = []
+    }
+
+    if (!defined(public_configs)) {
+      public_configs = []
+    }
+
+    public_configs += [ ":${sdk_target_name}_config" ]
+  }
+}

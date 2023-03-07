@@ -1,0 +1,2 @@
+package/lib/lib/ticlang/m4/drivers_cc32xx/./power/PowerCC32XX_asm.om4: power/PowerCC32XX_asm.sm4 
+power/PowerCC32XX_asm.sm4:

@@ -1,0 +1,90 @@
+#!/bin/bash
+#
+#  Copyright (c) 2022, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+
+if [[ -n ${BASH_SOURCE[0]} ]]; then
+    script_path="${BASH_SOURCE[0]}"
+else
+    script_path="$0"
+fi
+
+script_dir="$(dirname "$(realpath "$script_path")")"
+repo_dir="$(dirname "$script_dir")"
+
+# slc-cli installation dir
+[ -n "${SLC_INSTALL_DIR:-}" ] || SLC_INSTALL_DIR="${repo_dir}/third_party/silabs/slc"
+
+slc_cmd=""
+
+# Set to 0 to force using slc-cli from 'third_party'/silabs/slc.
+use_slc_from_path=1
+
+# Wrapper function to execute an slc command
+run_slc()
+{
+    IFS=" " read -r -a slc_args <<<"${@}"
+    "${slc_cmd}" "${slc_args[@]}"
+}
+
+# Find the command to use for slc
+slc_init()
+{
+
+    # 0 - Use slc-cli from ${repo_dir}/third_party/silabs/slc
+    # 1 - Use slc-cli or slc from PATH
+    if command -v slc && [ "$use_slc_from_path" -eq "1" ]; then
+        slc_cmd="slc"
+    else
+        if command -v slc-cli && [ "$use_slc_from_path" -eq "1" ]; then
+            slc_cmd="slc-cli"
+        else
+            echo "The 'slc-cli' command could not be found in your PATH."
+
+            # Find the slc executable
+            slc_cmd=$(find "${repo_dir}/third_party/silabs/slc" -perm "$([[ $OSTYPE == darwin* ]] && echo '+' || echo '/')"111 -name 'slc*' -type f)
+
+            # Automatically download slc if not found
+            if [ -z "${slc_cmd}" ]; then
+                "${repo_dir}"/script/bootstrap_silabs
+            fi
+
+            # Find the slc executable
+            slc_cmd=$(find "${repo_dir}/third_party/silabs/slc" -perm "$([[ $OSTYPE == darwin* ]] && echo '+' || echo '/')"111 -name 'slc*' -type f)
+
+        fi
+    fi
+}
+
+cleanup()
+{
+    if [ "$?" -eq "14" ]; then
+        echo "Please make sure Java 11 installed and the JAVA_11_HOME environment variable is set."
+    fi
+}
+
+trap cleanup EXIT

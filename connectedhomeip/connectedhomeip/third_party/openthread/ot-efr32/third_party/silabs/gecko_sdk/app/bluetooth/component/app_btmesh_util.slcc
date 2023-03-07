@@ -1,0 +1,22 @@
+id: "app_btmesh_util"
+label: "App Utility"
+package: "Btmesh"
+description: >
+  The App BT Mesh Utility provides collection of stateless utility functions and
+  macros to solve recurring tasks in the BT Mesh components and examples. This
+  component supports logging of missing application key binding and missing 
+  model publication data configuration errors.
+  The logging level of these errors are configurable.
+category: "Bluetooth Mesh|Utility"
+quality: "production"
+root_path: "app/bluetooth/common/app_btmesh_util"
+config_file:
+  - path: "config/app_btmesh_util_config.h"
+include:
+  - path: ""
+    file_list:
+      - path: "app_btmesh_util.h"
+provides:
+  - name: "app_btmesh_util"
+requires:
+  - name: "status"

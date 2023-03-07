@@ -1,0 +1,48 @@
+id: ot_platform_abstraction_source
+label: Platform Abstraction (Source)
+package: OpenThread
+category: OpenThread
+quality: production
+description: This component provides the source files for the platform abstraction layer between the OpenThread stack and Silicon Labs platform
+provides:
+  - name: ot_platform_abstraction_source
+ui_hints:
+  visibility: never
+include:
+  - path: util/third_party/openthread/examples/platforms/utils
+    file_list:
+      - path: code_utils.h
+      - path: link_metrics.h
+      - path: logging_rtt.h
+      - path: mac_frame.h
+      - path: soft_source_match_table.h
+      - path: settings.h
+  - path: protocol/openthread/platform-abstraction/efr32
+    file_list:
+      - path: ieee802154mac.h
+      - path: ieee802154-packet-utils.hpp
+      - path: platform-band.h
+      - path: rail_config.h
+      - path: security_manager.h
+      - path: sl_packet_utils.h
+      - path: sl_openthread.h
+source:
+      - path: util/third_party/openthread/examples/platforms/utils/debug_uart.c
+      - path: util/third_party/openthread/examples/platforms/utils/link_metrics.cpp
+      - path: util/third_party/openthread/examples/platforms/utils/logging_rtt.c
+      - path: util/third_party/openthread/examples/platforms/utils/mac_frame.cpp
+      - path: util/third_party/openthread/examples/platforms/utils/settings_ram.c
+      - path: util/third_party/openthread/examples/platforms/utils/soft_source_match_table.c
+      - path: protocol/openthread/platform-abstraction/efr32/alarm.c
+      - path: protocol/openthread/platform-abstraction/efr32/diag.c
+      - path: protocol/openthread/platform-abstraction/efr32/entropy.c
+      - path: protocol/openthread/platform-abstraction/efr32/flash.c
+      - path: protocol/openthread/platform-abstraction/efr32/logging.c
+      - path: protocol/openthread/platform-abstraction/efr32/memory.c
+      - path: protocol/openthread/platform-abstraction/efr32/misc.c
+      - path: protocol/openthread/platform-abstraction/efr32/crypto.c
+      - path: protocol/openthread/platform-abstraction/efr32/ieee802154-packet-utils.cpp
+      - path: protocol/openthread/platform-abstraction/efr32/radio.c
+      - path: protocol/openthread/platform-abstraction/efr32/security_manager.c
+      - path: protocol/openthread/platform-abstraction/efr32/startup-gcc.c
+      - path: protocol/openthread/platform-abstraction/efr32/system.c

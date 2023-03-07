@@ -1,0 +1,17 @@
+/*
+ * Copyright (c) 2018-2019, Arm Limited. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ *
+ */
+
+//This file holds description for the current directory. This documentation
+//will be included in the Doxygen output.
+
+/*!
+\dir
+\brief Source code for TF-M tests.
+\details TF-M tests exercise the TF-M core and various services to check correct
+operation.
+
+*/

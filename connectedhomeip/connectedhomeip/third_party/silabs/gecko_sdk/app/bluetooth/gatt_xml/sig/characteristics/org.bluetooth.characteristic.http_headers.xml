@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2015 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+last-modified="2015-05-18" name="HTTP Headers" type="org.bluetooth.characteristic.http_headers" uuid="2AB7" approved="Yes">
+    <InformativeText>
+        <Abstract>
+            The HTTP Headers Characteristic is used to hold the headers that would be sent to the HTTP Request or the headers contained within an HTTP response message from the HTTP Server.
+        </Abstract>
+    </InformativeText>
+    <Value>
+        <Field name="HTTP Headers">
+            <InformativeText>
+                The HTTP headers to be used in the HTTP request.
+            </InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>utf8s</Format>
+        </Field>
+    </Value>
+</Characteristic>

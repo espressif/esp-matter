@@ -1,0 +1,24 @@
+id: freertos_plus
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|FreeRTOS Plus
+label: All FreeRTOS+ Libraries
+description: All FreeRTOS+ libraries.
+
+package: amazon_platform
+quality: production
+
+provides:
+  - name: freertos_plus
+
+ui_hints:
+  visibility: never
+
+root_path: util/third_party/aws_iot_libs
+
+requires:
+  - name: freertos_cli
+  - name: freertos_posix
+  - name: freertos_tcpip
+  - name: iot_crypto
+  - name: iot_tls
+  - name: iot_system_init

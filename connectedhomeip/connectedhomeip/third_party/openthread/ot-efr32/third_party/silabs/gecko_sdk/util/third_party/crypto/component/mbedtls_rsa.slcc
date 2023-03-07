@@ -1,0 +1,42 @@
+id: mbedtls_rsa
+package: platform
+label: RSA
+description: >-
+  This component provides support for operations using RSA keys.
+category: Platform|Security|Mbed TLS|RSA
+quality: alpha
+# Does not need to be shown in UI, needs child-components (RSA size) to work.
+ui_hints:
+  visibility: never
+include:
+  - path: util/third_party/crypto/mbedtls/library
+    file_list:
+      - path: rsa_alt_helpers.h
+    unless: [trustzone_nonsecure]
+source:
+  - path: util/third_party/crypto/mbedtls/library/rsa.c
+    unless: [trustzone_nonsecure]
+  - path: util/third_party/crypto/mbedtls/library/rsa_alt_helpers.c
+    unless: [trustzone_nonsecure]
+provides:
+  - name: mbedtls_rsa
+  # This component will not become compatible with the SiliconLabs TrustZone Secure
+  # Key Library until the upper layer TLS code fully supports use of PSA APIs. For
+  # more details, please refer to the documentation of MBEDTLS_USE_PSA_CRYPTO in
+  # mbedtls/include/mbedtls/mbedtls_config.h.
+  - name: tz_ns_incompatible
+    condition: [tz_secure_key_library_ns]
+requires:
+  - name: mbedtls_mpi
+  - name: mbedtls_hash
+  - name: mbedtls_core
+  - name: mbedtls_rsa_size
+  - name: mbedtls_x509
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_RSA_C
+recommends:
+  - id: mbedtls_rsa_2048
+documentation:
+  docset: mbed-tls
+  document: group-rsa-module

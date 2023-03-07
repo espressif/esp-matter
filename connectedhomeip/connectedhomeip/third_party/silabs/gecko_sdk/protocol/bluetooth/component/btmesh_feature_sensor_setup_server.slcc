@@ -1,0 +1,19 @@
+id: "btmesh_feature_sensor_setup_server"
+label: "Sensor Setup Server Model"
+package: "Btmesh"
+description: "Enables Bluetooth Mesh Sensor Setup Server Model."
+category: "Bluetooth Mesh|Stack Classes"
+quality: "production"
+root_path: "protocol/bluetooth"
+
+requires:
+  - name: "btmesh_stack"
+  - name: "btmesh_feature_sensor_server"
+  - name: "btmesh_core"
+provides:
+  - name: "btmesh_feature_sensor_setup_server"
+template_contribution:
+  - name: btmesh_bgapi_class
+    value:
+      class: "sensor_setup_server"
+    priority: 1

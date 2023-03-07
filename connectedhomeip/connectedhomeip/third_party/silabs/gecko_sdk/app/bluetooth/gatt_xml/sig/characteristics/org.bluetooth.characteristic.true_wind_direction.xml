@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="True Wind Direction" type="org.bluetooth.characteristic.true_wind_direction" 
+uuid="2A71" last-modified="2014-11-20" approved="Yes">
+<Value>
+    <Field name="True Wind Direction">
+        <InformativeText>Unit is in degrees with a resolution of 0.01 degrees</InformativeText>
+        <Requirement>Mandatory</Requirement>
+        <Format>uint16</Format>
+        <Unit>org.bluetooth.unit.plane_angle.degree</Unit>
+        <Description>Wind direction is reported by the direction from which it originates and is an angle measured clockwise relative to Geographic North. For example, a wind coming from the north is given as 0 degrees, a wind coming from the south is given as 180 degrees, a wind coming from the east is given as 90 degrees and a wind coming from the west is given as 270 degrees.</Description>
+        <DecimalExponent>-2</DecimalExponent>
+        <Minimum>0</Minimum> 
+        <Maximum>359.99</Maximum>
+	</Field>
+    
+</Value>
+    </Characteristic>

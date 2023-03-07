@@ -1,0 +1,198 @@
+.\"
+.\" "$Id: mxmldoc.man 390 2009-05-05 13:38:00Z mike $"
+.\"
+.\" mxmldoc man page for mini-XML, a small XML-like file parsing library.
+.\"
+.\" Copyright 2003-2009 by Michael Sweet.
+.\"
+.\" This program is free software; you can redistribute it and/or
+.\" modify it under the terms of the GNU Library General Public
+.\" License as published by the Free Software Foundation; either
+.\" version 2, or (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.TH mxmldoc 1 "Mini-XML" "4 May 2009" "Michael Sweet"
+.SH NAME
+mxmldoc \- mini-xml documentation generator
+.SH SYNOPSIS
+.B mxmldoc
+\-\-no-output [
+.I filename.xml
+]
+.I source file(s)
+]
+.br
+.B mxmldoc
+[ \-\-footer
+.I footerfile
+] [ \-\-header
+.I headerfile
+] [ \-\-intro
+.I introfile
+] [ \-\-section
+.I section
+] [ \-\-title
+.I title
+] [
+.I filename.xml
+] [
+.I source file(s)
+] >
+.I filename.html
+.br
+.B mxmldoc
+\-\-docset
+.I directory.docset
+[ \-\-docversion
+.I version
+] [ \-\-feedname
+.I name
+] [ \-\-feedurl
+.I url
+] [ \-\-footer
+.I footerfile
+] [ \-\-header
+.I headerfile
+] [ \-\-intro
+.I introfile
+] [ \-\-section
+.I section
+] [ \-\-title
+.I title
+] [
+.I filename.xml
+] [
+.I source file(s)
+]
+.br
+.B mxmldoc
+\-\-tokens
+.I path
+[
+.I filename.xml
+] [
+.I source file(s)
+] > tokens.xml
+.br
+.B mxmldoc
+\-\-framed
+.I basename
+[ \-\-footer
+.I footerfile
+] [ \-\-header
+.I headerfile
+] [ \-\-intro
+.I introfile
+] [ \-\-section
+.I section
+] [ \-\-title
+.I title
+] [
+.I filename.xml
+] [
+.I source file(s)
+]
+.br
+.B mxmldoc
+[ \-\-footer
+.I footerfile
+] [ \-\-header
+.I headerfile
+] [ \-\-intro
+.I introfile
+] \-\-man
+.I manpage
+[ \-\-section
+.I section
+] [ \-\-title
+.I title
+] [
+.I filename.xml
+] [
+.I source file(s)
+] >
+.I filename.man
+.SH DESCRIPTION
+\fImxmldoc\fR scans the specified C and C++ source files to produce
+an XML representation of globally accessible classes, constants,
+enumerations, functions, structures, typedefs, unions, and variables
+- the XML file is updated as necessary. By default, a HTML
+representation of the XML file is written to the standard output.
+Use the \fI\-\-no-output\fR option to disable the HTML output.
+.PP
+Man page source can be generated using the \fI\-\-man\fR option.
+.PP
+If no source files are specified then the current XML file is
+converted to the standard output.
+.PP
+In general, any C or C++ source code is handled by \fImxmldoc\fR,
+however it was specifically written to handle code with
+documentation that is formatted according to the CUPS Developer
+Guide which is available at "http://www.cups.org/documentation.php".
+.SH OPTIONS
+.TP 5
+\-\-docset directory.docset
+.br
+Creates an Xcode documentation set in the specified directory.
+.TP 5
+\-\-docversion version
+.br
+Specifies the version number for the Xcode documentation set.
+.TP 5
+\-\-feedname name
+.br
+Specifies the Xcode documentation set feed name, typically the project or
+company name.
+.TP 5
+\-\-feedurl url
+.br
+Specifies the Xcode documentation set feed URL which must point to an ATOM file
+linking to updates.
+.TP 5
+\-\-footer footerfile
+.br
+Inserts the specified file at the bottom of the output documentation.
+.TP 5
+\-\-framed basename
+.br
+Creates HTML documentation using frames - one for the table-of-contents and
+one for the body.
+.TP 5
+\-\-header headerfile
+.br
+Inserts the specified file at the top of the output documentation.
+.TP 5
+\-\-intro introfile
+.br
+Inserts the specified file before the table of contents.
+.TP 5
+\-\-man manpage
+.br
+Generated a man page instead of HTML documentation.
+.TP 5
+\-\-no-output
+.br
+Disables generation of documentation on the standard output.
+.TP 5
+\-\-section section
+.br
+Sets the section/keywords in the output documentation.
+.TP 5
+\-\-title title
+.br
+Sets the title of the output documentation.
+.TP 5
+\-\-tokens
+.br
+Generates a Tokens.xml file for use with the Xcode documentation tools.
+.SH SEE ALSO
+mxml(3), Mini-XML Programmers Manual, http://www.minixml.org/
+.SH COPYRIGHT
+Copyright 2003-2009 by Michael Sweet.
+.\"
+.\" End of "$Id: mxmldoc.man 390 2009-05-05 13:38:00Z mike $".
+.\"

@@ -1,0 +1,20 @@
+purpose to check basic functionality of TF-Fuzz;
+
+/*// Attempt to get data from a deleted SST asset, using human-readable name:
+set sst name creditCardNos data "0985-9375-0338-3406";
+set sst name creditCardNos data "5687-3782-1127-9821";
+remove sst name creditCardNos;
+remove sst name creditCardNos;
+*/
+
+//remove sst name creditCardNos;
+
+//remove sst name creditCardNos expect user_defined_error;
+
+//read sst name creditCardNos dfname 'ccNumbersRead' expect uid_not_found;
+
+//set SST asset by raw UID number and then get its data:
+
+//set sst uid 38 data "Very short data set" expect nothing;
+
+//read sst uid 38 check "Very short data set" expect pass;

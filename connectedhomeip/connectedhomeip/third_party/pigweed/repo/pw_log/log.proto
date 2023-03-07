@@ -1,0 +1,234 @@
+// Copyright 2021 The Pigweed Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not
+// use this file except in compliance with the License. You may obtain a copy of
+// the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations under
+// the License.
+
+syntax = "proto3";
+
+package pw.log;
+
+import "pw_protobuf_protos/common.proto";
+import "pw_tokenizer/proto/options.proto";
+
+option java_outer_classname = "Log";
+
+// A log message and metadata. Logs come in a few different forms:
+//
+//  1. A tokenized log message (recommended for production)
+//  2. A non-tokenized log message (good for development)
+//  3. A "log missed" tombstone, indicating that some logs were dropped
+//
+// Size analysis for tokenized log messages, including each field's proto tag:
+//
+//  - message     - 6-12 bytes; depending on number and value of arguments
+//  - line_level  - 3 bytes; 4 bytes if line > 2048 (uncommon)
+//  - timestamp   - 3 bytes; assuming delta encoding
+//  - thread      - 2-6 bytes; depending on whether value is a token or string
+//
+// Adding the fields gives the total proto message size:
+//
+//    6-12 bytes - log
+//    9-15 bytes - log + level + line
+//   12-18 bytes - log + level + line + timestamp
+//
+// An analysis of a project's log token database revealed the following
+// distribution of the number of arguments to log messages:
+//
+//   # args   # messages
+//     0         2,700
+//     1         2,400
+//     2         1,200
+//     3+        1,000
+//
+// Note: The below proto makes some compromises compared to what one might
+// expect for a "clean" proto design, in order to shave bytes off of the
+// messages. It is critical that the log messages are as small as possible to
+// enable storing more logs in limited memory. This is why, for example, there
+// is no separate "DroppedLog" type, or a "TokenizedLog" and "StringLog", which
+// would add at least 2 extra bytes per message
+message LogEntry {
+  // The log message, which may be tokenized.
+  //
+  // If tokenized logging is used, implementations may encode metadata in the
+  // log message rather than as separate proto fields. This reduces the size of
+  // the protobuf with no overhead.
+  //
+  // The standard format for encoding metadata in the log message is defined by
+  // the pw_log_tokenized module. The message and metadata are encoded as
+  // key-value pairs using ■ and ♦ as delimiters. For example:
+  //
+  //  ■msg♦This is the log message: %d■module♦wifi■file♦../path/to/file.cc
+  //
+  // See http://pigweed.dev/pw_log_tokenized for full details. When
+  // pw_log_tokenized is used, this metadata is automatically included as
+  // described.
+  //
+  // The level and flags are not included since they may be runtime values and
+  // thus cannot always be tokenized. The line number is not included because
+  // line numbers change frequently and a new token is created for each line.
+  //
+  // Size analysis when tokenized:
+  //
+  //   tag+wire = 1 byte
+  //   size     = 1 byte; payload will almost always be < 127 bytes
+  //   payload  = N bytes; typically 4-10 in practice
+  //
+  // Total: 2 + N ~= 6-12 bytes
+  optional bytes message = 1 [(tokenizer.format) = TOKENIZATION_OPTIONAL];
+
+  // Packed log level and line number. Structure:
+  //
+  //   Level: Bottom 3 bits; level = line_level & 0x7
+  //   Line: Remaining bits; line = (line_level >> 3)
+  //
+  // Note: This packing saves two bytes per log message in most cases compared
+  // to having line and level separately; and is zero-cost if the log backend
+  // omits the line number.
+  uint32 line_level = 2;
+
+  // Some log messages have flags to indicate attributes such as whether they
+  // are from an assert or if they contain PII. The particular flags are
+  // product- and implementation-dependent.
+  uint32 flags = 3;
+
+  // Timestamps are either specified with an absolute timestamp or relative to
+  // the previous log entry.
+  oneof time {
+    // The absolute timestamp in implementation-defined ticks. Applications
+    // determine how to interpret this on the receiving end. In the simplest
+    // case, these ticks might be milliseconds or microseconds since boot.
+    // Applications could also access clock information out-of-band with a
+    // ClockParameters protobuf.
+    int64 timestamp = 4;
+
+    // Time since the last entry in implementation-defined ticks, as for the
+    // timestamp field. This enables delta encoding when batching entries
+    // together.
+    //
+    // Size analysis for this field including tag and varint, assuming 1 kHz
+    // ticks:
+    //
+    //           < 127 ms gap == 127 ms      ==  7 bits == 2 bytes
+    //        < 16,000 ms gap ==  16 seconds == 14 bits == 3 bytes
+    //     < 2,000,000 ms gap ==  35 minutes == 21 bits == 4 bytes
+    //   < 300,000,000 ms gap ==  74 hours   == 28 bits == 5 bytes
+    //
+    // Log bursts will thus consume just 2 bytes (tag + up to 127ms delta) for
+    // the timestamp, which is a good improvement over an absolute timestamp.
+    int64 time_since_last_entry = 5;
+  }
+
+  // When the log buffers are full but more logs come in, the logs are counted
+  // and a special log message is omitted with only counts for the number of
+  // messages dropped.
+  uint32 dropped = 6;
+
+  // The PW_LOG_MODULE_NAME for this log message.
+  bytes module = 7 [(tokenizer.format) = TOKENIZATION_OPTIONAL];
+
+  // The file path where this log was created, if not encoded in the message.
+  bytes file = 8 [(tokenizer.format) = TOKENIZATION_OPTIONAL];
+
+  // The task or thread name that created the log message. If the log was not
+  // created on a thread, it should use a name appropriate to that context.
+  bytes thread = 9 [(tokenizer.format) = TOKENIZATION_OPTIONAL];
+
+  // The following fields are planned but will not be added until they are
+  // needed. Protobuf field numbers over 15 use an extra byte, so these fields
+  // are left out for now to avoid reserving field numbers unnecessarily.
+
+  // Represents the device from which the log originated. The meaning of this
+  // field is implementation defined
+  // uint32 source_id = ?;
+
+  // Some messages are associated with trace events, which may carry additional
+  // contextual data. This is a tuple of a data format string which could be
+  // used by the decoder to identify the data (e.g. printf-style tokens) and the
+  // data itself in bytes.
+  // bytes data_format = ?
+  //     [(tokenizer.format) = TOKENIZATION_OPTIONAL];
+  // bytes data = ?;
+}
+
+message LogRequest {}
+
+message LogEntries {
+  repeated LogEntry entries = 1;
+  uint32 first_entry_sequence_id = 2;
+}
+
+// RPC service for accessing logs.
+service Logs {
+  rpc Listen(LogRequest) returns (stream LogEntries);
+}
+
+message FilterRule {
+  // Log level values match pw_log/levels.h. Enum names avoid collissions with
+  // possible macros.
+  enum Level {
+    ANY_LEVEL = 0;
+    DEBUG_LEVEL = 1;
+    INFO_LEVEL = 2;
+    WARN_LEVEL = 3;
+    ERROR_LEVEL = 4;
+    CRITICAL_LEVEL = 5;
+    FATAL_LEVEL = 7;
+  };
+  // Condition 1: log.level >= level_greater_than_or_equal.
+  Level level_greater_than_or_equal = 1;
+
+  // Condition 2: (module_equals.size() == 0) || (log.module == module_equals);
+  bytes module_equals = 2 [(tokenizer.format) = TOKENIZATION_OPTIONAL];
+
+  // Condition 3: (any_flags_set == 0) || (log.flags & any_flags_set) != 0))
+  uint32 any_flags_set = 3;
+
+  // Action to take if all conditions are met and rule is not inactive.
+  enum Action {
+    INACTIVE = 0;  // Ignore the rule entirely.
+    KEEP = 1;      // Keep the log entry if all conditions are met.
+    DROP = 2;      // Drop the log entry if all conditions are met
+  };
+  Action action = 4;
+
+  // Condition 4: (thread_equals.size() == 0 || log.thread == thread_equals).
+  bytes thread_equals = 5 [(tokenizer.format) = TOKENIZATION_OPTIONAL];
+}
+
+// A filter is a series of rules. First matching rule wins.
+message Filter {
+  repeated FilterRule rule = 1;
+}
+
+message SetFilterRequest {
+  // A filter can be identified by a human readable string, token, or number.
+  bytes filter_id = 1 [(tokenizer.format) = TOKENIZATION_OPTIONAL];
+
+  Filter filter = 2;
+}
+
+message GetFilterRequest {
+  bytes filter_id = 1 [(tokenizer.format) = TOKENIZATION_OPTIONAL];
+}
+
+message FilterIdListRequest {}
+
+message FilterIdListResponse {
+  repeated bytes filter_id = 1 [(tokenizer.format) = TOKENIZATION_OPTIONAL];
+}
+
+// RPC service for retrieving and modifying log filters.
+service Filters {
+  rpc SetFilter(SetFilterRequest) returns (pw.protobuf.Empty);
+  rpc GetFilter(GetFilterRequest) returns (Filter);
+  rpc ListFilterIds(FilterIdListRequest) returns (FilterIdListResponse);
+}

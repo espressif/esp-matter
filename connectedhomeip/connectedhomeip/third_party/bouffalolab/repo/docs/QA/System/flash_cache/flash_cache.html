@@ -1,0 +1,282 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>配置Flash频率和cache大小 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../../index.html"/>
+        <link rel="up" title="&lt;no title&gt;" href="../index.html"/>
+        <link rel="next" title="backtrace工具使用" href="../backtrace/backtrace.html"/>
+        <link rel="prev" title="&lt;no title&gt;" href="../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Examples/index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">QA</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">flash_cache</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#flash">配置Flash频率</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cache-size">配置cache size</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../backtrace/backtrace.html">backtrace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Tools/ota/ota.html">如何用命令行生成ota文件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Other/index_faq.html">Other</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">QA</a> &raquo;</li>
+        
+          <li><a href="../index.html">&lt;no title&gt;</a> &raquo;</li>
+        
+      <li>配置Flash频率和cache大小</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/QA/System/flash_cache/flash_cache.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="flashcache">
+<h1>配置Flash频率和cache大小<a class="headerlink" href="#flashcache" title="永久链接至标题"></a></h1>
+<div class="section" id="flash">
+<h2>配置Flash频率<a class="headerlink" href="#flash" title="永久链接至标题"></a></h2>
+<p>配置文件路径 <code class="docutils literal notranslate"><span class="pre">tools/flash_tool/chips/bl602/img_create_iot/efuse_bootheader_cfg.ini</span></code> ，配置文件
+<code class="docutils literal notranslate"><span class="pre">efuse_bootheader_cfg.ini``(如没有该配置文件，需要先打开烧录工具后该目录中才会存在此配置文件)</span>
+<span class="pre">，如下图所示，当前Flash时钟源为80M，分频为2分频（1+1），所以当前Flash时钟频率为40MHz，其中\</span> <span class="pre">``flash_clk_type</span></code>
+表示Flash的时钟源，<code class="docutils literal notranslate"><span class="pre">flash_clk_div</span></code> 表示分频因子（分频数 =
+flash_clk_div + 1）</p>
+<div class="figure">
+<img alt="" src="../../../_images/image138.png" />
+</div>
+</div>
+<div class="section" id="cache-size">
+<h2>配置cache size<a class="headerlink" href="#cache-size" title="永久链接至标题"></a></h2>
+<p>配置文件路径 <code class="docutils literal notranslate"><span class="pre">tools/flash_tool/chips/bl602/img_create_iot/efuse_bootheader_cfg.ini</span></code> ，配置文件
+<code class="docutils literal notranslate"><span class="pre">efuse_bootheader_cfg.ini``(如没有该配置文件，需要先打开烧录工具后该目录中才会存在此配置文件)</span>
+<span class="pre">，cache最大为32k，分为4条way，每条way是8k，调整的单位也是1条way，如下图所示，\</span> <span class="pre">``cache_enable</span></code>
+表示cache是否开启，<code class="docutils literal notranslate"><span class="pre">cache_way_disable</span></code>
+表示关闭way的数目，可以设置为0x01，0x03，0x07，0xFF，分别表示关闭1，2，3，4条way。</p>
+<div class="figure">
+<img alt="" src="../../../_images/image233.png" />
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../backtrace/backtrace.html" class="btn btn-neutral float-right" title="backtrace工具使用" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral" title="&lt;no title&gt;" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

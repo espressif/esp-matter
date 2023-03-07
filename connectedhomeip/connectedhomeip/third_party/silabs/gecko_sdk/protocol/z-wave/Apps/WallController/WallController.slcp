@@ -1,0 +1,116 @@
+project_name: zwave_soc_wall_controller
+label: Z-Wave - SoC Wall Controller
+category: Z-Wave|Apps
+description: The Z-Wave certified Wall Controller application shows a push-button switch panel implementation to control devices in the Z-Wave network from push buttons (physical or virtual) on a device that is meant to be mounted on a wall. Examples include scene and zone controller and wall-mounted AV controllers.
+package: Z-Wave
+quality: production
+component:
+  - id: emlib_letimer
+  - id: emlib_timer
+  - id: emlib_msc
+  - id: gpiointerrupt
+  - id: zw_role_type_always_on
+  - id: zw_core
+  - id: zw_appshw_wallcontroller
+  - id: zw_zaf
+  - id: zw_true_status
+  - id: zw_ota
+  - id: zw_cc_manufacturerspecific
+  - id: zw_cc_common
+  - id: zw_cc_association
+  - id: zw_cc_supervision
+  - id: zw_cc_multichannelcontrol
+  - id: zw_cc_basiccontroller
+  - id: zw_cc_deviceresetlocally
+  - id: zw_cc_firmwareupdate
+  - id: zw_cc_version
+  - id: zw_cc_indicator
+  - id: zw_cc_powerlevel
+  - id: zw_cc_zwaveplusinfo
+  - id: zw_cc_centralscene
+  - id: zw_cc_multilevelswitchcontrol
+  - id: sl_system
+  - id: device_init
+  - id: mpu # disable execution from RAM
+source:
+  - path: WallController.c
+  - path: main.c
+  - path: app.c
+include:
+  - path: .
+    file_list:
+      - path: app.h
+      - path: config_app.h
+      - path: events.h
+configuration:
+  - name: NVM3_DEFAULT_MAX_OBJECT_SIZE
+    value: 1900
+  - name: NVM3_DEFAULT_CACHE_SIZE
+    value: 100
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: SL_DEVICE_INIT_EMU_EM4_STATE
+    value: emuEM4Hibernate
+  - name: SL_DEVICE_INIT_EMU_EM4_RETAIN_LFRCO
+    value: 1
+  - name: SL_DEVICE_INIT_EMU_EM4_PIN_RETENTION_MODE
+    value: emuPinRetentionLatch
+  - name: SL_IOSTREAM_USART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: 1
+  - name: SL_IOSTREAM_USART_VCOM_RESTRICT_ENERGY_MODE_TO_ALLOW_RECEPTION
+    value: 0    # UART RX shouldn't prevent EM2
+  - name: SL_IOSTREAM_EUSART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: 1
+  - name: SL_IOSTREAM_EUSART_VCOM_RESTRICT_ENERGY_MODE_TO_ALLOW_RECEPTION
+    value: 0    # UART RX shouldn't prevent EM2    
+  - name: configUSE_IDLE_HOOK
+    value: 1
+  - name: configTIMER_TASK_PRIORITY
+    value: 55
+  - name: configMAX_SYSCALL_INTERRUPT_PRIORITY
+    value: 32
+    condition: [device_series_1]
+  - name: configKERNEL_INTERRUPT_PRIORITY
+    value: 224
+    condition: [device_series_1]
+  - name: configMAX_SYSCALL_INTERRUPT_PRIORITY
+    value: 16
+    condition: [device_series_2]
+  - name: configKERNEL_INTERRUPT_PRIORITY
+    value: 112
+    condition: [device_series_2]
+  - name: configTIMER_QUEUE_LENGTH
+    value: 8
+  - name: SL_DEVICE_INIT_DCDC_BYPASS
+    value: 1
+  - name: SL_POWER_MANAGER_LOWEST_EM_ALLOWED 
+    value: 3    
+  - name: SL_PSA_ITS_USER_MAX_FILES
+    value: 32
+    condition: ["device_series_2", "device_security_vault"]
+  - name: SL_PSA_KEY_USER_SLOT_COUNT
+    value: 12
+    condition: ["device_series_2", "device_security_vault"]
+  - name: SL_SLEEPTIMER_PERIPHERAL
+    value: SL_SLEEPTIMER_PERIPHERAL_BURTC
+    condition: ["device_series_2"]
+
+define:
+  - name: APP_PROPERTIES_CONFIG_FILE
+    value: <application_properties_config.h>
+  - name: OTA_MULTI_FRAME_ENABLED
+    value: 1
+
+other_file:
+  - path: ../../DevTools/postbuild.sh
+
+tag:
+  - prebuilt_demo
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Z-Wave"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]

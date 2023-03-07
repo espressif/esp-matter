@@ -1,0 +1,93 @@
+package: Zigbee
+description: NOTE This component is deprecated in Zigbee 3.0, but is still used for Zigbee Smart Energy requirements. See the Network Creator and Network Steering components instead for Zigbee 3.0-compliant implementations of this behavior. This component provides legacy Zigbee Home Automation (pre-3.0) implementation of routines for finding and joining any viable network via scanning, rather than joining a specific network. If the application will be deployed in an environment with potentially a lot of open networks, consider implementing a mechanism for network deny listing. Network deny listing may be accomplished by implementing the emberAfPluginNetworkFindJoinCallback. To extend the functionality to sub-GHz channels, also enable the Network Find (Sub-GHz) component.
+label: Network Find
+quality: production
+id: zigbee_network_find
+category: Zigbee|Network Form and Join
+provides:
+   - name: "zigbee_network_find"
+requires:
+   - name: "zigbee_form_and_join"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/network-find/config/network-find-config.h
+    unless:
+      - zigbee_key_establishment
+  # This is done to ensure that 'EMBER_AF_PLUGIN_NETWORK_FIND_ENABLE_ALL_CHANNELS' is set to TRUE for all the SE apps.
+  - path: protocol/zigbee/app/framework/plugin/network-find/config/network-find-config-se.h
+    condition:
+      - zigbee_key_establishment
+validation_helper:
+  - path: protocol/zigbee/app/framework/component/scripts/zigbee_radio_power_value_validation.lua
+source:
+  - path: protocol/zigbee/app/framework/plugin/network-find/network-find.c
+  - path: protocol/zigbee/app/framework/plugin/network-find/network-find-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/network-find/network-find-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/network-find
+    file_list:
+      - path: network-find.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_network_find
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emberAfPluginNetworkFindInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: local_data_init
+      function_name: emberAfPluginNetworkFindInitCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: stack_status
+      function_name: emberAfPluginNetworkFindStackStatusCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: unused_pan_id_found
+      function_name: emAfPluginNetworkFindUnusedPanIdFoundCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: scan_error
+      function_name: emAfPluginNetworkFindScanErrorCallback
+  - name: cli_group
+    value:
+      name: network
+      help: network related commands.
+  - name: cli_group
+    value:
+      group: network
+      name: find
+      help: find related commands.
+  - name: cli_command
+    value:
+      group: find
+      name: mask
+      handler: findMaskCommand
+      help: Sets a channel mask for a given channel page for find joinable and find unused.
+      argument:
+      - type: uint8
+        help: Channel page (0 and 28-31, if sub-GHz support is included)
+      - type: uint32
+        help: Channel mask
+  - name: cli_command
+    value:
+      group: find
+      name: mode
+      handler: findModeCommand
+      help: Sets a search mode for find joinable and find unused.
+      argument:
+      - type: int8
+        help: Bit 0 = enable 2.4GHz, Bit 1 = enable sub-GHz
+  - name: cli_command
+    value:
+      group: find
+      name: print
+      handler: findPrintCommand
+      help: Prints network search parameters (mode and channel masks).
+
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/network-find

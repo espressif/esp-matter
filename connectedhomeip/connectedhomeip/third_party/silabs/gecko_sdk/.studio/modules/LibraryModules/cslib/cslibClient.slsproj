@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="com.silabs.sdk.exx32.external.cslib" label="cslib" contentRoot="$(sdkInstallationPath:default())/platform/middleware/cslib">
+  <property key="category" value="efm32|Middleware"/>
+
+  <includePath uri="inc" />
+
+  <!-- IAR library files-->
+  <libraryFile uri="lib/libCSLIB_M0_IAR.a" partCompatibility=".*efm32zg.*" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.iar.*" />
+  <libraryFile uri="lib/libCSLIB_M0_IAR.a" partCompatibility=".*efm32hg.*" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.iar.*" />
+  <libraryFile uri="lib/libCSLIB_M0_CSEN_IAR.a" partCompatibility=".*efm32tg11b.*" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.iar.*" />
+  <libraryFile uri="lib/libCSLIB_M3_4_IAR.a" partCompatibility=".*efm32[lwg]g\d\d\d.*" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.iar.*" />
+  <libraryFile uri="lib/libCSLIB_M3_4_IAR.a" partCompatibility=".*efm32pg1\D\d.*" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.iar.*" />
+  <libraryFile uri="lib/libCSLIB_M3_4_CSEN_IAR.a" partCompatibility=".*efr32[mfb]g1[2-4]p.*" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.iar.*" />
+  <libraryFile uri="lib/libCSLIB_M3_4_CSEN_IAR.a" partCompatibility=".*efm32[pg]g1[1-4]b.*" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.iar.*" />
+
+  <!-- gcc library files -->
+  <libraryFile uri="lib/libCSLIB_M0_gcc.a" partCompatibility=".*efm32zg.*" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.gnu.*" />
+  <libraryFile uri="lib/libCSLIB_M0_gcc.a" partCompatibility=".*efm32hg.*" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.gnu.*" />
+  <libraryFile uri="lib/libCSLIB_M0_CSEN_gcc.a" partCompatibility=".*efm32tg11b.*" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.gnu.*" />
+  <libraryFile uri="lib/libCSLIB_M3_4_gcc.a" partCompatibility=".*efm32[lwg]g\d\d\d.*" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.gnu.*" />
+  <libraryFile uri="lib/libCSLIB_M3_4_gcc.a" partCompatibility=".*efm32pg1\D\d.*" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.gnu.*" />
+
+  <libraryFile uri="lib/libCSLIB_M3_4_CSEN_gcc.a" partCompatibility=".*efr32[mfb]g1[2-4]p.*" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.gnu.*" />
+  <libraryFile uri="lib/libCSLIB_M3_4_CSEN_gcc.a" partCompatibility=".*efm32[pg]g1[1-4]b.*" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.gnu.*" />
+
+</project>

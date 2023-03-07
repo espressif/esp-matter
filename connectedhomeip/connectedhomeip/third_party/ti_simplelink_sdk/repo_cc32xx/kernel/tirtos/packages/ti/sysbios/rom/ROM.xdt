@@ -1,0 +1,150 @@
+%/*
+% *  ======== ROM.xdt ========
+% */
+%var BIOS = xdc.module("ti.sysbios.BIOS");
+%var Build = xdc.module("ti.sysbios.Build");
+%var ROM = xdc.module("ti.sysbios.rom.ROM");
+%
+%if (ROM.groupFuncPtrs == true) {
+%   xdc.loadTemplate("ROM_group.xdt").genStream($out, this, $args);
+%   return;
+%}
+%if ((Build.buildROM == true) || (Build.buildROMApp == true)) {
+%   for (var i = 0; i < ROM.otherLibIncludes.length; i++) {
+#include <`ROM.otherLibIncludes[i]`>
+%   }
+
+%   if (ROM.otherLibFuncs.length != 0) {
+/*
+ *  non BIOS library functions referenced from within the ROM
+ */
+%   }
+%   for (var i = 0; i < ROM.otherLibFuncs.length; i++) {
+%       if (Program.build.target.$name.match(/iar/)) {
+#pragma location=".const_ti_sysbios_rom_ROM_`ROM.otherLibFuncs[i]`"
+%       }
+%       else if (Program.build.target.$name.match(/gnu/)) {
+xdc_Void * const ti_sysbios_rom_ROM_`ROM.otherLibFuncs[i]` __attribute__((section (".rodata_ti_sysbios_rom_ROM_`ROM.otherLibFuncs[i]`")));
+%       }
+%       else {
+#pragma DATA_SECTION(ti_sysbios_rom_ROM_`ROM.otherLibFuncs[i]`, ".const:ti_sysbios_rom_ROM_`ROM.otherLibFuncs[i]`");
+%       }
+xdc_Void * const ti_sysbios_rom_ROM_`ROM.otherLibFuncs[i]` = (xdc_Void *)NOROM_`ROM.otherLibFuncs[i]`;
+%       if (i < ROM.otherLibFuncs.length) {
+
+%       }
+%   }
+%   if (ROM.excludedFuncs.length != 0) {
+/*
+ *  functions explicitly excluded from the ROM
+ */
+%   }
+%   for (var i = 0; i < ROM.excludedFuncs.length; i++) {
+%       if (Program.build.target.$name.match(/iar/)) {
+#pragma location=".const_ti_sysbios_rom_ROM_`ROM.excludedFuncs[i]`"
+%       }
+%       else if (Program.build.target.$name.match(/gnu/)) {
+xdc_Void * const ti_sysbios_rom_ROM_`ROM.excludedFuncs[i]` __attribute__((section (".rodata_ti_sysbios_rom_ROM_`ROM.excludedFuncs[i]`")));
+%       }
+%       else {
+%           if (Program.build.target.$name.match(/C28/)) {
+#pragma DATA_SECTION(ti_sysbios_rom_ROM_`ROM.excludedFuncs[i]`, ".econst:ti_sysbios_rom_ROM_`ROM.excludedFuncs[i]`");
+%           }
+%           else {
+#pragma DATA_SECTION(ti_sysbios_rom_ROM_`ROM.excludedFuncs[i]`, ".const:ti_sysbios_rom_ROM_`ROM.excludedFuncs[i]`");
+%           }
+%       }
+xdc_Void * const ti_sysbios_rom_ROM_`ROM.excludedFuncs[i]` = (xdc_Void *)`ROM.excludedFuncs[i]`;
+%       if (i < ROM.excludedFuncs.length) {
+
+%       }
+%   }
+%   if (ROM.generatedFuncs.length != 0) {
+/*
+ *  generated functions referenced from within the ROM
+ */
+%   }
+%   for (var i = 0; i < ROM.generatedFuncs.length; i++) {
+%       if (Program.build.target.$name.match(/iar/)) {
+#pragma location=".const_ti_sysbios_rom_ROM_`ROM.generatedFuncs[i]`"
+%       }
+%       else if (Program.build.target.$name.match(/gnu/)) {
+xdc_Void * const ti_sysbios_rom_ROM_`ROM.generatedFuncs[i]` __attribute__((section (".rodata_ti_sysbios_rom_ROM_`ROM.generatedFuncs[i]`")));
+%       }
+%       else {
+%           if (Program.build.target.$name.match(/C28/)) {
+%               if (ROM.generatedFuncs[i] != "null") {
+#pragma DATA_SECTION(ti_sysbios_rom_ROM_`ROM.generatedFuncs[i]`, ".econst:ti_sysbios_rom_ROM_`ROM.generatedFuncs[i]`");
+%               }
+%               else {
+#pragma DATA_SECTION(ti_sysbios_rom_ROM_null`i`, ".econst:ti_sysbios_rom_ROM_null`i`");
+%               }
+%           }
+%           else {
+#pragma DATA_SECTION(ti_sysbios_rom_ROM_`ROM.generatedFuncs[i]`, ".const:ti_sysbios_rom_ROM_`ROM.generatedFuncs[i]`");
+%           }
+%       }
+%       if (ROM.generatedFuncs[i] != "null") {
+xdc_Void * const ti_sysbios_rom_ROM_`ROM.generatedFuncs[i]` = (xdc_Void *)`ROM.generatedFuncs[i]`;
+%       }
+%       else {
+xdc_Void * const ti_sysbios_rom_ROM_null`i` = NULL;
+%       }
+%       if (i < ROM.generatedFuncs.length) {
+
+%       }
+%   }
+%   if ((ROM.excludedFuncs.length != 0) && 
+%	(Build.buildROM == true) && 
+%	(Build.buildROMApp == false)) {
+%       if (Program.build.target.$name.match(/C28/)) {
+/*
+ * The following asm functions are provided during the ROM build phase
+ * so that any references to the symbols in ROM.excludedFuncs[]
+ * can be resolved when linking rom.obj. Sadly, the function rom_ROM_xx
+ * function pointers can't simply be intiialized with the mangled API
+ * names because there would need to be a corresponding extern for
+ * the mangled API name. This would require knowing the signatures
+ * of all the mangled APIs, which seems a little too hard for this
+ * programmer. Advantage is taken of using assembly language to
+ * circumvent the need to know the function signatures.
+ */
+%           for (var i = 0; i < ROM.excludedFuncs.length; i++) {
+asm("\n"
+"   .sect \".text:`ROM.excludedFuncs[i]`\"\n"
+"   .clink\n"
+"   .global _`ROM.excludedFuncs[i]`\n"
+"   .global _`ROM.excludedFuncs[i]`__mangled__\n"
+"_`ROM.excludedFuncs[i]`:\n"
+"   movl    xar4, #_`ROM.excludedFuncs[i]`__mangled__\n"
+"   lcr     *xar4\n"
+"   lretr\n");
+%               if (i < ROM.excludedFuncs.length) {
+
+%               }
+%           }
+%       }
+%       else {
+%           for (var i = 0; i < ROM.excludedFuncs.length; i++) {
+asm("\n"
+"   .sect \".text:`ROM.excludedFuncs[i]`\"\n"
+"   .clink\n"
+"   .thumbfunc `ROM.excludedFuncs[i]`\n"
+"   .thumb\n"
+"   .global `ROM.excludedFuncs[i]`\n"
+"   .global `ROM.excludedFuncs[i]`__mangled__\n"
+"`ROM.excludedFuncs[i]`:\n"
+"   push   {r4, lr}\n"
+"   ldr r4, `ROM.excludedFuncs[i]`c\n"
+"   blx r4\n"
+"   pop {r4, pc}\n"
+"`ROM.excludedFuncs[i]`c: \n"
+"   .word  `ROM.excludedFuncs[i]`__mangled__\n");
+%               if (i < ROM.excludedFuncs.length) {
+
+%               }
+%           }
+%       }
+%   }
+%}
+

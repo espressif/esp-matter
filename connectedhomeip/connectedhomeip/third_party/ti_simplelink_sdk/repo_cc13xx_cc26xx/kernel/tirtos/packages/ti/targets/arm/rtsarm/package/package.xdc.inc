@@ -1,0 +1,15 @@
+package.xdc
+package.xs
+Settings.xdc
+package/ti.targets.arm.rtsarm.sch
+package/.vers_g200
+package/.vers_r200
+package/.vers_b200
+package/.xdc-K04
+package/ti_targets_arm_rtsarm.java
+package/ti_targets_arm_rtsarm.class
+package/package_ti.targets.arm.rtsarm.c
+package/package.defs.h
+Settings.h
+package/internal/Settings.xdc.h
+package/ti.targets.arm.rtsarm.ccs

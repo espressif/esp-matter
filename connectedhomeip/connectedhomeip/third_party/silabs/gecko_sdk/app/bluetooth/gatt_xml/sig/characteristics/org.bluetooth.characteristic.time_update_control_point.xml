@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.time_update_control_point" uuid="2A16" name="Time Update Control Point">
+	<InformativeText>
+	</InformativeText>
+	<Value>
+		<Field name="Time Update Control Point">
+			<Requirement>Mandatory</Requirement>
+			<Format>uint8</Format>
+			<Minimum>1</Minimum>
+			<Maximum>2</Maximum>
+			<Enumerations>
+				<Enumeration key="1" value="Get Reference Update" />
+				<Enumeration key="2" value="Cancel Reference Update" />
+				<ReservedForFutureUse start="3" end="255" />
+				<Reserved start="0" end="0"/>
+			</Enumerations>
+		</Field>
+	</Value>
+</Characteristic>

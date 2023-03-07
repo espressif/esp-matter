@@ -1,0 +1,11 @@
+package/package.bld.xml
+package/build.cfg
+package/package.xdc.inc
+ccs_exec.xdt
+linkcmd.xdt
+linkUtils.xs
+std.h
+ccs_package.xdt
+ccs_start.bat
+ccs_start.pl
+package/package.cfg.xdc.inc

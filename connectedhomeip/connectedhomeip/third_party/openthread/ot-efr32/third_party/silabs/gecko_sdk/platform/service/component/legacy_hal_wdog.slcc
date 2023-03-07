@@ -1,0 +1,41 @@
+id: legacy_hal_wdog
+label: Legacy HAL Watchdog
+package: platform
+category: Services
+quality: production
+description: >
+  Legacy HAL Watchdog.
+
+
+  SL_LEGACY_HAL_WDOGn chooses which watchdog to use.  By default it's WDOG0.
+
+
+  SL_LEGACY_HAL_DISABLE_WATCHDOG disables calling halInternalEnableWatchDog in base-replacement.c's halInit() even if the component is added.
+requires:
+  - name: component_catalog
+provides:
+  - name: legacy_hal_wdog
+root_path: ./
+
+config_file:
+  - path: platform/service/legacy_hal_wdog/config/sl_legacy_hal_wdog_config.h
+
+define:
+  - name: SL_LEGACY_HAL_ENABLE_WATCHDOG
+    value: 1
+
+source:
+  - path: platform/service/legacy_hal_wdog/src/sl_legacy_hal_wdog.c
+
+include:
+  - path: platform/service/legacy_hal_wdog/inc
+    file_list:
+    - path: sl_legacy_hal_wdog.h
+
+template_contribution:
+  - name: component_catalog
+    value: legacy_hal_wdog
+
+documentation:
+    docset: gecko-platform
+    document: service/api/group-legacyhal

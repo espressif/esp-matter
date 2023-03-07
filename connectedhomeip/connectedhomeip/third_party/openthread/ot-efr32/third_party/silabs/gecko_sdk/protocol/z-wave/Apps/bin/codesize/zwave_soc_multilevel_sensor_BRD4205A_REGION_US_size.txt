@@ -1,0 +1,42 @@
+
+==========================================================
+The output of the size tool: (e.g. arm-none-ambi-size.exe)
+==========================================================
+
+zwave_soc_multilevel_sensor.out  :
+section                            size         addr
+.text                           0x36c2c    0x8006000
+_cc_handlers_v3                   0x240    0x803cc2c
+_zw_protocol_cmd_handlers          0x70    0x803ce6c
+_zw_protocol_cmd_handlers_lr       0x30    0x803cedc
+.ARM.exidx                          0x8    0x803cf0c
+.copy.table                         0xc    0x803cf14
+.zero.table                         0x0    0x803cf20
+.stack                           0x1000   0x20000000
+.data                             0x5b4   0x20001000
+.bss                             0xad90   0x200015b4
+.heap                            0x3cb8   0x2000c348
+.internal_storage               0x2c000    0x803cf20
+.zwave_nvm                       0x6000    0x8068f20
+.nvm                             0x8000    0x806ef20
+.ARM.attributes                    0x36          0x0
+.comment                           0x49          0x0
+.debug_frame                     0xa530          0x0
+.debug_info                    0xa8afab          0x0
+.debug_abbrev                   0x17f2d          0x0
+.debug_aranges                   0x3a88          0x0
+.debug_ranges                    0x76b8          0x0
+.debug_line                     0x44f91          0x0
+.debug_str                      0x7c76f          0x0
+.debug_loc                      0x4607b          0x0
+Total                          0xc40c5e
+
+The calculated FLASH and SRAM usage summary:
+============================================
+FLASH used as program memory:  (Including only the sections: .text, .ARM.exidx, .data, _cc_handlers_v3)
+   226516
+FLASH used for storage: (Including only the sections: .zwavenvm, .simee, .nvm, .zwave_nvm)
+   57344
+SRAM usage:             (Including only the sections: .data, .bss, .heap (limited to 2048 per sl_memory_config.h), .stack_dummy, .reset_info)
+   52036
+

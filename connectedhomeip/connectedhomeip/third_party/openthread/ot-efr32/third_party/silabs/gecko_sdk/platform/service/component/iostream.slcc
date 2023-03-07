@@ -1,0 +1,57 @@
+id: iostream
+package: platform
+label: IO Stream
+description: >
+  IO Stream to communicate over multiple protocols.
+
+  Can be one of the following protocols:
+  - RTT
+  - SWO
+  - USART
+  - LEUART
+  - EUSART
+category: Services|IO Stream
+quality: production
+component_root_path: platform/service/iostream
+provides:
+  - name: iostream
+requires:
+  - name: component_catalog
+  - name: cmsis_os2_ext_task_register
+    condition:
+      - kernel
+  - name: emlib_common
+  - name: emlib_core
+  - name: sl_assert
+  - name: enum
+  - name: iostream_transport_core
+  - name: status
+include:
+  - path: inc
+    file_list:
+      - path: sl_iostream.h
+source:
+  - path: src/sl_iostream.c
+template_file:
+  - path: init/sl_iostream_handles.h.jinja
+  - path: init/sl_iostream_handles.c.jinja
+  - path: init/sl_iostream_init_instances.h.jinja
+template_contribution:
+  - name: event
+    value:
+      id: iostream_instance_init
+      function:
+        name: sl_iostream_init_instances
+        return: void
+    priority: 4
+  - name: event_handler
+    value:
+      event: service_init
+      include: sl_iostream_init_instances.h
+      handler: sl_iostream_init_instances
+    priority: 4
+#validation_helper:
+#  - path: iostream_handle_validation.py
+documentation:
+    docset: gecko-platform
+    document: service/api/group-iostream

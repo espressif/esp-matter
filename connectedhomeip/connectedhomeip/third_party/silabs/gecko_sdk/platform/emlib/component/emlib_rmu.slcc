@@ -1,0 +1,59 @@
+id: emlib_rmu
+label: RMU
+package: platform
+description: >
+  Reset Management Unit (RMU) peripheral API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_rmu.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_rmu.h"
+provides:
+  - name: emlib_rmu
+requires:
+  - name: device
+  - name: device_has_rmu
+    condition: 
+    - device_series_0
+  - name: device_has_rmu
+    condition:
+    - device_series_1
+  - name: device_has_emu
+    condition:
+    - device_series_2
+  - name: emlib_common
+  - name: emlib_emu
+  - name: cmsis_core
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efm32g/group-rmu
+      condition: [device_sdid_71]
+    - page: emlib/api/efm32gg/group-rmu
+      condition: [device_sdid_72]
+    - page: emlib/api/efm32tg/group-rmu
+      condition: [device_sdid_73]
+    - page: emlib/api/efm32lg/group-rmu
+      condition: [device_sdid_74]
+    - page: emlib/api/efm32zg/group-rmu
+      condition: [device_sdid_76]
+    - page: emlib/api/efm32hg/group-rmu
+      condition: [device_sdid_77]
+    - page: emlib/api/efr32xg1/group-rmu
+      condition: [device_sdid_80]
+    - page: emlib/api/efr32xg12/group-rmu
+      condition: [device_sdid_84]
+    - page: emlib/api/efr32xg13/group-rmu
+      condition: [device_sdid_89]
+    - page: emlib/api/efr32xg14/group-rmu
+      condition: [device_sdid_95]
+    - page: emlib/api/efr32xg21/group-rmu
+      condition: [device_sdid_200]
+    - page: emlib/api/efr32xg22/group-rmu
+      condition: [device_sdid_205]
+    - page: emlib/api/efr32xg23/group-rmu
+      condition: [device_sdid_210]

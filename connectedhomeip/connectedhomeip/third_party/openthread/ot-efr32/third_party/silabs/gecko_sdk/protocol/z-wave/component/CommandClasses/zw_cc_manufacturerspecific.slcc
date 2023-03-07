@@ -1,0 +1,20 @@
+id: zw_cc_manufacturerspecific
+label: Manufacturer Specific Command Class
+category: Z-Wave|Command Classes
+description: > 
+  Manufacturer Specific Command Class is used to advertise
+  manufacturer specific and device specific information.
+package: Z-Wave
+quality: production
+source:
+  - path: protocol/z-wave/ZAF/CommandClasses/ManufacturerSpecific/CC_ManufacturerSpecific.c
+  - path: protocol/z-wave/ZAF/CommandClasses/ManufacturerSpecific/CC_ManufacturerSpecific_config.c
+include:
+  - path: protocol/z-wave/ZAF/CommandClasses/ManufacturerSpecific/
+    file_list:
+    - path: CC_ManufacturerSpecific.h
+  - path: protocol/z-wave/ZAF/CommandClasses/ManufacturerSpecific/config/
+    file_list:
+    - path: CC_ManufacturerSpecific_config.h
+provides:
+  - name: zw_cc_manufacturerspecific

@@ -1,0 +1,31 @@
+id: icm20648_driver
+package: platform
+label: ICM20648 - Motion Sensor
+description: >
+  Driver for the Invensense ICM20648 6-axis motion sensor
+category: Platform|Board Drivers
+quality: production
+root_path: hardware/driver/icm20648
+provides:
+  - name: icm20648_driver
+requires:
+  - name: emlib_cmu
+  - name: emlib_gpio
+  - name: emlib_usart
+  - name: sleeptimer
+  - name: status
+include:
+  - path: inc
+    file_list:
+      - path: sl_icm20648.h
+source:
+  - path: src/sl_icm20648.c
+config_file:
+  - path: config/sl_icm20648_config.h
+    file_id: icm20648_config
+template_contribution:
+  - name: component_catalog
+    value: icm20648_driver
+documentation:
+    docset: gecko-platform
+    document: hardware-driver/api/group-icm20648

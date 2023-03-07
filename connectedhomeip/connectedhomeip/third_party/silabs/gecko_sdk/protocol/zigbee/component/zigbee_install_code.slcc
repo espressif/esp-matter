@@ -1,0 +1,28 @@
+id: zigbee_install_code
+label: Install code
+package: Zigbee
+category: Zigbee|Stack
+quality: production
+
+description: Provides an initial link key based upon an install code manufacturing token in the device.  The key is hashed according to the Zigbee spec and can be used by applications running Smart Energy 1.x profile, Home Automation 1.2 profile, or Zigbee 3.0 network.
+
+provides:
+  - name: zigbee_install_code
+
+requires:
+  - name: zigbee_install_code_implementation
+  - name: zigbee_install_code_library
+    condition:
+     - zigbee_force_libraries
+
+recommends:
+  - id: zigbee_install_code_source
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_install_code
+
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/install-code

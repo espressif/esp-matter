@@ -1,0 +1,91 @@
+#
+# This plugin.info file is for BLE only plugins
+#
+
+plugin(mpsi) {
+  name=Multiprotocol Stack Interface (MPSI)
+  description=This plugin handles the sending and receiving of MPSI messages. For switched multiprotocol on a SoC, the MPSI Storage plugin should also be selected. This is so that stacks can communicate using flash storage as the medium.
+  category=Multiprotocol
+  quality=development
+  root=$PLUGIN/mpsi
+
+  architecture=efr32
+
+  providedApis=mpsi
+
+  sourceFiles=mpsi.c,mpsi-message-ids.c
+  headerFiles=mpsi.h,mpsi-message-ids.h
+
+  callbacks=mpsi-callbacks.info  
+
+  setup(bookkeeping) {
+    init=emberAfPluginMpsiInitCallback
+  } 
+
+  needsSetup=mpsi
+  setup(mpsi) {
+    yamlFile=mpsi.yaml
+  } 
+}
+
+
+plugin(mpsi-ipc) {
+  name=MPSI Inter-Process Communication
+  description=This plugin handles the sending and receiving of MPSI messages via a message queue on Unix systems. This is used for Trust Center host applications using the switched multiprotocol feature.
+  category=Multiprotocol
+  quality=development
+  root=$PLUGIN/plugin-common/mpsi-ipc
+
+  architecture=unix
+
+  providedApis=mpsi-ipc
+
+  sourceFiles=mpsi-ipc.c
+
+  headerFiles=mpsi-ipc.h
+
+  setup(bookkeeping) {
+    init=emberAfPluginMpsiIpcInitCallback
+    tick=emberAfPluginMpsiIpcTickCallback
+  }
+}
+
+plugin(mpsi-storage) {
+  name=MPSI Storage
+  description=This plugin handles the reading and writing of MPSI messages to flash storage. This is used for switched multiprotocol.
+  category=Multiprotocol
+  quality=development
+  root=$PLUGIN/plugin-common/mpsi-storage
+
+  architecture=efr32
+
+  requiredApis=mpsi,psstore
+  providedApis=mpsi-storage
+
+  sourceFiles=mpsi-storage.c
+  headerFiles=mpsi-storage.h
+
+  setup(bookkeeping) {
+    init=emberAfPluginMpsiStorageInitCallback
+  } 
+}
+
+
+plugin(slot-manager) {
+  name=Slot Manager
+  description=This plugin manages handling the slots on external SPI flash. This is for use with the common bootloader.
+  category=HAL
+  quality=development
+  root=$PLUGIN/slot-manager
+
+  architecture=efr32
+
+  providedApis=slot-manager
+
+  sourceFiles=slot-manager.c,slot-manager-cli.c
+  headerFiles=slot-manager.h,slot-manager-cli.h
+
+  setup(bookkeeping) {
+    init=emberAfPluginSlotManagerInitCallback
+  }
+}

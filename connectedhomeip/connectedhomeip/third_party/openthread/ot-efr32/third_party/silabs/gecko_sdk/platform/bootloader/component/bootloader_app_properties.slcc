@@ -1,0 +1,21 @@
+id: bootloader_app_properties
+label: App Properties
+package: bootloader
+description: >
+  The application properties struct is needed for an application that wishes to generate into a GBL file using the Commander utility and the --app option.
+  The struct in the application is used to declare the application version, application type, whether the application image is signed, what type of signature is used, etc.
+
+  Note: This component is added as a dependency when the Bootloader Application Interface component is added to the project. It is not recommended to install this component
+  independently, without installing the Bootloader Application Interface component
+category: Platform|Bootloader
+quality: production
+define:
+  - name: SL_APP_PROPERTIES
+source:
+  - path: platform/bootloader/app_properties/app_properties.c
+provides:
+  - name: bootloader_app_properties
+config_file:
+  - path: platform/bootloader/config/app_properties_config.h
+template_file:
+  - path: platform/bootloader/app_properties/config/sl_application_type.h.jinja

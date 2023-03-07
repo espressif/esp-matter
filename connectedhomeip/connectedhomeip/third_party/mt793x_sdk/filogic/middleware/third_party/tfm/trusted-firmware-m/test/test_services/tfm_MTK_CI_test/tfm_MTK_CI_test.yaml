@@ -1,0 +1,40 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+{
+  "psa_framework_version": 1.0,
+  "name": "TFM_MTK_CI_TEST",
+  "type": "APPLICATION-ROT",
+  "priority": "NORMAL",
+  "entry_point": "tfm_CI_test_init",
+  "stack_size": "0x0400",
+  "secure_functions": [
+    {
+      "name": "TFM_CI_TFM_EXCEPTION_HANDLER_TEST",
+      "signal": "TFM_CI_EXCEPTION_HANDLE_TEST",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CI_PLATFORM_ISOLATION_TEST",
+      "signal": "TFM_CI_PLATFORM_ISOLATION_TEST",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    }
+  ],
+  "services": [
+    {
+      "name": "TFM_CI_MTK_CI_TEST",
+      "sid": "0x0000F200",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+  ],
+}

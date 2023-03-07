@@ -1,0 +1,25 @@
+id: zigbee_xncp_test_harness
+label: XNCP Test Harness
+package: Zigbee
+category: Zigbee|NCP
+quality: production
+
+description: Allows a test harness running on a host to control non-standard behavior on the NCP.
+
+provides:
+  - name: zigbee_xncp_test_harness
+
+requires:
+  - name: zigbee_xncp
+
+include:
+  - path: protocol/zigbee/app/xncp-test-harness
+    file_list:
+      - path: xncp-test-harness.h
+
+source:
+  - path: protocol/zigbee/app/xncp-test-harness/xncp-test-harness.c
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_xncp_test_harness

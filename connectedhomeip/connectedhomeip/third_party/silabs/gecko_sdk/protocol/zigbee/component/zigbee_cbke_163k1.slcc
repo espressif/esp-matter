@@ -1,0 +1,37 @@
+id: zigbee_cbke_163k1
+label: CBKE 163k1
+package: Zigbee
+category: Zigbee|Stack
+quality: production
+
+description: Provides Certificate-Based Key Exchange (CBKE) functions specific to the 163k ECC curve used in Smart Energy 1.0 and 1.1.
+
+provides:
+  - name: zigbee_cbke_163k1
+  - name: zigbee_ecc_curve_support
+    allow_multiple: true
+
+requires:
+  - name: zigbee_cbke_163k1_implementation
+  - name: zigbee_cbke_163k1_library
+    condition:
+      - zigbee_force_libraries
+  - name: zigbee_cbke_core
+  - name: zigbee_ecc_163k1
+
+recommends:
+  - id: zigbee_cbke_163k1_source
+  - id: zigbee_ecc_163k1
+    condition:
+      - device_cortexm
+  - id: zigbee_ecc_163k1_simulation
+    condition:
+      - zigbee_simulation
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_cbke_163k1
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/cbke-163k1

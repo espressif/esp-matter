@@ -1,0 +1,135 @@
+.../tf_fuzz/tf_fuzz_regression directory contents:
+
+ 000001_set_sst_uid_data_expect_pass
+ 000002_set_sst_name_data_expect_nothing
+ 000003_set_sst_name_data
+ 000004_set_sst_name_rand_data
+ 000005_set_sst_rand_name_rand_data
+ 000006_set_sst_multi_name_rand_data
+ 000007_set_sst_multi_uid_rand_data
+ 000008_set_sst_name_rand_data_read_check_wrong
+ 000009_set_sst_name_rand_data_read_check_var_read_print
+ 000010_read_nonexistent_sst_check_string
+ 000011_read_nonexistent_sst_check_string_expect_pass
+ 000012_read_nonexistent_sst_check_string_expect_other
+ 000013_set_sst_name_rand_data_remove_twice
+ 000014_set_sst_name_rand_data_remove_other
+ add_these_tests
+ README
+ regress
+ regress_lib
+
+--------------------------------------------------------------------------------
+
+This is the beginnings of a regression suite for TF-Fuzz.  That is, tests to
+make sure that tf_fuzz is still functioning properly after making changes.
+
+This is neither complete nor working yet, but is close to its first-pass
+implementation.
+
+Here's the basic scheme of it all:
+
+*  "bash regress" from this directory runs regression.  It will fail with an
+   error if a problem is found.  If it runs to completion, then regression has
+   passed.
+
+*  Each test is in its own sub-directory containing these files, by name (always
+   same name):
+
+  *  template:  The test-template file to be run though the TF-Fuzz under test,
+     here called "the DUT TF-Fuzz" here.
+
+  *  exp_stdout_stderr:  The *expected*, combined stdout and stderr from running
+     TF-Fuzz in verbose mode (-v).  This file contains wildcard expressions to
+     be checked (more on that below).
+
+  *  exp_test.c:  The *expected* output C code.  This file also contains
+     wildcard expressions to be resolved against the DUT TF-Fuzz output (again,
+     more on that below).
+
+  *  stdout_stderr (if present):  The combined stdout and stderr from running
+     the DUT TF-Fuzz in verbose mode (-v), during regression testing.
+
+  *  test.c (if present):  The output C code generated from running the DUT
+     TF-Fuzz in verbose mode (-v), during regression testing.
+
+  *  diff_stdout_stderr (if present):  The "diff" of stdout_stderr against
+     exp_stdout_stderr.  As mentioned above, there are wildcards in some lines
+     of exp_stdout_stderr that have to be resolved against stdout_stderr.
+
+  *  diff_test.c (if present):  The "diff" of test.c against exp_test.c.  As
+     mentioned above, there are wildcards in some lines of exp_test.c that have
+     to be resolved against test.c.
+
+  *  check.py:  This Python script doesn't yet, but will, resolve the wildcard
+     differences in diff_stdout_stderr and diff_test.c.  Each test directory
+     has its own script customized to the needs of that particular test, but
+     they all draw from functions in the regress_lib directory.
+
+To explain how check.py checks -- or will check! -- a regression test, consider
+one example of the ./000005_set_sst_rand_name_rand_data/diff_test.c file, below:
+
+    45,46c45,46
+    <     static uint8_t gibberish_data[] = "Gof jav ofdomviv wazauyicef zoc xut rus sekneiqiv eidzai yefrabxiyob abjie pah jashui ziuven qetuvraqwiu omwid xenmav fipwiy meftofc.";
+    <     int gibberish_data_size = 133;
+    ---
+    >     static uint8_t gibberish_data[] = "@@002@10@@********";
+    >     int gibberish_data_size = ********;
+    51,52c51,52
+    <     /* Creating SST asset "gibberish," with data "Gof jav of...". */
+    <     sst_status = psa_ps_set(8617, gibberish_data_size, gibberish_data, PSA_PS_FLAG_NONE);
+    ---
+    >     /* Creating SST asset "gibberish," with data "@@002@10@@...". */
+    >     sst_status = psa_ps_set(@@@001@@@, gibberish_data_size, gibberish_data, PSA_PS_FLAG_********);
+    60c60
+    <     psa_ps_remove(8617);
+    ---
+    >     psa_ps_remove(@@@001@@@);
+
+So, by this process, a simple "diff" itself checks the vast majority of the
+correctness of the result.  check.py has only to resolve the wildcards, and in
+the process will also immediately see cases where "diff" discovered disparities.
+
+The wildcards in the exp_stdout_stderr and exp_test.c files are of three basic
+natures, using the examples shown above (please reference them above to
+clearly understand the ideas here):
+
+  ******** (exactly 8 *s):
+      This denotes any pattern of characters, until the expected and actual
+      character streams re-converge (sync up) again.  The characters in the
+      output from stdout_stderr or test.c from the DUT TF-Fuzz, that
+      correspond to the ******** in the exp_stdout_stderr or exp_test.c files
+      are *not* checked;  anything in the output from the DUT TF-Fuzz at this
+      position is acceptable.
+
+  @@@001@@@ ("@@@", a pattern number, "@@@"):
+      This denotes a particular pattern of characters, until the expected and
+      actual character streams re-sync again.  The important thing, however,
+      is that what this wildcard stands for *must be consistent* throughout the
+      comparison!  In this case above, @@@001@@@ in the exp_test.c must consis-
+      tently correspond to "8617" everywhere throughout the test.c file.  The
+      number between the two "@@@"s in the wildcard designates which pattern
+      must consistently match.
+
+  @@002@10@@ ("@@", a pattern number, "@", a pattern size, "@@"):
+      This is a slight variant upon the previous wildcard, in which a specific
+      match length is required.  In lines 45 and 46 above, random data generated
+      consists of 10 characters (thus the ...@10@@ in the wildcard) "Gof jav of"
+      followed by other characters we don't care about;  they can be anything.
+      Thus "@@002@10@@********" in line 45 of exp_test.c:  the "@@002@10@@"
+      denotes a pattern number 002 for a length of 10 characters that must match
+      "Gof jav of" in this case, followed by some arbitrary number of characters
+      we don't care about, thus ******** in exp_test.c, line 45.
+
+After the check.py capability -- resolving these wildcards -- for this purpose
+is fleshed out, we shall have to figure out how to address "shuffle" and
+"2 to 5 of {}" randomizations.
+
+--------------------------------------------------------------------------------
+
+The add_these_tests directory contains regression-test information of the above
+nature that the regression framework is not currently able to address.
+
+--------------
+
+*Copyright (c) 2019-2020, Arm Limited. All rights reserved.*

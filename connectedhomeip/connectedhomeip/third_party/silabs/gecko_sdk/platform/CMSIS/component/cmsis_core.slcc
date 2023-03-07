@@ -1,0 +1,66 @@
+id: cmsis_core
+label: CMSIS-Core
+package: platform
+description: CMSIS core include path.
+category: Platform|CMSIS
+quality: production
+include:
+  - path: platform/CMSIS/Core/Include
+    file_list:
+      - path: cmsis_compiler.h
+      - path: cmsis_version.h
+      - path: tz_context.h
+      - path: cmsis_armcc.h
+        condition: [toolchain_armcc]
+      - path: cmsis_armclang.h
+        condition: [toolchain_armclang]
+      - path: cmsis_gcc.h
+        condition: [toolchain_gcc]
+      - path: cmsis_iccarm.h
+        condition: [toolchain_iar]
+      - path: core_cm0.h
+        condition: [cortexm0]
+      - path: core_cm0plus.h
+        condition: [cortexm0plus]
+      - path: core_cm1.h
+        condition: [cortexm1]
+      - path: core_cm3.h
+        condition: [cortexm3]
+      - path: core_cm4.h
+        condition: [cortexm4]
+      - path: core_cm7.h
+        condition: [cortexm7]
+      - path: core_cm23.h
+        condition: [cortexm23]
+      - path: core_cm33.h
+        condition: [cortexm33]
+      - path: core_cm35p.h
+        condition: [cortexm35p]
+      - path: core_cm55.h
+        condition: [cortexm55]
+      - path: core_sc000.h
+        condition: [securcore000]
+      - path: core_sc300.h
+        condition: [securcore300]
+      - path: mpu_armv7.h
+        condition: [device_has_mpu, cortexm0]
+      - path: mpu_armv7.h
+        condition: [device_has_mpu, cortexm0plus]
+      - path: mpu_armv7.h
+        condition: [device_has_mpu, cortexm3]
+      - path: mpu_armv7.h
+        condition: [device_has_mpu, cortexm4]
+      - path: mpu_armv7.h
+        condition: [device_has_mpu, cortexm7]
+      - path: mpu_armv8.h
+        condition: [device_has_mpu, cortexm23]
+      - path: mpu_armv8.h
+        condition: [device_has_mpu, cortexm33]
+      - path: pmu_armv8.h
+        condition: [device_has_pmu, cortexm23]
+      - path: pmu_armv8.h
+        condition: [device_has_pmu, cortexm33]
+provides:
+  - name: cmsis_core
+template_file:
+  - path: platform/CMSIS/template/RTE_Components.h.jinja

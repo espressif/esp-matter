@@ -1,0 +1,96 @@
+id: "sl_iperf"
+label: "iPerf2"
+package: "wisun"
+description: "iPerf2 test tool comaptible implementaion"
+category: "Wi-SUN|Wi-SUN Services"
+quality: "production"
+root_path: "app/wisun/component/iperf"
+provides:
+  - name: sl_iperf
+
+source:
+  - path: "sl_iperf_network_interface.c"
+  - path: "sl_iperf.c"
+  - path: "sl_iperf_log.c"
+  - path: "sl_iperf_util.c"
+  - path: "sl_iperf_udp_srv.c"
+  - path: "sl_iperf_udp_clnt.c"
+  - path: "sl_iperf_cli.c"
+
+include:
+  - path: "."
+    file_list:
+    - "path": "sl_iperf_types.h"
+    - "path": "sl_iperf_network_interface.h"
+    - "path": "sl_iperf.h"
+    - "path": "sl_iperf_log.h"
+    - "path": "sl_iperf_util.h"
+    - "path": "sl_iperf_udp_srv.h"
+    - "path": "sl_iperf_udp_clnt.h"
+config_file:
+  - path: "config/sl_iperf_config.h"
+
+#-------------- Template Contribution ----------------
+template_contribution:
+  - name: "event_handler"
+    value:
+      event: "internal_app_init"
+      include: "sl_iperf.h"
+      handler: "sl_iperf_service_init"
+  - name: "cli_group"
+    value:
+      name: "iperf"
+      help: "iPerf2 commands"
+      shortcuts:
+        - name: "i"
+
+  - name: "cli_command"
+    value:
+      group: "iperf"
+      name: "get"
+      handler: "sl_iperf_cli_get"
+      help: "Get configuration parameters"
+      argument:
+        - type: wildcard
+          help: "empty | [string] Key"
+      shortcuts:
+        - name: "g"
+
+  - name: "cli_command"
+    value:
+      group: "iperf"
+      name: "set"
+      handler: "sl_iperf_cli_set"
+      help: "Set configuration parameters"
+      argument:
+        - type: wildcard
+          help: "empty | [string] Key [string] Value"
+      shortcuts:
+        - name: "s"
+
+  - name: "cli_command"
+    value:
+      group: "iperf"
+      name: "server"
+      handler: "sl_iperf_cli_exec_server"
+      help: "Start preconfigured iPerf Server test"
+      argument:
+        - type: wildcard
+          help: "help"
+      shortcuts:
+        - name: "-s"
+  - name: "cli_command"
+    value:
+      group: "iperf"
+      name: "client"
+      handler: "sl_iperf_cli_exec_client"
+      help: "Start preconfigured iPerf Client test"
+      argument:
+        - type: wildcard
+          help: "help"
+      shortcuts:
+        - name: "-c"
+
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: iperf

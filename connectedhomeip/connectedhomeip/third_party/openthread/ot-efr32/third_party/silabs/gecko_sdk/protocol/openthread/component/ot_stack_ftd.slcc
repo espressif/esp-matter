@@ -1,0 +1,33 @@
+id: ot_stack_ftd
+label: Stack (FTD)
+package: OpenThread
+category: OpenThread
+quality: production
+description: This component provides the OpenThread stack for a Full Thread Device (FTD)
+provides:
+  - name: ot_stack
+  - name: ot_stack_ftd
+requires:
+  - name: ot_stack_common
+    unless: [ot_cert_libs]
+  - name: ot_headers
+  - name: ot_platform_abstraction
+  - name: ot_thirdparty
+  - name: ot_psa_crypto
+config_file:
+  - path: protocol/openthread/config/sl_openthread_features_config.h
+    file_id: openthread_features
+    unless: [ot_cert_libs,ot_reference_device]
+  - path: protocol/openthread/config/sl_openthread_generic_config.h
+define:
+  - name: SL_OPENTHREAD_STACK_FEATURES_CONFIG_FILE
+    value: "\"sl_openthread_features_config.h\""
+    unless: [ot_cert_libs,ot_reference_device]
+  - name: OPENTHREAD_CONFIG_FILE
+    value: "\"sl_openthread_generic_config.h\""
+  - name: OPENTHREAD_FTD
+    value: 1
+  - name: OPENTHREAD_SPINEL_CONFIG_OPENTHREAD_MESSAGE_ENABLE
+    value: 1
+    condition:
+    - ot_ncp

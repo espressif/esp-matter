@@ -1,0 +1,28 @@
+!!omap
+- id: ZGM230SA27HNN_config
+- label: ZGM230SA27HNN config
+- description: Configuration files for ZGM230SA27HNN
+- package: platform
+- category: Platform|Device|ZGM23|Config
+- quality: production
+- ui_hints:
+    visibility: never
+- root_path: hardware/module/config
+- requires:
+  - name: zgm230sa27hnn
+- provides:
+  - name: ZGM230SA27HNN_config
+- config_file:
+  - override:
+      component: device_init_hfxo
+      file_id: device_init_hfxo_config
+    path: ZGM230SA27HNN/sl_device_init_hfxo_config.h
+  - override:
+      component: rail_util_pa
+      file_id: rail_util_pa_config
+    path: ZGM230SA27HNN/sl_rail_util_pa_config.h
+  - override:
+      component: iot_flash
+      file_id: iot_flash_cfg
+      instance: msc
+    path: ZGM230SA27HNN/iot_flash_cfg_msc.h

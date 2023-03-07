@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.pnp_id" uuid="2A50" name="PnP ID" last-modified="2011-11-13" approved="Yes">
+  <InformativeText>
+    <Abstract>
+    The PnP_ID characteristic returns its value when read using the GATT Characteristic Value Read procedure.
+    </Abstract>
+    <Summary>
+    The PnP_ID characteristic is a set of values that used to create a device ID value that is unique for this device.  Included in the characteristic is a Vendor ID Source field, a Vendor ID field, a Product ID field and a Product Version field.  These values are used to identify all devices of a given type/model/version using numbers.  
+    </Summary>
+  </InformativeText>
+  <Value>
+    <Field name="Vendor ID Source">
+      <InformativeText>Identifies the source of the Vendor ID field</InformativeText>
+      <Requirement>Mandatory</Requirement>
+      <Format>uint8</Format>
+      <Minimum>1</Minimum>
+      <Maximum>2</Maximum>
+       <Enumerations>
+            <Enumeration key="1" value="Bluetooth SIG assigned Company Identifier value from the Assigned Numbers document"  />
+            <Enumeration key="2" value="USB Implementer's Forum assigned Vendor ID value"  />
+            <ReservedForFutureUse start="3" end="255"/>
+            <ReservedForFutureUse1 start1="0" end1="0"/>
+          </Enumerations>
+    </Field>
+    <Field name="Vendor ID">
+      <InformativeText>Identifies the product vendor from the namespace in the Vendor ID Source</InformativeText>
+      <Requirement>Mandatory</Requirement>
+      <Format>uint16</Format>
+    </Field>
+    <Field name="Product ID">
+      <InformativeText>Manufacturer managed identifier for this product</InformativeText>
+      <Requirement>Mandatory</Requirement>
+      <Format>uint16</Format>
+    </Field>
+    <Field name="Product Version">
+      <InformativeText>Manufacturer managed version for this product</InformativeText>
+      <Requirement>Mandatory</Requirement>
+      <Format>uint16</Format>
+    </Field>
+  </Value>
+  <Note>
+    The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet
+  </Note>
+</Characteristic>

@@ -1,0 +1,126 @@
+/*
+ * Copyright (c) 2016-2020 Texas Instruments Incorporated - http://www.ti.com
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+ * Generally there is no need to edit this file!
+ *
+ * This file controls which libraries are built, as well as compiler options
+ * to use.
+ *
+ * The contents of this file usually don't change, but having it in your
+ * ownership allows you to tweak your compiler options.  If you do change
+ * this file, however, on the next upgrade of the product we recommend
+ * that you take "mcpi.bld" file as supplied by the upgrade and then merge
+ * your changes with it.
+ */
+
+/*
+ *  ======== mcpi.bld ========
+ *  This script is run prior to all build scripts. It sets host-system-
+ *  independent values for targets and platforms, then it attempts to
+ *  find the host-system-specific user.bld script that sets rootDirs.
+ *
+ *  These settings may be a function of the following global variables:
+ *
+ *	environment a hash table of environment strings
+ *
+ *	arguments   an array of string arguments to the _config.bld script
+ *		    initialized as follows:
+ *		        arguments[0] - the file name of the _config.bld script
+ *		        arguments[1] - the first argument specified in XDCARGS
+ *		            :
+ *		        arguments[n] - the n'th argument in XDCARGS
+ *
+ *	Build	    an alias for xdc.om.xdc.bld.BuildEnvironment
+ */
+
+var Build = xdc.useModule('xdc.bld.BuildEnvironment');
+var Pkg = xdc.useModule('xdc.bld.PackageContents');
+
+var ccOpts = {
+    "ti.targets.arm.elf.M4"           : " -ms -g ",
+    "ti.targets.arm.elf.M4F"          : " -ms -g ",
+
+    "ti.targets.arm.clang.M0"         : "",
+    "ti.targets.arm.clang.M4"         : "",
+    "ti.targets.arm.clang.M4F"        : "",
+    "ti.targets.arm.clang.M33"        : "",
+    "ti.targets.arm.clang.M33F"       : "",
+
+    "gnu.targets.arm.M4"              : " -g ",
+    "gnu.targets.arm.M4F"             : " -g ",
+    "gnu.targets.arm.M33F"            : " -g ",
+
+    "iar.targets.arm.M4"               : "",
+    "iar.targets.arm.M4F"              : "",
+    "iar.targets.arm.M33F"             : "",
+};
+
+var posixIncs = "";
+
+/* initialize local vars with those set in xdcpaths.mak (via XDCARGS) */
+for (arg = 0; arg < arguments.length; arg++) {
+    if (arguments[arg].match(/^TIPOSIX_REPO=/) ) {
+	/* ugh. set posixIncs global variable for use in uia package.bld */
+        posixIncs = arguments[arg].split("=")[1];
+        posixIncs = " -I" + posixIncs + "/ti/posix";
+    }
+
+    if (!arguments[arg].match(/targets/)) {
+        continue;
+    }
+
+    /*
+     * Get the compiler's installation directory.
+     * For "ti.targets.arm.elf.M3=/vendors/arm/5.2.0", we get "/vendors/arm/5.2.0"
+     */
+    var targetName = arguments[arg].split("=")[0];
+    var rootDir = arguments[arg].split("=")[1];
+
+    /* only build for the specified compilers */
+    if (rootDir == "" || rootDir == undefined) {
+        continue;
+    }
+
+    var target = xdc.useModule(targetName);
+    target.rootDir = rootDir;
+    target.ccOpts.suffix += ccOpts[targetName];
+
+    Build.targets.$add(target);
+}
+
+if (Build.targets.length == 0) {
+    Build.useTargets = null;
+}
+
+/* lib/ is a generated directory that 'xdc clean' should remove */
+Pkg.generatedFiles.$add("lib/");

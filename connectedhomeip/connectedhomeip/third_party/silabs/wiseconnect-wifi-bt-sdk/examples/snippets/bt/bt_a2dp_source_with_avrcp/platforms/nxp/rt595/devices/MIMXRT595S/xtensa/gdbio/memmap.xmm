@@ -1,0 +1,101 @@
+//  Memory map file to generate linker scripts for programs to run on
+//  most targets (that have the OCD option); allows I/O through the host
+//  debugger when being debugged using GDB (via the Xtensa OCD daemon).
+
+// Customer ID=13270; Build=0x815fe; Copyright (c) 2006-2015 Cadence Design Systems, Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+//  Show extra XTBOARD memory map details.
+INCLUDE_XTBOARD_MEMORIES = try
+
+
+// A memory map is a sequence of memory descriptions and
+// optional parameter assignments.
+//
+// Each memory description has the following format:
+//   BEGIN <name>
+//     <addr> [,<paddr>] : <mem-type> : <mem-name> : <size> [,<psize>]
+//                       : [writable] [,executable] [,device] ;
+//     <segment>*
+//   END <name>
+//
+// where each <segment> description has the following format:
+//     <seg-name> : F|C : <start-addr> - <end-addr> [ : STACK ] [ : HEAP ]
+//                : <section-name>* ;
+//
+// Each parameter assignment is a keyword/value pair in the following format:
+//   <keyword> = <value>                (no spaces in <value>)
+// or
+//   <keyword> = "<value>"              (spaces allowed in <value>)
+//
+// The following primitives are also defined:
+//   PLACE SECTIONS( <section-name>* ) { WITH_SECTION(<section-name>)
+//                                       | IN_SEGMENT(<seg-name>) }
+//
+//   NOLOAD <section-name1> [ <section-name2> ... ]
+//
+// Please refer to the Xtensa LSP Reference Manual for more details.
+//
+BEGIN iram0
+0x0: instRam : iram0 : 0x400000 : executable, writable ;
+ iram0_0 : F : 0x0 - 0x3ff : .ResetVector.text .ResetHandler.literal .ResetHandler.text;
+ iram0_1 : F : 0x400 - 0x57b : .WindowVectors.text .Level2InterruptVector.literal;
+ iram0_2 : F : 0x57c - 0x59b : .Level2InterruptVector.text .Level3InterruptVector.literal;
+ iram0_3 : F : 0x59c - 0x5bb : .Level3InterruptVector.text .DebugExceptionVector.literal;
+ iram0_4 : F : 0x5bc - 0x5db : .DebugExceptionVector.text .NMIExceptionVector.literal;
+ iram0_5 : F : 0x5dc - 0x5fb : .NMIExceptionVector.text .KernelExceptionVector.literal;
+ iram0_6 : F : 0x5fc - 0x61b : .KernelExceptionVector.text .UserExceptionVector.literal;
+ iram0_7 : F : 0x61c - 0x63b : .UserExceptionVector.text .DoubleExceptionVector.literal;
+ iram0_8 : F : 0x63c - 0x3fffff : .DoubleExceptionVector.text .iram0.literal .iram0.text;
+END iram0
+
+BEGIN iram1
+0x400000: instRam : iram1 : 0x400000 : executable, writable ;
+ iram1_0 : C : 0x400000 - 0x7fffff : .iram1.literal .iram1.text;
+END iram1
+
+BEGIN dram0
+0x800000: dataRam : dram0 : 0x400000 : writable ;
+ dram0_0 : C : 0x800000 - 0xbfffff : .dram0.rodata .dram0.data .dram0.bss;
+END dram0
+
+BEGIN dram1
+0xc00000: dataRam : dram1 : 0x400000 : writable ;
+ dram1_0 : C : 0xc00000 - 0xffffff : .dram1.rodata .dram1.data .dram1.bss;
+END dram1
+
+BEGIN sram
+0x20000000: sysram : sram : 0x500000 : executable, writable ;
+ sram0 : C : 0x20000000 - 0x204fffff :  STACK :  HEAP : .sram.rodata .clib.rodata .rtos.rodata .rodata .sram.literal .literal .rtos.literal .clib.literal .sram.text .text .clib.text .rtos.text .clib.data .clib.percpu.data .rtos.percpu.data .rtos.data .sram.data .data __llvm_prf_names .clib.bss .clib.percpu.bss .rtos.percpu.bss .rtos.bss .sram.bss .bss;
+END sram
+
+BEGIN iocached
+0x70000000: io : iocached : 0xda00000 : executable, writable ;
+END iocached
+
+BEGIN rambypass
+0x80000000: sysram : rambypass : 0x10000000 : device, executable, writable ;
+END rambypass
+
+BEGIN iobypass
+0x90000000: io : iobypass : 0xda00000 : device, executable, writable ;
+END iobypass
+

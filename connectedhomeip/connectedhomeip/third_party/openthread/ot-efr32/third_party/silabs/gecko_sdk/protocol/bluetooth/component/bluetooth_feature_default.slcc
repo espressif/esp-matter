@@ -1,0 +1,27 @@
+id: "bluetooth_feature_default"
+label: "Bluetooth Default Features"
+package: "Bluetooth"
+description: >
+  Includes Bluetooth stack and default selection of features.
+
+  Configuration for Bluetooth stack is provided under Bluetooth core component.
+
+category: "Bluetooth"
+quality: "deprecated"
+root_path: "protocol/bluetooth"
+requires:
+  - name: "bluetooth_stack"
+  - name: "gatt_configuration"
+  - name: "bluetooth_feature_system"
+  - name: "bluetooth_feature_gap"
+  - name: "bluetooth_feature_scanner"
+  - name: "bluetooth_feature_advertiser"
+  - name: "bluetooth_feature_connection"
+  - name: "bluetooth_feature_gatt"
+  - name: "bluetooth_feature_gatt_server"
+  - name: "bluetooth_feature_nvm"
+  - name: "bluetooth_feature_sm"
+provides:
+  - name: "bluetooth_feature_default"
+ui_hints:
+  visibility: never

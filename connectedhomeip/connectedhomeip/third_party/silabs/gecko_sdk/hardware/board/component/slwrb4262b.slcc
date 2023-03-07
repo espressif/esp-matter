@@ -1,0 +1,23 @@
+!!omap
+- id: slwrb4262b
+- label: SLWRB4262B
+- package: platform
+- description: Kit BSP support for the EFR32FG14 2400/868 MHz 13 dBm Radio Board with
+    TCXO.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4262b
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4262B"'
+  - name: SL_KIT_REV
+    value: '"A01"'
+- tag:
+  - kit:opn:SLWRB4262B
+  - kit:pn:WRB4262
+  - kit:variant:B
+  - kit:revision:A01

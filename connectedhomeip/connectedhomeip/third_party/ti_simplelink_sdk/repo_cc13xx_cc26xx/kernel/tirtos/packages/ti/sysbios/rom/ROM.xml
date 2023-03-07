@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="ROM" title="ROM" version="1">
+<page name="ROM" title="ROM">
+<html><body><table>
+  <tr>
+      <td><form>
+        <p>The ROM module allows you to select which ROM image to build your application against.</p>
+      </form></td>
+  </tr>
+  <tr></tr>
+  <tr>
+    <td><control type="checkbox" 
+      label="Add the ROM module to my configuration" 
+      value="value:this.$used" 
+      bold="true"/>
+    </td>
+  </tr>
+  <tr></tr>
+  <tr><td>
+    <h1>ROM Build Options</h1>
+    <table>
+        <tr>
+          <td><control type="label" label="ROM Selection" align="left"/></td>
+          <td><control type="droplist"
+               labels="NO_ROM;CC2650;CC1350;CC2640R2F;F28004x"
+               values="ROM.NO_ROM;ROM.CC2650;ROM.CC1350;ROM.CC2640R2F;ROM.F28004x"
+               text="value:this.romName"
+               tooltip="Supported range of Timer Ids is device specific"/></td>
+        </tr>
+    </table>
+    </td>
+  </tr>
+</table></body></html>
+</page>
+<properties name="Advanced" title="All Top-level BIOS Options" enabled="true" visible="true" link="this"/>
+</gep>

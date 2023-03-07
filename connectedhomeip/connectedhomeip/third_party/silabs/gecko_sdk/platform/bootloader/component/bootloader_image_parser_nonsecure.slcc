@@ -1,0 +1,13 @@
+id: bootloader_image_parser_nonsecure
+label: Image Parser (Non-Secure)
+package: bootloader
+description: >
+  Image parser
+category: Platform|Bootloader|TrustZone NonSecure|Core
+quality: beta
+source:
+  # NS interface
+  - path: platform/bootloader/parser/gbl/btl_gbl_parser_ns.c
+provides:
+  - name: bootloader_image_parser
+  - name: bootloader_image_parser_nonsecure

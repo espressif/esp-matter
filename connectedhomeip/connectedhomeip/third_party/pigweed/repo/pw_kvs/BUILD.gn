@@ -1,0 +1,628 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_bloat/bloat.gni")
+import("$dir_pw_build/module_config.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_toolchain/generate_toolchain.gni")
+import("$dir_pw_unit_test/test.gni")
+
+declare_args() {
+  # The build target that overrides the default configuration options for this
+  # module. This should point to a source set that provides defines through a
+  # public config (which may -include a file or add defines directly).
+  pw_kvs_CONFIG = pw_build_DEFAULT_MODULE_CONFIG
+}
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("pw_kvs") {
+  public_configs = [ ":public_include_path" ]
+  public = [
+    "public/pw_kvs/alignment.h",
+    "public/pw_kvs/checksum.h",
+    "public/pw_kvs/flash_memory.h",
+    "public/pw_kvs/flash_test_partition.h",
+    "public/pw_kvs/format.h",
+    "public/pw_kvs/io.h",
+    "public/pw_kvs/key.h",
+    "public/pw_kvs/key_value_store.h",
+  ]
+  sources = [
+    "alignment.cc",
+    "checksum.cc",
+    "entry.cc",
+    "entry_cache.cc",
+    "flash_memory.cc",
+    "format.cc",
+    "key_value_store.cc",
+    "public/pw_kvs/internal/entry.h",
+    "public/pw_kvs/internal/entry_cache.h",
+    "public/pw_kvs/internal/hash.h",
+    "public/pw_kvs/internal/key_descriptor.h",
+    "public/pw_kvs/internal/sectors.h",
+    "public/pw_kvs/internal/span_traits.h",
+    "sectors.cc",
+  ]
+  public_deps = [
+    dir_pw_assert,
+    dir_pw_bytes,
+    dir_pw_containers,
+    dir_pw_span,
+    dir_pw_status,
+    dir_pw_stream,
+  ]
+  deps = [
+    ":config",
+    dir_pw_checksum,
+    dir_pw_log,
+  ]
+  friend = [ ":*" ]
+}
+
+pw_source_set("config") {
+  public_deps = [ pw_kvs_CONFIG ]
+  public = [ "pw_kvs_private/config.h" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("crc16") {
+  public = [ "public/pw_kvs/crc16_checksum.h" ]
+  public_deps = [
+    ":pw_kvs",
+    dir_pw_checksum,
+    dir_pw_span,
+  ]
+}
+
+pw_source_set("flash_test_partition") {
+  public = [ "public/pw_kvs/flash_test_partition.h" ]
+  public_deps = [ ":pw_kvs" ]
+}
+
+pw_source_set("test_key_value_store") {
+  public = [ "public/pw_kvs/test_key_value_store.h" ]
+  public_deps = [
+    ":pw_kvs",
+    "$dir_pw_sync:borrow",
+  ]
+}
+
+pw_source_set("fake_flash") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_kvs/fake_flash_memory.h" ]
+  sources = [ "fake_flash_memory.cc" ]
+  public_deps = [
+    dir_pw_containers,
+    dir_pw_kvs,
+    dir_pw_status,
+  ]
+  deps = [
+    ":config",
+    dir_pw_log,
+  ]
+}
+
+pw_source_set("fake_flash_12_byte_partition") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_kvs/flash_test_partition.h" ]
+  sources = [ "fake_flash_test_partition.cc" ]
+  public_deps = [ ":flash_test_partition" ]
+  deps = [
+    ":fake_flash",
+    dir_pw_kvs,
+  ]
+  defines = [
+    "PW_FLASH_TEST_SECTORS=3",
+    "PW_FLASH_TEST_SECTOR_SIZE=4",
+    "PW_FLASH_TEST_ALIGNMENT=4",
+  ]
+}
+
+pw_source_set("fake_flash_1_aligned_partition") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_kvs/flash_test_partition.h" ]
+  sources = [ "fake_flash_test_partition.cc" ]
+  public_deps = [ ":flash_test_partition" ]
+  deps = [
+    ":fake_flash",
+    dir_pw_kvs,
+  ]
+  defines = [
+    "PW_FLASH_TEST_SECTORS=6U",
+    "PW_FLASH_TEST_SECTOR_SIZE=4096U",
+    "PW_FLASH_TEST_ALIGNMENT=1U",
+  ]
+}
+
+pw_source_set("fake_flash_16_aligned_partition") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_kvs/flash_test_partition.h" ]
+  sources = [ "fake_flash_test_partition.cc" ]
+  public_deps = [ ":flash_test_partition" ]
+  deps = [
+    ":fake_flash",
+    dir_pw_kvs,
+  ]
+  defines = [
+    "PW_FLASH_TEST_SECTORS=6U",
+    "PW_FLASH_TEST_SECTOR_SIZE=4096U",
+    "PW_FLASH_TEST_ALIGNMENT=16U",
+  ]
+}
+
+pw_source_set("fake_flash_64_aligned_partition") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_kvs/flash_test_partition.h" ]
+  sources = [ "fake_flash_test_partition.cc" ]
+  public_deps = [ ":flash_test_partition" ]
+  deps = [
+    ":fake_flash",
+    dir_pw_kvs,
+  ]
+  defines = [
+    "PW_FLASH_TEST_SECTORS=6U",
+    "PW_FLASH_TEST_SECTOR_SIZE=4096U",
+    "PW_FLASH_TEST_ALIGNMENT=64U",
+  ]
+}
+
+pw_source_set("fake_flash_256_aligned_partition") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_kvs/flash_test_partition.h" ]
+  sources = [ "fake_flash_test_partition.cc" ]
+  public_deps = [ ":flash_test_partition" ]
+  deps = [
+    ":fake_flash",
+    dir_pw_kvs,
+  ]
+  defines = [
+    "PW_FLASH_TEST_SECTORS=6U",
+    "PW_FLASH_TEST_SECTOR_SIZE=4096U",
+    "PW_FLASH_TEST_ALIGNMENT=256U",
+  ]
+}
+
+pw_source_set("fake_flash_test_key_value_store") {
+  public_configs = [ ":public_include_path" ]
+  sources = [ "fake_flash_test_key_value_store.cc" ]
+  public_deps = [ ":test_key_value_store" ]
+  deps = [
+    ":crc16",
+    ":fake_flash",
+    dir_pw_kvs,
+  ]
+}
+
+pw_source_set("flash_partition_stream_test") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_kvs/flash_memory.h" ]
+  sources = [ "flash_partition_stream_test.cc" ]
+  public_deps = [
+    "$dir_pw_sync:borrow",
+    dir_pw_bytes,
+    dir_pw_kvs,
+    dir_pw_polyfill,
+    dir_pw_preprocessor,
+    dir_pw_status,
+    dir_pw_stream,
+  ]
+  deps = [
+    ":config",
+    ":fake_flash",
+    ":flash_test_partition",
+    dir_pw_kvs,
+    dir_pw_log,
+    dir_pw_random,
+    dir_pw_unit_test,
+  ]
+}
+
+pw_source_set("flash_partition_test_100_iterations") {
+  deps = [
+    ":config",
+    ":flash_test_partition",
+    dir_pw_kvs,
+    dir_pw_log,
+    dir_pw_unit_test,
+  ]
+  sources = [ "flash_partition_test.cc" ]
+  defines = [
+    "PW_FLASH_TEST_ITERATIONS=100",
+    "PW_FLASH_TEST_WRITE_SIZE=1",
+  ]
+}
+
+pw_source_set("flash_partition_test_2_iterations") {
+  deps = [
+    ":config",
+    ":flash_test_partition",
+    dir_pw_kvs,
+    dir_pw_log,
+    dir_pw_unit_test,
+  ]
+  sources = [ "flash_partition_test.cc" ]
+  defines = [
+    "PW_FLASH_TEST_ITERATIONS=2",
+    "PW_FLASH_TEST_WRITE_SIZE=1",
+  ]
+}
+
+pw_source_set("flash_partition_test_100_iterations_256_write") {
+  deps = [
+    ":config",
+    ":flash_test_partition",
+    dir_pw_kvs,
+    dir_pw_log,
+    dir_pw_unit_test,
+  ]
+  sources = [ "flash_partition_test.cc" ]
+  defines = [
+    "PW_FLASH_TEST_ITERATIONS=100",
+    "PW_FLASH_TEST_WRITE_SIZE=256",
+  ]
+}
+
+pw_source_set("flash_partition_test_2_iterations_256_write") {
+  deps = [
+    ":config",
+    ":flash_test_partition",
+    dir_pw_kvs,
+    dir_pw_log,
+    dir_pw_unit_test,
+  ]
+  sources = [ "flash_partition_test.cc" ]
+  defines = [
+    "PW_FLASH_TEST_ITERATIONS=2",
+    "PW_FLASH_TEST_WRITE_SIZE=256",
+  ]
+}
+
+pw_source_set("key_value_store_initialized_test") {
+  deps = [
+    ":crc16",
+    ":flash_test_partition",
+    ":pw_kvs",
+    "$dir_pw_string:builder",
+    dir_pw_bytes,
+    dir_pw_checksum,
+    dir_pw_log,
+    dir_pw_unit_test,
+  ]
+  sources = [ "key_value_store_initialized_test.cc" ]
+}
+
+pw_source_set("key_value_store_fuzz_test") {
+  deps = [
+    ":config",
+    ":crc16",
+    ":flash_test_partition",
+    ":pw_kvs",
+    "$dir_pw_string:builder",
+    dir_pw_bytes,
+    dir_pw_checksum,
+    dir_pw_log,
+    dir_pw_unit_test,
+  ]
+  sources = [ "key_value_store_fuzz_test.cc" ]
+}
+
+pw_source_set("test_key_value_store_test") {
+  deps = [
+    ":pw_kvs",
+    ":test_key_value_store",
+    "$dir_pw_string:builder",
+    "$dir_pw_sync:borrow",
+    dir_pw_unit_test,
+  ]
+  sources = [ "test_key_value_store_test.cc" ]
+}
+
+pw_source_set("test_partition") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_kvs/flash_partition_with_stats.h" ]
+  sources = [ "flash_partition_with_stats.cc" ]
+  visibility = [ ":*" ]
+  public_deps = [
+    dir_pw_kvs,
+    dir_pw_log,
+    dir_pw_status,
+  ]
+  deps = [ ":config" ]
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":alignment_test",
+    ":checksum_test",
+    ":converts_to_span_test",
+    ":key_test",
+  ]
+
+  if (defined(pw_toolchain_SCOPE.is_host_toolchain) &&
+      pw_toolchain_SCOPE.is_host_toolchain) {
+    # TODO(b/234883746): KVS tests are not compatible with device builds as they
+    # use features such as std::map and are computationally expensive. Solving
+    # this requires a more complex capabilities-based build and configuration
+    # system which allowing enabling specific tests for targets that support
+    # them and modifying test parameters for different targets.
+
+    tests += [
+      ":entry_test",
+      ":entry_cache_test",
+      ":flash_partition_1_stream_test",
+      ":flash_partition_1_alignment_test",
+      ":flash_partition_16_alignment_test",
+      ":flash_partition_64_alignment_test",
+      ":flash_partition_256_alignment_test",
+      ":flash_partition_256_write_size_test",
+      ":key_value_store_test",
+      ":key_value_store_1_alignment_flash_test",
+      ":key_value_store_16_alignment_flash_test",
+      ":key_value_store_64_alignment_flash_test",
+      ":key_value_store_256_alignment_flash_test",
+      ":key_value_store_fuzz_1_alignment_flash_test",
+      ":key_value_store_fuzz_64_alignment_flash_test",
+      ":key_value_store_binary_format_test",
+      ":key_value_store_put_test",
+      ":key_value_store_map_test",
+      ":key_value_store_wear_test",
+      ":fake_flash_test_key_value_store_test",
+      ":sectors_test",
+    ]
+  }
+}
+
+pw_test("alignment_test") {
+  deps = [ ":pw_kvs" ]
+  sources = [ "alignment_test.cc" ]
+}
+
+pw_test("checksum_test") {
+  deps = [
+    ":crc16",
+    ":pw_kvs",
+    dir_pw_log,
+  ]
+  sources = [ "checksum_test.cc" ]
+}
+
+pw_test("converts_to_span_test") {
+  deps = [ ":pw_kvs" ]
+  sources = [ "converts_to_span_test.cc" ]
+}
+
+pw_test("entry_test") {
+  deps = [
+    ":crc16",
+    ":fake_flash",
+    ":pw_kvs",
+    dir_pw_bytes,
+  ]
+  sources = [ "entry_test.cc" ]
+}
+
+pw_test("entry_cache_test") {
+  deps = [
+    ":fake_flash",
+    ":pw_kvs",
+    dir_pw_bytes,
+  ]
+  sources = [ "entry_cache_test.cc" ]
+}
+
+pw_test("flash_partition_1_stream_test") {
+  deps = [
+    ":fake_flash",
+    ":fake_flash_1_aligned_partition",
+    ":flash_partition_stream_test",
+    dir_pw_log,
+  ]
+}
+
+pw_test("flash_partition_1_alignment_test") {
+  deps = [
+    ":fake_flash",
+    ":fake_flash_1_aligned_partition",
+    ":flash_partition_test_100_iterations",
+    dir_pw_log,
+  ]
+}
+
+pw_test("flash_partition_16_alignment_test") {
+  deps = [
+    ":fake_flash",
+    ":fake_flash_16_aligned_partition",
+    ":flash_partition_test_100_iterations",
+    dir_pw_log,
+  ]
+}
+
+pw_test("flash_partition_64_alignment_test") {
+  deps = [
+    ":fake_flash",
+    ":fake_flash_64_aligned_partition",
+    ":flash_partition_test_100_iterations",
+    dir_pw_log,
+  ]
+}
+
+pw_test("flash_partition_256_alignment_test") {
+  deps = [
+    ":fake_flash",
+    ":fake_flash_256_aligned_partition",
+    ":flash_partition_test_100_iterations",
+    dir_pw_log,
+  ]
+}
+
+pw_test("flash_partition_256_write_size_test") {
+  deps = [
+    ":fake_flash",
+    ":fake_flash_1_aligned_partition",
+    ":flash_partition_test_100_iterations_256_write",
+    dir_pw_log,
+  ]
+}
+
+pw_test("key_value_store_test") {
+  deps = [
+    ":config",
+    ":crc16",
+    ":fake_flash",
+    ":pw_kvs",
+    "$dir_pw_string:builder",
+    dir_pw_bytes,
+    dir_pw_checksum,
+    dir_pw_log,
+  ]
+  sources = [ "key_value_store_test.cc" ]
+}
+
+pw_test("key_value_store_1_alignment_flash_test") {
+  deps = [
+    ":fake_flash_1_aligned_partition",
+    ":key_value_store_initialized_test",
+  ]
+}
+
+pw_test("key_value_store_16_alignment_flash_test") {
+  deps = [
+    ":fake_flash_16_aligned_partition",
+    ":key_value_store_initialized_test",
+  ]
+}
+
+pw_test("key_value_store_64_alignment_flash_test") {
+  deps = [
+    ":fake_flash_64_aligned_partition",
+    ":key_value_store_initialized_test",
+  ]
+}
+
+pw_test("key_value_store_256_alignment_flash_test") {
+  deps = [
+    ":fake_flash_256_aligned_partition",
+    ":key_value_store_initialized_test",
+  ]
+}
+
+pw_test("key_value_store_fuzz_1_alignment_flash_test") {
+  deps = [
+    ":fake_flash_1_aligned_partition",
+    ":key_value_store_fuzz_test",
+  ]
+}
+
+pw_test("key_value_store_fuzz_64_alignment_flash_test") {
+  deps = [
+    ":fake_flash_64_aligned_partition",
+    ":key_value_store_fuzz_test",
+  ]
+}
+
+pw_test("key_value_store_binary_format_test") {
+  deps = [
+    ":crc16",
+    ":fake_flash",
+    ":pw_kvs",
+    dir_pw_bytes,
+    dir_pw_log,
+  ]
+  sources = [ "key_value_store_binary_format_test.cc" ]
+}
+
+pw_test("key_value_store_put_test") {
+  deps = [
+    ":crc16",
+    ":fake_flash",
+    ":pw_kvs",
+    ":test_partition",
+  ]
+  sources = [ "key_value_store_put_test.cc" ]
+}
+
+pw_test("fake_flash_test_key_value_store_test") {
+  deps = [
+    ":fake_flash_test_key_value_store",
+    ":test_key_value_store_test",
+    "$dir_pw_sync:borrow",
+  ]
+}
+
+pw_test("key_value_store_map_test") {
+  deps = [
+    ":crc16",
+    ":fake_flash",
+    ":pw_kvs",
+    ":test_partition",
+    "$dir_pw_string:builder",
+    dir_pw_checksum,
+  ]
+  sources = [ "key_value_store_map_test.cc" ]
+}
+
+pw_test("sectors_test") {
+  deps = [
+    ":fake_flash",
+    ":pw_kvs",
+  ]
+  sources = [ "sectors_test.cc" ]
+}
+
+pw_test("key_test") {
+  deps = [ ":pw_kvs" ]
+  sources = [ "key_test.cc" ]
+}
+
+pw_test("key_value_store_wear_test") {
+  deps = [
+    ":fake_flash",
+    ":pw_kvs",
+    ":test_partition",
+    dir_pw_log,
+  ]
+  sources = [ "key_value_store_wear_test.cc" ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+  report_deps = [ ":kvs_size" ]
+}
+
+pw_size_diff("kvs_size") {
+  title = "Pigweed KVS size report"
+
+  binaries = [
+    {
+      target = "size_report:with_kvs"
+      base = "size_report:base_with_only_flash"
+      label = "KeyValueStore"
+    },
+  ]
+
+  binaries += [
+    {
+      target = "size_report:base_with_only_flash"
+      base = "size_report:base"
+      label = "FlashPartition"
+    },
+  ]
+}

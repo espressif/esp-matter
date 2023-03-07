@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Personality id="20x19_ioss" name="Pins" version="1.0" path="" xmlns="http://cypress.com/xsd/cyhwpersonality_v1">
+  <Dependencies>
+    <IpBlock name="20x19_ioss" />
+    <Resource name="ioss" />
+  </Dependencies>
+  <ExposedMembers>
+    <ExposedMember key="pinIndex$idx" paramId="pinIndex$idx" repeatCount="40" />
+  </ExposedMembers>
+  <Parameters>
+    <ParamString id="description" name="" group="About" default="Enable top level Pins resource, then enable and configure underlying pins as needed." visible="true" editable="false" desc="" />
+    <Repeat count="40">
+      <ParamString id="pinLoc$idx" name="" group="" default="ioss[0].pin[$idx]" visible="false" editable="false" desc="" />
+      <ParamString id="pinIndex$idx" name="" group="" default="`${(($idx > 0) ? getParamValue(&quot;pinIndex&quot; . ($idx - 1)) : -1) + ((hasBlock(pinLoc$idx) &amp;&amp; isBlockUsed(pinLoc$idx)) ? 1 : 0)}`" visible="false" editable="false" desc="" />
+	</Repeat>
+  </Parameters>
+
+  <DRCs/>
+
+  <ConfigFirmware>
+    <ConfigInclude value="wiced_platform.h" include="true" />
+
+    <ConfigDefine name="WICED_GET_PIN_FOR_LED(idx)" public="true" include="true" value="(*(platform_led[(idx)].gpio))" />
+    <ConfigDefine name="WICED_GET_PIN_FOR_BUTTON(idx)" public="true" include="true" value="(*(platform_button[(idx)].gpio))" />
+    <ConfigDefine name="WICED_GET_PIN_FOR_IO(idx)" public="true" include="true" value="(*(platform_gpio[(idx)].gpio))" />
+
+    <ConfigStruct name="platform_gpio_pins" type="wiced_platform_gpio_t" const="true" isArray="true" public="true" include="true">
+      <Member name="PLATFORM_GPIO_`${pinIndex##}`" value="{WICED_P`${padLeft(&quot;##&quot;, 2, &quot;0&quot;)}`, `${isBlockUsed(pinLoc##) ? getExposedMember(pinLoc##, &quot;cfgConnection&quot;) : &quot;WICED_GPIO&quot;}`}" include="`${hasBlock(pinLoc##) &amp;&amp; isBlockUsed(pinLoc##)}`" count="40" />
+    </ConfigStruct>
+
+    <ConfigVariable name="platform_gpio_pin_count" type="size_t" const="true" value="(sizeof(platform_gpio_pins) / sizeof(wiced_platform_gpio_t))" public="true" include="true" />
+
+    <ConfigStruct name="platform_led" type="wiced_platform_led_config_t" const="true" isArray="true" public="true" include="true">
+      <Member name="`${getExposedMember(pinLoc##, &quot;gpioResource&quot;)}`" value="`${getExposedMember(pinLoc##, &quot;cfgStruct&quot;)}`" include="`${isBlockUsed(pinLoc##) &amp;&amp; &quot;LED&quot; eq getExposedMember(pinLoc##, &quot;type&quot;)}`" count="40" />
+    </ConfigStruct>
+
+    <ConfigVariable name="led_count" type="size_t" const="true" value="(sizeof(platform_led) / sizeof(wiced_platform_led_config_t))" public="true" include="true" />
+
+    <ConfigStruct name="platform_button" type="wiced_platform_button_config_t" const="true" isArray="true" public="true" include="true">
+      <Member name="`${getExposedMember(pinLoc##, &quot;gpioResource&quot;)}`" value="`${getExposedMember(pinLoc##, &quot;cfgStruct&quot;)}`" include="`${isBlockUsed(pinLoc##) &amp;&amp; &quot;BUTTON&quot; eq getExposedMember(pinLoc##, &quot;type&quot;)}`" count="40" />
+    </ConfigStruct>
+
+    <ConfigVariable name="button_count" type="size_t" const="true" value="(sizeof(platform_button) / sizeof(wiced_platform_button_config_t))" public="true" include="true" />
+
+    <ConfigStruct name="platform_gpio" type="wiced_platform_gpio_config_t" const="true" isArray="true" public="true" include="true">
+      <Member name="`${getExposedMember(pinLoc##, &quot;gpioResource&quot;)}`" value="`${getExposedMember(pinLoc##, &quot;cfgStruct&quot;)}`" include="`${isBlockUsed(pinLoc##) &amp;&amp; &quot;GPIO&quot; eq getExposedMember(pinLoc##, &quot;type&quot;)}`" count="40" />
+    </ConfigStruct>
+
+    <ConfigVariable name="gpio_count" type="size_t" const="true" value="(sizeof(platform_gpio) / sizeof(wiced_platform_gpio_config_t))" public="true" include="true" />
+
+  </ConfigFirmware>
+</Personality>

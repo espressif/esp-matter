@@ -1,0 +1,33 @@
+id: cpc_security_secondary
+label: CPC SECURITY
+package: platform
+description: Co-Processor Communication (CPC) security endpoint
+category: Services|Co-Processor Communication
+quality: production
+root_path: platform/service/cpc
+config_file:
+  - path: config/sl_cpc_security_config.h
+source:
+  - path: src/sl_cpc_security.c
+include:
+  - path: inc
+    file_list:
+      - path: sl_cpc_security.h
+      - path: sli_cpc_security.h
+provides:
+  - name: cpc_security_secondary
+requires:
+  - name: cpc_core
+  - name: psa_its
+  - name: psa_crypto
+  - name: psa_crypto_aes
+  - name: psa_crypto_gcm
+  - name: psa_crypto_sha256
+  - name: psa_crypto_ecdh
+  - name: psa_crypto_ecc_curve25519
+  - name: mbedtls_mpi
+template_contribution:
+  - name: component_catalog
+    value: cpc_security
+validation_helper:
+  - path: cpc_configuration_security_validation.lua

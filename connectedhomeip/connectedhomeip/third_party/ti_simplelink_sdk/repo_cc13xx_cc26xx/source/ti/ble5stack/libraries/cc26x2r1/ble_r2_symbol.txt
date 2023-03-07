@@ -1,0 +1,143 @@
+show *
+hide __aeabi*
+hide __iar*
+hide .iar*
+hide dbgPrintf*
+hide Region*
+hide RT_Init
+hide PAGE_SIZE
+hide R2F_FlashJT
+hide R2R_FlashJT
+hide R2F_FLASH_JT_ADDR
+hide R2R_FLASH_JT_ADDR
+hide ICall_dispatcher
+hide ICall_enterCriticalSection
+hide ICall_leaveCriticalSection
+hide abort
+hide smpInitiatorProcessPairingConfirm
+hide HCI_ReadLocalVersionInfoCmd
+hide abort
+hide rfMode
+hide rfObject
+hide llScheduleTask
+hide LL_DirectTestTxTest
+hide LL_DirectTestRxTest
+hide LL_DirectTestEnd
+hide LL_EXT_ModemTestRx
+hide LL_EXT_EnhancedModemTestTx
+hide LL_WriteDefaultDataLen
+hide LL_EXT_EnhancedModemHopTestTx
+hide LL_EXT_DisconnectImmed
+hide LL_EXT_EnhancedModemTestRx
+hide ll_GenerateDHKey
+hide LL_GenerateDHKeyCmd
+hide ll_ReadLocalP256PublicKey
+hide LL_ReadLocalP256PublicKeyCmd
+hide llRfInit
+hide llRfStartFS
+hide LL_EXT_ModemTestTx
+hide LL_EXT_ModemHopTestTx
+hide LL_PhyUpdateCompleteEventCback
+hide LL_ReadPhy
+hide llCombinePDU
+hide LE_SetExtScanEnable
+hide llFindNextAdvSet
+hide LL_DisableAdvSets
+hide llSetupExtAdv
+hide llSetupExtAdvLegacy
+hide llExtAdv_PostProcess
+hide LE_SetExtAdvData
+hide LE_SetExtScanRspData
+hide llInitFeatureSet
+hide LE_ExtCreateConn
+hide llSetupConn
+hide llSetupNextMasterEvent
+hide llSetupNextSlaveEvent
+hide GapAdv_prepareLoadByHandle
+hide GapAdv_loadByHandle
+hide gapProcessOSALMsg
+hide gapProcessHCICmdCompleteEvt
+hide gapProcessCommandStatusEvt
+hide gapCentProcessConnEvt
+hide gapPeriProcessConnUpdateCmdStatus
+hide gapPeriProcessConnUpdateCompleteEvt
+hide gapPeriProcessConnEvt
+hide gapProcessBLEEvents
+hide gapScan_processStartEndCb
+hide gapScan_filterDiscMode
+hide GAP_SetParamValue
+hide GATT_VerifyReadPermissions
+hide GATT_VerifyWritePermissions
+hide gattProcessReadByType
+hide gattProcessReadReq
+hide gattProcessReadMultiReq
+hide gattProcessWriteReq
+hide gattServApp_ProcessReadByTypeReq
+hide gattServApp_ProcessReadByGrpTypeReq
+hide GATT_UpdateMTU
+hide smpInitiatorProcessPairingRandom
+hide SM_SetECCRegenerationCount
+hide smResponderProcessLTKReq
+hide SM_p256KeyCB
+hide SM_dhKeyCB
+hide smDetermineIOCaps
+hide llConnExists
+hide llNextChanIndex
+hide llSendAdvSetEndEvent
+hide HCI_LE_SetHostChanClassificationCmd
+hide LL_SetRandomAddress
+hide LL_SetAddressResolutionEnable
+hide LL_SetResolvablePrivateAddressTimeout
+hide LL_ENC_DecryptMsg
+hide LL_ENC_Encrypt
+hide LL_ENC_Decrypt
+hide L2CAP_RegisterPsm
+hide LL_ENC_GenerateTrueRandNum
+hide LL_ENC_GeneratePseudoRandNum
+hide llGenerateValidAccessAddr
+hide LL_TxData
+hide HCI_LE_ReadBufSizeCmd
+hide HCI_SendDataPkt
+hide llReleaseConnId
+hide llMaster_TaskEnd
+hide llSlave_TaskEnd
+hide llAdv_TaskConnect
+hide LE_SetExtAdvEnable
+hide llRfSetup
+hide LL_ENC_EncryptMsg
+hide LE_WriteRfPathCompCmd
+hide HCI_LE_WriteRfPathCompCmd
+hide LL_EXT_SetLocalSupportedFeatures
+hide llSetNextDataChan
+hide smpResponderProcessPairingPublicKey
+hide llExtScan_PostProcess
+hide linkDB_NumActive
+hide llTimeCompare
+hide llAllocConnId
+hide GapScan_disable
+hide llFindNextSecCmd
+hide llSetupExtHdr
+hide llSetupConnRxDataEntryQueue
+hide llConnTerminate
+hide llReplaceRxBuffers
+hide LL_ChanMapUpdate
+//
+rename ECC_keyGen                 as eccRom_genKeys
+rename ECDH_commonKey             as eccRom_genSharedSecret
+rename win                        as eccRom_windowSize
+rename workzone                   as eccRom_workzone
+rename data_p                     as eccRom_param_p
+rename data_r                     as eccRom_param_r
+rename data_a                     as eccRom_param_a
+rename data_b                     as eccRom_param_b
+rename data_Gx                    as eccRom_param_Gx
+rename data_Gy                    as eccRom_param_Gy
+rename NIST256_p                  as NIST_Curve_P256_p
+rename NIST256_r                  as NIST_Curve_P256_r
+rename NIST256_a                  as NIST_Curve_P256_a
+rename NIST256_b                  as NIST_Curve_P256_b
+rename NIST256_Gx                 as NIST_Curve_P256_Gx
+rename NIST256_Gy                 as NIST_Curve_P256_Gy
+rename ECDSA_sign as ROM_ECDSA_sign
+rename ECDSA_verif as ROM_ECDSA_verif
+// Leave this line here.

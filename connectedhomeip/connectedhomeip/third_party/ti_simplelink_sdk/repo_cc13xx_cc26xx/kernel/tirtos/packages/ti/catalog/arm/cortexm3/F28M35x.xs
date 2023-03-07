@@ -1,0 +1,66 @@
+/*
+ * Copyright (c) 2016, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+ *  ======== F28M35x.xs ========
+ *
+ */
+
+/*
+ *  ======== F28M35x.getMemoryMap ========
+ *  Returns the memory map as seen by a program running on this device
+ *  when the registers are set as specified by the regs hash.
+ */
+function getMemoryMap(regs)
+{
+    return (this.memMap);
+}
+
+/*
+ *  ======== instance$meta$init ========
+ */
+function instance$meta$init()
+{
+    var Timer = xdc.useModule("ti.catalog.arm.peripherals.timers.Timer");
+    this.timer0 = Timer.create(
+        {name: "Timer 0", baseAddr: 0x40030000, intNum: 35}
+    );
+    this.timer1 = Timer.create(
+        {name: "Timer 1", baseAddr: 0x40031000, intNum: 37}
+    );
+    this.timer2 = Timer.create(
+        {name: "Timer 2", baseAddr: 0x40032000, intNum: 39}
+    );
+    this.timer3 = Timer.create(
+        {name: "Timer 3", baseAddr: 0x40033000, intNum: 51}
+    );
+}

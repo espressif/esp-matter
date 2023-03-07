@@ -1,0 +1,59 @@
+id: emlib_gpio
+label: GPIO
+package: platform
+description: >
+  General Purpose IO (GPIO) peripheral API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_gpio.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_gpio.h"
+provides:
+  - name: emlib_gpio
+requires:
+  - name: device
+  - name: device_has_gpio
+  - name: emlib_common
+  - name: cmsis_core
+  - name: enum
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efm32g/group-gpio
+      condition: [device_sdid_71]
+    - page: emlib/api/efm32gg/group-gpio
+      condition: [device_sdid_72]
+    - page: emlib/api/efm32tg/group-gpio
+      condition: [device_sdid_73]
+    - page: emlib/api/efm32lg/group-gpio
+      condition: [device_sdid_74]
+    - page: emlib/api/efm32zg/group-gpio
+      condition: [device_sdid_76]
+    - page: emlib/api/efm32hg/group-gpio
+      condition: [device_sdid_77]
+    - page: emlib/api/efr32xg1/group-gpio
+      condition: [device_sdid_80]
+    - page: emlib/api/efr32xg12/group-gpio
+      condition: [device_sdid_84]
+    - page: emlib/api/efr32xg13/group-gpio
+      condition: [device_sdid_89]
+    - page: emlib/api/efr32xg14/group-gpio
+      condition: [device_sdid_95]
+    - page: emlib/api/efm32gg11/group-gpio
+      condition: [device_sdid_100]
+    - page: emlib/api/efm32tg11/group-gpio
+      condition: [device_sdid_103]
+    - page: emlib/api/efm32gg12/group-gpio
+      condition: [device_sdid_106]
+    - page: emlib/api/efr32xg21/group-gpio
+      condition: [device_sdid_200]
+    - page: emlib/api/efr32xg22/group-gpio
+      condition: [device_sdid_205]
+    - page: emlib/api/efr32xg23/group-gpio
+      condition: [device_sdid_210]
+    - page: emlib/api/efr32xg24/group-gpio
+      condition: [device_sdid_215]

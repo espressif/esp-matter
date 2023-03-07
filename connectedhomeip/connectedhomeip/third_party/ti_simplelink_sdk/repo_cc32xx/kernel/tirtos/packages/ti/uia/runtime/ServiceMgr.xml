@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="ServiceMgr" title="UIA Service Manager" version="1">
+
+<page name="ServiceManager" title="UIA Service Manager">
+<html><body><table>
+  <tr>
+    <td>
+      <h1>Topology</h1>
+      <form>
+        <p>The ServiceMgr module also supports two different topologies:</p>
+        <li bindent="15">Topology_SINGLECORE: Each core on the device
+           communicates directly the instrumentation host.</li>
+        <li bindent="15">Topology_MULTICORE: Only one core (i.e. master)
+           communicates with the instrumentation host. Communication with
+           other cores are routed to the via the master core.  The master
+           core is determined by the masterProcId parameter. The
+           routing is done via Ipc's MessageQ module.  Note: ServiceMgr is a
+           user of Ipc and depends on the application to configure and
+           initialize Ipc.</li>
+      </form>
+      <table>
+        <tr>
+           <td><control type="radiogroup" value="value:this.topology" label="Topology" tooltip="value:this.topology.$summary" align="left" /></td>
+        </tr>
+        <tr>
+           <td><control type="label" label="Master core ID" align="right"/></td>
+           <td><control type="editbox"
+                value="value:ti.uia.runtime.ServiceMgr.masterProcId"
+                tooltip="value:ti.uia.runtime.ServiceMgr.masterProcId.$summary"
+                enabled="value:this.topology==this.Topology_MULTICORE"/></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <h1>Transport</h1>
+      <form>
+        <p>UIA can be configured for one of the following transports:</p>
+        <li bindent="15">TransportType_ETHERNET: Use the Ethernet transport. On
+           a SYS/BIOS system, this uses the NDK. The application is responsible
+           for adding the NDK into the application and initializing it.</li>
+        <li bindent="15">TransportType_FILE: Use the File transport. On a
+           SYS/BIOS system, this transport requires a JTAG connection.</li>
+        <li bindent="15">TransportType_USER: This allows the application to
+            specify their own transport functions.</li>
+        <li bindent="15">TransportType_NULL: This is used on the non-master cores
+            in a multi-core topology.</li>
+      </form>
+      <table>
+        <tr>
+           <td><control type="radiogroup" value="value:this.transportType" label="Transport" tooltip="value:this.transportType.$summary" align="left" /></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Transport initialization function" align="right"/></td>
+          <td><control type="editbox"
+               value="value:this.transportFxns.initFxn"
+               tooltip="value:this.TransportType.$summary"
+               enabled="value:this.transportType==this.TransportType_USER"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Transport start function" align="right"/></td>
+          <td><control type="editbox"
+               value="value:this.transportFxns.startFxn"
+               tooltip="value:this.TransportType.$summary"
+               enabled="value:this.transportType==this.TransportType_USER"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Transport receive function" align="right"/></td>
+          <td><control type="editbox"
+               value="value:this.transportFxns.recvFxn"
+               tooltip="value:this.TransportType.$summary"
+               enabled="value:this.transportType==this.TransportType_USER"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Transport send function" align="right"/></td>
+          <td><control type="editbox"
+               value="value:this.transportFxns.sendFxn"
+               tooltip="value:this.TransportType.$summary"
+               enabled="value:this.transportType==this.TransportType_USER"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Transport stop function" align="right"/></td>
+          <td><control type="editbox"
+               value="value:this.transportFxns.stopFxn"
+               tooltip="value:this.TransportType.$summary"
+               enabled="value:this.transportType==this.TransportType_USER"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Transport exit function" align="right"/></td>
+          <td><control type="editbox"
+               value="value:this.transportFxns.exitFxn"
+               tooltip="value:this.TransportType.$summary"
+               enabled="value:this.transportType==this.TransportType_USER"/></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+</table></body></html>
+</page>
+
+
+<properties name="Advanced" title="All Agent Options" enabled="true" visible="true" link="this"/>
+</gep>

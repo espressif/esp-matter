@@ -1,0 +1,18 @@
+[
+      {
+        "name": "Main",
+        "location": "0x0000",
+        "sig_models" : [
+          {"mid":"0x1303", "name":"Light CTL Server"},
+          {"mid":"0x1304", "name":"Light CTL Setup Server"}
+        ]
+      },
+      {
+        "name": "Temperature",
+        "location": "0x0000",
+        "sig_models" : [
+          {"mid":"0x1002", "name":"Generic Level Server"},
+          {"mid":"0x1306", "name":"Light CTL Temperature Server"}
+        ]
+      }
+]

@@ -1,0 +1,243 @@
+project_name: connect_soc_ecdh_key_exchange
+label: "Connect - SoC ECDH Key Exchange"
+package: Flex
+description: "This sample application illustrates how we could share the network key between multiple devices in a secure way (using Elliptic-curve Diffie-Hellman (ECDH) key agreement protocol)."
+category: Connect Examples
+quality: production
+
+#---------------- UC/UP components -------------------
+component:
+  - id: radio_config_simple_connect_singlephy
+  - id: sl_system
+  - id: app_log
+  # Connect components
+  - id: connect_app_framework_common
+  - id: connect_aes_security
+  - id: sl_connect_ecdh_key_exchange
+#---------------------- CLI --------------------------
+  - id: cli
+    instance:
+    - example
+#-----------Need while connect uses printf -----------
+  - id: printf
+  - id: iostream_recommended_stream
+  - id: iostream_retarget_stdio
+#------------Memory Protection Unit-------------------
+  - id: mpu
+
+
+#-------------- Restriction rules -------------------
+  - id: restrictions_profile_connect
+  - id: restrictions_profile_long_range
+
+#----------------- Provide list ----------------------
+provides:
+  - name: simple_connect_singlephy_application
+#----------------- Require list ----------------------
+requires:
+  - name: a_radio_config
+
+#----------------- Project files ---------------------
+include:
+  - path: "."
+    file_list:
+      - path: "app_init.h"
+      - path: "app_process.h"
+      - path: "app.h"
+
+source:
+  - path: "main.c"
+  - path: "app_init.c"
+  - path: "app_process.c"
+  - path: "app_cli.c"
+    condition:
+    - "cli"
+
+other_file:
+  - path: "../../../script/connect_create_gbl_image.bat"
+  - path: "../../../script/connect_create_gbl_image.sh"
+  - path: "hw_filter_tags.yaml"
+    condition:
+      - "add_hw_filter_to_project"
+
+readme:
+  - path: ../../../documentation/example/connect/connect_soc_ecdh_key_exchange/readme.md
+
+#----------------- Project macros --------------------
+
+
+#------------ Configuration overrides ----------------
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+  - name: SL_CLI_LOCAL_ECHO
+    value: "(1)"
+  - name: SL_CLI_INPUT_BUFFER_SIZE
+    value: "(256)"
+  - name: SL_IOSTREAM_USART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "(1)"
+  - name: SL_IOSTREAM_USART_VCOM_FLOW_CONTROL_TYPE
+    value: "usartHwFlowControlNone"
+  - name: SL_IOSTREAM_EUSART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "(1)"
+  - name: SL_IOSTREAM_EUSART_VCOM_FLOW_CONTROL_TYPE
+    value: "eusartHwFlowControlNone"
+  - name: APP_LOG_PREFIX_ENABLE
+    value: "0"
+  - name: "SL_HEAP_SIZE"
+    value: "8192"
+  - name: "SL_STACK_SIZE"
+    value: "8192"
+  - name: "EMBER_AF_PLUGIN_CMSIS_RTOS_CONNECT_STACK_SIZE"
+    value: "(800)"
+  - name: "EMBER_AF_PLUGIN_CMSIS_RTOS_APP_FRAMEWORK_STACK_SIZE"
+    value: "(800)"
+  - name: "SL_CLI_EXAMPLE_TASK_STACK_SIZE"
+    value: "1024"
+
+#--------------------- Toolchain ------------------------
+toolchain_settings:
+  - option: optimize
+    value: debug
+#-------------- Template Contribution ----------------
+template_contribution:
+#------------------ CLI commands ---------------------
+  - name: cli_command
+    value:
+      name: info
+      handler: cli_info
+      help: "Show network parameters"
+  - name: cli_command
+    value:
+      name: leave
+      handler: cli_leave
+      help: "De-configure network"
+  - name: cli_command
+    value:
+      name: set_network_key
+      handler: cli_set_network_key
+      help: "Set an arbitrary network key"
+      argument:
+      - type: hex
+        help: "Network key"
+  - name: cli_command
+    value:
+      name: generate_random_network_key
+      handler: cli_generate_random_network_key
+      help: "Generate a random network key"
+  - name: cli_command
+    value:
+      name: send
+      handler: cli_send
+      help: "Send a message to the specified address"
+      argument:
+      - type: uint16
+        help: "Address"
+      - type: hex
+        help: "Message"
+  - name: cli_command
+    value:
+      name: commission
+      handler: cli_commission
+      help: "Configure the network, assign short address"
+      argument:
+      - type: uint16
+        help: "Address"
+  - name: cli_command
+    value:
+      name: request_network_key
+      handler: cli_request_network_key
+      help: "Initiate key exchange and retrieve the network key from a remote node"
+      argument:
+      - type: uint16
+        help: "Address"
+  - name: cli_command
+    value:
+      name: generate_key_pair
+      handler: cli_generate_key_pair
+      help: "Generate local public/private key pair"
+  - name: cli_command
+    value:
+      name: export_public_key
+      handler: cli_export_public_key
+      help: "Export public key for the specified key ID"
+      argument:
+      - type: uint32
+        help: "Key ID"
+  - name: cli_command
+    value:
+      name: generate_shared_key
+      handler: cli_generate_shared_key
+      help: "Generate the shared key from local and remote keys"
+      argument:
+      - type: uint32
+        help: "Key ID"
+      - type: hex
+        help: "Remote key"
+  - name: cli_command
+    value:
+      name: encrypt_message
+      handler: cli_encrypt_message
+      help: "Encrypt message with the provided key"
+      argument:
+      - type: uint32
+        help: "Key ID"
+      - type: hex
+        help: "Message"
+  - name: cli_command
+    value:
+      name: decrypt_message
+      handler: cli_decrypt_message
+      help: "Decrypt message with the provided key and iv"
+      argument:
+      - type: uint32
+        help: "Key ID"
+      - type: hex
+        help: "Initial vector"
+      - type: hex
+        help: "Message"
+  - name: cli_command
+    value:
+      name: destroy_key
+      handler: cli_destroy_key
+      help: "Destroy previously created key and free the resources"
+      argument:
+      - type: uint32
+        help: "Key ID"
+  - name: cli_command
+    value: 
+      name: set_pan_id
+      handler: cli_set_pan_id
+      help: "Set the PAN ID of the node"
+      argument:
+      - type: uint16
+        help: "2 byte PAN ID"
+  - name: cli_command
+    value: 
+      name: set_channel
+      handler: cli_set_channel
+      help: "Set the communication channel"
+      argument:
+      - type: uint16
+        help: "2 byte channel number"
+  - name: cli_command
+    value:
+      name: set_power
+      handler: cli_set_power
+      help: "Set the current transmit power"
+      argument:
+      - type: int16
+        help: "Tx power"
+
+ui_hints:
+  highlight:
+    - path: readme.md
+      focus: true
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Connect"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]

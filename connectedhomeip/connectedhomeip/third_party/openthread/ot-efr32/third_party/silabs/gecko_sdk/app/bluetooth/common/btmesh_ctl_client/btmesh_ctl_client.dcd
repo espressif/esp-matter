@@ -1,0 +1,9 @@
+[
+      {
+        "name": "Main",
+        "location": "0x0000",
+        "sig_models" : [
+          {"mid":"0x1305", "name":"Light CTL Client"}
+        ]
+      }
+]

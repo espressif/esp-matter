@@ -1,0 +1,136 @@
+Release Name: MCUXpresso Software Development Kit (SDK)
+Release Version: 2.6.0
+Package License: LA_OPT_NXP_Software_License.htm - Production Use, Section 2.3 applies
+
+KSDK_Peripheral_Driver     Description: Peripheral drivers are designed for  
+                           the most common use cases identified for the      
+                           underlying hardware block.                        
+                           Author: Freescale                                 
+                           Version: 2.x.x                                    
+                           License: Open Source - BSD-3-Clause               
+                           Format: source code                               
+                           name: KSDK Peripheral Driver                      
+                           Location: devices/<device>/drivers                
+
+usb                        version: 2.2.0                                    
+                           Location: middleware/usb                          
+                           Description: Freescale USB stack. This is a       
+                           version of the USB stack that has been integrated 
+                           with the MCUXpresso SDK.                          
+                           License: Open Source - BSD-3-Clause               
+                           Author: Freescale                                 
+                           name: USB                                         
+                           Format: source code                               
+
+Amazon_FreeRTOS            Author: Real Time Engineers, Ltd.                 
+                           Description: IoT operating system for             
+                           microcontrollers                                  
+                           Format: source code                               
+                           License: MIT. See                                 
+                           ,<rootfolder>/rtos/amazon-freertos/License.       
+                           Location: rtos/amazon-freertos                    
+                           name: Amazon FreeRTOS                             
+                           URL: https://aws.amazon.com/freertos/             
+                           version: 1.4.6                                    
+
+FreeRTOS_heap_newlib       Author: Dave Nadler, Nadler & Associates          
+                           Consulting                                        
+                           Description: Newlib allocator for FreeRTOS        
+                           Format: source code                               
+                           License: Open Source - BSD-3-Clause               
+                           Location:                                         
+                           rtos/amazon-freertos/lib/FreeRTOS/portable/MemMang
+                           /                                                 
+                           name: Amazon FreeRTOS                             
+                           URL:                                              
+                           http://www.nadler.com/embedded/newlibAndFreeRTOS.h
+                           tml                                               
+                           version: 1.0.0                                    
+
+sdmmc                      name: SD MMC SDIO Card middleware                 
+                           Location: middleware/sdmmc                        
+                           License: Open Source - BSC-3-Clause               
+                           Description: A software component support SD card,
+                           eMMC card, SDIO card.                             
+                           Author: Freescale                                 
+                           version: 2.2.7                                    
+                           Format: source code                               
+
+fatfs                      Approved Open Source License: Yes                 
+                           Author: Electronic Lives Mfg. by ChaN of Ageo     
+                           city, Japan (hobbyist)                            
+                           Description: FatFs is a generic FAT file system   
+                           module for small embedded systems.                
+                           Format: source code                               
+                           License: Open Source - FatFs License,             
+                           middleware/fatfs/LICENSE.txt                      
+                           Location: middleware/fatfs                        
+                           name: FatFs                                       
+                           URL: http://elm-chan.org/fsw/ff/00index_e.html    
+                           version: 0.13c                                    
+
+cmsisdsp                   name: CMSIS DSP Library                           
+                           Format: source code                               
+                           License: Apache License 2.0, See CMSIS/LICENSE.txt
+                           parentversion: 1.5.2                              
+                           Author: ARM                                       
+                           version: 1.5.2 (CMSIS download 5.3.0)             
+                           URL:                                              
+                           https://github.com/ARM-software/CMSIS_5/releases/t
+                           ag/5.3.0                                          
+                           Location: CMSIS/DSP_Lib                           
+                           Description: A digital signal processing library  
+                           for Cortex-M cores from ARM                       
+
+cmsiscore                  Author: ARM                                       
+                           parentversion: 5.1.1                              
+                           URL:                                              
+                           https://github.com/ARM-software/CMSIS_5/releases/t
+                           ag/5.3.0                                          
+                           name: CMSIS Core header files                     
+                           Format: source code                               
+                           License: Apache License 2.0, See CMSIS/LICENSE.txt
+                           Location: CMSIS/Include                           
+                           version: 5.1.1 (CMSIS Download 5.3.0)             
+                           Description: Industry-standard header files       
+                           distributes by ARM for cortex-M cores             
+
+cmsis_drivers              Author: Freescale                                 
+                           version: 2.x.x                                    
+                           Format: source code                               
+                           Description: CMSIS Peripheral drivers are designed
+                           to provide hardware independent APIs which make   
+                           application reusable across a wide range of       
+                           supported microcontroller devices.                
+                           name: KSDK CMSIS Peripheral Drivers               
+                           Location: devices/<device>/cmsis_drivers          
+                           License: Open Source - Apache 2.0 & BSD-3-Clause  
+
+multicore                  version: 2.6.0                                    
+                           Location: middleware/multicore                    
+                           Description: NXP Multicore Software Development   
+                           Kit.                                              
+                           License: Open Source - BSD-3-Clause               
+                           Author: NXP                                       
+                           name: Multicore SDK                               
+                           Format: source code                               
+
+rpmsg_lite                 version: 2.2.0                                    
+                           Location: middleware/multicore/rpmsg_lite         
+                           Description: Open Asymmetric Multi Processing     
+                           (OpenAMP) framework project                       
+                           License: Open Source - BSD-3-Clause               
+                           Author: Mentor Graphics Corporation & community   
+                           contributors                                      
+                           name: RPMsg-Lite                                  
+                           Format: source code                               
+                           URL: https://github.com/OpenAMP/open-amp          
+
+dsp_audio_framework        version: 1.3p5_Alpha                              
+                           Location: middleware/dsp/audio_framework          
+                           Description: DSP Audio Streamer Framework based on
+                           Xtensa Audio Framework from Cadence Design        
+                           License: Open Source - BSD-3-Clause               
+                           Author: Cadence Design Systems, Inc. & NXP        
+                           name: dsp_audio_framework                         
+                           Format: source code                               

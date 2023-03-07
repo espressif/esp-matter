@@ -1,0 +1,307 @@
+<configurator>
+
+  <enum name="CustomStatus" type="ENUM8" description="Status Codes">
+    <item name="A"                      value="0x00" />
+    <item name="B"                      value="0x01" />
+    <item name="C"               value="0x70" />
+    <item name="D" value="0x71" />
+    <item name="E" value="0x72" />
+    <item name="F"            value="0x73" />
+    <item name="G"           value="0x74" />
+    <item name="H"               value="0x7E" />
+    <item name="I"      value="0x7F" />
+    <item name="J"            value="0x80" />
+    <item name="K"        value="0x81" />
+    <item name="L"        value="0x82" />
+    <item name="M"  value="0x83" />
+    <item name="N"  value="0x84" />
+    <item name="O"                value="0x85" />
+    <item name="P"        value="0x86" />
+    <item name="Q"                value="0x87" />
+    <item name="R"                    value="0x88" />
+    <item name="S"           value="0x89" />
+    <item name="T"             value="0x8A" />
+    <item name="U"                    value="0x8B" />
+    <item name="V"       value="0x8C" />
+    <item name="W"            value="0x8D" />
+    <item name="X"             value="0x8E" />
+    <item name="Y"                   value="0x8F" />
+    <item name="Z"   value="0x90" />
+    <item name="AA"          value="0x91" />
+    <item name="AB"                 value="0x92" />
+    <item name="AC"                value="0x93" />
+    <item name="AD"                      value="0x94" />
+    <item name="AE"                        value="0x95" />
+    <item name="AF"                value="0x96" />
+    <item name="AG"                value="0x97" />
+    <item name="AH"           value="0x98" />
+    <item name="AI"           value="0x99" />
+    <item name="AJ"             value="0xC0" />
+    <item name="AK"             value="0xC1" />
+    <item name="AL"            value="0xC2" />
+  </enum>
+
+  <enum name="CustomType" type="ENUM8">
+    <item name="T1"       value="0x00" />
+    <item name="T2"     value="0x01" />
+    <item name="T3"        value="0x02" />
+  </enum>
+
+  <enum name="CustomLevel" type="ENUM8">
+    <item name="L1"        value="0x00" />
+    <item name="L2"      value="0x01" />
+    <item name="L3"  value="0x02" />
+    <item name="L4"         value="0x03" />
+    <item name="L5"        value="0x04" />
+    <item name="L6"      value="0x05" />
+  </enum>
+
+  <enum name="CustomArea" type="ENUM8">
+    <item name="A1"        value="0x00" />
+  </enum>
+
+  <enum name="CustomType2" type="ENUM16">
+    <item name="T21"        value="0x0000" />
+  </enum>
+
+  <struct name="CustomStruct">
+    <item name="S1"       type="UTC_TIME" />
+    <item name="S2"      type="CustomType2" />
+    <item name="S3"      type="CustomLevel"  />
+    <item name="S4"       type="CustomArea" />
+  </struct>
+
+  <enum name="CustomId" type="ENUM8">
+    <item name="I1"             value="0x00" />
+    <item name="I2"            value="0x01" />
+    <item name="I3"            value="0x02" />
+    <item name="I4"        value="0x03" />
+  </enum>
+
+  <enum name="CustomColor" type="ENUM8">
+    <item name="C1"      value="0x0"/>
+    <item name="C2"    value="0x1"/>
+    <item name="C3"    value="0x2"/>
+    <item name="C4"     value="0x3"/>
+    <item name="C5"      value="0x4"/>
+  </enum>
+
+  <cluster manufacturerCode="0x10e0">
+    <name>Custom Cluster</name>
+    <domain>SE</domain>
+    <description>A Custom Cluster
+    </description>
+
+    <!-- Cluster Id must be within the mfg spec range 0xfc00 - 0xffff -->
+    <code>0xFCa7</code>
+    <define>CUSTOM_CLUSTER</define>
+    <client init="false" tick="false">true</client>
+    <server init="false" tick="false">true</server>
+
+    <attribute manufacturerCode="0x10e0" side="server" code="0x0001" define="A1"
+      type="INT8U" min="0x00" max="0x01" writable="true"
+      default="0x01" optional="false">A1</attribute>
+
+    <attribute manufacturerCode="0x10e0" side="server" code="0x0100" define="A2"
+        type="INT32U" min="0x00" max="0xFFFFFFFE" writable="false"
+        default="576" optional="false">A2</attribute>
+
+    <attribute  manufacturerCode="0x10e0" side="server" code="0x0101" define="A3"
+        type="INT16U" min="0x00" max="0xFFFE" writable="false"
+        default="24" optional="true">A3</attribute>
+
+    <attribute  manufacturerCode="0x10e0" side="server" code="0x0102" define="A4"
+        type="INT16U" min="0x00" max="0xFFFE" writable="false"
+        default="192" optional="true">A4</attribute>
+
+    <attribute  manufacturerCode="0x10e0" side="server" code="0x0103" define="A5"
+        type="INT8U" min="0x00" max="0xFE" writable="false"
+        default="1" optional="true">A5</attribute>
+
+    <attribute manufacturerCode="0x10e0" side="server" code="0x0200" define="A6"
+      type="INT8U" writable="true" default="0x01" optional="true">A6</attribute>
+
+    <attribute  manufacturerCode="0x10e0" side="server" code="0x0300" define="A7"
+      type="INT8U" min="0x0" writable="false"
+      default="0" optional="true">A7</attribute>
+
+    <attribute manufacturerCode="0x10e0" side="server" code="0x0301" define="A8"
+      type="INT16U" min="0" writable="false"
+      default="0" optional="true">A8</attribute>
+
+    <!-- COMMANDS -->
+    <!-- Client Commands -->
+    <command source="client" code="0x00"
+      name="C1"
+      optional="false">
+      <description>
+        C1
+      </description>
+      <arg name="arg1" type="INT16U" />
+    </command>
+
+    <command source="client" code="0x01"
+      name="C2"
+      optional="false">
+      <description>
+        C2
+      </description>
+      <arg name="arg1" type="INT16U" />
+    </command>
+
+    <command source="client" code="0x02"
+      name="C3"
+      optional="true">
+      <description>
+        C3
+      </description>
+      <arg name="arg1" type="INT16U" />
+    </command>
+
+    <command source="client" code="0x03"
+      name="C4"
+      optional="false">
+      <description>
+        C4
+      </description>
+      <arg name="arg1" type="INT16U" />
+      <arg name="arg2" type="INT16U" />
+      <arg name="arg3" type="INT16U" />
+    </command>
+
+    <command source="client" code="0x04"
+      name="C5"
+      optional="true" >
+      <description>
+        C5
+      </description>
+      <arg name="arg1" type="INT16U" />
+      <arg name="arg2" type="UTC_TIME" />
+      <arg name="arg3" type="CustomType" />
+      <arg name="arg4" type="INT16U" />
+      <arg name="arg5" type="INT16U" />
+    </command>
+
+    <command source="client" code="0x05"
+      name="C6"
+      optional="false" >
+      <description>
+        C6
+      </description>
+      <arg name="arg1" type="INT16U" />
+    </command>
+
+    <command source="client" code="0x06" name="C7" optional="true" >
+      <description>
+        C7
+      </description>
+      <arg name="arg1" type="INT16U" />
+      <arg name="arg2" type="INT16U" />
+      <arg name="arg3" type="INT16U" />
+    </command>
+
+    <command source="client" code="0x07"
+      name="C8"
+      optional="false">
+      <description>
+        C8
+      </description>
+      <arg name="arg1" type="INT16U" />
+      <arg name="arg2" type="INT8U" />
+    </command>
+
+    <command source="client" code="0x08"
+      name="C9"
+      optional="false">
+      <description>
+        C9
+      </description>
+      <arg name="arg1" type="INT16U" />
+    </command>
+
+    <command source="client" code="0x09"
+      name="C10"
+      optional="false">
+      <description>
+        C10
+      </description>
+      <arg name="arg1" type="INT16U" />
+      <arg name="arg2" type="CustomId"/>
+    </command>
+
+    <command source="client" code="0x0A"
+      name="C11"
+      optional="true">
+      <description>
+        C11
+      </description>
+      <arg name="arg1" type="INT16U"/>
+      <arg name="arg2" type="CustomId" />
+      <arg name="arg3" type="INT32S" />
+    </command>
+
+
+    <!-- Server commands -->
+    <command source="server" code="0x00"
+      name="C12"
+      optional="false">
+      <description>
+        C12
+      </description>
+      <arg name="arg1" type="INT32U" />
+      <arg name="arg2" type="OCTET_STRING" />
+    </command>
+
+    <command source="server" code="0x01"
+      name="C13"
+      optional="false" >
+      <description>
+        C13
+      </description>
+      <arg name="arg1" type="INT32U" />
+      <arg name="arg" type="CustomStatus" />
+    </command>
+
+    <command source="server" code="0x02" name="C14"
+      optional="false" >
+      <description>
+        C14
+      </description>
+      <arg name="arg1" type="INT32U" />
+      <arg name="arg2" type="UTC_TIME" />
+      <arg name="arg3" type="INT16U" />
+      <arg name="arg4" type="CustomLevel" />
+      <arg name="arg5" type="OCTET_STRING" />
+    </command>
+
+    <command source="server" code="0x03" name="C15"
+      optional="false" >
+      <description>
+        C15
+      </description>
+      <arg name="arg1" type="INT32U" />
+      <arg name="arg2" type="CustomStruct" />
+    </command>
+
+    <command source="server" code="0x04" name="C16"
+      optional="false" >
+      <description>
+        C16
+      </description>
+      <arg name="arg1" type="INT32U" />
+      <arg name="arg2" type="CustomId" />
+      <arg name="arg3" type="INT32S" />
+    </command>
+  </cluster>
+  <!-- Use the cluster extension to extend the identify cluster(Standard Cluster) -->
+  <clusterExtension code="0x0003">
+    <attribute side="server" code="0x0000" define="SAMPLE_MFG_SPECIFIC_IDENTIFY_1" type="INT8U" min="0x0000" max="0xFFFF" writable="true" default="0x0000" optional="true" manufacturerCode="0xABCD">Sample Mfg Specific Attribute: 0x0000 0xABCD</attribute>
+    <attribute side="server" code="0x0001" define="SAMPLE_MFG_SPECIFIC_IDENTIFY_2" type="INT16U" min="0x0000" max="0xFFFF" writable="true" default="0x0000" optional="true" manufacturerCode="0xABCD">Sample Mfg Specific Attribute: 0x0001 0x1040</attribute>
+    <command source="client" code="0x01" name="SampleMfgSpecificIdentifyCommand1" optional="true" manufacturerCode="0xABCD">
+      <description>Command Extension 1</description>
+    </command>
+    <command source="client" code="0x02" name="SampleMfgSpecificIdentifyCommand2" optional="true" manufacturerCode="0xABCD">
+      <description>Command Extension 2</description>
+    </command>
+  </clusterExtension>
+</configurator>

@@ -1,0 +1,382 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Core dump &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../index.html"/>
+        <link rel="up" title="&lt;no title&gt;" href="index.html"/>
+        <link rel="next" title="BL libc" href="Libc.html"/>
+        <link rel="prev" title="&lt;no title&gt;" href="index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Examples/index.html">Example</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Components</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Coredump</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">功能</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">结构</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Libc.html">Libc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Start.html">Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Middleware/yloop.html">yloop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Middleware/vfs.html">vfs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Middleware/devicetree.html">dts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Middleware/blog.html">blog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../BLE/ble_stack.html">ble_stack</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Components</a> &raquo;</li>
+        
+          <li><a href="index.html">&lt;no title&gt;</a> &raquo;</li>
+        
+      <li>Core dump</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/Components/System/Coredump.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="core-dump">
+<h1>Core dump<a class="headerlink" href="#core-dump" title="永久链接至标题"></a></h1>
+<p>在系统异常时dump出指定的内存数据</p>
+<div class="section" id="id1">
+<h2>功能<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<ol class="arabic simple">
+<li>可选配置默认dump区域，在exception时自动dump至UART，通过串口工具保存</li>
+<li>输出端口可配（用户自行适配）：</li>
+</ol>
+<ul class="simple">
+<li>串口</li>
+<li>flash</li>
+<li>spi</li>
+</ul>
+<ol class="arabic simple">
+<li>base64加密编码输出</li>
+</ol>
+</div>
+<div class="section" id="id2">
+<h2>结构<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<ol class="arabic simple">
+<li>Dump Tool命令</li>
+</ol>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="13%" />
+<col width="19%" />
+<col width="13%" />
+<col width="19%" />
+<col width="13%" />
+<col width="8%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">type</th>
+<th class="head">header</th>
+<th class="head">operation</th>
+<th class="head">*data</th>
+<th class="head">operation</th>
+<th class="head">*data</th>
+<th class="head">stop</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>len</strong></td>
+<td>1</td>
+<td>1</td>
+<td>4</td>
+<td>1</td>
+<td>4</td>
+<td>1</td>
+</tr>
+<tr class="row-odd"><td><strong>data</strong></td>
+<td>$</td>
+<td>command</td>
+<td>addr</td>
+<td>command</td>
+<td>len</td>
+<td>#</td>
+</tr>
+</tbody>
+</table>
+<p>operation支持以下命令：</p>
+<blockquote>
+<div>所有命令均为字符型</div></blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">command</th>
+<th class="head">info</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>d</td>
+<td>dump默认内存区域</td>
+</tr>
+<tr class="row-odd"><td>x</td>
+<td>指定dump地址</td>
+</tr>
+<tr class="row-even"><td>l</td>
+<td>指定dump长度</td>
+</tr>
+<tr class="row-odd"><td>...</td>
+<td>&#160;</td>
+</tr>
+</tbody>
+</table>
+<p><strong>注：</strong></p>
+<ul class="simple">
+<li><strong>x和l参数成对传入，先传入x，再传入l，若未提供l，默认dump长度为0x1000</strong></li>
+<li><strong>一次命令仅可包含一对``addr/len``</strong></li>
+<li><strong>若未配置默认dump区域，d命令不会响应；传入d命令时，其他指令会被忽略</strong></li>
+</ul>
+<ol class="arabic simple">
+<li>dump data</li>
+</ol>
+<table border="1" class="docutils">
+<colgroup>
+<col width="56%" />
+<col width="8%" />
+<col width="36%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">header</th>
+<th class="head">data</th>
+<th class="head">crc stop</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>------ DATA BEGIN <a class="reference external" href="mailto:addr&#37;&#52;&#48;len">addr<span>&#64;</span>len</a> ------</td>
+<td>***</td>
+<td>------ END crc ------</td>
+</tr>
+</tbody>
+</table>
+<p>CRC为解码后原数据的CRC，不是base64编码的CRC</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Libc.html" class="btn btn-neutral float-right" title="BL libc" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="&lt;no title&gt;" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

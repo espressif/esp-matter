@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.date_time" name="Date Time" uuid="2A08">
+    <InformativeText>
+        <Abstract>
+            The Date Time characteristic is used to represent time.
+        </Abstract> 
+        <Summary>
+            The Date Time characteristic contains fields for year, month, day, hours, minutes and seconds. Calendar days in Date Time are represented using Gregorian calendar. Hours in Date Time are represented in the 24h system.
+        </Summary>
+    </InformativeText>
+    <Value>
+        <Field name="Year">
+            <InformativeText>Year as defined by the Gregorian calendar.
+            </InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>uint16</Format>
+            <Unit>org.bluetooth.unit.time.year</Unit>
+            <Minimum>1582</Minimum>
+            <Maximum>9999</Maximum>
+            <AdditionalValues>
+                <Enumeration key="0" value="Year is not known" />
+            </AdditionalValues>
+        </Field>
+        <Field name="Month">
+            <InformativeText>
+                Month of the year as defined by the Gregorian calendar.
+            </InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+            <Unit>org.bluetooth.unit.time.month</Unit>
+            <Minimum>0</Minimum>
+            <Maximum>12</Maximum>
+            <Enumerations> 
+                <Enumeration key="0" value="Month is not known" />
+                <Enumeration key="1" value="January" />
+                <Enumeration key="2" value="February" />
+                <Enumeration key="3" value="March" />
+                <Enumeration key="4" value="April" />
+                <Enumeration key="5" value="May" />
+                <Enumeration key="6" value="June" />
+                <Enumeration key="7" value="July" />
+                <Enumeration key="8" value="August" />
+                <Enumeration key="9" value="September" />
+                <Enumeration key="10" value="October" />
+                <Enumeration key="11" value="November" />
+                <Enumeration key="12" value="December" />
+            </Enumerations>
+                     
+        </Field>
+        <Field name="Day">
+            <InformativeText>
+                Day of the month as defined by the Gregorian calendar.
+            </InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+            <Unit>org.bluetooth.unit.time.day</Unit>
+            <Minimum>1</Minimum>
+            <Maximum>31</Maximum>
+            <AdditionalValues>
+                <Enumeration key="0" value="Day of Month is not known" />
+            </AdditionalValues>
+        </Field>
+        <Field name="Hours">
+            <InformativeText>
+                Number of hours past midnight.
+            </InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+            <Unit>org.bluetooth.unit.time.hour</Unit>
+            <Minimum>0</Minimum>
+            <Maximum>23</Maximum>
+        </Field>
+        <Field name="Minutes">
+            <InformativeText>
+                Number of minutes since the start of the hour.
+            </InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+            <Unit>org.bluetooth.unit.time.minute</Unit>
+            <Minimum>0</Minimum>
+            <Maximum>59</Maximum>
+        </Field>
+        <Field name="Seconds">
+            <InformativeText>
+                Number of seconds since the start of the minute.
+            </InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+            <Unit>org.bluetooth.unit.time.second</Unit>
+            <Minimum>0</Minimum>
+            <Maximum>59</Maximum>
+        </Field>
+    </Value>
+    
+        <Note>
+            The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet.
+        </Note>
+    
+</Characteristic>

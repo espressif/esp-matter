@@ -1,0 +1,33 @@
+id: toolchain_iar
+label: IAR Toolchain
+package: platform
+description: Toolchain support for IAR
+category: Platform|Toolchain
+quality: production
+root_path: platform/common
+tag:
+  - toolchain:id:iar
+provides:
+  - name: toolchain
+  - name: toolchain_iar
+  - name: toolchain_supports_arm
+requires:
+  - name: toolchain_variant
+  - name: toolchain_variant_arm
+    condition: [device_cortexm]
+  - name: sl_memory
+    condition: [device_cortexm]
+template_file:
+  - path: toolchain/iar/linkerfile.icf.jinja
+    condition: [device_cortexm]
+    unless: [memory_layout_legacy_hal]
+  - path: toolchain/iar/linkerfile_base.icf.jinja
+    condition: [device_cortexm, memory_layout_legacy_hal]
+toolchain_settings:
+  - option: linkerfile
+    value: autogen/linkerfile.icf
+    condition: [device_cortexm]
+    unless: [memory_layout_legacy_hal]
+  - option: linkerfile
+    value: autogen/linkerfile_base.icf
+    condition: [device_cortexm, memory_layout_legacy_hal]

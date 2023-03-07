@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Personality id="20x19_quadrature" name="Quadrature Decoder" version="1.0" path="Digital Functions" xmlns="http://cypress.com/xsd/cyhwpersonality_v1">
+  <Dependencies>
+    <IpBlock name="20x19_quadrature" />
+    <Resource name="quadrature" />
+  </Dependencies>
+  <ExposedMembers />
+  <Parameters>
+    <ParamDoc id="apiDoc" name="Configuration Help" group="Peripheral Documentation" default="file:///`${cy_libs_path()}`/docs/group___quadrature.html" linkText="Open Quadrature Documentation" visible="true" desc="Opens the Hardware Driver Documentation" />
+
+    <ParamSignal port="qdx[0]" name="QDX0" group="Pins" visible="true" desc="X-axis input 0." canBeEmpty="false" />
+    <ParamSignal port="qdx[1]" name="QDX1" group="Pins" visible="true" desc="X-axis input 1." canBeEmpty="false" />
+    <ParamSignal port="qdy[0]" name="QDY0" group="Pins" visible="true" desc="Y-axis input 0." canBeEmpty="false" />
+    <ParamSignal port="qdy[1]" name="QDY1" group="Pins" visible="true" desc="Y-axis input 1." canBeEmpty="false" />
+    <ParamSignal port="qdz[0]" name="QDZ0" group="Pins" visible="true" desc="Z-axis input 0." canBeEmpty="false" />
+    <ParamSignal port="qdz[1]" name="QDZ1" group="Pins" visible="true" desc="Z-axis input 1." canBeEmpty="false" />
+
+    <ParamString id="instNum" name="" group="" default="`${getInstNumber(&quot;quadrature&quot;)}`" visible="false" editable="false" desc="" />
+  </Parameters>
+
+  <DRCs/>
+
+  <ConfigFirmware>
+
+  </ConfigFirmware>
+</Personality>

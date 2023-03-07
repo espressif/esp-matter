@@ -1,0 +1,34 @@
+id: iot_reset
+category: Third Party|Amazon FreeRTOS - AWS Libraries|Common I/O
+label: IoT Reset
+description: >
+  Silicon Labs' Implementation of Amazon Common I/O Reset API
+  Doc: https://docs.aws.amazon.com/freertos/latest/lib-ref/common-io/files.html
+package: amazon_platform
+quality: production
+provides:
+  - name: iot_reset
+requires:
+  - name: freertos
+  - name: device_init
+  - name: emlib_chip
+  - name: emlib_rmu
+  - name: status
+root_path: util/third_party/aws_iot_libs
+config_file:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_reset/config/iot_reset_cfg.h
+    file_id: iot_reset_cfg
+
+source:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_reset/source/iot_reset_drv.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_reset/source/iot_reset_hal.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_reset/test/iot_reset_test.c
+    condition: ["aws_tests_defs"]
+
+include:
+  - path: libraries/abstractions/common_io/include
+    file_list:
+      - path: iot_reset.h
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_reset/include
+    file_list:
+      - path: iot_reset_drv.h

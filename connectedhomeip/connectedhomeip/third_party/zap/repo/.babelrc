@@ -1,0 +1,25 @@
+{
+  "plugins": ["@babel/plugin-syntax-dynamic-import"],
+  "env": {
+    "development": {
+      "plugins": ["@babel/plugin-syntax-dynamic-import", "istanbul"]
+    },
+    "test": {
+      "plugins": ["dynamic-import-node"],
+      "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "modules": "commonjs",
+            "useBuiltIns": "usage",
+            "corejs": 3,
+            "targets": {
+              "node": "current"
+            }
+          }
+        ],
+        "@babel/preset-typescript"
+      ]
+    }
+  }
+}

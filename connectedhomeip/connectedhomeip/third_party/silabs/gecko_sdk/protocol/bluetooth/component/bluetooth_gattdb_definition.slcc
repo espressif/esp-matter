@@ -1,0 +1,16 @@
+id: "bluetooth_gattdb_definition"
+label: "Bluetooth GATT database structure definition"
+package: "Bluetooth"
+description: >
+  Bluetooth GATT database structure definition
+category: "Bluetooth|Stack"
+quality: "production"
+root_path: "protocol/bluetooth"
+include:
+  - path: "inc/"
+    file_list:
+      - path: "sli_bt_gattdb_def.h"
+provides:
+  - name: "bluetooth_gattdb_definition"
+ui_hints:
+  visibility: never

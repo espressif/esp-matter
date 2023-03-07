@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2011 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Alert Category ID" type="org.bluetooth.characteristic.alert_category_id" 
+uuid="2A43">
+	<InformativeText>
+        <Abstract>Categories of alerts/messages.</Abstract>
+        <Summary>The value of the characteristic is an unsigned 8 bit integer that has a fixed point exponent of 0. The Alert Category ID characteristic defines the predefined categories of messages as an enumeration.</Summary>
+        <Examples> 
+            <Example>The value 0x01 is interpreted as "Email"</Example>
+		</Examples>
+	</InformativeText>
+	<Value>
+		<Field name="Category ID">
+            <Requirement>Mandatory</Requirement>
+			<Format>uint8</Format>
+			<Minimum>0</Minimum>
+            <Maximum>255</Maximum>        
+            <Enumerations>
+              <Enumeration key="0" value="Simple Alert: General text alert or non-text alert" />
+              <Enumeration key="1" value="Email: Alert when Email messages arrives" />
+              <Enumeration key="2" value="News: News feeds such as RSS, Atom" />
+              <Enumeration key="3" value="Call: Incoming call" />
+              <Enumeration key="4" value="Missed call: Missed Call" />
+              <Enumeration key="5" value="SMS/MMS: SMS/MMS message arrives" />
+              <Enumeration key="6" value="Voice mail: Voice mail" />
+              <Enumeration key="7" value="Schedule: Alert occurred on calendar, planner" />  
+              <Enumeration key="8" value="High Prioritized Alert: Alert that should be handled as high priority" />
+              <Enumeration key="9" value="Instant Message: Alert for incoming instant messages" />  
+              <ReservedForFutureUse start="10" end="250" />
+              <DefinedByServiceSpecification start="251" end="255" />
+            </Enumerations>
+                
+        </Field>
+
+	</Value>
+    
+     <Note>The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet.</Note>
+</Characteristic>

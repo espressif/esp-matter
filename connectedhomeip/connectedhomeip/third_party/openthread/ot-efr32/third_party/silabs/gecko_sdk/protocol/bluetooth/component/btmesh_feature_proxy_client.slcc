@@ -1,0 +1,22 @@
+id: "btmesh_feature_proxy_client"
+label: "Proxy Client"
+package: "Btmesh"
+description: "Enables Bluetooth mesh GATT Proxy client-side functionality."
+category: "Bluetooth Mesh|Stack Classes"
+quality: "production"
+root_path: "protocol/bluetooth"
+
+requires:
+  - name: "btmesh_stack"
+  - name: "btmesh_feature_proxy"
+  - name: "btmesh_core"
+  - name: "bluetooth_feature_gatt"
+  
+provides:
+  - name: "btmesh_feature_proxy_client"
+
+template_contribution:
+  - name: btmesh_bgapi_class
+    value:
+      class: "proxy_client"
+    priority: 1

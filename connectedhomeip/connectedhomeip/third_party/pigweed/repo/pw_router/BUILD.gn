@@ -1,0 +1,94 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_bloat/bloat.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("static_router") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    ":egress",
+    ":packet_parser",
+    dir_pw_metric,
+    dir_pw_span,
+  ]
+  public = [ "public/pw_router/static_router.h" ]
+  sources = [ "static_router.cc" ]
+}
+
+pw_source_set("egress") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_router/egress.h" ]
+  public_deps = [
+    ":packet_parser",
+    dir_pw_bytes,
+    dir_pw_span,
+  ]
+}
+
+pw_source_set("packet_parser") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_router/packet_parser.h" ]
+  public_deps = [
+    dir_pw_bytes,
+    dir_pw_span,
+  ]
+}
+
+pw_source_set("egress_function") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_router/egress_function.h" ]
+  public_deps = [
+    ":egress",
+    dir_pw_function,
+    dir_pw_span,
+  ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+  report_deps = [ ":static_router_size" ]
+}
+
+pw_test_group("tests") {
+  tests = [ ":static_router_test" ]
+}
+
+pw_test("static_router_test") {
+  deps = [
+    ":egress_function",
+    ":static_router",
+  ]
+  sources = [ "static_router_test.cc" ]
+}
+
+pw_size_diff("static_router_size") {
+  title = "pw::router::StaticRouter size report"
+  binaries = [
+    {
+      target = "size_report:static_router_with_one_route"
+      base = "size_report:base"
+      label = "Static router with a single route"
+    },
+  ]
+}

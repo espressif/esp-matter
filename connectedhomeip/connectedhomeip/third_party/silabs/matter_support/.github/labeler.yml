@@ -1,0 +1,27 @@
+# Add 'matter' to any changes within 'matter' folder or any subfolders
+matter: 
+- matter/**/*
+
+# Add 'gsdk' to any file changes within 'proctocal' and 'platform' folder
+gsdk: 
+- protocol/**/*
+- platform/**/*
+
+# Add 'openthread' to any changes within 'openthread' folder or any subfolders
+openthread:
+- sl_openthread_cert_library/**/*
+
+wifi:
+- matter/wifi/**/*
+
+rs991x:
+- matter/wifi/rs911x/**/*
+
+wf200:
+- matter/wifi/wf200/**/*
+
+bootloaders:
+- matter/efr32/bootloader_binaries/**/*
+
+boards:
+- any: ['matter/efr32', '!matter/efr32/bootloader_binaries/*']

@@ -1,0 +1,25 @@
+Hardware Design
+========================
+
+此目录介绍芯片硬件文档或开发板等信息。
+
+参考手册
+-----------
+
+https://dev.bouffalolab.com/media/doc/702/open/reference_manual/zh/html/index.html
+
+数据手册
+-----------
+
+https://dev.bouffalolab.com/media/doc/702/open/datasheet/zh/html/index.html
+
+开发板
+---------
+
+https://dev.bouffalolab.com/product
+
+
+硬件设计指南
+---------
+
+您可以联系我们获取所需文档 https://dev.bouffalolab.com/faqs

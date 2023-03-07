@@ -1,0 +1,23 @@
+!!omap
+- id: BGM210LA22JNF_config
+- label: BGM210LA22JNF config
+- description: Configuration files for BGM210LA22JNF
+- package: platform
+- category: Platform|Device|BGM21|Config
+- quality: production
+- ui_hints:
+    visibility: never
+- root_path: hardware/module/config
+- requires:
+  - name: bgm210la22jnf
+- provides:
+  - name: BGM210LA22JNF_config
+- config_file:
+  - override:
+      component: rail_util_pa
+      file_id: rail_util_pa_config
+    path: BGM210LA22JNF/sl_rail_util_pa_config.h
+  - override:
+      component: device_init_hfxo
+      file_id: device_init_hfxo_config
+    path: BGM210LA22JNF/sl_device_init_hfxo_config.h

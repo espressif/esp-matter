@@ -1,0 +1,4 @@
+purpose to dump to a variable or to the log;
+set sst name greebledorf data *;
+read sst name greebledorf check a_variable;
+read sst name greebledorf print;

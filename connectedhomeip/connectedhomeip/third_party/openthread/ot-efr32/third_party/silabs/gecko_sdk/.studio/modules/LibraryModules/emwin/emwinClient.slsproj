@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="com.silabs.sdk.exx32.external.emwin" label="emWin" contentRoot="$(sdkInstallationPath:default())/util/third_party/emwin">
+  <property key="category" value="efm32|Third party"/>
+  <includePath uri="inc" />
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/common/drivers/emwin/DK3550" partCompatibility="mcu.arm.efm32.g" />
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/common/drivers/emwin/DK3750" partCompatibility="mcu.arm.efm32.gg mcu.arm.efm32.lg mcu.arm.efm32.wg" />
+  <libraryFile uri="lib/emwin_IAR_CM3.a" partCompatibility="::ARMCore==CORTEX_M3" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.iar.*" />
+  <libraryFile uri="lib/emwin_IAR_CM4F.a" partCompatibility="::ARMCore==CORTEX_M4F" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.iar.*" />
+  <libraryPath uri="lib" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.gnu.*" />
+  <libraryFile name="emwin_GCC_CM3" partCompatibility="::ARMCore==CORTEX_M3" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.gnu.*" />
+  <libraryFile name="emwin_GCC_CM4F" partCompatibility="::ARMCore==CORTEX_M4F" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.gnu.*" />
+  <libraryFile name="m" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.gnu.*" />
+  <folder name="emwin">
+    <folder name="Gecko" uri="$(sdkInstallationPath:default())/hardware/kit/common/drivers/emwin/DK3550" partCompatibility="mcu.arm.efm32.g" boardCompatibility="brd3302a" />
+    <folder name="Default" uri="$(sdkInstallationPath:default())/hardware/kit/common/drivers/emwin/DK3750" partCompatibility="mcu.arm.efm32.gg mcu.arm.efm32.lg mcu.arm.efm32.wg" />
+    <folder name="Gecko_DKxxx" uri="$(sdkInstallationPath:default())/hardware/kit/common/drivers/emwin/GxxxDK" partCompatibility="mcu.arm.efm32.g" boardCompatibility="brd3300a brd3300b brd2001a"/>
+  </folder>
+</project>

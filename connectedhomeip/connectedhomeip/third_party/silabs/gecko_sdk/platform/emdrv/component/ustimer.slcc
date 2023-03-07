@@ -1,0 +1,24 @@
+id: "ustimer"
+label: "USTIMER"
+package: "platform"
+description: >
+  The microsecond timer uses a high frequency hardware timer
+  to implement a delay function with microsecond accuracy.
+category: "Platform|Driver"
+quality: "production"
+config_file:
+- path: "platform/emdrv/ustimer/config/ustimer_config.h"
+source:
+- path: "platform/emdrv/ustimer/src/ustimer.c"
+include:
+  - path: "platform/emdrv/ustimer/inc"
+    file_list:
+      - path: "ustimer.h"
+provides:
+  - name: "ustimer"
+requires:
+  - name: "emlib_timer"
+  - name: "ecode"
+documentation:
+    docset: gecko-platform
+    document: driver/api/group-ustimer

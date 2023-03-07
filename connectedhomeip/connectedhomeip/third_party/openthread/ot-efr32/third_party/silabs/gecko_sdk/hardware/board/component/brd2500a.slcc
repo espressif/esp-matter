@@ -1,0 +1,57 @@
+!!omap
+- id: brd2500a
+- label: BRD2500A
+- package: platform
+- description: Board support for BRD2500A.
+- category: Platform|Board|Starter Kit
+- quality: production
+- requires:
+  - name: efm32pg1b200f256gm48
+  - name: brd2500a_config
+- provides:
+  - name: brd2500a
+  - name: hardware_board
+  - name: hardware_board_stk
+  - name: hardware_board_from_stk
+  - name: hardware_board_from_slstk3401a
+  - name: hardware_board_has_si70xx
+  - name: hardware_board_has_tempsensor
+  - name: hardware_board_has_vcom
+  - name: hardware_board_has_hfxo
+  - name: hardware_board_has_lfxo
+- recommends:
+  - id: iostream_usart
+    instance:
+    - vcom
+  - id: bootloader_uart_driver
+  - id: i2cspm
+    instance:
+    - sensor
+  - id: ls013b7dh03
+  - id: memlcd_usart
+  - id: simple_led
+    instance:
+    - led0
+    - led1
+  - id: simple_button
+    instance:
+    - btn0
+    - btn1
+  - id: bootloader_spi_peripheral_usart_driver
+- template_contribution: []
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD2500A"'
+  - name: SL_BOARD_REV
+    value: '"A01"'
+- tag:
+  - board:pn:BRD2500
+  - board:variant:A
+  - board:revision:A01
+  - board:device:efm32pg1b200f256gm48
+  - hardware:has:vcom
+  - hardware:has:sensor:si7021
+  - hardware:has:display:ls013b7dh03
+  - hardware:has:led:2
+  - hardware:has:button:2
+  - hardware:has:touch

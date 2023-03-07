@@ -1,0 +1,218 @@
+id: throughput_peripheral
+package: Bluetooth
+label: Throughput Test Transmitter (Peripheral) Role API
+description: >
+  Throughput Test Transmitter (Peripheral) Role API acts as a server and accepts connection from
+  Throughput Test Receivers (Central) Role clients. 
+  It sends out data via notifications or indications to a registered Central node.
+  Throughput parameters can be managed using the API calls or via CLI.
+  The API provides interface for configuring, starting and stopping transmission.
+  Status and result callbacks can be also registered using the API.
+category: Bluetooth|Application|Throughput
+quality: production
+root_path: app/bluetooth/common/throughput_peripheral
+include:
+  - path: .
+    file_list: 
+      - path: throughput_peripheral.h
+config_file:
+  - path: "config/throughput_peripheral_config.h"
+  - path: throughput_peripheral.xml
+    directory: btconf
+source:
+  - path: throughput_peripheral.c
+requires:
+  - name: app_log
+  - name: app_assert
+  - name: gatt_configuration
+  - name: bluetooth_stack
+  - name: bluetooth_feature_system
+  - name: bluetooth_feature_afh
+  - name: bluetooth_feature_power_control
+  - name: bluetooth_feature_connection
+  - name: bluetooth_feature_legacy_advertiser
+  - name: bluetooth_feature_extended_advertiser
+    condition: 
+      - device_supports_bluetooth_advertising_extensions
+  - name: bluetooth_feature_gatt_server
+  - name: bluetooth_feature_gatt
+  - name: power_manager
+  - name: throughput
+  - name: simple_timer
+  - name: sleeptimer
+  - name: throughput_ui
+
+recommends:
+  - id: simple_timer
+  - id: throughput_ui_log
+provides:
+  - name: throughput_peripheral
+template_contribution:
+  - name: bluetooth_on_event
+    value:
+      include: throughput_peripheral.h
+      function: throughput_peripheral_on_bt_event
+    priority: 0
+  - name: event_handler
+    value:
+      event: service_process_action
+      include: throughput_peripheral.h
+      handler: throughput_peripheral_step
+  - name: component_catalog
+    value: throughput_peripheral
+  - name: power_manager_handler
+    value:
+      event: is_ok_to_sleep
+      include: throughput_peripheral.h
+      handler: throughput_peripheral_is_ok_to_sleep
+  - name: power_manager_handler
+    value:
+      event: sleep_on_isr_exit
+      include: throughput_peripheral.h
+      handler: throughput_peripheral_sleep_on_isr_exit
+  - name: cli_group
+    value:
+      name: throughput_peripheral
+      help: "Throughput Peripheral"
+      shortcuts:
+        - name: peripheral
+    condition:
+      - "cli"
+  - name: cli_command
+    value:
+      group: throughput_peripheral
+      name: stop
+      handler: cli_throughput_peripheral_stop
+      shortcuts:
+        - name: x
+      help: "Stops transmission"
+    condition:
+      - "cli"
+  - name: cli_command
+    value:
+      group: throughput_peripheral
+      name: start
+      handler: cli_throughput_peripheral_start
+      shortcuts:
+        - name: s
+      help: "Starts transmission"
+      argument:
+      - type: uint8
+        help: "Type: 1: notification, 2: indication"
+    condition:
+      - "cli"
+  - name: cli_command
+    value:
+      group: throughput_peripheral
+      name: status
+      handler: cli_throughput_peripheral_status
+      shortcuts:
+        - name: t
+      help: "Prints current status"
+
+  - name: cli_group
+    value:
+      group: throughput_peripheral
+      name: mode
+      help: "Mode"
+      shortcuts:
+        - name: m
+    condition:
+      - "cli"
+  - name: cli_command
+    value:
+      group: mode
+      name: set
+      handler: cli_throughput_peripheral_mode_set
+      shortcuts:
+        - name: s
+      help: "Set transmission mode"
+      argument:
+      - type: uint8
+        help: "Mode: 0:Continous, 1:Fixed size, 2: Fixed time"
+      - type: uint32
+        help: "Value to set (in case of fixed time/size)"
+    condition:
+      - "cli"
+  - name: cli_command
+    value:
+      group: mode
+      name: get
+      handler: cli_throughput_peripheral_mode_get
+      shortcuts:
+        - name: g
+      help: "Get transmission mode, 0:Continous, 1:Fixed size, 2: Fixed time"
+    condition:
+      - "cli"
+  - name: cli_group
+    value:
+      group: throughput_peripheral
+      name: power
+      help: "Power settings"
+      shortcuts:
+        - name: p
+    condition:
+      - "cli"
+  - name: cli_command
+    value:
+      group: power
+      name: set
+      handler: cli_throughput_tx_power_set
+      shortcuts:
+        - name: s
+      help: "Set power"
+      argument:
+      - type: int16
+        help: "Power in dBm"
+      - type: uint8
+        help: "Enable adaptive power control"
+      - type: uint8
+        help: "Enable deep sleep"
+    condition:
+      - "cli"
+  - name: cli_command
+    value:
+      group: power
+      name: get
+      handler: cli_throughput_tx_power_get
+      shortcuts:
+        - name: g
+      help: "Read power settings"
+    condition:
+      - "cli"
+  - name: cli_group
+    value:
+      group: throughput_peripheral
+      name: data
+      help: "Data settings"
+      shortcuts:
+        - name: d
+    condition:
+      - "cli"
+  - name: cli_command
+    value:
+      group: data
+      name: set
+      handler: cli_throughput_peripheral_data_set
+      shortcuts:
+        - name: s
+      help: "Set data sizes"
+      argument:
+      - type: uint8
+        help: "Maximum MTU size"
+      - type: uint8
+        help: "Indication transfer size"
+      - type: uint8
+        help: "Notification transfer size"
+    condition:
+      - "cli"
+  - name: cli_command
+    value:
+      group: data
+      name: get
+      handler: cli_throughput_peripheral_data_get
+      shortcuts:
+        - name: g
+      help: "Read data settings"
+    condition:
+      - "cli"

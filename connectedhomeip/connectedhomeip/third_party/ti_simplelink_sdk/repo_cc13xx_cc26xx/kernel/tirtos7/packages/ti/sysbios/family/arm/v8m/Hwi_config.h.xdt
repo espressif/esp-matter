@@ -1,0 +1,117 @@
+%%{
+/*
+ * Copyright (c) 2020-2021 Texas Instruments Incorporated - http://www.ti.com
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+
+/*
+ *  ======== Hwi_config_h.xdt ========
+ */
+
+    /* passed by /ti/sysbios/BIOS_config.h.xdt */
+    let Hwi = args[0];
+
+    let numSparseInterrupts = 0;
+    if (Hwi.$static.dispatchTableSize < Hwi.$static.numInterrupts) {
+        numSparseInterrupts = Hwi.$static.dispatchTableSize;
+    }
+    /* instrumentation */
+    let BIOS = system.modules["/ti/sysbios/BIOS"];
+    let logD = 0; // BIOS.$static.hwiLogs.map(x => "#define Hwi_log" + x + "_D");
+    let nvicCCR = 0;
+    for (let opt in Hwi.$static.nvicCCR) {
+        if (Hwi.$static.nvicCCR[opt] == "STKALIGN") nvicCCR += 0x200;
+        if (Hwi.$static.nvicCCR[opt] == "BFHFNMIGN") nvicCCR += 0x100;
+        if (Hwi.$static.nvicCCR[opt] == "DIV_0_TRP") nvicCCR += 0x10;
+        if (Hwi.$static.nvicCCR[opt] == "UNALIGN_TRP") nvicCCR += 0x8;
+        if (Hwi.$static.nvicCCR[opt] == "USERSETMPEND") nvicCCR += 0x2;
+        if (Hwi.$static.nvicCCR[opt] == "NONEBASETHRDENA") nvicCCR += 0x1;
+    }
+%%}
+/* Hwi module definitions */
+
+#include <ti/sysbios/family/arm/v8m/Hwi.h>
+% if ((Hwi.$static.excHandlerFunc != "NULL") &&
+%   (Hwi.$static.excHandlerFunc != "Hwi_excHandlerMin") &&
+%   (Hwi.$static.excHandlerFunc != "Hwi_excHandlerMax")) {
+
+extern void `Hwi.$static.excHandlerFunc`(unsigned int, unsigned int);
+% }
+
+#define Hwi_NUM_INTERRUPTS_D `Hwi.$static.numInterrupts`
+#define Hwi_numSparseInterrupts_D `numSparseInterrupts`
+#define Hwi_disablePriority_D 0x`(Hwi.$static.disablePriority * 0x20).toString(16)`
+#define Hwi_priGroup_D 0x`(Hwi.$static.priGroup).toString(16)`
+#define Hwi_nvicCCR_D 0x`nvicCCR.toString(16)`
+#define Hwi_dispatcherAutoNestingSupport_D `Hwi.$static.dispatcherAutoNestingSupport.toString()`
+#define Hwi_dispatcherSwiSupport_D `Hwi.$static.dispatcherSwiSupport.toString()`
+#define Hwi_dispatcherTaskSupport_D `Hwi.$static.dispatcherTaskSupport.toString()`
+#define Hwi_excHandlerFunc_D `Hwi.$static.excHandlerFunc`
+#define Hwi_resetVectorAddress_D 0x`(Hwi.$static.resetVectorAddress).toString(16)`
+#define Hwi_vectorTableAddress_D 0x`(Hwi.$static.vectorTableAddress).toString(16)`
+#define Hwi_initStackFlag_D `Hwi.$static.initStackFlag.toString()`
+
+#define Hwi_resetFunc_D `Hwi.$static.resetFunc`
+#define Hwi_nmiFunc_D `Hwi.$static.nmiFunc`
+#define Hwi_hardFaultFunc_D `Hwi.$static.hardFaultFunc`
+#define Hwi_memFaultFunc_D `Hwi.$static.memFaultFunc`
+#define Hwi_busFaultFunc_D `Hwi.$static.busFaultFunc`
+#define Hwi_usageFaultFunc_D `Hwi.$static.usageFaultFunc`
+#define Hwi_svCallFunc_D `Hwi.$static.svCallFunc`
+#define Hwi_debugMonFunc_D `Hwi.$static.debugMonFunc`
+#define Hwi_reservedFunc_D `Hwi.$static.reservedFunc`
+
+% if (!BIOS.$static.disableSwi && Hwi.$static.dispatcherSwiSupport) {
+#define Hwi_swiDisable_D Swi_disable
+#define Hwi_swiRestore_D Swi_restore
+#define Hwi_swiRestoreHwi_D Swi_restoreHwi
+% } else {
+#define Hwi_swiDisable_D Hwi_swiDisableNull
+#define Hwi_swiRestore_D Hwi_swiRestoreNull
+#define Hwi_swiRestoreHwi_D Hwi_swiRestoreNull
+% }
+% if (!BIOS.$static.disableTask && Hwi.$static.dispatcherTaskSupport) {
+#define Hwi_taskDisable_D Task_disable
+#define Hwi_taskRestoreHwi_D Task_restoreHwi
+% } else {
+#define Hwi_taskDisable_D Hwi_taskDisableNull
+#define Hwi_taskRestoreHwi_D Hwi_taskRestoreHwiNull
+% }
+
+#define Hwi_nvic (*(volatile Hwi_NVIC *)0xe000e000)
+%
+% if (logD.length > 0) {
+
+#define Hwi_log_D
+% for (let i = 0; i < logD.length; i++) {
+`logD[i]`
+% }
+% }

@@ -1,0 +1,27 @@
+id: throughput_ui_log
+package: Bluetooth
+label: Throughput User Interface API with logging
+description: |-
+  API for printing throughput test state and results to log
+category: Bluetooth|Application|Throughput
+quality: production
+root_path: app/bluetooth/common/throughput_ui
+include:
+  - path: .
+    file_list: 
+      - path: throughput_ui.h
+      - path: throughput_ui_types.h
+source:
+  - path: throughput_ui_log.c
+  - path: throughput_ui_common.c
+config_file:
+  - path: "config/throughput_ui_log_config.h"
+requires:
+  - name: "throughput"
+  - name: "app_assert"
+  - name: "app_log"
+provides:
+  - name: throughput_ui
+template_contribution:
+  - name: component_catalog
+    value: throughput_ui

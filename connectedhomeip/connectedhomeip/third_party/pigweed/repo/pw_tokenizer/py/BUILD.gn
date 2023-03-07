@@ -1,0 +1,89 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/python.gni")
+import("$dir_pw_protobuf_compiler/proto.gni")
+
+pw_python_package("py") {
+  generate_setup = {
+    metadata = {
+      name = "pw_tokenizer"
+      version = "0.0.1"
+    }
+    options = {
+      extras_require = {
+        serial_detokenizer = [ "serial" ]
+      }
+    }
+  }
+  sources = [
+    "generate_argument_types_macro.py",
+    "generate_hash_macro.py",
+    "generate_hash_test_data.py",
+    "pw_tokenizer/__init__.py",
+    "pw_tokenizer/__main__.py",
+    "pw_tokenizer/database.py",
+    "pw_tokenizer/decode.py",
+    "pw_tokenizer/detokenize.py",
+    "pw_tokenizer/elf_reader.py",
+    "pw_tokenizer/encode.py",
+    "pw_tokenizer/parse_message.py",
+    "pw_tokenizer/proto/__init__.py",
+    "pw_tokenizer/serial_detokenizer.py",
+    "pw_tokenizer/tokens.py",
+  ]
+  tests = [
+    "database_test.py",
+    "decode_test.py",
+    "detokenize_proto_test.py",
+    "detokenize_test.py",
+    "elf_reader_test.py",
+    "encode_test.py",
+    "tokenized_string_decoding_test_data.py",
+    "tokens_test.py",
+    "varint_test_data.py",
+  ]
+  python_test_deps = [ ":test_proto.python" ]
+  inputs = [
+    "elf_reader_test_binary.elf",
+    "example_binary_with_tokenized_strings.elf",
+  ]
+  proto_library = "..:proto"
+  pylintrc = "$dir_pigweed/.pylintrc"
+  mypy_ini = "$dir_pigweed/.mypy.ini"
+
+  python_deps = [
+    "$dir_pw_cli/py",
+    "$dir_pw_protobuf_compiler:test_protos.python",
+  ]
+}
+
+# This setup.py may be used to install pw_tokenizer without GN. It does not
+# include the pw_tokenizer.proto subpackage, since it contains a generated
+# protobuf module.
+pw_python_script("setup") {
+  sources = [ "setup.py" ]
+  inputs = [
+    "setup.cfg",
+    "pyproject.toml",
+  ]
+}
+
+pw_proto_library("test_proto") {
+  sources = [ "detokenize_proto_test.proto" ]
+  deps = [ "..:proto" ]
+  prefix = "pw_tokenizer_tests"
+}

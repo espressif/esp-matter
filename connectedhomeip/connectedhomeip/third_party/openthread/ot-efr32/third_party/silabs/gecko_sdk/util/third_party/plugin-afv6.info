@@ -1,0 +1,2 @@
+# This file is strictly for plugins that require special AFV2 vs AFV6 handling
+pluginDirectory=.

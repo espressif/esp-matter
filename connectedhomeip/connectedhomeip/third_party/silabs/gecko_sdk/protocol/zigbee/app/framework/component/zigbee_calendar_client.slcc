@@ -1,0 +1,57 @@
+package: Zigbee
+description: Silicon Labs implementation of the Calendar client cluster.  This component is capable
+  of receiving calendars published by a server, but does not make requests on its
+  own.
+label: Calendar Client
+quality: production
+id: zigbee_calendar_client
+category: Zigbee|Cluster Library|Smart Energy
+provides:
+   - name: "zigbee_calendar_client"
+requires:
+   - name: "zigbee_calendar_common"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/calendar-client/config/calendar-client-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/calendar-client/calendar-client.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/calendar-client
+    file_list:
+      - path: calendar-client.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_calendar_client
+  - name: cluster_service
+    value:
+       cluster_id: "0x0707"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "CLIENT"       
+       service_function: "emberAfCalendarClusterClientCommandParse"
+  - name: cli_group
+    value:
+      group: plugin
+      name: calendar-client
+      help: calendar-client related commands.
+  - name: cli_command
+    value:
+      group: calendar-client
+      name: clear
+      handler: emberAfPluginCalendarClientClearCommand
+      help: Clears the calendars.
+      argument:
+      - type: uint8
+        help: The endpoint
+  - name: cli_command
+    value:
+      group: calendar-client
+      name: print
+      handler: emberAfPluginCalendarClientPrintCommand
+      help: Prints the calendars.
+      argument:
+      - type: uint8
+        help: The endpoint
+
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/calendar-client

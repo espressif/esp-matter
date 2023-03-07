@@ -1,0 +1,120 @@
+project_name: rcp-uart-802154-blehci
+label: Multiprotocol (OpenThread+Zigbee+BLE) - RCP (UART)
+package: OpenThread
+description: >
+  This multiprotocol radio co-processor (RCP) application supports running
+  OpenThread, Zigbee, and Bluetooth stacks simultaneously on a host processor.
+  It uses concurrent multiprotocol (CMP) / multi-PAN functionality to run the
+  802.15.4 networks simultaneously on the same channel, and dynamic
+  multiprotocol (DMP) to run the Bluetooth Link Layer simultaneously.
+  The host stacks and the RCP communicate using the
+  Co-Processor Communication protocol (CPC), which acts as a protocol multiplexer
+  and serial transport layer. The host applications connect to the CPC daemon,
+  which in turn connects to the EFR via a UART link.
+  Refer to *AN1333: Running Zigbee, OpenThread, and Bluetooth Concurrently on a
+  Linux Host with a Multiprotocol Co-processor* for more information on running
+  the multiprotocol RCP with different host applications.
+category: OpenThread Examples
+quality: alpha
+
+component:
+  - id: brd4001a
+  - id: ot_reference_device
+  - id: ot_stack_rcp
+  - id: ot_ncp_cpc
+  - id: cpc_secondary_driver_uart_usart
+    instance:
+      - vcom
+  - id: rail_util_pti
+  - id: bootloader_interface
+  - id: freertos
+  - id: freertos_heap_3
+  - id: bluetooth_hci_cpc
+  - id: bluetooth_controller
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_advertiser
+  - id: bluetooth_feature_connection_phy_update
+  - id: bluetooth_feature_scanner
+  - id: bluetooth_feature_extended_advertiser
+  - id: rail_lib_multiprotocol
+
+include:
+  - path: .
+    file_list:
+    - path: app.h
+  - path: ../../../../util/third_party/openthread/src/lib/platform
+    file_list:
+    - path: reset_util.h
+
+source:
+  - path: main.c
+  - path: app.c
+
+configuration:
+  - name: SL_BT_CONFIG_USER_ADVERTISERS
+    value: 3
+  - name: SL_STACK_SIZE
+    value: 2752
+  - name: SL_HEAP_SIZE
+    value: "15700"
+  - name: SL_DEVICE_INIT_LFXO_TIMEOUT
+    value: _CMU_LFXOCTRL_TIMEOUT_4KCYCLES
+    condition: ["device_sdid_80"]
+  - name: SL_DEVICE_INIT_LFXO_TIMEOUT
+    value: _CMU_LFXOCTRL_TIMEOUT_4KCYCLES
+    condition: ["device_sdid_84"]
+  - name: SL_DEVICE_INIT_LFXO_TIMEOUT
+    value: _CMU_LFXOCTRL_TIMEOUT_4KCYCLES
+    condition: ["device_sdid_89"]
+  - name: SL_DEVICE_INIT_LFXO_TIMEOUT
+    value: cmuLfxoStartupDelay_4KCycles
+    condition: ["device_sdid_200"]
+  - name: SL_DEVICE_INIT_LFXO_TIMEOUT
+    value: cmuLfxoStartupDelay_4KCycles
+    condition: ["device_sdid_205"]
+  - name: SL_PSA_KEY_USER_SLOT_COUNT
+    value: "0"
+    condition:
+      - psa_crypto
+
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: SL_CPC_DRV_UART_VCOM_BAUDRATE
+    value: 115200
+  - name: SL_CPC_DRV_UART_VCOM_FLOW_CONTROL_TYPE
+    value: usartHwFlowControlCtsAndRts
+  - name: OPENTHREAD_CONFIG_HEAP_EXTERNAL_ENABLE
+    value: 0
+  - name: OPENTHREAD_CONFIG_LOG_OUTPUT
+    value: OPENTHREAD_CONFIG_LOG_OUTPUT_PLATFORM_DEFINED
+  - name: OPENTHREAD_CONFIG_MULTIPAN_RCP_ENABLE
+    value: 1
+  - name: OPENTHREAD_CONFIG_DIAG_ENABLE
+    value: 1  
+  - name: OPENTHREAD_CONFIG_PLATFORM_KEY_REFERENCES_ENABLE
+    value: 0
+
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_ncp
+
+tag:
+  - prebuilt_demo
+
+readme:
+  - path: ./README-MP-DMP-RCP.md
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Thread", "Bluetooth"]
+  - name: "Device Type"
+    value: ["RCP"]
+  - name: "Capability"
+    value: ["Multiprotocol"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+
+ui_hints:
+  highlight:
+    - path: ./README-MP-DMP-RCP.md
+      focus: true

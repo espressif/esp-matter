@@ -1,0 +1,15 @@
+strcpy
+wcscpy
+strncpy
+strcat
+wcscat
+strncat
+sprintf
+vsprintf
+strtok
+atoi
+atol
+atoll
+itoa
+ltoa
+lltoa

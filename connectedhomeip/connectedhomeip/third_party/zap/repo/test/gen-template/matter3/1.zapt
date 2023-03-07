@@ -1,0 +1,9 @@
+{{#chip_client_clusters}}
+        case app::Clusters::{{asUpperCamelCase name}}::Id: {
+            using namespace app::Clusters::{{asUpperCamelCase name}};
+                {{#chip_server_cluster_attributes}}
+                case Attributes::{{asUpperCamelCase name}}::Id: {
+                    using TypeInfo = Attributes::{{asUpperCamelCase name}}::TypeInfo;
+                    {{>decode_value target="value" source="cppValue" cluster=(asUpperCamelCase parent.name) depth=0 earlyReturn="nullptr"}}
+                {{/chip_server_cluster_attributes}}
+{{/chip_client_clusters}}

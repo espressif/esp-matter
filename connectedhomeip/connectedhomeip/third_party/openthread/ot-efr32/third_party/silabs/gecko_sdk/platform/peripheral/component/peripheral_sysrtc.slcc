@@ -1,0 +1,28 @@
+id: peripheral_sysrtc
+label: SYSRTC
+package: platform
+description: >
+  System Real Time Counter (SYSRTC) peripheral API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/peripheral"
+source:
+  - path: "src/peripheral_sysrtc.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "peripheral_sysrtc.h"
+provides:
+  - name: peripheral_sysrtc
+requires:
+  - name: device
+  - name: device_has_sysrtc
+  - name: emlib_common
+  - name: cmsis_core
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efr32xg23/group-sysrtc
+      condition: [device_sdid_210]
+    - page: emlib/api/efr32xg24/group-sysrtc
+      condition: [device_sdid_215]

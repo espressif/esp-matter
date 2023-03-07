@@ -1,0 +1,176 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/facade.gni")
+import("$dir_pw_build/module_config.gni")
+import("$dir_pw_chrono/backend.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_log/backend.gni")
+import("$dir_pw_protobuf_compiler/proto.gni")
+import("$dir_pw_unit_test/test.gni")
+
+declare_args() {
+  # The build target that overrides the default configuration options for this
+  # module. This should point to a source set that provides defines through a
+  # public config (which may -include a file or add defines directly).
+  pw_log_CONFIG = pw_build_DEFAULT_MODULE_CONFIG
+
+  # The build target that overrides the default configuration options for the
+  # glog adapter portion of this module.
+  pw_log_GLOG_ADAPTER_CONFIG = pw_build_DEFAULT_MODULE_CONFIG
+}
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("config") {
+  public = [ "public/pw_log/config.h" ]
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ pw_log_CONFIG ]
+}
+
+pw_facade("pw_log") {
+  backend = pw_log_BACKEND
+  public_configs = [ ":public_include_path" ]
+  public = [
+    "public/pw_log/levels.h",
+    "public/pw_log/log.h",
+    "public/pw_log/options.h",
+    "public/pw_log/short.h",
+    "public/pw_log/shorter.h",
+  ]
+  public_deps = [ ":config" ]
+
+  require_link_deps = [ ":impl" ]
+}
+
+pw_source_set("glog_adapter") {
+  public_configs = [ ":public_include_path" ]
+  public = [
+    "public/pw_log/glog_adapter.h",
+    "public/pw_log/glog_adapter_config.h",
+  ]
+  public_deps = [
+    ":config",
+    "$dir_pw_assert",
+    "$dir_pw_log",
+    "$dir_pw_preprocessor",
+    "$dir_pw_string",
+    pw_log_GLOG_ADAPTER_CONFIG,
+  ]
+  sources = [ "public/pw_log/internal/glog_adapter.h" ]
+}
+
+pw_source_set("proto_utils") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_log/proto_utils.h" ]
+  public_deps = [
+    ":pw_log.facade",
+    "$dir_pw_bytes",
+    "$dir_pw_log:protos.pwpb",
+    "$dir_pw_log_tokenized:metadata",
+    "$dir_pw_result",
+    dir_pw_span,
+  ]
+  deps = [ "$dir_pw_protobuf" ]
+  sources = [ "proto_utils.cc" ]
+}
+
+# pw_log is low-level and ubiquitous. Because of this, it can often cause
+# circular dependencies. This target collects dependencies from the backend that
+# cannot be used because they would cause circular deps.
+#
+# This group ("$dir_pw_log:impl") must listed in pw_build_LINK_DEPS if
+# pw_log_BACKEND is set.
+#
+# pw_log backends must provide their own "impl" target that collects their
+# actual dependencies. The backend "impl" group may be empty if everything can
+# go directly in the backend target without causing circular dependencies.
+group("impl") {
+  public_deps = []
+
+  if (pw_log_BACKEND != "") {
+    public_deps +=
+        [ get_label_info(pw_log_BACKEND, "label_no_toolchain") + ".impl" ]
+  }
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":basic_log_test",
+    ":glog_adapter_test",
+    ":proto_utils_test",
+  ]
+}
+
+pw_test("basic_log_test") {
+  enable_if = pw_log_BACKEND != ""
+  deps = [
+    ":pw_log",
+    dir_pw_preprocessor,
+    pw_log_BACKEND,
+  ]
+
+  sources = [
+    "basic_log_test.cc",
+    "basic_log_test_plain_c.c",
+  ]
+}
+
+pw_test("glog_adapter_test") {
+  enable_if = pw_log_BACKEND != ""
+  deps = [
+    ":glog_adapter",
+    pw_log_BACKEND,
+  ]
+  sources = [ "glog_adapter_test.cc" ]
+}
+
+pw_test("proto_utils_test") {
+  enable_if = pw_log_BACKEND != ""
+  deps = [
+    ":proto_utils",
+    ":pw_log.facade",
+    "$dir_pw_containers",
+    "$dir_pw_log:protos.pwpb",
+    "$dir_pw_preprocessor",
+    "$dir_pw_protobuf",
+    "$dir_pw_protobuf:bytes_utils",
+  ]
+  sources = [ "proto_utils_test.cc" ]
+}
+
+pw_proto_library("protos") {
+  sources = [ "log.proto" ]
+  prefix = "pw_log/proto"
+  deps = [
+    "$dir_pw_protobuf:common_protos",
+    "$dir_pw_tokenizer:proto",
+  ]
+}
+
+pw_doc_group("docs") {
+  sources = [
+    "docs.rst",
+    "protobuf.rst",
+  ]
+  inputs = [
+    "example_layer_diagram.svg",
+    "log.proto",
+  ]
+}

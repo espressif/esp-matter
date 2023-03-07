@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="com.silabs.sdk.exx32.external.fatfs" label="FatFs" contentRoot="$(sdkInstallationPath:default())/util/third_party/fatfs">
+  <property key="category" value="efm32|Third party"/>
+  <includePath uri="inc" />
+  <folder name="FatFS">
+  	<file name="diskio.c" uri="src/diskio.c" />
+  	<file name="ff.c" uri="src/ff.c" />
+  	<file name="msddiskio.c" uri="src/msddiskio.c" />
+  </folder>
+</project>

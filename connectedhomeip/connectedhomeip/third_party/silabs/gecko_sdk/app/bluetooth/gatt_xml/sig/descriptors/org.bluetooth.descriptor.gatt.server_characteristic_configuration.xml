@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Created with Liquid XML Studio Developer Edition 8.1.7.2743 (http://www.liquid-technologies.com) -->
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Descriptor xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/descriptor.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.descriptor.gatt.server_characteristic_configuration" uuid="2903" name="Server Characteristic Configuration">
+  <InformativeText>
+    <Abstract>
+        The Server Characteristic Configuration descriptor defines how the characteristic descriptor is associated with may be configured for the server.
+		</Abstract>
+    <Summary>
+        Only one Server Characteristic Configuration descriptor exists in a characteristic definition.
+        A client may write this configuration descriptor to control the configuration of the characteristic on the server for all clients.
+        There is a single instantiation of this descriptor for all clients.
+        Authentication and authorization may be required by the server to write this descriptor.            
+		</Summary>
+  </InformativeText>
+  <Value>
+    <Field name="Properties">
+      <Requirement>Mandatory</Requirement>
+      <Format>uint16</Format>
+      <Minimum>0</Minimum>
+      <Maximum>1</Maximum>
+      <BitField>
+        <Bit index="0" size="1">
+          <Enumerations>
+            <Enumeration key="0" value="Broadcasts disabled" />
+            <Enumeration key="1" value="Broadcasts enabled" />
+          </Enumerations>
+        </Bit>
+        <Reserved index="1" size="15" />
+      </BitField>
+    </Field>
+  </Value>
+</Descriptor>

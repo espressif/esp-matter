@@ -1,0 +1,73 @@
+id: app_ota_dfu
+label: Application OTA DFU
+package: Bluetooth
+description: >
+ Component that provides over-the-air (OTA) device firmware update (DFU)
+ functionality in user application during runtime. No need to enter 
+ a specialized OTA state to update, and no AppLoader utility required.
+category: Bluetooth|OTA
+quality: production
+root_path: app/bluetooth/common/app_ota_dfu
+
+config_file:
+  - path: app_ota_dfu.xml
+    directory: btconf
+
+source:
+  - path: sl_bt_app_ota_dfu.c
+  - path: rtos/sl_bt_app_ota_dfu_freertos.c
+    condition:
+      - "freertos"
+  - path: rtos/sl_bt_app_ota_dfu_micriumos.c
+    condition:
+      - "micriumos_kernel"
+
+include:
+  - path: .
+    file_list:
+      - path: sl_bt_app_ota_dfu.h
+      - path: sli_bt_app_ota_dfu.h
+
+provides:
+  - name: app_ota_dfu
+
+conflicts:
+  - name: in_place_ota_dfu
+
+requires:
+  - name: app_assert
+  - name: bluetooth_feature_connection
+  - name: bluetooth_feature_gatt_server
+  - name: bluetooth_feature_system
+  - name: bluetooth_stack
+  - name: bootloader_interface
+  - name: gatt_configuration
+  - name: power_manager
+
+template_contribution:
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: sl_bt_app_ota_dfu.h
+      handler: sl_bt_app_ota_dfu_init
+  - name: event_handler
+    value:
+      event: internal_app_process_action
+      include: sli_bt_app_ota_dfu.h
+      handler: sli_bt_app_ota_dfu_step
+  - name: bluetooth_on_event
+    value:
+      include: sli_bt_app_ota_dfu.h
+      function: sli_bt_app_ota_dfu_on_event
+    priority: 5
+  - name: power_manager_handler
+    value:
+      event: is_ok_to_sleep
+      include: sl_bt_app_ota_dfu.h
+      handler: sl_bt_app_ota_dfu_is_ok_to_sleep
+  - name: power_manager_handler
+    value:
+      event: sleep_on_isr_exit
+      include: sl_bt_app_ota_dfu.h
+      handler: sl_bt_app_ota_dfu_sleep_on_isr_exit
+

@@ -1,0 +1,50 @@
+# Copyright 2019 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("python_action.gni")
+
+# Defines a Pigweed host tool and installs it into the host_tools directory.
+#
+# Args:
+#   tool: The target that outputs the binary tool.
+#   name: Optional name for the installed program. Defaults to the name of
+#     the compiled binary.
+template("pw_host_tool") {
+  assert(defined(invoker.tool),
+         "pw_host_tool must specify an executable as the tool variable")
+
+  _script_args = [
+    "--src",
+    "<TARGET_FILE(${invoker.tool})>",
+    "--dst",
+    rebase_path("$root_out_dir/host_tools", root_build_dir),
+    "--out-root",
+    rebase_path(root_out_dir, root_build_dir),
+  ]
+
+  if (defined(invoker.name) && invoker.name != "") {
+    _script_args += [
+      "--name",
+      invoker.name,
+    ]
+  }
+
+  pw_python_action(target_name) {
+    script = "$dir_pw_build/py/pw_build/host_tool.py"
+    args = _script_args
+    deps = [ invoker.tool ]
+    python_deps = [ "$dir_pw_cli/py" ]
+    stamp = true
+  }
+}

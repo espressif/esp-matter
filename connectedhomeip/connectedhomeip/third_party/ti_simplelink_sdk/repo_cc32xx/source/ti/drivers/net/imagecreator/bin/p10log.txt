@@ -1,0 +1,2 @@
+C:\ti\simplelink_cc32xx_sdk_5_10_00_00_eng\source\ti\drivers\net\imagecreator\bin\/SLImageCreator.exe syscfg create_image --json C:\Users\a0220067\AppData\Local\TI_pinmux\pinmuxExternalComFile.json --sdk_path C:\ti\simplelink_cc32xx_sdk_5_10_00_00_eng\source\ti\drivers\net\imagecreator\bin\\..\..\..\..\..\..\. --file ./../../../../../../tools/standalone_sysconfig/generated_images/CC3220S.sli
+0 

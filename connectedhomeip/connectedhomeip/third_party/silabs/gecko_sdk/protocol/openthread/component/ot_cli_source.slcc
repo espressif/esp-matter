@@ -1,0 +1,56 @@
+id: ot_cli_source
+label: CLI
+package: OpenThread
+category: OpenThread
+quality: production
+description: This component provides the OpenThread CLI. It requires that an OpenThread stack component be included with the project. If no OpenThread stack component is chosen, it will default to using the OpenThread stack for a Full Thread Device (FTD).
+provides:
+  - name: ot_cli
+requires:
+  - name: ot_stack
+  - name: ot_ble_cli
+    condition:
+      - bluetooth_stack
+recommends:
+  - id: ot_stack_ftd
+include:
+  - path: util/third_party/openthread/src
+  - path: util/third_party/openthread/src/cli
+    file_list:
+      - path: cli.hpp
+      - path: cli_coap.hpp
+      - path: cli_coap_secure.hpp
+      - path: cli_commissioner.hpp
+      - path: cli_config.h
+      - path: cli_dataset.hpp
+      - path: cli_history.hpp
+      - path: cli_joiner.hpp
+      - path: cli_network_data.hpp
+      - path: cli_output.hpp
+      - path: cli_srp_client.hpp
+      - path: cli_srp_server.hpp
+      - path: cli_tcp.hpp
+      - path: cli_udp.hpp
+      - path: x509_cert_key.hpp
+source:
+      - path: util/third_party/openthread/examples/apps/cli/cli_uart.cpp
+      - path: util/third_party/openthread/src/cli/cli.cpp
+      - path: util/third_party/openthread/src/cli/cli_coap.cpp
+      - path: util/third_party/openthread/src/cli/cli_coap_secure.cpp
+      - path: util/third_party/openthread/src/cli/cli_commissioner.cpp
+      - path: util/third_party/openthread/src/cli/cli_dataset.cpp
+      - path: util/third_party/openthread/src/cli/cli_history.cpp
+      - path: util/third_party/openthread/src/cli/cli_joiner.cpp
+      - path: util/third_party/openthread/src/cli/cli_network_data.cpp
+      - path: util/third_party/openthread/src/cli/cli_output.cpp
+      - path: util/third_party/openthread/src/cli/cli_srp_client.cpp
+      - path: util/third_party/openthread/src/cli/cli_srp_server.cpp
+      - path: util/third_party/openthread/src/cli/cli_tcp.cpp
+      - path: util/third_party/openthread/src/cli/cli_udp.cpp
+
+template_contribution:
+  - name: component_catalog
+    value: openthread_cli
+  - name: ot_init
+    value: sl_ot_cli_init
+    priority: 20

@@ -1,0 +1,110 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/python.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_rpc/internal/integration_test_ports.gni")
+
+pw_python_package("py") {
+  generate_setup = {
+    metadata = {
+      name = "pw_rpc"
+      version = "0.0.1"
+    }
+    options = {
+      install_requires = [ "protobuf" ]
+    }
+  }
+
+  sources = [
+    "pw_rpc/__init__.py",
+    "pw_rpc/callback_client/__init__.py",
+    "pw_rpc/callback_client/call.py",
+    "pw_rpc/callback_client/errors.py",
+    "pw_rpc/callback_client/impl.py",
+    "pw_rpc/client.py",
+    "pw_rpc/codegen.py",
+    "pw_rpc/codegen_nanopb.py",
+    "pw_rpc/codegen_pwpb.py",
+    "pw_rpc/codegen_raw.py",
+    "pw_rpc/console_tools/__init__.py",
+    "pw_rpc/console_tools/console.py",
+    "pw_rpc/console_tools/functions.py",
+    "pw_rpc/console_tools/watchdog.py",
+    "pw_rpc/descriptors.py",
+    "pw_rpc/ids.py",
+    "pw_rpc/lossy_channel.py",
+    "pw_rpc/packets.py",
+    "pw_rpc/plugin.py",
+    "pw_rpc/plugin_nanopb.py",
+    "pw_rpc/plugin_pwpb.py",
+    "pw_rpc/plugin_raw.py",
+    "pw_rpc/testing.py",
+  ]
+  tests = [
+    "tests/callback_client_test.py",
+    "tests/client_test.py",
+    "tests/console_tools/console_tools_test.py",
+    "tests/console_tools/functions_test.py",
+    "tests/console_tools/watchdog_test.py",
+    "tests/descriptors_test.py",
+    "tests/ids_test.py",
+    "tests/packets_test.py",
+  ]
+  python_deps = [
+    "$dir_pw_protobuf/py",
+    "$dir_pw_protobuf_compiler/py",
+    "$dir_pw_status/py",
+  ]
+  python_test_deps = [
+    "$dir_pw_build/py",
+    "$dir_pw_log:protos.python",
+    "$dir_pw_tokenizer/py:test_proto.python",
+  ]
+  pylintrc = "$dir_pigweed/.pylintrc"
+  mypy_ini = "$dir_pigweed/.mypy.ini"
+  proto_library = "..:protos"
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+  other_deps = [ ":py" ]
+}
+
+pw_python_script("python_client_cpp_server_test") {
+  sources = [ "tests/python_client_cpp_server_test.py" ]
+  python_deps = [
+    ":py",
+    "$dir_pw_build/py",
+    "$dir_pw_hdlc/py",
+    "$dir_pw_log:protos.python",
+    "$dir_pw_status/py",
+    "$dir_pw_tokenizer/py:test_proto.python",
+  ]
+
+  pylintrc = "$dir_pigweed/.pylintrc"
+  mypy_ini = "$dir_pigweed/.mypy.ini"
+
+  action = {
+    args = [
+      "--port=$pw_rpc_PYTHON_CLIENT_CPP_SERVER_TEST_PORT",
+      "--test-server-command",
+      "<TARGET_FILE(..:test_rpc_server)>",
+    ]
+    deps = [ "..:test_rpc_server" ]
+    stamp = true
+  }
+}

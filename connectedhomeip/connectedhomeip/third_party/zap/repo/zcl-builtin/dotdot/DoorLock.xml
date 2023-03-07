@@ -1,0 +1,821 @@
+﻿<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster xmlns:zcl="http://zigbee.org/zcl/clusters"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:type="http://zigbee.org/zcl/types"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd"
+  id="0101" revision="2" name="DoorLock">
+  <classification role="application" picsCode="DRLK" primaryTransaction="2" />
+
+  <type:type short="DrlkUserStatus" name="DrlkUserStatus" id="20" inheritsFrom="uint8">
+    <restriction>
+      <type:enumeration value="00" name="Available" />
+      <type:enumeration value="01" name="OccupiedEnabled" />
+      <!--  02 is not defined. -->
+      <type:enumeration value="03" name="OccupiedDisabled" />
+      <type:enumeration value="FF" name="NotSupported" />
+    </restriction>
+  </type:type>
+
+  <type:type short="DrlkSettableUserStatus" name="DrlkSettableUserStatus" id="20" inheritsFrom="uint8">
+    <restriction>
+      <type:enumeration value="01" name="OccupiedEnabled" />
+      <!--  02 is not defined. -->
+      <type:enumeration value="03" name="OccupiedDisabled" />
+    </restriction>
+  </type:type>
+
+  <type:type short="DrlkUserType" name="DrlkUserType" id="30" inheritsFrom="enum8">
+    <restriction>
+      <type:enumeration value="00" name="UnrestrictedUser" />
+      <type:enumeration value="01" name="YearDayScheduleUser" />
+      <type:enumeration value="02" name="WeekDayScheduleUser" />
+      <type:enumeration value="03" name="MasterUser" />
+      <type:enumeration value="04" name="NonAccessUser" />
+      <type:enumeration value="FF" name="NotSupported" />
+    </restriction>
+  </type:type>
+
+  <type:type short="DrlkOperMode" name="DrlkOperatingMode" id="30" inheritsFrom="enum8">
+    <restriction>
+          <type:enumeration value="00" name="Normal" />
+          <type:enumeration value="01" name="Vacation" />
+          <type:enumeration value="02" name="Privacy" />
+          <type:enumeration value="03" name="NoRFLockOrUnlock" />
+          <type:enumeration value="04" name="Passage" />
+    </restriction>
+  </type:type>
+
+  <type:type short="DrlkDaysMask" name="DrlkDaysMask" id="18" inheritsFrom="map8">
+    <bitmap>
+      <element name="Sun" type="bool" mask="01" />
+      <element name="Mon" type="bool" mask="02" shiftRight="1" />
+      <element name="Tue" type="bool" mask="04" shiftRight="2" />
+      <element name="Wed" type="bool" mask="08" shiftRight="3" />
+      <element name="Thu" type="bool" mask="10" shiftRight="4" />
+      <element name="Fri" type="bool" mask="20" shiftRight="5" />
+      <element name="Sat" type="bool" mask="40" shiftRight="6" />
+      <!-- Bit 7: reserved for SetWeekdaySchedule; Enable for GetWeekdayScheduleResponse.  -->
+      <element name="Enable" type="bool" mask="80" shiftRight="7" />
+    </bitmap>
+  </type:type>
+
+  <type:type short="DrlkPassFailStatus" name="DrlkPassFailStatus" id="20" inheritsFrom="uint8">
+    <restriction>
+      <type:enumeration value="00" name="Pass" />
+      <type:enumeration value="01" name="Fail" />
+    </restriction>
+  </type:type>
+
+  <type:type short="DrlkSetCodeStatus" name="DrlkSetCodeStatus" id="20" inheritsFrom="uint8">
+    <restriction>
+      <type:enumeration name="Success" value="00"/>
+      <type:enumeration name="GeneralFailure" value="01"/>
+      <type:enumeration name="MemoryFull" value="02"/>
+      <type:enumeration name="DuplicateCode" value="03"/>
+    </restriction>
+  </type:type>
+
+  <type:type short="DrlkOperEventSource" name="DrlkOperationEventSource" id="20" inheritsFrom="uint8">
+    <restriction>
+      <type:enumeration name="Keypad" value="00"/>
+      <type:enumeration name="RF" value="01"/>
+      <type:enumeration name="Manual" value="02"/>
+      <type:enumeration name="RFID" value="03"/>
+      <type:enumeration name="Indeterminate" value="FF"/>
+    </restriction>
+  </type:type>
+
+  <type:type short="DrlkPINUserID" name="DrlkPinUserID" id="21" inheritsFrom="uint16">
+    <restriction>
+      <type:maxInclusiveRef ref="NumberOfPINUsersSupported"/>
+    </restriction>
+  </type:type>
+
+  <type:type short="DrlkRFIDUserID" name="DrlkRFIDUserID" id="21" inheritsFrom="uint16">
+    <restriction>
+      <type:maxInclusiveRef ref="NumberOfRFIDUsersSupported"/>
+    </restriction>
+  </type:type>
+
+  <type:type short="DrlkTotalUserID" name="DrlkTotalUserID" id="21" inheritsFrom="uint16">
+    <restriction>
+      <type:maxInclusiveRef ref="NumberOfTotalUsersSupported"/>
+    </restriction>
+  </type:type>
+
+  <type:type short="DrlkWeekDayScheduleID" name="DrlkWeekDayScheduleID" id="20" inheritsFrom="uint8">
+    <restriction>
+      <type:maxInclusiveRef ref="NumberOfWeekDaySchedulesSupportedPerUser"/>
+    </restriction>
+  </type:type>
+
+  <type:type short="DrlkYearDayScheduleID" name="DrlkYearDayScheduleID" id="20" inheritsFrom="uint8">
+    <restriction>
+      <type:maxInclusiveRef ref="NumberOfYearDaySchedulesSupportedPerUser"/>
+    </restriction>
+  </type:type>
+
+  <type:type short="DrlkHolidayScheduleID" name="DrlkHolidayScheduleID" id="20" inheritsFrom="uint8">
+    <restriction>
+      <type:maxInclusiveRef ref="NumberOfHolidaySchedulesSupported"/>
+    </restriction>
+  </type:type>
+
+  <server>
+    <attributes>
+
+      <!--  Basic Information Attribute Set -->
+
+      <attribute id="0000" name="LockState" type="enum8" reportRequired="true" required="true" >
+        <restriction>
+          <type:enumeration value="00" name="NotFullyLocked" />
+          <type:enumeration value="01" name="Locked" />
+          <type:enumeration value="02" name="Unlocked" />
+          <type:enumeration value="FF" name="Undefined" />
+        </restriction>
+      </attribute>
+      <attribute id="0001" name="LockType" type="enum8" required="true" >
+        <restriction>
+          <type:enumeration value="00" name="DeadBolt" />
+          <type:enumeration value="01" name="Magnetic" />
+          <type:enumeration value="02" name="Other" />
+          <type:enumeration value="03" name="Mortise" />
+          <type:enumeration value="04" name="Rim" />
+          <type:enumeration value="05" name="LatchBolt" />
+          <type:enumeration value="06" name="CylindricalLock" />
+          <type:enumeration value="07" name="TubularLock" />
+          <type:enumeration value="08" name="InterconnectedLock" />
+          <type:enumeration value="09" name="DeadLatch" />
+          <type:enumeration value="0A" name="DoorFurniture" />
+        </restriction>
+      </attribute>
+      <attribute id="0002" name="ActuatorEnabled" type="bool" required="true" />
+      <attribute id="0003" name="DoorState" type="enum8" reportRequired="true" >
+        <restriction>
+          <type:enumeration value="00" name="Open" />
+          <type:enumeration value="01" name="Closed" />
+          <type:enumeration value="02" name="ErrorJammed" />
+          <type:enumeration value="03" name="ErrorForcedOpen" />
+          <type:enumeration value="04" name="ErrorUnspecified" />
+          <type:enumeration value="FF" name="Undefined" />
+        </restriction>
+      </attribute>
+      <attribute id="0004" name="DoorOpenEvents" type="uint32" writable="true" />
+      <attribute id="0005" name="DoorClosedEvents" type="uint32" writable="true" />
+      <attribute id="0006" name="OpenPeriod" type="uint16" writable="true" />
+
+      <!--  User / PIN / Schedule Information Attribute Set -->
+
+      <attribute id="0010" name="NumberOfLogRecordsSupported" type="uint16" default="0" />
+      <attribute id="0011" name="NumberOfTotalUsersSupported" type="uint16" default="0" >
+        <restriction>
+          <!--
+            ZCL7 states that NumberOfTotalUsersSupported is equal to the higher of subsequent
+            ...PINUsers... and ...RFIDUsers... attribute values. But this constraint is removed
+            in feature set ballot for door lock.
+          -->
+          <type:minInclusiveExpression expression="max(NumberOfPINUsersSupported, NumberOfRFIDUsersSupported)" />
+          <type:maxExclusiveExpression expression="max(NumberOfPINUsersSupported, NumberOfRFIDUsersSupported)" />
+        </restriction>
+      </attribute>
+      <attribute id="0012" name="NumberOfPINUsersSupported" type="uint16" default="0" />
+      <attribute id="0013" name="NumberOfRFIDUsersSupported" type="uint16" default="0" />
+      <attribute id="0014" name="NumberOfWeekDaySchedulesSupportedPerUser" type="uint8" default="0" />
+      <attribute id="0015" name="NumberOfYearDaySchedulesSupportedPerUser" type="uint8" default="0" />
+      <attribute id="0016" name="NumberOfHolidaySchedulesSupported" type="uint8" default="0" />
+      <!--  ZCL7 does not state a relationship between these next two sets of Max/Min attribute pairs. -->
+      <attribute id="0017" name="MaxPINCodeLength" type="uint8" default="8" />
+      <attribute id="0018" name="MinPINCodeLength" type="uint8" default="4" />
+      <attribute id="0019" name="MaxRFIDCodeLength" type="uint8" default="20" />
+      <attribute id="001A" name="MinRFIDCodeLength" type="uint8" default="8" />
+
+      <!--  Operational Settings Attribute Set -->
+
+      <attribute id="0020" name="EnableLogging" type="bool" writable="true" writeOptional="true" reportRequired="true" default="0" />
+      <attribute id="0021" name="Language" type="string" writable="true" writeOptional="true" reportRequired="true" default="" >
+        <restriction>
+          <type:length value="2" />
+         </restriction>
+      </attribute>
+      <attribute id="0022" name="LEDSettings" type="uint8" writable="true" writeOptional="true" reportRequired="true" default="0" >
+        <restriction>
+          <type:enumeration value="00" name="NeverUseLED" />
+          <type:enumeration value="01" name="UseLEDExceptForAccessAllowed" />
+          <type:enumeration value="02" name="UseLEDForAllEvents" />
+        </restriction>
+      </attribute>
+      <attribute id="0023" name="AutoRelockTime" type="uint32" writable="true" writeOptional="true" reportRequired="true" default="0" >
+        <restriction>
+          <type:special name="Disabled" value="0"/>
+        </restriction>
+      </attribute>
+      <attribute id="0024" name="SoundVolume" type="uint8" writable="true" writeOptional="true" reportRequired="true" default="0" >
+        <restriction>
+          <type:enumeration value="00" name="SilentMode" />
+          <type:enumeration value="01" name="LowVolume" />
+          <type:enumeration value="02" name="HighVolume" />
+        </restriction>
+      </attribute>
+      <attribute id="0025" name="OperatingMode" type="DrlkOperMode" writable="true" writeOptional="true" reportRequired="true" default="0" />
+      <attribute id="0026" name="SupportedOperatingModes" type="map16" default="1" >
+        <bitmap>
+          <element name="NormalModeSupported" type="bool" mask="0001" />
+          <element name="VacationModeSupported" type="bool" mask="0002" shiftRight="1" />
+          <element name="PrivacyModeSupported" type="bool" mask="0004" shiftRight="2" />
+          <element name="NoRFLockOrUnlockModeSupported" type="bool" mask="0008" shiftRight="3" />
+          <element name="PassageModeSupported" type="bool" mask="0010" shiftRight="4" />
+        </bitmap>
+      </attribute>
+      <attribute id="0027" name="DefaultConfigurationRegister" type="map16" reportRequired="true" default="0" >
+        <bitmap>
+          <element name="DefaultEnableLocalProgrammingAttributeIsEnabled" type="bool" mask="0001" />
+          <element name="DefaultKeypadInterfaceIsEnabled" type="bool" mask="0002" shiftRight="1" />
+          <element name="DefaultRFInterfaceIsEnabled" type="bool" mask="0004" shiftRight="2" />
+          <!--  Bits 3 and 4 not defined. -->
+          <element name="DefaultSoundVolumeIsEnabled" type="bool" mask="0020" shiftRight="5" />
+          <element name="DefaultAutoRelockTimeIsEnabled" type="bool" mask="0040" shiftRight="6" />
+          <element name="DefaultLEDSettingsIsEnabled" type="bool" mask="0080" shiftRight="7" />
+        </bitmap>
+      </attribute>
+      <attribute id="0028" name="EnableLocalProgramming" type="bool" writable="true" writeOptional="true" reportRequired="true" default="1" />
+      <attribute id="0029" name="EnableOneTouchLocking" type="bool" writable="true" reportRequired="true" default="0" />
+      <attribute id="002A" name="EnableInsideStatusLED" type="bool" writable="true" reportRequired="true" default="0" />
+      <attribute id="002B" name="EnablePrivacyModeButton" type="bool" writable="true" reportRequired="true" default="0" />
+
+      <!--  Security Settings Attribute Set -->
+
+      <attribute id="0030" name="WrongCodeEntryLimit" type="uint8" writable="true" writeOptional="true" reportRequired="true" default="0" />
+      <attribute id="0031" name="UserCodeTemporaryDisableTime" type="uint8" writable="true" writeOptional="true" reportRequired="true" default="0" />
+      <attribute id="0032" name="SendPINOverTheAir" type="bool" writable="true" writeOptional="true" reportRequired="true" default="0" />
+      <attribute id="0033" name="RequirePINforRFOperation" type="bool" writable="true" writeOptional="true" reportRequired="true" default="0" />
+      <attribute id="0034" name="SecurityLevel" type="enum8" reportRequired="true" default="0" >
+        <restriction>
+          <type:enumeration value="00" name="Network" />
+          <type:enumeration value="01" name="APS" />
+        </restriction>
+      </attribute>
+
+      <!--  Alarm and Event Masks Attribute Set -->
+
+      <attribute id="0040" name="AlarmMask" type="map16" writable="true" reportRequired="true" default="0" >
+        <bitmap>
+          <element name="DeadboltJammed" type="bool" mask="0001" />
+          <element name="LockResetToFactoryDefaults" type="bool" mask="0002" shiftRight="1" />
+          <!--  Bit 2 reserved. -->
+          <element name="RFPowerModuleCycled" type="bool" mask="0008" shiftRight="3" />
+          <element name="TamperAlarmWrongCodeEntryLimit" type="bool" mask="0010" shiftRight="4" />
+          <element name="TamperAlarmFrontEscutcheonRemovedFromMain" type="bool" mask="0020" shiftRight="5" />
+          <element name="ForcedDoorOpenUnderDoorLockedCondition" type="bool" mask="0040" shiftRight="6" />
+        </bitmap>
+      </attribute>
+      <attribute id="0041" name="KeypadOperationEventMask" type="map16" writable="true" reportRequired="true" default="0" >
+        <bitmap>
+          <element name="KeypadOpUnknownOrMS" type="bool" mask="0001" />
+          <element name="KeypadOpLock" type="bool" mask="0002" shiftRight="1" />
+          <element name="KeypadOpUnlock" type="bool" mask="0004" shiftRight="2" />
+          <element name="KeypadOpLockErrorInvalidPIN" type="bool" mask="0008" shiftRight="3" />
+          <element name="KeypadOpLockErrorInvalidSchedule" type="bool" mask="0010" shiftRight="4" />
+          <element name="KeypadOpUnlockInvalidPIN" type="bool" mask="0020" shiftRight="5" />
+          <element name="KeypadOpUnlockInvalidSchedule" type="bool" mask="0040" shiftRight="6" />
+          <element name="KeypadOpNonAccessUser" type="bool" mask="0080" shiftRight="7" />
+        </bitmap>
+      </attribute>
+      <attribute id="0042" name="RFOperationEventMask" type="map16" writable="true" reportRequired="true" default="0" >
+        <bitmap>
+          <element name="RFOpUnknownOrMS" type="bool" mask="0001" />
+          <element name="RFOpLock" type="bool" mask="0002" shiftRight="1" />
+          <element name="RFOpUnlock" type="bool" mask="0004" shiftRight="2" />
+          <element name="RFOpLockErrorInvalidCode" type="bool" mask="0008" shiftRight="3" />
+          <element name="RFOpLockErrorInvalidSchedule" type="bool" mask="0010" shiftRight="4" />
+          <element name="RFOpUnlockInvalidCode" type="bool" mask="0020" shiftRight="5" />
+          <element name="RFOpUnlockInvalidSchedule" type="bool" mask="0040" shiftRight="6" />
+        </bitmap>
+      </attribute>
+      <attribute id="0043" name="ManualOperationEventMask" type="map16" writable="true" reportRequired="true" default="0" >
+        <bitmap>
+          <element name="ManualOpUnknownOrMS" type="bool" mask="0001" />
+          <element name="ManualOpThumbturnLock" type="bool" mask="0002" shiftRight="1" />
+          <element name="ManualOpThumbturnUnlock" type="bool" mask="0004" shiftRight="2" />
+          <element name="ManualOpOneTouchLock" type="bool" mask="0008" shiftRight="3" />
+          <element name="ManualOpKeyLock" type="bool" mask="0010" shiftRight="4" />
+          <element name="ManualOpKeyUnlock" type="bool" mask="0020" shiftRight="5" />
+          <element name="ManualOpAutoLock" type="bool" mask="0040" shiftRight="6" />
+          <element name="ManualOpScheduleLock" type="bool" mask="0080" shiftRight="7" />
+          <element name="ManualOpScheduleUnlock" type="bool" mask="0100" shiftRight="8" />
+          <element name="ManualOpLock" type="bool" mask="0200" shiftRight="9" />
+          <element name="ManualOpUnlock" type="bool" mask="0400" shiftRight="10" />
+        </bitmap>
+      </attribute>
+      <attribute id="0044" name="RFIDOperationEventMask" type="map16" writable="true" reportRequired="true" default="0" >
+        <bitmap>
+          <element name="RFIDOpUnknownOrMS" type="bool" mask="0001" />
+          <element name="RFIDOpLock" type="bool" mask="0002" shiftRight="1" />
+          <element name="RFIDOpUnlock" type="bool" mask="0004" shiftRight="2" />
+          <element name="RFIDOpLockErrorInvalidRFID" type="bool" mask="0008" shiftRight="3" />
+          <element name="RFIDOpLockErrorInvalidSchedule" type="bool" mask="0010" shiftRight="4" />
+          <element name="RFIDOpUnlockErrorInvalidRFID" type="bool" mask="0020" shiftRight="5" />
+          <element name="RFIDOpUnlockErrorInvalidSchedule" type="bool" mask="0040" shiftRight="6" />
+        </bitmap>
+      </attribute>
+      <attribute id="0045" name="KeypadProgrammingEventMask" type="map16" writable="true" reportRequired="true" default="0" >
+        <bitmap>
+          <element name="KeypadProgUnknownOrMS" type="bool" mask="0001" />
+          <element name="KeypadProgMasterCodeChanged" type="bool" mask="0002" shiftRight="1" />
+          <element name="KeypadProgPINAdded" type="bool" mask="0004" shiftRight="2" />
+          <element name="KeypadProgPINDeleted" type="bool" mask="0008" shiftRight="3" />
+          <element name="KeypadProgPINChanged" type="bool" mask="0010" shiftRight="4" />
+        </bitmap>
+      </attribute>
+      <attribute id="0046" name="RFProgrammingEventMask" type="map16" writable="true" reportRequired="true" default="0" >
+        <bitmap>
+          <element name="RFProgUnknownOrMS" type="bool" mask="0001" />
+          <!--  Bit 1 not defined.  -->
+          <element name="RFProgPINAdded" type="bool" mask="0004" shiftRight="2" />
+          <element name="RFProgPINDeleted" type="bool" mask="0008" shiftRight="3" />
+          <element name="RFProgPINChanged" type="bool" mask="0010" shiftRight="4" />
+          <element name="RFProgRFIDAdded" type="bool" mask="0020" shiftRight="5" />
+          <element name="RFProgRFIDDeleted" type="bool" mask="0040" shiftRight="6" />
+        </bitmap>
+      </attribute>
+      <attribute id="0047" name="RFIDProgrammingEventMask" type="map16" writable="true" reportRequired="true" default="0" >
+         <bitmap>
+          <element name="RFIDProgUnknownOrMS" type="bool" mask="0001" />
+          <!--  Bits 1-4 not defined. -->
+          <element name="RFIDProgRFIDAdded" type="bool" mask="0020" shiftRight="5" />
+          <element name="RFIDProgRFIDDeleted" type="bool" mask="0040" shiftRight="6" />
+        </bitmap>
+      </attribute>
+    </attributes>
+
+    <commands>
+      <command id="00" name="LockDoor" required="true">
+        <fields>
+          <field name="PINOrRFIDCode" type="octstr" />
+        </fields>
+      </command>
+      <command id="01" name="UnlockDoor" required="true">
+        <fields>
+          <field name="PINOrRFIDCode" type="octstr" />
+        </fields>
+      </command>
+      <command id="02" name="Toggle">
+        <fields>
+          <field name="PINOrRFIDCode" type="octstr" />
+        </fields>
+      </command>
+      <command id="03" name="UnlockWithTimeout">
+        <fields>
+          <field name="TimeoutInSeconds" type="uint16" />
+          <field name="PINOrRFIDCode" type="octstr" />
+        </fields>
+      </command>
+      <command id="04" name="GetLogRecord">
+        <fields>
+          <field name="LogIndex" type="uint16" >
+            <restriction>
+              <type:special name="MostRecent" value="0"/>
+              <!-- Note: No other restriction; Response command description states
+                   that "if an invalid log entry ID was requested, it is set to 0
+                   and the most recent log entry will be returned".  -->
+            </restriction>
+          </field>
+        </fields>
+      </command>
+      <command id="05" name="SetPINCode">
+        <fields>
+          <field name="UserID" type="DrlkPINUserID" />
+          <field name="UserStatus" type="DrlkSettableUserStatus" />
+          <field name="UserType" type="DrlkUserType" />
+          <field name="PIN" type="octstr" />
+        </fields>
+      </command>
+      <command id="06" name="GetPINCode">
+        <fields>
+          <field name="UserID" type="DrlkPINUserID" />
+        </fields>
+      </command>
+      <command id="07" name="ClearPINCode">
+        <fields>
+          <field name="UserID" type="DrlkPINUserID" />
+        </fields>
+      </command>
+      <command id="08" name="ClearAllPINCodes" />
+      <command id="09" name="SetUserStatus">
+        <fields>
+          <field name="UserID" type="DrlkTotalUserID" />
+          <field name="UserStatus" type="DrlkSettableUserStatus" />
+        </fields>
+      </command>
+      <command id="0A" name="GetUserStatus">
+        <fields>
+          <field name="UserID" type="DrlkTotalUserID" />
+        </fields>
+      </command>
+      <command id="0B" name="SetWeekdaySchedule">
+        <fields>
+          <field name="ScheduleID" type="DrlkWeekDayScheduleID" />
+          <field name="UserID" type="DrlkTotalUserID" />
+          <field name="DaysMask" type="DrlkDaysMask" />
+          <!--
+            ZCL7 specifies constraint that StartHour <= EndHour;
+            and if they are equal, then StartMinute < EndMinute.
+            Result: StartHour/Minute strictly less than EndHour/Minute.
+          -->
+          <field name="StartHour" type="uint8" >
+            <restriction>
+              <type:minInclusive value="0" />
+              <type:maxInclusive value="23" />
+            </restriction>
+          </field>
+          <field name="StartMinute" type="uint8" >
+            <restriction>
+              <type:minInclusive value="0" />
+              <type:maxInclusive value="59" />
+              <!-- StartHour:StartMinute can't be 23:59, else no higher value for EndHour:EndMinute possible. -->
+              <type:complexConstraint expression="StartHour &lt; 23 or StartMinute &lt; 59" />
+            </restriction>
+          </field>
+          <field name="EndHour" type="uint8" >
+            <restriction>
+              <type:minInclusive value="0" />
+              <type:maxInclusive value="23" />
+              <!-- EndHour equal to StartHour only if StartMinute is less than 59, else no higher value for EndMinute possible. -->
+              <type:complexConstraint expression="StartHour &lt; EndHour or (StartHour = EndHour and StartMinute &lt; 59)" />
+            </restriction>
+          </field>
+          <field name="EndMinute" type="uint8" >
+            <restriction>
+              <type:minInclusive value="0" />
+              <type:maxInclusive value="59" />
+              <!-- EndMinute any value unless StartHour == EndHour, then must be strictly greater than StartMinute. -->
+              <type:complexConstraint expression="StartHour &lt; EndHour or (StartHour = EndHour and StartMinute &lt; EndMinute)" />
+            </restriction>
+          </field>
+        </fields>
+      </command>
+      <command id="0C" name="GetWeekdaySchedule">
+        <fields>
+          <field name="ScheduleID" type="DrlkWeekDayScheduleID" />
+          <field name="UserID" type="DrlkTotalUserID" />
+        </fields>
+      </command>
+      <command id="0D" name="ClearWeekdaySchedule">
+        <fields>
+          <field name="ScheduleID" type="DrlkWeekDayScheduleID" />
+          <field name="UserID" type="DrlkTotalUserID" />
+        </fields>
+      </command>
+      <command id="0E" name="SetYearDaySchedule">
+        <fields>
+          <field name="ScheduleID" type="DrlkYearDayScheduleID" />
+          <field name="UserID" type="DrlkTotalUserID" />
+          <field name="LocalStartTime" type="uint32" />
+          <field name="LocalEndTime" type="uint32" >
+            <restriction>
+              <type:minExclusiveRef ref="LocalStartTime" />
+            </restriction>
+          </field>
+        </fields>
+      </command>
+      <command id="0F" name="GetYearDaySchedule">
+        <fields>
+          <field name="ScheduleID" type="DrlkYearDayScheduleID" />
+          <field name="UserID" type="DrlkTotalUserID" />
+        </fields>
+      </command>
+      <command id="10" name="ClearYearDaySchedule">
+        <fields>
+          <field name="ScheduleID" type="DrlkYearDayScheduleID" />
+          <field name="UserID" type="DrlkTotalUserID" />
+        </fields>
+      </command>
+      <command id="11" name="SetHolidaySchedule">
+        <fields>
+          <field name="HolidayScheduleID" type="DrlkHolidayScheduleID" />
+          <field name="LocalStartTime" type="uint32" />
+          <field name="LocalEndTime" type="uint32" >
+            <restriction>
+              <type:minExclusiveRef ref="LocalStartTime" />
+            </restriction>
+          </field>
+          <field name="OperatingModeDuringHoliday" type="DrlkOperMode" />
+        </fields>
+      </command>
+      <command id="12" name="GetHolidaySchedule">
+        <fields>
+          <field name="HolidayScheduleID" type="DrlkHolidayScheduleID" />
+        </fields>
+      </command>
+      <command id="13" name="ClearHolidaySchedule">
+        <fields>
+          <field name="HolidayScheduleID" type="DrlkHolidayScheduleID" />
+        </fields>
+      </command>
+      <command id="14" name="SetUserType">
+        <fields>
+          <field name="UserID" type="DrlkTotalUserID" />
+          <field name="UserType" type="DrlkUserType" />
+        </fields>
+      </command>
+      <command id="15" name="GetUserType">
+        <fields>
+          <field name="UserID" type="DrlkTotalUserID" />
+        </fields>
+      </command>
+      <command id="16" name="SetRFIDCode">
+        <fields>
+          <field name="UserID" type="DrlkRFIDUserID" />
+          <field name="UserStatus" type="DrlkSettableUserStatus" />
+          <field name="UserType" type="DrlkUserType" />
+          <field name="RFIDCode" type="octstr" />
+        </fields>
+      </command>
+      <command id="17" name="GetRFIDCode">
+        <fields>
+          <field name="UserID" type="DrlkRFIDUserID" />
+        </fields>
+      </command>
+      <command id="18" name="ClearRFIDCode">
+        <fields>
+          <field name="UserID" type="DrlkRFIDUserID" />
+        </fields>
+      </command>
+      <command id="19" name="ClearAllRFIDCodes" />
+    </commands>
+  </server>
+  <client>
+    <commands>
+      <command id="00" name="LockDoorResponse" required="true" >
+        <fields>
+          <field name="Status" type="zclStatus" />
+        </fields>
+      </command>
+      <command id="01" name="UnlockDoorResponse" required="true" >
+        <fields>
+          <field name="Status" type="zclStatus" />
+        </fields>
+      </command>
+      <command id="02" name="ToggleResponse" >
+        <fields>
+          <field name="Status" type="zclStatus" />
+        </fields>
+      </command>
+      <command id="03" name="UnlockWithTimeoutResponse" >
+        <fields>
+          <field name="Status" type="zclStatus" />
+        </fields>
+      </command>
+      <command id="04" name="GetLogRecordResponse">
+        <fields>
+          <field name="LogEntryID" type="uint16" />
+          <field name="Timestamp" type="uint32" />
+          <field name="EventType" type="enum8" >
+            <restriction>
+              <type:enumeration name="Operation" value="00"/>
+              <type:enumeration name="Programming" value="01"/>
+              <type:enumeration name="Alarm" value="02"/>
+            </restriction>
+          </field>
+          <field name="SourceOperationEvent" type="DrlkOperEventSource" />
+          <field name="EventIDOrAlarmCode" type="uint8" />
+          <field name="UserID" type="uint16" />
+          <field name="PIN" type="octstr" />
+        </fields>
+      </command>
+      <command id="05" name="SetPINCodeResponse">
+        <fields>
+          <field name="Status" type="DrlkSetCodeStatus" />
+        </fields>
+      </command>
+      <command id="06" name="GetPINCodeResponse">
+        <fields>
+          <field name="UserID" type="uint16" />
+          <field name="UserStatus" type="DrlkUserStatus" />
+          <field name="UserType" type="DrlkUserType" />
+          <field name="Code" type="octstr" />
+        </fields>
+      </command>
+      <command id="07" name="ClearPINCodeResponse" >
+        <fields>
+          <field name="Status" type="DrlkPassFailStatus" />
+        </fields>
+      </command>
+      <command id="08" name="ClearAllPINCodesResponse" >
+        <fields>
+          <field name="Status" type="DrlkPassFailStatus" />
+        </fields>
+      </command>
+      <command id="09" name="SetUserStatusResponse" >
+        <fields>
+          <field name="Status" type="DrlkPassFailStatus" />
+        </fields>
+      </command>
+      <command id="0A" name="GetUserStatusResponse">
+        <fields>
+          <field name="UserID" type="uint16" />
+          <field name="UserStatus" type="DrlkUserStatus" />
+        </fields>
+      </command>
+      <command id="0B" name="SetWeekdayScheduleResponse" >
+        <fields>
+          <field name="Status" type="DrlkPassFailStatus" />
+        </fields>
+      </command>
+      <command id="0C" name="GetWeekdayScheduleResponse">
+        <fields>
+          <field name="ScheduleID" type="uint8" />
+          <field name="UserID" type="uint16" />
+          <field name="Status" type="zclStatus" />
+          <field name="DaysMask" type="DrlkDaysMask" presentIf="Status = 0" />
+          <!--
+            ZCL7 specifies constraint that StartHour <= EndHour;
+            and if they are equal, then StartMinute < EndMinute.
+            Result: StartHour/Minute strictly less than EndHour/Minute.
+          -->
+          <field name="StartHour" type="uint8" presentIf="Status = 0" >
+            <restriction>
+              <type:minInclusive value="0" />
+              <type:maxInclusive value="23" />
+            </restriction>
+          </field>
+          <field name="StartMinute" type="uint8" presentIf="Status = 0" >
+            <restriction>
+              <type:minInclusive value="0" />
+              <type:maxInclusive value="59" />
+              <!-- StartHour:StartMinute can't be 23:59, else no higher value for EndHour:EndMinute possible. -->
+              <type:complexConstraint expression="StartHour &lt; 23 or StartMinute &lt; 59" />
+            </restriction>
+          </field>
+          <field name="EndHour" type="uint8" presentIf="Status = 0" >
+            <restriction>
+              <type:minInclusive value="0" />
+              <type:maxInclusive value="23" />
+              <!-- EndHour equal to StartHour only if StartMinute is less than 59, else no higher value for EndMinute possible. -->
+              <type:complexConstraint expression="StartHour &lt; EndHour or (StartHour = EndHour and StartMinute &lt; 59)" />
+            </restriction>
+          </field>
+          <field name="EndMinute" type="uint8" presentIf="Status = 0" >
+            <restriction>
+              <type:minInclusive value="0" />
+              <type:maxInclusive value="59" />
+              <!-- EndMinute any value unless StartHour == EndHour, then must be strictly greater than StartMinute. -->
+              <type:complexConstraint expression="StartHour &lt; EndHour or (StartHour = EndHour and StartMinute &lt; EndMinute)" />
+            </restriction>
+          </field>
+        </fields>
+      </command>
+      <command id="0D" name="ClearWeekdayScheduleResponse" >
+        <fields>
+          <field name="Status" type="DrlkPassFailStatus" />
+        </fields>
+      </command>
+      <command id="0E" name="SetYearDayScheduleResponse" >
+        <fields>
+          <field name="Status" type="DrlkPassFailStatus" />
+        </fields>
+      </command>
+      <command id="0F" name="GetYearDayScheduleResponse">
+        <fields>
+          <field name="ScheduleID" type="uint8" />
+          <field name="UserID" type="uint16" />
+          <field name="Status" type="zclStatus" />
+          <field name="LocalStartTime" type="uint32" presentIf="Status = 0" />
+          <field name="LocalEndTime" type="uint32" presentIf="Status = 0" >
+            <restriction>
+              <type:minExclusiveRef ref="LocalStartTime" />
+            </restriction>
+          </field>
+        </fields>
+      </command>
+      <command id="10" name="ClearYearDayScheduleResponse" >
+        <fields>
+          <field name="Status" type="DrlkPassFailStatus" />
+        </fields>
+      </command>
+      <command id="11" name="SetHolidayScheduleResponse" >
+        <fields>
+          <field name="Status" type="DrlkPassFailStatus" />
+        </fields>
+      </command>
+      <command id="12" name="GetHolidayScheduleResponse">
+        <fields>
+          <field name="HolidayScheduleID" type="uint8" />
+          <field name="Status" type="zclStatus" />
+          <field name="LocalStartTime" type="uint32" presentIf="Status = 0" />
+          <field name="LocalEndTime" type="uint32" presentIf="Status = 0"  >
+            <restriction>
+              <type:minExclusiveRef ref="LocalStartTime" />
+            </restriction>
+          </field>
+          <field name="OperatingModeDuringHoliday" type="DrlkOperMode" presentIf="Status = 0" />
+        </fields>
+      </command>
+      <command id="13" name="ClearHolidayScheduleResponse" >
+        <fields>
+          <field name="Status" type="DrlkPassFailStatus" />
+        </fields>
+      </command>
+      <command id="14" name="SetUserTypeResponse" >
+        <fields>
+          <field name="Status" type="DrlkPassFailStatus" />
+        </fields>
+      </command>
+      <command id="15" name="GetUserTypeResponse">
+        <fields>
+          <field name="UserID" type="uint16" />
+          <field name="UserType" type="DrlkUserType" />
+        </fields>
+      </command>
+      <command id="16" name="SetRFIDCodeResponse">
+        <fields>
+          <field name="Status" type="DrlkSetCodeStatus" />
+        </fields>
+      </command>
+      <command id="17" name="GetRFIDCodeResponse">
+        <fields>
+          <field name="UserID" type="uint16" />
+          <field name="UserStatus" type="DrlkUserStatus" />
+          <field name="UserType" type="DrlkUserType" />
+          <field name="RFIDCode" type="octstr" />
+        </fields>
+      </command>
+      <command id="18" name="ClearRFIDCodeResponse" >
+        <fields>
+          <field name="Status" type="DrlkPassFailStatus" />
+        </fields>
+      </command>
+      <command id="19" name="ClearAllRFIDCodesResponse" >
+        <fields>
+          <field name="Status" type="DrlkPassFailStatus" />
+        </fields>
+      </command>
+      <command id="20" name="OperatingEventNotification" >
+        <fields>
+          <field name="OperationEventSource" type="DrlkOperEventSource" />
+          <field name="OperationEventCode" type="uint8" >
+            <restriction>
+              <type:enumeration name="UnknownOrMS" value="00"/>
+              <type:enumeration name="Lock" value="01"/>
+              <type:enumeration name="Unlock" value="02"/>
+              <type:enumeration name="LockFailureInvalidPINOrID" value="03"/>
+              <type:enumeration name="LockFailureInvalidSchedule" value="04"/>
+              <type:enumeration name="UnlockFailureInvalidPINOrID" value="05"/>
+              <type:enumeration name="UnlockFailureInvalidSchedule" value="06"/>
+              <type:enumeration name="OneTouchLock" value="07"/>
+              <type:enumeration name="KeyLock" value="08"/>
+              <type:enumeration name="KeyUnlock" value="09"/>
+              <type:enumeration name="AutoLock" value="0A"/>
+              <type:enumeration name="ScheduleLock" value="0B"/>
+              <type:enumeration name="ScheduleUnlock" value="0C"/>
+              <type:enumeration name="ManualLock" value="0D"/>
+              <type:enumeration name="ManualUnlock" value="0E"/>
+              <type:enumeration name="NonAccessUserOperationalEvent" value="0E"/>
+            </restriction>
+          </field>
+          <field name="UserID" type="uint16" />
+          <field name="PIN" type="octstr" />
+          <field name="LocalTime" type="uint32" />
+          <field name="Data" type="string" />
+        </fields>
+      </command>
+      <command id="21" name="ProgrammingEventNotification">
+        <fields>
+          <field name="ProgramEventSource" type="uint8" >
+            <restriction>
+              <type:enumeration name="Keypad" value="00"/>
+              <type:enumeration name="RF" value="01"/>
+              <!-- 02 reserved, corresponds to Manual for Operation Event Source -->
+              <type:enumeration name="RFID" value="03"/>
+              <type:enumeration name="Indeterminate" value="FF"/>
+            </restriction>
+          </field>
+          <field name="ProgramEventCode" type="uint8" >
+            <restriction>
+              <type:enumeration name="UnknownOrMS" value="00"/>
+              <type:enumeration name="MasterCodeChanged" value="01"/>
+              <type:enumeration name="PINCodeAdded" value="02"/>
+              <type:enumeration name="PINCodeDeleted" value="03"/>
+              <type:enumeration name="PINCodeChanged" value="04"/>
+              <type:enumeration name="RFIDCodeAdded" value="05"/>
+              <type:enumeration name="RFIDCodeDeleted" value="06"/>
+            </restriction>
+          </field>
+          <field name="UserID" type="uint16" />
+          <field name="PIN" type="octstr" />
+          <field name="UserType" type="DrlkUserType" />
+          <field name="UserStatus" type="DrlkUserStatus" />
+          <field name="LocalTime" type="uint32" />
+          <field name="Data" type="string" />
+        </fields>
+      </command>
+    </commands>
+  </client>
+</zcl:cluster>

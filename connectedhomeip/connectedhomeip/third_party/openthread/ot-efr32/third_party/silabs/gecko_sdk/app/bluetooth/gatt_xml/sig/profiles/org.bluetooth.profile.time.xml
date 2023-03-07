@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Profile xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/profile.xsd" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    type="org.bluetooth.profile.time"
+    name="Time">
+    <InformativeText>
+        <Abstract>The Time profile enables the device to get the date, time, time zone, and DST information and control the functions related the time.</Abstract>
+        <Summary>The Time profile is used to obtain the date and time, and related information such as time zone as exposed by the Current Time service in the peer device. Information of when next change of daylight savings time (DST) will occur can be retrieved from the peer exposed by the Next DST Change service. This profile also enables the device to request updating the time on the peer device as exposed by the Reference Time Update service.</Summary>
+	</InformativeText>
+	<Role name="Time Server">
+		<Service type="org.bluetooth.service.current_time">
+			<Declaration>Primary</Declaration>
+			<Requirement>Mandatory</Requirement>
+		</Service>
+		<Service type="org.bluetooth.service.next_dst_change">
+			<Declaration>Primary</Declaration>
+			<Requirement>Optional</Requirement>
+		</Service>
+		<Service type="org.bluetooth.service.reference_time_update">
+			<Declaration>Primary</Declaration>
+			<Requirement>Optional</Requirement>
+		</Service>
+	</Role>
+	<Role name="Time Client">
+        <Client type="org.bluetooth.service.current_time">
+			<Requirement>Mandatory</Requirement>
+		</Client>
+        <Client type="org.bluetooth.service.next_dst_change">
+			<Requirement>Optional</Requirement>
+		</Client>
+        <Client type="org.bluetooth.service.reference_time_update">
+			<Requirement>Optional</Requirement>
+		</Client>
+	</Role>
+</Profile>

@@ -1,0 +1,225 @@
+// Copyright 2022 The Pigweed Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not
+// use this file except in compliance with the License. You may obtain a copy of
+// the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations under
+// the License.
+syntax = "proto3";
+
+package pw.transfer;
+
+option java_package = "pw.transfer";
+option java_outer_classname = "ConfigProtos";
+
+message TransferAction {
+  enum ProtocolVersion {
+    option allow_alias = true;
+    UNKNOWN_VERSION = 0;
+    V1 = 1;
+    V2 = 2;
+    LATEST = 2;
+  }
+
+  // As transfers are always client initiated, TransferType is from the client's
+  // perspective.
+  enum TransferType {
+    UNKNOWN = 0;
+    WRITE_TO_SERVER = 1;
+    READ_FROM_SERVER = 2;
+  }
+
+  // Transfer resource ID to use for this transfer.
+  uint32 resource_id = 1;
+
+  // Path to the file that data should be read from or written to (depending on
+  // transfer_type). When reading from the server, this is the path the file
+  // is written to. When writing to the server, this is the path to the file
+  // that should be read from.
+  string file_path = 2;
+
+  // Whether to write to the server, or read from it.
+  TransferType transfer_type = 3;
+
+  // Expected final status of transfer operation.
+  //
+  // TODO(b/241456982): This should be a pw.protobuf.StatusCode, but importing
+  // other Pigweed protos doesn't work in Bazel.
+  uint32 expected_status = 4;
+
+  // Protocol version to initiate the transfer with.
+  ProtocolVersion protocol_version = 5;
+}
+
+// Configuration for the integration test client.
+message ClientConfig {
+  // The sequence of transfer actions to perform during the lifetime of this
+  // client configuration.
+  repeated TransferAction transfer_actions = 1;
+
+  // The maximum number of times this client will attempt to send a packet
+  // before the transfer aborts due to a lack of response.
+  uint32 max_retries = 2;
+
+  // The maximum time this client will wait for a response to the first
+  // packet sent to the pw_transfer server before attempting to retry. Extending
+  // this can help work around cases where transfer initialization takes a long
+  // time.
+  //
+  // Note: This parameter is only supported on Java transfer clients.
+  // TODO(tpudlik): google.protobuf.Duration?
+  uint32 initial_chunk_timeout_ms = 3;
+
+  // The maximum amount of time this client will wait for a response to a sent
+  // packet before attempting to re-send the packet.
+  //
+  // TODO(tpudlik): google.protobuf.Duration?
+  uint32 chunk_timeout_ms = 4;
+
+  // Cumulative maximum number of times to retry over the course of the transfer
+  // before giving up.
+  uint32 max_lifetime_retries = 5;
+}
+
+// Stacks of paths to use when doing transfers. Each new initiated transfer
+// on this resource gets the next file path in the stack. Once the stack is
+// exhausted, new transfers on this resource fail as though this resource is
+// unregistered.
+message ServerResourceLocations {
+  // When a client reads from this server, this stack is used to determine which
+  // file path to read data from.
+  repeated string source_paths = 3;
+
+  // When a client writes to this server, this stack is used to determine which
+  // file path to write data to.
+  repeated string destination_paths = 4;
+
+  // If source_paths is exhausted or empty, this source path can be reused
+  // as a fallback indefinitely.
+  string default_source_path = 5;
+
+  // If destination_paths is exhausted or empty, this destination path can be
+  // reused as a fallback indefinitely.
+  string default_destination_path = 6;
+}
+
+// Configuration for the integration test server.
+message ServerConfig {
+  // A mapping of transfer resource ID to files to read from or write to.
+  map<uint32, ServerResourceLocations> resources = 1;
+
+  // Size of the chunk buffer used by this server's transfer thread, in bytes.
+  uint32 chunk_size_bytes = 2;
+
+  // Window size, in bytes.
+  uint32 pending_bytes = 3;
+
+  // TODO(tpudlik): google.protobuf.Duration?
+  uint32 chunk_timeout_seconds = 4;
+  uint32 transfer_service_retries = 5;
+  uint32 extend_window_divisor = 6;
+}
+
+// Configuration for the HdlcPacketizer proxy filter.
+message HdlcPacketizerConfig {}
+
+// Configuration for the DataDropper proxy filter.
+message DataDropperConfig {
+  // Rate at which to drop data
+  float rate = 1;
+
+  // Seed to use for the rand number generator used for determining
+  // when data is dropped.
+  int64 seed = 2;
+}
+
+// Configuration for the KeepDropQueue proxy filter.
+message KeepDropQueueConfig {
+  // A KeepDropQueue filter will alternate between keeping packets and dropping
+  // chunks of data based on a keep/drop queue provided during its creation. The
+  // queue is looped over unless a negative element is found. A negative number
+  // is effectively the same as a value of infinity.
+  //
+  // This filter is typically most pratical when used with a packetizer so data
+  // can be dropped as distinct packets.
+  //
+  // Examples:
+  //
+  //   keep_drop_queue = [3, 2]:
+  //     Keeps 3 packets,
+  //     Drops 2 packets,
+  //     Keeps 3 packets,
+  //     Drops 2 packets,
+  //     ... [loops indefinitely]
+  //
+  //   keep_drop_queue = [5, 99, 1, -1]:
+  //     Keeps 5 packets,
+  //     Drops 99 packets,
+  //     Keeps 1 packet,
+  //     Drops all further packets.
+  repeated int32 keep_drop_queue = 1;
+}
+
+// Configuration for the RateLimiter proxy filter.
+message RateLimiterConfig {
+  // Rate limit, in bytes/sec.
+  float rate = 1;
+}
+
+// Configuration for the DataTransposer proxy filter.
+message DataTransposerConfig {
+  // Rate at which to transpose data.  Probability of transposition
+  // between 0.0 and 1.0.
+  float rate = 1;
+
+  // Maximum time a chunk of data will be held for Transposition.  After this
+  // time has elapsed, the packet is sent in order.
+  float timeout = 2;
+
+  // Seed to use for the rand number generator used for determining
+  // when data is transposed.
+  int64 seed = 3;
+}
+
+// Configuration for the ServerFailure proxy filter.
+message ServerFailureConfig {
+  // A list of numbers of packets to send before dropping all subsequent
+  // packets until a TRANSFER_START packet is seen.  This process is
+  // repeated for each element in packets_before_failure.  After that list
+  // is exhausted, ServerFailure will send all packets.
+  repeated uint32 packets_before_failure = 1;
+}
+
+// Configuration for the WindowPacketDropper proxy filter.
+message WindowPacketDropperConfig {
+  // The nth packet of every window to drop.
+  uint32 window_packet_to_drop = 1;
+}
+
+// Configuration for a single stage in the proxy filter stack.
+message FilterConfig {
+  oneof filter {
+    HdlcPacketizerConfig hdlc_packetizer = 1;
+    DataDropperConfig data_dropper = 2;
+    RateLimiterConfig rate_limiter = 3;
+    DataTransposerConfig data_transposer = 4;
+    ServerFailureConfig server_failure = 5;
+    KeepDropQueueConfig keep_drop_queue = 6;
+    WindowPacketDropperConfig window_packet_dropper = 7;
+  }
+}
+
+message ProxyConfig {
+  // Filters are listed in order of execution.  I.e. the first filter listed
+  // will get the received data first then pass it on the the second listed
+  // filter. That process repeats until the last filter send the data to the
+  // other side of the proxy.
+  repeated FilterConfig client_filter_stack = 1;
+  repeated FilterConfig server_filter_stack = 2;
+}

@@ -1,0 +1,139 @@
+/*
+ * Copyright (c) 2018, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+// @cliArgs --board /ti/boards/LP_CC2652R7 --rtos tirtos
+
+/*
+ *  oad_cli.syscfg
+ */
+ 
+/* Modules */
+var AESECB    = scripting.addModule("/ti/drivers/AESECB");
+var Device    = scripting.addModule("/ti/devices/CCFG");
+var Display   = scripting.addModule("/ti/display/Display");
+var DMA       = scripting.addModule("/ti/drivers/DMA");
+var ECDH      = scripting.addModule("/ti/drivers/ECDH");
+var ECDSA     = scripting.addModule("/ti/drivers/ECDSA");
+var ECJPAKE   = scripting.addModule("/ti/drivers/ECJPAKE");
+var GPIO      = scripting.addModule("/ti/drivers/GPIO");
+var NVS       = scripting.addModule("/ti/drivers/NVS");
+var Power     = scripting.addModule("/ti/drivers/Power");
+var RF        = scripting.addModule("/ti/drivers/RF");
+var RFDesign  = scripting.addModule("ti/devices/radioconfig/rfdesign");
+var SHA2      = scripting.addModule("/ti/drivers/SHA2");
+var Watchdog  = scripting.addModule("/ti/drivers/Watchdog");
+var TRNG      = scripting.addModule("/ti/drivers/TRNG");
+var Thread    = scripting.addModule("/ti/thread/thread");
+
+
+/* Instances */
+var AESECB     = AESECB.addInstance();
+var Display1   = Display.addInstance();
+var ECDH       = ECDH.addInstance();
+var ECDSA      = ECDSA.addInstance();
+var ECJPAKE    = ECJPAKE.addInstance();
+var GPIO1      = GPIO.addInstance();
+var GPIO2      = GPIO.addInstance();
+var GPIO3      = GPIO.addInstance();
+var GPIO4      = GPIO.addInstance();
+var NVS1       = NVS.addInstance();
+var SHA21      = SHA2.addInstance();
+var TRNG1      = TRNG.addInstance();
+var Watchdog1  = Watchdog.addInstance();
+
+/* CCFG */
+const ccfgSettings = system.getScript("/ti/common/lprf_ccfg_settings.js").ccfgSettings;
+for(var setting in ccfgSettings)
+{
+    Device[setting] = ccfgSettings[setting];
+}
+Device.enableCodeGeneration = false;
+
+/* Configuration */
+/* Display */
+Display1.$name                              = "CONFIG_DISPLAY";
+Display1.uartBufferSize                     = 128; // UART Display Buffer Size (in bytes)
+Display1.$hardware                          = system.deviceData.board.components.XDS110UART; // Use Hardware
+Display1.uart.$name                         = "CONFIG_DISPLAY_UART";
+Display1.uart.uart.$assign                  = "UART0"; // Use Peripheral
+Display1.uart.txPinInstance.$name           = "CONFIG_PIN_UART_TX";
+Display1.uart.txPinInstance.mode            = "Output";
+Display1.uart.txPinInstance.outputState     = "High";
+Display1.uart.txPinInstance.outputStrength  = "Low";
+Display1.uart.rxPinInstance.$name           = "CONFIG_PIN_UART_RX";
+Display1.uart.rxPinInstance.mode            = "Input";
+Display1.uart.rxPinInstance.pull            = "Pull Down";
+
+
+/* GPIO */
+GPIO1.$hardware                   = system.deviceData.board.components["BTN-1"];
+GPIO1.$name                       = "CONFIG_GPIO_BTN1";
+
+GPIO2.$hardware                   = system.deviceData.board.components["BTN-2"];
+GPIO2.$name                       = "CONFIG_GPIO_BTN2";
+
+GPIO3.$hardware                   = system.deviceData.board.components.LED_GREEN;
+GPIO3.$name                       = "CONFIG_GPIO_GLED";
+
+GPIO4.$hardware                   = system.deviceData.board.components.LED_RED;
+GPIO4.$name                       = "CONFIG_GPIO_RLED";
+
+
+/* RF */
+/* if an antenna component exists, assign it to the rf instance */
+if (system.deviceData.board && system.deviceData.board.components.RF) {
+    RF.$hardware = system.deviceData.board.components.RF;
+}
+
+const rfDesignSettings = system.getScript("/ti/common/lprf_rf_design_settings.js").rfDesignSettings;
+for(var setting in rfDesignSettings)
+{
+    RFDesign[setting] = rfDesignSettings[setting];
+}
+
+
+/* NVS */
+NVS1.$name                                 = "CONFIG_NVSINTERNAL";
+NVS1.internalFlash.regionBase              = 0x52000; // Base Address of Region
+NVS1.internalFlash.regionSize              = 0x4000; // Size of Region (in bytes)
+
+/* Watchdog */
+Watchdog1.$name             = "CONFIG_WATCHDOG0";
+Watchdog1.period            = 1000;
+Watchdog1.watchdog.$assign  = "WDT0";
+
+/* TRNG */
+TRNG1.$name  = "CONFIG_TRNG_0";
+
+/* Thread */
+Thread.deviceType         = "ftd";
+Thread.deviceTypeReadOnly = true;
+

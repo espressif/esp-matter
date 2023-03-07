@@ -1,0 +1,28 @@
+id: emlib_qspi
+label: QSPI
+package: platform
+description: >
+  QSPI Octal-SPI Flash Controller API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_qspi.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_qspi.h"
+provides:
+  - name: emlib_qspi
+requires:
+  - name: device
+  - name: device_has_qspi
+  - name: emlib_common
+  - name: cmsis_core
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efm32gg11/group-qspi
+      condition: [device_sdid_100]
+    - page: emlib/api/efm32gg12/group-qspi
+      condition: [device_sdid_106]

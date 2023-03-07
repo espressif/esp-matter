@@ -1,0 +1,30 @@
+id: emlib_gpio_simple_init
+label: GPIO Init
+package: platform
+description: >
+  Provides a simple initialization routine for GPIO.
+
+  This component is instantiable, meaning that several named instances can be created. For each instance a configuration is generated along with an initialization routine according to this configuration. The initialization
+  routine is available in a generated header file, sl_emlib_gpio_simple_init.h. 
+
+  If the Services->Runtime->System Setup->System Init component is included in the project, the configured GPIO's will be initialized automatically during the sl_system_init() call in main.c.
+
+  Selecting this component will also include the GPIO Init Core component, which is the implementation of the GPIO init routine. 
+
+category: Platform|Peripheral|Init
+quality: production
+root_path: "platform/emlib/init/gpio_simple"
+instantiable:
+  prefix: pin
+config_file:
+  - path: "config/sl_emlib_gpio_init_{{instance}}_config.h"
+provides:
+  - name: emlib_gpio_simple_init
+    allow_multiple: true
+requires:
+  - name: emlib_gpio_simple_init_common
+template_contribution:
+  - name: emlib_gpio_simple_init
+    value: "{{instance}}"
+tag:
+  - pin_tool:peripheral:gpio

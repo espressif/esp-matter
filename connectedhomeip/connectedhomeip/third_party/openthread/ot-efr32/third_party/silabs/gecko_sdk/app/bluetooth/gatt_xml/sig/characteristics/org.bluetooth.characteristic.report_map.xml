@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.report_map" uuid="2A4B" name="Report Map" last-modified="2011-11-14" approved="Yes">
+  <InformativeText>	
+    <Summary>
+      The Report Map characteristic is used to define formatting information for Input Report, Output Report, and Feature Report data transferred between a HID Device and HID Host, information on how this data can be used, and other information regarding physical aspects of the device (i.e. that the device functions as a keyboard, for example, or has multiple functions such as a keyboard and volume controls).
+      Only a single instance of this characteristic exists as part of a HID Service.
+    </Summary>
+  </InformativeText>
+  <Value>
+    <Field name="Report Map Value">
+      <Requirement>Mandatory</Requirement>
+      <Format>uint8</Format>
+      <Repeated>true</Repeated>
+    </Field>
+  </Value>
+</Characteristic>

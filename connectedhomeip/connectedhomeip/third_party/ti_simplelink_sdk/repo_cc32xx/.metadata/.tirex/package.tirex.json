@@ -1,0 +1,29 @@
+[
+    {
+        "version": "6.10.00.05",
+        "id": "com.ti.SIMPLELINK_CC32XX_SDK",
+        "type": "software",
+        "description": "<p>The SimpleLink Wi-Fi\u00c2\u00ae CC32xx device is a single-chip microcontroller (MCU) with built-in Wi-Fi connectivity, created for the Internet of Things (IoT). The CC32xx device is a wireless MCU that integrates a high-performance ARM\u00c2\u00ae Cortex\u00c2\u00ae-M4 MCU, allowing customers to develop an entire application with a single IC.</p><p>The Texas Instruments royalty-free CC32xx Embedded Wi-Fi foundation software development kit (SDK) is a complete software platform for developing Wi-Fi applications. It is based on the CC3220 and cc3235 devices, a complete Wi-Fi SoC (System-on-Chip) solution. The CC32xx family of devices comes in following variants:</p><ul><li>CC3220  Single-Band 2.4GHz Wi-Fi, MCU with 256KB of RAM, IoT networking security and device identity/keys<br /></li><li>CC3220S - Single-Band 2.4GHz Wi-Fi, MCU with 256KB of RAM, IoT networking security, device identity/keys as well as MCU level security such as file system encryption, user IP (MCU image) encryption, secure boot and debug security<br /></li><li>CC3220SF - Single-Band 2.4GHz Wi-Fi, MCU with 1MB user-dedicated flash and 256KB of RAM, IoT networking security, device identity/keys as well as MCU level security such as file system encryption, user IP (MCU image) encryption, secure boot and debug<br /></li><li>CC3235S  Dual-Band 2.4 and 5-GHz Wi-Fi, MCU with 256KB of RAM, IoT networking security, device identity/keys as well as MCU level security such as file system encryption, user IP (MCU image) encryption, secure boot and debug security<br /></li><li>CC3235SF - Dual-Band 2.4 and 5-GHz Wi-Fi, MCU with 1MB user-dedicated flash and 256KB of RAM, IoT networking security, device identity/keys as well as MCU level security such as file system encryption, user IP (MCU image) encryption, secure boot and debug</li></ul><p>The SimpleLink Wi-Fi\u00c2\u00ae CC32xx SDK contains drivers, libraries, example code for the CC32xx programmable MCU and documentation needed to use the solution. It also contains the flash programmer, a command line tool for flashing software, configuring network and software parameters (SSID, access point channel, network profile, etc.), system files, and user files (certificates, web pages, etc). This SDK can be used with TIs SimpleLink Wi-Fi CC32xx LaunchPads.</p><p>The CC32xx solution combines a 2.4-GHz and 5-Ghz Wi-Fi PHY/MAC and TCP/IP networking engine with a microcontroller, up to 256-kB on-chip RAM, 1-MB internal flash (for CC32xx SF), and a comprehensive range of peripherals.</p><p>The SimpleLink MCU portfolio offers a single development environment that delivers flexible hardware, software and tool options for customers developing wired and wireless applications. With 100 percent code reuse across host MCUs, Wi-Fi, Bluetooth\u00c2\u00ae low energy, Sub-1GHz devices and more, choose the MCU or connectivity standard that fits your design. A one-time investment with the SimpleLink software development kit (SDK) allows you to reuse often, opening the door to create unlimited applications.</p>",
+        "image": "../../docs/images/simplelink_cc3220_sdk_logo.png",
+        "devices": [
+            "CC3220S",
+            "CC3220SF",
+            "CC3235S",
+            "CC3235SF"
+        ],
+        "license": "../../license_simplelink_cc32xx_sdk_6_10_00_05.txt",
+        "metadataVersion": "2.1.0",
+        "name": "SimpleLink CC32xx SDK",
+        "dependencies": [
+            {
+                "version": "3.62.01.15",
+                "packageId": "xdctools",
+                "require": "optional"
+            },
+            {
+                "packageId": "sysconfig",
+                "version": "1.12.0"
+            }
+        ]
+    }
+]

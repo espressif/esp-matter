@@ -1,0 +1,85 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2018-2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+# The path of "template" can be relative path to TF-M root or absolute path
+# The path of "output" must be relative path to the root for generated files
+# Both can contain environment variables
+
+{
+  "name": "TF-M generated file list",
+  "type": "generated_file_list",
+  "version_major": 0,
+  "version_minor": 1,
+  "file_list": [
+    {
+        "name": "Secure Partition declarations",
+        "short_name": "tfm_partition_list",
+        "template": "secure_fw/spm/tfm_spm_db.inc.template",
+        "output": "secure_fw/spm/tfm_spm_db.inc"
+    },
+    {
+        "name": "Secure Service list",
+        "short_name": "tfm_service_list",
+        "template": "secure_fw/services/tfm_service_list.inc.template",
+        "output": "secure_fw/services/tfm_service_list.inc"
+    },
+    {
+        "name": "Common secure ld file",
+        "short_name": "tfm_common_s.ld",
+        "template": "platform/ext/common/gcc/tfm_common_s.ld.template",
+        "output": "platform/ext/common/gcc/tfm_common_s.ld"
+    },
+    {
+        "name": "Common secure sct file",
+        "short_name": "tfm_common_s.sct",
+        "template": "platform/ext/common/armclang/tfm_common_s.sct.template",
+        "output": "platform/ext/common/armclang/tfm_common_s.sct"
+    },
+    {
+        "name": "Common secure icf file",
+        "short_name": "tfm_common_s.icf",
+        "template": "platform/ext/common/iar/tfm_common_s.icf.template",
+        "output": "platform/ext/common/iar/tfm_common_s.icf"
+    },
+    {
+        "name": "Secure Veneers C file",
+        "short_name": "tfm_veneers_c",
+        "template": "secure_fw/ns_callable/tfm_veneers.c.template",
+        "output": "secure_fw/ns_callable/tfm_veneers.c"
+    },
+    {
+        "name": "Secure Veneers H file",
+        "short_name": "tfm_veneers_h",
+        "template": "interface/include/tfm_veneers.h.template",
+        "output": "interface/include/tfm_veneers.h"
+    },
+    {
+        "name": "Secure IRQ handlers",
+        "short_name": "tfm_secure_irq_handlers",
+        "template": "secure_fw/core/tfm_secure_irq_handlers.inc.template",
+        "output": "secure_fw/core/tfm_secure_irq_handlers.inc"
+    },
+    {
+        "name": "Secure IRQ handlers for PSA API",
+        "short_name": "tfm_secure_irq_handlers_ipc",
+        "template": "secure_fw/core/ipc/tfm_secure_irq_handlers_ipc.inc.template",
+        "output": "secure_fw/core/ipc/tfm_secure_irq_handlers_ipc.inc"
+    },
+    {
+        "name": "SID H file",
+        "short_name": "sid.h",
+        "template": "interface/include/psa_manifest/sid.h.template",
+        "output": "interface/include/psa_manifest/sid.h"
+    },
+    {
+        "name": "PID H file",
+        "short_name": "pid.h",
+        "template": "interface/include/psa_manifest/pid.h.template",
+        "output": "interface/include/psa_manifest/pid.h"
+    }
+  ]
+}

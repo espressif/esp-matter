@@ -1,0 +1,24 @@
+ADC
+====
+
+概述
+--------
+
+模数转换器（analog-to-digital converter，通常称为ADC）是一种模拟与数字转换器，支持12路外部模拟输入和若干内部模拟信号选择。 ADC支持以下四种模式：单次单通道转换、连续单通道转换、单次多通道转换和连续多通道转换模式。 转换结果为12/14/16bits左对齐模式。ADC拥有深度为32的FIFO，支持多种中断和DMA操作。 ADC除了用于普通模拟信号测量外，还可以用于测量供电电压， 此外ADC还可以通过测量内/外部二极管电压用于温度检测。
+
+.. note::
+
+    adc更多资料请参考 `BL602参考手册 <https://dev.bouffalolab.com/media/doc/602/reference_manual/zh/html/content/ADC.html>`_ 。
+    
+应用实例
+----------
+
+ADC实例： ``customer_app/peripheral/demo_adc`` 。
+
+API参考
+----------
+
+.. include:: /_build/inc/hosal_adc.inc
+
+
+

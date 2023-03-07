@@ -1,0 +1,99 @@
+%%{
+/*
+ * Copyright (c) 2020 Texas Instruments Incorporated - http://www.ti.com
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+
+/*
+ *  ======== TaskHooks_config_h.xdt ========
+ */
+    /* passed by /ti/sysbios/BIOS_config.c.xdt */
+    let TaskHooks = args[0];
+    let instances = TaskHooks.$instances;
+    let registerHooksPresent = false;
+    let createHooksPresent = false;
+    let readyHooksPresent = false;
+    let switchHooksPresent = false;
+    let exitHooksPresent = false;
+    let deleteHooksPresent = false;
+%%}
+/* TaskHooks module definitions */
+#include <ti/sysbios/knl/Task.h>
+
+#define TaskHooks_numHooks_D `instances.length`
+% if (instances.length != 0) {
+
+extern const Task_HookSet TaskHooks_array[TaskHooks_numHooks_D];
+%   for (let i = 0; i < instances.length; i++) {
+%       let inst = instances[i];
+%       if (instances[i].registerFxn != "NULL") {
+%           registerHooksPresent = true;
+%       }
+%       if (instances[i].createFxn != "NULL") {
+%           createHooksPresent = true;
+%       }
+%       if (instances[i].readyFxn != "NULL") {
+%           readyHooksPresent = true;
+%       }
+%       if (instances[i].switchFxn != "NULL") {
+%           switchHooksPresent = true;
+%       }
+%       if (instances[i].exitFxn != "NULL") {
+%           exitHooksPresent = true;
+%       }
+%       if (instances[i].deleteFxn != "NULL") {
+%           deleteHooksPresent = true;
+%       }
+%   }
+
+#define Task_ENABLE_HOOKS
+%   if (registerHooksPresent == true) {
+#define Task_ENABLE_REGISTER_HOOKS
+%   }
+%   if (createHooksPresent == true) {
+#define Task_ENABLE_CREATE_HOOKS
+%   }
+%   if (readyHooksPresent == true) {
+#define Task_ENABLE_READY_HOOKS
+%   }
+%   if (switchHooksPresent == true) {
+#define Task_ENABLE_SWITCH_HOOKS
+%   }
+%   if (exitHooksPresent == true) {
+#define Task_ENABLE_EXIT_HOOKS
+%   }
+%   if (deleteHooksPresent == true) {
+#define Task_ENABLE_DELETE_HOOKS
+%   }
+% }
+% else {
+#define TaskHooks_array NULL
+% }

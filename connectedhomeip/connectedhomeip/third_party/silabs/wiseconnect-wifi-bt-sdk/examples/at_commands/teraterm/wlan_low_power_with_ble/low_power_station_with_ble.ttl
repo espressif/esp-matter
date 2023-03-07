@@ -1,0 +1,200 @@
+TRUE = 1
+FALSE = 0
+DEVICE_NAME = 'RS9116W_BLE'
+
+message = 'This example demonstrates WLAN Station standby associated BLE advertising functionality'
+messagebox message ''
+
+send '|'
+wait 'U'
+sendln 'U'
+mpause 200
+sendln '1'
+wait 'Loading Done'
+message = 'Firmware Loading Done Successfully' 
+messagebox message ''
+
+;opermode command
+sendln 'at+rsi_opermode=851968,20,2147483652,2147483648,2159542272,3221225472,2147483648,1075773440,0,1'; This OPERMode is used for EVK Version 1.4
+wait 'OK' 'ERROR'
+if result == 2 then
+    goto error
+else 
+    messagebox 'Opermode successful.' ''
+endif
+
+;sendln 'at+rsi_opermode=851968,20,4,2147483648,2154823680,3221225472,0,1075773440'  ; This opermode is used for EVK Version BELOW 1.4.
+;wait 'OK' 'ERROR'
+;if result == 2 then
+;    goto error
+;else 
+;    messagebox 'Opermode successful.' ''
+;endif
+
+;added this command for current consumption measurement.
+sendln 'at+rsi_feat_frame=0,1,0,0,1,49'
+wait 'OK' 'ERROR'
+if result == 2 then
+    goto error
+else 
+    messagebox 'Feat_frame successful.' ''
+endif
+
+strlen DEVICE_NAME
+int2str device_name_length result
+sendln 'at+rsibt_setlocalname='device_name_length','DEVICE_NAME
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+    errorcode = groupmatchstr1
+    goto error
+endif
+
+
+sendln 'at+rsibt_getlocalbdaddr?'
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+    errorcode = groupmatchstr1
+    goto error
+endif
+
+sendln 'at+rsibt_setadvertisedata=10,2,1,6,C,9,52,53,39,31,31,36,57,5F,42,4C,45'
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+    errorcode = groupmatchstr1
+    goto error
+endif
+
+sendln 'at+rsibt_advertise=1,128,0,0,0,2048,2048,0,7'
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+    errorcode = groupmatchstr1
+    goto error
+endif
+
+messagebox 'Device is now advertising as a RS9116W_BLE '#10#13'use your BLE app to check for the device' 'SUCCESS'
+
+
+;inputbox 'Enter the desired frequency band (0. 2.4GHz 1. 5GHz).' 'BAND' 
+;BAND = inputstr
+
+sendln 'at+rsi_band=0'
+wait 'OK' 'ERROR'
+if result == 2 then
+    goto error
+else 
+    messagebox 'band successful.' ''
+endif
+
+sendln 'at+rsi_init'
+setdebug 2     ; output is in binary, so best to display in hex format
+wait '4F 4B' '45 52' ; 'OK' or 'ER'
+setdebug 0
+if result == 2 then
+    goto error
+else 
+    messagebox 'Init successful.' ''
+endif
+
+inputbox 'Enter SSID to scan.' 'SSID' 
+SSID = inputstr
+
+attempts = 5
+:scan_again
+sendln 'at+rsi_scan=0,'SSID
+mpause 1000
+wait 'OK' 'ERROR'
+if result == 2 then
+    if attempts > 0 then
+        attempts = attempts - 1
+        goto scan_again
+    else
+        message = "Could not find AP with SSID "
+        strconcat message SSID
+        messagebox message "AP Not Found."
+        goto error
+    endif
+else 
+    messagebox 'scan successful.' ''
+endif
+
+inputbox 'Enter PSK.' 'PSK' 
+PSK = inputstr
+
+strlen PSK
+;messagebox result ''
+int2str valstr result
+;messagebox valstr "str"
+sendln 'at+rsi_PSK=4,'valstr','PSK
+wait 'OK' 'ERROR'
+if result == 2 then
+    goto error
+endif
+
+sendln 'at+rsi_filter_bcast=3000,1,1'
+wait 'OK' 'ERROR'
+if result == 2 then
+    goto error
+else 
+    messagebox 'Success' ''
+endif
+
+sendln 'at+rsi_join='SSID',0,2,6,2,300' ; Note: This only works for WPA2
+wait 'OKC' 'ERROR'
+if result == 2 then
+    goto error
+else 
+    messagebox 'Joined AP network successfully.' ''
+endif
+
+; Request IP via DHCP.  Extract the IP address to present to user
+sendln 'at+rsi_ipconf=9,0,0'
+setdebug 2     ; output is in binary, so best to display in hex format
+waitregex '4F 4B .{18}(\h{2}) (\h{2}) (\h{2}) (\h{2})' '45 52' ; 'OK' or 'ER'
+setdebug 0
+if result == 2 then
+    goto error
+else 
+    messagebox 'IP config successfull.' ''
+endif
+
+strdim address_str 4
+
+; Add '$' so str2int will recognize these as hex values
+for i 0 3
+    address_str[i] = '$'
+next
+
+strconcat address_str[0] groupmatchstr1
+strconcat address_str[1] groupmatchstr2
+strconcat address_str[2] groupmatchstr3
+strconcat address_str[3] groupmatchstr4
+ 
+intdim address_int 4
+
+; convert hex strings to decimal ints
+for i 0 3
+    str2int address_int[i] address_str[i]
+next
+
+; convert decimal ints to decimal strings
+sprintf '%d.%d.%d.%d' address_int[0] address_int[1] address_int[2] address_int[3]
+address = inputstr
+
+;Sending power save parameters
+sendln 'at+rsi_pwmode=2,1,1'
+wait 'OK' 'ERROR'
+if result ==2 then
+	goto error
+else	
+	messagebox 'Set to Power Mode 2 successfully.' ''
+endif
+
+goto endscript
+
+:error
+messagebox 'An error occurred, Please check your configuration and try again.' 'ERROR'
+
+:endscript
+
+
+

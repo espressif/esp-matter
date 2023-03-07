@@ -1,0 +1,16 @@
+[
+    {
+        "files": [
+            "+../../platform.c -> platform.c",
+            "+../../tcpEcho.c -> tcpEcho.c",
+            "+../../README.md -> README.md",
+            "+../../README.html -> README.html",
+            "+../main_freertos.c -> main_freertos.c",
+            "+../common.syscfg -> common.syscfg",
+            "+../../../../../../../source/ti/boards/CC3220S_LAUNCHXL/Board.html -> Board.html",
+            "+cc32xxs_freertos.cmd -> cc32xxs_freertos.cmd",
+            "+../../image.syscfg -> image.syscfg",
+            "+../../userFiles/dummy-root-ca-cert -> userFiles/dummy-root-ca-cert"
+        ]
+    }
+]

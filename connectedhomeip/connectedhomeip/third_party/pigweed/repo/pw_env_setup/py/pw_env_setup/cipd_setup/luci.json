@@ -1,0 +1,115 @@
+{
+  "packages": [
+    {
+      "path": "infra/tools/bb/${platform}",
+      "platforms": [
+        "linux-amd64",
+        "linux-arm64",
+        "mac-amd64",
+        "mac-arm64",
+        "windows-amd64"
+      ],
+      "tags": [
+        "latest"
+      ],
+      "version_file": ".versions/bb.cipd_version"
+    },
+    {
+      "path": "infra/tools/luci-auth/${platform}",
+      "platforms": [
+        "linux-amd64",
+        "linux-arm64",
+        "mac-amd64",
+        "mac-arm64",
+        "windows-amd64"
+      ],
+      "tags": [
+        "latest"
+      ],
+      "version_file": ".versions/luci-auth.cipd_version"
+    },
+    {
+      "path": "infra/tools/luci/gerrit/${platform}",
+      "platforms": [
+        "linux-amd64",
+        "linux-arm64",
+        "mac-amd64",
+        "mac-arm64",
+        "windows-amd64"
+      ],
+      "tags": [
+        "latest"
+      ],
+      "version_file": ".versions/gerrit.cipd_version"
+    },
+    {
+      "path": "infra/tools/luci/gitiles/${platform}",
+      "platforms": [
+        "linux-amd64",
+        "linux-arm64",
+        "mac-amd64",
+        "mac-arm64",
+        "windows-amd64"
+      ],
+      "tags": [
+        "latest"
+      ],
+      "version_file": ".versions/gitiles.cipd_version"
+    },
+    {
+      "path": "infra/tools/luci/cas/${platform}",
+      "platforms": [
+        "linux-amd64",
+        "linux-arm64",
+        "mac-amd64",
+        "mac-arm64",
+        "windows-amd64"
+      ],
+      "tags": [
+        "latest"
+      ],
+      "version_file": ".versions/cas.cipd_version"
+    },
+    {
+      "path": "infra/tools/luci/led/${platform}",
+      "platforms": [
+        "linux-amd64",
+        "linux-arm64",
+        "mac-amd64",
+        "mac-arm64",
+        "windows-amd64"
+      ],
+      "tags": [
+        "latest"
+      ],
+      "version_file": ".versions/led.cipd_version"
+    },
+    {
+      "path": "infra/tools/luci/swarming/${platform}",
+      "platforms": [
+        "linux-amd64",
+        "linux-arm64",
+        "mac-amd64",
+        "mac-arm64",
+        "windows-amd64"
+      ],
+      "tags": [
+        "latest"
+      ],
+      "version_file": ".versions/swarming.cipd_version"
+    },
+    {
+      "path": "infra/tools/luci/logdog/logdog/${platform}",
+      "platforms": [
+        "linux-amd64",
+        "mac-amd64",
+        "mac-arm64",
+        "windows-amd64"
+      ],
+      "tags": [
+        "latest"
+      ],
+      "version_file": ".versions/logdog.cipd_version"
+    }
+  ]
+}

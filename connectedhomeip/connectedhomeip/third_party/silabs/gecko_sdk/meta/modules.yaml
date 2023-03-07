@@ -1,0 +1,401 @@
+root : ".."
+module :
+-
+  name      : "apache commons"
+  path      : "tool/apache_commons"
+  symbol    : "APACHE_COMMONS"
+-
+  name      : "app internal"
+  path      : "app/internal"
+  symbol    : "APP_INTERNAL"
+
+-
+  name      : "apple homekit"
+  path      : "app/apple_homekit"
+  symbol    : "APPLE_HOMEKIT"
+
+-
+  name      : "homekit"
+  path      : "app/homekit"
+  symbol    : "HOMEKIT"
+
+-
+  name      : "base"
+  path      : "platform/base"
+  symbol    : "BASE"
+
+-
+  name      : "beanshell"
+  path      : "tool/beanshell"
+  symbol    : "BEANSHELL"
+
+-
+  name      : "bluetooth app"
+  path      : "app/bluetooth"
+  symbol    : "BLUETOOTH_APP"
+
+-
+  name      : "bluetooth protocol"
+  path      : "protocol/bluetooth"
+  symbol    : "BLUETOOTH_PROTOCOL"
+
+-
+  name      : "bootloader"
+  path      : "platform/bootloader"
+  symbol    : "BOOTLOADER"
+
+-
+  name      : "cjson"
+  path      : "util/third_party/cjson"
+  symbol    : "CJSON"
+
+-
+  name      : "CMSIS"
+  path      : "platform/CMSIS"
+  symbol    : "CMSIS"
+
+-
+  name      : "App Common"
+  path      : "app/common"
+  symbol    : "APP COMMON"
+
+-
+  name      : "code generator"
+  path      : "tool/code_generator"
+  symbol    : "CODE_GENERATOR"
+
+-
+  name      : "cslib"
+  path      : "platform/middleware/cslib"
+  symbol    : "CSLIB"
+
+-
+  name      : "cslib_src"
+  path      : "platform/middleware/cslib_src"
+  symbol    : "CSLIB_SRC"
+
+-
+  name      : "customer board"
+  path      : "hardware/customer_board"
+  symbol    : "CUSTOMER_BOARD"
+
+-
+  name      : "Device"
+  path      : "platform/Device"
+  symbol    : "DEVICE"
+
+-
+  name      : "Platform Driver"
+  path      : "platform/driver"
+  symbol    : "PLATFORM_DRIVER"
+
+-
+  name      : "emdrv"
+  path      : "platform/emdrv"
+  symbol    : "EMDRV"
+
+-
+  name      : "emlib"
+  path      : "platform/emlib"
+  symbol    : "EMLIB"
+
+-
+  name      : "emtool"
+  path      : "tool/emtool"
+  symbol    : "EMTOOL"
+
+-
+  name      : "esf common"
+  path      : "app/esf_common"
+  symbol    : "ESF_COMMON"
+
+-
+  name      : "experimental"
+  path      : "app/experimental"
+  symbol    : "EXPERIMENTAL"
+
+-
+  name      : "fatfs"
+  path      : "util/third_party/fatfs/"
+  symbol    : "FATFS" 
+
+-
+  name      : "flex"
+  path      : "protocol/flex"
+  symbol    : "FLEX"
+
+-
+  name      : "freertos"
+  path      : "util/third_party/freertos"
+  symbol    : "FREERTOS"
+
+-
+  name      : "glib"
+  path      : "platform/middleware/glib"
+  symbol    : "GLIB"
+
+-
+  name      : "hal config"
+  path      : "platform/halconfig"
+  symbol    : "HALCONFIG"
+
+-
+  name      : "hardware module"
+  path      : "hardware/module"
+  symbol    : "HARDWARE_MODULE" 
+
+-
+  name      : "hwconf data"
+  path      : "platform/hwconf_data"
+  symbol    : "HWCONFDATA"
+
+-
+  name      : "ide_support"
+  path      : "tool/ide_support"
+  symbol    : "IDE_SUPPORT"
+
+-
+  name      : "jam"
+  path      : "tool/jam"
+  symbol    : "JAM"
+
+-
+  name      : "jenkins"
+  path      : "tool/jenkins"
+  symbol    : "JENKINS"
+
+-
+  name      : "kit"
+  path      : "hardware/kit"
+  symbol    : "KIT"
+-
+  name      : "driver"
+  path      : "hardware/driver"
+  symbol    : "DRIVER"
+
+-
+  name      : "libcoap"
+  path      : "util/third_party/libcoap"
+  symbol    : "LIBCOAP"
+
+-
+  name      : "lwip"
+  path      : "util/third_party/lwip"
+  symbol    : "LWIP"
+
+-
+  name      : "mbedtls"
+  path      : "util/third_party/crypto/mbedtls"
+  symbol    : "MBEDTLS"
+
+-
+  name      : "mcu example"
+  path      : "app/mcu_example"
+  symbol    : "MCU_EXAMPLE" 
+
+-
+  name      : "micrium OS"
+  path      : "platform/micrium_os"
+  symbol    : "MICRIUM_OS"
+
+-
+  name      : "micrium OS example"
+  path      : "app/micrium_os_example"
+  symbol    : "MICRIUM_OS_EXAMPLE"
+
+-
+  name      : "Service"
+  path      : "platform/service"
+  symbol    : "SERVICE"
+
+-
+  name      : "Common Platform Components"
+  path      : "platform/common"
+  symbol    : "COMMON"
+
+-
+  name      : "efr32 multi phy radio configurator"
+  path      : "platform/radio/efr32_multiphy_configurator"
+  symbol    : "MULTIPHY_RADIO_CONFIGURATOR"
+
+-
+  name      : "paho.mqtt.c"
+  path      : "util/third_party/paho.mqtt.c"
+  symbol    : "PAHOMQTT"
+
+-
+  name      : "segger"
+  path      : "util/third_party/segger"
+  symbol    : "SEGGER"
+
+-
+  name     : "peripheral"
+  path     : "platform/peripheral"
+  symbol   : "PERIPHERAL"
+
+-
+  name      : "plugin"
+  path      : "util/plugin"
+  symbol    : "PLUGIN"
+
+-
+  name      : "production bootloader"
+  path      : "platform/production_bootloader"
+  symbol    : "PRODUCTION_BOOTLOADER"
+
+-
+  name      : "efr32 radio configurator"
+  path      : "platform/tool/efr32_radio_configurator"
+  symbol    : "RADIO_CONFIGURATOR"
+
+-
+  name      : "efr32 multi phy radio configurator"
+  path      : "platform/tool/efr32_multi_phy_radio_configurator"
+  symbol    : "MULTIPHY_RADIO_CONFIGURATOR"
+
+-
+  name      : "rail lib"
+  path      : "platform/radio/rail_lib"
+  symbol    : "RAIL_LIB"
+
+-
+  name      : "reference design"
+  path      : "hardware/reference_design"
+  symbol    : "REFERENCE_DESIGN"
+
+-
+  name      : "runtest"
+  path      : "tool/runtest"
+  symbol    : "RUNTEST"
+
+-
+  name      : "script"
+  path      : "tool/script"
+  symbol    : "SCRIPT"
+
+-
+  name      : "scripted test framework"
+  path      : "tool/scripted_test_framework"
+  symbol    : "SCRIPTED_TEST_FRAMEWORK"
+
+-
+  name      : "silabs core"
+  path      : "util/silicon_labs/silabs_core"
+  symbol    : "SILABS_CORE"
+
+-
+  name      : "silabs aox"
+  path      : "util/silicon_labs/aox"
+  symbol    : "SILABS_AOX"
+
+-
+  name      : "studio"
+  path      : ".studio"
+  symbol    : "STUDIO" 
+
+-
+  name      : "toolchain manager"
+  path      : "tool/tcmgr"
+  symbol    : "TCMGR"
+
+-
+  name      : "thread"
+  path      : "protocol/thread"
+  symbol    : "THREAD"
+
+-
+  name      : "openthread"
+  path      : "protocol/openthread"
+  symbol    : "OPENTHREAD"
+
+-
+  name     : "ot-br-posix"
+  path     : "util/third_party/ot-br-posix"
+  symbol   : "OT_BR_POSIX"
+
+-
+  name      : "timac"
+  path      : "util/third_party/timac"
+  symbol    : "TIMAC"
+
+-
+  name      : "unity"
+  path      : "util/third_party/unity"
+  symbol    : "UNITY"
+-
+  name      : "unity_test_framework"
+  path      : "util/third_party/unity_test_framework"
+  symbol    : "UNITY_TEST_FRAMEWORK"
+-
+  name      : "usb gecko"
+  path      : "platform/middleware/usb_gecko"
+  symbol    : "USB_GECKO"
+
+-
+  name      : "usbxpress"
+  path      : "platform/middleware/usbxpress"
+  symbol    : "USBXPRESS"
+
+-
+  name      : "zcl"
+  path      : "app/zcl"
+  symbol    : "ZCL"
+-
+  name      : "zigbee"
+  path      : "protocol/zigbee"
+  symbol    : "ZIGBEE"
+
+-
+  name      : "vsrpc-lib"
+  path      : "tool/vsrpc-lib"
+  symbol    : "VSRPC-LIB"
+
+-
+  name      : "crypto"
+  path      : "util/third_party/crypto"
+  symbol    : "CRYPTO"
+
+-
+  name      : "printf"
+  path      : "util/third_party/printf"
+  symbol    : "PRINTF"
+
+-
+  name      : "hardware board"
+  path      : "hardware/board"
+  symbol    : "HARDWARE_BOARD" 
+
+-
+  name      : "app flex"
+  path      : "app/flex"
+  symbol    : "APP_FLEX"
+
+-
+  name      : "radio mac"
+  path      : "platform/radio/mac"
+  symbol    : "RADIO_MAC"
+
+-
+  name      : "z-wave"
+  path      : "protocol/z-wave"
+  symbol    : "Z-WAVE"
+
+-
+  name      : "homekit protocol"
+  path      : "protocol/homekit"
+  symbol    : "HOMEKIT_PROTOCOL"
+
+-
+  name      : "homekit util"
+  path      : "util/third_party/homekit"
+  symbol    : "HOMEKIT_UTIL"
+
+-
+  name      : "wfx_fmac_driver"
+  path      : "platform/radio/wifi/wfx_fmac_driver"
+  symbol    : "WFX_FMAC_DRIVER"
+
+-
+  name      : "wi-sun"
+  path      : "protocol/wisun"
+  symbol    : "WISUN"

@@ -1,0 +1,8 @@
+#!/bin/sh
+if [ "$1" == "BL606p" ]
+then
+    make CONFIG_CHIP_NAME=$1 CPU_ID=M1 CONFIG_LINK_RAM=1 -j V=1
+else
+    make CONFIG_CHIP_NAME=BL602 CONFIG_LINK_ROM=1 -j
+fi
+exit $?

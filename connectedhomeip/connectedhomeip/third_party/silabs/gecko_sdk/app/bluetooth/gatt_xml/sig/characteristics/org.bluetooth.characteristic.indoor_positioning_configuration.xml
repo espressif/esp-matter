@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2015 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Indoor Positioning Configuration" type="org.bluetooth.characteristic.indoor_positioning_configuration" uuid="2AAD" last-modified="2015-05-19" approved="Yes">
+    <InformativeText>
+        <Abstract>The Indoor Positioning Configuration describes the set of characteristic values included in the Indoor Positioning Service AD type.</Abstract>
+	</InformativeText>
+<Value>
+		<Field name="Indoor Positioning Configuration">
+   			<Requirement>Mandatory</Requirement>
+			<Format>uint8</Format>
+			<BitField>
+				<Bit index="0" size="1" name="Presence of coordinates in advertising packets">
+					<Enumerations>
+						<Enumeration key="0" value="Coordinates are not present"/>
+						<Enumeration key="1" value="Coordinates are present"/>
+					</Enumerations>
+				</Bit>
+				<Bit index="1" size="1" name="Coordinate system used in advertising packets">
+					<Enumerations>
+						<Enumeration key="0" value="WGS84 coordinate system"/>
+						<Enumeration key="1" value="Local coordinate system"/>
+					</Enumerations>
+				</Bit>
+				<Bit index="2" size="1" name="Presence of Tx Power field in advertising packets">
+					<Enumerations>
+						<Enumeration key="0" value="Tx Power is not present"/>
+						<Enumeration key="1" value="Tx Power is not present"/>
+					</Enumerations>
+				</Bit>
+                <Bit index="3" size="1" name="Presence of Altitude field in advertising packets">
+					<Enumerations>
+						<Enumeration key="0" value="Altitude is not present"/>
+						<Enumeration key="1" value="Altitude is present"/>
+					</Enumerations>
+				</Bit>
+				<Bit index="4" size="1" name="Presence of Floor Number in advertising packets">
+					<Enumerations>
+						<Enumeration key="0" value="Floor Number is not present"/>
+						<Enumeration key="1" value="Floor Number is present"/>
+					</Enumerations>
+				</Bit>
+				<Bit index="5" size="1" name="Location Name available in the GATT database">
+					<Enumerations>
+						<Enumeration key="0" value="Location Name is not present"/>
+						<Enumeration key="1" value="Location Name is present"/>
+					</Enumerations>
+				</Bit>
+				<ReservedForFutureUse index="6" size="2"/>
+			</BitField>
+		</Field>
+	</Value>
+  </Characteristic>

@@ -1,0 +1,548 @@
+{
+    "setting": {
+        "Name": "Custom (WMBUS N-MODE, 2.4 kbps, 2.4 kHz Deviation, 2-GFSK, 10 kHz RX Bandwidth, RX)",
+        "Description": "2.4 kbps, 169.45 MHz GFSK PHY, RX.",
+        "Frequency": "169",
+        "Patch": {
+            "Define": "RF_MODE_AUTO",
+            "Cpe": "rf_patch_cpe_prop",
+            "Mce": [],
+            "Rfe": []
+        },
+        "Command": [
+            {
+                "_name": "CMD_PROP_RADIO_DIV_SETUP",
+                "Field": [
+                    {
+                        "_name": "commandNo",
+                        "$": "CMD_PROP_RADIO_DIV_SETUP"
+                    },
+                    {
+                        "_name": "status",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pNextOp",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTime",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerType",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.bEnaCmd",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerNo",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.pastTrig",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "condition.rule",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "condition.nSkip",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "modulation.modType",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "modulation.deviation",
+                        "$": "154"
+                    },
+                    {
+                        "_name": "modulation.deviationStepSz",
+                        "$": "2"
+                    },
+                    {
+                        "_name": "symbolRate.preScale",
+                        "$": "252"
+                    },
+                    {
+                        "_name": "symbolRate.rateWord",
+                        "$": "26424"
+                    },
+                    {
+                        "_name": "symbolRate.decimMode",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "rxBw",
+                        "$": "68"
+                    },
+                    {
+                        "_name": "preamConf.nPreamBytes",
+                        "$": "4"
+                    },
+                    {
+                        "_name": "preamConf.preamMode",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "formatConf.nSwBits",
+                        "$": "16"
+                    },
+                    {
+                        "_name": "formatConf.bBitReversal",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "formatConf.bMsbFirst",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "formatConf.fecMode",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "formatConf.whitenMode",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "config.frontEndMode",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "config.biasMode",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "config.analogCfgMode",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "config.bNoFsPowerUp",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "config.bSynthNarrowBand",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "txPower",
+                        "$": "0x9F3F"
+                    },
+                    {
+                        "_name": "pRegOverride",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "centerFreq",
+                        "$": "169"
+                    },
+                    {
+                        "_name": "intFreq",
+                        "$": "0x8000"
+                    },
+                    {
+                        "_name": "loDivider",
+                        "$": "30"
+                    }
+                ],
+                "OverrideField": {
+                    "_name": "pRegOverride",
+                    "Block": [
+                        {
+                            "_name": "override_prop_common.json",
+                            "Element32b": {
+                                "_type": "ELEMENT",
+                                "_comment": "DC\/DC regulator: In Tx, use DCDCCTL5[3:0]=0x7 (DITHER_EN=0 and IPEAK=7).",
+                                "$": "0x00F788D3"
+                            }
+                        },
+                        {
+                            "_name": "override_prop_common_sub1g.json",
+                            "Element32b": [
+                                {
+                                    "_type": "ELEMENT",
+                                    "_comment": "Set RF_FSCA.ANADIV.DIV_SEL_BIAS = 1. Bits [0:16, 24, 30] are don't care..",
+                                    "$": "0x4001405D"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "_comment": "Set RF_FSCA.ANADIV.DIV_SEL_BIAS = 1. Bits [0:16, 24, 30] are don't care..",
+                                    "$": "0x08141131"
+                                }
+                            ]
+                        },
+                        {
+                            "_name": "override_tc220_rx.json",
+                            "Element32b": [
+                                {
+                                    "_type": "ELEMENT",
+                                    "_comment": "Set filter overrides",
+                                    "$": "0x40024029"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "_comment": "IIR EN, 2nd order, IIR_FILT_BW=1",
+                                    "$": "0x38000000"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "_comment": "Set IIR clk div",
+                                    "$": "0x01608402"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "_comment": "Synth: Set loop bandwidth after lock to 150 kHz (K2)",
+                                    "$": "0x424C0583"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "_comment": "Synth: Set loop bandwidth after lock to 150 kHz (K2)",
+                                    "$": "0x000205A3"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "_comment": "Synth: Set loop bandwidth after lock to 150 kHz (K3, LSB)",
+                                    "$": "0x98630603"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "_comment": "Synth: Set loop bandwidth after lock to 150 kHz (K3, MSB)",
+                                    "$": "0x00030623"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "_comment": "Synth: Set FREF = 8 (48 MHz\/6) MHz",
+                                    "$": "0x000684A3"
+                                },
+                                {
+                                    "_type": "ADI_HALFREG_OVERRIDE",
+                                    "_comment": "Rx: Set anti-aliasing filter bandwidth to 0xD (in ADI0, set IFAMPCTL3[7:4]=0xD)",
+                                    "$": "0,61,0xF,0xD"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "_comment": "Rx: Set RSSI offset to adjust reported RSSI by -2 dB (default: -2), trimmed for external bias and differential configuration",
+                                    "$": "0x000E88A3"
+                                },
+                                {
+                                    "_type": "HW_REG_OVERRIDE",
+                                    "_comment": "Rx: Set AGC reference level to 0x19 (default: 0x2E)",
+                                    "$": "0x609C,0x0019"
+                                },
+                                {
+                                    "_type": "HW_REG_OVERRIDE",
+                                    "_comment": "Rx: Set AGC max gain to -6 dB",
+                                    "$": "0x6098,0x34D1"
+                                }
+                            ]
+                        },
+                        {
+                            "_name": "override_patable_14dbm.json",
+                            "Element32b": {
+                                "_type": "ADI_REG_OVERRIDE",
+                                "_comment": "Tx: Set PA trim to max to maximize its output power (in ADI0, set PACTL0=0xF8)",
+                                "$": "0,12,0xF8"
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "_name": "CMD_FS",
+                "Field": [
+                    {
+                        "_name": "commandNo",
+                        "$": "CMD_FS"
+                    },
+                    {
+                        "_name": "status",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pNextOp",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTime",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerType",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.bEnaCmd",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerNo",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.pastTrig",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "condition.rule",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "condition.nSkip",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "frequency",
+                        "$": "169"
+                    },
+                    {
+                        "_name": "fractFreq",
+                        "$": "0x7334"
+                    },
+                    {
+                        "_name": "synthConf.bTxMode",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "synthConf.refFreq",
+                        "$": "0"
+                    }
+                ]
+            },
+            {
+                "_name": "CMD_RX_TEST",
+                "Field": [
+                    {
+                        "_name": "commandNo",
+                        "$": "CMD_RX_TEST"
+                    },
+                    {
+                        "_name": "status",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pNextOp",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTime",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerType",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.bEnaCmd",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerNo",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.pastTrig",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "condition.rule",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "condition.nSkip",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "config.bEnaFifo",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "config.bFsOff",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "config.bNoSync",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "endTrigger.triggerType",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "endTrigger.bEnaCmd",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "endTrigger.triggerNo",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "endTrigger.pastTrig",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "syncWord",
+                        "$": "0xF68D"
+                    },
+                    {
+                        "_name": "endTime",
+                        "$": "0"
+                    }
+                ]
+            },
+            {
+                "_name": "CMD_PROP_RX",
+                "Field": [
+                    {
+                        "_name": "commandNo",
+                        "$": "CMD_PROP_RX"
+                    },
+                    {
+                        "_name": "status",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pNextOp",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTime",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerType",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.bEnaCmd",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerNo",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.pastTrig",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "condition.rule",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "condition.nSkip",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pktConf.bFsOff",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pktConf.bRepeatOk",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pktConf.bRepeatNok",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pktConf.bUseCrc",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "pktConf.bVarLen",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pktConf.bChkAddress",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pktConf.endType",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pktConf.filterOp",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "rxConf.bAutoFlushIgnored",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "rxConf.bAutoFlushCrcErr",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "rxConf.bIncludeHdr",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "rxConf.bIncludeCrc",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "rxConf.bAppendRssi",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "rxConf.bAppendTimestamp",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "rxConf.bAppendStatus",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "syncWord",
+                        "$": "0xF68D"
+                    },
+                    {
+                        "_name": "maxPktLen",
+                        "$": "64"
+                    },
+                    {
+                        "_name": "address0",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "address1",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "endTrigger.triggerType",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "endTrigger.bEnaCmd",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "endTrigger.triggerNo",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "endTrigger.pastTrig",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "endTime",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pQueue",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pOutput",
+                        "$": "0"
+                    }
+                ]
+            }
+        ]
+    }
+}

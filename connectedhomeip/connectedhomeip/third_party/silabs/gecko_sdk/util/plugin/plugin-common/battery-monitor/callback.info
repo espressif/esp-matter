@@ -1,0 +1,10 @@
+/** @brief Data Ready
+ *
+ * This function is called whenever the battery monitor has generated a new
+ * valid battery level.
+ *
+ * @param batteryVoltageMilliV The battery voltage, in milli Volts  Ver.: always
+ */
+void emberAfPluginBatteryMonitorDataReadyCallback(uint16_t batteryVoltageMilliV)
+{
+}

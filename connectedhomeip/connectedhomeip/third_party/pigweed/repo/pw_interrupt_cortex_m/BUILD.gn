@@ -1,0 +1,62 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+config("backend_config") {
+  include_dirs = [ "public_overrides" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("context") {
+  public_deps = [
+    "$dir_pw_interrupt:context.facade",
+    "$dir_pw_preprocessor:arch",
+  ]
+  public_configs = [
+    ":public_include_path",
+    ":backend_config",
+  ]
+  public = [
+    "public/pw_interrupt_cortex_m/context_inline.h",
+    "public_overrides/pw_interrupt_backend/context_inline.h",
+  ]
+}
+
+# These targets are deprecated, use ":context" directly.
+group("context_armv6m") {
+  public_deps = [ ":context" ]
+}
+group("context_armv7m") {
+  public_deps = [ ":context" ]
+}
+group("context_armv8m") {
+  public_deps = [ ":context" ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}
+
+pw_test_group("tests") {
+}

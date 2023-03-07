@@ -1,0 +1,16 @@
+{
+    "target": {
+        "Name": "LP_CC2652R7",
+        "Revision": [],
+        "Description": "CC2652R7 LP. 7x7 VQFN48 package. Internal bias, differential output. 2.4 GHz frequency band.",
+        "DeviceName": "CC2652R7",
+        "DevicePackage": "VQFN 7x7",
+        "FrontEnd": "ID",
+        "PaSettings": "pasettings.json",
+        "RfDesign": "CC26x2-R7EM-7ID",
+        "DefaultCategory": "Settings",
+        "IoSettingsIdle": [],
+        "IoSettingsRx": [],
+        "IoSettingsTx": []
+    }
+}

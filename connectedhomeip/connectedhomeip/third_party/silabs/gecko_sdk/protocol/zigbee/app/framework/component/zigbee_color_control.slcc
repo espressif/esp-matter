@@ -1,0 +1,22 @@
+package: Zigbee
+description: Legacy Ember implementation of color control cluster.  This only implements
+  manipulation of HUE and saturation, and does not implement the CIE 1931 color standard.
+id: zigbee_color_control
+label: Color Control Cluster (deprecated)
+category: Zigbee|Cluster Library|Home Automation
+quality: deprecated
+provides:
+   - name: "zigbee_color_control"
+   - name: "zigbee_color_control_server_implementation"
+source:
+  - path: protocol/zigbee/app/framework/plugin/color-control/color-control.c
+  - path: protocol/zigbee/app/framework/plugin/color-control/color-control-cb.c
+template_contribution:
+  - name: component_catalog
+    value: zigbee_color_control
+  - name: cluster_service
+    value:
+       cluster_id: "0x0300"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "SERVER"       
+       service_function: "emberAfColorControlClusterServerCommandParse"

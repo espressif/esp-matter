@@ -1,0 +1,22 @@
+{
+  "packages": [
+    {
+      "path": "fuchsia/third_party/kythe",
+      "platforms": [
+        "linux-amd64"
+      ],
+      "tags": [
+        "version:1.0.3"
+      ]
+    },
+    {
+      "path": "fuchsia/third_party/kythe-libs/${platform}",
+      "platforms": [
+        "linux-amd64"
+      ],
+      "tags": [
+        "version:2020-08-05"
+      ]
+    }
+  ]
+}

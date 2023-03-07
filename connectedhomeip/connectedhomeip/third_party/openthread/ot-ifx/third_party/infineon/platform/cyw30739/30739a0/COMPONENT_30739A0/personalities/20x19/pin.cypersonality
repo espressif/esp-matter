@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Personality id="20x19_pin" name="Pin" version="1.0" path="Pin" xmlns="http://cypress.com/xsd/cyhwpersonality_v1">
+  <Dependencies>
+    <IpBlock name="20x19_ioss" />
+    <Resource name="ioss\.pin" />
+  </Dependencies>
+  <ExposedMembers>
+    <ExposedMember key="cfgStruct" paramId="cfgStruct" />
+    <ExposedMember key="cfgConnection" paramId="cfgConnection" />
+    <ExposedMember key="type" paramId="Type" />
+    <ExposedMember key="gpioResource" paramId="gpioResource" />
+  </ExposedMembers>
+  <Parameters>
+    <ParamDoc id="apiDoc" name="Configuration Help" group="Peripheral Documentation" default="file:///`${cy_libs_path()}`/docs/group___g_p_i_o_driver.html" linkText="Open GPIO Documentation" visible="true" desc="Opens the Hardware Driver Documentation" />
+
+    <ParamChoice id="Type" name="Type" group="General" default="PERIPHERAL" visible="true" editable="true" desc="Specifies the behavior for the pin.">
+      <Entry name="Button" value="BUTTON" visible="true" />
+      <Entry name="GPIO" value="GPIO" visible="true" />
+      <Entry name="LED" value="LED" visible="true" />
+      <Entry name="Peripheral" value="PERIPHERAL" visible="true" />
+    </ParamChoice>
+
+	<!-- Peripheral -->
+    <ParamSignal port="aux[0]" name="Target" group="General" visible="`${Type eq PERIPHERAL}`" desc="Peripheral driver signal." canBeEmpty="true" />
+
+    <!-- Basic GPIO config settings -->
+    <ParamRange id="Index" name="Index" group="General" default="0" min="`${Type eq PERIPHERAL ? 0 : 1}`" max="`${COUNT}`" resolution="1" visible="`${Type ne PERIPHERAL}`" editable="true" desc="Index into the Pin's &quot;platform_`${toLower(Type)}`[]&quot; array (cycfg_pins.c). Note: Choosing a value above the maximum number defined in wiced_platform.h will require user to update a new value in wiced_platform_`${toLower(Type)}`_number_t enum." />
+
+    <ParamChoice id="DefaultState" name="Default State" group="General" default="GPIO_PIN_OUTPUT_LOW" visible="`${Type ne PERIPHERAL}`" editable="true" desc="Pin state on power up.">
+      <Entry name="Low" value="GPIO_PIN_OUTPUT_LOW" visible="true" />
+      <Entry name="High" value="GPIO_PIN_OUTPUT_HIGH" visible="true" />
+    </ParamChoice>
+
+    <ParamChoice id="PressedValue" name="Button Pressed Value" group="General" default="GPIO_PIN_OUTPUT_LOW" visible="`${Type eq BUTTON}`" editable="`${Type eq BUTTON}`" desc="State when button is pressed.">
+      <Entry name="Low" value="GPIO_PIN_OUTPUT_LOW" visible="true" />
+      <Entry name="High" value="GPIO_PIN_OUTPUT_HIGH" visible="true" />
+    </ParamChoice>
+
+    <ParamChoice id="Control" name="Control" group="General" default="GPIO_INPUT_ENABLE" visible="`${Type ne PERIPHERAL}`" editable="true" desc="Direction of the pin.">
+      <Entry name="Input" value="GPIO_INPUT_ENABLE" visible="true" />
+      <Entry name="Output" value="GPIO_OUTPUT_ENABLE" visible="true" />
+	  <!--
+      <Entry name="Output Disable" value="GPIO_OUTPUT_DISABLE" visible="true" />
+      <Entry name="KeyScan Output Enable" value="GPIO_KS_OUTPUT_ENABLE" visible="true" />
+	  -->
+    </ParamChoice>
+
+    <ParamChoice id="PullMode" name="Pull Mode" group="General" default="GPIO_PULL_UP_DOWN_NONE" visible="`${Type ne PERIPHERAL}`" editable="true" desc="Configures the electrical characteristics of the pin.">
+      <Entry name="None" value="GPIO_PULL_UP_DOWN_NONE" visible="true" />
+      <Entry name="Pull Up" value="GPIO_PULL_UP" visible="true" />
+      <Entry name="Pull Down" value="GPIO_PULL_DOWN" visible="true" />
+      <Entry name="Disable Input" value="GPIO_INPUT_DISABLE" visible="true" />
+    </ParamChoice>
+
+    <!-- Advanced GPIO config settings -->
+    <ParamBool id="InterruptEnable" name="Enable Interrupt" group="General" default="false" visible="`${Type ne PERIPHERAL}`" editable="true" desc="Enables the interrupt signal from the pin." />
+
+    <ParamChoice id="InterruptTrigger" name="Interrupt Trigger" group="General" default="GPIO_EN_INT_RISING_EDGE" visible="`${Type ne PERIPHERAL &amp;&amp; InterruptEnable}`" editable="true" desc="Controls what signal change triggers the interrupt." >
+      <Entry name="Level High" value="GPIO_EN_INT_LEVEL_HIGH" visible="true" />
+      <Entry name="Level Low" value="GPIO_EN_INT_LEVEL_LOW" visible="true" />
+      <Entry name="Rising Edge" value="GPIO_EN_INT_RISING_EDGE" visible="true" />
+      <Entry name="Falling Edge" value="GPIO_EN_INT_FALLING_EDGE" visible="true" />
+      <Entry name="Both Edges" value="GPIO_EN_INT_BOTH_EDGE" visible="true" />
+    </ParamChoice>
+
+	<!--
+    <ParamChoice id="Trigger" name="Trigger" group="Advanced" default="GPIO_LEVEL_TRIGGER" visible="`${Type ne PERIPHERAL}`" editable="true" desc="">
+      <Entry name="Edge" value="GPIO_EDGE_TRIGGER" visible="true" />
+      <Entry name="Level" value="GPIO_LEVEL_TRIGGER" visible="true" />
+    </ParamChoice>
+
+    <ParamBool id="TriggerPolarityInvert" name="Invert Trigger Polarity" group="Advanced" default="false" visible="`${Type ne PERIPHERAL}`" editable="true" desc="Inverts the trigger polarity." />
+
+    <ParamBool id="TriggerBothEdge" name="Trigger on both edges" group="Advanced" default="false" visible="`${Type ne PERIPHERAL &amp;&amp; Trigger eq GPIO_EDGE_TRIGGER}`" editable="true" desc="" />
+
+    <ParamBool id="GlobalInput" name="Global Input" group="Advanced" default="true" visible="`${Type ne PERIPHERAL}`" editable="true" desc="" />
+
+    <ParamChoice id="DriveStrength" name="Drive Strength" group="Advanced" default="GPIO_DRIVE_SEL_LOWEST" visible="`${Type ne PERIPHERAL}`" editable="true" desc="">
+      <Entry name="Low" value="GPIO_DRIVE_SEL_LOWEST" visible="true" />
+      <Entry name="Middle 0" value="GPIO_DRIVE_SEL_MIDDLE0" visible="true" />
+      <Entry name="Middle 1" value="GPIO_DRIVE_SEL_MIDDLE1" visible="true" />
+      <Entry name="High" value="GPIO_DRIVE_SEL_HIGHEST" visible="true" />
+    </ParamChoice>
+
+    <ParamBool id="Hysteresis" name="Hysteresis" group="Advanced" default="false" visible="`${Type ne PERIPHERAL}`" editable="true" desc="" />
+
+    <ParamBool id="inFlash" name="Store Config in Flash" group="Advanced" default="true" visible="`${Type ne PERIPHERAL}`" editable="true" desc="Controls whether the configuration structure is stored in flash (const, true) or SRAM (not const, false)." />
+	-->
+
+    <!-- Utility -->
+    <ParamString id="instNum" name="" group="" default="`${getInstNumber(&quot;pin&quot;)}`" visible="false" editable="false" desc="" />
+    <ParamString id="idxNum" name="" group="" default="`${hasExposedMember(&quot;ioss[0]&quot;, &quot;pinIndex&quot; . instNum) ? getExposedMember(&quot;ioss[0]&quot;, &quot;pinIndex&quot; . instNum) : &quot;&quot;}`" visible="false" editable="false" desc="" />
+    <ParamString id="gpioResource" name="" group="" default="WICED_PLATFORM_`${Type}`_`${Index}`" visible="false" editable="false" desc="" />
+    <ParamString id="cfgStruct" name="" group="" default="`${INST_NAME}`_config" visible="false" editable="false" desc="" />
+    <ParamString id="cfgMap" name="" group="" default="`${INST_NAME}`_map" visible="false" editable="false" desc="" />
+    <ParamString id="cfgConnection" name="" group="" default="`${Type eq PERIPHERAL &amp;&amp; hasConnection(&quot;aux&quot;, 0) ? getDefineNameFromSignal(getParamValue(&quot;aux[0]&quot;)) . &quot;_TRIGGER_IN&quot; : &quot;WICED_GPIO&quot;}`" visible="false" editable="false" desc="" />
+
+  </Parameters>
+
+   <DRCs>
+    <DRC type="ERROR" text="The top-level Pins must be enabled to generate the pin initialization code." condition="`${!isBlockUsed(&quot;ioss[0]&quot;)}`" location="ioss[0]" >
+      <FixIt action="ENABLE_BLOCK" target="ioss[0]" value="" valid="true" />
+    </DRC>
+  </DRCs>
+
+  <ConfigFirmware>
+    <ConfigInclude value="wiced_platform.h" include="true" />
+    <ConfigInclude value="cycfg_routing.h" include="true" />
+
+    <ConfigDefine name="`${INST_NAME}`" value="WICED_P`${padLeft(getInstNumber(&quot;pin&quot;), 2, &quot;0&quot;)}`" public="true" include="true" />
+
+    <ConfigDefine name="`${cfgStruct}`" public="false" include="`${Type ne PERIPHERAL}`" value="\&#xA;{\&#xA;
+   .gpio = (wiced_bt_gpio_numbers_t*)&amp;platform_gpio_pins[PLATFORM_GPIO_`${idxNum}`].gpio_pin, \&#xA;
+   .config = `${Control .
+		(&quot; | &quot; . PullMode) .
+		(InterruptEnable ? &quot; | GPIO_INTERRUPT_ENABLE | &quot; . InterruptTrigger : &quot;&quot;)}`, \&#xA;
+   .default_state = `${DefaultState}`, \&#xA;
+`${Type eq BUTTON ? &quot;   .button_pressed_value = &quot; . PressedValue . &quot;, \\&#xA;&quot; : &quot;&quot;}`}" />
+
+    <!--ConfigStruct name="`${cfgStruct}`" type="wiced_platform_`${toLower(Type)}`_config_t" const="`${inFlash}`" public="true" include="`${Type ne PERIPHERAL}`">
+      <Member name="gpio" value="(wiced_bt_gpio_numbers_t*)&amp;platform_gpio_pins[PLATFORM_GPIO_`${idxNum}`].gpio_pin" />
+      <Member name="config" value="`${Control .
+		(&quot; | &quot; . PullMode) .
+		(&quot; | &quot; . Trigger) .
+		(TriggerPolarityInvert ? &quot; | GPIO_TRIGGER_NEG&quot; : &quot;&quot;) .
+		(Trigger eq GPIO_EDGE_TRIGGER ? &quot; | GPIO_EDGE_TRIGGER_BOTH&quot; : &quot; | GPIO_EDGE_TRIGGER_SINGLE&quot;) .
+		(InterruptEnable ? &quot; | GPIO_INTERRUPT_ENABLE&quot; : &quot; | GPIO_INTERRUPT_DISABLE&quot;) .
+		(InterruptEnable ? &quot; | &quot; . InterruptTrigger : &quot;&quot;) .
+		(GlobalInput ? &quot; | GPIO_GLOBAL_INPUT_ENABLE&quot; : &quot; | GPIO_GLOBAL_INPUT_DISABLE&quot;) .
+		(&quot; | &quot; . DriveStrength) .
+		(Hysteresis ? &quot; | GPIO_HYSTERESIS_ON&quot; : &quot; | GPIO_HYSTERESIS_OFF&quot;)}`" />
+      <Member name="default_state" value="`${DefaultState}`" />
+      <Member name="button_pressed_value" value="`${PressedValue}`" include="`${Type eq BUTTON}`" />
+    </ConfigStruct-->
+  </ConfigFirmware>
+</Personality>

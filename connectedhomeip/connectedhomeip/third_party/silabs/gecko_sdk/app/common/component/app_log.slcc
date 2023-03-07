@@ -1,0 +1,36 @@
+id: app_log
+label: Log
+package: platform
+description: Component that provides logging functionality.
+category: Application|Utility
+quality: production
+root_path: app/common/util/app_log
+config_file:
+  - path: config/app_log_config.h
+source:
+  - path: app_log.c
+include:
+  - path: .
+    file_list:
+      - path: app_log.h
+      - path: sl_app_log.h
+provides:
+  - name: app_log
+requires:
+  - name: iostream
+  - name: iostream_retarget_stdio
+  - name: iostream_stdlib_config
+  - name: component_catalog
+template_contribution:
+  - name: component_catalog
+    value: app_log
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: app_log.h
+      handler: app_log_init
+validation_library:
+  - path: ../../validation/autonumber_common.lua
+    name: autonumber_common
+validation_helper:
+  - path: app_log_validation.lua

@@ -1,0 +1,25 @@
+# Copyright (c) 2021 Arm Limited and Contributors. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+# This file contains the basic building block for build an test jobs
+.build:
+  script:
+    - set -x
+    - cmake -S . -B build --toolchain=$TOOLCHAIN -GNinja -DCMAKE_SYSTEM_PROCESSOR=$PROCESSOR -D IOTSDK_MDH_ARM=ON -D MDH_PLATFORM=$TARGET -D VARIANT=$VARIANT -D HTRUN_ARGUMENTS=$HTRUN_ARGUMENTS -D IOTSDK_STORAGE_BUILD_EXAMPLES=ON
+    - cmake --build build
+
+  after_script:
+    - set -x
+    - tar -czf build-$TARGET-$VARIANT.tar.gz --exclude="*.obj" build/*/examples build/*.cmake build/*/*.cmake
+
+  artifacts:
+    paths:
+      - build-$TARGET-$VARIANT.tar.gz
+    expire_in: 1 week
+
+.run_fvp:
+  before_script:
+    - tar -xzf build-$TARGET-$VARIANT.tar.gz
+  script:
+    - ctest --test-dir build --show-only
+    - ctest --test-dir build --verbose --no-tests=error

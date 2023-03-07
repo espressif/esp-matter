@@ -1,0 +1,289 @@
+package: Zigbee
+description: This component provides an implementation of a Price client. It simply stores
+  the prices received over-the-air. This component requires extending to act on the
+  price changes.
+label: Price Client
+quality: production
+id: zigbee_price_client
+category: Zigbee|Cluster Library|Smart Energy
+provides:
+   - name: "zigbee_price_client"
+requires:
+   - name: "zigbee_price_common"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/price-client/config/price-client-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/price-client/price-client.c
+  - path: protocol/zigbee/app/framework/plugin/price-client/price-client-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/price-client/price-client-consolidated-bills.c
+  - path: protocol/zigbee/app/framework/plugin/price-client/price-client-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/price-client
+    file_list:
+      - path: price-client.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_price_client
+  - name: cluster_service
+    value:
+       cluster_id: "0x0700"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "CLIENT"       
+       service_function: "emberAfPriceClusterClientCommandParse"    
+  - name: cli_group
+    value:
+      group: plugin
+      name: price-client
+      help: price-client related commands.
+  - name: cli_command
+    value:
+      group: price-client
+      name: init
+      handler: emAfPriceClientCliInit
+      help: Initializes the price info for the provided endpoint.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cli_command
+    value:
+      group: price-client
+      name: print
+      handler: emAfPriceClientCliPrint
+      help: Prints the price info for the provided endpoint.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cli_command
+    value:
+      group: price-client
+      name: printEvent
+      handler: emAfPriceClientCliPrintEvent
+      help: Prints the price info for the provided endpoint and event ID.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint32
+        help: The event ID that should be printed if found in the price table
+  - name: cli_group
+    value:
+      group: price-client
+      name: conv-factor
+      help: conv-factor related commands.
+  - name: cli_command
+    value:
+      group: conv-factor
+      name: printEvent
+      handler: emAfPriceClientCliConversionFactorPrintByEventId
+      help: Prints the conversion factor table entry with a matching event ID.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint32
+        help: The event ID that should be printed if found in the conversion factor table
+  - name: cli_group
+    value:
+      group: price-client
+      name: calf-value
+      help: calf-value related commands.
+  - name: cli_command
+    value:
+      group: calf-value
+      name: printEvent
+      handler: emAfPriceClientCliCalorificValuePrintByEventId
+      help: Prints the calorific value table entry with a matching event ID.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint32
+        help: The event ID that should be printed if found in the calorific value table
+  - name: cli_group
+    value:
+      group: price-client
+      name: co2-value
+      help: co2-value related commands.
+  - name: cli_command
+    value:
+      group: co2-value
+      name: printCurrent
+      handler: emAfPriceClientCliCo2ValueTablePrintCurrent
+      help: Prints the active CO2 value.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cli_group
+    value:
+      group: price-client
+      name: bill-period
+      help: bill-period related commands.
+  - name: cli_command
+    value:
+      group: bill-period
+      name: printCurrent
+      handler: emAfPriceClientCliBillingPeriodPrintCurrent
+      help: Prints the billing period table entry that is currently active.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cli_group
+    value:
+      group: price-client
+      name: block-period
+      help: block-period related commands.
+  - name: cli_command
+    value:
+      group: block-period
+      name: printEvent
+      handler: emAfPriceClientCliBlockPeriodPrintEntryByEventId
+      help: Prints the entry of the Block Period table with a matching event ID.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint32
+        help: The event ID whose information in the block period table should be printed
+  - name: cli_group
+    value:
+      group: price-client
+      name: tier-label
+      help: tier-label related commands.
+  - name: cli_command
+    value:
+      group: tier-label
+      name: printTariff
+      handler: emAfPriceClientCliTierLabelTablePrintTariffId
+      help: Prints the tier label table entry with a matching tariff ID.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint32
+        help: The issuer tariff ID that should be looked for in the tier label table
+  - name: cli_command
+    value:
+      group: price-client
+      name: table-clear
+      handler: emAfPriceClientCliTableClear
+      help: Clears out the currently set price for the supplied endpoint.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cli_group
+    value:
+      group: price-client
+      name: consol-bill
+      help: consol-bill related commands.
+  - name: cli_command
+    value:
+      group: consol-bill
+      name: print-bill
+      handler: emAfPriceClientCliConsolidatedBillTablePrint
+      help: Prints the entry of the consolidated bill table.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint8
+        help: The index of the consolidated bill table that should be printed
+  - name: cli_command
+    value:
+      group: consol-bill
+      name: printCurrent
+      handler: emAfPriceClientCliConsolidatedBillPrintCurrentEntry
+      help: Prints the entry of the active consolidated bill in the consolidated bills table.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cli_command
+    value:
+      group: consol-bill
+      name: printEvent
+      handler: emAfPriceClientCliConsolidatedBillPrintEntryByEventId
+      help: Prints the entry of the consolidated bill table with a matching event ID.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint32
+        help: The event ID whose information in the consolidated bill table should be printed
+  - name: cli_group
+    value:
+      group: price-client
+      name: cpp-event
+      help: cpp-event related commands
+  - name: cli_command
+    value:
+      group: cpp-event
+      name: setAuth
+      handler: emAfPriceClientCliSetCppEventAuth
+      help: Sets the authorization status for future CPP events.
+      argument:
+      - type: uint8
+        help: The authorization status for future CPP events
+  - name: cli_command
+    value:
+      group: cpp-event
+      name: print-event
+      handler: emAfPriceClientCliCppEventPrint
+      help: Prints the entry of the CPP event table.
+      argument:
+      - type: uint8
+  - name: cli_group
+    value:
+      group: price-client
+      name: credit-pmt
+      help: credit-pmt related commands.
+  - name: cli_command
+    value:
+      group: credit-pmt
+      name: print
+      handler: emAfPriceClientCliCreditPaymentTablePrint
+      help: Prints the entry of the credit payment table.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint8
+        help: The index of the credit payment table entry that should be printed
+  - name: cli_command
+    value:
+      group: credit-pmt
+      name: printEvent
+      handler: emAfPriceClientCliCreditPaymentPrintEntryByEventId
+      help: Prints the entry of the credit payment table with a matching issuer event ID.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint32
+        help: The issuerEventId of the credit payment table entry that should be printed
+  - name: cli_group
+    value:
+      group: price-client
+      name: currency-convers
+      help: currency-convers related commands.
+  - name: cli_command
+    value:
+      group: currency-convers
+      name: printEvent
+      handler: emAfPriceClientCliCurrencyConversionPrintByEventId
+      help: Prints the entry of the currency conversion table with a matching issuer event ID.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint32
+        help: The issuerEventId of the currency conversion table entry that should be printed
+  - name: cli_command
+    value:
+      group: currency-convers
+      name: printCurrent
+      handler: emAfPriceClientClieCurrencyConversionPrintCurrentCurrency
+      help: Prints the active entry of the currency conversion table.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cluster_functions
+    value:
+      cluster_name: Price
+      cluster_id: 0x700
+      cluster_type: client
+      init_function: emberAfPriceClusterClientInitCallback
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/price-client

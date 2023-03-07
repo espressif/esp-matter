@@ -1,0 +1,32 @@
+id: gatt_service_cte
+label: Constant Tone Extension GATT Service (Connection)
+package: Bluetooth
+description: >
+  Constant Tone Extension GATT Service reference implementation for ACL connection.
+category: Bluetooth|GATT
+quality: production
+root_path: app/bluetooth/common/gatt_service_cte
+source:
+  - path: sl_gatt_service_cte.c
+include:
+  - path: .
+    file_list:
+      - path: sl_gatt_service_cte.h
+      - path: sli_gatt_service_cte.h
+config_file:
+  - path: gatt_service_cte.xml
+    directory: btconf
+provides:
+  - name: gatt_service_cte
+requires:
+  - name: bluetooth_stack
+  - name: gatt_configuration
+  - name: bluetooth_feature_gatt_server
+  - name: bluetooth_feature_aoa_transmitter
+template_contribution:
+  - name: bluetooth_on_event
+    value:
+      include: sl_gatt_service_cte.h
+      function: sl_gatt_service_cte_on_event
+  - name: component_catalog
+    value: gatt_service_cte

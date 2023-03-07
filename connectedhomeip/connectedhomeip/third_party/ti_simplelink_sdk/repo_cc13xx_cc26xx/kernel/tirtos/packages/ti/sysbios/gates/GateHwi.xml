@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="GateHwi" title="Hardware Interrupt Gate" version="1">
+
+<page name="Module" title="Module Settings">
+<html><body><table>
+  <tr>
+      <td><form>
+        <p>GateHwi uses disabling and enabling of interrupts as the resource locking
+           mechanism. Such a gate guarantees exclusive access to the CPU. This gate
+           can be used whenever the resource is being shared by Tasks, Swis, and/or Hwis.</p>
+        <p> </p>
+      </form></td>
+  </tr>
+  <tr>
+    <td><control type="checkbox" label="Add the GateHwi module to my configuration" value="value:this.$used" bold="true"/></td>
+  </tr>
+  <tr></tr>
+</table></body></html>
+</page>
+</gep>
+

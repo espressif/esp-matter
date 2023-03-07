@@ -1,0 +1,55 @@
+menu "Example Configuration"
+
+    config EXAMPLE_TOUCH_WAKEUP
+        bool "Enable touch wake up"
+        default y
+        depends on !IDF_TARGET_ESP32C3
+        help
+            This option enables wake up from deep sleep using touch pads
+            TOUCH8 and TOUCH9, which correspond to GPIO33 and GPIO32.
+
+    config EXAMPLE_ULP_TEMPERATURE_WAKEUP
+        bool "Enable temperature monitoring by ULP"
+        default y
+        depends on IDF_TARGET_ESP32
+        help
+            This option enables wake up from deep sleep using ULP.
+            ULP program monitors the on-chip temperature sensor and
+            wakes up the chip when the temperature goes outside of
+            the window defined by the initial temperature and a threshold
+            around it.
+
+    config EXAMPLE_EXT1_WAKEUP
+        bool "Enable wakeup from GPIO"
+        default y
+        depends on !IDF_TARGET_ESP32C3
+        help
+            This option enables wake up from deep sleep from GPIO2 and GPIO4. They should be connected to LOW to avoid
+            floating pins. When triggering a wake up, connect one or both of the pins to HIGH. Note that floating
+            pins may trigger a wake up.
+
+    config EXAMPLE_GPIO_WAKEUP
+        bool "Enable wakeup from GPIO"
+        default y
+        depends on IDF_TARGET_ESP32C3
+        help
+            This option enables wake up from GPIO, only GPIO0~5 can be used to wake up. Be aware that if you use low level
+            to trigger wakeup, we strongly recommand you to connect external pull-up resistance.
+
+    menu "GPIO wakeup configuration"
+        visible if IDF_TARGET_ESP32C3
+
+        config EXAMPLE_GPIO_WAKEUP_PIN
+            int "Enable wakeup from GPIO"
+            default 0
+            range 0 5
+
+        config EXAMPLE_GPIO_WAKEUP_HIGH_LEVEL
+            bool "Enable GPIO high-level wakeup"
+            default y
+            help
+                This option set the gpio wake-up trigger signal, In deep sleep, only high or low level wake-up is
+                supported. If this option is enabled, it is a high level wake up, otherwise it is a low level wake up.
+    endmenu
+
+endmenu

@@ -1,0 +1,10 @@
+id: zw_debug
+label: Z-Wave Debug
+category: Z-Wave
+description: defines and paths used for z-wave debug build
+package: Z-Wave
+quality: production
+provides:
+- name: zw_debug
+- name: zw_build_mode
+

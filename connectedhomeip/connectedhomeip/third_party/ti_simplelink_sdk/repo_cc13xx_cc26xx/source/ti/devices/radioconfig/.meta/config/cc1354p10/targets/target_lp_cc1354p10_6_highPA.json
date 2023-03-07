@@ -1,0 +1,39 @@
+{
+    "target": {
+        "Name": "LP_EM_CC1354P10_6-HIGH-PA",
+        "Revision": [],
+        "Description": "CC1354P10 LaunchPad Band 6",
+        "DeviceName": "CC1354P10",
+        "DevicePackage": "RSK 8x8",
+        "FrontEnd": "XD",
+        "PaSettings": "pasettings.json",
+        "RfDesign": "LP-CC1354P-8x8-XD7793-XD24-PA24_10dBm",
+        "DefaultCategory": "Settings for Bluetooth Low Energy",
+        "IoSettings": {
+            "_name": "RF Switch",
+            "IoPin": [
+                {
+                    "_name": "DIO34",
+                    "ControlFunction": "Input\/Output",
+                    "Idle": "Input tristate (Default)",
+                    "Tx": "Output low",
+                    "Rx": "Output high"
+                },
+                {
+                    "_name": "DIO3",
+                    "ControlFunction": "Input\/Output",
+                    "Idle": "Input tristate (Default)",
+                    "Tx": "Output high",
+                    "Rx": "Output low"
+                },
+                {
+                    "_name": "DIO35",
+                    "ControlFunction": "Input\/Output",
+                    "Idle": "Input tristate (Default)",
+                    "Tx": "Output low",
+                    "Rx": "Output low"
+                }
+            ]
+        }
+    }
+}

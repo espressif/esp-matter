@@ -1,0 +1,53 @@
+!!omap
+- id: brd2200a
+- label: BRD2200A
+- package: platform
+- description: Board support for BRD2200A.
+- category: Platform|Board|Starter Kit
+- quality: production
+- requires:
+  - name: efm32gg990f1024
+  - name: brd2200a_config
+- provides:
+  - name: brd2200a
+  - name: hardware_board
+  - name: hardware_board_stk
+  - name: hardware_board_from_stk
+  - name: hardware_board_from_efm32gg-stk3700
+  - name: hardware_board_from_efm32gg-stk3700b
+  - name: hardware_board_has_vcom
+  - name: hardware_board_has_hfxo
+  - name: hardware_board_has_lfxo
+- recommends:
+  - id: iostream_uart
+    instance:
+    - vcom
+  - id: bootloader_uart_driver
+  - id: simple_led
+    instance:
+    - led0
+    - led1
+  - id: simple_button
+    instance:
+    - btn0
+    - btn1
+  - id: bootloader_spi_peripheral_usart_driver
+- template_contribution: []
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD2200A"'
+  - name: SL_BOARD_REV
+    value: '"B05"'
+- tag:
+  - board:pn:BRD2200
+  - board:variant:A
+  - board:revision:B05
+  - board:device:efm32gg990f1024
+  - hardware:has:vcom
+  - hardware:has:led:2
+  - hardware:has:button:2
+  - hardware:has:touch
+  - hardware:has:lcd
+  - hardware:has:lesense:lc
+  - hardware:has:lesense:light
+  - hardware:has:usb

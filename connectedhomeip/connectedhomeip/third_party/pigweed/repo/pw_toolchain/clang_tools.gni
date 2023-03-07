@@ -1,0 +1,65 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+import("//build_overrides/pigweed.gni")
+import("//build_overrides/pigweed_environment.gni")
+import("$dir_pw_toolchain/rbe.gni")
+
+declare_args() {
+  # This flag allows you to specify the root directory of the clang, clang++,
+  # and llvm-ar binaries to use when compiling with a clang-based toolchain.
+  # This is useful for debugging toolchain-related issues by building with an
+  # externally-provided toolchain.
+  pw_toolchain_CLANG_PREFIX =
+      rebase_path(pw_env_setup_CIPD_PIGWEED + "/bin/", root_build_dir)
+
+  # This flag allows you to specify the root directory of the rustc binary.
+  pw_toolchain_RUST_PREFIX =
+      rebase_path(pw_env_setup_CIPD_PIGWEED + "/rust/bin/", root_build_dir)
+}
+
+pw_toolchain_clang_tools = {
+  ar = "llvm-ar"
+  cc = "clang"
+  cxx = "clang++"
+  ld = cxx
+  rustc = "rustc"
+
+  if (pw_toolchain_CLANG_PREFIX != "") {
+    ar = pw_toolchain_CLANG_PREFIX + ar
+    cc = pw_toolchain_CLANG_PREFIX + cc
+    cxx = pw_toolchain_CLANG_PREFIX + cxx
+    ld = pw_toolchain_CLANG_PREFIX + ld
+  }
+
+  if (pw_toolchain_RUST_PREFIX != "") {
+    rustc = pw_toolchain_RUST_PREFIX + rustc
+  }
+
+  if (pw_toolchain_USE_RBE) {
+    _rbe_debug_flag = ""
+    if (pw_toolchain_RBE_DEBUG) {
+      _rbe_debug_flag = " -v"
+    }
+    _exec_root = rebase_path("//")
+    _rewrapper_binary = "rewrapper"
+    _pw_rbe_config = pw_rbe_clang_config
+    _rbe_toolchain_prefix =
+        _rewrapper_binary +
+        " --labels=type=compile,lang=cpp,compiler=clang --cfg=" +
+        _pw_rbe_config + " --exec_root=" + _exec_root + " -- "
+
+    cc = _rbe_toolchain_prefix + cc + _rbe_debug_flag
+    cxx = _rbe_toolchain_prefix + cxx + _rbe_debug_flag
+  }
+}

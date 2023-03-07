@@ -1,0 +1,44 @@
+id: zigbee_xncp
+label: XNCP
+package: Zigbee
+category: Zigbee|NCP
+quality: production
+
+description: Provides the functionality for an NCP device to communicate custom EZSP frames with a host.
+
+provides:
+  - name: zigbee_xncp
+
+requires:
+  - name: zigbee_xncp_implementation
+  - name: zigbee_xncp_library
+    condition:
+     - zigbee_force_libraries
+  - name: zigbee_ncp
+
+recommends:
+  - id: zigbee_xncp_source
+
+include:
+  - path: protocol/zigbee/app/xncp
+    file_list:
+      - path: xncp.h
+      - path: xncp-token.h
+      - path: xncp-sample-custom-ezsp-protocol.h
+  - path: protocol/zigbee/app/ncp/plugin/xncp
+    file_list:
+      - path: xncp.h
+
+source:
+  - path: protocol/zigbee/app/xncp/xncp_cb.c
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_xncp
+  - name: token_header
+    value: app/xncp/xncp-token.h
+
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/xncp

@@ -1,0 +1,47 @@
+project_name: tempdrv_kernel_micriumos
+package: platform
+quality: production
+label: Platform - TEMPDRV on Micrium OS kernel
+description: > 
+  This example project demonstrates how to use the internal temperature sensor in a Micrium OS kernel task.
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]
+source:
+  - path: app.c
+  - path: main.c
+  - path: tempdrv_micriumos.c
+include:
+  - path: .
+    file_list:
+    - path: app.h
+    - path: tempdrv_micriumos.h
+component:
+  - id: sl_system
+  - id: device_init
+  - id: micriumos_kernel
+  - id: sleeptimer
+  - id: tempdrv
+  - id: simple_led
+    instance:
+      - led0
+      - led1
+  - id: iostream_stdlib_config
+  - id: iostream_retarget_stdio
+  - id: iostream_recommended_stream
+define:
+  - name: DEBUG_EFM
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+tag:
+  - hardware:component:led:2+
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md

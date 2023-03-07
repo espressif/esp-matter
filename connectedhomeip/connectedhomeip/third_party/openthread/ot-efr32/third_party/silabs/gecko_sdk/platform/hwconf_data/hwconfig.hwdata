@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="ASCII"?>
+<model:MDescriptors xmlns:model="http://www.silabs.com/ss/Studio.ecore">
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/bgm11"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.bg1.bgm.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/bgm13"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.bg13.bgm.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/bgm21"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.bg21.bgm.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/bgm22"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.bg22.bgm.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efm32gg11"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efm32.gg11.efm32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efm32gg12"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efm32.gg12.efm32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efm32jg1"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efm32.jg1.efm32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efm32jg12"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efm32.jg12.efm32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efm32pg1"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efm32.pg1.efm32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efm32pg12"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efm32.pg12.efm32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efm32tg11"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efm32.tg11.efm32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32bg1"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.bg1.efr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32bg12"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.bg12.efr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32bg13"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.bg13.efr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32bg21"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.bg21.efr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32bg22"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.bg22.efr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32fg1"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.fg1.efr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32fg12"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.fg12.efr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32fg13"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.fg13.efr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32fg14"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.fg14.efr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32fg22"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.fg22.efr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32mg1"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.mg1.efr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32mg12"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.mg12.efr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32mg13"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.mg13.efr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32mg14"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.mg14.efr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32mg21"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.mg21.(efr32|rm).*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32mg22"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.mg22.efr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32zg13"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.zg13.efr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32zg14"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.zg14.efr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/mgm11"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.mg1.mgm.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/mgm12"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.mg12.mgm.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/mgm13"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.mg13.mgm.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/mgm21"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.mg21.mgm.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/zgm13"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.zg13.zgm.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efm32g"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efm32.g.efm32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efm32gg"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efm32.gg.efm32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efm32hg"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efm32.hg.efm32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efm32lg"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efm32.lg.efm32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efm32tg"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efm32.tg.efm32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efm32wg"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efm32.wg.efm32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efm32zg"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efm32.zg.efm32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/ezr32hg"/>
+    <properties key="core.partCompatibility" value="mcu.arm.ezr32.hg.ezr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/ezr32lg"/>
+    <properties key="core.partCompatibility" value="mcu.arm.ezr32.lg.ezr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/ezr32wg"/>
+    <properties key="core.partCompatibility" value="mcu.arm.ezr32.wg.ezr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/mgm22"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.mg22.mgm.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efm32pg23"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efm32.pg23.efm32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32fg23"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.fg23.efr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32zg23"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.zg23.efr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/zgm23"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.zg23.zgm.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efm32pg22"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efm32.pg22.efm32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32mg24"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.mg24.efr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/mgm24"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.mg24.mgm.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32fg25"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.fg25.efr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/wgm16"/>
+    <properties key="core.partCompatibility" value="mcu.arm.wf.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/bgm24"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.bg24.bgm.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32bg24"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.bg24.efr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32mr21"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.mr21.efr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32bg27"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.bg27.efr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/efr32mg27"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.mg27.efr32.*"/>
+  </descriptors>
+  <descriptors>
+    <properties key="hardwareConfigData" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/hwconf_data/pin_tool/fgm23"/>
+    <properties key="core.partCompatibility" value="mcu.arm.efr32.fg23.fgm.*"/>
+  </descriptors>
+</model:MDescriptors>

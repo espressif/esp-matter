@@ -1,0 +1,22 @@
+!!omap
+- id: efm32tg_stk3300
+- label: EFM32TG-STK3300
+- package: platform
+- description: Kit BSP support for the EFM32 Tiny Gecko Starter Kit.
+- category: Platform|Board|Kit|Starter Kit
+- quality: production
+- requires:
+  - name: hardware_board_from_efm32tg-stk3300
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_stk
+- define:
+  - name: SL_KIT_NAME
+    value: '"EFM32TG-STK3300"'
+  - name: SL_KIT_REV
+    value: '"C01"'
+- tag:
+  - kit:opn:EFM32TG-STK3300
+  - kit:pn:STK3300
+  - kit:variant:A
+  - kit:revision:C01

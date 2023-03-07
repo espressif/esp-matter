@@ -1,0 +1,439 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Easyflash4 boot times &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Easyflash4 boot times</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Examples/storage/sdk_app_easyflash_boottimes/easyflash_boottimes.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="easyflash4-boot-times">
+<span id="easyflash-boottimes-index"></span><h1>Easyflash4 boot times<a class="headerlink" href="#easyflash4-boot-times" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<h2>总览<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<p>本示例主要介绍Easyflash4 启动读写测试相关</p>
+</div>
+<div class="section" id="id2">
+<h2>算法实现<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<div class="section" id="id3">
+<span id="id4"></span><h3>1.首次使用<a class="headerlink" href="#id3" title="永久链接至标题"></a></h3>
+<ul>
+<li><p class="first">假定 ENV 分区里有 4 个扇区，以下将按照操作 ENV 的方式，逐一举例讲解不同操作下，对应的 Flash 状态及数据变化。</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image135.png" />
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">首次使用时，EasyFlash 会检查各个扇区的 header，如果不符合规定的格式将执行全部格式化操作，格式化后，每个扇区的顶部将被存入 header ，负责记录当前扇区的状态、魔数等信息。格式化的初始化状态为空状态。</p>
+</li>
+</ul>
+</div>
+<div class="section" id="kv1kv2kv3">
+<span id="kv"></span><h3>2.添加 KV1、KV2、KV3<a class="headerlink" href="#kv1kv2kv3" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image230.png" />
+</div>
+</div></blockquote>
+<ul class="simple">
+<li>在执行添加操作前，会先检索合适地址来存放即将添加的新 KV，这里检索策略主要是：</li>
+</ul>
+<ol class="arabic simple">
+<li>确定当前选择的扇区剩余容量充足</li>
+<li>优选选择正在使用状态的扇区，最后使用空状态扇区</li>
+<li>检查新 KV 是否有同名的 KV 存在，存在还需要额外执行删除旧值的动作</li>
+</ol>
+<ul class="simple">
+<li>通过上图可以看出， KV1、KV2 及 KV3 已经被放入 sector1 ，添加后，扇区状态也被修改为正在使用。</li>
+</ul>
+</div>
+<div class="section" id="kv2-kv3-kv1-kv4">
+<span id="id5"></span><h3>3.修改 KV2 KV3，删除 KV1，添加 KV4<a class="headerlink" href="#kv2-kv3-kv1-kv4" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image324.png" />
+</div>
+</div></blockquote>
+<ul class="simple">
+<li>修改 ENV 时，旧的 ENV 将被删除，扇区的状态也将被修改为脏状态，然后再执行新增 ENV 的操作。</li>
+</ul>
+<ol class="arabic simple">
+<li>执行修改 KV2 时，已经存在的 KV2 旧值被修改为已删除，sector1 状态被修改为脏状态，此后将 KV2 新值放入 sector1，发现 sector1 已经没有空间了，sector1 的状态还会被修改为已满状态；</li>
+<li>执行修改 KV3 时，已经存在的 KV3 旧值被修改为已删除，sector1 状态已经为脏状态，无需再做修改。经过查找发现 KV3 的新值只能放到 sector2，放到 sector2 后将其修改为正在使用状态；</li>
+<li>执行删除 KV1 时，找到 KV1 的位置，将其修改为已删除状态，sector1 状态已经为脏状态，无需再做修改；</li>
+<li>执行添加 KV4 时，经过查找在 sector2 找到合适的存储位置，将其添加后，sector2 状态已经为正在使用状态，无需再做修改。</li>
+</ol>
+</div>
+<div class="section" id="kv5-kv6-gc-garbage-clear">
+<span id="gc"></span><h3>4.添加 KV5 KV6，触发 GC （Garbage Clear）<a class="headerlink" href="#kv5-kv6-gc-garbage-clear" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image420.png" />
+</div>
+</div></blockquote>
+<ul class="simple">
+<li>执行添加 KV5 操作，由于 KV5 体积较大，sector2 放不下，所以只能放在一个新扇区 sector3 上，添加后，修改 sector3 状态为正在使用 ;</li>
+<li>执行添加 KV6 操作，KV6 也只能放在 sector3 下，将其放入 sector 3 后，发现 sector3 空间已满，所以将其修改已满状态。执行完成后，发现整个 ENV 的 4 个扇区只有 1 个状态为空的扇区了，这个扇区如果再继续使用就没法再执行 GC 操作了，所以此时触发了 GC 请求；</li>
+<li>执行 GC 请求，EasyFlash 会找到所有被标记为已满并且为脏状态的扇区，并将其内部的 ENV 搬运至其他位置。就这样 sector1 上的 KV2 被搬运至了 sector2，腾空 sector1 后，又对其执行了格式化操作，这样整个 ENV 分区里又多了一个空状态的扇区。</li>
+</ul>
+</div>
+</div>
+<div class="section" id="boot-times">
+<h2>boot times测试<a class="headerlink" href="#boot-times" title="永久链接至标题"></a></h2>
+<div class="section" id="id6">
+<h3>1. 测试流程以及效果<a class="headerlink" href="#id6" title="永久链接至标题"></a></h3>
+<p>测试流程为：easyflash初始化 → 读boottimes → boottimes++ → 写boottimes，反复复位重启800次。</p>
+<ol class="arabic simple">
+<li>easyflash初始化</li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">uint32_t</span> <span class="n">timer_us</span><span class="p">;</span>
+
+<span class="n">timer_us</span> <span class="o">=</span> <span class="n">bl_timer_now_us</span><span class="p">();</span>
+<span class="n">easyflash_init</span><span class="p">();</span>
+<span class="n">timer_us</span> <span class="o">=</span> <span class="n">bl_timer_now_us</span><span class="p">()</span> <span class="o">-</span> <span class="n">timer_us</span><span class="p">;</span>
+<span class="n">printf</span><span class="p">(</span><span class="s2">&quot;easyflash init time us </span><span class="si">%ld</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">timer_us</span><span class="p">);</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li>读写boottimes</li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">static</span> <span class="n">void</span> <span class="n">__easyflash_boottimes_dump</span><span class="p">()</span>
+    <span class="p">{</span>
+            <span class="n">char</span>     <span class="n">times</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+            <span class="n">size_t</span>   <span class="n">env_len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="n">uint32_t</span> <span class="n">times_num</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="n">char</span>     <span class="n">env_set</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+
+            <span class="n">uint32_t</span> <span class="n">timer_us</span><span class="p">;</span>
+
+            <span class="n">timer_us</span> <span class="o">=</span> <span class="n">bl_timer_now_us</span><span class="p">();</span>
+            <span class="n">env_len</span>  <span class="o">=</span> <span class="n">ef_get_env_blob</span><span class="p">(</span><span class="n">EASYFLASH_BOOT_TIMES</span><span class="p">,</span> <span class="n">times</span><span class="p">,</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">times</span><span class="p">)</span> <span class="p">,</span> <span class="n">NULL</span><span class="p">);</span>
+            <span class="n">timer_us</span> <span class="o">=</span> <span class="n">bl_timer_now_us</span><span class="p">()</span> <span class="o">-</span> <span class="n">timer_us</span><span class="p">;</span>
+
+            <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;easyflash read boot_times us </span><span class="si">%ld</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">timer_us</span><span class="p">);</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">env_len</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">__easyflash_first_boottimes</span><span class="p">();</span>
+            <span class="k">return</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="n">times_num</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">times</span><span class="p">);</span>
+            <span class="n">sprintf</span><span class="p">(</span><span class="n">env_set</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%ld</span><span class="s2">&quot;</span><span class="p">,</span> <span class="o">++</span><span class="n">times_num</span><span class="p">);</span>
+
+            <span class="n">timer_us</span> <span class="o">=</span> <span class="n">bl_timer_now_us</span><span class="p">();</span>
+            <span class="n">ef_set_env_blob</span><span class="p">(</span><span class="n">EASYFLASH_BOOT_TIMES</span><span class="p">,</span> <span class="n">env_set</span><span class="p">,</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">env_set</span><span class="p">));</span>
+            <span class="n">timer_us</span> <span class="o">=</span> <span class="n">bl_timer_now_us</span><span class="p">()</span> <span class="o">-</span> <span class="n">timer_us</span><span class="p">;</span>
+
+            <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;easyflash write boot_times us </span><span class="si">%ld</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">timer_us</span><span class="p">);</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;The system now boot times </span><span class="si">%ld</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">times_num</span><span class="p">);</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+<ol class="arabic" start="3">
+<li><p class="first">测试结果如下图：</p>
+<blockquote>
+<div><div class="figure">
+<a class="reference internal image-reference" href="../../../_images/image5_easyflash4.png"><img alt="../../../_images/image5_easyflash4.png" src="../../../_images/image5_easyflash4.png" style="width: 900px; height: 450px;" /></a>
+</div>
+</div></blockquote>
+</li>
+</ol>
+<p>上一版本测试结果图</p>
+<blockquote>
+<div><div class="figure">
+<a class="reference internal image-reference" href="../../../_images/image5_easyflash.png"><img alt="../../../_images/image5_easyflash.png" src="../../../_images/image5_easyflash.png" style="width: 900px; height: 450px;" /></a>
+</div>
+</div></blockquote>
+<p>横坐标：boot times （单位：次数）</p>
+<p>纵坐标：时间（单位：us）</p>
+<p>红色线：easyflash 初始化耗时</p>
+<p>绿色线：easyflash 写耗时</p>
+<p>黄色线：读easyflash耗时</p>
+</div>
+<div class="section" id="id7">
+<h3>2. 测试分析<a class="headerlink" href="#id7" title="永久链接至标题"></a></h3>
+<ol class="arabic simple">
+<li>easyflash_init过程包含读和其他操作,故初始化时间与读时间相关。图中第一次出现尖峰现象说明此时easyflash在检查并格式化扇区，详见： <a class="reference internal" href="#id3">首次使用</a>。</li>
+<li>读过程分析：由于easyflash4每write一次kv（写KV详细过程见： <a class="reference internal" href="#kv">添加KV</a>），都会在old_kv地址后新增一个kv,再将old_kv标记为“delete”,所以每读一次kv，都需要遍历一遍kv，write次数越多，读耗时越长。</li>
+<li>写过程分析：写之前都需要read找到kv（修改KV详细过程见： <a class="reference internal" href="#id5">修改KV</a>），本次测试write在read之后，每read一次后easyflash会更新到cache，故write的时间并没有与read呈线性关系。</li>
+<li>图中可见，在boottimes在576次左右时，读写操作时间“初始化”了，同时write的时间出现尖峰，此时触发了GC（触发GC过程详见： <a class="reference internal" href="#gc">触发GC</a>），说明flash的大小已经快操作尽，只剩一个空闲sector，此后的set_env会触发gc，每次触发擦除一个sector，直至无dirty的sector存在。</li>
+</ol>
+</div>
+<div class="section" id="id8">
+<h3>3. 测试结果对比<a class="headerlink" href="#id8" title="永久链接至标题"></a></h3>
+<ol class="arabic simple">
+<li>easyflash4初次使用时，init耗时相较于上一版本有所提升，缩短约120000（us）。</li>
+<li>读写过程分析：4版本的NG模式操作效率比以前的模式高，充分利用剩余空闲区域，擦除次数及操作时间显著降低。</li>
+<li>由于修改了GC处理机制，现版本的GC处理分多次擦除，降低了单一时间的GC操作时间。</li>
+</ol>
+</div>
+<div class="section" id="id9">
+<h3>4. 代码修改<a class="headerlink" href="#id9" title="永久链接至标题"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/* default sector hdr gc_flag*/
+    #define DEFAULT_GC_FLAG                          0xFFFFFFFF
+
+    struct sector_hdr_data {
+struct {
+    uint8_t store[STORE_STATUS_TABLE_SIZE];  /**&lt; sector store status @see sector_store_status_t */
+    uint8_t dirty[DIRTY_STATUS_TABLE_SIZE];  /**&lt; sector dirty status @see sector_dirty_status_t */
+} status_table;
+uint32_t magic;                              /**&lt; magic word(`E`, `F`, `4`, `0`) */
+uint32_t combined;                           /**&lt; the combined next sector number, 0xFFFFFFFF: not combined */
+uint32_t reserved;
+uint32_t gc_flag;                            /**&lt; sector gc_flag 0xFFFFFFFF-NO GC  0-NEED GC */
+    };
+
+    /* sector hdr gc_flag */
+    static uint32_t sector_hdr_gc_flag = DEFAULT_GC_FLAG;
+
+    static bool read_hdr_gc(sector_meta_data_t sector, void *arg1, void *arg2){
+
+            ef_port_read(sector-&gt;addr+SECTOR_HDR_GC_FLAG_OFFSET, (uint32_t *)&amp;sector_hdr_gc_flag, sizeof(sector_hdr_gc_flag));
+            if(sector_hdr_gc_flag == DEFAULT_GC_FLAG){
+                return false;
+            }
+            else{
+                EF_DEBUG(&quot;Have sector to gc @0x%08x\r\n&quot;, sector-&gt;addr);
+                return true;
+            }
+    }
+
+    static bool write_hdr_gc(sector_meta_data_t sector, void *arg1, void *arg2){
+            uint32_t data = 0;
+
+            if (sector-&gt;check_ok &amp;&amp;
+               (sector-&gt;status.dirty == SECTOR_DIRTY_TRUE || sector-&gt;status.dirty == SECTOR_DIRTY_GC) &amp;&amp;
+                sector-&gt;status.store == SECTOR_STORE_FULL) {
+                EF_DEBUG(&quot;Write sector hdr gc flag @0x%08x\r\n&quot;, sector-&gt;addr);
+                ef_port_write(sector-&gt;addr+SECTOR_HDR_GC_FLAG_OFFSET, (uint32_t *)&amp;data, sizeof(data));
+            }
+
+            return false;
+    }
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

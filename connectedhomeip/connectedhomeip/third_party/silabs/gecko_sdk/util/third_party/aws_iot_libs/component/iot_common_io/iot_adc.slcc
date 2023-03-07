@@ -1,0 +1,56 @@
+id: iot_adc
+category: Third Party|Amazon FreeRTOS - AWS Libraries|Common I/O
+label: IoT ADC
+description: >
+  Silicon Labs' Implementation of Amazon Common I/O ADC API
+  Doc: https://docs.aws.amazon.com/freertos/latest/lib-ref/common-io/files.html
+package: amazon_platform
+quality: production
+instantiable:
+  prefix: inst
+provides:
+  - name: iot_adc
+    allow_multiple: true
+requires:
+  - name: freertos
+  - name: device_init
+  - name: emlib_core
+  - name: emlib_adc
+    condition: [device_has_adc]
+  - name: emlib_iadc
+    condition: [device_has_iadc]
+  - name: status
+  - name: common_io_validation_lib
+root_path: util/third_party/aws_iot_libs
+config_file:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_adc/config/iot_adc_cfg_{{instance}}.h
+    file_id: iot_adc_cfg
+
+source:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_adc/source/iot_adc_drv_sar.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_adc/source/iot_adc_drv_inc.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_adc/source/iot_adc_hal.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_adc/source/iot_adc_pinout_drv.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_adc/test/iot_adc_test.c
+    condition: ["aws_tests_defs"]
+
+include:
+  - path: libraries/abstractions/common_io/include
+    file_list:
+      - path: iot_adc.h
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_adc/include
+    file_list:
+      - path: iot_adc_cb.h
+      - path: iot_adc_desc.h
+      - path: iot_adc_drv_sar.h
+      - path: iot_adc_drv_inc.h
+      - path: iot_adc_drv.h
+      - path: iot_adc_pinout_drv.h
+
+template_file:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_adc/template/iot_adc_desc.c.jinja
+template_contribution:
+  - name: iot_adc_instances
+    value: "{{instance}}"
+validation_helper:
+  - path: script/iot_adc_validation.lua

@@ -1,0 +1,33 @@
+id: iot_tsensor
+category: Third Party|Amazon FreeRTOS - AWS Libraries|Common I/O
+label: IoT Temp. Sensor
+description: >
+  Silicon Labs' Implementation of Amazon Common I/O TempSensor API
+  Doc: https://docs.aws.amazon.com/freertos/latest/lib-ref/common-io/files.html
+package: amazon_platform
+quality: production
+provides:
+  - name: iot_tsensor
+requires:
+  - name: tempdrv
+  - name: freertos
+  - name: device_init
+  - name: status
+root_path: util/third_party/aws_iot_libs
+config_file:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_tsensor/config/iot_tsensor_cfg.h
+    file_id: iot_tsensor_cfg
+
+source:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_tsensor/source/iot_tsensor_drv.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_tsensor/source/iot_tsensor_hal.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_tsensor/test/iot_tsensor_test.c
+    condition: ["aws_tests_defs"]
+
+include:
+  - path: libraries/abstractions/common_io/include
+    file_list:
+      - path: iot_tsensor.h
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_tsensor/include
+    file_list:
+      - path: iot_tsensor_drv.h

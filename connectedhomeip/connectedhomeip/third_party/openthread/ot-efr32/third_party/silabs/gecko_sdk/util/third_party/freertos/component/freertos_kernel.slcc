@@ -1,0 +1,212 @@
+id: freertos
+label: FreeRTOS
+package: platform
+description: >
+  FreeRTOS kernel
+category: RTOS|FreeRTOS
+quality: production
+config_file:
+  - path: util/third_party/freertos/config/series0_1/FreeRTOSConfig.h
+    file_id: freertos_config
+    condition: [device_series_0]
+  - path: util/third_party/freertos/config/series0_1/FreeRTOSConfig.h
+    file_id: freertos_config
+    condition: [device_series_1]
+  - path: util/third_party/freertos/config/series2/FreeRTOSConfig.h
+    file_id: freertos_config
+    condition: [device_series_2]
+source:
+  - path: util/third_party/freertos/cmsis/Source/cmsis_os2.c
+  - path: util/third_party/freertos/kernel/croutine.c
+  - path: util/third_party/freertos/kernel/event_groups.c
+  - path: util/third_party/freertos/kernel/list.c
+  - path: util/third_party/freertos/kernel/queue.c
+  - path: util/third_party/freertos/kernel/stream_buffer.c
+  - path: util/third_party/freertos/kernel/tasks.c
+  - path: util/third_party/freertos/kernel/timers.c
+  - path: util/third_party/freertos/kernel/portable/SiliconLabs/tick_power_manager.c
+    condition: [power_manager]
+  - path: util/third_party/freertos/kernel/portable/IAR/ARM_CM0/port.c
+    condition:
+      - toolchain_iar
+      - cortexm0plus
+  - path: util/third_party/freertos/kernel/portable/IAR/ARM_CM0/portasm.s
+    condition:
+      - toolchain_iar
+      - cortexm0plus
+  - path: util/third_party/freertos/kernel/portable/IAR/ARM_CM3/port.c
+    condition:
+      - toolchain_iar
+      - cortexm3
+  - path: util/third_party/freertos/kernel/portable/IAR/ARM_CM3/portasm.s
+    condition:
+      - toolchain_iar
+      - cortexm3
+  - path: util/third_party/freertos/kernel/portable/IAR/ARM_CM4F/port.c
+    condition:
+      - toolchain_iar
+      - cortexm4
+  - path: util/third_party/freertos/kernel/portable/IAR/ARM_CM4F/portasm.s
+    condition:
+      - toolchain_iar
+      - cortexm4
+  - path: util/third_party/freertos/kernel/portable/IAR/ARM_CM33_NTZ/non_secure/port.c
+    condition:
+      - toolchain_iar
+      - cortexm33
+  - path: util/third_party/freertos/kernel/portable/IAR/ARM_CM33_NTZ/non_secure/portasm.s
+    condition:
+      - toolchain_iar
+      - cortexm33
+  - path: util/third_party/freertos/kernel/portable/GCC/ARM_CM0/port.c
+    condition:
+      - toolchain_gcc
+      - cortexm0plus
+  - path: util/third_party/freertos/kernel/portable/GCC/ARM_CM3/port.c
+    condition:
+      - toolchain_gcc
+      - cortexm3
+  - path: util/third_party/freertos/kernel/portable/GCC/ARM_CM4F/port.c
+    condition:
+      - toolchain_gcc
+      - cortexm4
+  - path: util/third_party/freertos/kernel/portable/GCC/ARM_CM33_NTZ/non_secure/port.c
+    condition:
+      - toolchain_gcc
+      - cortexm33
+  - path: util/third_party/freertos/kernel/portable/GCC/ARM_CM33_NTZ/non_secure/portasm.c
+    condition:
+      - toolchain_gcc
+      - cortexm33
+include:
+  - path: util/third_party/freertos/cmsis/Include
+    file_list:
+      - path: freertos_os2.h
+      - path: freertos_mpool.h
+  - path: util/third_party/freertos/kernel/include
+    file_list:
+      - path: atomic.h
+      - path: croutine.h
+      - path: deprecated_definitions.h
+      - path: event_groups.h
+      - path: FreeRTOS.h
+      - path: list.h
+      - path: message_buffer.h
+      - path: mpu_prototypes.h
+      - path: mpu_wrappers.h
+      - path: portable.h
+      - path: projdefs.h
+      - path: queue.h
+      - path: semphr.h
+      - path: stack_macros.h
+      - path: StackMacros.h
+      - path: stream_buffer.h
+      - path: task.h
+      - path: timers.h
+  - path: util/third_party/freertos/kernel/portable/IAR/ARM_CM0
+    file_list:
+      - path: portmacro.h
+    condition:
+      - toolchain_iar
+      - cortexm0plus
+  - path: util/third_party/freertos/kernel/portable/GCC/ARM_CM0
+    file_list:
+      - path: portmacro.h
+    condition:
+      - toolchain_gcc
+      - cortexm0plus
+  - path: util/third_party/freertos/kernel/portable/RVDS/ARM_CM0
+    file_list:
+      - path: portmacro.h
+    condition:
+      - toolchain_arm
+      - cortexm0plus
+  - path: util/third_party/freertos/kernel/portable/IAR/ARM_CM3
+    file_list:
+      - path: portmacro.h
+    condition:
+      - toolchain_iar
+      - cortexm3
+  - path: util/third_party/freertos/kernel/portable/GCC/ARM_CM3
+    file_list:
+      - path: portmacro.h
+    condition:
+      - toolchain_gcc
+      - cortexm3
+  - path: util/third_party/freertos/kernel/portable/RVDS/ARM_CM3
+    file_list:
+      - path: portmacro.h
+    condition:
+      - toolchain_arm
+      - cortexm3
+  - path: util/third_party/freertos/kernel/portable/IAR/ARM_CM4F
+    file_list:
+      - path: portmacro.h
+    condition:
+      - toolchain_iar
+      - cortexm4
+  - path: util/third_party/freertos/kernel/portable/GCC/ARM_CM4F
+    file_list:
+      - path: portmacro.h
+    condition:
+      - toolchain_gcc
+      - cortexm4
+  - path: util/third_party/freertos/kernel/portable/RVDS/ARM_CM4F
+    file_list:
+      - path: portmacro.h
+    condition:
+      - toolchain_arm
+      - cortexm4
+  - path: util/third_party/freertos/kernel/portable/IAR/ARM_CM33_NTZ/non_secure
+    file_list:
+      - path: portmacro.h
+      - path: portasm.h
+    condition:
+      - toolchain_iar
+      - cortexm33
+  - path: util/third_party/freertos/kernel/portable/GCC/ARM_CM33_NTZ/non_secure
+    file_list:
+      - path: portmacro.h
+      - path: portasm.h
+    condition:
+      - toolchain_gcc
+      - cortexm33
+provides:
+  - name: freertos
+  - name: kernel
+  - name: cmsis_rtos2
+  - name: cmsis_rtos2_port
+requires:
+  - name: cmsis_core
+  - name: cmsis_common
+  - name: cmsis_rtos2_headers
+  - name: cmsis_rtos2_tick
+  - name: cmsis_rtos2_init
+  - name: freertos_heap
+  - name: sleeptimer
+    condition: [power_manager]
+  - name: component_catalog
+    condition: [power_manager]
+recommends:
+  - id: freertos_heap_4
+  - id: device_init
+  - id: device_init_nvic
+validation_helper:
+  - path: util/third_party/freertos/script/freertos_validation.lua
+template_contribution:
+  - name: component_catalog
+    value: freertos_kernel
+  - name: component_catalog
+    value: kernel
+  - name: rte_components
+    value: RTE_RTOS_FreeRTOS_CORE
+    priority: -9000
+  - name: rte_components
+    value: RTE_RTOS_FreeRTOS_CONFIG_RTOS2
+  - name: rte_components
+    value: RTE_RTOS_FreeRTOS_COROUTINE
+  - name: rte_components
+    value: RTE_RTOS_FreeRTOS_EVENTGROUPS
+  - name: rte_components
+    value: RTE_RTOS_FreeRTOS_TIMERS
+

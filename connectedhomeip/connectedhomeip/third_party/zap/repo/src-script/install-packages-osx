@@ -1,0 +1,5 @@
+#!/bin/bash
+#
+# Packages you have to install on macOS to get source build to compile via npm install.
+#
+brew install pkg-config cairo pango libpng jpeg giflib librsvg

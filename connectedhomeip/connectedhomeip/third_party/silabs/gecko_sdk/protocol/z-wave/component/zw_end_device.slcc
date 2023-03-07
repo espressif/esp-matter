@@ -1,0 +1,26 @@
+id: zw_end_device
+label: Z-Wave End Device
+category: Z-Wave
+description: Z-Wave End Device Component
+package: Z-Wave
+quality: production
+ui_hints:
+  visibility: never
+define:
+  - name: ZW_SLAVE
+  - name: ZW_SLAVE_ROUTING
+  - name: ZW_SECURITY_PROTOCOL
+  - name: NVM3_DEFAULT_NVM_SIZE
+    value: 36864
+    condition: [device_series_1]
+  - name: NVM3_DEFAULT_NVM_SIZE
+    value: 32768
+    condition: [device_series_2]
+
+requires:
+  - name: mbedtls_sha1
+    condition: [device_series_1]
+  - name: psa_crypto_sha1
+    condition: [device_series_2]
+provides:
+  - name: zw_end_device

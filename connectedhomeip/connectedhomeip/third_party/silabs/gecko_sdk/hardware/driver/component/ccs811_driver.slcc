@@ -1,0 +1,29 @@
+id: ccs811_driver
+package: platform
+label: CCS811 - Gas/Air Quality Sensor
+description: >
+  Driver for the Cambridge CMOS Sensors CCS811 gas and indoor air quality sensor
+category: Platform|Board Drivers
+quality: production
+root_path: hardware/driver/ccs811
+provides:
+  - name: ccs811_driver
+requires:
+  - name: i2cspm_core
+  - name: sleeptimer
+  - name: status
+include:
+  - path: inc
+    file_list:
+      - path: sl_ccs811.h
+  - path: firmware
+    file_list:
+      - path: sl_ccs811_fw_app_1v0p0.h
+source:
+  - path: src/sl_ccs811.c
+config_file:
+  - path: config/sl_ccs811_config.h
+    file_id: ccs811_config
+documentation:
+    docset: gecko-platform
+    document: hardware-driver/api/group-ccs811

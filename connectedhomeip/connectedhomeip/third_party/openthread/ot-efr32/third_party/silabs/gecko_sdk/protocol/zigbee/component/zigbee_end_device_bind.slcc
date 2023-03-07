@@ -1,0 +1,28 @@
+id: zigbee_end_device_bind
+label: End device bind
+package: Zigbee
+category: Zigbee|Stack
+quality: production
+
+description: Provides support on a coordinator device to answer ZDO End Device Bind requests and respond to them.  End Devices do not need this library.
+
+provides:
+  - name: zigbee_end_device_bind
+
+requires:
+  - name: zigbee_end_device_bind_implementation
+  - name: zigbee_end_device_bind_library
+    condition:
+     - zigbee_force_libraries
+
+recommends:
+  - id: zigbee_end_device_bind_source
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_end_device_bind
+
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/end-device-bind

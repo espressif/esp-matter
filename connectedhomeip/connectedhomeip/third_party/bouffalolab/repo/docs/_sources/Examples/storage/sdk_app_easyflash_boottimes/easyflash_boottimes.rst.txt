@@ -1,0 +1,213 @@
+.. _easyflash_boottimes-index:
+
+Easyflash4 boot times
+=======================
+
+总览
+------
+
+本示例主要介绍Easyflash4 启动读写测试相关
+
+算法实现
+----------------
+
+.. _首次使用:
+
+1.首次使用
+~~~~~~~~~~
+
+- 假定 ENV 分区里有 4 个扇区，以下将按照操作 ENV 的方式，逐一举例讲解不同操作下，对应的 Flash 状态及数据变化。
+
+    .. figure:: imgs/image1.png
+       :alt: 
+
+- 首次使用时，EasyFlash 会检查各个扇区的 header，如果不符合规定的格式将执行全部格式化操作，格式化后，每个扇区的顶部将被存入 header ，负责记录当前扇区的状态、魔数等信息。格式化的初始化状态为空状态。
+
+.. _添加KV:
+
+2.添加 KV1、KV2、KV3
+~~~~~~~~~~~~~~~~~~~~~
+
+    .. figure:: imgs/image2.png
+       :alt: 
+
+-  在执行添加操作前，会先检索合适地址来存放即将添加的新 KV，这里检索策略主要是：
+
+1) 确定当前选择的扇区剩余容量充足
+2) 优选选择正在使用状态的扇区，最后使用空状态扇区
+3) 检查新 KV 是否有同名的 KV 存在，存在还需要额外执行删除旧值的动作 
+
+- 通过上图可以看出， KV1、KV2 及 KV3 已经被放入 sector1 ，添加后，扇区状态也被修改为正在使用。
+
+.. _修改KV:
+
+3.修改 KV2 KV3，删除 KV1，添加 KV4
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    .. figure:: imgs/image3.png
+       :alt: 
+
+- 修改 ENV 时，旧的 ENV 将被删除，扇区的状态也将被修改为脏状态，然后再执行新增 ENV 的操作。
+
+1) 执行修改 KV2 时，已经存在的 KV2 旧值被修改为已删除，sector1 状态被修改为脏状态，此后将 KV2 新值放入 sector1，发现 sector1 已经没有空间了，sector1 的状态还会被修改为已满状态；
+2) 执行修改 KV3 时，已经存在的 KV3 旧值被修改为已删除，sector1 状态已经为脏状态，无需再做修改。经过查找发现 KV3 的新值只能放到 sector2，放到 sector2 后将其修改为正在使用状态；
+3) 执行删除 KV1 时，找到 KV1 的位置，将其修改为已删除状态，sector1 状态已经为脏状态，无需再做修改；
+4) 执行添加 KV4 时，经过查找在 sector2 找到合适的存储位置，将其添加后，sector2 状态已经为正在使用状态，无需再做修改。
+
+.. _触发GC:
+
+4.添加 KV5 KV6，触发 GC （Garbage Clear）
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    .. figure:: imgs/image4.png
+       :alt: 
+
+- 执行添加 KV5 操作，由于 KV5 体积较大，sector2 放不下，所以只能放在一个新扇区 sector3 上，添加后，修改 sector3 状态为正在使用 ;
+- 执行添加 KV6 操作，KV6 也只能放在 sector3 下，将其放入 sector 3 后，发现 sector3 空间已满，所以将其修改已满状态。执行完成后，发现整个 ENV 的 4 个扇区只有 1 个状态为空的扇区了，这个扇区如果再继续使用就没法再执行 GC 操作了，所以此时触发了 GC 请求； 
+- 执行 GC 请求，EasyFlash 会找到所有被标记为已满并且为脏状态的扇区，并将其内部的 ENV 搬运至其他位置。就这样 sector1 上的 KV2 被搬运至了 sector2，腾空 sector1 后，又对其执行了格式化操作，这样整个 ENV 分区里又多了一个空状态的扇区。
+
+boot times测试
+-------------------------
+
+1. 测试流程以及效果
+~~~~~~~~~~~~~~~~~~~~
+
+测试流程为：easyflash初始化 → 读boottimes → boottimes++ → 写boottimes，反复复位重启800次。
+
+1) easyflash初始化
+
+::
+
+    uint32_t timer_us;
+
+    timer_us = bl_timer_now_us();
+    easyflash_init();
+    timer_us = bl_timer_now_us() - timer_us;
+    printf("easyflash init time us %ld\r\n", timer_us);
+
+2) 读写boottimes
+
+::
+
+    static void __easyflash_boottimes_dump()
+	{
+		char     times[12] = {0};
+		size_t   env_len = 0;
+		uint32_t times_num = 0;
+		char     env_set[12] = {0};
+
+		uint32_t timer_us;
+
+		timer_us = bl_timer_now_us();
+		env_len  = ef_get_env_blob(EASYFLASH_BOOT_TIMES, times, sizeof(times) , NULL);
+		timer_us = bl_timer_now_us() - timer_us;
+		
+		printf("easyflash read boot_times us %ld\r\n", timer_us);
+
+		if (env_len == 0) {
+		__easyflash_first_boottimes();
+		return;
+		}
+		times_num = atoi(times);
+		sprintf(env_set, "%ld", ++times_num);
+		
+		timer_us = bl_timer_now_us();
+		ef_set_env_blob(EASYFLASH_BOOT_TIMES, env_set, sizeof(env_set));
+		timer_us = bl_timer_now_us() - timer_us;
+
+		printf("easyflash write boot_times us %ld\r\n", timer_us);
+		printf("The system now boot times %ld\r\n", times_num);
+	}
+
+3) 测试结果如下图：
+
+    .. figure:: imgs/image5_easyflash4.png
+       :width: 900
+       :height: 450
+
+上一版本测试结果图
+
+    .. figure:: imgs/image5_easyflash.png
+       :width: 900
+       :height: 450 
+
+横坐标：boot times （单位：次数）      
+
+纵坐标：时间（单位：us）
+
+红色线：easyflash 初始化耗时
+
+绿色线：easyflash 写耗时
+
+黄色线：读easyflash耗时
+
+2. 测试分析
+~~~~~~~~~~~~~
+
+1) easyflash_init过程包含读和其他操作,故初始化时间与读时间相关。图中第一次出现尖峰现象说明此时easyflash在检查并格式化扇区，详见： 首次使用_。
+
+2) 读过程分析：由于easyflash4每write一次kv（写KV详细过程见： 添加KV_），都会在old_kv地址后新增一个kv,再将old_kv标记为“delete”,所以每读一次kv，都需要遍历一遍kv，write次数越多，读耗时越长。
+
+3) 写过程分析：写之前都需要read找到kv（修改KV详细过程见： 修改KV_），本次测试write在read之后，每read一次后easyflash会更新到cache，故write的时间并没有与read呈线性关系。
+
+4) 图中可见，在boottimes在576次左右时，读写操作时间“初始化”了，同时write的时间出现尖峰，此时触发了GC（触发GC过程详见： 触发GC_），说明flash的大小已经快操作尽，只剩一个空闲sector，此后的set_env会触发gc，每次触发擦除一个sector，直至无dirty的sector存在。
+
+3. 测试结果对比
+~~~~~~~~~~~~~
+
+1) easyflash4初次使用时，init耗时相较于上一版本有所提升，缩短约120000（us）。
+
+2) 读写过程分析：4版本的NG模式操作效率比以前的模式高，充分利用剩余空闲区域，擦除次数及操作时间显著降低。
+
+3) 由于修改了GC处理机制，现版本的GC处理分多次擦除，降低了单一时间的GC操作时间。
+
+4. 代码修改
+~~~~~~~~~~~~~
+
+::
+
+    /* default sector hdr gc_flag*/
+	#define DEFAULT_GC_FLAG                          0xFFFFFFFF
+	
+	struct sector_hdr_data {
+    struct {
+        uint8_t store[STORE_STATUS_TABLE_SIZE];  /**< sector store status @see sector_store_status_t */
+        uint8_t dirty[DIRTY_STATUS_TABLE_SIZE];  /**< sector dirty status @see sector_dirty_status_t */
+    } status_table;
+    uint32_t magic;                              /**< magic word(`E`, `F`, `4`, `0`) */
+    uint32_t combined;                           /**< the combined next sector number, 0xFFFFFFFF: not combined */
+    uint32_t reserved;
+    uint32_t gc_flag;                            /**< sector gc_flag 0xFFFFFFFF-NO GC  0-NEED GC */
+	};
+	
+	/* sector hdr gc_flag */
+	static uint32_t sector_hdr_gc_flag = DEFAULT_GC_FLAG;
+	
+	static bool read_hdr_gc(sector_meta_data_t sector, void *arg1, void *arg2){
+
+		ef_port_read(sector->addr+SECTOR_HDR_GC_FLAG_OFFSET, (uint32_t *)&sector_hdr_gc_flag, sizeof(sector_hdr_gc_flag));
+		if(sector_hdr_gc_flag == DEFAULT_GC_FLAG){
+		    return false;
+		}
+		else{
+		    EF_DEBUG("Have sector to gc @0x%08x\r\n", sector->addr);
+		    return true;
+		}
+	}
+
+	static bool write_hdr_gc(sector_meta_data_t sector, void *arg1, void *arg2){
+		uint32_t data = 0;
+
+		if (sector->check_ok && 
+		   (sector->status.dirty == SECTOR_DIRTY_TRUE || sector->status.dirty == SECTOR_DIRTY_GC) &&
+		    sector->status.store == SECTOR_STORE_FULL) {
+		    EF_DEBUG("Write sector hdr gc flag @0x%08x\r\n", sector->addr);
+		    ef_port_write(sector->addr+SECTOR_HDR_GC_FLAG_OFFSET, (uint32_t *)&data, sizeof(data));
+		}
+
+		return false;
+	}
+
+
+
+

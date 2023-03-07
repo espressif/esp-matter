@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="ASCII"?>
+<model:MDescriptors xmlns:model="http://www.silabs.com/ss/Studio.ecore">
+  <descriptors name="bootloader-apploader-nonsecure" label="Bootloader - SoC Bluetooth AppLoader OTA DFU Non-Secure part of Bootloader using TrustZone" description="TrustZone is used to split into a Secure and Non-Secure bootloader. This is the non-secure part of the bootloader. The secure part of the bootloader, which contains the core functionalities needs to be built separately and used together with the non-secure part of the bootloader.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-apploader.bootloader-apploader-nonsecure.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-apploader/bootloader-apploader-nonsecure.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-apploader/readme.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd2703a brd4108a brd4171a brd4176a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4191a brd4195a brd4196a brd4197a brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a brd4316a brd4317a brd4319a brd4330a brd4331a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm22.* .*efr32bg21.* .*efr32bg22.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mr21.* .*mgm21.* .*mgm22.* .*mgm24.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="BETA"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="bootloader-apploader-secure" label="Bootloader - SoC Bluetooth AppLoader OTA DFU Secure part of Bootloader using TrustZone" description="TrustZone is used to split into a Secure and Non-Secure bootloader. This is the secure part of the bootloader. The non-secure part of the bootloader, which contains the communication interfaces needs to be built separately and used together with the secure part of the bootloader.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-apploader.bootloader-apploader-secure.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-apploader/bootloader-apploader-secure.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-apploader/readme.md"/>
+    <properties key="boardCompatibility" value="brd2600a brd2601a brd2601b brd2603a brd2703a brd4108a brd4171a brd4176a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4191a brd4195a brd4196a brd4197a brd4204a brd4204b brd4204c brd4204d brd4205a brd4205b brd4210a brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a brd4316a brd4317a brd4319a brd4328a brd4330a brd4331a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm22.* .*efm32pg22.* .*efm32pg23.* .*efr32bg21.* .*efr32bg22.* .*efr32fg22.* .*efr32fg23.* .*efr32fg25.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mr21.* .*efr32zg23.* .*fgm23.* .*mgm21.* .*mgm22.* .*mgm24.* .*zgm23.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="BETA"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="bootloader-spi-ezsp-nonsecure" label="Bootloader - NCP EZSP SPI Non-Secure part of Bootloader using TrustZone" description="TrustZone is used to split into a Secure and Non-Secure bootloader. This is the non-secure part of the bootloader. The secure part of the bootloader, which contains the core functionalities needs to be built separately and used together with the non-secure part of the bootloader.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-spi-ezsp.bootloader-spi-ezsp-nonsecure.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-spi-ezsp/bootloader-spi-ezsp-nonsecure.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-spi-ezsp/readme.md"/>
+    <properties key="boardCompatibility" value="brd2503a brd2601a brd2601b brd2603a brd2703a brd4171a brd4176a brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4191a brd4195a brd4196a brd4197a brd4204a brd4204b brd4204c brd4204d brd4205a brd4205b brd4210a brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4308a brd4308b brd4308c brd4308d brd4310a brd4311a brd4311b brd4312a brd4316a brd4317a brd4319a brd4328a brd4330a brd4331a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm22.* .*efm32pg22.* .*efm32pg23.* .*efr32bg21.* .*efr32bg22.* .*efr32fg22.* .*efr32fg23.* .*efr32fg25.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mr21.* .*efr32zg23.* .*fgm23.* .*mgm21.* .*mgm22.* .*mgm24.* .*zgm23.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="BETA"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|NCP MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="bootloader-spi-ezsp-secure" label="Bootloader - NCP EZSP SPI Secure part of Bootloader using TrustZone" description="TrustZone is used to split into a Secure and Non-Secure bootloader. This is the secure part of the bootloader. The non-secure part of the bootloader, which contains the communication interfaces needs to be built separately and used together with the secure part of the bootloader.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-spi-ezsp.bootloader-spi-ezsp-secure.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-spi-ezsp/bootloader-spi-ezsp-secure.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-spi-ezsp/readme.md"/>
+    <properties key="boardCompatibility" value="brd2503a brd2601a brd2601b brd2603a brd4171a brd4176a brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4195a brd4196a brd4197a brd4204a brd4204b brd4204c brd4204d brd4205a brd4205b brd4210a brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4308a brd4308b brd4308c brd4308d brd4310a brd4311a brd4311b brd4312a brd4316a brd4317a brd4319a brd4328a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm22.* .*efm32pg22.* .*efm32pg23.* .*efr32bg22.* .*efr32fg23.* .*efr32fg25.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mr21.* .*efr32zg23.* .*fgm23.* .*mgm21.* .*mgm22.* .*mgm24.* .*zgm23.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="BETA"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|NCP MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="bootloader-uart-bgapi-nonsecure" label="Bootloader - NCP BGAPI UART DFU Non-Secure part of Bootloader using TrustZone" description="TrustZone is used to split into a Secure and Non-Secure bootloader. This is the non-secure part of the bootloader. The secure part of the bootloader, which contains the core functionalities needs to be built separately and used together with the non-secure part of the bootloader.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-uart-bgapi.bootloader-uart-bgapi-nonsecure.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-uart-bgapi/bootloader-uart-bgapi-nonsecure.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-uart-bgapi/readme.md"/>
+    <properties key="boardCompatibility" value="brd2503a brd2504a brd2600a brd2601a brd2601b brd2603a brd2703a brd4108a brd4171a brd4176a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4191a brd4195a brd4196a brd4197a brd4204a brd4204b brd4204c brd4204d brd4205a brd4205b brd4210a brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a brd4316a brd4317a brd4319a brd4328a brd4330a brd4331a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm22.* .*efm32pg22.* .*efm32pg23.* .*efr32bg21.* .*efr32bg22.* .*efr32fg22.* .*efr32fg23.* .*efr32fg25.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mr21.* .*efr32zg23.* .*fgm23.* .*mgm21.* .*mgm22.* .*mgm24.* .*zgm23.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="BETA"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|NCP MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="bootloader-uart-bgapi-secure" label="Bootloader - NCP BGAPI UART DFU Secure part of Bootloader using TrustZone" description="TrustZone is used to split into a Secure and Non-Secure bootloader. This is the secure part of the bootloader. The non-secure part of the bootloader, which contains the communication interfaces needs to be built separately and used together with the secure part of the bootloader.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-uart-bgapi.bootloader-uart-bgapi-secure.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-uart-bgapi/bootloader-uart-bgapi-secure.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-uart-bgapi/readme.md"/>
+    <properties key="boardCompatibility" value="brd2503a brd2504a brd2600a brd2601a brd2601b brd2603a brd2703a brd4108a brd4171a brd4176a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4191a brd4195a brd4196a brd4197a brd4204a brd4204b brd4204c brd4204d brd4205a brd4205b brd4210a brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a brd4316a brd4317a brd4319a brd4328a brd4330a brd4331a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm22.* .*efm32pg22.* .*efm32pg23.* .*efr32bg21.* .*efr32bg22.* .*efr32fg22.* .*efr32fg23.* .*efr32fg25.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mr21.* .*efr32zg23.* .*fgm23.* .*mgm21.* .*mgm22.* .*mgm24.* .*zgm23.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="BETA"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|NCP MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="bootloader-uart-xmodem-nonsecure" label="Bootloader - NCP UART XMODEM Non-Secure part of Bootloader using TrustZone" description="TrustZone is used to split into a Secure and Non-Secure bootloader. This is the non-secure part of the bootloader. The secure part of the bootloader, which contains the core functionalities needs to be built separately and used together with the non-secure part of the bootloader.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-uart-xmodem.bootloader-uart-xmodem-nonsecure.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-uart-xmodem/bootloader-uart-xmodem-nonsecure.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-uart-xmodem/readme.md"/>
+    <properties key="boardCompatibility" value="brd2503a brd2504a brd2600a brd2601a brd2601b brd2603a brd2703a brd4108a brd4171a brd4176a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4191a brd4195a brd4196a brd4197a brd4204a brd4204b brd4204c brd4204d brd4205a brd4205b brd4210a brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a brd4316a brd4317a brd4319a brd4328a brd4330a brd4331a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm22.* .*efm32pg22.* .*efm32pg23.* .*efr32bg21.* .*efr32bg22.* .*efr32fg22.* .*efr32fg23.* .*efr32fg25.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mr21.* .*efr32zg23.* .*fgm23.* .*mgm21.* .*mgm22.* .*mgm24.* .*zgm23.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="BETA"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|NCP MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="bootloader-uart-xmodem-secure" label="Bootloader - NCP UART XMODEM Secure part of Bootloader using TrustZone" description="TrustZone is used to split into a Secure and Non-Secure bootloader. This is the secure part of the bootloader. The non-secure part of the bootloader, which contains the communication interfaces needs to be built separately and used together with the secure part of the bootloader.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="platform.bootloader.sample-apps.bootloader-uart-xmodem.bootloader-uart-xmodem-secure.slcp"/>
+    <properties key="projectFilePaths" value="sample-apps/bootloader-uart-xmodem/bootloader-uart-xmodem-secure.slcp"/>
+    <properties key="readmeFiles" value="sample-apps/bootloader-uart-xmodem/readme.md"/>
+    <properties key="boardCompatibility" value="brd2503a brd2504a brd2600a brd2601a brd2601b brd2603a brd2703a brd4108a brd4171a brd4176a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4191a brd4195a brd4196a brd4197a brd4204a brd4204b brd4204c brd4204d brd4205a brd4205b brd4210a brd4263a brd4263b brd4263c brd4264a brd4264b brd4264c brd4265a brd4265b brd4270a brd4270b brd4271a brd4272a brd4273a brd4274a brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a brd4316a brd4317a brd4319a brd4328a brd4330a brd4331a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm22.* .*efm32pg22.* .*efm32pg23.* .*efr32bg21.* .*efr32bg22.* .*efr32fg22.* .*efr32fg23.* .*efr32fg25.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mr21.* .*efr32zg23.* .*fgm23.* .*mgm21.* .*mgm22.* .*mgm24.* .*zgm23.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|Bootloader"/>
+    <properties key="quality" value="BETA"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|NCP MCU|Bootloader Project\ Difficulty|Advanced"/>
+  </descriptors>
+</model:MDescriptors>

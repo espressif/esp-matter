@@ -1,0 +1,43 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+{
+  "psa_framework_version": 1.0,
+  "name": "TFM_IRQ_MT7933",
+  "type": "APPLICATION-ROT",
+  "priority": "NORMAL",
+  "entry_point": "tfm_irq_mt7933_init",
+  "stack_size": "0x0400",
+  "mmio_regions": [
+  ],
+  "secure_functions": [
+  ],
+  "irqs": [
+    {
+      "source": "DEVAPC_INFRA_AON_SECURE_VIO_IRQn",
+      "signal": "SPM_CORE_DEVAPC_INFRA_AON_SECURE_VIO_IRQn",
+      "tfm_irq_priority": 64,
+    },
+    {
+      "source": "DEVAPC_AUD_BUS_SECURE_VIO_IRQn",
+      "signal": "SPM_CORE_DEVAPC_AUD_BUS_SECURE_VIO_IRQn",
+      "tfm_irq_priority": 64,
+    },
+    {
+      "source": "ASIC_MPU_SECURE_VIO_IRQn",
+      "signal": "SPM_CORE_ASIC_MPU_SECURE_VIO_IRQn",
+      "tfm_irq_priority": 64,
+    },
+    {
+      "source": "ASIC_MPU_PSRAM_SECURE_VIO_IRQn",
+      "signal": "SPM_CORE_ASIC_MPU_PSRAM_SECURE_VIO_IRQn",
+      "tfm_irq_priority": 64,
+    }
+  ],
+  "services": [
+  ]
+}

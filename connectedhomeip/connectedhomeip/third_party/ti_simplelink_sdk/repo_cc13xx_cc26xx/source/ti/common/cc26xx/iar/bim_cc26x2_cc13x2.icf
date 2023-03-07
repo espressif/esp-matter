@@ -1,0 +1,198 @@
+/******************************************************************************
+
+ @file  bim_cc26x2_cc13x2.icf
+
+ @brief IAR ARM Linker Configuration File - BLE Application
+
+        Imported Symbols
+        Note: Linker defines are located in the IAR IDE project using
+        --config_def in Options->Linker->Extra Options.
+
+        CCxxxx:            Device Name (e.g. DeviceFamily_CC13X2)
+
+        Exported Symbols
+        Note: Can be used as externs in C code.
+
+        STACK_TOP: Location of the top of RAM.
+
+ Group: WCS, BTS
+ Target Device: cc13xx_cc26xx
+
+ ******************************************************************************
+ 
+ Copyright (c) 2013-2022, Texas Instruments Incorporated
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+
+ *  Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+
+ *  Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+
+ *  Neither the name of Texas Instruments Incorporated nor the names of
+    its contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ ******************************************************************************
+ 
+ 
+ *****************************************************************************/
+
+////////////////////////////////////////////////////////////////////////////////
+// Memory Sizes
+////////////////////////////////////////////////////////////////////////////////
+
+define symbol FLASH_BASE            = 0x00000000;
+define symbol RAM_BASE              = 0x20000000;
+define symbol ROM_BASE              = 0x10000000;
+
+
+define symbol RAM_SIZE            = 0x00014000; // 80K
+define symbol FLASH_SIZE          = 0x00058000; // 352K
+define symbol ROM_SIZE            = 0x00040000; // 256K
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Memory Definitions
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// RAM
+//
+
+define symbol RESERVED_RAM_SIZE = 0x00000EB3;
+define symbol RAM_START         = RAM_BASE + 0x0000012C + RESERVED_RAM_SIZE; // PG 2.0 & PG2.1 Agama RAM_START
+define symbol RAM_END           = RAM_BASE+RAM_SIZE-1;
+
+////////////////////////////////////////////////////////////////////////////////
+// Flash
+//
+define symbol WORD_SIZE             = 4;
+
+define symbol PAGE_SIZE           = 0x2000;
+
+export symbol PAGE_SIZE;
+
+if (isdefinedsymbol(PAGE_ALIGN))
+{
+  define symbol FLASH_MEM_ALIGN     = PAGE_SIZE;
+}
+else
+{
+  define symbol FLASH_MEM_ALIGN     = WORD_SIZE;
+}
+
+define symbol FLASH_START           = FLASH_BASE;
+
+define symbol PAGE_MASK           = 0xFFFFE000;
+
+// BIM is allocated at flash sector.
+define symbol FLASH_PAGE_BIMSTART   = FLASH_BASE + FLASH_SIZE - PAGE_SIZE;
+define symbol FLASH_PAGE_BIMEND     = FLASH_BASE + FLASH_SIZE; //0x0001FFFF;
+
+
+// leaving 4 bytes of buffer between CCFG and veify function pointer 
+define symbol FLASH_FNPTR_START    = 0x00057fa0; 
+define symbol FLASH_FNPTR_END      = 0x00057fa3;
+
+//storing cert element in fixed flash region,
+//length of region is size of cert_element_t 
+define symbol CERT_END             = FLASH_FNPTR_START - 1;
+define symbol CERT_SIZE            = 0x4C;        // For version 1 ECDSA-P256
+define symbol CERT_START           = CERT_END - CERT_SIZE + 1;
+
+////////////////////////////////////////////////////////////////////////////////
+// Stack
+//
+
+define symbol STACK_SIZE           = 0x400;
+define symbol STACK_START          = RAM_END;
+define symbol STACK_END            = STACK_START - STACK_SIZE;
+define block CSTACK with alignment = 8, size = STACK_SIZE { section .stack };
+
+define symbol STACK_TOP            = RAM_END + 1;
+export symbol STACK_TOP;
+
+////////////////////////////////////////////////////////////////////////////////
+// Flash Interrupt Vector Table
+//
+
+define symbol INTVEC_NUM_ENTRIES   = 50 + 1; // first entry is stack location
+define symbol INTVEC_SIZE          = INTVEC_NUM_ENTRIES + 4;
+
+////////////////////////////////////////////////////////////////////////////////
+// Memory Regions
+////////////////////////////////////////////////////////////////////////////////
+
+define memory mem with size = 4G;
+
+define region RAM                  = mem:[from RAM_START to RAM_END];
+
+define region BIM                  = mem:[from FLASH_PAGE_BIMSTART
+                                       to   FLASH_PAGE_BIMEND];
+
+define region FLASH_FN_PTR         = mem:[from FLASH_FNPTR_START 
+                                       to   FLASH_FNPTR_END];
+            
+define region CERT_ELEMENT         = mem:[from CERT_START 
+                                          to CERT_END];
+
+////////////////////////////////////////////////////////////////////////////////
+// Memory Placement
+////////////////////////////////////////////////////////////////////////////////
+
+// Function pointer table address
+place at start of FLASH_FN_PTR   { readonly section .fnPtr };
+keep                             { readonly section .fnPtr };
+
+define block CERT                { ro section .cert_element};
+keep                             { ro section .cert_element};
+place at start of CERT_ELEMENT   { block CERT};
+
+// Interrupt Vector Table
+place at address mem:FLASH_PAGE_BIMSTART { readonly section .intvec };
+keep                                     { readonly section .intvec };
+
+// CCFG
+place at end of BIM                    { readonly section .ccfg   };
+keep                                   { section .ccfg            };
+
+// RAM Vector Table
+place at start of RAM                  { section .vtable_ram      };
+
+// Stack
+place at end of RAM                    { block CSTACK             };
+
+place in BIM                           { readonly                 };
+place in RAM                           { readwrite                };
+
+////////////////////////////////////////////////////////////////////////////////
+// Initialization
+////////////////////////////////////////////////////////////////////////////////
+
+initialize by copy  { readwrite };
+
+do not initialize
+{
+  section .noinit,
+  section .stack,
+};
+
+////////////////////////////////////////////////////////////////////////////////

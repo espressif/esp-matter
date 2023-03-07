@@ -1,0 +1,33 @@
+id: sim_eeprom1_to_sim_eeprom2_upgrade
+label: Simulated EEPROM 1 to Simulated EEPROM 2 Upgrade
+package: platform
+description: Simulated EEPROM 1 to Simulated EEPROM 2 Upgrade.
+category: Platform|Service
+quality: production
+provides:
+  - name: sim_eeprom1_to_sim_eeprom2_upgrade
+requires:
+  - name: sim_eeprom2
+  - name: device_series_1
+root_path: ./
+library:
+  - path: platform/service/sim_eeprom/sim_eeprom1_to_sim_eeprom2_upgrade/lib/libsim_eeprom1_to_sim_eeprom2_upgrade_CM4_gcc.a
+    condition:
+      - toolchain_gcc
+      - "cortexm4"
+      - "device_series_1"
+  - path: platform/service/sim_eeprom/sim_eeprom1_to_sim_eeprom2_upgrade/lib/libsim_eeprom1_to_sim_eeprom2_upgrade_CM4_iar.a
+    condition:
+      - toolchain_iar
+      - "cortexm4"
+      - "device_series_1"
+define:
+- name: USE_SIMEE2
+- name: SIMEE1_TO_SIMEE2_UPGRADE
+
+template_contribution:
+  - name: component_catalog
+    value: sim_eeprom1_to_sim_eeprom2_upgrade
+documentation:
+    docset: gecko-platform
+    document: service/api/group-simeeprom

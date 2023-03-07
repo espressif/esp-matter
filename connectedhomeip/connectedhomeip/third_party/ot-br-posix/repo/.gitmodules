@@ -1,0 +1,10 @@
+[submodule "third_party/openthread/repo"]
+	path = third_party/openthread/repo
+	url = https://github.com/openthread/openthread.git
+	branch = main
+[submodule "third_party/cJSON/repo"]
+	path = third_party/cJSON/repo
+	url = https://github.com/DaveGamble/cJSON.git
+[submodule "third_party/http-parser/repo"]
+	path = third_party/http-parser/repo
+	url = https://github.com/nodejs/http-parser.git

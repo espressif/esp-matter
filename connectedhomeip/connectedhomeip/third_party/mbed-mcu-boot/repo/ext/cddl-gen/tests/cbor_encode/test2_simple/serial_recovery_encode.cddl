@@ -1,0 +1,33 @@
+;
+; Copyright (c) 2020 Nordic Semiconductor ASA
+;
+; SPDX-License-Identifier: Apache-2.0
+;
+
+Image = (
+	"slot" => uint,
+	"version" => bstr,
+)
+
+MultiList = {
+	"images" => [+{
+		"image" => uint,
+		Image
+	}]
+}
+List = {
+	"images" => [{ Image }]
+}
+
+Empty = (
+	empty: "rc" => 0
+)
+
+SuccessResponse = (
+	Empty,
+	"off" => uint
+)
+
+FailureResponse = (
+	"rc" => int
+)

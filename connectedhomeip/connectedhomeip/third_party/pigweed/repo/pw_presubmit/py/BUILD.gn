@@ -1,0 +1,64 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/python.gni")
+
+pw_python_package("py") {
+  setup = [
+    "pyproject.toml",
+    "setup.cfg",
+    "setup.py",
+  ]
+  sources = [
+    "pw_presubmit/__init__.py",
+    "pw_presubmit/build.py",
+    "pw_presubmit/cli.py",
+    "pw_presubmit/cpp_checks.py",
+    "pw_presubmit/format_code.py",
+    "pw_presubmit/git_repo.py",
+    "pw_presubmit/gitmodules.py",
+    "pw_presubmit/inclusive_language.py",
+    "pw_presubmit/install_hook.py",
+    "pw_presubmit/keep_sorted.py",
+    "pw_presubmit/ninja_parser.py",
+    "pw_presubmit/npm_presubmit.py",
+    "pw_presubmit/owners_checks.py",
+    "pw_presubmit/pigweed_presubmit.py",
+    "pw_presubmit/presubmit.py",
+    "pw_presubmit/python_checks.py",
+    "pw_presubmit/shell_checks.py",
+    "pw_presubmit/todo_check.py",
+    "pw_presubmit/tools.py",
+  ]
+  tests = [
+    "git_repo_test.py",
+    "gitmodules_test.py",
+    "keep_sorted_test.py",
+    "ninja_parser_test.py",
+    "presubmit_test.py",
+    "owners_checks_test.py",
+    "todo_check_test.py",
+    "tools_test.py",
+  ]
+
+  python_deps = [
+    "$dir_pw_cli/py",
+    "$dir_pw_env_setup/py",
+    "$dir_pw_package/py",
+  ]
+  pylintrc = "$dir_pigweed/.pylintrc"
+  mypy_ini = "$dir_pigweed/.mypy.ini"
+}

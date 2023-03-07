@@ -1,0 +1,32 @@
+id: cli_storage_ram_core
+label: "CLI: Storage in RAM Core"
+package: platform
+description: CLI Storage in RAM Core
+category: Services|CLI
+quality: production
+ui_hints:
+  visibility: never
+root_path: platform/service/cli_storage
+include:
+  - path: inc
+    file_list:
+      - path: sl_cli_storage_ram.h
+source:
+  - path: src/sl_cli_storage_ram.c
+requires:
+ - name: cli_core
+ - name: sl_string
+provides:
+  - name: cli_storage_ram_core
+template_file:
+  - path: template/sl_cli_storage_ram_instances.c.jinja
+  - path: template/sl_cli_storage_ram_instances.h.jinja
+template_contribution:
+  - name: component_catalog
+    value: cli_storage_ram
+  - name: event_handler
+    value:
+      event: service_init
+      include: sl_cli_storage_ram_instances.h
+      handler: sl_cli_storage_ram_instances_init
+    priority: 6

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Personality id="20x19_clock" name="Clock" version="1.0" path="" xmlns="http://cypress.com/xsd/cyhwpersonality_v1">
+  <Dependencies>
+    <IpBlock name="20x19_clock" />
+    <Resource name="clock" />
+  </Dependencies>
+  <ExposedMembers />
+  <Parameters>
+    <ParamDoc id="apiDoc" name="Configuration Help" group="Peripheral Documentation" default="file:///`${cy_libs_path()}`/docs/group___aux_clk_driver.html" linkText="Open Auxilary Clock Documentation" visible="true" desc="Opens the Hardware Driver Documentation" />
+
+    <Repeat count="2">
+      <ParamSignal port="aclk[$idx]" name="AClk $idx" group="Pins" visible="true" desc="Auxiliary clock $idx." canBeEmpty="true" />
+      <ParamBool id="hasClkConnection$idx" name="" group="Hidden" default="`${hasConnection(&quot;aclk&quot;, $idx)}`" visible="false" editable="false" desc="" />
+    </Repeat>
+  </Parameters>
+
+  <DRCs>
+    <DRC type="ERROR" text="At least one amp signal must be connected if Clock peripheral is active" condition="`${!(hasClkConnection0 || hasClkConnection1) }`" />
+  </DRCs>
+
+  <ConfigFirmware>
+
+  </ConfigFirmware>
+</Personality>

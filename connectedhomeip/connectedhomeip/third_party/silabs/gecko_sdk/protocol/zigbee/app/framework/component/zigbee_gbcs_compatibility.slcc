@@ -1,0 +1,16 @@
+package: Zigbee
+description: This is a dummy component that is a precondition to building a GBCS-compatible
+  application. It does not provide any code of its own. Instead, it a) allows other components 
+  to add conditional code base on the presence of this component, in cases where GBCS contradicts
+  the Smart Energy specification, and b) enables the inclusion of other GBCS-related
+  components.
+id: zigbee_gbcs_compatibility
+label: GBCS Compatibility
+category: Zigbee|Great Britain Companion Specification
+quality: production
+provides:
+   - name: "zigbee_gbcs_compatibility"
+template_contribution:
+  - name: component_catalog
+    value: zigbee_gbcs_compatibility
+

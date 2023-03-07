@@ -1,0 +1,38 @@
+id: "sl_wisun_rht_measurement"
+label: "Relative humdity and temperature measurement"
+package: "wisun"
+description: "The component provides thread safe, and bare-metal compatible temperature and relative humidity measurement with the Si7021 I2C sensor."
+category: "Wi-SUN|Application"
+quality: "production"
+root_path: "app/wisun/component/rht_measurement"
+provides:
+  - name: sl_wisun_rht_measurement
+
+source:
+  - path: "sl_wisun_rht_measurement.c"
+
+include:
+  - path: "."
+    file_list:
+    - "path": "sl_wisun_rht_measurement.h"
+
+requires:
+  - name: si70xx_driver
+    condition:
+    - "hardware_board_has_tempsensor"
+  - name: i2cspm
+    condition:
+    - "hardware_board_has_tempsensor"
+  - name: sl_wisun_app_core
+
+ui_hints:
+  visibility: never
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: wisun_rht_measurement
+  - name: component_catalog
+    value: temp_sensor
+    condition: [hardware_board_has_tempsensor]
+

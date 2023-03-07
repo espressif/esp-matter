@@ -1,0 +1,177 @@
+/*
+ * Copyright (c) 2018-2019, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+// @cliArgs --board /ti/boards/CC3235SF_LAUNCHXL --rtos tirtos7
+
+/*
+ *  common.syscfg
+ */
+
+/* ======== TIRTOS7 ======== */
+if (system.getRTOS() === "tirtos7") {
+    const tirtos7_release_syscfg_js = system.getScript("tirtos7_release.syscfg.js");
+}
+
+
+const DriverLib      = scripting.addModule("/ti/devices/DriverLib");
+const Display        = scripting.addModule("/ti/display/Display");
+const Display1       = Display.addInstance();
+const Board          = scripting.addModule("/ti/drivers/Board");
+const Crypto         = scripting.addModule("/ti/drivers/Crypto");
+const Crypto1        = Crypto.addInstance();
+const DMA            = scripting.addModule("/ti/drivers/DMA");
+const GPIO           = scripting.addModule("/ti/drivers/GPIO");
+const GPIO1          = GPIO.addInstance();
+const GPIO2          = GPIO.addInstance();
+const GPIO3          = GPIO.addInstance();
+const GPIO4          = GPIO.addInstance();
+const GPIO5          = GPIO.addInstance();
+/*
+const GPIO6          = GPIO.addInstance();
+const GPIO7          = GPIO.addInstance();
+*/
+const Power          = scripting.addModule("/ti/drivers/Power");
+const SPI            = scripting.addModule("/ti/drivers/SPI");
+const SPI1           = SPI.addInstance();
+const Timer          = scripting.addModule("/ti/drivers/Timer");
+const Timer1         = Timer.addInstance();
+const Timer2         = Timer.addInstance();
+const Timer3         = Timer.addInstance();
+const Watchdog       = scripting.addModule("/ti/drivers/Watchdog");
+const Watchdog1      = Watchdog.addInstance();
+const SimpleLinkWifi = scripting.addModule("/ti/drivers/net/wifi/SimpleLinkWifi");
+const atcmd          = scripting.addModule("/ti/drivers/net/wifi/atcmd", {}, false);
+const atcmd1         = atcmd.addInstance();
+const net_utils      = scripting.addModule("/ti/drivers/net/wifi/net_utils", {}, false);
+const net_utils1     = net_utils.addInstance();
+const ota            = scripting.addModule("/ti/drivers/net/wifi/ota", {}, false);
+const ota1           = ota.addInstance();
+const MQTT           = scripting.addModule("/ti/net/MQTT", {}, false);
+const MQTT1          = MQTT.addInstance();
+const SNTP           = scripting.addModule("/ti/net/SNTP");
+const SlNet          = scripting.addModule("/ti/net/SlNet");
+const SlNet1         = SlNet.addInstance();
+const JSON           = scripting.addModule("/ti/utils/JSON");
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+Display1.$name                          = "CONFIG_Display_0";
+Display1.$hardware                      = system.deviceData.board.components.XDS110UART;
+Display1.uart.$name                     = "CONFIG_UART_0";
+Display1.useUART2                       = false;
+Display1.uart.useDMA                    = true;
+Display1.uart.uart.$assign              = "UART0";
+Display1.uart.uart.txPin.$assign        = "GP01";
+Display1.uart.uart.rxPin.$assign        = "GP02";
+Display1.uart.uart.txDmaChannel.$assign = "UDMA_CH9";
+Display1.uart.uart.rxDmaChannel.$assign = "UDMA_CH8";
+
+Crypto1.$name = "CONFIG_Crypto_0";
+
+GPIO1.$hardware        = system.deviceData.board.components.SW2;
+GPIO1.$name            = "CONFIG_GPIO_BUTTON_0";
+GPIO1.interruptTrigger = "Rising Edge";
+GPIO1.gpioPin.$assign  = "boosterpack.3";
+
+GPIO2.$hardware        = system.deviceData.board.components.SW3;
+GPIO2.$name            = "CONFIG_GPIO_BUTTON_1";
+GPIO2.interruptTrigger = "Rising Edge";
+GPIO2.gpioPin.$assign  = "boosterpack.11";
+
+GPIO3.$hardware      = system.deviceData.board.components.LED0;
+GPIO3.outputStrength = "High";
+GPIO3.$name          = "CONFIG_GPIO_LED_0";
+
+GPIO4.$hardware      = system.deviceData.board.components.LED2;
+GPIO4.outputStrength = "High";
+GPIO4.$name          = "CONFIG_GPIO_LED_1";
+
+GPIO5.$hardware      = system.deviceData.board.components.LED1;
+GPIO5.outputStrength = "High";
+GPIO5.$name          = "CONFIG_GPIO_LED_2";
+
+/*
+GPIO6.$name           = "CONFIG_GPIO_0";
+GPIO6.mode            = "Dynamic";
+GPIO6.gpioPin.$assign = "boosterpack.19";
+
+GPIO7.$name           = "CONFIG_GPIO_2";
+GPIO7.mode            = "Dynamic";
+GPIO7.gpioPin.$assign = "boosterpack.4";
+*/
+
+Power.ioRetentionShutdown = ["GRP_1"];
+Power.parkPins.$name      = "ti_drivers_power_PowerCC32XXPins0";
+
+SPI1.$name                    = "CONFIG_SPI_0";
+SPI1.mode                     = "Four Pin SS Active Low";
+SPI1.defaultTxBufferValue     = "0";
+SPI1.spi.$assign              = "SPI0";
+SPI1.spi.sclkPin.$assign      = "boosterpack.7";
+SPI1.spi.misoPin.$assign      = "boosterpack.14";
+SPI1.spi.mosiPin.$assign      = "boosterpack.15";
+SPI1.spi.ssPin.$assign        = "boosterpack.18";
+SPI1.spi.dmaRxChannel.$assign = "UDMA_CH6";
+SPI1.spi.dmaTxChannel.$assign = "UDMA_CH7";
+
+Timer1.$name         = "CONFIG_TIMER_0";
+Timer1.timerType     = "32 Bits";
+Timer1.timer.$assign = "Timer0";
+
+Timer2.$name         = "CONFIG_TIMER_1";
+Timer2.timer.$assign = "Timer1";
+
+Timer3.$name         = "CONFIG_TIMER_2";
+Timer3.timer.$assign = "Timer1";
+
+Watchdog1.$name            = "CONFIG_WATCHDOG_0";
+Watchdog1.watchdog.$assign = "WATCHDOG0";
+
+atcmd1.$name = "CONFIG_ATCMD_0";
+
+net_utils1.$name = "CONFIG_NET_UTILS_0";
+
+ota1.$name = "CONFIG_OTALib_0";
+
+MQTT1.$name = "CONFIG_MQTT_0";
+
+SlNet1.$name  = "CONFIG_SLNET";
+SlNet1.ifName = "CC32xx";
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+GPIO3.gpioPin.$suggestSolution = "boosterpack.29";
+GPIO4.gpioPin.$suggestSolution = "boosterpack.9";
+GPIO5.gpioPin.$suggestSolution = "boosterpack.10";

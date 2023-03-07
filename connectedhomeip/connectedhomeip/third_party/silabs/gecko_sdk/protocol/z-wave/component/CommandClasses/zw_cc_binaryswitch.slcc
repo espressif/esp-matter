@@ -1,0 +1,13 @@
+id: zw_cc_binaryswitch
+label: Binary Switch Command Class
+category: Z-Wave|Command Classes
+description: >
+  Binary Switch Command Class is used to control the On/Off state of supporting nodes.
+package: Z-Wave
+quality: production
+source:
+  - path: protocol/z-wave/ZAF/CommandClasses/BinarySwitch/CC_BinarySwitch.c
+include:
+  - path: protocol/z-wave/ZAF/CommandClasses/BinarySwitch
+    file_list:
+      - path: CC_BinarySwitch.h

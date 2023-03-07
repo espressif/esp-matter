@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/build.dtd -->
+<package name="ti.sysbios.family.arm.cc26xx" version="1, 0, 0, 0" producerId="undefined">
+    <units>
+        <module name="Alarm"/>
+        <module name="Boot"/>
+        <module name="Power"/>
+        <module name="Seconds"/>
+        <module name="Timer"/>
+        <module name="TimestampProvider"/>
+    </units>
+    <sources>
+    </sources>
+    <configscripts>
+    </configscripts>
+    <makefiles>
+        <srcFile name="package.mak" src="package.bld"/>
+        <srcFile name="package/package.xdc.dep" src="package.xdc"/>
+        <srcFile name="package/package.cfg.dep" src="package.xdc"/>
+        <srcFile name="package/rel/ti_sysbios_family_arm_cc26xx.tar.dep" src="package/rel/ti_sysbios_family_arm_cc26xx.xdc.inc"/>
+    </makefiles>
+    <targets>
+    </targets>
+    <libraries>
+    </libraries>
+    <configurations>
+    </configurations>
+    <executables>
+    </executables>
+    <tests>
+    </tests>
+    <releases relDir="package/rel/">
+    <release name="ti_sysbios_family_arm_cc26xx"
+        pname="ti_sysbios_family_arm_cc26xx.tar"
+        label="default"
+    >
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+        <file name="package.bld"/>
+        <file name="Boot.xdt"/>
+        <file name="Boot.xml"/>
+        <file name="Alarm.xml"/>
+        <file name="TimestampProvider.xml"/>
+        <file name="package/package.cfg.xdc.inc"/>
+    </release>
+    </releases>
+    <repositories>
+    </repositories>
+</package>

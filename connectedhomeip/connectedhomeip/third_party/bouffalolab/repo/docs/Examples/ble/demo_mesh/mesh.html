@@ -1,0 +1,564 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Mesh &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../../index.html"/>
+        <link rel="up" title="Bluetooth" href="../index.html"/>
+        <link rel="next" title="(BL702)" href="../../network/index.html"/>
+        <link rel="prev" title="BLE" href="../demo_ble/ble.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Example</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Bluetooth</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../demo_ble/ble.html">BLE</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Mesh</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">总览</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#node">Node 使用步骤</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#provisioner">Provisioner 使用步骤</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../network/index.html">Ethernet (BL702)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zigbee/index.html">Zigbee (BL702)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../peripheral/index.html">Peripherals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../storage/index.html">Storage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../system/index.html">System</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Example</a> &raquo;</li>
+        
+          <li><a href="../index.html">Bluetooth</a> &raquo;</li>
+        
+      <li>Mesh</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Examples/ble/demo_mesh/mesh.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="mesh">
+<span id="ble-index"></span><h1>Mesh<a class="headerlink" href="#mesh" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<h2>总览<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<p>本示例主要介绍如何使用ble mesh。</p>
+</div>
+<div class="section" id="node">
+<h2>Node 使用步骤<a class="headerlink" href="#node" title="永久链接至标题"></a></h2>
+<ul>
+<li><p class="first">下载 <a class="reference external" href="https://dev.bouffalolab.com/download">Bouffalo Lab BLE mesh apk</a> (目前仅支持安卓系统)并安装；</p>
+</li>
+<li><p class="first">进入 <code class="docutils literal notranslate"><span class="pre">customer_app/bl602_demo_event</span></code> 工程或者 <code class="docutils literal notranslate"><span class="pre">customer_app/bl702_demo_event</span></code> 工程；通过命令 <code class="docutils literal notranslate"><span class="pre">genblemeshmodel</span></code> 编译，成功后下载BIN文件；</p>
+</li>
+<li><p class="first">在串口中运行Mesh相关命令:</p>
+<blockquote>
+<div><ul>
+<li><dl class="first docutils">
+<dt>BL602：</dt>
+<dd><p class="first">#stack_ble</p>
+<p>#blemesh_init</p>
+<p class="last">#blemesh_pb 2 1</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>BL702：</dt>
+<dd><p class="first">#blemesh_init</p>
+<p class="last">#blemesh_pb 2 1</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<div class="figure align-center">
+<img alt="../../../_images/image221.png" src="../../../_images/image221.png" />
+</div>
+<ul class="simple">
+<li>打开App,Network栏中选择点击添加</li>
+</ul>
+<div class="figure align-center">
+<img alt="../../../_images/image231.png" src="../../../_images/image231.png" />
+</div>
+<ul class="simple">
+<li>在扫描界面中,选择要添加的设备</li>
+</ul>
+<div class="figure align-center">
+<img alt="../../../_images/image241.png" src="../../../_images/image241.png" />
+</div>
+<ul class="simple">
+<li>在界面中点击IDENTIFY选项</li>
+</ul>
+<div class="figure align-center">
+<img alt="../../../_images/image251.png" src="../../../_images/image251.png" />
+</div>
+<ul class="simple">
+<li>在界面中点击PROVISION选项</li>
+</ul>
+<div class="figure align-center">
+<img alt="../../../_images/image261.png" src="../../../_images/image261.png" />
+</div>
+<ul class="simple">
+<li>在弹出的界面中选择No OOB,点击ok</li>
+</ul>
+<div class="figure align-center">
+<img alt="../../../_images/image271.png" src="../../../_images/image271.png" />
+</div>
+<ul class="simple">
+<li>在弹出的界面中,点击ok</li>
+</ul>
+<div class="figure align-center">
+<img alt="../../../_images/image281.png" src="../../../_images/image281.png" />
+</div>
+<ul class="simple">
+<li>界面自动调到Network栏中,点击已经连成功的设备</li>
+</ul>
+<div class="figure align-center">
+<img alt="../../../_images/image291.png" src="../../../_images/image291.png" />
+</div>
+<ul class="simple">
+<li>在界面中选择Elements选项,点击其下拉按钮</li>
+</ul>
+<div class="figure align-center">
+<img alt="../../../_images/image301.png" src="../../../_images/image301.png" />
+</div>
+<ul class="simple">
+<li>在界面中选择Generic on off Server选项</li>
+</ul>
+<div class="figure align-center">
+<img alt="../../../_images/image311.png" src="../../../_images/image311.png" />
+</div>
+<ul class="simple">
+<li>在界面中选择BIND KEY选项</li>
+</ul>
+<div class="figure align-center">
+<img alt="../../../_images/image321.png" src="../../../_images/image321.png" />
+</div>
+<ul class="simple">
+<li>界面中点击Application key 1</li>
+</ul>
+<div class="figure align-center">
+<img alt="../../../_images/image331.png" src="../../../_images/image331.png" />
+</div>
+<ul class="simple">
+<li>在界面中点击ONOFF选项，控制LED的开关</li>
+</ul>
+<div class="figure align-center">
+<img alt="../../../_images/image361.png" src="../../../_images/image361.png" />
+</div>
+<ul class="simple">
+<li>在串口中看到有如下信息表明控制LED成功</li>
+</ul>
+<div class="figure align-center">
+<img alt="../../../_images/image411.png" src="../../../_images/image411.png" />
+</div>
+<ul class="simple">
+<li>在界面中点击SUBSCRIBE选项，</li>
+</ul>
+<div class="figure align-center">
+<img alt="../../../_images/image341.png" src="../../../_images/image341.png" />
+</div>
+<ul class="simple">
+<li>在界面中选择Create a new group to subscribe选项，</li>
+</ul>
+<div class="figure align-center">
+<img alt="../../../_images/image351.png" src="../../../_images/image351.png" />
+</div>
+<ul class="simple">
+<li>按照同样的方法添加另外一个设备的节点，添加成功后,在Groups选项中，点击已经成功创建的group</li>
+</ul>
+<div class="figure align-center">
+<img alt="../../../_images/image371.png" src="../../../_images/image371.png" />
+</div>
+<ul class="simple">
+<li>在group中,选择ON/OFF，并且串口中打印log提示LED开关信息，说明mesh组网成功</li>
+</ul>
+<div class="figure align-center">
+<img alt="../../../_images/image381.png" src="../../../_images/image381.png" />
+</div>
+<div class="figure align-center">
+<img alt="../../../_images/image411.png" src="../../../_images/image411.png" />
+</div>
+</div>
+<div class="section" id="provisioner">
+<h2>Provisioner 使用步骤<a class="headerlink" href="#provisioner" title="永久链接至标题"></a></h2>
+<blockquote>
+<div><p>编译时需要开启 如下配置选项</p>
+<p>CONFIG_BT_MESH_PROVISIONER=1</p>
+</div></blockquote>
+<ul>
+<li><p class="first">启动未入网节点, 进入等待入网状态。</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>1、初始化 BLE。</dt>
+<dd><p class="first last">stack_ble</p>
+</dd>
+<dt>2、初始化 MESH。</dt>
+<dd><p class="first last">blemesh_init</p>
+</dd>
+<dt>3、发送 PB-ADV Unproved beacon。</dt>
+<dd><p class="first last">blemesh_pb 1 1</p>
+</dd>
+</dl>
+</div></blockquote>
+</li>
+<li><p class="first">Provisioner 节点使用</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>1、启动Provisioner,添加未入网节点。</dt>
+<dd><dl class="first last docutils">
+<dt>1.1、初始化 BLE。</dt>
+<dd><p class="first last">stack_ble</p>
+</dd>
+<dt>1.2、初始化 MESH。</dt>
+<dd><p class="first">blemesh_pvnr_init</p>
+<p>运行 log 如下:</p>
+<blockquote class="last">
+<div><p># blemesh_pvnr_init</p>
+<p>Local node provisioned, net_idx 0x0000 address 0x0001</p>
+<p>Network key:8fe7deea92943001567251dc1f9b0f03</p>
+<p>Dev key:89c2f18f9f286661c6bbb1430d7aadb7</p>
+<p>Provisioning completed</p>
+</div></blockquote>
+</dd>
+<dt>1.3、开启未入网广播数据回调，和添加节点成功数回调，会打印出未入网设备的UUID信息。</dt>
+<dd><p class="first last">blemesh_beacon_listen 0x01</p>
+</dd>
+<dt>1.4、加指定设备入网</dt>
+<dd><p class="first">blemesh_provision_adv 07af000011112222333318b905de96c2 0 3 0</p>
+<p>P1：“07af000011112222333318b905de96c2&quot; 为设备的UUID.</p>
+<p>P2：0：net_idx</p>
+<p>P3：3：指定入网设备的单播地址。</p>
+<p>P4：0：attention_duration</p>
+<p>设备入网成功之后会打印如下提示信息:</p>
+<blockquote>
+<div><p>Node added:</p>
+<p>net_idx:[0]</p>
+<p><a class="reference external" href="uuid:[07af000011112222333318b905de96c2">uuid:[07af000011112222333318b905de96c2</a>]</p>
+<p>addr:[3]</p>
+<p>num_elem:[1]</p>
+</div></blockquote>
+<p class="last">设备入网成功。</p>
+</dd>
+</dl>
+</dd>
+<dt>2、设置 node model server</dt>
+<dd><dl class="first last docutils">
+<dt>2.1、获取 composition data.</dt>
+<dd><p class="first">blemesh_get_comp 0x0000 0x0003 0x00</p>
+<p>P1：net index.</p>
+<p>P2：dst address.</p>
+<p class="last">P3：page number.</p>
+</dd>
+<dt>2.2、添加appkey</dt>
+<dd><p class="first">blemesh_app_key_add 0x0000 0x0003 0x0000 0x0000</p>
+<p>P1：net index.</p>
+<p>P2：dst address.</p>
+<p>P3：Network key index。</p>
+<p class="last">P4：Application key index.</p>
+</dd>
+<dt>2.3、绑定Generic onoff server model</dt>
+<dd><p class="first">blemesh_mod_app_bind 0x0000 0x0003 0x0003 0x0000 0x1000</p>
+<p>P1：net index.</p>
+<p>P2：dst address.</p>
+<p>P3：element address.</p>
+<p>P4：Application key index.</p>
+<p class="last">P5：Model ID.</p>
+</dd>
+</dl>
+</dd>
+<dt>3、Provisioner 使用 client 控制 node 的 server</dt>
+<dd><dl class="first last docutils">
+<dt>3.1、注册回调函数</dt>
+<dd><p class="first last">blemesh_gen_oo_cli reg</p>
+</dd>
+<dt>3.2、获取Generic onoff server status</dt>
+<dd><p class="first last">blemesh_gen_oo_cli get 0x0000 0x8201 0x00 0x0003 0x0000</p>
+</dd>
+<dt>3.3、设置Generic onoff server</dt>
+<dd><p class="first">设置onoff状态为1</p>
+<p>blemesh_gen_oo_cli set 0x0000 0x8202 0x00 0x0003 0x0000 0x00 0x01 0x00 0x00 0x00</p>
+<p>设置onoff状态为0</p>
+<p class="last">blemesh_gen_oo_cli set 0x0000 0x8202 0x00 0x0003 0x0000 0x00 0x00 0x01 0x00 0x00</p>
+</dd>
+</dl>
+</dd>
+<dt>4、删除节点</dt>
+<dd><p class="first last">blemesh_node_reset 0x0000 0x0003</p>
+</dd>
+<dt>5、Group subscription 操作。</dt>
+<dd><p class="first">添加：
+blemesh_mod_sub_add 0x0000 0x0003 0x0003 0xc000 0x1000</p>
+<blockquote>
+<div><p>P1：net index.</p>
+<p>P2：dst address.</p>
+<p>P3：element address.</p>
+<p>P4：subscription address.</p>
+<p>P5：Model ID</p>
+</div></blockquote>
+<p>删除：</p>
+<p>blemesh_mod_sub_del 0x0000 0x0003 0x0003 0xc000 0x1000</p>
+<blockquote class="last">
+<div><p>P1：net index.</p>
+<p>P2：dst address.</p>
+<p>P3：element address.</p>
+<p>P4：subscription address.</p>
+<p>P5：Model ID</p>
+</div></blockquote>
+</dd>
+<dt>6、Vendor model 操作。</dt>
+<dd><p class="first">需要设置 CONFIG_BT_MESH_MODEL_VENDOR_CLI=1， 来开启 vendor cli model 的功能</p>
+<dl class="last docutils">
+<dt>6.1、Node 绑定 Vendor server model</dt>
+<dd><p class="first">blemesh_mod_app_bind 0x0000 0x0003 0x0003 0x0000 0x0002 0x07AF</p>
+<p>P1：net index.</p>
+<p>P2：dst address.</p>
+<p>P3：element address.</p>
+<p>P4：Application key index.</p>
+<p>P5：Model ID. (0x0002) bouffalolab vendor model id.</p>
+<p class="last">P6:   Company ID.(0x07AF) bouffalolab company id.</p>
+</dd>
+<dt>6.2、Provisioner  向 Node 发送数据</dt>
+<dd><p class="first">blemesh_vendor_cli  0x0000 0x0008 0x00 0x0003 0x0000 001234</p>
+<p>P1：Application key index</p>
+<p>P2：opcode</p>
+<p>P3：msg_role&nbsp;（暂未使用）</p>
+<p>P4：addr</p>
+<p>P5：net index</p>
+<p class="last">P6：status</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../network/index.html" class="btn btn-neutral float-right" title="(BL702)" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../demo_ble/ble.html" class="btn btn-neutral" title="BLE" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

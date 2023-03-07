@@ -1,0 +1,62 @@
+id: app_scheduler
+category: Application|Utility
+label:       Simple Application Scheduler
+description: >
+  Simple Application Scheduler helps handling events and scheduling tasks for execution.
+  It can be used to enqueue task functions with specified data from interrupt and other 
+  contexts and then to run them strictly from the main loop - when running on bare metal.
+  Data is stored in the memory management implementation component that can be static or dynamic.
+  The API of the component enables to pause and resume the execution.
+  The component also uses Power Maneger to prevent sleep when there is a triggered task to be executed.
+package: platform
+quality: alpha
+
+provides:
+  - name: app_scheduler
+
+requires:
+  - name: simple_timer
+  - name: app_scheduler_memory
+  - name: slist
+
+recommends:
+  - id: app_scheduler_memory_static
+  - id: simple_timer
+
+root_path: app/common/util/app_scheduler
+
+include:
+  - path: .
+    file_list: 
+      - path: app_scheduler.h
+      - path: app_scheduler_internal.h
+
+source:
+  - path: app_scheduler.c
+
+config_file:
+  - path: config/app_scheduler_config.h
+
+template_contribution:
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: app_scheduler.h
+      handler: app_scheduler_init
+  - name: component_catalog
+    value: app_scheduler
+  - name: event_handler
+    value:
+      event: service_process_action
+      include: app_scheduler.h
+      handler: app_scheduler_step
+  - name: power_manager_handler
+    value:
+      event: is_ok_to_sleep
+      include: app_scheduler.h
+      handler: app_scheduler_is_ok_to_sleep
+  - name: power_manager_handler
+    value:
+      event: sleep_on_isr_exit
+      include: app_scheduler.h
+      handler: app_scheduler_sleep_on_isr_exit

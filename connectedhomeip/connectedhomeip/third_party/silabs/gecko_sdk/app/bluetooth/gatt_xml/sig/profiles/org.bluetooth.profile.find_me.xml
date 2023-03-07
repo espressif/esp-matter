@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Profile xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/profile.xsd" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    type="org.bluetooth.profile.find_me"
+    name="Find Me">
+    <InformativeText>
+        <Abstract>The Find Me profile defines the behavior when a button is pressed on one device to cause an alerting signal on a peer device.</Abstract>
+        <Summary>The Find Me profile defines the behavior when a button is pressed on a device to cause an immediate alert on a peer device. This can be used to allow users to find devices that have been misplaced.</Summary>
+	</InformativeText>
+	<Role name="Find Me Target">
+		<Service type="org.bluetooth.service.immediate_alert">
+			<Declaration>PrimarySingleInstance</Declaration>
+			<Requirement>Mandatory</Requirement>
+		</Service>
+	</Role>
+	<Role name="Find Me Locator">
+		<Client type="org.bluetooth.service.immediate_alert">
+			<Requirement>Mandatory</Requirement>
+		</Client>
+	</Role>
+</Profile>

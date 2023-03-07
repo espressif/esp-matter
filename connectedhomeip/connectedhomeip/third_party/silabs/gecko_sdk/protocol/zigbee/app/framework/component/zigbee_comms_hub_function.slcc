@@ -1,0 +1,149 @@
+package: Zigbee
+description: Silicon Labs implementation of the Comms Hub Function (CHF).
+label: Comms Hub Function (CHF)
+quality: production
+id: zigbee_comms_hub_function
+category: Zigbee|Great Britain Companion Specification
+provides:
+   - name: "zigbee_comms_hub_function"
+requires:
+   - name: "zigbee_sleepy_message_queue"
+   - name: "zigbee_meter_mirror"
+   - name: "zigbee_tunneling_client"
+   - name: "zigbee_tunneling_server"
+   - name: "zigbee_gbcs_compatibility"
+   - name: "zigbee_gbcs_device_log"
+   - name: "zigbee_gas_proxy_function"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/comms-hub-function/config/comms-hub-function-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/comms-hub-function/comms-hub-function.c
+  - path: protocol/zigbee/app/framework/plugin/comms-hub-function/comms-hub-function-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/comms-hub-function/comms-hub-tunnel-endpoints.c
+  - path: protocol/zigbee/app/framework/plugin/comms-hub-function/tunnel-manager.c
+  - path: protocol/zigbee/app/framework/plugin/comms-hub-function/comms-hub-function-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/comms-hub-function
+    file_list:
+      - path: comms-hub-function.h
+      - path: comms-hub-tunnel-endpoints.h
+      - path: tunnel-manager.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_comms_hub_function
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emberAfPluginCommsHubFunctionInitCallback
+    priority: -2
+  - name: zigbee_af_callback
+    value:
+      callback_type: local_data_init
+      function_name: emberAfPluginCommsHubFunctionInitCallback
+    priority: -2
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emAfPluginCommsHubFunctionTunnelInit
+    priority: -1
+  - name: zigbee_af_callback
+    value:
+      callback_type: local_data_init
+      function_name: emAfPluginCommsHubFunctionTunnelInit
+    priority: -1
+  - name: zigbee_af_callback
+    value:
+      callback_type: local_data_init
+      function_name: emberAfPluginTunnelingEndpointInit
+    priority: 0
+  - name: zigbee_stack_callback
+    value:
+      callback_type: stack_status
+      function_name: emberAfPluginCommsHubFunctionStackStatusCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: comms-hub-function
+      help: comms-hub-function related commands
+  - name: cli_command
+    value:
+      group: comms-hub-function
+      name: simulate-gbz-msg
+      handler: emAfPluginCommsHubFunctionCliSimulateGbzMsg
+      help: Simulates transmission of a GBZ message to the Comms Hub Function.
+      argument:
+      - type: hex
+      - type: uint16
+  - name: cli_command
+    value:
+      group: comms-hub-function
+      name: print-supported-use-cases
+      handler: emAfPluginCommsHubFunctionCliPrintSupportedUseCases
+      help: Prints the list of supported use cases.  The message code printed should be used with the simulate-gbz-msg command.
+  - name: cli_command
+    value:
+      group: comms-hub-function
+      name: send
+      handler: emAfPluginCommsHubFunctionCliSend
+      help: Sends a message with hex payload.
+      argument:
+      - type: hex
+      - type: hex
+  - name: cli_command
+    value:
+      group: comms-hub-function
+      name: send_string
+      handler: emAfPluginCommsHubFunctionCliSend
+      help: Sends a message with string payload.
+      argument:
+      - type: hex
+      - type: string
+  - name: cli_command
+    value:
+      group: comms-hub-function
+      name: timeout
+      handler: emAfPluginCommsHubFunctionCliTimeout
+      help: Sets the default sleepy message timeout.
+      argument:
+      - type: uint32
+  - name: cli_command
+    value:
+      group: comms-hub-function
+      name: get-tunnel-endpoint
+      handler: emAfPluginCommsHubFunctionCliGetTunnelEndpoint
+      help: Retrievesthe tunneling endpoint for a given nodeId.
+      argument:
+      - type: uint16
+  - name: cli_command
+    value:
+      group: comms-hub-function
+      name: close-tunnel
+      handler: emAfPluginCommsHubFunctionCliCloseTunnel
+      help: Removes the tunnel for a given device.
+      argument:
+      - type: hex
+  - name: cli_command
+    value:
+      group: comms-hub-function
+      name: create-tunnel
+      handler: emAfPluginCommsHubFunctionCliCreateTunnel
+      help: Creates a tunnel for the given device and endpoint.
+      argument:
+      - type: hex
+      - type: uint8
+  - name: cli_command
+    value:
+      group: comms-hub-function
+      name: print
+      handler: emAfPluginCommsHubFunctionCliPrint
+      help: Prints the comms hub tunnel table.
+  - name: zigbee_stack_callback
+    value:
+      callback_type: trust_center_join
+      function_name: emAfPluginCommsHubFunctionTrustCenterJoinCallback      
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/comms-hub-function

@@ -1,0 +1,1803 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<demos xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://www.silabs.com/ss/Studio.ecore" xsi:noNamespaceSchemaLocation="http://www.silabs.com/ss/Demo.ecore">
+  <demo name="brd2601b.demo.btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty">
+    <model:description>An NCP Target C application that makes it possible for the NCP Host Controller to access the Bluetooth Mesh stack via UART. It provides access to the host layer via BGAPI and not to the link layer via HCI.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - NCP Empty"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b310f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd2601b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_ncp_empty/btmesh_ncp_empty-brd2601b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd2601b.s37"/>
+  </demo>
+  <demo name="brd4104a.demo.btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty">
+    <model:description>An NCP Target C application that makes it possible for the NCP Host Controller to access the Bluetooth Mesh stack via UART. It provides access to the host layer via BGAPI and not to the link layer via HCI.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - NCP Empty"/>
+    <property key="core.partCompatibility" value=".*efr32bg13p632f512gm48.*"/>
+    <property key="core.boardCompatibility" value="brd4104a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_ncp_empty/btmesh_ncp_empty-brd4104a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4104a-combined.s37"/>
+  </demo>
+  <demo name="brd4108a.demo.btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty">
+    <model:description>Demonstrates the bare minimum needed for an NCP Target C application.  This example is recommended for EFR32xG22, which has limited RAM and flash, and therefore some of the stack classes are disabled by default.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - NCP Empty"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4108a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_ncp_empty/btmesh_ncp_empty-brd4108a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4108a.s37"/>
+  </demo>
+  <demo name="brd4166a.demo.btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty">
+    <model:description>An NCP Target C application that makes it possible for the NCP Host Controller to access the Bluetooth Mesh stack via UART. It provides access to the host layer via BGAPI and not to the link layer via HCI.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - NCP Empty"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p332f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4166a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_ncp_empty/btmesh_ncp_empty-brd4166a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4166a-combined.s37"/>
+  </demo>
+  <demo name="brd4180b.demo.btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty">
+    <model:description>An NCP Target C application that makes it possible for the NCP Host Controller to access the Bluetooth Mesh stack via UART. It provides access to the host layer via BGAPI and not to the link layer via HCI.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - NCP Empty"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a020f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4180b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_ncp_empty/btmesh_ncp_empty-brd4180b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4180b.s37"/>
+  </demo>
+  <demo name="brd4181a.demo.btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty">
+    <model:description>An NCP Target C application that makes it possible for the NCP Host Controller to access the Bluetooth Mesh stack via UART. It provides access to the host layer via BGAPI and not to the link layer via HCI.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - NCP Empty"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a010f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4181a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_ncp_empty/btmesh_ncp_empty-brd4181a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4181a.s37"/>
+  </demo>
+  <demo name="brd4181b.demo.btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty">
+    <model:description>An NCP Target C application that makes it possible for the NCP Host Controller to access the Bluetooth Mesh stack via UART. It provides access to the host layer via BGAPI and not to the link layer via HCI.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - NCP Empty"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a010f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4181b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_ncp_empty/btmesh_ncp_empty-brd4181b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4181b.s37"/>
+  </demo>
+  <demo name="brd4182a.demo.btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty">
+    <model:description>Demonstrates the bare minimum needed for an NCP Target C application.  This example is recommended for EFR32xG22, which has limited RAM and flash, and therefore some of the stack classes are disabled by default.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - NCP Empty"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4182a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_ncp_empty/btmesh_ncp_empty-brd4182a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4182a.s37"/>
+  </demo>
+  <demo name="brd4183a.demo.btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty">
+    <model:description>Demonstrates the bare minimum needed for an NCP Target C application.  This example is recommended for EFR32xG22, which has limited RAM and flash, and therefore some of the stack classes are disabled by default.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - NCP Empty"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im32.*"/>
+    <property key="core.boardCompatibility" value="brd4183a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_ncp_empty/btmesh_ncp_empty-brd4183a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4183a.s37"/>
+  </demo>
+  <demo name="brd4183c.demo.btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty">
+    <model:description>Demonstrates the bare minimum needed for an NCP Target C application.  This example is recommended for EFR32xG22, which has limited RAM and flash, and therefore some of the stack classes are disabled by default.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - NCP Empty"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im32.*"/>
+    <property key="core.boardCompatibility" value="brd4183c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_ncp_empty/btmesh_ncp_empty-brd4183c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4183c.s37"/>
+  </demo>
+  <demo name="brd4184a.demo.btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty">
+    <model:description>Demonstrates the bare minimum needed for an NCP Target C application.  This example is recommended for EFR32xG22, which has limited RAM and flash, and therefore some of the stack classes are disabled by default.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - NCP Empty"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4184a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_ncp_empty/btmesh_ncp_empty-brd4184a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4184a.s37"/>
+  </demo>
+  <demo name="brd4184b.demo.btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty">
+    <model:description>Demonstrates the bare minimum needed for an NCP Target C application.  This example is recommended for EFR32xG22, which has limited RAM and flash, and therefore some of the stack classes are disabled by default.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - NCP Empty"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4184b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_ncp_empty/btmesh_ncp_empty-brd4184b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4184b.s37"/>
+  </demo>
+  <demo name="brd4186c.demo.btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty">
+    <model:description>An NCP Target C application that makes it possible for the NCP Host Controller to access the Bluetooth Mesh stack via UART. It provides access to the host layer via BGAPI and not to the link layer via HCI.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - NCP Empty"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b210f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4186c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_ncp_empty/btmesh_ncp_empty-brd4186c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4186c.s37"/>
+  </demo>
+  <demo name="brd4187c.demo.btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty">
+    <model:description>An NCP Target C application that makes it possible for the NCP Host Controller to access the Bluetooth Mesh stack via UART. It provides access to the host layer via BGAPI and not to the link layer via HCI.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - NCP Empty"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b220f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4187c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_ncp_empty/btmesh_ncp_empty-brd4187c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4187c.s37"/>
+  </demo>
+  <demo name="brd4188b.demo.btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty">
+    <model:description>An NCP Target C application that makes it possible for the NCP Host Controller to access the Bluetooth Mesh stack via UART. It provides access to the host layer via BGAPI and not to the link layer via HCI.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - NCP Empty"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b220f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4188b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_ncp_empty/btmesh_ncp_empty-brd4188b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4188b.s37"/>
+  </demo>
+  <demo name="brd4305c.demo.btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty">
+    <model:description>An NCP Target C application that makes it possible for the NCP Host Controller to access the Bluetooth Mesh stack via UART. It provides access to the host layer via BGAPI and not to the link layer via HCI.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - NCP Empty"/>
+    <property key="core.partCompatibility" value=".*bgm13s22f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4305c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_ncp_empty/btmesh_ncp_empty-brd4305c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4305c.s37"/>
+  </demo>
+  <demo name="brd4306a.demo.btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty">
+    <model:description>An NCP Target C application that makes it possible for the NCP Host Controller to access the Bluetooth Mesh stack via UART. It provides access to the host layer via BGAPI and not to the link layer via HCI.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - NCP Empty"/>
+    <property key="core.partCompatibility" value=".*bgm13p22f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4306a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_ncp_empty/btmesh_ncp_empty-brd4306a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4306a.s37"/>
+  </demo>
+  <demo name="brd4308a.demo.btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty">
+    <model:description>An NCP Target C application that makes it possible for the NCP Host Controller to access the Bluetooth Mesh stack via UART. It provides access to the host layer via BGAPI and not to the link layer via HCI.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - NCP Empty"/>
+    <property key="core.partCompatibility" value=".*mgm210pa32jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_ncp_empty/btmesh_ncp_empty-brd4308a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4308a.s37"/>
+  </demo>
+  <demo name="brd4308b.demo.btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty">
+    <model:description>An NCP Target C application that makes it possible for the NCP Host Controller to access the Bluetooth Mesh stack via UART. It provides access to the host layer via BGAPI and not to the link layer via HCI.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - NCP Empty"/>
+    <property key="core.partCompatibility" value=".*mgm210pa22jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_ncp_empty/btmesh_ncp_empty-brd4308b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4308b.s37"/>
+  </demo>
+  <demo name="brd4308c.demo.btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty">
+    <model:description>An NCP Target C application that makes it possible for the NCP Host Controller to access the Bluetooth Mesh stack via UART. It provides access to the host layer via BGAPI and not to the link layer via HCI.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - NCP Empty"/>
+    <property key="core.partCompatibility" value=".*mgm210pb32jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_ncp_empty/btmesh_ncp_empty-brd4308c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4308c.s37"/>
+  </demo>
+  <demo name="brd4308d.demo.btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty">
+    <model:description>An NCP Target C application that makes it possible for the NCP Host Controller to access the Bluetooth Mesh stack via UART. It provides access to the host layer via BGAPI and not to the link layer via HCI.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - NCP Empty"/>
+    <property key="core.partCompatibility" value=".*mgm210pb22jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308d"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_ncp_empty/btmesh_ncp_empty-brd4308d.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4308d.s37"/>
+  </demo>
+  <demo name="brd4311a.demo.btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty">
+    <model:description>Demonstrates the bare minimum needed for an NCP Target C application.  This example is recommended for EFR32xG22, which has limited RAM and flash, and therefore some of the stack classes are disabled by default.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - NCP Empty"/>
+    <property key="core.partCompatibility" value=".*bgm220pc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4311a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_ncp_empty/btmesh_ncp_empty-brd4311a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4311a.s37"/>
+  </demo>
+  <demo name="brd4312a.demo.btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty">
+    <model:description>Demonstrates the bare minimum needed for an NCP Target C application.  This example is recommended for EFR32xG22, which has limited RAM and flash, and therefore some of the stack classes are disabled by default.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - NCP Empty"/>
+    <property key="core.partCompatibility" value=".*bgm220sc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4312a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_ncp_empty/btmesh_ncp_empty-brd4312a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4312a.s37"/>
+  </demo>
+  <demo name="brd4314a.demo.btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty">
+    <model:description>Demonstrates the bare minimum needed for an NCP Target C application.  This example is recommended for EFR32xG22, which has limited RAM and flash, and therefore some of the stack classes are disabled by default.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - NCP Empty"/>
+    <property key="core.partCompatibility" value=".*bgm220pc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4314a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_ncp_empty/btmesh_ncp_empty-brd4314a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4314a.s37"/>
+  </demo>
+  <demo name="brd2601b.demo.btmesh_soc_hsl" label="Bluetooth Mesh - SoC HSL Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the mainboard can be switched on and off, and their lighting intensity, hue, and saturation can be set. The example also tries to establish friendship as a Friend node.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC HSL Light"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b310f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd2601b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_hsl/btmesh_soc_hsl-brd2601b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_hsl/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd2601b.s37"/>
+  </demo>
+  <demo name="brd4104a.demo.btmesh_soc_hsl" label="Bluetooth Mesh - SoC HSL Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the mainboard can be switched on and off, and their lighting intensity, hue, and saturation can be set. The example also tries to establish friendship as a Friend node.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC HSL Light"/>
+    <property key="core.partCompatibility" value=".*efr32bg13p632f512gm48.*"/>
+    <property key="core.boardCompatibility" value="brd4104a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_hsl/btmesh_soc_hsl-brd4104a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_hsl/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single-352k/bootloader-storage-internal-single-352k-brd4104a-combined.s37"/>
+  </demo>
+  <demo name="brd4166a.demo.btmesh_soc_hsl" label="Bluetooth Mesh - SoC HSL Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the Thunderboard Sense 2 can be switched on and off, and their lighting intensity, hue, and saturation can be set. The example also tries to establish friendship as a Friend node.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC HSL Light"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p332f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4166a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_hsl/btmesh_soc_hsl-brd4166a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_hsl/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single/bootloader-storage-internal-single-brd4166a-combined.s37"/>
+  </demo>
+  <demo name="brd4180b.demo.btmesh_soc_hsl" label="Bluetooth Mesh - SoC HSL Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the mainboard can be switched on and off, and their lighting intensity, hue, and saturation can be set. The example also tries to establish friendship as a Friend node.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC HSL Light"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a020f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4180b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_hsl/btmesh_soc_hsl-brd4180b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_hsl/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4180b.s37"/>
+  </demo>
+  <demo name="brd4181a.demo.btmesh_soc_hsl" label="Bluetooth Mesh - SoC HSL Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the mainboard can be switched on and off, and their lighting intensity, hue, and saturation can be set. The example also tries to establish friendship as a Friend node.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC HSL Light"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a010f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4181a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_hsl/btmesh_soc_hsl-brd4181a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_hsl/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4181a.s37"/>
+  </demo>
+  <demo name="brd4181b.demo.btmesh_soc_hsl" label="Bluetooth Mesh - SoC HSL Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the mainboard can be switched on and off, and their lighting intensity, hue, and saturation can be set. The example also tries to establish friendship as a Friend node.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC HSL Light"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a010f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4181b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_hsl/btmesh_soc_hsl-brd4181b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_hsl/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4181b.s37"/>
+  </demo>
+  <demo name="brd4186c.demo.btmesh_soc_hsl" label="Bluetooth Mesh - SoC HSL Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the mainboard can be switched on and off, and their lighting intensity, hue, and saturation can be set. The example also tries to establish friendship as a Friend node.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC HSL Light"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b210f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4186c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_hsl/btmesh_soc_hsl-brd4186c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_hsl/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4186c.s37"/>
+  </demo>
+  <demo name="brd4187c.demo.btmesh_soc_hsl" label="Bluetooth Mesh - SoC HSL Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the mainboard can be switched on and off, and their lighting intensity, hue, and saturation can be set. The example also tries to establish friendship as a Friend node.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC HSL Light"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b220f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4187c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_hsl/btmesh_soc_hsl-brd4187c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_hsl/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4187c.s37"/>
+  </demo>
+  <demo name="brd4188b.demo.btmesh_soc_hsl" label="Bluetooth Mesh - SoC HSL Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the mainboard can be switched on and off, and their lighting intensity, hue, and saturation can be set. The example also tries to establish friendship as a Friend node.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC HSL Light"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b220f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4188b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_hsl/btmesh_soc_hsl-brd4188b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_hsl/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4188b.s37"/>
+  </demo>
+  <demo name="brd4305c.demo.btmesh_soc_hsl" label="Bluetooth Mesh - SoC HSL Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the mainboard can be switched on and off, and their lighting intensity, hue, and saturation can be set. The example also tries to establish friendship as a Friend node.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC HSL Light"/>
+    <property key="core.partCompatibility" value=".*bgm13s22f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4305c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_hsl/btmesh_soc_hsl-brd4305c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_hsl/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single-352k/bootloader-storage-internal-single-352k-brd4305c.s37"/>
+  </demo>
+  <demo name="brd4306a.demo.btmesh_soc_hsl" label="Bluetooth Mesh - SoC HSL Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the mainboard can be switched on and off, and their lighting intensity, hue, and saturation can be set. The example also tries to establish friendship as a Friend node.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC HSL Light"/>
+    <property key="core.partCompatibility" value=".*bgm13p22f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4306a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_hsl/btmesh_soc_hsl-brd4306a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_hsl/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single-352k/bootloader-storage-internal-single-352k-brd4306a.s37"/>
+  </demo>
+  <demo name="brd4308a.demo.btmesh_soc_hsl" label="Bluetooth Mesh - SoC HSL Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the mainboard can be switched on and off, and their lighting intensity, hue, and saturation can be set. The example also tries to establish friendship as a Friend node.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC HSL Light"/>
+    <property key="core.partCompatibility" value=".*mgm210pa32jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_hsl/btmesh_soc_hsl-brd4308a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_hsl/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308a.s37"/>
+  </demo>
+  <demo name="brd4308b.demo.btmesh_soc_hsl" label="Bluetooth Mesh - SoC HSL Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the mainboard can be switched on and off, and their lighting intensity, hue, and saturation can be set. The example also tries to establish friendship as a Friend node.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC HSL Light"/>
+    <property key="core.partCompatibility" value=".*mgm210pa22jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_hsl/btmesh_soc_hsl-brd4308b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_hsl/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308b.s37"/>
+  </demo>
+  <demo name="brd4308c.demo.btmesh_soc_hsl" label="Bluetooth Mesh - SoC HSL Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the mainboard can be switched on and off, and their lighting intensity, hue, and saturation can be set. The example also tries to establish friendship as a Friend node.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC HSL Light"/>
+    <property key="core.partCompatibility" value=".*mgm210pb32jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_hsl/btmesh_soc_hsl-brd4308c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_hsl/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308c.s37"/>
+  </demo>
+  <demo name="brd4308d.demo.btmesh_soc_hsl" label="Bluetooth Mesh - SoC HSL Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the mainboard can be switched on and off, and their lighting intensity, hue, and saturation can be set. The example also tries to establish friendship as a Friend node.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC HSL Light"/>
+    <property key="core.partCompatibility" value=".*mgm210pb22jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308d"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_hsl/btmesh_soc_hsl-brd4308d.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_hsl/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308d.s37"/>
+  </demo>
+  <demo name="brd2601b.demo.btmesh_soc_light" label="Bluetooth Mesh - SoC Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the mainboard can be switched on and off, and their lighting intensity, color temperature, and delta UV can be set.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Light"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b310f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd2601b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_light/btmesh_soc_light-brd2601b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_light/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd2601b.s37"/>
+  </demo>
+  <demo name="brd4104a.demo.btmesh_soc_light" label="Bluetooth Mesh - SoC Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the WSTK can be switched on and off, and their lighting intensity, color temperature, and delta UV can be set.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Light"/>
+    <property key="core.partCompatibility" value=".*efr32bg13p632f512gm48.*"/>
+    <property key="core.boardCompatibility" value="brd4104a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_light/btmesh_soc_light-brd4104a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_light/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single-352k/bootloader-storage-internal-single-352k-brd4104a-combined.s37"/>
+  </demo>
+  <demo name="brd4166a.demo.btmesh_soc_light" label="Bluetooth Mesh - SoC Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the Thunderboard Sense 2 board can be switched on and off, and their lighting intensity, color temperature, and delta UV can be set.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Light"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p332f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4166a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_light/btmesh_soc_light-brd4166a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_light/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single/bootloader-storage-internal-single-brd4166a-combined.s37"/>
+  </demo>
+  <demo name="brd4180b.demo.btmesh_soc_light" label="Bluetooth Mesh - SoC Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the WSTK can be switched on and off, and their lighting intensity, color temperature, and delta UV can be set.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Light"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a020f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4180b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_light/btmesh_soc_light-brd4180b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_light/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4180b.s37"/>
+  </demo>
+  <demo name="brd4181a.demo.btmesh_soc_light" label="Bluetooth Mesh - SoC Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the WSTK can be switched on and off, and their lighting intensity, color temperature, and delta UV can be set.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Light"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a010f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4181a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_light/btmesh_soc_light-brd4181a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_light/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4181a.s37"/>
+  </demo>
+  <demo name="brd4181b.demo.btmesh_soc_light" label="Bluetooth Mesh - SoC Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the WSTK can be switched on and off, and their lighting intensity, color temperature, and delta UV can be set.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Light"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a010f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4181b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_light/btmesh_soc_light-brd4181b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_light/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4181b.s37"/>
+  </demo>
+  <demo name="brd4186c.demo.btmesh_soc_light" label="Bluetooth Mesh - SoC Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the WSTK can be switched on and off, and their lighting intensity, color temperature, and delta UV can be set.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Light"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b210f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4186c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_light/btmesh_soc_light-brd4186c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_light/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4186c.s37"/>
+  </demo>
+  <demo name="brd4187c.demo.btmesh_soc_light" label="Bluetooth Mesh - SoC Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the WSTK can be switched on and off, and their lighting intensity, color temperature, and delta UV can be set.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Light"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b220f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4187c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_light/btmesh_soc_light-brd4187c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_light/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4187c.s37"/>
+  </demo>
+  <demo name="brd4188b.demo.btmesh_soc_light" label="Bluetooth Mesh - SoC Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the WSTK can be switched on and off, and their lighting intensity, color temperature, and delta UV can be set.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Light"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b220f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4188b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_light/btmesh_soc_light-brd4188b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_light/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4188b.s37"/>
+  </demo>
+  <demo name="brd4305c.demo.btmesh_soc_light" label="Bluetooth Mesh - SoC Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the WSTK can be switched on and off, and their lighting intensity, color temperature, and delta UV can be set.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Light"/>
+    <property key="core.partCompatibility" value=".*bgm13s22f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4305c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_light/btmesh_soc_light-brd4305c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_light/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single-352k/bootloader-storage-internal-single-352k-brd4305c.s37"/>
+  </demo>
+  <demo name="brd4306a.demo.btmesh_soc_light" label="Bluetooth Mesh - SoC Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the WSTK can be switched on and off, and their lighting intensity, color temperature, and delta UV can be set.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Light"/>
+    <property key="core.partCompatibility" value=".*bgm13p22f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4306a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_light/btmesh_soc_light-brd4306a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_light/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single-352k/bootloader-storage-internal-single-352k-brd4306a.s37"/>
+  </demo>
+  <demo name="brd4308a.demo.btmesh_soc_light" label="Bluetooth Mesh - SoC Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the WSTK can be switched on and off, and their lighting intensity, color temperature, and delta UV can be set.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Light"/>
+    <property key="core.partCompatibility" value=".*mgm210pa32jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_light/btmesh_soc_light-brd4308a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_light/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308a.s37"/>
+  </demo>
+  <demo name="brd4308b.demo.btmesh_soc_light" label="Bluetooth Mesh - SoC Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the WSTK can be switched on and off, and their lighting intensity, color temperature, and delta UV can be set.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Light"/>
+    <property key="core.partCompatibility" value=".*mgm210pa22jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_light/btmesh_soc_light-brd4308b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_light/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308b.s37"/>
+  </demo>
+  <demo name="brd4308c.demo.btmesh_soc_light" label="Bluetooth Mesh - SoC Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the WSTK can be switched on and off, and their lighting intensity, color temperature, and delta UV can be set.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Light"/>
+    <property key="core.partCompatibility" value=".*mgm210pb32jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_light/btmesh_soc_light-brd4308c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_light/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308c.s37"/>
+  </demo>
+  <demo name="brd4308d.demo.btmesh_soc_light" label="Bluetooth Mesh - SoC Light">
+    <model:description>An out-of-the-box software demo where the LEDs of the WSTK can be switched on and off, and their lighting intensity, color temperature, and delta UV can be set.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Light"/>
+    <property key="core.partCompatibility" value=".*mgm210pb22jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308d"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_light/btmesh_soc_light-brd4308d.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_light/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308d.s37"/>
+  </demo>
+  <demo name="brd2601b.demo.btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Client"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b310f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd2601b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_client/btmesh_soc_sensor_client-brd2601b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd2601b.s37"/>
+  </demo>
+  <demo name="brd4104a.demo.btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Client"/>
+    <property key="core.partCompatibility" value=".*efr32bg13p632f512gm48.*"/>
+    <property key="core.boardCompatibility" value="brd4104a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_client/btmesh_soc_sensor_client-brd4104a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single-352k/bootloader-storage-internal-single-352k-brd4104a-combined.s37"/>
+  </demo>
+  <demo name="brd4108a.demo.btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Client"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4108a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_client/btmesh_soc_sensor_client-brd4108a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4108a.s37"/>
+  </demo>
+  <demo name="brd4166a.demo.btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Client"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p332f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4166a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_client/btmesh_soc_sensor_client-brd4166a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single/bootloader-storage-internal-single-brd4166a-combined.s37"/>
+  </demo>
+  <demo name="brd4180b.demo.btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Client"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a020f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4180b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_client/btmesh_soc_sensor_client-brd4180b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4180b.s37"/>
+  </demo>
+  <demo name="brd4181a.demo.btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Client"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a010f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4181a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_client/btmesh_soc_sensor_client-brd4181a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4181a.s37"/>
+  </demo>
+  <demo name="brd4181b.demo.btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Client"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a010f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4181b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_client/btmesh_soc_sensor_client-brd4181b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4181b.s37"/>
+  </demo>
+  <demo name="brd4182a.demo.btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Client"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4182a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_client/btmesh_soc_sensor_client-brd4182a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4182a.s37"/>
+  </demo>
+  <demo name="brd4183a.demo.btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Client"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im32.*"/>
+    <property key="core.boardCompatibility" value="brd4183a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_client/btmesh_soc_sensor_client-brd4183a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4183a.s37"/>
+  </demo>
+  <demo name="brd4183c.demo.btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Client"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im32.*"/>
+    <property key="core.boardCompatibility" value="brd4183c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_client/btmesh_soc_sensor_client-brd4183c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4183c.s37"/>
+  </demo>
+  <demo name="brd4184a.demo.btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Client"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4184a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_client/btmesh_soc_sensor_client-brd4184a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4184a.s37"/>
+  </demo>
+  <demo name="brd4184b.demo.btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Client"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4184b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_client/btmesh_soc_sensor_client-brd4184b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4184b.s37"/>
+  </demo>
+  <demo name="brd4186c.demo.btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Client"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b210f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4186c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_client/btmesh_soc_sensor_client-brd4186c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4186c.s37"/>
+  </demo>
+  <demo name="brd4187c.demo.btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Client"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b220f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4187c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_client/btmesh_soc_sensor_client-brd4187c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4187c.s37"/>
+  </demo>
+  <demo name="brd4188b.demo.btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Client"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b220f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4188b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_client/btmesh_soc_sensor_client-brd4188b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4188b.s37"/>
+  </demo>
+  <demo name="brd4305c.demo.btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Client"/>
+    <property key="core.partCompatibility" value=".*bgm13s22f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4305c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_client/btmesh_soc_sensor_client-brd4305c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single-352k/bootloader-storage-internal-single-352k-brd4305c.s37"/>
+  </demo>
+  <demo name="brd4306a.demo.btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Client"/>
+    <property key="core.partCompatibility" value=".*bgm13p22f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4306a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_client/btmesh_soc_sensor_client-brd4306a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single-352k/bootloader-storage-internal-single-352k-brd4306a.s37"/>
+  </demo>
+  <demo name="brd4308a.demo.btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Client"/>
+    <property key="core.partCompatibility" value=".*mgm210pa32jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_client/btmesh_soc_sensor_client-brd4308a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308a.s37"/>
+  </demo>
+  <demo name="brd4308b.demo.btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Client"/>
+    <property key="core.partCompatibility" value=".*mgm210pa22jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_client/btmesh_soc_sensor_client-brd4308b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308b.s37"/>
+  </demo>
+  <demo name="brd4308c.demo.btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Client"/>
+    <property key="core.partCompatibility" value=".*mgm210pb32jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_client/btmesh_soc_sensor_client-brd4308c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308c.s37"/>
+  </demo>
+  <demo name="brd4308d.demo.btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Client"/>
+    <property key="core.partCompatibility" value=".*mgm210pb22jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308d"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_client/btmesh_soc_sensor_client-brd4308d.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308d.s37"/>
+  </demo>
+  <demo name="brd4311a.demo.btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Client"/>
+    <property key="core.partCompatibility" value=".*bgm220pc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4311a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_client/btmesh_soc_sensor_client-brd4311a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4311a.s37"/>
+  </demo>
+  <demo name="brd4312a.demo.btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Client"/>
+    <property key="core.partCompatibility" value=".*bgm220sc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4312a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_client/btmesh_soc_sensor_client-brd4312a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4312a.s37"/>
+  </demo>
+  <demo name="brd4314a.demo.btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Client"/>
+    <property key="core.partCompatibility" value=".*bgm220pc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4314a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_client/btmesh_soc_sensor_client-brd4314a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4314a.s37"/>
+  </demo>
+  <demo name="brd2601b.demo.btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature, people count, and illuminance, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Server"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b310f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd2601b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_server/btmesh_soc_sensor_server-brd2601b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd2601b.s37"/>
+  </demo>
+  <demo name="brd4104a.demo.btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature and people count, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Server"/>
+    <property key="core.partCompatibility" value=".*efr32bg13p632f512gm48.*"/>
+    <property key="core.boardCompatibility" value="brd4104a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_server/btmesh_soc_sensor_server-brd4104a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single-352k/bootloader-storage-internal-single-352k-brd4104a-combined.s37"/>
+  </demo>
+  <demo name="brd4108a.demo.btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature and people count, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Server"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4108a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_server/btmesh_soc_sensor_server-brd4108a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4108a.s37"/>
+  </demo>
+  <demo name="brd4166a.demo.btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature, people count, and illuminance, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Server"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p332f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4166a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_server/btmesh_soc_sensor_server-brd4166a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single/bootloader-storage-internal-single-brd4166a-combined.s37"/>
+  </demo>
+  <demo name="brd4180b.demo.btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature and people count, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Server"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a020f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4180b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_server/btmesh_soc_sensor_server-brd4180b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4180b.s37"/>
+  </demo>
+  <demo name="brd4181a.demo.btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature and people count, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Server"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a010f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4181a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_server/btmesh_soc_sensor_server-brd4181a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4181a.s37"/>
+  </demo>
+  <demo name="brd4181b.demo.btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature and people count, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Server"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a010f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4181b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_server/btmesh_soc_sensor_server-brd4181b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4181b.s37"/>
+  </demo>
+  <demo name="brd4182a.demo.btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature and people count, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Server"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4182a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_server/btmesh_soc_sensor_server-brd4182a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4182a.s37"/>
+  </demo>
+  <demo name="brd4183a.demo.btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature and people count, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Server"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im32.*"/>
+    <property key="core.boardCompatibility" value="brd4183a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_server/btmesh_soc_sensor_server-brd4183a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4183a.s37"/>
+  </demo>
+  <demo name="brd4183c.demo.btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature and people count, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Server"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im32.*"/>
+    <property key="core.boardCompatibility" value="brd4183c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_server/btmesh_soc_sensor_server-brd4183c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4183c.s37"/>
+  </demo>
+  <demo name="brd4184a.demo.btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature, people count, and illuminance, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Server"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4184a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_server/btmesh_soc_sensor_server-brd4184a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4184a.s37"/>
+  </demo>
+  <demo name="brd4184b.demo.btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature, people count, and illuminance, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Server"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4184b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_server/btmesh_soc_sensor_server-brd4184b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4184b.s37"/>
+  </demo>
+  <demo name="brd4186c.demo.btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature and people count, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Server"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b210f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4186c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_server/btmesh_soc_sensor_server-brd4186c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4186c.s37"/>
+  </demo>
+  <demo name="brd4187c.demo.btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature and people count, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Server"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b220f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4187c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_server/btmesh_soc_sensor_server-brd4187c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4187c.s37"/>
+  </demo>
+  <demo name="brd4188b.demo.btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature and people count, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Server"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b220f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4188b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_server/btmesh_soc_sensor_server-brd4188b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4188b.s37"/>
+  </demo>
+  <demo name="brd4305c.demo.btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature and people count, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Server"/>
+    <property key="core.partCompatibility" value=".*bgm13s22f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4305c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_server/btmesh_soc_sensor_server-brd4305c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single-352k/bootloader-storage-internal-single-352k-brd4305c.s37"/>
+  </demo>
+  <demo name="brd4306a.demo.btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature and people count, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Server"/>
+    <property key="core.partCompatibility" value=".*bgm13p22f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4306a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_server/btmesh_soc_sensor_server-brd4306a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single-352k/bootloader-storage-internal-single-352k-brd4306a.s37"/>
+  </demo>
+  <demo name="brd4308a.demo.btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature and people count, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Server"/>
+    <property key="core.partCompatibility" value=".*mgm210pa32jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_server/btmesh_soc_sensor_server-brd4308a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308a.s37"/>
+  </demo>
+  <demo name="brd4308b.demo.btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature and people count, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Server"/>
+    <property key="core.partCompatibility" value=".*mgm210pa22jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_server/btmesh_soc_sensor_server-brd4308b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308b.s37"/>
+  </demo>
+  <demo name="brd4308c.demo.btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature and people count, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Server"/>
+    <property key="core.partCompatibility" value=".*mgm210pb32jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_server/btmesh_soc_sensor_server-brd4308c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308c.s37"/>
+  </demo>
+  <demo name="brd4308d.demo.btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature and people count, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Server"/>
+    <property key="core.partCompatibility" value=".*mgm210pb22jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308d"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_server/btmesh_soc_sensor_server-brd4308d.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308d.s37"/>
+  </demo>
+  <demo name="brd4311a.demo.btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature and people count, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Server"/>
+    <property key="core.partCompatibility" value=".*bgm220pc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4311a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_server/btmesh_soc_sensor_server-brd4311a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4311a.s37"/>
+  </demo>
+  <demo name="brd4312a.demo.btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature and people count, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Server"/>
+    <property key="core.partCompatibility" value=".*bgm220sc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4312a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_server/btmesh_soc_sensor_server-brd4312a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4312a.s37"/>
+  </demo>
+  <demo name="brd4314a.demo.btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server">
+    <model:description>This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature and people count, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Sensor Server"/>
+    <property key="core.partCompatibility" value=".*bgm220pc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4314a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_sensor_server/btmesh_soc_sensor_server-brd4314a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4314a.s37"/>
+  </demo>
+  <demo name="brd2601b.demo.btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD.Push Button presses can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch Low Power"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b310f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd2601b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch_low_power/btmesh_soc_switch_low_power-brd2601b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd2601b.s37"/>
+  </demo>
+  <demo name="brd4104a.demo.btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD.Push Button presses can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch Low Power"/>
+    <property key="core.partCompatibility" value=".*efr32bg13p632f512gm48.*"/>
+    <property key="core.boardCompatibility" value="brd4104a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch_low_power/btmesh_soc_switch_low_power-brd4104a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single-352k/bootloader-storage-internal-single-352k-brd4104a-combined.s37"/>
+  </demo>
+  <demo name="brd4108a.demo.btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power">
+    <model:description>A Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD. Button presses (only PB0 is functional) can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch Low Power"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4108a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch_low_power/btmesh_soc_switch_low_power-brd4108a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4108a.s37"/>
+  </demo>
+  <demo name="brd4166a.demo.btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD.Push Button presses can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch Low Power"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p332f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4166a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch_low_power/btmesh_soc_switch_low_power-brd4166a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single/bootloader-storage-internal-single-brd4166a-combined.s37"/>
+  </demo>
+  <demo name="brd4180b.demo.btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD.Push Button presses can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch Low Power"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a020f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4180b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch_low_power/btmesh_soc_switch_low_power-brd4180b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4180b.s37"/>
+  </demo>
+  <demo name="brd4181a.demo.btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD.Push Button presses can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch Low Power"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a010f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4181a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch_low_power/btmesh_soc_switch_low_power-brd4181a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4181a.s37"/>
+  </demo>
+  <demo name="brd4181b.demo.btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD.Push Button presses can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch Low Power"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a010f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4181b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch_low_power/btmesh_soc_switch_low_power-brd4181b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4181b.s37"/>
+  </demo>
+  <demo name="brd4182a.demo.btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD.Push Button presses can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch Low Power"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4182a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch_low_power/btmesh_soc_switch_low_power-brd4182a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4182a.s37"/>
+  </demo>
+  <demo name="brd4183a.demo.btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power">
+    <model:description>A Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD. Button presses (only PB0 is functional) can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch Low Power"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im32.*"/>
+    <property key="core.boardCompatibility" value="brd4183a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch_low_power/btmesh_soc_switch_low_power-brd4183a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4183a.s37"/>
+  </demo>
+  <demo name="brd4183c.demo.btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power">
+    <model:description>A Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD. Button presses (only PB0 is functional) can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch Low Power"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im32.*"/>
+    <property key="core.boardCompatibility" value="brd4183c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch_low_power/btmesh_soc_switch_low_power-brd4183c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4183c.s37"/>
+  </demo>
+  <demo name="brd4184a.demo.btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power">
+    <model:description>A Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD. Button presses (only PB0 is functional) can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch Low Power"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4184a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch_low_power/btmesh_soc_switch_low_power-brd4184a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4184a.s37"/>
+  </demo>
+  <demo name="brd4184b.demo.btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power">
+    <model:description>A Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD. Button presses (only PB0 is functional) can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch Low Power"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4184b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch_low_power/btmesh_soc_switch_low_power-brd4184b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4184b.s37"/>
+  </demo>
+  <demo name="brd4186c.demo.btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD.Push Button presses can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch Low Power"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b210f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4186c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch_low_power/btmesh_soc_switch_low_power-brd4186c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4186c.s37"/>
+  </demo>
+  <demo name="brd4187c.demo.btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD.Push Button presses can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch Low Power"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b220f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4187c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch_low_power/btmesh_soc_switch_low_power-brd4187c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4187c.s37"/>
+  </demo>
+  <demo name="brd4188b.demo.btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD.Push Button presses can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch Low Power"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b220f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4188b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch_low_power/btmesh_soc_switch_low_power-brd4188b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4188b.s37"/>
+  </demo>
+  <demo name="brd4305c.demo.btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD.Push Button presses can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch Low Power"/>
+    <property key="core.partCompatibility" value=".*bgm13s22f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4305c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch_low_power/btmesh_soc_switch_low_power-brd4305c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single-352k/bootloader-storage-internal-single-352k-brd4305c.s37"/>
+  </demo>
+  <demo name="brd4306a.demo.btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD.Push Button presses can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch Low Power"/>
+    <property key="core.partCompatibility" value=".*bgm13p22f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4306a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch_low_power/btmesh_soc_switch_low_power-brd4306a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single-352k/bootloader-storage-internal-single-352k-brd4306a.s37"/>
+  </demo>
+  <demo name="brd4308a.demo.btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD.Push Button presses can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch Low Power"/>
+    <property key="core.partCompatibility" value=".*mgm210pa32jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch_low_power/btmesh_soc_switch_low_power-brd4308a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308a.s37"/>
+  </demo>
+  <demo name="brd4308b.demo.btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD.Push Button presses can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch Low Power"/>
+    <property key="core.partCompatibility" value=".*mgm210pa22jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch_low_power/btmesh_soc_switch_low_power-brd4308b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308b.s37"/>
+  </demo>
+  <demo name="brd4308c.demo.btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD.Push Button presses can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch Low Power"/>
+    <property key="core.partCompatibility" value=".*mgm210pb32jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch_low_power/btmesh_soc_switch_low_power-brd4308c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308c.s37"/>
+  </demo>
+  <demo name="brd4308d.demo.btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD.Push Button presses can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch Low Power"/>
+    <property key="core.partCompatibility" value=".*mgm210pb22jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308d"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch_low_power/btmesh_soc_switch_low_power-brd4308d.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308d.s37"/>
+  </demo>
+  <demo name="brd4311a.demo.btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD.Push Button presses can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch Low Power"/>
+    <property key="core.partCompatibility" value=".*bgm220pc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4311a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch_low_power/btmesh_soc_switch_low_power-brd4311a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4311a.s37"/>
+  </demo>
+  <demo name="brd4312a.demo.btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD.Push Button presses can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch Low Power"/>
+    <property key="core.partCompatibility" value=".*bgm220sc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4312a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch_low_power/btmesh_soc_switch_low_power-brd4312a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4312a.s37"/>
+  </demo>
+  <demo name="brd4314a.demo.btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power">
+    <model:description>A Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD. Button presses (only PB0 is functional) can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch Low Power"/>
+    <property key="core.partCompatibility" value=".*bgm220pc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4314a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch_low_power/btmesh_soc_switch_low_power-brd4314a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4314a.s37"/>
+  </demo>
+  <demo name="brd2601b.demo.btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. Push Button presses or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b310f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd2601b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch/btmesh_soc_switch-brd2601b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd2601b.s37"/>
+  </demo>
+  <demo name="brd4104a.demo.btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. Push Button presses or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*efr32bg13p632f512gm48.*"/>
+    <property key="core.boardCompatibility" value="brd4104a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch/btmesh_soc_switch-brd4104a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single-352k/bootloader-storage-internal-single-352k-brd4104a-combined.s37"/>
+  </demo>
+  <demo name="brd4108a.demo.btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. Push Button presses (only PB0 is functional) or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4108a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch/btmesh_soc_switch-brd4108a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4108a.s37"/>
+  </demo>
+  <demo name="brd4166a.demo.btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. Push Button presses or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p332f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4166a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch/btmesh_soc_switch-brd4166a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single/bootloader-storage-internal-single-brd4166a-combined.s37"/>
+  </demo>
+  <demo name="brd4180b.demo.btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. Push Button presses or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a020f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4180b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch/btmesh_soc_switch-brd4180b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4180b.s37"/>
+  </demo>
+  <demo name="brd4181a.demo.btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. Push Button presses or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a010f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4181a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch/btmesh_soc_switch-brd4181a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4181a.s37"/>
+  </demo>
+  <demo name="brd4181b.demo.btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. Push Button presses or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a010f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4181b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch/btmesh_soc_switch-brd4181b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4181b.s37"/>
+  </demo>
+  <demo name="brd4182a.demo.btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. Push Button presses or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4182a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch/btmesh_soc_switch-brd4182a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4182a.s37"/>
+  </demo>
+  <demo name="brd4183a.demo.btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. Push Button presses (only PB0 is functional) or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im32.*"/>
+    <property key="core.boardCompatibility" value="brd4183a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch/btmesh_soc_switch-brd4183a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4183a.s37"/>
+  </demo>
+  <demo name="brd4183c.demo.btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. Push Button presses (only PB0 is functional) or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im32.*"/>
+    <property key="core.boardCompatibility" value="brd4183c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch/btmesh_soc_switch-brd4183c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4183c.s37"/>
+  </demo>
+  <demo name="brd4184a.demo.btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. Push Button presses (only PB0 is functional) or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4184a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch/btmesh_soc_switch-brd4184a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4184a.s37"/>
+  </demo>
+  <demo name="brd4184b.demo.btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. Push Button presses (only PB0 is functional) or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4184b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch/btmesh_soc_switch-brd4184b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4184b.s37"/>
+  </demo>
+  <demo name="brd4186c.demo.btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. Push Button presses or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b210f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4186c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch/btmesh_soc_switch-brd4186c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4186c.s37"/>
+  </demo>
+  <demo name="brd4187c.demo.btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. Push Button presses or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b220f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4187c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch/btmesh_soc_switch-brd4187c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4187c.s37"/>
+  </demo>
+  <demo name="brd4188b.demo.btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. Push Button presses or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b220f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4188b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch/btmesh_soc_switch-brd4188b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4188b.s37"/>
+  </demo>
+  <demo name="brd4305c.demo.btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. Push Button presses or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*bgm13s22f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4305c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch/btmesh_soc_switch-brd4305c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single-352k/bootloader-storage-internal-single-352k-brd4305c.s37"/>
+  </demo>
+  <demo name="brd4306a.demo.btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. Push Button presses or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*bgm13p22f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4306a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch/btmesh_soc_switch-brd4306a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single-352k/bootloader-storage-internal-single-352k-brd4306a.s37"/>
+  </demo>
+  <demo name="brd4308a.demo.btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. Push Button presses or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*mgm210pa32jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch/btmesh_soc_switch-brd4308a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308a.s37"/>
+  </demo>
+  <demo name="brd4308b.demo.btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. Push Button presses or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*mgm210pa22jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch/btmesh_soc_switch-brd4308b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308b.s37"/>
+  </demo>
+  <demo name="brd4308c.demo.btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. Push Button presses or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*mgm210pb32jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch/btmesh_soc_switch-brd4308c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308c.s37"/>
+  </demo>
+  <demo name="brd4308d.demo.btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. Push Button presses or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*mgm210pb22jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308d"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch/btmesh_soc_switch-brd4308d.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308d.s37"/>
+  </demo>
+  <demo name="brd4311a.demo.btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. Push Button presses or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*bgm220pc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4311a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch/btmesh_soc_switch-brd4311a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4311a.s37"/>
+  </demo>
+  <demo name="brd4312a.demo.btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. Push Button presses or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*bgm220sc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4312a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch/btmesh_soc_switch-brd4312a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4312a.s37"/>
+  </demo>
+  <demo name="brd4314a.demo.btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch">
+    <model:description>An out-of-the-box Software Demo where the device acts as a switch. Push Button presses (only PB0 is functional) or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth Mesh - SoC Switch"/>
+    <property key="core.partCompatibility" value=".*bgm220pc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4314a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/btmesh_soc_switch/btmesh_soc_switch-brd4314a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4314a.s37"/>
+  </demo>
+</demos>

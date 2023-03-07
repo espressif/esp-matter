@@ -1,0 +1,466 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2018-2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+{
+  "psa_framework_version": 1.0,
+  "name": "TFM_SP_CRYPTO",
+  "type": "PSA-ROT",
+  "priority": "NORMAL",
+  "entry_point": "tfm_crypto_init",
+  "stack_size": "0x2000",
+  "secure_functions": [
+    {
+      "name": "TFM_CRYPTO_GET_KEY_ATTRIBUTES",
+      "signal": "TFM_CRYPTO_GET_KEY_ATTRIBUTES",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_OPEN_KEY",
+      "signal": "TFM_CRYPTO_OPEN_KEY",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_CLOSE_KEY",
+      "signal": "TFM_CRYPTO_CLOSE_KEY",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_RESET_KEY_ATTRIBUTES",
+      "signal": "TFM_CRYPTO_RESET_KEY_ATTRIBUTES",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_IMPORT_KEY",
+      "signal": "TFM_CRYPTO_IMPORT_KEY",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_DESTROY_KEY",
+      "signal": "TFM_CRYPTO_DESTROY_KEY",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_EXPORT_KEY",
+      "signal": "TFM_CRYPTO_EXPORT_KEY",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_EXPORT_PUBLIC_KEY",
+      "signal": "TFM_CRYPTO_EXPORT_PUBLIC_KEY",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_COPY_KEY",
+      "signal": "TFM_CRYPTO_COPY_KEY",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_HASH_COMPUTE",
+      "signal": "TFM_CRYPTO_HASH_COMPUTE",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_HASH_COMPARE",
+      "signal": "TFM_CRYPTO_HASH_COMPARE",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_HASH_SETUP",
+      "signal": "TFM_CRYPTO_HASH_SETUP",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_HASH_UPDATE",
+      "signal": "TFM_CRYPTO_HASH_UPDATE",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_HASH_FINISH",
+      "signal": "TFM_CRYPTO_HASH_FINISH",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_HASH_VERIFY",
+      "signal": "TFM_CRYPTO_HASH_VERIFY",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_HASH_ABORT",
+      "signal": "TFM_CRYPTO_HASH_ABORT",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_HASH_CLONE",
+      "signal": "TFM_CRYPTO_HASH_CLONE",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_MAC_COMPUTE",
+      "signal": "TFM_CRYPTO_MAC_COMPUTE",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_MAC_VERIFY",
+      "signal": "TFM_CRYPTO_MAC_VERIFY",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_MAC_SIGN_SETUP",
+      "signal": "TFM_CRYPTO_MAC_SIGN_SETUP",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_MAC_VERIFY_SETUP",
+      "signal": "TFM_CRYPTO_MAC_VERIFY_SETUP",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_MAC_UPDATE",
+      "signal": "TFM_CRYPTO_MAC_UPDATE",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_MAC_SIGN_FINISH",
+      "signal": "TFM_CRYPTO_MAC_SIGN_FINISH",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_MAC_VERIFY_FINISH",
+      "signal": "TFM_CRYPTO_MAC_VERIFY_FINISH",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_MAC_ABORT",
+      "signal": "TFM_CRYPTO_MAC_ABORT",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_CIPHER_ENCRYPT",
+      "signal": "TFM_CRYPTO_CIPHER_ENCRYPT",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_CIPHER_DECRYPT",
+      "signal": "TFM_CRYPTO_CIPHER_DECRYPT",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_CIPHER_ENCRYPT_SETUP",
+      "signal": "TFM_CRYPTO_CIPHER_ENCRYPT_SETUP",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_CIPHER_DECRYPT_SETUP",
+      "signal": "TFM_CRYPTO_CIPHER_DECRYPT_SETUP",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_CIPHER_GENERATE_IV",
+      "signal": "TFM_CRYPTO_CIPHER_GENERATE_IV",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_CIPHER_SET_IV",
+      "signal": "TFM_CRYPTO_CIPHER_SET_IV",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_CIPHER_UPDATE",
+      "signal": "TFM_CRYPTO_CIPHER_UPDATE",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_CIPHER_FINISH",
+      "signal": "TFM_CRYPTO_CIPHER_FINISH",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_CIPHER_ABORT",
+      "signal": "TFM_CRYPTO_CIPHER_ABORT",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_AEAD_ENCRYPT",
+      "signal": "TFM_CRYPTO_AEAD_ENCRYPT",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_AEAD_DECRYPT",
+      "signal": "TFM_CRYPTO_AEAD_DECRYPT",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_AEAD_ENCRYPT_SETUP",
+      "signal": "TFM_CRYPTO_AEAD_ENCRYPT_SETUP",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_AEAD_DECRYPT_SETUP",
+      "signal": "TFM_CRYPTO_AEAD_DECRYPT_SETUP",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_AEAD_GENERATE_NONCE",
+      "signal": "TFM_CRYPTO_AEAD_GENERATE_NONCE",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_AEAD_SET_NONCE",
+      "signal": "TFM_CRYPTO_AEAD_SET_NONCE",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_AEAD_SET_LENGTHS",
+      "signal": "TFM_CRYPTO_AEAD_SET_LENGTHS",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_AEAD_UPDATE_AD",
+      "signal": "TFM_CRYPTO_AEAD_UPDATE_AD",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_AEAD_UPDATE",
+      "signal": "TFM_CRYPTO_AEAD_UPDATE",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_AEAD_FINISH",
+      "signal": "TFM_CRYPTO_AEAD_FINISH",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_AEAD_VERIFY",
+      "signal": "TFM_CRYPTO_AEAD_VERIFY",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_AEAD_ABORT",
+      "signal": "TFM_CRYPTO_AEAD_ABORT",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_SIGN_HASH",
+      "signal": "TFM_CRYPTO_SIGN_HASH",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_VERIFY_HASH",
+      "signal": "TFM_CRYPTO_VERIFY_HASH",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_ASYMMETRIC_ENCRYPT",
+      "signal": "TFM_CRYPTO_ASYMMETRIC_ENCRYPT",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_ASYMMETRIC_DECRYPT",
+      "signal": "TFM_CRYPTO_ASYMMETRIC_DECRYPT",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_KEY_DERIVATION_SETUP",
+      "signal": "TFM_CRYPTO_KEY_DERIVATION_SETUP",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_KEY_DERIVATION_GET_CAPACITY",
+      "signal": "TFM_CRYPTO_KEY_DERIVATION_GET_CAPACITY",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_KEY_DERIVATION_SET_CAPACITY",
+      "signal": "TFM_CRYPTO_KEY_DERIVATION_SET_CAPACITY",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_KEY_DERIVATION_INPUT_BYTES",
+      "signal": "TFM_CRYPTO_KEY_DERIVATION_INPUT_BYTES",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_KEY_DERIVATION_INPUT_KEY",
+      "signal": "TFM_CRYPTO_KEY_DERIVATION_INPUT_KEY",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_KEY_DERIVATION_KEY_AGREEMENT",
+      "signal": "TFM_CRYPTO_KEY_DERIVATION_KEY_AGREEMENT",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_KEY_DERIVATION_OUTPUT_BYTES",
+      "signal": "TFM_CRYPTO_KEY_DERIVATION_OUTPUT_BYTES",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_KEY_DERIVATION_OUTPUT_KEY",
+      "signal": "TFM_CRYPTO_KEY_DERIVATION_OUTPUT_KEY",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_KEY_DERIVATION_ABORT",
+      "signal": "TFM_CRYPTO_KEY_DERIVATION_ABORT",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_RAW_KEY_AGREEMENT",
+      "signal": "TFM_CRYPTO_RAW_KEY_AGREEMENT",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_GENERATE_RANDOM",
+      "signal": "TFM_CRYPTO_GENERATE_RANDOM",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CRYPTO_GENERATE_KEY",
+      "signal": "TFM_CRYPTO_GENERATE_KEY",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+  ],
+  "services" : [
+    {
+      "name": "TFM_CRYPTO",
+      "sid": "0x00000080",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+  ],
+  "dependencies": [
+    "TFM_ITS_SET",
+    "TFM_ITS_GET",
+    "TFM_ITS_GET_INFO",
+    "TFM_ITS_REMOVE",
+  ]
+}

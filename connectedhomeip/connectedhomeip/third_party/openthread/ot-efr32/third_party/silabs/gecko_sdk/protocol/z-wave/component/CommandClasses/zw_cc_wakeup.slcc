@@ -1,0 +1,17 @@
+id: zw_cc_wakeup
+label: Wakeup Command Class
+category: Z-Wave|Command Classes
+description: >
+  Wake Up Command Class allows a battery-powered device to notify another device
+  (always listening), that it is awake and ready to receive any queued commands.
+  
+package: Z-Wave
+quality: production
+source:
+  - path: protocol/z-wave/ZAF/CommandClasses/WakeUp/CC_WakeUp.c
+include:
+  - path: protocol/z-wave/ZAF/CommandClasses/WakeUp/
+    file_list:
+     - path: CC_WakeUp.h
+provides:
+  - name: zw_cc_wakeup

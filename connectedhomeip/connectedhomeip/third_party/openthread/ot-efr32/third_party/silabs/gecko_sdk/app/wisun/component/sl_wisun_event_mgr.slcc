@@ -1,0 +1,35 @@
+id: "sl_wisun_event_mgr"
+label: "Event Manager"
+package: "wisun"
+description: "Manages all Wi-SUN events and provides interface for them. There are two main categories: core and socket events. Both of them have internal and external callbacks that can be implement."
+category: "Wi-SUN|Application"
+quality: "production"
+root_path: "app/wisun/component/event_manager"
+provides:
+  - name: sl_wisun_event_mgr
+
+source:
+   - path: "sl_wisun_event_mgr.c"
+
+include:
+   - path: "."
+     file_list:
+     - "path": "sl_wisun_event_mgr.h"
+
+requires:
+  - name: "sl_wisun_trace_util"
+
+ui_hints:
+  visibility: never
+
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+  - name: "event_handler"
+    value:
+      event: "internal_app_init"
+      include: "sl_wisun_event_mgr.h"
+      handler: "app_wisun_event_mgr_init"
+
+  - name: component_catalog
+    value: wisun_event_mgr

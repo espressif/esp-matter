@@ -1,0 +1,22 @@
+id: linux_arch_64
+label: Linux OS (64 bit)
+package: platform
+description: OS component for 64 bit Linux build targets.
+category: Platform|Device|Native
+quality: production
+requires:
+  - name: linux
+provides:
+  - name: linux_arch
+  - name: linux_arch_64
+toolchain_settings:
+  - option: gcc_compiler_option
+    value: "-m32"
+    condition:
+      - build_32bit
+  - option: gcc_linker_option
+    value: "-m32"
+    condition:
+      - build_32bit
+tag:
+  - device:opn:linux_64

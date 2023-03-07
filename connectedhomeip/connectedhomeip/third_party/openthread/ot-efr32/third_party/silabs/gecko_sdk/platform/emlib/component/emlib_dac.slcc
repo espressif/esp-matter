@@ -1,0 +1,33 @@
+id: emlib_dac
+label: DAC
+package: platform
+description: >
+  Digital to Analog Converter (DAC) peripheral API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_dac.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_dac.h"
+provides:
+  - name: emlib_dac
+requires:
+  - name: device
+  - name: device_has_dac
+  - name: emlib_common
+  - name: emlib_cmu
+  - name: cmsis_core
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efm32g/group-dac
+      condition: [device_sdid_71]
+    - page: emlib/api/efm32gg/group-dac
+      condition: [device_sdid_72]
+    - page: emlib/api/efm32tg/group-dac
+      condition: [device_sdid_73]
+    - page: emlib/api/efm32lg/group-dac
+      condition: [device_sdid_74]

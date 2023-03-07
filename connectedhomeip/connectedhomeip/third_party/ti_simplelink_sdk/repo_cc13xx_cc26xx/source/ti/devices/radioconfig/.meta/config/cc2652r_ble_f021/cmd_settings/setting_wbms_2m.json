@@ -1,0 +1,654 @@
+{
+    "setting": {
+        "Name": "wBMS, 2 mbps, GFSK",
+        "Description": "wBMS, LE 2M PHY (2 Msym\/s GFSK, 2 Mbps data rate) for the 2.4 GHz ISM band.",
+        "Frequency": "2440",
+        "Patch": {
+            "Define": "RF_MODE_AUTO",
+            "Cpe": "rf_patch_cpe_bt5",
+            "Mce": [],
+            "Rfe": []
+        },
+        "Command": [
+            {
+                "_name": "CMD_BLE5_RADIO_SETUP",
+                "Field": [
+                    {
+                        "_name": "commandNo",
+                        "$": "CMD_BLE5_RADIO_SETUP"
+                    },
+                    {
+                        "_name": "status",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pNextOp",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTime",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerType",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.bEnaCmd",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerNo",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.pastTrig",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "condition.rule",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "condition.nSkip",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "defaultPhy.mainMode",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "defaultPhy.coding",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "loDivider",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "config.frontEndMode",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "config.biasMode",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "config.analogCfgMode",
+                        "$": "0x00"
+                    },
+                    {
+                        "_name": "config.bNoFsPowerUp",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "txPower",
+                        "$": "0x001F"
+                    },
+                    {
+                        "_name": "pRegOverrideCommon",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pRegOverride1Mbps",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pRegOverride2Mbps",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pRegOverrideCoded",
+                        "$": "0"
+                    }
+                ],
+                "OverrideField": [
+                    {
+                        "_name": "pRegOverrideCommon",
+                        "Block": [
+                            {
+                                "_name": "override_ble5_setup_override_common.json",
+                                "Element32b": [
+                                    {
+                                        "_type": "ELEMENT",
+                                        "_comment": "DC\/DC regulator: In Tx, use DCDCCTL5[3:0]=0x3 (DITHER_EN=0 and IPEAK=3).",
+                                        "$": "0x00F388D3"
+                                    },
+                                    {
+                                        "_type": "HW_REG_OVERRIDE",
+                                        "_comment": "Bluetooth 5: Set pilot tone length to 20 us Common",
+                                        "$": "0x6024,0x2E20"
+                                    },
+                                    {
+                                        "_type": "ELEMENT",
+                                        "_comment": "Bluetooth 5: Compensate for reduced pilot tone length",
+                                        "$": "0x01280263"
+                                    },
+                                    {
+                                        "_type": "HW_REG_OVERRIDE",
+                                        "_comment": "Bluetooth 5: Default to no CTE. ",
+                                        "$": "0x5328,0x0000"
+                                    },
+                                    {
+                                        "_type": "ELEMENT",
+                                        "_comment": "Synth: Increase mid code calibration time to 5 us",
+                                        "$": "0x00058683"
+                                    },
+                                    {
+                                        "_type": "HW32_ARRAY_OVERRIDE",
+                                        "_comment": "Synth: Increase mid code calibration time to 5 us",
+                                        "$": "0x4004,1"
+                                    },
+                                    {
+                                        "_type": "ELEMENT",
+                                        "_comment": "Synth: Increase mid code calibration time to 5 us",
+                                        "$": "0x38183C30"
+                                    },
+                                    {
+                                        "_type": "HW_REG_OVERRIDE",
+                                        "_comment": "Bluetooth 5: Move synth start code",
+                                        "$": "0x4064,0x3C"
+                                    },
+                                    {
+                                        "_type": "ELEMENT",
+                                        "_comment": "Bluetooth 5: Set DTX gain -5% for 1 Mbps",
+                                        "$": "0x00E787E3"
+                                    },
+                                    {
+                                        "_type": "ELEMENT",
+                                        "_comment": "Bluetooth 5: Set DTX threshold 1 Mbps",
+                                        "$": "0x00950803"
+                                    },
+                                    {
+                                        "_type": "ELEMENT",
+                                        "_comment": "Bluetooth 5: Set DTX gain -2.5% for 2 Mbps",
+                                        "$": "0x00F487F3"
+                                    },
+                                    {
+                                        "_type": "ELEMENT",
+                                        "_comment": "Bluetooth 5: Set DTX threshold 2 Mbps",
+                                        "$": "0x012A0823"
+                                    },
+                                    {
+                                        "_type": "HW32_ARRAY_OVERRIDE",
+                                        "_comment": "Bluetooth 5: Set synth fine code calibration interval",
+                                        "$": "0x4020,1"
+                                    },
+                                    {
+                                        "_type": "ELEMENT",
+                                        "_comment": "Bluetooth 5: Set synth fine code calibration interval",
+                                        "$": "0x41005F00"
+                                    },
+                                    {
+                                        "_type": "ELEMENT",
+                                        "_comment": "Bluetooth 5: Adapt to synth fine code calibration interval",
+                                        "$": "0xC0040141"
+                                    },
+                                    {
+                                        "_type": "ELEMENT",
+                                        "_comment": "Bluetooth 5: Adapt to synth fine code calibration interval",
+                                        "$": "0x0007DD44"
+                                    },
+                                    {
+                                        "_type": "ELEMENT",
+                                        "_comment": "Bluetooth 5: Set enhanced TX shape",
+                                        "$": "0x000D8C73"
+                                    }
+                                ]
+                            },
+                            {
+                                "_name": "override_wbms_override_common.json",
+                                "Element32b": [
+                                    {
+                                        "_type": "ELEMENT",
+                                        "_comment": "wBMS: Set number of CRC bytes to 32",
+                                        "$": "0x00208113"
+                                    },
+                                    {
+                                        "_type": "HW32_ARRAY_OVERRIDE",
+                                        "_comment": "wBMS: Set CRC polyomial",
+                                        "$": "0x2004,1"
+                                    },
+                                    {
+                                        "_type": "ELEMENT",
+                                        "_comment": "wBMS: Set CRC polyomial",
+                                        "$": "0x04C11DB7"
+                                    },
+                                    {
+                                        "_type": "ELEMENT",
+                                        "_comment": "wBMS: Set CRC initialization value",
+                                        "$": "0xC0040051"
+                                    },
+                                    {
+                                        "_type": "ELEMENT",
+                                        "_comment": "wBMS: CRC initialization value",
+                                        "$": "0xFFFFFFFF"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "_name": "pRegOverride1Mbps",
+                        "Block": {
+                            "_name": "override_ble5_setup_override_1mbps.json",
+                            "Element32b": [
+                                {
+                                    "_type": "HW_REG_OVERRIDE",
+                                    "_comment": "Bluetooth 5: Set pilot tone length to 20 us",
+                                    "$": "0x5320,0x03C0"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "_comment": "Bluetooth 5: Compensate syncTimeadjust",
+                                    "$": "0x015302A3"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "_name": "pRegOverride2Mbps",
+                        "Block": {
+                            "_name": "override_wbms_override_2mbps.json",
+                            "Element32b": [
+                                {
+                                    "_type": "HW_REG_OVERRIDE",
+                                    "_comment": "Bluetooth 5: Set pilot tone length to 20 us",
+                                    "$": "0x5320,0x03C0"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "_comment": "Bluetooth 5: Compensate syncTimeAdjust",
+                                    "$": "0x00F102A3"
+                                },
+                                {
+                                    "_type": "HW_REG_OVERRIDE",
+                                    "_comment": "Bluetooth 5: increase low gain AGC delay for 2 Mbps",
+                                    "$": "0x60A4,0x7D00"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "_name": "pRegOverrideCoded",
+                        "Block": {
+                            "_name": "override_wbms_override_coded.json",
+                            "Element32b": [
+                                {
+                                    "_type": "HW_REG_OVERRIDE",
+                                    "_comment": "Bluetooth 5: Set pilot tone length to 20 us",
+                                    "$": "0x5320,0x03C0"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "_comment": "Bluetooth 5: Compensate syncTimeadjust",
+                                    "$": "0x07A902A3"
+                                },
+                                {
+                                    "_type": "HW_REG_OVERRIDE",
+                                    "_comment": "Rx: Set AGC reference level to 0x1B (default: 0x2E)",
+                                    "$": "0x609C,0x001B"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                "_name": "CMD_FS",
+                "Field": [
+                    {
+                        "_name": "commandNo",
+                        "$": "CMD_FS"
+                    },
+                    {
+                        "_name": "status",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pNextOp",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTime",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerType",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.bEnaCmd",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerNo",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.pastTrig",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "condition.rule",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "condition.nSkip",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "frequency",
+                        "$": "2440"
+                    },
+                    {
+                        "_name": "fractFreq",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "synthConf.bTxMode",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "synthConf.refFreq",
+                        "$": "0"
+                    }
+                ]
+            },
+            {
+                "_name": "CMD_PROP_TX_ADV",
+                "_function": "SendPacket",
+                "Field": [
+                    {
+                        "_name": "commandNo",
+                        "$": "CMD_PROP_TX_ADV"
+                    },
+                    {
+                        "_name": "status",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pNextOp",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTime",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerType",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.bEnaCmd",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerNo",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.pastTrig",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "condition.rule",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "condition.nSkip",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pktConf.bFsOff",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pktConf.bUseCrc",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "pktConf.bCrcIncSw",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pktConf.bCrcIncHdr",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "numHdrBits",
+                        "$": "0x18"
+                    },
+                    {
+                        "_name": "pktLen",
+                        "$": "30"
+                    },
+                    {
+                        "_name": "startConf.bExtTxTrig",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startConf.inputMode",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startConf.source",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "preTrigger.triggerType",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "preTrigger.bEnaCmd",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "preTrigger.triggerNo",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "preTrigger.pastTrig",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "preTime",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "syncWord",
+                        "_tfOverride": "no",
+                        "$": "0x930B51DE"
+                    },
+                    {
+                        "_name": "pPkt",
+                        "$": "0"
+                    }
+                ]
+            },
+            {
+                "_name": "CMD_PROP_RX_ADV",
+                "Field": [
+                    {
+                        "_name": "commandNo",
+                        "$": "CMD_PROP_RX_ADV"
+                    },
+                    {
+                        "_name": "status",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pNextOp",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTime",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerType",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.bEnaCmd",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerNo",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.pastTrig",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "condition.rule",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "condition.nSkip",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pktConf.bFsOff",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pktConf.bRepeatOk",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pktConf.bRepeatNok",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pktConf.bUseCrc",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "pktConf.bCrcIncSw",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pktConf.bCrcIncHdr",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "pktConf.endType",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pktConf.filterOp",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "rxConf.bAutoFlushIgnored",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "rxConf.bAutoFlushCrcErr",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "rxConf.bIncludeHdr",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "rxConf.bIncludeCrc",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "rxConf.bAppendRssi",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "rxConf.bAppendTimestamp",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "rxConf.bAppendStatus",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "syncWord0",
+                        "_tfOverride": "no",
+                        "$": "0x930B51DE"
+                    },
+                    {
+                        "_name": "syncWord1",
+                        "_tfOverride": "no",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "maxPktLen",
+                        "$": "512"
+                    },
+                    {
+                        "_name": "hdrConf.numHdrBits",
+                        "$": "0x18"
+                    },
+                    {
+                        "_name": "hdrConf.lenPos",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "hdrConf.numLenBits",
+                        "$": "0x9"
+                    },
+                    {
+                        "_name": "addrConf.addrType",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "addrConf.addrSize",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "addrConf.addrPos",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "addrConf.numAddr",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "lenOffset",
+                        "$": "0xFD"
+                    },
+                    {
+                        "_name": "endTrigger.triggerType",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "endTrigger.bEnaCmd",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "endTrigger.triggerNo",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "endTrigger.pastTrig",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "endTime",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pAddr",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pQueue",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pOutput",
+                        "$": "0"
+                    }
+                ]
+            }
+        ]
+    }
+}

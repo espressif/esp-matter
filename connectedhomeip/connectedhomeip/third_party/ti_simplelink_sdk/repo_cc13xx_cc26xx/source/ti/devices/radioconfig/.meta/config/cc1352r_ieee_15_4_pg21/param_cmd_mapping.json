@@ -1,0 +1,34 @@
+{
+    "mapping": {
+        "settings": {
+            "name": "IEEE 802.15.4 PHY",
+            "parameters": {
+                "parameter": [
+                    {
+                        "_names": "channel",
+                        "rfCommand": [
+                            "CMD_IEEE_RX",
+                            "CMD_IEEE_ED_SCAN"
+                        ]
+                    },
+                    {
+                        "_names": "frequency",
+                        "rfCommand": "CMD_FS"
+                    },
+                    {
+                        "_names": "txPower",
+                        "rfCommand": "CMD_RADIO_SETUP"
+                    },
+                    {
+                        "_names": "packetLengthTx",
+                        "rfCommand": "CMD_IEEE_TX"
+                    },
+                    {
+                        "_names": "modulated",
+                        "rfCommand": "CMD_TX_TEST"
+                    }
+                ]
+            }
+        }
+    }
+}

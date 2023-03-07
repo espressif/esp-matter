@@ -1,0 +1,33 @@
+id: keyscan_driver
+package: platform
+label: Keyscan
+description: Keyscan driver.
+category: Platform|Driver
+quality: production
+component_root_path: platform/driver/keyscan
+provides:
+  - name: keyscan_driver
+requires:
+  - name: emlib_common
+  - name: peripheral_keyscan
+  - name: status
+  - name: slist
+include:
+  - path: inc
+    file_list:
+      - path: keyscan_driver.h
+  - path: src
+    file_list:
+      - path: keyscan_driver_hal.h
+source:
+  - path: src/keyscan_driver.c
+  - path: src/keyscan_driver_hal.c
+template_contribution:
+  - name: event_handler
+    value:
+      event: driver_init
+      include: "keyscan_driver.h"
+      handler: sl_keyscan_driver_init
+config_file:
+  - path: config/keyscan_driver_config.h
+    file_id: keyscan_driver_config

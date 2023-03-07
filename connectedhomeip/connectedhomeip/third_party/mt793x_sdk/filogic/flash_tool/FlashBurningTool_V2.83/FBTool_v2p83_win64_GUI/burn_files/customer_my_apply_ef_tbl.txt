@@ -1,0 +1,105 @@
+[CUSTK_0]
+comment = customer key0 ,must be HEX as "0A" not "A"
+blow_enable = n
+index = 1
+len = 32
+data = 00,00,00,00,00,00,00,00,00,00,00,00,00,00,aa,cc,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+
+[CUSTK_1]
+comment = customer key1 ,must be HEX as "0A" not "A"
+blow_enable = n
+index = 3
+len = 32
+data = 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,ee,ff
+
+[RESERVED_0]
+comment = RESERVED key0 ,must be HEX as "0A" not "A"
+blow_enable = n
+index = 5
+len = 32
+data = 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+
+[RESERVED_1]
+comment = RESERVED key1 ,must be HEX as "0A" not "A"
+blow_enable = n
+index = 7
+len = 32
+data = 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+
+[SBC_PUBK_HASH0]
+comment = security boot public key0 ,must be HEX as "0A" not "A";EDCSA_P256_SHA256:write to index11-12; EDCSA_P384_SHA384:write to index11-13; EDCSA_P521_SHA512:write to index11-14
+blow_enable = n
+index = 11
+len = 32
+data = 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+
+[SBC_PUBK_HASH1]
+comment = security boot public key1 ,must be HEX as "0A" not "A"
+blow_enable = n
+index = 13
+len = 32
+data = 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+
+[SBC_EN]
+comment = enable secure boot.(1-enable, 0-disable)
+blow_enable = n
+index = 16
+len = 1
+data = 0
+
+[PL_AR_EN]
+comment = enable bootloader anti-rollback.(1-enable, 0-disable)
+blow_enable = n
+index = 22
+len = 1
+data = 1
+
+[SBC_ALGO_1]
+comment = enable SBC ALGO 1. (1-enable, 0-disable); (SBC ALGO 1|SBC ALGO 0):(00):EDCSA_P256_SHA256; (01):EDCSA_P256_SHA256; (10):EDCSA_P384_SHA384; (11):EDCSA_P521_SHA512
+blow_enable = n
+index = 26
+len = 1
+data = 0
+
+[SBC_ALGO_0]
+comment = enable SBC ALGO 0. (1-enable, 0-disable)
+blow_enable = n
+index = 90
+len = 1
+data = 0
+
+[USBDL_DIS]
+comment = disable USB download feature.(1-enable, 0-disable)
+blow_enable = n
+index = 43
+len = 1
+data = 0
+
+[UARTDL_DIS]
+comment = disable UART download feature.(1-enable, 0-disable)
+blow_enable = n
+index = 44
+len = 1
+data = 0
+
+[SBC_PUBK_HASH0_DIS]
+comment = disable SBC public key HASH0.(1-enable, 0-disable)
+blow_enable = n
+index = 49
+len = 1
+data = 0
+
+[SBC_PUBK_HASH1_DIS]
+comment = disable SBC public key HASH1.(1-enable, 0-disable)
+blow_enable = n
+index = 50
+len = 1
+data = 0
+
+[JTAG_DIS]
+comment = disable HW JTAG function.(1-enable, 0-disable)
+blow_enable = n
+index = 72
+len = 1
+data = 0
+

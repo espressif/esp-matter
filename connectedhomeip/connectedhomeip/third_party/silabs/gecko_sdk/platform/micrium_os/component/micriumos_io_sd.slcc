@@ -1,0 +1,31 @@
+id: micriumos_io_sd
+label: Micrium OS Input-Output SD Module
+package: micrium-ioxx
+description: Micrium OS IO SD
+category: Services|Micrium|IO
+quality: production
+component_root_path: platform/micrium_os/io
+source:
+  - path: source/sd/sd.c
+  - path: source/sd/sd_card.c
+  - path: source/sd/sd_io.c
+include:
+  - path: source
+    file_list:
+      - path: sd/sd_card_ctrlr_priv.h
+      - path: sd/sd_io_fnct_priv.h
+      - path: sd/sd_mem_priv.h
+      - path: sd/sd_priv.h
+  - path: include
+    file_list:
+      - path: sd.h
+      - path: sd_card.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: IO_SD
+provides:
+  - name: io_sd
+requires:
+  - name: io_core
+  - name: common_collections
+  - name: common_platform_manager

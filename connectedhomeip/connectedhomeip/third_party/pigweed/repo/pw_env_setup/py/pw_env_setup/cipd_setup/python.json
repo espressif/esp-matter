@@ -1,0 +1,21 @@
+{
+  "included_files": [
+    "black.json"
+  ],
+  "packages": [
+    {
+      "path": "infra/3pp/tools/cpython3/${platform}",
+      "platforms": [
+        "linux-amd64",
+        "linux-arm64",
+        "mac-amd64",
+        "mac-arm64",
+        "windows-amd64"
+      ],
+      "tags": [
+        "version:2@3.10.8.chromium.23"
+      ],
+      "version_file": ".versions/cpython3.cipd_version"
+    }
+  ]
+}

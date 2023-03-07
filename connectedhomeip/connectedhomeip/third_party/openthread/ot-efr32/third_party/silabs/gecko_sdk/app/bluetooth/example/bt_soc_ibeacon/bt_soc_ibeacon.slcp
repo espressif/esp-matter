@@ -1,0 +1,74 @@
+project_name: bt_soc_ibeacon
+package: Bluetooth
+label: Bluetooth - SoC iBeacon
+description: >
+  Sends non-connectable advertisements in iBeacon format.
+  The iBeacon Service gives Bluetooth accessories a simple and convenient way
+  to send iBeacons to smartphones. This example can be tested together with the
+  EFR Connect mobile app.
+category: Bluetooth Examples
+quality: production
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Bluetooth"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]
+
+component:
+  - id: bluetooth_stack
+  - id: gatt_configuration
+  - id: bluetooth_feature_legacy_advertiser
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_gatt_server
+  - id: bluetooth_feature_sm
+  - id: bluetooth_feature_system
+  - id: app_assert
+  - id: bootloader_interface
+  - id: mpu
+
+source:
+  - path: main.c
+  - path: app.c
+
+include:
+  - path: .
+    file_list:
+      - path: app.h
+
+readme:
+  - path: ../../documentation/example/soc_ibeacon/readme.md
+
+other_file:
+  - path: ../../script/create_bl_files.bat
+  - path: ../../script/create_bl_files.sh
+  - path: ../../documentation/example/soc_ibeacon/readme_img0.png
+    folder: images
+  - path: ../../documentation/example/soc_ibeacon/readme_img1.png
+    folder: images
+  - path: ../../documentation/example/soc_ibeacon/readme_img2.png
+    folder: images
+  - path: ../../documentation/example/soc_ibeacon/readme_img3.png
+    folder: images
+
+configuration:
+  - name: SL_STACK_SIZE
+    value: "2752"
+  - name: SL_HEAP_SIZE
+    value: "9200"
+  - name: SL_PSA_KEY_USER_SLOT_COUNT
+    value: "0"
+    condition:
+      - psa_crypto
+
+tag:
+  - prebuilt_demo
+  - hardware:rf:band:2400
+
+ui_hints:
+  highlight:
+    - path: config/btconf/gatt_configuration.btconf
+    - path: readme.md
+      focus: true

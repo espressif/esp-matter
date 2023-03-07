@@ -1,0 +1,64 @@
+package: Zigbee
+description: This comopnent provides a function set for implementing EZ-Mode commissioning.
+label: EZ-Mode Commissioning
+id: zigbee_ezmode_commissioning
+category: Zigbee|Cluster Library|Home Automation
+quality: extend
+provides:
+   - name: "zigbee_ezmode_commissioning"
+requires:
+   - name: "zigbee_binding"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/ezmode-commissioning/config/ezmode-commissioning-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/ezmode-commissioning/ez-mode.c
+  - path: protocol/zigbee/app/framework/plugin/ezmode-commissioning/ez-mode-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/ezmode-commissioning/ezmode-commissioning-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/ezmode-commissioning
+    file_list:
+      - path: ez-mode.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_ezmode_commissioning
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emAfPluginEzmodeCommissioningInitCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: ezmode-commissioning
+      help: ezmode-commissioning related commands.
+  - name: cli_command
+    value:
+      group: ezmode-commissioning
+      name: client
+      handler: emberAfPluginEzModeCommissioningClientCommand
+      help: Starts EZ-Mode client commissioning.
+      argument:
+      - type: uint8
+        help: The local endpoint
+      - type: uint8
+        help: EMBER_AF_EZMODE_COMMISSIONING_SERVER_TO_CLIENT or EMBER_AF_EZMODE_COMMISSIONING_CLIENT_TO_SERVER
+      - type: uint16
+        help: A list of cluster IDs
+      - type: additional
+        help: Array type argument
+  - name: cli_command
+    value:
+      group: ezmode-commissioning
+      name: server
+      handler: emberAfPluginEzModeCommissioningServerCommand
+      help: Starts EZ-Mode server commissioning.
+      argument:
+      - type: uint8
+        help: The local endpoint
+      - type: uint16
+        help: The identify time in seconds
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/ez-mode

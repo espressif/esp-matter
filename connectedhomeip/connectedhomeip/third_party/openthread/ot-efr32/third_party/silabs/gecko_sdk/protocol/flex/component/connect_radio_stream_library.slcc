@@ -1,0 +1,39 @@
+id: "connect_radio_stream_library"
+label: "Radio Stream (Library)"
+package: "Flex"
+category: "Connect"
+quality: "production"
+ui_hints:
+  visibility: never
+description: "Provides the Connect Radio Stream library."
+provides:
+  - name: "connect_radio_stream_implementation"
+requires:
+  - name: "connect_radio_stream"
+library:
+  - path: "protocol/flex/libs/libconnect-radio-stream-library-efr32xg1-iar.a"
+    condition:
+      - "toolchain_iar"
+      - device_series_1
+      - device_sdid_80
+  - path: "protocol/flex/libs/libconnect-radio-stream-library-efr32xg1x-iar.a"
+    condition:
+      - "toolchain_iar"
+      - device_series_1
+  - path: "protocol/flex/libs/libconnect-radio-stream-library-efr32xg2x-iar.a"
+    condition:
+      - "toolchain_iar"
+      - device_series_2
+  - path: "protocol/flex/libs/libconnect-radio-stream-library-efr32xg1-gcc.a"
+    condition:
+      - "toolchain_gcc"
+      - device_series_1
+      - device_sdid_80
+  - path: "protocol/flex/libs/libconnect-radio-stream-library-efr32xg1x-gcc.a"
+    condition:
+      - "toolchain_gcc"
+      - device_series_1
+  - path: "protocol/flex/libs/libconnect-radio-stream-library-efr32xg2x-gcc.a"
+    condition:
+      - "toolchain_gcc"
+      - device_series_2

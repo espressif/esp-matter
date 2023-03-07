@@ -1,0 +1,228 @@
+project_name: connect_soc_direct_mode_device
+label: "Connect - SoC Direct Mode Device"
+package: Flex
+description: "This sample app allows direct commissioning of nodes and exchange data between them via CLI commands."
+category: Connect Examples
+quality: production
+
+#---------------- UC/UP components -------------------
+component:
+  - id: radio_config_simple_connect_singlephy
+  - id: app_log
+  - id: app_assert
+  - id: component_catalog
+  # Connect components
+  - id: connect_app_framework_common
+  - id: connect_stack_common
+  - id: connect_aes_security
+  - id: connect_mac_queue
+  - id: connect_stack_counters
+  - id: connect_poll
+  - id: connect_mailbox_server
+  - id: connect_mailbox_client
+  - id: token_manager
+  - id: connect_frequency_hopping
+#---------------------- CLI --------------------------
+  - id: cli
+    instance:
+    - example
+  - id: printf
+  - id: iostream_recommended_stream
+  - id: iostream_retarget_stdio
+#------------Memory Protection Unit-------------------
+  - id: mpu
+
+
+#-------------- Restriction rules -------------------
+  - id: restrictions_profile_connect
+  - id: restrictions_profile_long_range
+
+#----------------- Provide list ----------------------
+provides:
+  - name: simple_connect_singlephy_application
+#----------------- Require list ----------------------
+requires:
+  - name: a_radio_config
+
+#----------------- Project files ---------------------
+include:
+  - path: "."
+    file_list:
+      - path: "app_init.h"
+      - path: "app_process.h"
+
+source:
+  - path: "main.c"
+  - path: "app_init.c"
+  - path: "app_process.c"
+  - path: "app_cli.c"
+    condition:
+    - "cli"
+
+other_file:
+  - path: "../../../script/connect_create_gbl_image.bat"
+  - path: "../../../script/connect_create_gbl_image.sh"
+  - path: "hw_filter_tags.yaml"
+    condition:
+      - "add_hw_filter_to_project"
+
+readme:
+  - path: ../../../documentation/example/connect/connect_soc_direct_mode_device/readme.md
+
+#----------------- Project macros --------------------
+
+
+#------------ Configuration overrides ----------------
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+  - name: SL_CLI_LOCAL_ECHO
+    value: "(1)"
+  - name: SL_IOSTREAM_USART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "(1)"
+  - name: SL_IOSTREAM_USART_VCOM_FLOW_CONTROL_TYPE
+    value: "usartHwFlowControlNone"
+  - name: SL_IOSTREAM_EUSART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "(1)"
+  - name: SL_IOSTREAM_EUSART_VCOM_FLOW_CONTROL_TYPE
+    value: "eusartHwFlowControlNone"
+  - name: APP_LOG_PREFIX_ENABLE
+    value: "0"
+  - name: "SL_HEAP_SIZE"
+    value: "8192"
+
+#-------------- Template Contribution ----------------
+template_contribution:
+#------------------ CLI commands ---------------------
+  - name: cli_command
+    value:
+      name: commission
+      handler: cli_commission
+      help: "Form network and enable permit join"
+      argument:
+      - type: uint16
+        help: "Node ID"
+      - type: uint16
+        help: "PAN ID"
+      - type: uint8
+        help: "Radio Channel"
+      - type: int16
+        help: "Transmit Power"
+  - name: cli_command
+    value:
+      name: counter
+      handler: cli_counter
+      help: "Print out the passed stack counter"
+      argument:
+      - type: uint8
+        help: "Counter type"
+  - name: cli_command
+    value:
+      name: data
+      handler: cli_data
+      help: "Send message to the given destination Node ID"
+      argument:
+      - type: uint16
+        help: "Destination Node ID"
+      - type: hex
+        help: "Payload (e.g. {AABB} even number of digits)"
+  - name: cli_command
+    value:
+      name: info
+      handler: cli_info
+      help: "MCU ID, Network state, Node ID, PAN ID, Channel ID, etc."
+  - name: cli_command
+    value:
+      name: leave
+      handler: cli_leave
+      help: "Forget the current network and revert to EMBER_NO_NETWORK"
+  - name: cli_command
+    value:
+      name: reset
+      handler: cli_reset
+      help: "Reset the hardware"
+  - name: cli_command
+    value:
+      name: set_channel
+      handler: cli_set_channel
+      help: "Set Connect channel"
+      argument:
+      - type: uint8
+        help: "Channel ID"
+  - name: cli_command
+    value:
+      name: set_key
+      handler: cli_set_security_key
+      help: "Set security key"
+      argument:
+      - type: hex
+        help: "Security key (size:EMBER_ENCRYPTION_KEY_SIZE)"
+  - name: cli_command
+    value:
+      name: unset_key
+      handler: cli_unset_security_key
+      help: "Unset current security key"
+  - name: cli_command
+    value:
+      name: set_tx_options
+      handler: cli_set_tx_option
+      help: "Set Tx options"
+      argument:
+      - type: uint8
+        help: "Security(0x01) MAC Ack(0x02) High Prio(0x04)"
+  - name: cli_command
+    value:
+      name: start_energy_scan
+      handler: cli_start_energy_scan
+      help: "Scan the energy level on the given channel"
+      argument:
+      - type: uint8
+        help: "Channel ID"
+      - type: uint8
+        help: "Number of samples"
+  - name: cli_command
+    value:
+      name: toggle_radio
+      handler: cli_toggle_radio
+      help: "Turn ON/OFF the radio for RX"
+      argument:
+      - type: uint8
+        help: "State to set Radio (OFF-0, ON-anyway)"
+  - name: cli_command
+    value:
+      name: tx_test
+      handler: cli_tx_test
+      help: "Send packets to the given destination Node ID"
+      argument:
+      - type: uint8
+        help: "Packet size"
+      - type: uint8
+        help: "Packet number"
+      - type: uint16
+        help: "Node ID"
+  - name: cli_command
+    value:
+      name: tx_test_print_enable
+      handler: cli_tx_test_print_enable
+      help: "Turn ON/OFF printing the received TX test packets"
+      argument:
+      - type: uint8
+        help: "State printing received TX packets (OFF-0, ON-anyway)"
+
+#--------------------- Toolchain ------------------------
+toolchain_settings:
+  - option: optimize
+    value: debug
+
+ui_hints:
+  highlight:
+    - path: readme.md
+      focus: true
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Connect"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]

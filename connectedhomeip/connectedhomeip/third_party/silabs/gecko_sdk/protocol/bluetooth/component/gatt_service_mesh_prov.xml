@@ -1,0 +1,21 @@
+<gatt>
+    <!--Mesh Provisioning Service-->
+  <service advertise="false" name="Mesh Provisioning Service" requirement="mandatory" sourceId="com.silabs.service.mesh_provisioning" type="primary" uuid="1827">
+    <informativeText>Abstract:  The Mesh Provisioning Service allows a Provisioning Client to provision a Provisioning Server to allow it to participate in the mesh network.  </informativeText>
+    
+    <!--Mesh Provisioning Data In-->
+    <characteristic name="Mesh Provisioning Data In" sourceId="com.silabs.characteristic.mesh_provisioning_data_in" uuid="2adb">
+      <informativeText>Abstract:  The Mesh Provisioning Data In characteristic can be written to send a Proxy PDU message containing Provisioning PDU to the Provisioning Server.  </informativeText>
+      <value length="0" type="user" variable_length="false"/>
+      <properties write_no_response="true" write_no_response_requirement="mandatory"/>
+    </characteristic>
+    
+    <!--Mesh Provisioning Data Out-->
+    <characteristic name="Mesh Provisioning Data Out" sourceId="com.silabs.characteristic.mesh_provisioning_data_out" uuid="2adc">
+      <informativeText>Abstract:  The Mesh Provisioning Data Out characteristic can be notified to send a Proxy PDU message containing Provisioning PDU from a Provisioning Server to a Provisioning Client.  </informativeText>
+      <value length="0" type="user" variable_length="false"/>
+      <properties notify="true" notify_requirement="mandatory"/>
+    </characteristic>
+  </service>
+  
+</gatt>

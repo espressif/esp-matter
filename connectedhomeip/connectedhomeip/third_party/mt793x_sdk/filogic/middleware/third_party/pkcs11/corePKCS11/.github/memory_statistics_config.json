@@ -1,0 +1,15 @@
+{
+    "lib_name": "corePKCS11",
+    "src": [
+        "source/core_pkcs11.c",
+        "source/core_pki_utils.c",
+        "source/portable/mbedtls/core_pkcs11_mbedtls.c"
+    ],
+    "include": [
+        "source/include",
+        "source/dependency/3rdparty/pkcs11",
+        "source/dependency/3rdparty/mbedtls/include",
+        "source/dependency/3rdparty/mbedtls_utils",
+        "test/unit-test/config"
+    ]
+}

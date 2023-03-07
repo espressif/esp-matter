@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="com.silabs.sdk.exx32.common.CMSIS" label="CMSIS DSP" contentRoot="$(sdkInstallationPath:default())/platform/CMSIS">
+  <property key="category" value="efm32|Common"/>
+  <includePath uri="Core/Include" />
+  <folder name="DSP" uri="DSP/Source/BasicMathFunctions" includeAllFolders="false" />
+  <folder name="DSP" uri="DSP/Source/BayesFunctions" includeAllFolders="false" />
+  <folder name="DSP" uri="DSP/Source/CommonTables" includeAllFolders="false" />
+  <folder name="DSP" uri="DSP/Source/ComplexMathFunctions" includeAllFolders="false" />
+  <folder name="DSP" uri="DSP/Source/ControllerFunctions" includeAllFolders="false" />
+  <folder name="DSP" uri="DSP/Source/DistanceFunctions" includeAllFolders="false" />
+  <folder name="DSP" uri="DSP/Source/FastMathFunctions" includeAllFolders="false" />
+  <folder name="DSP" uri="DSP/Source/FilteringFunctions" includeAllFolders="false" />
+  <folder name="DSP" uri="DSP/Source/InterpolationFunctions" includeAllFolders="false" />
+  <folder name="DSP" uri="DSP/Source/MatrixFunctions" includeAllFolders="false" />
+  <folder name="DSP" uri="DSP/Source/QuaternionMathFunctions" includeAllFolders="false" />
+  <folder name="DSP" uri="DSP/Source/StatisticsFunctions" includeAllFolders="false" />
+  <folder name="DSP" uri="DSP/Source/SupportFunctions" includeAllFolders="false" />
+  <folder name="DSP" uri="DSP/Source/SVMFunctions" includeAllFolders="false" />
+  <folder name="DSP" uri="DSP/Source/TransformFunctions" includeAllFolders="false" />
+</project>

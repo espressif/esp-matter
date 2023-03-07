@@ -1,0 +1,16 @@
+id: zw_cc_centralscene
+label:  Central Scene Command Class
+category: Z-Wave|Command Classes
+description: >
+  Central Scene Command Class is used to communicate
+  central scene activations to a central controller using the lifeline concept.
+package: Z-Wave
+quality: production
+source:
+  - path: protocol/z-wave/ZAF/CommandClasses/CentralScene/CC_CentralScene.c
+include:
+  - path: protocol/z-wave/ZAF/CommandClasses/CentralScene/
+    file_list:
+    - path: CC_CentralScene.h
+provides:
+  - name: zw_cc_centralscene

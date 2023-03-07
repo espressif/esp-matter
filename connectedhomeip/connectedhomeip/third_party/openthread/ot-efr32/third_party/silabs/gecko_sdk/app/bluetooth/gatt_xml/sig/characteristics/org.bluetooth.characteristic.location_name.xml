@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2015 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.location_name" 
+uuid="2AB5" name="Location Name" last-modified="2015-05-19" approved="Yes">
+		<InformativeText>
+			<Abstract>The Location Name characteristic describes the name of the location the device is installed in.</Abstract>
+		</InformativeText>
+	<Value>
+		<Field name="Location Name">
+			<Requirement>Mandatory</Requirement>
+			<Format>utf8s</Format>
+		</Field>
+	</Value>
+</Characteristic>

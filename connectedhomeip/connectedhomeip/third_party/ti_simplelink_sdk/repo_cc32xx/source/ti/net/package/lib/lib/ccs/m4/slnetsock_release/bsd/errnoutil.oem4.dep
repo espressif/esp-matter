@@ -1,0 +1,18 @@
+package/lib/lib/ccs/m4/slnetsock_release/bsd/errnoutil.oem4: bsd/errnoutil.c /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ccs/errno.h bsd/errnoutil.h slneterr.h /opt/conan/ticodegen/include/errno.h /opt/conan/ticodegen/include/stdint.h /opt/conan/ticodegen/include/_ti_config.h /opt/conan/ticodegen/include/_tls.h /opt/conan/ticodegen/include/_stdint40.h /opt/conan/ticodegen/include/sys/stdint.h /opt/conan/ticodegen/include/linkage.h /opt/conan/ticodegen/include/sys/cdefs.h /opt/conan/ticodegen/include/sys/_types.h /opt/conan/ticodegen/include/machine/_stdint.h /opt/conan/ticodegen/include/sys/_stdint.h /opt/conan/ticodegen/include/machine/_types.h /opt/conan/ticodegen/include/machine/_limits.h 
+bsd/errnoutil.c:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ccs/errno.h:
+bsd/errnoutil.h:
+slneterr.h:
+/opt/conan/ticodegen/include/errno.h:
+/opt/conan/ticodegen/include/stdint.h:
+/opt/conan/ticodegen/include/_ti_config.h:
+/opt/conan/ticodegen/include/_tls.h:
+/opt/conan/ticodegen/include/_stdint40.h:
+/opt/conan/ticodegen/include/sys/stdint.h:
+/opt/conan/ticodegen/include/linkage.h:
+/opt/conan/ticodegen/include/sys/cdefs.h:
+/opt/conan/ticodegen/include/sys/_types.h:
+/opt/conan/ticodegen/include/machine/_stdint.h:
+/opt/conan/ticodegen/include/sys/_stdint.h:
+/opt/conan/ticodegen/include/machine/_types.h:
+/opt/conan/ticodegen/include/machine/_limits.h:

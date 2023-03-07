@@ -1,0 +1,35 @@
+
+ ADCIF_IRQn = 0 /*!< Device Interrupt ADCIF */
+,ASP_IRQn = 1 /*!< Device Interrupt ASP */
+,BBPLL_IRQn = 2 /*!< Device Interrupt BBPLL */
+,DMAS_IRQn = 3 /*!< Device Interrupt DMAS */
+,ES_IRQn = 4 /*!< Device Interrupt ES */
+,GPIO_IRQn = 5 /*!< Device Interrupt GPIO */
+,GPMICRO_IRQn = 6 /*!< Device Interrupt GPMICRO */
+,I2CM_IRQn = 7 /*!< Device Interrupt I2CM */
+,I2CSL_IRQn = 8 /*!< Device Interrupt I2CSL */
+,I2SM_IRQn = 9 /*!< Device Interrupt I2SM */
+,IPCEXT2X_IRQn = 10 /*!< Device Interrupt IPCEXT2X */
+,IPCGPM2X_IRQn = 11 /*!< Device Interrupt IPCGPM2X */
+,IPCX2INT_IRQn = 12 /*!< Device Interrupt IPCX2INT */
+,IR_IRQn = 13 /*!< Device Interrupt IR */
+,KEYPAD_IRQn = 14 /*!< Device Interrupt KEYPAD */
+,MRI_IRQn = 15 /*!< Device Interrupt MRI */
+,PARBLE_IRQn = 16 /*!< Device Interrupt PARBLE */
+,PARFCS_IRQn = 17 /*!< Device Interrupt PARFCS */
+,PHY_IRQn = 18 /*!< Device Interrupt PHY */
+,PWMS_IRQn = 19 /*!< Device Interrupt PWMS */
+,QTA_IRQn = 20 /*!< Device Interrupt QTA */
+,RCI_IRQn = 21 /*!< Device Interrupt RCI */
+,RPA_IRQn = 22 /*!< Device Interrupt RPA */
+,SECPROC_IRQn = 23 /*!< Device Interrupt SECPROC */
+,SPIM_IRQn = 24 /*!< Device Interrupt SPIM */
+,SPISL_IRQn = 25 /*!< Device Interrupt SPISL */
+,SSP_IRQn = 26 /*!< Device Interrupt SSP */
+,STBC_IRQn = 27 /*!< Device Interrupt STBC */
+,TIMERS_IRQn = 28 /*!< Device Interrupt TIMERS */
+,TRC_IRQn = 29 /*!< Device Interrupt TRC */
+,UART0_IRQn = 30 /*!< Device Interrupt UART0 */
+,UART1_IRQn = 31 /*!< Device Interrupt UART1 */
+,WATCHDOG_IRQn = 32 /*!< Device Interrupt WATCHDOG */
+

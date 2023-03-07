@@ -1,0 +1,680 @@
+"*********Silicon Labs RSIA7 PCB antenna*********"
+////Antenna Gain - 2.4GHz: 0.71dBi////
+////Antenna Gain -   5GHz: 1.25dBi////
+
+CC0_CC1_1P4_WLAN_2.4GHz_20MHz = {
+3,//NUM_OF_REGIONS
+    FCC, 0xB,//NUM_OF_CHANNELS
+//   rate,  11b, 11g, 11n
+        1,  28,  26,  22,
+        2,  28,  28,  26,
+        3,  28,  30,  30,
+        4,  28,  32,  34,
+        5,  28,  36,  36,
+        6,  28,  36,  36,
+        7,  28,  36,  36,
+        8,  28,  32,  34,
+        9,  28,  28,  30,
+        10, 28,  24,  26,
+        11, 26,  20,  18,
+    ETSI,0x11,
+       255, 32,  34, 34,
+    TELEC,0x11,
+       255, 36,  36, 36,
+};
+
+// 20MHz 5G power table for different rates and regions
+CC0_CC1_1P4_WLAN_5GHz_20MHz = {
+3,
+FCC, 0x6,
+    1,  7, 8, //band 1
+    2,  12, 12, //band 2  
+  100,  13, 13, //band 3  
+    3,  10, 9, //band 3 
+  149,  13, 14, //band 4  
+    4,  13, 14, //band 4  
+ETSI, 0x5,
+  1, 14, 13, //band 1
+  2, 13, 13, //band 2 
+  3, 15, 15, //band 3 
+140, 15,  14   //band 4
+  4, 11,  11, //band 4 
+
+TELEC, 0x4, 
+  1, 12, 12, //band 1
+  2, 11, 11, //band 2 
+  3, 13, 12, //band 3 
+  4, 13, 12, //band 4 
+};
+
+
+CC0_CC1_1P4_BT_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+FCC,         17,
+ETSI,        6,
+TELEC,      16,
+WORLDWIDE,  11,
+};
+
+CC0_CC1_BT_OFFSET = {
+4,//NUM_OF_REGIONS
+FCC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power_offset
+     255,       0,
+       0,       0,
+      39,       0,
+      78,       0,
+ETSI,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+       0,       0,
+      39,       0,
+      78,       0,
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,       0,
+        0,       0,
+       39,       1,
+       78,       2,
+WORLDWIDE,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+        0,      0,
+       39,      0,
+       78,      0,
+};
+
+CC0_CC1_1P4_BLE_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+FCC,        15,
+ETSI,        5,
+TELEC,       9,
+WORLDWIDE,  20,
+};
+
+CC0_CC1_BLE_OFFSET = {
+4,//NUM_OF_REGIONS
+FCC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power_offset
+      255,      0,
+       0,       1,
+      20,       1,
+      39,       7,
+
+ETSI,
+4,
+//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+       0,       0,
+      20,       0,
+      39,       0,
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,       0,
+        0,       1,
+       20,       1,
+       39,       0,
+WORLDWIDE,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,       0,
+        0,       0,
+       20,       0,
+       39,       0,
+};
+
+
+
+"*********SMARTEQ 4211613980 PIFA antenna*********"
+// Antenna Gain - 2.4GHz : 0dBi
+// Antenna Gain -  5GHz  : 2dBi
+
+CC0_CC1_1P4_WLAN_2.4GHz_20MHz = {
+3,//NUM_OF_REGIONS
+    FCC, 0xB,//NUM_OF_CHANNELS
+//   rate,  11b, 11g, 11n
+        1,  28,  36,  22,
+        2,  30,  36,  24,
+        3,  30,  36,  28,
+        4,  30,  36,  32,
+        5,  30,  36,  36,
+        6,  30,  36,  36,
+        7,  30,  36,  36,
+        8,  30,  36,  34,
+        9,  30,  34,  32,
+        10, 30,  34,  30,
+        11, 30,  32,  28,
+    ETSI,0x11,
+       255, 34,  34, 34,
+    TELEC,0x11,
+       255, 36,  36, 36,
+};
+
+// 20MHz 5G power table for different rates and regions
+CC0_CC1_1P4_WLAN_5GHz_20MHz = {
+3,
+FCC, 0x6,
+    1,   8,  8, //band 1
+    2,  12, 12, //band 2  
+  100,  13, 13, //band 3  
+    3,  13, 13, //band 3  
+  149,  14, 14, //band 4  
+    4,  14, 14, //band 4
+ETSI, 0x5,
+  1, 14,  14, //band 1
+  2, 13,  13, //band 2  
+  3, 15,  14, //band 3  
+140, 15,  14, //band 4 
+  4, 11,  10, //band 4  
+TELEC, 0x4,
+  1, 12, 12, //band 1
+  2, 11, 11, //band 2 
+  3, 13, 12, //band 3 
+  4, 14, 13, //band 4 
+};
+
+CC0_CC1_1P4_BT_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+FCC,        18,
+ETSI,        6,
+TELEC,      16,
+WORLDWIDE,  11,
+};
+
+CC0_CC1_BT_OFFSET = {
+4,//NUM_OF_REGIONS
+FCC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power_offset
+     255,       0,
+       0,       0,
+      39,       2,
+      78,       3,
+ETSI,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+       0,       0,
+      39,       0,
+      78,       0,
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,       0,
+        0,       0,
+       39,       1,
+       78,       2,
+WORLDWIDE,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+        0,      0,
+       39,      0,
+       78,      0,
+};
+
+CC0_CC1_1P4_BLE_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+FCC,        18,
+ETSI,        5,
+TELEC,       9,
+WORLDWIDE,  20,
+};
+
+CC0_CC1_BLE_OFFSET = {
+4,//NUM_OF_REGIONS
+FCC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power_offset
+      255,      0,
+       0,       1,
+      20,       1,
+      39,       2,
+ETSI,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power_offset
+      255,      0,
+       0,       0,
+      20,       0,
+      39,       0,
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,       0,
+        0,       1,
+       20,       1,
+       39,       0,
+WORLDWIDE,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,       0,
+        0,       0,
+       20,       0,
+       39,       0,
+};
+
+
+
+"*********MARS-31A8 PIFA antenna*********"
+//Antenna Gain - 2.4GHz : 2 dBi
+//Antenna Gain -  5GHz  : 2 dBi
+
+CC0_CC1_1P4_WLAN_2.4GHz_20MHz = {
+3,//NUM_OF_REGIONS
+    FCC, 0xB,//NUM_OF_CHANNELS
+//   rate,  11b, 11g, 11n
+        1,  28,  32,  32,
+        2,  30,  32,  34,
+        3,  30,  32,  34,
+        4,  30,  32,  34,
+        5,  30,  32,  34,
+        6,  30,  30,  34,
+        7,  30,  32,  34,
+        8,  30,  32,  32,
+        9,  30,  32,  30,
+        10, 30,  32,  30,
+        11, 28,  32,  28,
+    ETSI,0x11,
+       255, 30,  32, 34,
+    TELEC,0x11,
+       255, 34,  36, 36,
+};
+
+// 20MHz 5G power table for different rates and regions
+CC0_CC1_1P4_WLAN_5GHz_20MHz = {
+3,
+FCC, 0x6,
+    1,  12, 13, //band 1
+    2,  12, 21, //band 2  
+  100,  10, 13, //band 3  
+    3,  13, 13, //band 3  
+  149,  14, 14, //band 4  
+    4,  14, 14, //band 4  
+TELEC, 0x4,
+  1, 12, 12, //band 1
+  2, 11, 11, //band 2 
+  3, 13, 12, //band 3 
+  4, 13, 12, //band 4 
+
+ETSI, 0x5,
+  1, 13, 14, //band 1
+  2, 13, 13, //band 2 
+  3, 15, 14, //band 3 
+140, 15, 14, //band 4 
+  4, 11, 11, //band 4 
+};
+
+CC0_CC1_1P4_BT_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+FCC,        17,
+ETSI,        6,
+TELEC,      16,
+WORLDWIDE,  11,
+};
+
+CC0_CC1_BT_OFFSET = {
+4,//NUM_OF_REGIONS
+FCC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power_offset
+     255,       0,
+       0,       3,
+      39,       3,
+      78,       0,
+ETSI,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+       0,       0,
+      39,       0,
+      78,       0,
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+       0,       0,
+       39,      0,
+       78,      1,
+WORLDWIDE,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+        0,      0,
+       39,      0,
+       78,      0,
+};
+
+CC0_CC1_1P4_BLE_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+FCC,        16,
+ETSI,        3,
+TELEC,       8,
+WORLDWIDE,  20,
+};
+
+CC0_CC1_BLE_OFFSET = {
+4,//NUM_OF_REGIONS
+FCC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power_offset
+      255,      0,
+       0,       3,
+      20,       3,
+      39,       0,
+ETSI,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+       0,       1,
+      20,       1,
+      39,       1,
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,       3,
+       0,        0,
+       20,       0,
+       39,       0,
+WORLDWIDE,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,       0,
+        0,       0,
+       20,       0,
+       39,       0,
+};
+
+
+
+"*********TAOGLAS GW.71.5153 Dipole antenna*********"
+////Antenna Gain - 2.4GHz : 3.80dBi////						
+////Antenna Gain -  5GHz  : 5.50dBi////						
+            
+CC0_CC1_1P4_WLAN_2.4GHz_20MHz = {           
+3,//NUM_OF_REGIONS            
+    FCC, 0xB,//NUM_OF_CHANNELS            
+//   rate,  11b, 11g, 11n           
+        1,  28,  26,  24,           
+        2,  28,  30,  28,           
+        3,  28,  32,  30,           
+        4,  28,  34,  32,           
+        5,  28,  34,  34,           
+        6,  28,  36,  36,           
+        7,  28,  36,  36,           
+        8,  28,  34,  34,           
+        9,  28,  32,  32,           
+        10, 28,  30,  30,           
+        11, 30,  26,  26,           
+    ETSI,0x11,            
+       255, 28,  32, 32,          
+    TELEC,0x11,             
+       255, 28,  34, 34,          
+};            
+            
+// 20MHz 5G power table for different rates and regions           
+CC0_CC1_1P4_WLAN_5GHz_20MHz = {           
+3,            
+FCC, 0x6,           
+    1,   8,  8, //band 1            
+    2,  12, 12, //band 2            
+  100,  13, 13, //band 3            
+    3,  10, 10, //band 3            
+  149,  14, 14, //band 4            
+    4,  14, 14, //band 4            
+ETSI, 0x5,            
+    1,  14, 14, //band 1            
+    2,  12, 12, //band 2            
+    3,  12, 12, //band 3            
+  140,  12, 12, //band 4            
+    4,   8,  8, //band 4            
+TELEC,0x4,            
+    1, 11,  11, //band 1            
+    2, 11,  11, //band 2            
+    3, 13,  12, //band 3            
+    4, 13,  12, //band 4            
+};            
+            
+CC0_CC1_1P4_BT_MAXPOWER = {           
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,           
+FCC,        15,           
+ETSI,        2,           
+TELEC,      16,           
+WORLDWIDE,  11,           
+};            
+            
+CC0_CC1_BT_OFFSET = {           
+4,//NUM_OF_REGIONS            
+FCC,            
+4,//NUM_OF_CHANNELS           
+//channel_num tx_power_offset           
+     255,       0,  
+       0,       0,            
+      39,       0,            
+      78,       0,            
+ETSI,           
+4,//NUM_OF_CHANNELS           
+//channel_num tx_power            
+      255,      0,
+       0,       0,            
+      39,       0,            
+      78,       0,            
+TELEC,            
+4,//NUM_OF_CHANNELS           
+//channel_num tx_power            
+      255,      0,
+       0,       0,            
+       39,      0,            
+       78,      2,            
+WORLDWIDE,            
+4,//NUM_OF_CHANNELS           
+//channel_num tx_power            
+      255,      0,      
+        0,      0,            
+       39,      0,            
+       78,      0,            
+};            
+          
+CC0_CC1_1P4_BLE_MAXPOWER = {            
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,           
+FCC,        17,           
+ETSI,        2,           
+TELEC,       8,           
+WORLDWIDE,  20,           
+};            
+            
+CC0_CC1_BLE_OFFSET = {            
+4,//NUM_OF_REGIONS            
+FCC,            
+4,//NUM_OF_CHANNELS           
+//channel_num tx_power_offset           
+      255,      0,
+       0,       1,            
+      20,       1,            
+      39,       6,            
+            
+ETSI,           
+4,//NUM_OF_CHANNELS           
+//channel_num tx_power            
+      255,      0,
+       0,       0,            
+      20,       0,            
+      39,       0,            
+            
+TELEC,            
+4,//NUM_OF_CHANNELS           
+//channel_num tx_power            
+      255,      0,
+       0,       1,            
+       20,      0,            
+       39,      1,            
+WORLDWIDE,            
+4,//NUM_OF_CHANNELS           
+//channel_num tx_power            
+      255,      0,
+        0,      0,            
+       20,      0,            
+       39,      0,            
+};            
+            
+            
+
+"*********Inside WLAN PRO-IS-299 Dipole antenna*********"
+////Antenna Gain - 2.4GHz : 2.50dBi////						
+////Antenna Gain -  5GHz  : 1.60dBi////						
+            
+CC0_CC1_1P4_WLAN_2.4GHz_20MHz = {           
+3,//NUM_OF_REGIONS            
+    FCC, 0xB,//NUM_OF_CHANNELS            
+//   rate,  11b, 11g, 11n           
+        1,  30,  36,  36,           
+        2,  30,  36,  36,           
+        3,  30,  36,  36,           
+        4,  30,  36,  36,           
+        5,  30,  36,  36,           
+        6,  30,  36,  36,           
+        7,  30,  36,  36,           
+        8,  30,  36,  36,           
+        9,  30,  34,  36,           
+        10, 32,  32,  36,           
+        11, 34,  28,  36,           
+    ETSI,0x11,            
+       255, 30,  34, 34,          
+                
+    TELEC,0x11,           
+       255, 34,  36, 36,          
+};            
+            
+            
+// 20MHz 5G power table for different rates and regions           
+CC0_CC1_1P4_WLAN_5GHz_20MHz = {           
+3,            
+FCC, 0x6,           
+    1,  7,   8, //band 1            
+    2,  12, 12, //band 2            
+  100,  15, 13, //band 3            
+    3,  10, 10, //band 3            
+  140,  14, 14, //band 4            
+    4,  14, 14, //band 4            
+ETSI, 0x5,            
+    1,  14, 14, //band 1            
+    2,  12, 12, //band 2            
+    3,  15, 15, //band 3            
+  140,  15, 13, //band 4            
+    4,  11, 11, //band 4  
+TELEC,0x4,            
+  1, 11, 11, //band 1           
+  2, 11, 11, //band 2           
+  3, 13, 12, //band 3           
+  4, 14, 12, //band 4             
+};            
+            
+            
+            
+CC0_CC1_1P4_BT_MAXPOWER = {           
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,           
+FCC,        17,           
+ETSI,        5,           
+TELEC,      16,           
+WORLDWIDE,  11,           
+};            
+            
+CC0_CC1_BT_OFFSET = {           
+4,//NUM_OF_REGIONS            
+FCC,            
+4,//NUM_OF_CHANNELS           
+//channel_num tx_power_offset           
+     255,       0,  
+       0,       0,            
+      39,       0,            
+      78,       0,            
+ETSI,           
+4,//NUM_OF_CHANNELS           
+//channel_num tx_power            
+      255,      0,
+       0,       0,            
+      39,       0,            
+      78,       0,            
+TELEC,            
+4,//NUM_OF_CHANNELS           
+//channel_num tx_power            
+      255,      0,
+       0,       0,            
+       39,      1,            
+       78,      2,            
+WORLDWIDE,            
+4,//NUM_OF_CHANNELS           
+//channel_num tx_power            
+      255,      0,      
+        0,      0,            
+       39,      0,            
+       78,      0,            
+};            
+            
+          
+CC0_CC1_1P4_BLE_MAXPOWER = {            
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,           
+FCC,        18,           
+ETSI,        3,           
+TELEC,       8,           
+WORLDWIDE,  20,           
+};            
+            
+CC0_CC1_BLE_OFFSET = {            
+4,//NUM_OF_REGIONS            
+FCC,            
+4,//NUM_OF_CHANNELS           
+//channel_num tx_power_offset           
+      255,      0,
+       0,       0,            
+      20,       0,            
+      39,       1,            
+            
+ETSI,           
+4,//NUM_OF_CHANNELS           
+//channel_num tx_power            
+      255,      0,
+       0,       1,            
+      20,       1,            
+      39,       1,            
+TELEC,            
+4,//NUM_OF_CHANNELS           
+//channel_num tx_power            
+      255,      3,
+       0,       0,            
+       20,      0,            
+       39,      0,            
+WORLDWIDE,            
+4,//NUM_OF_CHANNELS           
+//channel_num tx_power            
+      255,      0,
+        0,      0,            
+       20,      0,            
+       39,      0,            
+};                    
+
+
+
+
+Use the TAOGLAS GW.71.5153 Dipole antenna TELEC Power table for following Antennas:
+1)M7R1229C   :  PIFA Antenna   :: -1 dBi
+2)M7R1277A   :  PCB Trace Antenna   :: 1.0 dBi
+3)M7R1314A   :  PCB Trace Antenna   :: 2.5 dBi
+4)HW-TABG3-RSMA_En  :  Dipole Antenna   :: 2 dBi
+5)T13-047-1085(1019-012A)  :  Dipole Antenna   :: 2.14 dBi
+6)T13-047-1086(1019-014A)  :  Dipole Antenna   :: 2.14 dBi
+7)TCF-6840RSXX-999  :  Dipole Antenna   :: 3 dBi
+8)TWF-HP01RS2X-999  :  Dipole Antenna   :: 2 dBi
+9)PRO-EX-286     :  Dipole Antenna   :: 3 dBi
+10)TE 2195630-1  :  Dipole Antenna   :: -2 dBi
+
+
+
+            
+

@@ -1,0 +1,47 @@
+id: iostream_usart
+label: "IO Stream: USART"
+package: platform
+description: IO Stream over Universal Synchronous Asynchronous Receiver Transceiver (USART) communication protocol.
+category: Services|IO Stream
+quality: production
+instantiable:
+  prefix: inst
+root_path: platform/service/iostream
+config_file:
+  - path: "config/s0/sl_iostream_usart_{{instance}}_config.h"
+    file_id: iostream_usart_config
+    condition: [device_series_0]
+  - path: "config/s1/sl_iostream_usart_{{instance}}_config.h"
+    file_id: iostream_usart_config
+    condition: [device_series_1]
+  - path: "config/s2/sl_iostream_usart_{{instance}}_config.h"
+    file_id: iostream_usart_config
+    condition: [device_series_2]
+provides:
+  - name: iostream_usart
+    allow_multiple: true
+  - name: iostream_transport
+    allow_multiple: true
+requires:
+  - name: iostream_usart_core
+  - name: device_has_usart
+template_contribution:
+  - name: iostream_usart_instances
+    value: "{{instance}}"
+  - name: event_handler
+    value:
+      event: iostream_instance_init
+      include: sl_iostream_init_usart_instances.h
+      handler: sl_iostream_usart_init_instances
+  - name: iostream_instance_info
+    value:
+      include: sl_iostream_init_usart_instances.h
+      handler: "sl_iostream_instance_{{instance}}_info"
+  - name: power_manager_handler
+    value:
+      event: sleep_on_isr_exit
+      include: sl_iostream_init_usart_instances.h
+      handler: "sl_iostream_usart_{{instance}}_sleep_on_isr_exit"
+documentation:
+    docset: gecko-platform
+    document: service/api/group-iostream-usart

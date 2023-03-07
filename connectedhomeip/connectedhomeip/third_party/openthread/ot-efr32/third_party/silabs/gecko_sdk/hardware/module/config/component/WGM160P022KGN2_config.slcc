@@ -1,0 +1,24 @@
+!!omap
+- id: WGM160P022KGN2_config
+- label: WGM160P022KGN2 config
+- description: Configuration files for WGM160P022KGN2
+- package: platform
+- category: Platform|Device|WGM160|Config
+- quality: production
+- ui_hints:
+    visibility: never
+- root_path: hardware/module/config
+- requires:
+  - name: wgm160p022kgn2
+- provides:
+  - name: WGM160P022KGN2_config
+- config_file:
+  - override:
+      component: iot_flash
+      file_id: iot_flash_cfg
+      instance: msc
+    path: WGM160P022KGN2/iot_flash_cfg_msc.h
+  - override:
+      component: rail_util_pa
+      file_id: rail_util_pa_config
+    path: WGM160P022KGN2/sl_rail_util_pa_config.h

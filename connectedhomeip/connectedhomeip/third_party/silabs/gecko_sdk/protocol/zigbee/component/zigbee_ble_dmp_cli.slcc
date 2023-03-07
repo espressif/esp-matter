@@ -1,0 +1,355 @@
+id: "zigbee_ble_dmp_cli"
+label: "Zigbee BLE DMP Command Line Interface"
+package: "Zigbee"
+category: "Zigbee|Zigbee 3.0"
+quality: "production"
+
+description: "Zigbee Bluetooth LE DMP Command Line Interface"
+provides:
+  - name: "zigbee_ble_dmp_cli"
+requires:
+  - name: "zigbee_app_framework_common"
+  - name: "zigbee_zcl_framework_core"
+  - name: "bluetooth_stack"
+
+source:  
+  - path: "protocol/zigbee/app/framework/plugin-soc/ble_cli/sl_dmp_zigbee_ble_cli.c"
+    condition: 
+      - "cli"
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_ble_dmp_cli
+
+# CLI Commands < plugin ble >
+  - name: cli_group
+    value:
+      group: plugin
+      name: ble
+      help: Contributes CLI commands to be used for initiating actions at the Bluetooth LE stack.
+  
+  - name: cli_command
+    value:
+      group: ble
+      name: hello
+      handler: emberAfPluginBleHelloCommand
+      help: Checks if the Bluetooth LE stack is functional
+
+# CLI Commands < plugin ble get >
+  - name: cli_group
+    value:
+      group: ble
+      name: get
+      help: Gets command group.
+
+  - name: cli_command
+    value:
+      group: get
+      name: address
+      handler: emberAfPluginBleGetAddressCommand
+      help: Displays the Bluetooth LE address of the node.
+
+# CLI Commands < plugin ble gap >
+  - name: cli_group
+    value:
+      group: ble
+      name: gap
+      help: Generic Access Profile (GAP) related CLI commands
+
+  - name: cli_command
+    value:
+      group: gap
+      name: print-connections
+      help: Prints active connections.
+      handler: sl_dmp_print_connections
+
+  - name: cli_command
+    value:
+      group: gap
+      name: stop-advertising
+      help: Stops advertising on advertising handle.
+      handler: emberAfPluginBleStopAdvertising
+      argument:
+      - type: uint8
+        help: "Advertisement handle"
+
+  - name: cli_command
+    value:
+      group: gap
+      name: set-mode
+      handler: emberAfPluginBleSetGapModeCommand
+      help: Sets the GAP mode (advertising handle,discoverable, connectable).
+      argument:
+      - type: uint8
+        help: "Advertising handle"
+      - type: uint8
+        help: "The GAP discoverable mode 0=non discoverable, 1=limited discoverable, 2=general discoverable, 3=broadcast, 4=user data"
+      - type: uint8
+        help: "The GAP connectable mode 0=non-connectable, 1=directed connectable, 2=undirected connectable, 3=scannable non connectable"
+
+  - name: cli_command
+    value:
+      group: gap
+      name: set-bt5-mode
+      handler: emberAfPluginBleSetBt5GapModeCommand
+      help: Sets the BT5 GAP mode (advertising handle,discoverable, connectable, max-events, address-type).
+      argument:
+      - type: uint8
+        help: "Advertising handle"
+      - type: uint8
+        help: "The GAP discoverable mode: 0=non discoverable, 1=limited discoverable, 2=general discoverable, 3=broadcast, 4=user data"
+      - type: uint8
+        help: "The GAP connectable mode: 0=non connectable, 1=directed connectable, 2=undirected connectable, 3=scannable non connectable"
+      - type: uint16
+        help: "The maximum number of events to process"
+      - type: uint8
+        help: "Address type: 0=public, 1=random, 2=public identity, 3=random identity, 16=classic bluetooth"
+
+  - name: cli_command
+    value:
+      group: gap
+      name: discover
+      handler: emberAfPluginBleGapDiscoverCommand
+      help: Starts the GAP Discovery procedure (discovery_mode).
+      argument:
+      - type: uint8
+        help: "The GAP discovery mode: 0=only limited discoverable devices, 1=limited and generic discoverable devices, 2=all devices"
+    condition:
+      - "bluetooth_feature_scanner"
+
+  - name: cli_command
+    value:
+      group: gap
+      name: conn-open
+      handler: emberAfPluginBleGapConnectionOpenCommand
+      help: Opens GAP Connection (address, address_type).
+      argument:
+      - type: hex
+        help: "The BLE address of the target device"
+      - type: uint8
+        help: "The address type: 0=public, 1=random, 2=public resolved by the stack, 3=public resolved by the stack, 16=classic bluetooth"
+
+  - name: cli_command
+    value:
+      group: gap
+      name: set-adv-params
+      handler: emberAfPluginBleSetAdvertisementParamsCommand
+      help: Sets the GAP advertisement parameters (advertising handle,min-interval, max-interval, channel-map).
+      argument:
+      - type: uint8
+        help: "Advertising handle"
+      - type: uint16
+        help: "Minimum connection interval"
+      - type: uint16
+        help: "Maximum connection interval"
+      - type: uint8
+        help: "Channel map indicating which of three channels will be used"
+
+  - name: cli_command
+    value:
+      group: gap
+      name: set-conn-params
+      handler: emberAfPluginBleGapSetConnectionParamsCommand
+      help: Sets the GAP advertisement parameters (min-interval, max-interval, slave-latency, supervision-timeout).
+      argument:
+      - type: uint16
+        help: "Minimum connection event interval"
+      - type: uint16
+        help: "Maximum connection event interval"
+      - type: uint16
+        help: "Number of connection intervals the slave can skip"
+      - type: uint16
+        help: "Time before the connection is dropped"
+
+  - name: cli_command
+    value:
+      group: gap
+      name: update-conn-params
+      handler: emberAfPluginBleConnectionSetParamsCommand
+      help: Sets the GAP advertisement parameters (connection handle, min-interval, max-interval, slave-latency, supervision-timeout).
+      argument:
+      - type: uint16
+        help: "Connection handle"
+      - type: uint16
+        help: "Minimum connection event interval"
+      - type: uint16
+        help: "Maximum connection event interval"
+      - type: uint16
+        help: "Number of connection intervals the slave can skip"
+      - type: uint16
+        help: "Time before the connection is dropped"
+
+# CLI Commands < plugin ble sm >
+  - name: cli_group
+    value:
+      group: ble
+      name: sm
+      help: "Security related commands - See https://docs.silabs.com/bluetooth/latest/sm"
+
+  - name: cli_command
+    value:
+      group: sm
+      name: increase-security
+      handler: emberAfPluginBleSecurityManagerIncreaseSecurityCommand
+      help: Increases the security level (conn handle). 
+      argument:
+      - type: uint8
+        help: "Connection handle for which we want to increase the security level"
+
+  - name: cli_command
+    value:
+      group: sm
+      name: list-all-bondings
+      handler: emberAfPluginBleSecurityManagerListAllBondingsCommand
+      help: Sends a command to get all the current bondings.
+
+  - name: cli_command
+    value:
+      group: sm
+      name: delete-bonding
+      handler: emberAfPluginBleSecurityManagerDeleteBondingCommand
+      help: Deletes bonding (bonding handle).
+      argument:
+      - type: uint8
+        help: "The bonding handle to be deleted"
+
+  - name: cli_command
+    value:
+      group: sm
+      name: configure
+      handler: emberAfPluginBleSecurityManagerConfigureCommand
+      help: Configures security requirements and I/O capabilities of the systemc(flags, io_capability).
+      argument:
+      - type: uint8
+        help: "Security requirement bitmask."
+      - type: uint8
+        help: "I/O Capabilities"
+
+  - name: cli_command
+    value:
+      group: sm
+      name: delete-all-bondings
+      handler: emberAfPluginBleSecurityManagerDeleteAllBondingsCommand
+      help: Deletes all bondings.
+
+  - name: cli_command
+    value:
+      group: sm
+      name: set-bondable-mode
+      handler: emberAfPluginBleSecurityManagerSetBondableModeCommand
+      help: Sets the bondable mode.
+
+  - name: cli_command
+    value:
+      group: sm
+      name: confirm-passkey
+      handler: emberAfPluginBleSecurityManagerConfirmPasskeyCommand
+      help: Accepts or rejects the reported passkey confirm value (connection-handle, confirm/reject).
+      argument:
+      - type: uint8
+        help: "Connection handle"
+      - type: uint8
+        help: "Confirm = 1, Reject = 0"
+
+  - name: cli_command
+    value:
+      group: sm
+      name: enter-passkey
+      handler: emberAfPluginBleSecurityManagerEnterPasskeyCommand
+      help: Enters a passkey after receiving a passkey request event (connection, passkey).
+      argument:
+      - type: uint8
+        help: "Connection handle"
+      - type: uint32
+        help: "Passkey"
+
+# CLI Commands < plugin ble gatt >
+  - name: cli_group
+    value:
+      group: ble
+      name: gatt
+      help: "Generic Attribute Profile (GATT) commands."
+
+  - name: cli_command
+    value:
+      group: gatt
+      name: discover-primary-services
+      handler: emberAfPluginBleGattDiscoverPrimaryServicesCommand
+      help: GATT discovery of primary services (connection-handle).
+      argument:
+      - type: uint8
+        help: "Connection handle on which discovery should be performed"
+
+
+  - name: cli_command
+    value:
+      group: gatt
+      name: discover-characteristics
+      handler: emberAfPluginBleGattDiscoverCharacteristicsCommand
+      help: GATT discovery of characteristics (connection-handle). 
+      argument:
+      - type: uint8
+        help: "Connection handle on which discovery should be performed"
+      - type: uint32
+        help: "Service handle on which discovery should be performed"
+
+  - name: cli_command
+    value:
+      group: gatt
+      name: set-characteristic-notification
+      handler: emberAfPluginBleGattSetCharacteristicNotificationCommand
+      help: GATT set characteristic notification (connection-handle, characteristic-handle, flags).
+      argument:
+      - type: uint8
+        help: "Connection handle for which the notification should be set"
+      - type: uint8
+        help: "Characteristic handle to set notification for"
+      - type: uint8
+        help: "0=disable, 1=notification, 2=indication"
+
+  - name: cli_command
+    value:
+      group: gatt
+      name: write-characteristic
+      handler: emberAfPluginBleGattWriteCharacteristicValueCommand
+      help: GATT write characteristic value (connection-handle, characteristic-handle, value-len, value-data).
+      argument:
+      - type: uint8
+        help: "Connection handle"
+      - type: uint8
+        help: "Characteristic handle"
+      - type: uint8
+        help: "Length of data"
+      - type: uint8
+        help: "Value of data"
+
+  - name: cli_command
+    value:
+      group: gatt
+      name: close
+      handler: emberAfPluginBleConnectionCloseCommand
+      help: Closes BLE connection (connection-handle).
+      argument:
+      - type: uint8
+        help: "Connection handle"
+
+# CLI Commands < plugin ble system >
+  - name: cli_group
+    value:
+      group: ble
+      name: system
+      help: "Bluetooth LE system commands."
+
+  - name: cli_command
+    value:
+      group: system
+      name: set-tx-power
+      handler: emberAfPluginBleSetTxPowerCommand
+      help: Sets the TX power (tx-power).
+      argument:
+      - type: int16
+        help: "TX power to be set in 0.1dBm steps"
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/ble-dmp-cli

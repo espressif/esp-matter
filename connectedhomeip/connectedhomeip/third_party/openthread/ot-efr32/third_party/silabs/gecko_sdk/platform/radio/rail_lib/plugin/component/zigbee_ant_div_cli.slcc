@@ -1,0 +1,55 @@
+id: zigbee_ant_div_cli
+label: Zigbee Utility, Antenna Diversity CLI
+description: Zigbee antenna diversity CLI
+package: platform
+category: Platform|Radio
+quality: production
+requires:
+  - name: rail_util_ant_div
+  - name: cli
+  - name: zigbee_debug_print
+provides:
+  - name: zigbee_ant_div_cli
+source:
+  - path: platform/radio/rail_lib/plugin/rail_util_ant_div/sl_zigbee_ant_div_cli.c
+template_contribution:
+# CLI Commands < plugin antenna >
+  - name: cli_group
+    value:
+      group: plugin
+      name: antenna
+      help: The antenna commands allow you run-time reconfiguration of the antenna plugin
+# CLI Commands < plugin antenna get-antenna-tx-mode >
+  - name: cli_command
+    value:
+      group: antenna
+      name: get-antenna-tx-mode
+      handler: emberAfPluginAntennaGetAntennaTxMode
+      help: Get the TX antenna mode
+# CLI Commands < plugin antenna set-antenna-tx-mode >
+  - name: cli_command
+    value:
+      group: antenna
+      name: set-antenna-tx-mode
+      handler: emberAfPluginAntennaSetAntennaTxMode
+      help: Set the TX antenna mode
+      argument:
+        - type: uint8
+          help: "Configure the TX antenna mode(0-don't switch,1-primary,2-secondary,3-TX antenna diversity)."
+# CLI Commands < plugin antenna get-antenna-rx-mode >
+  - name: cli_command
+    value:
+      group: antenna
+      name: get-antenna-rx-mode
+      handler: emberAfPluginAntennaGetAntennaRxMode
+      help: Get the RX antenna mode
+# CLI Commands < plugin antenna set-antenna-rx-mode >
+  - name: cli_command
+    value:
+      group: antenna
+      name: set-antenna-rx-mode
+      handler: emberAfPluginAntennaSetAntennaRxMode
+      help: Set the RX antenna mode
+      argument:
+        - type: uint8
+          help: "Configure the RX antenna mode(0-don't switch,1-primary,2-secondary,3-RX antenna diversity)."

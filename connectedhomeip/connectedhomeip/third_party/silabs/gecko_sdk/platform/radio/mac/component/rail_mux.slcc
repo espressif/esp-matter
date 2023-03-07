@@ -1,0 +1,46 @@
+id: "rail_mux"
+label: "RAIL 802.15.4 Multiplexer"
+version: 1
+package: platform
+category: Radio|Mac
+quality: "alpha"
+description: "Implements a RAIL Multiplexer Layer that enables supports for multiple 802.15.4-based protocols."
+provides:
+  - name: "rail_mux"
+
+requires:
+  - name: "legacy_hal"
+  - name: "rail_lib"
+  - name: rail_util_ieee802154_phy_select
+    
+include:
+  - path: "platform/radio/mac"
+  - path: "platform/radio/mac/rail_mux"
+    file_list:
+      - path: sl_rail_mux.h
+      - path: sl_rail_mux_rename.h
+  # TODO: temporary, clean this up
+  - path: "platform/radio/rail_lib/plugin"
+  - path: platform/radio/rail_lib/plugin/coexistence/protocol/ieee802154_uc
+  - path: platform/radio/rail_lib/common
+    file_list:
+      - path: "rail_module.h"
+
+source:
+  - path: "platform/radio/mac/rail_mux/sl_rail_mux.c"
+
+template_contribution:
+  - name: component_catalog
+    value: rail_multiplexer
+  - name: event_handler
+    value:
+      event: platform_init
+      include: "sl_rail_mux.h"
+      handler: sli_rail_mux_local_init
+    priority: -9999
+  - name: rail_util_ieee802154_phy_select_callbacks
+    value:
+      include: sl_rail_mux.h
+      runtime_phy_select_stack_support: 1
+      update_active_radio_config: sl_rail_mux_update_active_radio_config
+    priority: -9020

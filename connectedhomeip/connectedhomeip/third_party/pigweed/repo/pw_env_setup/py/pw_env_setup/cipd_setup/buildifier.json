@@ -1,0 +1,17 @@
+{
+  "packages": [
+    {
+      "path": "infra/3pp/tools/buildifier/${platform}",
+      "platforms": [
+        "linux-amd64",
+        "linux-arm64",
+        "mac-amd64",
+        "mac-arm64",
+        "windows-amd64"
+      ],
+      "tags": [
+        "version:2@5.1.0"
+      ]
+    }
+  ]
+}

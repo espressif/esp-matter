@@ -1,0 +1,162 @@
+package: Zigbee
+description: A component implementing the client-side functionality of the Green Power
+  cluster.
+label: Green Power Client
+quality: production
+id: zigbee_green_power_client
+category: Zigbee|Green Power
+provides:
+   - name: "zigbee_green_power_client"
+requires:
+   - name: "zigbee_gp"
+   - name: "zigbee_gp_util"
+   - name: "zigbee_green_power_common"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/green-power-client/config/green-power-client-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/green-power-client/green-power-client.c
+  - path: protocol/zigbee/app/framework/plugin/green-power-client/green-power-client-cli.c
+    condition:
+      - "cli"
+include:
+  - path: protocol/zigbee/app/framework/plugin/green-power-client
+    file_list:
+      - path: green-power-client.h
+  - path: protocol/zigbee/stack/gp
+    file_list:
+      - path: gp-proxy-table.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_green_power_client
+  - name: cluster_service
+    value:
+       cluster_id: "0x0021"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "CLIENT"
+       service_function: "emberAfGreenPowerClusterClientCommandParse"    
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emberAfPluginGreenPowerClientInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: local_data_init
+      function_name: emberAfPluginGreenPowerClientInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: init_done
+      function_name: emberAfPluginGreenPowerClientInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: retrieve_attribute_and_craft_response
+      function_name: emAfPluginGreenPowerClientRetrieveAttributeAndCraftResponse    
+  - name: zigbee_stack_callback
+    value:
+      callback_type: stack_status
+      function_name: emAfPluginGreenPowerClientStackStatusCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: d_gp_sent
+      function_name: emAfPluginGreenPowerClientDGpSentCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: gpep_incoming_message
+      function_name: emAfPluginGreenPowerClientGpepIncomingMessageCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: green-power-client
+      help: green-power-client related commands
+  - name: cli_command
+    value:
+      group: green-power-client
+      name: set-proxy-entry
+      handler: emberAfPluginGreenPowerClientSetProxyEntry
+      help: Sets a proxy table entry.
+      argument:
+      - type: uint8
+        help: Index to proxy table
+      - type: uint32
+        help: GPD Source ID
+      - type: uint16
+        help: Sinks node address
+      - type: uint32
+  - name: cli_command
+    value:
+      group: green-power-client
+      name: add-sink
+      handler: emberAfPluginGreenPowerClientAddSink
+      help: Adds a sink for a given GPD.
+      argument:
+      - type: uint32
+        help: GPD Source ID
+      - type: hex
+        help: Sinks IEEE address
+  - name: cli_command
+    value:
+      group: green-power-client
+      name: add-group-sink
+      handler: emberAfPluginGreenPowerClientAddGroupcastSink
+      help: Adds a groupcast sink for a given GPD.
+      argument:
+      - type: uint32
+        help: GPD Source ID
+      - type: uint16
+        help: Sink group
+  - name: cli_command
+    value:
+      group: green-power-client
+      name: rm-gpd
+      handler: emberAfPluginGreenPowerClientRemoveProxyTableEntry
+      help: Removes a given GPD from the proxy table.
+      argument:
+      - type: uint32
+        help: GPD Source ID
+  - name: cli_command
+    value:
+      group: green-power-client
+      name: rm-sink
+      handler: emberAfPluginGreenPowerClientAddSink
+      help: Removes a sink for a given GPD.  If it is the last sink, removes the proxy table entry.
+      argument:
+      - type: uint32
+        help: GPD Source ID
+      - type: hex
+        help: Sinks IEEE address
+  - name: cli_command
+    value:
+      group: green-power-client
+      name: print-proxy-table
+      handler: emberAfPluginGreenPowerClientPrintProxyTable
+      help: Prints the proxy table.
+  - name: cli_command
+    value:
+      group: green-power-client
+      name: clear-proxy-table
+      handler: emberAfPluginGreenPowerClientClearProxyTable
+      help: Clears the proxy table.
+  - name: cli_command
+    value:
+      group: green-power-client
+      name: duplicate-filter-test
+      handler: emberAfPluginGreenPowerClientDuplicateFilteringTest
+      help: Used to instrument the current device receiving a message, in order to test the duplicate message filtering functionality.
+      argument:
+      - type: uint8
+      - type: uint32
+        help: Source ID of the fake incoming message
+      - type: uint8
+  - name: cli_command
+    value:
+      group: green-power-client
+      name: set-key
+      handler: emberAfPluginGreenPowerClientSetKey
+      help: Used to set the key for a proxy table entry.
+      argument:
+      - type: uint8
+      - type: hex
+        help: Source ID of the fake incoming message
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/green-power-client

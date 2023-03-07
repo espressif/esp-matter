@@ -1,0 +1,50 @@
+﻿<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster xmlns:zcl="http://zigbee.org/zcl/clusters"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:type="http://zigbee.org/zcl/types"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd"
+  id="0009" revision="1" name="Alarms">
+  <classification role="application" picsCode="ALM" primaryTransaction="2" />
+  <server>
+    <attributes>
+      <attribute id="0000" name="AlarmCount" type="uint16" default="0" />
+    </attributes>
+    <commands>
+      <command id="00" name="ResetAlarm" required="true">
+        <fields>
+          <field name="AlarmCode" type="enum8" />
+          <field name="ClusterIdentifier" type="clusterId" />
+        </fields>
+      </command>
+      <command id="01" name="ResetAllAlarms" required="true" />
+      <command id="02" name="GetAlarm" />
+      <command id="03" name="ResetAlarmLog" />
+    </commands>
+  </server>
+  <client>
+    <commands>
+      <command id="00" name="Alarm" required="true">
+        <fields>
+          <field name="AlarmCode" type="enum8" />
+          <field name="ClusterIdentifier" type="clusterId" />
+        </fields>
+      </command>
+      <command id="01" name="GetAlarmResponse">
+        <fields>
+          <field name="Status" type="zclStatus" />
+          <field name="AlarmCode" type="enum8" presentIf="Status = 0" />
+          <field name="ClusterIdentifier" type="clusterId" presentIf="Status = 0" />
+          <field name="TimeStamp" type="uint32" presentIf="Status = 0" />
+        </fields>
+      </command>
+    </commands>
+  </client>
+</zcl:cluster>

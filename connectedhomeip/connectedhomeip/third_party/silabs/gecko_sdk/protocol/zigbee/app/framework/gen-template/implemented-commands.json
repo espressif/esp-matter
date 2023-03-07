@@ -1,0 +1,1094 @@
+[
+  {
+    "clusterCode": "0x0000",
+    "commandCode": "0x00",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0003",
+    "commandCode": "0x00",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0003",
+    "commandCode": "0x01",
+    "value": true,
+    "source": "client"
+  },  
+  {
+    "clusterCode": "0x0004",
+    "commandCode": "0x01",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0004",
+    "commandCode": "0x02",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0004",
+    "commandCode": "0x03",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0004",
+    "commandCode": "0x04",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0004",
+    "commandCode": "0x05",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0005",
+    "commandCode": "0x01",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0005",
+    "commandCode": "0x02",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0005",
+    "commandCode": "0x03",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0005",
+    "commandCode": "0x04",
+    "value": true,
+    "source": "client"
+  },
+{
+    "clusterCode": "0x0005",
+    "commandCode": "0x05",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0005",
+    "commandCode": "0x06",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0005",
+    "commandCode": "0x40",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0005",
+    "commandCode": "0x41",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0005",
+    "commandCode": "0x42",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0006",
+    "commandCode": "0x00",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0006",
+    "commandCode": "0x01",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0006",
+    "commandCode": "0x02",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0006",
+    "commandCode": "0x40",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0006",
+    "commandCode": "0x41",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0006",
+    "commandCode": "0x42",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0008",
+    "commandCode": "0x00",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0008",
+    "commandCode": "0x01",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0008",
+    "commandCode": "0x02",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0008",
+    "commandCode": "0x03",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0008",
+    "commandCode": "0x04",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0008",
+    "commandCode": "0x05",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0008",
+    "commandCode": "0x06",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0008",
+    "commandCode": "0x07",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0020",
+    "commandCode": "0x00",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0020",
+    "commandCode": "0x01",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0020",
+    "commandCode": "0x02",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0020",
+    "commandCode": "0x03",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0021",
+    "commandCode": "0x00",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0021",
+    "commandCode": "0x00",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0021",
+    "commandCode": "0x04",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0021",
+    "commandCode": "0x05",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0021",
+    "commandCode": "0x09",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0021",
+    "commandCode": "0x0A",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x00",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x01",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x03",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x04",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x05",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x06",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x07",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x08",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x0B",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x0C",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x0D",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x0E",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x0F",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x10",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x11",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x12",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x13",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x14",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x15",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x16",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x17",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x18",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x19",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x1A",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x1B",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x1C",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x1D",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0101",
+    "commandCode": "0x0E",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0103",
+    "commandCode": "0x00",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0103",
+    "commandCode": "0x01",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0300",
+    "commandCode": "0x00",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0300",
+    "commandCode": "0x01",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0300",
+    "commandCode": "0x02",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0300",
+    "commandCode": "0x03",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0300",
+    "commandCode": "0x04",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0300",
+    "commandCode": "0x05",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0300",
+    "commandCode": "0x06",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0300",
+    "commandCode": "0x07",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0300",
+    "commandCode": "0x08",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0300",
+    "commandCode": "0x09",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0500",
+    "commandCode": "0x00",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0700",
+    "commandCode": "0x00",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0700",
+    "commandCode": "0x01",
+     "value": true,
+    "source": "client"
+  },    
+  {
+    "clusterCode": "0x0700",
+    "commandCode": "0x02",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0700",
+    "commandCode": "0x03",
+    "value": true,
+    "source": "client"
+  }, 
+  {
+    "clusterCode": "0x0700",
+    "commandCode": "0x04",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0700",
+    "commandCode": "0x05",
+     "value": true,
+    "source": "client"
+  },    
+  {
+    "clusterCode": "0x0700",
+    "commandCode": "0x06",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0700",
+    "commandCode": "0x07",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0700",
+    "commandCode": "0x08",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0700",
+    "commandCode": "0x09",
+    "value": true,
+    "source": "client"
+  },    
+  {
+    "clusterCode": "0x0700",
+    "commandCode": "0x0A",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0700",
+    "commandCode": "0x0B",
+    "value": true,
+    "source": "client"
+  },
+  {
+    "clusterCode": "0x0700",
+    "commandCode": "0x0C",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0700",
+    "commandCode": "0x0D",
+    "value": true,
+    "source": "client"
+  },    
+  {
+    "clusterCode": "0x0700",
+    "commandCode": "0x0E",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0700",
+    "commandCode": "0x0F",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0700",
+    "commandCode": "0x10",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0701",
+    "commandCode": "0x00",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0701",
+    "commandCode": "0x01",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0701",
+    "commandCode": "0x02",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0702",
+    "commandCode": "0x00",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0702",
+    "commandCode": "0x03",
+    "value": true,
+    "source": "client"
+  },
+ { 
+    "clusterCode": "0x0702",
+    "commandCode": "0x07",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0702",
+    "commandCode": "0x08",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0702",
+    "commandCode": "0x09",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0702",
+    "commandCode": "0x0A",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0702",
+    "commandCode": "0x0B",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0702",
+    "commandCode": "0x0C",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0702",
+    "commandCode": "0x0D",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0702",
+    "commandCode": "0x0E",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0703",
+    "commandCode": "0x00",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0703",
+    "commandCode": "0x01",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0704",
+    "commandCode": "0x00",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0704",
+    "commandCode": "0x01",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0704",
+    "commandCode": "0x02",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0704",
+    "commandCode": "0x03",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0705",
+    "commandCode": "0x00",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0705",
+    "commandCode": "0x01",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0705",
+    "commandCode": "0x02",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0705",
+    "commandCode": "0x03",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0705",
+    "commandCode": "0x04",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0705",
+    "commandCode": "0x05",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0705",
+    "commandCode": "0x06",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0705",
+    "commandCode": "0x07",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0705",
+    "commandCode": "0x08",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0705",
+    "commandCode": "0x0A",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0707",
+    "commandCode": "0x00",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0707",
+    "commandCode": "0x01",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0707",
+    "commandCode": "0x02",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0707",
+    "commandCode": "0x03",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0707",
+    "commandCode": "0x04",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0707",
+    "commandCode": "0x05",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0708",
+    "commandCode": "0x00",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0708",
+    "commandCode": "0x01",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0708",
+    "commandCode": "0x02",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0708",
+    "commandCode": "0x03",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0708",
+    "commandCode": "0x04",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0708",
+    "commandCode": "0x05",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0709",
+    "commandCode": "0x00",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0709",
+    "commandCode": "0x01",
+    "value": true,
+    "source": "client"
+  },      
+  { 
+    "clusterCode": "0x070B",
+    "commandCode": "0x00",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0800",
+    "commandCode": "0x00",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0800",
+    "commandCode": "0x01",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0800",
+    "commandCode": "0x02",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0800",
+    "commandCode": "0x03",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x0800",
+    "commandCode": "0x04",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x1000",
+    "commandCode": "0x41",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0x1000",
+    "commandCode": "0x42",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x00",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x01",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x02",
+    "value": true,
+    "source": "client"
+  },   
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x03",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x04",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x05",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x06",
+    "value": true,
+    "source": "client"
+  },   
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x07",
+    "value": true,
+    "source": "client"
+  },    
+   { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x08",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x09",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x0A",
+    "value": true,
+    "source": "client"
+  },   
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x0B",
+    "value": true,
+    "source": "client"
+  },    
+   { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x0C",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x0D",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x0E",
+    "value": true,
+    "source": "client"
+  },   
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x0F",
+    "value": true,
+    "source": "client"
+  },    
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x10",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x11",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x12",
+    "value": true,
+    "source": "client"
+  },   
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x13",
+    "value": true,
+    "source": "client"
+  },    
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x14",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x15",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x16",
+    "value": true,
+    "source": "client"
+  },   
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x17",
+    "value": true,
+    "source": "client"
+  },    
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x18",
+    "value": true,
+    "source": "client"
+  },
+   { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x19",
+    "value": true,
+    "source": "client"
+  },    
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x1A",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x1B",
+    "value": true,
+    "source": "client"
+  },    
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x1C",
+    "value": true,
+    "source": "client"
+  },
+    { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x1D",
+    "value": true,
+    "source": "client"
+  },    
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x1E",
+    "value": true,
+    "source": "client"
+  },
+  { 
+    "clusterCode": "0xFC57",
+    "commandCode": "0x1F",
+    "value": true,
+    "source": "client"
+  }   
+]

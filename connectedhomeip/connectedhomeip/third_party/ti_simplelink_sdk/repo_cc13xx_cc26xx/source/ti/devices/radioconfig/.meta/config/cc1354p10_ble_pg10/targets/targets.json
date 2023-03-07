@@ -1,0 +1,19 @@
+{
+    "targets": {
+        "Default": "..\/..\/cc1354p10\/targets\/target_lp_cc1354p10_1_2_4_ghz.json:LP_EM_CC1354P10_1",
+        "VirtualTarget": [
+            {
+                "_name": "LP_EM_CC1354P10_1",
+                "Target": "..\/..\/cc1354p10\/targets\/target_lp_cc1354p10_1_2_4_ghz.json"
+            },
+            {
+                "_name": "LP_EM_CC1354P10_6",
+                "Target": "..\/..\/cc1354p10\/targets\/target_lp_cc1354p10_6_2_4_ghz.json"
+            },
+            {
+                "_name": "LP_CC1354P10_1_RGZ",
+                "Target": "..\/..\/cc1354p10\/targets\/target_lp_cc1354p10_1_rgz_2_4_ghz.json"
+            }
+        ]
+    }
+}

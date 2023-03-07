@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>   
+<project id="SDK.HAL.COEX.RAIL">
+  <folder name="coexistence" partCompatibility="mcu.arm.efr32.*">
+    <file name="coexistence-802154.c" uri="$(sdkInstallationPath)/platform/base/hal/plugin/coexistence/protocol/ieee802154/coexistence-802154.c"/>
+    <file name="coexistence-hal.c" uri="$(sdkInstallationPath)/platform/radio/rail/plugin/coexistence/hal/efr32/coexistence-hal.c"/>
+    <file name="coexistence.c" uri="$(sdkInstallationPath)/platform/radio/rail/plugin/coexistence/common/coexistence.c"/>
+  </folder>
+</project>

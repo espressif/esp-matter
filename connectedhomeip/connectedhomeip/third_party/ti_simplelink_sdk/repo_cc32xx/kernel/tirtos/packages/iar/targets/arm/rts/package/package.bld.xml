@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/build.dtd -->
+<package name="iar.targets.arm.rts" version="1, 0, 0" producerId="undefined">
+    <units>
+        <module name="Settings"/>
+        <module name="VectorTable"/>
+    </units>
+    <sources>
+        <srcFile name="package.bld"/>
+        <srcFile name="linkcmd.xdt"/>
+        <srcFile name="package/package_iar.targets.arm.rts.c"/>
+        <srcFile name="xdc/runtime/Assert.c"/>
+        <srcFile name="xdc/runtime/Core-mem.c"/>
+        <srcFile name="xdc/runtime/Core-smem.c"/>
+        <srcFile name="xdc/runtime/Core-label.c"/>
+        <srcFile name="xdc/runtime/Core-params.c"/>
+        <srcFile name="xdc/runtime/Diags.c"/>
+        <srcFile name="xdc/runtime/Error.c"/>
+        <srcFile name="xdc/runtime/Gate.c"/>
+        <srcFile name="xdc/runtime/GateNull.c"/>
+        <srcFile name="xdc/runtime/HeapMin.c"/>
+        <srcFile name="xdc/runtime/HeapStd.c"/>
+        <srcFile name="xdc/runtime/Log.c"/>
+        <srcFile name="xdc/runtime/LoggerBuf.c"/>
+        <srcFile name="xdc/runtime/LoggerCallback.c"/>
+        <srcFile name="xdc/runtime/LoggerSys.c"/>
+        <srcFile name="xdc/runtime/Memory.c"/>
+        <srcFile name="xdc/runtime/Registry.c"/>
+        <srcFile name="xdc/runtime/Rta.c"/>
+        <srcFile name="xdc/runtime/Startup.c"/>
+        <srcFile name="xdc/runtime/System.c"/>
+        <srcFile name="xdc/runtime/SysCallback.c"/>
+        <srcFile name="xdc/runtime/SysMin.c"/>
+        <srcFile name="xdc/runtime/SysStd.c"/>
+        <srcFile name="xdc/runtime/Text.c"/>
+        <srcFile name="xdc/runtime/Timestamp.c"/>
+        <srcFile name="xdc/runtime/TimestampNull.c"/>
+        <srcFile name="xdc/runtime/TimestampStd.c"/>
+        <srcFile name="xdc/runtime/xdc_init.cpp"/>
+        <srcFile name="xdc/runtime/knl/Cache.c"/>
+        <srcFile name="xdc/runtime/knl/GateThread.c"/>
+        <srcFile name="xdc/runtime/knl/Semaphore.c"/>
+        <srcFile name="xdc/runtime/knl/SyncNull.c"/>
+        <srcFile name="xdc/runtime/knl/GateH.c"/>
+        <srcFile name="xdc/runtime/knl/SemProcess.c"/>
+        <srcFile name="xdc/runtime/knl/Sync.c"/>
+        <srcFile name="xdc/runtime/knl/SyncSemThread.c"/>
+        <srcFile name="xdc/runtime/knl/GateProcess.c"/>
+        <srcFile name="xdc/runtime/knl/SemThread.c"/>
+        <srcFile name="xdc/runtime/knl/SyncGeneric.c"/>
+        <srcFile name="xdc/runtime/knl/Thread.c"/>
+        <srcFile name="xdc/runtime/knl/CacheSupportNull.c"/>
+        <srcFile name="xdc/runtime/knl/GateThreadSupportNull.c"/>
+        <srcFile name="xdc/runtime/knl/GateProcessSupportNull.c"/>
+        <srcFile name="cstartup_M.c"/>
+        <srcFile name="iar_xdc_init.c"/>
+        <srcFile name="cmain.s"/>
+        <srcFile name="boot.s"/>
+        <srcFile name="VectorTable.c"/>
+    </sources>
+    <configscripts>
+    </configscripts>
+    <makefiles>
+        <srcFile name="package.mak" src="package.bld"/>
+        <srcFile name="package/package.xdc.dep" src="package.xdc"/>
+        <srcFile name="package/package.cfg.dep" src="package.xdc"/>
+        <srcFile name="lib/debug/iar.targets.arm.rts.arm4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/package/package_iar.targets.arm.rts.orm4.dep" src="package/package_iar.targets.arm.rts.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/Assert.orm4.dep" src="xdc/runtime/Assert.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/Core-mem.orm4.dep" src="xdc/runtime/Core-mem.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/Core-smem.orm4.dep" src="xdc/runtime/Core-smem.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/Core-label.orm4.dep" src="xdc/runtime/Core-label.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/Core-params.orm4.dep" src="xdc/runtime/Core-params.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/Diags.orm4.dep" src="xdc/runtime/Diags.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/Error.orm4.dep" src="xdc/runtime/Error.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/Gate.orm4.dep" src="xdc/runtime/Gate.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/GateNull.orm4.dep" src="xdc/runtime/GateNull.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/HeapMin.orm4.dep" src="xdc/runtime/HeapMin.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/HeapStd.orm4.dep" src="xdc/runtime/HeapStd.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/Log.orm4.dep" src="xdc/runtime/Log.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/LoggerBuf.orm4.dep" src="xdc/runtime/LoggerBuf.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/LoggerCallback.orm4.dep" src="xdc/runtime/LoggerCallback.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/LoggerSys.orm4.dep" src="xdc/runtime/LoggerSys.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/Memory.orm4.dep" src="xdc/runtime/Memory.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/Registry.orm4.dep" src="xdc/runtime/Registry.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/Rta.orm4.dep" src="xdc/runtime/Rta.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/Startup.orm4.dep" src="xdc/runtime/Startup.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/System.orm4.dep" src="xdc/runtime/System.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/SysCallback.orm4.dep" src="xdc/runtime/SysCallback.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/SysMin.orm4.dep" src="xdc/runtime/SysMin.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/SysStd.orm4.dep" src="xdc/runtime/SysStd.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/Text.orm4.dep" src="xdc/runtime/Text.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/Timestamp.orm4.dep" src="xdc/runtime/Timestamp.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/TimestampNull.orm4.dep" src="xdc/runtime/TimestampNull.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/TimestampStd.orm4.dep" src="xdc/runtime/TimestampStd.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/xdc_init.orm4.dep" src="xdc/runtime/xdc_init.cpp"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/knl/Cache.orm4.dep" src="xdc/runtime/knl/Cache.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/knl/GateThread.orm4.dep" src="xdc/runtime/knl/GateThread.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/knl/Semaphore.orm4.dep" src="xdc/runtime/knl/Semaphore.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/knl/SyncNull.orm4.dep" src="xdc/runtime/knl/SyncNull.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/knl/GateH.orm4.dep" src="xdc/runtime/knl/GateH.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/knl/SemProcess.orm4.dep" src="xdc/runtime/knl/SemProcess.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/knl/Sync.orm4.dep" src="xdc/runtime/knl/Sync.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/knl/SyncSemThread.orm4.dep" src="xdc/runtime/knl/SyncSemThread.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/knl/GateProcess.orm4.dep" src="xdc/runtime/knl/GateProcess.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/knl/SemThread.orm4.dep" src="xdc/runtime/knl/SemThread.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/knl/SyncGeneric.orm4.dep" src="xdc/runtime/knl/SyncGeneric.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/knl/Thread.orm4.dep" src="xdc/runtime/knl/Thread.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/knl/CacheSupportNull.orm4.dep" src="xdc/runtime/knl/CacheSupportNull.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/knl/GateThreadSupportNull.orm4.dep" src="xdc/runtime/knl/GateThreadSupportNull.c"/>
+        <srcFile name="package/lib/lib/debug/iar.targets.arm.rts/xdc/runtime/knl/GateProcessSupportNull.orm4.dep" src="xdc/runtime/knl/GateProcessSupportNull.c"/>
+        <srcFile name="lib/debug/boot.arm4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug/boot/package/package_iar.targets.arm.rts.orm4.dep" src="package/package_iar.targets.arm.rts.c"/>
+        <srcFile name="package/lib/lib/debug/boot/cstartup_M.orm4.dep" src="cstartup_M.c"/>
+        <srcFile name="package/lib/lib/debug/boot/iar_xdc_init.orm4.dep" src="iar_xdc_init.c"/>
+        <srcFile name="package/lib/lib/debug/boot/cmain.orm4.dep" src="cmain.s"/>
+        <srcFile name="package/lib/lib/debug/boot/boot.orm4.dep" src="boot.s"/>
+        <srcFile name="lib/debug/iar_vectortable.arm4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug/iar_vectortable/package/package_iar.targets.arm.rts.orm4.dep" src="package/package_iar.targets.arm.rts.c"/>
+        <srcFile name="package/lib/lib/debug/iar_vectortable/VectorTable.orm4.dep" src="VectorTable.c"/>
+        <srcFile name="lib/release/iar.targets.arm.rts.arm4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/package/package_iar.targets.arm.rts.orm4.dep" src="package/package_iar.targets.arm.rts.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/Assert.orm4.dep" src="xdc/runtime/Assert.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/Core-mem.orm4.dep" src="xdc/runtime/Core-mem.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/Core-smem.orm4.dep" src="xdc/runtime/Core-smem.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/Core-label.orm4.dep" src="xdc/runtime/Core-label.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/Core-params.orm4.dep" src="xdc/runtime/Core-params.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/Diags.orm4.dep" src="xdc/runtime/Diags.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/Error.orm4.dep" src="xdc/runtime/Error.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/Gate.orm4.dep" src="xdc/runtime/Gate.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/GateNull.orm4.dep" src="xdc/runtime/GateNull.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/HeapMin.orm4.dep" src="xdc/runtime/HeapMin.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/HeapStd.orm4.dep" src="xdc/runtime/HeapStd.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/Log.orm4.dep" src="xdc/runtime/Log.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/LoggerBuf.orm4.dep" src="xdc/runtime/LoggerBuf.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/LoggerCallback.orm4.dep" src="xdc/runtime/LoggerCallback.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/LoggerSys.orm4.dep" src="xdc/runtime/LoggerSys.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/Memory.orm4.dep" src="xdc/runtime/Memory.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/Registry.orm4.dep" src="xdc/runtime/Registry.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/Rta.orm4.dep" src="xdc/runtime/Rta.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/Startup.orm4.dep" src="xdc/runtime/Startup.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/System.orm4.dep" src="xdc/runtime/System.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/SysCallback.orm4.dep" src="xdc/runtime/SysCallback.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/SysMin.orm4.dep" src="xdc/runtime/SysMin.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/SysStd.orm4.dep" src="xdc/runtime/SysStd.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/Text.orm4.dep" src="xdc/runtime/Text.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/Timestamp.orm4.dep" src="xdc/runtime/Timestamp.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/TimestampNull.orm4.dep" src="xdc/runtime/TimestampNull.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/TimestampStd.orm4.dep" src="xdc/runtime/TimestampStd.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/xdc_init.orm4.dep" src="xdc/runtime/xdc_init.cpp"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/knl/Cache.orm4.dep" src="xdc/runtime/knl/Cache.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/knl/GateThread.orm4.dep" src="xdc/runtime/knl/GateThread.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/knl/Semaphore.orm4.dep" src="xdc/runtime/knl/Semaphore.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/knl/SyncNull.orm4.dep" src="xdc/runtime/knl/SyncNull.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/knl/GateH.orm4.dep" src="xdc/runtime/knl/GateH.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/knl/SemProcess.orm4.dep" src="xdc/runtime/knl/SemProcess.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/knl/Sync.orm4.dep" src="xdc/runtime/knl/Sync.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/knl/SyncSemThread.orm4.dep" src="xdc/runtime/knl/SyncSemThread.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/knl/GateProcess.orm4.dep" src="xdc/runtime/knl/GateProcess.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/knl/SemThread.orm4.dep" src="xdc/runtime/knl/SemThread.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/knl/SyncGeneric.orm4.dep" src="xdc/runtime/knl/SyncGeneric.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/knl/Thread.orm4.dep" src="xdc/runtime/knl/Thread.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/knl/CacheSupportNull.orm4.dep" src="xdc/runtime/knl/CacheSupportNull.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/knl/GateThreadSupportNull.orm4.dep" src="xdc/runtime/knl/GateThreadSupportNull.c"/>
+        <srcFile name="package/lib/lib/release/iar.targets.arm.rts/xdc/runtime/knl/GateProcessSupportNull.orm4.dep" src="xdc/runtime/knl/GateProcessSupportNull.c"/>
+        <srcFile name="lib/release/boot.arm4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/release/boot/package/package_iar.targets.arm.rts.orm4.dep" src="package/package_iar.targets.arm.rts.c"/>
+        <srcFile name="package/lib/lib/release/boot/cstartup_M.orm4.dep" src="cstartup_M.c"/>
+        <srcFile name="package/lib/lib/release/boot/iar_xdc_init.orm4.dep" src="iar_xdc_init.c"/>
+        <srcFile name="package/lib/lib/release/boot/cmain.orm4.dep" src="cmain.s"/>
+        <srcFile name="package/lib/lib/release/boot/boot.orm4.dep" src="boot.s"/>
+        <srcFile name="lib/release/iar_vectortable.arm4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/release/iar_vectortable/package/package_iar.targets.arm.rts.orm4.dep" src="package/package_iar.targets.arm.rts.c"/>
+        <srcFile name="package/lib/lib/release/iar_vectortable/VectorTable.orm4.dep" src="VectorTable.c"/>
+        <srcFile name="lib/debug_full/iar.targets.arm.rts.arm4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/package/package_iar.targets.arm.rts.orm4.dep" src="package/package_iar.targets.arm.rts.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/Assert.orm4.dep" src="xdc/runtime/Assert.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/Core-mem.orm4.dep" src="xdc/runtime/Core-mem.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/Core-smem.orm4.dep" src="xdc/runtime/Core-smem.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/Core-label.orm4.dep" src="xdc/runtime/Core-label.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/Core-params.orm4.dep" src="xdc/runtime/Core-params.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/Diags.orm4.dep" src="xdc/runtime/Diags.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/Error.orm4.dep" src="xdc/runtime/Error.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/Gate.orm4.dep" src="xdc/runtime/Gate.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/GateNull.orm4.dep" src="xdc/runtime/GateNull.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/HeapMin.orm4.dep" src="xdc/runtime/HeapMin.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/HeapStd.orm4.dep" src="xdc/runtime/HeapStd.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/Log.orm4.dep" src="xdc/runtime/Log.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/LoggerBuf.orm4.dep" src="xdc/runtime/LoggerBuf.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/LoggerCallback.orm4.dep" src="xdc/runtime/LoggerCallback.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/LoggerSys.orm4.dep" src="xdc/runtime/LoggerSys.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/Memory.orm4.dep" src="xdc/runtime/Memory.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/Registry.orm4.dep" src="xdc/runtime/Registry.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/Rta.orm4.dep" src="xdc/runtime/Rta.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/Startup.orm4.dep" src="xdc/runtime/Startup.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/System.orm4.dep" src="xdc/runtime/System.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/SysCallback.orm4.dep" src="xdc/runtime/SysCallback.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/SysMin.orm4.dep" src="xdc/runtime/SysMin.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/SysStd.orm4.dep" src="xdc/runtime/SysStd.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/Text.orm4.dep" src="xdc/runtime/Text.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/Timestamp.orm4.dep" src="xdc/runtime/Timestamp.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/TimestampNull.orm4.dep" src="xdc/runtime/TimestampNull.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/TimestampStd.orm4.dep" src="xdc/runtime/TimestampStd.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/xdc_init.orm4.dep" src="xdc/runtime/xdc_init.cpp"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/knl/Cache.orm4.dep" src="xdc/runtime/knl/Cache.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/knl/GateThread.orm4.dep" src="xdc/runtime/knl/GateThread.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/knl/Semaphore.orm4.dep" src="xdc/runtime/knl/Semaphore.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/knl/SyncNull.orm4.dep" src="xdc/runtime/knl/SyncNull.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/knl/GateH.orm4.dep" src="xdc/runtime/knl/GateH.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/knl/SemProcess.orm4.dep" src="xdc/runtime/knl/SemProcess.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/knl/Sync.orm4.dep" src="xdc/runtime/knl/Sync.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/knl/SyncSemThread.orm4.dep" src="xdc/runtime/knl/SyncSemThread.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/knl/GateProcess.orm4.dep" src="xdc/runtime/knl/GateProcess.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/knl/SemThread.orm4.dep" src="xdc/runtime/knl/SemThread.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/knl/SyncGeneric.orm4.dep" src="xdc/runtime/knl/SyncGeneric.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/knl/Thread.orm4.dep" src="xdc/runtime/knl/Thread.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/knl/CacheSupportNull.orm4.dep" src="xdc/runtime/knl/CacheSupportNull.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/knl/GateThreadSupportNull.orm4.dep" src="xdc/runtime/knl/GateThreadSupportNull.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar.targets.arm.rts/xdc/runtime/knl/GateProcessSupportNull.orm4.dep" src="xdc/runtime/knl/GateProcessSupportNull.c"/>
+        <srcFile name="lib/debug_full/boot.arm4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug_full/boot/package/package_iar.targets.arm.rts.orm4.dep" src="package/package_iar.targets.arm.rts.c"/>
+        <srcFile name="package/lib/lib/debug_full/boot/cstartup_M.orm4.dep" src="cstartup_M.c"/>
+        <srcFile name="package/lib/lib/debug_full/boot/iar_xdc_init.orm4.dep" src="iar_xdc_init.c"/>
+        <srcFile name="package/lib/lib/debug_full/boot/cmain.orm4.dep" src="cmain.s"/>
+        <srcFile name="package/lib/lib/debug_full/boot/boot.orm4.dep" src="boot.s"/>
+        <srcFile name="lib/debug_full/iar_vectortable.arm4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug_full/iar_vectortable/package/package_iar.targets.arm.rts.orm4.dep" src="package/package_iar.targets.arm.rts.c"/>
+        <srcFile name="package/lib/lib/debug_full/iar_vectortable/VectorTable.orm4.dep" src="VectorTable.c"/>
+        <srcFile name="lib/release_full/iar.targets.arm.rts.arm4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/package/package_iar.targets.arm.rts.orm4.dep" src="package/package_iar.targets.arm.rts.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/Assert.orm4.dep" src="xdc/runtime/Assert.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/Core-mem.orm4.dep" src="xdc/runtime/Core-mem.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/Core-smem.orm4.dep" src="xdc/runtime/Core-smem.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/Core-label.orm4.dep" src="xdc/runtime/Core-label.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/Core-params.orm4.dep" src="xdc/runtime/Core-params.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/Diags.orm4.dep" src="xdc/runtime/Diags.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/Error.orm4.dep" src="xdc/runtime/Error.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/Gate.orm4.dep" src="xdc/runtime/Gate.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/GateNull.orm4.dep" src="xdc/runtime/GateNull.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/HeapMin.orm4.dep" src="xdc/runtime/HeapMin.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/HeapStd.orm4.dep" src="xdc/runtime/HeapStd.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/Log.orm4.dep" src="xdc/runtime/Log.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/LoggerBuf.orm4.dep" src="xdc/runtime/LoggerBuf.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/LoggerCallback.orm4.dep" src="xdc/runtime/LoggerCallback.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/LoggerSys.orm4.dep" src="xdc/runtime/LoggerSys.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/Memory.orm4.dep" src="xdc/runtime/Memory.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/Registry.orm4.dep" src="xdc/runtime/Registry.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/Rta.orm4.dep" src="xdc/runtime/Rta.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/Startup.orm4.dep" src="xdc/runtime/Startup.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/System.orm4.dep" src="xdc/runtime/System.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/SysCallback.orm4.dep" src="xdc/runtime/SysCallback.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/SysMin.orm4.dep" src="xdc/runtime/SysMin.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/SysStd.orm4.dep" src="xdc/runtime/SysStd.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/Text.orm4.dep" src="xdc/runtime/Text.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/Timestamp.orm4.dep" src="xdc/runtime/Timestamp.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/TimestampNull.orm4.dep" src="xdc/runtime/TimestampNull.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/TimestampStd.orm4.dep" src="xdc/runtime/TimestampStd.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/xdc_init.orm4.dep" src="xdc/runtime/xdc_init.cpp"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/knl/Cache.orm4.dep" src="xdc/runtime/knl/Cache.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/knl/GateThread.orm4.dep" src="xdc/runtime/knl/GateThread.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/knl/Semaphore.orm4.dep" src="xdc/runtime/knl/Semaphore.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/knl/SyncNull.orm4.dep" src="xdc/runtime/knl/SyncNull.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/knl/GateH.orm4.dep" src="xdc/runtime/knl/GateH.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/knl/SemProcess.orm4.dep" src="xdc/runtime/knl/SemProcess.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/knl/Sync.orm4.dep" src="xdc/runtime/knl/Sync.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/knl/SyncSemThread.orm4.dep" src="xdc/runtime/knl/SyncSemThread.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/knl/GateProcess.orm4.dep" src="xdc/runtime/knl/GateProcess.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/knl/SemThread.orm4.dep" src="xdc/runtime/knl/SemThread.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/knl/SyncGeneric.orm4.dep" src="xdc/runtime/knl/SyncGeneric.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/knl/Thread.orm4.dep" src="xdc/runtime/knl/Thread.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/knl/CacheSupportNull.orm4.dep" src="xdc/runtime/knl/CacheSupportNull.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/knl/GateThreadSupportNull.orm4.dep" src="xdc/runtime/knl/GateThreadSupportNull.c"/>
+        <srcFile name="package/lib/lib/release_full/iar.targets.arm.rts/xdc/runtime/knl/GateProcessSupportNull.orm4.dep" src="xdc/runtime/knl/GateProcessSupportNull.c"/>
+        <srcFile name="lib/release_full/boot.arm4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/release_full/boot/package/package_iar.targets.arm.rts.orm4.dep" src="package/package_iar.targets.arm.rts.c"/>
+        <srcFile name="package/lib/lib/release_full/boot/cstartup_M.orm4.dep" src="cstartup_M.c"/>
+        <srcFile name="package/lib/lib/release_full/boot/iar_xdc_init.orm4.dep" src="iar_xdc_init.c"/>
+        <srcFile name="package/lib/lib/release_full/boot/cmain.orm4.dep" src="cmain.s"/>
+        <srcFile name="package/lib/lib/release_full/boot/boot.orm4.dep" src="boot.s"/>
+        <srcFile name="lib/release_full/iar_vectortable.arm4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/release_full/iar_vectortable/package/package_iar.targets.arm.rts.orm4.dep" src="package/package_iar.targets.arm.rts.c"/>
+        <srcFile name="package/lib/lib/release_full/iar_vectortable/VectorTable.orm4.dep" src="VectorTable.c"/>
+        <srcFile name="package/rel/iar_targets_arm_rts.tar.dep" src="package/rel/iar_targets_arm_rts.xdc.inc"/>
+    </makefiles>
+    <targets>
+        <target name="iar.targets.arm.M4"
+            version="iar.targets.arm.M4{1,0,8.50,1"
+            rawVersion="8.50.1.245"
+            platform="ti.platforms.tiva:TM4C1294NCPDT:1"
+            isa="v7M4"
+            suffix="rm4"
+            rootDir="/scratch/xlibrary/.conan/data/iarcodegen/8.50.1.245-3/library-msp/ga/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9"
+            os="undefined"
+            rts="iar.targets.arm.rts">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+    </targets>
+    <libraries>
+    <library name="lib/debug/iar.targets.arm.rts"
+        pname="lib/debug/iar.targets.arm.rts.arm4"
+        profile="debug"
+        target="iar.targets.arm.M4"/>
+    <library name="lib/debug/boot"
+        pname="lib/debug/boot.arm4"
+        profile="debug"
+        target="iar.targets.arm.M4"/>
+    <library name="lib/debug/iar_vectortable"
+        pname="lib/debug/iar_vectortable.arm4"
+        profile="debug"
+        target="iar.targets.arm.M4"/>
+    <library name="lib/release/iar.targets.arm.rts"
+        pname="lib/release/iar.targets.arm.rts.arm4"
+        profile="release"
+        target="iar.targets.arm.M4"/>
+    <library name="lib/release/boot"
+        pname="lib/release/boot.arm4"
+        profile="release"
+        target="iar.targets.arm.M4"/>
+    <library name="lib/release/iar_vectortable"
+        pname="lib/release/iar_vectortable.arm4"
+        profile="release"
+        target="iar.targets.arm.M4"/>
+    <library name="lib/debug_full/iar.targets.arm.rts"
+        pname="lib/debug_full/iar.targets.arm.rts.arm4"
+        profile="debug_full"
+        target="iar.targets.arm.M4"/>
+    <library name="lib/debug_full/boot"
+        pname="lib/debug_full/boot.arm4"
+        profile="debug_full"
+        target="iar.targets.arm.M4"/>
+    <library name="lib/debug_full/iar_vectortable"
+        pname="lib/debug_full/iar_vectortable.arm4"
+        profile="debug_full"
+        target="iar.targets.arm.M4"/>
+    <library name="lib/release_full/iar.targets.arm.rts"
+        pname="lib/release_full/iar.targets.arm.rts.arm4"
+        profile="release_full"
+        target="iar.targets.arm.M4"/>
+    <library name="lib/release_full/boot"
+        pname="lib/release_full/boot.arm4"
+        profile="release_full"
+        target="iar.targets.arm.M4"/>
+    <library name="lib/release_full/iar_vectortable"
+        pname="lib/release_full/iar_vectortable.arm4"
+        profile="release_full"
+        target="iar.targets.arm.M4"/>
+    </libraries>
+    <configurations>
+    </configurations>
+    <executables>
+    </executables>
+    <tests>
+    </tests>
+    <releases relDir="package/rel/">
+    <release name="iar_targets_arm_rts"
+        pname="iar_targets_arm_rts.tar"
+        label="default"
+    >
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+        <file name="package.bld"/>
+        <file name="linkcmd.xdt"/>
+        <file name="package/package.cfg.xdc.inc"/>
+        <file name="lib/debug/iar.targets.arm.rts.arm4"/>
+        <file name="lib/debug/boot.arm4"/>
+        <file name="lib/debug/iar_vectortable.arm4"/>
+        <file name="lib/release/iar.targets.arm.rts.arm4"/>
+        <file name="lib/release/boot.arm4"/>
+        <file name="lib/release/iar_vectortable.arm4"/>
+        <file name="lib/debug_full/iar.targets.arm.rts.arm4"/>
+        <file name="lib/debug_full/boot.arm4"/>
+        <file name="lib/debug_full/iar_vectortable.arm4"/>
+        <file name="lib/release_full/iar.targets.arm.rts.arm4"/>
+        <file name="lib/release_full/boot.arm4"/>
+        <file name="lib/release_full/iar_vectortable.arm4"/>
+    </release>
+    </releases>
+    <repositories>
+    </repositories>
+</package>

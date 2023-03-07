@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Personality id="20x19_uart" name="UART" version="1.0" path="Communication" xmlns="http://cypress.com/xsd/cyhwpersonality_v1">
+  <Dependencies>
+    <IpBlock name="20x19_uart" />
+    <Resource name="uart" />
+  </Dependencies>
+  <ExposedMembers />
+  <Parameters>
+    <ParamDoc id="apiDoc" name="Configuration Help" group="Peripheral Documentation" default="file:///`${cy_libs_path()}`/docs/group___p_u_a_r_t_driver.html" linkText="Open UART Documentation" visible="true" desc="Opens the Hardware Driver Documentation" />
+
+    <ParamSignal port="txd[0]" name="TXD" group="Pins" visible="true" desc="The transmitter output drives the output serial data to another device on the serial bus." canBeEmpty="true" />
+    <ParamSignal port="rxd[0]" name="RXD" group="Pins" visible="true" desc="The receive input receives the serial data from another device on the serial bus." canBeEmpty="true" />
+    <ParamSignal port="cts[0]" name="CTS" group="Pins" visible="true" desc="The clear to send input accepts notification that another device is ready to receive data." canBeEmpty="true" />
+    <ParamSignal port="rts[0]" name="RTS" group="Pins" visible="true" desc="The request to send output notifies another device that this device is ready to receive data." canBeEmpty="true" />
+
+    <ParamString id="instNum" name="" group="" default="`${getInstNumber(&quot;uart&quot;)}`" visible="false" editable="false" desc="" />
+    <ParamBool id="hasUartMinConnection" name="" group="Hidden" default="`${hasConnection(&quot;txd&quot;, 0) || hasConnection(&quot;rxd&quot;, 0)}`" visible="false" editable="false" desc="" />
+  </Parameters>
+
+  <DRCs>
+    <DRC type="ERROR" text="At least one UART signal must be connected if UART peripheral is active" condition="`${!hasUartMinConnection}`" />
+  </DRCs>
+  <ConfigFirmware>
+
+  </ConfigFirmware>
+</Personality>

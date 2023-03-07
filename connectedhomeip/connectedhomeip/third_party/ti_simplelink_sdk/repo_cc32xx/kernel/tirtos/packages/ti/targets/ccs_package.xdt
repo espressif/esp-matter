@@ -1,0 +1,64 @@
+%%{
+/* 
+ *  Copyright (c) 2008 Texas Instruments and others.
+ *  All rights reserved. This program and the accompanying materials
+ *  are made available under the terms of the Eclipse Public License v1.0
+ *  which accompanies this distribution, and is available at
+ *  http://www.eclipse.org/legal/epl-v10.html
+ * 
+ *  Contributors:
+ *      Texas Instruments - initial implementation
+ * 
+ * */
+
+    /*
+     *  ======== ccs_package.xdt ========
+     *  This template is used to generate a CCS project file that can be
+     *  used with CCS to debug a package produced via XDC tools.
+     *
+     *  This template is evaluated in the build domain (after the build
+     *  script completes).
+     *
+     *  Preconditions:
+     *	    this	- the configured package object
+     *			  (xdc.bld.PackageContents)
+     *	    $args	- array of arguments passed to the template:
+     *			    $args[0] - the target (bld.ITarget)
+     *			    $args[1] - hash-table of all package sources
+     */
+    var TARG = $args[0];
+    var SRCS = $args[1];
+    
+    var CPUFAMILY;
+    if (TARG.isa.match(/^v\d/) != null) {
+        CPUFAMILY = "TMS470R" + (TARG.isa[1] - 3) + "X";
+    }
+    else {
+        CPUFAMILY = "TMS320C" + TARG.isa.substr(0, 2) + "XX";
+    }
+%%}
+; Code Composer Project File, Version 2.0 (do not modify or remove this line)
+[Project Settings]
+ProjectName="`this.name`"
+ProjectType=External
+CPUFamily=`CPUFAMILY`
+Tool="CustomBuilder"
+Config="Package"
+[Source Files]
+%for (var i in SRCS) {
+%    var src = SRCS[i];
+%    if (typeof src != 'string') {
+%	continue;
+%    }
+%    if (src.match(/^package\/cfg/)) {
+%	continue;
+%    }
+Source="../`src`"
+%}
+%%{
+/*
+ * @(#) ti.targets; 1, 0, 3,; 7-28-2021 06:57:38; /db/ztree/library/trees/xdctargets/xdctargets-w20/src/ xlibrary
+
+ */
+
+%%}

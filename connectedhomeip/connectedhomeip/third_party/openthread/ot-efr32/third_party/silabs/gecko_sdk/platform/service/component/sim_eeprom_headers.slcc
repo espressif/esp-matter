@@ -1,0 +1,24 @@
+id: sim_eeprom_headers
+label: Simulated EEPROM Headers
+package: platform
+description: Simulated EEPROM headers common to SimEE1 and SimEE2.
+category: Services|Simulated EEPROM
+quality: production
+provides:
+  - name: sim_eeprom_headers
+requires:
+  - name: token_manager
+  - name: device_series_1
+root_path: ./
+include:
+  - path: platform/service/sim_eeprom/sim_eeprom_headers/inc
+    file_list:
+      - path: sl_sim_eeprom_cortexm3.h
+      - path: sl_sim_eeprom_size.h
+      - path: sl_sim_eeprom.h
+template_contribution:
+  - name: component_catalog
+    value: sim_eeprom_headers
+documentation:
+    docset: gecko-platform
+    document: service/api/group-simeeprom2

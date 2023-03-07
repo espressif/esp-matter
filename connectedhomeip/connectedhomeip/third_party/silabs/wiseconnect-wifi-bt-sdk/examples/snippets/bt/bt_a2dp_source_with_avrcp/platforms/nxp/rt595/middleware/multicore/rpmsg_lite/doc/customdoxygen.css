@@ -1,0 +1,90 @@
+
+body {
+    color: #51626f;
+}
+
+body, table, div, p, dl {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.title {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.textblock ul {
+    list-style: none outside url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAYAAADgzO9IAAAAF0lEQVQIHWP8uZXhPwMWwIRFDCxEDwkAjygCuZMRiw4AAAAASUVORK5CYII=");
+}
+
+h1, h2.groupheader {
+    color: #51626f;
+    font-size: 21px;
+}
+
+h1 {
+    font-weight: 600;
+}
+
+h2 {
+    font-size: 18px;
+}
+
+.tablist a,
+.tablist a:hover {
+    text-shadow: none;
+    background-image: none;
+}
+
+.tablist a {
+    color: #ffffff;
+}
+
+.tablist a:hover {
+    background-color: #f2f2f5;
+    color: #007088;
+}
+
+.tablist li.current a {
+    text-shadow: none;
+    background-image: none;
+    background-color: #ffffff;
+    color: #777777;
+}
+
+.navpath ul {
+    background-image: none;
+    background-color: #e6e6e6;
+    color: #646464;
+}
+
+.tabs, .tabs2, .tabs3,
+.tablist li {
+    background: rgba(0, 0, 0, 0) linear-gradient(to bottom, #f1b635, #e4942a) repeat scroll 0 0;
+}
+
+a {
+    color: #5e89c1;
+}
+
+#nav-tree .selected {
+    text-shadow: none;
+    background-image: none;
+    background-color: #e6e6e6;
+    color: #646464;
+}
+
+#nav-tree .selected a {
+    color: #646464;
+}
+
+#titlearea {
+    border-bottom: 1px solid #51626f;
+}
+
+#projectname {
+    font: 32px "Helvetica Neue", Helvetica, Arial;
+}
+
+.image {
+    text-align: center;
+}
+

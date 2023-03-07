@@ -1,0 +1,132 @@
+/***************************************************************************//**
+ * @file    iot_spi_desc.c.jinja
+ * @brief   SPI instance descriptors - auto-generated file.
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2021 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ ******************************************************************************/
+
+/*******************************************************************************
+ *                               INCLUDES
+ ******************************************************************************/
+
+/* standard C */
+#include "stddef.h"
+
+/* SPI driver layer */
+#include "iot_spi_desc.h"
+
+{% for instance in iot_spi_instances %}
+/* instance {{ instance }} config */
+#include "iot_spi_cfg_{{ instance }}.h"
+{% endfor %}
+
+/*******************************************************************************
+ *                            DESCRIPTOR LIST
+ ******************************************************************************/
+
+IotSPIDescriptor_t iot_spi_desc[] = {
+
+{% for instance in iot_spi_instances %}
+  /* instance {{ instance }} config */
+  {
+    /* instance number */
+    .lInstNum           = IOT_SPI_CFG_{{ instance | upper }}_INST_NUM,
+
+    /* defaults */
+    .ulDefaultBitrate   = IOT_SPI_CFG_{{ instance | upper }}_DEFAULT_BITRATE,
+    .ulDefaultFrameLen  = IOT_SPI_CFG_{{ instance | upper }}_DEFAULT_FRAME_LENGTH,
+    .xDefaultType       = IOT_SPI_CFG_{{ instance | upper }}_DEFAULT_TYPE,
+    .xDefaultBitOrder   = IOT_SPI_CFG_{{ instance | upper }}_DEFAULT_BIT_ORDER,
+    .xDefaultClockMode  = IOT_SPI_CFG_{{ instance | upper }}_DEFAULT_CLOCK_MODE,
+    .xDefaultCsControl  = IOT_SPI_CFG_{{ instance | upper }}_DEFAULT_CS_CONTROL,
+    .xDefaultSlaveStart = IOT_SPI_CFG_{{ instance | upper }}_DEFAULT_SLAVE_START_MODE,
+
+    /* selected peripheral */
+    .pxPeripheral       = IOT_SPI_CFG_{{ instance | upper }}_PERIPHERAL,
+    .ucPeripheralNo     = IOT_SPI_CFG_{{ instance | upper }}_PERIPHERAL_NO,
+
+    /* ports */
+#if IOT_SPI_CFG_{{ instance | upper }}_LOOPBACK == 0
+    .xTxPort            = IOT_SPI_CFG_{{ instance | upper }}_TX_PORT,
+    .xRxPort            = IOT_SPI_CFG_{{ instance | upper }}_RX_PORT,
+    .xClkPort           = IOT_SPI_CFG_{{ instance | upper }}_CLK_PORT,
+    .xCsPort            = IOT_SPI_CFG_{{ instance | upper }}_CS_PORT,
+
+    /* pins */
+    .ucTxPin            = IOT_SPI_CFG_{{ instance | upper }}_TX_PIN,
+    .ucRxPin            = IOT_SPI_CFG_{{ instance | upper }}_RX_PIN,
+    .ucClkPin           = IOT_SPI_CFG_{{ instance | upper }}_CLK_PIN,
+    .ucCsPin            = IOT_SPI_CFG_{{ instance | upper }}_CS_PIN,
+
+    /* locations */
+#if (_SILICON_LABS_32B_SERIES < 2)
+    .ucTxLoc            = IOT_SPI_CFG_{{ instance | upper }}_TX_LOC,
+    .ucRxLoc            = IOT_SPI_CFG_{{ instance | upper }}_RX_LOC,
+    .ucClkLoc           = IOT_SPI_CFG_{{ instance | upper }}_CLK_LOC,
+    .ucCsLoc            = IOT_SPI_CFG_{{ instance | upper }}_CS_LOC,
+#endif
+#else
+    .xTxPort            = IOT_SPI_CFG_{{ instance | upper }}_TX_PORT,
+    .xRxPort            = IOT_SPI_CFG_{{ instance | upper }}_TX_PORT,
+    .xClkPort           = IOT_SPI_CFG_{{ instance | upper }}_CLK_PORT,
+    .xCsPort            = IOT_SPI_CFG_{{ instance | upper }}_CS_PORT,
+
+    /* pins */
+    .ucTxPin            = IOT_SPI_CFG_{{ instance | upper }}_TX_PIN,
+    .ucRxPin            = IOT_SPI_CFG_{{ instance | upper }}_TX_PIN,
+    .ucClkPin           = IOT_SPI_CFG_{{ instance | upper }}_CLK_PIN,
+    .ucCsPin            = IOT_SPI_CFG_{{ instance | upper }}_CS_PIN,
+
+    /* locations */
+#if (_SILICON_LABS_32B_SERIES < 2)
+    .ucTxLoc            = IOT_SPI_CFG_{{ instance | upper }}_TX_LOC,
+    .ucRxLoc            = IOT_SPI_CFG_{{ instance | upper }}_TX_LOC,
+    .ucClkLoc           = IOT_SPI_CFG_{{ instance | upper }}_CLK_LOC,
+    .ucCsLoc            = IOT_SPI_CFG_{{ instance | upper }}_CS_LOC,
+#endif
+#endif
+
+  },
+{% endfor %}
+};
+
+/*******************************************************************************
+ *                          iot_spi_desc_get
+ ******************************************************************************/
+
+IotSPIDescriptor_t *iot_spi_desc_get(int32_t lInstNum)
+{
+  int32_t lInstCount = sizeof(iot_spi_desc)/sizeof(IotSPIDescriptor_t);
+  int32_t lInstCur   = 0;
+
+  for (lInstCur = 0; lInstCur < lInstCount; lInstCur++) {
+    if (iot_spi_desc[lInstCur].lInstNum == lInstNum) {
+      return &iot_spi_desc[lInstCur];
+    }
+  }
+
+  return NULL;
+}

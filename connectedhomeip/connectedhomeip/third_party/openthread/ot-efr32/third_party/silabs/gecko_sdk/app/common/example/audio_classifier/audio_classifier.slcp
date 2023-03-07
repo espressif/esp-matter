@@ -1,0 +1,92 @@
+project_name: audio_classifier
+package: platform
+quality: production
+label: Machine Learning - Audio Classifier
+description: >
+  This application uses TensorFlow Lite for Microcontrollers to classify
+  audio data recorded on the microphone in a Micrium OS kernel task.
+  The classification is used to control a LED on the board.
+category: Example|Machine Learning
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+  - name: "Capability"
+    value: ["Machine Learning"]
+include:
+  - path: .
+    file_list:
+      - path: app.h
+      - path: audio_classifier.h
+      - path: recognize_commands.h
+source:
+  - path: main.c
+  - path: app.c
+  - path: audio_classifier.cc
+  - path: recognize_commands.cc
+component:
+  - id: sl_system
+  - id: device_init
+  - id: tensorflow_lite_micro
+  - id: ml_audio_feature_generation
+  - id: printf
+  - id: iostream_recommended_stream
+  - id: iostream_retarget_stdio
+  - id: simple_led
+    instance: [led0, led1]
+  - id: status
+  - id: micriumos_kernel
+  - id: power_manager
+  - id: sleeptimer
+config_file:
+  - path: config/audio_classifier_config.h
+  - path: "tflite_models/tflite/keyword_spotting_on_off.tflite"
+    file_id: flatbuffer_file_id
+    directory: "tflite"
+    unless: [tensorflow_lite_micro_accelerated_kernels]
+  - path: "tflite_models/tflite/keyword_spotting_on_off_v2.tflite"
+    file_id: flatbuffer_file_id
+    directory: "tflite"
+    condition: [tensorflow_lite_micro_accelerated_kernels]
+define:
+  - name: DEBUG_EFM
+  - name: TF_LITE_STATIC_MEMORY
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+  - name: SL_BOARD_ENABLE_SENSOR_MICROPHONE
+    value: "1"
+  - name: SL_IOSTREAM_USART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "1"
+    condition: [iostream_usart]
+  - name: SL_IOSTREAM_UART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "1"
+    condition: [iostream_uart]
+  - name: SL_ML_AUDIO_FEATURE_GENERATION_AUDIO_BUFFER_SIZE
+    value: "4096"
+  - name: SL_ML_AUDIO_FEATURE_GENERATION_AUDIO_GAIN
+    value: "2"
+  - name: SL_TFLITE_MICRO_ARENA_SIZE
+    value: "50000"
+  - name: SL_HEAP_SIZE
+    value: "0x2000"
+  - name: SL_SIMPLE_LED_LED1_PIN
+    value: "14"
+    condition: [brd2204a]
+toolchain_settings:
+  - option: gcc_compiler_option
+    value: "-Wno-unused-parameter"
+  - option: gcc_compiler_option
+    value: "-Wno-missing-field-initializers"
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+tag:
+  - hardware:component:led:2+
+  - hardware:component:microphone
+  - hardware:device:ram:56
+  - hardware:device:flash:130

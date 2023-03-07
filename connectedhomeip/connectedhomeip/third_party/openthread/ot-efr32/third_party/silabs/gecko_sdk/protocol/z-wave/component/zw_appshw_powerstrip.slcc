@@ -1,0 +1,18 @@
+id: zw_appshw_powerstrip
+label: PowerStrip AppsHw
+category: Z-Wave|AppsHw
+description: AppsHw for PowerStrip application
+package: Z-Wave
+quality: production
+ui_hints:
+  visibility: never
+source:
+  - path: "protocol/z-wave/platform/SiliconLabs/AppsHw/src/PowerStrip/PowerStrip_hw.c"
+include:
+  - path: "protocol/z-wave/Apps/PowerStrip"
+    file_list:
+      - path: "PowerStrip_hw.h"
+provides:
+  - name: zw_appshw_powerstrip
+requires:
+  - name: zw_appshw

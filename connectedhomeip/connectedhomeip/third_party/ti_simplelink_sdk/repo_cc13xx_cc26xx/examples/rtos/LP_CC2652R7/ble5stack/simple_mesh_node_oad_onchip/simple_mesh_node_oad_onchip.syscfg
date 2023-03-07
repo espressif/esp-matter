@@ -1,0 +1,228 @@
+/*
+ * Copyright (c) 2018, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+// @cliArgs --board /ti/boards/LP_CC2652R7 --rtos tirtos
+
+/*
+ *  simple_peripheral_oad_onchip.syscfg
+ */
+
+const devFamily = system.getScript("/ti/ble5stack/ble_common.js").device2DeviceFamily(system.deviceData.deviceId);
+const lpName = system.getScript("/ti/ble5stack/ble_common.js").getBoardOrLaunchPadName(true);
+
+/**
+ * Import the modules used in this configuration.
+ */
+const ble         = scripting.addModule("/ti/ble5stack/ble");
+const CCFG        = scripting.addModule("/ti/devices/CCFG");
+const rfDesign    = scripting.addModule("/ti/devices/radioconfig/rfdesign");
+const Display     = scripting.addModule("/ti/display/Display");
+const displayUART    = Display.addInstance();
+const AESCCM      = scripting.addModule("/ti/drivers/AESCCM");
+const AESCCM1     = AESCCM.addInstance();
+const AESCTRDRBG  = scripting.addModule("/ti/drivers/AESCTRDRBG");
+const AESCTRDRBG1 = AESCTRDRBG.addInstance();
+const AESCTRDRBG2 = AESCTRDRBG.addInstance();
+const AESECB      = scripting.addModule("/ti/drivers/AESECB");
+const AESECB1     = AESECB.addInstance();
+const ECDH        = scripting.addModule("/ti/drivers/ECDH");
+const ECDH1       = ECDH.addInstance();
+const GPIO        = scripting.addModule("/ti/drivers/PIN");
+const GPIO1       = GPIO.addInstance();
+const GPIO2       = GPIO.addInstance();
+const GPIO3       = GPIO.addInstance();
+const GPIO4       = GPIO.addInstance();
+const NVS         = scripting.addModule("/ti/drivers/NVS");
+const NVS1        = NVS.addInstance();
+const NVS2        = NVS.addInstance();
+const Power       = scripting.addModule("/ti/drivers/Power");
+const RF          = scripting.addModule("/ti/drivers/RF");
+const RTOS        = scripting.addModule("/ti/drivers/RTOS");
+const TRNG        = scripting.addModule("/ti/drivers/TRNG");
+const TRNG1       = TRNG.addInstance();
+
+/* ======== Display ======== */
+displayUART.$hardware = system.deviceData.board.components.XDS110UART;
+displayUART.enableANSI = true;
+displayUART.uartBufferSize = 128;
+displayUART.useUART2 = false;
+displayUART.uart.txPinInstance.outputState = "High";
+displayUART.uart.$name = "CONFIG_DISPLAY_UART";
+displayUART.uart.txPinInstance.$name = "CONFIG_PIN_UART_TX";
+displayUART.uart.rxPinInstance.$name = "CONFIG_PIN_UART_RX";
+
+/* ======== GPIO ======== */
+
+GPIO1.$hardware         = system.deviceData.board.components.BUTTON0;
+GPIO1.mode              = "Input";
+GPIO1.$name             = "CONFIG_GPIO_BTN1";
+
+GPIO2.$hardware         = system.deviceData.board.components.BUTTON1;
+GPIO2.mode              = "Input";
+GPIO2.$name             = "CONFIG_GPIO_BTN2";
+
+GPIO3.$hardware         = system.deviceData.board.components.LED_RED;
+GPIO3.mode              = "Output";
+GPIO3.$name             = "CONFIG_PIN_RLED";
+
+GPIO4.$hardware         = system.deviceData.board.components.LED_GREEN;
+GPIO4.mode              = "Output";
+GPIO4.$name             = "CONFIG_PIN_GLED";
+
+/* ======== RF ======== */
+/* if an antenna component exists, assign it to the rf instance */
+if (system.deviceData.board && system.deviceData.board.components.RF) {
+    RF.$hardware = system.deviceData.board.components.RF;
+}
+
+/* ======== POWER ======== */
+if(lpName == "LP_CC2652RB")
+{
+  Power.calibrateRCOSC_LF = false;
+  Power.calibrateRCOSC_HF = false;
+}
+
+/* ======== CCFG ======== */
+const ccfgSettings = system.getScript("/ti/common/lprf_ccfg_settings.js").ccfgSettings;
+for(var setting in ccfgSettings)
+{
+    CCFG[setting] = ccfgSettings[setting];
+}
+
+const bleCcfgSettings = system.getScript("/ti/ble5stack/ble_common.js").centralRoleCcfgSettings;
+for(var setting in bleCcfgSettings)
+{
+    CCFG[setting] = bleCcfgSettings[setting];
+}
+
+/* ======== RF Design ======== */
+const rfDesignSettings = system.getScript("/ti/common/lprf_rf_design_settings.js").rfDesignSettings;
+for(var setting in rfDesignSettings)
+{
+    rfDesign[setting] = rfDesignSettings[setting];
+}
+
+const radioSettings = system.getScript("/ti/ble5stack/ble_common.js").getRadioScript(rfDesign.rfDesign,system.deviceData.deviceId);
+const bleRfDesignSettings = radioSettings.rfDesignParams;
+for(var setting in bleRfDesignSettings)
+{
+    rfDesign[setting] = bleRfDesignSettings[setting];
+}
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+ble.rfDesign                                              = rfDesignSettings.rfDesign;
+ble.oadFeature                                            = true;
+ble.deviceRole                                            = "PERIPHERAL_CFG+CENTRAL_CFG";
+ble.lockProject                                           = true;
+ble.oadProject                                            = true;
+ble.disDevBySerUuid                                       = true;
+ble.addressMode                                           = "ADDRMODE_PUBLIC";
+ble.scanType                                              = "SCAN_TYPE_PASSIVE";
+ble.maxNumIcallEnabledTasks                               = 5;
+ble.maxConnNum                                            = 4;
+ble.maxPDUSize                                            = 255;
+if(lpName == "LP_CC2652RB")
+{
+    ble.deviceName = "SP OAD on-chip BAW";
+}
+else
+{
+    ble.deviceName = "SP OAD on-chip";
+}
+ble.radioConfig.codeExportConfig.$name                    = "ti_devices_radioconfig_code_export_param0";
+ble.connUpdateParamsPeripheral.$name                      = "ti_ble5stack_general_ble_conn_update_params0";
+ble.mesh                                                  = true;
+ble.meshApp                                              = "meshAndPeriOadOnchip";
+ble.gattBearer                                    = false;
+ble.uuid                                          = system.utils.bigInt("53696d706c65104da57368204e6f6465",16);
+ble.completeCbName                                = "prov_complete_cbk";
+ble.resetCbName                                   = "prov_reset_cbk";
+ble.Element[0].$name                              = "element_0";
+ble.Element[0].model.create(3);
+ble.Element[0].model[0].$name                     = "Model_0";
+ble.Element[0].model[0].modelType                 = "Vendor";
+ble.Element[0].model[0].numOfHandlers             = 4;
+ble.Element[0].model[0].handler1.$name            = "ti_ble5stack_mesh_dcd_handlers0";
+ble.Element[0].model[0].handler1.handlerOpCode    = 0x00;
+ble.Element[0].model[0].handler1.handlerFunction  = "vnd_button_pressed_cb";
+ble.Element[0].model[0].handler2.$name            = "ti_ble5stack_mesh_dcd_handlers1";
+ble.Element[0].model[0].handler2.handlerOpCode    = 0x01;
+ble.Element[0].model[0].handler2.handlerFunction  = "vnd_get_status_cb";
+ble.Element[0].model[0].handler3.$name            = "ti_ble5stack_mesh_dcd_handlers2";
+ble.Element[0].model[0].handler3.handlerOpCode    = 0x02;
+ble.Element[0].model[0].handler3.handlerFunction  = "vnd_notify_status_cb";
+ble.Element[0].model[0].handler4.$name           = "ti_ble5stack_mesh_dcd_handlers3";
+ble.Element[0].model[0].handler4.handlerOpCode   = 0x03;
+ble.Element[0].model[0].handler4.handlerFunction = "get_large_msg_cb";
+ble.Element[0].model[1].$name                    = "Model_1";
+ble.Element[0].model[1].sigModelName             = "GEN_ONOFF_SRV";
+ble.Element[0].model[2].$name                    = "Model_2";
+ble.Element[0].model[2].sigModelName             = "GEN_ONOFF_CLI";
+
+AESCCM1.$name = "CONFIG_AESCCM0";
+
+AESCTRDRBG1.$name              = "CONFIG_AESCTRDRBG_0";
+AESCTRDRBG1.aesctrObject.$name = "CONFIG_AESCTR_0";
+
+AESCTRDRBG2.$name              = "CONFIG_AESCTRDRBG_1";
+AESCTRDRBG2.aesctrObject.$name = "CONFIG_AESCTR_1";
+
+AESECB1.$name = "CONFIG_AESECB0";
+
+ECDH1.$name = "CONFIG_ECDH0";
+
+NVS1.$name                    = "CONFIG_NVSINTERNAL";
+NVS1.internalFlash.$name      = "ti_drivers_nvs_NVSCC26XX0";
+if(devFamily == "DeviceFamily_CC13X2X7" || devFamily == "DeviceFamily_CC26X2X7")
+{
+  NVS1.internalFlash.regionBase = 0x82000;
+}
+else
+{
+  NVS1.internalFlash.regionBase = 0x34000;
+}
+NVS1.internalFlash.regionSize = 0x4000;
+
+NVS2.$name                    = "CONFIG_NVSINTERNAL1";
+NVS2.internalFlash.$name      = "ti_drivers_nvs_NVSCC26XX1";
+if(devFamily == "DeviceFamily_CC13X2X7" || devFamily == "DeviceFamily_CC26X2X7")
+{
+  NVS2.internalFlash.regionSize = 0x82000;
+}
+else
+{
+  NVS2.internalFlash.regionSize = 0x34000;
+}
+NVS2.internalFlash.regionType = "Pointer";
+
+TRNG1.$name = "CONFIG_TRNG_0";

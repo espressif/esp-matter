@@ -1,0 +1,48 @@
+id: rail_test_graphics
+label: RAILtest Application, Graphics
+description: RAILtest Application WSTK Graphics Support
+package: platform
+category: Platform|Radio
+quality: production
+include:
+  - path: platform/radio/rail_lib/apps/rail_test_graphics
+    file_list:
+      - path: sl_rail_test_graphics.h
+source:
+  - path: platform/radio/rail_lib/apps/rail_test_graphics/sl_rail_test_graphics.c
+config_file:
+  - path: platform/radio/rail_lib/apps/rail_test_graphics/config/sl_rail_test_graphics_config.h
+requires:
+  - name: device_supports_rail_stack # only show this for "RAIL stacks" (e.g., RAILtest)
+  - name: board_control
+  - name: ls013b7dh03
+    condition: [brd4001a]
+  - name: ls013b7dh06
+    condition: [brd2204a]
+  - name: dmd_memlcd
+  - name: glib
+  - name: rail_test_core
+provides:
+  - name: rail_test_graphics
+documentation:
+  docset: rail
+  document: rail-test-graphics
+define:
+  # LCD support
+  - name: SL_RAIL_TEST_GRAPHICS_SUPPORT_ENABLE
+    value: '1'
+    condition:
+      - dmd_memlcd
+template_contribution:
+  - name: event_handler
+    value:
+      event:    service_init
+      include:  sl_rail_test_graphics.h
+      handler:  sl_rail_test_graphics_init
+    priority:   1000
+  - name: event_handler
+    value:
+      event:    service_process_action
+      include:  sl_rail_test_graphics.h
+      handler:  sl_rail_test_graphics_process_action
+    priority:   0

@@ -1,0 +1,32 @@
+id: emlib_gpio_simple_init_common
+label: GPIO Init Core
+package: platform
+description: >
+  Provides a simple initialization routine for GPIO.
+
+  This component includes only the core of the GPIO initialization routine. 
+  To configure an initialization routine for a GPIO, the GPIO Init component should be included 
+  in the project. 
+
+category: Platform|Peripheral|Init
+quality: production
+root_path: "platform/emlib/init/gpio_simple"
+template_file:
+  - path: "sl_emlib_gpio_simple_init.c.jinja"
+include:
+  - path: ""
+    file_list:
+    - path: "sl_emlib_gpio_simple_init.h"
+provides:
+  - name: emlib_gpio_simple_init_common
+requires:
+  - name: emlib_gpio_simple_init
+  - name: device
+  - name: emlib_gpio
+  - name: emlib_cmu
+template_contribution:
+  - name: event_handler
+    value:
+      event: driver_init
+      include: "sl_emlib_gpio_simple_init.h"
+      handler: sl_emlib_gpio_simple_init

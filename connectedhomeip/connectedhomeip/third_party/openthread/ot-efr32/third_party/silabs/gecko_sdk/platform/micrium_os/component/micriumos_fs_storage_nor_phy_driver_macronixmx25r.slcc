@@ -1,0 +1,18 @@
+id: micriumos_fs_storage_nor_phy_driver_macronixmx25r
+package: micrium-fsxx
+description: Micrium OS File System NOR Quad-SPI Driver for Silicon Labs
+category: Services|Micrium|File System
+quality: production
+component_root_path: platform/micrium_os/fs
+source:
+  - path: source/storage/nor/phy/fs_nor_phy_mx25r.c
+include:
+  - path: include
+    file_list:
+      - path: fs_nor_phy_drv.h
+      - path: fs_nor_quad_spi.h
+provides:
+  - name: fs_storage_nor_phy_driver_macronixmx25r
+  - name: fs_storage_nor_phy_driver
+requires:
+  - name: fs_storage_nor

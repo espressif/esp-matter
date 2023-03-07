@@ -1,0 +1,10 @@
+id: cmsis_rtos2_tick
+label: CMSIS-RTOS2 OS Tick
+package: platform
+description: CMSIS RTOS2 Tick Hooks.
+category: Platform|CMSIS
+quality: production
+source:
+  - path: platform/CMSIS/RTOS2/Source/os_systick.c
+provides:
+  - name: cmsis_rtos2_tick

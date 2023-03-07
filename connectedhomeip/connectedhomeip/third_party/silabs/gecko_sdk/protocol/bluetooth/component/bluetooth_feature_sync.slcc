@@ -1,0 +1,23 @@
+id: "bluetooth_feature_sync"
+label: "Periodic Advertising Synchronization"
+package: "Bluetooth"
+description: >
+  Bluetooth periodic advertising synchronization feature
+category: "Bluetooth|Feature"
+quality: "production"
+root_path: "protocol/bluetooth"
+requires:
+  - name: "bluetooth_controller"
+config_file:
+  - path: "config/sl_bluetooth_periodic_sync_config.h"
+provides:
+  - name: "bluetooth_feature_sync"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_sync
+  - name: bluetooth_controller_init
+    value:
+      include: "sl_bluetooth_periodic_sync_config.h"
+      function: "sl_btctrl_alloc_periodic_scan(SL_BT_CONFIG_MAX_PERIODIC_ADVERTISING_SYNC);sl_btctrl_init_periodic_scan()"
+      deinit: "sl_btctrl_alloc_periodic_scan(0)"
+    priority: 10

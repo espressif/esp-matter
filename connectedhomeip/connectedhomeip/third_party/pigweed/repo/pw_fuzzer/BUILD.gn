@@ -1,0 +1,92 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_fuzzer/fuzzer.gni")
+import("$dir_pw_fuzzer/oss_fuzz.gni")
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+# This is added automatically by the `pw_fuzzer` template.
+config("fuzzing") {
+  common_flags = [ "-fsanitize=fuzzer" ]
+  cflags = common_flags
+  ldflags = common_flags
+}
+
+# OSS-Fuzz needs to be able to specify its own compilers and add flags.
+config("oss_fuzz") {
+  # OSS-Fuzz doesn't always link with -fsanitize=fuzzer, sometimes it uses
+  #-fsanitize=fuzzer-no-link and provides the fuzzing engine explicitly to be
+  # passed to the linker.
+  ldflags = [ getenv("LIB_FUZZING_ENGINE") ]
+}
+
+config("oss_fuzz_extra") {
+  cflags_c = oss_fuzz_extra_cflags_c
+  cflags_cc = oss_fuzz_extra_cflags_cc
+  ldflags = oss_fuzz_extra_ldflags
+}
+
+pw_source_set("pw_fuzzer") {
+  public_configs = [ ":public_include_path" ]
+  public = [
+    "public/pw_fuzzer/asan_interface.h",
+    "public/pw_fuzzer/fuzzed_data_provider.h",
+  ]
+  public_deps = [ "$dir_pw_log" ]
+}
+
+pw_source_set("run_as_unit_test") {
+  configs = [ ":public_include_path" ]
+  sources = [ "pw_fuzzer_disabled.cc" ]
+  deps = [
+    dir_pw_log,
+    dir_pw_unit_test,
+  ]
+}
+
+# See https://llvm.org/docs/LibFuzzer.html#fuzzer-friendly-build-mode
+config("fuzzing_build_mode_unsafe_for_production") {
+  defines = [ "FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION" ]
+}
+
+config("fuzzing_verbose_logging") {
+  defines = [ "FUZZING_VERBOSE_LOGGING" ]
+}
+
+pw_doc_group("docs") {
+  inputs = [ "doc_resources/pw_fuzzer_coverage_guided.png" ]
+  sources = [ "docs.rst" ]
+}
+
+# Sample fuzzer
+pw_fuzzer("toy_fuzzer") {
+  sources = [ "examples/toy_fuzzer.cc" ]
+  deps = [
+    dir_pw_result,
+    dir_pw_span,
+    dir_pw_string,
+  ]
+}
+
+pw_test_group("tests") {
+  tests = [ ":toy_fuzzer" ]
+}

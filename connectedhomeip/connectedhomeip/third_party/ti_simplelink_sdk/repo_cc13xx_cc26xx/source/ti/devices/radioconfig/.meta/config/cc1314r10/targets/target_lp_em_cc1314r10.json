@@ -1,0 +1,13 @@
+{
+    "target": {
+        "Name": "LP_EM_CC1314R10",
+        "Revision": [],
+        "Description": "CC1314R10 LaunchPad.",
+        "DeviceName": "CC1314R10",
+        "DevicePackage": "RSK 8x8",
+        "FrontEnd": "XD",
+        "PaSettings": "pasettings.json",
+        "RfDesign": "LP-CC1314R-8x8-XD7793",
+        "DefaultCategory": "Settings"
+    }
+}

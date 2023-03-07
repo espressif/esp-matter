@@ -1,0 +1,581 @@
+#
+# This plugin.info file is for cross-stack (or stack agnostic) plugins.
+# Many of the plugins here are related to the Internet of Things reference
+# designs.
+#
+
+# New plugins should be based on the following template.  Unused sections from
+# the template should be removed.  Other options are available.  Ask tools_dev
+# for help.  Sort plugins alphabetically by id.
+#plugin(my-plugin) {
+#  name=My Plugin
+#  description=An example plugin.
+#  category=HAL
+#  quality=sample
+#  root=$HAL/my-plugin
+#
+#  architecture=efr32,simulation
+#
+#  providedApis=my-provided-api1,my-provided-api2
+#  api.my-provided-api1.header=my-provided-api1.h
+#  api.my-provided-api2.header=my-provided-api2.h
+#
+#  requiredApis=my-required-api1,my-required-api2
+#
+#  my-file-common.c
+#  my-file-efr32.c      (efr32)
+#  my-file-simulation.c (simulation)
+#
+#  callbacks=my-callback.info
+#
+#  options=myBooleanOption,myNumberOption
+#
+#  myBooleanOption.name=My boolean option
+#  myBooleanOption.description=An option that sets a boolean.
+#  myBooleanOption.type=BOOLEAN
+#  myBooleanOption.default=FALSE
+#
+#  myNumberOption.name=My number option
+#  myNumberOption.description=An option that sets a number.
+#  myNumberOption.type=NUMBER
+#  myNumberOption.default=0
+#
+#  setup(bookkeeping) {
+#    init=myInitHandler
+#    tick=myTickHandler
+#  }
+#
+#  setup(eventConfiguration) {
+#    myEvent1Control, myEvent1Handler
+#    myEvent2Control, myEvent2Handler
+#  }
+#
+#  setup(macros) {
+#    MY_CONFIGURATION_HEADER_MACRO
+#    -DMY_PROJECT_MACRO
+#  }
+#}
+
+pluginDirectory=./plugin-common
+
+plugin(battery-monitor) {
+  name=Battery Monitor
+  description=This plugin will monitor the value of the battery during the middle of radio transmissions, and use that data to calculate the voltage level of the battery. For an EFR32 design, the HAL_BATTERY_MONITOR_TX_ACTIVE_PORT and HAL_BATTERY_MONITOR_TX_ACTIVE_PIN macros must be set in the board.h.
+  category=HAL
+  quality=productionReady
+  root=./
+
+  architecture=efr32, simulation
+
+  providedApis=battery-monitor
+  api.battery-monitor.header=./plugin-common/battery-monitor/battery-monitor.h
+
+  callbacks=plugin-common/battery-monitor/callback.info
+
+  #HAL API is required in order to get access to ADC functions
+  requiredApis=hal
+
+  plugin-common/battery-monitor/battery-monitor-efr32.c (efr32)
+  plugin-common/battery-monitor-stub/battery-monitor-stub.c (simulation)
+
+  requiredPlugins=generic-interrupt-control
+
+  implementedCallbacks=emberAfPluginBatteryMonitorInitCallback
+
+  options=monitorTimeoutM,sampleFifoSize
+
+  monitorTimeoutM.name=Monitor Timeout (Minutes)
+  monitorTimeoutM.description=The length of time between battery reads.
+  monitorTimeoutM.type=NUMBER:0,1000
+  monitorTimeoutM.default=30
+
+  sampleFifoSize.name=Sample Collection FIFO Size
+  sampleFifoSize.description=The number of entries in the fifo used to collect ADC reads of the battery
+  sampleFifoSize.type=NUMBER:1,20
+  sampleFifoSize.default=16
+
+  setup(bookkeeping) {
+    init=emberAfPluginBatteryMonitorInitCallback
+  }
+
+  setup(eventConfiguration) {
+    emberAfPluginBatteryMonitorReadADCEventControl, emberAfPluginBatteryMonitorReadADCEventHandler
+  }
+
+  setup(hwConfig) {
+    dependentHwConfModules=BATTERYMON
+  }
+}
+
+plugin(bulb-pwm-driver) {
+  name=Bulb PWM Driver
+  description=Generic PWM drive routines for LED bulb.
+  category=HAL
+  quality=production
+  root=./
+
+  architecture=efr32,simulation
+
+  providedApis=bulb-pwm-driver
+  api.bulb-pwm-driver.header=./plugin-common/bulb-pwm-driver/bulb-pwm-driver.h
+
+  callbacks=plugin-common/bulb-pwm-driver/bulb-pwm-driver-callback.info
+
+  plugin-common/bulb-pwm-driver/bulb-pwm-driver-efr32.c   (efr32)
+  plugin-common/bulb-pwm-driver-stub/bulb-pwm-driver-stub.c          (simulation)
+  plugin-common/bulb-pwm-driver/bulb-pwm-driver-blink.c    (simulation, efr32)
+
+  setup(bookkeeping) {
+    init=halBulbPwmDriverInitialize
+  }
+
+  setup(eventConfiguration) {
+    emberAfPluginBulbPwmDriverBlinkEventControl, emberAfPluginBulbPwmDriverBlinkEventHandler
+    emberAfPluginBulbPwmDriverStatusEventControl, emberAfPluginBulbPwmDriverStatusEventHandler
+  }
+
+  setup(hwConfig) {
+    dependentHwConfModules=BULBPWM,BULBPWM_COLOR,TIMER0,TIMER1
+  }
+
+}
+
+plugin(button-interface) {
+  name=Button Interface
+  description=This code gives additional button pressing tracking functionality on top of the HAL button API.  It generates callbacks for different types of button presses, like short presses, long presses, and press and hold.
+  category=HAL
+  quality=production
+  root=./
+
+  providedApis=button-interface
+  api.button-interface.header=./plugin-common/button-interface/button-interface.h
+
+  architecture=efr32,simulation
+
+  plugin-common/button-interface/button-interface.c   (simulation,efr32)
+  plugin-afv6/button-interface/button-interface-afv6.c   (simulation,efr32)
+
+  callbacks=plugin-common/button-interface/callback.info
+  implementedCallbacks=halButtonIsr
+
+  options=buttonTimeoutMs
+
+  buttonTimeoutMs.name=Button Timeout (milliseconds)
+  buttonTimeoutMs.description=The length of time after the last button release before the button processing is called.
+  buttonTimeoutMs.type=NUMBER:1,16534
+  buttonTimeoutMs.default=1000
+
+  setup(eventConfiguration) {
+    emberAfPluginButtonInterfaceButton0PressedEventControl, emberAfPluginButtonInterfaceButton0PressedEventHandler
+    emberAfPluginButtonInterfaceButton0ReleasedEventControl, emberAfPluginButtonInterfaceButton0ReleasedEventHandler
+    emberAfPluginButtonInterfaceButton1PressedEventControl, emberAfPluginButtonInterfaceButton1PressedEventHandler
+    emberAfPluginButtonInterfaceButton1ReleasedEventControl, emberAfPluginButtonInterfaceButton1ReleasedEventHandler
+    emberAfPluginButtonInterfaceButtonTimeoutEventControl, emberAfPluginButtonInterfaceButtonTimeoutEventHandler
+  }
+}
+
+plugin(eeprom) {
+  name=EEPROM
+  description=This plugin manages the state of the EEPROM so that it will be correctly initialized prior to operations being executed. This is important, for example, when sleeping/waking the chip. The SPI or I2C bus must often be reinitialized. It also handles partial writes (less than the word size of the part), caching that partial word for writing later when a call to write is made that is at the next address to the partial word. If this plugin is not enabled or similar functionality is not implemented, deep sleep may not be possible. This plugin must be disabled if the module it is being used for does not have EEPROM.
+  category=HAL
+  quality=production
+  root=./
+
+  providedApis=eeprom,eeprom-print
+  api.eeprom.header=plugin-common/eeprom/eeprom.h
+  api.eeprom-print.header=plugin-afv6/eeprom/eeprom-print.h
+
+  plugin-afv6/eeprom/eeprom-print.c
+  plugin-common/eeprom/eeprom.c
+  plugin-common/eeprom/eeprom-cli.c
+
+  options=partialWordStorageCount
+
+  partialWordStorageCount.name=Partial Word Storage Count
+  partialWordStorageCount.description=The number of partial words that are stored by this plugin for writing later.  If a subsequent write to the following address of the partial word is made, or a call to emberAfPluginEepromFlushSavedPartialWrites() is made, then the partial words are written out.
+  partialWordStorageCount.type=NUMBER:1,10
+  partialWordStorageCount.default=2
+
+  setup(bookkeeping) {
+    init=emberAfPluginEepromInitCallback
+  }
+  
+  callbacks=plugin-common/eeprom/callback.info
+
+  setup(commandLineConfiguration) {
+    eeprom data-print, emAfEepromDataPrintCommand, w
+    eeprom status, emAfEepromStatusCommand
+    eeprom info, emAfEepromInfoCommand
+  }
+}
+
+plugin(eeprom-powerdown) {
+  name=EEPROM Power Down
+  description=Inclusion of this plugin will place the EEPROM into deep power down state.
+  category=HAL
+  quality=development
+  root=./
+  
+  setup(bookkeeping) {
+    init=emberEepromPowerDownInitCallback
+  }
+ 
+  providedApis=eeprom-powerdown
+  plugin-common/eeprom-powerdown/eeprom-powerdown.c
+
+  setup(hwConfig) {
+    dependentHwConfModules=EXTFLASH
+  }
+}
+
+plugin(generic-interrupt-control) {
+  name=Generic GPIO Interrupt Controller
+  description=This plugin will provide an interface into the interrupt controller of the hardware.
+  category=HAL
+  quality=production
+  root=./
+
+  providedApis=generic-interrupt-control
+  api.generic-interrupt-control.header=./plugin-common/generic-interrupt-control/generic-interrupt-control.h
+
+  architecture=efr32,simulation
+
+  plugin-common/generic-interrupt-control/generic-interrupt-control-efr32.c (efr32)
+  plugin-common/generic-interrupt-control-stub/generic-interrupt-control-stub.c (simulation)
+}
+
+plugin(gpio-sensor) {
+  name=GPIO Sensor Interface
+  category=HAL
+  quality=production
+  root=./
+
+  architecture=efr32,simulation
+
+  providedApis=gpio-sensor
+  api.gpio-sensor.header=./plugin-common/gpio-sensor/gpio-sensor.h
+
+  description=This is an interface for a generic binary GPIO sensor.  It provides very simple debouncing and a callback for when the state of the sensor changes.  For this plugin to function properly, the user must select a GPIO port and pin and define them in the applicaton's board.h via the GPIO_SENSOR_PORT and GPIO_SENSOR_PIN macros. For EFR32, no IRQ needs to be selected, but the user can set the GPIO_SENSOR_EM4WUPIN macro to true or false to enable or disable EM4 wake up functionality for the pin.
+
+  plugin-common/gpio-sensor/gpio-sensor.c     (efr32)
+  plugin-common/gpio-sensor-stub/gpio-sensor-stub.c (simulation)
+
+  requiredPlugins=generic-interrupt-control
+
+  # Included by default because the HAL configuration tab enables the button handling by default.
+  includedByDefault=false
+
+  implementedCallbacks=emberAfPluginGpioSensorInitCallback
+
+  callbacks=plugin-common/gpio-sensor/callback.info
+
+  options=sensorPolarity, assertDebounce, deassertDebounce
+
+  sensorPolarity.name=Sensor Polarity
+  sensorPolarity.description=1 means the sensor input is active high.  0 means the sensor input is active low.
+  sensorPolarity.type=NUMBER:0,1
+  sensorPolarity.default=0
+
+  assertDebounce.name=Sensor Assert Debounce (Milliseconds)
+  assertDebounce.description=The length of time after the sensor asserts that the sensor will wait to report subsequent status changes.
+  assertDebounce.type=NUMBER:0,60000
+  assertDebounce.default=100
+
+  deassertDebounce.name=Sensor Dessert Debounce (Milliseconds)
+  deassertDebounce.description=The length of time after the sensor deasserts that the sensor will wait to report subsequent status changes.
+  deassertDebounce.type=NUMBER:0,60000
+  deassertDebounce.default=100
+
+  events=Debounce, Interrupt
+  setup(eventConfiguration) {
+    emberAfPluginGpioSensorInterruptEventControl, emberAfPluginGpioSensorInterruptEventHandler
+    emberAfPluginGpioSensorDebounceEventControl, emberAfPluginGpioSensorDebounceEventHandler
+  }
+
+  setup(bookkeeping) {
+    init=emberAfPluginGpioSensorInitCallback
+  }
+}
+
+plugin(led-blink) {
+  name=LED Blinking
+  description=This code provides a simple interface for blinking different patterns on an LED. It allows for simple functionality like turning the LED on and off, and also provides an interface for a user to define a pattern that the LED should display, and an API for activating and deactivating those patterns.
+  category=HAL
+  quality=production
+  root=./
+
+  architecture=efr32,simulation
+
+  plugin-common/led-blink/led-blink.c     (efr32)
+  plugin-common/led-blink-stub/led-blink-stub.c (simulation)
+
+  providedApis=led-blink
+  api.led-blink.header=plugin-common/led-blink/led-blink.h
+  setup(eventConfiguration) {
+    emberAfPluginLedBlinkLed0EventFunctionEventControl, emberAfPluginLedBlinkLed0EventFunctionEventHandler
+    emberAfPluginLedBlinkLed1EventFunctionEventControl, emberAfPluginLedBlinkLed1EventFunctionEventHandler
+  }
+}
+
+plugin(mpsi) {
+  name=Multiprotocol Stack Interface (MPSI)
+  description=This plugin handles the sending and receiving of MPSI messages. For switched multiprotocol on a SoC, the MPSI Storage plugin should also be selected. This is so that stacks can communicate using flash storage as the medium. This plugin is currently supported by the BLE and ZigBee application frameworks.
+  category=Multiprotocol
+  quality=development
+  root=$PLUGIN/mpsi
+
+  architecture=efr32,unix,simulation
+
+  providedApis=mpsi
+
+  mpsi.c
+  mpsi-callbacks.c
+  mpsi-cli.c
+  mpsi-message-ids.c
+
+  headerFiles=mpsi.h,mpsi-cli.h,mpsi-message-ids.h
+
+  setup(bookkeeping) {
+    init=emberAfPluginMpsiInitCallback
+  }
+
+  setup(commandLineConfiguration) {
+    plugin mpsi receive-message, emAfPluginMpsiCliReceiveMessage
+    plugin mpsi send-message, emAfPluginMpsiCliSendMessage
+  }
+
+  setup(macros) {
+    -DEMBER_AF_PLUGIN_MPSI_SUPPORT
+  }
+
+  needsSetup=mpsi
+  setup(mpsi) {
+    yamlFile=mpsi.yaml
+  }
+}
+
+plugin(occupancy-pyd1698) {
+  name=Occupancy PYD-1698
+  category=HAL
+  root=./
+
+  quality=production
+
+  architecture=efr32,simulation
+
+  description=This plugin will provide an interface for the PYD-1698 occupancy sensor.  The PYD-1698 communicates using a proprietary serial interface, so direct register access to GPIO registers and 4-10 cycle processor waits will be used to bit bang the interface.  In order to use this plugin, the following macros must be defined, preferably in the project's board.h, based on the hardware design of the application: OCCUPANCY_PYD1698_SERIN_PORT, OCCUPANCY_PYD1698_SERIN_PIN, OCCUPANCY_PYD1698_DLINK_PORT, OCCUPANCY_PYD1698_DLINK_PIN, OCCUPANCY_PYD1698_INSTALLATION_JP_PORT, OCCUPANCY_PYD1698_INSTALLATION_JP_PIN.
+
+  providedApis=occupancy, occupancy-pyd1698
+  api.occupancy.header=$PLUGIN/plugin-common/occupancy-pyd1698/occupancy.h
+  api.occupancy-pyd1698.header=$PLUGIN/plugin-common/occupancy-pyd1698/occupancy-pyd1698.h
+
+  plugin-common/occupancy-pyd1698-stub/occupancy-pyd1698-stub.c               (simulation)
+  plugin-common/occupancy-pyd1698/occupancy-pyd1698-efr32.c   (efr32)
+
+  # Not included by default
+  includedByDefault=false
+
+  setup(eventConfiguration) {
+    emberAfPluginOccupancyPyd1698NotifyEventControl, emberAfPluginOccupancyPyd1698NotifyEventHandler
+    emberAfPluginOccupancyPyd1698OccupancyTimeoutEventControl, emberAfPluginOccupancyPyd1698OccupancyTimeoutEventHandler
+    emberAfPluginOccupancyPyd1698FirmwareBlindTimeoutEventControl, emberAfPluginOccupancyPyd1698FirmwareBlindTimeoutEventHandler
+    emberAfPluginOccupancyPyd1698InitEventControl, emberAfPluginOccupancyPyd1698InitEventHandler
+  }
+
+  setup(bookkeeping) {
+    init=emberAfPluginOccupancyPyd1698InitCallback
+  }
+
+  callbacks=$PLUGIN/plugin-common/occupancy-callback.info
+
+  options=threshold, blindTime, pulseCounter, windowTime, filterSource, operationMode, occupancyTimeout, occupancyCalibrationTimeout, firmwareBlindTime
+
+  threshold.name=Detection Threshold
+  threshold.description=The value defines the positive and negative threshold for detection. The ADC values after the BPF are compared to the threshold for counting the pulses.
+  threshold.type=NUMBER:0,255
+  threshold.default=8
+
+  blindTime.name=Hardware Blind Time
+  blindTime.description=The amount of time (in half seconds) during which motion detection is disabled by the PYD-1698 hardware after receiving an occupancy sensed callback
+  blindTime.type=NUMBER:1,16
+  blindTime.default=16
+
+  windowTime.name=Window Time
+  windowTime.description=The time window during which a series of pulses will trigger an occupancy sensed callback.  This value is in multiples of 4 seconds, total time = window time * 4s + 4s.
+  windowTime.type=NUMBER:0,3
+  windowTime.default=1
+
+  pulseCounter.name=Pulse Counter
+  pulseCounter.description=The number of pulses during the specified window time which will cause an occupancy sensed callback to occur.
+  pulseCounter.type=NUMBER:1,4
+  pulseCounter.default=1
+
+  filterSource.name=Filter Source
+  filterSource.description=The type of filtering that will be applied to the analog input to the occupancy sensor.  0 = Bandpass filter, 1 = Lowpass filter.
+  filterSource.type=NUMBER:0,1
+  filterSource.default=0
+
+  operationMode.name=Operation Mode
+  operationMode.description=This defines the mode of operation in which the occupancy sensed callbacks will be generated.  0 = Forced read out mode, 1 = interrupt read out mode, 2 = wake up operation mode
+  operationMode.type=NUMBER:0,2
+  operationMode.default=2
+
+  occupancyTimeout.name=Occupancy Timeout
+  occupancyTimeout.description=The amount of time (in minutes) after not seeing an occupancy interrupt at which point the sensor will determine that the room is not occupied.  This should be some number greater than the blind time option.
+  occupancyTimeout.type=NUMBER:0,65535
+  occupancyTimeout.default=10
+
+  occupancyCalibrationTimeout.name=Calibration Occupancy Timeout
+  occupancyCalibrationTimeout.description=The amount of time (in seconds) during test mode (when the calibration jumper is placed in lower position) after not seeing an occupancy interrupt at which point the sensor will determine that the room is not occupied and will blink the UI LED.
+  occupancyCalibrationTimeout.type=NUMBER:0,16383
+  occupancyCalibrationTimeout.default=8
+
+  firmwareBlindTime.name=Firmware Blind Time
+  firmwareBlindTime.description=The amount of time (in minutes) during which the firmware will ignore interrupts from the occupancy sensor.  This can be used to generate a large blind window than the 16 seconds available through hardware, which allows the MCU to sleep more and thus use less battery.  Assign a value of 0 to disable the firmware blind time.
+  firmwareBlindTime.type=NUMBER:0,65535
+  firmwareBlindTime.default=5
+
+  setup(hwConfig) {
+    dependentHwConfModules=PYD1698
+  }
+}
+
+plugin(occupancy-pyd1698-stub) {
+  name=Occupancy PYD-1698 Stub
+  description=Stub implementation of the PYD 1698 Occupancy sensor
+  category=HAL
+  quality=stub
+  root=./
+
+  providedApis=occupancy
+  api.occupancy.header=plugin-common/occupancy-pyd1698/occupancy.h
+
+  plugin-common/occupancy-pyd1698-stub/occupancy-pyd1698-stub.c
+}
+
+plugin(power-meter-cs5463) {
+  name=Power Meter CS5463
+  description=This plugin will read from a Cirrus Logic CS5463 power meter
+  category=HAL
+  quality=production
+  root=./
+
+  architecture=efr32,simulation,simulation-ezsp
+
+  providedApis=power-meter,power-meter-cs5463
+  api.power-meter.header=plugin-afv2/power-meter-cs5463/power-meter.h
+  api.power-meter-cs5463.header=plugin-afv2/power-meter-cs5463/power-meter-cs5463.h
+
+  plugin-afv2/power-meter-cs5463/power-meter-cs5463.c           (efr32)
+  plugin-afv2/power-meter-cs5463-stub/power-meter-cs5463-stub.c (simulation,simulation-ezsp)
+
+  setup(eventConfiguration) {
+    emberAfPluginPowerMeterCs5463InitEventControl, emberAfPluginPowerMeterCs5463InitEventHandler
+    emberAfPluginPowerMeterCs5463ReadEventControl, emberAfPluginPowerMeterCs5463ReadEventHandler
+  }
+
+  setup(bookkeeping) {
+    init=emberAfPluginPowerMeterCs5463InitCallback
+  }
+
+  setup(hwConfig) {
+    dependentHwConfModules=CS5463
+  }
+}
+
+plugin(sb1-gesture-sensor) {
+  name=SB1 Gesture Sensor
+  description=This code will act as a driver for an EFM8SB1 Gesture sensor.  It requires a callback (usually an irq's ISR) to be defined as the SB1_ISR macro in board.h.  It will implement the gestureReceived callback, which will deliver an enumerated gesture type (as defined in sb1-gesture-sensor.h) whenever a gesture is received.
+  category=HAL
+  quality=production
+  root=./
+
+  architecture=efr32,simulation
+
+  requiredPlugins=i2c-driver, generic-interrupt-control
+
+  plugin-common/sb1-gesture-sensor/sb1-gesture-sensor.c (efr32)
+  plugin-common/sb1-gesture-sensor-stub/sb1-gesture-sensor-stub.c (simulation)
+
+  callbacks=plugin-common/sb1-gesture-sensor/callback.info
+
+  providedApis=sb1-gesture-sensor
+  api.sb1-gesture-sensor.header=plugin-common/sb1-gesture-sensor/sb1-gesture-sensor.h
+
+  setup(bookkeeping) {
+    init=emberAfPluginSb1GestureSensorInitCallback
+  }
+
+  setup(eventConfiguration) {
+    emberAfPluginSb1GestureSensorMessageReadyEventControl, emberAfPluginSb1GestureSensorMessageReadyEventHandler
+  }
+
+  setup(commandLineConfiguration)  {
+    sb1-gesture-sensor msg-ready, emAfPluginSb1MessageReady,
+    sb1-gesture-sensor read-msg, emAfPluginSb1ReadMessage,
+    sb1-gesture-sensor send-gest, emAfPluginSb1SendGesture, uu
+  }
+}
+
+plugin(slot-manager) {
+  name=Slot Manager
+  description=This plugin manages handling the slots on external SPI flash. This is for use with the common bootloader. This plugin is currently supported by the BLE and ZigBee application frameworks.
+  category=HAL
+  quality=development
+  root=$PLUGIN/slot-manager
+
+  architecture=efr32,simulation
+
+  providedApis=slot-manager
+
+  slot-manager.c
+  slot-manager-cli.c
+
+  headerFiles=slot-manager.h,slot-manager-cli.h
+
+  setup(bookkeeping) {
+    init=emberAfPluginSlotManagerInitCallback
+  }
+
+  setup(commandLineConfiguration) {
+    plugin slot-manager boot-slot, emAfPluginSlotManagerCliBootloadSlot
+    plugin slot-manager erase-slot, emAfPluginSlotManagerCliEraseSlot
+    plugin slot-manager ext-flash-info, emAfPluginSlotManagerCliPrintExternalFlashInfo
+    plugin slot-manager read, emAfPluginSlotManagerCliReadExtFlash
+    plugin slot-manager slots-info, emAfPluginSlotManagerCliPrintSlotsInfo
+  }
+}
+
+plugin(tamper-switch) {
+  name=Tamper Switch Interface
+  category=HAL
+  quality=production
+  root=./
+
+  architecture=efr32,simulation
+
+  description=This is a tamper switch interface.  It is intended to be used as a switch that is closed when a device is placed inside an enclosure, which will generate an alarm if the enclosure is opened.  It requires that the tamper switch is defined as BUTTON0.
+
+  plugin-common/tamper-switch/tamper-switch.c     (efr32)
+  plugin-common/tamper-switch-stub/tamper-switch-stub.c (simulation)
+
+  callbacks=plugin-common/tamper-switch/callback.info
+
+  requiredPlugins=button-interface
+
+  providedApis=tamper-switch
+  api.tamper-switch.header=plugin-common/tamper-switch/tamper-switch.h
+
+  setup(bookkeeping) {
+    init=emberAfPluginTamperSwitchInitCallback
+  }
+
+  implementedCallbacks=emberAfPluginButtonInterfaceButton0PressingCallback,emberAfPluginButtonInterfaceButton0PressedLongCallback
+
+  options=tamperPolarity
+
+  tamperPolarity.name=Tamper Button Polarity
+  tamperPolarity.description=1 means the pushbutton is active high.  0 means the pushbutton is active low.
+  tamperPolarity.type=NUMBER:0,1
+  tamperPolarity.default=0
+}

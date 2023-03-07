@@ -1,0 +1,69 @@
+{
+    "version": "0.1.0",
+    "command": "bash",
+    "args": ["-c"],
+    "isShellCommand": true,
+    "showOutput": "always",
+    "suppressTaskName": true,
+    "options": {
+        "cwd": "${workspaceRoot}"
+    },
+    "tasks": [
+        {
+            "taskName": "build app",
+            "args": ["./BUILD all"],
+            "isBuildCommand": false,
+            "problemMatcher": {
+                "owner": "cpp",
+                "fileLocation": "absolute",
+                "pattern": {
+                    "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "severity": 4,
+                    "message": 5
+                }
+            }
+        },
+        {
+            "taskName": "build app -j8",
+            "args": ["./BUILD -j8 all"],
+            "isBuildCommand": true,
+            "problemMatcher": {
+                "owner": "cpp",
+                "fileLocation": "absolute",
+                "pattern": {
+                    "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "severity": 4,
+                    "message": 5
+                }
+            }
+        },
+        {
+            "taskName": "clean app",
+            "args": ["./BUILD clean"]
+        },
+        {
+            "taskName": "flash app",
+            "args": ["make app-flash"]
+        },
+        {
+            "taskName": "monitor",
+            "command": "gnome-terminal",
+            "args": ["-e","make monitor"],
+            "isShellCommand": false,
+            "showOutput": "never"
+        },
+        {
+            "taskName": "menuconfig",
+            "command": "gnome-terminal",
+            "args": ["-e","make menuconfig"],
+            "isShellCommand": false,
+            "showOutput": "never"
+        }
+    ]
+}

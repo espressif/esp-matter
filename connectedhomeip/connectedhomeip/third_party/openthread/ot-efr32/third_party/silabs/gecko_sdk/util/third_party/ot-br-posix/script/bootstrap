@@ -1,0 +1,171 @@
+#!/bin/bash
+#
+#  Copyright (c) 2017, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+#   Description:
+#       This script resolves all dependencies.
+#
+
+# shellcheck source=script/_initrc
+. "$(dirname "$0")"/_initrc
+
+NAT64_SERVICE="${NAT64_SERVICE:-tayga}"
+
+install_packages_apt()
+{
+    sudo apt-get update
+    sudo apt-get install --no-install-recommends -y \
+        wget \
+        iproute2 \
+        iputils-ping \
+        libreadline-dev \
+        libncurses-dev
+
+    sudo apt-get install --no-install-recommends -y build-essential ninja-build cmake
+
+    with RELEASE || sudo apt-get install --no-install-recommends -y libcpputest-dev
+
+    sudo apt-get install --no-install-recommends -y rsyslog
+
+    # For DBus server
+    sudo apt-get install --no-install-recommends -y libdbus-1-dev
+
+    # mDNS
+    sudo apt-get install --no-install-recommends -y libavahi-client3 libavahi-common-dev libavahi-client-dev avahi-daemon
+    (MDNS_RESPONDER_SOURCE_NAME=mDNSResponder-1310.80.1 \
+        && cd /tmp \
+        && wget -4 --no-check-certificate https://opensource.apple.com/tarballs/mDNSResponder/$MDNS_RESPONDER_SOURCE_NAME.tar.gz \
+        && tar xvf $MDNS_RESPONDER_SOURCE_NAME.tar.gz \
+        && cd /tmp/$MDNS_RESPONDER_SOURCE_NAME/Clients \
+        && sed -i '/#include <ctype.h>/a #include <stdarg.h>' dns-sd.c \
+        && sed -i '/#include <ctype.h>/a #include <sys/param.h>' dns-sd.c \
+        && cd /tmp/$MDNS_RESPONDER_SOURCE_NAME/mDNSPosix \
+        && make os=linux && sudo make install os=linux)
+
+    # Boost
+    sudo apt-get install --no-install-recommends -y libboost-dev libboost-filesystem-dev libboost-system-dev
+
+    # nat64
+    without NAT64 || {
+        "$NAT64_SERVICE" != "tayga" || sudo apt-get install --no-install-recommends -y tayga
+        sudo apt-get install --no-install-recommends -y iptables
+    }
+
+    # dns64
+    without DNS64 || {
+        if [ "$PLATFORM" = "beagleboneblack" ]; then
+            # dnsmasq needs to be stopped before bind9 is installed
+            sudo systemctl disable dnsmasq
+            sudo systemctl stop dnsmasq
+        fi
+        sudo apt-get install --no-install-recommends -y bind9
+        # Resolvconf cannot be installed inside docker environment
+        if without DOCKER; then
+            sudo apt-get install --no-install-recommends -y resolvconf
+        fi
+    }
+
+    # network-manager
+    without NETWORK_MANAGER || sudo apt-get install --no-install-recommends -y dnsmasq network-manager
+
+    # dhcpcd5
+    without DHCPV6_PD || sudo apt-get install --no-install-recommends -y dhcpcd5
+
+    # libjsoncpp
+    sudo apt-get install --no-install-recommends -y libjsoncpp-dev
+
+    # reference device
+    without REFERENCE_DEVICE || sudo apt-get install --no-install-recommends -y radvd dnsutils
+
+    # backbone-router
+    without BACKBONE_ROUTER || sudo apt-get install --no-install-recommends -y libnetfilter-queue1 libnetfilter-queue-dev
+
+    # web dependencies
+    without WEB_GUI || command -v npm || sudo apt-get install --no-install-recommends -y nodejs npm
+
+    # firewall
+    sudo apt-get install -y iptables ipset
+}
+
+install_packages_opkg()
+{
+    die 'opkg not supported currently'
+}
+
+install_packages_rpm()
+{
+    if have dnf; then
+        PM=dnf
+    else
+        PM=yum
+    fi
+    sudo $PM install -y gcc gcc-c++
+    with RELEASE || sudo $PM install -y cmake ninja-build
+    sudo $PM install -y dbus-devel
+    sudo $PM install -y avahi avahi-devel
+    sudo $PM install -y boost-devel boost-filesystem boost-system
+    "$NAT64_SERVICE" != "tayga" || sudo $PM install -y tayga
+    sudo $PM install -y iptables
+    sudo $PM install -y jsoncpp-devel
+    sudo $PM install -y wget
+}
+
+install_packages_brew()
+{
+    brew install boost cmake cpputest dbus jsoncpp ninja
+}
+
+install_packages_source()
+{
+    die 'source not supported currently'
+}
+
+install_packages()
+{
+    if have apt-get; then
+        install_packages_apt
+    elif have rpm; then
+        install_packages_rpm
+    elif have opkg; then
+        install_packages_opkg
+    elif have brew; then
+        install_packages_brew
+    else
+        install_packages_source
+    fi
+}
+
+main()
+{
+    . "$BEFORE_HOOK"
+    # TODO remove `|| true` after docker hub builder gets its git upgraded
+    git submodule update --init --recursive --depth 1 || true
+    install_packages
+    . "$AFTER_HOOK"
+}
+
+main

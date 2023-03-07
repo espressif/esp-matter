@@ -1,0 +1,90 @@
+project_name: amazon_aws_soc_mqtt_over_ble
+label: Amazon AWS - SoC MQTT over Bluetooth Low Energy
+description: "This application demonstrates how to use the MQTT over Bluetooth Low Energy service."
+quality: alpha
+package: amazon_bluetooth
+category: Example|AWS IoT
+
+source:
+  - path: "../../../../util/third_party/aws_iot_libs/vendors/siliconlabs/boards/all/aws_demos/application_code/main.c"
+component:
+  - id: bootloader_interface
+  - id: toolchain_gcc
+  - id: freertos
+  - id: iostream_usart
+    instance: [vcom]
+  # AFR - Bluetooth components
+  - id: bluetooth_on_demand_start
+  - id: bluetooth_rtos_adaptation
+  - id: iot_ble
+  # Bluetooth features
+  - id: bluetooth_feature_dynamic_gattdb
+  - id: bluetooth_feature_system
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_gatt
+  - id: bluetooth_feature_gatt_server
+  - id: bluetooth_feature_advertiser
+  - id: bluetooth_feature_sm
+  - id: bluetooth_feature_nvm
+  # AFR - AWS demo component
+  - id: aws_demos_core
+  # CommonIO instances
+  #- id: iot_uart
+  #  instance: [loopback]
+  - id: printf
+define:
+  - name: SL_IOSTREAM_UART_FLUSH_TX_BUFFER
+    # demo config
+  - name: CONFIG_MQTT_BLE_TRANSPORT_DEMO_ENABLED
+  - name: IOT_BLE_ADD_CUSTOM_SERVICES
+    value: 1
+  - name: configENABLED_NETWORKS
+    value: AWSIOT_NETWORK_TYPE_BLE
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: SL_IOSTREAM_USART_VCOM_BAUDRATE
+    value: 115200
+  - name: SL_IOSTREAM_USART_VCOM_FLOW_CONTROL_TYPE
+    value: usartHwFlowControlNone
+  - name: SL_IOSTREAM_USART_VCOM_RESTRICT_ENERGY_MODE_TO_ALLOW_RECEPTION
+    value: 0
+  - name: SL_IOSTREAM_USART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: 1
+  - name: SL_MBEDTLS_SSL_IN_CONTENT_LEN
+    value: 5000
+  - name: SL_MBEDTLS_SSL_OUT_CONTENT_LEN
+    value: 5000
+  - name: SL_STACK_SIZE
+    value: 2752
+  - name: SL_HEAP_SIZE
+    value: 10000
+  - name: SL_BT_CONFIG_BUFFER_SIZE 
+    value: 3150
+  - name: SL_BT_GATTDB_INCLUDE_STATIC_DATABASE
+    value: "0"
+  # FreeRTOS configs
+  - name: configTIMER_TASK_STACK_DEPTH
+    value: 500
+  - name: configTOTAL_HEAP_SIZE
+    value: 61500
+  - name: configMINIMAL_STACK_SIZE
+    value: 200
+  - name: configLOGGING_MAX_MESSAGE_LENGTH
+    value: 200
+tag:
+  - hardware:device:ram:64
+  - hardware:rf:band:2400
+  - hardware:device:sdid:200|205|215
+ui_hints:
+  highlight: config/aws_clientcredential.h
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Bluetooth"]
+  - name: "Ecosystem"
+    value: ["Amazon"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]

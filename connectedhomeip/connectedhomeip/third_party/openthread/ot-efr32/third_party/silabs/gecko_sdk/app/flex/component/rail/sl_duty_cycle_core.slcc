@@ -1,0 +1,64 @@
+id: "sl_duty_cycle_core"
+label: "Flex - Duty Cycle Core"
+package: "Flex"
+description: "Duty Cycle Core files and configurations."
+category: "Flex|RAIL|Core"
+quality: "production"
+root_path: "app/flex/component/rail/sl_duty_cycle_core"
+config_file:
+  - path: "config/sl_duty_cycle_config.h"
+include:
+  - path: ""
+    file_list:
+      - path: "sl_duty_cycle_utility.h"
+      - path: "app_graphics.h"
+        condition:
+          - dmd_memlcd
+source:
+  - path: "sl_duty_cycle_utility.c"
+  - path: "app_graphics.c"
+    condition:
+      - dmd_memlcd
+  - path: "app_cli.c"
+    condition:
+      - cli
+provides:
+  - name: "sl_duty_cycle_core"
+
+requires:
+  - name: "device_has_radio"
+
+#-------- Hides Component for user in Studio ---------
+ui_hints:
+  visibility: never
+
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: duty_cycle_core
+#------------------ CLI commands ---------------------
+  - name: cli_command
+    value:
+      name: info
+      handler: cli_info
+      help: Unique ID of the MCU
+      condition:
+        - cli
+  - name: cli_command
+    value:
+      name: send
+      handler: cli_send_packet
+      help: Send a packet
+      condition:
+        - cli
+  - name: cli_command
+    value:
+      name: receive
+      handler: cli_receive_packet
+      help: Turn ON/OFF received message forwarding on CLI
+      condition:
+        - cli
+      argument:
+      - type: uint8
+        help: ON/OFF

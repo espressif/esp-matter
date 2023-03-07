@@ -1,0 +1,44 @@
+id: core_http
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|Core Libraries
+label: CoreHTTP Library
+description: Lightweight HTTP client library for embedded devices.
+
+package: amazon_platform
+quality: production
+
+provides:
+  - name: core_http
+
+requires:
+  - name: iot_logging
+
+root_path: util/third_party/aws_iot_libs
+
+source:
+  - path: libraries/coreHTTP/source/core_http_client.c
+  - path: libraries/coreHTTP/source/dependency/3rdparty/http_parser/http_parser.c
+  # Test related files
+  - path: tests/integration_test/core_http_system_test.c
+    condition: ["aws_tests_defs"]
+  - path: libraries/abstractions/backoff_algorithm/source/backoff_algorithm.c
+    condition: ["aws_tests_defs"]
+  #- path: libraries/coreHTTP/test/unit-test/core_http_send_utest.c
+  #- path: libraries/coreHTTP/test/unit-test/core_http_utest.c
+
+include:
+  - path: libraries/coreHTTP/source/interface
+    file_list:
+      - path: transport_interface.h
+  - path: libraries/coreHTTP/source/include
+    file_list:
+      - path: core_http_client_private.h
+      - path: core_http_client.h
+      - path: core_http_config_defaults.h
+  - path: libraries/coreHTTP/source/dependency/3rdparty/http_parser
+    file_list:
+      - path: http_parser.h
+  - path: libraries/abstractions/backoff_algorithm/source/include
+    file_list:
+      - path: backoff_algorithm.h
+    condition: ["aws_tests_defs"]

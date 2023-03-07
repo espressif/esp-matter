@@ -1,0 +1,60 @@
+id: mbedtls_pki
+package: platform
+label: PKI
+description: >-
+  This component provides support for the Public Key Infrastructure
+  (PKI) functions in Mbed TLS.
+category: Platform|Security|Mbed TLS|Upper Layer
+quality: production
+source:
+  - path: util/third_party/crypto/mbedtls/library/pk.c
+  - path: util/third_party/crypto/mbedtls/library/pkparse.c
+  - path: util/third_party/crypto/mbedtls/library/pkwrite.c
+  - path: util/third_party/crypto/mbedtls/library/pk_wrap.c
+provides:
+  - name: mbedtls_pki
+  # This component will not become compatible with the SiliconLabs TrustZone Secure
+  # Key Library until the upper layer TLS code fully supports use of PSA APIs. For
+  # more details, please refer to the documentation of MBEDTLS_USE_PSA_CRYPTO in
+  # mbedtls/include/mbedtls/mbedtls_config.h.
+  - name: tz_ns_incompatible
+    condition: [tz_secure_key_library_ns]
+requires:
+  - name: mbedtls_ecc
+  - name: mbedtls_ecdsa
+    condition: [psa_crypto_ecdsa]
+  - name: mbedtls_ecc_secp192r1
+    condition: [psa_crypto_ecc_secp192r1]
+  - name: mbedtls_ecc_secp224r1
+    condition: [psa_crypto_ecc_secp224r1]
+  - name: mbedtls_ecc_secp256r1
+    condition: [psa_crypto_ecc_secp256r1]
+  - name: mbedtls_ecc_secp384r1
+    condition: [psa_crypto_ecc_secp384r1]
+  - name: mbedtls_ecc_secp521r1
+    condition: [psa_crypto_ecc_secp521r1]
+  - name: mbedtls_ecc_curve25519
+    condition: [psa_crypto_ecc_curve25519]
+  - name: mbedtls_sha1
+    condition: [psa_crypto_sha1]
+  - name: mbedtls_sha256
+    condition: [psa_crypto_sha224]
+  - name: mbedtls_sha256
+    condition: [psa_crypto_sha256]
+  - name: mbedtls_sha512
+    condition: [psa_crypto_sha384]
+  - name: mbedtls_sha512
+    condition: [psa_crypto_sha512]
+  - name: mbedtls_asn1
+  - name: mbedtls_hash
+  - name: mbedtls_core
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_PK_C
+  - name: mbedtls_config
+    value: MBEDTLS_PK_PARSE_C
+  - name: mbedtls_config
+    value: MBEDTLS_PK_WRITE_C
+documentation:
+  docset: mbed-tls
+  document: group-pk-module

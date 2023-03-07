@@ -1,0 +1,16 @@
+id: mbedtls_rsa_2048
+package: platform
+label: RSA-2048
+description: >-
+  This component adds support for 2048-bit RSA operations.
+category: Platform|Security|Mbed TLS|RSA
+quality: alpha
+provides:
+  - name: mbedtls_rsa_2048
+  - name: mbedtls_rsa_size
+    allow_multiple: true
+requires:
+  - name: mbedtls_rsa
+template_contribution:
+  - name: mbedtls_mpi_max
+    value: 256

@@ -1,0 +1,57 @@
+# Copyright 2019 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+import("bloat.gni")
+
+config("default_config") {
+  include_dirs = [ "public" ]
+}
+
+# Library which uses standard C/C++ functions such as memcpy to prevent them
+# from showing up within bloat diff reports.
+pw_source_set("bloat_this_binary") {
+  public_configs = [ ":default_config" ]
+  public = [ "public/pw_bloat/bloat_this_binary.h" ]
+  sources = [ "bloat_this_binary.cc" ]
+  deps = [
+    dir_pw_assert,
+    dir_pw_log,
+  ]
+}
+
+pw_source_set("base_main") {
+  sources = [ "base_main.cc" ]
+  deps = [ ":bloat_this_binary" ]
+}
+
+# Standard minimal base binary for bloat reports.
+pw_executable("bloat_base") {
+  forward_variables_from(pw_bloat_empty_base, "*")
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+  report_deps = [
+    "examples:simple_bloat_function",
+    "examples:simple_bloat_loop",
+  ]
+}
+
+pw_test_group("tests") {
+}

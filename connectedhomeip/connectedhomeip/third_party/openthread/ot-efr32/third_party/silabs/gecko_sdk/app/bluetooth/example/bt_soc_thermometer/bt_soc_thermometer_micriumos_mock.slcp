@@ -1,0 +1,138 @@
+project_name: bt_soc_thermometer_micriumos_mock
+package: Bluetooth
+label: Bluetooth - SoC Thermometer (Mock) Micrium OS
+description: >
+  Demonstrates the integration of Micrium OS into Bluetooth applications.
+  RTOS is added to the Bluetooth - SoC Thermometer (Mock) sample app.
+category: Bluetooth Examples
+quality: production
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Bluetooth"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]
+
+component:
+  - id: micriumos_kernel
+  - id: bluetooth_stack
+  - id: gatt_configuration
+  - id: bluetooth_feature_legacy_advertiser
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_gatt_server
+  - id: bluetooth_feature_sm
+  - id: bluetooth_feature_system
+  - id: in_place_ota_dfu
+  - id: bootloader_interface
+  - id: rail_util_pti
+  - id: cli
+    instance:
+      - example
+  - id: app_log
+  - id: app_assert
+  - id: component_catalog
+  - id: iostream_usart
+    instance:
+      - vcom
+  - id: iostream_retarget_stdio
+  - id: printf
+  - id: simple_timer_micriumos
+  - id: health_thermometer
+  - id: sensor_rht_mock
+  - id: simple_button
+    instance:
+      - btn0
+  - id: mpu
+
+source:
+  - path: main.c
+  - path: app.c
+
+include:
+  - path: .
+    file_list:
+      - path: app.h
+
+readme:
+  - path: ../../documentation/example/soc_thermometer_rtos/readme.md
+
+config_file:
+  - override:
+      component: gatt_configuration
+      file_id: gatt_configuration_file_id
+    path: gatt_configuration.btconf
+    directory: btconf
+
+other_file:
+  - path: ../../script/create_bl_files.bat
+  - path: ../../script/create_bl_files.sh
+  - path: ../../documentation/example/soc_thermometer_rtos/readme_img0.png
+    folder: images
+  - path: ../../documentation/example/soc_thermometer_rtos/readme_img1.png
+    folder: images
+
+configuration:
+  - name: SL_STACK_SIZE
+    value: "2752"
+  - name: SL_HEAP_SIZE
+    value: "9200"
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+    condition:
+      - iostream_usart
+  - name: OS_CFG_TMR_EN
+    value: "1"
+  - name: OS_CFG_DBG_EN
+    value: "0"
+  - name: OS_CFG_TS_EN
+    value: "0"
+  - name: OS_CFG_SCHED_ROUND_ROBIN_EN
+    value: "0"
+  - name: OS_CFG_STK_SIZE_MIN
+    value: "48"
+  - name: OS_CFG_Q_EN
+    value: "0"
+  - name: OS_CFG_MON_EN
+    value: "0"
+  - name: OS_CFG_STAT_TASK_EN
+    value: "0"
+  - name: OS_CFG_STAT_TASK_STK_CHK_EN
+    value: "0"
+  - name: OS_CFG_TASK_PROFILE_EN
+    value: "0"
+  - name: OS_CFG_TASK_Q_EN
+    value: "0"
+  - name: LIB_MEM_CFG_HEAP_SIZE
+    value: "2100"
+  - name: SL_CLI_EXAMPLE_TASK_STACK_SIZE
+    value: "250"
+  - name: SL_CLI_INPUT_BUFFER_SIZE
+    value: "32"
+  - name: SL_CLI_NUM_HISTORY_BYTES
+    value: "0"
+  - name: SL_PSA_KEY_USER_SLOT_COUNT
+    value: "0"
+    condition:
+      - psa_crypto
+
+template_contribution:
+  - name: cli_command
+    value:
+      name: hello
+      handler: hello
+      help: "hello"
+    condition:
+      - cli
+
+tag:
+  - hardware:rf:band:2400
+  - hardware:component:sensor:!si7021
+  - hardware:component:button:1+
+
+ui_hints:
+  highlight:
+    - path: config/btconf/gatt_configuration.btconf
+    - path: readme.md
+      focus: true

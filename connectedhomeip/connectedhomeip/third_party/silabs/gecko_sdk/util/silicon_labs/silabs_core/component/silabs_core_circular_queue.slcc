@@ -1,0 +1,21 @@
+id: silabs_core_circular_queue
+package: platform
+label: Circular Queue
+description: Silicon Labs core utility providing a circular queue.
+category: Platform|Utilities
+quality: production
+include:
+  - path: util/silicon_labs/silabs_core/queue
+    file_list: [{path: circular_queue.h}]
+config_file:
+  - path: util/silicon_labs/silabs_core/queue/config/circular_queue_config.h
+source:
+  - path: util/silicon_labs/silabs_core/queue/circular_queue.c
+requires:
+  - name: cmsis_core
+  - name: emlib_core
+provides:
+  - name: silabs_core_circular_queue
+define:
+  - name: CIRCULAR_QUEUE_USE_LOCAL_CONFIG_HEADER
+    value: "1"

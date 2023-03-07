@@ -1,0 +1,90 @@
+package: Zigbee
+description: This component supports managing the address table. On the SoC,
+  all action are directly performed on the stack address table. The host
+  maintains a copy of the address table and ensures that it is always in sync with
+  the NCP's address table. When building the HOST, 
+  make sure that the NCP can support the address table size in the component configuration. This
+  optimal size varies based on platform architecture and size of other dynamically-
+  allocated data for this application. If errors occur upon resetting the NCP,
+  the NCP may not have enough room to store a large
+  address table size. If this is not the case, the NCP may not be able to dynamically
+  increase the address table size based on the host's request. To work around
+  this issue, statically allocate the desired address table size on the Zigbee Pro Stack\Pro
+  Leaf Stack components on the NCP.
+label: Address Table
+quality: production
+id: zigbee_address_table
+category: Zigbee|Utility
+provides:
+   - name: "zigbee_address_table"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/address-table/config/address-table-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/address-table/address-table.c
+  - path: protocol/zigbee/app/framework/plugin/address-table/address-table-cli.c
+    condition:
+      - "cli"
+include:
+  - path: protocol/zigbee/app/framework/plugin/address-table
+    file_list:
+      - path: address-table.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_address_table
+  - name: zigbee_af_callback
+    value:
+      callback_type: ncp_init
+      function_name: emberAfPluginAddressTableNcpInitCallback
+    condition:
+      - zigbee_ezsp
+  - name: cli_group
+    value:
+      name: address-table
+      group: plugin  
+  - name: cli_command
+    value:
+      group: address-table
+      name: add
+      handler: emberAfPluginAddressTableAddCommand
+      help: ""
+      argument:
+      - type: hex 
+        help: "Entry to be added" 
+  - name: cli_command
+    value:
+      group: address-table
+      name: set
+      handler: emberAfPluginAddressTableSetCommand
+      help: Sets an entry in the address table according to the arguments specified.
+      argument:
+      - type: uint8
+      - type: hex
+      - type: uint16
+  - name: cli_command
+    value:
+      group: address-table
+      name: remove
+      handler: emberAfPluginAddressTableRemoveCommand
+      help: Removes an entry from the address table.
+      argument:
+      - type: hex
+        help: Entry to be removed
+  - name: cli_command
+    value:
+      group: address-table
+      name: lookup
+      handler: emberAfPluginAddressTableLookupCommand
+      help: Looks up an entry in the address table.
+      argument:
+      - type: hex
+        help: Entry to be looked up
+  - name: cli_command
+    value:
+      group: address-table
+      name: print
+      handler: emberAfPluginAddressTablePrintCommand
+      help: Prints the address table.        
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/address-table

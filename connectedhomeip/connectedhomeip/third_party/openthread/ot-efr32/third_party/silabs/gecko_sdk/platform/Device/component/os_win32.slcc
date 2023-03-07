@@ -1,0 +1,21 @@
+id: win32
+label: Win32
+package: platform
+description: OS component for Win32.
+category: Platform|Device|Native
+quality: production
+provides:
+  - name: operating_system
+  - name: win32
+  - name: device_family_host
+toolchain_settings:
+  - option: gcc_compiler_option
+    value: "-m32"
+    condition:
+      - build_32bit
+  - option: gcc_linker_option
+    value: "-m32"
+    condition:
+      - build_32bit
+tag:
+  - device:opn:win32

@@ -1,0 +1,55 @@
+package: Zigbee
+description: Software that supports a CLI-based application running on a gateway-style
+  device that has a POSIX compatible operating system. This component is NOT compatible
+  with an system-on-a-chip (SoC) platform.
+label: Gateway Support
+quality: production
+id: zigbee_gateway
+category: Zigbee|Unix Host
+toolchain_settings: []
+ui_hints: {}
+template_file: []
+provides:
+   - name: "zigbee_gateway"
+requires:
+   - name: "zigbee_file_descriptor_dispatch"
+   - name: "device_host"
+config_file:
+  - path: "protocol/zigbee/app/framework/plugin-host/gateway/config/gateway-config.h"
+include:
+  - path: protocol/zigbee/app/framework/plugin-host/gateway
+    file_list:
+      - path: gateway-support.h
+      - path: gateway-support-cli.h
+
+source:
+  - path: "protocol/zigbee/app/framework/plugin-host/gateway/gateway-support.c"
+  - path: "protocol/zigbee/app/framework/plugin-host/gateway/backchannel-support.c"
+  - path: "protocol/zigbee/app/framework/plugin-host/gateway/gateway-support-cli.c"
+    condition:
+      - "cli"
+  - path: "protocol/zigbee/app/framework/plugin-host/gateway/gateway-cb.c"
+template_contribution:
+  - name: component_catalog
+    value: zigbee_gateway
+  - name: zigbee_af_callback
+    value:
+      callback_type: init_done
+      function_name: emberAfPluginGatewayInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: tick
+      function_name: emberAfPluginGatewayTickCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: gateway
+      help: gateway related commands
+  - name: cli_command
+    value:
+      group: gateway
+      name: time-sync-local
+      handler: emberAfPluginGatewaySupportTimeSyncLocal
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/gateway

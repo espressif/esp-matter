@@ -1,0 +1,135 @@
+#!/bin/bash
+#
+#  Copyright (c) 2017, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+
+readonly OTBR_TOP_BUILDDIR="${BUILD_DIR}/otbr"
+readonly OTBR_OPTIONS="${OTBR_OPTIONS:-}"
+readonly REFERENCE_DEVICE="${REFERENCE_DEVICE:-0}"
+
+otbr_uninstall()
+{
+    if have systemctl; then
+        sudo systemctl stop otbr-web || true
+        sudo systemctl stop otbr-agent || true
+        sudo systemctl disable otbr-web || true
+        sudo systemctl disable otbr-agent || true
+        ! sudo systemctl is-enabled otbr-web
+        ! sudo systemctl is-enabled otbr-agent
+    fi
+    sudo killall otbr-web otbr-agent || true
+
+    (
+        if cd "${OTBR_TOP_BUILDDIR}"; then
+            # shellcheck disable=SC2024
+            sudo xargs rm <install_manifests.txt || true
+        fi
+    )
+    if have systemctl; then
+        sudo systemctl daemon-reload
+    fi
+}
+
+otbr_install()
+{
+    local otbr_options=()
+
+    if [[ ${OTBR_OPTIONS} ]]; then
+        read -r -a otbr_options <<<"${OTBR_OPTIONS}"
+    fi
+
+    otbr_options=(
+        "-DBUILD_TESTING=OFF"
+        "-DCMAKE_INSTALL_PREFIX=/usr"
+        "-DOTBR_DBUS=ON"
+        "-DOTBR_DNSSD_DISCOVERY_PROXY=ON"
+        "-DOTBR_SRP_ADVERTISING_PROXY=ON"
+        "-DOTBR_INFRA_IF_NAME=${INFRA_IF_NAME}"
+        "-DOTBR_MDNS=${OTBR_MDNS:=mDNSResponder}"
+        "${otbr_options[@]}"
+    )
+
+    if with WEB_GUI; then
+        otbr_options+=("-DOTBR_WEB=ON")
+    fi
+
+    if with BORDER_ROUTING; then
+        otbr_options+=(
+            "-DOTBR_BORDER_ROUTING=ON"
+        )
+    fi
+
+    if with REST_API; then
+        otbr_options+=("-DOTBR_REST=ON")
+    fi
+
+    if with BACKBONE_ROUTER; then
+        otbr_options+=(
+            "-DOTBR_BACKBONE_ROUTER=ON"
+        )
+        if [[ ${REFERENCE_DEVICE} == "1" ]]; then
+            otbr_options+=(
+                "-DOTBR_DUA_ROUTING=ON"
+            )
+        fi
+    fi
+
+    if [[ ${REFERENCE_DEVICE} == "1" ]]; then
+        otbr_options+=(
+            "-DOTBR_NO_AUTO_ATTACH=1"
+            "-DOT_REFERENCE_DEVICE=ON"
+            "-DOT_DHCP6_CLIENT=ON"
+            "-DOT_DHCP6_SERVER=ON"
+        )
+    fi
+
+    (./script/cmake-build "${otbr_options[@]}" \
+        && cd "${OTBR_TOP_BUILDDIR}" \
+        && ninja \
+        && sudo ninja install)
+
+    if have systemctl; then
+        sudo systemctl reload dbus
+        sudo systemctl daemon-reload
+        without WEB_GUI || sudo systemctl enable otbr-web || true
+        sudo systemctl enable otbr-agent || true
+        sudo systemctl is-enabled otbr-agent || die 'Failed to enable otbr-agent!'
+        without WEB_GUI || sudo systemctl is-enabled otbr-web || die 'Failed to enable otbr-web!'
+
+        if [[ ${REFERENCE_DEVICE} == "1" ]]; then
+            sudo systemctl enable testharness-discovery || true
+            sudo systemctl is-enabled testharness-discovery || die 'Failed to enable otbr-agent!'
+        fi
+    else
+        echo >&2 ' *** WARNING: systemctl not found. otbr cannot start on boot.'
+    fi
+}
+
+otbr_update()
+{
+    otbr_install
+}

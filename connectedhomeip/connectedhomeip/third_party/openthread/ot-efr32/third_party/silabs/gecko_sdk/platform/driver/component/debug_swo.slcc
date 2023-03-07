@@ -1,0 +1,51 @@
+id: debug_swo
+label: SWO Debug
+package: platform
+description: >
+  Driver for debugging using Serial Wire Output.
+  The driver can be configured to output hardware interrupt events and
+  Program Counter samples using the DWT and ITM, as well as arbitrary data
+  produced by software using any of the 32 stimulus ports of the ITM.
+
+  If the Services->Runtime->System Setup->System Init component is included in
+  a project, the driver will be initialized automatically during the
+  sl_system_init() call in main.c.
+
+  Note: This software component can be used to enable code correlation profiling.
+  For proper operation, enable interrupt event trace and Program Counter samples
+  in the component configuration.
+category: Platform|Driver
+quality: production
+root_path: platform/driver/debug
+source:
+  - path: src/sl_debug_swo.c
+include:
+  - path: inc
+    file_list:
+      - path: sl_debug_swo.h
+provides:
+  - name: debug_swo
+requires:
+  - name: status
+  - name: emlib_cmu
+  - name: emlib_gpio
+  - name: cmsis_core
+config_file:
+  - path: config/s0/tg/sl_debug_swo_config.h
+    condition: [device_sdid_71]
+  - path: config/s0/tg/sl_debug_swo_config.h
+    condition: [device_sdid_73]
+  - path: config/s0/gg/sl_debug_swo_config.h
+    condition: [device_sdid_72]
+  - path: config/s0/gg/sl_debug_swo_config.h
+    condition: [device_sdid_74]
+  - path: config/s1/sl_debug_swo_config.h
+    condition: [device_series_1]
+  - path: config/s2/sl_debug_swo_config.h
+    condition: [device_series_2]
+template_contribution:
+  - name: event_handler
+    value:
+      event: driver_init
+      include: "sl_debug_swo.h"
+      handler: sl_debug_swo_init

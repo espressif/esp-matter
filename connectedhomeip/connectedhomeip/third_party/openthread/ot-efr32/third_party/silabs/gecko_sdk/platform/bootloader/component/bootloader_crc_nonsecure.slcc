@@ -1,0 +1,18 @@
+id: bootloader_crc_nonsecure
+label: Cyclic Redundancy Check (Non-Secure)
+package: bootloader
+description: >
+  Software implementations of 16- and 32-bit CRC
+category: Platform|Bootloader|TrustZone NonSecure|Utils
+quality: beta
+source:
+  - path: platform/bootloader/security/btl_crc16_ns.c
+  - path: platform/bootloader/security/btl_crc32_ns.c
+include:
+  - path: platform/bootloader
+    file_list:
+      - path: security/btl_crc16.h
+      - path: security/btl_crc32.h
+provides:
+  - name: bootloader_crc
+  - name: bootloader_crc_nonsecure

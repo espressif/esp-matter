@@ -1,0 +1,31 @@
+id: bmp3xx_driver
+package: platform
+label: BMP3xx - Pressure Sensor
+description: >
+  Driver for the Bosch Sensortec BMP3xx barometric pressure sensors
+category: Platform|Board Drivers
+quality: production
+root_path: hardware/driver/bmp3xx
+provides:
+  - name: bmp3xx_driver
+requires:
+  - name: i2cspm_core
+  - name: status
+  - name: ustimer
+include:
+  - path: inc
+    file_list:
+      - path: sl_bmp3xx.h
+  - path: bosch/BMP3_driver
+    file_list:
+      - path: bmp3.h
+      - path: bmp3_defs.h
+source:
+  - path: src/sl_bmp3xx.c
+  - path: bosch/BMP3_driver/bmp3.c
+template_contribution:
+  - name: component_catalog
+    value: bmp3xx_driver
+documentation:
+    docset: gecko-platform
+    document: hardware-driver/api/group-bmp3xx

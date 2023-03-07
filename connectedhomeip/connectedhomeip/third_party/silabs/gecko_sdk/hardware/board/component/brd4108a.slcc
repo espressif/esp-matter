@@ -1,0 +1,51 @@
+!!omap
+- id: brd4108a
+- label: BRD4108A
+- package: platform
+- description: Board support for BRD4108A.
+- category: Platform|Board|Thunderboard
+- quality: production
+- requires:
+  - name: efr32bg22c224f512im40
+  - name: brd4108a_config
+- provides:
+  - name: brd4108a
+  - name: hardware_board
+  - name: hardware_board_tb
+  - name: hardware_board_from_tb
+  - name: hardware_board_from_bg22-ek4108a
+  - name: hardware_board_has_vcom
+  - name: hardware_board_has_hfxo
+  - name: hardware_board_has_lfxo
+  - name: hardware_board_supports_rf_band_2400
+  - name: hardware_board_supports_1_rf_band
+  - name: hardware_board_default_rf_band
+  - name: hardware_board_default_rf_band_2400
+- recommends:
+  - id: iostream_eusart
+    instance:
+    - vcom
+  - id: bootloader_uart_driver
+  - id: simple_led
+    instance:
+    - led0
+  - id: simple_button
+    instance:
+    - btn0
+- template_contribution:
+  - name: board_default_init
+    value: sl_board_disable_vcom()
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD4108A"'
+  - name: SL_BOARD_REV
+    value: '"A03"'
+- tag:
+  - board:pn:BRD4108
+  - board:variant:A
+  - board:revision:A03
+  - board:device:efr32bg22c224f512im40
+  - hardware:has:vcom
+  - hardware:has:pti
+  - hardware:has:led:1
+  - hardware:has:button:1

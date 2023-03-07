@@ -1,0 +1,19 @@
+id: bt_fp_soc_server
+label: Bluetooth Feature Pack - SoC Server (Peripheral)
+package: Bluetooth
+description: >
+  Includes selection of Bluetooth stack server features.
+category: Bluetooth|Application
+quality: production
+root_path: app/bluetooth
+requires:
+  - name: bluetooth_stack
+  - name: gatt_configuration
+  - name: bluetooth_feature_legacy_advertiser
+  - name: bluetooth_feature_extended_advertiser
+  - name: bluetooth_feature_connection
+  - name: bluetooth_feature_gatt_server
+  - name: bluetooth_feature_sm
+  - name: bluetooth_feature_system
+ui_hints:
+  visibility: never

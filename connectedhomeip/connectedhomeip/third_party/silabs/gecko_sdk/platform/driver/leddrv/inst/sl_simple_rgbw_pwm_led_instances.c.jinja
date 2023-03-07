@@ -1,0 +1,110 @@
+/***************************************************************************//**
+ * @file
+ * @brief Simple RGBW PWM LED Driver Instances
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2020 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * The licensor of this software is Silicon Laboratories Inc.  Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement.  This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
+ *
+ ******************************************************************************/
+
+#include "em_gpio.h"
+#include "sl_simple_rgbw_pwm_led.h"
+{% for inst in simple_rgbw_pwm_led_instance %}
+#include "sl_simple_rgbw_pwm_led_{{ inst }}_config.h"
+{% endfor %}
+
+{% for inst in simple_rgbw_pwm_led_instance %}
+sl_led_pwm_t red_{{ inst | lower }} = {
+  .port = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_RED_PORT,
+  .pin = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_RED_PIN,
+  .level = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_RESOLUTION - 1,
+  .polarity = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_RED_POLARITY,
+  .channel = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_RED_CHANNEL,
+#if defined(SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_RED_LOC)
+  .location = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_RED_LOC,
+#endif
+  .timer = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_PERIPHERAL,
+  .frequency = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_FREQUENCY,
+  .resolution = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_RESOLUTION,
+};
+
+sl_led_pwm_t green_{{ inst | lower }} = {
+  .port = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_GREEN_PORT,
+  .pin = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_GREEN_PIN,
+  .level = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_RESOLUTION - 1,
+  .polarity = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_GREEN_POLARITY,
+  .channel = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_GREEN_CHANNEL,
+#if defined(SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_GREEN_LOC)
+  .location = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_GREEN_LOC,
+#endif
+  .timer = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_PERIPHERAL,
+  .frequency = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_FREQUENCY,
+  .resolution = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_RESOLUTION,
+};
+
+sl_led_pwm_t blue_{{ inst | lower }} = {
+  .port = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_BLUE_PORT,
+  .pin = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_BLUE_PIN,
+  .level = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_RESOLUTION - 1,
+  .polarity = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_BLUE_POLARITY,
+  .channel = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_BLUE_CHANNEL,
+#if defined(SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_BLUE_LOC)
+  .location = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_BLUE_LOC,
+#endif
+  .timer = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_PERIPHERAL,
+  .frequency = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_FREQUENCY,
+  .resolution = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_RESOLUTION,
+};
+
+sl_led_pwm_t white_{{ inst | lower }} = {
+  .port = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_WHITE_PORT,
+  .pin = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_WHITE_PIN,
+  .level = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_RESOLUTION - 1,
+  .polarity = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_WHITE_POLARITY,
+  .channel = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_WHITE_CHANNEL,
+#if defined(SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_WHITE_LOC)
+  .location = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_WHITE_LOC,
+#endif
+  .timer = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_PERIPHERAL,
+  .frequency = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_FREQUENCY,
+  .resolution = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_RESOLUTION,
+};
+
+sl_simple_rgbw_pwm_led_context_t simple_rgbw_pwm_{{ inst | lower }}_context = {
+  .red = &red_{{ inst | lower }},
+  .green = &green_{{ inst | lower }},
+  .blue = &blue_{{ inst | lower }},
+  .white = &white_{{ inst | lower }},
+
+  .timer = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_PERIPHERAL,
+  .frequency = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_FREQUENCY,
+  .resolution = SL_SIMPLE_RGBW_PWM_LED_{{ inst | upper }}_RESOLUTION,
+};
+
+const sl_led_rgbw_pwm_t sl_simple_rgbw_pwm_led_{{ inst | lower }} = {
+  .led_common.context = &simple_rgbw_pwm_{{ inst | lower }}_context,
+  .led_common.init = sl_simple_rgbw_pwm_led_init,
+  .led_common.turn_on = sl_simple_rgbw_pwm_led_turn_on,
+  .led_common.turn_off = sl_simple_rgbw_pwm_led_turn_off,
+  .led_common.toggle = sl_simple_rgbw_pwm_led_toggle,
+  .led_common.get_state = sl_simple_rgbw_pwm_led_get_state,
+  .set_rgbw_color = sl_simple_rgbw_pwm_led_set_color,
+  .get_rgbw_color = sl_simple_rgbw_pwm_led_get_color,
+};
+
+{% endfor %}
+
+void sl_simple_rgbw_pwm_led_init_instances(void)
+{
+  {% for inst in simple_rgbw_pwm_led_instance %}
+  sl_led_init((sl_led_t *)&sl_simple_rgbw_pwm_led_{{ inst | lower }});
+  {% endfor %}
+}

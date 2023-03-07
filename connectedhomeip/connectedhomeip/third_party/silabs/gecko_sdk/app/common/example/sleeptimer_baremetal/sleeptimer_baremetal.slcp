@@ -1,0 +1,58 @@
+project_name: sleeptimer_baremetal
+package: platform
+quality: production
+label: Platform - Sleeptimer Bare-metal
+description: > 
+  This example project demonstrates periodic and
+  one-shot timers using the low-frequency real-time
+  clock peripheral. Timers can be stopped and restarted
+  using the buttons. Timer status is reported on the
+  virtual COM serial port.
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]
+source:
+  - path: app.c
+  - path: main.c
+  - path: sleeptimer_app.c
+include:
+  - path: .
+    file_list:
+    - path: app.h
+    - path: sleeptimer_app.h
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+component:
+  - id: sl_system
+  - id: device_init
+  - id: sleeptimer
+  - id: power_manager
+  - id: simple_led
+    instance: [led0, led1]
+  - id: simple_button
+    instance: [btn0, btn1]
+  - id: iostream_retarget_stdio
+  - id: iostream_stdlib_config
+  - id: iostream_recommended_stream
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: SL_IOSTREAM_USART_VCOM_RESTRICT_ENERGY_MODE_TO_ALLOW_RECEPTION
+    value: 0
+    condition: [iostream_usart]
+  - name: SL_IOSTREAM_UART_VCOM_RESTRICT_ENERGY_MODE_TO_ALLOW_RECEPTION
+    value: 0
+    condition: [iostream_uart]
+define:
+  - name: DEBUG_EFM
+tag:
+  - hardware:component:led:2+
+  - hardware:component:button:2+
+  - hardware:!shared:button:led

@@ -1,0 +1,23 @@
+# The PW_PLUGINS file lists commands that should be included with the pw command
+# when it is invoked in this directory or its subdirectories. Commands in this
+# file override those registered in parent directories.
+#
+# Entries in this file have three columns:
+#
+#   <name> <Python module> <function>
+#
+# The Python package containing that module must be installed in the Pigweed
+# virtual environment. The function must have no required arguments and should
+# return an int to use as the exit code.
+
+# keep-sorted: start
+console pw_console.__main__ main
+format pw_presubmit.format_code _pigweed_upstream_main
+heap-viewer pw_allocator.heap_viewer main
+ide pw_ide.__main__ main
+package pw_package.pigweed_packages main
+presubmit pw_presubmit.pigweed_presubmit main
+requires pw_cli.requires main
+rpc pw_hdlc.rpc_console main
+update pw_software_update.cli main
+# keep-sorted: end

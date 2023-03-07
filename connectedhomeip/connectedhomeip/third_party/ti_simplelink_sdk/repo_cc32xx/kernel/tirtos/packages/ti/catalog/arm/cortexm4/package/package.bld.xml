@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/build.dtd -->
+<package name="ti.catalog.arm.cortexm4" version="1, 0, 0" producerId="undefined">
+    <units>
+        <module name="Tiva"/>
+        <module name="OMAP5430"/>
+        <module name="Vayu"/>
+        <module name="DRA7XX"/>
+        <module name="TDA3XX"/>
+        <module name="CC32xx"/>
+        <module name="MSP432"/>
+        <module name="MSP432E"/>
+        <module name="CC13xx"/>
+        <module name="CC26xx"/>
+        <module name="CortexM"/>
+    </units>
+    <sources>
+    </sources>
+    <configscripts>
+    </configscripts>
+    <makefiles>
+        <srcFile name="package.mak" src="package.bld"/>
+        <srcFile name="package/package.xdc.dep" src="package.xdc"/>
+        <srcFile name="package/package.cfg.dep" src="package.xdc"/>
+        <srcFile name="package/rel/ti_catalog_arm_cortexm4.tar.dep" src="package/rel/ti_catalog_arm_cortexm4.xdc.inc"/>
+    </makefiles>
+    <targets>
+    </targets>
+    <libraries>
+    </libraries>
+    <configurations>
+    </configurations>
+    <executables>
+    </executables>
+    <tests>
+    </tests>
+    <releases relDir="package/rel/">
+    <release name="ti_catalog_arm_cortexm4"
+        pname="ti_catalog_arm_cortexm4.tar"
+        label="default"
+    >
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+        <file name="package/package.cfg.xdc.inc"/>
+    </release>
+    </releases>
+    <repositories>
+    </repositories>
+</package>

@@ -1,0 +1,54 @@
+id: "connect_mailbox_server"
+label: "Mailbox Server"
+package: "Flex"
+category: "Connect|Mailbox"
+quality: "production"
+description: "Implements the server side of the Connect mailbox protocol. It stores messages from mailbox client(s) and delivers them upon the destination node checks in. When a message expires it is removed from the queue. In both cases, delivery status is reported back to the mailbox client(s)."
+provides:
+  - name: "connect_mailbox_server"
+requires:
+  - name: "connect_stack_common"
+source:
+      - path: "protocol/flex/mailbox/mailbox-server/mailbox-server.c"
+      - path: "protocol/flex/mailbox/mailbox-server/mailbox-server-cb.c"
+include:
+  - path: "protocol/flex/mailbox"
+    file_list:
+      - path: "mailbox-protocol.h"
+      - path: "mailbox-types.h"
+  - path: "protocol/flex/mailbox/mailbox-server"
+    file_list:
+      - path: "mailbox-server.h"
+config_file:
+  - path: "protocol/flex/mailbox/mailbox-server/config/mailbox-server-config.h"
+template_contribution:
+  - name: stack_callback
+    value:
+      callback_type: "init"
+      function_name: "emAfPluginMailboxServerInitCallback"
+  - name: stack_callback
+    value:
+      callback_type: "stack_status"
+      function_name: "emAfPluginMailboxServerStackStatusCallback"
+  - name: stack_callback
+    value:
+      callback_type: "incoming_message"
+      function_name: "emAfPluginMailboxServerIncomingMessageCallback"
+  - name: stack_callback
+    value:
+      callback_type: "message_sent"
+      function_name: "emAfPluginMailboxServerMessageSentCallback"
+  - name: stack_callback
+    value:
+      callback_type: "mark_application_buffers"
+      function_name: "emAfPluginMailboxServerMarkBuffersCallback"
+  - name: event_system
+    value:
+      event_control: "emAfPluginMailboxServerEventControl"
+      event_handler: "emAfPluginMailboxServerEventHandler"
+  - name: component_catalog
+    value: connect_mailbox_server
+
+documentation:
+  docset: connect-stack
+  document: group-mailbox-server

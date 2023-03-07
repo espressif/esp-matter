@@ -1,0 +1,39 @@
+id: "connect_stack_counters_library"
+label: "Stack Counters (Library)"
+package: "Flex"
+category: "Connect"
+quality: "production"
+ui_hints:
+  visibility: never
+description: "This component provides the Connect Stack Counters library."
+provides:
+  - name: "connect_stack_counters_implementation"
+requires:
+  - name: "connect_stack_counters"
+library:
+  - path: "protocol/flex/libs/libconnect-stack-counters-library-efr32xg1-iar.a"
+    condition:
+      - "toolchain_iar"
+      - device_series_1
+      - device_sdid_80
+  - path: "protocol/flex/libs/libconnect-stack-counters-library-efr32xg1x-iar.a"
+    condition:
+      - "toolchain_iar"
+      - device_series_1
+  - path: "protocol/flex/libs/libconnect-stack-counters-library-efr32xg2x-iar.a"
+    condition:
+      - "toolchain_iar"
+      - device_series_2
+  - path: "protocol/flex/libs/libconnect-stack-counters-library-efr32xg1-gcc.a"
+    condition:
+      - "toolchain_gcc"
+      - device_series_1
+      - device_sdid_80
+  - path: "protocol/flex/libs/libconnect-stack-counters-library-efr32xg1x-gcc.a"
+    condition:
+      - "toolchain_gcc"
+      - device_series_1
+  - path: "protocol/flex/libs/libconnect-stack-counters-library-efr32xg2x-gcc.a"
+    condition:
+      - "toolchain_gcc"
+      - device_series_2

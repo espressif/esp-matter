@@ -1,0 +1,79 @@
+#
+# File describing the PHY support quiz in the appbuilder.
+#
+
+q1: {
+  architecture: efr32,
+  description: Select PHY support.,
+  a1: {
+    description: ZigBee 2.4Ghz device.,
+    default: true,
+
+    # Select phy = rail libraries
+    replacement: [ dynamicPhy=-rail ]
+  },
+
+  a2: {
+    description: ZigBee Multi-MAC Selection End Device. An End device can join on either 2.4Ghz or Sub-Ghz band. Supported boards 4150C/4170A.,
+    macros: [ -DPHY_RAILGB ],
+
+    # Select phy = railgb libraries
+    replacement: [ dynamicPhy=-railgb ],
+
+    #Turn on/off plugin if selected
+    plugins: [ -zigbee-r22-support-stub-library, +zigbee-r22-support-library ]
+  },
+
+  a3: {
+    description: ZigBee Multi-MAC Switch Coordinator. A Coordinator can form network on 2.4Ghz as well as Sub-Ghz band simultaneously. Supported board BRD4155A - Rev01.,
+    macros: [ -DPHY_DUAL, -DPHY_DUALRAIL ],
+
+    # Select phy = dualrail libraries
+    replacement: [ dynamicPhy=-dualrail ],
+
+    #Turn on/off plugin if selected
+    plugins: [ -zigbee-r22-support-stub-library, +zigbee-r22-support-library ],
+
+    # For 2.4Ghz and SubGhz simultaneous support, we have a phy library for each radio (native:efr32 and pro2plus)
+    # that needs to add in a project file.
+    files: [ ../../../../protocol/zigbee/build/phy-native-library-cortexm3-iar-$--chipFamily;L--$-dualrail$--stackProtection--$/phy-native-library.a,
+             ../../../../protocol/zigbee/build/phy-pro2plus-library-cortexm3-iar-$--chipFamily;L--$-dualrail$--stackProtection--$/phy-pro2plus-library.a]
+  },
+}
+
+q2: {
+  architecture: simulation,
+  description: Select PHY support for simulation.,
+  a1: {
+    description: ZigBee 2.4Ghz device in simulation.,
+    default: true,
+
+    # Select phy = rail libraries
+    replacement: [ dynamicPhy=-simulation]
+  },
+
+  a2: {
+    description: ZigBee Multi-MAC Selection End Device in simulation. An End device can join on either 2.4Ghz or Sub-Ghz band.,
+
+    # Select phy = simulation_gb libraries
+    replacement: [ dynamicPhy=-simulation_gb ],
+
+    #Turn on/off plugin if selected
+    plugins: [ -zigbee-r22-support-stub-library, +zigbee-r22-support-library ]
+  },
+
+  a3: {
+    description: ZigBee Multi-MAC Switch Coordinator in simulation. A Coordinator can form network on 2.4Ghz as well as Sub-Ghz band simultaneously.,
+
+    # Select phy = simulation_dual libraries
+    replacement: [ dynamicPhy=-simulation_dual ],
+
+    #Turn on/off plugin if selected
+    plugins: [ -zigbee-r22-support-stub-library, +zigbee-r22-support-library ],
+
+    # For 2.4Ghz and SubGhz simultaneous support, we have a phy library for each radio (native:efr32 and pro2plus)
+    # that needs to add in a project file.
+    files: [ ../../../../protocol/zigbee/build/phy-native-library-unix-gcc-simulation-simulation_dual$--stackProtection--$/phy-native-library.a,
+             ../../../../protocol/zigbee/build/phy-pro2plus-library-unix-gcc-simulation-simulation_dual$--stackProtection--$/phy-pro2plus-library.a]
+  }
+}

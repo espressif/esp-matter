@@ -1,0 +1,21 @@
+{{zap_header}}
+
+// Enclosing macro to prevent multiple inclusion
+#ifndef SILABS_PRINT_CLUSTER
+#define SILABS_PRINT_CLUSTER
+
+
+// This is the mapping of IDs to cluster names assuming a format according
+// to the "EmberAfClusterName" defined in the ZCL header.
+// The names of clusters that are not present, are removed.
+
+{{#all_user_clusters_irrespective_of_side}}
+{{indent}}#define SILABS_PRINTCLUSTER_{{as_delimited_macro this.define}} { ZCL_{{as_delimited_macro this.define}}_ID, {{as_hex this.mfgCode 4}}, "{{this.name}}" },
+{{/all_user_clusters_irrespective_of_side}}
+
+#define CLUSTER_IDS_TO_NAMES \
+{{#all_user_clusters_irrespective_of_side}}
+{{indent}}SILABS_PRINTCLUSTER_{{as_delimited_macro this.define}} \
+{{/all_user_clusters_irrespective_of_side}}
+
+#endif // SILABS_PRINT_CLUSTER

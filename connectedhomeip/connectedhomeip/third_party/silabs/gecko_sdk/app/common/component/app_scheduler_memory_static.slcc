@@ -1,0 +1,23 @@
+id: app_scheduler_memory_static
+category: Application|Utility
+label:       Static memory management implementation for Application Scheduler
+description: Static memory management implementation for Application Scheduler.
+package: platform
+quality: alpha
+
+provides:
+  - name: app_scheduler_memory
+  - name: app_scheduler_memory_static
+
+requires:
+  - name: app_scheduler
+
+root_path: app/common/util/app_scheduler
+
+include:
+  - path: .
+    file_list: 
+      - path: app_scheduler_memory.h
+
+source:
+  - path: app_scheduler_memory_static.c

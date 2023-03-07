@@ -1,0 +1,20 @@
+{% extends "base.j2" %}
+{% block filename %}{{filename}}.h{% endblock %}
+{% block title %}{{title}} Header{% endblock %}
+{% block content %}
+#ifndef __RAIL_CONFIG_H__
+#define __RAIL_CONFIG_H__
+
+#include <stdint.h>
+#include "rail_types.h"
+{% for phyConfigEntryName, phyConfigEntry in phyConfigEntries.items() -%}
+{% if phyConfigEntry.fecEnabled %}
+// NOTE: This buffer is to be used exclusively by hardware
+extern uint8_t convDecodeBuffer[];
+{% endif %}
+#define RADIO_CONFIG_XTAL_FREQUENCY {{phyConfigEntry.xtalFrequency}}UL
+
+extern const RAIL_ChannelConfig_t *channelConfigs[];
+{% endfor %}
+#endif // __RAIL_CONFIG_H__
+{% endblock %}

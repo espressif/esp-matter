@@ -1,0 +1,13 @@
+package.xdc
+BiosProductView.xdc
+BiosProductView.xs
+package/ti.sysbios.productview.sch
+package/.vers_g200
+package/.vers_r200
+package/.vers_b200
+package/.xdc-K04
+package/ti_sysbios_productview.java
+package/ti_sysbios_productview.class
+package/package_ti.sysbios.productview.c
+package/package.defs.h
+package/ti.sysbios.productview.ccs

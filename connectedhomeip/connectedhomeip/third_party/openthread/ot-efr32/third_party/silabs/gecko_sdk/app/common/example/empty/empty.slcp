@@ -1,0 +1,26 @@
+project_name: empty
+package: platform
+quality: production
+label: Platform - Empty C Example
+description: > 
+  This example project shows an empty configuration that can be used as a starting point to add components and functionality.
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]
+source:
+  - path: app.c
+  - path: main.c
+include:
+  - path: .
+    file_list:
+    - path: app.h
+component:
+  - id: sl_system
+  - id: device_init
+define:
+  - name: DEBUG_EFM

@@ -1,0 +1,638 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<contentItems>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.bg1.bgm111a256v2"/>
+    <property key="boardCompatibility" value="brd4300a"/>
+    <property key="installationPath" value="./BGM11_BRD4300A/config/brd4300arevA03.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.bg1.bgm113a256v2"/>
+    <property key="boardCompatibility" value="brd4301a"/>
+    <property key="installationPath" value="./BGM11_BRD4301A/config/brd4301a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.bg1.bgm121a256v2"/>
+    <property key="boardCompatibility" value="brd4302a"/>
+    <property key="installationPath" value="./BGM11_BRD4302A/config/brd4302a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.bg1.bgm11s22f256ga"/>
+    <property key="boardCompatibility" value="brd4303a"/>
+    <property key="installationPath" value="./BGM11_BRD4303A/config/brd4303a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.bg13.bgm13s32f512ga"/>
+    <property key="boardCompatibility" value="brd4305a"/>
+    <property key="installationPath" value="./BGM13_BRD4305A/config/brd4305a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.bg13.bgm13s22f512ga"/>
+    <property key="boardCompatibility" value="brd4305c"/>
+    <property key="installationPath" value="./BGM13_BRD4305C/config/brd4305c.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.bg13.bgm13p22f512ga"/>
+    <property key="boardCompatibility" value="brd4306a"/>
+    <property key="installationPath" value="./BGM13_BRD4306A/config/brd4306a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.bg13.bgm13p32f512ga"/>
+    <property key="boardCompatibility" value="brd4306b"/>
+    <property key="installationPath" value="./BGM13_BRD4306B/config/brd4306b.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.bg22.bgm220sc12wga"/>
+    <property key="boardCompatibility" value="brd4310a"/>
+    <property key="installationPath" value="./BGM22_BRD4310A/config/brd4310a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.bg22.bgm220pc22hna"/>
+    <property key="boardCompatibility" value="brd4311a"/>
+    <property key="installationPath" value="./BGM22_BRD4311A/config/brd4311a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg22.mgm220pc22hna"/>
+    <property key="boardCompatibility" value="brd4311b"/>
+    <property key="installationPath" value="./MGM22_BRD4311B/config/brd4311b.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.bg22.bgm220sc22hna"/>
+    <property key="boardCompatibility" value="brd4312a"/>
+    <property key="installationPath" value="./BGM22_BRD4312A/config/brd4312a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.bg22.bgm220pc22hna"/>
+    <property key="boardCompatibility" value="brd4314a"/>
+    <property key="installationPath" value="./BGM22_BRD4314A/config/brd4314a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.bg12.efr32bg12p332f1024gl125"/>
+    <property key="boardCompatibility" value="brd4103a"/>
+    <property key="installationPath" value="./EFR32BG12_BRD4103A/config/brd4103a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.bg13.efr32bg13p632f512gm48"/>
+    <property key="boardCompatibility" value="brd4104a"/>
+    <property key="installationPath" value="./EFR32BG13_BRD4104A/config/brd4104a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.bg1.efr32bg1p232f256gm48"/>
+    <property key="boardCompatibility" value="brd4100a"/>
+    <property key="installationPath" value="./EFR32BG1_BRD4100A/config/brd4100a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.bg1.efr32bg1p332f256gj43"/>
+    <property key="boardCompatibility" value="brd4101b.*A01"/>
+    <property key="installationPath" value="./EFR32BG1_BRD4101B/config/brd4101brevA01.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.bg1.efr32bg1b232f256gj43"/>
+    <property key="boardCompatibility" value="brd4101b.*A02"/>
+    <property key="installationPath" value="./EFR32BG1_BRD4101B/config/brd4101brevA02.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.bg22.efr32bg22c224f512im40"/>
+    <property key="boardCompatibility" value="brd4108a"/>
+    <property key="installationPath" value="./EFR32BG22_BRD4108A/config/brd4108a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.bg22.efr32bg22c112f352gm32"/>
+    <property key="boardCompatibility" value="brd4183b"/>
+    <property key="installationPath" value="./EFR32BG22_BRD4183B/config/brd4183b.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.bg22.efr32bg22c224f512im40"/>
+    <property key="boardCompatibility" value="brd4184a"/>
+    <property key="installationPath" value="./EFR32BG22_BRD4184A/config/brd4184a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.bg22.efr32bg22c224f512im40"/>
+    <property key="boardCompatibility" value="brd4184b"/>
+    <property key="installationPath" value="./EFR32BG22_BRD4184B/config/brd4184b.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.bg22.efr32bg22c224f512im40"/>
+    <property key="boardCompatibility" value="brd4185a"/>
+    <property key="installationPath" value="./EFR32BG22_BRD4185A/config/brd4185a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.fg12.efr32fg12p433f1024gl125"/>
+    <property key="boardCompatibility" value="brd4253a"/>
+    <property key="installationPath" value="./EFR32FG12_BRD4253A/config/brd4253a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.fg12.efr32fg12p433f1024gl125"/>
+    <property key="boardCompatibility" value="brd4254a"/>
+    <property key="installationPath" value="./EFR32FG12_BRD4254A/config/brd4254a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.fg13.efr32fg13p233f512gm48"/>
+    <property key="boardCompatibility" value="brd4255a"/>
+    <property key="installationPath" value="./EFR32FG13_BRD4255A/config/brd4255a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.fg13.efr32fg13p233f512gm48"/>
+    <property key="boardCompatibility" value="brd4256a"/>
+    <property key="installationPath" value="./EFR32FG13_BRD4256A/config/brd4256a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.fg14.efr32fg14p233f256gm48"/>
+    <property key="boardCompatibility" value="brd4257a"/>
+    <property key="installationPath" value="./EFR32FG14_BRD4257A/config/brd4257a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.fg14.efr32fg14p233f256gm48"/>
+    <property key="boardCompatibility" value="brd4257b"/>
+    <property key="installationPath" value="./EFR32FG14_BRD4257B/config/brd4257b.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.fg14.efr32fg14p233f256gm48"/>
+    <property key="boardCompatibility" value="brd4258a"/>
+    <property key="installationPath" value="./EFR32FG14_BRD4258A/config/brd4258a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.fg14.efr32fg14p233f256gm48"/>
+    <property key="boardCompatibility" value="brd4258b"/>
+    <property key="installationPath" value="./EFR32FG14_BRD4258B/config/brd4258b.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.fg14.efr32fg14p233f256gm48"/>
+    <property key="boardCompatibility" value="brd4259a"/>
+    <property key="installationPath" value="./EFR32FG14_BRD4259A/config/brd4259a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.fg23.efr32fg23a010f512gm48"/>
+    <property key="boardCompatibility" value="brd4263a"/>
+    <property key="installationPath" value="./EFR32FG23_BRD4263a/config/brd4263a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.fg23.efr32fg23a010f512gm48"/>
+    <property key="boardCompatibility" value="brd4263b"/>
+    <property key="installationPath" value="./EFR32FG23_BRD4263B/config/brd4263b.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.fg23.efr32fg23b010f512im48"/>
+    <property key="boardCompatibility" value="brd4263c"/>
+    <property key="installationPath" value="./EFR32FG23_BRD4263C/config/brd4263c.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.fg23.efr32fg23a020f512gm48"/>
+    <property key="boardCompatibility" value="brd4264a"/>
+    <property key="installationPath" value="./EFR32FG23_BRD4264A/config/brd4264a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.fg23.efr32fg23a020f512gm48"/>
+    <property key="boardCompatibility" value="brd4264b"/>
+    <property key="installationPath" value="./EFR32FG23_BRD4264B/config/brd4264b.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.fg23.efr32fg23b020f512im48"/>
+    <property key="boardCompatibility" value="brd4264c"/>
+    <property key="installationPath" value="./EFR32FG23_BRD4264C/config/brd4264c.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.fg23.efr32fg23a010f512gm48"/>
+    <property key="boardCompatibility" value="brd4265a"/>
+    <property key="installationPath" value="./EFR32FG23_BRD4265A/config/brd4265a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.fg23.efr32fg23b010f512im48"/>
+    <property key="boardCompatibility" value="brd4265b"/>
+    <property key="installationPath" value="./EFR32FG23_BRD4265B/config/brd4265b.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.fg1.efr32fg1p133f256gm48"/>
+    <property key="boardCompatibility" value="brd4250a"/>
+    <property key="installationPath" value="./EFR32FG1_BRD4250A/config/brd4250a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.fg1.efr32fg1p133f256gm48"/>
+    <property key="boardCompatibility" value="brd4250b"/>
+    <property key="installationPath" value="./EFR32FG1_BRD4250B/config/brd4250b.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.fg1.efr32fg1p133f256gm48"/>
+    <property key="boardCompatibility" value="brd4251a"/>
+    <property key="installationPath" value="./EFR32FG1_BRD4251A/config/brd4251a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.fg1.efr32fg1p133f256gm48"/>
+    <property key="boardCompatibility" value="brd4251b"/>
+    <property key="installationPath" value="./EFR32FG1_BRD4251B/config/brd4251b.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.fg1.efr32fg1p133f256gm48"/>
+    <property key="boardCompatibility" value="brd4251d"/>
+    <property key="installationPath" value="./EFR32FG1_BRD4251D/config/brd4251d.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.fg1.efr32fg1p132f256gm48"/>
+    <property key="boardCompatibility" value="brd4252a"/>
+    <property key="installationPath" value="./EFR32FG1_BRD4252A/config/brd4252a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg12.efr32mg12p432f1024gl125"/>
+    <property key="boardCompatibility" value="brd4161a"/>
+    <property key="installationPath" value="./EFR32MG12_BRD4161A/config/brd4161a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg12.efr32mg12p332f1024gl125"/>
+    <property key="boardCompatibility" value="brd4162a"/>
+    <property key="installationPath" value="./EFR32MG12_BRD4162A/config/brd4162a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg12.efr32mg12p433f1024gl125"/>
+    <property key="boardCompatibility" value="brd4163a"/>
+    <property key="installationPath" value="./EFR32MG12_BRD4163A/config/brd4163a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg12.efr32mg12p433f1024gl125"/>
+    <property key="boardCompatibility" value="brd4164a"/>
+    <property key="installationPath" value="./EFR32MG12_BRD4164A/config/brd4164a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg12.efr32mg12p332f1024gl125"/>
+    <property key="boardCompatibility" value="brd4166a"/>
+    <property key="installationPath" value="./EFR32MG12_BRD4166A/config/brd4166a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg12.efr32mg12p433f1024gm68"/>
+    <property key="boardCompatibility" value="brd4170a"/>
+    <property key="installationPath" value="./EFR32MG12_BRD4170A/config/brd4170a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg12.efr32mg12p433f1024gm48"/>
+    <property key="boardCompatibility" value="brd4172a"/>
+    <property key="installationPath" value="./EFR32MG12_BRD4172A/config/brd4172a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg12.efr32mg12p433f1024gm48"/>
+    <property key="boardCompatibility" value="brd4172b"/>
+    <property key="installationPath" value="./EFR32MG12_BRD4172B/config/brd4172b.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg12.efr32mg12p433f1024gm48"/>
+    <property key="boardCompatibility" value="brd4173a"/>
+    <property key="installationPath" value="./EFR32MG12_BRD4173A/config/brd4173a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg12.efr32mg12p232f1024gm48"/>
+    <property key="boardCompatibility" value="brd4190a"/>
+    <property key="installationPath" value="./EFR32MG12_BRD4190A/config/brd4190a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg13.efr32mg13p733f512gm48"/>
+    <property key="boardCompatibility" value="brd4158a"/>
+    <property key="installationPath" value="./EFR32MG13_BRD4158A/config/brd4158a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg13.efr32mg13p632f512gm48"/>
+    <property key="boardCompatibility" value="brd4159a"/>
+    <property key="installationPath" value="./EFR32MG13_BRD4159A/config/brd4159a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg13.efr32mg13p832f512im48"/>
+    <property key="boardCompatibility" value="brd4165b"/>
+    <property key="installationPath" value="./EFR32MG13_BRD4165B/config/brd4165b.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg13.efr32mg13p733f512gm48"/>
+    <property key="boardCompatibility" value="brd4167a"/>
+    <property key="installationPath" value="./EFR32MG13_BRD4167A/config/brd4167a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg13.efr32mg13p732f512gm48"/>
+    <property key="boardCompatibility" value="brd4168a"/>
+    <property key="installationPath" value="./EFR32MG13_BRD4168A/config/brd4168a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg13.efr32mg13p733f512gm48"/>
+    <property key="boardCompatibility" value="brd4174a"/>
+    <property key="installationPath" value="./EFR32MG13_BRD4174A/config/brd4174a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg13.efr32mg13p733f512gm48"/>
+    <property key="boardCompatibility" value="brd4174b"/>
+    <property key="installationPath" value="./EFR32MG13_BRD4174B/config/brd4174b.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg13.efr32mg13p733f512gm48"/>
+    <property key="boardCompatibility" value="brd4175a"/>
+    <property key="installationPath" value="./EFR32MG13_BRD4175A/config/brd4175a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg14.efr32mg14p733f256gm48"/>
+    <property key="boardCompatibility" value="brd4169a"/>
+    <property key="installationPath" value="./EFR32MG14_BRD4169A/config/brd4169a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg14.efr32mg14p733f256gm48"/>
+    <property key="boardCompatibility" value="brd4169b"/>
+    <property key="installationPath" value="./EFR32MG14_BRD4169B/config/brd4169b.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg1.efr32mg1p233f256gm48"/>
+    <property key="boardCompatibility" value="brd4150a"/>
+    <property key="installationPath" value="./EFR32MG1_BRD4150A/config/brd4150a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg1.efr32mg1p233f256gm48"/>
+    <property key="boardCompatibility" value="brd4150b"/>
+    <property key="installationPath" value="./EFR32MG1_BRD4150B/config/brd4150b.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg1.efr32mg1p133f256gm48"/>
+    <property key="boardCompatibility" value="brd4150c"/>
+    <property key="installationPath" value="./EFR32MG1_BRD4150C/config/brd4150c.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg1.efr32mg1p232f256gm48"/>
+    <property key="boardCompatibility" value="brd4151a"/>
+    <property key="installationPath" value="./EFR32MG1_BRD4151A/config/brd4151a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg1.efr32mg1p233f256gm48"/>
+    <property key="boardCompatibility" value="brd4152a"/>
+    <property key="installationPath" value="./EFR32MG1_BRD4152A/config/brd4152a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg1.efr32mg1p132f256gm48"/>
+    <property key="boardCompatibility" value="brd4153a"/>
+    <property key="installationPath" value="./EFR32MG1_BRD4153A/config/brd4153a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg1.efr32mg1p732f256gm32"/>
+    <property key="boardCompatibility" value="brd4154a"/>
+    <property key="installationPath" value="./EFR32MG1_BRD4154A/config/brd4154a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg1.efr32mg1p132f256gm48"/>
+    <property key="boardCompatibility" value="brd4155a"/>
+    <property key="installationPath" value="./EFR32MG1_BRD4155A/config/brd4155a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg21.rm21z000f1024im32"/>
+    <property key="boardCompatibility" value="brd4171a"/>
+    <property key="installationPath" value="./EFR32MG21_BRD4171A/config/brd4171a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg21.efr32mg21a010f1024im32"/>
+    <property key="boardCompatibility" value="brd4176a"/>
+    <property key="installationPath" value="./EFR32MG21_BRD4176A/config/brd4176a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg21.efr32mg21a010f1024im32"/>
+    <property key="boardCompatibility" value="brd4179b"/>
+    <property key="installationPath" value="./EFR32MG21_BRD4179B/config/brd4179b.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg21.efr32mg21a020f1024im32"/>
+    <property key="boardCompatibility" value="brd4180a"/>
+    <property key="installationPath" value="./EFR32MG21_BRD4180A/config/brd4180a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg21.efr32mg21a020f1024im32"/>
+    <property key="boardCompatibility" value="brd4180b"/>
+    <property key="installationPath" value="./EFR32MG21_BRD4180B/config/brd4180b.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg21.efr32mg21a010f1024im32"/>
+    <property key="boardCompatibility" value="brd4181a"/>
+    <property key="installationPath" value="./EFR32MG21_BRD4181A/config/brd4181a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg21.efr32mg21a010f1024im32"/>
+    <property key="boardCompatibility" value="brd4181b"/>
+    <property key="installationPath" value="./EFR32MG21_BRD4181B/config/brd4181b.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg21.efr32mg21b010f1024im32"/>
+    <property key="boardCompatibility" value="brd4181c"/>
+    <property key="installationPath" value="./EFR32MG21_BRD4181C/config/brd4181c.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg21.efr32mg21b010f1024im32"/>
+    <property key="boardCompatibility" value="brd4195a"/>
+    <property key="installationPath" value="./EFR32MG21_BRD4195A/config/brd4195a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg21.efr32mg21b020f1024im32"/>
+    <property key="boardCompatibility" value="brd4196a"/>
+    <property key="installationPath" value="./EFR32MG21_BRD4196A/config/brd4196a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg22.efr32mg22a224f512im40"/>
+    <property key="boardCompatibility" value="brd4182a.*B02"/>
+    <property key="installationPath" value="./EFR32MG22_BRD4182A/config/brd4182arevB02.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg22.efr32mg22c224f512im40"/>
+    <property key="boardCompatibility" value="brd4182a.*B03"/>
+    <property key="installationPath" value="./EFR32MG22_BRD4182A/config/brd4182arevB03.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg22.efr32mg22c224f512im32"/>
+    <property key="boardCompatibility" value="brd4183a"/>
+    <property key="installationPath" value="./EFR32MG22_BRD4183A/config/brd4183a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg22.efr32mg22c224f512im32"/>
+    <property key="boardCompatibility" value="brd4183c"/>
+    <property key="installationPath" value="./EFR32MG22_BRD4183C/config/brd4183c.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg24.efr32mg24a010f1536gm48"/>
+    <property key="boardCompatibility" value="brd4186a"/>
+    <property key="installationPath" value="./EFR32MG24_BRD4186A/config/brd4186a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg24.efr32mg24a020f1536gm48"/>
+    <property key="boardCompatibility" value="brd4187a"/>
+    <property key="installationPath" value="./EFR32MG24_BRD4187A/config/brd4187a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg27.efr32mg27c140f768im40"/>
+    <property key="boardCompatibility" value="brd4194a"/>
+    <property key="installationPath" value="./EFR32MG27_BRD4194A/config/brd4194a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.zg13.efr32zg13p531f512gm32"/>
+    <property key="boardCompatibility" value="brd4201b"/>
+    <property key="installationPath" value="./EFR32ZG13_BRD4201B/config/brd4201b.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.zg13.efr32zg13p531f512gm48"/>
+    <property key="boardCompatibility" value="brd4203a"/>
+    <property key="installationPath" value="./EFR32ZG13_BRD4203A/config/brd4203a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.zg14.efr32zg14p231f256gm32"/>
+    <property key="boardCompatibility" value="brd4201a"/>
+    <property key="installationPath" value="./EFR32ZG14_BRD4201A/config/brd4201a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.zg14.efr32zg14p231f256gm32"/>
+    <property key="boardCompatibility" value="brd4206a"/>
+    <property key="installationPath" value="./EFR32ZG14_BRD4206A/config/brd4206a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.zg23.efr32zg23a010f512gm48"/>
+    <property key="boardCompatibility" value="brd4204a"/>
+    <property key="installationPath" value="./EFR32ZG23_BRD4204A/config/brd4204a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.zg23.efr32zg23a010f512gm48"/>
+    <property key="boardCompatibility" value="brd4204b"/>
+    <property key="installationPath" value="./EFR32ZG23_BRD4204B/config/brd4204b.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.zg23.efr32zg23b010f512im48"/>
+    <property key="boardCompatibility" value="brd4204c"/>
+    <property key="installationPath" value="./EFR32ZG23_BRD4204C/config/brd4204c.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.zg23.efr32zg23b010f512im48"/>
+    <property key="boardCompatibility" value="brd4204d"/>
+    <property key="installationPath" value="./EFR32ZG23_BRD4204D/config/brd4204d.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.zg23.efr32zg23b020f512im48"/>
+    <property key="boardCompatibility" value="brd4210a"/>
+    <property key="installationPath" value="./EFR32ZG23_BRD4210a/config/brd4210a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg1.mgm111a256v2"/>
+    <property key="boardCompatibility" value="brd4300b"/>
+    <property key="installationPath" value="./MGM11_BRD4300B/config/brd4300b.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg12.mgm12p32f1024ga"/>
+    <property key="boardCompatibility" value="brd4304a"/>
+    <property key="installationPath" value="./MGM12_BRD4304A/config/brd4304a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg13.mgm13s02f512ga"/>
+    <property key="boardCompatibility" value="brd4305d"/>
+    <property key="installationPath" value="./MGM13_BRD4305D/config/brd4305d.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg13.mgm13s12f512ga"/>
+    <property key="boardCompatibility" value="brd4305e"/>
+    <property key="installationPath" value="./MGM13_BRD4305E/config/brd4305e.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg13.mgm13p02f512ga"/>
+    <property key="boardCompatibility" value="brd4306c"/>
+    <property key="installationPath" value="./MGM13_BRD4306C/config/brd4306c.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg13.mgm13p12f512ga"/>
+    <property key="boardCompatibility" value="brd4306d"/>
+    <property key="installationPath" value="./MGM13_BRD4306D/config/brd4306d.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg21.mgm210p032jia"/>
+    <property key="boardCompatibility" value="brd4308a.*A0[01]"/>
+    <property key="installationPath" value="./MGM21_BRD4308A/config/brd4308arevA01.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg21.mgm210pa32jia"/>
+    <property key="boardCompatibility" value="brd4308a.*A02"/>
+    <property key="installationPath" value="./MGM21_BRD4308A/config/brd4308arevA02.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg21.mgm210p022jia"/>
+    <property key="boardCompatibility" value="brd4308b.*A0[01]"/>
+    <property key="installationPath" value="./MGM21_BRD4308B/config/brd4308brevA01.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg21.mgm210pa22jia"/>
+    <property key="boardCompatibility" value="brd4308b.*A02"/>
+    <property key="installationPath" value="./MGM21_BRD4308B/config/brd4308brevA02.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg21.mgm210pb32jia"/>
+    <property key="boardCompatibility" value="brd4308c"/>
+    <property key="installationPath" value="./MGM21_BRD4308C/config/brd4308c.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg21.mgm210pb22jia"/>
+    <property key="boardCompatibility" value="brd4308d"/>
+    <property key="installationPath" value="./MGM21_BRD4308D/config/brd4308d.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg21.mgm210l022jif"/>
+    <property key="boardCompatibility" value="brd4309a"/>
+    <property key="installationPath" value="./MGM21_BRD4309A/config/brd4309a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.mg21.mgm210la22jif"/>
+    <property key="boardCompatibility" value="brd4309b"/>
+    <property key="installationPath" value="./MGM21_BRD4309B/config/brd4309b.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efm32.tg11.efm32tg11b520f128gm80"/>
+    <property key="boardCompatibility" value="brd2102a"/>
+    <property key="installationPath" value="./SLSTK3301A_EFM32TG11/config/brd2102a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efm32.(pg1|jg1)\..*"/>
+    <property key="boardCompatibility" value="brd2500a"/>
+    <property key="installationPath" value="./SLSTK3401A_EFM32PG/config/brd2500a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efm32.(pg12|jg12)\..*"/>
+    <property key="boardCompatibility" value="brd2501a"/>
+    <property key="installationPath" value="./SLSTK3402A_EFM32PG12/config/brd2501a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efm32.gg11.efm32gg11b820f2048gl192"/>
+    <property key="boardCompatibility" value="brd2204a"/>
+    <property key="installationPath" value="./SLSTK3701A_EFM32GG11/config/brd2204a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efm32.gg12.efm32gg12b810f1024gm64"/>
+    <property key="boardCompatibility" value="brd2207a"/>
+    <property key="installationPath" value="./SLTB009A_EFM32GG12/config/brd2207a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efm32.pg22.efm32pg22c200f512im40"/>
+    <property key="boardCompatibility" value="brd2503a"/>
+    <property key="installationPath" value="./EFM32PG22_DK2503A/config/brd2503a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efm32.pg23.efm32pg23b310f512im48"/>
+    <property key="boardCompatibility" value="brd2504a"/>
+    <property key="installationPath" value="./EFM32PG23_DK2504A/config/brd2504a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.zg13.zgm130s037hgn1"/>
+    <property key="boardCompatibility" value="brd4200a.*A03"/>
+    <property key="installationPath" value="./ZGM13_BRD4200A/config/brd4200arevA03.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.zg13.zgm130s037hgn"/>
+    <property key="boardCompatibility" value="brd4200a.*A04"/>
+    <property key="installationPath" value="./ZGM13_BRD4200A/config/brd4200arevA04.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.zg13.zgm130s037hgn1"/>
+    <property key="boardCompatibility" value="brd4202a.*A00"/>
+    <property key="installationPath" value="./ZGM13_BRD4202A/config/brd4202arevA00.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.zg13.zgm130s037hgn"/>
+    <property key="boardCompatibility" value="brd4202a.*A01"/>
+    <property key="installationPath" value="./ZGM13_BRD4202A/config/brd4202arevA01.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.zg13.zgm130s037hgn"/>
+    <property key="boardCompatibility" value="brd4207a"/>
+    <property key="installationPath" value="./ZGM13_BRD4207A/config/brd4207a.hwconf"/>
+  </contentItemData>
+  <contentItemData>
+    <property key="partCompatibility" value="mcu.arm.efr32.zg23.zgm230sb27hgn"/>
+    <property key="boardCompatibility" value="brd4205b"/>
+    <property key="installationPath" value="./ZGM23_BRD4205B/config/brd4205b.hwconf"/>
+  </contentItemData>
+</contentItems>

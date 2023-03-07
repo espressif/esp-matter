@@ -1,0 +1,26 @@
+id: test_framework_unity
+label: Unity test framework component
+package: platform
+description: Unity test framework
+category: Third Party|Unity
+quality: production
+component_root_path: 'util/third_party/unity_test_framework'
+provides:
+  - name: test_framwork_unity
+  - name: test_framework_unity
+requires:
+  - name: test_framework_unity_stream
+recommends:
+  - id: test_framework_unity_iostream
+config_file:
+  - path: examples/unity_config.h
+    file_id: test_framework_unity_config
+include:
+  - path: 'src'
+    file_list:
+      - path: unity.h
+      - path: unity_internals.h
+source:
+  - path: 'src/unity.c'
+
+

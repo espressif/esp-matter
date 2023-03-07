@@ -1,0 +1,24 @@
+id: "btmesh_feature_friend"
+label: "Friend"
+package: "Btmesh"
+description: "Enables Bluetooth Mesh Friend operation."
+category: "Bluetooth Mesh|Stack Classes"
+quality: "production"
+root_path: "protocol/bluetooth"
+
+requires:
+  - name: "btmesh_stack"
+  - name: "btmesh_core"
+  - name: component_catalog
+provides:
+  - name: "btmesh_feature_friend"
+template_contribution:
+  - name: btmesh_bgapi_class
+    value:
+      class: "friend"
+    priority: 1
+  - name: btmesh_feature_bitmask
+    value:
+      count: 4
+  - name: component_catalog
+    value: btmesh_feature_friend

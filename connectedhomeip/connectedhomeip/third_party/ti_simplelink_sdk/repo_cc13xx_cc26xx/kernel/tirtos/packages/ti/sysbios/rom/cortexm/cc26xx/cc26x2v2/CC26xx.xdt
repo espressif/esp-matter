@@ -1,0 +1,162 @@
+%%{
+/*
+ * Copyright (c) 2016-2017, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+ *  ======== CC26xx.xdt ========
+ */
+var Build = xdc.module("ti.sysbios.Build");
+var BIOS = xdc.module("ti.sysbios.BIOS");
+var CC26xx = xdc.module("ti.sysbios.rom.cortexm.cc26xx.cc26x2v2.CC26xx");
+
+/* get the specified output directory (saved when BIOS was "used") */
+var outputDir = Build.$private.outputDir;
+
+/* generate makefile from makefile.xdt
+ *    $args[0] = the RTSC target, so the makefile knows how to run the
+ *               compiler and archiver
+ */
+
+print("generating custom ROM library makefile ... ");
+var tplt = xdc.loadTemplate(this.$package.packageBase + "/" + this.templateName);
+tplt.genFile(outputDir + "/makefile", this, [Program.build.target]);
+%%}
+
+%if (Program.build.target.$name.match(/ti/) && (CC26xx.genPragmas == true)) {
+%for each (var mod in Program.targetModules()) {
+%    if ("$object" in mod) {
+%          var mn = mod.$name.replace(/\./g, "_");
+#pragma DATA_SECTION(`mn`_Module__state__V, ".data:`mn`_Module__state__V");
+%        }
+%    }
+%}
+
+%var CC26xx = xdc.module("ti.sysbios.rom.cortexm.cc26xx.cc26x2v2.CC26xx");
+%if ((Build.buildROM == true) || (Build.buildROMApp == true)) {
+%   for (var i = 0; i < CC26xx.otherLibFuncs.length; i++) {
+%       if (Program.build.target.$name.match(/iar/)) {
+#pragma location=".const_ti_sysbios_rom_ROM_`CC26xx.otherLibFuncs[i].substr(6)`"
+%       }
+%       else if (Program.build.target.$name.match(/gnu/)) {
+xdc_Void * const ti_sysbios_rom_ROM_`CC26xx.otherLibFuncs[i].substr(6)` __attribute__((section (".rodata_ti_sysbios_rom_ROM_`CC26xx.otherLibFuncs[i].substr(6)`")));
+%       }
+%       else {
+#pragma DATA_SECTION(ti_sysbios_rom_ROM_`CC26xx.otherLibFuncs[i].substr(6)`, ".const:ti_sysbios_rom_ROM_`CC26xx.otherLibFuncs[i].substr(6)`");
+%       }
+xdc_Void * const ti_sysbios_rom_ROM_`CC26xx.otherLibFuncs[i].substr(6)` = (xdc_Void *)NULL;
+%       if (i < CC26xx.otherLibFuncs.length) {
+
+%       }
+%   }
+%}
+
+%if (Program.build.target.$name.match(/gnu/)) {
+/* Inform CC2642.lds to reserve ROM data at 0x20000100 */
+char ROM_DATA_SIZE __attribute__((section(".data")));
+/* Inform CC2642.lds to reserve ROM rodata at 0x00001000 */
+char ROM_RODATA_SIZE __attribute__((section(".data")));
+
+extern unsigned int __sysbios_rom_data_load__;
+extern unsigned int __sysbios_rom_data_start__;
+extern unsigned int __sysbios_rom_data_end__;
+
+extern unsigned int __sysbios_data_other_load__;
+extern unsigned int __sysbios_data_other_start__;
+extern unsigned int __sysbios_data_other_end__;
+
+void ti_sysbios_rom_cortexm_cc26xx_cc26x2v2_CC26xx_dataInit()
+{
+    unsigned int * dl;
+    unsigned int * ds;
+    unsigned int * de;
+
+    dl = & __sysbios_rom_data_load__;
+    ds = & __sysbios_rom_data_start__;
+    de = & __sysbios_rom_data_end__;
+
+    while (ds < de) {
+        *ds = *dl;
+        dl++;
+        ds++;
+    }
+
+    dl = & __sysbios_data_other_load__;
+    ds = & __sysbios_data_other_start__;
+    de = & __sysbios_data_other_end__;
+
+    while (ds < de) {
+        *ds = *dl;
+        dl++;
+        ds++;
+    }
+}
+%}
+
+%if (Program.build.target.$name.match(/iar/)) {
+#pragma inline=never
+%}
+%else {
+Void ti_sysbios_rom_cortexm_cc26xx_cc26x2v2_CC26xx_badRomRevision__E() __attribute__ ((noinline));
+%}
+Void ti_sysbios_rom_cortexm_cc26xx_cc26x2v2_CC26xx_badRomRevision__E() {
+	/* Loop here forever if application is built with wrong version of ROM image */
+        while(1) {
+#ifdef __clang__ 
+            /* workaround CODEGEN-6288 */
+            asm(" nop");
+#endif
+            ;
+        }
+}
+
+%if (Program.build.target.$name.match(/iar/)) {
+#pragma inline=never
+Void ti_sysbios_rom_cortexm_cc26xx_cc26x2v2_CC26xx_badRomLink__E() {
+	/* Loop here forever if application is built without the ROM section placements in the .icf file */
+        while(1) {
+            ;
+        }
+}
+
+%}
+Void ti_sysbios_rom_cortexm_cc26xx_cc26x2v2_CC26xx_checkRevision__E()
+{
+    if (*((UInt32 *)(`CC26xx.REVISION_WORD_ADDRESS`)) != `CC26xx.REVISION`) {
+	ti_sysbios_rom_cortexm_cc26xx_cc26x2v2_CC26xx_badRomRevision__E();
+    }
+%if (Program.build.target.$name.match(/iar/)) {
+//    if (&ti_sysbios_rom_ROM_ti_sysbios_family_arm_cc26xx_Timer_getCount64__E != (Void *)(0x1304)) {
+//	ti_sysbios_rom_cortexm_cc26xx_cc26x2v2_CC26xx_badRomLink__E();
+//    }
+%}
+}
+

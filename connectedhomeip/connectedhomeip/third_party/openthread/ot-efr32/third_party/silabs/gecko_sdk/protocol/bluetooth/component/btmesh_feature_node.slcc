@@ -1,0 +1,23 @@
+id: "btmesh_feature_node"
+label: "Node"
+package: "Btmesh"
+description: "Enables Bluetooth Mesh stack API for unprovisioned devices and provisioned nodes."
+category: "Bluetooth Mesh|Stack Classes"
+quality: "production"
+root_path: "protocol/bluetooth"
+
+requires:
+  - name: "btmesh_stack"
+provides:
+  - name: "btmesh_feature_node"
+  - name: "btmesh_core"
+    allow_multiple: true
+template_contribution:
+  - name: btmesh_bgapi_class
+    value:
+      class: "node"
+    priority: 3
+  - name: btmesh_advertisers
+    value:
+      name: provisioning_advertisers
+      count: 2

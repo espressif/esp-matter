@@ -1,0 +1,110 @@
+/***************************************************************************//**
+ * @file    iot_adc_desc.c.jinja
+ * @brief   ADC instance descriptors - auto-generated file.
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2021 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ ******************************************************************************/
+
+/*******************************************************************************
+ *                               INCLUDES
+ ******************************************************************************/
+
+/* standard C */
+#include "stddef.h"
+
+/* ADC driver layer */
+#include "iot_adc_desc.h"
+
+{% for instance in iot_adc_instances %}
+/* instance {{ instance }} config */
+#include "iot_adc_cfg_{{ instance }}.h"
+{% endfor %}
+
+/*******************************************************************************
+ *                            DESCRIPTOR LIST
+ ******************************************************************************/
+
+IotAdcDescriptor_t iot_adc_desc[] = {
+
+{% for instance in iot_adc_instances %}
+  /* instance {{ instance }} config */
+  {
+    /* instance number */
+    .lInstNum            = IOT_ADC_CFG_{{ instance | upper }}_INST_NUM,
+
+    /* default acq time and resolution */
+    .ulDefaultAcqTime    = IOT_ADC_CFG_{{ instance | upper }}_DEFAULT_ACQ_TIME,
+    .ucDefaultResolution = IOT_ADC_CFG_{{ instance | upper }}_DEFAULT_RESOLUTION,
+
+    /* selected peripheral */
+    .pxPeripheral        = IOT_ADC_CFG_{{ instance | upper }}_PERIPHERAL,
+    .ucPeripheralNo      = IOT_ADC_CFG_{{ instance | upper }}_PERIPHERAL_NO,
+
+    /* clocks and IRQ lines (ADC0) */
+#if (_SILICON_LABS_32B_SERIES < 2)
+#if (IOT_ADC_CFG_{{ instance | upper }}_PERIPHERAL_NO == 0)
+    .xClock              = cmuClock_ADC0,
+    .xIRQn               = ADC0_IRQn,
+#endif
+#endif
+
+    /* clocks and IRQ lines (ADC1) */
+#if (_SILICON_LABS_32B_SERIES < 2)
+#if (IOT_ADC_CFG_{{ instance | upper }}_PERIPHERAL_NO == 1)
+    .xClock              = cmuClock_ADC1,
+    .xIRQn               = ADC1_IRQn,
+#endif
+#endif
+
+    /* clocks and IRQ lines (IADC0) */
+#if (_SILICON_LABS_32B_SERIES == 2)
+#if (IOT_ADC_CFG_{{ instance | upper }}_PERIPHERAL_NO == 0)
+    .xClock              = cmuClock_IADC0,
+    .xIRQn               = IADC_IRQn,
+#endif
+#endif
+  },
+{% endfor %}
+
+};
+
+/*******************************************************************************
+ *                          iot_adc_desc_get
+ ******************************************************************************/
+
+IotAdcDescriptor_t *iot_adc_desc_get(int32_t lInstNum)
+{
+  int32_t lInstCount = sizeof(iot_adc_desc)/sizeof(IotAdcDescriptor_t);
+  int32_t lInstCur   = 0;
+
+  for (lInstCur = 0; lInstCur < lInstCount; lInstCur++) {
+    if (iot_adc_desc[lInstCur].lInstNum == lInstNum) {
+      return &iot_adc_desc[lInstCur];
+    }
+  }
+
+  return NULL;
+}

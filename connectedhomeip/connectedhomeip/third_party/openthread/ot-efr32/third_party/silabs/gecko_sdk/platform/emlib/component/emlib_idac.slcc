@@ -1,0 +1,37 @@
+id: emlib_idac
+label: IDAC
+package: platform
+description: >
+  Current Digital to Analog Converter (IDAC) peripheral API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_idac.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_idac.h"
+provides:
+  - name: emlib_idac
+requires:
+  - name: device
+  - name: device_has_idac
+  - name: emlib_cmu
+  - name: emlib_common
+  - name: cmsis_core
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efm32zg/group-idac
+      condition: [device_sdid_76]
+    - page: emlib/api/efm32hg/group-idac
+      condition: [device_sdid_77]
+    - page: emlib/api/efr32xg1/group-idac
+      condition: [device_sdid_80]
+    - page: emlib/api/efr32xg12/group-idac
+      condition: [device_sdid_84]
+    - page: emlib/api/efr32xg13/group-idac
+      condition: [device_sdid_89]
+    - page: emlib/api/efr32xg14/group-idac
+      condition: [device_sdid_95]

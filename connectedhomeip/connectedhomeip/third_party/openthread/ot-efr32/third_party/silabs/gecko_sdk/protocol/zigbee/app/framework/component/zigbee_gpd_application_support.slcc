@@ -1,0 +1,33 @@
+package: Zigbee
+
+description: A component implementing the application support functionality of the Green Power device.
+
+label: Green Power Device Application Support
+quality: production
+id: zigbee_gpd_application_support
+category: Zigbee|Green Power Device
+
+provides:
+   - name: "zigbee_gpd_application_support"
+requires:
+   - name: "zigbee_gpd_network_support"
+
+config_file:
+  - path: "protocol/zigbee/app/gpd/plugin/apps/config/gpd-apps-config.h"
+
+source:
+  - path: "protocol/zigbee/app/gpd/plugin/apps/gpd-apps-commission.c"
+  - path: "protocol/zigbee/app/gpd/plugin/apps/gpd-apps-crypto-test.c"
+  - path: "protocol/zigbee/app/gpd/plugin/apps/gpd-apps-node.c"
+  - path: "protocol/zigbee/app/gpd/plugin/apps/gpd-apps-utility.c"
+  - path: "protocol/zigbee/app/gpd/plugin/apps/gpd-apps-cb.c"
+
+include:
+  - path: "protocol/zigbee/app/gpd/plugin/apps"
+    file_list:
+      - path: "gpd-apps-cb.h"
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_gpd_application_support
+

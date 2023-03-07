@@ -1,0 +1,30 @@
+id: "sl_flex_rail_packet_asm"
+label: "Flex - RAIL Standard packet assembler"
+package: "Flex"
+description: "Provides packet assembler functionalities for IEEE 802.15.4, BLE and WiSUN."
+category: "Flex|RAIL|Utility"
+quality: "production"
+root_path: "app/flex/component/rail/sl_flex_rail_packet_asm"
+provides:
+  - name: sl_flex_rail_packet_asm
+
+requires:
+  - name: app_log
+  - name: app_assert
+  - name: iostream_transport
+  - name: device_has_radio
+
+# according to standards the packet assembler is chosen.
+source:
+  - path: "sl_flex_packet_asm.c"
+include:
+  - path: "."
+    file_list:
+    - "path": "sl_flex_packet_asm.h"
+
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: flex_packet_asm
+

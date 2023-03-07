@@ -1,0 +1,23 @@
+id: freertos_heap_2
+label: FreeRTOS Heap 2
+package: platform
+description: >
+  A heap implementation for FreeRTOS.
+
+  A sample implementation of pvPortMalloc() and vPortFree() that permits
+  allocated blocks to be freed, but does not combine adjacent free blocks
+  into a single larger block (and so will fragment memory).  See heap_4.c for
+  an equivalent that does combine adjacent blocks into single larger blocks.
+category: RTOS|FreeRTOS
+quality: production
+source:
+  - path: util/third_party/freertos/kernel/portable/MemMang/heap_2.c
+provides:
+  - name: freertos_heap
+  - name: freertos_heap_2
+requires:
+  - name: cmsis_core
+  - name: freertos
+template_contribution:
+  - name: rte_components
+    value: RTE_RTOS_FreeRTOS_HEAP_2

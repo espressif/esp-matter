@@ -1,0 +1,55 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_malloc/backend.gni")
+import("$dir_pw_unit_test/test.gni")
+
+config("default_config") {
+  include_dirs = [ "public" ]
+}
+
+pw_source_set("pw_malloc_freelist") {
+  public_configs = [ ":default_config" ]
+  public = [ "public/pw_malloc_freelist/freelist_malloc.h" ]
+  deps = [
+    "$dir_pw_allocator:block",
+    "$dir_pw_allocator:freelist_heap",
+    "$dir_pw_malloc:facade",
+    "$dir_pw_preprocessor",
+    dir_pw_span,
+  ]
+  sources = [ "freelist_malloc.cc" ]
+}
+
+pw_test_group("tests") {
+  enable_if = pw_malloc_BACKEND == dir_pw_malloc_freelist
+  tests = [ ":freelist_malloc_test" ]
+}
+
+pw_test("freelist_malloc_test") {
+  deps = [
+    "$dir_pw_allocator",
+    "$dir_pw_malloc",
+    dir_pw_span,
+  ]
+  sources = [ "freelist_malloc_test.cc" ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}

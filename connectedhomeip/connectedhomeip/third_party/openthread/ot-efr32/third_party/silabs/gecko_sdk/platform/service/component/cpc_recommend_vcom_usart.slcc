@@ -1,0 +1,23 @@
+!!omap
+- id: cpc_recommend_vcom_usart
+- label: "CPC: Recommend VCOM USART interface"
+- package: platform
+- description: CPC Recommend VCOM USART interface
+- category: Services|Co-Processor Communication|Secondary Device
+- quality: production
+- ui_hints:
+    visibility: never
+- provides:
+  - name: cpc_recommend_vcom_usart
+- recommends:
+  - id: cpc_secondary_driver_uart_usart
+    instance: 
+    - vcom
+    condition: [device_has_usart, hardware_board_has_vcom]
+    unless: [cpc_test_ci, device_has_eusart]
+  - id: cpc_config_vcom_usart
+    instance:
+    - vcom
+    unless: [cpc_test_ci]
+- requires:
+  - name: cpc_config_vcom_usart

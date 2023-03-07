@@ -1,0 +1,21 @@
+id: "btmesh_feature_relay"
+label: "Relay"
+package: "Btmesh"
+description: >
+  Relay component enables Bluetooth Mesh Relay feature for the node.
+  Relay nodes forward all incoming messages to neighboring nodes.
+  Relay functionality can be enabled or disabled during runtime via node configuration.
+category: "Bluetooth Mesh|Features"
+quality: "production"
+root_path: "protocol/bluetooth"
+
+requires:
+  - name: "btmesh_stack"
+  - name: "btmesh_core"
+  - name: component_catalog
+provides:
+  - name: "btmesh_feature_relay"
+template_contribution:
+  - name: btmesh_feature_bitmask
+    value:
+      count: 1

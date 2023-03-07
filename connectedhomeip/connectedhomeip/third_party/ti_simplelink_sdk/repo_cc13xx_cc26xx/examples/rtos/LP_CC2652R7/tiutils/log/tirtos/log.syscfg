@@ -1,0 +1,82 @@
+/*
+ * Copyright (c) 2020-2021, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+// @cliArgs --board /ti/boards/LP_CC2652R7 --rtos tirtos
+
+/**
+ * Import the modules used in this configuration.
+ */
+const Board             = scripting.addModule("/ti/drivers/Board");
+const Power             = scripting.addModule("/ti/drivers/Power");
+const LoggerBuf         = scripting.addModule("/ti/loggers/utils/LoggerBuf", {}, false);
+const LoggerBuf1        = LoggerBuf.addInstance();
+const LoggerITM         = scripting.addModule("/ti/loggers/drivers/LoggerITM", {}, false);
+const LoggerITM1        = LoggerITM.addInstance();
+const LogMain           = scripting.addModule("/ti/utils/runtime/LogMain");
+const LogSite           = scripting.addModule("/ti/utils/runtime/LogSite", {}, false);
+const LogSite1          = LogSite.addInstance();
+const ITM               = scripting.addModule("/ti/drivers/ITM");
+
+/* ======== TIRTOS7 ======== */
+if (system.getRTOS() === "tirtos7") {
+    const tirtos7_release_syscfg_js = system.getScript("tirtos7_release.syscfg.js");
+}
+
+/* Add a GPIO instance to force PIN_init() to be called.  We need to
+ * call PIN_init() before shutting down the external flash in
+ * Board_initHook().
+ */
+var board = system.deviceData.board.name;
+if (board.match(/CC13.[12]|CC26.[12]/)) {
+    var GPIO = scripting.addModule("/ti/drivers/GPIO");
+    var gpio = GPIO.addInstance();
+    gpio.$hardware = system.deviceData.board.components.LED0;
+    gpio.$name = "CONFIG_GPIO_LED_0";
+    gpio.initialOutputState = "High";
+
+    /* assign the ITM to the LaunchPad default */
+    ITM.swoPin.$assign  = "DIO18";
+}
+
+/**
+ * Configure LogMain and the LoggerBuf instance
+ */
+LogMain.LogSite.logger = LoggerBuf1;
+LoggerBuf1.$name       = "CONFIG_ti_loggers_utils_LoggerBuf_Main";
+LoggerBuf1.label       = "Main Logger";
+
+/**
+ * Configure a second logmodule
+ */
+LogSite1.module = "ti_utils_examples_app";
+LogSite1.loggerMod = "/ti/loggers/drivers/LoggerITM";
+LoggerITM1.$name = "CONFIG_ti_loggers_drivers_LoggerITM_0";
+LogSite1.logger  = LoggerITM1;

@@ -1,0 +1,317 @@
+#include "callback_dispatcher.h"
+
+{# INIT #}
+void emberAfInit(void)
+{
+{% for cb in stack_callback -%}
+{% if cb['callback_type'] == "init" -%}
+{{ cb['function_name'] }}();
+{% endif -%}
+{% endfor -%}
+}
+
+{# TICK #}
+void emberAfTick(void)
+{
+{% for cb in stack_callback -%}
+{% if cb['callback_type'] == "tick" -%}
+{{ cb['function_name'] }}();
+{% endif -%}
+{% endfor -%}
+}
+
+{# STACK_STATUS #}
+void emberAfStackStatus(EmberStatus status)
+{
+(void)status;
+{% for cb in stack_callback -%}
+{% if cb['callback_type'] == "stack_status" -%}
+{{ cb['function_name'] }}(
+status
+);
+{% endif -%}
+{% endfor -%}
+}
+
+{# CHILD_JOIN #}
+void emberAfChildJoin(EmberNodeType nodeType,
+                      EmberNodeId nodeId)
+{
+(void)nodeType;
+(void)nodeId;
+{% for cb in stack_callback -%}
+{% if cb['callback_type'] == "child_join" -%}
+{{ cb['function_name'] }}(
+nodeType,
+nodeId
+);
+{% endif -%}
+{% endfor -%}
+}
+
+{# RADIO_NEEDS_CALIBRATING #}
+void emberAfRadioNeedsCalibrating(void)
+{
+{% for cb in stack_callback -%}
+{% if cb['callback_type'] == "radio_needs_calibrating" -%}
+{{ cb['function_name'] }}();
+{% endif -%}
+{% endfor -%}
+}
+
+{# STACK_ISR #}
+void emberAfStackIsr(void)
+{
+{% for cb in stack_callback -%}
+{% if cb['callback_type'] == "stack_isr" -%}
+{{ cb['function_name'] }}();
+{% endif -%}
+{% endfor -%}
+}
+
+{# MESSAGE_SENT #}
+void emberAfMessageSent(EmberStatus status,
+                        EmberOutgoingMessage *message)
+{
+(void)status;
+(void)message;
+{% for cb in stack_callback -%}
+{% if cb['callback_type'] == "message_sent" -%}
+{{ cb['function_name'] }}(
+status,
+message
+);
+{% endif -%}
+{% endfor -%}
+}
+
+{# MAC_MESSAGE_SENT #}
+void emberAfMacMessageSent(EmberStatus status,
+                           EmberOutgoingMacMessage *message)
+{
+(void)status;
+(void)message;
+{% for cb in stack_callback -%}
+{% if cb['callback_type'] == "mac_message_sent" -%}
+{{ cb['function_name'] }}(
+status,
+message
+);
+{% endif -%}
+{% endfor -%}
+}
+
+{# INCOMING_MESSAGE #}
+void emberAfIncomingMessage(EmberIncomingMessage *message)
+{
+(void)message;
+{% for cb in stack_callback -%}
+{% if cb['callback_type'] == "incoming_message" -%}
+{{ cb['function_name'] }}(
+message
+);
+{% endif -%}
+{% endfor -%}
+}
+
+{# MAC_INCOMING_MESSAGE #}
+void emberAfIncomingMacMessage(EmberIncomingMacMessage *message)
+{
+(void)message;
+{% for cb in stack_callback -%}
+{% if cb['callback_type'] == "mac_incoming_message" -%}
+{{ cb['function_name'] }}(
+message
+);
+{% endif -%}
+{% endfor -%}
+}
+
+{# INCOMING_BEACON #}
+void emberAfIncomingBeacon(EmberPanId panId,
+                           EmberMacAddress *source,
+                           int8_t rssi,
+                           bool permitJoining,
+                           uint8_t beaconFieldsLength,
+                           uint8_t *beaconFields,
+                           uint8_t beaconPayloadLength,
+                           uint8_t *beaconPayload)
+{
+(void)panId;
+(void)source;
+(void)rssi;
+(void)permitJoining;
+(void)beaconFieldsLength;
+(void)beaconFields;
+(void)beaconPayloadLength;
+(void)beaconPayload;
+{% for cb in stack_callback -%}
+{% if cb['callback_type'] == "incoming_beacon" -%}
+{{ cb['function_name'] }}(
+panId,
+source,
+rssi,
+permitJoining,
+beaconFieldsLength,
+beaconFields,
+beaconPayloadLength,
+beaconPayload
+);
+{% endif -%}
+{% endfor -%}
+}
+
+{# ACTIVE_SCAN_COMPLETE #}
+void emberAfActiveScanComplete(void)
+{
+{% for cb in stack_callback -%}
+{% if cb['callback_type'] == "active_scan_complete" -%}
+{{ cb['function_name'] }}();
+{% endif -%}
+{% endfor -%}
+}
+
+{# ENERGY_SCAN_COMPLETE #}
+void emberAfEnergyScanComplete(int8_t mean,
+                               int8_t min,
+                               int8_t max,
+                               uint16_t variance)
+{
+(void)mean;
+(void)min;
+(void)max;
+(void)variance;
+{% for cb in stack_callback -%}
+{% if cb['callback_type'] == "energy_scan_complete" -%}
+{{ cb['function_name'] }}(
+mean,
+min,
+max,
+variance
+);
+{% endif -%}
+{% endfor -%}
+}
+
+{# MARK_APPLICATION_BUFFERS #}
+void emberAfMarkApplicationBuffers(void)
+{
+{% for cb in stack_callback -%}
+{% if cb['callback_type'] == "mark_application_buffers" -%}
+{{ cb['function_name'] }}();
+{% endif -%}
+{% endfor -%}
+}
+
+{# FREQUENCY_HOPPING_CLIENT_START_COMPLETE #}
+void emberAfFrequencyHoppingStartClientComplete(EmberStatus status)
+{
+(void)status;
+{% for cb in stack_callback -%}
+{% if cb['callback_type'] == "frequency_hopping_client_start_complete" -%}
+{{ cb['function_name'] }}(status);
+{% endif -%}
+{% endfor -%}
+}
+
+//------------------------------------------------------------------------------
+// Application callbacks weak definitions
+
+WEAK(void emberAfInitCallback(void))
+{
+}
+
+WEAK(void emberAfTickCallback(void))
+{
+}
+
+WEAK(void emberAfStackStatusCallback(EmberStatus status))
+{
+  (void)status;
+}
+
+WEAK(void emberAfIncomingMessageCallback(EmberIncomingMessage *message))
+{
+  (void)message;
+}
+
+WEAK(void emberAfIncomingMacMessageCallback(EmberIncomingMacMessage *message))
+{
+  (void)message;
+}
+
+WEAK(void emberAfMessageSentCallback(EmberStatus status,
+                                     EmberOutgoingMessage *message))
+{
+  (void)status;
+  (void)message;
+}
+
+WEAK(void emberAfMacMessageSentCallback(EmberStatus status,
+                                        EmberOutgoingMacMessage *message))
+{
+  (void)status;
+  (void)message;
+}
+
+WEAK(void emberAfChildJoinCallback(EmberNodeType nodeType,
+                                   EmberNodeId nodeId))
+{
+  (void)nodeType;
+  (void)nodeId;  
+}
+
+WEAK(void emberAfActiveScanCompleteCallback(void))
+{
+}
+
+WEAK(void emberAfEnergyScanCompleteCallback(int8_t mean,
+                                            int8_t min,
+                                            int8_t max,
+                                            uint16_t variance))
+{
+  (void)mean;
+  (void)min;
+  (void)max;
+  (void)variance;  
+}
+
+WEAK(void emberAfMarkApplicationBuffersCallback(void))
+{
+}
+
+WEAK(void emberAfIncomingBeaconCallback(EmberPanId panId,
+                                        EmberMacAddress *source,
+                                        int8_t rssi,
+                                        bool permitJoining,
+                                        uint8_t beaconFieldsLength,
+                                        uint8_t *beaconFields,
+                                        uint8_t beaconPayloadLength,
+                                        uint8_t *beaconPayload))
+{
+  (void)panId;
+  (void)source;
+  (void)rssi;
+  (void)permitJoining;
+  (void)beaconFieldsLength;
+  (void)beaconFields;
+  (void)beaconPayloadLength;
+  (void)beaconPayload;
+}
+
+WEAK(void emberAfFrequencyHoppingStartClientCompleteCallback(EmberStatus status))
+{
+  (void)status;
+}
+
+WEAK(void emberAfRadioNeedsCalibratingCallback(void))
+{
+  emberCalibrateCurrentChannel();
+}
+
+WEAK(bool emberAfStackIdleCallback(uint32_t *idleTimeMs))
+{
+  (void)idleTimeMs;
+
+  return false;
+}

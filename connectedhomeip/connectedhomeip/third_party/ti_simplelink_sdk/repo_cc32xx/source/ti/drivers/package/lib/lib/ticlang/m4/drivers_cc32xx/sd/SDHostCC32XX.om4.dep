@@ -1,0 +1,26 @@
+package/lib/lib/ticlang/m4/drivers_cc32xx/./sd/SDHostCC32XX.om4: sd/SDHostCC32XX.c /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/DebugP.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/HwiP.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/SemaphoreP.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/Power.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/power/PowerCC32XX.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/sd/SDHostCC32XX.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dma/UDMACC32XX.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_common_reg.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_types.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_memmap.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_ocp_shared.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_ints.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_mmchs.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_udma.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_apps_rcm.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/rom.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/rom_map.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/pin.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/prcm.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/sdhost.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/udma.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/utils/List.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/SD.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/rom_patch.h 
+sd/SDHostCC32XX.c:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/DebugP.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/HwiP.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/SemaphoreP.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/Power.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/power/PowerCC32XX.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/sd/SDHostCC32XX.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dma/UDMACC32XX.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_common_reg.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_types.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_memmap.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_ocp_shared.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_ints.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_mmchs.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_udma.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_apps_rcm.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/rom.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/rom_map.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/pin.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/prcm.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/sdhost.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/udma.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/utils/List.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/SD.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/rom_patch.h:

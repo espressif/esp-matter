@@ -1,0 +1,51 @@
+package: Zigbee
+description: This component provides common utility functions used by both the Price
+  Server and Price Client components.
+id: zigbee_price_common
+label: Price Common
+category: Zigbee|Cluster Library|Smart Energy
+quality: extend
+provides:
+   - name: "zigbee_price_common"
+source:
+  - path: protocol/zigbee/app/framework/plugin/price-common/price-common.c
+  - path: protocol/zigbee/app/framework/plugin/price-common/price-common-time.c
+  - path: protocol/zigbee/app/framework/plugin/price-common/price-common-cli.c
+    condition:
+      - "cli"
+include:
+  - path: protocol/zigbee/app/framework/plugin/price-common
+    file_list:
+      - path: price-common.h
+      - path: price-common-time.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_price_common
+  - name: cli_group
+    value:
+      group: plugin
+      name: price-common
+      help: price-common related commands.
+  - name: cli_command
+    value:
+      group: price-common
+      name: adj-st-t
+      handler: emAfPluginPriceCommonClusterGetAdjustedStartTimeCli
+      help: Calculates a new UTC start time value based on the duration type parameter.
+      argument:
+      - type: uint32
+      - type: uint8
+  - name: cli_command
+    value:
+      group: price-common
+      name: cnvrt-durn-to-sec
+      handler: emAfPluginPriceCommonClusterConvertDurationToSecondsCli
+      help: Converts the duration to a number of seconds based on the duration type parameter.
+      argument:
+      - type: uint32
+      - type: uint32
+      - type: uint8
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/price-common

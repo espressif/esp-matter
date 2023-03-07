@@ -1,0 +1,32 @@
+common:
+    target:
+        - cortex-m33
+    core:
+        - Cortex-M33
+    macros:
+        - INTERFACE_MT7933
+        - CPU_MT7933
+        - DAPLINK_HIC_ID=0x24547933
+    includes:
+        - port/mt7933/inc
+        - port/mt7933/src
+    sources:
+        hic_hal:
+            - port/mt7933/src
+            - port/mt7933/GCC
+tool_specific:
+    gcc_arm:
+        misc:
+            c_flags:
+                - -march=armv8-m.main+fp+dsp
+                - -mfloat-abi=hard
+                - -mfpu=fpv4-sp-d16
+            ld_flags:
+                - -march=armv8-m.main+fp+dsp
+                - -mfloat-abi=hard
+                - -mfpu=fpv4-sp-d16
+                - -Wl,--defsym=__stack_size__=0x2000
+        linker_file:
+            - GCC/daplink.ld
+        includes:
+            - port/mt7933/inc

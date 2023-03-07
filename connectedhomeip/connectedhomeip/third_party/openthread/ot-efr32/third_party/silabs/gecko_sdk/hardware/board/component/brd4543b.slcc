@@ -1,0 +1,31 @@
+!!omap
+- id: brd4543b
+- label: BRD4543B
+- package: platform
+- description: Board support for BRD4543B.
+- category: Platform|Board|Radio Board
+- quality: production
+- requires:
+  - name: ezr32hg320f64r68
+  - name: brd4543b_config
+  - name: hardware_board_mainboard
+- provides:
+  - name: brd4543b
+  - name: hardware_board
+  - name: hardware_board_rb
+  - name: hardware_board_from_stk
+  - name: hardware_board_from_slwrb4543b
+  - name: hardware_board_from_slwstk6242a
+- recommends:
+  - id: brd4001a
+- template_contribution: []
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD4543B"'
+  - name: SL_BOARD_REV
+    value: '"A00"'
+- tag:
+  - board:pn:BRD4543
+  - board:variant:B
+  - board:revision:A00
+  - board:device:ezr32hg320f64r68

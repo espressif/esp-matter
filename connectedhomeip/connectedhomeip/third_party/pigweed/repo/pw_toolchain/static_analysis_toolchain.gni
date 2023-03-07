@@ -1,0 +1,241 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_compilation_testing/negative_compilation_test.gni")
+import("$dir_pw_toolchain/universal_tools.gni")
+
+declare_args() {
+  # Regular expressions matching the paths of the source files to be excluded
+  # from the analysis. clang-tidy provides no alternative option.
+  #
+  # For example, the following disables clang-tidy on all source files in the
+  # third_party directory:
+  #
+  #   pw_toolchain_STATIC_ANALYSIS_SKIP_SOURCES_RES = ["third_party/.*"]
+  #
+  pw_toolchain_STATIC_ANALYSIS_SKIP_SOURCES_RES = []
+
+  # Disable clang-tidy for specific include paths. In the clang-tidy command,
+  # include paths that end with one of these, or match as a regular expression,
+  # are switched from -I to -isystem, which causes clang-tidy to ignore them.
+  # Unfortunately, clang-tidy provides no other way to filter header files.
+  #
+  # For example, the following ignores header files in "mbedtls/include":
+  #
+  #   pw_toolchain_STATIC_ANALYSIS_SKIP_INCLUDE_PATHS = ["mbedtls/include"]
+  #
+  # While the following ignores all third-party header files:
+  #
+  #   pw_toolchain_STATIC_ANALYSIS_SKIP_INCLUDE_PATHS = [".*/third_party/.*"]
+  #
+  pw_toolchain_STATIC_ANALYSIS_SKIP_INCLUDE_PATHS = []
+}
+
+# Creates a toolchain target for static analysis.
+#
+# The generated toolchain runs clang-tidy on all source files that are not
+# excluded by pw_toolchain_STATIC_ANALYSIS_SKIP_SOURCES_RES or
+# pw_toolchain_STATIC_ANALYSIS_SKIP_INCLUDE_PATHS.
+#
+# Args:
+#   cc: (required) String indicating the C compiler to use.
+#   cxx: (required) String indicating the C++ compiler to use.
+template("pw_static_analysis_toolchain") {
+  invoker_toolchain_args = invoker.defaults
+
+  # Clang tidy is invoked by a wrapper script which implements the missing
+  # option --source-filter.
+  _clang_tidy_py_path =
+      rebase_path("$dir_pw_toolchain/py/pw_toolchain/clang_tidy.py",
+                  root_build_dir)
+  _clang_tidy_py = "${python_path} ${_clang_tidy_py_path}"
+  _source_root = rebase_path("//", root_build_dir)
+  _source_exclude = ""
+  foreach(pattern, pw_toolchain_STATIC_ANALYSIS_SKIP_SOURCES_RES) {
+    _source_exclude = _source_exclude + " --source-exclude '${pattern}'"
+  }
+  _skip_include_path = ""
+  foreach(pattern, pw_toolchain_STATIC_ANALYSIS_SKIP_INCLUDE_PATHS) {
+    _skip_include_path =
+        _skip_include_path + " --skip-include-path '${pattern}'"
+  }
+
+  toolchain(target_name) {
+    # Uncomment this line to see which toolchains generate other toolchains.
+    # print("Generating toolchain: ${target_name} by ${current_toolchain}")
+
+    tool("asm") {
+      depfile = "{{output}}.d"
+      command = pw_universal_stamp.command
+      depsformat = "gcc"
+      description = "as {{output}}"
+      outputs = [
+        # Use {{source_file_part}}, which includes the extension, instead of
+        # {{source_name_part}} so that object files created from <file_name>.c
+        # and <file_name>.cc sources are unique.
+        "{{source_out_dir}}/{{target_output_name}}.{{source_file_part}}.o",
+      ]
+    }
+
+    assert(defined(invoker.cc), "toolchain is missing 'cc'")
+    tool("cc") {
+      depfile = "{{output}}.d"
+      command = string_join(" ",
+                            [
+                              _clang_tidy_py,
+                              _source_exclude,
+                              _skip_include_path,
+                              "--source-file {{source}}",
+                              "--source-root '${_source_root}'",
+                              "--export-fixes {{output}}.yaml",
+                              "--",
+                              invoker.cc,
+                              "END_OF_INVOKER",
+                              "-MMD -MF $depfile",  # Write out dependencies.
+                              "{{cflags}}",
+                              "{{cflags_c}}",  # Must come after {{cflags}}.
+                              "{{defines}}",
+                              "{{include_dirs}}",
+                              "-c {{source}}",
+                              "-o {{output}}",
+                            ]) + " && touch {{output}}"
+      depsformat = "gcc"
+      description = "clang-tidy {{source}}"
+      outputs =
+          [ "{{source_out_dir}}/{{target_output_name}}.{{source_file_part}}.o" ]
+    }
+
+    assert(defined(invoker.cxx), "toolchain is missing 'cxx'")
+    tool("cxx") {
+      depfile = "{{output}}.d"
+      command = string_join(" ",
+                            [
+                              _clang_tidy_py,
+                              _source_exclude,
+                              _skip_include_path,
+                              "--source-file {{source}}",
+                              "--source-root '${_source_root}'",
+                              "--export-fixes {{output}}.yaml",
+                              "--",
+                              invoker.cxx,
+                              "END_OF_INVOKER",
+                              "-MMD -MF $depfile",  # Write out dependencies.
+                              "{{cflags}}",
+                              "{{cflags_cc}}",  # Must come after {{cflags}}.
+                              "{{defines}}",
+                              "{{include_dirs}}",
+                              "-c {{source}}",
+                              "-o {{output}}",
+                            ]) + " && touch {{output}}"
+      depsformat = "gcc"
+      description = "clang-tidy {{source}}"
+      outputs =
+          [ "{{source_out_dir}}/{{target_output_name}}.{{source_file_part}}.o" ]
+    }
+
+    tool("objc") {
+      depfile = "{{output}}.d"
+      command = pw_universal_stamp.command
+      depsformat = "gcc"
+      description = "objc {{source}}"
+      outputs =
+          [ "{{source_out_dir}}/{{target_output_name}}.{{source_file_part}}.o" ]
+    }
+
+    tool("objcxx") {
+      depfile = "{{output}}.d"
+      command = pw_universal_stamp.command
+      depsformat = "gcc"
+      description = "objc++ {{output}}"
+      outputs =
+          [ "{{source_out_dir}}/{{target_output_name}}.{{source_file_part}}.o" ]
+    }
+
+    tool("alink") {
+      command = "rm -f {{output}} && touch {{output}}"
+      description = "ar {{target_output_name}}{{output_extension}}"
+      outputs = [ "{{output_dir}}/{{target_output_name}}{{output_extension}}" ]
+      default_output_extension = ".a"
+      default_output_dir = "{{target_out_dir}}/lib"
+    }
+
+    tool("link") {
+      if (host_os == "win") {
+        # Force the extension to '.bat', empty bat scripts are still
+        # executable and will not raise errors.
+        _output = "{{output_dir}}/{{target_output_name}}.bat"
+        command = pw_universal_stamp.command
+        default_output_extension = ".bat"
+      } else {
+        default_output_extension = ""
+        _output = "{{output_dir}}/{{target_output_name}}{{output_extension}}"
+        command = "touch {{output}} && chmod +x {{output}}"
+      }
+      description = "ld $_output"
+      outputs = [ _output ]
+      default_output_dir = "{{target_out_dir}}/bin"
+    }
+
+    tool("solink") {
+      _output = "{{output_dir}}/{{target_output_name}}{{output_extension}}"
+      command = pw_universal_stamp.command
+      description = "ld -shared $_output"
+      outputs = [ _output ]
+      default_output_dir = "{{target_out_dir}}/lib"
+      default_output_extension = ".so"
+    }
+
+    tool("stamp") {
+      # GN-ism: GN gets mad if you directly forward the contents of
+      # pw_universal_stamp.
+      _stamp = pw_universal_stamp
+      forward_variables_from(_stamp, "*")
+    }
+
+    tool("copy") {
+      # GN-ism: GN gets mad if you directly forward the contents of
+      # pw_universal_copy.
+      _copy = pw_universal_copy
+      forward_variables_from(_copy, "*")
+    }
+
+    # Build arguments to be overridden when compiling cross-toolchain:
+    #
+    #   pw_toolchain_defaults: A scope setting defaults to apply to GN targets
+    #     in this toolchain. It is analogous to $pw_target_defaults in
+    #     $dir_pigweed/pw_vars_default.gni.
+    #
+    #   pw_toolchain_SCOPE: A copy of the invoker scope that defines the
+    #     toolchain. Used for generating derivative toolchains.
+    #
+    toolchain_args = {
+      pw_toolchain_SCOPE = {
+      }
+      pw_toolchain_SCOPE = {
+        forward_variables_from(invoker, "*")
+        name = target_name
+      }
+      forward_variables_from(invoker_toolchain_args, "*")
+
+      # Disable compilation testing for static analysis toolchains.
+      pw_compilation_testing_NEGATIVE_COMPILATION_ENABLED = false
+
+      # Always disable coverage generation since we will not actually run the
+      # instrumented binaries to produce a profraw file.
+      pw_toolchain_COVERAGE_ENABLED = false
+    }
+  }
+}

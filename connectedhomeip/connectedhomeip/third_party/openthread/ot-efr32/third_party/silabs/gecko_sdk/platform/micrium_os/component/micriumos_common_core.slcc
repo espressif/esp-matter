@@ -1,0 +1,52 @@
+id: micriumos_common_core
+label: Micrium OS Common Module Core
+package: micrium-krnx
+description: Micrium OS Common Module Core
+category: Services|Micrium|Common
+quality: production
+component_root_path: platform/micrium_os/common
+config_file:
+  - path: ../cfg/common_cfg.h
+  - path: ../cfg/rtos_cfg.h
+  - path: ../cfg/rtos_err_cfg.h
+source:
+  - path: source/kal/kal_kernel.c
+  - path: source/lib/lib_ascii.c
+  - path: source/lib/lib_str.c
+  - path: source/logging/logging.c
+  - path: source/ring_buf/ring_buf.c
+  - path: source/rtos/rtos_err_str.c
+  - path: source/rtos/rtos_utils.c
+include:
+  - path: source
+    file_list:
+      - path: common/common_priv.h
+      - path: kal/kal_priv.h
+      - path: lib/lib_mem.c
+      - path: lib/lib_str_priv.h
+      - path: logging/logging_chk_priv.h
+      - path: logging/logging_priv.h
+      - path: preprocessor/preprocessor_priv.h
+      - path: ring_buf/ring_buf_priv.h
+      - path: rtos/rtos_utils_priv.h
+  - path: include
+    file_list:
+      - path: common.h
+      - path: kal.h
+      - path: lib_ascii.h
+      - path: lib_def.h
+      - path: lib_math.h
+      - path: lib_mem.h
+      - path: lib_str.h
+      - path: lib_utils.h
+      - path: logging.h
+      - path: rtos_err.h
+      - path: rtos_opt_def.h
+      - path: rtos_path.h
+      - path: rtos_prio.h
+      - path: rtos_types.h
+      - path: rtos_utils.h
+      - path: rtos_version.h
+      - path: toolchains.h
+provides:
+  - name: common_core

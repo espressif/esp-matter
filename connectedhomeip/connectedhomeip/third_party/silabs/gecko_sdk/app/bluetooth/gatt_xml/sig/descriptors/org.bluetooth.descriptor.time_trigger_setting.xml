@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Descriptor xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/descriptor.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.descriptor.time_trigger_setting" 
+name="Time Trigger Setting" uuid="290E" last-modified="2015-07-14" approved="Yes">
+    <InformativeText>
+        <Abstract>The value of the descriptor has two parts. Part one is a condition field and occupies one octet, and part two is the comparison value (trigger point) that the characteristic value is checked against.</Abstract>
+    </InformativeText>
+    <Value>
+        <Field name="Condition">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+            <Enumerations>
+                <InformativeText>Available Conditions</InformativeText>
+                <Enumeration key="0" value="None" description="No time-based triggering used (valid for: Digital, Analog)" requires="C1"/>
+                <Enumeration key="1" value="Time Interval" description="Indicates or notifies unconditionally after a settable time.  This condition will cause server to periodically send notification or indication for the corresponding characteristic regardless of the Value Trigger state (valid for: Digital, Analog)" requires="C2"/>
+                <Enumeration key="2" value="Time Interval" description="Not indicated or notified more often than a settable time. After a successful indication or notification, the next indication or notification shall not be sent for the Time Interval time.  When the Time Interval expires, the characteristic is indicated or notified If the corresponding Value Trigger has a different state than at the time of the last successful indication or notification (valid for: Digital, Analog)" requires="C2" />
+                <Enumeration key="3" value="Count" description="Changed more often than.  This condition will cause server to count number of times the Value Trigger has changed its state and send the notification or indication for the corresponding characteristic on the 'count' occurrence of the state change (valid for: Digital, Analog)" requires="C3"/>
+                <ReservedForFutureUse start="4" end="255" />
+            </Enumerations>
+        </Field>
+        
+        
+        <Field name="Value (None)">
+            <InformativeText>No comparison value required</InformativeText>
+            <Requirement>C1</Requirement>
+            <Format>uint8</Format>
+        </Field>
+        <Field name="Value (Time Interval)">
+            <Requirement>C2</Requirement>
+            <Format>uint24</Format>
+            <Unit>org.bluetooth.unit.time.second</Unit>
+            <DecimalExponent>0</DecimalExponent>
+                     
+        </Field>
+        <Field name="Value (Count)">
+            <Requirement>C3</Requirement>
+            <Format>uint16</Format>
+        </Field>
+      
+    </Value>
+</Descriptor>

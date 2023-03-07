@@ -1,0 +1,27 @@
+id: cmsis_common
+label: "Common APIs for CMSIS-Compliant Kernels"
+description: >
+   This component provides "sl_cmsis_os2_common.h" header file, which in
+   turn provides typedefs like osSemaphore_t and osThread_t.
+
+   Those types are defined by CMSIS RTOS2 standard, yet their implementation
+   is specific to the operating system. Traditionally, the user would need to
+   include OS-specific header file (like "os.h" for MicriumOS) to have access
+   to those types. This implies that the application needs to be aware of
+   the kernel being used (MicriumOS, FreeRTOS, etc.)
+
+   For applications that need to be OS-agnostic, this component provides
+   an abstract header file "sl_cmsis_os2_common.h" that provides the same
+   functionality without the requirement of knowing which OS is used per se.
+package: platform
+category: Platform|Common
+quality: production
+root_path: platform/common
+include:
+  - path: inc
+    file_list:
+      - path: "sl_cmsis_os2_common.h"
+provides:
+  - name: cmsis_common
+requires:
+  - name: cmsis_core

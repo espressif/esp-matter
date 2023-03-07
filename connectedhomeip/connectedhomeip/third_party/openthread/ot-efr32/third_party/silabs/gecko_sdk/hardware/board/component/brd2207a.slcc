@@ -1,0 +1,56 @@
+!!omap
+- id: brd2207a
+- label: BRD2207A
+- package: platform
+- description: Board support for BRD2207A.
+- category: Platform|Board|Starter Kit
+- quality: production
+- requires:
+  - name: efm32gg12b810f1024gm64
+  - name: brd2207a_config
+- provides:
+  - name: brd2207a
+  - name: hardware_board
+  - name: hardware_board_stk
+  - name: hardware_board_from_stk
+  - name: hardware_board_from_sltb009a
+  - name: hardware_board_has_vcom
+  - name: hardware_board_has_hfxo
+  - name: hardware_board_has_lfxo
+- recommends:
+  - id: iostream_usart
+    instance:
+    - vcom
+  - id: bootloader_uart_driver
+  - id: mic_pdm_driver
+  - id: simple_led
+    instance:
+    - led0
+    - led1
+    - led2
+    - led3
+    - led4
+    - led5
+  - id: simple_button
+    instance:
+    - btn0
+    - btn1
+  - id: usb_device_driver_dwc_otg_fs
+  - id: bootloader_spi_peripheral_usart_driver
+- template_contribution: []
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD2207A"'
+  - name: SL_BOARD_REV
+    value: '"A03"'
+- tag:
+  - board:pn:BRD2207
+  - board:variant:A
+  - board:revision:A03
+  - board:device:efm32gg12b810f1024gm64
+  - hardware:has:vcom
+  - hardware:has:sensor:spk0641ht4h
+  - hardware:has:microphone
+  - hardware:has:led:6
+  - hardware:has:button:2
+  - hardware:has:usb

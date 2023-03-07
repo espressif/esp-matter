@@ -1,0 +1,188 @@
+// Copyright 2022 The Pigweed Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not
+// use this file except in compliance with the License. You may obtain a copy of
+// the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations under
+// the License.
+
+package {
+    default_applicable_licenses: ["external_pigweed_license"],
+}
+
+java_library {
+    name: "pw_rpc_java_client",
+    srcs: ["java/main/dev/pigweed/pw_rpc/*.java"],
+    visibility: ["//visibility:public"],
+    static_libs: [
+        "pw_log_android_java",
+        "pw_rpc_packet_proto_java_lite",
+    ],
+    libs: [
+        "auto_value_annotations",
+        "guava",
+        "jsr305",
+        "libprotobuf-java-lite",
+    ],
+    plugins: ["auto_value_plugin"],
+    sdk_version: "current",
+}
+
+java_library_static {
+    name: "pw_rpc_packet_proto_java_lite",
+    host_supported: true,
+    proto: {
+        type: "lite",
+    },
+    srcs: ["internal/packet.proto"],
+    sdk_version: "current",
+}
+
+java_library_static {
+    name: "pw_rpc_echo_proto_java_lite",
+    visibility: ["//visibility:public"],
+    host_supported: true,
+    proto: {
+        type: "lite",
+    },
+    srcs: ["echo.proto"],
+    sdk_version: "current",
+}
+
+cc_library_static {
+    name: "pw_rpc",
+    cpp_std: "c++2a",
+    vendor_available: true,
+    export_include_dirs: [
+        "public",
+    ],
+    header_libs: [
+        "fuschia_sdk_lib_fit",
+        "fuschia_sdk_lib_stdcompat",
+        "pw_assert_headers",
+        "pw_assert_log_headers",
+        "pw_function_headers",
+        "pw_log_headers",
+        "pw_log_null_headers",
+        "pw_polyfill_headers",
+        "pw_preprocessor_headers",
+        "pw_result_headers",
+        "pw_span_headers",
+        "pw_sync_baremetal_headers",
+        "pw_sync_headers",
+        "pw_toolchain",
+    ],
+    export_header_lib_headers: [
+        "fuschia_sdk_lib_fit",
+        "fuschia_sdk_lib_stdcompat",
+        "pw_assert_headers",
+        "pw_assert_log_headers",
+        "pw_function_headers",
+        "pw_log_headers",
+        "pw_log_null_headers",
+        "pw_polyfill_headers",
+        "pw_preprocessor_headers",
+        "pw_result_headers",
+        "pw_span_headers",
+        "pw_sync_baremetal_headers",
+        "pw_sync_headers",
+    ],
+    static_libs: [
+        "pw_bytes",
+        "pw_containers",
+        "pw_protobuf",
+        "pw_status",
+        "pw_stream",
+        "pw_string",
+        "pw_varint",
+    ],
+    export_static_lib_headers: [
+        "pw_bytes",
+        "pw_containers",
+        "pw_protobuf",
+        "pw_status",
+        "pw_stream",
+        "pw_string",
+        "pw_varint",
+    ],
+    generated_headers: [
+        "pw_rpc_internal_packet_pwpb_h",
+    ],
+    export_generated_headers: [
+        "pw_rpc_internal_packet_pwpb_h",
+    ],
+    srcs: [
+        "call.cc",
+        "channel.cc",
+        "channel_list.cc",
+        "client.cc",
+        "client_call.cc",
+        "endpoint.cc",
+        "packet.cc",
+        "packet_meta.cc",
+        "server.cc",
+        "server_call.cc",
+        "service.cc",
+    ],
+    cflags: [
+        "-DPW_RPC_USE_GLOBAL_MUTEX=0",
+        "-DPW_RPC_CLIENT_STREAM_END_CALLBACK",
+        "-DPW_RPC_DYNAMIC_ALLOCATION",
+    ],
+    host_supported: true,
+}
+
+genrule {
+    name: "pw_rpc_internal_packet_pwpb_h",
+    srcs: ["internal/packet.proto"],
+    cmd: "python3 $(location pw_protobuf_compiler_py) " +
+         "--out-dir=$$(dirname $(location pw_rpc/internal/packet.pwpb.h)) " +
+         "--plugin-path=$(location pw_protobuf_plugin_py) " +
+         "--compile-dir=$$(dirname $(in)) " +
+         "--sources $(in) " +
+         "--language pwpb " +
+         "--no-experimental-proto3-optional " +
+         "--protoc=$(location aprotoc) ",
+    out: [
+        "pw_rpc/internal/packet.pwpb.h",
+    ],
+    tools: [
+        "aprotoc",
+        "pw_protobuf_plugin_py",
+        "pw_protobuf_compiler_py",
+    ],
+}
+
+genrule {
+    name: "pw_rpc_internal_packet_py",
+    srcs: ["internal/packet.proto"],
+    cmd: "python3 $(location pw_protobuf_compiler_py) " +
+         "--out-dir=$(genDir) " +
+         "--compile-dir=$$(dirname $(in)) " +
+         "--sources $(in) " +
+         "--language python " +
+         "--no-generate-type-hints " +
+         "--no-experimental-proto3-optional " +
+         "--protoc=$(location aprotoc)",
+    out: [
+        "packet_pb2.py",
+    ],
+    tools: [
+        "aprotoc",
+        "pw_protobuf_compiler_py",
+    ],
+}
+
+python_library_host {
+    name: "pw_rpc_internal_packet_py_lib",
+    srcs: [
+        ":pw_rpc_internal_packet_py",
+    ],
+    pkg_path: "pw_rpc/internal",
+}

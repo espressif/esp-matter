@@ -1,0 +1,29 @@
+#ifndef SL_CLI_HANDLES_H
+#define SL_CLI_HANDLES_H
+
+#include "sl_cli.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// CLI instances present in the project.
+{% for instance in cli_instances %}#define SL_CLI_{{ instance | upper}}_PRESENT
+{% endfor %}
+
+// CLI handles.
+{% for instance in cli_instances %}extern sl_cli_handle_t sl_cli_{{ instance }}_handle;
+{% endfor %}
+
+// CLI command groups.
+{% for instance in cli_instances %}extern sl_cli_command_group_t sl_cli_{{ instance }}_command_group;
+{% endfor %}
+
+extern const sl_cli_handle_t sl_cli_handles[];
+extern const uint32_t sl_cli_handles_count;
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif // ifndef SL_CLI_HANDLES_H

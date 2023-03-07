@@ -1,0 +1,22 @@
+id: bootloader_spi_controller_driver
+label: Bootloader SPI Controller Driver
+package: bootloader
+description: >
+  Simple Blocking SPI Controller
+category: Platform|Bootloader|Drivers
+quality: production
+provides:
+  - name: bootloader_spi_controller_driver
+  - name: bootloader_nonsecure_incompatible
+    condition: [bootloader_core_nonsecure]
+requires:
+  - name: bootloader_spi_controller_transport
+recommends:
+  - id: bootloader_spi_controller_usart_driver
+    condition:
+     - brd4154a
+  - id: bootloader_spi_controller_usart_driver
+    condition:
+     - brd4165b
+ui_hints:
+  visibility: never

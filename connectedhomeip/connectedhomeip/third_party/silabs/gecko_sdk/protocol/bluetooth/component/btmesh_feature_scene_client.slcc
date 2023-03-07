@@ -1,0 +1,18 @@
+id: "btmesh_feature_scene_client"
+label: "Scene client Model"
+package: "Btmesh"
+description: "Enables Bluetooth Mesh Scene Client Model."
+category: "Bluetooth Mesh|Stack Classes"
+quality: "production"
+root_path: "protocol/bluetooth"
+
+requires:
+  - name: "btmesh_stack"
+  - name: "btmesh_core"
+provides:
+  - name: "btmesh_feature_scene_client"
+template_contribution:
+  - name: btmesh_bgapi_class
+    value:
+      class: "scene_client"
+    priority: 1

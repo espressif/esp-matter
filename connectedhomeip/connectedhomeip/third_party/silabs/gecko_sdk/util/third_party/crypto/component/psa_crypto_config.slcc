@@ -1,0 +1,121 @@
+id: psa_crypto_config
+package: platform
+label: Configuration
+description: >-
+  This component includes the PSA Crypto configuration.
+category: Platform|Security|PSA Crypto
+quality: production
+component_root_path: util/third_party/crypto/sl_component/sl_mbedtls_support
+
+provides:
+  - name: psa_crypto_config
+
+include:
+  - path: config
+    file_list:
+      - path: config-device-acceleration.h
+
+template_file:
+  - path: config/template/psa_crypto_config_autogen.h.jinja
+    unless: [tz_secure_key_library_s_app]
+
+config_file:
+  - path: config/template/psa_crypto_config.h
+    file_id: psa_crypto_config
+
+define:
+  - name: MBEDTLS_PSA_CRYPTO_CONFIG_FILE
+    value: "<psa_crypto_config.h>"
+
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_PSA_CRYPTO_CONFIG
+
+  # When defining MBEDTLS_PSA_CRYPTO_CONFIG, we are responsible for setting
+  # PSA_WANT_xxx and PSA_ACCEL_xxx based on what's available. If a user has
+  # selected mbedtls_xxx components for inclusion, we need to translate that
+  # here.
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_SHA_1
+    condition: [ mbedtls_sha1 ]
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_SHA_224
+    condition: [ mbedtls_sha256 ]
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_SHA_256
+    condition: [ mbedtls_sha256 ]
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_SHA_384
+    condition: [ mbedtls_sha512 ]
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_SHA_512
+    condition: [ mbedtls_sha512 ]
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_MD5
+    condition: [ mbedtls_md5 ]
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_CCM
+    condition: [ mbedtls_ccm ]
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_GCM
+    condition: [ mbedtls_gcm ]
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_CMAC
+    condition: [ mbedtls_cmac ]
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_CFB
+    condition: [ mbedtls_cipher_cfb ]
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_CHACHA20_POLY1305
+    condition: [ mbedtls_chachapoly ]
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_CTR
+    condition: [ mbedtls_cipher_ctr ]
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_CBC_NO_PADDING
+    condition: [ mbedtls_cipher_cbc ]
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_CBC_PKCS7
+    condition: [ mbedtls_cipher_padding_pkcs7 ]
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_ECB_NO_PADDING
+    condition: [ mbedtls_aes ]
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_XTS
+    condition: [ mbedtls_cipher_xts ]
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_ECDSA
+    condition: [ mbedtls_ecdsa ]
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_ECDH
+    condition: [ mbedtls_ecdh ]
+  - name: psa_crypto_config
+    value: PSA_WANT_KEY_TYPE_ECC_KEY_PAIR
+    condition: [ mbedtls_ecc ]
+  - name: psa_crypto_config
+    value: PSA_WANT_KEY_TYPE_ECC_PUBLIC_KEY
+    condition: [ mbedtls_ecc ]
+  - name: psa_crypto_config
+    value: PSA_WANT_KEY_TYPE_AES
+    condition: [ mbedtls_aes ]
+  - name: psa_crypto_config
+    value: PSA_WANT_KEY_TYPE_CHACHA20
+    condition: [ mbedtls_chachapoly ]
+  - name: psa_crypto_config
+    value: PSA_WANT_ECC_SECP_R1_192
+    condition: [ mbedtls_ecc_secp192r1 ]
+  - name: psa_crypto_config
+    value: PSA_WANT_ECC_SECP_R1_224
+    condition: [ mbedtls_ecc_secp224r1 ]
+  - name: psa_crypto_config
+    value: PSA_WANT_ECC_SECP_R1_256
+    condition: [ mbedtls_ecc_secp256r1 ]
+  - name: psa_crypto_config
+    value: PSA_WANT_ECC_SECP_R1_384
+    condition: [ mbedtls_ecc_secp384r1 ]
+  - name: psa_crypto_config
+    value: PSA_WANT_ECC_SECP_R1_521
+    condition: [ mbedtls_ecc_secp521r1 ]
+  - name: psa_crypto_config
+    value: PSA_WANT_ECC_MONTGOMERY_255
+    condition: [ mbedtls_ecc_curve25519 ]

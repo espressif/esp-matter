@@ -1,0 +1,23 @@
+id: "zigbee_cli"
+label: "Zigbee CLI"
+package: "Zigbee"
+category: "Zigbee|Utility"
+quality: production
+description: "This component is used to bring in the basic Zigbee CLI functionality "
+ui_hints:
+  visibility: never
+
+provides:
+  - name: "zigbee_cli"
+requires:
+  - name: "cli"
+include:
+  - path: protocol/zigbee/app/util/serial
+    file_list:
+      - path: sl_zigbee_command_interpreter.h    
+source:
+  - path: "protocol/zigbee/app/util/serial/sl_zigbee_command_interpreter.c"
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_cli

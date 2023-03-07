@@ -1,0 +1,71 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+fuchsia_repo_files = [
+    ".clang-format",
+    # fit
+    "sdk/lib/fit/include/lib/fit/function.h",
+    "sdk/lib/fit/include/lib/fit/internal/compiler.h",
+    "sdk/lib/fit/include/lib/fit/internal/function.h",
+    "sdk/lib/fit/include/lib/fit/internal/result.h",
+    "sdk/lib/fit/include/lib/fit/internal/utility.h",
+    "sdk/lib/fit/include/lib/fit/nullable.h",
+    "sdk/lib/fit/include/lib/fit/result.h",
+    "sdk/lib/fit/include/lib/fit/traits.h",
+    "sdk/lib/fit/test/function_tests.cc",
+    # stdcompat
+    "sdk/lib/stdcompat/include/lib/stdcompat/bit.h",
+    "sdk/lib/stdcompat/include/lib/stdcompat/memory.h",
+    "sdk/lib/stdcompat/include/lib/stdcompat/optional.h",
+    "sdk/lib/stdcompat/include/lib/stdcompat/type_traits.h",
+    "sdk/lib/stdcompat/include/lib/stdcompat/utility.h",
+    "sdk/lib/stdcompat/include/lib/stdcompat/version.h",
+    "sdk/lib/stdcompat/include/lib/stdcompat/internal/bit.h",
+    "sdk/lib/stdcompat/include/lib/stdcompat/internal/constructors.h",
+    "sdk/lib/stdcompat/include/lib/stdcompat/internal/exception.h",
+    "sdk/lib/stdcompat/include/lib/stdcompat/internal/storage.h",
+    "sdk/lib/stdcompat/include/lib/stdcompat/internal/type_traits.h",
+    "sdk/lib/stdcompat/include/lib/stdcompat/internal/utility.h",
+]
+
+core.workflow(
+    name = "default",
+    description = "Imports files from Fuchsia's fit library",
+    origin = git.origin(
+        url = "https://fuchsia.googlesource.com/fuchsia",
+        ref = "main",
+    ),
+    destination = git.gerrit_destination(
+        url = "https://pigweed.googlesource.com/pigweed/pigweed",
+        fetch = "main",
+        push_to_refs_for = "main%message=No%2dDocs%2dUpdate%2dReason%3a_copybara_import",
+        labels = ["Commit-Queue+1"],
+        checker = leakr.disable_check("Syncing between OSS projects"),
+    ),
+    origin_files = glob(fuchsia_repo_files),
+    destination_files = glob(["third_party/fuchsia/repo/**"]),
+    authoring = authoring.pass_thru("Fuchsia Authors <noreply@google.com>"),
+    transformations = [
+        core.move("", "third_party/fuchsia/repo"),
+        # Apply the patch file created by generate_fuchsia_patch.py.
+        patch.apply(["pigweed_adaptations.patch"]),
+        # Replace test #includes with gtest.
+        core.replace("#include <zxtest/zxtest.h>", "#include \"gtest/gtest.h\""),
+        # Show all commits but exclude the author to reduce line length.
+        metadata.squash_notes(
+            "third_party/fuchsia: Copybara import of the fit library\n\n",
+            show_author = False,
+        ),
+    ],
+)

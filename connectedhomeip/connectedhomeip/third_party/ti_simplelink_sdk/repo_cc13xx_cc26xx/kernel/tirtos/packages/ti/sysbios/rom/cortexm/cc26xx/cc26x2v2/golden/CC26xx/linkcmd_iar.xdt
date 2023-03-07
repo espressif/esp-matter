@@ -1,0 +1,63 @@
+%/*
+% * ======== linkcmd.xdt ========
+% *  This is template file is used to generate a linker command file for
+% *  executables.  It provides a single place where we can embed information
+% *  necessary to load/run executables.
+% *
+% *  This template is expanded after the configuration script runs and the
+% *  results placed in a file (with extension .xdl) associated with the
+% *  executable.
+% *
+% *  Linker templates are passed the following arguments:
+% *     $out        - an open file stream for the generated linker
+% *                   command file
+% *     $args[]     - an array of zero or more libraries that should be linked
+% *                   with (in the order they appear in the argument list)
+% *
+% *  In addition to these arguments, there is a global variable named
+% *  'this' that is set as follows:
+% *     this        - the program object
+% */
+%var prog = this;    /* meaningful alias for this (== xdc.cfg.Program) */
+/*
+ * Do not modify this file; it is automatically generated from the template
+ * linkcmd.xdt in the ti.platforms.tiva package and will be overwritten.
+ */
+
+%for (var i = 0, j = 0; i < $args.length; i++) {
+"`$args[i]`"
+%}
+
+%/*
+% * Linker command file contributions from all loaded packages:
+% */
+%var _utils = xdc.loadCapsule("ti/targets/linkUtils.xs");
+`_utils.genContributions($args)`
+
+%for (var sym in prog.symbol) {
+    %var inst = prog.symbol[sym];
+    %if ((typeof(inst) == 'number') && sym.match(/xdc_runtime_Startup/)) {
+--define_symbol `sym`=`inst`
+    %}
+%}
+
+%if (prog.platform.$orig.includeLinkCmdFile) {
+%    var linkFile;
+%    linkFile = prog.platform.$package.packageBase + '/include_iar/'
+%        + prog.cpu.deviceName.toUpperCase() + '.icf';
+--config "`linkFile`"
+%}
+
+%var RomModule = xdc.module('ti.sysbios.rom.cortexm.cc26xx.cc26x2v2.CC26xx');
+%var path = RomModule.$package.packageBase + "golden/CC26xx/"
+--config_search `path`
+--config_def USE_TIRTOS_ROM=1
+
+%/* force linker to include xdcmeta which is needed by ROV*/
+--keep __ASM__
+--keep __PLAT__
+--keep __ISA__
+--keep __TARG__
+%if (prog.build.target.binaryParser != null) {
+--keep __TRDR__
+%}

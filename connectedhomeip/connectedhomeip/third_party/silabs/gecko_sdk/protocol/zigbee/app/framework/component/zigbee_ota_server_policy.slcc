@@ -1,0 +1,27 @@
+package: Zigbee
+description: Silicon Labs implementation of the server policies for the Zigbee Over-the-air
+  bootload cluster (a multi-hop, application bootloader). This controls when a client
+  can upgrade, when new images are made available, and which version the client will
+  download and install. This component should be expanded to support the developer's
+  own server policy.
+label: OTA Bootload Cluster Server Policy
+quality: extend
+id: zigbee_ota_server_policy
+category: Zigbee|Over-The-Air Bootloading
+provides:
+   - name: "zigbee_ota_server_policy"
+requires:
+   - name: "zigbee_ota_server"
+source:
+  - path: protocol/zigbee/app/framework/plugin/ota-server-policy/ota-server-policy.c
+  - path: protocol/zigbee/app/framework/plugin/ota-server-policy/ota-server-policy-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/ota-server-policy
+    file_list:
+      - path: ota-server-policy.h  
+template_contribution:
+  - name: component_catalog
+    value: zigbee_ota_server_policy
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/ota-server-policy

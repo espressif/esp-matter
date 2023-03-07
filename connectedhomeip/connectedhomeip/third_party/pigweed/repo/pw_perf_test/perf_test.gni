@@ -1,0 +1,84 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_compilation_testing/negative_compilation_test.gni")
+import("$dir_pw_toolchain/host_clang/toolchains.gni")
+import("$dir_pw_unit_test/test.gni")
+
+declare_args() {
+  # Chooses the backend for how the framework calculates time
+  pw_perf_test_TIMER_INTERFACE_BACKEND = ""
+
+  # Chooses the EventHandler for running the perf tests
+  pw_perf_test_MAIN_FUNCTION = "$dir_pw_perf_test:log_perf_handler_main"
+
+  # Chooses the executable template for performance tests
+  pw_perf_test_EXECUTABLE_TARGET_TYPE = "pw_executable"
+}
+
+# Creates a library and an executable target for a unit test with pw_unit_test.
+#
+# <target_name>.lib contains the provided test sources as a library, which can
+# then be linked into a test executable.
+# <target_name> is a standalone executable which contains only the test sources
+# specified in the pw_perf_test_template.
+#
+# Args:
+#   - enable_if: (optional) Conditionally enables or disables this test. The
+#         test target does nothing when the test is disabled. The
+#         disabled test can still be built and run with the
+#         <target_name>.DISABLED. Defaults to true (enable_if).
+#   - All of the regular "executable" target args are accepted.
+#
+template("pw_perf_test") {
+  _test_target_name = target_name
+
+  _test_is_enabled = !defined(invoker.enable_if) || invoker.enable_if
+
+  _test_output_dir = "${target_out_dir}/test"
+  if (defined(invoker.output_dir)) {
+    _test_output_dir = invoker.output_dir
+  }
+
+  _test_main = pw_perf_test_MAIN_FUNCTION
+  if (defined(invoker.test_main)) {
+    _test_main = invoker.test_main
+  }
+
+  pw_internal_disableable_target("$target_name.lib") {
+    target_type = "pw_source_set"
+    enable_if = _test_is_enabled
+    forward_variables_from(invoker, "*", [ "metadata" ])
+
+    if (!defined(deps)) {
+      deps = []
+    }
+    deps += [ dir_pw_perf_test ]
+  }
+
+  pw_internal_disableable_target(_test_target_name) {
+    target_type = pw_perf_test_EXECUTABLE_TARGET_TYPE
+    enable_if = _test_is_enabled
+
+    deps = [ ":$_test_target_name.lib" ]
+    if (_test_main != "") {
+      deps += [ _test_main ]
+    }
+
+    output_dir = _test_output_dir
+  }
+}

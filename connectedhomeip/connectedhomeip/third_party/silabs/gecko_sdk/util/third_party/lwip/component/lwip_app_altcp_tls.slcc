@@ -1,0 +1,23 @@
+id: lwip_app_altcp_tls
+label: "altcp tls"
+pretty_name : "LWIP altcp tls high layer application"
+package: platform
+description: >
+    LWIP altcp tls high layer application specifically programmed with the lwIP low-level raw API.
+category: LwIP|apps
+quality: production
+provides:
+  - name: lwip_apps
+    allow_multiple: true
+  - name: lwip_app_altcp_tls
+requires:
+  - name: lwip_core
+source:
+  - path: util/third_party/lwip/lwip/src/apps/altcp_tls/altcp_tls_mbedtls.c
+  - path: util/third_party/lwip/lwip/src/apps/altcp_tls/altcp_tls_mbedtls_mem.c
+  - path: util/third_party/lwip/lwip/src/apps/altcp_tls/altcp_tls_mbedtls_mem.h
+  - path: util/third_party/lwip/lwip/src/apps/altcp_tls/altcp_tls_mbedtls_structs.h
+include:  
+  - path: util/third_party/lwip/lwip/src/include
+    file_list:
+    - path: lwip/apps/altcp_tls_mbedtls_opts.h

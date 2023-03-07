@@ -1,0 +1,11 @@
+id: mic_driver
+package: platform
+label: Microphone
+description: >
+  Generic abstraction of microphone drivers
+category: Platform|Board Drivers
+quality: production
+provides:
+  - name: mic_driver
+requires:
+  - name: mic_driver_implementation

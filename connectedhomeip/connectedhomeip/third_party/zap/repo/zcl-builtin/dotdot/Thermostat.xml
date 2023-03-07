@@ -1,0 +1,379 @@
+﻿<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster xmlns:zcl="http://zigbee.org/zcl/clusters" 
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+             xmlns:type="http://zigbee.org/zcl/types" 
+             xmlns:xi="http://www.w3.org/2001/XInclude" 
+             xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd" 
+             id="0201" revision="2" name="Thermostat" >
+  <classification role="application" picsCode="TSTAT" primaryTransaction="2" />
+  
+  <!-- Note that this type has a dependency on the Mode field of 
+  type TstatScheduleMode for any command it is used in -->
+  <type:type short="TransitionType" name="TransitionType" id="ff">
+    <restriction>
+      <type:sequence>
+        <field name="TransitionTime" type="uint16" />
+        <field name="HeatSetPoint" type="int16" presentIf="Mode.Heat" />
+        <field name="CoolSetPoint" type="int16" presentIf="Mode.Cool" />
+      </type:sequence>
+    </restriction>
+  </type:type>
+  
+  <type:type short="TstatScheduleDOW" name="Day Of Week" id="18" inheritsFrom="map8">
+    <bitmap>
+      <element name="Sunday" mask="01" type="bool" />
+      <element name="Monday" mask="02" shiftRight="1" type="bool" />
+      <element name="Tuesday" mask="04" shiftRight="2" type="bool" />
+      <element name="Wednesday" mask="08" shiftRight="3" type="bool" />
+      <element name="Thursday" mask="10" shiftRight="4" type="bool" />
+      <element name="Friday" mask="20" shiftRight="5" type="bool" />
+      <element name="Saturday" mask="40" shiftRight="6" type="bool" />
+      <element name="AwayOrVacation" mask="80" shiftRight="7" type="bool" />
+    </bitmap>
+  </type:type>
+  
+  <type:type short="TstatScheduleMode" name="ScheduleMode" id="18" inheritsFrom="map8">
+    <bitmap>
+      <element name="Heat" mask="01" type="bool" />
+      <element name="Cool" mask="02" shiftRight="1" type="bool" />
+    </bitmap>
+  </type:type>
+  
+  <server>
+    <attributes>
+      <!-- Thermostat Information Attribute Set -->
+      <attribute id="0000" name="LocalTemperature" type="int16" min="-27315" max="32767" reportRequired="true" required="true" />
+      <attribute id="0001" name="OutdoorTemperature" type="int16" min="-27315" max="32767" />
+      <attribute id="0002" name="Occupancy" type="map8" default="0">
+      	<bitmap>
+      	  <element name="Occupied" type="bool" mask="01" />
+      	</bitmap>
+      </attribute>
+      <attribute id="0003" name="AbsMinHeatSetpointLimit" type="int16" min="-27315" max="32767" default="700" />
+      <attribute id="0004" name="AbsMaxHeatSetpointLimit" type="int16" min="-27315" max="32767" default="3000" />
+      <attribute id="0005" name="AbsMinCoolSetpointLimit" type="int16" min="-27315" max="32767" default="1600" />
+      <attribute id="0006" name="AbsMaxCoolSetpointLimit" type="int16" min="-27315" max="32767" default="3200" />
+      <attribute id="0007" name="PICoolingDemand" type="uint8" max="100" reportRequired="true" />
+      <attribute id="0008" name="PIHeatingDemand" type="uint8" max="100" reportRequired="true" />
+      <attribute id="0009" name="HVACSystemTypeConfiguration" type="map8" writable="true" default="0">
+        <bitmap>
+          <element name="CoolingSystemStage" type="enum8" mask="03">
+          	<restriction>
+              <type:enumeration value="00" name="CoolStage1" />
+              <type:enumeration value="01" name="CoolStage2" />
+              <type:enumeration value="02" name="CoolStage3" />
+          	</restriction>
+          </element>
+          <element name="HeatingSystemStage" type="enum8" mask="0c" shiftRight="2">
+          	<restriction>
+          	  <type:enumeration value="00" name="HeatStage1" />
+          	  <type:enumeration value="01" name="HeatStage2" />
+          	  <type:enumeration value="02" name="HeatStage3" />
+          	</restriction>
+          </element>
+          <element name="HeatingSystemType" type="enum8" mask="10" shiftRight="4">
+          	<restriction>
+          	  <type:enumeration value="00" name="Conventional" />
+          	  <type:enumeration value="01" name="HeatPump" />
+          	</restriction>
+          </element>
+          <element name="HeatingFuelSource" type="enum8" mask="20" shiftRight="5">
+          	<restriction>
+          	  <type:enumeration value="00" name="ElectricOrB" />
+          	  <type:enumeration value="01" name="GasOrO" />
+          	</restriction>
+          </element>
+        </bitmap>
+      </attribute>
+      <!-- Thermostat Settings Attribute Set -->
+      <attribute id="0010" name="LocalTemperatureCalibration" type="int8" writable="true" min="-25" max="25" default="0" />
+      <attribute id="0011" name="OccupiedCoolingSetpoint" type="int16" writable="true" requiredIf="implements(OccupiedHeatingSetpoint) = false" sceneRequired="true" default="2600">
+        <restriction>
+          <type:minInclusiveRef ref="MinCoolSetpointLimit" />
+          <type:maxInclusiveRef ref="MaxCoolSetpointLimit" />
+        </restriction>
+      </attribute>
+      <attribute id="0012" name="OccupiedHeatingSetpoint" type="int16" writable="true" requiredIf="implements(OccupiedCoolingSetpoint) = false" sceneRequired="true" default="2000">
+        <restriction>
+          <type:minInclusiveRef ref="MinHeatSetpointLimit" />
+          <type:maxInclusiveRef ref="MaxHeatSetpointLimit" />
+        </restriction>
+      </attribute>
+      <attribute id="0013" name="UnoccupiedCoolingSetpoint" type="int16" writable="true" default="2600">
+        <restriction>
+          <type:minInclusiveRef ref="MinCoolSetpointLimit" />
+          <type:maxInclusiveRef ref="MaxCoolSetpointLimit" />
+        </restriction>
+      </attribute>
+      <attribute id="0014" name="UnoccupiedHeatingSetpoint" type="int16" writable="true" default="2000">
+        <restriction>
+          <type:minInclusiveRef ref="MinHeatSetpointLimit" />
+          <type:maxInclusiveRef ref="MaxHeatSetpointLimit" />
+        </restriction>
+      </attribute>
+      <attribute id="0015" name="MinHeatSetpointLimit" type="int16" min="-27315" max="32767" writable="true" default="700" />
+      <attribute id="0016" name="MaxHeatSetpointLimit" type="int16" min="-27315" max="32767" writable="true" default="3000" />
+      <attribute id="0017" name="MinCoolSetpointLimit" type="int16" min="-27315" max="32767" writable="true" default="1600" />
+      <attribute id="0018" name="MaxCoolSetpointLimit" type="int16" min="-27315" max="32767" writable="true" default="3200" />
+      <attribute id="0019" name="MinSetpointDeadBand" type="int8" writable="true" min="10" max="25" default="25" />
+      <attribute id="001A" name="RemoteSensing" type="map8" writable="true" default="0">
+        <bitmap>
+          <element name="LocalTemperatureRemote" mask="01" type="bool" />
+          <element name="OutdoorTemperatureRemote" mask="02" shiftRight="1" type="bool" />
+          <element name="OccupancyRemote" mask="04" shiftRight="2" type="bool" />
+        </bitmap>
+      </attribute>
+      <attribute id="001B" name="ControlSequenceOfOperation" type="enum8" writable="true" required="true" default="4">
+        <restriction>
+          <type:enumeration value="00" name="CoolingOnly" />
+          <type:enumeration value="01" name="CoolingWithReheat" />
+          <type:enumeration value="02" name="HeatingOnly" />
+          <type:enumeration value="03" name="HeatingWithReheat" />
+          <type:enumeration value="04" name="CoolingAndHeating4Pipes" />
+          <type:enumeration value="05" name="CoolingAndHeating4PipesWithReheat" />
+        </restriction>
+      </attribute>
+      <attribute id="001C" name="SystemMode" type="enum8" writable="true" required="true" default="1">
+        <restriction>
+          <type:enumeration value="00" name="Off" />
+          <type:enumeration value="01" name="Auto" />
+          <type:enumeration value="03" name="Cool" />
+          <type:enumeration value="04" name="Heat" />
+          <type:enumeration value="05" name="EmergencyHeating" />
+          <type:enumeration value="06" name="Precooling" />
+          <type:enumeration value="07" name="FanOnly" />
+          <type:enumeration value="08" name="Dry" />
+          <type:enumeration value="09" name="Sleep" />
+        </restriction>
+      </attribute>
+      <attribute id="001D" name="AlarmMask" type="map8" default="0">
+      	<bitmap>
+      	  <element name="InitializationFailure" type="bool" mask="01" />
+      	  <element name="HardwareFailure" type="bool" mask="02" shiftRight="1" />
+      	  <element name="SelfCalibrationFailure" type="bool" mask="04" shiftRight="2" />
+      	</bitmap>
+      </attribute>
+      <attribute id="001E" name="ThermostatRunningMode" type="enum8" default="0">
+        <restriction>
+          <type:enumeration value="00" name="Off" />
+          <type:enumeration value="03" name="Cool" />
+          <type:enumeration value="04" name="Heat" />
+        </restriction>
+      </attribute>
+      
+      <!-- Thermostat Schedule and HVAC Relay Attribute Set -->
+      <!-- Schedule Attribute Set 0x0020-0x0028 -->
+      <attribute id="0020" name="StartOfWeek" type="enum8">
+      	<restriction>
+      	  <type:enumeration value="00" name="Sunday" />
+     	  <type:enumeration value="01" name="Monday" />
+     	  <type:enumeration value="02" name="Tuesday" />
+     	  <type:enumeration value="03" name="Wednesday" />
+     	  <type:enumeration value="04" name="Thursday" />
+     	  <type:enumeration value="05" name="Friday" />
+     	  <type:enumeration value="06" name="Sunday" />
+      	</restriction>
+      </attribute>
+      <attribute id="0021" name="NumberOfWeeklyTransitions" type="uint8" max="255" />
+      <attribute id="0022" name="NumberOfDailyTransitions" type="uint8" max="255" />
+      <attribute id="0023" name="TemperatureSetpointHold" type="enum8" writable="true" default="0">
+        <restriction>
+          <type:enumeration value="00" name="SetpointHoldOff" />
+          <type:enumeration value="01" name="SetpointHoldOn" />
+        </restriction>
+      </attribute>
+      <attribute id="0024" name="TemperatureSetpointHoldDuration" type="uint16" writable="true" min="0" max="1440" default="65535" />
+      <attribute id="0025" name="ThermostatProgrammingOperationMode" type="map8" writable="true" reportRequired="true" default="0">
+        <bitmap>
+          <element name="ProgrammingMode" type="enum8" mask="01">
+            <restriction>
+              <type:enumeration value="00" name="SimpleOrSetpoint" />
+              <type:enumeration value="01" name="Schedule" />
+            </restriction>
+          </element>
+          <element name="AutoOrRecovery" type="bool" mask="02" shiftRight="1" />
+          <element name="EconomyOrEnergyStar" type="bool" mask="04" shiftRight="2" />
+        </bitmap>
+      </attribute>
+      <!-- HVA Relay Attribute Set 0x0029-0x002F -->
+      <attribute id="0029" name="ThermostatRunningState" type="map16">
+        <bitmap>
+          <element name="HeatOn" type="bool" mask="01" />
+          <element name="CoolOn" type="bool" mask="02" shiftRight="1" />
+          <element name="FanOn" type="bool" mask="04" shiftRight="2" />
+          <element name="HeatSecondStageOn" type="bool" mask="08" shiftRight="3" />
+          <element name="CoolSecondStageOn" type="bool" mask="10" shiftRight="4" />
+          <element name="FanSecondStageOn" type="bool" mask="20" shiftRight="5" />
+          <element name="FanThirdStageOn" type="bool" mask="40" shiftRight="6" />
+        </bitmap>
+      </attribute>
+
+      <!-- Thermostat Setpoint Change Tracking Attribute Set -->
+      <attribute id="0030" name="SetpointChangeSource" type="enum8" default="0">
+        <restriction>
+          <type:enumeration value="00" name="Manual" />
+          <type:enumeration value="01" name="ScheduleOrInternalProgramming" />
+          <type:enumeration value="02" name="External" />
+        </restriction>
+      </attribute>
+      <attribute id="0031" name="SetpointChangeAmount" type="int16" default="32768" />
+      <attribute id="0032" name="SetpointChangeSourceTimestamp" type="UTC" default="0" />
+      <attribute id="0034" name="OccupiedSetback" type="uint8" writable="true" default="255">
+        <restriction>
+          <type:minInclusiveRef ref="OccupiedSetbackMin" />
+          <type:maxInclusiveRef ref="OccupiedSetbackMax" />
+        </restriction>
+      </attribute>
+      <attribute id="0035" name="OccupiedSetbackMin" type="uint8" default="255" requiredIf="implements(OccupiedSetback)">
+        <restriction>
+          <type:minInclusive value="0" />
+          <type:maxExclusiveRef ref="OccupiedSetbackMax" />
+        </restriction>
+      </attribute>
+      <attribute id="0036" name="OccupiedSetbackMax" type="uint8" default="255" requiredIf="implements(OccupiedSetback)">
+        <restriction>
+          <type:minExclusiveRef ref="OccupiedSetbackMin" />
+          <type:maxInclusive value="255" />
+        </restriction>
+      </attribute>
+      <attribute id="0037" name="UnoccupiedSetback" type="uint8" writable="true" default="255">
+        <restriction>
+          <type:minInclusiveRef ref="UnoccupiedSetbackMin" />
+          <type:maxInclusiveRef ref="UnoccupiedSetbackMax" />
+        </restriction>
+      </attribute>
+      <attribute id="0038" name="UnoccupiedSetbackMin" type="uint8" default="255" requiredIf="implements(UnoccupiedSetback)">
+        <restriction>
+          <type:minInclusive value="0" />
+          <type:maxExclusiveRef ref="UnoccupiedSetbackMax" />
+        </restriction>
+      </attribute>
+      <attribute id="0039" name="UnoccupiedSetbackMax" type="uint8" default="255" requiredIf="implements(UnoccupiedSetback)">
+        <restriction>
+          <type:minExclusiveRef ref="UnoccupiedSetbackMin" />
+          <type:maxInclusive value="255" />
+        </restriction>
+      </attribute>
+      <attribute id="003A" name="EmergencyHeatDelta" type="uint8" writable="true" max="255" default="255" />
+      
+      <!-- AC Information Attribute Set -->
+      <attribute id="0040" name="ACType" type="enum8" writable="true" default="0">
+        <restriction>
+          <type:enumeration value="01" name="CoolingAndFixedSpeed" />
+          <type:enumeration value="02" name="HeatPumpAndFixedSpeed" />
+          <type:enumeration value="03" name="CoolingAndInverter" />
+          <type:enumeration value="04" name="HeatPumpAndInverter" />
+        </restriction>
+      </attribute>
+      <attribute id="0041" name="ACCapacity" type="uint16" writable="true" default="0" />
+      <attribute id="0042" name="ACRefrigerantType" type="enum8" writable="true" default="0">
+        <restriction>
+          <type:enumeration value="01" name="R22" />
+          <type:enumeration value="02" name="R410a" />
+          <type:enumeration value="03" name="R407c" />
+        </restriction>
+      </attribute>
+      <attribute id="0043" name="ACCompressorType" type="enum8" writable="true" default="0">
+        <restriction>
+          <type:enumeration value="01" name="T1" />
+          <type:enumeration value="02" name="T2" />
+          <type:enumeration value="03" name="T3" />
+        </restriction>
+      </attribute>
+      <attribute id="0044" name="ACErrorCode" type="map32" writable="true" default="0">
+        <bitmap>
+          <element name="CompressorFailureOrRefrigerantLeakage" type="bool" mask="01" />
+          <element name="RoomTemperatureSensorFailure" type="bool" mask="02" shiftRight="1" />
+          <element name="OutdoorTemperatureSensorFailure" type="bool" mask="04" shiftRight="2" />
+          <element name="IndoorCoilTemperatureSensorFailure" type="bool" mask="08" shiftRight="3" />
+          <element name="FanFailure" type="bool" mask="10" shiftRight="4" />
+        </bitmap>
+      </attribute>
+      <attribute id="0045" name="ACLouverPosition" type="enum8" writable="true" default="0">
+        <restriction>
+          <type:enumeration value="01" name="FullyClosed" />
+          <type:enumeration value="02" name="FullyOpen" />
+          <type:enumeration value="03" name="QuarterOpen" />
+          <type:enumeration value="04" name="HalfOpen" />
+          <type:enumeration value="05" name="ThreeQuartersOpen" />
+        </restriction>
+      </attribute>
+      <attribute id="0046" name="ACCoilTemperature" type="int16" min="-27315" max="32767" />
+      <attribute id="0047" name="ACCapacityFormat" type="enum8" writable="true" default="0">
+        <restriction>
+          <type:enumeration value="00" name="BTUh" />
+        </restriction>
+      </attribute>
+    </attributes>
+    <commands>
+      <command id="00" name="SetpointRaiseOrLower" required="true">
+        <fields>
+          <field name="Mode" type="enum8">
+            <restriction>
+              <type:enumeration value="00" name="Heat" />
+              <type:enumeration value="01" name="Cool" />
+              <type:enumeration value="02" name="Both" />
+            </restriction>
+          </field>
+          <field name="Amount" type="int8" />
+        </fields>
+      </command>
+      <command id="01" name="SetWeeklySchedule">
+        <fields>
+          <field name="NumberOfTransitions" type="enum8">
+            <restriction>
+              <type:minInclusive value="0" />
+              <type:maxInclusive value="10" />
+            </restriction>
+          </field>
+          <field name="DayOfWeek" type="TstatScheduleDOW" />
+          <field name="Mode" type="TstatScheduleMode" />
+          <field name="Transitions" type="TransitionType" array="true" arrayLengthField="NumberOfTransitions" />
+        </fields>
+      </command>
+      <command id="02" name="GetWeeklySchedule">
+        <fields>
+          <field name="DaysToReturn" type="TstatScheduleDOW" />
+          <field name="ModeToReturn" type="TstatScheduleMode" />
+        </fields>
+      </command>
+      <command id="03" name="ClearWeeklySchedule" />
+      <command id="04" name="GetRelayStatusLog" />
+    </commands>
+  </server>
+  
+  <client>
+    <commands>
+      <command id="00" name="GetWeeklyScheduleResponse">
+        <fields>
+          <field name="NumberOfTransitions" type="enum8">
+            <restriction>
+              <type:minInclusive value="0" />
+              <type:maxInclusive value="10" />
+            </restriction>
+          </field>
+          <field name="DayOfWeek" type="TstatScheduleDOW" />
+          <field name="Mode" type="TstatScheduleMode" />
+          <field name="Transitions" type="TransitionType" array="true" arrayLengthField="NumberOfTransitions" />
+        </fields>
+      </command>
+      <command id="01" name="GetRelayStatusLogResponse">
+        <fields>
+          <field name="TimeOfDay" type="uint16" />
+          <field name="RelayStatus" type="map8" />
+          <field name="LocalTemperature" type="int16" />
+          <field name="HumidityPercentage" type="uint8" />
+          <field name="SetPoint" type="int16" />
+          <field name="UnreadEntries" type="uint16" />
+        </fields>
+      </command>
+    </commands>
+  </client>
+</zcl:cluster>

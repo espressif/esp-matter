@@ -1,0 +1,352 @@
+project_name: rail_soc_light_std
+label: "RAIL - SoC Light Standards"
+package: Flex
+description: "The purpose of the application is to demonstrate  a simple wireless communication between two or more boards.
+In combination with the Switch sample application it creates a basic light functionality, where the light can be toggled in the Light node. After power up, the node is in ADVERTISE state. 
+It means broadcast messages are sent periodically. After pushing PB1 button, the node is connected, and ready for toggling the light. This is called the READY state. 
+If the Switch module has done the same procedure, light can be toggled from all the boards with pushing BP0 button"
+category: RAIL Examples
+quality: production
+
+#---------------- UC/UP components -------------------
+component:
+  - id: sl_system
+  - id: device_init
+  - id: sl_simple_rail_stub
+  - id: sl_flex_rail_802154_support
+  - id: app_log
+  - id: app_assert
+  - id: simple_button
+    instance:
+      - btn0
+      - btn1
+  - id: simple_led
+    instance:
+      - led0
+      - led1
+#-------------- Light-Switch Support -----------------
+  - id: demo_ui
+  - id: sl_light_switch_support
+#------------Memory Protection Unit-------------------
+  - id: mpu
+#---------------------- CLI --------------------------
+  - id: cli
+    instance:
+    - example
+  - id: printf
+  - id: iostream_recommended_stream
+  - id: iostream_retarget_stdio
+#-------------- Restriction rules -------------------
+#----------------- Require list ----------------------
+requires:
+  - name: sl_flex_rail_protocol
+  - name: sl_simple_rail_os
+    condition:
+      - "kernel"
+# Added for Safety for the EFF, but the sample app doesn't support it yet.
+  - name: rail_util_eff
+    condition: [hardware_board_has_eff]
+#---------------- RF band defines --------------------
+define:
+  # supported bands
+  - name: RF_BAND_2P4
+    value: "1"
+    condition:
+      - "hardware_board_supports_rf_band_2400"
+  - name: RF_BAND_868
+    value: "1"
+    condition:
+      - "hardware_board_supports_rf_band_868"
+  - name: RF_BAND_915
+    value: "1"
+    condition:
+      - "hardware_board_supports_rf_band_915"
+  # these bands (914,920) are supported, but the 915 band can be set as radion config for 802154
+  - name: RF_BAND_914
+    value: "1"
+    condition:
+      - "hardware_board_supports_rf_band_914"
+  - name: RF_BAND_924
+    value: "1"
+    condition:
+      - "hardware_board_supports_rf_band_924"
+#----------------- Project files ---------------------
+include:
+  - path: .
+    file_list:
+    - path: app_init.h
+    - path: app_process.h
+
+source:
+  - path: ../common/main/main.c
+  - path: app_init.c
+  - path: app_process.c
+  - path: app_cli.c
+    condition:
+      - cli
+
+other_file:
+  - path: "hw_filter_tags.yaml"
+    condition:
+      - "add_hw_filter_to_project"
+
+#------------ Configuration overrides ----------------
+configuration:
+  - name: SL_STACK_SIZE
+    value: "2048"
+  - name: SL_HEAP_SIZE
+    value: "2048"
+#----------------- OS --------------------------------
+  - name: OS_CFG_TMR_EN
+    value: "1"
+  - name: SL_STACK_SIZE
+    value: "4096"
+  - name: SL_HEAP_SIZE
+    value: "8000"
+  - name: OS_CFG_PRIO_MAX
+    value: "64"
+#------------- FreeRTOS OS        --------------------
+  - name: configMINIMAL_STACK_SIZE
+    value: "1024"
+#------------- Micrium OS / SystemView --------------------
+  - name: CPU_CFG_TS_32_EN
+    value: "1"
+  - name: OS_CFG_DBG_EN
+    value: "1"
+  - name: OS_CFG_TS_EN
+    value: "1"
+  - name: OS_CFG_SCHED_ROUND_ROBIN_EN
+    value: "1"
+  - name: OS_CFG_STAT_TASK_EN
+    value: "1"
+  - name: OS_CFG_TASK_PROFILE_EN
+    value: "1"
+#-------------------- RAIL init ----------------------
+  - name: SL_RAIL_UTIL_BLE_SUPPORT_ENABLE
+    value: "0"
+  - name: SL_RAIL_UTIL_INIT_PROTOCOLS_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_CALIBRATIONS_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_TRANSITIONS_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENTS_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_SCHEDULER_SUPPORT_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_INIT_COMPLETE_CALLBACK_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_DATA_FORMATS_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_TRANSITION_INST0_TX_SUCCESS
+    value: "RAIL_RF_STATE_RX"
+  - name: SL_RAIL_UTIL_INIT_TRANSITION_INST0_TX_ERROR
+    value: "RAIL_RF_STATE_RX"
+  - name: SL_RAIL_UTIL_INIT_TRANSITION_INST0_RX_SUCCESS
+    value: "RAIL_RF_STATE_RX"
+  - name: SL_RAIL_UTIL_INIT_TRANSITION_INST0_RX_ERROR
+    value: "RAIL_RF_STATE_RX"
+
+    # default IEEE 802.15.4 (2.4GHz) protocol settings
+    # if the 2P4GHz rf band is available next to other sub-GHz rf bands, it is the default rf band
+    # if the 2P4GHz is not available on the board, the default sub-GHz rf band is the default rf band
+  - name: SL_RAIL_UTIL_INIT_PROTOCOL_INST0_DEFAULT
+    value: SL_RAIL_UTIL_PROTOCOL_IEEE802154_2P4GHZ
+    condition:
+        - "hardware_board_supports_rf_band_2400"
+  - name: SL_RAIL_UTIL_INIT_PROTOCOL_INST0_DEFAULT
+    value: SL_RAIL_UTIL_PROTOCOL_IEEE802154_GB868_863MHZ
+    condition:
+        - "hardware_board_default_rf_band_868"
+    unless:
+        - "hardware_board_supports_rf_band_2400"
+  - name: SL_RAIL_UTIL_INIT_PROTOCOL_INST0_DEFAULT
+    value: SL_RAIL_UTIL_PROTOCOL_IEEE802154_GB868_915MHZ
+    condition:
+        - "hardware_board_default_rf_band_915"
+    unless:
+        - "hardware_board_supports_rf_band_2400"
+    # default rf band in case of the custom board 
+    # 2P4GHz is always the default rf band, the user shall pay attention on it
+  - name: SL_RAIL_UTIL_INIT_PROTOCOL_INST0_DEFAULT
+    value: SL_RAIL_UTIL_PROTOCOL_IEEE802154_2P4GHZ
+    unless:
+        - "hardware_board_default_rf_band"
+
+
+#------------- RAIL init, Radio Events ---------------
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_PACKET_RECEIVED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TX_PACKET_SENT_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_CAL_NEEDED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TXACK_PACKET_SENT_INST0_ENABLE
+    value: "1"
+    # RX error events
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_PACKET_ABORTED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_FRAME_ERROR_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_FIFO_OVERFLOW_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_ADDRESS_FILTERED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_SCHEDULED_RX_MISSED_INST0_ENABLE
+    value: "1"
+    # TX error events
+  - name: SL_RAIL_UTIL_INIT_EVENT_TX_ABORTED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TX_BLOCKED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TX_UNDERFLOW_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TX_CHANNEL_BUSY_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TX_SCHEDULED_TX_MISSED_INST0_ENABLE
+    value: "1"
+    # TX ACK error events
+  - name: SL_RAIL_UTIL_INIT_EVENT_TXACK_ABORTED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TXACK_BLOCKED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TXACK_UNDERFLOW_INST0_ENABLE
+    value: "1"
+#-------- RAIL protocol IEEE 802154 settings (2.4GHz) ---------
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_2P4GHZ_PAN_COORDINATOR_ENABLE
+    value: "0"
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_2P4GHZ_PROMISCUOUS_MODE_ENABLE
+    value: "0"
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_2P4GHZ_DEFAULT_FRAME_PENDING_STATE
+    value: "0"
+    # Frame types
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_2P4GHZ_ACCEPT_BEACON_FRAME_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_2P4GHZ_ACCEPT_DATA_FRAME_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_2P4GHZ_ACCEPT_ACK_FRAME_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_2P4GHZ_ACCEPT_COMMAND_FRAME_ENABLE
+    value: "1"
+    # Transition Times
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_2P4GHZ_TIMING_IDLE_TO_RX_US
+    value: "100"
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_2P4GHZ_TIMING_TX_TO_RX_US
+    value: "182"
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_2P4GHZ_TIMING_IDLE_TO_TX_US
+    value: "100"
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_2P4GHZ_TIMING_RX_TO_TX_US
+    value: "192"
+    # RX search timeouts
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_2P4GHZ_TIMING_RX_SEARCH_TIMEOUT_AFTER_IDLE_ENABLE
+    value: "0"
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_2P4GHZ_TIMING_RX_SEARCH_TIMEOUT_AFTER_TX_ENABLE
+    value: "0"
+    # ACK settings
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_2P4GHZ_AUTO_ACK_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_2P4GHZ_AUTO_ACK_TIMEOUT_US
+    value: "1000"
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_2P4GHZ_AUTO_ACK_RX_TRANSITION_STATE
+    value: "RAIL_RF_STATE_RX"
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_2P4GHZ_AUTO_ACK_TX_TRANSITION_STATE
+    value: "RAIL_RF_STATE_RX"
+#-------- RAIL protocol IEEE 802154 settings (863/915MHz) ---------
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_GB868_PAN_COORDINATOR_ENABLE
+    value: "0"
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_GB868_PROMISCUOUS_MODE_ENABLE
+    value: "0"
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_GB868_DEFAULT_FRAME_PENDING_STATE
+    value: "0"
+    # Frame types
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_GB868_ACCEPT_BEACON_FRAME_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_GB868_ACCEPT_DATA_FRAME_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_GB868_ACCEPT_ACK_FRAME_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_GB868_ACCEPT_COMMAND_FRAME_ENABLE
+    value: "1"
+    # Transition Times
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_GB868_TIMING_IDLE_TO_RX_US
+    value: "100"
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_GB868_TIMING_TX_TO_RX_US
+    value: "182"
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_GB868_TIMING_IDLE_TO_TX_US
+    value: "100"
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_GB868_TIMING_RX_TO_TX_US
+    value: "192"
+    # RX search timeouts
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_GB868_TIMING_RX_SEARCH_TIMEOUT_AFTER_IDLE_ENABLE
+    value: "0"
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_GB868_TIMING_RX_SEARCH_TIMEOUT_AFTER_TX_ENABLE
+    value: "0"
+    # ACK settings
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_GB868_AUTO_ACK_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_GB868_AUTO_ACK_TIMEOUT_US
+    value: "1200"
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_GB868_AUTO_ACK_RX_TRANSITION_STATE
+    value: "RAIL_RF_STATE_RX"
+  - name: SL_RAIL_UTIL_PROTOCOL_IEEE802154_GB868_AUTO_ACK_TX_TRANSITION_STATE
+    value: "RAIL_RF_STATE_RX"
+#------------- RAIL init, PA for EFF ---------------
+  - name: SL_RAIL_UTIL_PA_SELECTION_SUBGHZ
+    value: "RAIL_TX_POWER_MODE_SUBGIG_EFF_25DBM"
+    condition: [hardware_board_has_eff]
+  - name: SL_RAIL_UTIL_PA_CALIBRATION_ENABLE
+    value: "1"
+    condition: [hardware_board_has_eff] 
+#------------- Other project settings ----------------
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+  - name: SL_BOARD_ENABLE_DISPLAY
+    value: "true"
+  - name: SL_CLI_LOCAL_ECHO
+    value: "(1)"
+  - name: SL_IOSTREAM_USART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "(1)"
+  - name: SL_IOSTREAM_USART_VCOM_FLOW_CONTROL_TYPE
+    value: "usartHwFlowControlNone"
+  - name: SL_IOSTREAM_EUSART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "(1)"
+  - name: SL_IOSTREAM_EUSART_VCOM_FLOW_CONTROL_TYPE
+    value: "eusartHwFlowControlNone"
+  - name: APP_LOG_PREFIX_ENABLE
+    value: "0"
+
+#-------------- Template Contribution ----------------
+template_contribution:
+#------------------ CLI commands ---------------------
+  - name: cli_command
+    value:
+      name: info
+      handler: cli_info
+      help: Unique ID of the MCU
+  - name: cli_command
+    value:
+      name: toggle_light
+      handler: cli_toggle_light
+      help: Toggle the light on the panel, and send info to the Switch
+  - name: cli_command
+    value:
+      name: change_status
+      handler: cli_change_status
+      help: Toggle between ADVERT and READY modes 
+#--------------------- Toolchain ------------------------
+toolchain_settings:
+  - option: optimize
+    value: debug
+
+ui_hints:
+  highlight:
+    - path: "config/rail/radio_settings.radioconf"
+      focus: true
+
+filter:
+  - name: "Wireless Technology"
+    value: ["RAIL"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]

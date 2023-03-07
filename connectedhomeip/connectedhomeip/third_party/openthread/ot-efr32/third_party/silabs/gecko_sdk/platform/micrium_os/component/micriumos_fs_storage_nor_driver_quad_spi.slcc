@@ -1,0 +1,17 @@
+id: micriumos_fs_storage_nor_driver_quad_spi
+package: micrium-fsxx
+description: Micrium OS File System NOR Quad-SPI Driver for Silicon Labs
+category: Services|Micrium|File System
+quality: production
+component_root_path: platform/micrium_os/drivers/fs
+source:
+  - path: source/fs_nor_quad_spi_drv_silabs_efm32gg11.c
+include:
+  - path: include
+    file_list:
+      - path: fs_nor_quad_spi_drv.h
+provides:
+  - name: fs_storage_nor_driver_quad_spi
+requires:
+  - name: fs_storage_nor
+  - name: emlib_qspi

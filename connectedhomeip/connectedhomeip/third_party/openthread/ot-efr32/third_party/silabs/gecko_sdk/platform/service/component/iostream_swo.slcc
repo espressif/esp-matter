@@ -1,0 +1,39 @@
+id: iostream_swo
+package: platform
+label: "IO Stream: SWO"
+description: IO Stream over Single Wire Output (SWO) communication protocol.
+category: Services|IO Stream
+quality: production
+root_path: platform/service/iostream
+config_file:
+  - path: "config/sl_iostream_swo_config.h"
+provides:
+  - name: iostream_swo
+  - name: iostream_transport_core
+    allow_multiple: true
+  - name: iostream_transport
+    allow_multiple: true
+requires:
+  - name: iostream
+  - name: debug_swo
+include:
+  - path: inc
+    file_list:
+      - path: sl_iostream_swo.h
+source:
+  - path: src/sl_iostream_swo.c
+template_contribution:
+  - name: event_handler
+    value:
+      event: iostream_instance_init
+      include: sl_iostream_swo.h
+      handler: sl_iostream_swo_init
+  - name: iostream_instance_info
+    value:
+      include: sl_iostream_swo.h
+      handler: sl_iostream_instance_swo_info
+  - name: component_catalog
+    value: iostream_swo
+documentation:
+    docset: gecko-platform
+    document: service/api/group-iostream-swo

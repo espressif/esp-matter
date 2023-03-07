@@ -1,0 +1,8 @@
+[
+    {
+        "files": [
+            "+../release.cfg -> release.cfg",
+            "+../README.html -> README.html"
+        ]
+    }
+]

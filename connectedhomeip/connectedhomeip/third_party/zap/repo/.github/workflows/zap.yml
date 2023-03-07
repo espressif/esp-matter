@@ -1,0 +1,49 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Generation and back-end tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+env:
+  ZAP_TEST_TIMEOUT: 3600000
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+        os: [ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - run: sudo apt-get update
+      - run: sudo apt-get install --fix-missing libpixman-1-dev libcairo-dev libsdl-pango-dev libjpeg-dev libgif-dev xvfb libxml2-utils
+      - run: node --version
+      - run: npm --version
+      - run: npm ci
+      - run: npm run version-stamp
+      - run: npm rebuild canvas --update-binary
+      - run: npm rebuild libxmljs --update-binary
+      - run: npm run lic
+      - run: npm run build-spa
+      - run: npm run lint
+      - run: npm run xml-validate
+      - run: npm run test:unit
+      - run: xvfb-run -a npm run self-check
+      - run: npm run gen
+      - run: npm run genmatter
+      - run: npm run gendotdot
+      - run: npm run genmeta
+      - run: npm run metasdk

@@ -1,0 +1,162 @@
+menu "TFT Display"
+
+config TFT_PREDEFINED_DISPLAY_TYPE
+    int
+    default 0 if TFT_PREDEFINED_DISPLAY_TYPE0
+    default 1 if TFT_PREDEFINED_DISPLAY_TYPE1
+    default 2 if TFT_PREDEFINED_DISPLAY_TYPE2
+    default 3 if TFT_PREDEFINED_DISPLAY_TYPE3
+    default 4 if TFT_PREDEFINED_DISPLAY_TYPE4
+    default 5 if TFT_PREDEFINED_DISPLAY_TYPE5
+    default 6 if TFT_PREDEFINED_DISPLAY_TYPE6
+
+
+    choice
+        prompt "Select predefined display configuration"
+        default TFT_PREDEFINED_DISPLAY_TYPE0
+        help
+            Select predefined display configuration
+
+        config TFT_PREDEFINED_DISPLAY_TYPE0
+            bool "None"
+        config TFT_PREDEFINED_DISPLAY_TYPE1
+            bool "ESP-WROVER-KIT v3 Display (ST7789V)"
+        config TFT_PREDEFINED_DISPLAY_TYPE4
+            bool "ESP-WROVER-KIT v4.1 Display (ILI9341)"
+        config TFT_PREDEFINED_DISPLAY_TYPE2
+            bool "Adafruit TFT Feather Display"
+        config TFT_PREDEFINED_DISPLAY_TYPE3
+            bool "M5Stack TFT Display"
+    	config TFT_PREDEFINED_DISPLAY_TYPE5
+            bool "TTGO T-DISPLAY (ST7789V)"
+        config TFT_PREDEFINED_DISPLAY_TYPE6
+            bool "TTGO T-WRISTBAND (ST7735)"
+
+    endchoice
+
+if TFT_PREDEFINED_DISPLAY_TYPE0
+
+config TFT_DISPLAY_CONTROLLER_MODEL
+    int
+    default 0 if TFT_DISPLAY_CONTROLLER_ILI9341
+    default 1 if TFT_DISPLAY_CONTROLLER_ILI9488
+    default 2 if TFT_DISPLAY_CONTROLLER_ST7789V
+    default 3 if TFT_DISPLAY_CONTROLLER_ST7735
+    default 4 if TFT_DISPLAY_CONTROLLER_ST7735R
+    default 5 if TFT_DISPLAY_CONTROLLER_ST7735B
+
+    choice
+        prompt "Select a display controller model."
+        default TFT_DISPLAY_CONTROLLER_ILI9341
+        help
+          Select the controller for your display. If an TFT_PREDEFINED_DISPLAY_TYPE is set, this will be overridden.
+
+        config TFT_DISPLAY_CONTROLLER_ILI9341
+            bool "ILI9341"
+        config TFT_DISPLAY_CONTROLLER_ILI9488
+            bool "ILI9488"
+        config TFT_DISPLAY_CONTROLLER_ST7789V
+            bool "ST7789V"
+        config TFT_DISPLAY_CONTROLLER_ST7735
+            bool "ST7735"
+        config TFT_DISPLAY_CONTROLLER_ST7735R
+            bool "ST7735R"
+        config TFT_DISPLAY_CONTROLLER_ST7735B
+            bool "ST7735B"
+    endchoice
+
+config TFT_DISPLAY_WIDTH
+    int "TFT display width in pixels."
+    default 240
+    help
+    The smaller dimension (in portrait).
+
+config TFT_DISPLAY_HEIGHT
+    int "TFT display height in pixels."
+    default 320
+    help
+    The smaller dimension (in portrait).
+
+config TFT_RGB_BGR
+    bool "RGB (Red Green Blue)"
+    default n
+    help
+    Is the display RGB rather than GBR?
+
+config TFT_TOUCH_CONTROLLER
+    int
+    default 0 if TFT_TOUCH_CONTROLLER0
+    default 1 if TFT_TOUCH_CONTROLLER1
+    default 2 if TFT_TOUCH_CONTROLLER2
+
+    choice
+        prompt "Select touch controller."
+        default TFT_TOUCH_CONTROLLER0
+        help
+            Select predefined display configuration
+
+        config TFT_TOUCH_CONTROLLER0
+            bool "None"
+        config TFT_TOUCH_CONTROLLER1
+            bool "XPT2046"
+        config TFT_TOUCH_CONTROLLER2
+            bool "STMPE610"
+    endchoice
+
+config TFT_INVERT_ROTATION1
+    bool "Invert rotation1."
+    default n
+    help
+    If text is backwards on your display, try enabling this.
+
+config TFT_PIN_NUM_MOSI
+    int "GPIO for MOSI (Master Out Slave In)"
+    default 23
+    help
+    If not using a predefined display type, configure the MOSI pin here.
+
+config TFT_PIN_NUM_MISO
+    int "GPIO for MISO (Master In Slave Out)"
+    default 19
+    help
+    If not using a predefined display type, configure the MISO pin here.
+
+config TFT_PIN_NUM_CLK
+    int "GPIO for CLK (SCK / Serial Clock)"
+    default 18
+    help
+    If not using a predefined display type, configure the SCK pin here.
+
+config TFT_PIN_NUM_CS
+    int "GPIO for CS (Slave Select)"
+    default 5
+    help
+    If not using a predefined display type, configure the CS pin here.
+
+config TFT_PIN_NUM_DC
+    int "GPIO for DC (Data \ Command)"
+    default 26
+    help
+    If not using a predefined display type, configure the DC pin here.
+
+config TFT_PIN_NUM_TCS
+    int "GPIO for TCS (Touchscreen)"
+    default 25
+    help
+    Optional. If not using a predefined display type, configure the TCS (touch screen) pin here.
+
+config TFT_PIN_NUM_RST
+    int "GPIO for Reset"
+    default 0
+    help
+    Optional. If not using a predefined display type, configure the reset pin here.
+
+config TFT_PIN_NUM_BCKL
+    int "GPIO for Back-light control"
+    default 0
+    help
+    Optional. If not using a predefined display type, configure the blacklight pin here.
+
+endif
+
+endmenu

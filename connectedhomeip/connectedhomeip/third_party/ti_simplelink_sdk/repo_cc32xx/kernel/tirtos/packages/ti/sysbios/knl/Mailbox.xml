@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="Mailbox" title="Mailbox Synchronization Manager" version="1">
+
+<page name="Module" title="Module Settings">
+<html><body><table>
+  <tr>
+      <td><form>
+        <p>The Mailbox module provides a fixed length fifo message queue for Task communication and synchronization.  Instances of this module are used by Tasks to communicate, in a flow-controlled manner, with other threads in the system.</p>
+        <p> </p>
+      </form></td>
+  </tr>
+  <tr>
+    <td><control type="checkbox" label="Add the Mailbox module to my configuration" value="value:this.$used" bold="true"/></td>
+  </tr>
+</table></body></html>
+</page>
+
+<page name="Instance" title="Instance Settings" DPI="10">
+<html><body><table>
+  <tr>
+    <td>
+      <h1>Mailboxes</h1>
+      <table><tr>
+        <td><control type="listbox" sort="true" id="master" text="value:this.$activeInstance" width="10" height="15" align="fill" labels="value:this"/></td>
+        <td>
+          <control type="pushbutton" label="Add ..." align="fill" link="action:New"/>
+          <control type="pushbutton" label="Remove" align="fill" link="action:Delete" context="value:widget.master.selection"/>
+        </td>
+      </tr></table>
+    </td>
+    <td context="value:widget.master.selection">
+      <h1>Required Settings</h1>
+      <table>      
+        <tr>
+          <td><control type="label" label="Handle" align="left"/></td>
+          <td><control type="editbox" 
+               value="value:this.instance.name"
+               tooltip="Handle name"/></td>
+        </tr>      
+        <tr>
+          <td><control type="label" label="Size of messages (chars)" align="left"/></td>
+          <td><control type="editbox" 
+               value="value:this.create.msgSize"
+               tooltip="value:this.create.msgSize.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Max number of messages" align="left"/></td>
+          <td><control type="editbox" 
+               value="value:this.create.numMsgs"
+               tooltip="value:this.create.numMsgs.$summary"/></td>
+        </tr>
+      </table>
+      <h1>Event Synchronization</h1>
+      <form><p>The events below can be used to synchronize with threads that need to wait for messages to arrive in the mailbox (reader event) or for space to become available in the mailbox for a new message to be posted (writer event).
+        These options are only available when <a href="ref:ti.sysbios.knl.Event">Event</a> support is enabled by the <a href="ref:ti.sysbios.knl.Semaphore">Semaphore module.</a></p></form>
+       <table>
+        <tr>
+          <td><control type="label" label="Reader event" align="left"/></td>
+          <td><control type="droplist" 
+               enabled="value:ti.sysbios.knl.Semaphore.supportsEvents"
+               labels="value:ti.sysbios.knl.Event.eventInstances"
+               text="value:this.readerEvent"
+               tooltip="value:this.readerEvent.$summary"/></td>
+
+          <td><control type="label" label="  Event id" align="left"/></td>
+          <td><control type="droplist" 
+               enabled="value:ti.sysbios.knl.Semaphore.supportsEvents"
+               labels="Event_Id_00;Event_Id_01;Event_Id_02;Event_Id_03;Event_Id_04;Event_Id_05;Event_Id_06;Event_Id_07;Event_Id_08;Event_Id_09;Event_Id_10;Event_Id_11;Event_Id_12;Event_Id_13;Event_Id_14;Event_Id_15;Event_Id_16;Event_Id_17;Event_Id_18;Event_Id_19;Event_Id_20;Event_Id_21;Event_Id_22;Event_Id_23;Event_Id_24;Event_Id_25;Event_Id_26;Event_Id_27;Event_Id_28;Event_Id_29;Event_Id_30;Event_Id_31"
+               values="1;2;4;8;16;32;64;128;256;512;1024;2048;4096;8192;16384;32768;65536;
+                       131072;262144;524288;1048576;2097152;4194304;8388608;16777216;33554432;
+                       67108864;134217728;268435456;536870912;1073741824;2147483648;4294967296"
+               text="value:this.readerEventId"
+               tooltip="value:this.readerEventId.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Writer event" align="left"/></td>
+          <td><control type="droplist" 
+               enabled="value:ti.sysbios.knl.Semaphore.supportsEvents"
+               labels="value:ti.sysbios.knl.Event.eventInstances"
+               text="value:this.writerEvent"
+               tooltip="value:this.writerEvent.$summary"/></td>
+
+          <td><control type="label" label="  Event id" align="left"/></td>
+          <td><control type="droplist" 
+               enabled="value:ti.sysbios.knl.Semaphore.supportsEvents"
+               labels="Event_Id_00;Event_Id_01;Event_Id_02;Event_Id_03;Event_Id_04;Event_Id_05;Event_Id_06;Event_Id_07;Event_Id_08;Event_Id_09;Event_Id_10;Event_Id_11;Event_Id_12;Event_Id_13;Event_Id_14;Event_Id_15;Event_Id_16;Event_Id_17;Event_Id_18;Event_Id_19;Event_Id_20;Event_Id_21;Event_Id_22;Event_Id_23;Event_Id_24;Event_Id_25;Event_Id_26;Event_Id_27;Event_Id_28;Event_Id_29;Event_Id_30;Event_Id_31"
+               values="1;2;4;8;16;32;64;128;256;512;1024;2048;4096;8192;16384;32768;65536;
+                       131072;262144;524288;1048576;2097152;4194304;8388608;16777216;33554432;
+                       67108864;134217728;268435456;536870912;1073741824;2147483648;4294967296"
+               text="value:this.writerEventId"
+               tooltip="value:this.writerEventId.$summary"/></td>
+        </tr>
+      </table>
+      <h1>Message Memory Management</h1>
+      <table>
+        <tr>
+          <td><control type="label" label="Heap" align="left"/></td>
+          <td><control type="editbox"
+               value="value:this.heap"
+               tooltip="value:this.heap.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Buffer section" align="left"/></td>
+          <td><control type="editbox"
+               value="value:this.sectionName"
+               tooltip="value:this.sectionName.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Buffer pointer" align="left"/></td>
+          <td><control type="editbox"
+               display="hex"
+               value="value:this.buf"
+               tooltip="value:this.buf.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Buffer size (chars)" align="left"/></td>
+          <td><control type="editbox"
+               value="value:this.bufSize"
+               tooltip="value:this.bufSize.$summary"/></td>
+        </tr>
+      </table>
+    </td></tr>
+</table></body></html>
+</page>
+<properties name="Advanced" title="All Options" enabled="true" visible="true" link="this"/>
+</gep>
+

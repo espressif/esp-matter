@@ -1,0 +1,32 @@
+package: Zigbee
+description: A component to demonstrate handling scheduling, storage, and publishing
+  snapshots of the meter state in a Smart Energy network. The memory requirements for
+  this component can be very large, and it is therefore recommended only for use in host
+  applications or with few summation and block tiers supported.
+label: Meter Snapshot Storage
+quality: production
+id: zigbee_meter_snapshot_storage
+category: Zigbee|Cluster Library|Smart Energy
+provides:
+   - name: "zigbee_meter_snapshot_storage"
+requires:
+   - name: "zigbee_meter_snapshot_server"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/meter-snapshot-storage/config/meter-snapshot-storage-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/meter-snapshot-storage/meter-snapshot-storage.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/meter-snapshot-storage
+    file_list:
+      - path: meter-snapshot-storage.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_meter_snapshot_storage
+  - name: zigbee_af_callback
+    value:
+      callback_type: local_data_init
+      function_name: emberAfPluginMeterSnapshotStorageInitCallback
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/meter-snapshot-storage

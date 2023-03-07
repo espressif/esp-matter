@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2015 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+name="Object Action Control Point" type="org.bluetooth.characteristic.object_action_control_point" uuid="2AC5" last-modified="2015-11-23" approved="Yes">
+   <InformativeText>The Object Action Control Point (OACP) characteristic is defined in the Object Transfer Service Section 3.3 and its sub-sections.</InformativeText>
+</Characteristic>
+

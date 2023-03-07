@@ -1,0 +1,66 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_protobuf_compiler/proto.gni")
+import("$dir_pw_unit_test/test.gni")
+
+config("public_includes") {
+  include_dirs = [ "public" ]
+}
+
+pw_proto_library("proto") {
+  sources = [ "file.proto" ]
+  prefix = "pw_file"
+  deps = [ "$dir_pw_protobuf:common_protos" ]
+}
+
+pw_source_set("flat_file_system") {
+  public_deps = [
+    ":proto.pwpb",
+    ":proto.raw_rpc",
+    dir_pw_assert,
+    dir_pw_bytes,
+    dir_pw_log,
+    dir_pw_result,
+    dir_pw_span,
+    dir_pw_status,
+  ]
+  public_configs = [ ":public_includes" ]
+  public = [ "public/pw_file/flat_file_system.h" ]
+  sources = [ "flat_file_system.cc" ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+  inputs = [ "file.proto" ]
+}
+
+pw_test_group("tests") {
+  tests = [ ":flat_file_system_test" ]
+}
+
+pw_test("flat_file_system_test") {
+  deps = [
+    ":flat_file_system",
+    ":proto.pwpb",
+    "$dir_pw_rpc/raw:test_method_context",
+    dir_pw_bytes,
+    dir_pw_protobuf,
+    dir_pw_status,
+  ]
+  sources = [ "flat_file_system_test.cc" ]
+}

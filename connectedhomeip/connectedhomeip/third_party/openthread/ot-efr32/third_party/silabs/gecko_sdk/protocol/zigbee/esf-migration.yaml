@@ -1,0 +1,730 @@
+---
+zigbee:
+  pluginComponentMapping:
+    # Automatically enabled components
+    - component:
+        - id: zigbee_pro_stack
+        - id: zigbee_zcl_framework_core
+        - id: zigbee_phy
+        - id: zigbee_stack_common
+    # Mappings which components to enable if certain plugins are enabled
+    - pluginId: address-table
+      component:
+        - id: zigbee_address_table
+    - pluginId: aes-cmac
+      component:
+        - id: zigbee_aes_cmac
+    - pluginId: aes-software
+      component:
+        - id: zigbee_aes_software
+    - pluginId: aps-link-key-authorization
+      component:
+        - id: zigbee_aps_link_key_authorization
+    - pluginId: barrier-control-server
+      component:
+        - id: zigbee_barrier_control_server
+    - pluginId: basic
+      component:
+        - id: zigbee_basic
+    - pluginId: ble
+      component:
+        - id: zigbee_ble,
+    - pluginId: ble-cli
+      component:
+        - id: zigbee_ble_dmp_cli
+    - pluginId: ble-custom-ezsp
+      component:
+        - id: zigbee_ble_custom_ezsp
+    - pluginId: bulb-pwm-cli
+      component:
+        - id: zigbee_bulb_pwm_cli
+    - pluginId: bulb-ui
+      component:
+        - id: zigbee_bulb_ui
+    - pluginId: button-joining
+      component:
+        - id: zigbee_button_joining
+    - pluginId: calendar-client
+      component:
+        - id: zigbee_calendar_client
+    - pluginId: calendar-common
+      component:
+        - id: zigbee_calendar_common
+    - pluginId: calendar-server
+      component:
+        - id: zigbee_calendar_server
+    - pluginId: ccm-encryption
+      component:
+        - id: zigbee_ccm_psa/zigbee_ccm_sofware
+    - pluginId: cli-password-protection
+      component:
+        - id: cli_simple_password
+    - pluginId: coap-server
+      component:
+        - id: zigbee_coap_server
+    - pluginId: color-control
+      component:
+        - id: zigbee_color_control
+    - pluginId: color-control-server
+      component:
+        - id: zigbee_color_control_server
+    - pluginId: command-relay
+      component:
+        - id: zigbee_command_relay
+    - pluginId: comms-hub-function
+      component:
+        - id: zigbee_comms_hub_function
+    - pluginId: comms-hub-function-sub-ghz
+      component:
+        - id: zigbee_comms_hub_function_sub_ghz
+    - pluginId: compact-logger
+      component:
+        - id: zigbee_compact_logger
+    - pluginId: concentrator
+      component:
+        - id: zigbee_concentrator
+    - pluginId: configuration-server
+      component:
+        - id: zigbee_configuration_server
+    - pluginId: connection-manager
+      component:
+        - id: zigbee_connection_manager
+    - pluginId: coulomb-counter
+      component:
+        - id: zigbee_coulomb_counter
+    - pluginId: counters
+      component:
+        - id: zigbee_counters
+    - pluginId: critical-message-queue
+      component:
+        - id: zigbee_critical_message_queue
+    - pluginId: custom-ezsp
+      component:
+        - id: zigbee_custom_ezsp
+    - pluginId: debug-print
+      component:
+        - id: zigbee_debug_print
+    - pluginId: delayed-join
+      component:
+        - id: zigbee_delayed_join
+    - pluginId: device-database
+      component:
+        - id: zigbee_device_database
+    - pluginId: device-config
+      component:
+        - id: zigbee_device_config
+    - pluginId: device-management-client
+      component:
+        - id: zigbee_device_management_client
+    - pluginId: device-management-server
+      component:
+        - id: zigbee_device_management_server
+    - pluginId: device-query-service
+      component:
+        - id: zigbee_device_query_service
+    - pluginId: device-table
+      component:
+        - id: zigbee_device_table
+    - pluginId: diagnostic-server
+      component:
+        - id: zigbee_diagnostic_server
+    - pluginId: dido
+      component:
+        - id: zigbee_dido
+    - pluginId: dido-storage-posix-filesystem
+      component:
+        - id: zigbee_dido_storage_posix_filesystem
+    - pluginId: dmp-tuning
+      component:
+        - id: zigbee_dmp_tuning
+    - pluginId: door-lock-server
+      component:
+        - id: zigbee_door_lock_server
+    - pluginId: drlc
+      component:
+        - id: zigbee_drlc
+    - pluginId: drlc-server
+      component:
+        - id: zigbee_drlc_server
+    - pluginId: electrical-measurement-server
+      component:
+        - id: zigbee_electrical_measurement_server
+    - pluginId: em4
+      component:
+        - id: zigbee_em4
+    - pluginId: ember-minimal-printf
+      component:
+        - id: zigbee_ember_minimal_printf
+    - pluginId: end-device-support
+      component:
+        - id: zigbee_end_device_support
+    - pluginId: esi-management
+      component:
+        - id: zigbee_esi_management
+    - pluginId: events-client
+      component:
+        - id: zigbee_events_client
+    - pluginId: events-server
+      component:
+        - id: zigbee_events_server
+    - pluginId: exosite-demo
+      component:
+        - id: zigbee_exosite_demo
+    - pluginId: ezmode-commissioning
+      component:
+        - id: zigbee_ezmode_commissioning
+    - pluginId: ezsp
+      component:
+        - id: zigbee_ezsp
+    - pluginId: ezsp-spi
+      component:
+        - id: zigbee_ezsp_spi
+    - pluginId: ezsp-uart
+      component:
+        - id: zigbee_ezsp_uart
+    - pluginId: ezsp-usb
+      component:
+        - id: zigbee_ezsp_usb
+    - pluginId: file-descriptor-dispatch
+      component:
+        - id: zigbee_file_descriptor_dispatch
+    - pluginId: find-and-bind-initiator
+      component:
+        - id: zigbee_find_and_bind_initiator
+    - pluginId: find-and-bind-target
+      component:
+        - id: zigbee_find_and_bind_target
+    - pluginId: form-and-join
+      component:
+        - id: zigbee_form_and_join
+    - pluginId: fragmentation
+      component:
+        - id: zigbee_fragmentation
+    - pluginId: gas-proxy-function
+      component:
+        - id: zigbee_gas_proxy_function
+    - pluginId: gateway
+      component:
+        - id: zigbee_gateway
+    - pluginId: gateway-relay-coap
+      component:
+        - id: zigbee_gateway_relay_coap
+    - pluginId: gateway-relay-mqtt
+      component:
+        - id: zigbee_gateway_relay_mqtt
+    - pluginId: gbcs-compatibility
+      component:
+        - id: zigbee_gbcs_compatibility
+    - pluginId: gbcs-device-log
+      component:
+        - id: zigbee_gbcs_device_log
+    - pluginId: gbcs-gas-meter
+      component:
+        - id: zigbee_gbcs_gas_meter
+    - pluginId: gbz-message-controller
+      component:
+        - id: zigbee_gbz_message_controller
+    - pluginId: general-response-commands
+      component:
+        - id: zigbee_general_response_commands
+    - pluginId: green-power-client
+      component:
+        - id: zigbee_green_power_client
+    - pluginId: green-power-common
+      component:
+        - id: zigbee_green_power_common
+    - pluginId: green-power-server
+      component:
+        - id: zigbee_green_power_server
+    - pluginId: green-power-test-device
+      component:
+        - id: zigbee_green_power_test_device
+    - pluginId: green-power-translation-table
+      component:
+        - id: zigbee_green_power_translation_table
+    - pluginId: groups-client
+      component:
+        - id: zigbee_groups_client
+    - pluginId: groups-server
+      component:
+        - id: zigbee_groups_server
+    - pluginId: hc-11073-tunnel
+      component:
+        - id: zigbee_hc_11073_tunnel
+    - pluginId: heartbeat
+      component:
+        - id: zigbee_heartbeat
+    - pluginId: ias-zone-client
+      component:
+        - id: zigbee_ias_zone_client
+    - pluginId: ias-zone-server
+      component:
+        - id: zigbee_ias_zone_server
+    - pluginId: identify
+      component:
+        - id: zigbee_identify
+    - pluginId: identify-feedback
+      component:
+        - id: zigbee_identify_feedback
+    - pluginId: illuminance-measurement-server
+      component:
+        - id: zigbee_illuminance_measurement_server
+    - pluginId: interpan
+      component:
+        - id: zigbee_interpan
+    - pluginId: key-establishment
+      component:
+        - id: zigbee_key_establishment
+    - pluginId: led-dim-pwm
+      component:
+        - id: zigbee_led_dim_pwm
+    - pluginId: led-rgb-pwm
+      component:
+        - id: zigbee_led_rgb_pwm
+    - pluginId: led-temp-pwm
+      component:
+        - id: zigbee_led_temp_pwm
+    - pluginId: level-control
+      component:
+        - id: zigbee_level_control
+    - pluginId: low-voltage-shutdown
+      component:
+        - id: zigbee_low_voltage_shutdown
+    - pluginId: lwip-callback-tests
+      component:
+        - id: zigbee_lwip_callback_tests
+    - pluginId: lwip-interface
+      component:
+        - id: zigbee_lwip_interface
+    - pluginId: lwip-stats
+      component:
+        - id: zigbee_lwip_stats
+    - pluginId: mac-address-filtering
+      component:
+        - id: zigbee_mac_address_filtering
+    - pluginId: manufacturing-library-cli
+      component:
+        - id: zigbee_manufacturing_library_cli
+    - pluginId: manufacturing-library-ota
+      component:
+        - id: zigbee_manufacturing_library_ota
+    - pluginId: messaging-client
+      component:
+        - id: zigbee_messaging_client
+    - pluginId: messaging-server
+      component:
+        - id: zigbee_messaging_server
+    - pluginId: meter-mirror
+      component:
+        - id: zigbee_meter_mirror
+    - pluginId: meter-snapshot-client
+      component:
+        - id: zigbee_meter_snapshot_client
+    - pluginId: meter-snapshot-server
+      component:
+        - id: zigbee_meter_snapshot_server
+    - pluginId: meter-snapshot-storage
+      component:
+        - id: zigbee_meter_snapshot_storage
+    - pluginId: metering-server
+      component:
+        - id: zigbee_metering_server
+    - pluginId: micrium-rtos
+      component:
+        - id: zigbee_micrium_rtos
+    - pluginId: mn-price-passthrough
+      component:
+        - id: zigbee_mn_price_passthrough
+    - pluginId: multirail-demo
+      component:
+        - id: zigbee_multirail_demo
+    - pluginId: ncp-configuration
+      component:
+        - id: zigbee_ncp_configuration
+    - pluginId: network-creator
+      component:
+        - id: zigbee_network_creator
+    - pluginId: network-creator-security
+      component:
+        - id: zigbee_network_creator_security
+    - pluginId: network-find
+      component:
+        - id: zigbee_network_find
+    - pluginId: network-find-sub-ghz
+      component:
+        - id: zigbee_network_find_sub_ghz
+    - pluginId: network-steering
+      component:
+        - id: zigbee_network_steering
+    - pluginId: occupancy-pyd1698-cli
+      component:
+        - id: zigbee_occupancy_pyd1698_cli
+    - pluginId: occupancy-sensor-server
+      component:
+        - id: zigbee_occupancy_sensor_server
+    - pluginId: on-off
+      component:
+        - id: zigbee_on_off
+    - pluginId: ota-bootload
+      component:
+        - id: zigbee_ota_bootload
+    - pluginId: ota-client
+      component:
+        - id: zigbee_ota_client
+    - pluginId: ota-client-policy
+      component:
+        - id: zigbee_ota_client_policy
+    - pluginId: ota-common
+      component:
+        - id: zigbee_ota_common
+    - pluginId: ota-server
+      component:
+        - id: zigbee_ota_server
+    - pluginId: ota-server-policy
+      component:
+        - id: zigbee_ota_server_policy
+    - pluginId: ota-storage-common
+      component:
+        - id: zigbee_ota_storage_common
+    - pluginId: ota-storage-posix-filesystem
+      component:
+        - id: zigbee_ota_storage_posix_filesystem
+    - pluginId: ota-storage-simple
+      component:
+        - id: zigbee_ota_storage_simple
+    - pluginId: ota-storage-simple-eeprom
+      component:
+        - id: zigbee_ota_storage_simple_eeprom
+    - pluginId: ota-storage-simple-ram
+      component:
+        - id: zigbee_ota_storage_simple_ram
+    - pluginId: packet-handoff
+      component:
+        - id: zigbee_packet_handoff
+    - pluginId: packet-validate-library
+      component:
+        - id: zigbee_packet_validate
+    - pluginId: partner-link-key-exchange
+      component:
+        - id: zigbee_partner_link_key_exchange
+    - pluginId: permit-join-manager
+      component:
+        - id: zigbee_permit_join_manager
+    - pluginId: poll-control-client
+      component:
+        - id: zigbee_poll_control_client
+    - pluginId: poll-control-server
+      component:
+        - id: zigbee_poll_control_server
+    - pluginId: power-configuration-server
+      component:
+        - id: zigbee_power_configuration_server
+    - pluginId: power-consumption-model
+      component:
+        - id: zigbee_power_consumption_model
+    - pluginId: prepayment-client
+      component:
+        - id: zigbee_prepayment_client
+    - pluginId: prepayment-server
+      component:
+        - id: zigbee_prepayment_server
+    - pluginId: prepayment-snapshot-storage
+      component:
+        - id: zigbee_prepayment_snapshot_storage
+    - pluginId: price-client
+      component:
+        - id: zigbee_price_client
+    - pluginId: price-common
+      component:
+        - id: zigbee_price_common
+    - pluginId: price-server
+      component:
+        - id: zigbee_price_server
+    - pluginId: relative-humidity-measurement-server
+      component:
+        - id: zigbee_relative_humidity_measurement_server
+    - pluginId: relay-control-client
+      component:
+        - id: zigbee_relay_control_client
+    - pluginId: relay-control-server
+      component:
+        - id: zigbee_relay_control_server
+    - pluginId: reporting
+      component:
+        - id: zigbee_reporting
+    - pluginId: ring-buffer
+      component:
+        - id: zigbee_ring_buffer
+    - pluginId: rtos
+      component:
+        - id: freertos
+    - pluginId: scan-dispatch
+      component:
+        - id: zigbee_scan_dispatch
+    - pluginId: scenes
+      component:
+        - id: zigbee_scenes
+    - pluginId: scenes-client
+      component:
+        - id: zigbee_scenes_client
+    - pluginId: secure-ezsp
+      component:
+        - id: zigbee_secure_ezsp
+    - pluginId: security-sensor
+      component:
+        - id: zigbee_security_sensor
+    - pluginId: security-support
+      component:
+        - id: zigbee_security_support
+    - pluginId: silabs-device-ui
+      component:
+        - id: zigbee_silabs_device_ui
+    - pluginId: simple-clock
+      component:
+        - id: zigbee_simple_clock
+    - pluginId: simple-metering-client
+      component:
+        - id: zigbee_simple_metering_client
+    - pluginId: simple-metering-server
+      component:
+        - id: zigbee_simple_metering_server
+    - pluginId: sleepy-message-queue
+      component:
+        - id: zigbee_sleepy_message_queue
+    - pluginId: smart-energy-registration
+      component:
+        - id: zigbee_smart_energy_registration
+    - pluginId: stack-diagnostics
+      component:
+        - id: zigbee_stack_diagnostics
+    - pluginId: standalone-bootloader-client
+      component:
+        - id: zigbee_standalone_bootloader_client
+    - pluginId: standalone-bootloader-common
+      component:
+        - id: zigbee_standalone_bootloader_common
+    - pluginId: standalone-bootloader-server
+      component:
+        - id: zigbee_standalone_bootloader_server
+    - pluginId: strong-random
+      component:
+        - id: zigbee_strong_random
+    - pluginId: sub-ghz-client
+      component:
+        - id: zigbee_sub_ghz_client
+    - pluginId: sub-ghz-server
+      component:
+        - id: zigbee_sub_ghz_server
+    - pluginId: temperature-measurement-server
+      component:
+        - id: zigbee_temperature_measurement_server
+    - pluginId: test-harness
+      component:
+        - id: zigbee_test_harness
+    - pluginId: test-harness-z3
+      component:
+        - id: zigbee_test_harness_z3
+    - pluginId: throughput
+      component:
+        - id: zigbee_throughput
+    - pluginId: throughput-legacy
+      component:
+        - id: zigbee_throughput_legacy
+    - pluginId: time-server
+      component:
+        - id: zigbee_time_server
+    - pluginId: trust-center-backup
+      component:
+        - id: zigbee_trust_center_backup
+    - pluginId: trust-center-keepalive
+      component:
+        - id: zigbee_trust_center_keepalive
+    - pluginId: trust-center-nwk-key-update-broadcast
+      component:
+        - id: zigbee_trust_center_nwk_key_update_broadcast
+    - pluginId: trust-center-nwk-key-update-periodic
+      component:
+        - id: zigbee_trust_center_nwk_key_update_periodic
+    - pluginId: trust-center-nwk-key-update-unicast
+      component:
+        - id: zigbee_trust_center_nwk_key_update_unicast
+    - pluginId: tunneling-client
+      component:
+        - id: zigbee_tunneling_client
+    - pluginId: tunneling-server
+      component:
+        - id: zigbee_tunneling_server
+    - pluginId: unix-library
+      component:
+        - id: zigbee_unix_library
+    - pluginId: unix-printf
+      component:
+        - id: zigbee_unix_printf
+    - pluginId: update-ha-tc-link-key
+      component:
+        - id: zigbee_update_ha_tc_link_key
+    - pluginId: update-tc-link-key
+      component:
+        - id: zigbee_update_tc_link_key
+    - pluginId: wwah-app-event-retry-manager
+      component:
+        - id: zigbee_wwah_app_event_retry_manager
+    - pluginId: wwah-client-silabs
+      component:
+        - id: zigbee_wwah_client_silabs
+    - pluginId: wwah-connectivity-manager
+      component:
+        - id: zigbee_wwah_connectivity_manager
+    - pluginId: wwah-end-device-extension
+      component:
+        - id: zigbee_wwah_end_device_extension
+    - pluginId: wwah-server-silabs
+      component:
+        - id: zigbee_wwah_server_silabs
+    - pluginId: xmodem-sender
+      component:
+        - id: zigbee_xmodem_sender
+    - pluginId: zcl-activator
+      component:
+        - id: zigbee_zcl_activator
+    - pluginId: zcl-framework-core
+      component:
+        - id: zigbee_zcl_framework_core
+    - pluginId: zcl-ip
+      component:
+        - id: zigbee_zcl_ip
+    - pluginId: zcl-cli
+      component:
+        - id: zigbee_zcl_cli
+    - pluginId: event-logger
+      component:
+        - id: zigbee_zigbee_event_logger
+    - pluginId: event-logger-stub
+      component:
+        - id: zigbee_zigbee_event_logger_stub
+    - pluginId: zll-commissioning-client
+      component:
+        - id: zigbee_zll_commissioning_client
+    - pluginId: zll-commissioning-common
+      component:
+        - id: zigbee_zll_commissioning_common
+    - pluginId: zll-commissioning-network
+      component:
+        - id: zigbee_zll_commissioning_network
+    - pluginId: zll-commissioning-server
+      component:
+        - id: zigbee_zll_commissioning_server
+    - pluginId: zll-identify-server
+      component:
+        - id: zigbee_zll_identify_server
+    - pluginId: zll-level-control-server
+      component:
+        - id: zigbee_zll_level_control_server
+    - pluginId: zll-on-off-server
+      component:
+        - id: zigbee_zll_on_off_server
+    - pluginId: zll-scenes-client
+      component:
+        - id: zigbee_zll_scenes_client
+    - pluginId: zll-scenes-server
+      component:
+        - id: zigbee_zll_scenes_server
+    - pluginId: zll-utility-client
+      component:
+        - id: zigbee_zll_utility_client
+    - pluginId: zll-utility-server
+      component:
+        - id: zigbee_zll_utility_server
+    - pluginId: Stack
+      component:
+        - id: related
+    - pluginId: binding-table-library
+      component:
+        - id: zigbee_binding_table
+    - pluginId: cbke-163k1-library
+      component:
+        - id: zigbee_cbke_163k1
+    - pluginId: cbke-283k1-library
+      component:
+        - id: zigbee_cbke_283k1
+    - pluginId: cbke-library-core
+      component:
+        - id: zigbee_cbke_core
+    - pluginId: cbke-library-dsa-sign
+      component:
+        - id: zigbee_cbke_dsa_sign
+    - pluginId: cbke-library-dsa-verify
+      component:
+        - id: zigbee_cbke_dsa_verify
+    - pluginId: cbke-library-dsa-verify-283k1
+      component:
+        - id: zigbee_cbke_dsa_verify_283k1
+    - pluginId: debug-basic-library
+      component:
+        - id: zigbee_debug_basic
+    - pluginId: debug-extended-library
+      component:
+        - id: zigbee_debug_extended
+    - pluginId: ecc-library-163k1
+      component:
+        - id: zigbee_ecc_163k1
+    - pluginId: ecc-library-283k1
+      component:
+        - id: zigbee_ecc_283k1
+    - pluginId: end-device-bind-library
+      component:
+        - id: zigbee_end_device_bind
+    - pluginId: gp-library
+      component:
+        - id: zigbee_gp
+    - pluginId: install-code-library
+      component:
+        - id: zigbee_install_code
+    - pluginId: multi-network-library
+      component:
+        - id: zigbee_multi_network
+#  - pluginId: multi-network-stub-library
+#    This plugin has been deprecated
+    - pluginId: multi-pan-library
+      component:
+        - id: zigbee_multi_pan
+#  - pluginId: multi-pan-stub
+#    This plugin has been deprecated
+    - pluginId: packet-validate-library
+      component:
+        - id: zigbee_packet_validate
+    - pluginId: security-link-keys-library
+      component:
+        - id: zigbee_security_link_keys
+    - pluginId: source-route-library
+      component:
+        - id: zigbee_source_route
+    - pluginId: zigbee-pro-leaf-library
+      component:
+        - id: zigbee_pro_leaf_stack
+    - pluginId: zigbee-pro-leaf-with-csl
+      component:
+        - id: zigbee_pro_leaf_stack_with_csl
+    - pluginId: zigbee-pro-library
+      component:
+        - id: zigbee_pro_stack
+    - pluginId: zigbee-pro-stack-alt-mac-library
+      component:
+        - id: zigbee_pro_stack_alt_mac
+    - pluginId: zigbee-r22-support-library
+      component:
+        - id: zigbee_r22_support
+    - pluginId: zll-library
+      component:
+        - id: zigbee_zll
+    - pluginId: xncp
+      component:
+        - id: zigbee_xncp
+    - pluginId: strong-random
+      component:
+        - id: zigbee_strong_random_api_psa/radio
+# Mappings of plugin options to CMSIS macros
+# Example only: uncomment the next 3 lines if you want to add real data.
+# pluginCMSISMapping:
+# - pluginDefine: OLD_PLUGIN_DEFINE
+#   cmsisDefine: NEW_CMSIS_DEFINE

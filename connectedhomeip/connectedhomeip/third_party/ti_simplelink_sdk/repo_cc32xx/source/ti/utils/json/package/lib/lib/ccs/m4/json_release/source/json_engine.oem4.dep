@@ -1,0 +1,23 @@
+package/lib/lib/ccs/m4/json_release/source/json_engine.oem4: source/json_engine.c ./utils.h ./parse_common.h ./json_engine.h /opt/conan/ticodegen/include/stddef.h /opt/conan/ticodegen/include/stdlib.h /opt/conan/ticodegen/include/string.h /opt/conan/ticodegen/include/strings.h /opt/conan/ticodegen/include/stdint.h /opt/conan/ticodegen/include/stdbool.h /opt/conan/ticodegen/include/_ti_config.h /opt/conan/ticodegen/include/sys/cdefs.h /opt/conan/ticodegen/include/sys/_types.h /opt/conan/ticodegen/include/xlocale/_stdlib.h /opt/conan/ticodegen/include/xlocale/_string.h /opt/conan/ticodegen/include/_stdint40.h /opt/conan/ticodegen/include/sys/stdint.h /opt/conan/ticodegen/include/linkage.h /opt/conan/ticodegen/include/machine/_types.h /opt/conan/ticodegen/include/machine/_stdint.h /opt/conan/ticodegen/include/sys/_stdint.h /opt/conan/ticodegen/include/machine/_limits.h 
+source/json_engine.c:
+./utils.h:
+./parse_common.h:
+./json_engine.h:
+/opt/conan/ticodegen/include/stddef.h:
+/opt/conan/ticodegen/include/stdlib.h:
+/opt/conan/ticodegen/include/string.h:
+/opt/conan/ticodegen/include/strings.h:
+/opt/conan/ticodegen/include/stdint.h:
+/opt/conan/ticodegen/include/stdbool.h:
+/opt/conan/ticodegen/include/_ti_config.h:
+/opt/conan/ticodegen/include/sys/cdefs.h:
+/opt/conan/ticodegen/include/sys/_types.h:
+/opt/conan/ticodegen/include/xlocale/_stdlib.h:
+/opt/conan/ticodegen/include/xlocale/_string.h:
+/opt/conan/ticodegen/include/_stdint40.h:
+/opt/conan/ticodegen/include/sys/stdint.h:
+/opt/conan/ticodegen/include/linkage.h:
+/opt/conan/ticodegen/include/machine/_types.h:
+/opt/conan/ticodegen/include/machine/_stdint.h:
+/opt/conan/ticodegen/include/sys/_stdint.h:
+/opt/conan/ticodegen/include/machine/_limits.h:

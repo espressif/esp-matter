@@ -1,0 +1,80 @@
+id: tz_secure_key_library_ns
+package: platform
+description: >-
+  This component provides the NS interface files of the Secure Key library.
+category: Platform|Security|TrustZone
+quality: beta
+component_root_path: util/third_party/crypto
+
+provides:
+  - name: tz_secure_key_library_ns
+
+  # Provide this here, such that other TZ NS incompatible components that are
+  # included results in conflicts during SLC dependency resolution.
+  - name: tz_ns_incompatible
+
+requires:
+  - name: trustzone_nonsecure
+
+  # The Secure Key Library will always make use of PSA Crypto.
+  - name: psa_crypto
+
+  # NVM3 requirements.
+  - name: ecode
+  - name: sl_assert
+
+  - name: tz_common
+  # Service interfaces.
+  - name: tz_service_syscfg
+    condition: [emlib_syscfg]
+  - name: tz_service_msc
+    condition: [emlib_msc]
+  - name: tz_service_nvm3
+    condition: [nvm3]
+  - name: tz_service_psa_its
+    condition: [psa_its]
+  # We need to unconditionally include the following service components. That is
+  # because there is no NS component we can use as conditions. No additional
+  # code will be linked in unless the services are actually used.
+  - name: tz_service_psa_crypto
+  - name: tz_service_se_manager
+
+include:
+  # Interface
+  - path: trusted-firmware-m/interface/include
+    file_list:
+      - path: tfm_api.h
+      - path: tfm_crypto_defs.h
+      - path: tfm_ns_interface.h
+      - path: psa_config.h
+      - path: psa/client.h
+      - path: psa/crypto.h
+      - path: psa/crypto_types.h
+      - path: psa/crypto_client_struct.h
+      - path: psa/crypto_compat.h
+      - path: psa/crypto_extra.h
+      - path: psa/crypto_sizes.h
+      - path: psa/crypto_struct.h
+      - path: psa/crypto_values.h
+      - path: psa/error.h
+      - path: psa/internal_trusted_storage.h
+      - path: psa/storage_common.h
+
+  - path: sl_component/sl_trustzone/inc/nonsecure
+    file_list:
+      - path: sli_tz_ns_interface.h
+
+source:
+  - path: trusted-firmware-m/platform/ext/target/siliconlabs/common/tfm_ns_interface.c
+  - path: sl_component/sl_trustzone/src/sli_tz_ns_interface.c
+
+define:
+  # Use Silabs Secure Library configuration of TF-M (interface).
+  - name: TFM_CONFIG_SL_SECURE_LIBRARY
+
+template_contribution:
+  - name: component_catalog
+    value: tz_secure_key_library_ns
+library:
+  - path: sl_component/sl_trustzone/tz_secure_key_library_s_app/skl_secure_lib.o
+    unless: [secure_library_location]

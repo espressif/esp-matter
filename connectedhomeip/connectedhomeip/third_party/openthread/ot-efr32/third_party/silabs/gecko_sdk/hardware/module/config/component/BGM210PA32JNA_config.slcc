@@ -1,0 +1,15 @@
+!!omap
+- id: BGM210PA32JNA_config
+- label: BGM210PA32JNA config
+- description: Configuration files for BGM210PA32JNA
+- package: platform
+- category: Platform|Device|BGM21|Config
+- quality: production
+- ui_hints:
+    visibility: never
+- root_path: hardware/module/config
+- requires:
+  - name: bgm210pa32jna
+- provides:
+  - name: BGM210PA32JNA_config
+- config_file: []

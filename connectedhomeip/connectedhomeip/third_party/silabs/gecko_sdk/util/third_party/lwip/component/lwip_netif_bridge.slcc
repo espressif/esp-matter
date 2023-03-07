@@ -1,0 +1,20 @@
+id: lwip_netif_bridgeif
+label: "bridgeif"
+pretty_name : "LWIP generic network interface device drivers for bridgeif"
+package: platform
+description: >
+    LWIP generic network interface device drivers for bridgeif.
+category: LwIP|netif
+quality: production
+provides:
+  - name: lwip_netif_bridgeif
+requires:
+  - name: lwip_core
+source:
+  - path: util/third_party/lwip/lwip/src/netif/bridgeif.c
+  - path: util/third_party/lwip/lwip/src/netif/bridgeif_fdb.c
+include:  
+  - path: util/third_party/lwip/lwip/src/include
+    file_list:
+    - path: netif/bridgeif.h
+    - path: netif/bridgeif_opts.h

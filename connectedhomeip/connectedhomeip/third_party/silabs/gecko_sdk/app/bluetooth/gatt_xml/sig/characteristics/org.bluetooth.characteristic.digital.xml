@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2015 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Digital" type="org.bluetooth.characteristic.digital" uuid="2A56" last-modified="2015-07-14" approved="Yes">
+    <InformativeText>
+        <Summary>The Digital characteristic is used to expose and change the state of an IO Module's digital signals.</Summary>
+    </InformativeText>
+    <Value>
+        <Field name="Digital">
+            <InformativeText> The Digital characteristic is an array of n 2-bit values in a bit field</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>2bit</Format>
+            <Enumerations>
+                <Enumeration key="0" value="Inactive" />
+                <Enumeration key="1" value="Active" />
+                <Enumeration key="2" value="Tri-state" />
+                <Enumeration key="3" value="Output-state" />
+            </Enumerations>
+            <Repeated>true</Repeated>
+        </Field>
+    </Value>
+    <Note>The Octet Order in the above table is in the order of LSO to MSO, where LSO = Least Significant Octet and MSO = Most Significant Octet.</Note>
+</Characteristic>

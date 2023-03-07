@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2011 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Ringer Control point" type="org.bluetooth.characteristic.ringer_control_point" uuid="2A40">
+	<InformativeText>
+        <Abstract>            
+        The Ringer Control Point characteristic defines the Control Point of Ringer.
+            Value 1, meaning "Silent Mode"
+            Value 2, meaning "Mute Once"
+            Value 3, meaning "Cancel Silent Mode"
+		</Abstract>
+        <Examples> 
+            <Example>The value 0x01 shall be interpreted as "Silent Mode"</Example>
+	    </Examples>
+	</InformativeText>
+	<Value>
+		<Field name="Ringer Control Point">
+        <Requirement>Mandatory</Requirement>
+        <Format>uint8</Format>
+        <Minimum>1</Minimum>
+        <Maximum>3</Maximum>
+        <Enumerations>
+            <Enumeration key="1" value="Silent Mode" />
+            <Enumeration key="2" value="Mute Once" />
+            <Enumeration key="3" value="Cancel Silent Mode" />
+            <ReservedForFutureUse start="0" end="0" />
+            <ReservedForFutureUse start="4" end="255" />
+        </Enumerations>
+        </Field>
+	</Value>
+</Characteristic>

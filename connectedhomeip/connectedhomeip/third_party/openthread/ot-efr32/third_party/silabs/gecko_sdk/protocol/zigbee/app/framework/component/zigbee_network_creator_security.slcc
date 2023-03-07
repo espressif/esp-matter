@@ -1,0 +1,98 @@
+package: Zigbee
+description: This component performs the necessary security initialization to form
+  a Zigbee 3.0-compliant network. To enable "Allow Trust Center rejoin
+  with well known key", the "emberAfPluginEzspSecurityTrustCenterJoinCallback()" function
+  (on the NCP side) may need to be implemented. For more details about this callback
+  function, see "https//www.silabs.com/community/wireless/zigbee-and-thread/knowledge-base.entry.html/2018/12/26/how_to_allow_unsecur-sa3C".
+  If the link does not work, go to our community website and search "How to
+  allow unsecure rejoins on the Ember ZNet stack".
+label: Network Creator Security
+quality: production
+id: zigbee_network_creator_security
+category: Zigbee|Zigbee 3.0
+provides:
+   - name: "zigbee_network_creator_security"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/network-creator-security/config/network-creator-security-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/network-creator-security/network-creator-security.c
+  - path: protocol/zigbee/app/framework/plugin/network-creator-security/network-creator-security-cli.c
+    condition:
+      - "cli"
+include:
+  - path: protocol/zigbee/app/framework/plugin/network-creator-security
+    file_list:
+      - path: network-creator-security.h  
+template_contribution:
+  - name: component_catalog
+    value: zigbee_network_creator_security
+  - name: zigbee_af_callback
+    value:
+      callback_type: init_done
+      function_name: emberAfPluginNetworkCreatorSecurityInitCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: stack_status
+      function_name: emAfPluginNetworkCreatorSecurityStackStatusCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: zigbee_key_establishment
+      function_name: emberAfPluginNetworkCreatorSecurityZigbeeKeyEstablishmentCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: network-creator-security
+      help: network-creator-security related commands.
+  - name: cli_command
+    value:
+      group: network-creator-security
+      name: set-joining-link-key
+      handler: emAfPluginNetworkCreatorSecuritySetJoiningLinkKeyCommand
+      help: Sets the link key that a specific joining device will use when joining the network. This command can be also be used to add install code-derived link keys. If all FFs are entered for the EUI64 for the joining device, then this link key will be used for all joining devices without a joining key entry.
+      argument:
+      - type: hex
+        help: The EUI64 of the joining device
+      - type: hex
+        help: The link key that the joining device will use to enter the network
+  - name: cli_command
+    value:
+      group: network-creator-security
+      name: clear-joining-link-keys
+      handler: emAfPluginNetworkCreatorSecurityClearJoiningLinkKeyCommand
+      help: Clears all of the joining link keys stored in the stack.
+  - name: cli_command
+    value:
+      group: network-creator-security
+      name: open-network
+      handler: emAfPluginNetworkCreatorSecurityOpenOrCloseNetworkCommand
+      help: Opens the network for joining.
+  - name: cli_command
+    value:
+      group: network-creator-security
+      name: close-network
+      handler: emAfPluginNetworkCreatorSecurityOpenOrCloseNetworkCommand
+      help: Closes the network for joining.
+  - name: cli_command
+    value:
+      group: network-creator-security
+      name: open-with-key
+      handler: emAfPluginNetworkCreatorSecurityOpenNetworkWithKeyCommand
+      help: Opens the network that would only allow the node with the specified EUI and link key pair to join.
+      argument:
+      - type: hex
+        help: The EUI64 of the joining device
+      - type: hex
+        help: The link key that the joining device will use to enter the network
+  - name: cli_command
+    value:
+      group: network-creator-security
+      name: set-distributed-key
+      handler: emAfPluginNetworkCreatorSecurityConfigureDistributedKey
+      help: Sets the TC Link key for a distributed network.
+      argument:
+      - type: hex
+        help: The pre-configured distributed key that the joining device will use to enter the network
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/network-creator-security

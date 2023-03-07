@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.measurement_interval" uuid="2A21" name="Measurement Interval">
+	<InformativeText>
+        <Abstract>
+    The Measurement Interval characteristic defines the time between measurements.            
+		</Abstract>
+        <Summary>
+    This characteristic is capable of representing values from 1 second to 65535 seconds which is equal to 18 hours, 12 minutes and 15 seconds.            
+		</Summary>
+  </InformativeText>
+	<Value>
+		<Field name="Measurement Interval">
+			<Requirement>Mandatory</Requirement>
+			<Format>uint16</Format>
+			<Unit>org.bluetooth.unit.time.second</Unit>
+			<Minimum>1</Minimum>
+			<Maximum>65535</Maximum>
+			<AdditionalValues>
+				<Enumeration key="0" value="No periodic measurement"/>
+			</AdditionalValues>
+		</Field>
+	</Value>
+</Characteristic>

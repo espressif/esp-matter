@@ -1,0 +1,340 @@
+id: throughput_central
+package: Bluetooth
+label: Throughput Test Receiver (Central) Role API
+description: >
+  Throughput Test Receiver (Central) Role API opens connection to Throughput Test Transmitter (Peripheral) Role nodes, 
+  registers to notifications or indications.
+  Throughput parameters can be managed using the API calls or via CLI.
+  The API provides interface for configuring, starting and stopping transmission.
+  Status and result callbacks can be also registered using the API.
+category: Bluetooth|Application|Throughput
+quality: production
+root_path: app/bluetooth/common/throughput_central
+include:
+  - path: .
+    file_list: 
+      - path: throughput_central.h
+      - path: throughput_central_interface.h
+  - path: platform
+    file_list: 
+      - path: throughput_central_system.h
+config_file:
+  - path: "config/throughput_central_config.h"
+source:
+  - path: throughput_central.c
+  - path: platform/throughput_central_interface.c
+requires:
+  - name: "app_log"
+  - name: "app_assert"
+  - name: "bluetooth_stack"
+  - name: "bluetooth_feature_system"
+  - name: "bluetooth_feature_afh"
+  - name: "bluetooth_feature_power_control"
+  - name: "bluetooth_feature_connection"
+  - name: "bluetooth_feature_legacy_scanner"
+  - name: "bluetooth_feature_extended_scanner"
+  - name: "bluetooth_feature_gatt"
+  - name: "power_manager"
+  - name: "throughput"
+  - name: "simple_timer"
+  - name: "throughput_ui"
+recommends:
+  - id: "simple_timer"
+  - id: "throughput_ui_log"
+provides:
+  - name: throughput_central
+template_contribution:
+  - name: bluetooth_on_event
+    value:
+      include: throughput_central.h
+      function: bt_on_event_central
+    priority: 0
+  - name: event_handler
+    value:
+      event: service_process_action
+      include: throughput_central.h
+      handler: throughput_central_step
+  - name: component_catalog
+    value: throughput_central
+  - name: power_manager_handler
+    value:
+      event: is_ok_to_sleep
+      include: throughput_central.h
+      handler: throughput_central_is_ok_to_sleep
+  - name: power_manager_handler
+    value:
+      event: sleep_on_isr_exit
+      include: throughput_central.h
+      handler: throughput_central_sleep_on_isr_exit
+
+  - name: cli_group
+    value:
+      name: throughput_central
+      help: "Throughput Central"
+      shortcuts:
+        - name: central
+  - name: cli_command
+    value:
+      group: throughput_central
+      name: stop
+      handler: cli_throughput_central_stop
+      shortcuts:
+        - name: x
+      help: "Stops remote transmission"
+    condition:
+      - "cli"
+  - name: cli_command
+    value:
+      group: throughput_central
+      name: start
+      handler: cli_throughput_central_start
+      shortcuts:
+        - name: s
+      help: "Starts remote transmission"
+      argument:
+      - type: uint8
+        help: "Type: 1: notification, 2: indication"
+  - name: cli_command
+    value:
+      group: throughput_central
+      name: status
+      handler: cli_throughput_central_status
+      shortcuts:
+        - name: t
+      help: "Prints current status"
+
+  - name: cli_group
+    value:
+      group: throughput_central
+      name: central_mode
+      help: "Mode"
+      shortcuts:
+        - name: m
+    condition:
+      - "cli"
+  - name: cli_command
+    value:
+      group: central_mode
+      name: set
+      handler: cli_throughput_central_mode_set
+      shortcuts:
+        - name: s
+      help: "Set reception mode"
+      argument:
+      - type: uint8
+        help: "Mode: 0:Continous, 1:Fixed time, 2: Fixed size"
+      - type: uint32
+        help: "Value to set (in case of fixed time/size)"
+    condition:
+      - "cli"
+  - name: cli_command
+    value:
+      group: central_mode
+      name: get
+      handler: cli_throughput_central_mode_get
+      shortcuts:
+        - name: g
+      help: "Get reception mode, 0:Continous, 1:Fixed time, 2: Fixed size"
+    condition:
+      - "cli"
+  - name: cli_group
+    value:
+      group: throughput_central
+      name: central_tx_power
+      help: "Power settings"
+      shortcuts:
+        - name: p
+    condition:
+      - "cli"
+  - name: cli_command
+    value:
+      group: central_tx_power
+      name: set
+      handler: cli_throughput_central_tx_power_set
+      shortcuts:
+        - name: s
+      help: "Set power"
+      argument:
+      - type: int16
+        help: "Power in dBm"
+      - type: uint8
+        help: "Enable adaptive power control"
+      - type: uint8
+        help: "Enable deep sleep"
+    condition:
+      - "cli"
+  - name: cli_command
+    value:
+      group: central_tx_power
+      name: get
+      handler: cli_throughput_central_tx_power_get
+      shortcuts:
+        - name: g
+      help: "Read power settings"
+    condition:
+      - "cli"
+  - name: cli_group
+    value:
+      group: throughput_central
+      name: central_data
+      help: "Data settings"
+      shortcuts:
+        - name: d
+    condition:
+      - "cli"
+  - name: cli_command
+    value:
+      group: central_data
+      name: set
+      handler: cli_throughput_central_data_set
+      shortcuts:
+        - name: s
+      help: "Set data size"
+      argument:
+      - type: uint8
+        help: "Maximum MTU size"
+    condition:
+      - "cli"
+  - name: cli_command
+    value:
+      group: central_data
+      name: get
+      handler: cli_throughput_central_data_get
+      shortcuts:
+        - name: g
+      help: "Read data settings"
+    condition:
+      - "cli"
+
+  - name: cli_group
+    value:
+      group: throughput_central
+      name: phy
+      help: "PHY settings"
+      shortcuts:
+        - name: y
+    condition:
+      - "cli"
+  - name: cli_command
+    value:
+      group: phy
+      name: scan_set
+      handler: cli_throughput_central_phy_scan_set
+      shortcuts:
+        - name: s
+      help: "Set PHY used for scanning"
+      argument:
+      - type: uint8
+        help: "Scan PHY, 1:1M 4:Coded PHY"
+      condition:
+      - "cli"
+  - name: cli_command
+    value:
+      group: phy
+      name: conn_set
+      handler: cli_throughput_central_phy_conn_set
+      shortcuts:
+        - name: c
+      help: "Set PHY used for the connection, 1:1M 2:2M 4:Coded 125k, 8:Coded 500k PHY"
+      argument:
+      - type: uint8
+        help: "Connection PHY"
+      condition:
+      - "cli"
+  - name: cli_command
+    value:
+      group: phy
+      name: get
+      handler: cli_throughput_central_phy_get
+      shortcuts:
+        - name: g
+      help: "Read PHY settings for scan and connection, 1:1M 2:2M 4:Coded 125k, 8:Coded 500k PHY"
+    condition:
+      - "cli"
+
+  - name: cli_group
+    value:
+      group: throughput_central
+      name: connection
+      help: "Connection settings"
+      shortcuts:
+        - name: c
+    condition:
+      - "cli"
+  - name: cli_command
+    value:
+      group: connection
+      name: set
+      handler: cli_throughput_central_connection_set
+      shortcuts:
+        - name: s
+      help: "Set connection settings"
+      argument:
+      - type: uint32
+        help: "Minimum connection interval (in 1.25 ms steps)"
+      - type: uint32
+        help: "Maximum connection interval (in 1.25 ms steps)"
+      - type: uint32
+        help: "Responder latency (in connection intervals)"
+      - type: uint32
+        help: "Supervision timeout (in 10 ms steps)"
+      condition:
+      - "cli"
+  - name: cli_command
+    value:
+      group: connection
+      name: get
+      handler: cli_throughput_central_connection_get
+      shortcuts:
+        - name: g
+      help: "Read connection settings"
+    condition:
+      - "cli"
+
+  - name: cli_group
+    value:
+      group: throughput_central
+      name: allowlist
+      help: "Allowlist management"
+      shortcuts:
+        - name: w
+    condition:
+      - "cli"
+  - name: cli_command
+    value:
+      group: allowlist
+      name: add
+      handler: cli_throughput_central_allowlist_add
+      shortcuts:
+        - name: a
+      help: "Add address to allowlist"
+      argument:
+      - type: string
+        help: "Bluetooth address in 'XX:XX:XX:XX:XX:XX' format"
+      condition:
+      - "cli"
+  - name: cli_command
+    value:
+      group: allowlist
+      name: clear
+      handler: cli_throughput_central_allowlist_clear
+      shortcuts:
+        - name: c
+      help: "Clear allowlist"
+      condition:
+      - "cli"
+  - name: cli_command
+    value:
+      group: allowlist
+      name: get
+      handler: cli_throughput_central_allowlist_get
+      shortcuts:
+        - name: g
+      help: "Read allowlist table"
+    condition:
+      - "cli"
+validation_library:
+  - path: ../../../common/validation/autonumber_common.lua
+    name: autonumber_common
+validation_helper:
+  - path: throughput_central_validation.lua

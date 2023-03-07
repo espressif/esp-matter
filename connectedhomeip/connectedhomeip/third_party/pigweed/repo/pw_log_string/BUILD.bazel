@@ -1,0 +1,63 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load(
+    "//pw_build:pigweed.bzl",
+    "pw_cc_facade",
+    "pw_cc_library",
+)
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+pw_cc_library(
+    name = "pw_log_string",
+    hdrs = [
+        "public/pw_log_string/log_string.h",
+        "public_overrides/pw_log_backend/log_backend.h",
+    ],
+    includes = [
+        "public",
+        "public_overrides",
+    ],
+    deps = [
+        ":handler",
+        "//pw_preprocessor",
+    ],
+)
+
+pw_cc_facade(
+    name = "handler_facade",
+    hdrs = ["public/pw_log_string/handler.h"],
+    includes = ["public"],
+    deps = ["//pw_preprocessor"],
+)
+
+pw_cc_library(
+    name = "handler",
+    srcs = ["handler.cc"],
+    deps = [
+        ":handler_facade",
+        "@pigweed_config//:pw_log_string_handler_backend",
+    ],
+)
+
+pw_cc_library(
+    name = "handler_backend_multiplexer",
+    visibility = ["@pigweed_config//:__pkg__"],
+    # TODO(b/257539200): This probably should default to
+    # //pw_system:log_backend, but that target does not yet build in Bazel.
+    # deps = ["//pw_system:log_backend"],
+)

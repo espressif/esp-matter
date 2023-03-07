@@ -1,0 +1,205 @@
+
+sections,segment_names,fullsymbols,vmsize,filesize
+.FLASH.unused_space,LOAD #3 [RW],[section .FLASH.unused_space],1027616,0
+.heap,LOAD #5 [RW],[section .heap],114688,0
+.stack,LOAD #6 [RW],[section .stack],81248,0
+.code,FLASH,_dtoa_r,3036,3036
+.code,FLASH,[section .code],2967,2967
+.code,FLASH,_printf_float,1132,1132
+.code,FLASH,__adddf3,632,632
+.code,FLASH,_vfiprintf_r,608,608
+.code,FLASH,__aeabi_dmul,596,596
+.code,FLASH,_printf_i,588,588
+.code,FLASH,_svfprintf_r,512,512
+.code,FLASH,__aeabi_ddiv,464,464
+.code,FLASH,pw_assert_basic_HandleFailure,388,388
+.code,FLASH,__multiply,340,340
+.code,FLASH,quorem,284,284
+.code,FLASH,__mdiff,276,276
+.code,FLASH,_ctype_,271,271
+.code,FLASH,__sflush_r,268,268
+.code,FLASH,__lshift,224,224
+.code,FLASH,__swsetup_r,220,220
+.code,FLASH,_printf_common,220,220
+.code,FLASH,pw::allocator::FreeListHeap::Free(void*),220,220
+.code,FLASH,__mprec_tens,200,200
+.code,FLASH,__cvt,196,196
+.code,FLASH,__d2b,184,184
+.code,FLASH,__ssputs_r,184,184
+.code,FLASH,__pow5mult,180,180
+.code,FLASH,__swbuf_r,164,164
+.code,FLASH,pw_MallocInit,156,156
+.code,FLASH,__multadd,140,140
+.code,FLASH,__sfp,140,140
+.code,FLASH,_Balloc,128,128
+.code,FLASH,__smakebuf_r,128,128
+.code,FLASH,pw::allocator::FreeListHeap::Allocate(unsigned int),128,128
+.code,FLASH,"pw::allocator::FreeListHeap::FreeListHeap(pw::span<std::byte, 4294967295u>, pw::allocator::FreeList&)",128,128
+.code,FLASH,__exponent,126,126
+.code,FLASH,__cmpdf2,124,124
+.code,FLASH,_fflush_r,120,120
+.code,FLASH,pw::allocator::Block::CrashIfInvalid(),120,120
+.code,FLASH,__sinit,112,112
+.code,FLASH,pw_sys_io_stm32f429_Init,112,112
+.code,FLASH,"pw::allocator::FreeListHeap::Realloc(void*, unsigned int)",108,108
+.code,FLASH,pw_Log,108,108
+.code,FLASH,"pw::allocator::FreeList::RemoveChunk(pw::span<std::byte, 4294967295u>)",102,102
+.code,FLASH,main,100,100
+.code,FLASH,__lo0bits,96,96
+.code,FLASH,__floatdidf,92,92
+.code,FLASH,"pw::allocator::Block::Split(unsigned int, pw::allocator::Block**)",92,92
+.code,FLASH,pw::allocator::FreeList::FindChunk(unsigned int) const,88,88
+.code,FLASH,_vsnprintf_r,86,86
+.code,FLASH,__fixdfsi,80,80
+.code,FLASH,_raise_r,80,80
+.code,FLASH,__swhatbuf_r,76,76
+.code,FLASH,__libc_init_array,72,72
+.code,FLASH,std,72,72
+.code,FLASH,CSWTCH.1,68,68
+.code,FLASH,_Bfree,68,68
+.code,FLASH,__extendsfdf2,68,68
+.code,FLASH,__hi0bits,64,64
+.code,FLASH,_fwalk_reent,64,64
+.code,FLASH,pw::allocator::Block::CheckStatus() const,64,64
+.code,FLASH,"pw::allocator::FreeList::AddChunk(pw::span<std::byte, 4294967295u>)",64,64
+.code,FLASH,"pw::sys_io::WriteLine(std::basic_string_view<char, std::char_traits<char> > const&)",64,64
+.code,FLASH,__assert_func,60,60
+.code,FLASH,"pw::allocator::FreeList::FindChunkPtrForSize(unsigned int, bool) const",60,60
+.code,FLASH,"pw::string::FormatVaList(pw::span<char, 4294967295u>, char const*, std::__va_list)",60,60
+.code,FLASH,pw::StringBuilder::ResizeAndTerminate(unsigned int),58,58
+.code,FLASH,__mcmp,56,56
+.code,FLASH,__swrite,56,56
+.code,FLASH,StaticMemoryInit,52,52
+.code,FLASH,memmove,52,52
+.code,FLASH,pw::allocator::Block::MergeNext(),50,50
+.code,FLASH,__sfputc_r,46,46
+.code,FLASH,__aeabi_dcmpun,44,44
+.code,FLASH,__i2b,44,44
+.code,FLASH,__sfmoreglue,44,44
+.code,FLASH,"pw::StringBuilder::FormatVaList(char const*, std::__va_list)",44,44
+.code,FLASH,"pw::allocator::Block::Init(pw::span<std::byte, 4294967295u>, pw::allocator::Block**)",44,44
+.code,FLASH,"pw::sys_io::WriteBytes(pw::span<std::byte const, 4294967295u>)",44,44
+.code,FLASH,__mprec_bigtens,40,40
+.code,FLASH,pw::StringBuilder::append(char const*),40,40
+.code,FLASH,__sfputs_r,38,38
+.code,FLASH,__ascii_mbtowc,36,36
+.code,FLASH,__floatsidf,36,36
+.code,FLASH,__sseek,36,36
+.code,FLASH,_fstat_r,36,36
+.code,FLASH,_kill_r,36,36
+.code,FLASH,_lseek_r,36,36
+.code,FLASH,_read_r,36,36
+.code,FLASH,_write_r,36,36
+.code,FLASH,fflush,36,36
+.code,FLASH,fprintf,36,36
+.code,FLASH,__sread,34,34
+.code,FLASH,pw_boot_Entry,34,34
+.code,FLASH,__aeabi_ui2d,32,32
+.code,FLASH,__sf_fake_stderr,32,32
+.code,FLASH,__sf_fake_stdin,32,32
+.code,FLASH,__sf_fake_stdout,32,32
+.code,FLASH,_close_r,32,32
+.code,FLASH,_isatty_r,32,32
+.code,FLASH,"pw::StringBuilder::append(char const*, unsigned int)",32,32
+.code,FLASH,"pw::allocator::FreeListHeap::Calloc(unsigned int, unsigned int)",32,32
+.code,FLASH,_ZN2pw9log_basic12_GLOBAL__N_19write_logMUlSt17basic_string_viewIcSt11char_traitsIcEEE_4_FUNES5_,30,30
+.code,FLASH,"pw::StringBuilder::Format(char const*, ...)",30,30
+.code,FLASH,__ascii_wctomb,28,28
+.code,FLASH,memcpy,28,28
+.code,FLASH,pw::allocator::FreeListHeap::InvalidFreeCrash(),28,28
+.code,FLASH,pw_boot_PreStaticMemoryInit,28,28
+.code,FLASH,vsnprintf,28,28
+.code,FLASH,"Divide(float, float, float*)",24,24
+.code,FLASH,pw::allocator::FreeListHeapBuffer<6u>::defaultBuckets,24,24
+.code,FLASH,pw_StatusString,24,24
+.code,FLASH,pw::StringBuilder::HandleStatusWithSize(pw::StatusWithSize),22,22
+.code,FLASH,CSWTCH.3,20,20
+.code,FLASH,__aeabi_dcmpeq,20,20
+.code,FLASH,__aeabi_dcmpge,20,20
+.code,FLASH,__aeabi_dcmpgt,20,20
+.code,FLASH,__aeabi_dcmple,20,20
+.code,FLASH,__aeabi_dcmplt,20,20
+.code,FLASH,pw::StringBuffer<150u>::StringBuffer(),20,20
+.code,FLASH,"pw::Vector<pw::allocator::FreeList::FreeListNode*, 4294967295u>::operator[](unsigned short)",20,20
+.code,FLASH,pw::sys_io::WriteByte(std::byte),20,20
+.code,FLASH,pw_assert_HandleFailure,20,20
+.code,FLASH,"std::basic_string_view<char, std::char_traits<char> >::basic_string_view(char const*)",20,20
+.code,FLASH,__aeabi_cdcmple,16,16
+.code,FLASH,__aeabi_cdrcmple,16,16
+.code,FLASH,__aeabi_ul2d,16,16
+.code,FLASH,__gtdf2,16,16
+.code,FLASH,__wrap__calloc_r,16,16
+.code,FLASH,__wrap__free_r,16,16
+.code,FLASH,__wrap__malloc_r,16,16
+.code,FLASH,__wrap__realloc_r,16,16
+.code,FLASH,__wrap_malloc,16,16
+.code,FLASH,_close,16,16
+.code,FLASH,_fstat,16,16
+.code,FLASH,_getpid,16,16
+.code,FLASH,_isatty,16,16
+.code,FLASH,_kill,16,16
+.code,FLASH,_lseek,16,16
+.code,FLASH,_read,16,16
+.code,FLASH,_write,16,16
+.code,FLASH,memset,16,16
+.code,FLASH,pw_boot_PreStaticConstructorInit,16,16
+.code,FLASH,raise,16,16
+.code,FLASH,strlen,16,16
+.code,FLASH,abort,14,14
+.code,FLASH,pw::StringBuilder::NullTerminate(),14,14
+.code,FLASH,pw::allocator::Block::MergePrev(),14,14
+.code,FLASH,__sfp_lock_acquire,12,12
+.code,FLASH,__sfp_lock_release,12,12
+.code,FLASH,__sinit_lock_acquire,12,12
+.code,FLASH,__sinit_lock_release,12,12
+.code,FLASH,_cleanup_r,12,12
+.code,FLASH,p05.0,12,12
+.code,FLASH,pw::allocator::Block::InnerSize() const,12,12
+.code,FLASH,__sclose,8,8
+.code,FLASH,_localeconv_r,8,8
+.code,FLASH,"pw::StringBuilder::append(std::basic_string_view<char, std::char_traits<char> > const&)",8,8
+.code,FLASH,"WriteLine(std::basic_string_view<char, std::char_traits<char> > const&)",4,4
+.code,FLASH,__aeabi_dsub,4,4
+.code,FLASH,_getpid_r,4,4
+.code,FLASH,_global_impure_ptr,4,4
+.code,FLASH,pw_boot_PreMainInit,4,4
+.code,FLASH,DefaultFaultHandler,2,2
+.code,FLASH,__retarget_lock_acquire_recursive,2,2
+.code,FLASH,__retarget_lock_init_recursive,2,2
+.code,FLASH,__retarget_lock_release_recursive,2,2
+.code,FLASH,_exit,2,2
+.code,FLASH,pw_boot_PostMain,2,2
+.static_init_ram,RAM,__global_locale,368,368
+.static_init_ram,RAM,impure_data,96,96
+.static_init_ram,RAM,kCrashBanner,48,48
+.static_init_ram,RAM,_impure_ptr,4,4
+.static_init_ram,RAM,pw::log_basic::(anonymous namespace)::write_log,4,4
+.VECTOR_TABLE.unused_space,LOAD #0 [RW],[section .VECTOR_TABLE.unused_space],496,0
+.zero_init_ram,RAM,(anonymous namespace)::buf,104,0
+.zero_init_ram,RAM,object.0,24,0
+.zero_init_ram,RAM,errno,8,0
+.zero_init_ram,RAM,completed.1,4,0
+.zero_init_ram,RAM,pw_freelist_heap,4,0
+.zero_init_ram,RAM,unoptimizable,4,0
+.zero_init_ram,RAM,__lock___sinit_recursive_mutex,3,0
+.zero_init_ram,RAM,__lock___sfp_recursive_mutex,1,0
+.vector_table,LOAD #0 [RW],vector_table,16,16
+.ARM.attributes,,,0,48
+.comment,,,0,77
+.debug_abbrev,,,0,25188
+.debug_aranges,,,0,960
+.debug_frame,,,0,6548
+.debug_info,,,0,220270
+.debug_line,,,0,25550
+.debug_loc,,,0,18323
+.debug_ranges,,,0,4288
+.debug_str,,,0,47996
+.shstrtab,,,0,310
+.stab,,,0,204
+.stabstr,,,0,444
+.strtab,,,0,5790
+.symtab,,,0,9696
+[ELF Header],,,0,52
+[ELF Program Headers],,,0,224
+[ELF Section Headers],,,0,1040
+[Unmapped],,,0,110340

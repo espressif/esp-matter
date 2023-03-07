@@ -1,0 +1,36 @@
+id: iostream_uart_core
+package: platform
+label: "IO Stream: UART Core"
+description: Core of IO Stream UART.
+category: Services|IO Stream
+quality: production
+ui_hints:
+  visibility: never
+provides:
+  - name: iostream_uart_core
+  - name: iostream_transport_core
+    allow_multiple: true
+root_path: platform/service/iostream
+include:
+  - path: inc
+    file_list:
+      - path: sl_iostream_usart.h
+source:
+  - path: src/sl_iostream_usart.c
+template_file:
+  - path: init/sl_iostream_init_uart_instances.c.jinja
+    condition: [iostream_uart]
+  - path: init/sl_iostream_init_uart_instances.h.jinja
+    condition: [iostream_uart]
+template_contribution:
+  - name: component_catalog
+    value: iostream_uart
+requires:
+  - name: iostream
+  - name: iostream_uart_common
+  - name: status
+  - name: emlib_cmu
+  - name: emlib_gpio
+  - name: emlib_usart
+  - name: atomic
+  - name: device_has_uart0

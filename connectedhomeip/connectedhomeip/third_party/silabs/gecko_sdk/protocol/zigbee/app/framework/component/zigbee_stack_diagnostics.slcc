@@ -1,0 +1,49 @@
+package: Zigbee
+description: CLI commands for printing various information about the stack, such as
+  the child table, neighbor table, and routing table.
+id: zigbee_stack_diagnostics
+label: Stack Diagnostics
+category: Zigbee|Utility
+quality: production
+provides:
+   - name: "zigbee_stack_diagnostics"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/stack-diagnostics/config/stack-diagnostics-config.h
+validation_helper:
+  - path: protocol/zigbee/app/framework/component/scripts/zigbee_stack_diagnostics_validation.lua
+source:
+  - path: protocol/zigbee/app/framework/plugin/stack-diagnostics/stack-diagnostics.c
+    condition:
+      - "cli"
+template_contribution:
+  - name: component_catalog
+    value: zigbee_stack_diagnostics
+  - name: cli_group
+    value:
+      group: plugin
+      name: stack-diagnostics
+      help: stack-diagnostics related commands.
+  - name: cli_command
+    value:
+      group: stack-diagnostics
+      name: info
+      handler: printInfo
+      help: Prints out general information about the state of the stack.
+  - name: cli_command
+    value:
+      group: stack-diagnostics
+      name: child-table
+      handler: printChildTable
+      help: Prints out the entries in the stacks child table.
+  - name: cli_command
+    value:
+      group: stack-diagnostics
+      name: neighbor-table
+      handler: printNeighborTable
+      help: Prints out the entries in the stacks neighbor table.
+  - name: cli_command
+    value:
+      group: stack-diagnostics
+      name: route-table
+      handler: printRouteTable
+      help: Prints out the entries in the stacks route table.

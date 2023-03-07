@@ -1,0 +1,103 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2018-2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+{
+  "psa_framework_version": 1.0,
+  "name": "TFM_SP_CORE_TEST_2",
+  "type": "APPLICATION-ROT",
+  "priority": "NORMAL",
+  "entry_point": "core_test_2_init",
+  "stack_size": "0x0280",
+  "secure_functions": [
+    {
+      "name": "TFM_CORE_TEST_2_SFN_SLAVE_SERVICE",
+      "signal": "SPM_CORE_TEST_2_SLAVE_SERVICE",
+      "non_secure_clients": false,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CORE_TEST_2_SFN_INVERT",
+      "signal": "SPM_CORE_TEST_2_SFN_INVERT",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CORE_TEST_2_SFN_CHECK_CALLER_CLIENT_ID",
+      "signal": "SPM_CORE_TEST_2_CHECK_CALLER_CLIENT_ID",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CORE_TEST_2_SFN_GET_EVERY_SECOND_BYTE",
+      "signal": "SPM_CORE_TEST_2_GET_EVERY_SECOND_BYTE",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CORE_TEST_2_SFN_PREPARE_TEST_SCENARIO",
+      "signal": "SPM_CORE_TEST_2_PREPARE_TEST_SCENARIO",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CORE_TEST_2_SFN_EXECUTE_TEST_SCENARIO",
+      "signal": "SPM_CORE_TEST_2_EXECUTE_TEST_SCENARIO",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    }
+  ],
+  "services": [
+    {
+      "name": "SPM_CORE_TEST_2_SLAVE_SERVICE",
+      "sid": "0x0000F040",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "SPM_CORE_TEST_2_CHECK_CALLER_CLIENT_ID",
+      "sid": "0x0000F041",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "SPM_CORE_TEST_2_GET_EVERY_SECOND_BYTE",
+      "sid": "0x0000F042",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "SPM_CORE_TEST_2_INVERT",
+      "sid": "0x0000F043",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+    "name": "SPM_CORE_TEST_2_PREPARE_TEST_SCENARIO",
+    "sid": "0x0000F044",
+    "non_secure_clients": true,
+    "version": 1,
+    "version_policy": "STRICT"
+    },
+    {
+    "name": "SPM_CORE_TEST_2_EXECUTE_TEST_SCENARIO",
+    "sid": "0x0000F045",
+    "non_secure_clients": true,
+    "version": 1,
+    "version_policy": "STRICT"
+    },
+  ]
+}

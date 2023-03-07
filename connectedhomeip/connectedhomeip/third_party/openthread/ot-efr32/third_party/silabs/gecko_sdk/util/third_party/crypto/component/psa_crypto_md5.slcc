@@ -1,0 +1,18 @@
+id: psa_crypto_md5
+package: platform
+label: MD5
+description: >-
+  This component provides support for the MD5 hash function in PSA Crypto.
+  Hardware acceleration of MD5 is not supported on any devices from Silicon Labs.
+category: Platform|Security|PSA Crypto|Hashing
+quality: production
+provides:
+  - name: psa_crypto_md5
+requires:
+  - name: psa_crypto
+  - name: mbedtls_md5
+template_contribution:
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_MD5
+  - name: psa_crypto_config
+    value: "MBEDTLS_PSA_BUILTIN_ALG_MD5 1"

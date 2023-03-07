@@ -1,0 +1,30 @@
+id: lwip_app_http
+label: "http"
+pretty_name : "LWIP http high layer application"
+package: platform
+description: >
+    LWIP http high layer application specifically programmed with the lwIP low-level raw API.
+category: LwIP|apps
+quality: production
+provides:
+  - name: lwip_apps
+    allow_multiple: true
+  - name: lwip_app_http
+requires:
+  - name: lwip_core
+source:
+  - path: util/third_party/lwip/lwip/src/apps/http/altcp_proxyconnect.c
+  - path: util/third_party/lwip/lwip/src/apps/http/fs.c
+  - path: util/third_party/lwip/lwip/src/apps/http/http_client.c
+  - path: util/third_party/lwip/lwip/src/apps/http/httpd.c
+include:
+  - path: util/third_party/lwip/lwip/src/include
+    file_list:
+    - path: lwip/apps/http_client.h
+    - path: lwip/apps/httpd.h
+    - path: lwip/apps/httpd_opts.h
+    - path: lwip/apps/altcp_proxyconnect.h
+  - path: util/third_party/lwip/lwip/src/apps/http
+    file_list:
+    - path: fsdata.h
+    - path: httpd_structs.h

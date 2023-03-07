@@ -1,0 +1,157 @@
+%%{
+/* --COPYRIGHT--,EPL
+ *  Copyright (c) 2010 Texas Instruments and others.
+ *  All rights reserved. This program and the accompanying materials
+ *  are made available under the terms of the Eclipse Public License v1.0
+ *  which accompanies this distribution, and is available at
+ *  http://www.eclipse.org/legal/epl-v10.html
+ *
+ *  Contributors:
+ *      Texas Instruments - initial implementation
+ *
+ */
+%%}
+%%{
+    var File = xdc.module("xdc.services.io.File");
+
+    var BIOS = xdc.module("ti.sysbios.BIOS");
+
+    var Build = xdc.module("ti.sysbios.Build");
+
+    var TARGET = $args[0];
+
+    var XOPTS = '-I "' + environment['xdc.rootDir'] + '/packages" '
+	+ "-Dxdc_target_types__=" + TARGET.stdInclude
+	+ " -Dxdc_target_name__=" + TARGET.name;
+
+    var CGEN = TARGET.rootDir.replace(/\\/g, "/");
+
+    function baseName(path) {
+	return path.substr(path.lastIndexOf('/') + 1).replace(/\.[^\.]+$/, "");
+    }
+
+    function packageName(path) {
+	var dirpath = path.substring(0, path.lastIndexOf('/'));
+	return dirpath.substr(dirpath.lastIndexOf('/') + 1);
+    }
+    var OBJS = [];
+%%}
+vpath % `File.getDOSPath(this.$package.packageRepository) + "ti/sysbios/"`
+vpath %.c `environment['xdc.rootDir'] + '/packages/'`
+
+CCOPTS    = `BIOS.getCCOpts(TARGET.name)`
+
+XDC_ROOT = `environment['xdc.rootDir'] + '/packages/'`
+
+BIOS_ROOT = `File.getDOSPath(this.$package.packageRepository) + "ti/sysbios/"`
+
+BIOS_DEFS = `BIOS.getDefs()`
+
+BIOS_INC  = -I"`File.getDOSPath(this.$package.packageRepository)`"
+
+TARGET_INC = -I"`File.getDOSPath(xdc.loadPackage('ti.targets').packageRepository)`"
+
+INCS = $(BIOS_INC) $(TARGET_INC) `Build.getIncludePaths()`
+
+%if (TARGET.$name.match(/gnu/)) {
+CC = `CGEN`/`TARGET.ccBin.cmd` $(CCOPTS) -I `CGEN`/arm-none-eabi/include
+ASM = `CGEN`/`TARGET.asmBin.cmd` $(CCOPTS) -I `CGEN`/arm-none-eabi/include
+AR = `CGEN`/`TARGET.arBin.cmd` `TARGET.ar.opts`
+%}
+%else {
+CC = `CGEN`/bin/`TARGET.cc.cmd` $(CCOPTS) -I `CGEN`/include
+ASM = `CGEN`/bin/`TARGET.asm.cmd` $(CCOPTS) -I `CGEN`/include
+AR = `CGEN`/bin/`TARGET.ar.cmd` `TARGET.ar.opts`
+%}
+
+%if (environment["os.name"].match(/Windows.*/i)) {
+DEL = cmd.exe /q /c del /f
+CP = cmd.exe /q /c copy /Y
+%}
+%else {
+DEL = rm -f
+CP = cp -f
+%}
+
+define RM
+	$(if $(wildcard $1),$(DEL) $1,:)
+endef
+
+define ASSEMBLE
+	@echo asm`TARGET.suffix` $< ...
+	@$(ASM) $(BIOS_DEFS) `XOPTS` $(INCS) $<
+endef
+
+define COMPILE
+	@echo cl`TARGET.suffix` $< ...
+	@$(CC) $(BIOS_DEFS) `XOPTS` $(INCS) $<
+endef
+
+%var LIB = "sysbios.lib";
+
+all: `LIB`
+
+%var sources = BIOS.getAsmFiles(TARGET.$name);
+%for each (var s in sources) {
+%if (TARGET.$name.match(/gnu/)) {
+%    var obj = packageName(s) + "_" + baseName(s) + ".o";
+%}
+%else {
+%    var obj = packageName(s) + "_" + baseName(s) + ".obj";
+%}
+%    OBJS.push(obj)
+`obj`: `s` makefile
+	@-$(call RM, $@)
+%if (TARGET.$name.match(/gnu/)) {
+	$(ASSEMBLE) -o `obj`
+%}
+%else {
+	$(ASSEMBLE) --output_file=`obj`
+%}
+
+%}
+
+%var sources = BIOS.getCFiles(TARGET.name).split(' ');
+%for each (var s in sources) {
+%if (TARGET.$name.match(/gnu/)) {
+%    var obj = packageName(s) + "_" + baseName(s) + ".o";
+%}
+%else {
+%    var obj = packageName(s) + "_" + baseName(s) + ".obj";
+%}
+%    OBJS.push(obj)
+`obj`: `s` makefile
+	@-$(call RM, `obj`)
+%if (TARGET.$name.match(/gnu/)) {
+	$(COMPILE) -o `obj`
+%}
+%else {
+	$(COMPILE) --output_file=`obj`
+%}
+%}
+
+`LIB`: `OBJS.join(" ")`
+	@echo ar`TARGET.suffix` $^ ...
+	@-$(call RM, $@)
+%if (BIOS.buildingAppLib == false) {
+	@-$(call RM, `Build.$private.libDir``LIB`)
+%}
+	@$(AR) $@ $^
+%if (BIOS.buildingAppLib == false) {
+	@$(CP) `LIB` `Build.$private.libDir`
+%}
+
+clean:
+	@-$(call RM, `LIB`)
+%if (BIOS.buildingAppLib == false) {
+	@-$(call RM, `Build.$private.libDir``LIB`)
+%}
+%if (TARGET.$name.match(/gnu/)) {
+	@-$(call RM, BIOS.o)
+%}
+%else {
+	@-$(call RM, BIOS.obj)
+%}
+%for (var i = 0; i < OBJS.length; i++) {
+	@-$(call RM, `OBJS[i]`)
+%}

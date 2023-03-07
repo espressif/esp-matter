@@ -1,0 +1,23 @@
+id: token_manager_simee1
+label: Token Manager using SimEE1
+package: platform
+description: Token Manager using SimEE1 for storage.
+category: Services|Token Manager
+quality: production
+provides:
+  - name: token_manager_simee1
+  - name: token_manager_storage
+requires:
+  - name: emlib_msc
+  - name: ecode
+  - name: sim_eeprom1
+  - name: token_manager
+  - name: device_series_1
+define:
+  - name: USE_SIMEE1
+template_contribution:
+  - name: component_catalog
+    value: token_manager_simee1
+documentation:
+    docset: gecko-platform
+    document: service/api/group-token-manager

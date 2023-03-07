@@ -1,0 +1,59 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load("@rules_python//python:defs.bzl", "py_binary", "py_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+filegroup(
+    name = "pw_protobuf_common_sources",
+    srcs = [
+        "pw_protobuf/__init__.py",
+        "pw_protobuf/codegen_pwpb.py",
+        "pw_protobuf/options.py",
+        "pw_protobuf/output_file.py",
+        "pw_protobuf/plugin.py",
+        "pw_protobuf/proto_tree.py",
+        "pw_protobuf/symbol_name_mapping.py",
+    ],
+)
+
+py_library(
+    name = "plugin_library",
+    srcs = [":pw_protobuf_common_sources"],
+    imports = ["."],
+    deps = [
+        "//pw_protobuf:codegen_protos_pb2",
+        "@com_google_protobuf//:protobuf_python",
+    ],
+)
+
+py_binary(
+    name = "plugin",
+    srcs = ["pw_protobuf/plugin.py"],
+    imports = ["."],
+    python_version = "PY3",
+    deps = [
+        ":plugin_library",
+        "@com_google_protobuf//:protobuf_python",
+    ],
+)
+
+py_library(
+    name = "pw_protobuf",
+    srcs = [":pw_protobuf_common_sources"],
+    deps = ["//pw_cli/py:pw_cli"],
+)

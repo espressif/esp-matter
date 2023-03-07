@@ -1,0 +1,93 @@
+#!/bin/bash
+#
+#  Copyright (c) 2020, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+
+set -euxo pipefail
+
+if [[ -n ${BASH_SOURCE[0]} ]]; then
+    script_path="${BASH_SOURCE[0]}"
+else
+    script_path="$0"
+fi
+
+script_dir="$(dirname "$(realpath "$script_path")")"
+repo_dir="$(dirname "$script_dir")"
+
+# shellcheck source=script/efr32-definitions
+source "$script_dir/efr32-definitions"
+
+readonly OT_OPTIONS=(
+    "-DOT_COMPILE_WARNING_AS_ERROR=ON"
+    "-DOT_COMMISSIONER=ON"
+    "-DOT_DHCP6_CLIENT=ON"
+    "-DOT_DHCP6_SERVER=ON"
+    "-DOT_DNS_CLIENT=ON"
+    "-DOT_JOINER=ON"
+    "-DOT_BORDER_ROUTER=ON"
+    "-DOT_REFERENCE_DEVICE=ON"
+    "-DOT_COAP=ON"
+    "-DOT_COAPS=ON"
+    "-DOT_LOG_LEVEL_DYNAMIC=ON"
+    "-DOT_DIAGNOSTIC=ON"
+    "-DOT_FULL_LOGS=ON"
+    "-DOT_MAC_FILTER=ON"
+)
+
+# List of boards to test
+readonly BOARDS=(
+    brd4151a
+    brd4161a
+    brd4164a
+    brd4166a
+    brd4168a
+    brd4170a
+    brd4180a
+    brd4180b
+    brd4181a
+    brd4186c
+    brd4187c
+    brd4304a
+)
+
+# Sanity check to ensure each board has its platform before it.
+if [[ ! "$((${#BOARDS[@]} % 2))" -eq "0" ]]; then
+    echo "BOARDS is not properly defined."
+    # exit 1
+fi
+
+main()
+{
+    export CPPFLAGS="${CPPFLAGS:-} -DNDEBUG"
+    for ((idx = 0; idx < ${#BOARDS[@]}; idx = idx + 1)); do
+        local board="${BOARDS[idx]}"
+        echo "Building [${board}]..."
+        "$script_dir"/build "$board" "${OT_OPTIONS[@]}"
+    done
+}
+
+main "$@"

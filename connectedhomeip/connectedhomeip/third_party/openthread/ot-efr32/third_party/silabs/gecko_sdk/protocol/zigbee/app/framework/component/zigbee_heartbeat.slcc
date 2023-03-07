@@ -1,0 +1,28 @@
+package: Zigbee
+description: This component periodically blinks an LED and is useful as an indication
+  of whether the application is running or not.  It requires that the configuration
+  defines BOARD_HEARTBEAT_LED appropriately.  Typically, this is defined in the board
+  header file.
+label: Heartbeat
+quality: production
+id: zigbee_heartbeat
+category: Zigbee|Utility
+provides:
+   - name: zigbee_heartbeat
+requires:
+   - name: simple_led_recommended_instance
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/heartbeat/config/heartbeat-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/heartbeat/heartbeat.c
+template_contribution:
+  - name: component_catalog
+    value: zigbee_heartbeat
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emAfPluginHeartbeatInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: init_done
+      function_name: emAfPluginHeartbeatInitCallback

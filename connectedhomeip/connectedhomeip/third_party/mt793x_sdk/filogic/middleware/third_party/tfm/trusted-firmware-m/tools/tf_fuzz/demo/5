@@ -1,0 +1,2 @@
+purpose to show how to randomize name and data;
+set sst name * data *;

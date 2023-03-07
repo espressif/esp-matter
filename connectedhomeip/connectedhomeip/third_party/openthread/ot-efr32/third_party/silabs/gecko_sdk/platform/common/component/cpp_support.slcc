@@ -1,0 +1,12 @@
+id: cpp_support
+label: "Toolchain: C++ Support"
+description: >
+  C++ support for project. Adds C++ standard library for GCC.
+package: platform
+category: Platform|Toolchain
+quality: production
+library:
+  - system: stdc++
+    condition: [toolchain_gcc]
+provides:
+  - name: cpp_support

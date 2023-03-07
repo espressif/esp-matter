@@ -1,0 +1,185 @@
+{%- block content -%}
+  rx 0{{"\n"}}
+  {%- set phyInfoEntry = firstDictValue(multiPhyConfig.commonStructures.phyInfoEntries) -%}
+  writeRmrStructure {{ rmr_structs.phyInfo }} 0 8{% for byte in (phyInfoEntry.phyInfoData.version|uint32ToBytes) %} {{byte}}{% endfor -%}
+  {% for byte in (phyInfoEntry.phyInfoData.freqOffsetFactor_fxp|uint32ToBytes) %} {{byte}}{% endfor -%}
+  {{"\n"}}writeRmrStructure {{ rmr_structs.phyInfo }} 20 8{% for byte in (phyInfoEntry.phyInfoData.antDivRxAutoConfig|uint32ToBytes) %} {{byte}}{% endfor -%}
+  {% for byte in (phyInfoEntry.phyInfoData.src1Denominator|uint32ToBytes) %} {{byte}}{% endfor -%}
+  {{"\n"}}writeRmrStructure {{ rmr_structs.phyInfo }} 28 8{% for byte in (phyInfoEntry.phyInfoData.src2Denominator|uint32ToBytes) %} {{byte}}{% endfor -%}
+  {% for byte in ((phyInfoEntry.phyInfoData.txBaudRate|int)|uint32ToBytes) %} {{byte}}{% endfor -%}
+  {{"\n"}}writeRmrStructure {{ rmr_structs.phyInfo }} 36 8{% for byte in ((phyInfoEntry.phyInfoData.baudPerSymbol|baudsBits(phyInfoEntry.phyInfoData.bitsPerSymbol))|uint32ToBytes) %} {{byte}}{% endfor -%}
+  {% for byte in ((phyInfoEntry.phyInfoData.synthCache|int)|uint32ToBytes) %} {{byte}}{% endfor -%}
+  {#- Update the pointers in the phyInfoStructure -#}
+  {{"\n"}}updateConfigurationPointer {{ rmr_structs.phyInfo }} 2 {{ rmr_structs.null }}
+  {%- if phyInfoEntry.phyInfoData.irCalConfig|length > 0 -%}
+    {{"\n"}}updateConfigurationPointer {{ rmr_structs.phyInfo }} 3 {{ rmr_structs.irCalConfig }}
+  {%- else -%}
+    {{"\n"}}updateConfigurationPointer {{ rmr_structs.phyInfo }} 3 {{ rmr_structs.null }}
+  {%- endif -%}
+  {%- if phyInfoEntry.phyInfoData.dcdcRetimingConfig != None -%}
+    {{"\n"}}updateConfigurationPointer {{ rmr_structs.phyInfo }} 11 {{ rmr_structs.dcdcRetimingConfig }}
+  {%- else -%}
+    {{"\n"}}updateConfigurationPointer {{ rmr_structs.phyInfo }} 11 {{ rmr_structs.null }}
+  {%- endif -%}
+  {%- if phyInfoEntry.phyInfoData.hfxoRetimingConfig != None -%}
+    {{"\n"}}updateConfigurationPointer {{ rmr_structs.phyInfo }} 12 {{ rmr_structs.hfxoRetimingConfig }}
+  {%- else -%}
+    {{"\n"}}updateConfigurationPointer {{ rmr_structs.phyInfo }} 12 {{ rmr_structs.null }}
+  {%- endif -%}
+  {%- if phyInfoEntry.phyInfoData.rffpllConfig != None -%}
+    {{"\n"}}updateConfigurationPointer {{ rmr_structs.phyInfo }} 17 {{ rmr_structs.rffpllConfig }}
+  {%- else -%}
+    {{"\n"}}updateConfigurationPointer {{ rmr_structs.phyInfo }} 17 {{ rmr_structs.null }}
+  {%- endif -%}
+  {{"\n"}}updateConfigurationPointer {{ rmr_structs.phyInfo}} 4 {{ rmr_structs.null }}{{"\n"}}
+  {#- Write the irCalConfig info -#}
+  {%- set irCalConfigEntry = firstDictValue(multiPhyConfig.commonStructures.irCalConfigEntries) -%}
+  {%- if irCalConfigEntry|length > 0 -%}
+    writeRmrStructure {{ rmr_structs.irCalConfig }} 0 1 {{ irCalConfigEntry|length }}{{"\n"}}
+    {%- for items in (irCalConfigEntry|unrollAppendIndexLength(8, 1))|batch(10) -%}
+      writeRmrStructure {{ rmr_structs.irCalConfig }}
+      {%- for item in items -%}
+        {{" "}}{{item|int}}
+      {%- endfor -%}{{"\n"}}
+    {%- endfor -%}
+  {%- endif -%}
+  {%- for entries in ((modemConfigEntries|formatModemConfigEntries)|unrollAppendIndexLength(8,0))|batch(10) -%}
+    writeRmrStructure {{ rmr_structs.modemConfig }}
+    {%- for entry in entries -%}
+      {{" "}}{{entry|int}}
+    {%- endfor -%}{{"\n"}}
+  {%- endfor -%}
+  {%- set multiPhyConfigEntry = firstDictValue(multiPhyConfig.multiPhyConfigEntries) -%}
+  {%- set phyConfigEntry = firstDictValue(multiPhyConfigEntry.phyConfigEntries) -%}
+  {#- frameLengthlist printing -#}
+  {%- if phyConfigEntry.frameLengthEntry -%}
+    updateConfigurationPointer {{ rmr_structs.phyInfo }} 2 {{ rmr_structs.frameTypeConfig }}{{"\n"-}}
+    updateConfigurationPointer {{ rmr_structs.frameTypeConfig }} 0 {{ rmr_structs.frameLengthList }}{{"\n"-}}
+    writeRmrStructure {{ rmr_structs.frameTypeConfig }} 4 4 {{phyConfigEntry.frameTypeEntry.offset.value}} {{phyConfigEntry.frameTypeEntry.mask.value}} {{phyConfigEntry.frameTypeEntry.isValid.value|listToInt}} {{phyConfigEntry.frameTypeEntry.addressFilter.value|listToInt}}{{"\n"}}
+    {%- for items in ((phyConfigEntry.frameLengthEntry.values|formatFrameTypeConfigLengths)|unrollAppendIndexLength(8,0))|batch(10) -%}
+      writeRmrStructure {{ rmr_structs.frameLengthList }}
+      {%- for item in items -%}
+        {{" "}}{{item|int}}
+      {%- endfor -%}{{"\n"}}
+    {%- endfor -%}
+  {%- endif -%}
+  {#- frameCodingTable printing -#}
+  {%- if phyConfigEntry.frameCodingTableEntry %}
+    {%- for items in ((phyConfigEntry.frameCodingTableEntry.values|formatFrameCodingTable)|unrollAppendIndexLength(8,0))|batch(10) -%}
+      writeRmrStructure {{ rmr_structs.frameCodingTable }}
+      {%- for item in items -%}
+        {{" "}}{{item|int}}
+      {%- endfor -%}{{"\n"}}
+    {%- endfor -%}
+  {%- endif -%}
+  {%- set railChannelConfigEntryAttrEntr = firstDictValue(multiPhyConfig.commonStructures.railChannelConfigEntryAttrEntries) -%}
+  {%- if railChannelConfigEntryAttrEntr.calValues > 1-%}
+    writeRmrStructure {{ rmr_structs.channelConfigAttributes }} 0 8 255 255 255 255 255 255 255 255{{"\n"}}{#- Channel Config Attributes is hardcoded to 0xFFFFFFFFUL -#}
+  {%- else -%}
+    writeRmrStructure {{ rmr_structs.channelConfigAttributes }} 0 4 255 255 255 255{{"\n"}}{#- Channel Config Attributes is hardcoded to 0xFFFFFFFFUL -#}
+  {%- endif -%}
+  {#- Write the dcdcRetimingConfig info -#}
+  {%- if phyInfoEntry.phyInfoData.dcdcRetimingConfig != None -%}
+    {%- if multiPhyConfig.commonStructures.dcdcRetimingConfigEntries|length > 0 -%}
+      {%- set dcdcRetimingConfigEntry = firstDictValue(multiPhyConfig.commonStructures.dcdcRetimingConfigEntries) -%}
+      writeRmrStructure {{ rmr_structs.dcdcRetimingConfig }} 0 1 {{ dcdcRetimingConfigEntry|length }}{{"\n"}}
+      {%- for items in (dcdcRetimingConfigEntry|unrollAppendIndexLength(8, 1))|batch(10) -%}
+        writeRmrStructure {{ rmr_structs.dcdcRetimingConfig }}
+        {%- for item in items -%}
+          {{" "}}{{item|int}}
+        {%- endfor -%}{{"\n"}}
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endif -%}
+  {#- Write the hfxoRetimingConfig info -#}
+  {%- if phyInfoEntry.phyInfoData.hfxoRetimingConfig != None -%}
+    {%- set hfxoRetimingConfigEntry = firstDictValue(multiPhyConfig.commonStructures.hfxoRetimingTableEntries) -%}
+    {%- if hfxoRetimingConfigEntry|length > 0 -%}
+      writeRmrStructure {{ rmr_structs.hfxoRetimingConfig }} 0 4 {{ hfxoRetimingConfigEntry.hfxoRetimingInfoConfigEntries|length }}{{" 0 0 0"}}{{"\n"}}
+      {%- set hfxoDataList = [] -%}
+      {%- for hfxoRetimingInfoConfigEntryName, hfxoRetimingInfoConfigEntry in hfxoRetimingConfigEntry.hfxoRetimingInfoConfigEntries.items() %}
+        {%- for key, value in hfxoRetimingInfoConfigEntry.items() %}
+          {%- if key == "dpllClock" -%}
+            {%- for byte in (value | int | uint32ToBytes) -%}
+              {%- set tmp = hfxoDataList.append(byte) -%}
+            {%- endfor -%}
+          {%- else -%}
+            {%- set tmp = hfxoDataList.append(value | int) -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- set tmp = hfxoDataList.append(0) -%}
+        {%- set tmp = hfxoDataList.append(0) -%}
+      {%- endfor -%}
+      {%- for hfxoRetimingBandConfigEntryName, hfxoRetimingBandConfigEntry in hfxoRetimingConfigEntry.hfxoRetimingBandConfigEntries.items() %}
+        {%- for key, value in hfxoRetimingBandConfigEntry.items() %}
+          {%- if key == "loFreqUpperRange" -%}
+            {%- for byte in (value | int | uint16ToBytes) -%}
+              {%- set tmp = hfxoDataList.append(byte) -%}
+            {%- endfor -%}
+          {%- else -%}
+            {%- set tmp = hfxoDataList.append(value | int) -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endfor %}
+      {%- for items in (hfxoDataList|unrollAppendIndexLength(8, 4))|batch(10) -%}
+        writeRmrStructure {{ rmr_structs.hfxoRetimingConfig }}
+        {%- for item in items -%}
+          {{" "}}{{item|int}}
+        {%- endfor -%}{{"\n"}}
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endif -%}
+  {#-TODO: DynamicSlicerConfigEntries should go in here -#}
+  {#- Write the rffpllConfig info -#}
+  {%- if phyInfoEntry.phyInfoData.rffpllConfig != None -%}
+    {%- set rffpllConfigEntry = firstDictValue(multiPhyConfig.commonStructures.rffpllConfigEntries) -%}
+    {%- if rffpllConfigEntry|length > 0 -%}
+      {%- for items in (rffpllConfigEntry|unrollAppendIndexLength(8, 0, 32))|batch(10) -%}
+        writeRmrStructure {{ rmr_structs.rffpllConfig }}
+        {%- for item in items -%}
+          {{" "}}{{item|int}}
+        {%- endfor -%}{{"\n"}}
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endif -%}
+  {#- Do the channel configuration next -#}
+  {%- set multiPhyConfigEntry = firstDictValue(multiPhyConfig.multiPhyConfigEntries) -%}
+  {%- set entry = firstDictValue(multiPhyConfigEntry.channelConfigEntries) -%}
+  writeRmrStructure {{ rmr_structs.channelConfigEntry }} 4 8
+  {%- for byte in (entry.baseFrequency|uint32ToBytes) -%}
+    {{" "}}{{byte|int}}
+  {%- endfor -%}
+  {%- for byte in (entry.channelSpacing|uint32ToBytes) -%}
+    {{" "}}{{byte|int}}
+  {%- endfor -%}
+  {{"\n"}}writeRmrStructure {{ rmr_structs.channelConfigEntry }} 12 8
+  {%- if entry.physicalChannelOffset == "SAME_AS_FIRST_CHANNEL" -%}
+  {%- for byte in (entry.channelNumberStart|uint16ToBytes) -%}
+    {{" "}}{{byte|int}}
+  {%- endfor -%}
+  {%- else -%}
+  {%- for byte in (entry.physicalChannelOffset|uint16ToBytes) -%}
+    {{" "}}{{byte|int}}
+  {%- endfor -%}
+  {%- endif -%}
+  {%- for byte in (entry.channelNumberStart|uint16ToBytes) -%}
+    {{" "}}{{byte|int}}
+  {%- endfor -%}
+  {%- for byte in (entry.channelNumberEnd|uint16ToBytes) -%}
+    {{" "}}{{byte|int}}
+  {%- endfor -%}
+  {%- for byte in (entry.maxPower|uint16ToBytes) -%}
+    {{" "}}{{byte|int}}
+  {%- endfor -%}
+{{"\n"}}writeRmrStructure {{ rmr_structs.channelConfigEntry }} 24 4 {{entry.entryType|int}} 0 0 0 {{"\n"}}
+  {%- if len(modemConfigRefs) > 0 -%}
+    {%- for reference in modemConfigRefs -%}
+      updateConfigurationPointer
+      {%- for item in reference -%}
+        {{" "}}{{item}}
+      {%- endfor -%}{{"\n"}}
+    {%- endfor -%}
+  {%- endif -%}
+reconfigureModem
+getRadioState
+{%- endblock -%}

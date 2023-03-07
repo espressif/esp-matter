@@ -1,0 +1,20 @@
+id: "connect_stack_counters"
+label: "Stack Counters"
+package: "Flex"
+category: "Connect"
+quality: "production"
+description: "This component provides stack packet counters functionality. If this component is enabled, the stack shall keep track of successful and failed transmissions as well as successful received packets and dropped incoming packets."
+provides:
+  - name: "connect_stack_counters"
+requires:
+  - name: "connect_stack_common"
+  - name: "connect_stack_counters_implementation"
+recommends:
+  - id: "connect_stack_counters_source"
+template_contribution:
+  - name: component_catalog
+    value: connect_stack_counters
+
+documentation:
+  docset: connect-stack
+  document: group-stack-counters

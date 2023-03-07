@@ -1,0 +1,31 @@
+id: "btmesh_time_server"
+label: "Time Server"
+package: "Btmesh"
+description: >
+  Used to support the control and reporting functionality of a node that
+  tracks time.
+category: "Bluetooth Mesh|Models|Time and Scenes"
+quality: "production"
+root_path: "app/bluetooth/common/btmesh_time_server"
+config_file:
+  - path: "config/sl_btmesh_time_server_config.h"
+  - path: btmesh_time_server.dcd
+    directory: btmeshconf
+source:
+  - path: "sl_btmesh_time_server.c"
+include:
+  - path: ""
+    file_list:
+      - path: "sl_btmesh_time_server.h"
+provides:
+  - name: "btmesh_time_server"
+requires:
+  - name: "app_btmesh_util"
+  - name: "btmesh_feature_time_server"
+  - name: "btmesh_stack"
+
+template_contribution:
+  - name: "btmesh_on_event"
+    value:
+      include: "sl_btmesh_time_server.h"
+      function: "sl_btmesh_time_server_on_event"

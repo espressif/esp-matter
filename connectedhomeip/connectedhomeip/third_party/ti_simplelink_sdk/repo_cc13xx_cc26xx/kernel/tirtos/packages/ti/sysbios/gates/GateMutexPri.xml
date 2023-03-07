@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="GateMutexPri" title="Mutex Gate With Priority Inheritance" version="1">
+
+<page name="Module" title="Module Settings">
+<html><body><table>
+  <tr>
+      <td><form>
+        <p>GateMutexPri is a mutex gate (it can only be held by one thread at a time)
+           which implements priority inheritance in order to prevent priority 
+           inversion. Priority inversion occurs when a high priority task has its
+           priority effectively 'inverted' because it is waiting on a gate held by a
+           low priority task.</p>
+        <p> </p>
+      </form></td>
+  </tr>
+  <tr>
+    <td><control type="checkbox" label="Add the GateMutexPri module to my configuration" value="value:this.$used" bold="true"/></td>
+  </tr>
+  <tr></tr>
+</table></body></html>
+</page>
+</gep>
+

@@ -1,0 +1,74 @@
+name: Run tests
+
+on: [pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Run tests
+
+    steps:
+    - name: Checkout the code
+      uses: actions/checkout@v2
+
+    - name: Install west and dependencies
+      run: |
+        pip3 install -U pip
+        pip3 install -U setuptools
+        pip3 install -U -r scripts/requirements.txt
+
+    - name: Install cddl-gen package
+      run: |
+        python3 setup.py sdist bdist_wheel
+        pip3 install dist/cddl-gen-*.tar.gz
+        pip3 uninstall -y cddl-gen
+        pip3 install dist/cddl_gen-*.whl
+
+    - name: Run pycodestyle cddl_gen.py
+      working-directory: tests
+      run: |
+        pycodestyle ../cddl_gen/cddl_gen.py --max-line-length=120 --ignore=W191,E101,W503
+
+    - name: Run pycodestyle run_tests.py
+      working-directory: tests
+      run: |
+        pycodestyle scripts/run_tests.py --max-line-length=120 --ignore=W503,E501,E402
+
+    - name: Run python tests
+      working-directory: tests/scripts
+      run: |
+        python3 -m unittest run_tests
+
+    - name: Clone zephyr
+      working-directory: tests
+      run: |
+        git clone --depth 1 https://github.com/zephyrproject-rtos/zephyr
+
+    - name: West init
+      working-directory: tests
+      run: |
+        export ZEPHYR_BASE=$(pwd)/zephyr
+        export ZEPHYR_TOOLCHAIN_VARIANT=host
+        export PATH="$HOME/.local/bin:$PATH"
+        west init -l zephyr
+
+    - name: Install packages
+      run: |
+        sudo apt update
+        sudo apt install -y ninja-build gcc-multilib
+
+    - name: Run cbor_decode tests
+      working-directory: tests
+      run: |
+        export ZEPHYR_BASE=$(pwd)/zephyr
+        export ZEPHYR_TOOLCHAIN_VARIANT=host
+        cd cbor_decode
+        ./test.sh
+
+    - name: Run cbor_encode tests
+      working-directory: tests
+      run: |
+        export ZEPHYR_BASE=$(pwd)/zephyr
+        export ZEPHYR_TOOLCHAIN_VARIANT=host
+        cd cbor_encode
+        ./test.sh

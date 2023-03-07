@@ -1,0 +1,23 @@
+!!omap
+- id: slwstk6006a
+- label: SLWSTK6006A
+- package: platform
+- description: Kit BSP support for the EFR32xG21 2.4 GHz Mesh Networking Kit.
+- category: Platform|Board|Kit|Wireless Starter Kit
+- quality: production
+- requires:
+  - name: brd4001a
+  - name: hardware_board_from_slwstk6006a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_stk
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWSTK6006A"'
+  - name: SL_KIT_REV
+    value: '"B06"'
+- tag:
+  - kit:opn:SLWSTK6006A
+  - kit:pn:WSTK6006
+  - kit:variant:A
+  - kit:revision:B06

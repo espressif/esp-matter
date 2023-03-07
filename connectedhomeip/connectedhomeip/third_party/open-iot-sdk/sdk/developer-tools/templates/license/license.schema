@@ -1,0 +1,147 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "description": "scancode output",
+    "properties": {
+      "headers": {
+        "type": "array"
+      },
+      "files": {
+        "type": "array",
+        "items": {
+          "anyOf": [
+
+            {
+              "description": "folders objects are not required for license",
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "const": "directory"
+                }
+              },
+              "required": [
+                "path",
+                "type"
+              ]
+            },
+
+            {
+              "description": "binary file objects are not required for license",
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "pattern": "\\.(png|jpg)$"
+                },
+                "type": {
+                  "type": "string",
+                  "const": "file"
+                }
+              },
+              "required": [
+                "path",
+                "type"
+              ]
+            },
+
+            {
+              "description": "certain text-based file objects are not required for license",
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "pattern": "\\.(html|json|md|log|yaml|yml|in|map|rst|patch|wav|release_ignore|ini|conf|options)$"
+                },
+                "type": {
+                  "type": "string",
+                  "const": "file"
+                }
+              },
+              "required": [
+                "path",
+                "type"
+              ]
+            },
+
+            {
+              "description": "certain special files are not required for license",
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "pattern": "(gitmodules|CODEOWNERS|doxyfile_options|gitlint|license\\.schema|^(?!CMakeLists).+\\.txt|.gitkeep|.astylerc)$"
+                },
+                "type": {
+                  "type": "string",
+                  "const": "file"
+                }
+              },
+              "required": [
+                "path",
+                "type"
+              ]
+            },
+
+            {
+              "type": "object",
+              "description": "files require Permissive license",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "const": "file"
+                },
+                "licenses": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "category": {
+                          "type": "string",
+                          "const": "Permissive"
+                        },
+                        "spdx_license_key": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "key",
+                        "name",
+                        "category",
+                        "spdx_license_key"
+                      ]
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "path",
+                "type",
+                "licenses"
+              ]
+            }
+
+          ]
+        }
+      }
+    },
+    "required": [
+      "headers",
+      "files"
+    ]
+  }

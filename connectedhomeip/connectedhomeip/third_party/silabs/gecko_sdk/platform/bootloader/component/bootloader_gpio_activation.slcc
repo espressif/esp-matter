@@ -1,0 +1,22 @@
+id: bootloader_gpio_activation
+label: GPIO activation
+package: bootloader
+description: Enter bootloader firmware upgrade mode if GPIO has a given state at reset
+category: Platform|Bootloader|Utils
+quality: production
+source:
+  - path: platform/bootloader/gpio/gpio-activation/btl_gpio_activation.c
+include:
+  - path: platform/bootloader/gpio/gpio-activation
+    file_list:
+    - path: btl_gpio_activation.h
+define:
+  - name: BTL_GPIO_ACTIVATION
+    value: 1
+provides:
+  - name: bootloader_gpio_activation
+  - name: bootloader_nonsecure_incompatible
+    condition: [bootloader_core_nonsecure]
+config_file:
+  - path: platform/bootloader/config/btl_gpio_activation_cfg.h
+    file_id: btl_gpio_activation_cfg

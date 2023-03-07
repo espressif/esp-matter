@@ -1,0 +1,92 @@
+# Copyright 2019 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_bloat/bloat.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+}
+
+pw_source_set("pw_result") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    "$dir_pw_assert",
+    "$dir_pw_preprocessor",
+    "$dir_pw_status",
+  ]
+  public = [ "public/pw_result/result.h" ]
+  sources = [ "public/pw_result/internal/result_internal.h" ]
+}
+
+pw_test_group("tests") {
+  tests = [ ":result_test" ]
+}
+
+pw_test("result_test") {
+  deps = [
+    ":pw_result",
+    dir_pw_status,
+  ]
+  sources = [
+    "result_test.cc",
+    "statusor_test.cc",
+  ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+  report_deps = [ ":result_size" ]
+}
+
+pw_size_diff("result_size") {
+  title = "pw::Result vs. pw::Status and out pointer"
+
+  binaries = [
+    {
+      target = "size_report:result_simple"
+      base = "size_report:pointer_simple"
+      label = "Simple function"
+    },
+    {
+      target = "size_report:result_noinline"
+      base = "size_report:pointer_noinline"
+      label = "Simple function without inlining"
+    },
+    {
+      target = "size_report:result_read"
+      base = "size_report:pointer_read"
+      label = "Returning a larger object (std::span)"
+    },
+    {
+      target = "size_report:monadic_and_then"
+      base = "size_report:ladder_and_then"
+      label = "Using and_then instead of if ladder"
+    },
+    {
+      target = "size_report:monadic_or_else"
+      base = "size_report:ladder_or_else"
+      label = "Using or_else instead of if ladder"
+    },
+    {
+      target = "size_report:monadic_transform"
+      base = "size_report:ladder_transform"
+      label = "Using transform instead of if ladder"
+    },
+  ]
+}

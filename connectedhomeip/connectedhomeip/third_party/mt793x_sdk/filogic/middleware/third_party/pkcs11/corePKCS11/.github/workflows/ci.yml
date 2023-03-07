@@ -1,0 +1,173 @@
+name: CI Checks
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  systemtests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone This Repo
+        uses: actions/checkout@v2
+      - name: Build
+        run: |
+          cmake -S test -B build/ \
+          -G "Unix Makefiles" \
+          -DCMAKE_BUILD_TYPE=Debug \
+          -DBUILD_CLONE_SUBMODULES=ON \
+          -DSYSTEM_TESTS=1 \
+          -DCMAKE_C_FLAGS='-Wall -Wextra -DNDEBUG'
+          make -C build/ all
+      - name: System Tests
+        run: |
+          cd build/
+          ctest -E system --output-on-failure
+  unittest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone This Repo
+        uses: actions/checkout@v2
+      - name: Build
+        run: |
+          sudo apt-get install -y lcov
+          cmake -S test -B build/ \
+          -G "Unix Makefiles" \
+          -DCMAKE_BUILD_TYPE=Debug \
+          -DBUILD_CLONE_SUBMODULES=ON \
+          -DUNIT_TESTS=1 \
+          -DCMAKE_C_FLAGS='--coverage -Wall -Wextra -DNDEBUG'
+          make -C build/ all
+      - name: Unit Tests
+        run: |
+          cd build/
+          ctest -E system --output-on-failure
+          cd ..
+      - name: Coverage
+        run: |
+          make -C build/ coverage
+          lcov --rc lcov_branch_coverage=1 --remove build/coverage.info '*test*' --output-file build/coverage.info
+          lcov --rc lcov_branch_coverage=1 --remove build/coverage.info '*CMakeCCompilerId*' --output-file build/coverage.info
+          lcov --rc lcov_branch_coverage=1 --remove build/coverage.info '*mocks*' --output-file build/coverage.info
+          lcov --list build/coverage.info
+      - name: lcov-cop
+        uses: ChicagoFlutter/lcov-cop@v1.0.2
+        with:
+          path: "build/coverage.info"
+          min_coverage: 99
+          exclude: "**/*test*"
+  complexity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup
+        run: sudo apt-get install complexity
+      - name: Complexity
+        run: |
+          find source/ -iname '*.c' -not -path 'source/portable/windows/*' -not -path 'source/dependency*' |\
+          xargs complexity --scores --threshold=0 --horrid-threshold=8
+  doxygen:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Doxygen
+        run: |
+          wget -qO- "https://sourceforge.net/projects/doxygen/files/rel-1.8.20/doxygen-1.8.20.linux.bin.tar.gz/download" | sudo tar --strip-components=1 -xz -C /usr/local
+          sudo apt-get install -y libclang-9-dev graphviz
+      - name: Run Doxygen And Verify Stdout Is Empty
+        run: |
+          doxygen docs/doxygen/config.doxyfile 2>&1 | tee doxyoutput.txt
+          if [[ "$(wc -c < doxyoutput.txt | bc)" = "0" ]]; then exit 0; else exit 1; fi
+  spell-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Parent Repo
+        uses: actions/checkout@v2
+        with:
+          ref: main
+          repository: aws/aws-iot-device-sdk-embedded-C
+      - run: rm -r libraries/standard/corePKCS11
+      - name: Clone This Repo
+        uses: actions/checkout@v2
+        with:
+          path: libraries/standard/corePKCS11
+      - name: Install spell
+        run: |
+          sudo apt-get install spell
+          sudo apt-get install util-linux
+      - name: Check spelling
+        run: |
+          PATH=$PATH:$PWD/tools/spell
+          # Modifies `find` command used in spell checker to ignore the test and dependency directory
+          # The command looks like this `extract-comments `find $DIRNAME -name \*.[ch]` should the line change and the sed command will
+          # append "-not path {val added below}" for each of the directories mentioned.
+          # https://github.com/aws/aws-iot-device-sdk-embedded-C/blob/ad28ed355df4f82b77f48028e24bd6fc9e63bc54/tools/spell/find-unknown-comment-words#L86
+          sed -i 's/find $DIRNAME/find $DIRNAME -not -path '*test*' -not -path '*dependency*'/g' tools/spell/find-unknown-comment-words
+          find-unknown-comment-words --directory libraries/standard/corePKCS11
+          if [ "$?" = "0" ]; then
+            exit 0
+          else
+            exit 1
+          fi
+  formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Uncrustify
+        run: sudo apt-get install uncrustify
+      - name: Run Uncrustify
+        run: find . -iname "*.[hc]" -exec uncrustify --check -c tools/uncrustify.cfg {} +
+      - name: Check For Trailing Whitespace
+        run: |
+          set +e
+          grep --exclude="README.md" -rnI -e "[[:blank:]]$" .
+          if [ "$?" = "0" ]; then
+            echo "Files have trailing whitespace."
+            exit 1
+          else
+            exit 0
+          fi
+            url-check:
+  url-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone This Repo
+        uses: actions/checkout@v2
+        with:
+            path: ./kernel
+      - name: URL Checker
+        run: |
+            bash kernel/.github/actions/url_verifier.sh kernel
+  git-secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Checkout awslabs/git-secrets
+        uses: actions/checkout@v2
+        with:
+          repository: awslabs/git-secrets
+          ref: master
+          path: git-secrets
+      - name: Install git-secrets
+        run: cd git-secrets && sudo make install && cd ..
+      - name: Run git-secrets
+        run: |
+          git-secrets --register-aws
+          git-secrets --scan
+  memory_statistics:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: git submodule update --init --recursive --checkout
+      - name: Install Python3
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7.10'
+      - name: Measure sizes
+        uses: FreeRTOS/CI-CD-Github-Actions/memory_statistics@main
+        with:
+            config: .github/memory_statistics_config.json
+            check_against: docs/doxygen/include/size_table.html

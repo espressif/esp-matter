@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved.  -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.serial_number_string" uuid="2A25" name="Serial Number String" last-modified="2011-05-24" approved="Yes">
+	<InformativeText>
+        <Abstract>
+      The value of this characteristic is a variable-length UTF-8 string representing the serial number for a particular instance of the device.            
+		</Abstract>
+    </InformativeText>
+	<Value>
+		<Field name="Serial Number">
+			<Requirement>Mandatory</Requirement>
+			<Format>utf8s</Format>
+		</Field>
+	</Value>
+</Characteristic>

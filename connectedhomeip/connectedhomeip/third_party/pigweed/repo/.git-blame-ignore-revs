@@ -1,0 +1,64 @@
+# This is the list of commits that should be ignored by 'git blame'. To
+# use it, run the following:
+#
+#   git blame --ignore-revs-file .git-blame-ignore-revs
+#
+# To automatically use it when running 'git blame' on this repository, run the
+# following:
+#
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+#
+# To automatically use it for all repositories, run the following:
+#
+#   git config --global blame.ignoreRevsFile .git-blame-ignore-revs
+#
+# If concerned about other repositories using a different name, this is the
+# community standard, and is the file used by GitHub to ignore revisions in
+# their blame view.
+# https://github.blog/changelog/2022-03-24-ignore-commits-in-the-blame-view-beta/
+
+# Change formatting from yapf to black.
+02732d9506b4f66854f23ee064907ef6405b83f3
+1bda37930ca8f8ce3e5e6b79982f3244de51d0f2
+21cfe286308b6a465fcaa90db433bd2f382f683a
+31c492a6119fd0a36e3d233f9354c014f2652b89
+33b390814422db286fdf240bea27e6c09881b911
+3c8ba26bc89ae6762598655fd2133c0c150651df
+3cb4e229a05f720ad1c1c3405597e214680416ec
+44ee7fb1f63d8a9c0a8528857d4eda7e3e117267
+47398dfbbf3ed28a9751d521966e9b75b7897da7
+4d2f06133b301776f8c9a10c8363878a58fb56f0
+503e192e4ae138f623e5463f3435c2afeb9c808b
+5235eda12307db99d5ca0c24830cc1bcaf672145
+58ddd05093ecfb4558a7980f3b707011fd37e06e
+5b01d4fab136839d3d25062ec137ab931e92a5f3
+5b9ec8d5cae24541589ebfe5025b3c7daa6dcf52
+5e52cc3f9a12845bb29798fabf99cfc574692010
+5ffe355fd89b3dbdb11ec77034de9db54950fa2a
+622eb812cc8e73519f5732852e5d977cdcb50a53
+6eafe56722c702adae2996d6404fa3e08f074ffc
+6fb07f7b33f504e51049f0ea62b4700527fc34cf
+7220f7ebed024ee22f79043351709a561c1e393e
+85794e3642c659b6c7e1c9a90b65f5089a01a657
+85b160144ce9165883732974bf0fad4097869def
+873707e66bbac4ef8ac738e4ef45a44cdfbea9ac
+88529bdaf1fee07fae9105ecd845f77fb9597723
+916aaa30bd672d53a73ce650e5e4dd595c87cd12
+91e057b168cfa90797edcd62ac3da5d63bdfb873
+94138bba6b7fc2d7990379523e469494dae1d88f
+972b56c34486dcba43dd399a1cca88dc8dbca132
+9770972320c7b0e0c60f6ed51d88d63d38925d1b
+aa145977c92667b3766ad83c875b4718e77ed4ee
+b2ce4c9c6896d58ce4b4c5d07d798ab98c090a9c
+b94f2276bb7464532d477602a4a22f20fe51084f
+c2006043567754f95c49dcf3d1964904c923a1e2
+d5210ba6685e3676eb7377e930947d677541056d
+d64ba160189672976fbae008f0c332cebfd3b935
+db7d262156172ad6f66d896a3e7107bdd399c1c9
+e91ac5e74a012c71e8fc66162fe2eca9b7b45abd
+ec5b5a196977780aa93a8bd8be2ab5cd39664d70
+efdc28498ee4b6f6495178373227b58e883739b2
+f2097137dc6e9654e10815539d80e84e40e38855
+f84f8325ad5bb84847d2370ba58625c1a74086a7
+fbd772c3ad784ec2c434cfbb0ac9dea91d8648f9
+fdbe9ec4f04ae85e66a4245d3876cb871eff96c0

@@ -1,0 +1,16 @@
+# Copyright (c) 2022 Arm Limited and Contributors. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+variables:
+  SYNC_DESTINATION : 'https://${GITLAB_USER_ID}:${PUBLIC_SDK_TOKEN}@git.gitlab.arm.com/iot/open-iot-sdk/${CI_PROJECT_NAME}.git'
+
+.sync-public:
+  image: ${OPEN_IOT_SDK_DOCKER_REGISTRY}/sanity:v1
+  tags:
+    - iotmsw-amd64
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  script:
+    - git remote add public ${SYNC_DESTINATION}
+    - git push public HEAD:${CI_COMMIT_BRANCH}
+  stage: .post

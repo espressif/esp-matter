@@ -1,0 +1,16 @@
+{
+    "target": {
+        "Name": "LP_CC2652RSIP",
+        "Revision": [],
+        "Description": "CC2652LP SIP. 7x7 SIP package. Internal bias, differential output. 2.4 GHz frequency band.",
+        "DeviceName": "CC2652RSIP",
+        "DevicePackage": "MOT 7x7",
+        "FrontEnd": "ID",
+        "PaSettings": "pasettings.json",
+        "RfDesign": "CC2652RSIP-EM",
+        "DefaultCategory": "Settings",
+        "IoSettingsIdle": [],
+        "IoSettingsRx": [],
+        "IoSettingsTx": []
+    }
+}

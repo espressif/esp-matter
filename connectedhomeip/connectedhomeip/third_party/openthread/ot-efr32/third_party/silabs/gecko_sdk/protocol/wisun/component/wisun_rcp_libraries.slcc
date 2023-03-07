@@ -1,0 +1,27 @@
+id: "wisun_br_rcp_library"
+label: "Wi-SUN Border Router RCP (Library)"
+description: "Provide Wi-SUN Border Router RCP library"
+package: "wisun"
+category: "Wi-SUN"
+quality: "production"
+root_path: "protocol/wisun"
+
+ui_hints:
+  visibility: never
+
+provides:
+  - name: "wisun_br_rcp_implementation"
+  - name: "wisun_br_rcp_library"
+
+requires:
+  - name: "wisun_mac_library"
+
+library:
+  - path: "stack/libwisun_rcp_efr32xg1x.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_sdid_84"
+  - path: "stack/libwisun_rcp_efr32xg2x.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_sdid_220"

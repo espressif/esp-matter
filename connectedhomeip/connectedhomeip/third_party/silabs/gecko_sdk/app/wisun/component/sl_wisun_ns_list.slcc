@@ -1,0 +1,26 @@
+id: "sl_wisun_ns_list"
+label: "NS List"
+package: "wisun"
+description: "The Wi-SUN NS List component provides a list implementation running on top of the Wi-SUN stack."
+category: "Wi-SUN|Wi-SUN Services"
+quality: "production"
+root_path: "app/wisun/component/ns_list"
+
+ui_hints:
+  visibility: never
+
+provides:
+  - name: sl_wisun_ns_list
+
+source:
+  - path: "ns_list.c"
+include:
+  - path: "."
+    file_list:
+    - "path": "ns_list.h"
+
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: wisun_ns_list

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Magnetic Declination" type="org.bluetooth.characteristic.magnetic_declination" 
+uuid="2A2C" last-modified="2014-11-20" approved="Yes">
+    <Value>
+        <Field name="Magnetic Declination">
+            <InformativeText>Unit is in degrees with a resolution of 0.01 degrees</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>uint16</Format>
+            <Unit>org.bluetooth.unit.plane_angle.degree</Unit>
+            <Description>The magnetic declination is the angle on the horizontal plane between the direction of True North (geographic) and the direction of Magnetic North, measured clockwise from True North to Magnetic North.</Description>
+            <DecimalExponent>-2</DecimalExponent>
+            <Minimum>0</Minimum>
+            <Maximum>359.99</Maximum>
+        </Field>
+    </Value>
+</Characteristic>

@@ -1,0 +1,107 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+
+pw_executable("noop_checksum") {
+  sources = [ "run_checksum.cc" ]
+  deps = [
+    "$dir_pw_bloat:bloat_this_binary",
+    "$dir_pw_log",
+    "$dir_pw_preprocessor",
+    "$dir_pw_span",
+    "..",
+  ]
+  defines = [ "USE_NOOP_CHECKSUM=1" ]
+
+  # TODO(b/259746255): Remove this when everything compiles with -Wconversion.
+  configs = [ "$dir_pw_build:conversion_warnings" ]
+}
+
+pw_executable("crc32_8bit_checksum") {
+  sources = [ "run_checksum.cc" ]
+  deps = [
+    "$dir_pw_bloat:bloat_this_binary",
+    "$dir_pw_log",
+    "$dir_pw_preprocessor",
+    "$dir_pw_span",
+    "..",
+  ]
+  defines = [ "USE_CRC32_8BIT_CHECKSUM=1" ]
+
+  # TODO(b/259746255): Remove this when everything compiles with -Wconversion.
+  configs = [ "$dir_pw_build:conversion_warnings" ]
+}
+
+pw_executable("crc32_4bit_checksum") {
+  sources = [ "run_checksum.cc" ]
+  deps = [
+    "$dir_pw_bloat:bloat_this_binary",
+    "$dir_pw_log",
+    "$dir_pw_preprocessor",
+    "$dir_pw_span",
+    "..",
+  ]
+  defines = [ "USE_CRC32_4BIT_CHECKSUM=1" ]
+
+  # TODO(b/259746255): Remove this when everything compiles with -Wconversion.
+  configs = [ "$dir_pw_build:conversion_warnings" ]
+}
+
+pw_executable("crc32_1bit_checksum") {
+  sources = [ "run_checksum.cc" ]
+  deps = [
+    "$dir_pw_bloat:bloat_this_binary",
+    "$dir_pw_log",
+    "$dir_pw_preprocessor",
+    "$dir_pw_span",
+    "..",
+  ]
+  defines = [ "USE_CRC32_1BIT_CHECKSUM=1" ]
+
+  # TODO(b/259746255): Remove this when everything compiles with -Wconversion.
+  configs = [ "$dir_pw_build:conversion_warnings" ]
+}
+
+pw_executable("crc16_checksum") {
+  sources = [ "run_checksum.cc" ]
+  deps = [
+    "$dir_pw_bloat:bloat_this_binary",
+    "$dir_pw_log",
+    "$dir_pw_preprocessor",
+    "$dir_pw_span",
+    "..",
+  ]
+  defines = [ "USE_CRC16_CHECKSUM=1" ]
+
+  # TODO(b/259746255): Remove this when everything compiles with -Wconversion.
+  configs = [ "$dir_pw_build:conversion_warnings" ]
+}
+
+pw_executable("fletcher16_checksum") {
+  sources = [ "run_checksum.cc" ]
+  deps = [
+    "$dir_pw_bloat:bloat_this_binary",
+    "$dir_pw_log",
+    "$dir_pw_preprocessor",
+    "$dir_pw_span",
+    "..",
+  ]
+  defines = [ "USE_FLETCHER16_CHECKSUM=1" ]
+
+  # TODO(b/259746255): Remove this when everything compiles with -Wconversion.
+  configs = [ "$dir_pw_build:conversion_warnings" ]
+}

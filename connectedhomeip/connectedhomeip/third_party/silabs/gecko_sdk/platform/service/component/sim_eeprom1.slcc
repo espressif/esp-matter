@@ -1,0 +1,33 @@
+id: sim_eeprom1
+label: Simulated EEPROM 1
+package: platform
+description: Simulated EEPROM 1 provides storage of tokens in flash.
+category: Services|Simulated EEPROM
+quality: production
+provides:
+  - name: sim_eeprom1
+requires:
+  - name: sim_eeprom_callback
+  - name: sim_eeprom_headers
+  - name: token_manager
+  - name: device_series_1
+root_path: ./
+source:
+  - path: platform/service/sim_eeprom/sim_eeprom1/src/sl_sim_eeprom1.c
+library:
+  - path: platform/service/sim_eeprom/sim_eeprom1/lib/libsim_eeprom1_CM4_gcc.a
+    condition: [toolchain_gcc, cortexm4]
+  - path: platform/service/sim_eeprom/sim_eeprom1/lib/libsim_eeprom1_CM4_iar.a
+    condition: [toolchain_iar, cortexm4]
+define:
+  - name: USE_SIMEE1
+template_contribution:
+  - name: component_catalog
+    value: sim_eeprom1
+  - name: nvm_flash_reserve
+    # SIMEE1's default size is 8k
+    value: 8192
+    priority: 100
+documentation:
+    docset: gecko-platform
+    document: service/api/group-simeeprom

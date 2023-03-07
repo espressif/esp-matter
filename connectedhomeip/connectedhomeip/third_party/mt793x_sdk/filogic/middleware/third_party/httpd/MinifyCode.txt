@@ -1,0 +1,12 @@
+Please use the MinifyCode to compress HTML, CSS and JavaScript because build load.
+
+Backgroud:
+http://minifycode.com/html-minifier
+MinifyCode
+MinifyCode is a quick web tool to compress or decompress HTML, CSS and JavaScript.
+
+http://www.3rank.com/tools-to-minify-code/
+Minify HTML
+Having compressed HTML files online could save you a lot of money on your server bills if you are hosting a very heavy bandwidth website.
+These compression tools will save space in HTML files by removing text line breaks, tab spaces, and replacing double spaces with single spaces without breaking the content structure.
+

@@ -1,0 +1,46 @@
+id: usb_device_core
+category: Protocol|USB|Device
+label: USB Device Core
+description: >
+  Core implementation of the USB Device (USBD) stack.
+package: usb
+quality: production
+component_root_path: protocol/usb
+config_file:
+  - path: config/sl_usbd_core_config.h
+source:
+  - path: src/sl_usbd_core.c
+  - path: src/sl_usbd_core_ep.c
+  - path: src/sl_usbd_core_os.c
+include:
+  - path: src
+    file_list:
+      - path: sli_usbd_core.h
+  - path: inc
+    file_list:
+      - path: sl_usbd_core.h
+template_file:
+  - path: template/sl_usbd_init.h.jinja
+  - path: template/sl_usbd_init.c.jinja
+template_contribution:
+  - name: component_catalog
+    value: usb_device_core
+  - name: usbd_init
+    value: usb_device_core
+  - name: event_handler
+    value:
+      event: driver_init
+      include: sl_usbd_init.h
+      handler: sli_usbd_init
+provides:
+  - name: usb_device_core
+requires:
+  - name: usb_device_driver
+  - name: kernel
+  - name: bit
+  - name: status
+  - name: enum
+  - name: sl_string
+  - name: silabs_core_sl_malloc
+validation_helper:
+  - path: script/sl_usbd_core_validation.lua

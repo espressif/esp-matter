@@ -1,0 +1,48 @@
+// app global css in Sass form
+.my-sticky-header-table
+  /* height or max-height is important */
+  height: 77vh  //TODO: how to properly use the parents view height
+
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th
+    /* bg color is important for th; just specify one */
+    background-color: #eeeeee
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  thead tr:first-child th
+    top: 0
+
+  tr:nth-child(even)
+    background-color: #dddddd
+
+  /* this is when the loading indicator appears */
+  &.q-table--loading thead tr:last-child th
+    /* height of all previous header rows */
+  color: black
+    top: 48px
+
+.body--dark .my-sticky-header-table
+  thead tr:first-child th
+    /* bg color is important for th; just specify one */
+    background-color: $dark-header-bar-bg
+
+  tr:nth-child(even)
+    background-color: $dark-header-bar-bg
+
+  color: white
+
+.body--light .section-header
+   background: #cccccc
+
+.body--dark .section-header
+   color: white
+   background: $dark-header-bar-bg
+  
+.q-table__bottom.row
+  background-color:(inherit !important)
+
+aside
+  z-index :(9999 !important)

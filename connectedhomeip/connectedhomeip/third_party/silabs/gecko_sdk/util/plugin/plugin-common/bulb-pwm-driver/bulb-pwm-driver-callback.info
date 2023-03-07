@@ -1,0 +1,112 @@
+#include PLATFORM_HEADER
+#include CONFIGURATION_HEADER
+#include EMBER_AF_API_BULB_PWM_DRIVER
+
+/** @brief Configures the frequency of the PWM driver. Called by the bulb-pwm
+ * driver upon initialization to determine the frequency at which the PWM driver
+ * should be driven. It should return either the frequency, in Hz, or
+ * USE_DEFAULT_FREQUENCY to indicate that the plugin should use the default
+ * value. The default value is 1000 Hz, but can be overridden by a macro
+ * in the board header.
+ *
+ * @appusage Should be implemented by an application layer configuration
+ * plugin.
+ *
+ */
+uint16_t halBulbPwmDriverFrequencyCallback(void)
+{
+  return 0xFFFF;//USE_DEFAULT_FREQUENCY;
+}
+
+/** @brief Indicates that the PWM driver has been initialized and
+ * the bulb should drive the initial LED PWM values at this time.
+ *
+ * @appusage Should be implemented by an application layer configuration
+ * plugin.
+ *
+ */
+void halBulbPwmDriverInitCompleteCallback(void)
+{
+}
+
+/** @brief Generated during blinking behavior when it is time
+ * to turn the bulb on. While the plugin will determine when to blink the
+ * bulb on or off, it is up to this callback to determine how to turn the bulb
+ * on.
+ *
+ * @appusage Should be implemented by an application layer configuration
+ * plugin.
+ *
+ */
+void halBulbPwmDriverBlinkOnCallback(void)
+{
+#ifdef BULB_PWM_WHITE
+  halBulbPwmDriverSetPwmLevel(halBulbPwmDriverTicksPerPeriod(), BULB_PWM_WHITE);
+#endif
+#ifdef BULB_PWM_LOWTEMP
+  halBulbPwmDriverSetPwmLevel(halBulbPwmDriverTicksPerPeriod(), BULB_PWM_LOWTEMP);
+#endif
+#ifdef BULB_PWM_RED
+  halBulbPwmDriverSetPwmLevel(halBulbPwmDriverTicksPerPeriod(), BULB_PWM_RED);
+#endif
+#ifdef BULB_PWM_GREEN
+  halBulbPwmDriverSetPwmLevel(halBulbPwmDriverTicksPerPeriod(), BULB_PWM_GREEN);
+#endif
+#ifdef BULB_PWM_BLUE
+  halBulbPwmDriverSetPwmLevel(halBulbPwmDriverTicksPerPeriod(), BULB_PWM_BLUE);
+#endif
+}
+
+/** @brief Generated during blinking behavior when it is time
+ * to turn the bulb off. While the plugin will determine when to blink the
+ * bulb on or off, it is up to this callback to determine how to turn the bulb
+ * off.
+ *
+ * @appusage Should be implemented by an application layer configuration
+ * plugin.
+ *
+ */
+void halBulbPwmDriverBlinkOffCallback(void)
+{
+#ifdef BULB_PWM_WHITE
+  halBulbPwmDriverSetPwmLevel(0, BULB_PWM_WHITE);
+#endif
+#ifdef BULB_PWM_LOWTEMP
+  halBulbPwmDriverSetPwmLevel(0, BULB_PWM_LOWTEMP);
+#endif
+#ifdef BULB_PWM_RED
+  halBulbPwmDriverSetPwmLevel(0, BULB_PWM_RED);
+#endif
+#ifdef BULB_PWM_GREEN
+  halBulbPwmDriverSetPwmLevel(0, BULB_PWM_GREEN);
+#endif
+#ifdef BULB_PWM_BLUE
+  halBulbPwmDriverSetPwmLevel(0, BULB_PWM_BLUE);
+#endif
+}
+
+/** @brief Generated when the application layer makes a
+ * call to initiate blinking behavior. It warns the application layer PWM
+ * code not to attempt to drive the LEDs directly and interfere with the
+ * blinking behavior.
+ *
+ * @appusage Should be implemented by an application layer configuration
+ * plugin.
+ *
+ */
+void halBulbPwmDriverBlinkStartCallback(void)
+{
+}
+
+/** @brief Generated when the current blinking command
+ * finishes. The application layer PWM code must then determine what the
+ * bulb drive should be, based on the current application layer attributes
+ * (i.e., level, on/off, color XY, and so on.)
+ *
+ * @appusage Should be implemented by an application layer configuration
+ * plugin.
+ *
+ */
+void halBulbPwmDriverBlinkStopCallback(void)
+{
+}

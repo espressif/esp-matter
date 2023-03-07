@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectSpec>
+    <applicability>
+        <when>
+            <context
+                deviceFamily="ARM"
+                deviceId="Cortex M.CC2652R7"
+            />
+        </when>
+    </applicability>
+
+    <import spec="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/ti/thread/cc13x2_26x2/libopenthread_mtd/lib/ticlang/m4f/libopenthread_mtd_cc13x2_26x2_ticlang.projectspec"/>
+    <import spec="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/ti/thread/cc13x2_26x2/libopenthread_platform_utils_mtd/lib/ticlang/m4f/libopenthread_platform_utils_mtd_cc13x2_26x2_ticlang.projectspec"/>
+    <import spec="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/ti/thread/cc13x2_26x2/libmbedcrypto/lib/ticlang/m4f/libmbedcrypto_cc13x2_26x2_ticlang.projectspec"/>
+
+    <project
+        title="Shade Application using minumum thread device type"
+        name="shade_LP_CC2652R7_tirtos_ticlang"
+        configurations="Debug"
+        toolChain="TICLANG"
+        cgtVersion="TICLANG_1.3.0.LTS"
+        connection="TIXDS110_Connection.xml"
+        device="Cortex M.CC2652R7"
+        ignoreDefaultDeviceSettings="true"
+        ignoreDefaultCCSSettings="true"
+        references="libopenthread_mtd_cc13x2_26x2_ticlang,libopenthread_platform_utils_mtd_cc13x2_26x2_ticlang,libmbedcrypto_cc13x2_26x2_ticlang"
+        products="com.ti.SIMPLELINK_CC13XX_CC26XX_SDK;sysconfig"
+        compilerBuildOptions="
+            -I${PROJECT_ROOT}
+            -I${PROJECT_ROOT}/${ConfigName}
+            -Oz
+            -g
+            -gdwarf-3
+            -gstrict-dwarf
+            -Wall
+            -Wno-ti-macros
+            -DHAVE_CONFIG_H
+            -DBoard_EXCLUDE_NVS_EXTERNAL_FLASH
+            -DNVOCMP_POSIX_MUTEX
+            -DNVOCMP_NVPAGES=2
+            -DNDEBUG
+            -DBOARD_DISPLAY_USE_UART=1
+            -DMBEDTLS_CONFIG_FILE=&apos;&quot;mbedtls-config-cc13x2_26x2.h&quot;&apos;
+            -I${WORKSPACE_LOC}/libmbedcrypto_cc13x2_26x2_ticlang/config
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/examples/platforms
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/include
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/core
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/third_party/mbedtls/repo/include
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source
+            -I${PROJECT_ROOT}/platform/crypto
+            -DOPENTHREAD_MTD=1
+            -I${WORKSPACE_LOC}/libopenthread_mtd_cc13x2_26x2_ticlang/config
+            -DOPENTHREAD_CONFIG_FILE=&apos;&quot;openthread-config-cc13x2_26x2-mtd.h&quot;&apos;
+            -DOPENTHREAD_PROJECT_CORE_CONFIG_FILE=&apos;&quot;openthread-core-cc13x2_26x2-config.h&quot;&apos;
+            -DTIOP_CUI=1
+            -DBOARD_DISPLAY_USE_LCD=1
+            -DDeviceFamily_CC13X2X7_CC26X2X7
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/ti/devices/cc13x2_cc26x2
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/ti/posix/ticlang
+            -mcpu=cortex-m4
+            -march=armv7e-m
+            -mthumb
+            -mfloat-abi=hard
+            -mfpu=fpv4-sp-d16
+        "
+        linkerBuildOptions="
+            --reread_libs
+            -Wl,-i${WORKSPACE_LOC}/libopenthread_mtd_cc13x2_26x2_ticlang/OptimizeSize
+            -Wl,-i${WORKSPACE_LOC}/libopenthread_platform_utils_mtd_cc13x2_26x2_ticlang/OptimizeSize
+            -Wl,-i${WORKSPACE_LOC}/libmbedcrypto_cc13x2_26x2_ticlang/OptimizeSize
+            -Wl,-llibopenthread_mtd.a
+            -Wl,-llibopenthread_platform_utils_mtd.a
+            -Wl,-llibmbedcrypto.a
+            -l${PROJECT_BUILD_DIR}/syscfg/ti_utils_build_linker.cmd.genlibs
+            -L${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source
+            -L${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source
+            -L${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/kernel/tirtos/packages
+            -L${PROJECT_BUILD_DIR}/syscfg
+            -lti/devices/cc13x2x7_cc26x2x7/driverlib/bin/ticlang/driverlib.lib
+            -Wl,-c
+            -Wl,-w
+            -L${CG_TOOL_ROOT}/lib
+            -llibc.a
+        "
+        enableSysConfigTool="true"
+        sysConfigBuildOptions="
+            --product ${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/.metadata/product.json
+            --compiler ticlang
+        "
+        description="A simple application with Shade functionality on a Thread network">
+        <property name="type" value="rtsc"/>
+        <property name="xdcToolsVersion" value="3_62_00_08"/>
+        <property name="target" value="ti.targets.arm.clang.M4F"/>
+        <property name="platform" value="ti.platforms.simplelink:CC1352R1F3"/>
+
+        <property name="buildProfile" value="release"/>
+        <property name="isHybrid" value="true"/>
+        <property name="configuroOptions" value=" --compileOptions &quot;${COMPILER_FLAGS} &quot;"/>
+        <file path="../../README.md" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../README.html" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../platform/alarm.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/alarm_micro.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/radio.h" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/diag.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/DIAG.md" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/entropy.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/misc.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/settings.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/system.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/system.h" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/radio.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/uart.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/debug_uart.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/nv/crc.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform/nv">
+        </file>
+        <file path="../../platform/nv/crc.h" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform/nv">
+        </file>
+        <file path="../../platform/nv/nvocmp.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform/nv">
+        </file>
+        <file path="../../platform/nv/nvocmp.h" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform/nv">
+        </file>
+        <file path="../../platform/nv/nvintf.h" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform/nv">
+        </file>
+        <file path="../../images.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../images.h" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../tiop_ui.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../tiop_ui.h" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../cui.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../cui.h" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../tiop_app_defs.h" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../disp_utils.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../disp_utils.h" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../shade.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../shade.h" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../main.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../task_config.h" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../otstack.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../otstack.h" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../otsupport/otrtosapi.h" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="otsupport">
+        </file>
+        <file path="../../otsupport/otrtosapi.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="otsupport">
+        </file>
+        <file path="../../otsupport/otinstance.h" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="otsupport">
+        </file>
+        <file path="../../release.cfg" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../shade.syscfg" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/ti/boards/LP_CC2652R7/Board.html" openOnCreation="false" excludeFromBuild="false" action="link">
+        </file>
+        <file path="../../platform/crypto/aes_alt.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform/crypto">
+        </file>
+        <file path="../../platform/crypto/sha256_alt.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform/crypto">
+        </file>
+        <file path="../../platform/crypto/ecjpake_alt.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform/crypto">
+        </file>
+        <file path="../../platform/crypto/crypto_misc.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform/crypto">
+        </file>
+        <file path="../../tirtos/ticlang/cc13x2x7_cc26x2x7_tirtos.cmd" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../tirtos/makefile.defs" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+    </project>
+</projectSpec>

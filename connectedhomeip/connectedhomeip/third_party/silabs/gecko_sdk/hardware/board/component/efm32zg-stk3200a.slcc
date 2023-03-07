@@ -1,0 +1,22 @@
+!!omap
+- id: efm32zg_stk3200a
+- label: EFM32ZG-STK3200A
+- package: platform
+- description: Kit BSP support for the EFM32 Zero Gecko Starter Kit.
+- category: Platform|Board|Kit|Starter Kit
+- quality: production
+- requires:
+  - name: hardware_board_from_efm32zg-stk3200a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_stk
+- define:
+  - name: SL_KIT_NAME
+    value: '"EFM32ZG-STK3200A"'
+  - name: SL_KIT_REV
+    value: '"C01"'
+- tag:
+  - kit:opn:EFM32ZG-STK3200A
+  - kit:pn:STK3200
+  - kit:variant:A
+  - kit:revision:C01

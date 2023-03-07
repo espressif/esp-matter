@@ -1,0 +1,151 @@
+id: iot_config_common
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|C SDK
+label: IoT Config Common
+description: Common configurations for Iot components.
+
+package: amazon_platform
+quality: production
+
+provides:
+  - name: iot_config_common
+
+requires:
+  - name: iot_platform_types
+  - name: freertos
+  - name: device_init
+  - name: system_init
+  - name: power_manager
+  - name: test_framework_unity
+    condition: ["aws_tests_defs"]
+  - name: test_framework_unity_fixture
+    condition: ["aws_tests_defs"]
+
+root_path: util/third_party/aws_iot_libs
+
+config_file:
+  - path: vendors/siliconlabs/boards/all/aws_tests/config_files/aws_application_version.h
+    condition: ["aws_tests_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_tests/config_files/aws_test_runner_config.h
+    condition: ["aws_tests_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_tests/config_files/aws_test_tcp_config.h
+    condition: ["aws_tests_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_tests/config_files/aws_test_tcp.h
+    condition: ["aws_tests_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_tests/config_files/core_http_config.h
+    condition: ["aws_tests_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_tests/config_files/core_mqtt_config.h
+    condition: ["aws_tests_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_tests/config_files/core_pkcs11_config.h
+    condition: ["aws_tests_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_tests/config_files/core_test_pkcs11_config.h
+    condition: ["aws_tests_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_tests/config_files/iot_config.h
+    condition: ["aws_tests_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_tests/config_files/iot_secure_sockets_config.h
+    condition: ["aws_tests_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_tests/config_files/FreeRTOS_POSIX_portable.h
+    condition: ["aws_tests_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_tests/config_files/FreeRTOSIPConfig.h
+    condition: ["aws_tests_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_tests/config_files/FreeRTOSConfig.h
+    condition: ["aws_tests_defs"]
+    override:
+      component: freertos
+      file_id: freertos_config
+  - path: vendors/siliconlabs/boards/all/aws_tests/config_files/unity_config.h
+    condition: ["aws_tests_defs"]
+    override:
+      component: test_framework_unity
+      file_id: test_framework_unity_config
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/aws_demo_config.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/aws_ggd_config.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/aws_ota_agent_config.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/aws_shadow_config.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/aws_wifi_config.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/core_http_config.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/core_mqtt_config.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/core_pkcs11_config.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/defender_config.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/defender_demo_config.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/FreeRTOSConfig.h
+    override:
+      component: freertos
+      file_id: freertos_config
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/FreeRTOSIPConfig.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/http_demo_mutual_auth_config.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/http_demo_s3_download_config.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/http_demo_s3_upload_config.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/iot_bufferpool_config.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/iot_secure_sockets_config.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/jobs_demo_config.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/mqtt_demo_connection_sharing_config.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/mqtt_demo_mutual_auth_config.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/mqtt_demo_plaintext_config.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/shadow_config.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/shadow_demo_config.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/iot_config.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/aws_iot_network_config.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/FreeRTOS_POSIX_portable.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/mqtt_ble_demo_config.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/aws_application_version.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/aws_clientcredential.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/aws_clientcredential_keys.h
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/aws_ota_codesigner_certificate.h
+    condition: ["aws_demos_defs"]
+
+include:
+  - path: tests/include
+    file_list:
+      - path: iot_config_common.h
+    condition: ["aws_tests_defs"]
+  - path: demos/include
+    file_list:
+      - path: aws_demo.h
+      - path: aws_iot_demo_network.h
+      - path: aws_iot_metrics.h
+      - path: aws_wifi_connect_task.h
+      - path: iot_ble_gatt_server_demo.h
+      - path: iot_ble_numericComparison.h
+      - path: iot_config_common.h
+      - path: iot_demo_logging.h
+      - path: iot_demo_runner.h
+    condition: ["aws_demos_defs"]
+
+define:
+  - name: UNITY_EXCLUDE_STDIO_H
+
+  - name: NVM3_DEFAULT_MAX_OBJECT_SIZE
+    value: 1500
+  - name: NVM3_DEFAULT_CACHE_SIZE
+    value: 10

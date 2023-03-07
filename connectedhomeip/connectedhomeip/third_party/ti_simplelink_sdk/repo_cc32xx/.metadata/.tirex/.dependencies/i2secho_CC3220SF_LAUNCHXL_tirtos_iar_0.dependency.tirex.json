@@ -1,0 +1,17 @@
+[
+    {
+        "files": [
+            "+../../AudioCodec.c -> AudioCodec.c",
+            "+../../AudioCodec.h -> AudioCodec.h",
+            "+../../../../../../../source/ti/boards/CC3220SF_LAUNCHXL/Board.html -> Board.html",
+            "+cc32xxsf_tirtos.icf -> cc32xxsf_tirtos.icf",
+            "+../../i2secho.c -> i2secho.c",
+            "+../i2secho.syscfg -> i2secho.syscfg",
+            "+../main_tirtos.c -> main_tirtos.c",
+            "+../../overview.rov.json -> overview.rov.json",
+            "+../../README.html -> README.html",
+            "+../../README.md -> README.md",
+            "+../../TI3254.h -> TI3254.h"
+        ]
+    }
+]

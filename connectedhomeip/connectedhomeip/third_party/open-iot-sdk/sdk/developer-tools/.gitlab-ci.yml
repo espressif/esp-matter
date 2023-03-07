@@ -1,0 +1,34 @@
+# Copyright (c) 2022 Arm Limited and Contributors. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+include:
+  - '/templates/pipeline-baseline-sdk.yml'
+  - '/templates/sync-public/pipeline-sync-public.yml'
+
+variables:
+  GIT_CLONE_PATH: /builds/workspace
+
+stages:
+  - quality_check
+  - test
+
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_REF_NAME =~ /^release-.*/
+    - if: $CI_PIPELINE_SOURCE == "web"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+pytest:
+  tags:
+    - iotmsw-amd64
+  image: ${OPEN_IOT_SDK_DOCKER_REGISTRY}/sanity:v1
+  stage: test
+  script:
+    - pytest -v .
+
+mirror:
+  variables:
+    SYNC_DESTINATION : 'https://${GITLAB_USER_ID}:${PUBLIC_SDK_TOKEN}@git.gitlab.arm.com/iot/open-iot-sdk/tools/developer-tools.git'
+  extends: .sync-public
+  stage: .post

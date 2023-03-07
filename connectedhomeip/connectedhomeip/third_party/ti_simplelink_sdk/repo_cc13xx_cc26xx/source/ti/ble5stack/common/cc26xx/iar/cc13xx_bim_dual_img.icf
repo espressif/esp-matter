@@ -1,0 +1,179 @@
+/******************************************************************************
+
+ @file  cc13xx_bim_dual_img.icf
+
+ @brief IAR ARM Linker Configuration File - BIM
+
+        Imported Symbols
+        Note: Linker defines are located in the IAR IDE project using
+        --config_def in Options->Linker->Extra Options.
+
+        CCxxxx:             Device Name (e.g. CC1350). In order to define this
+                            symbol, the tool chain requires that it be set to
+                            a specific value, but in fact, the actual value does
+                            not matter as it is not used in the linker control
+                            file. The only way this symbol is used is based on
+                            whether it is defined or not, not its actual value.
+                            There are other linker symbols that do specifically
+                            set their value to 1 to indicate R1, and 2 to
+                            indicate R2, and these values are checked and do make
+                            a difference. However, it would appear confusing if
+                            the device name's value did not correspond to the
+                            value set in other linker symbols. In order to avoid
+                            this confusion, when the symbol is defined, it should
+                            be set to the value of the device's ROM that it
+                            corresponds so as to look and feel consistent. Please
+                            note that a device name symbol should always be
+                            defined to avoid side effects from default values
+                            that may not be correct for the device being used.
+
+        Exported Symbols
+        Note: Can be used as externs in C code.
+
+        STACK_TOP: Location of the top of RAM.
+
+ Group: WCS, BTS
+ Target Device: cc13xx_cc26xx
+
+ ******************************************************************************
+ 
+ Copyright (c) 2013-2022, Texas Instruments Incorporated
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+
+ *  Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+
+ *  Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+
+ *  Neither the name of Texas Instruments Incorporated nor the names of
+    its contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ ******************************************************************************
+ 
+ 
+ *****************************************************************************/
+
+////////////////////////////////////////////////////////////////////////////////
+// Memory Sizes
+////////////////////////////////////////////////////////////////////////////////
+
+define symbol RAM_SIZE             = 0x00005000;  // 20K
+define symbol FLASH_SIZE           = 0x00020000;  // 128K
+define symbol ROM_SIZE             = 0x0001C000;  // 115K
+
+////////////////////////////////////////////////////////////////////////////////
+// Memory Definitions
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// RAM
+//
+
+define symbol RAM_START            = 0x20000000;
+
+if ( isdefinedsymbol(ICALL_RAM0_START) )
+{
+  define symbol RAM_END            = (ICALL_RAM0_START-1);
+}
+else // Default
+{
+  define symbol RAM_END            = 0x200036FF;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Flash
+//
+
+// BIM is allocated Flash sector 0.
+
+define symbol FLASH_START          = 0x00000000;
+
+define symbol FLASH_END            = 0x0001FFFF;
+
+// Start here to avoid the RTOS in ROM config area from 0x100 to 0x5FF
+define symbol BIM_START            = 0x0001F000;
+
+////////////////////////////////////////////////////////////////////////////////
+// Stack
+//
+
+define symbol STACK_SIZE           = 0x400;
+define symbol STACK_START          = RAM_END + 1;
+define symbol STACK_END            = STACK_START - STACK_SIZE;
+define block CSTACK with alignment = 8, size = STACK_SIZE { section .stack };
+//
+define symbol STACK_TOP            = RAM_END + 1;
+export symbol STACK_TOP;
+
+////////////////////////////////////////////////////////////////////////////////
+// Flash Interrupt Vector Table
+//
+
+define symbol INTVEC_NUM_ENTRIES   = 50 + 1; // first entry is stack location
+define symbol INTVEC_SIZE          = INTVEC_NUM_ENTRIES + 4;
+
+////////////////////////////////////////////////////////////////////////////////
+// Memory Regions
+////////////////////////////////////////////////////////////////////////////////
+
+define memory mem with size = 4G;
+
+define region RAM                  = mem:[from RAM_START   to RAM_END];
+define region FLASH                = mem:[from FLASH_START to FLASH_END];
+define region BIM                  = mem:[from BIM_START   to FLASH_END];
+
+////////////////////////////////////////////////////////////////////////////////
+// Memory Placement
+////////////////////////////////////////////////////////////////////////////////
+
+// Interrupt Vector Table
+place at address mem:FLASH_START { readonly section .intvec };
+keep                             { readonly section .intvec };
+
+// RAM Vector Table
+place at start of RAM            { section .vtable_ram };
+
+// Stack
+place at end of RAM              { block CSTACK };
+
+place in BIM                     { readonly };
+place in RAM                     { readwrite };
+
+// CCFG
+place at end of FLASH { readonly section .ccfg };
+keep { section .ccfg };
+
+////////////////////////////////////////////////////////////////////////////////
+// Initialization
+////////////////////////////////////////////////////////////////////////////////
+
+initialize manually { section oadSelect };
+
+initialize by copy  { readwrite };
+
+do not initialize
+{
+  section .noinit,
+  section .stack,
+};
+
+////////////////////////////////////////////////////////////////////////////////

@@ -1,0 +1,46 @@
+﻿<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster xmlns:zcl="http://zigbee.org/zcl/clusters"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:type="http://zigbee.org/zcl/types"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd"
+  id="0100" revision="1" name="ShadeConfiguration">
+  <classification role="application" picsCode="SHDCFG" primaryTransaction="2" />
+  <type:type short="SHDCFGDirection" name="Direction" id="30" inheritsFrom="enum8">
+    <restriction>
+      <type:enumeration name="Closing" value="00" />
+      <type:enumeration name="Opening" value="01" />
+    </restriction>
+  </type:type>
+  <server>
+    <attributes>
+      <!-- Shade Information Attribute Set -->
+      <attribute id="0000" name="PhysicalClosedLimit" type="uint16" min="1" />
+      <attribute id="0001" name="MotorStepSize" type="uint8" max="254" />
+      <attribute id="0002" name="Status" type="map8" writable="true" required="true" default="0">
+        <bitmap>
+          <element name="ShadeOperational" type="bool" mask="01" />
+          <element name="ShadeAdjusting" type="bool" mask="02" shiftRight="1" />
+          <element name="ShadeDirection" type="SHDCFGDirection" mask="04" shiftRight="2" />
+          <!-- The ForwardDirectionOfMotor is currently the only field in the bitmap which is writable. -->
+          <element name="ForwardDirectionOfMotor" type="SHDCFGDirection" mask="08" shiftRight="3" />
+        </bitmap>
+      </attribute>
+      <!-- Shade Settings Attribute Set -->
+      <attribute id="0010" name="ClosedLimit" type="uint16" writable="true" required="true" min="1" default="1" />
+      <attribute id="0011" name="Mode" type="enum8" writable="true" required="true" default="0">
+        <restriction>
+          <type:enumeration name="Normal" value="00" />
+          <type:enumeration name="Configure" value="01" />
+        </restriction>
+      </attribute>
+    </attributes>
+  </server>
+</zcl:cluster>

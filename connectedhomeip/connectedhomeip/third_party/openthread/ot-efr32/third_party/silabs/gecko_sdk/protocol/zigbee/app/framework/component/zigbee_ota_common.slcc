@@ -1,0 +1,22 @@
+package: Zigbee
+description: Common code for Silicon Labs implementation of the Zigbee Over-the-air Bootload
+  Cluster Client and Server components (a multi-hop, application bootloader).
+id: zigbee_ota_common
+label: OTA Bootload Cluster Common Code
+category: Zigbee|Over-The-Air Bootloading
+quality: production
+provides:
+   - name: "zigbee_ota_common"
+source:
+  - path: protocol/zigbee/app/framework/plugin/ota-common/ota-common.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/ota-common
+    file_list:
+      - path: ota.h
+      - path: ota-cli.h
+  - path: protocol/zigbee/app/framework/plugin/ota-server-policy
+    file_list:
+      - path: ota-server-policy.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_ota_common

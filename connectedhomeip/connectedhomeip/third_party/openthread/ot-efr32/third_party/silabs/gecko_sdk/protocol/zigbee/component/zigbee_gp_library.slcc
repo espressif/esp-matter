@@ -1,0 +1,815 @@
+#WARNING: This is a generated file. Do not modify.
+#WARNING: Run python3 zigbee_library_slcc_gen.py under zigbee folder to generate
+
+id: zigbee_gp_library
+label: Green Power (Library)
+package: Zigbee
+category: Zigbee|Stack
+quality: production
+ui_hints:
+  visibility: never
+
+description: Provides Green Power (Library)
+
+provides:
+  - name: zigbee_gp_implementation
+  - name: zigbee_gp_library
+
+requires:
+  - name: zigbee_gp
+
+library:
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-efr32mg12p-rail/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg12p
+      - zigbee_phy_2_4
+      - zigbee_multi_network
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-efr32mg12p-rail-stack_protection/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg12p
+      - zigbee_phy_2_4
+      - stack_protection_iar
+      - zigbee_multi_network
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-efr32mg12p-rail-ember_multi_network_stripped/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg12p
+      - zigbee_phy_2_4
+    unless:
+      - zigbee_multi_network
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-efr32mg12p-rail-ember_multi_network_stripped-stack_protection/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg12p
+      - zigbee_phy_2_4
+      - stack_protection_iar
+    unless:
+      - zigbee_multi_network
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-efr32mg13p-rail/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg13p
+      - zigbee_phy_2_4
+      - zigbee_multi_network
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-efr32mg13p-rail-stack_protection/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg13p
+      - zigbee_phy_2_4
+      - stack_protection_iar
+      - zigbee_multi_network
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-efr32mg13p-rail-ember_multi_network_stripped/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg13p
+      - zigbee_phy_2_4
+    unless:
+      - zigbee_multi_network
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-efr32mg13p-rail-ember_multi_network_stripped-stack_protection/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg13p
+      - zigbee_phy_2_4
+      - stack_protection_iar
+    unless:
+      - zigbee_multi_network
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-efr32mg21-rail/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg21
+      - zigbee_phy_2_4
+      - zigbee_multi_network
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-efr32mg21-rail-stack_protection/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg21
+      - zigbee_phy_2_4
+      - stack_protection_iar
+      - zigbee_multi_network
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-efr32mg21-rail-ember_multi_network_stripped/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg21
+      - zigbee_phy_2_4
+    unless:
+      - zigbee_multi_network
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-efr32mg21-rail-ember_multi_network_stripped-stack_protection/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg21
+      - zigbee_phy_2_4
+      - stack_protection_iar
+    unless:
+      - zigbee_multi_network
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-efr32mg22-rail/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg22
+      - zigbee_phy_2_4
+      - zigbee_multi_network
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-efr32mg22-rail-stack_protection/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg22
+      - zigbee_phy_2_4
+      - stack_protection_iar
+      - zigbee_multi_network
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-efr32mg22-rail-ember_multi_network_stripped/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg22
+      - zigbee_phy_2_4
+    unless:
+      - zigbee_multi_network
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-efr32mg22-rail-ember_multi_network_stripped-stack_protection/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg22
+      - zigbee_phy_2_4
+      - stack_protection_iar
+    unless:
+      - zigbee_multi_network
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-efr32mg24-rail/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg24
+      - zigbee_phy_2_4
+      - zigbee_multi_network
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-efr32mg24-rail-stack_protection/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg24
+      - zigbee_phy_2_4
+      - stack_protection_iar
+      - zigbee_multi_network
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-efr32mg24-rail-ember_multi_network_stripped/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg24
+      - zigbee_phy_2_4
+    unless:
+      - zigbee_multi_network
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-efr32mg24-rail-ember_multi_network_stripped-stack_protection/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg24
+      - zigbee_phy_2_4
+      - stack_protection_iar
+    unless:
+      - zigbee_multi_network
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-efr32mg27-rail/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg27
+      - zigbee_phy_2_4
+      - zigbee_multi_network
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-efr32mg27-rail-stack_protection/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg27
+      - zigbee_phy_2_4
+      - stack_protection_iar
+      - zigbee_multi_network
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-efr32mg27-rail-ember_multi_network_stripped/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg27
+      - zigbee_phy_2_4
+    unless:
+      - zigbee_multi_network
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-efr32mg27-rail-ember_multi_network_stripped-stack_protection/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg27
+      - zigbee_phy_2_4
+      - stack_protection_iar
+    unless:
+      - zigbee_multi_network
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-mgm12-rail/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm12
+      - zigbee_phy_2_4
+      - zigbee_multi_network
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-mgm12-rail-stack_protection/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm12
+      - zigbee_phy_2_4
+      - stack_protection_iar
+      - zigbee_multi_network
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-mgm12-rail-ember_multi_network_stripped/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm12
+      - zigbee_phy_2_4
+    unless:
+      - zigbee_multi_network
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-mgm12-rail-ember_multi_network_stripped-stack_protection/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm12
+      - zigbee_phy_2_4
+      - stack_protection_iar
+    unless:
+      - zigbee_multi_network
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-mgm13-rail/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm13
+      - zigbee_phy_2_4
+      - zigbee_multi_network
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-mgm13-rail-stack_protection/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm13
+      - zigbee_phy_2_4
+      - stack_protection_iar
+      - zigbee_multi_network
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-mgm13-rail-ember_multi_network_stripped/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm13
+      - zigbee_phy_2_4
+    unless:
+      - zigbee_multi_network
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-mgm13-rail-ember_multi_network_stripped-stack_protection/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm13
+      - zigbee_phy_2_4
+      - stack_protection_iar
+    unless:
+      - zigbee_multi_network
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-mgm21-rail/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm21
+      - zigbee_phy_2_4
+      - zigbee_multi_network
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-mgm21-rail-stack_protection/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm21
+      - zigbee_phy_2_4
+      - stack_protection_iar
+      - zigbee_multi_network
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-mgm21-rail-ember_multi_network_stripped/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm21
+      - zigbee_phy_2_4
+    unless:
+      - zigbee_multi_network
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-mgm21-rail-ember_multi_network_stripped-stack_protection/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm21
+      - zigbee_phy_2_4
+      - stack_protection_iar
+    unless:
+      - zigbee_multi_network
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-mgm22-rail/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm22
+      - zigbee_phy_2_4
+      - zigbee_multi_network
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-mgm22-rail-stack_protection/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm22
+      - zigbee_phy_2_4
+      - stack_protection_iar
+      - zigbee_multi_network
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-mgm22-rail-ember_multi_network_stripped/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm22
+      - zigbee_phy_2_4
+    unless:
+      - zigbee_multi_network
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-mgm22-rail-ember_multi_network_stripped-stack_protection/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm22
+      - zigbee_phy_2_4
+      - stack_protection_iar
+    unless:
+      - zigbee_multi_network
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-mgm24-rail/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm24
+      - zigbee_phy_2_4
+      - zigbee_multi_network
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-mgm24-rail-stack_protection/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm24
+      - zigbee_phy_2_4
+      - stack_protection_iar
+      - zigbee_multi_network
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-mgm24-rail-ember_multi_network_stripped/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm24
+      - zigbee_phy_2_4
+    unless:
+      - zigbee_multi_network
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-iar-mgm24-rail-ember_multi_network_stripped-stack_protection/gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm24
+      - zigbee_phy_2_4
+      - stack_protection_iar
+    unless:
+      - zigbee_multi_network
+  - path: protocol/zigbee/build/gp-library-cortexm3-gcc-efr32mg12p-rail/gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_efr32mg12p
+      - zigbee_phy_2_4
+      - zigbee_multi_network
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-gcc-efr32mg12p-rail-ember_multi_network_stripped/gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_efr32mg12p
+      - zigbee_phy_2_4
+    unless:
+      - zigbee_multi_network
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-gcc-efr32mg13p-rail/gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_efr32mg13p
+      - zigbee_phy_2_4
+      - zigbee_multi_network
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-gcc-efr32mg13p-rail-ember_multi_network_stripped/gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_efr32mg13p
+      - zigbee_phy_2_4
+    unless:
+      - zigbee_multi_network
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-gcc-efr32mg21-rail/gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_efr32mg21
+      - zigbee_phy_2_4
+      - zigbee_multi_network
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-gcc-efr32mg21-rail-ember_multi_network_stripped/gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_efr32mg21
+      - zigbee_phy_2_4
+    unless:
+      - zigbee_multi_network
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-gcc-efr32mg22-rail/gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_efr32mg22
+      - zigbee_phy_2_4
+      - zigbee_multi_network
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-gcc-efr32mg22-rail-ember_multi_network_stripped/gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_efr32mg22
+      - zigbee_phy_2_4
+    unless:
+      - zigbee_multi_network
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-gcc-efr32mg24-rail/gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_efr32mg24
+      - zigbee_phy_2_4
+      - zigbee_multi_network
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-gcc-efr32mg24-rail-ember_multi_network_stripped/gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_efr32mg24
+      - zigbee_phy_2_4
+    unless:
+      - zigbee_multi_network
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-gcc-efr32mg27-rail/gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_efr32mg27
+      - zigbee_phy_2_4
+      - zigbee_multi_network
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-gcc-efr32mg27-rail-ember_multi_network_stripped/gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_efr32mg27
+      - zigbee_phy_2_4
+    unless:
+      - zigbee_multi_network
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-gcc-mgm12-rail/gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_mgm12
+      - zigbee_phy_2_4
+      - zigbee_multi_network
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-gcc-mgm12-rail-ember_multi_network_stripped/gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_mgm12
+      - zigbee_phy_2_4
+    unless:
+      - zigbee_multi_network
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-gcc-mgm13-rail/gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_mgm13
+      - zigbee_phy_2_4
+      - zigbee_multi_network
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-gcc-mgm13-rail-ember_multi_network_stripped/gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_mgm13
+      - zigbee_phy_2_4
+    unless:
+      - zigbee_multi_network
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-gcc-mgm21-rail/gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_mgm21
+      - zigbee_phy_2_4
+      - zigbee_multi_network
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-gcc-mgm21-rail-ember_multi_network_stripped/gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_mgm21
+      - zigbee_phy_2_4
+    unless:
+      - zigbee_multi_network
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-gcc-mgm22-rail/gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_mgm22
+      - zigbee_phy_2_4
+      - zigbee_multi_network
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-gcc-mgm22-rail-ember_multi_network_stripped/gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_mgm22
+      - zigbee_phy_2_4
+    unless:
+      - zigbee_multi_network
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-gcc-mgm24-rail/gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_mgm24
+      - zigbee_phy_2_4
+      - zigbee_multi_network
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-cortexm3-gcc-mgm24-rail-ember_multi_network_stripped/gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_mgm24
+      - zigbee_phy_2_4
+    unless:
+      - zigbee_multi_network
+      - stack_protection_iar
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-iar-efr32mg12p-rail/ncp-gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg12p
+      - zigbee_phy_2_4
+      - zigbee_ncp
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-iar-efr32mg12p-rail-stack_protection/ncp-gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg12p
+      - zigbee_phy_2_4
+      - stack_protection_iar
+      - zigbee_ncp
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-iar-efr32mg13p-rail/ncp-gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg13p
+      - zigbee_phy_2_4
+      - zigbee_ncp
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-iar-efr32mg13p-rail-stack_protection/ncp-gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg13p
+      - zigbee_phy_2_4
+      - stack_protection_iar
+      - zigbee_ncp
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-iar-efr32mg21-rail/ncp-gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg21
+      - zigbee_phy_2_4
+      - zigbee_ncp
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-iar-efr32mg21-rail-stack_protection/ncp-gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg21
+      - zigbee_phy_2_4
+      - stack_protection_iar
+      - zigbee_ncp
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-iar-efr32mg22-rail/ncp-gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg22
+      - zigbee_phy_2_4
+      - zigbee_ncp
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-iar-efr32mg22-rail-stack_protection/ncp-gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg22
+      - zigbee_phy_2_4
+      - stack_protection_iar
+      - zigbee_ncp
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-iar-efr32mg24-rail/ncp-gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg24
+      - zigbee_phy_2_4
+      - zigbee_ncp
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-iar-efr32mg24-rail-stack_protection/ncp-gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg24
+      - zigbee_phy_2_4
+      - stack_protection_iar
+      - zigbee_ncp
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-iar-efr32mg27-rail/ncp-gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg27
+      - zigbee_phy_2_4
+      - zigbee_ncp
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-iar-efr32mg27-rail-stack_protection/ncp-gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_efr32mg27
+      - zigbee_phy_2_4
+      - stack_protection_iar
+      - zigbee_ncp
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-iar-mgm12-rail/ncp-gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm12
+      - zigbee_phy_2_4
+      - zigbee_ncp
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-iar-mgm12-rail-stack_protection/ncp-gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm12
+      - zigbee_phy_2_4
+      - stack_protection_iar
+      - zigbee_ncp
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-iar-mgm13-rail/ncp-gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm13
+      - zigbee_phy_2_4
+      - zigbee_ncp
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-iar-mgm13-rail-stack_protection/ncp-gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm13
+      - zigbee_phy_2_4
+      - stack_protection_iar
+      - zigbee_ncp
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-iar-mgm21-rail/ncp-gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm21
+      - zigbee_phy_2_4
+      - zigbee_ncp
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-iar-mgm21-rail-stack_protection/ncp-gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm21
+      - zigbee_phy_2_4
+      - stack_protection_iar
+      - zigbee_ncp
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-iar-mgm22-rail/ncp-gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm22
+      - zigbee_phy_2_4
+      - zigbee_ncp
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-iar-mgm22-rail-stack_protection/ncp-gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm22
+      - zigbee_phy_2_4
+      - stack_protection_iar
+      - zigbee_ncp
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-iar-mgm24-rail/ncp-gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm24
+      - zigbee_phy_2_4
+      - zigbee_ncp
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-iar-mgm24-rail-stack_protection/ncp-gp-library.a
+    condition: 
+      - toolchain_iar
+      - device_family_mgm24
+      - zigbee_phy_2_4
+      - stack_protection_iar
+      - zigbee_ncp
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-gcc-efr32mg12p-rail/ncp-gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_efr32mg12p
+      - zigbee_phy_2_4
+      - zigbee_ncp
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-gcc-efr32mg13p-rail/ncp-gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_efr32mg13p
+      - zigbee_phy_2_4
+      - zigbee_ncp
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-gcc-efr32mg21-rail/ncp-gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_efr32mg21
+      - zigbee_phy_2_4
+      - zigbee_ncp
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-gcc-efr32mg22-rail/ncp-gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_efr32mg22
+      - zigbee_phy_2_4
+      - zigbee_ncp
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-gcc-efr32mg24-rail/ncp-gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_efr32mg24
+      - zigbee_phy_2_4
+      - zigbee_ncp
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-gcc-efr32mg27-rail/ncp-gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_efr32mg27
+      - zigbee_phy_2_4
+      - zigbee_ncp
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-gcc-mgm12-rail/ncp-gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_mgm12
+      - zigbee_phy_2_4
+      - zigbee_ncp
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-gcc-mgm13-rail/ncp-gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_mgm13
+      - zigbee_phy_2_4
+      - zigbee_ncp
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-gcc-mgm21-rail/ncp-gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_mgm21
+      - zigbee_phy_2_4
+      - zigbee_ncp
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-gcc-mgm22-rail/ncp-gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_mgm22
+      - zigbee_phy_2_4
+      - zigbee_ncp
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/ncp-gp-library-cortexm3-gcc-mgm24-rail/ncp-gp-library.a
+    condition: 
+      - toolchain_gcc
+      - device_family_mgm24
+      - zigbee_phy_2_4
+      - zigbee_ncp
+    unless:
+      - stack_protection_iar
+  - path: protocol/zigbee/build/gp-library-unix-gcc-simulation-null-arm32v7-ember_multi_network_stripped/gp-library.a
+    condition:
+      - toolchain_gcc
+      - zigbee_stack_unix
+      - zigbee_ncp
+      - linux_arch_32
+  - path: protocol/zigbee/build/gp-library-unix-gcc-simulation-null-arm64v8-ember_multi_network_stripped/gp-library.a
+    condition:
+      - toolchain_gcc
+      - zigbee_stack_unix
+      - zigbee_ncp
+      - linux_arch_64
+  - path: protocol/zigbee/build/ncp-gp-library-unix-gcc-simulation-null-arm32v7/ncp-gp-library.a
+    condition:
+      - toolchain_gcc
+      - zigbee_stack_unix
+      - zigbee_ncp
+      - linux_arch_32
+  - path: protocol/zigbee/build/ncp-gp-library-unix-gcc-simulation-null-arm64v8/ncp-gp-library.a
+    condition:
+      - toolchain_gcc
+      - zigbee_stack_unix
+      - zigbee_ncp
+      - linux_arch_64

@@ -1,0 +1,50 @@
+!!omap
+- id: brd4330a
+- label: BRD4330A
+- package: platform
+- description: Board support for BRD4330A.
+- category: Platform|Board|Radio Board
+- quality: production
+- requires:
+  - name: bgm220pc22hna
+  - name: brd4330a_config
+  - name: hardware_board_mainboard
+- provides:
+  - name: brd4330a
+  - name: hardware_board
+  - name: hardware_board_rb
+  - name: hardware_board_from_stk
+  - name: hardware_board_has_vcom
+  - name: hardware_board_supports_rf_band_2400
+  - name: hardware_board_supports_1_rf_band
+  - name: hardware_board_default_rf_band
+  - name: hardware_board_default_rf_band_2400
+- recommends:
+  - id: brd4001a
+  - id: iostream_eusart
+    instance:
+    - vcom
+  - id: bootloader_uart_driver
+  - id: simple_led
+    instance:
+    - led0
+  - id: simple_button
+    instance:
+    - btn0
+- template_contribution:
+  - name: board_default_init
+    value: sl_board_disable_vcom()
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD4330A"'
+  - name: SL_BOARD_REV
+    value: '"A00"'
+- tag:
+  - board:pn:BRD4330
+  - board:variant:A
+  - board:revision:A00
+  - board:device:bgm220pc22hna
+  - hardware:has:vcom
+  - hardware:has:pti
+  - hardware:has:led:1
+  - hardware:has:button:1

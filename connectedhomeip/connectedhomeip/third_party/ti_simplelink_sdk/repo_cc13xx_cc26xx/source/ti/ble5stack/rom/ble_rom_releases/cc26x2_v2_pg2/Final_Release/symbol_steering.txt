@@ -1,0 +1,34 @@
+show *
+hide __aeabi*
+hide __iar*
+hide .iar*
+hide dbgPrintf*
+hide Region*
+hide RT_Init
+hide PAGE_SIZE
+hide R2F_FlashJT
+hide R2R_FlashJT
+hide R2F_FLASH_JT_ADDR
+hide R2R_FLASH_JT_ADDR
+hide ICall_dispatcher
+hide ICall_enterCriticalSection
+hide ICall_leaveCriticalSection
+hide abort
+//
+rename ECC_keyGen                 as eccRom_genKeys
+rename ECDH_commonKey             as eccRom_genSharedSecret
+rename win                        as eccRom_windowSize
+rename workzone                   as eccRom_workzone
+rename data_p                     as eccRom_param_p
+rename data_r                     as eccRom_param_r
+rename data_a                     as eccRom_param_a
+rename data_b                     as eccRom_param_b
+rename data_Gx                    as eccRom_param_Gx
+rename data_Gy                    as eccRom_param_Gy
+rename NIST256_p                  as NIST_Curve_P256_p
+rename NIST256_r                  as NIST_Curve_P256_r
+rename NIST256_a                  as NIST_Curve_P256_a
+rename NIST256_b                  as NIST_Curve_P256_b
+rename NIST256_Gx                 as NIST_Curve_P256_Gx
+rename NIST256_Gy                 as NIST_Curve_P256_Gy
+// Leave this line here.

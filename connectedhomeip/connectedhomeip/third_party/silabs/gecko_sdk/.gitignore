@@ -1,0 +1,2 @@
+#Do not show SLC Extensions in `git status`
+extension/

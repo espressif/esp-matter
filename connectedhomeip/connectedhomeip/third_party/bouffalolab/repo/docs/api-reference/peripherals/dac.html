@@ -1,0 +1,573 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>DAC &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../index.html"/>
+        <link rel="up" title="外设 API" href="index.html"/>
+        <link rel="next" title="I2C" href="i2c.html"/>
+        <link rel="prev" title="外设 API" href="index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">BL602 API 参考</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../ble/index.html">蓝牙</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../network/index.html">连网</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">外设</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">DAC</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">概述</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">应用实例</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#api">API参考</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="i2c.html">I2C</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pwm.html">PWM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rng.html">RNG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rtc.html">RTC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spi.html">SPI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="uart.html">UART</a></li>
+<li class="toctree-l3"><a class="reference internal" href="timer.html">TIMER</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wdg.html">WDG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gpio.html">GPIO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adc.html">ADC</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../protocols/index.html">协议</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../storage/index.html">存储</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../system/index.html">系统</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../Examples/index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">BL602 API 参考</a> &raquo;</li>
+        
+          <li><a href="index.html">外设 API</a> &raquo;</li>
+        
+      <li>DAC</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/api-reference/peripherals/dac.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="dac">
+<h1>DAC<a class="headerlink" href="#dac" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<h2>概述<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<p>数模转换器（digital-to-analog converter，通常称为DAC）是一种数字与模拟转换器，，FIFO深度为1，支持2路DAC调制输出。 可用于音频播放，常规的模拟信号调制。</p>
+<div class="admonition note">
+<p class="first admonition-title">注解</p>
+<p class="last">dac更多资料请参考 <a class="reference external" href="https://dev.bouffalolab.com/media/doc/602/reference_manual/zh/html/content/DAC.html">BL602参考手册</a> 。</p>
+</div>
+</div>
+<div class="section" id="id2">
+<h2>应用实例<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<p>DAC实例： <code class="docutils literal notranslate"><span class="pre">customer_app/peripheral/demo_dac</span></code> 。</p>
+</div>
+<div class="section" id="api">
+<h2>API参考<a class="headerlink" href="#api" title="永久链接至标题"></a></h2>
+<div class="section" id="header-file">
+<h3>Header File<a class="headerlink" href="#header-file" title="永久链接至标题"></a></h3>
+<ul class="simple">
+<li><span class="xref std std-doc">components/platform/hosal/include/hosal_dac.h</span></li>
+</ul>
+</div>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="永久链接至标题"></a></h3>
+<dl class="function">
+<dt id="_CPPv414hosal_dac_initP15hosal_dac_dev_t">
+<span id="_CPPv314hosal_dac_initP15hosal_dac_dev_t"></span><span id="_CPPv214hosal_dac_initP15hosal_dac_dev_t"></span><span id="hosal_dac_init__hosal_dac_dev_tP"></span><span class="target" id="group__hosal__dac_1ga5708500deefbd091b3183b95d8cf9c87"></span>int <code class="descname">hosal_dac_init</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_dac_dev_t" title="hosal_dac_dev_t">hosal_dac_dev_t</a> *<em>dac</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414hosal_dac_initP15hosal_dac_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Initialises an dac interface. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">dac</span></code>: the interface which should be initialised</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv418hosal_dac_finalizeP15hosal_dac_dev_t">
+<span id="_CPPv318hosal_dac_finalizeP15hosal_dac_dev_t"></span><span id="_CPPv218hosal_dac_finalizeP15hosal_dac_dev_t"></span><span id="hosal_dac_finalize__hosal_dac_dev_tP"></span><span class="target" id="group__hosal__dac_1ga29a3e55031c6728b65facdfd7fa8f80e"></span>int <code class="descname">hosal_dac_finalize</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_dac_dev_t" title="hosal_dac_dev_t">hosal_dac_dev_t</a> *<em>dac</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418hosal_dac_finalizeP15hosal_dac_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>De-initialises an dac interface, Turns off an dac hardware interface. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">dac</span></code>: the interface which should be de-initialised</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv415hosal_dac_startP15hosal_dac_dev_t">
+<span id="_CPPv315hosal_dac_startP15hosal_dac_dev_t"></span><span id="_CPPv215hosal_dac_startP15hosal_dac_dev_t"></span><span id="hosal_dac_start__hosal_dac_dev_tP"></span><span class="target" id="group__hosal__dac_1gad59400a65ce399fd6a84690c8fca8fe1"></span>int <code class="descname">hosal_dac_start</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_dac_dev_t" title="hosal_dac_dev_t">hosal_dac_dev_t</a> *<em>dac</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415hosal_dac_startP15hosal_dac_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Start output dac （no DMA mode） </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">dac</span></code>: the interface which should be started</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv414hosal_dac_stopP15hosal_dac_dev_t">
+<span id="_CPPv314hosal_dac_stopP15hosal_dac_dev_t"></span><span id="_CPPv214hosal_dac_stopP15hosal_dac_dev_t"></span><span id="hosal_dac_stop__hosal_dac_dev_tP"></span><span class="target" id="group__hosal__dac_1ga512b1430fa538c945f84540e3509ec71"></span>int <code class="descname">hosal_dac_stop</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_dac_dev_t" title="hosal_dac_dev_t">hosal_dac_dev_t</a> *<em>dac</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414hosal_dac_stopP15hosal_dac_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Stop output dac. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">dac</span></code>: the interface which should be stopped</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv419hosal_dac_set_valueP15hosal_dac_dev_t8uint32_t">
+<span id="_CPPv319hosal_dac_set_valueP15hosal_dac_dev_t8uint32_t"></span><span id="_CPPv219hosal_dac_set_valueP15hosal_dac_dev_t8uint32_t"></span><span id="hosal_dac_set_value__hosal_dac_dev_tP.uint32_t"></span><span class="target" id="group__hosal__dac_1ga7a00c3f694d5105ed6e807af228d6a90"></span>int <code class="descname">hosal_dac_set_value</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_dac_dev_t" title="hosal_dac_dev_t">hosal_dac_dev_t</a> *<em>dac</em>, uint32_t <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419hosal_dac_set_valueP15hosal_dac_dev_t8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Output a value to an dac interface. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">dac</span></code>: the interface to set value</li>
+<li><code class="docutils literal notranslate"><span class="pre">data</span></code>: the value to output, output unit: μV</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv419hosal_dac_get_valueP15hosal_dac_dev_t">
+<span id="_CPPv319hosal_dac_get_valueP15hosal_dac_dev_t"></span><span id="_CPPv219hosal_dac_get_valueP15hosal_dac_dev_t"></span><span id="hosal_dac_get_value__hosal_dac_dev_tP"></span><span class="target" id="group__hosal__dac_1ga64322c7081654c16c6fa52693abba49d"></span>int <code class="descname">hosal_dac_get_value</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_dac_dev_t" title="hosal_dac_dev_t">hosal_dac_dev_t</a> *<em>dac</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419hosal_dac_get_valueP15hosal_dac_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Returns the last data output value of the selected dac channel. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>dac output value, output unit: μV </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">dac</span></code>: the interface to get value</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv420hosal_dac_dma_cb_regP15hosal_dac_dev_t14hosal_dac_cb_tPv">
+<span id="_CPPv320hosal_dac_dma_cb_regP15hosal_dac_dev_t14hosal_dac_cb_tPv"></span><span id="_CPPv220hosal_dac_dma_cb_regP15hosal_dac_dev_t14hosal_dac_cb_tPv"></span><span id="hosal_dac_dma_cb_reg__hosal_dac_dev_tP.hosal_dac_cb_t.voidP"></span><span class="target" id="group__hosal__dac_1ga96eb9effc543cae1b6c8b6ef5f3e13e6"></span>int <code class="descname">hosal_dac_dma_cb_reg</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_dac_dev_t" title="hosal_dac_dev_t">hosal_dac_dev_t</a> *<em>dac</em>, <a class="reference internal" href="#_CPPv414hosal_dac_cb_t" title="hosal_dac_cb_t">hosal_dac_cb_t</a> <em>callback</em>, void *<em>arg</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420hosal_dac_dma_cb_regP15hosal_dac_dev_t14hosal_dac_cb_tPv" title="永久链接至目标"></a><br /></dt>
+<dd><p>DAC cb register. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">dac</span></code>: the DAC interface </li>
+<li><code class="docutils literal notranslate"><span class="pre">callback</span></code>: callback handler </li>
+<li><code class="docutils literal notranslate"><span class="pre">arg</span></code>: callback arg</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv419hosal_dac_dma_startP15hosal_dac_dev_tP8uint32_t8uint32_t">
+<span id="_CPPv319hosal_dac_dma_startP15hosal_dac_dev_tP8uint32_t8uint32_t"></span><span id="_CPPv219hosal_dac_dma_startP15hosal_dac_dev_tP8uint32_t8uint32_t"></span><span id="hosal_dac_dma_start__hosal_dac_dev_tP.uint32_tP.uint32_t"></span><span class="target" id="group__hosal__dac_1gabc080debe57fbad873d93c0efd2e9f57"></span>int <code class="descname">hosal_dac_dma_start</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_dac_dev_t" title="hosal_dac_dev_t">hosal_dac_dev_t</a> *<em>dac</em>, uint32_t *<em>data</em>, uint32_t <em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419hosal_dac_dma_startP15hosal_dac_dev_tP8uint32_t8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>DAC use DMA mode. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">adc</span></code>: the DAC interface </li>
+<li><code class="docutils literal notranslate"><span class="pre">data</span></code>: dac data buffer </li>
+<li><code class="docutils literal notranslate"><span class="pre">size</span></code>: data buffer size</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv418hosal_dac_dma_stopP15hosal_dac_dev_t">
+<span id="_CPPv318hosal_dac_dma_stopP15hosal_dac_dev_t"></span><span id="_CPPv218hosal_dac_dma_stopP15hosal_dac_dev_t"></span><span id="hosal_dac_dma_stop__hosal_dac_dev_tP"></span><span class="target" id="group__hosal__dac_1gafd72bc12921bc23b44730b307d16893a"></span>int <code class="descname">hosal_dac_dma_stop</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_dac_dev_t" title="hosal_dac_dev_t">hosal_dac_dev_t</a> *<em>dac</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418hosal_dac_dma_stopP15hosal_dac_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Stop output dac. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">dac</span></code>: the interface which should be stopped</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="structures">
+<h3>Structures<a class="headerlink" href="#structures" title="永久链接至标题"></a></h3>
+<dl class="class">
+<dt id="_CPPv418hosal_dac_config_t">
+<span id="_CPPv318hosal_dac_config_t"></span><span id="_CPPv218hosal_dac_config_t"></span><span id="hosal_dac_config_t"></span><span class="target" id="structhosal__dac__config__t"></span><em class="property">struct </em><code class="descname">hosal_dac_config_t</code><a class="headerlink" href="#_CPPv418hosal_dac_config_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>This struct define dac config args. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N18hosal_dac_config_t10dma_enableE">
+<span id="_CPPv3N18hosal_dac_config_t10dma_enableE"></span><span id="_CPPv2N18hosal_dac_config_t10dma_enableE"></span><span id="hosal_dac_config_t::dma_enable__uint8_t"></span><span class="target" id="group__hosal__dac_1ga950b8a7ba01a289ee773919b945de1cc"></span>uint8_t <code class="descname">dma_enable</code><a class="headerlink" href="#_CPPv4N18hosal_dac_config_t10dma_enableE" title="永久链接至目标"></a><br /></dt>
+<dd><p>1: use dma, 0: no dma </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N18hosal_dac_config_t3pinE">
+<span id="_CPPv3N18hosal_dac_config_t3pinE"></span><span id="_CPPv2N18hosal_dac_config_t3pinE"></span><span id="hosal_dac_config_t::pin__uint32_t"></span><span class="target" id="group__hosal__dac_1ga2731b75fb72af4fbd01ad56835637acd"></span>uint32_t <code class="descname">pin</code><a class="headerlink" href="#_CPPv4N18hosal_dac_config_t3pinE" title="永久链接至目标"></a><br /></dt>
+<dd><p>dac pin </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N18hosal_dac_config_t4freqE">
+<span id="_CPPv3N18hosal_dac_config_t4freqE"></span><span id="_CPPv2N18hosal_dac_config_t4freqE"></span><span id="hosal_dac_config_t::freq__uint32_t"></span><span class="target" id="group__hosal__dac_1ga20bc2ced0d1373cdd99a3f3ac68709f6"></span>uint32_t <code class="descname">freq</code><a class="headerlink" href="#_CPPv4N18hosal_dac_config_t4freqE" title="永久链接至目标"></a><br /></dt>
+<dd><p>dac freq </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv415hosal_dac_dev_t">
+<span id="_CPPv315hosal_dac_dev_t"></span><span id="_CPPv215hosal_dac_dev_t"></span><span id="hosal_dac_dev_t"></span><span class="target" id="structhosal__dac__dev__t"></span><em class="property">struct </em><code class="descname">hosal_dac_dev_t</code><a class="headerlink" href="#_CPPv415hosal_dac_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>This struct define dac device type. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N15hosal_dac_dev_t4portE">
+<span id="_CPPv3N15hosal_dac_dev_t4portE"></span><span id="_CPPv2N15hosal_dac_dev_t4portE"></span><span id="hosal_dac_dev_t::port__uint8_t"></span><span class="target" id="group__hosal__dac_1ga4eabcf90bd0934d553330ed6f2579567"></span>uint8_t <code class="descname">port</code><a class="headerlink" href="#_CPPv4N15hosal_dac_dev_t4portE" title="永久链接至目标"></a><br /></dt>
+<dd><p>dac id </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15hosal_dac_dev_t6configE">
+<span id="_CPPv3N15hosal_dac_dev_t6configE"></span><span id="_CPPv2N15hosal_dac_dev_t6configE"></span><span id="hosal_dac_dev_t::config__hosal_dac_config_t"></span><span class="target" id="group__hosal__dac_1gaf0e01173a42a4a3113da4da5bb3c6530"></span><a class="reference internal" href="#_CPPv418hosal_dac_config_t" title="hosal_dac_config_t">hosal_dac_config_t</a> <code class="descname">config</code><a class="headerlink" href="#_CPPv4N15hosal_dac_dev_t6configE" title="永久链接至目标"></a><br /></dt>
+<dd><p>dac config </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15hosal_dac_dev_t2cbE">
+<span id="_CPPv3N15hosal_dac_dev_t2cbE"></span><span id="_CPPv2N15hosal_dac_dev_t2cbE"></span><span id="hosal_dac_dev_t::cb__hosal_dac_cb_t"></span><span class="target" id="group__hosal__dac_1gabd23f1bea21fc241e3604bc8e86339da"></span><a class="reference internal" href="#_CPPv414hosal_dac_cb_t" title="hosal_dac_cb_t">hosal_dac_cb_t</a> <code class="descname">cb</code><a class="headerlink" href="#_CPPv4N15hosal_dac_dev_t2cbE" title="永久链接至目标"></a><br /></dt>
+<dd><p>dma callback </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15hosal_dac_dev_t8dma_chanE">
+<span id="_CPPv3N15hosal_dac_dev_t8dma_chanE"></span><span id="_CPPv2N15hosal_dac_dev_t8dma_chanE"></span><span id="hosal_dac_dev_t::dma_chan__hosal_dma_chan_t"></span><span class="target" id="group__hosal__dac_1ga7ead3911337efdafa8168e405c526548"></span>hosal_dma_chan_t <code class="descname">dma_chan</code><a class="headerlink" href="#_CPPv4N15hosal_dac_dev_t8dma_chanE" title="永久链接至目标"></a><br /></dt>
+<dd><p>dac dma channel </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15hosal_dac_dev_t3argE">
+<span id="_CPPv3N15hosal_dac_dev_t3argE"></span><span id="_CPPv2N15hosal_dac_dev_t3argE"></span><span id="hosal_dac_dev_t::arg__voidP"></span><span class="target" id="group__hosal__dac_1ga7f271095bf51fe9f2914848cae76e986"></span>void *<code class="descname">arg</code><a class="headerlink" href="#_CPPv4N15hosal_dac_dev_t3argE" title="永久链接至目标"></a><br /></dt>
+<dd><p>arg data </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15hosal_dac_dev_t4privE">
+<span id="_CPPv3N15hosal_dac_dev_t4privE"></span><span id="_CPPv2N15hosal_dac_dev_t4privE"></span><span id="hosal_dac_dev_t::priv__voidP"></span><span class="target" id="group__hosal__dac_1ga99a4a8c4c18cefd250a1905d432f6890"></span>void *<code class="descname">priv</code><a class="headerlink" href="#_CPPv4N15hosal_dac_dev_t4privE" title="永久链接至目标"></a><br /></dt>
+<dd><p>priv data </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="type-definitions">
+<h3>Type Definitions<a class="headerlink" href="#type-definitions" title="永久链接至标题"></a></h3>
+<dl class="type">
+<dt id="_CPPv414hosal_dac_cb_t">
+<span id="_CPPv314hosal_dac_cb_t"></span><span id="_CPPv214hosal_dac_cb_t"></span><span id="hosal_dac_cb_t"></span><span class="target" id="group__hosal__dac_1gacd5f6386a7cebb9ad412e47df99b7079"></span><em class="property">typedef </em>void (*<code class="descname">hosal_dac_cb_t</code>)<span class="sig-paren">(</span>void *arg<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414hosal_dac_cb_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>hosal dac callback </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">arg</span></code>: Set the custom parameters specified when the callback function is set </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="i2c.html" class="btn btn-neutral float-right" title="I2C" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="外设 API" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,112 @@
+/***************************************************************************//**
+ * @file  zap-event.h
+ * @brief Generated file for zcl events using ZAP. Do not update file manually.
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2020 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * The licensor of this software is Silicon Laboratories Inc. Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement. This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
+ *
+ ******************************************************************************/
+
+
+#ifdef UC_BUILD
+#include "sl_component_catalog.h"
+
+#ifdef SL_CATALOG_ZIGBEE_ZCL_FRAMEWORK_CORE_PRESENT
+#include "af.h"
+
+#define EMBER_AF_GENERATED_UC_EVENTS_DEF \
+{{#user_endpoints}}
+	{{#user_clusters}}
+		{{#if (is_enabled enabled)}}
+			{{#template_options category="tick_events"}}
+				{{#if (is_lowercase_equal (concatenate ../name ../side) optionLabel)~}}
+				sl_zigbee_event_t {{optionCode}}Event{{endpoint_type_identifier ../../endpointTypeId}}; \
+				{{/if}}
+			{{/template_options}}
+		{{/if}}
+	{{/user_clusters}}
+{{/user_endpoints}}
+{{#all_user_clusters}}
+	{{#template_options category="generic_events"}}
+		{{#if (is_lowercase_equal (concatenate ../name ../side) optionLabel)~}}
+			sl_zigbee_event_t {{optionCode}}EndpointEvents[{{user_endpoint_count_by_cluster ../id ../side}}]; \
+		{{/if}}
+	{{/template_options}}
+{{/all_user_clusters}}
+
+
+#define EMBER_AF_GENERATED_UC_EVENTS_INIT \
+{{#all_user_clusters}}
+	{{#if (is_enabled enabled)}}
+		{{#template_options category="tick_events"}}
+			{{#if (is_lowercase_equal (concatenate ../name ../side) optionLabel)~}}
+			extern void {{optionCode}}(uint8_t endpoint); \
+			{{/if}}
+		{{/template_options}}
+	{{/if}}
+{{/all_user_clusters}}
+{{#user_endpoints}}
+	{{#user_clusters}}
+		{{#if (is_enabled enabled)}}
+			{{#template_options category="tick_events"}}
+				{{#if (is_lowercase_equal (concatenate ../name ../side) optionLabel)~}}
+				sl_zigbee_endpoint_event_init(&{{optionCode}}Event{{endpoint_type_identifier ../../endpointTypeId}}, (void *){{optionCode}}, {{endpoint_type_identifier ../../endpointTypeId}}); \
+				{{/if}}
+			{{/template_options}}
+		{{/if}}
+	{{/user_clusters}}
+{{/user_endpoints}}
+{{#all_user_clusters}}
+	{{#if (is_enabled enabled)}}
+		{{#template_options category="generic_events"}}
+			{{#if (is_lowercase_equal (concatenate ../name ../side) optionLabel)~}}
+			extern void {{optionCode}}EndpointEventHandler(uint8_t endpoint); \
+			{{/if}}
+		{{/template_options}}
+	{{/if}}
+{{/all_user_clusters}}
+{{#user_endpoints}}
+	{{#user_clusters}}
+		{{#if (is_enabled enabled)}}
+			{{#template_options category="generic_events"}}
+				{{#if (is_lowercase_equal (concatenate ../name ../side) optionLabel)~}}
+				sl_zigbee_endpoint_event_init(&{{optionCode}}EndpointEvents[{{endpoint_type_index ../../endpointTypeId}}], (void *){{optionCode}}EndpointEventHandler, {{endpoint_type_identifier ../../endpointTypeId}}); \
+				{{/if}}
+			{{/template_options}}
+		{{/if}}
+	{{/user_clusters}}
+{{/user_endpoints}}
+
+// sl_zigbee_event_context_t structs used to populate the sli_zigbee_app_event_context table
+#define EMBER_AF_GENERATED_UC_EVENT_CONTEXT \
+{{#user_endpoints}}
+	{{#user_clusters}}
+		{{#if (is_enabled enabled)}}
+			{{#template_options category="tick_events"}}
+				{{#if (is_lowercase_equal (concatenate ../name ../side) optionLabel)~}}
+				{ {{endpoint_type_identifier ../../endpointTypeId}}, {{as_hex ../code}}, {{#if (is_client ../side)}}true{{else}}false{{/if}}, EMBER_AF_LONG_POLL, EMBER_AF_OK_TO_SLEEP, &{{optionCode}}Event{{endpoint_type_identifier ../../endpointTypeId}} },     \
+				{{~new_line 1~}}{{~addToAccumulator "event_size" 1~}}
+				{{/if}}
+			{{/template_options}}
+		{{/if}}
+	{{/user_clusters}}
+{{/user_endpoints}}
+
+{{#after}}
+	{{#iterateAccumulator accumulator="event_size"}}
+		{{#last}}
+#define EMBER_AF_GENERATED_UC_EVENT_CONTEXT_COUNT {{sum}}
+		{{/last}}
+	{{/iterateAccumulator}}
+{{/after}}
+
+#endif // SL_CATALOG_ZIGBEE_ZCL_FRAMEWORK_CORE_PRESENT
+#endif // UC_BUILD

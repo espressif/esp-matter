@@ -1,0 +1,42 @@
+id: iostream_vuart
+package: platform
+label: "IO Stream VUART"
+description: IO Stream VUART.
+category: Services|IO Stream
+quality: alpha
+root_path: platform/service/iostream
+provides:
+  - name: iostream_vuart
+  - name: iostream_transport_core
+    allow_multiple: true
+  - name: iostream_transport
+    allow_multiple: true
+requires:
+  - name: iostream
+  - name: segger_rtt
+  - name: debug_swo
+config_file:
+  - path: config/sl_iostream_vuart_config.h
+include:
+  - path: inc
+    file_list:
+      - path: sl_iostream_vuart.h
+      - path: sl_iostream_swo_itm_8.h
+      - path: sli_iostream_swo_itm_8.h
+      - path: sl_iostream_swo.h
+source:
+  - path: src/sl_iostream_vuart.c
+  - path: src/sl_iostream_swo_itm_8.c
+define:
+  - name: SEGGER_RTT_ALIGNMENT
+    value: 1024
+template_contribution:
+  - name: event_handler
+    value:
+      event: iostream_instance_init
+      include: sl_iostream_vuart.h
+      handler: sl_iostream_vuart_init
+  - name: iostream_instance_info
+    value:
+      include: sl_iostream_vuart.h
+      handler: sl_iostream_instance_vuart_info

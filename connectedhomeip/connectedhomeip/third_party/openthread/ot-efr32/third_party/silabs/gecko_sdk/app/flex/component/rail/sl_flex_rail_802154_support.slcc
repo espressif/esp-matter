@@ -1,0 +1,33 @@
+id: "sl_flex_rail_802154_support"
+label: "Flex - RAIL IEEE 802.15.4 support"
+package: "Flex"
+description: "Adds minimalist IEEE Std. 802.15.4 support for coding, decoding packets and using basic functionalities."
+category: "Flex|RAIL|Utility"
+quality: "production"
+root_path: "app/flex/component/rail/sl_flex_rail_802154_support"
+config_file:
+  - path: "config/sl_flex_rail_ieee802154_config.h"
+provides:
+  - name: sl_flex_rail_802154_support
+  - name: sl_flex_rail_protocol
+    allow_multiple: false
+  - name: rail_util_init
+    allow_multiple: false
+
+requires:
+  - name: sl_flex_util_802154_init
+  - name: sl_flex_rail_packet_asm
+  - name: device_has_radio
+
+source:
+  - path: "sl_flex_ieee802154_support.c"
+include:
+  - path: "."
+    file_list:
+    - "path": "sl_flex_ieee802154_support.h"
+
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: flex_ieee802154_support

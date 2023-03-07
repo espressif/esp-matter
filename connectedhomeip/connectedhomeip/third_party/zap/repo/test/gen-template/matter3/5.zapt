@@ -1,0 +1,46 @@
+{{> header}}
+package chip.devicecontroller;
+
+{{#if (chip_has_client_clusters)}}
+A
+{{/if}}
+
+public class ChipEventStructs {
+{{#if (chip_has_client_clusters)}}
+{{#chip_client_clusters}}
+{{#zcl_events}}
+public static class {{asUpperCamelCase parent.name}}Cluster{{asUpperCamelCase name}}Event {
+{{#zcl_event_fields}}
+public {{asJavaType type null parent.parent.name includeAnnotations=true}} {{asLowerCamelCase (asSymbol name)}};
+{{/zcl_event_fields}}
+
+  public {{asUpperCamelCase parent.name}}Cluster{{asUpperCamelCase name}}Event(
+  {{#zcl_event_fields}}
+    {{#not_first}}, {{/not_first}}{{asJavaType type null parent.parent.name includeAnnotations=true}} {{asLowerCamelCase (asSymbol name)}}
+  {{/zcl_event_fields}}) {
+    {{#zcl_event_fields}}
+    this.{{asLowerCamelCase (asSymbol name)}} = {{asLowerCamelCase (asSymbol name)}};
+    {{/zcl_event_fields}}
+
+    output.append("{{asUpperCamelCase parent.name}}Cluster{{asUpperCamelCase name}}Event {\n");
+    {{#zcl_event_fields}}
+    output.append("\t{{asLowerCamelCase name}}: ");
+    {{#if isArray}}
+    output.append({{asLowerCamelCase name}});
+    {{else if (isOctetString type)}}
+    {{#if isOptional}}
+    output.append({{asLowerCamelCase name}}.isPresent() ? Arrays.toString({{asLowerCamelCase name}}.get()) : "");
+    {{else}}
+    output.append(Arrays.toString({{asLowerCamelCase name}}));
+    {{/if}}
+    {{else}}
+    output.append({{asLowerCamelCase name}});
+    {{/if}}
+    {{/zcl_event_fields}}
+  }
+}
+
+{{/zcl_events}}
+{{/chip_client_clusters}}
+{{/if}}
+}

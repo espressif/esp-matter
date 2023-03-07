@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<?xml-stylesheet type="text/xsl" href="FieldBasedDisplay.xslt"?>-->
+<!-- Created with Liquid XML Studio Designer Edition 9.1.10.3537 (http://www.liquid-technologies.com) -->
+<!--Copyright 2011 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Navigation" type="org.bluetooth.characteristic.navigation" uuid="2A68" last-modified="2013-05-13" approved="Yes">
+  <InformativeText>
+    <Summary>The Navigation characteristic is a variable length structure containing a Flags field, a Bearing field, a Heading field and, based on the contents of the Flags field, may contain a combination of data fields listed below.</Summary>
+  </InformativeText>
+  <Value>
+    <Field name="Flags">
+      <Requirement>Mandatory</Requirement>
+      <Format>16bit</Format>
+      <BitField>
+        <Bit index="0" size="1" name="Remaining Distance Present">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="1" size="1" name="Remaining Vertical Distance Present">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="2" size="1" name="Estimated Time of Arrival Present">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="3" size="2" name="Position Status">
+          <Enumerations>
+            <Enumeration key="0" value="No Position" />
+            <Enumeration key="1" value="Position Ok" />
+            <Enumeration key="2" value="Estimated Position" />
+            <Enumeration key="3" value="Last Known Position" />
+          </Enumerations>
+        </Bit>
+        <Bit index="5" size="1" name="Heading Source">
+          <Enumerations>
+            <Enumeration key="0" value="Heading based on movement" />
+            <Enumeration key="1" value="Heading based on magnetic compass" />
+          </Enumerations>
+        </Bit>
+        <Bit index="6" size="1" name="Navigation Indicator Type">
+          <Enumerations>
+            <Enumeration key="0" value="To Waypoint" />
+            <Enumeration key="1" value="To Destination" />
+          </Enumerations>
+        </Bit>
+        <Bit index="7" size="1" name="Waypoint Reached">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="8" size="1" name="Destination Reached">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <ReservedForFutureUse index="9" size="7" />
+      </BitField>
+    </Field>
+    <Field name="Bearing">
+      <InformativeText>Unit is in degrees with a resolution of 1/100</InformativeText>
+      <Requirement>Mandatory</Requirement>
+      <Format>uint16</Format>
+      <Unit>org.bluetooth.unit.plane_angle.degree</Unit>
+      <DecimalExponent>-2</DecimalExponent>
+    </Field>
+    <Field name="Heading">
+      <InformativeText>Unit is in degrees with a resolution of 1/100</InformativeText>
+      <Requirement>Mandatory</Requirement>
+      <Format>uint16</Format>
+      <Unit>org.bluetooth.unit.plane_angle.degree</Unit>
+      <DecimalExponent>-2</DecimalExponent>
+    </Field>
+    <Field name="Remaining Distance">
+      <InformativeText>Unit is in meters with a resolution of 1/10</InformativeText>
+      <Requirement>Optional</Requirement>
+      <Format>uint24</Format>
+      <Unit>org.bluetooth.unit.length.meter</Unit>
+      <DecimalExponent>-1</DecimalExponent>
+    </Field>
+    <Field name="Remaining Vertical Distance">
+      <InformativeText>Unit is in meters with a resolution of 1/100</InformativeText>
+      <Requirement>Optional</Requirement>
+      <Format>sint24</Format>
+      <Unit>org.bluetooth.unit.length.meter</Unit>
+      <DecimalExponent>-2</DecimalExponent>
+    </Field>
+    <Field name="Estimated Time of Arrival">
+      <InformativeText>
+             Smallest units in seconds
+            </InformativeText>
+      <Requirement>Optional</Requirement>
+      <Reference>org.bluetooth.characteristic.date_time</Reference>
+    </Field>
+  </Value>
+  <Note>        
+       The fields in the above table, reading from top to bottom, are shown in the order of LSO to MSO, where LSO = Least Significant Octet and MSO = Most Significant Octet.
+       The Least Significant Octet represents the eight bits numbered 0 to 7.
+    </Note>
+</Characteristic>

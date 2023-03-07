@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster xmlns:zcl="http://zigbee.org/zcl/clusters"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:type="http://zigbee.org/zcl/types"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd"
+  id="0102" revision="2" name="WindowCovering">
+  <classification role="application" picsCode="WNCV" primaryTransaction="1" />
+  <server>
+    <attributes>
+      <!-- Window Covering Information Attribute Set -->
+      <attribute id="0000" name="WindowCoveringType" type="enum8" required="true" default="0">
+        <restriction>
+          <type:enumeration value="00" name="Rollershade"/>
+          <type:enumeration value="01" name="Rollershade2Motor"/>
+          <type:enumeration value="02" name="RollershadeExterior"/>
+          <type:enumeration value="03" name="RollershadeExterior2Motor"/>
+          <type:enumeration value="04" name="Drapery"/>
+          <type:enumeration value="05" name="Awning"/>
+          <type:enumeration value="06" name="Shutter"/>
+          <type:enumeration value="07" name="TiltBlindTiltOnly" />
+          <type:enumeration value="08" name="TiltBlindLiftAndTilt" />
+          <type:enumeration value="09" name="ProjectorScreen" />
+        </restriction>
+      </attribute>
+      <attribute id="0001" name="PhysicalClosedLimitLift" type="uint16" default="0" />
+      <attribute id="0002" name="PhysicalClosedLimitTilt" type="uint16" default="0" />
+      <attribute id="0003" name="CurrentPositionLift" type="uint16" default="0" />
+      <attribute id="0004" name="CurrentPositionTilt" type="uint16" default="0" />
+      <attribute id="0005" name="NumberOfActuationsLift" type="uint16" default="0" />
+      <attribute id="0006" name="NumberOfActuationsTilt" type="uint16" default="0" />
+      <attribute id="0007" name="ConfigOrStatus" type="map8" required="true" default="3">
+        <bitmap>
+          <element name="Operational" type="bool" mask="01" />
+          <element name="Online" type="bool" mask="02" shiftRight="1" />
+          <element name="OpenAndUpCommandsReversed" type="bool" mask="04" shiftRight="2" />
+          <element name="LiftClosedLoop" type="bool" mask="08" shiftRight="3" />
+          <element name="TiltClosedLoop" type="bool" mask="10" shiftRight="4" />
+          <element name="LiftEncoderControlled" type="bool" mask="20" shiftRight="5" />
+          <element name="TiltEncoderControlled" type="bool" mask="40" shiftRight="6" />
+        </bitmap>
+      </attribute>
+      <attribute id="0008" name="CurrentPositionLiftPercentage" type="uint8" requiredIf="ConfigOrStatus.LiftClosedLoop = true" reportRequired="true" sceneRequired="true" max="100" default="0" />
+      <attribute id="0009" name="CurrentPositionTiltPercentage" type="uint8" requiredIf="ConfigOrStatus.TiltClosedLoop = true" reportRequired="true" sceneRequired="true" max="100" default="0" />
+      
+       <!-- Window Covering Settings Attribute Set -->
+      <attribute id="0100" name="InstalledOpenLimitLift" type="uint16" requiredIf="ConfigOrStatus.LiftClosedLoop = true" default="0" />
+      <attribute id="0101" name="InstalledClosedLimitLift" type="uint16" requiredIf="ConfigOrStatus.LiftClosedLoop = true" default="65535" />
+      <attribute id="0102" name="InstalledOpenLimitTilt" type="uint16" requiredIf="ConfigOrStatus.TiltClosedLoop = true" default="0" />
+      <attribute id="0103" name="InstalledClosedLimitTilt" type="uint16" requiredIf="ConfigOrStatus.TiltClosedLoop = true" default="65535" />
+      <attribute id="0104" name="VelocityLift" type="uint16" writable="true" default="0" />
+      <attribute id="0105" name="AccelerationTimeLift" type="uint16" writable="true" default="0" />
+      <attribute id="0106" name="DecelerationTimeLift" type="uint16" writable="true" default="0" />
+      <attribute id="0107" name="Mode" type="map8" required="true" default="4">
+        <bitmap>
+          <element name="MotorDirectionReversed" type="bool" mask="01" />
+          <element name="CalibrationMode" type="bool" mask="02" shiftRight="1" />
+          <element name="MaintenanceMode" type="bool" mask="04" shiftRight="2" />
+          <element name="LEDFeedback" type="bool" mask="08" shiftRight="3" />
+        </bitmap>
+      </attribute>
+      <attribute id="0108" name="IntermediateSetpointsLift" type="octstr" default="1,0x0000" />
+      <attribute id="0109" name="IntermediateSetpointsTilt" type="octstr" default="1,0x0000" />
+    </attributes>
+    <commands>
+      <command id="00" name="UpOrOpen" required="true" />
+      <command id="01" name="DownOrClose" required="true" />
+      <command id="02" name="Stop" required="true" />
+      <command id="04" name="GoToLiftValue">
+        <fields>
+          <field name="LiftValue" type="uint16">
+            <restriction>
+              <type:minInclusiveRef ref="InstalledClosedLimitLift" />
+              <type:maxInclusiveRef ref="InstalledOpenLimitLift" />
+            </restriction>
+          </field>
+        </fields>
+      </command>
+      <command id="05" name="GoToLiftPercentage" requiredIf="implements(GoToTiltPercentage) = false">
+        <fields>
+          <field name="PercentageLiftValue" type="uint8">
+            <restriction>
+              <type:maxInclusive value="100" />
+            </restriction>
+          </field>
+        </fields>
+      </command>
+      <command id="07" name="GoToTiltValue">
+        <fields>
+          <field name="TiltValue" type="uint16">
+            <restriction>
+              <type:minInclusiveRef ref="InstalledClosedLimitTilt" />
+              <type:maxInclusiveRef ref="InstalledOpenLimitTilt" />
+            </restriction>
+          </field>
+        </fields>
+      </command>
+      <command id="08" name="GoToTiltPercentage" requiredIf="implements(GoToLiftPercentage) = false">
+        <fields>
+          <field name="PercentageTiltValue" type="uint8">
+            <restriction>
+              <type:maxInclusive value="100" />
+            </restriction>
+          </field>
+        </fields>
+      </command>
+    </commands>
+  </server>
+</zcl:cluster>

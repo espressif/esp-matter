@@ -1,0 +1,78 @@
+#ISD afv6
+{setupId:zclAfv2
+intMap:ManufacturingCode = 4098
+intMap:ReportTableSize = 5
+intMap:Endpoint = 10
+intMap:DeviceVersion = 0
+intMap:DefaultDestinationEndpoint = 10
+intMap:ProfileId = -1
+intMap:DeviceId = -1
+intMap:DefaultResponsePolicy = 0
+boolMap:EnableStandardReporting = false
+boolMap:EnableInterPanSend = false
+boolMap:EnableInterPanReceive = false
+boolMap:SupportCommandDiscovery = true
+boolMap:EnableKeySwitch = false
+boolMap:LowRamConcentrator = true
+boolMap:EnableAttributeRangeChecking = false
+boolMap:ReceiveSupportedZdoRequests = false
+boolMap:HandleUnsupportedZdoRequests = false
+boolMap:HandleEndpointZdoRequests = false
+boolMap:HandleBindingZdoRequests = false
+boolMap:LegacyCli = false
+boolMap:AddCustomCli = false
+boolMap:IncludeCommandDescriptions = false
+boolMap:GenerateCallbacksFile = false
+boolMap:ManufacturerCodeDefaultIsZero = true
+beginAttrList:SAVED_TO_FLASH
+  cl:0x0006, at:0x0000, di:server, mf:0x0000
+  cl:0x0006, at:0x4003, di:server, mf:0x0000
+  cl:0x0008, at:0x0000, di:server, mf:0x0000
+  cl:0x0008, at:0x4000, di:server, mf:0x0000
+  cl:0x0300, at:0x0007, di:server, mf:0x0000
+  cl:0x0300, at:0x4010, di:server, mf:0x0000
+endAttrList:SAVED_TO_FLASH
+beginAttributeDefaults
+cl:0x0006, at:0x4003, di:server, mf:0x0000 => 0xFF
+cl:0x0008, at:0x4000, di:server, mf:0x0000 => 0x33
+cl:0x0300, at:0x4010, di:server, mf:0x0000 => 0x4444
+endAttributeDefaults
+beginAttributeDefaultReportingConfig
+cl:0x0008, at:0x0000, di:server, mf:0x0000 => 10,60:1
+endAttributeDefaultReportingConfig
+configuredNetwork:*type:ZIGBEE_PRO, name:Primary
+beginEndpointType:Primary
+device:HA-onoff
+deviceId:0
+profileId:260
+endEndpointType
+beginEndpointType:Centralized
+device:LO-dimmablelight
+deviceId:257
+profileId:260
+endEndpointType
+beginEndpointType:Touchlink
+device:LO-extendedcolorlight
+deviceId:269
+profileId:260
+overrideClientCluster:0x1000,no
+overrideServerCluster:0x1000,yes
+endEndpointType
+beginEndpointType:GreenPower
+device:GP-proxy-basic
+deviceId:97
+profileId:41440
+endEndpointType
+configuredEndpoint:*ep:1,pi: -1,di:-1,dv:1,ept:Centralized,nwk:Primary
+configuredEndpoint:ep:2,pi: 260,di:269,dv:1,ept:Touchlink,nwk:Primary
+configuredEndpoint:ep:242,pi: -1,di:-1,dv:1,ept:GreenPower,nwk:Primary
+callbacks:emberAfMainInitCallback
+callbacks:emberAfStackStatusCallback
+callbacks:emberAfOnOffClusterServerAttributeChangedCallback
+callbacks:emberAfPluginOnOffClusterServerPostInitCallback
+callbacks:emberAfPluginNetworkSteeringCompleteCallback
+callbacks:emberAfPluginNetworkCreatorCompleteCallback
+callbacks:emberAfHalButtonIsrCallback
+}
+{setupId:zclCustomizer
+}

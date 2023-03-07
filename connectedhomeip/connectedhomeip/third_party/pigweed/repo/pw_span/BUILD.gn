@@ -1,0 +1,123 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/module_config.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_toolchain/traits.gni")
+import("$dir_pw_unit_test/test.gni")
+
+declare_args() {
+  # Whether or not to enable bounds-checking asserts in pw::span. Enabling this
+  # may significantly increase binary size, and can introduce dependency cycles
+  # if your pw_assert backend's headers depends directly or indirectly on
+  # pw_span. It's recommended to enable this for debug builds if possible.
+  pw_span_ENABLE_ASSERTS = false
+
+  # The build target that overrides the default configuration options for this
+  # module. This should point to a source set that provides defines through a
+  # public config (which may -include a file or add defines directly).
+  #
+  # Most modules depend on pw_build_DEFAULT_MODULE_CONFIG as the default config,
+  # but since this module's config options require interaction with the build
+  # system, this defaults to an internal config to properly support
+  # pw_span_ENABLE_ASSERTS.
+  pw_span_CONFIG = "$dir_pw_span:span_asserts"
+}
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("config") {
+  public = [ "public/pw_span/internal/config.h" ]
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ pw_span_CONFIG ]
+  remove_public_deps = [ "*" ]
+  visibility = [ ":*" ]
+}
+
+config("public_config") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+config("span_asserts_config") {
+  defines = [ "PW_SPAN_ENABLE_ASSERTS=${pw_span_ENABLE_ASSERTS}" ]
+  visibility = [ ":span_asserts" ]
+}
+
+pw_source_set("span_asserts") {
+  public_configs = [ ":span_asserts_config" ]
+  visibility = [ ":config" ]
+}
+
+# Provides "pw_span/span.h" and pw::span.
+pw_source_set("pw_span") {
+  public = [ "public/pw_span/span.h" ]
+  public_deps = [ ":common" ]
+}
+
+pw_source_set("common") {
+  public_configs = [ ":public_config" ]
+  public_deps = [
+    ":config",
+    "$dir_pw_polyfill",
+  ]
+
+  # Polyfill <cstddef> (std::byte) and <iterator> (std::size(), std::data) if
+  # C++17 is not supported.
+  if (pw_toolchain_CXX_STANDARD < pw_toolchain_STANDARD.CXX17) {
+    public_deps += [
+      "$dir_pw_polyfill:cstddef",
+      "$dir_pw_polyfill:iterator",
+    ]
+  }
+
+  # Only add a dependency on pw_assert if the flag is explicitly enabled.
+  if (pw_span_ENABLE_ASSERTS) {
+    public_deps += [ "$dir_pw_assert:assert" ]
+  }
+
+  sources = [ "public/pw_span/internal/span_impl.h" ]
+  visibility = [ ":*" ]
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":pw_span_test",
+    ":compatibility_test",
+  ]
+}
+
+pw_test("pw_span_test") {
+  deps = [ ":pw_span" ]
+  remove_configs = [ "$dir_pw_build:extra_strict_warnings" ]
+  sources = [ "span_test.cc" ]
+}
+
+pw_test("compatibility_test") {
+  deps = [
+    ":pw_span",
+    dir_pw_polyfill,
+  ]
+  sources = [ "compatibility_test.cc" ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}

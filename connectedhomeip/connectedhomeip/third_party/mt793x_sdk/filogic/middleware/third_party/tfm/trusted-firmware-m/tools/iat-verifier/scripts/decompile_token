@@ -1,0 +1,35 @@
+#!/usr/bin/env python3
+#-------------------------------------------------------------------------------
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+import argparse
+import os
+import sys
+
+import cbor
+import yaml
+from iatverifier.util import convert_token_to_map
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('source', help='A compiled COSE IAT token.')
+    parser.add_argument('-o', '--outfile',
+                        help='''Output file for the depompiled claims. If this is not
+                        specified, the claims will be written to standard output.''')
+    args = parser.parse_args()
+
+    with open(args.source, 'rb') as fh:
+        token_map = convert_token_to_map(fh.read())
+
+    if args.outfile:
+        with open(args.outfile, 'w') as wfh:
+            yaml.dump(token_map, wfh)
+    else:
+        yaml.dump(token_map, sys.stdout)
+
+

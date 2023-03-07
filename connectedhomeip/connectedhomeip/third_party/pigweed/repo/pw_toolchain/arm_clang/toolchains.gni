@@ -1,0 +1,246 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_toolchain/clang_tools.gni")
+
+# Specifies the tools used by host Clang toolchains.
+_arm_clang_toolchain = {
+  forward_variables_from(pw_toolchain_clang_tools, "*")
+
+  link_whole_archive = true
+
+  # Enable static analysis for arm clang based toolchains.
+  static_analysis = true
+}
+
+# Configs specific to different architectures.
+_cortex_m0plus = [ "$dir_pw_toolchain/arm_clang:cortex_m0plus" ]
+
+_cortex_m3 = [ "$dir_pw_toolchain/arm_clang:cortex_m3" ]
+
+_cortex_m4 = [ "$dir_pw_toolchain/arm_clang:cortex_m4" ]
+
+_cortex_m4f = [ "$dir_pw_toolchain/arm_clang:cortex_m4f" ]
+
+_cortex_m7 = [ "$dir_pw_toolchain/arm_clang:cortex_m7" ]
+
+_cortex_m7f = [ "$dir_pw_toolchain/arm_clang:cortex_m7f" ]
+
+_cortex_m33 = [ "$dir_pw_toolchain/arm_clang:cortex_m33" ]
+
+_cortex_m33f = [ "$dir_pw_toolchain/arm_clang:cortex_m33f" ]
+
+# Describes ARM clang toolchains for specific targets.
+pw_toolchain_arm_clang = {
+  cortex_m0plus_debug = {
+    name = "arm_clang_cortex_m0plus_debug"
+    forward_variables_from(_arm_clang_toolchain, "*")
+    defaults = {
+      default_configs = _cortex_m0plus + [ "$dir_pw_build:optimize_debugging" ]
+    }
+  }
+  cortex_m0plus_speed_optimized = {
+    name = "arm_clang_cortex_m0plus_speed_optimized"
+    forward_variables_from(_arm_clang_toolchain, "*")
+    defaults = {
+      default_configs = _cortex_m0plus + [ "$dir_pw_build:optimize_speed" ]
+    }
+  }
+  cortex_m0plus_size_optimized = {
+    name = "arm_clang_cortex_m0plus_size_optimized"
+    forward_variables_from(_arm_clang_toolchain, "*")
+    defaults = {
+      default_configs = _cortex_m0plus + [ "$dir_pw_build:optimize_size_clang" ]
+    }
+  }
+  cortex_m3_debug = {
+    name = "arm_clang_cortex_m3_debug"
+    forward_variables_from(_arm_clang_toolchain, "*")
+    defaults = {
+      default_configs = _cortex_m3 + [ "$dir_pw_build:optimize_debugging" ]
+    }
+  }
+  cortex_m3_speed_optimized = {
+    name = "arm_clang_cortex_m3_speed_optimized"
+    forward_variables_from(_arm_clang_toolchain, "*")
+    defaults = {
+      default_configs = _cortex_m3 + [ "$dir_pw_build:optimize_speed" ]
+    }
+  }
+  cortex_m3_size_optimized = {
+    name = "arm_clang_cortex_m3_size_optimized"
+    forward_variables_from(_arm_clang_toolchain, "*")
+    defaults = {
+      default_configs = _cortex_m3 + [ "$dir_pw_build:optimize_size_clang" ]
+    }
+  }
+  cortex_m4_debug = {
+    name = "arm_clang_cortex_m4_debug"
+    forward_variables_from(_arm_clang_toolchain, "*")
+    defaults = {
+      default_configs = _cortex_m4 + [ "$dir_pw_build:optimize_debugging" ]
+    }
+  }
+  cortex_m4_speed_optimized = {
+    name = "arm_clang_cortex_m4_speed_optimized"
+    forward_variables_from(_arm_clang_toolchain, "*")
+    defaults = {
+      default_configs = _cortex_m4 + [ "$dir_pw_build:optimize_speed" ]
+    }
+  }
+  cortex_m4_size_optimized = {
+    name = "arm_clang_cortex_m4_size_optimized"
+    forward_variables_from(_arm_clang_toolchain, "*")
+    defaults = {
+      default_configs = _cortex_m4 + [ "$dir_pw_build:optimize_size_clang" ]
+    }
+  }
+  cortex_m4f_debug = {
+    name = "arm_clang_cortex_m4f_debug"
+    forward_variables_from(_arm_clang_toolchain, "*")
+    defaults = {
+      default_configs = _cortex_m4f + [ "$dir_pw_build:optimize_debugging" ]
+    }
+  }
+  cortex_m4f_speed_optimized = {
+    name = "arm_clang_cortex_m4f_speed_optimized"
+    forward_variables_from(_arm_clang_toolchain, "*")
+    defaults = {
+      default_configs = _cortex_m4f + [ "$dir_pw_build:optimize_speed" ]
+    }
+  }
+  cortex_m4f_size_optimized = {
+    name = "arm_clang_cortex_m4f_size_optimized"
+    forward_variables_from(_arm_clang_toolchain, "*")
+    defaults = {
+      default_configs = _cortex_m4f + [ "$dir_pw_build:optimize_size_clang" ]
+    }
+  }
+  cortex_m7_debug = {
+    name = "arm_clang_cortex_m7_debug"
+    forward_variables_from(_arm_clang_toolchain, "*")
+    defaults = {
+      default_configs = _cortex_m7 + [ "$dir_pw_build:optimize_debugging" ]
+    }
+  }
+  cortex_m7_speed_optimized = {
+    name = "arm_clang_cortex_m7_speed_optimized"
+    forward_variables_from(_arm_clang_toolchain, "*")
+    defaults = {
+      default_configs = _cortex_m7 + [ "$dir_pw_build:optimize_speed" ]
+    }
+  }
+  cortex_m7_size_optimized = {
+    name = "arm_clang_cortex_m7_size_optimized"
+    forward_variables_from(_arm_clang_toolchain, "*")
+    defaults = {
+      default_configs = _cortex_m7 + [ "$dir_pw_build:optimize_size_clang" ]
+    }
+  }
+  cortex_m7f_debug = {
+    name = "arm_clang_cortex_m7f_debug"
+    forward_variables_from(_arm_clang_toolchain, "*")
+    defaults = {
+      default_configs = _cortex_m7f + [ "$dir_pw_build:optimize_debugging" ]
+    }
+  }
+  cortex_m7f_speed_optimized = {
+    name = "arm_clang_cortex_m7f_speed_optimized"
+    forward_variables_from(_arm_clang_toolchain, "*")
+    defaults = {
+      default_configs = _cortex_m7f + [ "$dir_pw_build:optimize_speed" ]
+    }
+  }
+  cortex_m7f_size_optimized = {
+    name = "arm_clang_cortex_m7f_size_optimized"
+    forward_variables_from(_arm_clang_toolchain, "*")
+    defaults = {
+      default_configs = _cortex_m7f + [ "$dir_pw_build:optimize_size_clang" ]
+    }
+  }
+  cortex_m33_debug = {
+    name = "arm_clang_cortex_m33_debug"
+    forward_variables_from(_arm_clang_toolchain, "*")
+    defaults = {
+      default_configs = _cortex_m33 + [ "$dir_pw_build:optimize_debugging" ]
+    }
+  }
+  cortex_m33_speed_optimized = {
+    name = "arm_clang_cortex_m33_speed_optimized"
+    forward_variables_from(_arm_clang_toolchain, "*")
+    defaults = {
+      default_configs = _cortex_m33 + [ "$dir_pw_build:optimize_speed" ]
+    }
+  }
+  cortex_m33_size_optimized = {
+    name = "arm_clang_cortex_m33_size_optimized"
+    forward_variables_from(_arm_clang_toolchain, "*")
+    defaults = {
+      default_configs = _cortex_m33 + [ "$dir_pw_build:optimize_size_clang" ]
+    }
+  }
+  cortex_m33f_debug = {
+    name = "arm_clang_cortex_m33f_debug"
+    forward_variables_from(_arm_clang_toolchain, "*")
+    defaults = {
+      default_configs = _cortex_m33f + [ "$dir_pw_build:optimize_debugging" ]
+    }
+  }
+  cortex_m33f_speed_optimized = {
+    name = "arm_clang_cortex_m33f_speed_optimized"
+    forward_variables_from(_arm_clang_toolchain, "*")
+    defaults = {
+      default_configs = _cortex_m33f + [ "$dir_pw_build:optimize_speed" ]
+    }
+  }
+  cortex_m33f_size_optimized = {
+    name = "arm_clang_cortex_m33f_size_optimized"
+    forward_variables_from(_arm_clang_toolchain, "*")
+    defaults = {
+      default_configs = _cortex_m33f + [ "$dir_pw_build:optimize_size_clang" ]
+    }
+  }
+}
+
+# This list just contains the members of the above scope for convenience to make
+# it trivial to generate all the toolchains in this file via a
+# `generate_toolchains` target.
+pw_toolchain_arm_clang_list = [
+  pw_toolchain_arm_clang.cortex_m0plus_debug,
+  pw_toolchain_arm_clang.cortex_m0plus_speed_optimized,
+  pw_toolchain_arm_clang.cortex_m0plus_size_optimized,
+  pw_toolchain_arm_clang.cortex_m3_debug,
+  pw_toolchain_arm_clang.cortex_m3_speed_optimized,
+  pw_toolchain_arm_clang.cortex_m3_size_optimized,
+  pw_toolchain_arm_clang.cortex_m4_debug,
+  pw_toolchain_arm_clang.cortex_m4_speed_optimized,
+  pw_toolchain_arm_clang.cortex_m4_size_optimized,
+  pw_toolchain_arm_clang.cortex_m4f_debug,
+  pw_toolchain_arm_clang.cortex_m4f_speed_optimized,
+  pw_toolchain_arm_clang.cortex_m4f_size_optimized,
+  pw_toolchain_arm_clang.cortex_m7_debug,
+  pw_toolchain_arm_clang.cortex_m7_speed_optimized,
+  pw_toolchain_arm_clang.cortex_m7_size_optimized,
+  pw_toolchain_arm_clang.cortex_m7f_debug,
+  pw_toolchain_arm_clang.cortex_m7f_speed_optimized,
+  pw_toolchain_arm_clang.cortex_m7f_size_optimized,
+  pw_toolchain_arm_clang.cortex_m33_debug,
+  pw_toolchain_arm_clang.cortex_m33_speed_optimized,
+  pw_toolchain_arm_clang.cortex_m33_size_optimized,
+  pw_toolchain_arm_clang.cortex_m33f_debug,
+  pw_toolchain_arm_clang.cortex_m33f_speed_optimized,
+  pw_toolchain_arm_clang.cortex_m33f_size_optimized,
+]

@@ -1,0 +1,43 @@
+id: cbap
+label: Certificate Based Authentication and Pairing
+package: Bluetooth
+description: >
+  Establish Certificate Based Authentication and Pairing
+category: Bluetooth|Middleware
+quality: production
+root_path: app/bluetooth/common/cbap
+include:
+  - path: .
+    file_list:
+      - path: sl_bt_cbap.h
+config_file:
+  - path: config/sl_bt_cbap_config.h
+  - path: config/sl_bt_cbap_root_cert.h
+    file_id: cbap_root_certificate
+  - path: cbap.xml
+    directory: btconf
+source:
+  - path: sl_bt_cbap.c
+requires:
+  - name: bluetooth_stack
+  - name: gatt_configuration
+  - name: bluetooth_feature_gatt
+  - name: bluetooth_feature_gatt_server
+  - name: bluetooth_feature_sm
+  - name: app_assert
+  - name: simple_timer
+  - name: cbap_lib
+recommends:
+  - id: simple_timer
+provides:
+  - name: cbap
+template_contribution:
+  - name: bluetooth_on_event
+    value:
+      include: sl_bt_cbap.h
+      function: sli_bt_cbap_on_event
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: sl_bt_cbap.h
+      handler: sl_bt_cbap_init

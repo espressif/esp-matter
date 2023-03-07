@@ -1,0 +1,85 @@
+id: rail_lib
+label: RAIL Library, Core
+description: Radio Abstraction Interface Library (RAIL) Library Support
+package: platform
+category: Platform|Radio
+quality: production
+ui_hints:
+  visibility: never
+requires:
+  - name: rail_lib_Xprotocol # generic requirement
+  - name: rail_lib_config_module
+    condition:
+      - device_is_module
+  - name: wireless_stack
+    condition:
+      - device_no_rail_api # require a stack if no direct RAIL API usage is allowed; provided by device component
+  - name: emlib_gpio
+  - name: emlib_core
+  - name: cmsis_core
+  - name: emlib_cmu
+  - name: emlib_emu
+  - name: emlib_system
+  - name: emlib_prs
+  # Note: In the future, this fem_util dependency needs to be required by a more generic component.
+  - name: fem_util
+    condition:
+      - mgm12p22f1024ga # Note: tag "device_has_fem" doesn't exist
+  - name: fem_util
+    condition:
+      - mgm12p22f1024ge # Note: tag "device_has_fem" doesn't exist
+  - name: fem_util
+    condition:
+      - mgm12p32f1024ga # Note: tag "device_has_fem" doesn't exist
+  - name: fem_util
+    condition:
+      - mgm12p32f1024ge # Note: tag "device_has_fem" doesn't exist
+  # Note: In the future, this rail_util_rf_path dependency needs to be required by a more generic component.
+  - name: rail_util_rf_path
+    condition:
+      - device_sdid_200 # efr32xg21 has a chip-internal rf path selection
+      - device_init
+  - name: device_init_hfxo
+    condition:
+      - device_init # RAIL requires HFXO, but only require this specific implementation if device_init is in play.
+  - name: emlib_acmp
+    condition:
+      - device_sdid_220 # Needed for EFF01
+  - name: emlib_vdac
+    condition:
+      - device_sdid_220 # Needed for EFF01
+
+recommends:
+  - id: rail_lib_singleprotocol # default component to satisfy generic rail_lib_Xprotocol requirement
+provides:
+  - name: rail_lib
+include:
+  - path: platform/radio/rail_lib/common
+    file_list:
+      - path: rail.h
+      - path: rail_mfm.h
+      - path: rail_assert_error_codes.h
+      - path: rail_types.h
+      - path: rail_features.h
+  - path: platform/radio/rail_lib/protocol/ble
+    file_list:
+      - path: rail_ble.h
+  - path: platform/radio/rail_lib/protocol/ieee802154
+    file_list:
+      - path: rail_ieee802154.h
+  - path: platform/radio/rail_lib/protocol/zwave
+    file_list:
+      - path: rail_zwave.h
+  - path: platform/radio/rail_lib/chip/efr32/efr32xg1x
+    file_list:
+      - path: rail_chip_specific.h
+    condition:
+      - device_series_1
+  - path: platform/radio/rail_lib/chip/efr32/efr32xg2x
+    file_list:
+      - path: rail_chip_specific.h
+    condition:
+      - device_series_2
+template_contribution:
+  - name: component_catalog
+    value: rail_lib

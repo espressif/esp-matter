@@ -1,0 +1,6 @@
+os
+ble
+bton
+btdrv
+ver
+bt on

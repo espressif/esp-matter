@@ -1,0 +1,16 @@
+id: enum
+label: "Enumerations"
+package: platform
+description: A wrapper for enum generation that ensures consistent sizing and doxygen stylization.
+category: Platform|Utilities
+quality: production
+root_path: platform/common/inc/
+include:
+  - path: ./
+    file_list:
+      - path: sl_enum.h
+provides:
+  - name: enum
+documentation:
+  docset: gecko-platform
+  document: common/api/group-enum

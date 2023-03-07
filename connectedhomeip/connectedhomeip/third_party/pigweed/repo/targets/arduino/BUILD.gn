@@ -1,0 +1,107 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_arduino_build/arduino.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_toolchain/generate_toolchain.gni")
+pw_doc_group("target_docs") {
+  sources = [ "target_docs.rst" ]
+}
+
+if (pw_arduino_build_CORE_PATH != "") {
+  import("target_toolchains.gni")
+
+  generate_toolchains("target_toolchains") {
+    toolchains = pw_target_toolchain_arduino_list
+  }
+
+  if (current_toolchain != default_toolchain) {
+    config("arduino_build") {
+      # Debug: Print out arduinobuilder.py args
+      # print(string_join(" ", [rebase_path(arduino_builder_script, root_build_dir)] + arduino_show_command_args))
+
+      # Run prebuilds
+      # TODO(tonymd) This only needs to be run once but it's happening multiple times.
+      exec_script(arduino_builder_script,
+                  filter_exclude(arduino_run_command_args,
+                                 [ "--save-config" ]) + [ "--run-prebuilds" ],
+                  "string")
+
+      _exclude_flags = [ "-std=gnu++14" ]
+
+      _cflags = exec_script(arduino_builder_script,
+                            arduino_show_command_args + [ "--c-flags" ],
+                            "list lines")
+      cflags = filter_exclude(_cflags, _exclude_flags)
+
+      asmflags = exec_script(arduino_builder_script,
+                             arduino_show_command_args + [ "--s-only-flags" ],
+                             "list lines")
+
+      _cflags_cc =
+          exec_script(arduino_builder_script,
+                      arduino_show_command_args + [ "--cpp-only-flags" ],
+                      "list lines")
+      cflags_cc = filter_exclude(_cflags_cc, _exclude_flags)
+
+      _ldflags = exec_script(arduino_builder_script,
+                             arduino_show_command_args + [ "--ld-flags" ],
+                             "list lines")
+      ldflags =
+          filter_exclude(_ldflags,
+                         [
+                           # Remove arguments ending in 'core.a', for example:
+                           # C:/Users/username/pigweed/out/core.a
+                           "*core.a\b",
+
+                           # Remove .elf output file, for example:
+                           # -o C:/Users/username/pigweed/out/pigweed.elf
+                           "\b-o\b",
+                           "*.elf\b",
+
+                           # Remove the Arduino {object_files} variable
+                           "{object_files}",
+                         ])
+
+      # TODO(tonymd): Determine if libs are needed.
+      #   Teensy4 core recipe uses: '-larm_cortexM7lfsp_math -lm -lstdc++'
+      libs = filter_exclude(
+              exec_script(arduino_builder_script,
+                          arduino_show_command_args + [ "--ld-lib-names" ],
+                          "list lines"),
+              # Exclude stdc++ which causes linking errors for teensy cores.
+              [ "\bstdc++\b" ])
+    }
+
+    pw_source_set("pre_init") {
+      sources = [ "init.cc" ]
+      public_deps = [
+        "$dir_pw_sys_io_arduino",
+        "$dir_pw_third_party/arduino:arduino_core_sources",
+      ]
+      deps = [
+        "$dir_pw_arduino_build:arduino_init.facade",
+        "$dir_pw_preprocessor",
+      ]
+    }
+  }
+} else {
+  config("arduino_build") {
+  }
+  group("pre_init") {
+  }
+}

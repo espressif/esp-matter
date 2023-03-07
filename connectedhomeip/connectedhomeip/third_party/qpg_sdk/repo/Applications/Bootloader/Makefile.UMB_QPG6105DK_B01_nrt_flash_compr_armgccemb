@@ -1,0 +1,255 @@
+#Generated from:
+# $(BASEDIR)/../../Applications/Bootloader/UserModeBootloader_QPG6105DK_B01_compr_armgccemb.py
+
+ifndef BASEDIR
+BASEDIR:=$(abspath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
+endif
+# Global vars
+OS_USED?=LINUX
+GPHUB_ROOT?=/builds/291/0/depot/gpHub
+ROOTDIR?=$(BASEDIR)/../..
+WORKDIR?=$(BASEDIR)/../../Work/UMB_QPG6105DK_B01_nrt_flash_compr_armgccemb
+ENV_PATH?=$(BASEDIR)/../..
+PYTHON_BIN?=/usr/bin/python3
+CURRENT_CONF:=UserModeBootloader_QPG6105DK_B01_compr_armgccemb.py
+EXTRA_CONF:=
+
+CONFIG_HEADER:=$(BASEDIR)/../../Applications/Bootloader/gen/UMB_QPG6105DK_B01_nrt_flash_compr_armgccemb/qorvo_config.h
+INTERNALS_HEADER:=$(BASEDIR)/../../Applications/Bootloader/gen/UMB_QPG6105DK_B01_nrt_flash_compr_armgccemb/qorvo_internals.h
+PREINCLUDE_HEADER:=$(BASEDIR)/../../Applications/Bootloader/gen/UMB_QPG6105DK_B01_nrt_flash_compr_armgccemb/qorvo_config.h
+
+PREBUILD_SCRIPT:=
+
+POSTBUILD_SCRIPT:=
+
+FLAGS=
+# Build variables
+ARMCHIP=K8E
+MCU=cortex-m4
+PRODUCTID?=QPG6105
+
+# Main target file
+APPFILE:=$(WORKDIR)/UMB_QPG6105DK_B01_nrt_flash_compr_armgccemb.hex
+
+
+# Compiler specifics
+COMPILER?=armgccemb
+COMPILER_VERSION:=9_2019-q4-major
+TOOLCHAIN?=/usr
+PROGRAMMER?=xsif
+PROGRAM_EXT:=hex
+LIB_EXT:=a
+
+SRC=
+SRC_NOWARNING=
+ASRC=
+INC=
+AINC=
+LIB=
+
+# Application defines
+APPNAME:=UMB_QPG6105DK_B01_nrt_flash_compr_armgccemb
+SRC_APP:=
+SRC_APP+=$(BASEDIR)/../../Applications/Bootloader/src/default_handlers_bl.c
+SRC_APP+=$(BASEDIR)/../../Applications/Bootloader/src/ivt_bl.c
+SRC_APP+=$(BASEDIR)/../../Applications/Bootloader/src/userModeBootloader.c
+SRC_APP+=$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/halCortexM4/k8e/src/hal_CLK.c
+SRC_APP+=$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/halCortexM4/k8e/src/hal_wait.c
+SRC_APP+=$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/halCortexM4/src/hal_user_license.c
+SRC_APP+=$(BASEDIR)/../../Components/Qorvo/HAL_RF/gphal/k8e/src/gpHal_Flash.c
+SRC_APP+=$(BASEDIR)/../../Components/Qorvo/HAL_RF/gphal/k8e/src/gpHal_MISC.c
+SRC_APP+=$(BASEDIR)/../../Components/Qorvo/HAL_RF/gphal/k8e/src/gpHal_Rap.c
+SRC_APP+=$(BASEDIR)/../../Components/Qorvo/OS/gpVersion/src/gpVersion_versionInfo.c
+SRC+=$(SRC_APP)
+ASRC_APP:=
+ASRC_APP+=$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/halCortexM4/k8e/src/hal_wait_gcc.S
+ASRC_APP+=$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/halCortexM4/k8e/src/handlers_gcc.S
+ASRC+=$(ASRC_APP)
+INC_APP:=
+INC_APP+=-I$(BASEDIR)/../../Applications/Bootloader/gen/UMB_QPG6105DK_B01_nrt_flash_compr_armgccemb
+INC_APP+=-I$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/halCortexM4/inc
+INC_APP+=-I$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/halCortexM4/k8e/src
+INC_APP+=-I$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/inc
+INC_APP+=-I$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/inc/compiler/ARMGCCEMB
+INC+=$(INC_APP)
+AINC_APP:=
+AINC_APP+=-I$(BASEDIR)/../../Applications/Bootloader/gen/UMB_QPG6105DK_B01_nrt_flash_compr_armgccemb
+AINC+=$(AINC_APP)
+SRC_NOWARNING+=$(SRC_APP)
+
+#Compilation flags are defined in $(BASEDIR)/../../Applications/Bootloader/gen/UMB_QPG6105DK_B01_nrt_flash_compr_armgccemb/qorvo_config.h
+FLAGS+=-DGP_CONFIG_HEADER
+LINKERSCRIPT:=$(BASEDIR)/../../Applications/Bootloader/gen/UMB_QPG6105DK_B01_nrt_flash_compr_armgccemb/UMB_QPG6105DK_B01_nrt_flash_compr_armgccemb.ld
+APPFIRMWARE:=
+
+COMPS:=
+
+#Component sources
+#Depends on:
+# src: gpLog
+COMPS+=gpAssert
+SRC_gpAssert:=
+SRC_gpAssert+=$(BASEDIR)/../../Components/Qorvo/OS/gpAssert/src/gpAssert.c
+SRC+=$(SRC_gpAssert)
+INC_gpAssert:=
+INC_gpAssert+=-I$(BASEDIR)/../../Components/Qorvo/OS/gpAssert/inc
+INC+=$(INC_gpAssert)
+SRC_NOWARNING+=$(SRC_gpAssert)
+
+#Depends on:
+# src: 
+COMPS+=gpBsp
+INC_gpBsp:=
+INC_gpBsp+=-I$(BASEDIR)/../../Components/Qorvo/BSP/gpBsp/inc
+INC_gpBsp+=-I$(BASEDIR)/../../Components/Qorvo/BSP/gpBsp/inc/BLE
+INC_gpBsp+=-I$(BASEDIR)/../../Components/Qorvo/BSP/gpBsp/inc/FTS
+INC_gpBsp+=-I$(BASEDIR)/../../Components/Qorvo/BSP/gpBsp/inc/FoundationAndSilicon
+INC_gpBsp+=-I$(BASEDIR)/../../Components/Qorvo/BSP/gpBsp/inc/Gateway
+INC_gpBsp+=-I$(BASEDIR)/../../Components/Qorvo/BSP/gpBsp/inc/PTC
+INC_gpBsp+=-I$(BASEDIR)/../../Components/Qorvo/BSP/gpBsp/inc/PeripheralExamples
+INC_gpBsp+=-I$(BASEDIR)/../../Components/Qorvo/BSP/gpBsp/inc/RemoteControl
+INC_gpBsp+=-I$(BASEDIR)/../../Components/Qorvo/BSP/gpBsp/inc/SmartHomeAndLighting
+INC+=$(INC_gpBsp)
+
+#Depends on:
+# src: gpAssert
+COMPS+=gpLog
+INC_gpLog:=
+INC_gpLog+=-I$(BASEDIR)/../../Components/Qorvo/OS/gpLog/inc
+INC+=$(INC_gpLog)
+
+#Depends on:
+# src: gpLog, gpAssert, gphal
+COMPS+=gpPad
+INC_gpPad:=
+INC_gpPad+=-I$(BASEDIR)/../../Components/Qorvo/HAL_RF/gpPad/inc
+INC+=$(INC_gpPad)
+
+#Depends on:
+# src: gpLog, gpAssert
+# inc: gpSched, gphal
+COMPS+=gpPd
+INC_gpPd:=
+INC_gpPd+=-I$(BASEDIR)/../../Components/Qorvo/HAL_RF/gpPd/inc
+INC+=$(INC_gpPd)
+
+#Depends on:
+# src: gpLog, gpSched, gphal
+COMPS+=gpRandom
+INC_gpRandom:=
+INC_gpRandom+=-I$(BASEDIR)/../../Components/Qorvo/BaseUtils/gpRandom/inc
+INC+=$(INC_gpRandom)
+
+#Depends on:
+# src: 
+COMPS+=gpReset
+INC_gpReset:=
+INC_gpReset+=-I$(BASEDIR)/../../Components/Qorvo/OS/gpReset/inc
+INC+=$(INC_gpReset)
+
+#Depends on:
+# src: gpAssert, gphal, gpLog
+COMPS+=gpRxArbiter
+INC_gpRxArbiter:=
+INC_gpRxArbiter+=-I$(BASEDIR)/../../Components/Qorvo/802_15_4/gpRxArbiter/inc
+INC+=$(INC_gpRxArbiter)
+
+#Depends on:
+# src: gpAssert, gpLog, gpUtils
+COMPS+=gpSched
+INC_gpSched:=
+INC_gpSched+=-I$(BASEDIR)/../../Components/Qorvo/OS/gpSched/inc
+INC_gpSched+=-I$(BASEDIR)/../../Components/Qorvo/OS/gpSched/src
+INC+=$(INC_gpSched)
+
+#Depends on:
+# src: gpLog, gpAssert
+COMPS+=gpStat
+INC_gpStat:=
+INC_gpStat+=-I$(BASEDIR)/../../Components/Qorvo/BaseUtils/gpStat/inc
+INC+=$(INC_gpStat)
+
+#Depends on:
+# src: gpUtils, lzma
+# inc: gphal
+COMPS+=gpUpgrade
+SRC_gpUpgrade:=
+SRC_gpUpgrade+=$(BASEDIR)/../../Components/Qorvo/Bootloader/gpUpgrade/src/gpUpgrade_OtaArea.c
+SRC_gpUpgrade+=$(BASEDIR)/../../Components/Qorvo/Bootloader/gpUpgrade/src/gpUpgrade_boot_appLicenseBased.c
+SRC_gpUpgrade+=$(BASEDIR)/../../Components/Qorvo/Bootloader/gpUpgrade/src/gpUpgrade_flash.c
+SRC_gpUpgrade+=$(BASEDIR)/../../Components/Qorvo/Bootloader/gpUpgrade/src/gpUpgrade_hash.c
+SRC_gpUpgrade+=$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/halCortexM4/k8e/src/rom_access_gcc.S
+SRC+=$(SRC_gpUpgrade)
+INC_gpUpgrade:=
+INC_gpUpgrade+=-I$(BASEDIR)/../../Components/Qorvo/Bootloader/gpUpgrade/inc
+INC+=$(INC_gpUpgrade)
+SRC_NOWARNING+=$(SRC_gpUpgrade)
+
+#Depends on:
+# src: gpAssert, gpLog
+COMPS+=gpUtils
+SRC_gpUtils:=
+SRC_gpUtils+=$(BASEDIR)/../../Components/Qorvo/BaseUtils/gpUtils/src/gpUtils_LL.c
+SRC_gpUtils+=$(BASEDIR)/../../Components/Qorvo/BaseUtils/gpUtils/src/gpUtils_LLext.c
+SRC_gpUtils+=$(BASEDIR)/../../Components/Qorvo/BaseUtils/gpUtils/src/gpUtils_base64.c
+SRC_gpUtils+=$(BASEDIR)/../../Components/Qorvo/BaseUtils/gpUtils/src/gpUtils_crc.c
+SRC_gpUtils+=$(BASEDIR)/../../Components/Qorvo/BaseUtils/gpUtils/src/gpUtils_crc32.c
+SRC+=$(SRC_gpUtils)
+INC_gpUtils:=
+INC_gpUtils+=-I$(BASEDIR)/../../Components/Qorvo/BaseUtils/gpUtils/inc
+INC+=$(INC_gpUtils)
+SRC_NOWARNING+=$(SRC_gpUtils)
+
+#Depends on:
+# src: 
+COMPS+=gpVersion
+INC_gpVersion:=
+INC_gpVersion+=-I$(BASEDIR)/../../Components/Qorvo/OS/gpVersion/inc
+INC_gpVersion+=-I$(BASEDIR)/../../Components/Qorvo/OS/gpVersion/src
+INC+=$(INC_gpVersion)
+
+#Depends on:
+# src: gpAssert, gpReset, gpSched, gpRandom
+# inc: gpStat, gpBsp, gpPd, gpPad, gpRxArbiter
+COMPS+=gphal
+INC_gphal:=
+INC_gphal+=-I$(BASEDIR)/../../Components/Qorvo/HAL_RF/gphal/inc
+INC_gphal+=-I$(BASEDIR)/../../Components/Qorvo/HAL_RF/gphal/inc/gen
+INC_gphal+=-I$(BASEDIR)/../../Components/Qorvo/HAL_RF/gphal/k8e/inc
+INC_gphal+=-I$(BASEDIR)/../../Components/Qorvo/HAL_RF/gphal/k8e/src
+INC_gphal+=-I$(BASEDIR)/../../Components/Qorvo/HAL_RF/gphal/src
+INC+=$(INC_gphal)
+AINC_gphal:=
+AINC_gphal+=-I$(BASEDIR)/../../Components/Qorvo/HAL_RF/gphal/k8e/inc
+AINC+=$(AINC_gphal)
+
+#Depends on:
+# src: gpAssert, gphal
+# inc: gpBsp
+COMPS+=halCortexM4
+INC_halCortexM4:=
+INC_halCortexM4+=-I$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/halCortexM4/inc
+INC_halCortexM4+=-I$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/halCortexM4/k8e/inc
+INC_halCortexM4+=-I$(BASEDIR)/../../Components/ThirdParty/TOOL_CMSIS/CMSIS/Core/Include
+INC+=$(INC_halCortexM4)
+
+#Depends on:
+# src: 
+COMPS+=lzma
+SRC_lzma:=
+SRC_lzma+=$(BASEDIR)/../../Components/Qorvo/Bootloader/lzma/src/lzma.c
+SRC_lzma+=$(BASEDIR)/../../Components/Qorvo/Bootloader/lzma/src/lzma_gpHal_Flash.c
+SRC+=$(SRC_lzma)
+ASRC_lzma:=
+ASRC_lzma+=$(BASEDIR)/../../Components/Qorvo/Bootloader/lzma/asrc/lzma-decompression-v4-GCC.S
+ASRC_lzma+=$(BASEDIR)/../../Components/Qorvo/Bootloader/lzma/asrc/lzma-decompression-v4-output-GCC.S
+ASRC+=$(ASRC_lzma)
+INC_lzma:=
+INC_lzma+=-I$(BASEDIR)/../../Components/Qorvo/Bootloader/lzma/inc
+INC_lzma+=-I$(BASEDIR)/../../Components/Qorvo/Bootloader/lzma/src
+INC+=$(INC_lzma)
+SRC_NOWARNING+=$(SRC_lzma)
+
+
+-include $(BASEDIR)/custom.mk
+include $(ENV_PATH)/make/gpcommon.mk

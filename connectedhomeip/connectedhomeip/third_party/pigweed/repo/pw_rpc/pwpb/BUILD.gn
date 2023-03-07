@@ -1,0 +1,329 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_sync/backend.gni")
+import("$dir_pw_thread/backend.gni")
+import("$dir_pw_unit_test/test.gni")
+
+config("public") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("server_api") {
+  public_configs = [ ":public" ]
+  public = [
+    "public/pw_rpc/pwpb/internal/method.h",
+    "public/pw_rpc/pwpb/internal/method_union.h",
+    "public/pw_rpc/pwpb/server_reader_writer.h",
+  ]
+  sources = [ "server_reader_writer.cc" ]
+  public_deps = [
+    ":common",
+    "$dir_pw_rpc/raw:server_api",
+    "..:config",
+    "..:server",
+    dir_pw_bytes,
+  ]
+  deps = [
+    "..:log_config",
+    dir_pw_log,
+  ]
+  allow_circular_includes_from = [ ":common" ]
+}
+
+pw_source_set("client_api") {
+  public_configs = [ ":public" ]
+  public_deps = [
+    ":common",
+    "..:client",
+    dir_pw_function,
+  ]
+  public = [ "public/pw_rpc/pwpb/client_reader_writer.h" ]
+}
+
+pw_source_set("common") {
+  public_deps = [
+    "..:common",
+    dir_pw_bytes,
+    dir_pw_span,
+  ]
+  public_configs = [ ":public" ]
+  deps = [
+    "..:client",
+    "..:log_config",
+    "..:server",
+    dir_pw_log,
+    dir_pw_stream,
+  ]
+  public = [
+    "public/pw_rpc/pwpb/internal/common.h",
+    "public/pw_rpc/pwpb/serde.h",
+  ]
+}
+
+pw_source_set("test_method_context") {
+  public_configs = [ ":public" ]
+  public = [
+    "public/pw_rpc/pwpb/fake_channel_output.h",
+    "public/pw_rpc/pwpb/test_method_context.h",
+  ]
+  public_deps = [
+    ":server_api",
+    "..:test_utils",
+    dir_pw_assert,
+    dir_pw_containers,
+    dir_pw_span,
+  ]
+}
+
+pw_source_set("client_testing") {
+  public = [ "public/pw_rpc/pwpb/client_testing.h" ]
+  public_deps = [
+    ":test_method_context",
+    "..:client",
+    "../raw:client_testing",
+  ]
+}
+
+pw_source_set("client_server_testing") {
+  public = [ "public/pw_rpc/pwpb/client_server_testing.h" ]
+  public_deps = [
+    ":test_method_context",
+    "..:client_server_testing",
+  ]
+}
+
+pw_source_set("client_server_testing_threaded") {
+  public = [ "public/pw_rpc/pwpb/client_server_testing_threaded.h" ]
+  public_deps = [
+    ":test_method_context",
+    "..:client_server_testing_threaded",
+  ]
+}
+
+pw_source_set("internal_test_utils") {
+  public = [ "pw_rpc_pwpb_private/internal_test_utils.h" ]
+  public_deps = [
+    dir_pw_status,
+    dir_pw_stream,
+  ]
+}
+
+pw_source_set("echo_service") {
+  public_configs = [ ":public" ]
+  public_deps = [ "..:protos.pwpb_rpc" ]
+  sources = [ "public/pw_rpc/echo_service_pwpb.h" ]
+}
+
+pw_source_set("client_integration_test") {
+  public_configs = [ ":public" ]
+  public_deps = [
+    "$dir_pw_sync:binary_semaphore",
+    "..:integration_testing",
+    "..:protos.pwpb_rpc",
+    dir_pw_assert,
+    dir_pw_unit_test,
+  ]
+  sources = [ "client_integration_test.cc" ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":client_call_test",
+    ":client_reader_writer_test",
+    ":client_server_context_test",
+    ":client_server_context_threaded_test",
+    ":codegen_test",
+    ":echo_service_test",
+    ":fake_channel_output_test",
+    ":method_lookup_test",
+    ":method_test",
+    ":method_info_test",
+    ":method_union_test",
+    ":server_callback_test",
+    ":server_reader_writer_test",
+    ":serde_test",
+    ":stub_generation_test",
+    ":synchronous_call_test",
+  ]
+}
+
+pw_test("client_call_test") {
+  deps = [
+    ":client_api",
+    ":internal_test_utils",
+    "..:test_protos.pwpb",
+    "..:test_utils",
+  ]
+  sources = [ "client_call_test.cc" ]
+}
+
+pw_test("client_reader_writer_test") {
+  deps = [
+    ":client_api",
+    ":client_testing",
+    "..:test_protos.pwpb_rpc",
+  ]
+  sources = [ "client_reader_writer_test.cc" ]
+}
+
+pw_test("client_server_context_test") {
+  deps = [
+    ":client_api",
+    ":client_server_testing",
+    "..:test_protos.pwpb_rpc",
+  ]
+  sources = [ "client_server_context_test.cc" ]
+}
+
+_stl_threading_enabled =
+    pw_thread_THREAD_BACKEND == "$dir_pw_thread_stl:thread" &&
+    pw_sync_BINARY_SEMAPHORE_BACKEND != "" && pw_sync_MUTEX_BACKEND != ""
+
+pw_test("client_server_context_threaded_test") {
+  deps = [
+    ":client_api",
+    ":client_server_testing_threaded",
+    "$dir_pw_sync:binary_semaphore",
+    "$dir_pw_thread:test_threads",
+    "$dir_pw_thread_stl:test_threads",
+    "..:test_protos.pwpb_rpc",
+  ]
+  sources = [ "client_server_context_threaded_test.cc" ]
+  enable_if = _stl_threading_enabled
+}
+
+pw_test("codegen_test") {
+  deps = [
+    ":client_api",
+    ":internal_test_utils",
+    ":server_api",
+    ":test_method_context",
+    "..:test_protos.pwpb_rpc",
+    "..:test_utils",
+  ]
+  sources = [ "codegen_test.cc" ]
+}
+
+pw_test("echo_service_test") {
+  deps = [
+    ":echo_service",
+    ":server_api",
+    ":test_method_context",
+  ]
+  sources = [ "echo_service_test.cc" ]
+}
+
+pw_test("fake_channel_output_test") {
+  deps = [
+    ":server_api",
+    ":test_method_context",
+    "..:test_protos.pwpb_rpc",
+  ]
+  sources = [ "fake_channel_output_test.cc" ]
+}
+
+pw_test("method_test") {
+  deps = [
+    ":internal_test_utils",
+    ":server_api",
+    "$dir_pw_containers",
+    "..:test_protos.pwpb",
+    "..:test_utils",
+  ]
+  sources = [ "method_test.cc" ]
+}
+
+pw_test("method_info_test") {
+  deps = [
+    "..:common",
+    "..:test_protos.pwpb_rpc",
+    "..:test_utils",
+  ]
+  sources = [ "method_info_test.cc" ]
+}
+
+pw_test("method_lookup_test") {
+  deps = [
+    ":server_api",
+    ":test_method_context",
+    "..:test_protos.pwpb_rpc",
+    "..:test_utils",
+    "../raw:test_method_context",
+  ]
+  sources = [ "method_lookup_test.cc" ]
+}
+
+pw_test("method_union_test") {
+  deps = [
+    ":internal_test_utils",
+    ":server_api",
+    "..:test_protos.pwpb",
+    "..:test_utils",
+  ]
+  sources = [ "method_union_test.cc" ]
+}
+
+pw_test("serde_test") {
+  deps = [
+    ":server_api",
+    "..:test_protos.pwpb",
+  ]
+  sources = [ "serde_test.cc" ]
+}
+
+pw_test("server_callback_test") {
+  deps = [
+    ":server_api",
+    ":test_method_context",
+    "..:test_protos.pwpb_rpc",
+  ]
+  sources = [ "server_callback_test.cc" ]
+}
+
+pw_test("server_reader_writer_test") {
+  deps = [
+    ":server_api",
+    ":test_method_context",
+    "..:test_protos.pwpb_rpc",
+  ]
+  sources = [ "server_reader_writer_test.cc" ]
+}
+
+pw_test("stub_generation_test") {
+  deps = [ "..:test_protos.pwpb_rpc" ]
+  sources = [ "stub_generation_test.cc" ]
+}
+
+pw_test("synchronous_call_test") {
+  deps = [
+    ":test_method_context",
+    "$dir_pw_work_queue:pw_work_queue",
+    "$dir_pw_work_queue:stl_test_thread",
+    "$dir_pw_work_queue:test_thread",
+    "..:synchronous_client_api",
+    "..:test_protos.pwpb_rpc",
+  ]
+  sources = [ "synchronous_call_test.cc" ]
+  enable_if = pw_sync_TIMED_THREAD_NOTIFICATION_BACKEND != ""
+}

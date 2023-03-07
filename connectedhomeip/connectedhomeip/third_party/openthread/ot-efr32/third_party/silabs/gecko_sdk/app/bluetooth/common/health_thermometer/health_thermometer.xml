@@ -1,0 +1,58 @@
+<gatt>
+  <!--Health Thermometer-->
+  <service advertise="true" id="health_thermometer" name="Health Thermometer" requirement="mandatory" sourceId="org.bluetooth.service.health_thermometer" type="primary" uuid="1809">
+    <informativeText>Abstract: The Health Thermometer service exposes temperature and other data from a thermometer intended for healthcare and fitness applications. Summary: The Health Thermometer service is instantiated as a Primary Service. There are one or more instantiations of the Health Thermometer service per device claiming conformance with this specification. </informativeText>
+    
+    <!--Temperature Measurement-->
+    <characteristic id="temperature_measurement" name="Temperature Measurement" sourceId="org.bluetooth.characteristic.temperature_measurement" uuid="2A1C">
+      <informativeText/>
+      <value length="17" type="hex" variable_length="false"/>
+      <properties indicate="true" indicate_requirement="mandatory" notify="false" notify_requirement="excluded" read="false" read_requirement="excluded" reliable_write="false" reliable_write_requirement="excluded" write="false" write_no_response="false" write_no_response_requirement="excluded" write_requirement="excluded"/>
+      
+      <!--Client Characteristic Configuration-->
+      <descriptor id="client_characteristic_configuration" name="Client Characteristic Configuration" sourceId="org.bluetooth.descriptor.gatt.client_characteristic_configuration" uuid="2902">
+        <properties read="true" read_requirement="mandatory" write="true" write_requirement="mandatory"/>
+        <value length="2" type="hex" variable_length="false"/>
+      </descriptor>
+    </characteristic>
+    
+    <!--Temperature Type-->
+    <characteristic id="temperature_type" name="Temperature Type" sourceId="org.bluetooth.characteristic.temperature_type" uuid="2A1D">
+      <informativeText>Abstract: The Temperature Type characteristic is an enumeration that indicates where the temperature was measured. Summary: These Temperature Type values correspond to the Temperature Type descriptions used in ISO/IEEE 11073-10408-2008. </informativeText>
+      <value length="1" type="hex" variable_length="false"/>
+      <properties indicate="false" indicate_requirement="excluded" notify="false" notify_requirement="excluded" read="true" read_requirement="mandatory" reliable_write="false" reliable_write_requirement="excluded" write="false" write_no_response="false" write_no_response_requirement="excluded" write_requirement="excluded"/>
+    </characteristic>
+    
+    <!--Intermediate Temperature-->
+    <characteristic id="intermediate_temperature" name="Intermediate Temperature" sourceId="org.bluetooth.characteristic.intermediate_temperature" uuid="2A1E">
+      <informativeText>Abstract: The Intermediate Temperature characteristic has the same format as the Temperature Measurement characteristic. However, due to a different context, the Value field is referred to as the Intermediate Temperature Value field. </informativeText>
+      <value length="17" type="hex" variable_length="false"/>
+      <properties indicate="false" indicate_requirement="excluded" notify="true" notify_requirement="mandatory" read="false" read_requirement="excluded" reliable_write="false" reliable_write_requirement="excluded" write="false" write_no_response="false" write_no_response_requirement="excluded" write_requirement="excluded"/>
+      
+      <!--Client Characteristic Configuration-->
+      <descriptor id="client_characteristic_configuration_2" name="Client Characteristic Configuration" sourceId="org.bluetooth.descriptor.gatt.client_characteristic_configuration" uuid="2902">
+        <properties read="true" read_requirement="mandatory" write="true" write_requirement="mandatory"/>
+        <value length="2" type="hex" variable_length="false"/>
+      </descriptor>
+    </characteristic>
+    
+    <!--Measurement Interval-->
+    <characteristic id="measurement_interval" name="Measurement Interval" sourceId="org.bluetooth.characteristic.measurement_interval" uuid="2A21">
+      <informativeText>Abstract: The Measurement Interval characteristic defines the time between measurements. Summary: This characteristic is capable of representing values from 1 second to 65535 seconds which is equal to 18 hours, 12 minutes and 15 seconds. </informativeText>
+      <value length="2" type="hex" variable_length="false"/>
+      <properties indicate="false" indicate_requirement="optional" notify="false" notify_requirement="excluded" read="true" read_requirement="mandatory" reliable_write="false" reliable_write_requirement="excluded" write="false" write_no_response="false" write_no_response_requirement="excluded" write_requirement="optional"/>
+      
+      <!--Client Characteristic Configuration-->
+      <descriptor id="client_characteristic_configuration_3" name="Client Characteristic Configuration" sourceId="org.bluetooth.descriptor.gatt.client_characteristic_configuration" uuid="2902">
+        <properties read="true" read_requirement="mandatory" write="true" write_requirement="mandatory"/>
+        <value length="2" type="hex" variable_length="false"/>
+      </descriptor>
+      
+      <!--Valid Range-->
+      <descriptor id="valid_range" name="Valid Range" sourceId="org.bluetooth.descriptor.valid_range" uuid="2906">
+        <properties read="true" read_requirement="mandatory" write="false" write_requirement="excluded"/>
+        <value length="4" type="hex" variable_length="false"/>
+      </descriptor>
+    </characteristic>
+  </service>
+</gatt>

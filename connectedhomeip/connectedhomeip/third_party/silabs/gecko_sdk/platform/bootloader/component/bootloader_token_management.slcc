@@ -1,0 +1,16 @@
+id: bootloader_token_management
+label: Token Management
+package: bootloader
+description: Token management for cryptographic keys.
+category: Platform|Bootloader|Utils
+quality: production
+source:
+  - path: platform/bootloader/security/btl_security_tokens.c
+include:
+  - path: platform/bootloader/security
+    file_list:
+    - path: btl_security_tokens.h
+provides:
+  - name: bootloader_token_management
+  - name: bootloader_nonsecure_incompatible
+    condition: [bootloader_core_nonsecure]

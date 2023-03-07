@@ -1,0 +1,33 @@
+{{> header}}
+{{#if (chip_has_client_clusters)}}
+
+{{#chip_server_global_responses}}
+{{#unless (isStrEqual chipCallback.name "Unsupported")}}
+class CHIP{{chipCallback.name}}AttributeCallback : public chip::Callback::Callback<{{chipCallback.name}}AttributeCallback> {
+public:
+    CHIP{{chipCallback.name}}AttributeCallback(jobject javaCallback, bool keepAlive = false);
+
+    ~CHIP{{chipCallback.name}}AttributeCallback();
+
+    static void CallbackFn(void * context, {{chipCallback.type}} value);
+};
+{{/unless}}
+{{/chip_server_global_responses}}
+
+{{#chip_client_clusters}}
+{{#chip_server_cluster_attributes}}
+{{#unless (isStrEqual chipCallback.name "Unsupported")}}
+{{#if_basic_global_response}}
+{{else}}
+class CHIP{{asUpperCamelCase parent.name}}{{asUpperCamelCase name}}AttributeCallback : public chip::Callback::Callback<CHIP{{asUpperCamelCase parent.name}}Cluster{{asUpperCamelCase name}}AttributeCallbackType>
+    CHIP{{asUpperCamelCase parent.name}}{{asUpperCamelCase name}}AttributeCallback(jobject javaCallback, bool keepAlive = false);
+
+    ~CHIP{{asUpperCamelCase parent.name}}{{asUpperCamelCase name}}AttributeCallback();
+
+{{/if_basic_global_response}}
+
+{{/unless}}
+{{/chip_server_cluster_attributes}}
+{{/chip_client_clusters}}
+
+{{/if}}

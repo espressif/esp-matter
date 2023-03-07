@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2015 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="TDS Control Point" 
+type="org.bluetooth.characteristic.tds_control_point" uuid="2ABC" last-modified="2015-11-23">
+	<InformativeText>
+        <Summary>
+         The TDS Control Point characteristic is defined in the Transport Discovery Service, Section 4.1 and its sub-sections.
+		</Summary>
+        </InformativeText>
+</Characteristic>

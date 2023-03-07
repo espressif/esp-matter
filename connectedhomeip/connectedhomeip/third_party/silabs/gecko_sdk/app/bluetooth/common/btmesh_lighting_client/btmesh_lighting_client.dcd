@@ -1,0 +1,10 @@
+[
+      {
+        "name": "Main",
+        "location": "0x0000",
+        "sig_models" : [
+          {"mid":"0x1001", "name":"Generic On/Off Client"},
+          {"mid":"0x1302", "name":"Light Lightness Client"}
+        ]
+      }
+]

@@ -1,0 +1,96 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+}
+
+config("check_backend_overrides") {
+  include_dirs = [ "check_backend_public_overrides" ]
+}
+
+config("assert_backend_overrides") {
+  include_dirs = [ "assert_backend_public_overrides" ]
+}
+
+# This target provides a backend to pw_assert's check facade
+# (PW_CHECK()/PW_CRASH() macros) and assert compatibility C ABI
+# (the pw_assert_HandleFailure() function) via PW_LOG.
+pw_source_set("check_backend") {
+  public_configs = [
+    ":check_backend_overrides",
+    ":public_include_path",
+  ]
+  public_deps = [ "$dir_pw_log" ]
+  public =
+      [ "check_backend_public_overrides/pw_assert_backend/check_backend.h" ]
+  deps = [
+    "$dir_pw_assert:assert_compatibility_backend",
+    "$dir_pw_assert:config",
+    "$dir_pw_assert:facade",
+    "$dir_pw_preprocessor",
+  ]
+  sources = [
+    # TODO(b/235149326): assert_log.cc implements the assert compatibility
+    #     backend, but nothing for check_backend.
+    "assert_log.cc",
+    "public/pw_assert_log/check_log.h",
+  ]
+}
+
+# TODO(b/235149326): Remove this deprecated alias.
+group("pw_assert_log") {
+  public_deps = [ ":check_backend" ]
+}
+
+# This backend to pw_assert's PW_ASSERT() macros via PW_LOG. It is intended only
+# for use with PW_LOG backends which are constexpr compatible such as
+# pw_log_android.
+pw_source_set("assert_backend") {
+  public_configs = [
+    ":assert_backend_overrides",
+    ":public_include_path",
+  ]
+  public_deps = [
+    "$dir_pw_log",
+    "$dir_pw_preprocessor",
+  ]
+  public =
+      [ "assert_backend_public_overrides/pw_assert_backend/assert_backend.h" ]
+  sources = [ "public/pw_assert_log/assert_log.h" ]
+}
+
+group("assert_backend.impl") {
+}
+
+group("check_backend.impl") {
+}
+
+# pw_assert_log doesn't have deps with potential circular dependencies, so this
+# impl group can be empty.
+group("pw_assert_log.impl") {
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}
+
+pw_test_group("tests") {
+}

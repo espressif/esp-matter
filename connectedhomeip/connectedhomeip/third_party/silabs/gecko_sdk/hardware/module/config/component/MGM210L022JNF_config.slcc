@@ -1,0 +1,28 @@
+!!omap
+- id: MGM210L022JNF_config
+- label: MGM210L022JNF config
+- description: Configuration files for MGM210L022JNF
+- package: platform
+- category: Platform|Device|MGM21|Config
+- quality: production
+- ui_hints:
+    visibility: never
+- root_path: hardware/module/config
+- requires:
+  - name: mgm210l022jnf
+- provides:
+  - name: MGM210L022JNF_config
+- config_file:
+  - override:
+      component: rail_util_pa
+      file_id: rail_util_pa_config
+    path: MGM210L022JNF/sl_rail_util_pa_config.h
+  - override:
+      component: device_init_hfxo
+      file_id: device_init_hfxo_config
+    path: MGM210L022JNF/sl_device_init_hfxo_config.h
+  - override:
+      component: iot_flash
+      file_id: iot_flash_cfg
+      instance: msc
+    path: MGM210L022JNF/iot_flash_cfg_msc.h

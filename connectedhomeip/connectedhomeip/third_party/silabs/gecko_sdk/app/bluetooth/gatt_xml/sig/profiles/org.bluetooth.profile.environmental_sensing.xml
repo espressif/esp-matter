@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2016 Bluetooth SIG, Inc. All rights reserved. -->
+<Profile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/profile.xsd"
+  name="Environmental Sensing"
+  type="org.bluetooth.profile.environmental_sensing">
+  <InformativeText>
+    <Abstract>This profile enables a Collector device to connect and interact with an Environmental Sensor for use in outdoor activity applications.</Abstract>
+    <InformativeDisclaimer />
+    <Summary>The Environmental Sensing Profile is used to enable a data collection device to obtain data from an Environmental Sensor that exposes the Environmental Sensing Service.</Summary>
+    <Examples />
+  </InformativeText>
+  <Role
+    name="Environmental Sensor">
+    <Service
+      type="org.bluetooth.service.environmental_sensing">
+      <Declaration>PrimarySingleInstance</Declaration>
+      <Requirement>Mandatory</Requirement>
+    </Service>
+    <Service
+      type="org.bluetooth.service.device_information">
+      <Declaration>Primary</Declaration>
+      <Requirement>Optional</Requirement>
+    </Service>
+    <Service
+      type="org.bluetooth.service.battery_service">
+      <Declaration>Primary</Declaration>
+      <Requirement>Optional</Requirement>
+    </Service>
+  </Role>
+  <Role
+    name="Collector">
+    <Client
+      type="org.bluetooth.service.environmental_sensing">
+      <Requirement>Mandatory</Requirement>
+    </Client>
+    <Client
+      type="org.bluetooth.service.device_information">
+      <Requirement>Optional</Requirement>
+    </Client>
+    <Client
+      type="org.bluetooth.service.battery_service">
+      <Requirement>Optional</Requirement>
+    </Client>
+  </Role>
+</Profile>

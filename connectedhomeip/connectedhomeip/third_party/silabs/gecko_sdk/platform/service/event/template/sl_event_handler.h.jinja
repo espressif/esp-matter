@@ -1,0 +1,7 @@
+#ifndef SL_EVENT_HANDLER_H
+#define SL_EVENT_HANDLER_H
+
+{% for e in event -%}
+{{ e['function']['return'] }} {{ e['function']['name'] }}(void);
+{% endfor %}
+#endif // SL_EVENT_HANDLER_H

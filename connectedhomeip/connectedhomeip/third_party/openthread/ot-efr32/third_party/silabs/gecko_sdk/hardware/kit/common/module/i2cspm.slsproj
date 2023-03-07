@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="SDK.HAL.I2CSPM.COMMON">
+  <folder name="i2cspm">
+    <file name="i2cspm.c" partCompatibility="mcu.arm.efm32.* mcu.arm.ezr32.* mcu.arm.efr32.*" uri="$(sdkInstallationPath)/hardware/kit/common/drivers/i2cspm.c"/>
+  </folder>
+  <includePath languageCompatibility="c asm" uri="$(sdkInstallationPath)/hardware/kit/common/drivers/"/>
+</project>

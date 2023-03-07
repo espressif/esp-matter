@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2011 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Blood Pressure Measurement" type="org.bluetooth.characteristic.blood_pressure_measurement" uuid="2A35">
+    <InformativeText>
+        <Abstract>
+        The Blood Pressure Measurement characteristic is a variable length structure containing a Flags field, a Blood Pressure Measurement Compound Value field, and contains additional fields such as Time Stamp, Pulse Rate and User ID as determined by the contents of the Flags field.            
+		</Abstract>
+	</InformativeText>
+	<Value>
+		<Field name="Flags">
+            <InformativeText>These flags define which data fields are present in the Characteristic value</InformativeText>
+			<Requirement>Mandatory</Requirement>
+			<Format>8bit</Format>
+			<BitField>
+				<Bit index="0" size="1" name="Blood Pressure Units Flag">
+					<Enumerations>
+						<Enumeration key="0" value="Blood pressure for Systolic, Diastolic and MAP in units of mmHg" requires="C1"/>
+						<Enumeration key="1" value="Blood pressure for Systolic, Diastolic and MAP in units of kPa" requires="C2"/>
+					</Enumerations>
+				</Bit>
+				<Bit index="1" size="1" name="Time Stamp Flag">
+					<Enumerations>
+						<Enumeration key="0" value="Time Stamp not present"/>
+						<Enumeration key="1" value="Time Stamp present" requires="C3"/>
+					</Enumerations>
+				</Bit>
+				<Bit index="2" size="1" name="Pulse Rate Flag">
+					<Enumerations>
+						<Enumeration key="0" value="Pulse Rate not present"/>
+						<Enumeration key="1" value="Pulse Rate present" requires="C4"/>
+					</Enumerations>
+				</Bit>
+				<Bit index="3" size="1" name="User ID Flag">
+					<Enumerations>
+						<Enumeration key="0" value="User ID not present"/>
+						<Enumeration key="1" value="User ID present" requires="C5"/>
+					</Enumerations>
+				</Bit>
+				<Bit index="4" size="1" name="Measurement Status Flag">
+					<Enumerations>
+						<Enumeration key="0" value="Measurement Status not present"/>
+						<Enumeration key="1" value="Measurement Status present" requires="C6"/>
+					</Enumerations>
+				</Bit>
+				<ReservedForFutureUse index="5" size="1"/>
+                <ReservedForFutureUse index="6" size="1"/>
+                <ReservedForFutureUse index="7" size="1"/>
+			</BitField>
+		</Field>
+		<Field name="Blood Pressure Measurement Compound Value - Systolic (mmHg)">
+            <InformativeText>C1: Field exists if the key of bit 0 of the Flags field is set to 0</InformativeText>
+			<Requirement>C1</Requirement>
+			<Format>SFLOAT</Format>
+			<Unit>org.bluetooth.unit.pressure.millimetre_of_mercury</Unit>
+		</Field>
+		<Field name="Blood Pressure Measurement Compound Value - Diastolic (mmHg)">
+            <InformativeText>C1: Field exists if the key of bit 0 of the Flags field is set to 0</InformativeText>
+			<Requirement>C1</Requirement>
+			<Format>SFLOAT</Format>
+			<Unit>org.bluetooth.unit.pressure.millimetre_of_mercury</Unit>
+		</Field>
+		<Field name="Blood Pressure Measurement Compound Value - Mean Arterial Pressure (mmHg)">
+            <InformativeText>C1: Field exists if the key of bit 0 of the Flags field is set to 0</InformativeText>
+			<Requirement>C1</Requirement>
+			<Format>SFLOAT</Format>
+			<Unit>org.bluetooth.unit.pressure.millimetre_of_mercury</Unit>
+		</Field>
+		<Field name="Blood Pressure Measurement Compound Value - Systolic (kPa)">
+            <InformativeText>C2: Field exists if the key of bit 0 of the Flags field is set to 1</InformativeText>
+			<Requirement>C2</Requirement>
+			<Format>SFLOAT</Format>
+			<Unit>org.bluetooth.unit.pressure.pascal</Unit>
+			<DecimalExponent>3</DecimalExponent>
+		</Field>
+		<Field name="Blood Pressure Measurement Compound Value - Diastolic (kPa)">
+            <InformativeText>C2: Field exists if the key of bit 0 of the Flags field is set to 1</InformativeText>
+			<Requirement>C2</Requirement>
+			<Format>SFLOAT</Format>
+			<Unit>org.bluetooth.unit.pressure.pascal</Unit>
+			<DecimalExponent>3</DecimalExponent>
+		</Field>
+		<Field name="Blood Pressure Measurement Compound Value - Mean Arterial Pressure (kPa)">
+            <InformativeText>C2: Field exists if the key of bit 0 of the Flags field is set to 1</InformativeText>
+			<Requirement>C2</Requirement>
+			<Format>SFLOAT</Format>
+			<Unit>org.bluetooth.unit.pressure.pascal</Unit>
+			<DecimalExponent>3</DecimalExponent>
+		</Field>
+		<Field name="Time Stamp">
+            <InformativeText>C3: Field exists if the key of bit 1 of the Flags field is set to 1</InformativeText>
+			<Requirement>C3</Requirement>
+			<Reference>org.bluetooth.characteristic.date_time</Reference>
+		</Field>
+		<Field name="Pulse Rate">
+            <InformativeText>C4: Field exists if the key of bit 2 of the Flags field is set to 1</InformativeText>
+			<Requirement>C4</Requirement>
+			<Format>SFLOAT</Format>
+			<Unit>org.bluetooth.unit.period.beats_per_minute</Unit>
+		</Field>
+		<Field name="User ID">
+            <InformativeText>C5: Field exists if the key of bit 3 of the Flags field is set to 1</InformativeText>
+			<Requirement>C5</Requirement>
+			<Format>uint8</Format>
+            <Enumerations>
+                <Enumeration key="255" value="Unknown User" />
+                <DefinedByServiceSpecification start="0" end="254" />
+            </Enumerations>
+		</Field>
+		<Field name="Measurement Status">
+            <InformativeText>C6: Field exists if the key of bit 4 of the Flags field is set to 1</InformativeText>
+			<Requirement>C6</Requirement>
+			<Format>16bit</Format>
+			<BitField>
+				<Bit index="0" size="1" name="Body Movement Detection Flag">
+					<Enumerations>
+						<Enumeration key="0" value="No body movement"/>
+						<Enumeration key="1" value="Body movement during measurement"/>
+					</Enumerations>
+				</Bit>
+				<Bit index="1" size="1" name="Cuff Fit Detection Flag">
+					<Enumerations>
+						<Enumeration key="0" value="Cuff fits properly"/>
+						<Enumeration key="1" value="Cuff too loose"/>
+					</Enumerations>
+				</Bit>
+				<Bit index="2" size="1" name="Irregular Pulse Detection Flag">
+					<Enumerations>
+						<Enumeration key="0" value="No irregular pulse detected"/>
+						<Enumeration key="1" value="Irregular pulse detected"/>
+					</Enumerations>
+				</Bit>
+				<Bit index="3" size="2" name="Pulse Rate Range Detection Flags">
+					<Enumerations>
+						<Enumeration key="0" value="Pulse rate is within the range"/>
+						<Enumeration key="1" value="Pulse rate exceeds upper limit"/>
+						<Enumeration key="2" value="Pulse rate is less than lower limit"/>
+						<ReservedForFutureUse1 start1="3" end1="3"/>
+                     </Enumerations>
+                    
+				</Bit>
+				<Bit index="5" size="1" name="Measurement Position Detection Flag">
+					<Enumerations>
+						<Enumeration key="0" value="Proper measurement position"/>
+						<Enumeration key="1" value="Improper measurement position"/>
+					</Enumerations>
+				</Bit>
+				<ReservedForFutureUse index="6" size="1"/>
+                <ReservedForFutureUse index="7" size="1"/>
+				<ReservedForFutureUse index="8" size="1"/>
+                <ReservedForFutureUse index="9" size="1"/>
+                <ReservedForFutureUse index="10" size="1"/>
+                <ReservedForFutureUse index="11" size="1"/>
+                <ReservedForFutureUse index="12" size="1"/>
+                <ReservedForFutureUse index="13" size="1"/>
+                <ReservedForFutureUse index="14" size="1"/>
+                <ReservedForFutureUse index="15" size="1"/>
+			</BitField>
+		</Field>
+	</Value>
+   <Note>
+    The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet and MAP = Mean Arterial Pressure.
+   </Note>
+</Characteristic>

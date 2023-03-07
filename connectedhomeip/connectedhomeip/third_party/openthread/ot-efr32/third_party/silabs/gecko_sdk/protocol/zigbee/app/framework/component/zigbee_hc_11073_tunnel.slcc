@@ -1,0 +1,28 @@
+package: Zigbee
+description: Silicon Labs implementation of the Health Care 11073 protocol tunnel. This component
+  handles the life cycle of the 11073 tunnel, which is used by health care devices
+  to transmit 11073 data over the Zigbee protocol.
+id: zigbee_hc_11073_tunnel
+label: Health Care 11073 Protocol Tunnel
+category: Zigbee|Cluster Library|Health Care
+quality: extend
+provides:
+   - name: "zigbee_hc_11073_tunnel"
+source:
+  - path: protocol/zigbee/app/framework/plugin/hc-11073-tunnel/11073-tunnel.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/hc-11073-tunnel
+    file_list:
+      - path: 11073-tunnel.h  
+template_contribution:
+  - name: component_catalog
+    value: zigbee_hc_11073_tunnel
+  - name: cluster_service
+    value:
+       cluster_id: "0x0614"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "SERVER"       
+       service_function: "emberAf11073ProtocolTunnelClusterServerCommandParse"
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/hc-11073-tunnel

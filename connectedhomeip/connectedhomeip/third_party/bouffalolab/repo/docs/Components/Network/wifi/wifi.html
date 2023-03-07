@@ -1,0 +1,531 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>WiFi &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Examples/index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+      <li>WiFi</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Components/Network/wifi/wifi.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="wifi">
+<span id="wifi-index"></span><h1>WiFi<a class="headerlink" href="#wifi" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<h2>概述<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<p>本文档介绍BL_IoT SDK的WiFi联网功能。主要包括</p>
+<ul class="simple">
+<li>基站模式（即 STA 模式或 Wi-Fi 客户端模式），此时 BL_IoT 连接到接入点 (AP)。</li>
+<li>AP 模式（即 Soft-AP 模式或接入点模式），此时基站连接到 BL_IoT。</li>
+<li>AP-STA 共存模式（BL_IoT 既是接入点，同时又作为基站连接到另外一个接入点）。</li>
+<li>上述模式的各种安全模式（WPA、WPA2 及 WEP（AP模式不支持））。</li>
+<li>扫描接入点（包括主动扫描及被动扫描）。</li>
+<li>使用混杂模式监控 IEEE802.11 Wi-Fi 数据包。</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2>应用实例<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<p>BL_IoT的实例 <code class="docutils literal notranslate"><span class="pre">bl602_demo_wifi</span></code> 目录下包含了一个应用程序，该demo介绍了如何使用BL_IoT模组连接到AP等一系列wifi操作。该实例实现的主要思路如下：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image11.png" />
+</div>
+<ul class="simple">
+<li>在主函数 <code class="docutils literal notranslate"><span class="pre">bfl_main()</span></code> 中创建一个 <code class="docutils literal notranslate"><span class="pre">aos_loop_proc()</span></code> 线程，在此线程中调用 <code class="docutils literal notranslate"><span class="pre">aos_register_event_filter()</span></code> 接口注册一个 <code class="docutils literal notranslate"><span class="pre">EV_WIFI</span></code> 事件的监听函数 <code class="docutils literal notranslate"><span class="pre">event_cb_wifi_event()</span></code> ；</li>
+<li>首先用户在终端中输入 <code class="docutils literal notranslate"><span class="pre">stack_wifi</span></code> 命令后，在 <code class="docutils literal notranslate"><span class="pre">cmd_stack_wifi()</span></code> 函数中创建一个 <code class="docutils literal notranslate"><span class="pre">wifi_main()</span></code> 的线程，接着调用 <code class="docutils literal notranslate"><span class="pre">aos_post_event()</span></code> 接口发布 <code class="docutils literal notranslate"><span class="pre">CODE_WIFI_ON_INIT_DONE</span></code> 事件后， <code class="docutils literal notranslate"><span class="pre">event_cb_wifi_event()</span></code> 会被调用，并进入case <code class="docutils literal notranslate"><span class="pre">CODE_WIFI_ON_INIT_DONE</span></code> 分支从而调用 <code class="docutils literal notranslate"><span class="pre">wifi_mgmr_start_background()</span></code> 开启WiFi Manager，同时发布 <code class="docutils literal notranslate"><span class="pre">CODE_WIFI_ON_MGMR_DONE</span></code> 事件，进入case <code class="docutils literal notranslate"><span class="pre">CODE_WIFI_ON_MGMR_DONE</span></code> 分支调用 <code class="docutils literal notranslate"><span class="pre">_connect_wifi()</span></code> 函数，此函数先判断easyflash中是否设置了可连接的ssid，如果设置了则会自动进行wifi连接，没有设置则需手动输命令设置；</li>
+<li>如用户在终端中输入 <code class="docutils literal notranslate"><span class="pre">wifi_sta_connect</span></code> 命令，会调用相应的api实现。如需实现wifi相关的其他功能可通过调用对应api来实现。</li>
+</ul>
+</div>
+<div class="section" id="reason-codes">
+<h2>Reason Codes<a class="headerlink" href="#reason-codes" title="永久链接至标题"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">WLAN_FW_SUCCESSFUL</span></code></p>
+<p>WiFi连接成功</p>
+<p><code class="docutils literal notranslate"><span class="pre">WLAN_FW_TX_AUTH_FRAME_ALLOCATE_FAIILURE</span></code></p>
+<p>发送验证帧分配失败</p>
+<p><code class="docutils literal notranslate"><span class="pre">WLAN_FW_AUTHENTICATION_FAIILURE</span></code></p>
+<p>验证失败</p>
+<p><code class="docutils literal notranslate"><span class="pre">WLAN_FW_AUTH_ALGO_FAIILURE</span></code></p>
+<p>身份验证响应但身份验证算法失败</p>
+<p><code class="docutils literal notranslate"><span class="pre">WLAN_FW_TX_ASSOC_FRAME_ALLOCATE_FAIILURE</span></code></p>
+<p>发送关联帧分配失败</p>
+<p><code class="docutils literal notranslate"><span class="pre">WLAN_FW_ASSOCIATE_FAIILURE</span></code></p>
+<p>关联错误</p>
+<p><code class="docutils literal notranslate"><span class="pre">WLAN_FW_DEAUTH_BY_AP_WHEN_NOT_CONNECTION</span></code></p>
+<p>AP取消验证，但状态错误</p>
+<p><code class="docutils literal notranslate"><span class="pre">WLAN_FW_DEAUTH_BY_AP_WHEN_CONNECTION</span></code></p>
+<p>连接时由AP取消验证</p>
+<p><code class="docutils literal notranslate"><span class="pre">WLAN_FW_4WAY_HANDSHAKE_ERROR_PSK_TIMEOUT_FAILURE</span></code></p>
+<p>密码错误，四次握手超时</p>
+<p><code class="docutils literal notranslate"><span class="pre">WLAN_FW_4WAY_HANDSHAKE_TX_DEAUTH_FRAME_TRANSMIT_FAILURE</span></code></p>
+<p>密码错误，发送取消验证帧传输失败</p>
+<p><code class="docutils literal notranslate"><span class="pre">WLAN_FW_4WAY_HANDSHAKE_TX_DEAUTH_FRAME_ALLOCATE_FAIILURE</span></code></p>
+<p>密码错误，发送取消验证帧分配失败</p>
+<p><code class="docutils literal notranslate"><span class="pre">WLAN_FW_TX_AUTH_OR_ASSOC_FRAME_TRANSMIT_FAILURE</span></code></p>
+<p>发送授权或关联帧传输失败</p>
+<p><code class="docutils literal notranslate"><span class="pre">WLAN_FW_SCAN_NO_BSSID_AND_CHANNEL</span></code></p>
+<p>SSID错误，扫描不到bssid和频道</p>
+<p><code class="docutils literal notranslate"><span class="pre">WLAN_FW_CREATE_CHANNEL_CTX_FAILURE_WHEN_JOIN_NETWORK</span></code></p>
+<p>加入网络时创建通道上下文失败</p>
+<p><code class="docutils literal notranslate"><span class="pre">WLAN_FW_JOIN_NETWORK_FAILURE</span></code></p>
+<p>加入网络失败</p>
+<p><code class="docutils literal notranslate"><span class="pre">WLAN_FW_ADD_STA_FAILURE</span></code></p>
+<p>加入sta模式失败</p>
+<p><code class="docutils literal notranslate"><span class="pre">WLAN_FW_BEACON_LOSS</span></code></p>
+<p>信标丢失</p>
+</div>
+<div class="section" id="api">
+<h2>API参考<a class="headerlink" href="#api" title="永久链接至标题"></a></h2>
+<ul class="simple">
+<li>头文件</li>
+</ul>
+<p><a class="reference external" href="../../../../components/bl602/bl602_wifidrv/bl60x_wifi_driver/include/wifi_mgmr_ext.h">wifi_mgmr_ext.h</a></p>
+<ul class="simple">
+<li>API介绍</li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">wifi_mgmr_start_background(wifi_conf_t</span> <span class="pre">*conf)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      初始化并开启WiFi Manager。（wifi相关的操作第一步首先调用此接口）
+*
+* @param[in]    conf    WiFi配置
+*
+* @return       无
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">wifi_interface_t</span> <span class="pre">wifi_mgmr_sta_enable(void)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/**</span>
+<span class="o">*</span> <span class="n">function</span>      <span class="n">wifi</span> <span class="n">sta</span> <span class="n">使能</span>
+<span class="o">*</span>
+<span class="o">*</span> <span class="nd">@param</span><span class="p">[</span><span class="ow">in</span><span class="p">]</span>    <span class="n">无</span>
+<span class="o">*</span>
+<span class="o">*</span> <span class="nd">@return</span>       <span class="n">指向wifi</span> <span class="n">sta的结构体信息的指针</span>
+<span class="o">*/</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">wifi_mgmr_sta_disable(wifi_interface_t</span> <span class="pre">*interface)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function    wifi sta 失能
+*
+* @param[in]  interface    wifi sta结构体指针
+*
+* @return     0：成功, 其他：失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">wifi_mgmr_sta_mac_set(uint8_t</span> <span class="pre">mac[6])</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function    设置 wifi mac 地址
+*
+* @param[in]  mac[6]    存储mac地址的数组
+*
+* @return     0：成功, 其他：失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">wifi_mgmr_sta_mac_get(uint8_t</span> <span class="pre">mac[6])</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function    获取 wifi mac 地址
+*
+* @param[in]  mac[6]    存储mac地址的数组
+*
+* @return     0：成功, 其他：失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">wifi_mgmr_sta_ip_get(uint32_t</span> <span class="pre">*ip,</span> <span class="pre">uint32_t</span> <span class="pre">*gw,</span> <span class="pre">uint32_t</span> <span class="pre">*mask)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function    获取 wifi ip
+*
+* @param[in]  ip    指向ip的指针
+* @param[in]  gw    指向gateway的指针
+* @param[in]  mask  指向mask的指针
+*
+* @return     0：成功, 其他：失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">wifi_mgmr_sta_connect(wifi_interface_t</span> <span class="pre">*wifi_interface,</span> <span class="pre">char</span> <span class="pre">*ssid,</span> <span class="pre">char</span> <span class="pre">*psk,</span> <span class="pre">char</span> <span class="pre">*pmk,</span> <span class="pre">uint8_t</span> <span class="pre">*mac,</span> <span class="pre">uint8_t</span> <span class="pre">band,</span> <span class="pre">uint16_t</span> <span class="pre">freq)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function    wifi sta 连接
+*
+* @param[in]  wifi_interface    wifi sta结构体指针（wifi_mgmr_sta_enable的返回值）
+* @param[in]  ssid              wifi名
+* @param[in]  psk               密码
+* @param[in]  pmk               pmk
+* @param[in]  mac               mac地址
+* @param[in]  band              band
+* @param[in]  freq              freq
+* @return     0：成功, 其他：失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">wifi_mgmr_sta_disconnect(void)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function    wifi sta 断开（调用此接口后需要TaskDelay 1s左右，再调用wifi_mgmr_sta_disable接口才能实现wifi disconnect）
+*
+* @param[in]  无
+*
+* @return     0：成功, 其他：失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">wifi_interface_t</span> <span class="pre">wifi_mgmr_ap_enable(void)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/**</span>
+<span class="o">*</span> <span class="n">function</span>    <span class="n">wifi</span> <span class="n">ap模式使能</span>
+<span class="o">*</span>
+<span class="o">*</span> <span class="nd">@param</span><span class="p">[</span><span class="ow">in</span><span class="p">]</span>  <span class="n">无</span>
+<span class="o">*</span>
+<span class="o">*</span> <span class="nd">@return</span>     <span class="n">指向wifi</span> <span class="n">ap的结构体信息的指针</span>
+<span class="o">*/</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">wifi_mgmr_ap_start(wifi_interface_t</span> <span class="pre">*interface,</span> <span class="pre">char</span> <span class="pre">*ssid,</span> <span class="pre">int</span> <span class="pre">md,</span> <span class="pre">char</span> <span class="pre">*passwd,</span> <span class="pre">int</span> <span class="pre">channel)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function    开启wifi ap模式
+*
+* @param[in]  interface     wifi ap结构体指针
+* @param[in]  ssid          wifi名
+* @param[in]  md            md
+* @param[in]  passwd        密码
+* @param[in]  channel       wifi信道
+*
+* @return     0：成功, 其他：失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">wifi_mgmr_ap_stop(wifi_interface_t</span> <span class="pre">*interface)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function    关闭wifi ap模式
+*
+* @param[in]  interface     wifi ap结构体指针
+*
+* @return     0：成功, 其他：失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">wifi_mgmr_scan(void</span> <span class="pre">*data,</span> <span class="pre">scan_complete_cb_t</span> <span class="pre">cb)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function    开启wifi扫描
+*
+* @param[in]  data     scan data
+* @param[in]  cb       sacn cb
+*
+* @return     0：成功, 其他：失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">wifi_mgmr_sta_autoconnect_enable(void)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function    开启wifi重连
+*
+* @param[in]  无
+*
+* @return     0：成功, 其他：失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">wifi_mgmr_sta_autoconnect_disable(void)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function    关闭wifi重连
+*
+* @param[in]  无
+*
+* @return     0：成功, 其他：失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">wifi_mgmr_sta_powersaving(int</span> <span class="pre">ps)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function    开启wifi sta省电模式
+*
+* @param[in]  ps     0：关闭省电模式
+                     1：开启省电模式
+                     2：动态切换模式
+*
+* @return     0：成功, 其他：失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">wifi_mgmr_ap_sta_cnt_get(uint8_t</span> <span class="pre">*sta_cnt)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function    获取ap模式下允许连接的sta个数
+*
+* @param[in]  sta_cnt     sta的个数
+*
+* @return     0：成功, 其他：失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">wifi_mgmr_ap_sta_info_get(struct</span> <span class="pre">wifi_sta_basic_info</span> <span class="pre">*sta_info,</span> <span class="pre">uint8_t</span> <span class="pre">idx)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function    获取ap模式下sta连接的信息
+*
+* @param[in]  sta_info     存储sta的信息
+* @param[in]  idx          sta编号
+*
+* @return     0：成功, 其他：失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">wifi_mgmr_sniffer_enable(void)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function    使能sniffer
+*
+* @param[in]  无
+*
+* @return     0：成功, 其他：失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">wifi_mgmr_sniffer_disable(void)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function    失能sniffer
+*
+* @param[in]  无
+*
+* @return     0：成功, 其他：失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">wifi_mgmr_sniffer_register(void</span> <span class="pre">*env,</span> <span class="pre">sniffer_cb_t</span> <span class="pre">cb)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function    注册sniffer（注册之前需enable sniffer）
+*
+* @param[in]  env    env
+* @param[in]  cb     sniffer回调函数
+*
+* @return     0：成功, 其他：失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">wifi_mgmr_sniffer_unregister(void</span> <span class="pre">*env)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function    注销sniffer（注销之前需disable sniffer）
+*
+* @param[in]  env    env
+*
+* @return     0：成功, 其他：失败
+*/
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Personality id="20x19_i2c" name="I2C" version="1.0" path="Communication" xmlns="http://cypress.com/xsd/cyhwpersonality_v1">
+  <Dependencies>
+    <IpBlock name="20x19_i2c" />
+    <Resource name="i2c" />
+  </Dependencies>
+  <ExposedMembers />
+  <Parameters>
+    <ParamDoc id="apiDoc" name="Configuration Help" group="Peripheral Documentation" default="file:///`${cy_libs_path()}`/docs/group___i2_c_driver.html" linkText="Open I2C Documentation" visible="true" desc="Opens the Hardware Driver Documentation" />
+
+    <ParamSignal port="scl[0]" name="SCL" group="Pins" visible="true" desc="Serial clock (SCL) is the master-generated I2C clock." canBeEmpty="false" />
+    <ParamSignal port="sda[0]" name="SDA" group="Pins" visible="true" desc="Serial data (SDA) is the I2C data signal." canBeEmpty="false" />
+  </Parameters>
+
+  <DRCs/>
+
+  <ConfigFirmware>
+
+  </ConfigFirmware>
+</Personality>

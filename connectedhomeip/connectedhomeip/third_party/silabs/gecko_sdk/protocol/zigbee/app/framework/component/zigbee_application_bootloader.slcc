@@ -1,0 +1,22 @@
+package: Zigbee
+id: zigbee_application_bootloader
+label: Zigbee Application Bootloader
+description: >
+  This component should be added in order to use the Gecko Bootloader for Zigbee
+  applications. Refer to the "Bootloader Application Interface" for more
+  details.
+category: Zigbee|Bootloader
+quality: production
+provides:
+  - name: zigbee_application_bootloader
+requires:
+  - name: bootloader_interface
+    condition:
+      - device_has_radio
+source:
+  - path: protocol/zigbee/app/util/common/app_properties.c
+    unless:
+      - bootloader_app_properties
+template_contribution:
+  - name: component_catalog
+    value: zigbee_application_bootloader

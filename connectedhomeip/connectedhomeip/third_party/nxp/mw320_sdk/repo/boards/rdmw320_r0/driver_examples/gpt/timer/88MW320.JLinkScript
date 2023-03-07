@@ -1,0 +1,38 @@
+void HandleAfterFlashProg(void) {
+  int v;
+
+  JLINK_SYS_Report("---- Setup XIP...");
+
+  //PMU->PERI1_CLK_DIV.BF.FLASH_CLK_DIV = 4;
+  v = JLINK_MEM_ReadU32(0x480A0094);
+  JLINK_MEM_WriteU32(0x480A0094, (v & ~0x70) | 0x40);
+
+  //FLASHC->FCTR.BF.CLK_CAPT_EDGE = 1;
+  v = JLINK_MEM_ReadU32(0x44003004);
+  v = v | 0x10;
+  JLINK_MEM_WriteU32(0x44003004, v);
+
+  //FLASHC->FCCR.BF.CMD_TYPE = FLASHC_HW_CMD_FRQIO;
+  v = JLINK_MEM_ReadU32(0x44003000);
+  v = (v & ~0xF) | 0x6;
+  JLINK_MEM_WriteU32(0x44003000, v);
+
+  //FLASHC->FCCR.BF.CACHE_EN = ENABLE;
+  //FLASHC->FCCR.BF.SRAM_MODE_EN = DISABLE;
+  v = (v & ~0x10000000) | 0x40000000;
+  JLINK_MEM_WriteU32(0x44003000, v);
+
+  //FLASHC->FCCR.BF.CLK_PRESCALE = FLASHC_CLK_DIVIDE_1;
+  v = (v & ~0x1F00) | 0x100;
+  JLINK_MEM_WriteU32(0x44003000, v);
+  
+  //FLASHC->FCCR.BF.FLASHC_PAD_EN = ENABLE;
+  v = v | 0x80000000;
+  JLINK_MEM_WriteU32(0x44003000, v);
+}
+
+void AfterResetTarget(void) {
+  // Clear boot flags
+  JLINK_SYS_Report("---- Clear boot flags...");
+  JLINK_MEM_WriteU32(0x480C0024, 0x00000000);
+}

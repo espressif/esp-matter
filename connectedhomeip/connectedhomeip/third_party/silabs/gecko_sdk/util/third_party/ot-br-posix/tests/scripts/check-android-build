@@ -1,0 +1,229 @@
+#!/bin/bash
+#
+#  Copyright (c) 2018, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+
+set -e
+set -x
+
+#######################################
+# Prepare dbus source code
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
+prepare_dbus()
+{
+    DBUS_SOURCE=dbus-1.4.26
+    wget --tries 4 --no-check-certificate --quiet "https://dbus.freedesktop.org/releases/dbus/${DBUS_SOURCE}.tar.gz"
+    tar xvf "${DBUS_SOURCE}.tar.gz"
+    (cd "${DBUS_SOURCE}" && ./configure --prefix= --exec-prefix=/usr \
+        && sed -i '/HAVE_BACKTRACE/d' config.h \
+        && sed -i 's/long/long long/' dbus/dbus-arch-deps.h)
+    cat >"${DBUS_SOURCE}/dbus/Android.mk" <<EOF
+LOCAL_PATH:= \$(call my-dir)
+include \$(CLEAR_VARS)
+
+LOCAL_SRC_FILES := \
+    dbus-address.c \
+    dbus-auth.c \
+    dbus-auth-script.c \
+    dbus-auth-util.c \
+    dbus-bus.c \
+    dbus-connection.c \
+    dbus-credentials.c \
+    dbus-credentials-util.c \
+    dbus-dataslot.c \
+    dbus-errors.c \
+    dbus-file.c \
+    dbus-file-unix.c \
+    dbus-hash.c \
+    dbus-internals.c \
+    dbus-keyring.c \
+    dbus-list.c \
+    dbus-mainloop.c \
+    dbus-marshal-basic.c \
+    dbus-marshal-byteswap.c \
+    dbus-marshal-byteswap-util.c \
+    dbus-marshal-header.c \
+    dbus-marshal-recursive.c \
+    dbus-marshal-recursive-util.c \
+    dbus-marshal-validate.c \
+    dbus-marshal-validate-util.c \
+    dbus-memory.c \
+    dbus-mempool.c \
+    dbus-message.c \
+    dbus-message-factory.c \
+    dbus-message-util.c \
+    dbus-misc.c \
+    dbus-nonce.c \
+    dbus-object-tree.c \
+    dbus-pending-call.c \
+    dbus-pipe.c \
+    dbus-pipe-unix.c \
+    dbus-resources.c \
+    dbus-server.c \
+    dbus-server-debug-pipe.c \
+    dbus-server-launchd.c \
+    dbus-server-socket.c \
+    dbus-server-unix.c \
+    dbus-sha.c \
+    dbus-shell.c \
+    dbus-signature.c \
+    dbus-spawn.c \
+    dbus-string.c \
+    dbus-string-util.c \
+    dbus-sysdeps.c \
+    dbus-sysdeps-pthread.c \
+    dbus-sysdeps-unix.c \
+    dbus-sysdeps-util.c \
+    dbus-sysdeps-util-unix.c \
+    dbus-test.c \
+    dbus-test-main.c \
+    dbus-threads.c \
+    dbus-timeout.c \
+    dbus-transport.c \
+    dbus-transport-socket.c \
+    dbus-transport-unix.c \
+    dbus-userdb.c \
+    dbus-userdb-util.c \
+    dbus-uuidgen.c \
+    dbus-watch.c \
+    sd-daemon.c \
+
+\$(DBUS_SOURCES:\$(LOCAL_PATH)/%=%)
+
+LOCAL_C_INCLUDES+= \$(LOCAL_PATH)/..
+
+LOCAL_MODULE:=libdbus
+
+DBUS_HEADERS := \$(wildcard \$(LOCAL_PATH)/*.h)
+LOCAL_COPY_HEADERS := \$(DBUS_HEADERS:\$(LOCAL_PATH)/%=%)
+
+LOCAL_COPY_HEADERS_TO := dbus
+
+LOCAL_CFLAGS+= \
+    -DDBUS_COMPILATION \
+    -DHAVE_MONOTONIC_CLOCK \
+    -DDBUS_MACHINE_UUID_FILE=\"/etc/machine-id\" \
+    -DDBUS_SYSTEM_CONFIG_FILE=\"/etc/dbus-1/system.conf\" \
+    -DDBUS_SESSION_CONFIG_FILE=\"/etc/dbus-1/session.conf\" \
+    -Wno-empty-body \
+    -Wno-missing-field-initializers \
+    -Wno-pointer-sign \
+    -Wno-sign-compare \
+    -Wno-tautological-compare \
+    -Wno-type-limits \
+    -Wno-unused-parameter
+
+include \$(BUILD_SHARED_LIBRARY)
+EOF
+}
+
+#######################################
+# Prepare libmdns source code
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
+prepare_libmdnssd()
+{
+    readonly MDNSRESPONDER_SOURCE=mDNSResponder-1310.80.1
+
+    [[ ${OTBR_MDNS} == mDNSResponder ]] || return 0
+
+    wget --tries 4 --no-check-certificate --quiet "https://opensource.apple.com/tarballs/mDNSResponder/${MDNSRESPONDER_SOURCE}.tar.gz"
+    tar xvf "${MDNSRESPONDER_SOURCE}.tar.gz"
+    cat >"${MDNSRESPONDER_SOURCE}/Android.mk" <<EOF
+LOCAL_PATH:= \$(call my-dir)
+
+include \$(CLEAR_VARS)
+
+LOCAL_SRC_FILES :=  \
+    mDNSShared/dnssd_clientlib.c  \
+    mDNSShared/dnssd_clientstub.c \
+    mDNSShared/dnssd_ipc.c \
+
+LOCAL_MODULE := libmdnssd
+LOCAL_MODULE_TAGS := eng
+
+DBUS_HEADERS := \$(wildcard \$(LOCAL_PATH)/mDNSShared/*.h)
+LOCAL_COPY_HEADERS := \$(DBUS_HEADERS:\$(LOCAL_PATH)/%=%)
+
+LOCAL_EXPORT_C_INCLUDE_DIRS := \$(LOCAL_PATH)/mDNSShared
+
+LOCAL_CFLAGS := -O2 -g -W -Wall -D_GNU_SOURCE -DHAVE_IPV6 -DNOT_HAVE_SA_LEN -DUSES_NETLINK -DTARGET_OS_LINUX -fno-strict-aliasing -DHAVE_LINUX -DMDNS_DEBUGMSGS=0
+
+include \$(BUILD_SHARED_LIBRARY)
+EOF
+}
+
+prepare_openthread()
+{
+    cat >>buildspec.mk <<EOF
+
+USE_OTBR_DAEMON := 1
+OTBR_ENABLE_ANDROID_MK := 1
+OPENTHREAD_ENABLE_ANDROID_MK := 1
+ANDROID_NDK := 1
+OPENTHREAD_PROJECT_CFLAGS := \
+    -DOPENTHREAD_CONFIG_MLE_STEERING_DATA_SET_OOB_ENABLE=1 \
+    -DOPENTHREAD_PROJECT_CORE_CONFIG_FILE=\"openthread-core-posix-config.h\" \
+    -std=c99
+EOF
+}
+
+#######################################
+# Check build with android build system
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
+main()
+{
+    prepare_dbus
+    prepare_libmdnssd
+    prepare_openthread
+
+    make showcommands otbr-agent otbr-agent.conf
+
+    test -f out/target/product/generic/system/bin/otbr-agent
+    test -f out/target/product/generic/system/etc/dbus-1/system.d/otbr-agent.conf
+
+    [[ ${OTBR_MDNS} != mDNSResponder ]] || test out/target/product/generic/system/lib/libmdnssd.so
+}
+
+main "$@"

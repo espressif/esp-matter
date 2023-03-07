@@ -1,0 +1,53 @@
+OPENSSL_CFLAGS += -DOPENSSL_NO_ERR
+OPENSSL_CFLAGS += -DOPENSSL_NO_STACK
+OPENSSL_CFLAGS += -DOPENSSL_NO_STDIO
+OPENSSL_CFLAGS += -DOPENSSL_NO_ASM
+OPENSSL_CFLAGS += -DOPENSSL_NO_CRYPTO_MDEBUG
+OPENSSL_CFLAGS += -DOPENSSL_NO_CRYPTO_MDEBUG_BACKTRACE
+OPENSSL_CFLAGS += -DOPENSSL_NO_EC2M
+OPENSSL_CFLAGS += -DOPENSSL_NO_EC_NISTP_64_GCC_128
+OPENSSL_CFLAGS += -DMTK_SYS_AIROHA
+OPENSSL_CFLAGS += -DOPENSSL_SMALL_FOOTPRINT
+OPENSSL_CFLAGS += -DOPENSSL_NO_SM2
+
+CFLAGS += $(OPENSSL_CFLAGS)
+
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/mem.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/mem_sec.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/mem_clr.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/threads_none.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/cryptlib.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/bn/bn_add.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/bn/bn_rand.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/bn/bn_asm.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/bn/bn_ctx.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/bn/bn_mont.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/bn/bn_recp.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/bn/bn_exp.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/bn/bn_div.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/bn/bn_shift.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/bn/bn_mul.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/bn/bn_word.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/bn/bn_mod.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/bn/bn_gcd.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/bn/bn_kron.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/bn/bn_sqr.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/bn/bn_sqrt.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/bn/bn_nist.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/bn/bn_intern.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/bn/bn_lib.o
+
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/ec/ec_curve.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/ec/ec_mult.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/ec/ec_cvt.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/ec/ecp_oct.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/ec/ec_oct.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/ec/ec_lib.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/ec/ecp_smpl.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/ec/ecp_nistputil.o
+OPENSSL_SAE_OBJS += $(BUILD_DIR)/src/crypto/openssl/crypto/ec/ecp_nist.o
+
+OBJS += $(OPENSSL_SAE_OBJS)
+OBJS_p += $(OPENSSL_SAE_OBJS)
+OBJS_priv += $(OPENSSL_SAE_OBJS)
+##### COMMON VARS

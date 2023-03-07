@@ -1,0 +1,96 @@
+/*!
+@page middleware_log Middleware Change Log
+
+@section lwip lwIP for MCUXpresso SDK
+  The current version of lwIP is based on lwIP 2.2.0.dev.
+
+  - 2.2.0_rev3
+    - New features:
+      - Ported lwIP 2.2.0.dev (2020-07-07, branch: master, SHA-1: c385f31076b27efb8ee37f00cb5568783a58f299) to KSDK 2.0.0.
+
+  - 2.2.0_rev2
+    - New features:
+      - Kinetis ENET adaptation layer - implemented zero-copy on receive.
+      - lwiperf - counter of transferred bytes extended from 32 to 64 bit
+    - Bug fixes:
+      - Fixed restarting Auto IP from DHCP.
+
+  - 2.2.0_rev1
+    - New features:
+      - Ported lwIP 2.2.0.dev (2019-12-12, branch: master, SHA-1: 555812dcec38c9a2ef1ef9b31816291549fbf9f8) to KSDK 2.0.0.
+      - Implemented LWIP_ASSERT_CORE_LOCKED related functions in sys_arch.c. It can be enabled in lwipopts.h:
+        - <tt>\#define LWIP_ASSERT_CORE_LOCKED() sys_check_core_locking()</tt>
+        - <tt>\#define LWIP_MARK_TCPIP_THREAD() sys_mark_tcpip_thread() // if NO_SYS == 0</tt>
+        - <tt>\#define LOCK_TCPIP_CORE() sys_lock_tcpip_core() // if NO_SYS == 0 and LWIP_TCPIP_CORE_LOCKING == 1</tt>
+        - <tt>\#define UNLOCK_TCPIP_CORE() sys_unlock_tcpip_core() // if NO_SYS == 0 and LWIP_TCPIP_CORE_LOCKING == 1</tt>
+
+  - 2.1.2_rev5
+    - New features:
+      - Implemented TCP_USER_TIMEOUT socket option.
+      - Implemented SIOCOUTQ ioctl.
+
+  - 2.1.2_rev4
+    - New features:
+      - Ported lwIP 2.1.3.dev (2019-02-27, branch: STABLE-2_1_x, SHA-1: 1bb6e7f52de1cd86be0eed31e348431edc2cd01e) to KSDK 2.0.0.
+      - Updated sys_thread_new implementation and comment.
+      - Kinetis ENET adaptation layer - reading frames into a pbuf chain is conditionally compiled only when a single pbuf from pool
+        cannot hold maximum frame size (PBUF_POOL_BUFSIZE >= maximum frame size).
+        Avoiding this code also reduces stack size requirements by about 1.5 kilobytes.
+    - Bug fixes:
+      - Fixes in ethernetif_linkoutput() in enet_ethernetif_lpc.c:
+        - Removed access to possibly freed pbuf.
+        - Call pbuf_free() when transmit buffers not available.
+        - When copying pbuf chain, updating the number of necessary transmit buffers to wait for, which can be often smaller in the copy.
+      - When CGI script is reading POST data by chunks, the loop in httpsrv_read() may cause blocking in receive function waiting for more data at the end of the stream
+        - HTTPSRV_cgi_read() - added limiting of the last chunk length according to content length to avoid undesired blocking
+      - Applied AUTOIP patch https://savannah.nongnu.org/patch/?9847 - with modification to support multiple network interfaces.
+      - Fixed buffer overflow in httpsrv when application provided CGI script does not handle the whole content of POST request
+    - Removed LwipMibCompiler contrib application as it contained LGPL licensed files in SharpSnmpLib.
+
+  - 2.1.2_rev3
+    - New features:
+	  - lwiperf updated with UDP client/server support from the patch 9751 (https://savannah.nongnu.org/patch/?9751)
+
+  - 2.1.2_rev2
+    - Bug fixes:
+	  - Fixed lwiperf_abort() in lwiperf.c to correctly close connections and free resources
+
+  - 2.1.2_rev1
+    - New features:
+      - Ported lwIP 2.1.2 (2018-11-22, SHA-1: 159e31b689577dbf69cf0683bbaffbd71fa5ee10) to KSDK 2.0.0.
+      - Ported lwIP-contrib 2.1.0 (2018-09-24, SHA-1: 35b011d4cf4c4b480f8859c456587a884ec9d287) to KSDK 2.0.0.
+
+  - 2.0.3_rev1
+    - New features:
+      - Ported lwIP 2.0.3 (2017-09-15, SHA-1: 92f23d6ca0971a32f2085b9480e738d34174417b) to KSDK 2.0.0.
+
+  - 2.0.2_rev1
+    - New features:
+      - Ported lwIP 2.0.2 (2017-03-13, SHA-1: c0862d60746e2d1ceae69af4c6f24e469570ecef) to KSDK 2.0.0.
+	  
+  - 2.0.0_rev3
+    - New features:
+      - Ported lwIP 2.0.0 (2016-11-10, SHA-1: 216bf89491815029aa15463a18744afa04df58fe) to KSDK 2.0.0.
+	  
+  - 2.0.0_rev2
+    - New features:
+      - Ported lwIP 2.0.0 RC2 (2016-08-08, SHA-1: b1dfd00f9233d124514a36a8c8606990016f2ad4) to KSDK 2.0.0.
+	  
+  - 2.0.0_rev1
+    - New features:
+      - Ported lwIP 2.0.0 RC0 (2016-05-26) to KSDK 2.0.0. 
+	  - Changed lwIP bare-metal examples to use poll-driven approach instead of interrupt-driven one.
+	  
+  - 1.4.1_rev2
+    - New features:
+      - Enabled critical sections in lwIP.
+    - Bug fixes:
+      - Fixed default lwIP packet-buffer size to be able to accept a maximum size frame from the ENET driver.
+      - Fixed possible drop of multi-frame packets during transmission.
+ 
+  - 1.4.1_rev1
+    - New features:
+      - Ported lwIP 1.4.1 to KSDK 2.0.0.
+*/
+
+

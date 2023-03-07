@@ -1,0 +1,84 @@
+project_name: connect_soc_empty
+label: "Connect - SoC Empty"
+package: Flex
+description: "The Connect Empty project is a barebone Connect app that can be a basis of streamlined proprietary solutions."
+category: Connect Examples
+quality: production
+
+#---------------- UC/UP components -------------------
+component:
+  - id: radio_config_simple_connect_singlephy
+  - id: sl_system
+  - id: device_init
+  - id: connect_app_framework_common
+  - id: mbedtls_core 
+  - id: token_manager
+#------------Memory Protection Unit-------------------
+  - id: mpu
+
+#-----------Need while connect uses printf -----------
+  - id: printf
+  - id: iostream_recommended_stream
+  - id: iostream_retarget_stdio
+#------------Memory Protection Unit-------------------
+  - id: mpu
+
+#-------------- Restriction rules -------------------
+  - id: restrictions_profile_connect
+  - id: restrictions_profile_long_range
+
+#----------------- Require list ----------------------
+requires:
+  - name: a_radio_config
+
+#----------------- Project files ---------------------
+include:
+  - path: .
+    file_list:
+    - path: app_init.h
+    - path: app_process.h
+
+source:
+  - path: main.c
+  - path: app_init.c
+  - path: app_process.c
+
+other_file:
+  - path: "../../../script/connect_create_gbl_image.bat"
+  - path: "../../../script/connect_create_gbl_image.sh"
+  - path: "hw_filter_tags.yaml"
+    condition:
+      - "add_hw_filter_to_project"
+
+readme:
+  - path: ../../../documentation/example/connect/connect_soc_empty/readme.md
+
+#------------ Configuration overrides ----------------
+configuration:
+#------------ RAIL init, Channel Config --------------
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+  - name: SL_IOSTREAM_USART_VCOM_FLOW_CONTROL_TYPE
+    value: "usartHwFlowControlNone"
+  - name: SL_IOSTREAM_EUSART_VCOM_FLOW_CONTROL_TYPE
+    value: "eusartHwFlowControlNone"
+  - name: "SL_HEAP_SIZE"
+    value: "8192"
+
+#--------------------- Toolchain ------------------------
+toolchain_settings:
+  - option: optimize
+    value: debug
+
+ui_hints:
+  highlight:
+    - path: readme.md
+      focus: true
+  
+filter:
+  - name: "Wireless Technology"
+    value: ["Connect"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]

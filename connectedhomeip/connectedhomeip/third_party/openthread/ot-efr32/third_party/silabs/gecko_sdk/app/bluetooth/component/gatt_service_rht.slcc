@@ -1,0 +1,33 @@
+id: gatt_service_rht
+label: Environment Sensing - Relative Humidity and Temperature GATT Service
+package: Bluetooth
+description: >
+  Provides relative humidity and temperature sensor data in GATT characteristics.
+  Designed for the Thunderboard smartphone app.
+category: Bluetooth|GATT
+quality: production
+root_path: app/bluetooth/common/gatt_service_rht
+config_file:
+  - path: config/sl_gatt_service_rht_config.h
+  - path: gatt_service_rht.xml
+    directory: btconf
+source:
+  - path: sl_gatt_service_rht.c
+include:
+  - path: .
+    file_list:
+      - path: sl_gatt_service_rht.h
+provides:
+  - name: gatt_service_rht
+requires:
+  - name: bluetooth_stack
+  - name: gatt_configuration
+  - name: bluetooth_feature_gatt_server
+  - name: app_assert
+template_contribution:
+  - name: bluetooth_on_event
+    value:
+      include: sl_gatt_service_rht.h
+      function: sl_gatt_service_rht_on_event
+  - name: component_catalog
+    value: gatt_service_rht

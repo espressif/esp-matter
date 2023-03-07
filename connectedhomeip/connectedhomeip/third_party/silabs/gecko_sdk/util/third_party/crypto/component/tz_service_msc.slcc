@@ -1,0 +1,35 @@
+id: tz_service_msc
+package: platform
+label: Secure MSC Service for TrustZone Secure Key Library
+description: >-
+  This component provides an interface for the TZ non-secure application to
+  access a subset of the MSC's functionality.
+category: Platform|Security|TrustZone
+quality: beta
+component_root_path: util/third_party/crypto/sl_component/sl_trustzone/
+
+provides:
+  - name: tz_service_msc
+
+requires:
+  - name: tz_service_common
+    condition: [trustzone_secure]
+  - name: emlib_msc
+    condition: [trustzone_secure]
+  - name: emlib_core
+    condition: [trustzone_secure]
+
+include:
+  - path: inc/common
+    file_list:
+      - path: sli_tz_service_msc.h
+
+source:
+  - path: src/sli_tz_service_msc_ns.c
+    condition: [trustzone_nonsecure]
+  - path: src/sli_tz_service_msc_s.c
+    condition: [trustzone_secure]
+
+template_contribution:
+  - name: component_catalog
+    value: tz_service_msc

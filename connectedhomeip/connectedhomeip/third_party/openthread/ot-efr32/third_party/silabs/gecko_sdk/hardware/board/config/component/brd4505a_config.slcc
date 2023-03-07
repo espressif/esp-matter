@@ -1,0 +1,15 @@
+!!omap
+- id: brd4505a_config
+- label: brd4505a config
+- description: Configuration files for BRD4505A
+- package: platform
+- category: Platform|Board|Config
+- quality: production
+- ui_hints:
+    visibility: never
+- root_path: hardware/board/config
+- requires:
+  - name: brd4505a
+- provides:
+  - name: brd4505a_config
+- config_file: []

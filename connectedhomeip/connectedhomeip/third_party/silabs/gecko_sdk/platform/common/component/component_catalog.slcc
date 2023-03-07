@@ -1,0 +1,13 @@
+id: component_catalog
+label: "Component Catalog"
+package: platform
+description: Component catalog that provides the list of APIs present in the project.
+category: Platform|Utilities
+quality: production
+root_path: platform/common/component_catalog
+template_file:
+  - path: sl_component_catalog.h.jinja
+provides:
+  - name: component_catalog
+define:
+  - name: SL_COMPONENT_CATALOG_PRESENT

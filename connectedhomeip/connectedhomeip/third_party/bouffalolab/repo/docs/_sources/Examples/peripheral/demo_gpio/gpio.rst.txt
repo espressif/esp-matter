@@ -1,0 +1,113 @@
+.. _gpio-index:
+
+GPIO
+==================
+
+总览
+----------------
+
+本示例主要介绍gpio的使用方法。
+
+准备及使用步骤
+----------------
+- 使用步骤：
+ - 插入将板子的USB电源线；
+ - 编译 ``customer_app/periperal/demo_gpio`` 工程( ``./genromap BL602`` 编译602平台, ``./genromap BL702`` 编译702版本）并下载工程；
+ - 打开一个串口终端窗口（波特率为2000000，用于接收和发送uart消息）。
+ - 串口终端输入 ``demo_gpio_led_on`` ，可以看到板子上led被点亮。
+ 
+ .. figure:: imgs/img1.png
+   :alt: 
+
+ - 串口输入 ``demo_gpio_led_off`` led灯灭。 
+ 
+ .. figure:: imgs/img2.png
+   :alt: 
+ 
+ - 串口输入 ``demo_gpio_irq_test``,将demo中用于中断测试的pin3和pin4接GND，会产生下降沿中断。
+ 
+ .. figure:: imgs/img3.png
+   :alt: 
+
+
+ - 串口输入 ``demo_gpio_irq1_mask``,此时pin1下降沿中断不会触发，pin2下降沿触发正常。 
+应用实例
+----------------
+- 示例代码
+
+::
+
+  #include <stdio.h>
+  #include <hosal_gpio.h>
+  #include <hosal_dma.h>
+  #include <blog.h>
+   
+  static hosal_gpio_dev_t gp1;
+  
+  void gpio_set_led_on(void) 
+  { 
+       gp1.port = 5; 
+       gp1.config = OUTPUT_OPEN_DRAIN_NO_PULL; 
+       hosal_gpio_init(&gp1);
+       hosal_gpio_output_set(&gp1, 1);
+   }
+    
+  void gpio_set_led_off(void)
+  {
+      hosal_gpio_output_set(&gp1, 0);
+  }
+   
+
+- 通过 ``hosal_gpio_dev_t`` 定义一个gpio设备，port对应pin脚，调用 ``hosal_gpio_init`` 初始化gpio,调用 ``hosal_gpio_output_set(&gp1, 1)`` 使相应pin脚输出高电平, ``hosal_gpio_output_set(&gp1, 0)`` 输出低电平。
+
+::
+  
+    static hosal_gpio_dev_t key1;
+    static hosal_gpio_dev_t key2;
+    static uint8_t arg1 = 2, arg2 = 3;
+    
+    void key1_irq(void *arg)
+    { 
+        uint8_t val1 = *(uint8_t *)arg;
+        if (val1 == arg1) {
+            blog_info("[HOSAL][GPIO] irq1 ok\r\n");
+        }
+    }
+      
+    void key2_irq(void *arg)
+    {
+        uint8_t val2 = *(uint8_t *)arg;
+        if (val2 == arg2) {
+            blog_info("[HOSAL][GPIO] irq2 ok\r\n");
+        }
+     } 
+    
+    void gpio_irq_test(void)
+    {
+    
+        key1.port = 3;
+        key1.config = INPUT_PULL_UP;
+        hosal_gpio_init(&key1);
+          
+        key2.port = 4;
+        key2.config = INPUT_PULL_UP;
+        hosal_gpio_init(&key2);
+    
+        hosal_gpio_irq_set(&key1, HOSAL_IRQ_TRIG_NEG_PULSE, key1_irq, &arg1);
+        hosal_gpio_irq_set(&key2, HOSAL_IRQ_TRIG_NEG_PULSE, key2_irq, &arg2);
+    }
+    
+   void key1_irq_mask_test(uint8_t mask)
+   {
+       hosal_gpio_irq_mask(&key1, mask);
+   }
+
+
+- 通过 ``hosal_gpio_irq_set(&key1, HOSAL_IRQ_TRIG_NEG_PULSE, key1_irq, &arg1)`` 注册下降沿中断函数 ``key1_irq`` ,传入参数 ``arg1`` 。
+  
+- 不再使用该gpio可调用 ``hosal_gpio_finalize`` 释放相应内存。
+
+::
+  
+  hosal_gpio_finalize(&gp1);
+    

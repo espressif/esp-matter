@@ -1,0 +1,456 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+	background-color: #FFF;
+	font-family: Verdana Neue, Helvetica, Arial, sans-serif;
+	font-weight: normal;
+	color: #666;
+	margin: 0px;
+}
+
+h1 {
+	line-height: 28px;
+	margin: 0px;
+	padding: 0px;
+	text-indent: 0px;
+	color: #E66A08;
+}
+
+h2 {
+	color: #EA802C;
+	margin-top: 0px;
+}
+
+p
+{
+	text-align: justify;
+}
+
+/* For mobile phones: */
+[class*="col-"] {
+  width: 100%;
+}
+
+@media only screen and (min-width: 768px) {
+  /* For desktop: */
+  .col-1 {width: 8.33%;}
+  .col-2 {width: 16.66%;}
+  .col-3 {width: 25%;}
+  .col-4 {width: 33.33%;}
+  .col-5 {width: 41.66%;}
+  .col-6 {width: 50%;}
+  .col-7 {width: 58.33%;}
+  .col-8 {width: 66.66%;}
+  .col-9 {width: 75%;}
+  .col-10 {width: 83.33%;}
+  .col-11 {width: 91.66%;}
+  .col-12 {width: 100%;}
+}
+
+[class*="col-"] {
+  float: left;
+  padding: 15px;
+  /*border: 1px solid red;*/
+}
+
+
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+
+
+.menu_button, #ap_password_page button
+{
+	text-decoration: none;
+	font-size: 16px;
+	color: rgb(0,0,0);
+	text-shadow: 0px 1px 1px rgba(255,255,255,0.3), 
+	             0px 0px 0px rgba(0,0,0,0.7);
+	border-radius: 2px;
+	border-style: none;
+	box-shadow: 3px 3px 10px #888888;
+	margin : 1%;
+	padding: 3px;
+	width: 92%;
+	min-height: 70px;
+	background: rgb(249, 181, 0);
+	transition: color 0.1s, background 0.1s;
+	cursor: pointer;
+	border: 3px solid rgb(197, 148, 17);
+}
+
+.menu_button:hover, #ap_password_page button:hover
+{
+	text-decoration: none;
+	color: rgba(248,248,248,0.9);
+	text-shadow: 0px 1px 1px rgba(0,0,0,0.3), 
+	             0px 0px 0px rgba(255,255,255,1);
+	z-index: 50;
+	background: rgb(217, 165, 27);
+}
+
+
+/* Green button */
+#scan_button, #ap_password_page button{
+	background: rgb(201, 210, 0);
+	border: 3px solid #668a08;
+}
+
+#scan_button:hover, #ap_password_page button:hover {
+	background: rgb(115, 152, 51);
+}
+
+
+/* Red button */
+#clear_confirm button.warning, #clientJoin_banner button.warning {
+	background: #d72c2c;
+	border: 3px solid #9e1212;
+}
+#clear_confirm button.warning:hover, #clientJoin_banner button.warning:hover {
+	background: #b31414;
+}
+
+.menu_button:focus, #ap_password_page button:focus
+{
+	outline: 0;
+}
+
+.header_banner
+{
+	
+	box-shadow: 0px 3px 8px #888888;
+	overflow:auto;
+	background: rgb(0,0,0);
+}
+
+.header_container
+{
+	margin:auto;
+	max-width: 768px;
+}
+
+.logo img
+{
+	max-width: 80px;
+	display: block;
+	margin:auto;
+}
+
+.header_text
+{
+	font-size: 26px;
+	text-align: center;
+	font-weight: bolder;
+	font-style: normal;
+	color: rgba(240,240,240,1);
+	padding-top: 0;
+
+}
+
+
+@media only screen and (min-width: 768px) {
+	.logo img{
+		max-width: 150px;
+	}
+
+	.header_text {
+		text-align: left;
+		line-height: 54px;
+		font-size: 36px;
+		padding-top: 15px;
+	}
+
+}
+
+.page_body
+{
+	margin: auto;
+	margin-top: 2px;
+	width:100%;
+	max-width: 768px;
+}
+
+.page_content
+{
+	text-align: left; 
+	border-left: 1px solid #C3CFD1;
+}
+
+.page_content h3 {
+	margin-bottom: 3px; 
+}
+
+#wifi_list {
+	margin-top: 10px;
+}
+
+.menu_row
+{
+	margin: auto;
+	padding: 0 5px;
+	width:50%;
+	float:left;
+	text-align: center;
+}
+
+#board_info {
+	margin-bottom: 10px;
+}
+
+#board_status {
+	display: inline;
+}
+
+#boardName {
+	font-weight: bold;
+}
+
+
+.statusIndicator {
+	width: 48%;
+
+	background: #e3e3e3;
+	border-radius: 5px;
+
+	color: white;
+	font-weight: bold;
+	font-size: 23px;
+	line-height: 85px;
+	text-align: center;
+	display:inline-block;
+	margin-bottom: 5px;
+	min-width: 70px;
+}
+
+.statusIndicator.active {
+	animation: indicatorFade 2s linear infinite alternate;
+}
+
+@keyframes indicatorFade {
+  0% { background: #c9d200; }
+  100% { background: #7bb1db; }
+}
+
+@media only screen and (min-width: 768px) {
+	.menu_row{
+		width: 100%
+	}
+}
+
+@media only screen and (max-width: 390px) {
+	.menu_button{
+		line-height: 1.7em;
+	}
+}
+
+.footer
+{
+	margin: auto;
+	margin-top: 10px;
+	line-height: 23px;
+	border: 1px solid #C3CFD1;
+	font-size: .9em;
+	width: 100%;
+	text-align: center;
+}
+
+#section_networks{
+	padding: 20px;
+	padding-top: 20px;
+
+	background: #c4e5ff;
+	padding-top: 1px;
+	border: #ccc 1px solid;
+	border-radius: 5px;
+
+}
+
+#section_networks .wifi_network, #wifi_no_networks  {
+	border: 1px solid #acacac;
+
+	padding: 10px;
+
+	background: #f4f4f4;
+
+	border-radius: 5px;
+	margin-bottom: 5px;
+	line-height: 22px;
+	cursor: pointer;
+	transition: transform .2s, background .2s, color .2s;
+
+}
+
+#section_networks .wifi_network:hover {
+	background: #c9d200;
+	box-shadow: 0px 5px 20px #0000006e;
+	transform: scale(1.05);
+}
+
+#section_networks .wifi_network.hidden_network {
+	color: #8a8a8a;
+	background: #cecece;
+}
+
+#section_networks .wifi_network.hidden_network:hover {
+	background: #a0a0a0;
+	color: #545454;
+}
+
+#section_networks .wifi_network.enterprise_network {
+	color: #8a8a8a;
+	background: #cecece;
+}
+
+#section_networks .wifi_network.enterprise_network:hover {
+	background: #a0a0a0;
+	color: #545454;
+}
+
+#section_networks .wifi5GHz_network {
+	background: rgb(255, 181, 0);
+}
+
+
+#section_networks .wifi_network span {
+	
+}
+
+#section_networks .wifi_network h3 {
+	margin: 5px;
+	text-align: center;
+	color: gray;
+}
+
+.wifi_network_label {
+	/*float:left;*/
+}
+
+.wifi_network_value {
+	float:right;
+}
+
+.wifi_network_ssid {
+	font-weight: bold;
+	float:left;
+}
+
+#wif_no_networks{
+	text-align: center;
+	font-weight: bold;
+	cursor: default;
+}
+
+#loader_page{
+	background: #000000a6;
+	position: fixed;
+
+	top: 0;
+	padding-top: 150px;
+	width: 100%;
+	height: 100%;
+	z-index: 100;
+}
+
+#loader_page h2 {
+	font-size: 45px;
+	color:#7bb1db;
+	text-shadow: 1px 1px 10px #000000b8;
+	text-align: center;
+}
+
+.loader {
+  margin: auto;
+  border: 15px solid #fff;
+  border-top: 15px solid #7bb1db;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.banner_background {	
+	background: #000000a6;
+	position: fixed;
+
+	top: 0;
+	padding-top: 150px;
+	width: 100%;
+	height: 100%;
+	z-index: 100;
+}
+
+.banner_dialogue{
+	margin: auto;
+	padding:20px;
+	border-radius: 10px;
+	background: #fff;
+	width:95%;
+	max-width: 450px;
+	box-shadow: 5px 0px 26px #0000008c;
+}
+
+#mode_switch_dialogue {
+	max-width: 550px;
+}
+
+@media only screen and (max-width: 490px) {
+	.banner_background{
+		padding-top: 50px;
+	}
+}
+
+
+#ap_password_page input{
+	font-size: 23px;
+	margin-bottom:5px;
+	padding:2px;
+	width: 100%;
+}
+
+#ap_password_page span{
+	font-size:18px;
+}
+
+#ap_password_page span input{
+	width: 17px;
+	height: 17px;
+	margin: 4px;
+}
+
+#ap_password_page label{
+	font-size: 23px;
+	margin-bottom:5px;
+	padding:2px;
+	display: inline-block;
+	text-align: right;
+}
+
+#post_errors{
+	color: #df2020;
+	font-size: 22px;
+	font-weight: bold;
+}
+
+#mode_switch_dialogue h2 span {
+	text-decoration: underline;
+}
+
+#error_banner_dialogue h2 {
+	color: #EA2C2C;
+	font-size: 30px;
+}
+
+#success_banner_dialogue h2 {
+	color: #C9D200;
+	font-size: 30px;
+}

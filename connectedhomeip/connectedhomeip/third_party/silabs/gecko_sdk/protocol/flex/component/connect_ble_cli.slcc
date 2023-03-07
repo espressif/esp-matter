@@ -1,0 +1,91 @@
+id: "connect_ble_cli"
+label: "BLE CLI commands"
+package: "Flex"
+category: "Connect"
+quality: "production"
+description: "Provides CLI commands to perform basic BLE operations."
+provides:
+  - name: "connect_ble_cli"
+requires:
+  - name: "connect_stack_common"
+  - name: "cli"
+  - name: "connect_debug_print"
+  - name: "bluetooth_stack"
+  - name: "gatt_configuration"
+  - name: "bluetooth_feature_system"
+  - name: "bluetooth_feature_gap"
+  - name: "bluetooth_feature_scanner"
+  - name: "bluetooth_feature_legacy_advertiser"
+  - name: "bluetooth_feature_connection"
+  - name: "bluetooth_feature_gatt"
+  - name: "bluetooth_feature_gatt_server"
+  - name: "bluetooth_feature_nvm"
+  - name: "bluetooth_feature_sm"
+source:
+  - path: "protocol/flex/ble-cli/ble-cli.c"
+
+template_contribution:
+  - name: component_catalog
+    value: connect_ble_cli
+  - name: cli_command
+    value:
+      name: ble_hello
+      handler: connect_ble_cli_hello_command
+      help: "Issue an Hello command to the BLE stack"
+  - name: cli_command
+    value:
+      name: ble_get_address
+      handler: connect_ble_cli_get_address_command
+      help: "Get the BLE address"
+  - name: cli_command
+    value:
+      name: ble_set_adv_params
+      handler: connect_ble_cli_set_adv_params_command
+      help: "Set the BLE advertisement parameters"
+      argument:
+      - type: uint16
+        help: "Minimum interval"
+      - type: uint16
+        help: "Maximum interval"
+  - name: cli_command
+    value:
+      name: ble_start_adv
+      handler: connect_ble_cli_start_adv_command
+      help: "Start BLE advertising"
+      argument:
+      - type: uint8
+        help: "Discoverable mode"
+      - type: uint8
+        help: "Connectable mode"
+  - name: cli_command
+    value:
+      name: ble_open_connection
+      handler: connect_ble_cli_open_connection_command
+      help: "Open a BLE connection"
+      argument:
+      - type: hex
+        help: "Address"
+      - type: uint8
+        help: "Address type"
+  - name: cli_command
+    value:
+      name: ble_close_connection
+      handler: connect_ble_cli_close_connection_command
+      help: "Close a BLE connection"
+      argument:
+      - type: uint8
+        help: "Connection handle"
+  - name: cli_command
+    value:
+      name: ble_set_connection_params
+      handler: connect_ble_cli_set_connection_params_command
+      help: "Set the BLE default connection parameters"
+      argument:
+      - type: uint16
+        help: "Minimum interval"
+      - type: uint16
+        help: "Maximum interval"
+      - type: uint16
+        help: "Slave latency"
+      - type: uint16
+        help: "Supervision timeout"

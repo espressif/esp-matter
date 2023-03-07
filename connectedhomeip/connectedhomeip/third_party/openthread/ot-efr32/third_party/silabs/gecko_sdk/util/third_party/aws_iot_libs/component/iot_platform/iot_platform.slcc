@@ -1,0 +1,21 @@
+id: iot_platform
+
+category:    Third Party|Amazon FreeRTOS - AWS Libraries|Platform
+label:       All Platform libraries
+description: Platform Iot modules which provide platform-level APIs for AWS modules.
+
+package: amazon_platform
+quality: alpha
+
+provides:
+  - name: iot_platform
+
+requires:
+  - name: iot_clock
+  - name: iot_metrics
+  - name: iot_network
+  - name: iot_platform_types
+  - name: iot_threads
+
+ui_hints:
+  visibility: never

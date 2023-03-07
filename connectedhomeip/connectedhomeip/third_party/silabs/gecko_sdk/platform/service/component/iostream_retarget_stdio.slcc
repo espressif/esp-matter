@@ -1,0 +1,18 @@
+id: iostream_retarget_stdio
+label: "IO Stream: Retarget STDIO"
+package: platform
+description: Retarget STDIO to IOStream.
+category: Services|IO Stream
+quality: production
+source:
+  - path: platform/service/iostream/src/sl_iostream_retarget_stdio.c
+    unless: [win32]
+provides:
+  - name: iostream_retarget_stdio
+  - name: printf_integration
+    allow_multiple: true
+requires:
+  - name: iostream
+template_contribution:
+  - name: component_catalog
+    value: retarget_stdio

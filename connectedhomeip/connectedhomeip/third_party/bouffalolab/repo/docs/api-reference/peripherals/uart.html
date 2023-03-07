@@ -1,0 +1,1008 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>UART &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../index.html"/>
+        <link rel="up" title="外设 API" href="index.html"/>
+        <link rel="next" title="timer" href="timer.html"/>
+        <link rel="prev" title="SPI" href="spi.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">BL602 API 参考</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../ble/index.html">蓝牙</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../network/index.html">连网</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">外设</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="dac.html">DAC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="i2c.html">I2C</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pwm.html">PWM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rng.html">RNG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rtc.html">RTC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spi.html">SPI</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">UART</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">概述</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">应用实例</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#api">API参考</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="timer.html">TIMER</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wdg.html">WDG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gpio.html">GPIO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adc.html">ADC</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../protocols/index.html">协议</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../storage/index.html">存储</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../system/index.html">系统</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../Examples/index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">BL602 API 参考</a> &raquo;</li>
+        
+          <li><a href="index.html">外设 API</a> &raquo;</li>
+        
+      <li>UART</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/api-reference/peripherals/uart.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="uart">
+<h1>UART<a class="headerlink" href="#uart" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<h2>概述<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<p>通用异步收发传输器（Universal Asynchronous Receiver/Transmitter，通常称为UART）是一种异步收发传输器，提供了与外部设备进行全双工数据交换的灵活方式。 BL602共有2组UART口（UART0和UART1），通过配合DMA使用，可以实现高效的数据通信。</p>
+<div class="admonition note">
+<p class="first admonition-title">注解</p>
+<p class="last">需要注意的是gpio的pin脚作为uart功能使用时，选取的gpio pin脚对8取余不能相等，如gpio0和gpio8不能同时做为uart的引脚，uart更多资料请参考 <a class="reference external" href="https://dev.bouffalolab.com/media/doc/602/reference_manual/zh/html/content/UART.html">BL602参考手册</a> , <a class="reference external" href="https://dev.bouffalolab.com/media/doc/602/open/reference_manual/zh/html/content/GLB.html">BL602参考手册的3.2.8 GPIO功能设定</a> 。</p>
+</div>
+</div>
+<div class="section" id="id2">
+<h2>应用实例<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<p>串口实例： <code class="docutils literal notranslate"><span class="pre">customer_app/peripheral/demo_uart</span></code> 。</p>
+</div>
+<div class="section" id="api">
+<h2>API参考<a class="headerlink" href="#api" title="永久链接至标题"></a></h2>
+<div class="section" id="header-file">
+<h3>Header File<a class="headerlink" href="#header-file" title="永久链接至标题"></a></h3>
+<ul class="simple">
+<li><span class="xref std std-doc">components/platform/hosal/include/hosal_uart.h</span></li>
+</ul>
+</div>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="永久链接至标题"></a></h3>
+<dl class="function">
+<dt id="_CPPv418hosal_uart_abr_getP16hosal_uart_dev_t7uint8_t">
+<span id="_CPPv318hosal_uart_abr_getP16hosal_uart_dev_t7uint8_t"></span><span id="_CPPv218hosal_uart_abr_getP16hosal_uart_dev_t7uint8_t"></span><span id="hosal_uart_abr_get__hosal_uart_dev_tP.uint8_t"></span><span class="target" id="group__hosal__uart_1ga6c3cc01eec07036a76798423db529d2a"></span>int <code class="descname">hosal_uart_abr_get</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv416hosal_uart_dev_t" title="hosal_uart_dev_t">hosal_uart_dev_t</a> *<em>uart</em>, uint8_t <em>mode</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418hosal_uart_abr_getP16hosal_uart_dev_t7uint8_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Get auto baudrate on a UART interface. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>= 0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">uart</span></code>: the UART interface </li>
+<li><code class="docutils literal notranslate"><span class="pre">mode</span></code>: auto baudrate detection mode(codeword 0x55 or start bit)</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv415hosal_uart_initP16hosal_uart_dev_t">
+<span id="_CPPv315hosal_uart_initP16hosal_uart_dev_t"></span><span id="_CPPv215hosal_uart_initP16hosal_uart_dev_t"></span><span id="hosal_uart_init__hosal_uart_dev_tP"></span><span class="target" id="group__hosal__uart_1ga96699adcd663e93fe7ddea0688083832"></span>int <code class="descname">hosal_uart_init</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv416hosal_uart_dev_t" title="hosal_uart_dev_t">hosal_uart_dev_t</a> *<em>uart</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415hosal_uart_initP16hosal_uart_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Initialises a UART interface. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">uart</span></code>: the interface which should be initialised</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv415hosal_uart_sendP16hosal_uart_dev_tPKv8uint32_t">
+<span id="_CPPv315hosal_uart_sendP16hosal_uart_dev_tPKv8uint32_t"></span><span id="_CPPv215hosal_uart_sendP16hosal_uart_dev_tPKv8uint32_t"></span><span id="hosal_uart_send__hosal_uart_dev_tP.voidCP.uint32_t"></span><span class="target" id="group__hosal__uart_1ga490021e0d41a28ab281db7cf1cd99733"></span>int <code class="descname">hosal_uart_send</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv416hosal_uart_dev_t" title="hosal_uart_dev_t">hosal_uart_dev_t</a> *<em>uart</em>, <em class="property">const</em> void *<em>txbuf</em>, uint32_t <em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415hosal_uart_sendP16hosal_uart_dev_tPKv8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Poll transmit data on a UART interface. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>&gt; 0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">uart</span></code>: the UART interface </li>
+<li><code class="docutils literal notranslate"><span class="pre">txbuf</span></code>: pointer to the start of data </li>
+<li><code class="docutils literal notranslate"><span class="pre">size</span></code>: number of bytes to transmit</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv418hosal_uart_receiveP16hosal_uart_dev_tPv8uint32_t">
+<span id="_CPPv318hosal_uart_receiveP16hosal_uart_dev_tPv8uint32_t"></span><span id="_CPPv218hosal_uart_receiveP16hosal_uart_dev_tPv8uint32_t"></span><span id="hosal_uart_receive__hosal_uart_dev_tP.voidP.uint32_t"></span><span class="target" id="group__hosal__uart_1ga4e1c4ab66a647ed369dcccfed3a5e461"></span>int <code class="descname">hosal_uart_receive</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv416hosal_uart_dev_t" title="hosal_uart_dev_t">hosal_uart_dev_t</a> *<em>uart</em>, void *<em>data</em>, uint32_t <em>expect_size</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418hosal_uart_receiveP16hosal_uart_dev_tPv8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Poll receive data on a UART interface. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>&gt; 0 number of bytes to receive</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">uart</span></code>: the UART interface </li>
+<li><code class="docutils literal notranslate"><span class="pre">rxbuf</span></code>: pointer to the buffer which will store incoming data </li>
+<li><code class="docutils literal notranslate"><span class="pre">expect_size</span></code>: expect number of bytes to receive</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv416hosal_uart_ioctlP16hosal_uart_dev_tiPv">
+<span id="_CPPv316hosal_uart_ioctlP16hosal_uart_dev_tiPv"></span><span id="_CPPv216hosal_uart_ioctlP16hosal_uart_dev_tiPv"></span><span id="hosal_uart_ioctl__hosal_uart_dev_tP.i.voidP"></span><span class="target" id="group__hosal__uart_1ga5a586b8eee96060a935a7f0e36c8b036"></span>int <code class="descname">hosal_uart_ioctl</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv416hosal_uart_dev_t" title="hosal_uart_dev_t">hosal_uart_dev_t</a> *<em>uart</em>, int <em>ctl</em>, void *<em>p_arg</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416hosal_uart_ioctlP16hosal_uart_dev_tiPv" title="永久链接至目标"></a><br /></dt>
+<dd><p>hal uart ioctl </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">uart</span></code>: the UART interface </li>
+<li><code class="docutils literal notranslate"><span class="pre">ctl</span></code>: Control request<ul>
+<li>HOSAL_UART_BAUD_SET : baud set, p_arg is baud</li>
+<li>HOSAL_UART_BAUD_GET : baud get, p_arg is baud's pointer</li>
+<li>HOSAL_UART_DATA_WIDTH_SET : set data width，p_arg is hosal_uart_data_width_t</li>
+<li>HOSAL_UART_DATA_WIDTH_GET : get data width，p_arg is hosal_uart_data_width_t's pointer</li>
+<li>HOSAL_UART_STOP_BITS_SET : set stop bits, p_arg is hosal_uart_stop_bits_t</li>
+<li>HOSAL_UART_STOP_BITS_GET : get stop bits, p_arg is hosal_uart_stop_bits_t's pointer</li>
+<li>HOSAL_UART_PARITY_SET : set parity, p_arg is hosal_uart_parity_t</li>
+<li>HOSAL_UART_PARITY_GET : get parity, p_arg is hosal_uart_parity_t's pointer</li>
+<li>HOSAL_UART_MODE_SET : UART mode set, p_arg is hosal_uart_mode_t</li>
+<li>HOSAL_UART_MODE_GET : UART mode get, p_arg is hosal_uart_mode_t's pointer</li>
+<li>HOSAL_UART_FLOWMODE_SET : UART flow mode set, p_arg is hosal_uart_flow_control_t</li>
+<li>HOSAL_UART_FLOWSTAT_GET : UART flow state get, p_arg is hosal_uart_flow_control_t's pointer</li>
+<li>HOSAL_UART_FREE_TXFIFO_GET : get uart free tx fifo size (bytes)</li>
+<li>HOSAL_UART_FREE_RXFIFO_GET : get uart free rx fifo size (bytes)</li>
+<li>HOSAL_UART_FLUSH : Wait for the send to complete</li>
+<li>HOSAL_UART_TX_TRIGGER_ON : UART TX trigger on</li>
+<li>HOSAL_UART_TX_TRIGGER_OFF : UART TX trigger off</li>
+<li>HOSAL_UART_DMA_CONFIG : p_arg is <a class="reference internal" href="#structhosal__uart__dma__cfg__t"><span class="std std-ref">hosal_uart_dma_cfg_t</span></a>'s pointer</li>
+<li>HOSAL_UART_DMA_TX_START : UART DMA TX start trans p_arg is <a class="reference internal" href="#structhosal__uart__dma__cfg__t"><span class="std std-ref">hosal_uart_dma_cfg_t</span></a>'s pointer</li>
+<li>HOSAL_UART_DMA_RX_START : UART DMA RX start trans p_arg is <a class="reference internal" href="#structhosal__uart__dma__cfg__t"><span class="std std-ref">hosal_uart_dma_cfg_t</span></a>'s pointer</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">p_arg</span></code>: parameter</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv423hosal_uart_callback_setP16hosal_uart_dev_ti21hosal_uart_callback_tPv">
+<span id="_CPPv323hosal_uart_callback_setP16hosal_uart_dev_ti21hosal_uart_callback_tPv"></span><span id="_CPPv223hosal_uart_callback_setP16hosal_uart_dev_ti21hosal_uart_callback_tPv"></span><span id="hosal_uart_callback_set__hosal_uart_dev_tP.i.hosal_uart_callback_t.voidP"></span><span class="target" id="group__hosal__uart_1ga73b90af23346417933781073340c2e8f"></span>int <code class="descname">hosal_uart_callback_set</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv416hosal_uart_dev_t" title="hosal_uart_dev_t">hosal_uart_dev_t</a> *<em>uart</em>, int <em>callback_type</em>, <a class="reference internal" href="#_CPPv421hosal_uart_callback_t" title="hosal_uart_callback_t">hosal_uart_callback_t</a> <em>pfn_callback</em>, void *<em>arg</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv423hosal_uart_callback_setP16hosal_uart_dev_ti21hosal_uart_callback_tPv" title="永久链接至目标"></a><br /></dt>
+<dd><p>hal uart callback set </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">uart</span></code>: the UART interface </li>
+<li><code class="docutils literal notranslate"><span class="pre">callback_type</span></code>: callback type<ul>
+<li>HOSAL_UART_TX_CALLBACK</li>
+<li>HOSAL_UART_RX_CALLBACK</li>
+<li>HOSAL_UART_TX_DMA_CALLBACK</li>
+<li>HOSAL_UART_RX_DMA_CALLBACK </li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">pfn_callback</span></code>: callback function </li>
+<li><code class="docutils literal notranslate"><span class="pre">arg</span></code>: callback function parameter</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv419hosal_uart_finalizeP16hosal_uart_dev_t">
+<span id="_CPPv319hosal_uart_finalizeP16hosal_uart_dev_t"></span><span id="_CPPv219hosal_uart_finalizeP16hosal_uart_dev_t"></span><span id="hosal_uart_finalize__hosal_uart_dev_tP"></span><span class="target" id="group__hosal__uart_1gafb62d7e15d58235a568c0c189ec60980"></span>int <code class="descname">hosal_uart_finalize</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv416hosal_uart_dev_t" title="hosal_uart_dev_t">hosal_uart_dev_t</a> *<em>uart</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419hosal_uart_finalizeP16hosal_uart_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Deinitialises a UART interface. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">uart</span></code>: the interface which should be deinitialised</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="structures">
+<h3>Structures<a class="headerlink" href="#structures" title="永久链接至标题"></a></h3>
+<dl class="class">
+<dt id="_CPPv420hosal_uart_dma_cfg_t">
+<span id="_CPPv320hosal_uart_dma_cfg_t"></span><span id="_CPPv220hosal_uart_dma_cfg_t"></span><span id="hosal_uart_dma_cfg_t"></span><span class="target" id="structhosal__uart__dma__cfg__t"></span><em class="property">struct </em><code class="descname">hosal_uart_dma_cfg_t</code><a class="headerlink" href="#_CPPv420hosal_uart_dma_cfg_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART DMA configuration. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N20hosal_uart_dma_cfg_t7dma_bufE">
+<span id="_CPPv3N20hosal_uart_dma_cfg_t7dma_bufE"></span><span id="_CPPv2N20hosal_uart_dma_cfg_t7dma_bufE"></span><span id="hosal_uart_dma_cfg_t::dma_buf__uint8_tP"></span><span class="target" id="structhosal__uart__dma__cfg__t_1aca0c4946bdc0f00b1ea95d71d5a82de0"></span>uint8_t *<code class="descname">dma_buf</code><a class="headerlink" href="#_CPPv4N20hosal_uart_dma_cfg_t7dma_bufE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART DMA trans buffer When the transmission is TX, the address is the src address When the transmission is RX, the address is the dest address. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N20hosal_uart_dma_cfg_t12dma_buf_sizeE">
+<span id="_CPPv3N20hosal_uart_dma_cfg_t12dma_buf_sizeE"></span><span id="_CPPv2N20hosal_uart_dma_cfg_t12dma_buf_sizeE"></span><span id="hosal_uart_dma_cfg_t::dma_buf_size__uint32_t"></span><span class="target" id="structhosal__uart__dma__cfg__t_1aa4b3a67b3332ce251c3685530514ed50"></span>uint32_t <code class="descname">dma_buf_size</code><a class="headerlink" href="#_CPPv4N20hosal_uart_dma_cfg_t12dma_buf_sizeE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART DMA trans buffer size. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv419hosal_uart_config_t">
+<span id="_CPPv319hosal_uart_config_t"></span><span id="_CPPv219hosal_uart_config_t"></span><span id="hosal_uart_config_t"></span><span class="target" id="structhosal__uart__config__t"></span><em class="property">struct </em><code class="descname">hosal_uart_config_t</code><a class="headerlink" href="#_CPPv419hosal_uart_config_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART configuration. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N19hosal_uart_config_t7uart_idE">
+<span id="_CPPv3N19hosal_uart_config_t7uart_idE"></span><span id="_CPPv2N19hosal_uart_config_t7uart_idE"></span><span id="hosal_uart_config_t::uart_id__uint8_t"></span><span class="target" id="structhosal__uart__config__t_1a9963b893741d19c3822c7d0dce7c2166"></span>uint8_t <code class="descname">uart_id</code><a class="headerlink" href="#_CPPv4N19hosal_uart_config_t7uart_idE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART id. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N19hosal_uart_config_t6tx_pinE">
+<span id="_CPPv3N19hosal_uart_config_t6tx_pinE"></span><span id="_CPPv2N19hosal_uart_config_t6tx_pinE"></span><span id="hosal_uart_config_t::tx_pin__uint8_t"></span><span class="target" id="structhosal__uart__config__t_1a4d2eec8dfab20d053e0bff7c6d2e3756"></span>uint8_t <code class="descname">tx_pin</code><a class="headerlink" href="#_CPPv4N19hosal_uart_config_t6tx_pinE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART tx pin. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N19hosal_uart_config_t6rx_pinE">
+<span id="_CPPv3N19hosal_uart_config_t6rx_pinE"></span><span id="_CPPv2N19hosal_uart_config_t6rx_pinE"></span><span id="hosal_uart_config_t::rx_pin__uint8_t"></span><span class="target" id="structhosal__uart__config__t_1a4b082c5a949a0911d112355a63a0effe"></span>uint8_t <code class="descname">rx_pin</code><a class="headerlink" href="#_CPPv4N19hosal_uart_config_t6rx_pinE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART rx pin. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N19hosal_uart_config_t7cts_pinE">
+<span id="_CPPv3N19hosal_uart_config_t7cts_pinE"></span><span id="_CPPv2N19hosal_uart_config_t7cts_pinE"></span><span id="hosal_uart_config_t::cts_pin__uint8_t"></span><span class="target" id="structhosal__uart__config__t_1a6b8b74a955e44c60bd26bf456d068766"></span>uint8_t <code class="descname">cts_pin</code><a class="headerlink" href="#_CPPv4N19hosal_uart_config_t7cts_pinE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART cts pin. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N19hosal_uart_config_t7rts_pinE">
+<span id="_CPPv3N19hosal_uart_config_t7rts_pinE"></span><span id="_CPPv2N19hosal_uart_config_t7rts_pinE"></span><span id="hosal_uart_config_t::rts_pin__uint8_t"></span><span class="target" id="structhosal__uart__config__t_1afaad2ec3e22559f3b0951ccca8242fad"></span>uint8_t <code class="descname">rts_pin</code><a class="headerlink" href="#_CPPv4N19hosal_uart_config_t7rts_pinE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART rts pin. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N19hosal_uart_config_t9baud_rateE">
+<span id="_CPPv3N19hosal_uart_config_t9baud_rateE"></span><span id="_CPPv2N19hosal_uart_config_t9baud_rateE"></span><span id="hosal_uart_config_t::baud_rate__uint32_t"></span><span class="target" id="structhosal__uart__config__t_1a7584050527ea2a2b9adcbc77c78f3368"></span>uint32_t <code class="descname">baud_rate</code><a class="headerlink" href="#_CPPv4N19hosal_uart_config_t9baud_rateE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART baud rate. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N19hosal_uart_config_t10data_widthE">
+<span id="_CPPv3N19hosal_uart_config_t10data_widthE"></span><span id="_CPPv2N19hosal_uart_config_t10data_widthE"></span><span id="hosal_uart_config_t::data_width__hosal_uart_data_width_t"></span><span class="target" id="structhosal__uart__config__t_1adf1164655fe0bb0fb8d842b0690c7579"></span><a class="reference internal" href="#_CPPv423hosal_uart_data_width_t" title="hosal_uart_data_width_t">hosal_uart_data_width_t</a> <code class="descname">data_width</code><a class="headerlink" href="#_CPPv4N19hosal_uart_config_t10data_widthE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART data width. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N19hosal_uart_config_t6parityE">
+<span id="_CPPv3N19hosal_uart_config_t6parityE"></span><span id="_CPPv2N19hosal_uart_config_t6parityE"></span><span id="hosal_uart_config_t::parity__hosal_uart_parity_t"></span><span class="target" id="structhosal__uart__config__t_1a054c49897cf180c157fc4b973f728b8c"></span><a class="reference internal" href="#_CPPv419hosal_uart_parity_t" title="hosal_uart_parity_t">hosal_uart_parity_t</a> <code class="descname">parity</code><a class="headerlink" href="#_CPPv4N19hosal_uart_config_t6parityE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART parity bit. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N19hosal_uart_config_t9stop_bitsE">
+<span id="_CPPv3N19hosal_uart_config_t9stop_bitsE"></span><span id="_CPPv2N19hosal_uart_config_t9stop_bitsE"></span><span id="hosal_uart_config_t::stop_bits__hosal_uart_stop_bits_t"></span><span class="target" id="structhosal__uart__config__t_1afdd669e94fd5172f1461d0a5dac2cf4f"></span><a class="reference internal" href="#_CPPv422hosal_uart_stop_bits_t" title="hosal_uart_stop_bits_t">hosal_uart_stop_bits_t</a> <code class="descname">stop_bits</code><a class="headerlink" href="#_CPPv4N19hosal_uart_config_t9stop_bitsE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART stop btis. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N19hosal_uart_config_t12flow_controlE">
+<span id="_CPPv3N19hosal_uart_config_t12flow_controlE"></span><span id="_CPPv2N19hosal_uart_config_t12flow_controlE"></span><span id="hosal_uart_config_t::flow_control__hosal_uart_flow_control_t"></span><span class="target" id="structhosal__uart__config__t_1a65d10beac6f4507b043f90dc08caf77e"></span><a class="reference internal" href="#_CPPv425hosal_uart_flow_control_t" title="hosal_uart_flow_control_t">hosal_uart_flow_control_t</a> <code class="descname">flow_control</code><a class="headerlink" href="#_CPPv4N19hosal_uart_config_t12flow_controlE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART flow control. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N19hosal_uart_config_t4modeE">
+<span id="_CPPv3N19hosal_uart_config_t4modeE"></span><span id="_CPPv2N19hosal_uart_config_t4modeE"></span><span id="hosal_uart_config_t::mode__hosal_uart_mode_t"></span><span class="target" id="structhosal__uart__config__t_1a9aa732f6ca85335969ada40fd2f6f6fe"></span><a class="reference internal" href="#_CPPv417hosal_uart_mode_t" title="hosal_uart_mode_t">hosal_uart_mode_t</a> <code class="descname">mode</code><a class="headerlink" href="#_CPPv4N19hosal_uart_config_t4modeE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART int or pull mode. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv416hosal_uart_dev_t">
+<span id="_CPPv316hosal_uart_dev_t"></span><span id="_CPPv216hosal_uart_dev_t"></span><span id="hosal_uart_dev_t"></span><span class="target" id="structhosal__uart__dev__t"></span><em class="property">struct </em><code class="descname">hosal_uart_dev_t</code><a class="headerlink" href="#_CPPv416hosal_uart_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART device type. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N16hosal_uart_dev_t4portE">
+<span id="_CPPv3N16hosal_uart_dev_t4portE"></span><span id="_CPPv2N16hosal_uart_dev_t4portE"></span><span id="hosal_uart_dev_t::port__uint8_t"></span><span class="target" id="structhosal__uart__dev__t_1a8a274d3034bd1e165becb775ebef9dcf"></span>uint8_t <code class="descname">port</code><a class="headerlink" href="#_CPPv4N16hosal_uart_dev_t4portE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART port. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16hosal_uart_dev_t6configE">
+<span id="_CPPv3N16hosal_uart_dev_t6configE"></span><span id="_CPPv2N16hosal_uart_dev_t6configE"></span><span id="hosal_uart_dev_t::config__hosal_uart_config_t"></span><span class="target" id="structhosal__uart__dev__t_1ae8d1506dc102e3b63e3d17a7a3f2eed2"></span><a class="reference internal" href="#_CPPv419hosal_uart_config_t" title="hosal_uart_config_t">hosal_uart_config_t</a> <code class="descname">config</code><a class="headerlink" href="#_CPPv4N16hosal_uart_dev_t6configE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART config. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16hosal_uart_dev_t5tx_cbE">
+<span id="_CPPv3N16hosal_uart_dev_t5tx_cbE"></span><span id="_CPPv2N16hosal_uart_dev_t5tx_cbE"></span><span id="hosal_uart_dev_t::tx_cb__hosal_uart_callback_t"></span><span class="target" id="structhosal__uart__dev__t_1a86d24b7c14d0706a30e89360231fcfef"></span><a class="reference internal" href="#_CPPv421hosal_uart_callback_t" title="hosal_uart_callback_t">hosal_uart_callback_t</a> <code class="descname">tx_cb</code><a class="headerlink" href="#_CPPv4N16hosal_uart_dev_t5tx_cbE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART tx callback. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16hosal_uart_dev_t7p_txargE">
+<span id="_CPPv3N16hosal_uart_dev_t7p_txargE"></span><span id="_CPPv2N16hosal_uart_dev_t7p_txargE"></span><span id="hosal_uart_dev_t::p_txarg__voidP"></span><span class="target" id="structhosal__uart__dev__t_1ac22a0c524703adc591bb5996db877544"></span>void *<code class="descname">p_txarg</code><a class="headerlink" href="#_CPPv4N16hosal_uart_dev_t7p_txargE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART tx callback arg. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16hosal_uart_dev_t5rx_cbE">
+<span id="_CPPv3N16hosal_uart_dev_t5rx_cbE"></span><span id="_CPPv2N16hosal_uart_dev_t5rx_cbE"></span><span id="hosal_uart_dev_t::rx_cb__hosal_uart_callback_t"></span><span class="target" id="structhosal__uart__dev__t_1a2f380c277bb23ae3d0ebbe7daf715549"></span><a class="reference internal" href="#_CPPv421hosal_uart_callback_t" title="hosal_uart_callback_t">hosal_uart_callback_t</a> <code class="descname">rx_cb</code><a class="headerlink" href="#_CPPv4N16hosal_uart_dev_t5rx_cbE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART rx callback. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16hosal_uart_dev_t7p_rxargE">
+<span id="_CPPv3N16hosal_uart_dev_t7p_rxargE"></span><span id="_CPPv2N16hosal_uart_dev_t7p_rxargE"></span><span id="hosal_uart_dev_t::p_rxarg__voidP"></span><span class="target" id="structhosal__uart__dev__t_1aa768caffa0e085588da695ec1f7f1768"></span>void *<code class="descname">p_rxarg</code><a class="headerlink" href="#_CPPv4N16hosal_uart_dev_t7p_rxargE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART rx callback arg. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16hosal_uart_dev_t8txdma_cbE">
+<span id="_CPPv3N16hosal_uart_dev_t8txdma_cbE"></span><span id="_CPPv2N16hosal_uart_dev_t8txdma_cbE"></span><span id="hosal_uart_dev_t::txdma_cb__hosal_uart_callback_t"></span><span class="target" id="structhosal__uart__dev__t_1a97ea7199774f39ea44c71b2006421dec"></span><a class="reference internal" href="#_CPPv421hosal_uart_callback_t" title="hosal_uart_callback_t">hosal_uart_callback_t</a> <code class="descname">txdma_cb</code><a class="headerlink" href="#_CPPv4N16hosal_uart_dev_t8txdma_cbE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART tx dma callback. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16hosal_uart_dev_t11p_txdma_argE">
+<span id="_CPPv3N16hosal_uart_dev_t11p_txdma_argE"></span><span id="_CPPv2N16hosal_uart_dev_t11p_txdma_argE"></span><span id="hosal_uart_dev_t::p_txdma_arg__voidP"></span><span class="target" id="structhosal__uart__dev__t_1ab2a6fe6be05aa46f7a46d7842a93ed74"></span>void *<code class="descname">p_txdma_arg</code><a class="headerlink" href="#_CPPv4N16hosal_uart_dev_t11p_txdma_argE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART tx dma callback arg. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16hosal_uart_dev_t8rxdma_cbE">
+<span id="_CPPv3N16hosal_uart_dev_t8rxdma_cbE"></span><span id="_CPPv2N16hosal_uart_dev_t8rxdma_cbE"></span><span id="hosal_uart_dev_t::rxdma_cb__hosal_uart_callback_t"></span><span class="target" id="structhosal__uart__dev__t_1aaa99613645a1074b8935f7c870dbc17a"></span><a class="reference internal" href="#_CPPv421hosal_uart_callback_t" title="hosal_uart_callback_t">hosal_uart_callback_t</a> <code class="descname">rxdma_cb</code><a class="headerlink" href="#_CPPv4N16hosal_uart_dev_t8rxdma_cbE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART rx dma callback. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16hosal_uart_dev_t11p_rxdma_argE">
+<span id="_CPPv3N16hosal_uart_dev_t11p_rxdma_argE"></span><span id="_CPPv2N16hosal_uart_dev_t11p_rxdma_argE"></span><span id="hosal_uart_dev_t::p_rxdma_arg__voidP"></span><span class="target" id="structhosal__uart__dev__t_1ad871aaa1bd801eb9f0d4f8c93e311361"></span>void *<code class="descname">p_rxdma_arg</code><a class="headerlink" href="#_CPPv4N16hosal_uart_dev_t11p_rxdma_argE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART rx dma callback arg. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16hosal_uart_dev_t11dma_tx_chanE">
+<span id="_CPPv3N16hosal_uart_dev_t11dma_tx_chanE"></span><span id="_CPPv2N16hosal_uart_dev_t11dma_tx_chanE"></span><span id="hosal_uart_dev_t::dma_tx_chan__hosal_dma_chan_t"></span><span class="target" id="structhosal__uart__dev__t_1ae7fd425331dba43b1bfda4f76553cc17"></span>hosal_dma_chan_t <code class="descname">dma_tx_chan</code><a class="headerlink" href="#_CPPv4N16hosal_uart_dev_t11dma_tx_chanE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART dma tx channel. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16hosal_uart_dev_t11dma_rx_chanE">
+<span id="_CPPv3N16hosal_uart_dev_t11dma_rx_chanE"></span><span id="_CPPv2N16hosal_uart_dev_t11dma_rx_chanE"></span><span id="hosal_uart_dev_t::dma_rx_chan__hosal_dma_chan_t"></span><span class="target" id="structhosal__uart__dev__t_1a303fff94014709c531a3bc17aa3994dd"></span>hosal_dma_chan_t <code class="descname">dma_rx_chan</code><a class="headerlink" href="#_CPPv4N16hosal_uart_dev_t11dma_rx_chanE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART dma rx channel. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16hosal_uart_dev_t4privE">
+<span id="_CPPv3N16hosal_uart_dev_t4privE"></span><span id="_CPPv2N16hosal_uart_dev_t4privE"></span><span id="hosal_uart_dev_t::priv__voidP"></span><span class="target" id="structhosal__uart__dev__t_1adbea410363ab4821ae719d96ba460de6"></span>void *<code class="descname">priv</code><a class="headerlink" href="#_CPPv4N16hosal_uart_dev_t4privE" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART private data. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="macros">
+<h3>Macros<a class="headerlink" href="#macros" title="永久链接至标题"></a></h3>
+<dl class="macro">
+<dt id="c.HOSAL_UART_AUTOBAUD_0X55">
+<span class="target" id="group__hosal__uart_1gaeed3cb352218113e5d8aba5caca951bd"></span><code class="descname">HOSAL_UART_AUTOBAUD_0X55</code><a class="headerlink" href="#c.HOSAL_UART_AUTOBAUD_0X55" title="永久链接至目标"></a></dt>
+<dd><p>UART auto baudrate detection using codeword 0x55. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_AUTOBAUD_STARTBIT">
+<span class="target" id="group__hosal__uart_1gad934286777c640f447f9c3c645281979"></span><code class="descname">HOSAL_UART_AUTOBAUD_STARTBIT</code><a class="headerlink" href="#c.HOSAL_UART_AUTOBAUD_STARTBIT" title="永久链接至目标"></a></dt>
+<dd><p>UART auto baudrate detection using start bit. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_TX_CALLBACK">
+<span class="target" id="group__hosal__uart_1ga7ed7870678a814e48aae3125a04584d8"></span><code class="descname">HOSAL_UART_TX_CALLBACK</code><a class="headerlink" href="#c.HOSAL_UART_TX_CALLBACK" title="永久链接至目标"></a></dt>
+<dd><p>UART tx idle interrupt callback. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_RX_CALLBACK">
+<span class="target" id="group__hosal__uart_1gacf82e7eaae1f668a6d5e2fefc7f8d345"></span><code class="descname">HOSAL_UART_RX_CALLBACK</code><a class="headerlink" href="#c.HOSAL_UART_RX_CALLBACK" title="永久链接至目标"></a></dt>
+<dd><p>UART rx complete callback. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_TX_DMA_CALLBACK">
+<span class="target" id="group__hosal__uart_1ga39ea0b72f130ff10dfab3a2bc80ba7a1"></span><code class="descname">HOSAL_UART_TX_DMA_CALLBACK</code><a class="headerlink" href="#c.HOSAL_UART_TX_DMA_CALLBACK" title="永久链接至目标"></a></dt>
+<dd><p>UART tx DMA trans complete callback. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_RX_DMA_CALLBACK">
+<span class="target" id="group__hosal__uart_1gadd8d13ea42ea2112b01c2e5453de8c8e"></span><code class="descname">HOSAL_UART_RX_DMA_CALLBACK</code><a class="headerlink" href="#c.HOSAL_UART_RX_DMA_CALLBACK" title="永久链接至目标"></a></dt>
+<dd><p>UART rx DMA trans complete callback. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_BAUD_SET">
+<span class="target" id="group__hosal__uart_1ga1b868810eb0afb32d63287190f5dfda8"></span><code class="descname">HOSAL_UART_BAUD_SET</code><a class="headerlink" href="#c.HOSAL_UART_BAUD_SET" title="永久链接至目标"></a></dt>
+<dd><p>UART baud set. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_BAUD_GET">
+<span class="target" id="group__hosal__uart_1gac6e5a544c6eceb7914a4db83267485e3"></span><code class="descname">HOSAL_UART_BAUD_GET</code><a class="headerlink" href="#c.HOSAL_UART_BAUD_GET" title="永久链接至目标"></a></dt>
+<dd><p>UART baud get. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_DATA_WIDTH_SET">
+<span class="target" id="group__hosal__uart_1ga99e9f73f4397e4ca74bb650affce0fb4"></span><code class="descname">HOSAL_UART_DATA_WIDTH_SET</code><a class="headerlink" href="#c.HOSAL_UART_DATA_WIDTH_SET" title="永久链接至目标"></a></dt>
+<dd><p>UART data width set. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_DATA_WIDTH_GET">
+<span class="target" id="group__hosal__uart_1gaf2f91b75aae73d1816ee89d7acda7156"></span><code class="descname">HOSAL_UART_DATA_WIDTH_GET</code><a class="headerlink" href="#c.HOSAL_UART_DATA_WIDTH_GET" title="永久链接至目标"></a></dt>
+<dd><p>UART data width get. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_STOP_BITS_SET">
+<span class="target" id="group__hosal__uart_1ga4a95db32c1edea6968555d91af146faf"></span><code class="descname">HOSAL_UART_STOP_BITS_SET</code><a class="headerlink" href="#c.HOSAL_UART_STOP_BITS_SET" title="永久链接至目标"></a></dt>
+<dd><p>UART stop bits set. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_STOP_BITS_GET">
+<span class="target" id="group__hosal__uart_1ga6aca1c2580f7f0b16c12df23ecdf4f5f"></span><code class="descname">HOSAL_UART_STOP_BITS_GET</code><a class="headerlink" href="#c.HOSAL_UART_STOP_BITS_GET" title="永久链接至目标"></a></dt>
+<dd><p>UART stop bits get. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_FLOWMODE_SET">
+<span class="target" id="group__hosal__uart_1gab6beeed71cc23adb53310c3c5e48a834"></span><code class="descname">HOSAL_UART_FLOWMODE_SET</code><a class="headerlink" href="#c.HOSAL_UART_FLOWMODE_SET" title="永久链接至目标"></a></dt>
+<dd><p>UART flow mode set. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_FLOWSTAT_GET">
+<span class="target" id="group__hosal__uart_1ga18e01037eeeff22ca240178dd6eee232"></span><code class="descname">HOSAL_UART_FLOWSTAT_GET</code><a class="headerlink" href="#c.HOSAL_UART_FLOWSTAT_GET" title="永久链接至目标"></a></dt>
+<dd><p>UART flow state get. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_PARITY_SET">
+<span class="target" id="group__hosal__uart_1gac07151c148c44333eb9e76b6fafea78b"></span><code class="descname">HOSAL_UART_PARITY_SET</code><a class="headerlink" href="#c.HOSAL_UART_PARITY_SET" title="永久链接至目标"></a></dt>
+<dd><p>UART flow mode set. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_PARITY_GET">
+<span class="target" id="group__hosal__uart_1ga185c0eff697f0366f211b19136951250"></span><code class="descname">HOSAL_UART_PARITY_GET</code><a class="headerlink" href="#c.HOSAL_UART_PARITY_GET" title="永久链接至目标"></a></dt>
+<dd><p>UART flow state get. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_MODE_SET">
+<span class="target" id="group__hosal__uart_1ga7d57fd543c930510edaa76737e28df02"></span><code class="descname">HOSAL_UART_MODE_SET</code><a class="headerlink" href="#c.HOSAL_UART_MODE_SET" title="永久链接至目标"></a></dt>
+<dd><p>UART mode set. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_MODE_GET">
+<span class="target" id="group__hosal__uart_1gabae7846d677ef87363883a1619734226"></span><code class="descname">HOSAL_UART_MODE_GET</code><a class="headerlink" href="#c.HOSAL_UART_MODE_GET" title="永久链接至目标"></a></dt>
+<dd><p>UART mode get. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_FREE_TXFIFO_GET">
+<span class="target" id="group__hosal__uart_1ga5c457093e48f46437f40b86fc502ce95"></span><code class="descname">HOSAL_UART_FREE_TXFIFO_GET</code><a class="headerlink" href="#c.HOSAL_UART_FREE_TXFIFO_GET" title="永久链接至目标"></a></dt>
+<dd><p>UART free tx fifo get. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_FREE_RXFIFO_GET">
+<span class="target" id="group__hosal__uart_1gaec8638941e30bf7dbcd07c7352ad65ea"></span><code class="descname">HOSAL_UART_FREE_RXFIFO_GET</code><a class="headerlink" href="#c.HOSAL_UART_FREE_RXFIFO_GET" title="永久链接至目标"></a></dt>
+<dd><p>UART free rx fifo get. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_FLUSH">
+<span class="target" id="group__hosal__uart_1gaa9d2515f868990d9390e070a7e9b4532"></span><code class="descname">HOSAL_UART_FLUSH</code><a class="headerlink" href="#c.HOSAL_UART_FLUSH" title="永久链接至目标"></a></dt>
+<dd><p>Wait for the send to complete. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_TX_TRIGGER_ON">
+<span class="target" id="group__hosal__uart_1gaabc224191a38204ba149346f6015635c"></span><code class="descname">HOSAL_UART_TX_TRIGGER_ON</code><a class="headerlink" href="#c.HOSAL_UART_TX_TRIGGER_ON" title="永久链接至目标"></a></dt>
+<dd><p>UART TX trigger on. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_TX_TRIGGER_OFF">
+<span class="target" id="group__hosal__uart_1ga16d69791cbb6c8526f1a3b73d82399a3"></span><code class="descname">HOSAL_UART_TX_TRIGGER_OFF</code><a class="headerlink" href="#c.HOSAL_UART_TX_TRIGGER_OFF" title="永久链接至目标"></a></dt>
+<dd><p>UART TX trigger off. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_DMA_TX_START">
+<span class="target" id="group__hosal__uart_1ga05668cb2cc8102bf28e295df1a3611ba"></span><code class="descname">HOSAL_UART_DMA_TX_START</code><a class="headerlink" href="#c.HOSAL_UART_DMA_TX_START" title="永久链接至目标"></a></dt>
+<dd><p>UART DMA TX start trans. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_DMA_RX_START">
+<span class="target" id="group__hosal__uart_1ga1a214fc8368c19c1797d318f0d72c975"></span><code class="descname">HOSAL_UART_DMA_RX_START</code><a class="headerlink" href="#c.HOSAL_UART_DMA_RX_START" title="永久链接至目标"></a></dt>
+<dd><p>UART DMA RX start trans. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_CFG_DECL">
+<span class="target" id="group__hosal__uart_1ga7be64680f1bd4d80cb6d64c45772a8f8"></span><code class="descname">HOSAL_UART_CFG_DECL</code><span class="sig-paren">(</span>cfg, id, tx, rx, baud<span class="sig-paren">)</span><a class="headerlink" href="#c.HOSAL_UART_CFG_DECL" title="永久链接至目标"></a></dt>
+<dd><p>define a UART default config </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">cfg</span></code>: config define </li>
+<li><code class="docutils literal notranslate"><span class="pre">id</span></code>: uart id </li>
+<li><code class="docutils literal notranslate"><span class="pre">tx</span></code>: uart tx pin </li>
+<li><code class="docutils literal notranslate"><span class="pre">rx</span></code>: uart rx pin </li>
+<li><code class="docutils literal notranslate"><span class="pre">baud</span></code>: uart baud </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_UART_DEV_DECL">
+<span class="target" id="group__hosal__uart_1gab0f8a0b79712be028f52a0a0d9145cf8"></span><code class="descname">HOSAL_UART_DEV_DECL</code><span class="sig-paren">(</span>dev, id, tx, rx, baud<span class="sig-paren">)</span><a class="headerlink" href="#c.HOSAL_UART_DEV_DECL" title="永久链接至目标"></a></dt>
+<dd><p>define a UART device </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">dev</span></code>: uart device </li>
+<li><code class="docutils literal notranslate"><span class="pre">id</span></code>: uart id </li>
+<li><code class="docutils literal notranslate"><span class="pre">tx</span></code>: uart tx pin </li>
+<li><code class="docutils literal notranslate"><span class="pre">rx</span></code>: uart rx pin </li>
+<li><code class="docutils literal notranslate"><span class="pre">baud</span></code>: uart baud </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="type-definitions">
+<h3>Type Definitions<a class="headerlink" href="#type-definitions" title="永久链接至标题"></a></h3>
+<dl class="type">
+<dt id="_CPPv421hosal_uart_callback_t">
+<span id="_CPPv321hosal_uart_callback_t"></span><span id="_CPPv221hosal_uart_callback_t"></span><span id="hosal_uart_callback_t"></span><span class="target" id="group__hosal__uart_1ga29541808a46c91ca6859adb50d19eed7"></span><em class="property">typedef </em>int (*<code class="descname">hosal_uart_callback_t</code>)<span class="sig-paren">(</span>void *p_arg<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421hosal_uart_callback_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>hosal uart callback </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 : on success</li>
+<li>EIO : if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">p_arg</span></code>: Set the custom parameters specified when the callback function is set</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="enumerations">
+<h3>Enumerations<a class="headerlink" href="#enumerations" title="永久链接至标题"></a></h3>
+<dl class="type">
+<dt id="_CPPv423hosal_uart_data_width_t">
+<span id="_CPPv323hosal_uart_data_width_t"></span><span id="_CPPv223hosal_uart_data_width_t"></span><span id="hosal_uart_data_width_t"></span><span class="target" id="group__hosal__uart_1ga88c58a5c3e89f08e1b3cba0e552390fa"></span><em class="property">enum </em><code class="descname">hosal_uart_data_width_t</code><a class="headerlink" href="#_CPPv423hosal_uart_data_width_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART data width. </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv421HOSAL_DATA_WIDTH_5BIT">
+<span id="_CPPv321HOSAL_DATA_WIDTH_5BIT"></span><span id="_CPPv221HOSAL_DATA_WIDTH_5BIT"></span><span class="target" id="group__hosal__uart_1gga88c58a5c3e89f08e1b3cba0e552390faaf20d69f1c5f183dc614c99115353a076"></span><code class="descname">HOSAL_DATA_WIDTH_5BIT</code><a class="headerlink" href="#_CPPv421HOSAL_DATA_WIDTH_5BIT" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv421HOSAL_DATA_WIDTH_6BIT">
+<span id="_CPPv321HOSAL_DATA_WIDTH_6BIT"></span><span id="_CPPv221HOSAL_DATA_WIDTH_6BIT"></span><span class="target" id="group__hosal__uart_1gga88c58a5c3e89f08e1b3cba0e552390faa112acb6a7c4950447fcf71ee16ed610b"></span><code class="descname">HOSAL_DATA_WIDTH_6BIT</code><a class="headerlink" href="#_CPPv421HOSAL_DATA_WIDTH_6BIT" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv421HOSAL_DATA_WIDTH_7BIT">
+<span id="_CPPv321HOSAL_DATA_WIDTH_7BIT"></span><span id="_CPPv221HOSAL_DATA_WIDTH_7BIT"></span><span class="target" id="group__hosal__uart_1gga88c58a5c3e89f08e1b3cba0e552390faaecfc2d4ddd3fa7aac92c26d42005f3db"></span><code class="descname">HOSAL_DATA_WIDTH_7BIT</code><a class="headerlink" href="#_CPPv421HOSAL_DATA_WIDTH_7BIT" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv421HOSAL_DATA_WIDTH_8BIT">
+<span id="_CPPv321HOSAL_DATA_WIDTH_8BIT"></span><span id="_CPPv221HOSAL_DATA_WIDTH_8BIT"></span><span class="target" id="group__hosal__uart_1gga88c58a5c3e89f08e1b3cba0e552390faa525973af58d6c91c112367e2c3663b43"></span><code class="descname">HOSAL_DATA_WIDTH_8BIT</code><a class="headerlink" href="#_CPPv421HOSAL_DATA_WIDTH_8BIT" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv421HOSAL_DATA_WIDTH_9BIT">
+<span id="_CPPv321HOSAL_DATA_WIDTH_9BIT"></span><span id="_CPPv221HOSAL_DATA_WIDTH_9BIT"></span><span class="target" id="group__hosal__uart_1gga88c58a5c3e89f08e1b3cba0e552390faa230fe4542cd1c776ecca9d60512482d0"></span><code class="descname">HOSAL_DATA_WIDTH_9BIT</code><a class="headerlink" href="#_CPPv421HOSAL_DATA_WIDTH_9BIT" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="type">
+<dt id="_CPPv422hosal_uart_stop_bits_t">
+<span id="_CPPv322hosal_uart_stop_bits_t"></span><span id="_CPPv222hosal_uart_stop_bits_t"></span><span id="hosal_uart_stop_bits_t"></span><span class="target" id="group__hosal__uart_1ga27b03212138e3952cd8b7836a44c583b"></span><em class="property">enum </em><code class="descname">hosal_uart_stop_bits_t</code><a class="headerlink" href="#_CPPv422hosal_uart_stop_bits_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART stop bits. </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv417HOSAL_STOP_BITS_1">
+<span id="_CPPv317HOSAL_STOP_BITS_1"></span><span id="_CPPv217HOSAL_STOP_BITS_1"></span><span class="target" id="group__hosal__uart_1gga27b03212138e3952cd8b7836a44c583ba321ce43a5349ea10b32099e4799f2b44"></span><code class="descname">HOSAL_STOP_BITS_1</code> = 1<a class="headerlink" href="#_CPPv417HOSAL_STOP_BITS_1" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv417HOSAL_STOP_BITS_2">
+<span id="_CPPv317HOSAL_STOP_BITS_2"></span><span id="_CPPv217HOSAL_STOP_BITS_2"></span><span class="target" id="group__hosal__uart_1gga27b03212138e3952cd8b7836a44c583ba5b30e65186cf1ec197f6486fdb4af7ca"></span><code class="descname">HOSAL_STOP_BITS_2</code> = 3<a class="headerlink" href="#_CPPv417HOSAL_STOP_BITS_2" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="type">
+<dt id="_CPPv425hosal_uart_flow_control_t">
+<span id="_CPPv325hosal_uart_flow_control_t"></span><span id="_CPPv225hosal_uart_flow_control_t"></span><span id="hosal_uart_flow_control_t"></span><span class="target" id="group__hosal__uart_1gacc3bd188ec75d5a7cd4a6e8a083d4329"></span><em class="property">enum </em><code class="descname">hosal_uart_flow_control_t</code><a class="headerlink" href="#_CPPv425hosal_uart_flow_control_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART flow control. </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv427HOSAL_FLOW_CONTROL_DISABLED">
+<span id="_CPPv327HOSAL_FLOW_CONTROL_DISABLED"></span><span id="_CPPv227HOSAL_FLOW_CONTROL_DISABLED"></span><span class="target" id="group__hosal__uart_1ggacc3bd188ec75d5a7cd4a6e8a083d4329a8814a2c0d44c80e4a4b75f63a8675337"></span><code class="descname">HOSAL_FLOW_CONTROL_DISABLED</code><a class="headerlink" href="#_CPPv427HOSAL_FLOW_CONTROL_DISABLED" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv422HOSAL_FLOW_CONTROL_RTS">
+<span id="_CPPv322HOSAL_FLOW_CONTROL_RTS"></span><span id="_CPPv222HOSAL_FLOW_CONTROL_RTS"></span><span class="target" id="group__hosal__uart_1ggacc3bd188ec75d5a7cd4a6e8a083d4329a07a766e52776321a66740346b04314bb"></span><code class="descname">HOSAL_FLOW_CONTROL_RTS</code><a class="headerlink" href="#_CPPv422HOSAL_FLOW_CONTROL_RTS" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv422HOSAL_FLOW_CONTROL_CTS">
+<span id="_CPPv322HOSAL_FLOW_CONTROL_CTS"></span><span id="_CPPv222HOSAL_FLOW_CONTROL_CTS"></span><span class="target" id="group__hosal__uart_1ggacc3bd188ec75d5a7cd4a6e8a083d4329a1dfa03cc4397a72121e2835e267464ef"></span><code class="descname">HOSAL_FLOW_CONTROL_CTS</code><a class="headerlink" href="#_CPPv422HOSAL_FLOW_CONTROL_CTS" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv426HOSAL_FLOW_CONTROL_CTS_RTS">
+<span id="_CPPv326HOSAL_FLOW_CONTROL_CTS_RTS"></span><span id="_CPPv226HOSAL_FLOW_CONTROL_CTS_RTS"></span><span class="target" id="group__hosal__uart_1ggacc3bd188ec75d5a7cd4a6e8a083d4329ac7d17fcde3c25021ff360e390c3b7a5a"></span><code class="descname">HOSAL_FLOW_CONTROL_CTS_RTS</code><a class="headerlink" href="#_CPPv426HOSAL_FLOW_CONTROL_CTS_RTS" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="type">
+<dt id="_CPPv419hosal_uart_parity_t">
+<span id="_CPPv319hosal_uart_parity_t"></span><span id="_CPPv219hosal_uart_parity_t"></span><span id="hosal_uart_parity_t"></span><span class="target" id="group__hosal__uart_1gafaaa0dfdf347ee740e5e5efd5001722d"></span><em class="property">enum </em><code class="descname">hosal_uart_parity_t</code><a class="headerlink" href="#_CPPv419hosal_uart_parity_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART parity. </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv415HOSAL_NO_PARITY">
+<span id="_CPPv315HOSAL_NO_PARITY"></span><span id="_CPPv215HOSAL_NO_PARITY"></span><span class="target" id="group__hosal__uart_1ggafaaa0dfdf347ee740e5e5efd5001722dacb7bfd4db95243413311b22fb281b4a4"></span><code class="descname">HOSAL_NO_PARITY</code><a class="headerlink" href="#_CPPv415HOSAL_NO_PARITY" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv416HOSAL_ODD_PARITY">
+<span id="_CPPv316HOSAL_ODD_PARITY"></span><span id="_CPPv216HOSAL_ODD_PARITY"></span><span class="target" id="group__hosal__uart_1ggafaaa0dfdf347ee740e5e5efd5001722da6847ae029c0b8bd9c222bc200309067c"></span><code class="descname">HOSAL_ODD_PARITY</code><a class="headerlink" href="#_CPPv416HOSAL_ODD_PARITY" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv417HOSAL_EVEN_PARITY">
+<span id="_CPPv317HOSAL_EVEN_PARITY"></span><span id="_CPPv217HOSAL_EVEN_PARITY"></span><span class="target" id="group__hosal__uart_1ggafaaa0dfdf347ee740e5e5efd5001722da5d2803a25183df14740fdff2d9fa597a"></span><code class="descname">HOSAL_EVEN_PARITY</code><a class="headerlink" href="#_CPPv417HOSAL_EVEN_PARITY" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="type">
+<dt id="_CPPv417hosal_uart_mode_t">
+<span id="_CPPv317hosal_uart_mode_t"></span><span id="_CPPv217hosal_uart_mode_t"></span><span id="hosal_uart_mode_t"></span><span class="target" id="group__hosal__uart_1ga1068c91df33261768008fb6fee815853"></span><em class="property">enum </em><code class="descname">hosal_uart_mode_t</code><a class="headerlink" href="#_CPPv417hosal_uart_mode_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART mode. </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv420HOSAL_UART_MODE_POLL">
+<span id="_CPPv320HOSAL_UART_MODE_POLL"></span><span id="_CPPv220HOSAL_UART_MODE_POLL"></span><span class="target" id="group__hosal__uart_1gga1068c91df33261768008fb6fee815853afb1437f62cbbcec7118f52aa28436294"></span><code class="descname">HOSAL_UART_MODE_POLL</code><a class="headerlink" href="#_CPPv420HOSAL_UART_MODE_POLL" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART poll mode (default mode) </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv422HOSAL_UART_MODE_INT_TX">
+<span id="_CPPv322HOSAL_UART_MODE_INT_TX"></span><span id="_CPPv222HOSAL_UART_MODE_INT_TX"></span><span class="target" id="group__hosal__uart_1gga1068c91df33261768008fb6fee815853a99e61d6eda991c43d435fc5cf8e153e1"></span><code class="descname">HOSAL_UART_MODE_INT_TX</code><a class="headerlink" href="#_CPPv422HOSAL_UART_MODE_INT_TX" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART TX int mode. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv422HOSAL_UART_MODE_INT_RX">
+<span id="_CPPv322HOSAL_UART_MODE_INT_RX"></span><span id="_CPPv222HOSAL_UART_MODE_INT_RX"></span><span class="target" id="group__hosal__uart_1gga1068c91df33261768008fb6fee815853aaf47c37a77c85f78cb11f9fbbb1cb406"></span><code class="descname">HOSAL_UART_MODE_INT_RX</code><a class="headerlink" href="#_CPPv422HOSAL_UART_MODE_INT_RX" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART RX int mode. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv419HOSAL_UART_MODE_INT">
+<span id="_CPPv319HOSAL_UART_MODE_INT"></span><span id="_CPPv219HOSAL_UART_MODE_INT"></span><span class="target" id="group__hosal__uart_1gga1068c91df33261768008fb6fee815853a5592fbdcae32c8768415e35b4d1c3890"></span><code class="descname">HOSAL_UART_MODE_INT</code><a class="headerlink" href="#_CPPv419HOSAL_UART_MODE_INT" title="永久链接至目标"></a><br /></dt>
+<dd><p>UART TX and RX int mode. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="timer.html" class="btn btn-neutral float-right" title="timer" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="spi.html" class="btn btn-neutral" title="SPI" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

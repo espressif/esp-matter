@@ -1,0 +1,39 @@
+{
+    "target": {
+        "Name": "LAUNCHXL-CC1352P-2_4-GHZ-HIGH-PA_10DBM",
+        "Revision": [],
+        "Description": "CC1352P-4 LP. 7x7 VQFN48 package. External bias, differential output, 2.4 GHz band.",
+        "DeviceName": "CC1352P",
+        "DevicePackage": "VQFN 7x7",
+        "FrontEnd": "XD",
+        "PaSettings": "pasettings.json",
+        "RfDesign": "CC1352PEM-XD4251-XD24-PA24_10dBm",
+        "DefaultCategory": "Settings",
+        "IoSettings": {
+            "_name": "RF Switch",
+            "IoPin": [
+                {
+                    "_name": "DIO28",
+                    "ControlFunction": "Input\/Output",
+                    "Idle": "Input tristate (Default)",
+                    "Tx": "Output low",
+                    "Rx": "Output high"
+                },
+                {
+                    "_name": "DIO29",
+                    "ControlFunction": "Input\/Output",
+                    "Idle": "Input tristate (Default)",
+                    "Tx": "Output high",
+                    "Rx": "Output low"
+                },
+                {
+                    "_name": "DIO30",
+                    "ControlFunction": "Input\/Output",
+                    "Idle": "Input tristate (Default)",
+                    "Tx": "Output low",
+                    "Rx": "Output low"
+                }
+            ]
+        }
+    }
+}

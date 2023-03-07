@@ -1,0 +1,13 @@
+# Bluetooth Mesh Advanced Configurator Adapter Pack Definition
+
+# Is used for SetupId
+id=btMeshConfig
+label=Bluetooth Mesh Advanced Configurator Adapter Pack
+
+# Trigger file extension. No period.
+uc.triggerExtension=btmeshconf
+
+# Standard generation function
+function(uc_generate) {
+  cmd=$(python) BtMeshGenerator.py ${contentFolder} ${generationOutput}
+}

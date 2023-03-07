@@ -1,0 +1,22 @@
+id: freertos_heap_4
+label: FreeRTOS Heap 4
+package: platform
+description: >
+  A heap implementation for FreeRTOS.
+
+  A sample implementation of pvPortMalloc() and vPortFree() that combines
+  (coalescences) adjacent memory blocks as they are freed, and in so doing
+  limits memory fragmentation.
+category: RTOS|FreeRTOS
+quality: production
+source:
+  - path: util/third_party/freertos/kernel/portable/MemMang/heap_4.c
+provides:
+  - name: freertos_heap
+  - name: freertos_heap_4
+requires:
+  - name: cmsis_core
+  - name: freertos
+template_contribution:
+  - name: rte_components
+    value: RTE_RTOS_FreeRTOS_HEAP_4

@@ -1,0 +1,15 @@
+[
+    {
+        "files": [
+            "+../console_tirtos.c -> console_tirtos.c",
+            "+../temperature_tirtos.c -> temperature_tirtos.c",
+            "+../../../../../../../source/ti/boards/CC3235SF_LAUNCHXL/Board.html -> Board.html",
+            "+cc32xxsf_tirtos7.icf -> cc32xxsf_tirtos7.icf",
+            "+../main_tirtos.c -> main_tirtos.c",
+            "+../../overview.rov.json -> overview.rov.json",
+            "+../portableNative.syscfg -> portableNative.syscfg",
+            "+../../README.html -> README.html",
+            "+../../README.md -> README.md"
+        ]
+    }
+]

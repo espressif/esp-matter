@@ -1,0 +1,22 @@
+!!omap
+- id: slwrb4100a
+- label: SLWRB4100A
+- package: platform
+- description: Kit BSP support for the EFR32BG 2.4 GHz 10.5 dBm Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4100a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4100A"'
+  - name: SL_KIT_REV
+    value: '"A02"'
+- tag:
+  - kit:opn:SLWRB4100A
+  - kit:pn:WRB4100
+  - kit:variant:A
+  - kit:revision:A02

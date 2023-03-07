@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="GateSwi" title="Software Interrupt Gate" version="1">
+
+<page name="Module" title="Module Settings">
+<html><body><table>
+  <tr>
+      <td><form>
+        <p>GateSwi uses disabling and enabling of software interrupts as the
+           resource locking  mechanism. This gate can be used whenever the resource
+           is being shared by Swis or Tasks. This gate cannot be used by a Hwi.</p>
+        <p> </p>
+      </form></td>
+  </tr>
+  <tr>
+    <td><control type="checkbox" label="Add the GateSwi module to my configuration" value="value:this.$used" bold="true"/></td>
+  </tr>
+  <tr></tr>
+</table></body></html>
+</page>
+</gep>
+

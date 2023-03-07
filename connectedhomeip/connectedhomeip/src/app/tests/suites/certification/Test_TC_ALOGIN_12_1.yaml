@@ -1,0 +1,96 @@
+# Copyright (c) 2021 Project CHIP Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# Auto-generated scripts for harness use only, please review before automation. The endpoints and cluster names are currently set to default
+
+name: 3.14.1. [TC-ALOGIN-12.1] Account Login Verification
+
+PICS:
+    - ALOGIN.S
+
+config:
+    nodeId: 0x12344321
+    cluster: "Account Login"
+    endpoint: 3
+    TempAccountIdentifier:
+        type: char_string
+        defaultValue: "1111"
+    catalogVendorId:
+        type: int16u
+        defaultValue: 123
+    applicationId:
+        type: char_string
+        defaultValue: "exampleid"
+
+tests:
+    - label: "Wait for the commissioned device to be retrieved"
+      cluster: "DelayCommands"
+      command: "WaitForCommissionee"
+      arguments:
+          values:
+              - name: "nodeId"
+                value: nodeId
+
+    - label: "Launch an app with the provided a application ID"
+      PICS: APPLAUNCHER.S.C00.Rsp
+      cluster: "Application Launcher"
+      command: "LaunchApp"
+      arguments:
+          values:
+              - name: "Data"
+                value: "Hello World"
+              - name: "application"
+                value:
+                    {
+                        catalogVendorId: catalogVendorId,
+                        applicationId: applicationId,
+                    }
+      response:
+          values:
+              - name: "status"
+                value: 0
+
+    - label:
+          "TH sends a GetSetupPIN command to the DUT with test values provided
+          by the product maker."
+      PICS: ALOGIN.S.C00.Rsp
+      command: "GetSetupPIN"
+      timedInteractionTimeoutMs: 10000
+      arguments:
+          values:
+              - name: "TempAccountIdentifier"
+                value: TempAccountIdentifier
+      response:
+          values:
+              - name: "setupPIN"
+                saveAs: setupPIN
+
+    - label:
+          "TH sends a Login command to the DUT with test values provided by the
+          product maker."
+      PICS: ALOGIN.S.C02.Rsp
+      command: "Login"
+      timedInteractionTimeoutMs: 10000
+      arguments:
+          values:
+              - name: "tempAccountIdentifier"
+                value: TempAccountIdentifier
+              - name: "setupPIN"
+                value: setupPIN
+
+    - label:
+          "TH sends a Logout command to the DUT with test values provided by the
+          product maker."
+      PICS: ALOGIN.S.C03.Rsp
+      command: "Logout"
+      timedInteractionTimeoutMs: 10000

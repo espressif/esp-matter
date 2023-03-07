@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Personality id="20x19_spi" name="SPI" version="1.0" path="Communication" xmlns="http://cypress.com/xsd/cyhwpersonality_v1">
+  <Dependencies>
+    <IpBlock name="20x19_spi" />
+    <Resource name="spi" />
+  </Dependencies>
+  <ExposedMembers />
+  <Parameters>
+    <ParamDoc id="apiDoc" name="Configuration Help" group="Peripheral Documentation" default="file:///`${cy_libs_path()}`/docs/group___peripheral_spi_driver.html" linkText="Open SPI Documentation" visible="true" desc="Opens the Hardware Driver Documentation" />
+
+    <ParamSignal port="clk[0]" name="Clock" group="Pins" visible="true" desc="The Serial Clock (SCLK) from the master to slave device." canBeEmpty="false" />
+    <ParamSignal port="miso[0]" name="MISO" group="Pins" visible="true" desc="The Master Input Slave Output (MOSI) signal between the slave and master devices." canBeEmpty="false" />
+    <ParamSignal port="mosi[0]" name="MOSI" group="Pins" visible="true" desc="The Master Output Slave Input (MOSI) signal between the master and slave devices." canBeEmpty="false" />
+    <ParamSignal port="cs[0]" name="CS" group="Pins" visible="true" desc="The Cable/Slave Select (CS) signal between the master and slave devices." canBeEmpty="true" />
+
+    <ParamSignal port="io2[0]" name="IO2" group="Pins" visible="`${IS_QUAD}`" desc="The Data[2] signal between the master and slave devices." canBeEmpty="true" />
+    <ParamSignal port="io3[0]" name="IO3" group="Pins" visible="`${IS_QUAD}`" desc="The Data[3] signal between the master and slave devices." canBeEmpty="true" />
+
+    <ParamSignal port="int[0]" name="INT" group="Pins" visible="true" desc="The interrupt signal." canBeEmpty="true" />
+  </Parameters>
+
+  <DRCs/>
+
+  <ConfigFirmware>
+
+  </ConfigFirmware>
+</Personality>

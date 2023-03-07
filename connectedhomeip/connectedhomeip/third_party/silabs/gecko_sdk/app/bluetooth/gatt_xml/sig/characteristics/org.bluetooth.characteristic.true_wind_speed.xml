@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2011 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="True Wind Speed" type="org.bluetooth.characteristic.true_wind_speed"
+uuid="2A70" last-modified="2014-11-20" approved="Yes">
+<Value>
+    <Field name="True Wind Speed">
+        <InformativeText>Unit is in meters per second with a resolution of 0.01 m/s</InformativeText>
+        <Requirement>Mandatory</Requirement>
+        <Format>uint16</Format>
+        <Unit>org.bluetooth.unit.velocity.metres_per_second</Unit>
+        <DecimalExponent>-2</DecimalExponent>
+	</Field>
+    
+</Value>
+</Characteristic>

@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Service xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.service.immediate_alert" uuid="1802" name="Immediate Alert">
+	<InformativeText>
+        <Abstract>This service exposes a control point to allow a peer device to cause the device to immediately alert.</Abstract>
+        <Summary>
+    The Immediate Alert service is instantiated as a Primary Service.
+    There is only one instance of the Immediate Alert service on a device.
+    There is only one instance of the Alert Level characteristic in an Immediate Alert service.
+    This alert continues until one of following conditions occurs:
+    - An implementation specific timeout
+    - User interaction on this device
+    - A new alert level is written
+    - The physical link is disconnected
+		</Summary>
+    	<Examples>
+	    	<Example>If the written alert level is "No Alert", no alerting is done on this device.</Example>
+		    <Example>If the written alert level is "Mild Alert", the device alerts.</Example>
+		    <Example>If the written alert level is "High Alert", the device alerts in the strongest possible way.</Example>
+    	</Examples>
+    </InformativeText>
+	<Dependencies>
+		<Dependency>This service has no dependencies on other GATT-based services</Dependency>
+	</Dependencies>
+	<GATTRequirements>
+		<Requirement subProcedure="Write Without Response">Mandatory</Requirement>
+	</GATTRequirements>
+	<Transports>
+		<Classic>true</Classic>
+		<LowEnergy>true</LowEnergy>
+	</Transports>
+	<Characteristics>
+		<Characteristic name="Alert Level" type="org.bluetooth.characteristic.alert_level">
+			<InformativeText>The Alert Level characteristic is a control point that allows a peer to command this device to alert to a given level.</InformativeText>
+			<Requirement>Mandatory</Requirement>
+			<Properties>
+				<Read>Excluded</Read>
+				<Write>Excluded</Write>
+				<WriteWithoutResponse>Mandatory</WriteWithoutResponse>
+				<SignedWrite>Excluded</SignedWrite>
+				<ReliableWrite>Excluded</ReliableWrite>
+				<Notify>Excluded</Notify>
+				<Indicate>Excluded</Indicate>
+				<WritableAuxiliaries>Excluded</WritableAuxiliaries>
+				<Broadcast>Excluded</Broadcast>
+			</Properties>
+		</Characteristic>
+	</Characteristics>
+</Service>

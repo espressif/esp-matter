@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="Swi" title="Software Interrupt Management" version="1">
+
+<page name="Module" title="Module Settings">
+<html><body><table>
+  <tr><td><table><tr>
+    <td><control type="label" 
+      label=" NOTE! Configuration of the Swi module has been disabled.  See the SYS/BIOS 'Enable Software Interrupts' setting under"
+      visible="value:!ti.sysbios.BIOS.swiEnabled"
+      align="left"
+      bold="true"/>
+    </td>
+    <td><control 
+      type="hyperlink" 
+      link="ti.sysbios.BIOS" 
+      page="Runtime" 
+      bold="true"
+      visible="value:!ti.sysbios.BIOS.swiEnabled"
+      label="'Threading Options'"
+      />
+    </td>
+    </tr></table></td>
+  </tr>
+  <tr>
+      <td><form>
+        <p>The Swi module allows you to define one or more prioritized run-to-completion functions that always <br/>preempt Task threads and are always preempted by Hwi (hardware interrupt) threads.</p>
+      </form></td>
+  </tr>
+  <tr></tr>
+  <tr>
+    <td><control type="checkbox" 
+     label="Add the software interrupt threads module to my configuration" 
+     value="value:this.$used" 
+     enabled="value:ti.sysbios.BIOS.swiEnabled"
+     bold="true"/>
+    </td>
+  </tr>
+  <tr></tr>
+  <tr><td>
+    <h1>Global Swi Options</h1>
+    <table>
+      <tr>
+        <td><control type="label" label="Number of priorities" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.numPriorities"
+             tooltip="value:this.numPriorities.$summary"/></td>
+      </tr>
+    </table>
+  </td>
+  <td/>
+  </tr>
+</table></body></html>
+</page>
+
+<page name="Instance" title="Instance Settings" DPI="10" enabled="value:ti.sysbios.BIOS.swiEnabled">
+<html><body><table>
+  <tr>
+    <td>
+      <h1>Swis</h1>
+      <table><tr>
+        <td><control type="listbox" sort="true" id="master" text="value:this.$activeInstance" width="10" height="15" align="fill" labels="value:this"/></td>
+        <td>
+          <control type="pushbutton" label="Add ..." align="fill" link="action:New"
+                enabled="value:ti.sysbios.BIOS.swiEnabled"/>
+          <control type="pushbutton" label="Remove" align="fill" link="action:Delete" context="value:widget.master.selection"/>
+        </td>
+      </tr></table>
+    </td>
+    <td context="value:widget.master.selection">
+      <h1>Required Settings</h1>
+      <table>
+        <tr>
+          <td><control type="label" label="Handle" align="left"/></td>
+          <td><control type="editbox" 
+               value="value:this.instance.name"
+               tooltip="Handle name"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Function" align="left"/></td>
+          <td><control type="editbox" 
+               value="value:this.create.swiFxn"
+               tooltip="value:this.create.swiFxn.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Interrupt priority" align="left"/></td>
+          <td><control type="editbox" 
+             value="value:this.priority"
+             tooltip="value:this.priority.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Initial trigger" align="left"/></td>
+          <td><control type="editbox"
+             display="hex"
+             value="value:this.trigger"
+             tooltip="value:this.trigger.$summary"/></td>
+        </tr>
+      </table>
+      <h1>Thread Context</h1>
+      <table>     
+        <tr>
+          <td><control type="label" label="Argument 0" align="left"/></td>
+          <td><control type="editbox" 
+             value="value:this.arg0"
+             tooltip="value:this.arg0.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Argument 1" align="left"/></td>
+          <td><control type="editbox" 
+             value="value:this.arg1"
+             tooltip="value:this.arg1.$summary"/></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table></body></html>
+</page>
+<properties name="Advanced" title="All Options" enabled="value:ti.sysbios.BIOS.swiEnabled" visible="true" link="this"/>
+</gep>
+

@@ -1,0 +1,32 @@
+id: stack_protection_iar
+label: IAR stack protection
+package: platform
+category: Platform|Utilities
+quality: production
+
+description:  This component enables stack protection and also provides stack protection definitions for IAR.
+
+provides:
+  - name: stack_protection_iar
+
+requires:
+  - name: toolchain_iar
+  - name: legacy_hal
+
+source:
+  - path: "util/plugin/plugin-common/stack-protection-iar/stack-protection.c"
+
+define:
+  - name: STACK_PROTECTION
+
+include:
+  - path: "platform/service"
+
+toolchain_settings:
+  - option: iar_compiler_option
+    value: "--stack_protection"
+
+template_contribution:
+  - name: component_catalog
+    value: stack_protection_iar
+

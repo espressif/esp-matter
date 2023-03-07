@@ -1,0 +1,42 @@
+id: "btmesh_sensor_server"
+label: "Sensor Server"
+package: "Btmesh"
+description: >
+  Used to support the reporting functionality of a node with a set of sensors
+  whose data is available on the network. It also has a corresponding Sensor
+  Setup Server model which is present on the same element.
+  
+  This component implements temperature, people count, and illuminance measurements.
+  It provides callback functions for each property. 
+category: "Bluetooth Mesh|Models|Sensors"
+quality: "production"
+root_path: "app/bluetooth/common/btmesh_sensor_server"
+include:
+  - path: ""
+    file_list:
+      - path: "sl_btmesh_sensor_server.h"
+      - path: "sl_btmesh_sensor_server_cadence.h"
+config_file:
+  - path: "config/sl_btmesh_sensor_server_config.h"
+    file_id: "btmesh_sensor_server_config"
+  - path: btmesh_sensor_server.dcd
+    directory: btmeshconf
+source:
+  - path: "sl_btmesh_sensor_server.c"
+  - path: "sl_btmesh_sensor_server_cadence.c"
+provides:
+  - name: "btmesh_sensor_server"
+requires:
+  - name: "app_assert"
+  - name: "app_btmesh_util"
+  - name: "btmesh_feature_node"
+  - name: "btmesh_feature_sensor_server"
+  - name: "btmesh_feature_sensor_setup_server"
+  - name: "btmesh_stack"
+  - name: "simple_timer"
+
+template_contribution:
+  - name: "btmesh_on_event"
+    value:
+      include: "sl_btmesh_sensor_server.h"
+      function: "sl_btmesh_handle_sensor_server_events"

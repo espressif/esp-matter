@@ -1,0 +1,28 @@
+<zap>
+  <accessControl>
+    <operation type="read" description="Read operation"/>
+    <operation type="write" description="Write operation"/>
+    <operation type="invoke" description="Invoke operation"/>
+    <modifier type="fabric-scoped" description="Fabric-scoped data"/>
+    <modifier type="fabric-sensitive" description="Fabric-sensitive data"/>
+    <role type="view" description="View privilege"/>
+    <role type="operate" description="Operate privilege"/>
+    <!-- Privilege is an alias to role. Does the same thing. -->
+    <privilege type="manage" description="Managing privilege"/>
+    <privilege type="administer" description="Administrative privilege"/>
+  </accessControl>
+  <defaultAccess type="command">
+    <access op="invoke"/>
+  </defaultAccess>
+  <defaultAccess type="cluster">
+    <access op="read"/>
+    <access op="write"/>
+  </defaultAccess>
+  <defaultAccess type="attribute">
+    <access op="read" role="view"/>
+    <access op="write" role="operate"/>
+  </defaultAccess>
+  <defaultAccess type="event">
+    <access op="invoke"/>
+  </defaultAccess>
+</zap>

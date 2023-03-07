@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+name="Weight Measurement" type="org.bluetooth.characteristic.weight_measurement" uuid="2A9D" last-modified="2014-10-17" approved="Yes">
+    <Value>
+        <Field name="Flags">
+            <Requirement>Mandatory</Requirement>
+            <Format>8bit</Format>
+            <BitField>
+                <Bit index="0" size="1" name="Measurement Units">
+                    <Enumerations>
+                        <Enumeration key="0" value="SI (Weight and Mass in units of kilogram (kg) and Height in units of meter)" requires="C1" />
+                        <Enumeration key="1" value="Imperial (Weight and Mass in units of pound (lb) and Height in units of inch (in))" requires="C2" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="1" size="1" name="Time stamp present">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" requires="C3" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="2" size="1" name="User ID present">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" requires="C4" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="3" size="1" name="BMI and Height present">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" requires="C5" />
+                    </Enumerations>
+                </Bit>
+                <ReservedForFutureUse index="4" size="4" />
+            </BitField>
+        </Field>
+        <Field name="Weight - SI ">
+            <InformativeText>Unit is in kilograms with a resolution of 0.005, and determined when bit 0 of the Flags field is set to 0.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Format>uint16</Format>
+            <Unit>org.bluetooth.unit.mass.kilogram</Unit>
+            <DecimalExponent>-3</DecimalExponent>
+            <Multiplier>5</Multiplier>
+        </Field>
+        <Field name="Weight - Imperial ">
+            <InformativeText>Unit is in pounds with a resolution of 0.01, and determined when bit 0 of the Flags field is set to 1.</InformativeText>
+            <Requirement>C2</Requirement>
+            <Format>uint16</Format>
+            <Unit>org.bluetooth.unit.mass.pound</Unit>
+            <DecimalExponent>-2</DecimalExponent>
+        </Field>
+        <Field name="Time Stamp">
+            <InformativeText>Smallest unit in seconds</InformativeText>
+            <Requirement>C3</Requirement>
+            <Reference>org.bluetooth.characteristic.date_time</Reference>
+        </Field>
+        <Field name="User ID">
+            <InformativeText>Unit is unitless with a resolution of 1</InformativeText>
+            <Requirement>C4</Requirement>
+            <Format>uint8</Format>
+            <Unit>org.bluetooth.unit.unitless</Unit>
+            <DecimalExponent>0</DecimalExponent>
+            <Enumerations>
+                <InformativeText>The special value of 0xFF (255 Decimal) for User ID represents "unknown user".</InformativeText>
+                <Enumeration key="255" value="unknown user"></Enumeration>
+            </Enumerations>
+        </Field>
+        <Field name="BMI">
+            <InformativeText>Unit is unitless with a resolution of 0.1</InformativeText>
+            <Requirement>C5</Requirement>
+            <Format>uint16</Format>
+            <Unit>org.bluetooth.unit.unitless</Unit>
+            <DecimalExponent>-1</DecimalExponent>
+        </Field>
+        <Field name="Height - SI">
+            <InformativeText>Unit is in meters with a resolution of 0.001, and determined when bit 0 of the Flags field is set to 0.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Requirement>C5</Requirement>
+            <Format>uint16</Format>
+            <Unit>org.bluetooth.unit.length.meter</Unit>
+            <DecimalExponent>-3</DecimalExponent>
+        </Field>
+        <Field name="Height - Imperial">
+            <InformativeText>Unit is in inches with a resolution of 0.1, and determined when bit 0 of the Flags field is set to 1</InformativeText>
+            <Requirement>C2</Requirement>
+            <Requirement>C5</Requirement>
+            <Format>uint16</Format>
+            <Unit>org.bluetooth.unit.length.inch</Unit>
+            <DecimalExponent>-1</DecimalExponent>
+        </Field>
+    </Value>
+    <Note>The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet.</Note>
+</Characteristic>

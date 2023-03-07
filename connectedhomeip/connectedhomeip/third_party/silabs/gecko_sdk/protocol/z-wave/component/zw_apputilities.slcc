@@ -1,0 +1,40 @@
+id: zw_apputilities
+label: Z-Wave ApplicationUtility Component
+category: Z-Wave
+description: ApplicationUtility Component
+package: Z-Wave
+quality: production
+include:
+  - path: "protocol/z-wave/ZAF/ApplicationUtilities"
+    file_list:
+      - path: "misc.h"
+      - path: "ZAF_command_class_utils.h"
+      - path: "ZAF_network_learn.h"
+      - path: "ZAF_network_management.h"
+      - path: "ZAF_nvm_app.h"
+      - path: "ZAF_tx_mutex.h"
+      - path: "ZW_TransportLayer.h"
+      - path: "ZW_TransportMulticast.h"
+      - path: "ZAF_CC_Invoker.h"
+      - path: "ZAF_transport.h"
+source:
+  - path: "protocol/z-wave/ZAF/ApplicationUtilities/ZW_TransportEndpoint.c"
+  - path: "protocol/z-wave/ZAF/ApplicationUtilities/ZAF_CmdPublisher.c"
+  - path: "protocol/z-wave/ZAF/ApplicationUtilities/ZAF_network_learn.c"
+  - path: "protocol/z-wave/ZAF/ApplicationUtilities/ZAF_network_management.c"
+  - path: "protocol/z-wave/ZAF/ApplicationUtilities/ZW_TransportSecProtocol.c"
+  - path: "protocol/z-wave/ZAF/ApplicationUtilities/ZW_TransportMulticast.c"
+  - path: "protocol/z-wave/ZAF/ApplicationUtilities/ZAF_tx_mutex.c"
+  - path: "protocol/z-wave/ZAF/ApplicationUtilities/ZAF_command_class_utils.c"
+  - path: "protocol/z-wave/ZAF/ApplicationUtilities/ZAF_nvm_app.c"
+  - path: "protocol/z-wave/ZAF/ApplicationUtilities/Actuator/ZAF_Actuator.c"
+  - path: "protocol/z-wave/ZAF/ApplicationUtilities/EventHandling/zaf_event_helper.c"
+  - path: "protocol/z-wave/ZAF/ApplicationUtilities/EventHandling/zaf_job_helper.c"
+  - path: "protocol/z-wave/ZAF/ApplicationUtilities/_commonIF/ZAF_Common_helper.c"
+  - path: "protocol/z-wave/ZAF/ApplicationUtilities/ZAF_CC_Invoker.c"
+  - path: "protocol/z-wave/ZAF/ApplicationUtilities/ZAF_transport.c"
+  - path: "protocol/z-wave/ZAF/ApplicationUtilities/TrueStatusEngine/ZAF_TSE_weak.c"
+requires:
+  - name: zw_apputilities_minimal
+provides:
+  - name: zw_apputilities

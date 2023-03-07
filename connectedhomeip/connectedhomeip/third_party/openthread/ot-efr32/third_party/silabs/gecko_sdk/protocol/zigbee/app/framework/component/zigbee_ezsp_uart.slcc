@@ -1,0 +1,48 @@
+package: Zigbee
+label: EZSP UART
+quality: production
+id: zigbee_ezsp_uart
+category: Zigbee|Utility
+
+description: This is the UART implementation of EZSP.
+
+provides:
+   - name: "zigbee_ezsp_serial_interface"
+   - name: "zigbee_ezsp_uart"
+requires:
+   - name: "zigbee_ezsp"
+   - name: "device_host"
+   - name: "legacy_host_ash"
+   # cli_threaded_host component is required to correctly read I/O in a nonblocking fashion
+   - name: "cli_threaded_host"
+     condition:
+      - cli
+define:
+   - name: "EZSP_UART"
+   - name: "EZSP_ASH"
+source:
+  - path: "protocol/zigbee/app/util/ezsp/serial-interface-uart.c"
+  - path: "protocol/zigbee/app/ezsp-host/ash/ash-host-ui.c"
+  - path: "protocol/zigbee/app/ezsp-host/ash/ash-host.c"
+  - path: "protocol/zigbee/app/util/gateway/backchannel-stub.c"
+    condition:
+      - zigbee_host_simulation
+  - path: "protocol/zigbee/app/ezsp-host/ezsp-host-io-sim.c"
+    condition:
+      - zigbee_host_simulation
+  - path: "protocol/zigbee/app/ezsp-host/ezsp-host-queues.c"
+    condition:
+      - zigbee_host_simulation
+  - path: "protocol/zigbee/app/ezsp-host/ezsp-host-ui.c"
+    condition:
+      - zigbee_host_simulation
+include:
+  - path: protocol/zigbee/app/ezsp-host/ash
+    file_list:
+      - path: ash-host.h
+      - path: ash-host-priv.h
+      - path: ash-host-ui.h
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_ezsp_uart

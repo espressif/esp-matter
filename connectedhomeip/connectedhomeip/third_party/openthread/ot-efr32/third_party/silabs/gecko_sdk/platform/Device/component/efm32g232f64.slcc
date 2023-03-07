@@ -1,0 +1,175 @@
+!!omap
+- id: EFM32G232F64
+- package: platform
+- description: Silicon Labs CMSIS-Device part headers for EFM32G232F64.
+- category: Platform|Device|EFM32G
+- quality: production
+- define:
+  - name: EFM32G232F64
+    unless:
+    - device_content_override
+- source:
+  - path: platform/Device/SiliconLabs/EFM32G/Source/system_efm32g.c
+    unless:
+    - device_content_override
+  - path: platform/Device/SiliconLabs/EFM32G/Source/startup_efm32g.c
+    unless:
+    - device_content_override
+  - condition:
+    - toolchain_arm
+    path: platform/Device/SiliconLabs/EFM32G/Source/ARM/startup_efm32g.s
+    unless:
+    - device_content_override
+- include:
+  - file_list:
+    - path: efm32g232f64.h
+    - path: efm32g_acmp.h
+    - path: efm32g_adc.h
+    - path: efm32g_aes.h
+    - path: efm32g_af_pins.h
+    - path: efm32g_af_ports.h
+    - path: efm32g_calibrate.h
+    - path: efm32g_cmu.h
+    - path: efm32g_dac.h
+    - path: efm32g_devinfo.h
+    - path: efm32g_dma.h
+    - path: efm32g_dma_ch.h
+    - path: efm32g_dma_descriptor.h
+    - path: efm32g_dmactrl.h
+    - path: efm32g_dmareq.h
+    - path: efm32g_ebi.h
+    - path: efm32g_emu.h
+    - path: efm32g_gpio.h
+    - path: efm32g_gpio_p.h
+    - path: efm32g_i2c.h
+    - path: efm32g_lcd.h
+    - path: efm32g_letimer.h
+    - path: efm32g_leuart.h
+    - path: efm32g_msc.h
+    - path: efm32g_pcnt.h
+    - path: efm32g_prs.h
+    - path: efm32g_prs_ch.h
+    - path: efm32g_prs_signals.h
+    - path: efm32g_rmu.h
+    - path: efm32g_romtable.h
+    - path: efm32g_rtc.h
+    - path: efm32g_timer.h
+    - path: efm32g_timer_cc.h
+    - path: efm32g_uart.h
+    - path: efm32g_usart.h
+    - path: efm32g_vcmp.h
+    - path: efm32g_wdog.h
+    - path: em_device.h
+    - path: system_efm32g.h
+    path: platform/Device/SiliconLabs/EFM32G/Include/
+    unless:
+    - device_content_override
+- provides:
+  - name: efm32g232f64
+  - name: device
+  - name: device_series_0
+  - name: device_sdid_71
+  - name: device_family_efm32g
+  - name: device_cortexm
+  - name: device_arm
+  - name: cortexm3
+  - name: armv7m
+  - name: device_has_acmp
+  - name: device_has_acmp0
+  - name: device_has_acmp1
+  - name: device_has_adc
+  - name: device_has_adc0
+  - name: device_has_aes
+  - name: device_has_calibrate
+  - name: device_has_cmu
+  - name: device_has_dac
+  - name: device_has_dac0
+  - name: device_has_devinfo
+  - name: device_has_dma
+  - name: device_has_emu
+  - name: device_has_gpio
+  - name: device_has_i2c
+  - name: device_has_i2c0
+  - name: device_has_letimer
+  - name: device_has_letimer0
+  - name: device_has_leuart
+  - name: device_has_leuart0
+  - name: device_has_leuart1
+  - name: device_has_msc
+  - name: device_has_pcnt
+  - name: device_has_pcnt0
+  - name: device_has_pcnt1
+  - name: device_has_pcnt2
+  - name: device_has_prs
+  - name: device_has_rmu
+  - name: device_has_romtable
+  - name: device_has_rtc
+  - name: device_has_timer
+  - name: device_has_timer0
+  - name: device_has_timer1
+  - name: device_has_timer2
+  - name: device_has_uart
+  - name: device_has_usart
+  - name: device_has_usart0
+  - name: device_has_usart1
+  - name: device_has_usart2
+  - name: device_has_vcmp
+  - name: device_has_wdog
+  - name: device_has_dwt
+  - name: device_has_mpu
+- requires:
+  - name: cmsis_core
+- template_contribution:
+  - name: device_opn
+    value: EFM32G232F64
+  - name: device_arch
+    value: armv7m
+  - name: device_cpu
+    value: cortexm3
+  - name: device_series
+    value: 0
+  - name: device_family
+    value: efm32g
+  - name: device_flash_addr
+    value: 0
+  - name: device_flash_size
+    value: 65536
+  - name: device_flash_page_size
+    value: 512
+  - name: device_ram_addr
+    value: 536870912
+  - name: device_ram_size
+    value: 16384
+  - name: device_mpu
+    value: true
+  - name: default_stack_size
+    value: 4096
+  - name: default_heap_size
+    value: 2048
+- tag:
+  - device:opn:efm32g232f64
+- toolchain_settings:
+  - option: device_opn
+    value: efm32g232f64
+  - option: architecture
+    value: armv7-m
+  - option: cpu
+    value: cortex-m3
+- config_file:
+  - condition:
+    - custom_radio_config
+    directory: rail
+    path: platform/Device/config/71/device.yaml
+- metadata:
+    device:
+      memory:
+      - name: Main Flash
+        page_size: 512
+        size: 65536
+        start: 0
+        type: non-volatile
+      - name: RAM
+        size: 16384
+        start: 536870912
+        type: volatile
+      opn: efm32g232f64

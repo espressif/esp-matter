@@ -1,0 +1,156 @@
+# Copyright (c) 2021-2022 Arm Limited and Contributors. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+#
+# Build and Test are done in two separate jobs in CI and will be run in
+# different workers. Reasons for doing in two separate jobs are:
+#
+# * To allow some matrix to just build - The tests will be run for
+#   different Cloud OS, Compiler matrix etc. We may need to allow some
+#   matrix just to build.
+#
+# * To keep the CI scripts consistent - Tests using real hardware boards
+#   are run in LAVA. LAVA nodes may not be powerful nor licensed to run
+#   both build and test.
+#
+#
+# Default workspace may not be the same for Kubernetes GitLab runners.
+# Hence, build and test job may get executed in different directories
+# ctest needs to have build artefacts in same directory path
+# to find the tests. To get the workspace same, execute the jobs in
+# a pre-defined workspace by setting the GIT_CLONE_PATH
+#
+include:
+  - project: '${OPEN_IOT_SDK_BASE_GROUP}/tools/developer-tools'
+    ref: 6ae9852bf43cca495842c21d8ebf7a04f8de4e75
+    file:
+      - '/templates/pipeline-baseline-sdk.yml'
+      - '/templates/sync-public/pipeline-sync-public.yml'
+      - '/templates/autobot/pipeline-autobot.yml'
+
+variables:
+  GIT_CLONE_PATH: /builds/workspace
+
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_REF_NAME =~ /^release-.*/
+    - if: $CI_COMMIT_REF_NAME == "main"
+    - if: $CI_PIPELINE_SOURCE == "web"
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+
+stages:
+  - autobot
+  - quality_check
+  - build_and_test
+
+autobot:
+  stage: autobot
+  image: ${OPEN_IOT_SDK_DOCKER_REGISTRY}/sanity:v1
+  tags:
+    - iotmsw-amd64
+  extends:
+    - .autobot
+  rules:
+    - if: $UPDATE_SDK_COMPONENTS == "true"
+
+.test-rules: &test-rules
+  - if: $CI_MERGE_REQUEST_ID
+  - if: $CI_COMMIT_REF_NAME =~ /^release-.*/
+  - if: $CI_PIPELINE_SOURCE == "web"
+
+unit-tests:
+  tags:
+    - iotmsw-amd64
+  image: ${OPEN_IOT_SDK_DOCKER_REGISTRY}/sanity:v1
+  stage: quality_check
+  script:
+    - cmake -S . -B __build -GNinja -DENABLE_DEVELOPER_MODE=ON -DOPT_ENABLE_DOXYGEN=ON -DOPT_ENABLE_SANITIZER_LEAK=ON -DOPT_ENABLE_COVERAGE=ON
+    - cmake --build __build
+    - ctest --test-dir __build --output-on-failure
+    - cmake --build __build --target covreport
+  coverage: /^\s*lines:\s*\d+.\d+\%/
+  artifacts:
+    name: ${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHA}
+    expire_in: 7 days
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: __build/coverage.xml
+    paths:
+      - __build/html/
+  rules: *test-rules
+
+# This fragment contains base variables required by a pipeline.
+# It can be used to set matrix parameters and extended using << : .anchor syntax
+.pipeline_matrix: &pipeline_matrix
+  TEST: [
+    examples/aws-client,
+    examples/azure-sdk,
+    examples/cmsis-lwip,
+    examples/cmsis-rtos-api,
+    examples/freertos-api,
+    examples/littlefs,
+    examples/mbedtls,
+    examples/pigweed-log,
+    examples/tf-m,
+    examples/threadx-api,
+    tests/cmsis-sockets,
+    tests/tf-m
+  ]
+  PLATFORM: [corstone-300, corstone-310]
+  TOOLCHAIN: [armclang, arm-none-eabi-gcc]
+
+.build-test-fvp-base:
+  stage:
+    build_and_test
+  trigger:
+    include: .gitlab/ci/pipeline/pipelines_per_target/fvp.yml
+    strategy: depend
+  variables:
+    TEST: $TEST
+    TOOLCHAIN: $TOOLCHAIN
+    PLATFORM: $PLATFORM
+  rules: *test-rules
+
+build-test-fvp-armclang:
+  extends: .build-test-fvp-base
+  parallel:
+    matrix:
+     -
+      << : *pipeline_matrix
+      TOOLCHAIN: [armclang]
+
+build-test-fvp-gcc:
+  extends: .build-test-fvp-base
+  parallel:
+    matrix:
+     -
+      << : *pipeline_matrix
+      TOOLCHAIN: [arm-none-eabi-gcc]
+
+mirror:
+  extends:
+    - .sync-public
+  stage: .post
+
+upload-examples:
+  image: ${OPEN_IOT_SDK_DOCKER_REGISTRY}/sanity:v1
+  tags:
+    - iotmsw-amd64
+  stage: .post
+  variables:
+    UPLOAD_DESTINATION : 'https://${GITLAB_USER_ID}:${UPDATE_SDK_EXAMPLES}@${OPEN_IOT_SDK_BASE}/examples/sdk-examples.git'
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $UPDATE_SDK_COMPONENTS != "true"
+  script:
+    - git clone ${UPLOAD_DESTINATION} sdk-examples
+    - cmake -S templates -B tmp
+    - rm -rf sdk-examples/examples
+    - cp -r __codegen/examples sdk-examples/examples
+    - cd sdk-examples
+    - git add -A
+    - git config --global user.email "auto-update-bot@git.gitlab.arm.com"
+    - git config --global user.name "Auto-update bot"
+    - git commit -m "Update examples to https://git.gitlab.arm.com/iot/open-iot-sdk/sdk/-/commit/${CI_COMMIT_SHORT_SHA}"
+    - git push ${UPLOAD_DESTINATION} HEAD:${CI_DEFAULT_BRANCH}

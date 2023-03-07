@@ -1,0 +1,29 @@
+# Copyright (c) 2022, Arm Limited and Contributors. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+include(FetchContent)
+
+FetchContent_Declare(
+    TinyUSB
+    GIT_REPOSITORY  https://github.com/hathach/tinyusb.git
+    GIT_TAG         latest_tag
+)
+
+ExternalProject_Add(
+    ml-embedded-evaluation-kit
+    GIT_REPOSITORY  https://review.mlplatform.org/ml/ethos-u/ml-embedded-evaluation-kit
+    GIT_TAG         69a4745c5178b0a1126a98bf077e2fd65241e1c6
+    GIT_SHALLOW     OFF
+    GIT_PROGRESS    ON
+    PREFIX          ml
+    INSTALL_COMMAND ""
+    CMAKE_ARGS
+        -DCMAKE_TOOLCHAIN_FILE=${ml_toolchain_file}
+        -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+        ${ML_CMAKE_ARGS}
+    PATCH_COMMAND
+        ${ML_PATCH_COMMAND}
+)
+
+FetchContent_MakeAvailable(TinyUSB)
+FetchContent_GetProperties(TinyUSB)

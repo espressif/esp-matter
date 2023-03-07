@@ -1,0 +1,11 @@
+[
+      {
+        "name": "Light LC",
+        "location": "0x0000",
+        "sig_models" : [
+          {"mid":"0x1000", "name":"Generic OnOff Server"},
+          {"mid":"0x130F", "name":"Light LC Server"},
+          {"mid":"0x1310", "name":"Light LC Setup Server"}
+        ]
+      }
+]

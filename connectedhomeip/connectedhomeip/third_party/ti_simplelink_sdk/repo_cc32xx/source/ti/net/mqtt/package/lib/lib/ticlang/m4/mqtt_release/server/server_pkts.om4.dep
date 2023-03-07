@@ -1,0 +1,13 @@
+package/lib/lib/ticlang/m4/mqtt_release/server/server_pkts.om4: server/server_pkts.c ../../../ti/net/slneterr.h server/server_pkts.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/pthread.h common/mqtt_common.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/types.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/time.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sched.h ../../../ti/net/slnetsock.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/_internal.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/signal.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/time.h 
+server/server_pkts.c:
+../../../ti/net/slneterr.h:
+server/server_pkts.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/pthread.h:
+common/mqtt_common.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/types.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/time.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sched.h:
+../../../ti/net/slnetsock.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/_internal.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/signal.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/time.h:

@@ -1,0 +1,3 @@
+**/*.h eol=crlf
+**/*.c eol=crlf
+**/*.cpp eol=crlf

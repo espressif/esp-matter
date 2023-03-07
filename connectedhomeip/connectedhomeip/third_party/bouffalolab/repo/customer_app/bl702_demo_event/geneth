@@ -1,0 +1,3 @@
+#!/bin/sh
+make CONFIG_ETHERNET=1 CONFIG_USB_CDC=0 CONFIG_USE_PSRAM=0 -j
+exit $?

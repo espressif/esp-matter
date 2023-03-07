@@ -1,0 +1,18 @@
+id: tensorflow_dependency_ruy
+package: platform
+label: Ruy Matrix Multiplication
+description: >
+  Ruy matrix multiplication library
+category: Machine Learning|TensorFlow|Dependency
+quality: production
+root_path: util/third_party/tensorflow_extra/ruy
+provides:
+  - name: tensorflow_dependency_ruy
+include:
+  - path: .
+    file_list:
+      - path: ruy/profiler/instrumentation.h
+source:
+  []
+ui_hints:
+  visibility: never

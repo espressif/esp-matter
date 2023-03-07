@@ -1,0 +1,22 @@
+id: "bluetooth_feature_whitelisting"
+label:  "Accept List Filtering"
+package: "Bluetooth"
+description: >
+  Bluetooth accept list filtering.
+
+  Currently this feature only supports the scanning. It does not work with
+  advertisers that use resolvable private addresses (RPA) since the address
+  resolving is performed by the Bluetooth host. RPA addresses may be rejected by
+  the filtering since they are unknown to the controller.
+category: "Bluetooth|Stack"
+quality: "production"
+root_path: "protocol/bluetooth"
+requires:
+  - name: "bluetooth_stack"
+  - name: "bluetooth_feature_gap"
+  - name: "bluetooth_feature_scanner"
+provides:
+  - name: "bluetooth_feature_whitelisting"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_whitelisting

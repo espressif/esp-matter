@@ -1,0 +1,27 @@
+!!omap
+- id: BGM210P022JIA_config
+- label: BGM210P022JIA config
+- description: Configuration files for BGM210P022JIA
+- package: platform
+- category: Platform|Device|BGM21|Config
+- quality: production
+- ui_hints:
+    visibility: never
+- root_path: hardware/module/config
+- requires:
+  - name: bgm210p022jia
+- provides:
+  - name: BGM210P022JIA_config
+- config_file:
+  - override:
+      component: rail_util_pa
+      file_id: rail_util_pa_config
+    path: BGM210P022JIA/sl_rail_util_pa_config.h
+  - override:
+      component: device_init_hfxo
+      file_id: device_init_hfxo_config
+    path: BGM210P022JIA/sl_device_init_hfxo_config.h
+  - override:
+      component: rail_util_rf_path
+      file_id: rail_util_rf_path_config
+    path: BGM210P022JIA/sl_rail_util_rf_path_config.h

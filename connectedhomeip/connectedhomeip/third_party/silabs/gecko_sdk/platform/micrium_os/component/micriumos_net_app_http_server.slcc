@@ -1,0 +1,32 @@
+id: micriumos_net_app_http_server
+label: Network Suite - HTTP Server
+package: micrium-tcpx
+description: Micrium OS Network HTTP Server
+category: Services|Micrium|Network Suite
+quality: production
+component_root_path: platform/micrium_os/net
+config_file:
+  - path: ../cfg/http_server_cfg.h
+source:
+  - path: source/http/server/http_server.c
+  - path: source/http/server/http_server_conn.c
+  - path: source/http/server/http_server_mem.c
+  - path: source/http/server/http_server_req.c
+  - path: source/http/server/http_server_resp.c
+  - path: source/http/server/http_server_sock.c
+  - path: source/http/server/http_server_str.c
+  - path: source/http/server/http_server_task.c
+include:
+  - path: source
+    file_list:
+      - path: http/server/http_server_priv.h
+  - path: include
+    file_list:
+      - path: http_server.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: NET_HTTP_SERVER
+provides:
+  - name: net_app_http_server
+requires:
+  - name: net_app_http

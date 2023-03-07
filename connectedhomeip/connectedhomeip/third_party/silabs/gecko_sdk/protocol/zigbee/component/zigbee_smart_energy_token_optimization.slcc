@@ -1,0 +1,29 @@
+id: zigbee_smart_energy_token_optimization
+label: Smart energy token optimization
+package: Zigbee
+category: Zigbee|Stack
+quality: production
+
+description: This component enables token optimization for Smart Energy profile applications such as CommsHub. This is mainly to reduce the code size on smaller EFR32 flash parts. This option disables Green-Power, multi-network, multi-PAN and ZLL functionalities.
+
+provides:
+  - name: zigbee_smart_energy_token_optimization
+  - name: zigbee_gp_for_exclusivity"
+  - name: zigbee_zll_for_exclusivity
+
+requires:
+  # To make this component only applicable to dumbo parts.
+  # Device id for dumbo is 80.
+  - name: device_sdid_80
+
+define:
+  - name: SMART_ENERGY_STACK_TOKENS
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_smart_energy_token_optimization
+
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/smart-energy-token-optimization

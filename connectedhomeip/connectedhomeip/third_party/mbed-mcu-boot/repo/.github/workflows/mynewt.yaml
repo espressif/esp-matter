@@ -1,0 +1,36 @@
+# For development, trigger this on any push.
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+name: Mynewt
+
+concurrency:
+  group: mynewt-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  environment:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Print the environment
+      run: |
+        uname -a
+        lscpu
+        free
+        pwd
+    - name: Signed commit check
+      if: ${{ github.event_name == 'pull_request' }}
+      run: |
+        ./ci/check-signed-off-by.sh
+    - name: Mynewt install
+      run: |
+        ./ci/mynewt_install.sh
+    - name: Mynewt run
+      run: |
+        ./ci/mynewt_run.sh

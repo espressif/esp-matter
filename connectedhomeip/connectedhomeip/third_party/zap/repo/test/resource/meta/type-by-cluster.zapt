@@ -1,0 +1,47 @@
+This file goes over all the clusters and then outputs structs and enums
+for each of the clusters.
+{{#zcl_clusters}}
+Cluster: {{name}}
+
+Structs for cluster {{name}}:
+{{#zcl_structs}}
+{{#if struct_contains_array}}
+   * Struct with array: {{name}}
+{{#zcl_struct_items}}
+{{#if isEnum}}
+      - enum item: {{name}}
+{{else}}
+      - item: {{name}}
+{{/if}}
+{{/zcl_struct_items}}
+{{else}}
+   * Struct without array: {{name}}
+{{#zcl_struct_items}}
+{{#if isEnum}}
+      - enum item: {{name}}
+{{else}}
+      - item: {{name}}
+{{/if}}
+{{/zcl_struct_items}}
+{{/if}}
+{{/zcl_structs}}
+
+Enums for cluster {{name}}:
+{{#zcl_enums}}
+   * Enum: {{name}}
+   * First unused enum value for {{name}}: {{first_unused_enum_value mode="first_unused"}} (0x{{first_unused_enum_value mode="first_unused" format="hex"}})
+   * First next larger enum value for {{name}}: {{first_unused_enum_value mode="next_larger"}} (0x{{first_unused_enum_value mode="next_larger" format="hex"}})
+{{#zcl_enum_items}}
+      - item: {{name}} = {{value}}
+{{/zcl_enum_items}}
+{{/zcl_enums}}
+
+Bitmaps for cluster {{name}}:
+{{#zcl_bitmaps}}
+   * Bitmap: {{name}}
+{{#zcl_bitmap_items}}
+      - item: {{name}}
+{{/zcl_bitmap_items}}
+{{/zcl_bitmaps}}
+
+{{/zcl_clusters}}

@@ -1,0 +1,49 @@
+id: "btmesh_lc_server"
+label: "LC Server"
+package: "Btmesh"
+description: >
+  Lightness Control (LC) Server model. Used to support the control and reporting
+  functionality of a node with a light lightness controller that can monitor
+  occupancy and ambient light level sensors and adjust the dim level of a light.
+  LC Server extends Lightness Server model and Generic OnOff Server. It also has
+  a corresponding LC Setup Server model which is present in the same element.
+category: "Bluetooth Mesh|Models|Lighting"
+quality: "production"
+root_path: "app/bluetooth/common/btmesh_lc_server"
+config_file:
+  - path: "config/sl_btmesh_lc_server_config.h"
+  - path: btmesh_lc_server.dcd
+    directory: btmeshconf
+source:
+  - path: "sl_btmesh_lc_server.c"
+include:
+  - path: ""
+    file_list:
+      - path: "sl_btmesh_lc_server.h"
+provides:
+  - name: "btmesh_lc_server"
+requires:
+  - name: "app_assert"
+  - name: "app_btmesh_util"
+  - name: "bluetooth_feature_nvm"
+  - name: "btmesh_feature_generic_server"
+  - name: "btmesh_feature_lc_setup_server"
+  - name: "btmesh_feature_lc_server"
+  - name: "btmesh_feature_node"
+  - name: "btmesh_generic_server"
+  - name: "btmesh_lighting_server"
+  - name: "btmesh_stack"
+  - name: "simple_timer"
+recommends:
+  - id: "simple_timer"
+
+template_contribution:
+  - name: "btmesh_on_event"
+    value:
+      include: "sl_btmesh_lc_server.h"
+      function: "sl_btmesh_lc_server_on_event"
+    priority: -5
+  - name: btmesh_generic_handler
+    value:
+      name: lc_server
+      count: 1

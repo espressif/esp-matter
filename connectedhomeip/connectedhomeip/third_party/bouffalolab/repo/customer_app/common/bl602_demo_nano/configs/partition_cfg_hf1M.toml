@@ -1,0 +1,18 @@
+[pt_table]
+#partition table is 4K in size
+address0 = 0xE000
+address1 = 0xF000
+
+[[pt_entry]]
+type = 0
+name = "FW"
+device = 0
+#576 K
+address0 = 0x10000
+size0 = 0x90000
+#344 K
+address1 = 0xA0000
+size1 = 0x56000
+# compressed image must set len,normal image can left it to 0
+len = 0
+

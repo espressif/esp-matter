@@ -1,0 +1,110 @@
+// Copyright 2021 The Pigweed Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not
+// use this file except in compliance with the License. You may obtain a copy of
+// the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations under
+// the License.
+syntax = "proto3";
+
+package pw.thread.proto;
+
+import "pw_tokenizer/proto/options.proto";
+
+option java_package = "pw.thread.proto";
+option java_outer_classname = "Thread";
+
+message ThreadState {
+  enum Enum {
+    // Thread state is invalid or cannot be expressed by this enum.
+    UNKNOWN = 0;
+    // Interrupt handling is often done on a stack that isn't associated with a
+    // true RTOS thread. This state indicates the provided thread info is for an
+    // interrupt handler.
+    INTERRUPT_HANDLER = 1;
+    // This is the currently active thread as marked by the RTOS. In crashes in
+    // interrupt contexts, this isn’t necessarily the thread that crashed.
+    RUNNING = 2;
+    // Thread is ready to run, but isn’t currently running.
+    READY = 3;
+    // The thread is not ready to run, and will not be ready to run until it is
+    // explicitly resumed.
+    SUSPENDED = 4;
+    // The thread is waiting on something before it can run again.
+    BLOCKED = 5;
+    // The thread is either not yet initialized, or has terminated. In other
+    // words, this thread is a suspended thread that cannot be unsuspended.
+    INACTIVE = 6;
+  }
+}
+
+message Thread {
+  // Thread names must be unique; this allows extensions of Snapshot to augment
+  // threads with additional data. This should either be human readable text, or
+  // tokenized data (e.g. base-64 encoded or binary data).
+  bytes name = 1 [(tokenizer.format) = TOKENIZATION_OPTIONAL];
+
+  // This field has been deprecatdin favor of using the state enum to report
+  // RUNNING or INTERRUPT_CONTEXT to mark them as active.
+  //
+  // Whether or not this thread is the thread is the currently active context
+  // at the time of capture. For multi-thread dumps, this field should only be
+  // set on ONE thread.
+  bool active = 2 [deprecated = true];
+
+  // A summarized thread state. RTOS-specific extensions of the Thread message
+  // may provide more specific thread state information.
+  ThreadState.Enum state = 3;
+
+  // Contents of a stack trace. It is expected that this stack is pre-walked,
+  // and contains addresses. Most recent stack events are at the beginning of
+  // the captured stack trace.
+  repeated uint64 raw_backtrace = 4;
+
+  // Results of symbolizing stack_entries. This is usually not provided by the
+  // device, but instead by server/host side processing.
+  repeated string symbolized_backtrace = 5;
+
+  // This should contain the raw contents of the thread's stack. This might not
+  // match stack_size. It can be larger due to a stack overflow, or smaller due
+  // to the implementation deciding to only capture a portion of the stack.
+  // Partial stack captures are typically a result of storage/memory
+  // limitations.
+  bytes raw_stack = 6;
+
+  // The address this thread's stack pointer began at. For descending stacks,
+  // this is the highest address of the stack bounds. For ascending stacks, this
+  // is the lowest address of the stack bounds.
+  optional uint64 stack_start_pointer = 7;
+
+  // The furthest permitted address from where this thread's stack pointer
+  // began. For descending stacks, this is the lowest address of the stack
+  // bounds. For ascending stacks, this is the highest address of the stack
+  // bounds.
+  optional uint64 stack_end_pointer = 8;
+
+  // The current stack pointer of this thread.
+  optional uint64 stack_pointer = 9;
+
+  // CPU usage info. This is the percentage of CPU time the thread has been
+  // active in hundredths of a percent. (e.g. 5.00% = 500u)
+  optional uint32 cpu_usage_hundredths = 10;
+
+  // The address of highest estimated currently used in the thread stack.
+  // Percentage of bytes used can be calculated by:
+  // (stack_estimate_max_addr-stack_start_pointer) /
+  // (stack_end_pointer-stack_start_pointer) * 100%
+  optional uint64 stack_pointer_est_peak = 11;
+}
+
+// This message overlays the pw.snapshot.Snapshot proto. It's valid to encode
+// this message to the same sink that a Snapshot proto is being written to.
+message SnapshotThreadInfo {
+  repeated pw.thread.proto.Thread threads = 18;
+}

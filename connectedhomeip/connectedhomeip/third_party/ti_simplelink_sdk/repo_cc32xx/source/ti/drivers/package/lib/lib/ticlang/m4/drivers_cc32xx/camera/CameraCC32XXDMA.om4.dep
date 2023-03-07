@@ -1,0 +1,22 @@
+package/lib/lib/ticlang/m4/drivers_cc32xx/./camera/CameraCC32XXDMA.om4: camera/CameraCC32XXDMA.c /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/DebugP.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/HwiP.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/SemaphoreP.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/Power.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/power/PowerCC32XX.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/camera/CameraCC32XXDMA.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_memmap.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_ints.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_types.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/rom.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/rom_map.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/camera.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/interrupt.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/prcm.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/udma.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/utils.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/utils/List.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/pin.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/Camera.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/rom_patch.h 
+camera/CameraCC32XXDMA.c:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/DebugP.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/HwiP.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/SemaphoreP.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/Power.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/power/PowerCC32XX.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/camera/CameraCC32XXDMA.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_memmap.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_ints.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_types.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/rom.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/rom_map.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/camera.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/interrupt.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/prcm.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/udma.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/utils.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/utils/List.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/pin.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/Camera.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/rom_patch.h:

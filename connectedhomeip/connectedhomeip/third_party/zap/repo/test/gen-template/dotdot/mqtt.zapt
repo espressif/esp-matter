@@ -1,0 +1,448 @@
+{{zap_header}}
+
+{{#zcl_clusters}}
+{{#if (supportedCluster label)}}
+
+// Callbacks pointers
+{{#zcl_commands}}
+static {{asCommandCallback this}}_t {{asCommandCallback this}};
+{{/zcl_commands}}
+static {{dotdot_prefix}}_{{asSnakeCaseLower label}}_write_attributes_callback_t {{dotdot_prefix}}_{{asSnakeCaseLower label}}_write_attributes_callback;
+
+// Callbacks setters
+{{#zcl_commands}}
+void {{asCommandCallback this}}_set(const {{asCommandCallback this}}_t callback)
+{
+  {{asCommandCallback this}} = callback;
+}
+{{/zcl_commands}}
+
+void {{dotdot_prefix}}_set_{{asSnakeCaseLower label}}_write_attributes_callback(
+  const {{dotdot_prefix}}_{{asSnakeCaseLower label}}_write_attributes_callback_t callback)
+{
+  {{dotdot_prefix}}_{{asSnakeCaseLower label}}_write_attributes_callback = callback;
+}
+
+{{#zcl_commands}}
+// Callback function for incoming publications on ucl/by-unid/#
+static void {{dotdot_prefix}}_on_{{asSnakeCaseLower parent.label}}_{{asSnakeCaseLower label}}(
+  const char *topic,
+  const char *message,
+  const size_t message_length)
+{
+
+  if (message_length == 0) {
+    return;
+  }
+
+  try {
+    std::stringstream ss;
+    bpt::ptree pt;
+    ss << std::string(message, message_length);
+
+    bpt::json_parser::read_json(ss, pt);
+
+    if({{asCommandCallback this}}) {
+
+      {{#zcl_command_arguments}}
+      if (pt.count("{{label}}") == 0) {
+        sl_log_debug(LOG_TAG, "{{parent.parent.label}}::{{parent.label}}: Missing command-argument: {{label}}\n");
+        return;
+      }
+      {{/zcl_command_arguments}}
+
+      std::string topic_string(topic);
+      std::vector<std::string> topic_elements;
+
+      boost::algorithm::split(topic_elements, topic_string, boost::is_any_of("/"));
+
+      uint8_t endpoint = 0;
+      if (0 == sscanf(topic_elements[3].c_str(), "ep%2" SCNu8, &endpoint)) {
+        sl_log_debug(LOG_TAG,
+                    "Error parsing Endpoint ID from topic %s. Ignoring",
+                    topic);
+        //FIXME: Activate this return and fix the unit test
+        //return;
+      }
+
+      {{#zcl_command_arguments}}
+      #if defined({{notStandardType type}}BitmapExists)
+      {{asUnderlyingTypeCustom type}} {{label}}_value;
+      {{label}}_value.map_value = {{asUnderlyingTypeCustom type}}Bitmap.get_bitmap_state_value_from_json_tree(pt.get_child("{{label}}"));
+      #else
+      {{asUnderlyingTypeCustom type}} {{label}}_value = pt.get<{{asUnderlyingTypeCustom type}}>("{{label}}");
+      #endif
+      {{/zcl_command_arguments}}
+
+      {{asCommandCallback this}}(
+        reinterpret_cast<dotdot_unid_t>(topic_elements[2].c_str()), // UNID
+        endpoint,
+        {{asSnakeCaseUpper (dotdot_prefix)}}_CALLBACK_TYPE_NORMAL{{#zcl_command_arguments}}{{#first}},{{/first}}
+          {{label}}_value{{listComma this}}
+        {{/zcl_command_arguments}}
+      );
+    }
+  } catch (const std::exception &exc) {
+    sl_log_debug(LOG_TAG, "{{label}}: Unable to parse JSON payload.\n");
+    return;
+  }
+
+}
+
+// Callback function for incoming publications on ucl/by-group/#
+static void {{dotdot_prefix}}_on_group_{{asSnakeCaseLower parent.label}}_{{asSnakeCaseLower label}}(
+  const char *topic,
+  const char *message,
+  const size_t message_length)
+{
+  if (group_dispatch_callback == nullptr) {
+    return;
+  }
+  if (message_length == 0) {
+    return;
+  }
+
+  try {
+    std::stringstream ss;
+    bpt::ptree pt;
+    ss << std::string(message, message_length);
+
+    bpt::json_parser::read_json(ss, pt);
+
+    if({{dotdot_prefix}}_{{asSnakeCaseLower parent.label}}_{{asSnakeCaseLower label}}_callback) {
+
+      {{#zcl_command_arguments}}
+      if (pt.count("{{label}}") == 0) {
+        sl_log_debug(LOG_TAG, "{{parent.parent.label}}::{{parent.label}}: Missing command-argument: {{label}}\n");
+        return;
+      }
+      {{/zcl_command_arguments}}
+
+      std::string topic_string(topic);
+      std::vector<std::string> topic_elements;
+
+      boost::algorithm::split(topic_elements, topic_string, boost::is_any_of("/"));
+
+      uint16_t group_id = 0;
+      if (0 == sscanf(topic_elements[2].c_str(), "%" SCNu16, &group_id)) {
+        sl_log_debug(LOG_TAG,
+                    "Error parsing Group ID from topic %s. Ignoring",
+                    topic);
+        return;
+      }
+
+      group_dispatch_callback(group_id,
+                              "{{asSnakeCaseLower label}}",
+                              topic_elements.back().c_str(),
+                              message,
+                              message_length,
+                              {{dotdot_prefix}}_on_{{asSnakeCaseLower parent.label}}_{{asSnakeCaseLower label}});
+
+
+	  }
+  } catch (...) {
+    sl_log_debug(LOG_TAG, "{{label}}: Unable to parse JSON payload.\n");
+    return;
+  }
+}
+{{/zcl_commands}}
+
+static void {{dotdot_prefix}}_on_{{asSnakeCaseLower label}}_WriteAttributes(
+  const char *topic,
+  const char *message,
+  const size_t message_length)
+{
+
+  if (message_length == 0) {
+    return;
+  }
+
+  try {
+    std::stringstream ss;
+    bpt::ptree pt;
+    ss << std::string(message,message_length);
+
+    bpt::json_parser::read_json(ss, pt);
+
+    if( {{dotdot_prefix}}_{{asSnakeCaseLower label}}_write_attributes_callback ) {
+
+      std::string topic_string(topic);
+      std::vector<std::string> topic_elements;
+
+      boost::algorithm::split(topic_elements, topic_string, boost::is_any_of("/"));
+
+      uint8_t endpoint = 0;
+      if (0 == sscanf(topic_elements[3].c_str(), "ep%2" SCNu8, &endpoint)) {
+        sl_log_debug(LOG_TAG,
+                    "Error parsing Endpoint ID from topic %s. Ignoring",
+                    topic);
+        //FIXME: Activate this return and fix the unit test
+        //return;
+      }
+
+      {{dotdot_prefix}}_{{asSnakeCaseLower label}}_state_t new_state = {0};
+      {{dotdot_prefix}}_{{asSnakeCaseLower label}}_updated_state_t new_updated_state = {0};
+
+      {{#zcl_attributes}}
+      {{#if isWritable }}
+      if (pt.count("{{label}}") > 0) {
+        {{#if (isEnum type)}}
+        std::string payload_value(pt.get<std::string>("{{label}}"));
+        boost::replace_all(payload_value, "\"", "");
+        try {
+          new_state.{{asSnakeCaseLower label}} = std::stoi(payload_value, nullptr, 0);
+        }
+        catch (std::invalid_argument &e) {
+          new_state.{{asSnakeCaseLower label}} = pt.get<{{asType parent.label}}{{asType label}}>("{{label}}");
+        }
+        {{else}}
+          {{#if (isMap type)}}
+        new_state.{{asSnakeCaseLower label}} = get_bitmap_decimal_value("{{label}}", pt, {{parent.label}}{{label}}Bitmap);
+          {{else}}
+        new_state.{{asSnakeCaseLower label}} = pt.get<{{asUnderlyingType type}}>("{{label}}");
+          {{/if}}
+        {{/if}}
+        new_updated_state.{{asSnakeCaseLower label}} = true;
+      }
+      {{/if}}
+      {{/zcl_attributes}}
+
+      {{dotdot_prefix}}_{{asSnakeCaseLower label}}_write_attributes_callback(
+        reinterpret_cast<dotdot_unid_t>(topic_elements[2].c_str()), // UNID
+        endpoint,
+        new_state,
+        new_updated_state
+      );
+    }
+  } catch (...) {
+    sl_log_debug(LOG_TAG, "{{label}}: Unable to parse JSON payload.\n");
+    return;
+  }
+}
+
+static void {{dotdot_prefix}}_on_group_{{asSnakeCaseLower label}}_WriteAttributes(
+  const char *topic,
+  const char *message,
+  const size_t message_length)
+{
+  if (group_dispatch_callback == nullptr) {
+    return;
+  }
+  if (message_length == 0) {
+    return;
+  }
+  try {
+    std::stringstream ss;
+    bpt::ptree pt;
+    ss << std::string(message,message_length);
+
+    bpt::json_parser::read_json(ss, pt);
+
+    if( {{dotdot_prefix}}_{{asSnakeCaseLower label}}_write_attributes_callback ) {
+
+      std::string topic_string(topic);
+      std::vector<std::string> topic_elements;
+
+      boost::algorithm::split(topic_elements, topic_string, boost::is_any_of("/"));
+
+      uint16_t group_id = 0;
+      if (0 == sscanf(topic_elements[2].c_str(), "%" SCNu16, &group_id)) {
+        sl_log_debug(LOG_TAG,
+                    "Error parsing Group ID from topic %s. Ignoring",
+                    topic);
+        return;
+      }
+      group_dispatch_callback(group_id,
+                              "WriteAttributes",
+                              topic_elements.back().c_str(),
+                              message,
+                              message_length,
+                              {{dotdot_prefix}}_on_{{asSnakeCaseLower label}}_WriteAttributes);
+
+    }
+  } catch (...) {
+    sl_log_debug(LOG_TAG, "{{label}}: Unable to parse JSON payload.\n");
+    return;
+  }
+}
+
+{{#zcl_attributes}}
+sl_status_t {{dotdot_prefix}}_{{asSnakeCaseLower parent.label}}_{{asSnakeCaseLower label}}_publish(
+  const char *base_topic,
+  {{asUnderlyingType type}} value,
+  {{dotdot_prefix}}_attribute_publish_type_t publish_type
+)
+{
+  bpt::ptree doc;
+  {{#if (isEnum type)}}
+  doc.add("value", static_cast<{{asType parent.label}}{{asType label}}>(value));
+  {{else}}
+    {{#if_is_string type}}
+  doc.add("value", value);
+    {{else}}
+  // This looks a bit odd, but Boost PropertyTree insists on representing
+  // atomic types as strings, e.g. int 5 becomes "5", true becomes "true"
+  // and there's no easy way around it. So atomic types become this placeholder,
+  // which then is replaced further down, after the JSON payload has been constructed.
+      {{#if (isBool type)}}
+  doc.add("value", ":BoolPlaceHolder");
+      {{else}}
+        {{#if (isMap type)}}
+  bpt::ptree bitmap_values = {{parent.label}}{{label}}Bitmap.get_bitmap_values_as_json_tree((uint32_t)value);
+  doc.add_child("value", bitmap_values);
+        {{else}}
+  doc.add("value", ":PlaceHolder");
+        {{/if}}
+      {{/if}}
+    {{/if_is_string}}
+  {{/if}}
+
+
+
+  std::stringstream ss;
+  bpt::write_json(ss, doc);
+  std::string payload_str(ss.str());
+  {{#unless (isEnum type)}}
+    {{#unless (isString type)}}
+      {{#if (isBool type)}}
+  boost::replace_all(payload_str, "\":BoolPlaceHolder\"", value ? "true" : "false");
+      {{else}}
+        {{#if (isMap type)}}
+  boost::replace_all(payload_str, "\"true\"", "true");
+  boost::replace_all(payload_str, "\"false\"", "false");
+        {{else}}
+  boost::replace_all(payload_str, "\":PlaceHolder\"", to_string(value));
+        {{/if}}
+      {{/if}}
+    {{/unless}}
+  {{/unless}}
+
+  std::string topic = std::string(base_topic) + "/{{parent.label}}/Attributes/{{label}}";
+  if (publish_type & UCL_MQTT_PUBLISH_TYPE_DESIRED)
+  {
+    std::string topic_desired = topic + "/Desired";
+    uic_mqtt_publish(topic_desired.c_str(),
+              payload_str.c_str(),
+              payload_str.length(),
+              true);
+  }
+  if (publish_type & UCL_MQTT_PUBLISH_TYPE_REPORTED)
+  {
+    std::string topic_reported = topic + "/Reported";
+    uic_mqtt_publish(topic_reported.c_str(),
+              payload_str.c_str(),
+              payload_str.length(),
+              true);
+  }
+  return SL_STATUS_OK;
+}
+{{/zcl_attributes}}
+
+sl_status_t {{dotdot_prefix}}_{{asSnakeCaseLower label}}_init()
+{
+  if({{dotdot_prefix}}_{{asSnakeCaseLower label}}_write_attributes_callback) {
+    uic_mqtt_subscribe("ucl/by-unid/+/+/{{label}}/Commands/WriteAttributes", {{dotdot_prefix}}_on_{{asSnakeCaseLower label}}_WriteAttributes);
+  }
+{{#zcl_commands}}
+  if ({{asCommandCallback this}}) {
+    uic_mqtt_subscribe("ucl/by-unid/+/+/{{parent.label}}/Commands/{{label}}", {{dotdot_prefix}}_on_{{asSnakeCaseLower parent.label}}_{{asSnakeCaseLower label}});
+  }
+{{/zcl_commands}}
+  return SL_STATUS_OK;
+}
+{{/if}}
+{{/zcl_clusters}}
+
+void {{dotdot_prefix}}_set_group_dispatch_callback(group_dispatch_t callback)
+{
+  // Check for uninitialized value in order to subscribe with on_group handlers
+  // only once.
+  if (group_dispatch_callback == nullptr) {
+{{#zcl_clusters}}
+{{#if (supportedCluster label)}}
+    uic_mqtt_subscribe("ucl/by-group/+/{{label}}/Commands/WriteAttributes", {{dotdot_prefix}}_on_group_{{asSnakeCaseLower label}}_WriteAttributes);
+{{#zcl_commands}}
+    uic_mqtt_subscribe("ucl/by-group/+/{{parent.label}}/Commands/{{label}}", {{dotdot_prefix}}_on_group_{{asSnakeCaseLower parent.label}}_{{asSnakeCaseLower label}});
+{{/zcl_commands}}
+{{/if}}
+{{/zcl_clusters}}
+  }
+
+  group_dispatch_callback = callback;
+
+}
+
+sl_status_t {{dotdot_prefix}}_init() {
+
+  sl_status_t status_flag = SL_STATUS_OK;
+
+{{#zcl_clusters}}
+{{#if (supportedCluster label)}}
+  if (status_flag == SL_STATUS_OK) {
+    status_flag = {{dotdot_prefix}}_{{asSnakeCaseLower label}}_init();
+  }
+
+{{/if}}
+{{/zcl_clusters}}
+
+  return status_flag;
+}
+
+void {{dotdot_prefix}}_publish_supported_commands(
+  dotdot_unid_t unid,
+  dotdot_endpoint_id_t endpoint)
+{
+  {{#zcl_clusters}}
+  {{#if (supportedCluster label)}}
+  {{#zcl_commands}}
+  {{#first}}
+  {
+    std::stringstream ss;
+  {{/first}}
+    // check if there is calback
+    if ({{asCommandCallback this}}) {
+      {{#zcl_command_arguments}}
+      {{asUnderlyingTypeCustom type}} {{label}}_value;
+      memset(&{{label}}_value, 0x00, sizeof({{label}}_value));
+      {{/zcl_command_arguments}}
+      if ( {{asCommandCallback this}}(
+              unid,
+              endpoint,
+              {{asSnakeCaseUpper (dotdot_prefix)}}_CALLBACK_TYPE_SUPPORT_CHECK{{#zcl_command_arguments}},
+              {{label}}_value{{/zcl_command_arguments}}
+          ) == SL_STATUS_OK) {
+        if (ss.rdbuf()->in_avail() != 0) {
+          ss << ",";
+        }
+        ss << R"("{{label}}")";
+      }
+    }
+  {{#last}}
+    //Publish supported commands
+    if (ss.rdbuf()->in_avail() != 0){
+      std::string payload_str("[" + ss.str() + "]");
+      std::string topic = "ucl/by-unid/" + std::string(unid) +
+                          "/ep" + std::to_string(endpoint) + "/{{parent.label}}/SupportedCommands";
+      uic_mqtt_publish(topic.c_str() ,
+                payload_str.c_str(),
+                payload_str.length(),
+                true);
+    }
+  }
+  {{/last}}
+  {{/zcl_commands}}
+  {{/if}}
+  {{/zcl_clusters}}
+}
+
+{{#zcl_command_arguments}}
+{{#if_is_bitmap type}}
+const std::string Bitmap_{{label}} = "{{type}}"
+{{else}}
+{{#if_is_enum type}}
+const std::string Enum_{{label}} = "{{type}}"
+{{else}}
+const std::string Not_either_{{label}} = "{{type}}"
+{{/if_is_enum}}
+{{/if_is_bitmap}}
+{{/zcl_command_arguments}}

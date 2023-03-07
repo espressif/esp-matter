@@ -1,0 +1,44 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load(":pigweed_internal.bzl", "pw_linker_script")
+load(":pigweed_internal_test.bzl", "pigweed_internal_test_suite")
+
+pw_linker_script(
+    name = "linker_script_test",
+    defines = [
+        "PW_BOOT_FLASH_BEGIN=0x08000200",
+        "PW_BOOT_FLASH_SIZE=1024K",
+        "PW_BOOT_HEAP_SIZE=112K",
+        "PW_BOOT_MIN_STACK_SIZE=1K",
+        "PW_BOOT_RAM_BEGIN=0x20000000",
+        "PW_BOOT_RAM_SIZE=192K",
+        "PW_BOOT_VECTOR_TABLE_BEGIN=0x08000000",
+        "PW_BOOT_VECTOR_TABLE_SIZE=512",
+    ],
+    linker_script = "linker_script.ld",
+)
+
+# Use cc_binary to build the test to avoid duplicating the linker script in the
+# command line via implicit deps in pw_cc_binary.
+cc_binary(
+    name = "test_linker_script",
+    srcs = ["test.cc"],
+    additional_linker_inputs = [":linker_script_test"],
+    linkopts = ["-T $(location :linker_script_test)"],
+)
+
+pigweed_internal_test_suite(
+    name = "pigweed_internal_tests",
+)

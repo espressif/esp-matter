@@ -1,0 +1,29 @@
+id: udelay
+label: Microsecond Delay
+package: platform
+description: >
+  This component provides a microsecond delay function which can be used
+  for small delays. The delay function is designed to not use any hardware
+  peripherals and instead use a while loop based on the frequency of the
+  core clock.
+category: Services
+quality: production
+component_root_path: platform/service/udelay
+source:
+  - path: src/sl_udelay.c
+  - path: src/sl_udelay_armv6m_gcc.S
+    condition: [toolchain_gcc]
+  - path: src/sl_udelay_armv6m_iar.s
+    condition: [toolchain_iar]
+include:
+  - path: inc
+    file_list:
+      - path: sl_udelay.h
+provides:
+  - name: udelay
+requires:
+  - name: emlib_common
+  - name: sl_assert
+documentation:
+    docset: gecko-platform
+    document: service/api/group-udelay

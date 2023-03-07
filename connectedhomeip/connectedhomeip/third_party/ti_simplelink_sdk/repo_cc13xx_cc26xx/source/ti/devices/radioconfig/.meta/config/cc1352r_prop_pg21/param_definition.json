@@ -1,0 +1,958 @@
+{
+    "parDefinition": {
+        "parGroup": [
+            {
+                "_name": "mainRfParameters",
+                "Parameter": [
+                    {
+                        "_name": "carrier_frequency",
+                        "_type": "float",
+                        "Access": "R\/W",
+                        "Label": "Frequency",
+                        "Unit": "MHz",
+                        "DefValue": "868",
+                        "Validation": {
+                            "_type": "code",
+                            "Name": "frequency"
+                        },
+                        "Tooltip": "Frequency.",
+                        "Row": "0",
+                        "Dependencies": {
+                            "Dependency": [
+                                {
+                                    "_name": "ContTxFrequency",
+                                    "Type": "DT_EQUAL",
+                                    "Group": "ContTx",
+                                    "Parameter": "carrier_frequency"
+                                },
+                                {
+                                    "_name": "PacketTxFrequency",
+                                    "Type": "DT_EQUAL",
+                                    "Group": "PacketTx",
+                                    "Parameter": "carrier_frequency"
+                                },
+                                {
+                                    "_name": "TxPowerFrequency",
+                                    "Type": "DT_CODE",
+                                    "Group": "mainRfParameters",
+                                    "Parameter": "txPower"
+                                },
+                                {
+                                    "_name": "LoDivider",
+                                    "Type": "DT_CODE",
+                                    "Group": "MainRfParameters",
+                                    "Parameter": "loDivider"
+                                },
+                                {
+                                    "_name": "FrontendFrequency",
+                                    "Type": "DT_CODE",
+                                    "Group": "mainRfParameters",
+                                    "Parameter": "carrier_frequency"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "_name": "symbolRate",
+                        "_type": "float",
+                        "Access": "R\/W",
+                        "Label": "Symbol Rate",
+                        "Unit": "kBaud",
+                        "DefValue": "38.4",
+                        "Tooltip": "Symbol Rate.",
+                        "Row": "0",
+                        "Dependencies": {
+                            "Dependency": [
+                                {
+                                    "_name": "packetInterval",
+                                    "Type": "DT_CODE",
+                                    "Group": "PacketTx",
+                                    "Parameter": "packetInterval"
+                                },
+                                {
+                                    "_name": "symbolRateRxBw",
+                                    "Type": "DT_CODE",
+                                    "Group": "mainRfParameters",
+                                    "Parameter": "rxFilterBw"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "_name": "deviation",
+                        "_type": "float",
+                        "Access": "R\/W",
+                        "Label": "Deviation",
+                        "Unit": "kHz",
+                        "DefValue": "25.0",
+                        "Validation": {
+                            "_type": "minmax",
+                            "Min": "0",
+                            "Max": "1000"
+                        },
+                        "Tooltip": "Deviation.",
+                        "Row": "0",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "Modulation",
+                                "Type": "DT_CODE",
+                                "Group": "MainRfParameters",
+                                "Parameter": "deviation"
+                            }
+                        }
+                    },
+                    {
+                        "_name": "rxFilterBw",
+                        "_type": "list",
+                        "Access": "R",
+                        "Label": "RX Filter BW",
+                        "Unit": "kHz",
+                        "ListValues": {
+                            "Value": [
+                                {
+                                    "_text": "4.3",
+                                    "$": "64"
+                                },
+                                {
+                                    "_text": "4.9",
+                                    "$": "65"
+                                },
+                                {
+                                    "_text": "6.1",
+                                    "$": "66"
+                                },
+                                {
+                                    "_text": "7.4",
+                                    "$": "67"
+                                },
+                                {
+                                    "_text": "8.5",
+                                    "$": "68"
+                                },
+                                {
+                                    "_text": "9.7",
+                                    "$": "69"
+                                },
+                                {
+                                    "_text": "12.2",
+                                    "$": "70"
+                                },
+                                {
+                                    "_text": "14.7",
+                                    "$": "71"
+                                },
+                                {
+                                    "_text": "17.1",
+                                    "$": "72"
+                                },
+                                {
+                                    "_text": "19.4",
+                                    "$": "73"
+                                },
+                                {
+                                    "_text": "24.5",
+                                    "$": "74"
+                                },
+                                {
+                                    "_text": "29.4",
+                                    "$": "75"
+                                },
+                                {
+                                    "_text": "34.1",
+                                    "$": "76"
+                                },
+                                {
+                                    "_text": "38.9",
+                                    "$": "77"
+                                },
+                                {
+                                    "_text": "49.0",
+                                    "$": "78"
+                                },
+                                {
+                                    "_text": "58.9",
+                                    "$": "79"
+                                },
+                                {
+                                    "_text": "68.3",
+                                    "$": "80"
+                                },
+                                {
+                                    "_text": "77.7",
+                                    "$": "81"
+                                },
+                                {
+                                    "_text": "98.0",
+                                    "$": "82"
+                                },
+                                {
+                                    "_text": "117.7",
+                                    "$": "83"
+                                },
+                                {
+                                    "_text": "136.6",
+                                    "$": "84"
+                                },
+                                {
+                                    "_text": "155.4",
+                                    "$": "85"
+                                },
+                                {
+                                    "_text": "195.9",
+                                    "$": "86"
+                                },
+                                {
+                                    "_text": "235.5",
+                                    "$": "87"
+                                },
+                                {
+                                    "_text": "273.1",
+                                    "$": "88"
+                                },
+                                {
+                                    "_text": "310.8",
+                                    "$": "89"
+                                },
+                                {
+                                    "_text": "391.8",
+                                    "$": "90"
+                                },
+                                {
+                                    "_text": "470.9",
+                                    "$": "91"
+                                },
+                                {
+                                    "_text": "546.3",
+                                    "$": "92"
+                                },
+                                {
+                                    "_text": "621.6",
+                                    "$": "93"
+                                },
+                                {
+                                    "_text": "783.6",
+                                    "$": "94"
+                                },
+                                {
+                                    "_text": "941.8",
+                                    "$": "95"
+                                },
+                                {
+                                    "_text": "1092.5",
+                                    "$": "96"
+                                },
+                                {
+                                    "_text": "1243.2",
+                                    "$": "97"
+                                },
+                                {
+                                    "_text": "1567.2",
+                                    "$": "98"
+                                },
+                                {
+                                    "_text": "1883.7",
+                                    "$": "99"
+                                },
+                                {
+                                    "_text": "2185.1",
+                                    "$": "100"
+                                },
+                                {
+                                    "_text": "2486.5",
+                                    "$": "101"
+                                },
+                                {
+                                    "_text": "3134.4",
+                                    "$": "102"
+                                },
+                                {
+                                    "_text": "3767.4",
+                                    "$": "103"
+                                },
+                                {
+                                    "_text": "17.1",
+                                    "_decimMode": "7",
+                                    "$": "115"
+                                }
+                            ]
+                        },
+                        "DefValue": "82",
+                        "Tooltip": "RX Filter BW",
+                        "Row": "1",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "symbolRateRxBw",
+                                "Type": "DT_CODE",
+                                "Group": "mainRfParameters",
+                                "Parameter": "symbolRate"
+                            }
+                        }
+                    },
+                    {
+                        "_name": "txPower",
+                        "_type": "list",
+                        "Access": "R",
+                        "Label": "TX Power",
+                        "ClassName": "DALRfParTxPowerCC13xx",
+                        "Unit": "dBm",
+                        "ListValues": [],
+                        "DefValue": "14",
+                        "Tooltip": "TX Power",
+                        "Row": "1",
+                        "Dependencies": {
+                            "Dependency": [
+                                {
+                                    "_name": "ContTxPower",
+                                    "Type": "DT_EQUAL",
+                                    "Group": "ContTx",
+                                    "Parameter": "txPower"
+                                },
+                                {
+                                    "_name": "PacketTxPower",
+                                    "Type": "DT_EQUAL",
+                                    "Group": "PacketTx",
+                                    "Parameter": "txPower"
+                                },
+                                {
+                                    "_name": "Modulation",
+                                    "Type": "DT_CODE",
+                                    "Group": "MainRfParameters",
+                                    "Parameter": "modulation"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "_name": "whitening",
+                        "_type": "list",
+                        "Access": "R",
+                        "Label": "Whitening",
+                        "Unit": [],
+                        "ListValues": {
+                            "Value": [
+                                {
+                                    "_text": "No whitening",
+                                    "$": "0"
+                                },
+                                {
+                                    "_text": "CC1101\/CC2500 compatible",
+                                    "$": "1"
+                                },
+                                {
+                                    "_text": "PN9 Whitening",
+                                    "$": "2"
+                                },
+                                {
+                                    "_text": "No whitener, 32-bit IEEE 802.15.4g compatible CRC",
+                                    "$": "4"
+                                },
+                                {
+                                    "_text": "IEEE 802.15.4g compatible whitener and 32-bit CRC",
+                                    "$": "5"
+                                },
+                                {
+                                    "_text": "No whitener, dynamically IEEE 802.15.4g compatible 16\/32-bit CRC",
+                                    "$": "6"
+                                },
+                                {
+                                    "_text": "Dynamically IEEE 802.15.4g compatible whitener and 16\/32-bit CRC",
+                                    "$": "7"
+                                }
+                            ]
+                        },
+                        "DefValue": "No whitening",
+                        "Tooltip": "Whitening",
+                        "Row": "1"
+                    },
+                    {
+                        "_name": "loDivider",
+                        "_type": "int",
+                        "Visible": "no",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "LoDivider",
+                                "Type": "DT_CODE",
+                                "Group": "MainRfParameters",
+                                "Parameter": "carrier_frequency"
+                            }
+                        }
+                    },
+                    {
+                        "_name": "modulation",
+                        "_type": "list",
+                        "Visible": "no",
+                        "ListValues": {
+                            "Value": [
+                                {
+                                    "_text": "FSK",
+                                    "$": "0"
+                                },
+                                {
+                                    "_text": "GFSK",
+                                    "$": "1"
+                                },
+                                {
+                                    "_text": "OOK",
+                                    "$": "2"
+                                }
+                            ]
+                        },
+                        "DefValue": "0"
+                    }
+                ]
+            },
+            {
+                "_name": "ContTx",
+                "Parameter": [
+                    {
+                        "_name": "carrier_frequency",
+                        "_type": "text",
+                        "Access": "R",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "ContTxFrequency",
+                                "Type": "DT_EQUAL",
+                                "Group": "MainRfParameters",
+                                "Parameter": "carrier_frequency"
+                            }
+                        }
+                    },
+                    {
+                        "_name": "txPower",
+                        "_type": "text",
+                        "Access": "R",
+                        "DefValue": "10",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "ContTxPower",
+                                "Type": "DT_EQUAL",
+                                "Group": "MainRfParameters",
+                                "Parameter": "txPower"
+                            }
+                        }
+                    },
+                    {
+                        "_name": "modulated",
+                        "_type": "bool",
+                        "Access": "R\/W"
+                    }
+                ]
+            },
+            {
+                "_name": "ContRx",
+                "Parameter": {
+                    "_name": "dataFormat",
+                    "_type": "list",
+                    "Access": "R",
+                    "Label": "Data Format",
+                    "Unit": [],
+                    "ClassName": "DALRfParDataFormatCC13xx",
+                    "ListValues": {
+                        "Value": [
+                            {
+                                "_text": "Serial mode disable",
+                                "$": "0"
+                            },
+                            {
+                                "_text": "Serial mode enable",
+                                "$": "1"
+                            }
+                        ]
+                    },
+                    "DefValue": "Serial mode disable",
+                    "Tooltip": "Data Format"
+                }
+            },
+            {
+                "_name": "PacketTx",
+                "Parameter": [
+                    {
+                        "_name": "carrier_frequency",
+                        "_type": "text",
+                        "Access": "R",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "PacketTxFrequency",
+                                "Type": "DT_EQUAL",
+                                "Group": "MainRfParameters",
+                                "Parameter": "carrier_frequency"
+                            }
+                        }
+                    },
+                    {
+                        "_name": "txPower",
+                        "_type": "text",
+                        "Access": "R",
+                        "DefValue": "10",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "PacketTxPower",
+                                "Type": "DT_EQUAL",
+                                "Group": "MainRfParameters",
+                                "Parameter": "txPower"
+                            }
+                        }
+                    },
+                    {
+                        "_name": "preambleCount",
+                        "_type": "list",
+                        "Access": "R\/W",
+                        "Label": "Preamble Count",
+                        "DefValue": "3 Bytes",
+                        "ListValues": {
+                            "Value": [
+                                {
+                                    "_text": "1 Bit",
+                                    "$": "0"
+                                },
+                                {
+                                    "_text": "4 Bits",
+                                    "$": "31"
+                                },
+                                {
+                                    "_text": "1 Byte",
+                                    "$": "1"
+                                },
+                                {
+                                    "_text": "18 Bytes",
+                                    "$": "18"
+                                },
+                                {
+                                    "_text": "20 Bytes",
+                                    "$": "20"
+                                },
+                                {
+                                    "_text": "22 Bytes",
+                                    "$": "22"
+                                },
+                                {
+                                    "_text": "24 Bytes",
+                                    "$": "24"
+                                },
+                                {
+                                    "_text": "26 Bytes",
+                                    "$": "26"
+                                },
+                                {
+                                    "_text": "28 Bytes",
+                                    "$": "28"
+                                },
+                                {
+                                    "_text": "30 Bytes",
+                                    "$": "30"
+                                },
+                                {
+                                    "_text": "32 Bytes",
+                                    "$": "32"
+                                }
+                            ],
+                            "Range": {
+                                "_step": "1",
+                                "Begin": {
+                                    "_text": "%1 Bytes",
+                                    "$": "2"
+                                },
+                                "End": "16"
+                            }
+                        },
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "Preamble",
+                                "Type": "DT_CODE",
+                                "Group": "PacketView",
+                                "Parameter": "preamble"
+                            }
+                        }
+                    },
+                    {
+                        "_name": "preambleMode",
+                        "_type": "list",
+                        "Access": "R\/W",
+                        "Label": "Preamble Mode",
+                        "DefValue": "0",
+                        "ListValues": {
+                            "Value": [
+                                {
+                                    "_text": "Send 0 as the first preamble bit",
+                                    "$": "0"
+                                },
+                                {
+                                    "_text": "Send 1 as the first preamble bit",
+                                    "$": "1"
+                                },
+                                {
+                                    "_text": "Send same first preamble bit in preamble and sync word",
+                                    "$": "2"
+                                },
+                                {
+                                    "_text": "Send different first preamble bit in preamble and sync word",
+                                    "$": "3"
+                                }
+                            ]
+                        },
+                        "Tooltip": "Preamble mode."
+                    },
+                    {
+                        "_name": "syncWordLength",
+                        "_type": "list",
+                        "Access": "R\/W",
+                        "Label": "Sync Word Length",
+                        "DefValue": "32 Bits",
+                        "Tooltip": "Number of bits in Sync Word.",
+                        "ListValues": {
+                            "Range": {
+                                "_step": "1",
+                                "Begin": {
+                                    "_text": "%1 Bits",
+                                    "$": "8"
+                                },
+                                "End": "32"
+                            }
+                        },
+                        "Dependencies": {
+                            "Dependency": [
+                                {
+                                    "_name": "syncWordLength",
+                                    "Type": "DT_EQUAL",
+                                    "Group": "PacketRx",
+                                    "Parameter": "syncWordLength"
+                                },
+                                {
+                                    "_name": "syncWord",
+                                    "Type": "DT_CODE",
+                                    "Group": "PacketView",
+                                    "Parameter": "syncWord"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "_name": "packetLengthConfig",
+                        "_type": "list",
+                        "Access": "R\/W",
+                        "Label": "Packet Length Config",
+                        "ListValues": {
+                            "Value": [
+                                {
+                                    "_text": "Fixed",
+                                    "$": "0"
+                                },
+                                {
+                                    "_text": "Variable",
+                                    "$": "1"
+                                }
+                            ]
+                        },
+                        "DefValue": "Variable",
+                        "Tooltip": "Packet Length Configuration"
+                    },
+                    {
+                        "_name": "fixedPacketLength",
+                        "_type": "int",
+                        "Access": "R\/W",
+                        "Label": "Fixed Packet Length",
+                        "DefValue": "20",
+                        "Validation": {
+                            "_type": "minmax",
+                            "Min": "0",
+                            "Max": "255"
+                        },
+                        "Tooltip": "The fixed packet length will not be part of the packet data.",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "packetInterval",
+                                "Type": "DT_CODE",
+                                "Group": "PacketTx",
+                                "Parameter": "packetInterval"
+                            }
+                        }
+                    },
+                    {
+                        "_name": "address",
+                        "_type": "int",
+                        "Access": "R\/W",
+                        "Label": "TX Address",
+                        "DefValue": "0",
+                        "CmdUpdate": "NO",
+                        "Tooltip": "The address field is one byte that will be programmed as the first byte of the payload."
+                    },
+                    {
+                        "_name": "packetInterval",
+                        "_type": "int",
+                        "CmdUpdate": "NO",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "packetInterval",
+                                "Type": "DT_CODE",
+                                "Group": "mainRfParameters",
+                                "Parameter": "symbolRate"
+                            }
+                        }
+                    },
+                    {
+                        "_name": "ieee154g_mode",
+                        "_type": "int",
+                        "Access": "R\/W",
+                        "Label": "802.15.4g Mode",
+                        "DefValue": "0",
+                        "CmdUpdate": "NO",
+                        "Tooltip": "Enable 802.15.4g packet mode."
+                    },
+                    {
+                        "_name": "ieee154gpktLen",
+                        "_type": "int",
+                        "Access": "R",
+                        "Label": "IEEE 802.15.4g Packet Length",
+                        "DefValue": "30",
+                        "Tooltip": "802.15.4g packet length ."
+                    },
+                    {
+                        "_name": "ieee154g_psdu_bitorder",
+                        "_type": "int",
+                        "Access": "R\/W",
+                        "Label": "Select bit order to transmit PSDU octets",
+                        "ClassName": "DALRfParIeee154gBitOrder",
+                        "DefValue": "1",
+                        "Tooltip": "Select either MSbit or LSbit to be transmitted first for each PSDU octet."
+                    }
+                ]
+            },
+            {
+                "_name": "PacketRx",
+                "Parameter": [
+                    {
+                        "_name": "syncWord",
+                        "_type": "int",
+                        "Access": "R\/W",
+                        "Label": "Sync Word",
+                        "DefValue": "0x930b51de",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "PacketRxSyncWord",
+                                "Type": "DT_EQUAL",
+                                "Group": "PacketView",
+                                "Parameter": "syncWord"
+                            }
+                        },
+                        "Tooltip": "Complete Sync Word. Number of bits that is checked is determined by the Sync word length field.\\n The bit order is determined by formatConf.bMsbFirst."
+                    },
+                    {
+                        "_name": "syncWordLength",
+                        "_type": "list",
+                        "Access": "R\/W",
+                        "Label": "Sync Word Length",
+                        "DefValue": "32 Bits",
+                        "Tooltip": "Number of bits in Sync Word.",
+                        "ListValues": {
+                            "Range": {
+                                "_step": "1",
+                                "Begin": {
+                                    "_text": "%1 Bits",
+                                    "$": "8"
+                                },
+                                "End": "32"
+                            }
+                        },
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "syncWordLength",
+                                "Type": "DT_EQUAL",
+                                "Group": "PacketTx",
+                                "Parameter": "syncWordLength"
+                            }
+                        }
+                    },
+                    {
+                        "_name": "packetLengthConfig",
+                        "_type": "list",
+                        "Access": "R\/W",
+                        "Label": "Packet Length Config",
+                        "ListValues": {
+                            "Value": [
+                                {
+                                    "_text": "Fixed",
+                                    "$": "0"
+                                },
+                                {
+                                    "_text": "Variable",
+                                    "$": "1"
+                                }
+                            ]
+                        },
+                        "DefValue": "Variable",
+                        "Tooltip": "Packet Length Configuration",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "packetTxPacketLengthConfig",
+                                "Type": "DT_EQUAL",
+                                "Group": "PacketTx",
+                                "Parameter": "packetLengthConfig"
+                            }
+                        }
+                    },
+                    {
+                        "_name": "packetLengthRx",
+                        "_type": "int",
+                        "Access": "R\/W",
+                        "Label": "Max Packet Length",
+                        "DefValue": "20",
+                        "Tooltip": "Packet Length",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "packetTxPacketLength",
+                                "Type": "DT_EQUAL",
+                                "Group": "PacketTx",
+                                "Parameter": "packetLengthTx"
+                            }
+                        }
+                    },
+                    {
+                        "_name": "addressMode",
+                        "_type": "list",
+                        "Access": "R\/W",
+                        "Label": "RX Address Mode",
+                        "DefValue": "0",
+                        "ListValues": {
+                            "Value": [
+                                {
+                                    "_text": "No address check",
+                                    "$": "0"
+                                },
+                                {
+                                    "_text": "Address check",
+                                    "$": "1"
+                                }
+                            ]
+                        },
+                        "Tooltip": "Select the address check mode."
+                    },
+                    {
+                        "_name": "address0",
+                        "_type": "int",
+                        "Access": "R\/W",
+                        "Label": "RX Address0",
+                        "DefValue": [],
+                        "Tooltip": "First allowed address. SmartRF Studio can support up to two addresses."
+                    },
+                    {
+                        "_name": "address1",
+                        "_type": "int",
+                        "Access": "R\/W",
+                        "Label": "RX Address1",
+                        "DefValue": [],
+                        "Tooltip": "Second allowed address. SmartRF Studio can support up to two addresses."
+                    },
+                    {
+                        "_name": "ieee154g_psdu_bitorder",
+                        "_type": "int",
+                        "Access": "R\/W",
+                        "Label": "Select bit order to transmit PSDU octets:",
+                        "ClassName": "DALRfParIeee154gBitOrder",
+                        "DefValue": "1",
+                        "Tooltip": "Select either MSbit or LSbit to be transmitted first for each PSDU octet."
+                    }
+                ]
+            },
+            {
+                "_name": "PacketView",
+                "Parameter": [
+                    {
+                        "_name": "preamble",
+                        "_type": "text",
+                        "Access": "R",
+                        "DefValue": "01010101...",
+                        "Tooltip": "The preable bit sequence.",
+                        "Dependencies": {
+                            "Dependency": [
+                                {
+                                    "_name": "preamble",
+                                    "Type": "DT_CODE",
+                                    "Group": "PacketView",
+                                    "Parameter": "syncWord"
+                                },
+                                {
+                                    "_name": "Preamble",
+                                    "Type": "DT_CODE",
+                                    "Group": "PacketTx",
+                                    "Parameter": "preambleCount"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "_name": "syncWord",
+                        "_type": "int",
+                        "Access": "R\/W",
+                        "Label": "Sync word",
+                        "DefValue": "0x930b51de",
+                        "Tooltip": "Sync word to transmit.",
+                        "Dependencies": {
+                            "Dependency": [
+                                {
+                                    "_name": "PacketRxSyncWord",
+                                    "Type": "DT_EQUAL",
+                                    "Group": "PacketRx",
+                                    "Parameter": "syncWord"
+                                },
+                                {
+                                    "_name": "syncWord",
+                                    "Type": "DT_CODE",
+                                    "Group": "PacketTx",
+                                    "Parameter": "syncWordLength"
+                                },
+                                {
+                                    "_name": "Preamble",
+                                    "Type": "DT_CODE",
+                                    "Group": "PacketView",
+                                    "Parameter": "preamble"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "_name": "syncWordMsbFirst",
+                        "_type": "bool",
+                        "Access": "R\/W"
+                    },
+                    {
+                        "_name": "packetLengthTx",
+                        "_type": "int",
+                        "Access": "R\/W",
+                        "Label": "Packet Length",
+                        "DefValue": "20",
+                        "Validation": {
+                            "_type": "minmax",
+                            "Min": "0",
+                            "Max": "255"
+                        },
+                        "Tooltip": "Packet Length should be given as a decimal value.",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "packetInterval",
+                                "Type": "DT_CODE",
+                                "Group": "PacketTx",
+                                "Parameter": "packetInterval"
+                            }
+                        }
+                    },
+                    {
+                        "_name": "pktData",
+                        "_type": "composit",
+                        "Access": "R",
+                        "Label": "Packet Data",
+                        "DefValue": "255",
+                        "Tooltip": "Packet Data.",
+                        "CmdUpdate": "NO"
+                    },
+                    {
+                        "_name": "crc",
+                        "_type": "text",
+                        "Access": "R",
+                        "DefValue": "xx xx",
+                        "Tooltip": "Cyclic redundancy check."
+                    }
+                ]
+            }
+        ]
+    }
+}

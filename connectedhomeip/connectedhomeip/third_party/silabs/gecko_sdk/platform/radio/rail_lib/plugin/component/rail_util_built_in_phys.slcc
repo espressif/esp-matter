@@ -1,0 +1,42 @@
+id: rail_util_built_in_phys
+label: RAIL Utility, Built-in PHYs Across HFXO Frequencies
+description: >
+  Utility to include built-in PHYs to work with different HFXO frequencies. On
+  EFR32XG24 parts, both 38.4 MHz and 39 MHz HFXO support are provided by this
+  component.
+package: platform
+category: Platform|Radio
+quality: production
+requires:
+  - name: rail_lib
+  - name: emlib_cmu
+  - name: device
+  - name: emlib_common
+  - name: device_init_hfxo
+provides:
+  - name: rail_util_built_in_phys
+include:
+  - path: platform/radio/rail_lib/plugin/rail_util_built_in_phys/efr32xg24
+    condition: [device_sdid_215]
+    unless: [device_is_module]
+    file_list:
+      - path: sl_rail_ble_config_38M4Hz.h
+      - path: sl_rail_ieee802154_config_38M4Hz.h
+      - path: sl_rail_ble_config_39MHz.h
+      - path: sl_rail_ieee802154_config_39MHz.h
+source:
+  - path: platform/radio/rail_lib/plugin/rail_util_built_in_phys/sl_rail_phy_overrides.c
+    condition: [device_sdid_215]
+    unless: [device_is_module]
+  - path: platform/radio/rail_lib/plugin/rail_util_built_in_phys/efr32xg24/sl_rail_ble_config_38M4Hz.c
+    condition: [device_sdid_215]
+    unless: [device_is_module]
+  - path: platform/radio/rail_lib/plugin/rail_util_built_in_phys/efr32xg24/sl_rail_ieee802154_config_38M4Hz.c
+    condition: [device_sdid_215]
+    unless: [device_is_module]
+  - path: platform/radio/rail_lib/plugin/rail_util_built_in_phys/efr32xg24/sl_rail_ble_config_39MHz.c
+    condition: [device_sdid_215]
+    unless: [device_is_module]
+  - path: platform/radio/rail_lib/plugin/rail_util_built_in_phys/efr32xg24/sl_rail_ieee802154_config_39MHz.c
+    condition: [device_sdid_215]
+    unless: [device_is_module]

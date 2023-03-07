@@ -1,0 +1,14 @@
+id: legacy_host_ash
+label: Legacy Host ASH
+package: platform
+category: Services
+description: Legacy Ember ASH implementation for Host.
+quality: production
+root_path: platform/service/legacy_host_ash
+provides:
+  - name: legacy_host_ash
+requires:
+  - name: legacy_common_ash
+template_contribution:
+  - name: component_catalog
+    value: legacy_host_ash

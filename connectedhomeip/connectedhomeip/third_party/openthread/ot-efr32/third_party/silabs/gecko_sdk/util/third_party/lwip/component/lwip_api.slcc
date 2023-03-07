@@ -1,0 +1,22 @@
+id: lwip_api
+label: "LwIP API"
+pretty_name : "LightWeight IP (LWIP) API"
+package: platform
+description: >
+    The code for the high-level wrapper API. Not needed if you use the lowel-level call-back/raw API.
+category: LwIP
+quality: production
+provides:
+  - name: lwip_api
+requires:
+  - name: lwip_core
+source:
+  - path: util/third_party/lwip/lwip/src/api/api_lib.c
+  - path: util/third_party/lwip/lwip/src/api/api_msg.c
+  - path: util/third_party/lwip/lwip/src/api/err.c
+  - path: util/third_party/lwip/lwip/src/api/if_api.c
+  - path: util/third_party/lwip/lwip/src/api/netbuf.c
+  - path: util/third_party/lwip/lwip/src/api/netdb.c
+  - path: util/third_party/lwip/lwip/src/api/netifapi.c
+  - path: util/third_party/lwip/lwip/src/api/sockets.c
+  - path: util/third_party/lwip/lwip/src/api/tcpip.c

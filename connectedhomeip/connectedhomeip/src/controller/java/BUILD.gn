@@ -1,0 +1,161 @@
+# Copyright (c) 2020-2021 Project CHIP Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build_overrides/build.gni")
+import("//build_overrides/chip.gni")
+import("${chip_root}/build/chip/java/config.gni")
+import("${chip_root}/build/chip/java/rules.gni")
+
+if (!build_java_matter_controller) {
+  import("${build_root}/config/android_abi.gni")
+}
+
+shared_library("jni") {
+  output_name = "libCHIPController"
+
+  sources = [
+    "AndroidCallbacks-JNI.cpp",
+    "AndroidCallbacks.cpp",
+    "AndroidCallbacks.h",
+    "AndroidClusterExceptions.cpp",
+    "AndroidClusterExceptions.h",
+    "AndroidCommissioningWindowOpener.cpp",
+    "AndroidCommissioningWindowOpener.h",
+    "AndroidDeviceControllerWrapper.cpp",
+    "AndroidDeviceControllerWrapper.h",
+    "AndroidOperationalCredentialsIssuer.cpp",
+    "AndroidOperationalCredentialsIssuer.h",
+    "BaseCHIPCluster-JNI.cpp",
+    "CHIPAttributeTLVValueDecoder.h",
+    "CHIPDefaultCallbacks.cpp",
+    "CHIPDefaultCallbacks.h",
+    "CHIPDeviceController-JNI.cpp",
+    "zap-generated/CHIPAttributeTLVValueDecoder.cpp",
+    "zap-generated/CHIPClustersWrite-JNI.cpp",
+    "zap-generated/CHIPEventTLVValueDecoder.cpp",
+    "zap-generated/CHIPInvokeCallbacks.cpp",
+    "zap-generated/CHIPInvokeCallbacks.h",
+    "zap-generated/CHIPReadCallbacks.cpp",
+    "zap-generated/CHIPReadCallbacks.h",
+  ]
+  if (build_java_matter_controller) {
+    sources += [
+      "${chip_root}/src/controller/ExamplePersistentStorage.cpp",
+      "${chip_root}/src/controller/ExamplePersistentStorage.h",
+    ]
+  }
+  deps = [
+    "${chip_root}/src/controller/data_model",
+    "${chip_root}/src/controller/data_model:java-jni-sources",
+    "${chip_root}/src/credentials:default_attestation_verifier",
+    "${chip_root}/src/inet",
+    "${chip_root}/src/lib",
+    "${chip_root}/src/lib/support/jsontlv",
+    "${chip_root}/src/platform",
+  ]
+
+  public_configs = [ "${chip_root}/src:includes" ]
+
+  if (build_java_matter_controller) {
+    defines = [ "JAVA_MATTER_CONTROLLER_TEST" ]
+    include_dirs = java_matter_controller_dependent_paths
+
+    deps += [ "${chip_root}/src/platform/Linux" ]
+
+    cflags = [ "-Wno-unknown-pragmas" ]
+
+    output_dir = "${root_out_dir}/lib/jni"
+  } else {
+    deps += [ "${chip_root}/src/platform/android" ]
+
+    output_dir = "${root_out_dir}/lib/jni/${android_abi}"
+  }
+
+  ldflags = [ "-Wl,--gc-sections" ]
+}
+
+android_library("java") {
+  output_name = "CHIPController.jar"
+
+  deps = [ "${chip_root}/third_party/java_deps:annotation" ]
+
+  data_deps = [ ":jni" ]
+
+  sources = [
+    "src/chip/clusterinfo/ClusterCommandCallback.java",
+    "src/chip/clusterinfo/ClusterInfo.java",
+    "src/chip/clusterinfo/CommandParameterInfo.java",
+    "src/chip/clusterinfo/CommandResponseInfo.java",
+    "src/chip/clusterinfo/DelegatedClusterCallback.java",
+    "src/chip/clusterinfo/InteractionInfo.java",
+    "src/chip/devicecontroller/AttestationInfo.java",
+    "src/chip/devicecontroller/CSRInfo.java",
+    "src/chip/devicecontroller/ChipClusterException.java",
+    "src/chip/devicecontroller/ChipCommandType.java",
+    "src/chip/devicecontroller/ChipDeviceController.java",
+    "src/chip/devicecontroller/ChipDeviceControllerException.java",
+    "src/chip/devicecontroller/ControllerParams.java",
+    "src/chip/devicecontroller/DiscoveredDevice.java",
+    "src/chip/devicecontroller/GetConnectedDeviceCallbackJni.java",
+    "src/chip/devicecontroller/KeypairDelegate.java",
+    "src/chip/devicecontroller/NetworkCredentials.java",
+    "src/chip/devicecontroller/NetworkLocation.java",
+    "src/chip/devicecontroller/OpenCommissioningCallback.java",
+    "src/chip/devicecontroller/OperationalKeyConfig.java",
+    "src/chip/devicecontroller/PaseVerifierParams.java",
+    "src/chip/devicecontroller/ReportCallback.java",
+    "src/chip/devicecontroller/ReportCallbackJni.java",
+    "src/chip/devicecontroller/ReportEventCallback.java",
+    "src/chip/devicecontroller/ReportEventCallbackJni.java",
+    "src/chip/devicecontroller/ResubscriptionAttemptCallback.java",
+    "src/chip/devicecontroller/SubscriptionEstablishedCallback.java",
+    "src/chip/devicecontroller/model/AttributeState.java",
+    "src/chip/devicecontroller/model/ChipAttributePath.java",
+    "src/chip/devicecontroller/model/ChipEventPath.java",
+    "src/chip/devicecontroller/model/ChipPathId.java",
+    "src/chip/devicecontroller/model/ClusterState.java",
+    "src/chip/devicecontroller/model/EndpointState.java",
+    "src/chip/devicecontroller/model/EventState.java",
+    "src/chip/devicecontroller/model/NodeState.java",
+    "zap-generated/chip/devicecontroller/ChipClusters.java",
+    "zap-generated/chip/devicecontroller/ChipEventStructs.java",
+    "zap-generated/chip/devicecontroller/ChipIdLookup.java",
+    "zap-generated/chip/devicecontroller/ChipStructs.java",
+    "zap-generated/chip/devicecontroller/ClusterInfoMapping.java",
+    "zap-generated/chip/devicecontroller/ClusterReadMapping.java",
+    "zap-generated/chip/devicecontroller/ClusterWriteMapping.java",
+  ]
+
+  if (build_java_matter_controller) {
+    deps += [
+      "${chip_root}/third_party/java_deps:json",
+      "${chip_root}/third_party/java_deps/stub_src",
+    ]
+  } else {
+    deps += [ ":android" ]
+
+    data_deps += [ "${chip_root}/build/chip/java:shared_cpplib" ]
+  }
+
+  javac_flags = [ "-Xlint:deprecation" ]
+
+  # TODO: add classpath support (we likely need to add something like
+  #  ..../platforms/android-21/android.jar to access BLE items)
+}
+
+if (!build_java_matter_controller) {
+  java_prebuilt("android") {
+    jar_path = "${android_sdk_root}/platforms/android-21/android.jar"
+  }
+}

@@ -1,0 +1,24 @@
+id: sensor_select
+label: Sensor select utility
+package: Bluetooth
+description: Utility for selecting I2C sensors, designed for Thunderboard.
+category: Application|Sensor
+quality: production
+root_path: app/bluetooth/common/sensor_select
+source:
+  - path: sl_sensor_select.c
+include:
+  - path: .
+    file_list:
+      - path: sl_sensor_select.h
+provides:
+  - name: sensor_select
+requires:
+  - name: i2cspm
+  - name: brd4166a_support
+    condition:
+      - brd4166a
+define:
+  - name: BRD4166A_SUPPORT
+    condition:
+      - brd4166a

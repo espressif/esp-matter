@@ -1,0 +1,22 @@
+!!omap
+- id: slwrb4201c
+- label: SLWRB4201C
+- package: platform
+- description: Kit BSP support for the Z-Wave 700 - EFR32ZG13L Radio Board w. SAW.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4201c
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4201C"'
+  - name: SL_KIT_REV
+    value: '"A00"'
+- tag:
+  - kit:opn:SLWRB4201C
+  - kit:pn:WRB4201
+  - kit:variant:C
+  - kit:revision:A00

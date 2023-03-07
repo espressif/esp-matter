@@ -1,0 +1,25 @@
+id: "btmesh_dcd_configuration"
+label: "DCD Configuration"
+package: "Btmesh"
+description: "Bluetooth Mesh Configuration"
+category: "Bluetooth Mesh|DCD"
+quality: "production"
+root_path: "app/bluetooth/common/btmesh_dcd_configuration"
+config_file:
+  - path: "dcd_config.btmeshconf"
+    file_id: dcd_configuration_file_id
+    directory: "btmeshconf"
+
+provides:
+  - name: "btmesh_dcd_configuration"
+  - name: "dcd_configuration"
+
+requires:
+  - name: "btmesh_stack"
+
+template_contribution:
+  - name: component_catalog
+    value: btmesh_dcd_configuration
+
+ui_hints:
+  visibility: never

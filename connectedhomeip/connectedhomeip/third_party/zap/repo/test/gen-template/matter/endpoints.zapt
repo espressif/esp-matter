@@ -1,0 +1,20 @@
+{{#user_endpoint_types}}
+=== Endpoint {{name}}
+  >> device: {{deviceTypeName}} [{{deviceTypeCode}}]
+  >> clusters:
+{{#user_clusters}}
+    > {{name}} [{{code}}] - {{side}}: {{enabled}}
+      attributes: 
+{{#user_cluster_attributes}}
+        - {{name}}: {{included}}
+{{/user_cluster_attributes}}
+      commands: 
+{{#user_cluster_commands}}
+        - {{name}}: {{incoming}}/{{outgoing}}
+{{/user_cluster_commands}}
+      events: 
+{{#user_cluster_events}}
+        - {{name}}: {{included}}
+{{/user_cluster_events}}
+{{/user_clusters}}
+{{/user_endpoint_types}}

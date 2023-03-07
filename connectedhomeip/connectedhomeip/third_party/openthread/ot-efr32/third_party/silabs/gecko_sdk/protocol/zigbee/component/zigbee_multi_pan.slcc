@@ -1,0 +1,36 @@
+id: zigbee_multi_pan
+label: Multi PAN
+package: Zigbee
+category: Zigbee|Stack
+quality: production
+
+description: "Provides the ability for a single device to operate on two simultaneous receiver-on-when-idle networks. The device may configure two independent coordinator networks operating on the same radio channel. Visit AN724: Designing for Multiple Networks on a Single Zigbee Chip for more information."
+
+provides:
+  - name: zigbee_multi_pan
+  - name: zigbee_multi_pan_feature
+
+requires:
+  - name: zigbee_multi_pan_implementation
+  - name: zigbee_multi_pan_library
+    condition:
+     - zigbee_force_libraries
+  - name: zigbee_pro_stack
+  - name: zigbee_multi_network
+
+recommends:
+  - id: zigbee_multi_pan_source
+
+include:
+  - path: protocol/zigbee/stack/core
+    file_list:
+      - path: multi-pan-token-config.h
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_multi_pan
+
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/multi-pan

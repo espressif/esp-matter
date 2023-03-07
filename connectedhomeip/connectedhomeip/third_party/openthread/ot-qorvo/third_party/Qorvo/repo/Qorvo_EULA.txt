@@ -1,0 +1,130 @@
+1. SOFTWARE DEVELOPMENT KIT LICENSE AGREEMENT
+THIS LEGALLY BINDING AGREEMENT, FOR THE USE OF THE LICENSED SOFTWARE INSTALLED UPON ACCEPTANCE OF THIS AGREEMENT,
+IS BETWEEN QORVO INTERNATIONAL PTE LTD. (“LICENSOR”), INCLUDING ITS AFFILIATES, AND EITHER AN INDIVIDUAL OR LEGAL ENTITY (“LICENSEE”), INCLUDING EACH AFFILIATE OF SUCH, AS APPLICABLE, ON WHOSE BEHALF YOU ARE LEGALLY AUTHORIZED TO ACCEPT THIS LICENSE AGREEMENT.
+AS USED HEREIN, “YOU,” "YOUR", OR “LICENSEE” SHALL MEAN SUCH INDIVIDUAL OR ENTITY, INCLUDING AFFILIATES OF SUCH ENTITY.
+LICENSOR IS ONLY WILLING TO LICENSE THE LICENSED SOFTWARE TO YOU ON CONDITION THAT YOU ACCEPT ALL OF THE TERMS IN THIS AGREEMENT.
+BY INSTALLING OR OTHERWISE USING OR COPYING THE LICENSED SOFTWARE, YOU EXPRESSLY AGREE TO BE BOUND BY ALL OF THE TERMS OF THIS AGREEMENT.
+IF YOU DO NOT AGREE TO THE TERMS OF THIS AGREEMENT, YOU MAY NOT INSTALL, USE, OR COPY THE LICENSED SOFTWARE, AND YOU MUST DELETE ANY DOWNLOADS OR COPIES OF THE LICENSED SOFTWARE.
+
+1.1 Definitions
+
+'Confidential Information' means all information (whether written, electronic, visual, or oral) disclosed by Licensor that is marked or identified as “confidential” or with a similar legend or designation, or that the Licensor otherwise considers in good faith to be confidential.
+
+'Documentation' means all documents, in any form, associated with the Licensed Software, including, but not limited to, user manuals, instruction manuals, specifications, and other software-associated documentation.
+
+'Licensed Software' means the Software Development Kit (“SDK”) of Licensor as provided to Licensee under this Agreement.
+Licensed Software also includes any additions, updates, and releases thereto issued by Licensor from time-to-time.
+
+'Licensee Product' means a product developed by Licensee embodying Licensee Software.
+
+'Licensee Software' means software developed by Licensee using the Licensed Software.
+
+'Licensor Silicon' means a Licensor integrated circuit that runs Licensor Software and/or Licensee Software.
+
+1.2 Intellectual Property Rights
+Intellectual Property Rights means all intellectual property rights, including, intellectual property rights associated with patents, utility models, know-how, trade and service marks, trade or business names, domain names, and rights in designs, copyrights, moral rights, topography rights, and database rights, in all cases whether or not registered or registerable in any country for the full term of such rights including any extension to or renewal of the terms of such rights including registrations and applications for registrations of any of these and rights to apply for the same and all rights and forms of protection of a similar nature or having equivalent effect to any of these anywhere in the world.
+
+1.3 License
+Use of Licensed Software.
+Licensor hereby grants to Licensee a worldwide, fully paid-up, non-exclusive, non-transferable license to use the Licensed Software to develop Licensee Software and to incorporate the Licensee Software into Licensee Products and PROVIDED FURTHER that Licensee only uses Licensee and/or Licensed Software in combination with Licensor Silicon, and, for such purposes, to distribute the Licensed Software and/or Licensee Software to its subcontractors for the purpose of designing or manufacturing the Licensee Products on Licensee’s behalf, or programming the Licensed Software and/or Licensee Software, thereby producing programmed software, which will then be integrated into the Licensee Products, PROVIDED HOWEVER that Licensee obtains the express acknowledgement and undertaking of each such subcontractor to be bound by terms and conditions of confidentiality and limited use that are no broader in scope and duration than the confidentiality and limited use and conditions in this Agreement, and Licensee remains responsible for any breach by such subcontractor and PROVIDED FURTHER that Licensee’s subcontractor only uses the programmed software in combination with Licensor Silicon.
+
+No Sale.
+The licenses granted under this Agreement do not constitute a sale of the Licensed Software or any portion or copy of it.
+
+1.4 Ownership and Restrictions
+Ownership and Retention of Rights.
+Licensee acknowledges Licensor owns and shall retain all right, title, and interest in and to:
+(i) the Licensed Software and updates, and Documentation, including all Intellectual Property Rights embodied therein;
+(ii) all of the service marks, trade¬marks, trade names or any other designations associated with the Licensed Software; and
+(iii) all copyrights, patent rights, trade secret rights, and other proprietary rights relating to the Licensed Software, the Documentation, or Licensor’s Confidential Information. Licensee further acknowl-edges and agrees that it shall have no rights with respect to any of the foregoing other than the rights expressly set forth in this Agreement.
+
+Restrictions on Use.
+Licensee agrees:
+(i) not to remove any Licensor identification or notices of any proprietary, patent or copyright restrictions from the Licensed Software, Documentation, or any support material; or
+(ii) not to develop methods to enable unauthorized parties to use Licensor Silicon.
+
+2. WARRANTY AND DISCLAIMERS
+
+2.1 WARRANTY DISCLAIMER
+WARRANTY DISCLAIMER.
+THE LICENSED SOFTWARE IS PROVIDED ‘AS IS’;
+LICENSOR MAKES NO WARRANTIES WITH RESPECT TO ANY LICENSED SOFTWARE OR SERVICE AND DISCLAIMS ALL STATUTORY OR IMPLIED WARRANTIES, INCLUDING WITHOUT LIMITATION WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR ARISING FROM A COURSE OF DEALING OR USAGE OF TRADE AND ANY WARRANTIES OF NONINFRINGEMENT.
+LICENSOR DOES NOT WARRANT THAT THE LICENSED SOFTWARE WILL MEET ANY REQUIREMENTS OR THAT THE OPERATION OF THE LICENSED SOFTWARE WILL BE UN¬INTERRUPTED OR ERROR FREE.
+
+2.2 LIMITATION OF LIABILITY
+LIMITATION OF LIABILITY.
+NOTWITHSTANDING ANYTHING ELSE IN THIS AGREEMENT OR OTHERWISE, AND TO THE EXTENT PERMITTED BY APPLICABLE LAW, LICENSOR WILL IN NO EVENT BE LIABLE WITH RESPECT TO ANY SUBJECT MATTER OF THIS AGREEMENT UNDER ANY CONTRACT, TORT, OR OTHER LEGAL OR EQUITABLE THEORY FOR:
+(I) ANY DIRECT, INDIRECT, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES, HOWEVER CAUSED AND WHETHER OR NOT ADVISED IN ADVANCE OF THE POSSIBILITY OF SUCH DAMAGES; OR
+(II) DAMAGES FOR LOST PROFITS OR LOST DATA; OR
+(III) COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR SERVICES.
+
+2.3 Indemnification
+You agree to fully defend and indemnify Licensor and its employees, subcontractors, licensors and agents from any and all claims, liabilities, and costs (including reasonable attorney’s fees) related to:
+(i) Your use (including Your sublicensee’s use, if permitted) of the Licensed Software; or
+(ii) Your violation of the terms and conditions of this Agreement.
+
+3. CONFIDENTIAL INFORMATION
+Protection of Confidential Information.
+Licensee will protect Licensor’s Confidential Information from unauthorized dissemination and use the same degree of care that Licensee uses to protect its own like information, but in no event less than a reasonable degree of care. Licensee will not disclose to third parties Licensor’s Confidential Information without the prior written consent of Licensor. Licensee will not use Licensor’s Confidential Information for purposes other than those necessary to use the Licensed Software. Notwithstanding the foregoing, Licensee may use or disclose Confidential Information to the extent Licensee is legally required to disclose such Confidential Information provided, however, that prior to any such required disclosure, the Licensee will notify Licensor and will cooper¬ate fully with Licensor in protecting against any such disclosure and/or obtaining a protective order narrowing the scope of such disclosure and/or use of the Confidential Information. Licensee agrees that any breach of this Section would cause irreparable harm to Licensor for which monetary damages would not be adequate and therefore, in the event of a breach of this Section, Licensor shall be entitled to equitable relief in addition to any remedies it may have hereunder or at law.
+
+Security.
+Licensee shall implement reasonable security measures to prevent unauthorized use or disclosure of Licensed Software.
+
+Notification of Employees.
+Licensee will take appropriate action by instruction, agreement or otherwise with its employees, agents and contractors allowed access to the Confidential Information to satisfy its obligations under this Section.
+
+4. TRADEMARKS, COPYRIGHTS AND NOTICES
+
+4.1 Trademarks and Use of Marks
+
+Trademarks.
+Licensee is not granted any ownership in or license to the trademarks, marks, service marks or trade names, or good will associated with such marks or names (collectively, "Marks") of the Licensor.
+Licensee shall not use the Marks or confusingly similar marks in con-nection with any goods or services other than the Licensed Software or in a manner that dilutes, disparages, or harms the reputation of the Licensor.
+Licensee agrees that any goodwill arising from its use of the Marks shall inure to the benefit of the Licensor who will be the sole and exclusive owner of such goodwill.
+
+Use of Marks.
+All advertising and other materials in which Licensor’s Marks are used shall be subject to the prior written approval of Licensor.  Whenever a Licensee uses the Mark of the Licensor, Licensor shall indicate that such Mark is the property of the Licensor.
+
+Defense of Trademarks.
+Licensee will not at any time contest, or assist others in contesting, the validity or enforceability of the Marks of Licensor or do, cause to be done, or tolerate any act or thing contesting or in any way impairing or tending to impair any said right, title, an interest of Licensor in such Marks.
+ 
+4.2 Copyright Notice
+Copyright Notice.
+Licensee shall include Licensor’s copyright notice as required herein. The following copyright notice is required in Licensee Software: Copyright (c) 2017-2021, Qorvo Inc.
+
+4.3 Third Party Notices
+Third Party Notice.
+This license does not apply to any open source software contained in Licensed Software.
+Rather, the terms and conditions in the applicable open source software license shall apply to the open source software.
+Nothing in this Agreement limits your rights under, or grants you rights that supersede, any open source software license.
+You acknowledge that the open source software license is solely between you and the applicable licensor of the open source software.
+You shall comply with the terms of all applicable open source software licenses, if any.
+License and copyright information for the open source software are disclosed in the Licensed Software documentation.
+
+Licensed Software may include open source software licensed under the General Public License and/or the Lesser General Public License (or any other license requiring us to make a written offer to provide corresponding source code to you).
+You may obtain the corresponding source code for any such open source software from us for a period of three years after our last shipment of Licensed Software and without charge except for the cost of media, shipping, and handling, upon written request to Licensor.
+This offer is valid to anyone in receipt of Licensed Software.
+You may send your request in writing to the address below.
+Please make sure your request includes the version and name associated with the Licensed Software.
+
+Qorvo Belgium NV
+Senior Manager, Applications Engineering
+Spinnerijstraat 14
+9240 Zele, Belgium
+
+5. GOVERNING LAW AND JURISDICTION
+
+Governing Law.
+This Agreement is made in, governed by and shall be construed in accordance with the laws of the Republic of Singapore without regard to conflicts of laws principles. The Parties agree that the United Nations Convention on Contracts for the International Sale of Goods is hereby excluded in its entirety from this Agreement.
+
+Jurisdiction.
+Any dispute arising out of or in connection with this Agreement, including any question regarding its existence, validity or termination, shall be referred to and finally resolved by arbitration administered by the Singapore International Arbitration Centre (“SIAC”) in accordance with the Arbitration Rules of the Singapore International Arbitration Centre ("SIAC Rules"), which rules are deemed to be incorporated by reference in this clause.
+The seat and venue of the arbitration shall be Singapore.
+The tribunal shall consist of one arbitrator to be appointed by the chairman of the SIAC, upon the recommendation of Licensor.
+The language of the arbitration shall be English.
+
+Injunctive Relief.
+A breach of this Agreement adversely affecting Licensor’s Intellectual Property Rights in the Licensed Software, Licensor’s Products or Documentation may cause irreparable injury to Licensor for which monetary damages may not be an adequate remedy and Licensor. shall be entitled to equitable relief in addition to any remedies it may have hereunder or at law.
+
+Entire Agreement.
+This Agreement constitutes the entire agreement between Licensee and Licensor regarding the subject matter of this Agreement, and supersedes all prior communications, negotiations, understandings, agreements or representations, either written or oral, if any. This Agreement may only be amended in a signed writing, duly executed by Licensee and Licensor.

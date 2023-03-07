@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/build.dtd -->
+<package name="ti.catalog.arm" version="1, 0, 1" producerId="undefined">
+    <units>
+        <interface name="IOMAP2x3x"/>
+        <interface name="IOMAP3xxx"/>
+        <interface name="ITMS320DA8xx"/>
+        <module name="TMS470R10"/>
+        <module name="TMS320C5912"/>
+        <module name="TMS320C1030"/>
+        <module name="TMS320CDM6446"/>
+        <module name="TMS320CDM6467"/>
+        <module name="TMS320DM355"/>
+        <module name="TMS320DM357"/>
+        <module name="TMS320DM365"/>
+        <module name="TMS320CDM510"/>
+        <module name="OMAP2430"/>
+        <module name="OMAP2431"/>
+        <module name="OMAP2530"/>
+        <module name="OMAP2531"/>
+        <module name="OMAP3403"/>
+        <module name="OMAP3405"/>
+        <module name="OMAP3503"/>
+        <module name="OMAP3505"/>
+        <module name="OMAP3515"/>
+        <module name="OMAP3517"/>
+        <module name="OMAP3425"/>
+        <module name="OMAP3525"/>
+        <module name="TMS320C3430"/>
+        <module name="OMAP3530"/>
+        <module name="TMS320DA828"/>
+        <module name="TMS320DA830"/>
+        <module name="OMAPL137"/>
+        <module name="CortexM3"/>
+        <module name="TMS570PSF762"/>
+        <module name="TMS570LS20216"/>
+        <module name="TMS320DA840"/>
+        <module name="TMS320DA850"/>
+        <module name="AM1705"/>
+        <module name="AM1707"/>
+        <module name="AM1806"/>
+        <module name="AM1808"/>
+        <module name="OMAPL108"/>
+        <module name="OMAPL118"/>
+        <module name="OMAPL138"/>
+        <module name="TMS320CDM730"/>
+        <module name="TMS320CDM740"/>
+        <module name="TNETV107X"/>
+    </units>
+    <sources>
+    </sources>
+    <configscripts>
+    </configscripts>
+    <makefiles>
+        <srcFile name="package.mak" src="package.bld"/>
+        <srcFile name="package/package.xdc.dep" src="package.xdc"/>
+        <srcFile name="package/package.cfg.dep" src="package.xdc"/>
+        <srcFile name="package/rel/ti_catalog_arm.tar.dep" src="package/rel/ti_catalog_arm.xdc.inc"/>
+    </makefiles>
+    <targets>
+    </targets>
+    <libraries>
+    </libraries>
+    <configurations>
+    </configurations>
+    <executables>
+    </executables>
+    <tests>
+    </tests>
+    <releases relDir="package/rel/">
+    <release name="ti_catalog_arm"
+        pname="ti_catalog_arm.tar"
+        label="default"
+    >
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+        <file name="package/package.cfg.xdc.inc"/>
+    </release>
+    </releases>
+    <repositories>
+    </repositories>
+</package>

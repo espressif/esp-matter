@@ -1,0 +1,106 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+# Creates a toolchain that provides no C/C++ compiler. It can be used for
+# non-C/C++ languages or actions that should only happen once across all builds.
+# The toolchain cannot compile C/C++, and trying to use it to is an error.
+#
+# Args:
+#   command: Run this command if this toolchain is used to build C/C++ code.
+#
+template("pw_non_c_toolchain") {
+  # Import the universal stamp & copy tools.
+  import("$dir_pw_toolchain/universal_tools.gni")
+  _label = get_label_info(":$target_name", "label_no_toolchain")
+
+  # If the user tries to build a target with this toolchain, run a script that
+  # prints out an error.
+  _message =
+      "Attempted to use the $target_name toolchain to compile {{source}}.\n" +
+      "This toolchain cannot be used to compile C/C++ source code.\n\n" +
+      "This toolchain was either explicitly specified in a deps list with\n" +
+      "GN's :target($_label) syntax or was set as the\n" +
+      "default toolchain in the BUILDCONFIG.gn file.\n\n" +
+      "Ensure that no C/C++ GN targets are referred to with this toolchain,\n" +
+      "even transitively.\n\n" +
+      "See https://pigweed.dev/pw_toolchain for more information."
+
+  _command = string_join(" ",
+                         [
+                           "python",
+                           rebase_path("$dir_pw_build/py/pw_build/error.py",
+                                       root_build_dir),
+                           "--message \"$_message\"",
+                           "--target",
+                           _label,
+                           "--root",
+                           rebase_path("//", root_build_dir),
+                           "--out",
+                           ".",
+                         ])
+
+  if (defined(invoker.command)) {
+    _command = invoker.command
+  } else {
+    not_needed([ "invoker" ])
+  }
+
+  toolchain(target_name) {
+    tool("stamp") {
+      forward_variables_from(pw_universal_stamp, "*")
+    }
+
+    tool("copy") {
+      forward_variables_from(pw_universal_copy, "*")
+    }
+
+    tool("asm") {
+      command = _command
+      outputs =
+          [ "{{source_out_dir}}/{{target_output_name}}.{{source_file_part}}.o" ]
+    }
+
+    tool("cc") {
+      command = _command
+      outputs =
+          [ "{{source_out_dir}}/{{target_output_name}}.{{source_file_part}}.o" ]
+    }
+
+    tool("cxx") {
+      command = _command
+      outputs =
+          [ "{{source_out_dir}}/{{target_output_name}}.{{source_file_part}}.o" ]
+    }
+
+    # Can't use {{source}} for the linker, so replace it if it's in the command.
+    _command_no_source = string_replace(_command, "{{source}}", "C/C++ sources")
+
+    tool("link") {
+      command = _command_no_source
+      outputs = [ "{{output_dir}}/{{target_output_name}}{{output_extension}}" ]
+    }
+
+    tool("alink") {
+      command = _command_no_source
+      outputs = [ "{{output_dir}}/{{target_output_name}}{{output_extension}}" ]
+    }
+
+    tool("solink") {
+      command = _command_no_source
+      outputs = [ "{{output_dir}}/{{target_output_name}}{{output_extension}}" ]
+    }
+  }
+}

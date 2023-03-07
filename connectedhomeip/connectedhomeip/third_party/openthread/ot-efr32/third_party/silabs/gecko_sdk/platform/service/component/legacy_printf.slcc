@@ -1,0 +1,32 @@
+id: legacy_printf
+label: Legacy Printf
+package: platform
+category: Services
+quality: production
+description: Legacy emberSerialPrintf API.
+provides:
+  - name: legacy_printf
+requires:
+  - name: component_catalog
+  - name: status
+  - name: iostream
+source:
+  - path: platform/service/legacy_printf/src/sl_legacy_printf.c
+include:
+  - path: platform/service/legacy_printf/inc
+    file_list:
+    - path: sl_legacy_printf.h
+define:
+  - name: "PLATFORM_HEADER"
+    value: "\"platform-header.h\""
+    unless: 
+      - zigbee_host_simulation
+  - name: CORTEXM3_EFM32_MICRO
+  - name: CORTEXM3
+  - name: CORTEXM3_EFR32
+template_contribution:
+  - name: component_catalog
+    value: legacy_printf
+documentation:
+    docset: gecko-platform
+    document: service/api/group-legacyprintf

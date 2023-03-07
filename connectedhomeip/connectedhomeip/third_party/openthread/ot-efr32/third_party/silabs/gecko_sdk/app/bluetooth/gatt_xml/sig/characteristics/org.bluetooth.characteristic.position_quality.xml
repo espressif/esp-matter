@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<?xml-stylesheet type="text/xsl" href="FieldBasedDisplay.xslt"?>-->
+<!-- Created with Liquid XML Studio Designer Edition 9.1.10.3537 (http://www.liquid-technologies.com) -->
+<!--Copyright 2011 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Position Quality" type="org.bluetooth.characteristic.position_quality" uuid="2A69" last-modified="2013-05-13" approved="Yes">
+  <InformativeText>
+    <Summary>The Position Quality characteristic is a variable length structure containing a Flags field and at least one of the optional data fields listed below</Summary>
+  </InformativeText>
+  <Value>
+    <Field name="Flags">
+      <Requirement>Mandatory</Requirement>
+      <Format>16bit</Format>
+      <BitField>
+        <Bit index="0" size="1" name="Number of Beacons in Solution Present">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="1" size="1" name="Number of Beacons in View Present">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="2" size="1" name="Time to First Fix Present">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="3" size="1" name="EHPE Present">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="4" size="1" name="EVPE Present">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="5" size="1" name="HDOP Present">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="6" size="1" name="VDOP Present">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="7" size="2" name="Position Status">
+          <Enumerations>
+            <Enumeration key="0" value="No Position" />
+            <Enumeration key="1" value="Position Ok" />
+            <Enumeration key="2" value="Estimated Position" />
+            <Enumeration key="3" value="Last Known Position" />
+          </Enumerations>
+        </Bit>
+        <!--  <Bit index="9" size="7" name="Reserved For Future Use">
+                </Bit>-->
+        <ReservedForFutureUse index="9" size="7" />
+      </BitField>
+    </Field>
+    <Field name="Number of Beacons in Solution">
+      <InformativeText>Unitless with a resolution of 1</InformativeText>
+      <Requirement>Optional</Requirement>
+      <Format>uint8</Format>
+      <Unit>org.bluetooth.unit.unitless</Unit>
+      <DecimalExponent>0</DecimalExponent>
+    </Field>
+    <Field name="Number of Beacons in View">
+      <InformativeText>Unitless with a resolution of 1</InformativeText>
+      <Requirement>Optional</Requirement>
+      <Format>uint8</Format>
+      <Unit>org.bluetooth.unit.unitless</Unit>
+      <DecimalExponent>0</DecimalExponent>
+    </Field>
+    <Field name="Time to First Fix">
+      <InformativeText>Unit is in seconds with a resolution of 1/10</InformativeText>
+      <Requirement>Optional</Requirement>
+      <Format>uint16</Format>
+      <Unit>org.bluetooth.unit.time.second</Unit>
+      <DecimalExponent>-1</DecimalExponent>
+    </Field>
+    <Field name="EHPE">
+      <InformativeText>Unit is in meters with a resolution of 1/100</InformativeText>
+      <Requirement>Optional</Requirement>
+      <Format>uint32</Format>
+      <Unit>org.bluetooth.unit.length.meter</Unit>
+      <DecimalExponent>-2</DecimalExponent>
+    </Field>
+    <Field name="EVPE">
+      <InformativeText>Unit is in meters with a resolution of 1/100</InformativeText>
+      <Requirement>Optional</Requirement>
+      <Format>uint32</Format>
+      <Unit>org.bluetooth.unit.length.meter</Unit>
+      <DecimalExponent>-2</DecimalExponent>
+    </Field>
+    <Field name="HDOP">
+      <InformativeText>Unitless with a resolution of 2/10</InformativeText>
+      <Requirement>Optional</Requirement>
+      <Format>uint8</Format>
+      <Unit>org.bluetooth.unit.unitless</Unit>
+      <DecimalExponent>-1</DecimalExponent>
+      <Multiplier>2</Multiplier>
+    </Field>
+    <Field name="VDOP">
+      <InformativeText>Unitless with a resolution of 2/10</InformativeText>
+      <Requirement>Optional</Requirement>
+      <Format>uint8</Format>
+      <Unit>org.bluetooth.unit.unitless</Unit>
+      <DecimalExponent>-1</DecimalExponent>
+      <Multiplier>2</Multiplier>
+    </Field>
+  </Value>
+  <Note>        
+       The fields in the above table, reading from top to bottom, are shown in the order of LSO to MSO, where LSO = Least Significant Octet and MSO = Most Significant Octet.
+       Where a field with the format '16bits' or 32bits' is used, the Least Significant Octet represents the eight bits numbered 0 to 7.
+    </Note>
+</Characteristic>

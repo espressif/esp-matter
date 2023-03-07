@@ -1,0 +1,14 @@
+id: linux
+label: Linux OS
+package: platform
+description: OS component for Linux.
+category: Platform|Device|Native
+quality: production
+provides:
+  - name: operating_system
+  - name: linux
+  - name: device_family_host
+requires:
+  - name: linux_arch
+recommends:
+  - id: linux_arch_64

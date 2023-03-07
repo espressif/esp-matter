@@ -1,0 +1,101 @@
+package: Zigbee
+description: Silicon Labs implementation of Tunneling client cluster.  This component requires
+  extending to integrate the software that processes the tunneled data.  Note
+  if the maximum transfer size requires fragmentation, manually include
+  the Fragmentation component and configure it to support the tunnel data size.  Additionally,
+  the component uses the address table to communicate with the server, so you must manually
+  configure the address table size so that it accommodates active tunnels managed by
+  this component as well as any other entries created during normal operation.
+label: Tunneling Client Cluster
+quality: extend
+id: zigbee_tunneling_client
+category: Zigbee|Cluster Library|Smart Energy
+provides:
+   - name: "zigbee_tunneling_client"
+requires:
+   - name: "zigbee_address_table"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/tunneling-client/config/tunneling-client-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/tunneling-client/tunneling-client.c
+  - path: protocol/zigbee/app/framework/plugin/tunneling-client/tunneling-client-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/tunneling-client/tunneling-client-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/tunneling-client
+    file_list:
+      - path: tunneling-client.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_tunneling_client
+  - name: cluster_service
+    value:
+       cluster_id: "0x0704"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "CLIENT"       
+       service_function: "emberAfTunnelingClusterClientCommandParse"    
+  - name: zigbee_stack_callback
+    value:
+      callback_type: stack_status
+      function_name: emberAfPluginTunnelingClientStackStatusCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: tunneling-client
+      help: tunneling-client related commands.
+  - name: cli_command
+    value:
+      group: tunneling-client
+      name: request
+      handler: emAfPluginTunnelingClientCliRequest
+      help: Requests a Tunneling cluster tunnel with a server.
+      argument:
+      - type: uint16
+        help: The network address of the server to which the request will be sent
+      - type: uint8
+        help: The local endpoint from which the request will be sent
+      - type: uint8
+        help: The remote endpoint to which the request will be sent
+      - type: uint8
+        help: The protocol id of the requested tunnel
+      - type: uint16
+        help: The manufacturer code of the requested tunnel
+      - type: int8
+        help: 1 if flow control support is requested or 0 if not
+  - name: cli_command
+    value:
+      group: tunneling-client
+      name: transfer
+      handler: emAfPluginTunnelingClientCliTransfer
+      help: Transfers data to a server through a Tunneling cluster tunnel.
+      argument:
+      - type: uint8
+        help: The index of the tunnel through which to send the data
+      - type: hex
+        help: The data to send through the tunnel
+  - name: cli_command
+    value:
+      group: tunneling-client
+      name: close
+      handler: emAfPluginTunnelingClientCliClose
+      help: Closes a Tunneling cluster tunnel.
+      argument:
+      - type: uint8
+        help: The index of the tunnel to close
+  - name: cli_command
+    value:
+      group: tunneling-client
+      name: print
+      handler: emAfPluginTunnelingClientCliPrintCommand
+      help: Prints out the status of active tunnels.
+  - name: cluster_functions
+    value:
+      cluster_name: Tunneling
+      cluster_id: 0x704
+      cluster_type: client
+      init_function: emberAfTunnelingClusterClientInitCallback
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/tunneling-client

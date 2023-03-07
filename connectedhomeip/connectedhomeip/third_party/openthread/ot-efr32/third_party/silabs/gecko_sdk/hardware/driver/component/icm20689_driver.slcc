@@ -1,0 +1,33 @@
+id: icm20689_driver
+package: platform
+label: ICM20689 - Motion Sensor
+description: >
+  Driver for the Invensense ICM20689 6-axis motion sensor
+category: Platform|Board Drivers
+quality: production
+root_path: hardware/driver/icm20689
+provides:
+  - name: icm20689_driver
+requires:
+  - name: emlib_common
+  - name: emlib_cmu
+  - name: emlib_gpio
+  - name: emlib_eusart
+  - name: sleeptimer
+  - name: status
+include:
+  - path: inc
+    file_list:
+      - path: sl_icm20689.h
+      - path: sl_icm20689_defs.h
+source:
+  - path: src/sl_icm20689.c
+config_file:
+  - path: config/s2/sl_icm20689_config.h
+    file_id: icm20689_config
+template_contribution:
+  - name: component_catalog
+    value: icm20689_driver
+documentation:
+    docset: gecko-platform
+    document: hardware-driver/api/group-icm20689

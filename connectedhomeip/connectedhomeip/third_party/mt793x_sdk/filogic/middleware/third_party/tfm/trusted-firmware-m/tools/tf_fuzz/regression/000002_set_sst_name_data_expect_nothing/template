@@ -1,0 +1,2 @@
+purpose to give assets a human name;
+set sst name forecast data "sunny with a 30% chance of weather!" expect nothing;

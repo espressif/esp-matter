@@ -1,0 +1,634 @@
+<html>
+<body>
+
+<h1 align='right'><a name='ADVANCED'><img src="3.gif" align="right"
+hspace="10" width="100" height="100" alt="3"></a>More Mini-XML
+Programming Techniques</h1>
+
+<p>This chapter shows additional ways to use the Mini-XML
+library in your programs.</p>
+
+<h2><a name='LOAD_CALLBACKS'>Load Callbacks</a></h2>
+
+<p><a href='#LOAD_XML'>Chapter 2</a> introduced the <a
+href='#mxmlLoadFile'><tt>mxmlLoadFile()</tt></a> and <a
+href='#mxmlLoadString'><tt>mxmlLoadString()</tt></a> functions.
+The last argument to these functions is a callback function
+which is used to determine the value type of each data node in
+an XML document.</p>
+
+<p>Mini-XML defines several standard callbacks for simple
+XML data files:</p>
+
+<ul>
+
+        <li><tt>MXML_INTEGER_CALLBACK</tt> - All data nodes
+        contain whitespace-separated integers.</li>
+
+        <li><tt>MXML_OPAQUE_CALLBACK</tt> - All data nodes
+        contain opaque strings ("CDATA").</li>
+
+	<li><tt>MXML_REAL_CALLBACK</tt> - All data nodes contain
+	whitespace-separated floating-point numbers.</li>
+
+	<li><tt>MXML_TEXT_CALLBACK</tt> - All data nodes contain
+	whitespace-separated strings.</li>
+
+</ul>
+
+<p>You can provide your own callback functions for more complex
+XML documents. Your callback function will receive a pointer to
+the current element node and must return the value type of the
+immediate children for that element node: <tt>MXML_INTEGER</tt>,
+<tt>MXML_OPAQUE</tt>, <tt>MXML_REAL</tt>, or <tt>MXML_TEXT</tt>.
+The function is called <i>after</i> the element and its
+attributes have been read, so you can look at the element name,
+attributes, and attribute values to determine the proper value
+type to return.</p>
+
+<!-- NEED 2in -->
+<p>The following callback function looks for an attribute named
+"type" or the element name to determine the value type for its
+child nodes:</p>
+
+<pre>
+    mxml_type_t
+    type_cb(mxml_node_t *node)
+    {
+      const char *type;
+
+     /*
+      * You can lookup attributes and/or use the
+      * element name, hierarchy, etc...
+      */
+
+      type = mxmlElementGetAttr(node, "type");
+      if (type == NULL)
+	type = mxmlGetElement(node);
+
+      if (!strcmp(type, "integer"))
+	return (MXML_INTEGER);
+      else if (!strcmp(type, "opaque"))
+	return (MXML_OPAQUE);
+      else if (!strcmp(type, "real"))
+	return (MXML_REAL);
+      else
+	return (MXML_TEXT);
+    }
+</pre>
+
+<p>To use this callback function, simply use the name when you
+call any of the load functions:</p>
+
+<pre>
+    FILE *fp;
+    mxml_node_t *tree;
+
+    fp = fopen("filename.xml", "r");
+    tree = mxmlLoadFile(NULL, fp, <b>type_cb</b>);
+    fclose(fp);
+</pre>
+
+
+<h2><a name='SAVE_CALLBACKS'>Save Callbacks</a></h2>
+
+<p><a href='#LOAD_XML'>Chapter 2</a> also introduced the <a
+href='#mxmlSaveFile'><tt>mxmlSaveFile()</tt></a>, <a
+href='#mxmlSaveString'><tt>mxmlSaveString()</tt></a>, and <a
+href='#mxmlSaveAllocString'><tt>mxmlSaveAllocString()</tt></a>
+functions. The last argument to these functions is a callback
+function which is used to automatically insert whitespace in an
+XML document.</p>
+
+<p>Your callback function will be called up to four times for
+each element node with a pointer to the node and a "where" value
+of <tt>MXML_WS_BEFORE_OPEN</tt>, <tt>MXML_WS_AFTER_OPEN</tt>,
+<tt>MXML_WS_BEFORE_CLOSE</tt>, or <tt>MXML_WS_AFTER_CLOSE</tt>.
+The callback function should return <tt>NULL</tt> if no
+whitespace should be added and the string to insert (spaces,
+tabs, carriage returns, and newlines) otherwise.</p>
+
+<p>The following whitespace callback can be used to add
+whitespace to XHTML output to make it more readable in a standard
+text editor:</p>
+
+<pre>
+    const char *
+    whitespace_cb(mxml_node_t *node,
+                  int where)
+    {
+      const char *name;
+
+     /*
+      * We can conditionally break to a new line
+      * before or after any element. These are
+      * just common HTML elements...
+      */
+
+      name = mxmlGetElement(node);
+
+      if (!strcmp(name, "html") ||
+          !strcmp(name, "head") ||
+          !strcmp(name, "body") ||
+	  !strcmp(name, "pre") ||
+          !strcmp(name, "p") ||
+	  !strcmp(name, "h1") ||
+          !strcmp(name, "h2") ||
+          !strcmp(name, "h3") ||
+	  !strcmp(name, "h4") ||
+          !strcmp(name, "h5") ||
+          !strcmp(name, "h6"))
+      {
+       /*
+	* Newlines before open and after
+        * close...
+	*/
+
+	if (where == MXML_WS_BEFORE_OPEN ||
+            where == MXML_WS_AFTER_CLOSE)
+	  return ("\n");
+      }
+      else if (!strcmp(name, "dl") ||
+               !strcmp(name, "ol") ||
+               !strcmp(name, "ul"))
+      {
+       /*
+	* Put a newline before and after list
+        * elements...
+	*/
+
+	return ("\n");
+      }
+      else if (!strcmp(name, "dd") ||
+               !strcmp(name, "dt") ||
+               !strcmp(name, "li"))
+      {
+       /*
+	* Put a tab before &lt;li>'s, * &lt;dd>'s,
+        * and &lt;dt>'s, and a newline after them...
+	*/
+
+	if (where == MXML_WS_BEFORE_OPEN)
+	  return ("\t");
+	else if (where == MXML_WS_AFTER_CLOSE)
+	  return ("\n");
+      }
+
+     /*
+      * Return NULL for no added whitespace...
+      */
+
+      return (NULL);
+    }
+</pre>
+
+<p>To use this callback function, simply use the name when you
+call any of the save functions:</p>
+
+<pre>
+    FILE *fp;
+    mxml_node_t *tree;
+
+    fp = fopen("filename.xml", "w");
+    mxmlSaveFile(tree, fp, <b>whitespace_cb</b>);
+    fclose(fp);
+</pre>
+
+
+<!-- NEED 10 -->
+<h2>Custom Data Types</h2>
+
+<p>Mini-XML supports custom data types via global load and save
+callbacks. Only a single set of callbacks can be active at any
+time, however your callbacks can store additional information in
+order to support multiple custom data types as needed. The
+<tt>MXML_CUSTOM</tt> node type identifies custom data nodes.</p>
+
+<p>The load callback receives a pointer to the current data node
+and a string of opaque character data from the XML source with
+character entities converted to the corresponding UTF-8
+characters. For example, if we wanted to support a custom
+date/time type whose value is encoded as "yyyy-mm-ddThh:mm:ssZ"
+(ISO format), the load callback would look like the
+following:</p>
+
+<pre>
+    typedef struct
+    {
+      unsigned      year,    /* Year */
+                    month,   /* Month */
+                    day,     /* Day */
+                    hour,    /* Hour */
+                    minute,  /* Minute */
+                    second;  /* Second */
+      time_t        unix;    /* UNIX time */
+    } iso_date_time_t;
+
+    int
+    load_custom(mxml_node_t *node,
+                const char *data)
+    {
+      iso_date_time_t *dt;
+      struct tm tmdata;
+
+     /*
+      * Allocate data structure...
+      */
+
+      dt = calloc(1, sizeof(iso_date_time_t));
+
+     /*
+      * Try reading 6 unsigned integers from the
+      * data string...
+      */
+
+      if (sscanf(data, "%u-%u-%uT%u:%u:%uZ",
+                 &amp;(dt->year), &amp;(dt->month),
+                 &amp;(dt->day), &amp;(dt->hour),
+                 &amp;(dt->minute),
+                 &amp;(dt->second)) != 6)
+      {
+       /*
+        * Unable to read numbers, free the data
+        * structure and return an error...
+        */
+
+        free(dt);
+
+        return (-1);
+      }
+
+     /*
+      * Range check values...
+      */
+
+      if (dt->month < 1 || dt->month > 12 ||
+          dt->day < 1 || dt->day > 31 ||
+          dt->hour < 0 || dt->hour > 23 ||
+          dt->minute < 0 || dt->minute > 59 ||
+          dt->second < 0 || dt->second > 59)
+      {
+       /*
+        * Date information is out of range...
+        */
+
+        free(dt);
+
+        return (-1);
+      }
+
+     /*
+      * Convert ISO time to UNIX time in
+      * seconds...
+      */
+
+      tmdata.tm_year = dt->year - 1900;
+      tmdata.tm_mon  = dt->month - 1;
+      tmdata.tm_day  = dt->day;
+      tmdata.tm_hour = dt->hour;
+      tmdata.tm_min  = dt->minute;
+      tmdata.tm_sec  = dt->second;
+
+      dt->unix = gmtime(&amp;tmdata);
+
+     /*
+      * Assign custom node data and destroy
+      * function pointers...
+      */
+
+      mxmlSetCustom(node, data, destroy);
+
+     /*
+      * Return with no errors...
+      */
+
+      return (0);
+    }
+</pre>
+
+<p>The function itself can return 0 on success or -1 if it is
+unable to decode the custom data or the data contains an error.
+Custom data nodes contain a <tt>void</tt> pointer to the
+allocated custom data for the node and a pointer to a destructor
+function which will free the custom data when the node is
+deleted.</p>
+
+<!-- NEED 15 -->
+<p>The save callback receives the node pointer and returns an
+allocated string containing the custom data value. The following
+save callback could be used for our ISO date/time type:</p>
+
+<pre>
+    char *
+    save_custom(mxml_node_t *node)
+    {
+      char data[255];
+      iso_date_time_t *dt;
+
+
+      dt = (iso_date_time_t *)mxmlGetCustom(node);
+
+      snprintf(data, sizeof(data),
+               "%04u-%02u-%02uT%02u:%02u:%02uZ",
+               dt->year, dt->month, dt->day,
+               dt->hour, dt->minute, dt->second);
+
+      return (strdup(data));
+    }
+</pre>
+
+<p>You register the callback functions using the <a
+href='#mxmlSetCustomHandlers'><tt>mxmlSetCustomHandlers()</tt></a>
+function:</p>
+
+<pre>
+    mxmlSetCustomHandlers(<b>load_custom</b>,
+                          <b>save_custom</b>);
+</pre>
+
+
+<!-- NEED 20 -->
+<h2>Changing Node Values</h2>
+
+<p>All of the examples so far have concentrated on creating and
+loading new XML data nodes. Many applications, however, need to
+manipulate or change the nodes during their operation, so
+Mini-XML provides functions to change node values safely and
+without leaking memory.</p>
+
+<p>Existing nodes can be changed using the <a
+href='#mxmlSetElement'><tt>mxmlSetElement()</tt></a>, <a
+href='#mxmlSetInteger'><tt>mxmlSetInteger()</tt></a>, <a
+href='#mxmlSetOpaque'><tt>mxmlSetOpaque()</tt></a>, <a
+href='#mxmlSetReal'><tt>mxmlSetReal()</tt></a>, <a
+href='#mxmlSetText'><tt>mxmlSetText()</tt></a>, and <a
+href='#mxmlSetTextf'><tt>mxmlSetTextf()</tt></a> functions. For
+example, use the following function call to change a text node
+to contain the text "new" with leading whitespace:</p>
+
+<pre>
+    mxml_node_t *node;
+
+    mxmlSetText(node, 1, "new");
+</pre>
+
+
+<h2>Formatted Text</h2>
+
+<p>The <a href='#mxmlNewTextf'><tt>mxmlNewTextf()</tt></a> and <a
+href='#mxmlSetTextf'><tt>mxmlSetTextf()</tt></a> functions create
+and change text nodes, respectively, using <tt>printf</tt>-style
+format strings and arguments. For example, use the following
+function call to create a new text node containing a constructed
+filename:</p>
+
+<pre>
+    mxml_node_t</a> *node;
+
+    node = mxmlNewTextf(node, 1, "%s/%s",
+                        path, filename);
+</pre>
+
+
+<h2>Indexing</h2>
+
+<p>Mini-XML provides functions for managing indices of nodes.
+The current implementation provides the same functionality as
+<a href='#mxmlFindElement'><tt>mxmlFindElement()</tt></a>.
+The advantage of using an index is that searching and
+enumeration of elements is significantly faster. The only
+disadvantage is that each index is a static snapshot of the XML
+document, so indices are not well suited to XML data that is
+updated more often than it is searched. The overhead of creating
+an index is approximately equal to walking the XML document
+tree. Nodes in the index are sorted by element name and
+attribute value.</p>
+
+<p>Indices are stored in <a href='#mxml_index_t'><tt>mxml_index_t</tt></a>
+structures. The <a href='#mxmlIndexNew'><tt>mxmlIndexNew()</tt></a> function
+creates a new index:</p>
+
+<pre>
+    mxml_node_t *tree;
+    mxml_index_t *ind;
+
+    ind = mxmlIndexNew(tree, "element",
+                       "attribute");
+</pre>
+
+<p>The first argument is the XML node tree to index. Normally this
+will be a pointer to the <tt>?xml</tt> element.</p>
+
+<p>The second argument contains the element to index; passing
+<tt>NULL</tt> indexes all element nodes alphabetically.</p>
+
+<p>The third argument contains the attribute to index; passing
+<tt>NULL</tt> causes only the element name to be indexed.</p>
+
+<p>Once the index is created, the <a
+href='#mxmlIndexEnum'><tt>mxmlIndexEnum()</tt></a>,  <a
+href='#mxmlIndexFind'><tt>mxmlIndexFind()</tt></a>, and  <a
+href='#mxmlIndexReset'><tt>mxmlIndexReset()</tt></a> functions
+are used to access the nodes in the index. The <a
+href='#mxmlIndexReset'><tt>mxmlIndexReset()</tt></a> function
+resets the "current" node pointer in the index, allowing you to
+do new searches and enumerations on the same index. Typically
+you will call this function prior to your calls to <a
+href='#mxmlIndexEnum'><tt>mxmlIndexEnum()</tt></a> and <a
+href='#mxmlIndexFind'><tt>mxmlIndexFind()</tt></a>.</p>
+
+<p>The <a href='#mxmlIndexEnum'><tt>mxmlIndexEnum()</tt></a>
+function enumerates each of the nodes in the index and can be
+used in a loop as follows:</p>
+
+<pre>
+    mxml_node_t *node;
+
+    mxmlIndexReset(ind);
+
+    while ((node = mxmlIndexEnum(ind)) != NULL)
+    {
+      // do something with node
+    }
+</pre>
+
+<p>The <a href='#mxmlIndexFind'><tt>mxmlIndexFind()</tt></a>
+function locates the next occurrence of the named element and
+attribute value in the index. It can be used to find all
+matching elements in an index, as follows:</p>
+
+<pre>
+    mxml_node_t *node;
+
+    mxmlIndexReset(ind);
+
+    while ((node = mxmlIndexFind(ind, "element",
+                                 "attr-value"))
+                != NULL)
+    {
+      // do something with node
+    }
+</pre>
+
+<p>The second and third arguments represent the element name and
+attribute value, respectively. A <tt>NULL</tt> pointer is used
+to return all elements or attributes in the index. Passing
+<tt>NULL</tt> for both the element name and attribute value
+is equivalent to calling <tt>mxmlIndexEnum</tt>.</p>
+
+<p>When you are done using the index, delete it using the
+<a href='#mxmlIndexDelete()'><tt>mxmlIndexDelete()</tt></a>
+function:</p>
+
+<pre>
+    mxmlIndexDelete(ind);
+</pre>
+
+<h2>SAX (Stream) Loading of Documents</h2>
+
+<p>Mini-XML supports an implementation of the Simple API for XML
+(SAX) which allows you to load and process an XML document as a
+stream of nodes. Aside from allowing you to process XML documents of
+any size, the Mini-XML implementation also allows you to retain
+portions of the document in memory for later processing.</p>
+
+<p>The <a href='#mxmlSAXLoad'><tt>mxmlSAXLoadFd</tt></a>, <a
+href='#mxmlSAXLoadFile'><tt>mxmlSAXLoadFile</tt></a>, and <a
+href='#mxmlSAXLoadString'><tt>mxmlSAXLoadString</tt></a> functions
+provide the SAX loading APIs. Each function works like the
+corresponding <tt>mxmlLoad</tt> function but uses a callback to
+process each node as it is read.</p>
+
+<p>The callback function receives the node, an event code, and
+a user data pointer you supply:</p>
+
+<pre>
+    void
+    sax_cb(mxml_node_t *node,
+           mxml_sax_event_t event,
+           void *data)
+    {
+      ... do something ...
+    }
+</pre>
+
+<p>The event will be one of the following:</p>
+
+<ul>
+
+	<li><tt>MXML_SAX_CDATA</tt> - CDATA was just read</li>
+
+	<li><tt>MXML_SAX_COMMENT</tt> - A comment was just read</li>
+
+	<li><tt>MXML_SAX_DATA</tt> - Data (custom, integer, opaque, real, or text) was just read</li>
+
+	<li><tt>MXML_SAX_DIRECTIVE</tt> - A processing directive was just read</li>
+
+	<li><tt>MXML_SAX_ELEMENT_CLOSE</tt> - A close element was just read (<tt>&lt;/element&gt;</tt>)</li>
+
+	<li><tt>MXML_SAX_ELEMENT_OPEN</tt> - An open element was just read (<tt>&lt;element&gt;</tt>)</li>
+
+</ul>
+
+<p>Elements are <em>released</em> after the close element is
+processed. All other nodes are released after they are processed.
+The SAX callback can <em>retain</em> the node using the <a
+href='#mxmlRetain'><tt>mxmlRetain</tt></a> function. For example,
+the following SAX callback will retain all nodes, effectively
+simulating a normal in-memory load:</p>
+
+<pre>
+    void
+    sax_cb(mxml_node_t *node,
+           mxml_sax_event_t event,
+           void *data)
+    {
+      if (event != MXML_SAX_ELEMENT_CLOSE)
+        mxmlRetain(node);
+    }
+</pre>
+
+<p>More typically the SAX callback will only retain a small portion
+of the document that is needed for post-processing. For example, the
+following SAX callback will retain the title and headings in an
+XHTML file. It also retains the (parent) elements like <tt>&lt;html&gt;</tt>, <tt>&lt;head&gt;</tt>, and <tt>&lt;body&gt;</tt>, and processing
+directives like  <tt>&lt;?xml ... ?&gt;</tt> and  <tt>&lt;!DOCTYPE ... &gt;</tt>:</p>
+
+<!-- NEED 10 -->
+<pre>
+    void
+    sax_cb(mxml_node_t *node,
+           mxml_sax_event_t event,
+           void *data)
+    {
+      if (event == MXML_SAX_ELEMENT_OPEN)
+      {
+       /*
+        * Retain headings and titles...
+        */
+
+        char *name = mxmlGetElement(node);
+
+        if (!strcmp(name, "html") ||
+            !strcmp(name, "head") ||
+            !strcmp(name, "title") ||
+            !strcmp(name, "body") ||
+            !strcmp(name, "h1") ||
+            !strcmp(name, "h2") ||
+            !strcmp(name, "h3") ||
+            !strcmp(name, "h4") ||
+            !strcmp(name, "h5") ||
+            !strcmp(name, "h6"))
+          mxmlRetain(node);
+      }
+      else if (event == MXML_SAX_DIRECTIVE)
+        mxmlRetain(node);
+      else if (event == MXML_SAX_DATA)
+      {
+        if (mxmlGetRefCount(mxmlGetParent(node)) > 1)
+        {
+         /*
+          * If the parent was retained, then retain
+          * this data node as well.
+          */
+
+          mxmlRetain(node);
+        }
+      }
+    }
+</pre>
+
+<p>The resulting skeleton document tree can then be searched just
+like one loaded using the <tt>mxmlLoad</tt> functions. For example,
+a filter that reads an XHTML document from stdin and then shows the
+title and headings in the document would look like:</p>
+
+<pre>
+    mxml_node_t *doc, *title, *body, *heading;
+
+    doc = mxmlSAXLoadFd(NULL, 0,
+                        MXML_TEXT_CALLBACK,
+                        <b>sax_cb</b>, NULL);
+
+    title = mxmlFindElement(doc, doc, "title",
+                            NULL, NULL,
+                            MXML_DESCEND);
+
+    if (title)
+      print_children(title);
+
+    body = mxmlFindElement(doc, doc, "body",
+                           NULL, NULL,
+                           MXML_DESCEND);
+
+    if (body)
+    {
+      for (heading = mxmlGetFirstChild(body);
+           heading;
+           heading = mxmlGetNextSibling(heading))
+        print_children(heading);
+    }
+</pre>
+
+</body>
+</html>

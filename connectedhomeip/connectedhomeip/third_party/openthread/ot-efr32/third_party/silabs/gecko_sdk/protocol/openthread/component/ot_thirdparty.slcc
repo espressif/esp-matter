@@ -1,0 +1,22 @@
+id: ot_thirdparty
+label: Thirdparty
+package: OpenThread
+category: OpenThread
+quality: production
+description: This component references to all the third party support needed by the OpenThread stack
+provides:
+  - name: ot_thirdparty
+requires:
+  - name: ot_mbedtls
+  - name: segger_rtt
+define:
+  - name: BUFFER_SIZE_DOWN
+    value: 0
+  - name: BUFFER_SIZE_UP
+    value: 768
+    unless:
+    - "device_family_efr32mg1"
+  - name: BUFFER_SIZE_UP
+    value: 128
+    condition:
+    - "device_family_efr32mg1"

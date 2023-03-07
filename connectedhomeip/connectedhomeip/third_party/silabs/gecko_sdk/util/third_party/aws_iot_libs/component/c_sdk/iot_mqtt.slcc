@@ -1,0 +1,121 @@
+id: iot_mqtt
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|C SDK
+label: IoT MQTT
+description: >
+  C SDK for MQTT
+  Note: The version provided with Gecko SDK is present for running aws_test and validate the 
+  low-level implementation of IoT API. This module is not used internally by any Silicon Labs 
+  component.
+  Be aware that The MQTT used by aws_test contains the following security vulnerability: 
+  CVE-2019-13120 - "Amazon FreeRTOS up to and including v1.4.8 lacks length checking in 
+  prvProcessReceivedPublish, resulting in untargetable leakage of arbitrary memory contents 
+  on a device to an attacker. If an attacker has the authorization to send a malformed MQTT 
+  publish packet to an Amazon IoT Thing, which interacts with an associated vulnerable MQTT 
+  message in the application, specific circumstances could trigger this vulnerability."
+
+package: amazon_platform
+quality: production
+
+root_path: util/third_party/aws_iot_libs
+
+provides:
+  - name: iot_mqtt
+
+requires:
+  - name: iot_doubly_linked_list
+  - name: iot_config_common
+  - name: iot_lib_init
+  - name: iot_clock
+  - name: iot_threads
+  - name: iot_atomic
+  - name: iot_error
+  - name: iot_static_memory
+
+  # Test related requires
+  - name: iot_tls
+    condition: ["aws_tests_defs"]
+
+source:
+  - path: libraries/c_sdk/standard/mqtt/src/iot_mqtt_agent.c
+  - path: libraries/c_sdk/standard/mqtt/src/iot_mqtt_api.c
+  - path: libraries/c_sdk/standard/mqtt/src/iot_mqtt_context_connection.c
+  - path: libraries/c_sdk/standard/mqtt/src/iot_mqtt_managed_function_wrapper.c
+  - path: libraries/c_sdk/standard/mqtt/src/iot_mqtt_mutex_wrapper.c
+  - path: libraries/c_sdk/standard/mqtt/src/iot_mqtt_network.c
+  - path: libraries/c_sdk/standard/mqtt/src/iot_mqtt_operation.c
+  - path: libraries/c_sdk/standard/mqtt/src/iot_mqtt_publish_duplicates.c
+  - path: libraries/c_sdk/standard/mqtt/src/iot_mqtt_serializer_deserializer_wrapper.c
+  - path: libraries/c_sdk/standard/mqtt/src/iot_mqtt_static_memory.c
+  - path: libraries/c_sdk/standard/mqtt/src/iot_mqtt_subscription.c
+  - path: libraries/c_sdk/standard/mqtt/src/iot_mqtt_subscription_container.c
+  - path: libraries/c_sdk/standard/mqtt/src/iot_mqtt_validate.c
+  - path: libraries/c_sdk/standard/mqtt/src/private/iot_mqtt_internal.h
+
+  # Test related files
+  - path: tests/integration_test/core_mqtt_system_test.c
+    condition: ["aws_tests_defs"]
+  - path: libraries/c_sdk/standard/mqtt/test/unit/iot_tests_mqtt_api.c
+    condition: ["aws_tests_defs"]
+  - path: libraries/c_sdk/standard/mqtt/test/unit/iot_tests_mqtt_metrics.c
+    condition: ["aws_tests_defs"]
+  - path: libraries/c_sdk/standard/mqtt/test/unit/iot_tests_mqtt_receive.c
+    condition: ["aws_tests_defs"]
+  - path: libraries/c_sdk/standard/mqtt/test/unit/iot_tests_mqtt_subscription.c
+    condition: ["aws_tests_defs"]
+  - path: libraries/c_sdk/standard/mqtt/test/unit/iot_tests_mqtt_validate.c
+    condition: ["aws_tests_defs"]
+  - path: libraries/c_sdk/standard/mqtt/test/system/iot_tests_mqtt_system.c
+    condition: ["aws_tests_defs"]
+  - path: libraries/c_sdk/standard/mqtt/test/mock/iot_tests_mqtt_mock.c
+    condition: ["aws_tests_defs"]
+  - path: libraries/abstractions/backoff_algorithm/source/backoff_algorithm.c
+    condition: ["aws_tests_defs"]
+
+include:
+  - path: libraries/c_sdk/standard/mqtt/include/types
+    file_list:
+      - path: iot_mqtt_types.h
+  - path: libraries/c_sdk/standard/mqtt/include
+    file_list:
+      - path: iot_mqtt.h
+      - path: iot_mqtt_agent.h
+      - path: iot_mqtt_lib.h
+  - path: libraries/c_sdk/standard/mqtt/src
+    file_list:
+      - path: private/iot_mqtt_internal.h
+
+  # Test related includes
+  - path: libraries/c_sdk/standard/mqtt/test/mock
+    file_list:
+      - path: iot_tests_mqtt_mock.h
+    condition: ["aws_tests_defs"]
+  - path: libraries/c_sdk/standard/mqtt/test/access
+    file_list:
+      - path: iot_test_access_mqtt.h
+      - path: iot_test_access_mqtt_api.c
+      - path: iot_test_access_mqtt_context_connection.c
+      - path: iot_test_access_mqtt_subscription.c
+    condition: ["aws_tests_defs"]
+  - path: libraries/abstractions/backoff_algorithm/source/include
+    file_list:
+      - path: backoff_algorithm.h
+    condition: ["aws_tests_defs"]
+
+config_file:
+  - path: libraries/c_sdk/standard/mqtt/include/iot_mqtt_agent_config_defaults.h
+    file_id: iot_mqtt_agent_config_defaults
+  - path: libraries/c_sdk/standard/mqtt/include/iot_mqtt_config_defaults.h
+    file_id: iot_mqtt_config_defaults
+  - path: vendors/siliconlabs/boards/all/aws_tests/config_files/iot_mqtt_config.h
+    file_id: iot_mqtt_config
+    condition: ["aws_tests_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_tests/config_files/iot_mqtt_agent_config.h
+    file_id: iot_mqtt_agent_config
+    condition: ["aws_tests_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/iot_mqtt_config.h
+    file_id: iot_mqtt_config
+    condition: ["aws_demos_defs"]
+  - path: vendors/siliconlabs/boards/all/aws_demos/config_files/iot_mqtt_agent_config.h
+    file_id: iot_mqtt_agent_config
+    condition: ["aws_demos_defs"]

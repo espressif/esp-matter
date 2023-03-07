@@ -1,0 +1,12 @@
+package/lib/lib/ticlang/m4/slnetsock_release/bsd/netdb.om4: bsd/netdb.c bsd/sys/socket.h slnetif.h slnetutils.h bsd/netdb.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/types.h bsd/errnoutil.h slnetsock.h slneterr.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/_internal.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/time.h 
+bsd/netdb.c:
+bsd/sys/socket.h:
+slnetif.h:
+slnetutils.h:
+bsd/netdb.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/types.h:
+bsd/errnoutil.h:
+slnetsock.h:
+slneterr.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/_internal.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/time.h:

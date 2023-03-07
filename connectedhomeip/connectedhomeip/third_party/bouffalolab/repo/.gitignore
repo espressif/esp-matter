@@ -1,0 +1,15 @@
+toolchain
+tools/flash_tool
+
+# IntelliJ/CLion
+.idea
+
+**/build_out
+
+# Linux
+*.swp
+*.tmp
+
+# MacOS
+.DS_Store
+__pycache__

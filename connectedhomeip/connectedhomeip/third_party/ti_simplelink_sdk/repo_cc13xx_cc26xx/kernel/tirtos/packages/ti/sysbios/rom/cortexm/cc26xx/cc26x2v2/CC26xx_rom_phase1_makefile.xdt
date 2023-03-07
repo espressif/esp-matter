@@ -1,0 +1,320 @@
+%%{
+/*
+ * Copyright (c) 2016-2017, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+%%}
+%%{
+    var File = xdc.module("xdc.services.io.File");
+
+    var BIOS = xdc.module("ti.sysbios.BIOS");
+
+    var Build = xdc.module("ti.sysbios.Build");
+
+    var ROM = xdc.module("ti.sysbios.rom.ROM");
+
+    var TARGET = $args[0];
+
+    var XDCROOT = String(environment['xdc.rootDir'] + '/packages/').replace(/\\/g, "/");
+
+    /* collect xdc include paths */
+    var xdcpath =  String(environment['xdc.path'] + '/packages/').replace(/\\/g, "/");
+    var xdcincs = xdcpath.split(';');
+    var XDC_PATH_INCS = "";
+    for each (var inc in xdcincs) {
+        XDC_PATH_INCS += "-I\"" + inc + "/\" ";
+    }
+
+    var XDCRUNTIME = xdc.loadPackage('xdc.runtime').packageRepository;
+    
+    var CGEN = TARGET.rootDir.replace(/\\/g, "/");
+    
+    var BIOSROOT = File.getDOSPath(this.$package.packageRepository) + "ti/sysbios/"
+
+    BIOS.buildingAppLib = false;
+    
+    var sourcesLIB = Build.getCFiles(TARGET.$name).split(' ');
+
+    BIOS.buildingAppLib = true;
+
+    var sourcesROM = Build.getCFiles(TARGET.$name).split(' ');
+
+    function srcName(path) {
+	if (s.substring(0,4) == "xdc/") {
+	    return (XDCRUNTIME + s);
+	} else if (s.substring(0,2) == "./") {
+	    return(s);
+	} else if (s.substring(0,1) == "/") {
+	    return(s);
+	} else {
+	    return (BIOSROOT + s);
+	}
+    }
+
+    function baseName(path) {
+	return (path.substr(path.lastIndexOf('/') + 1).replace(/\.[^\.]+$/, ""));
+    }
+
+    function packageName(path) {
+	var dirpath = path.substring(0, path.lastIndexOf('/'));
+	var begin = dirpath.substring(0, dirpath.lastIndexOf('/'));
+	if (begin.length != 0) {
+	    dirpath = begin + "_" + dirpath.substr(dirpath.lastIndexOf('/')+1);
+	}
+	return (dirpath.substr(dirpath.lastIndexOf('/') + 1));
+    }
+    
+    function packageDir(path) {
+	return (path.substring(0, path.lastIndexOf('/')));
+    }
+
+    function fileToString(filename) {
+        var line, idx = 0;
+        var lineArr = new Array();
+
+        /* Open file */
+        var file = new java.io.BufferedReader(new java.io.FileReader(filename));
+
+        /* Read file */
+        while ((line = file.readLine()) != null) {
+            lineArr[idx++] = line;
+        }
+
+        return String(lineArr.join("|"));
+    }
+
+    var ROMASMOBJS = [];
+    var ROMPPS = [];
+
+    var TestName = xdc.module("xdc.cfg.Program").name.substring(0, Program.name.lastIndexOf('.'));
+
+    var RomModule = this;
+print(RomModule.$name);
+    ROM.makeExternsFile("./package/cfg/" + TestName + "_p" + TARGET.suffix + ".src/sysbios/romExternFuncs.txt");
+    
+    var RTS = xdc.loadPackage(TARGET.rts);
+
+    var Libs = RTS.getLibs(xdc.module("xdc.cfg.Program"));
+    var libsArray = Libs.split(';');
+    var XDC_LIB = "";
+    for (i in libsArray) {
+	XDC_LIB += "-l \"" + XDCROOT + TARGET.rts.replace(/\./g,"/") + "/"
+					 + libsArray[i].match(/[^\;]*/) + "\" ";
+    }
+
+    var driverlib = "-l " + xdc.findFile("ti/devices/cc13x2_cc26x2/driverlib/bin/ccs/driverlib.lib");
+    print(driverlib);
+
+    if (!java.io.File(RomModule.libDir).exists()) {
+	java.io.File(RomModule.libDir).mkdir();
+    }
+%%}
+
+SHELL = /bin/bash
+
+MAKEFLAGS = -j16
+
+RTSLIB = -i`CGEN`/lib/ -llibc.a
+
+XDCLIB = `XDC_LIB`
+
+LIBS = `ROM.getOtherLibs()` `driverlib`
+
+XOPTS = `'-I"' + XDCRUNTIME + '" ' + '-I"' + XDCROOT + '"' + " -Dxdc_target_types__=" + File.getDOSPath(TARGET.$package.packageRepository) + TARGET.stdInclude + " -Dxdc_target_name__=" + TARGET.name`
+
+vpath % `File.getDOSPath(this.$package.packageRepository) + "ti/sysbios/"`
+vpath %.c `XDCROOT`
+
+CCOPTS    = `BIOS.getCCOpts(TARGET.name)`
+
+LNKOPTS   = -z
+
+XDC_ROOT  = `XDCROOT`
+
+BIOS_ROOT = `BIOSROOT`
+
+BIOS_DEFS = `Build.getDefs() + ROM.getConfigDefs()`
+
+ROM_LIB_DEFS  = -DDRIVERLIB_NOROM `RomModule.getOtherLibDefs()`
+
+ROM_EXTERN_DEFS  = `ROM.getExternDefs()`
+
+ROM_GEN_DEFS  = `ROM.getGeneratedDefs()`
+
+EXTERN_FUNCS = `fileToString(Build.$private.outputDir+"/romExternFuncs.txt")`
+
+INTERN_FUNCS = 
+
+BIOS_INC  = -I"`File.getDOSPath(this.$package.packageRepository)`"
+
+INCS =  $(BIOS_INC) `XDC_PATH_INCS`
+
+CC = `CGEN`/bin/`TARGET.cc.cmd` $(CCOPTS) -I `CGEN`/include
+ASM = `CGEN`/bin/`TARGET.asm.cmd` $(CCOPTS) -I `CGEN`/include
+AR = `CGEN`/bin/`TARGET.ar.cmd` `TARGET.ar.opts`
+LNK = `CGEN`/bin/`TARGET.lnk.cmd` $(LNKOPTS)
+NM = `CGEN`/bin/armnm
+OBJDUMP = /db/vendors/linaro/gcc-arm-none-eabi-4_8-2014q3/bin/arm-none-eabi-objdump
+
+%/*
+% * In order to prevent the linker from aliasing some of the generated proxy/delegate
+% * APIs together and having unwanted symbols defined in the ROM, the big.c file
+% * must be built without optimizations here.
+% */
+%var CCOPTS_BIGC = BIOS.getCCOpts(TARGET.name).toString().replace(/\-o3/," ") + Build.getCommandLineDefs();
+%CCOPTS_BIGC = CCOPTS_BIGC.toString().replace(/\-\-program_level_compile/,"");
+%CCOPTS_BIGC = CCOPTS_BIGC.toString().replace(/\-\-optimize_with_debug/,"");
+%CCOPTS_BIGC = CCOPTS_BIGC.toString().replace(/\-\-opt_for_speed=2/,"");
+%CCOPTS_BIGC = CCOPTS_BIGC.toString().replace("-Dti_sysbios_family_arm_m3_Hwi_enableException__D=FALSE","");
+%CCOPTS_BIGC = CCOPTS_BIGC.toString().replace("-Dti_sysbios_family_arm_m3_Hwi_disablePriority__D=32U","");
+CC_BIGC = `CGEN`/bin/`TARGET.cc.cmd` `CCOPTS_BIGC` -I `CGEN`/include
+
+%var CCOPTS_LIB = BIOS.getCCOpts(TARGET.name).toString().replace("--opt_for_speed=0","--opt_for_speed=2");
+CC_LIB = `CGEN`/bin/`TARGET.cc.cmd` `CCOPTS_LIB` -I `CGEN`/include
+
+DEL = rm -f
+CP = cp -f
+
+define RM
+	$(if $(wildcard $1),$(DEL) $1,:)
+endef
+
+define ASSEMBLE
+	@echo asm`TARGET.suffix` $< ...
+	@$(ASM) $(BIOS_DEFS) $(XOPTS) $(INCS) $<
+endef
+%var LIB = "sysbios.a" + TARGET.suffix;
+%var CFG_OBJ = "rom_sysbios_config.obj";
+%var ROM_EXEC = "rtos_rom.x" + TARGET.suffix;
+%var SYMBOL_MAP_FILE = "symbolMapFile.mak";
+
+all: `ROM_EXEC`
+
+%var asmSources = Build.getAsmFiles(TARGET.$name);
+%/* 
+% * pull in ALL ASM files
+% * and mangle the names of the ROM'd APIs in the non-ROM lib.
+% */
+%for each (var s in asmSources) {
+%   var romAsmObj = packageName(s) + "_" + baseName(s) + "_rom.obj";
+%   var romAsmFile = packageName(s) + "_" + baseName(s) + "_rom.asm";
+%   var asmDir = packageDir(s);
+%   ROMASMOBJS.push(romAsmObj)
+`romAsmObj`: `s` romExternFuncs.txt
+	@-$(call RM, $@)
+	@$(CP) $(BIOS_ROOT)`s` `romAsmFile`
+	@$(XDC_ROOT)/../xs -c `RomModule.libDir`../mangleAsmFile.xs `romAsmFile` `romAsmFile` romExternFuncs.txt
+	@$(ASM) --output_file=`romAsmObj` -i$(BIOS_ROOT)`asmDir` $(BIOS_DEFS) $(XOPTS) $(INCS) `romAsmFile`
+
+%}
+
+%
+%/* 
+% * pull in all the C files used in BIOS.obj 
+% * and mangle the names of the externed APIs in the ROM lib.
+% */
+%for each (var s in sourcesROM) {
+%   if ((s.match(/_config.c/))) {
+%       var romPP = baseName(s) + "_rom.pp";
+%   }
+%   else {
+%	if (packageName(s)) {
+%           var romPP = packageName(s) + "_" + baseName(s) + "_rom.pp";
+%	}
+%	else {
+%           var romPP = baseName(s) + "_rom.pp";
+%	}
+%   }
+%   ROMPPS.push("mangled_" + romPP);
+mangled_`romPP`: `s` romExternFuncs.txt
+	@echo cpp`TARGET.suffix` `s` ...
+%if (baseName(s) == "HeapTrack") {
+	@$(CC) -ppl --output_file=`romPP` $(BIOS_DEFS) $(ROM_LIB_DEFS) $(XOPTS) $(INCS) -Uxdc_runtime_Assert_DISABLE_ALL \
+%} else {
+	@$(CC) -ppl --output_file=`romPP` $(BIOS_DEFS) $(ROM_LIB_DEFS) $(XOPTS) $(INCS) \
+%}
+	`srcName(s)`
+	@if [[ -s romExternFuncs.txt ]]; then \
+	$(XDC_ROOT)/../xs -c `RomModule.libDir`../mangleCFile.xs `romPP` mangled_`romPP` romExternFuncs.txt "$(EXTERN_FUNCS)"; \
+	fi
+
+%}
+
+mangled_BIOS_rom.obj: `ROMPPS.join(" ")`
+	@echo ROM Build Stage0: Create the OBJ files that will go into the ROM based on the
+	@echo specified set of modules.
+	@-$(call RM, $@)
+	@echo cl`TARGET.suffix` $< ...
+	@$(CC) $(BIOS_DEFS) $(ROM_EXTERN_DEFS) $(ROM_GEN_DEFS) $(XOPTS) $(INCS) \
+%for each (var s in ROMPPS) {
+	`s` \
+%}
+
+`TestName`.obj: `RomModule.libDir`../`TestName`.c makefile
+	@echo cl`TARGET.suffix` `TestName`.c ...
+	@-$(call RM, `TestName`.obj)
+	@$(CC) --output_file=`TestName`.obj $(BIOS_DEFS) $(XOPTS) $(INCS) \
+	`RomModule.libDir`../`TestName`.c
+
+`TestName`_p`TARGET.suffix`.obj: ../../`TestName`_p`TARGET.suffix`.c
+	@echo Compiling Big.c
+	@echo cl`TARGET.suffix` `TestName`_p`TARGET.suffix` ...
+	@$(CP) ../../`TestName`_p`TARGET.suffix`.c .
+	@$(CP) ../../`TestName`_p`TARGET.suffix`.h .
+	@$(CP) ../../`TestName`_p`TARGET.suffix`.xdl .
+	@$(CC_BIGC) $(XOPTS) $(INCS) `TestName`_p`TARGET.suffix`.c
+
+`ROM_EXEC`: mangled_BIOS_rom.obj `ROMASMOBJS.join(" ")` `TestName`_p`TARGET.suffix`.obj `TestName`.obj
+	@echo ROM Build Stage 1: Partially link the component library OBJ files.
+	@echo Manually parse the resulting rom_p.map file to
+	@echo determine the names of each non-ROM function referenced by the ROM.
+	@echo This list is then used to populate ROM.funcTable[] entries in the
+	@echo `TestName`.cfg file.
+	@echo lnk`TARGET.suffix` rom_p.obj
+	@$(LNK) -r --output_file=rom_p.obj -m rom_p.map `TestName`.obj mangled_BIOS_rom.obj `ROMASMOBJS.join(" ")`
+	@echo ROM Build Stage 2: create the executable ROM image "rom.obj".
+	@echo lnk`TARGET.suffix` `ROM_EXEC`
+	@$(LNK) --output_file=`ROM_EXEC` -m rtos_rom.map `TestName`_p`TARGET.suffix`.obj `TestName`.obj mangled_BIOS_rom.obj `ROMASMOBJS.join(" ")` `RomModule.libDir`../CC26xx.cmd `TestName`_p`TARGET.suffix`.xdl $(LIBS) $(RTSLIB)
+	@$(CP) `ROM_EXEC` "`RomModule.libDir`"
+	@$(CP) rtos_rom.map "`RomModule.libDir`"
+	@echo Extract sysbios_rom_text, sysbios_rom_const, sysbios_rom_data
+	@$(OBJDUMP) -t -j .sysbios_rom_text  `ROM_EXEC` | grep " g " > sysbios_rom_text
+	@$(OBJDUMP) -t -j .sysbios_rom_const `ROM_EXEC` | grep " g " > sysbios_rom_const
+	@$(OBJDUMP) -t -j .sysbios_rom_data  `ROM_EXEC` | grep " g " > sysbios_rom_data
+	@$(CP) sysbios_rom_text "`RomModule.libDir`"
+	@$(CP) sysbios_rom_const "`RomModule.libDir`"
+	@$(CP) sysbios_rom_data "`RomModule.libDir`"
+	@echo Create CC26xx_romStructArraySumbols.txt file
+	@$(XDC_ROOT)/../xs -c `RomModule.libDir`../createRomStructContents.xs  sysbios_rom_text sysbios_rom_const sysbios_rom_data CC26xx_romStructArraySymbols.txt
+	@$(CP) CC26xx_romStructArraySymbols.txt "`RomModule.libDir`"
+
+clean:
+	@$(CP) `TestName`_p`TARGET.suffix`.* ../../
+	@-$(call RM, *.*)

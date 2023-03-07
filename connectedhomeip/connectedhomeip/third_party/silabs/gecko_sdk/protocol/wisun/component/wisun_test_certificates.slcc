@@ -1,0 +1,16 @@
+id: "wisun_test_certificates"
+label: "Wi-SUN Test Certificates"
+description: "Wi-SUN Test Certificates"
+package: "wisun"
+category: "Wi-SUN"
+quality: "production"
+root_path: "protocol/wisun"
+
+ui_hints:
+  visibility: never
+
+provides:
+  - name: "wisun_test_certificates"
+
+config_file:
+  - path: "plugin/wisun_test_certificates.h"

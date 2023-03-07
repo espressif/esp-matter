@@ -1,0 +1,14 @@
+id: zw_debug_print
+label: Z-Wave Debug Print
+category: Z-Wave
+description: Enables debug print. Install this component to get debug output.
+package: Z-Wave
+quality: production
+provides:
+- name: zw_debug_print
+
+requires:
+  - name: iostream_recommended_stream
+  - name: zw_debug
+  - name: iostream_swo
+    condition: [zw_api_serialapi]

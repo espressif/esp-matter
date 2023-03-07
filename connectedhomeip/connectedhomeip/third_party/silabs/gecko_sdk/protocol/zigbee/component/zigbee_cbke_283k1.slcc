@@ -1,0 +1,46 @@
+id: zigbee_cbke_283k1
+label: CBKE 283k1
+package: Zigbee
+category: Zigbee|Stack
+quality: production
+
+description: Provides Certificate-Based Key Exchange (CBKE) functions specific to the 283k ECC curve used in Smart Energy 1.2 and later.
+
+provides:
+  - name: zigbee_cbke_283k1
+  - name: zigbee_ecc_curve_support
+    allow_multiple: true
+
+requires:
+  - name: zigbee_cbke_283k1_implementation
+  - name: zigbee_cbke_283k1_library
+    condition:
+      - zigbee_force_libraries
+  - name: zigbee_cbke_core
+  - name: zigbee_ecc_283k1
+
+recommends:
+  - id: zigbee_cbke_283k1_source
+  - id: zigbee_ecc_283k1
+    condition:
+      - device_cortexm
+  - id: zigbee_ecc_283k1_simulation
+    condition:
+      - zigbee_simulation
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_cbke_283k1
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: set_value
+      function_name: emberAfPluginEzspCbkeSetValueCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: permit_host_to_ncp_frame
+      function_name: emberAfPluginEzspCbkePermitHostToNcpFrameCallback
+
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/cbke-283k1

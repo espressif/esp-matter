@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster xmlns:zcl="http://zigbee.org/zcl/clusters"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:type="http://zigbee.org/zcl/types"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd"
+  id="0500" revision="2" name="IASZone">
+  <classification role="application" picsCode="IASZ" primaryTransaction="2" />
+
+  <server>
+    <attributes>
+      <!--  Zone Information Attribute Set -->
+      <attribute id="0000" name="ZoneState" type="enum8" required="true" max="255" default="0">
+        <restriction>
+          <type:enumeration value="00" name="NotEnrolled" />
+          <type:enumeration value="01" name="Enrolled" />
+        </restriction>
+      </attribute>
+      <attribute id="0001" name="ZoneType" type="IasZoneType" required="true" />
+      <attribute id="0002" name="ZoneStatus" type="IasZoneStatus" required="true" default="0" />
+      <!--  Zone Settings Attribute Set -->
+      <attribute id="0010" name="IASCIEAddress" type="EUI64" writable="true" required="true" />
+      <attribute id="0011" name="ZoneID" type="uint8" required="true" max="255" default="255" />
+      <attribute id="0012" name="NumberOfZoneSensitivityLevelsSupported" type="uint8" min="2" max="255" default="2" />
+      <attribute id="0013" name="CurrentZoneSensitivityLevel" type="uint8" writable="true" max="255" default="0" />
+    </attributes>
+    <commands>
+      <command id="00" name="ZoneEnrollResponse" required="true" >
+        <fields>
+          <field name="EnrollResponseCode" type="enum8">
+            <restriction>
+              <type:enumeration name="Success" value="00"/>
+              <type:enumeration name="NotSupported" value="01"/>
+              <type:enumeration name="NoEnrollPermit" value="02"/>
+              <type:enumeration name="TooManyZones" value="03"/>
+            </restriction>
+          </field>
+          <field name="ZoneID" type="uint8"/>
+        </fields>
+      </command>
+      <command id="01" name="InitiateNormalOperationMode" />
+      <command id="02" name="InitiateTestMode" >
+       <fields>
+          <field name="TestModeDuration" type="uint8"/>
+          <field name="CurrentZoneSensitivityLevel" type="uint8"/>
+        </fields>
+      </command>
+    </commands>
+  </server>
+  <client>
+    <commands>
+      <command id="00" name="ZoneStatusChangeNotification" required="true" >
+        <fields>
+          <field name="ZoneStatus" type="IasZoneStatus"/>
+          <field name="ExtendedStatus" type="map8"/>
+          <field name="ZoneID" type="uint8"/>
+          <field name="Delay" type="uint16"/>
+        </fields>
+      </command>
+      <command id="01" name="ZoneEnrollRequest" required="true" >
+       <fields>
+          <field name="ZoneType" type="IasZoneType"/>
+          <field name="ManufacturerCode" type="uint16"/>
+        </fields>
+      </command>
+    </commands>
+  </client>
+</zcl:cluster>

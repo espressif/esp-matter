@@ -1,0 +1,370 @@
+<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:type="http://zigbee.org/zcl/types"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xmlns:zcl="http://zigbee.org/zcl/clusters"
+  xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd"
+  id="0300" revision="2" name="ColorControl">
+  <classification role="application" picsCode="CC" primaryTransaction="1" />
+  
+  <type:type short="CCColorOptions" name="CCColorOptions" id="18" inheritsFrom="map8">
+    <bitmap>
+      <element name="ExecuteIfOff" type="bool" mask="01" />
+    </bitmap>
+  </type:type>
+  <type:type short="CCDirection" name="CCDirection" id="30" inheritsFrom="enum8">
+    <restriction>
+      <type:enumeration value="00" name="ShortestDistance" />
+      <type:enumeration value="01" name="LongestDistance" />
+      <type:enumeration value="02" name="Up" />
+      <type:enumeration value="03" name="Down" />
+    </restriction>
+  </type:type>
+  <type:type short="CCMoveMode" name="CCMoveMode" id="30" inheritsFrom="enum8">
+    <restriction>
+      <type:enumeration value="00" name="Stop" />
+      <type:enumeration value="01" name="Up" />
+      <type:enumeration value="03" name="Down" />
+    </restriction>
+  </type:type>
+  <type:type short="CCStepMode" name="CCStepMode" id="30" inheritsFrom="enum8">
+    <restriction>
+      <type:enumeration value="01" name="Up" />
+      <type:enumeration value="03" name="Down" />
+    </restriction>
+  </type:type>
+  <type:type short="CCMinMiredsField" name="CCMinMiredsField" id="21" inheritsFrom="uint16">
+    <restriction>
+      <type:special value="0000" name="ClipMinToColorTempPhysicalMinMireds" />
+      <type:minInclusiveRef ref="ColorTempPhysicalMinMireds" />
+      <type:maxInclusiveRef ref="ColorTemperatureMireds" />
+    </restriction>
+  </type:type>
+  <type:type short="CCMaxMiredsField" name="CCMaxMiredsField" id="21" inheritsFrom="uint16">
+    <restriction>
+      <type:special value="0000" name="ClipMaxToColorTempPhysicalMaxMireds" />
+      <type:minInclusiveRef ref="ColorTemperatureMireds" />
+      <type:maxInclusiveRef ref="ColorTempPhysicalMaxMireds" />
+    </restriction>
+  </type:type>
+  <type:type short="CCColorLoopDirection" name="CCColorLoopDirection" id="20" inheritsFrom="uint8">
+    <restriction>
+      <type:enumeration value="00" name="DecrementEnhancedCurrentHue" />
+      <type:enumeration value="01" name="IncrementEnhancedCurrentHue" />
+    </restriction>
+  </type:type>
+  
+  <server>
+    <attributes>
+      <!-- Color Information Attribute Set -->
+      <attribute id="0000" name="CurrentHue" type="uint8" max="254" reportRequired="true" default="0" requiredIf="ColorCapabilities.HueSaturationSupported = true" />
+      <attribute id="0001" name="CurrentSaturation" type="uint8" max="254" reportRequired="true" sceneRequired="true" default="0" requiredIf="ColorCapabilities.HueSaturationSupported = true" />
+      <attribute id="0002" name="RemainingTime" type="uint16" max="65534" default="0" />
+      <attribute id="0003" name="CurrentX" type="uint16" max="65279" reportRequired="true" sceneRequired="true" default="24939" requiredIf="ColorCapabilities.XYSupported = true" />
+      <attribute id="0004" name="CurrentY" type="uint16" max="65279" reportRequired="true" sceneRequired="true" default="24701" requiredIf="ColorCapabilities.XYSupported = true" />
+      <attribute id="0005" name="DriftCompensation" type="enum8">
+        <restriction>
+          <type:enumeration value="00" name="None" />
+          <type:enumeration value="01" name="OtherOrUnknown" />
+          <type:enumeration value="02" name="TemperatureMonitoring" />
+          <type:enumeration value="03" name="OpticalLuminanceMonitoringAndFeedback" />
+          <type:enumeration value="04" name="OpticalColorMonitoringAndFeedback" />
+        </restriction>
+      </attribute>
+      <attribute id="0006" name="CompensationText" type="string">
+        <restriction>
+          <type:minLength value="0" />
+          <type:maxLength value="254" />
+        </restriction>
+      </attribute>
+      <attribute id="0007" name="ColorTemperatureMireds" type="uint16" max="65279" reportRequired="true" sceneRequired="true" default="250" requiredIf="ColorCapabilities.ColorTemperatureSupported = true">
+        <restriction>
+          <type:special value="0000" name="Undefined" />
+          <type:minInclusiveRef ref="ColorTempPhysicalMinMireds" />
+          <type:maxInclusiveRef ref="ColorTempPhysicalMaxMireds" />
+        </restriction>
+      </attribute>
+      <attribute id="0008" name="ColorMode" type="enum8" default="1" required="true">
+        <restriction>
+          <type:enumeration value="00" name="CurrentHueAndCurrentSaturation" />
+          <type:enumeration value="01" name="CurrentXAndCurrentY" />
+          <type:enumeration value="02" name="ColorTemperatureMireds" />
+        </restriction>
+      </attribute>
+      <attribute id="000F" name="Options" type="CCColorOptions" writable="true" default="0" required="true" />
+      <attribute id="4000" name="EnhancedCurrentHue" type="uint16" max="65535" sceneRequired="true" default="0" requiredIf="ColorCapabilities.EnhancedHueSupported = true" />
+      <attribute id="4001" name="EnhancedColorMode" type="enum8" default="1" required="true">
+        <restriction>
+          <type:enumeration value="00" name="CurrentHueAndCurrentSaturation" />
+          <type:enumeration value="01" name="CurrentXAndCurrentY" />
+          <type:enumeration value="02" name="ColorTemperatureMireds" />
+          <type:enumeration value="03" name="EnhancedCurrentHueAndCurrentSaturation" />
+        </restriction>
+      </attribute>
+      <attribute id="4002" name="ColorLoopActive" type="uint8" max="255" sceneRequired="true" default="0" requiredIf="ColorCapabilities.ColorLoopSupported = true">
+        <restriction>
+          <type:enumeration value="00" name="ColorLoopInactive" />
+          <type:enumeration value="01" name="ColorLoopActive" />
+        </restriction>
+      </attribute>
+      <attribute id="4003" name="ColorLoopDirection" type="CCColorLoopDirection" max="255" sceneRequired="true" default="0" requiredIf="ColorCapabilities.ColorLoopSupported = true" />
+      <attribute id="4004" name="ColorLoopTime" type="uint16" max="65535" sceneRequired="true" default="25" requiredIf="ColorCapabilities.ColorLoopSupported = true" />
+      <attribute id="4005" name="ColorLoopStartEnhancedHue" type="uint16" max="65535" default="8960" requiredIf="ColorCapabilities.ColorLoopSupported = true" />
+      <attribute id="4006" name="ColorLoopStoredEnhancedHue" type="uint16" max="65535" default="0" requiredIf="ColorCapabilities.ColorLoopSupported = true" />
+      <attribute id="400A" name="ColorCapabilities" type="map16" default="0" required="true">
+        <bitmap>
+          <element name="HueSaturationSupported" type="bool" mask="0001" />
+          <element name="EnhancedHueSupported" type="bool" mask="0002" shiftRight="1" />
+          <element name="ColorLoopSupported" type="bool" mask="0004" shiftRight="2" />
+          <element name="XYSupported" type="bool" mask="0008" shiftRight="3" />
+          <element name="ColorTemperatureSupported" type="bool" mask="0010" shiftRight="4" />
+        </bitmap>
+      </attribute>
+      <attribute id="400B" name="ColorTempPhysicalMinMireds" type="uint16" max="65279" default="0" requiredIf="ColorCapabilities.ColorTemperatureSupported = true">
+        <restriction>
+          <type:maxInclusiveRef ref="ColorTempPhysicalMaxMireds" />
+        </restriction>
+      </attribute>
+      <attribute id="400C" name="ColorTempPhysicalMaxMireds" type="uint16" max="65279" default="65279" requiredIf="ColorCapabilities.ColorTemperatureSupported = true">
+        <restriction>
+          <type:minInclusiveRef ref="ColorTempPhysicalMinMireds" />
+        </restriction>
+      </attribute>
+      <attribute id="400D" name="CoupleColorTempToLevelMinMireds" type="uint16" requiredIf="ColorCapabilities.ColorTemperatureSupported = true">
+        <restriction>
+          <type:minInclusiveRef ref="ColorTempPhysicalMinMireds" />
+          <type:maxInclusiveRef ref="ColorTemperatureMireds" />
+        </restriction>
+      </attribute>
+      <attribute id="4010" name="StartUpColorTemperatureMireds" type="uint16" max="65279" writable="true" requiredIf="ColorCapabilities.ColorTemperatureSupported = true">
+        <restriction>
+          <type:special value="ffff" name="SetColorTempToPreviousValue" />
+        </restriction>
+      </attribute>
+      <!-- Defined Primaries Information Attribute Set -->
+      <attribute id="0010" name="NumberOfPrimaries" type="uint8" max="6" required="true" />
+      <attribute id="0011" name="Primary1X" type="uint16" max="65279" requiredIf="NumberOfPrimaries > 0" />
+      <attribute id="0012" name="Primary1Y" type="uint16" max="65279" requiredIf="NumberOfPrimaries > 0" />
+      <attribute id="0013" name="Primary1Intensity" type="uint8" max="255" requiredIf="NumberOfPrimaries > 0" />
+      <attribute id="0015" name="Primary2X" type="uint16" max="65279" requiredIf="NumberOfPrimaries > 1" />
+      <attribute id="0016" name="Primary2Y" type="uint16" max="65279" requiredIf="NumberOfPrimaries > 1" />
+      <attribute id="0017" name="Primary2Intensity" type="uint8" requiredIf="NumberOfPrimaries > 1" />
+      <attribute id="0019" name="Primary3X" type="uint16" max="65279" requiredIf="NumberOfPrimaries > 2" />
+      <attribute id="001A" name="Primary3Y" type="uint16" max="65279" requiredIf="NumberOfPrimaries > 2" />
+      <attribute id="001B" name="Primary3Intensity" type="uint8" max="255" requiredIf="NumberOfPrimaries > 2" />
+      <!-- Additional Defined Primaries Information Attribute Set -->
+      <attribute id="0020" name="Primary4X" type="uint16" max="65279" requiredIf="NumberOfPrimaries > 3" />
+      <attribute id="0021" name="Primary4Y" type="uint16" max="65279" requiredIf="NumberOfPrimaries > 3" />
+      <attribute id="0022" name="Primary4Intensity" type="uint8" max="255" requiredIf="NumberOfPrimaries > 3" />
+      <attribute id="0024" name="Primary5X" type="uint16" max="65279" requiredIf="NumberOfPrimaries > 4" />
+      <attribute id="0025" name="Primary5Y" type="uint16" max="65279" requiredIf="NumberOfPrimaries > 4" />
+      <attribute id="0026" name="Primary5Intensity" type="uint8" max="255" requiredIf="NumberOfPrimaries > 4" />
+      <attribute id="0028" name="Primary6X" type="uint16" max="65279" requiredIf="NumberOfPrimaries > 5" />
+      <attribute id="0029" name="Primary6Y" type="uint16" max="65279" requiredIf="NumberOfPrimaries > 5" />
+      <attribute id="002A" name="Primary6Intensity" type="uint8" max="255" requiredIf="NumberOfPrimaries > 5" />
+      <!-- Defined Color Points Settings Attribute Set -->
+      <attribute id="0030" name="WhitePointX" type="uint16" max="65279" writable="true" requiredIf="implements(WhitePointY)" />
+      <attribute id="0031" name="WhitePointY" type="uint16" max="65279" writable="true" requiredIf="implements(WhitePointX)" />
+      <attribute id="0032" name="ColorPointRX" type="uint16" max="65279" writable="true" requiredIf="implements(ColorPointRY) or implements(ColorPointRIntensity) or implements(ColorPointGX) or implements(ColorPointGY) or implements(ColorPointGIntensity) or implements(ColorPointBX) or implements(ColorPointBY) or implements(ColorPointBIntensity)" />
+      <attribute id="0033" name="ColorPointRY" type="uint16" max="65279" writable="true" requiredIf="implements(ColorPointRX)" />
+      <attribute id="0034" name="ColorPointRIntensity" type="uint8" max="255" writable="true" requiredIf="implements(ColorPointRX)" />
+      <attribute id="0036" name="ColorPointGX" type="uint16" max="65279" writable="true" requiredIf="implements(ColorPointRX)" />
+      <attribute id="0037" name="ColorPointGY" type="uint16" max="65279" writable="true" requiredIf="implements(ColorPointRX)" />
+      <attribute id="0038" name="ColorPointGIntensity" type="uint8" max="255" writable="true" requiredIf="implements(ColorPointRX)" />
+      <attribute id="003A" name="ColorPointBX" type="uint16" max="65279" writable="true" requiredIf="implements(ColorPointRX)" />
+      <attribute id="003B" name="ColorPointBY" type="uint16" max="65279" writable="true" requiredIf="implements(ColorPointRX)" />
+      <attribute id="003C" name="ColorPointBIntensity" type="uint8" max="255" writable="true" requiredIf="implements(ColorPointRX)" />
+    </attributes>
+    <commands>
+      <command id="00" name="MoveToHue" requiredIf="ColorCapabilities.HueSaturationSupported = true">
+        <fields>
+          <field name="Hue" type="uint8" />
+          <field name="Direction" type="CCDirection" />
+          <field name="TransitionTime" type="uint16" />
+          <field name="OptionsMask" type="CCColorOptions" />
+          <field name="OptionsOverride" type="CCColorOptions" />
+        </fields>
+      </command>
+      <command id="01" name="MoveHue" requiredIf="ColorCapabilities.HueSaturationSupported = true">
+        <fields>
+          <field name="MoveMode" type="CCMoveMode" />
+          <field name="Rate" type="uint8" />
+          <field name="OptionsMask" type="CCColorOptions" />
+          <field name="OptionsOverride" type="CCColorOptions" />
+        </fields>
+      </command>
+      <command id="02" name="StepHue" requiredIf="ColorCapabilities.HueSaturationSupported = true">
+        <fields>
+          <field name="StepMode" type="CCStepMode" />
+          <field name="StepSize" type="uint8" />
+          <field name="TransitionTime" type="uint8" />
+          <field name="OptionsMask" type="CCColorOptions" />
+          <field name="OptionsOverride" type="CCColorOptions" />
+        </fields>
+      </command>
+      <command id="03" name="MoveToSaturation" requiredIf="ColorCapabilities.HueSaturationSupported = true">
+        <fields>
+          <field name="Saturation" type="uint8" />
+          <field name="TransitionTime" type="uint16" />
+          <field name="OptionsMask" type="CCColorOptions" />
+          <field name="OptionsOverride" type="CCColorOptions" />
+        </fields>
+      </command>
+      <command id="04" name="MoveSaturation" requiredIf="ColorCapabilities.HueSaturationSupported = true">
+        <fields>
+          <field name="MoveMode" type="CCMoveMode" />
+          <field name="Rate" type="uint8" />
+          <field name="OptionsMask" type="CCColorOptions" />
+          <field name="OptionsOverride" type="CCColorOptions" />
+        </fields>
+      </command>
+      <command id="05" name="StepSaturation" requiredIf="ColorCapabilities.HueSaturationSupported = true">
+        <fields>
+          <field name="StepMode" type="CCStepMode" />
+          <field name="StepSize" type="uint8" />
+          <field name="TransitionTime" type="uint8" />
+          <field name="OptionsMask" type="CCColorOptions" />
+          <field name="OptionsOverride" type="CCColorOptions" />
+        </fields>
+      </command>
+      <command id="06" name="MoveToHueAndSaturation" requiredIf="ColorCapabilities.HueSaturationSupported = true">
+        <fields>
+          <field name="Hue" type="uint8" />
+          <field name="Saturation" type="uint8" />
+          <field name="TransitionTime" type="uint16" />
+          <field name="OptionsMask" type="CCColorOptions" />
+          <field name="OptionsOverride" type="CCColorOptions" />
+        </fields>
+      </command>
+      <command id="07" name="MoveToColor" requiredIf="ColorCapabilities.XYSupported = true">
+        <fields>
+          <field name="ColorX" type="uint16" />
+          <field name="ColorY" type="uint16" />
+          <field name="TransitionTime" type="uint16" />
+          <field name="OptionsMask" type="CCColorOptions" />
+          <field name="OptionsOverride" type="CCColorOptions" />
+        </fields>
+      </command>
+      <command id="08" name="MoveColor" requiredIf="ColorCapabilities.XYSupported = true">
+        <fields>
+          <field name="RateX" type="int16" />
+          <field name="RateY" type="int16" />
+          <field name="OptionsMask" type="CCColorOptions" />
+          <field name="OptionsOverride" type="CCColorOptions" />
+        </fields>
+      </command>
+      <command id="09" name="StepColor" requiredIf="ColorCapabilities.XYSupported = true">
+        <fields>
+          <field name="StepX" type="int16" />
+          <field name="StepY" type="int16" />
+          <field name="TransitionTime" type="uint16" />
+          <field name="OptionsMask" type="CCColorOptions" />
+          <field name="OptionsOverride" type="CCColorOptions" />
+        </fields>
+      </command>
+      <command id="0A" name="MoveToColorTemperature" requiredIf="ColorCapabilities.ColorTemperatureSupported = true">
+        <fields>
+          <field name="ColorTemperatureMireds" type="uint16" />
+          <field name="TransitionTime" type="uint16" />
+          <field name="OptionsMask" type="CCColorOptions" />
+          <field name="OptionsOverride" type="CCColorOptions" />
+        </fields>
+      </command>
+      <command id="40" name="EnhancedMoveToHue" requiredIf="ColorCapabilities.EnhancedHueSupported = true">
+        <fields>
+          <field name="EnhancedHue" type="uint16" />
+          <field name="Direction" type="CCDirection" />
+          <field name="TransitionTime" type="uint16" />
+          <field name="OptionsMask" type="CCColorOptions" />
+          <field name="OptionsOverride" type="CCColorOptions" />
+        </fields>
+      </command>
+      <command id="41" name="EnhancedMoveHue" requiredIf="ColorCapabilities.EnhancedHueSupported = true">
+        <fields>
+          <field name="MoveMode" type="CCMoveMode" />
+          <field name="Rate" type="uint16" />
+          <field name="OptionsMask" type="CCColorOptions" />
+          <field name="OptionsOverride" type="CCColorOptions" />
+        </fields>
+      </command>
+      <command id="42" name="EnhancedStepHue" requiredIf="ColorCapabilities.EnhancedHueSupported = true">
+        <fields>
+          <field name="StepMode" type="CCStepMode" />
+          <field name="StepSize" type="uint16" />
+          <field name="TransitionTime" type="uint16" />
+          <field name="OptionsMask" type="CCColorOptions" />
+          <field name="OptionsOverride" type="CCColorOptions" />
+        </fields>
+      </command>
+      <command id="43" name="EnhancedMoveToHueAndSaturation" requiredIf="ColorCapabilities.EnhancedHueSupported = true">
+        <fields>
+          <field name="EnhancedHue" type="uint16" />
+          <field name="Saturation" type="uint8" />
+          <field name="TransitionTime" type="uint16" />
+          <field name="OptionsMask" type="CCColorOptions" />
+          <field name="OptionsOverride" type="CCColorOptions" />
+        </fields>
+      </command>
+      <command id="44" name="ColorLoopSet" requiredIf="ColorCapabilities.ColorLoopSupported = true">
+        <fields>
+          <field name="UpdateFlags" type="map8">
+            <bitmap>
+              <element name="UpdateAction" type="bool" mask="01" />
+              <element name="UpdateDirection" type="bool" mask="02" shiftRight="1" />
+              <element name="UpdateTime" type="bool" mask="04" shiftRight="2" />
+              <element name="UpdateStartHue" type="bool" mask="08" shiftRight="3" />
+            </bitmap>
+          </field>
+          <field name="Action" type="enum8">
+            <restriction>
+              <type:enumeration value="00" name="DeactivateColorLoop" />
+              <type:enumeration value="01" name="ActivateColorLoopFromColorLoopStartEnhancedHue" />
+              <type:enumeration value="02" name="ActivateColorLoopFromEnhancedCurrentHue" />
+            </restriction>
+          </field>
+          <field name="Direction" type="CCColorLoopDirection" />
+          <field name="Time" type="uint16" />
+          <field name="StartHue" type="uint16" />
+          <field name="OptionsMask" type="CCColorOptions" />
+          <field name="OptionsOverride" type="CCColorOptions" />
+        </fields>
+      </command>
+      <!-- StopMoveStep is always required as it is required by all color features specifies in the ColorCapabilities attribute.  Note that this command is also required for the color loop feature since the enhanced hue feature must also be supported. -->
+      <command id="47" name="StopMoveStep" required="true">
+        <fields>
+          <field name="OptionsMask" type="CCColorOptions" />
+          <field name="OptionsOverride" type="CCColorOptions" />
+        </fields>
+      </command>
+      <command id="4B" name="MoveColorTemperature" requiredIf="ColorCapabilities.ColorTemperatureSupported = true">
+        <fields>
+          <field name="MoveMode" type="CCMoveMode" />
+          <field name="Rate" type="uint16" />
+          <field name="ColorTemperatureMinimumMireds" type="CCMinMiredsField" />
+          <field name="ColorTemperatureMaximumMireds" type="CCMaxMiredsField" />
+          <field name="OptionsMask" type="CCColorOptions" />
+          <field name="OptionsOverride" type="CCColorOptions" />
+        </fields>
+      </command>
+      <command id="4C" name="StepColorTemperature" requiredIf="ColorCapabilities.ColorTemperatureSupported = true">
+        <fields>
+          <field name="StepMode" type="CCStepMode" />
+          <field name="StepSize" type="uint16" />
+          <field name="TransitionTime" type="uint16" />
+          <field name="ColorTemperatureMinimumMireds" type="CCMinMiredsField" />
+          <field name="ColorTemperatureMaximumMireds" type="CCMaxMiredsField" />
+          <field name="OptionsMask" type="CCColorOptions" />
+          <field name="OptionsOverride" type="CCColorOptions" />
+        </fields>
+      </command>
+    </commands>
+  </server>
+</zcl:cluster>

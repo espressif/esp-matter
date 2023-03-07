@@ -1,0 +1,28 @@
+id: "wisun_mac_library"
+label: "Wi-SUN MAC (Library)"
+description: "Provide Wi-SUN MAC library"
+package: "wisun"
+category: "Wi-SUN"
+quality: "production"
+root_path: "protocol/wisun/stack"
+
+ui_hints:
+  visibility: never
+
+requires:
+  - name: "wisun_mac"
+
+provides:
+  - name: "wisun_mac_implementation"
+  - name: "wisun_mac_library"
+
+library:
+  - path: "libwisun_mac_efr32xg1x.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_sdid_84"
+  - path: "libwisun_mac_efr32xg2x.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_sdid_220"
+

@@ -1,0 +1,33 @@
+id: "connect_poll"
+label: "Poll"
+package: "Flex"
+category: "Connect"
+quality: "production"
+description: "Implements polling for end devices."
+provides:
+  - name: "connect_poll"
+requires:
+  - name: "connect_stack_common"
+source:
+      - path: "protocol/flex/poll/poll.c"
+include:
+  - path: "protocol/flex/poll"
+    file_list:
+      - path: "poll.h"
+config_file:
+  - path: "protocol/flex/poll/config/poll-config.h"
+template_contribution:
+  - name: stack_callback
+    value:
+      callback_type: "stack_status"
+      function_name: "emberAfPluginPollStackStatusCallback"
+  - name: event_system
+    value:
+      event_control: "emberAfPluginPollEventControl"
+      event_handler: "emberAfPluginPollEventHandler"
+  - name: component_catalog
+    value: connect_poll
+
+documentation:
+  docset: connect-stack
+  document: group-poll

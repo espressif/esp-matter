@@ -1,0 +1,36 @@
+#
+# Start Platform configuration
+#
+
+# BT MPAF FRAMEWORK - Enable WICED Application
+ENTRY "BT MPAF FRAMEWORK"
+{
+    "MPAF appEnableBitMask" = 0x00001000
+    "feature map" = 0x80000002
+    "MPAF NV max devinfo" = 0x1
+    "MPAF TRANS MODE" = 0x0
+    "MPAF PKT TYPE" = 0x19
+    "mm_Sbrk_Limit" = 0x0
+}
+#
+# Sleep Mode configuration - Assign bt wake GPIO to a non-connected pin
+ENTRY "Sleep Mode Configuration"
+{
+    "Sleep mode" = 0
+    "Idle threshold host" = 0
+    "Idle threshold HC" = 0
+    "Enable break to host" = 0
+    "Pulse host wake" = 0
+    "Active connection handling on suspend" = 0
+    "Enable tristate control of UART TX line" = 0
+    "Combine sleep mode and LPM" = 0
+    "Allow host sleep during SCO" = 0
+    "Host wake GPIO 3 active mode" = 0
+    "Bt GPIO 0 active mode" = 0
+    "Resume timeout" = 0
+    "Sleep enable" = 0
+    "Bt wake GPIO" = 3
+}
+#
+# End Platform configurtion
+#

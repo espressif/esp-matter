@@ -1,0 +1,17 @@
+id: tz_util
+package: platform
+category: Platform|Security|TrustZone
+description: >-
+  This component provides includes utility files for TZ Secure and NonSecure applications.
+ui_hints:
+  visibility: never
+quality: beta
+component_root_path: util/third_party/crypto
+
+provides:
+  - name: tz_util
+
+include:
+  - path: sl_component/sl_trustzone/inc/common
+    file_list:
+      - path: sli_tz_util.h

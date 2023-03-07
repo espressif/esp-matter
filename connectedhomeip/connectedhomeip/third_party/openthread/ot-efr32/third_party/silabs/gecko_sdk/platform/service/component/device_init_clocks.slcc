@@ -1,0 +1,38 @@
+id: device_init_clocks
+label: "Device Init: Clocks"
+package: platform
+description: >
+  Device initialization for clock tree
+category: Services|Device Initialization
+quality: production
+root_path: platform/service/device_init/
+include:
+  - path: inc
+    file_list:
+      - path: sl_device_init_clocks.h
+template_file:
+  - path: template/sl_device_init_clocks.c.jinja
+provides:
+  - name: device_init_clocks
+requires:
+  - name: emlib_cmu
+  - name: status
+template_contribution:
+  - name: event_handler
+    value:
+      event: platform_init
+      include: sl_device_init_clocks.h
+      handler: sl_device_init_clocks
+    priority: -9500
+  - name: device_init_clocks_arch
+    value: s0
+    condition: [device_series_0]
+  - name: device_init_clocks_arch
+    value: s1
+    condition: [device_series_1]
+  - name: device_init_clocks_arch
+    value: s2
+    condition: [device_series_2]
+documentation:
+    docset: gecko-platform
+    document: service/api/group-device-init-clocks

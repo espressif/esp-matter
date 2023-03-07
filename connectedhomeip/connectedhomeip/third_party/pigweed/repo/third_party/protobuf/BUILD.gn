@@ -1,0 +1,174 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_protobuf_compiler/proto.gni")
+import("protobuf.gni")
+
+# This file defines a GN source_set for an external installation of protobuf.
+# To use, checkout the protobuf source into a directory, then set the build arg
+# dir_pw_third_party_protobuf to point to that directory. The protobuf library
+# will be available in GN at "$dir_pw_third_party/protobuf".
+#
+# This is known to work with commit 300dfcc5bf46d0fae35146db2195891df4959e4 in
+# the protobuf repository. These targets may not work with other versions.
+#
+# If the dir_pw_third_party_protobuf build argument is not set, the protobuf
+# targets are effectively disabled.
+if (dir_pw_third_party_protobuf != "") {
+  have_pthreads = current_os == "linux" || current_os == "mac"
+
+  config("includes") {
+    include_dirs = [ "$dir_pw_third_party_protobuf/src" ]
+  }
+
+  config("defines") {
+    defines = [ "HAVE_ZLIB=0" ]
+    if (have_pthreads) {
+      defines += [ "HAVE_PTHREAD=1" ]
+    }
+  }
+
+  config("cc_flags") {
+    cflags_cc = [
+      "-Wno-cast-qual",
+      "-Wno-shadow",
+      "-Wno-sign-compare",
+      "-Wno-unused-parameter",
+    ]
+  }
+
+  pw_source_set("libprotobuf_lite") {
+    sources = [
+      "$dir_pw_third_party_protobuf/src/google/protobuf/any_lite.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/arena.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/extension_set.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/generated_enum_util.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/generated_message_table_driven_lite.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/generated_message_util.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/implicit_weak_message.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/io/coded_stream.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/io/io_win32.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/io/strtod.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/io/zero_copy_stream.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/io/zero_copy_stream_impl.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/io/zero_copy_stream_impl_lite.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/map.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/message_lite.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/parse_context.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/repeated_field.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/stubs/bytestream.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/stubs/common.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/stubs/int128.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/stubs/status.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/stubs/statusor.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/stubs/stringpiece.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/stubs/stringprintf.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/stubs/structurally_valid.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/stubs/strutil.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/stubs/time.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/wire_format_lite.cc",
+    ]
+    public_configs = [
+      ":includes",
+      ":cc_flags",
+    ]
+    configs = [ ":defines" ]
+  }
+
+  pw_source_set("libprotobuf") {
+    sources = [
+      "$dir_pw_third_party_protobuf/src/google/protobuf/any.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/any.pb.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/api.pb.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/compiler/importer.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/compiler/parser.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/descriptor.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/descriptor.pb.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/descriptor_database.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/duration.pb.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/dynamic_message.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/empty.pb.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/extension_set_heavy.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/field_mask.pb.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/generated_message_reflection.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/generated_message_table_driven.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/io/gzip_stream.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/io/printer.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/io/tokenizer.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/map_field.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/message.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/reflection_ops.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/service.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/source_context.pb.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/struct.pb.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/stubs/substitute.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/text_format.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/timestamp.pb.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/type.pb.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/unknown_field_set.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/util/delimited_message_util.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/util/field_comparator.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/util/field_mask_util.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/util/internal/datapiece.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/util/internal/default_value_objectwriter.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/util/internal/error_listener.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/util/internal/field_mask_utility.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/util/internal/json_escaping.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/util/internal/json_objectwriter.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/util/internal/json_stream_parser.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/util/internal/object_writer.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/util/internal/proto_writer.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/util/internal/protostream_objectsource.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/util/internal/protostream_objectwriter.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/util/internal/type_info.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/util/internal/type_info_test_helper.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/util/internal/utility.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/util/json_util.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/util/message_differencer.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/util/time_util.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/util/type_resolver_util.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/wire_format.cc",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/wrappers.pb.cc",
+    ]
+    public_deps = [ ":libprotobuf_lite" ]
+    configs = [ ":defines" ]
+  }
+
+  pw_proto_library("wellknown_types") {
+    sources = [
+      "$dir_pw_third_party_protobuf/src/google/protobuf/any.proto",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/api.proto",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/descriptor.proto",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/duration.proto",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/empty.proto",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/field_mask.proto",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/source_context.proto",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/struct.proto",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/timestamp.proto",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/type.proto",
+      "$dir_pw_third_party_protobuf/src/google/protobuf/wrappers.proto",
+    ]
+    strip_prefix = "$dir_pw_third_party_protobuf/src/"
+  }
+} else {
+  # As mentioned above, these targets are effectively disabled if the build
+  # argument pointing to the protobuf source directory is not set.
+  group("libprotobuf_lite") {
+  }
+  group("libprotobuf") {
+  }
+}

@@ -1,0 +1,22 @@
+!!omap
+- id: slwrb4301a
+- label: SLWRB4301A
+- package: platform
+- description: Kit BSP support for the BGM113 Blue Gecko Module Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4301a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4301A"'
+  - name: SL_KIT_REV
+    value: '"A02"'
+- tag:
+  - kit:opn:SLWRB4301A
+  - kit:pn:WRB4301
+  - kit:variant:A
+  - kit:revision:A02

@@ -1,0 +1,95 @@
+#!/bin/bash
+#
+#  Copyright (c) 2018, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+
+set -euxo pipefail
+
+readonly OT_POSIX_CONFIG_RCP_BUS=${OT_POSIX_CONFIG_RCP_BUS:-UART}
+
+on_exit()
+{
+    local status=$?
+
+    killall socat || true
+    docker stop "${OTBR_DOCKER_PID}" || true
+    killall ot-rcp || true
+    killall socat || true
+
+    return "${status}"
+}
+
+main()
+{
+    sudo modprobe ip6table_filter
+    docker build -t otbr \
+        --build-arg OTBR_OPTIONS=-DOT_POSIX_CONFIG_RCP_BUS="${OT_POSIX_CONFIG_RCP_BUS}" \
+        --build-arg BACKBONE_ROUTER=0 \
+        -f etc/docker/Dockerfile .
+
+    # SPI simulation is not available yet, so just verify the binary runs
+    if [[ ${OT_POSIX_CONFIG_RCP_BUS} == SPI ]]; then
+        docker run --rm -t --entrypoint otbr-agent otbr -h | grep 'spi://'
+        return 0
+    fi
+
+    local -r SOCAT_OUTPUT=/tmp/ot-socat
+    socat -d -d pty,raw,echo=0 pty,raw,echo=0 2>&1 | tee $SOCAT_OUTPUT &
+    while true; do
+        if test "$(head -n2 "$SOCAT_OUTPUT" | wc -l)" = 2; then
+            local -r DEVICE_PTY=$(head -n1 $SOCAT_OUTPUT | grep -o '/dev/.\+')
+            local -r DOCKER_PTY=$(head -n2 $SOCAT_OUTPUT | tail -n1 | grep -o '/dev/.\+')
+            break
+        fi
+        echo 'Waiting for socat ready...'
+        sleep 1
+    done
+
+    trap on_exit EXIT
+
+    # shellcheck disable=SC2094
+    ot-rcp 1 >"$DEVICE_PTY" <"$DEVICE_PTY" &
+
+    readonly OTBR_DOCKER_PID=$(docker run --rm -d \
+        --sysctl "net.ipv6.conf.all.disable_ipv6=0 net.ipv4.conf.all.forwarding=1 net.ipv6.conf.all.forwarding=1" \
+        --privileged -p 8080:80 --dns=127.0.0.1 --volume "$DOCKER_PTY":/dev/ttyUSB0 otbr --backbone-interface eth0)
+    sleep 10
+    sudo lsof -i :8080
+
+    local -r OTBR_WEB_URL="http://127.0.0.1:8080"
+    local -r OT_NETWORK_KEY=00112233445566778899aabbccddeeff
+    local -r OT_XPANID=0011223344556677
+    local -r OT_PANID=0xface
+    local -r OT_AGENT_PASSPHRASE=123456
+    local -r OT_CHANNEL=12
+    local -r OT_NETWORK_NAME=OpenThreadDocker
+
+    curl "${OTBR_WEB_URL}"/index.html | grep 'What is OpenThread'
+    curl --header "Content-Type: application/json" --request POST --data "{\"networkKey\":\"${OT_NETWORK_KEY}\",\"prefix\":\"fd11:22::\",\"defaultRoute\":true,\"extPanId\":\"${OT_XPANID}\",\"panId\":\"${OT_PANID}\",\"passphrase\":\"${OT_AGENT_PASSPHRASE}\",\"channel\":${OT_CHANNEL},\"networkName\":\"${OT_NETWORK_NAME}\"}" "${OTBR_WEB_URL}"/form_network | grep "success"
+}
+
+main "$@"

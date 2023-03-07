@@ -1,0 +1,3 @@
+COMPILER_TOOL  = ${IAR_ARMCOMPILER}/bin/iccarm
+ARCHIVER_TOOL  = ${IAR_ARMCOMPILER}/bin/iarchive
+OBJ_MANIP_TOOL = ${IAR_ARMCOMPILER}/bin/iobjmanip

@@ -1,0 +1,35 @@
+
+ { .__fun = adcif_handler} /*ADCIF*/
+,{ .__fun = asp_handler} /*ASP*/
+,{ .__fun = bbpll_handler} /*BBPLL*/
+,{ .__fun = dmas_handler} /*DMAS*/
+,{ .__fun = es_handler} /*ES*/
+,{ .__fun = gpio_handler} /*GPIO*/
+,{ .__fun = gpmicro_handler} /*GPMICRO*/
+,{ .__fun = i2cm_handler} /*I2CM*/
+,{ .__fun = i2csl_handler} /*I2CSL*/
+,{ .__fun = i2sm_handler} /*I2SM*/
+,{ .__fun = ipcext2x_handler} /*IPCEXT2X*/
+,{ .__fun = ipcgpm2x_handler} /*IPCGPM2X*/
+,{ .__fun = ipcx2int_handler} /*IPCX2INT*/
+,{ .__fun = ir_handler} /*IR*/
+,{ .__fun = keypad_handler} /*KEYPAD*/
+,{ .__fun = mri_handler} /*MRI*/
+,{ .__fun = parble_handler} /*PARBLE*/
+,{ .__fun = parfcs_handler} /*PARFCS*/
+,{ .__fun = phy_handler} /*PHY*/
+,{ .__fun = pwms_handler} /*PWM*/
+,{ .__fun = qta_handler} /*QTA*/
+,{ .__fun = rci_handler} /*RCI*/
+,{ .__fun = rpa_handler} /*RPA*/
+,{ .__fun = secproc_handler} /*SECPROC*/
+,{ .__fun = spim_handler} /*SPIM*/
+,{ .__fun = spisl_handler} /*SPISL*/
+,{ .__fun = ssp_handler} /*SSP*/
+,{ .__fun = stbc_handler} /*STBC*/
+,{ .__fun = timer_handler} /*TIMER*/
+,{ .__fun = trc_handler} /*TRC*/
+,{ .__fun = uart0_handler} /*UART0*/
+,{ .__fun = uart1_handler} /*UART1*/
+,{ .__fun = watchdog_handler} /*WATCHDOG*/
+

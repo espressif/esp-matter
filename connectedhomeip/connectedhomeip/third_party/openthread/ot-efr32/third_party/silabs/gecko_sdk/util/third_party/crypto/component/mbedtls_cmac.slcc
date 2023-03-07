@@ -1,0 +1,30 @@
+id: mbedtls_cmac
+package: platform
+label: CMAC
+description: >-
+  This component provides support for message authentication with the CMAC
+  algorithm using Mbed TLS.
+category: Platform|Security|Mbed TLS|Message Authentication Codes
+quality: production
+source:
+  - path: util/third_party/crypto/mbedtls/library/cmac.c
+    unless: [trustzone_nonsecure]
+include:
+  - path: util/third_party/crypto/mbedtls/include
+    file_list:
+      - path: mbedtls/cmac.h
+    unless: [trustzone_nonsecure]
+provides:
+  - name: mbedtls_cmac
+requires:
+  - name: mbedtls_aes
+  - name: mbedtls_cipher
+  - name: mbedtls_core
+  - name: sli_protocol_crypto
+    condition: [device_has_radioaes, device_has_semailbox]
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_CMAC_C
+documentation:
+  docset: mbed-tls
+  document: group-sl-crypto-cmac

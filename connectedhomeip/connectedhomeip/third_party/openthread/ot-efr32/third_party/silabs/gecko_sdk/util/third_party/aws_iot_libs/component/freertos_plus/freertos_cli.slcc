@@ -1,0 +1,36 @@
+id: freertos_cli
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|FreeRTOS Plus
+label: FreeRTOS+ CLI
+description: FreeRTOS Plus CLI Utility.
+
+package: amazon_platform
+quality: production
+
+provides:
+  - name: freertos_cli
+
+requires:
+  - name: iot_config_common
+
+root_path: util/third_party/aws_iot_libs
+
+source:
+  - path: libraries/freertos_plus/standard/freertos_plus_cli/source/FreeRTOS_CLI_Console.c
+  - path: libraries/freertos_plus/standard/freertos_plus_cli/source/FreeRTOS_CLI.c
+  - path: libraries/freertos_plus/standard/freertos_plus_cli/utest/iot_test_freertos_cli.c
+    condition: ["aws_tests_defs"]
+  - path: libraries/freertos_plus/standard/freertos_plus_cli/utest/iot_test_freertos_cli_console.c
+    condition: ["aws_tests_defs"]
+
+include:
+  - path: libraries/freertos_plus/standard/freertos_plus_cli/include
+    file_list:
+      - path: FreeRTOS_CLI_Console.h
+      - path: FreeRTOS_CLI_UART.h
+      - path: FreeRTOS_CLI.h
+  - path: tests/include
+    file_list:
+      - path: aws_test_runner.h
+      - path: aws_test_utils.h
+    condition: ["aws_tests_defs"]

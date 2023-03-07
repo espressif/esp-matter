@@ -1,0 +1,34 @@
+package: Zigbee
+description: API to use the PSA Crypto implementation of AES.
+label: AES (PSA)
+quality: production
+id: zigbee_aes_psa
+category: Zigbee|Utility
+
+provides:
+   - name: "zigbee_aes"
+   - name: "zigbee_aes_psa"
+requires:
+   - name: "psa_crypto_aes"
+   - name: "psa_crypto_cipher_ecb"
+   - name: "psa_driver"
+   - name: "psa_crypto_common"
+   # ATM this is required in order to include the generated MbedTLS config file.
+   # The platform security team should make changes so that this is not required
+   # in the future.
+   - name: "mbedtls_core"
+
+include:
+  - path: protocol/zigbee/stack/platform/micro
+    file_list:
+      - path: aes.h
+  - path: protocol/zigbee/stack/include
+    file_list:
+      - path: security.h
+
+source:
+  - path: protocol/zigbee/stack/framework/aes-ecb.c
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_aes_psa

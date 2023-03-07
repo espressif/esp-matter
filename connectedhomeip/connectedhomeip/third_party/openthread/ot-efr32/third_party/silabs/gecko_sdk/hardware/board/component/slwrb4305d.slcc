@@ -1,0 +1,22 @@
+!!omap
+- id: slwrb4305d
+- label: SLWRB4305D
+- package: platform
+- description: Kit BSP support for the MGM13S02 Mighty Gecko Module Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4305d
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4305D"'
+  - name: SL_KIT_REV
+    value: '"A02"'
+- tag:
+  - kit:opn:SLWRB4305D
+  - kit:pn:WRB4305
+  - kit:variant:D
+  - kit:revision:A02

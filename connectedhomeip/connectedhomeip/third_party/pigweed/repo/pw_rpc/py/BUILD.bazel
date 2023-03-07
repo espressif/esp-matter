@@ -1,0 +1,168 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load("@rules_python//python:defs.bzl", "py_binary")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+filegroup(
+    name = "pw_rpc_common_sources",
+    srcs = [
+        "pw_rpc/callback_client/__init__.py",
+        "pw_rpc/callback_client/call.py",
+        "pw_rpc/callback_client/errors.py",
+        "pw_rpc/callback_client/impl.py",
+        "pw_rpc/codegen.py",
+        "pw_rpc/codegen_nanopb.py",
+        "pw_rpc/codegen_pwpb.py",
+        "pw_rpc/codegen_raw.py",
+        "pw_rpc/console_tools/__init__.py",
+        "pw_rpc/console_tools/console.py",
+        "pw_rpc/console_tools/functions.py",
+        "pw_rpc/console_tools/watchdog.py",
+        "pw_rpc/descriptors.py",
+        "pw_rpc/ids.py",
+        "pw_rpc/packets.py",
+        "pw_rpc/plugin.py",
+        "pw_rpc/plugin_nanopb.py",
+        "pw_rpc/plugin_pwpb.py",
+        "pw_rpc/plugin_raw.py",
+    ],
+)
+
+py_binary(
+    name = "plugin_raw",
+    srcs = [":pw_rpc_common_sources"],
+    imports = ["."],
+    main = "pw_rpc/plugin_raw.py",
+    python_version = "PY3",
+    deps = [
+        "//pw_protobuf/py:plugin_library",
+        "//pw_protobuf_compiler/py:pw_protobuf_compiler",
+        "//pw_status/py:pw_status",
+        "@com_google_protobuf//:protobuf_python",
+    ],
+)
+
+py_binary(
+    name = "plugin_nanopb",
+    srcs = [":pw_rpc_common_sources"],
+    imports = ["."],
+    main = "pw_rpc/plugin_nanopb.py",
+    python_version = "PY3",
+    deps = [
+        "//pw_protobuf/py:plugin_library",
+        "//pw_protobuf_compiler/py:pw_protobuf_compiler",
+        "//pw_status/py:pw_status",
+        "@com_google_protobuf//:protobuf_python",
+    ],
+)
+
+py_binary(
+    name = "plugin_pwpb",
+    srcs = [":pw_rpc_common_sources"],
+    imports = ["."],
+    main = "pw_rpc/plugin_pwpb.py",
+    python_version = "PY3",
+    deps = [
+        "//pw_protobuf/py:plugin_library",
+        "//pw_protobuf_compiler/py:pw_protobuf_compiler",
+        "//pw_status/py:pw_status",
+        "@com_google_protobuf//:protobuf_python",
+    ],
+)
+
+py_library(
+    name = "pw_rpc",
+    srcs = [
+        "pw_rpc/__init__.py",
+        "pw_rpc/client.py",
+        ":pw_rpc_common_sources",
+    ],
+    imports = ["."],
+    deps = [
+        "//pw_protobuf/py:pw_protobuf",
+        "//pw_protobuf_compiler/py:pw_protobuf_compiler",
+        "//pw_rpc:internal_packet_proto_pb2",
+        "//pw_status/py:pw_status",
+    ],
+)
+
+py_test(
+    name = "callback_client_test",
+    size = "small",
+    srcs = [
+        "tests/callback_client_test.py",
+    ],
+    deps = [
+        ":pw_rpc",
+        "//pw_protobuf_compiler:pw_protobuf_compiler_protos",
+        "//pw_rpc:internal_packet_proto_pb2",
+        "//pw_status/py:pw_status",
+    ],
+)
+
+py_test(
+    name = "client_test",
+    size = "small",
+    srcs = [
+        "tests/client_test.py",
+    ],
+    deps = [
+        ":pw_rpc",
+        "//pw_rpc:internal_packet_proto_pb2",
+        "//pw_status/py:pw_status",
+    ],
+)
+
+py_test(
+    name = "descriptors_test",
+    size = "small",
+    srcs = [
+        "tests/descriptors_test.py",
+    ],
+    deps = [
+        ":pw_rpc",
+        "//pw_protobuf_compiler:pw_protobuf_compiler_protos",
+        "@com_google_protobuf//:protobuf_python",
+    ],
+)
+
+py_test(
+    name = "ids_test",
+    size = "small",
+    srcs = [
+        "tests/ids_test.py",
+    ],
+    deps = [
+        ":pw_rpc",
+        "//pw_build/py:pw_build",
+        "//pw_protobuf_compiler:pw_protobuf_compiler_protos",
+    ],
+)
+
+py_test(
+    name = "packets_test",
+    size = "small",
+    srcs = [
+        "tests/packets_test.py",
+    ],
+    deps = [
+        ":pw_rpc",
+        "//pw_rpc:internal_packet_proto_pb2",
+        "//pw_status/py:pw_status",
+    ],
+)

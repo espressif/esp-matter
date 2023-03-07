@@ -1,0 +1,38 @@
+{% extends "base.j2" %}
+{% block filename %}{{filename}}.h{% endblock %}
+{% block title %}{{title}} Header{% endblock %}
+{% block content %}
+#ifndef __RAIL_CONFIG_H__
+#define __RAIL_CONFIG_H__
+
+#include <stdint.h>
+#include "rail_types.h"
+{% for phyConfigEntryName, phyConfigEntry in phyConfigEntries.items() -%}
+{% if phyConfigEntry.fecEnabled %}
+// NOTE: This buffer is to be used exclusively by hardware
+extern uint8_t convDecodeBuffer[];
+{% endif %}
+extern const uint32_t {{phyConfigEntryName}}[];
+
+extern const uint32_t *configList[];
+extern const char *configNames[];
+extern const uint8_t irCalConfig[];
+
+#define NUM_RAIL_CONFIGS {{phyConfigEntries|length}}
+extern RAIL_ChannelConfigEntry_t {{phyConfigEntryName}}_channels[];
+extern const RAIL_ChannelConfig_t {{phyConfigEntryName}}_channelConfig;
+extern const RAIL_ChannelConfig_t *channelConfigs[];
+extern RAIL_FrameType_t *frameTypeConfigList[];
+
+extern const uint32_t {{phyConfigEntryName}}_phyInfo[];
+
+#define RADIO_CONFIG_BASE_FREQUENCY {{phyConfigEntry.baseFrequency}}UL
+#define RADIO_CONFIG_XTAL_FREQUENCY {{phyConfigEntry.xtalFrequency}}UL
+#define RADIO_CONFIG_BITRATE "{{phyConfigEntry.bitrate|formatToEngineering("bps")}}"
+#define RADIO_CONFIG_MODULATION_TYPE "{{phyConfigEntry.modType|replace("ModModeEnum.","")}}"
+#define RADIO_CONFIG_DEVIATION "{{phyConfigEntry.deviation|formatToEngineering("Hz")}}"
+#define RADIO_CONFIG_SYNTHESIZER_RESOLUTION "{{phyConfigEntry.synthResolution}}"
+
+{% endfor -%}
+#endif // __RAIL_CONFIG_H__
+{% endblock %}

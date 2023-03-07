@@ -1,0 +1,13 @@
+{
+  "root_variable": "PW_ROOT",
+  "cipd_package_files": [
+    "pw_env_setup/py/pw_env_setup/cipd_setup/upstream.json",
+    "pw_env_setup/py/pw_env_setup/cipd_setup/compatibility.json"
+  ],
+  "virtualenv": {
+    "gn_root": ".",
+    "gn_targets": [
+      ":python.install"
+    ]
+  }
+}

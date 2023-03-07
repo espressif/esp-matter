@@ -1,0 +1,2 @@
+from pylib_multi_phy_model.multi_phy_configuration_model.MultiPHYConfig import MultiPHYConfig
+from pylib_multi_phy_model.multi_phy_configuration_model.Bindings import *

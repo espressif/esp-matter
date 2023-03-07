@@ -1,0 +1,49 @@
+show ECC_keyGen
+show ECDH_commonKey
+show win
+show workzone
+show data_p
+show data_r
+show data_a
+show data_b
+show data_Gx
+show data_Gy
+show NIST256_p
+show NIST256_r
+show NIST256_a
+show NIST256_b
+show NIST256_Gx
+show NIST256_Gy
+rename ECC_keyGen     as eccRom_genKeys
+rename ECDH_commonKey as eccRom_genSharedSecret
+rename win            as eccRom_windowSize
+rename workzone       as eccRom_workzone
+rename data_p         as eccRom_param_p
+rename data_r         as eccRom_param_r
+rename data_a         as eccRom_param_a
+rename data_b         as eccRom_param_b
+rename data_Gx        as eccRom_param_Gx
+rename data_Gy        as eccRom_param_Gy
+rename NIST256_p      as NIST_Curve_P256_p
+rename NIST256_r      as NIST_Curve_P256_r
+rename NIST256_a      as NIST_Curve_P256_a
+rename NIST256_b      as NIST_Curve_P256_b
+rename NIST256_Gx     as NIST_Curve_P256_Gx
+rename NIST256_Gy     as NIST_Curve_P256_Gy
+show eccRom_genKeys
+show eccRom_genSharedSecret
+show eccRom_windowSize
+show eccRom_workzone
+show eccRom_param_p
+show eccRom_param_r
+show eccRom_param_a
+show eccRom_param_b
+show eccRom_param_Gx
+show eccRom_param_Gy
+show NIST_Curve_P256_p
+show NIST_Curve_P256_r
+show NIST_Curve_P256_a
+show NIST_Curve_P256_b
+show NIST_Curve_P256_Gx
+show NIST_Curve_P256_Gy
+// Leave this line here.

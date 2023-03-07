@@ -1,0 +1,33 @@
+id: "sl_gui"
+label: "Graphical User Interface"
+package: "wisun"
+description: "The component provides Graphical User Interface top of the display driver"
+category: "Wi-SUN|Application"
+quality: "production"
+root_path: "app/wisun/component/gui"
+provides:
+  - name: sl_gui
+
+source:
+  - path: "sl_gui.c"
+  - path: "sl_widget.c"
+
+include:
+  - path: "."
+    file_list:
+    - "path": "sl_gui.h"
+    - "path": "sl_widget.h"
+config_file:
+  - path: "config/sl_widget_config.h"
+  
+requires:
+  - name: sl_display
+  - name: simple_button
+
+ui_hints:
+  visibility: never
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: gui

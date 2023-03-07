@@ -1,0 +1,19 @@
+id: "wisun_fan_certification"
+label: "Wi-SUN FAN Certification"
+description: "Add settings to Wi-SUN CLI for FAN certification process"
+package: "wisun"
+category: "Wi-SUN"
+quality: "production"
+root_path: "protocol/wisun"
+
+provides:
+  - name: "wisun_fan_certification"
+
+source:
+  - path: "plugin/sl_wisun_fan_certification.c"
+
+define:
+  - name: "WISUN_FAN_CERTIFICATION"
+
+config_file:
+  - path: "plugin/sl_wisun_alliance_certificates.h"

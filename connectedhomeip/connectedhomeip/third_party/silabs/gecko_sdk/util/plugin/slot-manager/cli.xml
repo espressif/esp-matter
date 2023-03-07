@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<cli>
+  <group id="plugin-slot-manager" name="Plugin Commands: Slot Manager">
+    <description>
+      This plugin provides a set of CLI commands to interact with external SPI flash, particularly in a setup where slots are present to work with the common bootloader.
+    </description>
+  </group>
+  <command cli="plugin slot-manager boot-slot" functionName="emAfPluginSlotManagerCliBootloadSlot" group="plugin-slot-manager">
+    <description>
+      Boot the image in the specified slot ID.
+    </description>
+    <arg name="slotId" type="INT32U" description="The slot ID to boot"/>
+  </command>
+  <command cli="plugin slot-manager erase-slot" functionName="emAfPluginSlotManagerCliEraseSlot" group="plugin-slot-manager">
+    <description>
+      Erase the specified slot ID.
+    </description>
+    <arg name="slotId" type="INT32U" description="The slot ID to erase"/>
+  </command>
+  <command cli="plugin slot-manager ext-flash-info" functionName="emAfPluginSlotManagerCliPrintExternalFlashInfo" group="plugin-slot-manager">
+    <description>
+      Print external flash information.
+    </description>
+  </command>
+  <command cli="plugin slot-manager read" functionName="emAfPluginSlotManagerCliReadExtFlash" group="plugin-slot-manager">
+    <description>
+      Read raw data from external flash.
+    </description>
+    <arg name="address" type="INT32U" description="Address to read"/>
+    <arg name="length" type="INT8U" description="Length of bytes to read"/>
+  </command>
+  <command cli="plugin slot-manager slots-info" functionName="emAfPluginSlotManagerCliPrintSlotsInfo" group="plugin-slot-manager">
+    <description>
+      Print information for all available slots.
+    </description>
+  </command>
+</cli>

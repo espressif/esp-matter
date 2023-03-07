@@ -1,0 +1,23 @@
+!!omap
+- id: slwstk6101b
+- label: SLWSTK6101B
+- package: platform
+- description: Kit BSP support for the Blue Gecko Module Wireless Starter Kit.
+- category: Platform|Board|Kit|Wireless Starter Kit
+- quality: production
+- requires:
+  - name: brd4001a
+  - name: hardware_board_from_slwstk6101b
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_stk
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWSTK6101B"'
+  - name: SL_KIT_REV
+    value: '"A01"'
+- tag:
+  - kit:opn:SLWSTK6101B
+  - kit:pn:WSTK6101
+  - kit:variant:B
+  - kit:revision:A01

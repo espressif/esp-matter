@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- IAR Project Connection File -->
+
+<iarProjectConnection version="1.2" name="libmbedcrypto_cc13x2_26x2" oneShot="true"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="IarProjectConnection_1.2.xsd">
+
+    <asmIncludePath>
+        <path>$PROJ_DIR$</path>
+    </asmIncludePath>
+
+    <includePath>
+        <path>$PROJ_DIR$</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/examples/platforms</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/include</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/include</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/thread/cc13x2_26x2/libmbedcrypto/config</path>
+    </includePath>
+
+    <defines>
+        <define>DeviceFamily_CC13X2_CC26X2</define>
+        <define>HAVE_CONFIG_H</define>
+        <define>_BSD_SOURCE=1</define>
+        <define>_DEFAULT_SOURCE=1</define>
+        <define>MBEDTLS_CONFIG_FILE="mbedtls-config-cc13x2_26x2.h"</define>
+    </defines>
+
+    <extraOptions>
+        <args>
+            <arg>--debug</arg>
+            <arg>--silent</arg>
+            <arg>-e</arg>
+            <arg>--aeabi</arg>
+            <arg>--thumb</arg>
+            <arg>--diag_suppress=Pa050</arg>
+        </args>
+    </extraOptions>
+
+    <linkerFile>
+        <override>false</override>
+    </linkerFile>
+
+    <linkerExtraOptions>
+        <args>
+        </args>
+    </linkerExtraOptions>
+
+    <customBuildTools>
+    </customBuildTools>
+
+    <heaps>
+        <heap> <!-- If omitted, id="0" -->
+            <size>0</size>
+        </heap>
+        <heap id="1">
+            <size>0</size>
+        </heap>
+    </heaps>
+    <stacks>
+        <stack> <!-- If omitted, id="0" -->
+            <size>512</size>
+        </stack>
+    </stacks>
+
+
+    <files>
+        <group name="config" build="true">
+            <path copyTo="$PROJ_DIR$/config/aes_alt.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/thread/cc13x2_26x2/libmbedcrypto/config/aes_alt.h</path>
+            <path copyTo="$PROJ_DIR$/config/ecjpake_alt.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/thread/cc13x2_26x2/libmbedcrypto/config/ecjpake_alt.h</path>
+            <path copyTo="$PROJ_DIR$/config/mbedtls-config-cc13x2_26x2.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/thread/cc13x2_26x2/libmbedcrypto/config/mbedtls-config-cc13x2_26x2.h</path>
+            <path copyTo="$PROJ_DIR$/config/sha256_alt.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/thread/cc13x2_26x2/libmbedcrypto/config/sha256_alt.h</path>
+        </group>
+        <group name="third_party/mbedtls/repo/library" build="true">
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/aes.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/aes.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/aesni.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/aesni.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/arc4.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/arc4.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/aria.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/aria.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/asn1parse.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/asn1parse.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/asn1write.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/asn1write.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/base64.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/base64.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/bignum.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/bignum.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/blowfish.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/blowfish.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/camellia.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/camellia.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/ccm.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/ccm.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/certs.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/certs.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/chacha20.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/chacha20.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/chachapoly.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/chachapoly.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/cipher.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/cipher.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/cipher_wrap.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/cipher_wrap.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/cmac.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/cmac.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/ctr_drbg.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/ctr_drbg.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/debug.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/debug.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/des.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/des.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/dhm.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/dhm.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/ecdh.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/ecdh.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/ecdsa.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/ecdsa.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/ecjpake.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/ecjpake.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/ecp.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/ecp.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/ecp_curves.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/ecp_curves.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/entropy.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/entropy.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/entropy_poll.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/entropy_poll.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/error.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/error.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/gcm.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/gcm.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/havege.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/havege.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/hkdf.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/hkdf.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/hmac_drbg.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/hmac_drbg.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/md.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/md.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/md2.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/md2.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/md4.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/md4.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/md5.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/md5.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/md_wrap.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/md_wrap.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/memory_buffer_alloc.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/memory_buffer_alloc.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/net_sockets.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/net_sockets.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/nist_kw.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/nist_kw.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/oid.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/oid.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/padlock.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/padlock.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/pem.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/pem.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/pk.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/pk.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/pk_wrap.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/pk_wrap.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/pkcs11.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/pkcs11.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/pkcs12.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/pkcs12.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/pkcs5.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/pkcs5.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/pkparse.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/pkparse.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/pkwrite.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/pkwrite.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/platform.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/platform.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/platform_util.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/platform_util.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/poly1305.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/poly1305.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/ripemd160.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/ripemd160.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/rsa.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/rsa.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/rsa_internal.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/rsa_internal.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/sha1.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/sha1.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/sha256.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/sha256.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/sha512.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/sha512.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/ssl_cache.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/ssl_cache.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/ssl_ciphersuites.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/ssl_ciphersuites.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/ssl_cli.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/ssl_cli.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/ssl_cookie.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/ssl_cookie.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/ssl_srv.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/ssl_srv.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/ssl_ticket.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/ssl_ticket.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/ssl_tls.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/ssl_tls.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/threading.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/threading.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/timing.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/timing.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/version.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/version.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/version_features.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/version_features.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/x509.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/x509.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/x509_create.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/x509_create.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/x509_crl.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/x509_crl.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/x509_crt.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/x509_crt.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/x509_csr.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/x509_csr.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/x509write_crt.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/x509write_crt.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/x509write_csr.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/x509write_csr.c</path>
+            <path reference="$PROJ_DIR$/third_party/mbedtls/repo/library/xtea.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/library/xtea.c</path>
+        </group>
+    </files>
+</iarProjectConnection>

@@ -1,0 +1,21 @@
+id: stdio
+label: "Standard I/O"
+package: platform
+description: Component that provides stdio compatibility.
+category: Platform|Utilities
+quality: production
+root_path: platform/common
+include:
+  - path: inc
+    file_list:
+      - path: sl_stdio.h
+source:
+  - path: src/sl_stdio.c
+provides:
+  - name: stdio
+requires:
+  - name: iostream
+  - name: status
+documentation:
+  docset: gecko-platform
+  document: common/api/group-stdio

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Personality id="20x19_pdm" name="PDM" version="1.0" path="Digital Functions" xmlns="http://cypress.com/xsd/cyhwpersonality_v1">
+  <Dependencies>
+    <IpBlock name="20x19_pdm" />
+    <Resource name="pdm" />
+  </Dependencies>
+  <ExposedMembers />
+  <Parameters>
+    <ParamSignal port="pdm_in[0]" name="PDM_IN 0" group="Pins" visible="true" desc="The PDM input channel 0." canBeEmpty="false" />
+    <ParamSignal port="pdm_in[1]" name="PDM_IN 1" group="Pins" visible="true" desc="The PDM input channel 1." canBeEmpty="false" />
+
+    <ParamString id="instNum" name="" group="" default="`${getInstNumber(&quot;pdm&quot;)}`" visible="false" editable="false" desc="" />
+  </Parameters>
+
+  <DRCs/>
+
+  <ConfigFirmware>
+
+  </ConfigFirmware>
+</Personality>

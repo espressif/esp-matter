@@ -1,0 +1,15 @@
+[
+    {
+        "files": [
+            "+../../uart2callback.c -> uart2callback.c",
+            "+../../README.md -> README.md",
+            "+../../README.html -> README.html",
+            "+../main_freertos.c -> main_freertos.c",
+            "+../uart2callback.syscfg -> uart2callback.syscfg",
+            "+../../../../../../../source/ti/boards/CC3235S_LAUNCHXL/Board.html -> Board.html",
+            "+cc32xxs_freertos.lds -> cc32xxs_freertos.lds",
+            "+../../image.syscfg -> image.syscfg",
+            "+../../userFiles/dummy-root-ca-cert -> userFiles/dummy-root-ca-cert"
+        ]
+    }
+]

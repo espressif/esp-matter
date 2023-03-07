@@ -1,0 +1,106 @@
+;
+;  Copyright (c) 2013, Texas Instruments Incorporated
+;  All rights reserved.
+;
+;  Redistribution and use in source and binary forms, with or without
+;  modification, are permitted provided that the following conditions
+;  are met:
+;
+;  *  Redistributions of source code must retain the above copyright
+;     notice, this list of conditions and the following disclaimer.
+;
+;  *  Redistributions in binary form must reproduce the above copyright
+;     notice, this list of conditions and the following disclaimer in the
+;     documentation and/or other materials provided with the distribution.
+;
+;  *  Neither the name of Texas Instruments Incorporated nor the names of
+;     its contributors may be used to endorse or promote products derived
+;     from this software without specific prior written permission.
+;
+;  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+;  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+;  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+;  PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+;  CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+;  EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+;  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+;  OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+;  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+;  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+;  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+;
+;
+; ======== Clobber_asm_iar.s ========
+;
+;
+
+        PRESERVE8
+
+        PUBLIC ti_sysbios_family_arm_m3_Clobber_trashRegs__E
+        PUBLIC ti_sysbios_family_arm_m3_Clobber_postIntr__E
+        PUBLIC ti_sysbios_family_arm_m3_Clobber_checkRegs__E
+
+;
+; ======== Clobber_trashRegs ========
+; Trash the saved-by-parent registers r0-r3, r12
+;
+        SECTION CODE:CODE:NOROOT(2)
+        THUMB
+
+ti_sysbios_family_arm_m3_Clobber_trashRegs__E:
+
+        add     r0, r0, #0
+        add     r1, r0, #1
+        add     r2, r0, #2
+        add     r3, r0, #3
+        add     r12, r0, #12
+        bx      lr
+
+;
+; ======== Clobber_postIntr ========
+; Wait for interrupt
+;
+        SECTION CODE:CODE:NOROOT
+        THUMB
+
+ti_sysbios_family_arm_m3_Clobber_postIntr__E:
+        push    {r4}
+        ldr     r4, nvic_isr
+        sub     r0, r0, #16
+        str     r0, [r4]
+        pop     {r4}
+        bx      lr
+
+        DATA
+        ALIGNROM 2
+nvic_isr:
+        DC32           0xe000ef00
+
+;
+; ======== Clobber_checkRegs ========
+; Verify the saved-by-parent registers r4 - r11
+;
+        SECTION CODE:CODE:NOROOT
+        THUMB
+
+ti_sysbios_family_arm_m3_Clobber_checkRegs__E:
+        add     r0, r0, #1
+        cmp     r1, r0
+        bne     badexit
+        add     r0, r0, #1
+        cmp     r2, r0
+        bne     badexit
+        add     r0, r0, #1
+        cmp     r3, r0
+        bne     badexit
+        add     r0, r0, #9
+        cmp     r12, r0
+        bne     badexit
+        mov     r0, #0
+        bx      lr
+
+badexit:
+        mov     r0, #1
+        bx      lr
+
+        END

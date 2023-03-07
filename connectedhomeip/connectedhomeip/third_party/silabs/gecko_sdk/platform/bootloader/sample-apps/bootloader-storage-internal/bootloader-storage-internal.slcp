@@ -1,0 +1,52 @@
+project_name: bootloader-storage-internal
+package: bootloader
+quality: production
+label: Bootloader - SoC Internal Storage (multiple images on 1MB device)
+description: >
+  Application Bootloader for all EFR32 and EFM32 devices with 1MB or larger flash, using the internal flash memory to store upgrade images received by the application over the air in an application specific way. This sample configuration supports storing multiple firmware update images simultaneously by configuring multiple storage slots. The storage layout is designed for 1024 kB EFR32xG12 devices, and the layout of the storage should be modified before being run on other devices.
+
+category: Example|Bootloader
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+  - name: "MCU"
+    value: ["Bootloader"]
+
+
+component:
+  - id: bootloader_core
+  - id: bootloader_crc
+  - id: bootloader_aes_sha_ecdsa
+  - id: bootloader_internal_storage
+  - id: bootloader_image_parser
+  - id: bootloader_common_storage
+  - id: bootloader_token_management
+  - id: bootloader_debug
+
+configuration:
+  - name: BTL_STORAGE_BASE_ADDRESS
+    value: 364544
+  - name: SLOT0_ENABLE
+    value: 1
+  - name: SLOT0_START
+    value: 368640
+  - name: SLOT0_SIZE
+    value: 337920
+  - name: SLOT1_ENABLE
+    value: 1
+  - name: SLOT1_START
+    value: 706560
+  - name: SLOT1_SIZE
+    value: 337920
+
+tag:
+  - hardware:device:flash:1024
+
+other_file:
+  - path: ../../script/postbuild/postbuild.sh
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md

@@ -1,0 +1,23 @@
+id: "connect_parent_support"
+label: "Parent Support"
+package: "Flex"
+category: "Connect"
+quality: "production"
+description: "Provides parent functionalities such as indirect communication (communication with sleepy devices) and child table. It should be included for any coordinator or range extender node intended to support multiple end-device and/or sleepy end-device nodes."
+provides:
+  - name: "connect_parent_support"
+requires:
+  - name: "connect_stack_common"
+  - name: "connect_mac_queue"
+  - name: "connect_parent_support_implementation"
+recommends:
+  - id: "connect_parent_support_source"
+config_file:
+  - path: "protocol/flex/stack/config/component_config/parent-support-config.h"
+template_contribution:
+  - name: component_catalog
+    value: connect_parent_support
+
+documentation:
+  docset: connect-stack
+  document: group-parent-support

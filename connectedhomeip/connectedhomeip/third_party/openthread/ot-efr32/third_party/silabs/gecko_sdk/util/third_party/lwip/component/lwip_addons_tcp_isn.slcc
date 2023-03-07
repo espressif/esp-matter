@@ -1,0 +1,18 @@
+id: lwip_addons_tcp_isn
+label: "TCP ISN"
+pretty_name : "TCP Initial Sequence Numbers"
+package: platform
+description: >
+  TCP Initial Sequence Numbers addon.
+category: LwIP|Addons
+quality: production
+provides:
+  - name: lwip_addons_tcp_isn
+requires:
+  - name: lwip_core
+source:
+  - path: util/third_party/lwip/lwip-contrib/addons/tcp_isn/tcp_isn.c
+include:
+  - path: util/third_party/lwip/lwip-contrib/addons/tcp_isn
+    file_list:
+    - path: tcp_isn.h

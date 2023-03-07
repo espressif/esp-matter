@@ -1,0 +1,54 @@
+id: iot_flash
+category: Third Party|Amazon FreeRTOS - AWS Libraries|Common I/O
+label: IoT Flash
+description: >
+  Silicon Labs' Implementation of Amazon Common I/O Flash API
+  Doc: https://docs.aws.amazon.com/freertos/latest/lib-ref/common-io/files.html
+package: amazon_platform
+quality: production
+instantiable:
+  prefix: inst
+provides:
+  - name: iot_flash
+    allow_multiple: true
+requires:
+  - name: se_manager
+    condition: [device_series_2]
+  - name: spidrv_core
+  - name: freertos
+  - name: device_init
+  - name: emlib_core
+  - name: emlib_msc
+  - name: emlib_usart
+  - name: status
+  - name: common_io_validation_lib
+root_path: util/third_party/aws_iot_libs
+config_file:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_flash/config/iot_flash_cfg_{{instance}}.h
+    file_id: iot_flash_cfg
+
+source:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_flash/source/iot_flash_drv_msc.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_flash/source/iot_flash_drv_spi.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_flash/source/iot_flash_hal.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_flash/test/iot_flash_test.c
+    condition: ["aws_tests_defs"]
+
+include:
+  - path: libraries/abstractions/common_io/include
+    file_list:
+      - path: iot_flash.h
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_flash/include
+    file_list:
+      - path: iot_flash_desc.h
+      - path: iot_flash_drv_msc.h
+      - path: iot_flash_drv_spi.h
+      - path: iot_flash_drv.h
+
+template_file:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_flash/template/iot_flash_desc.c.jinja
+template_contribution:
+  - name: iot_flash_instances
+    value: "{{instance}}"
+validation_helper:
+  - path: script/iot_flash_validation.lua

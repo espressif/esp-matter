@@ -1,0 +1,11 @@
+#ifndef BLCRYPTO_SUITE_TOP_CONFIG_H_YJ9KRAA4
+#define BLCRYPTO_SUITE_TOP_CONFIG_H_YJ9KRAA4
+
+//XXX TODO remove bl606p/bl808
+#if defined(CFG_CHIP_BL606P)||defined(CFG_CHIP_BL808)
+#define USE_HWCRYPTO 0
+#else
+#define USE_HWCRYPTO 1
+#endif
+
+#endif /* end of include guard: BLCRYPTO_SUITE_TOP_CONFIG_H_YJ9KRAA4 */

@@ -1,0 +1,253 @@
+project_name: rail_soc_range_test
+label: "RAIL - SoC Range Test"
+package: Flex
+description: "This is a customizable Range Test Sample Application that demonstrates over the air range of the EFR32.
+This sample app can act as a Transmitter and a Receiver. The role can be selected in the LCD menu. Flashing this app into two separate boards makes it possible to test the features and specification of the radio. The sample also provides an example how the RAIL API can be used.
+A menu is displayed in the LCD, which allows the user to see the most important information about the settings and also change some of them. The left button navigates in the menu and the right button selects or changes options. The bottom line always shows what the buttons do in the particular context.
+In Tx Mode, the user can send packets. Packet length (7..64 bytes) and the number of packets to transmit (from 500 up to continuous) can be set.
+Output power can be set in the LCD menu, in 0.5dBm steps (power setpoint), between -15..+20dBm. Actual minimum and maximum power may vary in different frequencies as well as the power that is actually set by RAIL. The LCD menu informs the user about the setpoint and the actual power. In the LCD menu, the Power item displays the setpoint first, then actual value.
+In Rx Mode, the radio listens on the given channel and inspects the packets received. Only packets that are sent with the expected device ID, will be processed. Packet Error Rate, Bit Error Rate and RSSI of the packets is displayed to inform about the quality of the transmission.
+For both modes, the channel on which the Tx/Rx radio will operate and the device IDs of the transmitters and receiver radio, can be set.
+Radio related events can be logged on UART on demand.
+CLI can be used for setting and starting/stoping the application as well, to start with CLI interface send 'help' over terminal.
+NOTE: Due to the higher current consumption of the continuous radio usage (especially in Rx Mode), it is not recommended to power the boards from a coin cell. Instead, an USB power bank can be used if portability is needed."
+category: RAIL Examples
+quality: production
+
+
+#---------------- UC/UP components -------------------
+component:
+  - id: sl_system
+  - id: device_init
+  - id: sl_simple_rail_stub
+  - id: rail_util_init
+    instance:
+      - inst0
+  - id: rail_util_recommended
+  - id: sl_flex_rail_packet_asm
+  - id: app_log
+  - id: app_assert
+#---------------------- CLI -------------------------
+  - id: "cli"
+    instance:
+    - example
+  - id: sl_range_test_cli
+#---------------------- LCD -------------------------
+  - id: glib
+#---------------- Images for LCD ---------------------  
+  - id: sl_flex_images_for_lcd
+#--------------------- BUTTON ------------------------
+  - id: simple_button
+    instance:
+      - btn0
+      - btn1
+#--------------------- VCOM --------------------------
+  - id: printf
+  - id: iostream_recommended_stream
+  - id: iostream_retarget_stdio
+#------------Memory Protection Unit-------------------
+  - id: mpu
+#------------Core and Extension files------------------
+  - id: sl_range_test_core
+
+#-------------- Restriction rules -------------------
+  - id: restrictions_profile_base
+  - id: restrictions_profile_connect
+  - id: restrictions_profile_long_range
+  - id: restrictions_profile_wisun_fan_1_0
+  - id: restrictions_profile_wisun_han
+  - id: restrictions_profile_wisun_ofdm
+  - id: restrictions_profile_sun
+
+#----------------- Require list ----------------------
+requires:
+  - name: a_radio_config
+  - name: sl_simple_rail_os
+    condition:
+      - "kernel"
+# Added for Safety for the EFF, but the sample app doesn't support it yet.
+  - name: rail_util_eff
+    condition: [hardware_board_has_eff]
+  - name: radio_config_simple_rail_singlephy
+    condition: [device_sdid_80]
+  - name: radio_config_simple_rail_singlephy
+    condition: [device_sdid_84]
+  - name: radio_config_simple_rail_singlephy
+    condition: [device_sdid_89]
+  - name: radio_config_simple_rail_singlephy
+    condition: [device_sdid_95]
+  - name: radio_config_simple_rail_singlephy
+    condition: [device_sdid_205]
+  - name: radio_config_simple_rail_singlephy
+    condition: [device_sdid_215]
+  - name: radio_config_simple_rail_singlephy
+    condition: [device_sdid_220]
+  - name: radio_config_simple_rail_singlephy
+    condition: 
+      - device_sdid_210
+      - hardware_board_default_rf_band_434
+  - name: radio_config_simple_rail_singlephy
+    condition: 
+      - device_sdid_210
+      - hardware_board_default_rf_band_868
+      - hardware_board_supports_1_rf_band
+  - name: radio_config_simple_rail_singlephy
+    condition: 
+      - device_sdid_210
+      - hardware_board_default_rf_band_915
+  - name: radio_config_range_test_sdid_210_868_915_phys
+    condition: 
+      - device_sdid_210
+      - hardware_board_default_rf_band_868
+      - hardware_board_supports_2_rf_bands
+  - name: radio_config_range_test_sdid_210_868_915_phys
+    condition: 
+      - device_sdid_210
+      - hardware_board_default_rf_band_868
+      - hardware_board_supports_3_rf_bands
+  - name: radio_config_singlephy_device_family_fgm23
+    condition:
+      - "device_family_fgm23"
+
+#----------------- Project files ---------------------
+source:
+  - path: ../common/main/main.c
+
+readme:
+  - path: ../../../documentation/example/rail/rail_soc_range_test/readme.md
+
+other_file:
+  - path: "hw_filter_tags.yaml"
+    condition:
+      - "add_hw_filter_to_project"
+
+#----------------- Project defines ---------------------
+define:
+  - name: HARDWARE_BOARD_HAS_EFF
+    condition: [hardware_board_has_eff]
+
+#------------ Configuration overrides ----------------
+configuration:
+#----------------- OS --------------------------------
+  - name: OS_CFG_TMR_EN
+    value: "1"
+  - name: SL_STACK_SIZE
+    value: "4096"
+  - name: SL_HEAP_SIZE
+    value: "8000"
+  - name: OS_CFG_PRIO_MAX
+    value: "8"
+#------------- FreeRTOS OS        --------------------
+  - name: configMINIMAL_STACK_SIZE
+    value: "1024"
+#------------- Micrium OS / SystemView --------------------
+  - name: CPU_CFG_TS_32_EN
+    value: "1"
+  - name: OS_CFG_DBG_EN
+    value: "1"
+  - name: OS_CFG_TS_EN
+    value: "1"
+  - name: OS_CFG_SCHED_ROUND_ROBIN_EN
+    value: "1"
+  - name: OS_CFG_STAT_TASK_EN
+    value: "1"
+  - name: OS_CFG_TASK_PROFILE_EN
+    value: "1"
+#----------------- CLI --------------------------------
+  - name: SL_CLI_EXAMPLE_TASK_STACK_SIZE
+    value: "250"
+  - name: SL_CLI_INPUT_BUFFER_SIZE
+    value: "32"
+  - name: SL_CLI_NUM_HISTORY_BYTES
+    value: "0"
+  - name: SL_CLI_EXAMPLE_TASK_PRIORITY
+    value: "48"
+#------------- RAIL init, Project --------------------
+  - name: SL_RAIL_UTIL_INIT_INIT_COMPLETE_CALLBACK_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_RADIO_CONFIG_SUPPORT_INST0_ENABLE
+    value: "1"
+#------------- RAIL init, Protocol -------------------
+  - name: SL_RAIL_UTIL_INIT_PROTOCOLS_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_PROTOCOL_INST0_DEFAULT
+    value: "SL_RAIL_UTIL_PROTOCOL_PROPRIETARY"
+#------------- RAIL init, Calibrations ---------------
+  - name: SL_RAIL_UTIL_INIT_CALIBRATIONS_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_CALIBRATION_TEMPERATURE_NOTIFY_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_CALIBRATION_ONETIME_NOTIFY_INST0_ENABLE
+    value: "1"
+#------------- RAIL init, Auto Transitions -----------
+  - name: SL_RAIL_UTIL_INIT_TRANSITIONS_INST0_ENABLE
+    value: "1"
+#------------- RAIL init, Data Format ----------------
+  - name: SL_RAIL_UTIL_INIT_DATA_FORMATS_INST0_ENABLE
+    value: "1"
+#------------- RAIL init, Radio Events ---------------
+  - name: SL_RAIL_UTIL_INIT_EVENTS_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_PACKET_RECEIVED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_FRAME_ERROR_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TX_PACKET_SENT_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_TX_SCHEDULED_RX_TX_STARTED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_CAL_NEEDED_INST0_ENABLE
+    value: "1"
+#------------- RAIL init, PA for EFF ---------------
+  - name: SL_RAIL_UTIL_PA_SELECTION_SUBGHZ
+    value: "RAIL_TX_POWER_MODE_SUBGIG_EFF_25DBM"
+    condition: [hardware_board_has_eff]
+  - name: SL_RAIL_UTIL_PA_CALIBRATION_ENABLE
+    value: "1"
+    condition: [hardware_board_has_eff] 
+#------------- USART settings ----------------
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+  - name: SL_IOSTREAM_USART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "(1)"
+  - name: SL_IOSTREAM_USART_VCOM_FLOW_CONTROL_TYPE
+    value: "usartHwFlowControlNone"
+  - name: SL_IOSTREAM_EUSART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "(1)"
+  - name: SL_IOSTREAM_EUSART_VCOM_FLOW_CONTROL_TYPE
+    value: "eusartHwFlowControlNone"
+#------------- LCD settings ----------------
+  - name: SL_BOARD_ENABLE_DISPLAY
+    value: "1"
+    condition:
+      - dmd_memlcd
+#------------- Button settings ----------------
+  - name: SL_SIMPLE_BUTTON_BTN0_MODE
+    value: "SL_SIMPLE_BUTTON_MODE_INTERRUPT"
+  - name: SL_SIMPLE_BUTTON_BTN1_MODE
+    value: "SL_SIMPLE_BUTTON_MODE_INTERRUPT"
+#------------- Other project settings ----------------
+  - name: APP_LOG_PREFIX_ENABLE
+    value: "0"
+
+#--------------------- Toolchain ------------------------
+toolchain_settings:
+  - option: optimize
+    value: debug
+
+ui_hints:
+  highlight:
+    - path: "readme.md"
+    - path: "config/rail/radio_settings.radioconf"
+      focus: true
+
+tag:
+  - prebuilt_demo
+
+filter:
+  - name: "Wireless Technology"
+    value: ["RAIL"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]

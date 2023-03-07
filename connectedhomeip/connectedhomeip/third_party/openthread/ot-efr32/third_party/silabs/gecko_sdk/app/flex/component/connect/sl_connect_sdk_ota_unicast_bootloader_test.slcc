@@ -1,0 +1,59 @@
+id: "sl_connect_sdk_ota_unicast_bootloader_test"
+label: "OTA Unicast Bootloader Test"
+package: "Flex"
+category: "Connect|Test"
+quality: "production"
+description: "Demonstrates how to use the OTA Unicast Bootloader components (server and/or client). It also provides CLI commands for accessing the external flash part and controlling the OTA Unicast bootloader process and from CLI."
+root_path: "app/flex/component/connect/sl_connect_sdk_ota_unicast_bootloader_test"
+provides:
+  - name: "sl_connect_sdk_ota_unicast_bootloader_test"
+requires:
+  - name: "sl_connect_sdk_ota_bootloader_test_common"
+source:
+  - path: "sl_connect_sdk_ota_unicast_bootloader_test.c"
+define:
+  - name: "SL_CATALOG_CONNECT_OTA_UNICAST_BOOTLOADER_CLIENT"
+    condition: ["connect_ota_unicast_bootloader_client"]
+    value: "\"ota-unicast-bootloader-client.h\""
+  - name: "SL_CATALOG_CONNECT_OTA_UNICAST_BOOTLOADER_SERVER"
+    condition: ["connect_ota_unicast_bootloader_server"]
+    value: "\"ota-unicast-bootloader-server.h\""
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: sl_connect_sdk_ota_unicast_bootloader_test
+  - name: event_system
+    value:
+      event_control: "emAfPluginOtaUnicastBootloaderTestEventControl"
+      event_handler: "emAfPluginOtaUnicastBootloaderTestEventHandler"    
+  - name: cli_command
+    value:
+      name: bootloader_unicast_set_target
+      handler: cli_bootloader_unicast_set_target
+      help: "Set the target node ID where the image is sent."
+      argument:
+      - type: uint16
+        help: "Target node ID"
+  - name: cli_command
+    value:
+      name: bootloader_unicast_distribute
+      handler: cli_bootloader_unicast_unicast_distribute
+      help: "Sart sending the image to the target node."
+      argument:
+      - type: uint32
+        help: "Length of the GLB image in bytes"
+      - type: uint16
+        help: "image tag being transmitted"
+  - name: cli_command
+    value:
+      name: bootloader_unicast_request_bootload
+      handler: cli_bootloader_unicast_request_bootload
+      help: "Requesting the target node to flash the transmitted image scheduled to the given time"
+      argument:
+      - type: uint32
+        help: "Sheduled time ahead after which the bootload is to be timed"
+      - type: uint16
+        help: ""
+
+

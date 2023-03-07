@@ -1,0 +1,63 @@
+package: Zigbee
+description: This component provides the platform-specific means to bootload a device
+  with an application bootloader using external storage for the new image. For an
+  SOC platform this will simply execute the bootloader. In that case it is assumed
+  that the SOC bootloader can access the same storage device as the run-time application
+  using the bootload cluster (i.e. they both have the same EEPROM driver). For the
+  NCP, the code is more complex but functionally the same.  This host code launches
+  the bootloader on the NCP, transfers the file over to the NCP via the xmodem protocol,
+  then reboots the NCP.  It is assumed for the NCP that the serial standalone bootloader
+  appropriate for the platform (UART or SPI) is loaded.  The NCP code requires an
+  OTA Storage implementation and device. This component does not support any host bootloading,
+  or bootloading other microchips, but it can be extended to do so.
+label: OTA Cluster Platform Bootloader
+quality: production
+id: zigbee_ota_bootload
+category: Zigbee|Over-The-Air Bootloading
+provides:
+   - name: zigbee_ota_bootload
+requires:
+   - name: zigbee_ota_common
+   - name: zigbee_ota_storage_common
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/ota-bootload/config/ota-bootload-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/ota-bootload/ota-bootload-cli.c
+    condition:
+      - cli
+  - path: protocol/zigbee/app/framework/plugin/ota-bootload/ota-bootload-ncp.c
+    condition:
+      - zigbee_ezsp
+  - path: protocol/zigbee/app/framework/plugin/ota-bootload/ota-bootload-ncp-uart.c
+    condition:
+      - zigbee_ezsp
+  - path: protocol/zigbee/app/framework/plugin/ota-bootload/ota-bootload-ncp-spi.c
+    condition:
+      - zigbee_ezsp
+  - path: protocol/zigbee/app/framework/plugin/ota-bootload/ota-bootload-xmodem.c
+    condition:
+      - zigbee_ezsp
+  - path: protocol/zigbee/app/framework/plugin/ota-bootload/ota-bootload-soc.c
+    condition:
+      - zigbee_stack_common
+include:
+  - path: protocol/zigbee/app/framework/plugin/ota-bootload
+    file_list:
+      - path: ota-bootload-ncp.h
+      - path: ota-bootload-xmodem.h
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_ota_bootload
+  - name: cli_group
+    value:
+      group: plugin
+      name: ota-bootload
+      help: ota-bootload related commands
+  - name: cli_command
+    value:
+      group: ota-bootload
+      name: info
+      handler: printBootloaderInfoCommand
+      help: Prints info about the installed bootloader.
+

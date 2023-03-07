@@ -1,0 +1,42 @@
+package: Zigbee
+description: Silicon Labs implementation of Time server cluster. This component is not recommended
+  for production because it uses a software system to keep track of time. Instead
+  the user should hook the cluster callbacks into a set of hardware
+  routines to maintain the device's system clock. This software implementation is
+  inappropriate for sleepy devices since it prevents them from sleeping for longer
+  than one second. During initialization, the Time Server component writes the TimeStatus
+  attribute based on the component options, overriding any attribute default that may
+  have been configured.
+label: Time Server Cluster
+quality: production
+id: zigbee_time_server
+category: Zigbee|Cluster Library|Common
+provides:
+   - name: "zigbee_time_server"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/time-server/config/time-server-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/time-server/time-server.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/time-server
+    file_list:
+      - path: time-server.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_time_server
+  - name: cluster_functions
+    value:
+      cluster_name: Time
+      cluster_id: 0x000a
+      cluster_type: server
+      init_function: emberAfTimeClusterServerInitCallback
+  - name: cluster_functions
+    value:
+      cluster_name: Time
+      cluster_id: 0x000a
+      cluster_type: server
+      pre_attribute_changed_function: emberAfTimeClusterServerPreAttributeChangedCallback
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/time-server

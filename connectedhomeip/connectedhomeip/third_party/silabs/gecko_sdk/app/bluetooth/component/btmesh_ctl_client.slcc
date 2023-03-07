@@ -1,0 +1,41 @@
+id: "btmesh_ctl_client"
+label: "CTL Client"
+package: "Btmesh"
+description: >
+  Color Tunable Lighting (CTL) Client model. Used to set the dim level or the
+  color temperature of a light source (CTL Server) on another node.
+  
+  This component extends the lighting client with functions to change the
+  temperature by, or to change the temperature to a certain percentage.
+  
+  For more details about lighting please see Lighting Client.
+category: "Bluetooth Mesh|Models|Lighting"
+quality: "production"
+root_path: "app/bluetooth/common/btmesh_ctl_client"
+config_file:
+  - path: btmesh_ctl_client.dcd
+    directory: btmeshconf
+  - path: "config/sl_btmesh_ctl_client_config.h"
+source:
+  - path: "sl_btmesh_ctl_client.c"
+include:
+  - path: ""
+    file_list:
+      - path: "sl_btmesh_ctl_client.h"
+provides:
+  - name: "btmesh_ctl_client"
+requires:
+  - name: "app_assert"
+  - name: "app_btmesh_util"
+  - name: "btmesh_feature_generic_client"
+  - name: "btmesh_feature_node"
+  - name: "btmesh_generic_client"
+  - name: "btmesh_lighting_client"
+  - name: "btmesh_stack"
+  - name: "simple_timer"
+recommends:
+  - id: "simple_timer"
+
+template_contribution:
+  - name: component_catalog
+    value: btmesh_ctl_client

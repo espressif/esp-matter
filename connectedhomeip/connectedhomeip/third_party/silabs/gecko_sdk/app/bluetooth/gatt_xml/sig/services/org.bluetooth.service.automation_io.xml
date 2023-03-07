@@ -1,0 +1,226 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2015 Bluetooth SIG, Inc. All rights reserved. -->
+<Service xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Automation IO" type="org.bluetooth.service.automation_io" uuid="1815" last-modified="2015-07-14" approved="Yes">
+    <InformativeText>
+        <Abstract>The Automation IO service is used to expose the analog inputs/outputs and digital input/outputs of a generic IO module (IOM).</Abstract>
+    </InformativeText>
+    <Dependencies>
+        <Dependency>This service has no dependencies on other GATT-based services.</Dependency>
+    </Dependencies>
+    <GATTRequirements>
+        <Requirement subProcedure="Write Characteristic Value">C1: Mandatory if Digital or Analog with Write property is supported.</Requirement>
+        <Requirement subProcedure="Write Without Response">C2: Mandatory if the "write without response" characteristic property is supported for either the Digital or Analog characteristics (if any available).</Requirement>
+        <Requirement subProcedure="Indications">C3: Mandatory if the "indicate" or "notify" characteristic property respectively is supported for either the Digital, Analog  or Aggregate characteristic.</Requirement>
+        <Requirement subProcedure="Notifications">C3:Mandatory if the "indicate" or "notify" characteristic property respectively is supported for either the Digital, Analog  or Aggregate characteristic.</Requirement>
+        <Requirement subProcedure="Write Characteristic Descriptors">C4: Mandatory if indications or notification is supported or if writable characteristics descriptors are supported for at least one supported characteristics.</Requirement>
+        <Requirement subProcedure="Read Characteristic Descriptors">C5: Mandatory if a Digital characteristic is present.</Requirement>
+    </GATTRequirements>
+    
+    <Transports>
+        <Classic>true</Classic>
+        <LowEnergy>true</LowEnergy>
+    </Transports>
+    
+    <ErrorCodes>
+        <ErrorCode name="Trigger condition value not supported" code="0x08" Description="An attempt was made to configure a condition value not supported by this Automation IO Server"></ErrorCode>
+     </ErrorCodes>
+    <Characteristics>
+        <Characteristic name="Digital" type="org.bluetooth.characteristic.digital" multiple_instances="Yes">
+            <InformativeText>The Digital characteristic is used to expose and change the state of an IOM's digital signals.</InformativeText>
+            <Requirement>Conditional</Requirement>
+            <Properties>
+            <InformationText>
+               C1: At least one instance of either Digital or Analog characteristics shall be supported
+               C3: The Indicate and Notify properties are excluded for the Digital and Analog characteristics if the Aggregate characteristic is supported
+               C4: The Indicate and Notify properties shall not be permitted simultaneously for any supported characteristic   
+               C5: Indicate or Notify property shall be supported only if the Read property is supported for the characteristic
+            </InformationText>
+                <Read>Optional</Read>
+                <Write>Optional</Write>
+                <WriteWithoutResponse>Optional</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Optional</Notify>
+                <Indicate>Optional</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+                <ExtendedProperties>Excluded</ExtendedProperties>
+            </Properties>
+            <Descriptors>
+                <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+                    <Requirement>if_notify_or_indicate_supported</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>Mandatory</Write>
+                    </Properties>
+                </Descriptor>
+                <Descriptor name="Characteristic Presentation Format" type="org.bluetooth.descriptor.gatt.characteristic_presentation_format">
+                    <Requirement>if_multiple_instances_of_same_characteristic</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>Excluded</Write>
+                    </Properties>
+                </Descriptor>
+                <Descriptor name="Characteristic User Description" type="org.bluetooth.descriptor.gatt.characteristic_user_description">
+                    <InformativeText>C2: Write permitted if «writable auxiliaries» is supported in the Characteristic Extended Properties descriptor otherwise read-only.</InformativeText>
+                    <Requirement>Optional</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>C2</Write>
+                    </Properties>
+                </Descriptor>
+                <Descriptor name="Characteristic Extended Properties" type="org.bluetooth.descriptor.gatt.characteristic_extended_properties">
+                    <Requirement>Optional</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>Excluded</Write>
+                    </Properties>
+                </Descriptor>
+                <Descriptor name="Value Trigger Setting" type="org.bluetooth.descriptor.value_trigger_setting">
+                    <InformativeText>
+                        C3: Excluded if a custom condition is available, otherwise Optional.
+                        C5: Excluded if Indicate or Notify not is defined for the characteristic or for the Aggregate characteristic (if it is used).
+					</InformativeText>
+                    <Requirement>Conditional</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>Mandatory</Write>
+                    </Properties>
+                </Descriptor>
+                 <Descriptor name="Time Trigger Setting" type="org.bluetooth.descriptor.time_trigger_setting">
+                    <InformativeText>
+                        C3: Excluded if a custom condition is available, otherwise Optional.
+                        C4: Excluded if a Value Trigger Descriptor not is defined for the characteristic.
+                        C5: Excluded if Indicate or Notify not is defined for the characteristic or for the Aggregate characteristic (if it is used).
+					</InformativeText>
+                    <Requirement>Conditional</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>Mandatory</Write>
+                    </Properties>
+                </Descriptor>
+                <Descriptor name="Number of Digitals" type="org.bluetooth.descriptor.number_of_digitals">
+                    <Requirement>Mandatory</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>Excluded</Write>
+                    </Properties>
+                </Descriptor>
+            </Descriptors>
+        </Characteristic>
+    
+        <Characteristic name="Analog" type="org.bluetooth.characteristic.analog" multiple_instances="Yes">
+            <InformativeText>The Analog characteristic is used to read or write the value of one of the IOM's analog signals.</InformativeText>
+            <Requirement>Conditional</Requirement>
+            <Properties>
+              <InformationText>
+                C1: At least one instance of either Digital or Analog characteristics shall be supported
+                C3: The Indicate and Notify properties are excluded for the Digital and Analog characteristics if the Aggregate characteristic is supported
+                C4: The Indicate and Notify properties shall not be permitted simultaneously for any supported characteristic
+                C5: Indicate or Notify property shall be supported only if the Read property is supported for the characteristic
+             </InformationText>
+                <Read>Optional</Read>
+                <Write>Optional</Write>
+                <WriteWithoutResponse>Optional</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Optional</Notify>
+                <Indicate>Optional</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+                <ExtendedProperties>Excluded</ExtendedProperties>
+            </Properties>
+            <Descriptors>
+                 <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+                    <Requirement>if_notify_or_indicate_supported</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>Mandatory</Write>
+                    </Properties>
+                </Descriptor>
+                <Descriptor name="Characteristic Presentation Format" type="org.bluetooth.descriptor.gatt.characteristic_presentation_format">
+                    <Requirement>if_multiple_instances_of_same_characteristic</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>Excluded</Write>
+                    </Properties>
+                </Descriptor>
+                <Descriptor name="Characteristic User Description" type="org.bluetooth.descriptor.gatt.characteristic_user_description">
+                    <InformativeText>C2: Write permitted if «writable auxiliaries» is supported in the Characteristic Extended Properties descriptor otherwise read-only.</InformativeText>
+                    <Requirement>Optional</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>C2</Write>
+                    </Properties>
+                </Descriptor>
+                <Descriptor name="Characteristic Extended Properties" type="org.bluetooth.descriptor.gatt.characteristic_extended_properties">
+                    <Requirement>Optional</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>Excluded</Write>
+                    </Properties>
+                </Descriptor>
+                <Descriptor name="Value Trigger Setting" type="org.bluetooth.descriptor.value_trigger_setting">
+                    <InformativeText>
+                        C4: Excluded if a custom condition is available otherwise Optional.
+                        C6: Excluded if Indicate or Notify not is defined for the characteristic or for the Aggregate characteristic (if it is used).
+					</InformativeText>
+                    <Requirement>Conditional</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>Mandatory</Write>
+                    </Properties>
+                </Descriptor>
+                 <Descriptor name="Time Trigger Setting" type="org.bluetooth.descriptor.time_trigger_setting">
+                    <InformativeText>
+                        C4: Excluded if a custom condition is available otherwise Optional.
+                        C5: Excluded if a Value Trigger Setting descriptor not is defined for the characteristic.
+                        C6: Excluded if Indicate or Notify not is defined for the characteristic or for the Aggregate characteristic (if it is used).
+					</InformativeText>
+                    <Requirement>Conditional</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>Mandatory</Write>
+                    </Properties>
+                </Descriptor>
+                <Descriptor name="Valid Range" type="org.bluetooth.descriptor.valid_range">
+                    <Requirement>Optional</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>Excluded</Write>
+                    </Properties>
+                </Descriptor>
+            </Descriptors>
+        </Characteristic>
+        
+        <Characteristic name="Aggregate" type="org.bluetooth.characteristic.aggregate">
+            <Requirement>Conditional</Requirement>
+            <Properties>
+                <InformationText>
+                C2: Only one instance of the Aggregate characteristic shall exist if the Aggregate characteristic is supported
+                C4: The Indicate and Notify properties shall not be permitted simultaneously for any supported characteristic
+                C5: Indicate or Notify property shall be supported only if the Read property is supported for the characteristic
+				</InformationText>
+                <Read>Optional</Read>
+                <Write>Excluded</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Optional</Notify>
+                <Indicate>Optional</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+                <ExtendedProperties>Excluded</ExtendedProperties>
+            </Properties>
+            <Descriptors>
+                <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+                    <Requirement>if_notify_or_indicate_supported</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>Mandatory</Write>
+                    </Properties>
+                </Descriptor>
+            </Descriptors>
+        </Characteristic>
+    </Characteristics>
+</Service>

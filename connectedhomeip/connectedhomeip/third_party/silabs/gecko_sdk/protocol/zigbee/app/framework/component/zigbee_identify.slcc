@@ -1,0 +1,55 @@
+package: Zigbee
+description: Silicon Labs implementation of Identify cluster.  It requires extending in order
+  to integrate the code with the hardware, for example to make a light blink
+  during identify.
+id: zigbee_identify
+label: Identify Cluster
+category: Zigbee|Cluster Library|Common
+quality: extend
+provides:
+   - name: "zigbee_identify"
+source:
+  - path: protocol/zigbee/app/framework/plugin/identify/identify.c
+  - path: protocol/zigbee/app/framework/plugin/identify/identify-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/identify/identify-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/identify
+    file_list:
+      - path: identify.h  
+template_contribution:
+  - name: component_catalog
+    value: zigbee_identify
+  - name: cluster_functions
+    value:
+       cluster_name: Identify
+       cluster_id: 0x0003
+       cluster_type: server
+       init_function: emberAfIdentifyClusterServerInitCallback
+  - name: cluster_functions
+    value:
+       cluster_name: Identify
+       cluster_id: 0x0003
+       cluster_type: server      
+       attribute_changed_function: emberAfIdentifyClusterServerAttributeChangedCallback       
+  - name: cli_group
+    value:
+      group: plugin
+      name: identify
+      help: identify related commands
+  - name: cli_command
+    value:
+      group: identify
+      name: print
+      handler: emAfPluginIdentifyCliPrint
+      help: Print which endpoints are reporting.
+  - name: cluster_service
+    value:
+       cluster_id: "0x0003"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "SERVER"
+       service_function: "emberAfIdentifyClusterServerCommandParse"
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/identify

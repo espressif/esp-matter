@@ -1,0 +1,85 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pi_pico.gni")
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+
+# TODO(amontanez): This can go away if the GN build can be upstreamed to the
+# Pi Pico repo.
+_CWD = "${PICO_SRC_DIR}/src/rp2040/hardware_regs"
+
+config("public_include_dirs") {
+  include_dirs = [ "${_CWD}/include" ]
+}
+
+pw_source_set("platform_defs") {
+  public_configs = [
+    ":public_include_dirs",
+    "${PICO_ROOT}/gn:disable_warnings",
+  ]
+  public = [
+    "${_CWD}/include/hardware/platform_defs.h",
+    "${_CWD}/include/hardware/regs/addressmap.h",
+    "${_CWD}/include/hardware/regs/sio.h",
+  ]
+}
+
+pw_source_set("hardware_regs") {
+  public_configs = [
+    ":public_include_dirs",
+    "${PICO_ROOT}/gn:disable_warnings",
+  ]
+  public_deps = [
+    ":platform_defs",
+    "${PICO_ROOT}/src/rp2_common/pico_platform:headers",
+  ]
+  public = [
+    "${_CWD}/include/hardware/regs/adc.h",
+    "${_CWD}/include/hardware/regs/addressmap.h",
+    "${_CWD}/include/hardware/regs/busctrl.h",
+    "${_CWD}/include/hardware/regs/clocks.h",
+    "${_CWD}/include/hardware/regs/dma.h",
+    "${_CWD}/include/hardware/regs/dreq.h",
+    "${_CWD}/include/hardware/regs/i2c.h",
+    "${_CWD}/include/hardware/regs/intctrl.h",
+    "${_CWD}/include/hardware/regs/io_bank0.h",
+    "${_CWD}/include/hardware/regs/io_qspi.h",
+    "${_CWD}/include/hardware/regs/m0plus.h",
+    "${_CWD}/include/hardware/regs/pads_bank0.h",
+    "${_CWD}/include/hardware/regs/pads_qspi.h",
+    "${_CWD}/include/hardware/regs/pio.h",
+    "${_CWD}/include/hardware/regs/pll.h",
+    "${_CWD}/include/hardware/regs/psm.h",
+    "${_CWD}/include/hardware/regs/pwm.h",
+    "${_CWD}/include/hardware/regs/resets.h",
+    "${_CWD}/include/hardware/regs/rosc.h",
+    "${_CWD}/include/hardware/regs/rtc.h",
+    "${_CWD}/include/hardware/regs/sio.h",
+    "${_CWD}/include/hardware/regs/spi.h",
+    "${_CWD}/include/hardware/regs/ssi.h",
+    "${_CWD}/include/hardware/regs/syscfg.h",
+    "${_CWD}/include/hardware/regs/sysinfo.h",
+    "${_CWD}/include/hardware/regs/tbman.h",
+    "${_CWD}/include/hardware/regs/timer.h",
+    "${_CWD}/include/hardware/regs/uart.h",
+    "${_CWD}/include/hardware/regs/usb.h",
+    "${_CWD}/include/hardware/regs/usb_device_dpram.h",
+    "${_CWD}/include/hardware/regs/vreg_and_chip_reset.h",
+    "${_CWD}/include/hardware/regs/watchdog.h",
+    "${_CWD}/include/hardware/regs/xip.h",
+    "${_CWD}/include/hardware/regs/xosc.h",
+  ]
+}

@@ -1,0 +1,118 @@
+package: Zigbee
+description: This component performs the necessary steps to create a network according
+  to the Base Device Behavior specification. The component performs an active scan
+  followed by an energy scan across a primary channel set to decide which
+  channel(s) are valid candidates for network formation. If the component fails to form
+  a network on any primary channels, it moves to a secondary channel mask. Before
+  every attempt at network formation, this component sets up the stack to use Zigbee
+  3.0 security.
+label: Network Creator
+quality: production
+id: zigbee_network_creator
+category: Zigbee|Zigbee 3.0
+provides:
+   - name: "zigbee_network_creator"
+requires:
+   - name: "zigbee_scan_dispatch"
+   - name: "zigbee_network_creator_security"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/network-creator/config/network-creator-config.h
+validation_helper:
+  - path: protocol/zigbee/app/framework/component/scripts/zigbee_radio_power_value_validation.lua
+source:
+  - path: protocol/zigbee/app/framework/plugin/network-creator/network-creator.c
+  - path: protocol/zigbee/app/framework/plugin/network-creator/network-creator-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/network-creator/network-creator-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/network-creator
+    file_list:
+      - path: network-creator.h
+      - path: network-creator-composite.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_network_creator
+  - name: cli_group
+    value:
+      group: plugin
+      name: network-creator
+      help: network-creator related commands.
+  - name: cli_command
+    value:
+      group: network-creator
+      name: start
+      handler: emberAfPluginNetworkCreatorStartCommand
+      help: Starts the network formation process.
+      argument:
+      - type: int8
+        help: Whether or not to form a centralized network. If this value is false, the device will attempt to join a distributed network.
+  - name: cli_command
+    value:
+      group: network-creator
+      name: stop
+      handler: emberAfPluginNetworkCreatorStop
+      help: Stops the network formation process.
+  - name: cli_command
+    value:
+      group: network-creator
+      name: form
+      handler: emberAfPluginNetworkCreatorFormCommand
+      help: Forms a network with specified parameters.
+      argument:
+      - type: int8
+        help: Whether or not to form a centralized network. If this value is false, the device will attempt to join a distributed network.
+      - type: uint16
+        help: PanID of the network to be formed
+      - type: int8
+        help: Tx power of the network to be formed
+      - type: uint8
+        help: Channel of the network to be formed
+  - name: cli_group
+    value:
+      group: network-creator
+      name: mask
+      help: mask related commands
+  - name: cli_command
+    value:
+      group: mask
+      name: add
+      handler: emberAfPluginNetworkCreatorChannelMaskCommand
+      help: Adds a channel to the channel mask of choice.
+      argument:
+      - type: uint8
+        help: The mask to which to add the channel. 1 chooses the primary channel mask, any other argument chooses the secondary channel mask.
+      - type: uint32
+        help: The channel to add to the channel mask
+  - name: cli_command
+    value:
+      group: mask
+      name: subtract
+      handler: emberAfPluginNetworkCreatorChannelMaskCommand
+      help: Subtracts a channel from the channel mask of choice.
+      argument:
+      - type: uint8
+        help: The mask from which to subtract the channel. 1 chooses the primary channel mask. Any other argument chooses the secondary channel mask.
+      - type: uint32
+        help: The channel to subtract from the channel mask
+  - name: cli_command
+    value:
+      group: mask
+      name: set
+      handler: emberAfPluginNetworkCreatorChannelMaskCommand
+      help: Sets a channel mask.
+      argument:
+      - type: uint8
+        help: The mask  to set. 1 chooses the primary channel mask. Any other argument chooses the secondary channel mask.
+      - type: uint32
+        help: The bit mask to which to set the chosen channel mask.
+  - name: cli_command
+    value:
+      group: network-creator
+      name: status
+      handler: emberAfPluginNetworkCreatorStatusCommand
+      help: Prints the status of the network-creator component.
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/network-creator

@@ -1,0 +1,21 @@
+id: micriumos_usbh_class_aoap
+label: Micrium-USB Host Class - Android Accessory
+package: micrium-usbh
+description: Micrium OS USB Host Android Accessory Class
+category: Services|Micrium|USB
+quality: deprecated
+source:
+  - path: platform/micrium_os/usb/source/host/class/usbh_aoap.c
+include:
+  - path: platform/micrium_os
+    file_list:
+      - path: usb/include/host/usbh_aoap.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: USB_HOST_AOAP
+provides:
+  - name: usbh_class_aoap
+  - name: usbh_class
+    allow_multiple: true
+requires:
+  - name: usbh

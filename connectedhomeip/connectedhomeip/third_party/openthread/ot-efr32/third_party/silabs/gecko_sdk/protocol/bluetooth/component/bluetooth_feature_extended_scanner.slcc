@@ -1,0 +1,38 @@
+id: "bluetooth_feature_extended_scanner"
+label: "Scanner for extended advertisements"
+package: "Bluetooth"
+description: >
+  This component brings in necessary functionalities for scanning the advertisements
+  that use legacy or extended advertising PDUs.
+  
+  Include this component if the application needs to scan advertisements that
+  use extended advertising PDUs. When this component is included by
+  the application, advertisements received by the scanner are reported with the
+  BGAPI sl_bt_evt_scanner_legacy_advertisement_report event for legacy advertising
+  PDUs, and the sl_bt_evt_scanner_extended_advertisement_report event for
+  extended advertising PDUs.
+
+  If the application only needs to scan for advertisements that use legacy advertising
+  PDUs, the application should use the component <bluetooth_feature_legacy_scanner>.
+category: "Bluetooth|Feature"
+quality: "production"
+root_path: "protocol/bluetooth"
+requires:
+  - name: "bluetooth_controller"
+  - name: "bluetooth_feature_scanner"
+  - name: "device_supports_bluetooth_advertising_extensions"
+provides:
+  - name: "bluetooth_feature_extended_scanner"
+  - name: "bluetooth_feature_central_connection"
+    allow_multiple: true
+  - name: "bluetooth_feature_connection_creation"
+    allow_multiple: true
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_extended_scanner
+
+# TODO: This cannot be enabled for RCP yet:
+#  - name: bluetooth_controller_init
+#    value:
+#      function: sl_btctrl_init_scan_ext()
+#    priority: 8

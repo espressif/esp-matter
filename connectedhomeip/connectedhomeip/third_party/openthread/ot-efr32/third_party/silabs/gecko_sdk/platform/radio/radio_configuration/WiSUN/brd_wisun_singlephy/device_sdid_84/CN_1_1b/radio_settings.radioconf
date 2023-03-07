@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<multi_phy_configuration part_family="jumbo" part_revision="A0" rail_adapter_version="rail_api_2.x" status_code="0" xsd_version="0.0.20">
+  <base_channel_configurations>
+    <base_channel_configuration name="Protocol Configuration" profile="wisun_fan_1_0">
+      <channel_config_entries>
+        <channel_config_entry name="Channel Group 1">
+          <channel_number_start>0</channel_number_start>
+          <channel_number_end>198</channel_number_end>
+          <physical_channel_offset>SAME_AS_FIRST_CHANNEL</physical_channel_offset>
+          <max_power>RAIL_TX_POWER_MAX</max_power>
+        </channel_config_entry>
+      </channel_config_entries>
+      <phy name="PHY_IEEE802154_WISUN_470MHz_2GFSK_50kbps_1b_CN"/>
+    </base_channel_configuration>
+  </base_channel_configurations>
+</multi_phy_configuration>

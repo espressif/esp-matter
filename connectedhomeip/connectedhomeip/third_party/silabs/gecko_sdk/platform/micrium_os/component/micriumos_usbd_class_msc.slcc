@@ -1,0 +1,33 @@
+id: micriumos_usbd_class_msc
+label: USB Device Class - MSC
+package: micrium-usbd
+description: Micrium OS USB Device MSC Class
+category: Services|Micrium|USB
+quality: deprecated
+component_root_path: platform/micrium_os/usb
+source:
+  - path: source/device/class/usbd_msc.c
+  - path: source/device/class/usbd_msc_os.c
+  - path: source/device/class/usbd_scsi.c
+  - path: source/device/class/usbd_scsi_storage_blk_dev.c
+include:
+  - path: source
+    file_list:
+      - path: device/class/usbd_msc_priv.h
+      - path: device/class/usbd_scsi_priv.h
+      - path: device/class/usbd_scsi_storage_priv.h
+      - path: device/class/usbd_scsi_types_priv.h
+  - path: include
+    file_list:
+      - path: device/usbd_msc.h
+      - path: device/usbd_scsi_storage_blk_dev.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: USB_DEV_MSC
+provides:
+  - name: usbd_class_msc
+  - name: usbd_class
+    allow_multiple: true
+requires:
+  - name: fs
+  - name: usbd

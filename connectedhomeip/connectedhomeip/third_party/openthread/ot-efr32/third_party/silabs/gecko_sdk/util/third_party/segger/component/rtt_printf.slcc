@@ -1,0 +1,12 @@
+id: "segger_rtt_printf"
+label: "SEGGER RTT printf"
+package: "platform"
+description: "SEGGER RTT with printf feature"
+category: "Platform|Utilities|RTT"
+quality: "production"
+source:
+  - path: "util/third_party/segger/systemview/SEGGER/SEGGER_RTT_printf.c"
+provides:
+  - name: "segger_rtt_printf"
+requires:
+  - name: "segger_rtt"

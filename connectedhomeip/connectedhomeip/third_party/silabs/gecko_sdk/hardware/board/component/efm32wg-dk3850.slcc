@@ -1,0 +1,22 @@
+!!omap
+- id: efm32wg_dk3850
+- label: EFM32WG-DK3850
+- package: platform
+- description: Kit BSP support for the EFM32 Wonder Gecko Development Kit.
+- category: Platform|Board|Kit|Development Kit
+- quality: production
+- requires:
+  - name: hardware_board_from_efm32wg-dk3850
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_dk
+- define:
+  - name: SL_KIT_NAME
+    value: '"EFM32WG-DK3850"'
+  - name: SL_KIT_REV
+    value: '"A02"'
+- tag:
+  - kit:opn:EFM32WG-DK3850
+  - kit:pn:DK3850
+  - kit:variant:A
+  - kit:revision:A02

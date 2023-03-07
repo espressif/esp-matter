@@ -1,0 +1,19 @@
+#!/bin/bash
+
+LOC=`dirname "$0"`
+
+for A in ${LOC}/../*.xml; do
+    xmllint --format --output $A.format --schema ${LOC}/../schema/zcl.xsd $A
+    mv -f $A.format $A
+done
+for A in ${LOC}/../../silabs/*.xml; do
+    xmllint --format --output $A.format --schema ${LOC}/../schema/zcl.xsd $A
+    mv -f $A.format $A
+done
+for A in ${LOC}/../../matter/*.xml; do
+    xmllint --format --output $A.format --schema ${LOC}/../schema/zcl.xsd $A
+    mv -f $A.format $A
+done
+
+xmllint --format --output ${LOC}/../schema/zcl.xsd.format ${LOC}/../schema/zcl.xsd
+mv -f ${LOC}/../schema/zcl.xsd.format ${LOC}/../schema/zcl.xsd

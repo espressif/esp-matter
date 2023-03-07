@@ -1,0 +1,548 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3D1B9EEF1C5F03810021C58B /* RWSSocketObjc.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D1B9EEE1C5F03810021C58B /* RWSSocketObjc.m */; };
+		3D1B9EF01C5F03840021C58B /* RWSSocketObjc.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D1B9EEE1C5F03810021C58B /* RWSSocketObjc.m */; };
+		3D1B9EF21C5F04BA0021C58B /* ObjcContrib.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D1B9EF11C5F04BA0021C58B /* ObjcContrib.m */; };
+		3D8A11A51C4E9C130005F9B9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D8A11A41C4E9C130005F9B9 /* main.m */; };
+		3D8A11A81C4E9C130005F9B9 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D8A11A71C4E9C130005F9B9 /* AppDelegate.m */; };
+		3D8A11AB1C4E9C130005F9B9 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D8A11AA1C4E9C130005F9B9 /* ViewController.m */; };
+		3D8A11AE1C4E9C130005F9B9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D8A11AC1C4E9C130005F9B9 /* Main.storyboard */; };
+		3D8A11B01C4E9C130005F9B9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D8A11AF1C4E9C130005F9B9 /* Assets.xcassets */; };
+		3D8A11B31C4E9C130005F9B9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D8A11B11C4E9C130005F9B9 /* LaunchScreen.storyboard */; };
+		3D8A11CB1C4E9CAE0005F9B9 /* librws.c in Sources */ = {isa = PBXBuildFile; fileRef = 3D8A11C91C4E9CAE0005F9B9 /* librws.c */; };
+		3DD7B9431C8F6D43002AF61A /* rws_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DD7B9411C8F6D43002AF61A /* rws_list.c */; };
+		3DD7B9441C8F6D43002AF61A /* rws_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DD7B9411C8F6D43002AF61A /* rws_list.c */; };
+		3DD7B9471C8F6D4D002AF61A /* rws_thread.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DD7B9451C8F6D4D002AF61A /* rws_thread.c */; };
+		3DD7B9481C8F6D4D002AF61A /* rws_thread.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DD7B9451C8F6D4D002AF61A /* rws_thread.c */; };
+		3DD7B94B1C8F6D58002AF61A /* rws_error.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DD7B9491C8F6D58002AF61A /* rws_error.c */; };
+		3DD7B94C1C8F6D58002AF61A /* rws_error.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DD7B9491C8F6D58002AF61A /* rws_error.c */; };
+		3DD7B94F1C8F6D61002AF61A /* rws_memory.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DD7B94D1C8F6D61002AF61A /* rws_memory.c */; };
+		3DD7B9501C8F6D61002AF61A /* rws_memory.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DD7B94D1C8F6D61002AF61A /* rws_memory.c */; };
+		3DD7B9531C8F6D6C002AF61A /* rws_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DD7B9511C8F6D6C002AF61A /* rws_common.c */; };
+		3DD7B9541C8F6D6C002AF61A /* rws_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DD7B9511C8F6D6C002AF61A /* rws_common.c */; };
+		3DD7B9581C8F6D7D002AF61A /* rws_socketpriv.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DD7B9561C8F6D7D002AF61A /* rws_socketpriv.c */; };
+		3DD7B9591C8F6D7D002AF61A /* rws_socketpriv.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DD7B9561C8F6D7D002AF61A /* rws_socketpriv.c */; };
+		3DD7B95A1C8F6D7D002AF61A /* rws_socketpub.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DD7B9571C8F6D7D002AF61A /* rws_socketpub.c */; };
+		3DD7B95B1C8F6D7D002AF61A /* rws_socketpub.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DD7B9571C8F6D7D002AF61A /* rws_socketpub.c */; };
+		3DD7B95E1C8F6D85002AF61A /* rws_string.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DD7B95C1C8F6D85002AF61A /* rws_string.c */; };
+		3DD7B95F1C8F6D85002AF61A /* rws_string.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DD7B95C1C8F6D85002AF61A /* rws_string.c */; };
+		3DD7B9621C8F6D8C002AF61A /* rws_frame.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DD7B9601C8F6D8C002AF61A /* rws_frame.c */; };
+		3DD7B9631C8F6D8C002AF61A /* rws_frame.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DD7B9601C8F6D8C002AF61A /* rws_frame.c */; };
+		3DE1B2721C58E67A00966F56 /* creation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE1B2711C58E67A00966F56 /* creation.m */; };
+		3DE1B2731C58E6AD00966F56 /* librws.c in Sources */ = {isa = PBXBuildFile; fileRef = 3D8A11C91C4E9CAE0005F9B9 /* librws.c */; };
+		3DE1B27E1C58E85300966F56 /* getterAndSetters.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE1B27D1C58E85300966F56 /* getterAndSetters.m */; };
+		3DE1B2801C58ECCE00966F56 /* connection.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE1B27F1C58ECCE00966F56 /* connection.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		3D8A11BA1C4E9C140005F9B9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3D8A11981C4E9C130005F9B9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3D8A119F1C4E9C130005F9B9;
+			remoteInfo = librws_test;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		3D1B9EED1C5F03810021C58B /* RWSSocketObjc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RWSSocketObjc.h; path = ../contrib/objc/RWSSocketObjc.h; sourceTree = "<group>"; };
+		3D1B9EEE1C5F03810021C58B /* RWSSocketObjc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RWSSocketObjc.m; path = ../contrib/objc/RWSSocketObjc.m; sourceTree = "<group>"; };
+		3D1B9EF11C5F04BA0021C58B /* ObjcContrib.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjcContrib.m; sourceTree = "<group>"; };
+		3D8A11A01C4E9C130005F9B9 /* librws_test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = librws_test.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3D8A11A41C4E9C130005F9B9 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		3D8A11A61C4E9C130005F9B9 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		3D8A11A71C4E9C130005F9B9 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		3D8A11A91C4E9C130005F9B9 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		3D8A11AA1C4E9C130005F9B9 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		3D8A11AD1C4E9C130005F9B9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		3D8A11AF1C4E9C130005F9B9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3D8A11B21C4E9C130005F9B9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		3D8A11B41C4E9C130005F9B9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3D8A11B91C4E9C140005F9B9 /* librws_testTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = librws_testTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3D8A11BF1C4E9C140005F9B9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3D8A11C91C4E9CAE0005F9B9 /* librws.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = librws.c; path = ../src/librws.c; sourceTree = "<group>"; };
+		3D8A11CC1C4E9CC40005F9B9 /* librws.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = librws.h; path = ../librws.h; sourceTree = "<group>"; };
+		3DB6A4EE1C4EEB2600DDBEAF /* test_librws_creation.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test_librws_creation.c; sourceTree = SOURCE_ROOT; };
+		3DB6A4F31C4EF8E400DDBEAF /* test_librws_socket_get_set.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test_librws_socket_get_set.c; sourceTree = SOURCE_ROOT; };
+		3DD7B9411C8F6D43002AF61A /* rws_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = rws_list.c; path = ../src/rws_list.c; sourceTree = "<group>"; };
+		3DD7B9421C8F6D43002AF61A /* rws_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rws_list.h; path = ../src/rws_list.h; sourceTree = "<group>"; };
+		3DD7B9451C8F6D4D002AF61A /* rws_thread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = rws_thread.c; path = ../src/rws_thread.c; sourceTree = "<group>"; };
+		3DD7B9461C8F6D4D002AF61A /* rws_thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rws_thread.h; path = ../src/rws_thread.h; sourceTree = "<group>"; };
+		3DD7B9491C8F6D58002AF61A /* rws_error.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = rws_error.c; path = ../src/rws_error.c; sourceTree = "<group>"; };
+		3DD7B94A1C8F6D58002AF61A /* rws_error.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rws_error.h; path = ../src/rws_error.h; sourceTree = "<group>"; };
+		3DD7B94D1C8F6D61002AF61A /* rws_memory.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = rws_memory.c; path = ../src/rws_memory.c; sourceTree = "<group>"; };
+		3DD7B94E1C8F6D61002AF61A /* rws_memory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rws_memory.h; path = ../src/rws_memory.h; sourceTree = "<group>"; };
+		3DD7B9511C8F6D6C002AF61A /* rws_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = rws_common.c; path = ../src/rws_common.c; sourceTree = "<group>"; };
+		3DD7B9521C8F6D6C002AF61A /* rws_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rws_common.h; path = ../src/rws_common.h; sourceTree = "<group>"; };
+		3DD7B9551C8F6D74002AF61A /* rws_socket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = rws_socket.h; path = ../src/rws_socket.h; sourceTree = "<group>"; };
+		3DD7B9561C8F6D7D002AF61A /* rws_socketpriv.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = rws_socketpriv.c; path = ../src/rws_socketpriv.c; sourceTree = "<group>"; };
+		3DD7B9571C8F6D7D002AF61A /* rws_socketpub.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = rws_socketpub.c; path = ../src/rws_socketpub.c; sourceTree = "<group>"; };
+		3DD7B95C1C8F6D85002AF61A /* rws_string.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = rws_string.c; path = ../src/rws_string.c; sourceTree = "<group>"; };
+		3DD7B95D1C8F6D85002AF61A /* rws_string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rws_string.h; path = ../src/rws_string.h; sourceTree = "<group>"; };
+		3DD7B9601C8F6D8C002AF61A /* rws_frame.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = rws_frame.c; path = ../src/rws_frame.c; sourceTree = "<group>"; };
+		3DD7B9611C8F6D8C002AF61A /* rws_frame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rws_frame.h; path = ../src/rws_frame.h; sourceTree = "<group>"; };
+		3DE1B2711C58E67A00966F56 /* creation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = creation.m; sourceTree = "<group>"; };
+		3DE1B27D1C58E85300966F56 /* getterAndSetters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = getterAndSetters.m; sourceTree = "<group>"; };
+		3DE1B27F1C58ECCE00966F56 /* connection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = connection.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3D8A119D1C4E9C130005F9B9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3D8A11B61C4E9C140005F9B9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3D1B9EEC1C5F034D0021C58B /* contrib */ = {
+			isa = PBXGroup;
+			children = (
+				3D1B9EED1C5F03810021C58B /* RWSSocketObjc.h */,
+				3D1B9EEE1C5F03810021C58B /* RWSSocketObjc.m */,
+			);
+			name = contrib;
+			sourceTree = "<group>";
+		};
+		3D8A11971C4E9C130005F9B9 = {
+			isa = PBXGroup;
+			children = (
+				3D8A11C81C4E9C980005F9B9 /* librws */,
+				3D8A11A21C4E9C130005F9B9 /* librws_test */,
+				3D8A11BC1C4E9C140005F9B9 /* librws_testTests */,
+				3D8A11A11C4E9C130005F9B9 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		3D8A11A11C4E9C130005F9B9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3D8A11A01C4E9C130005F9B9 /* librws_test.app */,
+				3D8A11B91C4E9C140005F9B9 /* librws_testTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3D8A11A21C4E9C130005F9B9 /* librws_test */ = {
+			isa = PBXGroup;
+			children = (
+				3D8A11A61C4E9C130005F9B9 /* AppDelegate.h */,
+				3D8A11A71C4E9C130005F9B9 /* AppDelegate.m */,
+				3D8A11A91C4E9C130005F9B9 /* ViewController.h */,
+				3D8A11AA1C4E9C130005F9B9 /* ViewController.m */,
+				3D8A11AC1C4E9C130005F9B9 /* Main.storyboard */,
+				3D8A11AF1C4E9C130005F9B9 /* Assets.xcassets */,
+				3D8A11B11C4E9C130005F9B9 /* LaunchScreen.storyboard */,
+				3D8A11B41C4E9C130005F9B9 /* Info.plist */,
+				3D8A11A31C4E9C130005F9B9 /* Supporting Files */,
+			);
+			path = librws_test;
+			sourceTree = "<group>";
+		};
+		3D8A11A31C4E9C130005F9B9 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				3D8A11A41C4E9C130005F9B9 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		3D8A11BC1C4E9C140005F9B9 /* librws_testTests */ = {
+			isa = PBXGroup;
+			children = (
+				3DB6A4F31C4EF8E400DDBEAF /* test_librws_socket_get_set.c */,
+				3DB6A4EE1C4EEB2600DDBEAF /* test_librws_creation.c */,
+				3D8A11BF1C4E9C140005F9B9 /* Info.plist */,
+				3DE1B2711C58E67A00966F56 /* creation.m */,
+				3DE1B27D1C58E85300966F56 /* getterAndSetters.m */,
+				3DE1B27F1C58ECCE00966F56 /* connection.m */,
+				3D1B9EF11C5F04BA0021C58B /* ObjcContrib.m */,
+			);
+			path = librws_testTests;
+			sourceTree = "<group>";
+		};
+		3D8A11C81C4E9C980005F9B9 /* librws */ = {
+			isa = PBXGroup;
+			children = (
+				3D1B9EEC1C5F034D0021C58B /* contrib */,
+				3D8A11CD1C4E9E090005F9B9 /* src */,
+				3D8A11CC1C4E9CC40005F9B9 /* librws.h */,
+			);
+			name = librws;
+			sourceTree = "<group>";
+		};
+		3D8A11CD1C4E9E090005F9B9 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				3DD7B9421C8F6D43002AF61A /* rws_list.h */,
+				3DD7B9411C8F6D43002AF61A /* rws_list.c */,
+				3DD7B9461C8F6D4D002AF61A /* rws_thread.h */,
+				3DD7B9451C8F6D4D002AF61A /* rws_thread.c */,
+				3DD7B94A1C8F6D58002AF61A /* rws_error.h */,
+				3DD7B9491C8F6D58002AF61A /* rws_error.c */,
+				3DD7B94E1C8F6D61002AF61A /* rws_memory.h */,
+				3DD7B94D1C8F6D61002AF61A /* rws_memory.c */,
+				3DD7B9521C8F6D6C002AF61A /* rws_common.h */,
+				3DD7B9511C8F6D6C002AF61A /* rws_common.c */,
+				3DD7B9551C8F6D74002AF61A /* rws_socket.h */,
+				3DD7B9561C8F6D7D002AF61A /* rws_socketpriv.c */,
+				3DD7B9571C8F6D7D002AF61A /* rws_socketpub.c */,
+				3D8A11C91C4E9CAE0005F9B9 /* librws.c */,
+				3DD7B95D1C8F6D85002AF61A /* rws_string.h */,
+				3DD7B95C1C8F6D85002AF61A /* rws_string.c */,
+				3DD7B9611C8F6D8C002AF61A /* rws_frame.h */,
+				3DD7B9601C8F6D8C002AF61A /* rws_frame.c */,
+			);
+			name = src;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3D8A119F1C4E9C130005F9B9 /* librws_test */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3D8A11C21C4E9C140005F9B9 /* Build configuration list for PBXNativeTarget "librws_test" */;
+			buildPhases = (
+				3D8A119C1C4E9C130005F9B9 /* Sources */,
+				3D8A119D1C4E9C130005F9B9 /* Frameworks */,
+				3D8A119E1C4E9C130005F9B9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = librws_test;
+			productName = librws_test;
+			productReference = 3D8A11A01C4E9C130005F9B9 /* librws_test.app */;
+			productType = "com.apple.product-type.application";
+		};
+		3D8A11B81C4E9C140005F9B9 /* librws_testTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3D8A11C51C4E9C140005F9B9 /* Build configuration list for PBXNativeTarget "librws_testTests" */;
+			buildPhases = (
+				3D8A11B51C4E9C140005F9B9 /* Sources */,
+				3D8A11B61C4E9C140005F9B9 /* Frameworks */,
+				3D8A11B71C4E9C140005F9B9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3D8A11BB1C4E9C140005F9B9 /* PBXTargetDependency */,
+			);
+			name = librws_testTests;
+			productName = librws_testTests;
+			productReference = 3D8A11B91C4E9C140005F9B9 /* librws_testTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3D8A11981C4E9C130005F9B9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = none;
+				TargetAttributes = {
+					3D8A119F1C4E9C130005F9B9 = {
+						CreatedOnToolsVersion = 7.2;
+					};
+					3D8A11B81C4E9C140005F9B9 = {
+						CreatedOnToolsVersion = 7.2;
+						TestTargetID = 3D8A119F1C4E9C130005F9B9;
+					};
+				};
+			};
+			buildConfigurationList = 3D8A119B1C4E9C130005F9B9 /* Build configuration list for PBXProject "librws_test" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 3D8A11971C4E9C130005F9B9;
+			productRefGroup = 3D8A11A11C4E9C130005F9B9 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3D8A119F1C4E9C130005F9B9 /* librws_test */,
+				3D8A11B81C4E9C140005F9B9 /* librws_testTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3D8A119E1C4E9C130005F9B9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3D8A11B31C4E9C130005F9B9 /* LaunchScreen.storyboard in Resources */,
+				3D8A11B01C4E9C130005F9B9 /* Assets.xcassets in Resources */,
+				3D8A11AE1C4E9C130005F9B9 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3D8A11B71C4E9C140005F9B9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3D8A119C1C4E9C130005F9B9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3DD7B94F1C8F6D61002AF61A /* rws_memory.c in Sources */,
+				3DD7B9581C8F6D7D002AF61A /* rws_socketpriv.c in Sources */,
+				3DD7B9621C8F6D8C002AF61A /* rws_frame.c in Sources */,
+				3D8A11CB1C4E9CAE0005F9B9 /* librws.c in Sources */,
+				3DD7B9471C8F6D4D002AF61A /* rws_thread.c in Sources */,
+				3D8A11AB1C4E9C130005F9B9 /* ViewController.m in Sources */,
+				3DD7B9531C8F6D6C002AF61A /* rws_common.c in Sources */,
+				3D1B9EEF1C5F03810021C58B /* RWSSocketObjc.m in Sources */,
+				3D8A11A81C4E9C130005F9B9 /* AppDelegate.m in Sources */,
+				3DD7B9431C8F6D43002AF61A /* rws_list.c in Sources */,
+				3DD7B94B1C8F6D58002AF61A /* rws_error.c in Sources */,
+				3DD7B95A1C8F6D7D002AF61A /* rws_socketpub.c in Sources */,
+				3D8A11A51C4E9C130005F9B9 /* main.m in Sources */,
+				3DD7B95E1C8F6D85002AF61A /* rws_string.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3D8A11B51C4E9C140005F9B9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3DD7B9541C8F6D6C002AF61A /* rws_common.c in Sources */,
+				3DD7B94C1C8F6D58002AF61A /* rws_error.c in Sources */,
+				3DD7B9481C8F6D4D002AF61A /* rws_thread.c in Sources */,
+				3DD7B95B1C8F6D7D002AF61A /* rws_socketpub.c in Sources */,
+				3DD7B95F1C8F6D85002AF61A /* rws_string.c in Sources */,
+				3DD7B9501C8F6D61002AF61A /* rws_memory.c in Sources */,
+				3DE1B27E1C58E85300966F56 /* getterAndSetters.m in Sources */,
+				3DE1B2731C58E6AD00966F56 /* librws.c in Sources */,
+				3D1B9EF21C5F04BA0021C58B /* ObjcContrib.m in Sources */,
+				3D1B9EF01C5F03840021C58B /* RWSSocketObjc.m in Sources */,
+				3DD7B9591C8F6D7D002AF61A /* rws_socketpriv.c in Sources */,
+				3DE1B2801C58ECCE00966F56 /* connection.m in Sources */,
+				3DD7B9631C8F6D8C002AF61A /* rws_frame.c in Sources */,
+				3DE1B2721C58E67A00966F56 /* creation.m in Sources */,
+				3DD7B9441C8F6D43002AF61A /* rws_list.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		3D8A11BB1C4E9C140005F9B9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3D8A119F1C4E9C130005F9B9 /* librws_test */;
+			targetProxy = 3D8A11BA1C4E9C140005F9B9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		3D8A11AC1C4E9C130005F9B9 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3D8A11AD1C4E9C130005F9B9 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		3D8A11B11C4E9C130005F9B9 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3D8A11B21C4E9C130005F9B9 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		3D8A11C01C4E9C140005F9B9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		3D8A11C11C4E9C140005F9B9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		3D8A11C31C4E9C140005F9B9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = librws_test/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "re.librws-test";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		3D8A11C41C4E9C140005F9B9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = librws_test/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "re.librws-test";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		3D8A11C61C4E9C140005F9B9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+					"XCODE=1",
+				);
+				INFOPLIST_FILE = librws_testTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "re.librws-testTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/librws_test.app/librws_test";
+			};
+			name = Debug;
+		};
+		3D8A11C71C4E9C140005F9B9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GCC_PREPROCESSOR_DEFINITIONS = "XCODE=1";
+				INFOPLIST_FILE = librws_testTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "re.librws-testTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/librws_test.app/librws_test";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3D8A119B1C4E9C130005F9B9 /* Build configuration list for PBXProject "librws_test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3D8A11C01C4E9C140005F9B9 /* Debug */,
+				3D8A11C11C4E9C140005F9B9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3D8A11C21C4E9C140005F9B9 /* Build configuration list for PBXNativeTarget "librws_test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3D8A11C31C4E9C140005F9B9 /* Debug */,
+				3D8A11C41C4E9C140005F9B9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3D8A11C51C4E9C140005F9B9 /* Build configuration list for PBXNativeTarget "librws_testTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3D8A11C61C4E9C140005F9B9 /* Debug */,
+				3D8A11C71C4E9C140005F9B9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 3D8A11981C4E9C130005F9B9 /* Project object */;
+}

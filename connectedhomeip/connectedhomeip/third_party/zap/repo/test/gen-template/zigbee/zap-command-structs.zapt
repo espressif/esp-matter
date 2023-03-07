@@ -1,0 +1,23 @@
+{{#zcl_commands_with_arguments sortBy="signature"}}{{#if argCount }}
+/*
+ * Command Struct for {{clusterName}} cluster and {{commandName}} command
+ */
+typedef struct __zcl_{{as_underscore_lowercase clusterName}}_cluster_{{as_underscore_lowercase commandName}}_command {
+    {{#zcl_command_arguments}}
+  {{as_underlying_zcl_type type struct="uint8_t *" array="uint8_t *"}} {{as_symbol label}};
+    {{/zcl_command_arguments}}
+} sl_zcl_{{as_underscore_lowercase clusterName}}_cluster_{{as_underscore_lowercase commandName}}_command_t;
+{{#if isSignatureSimple}}
+
+/*
+ * Decoding signature for {{clusterName}} cluster and {{commandName}} command
+ *     {{signature}}
+ */
+#define sl_zcl_{{as_underscore_lowercase clusterName}}_cluster_{{as_underscore_lowercase commandName}}_command_signature  { \
+  {{argCount}}, \
+{{#zcl_command_arguments}}  {{#if isOptional}}OPTIONAL_FIELD|{{/if}}ZAP_SIGNATURE_TYPE_{{as_underscore_uppercase baseType}}, offsetof(sl_zcl_{{as_underscore_lowercase ../clusterName}}_cluster_{{as_underscore_lowercase ../commandName}}_command_t, {{as_symbol label}}), \ 
+{{/zcl_command_arguments}}
+}
+{{/if}}
+
+{{/if}}{{/zcl_commands_with_arguments}}

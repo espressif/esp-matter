@@ -1,0 +1,128 @@
+id: bootloader_core_nonsecure
+label: Bootloader Core (Non-Secure)
+package: bootloader
+description: NonSecure Core library for Gecko bootloader.
+category: Platform|Bootloader|TrustZone NonSecure|Core
+quality: beta
+source:
+  - path: platform/bootloader/core/btl_main_ns.c
+  - path: platform/bootloader/core/btl_reset_ns.c
+  - path: platform/bootloader/core/btl_bootload_ns.c
+
+define:
+  - name: SL_RAMFUNC_DISABLE
+    value: 1
+  - name: __START
+    value: main
+  - name: __STARTUP_CLEAR_BSS
+    value: 1
+  - name: BOOTLOADER_SECOND_STAGE
+    value: 1
+
+include:
+  - path: platform/bootloader
+    file_list:
+      - path: core/btl_reset_ns.h
+      - path: core/btl_bootload_ns.h
+      - path: debug/btl_debug.h
+      - path: config/btl_config.h
+      - path: core/btl_util.h
+  - path: platform/bootloader/build/lib
+
+provides:
+  - name: bootloader_core
+  - name: bootloader_core_nonsecure
+
+    # Used to force conflict during SLC dependency resolution
+    # if other NonSecure incompatible components are being added.
+  - name: bootloader_nonsecure_incompatible
+
+requires:
+  - name: bootloader_tz_nonsecure
+  - name: emlib
+
+recommends:
+  - id: bootloader_delay_driver_nonsecure
+  - id: bootloader_ezsp_spi_nonsecure
+  - id: bootloader_debug_nonsecure
+  - id: bootloader_image_parser_nonsecure
+  - id: bootloader_spi_peripheral_driver_nonsecure
+  - id: bootloader_crc_nonsecure
+  - id: bootloader_serial_driver_nonsecure
+  - id: bootloader_include_parser_nonsecure
+  - id: bootloader_uart_xmodem_nonsecure
+  - id: bootloader_xmodem_parser_nonsecure
+  - id: bootloader_bgapi_uartdfu_nonsecure
+
+library:
+  - path: platform/bootloader/build/lib/bootloader_secure_lib_xg21.o
+    condition: [device_sdid_200]
+  - path: platform/bootloader/build/lib/bootloader_secure_lib_xg22.o
+    condition: [device_sdid_205]
+  - path: platform/bootloader/build/lib/bootloader_secure_lib_xg23.o
+    condition: [device_sdid_210]
+  - path: platform/bootloader/build/lib/bootloader_secure_lib_xg24.o
+    condition: [device_sdid_215]
+  - path: platform/bootloader/build/lib/bootloader_secure_lib_xg25.o
+    condition: [device_sdid_220]
+  - path: platform/bootloader/build/lib/bootloader_secure_lib_xg27.o
+    condition: [device_sdid_230]
+template_contribution:
+  - name: memory_flash_start
+    value: 0x5000
+    condition:
+      - device_sdid_200 # xG21
+  - name: memory_flash_start
+    value: 0x5000
+    condition:
+      - device_sdid_205 # xG22
+  - name: memory_flash_start
+    value: 0x8005000
+    condition:
+      - device_sdid_210 # xG23
+  - name: memory_flash_start
+    value: 0x8005000
+    condition:
+      - device_sdid_215 # xG24
+  - name: memory_flash_start
+    value: 0x8005000
+    condition:
+      - device_sdid_220 # xG25
+  - name: memory_flash_start
+    value: 0x8005000
+    condition:
+      - device_sdid_230 # xG27
+
+  # Memory flash size
+  - name: memory_flash_size
+    value: 4096
+    unless:
+      - bootloader_apploader
+  - name: memory_flash_size
+    value: 0xF000
+    condition:
+      - bootloader_apploader
+
+  # Memory RAM start
+  - name: memory_ram_start
+    value: 0x20006000
+    unless:
+      - bootloader_apploader
+  - name: memory_ram_start
+    value: 0x20002000
+    condition:
+      - bootloader_apploader
+
+  # Memory RAM size
+  - name: memory_ram_size
+    value: 0x2000
+    unless:
+      - bootloader_apploader
+  - name: memory_ram_size
+    value: 0x6000
+    condition:
+      - bootloader_apploader
+
+toolchain_settings:
+  - option: optimize
+    value: size

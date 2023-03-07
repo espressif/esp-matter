@@ -1,0 +1,57 @@
+package: Zigbee
+description: Common functionality for Unix hosts.
+label: Unix Library
+quality: production
+id: zigbee_host_unix_library
+category: Zigbee|Unix Host
+toolchain_settings: []
+ui_hints: {}
+template_file: []
+provides:
+  - name: zigbee_crc
+  - name: zigbee_hal
+  - name: zigbee_random
+  - name: zigbee_system_timer
+  - name: zigbee_token
+  - name: zigbee_host_unix_library
+
+requires:
+  - name: device_host
+  - name: zigbee_ezsp
+
+config_file:
+  - path: protocol/zigbee/app/framework/plugin-host/unix-library/config/unix-library-config.h
+
+source:
+  - path: platform/service/legacy_hal/src/crc.c
+  - path: platform/service/legacy_hal/src/random.c
+  - path: platform/service/legacy_hal/src/system-timer.c
+  - path: platform/service/legacy_hal/src/micro_host.c
+  - path: platform/service/legacy_host/src/token.c
+  - path: platform/service/token_manager/src/sl_token_def.c
+
+include:
+  - path: platform/service/legacy_hal/inc/
+    file_list:
+      - path: crc.h
+      - path: random.h
+      - path: hal.h
+      - path: hal/hal.h
+      - path: micro_host.h
+  - path: platform/service/legacy_host/inc/
+    file_list:
+      - path: token.h
+  - path: protocol/zigbee/stack/config/
+    file_list:
+      - path: token-stack.h
+      - path: token-phy.h
+  - path: protocol/zigbee/stack/zll/
+    file_list:
+      - path: zll-token-config.h
+  - path: protocol/zigbee/stack/core/
+    file_list:
+      - path: multi-pan-token-config.h
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_host_unix_library

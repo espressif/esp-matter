@@ -1,0 +1,45 @@
+id: aws_demos_core
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|AWS Demos
+label: AWS Demos Core
+description: Amazon AWS Demos Core Files
+
+package: amazon_platform
+quality: production
+
+provides:
+  - name: aws_demos_core
+
+ui_hints:
+  visibility: never
+
+root_path: util/third_party/aws_iot_libs
+
+source:
+  - path: demos/demo_runner/aws_demo.c
+  - path: demos/demo_runner/aws_demo_network_addr.c
+  - path: demos/demo_runner/aws_demo_version.c
+  - path: demos/demo_runner/iot_demo_freertos.c
+  - path: demos/demo_runner/iot_demo_runner.c
+  - path: demos/network_manager/aws_iot_demo_network.c
+  - path: demos/network_manager/aws_iot_network_manager.c
+  - path: demos/ble/gatt_server/iot_ble_gatt_server_demo.c
+  - path: demos/ble/numeric_comparison/iot_ble_numericComparison.c
+  - path: demos/ble/mqtt_ble/mqtt_demo_ble_transport.c
+
+include:
+  - path: demos/network_manager
+    file_list:
+      - path: iot_network_manager_private.h
+
+define:
+  - name: AWS_DEMOS
+
+requires:
+  - name: core_libs
+  - name: c_sdk
+  - name: iot_platform
+  - name: freertos_plus
+  - name: aws_demos_defs
+  - name: iot_cbor_serializer
+  - name: iot_json_serializer

@@ -1,0 +1,38 @@
+id: legacy_bootloader_interface
+label: Legacy Bootloader Application Interface
+package: platform
+description: >
+  Interface for legacy bootloader. This component is to be used along with
+  legacy_hal. It provides legacy bootloader APIs.
+category: Services
+quality: production
+root_path: platform/service/legacy_hal
+source:
+  - path: src/bootloader-interface.c
+  - path: src/bootloader-interface-app.c
+  - path: src/bootloader-interface-standalone.c
+  - path: src/bootloader-common.c
+include:
+  - path: inc
+    file_list:
+    - path: bootloader-interface.h
+    - path: bootloader-interface-app.h
+    - path: bootloader-interface-standalone.h
+    - path: bootloader-common.h
+    - path: bootloader-eeprom.h
+provides:
+  - name: legacy_bootloader_interface
+requires:
+  - name: bootloader_interface
+  - name: legacy_hal
+  - name: memory_layout_legacy_hal
+template_file:
+  - path: inc/sl_legacy_bootloader_device_info.h.jinja
+define:
+  - name: EMBER_AF_API_BOOTLOADER_INTERFACE
+template_contribution:
+  - name: "component_catalog"
+    value: legacy_bootloader_interface
+documentation:
+    docset: gecko-platform
+    document: service/api/group-common-bootload

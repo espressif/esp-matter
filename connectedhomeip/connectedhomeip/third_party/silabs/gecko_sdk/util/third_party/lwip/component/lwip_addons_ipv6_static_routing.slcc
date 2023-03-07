@@ -1,0 +1,17 @@
+id: lwip_addons_ip6_static_routing
+label: "IPv6 static routing"
+package: platform
+description: >
+  IPv6 static routing addon.
+category: LwIP|Addons
+quality: production
+provides:
+  - name: lwip_addons_ip6_static_routing
+requires:
+  - name: lwip_core
+source:
+  - path: util/third_party/lwip/lwip-contrib/addons/ipv6_static_routing/ip6_route_table.c
+include:
+  - path: util/third_party/lwip/lwip-contrib/addons/ipv6_static_routing
+    file_list:
+    - path: ip6_route_table.h

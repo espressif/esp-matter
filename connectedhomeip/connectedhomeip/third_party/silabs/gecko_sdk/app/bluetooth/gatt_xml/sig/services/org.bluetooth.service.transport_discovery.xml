@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2015 Bluetooth SIG, Inc. All rights reserved. -->
+<Service xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+name="Transport Discovery" type="org.bluetooth.service.transport_discovery" uuid="1824" last-modified="11-16-2015" approved="Yes">
+	<InformativeText>
+     <Abstract>
+        This service enables a device using Bluetooth low energy wireless technology to expose services that are available on a transport other than Bluetooth low energy. 
+        When used together with a higher level specification (e.g., a specification which references and makes use of TDS), the information provided by this service can be 
+        used to facilitate discovery and utilization of BR/EDR or transports not defined by the Bluetooth SIG such as those defined by the Wi-Fi Alliance® or other organizations.
+		</Abstract>
+        <Summary>            
+            The Transport Discovery Service (TDS) enables a device using Bluetooth low energy wireless technology to expose services that are available on a transport other than Bluetooth low energy.     
+        </Summary>
+	</InformativeText>
+	<Dependencies>
+		<Dependency>This service has no dependencies on other GATT-based services.</Dependency>
+	</Dependencies>
+	<GATTRequirements>
+		<Requirement subProcedure="Write Characteristic Value">C.1</Requirement>
+        <Requirement subProcedure="Indications">C.1</Requirement>
+        <Requirement subProcedure="Read Characteristic Descriptors">C.1</Requirement>
+        <Requirement subProcedure="Write Characteristic Descriptors">C.1</Requirement>
+	</GATTRequirements>
+    <Note>C.1: Mandatory if the Server supports the TDS Control Point characteristic; optional otherwise.</Note>
+	<Transports>
+		<Classic>true</Classic>
+		<LowEnergy>true</LowEnergy>
+        <HighSpeed>true</HighSpeed>
+	</Transports>
+	<Characteristics>
+		<Characteristic name="TDS Control Point" type="org.bluetooth.characteristic.tds_control_point">
+            <InformativeText>The TDS Control Point characteristic is used to request activation of a transport.</InformativeText>
+			<Requirement>Optional</Requirement>
+			<Properties>
+				<Read>Excluded</Read>
+				<Write>Mandatory</Write>
+				<WriteWithoutResponse>Excluded</WriteWithoutResponse>
+				<SignedWrite>Excluded</SignedWrite>
+				<ReliableWrite>Excluded</ReliableWrite>
+				<Notify>Excluded</Notify>
+				<Indicate>Mandatory</Indicate>
+				<WritableAuxiliaries>Excluded</WritableAuxiliaries>
+				<Broadcast>Excluded</Broadcast>
+			</Properties>
+            <Descriptors>
+                <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+                    <Requirement>if_indicate_supported</Requirement>
+                    <Properties>
+                    <Read>Mandatory</Read>
+                    <Write>Mandatory</Write>
+                    </Properties>
+                </Descriptor>
+           </Descriptors>
+         </Characteristic>
+	</Characteristics>
+</Service>

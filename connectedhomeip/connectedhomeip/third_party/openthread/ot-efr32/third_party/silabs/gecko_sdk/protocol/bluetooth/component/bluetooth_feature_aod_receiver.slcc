@@ -1,0 +1,21 @@
+id: "bluetooth_feature_aod_receiver"
+label: "AoD Receiver"
+package: "Bluetooth"
+description: >
+  The Bluetooth Angle of Departure (AoD) Constant Tone Extension (CTE) receiving feature
+category: "Bluetooth|Stack|Direction Finding"
+quality: "alpha"
+root_path: "protocol/bluetooth"
+requires:
+  - name: bluetooth_controller
+  - name: device_supports_bluetooth_cte
+  - name: device_supports_bluetooth_iq_sampling
+provides:
+  - name: "bluetooth_feature_aod_receiver"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_aod_receiver
+  - name: bluetooth_controller_init
+    value:
+      function: "sl_btctrl_init_cte()"
+    priority: 10

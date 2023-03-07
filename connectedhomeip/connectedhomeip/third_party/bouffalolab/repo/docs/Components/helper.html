@@ -1,0 +1,524 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>helper &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../about.html"/>
+        <link rel="index" title="索引"
+              href="../genindex.html"/>
+        <link rel="search" title="搜索" href="../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Examples/index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>helper</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/Components/helper.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="helper">
+<h1>helper<a class="headerlink" href="#helper" title="永久链接至标题"></a></h1>
+<p>这里主要介绍现阶段支持到部分命令，包括系统命令和用户命令，当然有的命令板子不一定支持，可以通过<code class="docutils literal notranslate"><span class="pre">help</span></code>查看其支持到命令，更多的命令请参考源码或者自行添加</p>
+<div class="section" id="cli">
+<h2>cli 命令表<a class="headerlink" href="#cli" title="永久链接至标题"></a></h2>
+<ul class="simple">
+<li><strong>系统命令</strong></li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="34%" />
+<col width="66%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">name</th>
+<th class="head">help</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>help</td>
+<td>print this</td>
+</tr>
+<tr class="row-odd"><td>p</td>
+<td>print memory</td>
+</tr>
+<tr class="row-even"><td>m</td>
+<td>modify memory</td>
+</tr>
+<tr class="row-odd"><td>echo</td>
+<td>echo for command</td>
+</tr>
+<tr class="row-even"><td>exit</td>
+<td>close CLI</td>
+</tr>
+<tr class="row-odd"><td>devname</td>
+<td>print device name</td>
+</tr>
+<tr class="row-even"><td>sysver</td>
+<td>system version</td>
+</tr>
+<tr class="row-odd"><td>reboot</td>
+<td>reboot system</td>
+</tr>
+<tr class="row-even"><td>poweroff</td>
+<td>poweroff system</td>
+</tr>
+<tr class="row-odd"><td>time</td>
+<td>system time</td>
+</tr>
+<tr class="row-even"><td>ota</td>
+<td>system ota</td>
+</tr>
+<tr class="row-odd"><td>ls</td>
+<td>thread dump</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>用户命令</strong></li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">name</th>
+<th class="head">help</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>test_trng</td>
+<td>Test TRNG</td>
+</tr>
+<tr class="row-odd"><td>tcpc</td>
+<td>create a tcpc for in a new task</td>
+</tr>
+<tr class="row-even"><td>ipc</td>
+<td>iperf TCP client</td>
+</tr>
+<tr class="row-odd"><td>ips</td>
+<td>iperf TCP server</td>
+</tr>
+<tr class="row-even"><td>ipu</td>
+<td>iperf UDP client</td>
+</tr>
+<tr class="row-odd"><td>psm_set</td>
+<td>psm set</td>
+</tr>
+<tr class="row-even"><td>psm_unset</td>
+<td>psm unset</td>
+</tr>
+<tr class="row-odd"><td>psm_get</td>
+<td>psm get</td>
+</tr>
+<tr class="row-even"><td>psm_dump</td>
+<td>psm dump</td>
+</tr>
+<tr class="row-odd"><td>psm_erase</td>
+<td>psm dump</td>
+</tr>
+<tr class="row-even"><td>amr</td>
+<td>amr encode test</td>
+</tr>
+<tr class="row-odd"><td>test_sdh</td>
+<td>test SDH based on fatfs</td>
+</tr>
+<tr class="row-even"><td>http</td>
+<td>http client download test</td>
+</tr>
+<tr class="row-odd"><td>mjpeg_start</td>
+<td>start mjpeg tasks</td>
+</tr>
+<tr class="row-even"><td>msg_set</td>
+<td>message set</td>
+</tr>
+<tr class="row-odd"><td>msg_get</td>
+<td>message get</td>
+</tr>
+<tr class="row-even"><td>msg_dump</td>
+<td>message dump</td>
+</tr>
+<tr class="row-odd"><td>msg_reset</td>
+<td>erase all message regions</td>
+</tr>
+<tr class="row-even"><td>msg_set_t1</td>
+<td>message set test 1</td>
+</tr>
+<tr class="row-odd"><td>rf_dump</td>
+<td>rf dump</td>
+</tr>
+<tr class="row-even"><td>wifi_ap_start</td>
+<td>start AP mode</td>
+</tr>
+<tr class="row-odd"><td>wifi_scan</td>
+<td>wifi scan</td>
+</tr>
+<tr class="row-even"><td>wifi_mon</td>
+<td>wifi monitor</td>
+</tr>
+<tr class="row-odd"><td>wifi_raw_send: wifi</td>
+<td>raw send test</td>
+</tr>
+<tr class="row-even"><td>wifi_sta_disconnect</td>
+<td>wifi station disconnect</td>
+</tr>
+<tr class="row-odd"><td>wifi_sta_connect</td>
+<td>wifi station connect</td>
+</tr>
+<tr class="row-even"><td>airkiss</td>
+<td>airkiss</td>
+</tr>
+<tr class="row-odd"><td>rc_fix_en</td>
+<td>wifi rate control fixed rate enable</td>
+</tr>
+<tr class="row-even"><td>rc_fix_dis</td>
+<td>wifi rate control fixed rate diable</td>
+</tr>
+<tr class="row-odd"><td>wifi_capcode</td>
+<td>capcode utils, wifi_capcode [cap_in] [cap_out]</td>
+</tr>
+<tr class="row-even"><td>blfdt</td>
+<td>blfdt</td>
+</tr>
+<tr class="row-odd"><td>tc_uart</td>
+<td>bl test uart</td>
+</tr>
+<tr class="row-even"><td>audio_play_ram</td>
+<td>play sound fm ram</td>
+</tr>
+<tr class="row-odd"><td>audio_config_es8311</td>
+<td>config ES831</td>
+</tr>
+<tr class="row-even"><td>audio_mp3</td>
+<td>play sou mp3</td>
+</tr>
+<tr class="row-odd"><td>audio_test</td>
+<td>play test</td>
+</tr>
+<tr class="row-even"><td>audio_play</td>
+<td>audio play</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id1">
+<h2>常用命令<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<ul>
+<li><p class="first"><strong>查看支持的所有命令</strong></p>
+<p>可以通过按键<code class="docutils literal notranslate"><span class="pre">TAB</span></code>查看，或者命令输入<code class="docutils literal notranslate"><span class="pre">help</span></code>如下：</p>
+<p><strong>#</strong> <code class="docutils literal notranslate"><span class="pre">help</span></code></p>
+</li>
+<li><p class="first"><strong>配置wifi的临时ssid和passwd（重启恢复使用默认值）</strong></p>
+<p>例如配置wifi:<code class="docutils literal notranslate"><span class="pre">bl_wifi_005</span></code>和密码:<code class="docutils literal notranslate"><span class="pre">123456789</span></code>
+命令行输入如下命令：</p>
+<p><strong>#</strong> <code class="docutils literal notranslate"><span class="pre">wifi_sta_connect</span> <span class="pre">bl_wifi_005</span> <span class="pre">123456789</span></code></p>
+</li>
+<li><p class="first"><strong>配置wifi的默认ssid和passwd</strong></p>
+<p>例如配置wifi:<code class="docutils literal notranslate"><span class="pre">bl_wifi_005</span></code>和密码:<code class="docutils literal notranslate"><span class="pre">123456789</span></code>
+命令行输入如下命令：</p>
+<p><strong>#</strong> <code class="docutils literal notranslate"><span class="pre">psm_set</span> <span class="pre">conf_ap_ssid</span> <span class="pre">bl_wifi_005</span></code></p>
+<p><strong>#</strong> <code class="docutils literal notranslate"><span class="pre">psm_set</span> <span class="pre">conf_ap_psk</span> <span class="pre">123456789</span></code></p>
+</li>
+<li><p class="first"><strong>启动AP</strong></p>
+<p>使用<code class="docutils literal notranslate"><span class="pre">wifi_ap_start</span></code>命令可以启动AP，但使用前需要使用<code class="docutils literal notranslate"><span class="pre">psm_erase</span></code>擦除STA相关配置信息并重启。启动的AP
+SSID为<code class="docutils literal notranslate"><span class="pre">BL60X_uAP_</span></code>加上MAC地址的后3三个字节的HEX串，密码为<code class="docutils literal notranslate"><span class="pre">bouffalolab</span></code></p>
+</li>
+<li><p class="first"><strong>系统重启</strong></p>
+<p><strong>#</strong> <code class="docutils literal notranslate"><span class="pre">reboot</span></code></p>
+</li>
+<li><p class="first"><strong>播音与录音</strong></p>
+<p>该模块需要硬件有SD卡支持，暂时仅支持 pcm 格式文件，其他格式待更新</p>
+<ul>
+<li><p class="first">配置音频的采样频率</p>
+<p><strong>#</strong> audio_config 11p025</p>
+<p>如果没有参数，默认使用16Khz，支持
+8k、16k、24k、32k、48k、11p025、22p05、44p1
+采样频率(11.025khz用11p025表示，其他类似)，例如这里配置采样频率为
+11.025Khz</p>
+</li>
+<li><p class="first">录音</p>
+<p><strong>#</strong> audio_record test.pcm</p>
+<p>如果没有参数，默认录音放在sd卡根目录中，录音文件名record.pcm，这里配置文件名test.pcm，即存放在在根目录test.pcm文件中，同时默认录音10S左右</p>
+</li>
+<li><p class="first">放音</p>
+<p><strong>#</strong> audio_play test.pcm</p>
+<p>如果没有参数，默认使用sd卡根目录中，录音文件名record.pcm，这里配置文件名test.pcm，即播放SD卡中的test.pcm音频</p>
+</li>
+</ul>
+</li>
+<li><p class="first"><strong>图传</strong></p>
+<p>使用<code class="docutils literal notranslate"><span class="pre">mjpeg_start</span></code>命令可以启动图传的相关任务</p>
+</li>
+<li><p class="first"><strong>保存图片至SD卡</strong></p>
+<p>该模块需要硬件有SD卡支持，暂时仅支持 jpeg 格式文件，其他格式待更新</p>
+<ul>
+<li><p class="first">配置mjpeg图片的quality</p>
+<p><strong>#</strong> mjpegsd_config 50</p>
+<p>暂时支持6种 quality 5、10、25、50、75、100</p>
+</li>
+<li><p class="first">启动保存图片</p>
+<p><strong>#</strong> mjpegsd_start</p>
+<p>启动保存图片，默认保存50帧数据</p>
+</li>
+<li><p class="first"><strong>注意</strong></p>
+<ul class="simple">
+<li>如上，示例命令，会在SD卡根目录保存50张
+0.jpeg、1.jpeg...49.jpeg图片</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p class="first"><strong>保存AVI至SD卡</strong></p>
+<p>该模块需要硬件有SD卡支持，暂时仅支持 AIV 格式文件，其他格式待更新</p>
+<ul>
+<li><p class="first">配置mjpeg图片的quality</p>
+<p><strong>#</strong> avisd_config 50 bl_avi_q50.avi</p>
+<p>暂时支持6种 quality 5、10、25、50、75、100</p>
+</li>
+<li><p class="first">启动保存avi</p>
+<p><strong>#</strong> avisd_start</p>
+<p>启动保存avi，默认保存750帧图片</p>
+</li>
+<li><p class="first"><strong>注意</strong></p>
+<ul class="simple">
+<li>如上，示例命令，会在SD卡根目录保存一个&quot;bl_avi_q50.avi&quot;文件</li>
+<li>内存卡建议格式化为分配单元64KB，文件系统FAT32</li>
+<li>avisd_start之后，如果想修改quality，需重启一下开发板</li>
+<li>该模块需要有psram、camera支持，需要开启使能PSRAM、camera相关开关</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p class="first"><strong>二维码配网</strong></p>
+<p>该模块是通过手机分享热点的二维码连接WiFi</p>
+<ul>
+<li><p class="first">启动命令</p>
+<p><code class="docutils literal notranslate"><span class="pre">qrcode_connect_wifi</span></code></p>
+<p>输入命令后摄像头会初始化然后开始循环识别二维码</p>
+</li>
+<li><p class="first"><strong>注意</strong></p>
+<ul class="simple">
+<li>成功识别的到二维码后，会先打印二维码信息，如果不是分享热点的二维码会继续扫描</li>
+<li>支持SSID为中文，但是要求unicode编码规则为UTF-8</li>
+<li>支持开放热点</li>
+<li>该模块需要psram、camera支持，需要开启使能PSRAM、camera相关开关</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,104 @@
+#!/bin/bash
+#
+#  Copyright (c) 2021, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+
+set -exo pipefail
+
+OT_CMAKE_NINJA_TARGET=${OT_CMAKE_NINJA_TARGET:-}
+
+readonly OT_SRCDIR="$(pwd)"
+readonly OT_OPTIONS=(
+    "-DCMAKE_TOOLCHAIN_FILE=src/k32w0/jn5189/arm-none-eabi.cmake"
+    "-DCMAKE_BUILD_TYPE=MinSizeRel"
+    "-DOT_PLATFORM=external"
+    "-DOT_SLAAC=ON"
+)
+
+build()
+{
+    local builddir="${OT_CMAKE_BUILD_DIR:-build_jn5189}"
+
+    mkdir -p "${builddir}"
+    cd "${builddir}"
+
+    # shellcheck disable=SC2068
+    cmake -GNinja -DOT_BUILD_K32W0=ON -DOT_BUILD_JN5189=ON -DOT_COMPILE_WARNING_AS_ERROR=ON -DOT_MBEDTLS_CONFIG_FILE=\"mbedtls-config.h\" $@ "${OT_SRCDIR}"
+
+    if [[ -n ${OT_CMAKE_NINJA_TARGET[*]} ]]; then
+        ninja "${OT_CMAKE_NINJA_TARGET[@]}"
+    else
+        ninja
+    fi
+
+    if [ "$SDK_RELEASE" == "ON" ]; then
+        "$NXP_JN5189_SDK_ROOT"/tools/imagetool/sign_images.sh openthread/examples/apps/cli/
+        "$NXP_JN5189_SDK_ROOT"/tools/imagetool/sign_images.sh openthread/examples/apps/ncp/
+    else
+        "$NXP_JN5189_SDK_ROOT"/middleware/wireless/openthread/boards/dk6_jn5189/enablement/sign_images.sh openthread/examples/apps/cli/ "$NXP_JN5189_SDK_ROOT"/tools/imagetool
+        "$NXP_JN5189_SDK_ROOT"/middleware/wireless/openthread/boards/dk6_jn5189/enablement/sign_images.sh openthread/examples/apps/ncp/ "$NXP_JN5189_SDK_ROOT"/tools/imagetool
+    fi
+
+    cd "${OT_SRCDIR}"
+}
+
+main()
+{
+
+    # check if environmental variable NXP_JN5189_SDK_ROOT is set
+    #     if not, then use "../../../" as a possible path
+    # then  check if NXP_JN5189_SDK_ROOT contains a valid SDK
+    #     if SW-Content-Register.txt is found
+    #         then NXP_JN5189_SDK_ROOT points to a released SDK
+    #     else if .gitignore is found
+    #         then NXP_JN5189_SDK_ROOT points to a cloned repository
+
+    if [ -z "$NXP_JN5189_SDK_ROOT" ]; then
+        NXP_JN5189_SDK_ROOT="../../../"
+    fi
+
+    if [ -f $NXP_JN5189_SDK_ROOT/SW-Content-Register.txt ]; then
+        SDK_RELEASE=ON
+    elif [ -f $NXP_JN5189_SDK_ROOT/.gitmodules ]; then
+        SDK_RELEASE=OFF
+    else
+        echo "Could not found a valid SDK package!"
+        return
+    fi
+
+    echo "NXP_JN5189_SDK_ROOT set to " $NXP_JN5189_SDK_ROOT
+
+    local options=("${OT_OPTIONS[@]}")
+
+    options+=("$@")
+
+    options+=(" -DSDK_RELEASE=$SDK_RELEASE")
+
+    build "${options[@]}"
+}
+
+main "$@"

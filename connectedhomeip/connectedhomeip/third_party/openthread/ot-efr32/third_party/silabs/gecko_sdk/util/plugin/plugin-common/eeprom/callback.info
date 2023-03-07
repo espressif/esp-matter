@@ -1,0 +1,14 @@
+#include PLATFORM_HEADER
+#include CONFIGURATION_HEADER
+#include "hal/hal.h"
+#include EMBER_AF_API_EEPROM
+
+/** @brief Called whenever the EEPROM changes state
+ *
+ * @param oldEepromState The old state of the EEPROM
+ * @param newEepromState The new state of the EEPROM
+ * 
+ */
+void emberAfPluginEepromStateChangeCallback(HalEepromState oldEepromState, HalEepromState newEepromState)
+{
+}

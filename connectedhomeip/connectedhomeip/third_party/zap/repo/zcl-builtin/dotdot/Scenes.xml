@@ -1,0 +1,212 @@
+﻿<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster
+	xmlns:zcl="http://zigbee.org/zcl/clusters"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:type="http://zigbee.org/zcl/types"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd"
+	id="0005" revision="2" name="Scenes">
+  <classification role="application" picsCode="S" primaryTransaction="1" />
+  
+  <type:type short="SSceneName" name="SSceneName" id="42" inheritsFrom="string">
+    <restriction>
+      <type:minLength value="0" />
+      <type:maxLength value="16" />
+    </restriction>
+  </type:type>
+  <type:type short="SExtensionFieldSetList" name="SExtensionFieldSetList" id="ff">
+    <restriction>
+      <type:sequence>
+        <field name="ClusterId" type="uint16" />
+        <field name="ExtensionFieldSet" type="octstr" array="true" />
+      </type:sequence>
+    </restriction>
+  </type:type>
+  <type:type short="SGroupId" name="SGroupId" id="21" inheritsFrom="uint16">
+    <restriction>
+      <type:special value="0000" name="NotAssociatedWithScene" />
+      <type:maxInclusive value="fff7" />
+    </restriction>
+  </type:type>
+  
+  <server>
+    <attributes>
+      <attribute id="0000" name="SceneCount" type="uint8" default="0" required="true" />
+      <attribute id="0001" name="CurrentScene" type="uint8" default="0" required="true" />
+      <attribute id="0002" name="CurrentGroup" type="SGroupId" default="0" required="true" />
+      <attribute id="0003" name="SceneValid" type="bool" default="0" required="true" />
+      <attribute id="0004" name="NameSupport" type="map8" required="true">
+        <bitmap>
+          <element name="SceneNamesSupported" type="bool" mask="80" shiftRight="7" />
+        </bitmap>
+      </attribute>
+      <attribute id="0005" name="LastConfiguredBy" type="EUI64">
+        <restriction>
+          <type:special value="ffffffffffffffff" name="UnknownOrNotConfigured" />
+        </restriction>
+      </attribute>
+    </attributes>
+    <commands>
+      <command id="00" name="AddScene" required="true">
+        <fields>
+          <field name="GroupID" type="SGroupId" />
+          <field name="SceneID" type="uint8" />
+          <field name="TransitionTime" type="uint16" />
+          <field name="SceneName" type="SSceneName" />
+          <field name="ExtensionFieldSets" type="SExtensionFieldSetList" array="true" arrayLengthSize="0" />
+        </fields>
+      </command>
+      <command id="01" name="ViewScene" required="true">
+        <fields>
+          <field name="GroupID" type="SGroupId" />
+          <field name="SceneID" type="uint8" />
+        </fields>
+      </command>
+      <command id="02" name="RemoveScene" required="true">
+        <fields>
+          <field name="GroupID" type="SGroupId" />
+          <field name="SceneID" type="uint8" />
+        </fields>
+      </command>
+      <command id="03" name="RemoveAllScenes" required="true">
+        <fields>
+          <field name="GroupID" type="SGroupId" />
+        </fields>
+      </command>
+      <command id="04" name="StoreScene" required="true">
+        <fields>
+          <field name="GroupID" type="SGroupId" />
+          <field name="SceneID" type="uint8" />
+        </fields>
+      </command>
+      <command id="05" name="RecallScene" required="true">
+        <fields>
+          <field name="GroupID" type="SGroupId" />
+          <field name="SceneID" type="uint8" />
+          <field name="TransitionTime" type="uint16" />
+        </fields>
+      </command>
+      <command id="06" name="GetSceneMembership" required="true">
+        <fields>
+          <field name="GroupID" type="SGroupId" />
+        </fields>
+      </command>
+      <command id="40" name="EnhancedAddScene">
+        <fields>
+          <field name="GroupID" type="SGroupId" />
+          <field name="SceneID" type="uint8" />
+          <field name="TransitionTime" type="uint16" />
+          <field name="SceneName" type="SSceneName" />
+          <field name="ExtensionFieldSets" type="SExtensionFieldSetList" array="true" arrayLengthSize="0" />
+        </fields>
+      </command>
+      <command id="41" name="EnhancedViewScene">
+        <fields>
+          <field name="GroupID" type="SGroupId" />
+          <field name="SceneID" type="uint8" />
+        </fields>
+      </command>
+      <command id="42" name="CopyScene">
+        <fields>
+          <field name="Mode" type="uint8">
+            <bitmap>
+              <element name="CopyAllScenes" type="bool" mask="01" />
+            </bitmap>
+          </field>
+          <field name="GroupIdentifierFrom" type="SGroupId" />
+          <field name="SceneIdentifierFrom" type="uint8" />
+          <field name="GroupIdentifierTo" type="SGroupId" />
+          <field name="SceneIdentifierTo" type="uint8" />
+        </fields>
+      </command>
+    </commands>
+  </server>
+  <client>
+    <commands>
+      <command id="00" name="AddSceneResponse" required="true">
+        <fields>
+          <field name="Status" type="zclStatus" />
+          <field name="GroupID" type="SGroupId" />
+          <field name="SceneID" type="uint8" />
+        </fields>
+      </command>
+      <command id="01" name="ViewSceneResponse" required="true">
+        <fields>
+          <field name="Status" type="zclStatus" />
+          <field name="GroupID" type="SGroupId" />
+          <field name="SceneID" type="uint8" />
+          <field name="TransitionTime" type="uint16" />
+          <field name="SceneName" type="SSceneName" />
+          <field name="ExtensionFieldSets" type="SExtensionFieldSetList" array="true" arrayLengthSize="0" />
+        </fields>
+      </command>
+      <command id="02" name="RemoveSceneResponse" required="true">
+        <fields>
+          <field name="Status" type="zclStatus" />
+          <field name="GroupID" type="SGroupId" />
+          <field name="SceneID" type="uint8" />
+        </fields>
+      </command>
+      <command id="03" name="RemoveAllScenesResponse" required="true">
+        <fields>
+          <field name="Status" type="zclStatus" />
+          <field name="GroupID" type="SGroupId" />
+        </fields>
+      </command>
+      <command id="04" name="StoreSceneResponse" required="true">
+        <fields>
+          <field name="Status" type="zclStatus" />
+          <field name="GroupID" type="SGroupId" />
+          <field name="SceneID" type="uint8" />
+        </fields>
+      </command>
+      <command id="06" name="GetSceneMembershipResponse" required="true">
+        <fields>
+          <field name="Status" type="zclStatus" />
+          <field name="Capacity" type="uint8">
+            <restriction>
+              <type:special value="00" name="NoFurtherScenesMayBeAdded" />
+              <type:minInclusive value="01" />
+              <type:maxInclusive value="fd" />
+              <type:special value="fe" name="AtLeastOneFurtherSceneMayBeAdded" />
+              <type:special value="ff" name="Unknown" />
+            </restriction>
+          </field>
+          <field name="GroupID" type="SGroupId" />
+          <field name="SceneList" type="uint8" array="true" />
+        </fields>
+      </command>
+      <command id="40" name="EnhancedAddSceneResponse">
+        <fields>
+          <field name="Status" type="zclStatus" />
+          <field name="GroupID" type="SGroupId" />
+          <field name="SceneID" type="uint8" />
+        </fields>
+      </command>
+      <command id="41" name="EnhancedViewSceneResponse">
+        <fields>
+          <field name="Status" type="zclStatus" />
+          <field name="GroupID" type="SGroupId" />
+          <field name="SceneID" type="uint8" />
+          <field name="TransitionTime" type="uint16" />
+          <field name="SceneName" type="SSceneName" />
+          <field name="ExtensionFieldSets" type="SExtensionFieldSetList" array="true" arrayLengthSize="0" />
+        </fields>
+      </command>
+      <command id="42" name="CopySceneResponse">
+        <fields>
+          <field name="Status" type="zclStatus" />
+          <field name="GroupIdentifierFrom" type="SGroupId" />
+          <field name="SceneIdentifierFrom" type="uint8" />
+        </fields>
+      </command>
+    </commands>
+  </client>
+</zcl:cluster>

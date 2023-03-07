@@ -1,0 +1,74 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pi_pico.gni")
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+
+# TODO(amontanez): This can go away if the GN build can be upstreamed to the
+# Pi Pico repo.
+_CWD = "${PICO_SRC_DIR}/src/boards"
+
+config("public_include_dirs") {
+  include_dirs = [ "${_CWD}/include" ]
+}
+
+pw_source_set("boards") {
+  public_configs = [
+    ":public_include_dirs",
+    "${PICO_ROOT}/gn:disable_warnings",
+  ]
+  public = [
+    "${_CWD}/include/boards/adafruit_feather_rp2040.h",
+    "${_CWD}/include/boards/adafruit_itsybitsy_rp2040.h",
+    "${_CWD}/include/boards/adafruit_kb2040.h",
+    "${_CWD}/include/boards/adafruit_macropad_rp2040.h",
+    "${_CWD}/include/boards/adafruit_qtpy_rp2040.h",
+    "${_CWD}/include/boards/adafruit_trinkey_qt2040.h",
+    "${_CWD}/include/boards/arduino_nano_rp2040_connect.h",
+    "${_CWD}/include/boards/datanoisetv_rp2040_dsp.h",
+    "${_CWD}/include/boards/eetree_gamekit_rp2040.h",
+    "${_CWD}/include/boards/garatronic_pybstick26_rp2040.h",
+    "${_CWD}/include/boards/melopero_shake_rp2040.h",
+    "${_CWD}/include/boards/none.h",
+    "${_CWD}/include/boards/pico.h",
+    "${_CWD}/include/boards/pico_w.h",
+    "${_CWD}/include/boards/pimoroni_badger2040.h",
+    "${_CWD}/include/boards/pimoroni_interstate75.h",
+    "${_CWD}/include/boards/pimoroni_keybow2040.h",
+    "${_CWD}/include/boards/pimoroni_motor2040.h",
+    "${_CWD}/include/boards/pimoroni_pga2040.h",
+    "${_CWD}/include/boards/pimoroni_picolipo_16mb.h",
+    "${_CWD}/include/boards/pimoroni_picolipo_4mb.h",
+    "${_CWD}/include/boards/pimoroni_picosystem.h",
+    "${_CWD}/include/boards/pimoroni_plasma2040.h",
+    "${_CWD}/include/boards/pimoroni_servo2040.h",
+    "${_CWD}/include/boards/pimoroni_tiny2040.h",
+    "${_CWD}/include/boards/pimoroni_tiny2040_2mb.h",
+    "${_CWD}/include/boards/seeed_xiao_rp2040.h",
+    "${_CWD}/include/boards/solderparty_rp2040_stamp.h",
+    "${_CWD}/include/boards/solderparty_rp2040_stamp_carrier.h",
+    "${_CWD}/include/boards/solderparty_rp2040_stamp_round_carrier.h",
+    "${_CWD}/include/boards/sparkfun_micromod.h",
+    "${_CWD}/include/boards/sparkfun_promicro.h",
+    "${_CWD}/include/boards/sparkfun_thingplus.h",
+    "${_CWD}/include/boards/vgaboard.h",
+    "${_CWD}/include/boards/waveshare_rp2040_lcd_0.96.h",
+    "${_CWD}/include/boards/waveshare_rp2040_plus_16mb.h",
+    "${_CWD}/include/boards/waveshare_rp2040_plus_4mb.h",
+    "${_CWD}/include/boards/waveshare_rp2040_zero.h",
+    "${_CWD}/include/boards/wiznet_w5100s_evb_pico.h",
+  ]
+}

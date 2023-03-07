@@ -1,0 +1,103 @@
+﻿<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster xmlns:zcl="http://zigbee.org/zcl/clusters" 
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+             xmlns:type="http://zigbee.org/zcl/types" 
+             xmlns:xi="http://www.w3.org/2001/XInclude" 
+             xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd" 
+             id="0004" revision="2" name="Groups">
+  <classification role="utility" picsCode="G" />
+  <server>
+    <attributes>
+      <attribute id="0000" name="NameSupport" type="map8" required="true">
+      	<bitmap>
+      		<element name="Supported" type="bool" mask="80" shiftRight="7" />
+      	</bitmap>
+      </attribute>
+    </attributes>
+    <commands>
+      <command id="00" name="AddGroup" required="true">
+        <fields>
+          <field name="GroupId" type="uint16" />
+          <field name="GroupName" type="string" />
+        </fields>
+        <tag ref="AddressAssignmentMode" />
+        <tag ref="MulticastIPv6Address" />
+        <tag ref="GroupPort" />
+      </command>
+      <command id="01" name="ViewGroup" required="true">
+        <fields>
+          <field name="GroupId" type="uint16" />
+        </fields>
+      </command>
+      <command id="02" name="GetGroupMembership" required="true">
+        <fields>
+          <field name="GroupList" type="uint16" array="true" />
+        </fields>
+      </command>
+      <command id="03" name="RemoveGroup" required="true">
+        <fields>
+          <field name="GroupId" type="uint16" />
+        </fields>
+      </command>
+      <command id="04" name="RemoveAllGroups" required="true" />
+      <command id="05" name="AddGroupIfIdentifying" required="true">
+        <fields>
+          <field name="GroupId" type="uint16" />
+          <field name="GroupName" type="string" />
+        </fields>
+        <tag ref="AddressAssignmentMode" />
+        <tag ref="MulticastIPv6Address" />
+        <tag ref="GroupPort" />        
+      </command>
+    </commands>
+  </server>
+  <client>
+    <commands>
+      <command id="00" name="AddGroupResponse" required="true">
+        <fields>
+          <field name="Status" type="enum8" />
+          <field name="GroupId" type="uint16" />
+        </fields>
+      </command>
+      <command id="01" name="ViewGroupResponse" required="true">
+        <fields>
+          <field name="Status" type="enum8" />
+          <field name="GroupId" type="uint16" />
+          <field name="GroupName" type="string" />
+        </fields>
+        <tag ref="AddressAssignmentMode" />
+        <tag ref="MulticastIPv6Address" />
+        <tag ref="GroupPort" />        
+      </command>
+      <command id="02" name="GetGroupMembershipResponse" required="true">
+        <fields>
+          <field name="Capacity" type="uint8" />
+          <field name="GroupList" type="uint16" array="true" />
+        </fields>
+      </command>
+      <command id="03" name="RemoveGroupResponse" required="true">
+        <fields>
+          <field name="Status" type="enum8" />
+          <field name="GroupId" type="uint16" />
+        </fields>
+      </command>
+    </commands>
+  </client>
+  <tags>
+    <tag id="1" name="AddressAssignmentMode" type="uint8" />
+    <tag id="2" name="MulticastIPv6Address" type="octstr">
+    	<restriction>
+    	  <type:minLength value="1" />
+      	  <type:maxLength value="16"/>
+    	</restriction>
+    </tag>
+    <tag id="3" name="GroupPort" type="uint16" />
+  </tags>
+</zcl:cluster>

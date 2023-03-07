@@ -1,0 +1,37 @@
+id: "btmesh_provisioning_decorator"
+label: "Provisioning Decorator"
+package: "Btmesh"
+description: >
+  The Provisioning Decorator is an application-level software module
+  that ensures callbacks at main provisioning process steps. There are callbacks for
+  initialization phase, for starting and successful finishing or for failed
+  provisioning. A general callback for handling Provisioning Decorator events is
+  also available.
+category: "Bluetooth Mesh|Utility"
+quality: "production"
+root_path: "app/bluetooth/common/btmesh_provisioning_decorator"
+config_file:
+  - path: "config/sl_btmesh_provisioning_decorator_config.h"
+source:
+  - path: "sl_btmesh_provisioning_decorator.c"
+include:
+  - path: ""
+    file_list:
+      - path: "sl_btmesh_provisioning_decorator.h"
+provides:
+  - name: "btmesh_provisioning_decorator"
+requires:
+  - name: "app_assert"
+  - name: "app_btmesh_util"
+  - name: "bluetooth_feature_system"
+  - name: "btmesh_stack"
+  - name: "simple_timer"
+recommends:
+  - id: "simple_timer"
+
+template_contribution:
+  - name: "btmesh_on_event"
+    value:
+      include: "sl_btmesh_provisioning_decorator.h"
+      function: "sl_btmesh_handle_provisioning_decorator_event"
+    priority: -8000

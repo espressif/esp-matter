@@ -1,0 +1,173 @@
+BL IOT SDK启动链接及FreeRTOS简要分析
+=====================================
+
+本文简要分析bl iot SDK的start.S文件的初始化过程，FreeRTOS以及链接脚本。
+
+start.S
+---------------
+
+该文件路径：components/platform/soc/bl602/bl602/evb/src/boot/gcc/start.S
+
+- 关闭中断
+
+::
+
+    li t0, MSTATUS_MIE
+    csrc mstatus, t0
+
+- 初始化GP寄存器
+
+::
+
+    la gp, __global_pointer
+    GP附近的数据会通过GP寄存器相对寻址来访问，GP的值在链接时决定，不可更改。
+
+- 初始化栈指针
+
+::
+
+    la sp, _sp_main
+
+- 读取boot2中约定好的partition地址来设置sdk中的boot2_partition_table变量,该变量放置在指定的section中
+
+::
+
+    la a0, __boot2_pt_addr_src
+    la a1, __boot2_pt_addr_start
+    la a2, __boot2_pt_addr_end
+
+- 读取boot2中约定好的flash地址来设置sdk中的boot2_flashCfg变量,该变量放置在指定的section中
+
+::
+
+    jal hal_boot2_get_flash_addr
+    la a1, __boot2_flashCfg_start
+    la a2, __boot2_flashCfg_end
+
+- 初始化data段
+
+::
+
+    la a0, _data_load
+    la a1, _data_run
+    la a2, _data_run_end
+
+- 初始化bss段
+
+::
+
+    la a0, __bss_start
+    la a1, __bss_end
+
+- 初始化main入口地址
+
+::
+
+    li a0, 0
+    li a1, 0
+    call bfl_main
+
+
+FreeRTOS
+-----------
+
+FreeRTOS由Richard Barry开发，是一个开源的、可移植的、小型的嵌入式实时操作系统内核。FreeRTOS既支持抢占式多任务，也支持协作式多任务,SDK中源码路径：components/platform/soc/bl602/freertos_riscv_ram。
+
+- 中断入口
+    SDK中components/platform/soc/bl602/freertos_riscv_ram/portable/GCC/RISC-V/portASM.S里的freertos_risc_v_trap_handler。
+
+flash_rom.ld
+--------------
+
+该文件路径：components/platform/soc/bl602/bl602/evb/ld/flash_rom.ld
+
+- 设置输出文件的machine architecture(体系结构)
+
+::
+
+    OUTPUT_ARCH( "riscv" )
+
+- 设置入口地址
+
+::
+
+    ENTRY( bl602_start )
+
+- MEMORY命令
+
+::
+
+    MEMORY
+    {
+        rom       (rxai!w) : ORIGIN = 0x21015000, LENGTH = 44K 
+        flash     (rxai!w) : ORIGIN = 0x23000000, LENGTH = 4M
+        ram_tcm   (wxa)    : ORIGIN = 0x4200C000, LENGTH = (16K + 16K + 48K + 64K + 64K + 8K - __EM_SIZE) /*put itcm with dtam and also OCRAM*/
+        ram_wifi  (wxa)    : ORIGIN = 0x42042000 - __EM_SIZE, LENGTH = (8K + 104K - 64K - 8K) /*leave 8K left for BLE*/
+    }
+
+例：rom表示存储区域名，（rxai!w）表示该存储区域的属性，ATTR属性内可以出现以下7个字符，
+R 只读section
+W 读/写section
+X 可执行section
+A ‘可分配的’section
+I 初始化了的section
+L 同I
+! 不满足该字符之后的任何一个属性的section
+ORIGIN ：关键字，区域的开始地址，可简写成org或o
+LENGTH ：关键字，区域的大小，可简写成len或l
+
+- SECTIONS命令
+
+在链接脚本中定义了.init段，.text段，.rodata段，.wifibss段，.romdata段，.data段，.boot2段，.bss段，.stack段。
+ 例:
+    - .init段
+
+    ::
+
+        .init           :   
+        {
+            KEEP (*(SORT_NONE(.init)))
+        } > flash
+
+    KEEP()关键字强制连接器保留.init段， > flash表示：将输出的.init段放置在flash中
+    
+    - .rodata段
+
+    ::
+
+        .rodata         :   
+        {
+            *(.rdata)
+            *(.rodata .rodata.*)
+            *(.sdata2.*)
+
+            /* static cli cmds */
+            . = ALIGN(4);
+            _bl_static_cli_cmds_start = .;
+            KEEP(*(.static_cli_cmds))
+            *(.static_cli_cmds)
+            _bl_static_cli_cmds_end = .;
+            ...
+            ...
+            ...
+        } > flash
+    
+    其中花括号外面的.rodata表示输出段的名字，花括号中表示输入的段。
+    整个代码段表示：所有文件的.rdata段,.rodata段,.rodata.*段,.sdata2.*段等段输出到.rodata段中,并将其放置在flash中。
+    . = ALIGN(4); .表示当前地址，ALIGN(4):4字节对齐。
+
+- PROVIDE命令
+
+该关键字用于定义这类符号：在目标文件内被引用，但没有在任何目标文件内被定义的符号。
+例:
+
+::
+
+    PROVIDE( _ld_bl_static_cli_cmds_start = _bl_static_cli_cmds_start );
+    PROVIDE( _ld_bl_static_cli_cmds_end   = _bl_static_cli_cmds_end );
+
+_ld_bl_static_cli_cmds_start和_ld_bl_static_cli_cmds_end在sdk中的aos_cli_init()函数中被引用。_bl_static_cli_cmds_start和_bl_static_cli_cmds_end在上文中已经定义了。
+
+
+
+

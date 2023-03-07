@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+name="Apparent Wind Direction" type="org.bluetooth.characteristic.apparent_wind_direction" uuid="2A73" last-modified="2014-11-20" approved="Yes">
+    <Value>
+        <Field name="Apparent Wind Direction">
+            <InformativeText>Unit is in degrees with a resolution of 0.01 degrees</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>uint16</Format>
+            <Unit>org.bluetooth.unit.plane_angle.degree</Unit>
+            <Description>The apparent wind is the wind experienced by an observer in motion and is the relative velocity of the wind in relation to the observer. For example, the apparent wind direction on-board a boat is given in degrees relative to the heading of the boat.
+                           Wind direction is reported by the direction from which it appears to originate. For example, an apparent wind coming from a direction that is 45 degrees clockwise relative to the heading of the observer is given as 45 degrees; one that is from a direction 45 degrees anti-clockwise relative to the heading of the observer is given as 315 degrees.</Description>
+            <DecimalExponent>-2</DecimalExponent>
+            <Minimum>0</Minimum>
+            <Maximum>359.99</Maximum>
+        </Field>
+    </Value>
+</Characteristic>

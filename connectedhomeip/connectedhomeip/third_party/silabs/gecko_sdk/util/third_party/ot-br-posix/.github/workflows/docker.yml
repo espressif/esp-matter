@@ -1,0 +1,163 @@
+#
+#  Copyright (c) 2020, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+
+name: Docker
+
+on:
+  push:
+    branches-ignore:
+      - 'dependabot/**'
+  pull_request:
+    branches:
+      - 'main'
+
+jobs:
+
+  cancel-previous-runs:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: rokroskar/workflow-run-cleanup-action@master
+      env:
+        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      if: "github.ref != 'refs/heads/main'"
+
+  docker-check:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        rcp_bus: ["UART", "SPI"]
+    env:
+      OT_POSIX_CONFIG_RCP_BUS: ${{matrix.rcp_bus}}
+      OTBR_COVERAGE: 1
+      VERBOSE: 1
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Bootstrap
+      env:
+        BUILD_TARGET: "docker-check"
+      run: tests/scripts/bootstrap.sh
+    - name: Check
+      run: tests/scripts/check-docker
+
+  buildx:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image_tag: "latest"
+            base_image: "ubuntu:bionic"
+            build_args: ""
+            platforms: "linux/amd64,linux/arm/v7,linux/arm64"
+            push: yes
+          - image_tag: "focal"
+            base_image: "ubuntu:focal"
+            build_args: ""
+            platforms: "linux/amd64,linux/arm64"
+            push: yes
+          - image_tag: "hirsute"
+            base_image: "ubuntu:hirsute"
+            build_args: ""
+            platforms: "linux/amd64,linux/arm64"
+            push: yes
+          - image_tag: "reference-device"
+            base_image: "ubuntu:bionic"
+            build_args: >-
+              --build-arg REFERENCE_DEVICE=1
+              --build-arg BORDER_ROUTING=0
+              --build-arg BACKBONE_ROUTER=1
+              --build-arg NAT64=0
+              --build-arg WEB_GUI=0
+              --build-arg REST_API=0
+              --build-arg OTBR_OPTIONS='-DOTBR_DUA_ROUTING=ON -DOT_DUA=ON -DOT_MLR=ON'
+            platforms: "linux/amd64,linux/arm/v7,linux/arm64"
+            push: yes
+          - image_tag: "test"
+            base_image: "ubuntu:bionic"
+            build_args: >-
+              --build-arg OT_BACKBONE_CI=1
+              --build-arg REFERENCE_DEVICE=1
+              --build-arg BACKBONE_ROUTER=1
+              --build-arg OTBR_OPTIONS='-DOTBR_DUA_ROUTING=ON -DOT_DUA=ON -DOT_MLR=ON'
+            platforms: "linux/amd64,linux/arm/v7,linux/arm64"
+            push: no
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Prepare
+      id: prepare
+      run: |
+        DOCKER_IMAGE=openthread/otbr
+        DOCKER_PLATFORMS=${{ matrix.platforms }}
+        VERSION=${{ matrix.image_tag }}
+
+        TAGS="--tag ${DOCKER_IMAGE}:${VERSION}"
+
+        echo ::set-output name=docker_image::${DOCKER_IMAGE}
+        echo ::set-output name=version::${VERSION}
+        echo ::set-output name=buildx_args::"--platform ${DOCKER_PLATFORMS} \
+          --build-arg BASE_IMAGE=${{ matrix.base_image }} \
+          --build-arg VERSION=${VERSION} \
+          --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
+          --build-arg VCS_REF=${GITHUB_SHA::8} \
+          ${{ matrix.build_args }} \
+          ${TAGS} --file etc/docker/Dockerfile ."
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+      with:
+        platforms: all
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Docker Buildx (build)
+      run: |
+        docker buildx build --output "type=image,push=false" ${{ steps.prepare.outputs.buildx_args }}
+
+    - name: Login to DockerHub
+      if: success() && github.repository == 'openthread/ot-br-posix' && github.event_name != 'pull_request' && matrix.push
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Docker Buildx (push)
+      if: success() && github.repository == 'openthread/ot-br-posix' && github.event_name != 'pull_request' && matrix.push
+      run: |
+        docker buildx build --output "type=image,push=true" ${{ steps.prepare.outputs.buildx_args }}
+
+    - name: Inspect Image
+      if: always() && github.repository == 'openthread/ot-br-posix' && github.event_name != 'pull_request' && matrix.push
+      run: |
+        docker buildx imagetools inspect ${{ steps.prepare.outputs.docker_image }}:${{ steps.prepare.outputs.version }}

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="ASCII"?>
+<model:MDescriptors xmlns:model="http://www.silabs.com/ss/Studio.ecore">
+  <descriptors name="factory_demo" label="MCU Example - Factory Demo (Previously known as 'helges_demo')" description="This example project demonstrates a wide range of features of the EFM32TG11 MCU and the SLSTK3301A Starter Kit.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="factory_demo/brd2102a/factory_demo.slcp"/>
+    <properties key="readmeFiles" value="factory_demo/brd2102a/readme.md"/>
+    <properties key="boardCompatibility" value="brd2102a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efm32gg11b.* .*efm32gg12b.* .*efm32tg11b.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|MCU Example"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="filters" value="Device\ Type|SoC MCU|32-bit\ MCU Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="factory_demo" label="MCU Example - Factory Demo (Previously known as 'helges_demo')" description="This example project demonstrates a wide range of features of the EFM32GG11 MCU and the SLSTK3701A Starter Kit.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="factory_demo/brd2204a/factory_demo.slcp"/>
+    <properties key="readmeFiles" value="factory_demo/brd2204a/readme.md"/>
+    <properties key="boardCompatibility" value="brd2204a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efm32gg11b.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|MCU Example"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="filters" value="Device\ Type|SoC MCU|32-bit\ MCU Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="micriumos_canopen" label="MCU Example - Micrium OS CANopen" description="This example shows how to use the Micrium OS CANopen stack. It uses the EFM32GG11B starter kit's two CAN peripherals in external loopback mode.  It requires CAN expansion board ISO-CAN-EXP REV 1.0 or REV 2.0. This example  will, upon the user pressing either push buttons (BTN0, BTN1), update one entry  in the CANopen object dictionary of node 1 on the 'can0' bus with a predefined  value for each button. Upon changing the value, a PDO message will be triggered, which will be caught by node 2 on the 'can1' bus. Node 2 will in turn update its object dictionary with the received value. The value of the object of both nodes is continuously displayed on the LCD.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="micriumos_canopen/micriumos_canopen.slcp"/>
+    <properties key="readmeFiles" value="micriumos_canopen/readme.md"/>
+    <properties key="boardCompatibility" value="brd2204a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efm32gg11b.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|MCU Example"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="filters" value="Device\ Type|SoC MCU|32-bit\ MCU Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="micriumos_net" label="MCU Example - Micrium OS Network" description="MicriumOS Network example.&#xA;This example shows how to use the Micrium OS network stack with the ETH  peripheral on the EFM32GG11B starter kit. This example will initialize  the RMII interface to the external PHY and setup a 100 Mbit connection.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="micriumos_net/micriumos_net.slcp"/>
+    <properties key="readmeFiles" value="micriumos_net/readme.md"/>
+    <properties key="boardCompatibility" value="brd2204a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efm32gg11b.* .*efm32hg.* .*efm32pg12b.* .*efm32pg1b.* .*efm32zg.* .*zgm23.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|MCU Example"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="filters" value="Device\ Type|SoC MCU|32-bit\ MCU Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="micriumos_webmic" label="MCU Example - Micrium OS Webmic" description="Example usage of microphones and MicriumOS HTTP server&#xA;This example shows how to sample data from the microphone and also how to stream that data on a web server using uC/HTTPs.&#xA;The audio is sampled from on-kit microphones by using LDMA. The sampled audio waveform is displayed on LCD.  Sampling and encoding is performed in the main os task. Configuration can be found in common_declarations.h and config.h. For info on encoding, see IETFs and xiphs rfc6716, rfc7845 and rfc3533.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="micriumos_webmic/micriumos_webmic.slcp"/>
+    <properties key="readmeFiles" value="micriumos_webmic/readme.md"/>
+    <properties key="boardCompatibility" value="brd2204a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efm32gg11b.* .*efm32hg.* .*efm32pg12b.* .*efm32pg1b.* .*efm32zg.* .*zgm23.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|MCU Example"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="filters" value="Device\ Type|SoC MCU|32-bit\ MCU Project\ Difficulty|Advanced"/>
+  </descriptors>
+  <descriptors name="si72xx_wheeldemo" label="MCU Example - Si72xx Wheeldemo" description="Hall effect demo code for the Si72xx-WD-Kit using a Silicon Labs SLSTK3400A-EFM32HG Starter Kit.&#xA;You must have the Hall Effect Evaluation kit, Si72xx-WD-Kit, to make use of this demo. The Si72xx-WD-Kit includes two Si7210 sensors mounted on an expansion board (Si72xx-EXP) plus each of the six base part types mounted on small postage-stamp-sized (PS) boards. You must use the Silicon Labs SLSTK3400A-EFM32HG Starter Kit which is included in the Si72xx-WD-Kit.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="si72xx_wheeldemo/si72xx_wheeldemo.slcp"/>
+    <properties key="readmeFiles" value="si72xx_wheeldemo/readme.md"/>
+    <properties key="boardCompatibility" value="brd2012a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efm32gg11b.* .*efm32hg.* .*efm32pg12b.* .*efm32pg1b.* .*efm32zg.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|MCU Example"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="filters" value="Device\ Type|SoC MCU|32-bit\ MCU Project\ Difficulty|Advanced"/>
+  </descriptors>
+</model:MDescriptors>

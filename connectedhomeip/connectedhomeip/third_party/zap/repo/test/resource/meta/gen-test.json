@@ -1,0 +1,33 @@
+{
+  "name": "Meta test templates",
+  "version": "meta-test",
+  "helpers": ["meta-helper"],
+  "categories": ["meta"],
+  "templates": [
+    {
+      "path": "test1.zapt",
+      "name": "Test 1",
+      "output": "test1.out"
+    },
+    {
+      "path": "test2.zapt",
+      "name": "Test ",
+      "output": "out/test1.out"
+    },
+    {
+      "path": "struct.zapt",
+      "name": "Struct",
+      "output": "struct.h"
+    },
+    {
+      "path": "type-by-cluster.zapt",
+      "name": "Types by cluster",
+      "output": "type-by-cluster.h"
+    },
+    {
+      "path": "access.zapt",
+      "name": "Access data example",
+      "output": "access.out"
+    }
+  ]
+}

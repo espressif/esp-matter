@@ -1,0 +1,35 @@
+id: cli_storage_nvm3_core
+label: "CLI: Storage in NVM3 Core"
+package: platform
+description: CLI Storage in NVM3 Core
+category: Services|CLI
+quality: production
+ui_hints:
+  visibility: never
+root_path: platform/service/cli_storage
+include:
+  - path: inc
+    file_list:
+      - path: sl_cli_storage_nvm3.h
+source:
+  - path: src/sl_cli_storage_nvm3.c
+requires:
+  - name: sl_string
+  - name: cli_core
+  - name: nvm3_default
+recommends:
+  - id: nvm3_lib
+provides:
+  - name: cli_storage_nvm3_core
+template_file:
+  - path: template/sl_cli_storage_nvm3_instances.c.jinja
+  - path: template/sl_cli_storage_nvm3_instances.h.jinja
+template_contribution:
+  - name: component_catalog
+    value: cli_storage_nvm3
+  - name: event_handler
+    value:
+      event: service_init
+      include: sl_cli_storage_nvm3_instances.h
+      handler: sl_cli_storage_nvm3_instances_init
+    priority: 6

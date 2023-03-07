@@ -1,0 +1,126 @@
+<%-
+	local ubus = require "ubus"
+	local sys = require "luci.sys"
+	local utl = require "luci.util"
+
+	function guess_thread_signal(info)
+		local scale
+		local icon
+		local rssi = info.Rssi or 0
+
+		if rssi <= -100 then
+			scale = 0
+		elseif rssi >= -50 then
+			scale = 100
+		else
+			scale = math.floor(2 * (100 + rssi))
+		end
+
+		if info.NetworkName == nil then
+			icon = resource .. "/icons/signal-none.png"
+		elseif scale < 15 then
+			icon = resource .. "/icons/signal-0.png"
+		elseif scale < 35 then
+			icon = resource .. "/icons/signal-0-25.png"
+		elseif scale < 55 then
+			icon = resource .. "/icons/signal-25-50.png"
+		elseif scale < 75 then
+			icon = resource .. "/icons/signal-50-75.png"
+		else
+			icon = resource .. "/icons/signal-75-100.png"
+		end
+
+		return icon
+	end
+
+	function percent_thread_signal(info)
+		local rssi = info.Rssi or 0
+
+		if rssi <= -100 then
+			return 0
+		elseif rssi >= -50 then
+			return 100
+		else
+			return math.floor(2 * (100 + rssi))
+		end
+	end
+
+	function scanlist()
+		local k, v
+		local l = { }
+
+		local conn = ubus.connect()
+		if not conn then
+			error("Failed to connect to ubusd")
+		end
+
+		local scanresult = conn:call("otbr", "scan", {})
+
+		for k, v in pairs(scanresult.scan_list) do
+			l[#l+1] = v
+		end
+
+		return l
+	end
+-%>
+
+<%+header%>
+
+<h2><%:Join Network: Thread Scan%></h2>
+<br />
+
+<div class="cbi-map">
+	<div class="cbi-section">
+		<div class="table">
+			<div class="tr table-titles">
+				<div class="th col-1 center"><%:RSSI%></div>
+				<div class="th col-1 center"><%:Channel%></div>
+				<div class="th col-2 center"><%:PAN Id%></div>
+				<div class="th col-1 left"><%:Lqi%></div>
+				<div class="th cbi-section-actions">&#160;</div>
+			</div>
+
+			<!-- scan list -->
+			<% for i, net in ipairs(scanlist()) do %>
+			<div class="tr cbi-rowstyle-<%=1 + ((i-1) % 2)%>">
+				<div class="td col-1 center">
+					<abbr title="<%:Signal%>: <%=net.Rssi%> <%:dB%> / <%:Quality%>: <%=net.Lqi%>">
+						<img src="<%=guess_thread_signal(net)%>" /><br />
+						<small><%=percent_thread_signal(net)%>%</small>
+					</abbr>
+				</div>
+				<div class="td col-1 center" data-title="<%:Channel%>">
+					<%=net.Channel%>
+				</div>
+				<div class="td col-2 center" data-title="<%:PanId%>">
+					<%=net.PanId%>
+				</div>
+				<div class="td col-1 left" data-title="<%:Lqi%>">
+					<%=net.Lqi%>
+				</div>
+				<div class="td cbi-section-actions">
+					<!--div><%:test%></div-->
+					<form action="<%=url('admin/network/thread_join')%>" method="post">
+						<input type="hidden" name="token" value="<%=token%>" />
+						<input type="hidden" name="PanId" value="<%=net.PanId%>" .>
+						<input type="hidden" name="Channel" value="<%=net.Channel%>" .>
+						<input class="cbi-button cbi-button-action important" type="submit" value="<%:Join Network%>" />
+					</form>
+				</div>
+			</div>
+			<% end %>
+			<!-- /scan list -->
+		</div>
+	</div>
+</div>
+<div class="cbi-page-actions right">
+	<form class="inline" action="<%=url('admin/network/thread')%>" method="get">
+		<input class="cbi-button cbi-button-neutral" type="submit" value="<%:Back to overview%>" />
+	</form>
+	<form class="inline" action="<%=url('admin/network/thread_scan')%>" method="post">
+		<input type="hidden" name="token" value="<%=token%>" />
+		<input class="cbi-button cbi-button-action" type="submit" value="<%:Repeat scan%>" />
+	</form>
+</div>
+
+<%+footer%>

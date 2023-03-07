@@ -1,0 +1,29 @@
+id: "wisun_full_radioconf"
+label: "Wi-SUN Full Radio Config"
+package: "wisun"
+category: "Wi-SUN"
+quality: "production"
+description: "Provide a radio configuration containing all Wi-SUN PHY and channels"
+root_path: "protocol/wisun"
+
+ui_hints:
+  visibility: never
+
+provides:
+  - name: wisun_radioconf
+  - name: wisun_full_radioconf
+  - name: a_radio_config
+
+config_file:
+  - path: rail/device_sdid_84/radio_settings.radioconf
+    directory: rail
+    condition:
+    - device_sdid_84
+  - path: rail/device_sdid_220/radio_settings.radioconf
+    directory: rail
+    condition:
+    - device_sdid_220
+
+template_contribution:
+  - name: component_catalog
+    value: wisun_full_radioconf

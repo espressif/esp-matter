@@ -1,0 +1,466 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load("//pw_build:pigweed.bzl", "pw_cc_library", "pw_cc_test")
+load("//pw_protobuf_compiler:proto.bzl", "pw_proto_library")
+load("//pw_protobuf_compiler:pw_proto_library.bzl", "pw_proto_filegroup")
+load("@com_google_protobuf//:protobuf.bzl", "py_proto_library")
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@rules_proto_grpc//:defs.bzl", "proto_plugin")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+proto_library(
+    name = "benchmark_proto",
+    srcs = [
+        "benchmark.proto",
+    ],
+)
+
+pw_proto_library(
+    name = "benchmark_cc",
+    deps = [":benchmark_proto"],
+)
+
+pw_cc_library(
+    name = "benchmark",
+    srcs = ["benchmark.cc"],
+    hdrs = ["public/pw_rpc/benchmark.h"],
+    includes = ["public"],
+    deps = [
+        ":benchmark_cc.pwpb",
+        ":benchmark_cc.raw_rpc",
+    ],
+)
+
+# TODO(b/242059613): Build this as a cc_binary and use it in integration tests.
+filegroup(
+    name = "test_rpc_server",
+    srcs = ["test_rpc_server.cc"],
+    # deps = [
+    #     "system_server",
+    #     ":benchmark",
+    #     "//pw_log",
+    # ],
+)
+
+pw_cc_library(
+    name = "client_server",
+    srcs = ["client_server.cc"],
+    hdrs = ["public/pw_rpc/client_server.h"],
+    deps = [":pw_rpc"],
+)
+
+pw_cc_library(
+    name = "pw_rpc",
+    srcs = [
+        "call.cc",
+        "channel.cc",
+        "channel_list.cc",
+        "client.cc",
+        "client_call.cc",
+        "endpoint.cc",
+        "packet.cc",
+        "packet_meta.cc",
+        "public/pw_rpc/internal/call.h",
+        "public/pw_rpc/internal/call_context.h",
+        "public/pw_rpc/internal/channel.h",
+        "public/pw_rpc/internal/channel_list.h",
+        "public/pw_rpc/internal/client_call.h",
+        "public/pw_rpc/internal/config.h",
+        "public/pw_rpc/internal/endpoint.h",
+        "public/pw_rpc/internal/hash.h",
+        "public/pw_rpc/internal/lock.h",
+        "public/pw_rpc/internal/log_config.h",
+        "public/pw_rpc/internal/method.h",
+        "public/pw_rpc/internal/method_info.h",
+        "public/pw_rpc/internal/method_lookup.h",
+        "public/pw_rpc/internal/method_union.h",
+        "public/pw_rpc/internal/packet.h",
+        "public/pw_rpc/internal/server_call.h",
+        "public/pw_rpc/method_info.h",
+        "public/pw_rpc/method_type.h",
+        "public/pw_rpc/writer.h",
+        "server.cc",
+        "server_call.cc",
+        "service.cc",
+    ],
+    hdrs = [
+        "public/pw_rpc/channel.h",
+        "public/pw_rpc/client.h",
+        "public/pw_rpc/internal/service_client.h",
+        "public/pw_rpc/method_id.h",
+        "public/pw_rpc/method_info.h",
+        "public/pw_rpc/packet_meta.h",
+        "public/pw_rpc/server.h",
+        "public/pw_rpc/service.h",
+        "public/pw_rpc/service_id.h",
+    ],
+    includes = ["public"],
+    deps = [
+        ":internal_packet_cc.pwpb",
+        "//pw_assert",
+        "//pw_bytes",
+        "//pw_containers:intrusive_list",
+        "//pw_function",
+        "//pw_log",
+        "//pw_result",
+        "//pw_span",
+        "//pw_status",
+        "//pw_sync:lock_annotations",
+        "//pw_sync:mutex",
+        "//pw_toolchain:no_destructor",
+    ],
+)
+
+pw_cc_library(
+    name = "synchronous_client_api",
+    hdrs = [
+        "public/pw_rpc/synchronous_call.h",
+        "public/pw_rpc/synchronous_call_result.h",
+    ],
+    includes = ["public"],
+    deps = [
+        ":pw_rpc",
+        "//pw_chrono:system_clock",
+        "//pw_sync:timed_thread_notification",
+    ],
+)
+
+pw_cc_library(
+    name = "client_server_testing",
+    hdrs = ["public/pw_rpc/internal/client_server_testing.h"],
+    includes = ["public"],
+    deps = [
+        ":client_server",
+        ":internal_test_utils",
+        "//pw_bytes",
+        "//pw_result",
+    ],
+)
+
+pw_cc_library(
+    name = "client_server_testing_threaded",
+    hdrs = ["public/pw_rpc/internal/client_server_testing_threaded.h"],
+    includes = ["public"],
+    deps = [
+        ":client_server_testing",
+        "//pw_bytes",
+        "//pw_result",
+        "//pw_sync:binary_semaphore",
+        "//pw_sync:lock_annotations",
+        "//pw_sync:mutex",
+        "//pw_thread:thread",
+    ],
+)
+
+pw_cc_library(
+    name = "test_helpers",
+    hdrs = ["public/pw_rpc/test_helpers.h"],
+    includes = ["public"],
+    deps = [
+        ":internal_test_utils",
+        ":pw_rpc",
+        "//pw_assert",
+        "//pw_chrono:system_clock",
+        "//pw_status",
+        "//pw_sync:counting_semaphore",
+        "//pw_thread:yield",
+    ],
+)
+
+# thread_testing target is kept for backward compatibility.
+# New code should use test_helpers instead.
+pw_cc_library(
+    name = "thread_testing",
+    hdrs = ["public/pw_rpc/thread_testing.h"],
+    includes = ["public"],
+    deps = [":test_helpers"],
+)
+
+pw_cc_library(
+    name = "internal_test_utils",
+    srcs = ["fake_channel_output.cc"],
+    hdrs = [
+        "public/pw_rpc/internal/fake_channel_output.h",
+        "public/pw_rpc/internal/method_impl_tester.h",
+        "public/pw_rpc/internal/method_info_tester.h",
+        "public/pw_rpc/internal/test_method.h",
+        "public/pw_rpc/internal/test_method_context.h",
+        "public/pw_rpc/internal/test_utils.h",
+        "public/pw_rpc/payloads_view.h",
+        "pw_rpc_private/fake_server_reader_writer.h",
+    ],
+    includes = [
+        ".",
+        "public",
+    ],
+    visibility = [":__subpackages__"],
+    deps = [
+        ":pw_rpc",
+        "//pw_assert",
+        "//pw_bytes",
+        "//pw_containers:filtered_view",
+        "//pw_containers:vector",
+        "//pw_containers:wrapped_iterator",
+        "//pw_rpc/raw:fake_channel_output",
+        "//pw_span",
+        "//pw_sync:mutex",
+    ],
+)
+
+pw_cc_library(
+    name = "integration_testing",
+    srcs = [
+        "integration_testing.cc",
+    ],
+    hdrs = [
+        "public/pw_rpc/integration_test_socket_client.h",
+        "public/pw_rpc/integration_testing.h",
+    ],
+    deps = [
+        ":pw_rpc",
+        "//pw_assert",
+        "//pw_hdlc:pw_rpc",
+        "//pw_hdlc:rpc_channel_output",
+        "//pw_log",
+        "//pw_stream:socket_stream",
+        "//pw_unit_test",
+        "//pw_unit_test:logging_event_handler",
+    ],
+)
+
+# TODO(b/242059613): Add the client integration test to the build.
+filegroup(
+    name = "client_integration_test",
+    srcs = ["client_integration_test.cc"],
+)
+
+pw_cc_test(
+    name = "call_test",
+    srcs = [
+        "call_test.cc",
+    ],
+    deps = [
+        ":internal_test_utils",
+        ":pw_rpc",
+    ],
+)
+
+pw_cc_test(
+    name = "callback_test",
+    srcs = ["callback_test.cc"],
+    deps = [
+        ":pw_rpc",
+        ":pw_rpc_test_cc.raw_rpc",
+        "//pw_rpc/raw:client_testing",
+        "//pw_sync:binary_semaphore",
+        "//pw_thread:sleep",
+        "//pw_thread:test_threads_header",
+        "//pw_thread_stl:test_threads",
+    ],
+)
+
+pw_cc_test(
+    name = "channel_test",
+    srcs = ["channel_test.cc"],
+    deps = [
+        ":internal_test_utils",
+        ":pw_rpc",
+    ],
+)
+
+pw_cc_test(
+    name = "method_test",
+    srcs = ["method_test.cc"],
+    deps = [
+        ":internal_test_utils",
+        ":pw_rpc",
+    ],
+)
+
+pw_cc_test(
+    name = "packet_test",
+    srcs = [
+        "packet_test.cc",
+    ],
+    deps = [
+        ":pw_rpc",
+    ],
+)
+
+pw_cc_test(
+    name = "packet_meta_test",
+    srcs = [
+        "packet_meta_test.cc",
+    ],
+    deps = [
+        ":pw_rpc",
+    ],
+)
+
+pw_cc_test(
+    name = "client_server_test",
+    srcs = ["client_server_test.cc"],
+    deps = [
+        ":client_server",
+        ":internal_test_utils",
+        "//pw_rpc/raw:server_api",
+    ],
+)
+
+pw_cc_test(
+    name = "server_test",
+    srcs = [
+        "server_test.cc",
+    ],
+    deps = [
+        ":internal_test_utils",
+        ":pw_rpc",
+        "//pw_assert",
+    ],
+)
+
+pw_cc_test(
+    name = "service_test",
+    srcs = [
+        "service_test.cc",
+    ],
+    deps = [
+        ":internal_test_utils",
+        ":pw_rpc",
+        "//pw_assert",
+    ],
+)
+
+pw_cc_test(
+    name = "fake_channel_output_test",
+    srcs = ["fake_channel_output_test.cc"],
+    deps = [":internal_test_utils"],
+)
+
+# TODO(b/234874064): Add test_helpers_test when it is possible to use .options
+# in bazel build.
+filegroup(
+    name = "test_helpers_test",
+    srcs = ["test_helpers_test.cc"],
+)
+
+proto_library(
+    name = "internal_packet_proto",
+    srcs = ["internal/packet.proto"],
+    visibility = [":__subpackages__"],
+)
+
+java_lite_proto_library(
+    name = "packet_proto_java_lite",
+    deps = [":internal_packet_proto"],
+)
+
+py_proto_library(
+    name = "internal_packet_proto_pb2",
+    srcs = ["internal/packet.proto"],
+)
+
+pw_proto_library(
+    name = "internal_packet_cc",
+    deps = [":internal_packet_proto"],
+)
+
+proto_library(
+    name = "pw_rpc_test_proto",
+    srcs = [
+        "pw_rpc_test_protos/no_package.proto",
+        "pw_rpc_test_protos/test.proto",
+    ],
+    strip_import_prefix = "//pw_rpc",
+)
+
+pw_proto_library(
+    name = "pw_rpc_test_cc",
+    deps = [":pw_rpc_test_proto"],
+)
+
+proto_plugin(
+    name = "pw_cc_plugin_raw",
+    outputs = [
+        "{protopath}.raw_rpc.pb.h",
+    ],
+    protoc_plugin_name = "raw_rpc",
+    tool = "@pigweed//pw_rpc/py:plugin_raw",
+    use_built_in_shell_environment = True,
+    visibility = ["//visibility:public"],
+)
+
+proto_plugin(
+    name = "pw_cc_plugin_nanopb_rpc",
+    outputs = [
+        "{protopath}.rpc.pb.h",
+    ],
+    protoc_plugin_name = "nanopb_rpc",
+    tool = "@pigweed//pw_rpc/py:plugin_nanopb",
+    use_built_in_shell_environment = True,
+    visibility = ["//visibility:public"],
+)
+
+proto_plugin(
+    name = "nanopb_plugin",
+    options = [
+        "--library-include-format='#include\"%s\"'",
+    ],
+    outputs = [
+        "{protopath}.pb.h",
+        "{protopath}.pb.c",
+    ],
+    separate_options_flag = True,
+    tool = "@com_github_nanopb_nanopb//:bazel_generator",
+    use_built_in_shell_environment = True,
+    visibility = ["//visibility:public"],
+)
+
+proto_plugin(
+    name = "pw_cc_plugin_pwpb_rpc",
+    outputs = [
+        "{protopath}.rpc.pwpb.h",
+    ],
+    protoc_plugin_name = "pwpb_rpc",
+    tool = "@pigweed//pw_rpc/py:plugin_pwpb",
+    use_built_in_shell_environment = True,
+    visibility = ["//visibility:public"],
+)
+
+pw_proto_filegroup(
+    name = "echo_proto_and_options",
+    srcs = ["echo.proto"],
+    options_files = ["echo.options"],
+)
+
+proto_library(
+    name = "echo_proto",
+    srcs = [":echo_proto_and_options"],
+)
+
+py_proto_library(
+    name = "echo_py_pb2",
+    srcs = ["echo.proto"],
+)
+
+pw_proto_library(
+    name = "echo_cc",
+    deps = [":echo_proto"],
+    # TODO(tpudlik): We should provide echo.options to nanopb here, but the
+    # current proto codegen implementation provides no mechanism for doing so.
+)

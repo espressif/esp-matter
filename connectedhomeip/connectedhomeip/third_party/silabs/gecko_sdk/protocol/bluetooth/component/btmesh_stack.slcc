@@ -1,0 +1,311 @@
+id: "btmesh_stack"
+label: "Bluetooth Mesh Stack"
+package: "Btmesh"
+description: "Bluetooth Mesh Stack"
+category: "Bluetooth Mesh"
+quality: "production"
+root_path: "protocol/bluetooth"
+config_file:
+  - path: "config/sl_btmesh_config.h"
+  - path: component/gatt_service_mesh_default.xml
+    directory: btconf
+source:
+  - path: "src/sl_btmesh_lib.c"
+    condition:
+      - "btmesh_generic_model"
+  - path: "src/sl_btmesh_serdeser.c"
+    condition:
+      - "btmesh_generic_model"
+  - path: "src/sl_btmesh_sensor.c"
+    condition:
+      - "btmesh_sensor_model"
+  - path: "src/sl_btmesh_sensor.c"
+    condition:
+      - "btmesh_feature_lc_server"
+    unless:
+      - "btmesh_sensor_model"
+include:
+  - path: "inc"
+    file_list:
+      - path: "sl_btmesh_stack_init.h"
+      - path: "sl_btmesh_api.h"
+      - path: "sl_btmesh_bgapi.h"
+      - path: "sl_btmesh_compatibility_macros.h"
+      - path: "sl_btmesh_capi_types.h"
+      - path: "sl_btmesh_memory_config.h"
+      - path: "sl_btmesh_model_specification_defs.h"
+      - path: "sl_btmesh_generic_model_capi_types.h"
+        condition:
+          - "btmesh_generic_model"
+      - path: "sl_btmesh_lib.h"
+        condition:
+          - "btmesh_generic_model"
+      - path: "sl_btmesh_serdeser.h"
+        condition:
+          - "btmesh_generic_model"
+      - path: "sl_btmesh_lighting_model_capi_types.h"
+        condition:
+          - "btmesh_generic_model"
+      - path: "sl_btmesh_device_properties.h"
+        condition:
+          - "btmesh_sensor_model"
+      - path: "sl_btmesh_device_properties.h"
+        condition:
+          - "btmesh_feature_lc_server"
+        unless:
+          - "btmesh_sensor_model"
+      - path: "sl_btmesh_sensor_model_capi_types.h"
+        condition:
+          - "btmesh_sensor_model"
+      - path: "sl_btmesh_sensor_model_capi_types.h"
+        condition:
+          - "btmesh_feature_lc_server"
+        unless:
+          - "btmesh_sensor_model"
+      - path: "sl_btmesh_sensor.h"
+        condition:
+          - "btmesh_sensor_model"
+      - path: "sl_btmesh_sensor.h"
+        condition:
+          - "btmesh_feature_lc_server"
+        unless:
+          - "btmesh_sensor_model"
+template_file:
+  - path: "src/sl_btmesh.c.jinja"
+  - path: "inc/sl_btmesh.h.jinja"
+other_file:
+  - path: "api/sl_btmesh.xapi"
+library:
+#EFR32BG12P
+  - path: "lib/EFR32BG12P/GCC/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32bg12p"
+  - path: "lib/EFR32BG12P/IAR/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32bg12p"
+#EFR32MG12P
+  - path: "lib/EFR32MG12P/GCC/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32mg12p"
+  - path: "lib/EFR32MG12P/IAR/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32mg12p"
+#MGM12
+  - path: "lib/EFR32MG12P/GCC/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_mgm12"
+  - path: "lib/EFR32MG12P/IAR/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_mgm12"
+#EFR32BG13P
+  - path: "lib/EFR32BG13P/GCC/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32bg13p"
+  - path: "lib/EFR32BG13P/IAR/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32bg13p"
+#BGM13
+  - path: "lib/EFR32BG13P/GCC/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_bgm13"
+  - path: "lib/EFR32BG13P/IAR/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_bgm13"
+#EFR32MG13P
+  - path: "lib/EFR32MG13P/GCC/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32mg13p"
+  - path: "lib/EFR32MG13P/IAR/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32mg13p"
+#MGM13
+  - path: "lib/EFR32MG13P/GCC/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_mgm13"
+  - path: "lib/EFR32MG13P/IAR/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_mgm13"
+#EFR32BG21
+  - path: "lib/EFR32BG21/GCC/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32bg21"
+  - path: "lib/EFR32BG21/IAR/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32bg21"
+#BGM21
+  - path: "lib/EFR32BG21/GCC/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_bgm21"
+  - path: "lib/EFR32BG21/IAR/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_bgm21"
+#EFR32MG21
+  - path: "lib/EFR32MG21/GCC/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32mg21"
+  - path: "lib/EFR32MG21/IAR/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32mg21"
+#MGM21
+  - path: "lib/EFR32MG21/GCC/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_mgm21"
+  - path: "lib/EFR32MG21/IAR/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_mgm21"
+#EFR32BG22
+  - path: "lib/EFR32BG22/GCC/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32bg22"
+  - path: "lib/EFR32BG22/IAR/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32bg22"
+#BGM22
+  - path: "lib/EFR32BG22/GCC/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_bgm22"
+  - path: "lib/EFR32BG22/IAR/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_bgm22"
+#EFR32MG22
+  - path: "lib/EFR32MG22/GCC/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32mg22"
+  - path: "lib/EFR32MG22/IAR/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32mg22"
+#MGM22
+  - path: "lib/EFR32MG22/GCC/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_mgm22"
+  - path: "lib/EFR32MG22/IAR/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_mgm22"
+#EFR32MG24
+  - path: "lib/EFR32MG24/GCC/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32mg24"
+  - path: "lib/EFR32MG24/IAR/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32mg24"
+#EFR32BG24
+  - path: "lib/EFR32BG24/GCC/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32bg24"
+  - path: "lib/EFR32BG24/IAR/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32bg24"
+#MGM24
+  - path: "lib/EFR32MG24/GCC/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_mgm24"
+  - path: "lib/EFR32MG24/IAR/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_mgm24"
+#BGM24
+  - path: "lib/EFR32BG24/GCC/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_bgm24"
+  - path: "lib/EFR32BG24/IAR/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_bgm24"
+#EFR32MG27
+  - path: "lib/EFR32MG27/GCC/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32mg27"
+  - path: "lib/EFR32MG27/IAR/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32mg27"
+#EFR32BG27
+  - path: "lib/EFR32BG27/GCC/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32bg27"
+  - path: "lib/EFR32BG27/IAR/libbluetooth_mesh.a"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32bg27"
+template_contribution:
+  - name: component_catalog
+    value: btmesh
+  - name: event_handler
+    value:
+      event: stack_init
+      include: "sl_btmesh.h"
+      handler: "sl_btmesh_init"
+    priority: 1
+  - name: event_handler
+    value:
+      event: stack_process_action
+      include: "sl_btmesh.h"
+      handler: "sl_btmesh_step"
+    priority: 10
+  - name: btmesh_stack
+    value: 1
+  - name: bluetooth_on_event
+    value:
+      function: sl_btmesh_bgapi_listener
+  - name: btmesh_advertisers
+    value:
+      name: mesh_data
+      count: 2
+requires:
+  - name: "sl_system"
+  - name: "device_init"
+  - name: "device_init_hfxo"
+  - name: "bluetooth_stack"
+  - name: "bluetooth_feature_system"
+  - name: "bluetooth_feature_gap"
+  - name: "bluetooth_feature_scanner"
+  - name: "bluetooth_feature_advertiser"
+  - name: "emlib"
+  - name: "sleeptimer"
+  - name: "rail_lib"
+  - name: "nvm3_lib"
+  - name: "nvm3_default"
+  - name: "btmesh_crypto"
+  - name: "device_supports_bluetooth"
+  - name: "btmesh_feature_health_server"
+  - name: "dcd_configuration"
+provides:
+  - name: "btmesh_stack"

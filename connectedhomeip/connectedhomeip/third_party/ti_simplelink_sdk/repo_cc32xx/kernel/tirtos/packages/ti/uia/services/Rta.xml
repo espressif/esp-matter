@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="Rta" title="Rta Configuration" version="1">
+
+<page name="Module" title="Module Settings">
+<html><body><table>
+  <tr>
+      <td><form>
+        <p>The Rta service is responsible to move Log data to an instrumentation host.</p>
+        <p> </p>
+        <p> </p>
+      </form></td>
+  </tr>
+  <tr>
+    <td><control type="checkbox" label="Add the Rta module to my configuration" value="value:this.$used" bold="true"/></td>
+  </tr>
+  <tr></tr>
+  <tr><td>
+    <h1>Rta Options</h1>
+    <table>
+      <tr>
+        <td><control type="label" label="Collection Period (MS)" align="left"/></td>
+        <td><control type="editbox"
+             value="value:this.periodInMs"
+             tooltip="value:this.periodInMs.$summary"/></td>
+      </tr>
+    </table>
+  </td></tr>
+</table></body></html>
+</page>
+</gep>

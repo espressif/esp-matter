@@ -1,0 +1,51 @@
+﻿<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster xmlns:zcl="http://zigbee.org/zcl/clusters"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:type="http://zigbee.org/zcl/types"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd"
+  id="0020" revision="2" name="PollControl">
+  <classification role="utility" picsCode="POLL" />
+  <server>
+    <attributes>
+      <attribute id="0000" name="CheckInInterval" type="uint32" writable="true" required="true" max="7208960" default="14400" />
+      <attribute id="0001" name="LongPollInterval" type="uint32" required="true" min="4" max="7208960" default="20" />
+      <attribute id="0002" name="ShortPollInterval" type="uint16" required="true" min="1" max="65535" default="2" />
+      <attribute id="0003" name="FastPollTimeout" type="uint16" writable="true" required="true" min="1" max="65535" default="40" />
+      <attribute id="0004" name="CheckInIntervalMin" type="uint32" default="0" />
+      <attribute id="0005" name="LongPollIntervalMin" type="uint32" default="0" />
+      <attribute id="0006" name="FastPollTimeoutMax" type="uint16" default="0" />
+    </attributes>
+    <commands>
+      <command id="00" name="CheckIn" required="true" />
+    </commands>
+  </server>
+  <client>
+    <commands>
+      <command id="00" name="CheckInResponse" required="true">
+        <fields>
+          <field name="StartFastPolling" type="bool" />
+          <field name="FastPollTimeout" type="uint16" />
+        </fields>
+      </command>
+      <command id="01" name="FastPollStop" required="true" />
+      <command id="02" name="SetLongPollInterval">
+        <fields>
+          <field name="NewLongPollInterval" type="uint32" />
+        </fields>
+      </command>
+      <command id="03" name="SetShortPollInterval">
+        <fields>
+          <field name="NewShortPollInterval" type="uint16" />
+        </fields>
+      </command>
+    </commands>
+  </client>
+</zcl:cluster>

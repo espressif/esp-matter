@@ -1,0 +1,48 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+# Disable obnoxious ABI warning.
+#
+# GCC 7.1 adds an over-zealous ABI warning with little useful information
+# on how to resolve the issue. The warning you get is:
+#
+#   note: parameter passing for argument of type '...' changed in GCC 7.1
+#
+# There is no other information, and searching for the error is needed to
+# understand what is happening. For upstream Pigweed, we compile from
+# source so this is irrelevant; so disable it.
+#
+# See: https://gcc.gnu.org/gcc-7/changes.html (search for "psabi").
+#      https://gcc.gnu.org/ml/gcc/2017-05/msg00073.html
+config("disable_psabi_warning") {
+  cflags = [ "-Wno-psabi" ]
+}
+
+config("mingw_z_format") {
+  if (host_os == "win") {
+    # MinGW can't handle %z format specifiers without this flag enabled. This
+    # flag is deprecated in future versions of MinGW, and should be replaced by
+    # setting __MINGW_FEATURES__=__MINGW_ANSI_STDIO__ when switching to a
+    # version of MinGW that uses the new flags.
+    cflags = [ "-D__USE_MINGW_ANSI_STDIO=1" ]
+  }
+}
+
+# GCC needs the -pthread option to support multithreading. This must be
+# specified to build e.g. pw_thread_stl.
+config("threading_support") {
+  ldflags = [ "-pthread" ]
+}

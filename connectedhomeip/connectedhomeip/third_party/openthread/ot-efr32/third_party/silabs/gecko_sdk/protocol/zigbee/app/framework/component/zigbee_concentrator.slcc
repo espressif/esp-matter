@@ -1,0 +1,88 @@
+package: Zigbee
+description: Code that handles periodically broadcasting a many-to-one-route-request
+  (MTORR) so that the device will act as a concentrator (sink) in the network. Note
+  NCP/SoC source route table size can now be defined as part of the source routing
+  library.
+label: Concentrator Support
+quality: production
+id: zigbee_concentrator
+category: Zigbee|Utility
+provides:
+   - name: "zigbee_concentrator"
+requires:
+   - name: "zigbee_source_route"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/concentrator/config/concentrator-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/concentrator/concentrator-support.c
+  - path: protocol/zigbee/app/framework/plugin/concentrator/concentrator-support-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/concentrator/concentrator-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/concentrator
+    file_list:
+      - path: concentrator-support.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_concentrator
+  - name: zigbee_stack_callback
+    value:
+      callback_type: stack_status
+      function_name: emberAfPluginConcentratorStackStatusCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: incoming_route_error
+      function_name: emAfPluginConcentratorIncomingRouteErrorCallback   
+  - name: zigbee_af_callback
+    value:
+      callback_type: local_data_init
+      function_name: emberAfPluginConcentratorInitCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: concentrator
+      help: concentrator related commands.
+  - name: cli_command
+    value:
+      group: concentrator
+      name: status
+      handler: emberAfPluginConcentratorStatus
+      help: Prints current status and configured parameters of the concentrator.
+  - name: cli_command
+    value:
+      group: concentrator
+      name: start
+      handler: emberAfPluginConcentratorStartDiscoveryCommand
+      help: Starts the periodic broadcast of MTORRs.
+  - name: cli_command
+    value:
+      group: concentrator
+      name: stop
+      handler: emberAfPluginConcentratorStopDiscoveryCommand
+      help: Stops the periodic broadcast of MTORRs.
+  - name: cli_command
+    value:
+      group: concentrator
+      name: agg
+      handler: emberAfPluginConcentratorAggregationCommand
+      help: (Requires Concentrator Support to be enabled on this device.) Schedules a Zigbee PRO Many-To-One Route Request (MTORR) to be sent out at the next opportunity, which will cause aggregation (many-to-one) routes to be created towards this concentrator.
+  - name: cli_command
+    value:
+      group: concentrator
+      name: print-table
+      handler: emberAfPluginConcentratorPrintSourceRouteTable
+      help: Prints the SoC/NCP source route table.
+  - name: cli_command
+    value:
+      group: concentrator
+      name: set-router-behavior
+      handler: emberAfPluginConcentratorSetRouterBehaviorCommand
+      help: This command allows the user to set the router behavior for this component. The argument values come from concentrator-support.h in the enum with members starting with EMBER_AF_PLUGIN_CONCENTRATOR_ROUTER_BEHAVIOR_.
+      argument:
+      - type: uint8
+        help: The value of an EMBER_AF_PLUGIN_CONCENTRATOR_ROUTER_BEHAVIOR_ enum member  
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/concentrator-support

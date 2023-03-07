@@ -1,0 +1,48 @@
+id: tz_service_nvm3
+package: platform
+label: Secure NVM3 service for TrustZone secure library
+description: >-
+  This component includes the secure NVM3 service for the TrustZone secure library.
+category: Platform|Security|TrustZone
+quality: beta
+component_root_path: util/third_party/crypto/trusted-firmware-m
+
+provides:
+  - name: tz_service_nvm3
+
+requires:
+  - name: tz_service_common
+    condition: [trustzone_secure]
+  - name: tz_secure_nvm3_s
+    condition: [trustzone_secure]
+  - name: nvm3_default
+    condition: [trustzone_nonsecure]
+
+include:
+  - path: ../sl_component/sl_trustzone/inc/common
+    file_list:
+      - path: sli_tz_service_nvm3.h
+
+  - path: secure_fw/partitions/nvm3
+    condition: [trustzone_secure]
+    file_list:
+      - path: tfm_nvm3_include.h
+
+  - path: ../../../../platform/emdrv/nvm3/inc
+    condition: [trustzone_nonsecure]
+    file_list:
+      - path: nvm3_default.h
+      - path: nvm3.h
+      - path: nvm3_hal.h
+      - path: nvm3_hal_flash.h
+      - path: nvm3_lock.h
+
+source:
+  - path: secure_fw/partitions/nvm3/nvm3.c
+    condition: [trustzone_secure]
+  - path: interface/src/tfm_nvm3_func_api.c
+    condition: [trustzone_nonsecure]
+
+template_contribution:
+  - name: component_catalog
+    value: tz_service_nvm3

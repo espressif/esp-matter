@@ -1,0 +1,44 @@
+id: "connect_frequency_hopping_cli"
+label: "Frequency Hopping (Cli)"
+package: "Flex"
+category: "Connect"
+quality: "production"
+description: "This component provides frequency hopping CLI commands."
+provides:
+  - name: "connect_frequency_hopping_cli"
+requires:
+  - name: "connect_frequency_hopping"
+  - name: "cli"
+  - name: "connect_debug_print"
+source:
+  - path: "protocol/flex/stack-cli/stack-cli.c"
+
+template_contribution:
+  - name: cli_command
+    value:
+      name: stack_set_fh_channel_mask
+      handler: stack_set_fh_channel_mask_command
+      help: ""
+      argument:
+      - type: hex
+        help: "Channel Mask"
+  - name: cli_command
+    value:
+      name: stack_start_fh_server
+      handler: stack_start_fh_server_command
+      help: ""
+  - name: cli_command
+    value:
+      name: stack_start_fh_client
+      handler: stack_start_fh_client_command
+      help: ""
+      argument:
+      - type: uint16
+        help: "Node ID"
+      - type: uint16
+        help: "Pan ID"
+  - name: cli_command
+    value:
+      name: stack_stop_fh
+      handler: stack_stop_fh_command
+      help: ""

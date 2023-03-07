@@ -1,0 +1,21 @@
+id: lwip_port_micriumos
+label: "MicriumOS"
+pretty_name : "LwIP MicriumOS port "
+package: platform
+description: >
+  LwIP port contribution for MicriumOS.
+category: LwIP|OS
+quality: production
+provides:
+  - name: lwip_port_micriumos
+requires:
+  - name: lwip_core
+source:
+  - path: util/third_party/lwip/lwip-contrib/ports/micriumos/sys_arch.c
+include:
+  - path: util/third_party/lwip/lwip-contrib/ports/micriumos/include
+    file_list:
+    - path: arch/sys_arch.h
+    - path: arch/cc.h
+    - path: arch/bpstruct.h
+    - path: arch/epstruct.h

@@ -1,0 +1,45 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("negative_compilation_testing") {
+  public = [ "public/pw_compilation_testing/negative_compilation.h" ]
+  public_configs = [ ":public_include_path" ]
+  visibility = [ ":internal_pigweed_use_only" ]
+}
+
+# The pw_compilation_testing header cannot be used outside of a negative
+# compilation test. To create a negative compilation test, use the
+# pw_cc_negative_compilation_test() GN template or specify
+# negative_compilation_test = true in a pw_test() template.
+group("internal_pigweed_use_only") {
+  public_deps = [ ":negative_compilation_testing" ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}
+
+pw_test_group("tests") {
+}

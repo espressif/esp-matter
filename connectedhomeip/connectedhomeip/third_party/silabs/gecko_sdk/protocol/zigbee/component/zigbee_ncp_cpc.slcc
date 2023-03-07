@@ -1,0 +1,28 @@
+id: zigbee_ncp_cpc
+label: NCP CPC
+package: Zigbee
+category: Zigbee|NCP
+quality: alpha
+description: This component provides Co-Processor Communication (CPC) support for the Zigbee stack.
+provides:
+  - name: zigbee_ncp_cpc
+  - name: zigbee_ncp
+
+requires:
+  - name: cpc_secondary
+  - name: zigbee_ncp_framework
+  - name: zigbee_ncp_cpc_implementation
+  - name: zigbee_ncp_cpc_library
+    condition:
+      - zigbee_force_libraries
+
+recommends:
+  - id: zigbee_ncp_cpc_source
+
+define:
+  - name: EZSP_CPC
+  - name: NO_USB
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_ncp_cpc

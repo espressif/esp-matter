@@ -1,0 +1,116 @@
+// Provide function declarations
+  {{#all_cli_commands_for_user_enabled_clusters}}
+      {{#template_options category="cli"}}
+        {{#if (isEqual this.optionCode ../name)}}
+void sli_zigbee_cli_zcl_{{cleanseLabel ../clusterName}}_{{cleanseLabel (asLastWord this.optionLabel)}}_command(sl_cli_command_arg_t *arguments);
+        {{/if}}
+      {{/template_options}}
+  {{/all_cli_commands_for_user_enabled_clusters}}
+
+
+
+// Command structs. Names are command names prefixed by cli_cmd_zcl_[cluster name]_cluster
+{{#all_cli_commands_for_user_enabled_clusters}}
+      {{#template_options category="cli"}}
+        {{#if (isEqual this.optionCode ../name)}}
+static const sl_cli_command_info_t cli_cmd_zcl_{{cleanseLabel ../clusterName}}_cluster_{{asUnderscoreLowercase ../name}} = \
+SL_CLI_COMMAND(sli_zigbee_cli_zcl_{{cleanseLabel ../clusterName}}_{{cleanseLabel (asLastWord this.optionLabel)}}_command,
+        {{/if}}
+      {{/template_options}}
+            "{{trim_string description}}",
+            {{#zcl_command_arguments}}"{{asSpacedLowercase label}}" SL_CLI_UNIT_SEPARATOR {{#last}},{{/last}}{{/zcl_command_arguments}}
+            {{~if_command_arguments_exist id "" "\"\","}}
+            {
+              {{#zcl_command_arguments}}
+                {{zcl_command_argument_type_to_cli_data_type type struct="SL_CLI_ARG_HEX"}},
+              {{/zcl_command_arguments}}
+                SL_CLI_ARG_END,
+            });
+
+{{/all_cli_commands_for_user_enabled_clusters}}
+
+
+// Create group command tables and structs if cli_groups given
+// in template. Group name is suffixed with [cluster name]_[cluster_side]_cluster_group_table for tables
+// and group commands are cli_cmd_( group name )_group
+{{#all_user_clusters_irrespective_of_side}}
+  {{#user_cluster_commands_with_cli}}
+  {{#first}}
+static const sl_cli_command_entry_t zcl_{{cleanseLabel ../name}}_cluster_command_table[] = {
+  {{/first}}    
+          {{#template_options category="cli"}}
+            {{#if (isEqual this.optionCode ../name)}}
+    { "{{asLastWord optionLabel}}", &cli_cmd_zcl_{{cleanseLabel ../../name}}_cluster_{{asUnderscoreLowercase ../name}}, false },
+            {{/if}}
+          {{/template_options}}
+  {{#last}}
+  { NULL, NULL, false },
+};
+  {{/last}}
+  {{/user_cluster_commands_with_cli}}
+{{/all_user_clusters_irrespective_of_side}}
+
+// Global ZCL commands
+static const sl_cli_command_info_t cli_cmd_zcl_global_group = \
+  SL_CLI_COMMAND_GROUP(zcl_global_command_table, "ZCL global cluster commands");
+
+// ZCL cluster commands
+{{#all_user_clusters_irrespective_of_side}}
+  {{#user_cluster_commands_with_cli}}
+  {{#first}}
+static const sl_cli_command_info_t cli_cmd_{{cleanseLabel ../name}}_group = \
+  SL_CLI_COMMAND_GROUP(zcl_{{cleanseLabel ../name}}_cluster_command_table, "ZCL {{cleanseLabel ../name}} cluster commands");
+  {{/first}}
+  {{/user_cluster_commands_with_cli}}
+{{/all_user_clusters_irrespective_of_side}}
+
+static const sl_cli_command_entry_t zcl_group_table[] = {
+{{#all_user_clusters_irrespective_of_side}}
+  {{#user_cluster_commands_with_cli}}
+  {{#first}}
+  { "{{cleanseLabelAsKebabCase ../name}}", &cli_cmd_{{cleanseLabel ../name}}_group, false },
+  {{/first}}
+  {{/user_cluster_commands_with_cli}}
+{{/all_user_clusters_irrespective_of_side}}
+  { "global", &cli_cmd_zcl_global_group, false },
+  { NULL, NULL, false },
+};
+
+sl_cli_command_info_t cli_cmd_zcl_group = \
+  SL_CLI_COMMAND_GROUP(zcl_group_table, "ZCL commands");
+
+// Create root command table
+const sl_cli_command_entry_t sl_cli_zcl_command_table[] = {
+  { "zcl", &cli_cmd_zcl_group, false },
+  { NULL, NULL, false },
+};
+
+sl_cli_command_group_t sl_cli_zcl_command_group =
+{
+  { NULL },
+  false,
+  sl_cli_zcl_command_table
+};
+
+
+{{#all_cli_commands_for_user_enabled_clusters}}
+      {{#template_options category="cli"}}
+        {{#if (isEqual this.optionCode ../name)}}
+void sli_zigbee_cli_zcl_{{cleanseLabel ../clusterName}}_{{cleanseLabel (asLastWord this.optionLabel)}}_command(sl_cli_command_arg_t *arguments) {
+        {{/if}}
+      {{/template_options}}
+uint8_t argumentTypes[{{addOne (zcl_command_arguments_count this.id)}}] =  { {{#zcl_command_arguments}}
+                 {{zcl_command_argument_type_to_zcl_cli_data_type type struct="SL_CLI_ARG_HEX"}},
+                          {{/zcl_command_arguments}} };
+sli_zigbee_zcl_simple_command(ZCL_CLUSTER_SPECIFIC_COMMAND | {{#if (isClient commandSource)}}ZCL_FRAME_CONTROL_CLIENT_TO_SERVER{{else}}ZCL_FRAME_CONTROL_SERVER_TO_CLIENT{{/if}},  \
+                 ZCL_{{asUnderscoreUppercase clusterName}}_CLUSTER_ID,                                                       \
+                 {{code}},
+                 arguments,
+                 argumentTypes);
+}
+
+{{/all_cli_commands_for_user_enabled_clusters}}
+#ifdef __cplusplus
+}
+#endif
+#endif

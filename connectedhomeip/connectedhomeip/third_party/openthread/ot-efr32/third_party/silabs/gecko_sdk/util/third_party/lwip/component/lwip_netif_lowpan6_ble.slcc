@@ -1,0 +1,24 @@
+id: lwip_netif_lowpan6_ble
+label: "lowpan6 BLE"
+pretty_name : "LWIP generic network interface device drivers for lowpan6_ble"
+package: platform
+description: >
+    LWIP generic network interface device drivers for ethernet. A 6LoWPAN over Bluetooth
+    Low Energy (BLE) implementation as netif, according to RFC-7668.
+category: LwIP|netif
+quality: production
+provides:
+  - name: lwip_netif
+    allow_multiple: true
+  - name: lwip_netif_lowpan6_ble
+requires:
+  - name: lwip_core
+source:
+  - path: util/third_party/lwip/lwip/src/netif/lowpan6_common.c
+  - path: util/third_party/lwip/lwip/src/netif/lowpan6_ble.c
+include:  
+  - path: util/third_party/lwip/lwip/src/include
+    file_list:
+    - path: netif/lowpan6_ble.h
+    - path: netif/lowpan6_common.h
+    - path: netif/lowpan6_opts.h

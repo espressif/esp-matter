@@ -1,0 +1,233 @@
+#!/bin/bash
+#
+#  Copyright (c) 2017, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+#   Description:
+#       This script runs border router tests.
+#
+
+# shellcheck source=script/_initrc
+. "$(dirname "$0")"/_initrc
+
+readonly OTBR_COLOR_PASS='\033[0;32m'
+readonly OTBR_COLOR_FAIL='\033[0;31m'
+readonly OTBR_COLOR_NONE='\033[0m'
+readonly QUIET=${QUIET:-1}
+
+readonly OTBR_BUILD_TYPE="${OTBR_BUILD_TYPE:-Debug}"
+readonly OTBR_COVERAGE="${OTBR_COVERAGE:-0}"
+readonly OTBR_MDNS="${OTBR_MDNS:-}"
+readonly OTBR_REST="${OTBR_REST:-}"
+readonly OTBR_OPTIONS="${OTBR_OPTIONS:-}"
+readonly OTBR_TOP_BUILDDIR="${BUILD_DIR}/otbr"
+
+#######################################
+# Run test and print result.
+# Globals:
+#   OTBR_COLOR_PASS
+#   OTBR_COLOR_FAIL
+#   OTBR_COLOR_NONE
+# Arguments:
+#   $@  - Test command
+# Returns:
+#   0           - Test passed.
+#   Otherwise   - Test failed!
+#######################################
+print_result()
+{
+    local exit_code=0
+
+    echo -e "$(date) Running $*"
+
+    if [[ ${QUIET} == 1 ]]; then
+        "$@" &>test.log || exit_code=$?
+    else
+        "$@" || exit_code=$?
+    fi
+
+    if [[ $exit_code == 0 ]]; then
+        prefix="${OTBR_COLOR_PASS}PASS${OTBR_COLOR_NONE}"
+    else
+        prefix="${OTBR_COLOR_FAIL}FAIL${OTBR_COLOR_NONE}"
+    fi
+
+    echo -e "${prefix} $*"
+
+    # only output log on failure
+    if [[ ${QUIET} == 1 && ${exit_code} != 0 ]]; then
+        cat test.log
+    fi
+
+    return ${exit_code}
+}
+
+print_usage()
+{
+    cat <<EOF
+USAGE: $0 COMMAND
+
+COMMAND:
+    build       Build project for running tests. This can be used to rebuild the project for changes.
+    clean       Clean built files to prepare new build.
+    meshcop     Run MeshCoP tests.
+    openwrt     Run OpenWRT tests.
+    help        Print this help.
+
+EXAMPLES:
+    $0 clean build
+EOF
+    exit "$1"
+}
+
+do_build()
+{
+    otbr_options=(
+        "-DCMAKE_BUILD_TYPE=${OTBR_BUILD_TYPE}"
+        "-DCMAKE_INSTALL_PREFIX=/usr"
+        "-DOT_THREAD_VERSION=1.3"
+        "-DOTBR_DBUS=ON"
+        "-DOTBR_WEB=ON"
+        "-DOTBR_UNSECURE_JOIN=ON"
+        "-DOTBR_TREL=ON"
+        ${otbr_options[@]+"${otbr_options[@]}"}
+    )
+
+    ./script/cmake-build "${otbr_options[@]}"
+}
+
+do_clean()
+{
+    echo "Removing ${BUILD_DIR} (requiring sudo)"
+    rm -rf "${BUILD_DIR}" || sudo rm -rf "${BUILD_DIR}"
+}
+
+do_check()
+{
+    (cd "${OTBR_TOP_BUILDDIR}" \
+        && sudo ninja install \
+        && CTEST_OUTPUT_ON_FAILURE=1 ninja test)
+}
+
+do_doxygen()
+{
+    otbr_options=(
+        "-DOTBR_DOC=ON"
+    )
+
+    OTBR_TARGET="doxygen" ./script/cmake-build "${otbr_options[@]}"
+}
+
+do_prepare()
+{
+    if [[ ${OTBR_OPTIONS} ]]; then
+        read -r -a otbr_options <<<"${OTBR_OPTIONS}"
+    else
+        otbr_options=()
+    fi
+
+    if [[ -n ${OTBR_MDNS} ]]; then
+        otbr_options+=("-DOTBR_MDNS=${OTBR_MDNS}")
+    fi
+
+    if [[ ${OTBR_COVERAGE} == 1 ]]; then
+        otbr_options+=("-DOTBR_COVERAGE=ON")
+    fi
+
+    if [[ ${OTBR_REST} == "rest-off" ]]; then
+        otbr_options+=("-DOTBR_REST=OFF")
+    else
+        otbr_options+=("-DOTBR_REST=ON")
+    fi
+}
+
+do_package()
+{
+    otbr_options=(
+        "-DBUILD_TESTING=OFF"
+        "-DCMAKE_INSTALL_PREFIX=/usr"
+        "-DCMAKE_BUILD_TYPE=Release"
+        "-DOTBR_WEB=ON"
+        ${otbr_options[@]+"${otbr_options[@]}"}
+    )
+
+    OTBR_TARGET="package" ./script/cmake-build "${otbr_options[@]}"
+}
+
+do_simulation()
+{
+    export top_builddir="${OTBR_TOP_BUILDDIR}"
+
+    print_result tests/scripts/auto-attach
+}
+
+main()
+{
+    if [[ $# == 0 ]]; then
+        print_usage 1
+    fi
+
+    do_prepare
+
+    while [[ $# != 0 ]]; do
+        case "$1" in
+            build)
+                do_build
+                ;;
+            check)
+                do_check
+                ;;
+            clean)
+                do_clean
+                ;;
+            doxygen)
+                do_doxygen
+                ;;
+            help)
+                print_usage
+                ;;
+            meshcop)
+                top_builddir="${OTBR_TOP_BUILDDIR}" print_result ./tests/scripts/meshcop
+                ;;
+            openwrt)
+                print_result ./tests/scripts/openwrt
+                ;;
+            simulation)
+                do_simulation
+                ;;
+            package)
+                do_package
+                ;;
+            *)
+                echo "Unknown test: ${1}"
+                print_usage 1
+                ;;
+        esac
+        shift
+    done
+}
+
+main "$@"

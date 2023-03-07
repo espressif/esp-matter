@@ -1,0 +1,18 @@
+id: toolchain_variant_arm
+label: Toolchain for ARM
+package: platform
+description: Toolchain support for ARM devices
+category: Platform|Toolchain
+quality: production
+tag:
+  - toolchain:variant:arm
+provides:
+  - name: toolchain_variant
+  - name: toolchain_variant_arm
+toolchain_settings:
+  - option: split_sections
+    value: enabled
+  - option: nano_c_libs
+    value: enabled
+  - option: device_type
+    value: embedded

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="SYS/BIOS" title="SYS/BIOS" version="1">
+
+<page name="Welcome" title="Welcome" DPI="2540">
+  <instance href="Welcome.html"/>
+</page>
+
+<page name="System Overview" title="System Overview" DPI="2540">
+  <instance href="Overview.xml"/>  
+</page>
+
+<page name="Runtime" title="Basic Runtime Options">
+<html><body><table>
+  <tr><td>
+    <h1>Library Selection Options</h1>
+    <table>
+      <tr>
+        <td><control type="radiogroup" value="value:this.libType" label="SYS/BIOS library type" tooltip="SYS/BIOS library selection" align="left" /></td>
+      </tr>
+    </table>
+    <form><p>The library options above allow you to select between several variations of SYS/BIOS libraries depending on your application's requirements. All options except Debug are aggressively optimized with minimal debug content.</p><p></p></form>
+    <table>
+      <tr>
+        <td colspan="2"><control type="checkbox" 
+             label="Enable Asserts" 
+             value="value:this.assertsEnabled" 
+             tooltip="value:this.assertsEnabled.$summary"
+             enabled="value:this.libType!=this.LibType_Instrumented &amp;&amp; this.libType!=this.LibType_NonInstrumented"/></td>
+      </tr>
+      <tr>
+        <td colspan="2"><control type="checkbox" 
+             label="Enable Logs" 
+             value="value:this.logsEnabled" 
+             tooltip="value:this.logsEnabled.$summary"
+             enabled="value:this.libType!=this.LibType_Instrumented &amp;&amp; this.libType!=this.LibType_NonInstrumented"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" 
+         label="Custom Compiler Options" 
+         align="left"
+             enabled="value:this.libType!=this.LibType_Instrumented &amp;&amp; this.libType!=this.LibType_NonInstrumented"/></td>
+        <td><control type="editbox" 
+             width="150"
+             value="value:this.customCCOpts" 
+             tooltip="value:this.customCCOpts.$summary"
+             enabled="value:this.libType!=this.LibType_Instrumented &amp;&amp; this.libType!=this.LibType_NonInstrumented"/></td>
+      </tr>
+    </table>
+    </td><td>
+    <h1>Dynamic Instance Creation Support</h1>
+    <table>
+      <tr>
+        <td colspan="2"><control type="checkbox" 
+             label="Enable Dynamic Instance Creation" 
+             value="value:this.runtimeCreatesEnabled"
+             tooltip="value:this.runtimeCreatesEnabled.$summary"/></td>
+      </tr>
+    </table>
+    <form><p>A savings in code and data size can be achieved by disabling dynamic instance creation.</p></form>
+    <form/>
+    <form/>
+    <h1>Runtime Memory Options</h1>
+    <table>
+      <tr>
+        <td><control type="label" label="System (Hwi and Swi) stack size" align="left"/></td>
+        <td><control type="editbox"
+             value="value:xdc.cfg.Program.stack"
+             tooltip="Initial C stack, becomes Hwi/Swi stack in BIOS_start()"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="Heap size" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.heapSize" 
+             tooltip="value:this.heapSize.$summary"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="Heap section" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.heapSection" 
+             tooltip="value:this.heapSection.$summary"/></td>
+      </tr>
+      <tr>
+        <td colspan="2"><control type="checkbox" 
+             label="Use HeapTrack"
+             value="value:this.heapTrackEnabled" 
+             tooltip="value:this.heapTrackEnabled.$summary"/></td>
+      </tr>
+    </table>
+    <form><p>The heap configured above is used for the standard C malloc() and free() functions or when the 'heap' argument to <a href="help:http:/help/topic/org.eclipse.rtsc.xdctools.product.ui/cdoc/xdc/runtime/Memory.html#alloc">Memory_alloc()</a> is NULL.</p></form>
+    </td>
+  </tr>
+  <tr><td>
+    <h1>Threading Options</h1>
+    <table>
+      <tr>
+        <td colspan="2"><control type="checkbox" 
+             label="Enable Tasks (When disabled, the Task module is not configurable)" 
+             value="value:this.taskEnabled" 
+             tooltip="value:this.taskEnabled.$summary"/></td>
+      </tr>
+      <tr>
+        <td colspan="2"><control type="checkbox" 
+             label="Enable Software Interrupts (When disabled, the Swi module is not configurable)" 
+             value="value:this.swiEnabled" 
+             tooltip="value:this.swiEnabled.$summary"/></td>
+      </tr>
+      <tr>
+        <td colspan="2"><control type="checkbox" 
+             label="Enable Clock Manager (When disabled, the Clock module is not configurable)" 
+             value="value:this.clockEnabled" 
+             tooltip="value:this.clockEnabled.$summary"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="C Standard Library Lock" align="left"/></td>
+        <td><control type="droplist" 
+             value="value:this.rtsGateType" 
+             tooltip="value:this.rtsGateType.$summary"/></td>
+      </tr>
+    </table>
+    </td>
+    <td>
+    <h1>Platform Settings</h1>
+    <form><p>These settings should reflect the hardware platform that runs your application.</p></form>
+    <table>
+      <tr>
+        <td><control type="label" label="CPU clock frequency (Hz)" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.cpuFreq.lo" 
+             tooltip="value:this.cpuFreq.$summary"/></td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table></body></html>
+</page>
+
+<page name="Error Handling" title="Runtime Error Handling">
+<html><body><table>
+  <tr>
+    <td>
+      <h1>Assertion Checking</h1>
+      <table>
+        <tr>
+          <td><control type="label" label="Named Asserts"/></td>
+          <td><control type="droplist"
+               enabled="value:this.$used"
+               value="value:xdc.runtime.Defaults.common$.diags_ASSERT"
+               tooltip="control how Assert events are handled"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Internal Asserts"/></td>
+          <td><control type="droplist"
+               enabled="value:this.$used"
+               value="value:xdc.runtime.Defaults.common$.diags_INTERNAL"
+               tooltip="control how 'internal' Assert events are handled"/></td>
+        </tr>
+      </table>
+      <form><p>Assertion events are either "named" or "internal":</p>
+        <li bindent="10">Named asserts are controlled by the "Named Asserts" settings above and are provided in production libraries as a means to validate an application's use of the library.</li>
+        <li bindent="10">Internal asserts are active only when <b>both</b> internal and named asserts are enabled.  These assertions are used during early development and are generally compiled out of production libraries.</li>
+      </form>
+    </td>
+  </tr>
+  <tr>
+   <td>
+      <h1>Error Policy Options</h1>
+      <table>
+        <tr>
+          <td><control type="label" label="Error hook"/></td>
+          <td><control type="editbox"
+               enabled="value:this.$used"
+               value="value:xdc.runtime.Error.raiseHook" 
+               tooltip="value:xdc.runtime.Error.raiseHook.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Maximum error nesting"/></td>
+          <td><control type="editbox"
+               enabled="value:this.$used"
+               value="value:xdc.runtime.Error.maxDepth" 
+               tooltip="value:xdc.runtime.Error.maxDepth.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Error policy"/></td>
+          <td><control type="droplist"
+               enabled="value:this.$used"
+               value="value:xdc.runtime.Error.policy" 
+               tooltip="value:xdc.runtime.Error.policy.$summary"/></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table></body></html>
+</page>
+
+<page name="Device Support" title="Device Specific Support">
+  <instance href="value:ti.sysbios.family.Settings.familyConfigPage"/>
+</page>
+
+<properties name="Advanced" title="All Top-level BIOS Options" enabled="true" visible="true" link="this"/>
+</gep>

@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="up" title="FatFs" href="../00index_e.html">
+<link rel="alternate" hreflang="ja" title="Japanese" href="../ja/sdir.html">
+<link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
+<title>FatFs - DIR</title>
+</head>
+
+<body>
+
+<div class="para">
+<h2>DIR</h2>
+<p>The <tt>DIR</tt> structure is used for the work area to read a directory by f_oepndir, f_readdir function. There is no member that can be changed by application.</p>
+<pre>
+typedef struct {
+    FATFS*  fs;         <span>/* Pointer to the owner file system object */</span>
+    WORD    id;         <span>/* Owner file system mount ID */</span>
+    WORD    index;      <span>/* Directory index number to be read/write next */</span>
+    DWORD   sclust;     <span>/* Table start cluster (0:Root dir) */</span>
+    DWORD   clust;      <span>/* Current cluster */</span>
+    DWORD   sect;       <span>/* Current sector */</span>
+    BYTE*   dir;        <span>/* Pointer to the current SFN entry in the win[] */</span>
+    BYTE*   fn;         <span>/* Pointer to the SFN (in/out) {file[8],ext[3],status[1]} */</span>
+#if _USE_LFN
+    WCHAR*  lfn;        <span>/* Pointer to the LFN working buffer */</span>
+    WORD    lfn_idx;    <span>/* Last matched LFN index (0xFFFF:No LFN) */</span>
+#endif
+} DIR;
+</pre>
+</div>
+
+<p class="foot"><a href="../00index_e.html">Return</a></p>
+</body>
+</html>

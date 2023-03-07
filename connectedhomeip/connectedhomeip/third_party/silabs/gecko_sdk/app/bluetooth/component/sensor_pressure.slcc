@@ -1,0 +1,24 @@
+id: sensor_pressure
+label: Air pressure sensor
+package: Bluetooth
+description: Air pressure sensor driver abstraction designed for Thunderboard.
+category: Application|Sensor
+quality: production
+root_path: app/bluetooth/common/sensor_pressure
+source:
+  - path: sl_sensor_pressure.c
+
+include:
+  - path: .
+    file_list:
+      - path: sl_sensor_pressure.h
+provides:
+  - name: sensor_pressure
+requires:
+  - name: sensor_select
+  - name: pressure_driver
+  - name: i2cspm
+  - name: app_assert
+template_contribution:
+  - name: component_catalog
+    value: sensor_pressure

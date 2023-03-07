@@ -1,0 +1,35 @@
+id: emlib_csen
+label: CSEN
+package: platform
+description: >
+  Capacitive Sense Module (CSEN) peripheral API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_csen.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_csen.h"
+provides:
+  - name: emlib_csen
+requires:
+  - name: device
+  - name: device_has_csen
+  - name: emlib_common
+  - name: emlib_cmu
+  - name: cmsis_core
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efr32xg12/group-csen
+      condition: [device_sdid_84]
+    - page: emlib/api/efr32xg13/group-csen
+      condition: [device_sdid_89]
+    - page: emlib/api/efm32gg11/group-csen
+      condition: [device_sdid_100]
+    - page: emlib/api/efm32tg11/group-csen
+      condition: [device_sdid_103]
+    - page: emlib/api/efm32gg12/group-csen
+      condition: [device_sdid_106]

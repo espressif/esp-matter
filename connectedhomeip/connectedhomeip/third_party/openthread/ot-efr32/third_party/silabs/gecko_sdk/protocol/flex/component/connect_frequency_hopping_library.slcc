@@ -1,0 +1,39 @@
+id: "connect_frequency_hopping_library"
+label: "Frequency Hopping (Library)"
+package: "Flex"
+category: "Connect"
+quality: "production"
+ui_hints:
+  visibility: never
+description: "Provides the Connect Frequency Hopping library."
+provides:
+  - name: "connect_frequency_hopping_implementation"
+requires:
+  - name: "connect_frequency_hopping"
+library:
+  - path: "protocol/flex/libs/libconnect-frequency-hopping-library-efr32xg1-iar.a"
+    condition:
+      - "toolchain_iar"
+      - device_series_1
+      - device_sdid_80
+  - path: "protocol/flex/libs/libconnect-frequency-hopping-library-efr32xg1x-iar.a"
+    condition:
+      - "toolchain_iar"
+      - device_series_1
+  - path: "protocol/flex/libs/libconnect-frequency-hopping-library-efr32xg2x-iar.a"
+    condition:
+      - "toolchain_iar"
+      - device_series_2
+  - path: "protocol/flex/libs/libconnect-frequency-hopping-library-efr32xg1-gcc.a"
+    condition:
+      - "toolchain_gcc"
+      - device_series_1
+      - device_sdid_80
+  - path: "protocol/flex/libs/libconnect-frequency-hopping-library-efr32xg1x-gcc.a"
+    condition:
+      - "toolchain_gcc"
+      - device_series_1
+  - path: "protocol/flex/libs/libconnect-frequency-hopping-library-efr32xg2x-gcc.a"
+    condition:
+      - "toolchain_gcc"
+      - device_series_2

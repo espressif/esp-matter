@@ -1,0 +1,8 @@
+
+place at address mem:0x20000104 {readwrite section .data_xdcRomExternFuncPtr};
+place at address mem:0x20000108 {readwrite section .data_xdcRomStatePtr};
+place at address mem:0x20000100 {readwrite section .data_xdcRomConstPtr};
+
+place at address mem:ROM_constStructAddr {section .const_ROM_constStruct};
+place at address mem:ROM_dataStructAddr {section .data_ROM_stateStruct};
+place at address mem:ROM_externFuncStructAddr {section .const_ROM_externFuncPtrs};

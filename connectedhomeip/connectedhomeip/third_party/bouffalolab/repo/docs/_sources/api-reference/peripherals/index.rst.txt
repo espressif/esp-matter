@@ -1,0 +1,17 @@
+外设 API
+***************
+
+.. toctree::
+   :maxdepth: 2
+
+   DAC <dac>
+   I2C <i2c>
+   PWM <pwm>
+   RNG <rng>
+   RTC <rtc>
+   SPI <spi>
+   UART <uart>
+   TIMER <timer>
+   WDG <wdg>
+   GPIO <gpio>
+   ADC <adc>

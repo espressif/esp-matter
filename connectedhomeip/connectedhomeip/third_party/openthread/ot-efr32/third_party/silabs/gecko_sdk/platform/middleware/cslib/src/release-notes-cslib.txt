@@ -1,0 +1,17 @@
+RELEASE NOTES
+=============
+Silicon Labs Capacitive Sense Library
+
+Package version: 1.3.1
+Release date:    2017-06-22
+
+******************************************************************************
+    RELEASE NOTES FOR 1.3.1 (2017-06-22)
+
+Changes for EFM32 related projects
+==============================================================================
+MCUFW-1430   | Fixed issues with incorrect number of sensors in header files.  
+MCUFW-1434   | MG12 example using incorrect pinout. Updated thresholds to be   
+             | larger since there is no overlay.                               
+MCUFW-1436   | PG12 example changed to correctly use CSEN instead of ACMP      
+

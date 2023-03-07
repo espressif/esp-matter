@@ -1,0 +1,228 @@
+
+"*********Silicon Labs RSIA15 PCB antenna*********"
+//Antenna Gain-0.99 dBi
+AA0_AA1_1P3_WLAN_2.4GHZ_20MHz = {
+3,//NUM_OF_REGIONS
+    FCC, 0xB,//NUM_OF_CHANNELS
+//   rate,  11b, 11g, 11n
+        1,  32,  18,  18,
+        2,  32,  22,  22,
+        3,  32,  26,  26,
+        4,  32,  30,  30,
+        5,  32,  34,  34,
+        6,  32,  34,  34,
+        7,  32,  34,  34,
+        8,  32,  30,  30,
+        9,  32,  28,  26,
+        10, 32,  24,  26,
+        11, 32,  22,  22,
+    ETSI,0x11,
+       255, 30,  28, 28,
+    TELEC,0x11,
+       255, 30,  28, 28,
+};
+
+AA0_AA1_1P3_BT_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+FCC,        15,
+ETSI,        5,
+TELEC,      17,
+WORLDWIDE,  11,
+};
+
+AA0_AA1_BT_OFFSET = {
+4,//NUM_OF_REGIONS
+FCC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power_offset
+     255,       0,
+       0,       0,
+      39,       0,
+      78,       1,
+ETSI,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+       0,       0,
+      39,       0,
+      78,       0,
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+        0,       2,
+       39,       0,
+       78,       0,
+WORLDWIDE,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+        0,      0,
+       39,      0,
+       78,      0,
+};
+
+
+AA0_AA1_1P3_BLE_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+FCC,        17,
+ETSI,        5,
+TELEC,       8,
+WORLDWIDE,  20,
+};
+
+AA0_AA1_BLE_OFFSET = {
+4,//NUM_OF_REGIONS
+FCC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power_offset
+      255,      0,
+       0,       0,
+      20,       0,
+      39,       3,
+ETSI,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+       0,       0,
+      20,       0,
+      39,       1,
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+        0,       0,
+       19,       0,
+       39,       0,
+WORLDWIDE,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,       0,
+        0,       0,
+       20,       0,
+       39,       0,
+};
+
+
+
+
+
+"*********WS.01.B.305151 HEAVY DUTY SCREW MOUNT antenna*********"
+//Antenna Gain-4.10 dBi
+
+AA0_AA1_1P3_WLAN_2.4GHZ_20MHz = {
+3,//NUM_OF_REGIONS
+    FCC, 0xB,//NUM_OF_CHANNELS
+//   rate,  11b, 11g, 11n
+        1,  28,  14,  16,
+        2,  30,  22,  22,
+        3,  32,  26,  28,
+        4,  32,  30,  32,
+        5,  32,  34,  34,
+        6,  32,  34,  34,
+        7,  32,  34,  34,
+        8,  32,  28,  28,
+        9,  32,  24,  22,
+        10, 32,  20,  16,
+        11, 32,  14,  14,
+    ETSI,0x11,
+       255, 22,  22, 22,
+    TELEC,0x11,
+       255, 30,  28, 28,
+};
+
+
+AA0_AA1_1P3_BT_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+FCC,        15,
+ETSI,        1,
+TELEC,      17,
+WORLDWIDE,  11,
+};
+
+AA0_AA1_BT_OFFSET = {
+4,//NUM_OF_REGIONS
+FCC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power_offset
+     255,       0,
+       0,       0,
+      39,       0,
+      78,       1,
+ETSI,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+       0,       0,
+      39,       0,
+      78,       0,
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+        0,       2,
+       39,       0,
+       78,       0,
+WORLDWIDE,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+        0,      0,
+       39,      0,
+       78,      0,
+};
+
+
+AA0_AA1_1P3_BLE_MAXPOWER = {
+//EDR - Max Power Index,  BDR Max Power Index, BLE Max Power Index,
+FCC,        11,
+ETSI,        2,
+TELEC,       8,
+WORLDWIDE,  20,
+};
+
+AA0_AA1_BLE_OFFSET = {
+4,//NUM_OF_REGIONS
+FCC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power_offset
+      255,      0,
+       0,       0,
+      20,       0,
+      39,       2,
+
+ETSI,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+       0,       0,
+      20,       0,
+      39,       0,
+TELEC,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,      0,
+        0,       0,
+       19,       0,
+       39,       0,
+WORLDWIDE,
+4,//NUM_OF_CHANNELS
+//channel_num tx_power
+      255,       0,
+        0,       0,
+       20,       0,
+       39,       0,
+};
+
+
+
+
+
+Use the WS.01.B.305151 HEAVY DUTY SCREW MOUNT antenna TELEC Power table for following Antennas:
+1)AEM6P-100000   :  Dipole Antenna   :: 2 dBi
+2)AEM6P-100001   :  Dipole Antenna   :: 2 dBi
+3)AEEE0-000000   :  Multilayer ceramic Antenna   :: 2.13 dBi
+4)AEEE0-000001   :  Chip Antenna   :: 4 dBi
+5)AEEE0-000002   :  Chip Antenna   :: 4 dBi
+6)AEP6P-100006X  :  PIFA Antenna   :: 3 dBi
+7)AEP6P-100008X  :  PIFA Antenna   :: 3 dBi

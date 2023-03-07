@@ -1,0 +1,552 @@
+#!/bin/bash
+#
+#  Copyright (c) 2017, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+# Test thread commissioning along with openthread.
+#
+# Usage:
+#   ./meshcop                        # test with latest openthread.
+#   NO_CLEAN=1 ./meshcop             # test with existing binaries in ${TEST_BASE}.
+#   TEST_CASE=mdns_service ./meshcop # test the meshcop mDNS service.
+set -euxo pipefail
+
+# The test case to run. available cases are:
+# - commissioning
+# - mdns_service
+readonly TEST_CASE="${TEST_CASE:-commissioning}"
+
+# Get our starting directory and remember it
+readonly ORIGIN_PWD="$(pwd)"
+readonly SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+#---------------------------------------
+# Configurations
+#---------------------------------------
+readonly OT_RCP="ot-rcp"
+readonly OT_CLI="${OT_CLI:-ot-cli-ftd}"
+readonly ABS_TOP_BUILDDIR="$(cd "${top_builddir:-"${SCRIPT_DIR}"/../../}" && pwd)"
+readonly ABS_TOP_SRCDIR="$(cd "${top_srcdir:-"${SCRIPT_DIR}"/../../}" && pwd)"
+readonly NO_CLEAN="${NO_CLEAN:-1}"
+readonly IGNORE_INSTALLED="${IGNORE_INSTALLED:-0}"
+readonly OTBR_USE_WEB_COMMISSIONER="${USE_WEB_COMMISSIONER:-0}"
+
+#----------------------------------------
+# Test constants
+#----------------------------------------
+readonly TEST_BASE=/tmp/test-otbr
+
+readonly OTBR_AGENT=otbr-agent
+readonly OTBR_WEB=otbr-web
+readonly OT_COMMISSIONER_CLI=commissioner-cli
+
+readonly STAGE_DIR="${TEST_BASE}/stage"
+readonly BUILD_DIR="${TEST_BASE}/build"
+readonly OTBR_PSKC_PATH="${ABS_TOP_BUILDDIR}/tools/pskc"
+readonly OTBR_AGENT_PATH="${ABS_TOP_BUILDDIR}/src/agent/${OTBR_AGENT}"
+readonly OTBR_DBUS_CONF="${ABS_TOP_BUILDDIR}/src/agent/otbr-agent.conf"
+readonly OTBR_WEB_PATH="${ABS_TOP_BUILDDIR}/src/web/${OTBR_WEB}"
+readonly OT_CTL="${ABS_TOP_BUILDDIR}/third_party/openthread/repo/src/posix/ot-ctl"
+
+# The node ids
+readonly LEADER_NODE_ID=1
+readonly JOINER_NODE_ID=2
+
+# Web GUI
+readonly OTBR_WEB_HOST=127.0.0.1
+readonly OTBR_WEB_PORT=8773
+readonly OTBR_WEB_URL="http://${OTBR_WEB_HOST}:${OTBR_WEB_PORT}"
+
+# External commissioner
+readonly OT_COMMISSIONER_PATH=${BUILD_DIR}/ot-commissioner/build/src/app/cli/commissioner-cli
+readonly OT_COMMISSIONER_CONFIG=${BUILD_DIR}/ot-commissioner/src/app/etc/commissioner/non-ccm-config.json
+
+#
+# NOTE Joiner pass phrase:
+#   Must be at least 6 bytes long
+#   And this example has: J ZERO ONE N E R
+#   We cannot use letter O and I because Q O I Z are not allowed per spec
+readonly OT_JOINER_PASSPHRASE=J01NER
+
+# 18b430 is the nest EUI prefix.
+readonly OT_JOINER_EUI64="18b430000000000${JOINER_NODE_ID}"
+
+# The border agent, and ncp needs a pass phrase.
+readonly OT_AGENT_PASSPHRASE=MYPASSPHRASE
+
+# The network needs a name.
+readonly OT_NETWORK_NAME=MyTestNetwork
+
+# The TUN device for OpenThread border router.
+readonly TUN_NAME=wpan0
+
+# The default meshcop service instance name
+readonly OT_SERVICE_INSTANCE='OpenThread\(\\032\| \)BorderRouter\(\\032\| \)#[0-9A-F][0-9A-F][0-9A-F][0-9A-F]'
+
+echo "ORIGIN_PWD: ${ORIGIN_PWD}"
+echo "TEST_BASE: ${TEST_BASE}"
+echo "ABS_TOP_SRCDIR=${ABS_TOP_SRCDIR}"
+echo "ABS_TOP_BUILDDIR=${ABS_TOP_BUILDDIR}"
+
+#----------------------------------------
+# Helper functions
+#----------------------------------------
+
+die()
+{
+    exit_message="$*"
+    echo " *** ERROR: $*"
+    exit 1
+}
+
+exists_or_die()
+{
+    [[ -f $1 ]] || die "Missing file: $1"
+}
+
+executable_or_die()
+{
+    [[ -x $1 ]] || die "Missing executable: $1"
+}
+
+random_channel()
+{
+    echo $((11 + "${RANDOM}" % 16))
+}
+
+random_panid()
+{
+    printf "0x%04x" "${RANDOM}"
+}
+
+random_xpanid()
+{
+    printf "%04x%04x%04x%04x" "${RANDOM}" "${RANDOM}" "${RANDOM}" "${RANDOM}"
+}
+
+random_networkkey()
+{
+    printf "%04x%04x%04x%04x%04x%04x%04x%04x" "${RANDOM}" "${RANDOM}" "${RANDOM}" "${RANDOM}" "${RANDOM}" "${RANDOM}" "${RANDOM}" "${RANDOM}"
+}
+
+write_syslog()
+{
+    logger -s -p syslog.alert "OPENTHREAD_TEST: $*"
+}
+
+output_logs()
+{
+    write_syslog 'All apps should be dead now'
+
+    # part 1
+    # ------
+    #
+    # On travis (the CI server), we can't see what went into the
+    # syslog.  So this is here so we can see the output.
+    #
+    # part 2
+    # ------
+    #
+    # If we run locally, it is sometimes helpful for our victim (you
+    # the developer) to have logs split upto various files to help
+    # that victim, we'll GREP the log files according.
+    #
+    # Wait 5 seconds for the "logs to flush"
+    sleep 5
+
+    cd "${ORIGIN_PWD}"
+    echo 'START_LOG: SYSLOG ==================='
+    tee complete-syslog.log </var/log/syslog
+    echo 'START_LOG: BR-AGENT ================='
+    grep "${OTBR_AGENT}" /var/log/syslog | tee otbr-agent.log
+    echo 'START_LOG: OT-COMISSIONER ========='
+    cat "${OT_COMMISSIONER_LOG}"
+    echo 'START_LOG: OT-RCP ==================='
+    grep "${OT_RCP}" /var/log/syslog | tee "${OT_RCP}.log"
+    echo 'START_LOG: OT-CLI ==================='
+    grep "${OT_CLI}" /var/log/syslog | tee "${OT_CLI}.log"
+    echo '====================================='
+    echo 'Hint, for each log Search backwards for: "START_LOG: <NAME>"'
+    echo '====================================='
+}
+
+build_dependencies()
+{
+    # Clean up old stuff
+    if [[ ${NO_CLEAN} != 1 ]]; then
+        [[ ! -d ${STAGE_DIR} ]] || rm -rf "${STAGE_DIR}"
+        [[ ! -d ${BUILD_DIR} ]] || rm -rf "${BUILD_DIR}"
+    fi
+
+    [[ -d ${STAGE_DIR} ]] || mkdir -p "${STAGE_DIR}"
+    [[ -d ${BUILD_DIR} ]] || mkdir -p "${BUILD_DIR}"
+
+    # As above, these steps are broken up
+    ot_cli=$(command -v "${OT_CLI}")
+    ot_rcp=$(command -v "${OT_RCP}")
+
+    if
+        [ "${TEST_CASE}" == "commissioning" ] \
+            && [[ ${OTBR_USE_WEB_COMMISSIONER} != 1 ]]
+    then
+        ot_commissioner_build
+    fi
+
+    write_syslog "TEST: BUILD COMPLETE"
+}
+
+test_setup()
+{
+    # message for general failures
+    exit_message="JOINER FAILED"
+
+    executable_or_die "${OTBR_AGENT_PATH}"
+    executable_or_die "${OTBR_WEB_PATH}"
+
+    # Remove flashes
+    sudo rm -vrf "${TEST_BASE}/tmp"
+    # OPENTHREAD_POSIX_DAEMON_SOCKET_LOCK
+    sudo rm -vf "/tmp/openthread.lock"
+
+    build_dependencies
+
+    # We will be creating a lot of log information
+    # Rotate logs so we have a clean and empty set of logs uncluttered with other stuff
+    if [[ -f /etc/logrotate.conf ]]; then
+        sudo logrotate -f /etc/logrotate.conf || true
+    fi
+
+    # From now on - all exits are TRAPPED
+    # When they occur, we call the function: output_logs'.
+    trap test_teardown EXIT
+}
+
+test_teardown()
+{
+    # Capture the exit code so we can return it below
+    readonly EXIT_CODE=$?
+    write_syslog "EXIT ${EXIT_CODE} - output logs"
+
+    sudo pkill -f "${OTBR_AGENT}" || true
+    sudo pkill -f "${OTBR_WEB}" || true
+    sudo pkill -f "${OT_COMMISSIONER_CLI}" || true
+    sudo pkill -f "${OT_CLI}" || true
+    wait
+
+    if [[ ${NO_CLEAN} != 1 ]]; then
+        echo 'clearing all'
+        sudo rm /etc/dbus-1/system.d/otbr-agent.conf || true
+        sudo rm -rf "${STAGE_DIR}" || true
+        sudo rm -rf "${BUILD_DIR}" || true
+
+        output_logs
+    fi
+
+    echo "EXIT ${EXIT_CODE}: MESSAGE: ${exit_message}"
+    exit ${EXIT_CODE}
+}
+
+ba_start()
+{
+    exists_or_die "${OTBR_DBUS_CONF}"
+    sudo cp "${OTBR_DBUS_CONF}" /etc/dbus-1/system.d
+
+    write_syslog "AGENT: kill old"
+    sudo killall "${OTBR_AGENT}" || true
+    sleep 5
+    write_syslog "AGENT: starting"
+
+    # we launch this in the background
+    (
+        set -e
+        set -x
+
+        cd "${ORIGIN_PWD}"
+
+        # check version
+        sudo "${OTBR_AGENT_PATH}" -V
+        # check invalid arguments
+        sudo "${OTBR_AGENT_PATH}" -x && exit $?
+
+        [[ ! -d tmp ]] || sudo rm -rf tmp
+        sudo "${OTBR_AGENT_PATH}" -I "${TUN_NAME}" -v -d 6 "spinel+hdlc+forkpty://${ot_rcp}?forkpty-arg=${LEADER_NODE_ID}" &
+    )
+
+    # wait for it to complete
+    sleep 10
+
+    pidof ${OTBR_AGENT} || die "AGENT: failed to start"
+    write_syslog "AGENT: start complete"
+}
+
+web_start()
+{
+    write_syslog "WEB: kill old"
+    sudo killall "${OTBR_WEB}" || true
+    write_syslog "WEB: starting"
+    (
+        set -e
+        set -x
+
+        cd "${ORIGIN_PWD}"
+        sudo "${OTBR_WEB_PATH}" -I "${TUN_NAME}" -p "${OTBR_WEB_PORT}" -a "${OTBR_WEB_HOST}" &
+    )
+    sleep 15
+
+    pidof ${OTBR_WEB} || die "WEB: failed to start"
+    write_syslog "WEB: start complete"
+}
+
+network_form()
+{
+    readonly OT_PANID="$(random_panid)"
+    readonly OT_XPANID="$(random_xpanid)"
+    readonly OT_NETWORK_KEY="$(random_networkkey)"
+    readonly OT_CHANNEL="$(random_channel)"
+
+    curl --header "Content-Type: application/json" --request POST --data "{\"networkKey\":\"${OT_NETWORK_KEY}\",\"prefix\":\"fd11:22::\",\"defaultRoute\":true,\"extPanId\":\"${OT_XPANID}\",\"panId\":\"${OT_PANID}\",\"passphrase\":\"${OT_AGENT_PASSPHRASE}\",\"channel\":${OT_CHANNEL},\"networkName\":\"${OT_NETWORK_NAME}\"}" "${OTBR_WEB_URL}"/form_network | grep "success" || die "WEB: form failed"
+    sleep 15
+    # verify mDNS is working as expected.
+    local mdns_result="${TEST_BASE}"/mdns_result.log
+    avahi-browse -art | tee "${mdns_result}"
+    OT_BORDER_AGENT_PORT=$(grep -GA3 '^=.\+'"${OT_SERVICE_INSTANCE}"'.\+_meshcop._udp' "${mdns_result}" | head -n4 | grep port | grep -ao '[0-9]\{5\}')
+    rm "${mdns_result}"
+}
+
+ot_commissioner_build()
+{
+    if [[ -x ${OT_COMMISSIONER_PATH} ]]; then
+        return 0
+    fi
+
+    (mkdir -p "${BUILD_DIR}/ot-commissioner" \
+        && cd "${BUILD_DIR}/ot-commissioner" \
+        && (git --git-dir=.git rev-parse --is-inside-work-tree || git --git-dir=.git init .) \
+        && git fetch --depth 1 https://github.com/openthread/ot-commissioner.git main \
+        && git checkout FETCH_HEAD \
+        && ./script/bootstrap.sh \
+        && mkdir build && cd build \
+        && cmake -GNinja -DCMAKE_BUILD_TYPE=Release .. \
+        && ninja)
+}
+
+ot_commissioner_start()
+{
+    write_syslog "COMMISSIONER: kill old"
+    sudo killall "${OT_COMMISSIONER_CLI}" || true
+
+    readonly OT_PSKC="$("${OTBR_PSKC_PATH}" "${OT_AGENT_PASSPHRASE}" "${OT_XPANID}" "${OT_NETWORK_NAME}")"
+    readonly OT_COMMISSIONER_LOG="${TEST_BASE}"/commissioner.log
+
+    local commissioner_config_file="${TEST_BASE}"/ot-commissioner.json
+
+    sed "s/3aa55f91ca47d1e4e71a08cb35e91591/${OT_PSKC}/g" "${OT_COMMISSIONER_CONFIG}" >"${commissioner_config_file}"
+
+    expect -f- <<EOF &
+spawn ${OT_COMMISSIONER_PATH} ${commissioner_config_file}
+set timeout 1
+expect_after {
+    timeout { exit 1 }
+}
+send "start :: $OT_BORDER_AGENT_PORT\n"
+expect "done"
+sleep 5
+send "active\n"
+expect "true"
+send "joiner enable meshcop 0x${OT_JOINER_EUI64} ${OT_JOINER_PASSPHRASE}\n"
+expect "done"
+wait
+EOF
+
+    sleep 10
+}
+
+web_commissioner_start()
+{
+    curl --header "Content-Type: application/json" --request POST --data "{\"pskd\":\"${OT_JOINER_PASSPHRASE}\", \"passphrase\":\"${OT_AGENT_PASSPHRASE}\"}" "${OTBR_WEB_URL}"/commission
+    sleep 15
+}
+
+joiner_start()
+{
+    write_syslog 'JOINER START'
+    cd ${TEST_BASE}
+    sudo expect -f- <<EOF || die 'JOINER FAILED'
+spawn ${ot_cli} ${JOINER_NODE_ID}
+send "ifconfig up\r\n"
+expect "Done"
+send "joiner start ${OT_JOINER_PASSPHRASE}\r\n"
+set timeout 20
+expect {
+  "Join success" {
+    send_user "succeeded to find join success"
+    send "exit\r\n"
+  }
+  timeout {
+    send_user "Failed to find join success"
+    exit 1
+  }
+}
+EOF
+    exit_message="JOINER SUCCESS COMPLETE"
+}
+
+scan_meshcop_service()
+{
+    if command -v dns-sd; then
+        timeout 2 dns-sd -Z _meshcop._udp local. || true
+    else
+        avahi-browse -aprt || true
+    fi
+}
+
+test_meshcop_service()
+{
+    local network_name="ot-test-net"
+    local xpanid="4142434445464748"
+    local xpanid_txt="ABCDEFGH"
+    local extaddr="4142434445464748"
+    local extaddr_txt="ABCDEFGH"
+    local passphrase="SECRET"
+    local service
+
+    test_setup
+    ba_start
+    sudo "${OT_CTL}" factoryreset
+    sleep 1
+    sudo "${OT_CTL}" dataset init new
+    sudo "${OT_CTL}" dataset networkname ${network_name}
+    sudo "${OT_CTL}" dataset extpanid ${xpanid}
+    sudo "${OT_CTL}" dataset pskc -p ${passphrase}
+    sudo "${OT_CTL}" dataset commit active
+    sudo "${OT_CTL}" ifconfig up
+    sudo "${OT_CTL}" extaddr ${extaddr}
+    sudo "${OT_CTL}" thread start
+    sleep 20
+
+    sudo "${OT_CTL}" state | grep "leader"
+
+    service="$(scan_meshcop_service)"
+    grep "${OT_SERVICE_INSTANCE}._meshcop\._udp" <<<"${service}"
+    grep "rv=1" <<<"${service}"
+    grep "tv=1\.3\.0" <<<"${service}"
+    grep "nn=${network_name}" <<<"${service}"
+    grep "xp=${xpanid_txt}" <<<"${service}"
+    grep "xa=${extaddr_txt}" <<<"${service}"
+
+    # TODO: enable the checks after enabling Thread 1.2 for tests.
+    #grep "dn=${domain_name}" <<< "${service}"
+    #grep "sq=" <<< "${service}"
+    #grep "bb=" <<< "${service}"
+
+    # The binary values are not printable with dns-sd.
+    grep "sb=" <<<"${service}"
+    grep "at=" <<<"${service}"
+    grep "pt=" <<<"${service}"
+
+    # Test if the meshcop service is published when thread is not on
+    sudo "${OT_CTL}" dataset init active
+    sudo "${OT_CTL}" dataset pskc 00000000000000000000000000000000
+    sudo "${OT_CTL}" dataset commit active
+    sleep 2
+    service="$(scan_meshcop_service)"
+    grep -q "${OT_SERVICE_INSTANCE}._meshcop\._udp" <<<"${service}"
+
+    # Test if the meshcop service is published again when a non-zero
+    # PSKc is set back.
+    sudo "${OT_CTL}" dataset init active
+    sudo "${OT_CTL}" dataset pskc 11223344556677889900aabbccddeeff
+    sudo "${OT_CTL}" dataset commit active
+    sleep 2
+    service="$(scan_meshcop_service)"
+    grep "${OT_SERVICE_INSTANCE}._meshcop\._udp" <<<"${service}"
+
+    # Test if the meshcop service's 'nn' field is updated
+    # when the network name is changed.
+    local new_network_name="ot-test-net-new"
+    sudo "${OT_CTL}" dataset init active
+    sudo "${OT_CTL}" dataset networkname ${new_network_name}
+    sudo "${OT_CTL}" dataset commit active
+    sleep 2
+    service="$(scan_meshcop_service)"
+    grep "${OT_SERVICE_INSTANCE}._meshcop\._udp" <<<"${service}"
+    grep "nn=${new_network_name}" <<<"${service}"
+
+    # Test if the discriminator is updated when extaddr is changed.
+    local new_extaddr="4847464544434241"
+    local new_extaddr_txt="HGFEDCBA"
+    sudo "${OT_CTL}" thread stop
+    sudo "${OT_CTL}" extaddr ${new_extaddr}
+    sudo "${OT_CTL}" thread start
+    sleep 5
+    service="$(scan_meshcop_service)"
+    grep "${OT_SERVICE_INSTANCE}._meshcop\._udp" <<<"${service}"
+    grep "xa=${new_extaddr_txt}" <<<"${service}"
+
+    # Test if the meshcop service is published when Thread is stopped.
+    sudo "${OT_CTL}" thread stop
+    sleep 2
+    service="$(scan_meshcop_service)"
+    grep -q "${OT_SERVICE_INSTANCE}._meshcop\._udp" <<<"${service}"
+
+    sudo "${OT_CTL}" thread start
+    sleep 5
+    service="$(scan_meshcop_service)"
+    grep "${OT_SERVICE_INSTANCE}._meshcop\._udp" <<<"${service}"
+
+    # Test if the the meshcop service is unpublished when otbr-agent stops.
+    sudo killall "${OTBR_AGENT}"
+    sleep 10
+    service="$(scan_meshcop_service)"
+    if grep -q "${OT_SERVICE_INSTANCE}._meshcop\._udp" <<<"${service}"; then
+        die "unexpect meshcop service when otbr-agent exits!"
+    fi
+}
+
+test_commissioning()
+{
+    test_setup
+    ba_start
+    web_start
+    network_form
+    if [[ ${OTBR_USE_WEB_COMMISSIONER} == 1 ]]; then
+        web_commissioner_start
+    else
+        ot_commissioner_start
+    fi
+    joiner_start
+}
+
+main()
+{
+    if [ "${TEST_CASE}" == "mdns_service" ]; then
+        test_meshcop_service
+    else
+        test_commissioning
+    fi
+}
+
+main "$@"

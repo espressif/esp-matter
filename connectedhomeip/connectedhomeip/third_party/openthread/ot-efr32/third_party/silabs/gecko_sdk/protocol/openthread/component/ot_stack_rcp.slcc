@@ -1,0 +1,30 @@
+id: ot_stack_rcp
+label: Stack (RCP)
+package: OpenThread
+category: OpenThread
+quality: production
+description: This component provides OpenThread Radio Co-Processor support
+provides:
+  - name: ot_stack
+requires:
+  - name: ot_ncp
+  - name: ot_radio
+  - name: ot_headers
+  - name: ot_platform_abstraction
+  - name: ot_thirdparty
+config_file:
+  - path: protocol/openthread/config/sl_openthread_features_config.h
+  - path: protocol/openthread/config/sl_openthread_generic_config.h
+define:
+  - name: SL_OPENTHREAD_STACK_FEATURES_CONFIG_FILE
+    value: "\"sl_openthread_features_config.h\""
+  - name: OPENTHREAD_CONFIG_FILE
+    value: "\"sl_openthread_generic_config.h\""
+  - name: OPENTHREAD_COPROCESSOR
+    value: 1
+  - name: OPENTHREAD_RADIO
+    value: 1
+  - name: OPENTHREAD_SPINEL_CONFIG_OPENTHREAD_MESSAGE_ENABLE
+    value: 0
+  - name: OPENTHREAD_CONFIG_PLATFORM_KEY_REFERENCES_ENABLE
+    value: 0

@@ -1,0 +1,27 @@
+id: ot_ble_cli
+label: BLE CLI
+package: OpenThread
+category: OpenThread
+quality: production
+description: This component provides CLI support for BLE with OpenThread.
+ui_hints:
+  visibility: never
+provides:
+  - name: ot_ble_cli
+requires:
+  - name: sl_ot_custom_cli
+  - name: bluetooth_stack
+config_file:
+  - path: protocol/openthread/config/sl_openthread_ble_cli_config.h
+toolchain_settings:
+  - option: preinclude
+    value: sl_openthread_ble_cli_config.h
+template_contribution:
+  - name: sl_ot_cli_command
+    value:
+      name: "ble"
+      handler: "bleCommand"
+      macro: "SL_OPENTHREAD_BLE_CLI_ENABLE"
+
+source:
+  - path: protocol/openthread/src/cli/bluetooth_cli.c

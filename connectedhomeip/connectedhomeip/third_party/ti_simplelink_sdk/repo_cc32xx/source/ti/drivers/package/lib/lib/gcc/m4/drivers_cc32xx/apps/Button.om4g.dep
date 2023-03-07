@@ -1,0 +1,19 @@
+package/lib/lib/gcc/m4/drivers_cc32xx/./apps/Button.om4g: apps/Button.c  /vagrant/2022_Q1_14_2_22/sdk_root/kernel/tirtos/packages/gnu/targets/arm//libs/install-native/arm-none-eabi/include/stdint.h  /vagrant/2022_Q1_14_2_22/sdk_root/kernel/tirtos/packages/gnu/targets/arm//libs/install-native/arm-none-eabi/include/machine/_default_types.h  /vagrant/2022_Q1_14_2_22/sdk_root/kernel/tirtos/packages/gnu/targets/arm//libs/install-native/arm-none-eabi/include/sys/features.h  /vagrant/2022_Q1_14_2_22/sdk_root/kernel/tirtos/packages/gnu/targets/arm//libs/install-native/arm-none-eabi/include/_newlib_version.h  /vagrant/2022_Q1_14_2_22/sdk_root/kernel/tirtos/packages/gnu/targets/arm//libs/install-native/arm-none-eabi/include/sys/_intsup.h  /vagrant/2022_Q1_14_2_22/sdk_root/kernel/tirtos/packages/gnu/targets/arm//libs/install-native/arm-none-eabi/include/sys/_stdint.h  /home/vagrant/.conan/data/arm-none-eabi-gcc/9.2019.q4.major-0/library-msp/ga/package/44fcf6b9a7fb86b2586303e3db40189d3b511830/lib/gcc/arm-none-eabi/9.2.1/include/stdbool.h  /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/GPIO.h  /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/DeviceFamily.h  /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/gpio/GPIOCC32XX.h  /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_types.h  /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/gpio.h  /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/pin.h  /home/vagrant/.conan/data/arm-none-eabi-gcc/9.2019.q4.major-0/library-msp/ga/package/44fcf6b9a7fb86b2586303e3db40189d3b511830/lib/gcc/arm-none-eabi/9.2.1/include/arm_acle.h  /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/ClockP.h  /home/vagrant/.conan/data/arm-none-eabi-gcc/9.2019.q4.major-0/library-msp/ga/package/44fcf6b9a7fb86b2586303e3db40189d3b511830/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h  /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/apps/Button.h
+apps/Button.c:
+/vagrant/2022_Q1_14_2_22/sdk_root/kernel/tirtos/packages/gnu/targets/arm//libs/install-native/arm-none-eabi/include/stdint.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/kernel/tirtos/packages/gnu/targets/arm//libs/install-native/arm-none-eabi/include/machine/_default_types.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/kernel/tirtos/packages/gnu/targets/arm//libs/install-native/arm-none-eabi/include/sys/features.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/kernel/tirtos/packages/gnu/targets/arm//libs/install-native/arm-none-eabi/include/_newlib_version.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/kernel/tirtos/packages/gnu/targets/arm//libs/install-native/arm-none-eabi/include/sys/_intsup.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/kernel/tirtos/packages/gnu/targets/arm//libs/install-native/arm-none-eabi/include/sys/_stdint.h:
+/home/vagrant/.conan/data/arm-none-eabi-gcc/9.2019.q4.major-0/library-msp/ga/package/44fcf6b9a7fb86b2586303e3db40189d3b511830/lib/gcc/arm-none-eabi/9.2.1/include/stdbool.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/GPIO.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/DeviceFamily.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/gpio/GPIOCC32XX.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_types.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/gpio.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/pin.h:
+/home/vagrant/.conan/data/arm-none-eabi-gcc/9.2019.q4.major-0/library-msp/ga/package/44fcf6b9a7fb86b2586303e3db40189d3b511830/lib/gcc/arm-none-eabi/9.2.1/include/arm_acle.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/ClockP.h:
+/home/vagrant/.conan/data/arm-none-eabi-gcc/9.2019.q4.major-0/library-msp/ga/package/44fcf6b9a7fb86b2586303e3db40189d3b511830/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/apps/Button.h:

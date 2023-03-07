@@ -1,0 +1,19 @@
+id: micriumos_usbd_driver_dwc_otg_fs
+label: USB Device Driver - DWC OTG FS
+package: micrium-usbd
+description: Micrium OS USB Device Driver for DWC OTG FS
+category: Services|Micrium|USB
+quality: deprecated
+component_root_path: platform/micrium_os/drivers/usb
+source:
+  - path: source/device/usbd_drv_dwc_otg_fs.c
+include:
+  - path: include
+    file_list:
+      - path: usbd_drv.h
+provides:
+  - name: usbd_driver_dwc_otg_fs
+  - name: usbd_driver
+requires:
+  - name: usbd
+  - name: device_has_usb

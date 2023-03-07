@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--Custom BLE GATT-->
+<gatt gatt_caching="true" generic_attribute_service="true" header="gatt_db.h" name="Custom BLE GATT" out="gatt_db.c" prefix="gattdb_">
+  
+  <!--Device Information-->
+  <service advertise="false" id="device_info" name="Device Information" requirement="mandatory" sourceId="org.bluetooth.service.device_information" type="primary" uuid="180A">
+    <informativeText>Abstract: The Device Information Service exposes manufacturer and/or vendor information about a device. Summary: This service exposes manufacturer information about a device. The Device Information Service is instantiated as a Primary Service. Only one instance of the Device Information Service is exposed on a device. </informativeText>
+    
+    <!--Manufacturer Name String-->
+    <characteristic const="false" id="manufacturer_name_string" name="Manufacturer Name String" sourceId="org.bluetooth.characteristic.manufacturer_name_string" uuid="2A29">
+      <description>null</description>
+      <informativeText>Abstract: The value of this characteristic is a UTF-8 string representing the name of the manufacturer of the device. </informativeText>
+      <value length="12" type="utf-8" variable_length="true">Silicon Labs</value>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--Model Number String-->
+    <characteristic const="false" id="model_number_string" name="Model Number String" sourceId="org.bluetooth.characteristic.model_number_string" uuid="2A24">
+      <description>null</description>
+      <informativeText>Abstract: The value of this characteristic is a UTF-8 string representing the model number of the device. </informativeText>
+      <value length="8" type="utf-8" variable_length="false">DMP-001A</value>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--Serial Number String-->
+    <characteristic const="false" id="serial_number_string" name="Serial Number String" sourceId="org.bluetooth.characteristic.serial_number_string" uuid="2A25">
+      <description>null</description>
+      <informativeText>Abstract: The value of this characteristic is a UTF-8 string representing the serial number of the device. </informativeText>
+      <value length="3" type="utf-8" variable_length="false">001</value>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--Firmware Revision String-->
+    <characteristic const="false" id="firmware_revision_string" name="Firmware Revision String" sourceId="org.bluetooth.characteristic.firmware_revision_string" uuid="2A26">
+      <description>null</description>
+      <informativeText>Abstract: The value of this characteristic is a UTF-8 string representing the firmware version of the device. </informativeText>
+      <value length="5" type="utf-8" variable_length="false">0.0.1</value>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+  </service>
+  
+  <!--Generic Access-->
+  <service advertise="false" id="device_information" name="Generic Access" requirement="mandatory" sourceId="org.bluetooth.service.generic_access" type="primary" uuid="1800">
+    <informativeText>Abstract: The generic_access service contains generic information about the device. All available Characteristics are readonly. </informativeText>
+    
+    <!--Device Name-->
+    <characteristic const="false" id="device_name" name="Device Name" sourceId="org.bluetooth.characteristic.gap.device_name" uuid="2A00">
+      <description>null</description>
+      <informativeText/>
+      <value length="8" type="utf-8" variable_length="true">DMP Demo</value>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--Appearance-->
+    <characteristic const="false" id="appearance" name="Appearance" sourceId="org.bluetooth.characteristic.gap.appearance" uuid="2A01">
+      <description>null</description>
+      <informativeText/>
+      <value length="2" type="hex" variable_length="false"/>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+  </service>
+  
+  <!--Silabs DMP Light-->
+  <service advertise="false" name="Silabs DMP Light" requirement="mandatory" sourceId="" type="primary" uuid="bae55b96-7d19-458d-970c-50613d801bc9">
+    <informativeText/>
+    
+    <!--Light-->
+    <characteristic const="false" id="light_state" name="Light" sourceId="custom.type" uuid="76e137ac-b15f-49d7-9c4c-e278e6492ad9">
+      <description>null</description>
+      <informativeText/>
+      <value length="0" type="user" variable_length="false"/>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+        <write authenticated="false" bonded="false" encrypted="false"/>
+        <indicate authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--Trigger Source-->
+    <characteristic const="false" id="trigger_source" name="Trigger Source" sourceId="custom.type" uuid="2f16ee52-0bfd-4597-85d4-a5141fdbae15">
+      <description>null</description>
+      <informativeText/>
+      <value length="0" type="user" variable_length="false"/>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+        <indicate authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--Source Address-->
+    <characteristic const="false" id="source_address" name="Source Address" sourceId="custom.type" uuid="82a1cb54-3921-4c9c-ba34-34f78bab9a1b">
+      <description>null</description>
+      <informativeText/>
+      <value length="0" type="user" variable_length="false"/>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+        <indicate authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+  </service>
+</gatt>

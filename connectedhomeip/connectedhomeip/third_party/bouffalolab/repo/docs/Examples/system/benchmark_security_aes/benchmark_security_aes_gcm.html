@@ -1,0 +1,298 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>AES-GCM &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+      <li>AES-GCM</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Examples/system/benchmark_security_aes/benchmark_security_aes_gcm.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="aes-gcm">
+<span id="aes-gcm-index"></span><h1>AES-GCM<a class="headerlink" href="#aes-gcm" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<h2>总览<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<p>AES是一种对称加密算法，它的相关概念在此不赘述，本文档主要介绍AES-GCM的原理和实现。</p>
+<p>GCM ( Galois/Counter Mode) 指的是该对称加密采用Counter模式，并带有GMAC消息认证码。
+在详细介绍AES-GCM之前，我们先了解一些相关概念。</p>
+</div>
+<div class="section" id="ctr-counter">
+<h2>CTR（CounTeR）<a class="headerlink" href="#ctr-counter" title="永久链接至标题"></a></h2>
+<blockquote>
+<div><p>在CTR模式下，我们对一个逐次累加的计数器进行加密，用加密后的比特序列与明文分组进行异或得到密文。过程如下图：</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image136.png" />
+</div>
+</div></blockquote>
+</div></blockquote>
+<p>其中， IV为初始化向量，Ek表示ECB文本加密，PT表示输入的明文，CT表示输出的密文。</p>
+<p>在BL602中，我们可以直接使用硬件完成CTR算法，即设置key密钥后，输入IV以及需要加密的明文，硬件会自动完成累加计数加密并输出密文。</p>
+<p>CTR模式的优点是：
+1）支持加解密并行计算，可事先进行加解密准备；
+2）错误密文中的对应比特只会影响明文中的对应比特。
+但是它不能提供密文消息完整性校验的功能。</p>
+</div>
+<div class="section" id="mac-message-authentication-code">
+<h2>MAC（Message Authentication Code）<a class="headerlink" href="#mac-message-authentication-code" title="永久链接至标题"></a></h2>
+<p>想要校验消息的完整性，必须引入另一个概念：消息验证码。消息验证码是一种与秘钥相关的单项散列函数，过程如下图所示：</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image232.png" />
+</div>
+</div></blockquote>
+<p>密文的收发双发需要提前共享一个秘钥。密文发送者将密文的MAC值随密文一起发送，密文接收者通过共享秘钥计算收到密文的MAC值，
+这样就可以对收到的密文做完整性校验。当篡改者篡改密文后，没有共享秘钥，就无法计算出篡改后的密文的MAC值。</p>
+</div>
+<div class="section" id="gmac-galois-message-authentication-code-mode">
+<h2>GMAC（Galois message authentication code mode）<a class="headerlink" href="#gmac-galois-message-authentication-code-mode" title="永久链接至标题"></a></h2>
+<p>对应到上图中的消息认证码，GMAC就是利用伽罗华域(Galois Field，GF，有限域)乘法运算来计算消息的MAC值。
+假设秘钥长度为128bits, 当密文大于128bits时，需要将密文按128bits进行分组。应用流程如下图：</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image325.png" />
+</div>
+</div></blockquote>
+<p>其中，msg为需要验证的消息，Mh表示在有限域上做乘法运算，MAC即为生成的验证码。</p>
+<p>在BL602中，我们可以直接使用硬件完成GMAC验证。</p>
+</div>
+<div class="section" id="gcm-galois-counter-mode">
+<h2>GCM（ Galois/Counter Mode )<a class="headerlink" href="#gcm-galois-counter-mode" title="永久链接至标题"></a></h2>
+<p>GCM中的G就是指GMAC，C就是指CTR。于是将CTR算法加上GMAC验证就是AES-GCM模式了。过程如下图所示：</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image421.png" />
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="id2">
+<h2>具体实现<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<p>具体代码实现大体如下图所示：</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image59.png" />
+</div>
+</div></blockquote>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

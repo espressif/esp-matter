@@ -1,0 +1,187 @@
+# Copyright 2019 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_bloat/bloat.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+}
+
+group("pw_containers") {
+  public_deps = [
+    ":algorithm",
+    ":flat_map",
+    ":intrusive_list",
+    ":vector",
+  ]
+}
+
+pw_source_set("algorithm") {
+  public_configs = [ ":public_include_path" ]
+  public = [
+    "public/pw_containers/algorithm.h",
+    "public/pw_containers/internal/algorithm_internal.h",
+  ]
+}
+
+pw_source_set("filtered_view") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_containers/filtered_view.h" ]
+}
+
+pw_source_set("flat_map") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_containers/flat_map.h" ]
+}
+
+pw_source_set("iterator") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ dir_pw_polyfill ]
+  public = [ "public/pw_containers/iterator.h" ]
+}
+
+pw_source_set("to_array") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_containers/to_array.h" ]
+}
+
+pw_source_set("vector") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    dir_pw_assert,
+    dir_pw_polyfill,
+  ]
+  public = [ "public/pw_containers/vector.h" ]
+}
+
+pw_source_set("wrapped_iterator") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_containers/wrapped_iterator.h" ]
+}
+
+pw_source_set("intrusive_list") {
+  public_configs = [ ":public_include_path" ]
+  public = [
+    "public/pw_containers/internal/intrusive_list_impl.h",
+    "public/pw_containers/intrusive_list.h",
+  ]
+  sources = [ "intrusive_list.cc" ]
+  deps = [ dir_pw_assert ]
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":algorithm_test",
+    ":filtered_view_test",
+    ":flat_map_test",
+    ":intrusive_list_test",
+    ":to_array_test",
+    ":vector_test",
+    ":wrapped_iterator_test",
+  ]
+}
+
+pw_test("algorithm_test") {
+  sources = [ "algorithm_test.cc" ]
+  deps = [
+    ":algorithm",
+    ":intrusive_list",
+    ":vector",
+    dir_pw_span,
+  ]
+}
+
+pw_test("filtered_view_test") {
+  sources = [ "filtered_view_test.cc" ]
+  deps = [
+    ":filtered_view",
+    ":intrusive_list",
+    dir_pw_span,
+  ]
+}
+
+pw_test("flat_map_test") {
+  sources = [ "flat_map_test.cc" ]
+  deps = [ ":flat_map" ]
+}
+
+pw_test("to_array_test") {
+  sources = [ "to_array_test.cc" ]
+  deps = [ ":to_array" ]
+}
+
+pw_test("vector_test") {
+  sources = [ "vector_test.cc" ]
+  deps = [ ":vector" ]
+}
+
+pw_test("wrapped_iterator_test") {
+  sources = [ "wrapped_iterator_test.cc" ]
+  deps = [ ":wrapped_iterator" ]
+}
+
+pw_test("intrusive_list_test") {
+  sources = [ "intrusive_list_test.cc" ]
+  deps = [
+    ":intrusive_list",
+    "$dir_pw_preprocessor",
+  ]
+  negative_compilation_tests = true
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+  report_deps = [ ":containers_size_report" ]
+}
+
+pw_size_diff("containers_size_report") {
+  title = "Pigweed containers size report"
+  binaries = [
+    {
+      target = "size_report:linked_list_one_item"
+      base = "size_report:base"
+      label = "linked list one item"
+    },
+    {
+      target = "size_report:linked_list_two_item"
+      base = "size_report:base"
+      label = "linked list two item"
+    },
+    {
+      target = "size_report:linked_list_four_item"
+      base = "size_report:base"
+      label = "linked list four item"
+    },
+    {
+      target = "size_report:intrusive_list_one_item"
+      base = "size_report:base"
+      label = "intrusive list one item"
+    },
+    {
+      target = "size_report:intrusive_list_two_item"
+      base = "size_report:base"
+      label = "intrusive list two item"
+    },
+    {
+      target = "size_report:intrusive_list_four_item"
+      base = "size_report:base"
+      label = "intrusive list four item"
+    },
+  ]
+}

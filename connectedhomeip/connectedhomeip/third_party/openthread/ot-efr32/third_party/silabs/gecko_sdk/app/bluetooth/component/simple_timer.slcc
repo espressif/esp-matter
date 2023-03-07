@@ -1,0 +1,36 @@
+id: simple_timer
+label: Simple timer service
+package: Bluetooth
+description: Simple timer service for applications with less strict timing requirements.
+category: Application|Service
+quality: production
+root_path: app/bluetooth/common/simple_timer
+source:
+  - path: sl_simple_timer.c
+include:
+  - path: .
+    file_list:
+      - path: sl_simple_timer.h
+provides:
+  - name: simple_timer
+requires:
+  - name: power_manager
+  - name: sleeptimer
+template_contribution:
+  - name: component_catalog
+    value: simple_timer
+  - name: event_handler
+    value:
+      event: service_process_action
+      include: sl_simple_timer.h
+      handler: sli_simple_timer_step
+  - name: power_manager_handler
+    value:
+      event: is_ok_to_sleep
+      include: sl_simple_timer.h
+      handler: sli_simple_timer_is_ok_to_sleep
+  - name: power_manager_handler
+    value:
+      event: sleep_on_isr_exit
+      include: sl_simple_timer.h
+      handler: sli_simple_timer_sleep_on_isr_exit

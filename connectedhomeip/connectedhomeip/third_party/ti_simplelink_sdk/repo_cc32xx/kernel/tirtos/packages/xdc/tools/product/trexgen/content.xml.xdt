@@ -1,0 +1,40 @@
+%%{
+/*
+ *  Copyright 2019 by Texas Instruments Incorporated.
+ *
+ */
+
+%%}
+%    var opts = $args[0];
+%    var homepage = "http://processors.wiki.ti.com";
+%    if (opts.productSchema.productDescriptor.url != undefined) {
+%        homepage =  opts.productSchema.productDescriptor.url;
+%    }
+<?xml version="1.0" encoding="UTF-8"?>
+
+<resource.explorer version="1.0" name="%NAME%" dir="" href="`homepage`">
+
+%   var contentArray = opts.productSchema.helpTocArr;
+%   for each(var content in contentArray) {
+%       /* Search for doc along the document search path */
+%       for (var j = 0; j < opts.productSchema.docsLocArr.length; j++) {
+%           var tocFile = new java.io.File(
+%               opts.productDir + "/" + opts.productSchema.docsLocArr[j],
+%               content.filePath);
+%           var doc = opts.productSchema.docsLocArr[j] + "/" + content.filePath;
+%           if (tocFile.exists() && content.tocFile == false) {
+    <content name="`content.label`" href="`doc`">
+	<type>weblink</type>
+    </content>
+%           }
+%       }
+%   }
+    <!-- DEVICE-BASED-CONTENT -->
+
+</resource.explorer>
+%%{
+/*
+ * @(#) xdc.tools.product.trexgen; 1, 0, 0,3; 2-18-2019 11:04:07; /db/ztree/library/trees/xdctools/xdctools-h03/src/
+ */
+
+%%}

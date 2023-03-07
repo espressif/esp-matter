@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Magnetic Flux Density - 3D" type="org.bluetooth.characteristic.magnetic_flux_density_3D" 
+uuid="2AA1" last-modified="2014-11-20" approved="Yes">
+    <Value>
+        <Field name="Magnetic Flux Density: X-Axis">
+            <Requirement>Mandatory</Requirement>
+            <Format>sint16</Format>
+            <Unit>org.bluetooth.unit.magnetic_flux_density.tesla</Unit>
+            <Description>
+                This characteristic contains measurements of magnetic flux density for three orthogonal axes: X, Y and Z.
+                This characteristic is composed of three fields having the same format:
+                In order of LSO to MSO, the fields are: X-Axis, Y-Axis, Z-Axis.
+                1 x 10^-7 Tesla equals 0.001 Gauss.
+            </Description>
+            <DecimalExponent>-7</DecimalExponent>
+        </Field>
+        <Field name="Magnetic Flux Density: Y-Axis">
+            <Requirement>Mandatory</Requirement>
+            <Format>sint16</Format>
+            <Unit>org.bluetooth.unit.magnetic_flux_density.tesla</Unit>
+            <Description>This characteristic contains measurements of magnetic flux density for three orthogonal axes: X, Y and Z.
+                This characteristic is composed of three fields having the same format:
+                In order of LSO to MSO, the fields are: X-Axis, Y-Axis, Z-Axis.
+                1 x 10^-7 Tesla equals 0.001 Gauss.
+            </Description>
+            <DecimalExponent>-7</DecimalExponent>
+        </Field>
+         <Field name="Magnetic Flux Density: Z-Axis">
+            <Requirement>Mandatory</Requirement>
+            <Format>sint16</Format>
+            <Unit>org.bluetooth.unit.magnetic_flux_density.tesla</Unit>
+            <Description>This characteristic contains measurements of magnetic flux density for three orthogonal axes: X, Y and Z.
+                This characteristic is composed of three fields having the same format:
+                In order of LSO to MSO, the fields are: X-Axis, Y-Axis, Z-Axis.
+                1 x 10^-7 Tesla equals 0.001 Gauss.
+            </Description>
+            <DecimalExponent>-7</DecimalExponent>
+        </Field>
+    </Value>
+    <Note>The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet</Note>
+</Characteristic>

@@ -1,0 +1,28 @@
+{{> header}}
+{{#if (chip_has_client_clusters)}}
+
+{{#chip_client_clusters}}
+{{#chip_cluster_responses}}
+CHIP{{asUpperCamelCase parent.name}}Cluster{{asUpperCamelCase name}}Callback::CHIP{{asUpperCamelCase parent.name}}Cluster{{asUpperCamelCase name}}Callback(jobject javaCallback): Callback::Callback<CHIP{{asUpperCamelCase parent.name}}Cluster{{asUpperCamelCase name}}CallbackType>(CallbackFn, this)
+
+CHIP{{asUpperCamelCase parent.name}}Cluster{{asUpperCamelCase name}}Callback::~CHIP{{asUpperCamelCase parent.name}}Cluster{{asUpperCamelCase name}}Callback()
+
+void CHIP{{asUpperCamelCase parent.name}}Cluster{{asUpperCamelCase name}}Callback::CallbackFn(void * context, const chip::app::Clusters::{{asUpperCamelCase parent.name}}::Commands::{{asUpperCamelCase name}}::DecodableType & dataResponse)
+{
+
+    std::unique_ptr<CHIP{{asUpperCamelCase parent.name}}Cluster{{asUpperCamelCase name}}Callback, void (*)(CHIP{{asUpperCamelCase parent.name}}Cluster{{asUpperCamelCase name}}Callback *)> cppCallback(
+        reinterpret_cast<CHIP{{asUpperCamelCase parent.name}}Cluster{{asUpperCamelCase name}}Callback *>(context),
+        chip::Platform::Delete<CHIP{{asUpperCamelCase parent.name}}Cluster{{asUpperCamelCase name}}Callback>
+    );
+    err = JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "({{#chip_cluster_response_arguments}}{{asJniSignature type null parent.parent.name true}}{{/chip_cluster_response_arguments}})V", &javaMethod);
+
+    {{#chip_cluster_response_arguments}}
+    {{>decode_value source=(concat "dataResponse." (asLowerCamelCase name)) target=(asSymbol label) cluster=(asUpperCamelCase parent.parent.name) depth=0}}
+    {{/chip_cluster_response_arguments}}
+
+    env->CallVoidMethod(javaCallbackRef, javaMethod{{#chip_cluster_response_arguments}}, {{asSymbol label}}{{/chip_cluster_response_arguments}});
+}
+{{/chip_cluster_responses}}
+{{/chip_client_clusters}}
+} // namespace chip
+{{/if}}

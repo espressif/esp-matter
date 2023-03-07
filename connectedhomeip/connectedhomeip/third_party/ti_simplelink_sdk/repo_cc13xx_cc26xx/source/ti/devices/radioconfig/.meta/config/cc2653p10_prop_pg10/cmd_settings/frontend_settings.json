@@ -1,0 +1,84 @@
+{
+    "frontends": {
+        "FrontEnd": [
+            {
+                "_name": "ID",
+                "FrequencyRange": [
+                    {
+                        "Min": "770",
+                        "Max": "930",
+                        "Command": {
+                            "_name": "CMD_PROP_RADIO_DIV_SETUP_PA",
+                            "Field": [
+                                {
+                                    "_name": "config.frontEndMode",
+                                    "$": "0"
+                                },
+                                {
+                                    "_name": "config.biasMode",
+                                    "$": "0"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "Min": "0",
+                        "Max": "0",
+                        "Command": {
+                            "_name": "CMD_PROP_RADIO_DIV_SETUP_PA",
+                            "Field": [
+                                {
+                                    "_name": "config.frontEndMode",
+                                    "$": "0"
+                                },
+                                {
+                                    "_name": "config.biasMode",
+                                    "$": "0"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                "_name": "XD",
+                "FrequencyRange": [
+                    {
+                        "Min": "770",
+                        "Max": "930",
+                        "Command": {
+                            "_name": "CMD_PROP_RADIO_DIV_SETUP_PA",
+                            "Field": [
+                                {
+                                    "_name": "config.frontEndMode",
+                                    "$": "0"
+                                },
+                                {
+                                    "_name": "config.biasMode",
+                                    "$": "1"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "Min": "0",
+                        "Max": "0",
+                        "Command": {
+                            "_name": "CMD_PROP_RADIO_DIV_SETUP_PA",
+                            "Field": [
+                                {
+                                    "_name": "config.frontEndMode",
+                                    "$": "0"
+                                },
+                                {
+                                    "_name": "config.biasMode",
+                                    "$": "1"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}

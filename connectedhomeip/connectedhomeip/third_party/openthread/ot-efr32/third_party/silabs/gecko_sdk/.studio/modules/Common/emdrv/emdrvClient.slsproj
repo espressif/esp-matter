@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="com.silabs.sdk.exx32.common.emdrv" label="energyAware Drivers" contentRoot="$(sdkInstallationPath:default())/platform/emdrv">
+  <property key="category" value="efm32|Common"/>
+  <includePath uri="common/inc" />
+  <includePath uri="dmadrv/config" />
+  <includePath uri="ezradiodrv/config" />
+  <includePath uri="rtcdrv/config" />
+  <includePath uri="spidrv/config" />
+  <includePath uri="tempdrv/config" />
+  <includePath uri="uartdrv/config" />
+  <includePath uri="ustimer/config" />
+  <includePath uri="$(sdkInstallationPath:default())/hardware/kit/common/drivers" />
+  <includePath uri="ezradiodrv/common/inc" partCompatibility="mcu.arm.ezr32.*r(55|6.)." />
+  <includePath uri="ezradiodrv/common/inc/si4x6x" partCompatibility="mcu.arm.ezr32.*r6.." />
+  <includePath uri="ezradiodrv/common/inc/si4x55" partCompatibility="mcu.arm.ezr32.*.*r55." />
+  <includePath uri="ezradiodrv/plugins/inc/" partCompatibility="mcu.arm.ezr32.*r(55|6.)." />
+  <includePath uri="ezradiodrv/si4455/inc" partCompatibility="mcu.arm.ezr32.*.*r55." />
+  <includePath uri="ezradiodrv/si4460/inc" partCompatibility="mcu.arm.ezr32.*.*r60." />
+  <includePath uri="ezradiodrv/si4461/inc" partCompatibility="mcu.arm.ezr32.*.*r61." />
+  <includePath uri="ezradiodrv/si4463/inc" partCompatibility="mcu.arm.ezr32.*.*r63." />
+  <includePath uri="ezradiodrv/si4468/inc" partCompatibility="mcu.arm.ezr32.*.*r68." />
+  <includePath uri="dmadrv/inc" />
+  <includePath uri="gpiointerrupt/inc" />
+  <includePath uri="rtcdrv/inc" />
+  <includePath uri="sleep/inc" />
+  <includePath uri="spidrv/inc" />
+  <includePath uri="uartdrv/inc" />
+  <includePath uri="ustimer/inc" />
+  <includePath uri="tempdrv/inc" />
+
+  <folder name="Drivers" uri="dmadrv/src" />
+  <folder name="Drivers" uri="ezradiodrv/common/src" partCompatibility="mcu.arm.ezr32.*r(55|6.)." includeAllFolders="false" />
+  <folder name="Drivers" uri="ezradiodrv/plugins/src" partCompatibility="mcu.arm.ezr32.*r(55|6.)." includeAllFolders="false" />
+  <folder name="Drivers">
+    <folder name="si4x6x" uri="ezradiodrv/common/src/si4x6x" partCompatibility="mcu.arm.ezr32.*.*r6.." includeAllFolders="false" />
+    <folder name="si4x55" uri="ezradiodrv/common/src/si4x55" partCompatibility="mcu.arm.ezr32.*.*r55." includeAllFolders="false" />
+  </folder>
+  <folder name="Drivers" uri="gpiointerrupt/src" />
+  <folder name="Drivers" uri="rtcdrv/src" />
+  <folder name="Drivers" uri="sleep/src" />
+  <folder name="Drivers" uri="spidrv/src" />
+  <folder name="Drivers" uri="uartdrv/src" />
+  <folder name="Drivers" uri="ustimer/src" />
+  <folder name="Drivers" uri="tempdrv/src" />
+</project>

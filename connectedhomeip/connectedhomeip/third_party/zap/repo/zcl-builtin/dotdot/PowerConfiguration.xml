@@ -1,0 +1,156 @@
+﻿<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster xmlns:zcl="http://zigbee.org/zcl/clusters"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:type="http://zigbee.org/zcl/types"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd"
+  id="0001" revision="1" name="PowerConfiguration">
+  <classification role="utility" picsCode="PC" />
+  
+  <type:type short="BatterySize" name="BatterySize" id="30" inheritsFrom="enum8">
+    <restriction>
+      <type:enumeration value="00" name="NoBattery" />
+      <type:enumeration value="01" name="BuiltIn" />
+      <type:enumeration value="02" name="Other" />
+      <type:enumeration value="03" name="AA" />
+      <type:enumeration value="04" name="AAA" />
+      <type:enumeration value="05" name="C" />
+      <type:enumeration value="06" name="D" />
+      <type:enumeration value="07" name="CR2" />
+      <type:enumeration value="08" name="CR123A" />
+      <type:enumeration value="FF" name="Unknown" />
+    </restriction>
+  </type:type>
+  
+  <type:type short="BatteryAlarmMask" name="BatteryAlarmMask" id="18" inheritsFrom="map8">
+    <bitmap>
+      <element name="BatteryVoltageTooLow" type="bool" mask="01" />
+      <element name="BatteryAlarm1" type="bool" mask="02" shiftRight="1" />
+      <element name="BatteryAlarm2" type="bool" mask="04" shiftRight="2" />
+      <element name="BatteryAlarm3" type="bool" mask="08" shiftRight="3" />
+    </bitmap>
+  </type:type>
+  
+  <type:type short="BatteryAlarmState" name="BatteryAlarmState" id="1b" inheritsFrom="map32">
+    <bitmap>
+      <element name="Battery1MinThreshold" type="bool" mask="00000001" />
+      <element name="Battery1Threshold1" type="bool" mask="00000002" shiftRight="1" />
+      <element name="Battery1Threshold2" type="bool" mask="00000004" shiftRight="2" />
+      <element name="Battery1Threshold3" type="bool" mask="00000008" shiftRight="3" />
+      <element name="Battery2MinThreshold" type="bool" mask="00000400" shiftRight="10" />
+      <element name="Battery2Threshold1" type="bool" mask="00000800" shiftRight="11" />
+      <element name="Battery2Threshold2" type="bool" mask="00001000" shiftRight="12" />
+      <element name="Battery2Threshold3" type="bool" mask="00002000" shiftRight="13" />
+      <element name="Battery3MinThreshold" type="bool" mask="00100000" shiftRight="20" />
+      <element name="Battery3Threshold1" type="bool" mask="00200000" shiftRight="21" />
+      <element name="Battery3Threshold2" type="bool" mask="00400000" shiftRight="22" />
+      <element name="Battery3Threshold3" type="bool" mask="00800000" shiftRight="23" />
+      <element name="MainsPowerSupplyLost" type="bool" mask="40000000" shiftRight="30" />
+    </bitmap>
+  </type:type>
+  
+  <server>
+    <attributes>
+      <!-- Mains Information Attribute Set -->
+      <attribute id="0000" name="MainsVoltage" type="uint16" max="65535" />
+      <attribute id="0001" name="MainsFrequency" type="uint8" max="255" />
+      
+      <!-- Mains Settings Attribute Set -->
+      <attribute id="0010" name="MainsAlarmMask" type="map8" writable="true" default="0000 0000">
+        <bitmap>
+          <element name="MainsVoltageTooLow" type="bool" mask="01" />
+          <element name="MainsVoltageTooHigh" type="bool" mask="02" shiftRight="1" />
+          <element name="MainsPowerSupplyLost" type="bool" mask="04" shiftRight="2" />
+        </bitmap>
+      </attribute>
+      <attribute id="0011" name="MainsVoltageMinThreshold" type="uint16" writable="true" max="65535" default="0" />
+      <attribute id="0012" name="MainsVoltageMaxThreshold" type="uint16" writable="true" max="65535" default="65535" />
+      <attribute id="0013" name="MainsVoltageDwellTripPoint" type="uint16" writable="true" max="65535" default="0" />
+
+      <!-- Battery Information Attribute Set -->
+      <attribute id="0020" name="BatteryVoltage" type="uint8" max="255" />
+      <attribute id="0021" name="BatteryPercentageRemaining" type="uint8" reportRequired="true" max="255" default="0" />
+
+      <!-- Battery Settings Attribute Set -->
+      <attribute id="0030" name="BatteryManufacturer" type="string" writable="true" default="">
+        <restriction>
+          <type:minLength value="0" />
+          <type:maxLength value="16" />
+        </restriction>
+      </attribute>
+      <attribute id="0031" name="BatterySize" type="BatterySize" writable="true" default="255" />
+      <attribute id="0032" name="BatteryAHrRating" type="uint16" writable="true" max="65535" />
+      <attribute id="0033" name="BatteryQuantity" type="uint8" writable="true" max="255" />
+      <attribute id="0034" name="BatteryRatedVoltage" type="uint8" writable="true" max="255" />
+      <attribute id="0035" name="BatteryAlarmMask" type="BatteryAlarmMask" writable="true" default="0" />
+      <attribute id="0036" name="BatteryVoltageMinThreshold" type="uint8" writable="true" max="255" default="0" />
+      <attribute id="0037" name="BatteryVoltageThreshold1" type="uint8" writable="true" writeOptional="true" max="255" default="0" />
+      <attribute id="0038" name="BatteryVoltageThreshold2" type="uint8" writable="true" writeOptional="true" max="255" default="0" />
+      <attribute id="0039" name="BatteryVoltageThreshold3" type="uint8" writable="true" writeOptional="true" max="255" default="0" />
+      <attribute id="003A" name="BatteryPercentageMinThreshold" type="uint8" writable="true" writeOptional="true" max="255" default="0" />
+      <attribute id="003B" name="BatteryPercentageThreshold1" type="uint8" writable="true" writeOptional="true" max="255" default="0" />
+      <attribute id="003C" name="BatteryPercentageThreshold2" type="uint8" writable="true" writeOptional="true" max="255" default="0" />
+      <attribute id="003D" name="BatteryPercentageThreshold3" type="uint8" writable="true" writeOptional="true" max="255" default="0" />
+      <attribute id="003E" name="BatteryAlarmState" type="BatteryAlarmState" default="0" />
+      
+      <!-- Battery 2 Information Attribute Set -->
+      <attribute id="0040" name="Battery2Voltage" type="uint8" max="255" />
+      <attribute id="0041" name="Battery2PercentageRemaining" type="uint8" reportRequired="true" max="255" default="0" />
+      
+      <!-- Battery 2 Settings Attribute Set -->
+      <attribute id="0050" name="Battery2Manufacturer" type="string" writable="true" default="">
+        <restriction>
+          <type:minLength value="0" />
+          <type:maxLength value="16" />
+        </restriction>
+      </attribute>
+      <attribute id="0051" name="Battery2Size" type="BatterySize" writable="true" default="255" />
+      <attribute id="0052" name="Battery2AHrRating" type="uint16" writable="true" max="65535" />
+      <attribute id="0053" name="Battery2Quantity" type="uint8" writable="true" max="255" />
+      <attribute id="0054" name="Battery2RatedVoltage" type="uint8" writable="true" max="255" />
+      <attribute id="0055" name="Battery2AlarmMask" type="BatteryAlarmMask" writable="true" default="0" />
+      <attribute id="0056" name="Battery2VoltageMinThreshold" type="uint8" writable="true" max="255" default="0" />
+      <attribute id="0057" name="Battery2VoltageThreshold1" type="uint8" writable="true" writeOptional="true" max="255" default="0" />
+      <attribute id="0058" name="Battery2VoltageThreshold2" type="uint8" writable="true" writeOptional="true" max="255" default="0" />
+      <attribute id="0059" name="Battery2VoltageThreshold3" type="uint8" writable="true" writeOptional="true" max="255" default="0" />
+      <attribute id="005A" name="Battery2PercentageMinThreshold" type="uint8" writable="true" writeOptional="true" max="255" default="0" />
+      <attribute id="005B" name="Battery2PercentageThreshold1" type="uint8" writable="true" writeOptional="true" max="255" default="0" />
+      <attribute id="005C" name="Battery2PercentageThreshold2" type="uint8" writable="true" writeOptional="true" max="255" default="0" />
+      <attribute id="005D" name="Battery2PercentageThreshold3" type="uint8" writable="true" writeOptional="true" max="255" default="0" />
+      <attribute id="005E" name="Battery2AlarmState" type="BatteryAlarmState" default="0" />
+      
+      <!-- Battery 3 Information Attribute Set -->
+      <attribute id="0060" name="Battery3Voltage" type="uint8" max="255" />
+      <attribute id="0061" name="Battery3PercentageRemaining" type="uint8" reportRequired="true" max="255" default="0" />
+      
+      <!-- Battery 3 Settings Attribute Set -->
+      <attribute id="0070" name="Battery3Manufacturer" type="string" writable="true" default="">
+        <restriction>
+          <type:minLength value="0" />
+          <type:maxLength value="16" />
+        </restriction>
+      </attribute>
+      <attribute id="0071" name="Battery3Size" type="BatterySize" writable="true" default="255" />
+      <attribute id="0072" name="Battery3AHrRating" type="uint16" writable="true" max="65535" />
+      <attribute id="0073" name="Battery3Quantity" type="uint8" writable="true" max="255" />
+      <attribute id="0074" name="Battery3RatedVoltage" type="uint8" writable="true" max="255" />
+      <attribute id="0075" name="Battery3AlarmMask" type="BatteryAlarmMask" writable="true" default="0" />
+      <attribute id="0076" name="Battery3VoltageMinThreshold" type="uint8" writable="true" max="255" default="0" />
+      <attribute id="0077" name="Battery3VoltageThreshold1" type="uint8" writable="true" writeOptional="true" max="255" default="0" />
+      <attribute id="0078" name="Battery3VoltageThreshold2" type="uint8" writable="true" writeOptional="true" max="255" default="0" />
+      <attribute id="0079" name="Battery3VoltageThreshold3" type="uint8" writable="true" writeOptional="true" max="255" default="0" />
+      <attribute id="007A" name="Battery3PercentageMinThreshold" type="uint8" writable="true" writeOptional="true" max="255" default="0" />
+      <attribute id="007B" name="Battery3PercentageThreshold1" type="uint8" writable="true" writeOptional="true" max="255" default="0" />
+      <attribute id="007C" name="Battery3PercentageThreshold2" type="uint8" writable="true" writeOptional="true" max="255" default="0" />
+      <attribute id="007D" name="Battery3PercentageThreshold3" type="uint8" writable="true" writeOptional="true" max="255" default="0" />
+      <attribute id="007E" name="Battery3AlarmState" type="BatteryAlarmState" default="0" />
+    </attributes>
+  </server>
+</zcl:cluster>

@@ -1,0 +1,91 @@
+id: core_pkcs11
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|Core Libraries
+label: CorePKCS11 Library
+description: This component fetches PKCS11 and mbedTLS with AWS related configs.
+
+package: amazon_platform
+quality: production
+
+provides:
+  - name: core_pkcs11
+
+requires:
+  - name: mbedtls_sha
+  - name: mbedtls_sha256
+  - name: mbedtls_ecdsa
+  - name: mbedtls_ecdh
+  - name: mbedtls_ecc_secp256r1
+  - name: mbedtls_tls
+  - name: mbedtls_cipher_cbc
+  - name: mbedtls_cipher_cfb
+  - name: mbedtls_cipher_ctr
+  - name: mbedtls_cipher_padding_pkcs7
+  - name: mbedtls_gcm
+  - name: mbedtls_rsa_4096
+  - name: mbedtls_ecdhe_key_exchange
+  - name: mbedtls_error
+
+  - name: iot_logging
+  - name: iot_crypto
+  - name: iot_default_root_certificates
+
+  - name: nvm3_default
+
+root_path: util/third_party/aws_iot_libs
+
+source:
+  - path: demos/dev_mode_key_provisioning/src/aws_dev_mode_key_provisioning.c
+  - path: libraries/abstractions/pkcs11/corePKCS11/source/core_pkcs11.c
+  - path: libraries/abstractions/pkcs11/corePKCS11/source/core_pki_utils.c
+  - path: vendors/siliconlabs/boards/all/ports/pkcs11/core_pkcs11_mbedtls_3.c
+  - path: libraries/abstractions/pkcs11/test/iot_test_pkcs11.c
+    condition: ["aws_tests_defs"]
+  - path: vendors/siliconlabs/boards/all/ports/pkcs11/core_pkcs11_pal.c
+  - path: libraries/3rdparty/mbedtls_utils/mbedtls_error.c
+  - path: libraries/3rdparty/mbedtls_utils/mbedtls_utils.c
+
+include:
+  - path: demos/dev_mode_key_provisioning/include
+    file_list:
+      - path: aws_dev_mode_key_provisioning.h
+  - path: libraries/abstractions/pkcs11/corePKCS11/source/include
+    file_list:
+      - path: core_pkcs11_pal.h
+      - path: core_pkcs11.h
+      - path: core_pki_utils.h
+  - path: libraries/3rdparty/pkcs11
+    file_list:
+      - path: pkcs11.h
+      - path: pkcs11f.h
+      - path: pkcs11t.h
+  - path: libraries/abstractions/pkcs11/test
+    file_list:
+      - path: iot_test_pkcs11_globals.h
+    condition: ["aws_tests_defs"]
+  - path: libraries/3rdparty/mbedtls_utils
+    file_list:
+      - path: mbedtls_error.h
+
+define:
+  - name: NVM3_DEFAULT_MAX_OBJECT_SIZE
+    value: 1500
+  - name: NVM3_DEFAULT_CACHE_SIZE
+    value: 10
+
+template_contribution:
+  - { name: mbedtls_config, value: MBEDTLS_SSL_ALPN }
+  - { name: mbedtls_config, value: MBEDTLS_PK_RSA_ALT_SUPPORT }
+  - { name: mbedtls_config, value: MBEDTLS_SSL_ALL_ALERT_MESSAGES }
+  - { name: mbedtls_config, value: MBEDTLS_SSL_ENCRYPT_THEN_MAC }
+  - { name: mbedtls_config, value: MBEDTLS_SSL_EXTENDED_MASTER_SECRET }
+  - { name: mbedtls_config, value: MBEDTLS_SSL_MAX_FRAGMENT_LENGTH }
+  - { name: mbedtls_config, value: MBEDTLS_SSL_SERVER_NAME_INDICATION }
+  - { name: mbedtls_config, value: MBEDTLS_X509_CHECK_KEY_USAGE }
+  - { name: mbedtls_config, value: MBEDTLS_X509_CHECK_EXTENDED_KEY_USAGE }
+  - { name: mbedtls_config, value: MBEDTLS_REMOVE_ARC4_CIPHERSUITES }
+  - { name: mbedtls_config, value: MBEDTLS_REMOVE_3DES_CIPHERSUITES }
+  - { name: mbedtls_config, value: MBEDTLS_CIPHER_PADDING_ONE_AND_ZEROS }
+  - { name: mbedtls_config, value: MBEDTLS_CIPHER_PADDING_ZEROS_AND_LEN }
+  - { name: mbedtls_config, value: MBEDTLS_CIPHER_PADDING_ZEROS }
+  - { name: mbedtls_config, value: SLI_MBEDTLS_AUTODETECT_CIPHERSUITES }

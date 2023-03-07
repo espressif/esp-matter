@@ -1,0 +1,47 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+declare_args() {
+  # Backend for the pw_sync module's binary semaphore.
+  pw_sync_BINARY_SEMAPHORE_BACKEND = ""
+
+  # Backend for the pw_sync module's condition variable.
+  pw_sync_CONDITION_VARIABLE_BACKEND = ""
+
+  # Backend for the pw_sync module's counting semaphore.
+  pw_sync_COUNTING_SEMAPHORE_BACKEND = ""
+
+  # Backend for the pw_sync module's mutex.
+  pw_sync_MUTEX_BACKEND = ""
+
+  # Backend for the pw_sync module's timed mutex.
+  pw_sync_TIMED_MUTEX_BACKEND = ""
+
+  # Backend for the pw_sync module's recursive mutex.
+  pw_sync_RECURSIVE_MUTEX_BACKEND = ""
+
+  # Backend for the pw_sync module's interrupt spin lock.
+  pw_sync_INTERRUPT_SPIN_LOCK_BACKEND = ""
+
+  # Backend for the pw_sync module's thread notification.
+  pw_sync_THREAD_NOTIFICATION_BACKEND = ""
+
+  # Backend for the pw_sync module's timed thread notification.
+  pw_sync_TIMED_THREAD_NOTIFICATION_BACKEND = ""
+
+  # Whether the GN asserts should be silenced in ensuring that a compatible
+  # backend for pw_chrono_SYSTEM_CLOCK_BACKEND is chosen.
+  # Set to true to disable the asserts.
+  pw_sync_OVERRIDE_SYSTEM_CLOCK_BACKEND_CHECK = false
+}

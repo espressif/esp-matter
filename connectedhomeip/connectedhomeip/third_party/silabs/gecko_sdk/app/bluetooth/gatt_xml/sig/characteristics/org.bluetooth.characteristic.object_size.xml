@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2015 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Object Size" 
+type="org.bluetooth.characteristic.object_size" uuid="2AC0" last-modified="2015-11-23" approved="Yes">
+    <Value>
+        <Field name="Current Size">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint32</Format>
+            <DecimalExponent>0</DecimalExponent>
+		</Field>
+        
+         <Field name="Allocated Size">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint32</Format>
+            <DecimalExponent>0</DecimalExponent>
+		</Field>
+        
+	</Value>
+    <Note>
+        <p>The fields in the above table, reading from top to bottom, are shown in the order of LSO to MSO, where LSO = Least Significant Octet and MSO = Most Significant Octet.</p>
+	</Note>
+    </Characteristic>

@@ -1,0 +1,311 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load(
+    "//pw_build:pigweed.bzl",
+    "pw_cc_library",
+    "pw_cc_test",
+)
+load("//pw_fuzzer:fuzzer.bzl", "pw_cc_fuzz_test")
+load("@com_google_protobuf//:protobuf.bzl", "py_proto_library")
+load("@rules_proto_grpc//:defs.bzl", "proto_plugin")
+load("//pw_protobuf_compiler:proto.bzl", "pw_proto_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+pw_cc_library(
+    name = "config",
+    hdrs = ["public/pw_protobuf/config.h"],
+    includes = ["public"],
+)
+
+pw_cc_library(
+    name = "pw_protobuf",
+    srcs = [
+        "decoder.cc",
+        "encoder.cc",
+        "find.cc",
+        "map_utils.cc",
+        "message.cc",
+        "stream_decoder.cc",
+    ],
+    hdrs = [
+        "public/pw_protobuf/decoder.h",
+        "public/pw_protobuf/encoder.h",
+        "public/pw_protobuf/find.h",
+        "public/pw_protobuf/internal/codegen.h",
+        "public/pw_protobuf/internal/proto_integer_base.h",
+        "public/pw_protobuf/map_utils.h",
+        "public/pw_protobuf/message.h",
+        "public/pw_protobuf/serialized_size.h",
+        "public/pw_protobuf/stream_decoder.h",
+        "public/pw_protobuf/wire_format.h",
+    ],
+    includes = ["public"],
+    deps = [
+        ":config",
+        "//pw_assert",
+        "//pw_bytes",
+        "//pw_bytes:bit",
+        "//pw_containers:vector",
+        "//pw_function",
+        "//pw_result",
+        "//pw_span",
+        "//pw_status",
+        "//pw_stream",
+        "//pw_stream:interval_reader",
+        "//pw_string:string",
+        "//pw_varint",
+        "//pw_varint:stream",
+    ],
+)
+
+pw_cc_library(
+    name = "bytes_utils",
+    hdrs = ["public/pw_protobuf/bytes_utils.h"],
+    includes = ["public"],
+    deps = [
+        ":pw_protobuf",
+        "//pw_bytes",
+        "//pw_result",
+        "//pw_status",
+    ],
+)
+
+pw_cc_test(
+    name = "decoder_test",
+    srcs = ["decoder_test.cc"],
+    deps = [
+        ":pw_protobuf",
+        "//pw_preprocessor",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "encoder_test",
+    srcs = ["encoder_test.cc"],
+    deps = [
+        ":pw_protobuf",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_fuzz_test(
+    name = "encoder_fuzz_test",
+    srcs = [
+        "encoder_fuzzer.cc",
+        "fuzz.h",
+    ],
+    deps = [
+        "//pw_fuzzer",
+        "//pw_protobuf",
+        "//pw_span",
+    ],
+)
+
+pw_cc_fuzz_test(
+    name = "decoder_fuzz_test",
+    srcs = [
+        "decoder_fuzzer.cc",
+        "fuzz.h",
+    ],
+    deps = [
+        "//pw_fuzzer",
+        "//pw_protobuf",
+        "//pw_span",
+    ],
+)
+
+pw_cc_test(
+    name = "find_test",
+    srcs = ["find_test.cc"],
+    deps = [
+        ":pw_protobuf",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "serialized_size_test",
+    srcs = ["serialized_size_test.cc"],
+    deps = [
+        ":pw_protobuf",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "stream_decoder_test",
+    srcs = ["stream_decoder_test.cc"],
+    deps = [
+        ":pw_protobuf",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "map_utils_test",
+    srcs = ["map_utils_test.cc"],
+    deps = [
+        ":pw_protobuf",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "message_test",
+    srcs = ["message_test.cc"],
+    deps = [
+        ":pw_protobuf",
+        "//pw_unit_test",
+    ],
+)
+
+proto_library(
+    name = "codegen_protos",
+    srcs = [
+        "pw_protobuf_codegen_protos/options.proto",
+    ],
+    strip_import_prefix = "//pw_protobuf",
+)
+
+py_proto_library(
+    name = "codegen_protos_pb2",
+    srcs = [
+        "pw_protobuf_codegen_protos/options.proto",
+    ],
+)
+
+proto_library(
+    name = "common_proto",
+    srcs = [
+        "pw_protobuf_protos/common.proto",
+    ],
+    strip_import_prefix = "//pw_protobuf",
+)
+
+proto_library(
+    name = "status_proto",
+    srcs = [
+        "pw_protobuf_protos/status.proto",
+    ],
+    strip_import_prefix = "//pw_protobuf",
+)
+
+py_proto_library(
+    name = "status_proto_pb2",
+    srcs = [
+        "pw_protobuf_protos/status.proto",
+    ],
+)
+
+proto_library(
+    name = "codegen_test_deps_protos",
+    srcs = [
+        "pw_protobuf_test_deps_protos/imported.proto",
+    ],
+    strip_import_prefix = "//pw_protobuf",
+)
+
+proto_library(
+    name = "codegen_test_proto",
+    srcs = [
+        "pw_protobuf_test_protos/full_test.proto",
+        "pw_protobuf_test_protos/imported.proto",
+        "pw_protobuf_test_protos/importer.proto",
+        "pw_protobuf_test_protos/non_pw_package.proto",
+        "pw_protobuf_test_protos/optional.proto",
+        "pw_protobuf_test_protos/proto2.proto",
+        "pw_protobuf_test_protos/repeated.proto",
+        "pw_protobuf_test_protos/size_report.proto",
+    ],
+    strip_import_prefix = "//pw_protobuf",
+    deps = [
+        ":codegen_test_deps_protos",
+        ":common_proto",
+    ],
+)
+
+pw_proto_library(
+    name = "codegen_test_proto_cc",
+    deps = [
+        ":codegen_test_proto",
+        ":common_proto",
+    ],
+)
+
+pw_cc_test(
+    name = "codegen_decoder_test",
+    srcs = [
+        "codegen_decoder_test.cc",
+    ],
+    deps = [
+        ":codegen_test_proto_cc.pwpb",
+        ":pw_protobuf",
+        "//pw_span",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "codegen_encoder_test",
+    srcs = [
+        "codegen_encoder_test.cc",
+    ],
+    deps = [
+        ":codegen_test_proto_cc.pwpb",
+        ":pw_protobuf",
+        "//pw_span",
+        "//pw_unit_test",
+    ],
+)
+
+# TODO(tpudlik): Figure out how to add options file support to Bazel.
+filegroup(
+    name = "codegen_message_test",
+    srcs = [
+        "codegen_message_test.cc",
+    ],
+)
+
+# TODO(frolv): Figure out how to add facade tests to Bazel.
+filegroup(
+    name = "varint_size_test",
+    srcs = [
+        "varint_size_test.cc",
+    ],
+)
+
+# TODO(frolv): Figure out what to do about size reports in Bazel.
+filegroup(
+    name = "size_reports",
+    srcs = glob([
+        "size_report/*.cc",
+    ]),
+)
+
+proto_plugin(
+    name = "pw_cc_plugin",
+    outputs = [
+        "{protopath}.pwpb.h",
+    ],
+    protoc_plugin_name = "pwpb",
+    tool = "@pigweed//pw_protobuf/py:plugin",
+    use_built_in_shell_environment = True,
+    visibility = ["//visibility:public"],
+)

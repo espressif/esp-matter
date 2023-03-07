@@ -1,0 +1,27 @@
+!!omap
+- id: MGM111A256V2_config
+- label: MGM111A256V2 config
+- description: Configuration files for MGM111A256V2
+- package: platform
+- category: Platform|Device|MGM1|Config
+- quality: production
+- ui_hints:
+    visibility: never
+- root_path: hardware/module/config
+- requires:
+  - name: mgm111a256v2
+- provides:
+  - name: MGM111A256V2_config
+- config_file:
+  - override:
+      component: rail_util_pa
+      file_id: rail_util_pa_config
+    path: MGM111A256V2/sl_rail_util_pa_config.h
+  - override:
+      component: device_init_hfxo
+      file_id: device_init_hfxo_config
+    path: MGM111A256V2/sl_device_init_hfxo_config.h
+  - override:
+      component: device_init_lfxo
+      file_id: device_init_lfxo_config
+    path: MGM111A256V2/sl_device_init_lfxo_config.h

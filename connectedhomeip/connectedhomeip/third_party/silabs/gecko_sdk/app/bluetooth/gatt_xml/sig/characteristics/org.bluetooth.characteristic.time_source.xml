@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.time_source" uuid="2A13" name="Time Source">
+	<InformativeText>
+	</InformativeText>
+	<Value>
+		<Field name="Time Source">
+			<Requirement>Mandatory</Requirement>
+			<Format>8bit</Format>
+			<Minimum>0</Minimum>
+			<Maximum>7</Maximum>
+			<Enumerations>
+				<Enumeration key="0" value="Unknown" />
+				<Enumeration key="1" value="Network Time Protocol" />
+				<Enumeration key="2" value="GPS" />
+				<Enumeration key="3" value="Radio Time Signal" />
+				<Enumeration key="4" value="Manual" />
+				<Enumeration key="5" value="Atomic Clock" />
+				<Enumeration key="6" value="Cellular Network" />
+				<ReservedForFutureUse start="7" end="255"/>
+			</Enumerations>
+		</Field>
+	</Value>
+</Characteristic>

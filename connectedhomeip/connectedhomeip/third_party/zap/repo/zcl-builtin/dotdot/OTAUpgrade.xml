@@ -1,0 +1,198 @@
+﻿<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster xmlns:zcl="http://zigbee.org/zcl/clusters"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:type="http://zigbee.org/zcl/types"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd" 
+  id="0019" revision="3" name="OTAUpgrade">
+  <classification role="utility" picsCode="OTA" />
+  <type:type short="OTAImageType" name="Image Type Id" id="21" inheritsFrom="uint16">
+    <restriction>
+      <type:maxInclusive value="65471"/>
+      <type:special name="Wildcard" value="65535"/>
+    </restriction>
+  </type:type>
+  <type:type short="OTADeviceSpecificImageType" name="Image Type Id (Device Specific)" id="21" inheritsFrom="uint16">
+    <restriction>
+      <type:minInclusive value="65472" />
+      <type:maxInclusive value="65534"/>
+      <type:enumeration name="ClientSecurityCredentials" value="ffc0"/>
+      <type:enumeration name="ClientConfiguration" value="ffc1" />
+      <type:enumeration name="ServerLog" value="ffc2" />
+      <type:enumeration name="Picture" value="ffc3" />
+      <type:special name="Wildcard" value="65535"/>
+    </restriction>
+  </type:type>
+  <server>
+    <commands>
+      <command id="01" name="QueryNextImageRequest" required="true">
+        <fields>
+          <field name="FieldControl" type="map8">
+            <bitmap>
+              <element name="HardwareVersionPresent" type="bool" mask="01" />
+            </bitmap>
+          </field>
+          <field name="ManufacturerCode" type="uint16" />
+          <field name="ImageType" type="OTAImageType" />
+          <field name="CurrentFileVersion" type="uint32" />
+          <field name="HardwareVersion" type="uint16" presentIf="FieldControl.HardwareVersionPresent" />
+        </fields>
+      </command>
+      <command id="03" name="ImageBlockRequest" required="true">
+        <fields>
+          <field name="FieldControl" type="map8">
+            <bitmap>
+              <element name="RequestNodeIEEEAddressPresent" type="bool" mask="01" />
+              <element name="MinimumBlockPeriodPresent" type="bool" mask="02" shiftRight="1" />
+            </bitmap>
+          </field>
+          <field name="ManufacturerCode" type="uint16" />
+          <field name="ImageType" type="OTAImageType" />
+          <field name="FileVersion" type="uint32" />
+          <field name="FileOffset" type="uint32" />
+          <field name="MaximumDataSize" type="uint8" />
+          <field name="RequestNodeAddress" type="EUI64" presentIf="FieldControl.RequestNodeIEEEAddressPresent" />
+          <field name="MinimumBlockPeriod" type="uint16" presentIf="FieldControl.MinimumBlockPeriodPresent" />    
+        </fields>
+      </command>
+      <command id="04" name="ImagePageRequest">
+        <fields>
+          <field name="FieldControl" type="map8">
+            <bitmap>
+              <element name="RequestNodeIEEEAddressPresent" type="bool" mask="01" />
+            </bitmap>
+          </field>
+          <field name="ManufacturerCode" type="uint16" />
+          <field name="ImageType" type="OTAImageType" />
+          <field name="FileVersion" type="uint32" />
+          <field name="FileOffset" type="uint32" />
+          <field name="MaximumDataSize" type="uint8" />
+          <field name="PageSize" type="uint16" />
+          <field name="ResponseSpacing" type="uint16" />
+          <field name="RequestNodeAddress" type="EUI64" presentIf="FieldControl.RequestNodeIEEEAddressPresent" />
+        </fields>
+      </command>
+      <command id="06" name="UpgradeEndRequest" required="true">
+        <fields>
+          <field name="Status" type="zclStatus" />
+          <field name="ManufacturerCode" type="uint16" />
+          <field name="ImageType" type="OTAImageType" />
+          <field name="FileVersion" type="uint32" />
+        </fields>
+      </command>
+      <command id="08" name="QueryDeviceSpecificFileRequest">
+        <fields>
+          <field name="RequestNodeAddress" type="EUI64" />
+          <field name="ManufacturerCode" type="uint16" />
+          <field name="ImageType" type="OTADeviceSpecificImageType" />
+          <field name="FileVersion" type="uint32" />
+          <field name="CurrentZigbeeStackVersion" type="uint16" />
+        </fields>
+      </command>
+    </commands>
+  </server>
+  <client>
+    <attributes>
+      <attribute id="0000" name="UpgradeServerID" type="EUI64" required="true" default="18446744073709551615" />
+      <attribute id="0001" name="FileOffset" type="uint32" default="4294967294" />
+      <attribute id="0002" name="CurrentFileVersion" type="uint32" default="4294967294" />
+      <attribute id="0003" name="CurrentZigBeeStackVersion" type="uint16" default="65535" />
+      <attribute id="0004" name="DownloadedFileVersion" type="uint32" default="4294967294" />
+      <attribute id="0005" name="DownloadedZigBeeStackVersion" type="uint16" default="65535" />
+      <attribute id="0006" name="ImageUpgradeStatus" type="enum8" default="0" required="true">
+        <restriction>
+           <type:enumeration value="00" name="Normal" />
+           <type:enumeration value="01" name="DownloadInProgress" />
+           <type:enumeration value="02" name="DownloadComplete" />
+           <type:enumeration value="03" name="WaitingToUpgrade" />
+           <type:enumeration value="04" name="CountDown" />
+           <type:enumeration value="05" name="WaitForMore" />
+           <type:enumeration value="06" name="WaitingToUpgradeViaExternalEvent" />
+        </restriction>
+      </attribute>
+      <attribute id="0007" name="ManufacturerID" type="uint16" />
+      <attribute id="0008" name="ImageTypeID" type="uint16" />
+      <attribute id="0009" name="MinimumBlockPeriod" type="uint16" default="0" />
+      <attribute id="000A" name="ImageStamp" type="uint32" />
+      <attribute id="000B" name="UpgradeActivationPolicy" type="enum8" default="0">
+        <restriction>
+          <type:enumeration value="00" name="OTAServerActivationAllowed" />
+          <type:enumeration value="01" name="OutOfBandActivationOnly" />
+        </restriction>
+      </attribute>
+      <attribute id="000C" name="UpgradeTimeoutPolicy" type="enum8" default="0">
+        <restriction>
+          <type:enumeration value="00" name="ApplyUpgradeAfterTimeout" />
+          <type:enumeration value="01" name="DoNotApplyUpgradeAfterTimeout" />
+        </restriction>
+      </attribute>
+    </attributes>
+    <commands>
+      <command id="00" name="ImageNotify">
+        <fields>
+          <field name="PayloadType" type="enum8">
+            <restriction>
+              <type:enumeration value="00" name="QueryJitter" />
+              <type:enumeration value="01" name="QueryJitterAndManufacturerCode" />
+              <type:enumeration value="02" name="QueryJitterManufacturerCodeAndImageType" />
+              <type:enumeration value="03" name="QueryJitterManufacturerCodeImageTypeAndNewFileVersion" />
+            </restriction>
+          </field>
+          <field name="QueryJitter" type="uint8" />
+          <field name="ManufacturerCode" type="uint16" presentIf="PayloadType >= 1" />
+          <field name="ImageType" type="uint16" presentIf="PayloadType >= 2" />
+          <field name="NewFileVersion" type="uint32" presentIf="PayloadType >= 3" />
+        </fields>
+      </command>
+      <command id="02" name="QueryNextImageResponse" required="true">
+        <fields>
+          <field name="Status" type="zclStatus" />
+          <field name="ManufacturerCode" type="uint16" presentIf="Status=0"/>
+          <field name="ImageType" type="OTAImageType" presentIf="Status=0" />
+          <field name="FileVersion" type="uint32" presentIf="Status=0" />
+          <field name="ImageSize" type="uint32" presentIf="Status=0" />
+        </fields>
+      </command>
+      <command id="05" name="ImageBlockResponse" required="true">
+        <fields>
+          <field name="Status" type="zclStatus" />
+          <!-- Success Fields -->
+          <field name="ManufacturerCode" type="uint16" presentIf="Status=0"/>
+          <field name="ImageType" type="OTAImageType" presentIf="Status=0" />
+          <field name="FileVersion" type="uint32" presentIf="Status=0" />
+          <field name="FileOffset" type="uint32" presentIf="Status=0" />
+          <field name="ImageData" type="octstr" presentIf="Status=0" />
+          <!-- Wait For Data (0x97) Fields -->
+          <field name="CurrentTime" type="uint32" presentIf="Status=151" />
+          <field name="RequestTime" type="uint32" presentIf="Status=151" />
+          <field name="MinimumBlockPeriod" type="uint16" presentIf="Status=151" />
+        </fields>
+      </command>
+      <command id="07" name="UpgradeEndResponse" required="true">
+        <fields>
+          <field name="ManufacturerCode" type="uint16" />
+          <field name="ImageType" type="OTAImageType" />
+          <field name="FileVersion" type="uint32" />
+          <field name="CurrentTime" type="UTC" />
+          <field name="UpgradeTime" type="UTC" />
+        </fields>
+      </command>
+      <command id="09" name="QueryDeviceSpecificFileResponse">
+        <fields>
+          <field name="Status" type="zclStatus" />
+          <field name="ManufacturerCode" type="uint16" presentIf="Status=0"/>
+          <field name="ImageType" type="OTADeviceSpecificImageType" presentIf="Status=0" />
+          <field name="FileVersion" type="uint32" presentIf="Status=0" />
+          <field name="ImageSize" type="uint32" presentIf="Status=0" />
+        </fields>
+      </command>
+    </commands>
+  </client>
+</zcl:cluster>

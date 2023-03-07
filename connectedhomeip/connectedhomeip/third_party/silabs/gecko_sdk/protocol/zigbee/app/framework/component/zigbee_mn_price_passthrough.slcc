@@ -1,0 +1,73 @@
+package: Zigbee
+description: This component demonstrates the capabilities of multi-network support.  The
+  component acts as a Price cluster client on one network and a Price cluster server
+  on another network.  As a client, it periodically polls a remote server for
+  pricing information and then stores the data locally.  As a server, it makes that
+  pricing information available to clients, thereby proxying the data between networks.
+label: Multi-Network Price Passthrough
+quality: production
+id: zigbee_mn_price_passthrough
+category: Zigbee|Cluster Library|Smart Energy
+provides:
+   - name: "zigbee_mn_price_passthrough"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/mn-price-passthrough/config/mn-price-passthrough-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/mn-price-passthrough/mn-price-passthrough.c
+  - path: protocol/zigbee/app/framework/plugin/mn-price-passthrough/mn-price-passthrough-cli.c
+    condition:
+      - "cli"
+include:
+  - path: protocol/zigbee/app/framework/plugin/mn-price-passthrough
+    file_list:
+      - path: mn-price-passthrough.h  
+template_contribution:
+  - name: component_catalog
+    value: zigbee_mn_price_passthrough
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emberAfPluginMnPricePassthroughInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: local_data_init
+      function_name: emberAfPluginMnPricePassthroughInitCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: mn-price-passthrough
+      help: mn-price-passthrough related commands.
+  - name: cli_command
+    value:
+      group: mn-price-passthrough
+      name: start
+      handler: emAfPluginMnPriceStartCommand
+      help: Starts polling and forwarding.
+  - name: cli_command
+    value:
+      group: mn-price-passthrough
+      name: stop
+      handler: emAfPluginMnPriceStopCommand
+      help: Stops polling and forwarding.
+  - name: cli_command
+    value:
+      group: mn-price-passthrough
+      name: set-routing
+      handler: emAfPluginMnPriceSetRoutingCommand
+      help: Sets the routing parameters.
+      argument:
+      - type: uint16
+        help: The node id of the forwarding endpoint
+      - type: uint8
+        help: The forwarding endpoint
+      - type: uint8
+        help: The endpoint of the proxy ESI
+  - name: cli_command
+    value:
+      group: mn-price-passthrough
+      name: print
+      handler: emAfPluginMnPricePrintCommand
+      help: Print the current price known to the proxy ESI.
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/mn-price-passthrough

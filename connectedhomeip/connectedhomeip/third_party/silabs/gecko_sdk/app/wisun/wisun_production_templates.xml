@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='ASCII'?>
+<model:MDescriptors xmlns:model="http://www.silabs.com/ss/Studio.ecore">
+  <descriptors name="wisun_soc_cli" label="Wi-SUN - CLI example" description="The Wi-SUN CLI (Command-Line Interface) sample application allows developers to easily evaluate the Wi-SUN stack APIs. The Wi-SUN command line interface provides a serial interface to a number of the Wi-SUN stack functions. For example, it can be used to connect the Wi-SUN device to a Wi-SUN border router and exchange IP packets.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="../../protocol/wisun/app/wisun_soc_cli/wisun_soc_cli.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/wisun_cli/readme.md"/>
+    <properties key="boardCompatibility" value="brd4163a brd4164a brd4170a brd4172a brd4253a brd4254a brd4270a brd4270b brd4271a brd4272a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg12.* .*efr32mg12.* .*efr32fg25.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Wi-SUN Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Wi-SUN"/>
+  </descriptors>
+  <descriptors name="wisun_rcp" label="Wi-SUN - RCP" description="The Wi-SUN RCP (radio coprocessor) application provides a radio interface to a Linux host. It is meant to be paired with wsbrd (Wi-SUN Network implementation for Linux) to run as a Linux border router device.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="../../protocol/wisun/app/wisun_rcp/wisun_rcp.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/wisun_rcp/readme.md"/>
+    <properties key="boardCompatibility" value="brd4163a brd4164a brd4170a brd4172a brd4253a brd4254a brd4270a brd4270b brd4271a brd4272a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg12.* .*efr32mg12.* .*efr32fg25.*"/>
+    <properties key="ideCompatibility" value="makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Wi-SUN Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|RCP Project\ Difficulty|Advanced Wireless\ Technology|Wi-SUN"/>
+  </descriptors>
+  <descriptors name="wisun_soc_empty" label="Wi-SUN - SoC Empty" description="The Wi-SUN Empty sample application is a bare-bones application. This application can be used as a template to develop a Wi-SUN application.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/wisun_soc_empty/wisun_soc_empty.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/wisun_soc_empty/readme.md"/>
+    <properties key="boardCompatibility" value="brd4163a brd4164a brd4170a brd4172a brd4253a brd4254a brd4270a brd4270b brd4271a brd4272a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg12.* .*efr32mg12.* .*efr32fg25.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Wi-SUN Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Wi-SUN"/>
+  </descriptors>
+  <descriptors name="wisun_soc_ping" label="Wi-SUN - SoC Ping" description="The Wi-SUN Ping sample application demonstrates how to use the Wi-SUN application framework and the POSIX-like socket API to implement a basic ping application.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/wisun_soc_ping/wisun_soc_ping.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/wisun_soc_ping/readme.md"/>
+    <properties key="boardCompatibility" value="brd4163a brd4164a brd4170a brd4172a brd4253a brd4254a brd4270a brd4270b brd4271a brd4272a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg12.* .*efr32mg12.* .*efr32fg25.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Wi-SUN Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Wi-SUN"/>
+  </descriptors>
+  <descriptors name="wisun_soc_udp_server" label="Wi-SUN - SoC UDP Server" description="The Wi-SUN UDP Server sample application provides a simple echo server implementation based on the UDP protocol. The sample application creates a UDP socket where every incoming packets are echoed back to the sender. The UDP Server leverages the POSIX-like socket component on top of the Wi-SUN stack.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/wisun_soc_udp_server/wisun_soc_udp_server.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/wisun_soc_udp_server/readme.md"/>
+    <properties key="boardCompatibility" value="brd4163a brd4164a brd4170a brd4172a brd4253a brd4254a brd4270a brd4270b brd4271a brd4272a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg12.* .*efr32mg12.* .*efr32fg25.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Wi-SUN Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Wi-SUN"/>
+  </descriptors>
+  <descriptors name="wisun_soc_udp_client" label="Wi-SUN - SoC UDP Client" description="The Wi-SUN UDP Client sample application provides a simple client implementation based on the UDP protocol. The sample application operates with a command-line interface to create, close, read or write sockets. The UDP Client leverages the POSIX-like socket component on top of the Wi-SUN stack.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/wisun_soc_udp_client/wisun_soc_udp_client.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/wisun_soc_udp_client/readme.md"/>
+    <properties key="boardCompatibility" value="brd4163a brd4164a brd4170a brd4172a brd4253a brd4254a brd4270a brd4270b brd4271a brd4272a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg12.* .*efr32mg12.* .*efr32fg25.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Wi-SUN Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Wi-SUN"/>
+  </descriptors>
+  <descriptors name="wisun_soc_tcp_server" label="Wi-SUN - SoC TCP Server" description="The Wi-SUN TCP Server sample application provides a simple echo server implementation based on the connection oriented TCP protocol. The sample application creates a TCP socket where every incoming packets are echoed back to the sender. The TCP Server leverages the POSIX-like socket component on top of the Wi-SUN stack.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/wisun_soc_tcp_server/wisun_soc_tcp_server.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/wisun_soc_tcp_server/readme.md"/>
+    <properties key="boardCompatibility" value="brd4163a brd4164a brd4170a brd4172a brd4253a brd4254a brd4270a brd4270b brd4271a brd4272a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg12.* .*efr32mg12.* .*efr32fg25.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Wi-SUN Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Wi-SUN"/>
+  </descriptors>
+  <descriptors name="wisun_soc_tcp_client" label="Wi-SUN - SoC TCP Client" description="The Wi-SUN TCP Client sample application provides a simple client implementation based on the connection oriented TCP protocol. The sample application operates with a command-line interface to create, close, read or write sockets. The TCP Client leverages the POSIX-like socket component on top of the Wi-SUN stack.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/wisun_soc_tcp_client/wisun_soc_tcp_client.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/wisun_soc_tcp_client/readme.md"/>
+    <properties key="boardCompatibility" value="brd4163a brd4164a brd4170a brd4172a brd4253a brd4254a brd4270a brd4270b brd4271a brd4272a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg12.* .*efr32mg12.* .*efr32fg25.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Wi-SUN Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Wi-SUN"/>
+  </descriptors>
+  <descriptors name="wisun_soc_meter" label="Wi-SUN - SoC Meter" description="The Wi-SUN Meter sample application demonstrates the use of a UDP socket to emulate a metering-like application. The Meter sends sensor measurements (temperature and relative humidity from the SI7021 I2C sensor and dummy lux values) to a Collector device in the same Wi-SUN network.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/wisun_soc_meter/wisun_soc_meter.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/wisun_soc_meter/readme.md"/>
+    <properties key="boardCompatibility" value="brd4163a brd4164a brd4170a brd4172a brd4253a brd4254a brd4270a brd4270b brd4271a brd4272a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg12.* .*efr32mg12.* .*efr32fg25.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Wi-SUN Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Wi-SUN"/>
+  </descriptors>
+  <descriptors name="wisun_soc_collector" label="Wi-SUN - SoC Collector" description="The Wi-SUN Collector sample application demonstrates a data collector implementation on top of a UDP client socket to emulate a metering-like application.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/wisun_soc_collector/wisun_soc_collector.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/wisun_soc_collector/readme.md"/>
+    <properties key="boardCompatibility" value="brd4163a brd4164a brd4170a brd4172a brd4253a brd4254a brd4270a brd4270b brd4271a brd4272a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg12.* .*efr32mg12.* .*efr32fg25.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Wi-SUN Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Wi-SUN"/>
+  </descriptors>
+  <descriptors name="wisun_soc_coap_meter" label="Wi-SUN - SoC CoAP Meter" description="The Wi-SUN CoAP Meter sample application demonstrates the use of the CoAP (Constrained Application Protocol) protocol to emulate a metering-like application. The CoAP Meter purpose is to send sensor measurements to a CoAP Collector device in the same Wi-SUN network.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/wisun_soc_coap_meter/wisun_soc_coap_meter.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/wisun_soc_coap_meter/readme.md"/>
+    <properties key="boardCompatibility" value="brd4163a brd4164a brd4170a brd4172a brd4253a brd4254a brd4270a brd4270b brd4271a brd4272a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg12.* .*efr32mg12.* .*efr32fg25.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Wi-SUN Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Wi-SUN"/>
+  </descriptors>
+  <descriptors name="wisun_soc_coap_collector" label="Wi-SUN - SoC CoAP Collector" description="The Wi-SUN CoAP Collector sample application demonstrates the use of the CoAP (Constrained Application Protocol) to emulate a metering-like application. The CoAP Collector purpose is to retrieve measurements from the devices running the Wi-SUN CoAP Meter application in the same Wi-SUN network.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/wisun_soc_coap_collector/wisun_soc_coap_collector.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/wisun_soc_coap_collector/readme.md"/>
+    <properties key="boardCompatibility" value="brd4163a brd4164a brd4170a brd4172a brd4253a brd4254a brd4270a brd4270b brd4271a brd4272a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg12.* .*efr32mg12.* .*efr32fg25.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Wi-SUN Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Wi-SUN"/>
+  </descriptors>
+  <descriptors name="wisun_soc_network_measurement" label="Wi-SUN - SoC Network Measurement" description="The Wi-SUN Network Measurement application provides a performance measurement solution based on the ping mechanism.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="example/wisun_soc_network_measurement/wisun_soc_network_measurement.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/wisun_soc_network_measurement/readme.md"/>
+    <properties key="boardCompatibility" value="brd4163a brd4164a brd4170a brd4172a brd4253a brd4254a brd4270a brd4270b brd4271a brd4272a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32fg12.* .*efr32mg12.* .*efr32fg25.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Wi-SUN Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Wi-SUN"/>
+  </descriptors>
+</model:MDescriptors>

@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Liquid XML Studio Developer Edition 8.1.7.2743 (http://www.liquid-technologies.com) -->
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.temperature_type" uuid="2A1D" name="Temperature Type">
+    <InformativeText>
+        <Abstract>
+    The Temperature Type characteristic is an enumeration that indicates where the temperature was measured.            
+		</Abstract>
+        <Summary>
+    These Temperature Type values correspond to the Temperature Type descriptions used in ISO/IEEE 11073-10408-2008.            
+		</Summary>
+    </InformativeText>
+    <Value>
+        <Field name="Temperature Text Description">
+            <Requirement>Mandatory</Requirement>
+            <Format>8bit</Format>
+            <Enumerations>
+                <Enumeration key="1" value="Armpit" />
+                <Enumeration key="2" value="Body (general)" />
+                <Enumeration key="3" value="Ear (usually ear lobe)" />
+                <Enumeration key="4" value="Finger" />
+                <Enumeration key="5" value="Gastro-intestinal Tract" />
+                <Enumeration key="6" value="Mouth" />
+                <Enumeration key="7" value="Rectum" />
+                <Enumeration key="8" value="Toe" />
+                <Enumeration key="9" value="Tympanum (ear drum)" />
+                <ReservedForFutureUse start="10" end="255" />
+                <ReservedForFutureUse start="0" end="0" />
+            </Enumerations>
+        </Field>
+    </Value>
+</Characteristic>

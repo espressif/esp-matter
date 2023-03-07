@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<cli>
+  <group id="plugin-sb1-gesture-sensor" name="Plugin Commands: SB1 Gesture Sensor">
+    <description>
+      Diagnostic commands for the SB1 Gesture Sensor.
+    </description>
+  </group>
+  <command cli="plugin sb1-gesture-sensor msg-ready" functionName="emAfPluginSb1MessageReady" group="plugin-sb1-gesture-sensor">
+    <description>
+	Will print "msg ready" or "no msg ready" based on the state of the SB1's IRQ pin
+    </description>
+   </command>
+  <command cli="plugin sb1-gesture-sensor read-msg" functionName="emAfPluginSb1ReadMessage" group="plugin-sb1-gesture-sensor">
+    <description>
+	Will generate an i2c read of the sb1 gesture sensor, printing the resulting message (or i2c bus state in case of error)
+    </description>
+  </command>
+  <command cli="plugin sb1-gesture-sensor send-gest" functionName="emAfPluginSb1SendGesture" group="plugin-sb1-gesture-sensor">
+    <description>
+	Will simulate receiving a gesture of type specified by the argument
+    </description>
+    <arg name="gesture" type="INT8U" description = "Gesture to simulate." />
+    <arg name="button" type="INT8U" description = "Button to simulate gesture on." />
+  </command>
+</cli>
+

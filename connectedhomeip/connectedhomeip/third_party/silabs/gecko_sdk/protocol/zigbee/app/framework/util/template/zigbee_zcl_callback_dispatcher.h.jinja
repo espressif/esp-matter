@@ -1,0 +1,90 @@
+/***************************************************************************//**
+ * @file zigbee_zcl_callback_dispatcher.h
+ * @brief ZCL callback dispatcher declarations.
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2020 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * The licensor of this software is Silicon Laboratories Inc. Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement. This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
+ *
+ ******************************************************************************/
+
+#ifndef SL_ZIGBEE_AF_CALLBACK_DISPATCHER_H
+#define SL_ZIGBEE_AF_CALLBACK_DISPATCHER_H
+
+#include PLATFORM_HEADER
+#include "af.h"
+
+{# RESET_ATTRIBUTES -#}
+// Reset Attributes
+void emAfResetAttributes(uint8_t endpointId);
+{% for cb in zigbee_af_callback -%}
+{% if cb['callback_type'] == "reset_attributes" -%}
+void {{ cb['function_name'] }}(uint8_t endpointId);
+{% endif -%}
+{% endfor -%}
+
+{# PRE_COMMAND_RECEIVED #}
+// Pre command received
+bool emAfPreCommandReceived(EmberAfClusterCommand* cmd);
+bool emberAfPreCommandReceivedCallback(EmberAfClusterCommand* cmd);
+{% for cb in zigbee_af_callback -%}
+{% if cb['callback_type'] == "pre_command_received" -%}
+bool {{ cb['function_name'] }}(EmberAfClusterCommand* cmd);
+{% endif -%}
+{% endfor -%}
+
+{# PRE_ZDO_MESSAGE_RECEIVED #}
+// Pre ZDO message received
+bool emAfPreZDOMessageReceived(EmberNodeId nodeId, EmberApsFrame* apsFrame, uint8_t* message, uint16_t length);
+bool emberAfPreZDOMessageReceivedCallback(EmberNodeId nodeId, EmberApsFrame* apsFrame, uint8_t* message, uint16_t length);
+{% for cb in zigbee_af_callback -%}
+{% if cb['callback_type'] == "pre_zdo_message_received" -%}
+bool {{ cb['function_name'] }}(EmberNodeId nodeId, EmberApsFrame* apsFrame, uint8_t* message, uint16_t length);
+{% endif -%}
+{% endfor -%}
+
+{# ZDO_MESSAGE_RECEIVED #}
+// ZDO message received
+void emAfZDOMessageReceived(EmberNodeId sender, EmberApsFrame* apsFrame, uint8_t* message, uint16_t length);
+{% for cb in zigbee_af_callback -%}
+{% if cb['callback_type'] == "zdo_message_received" -%}
+void {{ cb['function_name'] }}(EmberNodeId sender, EmberApsFrame* apsFrame, uint8_t* message, uint16_t length);
+{% endif -%}
+{% endfor -%}
+
+{# RETRIEVE_ATTRIBUTE_AND_CRAFT_RESPONSE #}
+// Retrieve attribute and craft response
+bool emAfRetrieveAttributeAndCraftResponse(uint8_t endpoint, EmberAfClusterId clusterId, EmberAfAttributeId attrId, uint8_t mask, uint16_t maunfacturerCode, uint16_t readLength);
+{% for cb in zigbee_af_callback -%}
+{% if cb['callback_type'] == "retrieve_attribute_and_craft_response" -%}
+bool {{ cb['function_name'] }}(uint8_t endpoint, EmberAfClusterId clusterId, EmberAfAttributeId attrId, uint8_t mask, uint16_t maunfacturerCode, uint16_t readLength);
+{% endif -%}
+{% endfor -%}
+
+{# READ_ATTRIBUTES_RESPONSE #}
+bool emAfReadAttributesResponse(EmberAfClusterId clusterId, uint8_t* buffer, uint16_t bufLen);
+// Read attributes response
+bool emberAfReadAttributesResponseCallback(EmberAfClusterId clusterId, uint8_t* buffer, uint16_t bufLen);
+{% for cb in zigbee_af_callback -%}
+{% if cb['callback_type'] == "read_attributes_response" -%}
+bool {{ cb['function_name'] }}(EmberAfClusterId clusterId, uint8_t* buffer, uint16_t bufLen);
+{% endif -%}
+{% endfor -%}
+
+{# REPORT_ATTRIBUTES #}
+// Report attributes
+bool emAfReportAttributes(EmberAfClusterId clusterId, uint8_t * buffer, uint16_t bufLen);
+bool emberAfReportAttributesCallback(EmberAfClusterId clusterId, uint8_t * buffer, uint16_t bufLen);
+{% for cb in zigbee_af_callback -%}
+{% if cb['callback_type'] == "report_attributes" -%}
+bool {{ cb['function_name'] }}(EmberAfClusterId clusterId, uint8_t * buffer, uint16_t bufLen);
+{% endif -%}
+{% endfor %}
+#endif // SL_ZIGBEE_AF_CALLBACK_DISPATCHER_H

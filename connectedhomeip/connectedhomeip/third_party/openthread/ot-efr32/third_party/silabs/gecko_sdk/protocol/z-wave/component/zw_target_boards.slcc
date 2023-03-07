@@ -1,0 +1,63 @@
+id: zw_target_boards
+label: Z-Wave Target Boards
+category: Z-Wave
+description: Target Boards Component
+package: Z-Wave
+quality: production
+include:
+  - path: "protocol/z-wave/platform/SiliconLabs/AppsHw/inc"
+    file_list:
+      - path: "target_boards.h"
+      - path: "extension_board_8029a.h"
+      - path: "extension_board_8029a_efr32xg13.h"
+        condition: [device_sdid_89]
+      - path: "extension_board_8029a_efr32xg13.h"
+        condition: [device_sdid_95]
+      - path: "extension_board_8029a_efr32zg23.h"
+        condition: [device_sdid_210]
+      - path: "radio_board_efr32zg14.h"
+        condition: [device_sdid_95]
+      - path: "radio_board_efr32zg23.h"
+        condition: [device_sdid_210, device_security_vault]
+        unless: [zgm230sa27hnn, zgm230sa27hgn, zgm230sb27hgn]
+      - path: "radio_board_zgm130s.h"
+        condition: [device_sdid_89]
+      - path: "radio_board_zgm230s.h"
+        condition: [device_sdid_210, zgm230sa27hnn, device_security_se]
+      - path: "radio_board_zgm230s.h"
+        condition: [device_sdid_210, zgm230sa27hgn, device_security_se]
+      - path: "radio_board_zgm230s.h"
+        condition: [device_sdid_210, zgm230sb27hgn, device_security_vault]
+        unless: [brd2603a]
+      - path: "radio_board_brd2603a.h"
+        condition: [brd2603a]
+define:
+  - name: RADIO_BOARD_EFR32ZG14
+    value: 1
+    condition: [device_sdid_95]
+  - name: RADIO_BOARD_EFR32ZG23
+    value: 1
+    condition: [device_sdid_210, device_security_vault]
+    unless: [zgm230sa27hnn, zgm230sa27hgn, zgm230sb27hgn]
+  - name: RADIO_BOARD_ZGM130S
+    value: 1
+    condition: [device_sdid_89]
+  - name: RADIO_BOARD_ZGM230SA
+    value: 1
+    condition: [device_sdid_210, zgm230sa27hnn, device_security_se]
+  - name: RADIO_BOARD_ZGM230SA
+    value: 1
+    condition: [device_sdid_210, zgm230sa27hgn, device_security_se]
+  - name: RADIO_BOARD_ZGM230SB
+    value: 1
+    condition: [device_sdid_210, zgm230sb27hgn, device_security_vault]
+    unless: [brd2603a]
+  - name: RADIO_BOARD_BRD2603A
+    condition: [brd2603a]
+  - name: EXT_BOARD_8029A
+    value: 1
+    unless: [brd2603a]
+provides:
+  - name: zw_target_boards
+requires:
+  - name: zw_series

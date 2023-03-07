@@ -1,0 +1,29 @@
+id: "sl_connect_sdk_ota_bootloader_interface"
+label: "OTA Bootloader Interface"
+package: "Flex"
+category: "Connect"
+quality: "production"
+description: "Provides an interface layer to the Application Bootloader. Required by any bootloader-related functions."
+root_path: "app/flex/component/connect/sl_connect_sdk_ota_bootloader_interface"
+provides:
+  - name: "sl_connect_sdk_ota_bootloader_interface"
+requires:
+  - name: "legacy_hal"
+  - name: "legacy_printf"
+  - name: "connect_stack_common"
+  - name: "legacy_bootloader_interface"
+source:
+  - path: "sl_connect_sdk_btl-interface.c"
+include:
+  - path: "."
+    file_list:
+      - path: "sl_connect_sdk_btl-interface.h"
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: sl_connect_sdk_ota_bootloader_interface
+  - name: stack_callback
+    value: 
+      callback_type: "init"
+      function_name: "emberAfPluginBootloaderInterfaceSleep"

@@ -1,0 +1,57 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_arduino_build/arduino.gni")
+import("$dir_pw_build/facade.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+
+declare_args() {
+  # Backend for the pw_arduino_init module.
+  pw_arduino_build_INIT_BACKEND = ""
+}
+
+if (pw_arduino_build_CORE_PATH != "") {
+  pw_facade("arduino_init") {
+    backend = pw_arduino_build_INIT_BACKEND
+    public = [ "public/pw_arduino_build/init.h" ]
+    public_configs = [ ":default_config" ]
+  }
+  config("default_config") {
+    include_dirs = [ "public" ]
+  }
+
+  pw_source_set("arduino_main_wrapper") {
+    remove_configs = [ "$dir_pw_build:strict_warnings" ]
+    deps = [
+      ":arduino_init",
+      "$dir_pw_sys_io",
+      "$dir_pw_third_party/arduino:arduino_core_sources",
+    ]
+    sources = [ "arduino_main_wrapper.cc" ]
+  }
+} else {
+  group("arduino_main_wrapper") {
+  }
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}
+
+pw_test_group("tests") {
+}

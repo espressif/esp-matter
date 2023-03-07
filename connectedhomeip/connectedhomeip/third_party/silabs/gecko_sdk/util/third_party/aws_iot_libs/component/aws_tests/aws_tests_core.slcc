@@ -1,0 +1,47 @@
+id: aws_tests_core
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|AWS Tests
+label: AWS Tests Core
+description: Amazon AWS Tests Core Files
+
+package: amazon_platform
+quality: production
+
+provides:
+  - name: aws_tests_core
+
+requires:
+  - name: core_libs
+  - name: c_sdk
+  - name: iot_platform
+  #- name: iot_common_io
+  - name: freertos_plus
+  - name: aws_tests_defs
+
+ui_hints:
+  visibility: never
+
+root_path: util/third_party/aws_iot_libs
+
+source:
+  - path: tests/common/aws_test_framework.c
+  - path: tests/common/aws_test_runner.c
+  - path: tests/common/aws_test.c
+  - path: tests/common/iot_test_freertos.c
+  - path: tests/common/iot_tests_network.c
+
+include:
+  - path: tests/include
+    file_list:
+      - path: aws_application_version.h
+      - path: aws_test_framework.h
+      - path: aws_test_runner.h
+      - path: aws_test_utils.h
+      - path: aws_unity_config.h
+      - path: iot_config_common.h
+      - path: aws_clientcredential.h
+      - path: aws_clientcredential_keys.h
+
+define:
+  - name: UNITY_EXCLUDE_STDIO_H
+  - name: UNITY_INCLUDE_CONFIG_H

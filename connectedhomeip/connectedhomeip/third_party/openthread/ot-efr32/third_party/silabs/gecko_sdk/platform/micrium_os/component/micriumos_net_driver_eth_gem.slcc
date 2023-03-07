@@ -1,0 +1,27 @@
+id: micriumos_net_driver_eth_gem
+label: Network Suite - GEM Ethernet Driver
+package: micrium-tcpx
+description: Micrium OS Network GEM Ethernet Driver
+category: Services|Micrium|Network Suite
+quality: production
+component_root_path: platform/micrium_os/drivers/net
+source:
+  - path: source/net_drv_ether_gem.c
+  - path: source/net_drv_phy_generic.c
+include:
+  - path: include
+    file_list:
+      - path: net_drv_ether.h
+      - path: net_drv_phy.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: NET_IF_ETHER
+provides:
+  - name: net_driver_eth_gem
+  - name: net_driver
+    allow_multiple: true
+  - name: net_driver_eth
+    allow_multiple: true
+requires:
+  - name: net
+  - name: device_has_eth

@@ -1,0 +1,24 @@
+# Copyright (c) 2021 Arm Limited and Contributors. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+# Include this pipeline for new projects, brings all required
+# common pipelines together
+# The jobs are visible, just include this yml file and all
+# of them become part of the pipeline in the project
+
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
+include:
+  - '/templates/license/pipeline-license.yml'
+  - '/templates/pre-commit/pipeline-pre-commit.yml'
+  - '/templates/gitlint/pipeline-gitlint.yml'
+
+pre-commit:
+  extends: .pre-commit-check
+
+license:
+  extends: .license-check
+
+gitlint:
+  extends: .gitlint-check

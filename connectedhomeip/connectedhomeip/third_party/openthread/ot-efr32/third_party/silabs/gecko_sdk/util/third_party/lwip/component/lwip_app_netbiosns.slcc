@@ -1,0 +1,21 @@
+id: lwip_app_netbiosns
+label: "netbiosns"
+pretty_name : "LWIP netbiosns high layer application"
+package: platform
+description: >
+    LWIP netbiosns high layer application specifically programmed with the lwIP low-level raw API.
+category: LwIP|apps
+quality: production
+provides:
+  - name: lwip_apps
+    allow_multiple: true
+  - name: lwip_app_netbiosns
+requires:
+  - name: lwip_core
+source:
+  - path: util/third_party/lwip/lwip/src/apps/netbiosns/netbiosns.c
+include:  
+  - path: util/third_party/lwip/lwip/src/include
+    file_list:
+    - path: lwip/apps/netbiosns.h
+    - path: lwip/apps/netbiosns_opts.h

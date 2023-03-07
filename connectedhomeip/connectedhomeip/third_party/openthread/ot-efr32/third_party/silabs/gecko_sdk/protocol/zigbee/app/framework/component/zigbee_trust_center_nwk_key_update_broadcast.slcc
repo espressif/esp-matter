@@ -1,0 +1,28 @@
+package: Zigbee
+description: This is a Trust Center component that handles updating
+  the Network Key by BROADCASTING the key to all devices in the network. This is
+  the method used by HA and networks that are not running Smart Energy. The new network
+  key is randomly generated.
+id: zigbee_trust_center_nwk_key_update_broadcast
+label: Trust Center Network Key Update Broadcast
+category: Zigbee|Trust Center
+quality: production
+provides:
+   - name: "zigbee_trust_center_nwk_key_update_broadcast"
+source:
+  - path: protocol/zigbee/app/framework/plugin/trust-center-nwk-key-update-broadcast/trust-center-nwk-key-update-broadcast.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/trust-center-nwk-key-update-broadcast
+    file_list:
+      - path: trust-center-nwk-key-update-broadcast.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_trust_center_nwk_key_update_broadcast
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emAfPluginTrustCenterNwkKeyUpdateBroadcastInitCallback    
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/trust-center-nwk-key-update-broadcast

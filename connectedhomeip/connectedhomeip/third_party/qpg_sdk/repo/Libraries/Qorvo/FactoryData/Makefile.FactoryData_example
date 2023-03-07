@@ -1,0 +1,84 @@
+#Generated from:
+# $(BASEDIR)/../../../Libraries/Qorvo/FactoryData/FactoryData.py
+
+
+SHELL = /bin/bash
+
+ifndef BASEDIR
+BASEDIR:=$(abspath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
+endif
+
+ROOTDIR?=$(BASEDIR)/../../..
+QPG_SDK_ROOT_PATH ?= $(BASEDIR)/../../../
+
+WORKDIR ?= $(BASEDIR)/../../../Work/FactoryData_example
+OUT_FILE := $(WORKDIR)/factory_data.bin
+DEP_FILE := $(WORKDIR)/depfile
+
+LIBFACTORYDATA_EXAMPLE_A := $(WORKDIR)/libFactoryData_example.a
+
+TOOLCHAIN ?= /usr
+ifeq (,$(TOOLCHAIN))
+# Will use the path variable to find the compiler
+Q_TOOLCHAIN_PREFIX=
+else
+# Use an absolute path, add bin, path separator
+Q_TOOLCHAIN_PREFIX= $(TOOLCHAIN)/bin/
+endif
+
+FACTORY_DATA_CONF_FILE ?= $(BASEDIR)/../../../Tools/FactoryData/Credentials/example.factory_data_config
+
+
+CHIP_ROOT := $(BASEDIR)/../../../Components/ThirdParty/Matter/repo
+
+GENERATE_FACTORY_DATA ?= $(BASEDIR)/../../../Tools/FactoryData/generate_factory_data.py
+
+# always generate depfile to determine dependencies
+COMPUTE_DEPFILE_RESULT := $(shell \
+    mkdir -p $(WORKDIR) && \
+    export CHIP_ROOT=$(CHIP_ROOT) && \
+    export QPG_SDK_ROOT=$(QPG_SDK_ROOT_PATH) && \
+    python3 $(GENERATE_FACTORY_DATA) @$(FACTORY_DATA_CONF_FILE) --write-depfile-and-exit=$(DEP_FILE) --maximum-size=0x800 --out_file $(OUT_FILE) \
+    )
+
+
+
+OBJCOPY ?= $(Q_TOOLCHAIN_PREFIX)arm-none-eabi-objcopy -I binary -O elf32-littlearm -B armv7e-m
+AR ?= $(Q_TOOLCHAIN_PREFIX)arm-none-eabi-ar
+
+.PHONY:all
+all: $(LIBFACTORYDATA_EXAMPLE_A)
+
+ifeq ("$(wildcard $(GENERATE_FACTORY_DATA))","")
+$(error $(GENERATE_FACTORY_DATA) tool does not exist!)
+endif
+
+ifeq ("$(wildcard $(FACTORY_DATA_CONF_FILE))","")
+$(error $(FACTORY_DATA_CONF_FILE) config file does not exist!)
+endif
+
+# NOTE: we 'cd' to the dir that has the .bin file so objcopy will not add in a prefix path to the symbol.
+.PRECIOUS: $(OUT_FILE)
+-include $(DEP_FILE)
+.PRECIOUS: $(OUT_FILE)
+$(OUT_FILE): $(GENERATE_FACTORY_DATA) $(FACTORY_DATA_CONF_FILE)
+	mkdir -p $(WORKDIR) && \
+	export CHIP_ROOT=$(CHIP_ROOT) && \
+    export QPG_SDK_ROOT=$(QPG_SDK_ROOT_PATH) && \
+	python3 $(GENERATE_FACTORY_DATA) @$(FACTORY_DATA_CONF_FILE) \
+	--maximum-size=0x800 \
+	--out_file $(OUT_FILE)
+
+.PRECIOUS: $(LIBFACTORYDATA_EXAMPLE_A)
+$(LIBFACTORYDATA_EXAMPLE_A): $(OUT_FILE)
+	cd $(WORKDIR) && \
+	$(OBJCOPY) --prefix-sections=factory_data factory_data.bin factory_data.o && \
+	$(AR) rcs $(shell realpath --canonicalize-missing --relative-to $(WORKDIR) $(LIBFACTORYDATA_EXAMPLE_A)) factory_data.o
+
+export_prerequisites: $(LIBFACTORYDATA_EXAMPLE_A)
+
+applib: $(LIBFACTORYDATA_EXAMPLE_A)
+
+.PHONY:clean
+clean:
+	-rm -r $(WORKDIR)

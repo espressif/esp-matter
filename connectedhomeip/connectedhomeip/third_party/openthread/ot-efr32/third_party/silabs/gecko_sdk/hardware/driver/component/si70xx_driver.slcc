@@ -1,0 +1,23 @@
+id: si70xx_driver
+package: platform
+label: Si70xx - Temperature/Humidity Sensor
+description: |-
+  Driver for the Si7006, Si7013, Si7020 and Si7021 Temperature / Humidity sensors
+category: Platform|Board Drivers
+quality: production
+root_path: hardware/driver/si70xx
+provides:
+  - name: si70xx_driver
+requires:
+  - name: i2cspm
+  - name: sleeptimer
+  - name: status
+include:
+  - path: inc
+    file_list:
+      - path: sl_si70xx.h
+source:
+  - path: src/sl_si70xx.c
+documentation:
+    docset: gecko-platform
+    document: hardware-driver/api/group-si70xx

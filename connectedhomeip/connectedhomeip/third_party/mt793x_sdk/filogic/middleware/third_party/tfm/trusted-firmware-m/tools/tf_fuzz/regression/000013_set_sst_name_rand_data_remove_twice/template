@@ -1,0 +1,4 @@
+purpose to illustrate deleting assets;
+set sst name george data *;
+remove sst name george;
+remove sst name george;

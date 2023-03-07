@@ -1,0 +1,525 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>RTC &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../index.html"/>
+        <link rel="up" title="外设 API" href="index.html"/>
+        <link rel="next" title="SPI" href="spi.html"/>
+        <link rel="prev" title="RNG" href="rng.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">BL602 API 参考</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../ble/index.html">蓝牙</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../network/index.html">连网</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">外设</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="dac.html">DAC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="i2c.html">I2C</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pwm.html">PWM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rng.html">RNG</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">RTC</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">概述</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">应用实例</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#api">API参考</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="spi.html">SPI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="uart.html">UART</a></li>
+<li class="toctree-l3"><a class="reference internal" href="timer.html">TIMER</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wdg.html">WDG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gpio.html">GPIO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adc.html">ADC</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../protocols/index.html">协议</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../storage/index.html">存储</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../system/index.html">系统</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../Examples/index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">BL602 API 参考</a> &raquo;</li>
+        
+          <li><a href="index.html">外设 API</a> &raquo;</li>
+        
+      <li>RTC</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/api-reference/peripherals/rtc.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="rtc">
+<h1>RTC<a class="headerlink" href="#rtc" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<h2>概述<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<p>RTC(real-time clock)为操作系统中的实时时钟设备，为操作系统提供精准的实时时间和定时报警功能。当设备下电后，通过外置电池供电，RTC继续记录操作系统时间；设备上电后，RTC提供实时时钟给操作系统，确保断电后系统时间的连续性。</p>
+</div>
+<div class="section" id="id2">
+<h2>应用实例<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<p>串口实例： <code class="docutils literal notranslate"><span class="pre">customer_app/peripheral/demo_rtc</span></code> 。</p>
+</div>
+<div class="section" id="api">
+<h2>API参考<a class="headerlink" href="#api" title="永久链接至标题"></a></h2>
+<div class="section" id="header-file">
+<h3>Header File<a class="headerlink" href="#header-file" title="永久链接至标题"></a></h3>
+<ul class="simple">
+<li><span class="xref std std-doc">components/platform/hosal/include/hosal_rtc.h</span></li>
+</ul>
+</div>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="永久链接至标题"></a></h3>
+<dl class="function">
+<dt id="_CPPv414hosal_rtc_initP15hosal_rtc_dev_t">
+<span id="_CPPv314hosal_rtc_initP15hosal_rtc_dev_t"></span><span id="_CPPv214hosal_rtc_initP15hosal_rtc_dev_t"></span><span id="hosal_rtc_init__hosal_rtc_dev_tP"></span><span class="target" id="group__hal__rtc_1gaf6ac29e9ce023754c3d2c4951b2335f7"></span>int <code class="descname">hosal_rtc_init</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_rtc_dev_t" title="hosal_rtc_dev_t">hosal_rtc_dev_t</a> *<em>rtc</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414hosal_rtc_initP15hosal_rtc_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>This function will initialize the on board CPU real time clock. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 : success</li>
+<li>other : fail </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">rtc</span></code>: rtc device</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv418hosal_rtc_set_timeP15hosal_rtc_dev_tPK16hosal_rtc_time_t">
+<span id="_CPPv318hosal_rtc_set_timeP15hosal_rtc_dev_tPK16hosal_rtc_time_t"></span><span id="_CPPv218hosal_rtc_set_timeP15hosal_rtc_dev_tPK16hosal_rtc_time_t"></span><span id="hosal_rtc_set_time__hosal_rtc_dev_tP.hosal_rtc_time_tCP"></span><span class="target" id="group__hal__rtc_1gae4dc0601cc4b0945916c0a276ed17e58"></span>int <code class="descname">hosal_rtc_set_time</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_rtc_dev_t" title="hosal_rtc_dev_t">hosal_rtc_dev_t</a> *<em>rtc</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv416hosal_rtc_time_t" title="hosal_rtc_time_t">hosal_rtc_time_t</a> *<em>time</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418hosal_rtc_set_timeP15hosal_rtc_dev_tPK16hosal_rtc_time_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>This function will set MCU RTC time to a new value. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 : success</li>
+<li>other : fail </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">rtc</span></code>: rtc device </li>
+<li><code class="docutils literal notranslate"><span class="pre">time</span></code>: pointer to a time structure</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv418hosal_rtc_get_timeP15hosal_rtc_dev_tP16hosal_rtc_time_t">
+<span id="_CPPv318hosal_rtc_get_timeP15hosal_rtc_dev_tP16hosal_rtc_time_t"></span><span id="_CPPv218hosal_rtc_get_timeP15hosal_rtc_dev_tP16hosal_rtc_time_t"></span><span id="hosal_rtc_get_time__hosal_rtc_dev_tP.hosal_rtc_time_tP"></span><span class="target" id="group__hal__rtc_1ga8685857ea5582cf38f57ca91f19186a1"></span>int <code class="descname">hosal_rtc_get_time</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_rtc_dev_t" title="hosal_rtc_dev_t">hosal_rtc_dev_t</a> *<em>rtc</em>, <a class="reference internal" href="#_CPPv416hosal_rtc_time_t" title="hosal_rtc_time_t">hosal_rtc_time_t</a> *<em>time</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418hosal_rtc_get_timeP15hosal_rtc_dev_tP16hosal_rtc_time_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>This function will return the value of time read from the on board CPU real time clock. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 : success</li>
+<li>other : fail </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">rtc</span></code>: rtc device </li>
+<li><code class="docutils literal notranslate"><span class="pre">time</span></code>: pointer to a time structure</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv419hosal_rtc_set_countP15hosal_rtc_dev_tP8uint64_t">
+<span id="_CPPv319hosal_rtc_set_countP15hosal_rtc_dev_tP8uint64_t"></span><span id="_CPPv219hosal_rtc_set_countP15hosal_rtc_dev_tP8uint64_t"></span><span id="hosal_rtc_set_count__hosal_rtc_dev_tP.uint64_tP"></span><span class="target" id="group__hal__rtc_1ga6d25065a50739379648c9eb243e4ede2"></span>int <code class="descname">hosal_rtc_set_count</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_rtc_dev_t" title="hosal_rtc_dev_t">hosal_rtc_dev_t</a> *<em>rtc</em>, uint64_t *<em>time_stamp</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419hosal_rtc_set_countP15hosal_rtc_dev_tP8uint64_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>This function will set MCU RTC time to a new value. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 : success</li>
+<li>other : fail </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">rtc</span></code>: rtc device </li>
+<li><code class="docutils literal notranslate"><span class="pre">time_stamp</span></code>: new time value</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv419hosal_rtc_get_countP15hosal_rtc_dev_tP8uint64_t">
+<span id="_CPPv319hosal_rtc_get_countP15hosal_rtc_dev_tP8uint64_t"></span><span id="_CPPv219hosal_rtc_get_countP15hosal_rtc_dev_tP8uint64_t"></span><span id="hosal_rtc_get_count__hosal_rtc_dev_tP.uint64_tP"></span><span class="target" id="group__hal__rtc_1ga4e7f20e3de457c6deeea3fccf6d0d6f5"></span>int <code class="descname">hosal_rtc_get_count</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_rtc_dev_t" title="hosal_rtc_dev_t">hosal_rtc_dev_t</a> *<em>rtc</em>, uint64_t *<em>time_stamp</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419hosal_rtc_get_countP15hosal_rtc_dev_tP8uint64_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>This function will return the value of time read from the on board CPU real time clock. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 : success</li>
+<li>other : fail </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">rtc</span></code>: rtc device </li>
+<li><code class="docutils literal notranslate"><span class="pre">time_stamp</span></code>: new time value</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv418hosal_rtc_finalizeP15hosal_rtc_dev_t">
+<span id="_CPPv318hosal_rtc_finalizeP15hosal_rtc_dev_t"></span><span id="_CPPv218hosal_rtc_finalizeP15hosal_rtc_dev_t"></span><span id="hosal_rtc_finalize__hosal_rtc_dev_tP"></span><span class="target" id="group__hal__rtc_1ga0530744cf59c4a0a9049f76c3e4441eb"></span>int <code class="descname">hosal_rtc_finalize</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_rtc_dev_t" title="hosal_rtc_dev_t">hosal_rtc_dev_t</a> *<em>rtc</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418hosal_rtc_finalizeP15hosal_rtc_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>De-initialises an RTC interface, Turns off an RTC hardware interface. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 : success</li>
+<li>other : fail </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">RTC</span></code>: the interface which should be de-initialised</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="structures">
+<h3>Structures<a class="headerlink" href="#structures" title="永久链接至标题"></a></h3>
+<dl class="class">
+<dt id="_CPPv418hosal_rtc_config_t">
+<span id="_CPPv318hosal_rtc_config_t"></span><span id="_CPPv218hosal_rtc_config_t"></span><span id="hosal_rtc_config_t"></span><span class="target" id="structhosal__rtc__config__t"></span><em class="property">struct </em><code class="descname">hosal_rtc_config_t</code><a class="headerlink" href="#_CPPv418hosal_rtc_config_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>rtc config struct </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N18hosal_rtc_config_t6formatE">
+<span id="_CPPv3N18hosal_rtc_config_t6formatE"></span><span id="_CPPv2N18hosal_rtc_config_t6formatE"></span><span id="hosal_rtc_config_t::format__uint8_t"></span><span class="target" id="structhosal__rtc__config__t_1a377aca8f399b70d13a316973741ed274"></span>uint8_t <code class="descname">format</code><a class="headerlink" href="#_CPPv4N18hosal_rtc_config_t6formatE" title="永久链接至目标"></a><br /></dt>
+<dd><p>time formart DEC or BCD </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv415hosal_rtc_dev_t">
+<span id="_CPPv315hosal_rtc_dev_t"></span><span id="_CPPv215hosal_rtc_dev_t"></span><span id="hosal_rtc_dev_t"></span><span class="target" id="structhosal__rtc__dev__t"></span><em class="property">struct </em><code class="descname">hosal_rtc_dev_t</code><a class="headerlink" href="#_CPPv415hosal_rtc_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>rtc dev struct </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N15hosal_rtc_dev_t4portE">
+<span id="_CPPv3N15hosal_rtc_dev_t4portE"></span><span id="_CPPv2N15hosal_rtc_dev_t4portE"></span><span id="hosal_rtc_dev_t::port__uint8_t"></span><span class="target" id="structhosal__rtc__dev__t_1a1f07645e827142542e940db4d6ecf06d"></span>uint8_t <code class="descname">port</code><a class="headerlink" href="#_CPPv4N15hosal_rtc_dev_t4portE" title="永久链接至目标"></a><br /></dt>
+<dd><p>rtc port </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15hosal_rtc_dev_t6configE">
+<span id="_CPPv3N15hosal_rtc_dev_t6configE"></span><span id="_CPPv2N15hosal_rtc_dev_t6configE"></span><span id="hosal_rtc_dev_t::config__hosal_rtc_config_t"></span><span class="target" id="structhosal__rtc__dev__t_1a2e72467cf853558ee32bf5eed093c1c6"></span><a class="reference internal" href="#_CPPv418hosal_rtc_config_t" title="hosal_rtc_config_t">hosal_rtc_config_t</a> <code class="descname">config</code><a class="headerlink" href="#_CPPv4N15hosal_rtc_dev_t6configE" title="永久链接至目标"></a><br /></dt>
+<dd><p>rtc config </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15hosal_rtc_dev_t4privE">
+<span id="_CPPv3N15hosal_rtc_dev_t4privE"></span><span id="_CPPv2N15hosal_rtc_dev_t4privE"></span><span id="hosal_rtc_dev_t::priv__voidP"></span><span class="target" id="structhosal__rtc__dev__t_1a95d21d5a6d8e43f0827138fa0bddd8b9"></span>void *<code class="descname">priv</code><a class="headerlink" href="#_CPPv4N15hosal_rtc_dev_t4privE" title="永久链接至目标"></a><br /></dt>
+<dd><p>priv data </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv416hosal_rtc_time_t">
+<span id="_CPPv316hosal_rtc_time_t"></span><span id="_CPPv216hosal_rtc_time_t"></span><span id="hosal_rtc_time_t"></span><span class="target" id="structhosal__rtc__time__t"></span><em class="property">struct </em><code class="descname">hosal_rtc_time_t</code><a class="headerlink" href="#_CPPv416hosal_rtc_time_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>RTC time struct. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N16hosal_rtc_time_t3secE">
+<span id="_CPPv3N16hosal_rtc_time_t3secE"></span><span id="_CPPv2N16hosal_rtc_time_t3secE"></span><span id="hosal_rtc_time_t::sec__uint8_t"></span><span class="target" id="structhosal__rtc__time__t_1a5d3761f12b18c8add07c949057a20ca9"></span>uint8_t <code class="descname">sec</code><a class="headerlink" href="#_CPPv4N16hosal_rtc_time_t3secE" title="永久链接至目标"></a><br /></dt>
+<dd><p>DEC format:value range from 0 to 59, BCD format:value range from 0x00 to 0x59 </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16hosal_rtc_time_t3minE">
+<span id="_CPPv3N16hosal_rtc_time_t3minE"></span><span id="_CPPv2N16hosal_rtc_time_t3minE"></span><span id="hosal_rtc_time_t::min__uint8_t"></span><span class="target" id="structhosal__rtc__time__t_1a00e1e68e368efdef55462aac97a54684"></span>uint8_t <code class="descname">min</code><a class="headerlink" href="#_CPPv4N16hosal_rtc_time_t3minE" title="永久链接至目标"></a><br /></dt>
+<dd><p>DEC format:value range from 0 to 59, BCD format:value range from 0x00 to 0x59 </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16hosal_rtc_time_t2hrE">
+<span id="_CPPv3N16hosal_rtc_time_t2hrE"></span><span id="_CPPv2N16hosal_rtc_time_t2hrE"></span><span id="hosal_rtc_time_t::hr__uint8_t"></span><span class="target" id="structhosal__rtc__time__t_1a68f12f713b97508dd99e97802039b110"></span>uint8_t <code class="descname">hr</code><a class="headerlink" href="#_CPPv4N16hosal_rtc_time_t2hrE" title="永久链接至目标"></a><br /></dt>
+<dd><p>DEC format:value range from 0 to 23, BCD format:value range from 0x00 to 0x23 </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16hosal_rtc_time_t4dateE">
+<span id="_CPPv3N16hosal_rtc_time_t4dateE"></span><span id="_CPPv2N16hosal_rtc_time_t4dateE"></span><span id="hosal_rtc_time_t::date__uint8_t"></span><span class="target" id="structhosal__rtc__time__t_1aa7ca2218779bd8a33524e6b18df9cb3e"></span>uint8_t <code class="descname">date</code><a class="headerlink" href="#_CPPv4N16hosal_rtc_time_t4dateE" title="永久链接至目标"></a><br /></dt>
+<dd><p>DEC format:value range from 1 to 31, BCD format:value range from 0x01 to 0x31 </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16hosal_rtc_time_t5monthE">
+<span id="_CPPv3N16hosal_rtc_time_t5monthE"></span><span id="_CPPv2N16hosal_rtc_time_t5monthE"></span><span id="hosal_rtc_time_t::month__uint8_t"></span><span class="target" id="structhosal__rtc__time__t_1ad1296e4fa4794facf010839ade2c7c6a"></span>uint8_t <code class="descname">month</code><a class="headerlink" href="#_CPPv4N16hosal_rtc_time_t5monthE" title="永久链接至目标"></a><br /></dt>
+<dd><p>DEC format:value range from 1 to 12, BCD format:value range from 0x01 to 0x12 </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16hosal_rtc_time_t4yearE">
+<span id="_CPPv3N16hosal_rtc_time_t4yearE"></span><span id="_CPPv2N16hosal_rtc_time_t4yearE"></span><span id="hosal_rtc_time_t::year__uint16_t"></span><span class="target" id="structhosal__rtc__time__t_1acb3e67c045681aad9b6aa54d3b150fd2"></span>uint16_t <code class="descname">year</code><a class="headerlink" href="#_CPPv4N16hosal_rtc_time_t4yearE" title="永久链接至目标"></a><br /></dt>
+<dd><p>DEC format:value range from 0 to 9999, BCD format:value range from 0x0000 to 0x9999 </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="macros">
+<h3>Macros<a class="headerlink" href="#macros" title="永久链接至标题"></a></h3>
+<dl class="macro">
+<dt id="c.HOSAL_RTC_FORMAT_DEC">
+<span class="target" id="group__hal__rtc_1ga405b46e9102fc7ec28b5b0c9a3ba8c0b"></span><code class="descname">HOSAL_RTC_FORMAT_DEC</code><a class="headerlink" href="#c.HOSAL_RTC_FORMAT_DEC" title="永久链接至目标"></a></dt>
+<dd><p>RTC DEC format </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_RTC_FORMAT_BCD">
+<span class="target" id="group__hal__rtc_1ga055204ef86de806c614b553c94dfc1d8"></span><code class="descname">HOSAL_RTC_FORMAT_BCD</code><a class="headerlink" href="#c.HOSAL_RTC_FORMAT_BCD" title="永久链接至目标"></a></dt>
+<dd><p>RTC BCD format </p>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="spi.html" class="btn btn-neutral float-right" title="SPI" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="rng.html" class="btn btn-neutral" title="RNG" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,85 @@
+/******************/
+{{#zcl_enums}}
+// {{index}}/{{count}}: label=>{{label}} caption=>{{caption}}
+{{#last}}
+Label count: {{count}}
+{{/last}}
+{{else}}
+This is output only if there are no enums.
+{{/zcl_enums}}
+
+
+/******************/
+{{#zcl_structs}}
+{{#first}}
+First item
+{{/first}}
+// struct: {{label}}
+{{#last}}
+Last item
+{{/last}}
+{{/zcl_structs}}
+
+
+/******************/
+{{#zcl_clusters}}
+// cluster: {{asHex code 4}} {{label}}
+// {{description}}
+{{/zcl_clusters}}
+
+/********* COMMANDS *********/
+{{#zcl_commands}}
+// cmd: {{asHex code 2}} {{label}}
+{{/zcl_commands}}
+
+/********* ATTRIBUTES *********/
+{{#zcl_attributes}}
+// att: {{asHex code 4}} {{label}}
+{{/zcl_attributes}}
+
+/********* EVENTS **********/
+{{#zcl_events}}
+// event: {{asHex code 4}} {{name}}
+{{#zcl_event_fields}}
+//   -> field: {{asHex fieldIdentifier 4}} {{name}} {{type}}
+{{/zcl_event_fields}}
+{{/zcl_events}}
+
+
+/******************/
+{{#user_endpoint_types}}
+// Endpoint: {{endpointTypeId}}, {{name}} / Device Type: {{deviceTypeName}}, {{deviceTypeCode}}
+
+{{#user_clusters}}
+// Cluster: {{code}} / {{name}} ({{side}}) / {{mfgCode}}
+{{#user_cluster_attributes}}
+// - attribute: {{code}} / {{name}}
+{{/user_cluster_attributes}}
+{{#user_cluster_commands}}
+// - command: {{code}} / {{name}}
+{{/user_cluster_commands}}
+{{/user_clusters}}
+{{/user_endpoint_types}}
+
+/******** COMMAND ARGUMENTS **********/
+{{#zcl_commands}}
+    {{#zcl_command_arguments}}
+        {{#if_is_struct type}}
+            {{name}} is struct
+            {{#zcl_struct_items_by_struct_name type}}
+                {{parent.name}}::{{label}} struct item
+            {{/zcl_struct_items_by_struct_name}}
+        {{else}}
+            {{name}} is not struct
+        {{/if_is_struct}}
+    {{/zcl_command_arguments}}
+{{/zcl_commands}}
+/******************************************/
+
+/******** COMMAND DISCOVERY TEST **********/
+{{#if_command_discovery_enabled}}
+#define EMBER_AF_SUPPORT_COMMAND_DISCOVERY
+{{else}}
+#undef EMBER_AF_SUPPORT_COMMAND_DISCOVERY
+{{/if_command_discovery_enabled}}
+/******************************************/

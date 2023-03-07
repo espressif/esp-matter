@@ -1,0 +1,15 @@
+!!omap
+- id: WGM160P022KGA3_config
+- label: WGM160P022KGA3 config
+- description: Configuration files for WGM160P022KGA3
+- package: platform
+- category: Platform|Device|WGM160|Config
+- quality: production
+- ui_hints:
+    visibility: never
+- root_path: hardware/module/config
+- requires:
+  - name: wgm160p022kga3
+- provides:
+  - name: WGM160P022KGA3_config
+- config_file: []

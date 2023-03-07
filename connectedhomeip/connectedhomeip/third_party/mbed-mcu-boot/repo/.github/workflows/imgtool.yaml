@@ -1,0 +1,34 @@
+on:
+  push:
+    branches:
+      - main
+      - v*-branch
+
+name: imgtool
+
+concurrency:
+  group: imgtool-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  environment:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Cache pip
+      uses: actions/cache@v1
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip
+    - name: Install packages
+      run: |
+        export PATH="$HOME/.local/bin:$PATH"
+        ./ci/imgtool_install.sh
+    - name: Publish
+      env:
+        TWINE_TOKEN: ${{ secrets.TWINE_TOKEN }}
+      run: |
+        export PATH="$HOME/.local/bin:$PATH"
+        ./ci/imgtool_run.sh

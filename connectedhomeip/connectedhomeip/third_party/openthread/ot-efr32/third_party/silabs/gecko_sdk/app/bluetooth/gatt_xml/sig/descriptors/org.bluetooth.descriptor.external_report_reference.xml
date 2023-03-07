@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Descriptor xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/descriptor.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.descriptor.external_report_reference" uuid="2907" name="External Report Reference">
+  <InformativeText>
+    <Summary>
+        The External Report Reference characteristic descriptor allows a HID Host to map information from the Report Map characteristic value for Input Report, Output Report or Feature Report data to the Characteristic UUID of external service characteristics used to transfer the associated data.
+	</Summary>
+  </InformativeText>
+  <Value>
+    <Field name="External Report Reference">
+      <InformativeText>Characteristic UUID for externally referenced characteristic</InformativeText>
+      <Requirement>Mandatory</Requirement>
+      <Format>gatt_uuid</Format>       
+    </Field>
+  </Value>
+</Descriptor>

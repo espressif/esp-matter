@@ -1,0 +1,559 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>SPI &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../index.html"/>
+        <link rel="up" title="外设 API" href="index.html"/>
+        <link rel="next" title="UART" href="uart.html"/>
+        <link rel="prev" title="RTC" href="rtc.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">BL602 API 参考</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../ble/index.html">蓝牙</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../network/index.html">连网</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">外设</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="dac.html">DAC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="i2c.html">I2C</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pwm.html">PWM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rng.html">RNG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rtc.html">RTC</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">SPI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">概述</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">应用实例</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#api">API参考</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="uart.html">UART</a></li>
+<li class="toctree-l3"><a class="reference internal" href="timer.html">TIMER</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wdg.html">WDG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gpio.html">GPIO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adc.html">ADC</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../protocols/index.html">协议</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../storage/index.html">存储</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../system/index.html">系统</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../Examples/index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">BL602 API 参考</a> &raquo;</li>
+        
+          <li><a href="index.html">外设 API</a> &raquo;</li>
+        
+      <li>SPI</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/api-reference/peripherals/spi.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="spi">
+<h1>SPI<a class="headerlink" href="#spi" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<h2>概述<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<p>串行外设接口（Serial Peripheral Interface Bus, SPI）是一种用于短程通信的同步串行通信接口规范，装置之间使用全双工模式通信，是一个主机和一个或多个从机的主从模式。需要至 少4根线，事实上3根也可以（单向传输时）,包括SDI（数据输入）、SDO（数据输出）、SCLK（时钟）、CS（片选）</p>
+<div class="admonition note">
+<p class="first admonition-title">注解</p>
+<p class="last">spi更多资料请参考 <a class="reference external" href="https://dev.bouffalolab.com/media/doc/602/reference_manual/zh/html/content/SPI.html">BL602参考手册</a> 。</p>
+</div>
+</div>
+<div class="section" id="id2">
+<h2>应用实例<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<p>串口实例： <code class="docutils literal notranslate"><span class="pre">customer_app/peripheral/demo_spi</span></code> 。</p>
+</div>
+<div class="section" id="api">
+<h2>API参考<a class="headerlink" href="#api" title="永久链接至标题"></a></h2>
+<div class="section" id="header-file">
+<h3>Header File<a class="headerlink" href="#header-file" title="永久链接至标题"></a></h3>
+<ul class="simple">
+<li><span class="xref std std-doc">components/platform/hosal/include/hosal_spi.h</span></li>
+</ul>
+</div>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="永久链接至标题"></a></h3>
+<dl class="function">
+<dt id="_CPPv414hosal_spi_initP15hosal_spi_dev_t">
+<span id="_CPPv314hosal_spi_initP15hosal_spi_dev_t"></span><span id="_CPPv214hosal_spi_initP15hosal_spi_dev_t"></span><span id="hosal_spi_init__hosal_spi_dev_tP"></span><span class="target" id="group__hosal__spi_1ga7fbb6370d34d8894d90e2f9f493d2279"></span>int <code class="descname">hosal_spi_init</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_spi_dev_t" title="hosal_spi_dev_t">hosal_spi_dev_t</a> *<em>spi</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414hosal_spi_initP15hosal_spi_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Initialises the SPI interface for a given SPI device. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 : on success</li>
+<li>other : error </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">spi</span></code>: the spi device</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv414hosal_spi_sendP15hosal_spi_dev_tPK7uint8_t8uint16_t8uint32_t">
+<span id="_CPPv314hosal_spi_sendP15hosal_spi_dev_tPK7uint8_t8uint16_t8uint32_t"></span><span id="_CPPv214hosal_spi_sendP15hosal_spi_dev_tPK7uint8_t8uint16_t8uint32_t"></span><span id="hosal_spi_send__hosal_spi_dev_tP.uint8_tCP.uint16_t.uint32_t"></span><span class="target" id="group__hosal__spi_1gaec6021be2fa062773a758068f98da5b3"></span>int <code class="descname">hosal_spi_send</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_spi_dev_t" title="hosal_spi_dev_t">hosal_spi_dev_t</a> *<em>spi</em>, <em class="property">const</em> uint8_t *<em>data</em>, uint16_t <em>size</em>, uint32_t <em>timeout</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414hosal_spi_sendP15hosal_spi_dev_tPK7uint8_t8uint16_t8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Spi send. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 : on success </li>
+<li>other : error </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">spi</span></code>: the spi device </li>
+<li><code class="docutils literal notranslate"><span class="pre">data</span></code>: spi send data </li>
+<li><code class="docutils literal notranslate"><span class="pre">size</span></code>: spi send data size </li>
+<li><code class="docutils literal notranslate"><span class="pre">timeout</span></code>: timeout in milisecond, set this value to HAL_WAIT_FOREVER if you want to wait forever</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv414hosal_spi_recvP15hosal_spi_dev_tP7uint8_t8uint16_t8uint32_t">
+<span id="_CPPv314hosal_spi_recvP15hosal_spi_dev_tP7uint8_t8uint16_t8uint32_t"></span><span id="_CPPv214hosal_spi_recvP15hosal_spi_dev_tP7uint8_t8uint16_t8uint32_t"></span><span id="hosal_spi_recv__hosal_spi_dev_tP.uint8_tP.uint16_t.uint32_t"></span><span class="target" id="group__hosal__spi_1gaaafc156ec8edf0bff78e2e091a00b3b1"></span>int <code class="descname">hosal_spi_recv</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_spi_dev_t" title="hosal_spi_dev_t">hosal_spi_dev_t</a> *<em>spi</em>, uint8_t *<em>data</em>, uint16_t <em>size</em>, uint32_t <em>timeout</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414hosal_spi_recvP15hosal_spi_dev_tP7uint8_t8uint16_t8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Spi recv. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 : success</li>
+<li>other : error </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">spi</span></code>: the spi device </li>
+<li><code class="docutils literal notranslate"><span class="pre">data</span></code>: spi recv data </li>
+<li><code class="docutils literal notranslate"><span class="pre">size</span></code>: spi recv data size </li>
+<li><code class="docutils literal notranslate"><span class="pre">timeout</span></code>: timeout in milisecond, set this value to HAL_WAIT_FOREVER if you want to wait forever</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv419hosal_spi_send_recvP15hosal_spi_dev_tP7uint8_tP7uint8_t8uint16_t8uint32_t">
+<span id="_CPPv319hosal_spi_send_recvP15hosal_spi_dev_tP7uint8_tP7uint8_t8uint16_t8uint32_t"></span><span id="_CPPv219hosal_spi_send_recvP15hosal_spi_dev_tP7uint8_tP7uint8_t8uint16_t8uint32_t"></span><span id="hosal_spi_send_recv__hosal_spi_dev_tP.uint8_tP.uint8_tP.uint16_t.uint32_t"></span><span class="target" id="group__hosal__spi_1ga3e33e5deaabcfc882a372d645ad59d66"></span>int <code class="descname">hosal_spi_send_recv</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_spi_dev_t" title="hosal_spi_dev_t">hosal_spi_dev_t</a> *<em>spi</em>, uint8_t *<em>tx_data</em>, uint8_t *<em>rx_data</em>, uint16_t <em>size</em>, uint32_t <em>timeout</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419hosal_spi_send_recvP15hosal_spi_dev_tP7uint8_tP7uint8_t8uint16_t8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>spi send data and recv </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 : success</li>
+<li>other : error </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">spi</span></code>: the spi device </li>
+<li><code class="docutils literal notranslate"><span class="pre">tx_data</span></code>: spi send data </li>
+<li><code class="docutils literal notranslate"><span class="pre">rx_data</span></code>: spi recv data </li>
+<li><code class="docutils literal notranslate"><span class="pre">size</span></code>: spi data to be sent and recived </li>
+<li><code class="docutils literal notranslate"><span class="pre">timeout</span></code>: timeout in milisecond, set this value to HAL_WAIT_FOREVER if you want to wait forever</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv426hosal_spi_irq_callback_setP15hosal_spi_dev_t15hosal_spi_irq_tPv">
+<span id="_CPPv326hosal_spi_irq_callback_setP15hosal_spi_dev_t15hosal_spi_irq_tPv"></span><span id="_CPPv226hosal_spi_irq_callback_setP15hosal_spi_dev_t15hosal_spi_irq_tPv"></span><span id="hosal_spi_irq_callback_set__hosal_spi_dev_tP.hosal_spi_irq_t.voidP"></span><span class="target" id="group__hosal__spi_1ga0eec9d64754fd0772b455a608a1f9072"></span>int <code class="descname">hosal_spi_irq_callback_set</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_spi_dev_t" title="hosal_spi_dev_t">hosal_spi_dev_t</a> *<em>spi</em>, <a class="reference internal" href="#_CPPv415hosal_spi_irq_t" title="hosal_spi_irq_t">hosal_spi_irq_t</a> <em>pfn</em>, void *<em>p_arg</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv426hosal_spi_irq_callback_setP15hosal_spi_dev_t15hosal_spi_irq_tPv" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv416hosal_spi_set_cs7uint8_t7uint8_t">
+<span id="_CPPv316hosal_spi_set_cs7uint8_t7uint8_t"></span><span id="_CPPv216hosal_spi_set_cs7uint8_t7uint8_t"></span><span id="hosal_spi_set_cs__uint8_t.uint8_t"></span><span class="target" id="group__hosal__spi_1ga6f069cc9029b885112e7664d215674ff"></span>int <code class="descname">hosal_spi_set_cs</code><span class="sig-paren">(</span>uint8_t <em>pin</em>, uint8_t <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416hosal_spi_set_cs7uint8_t7uint8_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>spi software set cs pin high/low only for master device </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 : success</li>
+<li>other : error </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">pin</span></code>: cs pin </li>
+<li><code class="docutils literal notranslate"><span class="pre">value</span></code>: 0 or 1</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv418hosal_spi_finalizeP15hosal_spi_dev_t">
+<span id="_CPPv318hosal_spi_finalizeP15hosal_spi_dev_t"></span><span id="_CPPv218hosal_spi_finalizeP15hosal_spi_dev_t"></span><span id="hosal_spi_finalize__hosal_spi_dev_tP"></span><span class="target" id="group__hosal__spi_1ga0a6bab0676ad046d1df4054df11db866"></span>int <code class="descname">hosal_spi_finalize</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_spi_dev_t" title="hosal_spi_dev_t">hosal_spi_dev_t</a> *<em>spi</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418hosal_spi_finalizeP15hosal_spi_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>De-initialises a SPI interface. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 : success</li>
+<li>other : error </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">spi</span></code>: the SPI device to be de-initialised</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="structures">
+<h3>Structures<a class="headerlink" href="#structures" title="永久链接至标题"></a></h3>
+<dl class="class">
+<dt id="_CPPv418hosal_spi_config_t">
+<span id="_CPPv318hosal_spi_config_t"></span><span id="_CPPv218hosal_spi_config_t"></span><span id="hosal_spi_config_t"></span><span class="target" id="structhosal__spi__config__t"></span><em class="property">struct </em><code class="descname">hosal_spi_config_t</code><a class="headerlink" href="#_CPPv418hosal_spi_config_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Define spi config args. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N18hosal_spi_config_t4modeE">
+<span id="_CPPv3N18hosal_spi_config_t4modeE"></span><span id="_CPPv2N18hosal_spi_config_t4modeE"></span><span id="hosal_spi_config_t::mode__uint8_t"></span><span class="target" id="structhosal__spi__config__t_1ab8c41d46b81df5c33863711a57ef63b9"></span>uint8_t <code class="descname">mode</code><a class="headerlink" href="#_CPPv4N18hosal_spi_config_t4modeE" title="永久链接至目标"></a><br /></dt>
+<dd><p>spi communication mode </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N18hosal_spi_config_t10dma_enableE">
+<span id="_CPPv3N18hosal_spi_config_t10dma_enableE"></span><span id="_CPPv2N18hosal_spi_config_t10dma_enableE"></span><span id="hosal_spi_config_t::dma_enable__uint8_t"></span><span class="target" id="structhosal__spi__config__t_1a265b13da779ae82784feabd64d524202"></span>uint8_t <code class="descname">dma_enable</code><a class="headerlink" href="#_CPPv4N18hosal_spi_config_t10dma_enableE" title="永久链接至目标"></a><br /></dt>
+<dd><p>enable dma tansmission or not </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N18hosal_spi_config_t11polar_phaseE">
+<span id="_CPPv3N18hosal_spi_config_t11polar_phaseE"></span><span id="_CPPv2N18hosal_spi_config_t11polar_phaseE"></span><span id="hosal_spi_config_t::polar_phase__uint8_t"></span><span class="target" id="structhosal__spi__config__t_1a55b42368c5a59f236b9acdba99f51f3d"></span>uint8_t <code class="descname">polar_phase</code><a class="headerlink" href="#_CPPv4N18hosal_spi_config_t11polar_phaseE" title="永久链接至目标"></a><br /></dt>
+<dd><p>spi polar and phase </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N18hosal_spi_config_t4freqE">
+<span id="_CPPv3N18hosal_spi_config_t4freqE"></span><span id="_CPPv2N18hosal_spi_config_t4freqE"></span><span id="hosal_spi_config_t::freq__uint32_t"></span><span class="target" id="structhosal__spi__config__t_1af2e2c8aac89a334941aa2ea96712b4d9"></span>uint32_t <code class="descname">freq</code><a class="headerlink" href="#_CPPv4N18hosal_spi_config_t4freqE" title="永久链接至目标"></a><br /></dt>
+<dd><p>communication frequency Hz </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N18hosal_spi_config_t7pin_clkE">
+<span id="_CPPv3N18hosal_spi_config_t7pin_clkE"></span><span id="_CPPv2N18hosal_spi_config_t7pin_clkE"></span><span id="hosal_spi_config_t::pin_clk__uint8_t"></span><span class="target" id="structhosal__spi__config__t_1ab63360bedcf38ae370329173976ecb8d"></span>uint8_t <code class="descname">pin_clk</code><a class="headerlink" href="#_CPPv4N18hosal_spi_config_t7pin_clkE" title="永久链接至目标"></a><br /></dt>
+<dd><p>spi clk pin </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N18hosal_spi_config_t8pin_mosiE">
+<span id="_CPPv3N18hosal_spi_config_t8pin_mosiE"></span><span id="_CPPv2N18hosal_spi_config_t8pin_mosiE"></span><span id="hosal_spi_config_t::pin_mosi__uint8_t"></span><span class="target" id="structhosal__spi__config__t_1a113ac6d5964e7564741ac57068f99bb4"></span>uint8_t <code class="descname">pin_mosi</code><a class="headerlink" href="#_CPPv4N18hosal_spi_config_t8pin_mosiE" title="永久链接至目标"></a><br /></dt>
+<dd><p>spi mosi pin </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N18hosal_spi_config_t8pin_misoE">
+<span id="_CPPv3N18hosal_spi_config_t8pin_misoE"></span><span id="_CPPv2N18hosal_spi_config_t8pin_misoE"></span><span id="hosal_spi_config_t::pin_miso__uint8_t"></span><span class="target" id="structhosal__spi__config__t_1a547dcc6ebab7422fb4e84b450efbca91"></span>uint8_t <code class="descname">pin_miso</code><a class="headerlink" href="#_CPPv4N18hosal_spi_config_t8pin_misoE" title="永久链接至目标"></a><br /></dt>
+<dd><p>spi miso pin </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv415hosal_spi_dev_t">
+<span id="_CPPv315hosal_spi_dev_t"></span><span id="_CPPv215hosal_spi_dev_t"></span><span id="hosal_spi_dev_t"></span><span class="target" id="structhosal__spi__dev__t"></span><em class="property">struct </em><code class="descname">hosal_spi_dev_t</code><a class="headerlink" href="#_CPPv415hosal_spi_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Define spi dev handle. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N15hosal_spi_dev_t4portE">
+<span id="_CPPv3N15hosal_spi_dev_t4portE"></span><span id="_CPPv2N15hosal_spi_dev_t4portE"></span><span id="hosal_spi_dev_t::port__uint8_t"></span><span class="target" id="structhosal__spi__dev__t_1af261ca187f5044cf5f23535f6b0f47a6"></span>uint8_t <code class="descname">port</code><a class="headerlink" href="#_CPPv4N15hosal_spi_dev_t4portE" title="永久链接至目标"></a><br /></dt>
+<dd><p>spi port </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15hosal_spi_dev_t6configE">
+<span id="_CPPv3N15hosal_spi_dev_t6configE"></span><span id="_CPPv2N15hosal_spi_dev_t6configE"></span><span id="hosal_spi_dev_t::config__hosal_spi_config_t"></span><span class="target" id="structhosal__spi__dev__t_1aefd50be1191bb7dd02b4becbb2a85627"></span><a class="reference internal" href="#_CPPv418hosal_spi_config_t" title="hosal_spi_config_t">hosal_spi_config_t</a> <code class="descname">config</code><a class="headerlink" href="#_CPPv4N15hosal_spi_dev_t6configE" title="永久链接至目标"></a><br /></dt>
+<dd><p>spi config </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15hosal_spi_dev_t2cbE">
+<span id="_CPPv3N15hosal_spi_dev_t2cbE"></span><span id="_CPPv2N15hosal_spi_dev_t2cbE"></span><span id="hosal_spi_dev_t::cb__hosal_spi_irq_t"></span><span class="target" id="structhosal__spi__dev__t_1a5f7db3ddee0dbcf8bedaaad9ad7b8c60"></span><a class="reference internal" href="#_CPPv415hosal_spi_irq_t" title="hosal_spi_irq_t">hosal_spi_irq_t</a> <code class="descname">cb</code><a class="headerlink" href="#_CPPv4N15hosal_spi_dev_t2cbE" title="永久链接至目标"></a><br /></dt>
+<dd><p>spi interrupt callback </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15hosal_spi_dev_t5p_argE">
+<span id="_CPPv3N15hosal_spi_dev_t5p_argE"></span><span id="_CPPv2N15hosal_spi_dev_t5p_argE"></span><span id="hosal_spi_dev_t::p_arg__voidP"></span><span class="target" id="structhosal__spi__dev__t_1a79a29f7c6a2ee045579f2026dc96fb59"></span>void *<code class="descname">p_arg</code><a class="headerlink" href="#_CPPv4N15hosal_spi_dev_t5p_argE" title="永久链接至目标"></a><br /></dt>
+<dd><p>arg pass to callback </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15hosal_spi_dev_t4privE">
+<span id="_CPPv3N15hosal_spi_dev_t4privE"></span><span id="_CPPv2N15hosal_spi_dev_t4privE"></span><span id="hosal_spi_dev_t::priv__voidP"></span><span class="target" id="structhosal__spi__dev__t_1af85c6d3807f1fd124541b22eed4b02bb"></span>void *<code class="descname">priv</code><a class="headerlink" href="#_CPPv4N15hosal_spi_dev_t4privE" title="永久链接至目标"></a><br /></dt>
+<dd><p>priv data </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="macros">
+<h3>Macros<a class="headerlink" href="#macros" title="永久链接至标题"></a></h3>
+<dl class="macro">
+<dt id="c.HOSAL_SPI_MODE_MASTER">
+<span class="target" id="group__hosal__spi_1gafe66f3afc73fff8428d6e2e899fe9f40"></span><code class="descname">HOSAL_SPI_MODE_MASTER</code><a class="headerlink" href="#c.HOSAL_SPI_MODE_MASTER" title="永久链接至目标"></a></dt>
+<dd><p>spi communication is master mode </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_SPI_MODE_SLAVE">
+<span class="target" id="group__hosal__spi_1gad9b7bd87e408f8f158f454fbe1646d15"></span><code class="descname">HOSAL_SPI_MODE_SLAVE</code><a class="headerlink" href="#c.HOSAL_SPI_MODE_SLAVE" title="永久链接至目标"></a></dt>
+<dd><p>spi communication is slave mode </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.HOSAL_WAIT_FOREVER">
+<span class="target" id="group__hosal__adc_1ga03a3226ba9abb7c61df22cf5d162624d"></span><code class="descname">HOSAL_WAIT_FOREVER</code><a class="headerlink" href="#c.HOSAL_WAIT_FOREVER" title="永久链接至目标"></a></dt>
+<dd><p>Define the wait forever timeout macro. </p>
+</dd></dl>
+
+</div>
+<div class="section" id="type-definitions">
+<h3>Type Definitions<a class="headerlink" href="#type-definitions" title="永久链接至标题"></a></h3>
+<dl class="type">
+<dt id="_CPPv415hosal_spi_irq_t">
+<span id="_CPPv315hosal_spi_irq_t"></span><span id="_CPPv215hosal_spi_irq_t"></span><span id="hosal_spi_irq_t"></span><span class="target" id="group__hosal__spi_1ga3fdded3c6752e146e4646bc8ff7b46d6"></span><em class="property">typedef </em>void (*<code class="descname">hosal_spi_irq_t</code>)<span class="sig-paren">(</span>void *parg<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415hosal_spi_irq_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>spi irq callback function </p>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="uart.html" class="btn btn-neutral float-right" title="UART" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="rtc.html" class="btn btn-neutral" title="RTC" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

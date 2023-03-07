@@ -1,0 +1,53 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load(
+    "//pw_build:pigweed.bzl",
+    "pw_cc_facade",
+    "pw_cc_library",
+)
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+pw_cc_facade(
+    name = "facade",
+    hdrs = [
+        "public/pw_boot/boot.h",
+    ],
+    includes = ["public"],
+    deps = [
+        "//pw_preprocessor",
+    ],
+)
+
+pw_cc_library(
+    name = "pw_boot",
+    deps = [
+        ":facade",
+        "@pigweed_config//:pw_boot_backend",
+    ],
+)
+
+pw_cc_library(
+    name = "backend_multiplexer",
+    deps = select({
+        "@platforms//cpu:armv7-m": ["//pw_boot_cortex_m:pw_boot_cortex_m"],
+        "@platforms//cpu:armv7e-m": ["//pw_boot_cortex_m:pw_boot_cortex_m"],
+        "@platforms//cpu:armv8-m": ["//pw_boot_cortex_m:pw_boot_cortex_m"],
+        # When building for the host, we don't need a pw_boot implementation.
+        "//conditions:default": [],
+    }),
+)

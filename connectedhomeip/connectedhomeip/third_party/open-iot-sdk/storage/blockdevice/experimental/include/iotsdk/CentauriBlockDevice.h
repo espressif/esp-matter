@@ -1,0 +1,166 @@
+/*
+ * Copyright (c) 2022, Arm Limited and Contributors. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/** \addtogroup storage */
+/** @{*/
+
+#ifndef IOTSDK_CENTAURIBLOCKDEVICE_H
+#define IOTSDK_CENTAURIBLOCKDEVICE_H
+
+#include "iotsdk/BlockDevice.h"
+
+#include "iotsdk/block_device.h"
+
+namespace iotsdk {
+namespace storage {
+/** BlockDevice C++ wrapper for Centauri C API
+ *
+ *  This object cannot be initialized directly. Any concrete implementations of
+ *  the Centauri C API, wishing to also provide a C++ wrapper, should derive
+ *  from this class. The subclass must implement a constructor that creates an
+ *  instance of an `iotsdk_blockdevice_t`. Derived classes must then call the
+ *  protected constructor, passing it a valid pointer to
+ *  `iotsdk_blockdevice_t`. The lifetime of `iotsdk_blockdevice_t` is managed
+ *  by the subclass. This wrapper class will handle calling the
+ *  `iotsdk_blockdevice` C API functions.
+ */
+class CentauriBlockDevice : public BlockDevice {
+protected:
+    /** Create a CentauriBlockDevice
+     *
+     *  @param bd       Pointer to the underlying block device
+     */
+    explicit CentauriBlockDevice(iotsdk_blockdevice_t *bd);
+
+public:
+    /** Initialize a block device
+     *
+     *  This method must be called before attempting any further block device operations.
+     *
+     *  @return         bd_status::OK on success or an error status on failure
+     */
+    bd_status init() override;
+
+    /** Deinitialize a block device
+     *
+     *  @return         bd_status::OK on success or an error status on failure
+     */
+    bd_status deinit() override;
+
+    /** Read blocks from a block device
+     *
+     *  If a failure occurs, it is not possible to determine how many bytes succeeded.
+     *
+     *  @param buffer   Buffer to write blocks to
+     *  @param addr     Address of block to begin reading from
+     *  @param size     Size to read in bytes, must be a multiple of the read block size
+     *  @return         bd_status::OK on success or an error status on failure
+     */
+    bd_status read(void *buffer, bd_addr_t addr, bd_size_t size) override;
+
+    /** Program blocks to a block device
+     *
+     *  The blocks must have been erased prior to being programmed.
+     *
+     *  If a failure occurs, it is not possible to determine how many bytes succeeded.
+     *
+     *  @param buffer   Buffer of data to write to blocks
+     *  @param addr     Address of block to begin writing to
+     *  @param size     Size to write in bytes, must be a multiple of the program block size
+     *  @return         bd_status::OK on success or an error status on failure
+     */
+    bd_status program(const void *buffer, bd_addr_t addr, bd_size_t size) override;
+
+    /** Erase blocks on a block device
+     *
+     *  The state of an erased block is undefined until it has been programmed,
+     *  unless get_erase_value returns a non-negative byte value.
+     *
+     *  @param addr     Address of block to begin erasing
+     *  @param size     Size to erase in bytes, must be a multiple of the erase block size
+     *  @return         bd_status::OK on success or an error status on failure
+     */
+    bd_status erase(bd_addr_t addr, bd_size_t size) override;
+
+    /** Get the size of a readable block
+     *
+     *  @return         Size of a readable block in bytes
+     */
+    bd_size_t get_read_size() const override;
+
+    /** Get the size of a programable block
+     *
+     *  @return         Size of a programable block in bytes
+     *  @note Must be a multiple of the read size
+     */
+    bd_size_t get_program_size() const override;
+
+    /** Get the size of a eraseable block
+     *
+     *  @return         Size of a eraseable block in bytes
+     *  @note Must be a multiple of the program size
+     */
+    bd_size_t get_erase_size() const override;
+
+    /** Get the size of an erasable block given address
+     *
+     *  @param addr     Address within the erasable block
+     *  @return         Size of an erasable block in bytes
+     *  @note Must be a multiple of the program size
+     */
+    bd_size_t get_erase_size(bd_addr_t addr) const override;
+
+    /** Get the value of storage when erased
+     *
+     *  If get_erase_value returns a non-negative byte value, the underlying
+     *  storage is set to that value when erased, and storage containing
+     *  that value can be programmed without another erase.
+     *
+     *  @return         The value of storage when erased, or -1 if you can't
+     *                  rely on the value of the erased storage
+     */
+    int get_erase_value() const override;
+
+    /** Get the total size of the underlying device
+     *
+     *  @return         Size of the underlying device in bytes
+     */
+    bd_size_t size() const override;
+
+    /** Convenience function for checking block read validity
+     *
+     *  @param addr     Address of block to begin reading from
+     *  @param size     Size to read in bytes
+     *  @return         bd_status::OK if read is valid for underlying block device
+     */
+    bd_status is_valid_read(bd_addr_t addr, bd_size_t size) const override;
+
+    /** Convenience function for checking block program validity
+     *
+     *  @param addr     Address of block to begin writing to
+     *  @param size     Size to write in bytes
+     *  @return         bd_status::OK if program is valid for underlying block device
+     */
+    bd_status is_valid_program(bd_addr_t addr, bd_size_t size) const override;
+
+    /** Convenience function for checking block erase validity
+     *
+     *  @param addr     Address of block to begin erasing
+     *  @param size     Size to erase in bytes
+     *  @return         bd_status::OK if erase is valid for underlying block device
+     */
+    bd_status is_valid_erase(bd_addr_t addr, bd_size_t size) const override;
+
+private:
+    // Device configuration
+    iotsdk_blockdevice_t *_bd;
+};
+
+} // namespace storage
+} // namespace iotsdk
+
+#endif /* IOTSDK_CENTAURIBLOCKDEVICE_H */
+
+/** @}*/

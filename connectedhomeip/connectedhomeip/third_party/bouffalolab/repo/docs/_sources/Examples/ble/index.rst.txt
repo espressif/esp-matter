@@ -1,0 +1,8 @@
+Bluetooth
+***************
+
+.. toctree::
+   :maxdepth: 2
+
+   BLE <demo_ble/ble>
+   Mesh <demo_mesh/mesh>

@@ -1,0 +1,35 @@
+{
+    "targets": {
+        "Default": "target_launchxl-cc1352p_highPA.json:LAUNCHXL-CC1352P1",
+        "VirtualTarget": [
+            {
+                "_name": "LAUNCHXL-CC1352P1",
+                "Target": [
+                    "target_launchxl-cc1352p.json",
+                    "target_launchxl-cc1352p_highPA.json",
+                    "target_launchxl-cc1352p_2_4_ghz.json"
+                ]
+            },
+            {
+                "_name": "LAUNCHXL-CC1352P-2",
+                "Target": [
+                    "target_launchxl-cc1352p.json",
+                    "target_launchxl-cc1352p_2_4_ghz.json",
+                    "target_launchxl-cc1352p_2_4_ghz_highPA.json"
+                ]
+            },
+            {
+                "_name": "LAUNCHXL-CC1352P-4",
+                "Target": [
+                    "target_launchxl-cc1352p-4.json",
+                    "target_launchxl-cc1352p-4_highPA.json",
+                    "target_launchxl-cc1352p_2_4_ghz.json"
+                ]
+            },
+            {
+                "_name": "CC1352EM-XS169-XS24, 10 dBm",
+                "Target": "..\/..\/cc1352r\/targets\/target_refdesign_cc1352r1_169_mhz.json"
+            }
+        ]
+    }
+}

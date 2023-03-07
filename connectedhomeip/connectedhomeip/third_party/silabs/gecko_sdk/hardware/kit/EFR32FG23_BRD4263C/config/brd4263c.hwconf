@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ASCII"?>
+<device:XMLDevice xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:device="http://www.silabs.com/ss/hwconfig/document/device.ecore" name="EFR32FG23B010F512IM48" partId="mcu.arm.efr32.fg23.efr32fg23b010f512im48" contextId="com.silabs.sdk.stack.super">
+  <mode name="DefaultMode">
+    <property object="BTL_BUTTON" propertyId="BTL_BUTTON.BSP_BTL_BUTTON.PIN" value="PB01"/>
+
+    <property object="BUTTON" propertyId="BUTTON.BSP_BUTTON0.PIN" value="PB01"/>
+    <property object="BUTTON" propertyId="BUTTON.BSP_BUTTON1.PIN" value="PB03"/>
+    <property object="BUTTON" propertyId="BUTTON.HAL_BUTTON_COUNT.INT" value="2"/>
+    <property object="BUTTON" propertyId="BUTTON.HAL_BUTTON_ENABLE.ARRAY" value="0, 1"/>
+
+    <property object="CMU" propertyId="ABPeripheral.included" value="true"/>
+    <property object="CMU" propertyId="CMU.BSP_CLK_HFXO_CTUNE.INT" value="111"/>
+    <property object="CMU" propertyId="CMU.BSP_CLK_HFXO_PRESENT.BOOL" value="1"/>
+    <property object="CMU" propertyId="CMU.BSP_CLK_LFXO_CTUNE.INT" value="38"/>
+    <property object="CMU" propertyId="CMU.BSP_CLK_LFXO_PRESENT.BOOL" value="1"/>
+
+    <property object="DCDC" propertyId="ABPeripheral.included" value="true"/>
+    <property object="DefaultMode" propertyId="mode.diagramLocation" value="100, 100"/>
+
+    <property object="EXTFLASH" propertyId="EXTFLASH.BSP_EXTFLASH_CS.PIN" value="PC04"/>
+    <property object="EXTFLASH" propertyId="EXTFLASH.BSP_EXTFLASH_USART.MOD" value="USART0"/>
+
+    <property object="I2C0" propertyId="I2C.BSP_I2C_SCL.PIN" value="PC05"/>
+    <property object="I2C0" propertyId="I2C.BSP_I2C_SDA.PIN" value="PC07"/>
+
+    <property object="I2CSENSOR" propertyId="I2CSENSOR.BSP_I2CSENSOR_ENABLE.PIN" value="PC09"/>
+    <property object="I2CSENSOR" propertyId="I2CSENSOR.BSP_I2CSENSOR_PERIPHERAL.MOD" value="I2C0"/>
+
+    <property object="GPIO" propertyId="GPIO.BSP_TRACE_SWO.PIN" value="PA03"/>
+
+    <property object="LED" propertyId="LED.BSP_LED0.PIN" value="PB02"/>
+    <property object="LED" propertyId="LED.BSP_LED1.PIN" value="PD03"/>
+    <property object="LED" propertyId="LED.HAL_LED_COUNT.INT" value="2"/>
+    <property object="LED" propertyId="LED.HAL_LED_ENABLE.ARRAY" value="0, 1"/>
+
+    <property object="PA" propertyId="PA.HAL_PA_SELECTION.ENUM" value="HAL_PA_SELECTION_HP"/>
+
+    <property object="PTI" propertyId="PTI.BSP_PTI_DFRAME.PIN" value="PD05"/>
+    <property object="PTI" propertyId="PTI.BSP_PTI_DOUT.PIN" value="PD04"/>
+
+    <property object="SERIAL" propertyId="SERIAL.BSP_SERIAL_APP_PORT.MOD" value="EUSART0"/>
+
+    <property object="SPIDISPLAY" propertyId="SPIDISPLAY.BSP_SPIDISPLAY_CS.PIN" value="PC08"/>
+    <property object="SPIDISPLAY" propertyId="SPIDISPLAY.BSP_SPIDISPLAY_ENABLE.PIN" value="PC09"/>
+    <property object="SPIDISPLAY" propertyId="SPIDISPLAY.BSP_SPIDISPLAY_EXTCOMIN.PIN" value="PC06"/>
+    <property object="SPIDISPLAY" propertyId="SPIDISPLAY.BSP_SPIDISPLAY_EXTCOMIN4.PIN" value="PC06"/>
+    <property object="SPIDISPLAY" propertyId="SPIDISPLAY.BSP_SPIDISPLAY_EXTCOMIN_CHANNEL.ENUM" value="4"/>
+    <property object="SPIDISPLAY" propertyId="SPIDISPLAY.BSP_SPIDISPLAY_USART.MOD" value="USART0"/>
+    <property object="SPIDISPLAY" propertyId="SPIDISPLAY.HAL_SPIDISPLAY_EXTCOMIN_USE_PRS.BOOL" value="1"/>
+
+    <property object="SPINCP" propertyId="SPINCP.BSP_SPINCP_NHOSTINT.PIN" value="PA05"/>
+    <property object="SPINCP" propertyId="SPINCP.BSP_SPINCP_NWAKE.PIN" value="PD02"/>
+    <property object="SPINCP" propertyId="SPINCP.BSP_SPINCP_USART_PORT.MOD" value="USART0"/>
+
+    <property object="UARTNCP" propertyId="UARTNCP.BSP_UARTNCP_USART_PORT.MOD" value="USART0"/>
+
+    <property object="EUSART0" propertyId="EUSART.BSP_EUSART_RX.PIN" value="PA09"/>
+    <property object="EUSART0" propertyId="EUSART.BSP_EUSART_TX.PIN" value="PA08"/>
+    <property object="EUSART0" propertyId="EUSART.BSP_EUSART_CTS.PIN" value="PA10"/>
+    <property object="EUSART0" propertyId="EUSART.BSP_EUSART_RTS.PIN" value="PA00"/>
+
+    <property object="USART0" propertyId="USART.BSP_USART_MOSI.PIN" value="PC01"/>
+    <property object="USART0" propertyId="USART.BSP_USART_MISO.PIN" value="PC02"/>
+    <property object="USART0" propertyId="USART.BSP_USART_CLK.PIN" value="PC03"/>
+    <property object="USART0" propertyId="USART.BSP_USART_CS.PIN" value="PC00"/>
+    <property object="USART0" propertyId="USART.hal_usart_mode.ENUM" value="spi"/>
+
+    <property object="VCOM" propertyId="VCOM.BSP_VCOM_ENABLE.PIN" value="PB00"/>
+  </mode>
+  <modeTransition>
+    <property object="RESET &#x2192; DefaultMode" propertyId="modeTransition.source" value="RESET"/>
+    <property object="RESET &#x2192; DefaultMode" propertyId="modeTransition.target" value="DefaultMode"/>
+  </modeTransition>
+</device:XMLDevice>

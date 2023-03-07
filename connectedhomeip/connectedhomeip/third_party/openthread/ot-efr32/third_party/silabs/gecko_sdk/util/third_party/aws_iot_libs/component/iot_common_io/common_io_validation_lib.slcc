@@ -1,0 +1,14 @@
+id: common_io_validation_lib
+label: Configuration Requirements Validation Lib
+package: amazon_platform
+description: UC Validation library to check if project configuration is valid and the required components are provided
+category: Third Party|Amazon FreeRTOS - AWS Libraries|Common I/O
+ui_hints:
+  visibility: never
+quality: production
+root_path: util/third_party/aws_iot_libs/script
+provides:
+  - name: common_io_validation_lib
+validation_library:
+  - path: common_io_validation.lua
+

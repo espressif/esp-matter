@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ksdk:examples xmlns:ksdk="http://nxp.com/ksdk/2.0/ksdk_manifest_v3.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nxp.com/ksdk/2.0/ksdk_manifest_v3.0.xsd manifest.xsd">
+  <!--Timestamp (UTC): 2021-03-01 08:18:13.691374-->
+  <externalDefinitions>
+    <definition extID="platform.drivers.mw_gpio.88MW320"/>
+    <definition extID="platform.drivers.power.88MW320"/>
+    <definition extID="platform.drivers.clock.88MW320"/>
+    <definition extID="platform.drivers.common.88MW320"/>
+    <definition extID="device.88MW320_CMSIS.88MW320"/>
+    <definition extID="utility.debug_console.88MW320"/>
+    <definition extID="platform.utilities.assert.88MW320"/>
+    <definition extID="component.mw_uart_adapter.88MW320"/>
+    <definition extID="platform.drivers.mw_qspi.88MW320"/>
+    <definition extID="platform.drivers.mw_flashc.88MW320"/>
+    <definition extID="component.serial_manager.88MW320"/>
+    <definition extID="component.lists.88MW320"/>
+    <definition extID="component.serial_manager_uart.88MW320"/>
+    <definition extID="platform.drivers.mw_uart.88MW320"/>
+    <definition extID="device.88MW320_startup.88MW320"/>
+    <definition extID="platform.drivers.mw_pinmux.88MW320"/>
+    <definition extID="platform.Include_core_cm4.88MW320"/>
+    <definition extID="platform.Include_common.88MW320"/>
+    <definition extID="platform.Include_dsp.88MW320"/>
+    <definition extID="platform.utilities.misc_utilities.88MW320"/>
+    <definition extID="device.88MW320_system.88MW320"/>
+    <definition extID="iar"/>
+    <definition extID="mdk"/>
+    <definition extID="armgcc"/>
+    <definition extID="mcuxpresso"/>
+    <definition extID="com.nxp.mcuxpresso"/>
+    <definition extID="com.nxp.mcuxpresso.core.debug.support.segger.debug"/>
+    <definition extID="com.nxp.mcuxpresso.core.debug.support.segger.release"/>
+    <definition extID="com.crt.advproject.config.exe.debug"/>
+    <definition extID="com.crt.advproject.config.exe.release"/>
+  </externalDefinitions>
+  <example id="rdmw320_r0_gpio_led_output" name="gpio_led_output" dependency="platform.drivers.mw_gpio.88MW320 platform.drivers.power.88MW320 platform.drivers.clock.88MW320 platform.drivers.common.88MW320 device.88MW320_CMSIS.88MW320 utility.debug_console.88MW320 platform.utilities.assert.88MW320 component.mw_uart_adapter.88MW320 platform.drivers.mw_qspi.88MW320 platform.drivers.mw_flashc.88MW320 component.serial_manager.88MW320 component.lists.88MW320 component.serial_manager_uart.88MW320 platform.drivers.mw_uart.88MW320 device.88MW320_startup.88MW320 platform.drivers.mw_pinmux.88MW320 platform.Include_core_cm4.88MW320 platform.Include_common.88MW320 platform.Include_dsp.88MW320 platform.utilities.misc_utilities.88MW320 device.88MW320_system.88MW320" category="driver_examples/gpio">
+    <projects>
+      <project type="com.crt.advproject.projecttype.exe" nature="org.eclipse.cdt.core.cnature"/>
+    </projects>
+    <memory>
+      <memoryBlock id="QSPI_FLASH_88MW320" name="QSPI_FLASH" addr="1F000000" size="00400000" type="ExtFlash" access="RO"/>
+      <memoryBlock id="SRAM_CODE_88MW320" name="SRAM_CODE" addr="00100000" size="00060000" type="RAM" access="RW"/>
+      <memoryBlock id="SRAM_SYS_88MW320" name="SRAM_SYS" addr="20000000" size="00020000" type="RAM" access="RW"/>
+    </memory>
+    <toolchainSettings>
+      <toolchainSetting id_refs="com.nxp.mcuxpresso">
+        <option id="gnu.c.compiler.option.preprocessor.def.symbols" type="stringList">
+          <value>CPU_88MW320_A0_NAPC</value>
+          <value>SERIAL_PORT_TYPE_UART=1</value>
+        </option>
+        <option id="com.crt.advproject.gas.fpu" type="enum">
+          <value>com.crt.advproject.gas.fpu.fpv4.hard</value>
+        </option>
+        <option id="com.crt.advproject.gcc.fpu" type="enum">
+          <value>com.crt.advproject.gcc.fpu.fpv4.hard</value>
+        </option>
+        <option id="gnu.c.compiler.option.optimization.flags" type="string">
+          <value>-fno-common</value>
+        </option>
+        <option id="com.crt.advproject.c.misc.dialect" type="enum">
+          <value>com.crt.advproject.misc.dialect.gnu99</value>
+        </option>
+        <option id="gnu.c.compiler.option.misc.other" type="string">
+          <value>-c -ffunction-sections -fdata-sections -ffreestanding -fno-builtin</value>
+        </option>
+        <option id="gnu.c.compiler.option.warnings.allwarn" type="boolean">
+          <value>false</value>
+        </option>
+        <option id="com.crt.advproject.link.fpu" type="enum">
+          <value>com.crt.advproject.link.fpu.fpv4.hard</value>
+        </option>
+        <option id="gnu.c.link.option.nostdlibs" type="boolean">
+          <value>true</value>
+        </option>
+      </toolchainSetting>
+    </toolchainSettings>
+    <debug_configurations>
+      <debug_configuration id_refs="com.nxp.mcuxpresso.core.debug.support.segger.debug">
+        <scripts>
+          <script type="segger_script">
+            <source path="boards/rdmw320_r0/driver_examples/gpio/led_output" project_relative_path="script" type="script">
+              <files mask="88MW320.JLinkScript"/>
+            </source>
+          </script>
+        </scripts>
+      </debug_configuration>
+      <debug_configuration id_refs="com.nxp.mcuxpresso.core.debug.support.segger.release">
+        <scripts>
+          <script type="segger_script">
+            <source path="boards/rdmw320_r0/driver_examples/gpio/led_output" project_relative_path="script" type="script">
+              <files mask="88MW320.JLinkScript"/>
+            </source>
+          </script>
+        </scripts>
+      </debug_configuration>
+      <debug_configuration id_refs="com.crt.advproject.config.exe.debug com.crt.advproject.config.exe.release">
+        <drivers>
+          <driver id_refs="QSPI_FLASH_88MW320">
+            <driverBinary path="devices/88MW320/mcuxpresso" project_relative_path="binary" type="binary">
+              <files mask="88MW320.cfx"/>
+            </driverBinary>
+          </driver>
+        </drivers>
+      </debug_configuration>
+    </debug_configurations>
+    <include_paths>
+      <include_path path="boards/rdmw320_r0/driver_examples/gpio/led_output" project_relative_path="board" type="c_include"/>
+      <include_path path="boards/rdmw320_r0/driver_examples/gpio/led_output" project_relative_path="rdmw320_r0/driver_examples/gpio/led_output" type="c_include"/>
+    </include_paths>
+    <source path="boards/rdmw320_r0/driver_examples/gpio/led_output/iar" project_relative_path="./" type="workspace" toolchain="iar">
+      <files mask="gpio_led_output.ewd"/>
+      <files mask="gpio_led_output.ewp"/>
+      <files mask="gpio_led_output.eww"/>
+    </source>
+    <source path="boards/rdmw320_r0/driver_examples/gpio/led_output/mdk" project_relative_path="./" type="workspace" toolchain="mdk">
+      <files mask="gpio_led_output.uvprojx"/>
+      <files mask="gpio_led_output.uvoptx"/>
+      <files mask="pemicro_connection_settings.ini"/>
+      <files mask="gpio_led_output.uvmpw"/>
+    </source>
+    <source path="boards/rdmw320_r0/driver_examples/gpio/led_output/armgcc" project_relative_path="./" type="workspace" toolchain="armgcc">
+      <files mask="build_all.bat"/>
+      <files mask="build_all.sh"/>
+      <files mask="clean.bat"/>
+      <files mask="clean.sh"/>
+      <files mask="CMakeLists.txt"/>
+      <files mask="flags.cmake"/>
+      <files mask="config.cmake"/>
+      <files mask="build_debug.bat"/>
+      <files mask="build_debug.sh"/>
+      <files mask="build_release.bat"/>
+      <files mask="build_release.sh"/>
+      <files mask="build_flash_debug.bat"/>
+      <files mask="build_flash_debug.sh"/>
+      <files mask="build_flash_release.bat"/>
+      <files mask="build_flash_release.sh"/>
+    </source>
+    <source path="boards/rdmw320_r0/driver_examples/gpio/led_output" project_relative_path="source" type="src">
+      <files mask="gpio_led_output.c"/>
+    </source>
+    <source path="boards/rdmw320_r0/driver_examples/gpio/led_output" project_relative_path="board" type="src">
+      <files mask="pin_mux.c"/>
+    </source>
+    <source path="boards/rdmw320_r0/driver_examples/gpio/led_output" project_relative_path="board" type="c_include">
+      <files mask="pin_mux.h"/>
+    </source>
+    <source path="boards/rdmw320_r0/driver_examples/gpio/led_output" project_relative_path="board" type="src">
+      <files mask="board.c"/>
+      <files mask="clock_config.c"/>
+    </source>
+    <source path="boards/rdmw320_r0/driver_examples/gpio/led_output" project_relative_path="board" type="c_include">
+      <files mask="board.h"/>
+      <files mask="clock_config.h"/>
+    </source>
+    <source path="boards/rdmw320_r0/driver_examples/gpio/led_output" project_relative_path="doc" type="doc" toolchain="iar mdk mcuxpresso armgcc">
+      <files mask="readme.txt"/>
+    </source>
+    <source path="boards/rdmw320_r0/driver_examples/gpio/led_output/iar" project_relative_path="88MW320/iar" type="linker" toolchain="iar">
+      <files mask="88MW320_xx_xxxx_ram.icf"/>
+      <files mask="88MW320_xx_xxxx_flash.icf"/>
+    </source>
+    <source path="boards/rdmw320_r0/driver_examples/gpio/led_output/mdk" project_relative_path="88MW320/arm" type="linker" toolchain="mdk">
+      <files mask="88MW320_xx_xxxx_ram.scf"/>
+      <files mask="88MW320_xx_xxxx_flash.scf"/>
+    </source>
+    <source path="boards/rdmw320_r0/driver_examples/gpio/led_output/armgcc" project_relative_path="88MW320/gcc" type="linker" toolchain="armgcc">
+      <files mask="88MW320_xx_xxxx_ram.ld"/>
+      <files mask="88MW320_xx_xxxx_flash.ld"/>
+    </source>
+  </example>
+</ksdk:examples>

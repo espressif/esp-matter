@@ -1,0 +1,153 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/python_action.gni")
+
+# Updates a tokenized string database in the source tree with artifacts from one
+# or more targets. Other database files may also be used.
+#
+# The database file must exist. A CSV or binary database can be created with the
+# pw/pw_tokenizer/database.py tool. An empty CSV database file can be also
+# created as a starting point.
+#
+# Args:
+#   database: if updating a database, path to an existing database in the source
+#       tree; optional if creating a database, but may provide an output
+#       directory path to override the default of
+#       "$target_gen_dir/$target_name.[csv/binary]"
+#   create: if specified, create a database instead of updating one; 'create'
+#       must be set to one of the supported database types: "csv" or "binary"
+#   targets: GN targets (executables or libraries) from which to add tokens;
+#       these targets are added to deps
+#   optional_targets: GN targets from which to add tokens, if the output files
+#       already exist; these targets are NOT added to 'deps'
+#   optional_paths: Paths or globs to files in the output directory from which
+#       to add tokens. For example, "$root_build_dir/**/*.elf" finds all ELF
+#       files in the output directory; this does NOT add anything to 'deps': add
+#       targets to 'deps' or 'targets' if they must be built first
+#   input_databases: paths to other database files from which to add tokens
+#   deps: GN targets to build prior to generating the database; artifacts from
+#       these targets are NOT implicitly used for database generation
+#   domain: if provided, extract strings from tokenization domains matching this
+#       regular expression
+#
+template("pw_tokenizer_database") {
+  assert(defined(invoker.database) || defined(invoker.create),
+         "pw_tokenizer_database requires a 'database' variable, unless " +
+             "'create' is specified")
+
+  if (defined(invoker.create)) {
+    assert(invoker.create == "csv" || invoker.create == "binary",
+           "If provided, 'create' must be \"csv\" or \"binary\"")
+    _create = invoker.create
+  } else {
+    _create = ""
+  }
+
+  if (defined(invoker.database)) {
+    _database = invoker.database
+  } else {
+    _database = "$target_gen_dir/$target_name.${invoker.create}"
+  }
+  if (defined(invoker.targets)) {
+    _targets = invoker.targets
+  } else {
+    _targets = []
+  }
+
+  if (defined(invoker.optional_targets)) {
+    _optional_targets = invoker.optional_targets
+  } else {
+    _optional_targets = []
+  }
+
+  if (defined(invoker.input_databases)) {
+    _input_databases = invoker.input_databases
+  } else {
+    _input_databases = []
+  }
+
+  if (defined(invoker.domain)) {
+    _domain = "#" + invoker.domain
+  } else {
+    _domain = ""
+  }
+
+  if (_targets == [] && _optional_targets == []) {
+    # If no targets were specified, the domain will not be used, which is OK.
+    not_needed([ "_domain" ])
+  }
+
+  pw_python_action(target_name) {
+    script = "$dir_pw_tokenizer/py/pw_tokenizer/database.py"
+
+    # Restrict parallelism for updating this database file to one thread. This
+    # makes it safe to update it from multiple toolchains.
+    pool = "$dir_pw_tokenizer/pool:database($default_toolchain)"
+
+    inputs = _input_databases
+
+    if (_create == "") {
+      args = [ "add" ]
+      if (defined(invoker.commit)) {
+        args += [
+          "--discard-temporary",
+          invoker.commit,
+        ]
+      }
+      inputs += [ _database ]
+      stamp = true
+    } else {
+      args = [
+        "create",
+        "--force",
+        "--type",
+        _create,
+      ]
+      outputs = [ _database ]
+    }
+
+    args += [
+      "--database",
+      rebase_path(_database, root_build_dir),
+    ]
+    args += rebase_path(_input_databases, root_build_dir)
+
+    foreach(target, _targets) {
+      args += [ "<TARGET_FILE($target)>$_domain" ]
+    }
+
+    # For optional targets, the build outputs may not exist, since they aren't
+    # added to deps. Use TARGET_FILE_IF_EXISTS to handle this.
+    foreach(target, _optional_targets) {
+      args += [ "<TARGET_FILE_IF_EXISTS($target)>$_domain" ]
+    }
+
+    if (defined(invoker.optional_paths)) {
+      _paths = rebase_path(invoker.optional_paths, root_build_dir)
+      assert(filter_include(_paths, [ "../*" ]) == [],
+             "Paths in 'optional_paths' must be in the out directory. Use " +
+                 "'input_databases' for files in the source tree.")
+      args += _paths
+    }
+
+    deps = _targets
+
+    if (defined(invoker.deps)) {
+      deps += invoker.deps
+    }
+  }
+}

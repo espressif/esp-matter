@@ -1,0 +1,41 @@
+id: simple_led_core
+label: Simple LED Core
+package: platform
+description: >
+  The Simple LED Driver provides an implementation of the Generic LED API.
+  This driver supports controlling GPIO based on/off type LEDs.
+
+
+  This component includes only the Simple LED driver core. To configure and create
+  instances of this driver, the Simple LED component should be included in the 
+  project.
+category: Platform|Driver|LED
+quality: production
+root_path: platform/driver/leddrv/
+source:
+  - path: src/sl_simple_led.c
+include:
+  - path: inc
+    file_list:
+      - path: sl_simple_led.h
+provides:
+  - name: simple_led_core
+requires:
+  - name: status
+  - name: emlib_gpio
+  - name: emlib_cmu
+  - name: emlib_common
+  - name: led
+template_file:
+  - path: inst/sl_simple_led_instances.c.jinja
+  - path: inst/sl_simple_led_instances.h.jinja
+template_contribution:
+  - name: event_handler
+    condition: [simple_led]
+    value:
+      event: driver_init
+      include: "sl_simple_led_instances.h"
+      handler: sl_simple_led_init_instances
+documentation:
+    docset: gecko-platform
+    document: driver/api/group-simple-led

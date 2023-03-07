@@ -1,0 +1,24 @@
+I2C
+====
+
+概述
+--------
+
+I2C (Inter-Intergrated Circuit)是一种串行通讯总线，使用多主从架构，用来连接低速外围装置。 每个器件都有一个唯一的识别地址，并且都可以作为一个发送器或接收器。 如果有两个或多个主机同时初始化，数据传输可以通过冲突检测和仲裁防止数据被破坏。 BL602/BL604包含一个I2C控制器主机，可灵活配置slaveAddr、subAddr以及传输数据，方便与从设备通信，提供2个word深度的fifo，提供中断功能，可搭配DMA使用提高效率，可灵活调整时钟频率。
+
+.. note::
+
+    i2c更多资料请参考 `BL602参考手册 <https://dev.bouffalolab.com/media/doc/602/reference_manual/zh/html/content/I2C.html>`_ 。
+
+应用实例
+----------
+
+i2c实例： ``customer_app/peripheral/demo_i2c`` 。
+
+API参考
+----------
+
+.. include:: /_build/inc/hosal_i2c.inc
+
+
+

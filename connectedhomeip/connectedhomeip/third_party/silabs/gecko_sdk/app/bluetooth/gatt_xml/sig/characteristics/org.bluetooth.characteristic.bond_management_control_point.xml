@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                name="Bond Management Control Point"
+                type="org.bluetooth.characteristic.bond_management_control_point"
+                uuid="2AA4"
+                last-modified="2014-10-17"
+                approved="Yes">
+<InformativeText>
+    <Abstract>The Bond Management Service Control Point (BMSCP) encapsulates functionality and mechanisms to control the bonds of a device. </Abstract>
+    <Summary>This control point is used with a service to provide BMS specific functionality and the ability to manage bonds on the device. This includes functions like delete the bond information of the current connection or deletion of the whole bond information. The criterion in the Operand field is defined by the service that references this characteristic</Summary>
+    
+</InformativeText>
+<Value>
+    <Field name="Op Code">
+        <InformativeText>
+		</InformativeText>
+        <Requirement>Mandatory</Requirement>
+        <Format>uint8</Format>
+        <Enumerations>
+            <Enumeration key="0" value="Reserved for futire use" />
+            <Enumeration key="1" value="Delete bond of requesting device (BR/EDR and LE)" description="Initiates the procedure to delete bonds of requesting device on BR/EDR and LE transports. The optional Authorization Code is sent as parameter to this op code."/>
+            <Enumeration key="2" value="Delete bond of requesting device (BR/EDR transport only)" description="Initiates the procedure to delete bond of requesting device on BR/EDR transport. The optional Authorization Code is sent as parameter to this op code."/>
+            <Enumeration key="3" value="Delete bond of requesting device (LE transport only)" description="Initiates the procedure to delete bond of requesting device on LE transport. The optional Authorization Code for that is sent as parameter to this op code."/>
+            <Enumeration key="4" value="Delete all bonds on server (BR/EDR and LE)" description="Initiates the procedure to delete all bonds of the device on BR/EDR and LE transport. The optional Authorization Code is sent as parameter to this op code."/>
+            <Enumeration key="5" value="Delete all bonds on server (BR/EDR transport only)" description="Initiates the procedure to delete all bonds of the device on BR/EDR transport. The optional Authorization Code is sent as parameter to this op code."/>
+            <Enumeration key="6" value="Delete all bonds on server (LE transport only)" description="Initiates the procedure to delete all bonds of the device on LE transport. The optional Authorization Code is sent as parameter to this op code."/>
+            <Enumeration key="7" value="Delete all but the active bond on server (BR/EDR and LE)" description="Initiates the procedure to delete all bonds but the requesting device on BR/EDR and LE transport. The optional Authorization Code is sent as parameter to this op code."/>
+            <Enumeration key="8" value="Delete all but the active bond on server (BR/EDR transport only)" description="Initiates the procedure to delete all bonds but the requesting device on BR/EDR transport. The optional Authorization Code is sent as parameter to this op code."/>
+            <Enumeration key="9" value="Delete all but the active bond on server (LE transport only)" description="Initiates the procedure to delete all bonds but the requesting device on LE transport. The optional Authorization Code is sent as parameter to this op code."/>
+            <ReservedForFutureUse start="10" end="255"/>
+            </Enumerations>
+	</Field>
+    <Field name="Operand">
+        <InformativeText>
+            Octet Order - LSO-MSO
+        </InformativeText>
+        <Requirement>Conditional</Requirement>
+        <Format>variable</Format>
+        <Enumerations>
+            <Enumeration key="0" value="N/A"/>
+            <Enumeration key="1" value="Authorization Code for Op Code 1" requires="C1" description="C1: If device supports transport over BR/EDR and LE (dual mode) to the same device, this Op code is mandatory otherwise excluded."/>
+            <Enumeration key="2" value="Authorization Code for Op Code 2" requires="C2" description="C2: If device supports transport over BR/EDR this Op Code is mandatory otherwise excluded."/>
+            <Enumeration key="3" value="Authorization Code for Op Code 3" requires="C3" description="C3: If device supports transport over LE this Op Code is mandatory otherwise excluded."/>
+            <Enumeration key="4" value="Authorization Code for Op Code 4" requires="C4" description="C4: If device supports transport over BR/EDR and LE (dual mode), this Op code is optional otherwise excluded."/>
+            <Enumeration key="5" value="Authorization Code for Op Code 5" requires="C5" description="C5: If device supports transport over BR/EDR this Op Code is optional otherwise excluded."/>
+            <Enumeration key="6" value="Authorization Code for Op Code 6" requires="C6" description="C6: If device supports transport over LE this Op Code is optional otherwise excluded."/>
+            <Enumeration key="7" value="Authorization Code for Op Code 7" requires="C4" description="C4: If device supports transport over BR/EDR and LE (dual mode), this Op code is optional otherwise excluded."/>
+            <Enumeration key="8" value="Authorization Code for Op Code 8" requires="C5" description="C5: If device supports transport over BR/EDR this Op Code is optional otherwise excluded."/>
+            <Enumeration key="9" value="Authorization Code for Op Code 9" requires="C6" description="C6: If device supports transport over LE this Op Code is optional otherwise excluded."/>
+            
+		</Enumerations>
+
+	</Field>
+</Value>
+    <Note>The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet</Note>
+</Characteristic>

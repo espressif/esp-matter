@@ -1,0 +1,10 @@
+[
+  {
+    "name": "selectLimit",
+    "arguments": {
+      "id": "ProfilSelector",
+      "enabled": ["Base"],
+      "selected": "Base"
+    }
+  }
+]

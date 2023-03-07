@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Personality id="20x19_adc" name="ADC" version="1.0" path="" xmlns="http://cypress.com/xsd/cyhwpersonality_v1">
+  <Dependencies>
+    <IpBlock name="20x19_adc" />
+    <Resource name="adc" />
+  </Dependencies>
+  <ExposedMembers />
+  <Parameters>
+    <ParamDoc id="apiDoc" name="Configuration Help" group="Peripheral Documentation" default="file:///`${cy_libs_path()}`/docs/group___adc_driver.html" linkText="Open ADC Documentation" visible="true" desc="Opens the Hardware Driver Documentation" />
+
+    <ParamRange id="Channels" name="Channels" group="General" default="1" min="1" max="`${CHANNELS}`" resolution="1" visible="true" editable="true" desc="" />
+
+    <Repeat count="40">
+      <ParamSignal port="channel[$idx]" name="Channel" group="Pins" visible="`${Channels > $idx}`" desc="ADC input channel" canBeEmpty="`${$idx &gt;= Channels}`" />
+    </Repeat>
+
+    <ParamString id="instNum" name="" group="" default="`${getInstNumber(&quot;adc&quot;)}`" visible="false" editable="false" desc="" />
+  </Parameters>
+
+  <DRCs/>
+
+  <ConfigFirmware>
+
+  </ConfigFirmware>
+</Personality>

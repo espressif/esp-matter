@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- IAR Project Connection File -->
+
+<iarProjectConnection version="1.2" name="FreeRTOS kernel project" oneShot="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="IarProjectConnection_1.2.xsd">
+
+  <device>
+    <name>CC3220SF</name>
+  </device>
+
+  <extraOptions>
+    <args>
+      <arg>-I$FREERTOS_INSTALL_DIR$/FreeRTOS/Source/include</arg>
+      <arg>-I$FREERTOS_INSTALL_DIR$/FreeRTOS/Source/portable/IAR/ARM_CM3</arg>
+      <arg>-I$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/source/ti/posix/iar</arg>
+      <arg>-I$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/kernel/freertos/startup</arg>
+      <arg>-I$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/source</arg>
+      <arg>-I$PROJ_DIR$/..</arg>
+      <arg>-Dewarm</arg>
+      <arg>--debug</arg>
+      <arg>--silent</arg>
+      <arg>--diag_suppress=Pa050,Go005</arg>
+      <arg>-e</arg>
+      <arg>--thumb</arg>
+    </args>
+  </extraOptions>
+
+  <asmIncludePath>
+    <path>$FREERTOS_INSTALL_DIR$/FreeRTOS/Source/include</path>
+    <path>$PROJ_DIR$/..</path>
+  </asmIncludePath>
+
+  <files>
+    <group name="Source files">
+      <path reference="$PROJ_DIR$/croutine.c">$FREERTOS_INSTALL_DIR$/FreeRTOS/Source/croutine.c</path>
+      <path reference="$PROJ_DIR$/event_groups.c">$FREERTOS_INSTALL_DIR$/FreeRTOS/Source/event_groups.c</path>
+      <path reference="$PROJ_DIR$/list.c">$FREERTOS_INSTALL_DIR$/FreeRTOS/Source/list.c</path>
+      <path reference="$PROJ_DIR$/queue.c">$FREERTOS_INSTALL_DIR$/FreeRTOS/Source/queue.c</path>
+      <path reference="$PROJ_DIR$/stream_buffer.c">$FREERTOS_INSTALL_DIR$/FreeRTOS/Source/stream_buffer.c</path>
+      <path reference="$PROJ_DIR$/tasks.c">$FREERTOS_INSTALL_DIR$/FreeRTOS/Source/tasks.c</path>
+      <path reference="$PROJ_DIR$/timers.c">$FREERTOS_INSTALL_DIR$/FreeRTOS/Source/timers.c</path>
+      <path reference="$PROJ_DIR$/port.c">$FREERTOS_INSTALL_DIR$/FreeRTOS/Source/portable/IAR/ARM_CM3/port.c</path>
+      <path reference="$PROJ_DIR$/heap_4.c">$FREERTOS_INSTALL_DIR$/FreeRTOS/Source/portable/MemMang/heap_4.c</path>
+      <path reference="$PROJ_DIR$/portasm.s">$FREERTOS_INSTALL_DIR$/FreeRTOS/Source/portable/IAR/ARM_CM3/portasm.s</path>
+      <path reference="$PROJ_DIR$/posix_clock.c">$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/source/ti/posix/freertos/clock.c</path>
+      <path reference="$PROJ_DIR$/posix_memory.c">$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/source/ti/posix/freertos/memory.c</path>
+      <path reference="$PROJ_DIR$/posix_mqueue.c">$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/source/ti/posix/freertos/mqueue.c</path>
+      <path reference="$PROJ_DIR$/posix_pthread_barrier.c">$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/source/ti/posix/freertos/pthread_barrier.c</path>
+      <path reference="$PROJ_DIR$/posix_pthread_cond.c">$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/source/ti/posix/freertos/pthread_cond.c</path>
+      <path reference="$PROJ_DIR$/posix_pthread.c">$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/source/ti/posix/freertos/pthread.c</path>
+      <path reference="$PROJ_DIR$/posix_pthread_mutex.c">$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/source/ti/posix/freertos/pthread_mutex.c</path>
+      <path reference="$PROJ_DIR$/posix_pthread_mutex.c">$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/source/ti/posix/freertos/pthread_rwlock.c</path>
+      <path reference="$PROJ_DIR$/posix_sched.c">$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/source/ti/posix/freertos/sched.c</path>
+      <path reference="$PROJ_DIR$/posix_semaphore.c">$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/source/ti/posix/freertos/semaphore.c</path>
+      <path reference="$PROJ_DIR$/posix_sleep.c">$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/source/ti/posix/freertos/sleep.c</path>
+      <path reference="$PROJ_DIR$/posix_timer.c">$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/source/ti/posix/freertos/timer.c</path>
+      <path reference="$PROJ_DIR$/posix_Mtx.c">$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/source/ti/posix/freertos/Mtx.c</path>
+      <path reference="$PROJ_DIR$/AppHooks_freertos.c">$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/kernel/freertos/dpl/AppHooks_freertos.c</path>
+      <path reference="$PROJ_DIR$/ClockP_freertos.c">$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/kernel/freertos/dpl/ClockP_freertos.c</path>
+      <path reference="$PROJ_DIR$/DebugP_freertos.c">$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/kernel/freertos/dpl/DebugP_freertos.c</path>
+      <path reference="$PROJ_DIR$/MutexP_freertos.c">$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/kernel/freertos/dpl/MutexP_freertos.c</path>
+      <path reference="$PROJ_DIR$/QueueP_freertos.c">$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/kernel/freertos/dpl/QueueP_freertos.c</path>
+      <path reference="$PROJ_DIR$/SemaphoreP_freertos.c">$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/kernel/freertos/dpl/SemaphoreP_freertos.c</path>
+      <path reference="$PROJ_DIR$/StaticAllocs_freertos.c">$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/kernel/freertos/dpl/StaticAllocs_freertos.c</path>
+      <path reference="$PROJ_DIR$/SwiP_freertos.c">$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/kernel/freertos/dpl/SwiP_freertos.c</path>
+      <path reference="$PROJ_DIR$/SystemP_freertos.c">$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/kernel/freertos/dpl/SystemP_freertos.c</path>
+      <path reference="$PROJ_DIR$/HwiPCC32XX_freertos.c">$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/kernel/freertos/dpl/HwiPCC32XX_freertos.c</path>
+      <path reference="$PROJ_DIR$/PowerCC32XX_freertos.c">$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/kernel/freertos/dpl/PowerCC32XX_freertos.c</path>
+      <path reference="$PROJ_DIR$/startup_cc32xx_iar.c">$SIMPLELINK_CC32XX_SDK_INSTALL_DIR$/kernel/freertos/startup/startup_cc32xx_iar.c</path>
+    </group>
+    
+    <group name="Header files">
+      <path reference="$PROJ_DIR$/FreeRTOSConfig.h">./../FreeRTOSConfig.h</path>
+    </group>
+  </files>
+</iarProjectConnection>

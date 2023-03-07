@@ -1,0 +1,7 @@
+coverage:
+  status:
+    patch: off
+    project: off
+
+ignore:
+  - "third_party/**/*"

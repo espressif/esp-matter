@@ -1,0 +1,463 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>timer &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../index.html"/>
+        <link rel="up" title="外设 API" href="index.html"/>
+        <link rel="next" title="WDG" href="wdg.html"/>
+        <link rel="prev" title="UART" href="uart.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">BL602 API 参考</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../ble/index.html">蓝牙</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../network/index.html">连网</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">外设</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="dac.html">DAC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="i2c.html">I2C</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pwm.html">PWM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rng.html">RNG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rtc.html">RTC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spi.html">SPI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="uart.html">UART</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">TIMER</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">概述</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">应用实例</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#api">API参考</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="wdg.html">WDG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gpio.html">GPIO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adc.html">ADC</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../protocols/index.html">协议</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../storage/index.html">存储</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../system/index.html">系统</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../Examples/index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">BL602 API 参考</a> &raquo;</li>
+        
+          <li><a href="index.html">外设 API</a> &raquo;</li>
+        
+      <li>timer</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/api-reference/peripherals/timer.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="timer">
+<h1>timer<a class="headerlink" href="#timer" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<h2>概述<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<p>通用定时器，用于定时，当时间到达我们所设置的定时时间会产生定时中断，可以用来完成定时任务。</p>
+<div class="admonition note">
+<p class="first admonition-title">注解</p>
+<p class="last">timer更多资料请参考 <a class="reference external" href="https://dev.bouffalolab.com/media/doc/602/open/reference_manual/zh/html/content/TIMER.html">BL602参考手册</a> 。</p>
+</div>
+</div>
+<div class="section" id="id2">
+<h2>应用实例<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<p>串口实例： <code class="docutils literal notranslate"><span class="pre">customer_app/peripheral/demo_timer</span></code> 。</p>
+</div>
+<div class="section" id="api">
+<h2>API参考<a class="headerlink" href="#api" title="永久链接至标题"></a></h2>
+<div class="section" id="header-file">
+<h3>Header File<a class="headerlink" href="#header-file" title="永久链接至标题"></a></h3>
+<ul class="simple">
+<li><span class="xref std std-doc">components/platform/hosal/include/hosal_timer.h</span></li>
+</ul>
+</div>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="永久链接至标题"></a></h3>
+<dl class="function">
+<dt id="_CPPv416hosal_timer_initP17hosal_timer_dev_t">
+<span id="_CPPv316hosal_timer_initP17hosal_timer_dev_t"></span><span id="_CPPv216hosal_timer_initP17hosal_timer_dev_t"></span><span id="hosal_timer_init__hosal_timer_dev_tP"></span><span class="target" id="group__hal__timer_1ga1483fd61efc5dce17506f3c5a39351f2"></span>int <code class="descname">hosal_timer_init</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv417hosal_timer_dev_t" title="hosal_timer_dev_t">hosal_timer_dev_t</a> *<em>tim</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416hosal_timer_initP17hosal_timer_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>init a hardware timer</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 : success</li>
+<li>other :error </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">tim</span></code>: timer device</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv417hosal_timer_startP17hosal_timer_dev_t">
+<span id="_CPPv317hosal_timer_startP17hosal_timer_dev_t"></span><span id="_CPPv217hosal_timer_startP17hosal_timer_dev_t"></span><span id="hosal_timer_start__hosal_timer_dev_tP"></span><span class="target" id="group__hal__timer_1ga99f78213301b09db2a78adecfcf0256a"></span>int <code class="descname">hosal_timer_start</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv417hosal_timer_dev_t" title="hosal_timer_dev_t">hosal_timer_dev_t</a> *<em>tim</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417hosal_timer_startP17hosal_timer_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>start a hardware timer</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 : success</li>
+<li>other : error </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">tim</span></code>: timer device</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv416hosal_timer_stopP17hosal_timer_dev_t">
+<span id="_CPPv316hosal_timer_stopP17hosal_timer_dev_t"></span><span id="_CPPv216hosal_timer_stopP17hosal_timer_dev_t"></span><span id="hosal_timer_stop__hosal_timer_dev_tP"></span><span class="target" id="group__hal__timer_1ga50f9a9af4d724b8032fdb855a6b582d4"></span>void <code class="descname">hosal_timer_stop</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv417hosal_timer_dev_t" title="hosal_timer_dev_t">hosal_timer_dev_t</a> *<em>tim</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416hosal_timer_stopP17hosal_timer_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>stop a hardware timer</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>none </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">tim</span></code>: timer device</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv420hosal_timer_finalizeP17hosal_timer_dev_t">
+<span id="_CPPv320hosal_timer_finalizeP17hosal_timer_dev_t"></span><span id="_CPPv220hosal_timer_finalizeP17hosal_timer_dev_t"></span><span id="hosal_timer_finalize__hosal_timer_dev_tP"></span><span class="target" id="group__hal__timer_1ga0bccaf2c80b6a1f8f5f3ed7db0a47725"></span>int <code class="descname">hosal_timer_finalize</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv417hosal_timer_dev_t" title="hosal_timer_dev_t">hosal_timer_dev_t</a> *<em>tim</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420hosal_timer_finalizeP17hosal_timer_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>De-initialises an TIMER interface, Turns off an TIMER hardware interface</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 : success</li>
+<li>other : error </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">tim</span></code>: timer device</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="structures">
+<h3>Structures<a class="headerlink" href="#structures" title="永久链接至标题"></a></h3>
+<dl class="class">
+<dt id="_CPPv420hosal_timer_config_t">
+<span id="_CPPv320hosal_timer_config_t"></span><span id="_CPPv220hosal_timer_config_t"></span><span id="hosal_timer_config_t"></span><span class="target" id="structhosal__timer__config__t"></span><em class="property">struct </em><code class="descname">hosal_timer_config_t</code><a class="headerlink" href="#_CPPv420hosal_timer_config_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Define timer config args </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N20hosal_timer_config_t6periodE">
+<span id="_CPPv3N20hosal_timer_config_t6periodE"></span><span id="_CPPv2N20hosal_timer_config_t6periodE"></span><span id="hosal_timer_config_t::period__uint32_t"></span><span class="target" id="structhosal__timer__config__t_1a7d88af24ee11ee32d1598131948d090b"></span>uint32_t <code class="descname">period</code><a class="headerlink" href="#_CPPv4N20hosal_timer_config_t6periodE" title="永久链接至目标"></a><br /></dt>
+<dd><p>timer period, us </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N20hosal_timer_config_t11reload_modeE">
+<span id="_CPPv3N20hosal_timer_config_t11reload_modeE"></span><span id="_CPPv2N20hosal_timer_config_t11reload_modeE"></span><span id="hosal_timer_config_t::reload_mode__uint8_t"></span><span class="target" id="structhosal__timer__config__t_1a51f8b0af7ae800565c84a205c8142731"></span>uint8_t <code class="descname">reload_mode</code><a class="headerlink" href="#_CPPv4N20hosal_timer_config_t11reload_modeE" title="永久链接至目标"></a><br /></dt>
+<dd><p>auto reload or not </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N20hosal_timer_config_t2cbE">
+<span id="_CPPv3N20hosal_timer_config_t2cbE"></span><span id="_CPPv2N20hosal_timer_config_t2cbE"></span><span id="hosal_timer_config_t::cb__hosal_timer_cb_t"></span><span class="target" id="structhosal__timer__config__t_1a6056ff4a73d8aa9f87fbba4411425327"></span><a class="reference internal" href="#_CPPv416hosal_timer_cb_t" title="hosal_timer_cb_t">hosal_timer_cb_t</a> <code class="descname">cb</code><a class="headerlink" href="#_CPPv4N20hosal_timer_config_t2cbE" title="永久链接至目标"></a><br /></dt>
+<dd><p>timer handle when expired </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N20hosal_timer_config_t3argE">
+<span id="_CPPv3N20hosal_timer_config_t3argE"></span><span id="_CPPv2N20hosal_timer_config_t3argE"></span><span id="hosal_timer_config_t::arg__voidP"></span><span class="target" id="structhosal__timer__config__t_1a1617deef5fe91202a29b888844e1ad9c"></span>void *<code class="descname">arg</code><a class="headerlink" href="#_CPPv4N20hosal_timer_config_t3argE" title="永久链接至目标"></a><br /></dt>
+<dd><p>timer handle args </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv417hosal_timer_dev_t">
+<span id="_CPPv317hosal_timer_dev_t"></span><span id="_CPPv217hosal_timer_dev_t"></span><span id="hosal_timer_dev_t"></span><span class="target" id="structhosal__timer__dev__t"></span><em class="property">struct </em><code class="descname">hosal_timer_dev_t</code><a class="headerlink" href="#_CPPv417hosal_timer_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Define timer dev handle </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N17hosal_timer_dev_t4portE">
+<span id="_CPPv3N17hosal_timer_dev_t4portE"></span><span id="_CPPv2N17hosal_timer_dev_t4portE"></span><span id="hosal_timer_dev_t::port__int8_t"></span><span class="target" id="structhosal__timer__dev__t_1a342d016d28da297cbaea80fdd783599b"></span>int8_t <code class="descname">port</code><a class="headerlink" href="#_CPPv4N17hosal_timer_dev_t4portE" title="永久链接至目标"></a><br /></dt>
+<dd><p>timer port </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N17hosal_timer_dev_t6configE">
+<span id="_CPPv3N17hosal_timer_dev_t6configE"></span><span id="_CPPv2N17hosal_timer_dev_t6configE"></span><span id="hosal_timer_dev_t::config__hosal_timer_config_t"></span><span class="target" id="structhosal__timer__dev__t_1a85396091a741a743f2f0652d311e1a9c"></span><a class="reference internal" href="#_CPPv420hosal_timer_config_t" title="hosal_timer_config_t">hosal_timer_config_t</a> <code class="descname">config</code><a class="headerlink" href="#_CPPv4N17hosal_timer_dev_t6configE" title="永久链接至目标"></a><br /></dt>
+<dd><p>timer config </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N17hosal_timer_dev_t4privE">
+<span id="_CPPv3N17hosal_timer_dev_t4privE"></span><span id="_CPPv2N17hosal_timer_dev_t4privE"></span><span id="hosal_timer_dev_t::priv__voidP"></span><span class="target" id="structhosal__timer__dev__t_1ada93a0a0a689bfb69b3e4b985bfb00df"></span>void *<code class="descname">priv</code><a class="headerlink" href="#_CPPv4N17hosal_timer_dev_t4privE" title="永久链接至目标"></a><br /></dt>
+<dd><p>priv data </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="macros">
+<h3>Macros<a class="headerlink" href="#macros" title="永久链接至标题"></a></h3>
+<dl class="macro">
+<dt id="c.TIMER_RELOAD_PERIODIC">
+<span class="target" id="group__hal__timer_1ga4f0febdc46b055737dcbce2075e8cb21"></span><code class="descname">TIMER_RELOAD_PERIODIC</code><a class="headerlink" href="#c.TIMER_RELOAD_PERIODIC" title="永久链接至目标"></a></dt>
+<dd><p>timer reload automatic </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.TIMER_RELOAD_ONCE">
+<span class="target" id="group__hal__timer_1ga419918416ddfe0c1f9bfd33541259d09"></span><code class="descname">TIMER_RELOAD_ONCE</code><a class="headerlink" href="#c.TIMER_RELOAD_ONCE" title="永久链接至目标"></a></dt>
+<dd><p>timer reload once and need to reload manually </p>
+</dd></dl>
+
+</div>
+<div class="section" id="type-definitions">
+<h3>Type Definitions<a class="headerlink" href="#type-definitions" title="永久链接至标题"></a></h3>
+<dl class="type">
+<dt id="_CPPv416hosal_timer_cb_t">
+<span id="_CPPv316hosal_timer_cb_t"></span><span id="_CPPv216hosal_timer_cb_t"></span><span id="hosal_timer_cb_t"></span><span class="target" id="group__hal__timer_1ga5c112a04302e9884c5729b543a1f1554"></span><em class="property">typedef </em>void (*<code class="descname">hosal_timer_cb_t</code>)<span class="sig-paren">(</span>void *arg<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416hosal_timer_cb_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Define timer handle function type </p>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="wdg.html" class="btn btn-neutral float-right" title="WDG" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="uart.html" class="btn btn-neutral" title="UART" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

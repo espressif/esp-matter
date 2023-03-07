@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="LoggerIdle" title="Logger Idle Configuration" version="1">
+
+<page name="Module" title="Module Settings">
+<html><body><table>
+  <tr>
+      <td><form>
+        <p>A logger which routes `Log` events to a users transport function.</p>
+        <p> </p>
+        <p> This logger processes log events as they are generated, stores them in
+             a buffer and during idle sends a section of the buffer to the users
+             transport function.</p>
+        <p> </p>
+      </form></td>
+  </tr>
+  <tr>
+    <td><control type="checkbox" label="Add the LoggerIdle module to my configuration" value="value:this.$used" bold="true"/></td>
+  </tr>
+  <tr></tr>
+  <tr><td>
+    <h1>Logging Options</h1>
+    <table>
+      <tr>
+        <td><control type="label" label="Buffer Size" align="left"/></td>
+        <td><control type="editbox"
+             value="value:this.bufferSize"
+             tooltip="value:this.bufferSize.$summary"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="Transport Function" align="left"/></td>
+        <td><control type="editbox"
+             value="value:this.transportFxn"
+             tooltip="value:this.transportFxn.$summary"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="Transport Type" align="left"/></td>
+        <td><control type="droplist"
+             value="value:this.transportType"
+             tooltip="value:this.transportType.$summary"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="Custom Transport" align="left"/></td>
+        <td><control type="editbox"
+             value="value:this.customTransportType"
+             tooltip="value:this.customTransportType.$summary"/></td>
+      </tr>
+      <tr></tr>
+        <tr>
+          <td><control type="label" label="Optimization parameters" align="left"/></td>
+      </tr>
+      <tr>
+        <td><control type="checkbox"
+             label="Timestamp"
+             value="value:this.isTimestampEnabled"
+             tooltip="value:this.isTimestampEnabled.$summary"/></td>
+      </tr>
+    </table>
+  </td></tr>
+</table></body></html>
+</page>
+</gep>

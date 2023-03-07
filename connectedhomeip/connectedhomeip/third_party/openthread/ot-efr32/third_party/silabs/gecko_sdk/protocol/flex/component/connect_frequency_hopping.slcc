@@ -1,0 +1,23 @@
+id: "connect_frequency_hopping"
+label: "Frequency Hopping"
+package: "Flex"
+category: "Connect"
+quality: "production"
+description: "Implements frequency hopping based on FCC specifications. A companion component can be installed to add frequency hopping CLI commands."
+provides:
+  - name: "connect_frequency_hopping"
+requires:
+  - name: "connect_stack_common"
+  - name: "connect_frequency_hopping_implementation"
+  - name: "sleeptimer"
+recommends:
+  - id: "connect_frequency_hopping_source"
+config_file:
+  - path: "protocol/flex/stack/config/component_config/frequency-hopping-config.h"
+template_contribution:
+  - name: component_catalog
+    value: connect_frequency_hopping
+
+documentation:
+  docset: connect-stack
+  document: group-frequency-hopping

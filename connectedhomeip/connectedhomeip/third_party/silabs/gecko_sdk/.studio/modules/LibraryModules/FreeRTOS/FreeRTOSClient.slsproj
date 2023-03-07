@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="com.silabs.sdk.exx32.external.FreeRTOS" label="FreeRTOS" contentRoot="$(sdkInstallationPath:default())/util/third_party/freertos">
+  <property key="category" value="efm32|Third party"/>
+  <includePath uri="Source/include" />
+  <includePath uri="Demo/Common/include" />
+
+  <!-- Cortex M0+ -->
+  <includePath uri="Source/portable/IAR/ARM_CM0" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="com.silabs.ide.si32.iar" />
+  <includePath uri="Source/portable/GCC/ARM_CM0" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="com.silabs.ide.si32.gcc" />
+
+  <!-- Cortex M3 -->
+  <includePath uri="Source/portable/IAR/ARM_CM3" partCompatibility="::ARMCore==CORTEX_M3" toolchainCompatibility="com.silabs.ide.si32.iar" />
+  <includePath uri="Source/portable/GCC/ARM_CM3" partCompatibility="::ARMCore==CORTEX_M3" toolchainCompatibility="com.silabs.ide.si32.gcc" />
+
+  <!-- Cortex M4 -->
+  <includePath uri="Source/portable/IAR/ARM_CM4F" partCompatibility="::ARMCore==CORTEX_M4F" toolchainCompatibility="com.silabs.ide.si32.iar" />
+  <includePath uri="Source/portable/GCC/ARM_CM4F" partCompatibility="::ARMCore==CORTEX_M4F" toolchainCompatibility="com.silabs.ide.si32.gcc" />
+
+  <folder name="FreeRTOS">
+    <folder name="$(partGroupName)">
+      <!-- Cortex M0+ -->
+      <file name="portasm.s" uri="Source/portable/IAR/ARM_CM0/portasm.s" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="com.silabs.ide.si32.iar" />
+      <file name="port_iar.c" uri="Source/portable/IAR/ARM_CM0/port.c" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="com.silabs.ide.si32.iar" />
+      <file name="port_gcc.c" uri="Source/portable/GCC/ARM_CM0/port.c" partCompatibility="::ARMCore==CORTEX_M0+" toolchainCompatibility="com.silabs.ide.si32.gcc" />
+
+      <!-- Cortex M3 -->
+      <file name="portasm.s" uri="Source/portable/IAR/ARM_CM3/portasm.s" partCompatibility="::ARMCore==CORTEX_M3" toolchainCompatibility="com.silabs.ide.si32.iar" />
+      <file name="port_iar.c" uri="Source/portable/IAR/ARM_CM3/port.c" partCompatibility="::ARMCore==CORTEX_M3" toolchainCompatibility="com.silabs.ide.si32.iar" />
+      <file name="port_gcc.c" uri="Source/portable/GCC/ARM_CM3/port.c" partCompatibility="::ARMCore==CORTEX_M3" toolchainCompatibility="com.silabs.ide.si32.gcc" />
+
+      <!-- Cortex M4 -->
+      <file name="portasm.s" uri="Source/portable/IAR/ARM_CM4F/portasm.s" partCompatibility="::ARMCore==CORTEX_M4F" toolchainCompatibility="com.silabs.ide.si32.iar" />
+      <file name="port_iar.c" uri="Source/portable/IAR/ARM_CM4F/port.c" partCompatibility="::ARMCore==CORTEX_M4F" toolchainCompatibility="com.silabs.ide.si32.iar" />
+      <file name="port_gcc.c" uri="Source/portable/GCC/ARM_CM4F/port.c" partCompatibility="::ARMCore==CORTEX_M4F" toolchainCompatibility="com.silabs.ide.si32.gcc" />
+    </folder>
+    <folder name="Source" uri="Source" includeAllFiles="true" includeAllFolders="false">
+      <folder name="portable">
+        <folder name="SiliconLabs" uri="Source/portable/SiliconLabs" includeAllFiles="true" includeAllFolders="false" />
+        <folder name="MemMang" uri="Source/portable/MemMang" includeAllFiles="true" includeAllFolders="false" />
+      </folder>
+    </folder>
+    <folder name="Demo">
+      <folder name="Common">
+        <folder name="Minimal" uri="Demo/Common/Minimal" includeAllFiles="true" includeAllFolders="false" />
+      </folder>
+    </folder>
+  </folder>
+</project>

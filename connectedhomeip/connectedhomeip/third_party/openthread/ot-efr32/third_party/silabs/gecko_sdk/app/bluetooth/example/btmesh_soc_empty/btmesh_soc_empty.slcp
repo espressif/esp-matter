@@ -1,0 +1,89 @@
+project_name: btmesh_soc_empty
+package: Btmesh
+label: Bluetooth Mesh - SoC Empty
+description: >
+  Demonstrates the bare minimum needed for a Bluetooth Mesh C application.
+  The application starts Unprovisioned Device Beaconing after booting, and
+  then waits to be provisioned.
+
+category: Bluetooth Mesh Examples
+quality: production
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Bluetooth Mesh"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]
+
+component:
+  - id: app_assert
+  - id: bootloader_interface
+  - id: btmesh_feature_gatt_prov_bearer
+  - id: btmesh_feature_node
+  - id: btmesh_feature_relay
+  - id: btmesh_proxy
+  - id: btmesh_stack
+  - id: mpu
+  - id: in_place_ota_dfu
+  - id: rail_util_pti
+
+source:
+  - path: app.c
+  - path: main.c
+
+include:
+  - path: .
+    file_list:
+    - path: app.h
+
+config_file:
+  - override:
+      component: btmesh_dcd_configuration
+      file_id: dcd_configuration_file_id
+    path: dcd_config.btmeshconf
+    directory: btmeshconf
+
+readme:
+  - path: ../../documentation/example/btmesh_soc_empty/readme.md
+
+other_file:
+  - path: ../../script/create_bl_files.bat
+  - path: ../../script/create_bl_files.sh
+  - path: ../../documentation/example/btmesh_soc_empty/readme_img0.png
+    folder: images
+  - path: ../../documentation/example/btmesh_soc_empty/readme_img1.png
+    folder: images
+  - path: ../../documentation/example/btmesh_soc_empty/readme_img2.png
+    folder: images
+  - path: ../../documentation/example/btmesh_soc_empty/readme_img3.png
+    folder: images
+  - path: ../../documentation/example/btmesh_soc_empty/readme_img4.png
+    folder: images
+  - path: ../../documentation/example/btmesh_soc_empty/readme_img5.png
+    folder: images
+
+configuration:
+  - name: SL_HEAP_SIZE
+    value: "0x4000"
+  - name: SL_PSA_KEY_USER_SLOT_COUNT
+    value: "0"
+    condition:
+      - psa_crypto
+  - name: SL_STACK_SIZE
+    value: "0x1200"
+
+tag:
+  - hardware:device:flash:512
+  - hardware:device:ram:32
+  - hardware:rf:band:2400
+
+ui_hints:
+  highlight:
+    - path: config/btconf/gatt_configuration.btconf
+      focus: false
+    - path: config/btmeshconf/dcd_config.btmeshconf
+      focus: false
+    - path: readme.md
+      focus: true

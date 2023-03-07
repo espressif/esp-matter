@@ -1,0 +1,24 @@
+id: bootloader_euart_driver
+label: Bootloader EUART Driver
+package: bootloader
+description: >
+  DMA-driven EUART driver.
+category: Platform|Bootloader|Drivers
+quality: production
+source:
+  - path: platform/bootloader/driver/btl_driver_euart.c
+include:
+  - path: platform/bootloader/driver
+    file_list:
+      - path: btl_driver_util.h
+      - path: btl_serial_driver.h
+provides:
+  - name: bootloader_euart_driver
+  - name: bootloader_serial_transport
+  - name: bootloader_nonsecure_incompatible
+    condition: [bootloader_core_nonsecure]
+requires:
+  - name: bootloader_delay_driver
+config_file:
+  - path: platform/bootloader/config/btl_euart_driver_cfg.h
+    file_id: btl_euart_driver_cfg

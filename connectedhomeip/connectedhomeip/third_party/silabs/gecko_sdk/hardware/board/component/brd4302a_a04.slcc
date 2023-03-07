@@ -1,0 +1,68 @@
+!!omap
+- id: brd4302a_a04
+- label: BRD4302A rev A04
+- package: platform
+- description: Board support for BRD4302A.
+- category: Platform|Board|Radio Board
+- quality: production
+- requires:
+  - name: bgm121a256v2
+  - name: brd4302a_config
+  - name: hardware_board_mainboard
+- provides:
+  - name: brd4302a_revision
+  - name: brd4302a_a04
+  - name: hardware_board
+  - name: hardware_board_rb
+  - name: hardware_board_has_si70xx
+  - name: hardware_board_has_tempsensor
+  - name: hardware_board_has_vcom
+  - name: hardware_board_has_spiflash
+  - name: hardware_board_supports_rf_band_2400
+  - name: hardware_board_supports_1_rf_band
+  - name: hardware_board_default_rf_band
+  - name: hardware_board_default_rf_band_2400
+- recommends:
+  - id: brd4001a
+  - id: iostream_usart
+    instance:
+    - vcom
+  - id: bootloader_uart_driver
+  - id: i2cspm
+    instance:
+    - sensor
+  - id: ls013b7dh03
+  - id: memlcd_usart
+  - id: simple_led
+    instance:
+    - led0
+    - led1
+  - id: skrhaae010
+  - id: simple_button
+    instance:
+    - btn0
+    - btn1
+  - id: mx25_flash_shutdown_usart
+  - id: bootloader_spi_controller_usart_driver
+  - id: bootloader_spi_peripheral_usart_driver
+- template_contribution:
+  - name: board_default_init
+    value: sl_board_disable_vcom()
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD4302A"'
+  - name: SL_BOARD_REV
+    value: '"A04"'
+- tag:
+  - board:pn:BRD4302
+  - board:variant:A
+  - board:revision:A04
+  - board:device:bgm121a256v2
+  - hardware:has:vcom
+  - hardware:has:pti
+  - hardware:has:sensor:si7021
+  - hardware:has:display:ls013b7dh03
+  - hardware:has:led:2
+  - hardware:has:joystick:skrhaae010
+  - hardware:has:button:2
+  - hardware:has:memory:spi:mx25r8035f

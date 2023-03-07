@@ -1,0 +1,50 @@
+!!omap
+- id: brd2703a_a02
+- label: BRD2703A rev A02
+- package: platform
+- description: Board support for BRD2703A.
+- category: Platform|Board|Starter Kit
+- quality: production
+- requires:
+  - name: efr32mg24b210f1536im48
+  - name: brd2703a_config
+- provides:
+  - name: brd2703a_revision
+  - name: brd2703a_a02
+  - name: hardware_board
+  - name: hardware_board_stk
+  - name: hardware_board_has_vcom
+  - name: hardware_board_has_hfxo
+  - name: hardware_board_has_lfxo
+  - name: hardware_board_supports_rf_band_2400
+  - name: hardware_board_supports_1_rf_band
+  - name: hardware_board_default_rf_band
+  - name: hardware_board_default_rf_band_2400
+- recommends:
+  - id: iostream_eusart
+    instance:
+    - vcom
+  - id: bootloader_uart_driver
+  - id: simple_led
+    instance:
+    - led0
+    - led1
+  - id: simple_button
+    instance:
+    - btn0
+    - btn1
+- template_contribution: []
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD2703A"'
+  - name: SL_BOARD_REV
+    value: '"A02"'
+- tag:
+  - board:pn:BRD2703
+  - board:variant:A
+  - board:revision:A02
+  - board:device:efr32mg24b210f1536im48
+  - hardware:has:vcom
+  - hardware:has:pti
+  - hardware:has:led:2
+  - hardware:has:button:2

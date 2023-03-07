@@ -1,0 +1,163 @@
+package: Zigbee
+description: Simple C-based rules engine for demonstrating automatic control through
+  a gateway.
+label: Device Table
+quality: extend
+id: zigbee_device_table
+category: Zigbee|Utility
+provides:
+   - name: "zigbee_device_table"
+source:
+  - path: protocol/zigbee/app/framework/plugin/device-table/device-table.c
+  - path: protocol/zigbee/app/framework/plugin/device-table/device-table-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/device-table/device-table-discovery.c
+  - path: protocol/zigbee/app/framework/plugin/device-table/device-table-tracking.c
+  - path: protocol/zigbee/app/framework/plugin/device-table/device-table-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/device-table
+    file_list:
+      - path: device-table.h
+      - path: device-table-internal.h
+
+template_file:
+  - path: "protocol/zigbee/app/framework/plugin/device-table/template/sl_zigbee_device_table_dispatcher.c.jinja"
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_device_table
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emberAfPluginDeviceTableInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: local_data_init
+      function_name: emberAfPluginDeviceTableInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: init_done
+      function_name: emberAfPluginDeviceTableInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: pre_command_received
+      function_name: emAfPluginDeviceTablePreCommandReceivedCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: pre_zdo_message_received
+      function_name: emAfPluginDeviceTablePreZDOMessageReceived    
+  - name: zigbee_stack_callback
+    value:
+      callback_type: stack_status
+      function_name: emberAfPluginDeviceTableStackStatusCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: device-table
+      help: device-table related commands.
+  - name: cli_command
+    value:
+      group: device-table
+      name: disc
+      handler: emAfDeviceTableDiscoverPresentNodeCommand
+      help: Forces a (re)discovery of the device based on the node ID.
+      argument:
+      - type: uint16
+        help: Node ID to discover
+  - name: cli_command
+    value:
+      group: device-table
+      name: isend
+      handler: emAfDeviceTableIndexSendCommand
+      help: Sends to a device in the device table.
+      argument:
+      - type: uint16
+        help: Device table index
+  - name: cli_command
+    value:
+      group: device-table
+      name: send
+      handler: emAfDeviceTableSendCommand
+      help: Sends to a device in the device table.
+      argument:
+      - type: hex
+        help: EUI64 of device
+      - type: uint8
+        help: Endpoint of device
+  - name: cli_command
+    value:
+      group: device-table
+      name: irepair
+      handler: emAfDeviceTableIndexRouteRepairCommand
+      help: Kicks off device route repair.
+      argument:
+      - type: uint16
+        help: Device table index
+  - name: cli_command
+    value:
+      group: device-table
+      name: repair
+      handler: emAfDeviceTableRouteRepairCommand
+      help: Kicks off device route repair.
+      argument:
+      - type: hex
+        help: EUI64 of device
+  - name: cli_command
+    value:
+      group: device-table
+      name: iremove
+      handler: emAfDeviceTableIndexRemoveCommand
+      help: Removes device from the device table.
+      argument:
+      - type: uint16
+        help: Device table index
+  - name: cli_command
+    value:
+      group: device-table
+      name: remove
+      handler: emAfDeviceTableRemoveCommand
+      help: Removes device from the device table.
+      argument:
+      - type: hex
+        help: EUI64 of device
+  - name: cli_command
+    value:
+      group: device-table
+      name: save
+      handler: emAfDeviceTableSaveCommand
+      help: Saves the file.
+  - name: cli_command
+    value:
+      group: device-table
+      name: load
+      handler: emAfDeviceTableLoadCommand
+      help: Loads the file.
+  - name: cli_command
+    value:
+      group: device-table
+      name: leave
+      handler: emAfPluginDeviceTableSendLeaveCommand
+      help: Removes a device from the device table.
+      argument:
+      - type: hex
+        help: EUI64 of device
+  - name: cli_command
+    value:
+      group: device-table
+      name: clear
+      handler: emberAfDeviceTableClear
+      help: Clears the device table.
+  - name: cli_command
+    value:
+      group: device-table
+      name: print
+      handler: emberAfDeviceTablePrintDeviceTable
+  - name: zigbee_stack_callback
+    value:
+      callback_type: trust_center_join
+      function_name: emAfPluginDeviceTableTrustCenterJoinCallback
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/device-table

@@ -1,0 +1,16 @@
+id: zigbee_msla_check
+label: Zigbee MSLA Check
+package: Zigbee
+category: Zigbee|Stack
+quality: production
+ui_hints:
+  visibility: never
+
+provides:
+  - name: "zigbee_msla_check"
+
+description: When this component is present, the zigbeed application will perform the msla check in run time.
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/msla-check

@@ -1,0 +1,22 @@
+!!omap
+- id: efm32gg_dk3750
+- label: EFM32GG-DK3750
+- package: platform
+- description: Kit BSP support for the EFM32 Giant Gecko Development Kit.
+- category: Platform|Board|Kit|Development Kit
+- quality: production
+- requires:
+  - name: hardware_board_from_efm32gg-dk3750
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_dk
+- define:
+  - name: SL_KIT_NAME
+    value: '"EFM32GG-DK3750"'
+  - name: SL_KIT_REV
+    value: '"A09"'
+- tag:
+  - kit:opn:EFM32GG-DK3750
+  - kit:pn:DK3750
+  - kit:variant:A
+  - kit:revision:A09

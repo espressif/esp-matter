@@ -1,0 +1,15 @@
+[
+      {
+        "name": "Main",
+        "location": "0x0000",
+        "sig_models" : [
+          {"mid":"0x1000", "name":"Generic OnOff Server"},
+          {"mid":"0x1002", "name":"Generic Level Server"},
+          {"mid":"0x1004", "name":"Generic Default Transition Time Server"},
+          {"mid":"0x1006", "name":"Generic Power OnOff Server"},
+          {"mid":"0x1007", "name":"Generic Power OnOff Setup Server"},
+          {"mid":"0x1300", "name":"Light Lightness Server"},
+          {"mid":"0x1301", "name":"Light Lightness Setup Server"}
+        ]
+      }
+]

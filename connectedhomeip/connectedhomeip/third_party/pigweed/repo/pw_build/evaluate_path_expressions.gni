@@ -1,0 +1,89 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("python_action.gni")
+
+# Scans files for special GN target expressions and evaluates them, modifying
+# the files in-place.
+#
+# The supported expressions are the same as within the arguments list of a
+# pw_python_action target, namely:
+#
+#   <TARGET_FILE(//some/label:here)> - expands to the
+#       output file (such as a .a or .elf) from a GN target
+#   <TARGET_FILE_IF_EXISTS(//some/label:here)> - expands to
+#       the output file if the target exists, or nothing
+#   <TARGET_OBJECTS(//some/label:here)> - expands to the
+#       object files produced by the provided GN target
+#
+# This template may be useful, for example, to generate an artifact file
+# containing a list of binary objects produced by targets within a build.
+# Typically, this is used as a subtarget of a larger template, rather than a
+# standalone target.
+#
+# Args:
+#   files: List of file paths to scan for expressions.
+#
+# Example:
+#
+#   template("executable_with_artifacts") {
+#     executable("${target_name}.exe") {
+#       sources = invoker.sources
+#     }
+#
+#     _artifacts_file = "$target_gen_dir/${target_name}_artifacts.json"
+#     _artifacts = {
+#       binary = "<TARGET_FILE(:${target_name}.exe)>"
+#       objects = "<TARGET_OBJECTS(:${target_name}.exe)>"
+#     }
+#     write_file(_artifacts_file, _artifacts, "json")
+#
+#     pw_evaluate_path_expressions("${target_name}.evaluate") {
+#       files = [ _artifacts_file ]
+#     }
+#
+#     group(target_name) {
+#       deps = [
+#         ":${target_name}.exe",
+#         ":${target_name}.evaluate",
+#       ]
+#     }
+#   }
+#
+template("pw_evaluate_path_expressions") {
+  assert(defined(invoker.files),
+         "pw_evaluate_path_expressions requires input files to scan")
+
+  _script_args = [
+    "--gn-root",
+    rebase_path("//", root_build_dir),
+    "--current-path",
+    rebase_path(".", root_build_dir),
+    "--default-toolchain",
+    default_toolchain,
+    "--current-toolchain",
+    current_toolchain,
+  ]
+
+  foreach(_file, invoker.files) {
+    _script_args += [ rebase_path(_file) ]
+  }
+
+  pw_python_action(target_name) {
+    script = "$dir_pw_build/py/pw_build/gn_resolver.py"
+    inputs = invoker.files
+    args = _script_args
+    stamp = true
+  }
+}

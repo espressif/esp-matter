@@ -1,0 +1,54 @@
+id: ncp
+label: NCP Interface
+package: Bluetooth
+description: Component that provides the Bluetooth Network Co-Processor (NCP) communication interface.
+category: Bluetooth|NCP|Target
+quality: production
+root_path: app/bluetooth/common/ncp
+config_file:
+  - path: config/sl_ncp_config.h
+source:
+  - path: sl_ncp.c
+include:
+  - path: .
+    file_list:
+      - path: sl_ncp.h
+provides:
+  - name: ncp
+requires:
+  - name: app_assert
+  - name: bluetooth_stack
+  - name: power_manager
+  - name: emlib_common
+  - name: emlib_core
+  - name: ncp_evt_filter
+  - name: simple_com
+  - name: simple_timer
+  - name: status
+  - name: bootloader_interface
+recommends:
+  - id: simple_timer
+define:
+  - name: "SL_BT_API_FULL"
+template_contribution:
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: sl_ncp.h
+      handler: sl_ncp_init
+    priority: 5
+  - name: event_handler
+    value:
+      event: internal_app_process_action
+      include: sl_ncp.h
+      handler: sl_ncp_step
+  - name: power_manager_handler
+    value:
+      event: is_ok_to_sleep
+      include: sl_ncp.h
+      handler: sli_ncp_is_ok_to_sleep
+  - name: power_manager_handler
+    value:
+      event: sleep_on_isr_exit
+      include: sl_ncp.h
+      handler: sli_ncp_sleep_on_isr_exit

@@ -1,0 +1,25 @@
+PWM
+====
+
+概述
+--------
+
+脉冲宽度调制（Pulse width modulation，简称PWM）是一种模拟控制方式，根据相应载荷的变化来调制晶体管基极或MOS管栅极的偏置，来实现晶体管或MOS管导通时间的改变，从而实现开关稳定电源输出的改变。这种方式能使电源的输出电压在工作条件变化时保持恒定，是利用微处理器的数字信号对模拟电路进行控制的一种非常有效的技术，广泛应用在从测量、通信到功率控制与变换的许多领域中。
+
+.. note::
+
+    pwm更多资料请参考 `BL602参考手册 <https://dev.bouffalolab.com/media/doc/602/reference_manual/zh/html/content/PWM.html>`_ 。
+
+应用实例
+----------
+
+DAC实例： ``customer_app/peripheral/demo_pwm`` 。
+
+API参考
+----------
+
+.. include:: /_build/inc/hosal_pwm.inc
+
+
+
+

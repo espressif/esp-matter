@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Day of Week" type="org.bluetooth.characteristic.day_of_week" uuid="2A09">
+	<InformativeText>
+	</InformativeText>
+	<Value>
+		<Field name="Day of Week">
+			<Requirement>Mandatory</Requirement>
+			<Format>uint8</Format>
+			<Unit>org.bluetooth.unit.time.day</Unit>
+			<Minimum>0</Minimum>
+			<Maximum>7</Maximum>
+			<Enumerations>
+				<Enumeration key="1" value="Monday" />
+				<Enumeration key="2" value="Tuesday" />
+				<Enumeration key="3" value="Wednesday" />
+				<Enumeration key="4" value="Thursday" />
+				<Enumeration key="5" value="Friday" />
+				<Enumeration key="6" value="Saturday" />
+				<Enumeration key="7" value="Sunday" />
+			</Enumerations>
+			<AdditionalValues>
+				<Enumeration key="0" value="Day of week is not known"/>
+			</AdditionalValues>            
+		</Field>
+	</Value>
+</Characteristic>

@@ -1,0 +1,195 @@
+{
+    "patables": {
+        "RfDesign": [
+            {
+                "_name": "CC2652RSIP-EM",
+                "FrequencyRange": {
+                    "Min": "2360",
+                    "Max": "2500",
+                    "PaSettingTable": {
+                        "PaSetting": [
+                            {
+                                "_text": "5",
+                                "Value": "0xA03A"
+                            },
+                            {
+                                "_text": "4",
+                                "Value": "0x6620"
+                            },
+                            {
+                                "_text": "3",
+                                "Value": "0x5869"
+                            },
+                            {
+                                "_text": "2",
+                                "Value": "0x4060"
+                            },
+                            {
+                                "_text": "1",
+                                "Value": "0x3CA0"
+                            },
+                            {
+                                "_text": "0",
+                                "Value": "0x2E9C"
+                            },
+                            {
+                                "_text": "-3",
+                                "Value": "0x38DE"
+                            },
+                            {
+                                "_text": "-5",
+                                "Value": "0x1CD7"
+                            },
+                            {
+                                "_text": "-6",
+                                "Value": "0x16D5"
+                            },
+                            {
+                                "_text": "-9",
+                                "Value": "0x0AD0"
+                            },
+                            {
+                                "_text": "-10",
+                                "Value": "0x0ACE"
+                            },
+                            {
+                                "_text": "-12",
+                                "Value": "0x0ACC"
+                            },
+                            {
+                                "_text": "-15",
+                                "Value": "0x08C9"
+                            },
+                            {
+                                "_text": "-18",
+                                "Value": "0x04C7"
+                            },
+                            {
+                                "_text": "-20",
+                                "Value": "0x04C5"
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                "_name": "CC2652PSIP-EM",
+                "FrequencyRange": {
+                    "Min": "2360",
+                    "Max": "2500",
+                    "PaSettingTable": {
+                        "PaSetting": [
+                            {
+                                "_text": "5",
+                                "Value": "0x6C3E"
+                            },
+                            {
+                                "_text": "4",
+                                "Value": "0x8A2A"
+                            },
+                            {
+                                "_text": "3",
+                                "Value": "0x581B"
+                            },
+                            {
+                                "_text": "2",
+                                "Value": "0x3863"
+                            },
+                            {
+                                "_text": "1",
+                                "Value": "0x26A3"
+                            },
+                            {
+                                "_text": "0",
+                                "Value": "0x269E"
+                            },
+                            {
+                                "_text": "-3",
+                                "Value": "0x26E0"
+                            },
+                            {
+                                "_text": "-5",
+                                "Value": "0x0ED8"
+                            },
+                            {
+                                "_text": "-6",
+                                "Value": "0x08D5"
+                            },
+                            {
+                                "_text": "-9",
+                                "Value": "0x08D0"
+                            },
+                            {
+                                "_text": "-10",
+                                "Value": "0x08CF"
+                            },
+                            {
+                                "_text": "-12",
+                                "Value": "0x00CC"
+                            },
+                            {
+                                "_text": "-15",
+                                "Value": "0x00C9"
+                            },
+                            {
+                                "_text": "-18",
+                                "Value": "0x08C7"
+                            },
+                            {
+                                "_text": "-20",
+                                "Value": "0x08C6"
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                "_name": "CC2652PSIP-EM_10dBm",
+                "FrequencyRange": {
+                    "Min": "2360",
+                    "Max": "2500",
+                    "PaSettingTable": {
+                        "PaSetting": [
+                            {
+                                "_text": "10",
+                                "Value": "0xFFFF",
+                                "TxHighPa": "0x103F5F"
+                            },
+                            {
+                                "_text": "9",
+                                "Value": "0xFFFF",
+                                "TxHighPa": "0x10335A"
+                            },
+                            {
+                                "_text": "8",
+                                "Value": "0xFFFF",
+                                "TxHighPa": "0x143661"
+                            },
+                            {
+                                "_text": "7",
+                                "Value": "0xFFFF",
+                                "TxHighPa": "0x144F2A"
+                            },
+                            {
+                                "_text": "6",
+                                "Value": "0xFFFF",
+                                "TxHighPa": "0x144F26"
+                            },
+                            {
+                                "_text": "5.1",
+                                "Value": "0xFFFF",
+                                "TxHighPa": "0x144722"
+                            }
+                        ]
+                    }
+                }
+            }
+        ],
+        "DefaultPaTable": {
+            "PaSetting": {
+                "_text": "Unknown",
+                "Value": "0xFFFF"
+            }
+        }
+    }
+}

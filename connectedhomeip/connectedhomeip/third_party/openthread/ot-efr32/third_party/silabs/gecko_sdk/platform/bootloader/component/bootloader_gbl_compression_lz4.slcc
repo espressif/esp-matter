@@ -1,0 +1,19 @@
+id: bootloader_gbl_compression_lz4
+label: GBL Compression (LZ4)
+package: bootloader
+description: Support LZ4 compressed GBL upgrade files.
+category: Platform|Bootloader|Core
+quality: production
+source:
+  - path: platform/bootloader/parser/compression/btl_decompress_lz4.c
+include:
+  - path: platform/bootloader/parser/compression
+    file_list:
+    - path: btl_decompress_lz4.h
+define:
+  - name: BTL_PARSER_SUPPORT_LZ4
+    value: 1
+provides:
+  - name: bootloader_gbl_compression_lz4
+  - name: bootloader_nonsecure_incompatible
+    condition: [bootloader_core_nonsecure]

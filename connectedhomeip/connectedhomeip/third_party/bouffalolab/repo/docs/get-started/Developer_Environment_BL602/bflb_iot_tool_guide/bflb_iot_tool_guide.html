@@ -1,0 +1,275 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>bflb_iot_tool使用方法 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Examples/index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+      <li>bflb_iot_tool使用方法</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/get-started/Developer_Environment_BL602/bflb_iot_tool_guide/bflb_iot_tool_guide.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="bflb-iot-tool">
+<h1>bflb_iot_tool使用方法<a class="headerlink" href="#bflb-iot-tool" title="永久链接至标题"></a></h1>
+<p>在tools/flash_tool目录下有两个可执行文件: bflb_iot_tool和bflb_iot_tool.exe,分别对应linux和windows环境，通过传入不同的参数，我们可以以命令行的形式自定义烧录，具体使用方法如下，以linux环境为例。</p>
+<div class="section" id="id1">
+<h2>参数列表<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<ul class="simple">
+<li>--chipname：芯片名字BL602或者BL702 <strong>必填</strong></li>
+<li>--interface：默认uart</li>
+<li>--port：com口，默认自动查找，不指定的话默认 <strong>端口0</strong></li>
+<li>--baudrate：波特率默认115200</li>
+<li>--xtal：xtal,602默认40M，702默认32M</li>
+<li>--dts：device tree文件(<strong>必填</strong>,可以为空或者指定文件不存在，如果指定为空或者文件不存在则使用默认dts文件</li>
+<li>--pt：partition table文件(<strong>必填</strong>，可以为空或者指定文件不存在，如果指定为空或者文件不存在则使用默认d分区文件）</li>
+<li>--firmware：默认img目录下的project.bin ，一般指定为我们要烧录工程的bin</li>
+<li>--build：只生成镜像</li>
+<li>--erase：擦除flash</li>
+<li>--single：单文件烧写</li>
+<li>--addr：烧写地址默认0</li>
+<li>--config：eflash_loader_cfg.ini</li>
+<li>--ota： 指定ota文件生成目录</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2>示例<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<p>比如我们要在602平台烧录customer_app/bl602_demo_event/build_out/bl602_demo_event.bin,参数分别如下：</p>
+<ul class="simple">
+<li>chipname=BL602</li>
+<li>interface=uart</li>
+<li>port=/dev/ttyUSB0</li>
+<li>boudrate=2000000</li>
+<li>xtal=40M</li>
+<li>dts=customer_app/bl602_demo_event/img_conf/bl_factory_params_IoTKitA_40M.dts</li>
+<li>pt=customer_app/bl602_demo_event/img_conf/partition_cfg_2M.toml</li>
+<li>firmware=customer_app/bl602_demo_event/build_out/bl602_demo_event.bin</li>
+</ul>
+<p>以上参数有些默认可以不用指定。</p>
+<ul class="simple">
+<li>执行命令  <strong>./tools/flash_tool/bflb_iot_tool --chipname=BL602 --port=/dev/ttyUSB1 --baudrate=2000000 --dts=customer_app/bl602_demo_event/img_conf/bl_factory_params_IoTKitA_40M.dts --pt=customer_app/bl602_demo_event/img_conf/partition_cfg_2M.toml --firmware=customer_app/bl602_demo_event/build_out/bl602_demo_event.bin</strong>, 出现下图所示表明烧录成功。</li>
+</ul>
+<div class="figure">
+<img alt="" src="../../../_images/1.png" />
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

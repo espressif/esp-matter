@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2015 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.floor_number" 
+uuid="2AB2" name="Floor Number" last-modified="2015-05-19" approved="Yes">
+	<InformativeText>
+		<Abstract>The Floor Number characteristic describes in which floor the device is installed.</Abstract>
+	</InformativeText>
+	<Value>
+		<Field name="Floor Number">
+			<Requirement>Mandatory</Requirement>
+			<Format>uint8</Format>
+		</Field>
+	</Value>
+</Characteristic>

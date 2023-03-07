@@ -1,0 +1,17 @@
+[
+    {
+        "files": [
+            "+../../swi.c -> swi.c",
+            "+../../README.md -> README.md",
+            "+../../README.html -> README.html",
+            "+../../swi.syscfg -> swi.syscfg",
+            "+../../overview.rov.json -> overview.rov.json",
+            "+../swi.cfg -> swi.cfg",
+            "+../../../../../../../source/ti/boards/CC3235S_LAUNCHXL/Board.html -> Board.html",
+            "+cc32xxs_tirtos.cmd -> cc32xxs_tirtos.cmd",
+            "+../makefile.defs -> makefile.defs",
+            "+../../image.syscfg -> image.syscfg",
+            "+../../userFiles/dummy-root-ca-cert -> userFiles/dummy-root-ca-cert"
+        ]
+    }
+]

@@ -1,0 +1,22 @@
+!!omap
+- id: efm32_g8xx_stk
+- label: EFM32-G8XX-STK
+- package: platform
+- description: Kit BSP support for the EFM32 Gecko Starter Kit.
+- category: Platform|Board|Kit|Starter Kit
+- quality: production
+- requires:
+  - name: hardware_board_from_efm32-g8xx-stk
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_stk
+- define:
+  - name: SL_KIT_NAME
+    value: '"EFM32-G8XX-STK"'
+  - name: SL_KIT_REV
+    value: '"C01"'
+- tag:
+  - kit:opn:EFM32-G8xx-STK
+  - kit:pn:G8xx-STK
+  - kit:variant:A
+  - kit:revision:C01

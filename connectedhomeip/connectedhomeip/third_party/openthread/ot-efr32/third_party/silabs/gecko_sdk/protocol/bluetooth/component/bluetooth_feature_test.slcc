@@ -1,0 +1,15 @@
+id: "bluetooth_feature_test"
+label: "Direct Test Mode"
+package: "Bluetooth"
+description: >
+  Bluetooth DTM test feature
+category: "Bluetooth|Stack|DTM"
+quality: "production"
+root_path: "protocol/bluetooth"
+requires:
+  - name: "bluetooth_stack"
+provides:
+  - name: "bluetooth_feature_test"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_test

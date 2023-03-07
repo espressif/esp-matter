@@ -1,0 +1,1359 @@
+/*****************************************************************************/
+/**
+ * Copyright 2020 Silicon Laboratories, Inc.
+ *
+ *****************************************************************************/
+//
+// *** Generated file. Do not edit! ***
+//
+
+#include PLATFORM_HEADER
+#ifdef EZSP_HOST
+#include "stack/include/ember-types.h"
+#else
+#include "stack/include/ember.h"
+#endif // EZSP_HOST
+
+
+{# INCOMING_MESSAGE #}
+// Incoming Message
+#ifdef EZSP_HOST
+void emAfIncomingMessage(
+      // Incoming message type
+      EmberIncomingMessageType type,
+      // The aps Frame
+      EmberApsFrame *apsFrame,
+      // The link quality
+      uint8_t lastHopLqi,
+      // The energy level
+      int8_t lastHopRssi,
+      // The sender of the message.
+      EmberNodeId sender,
+      // The index of a binding that matches the message
+      // matching binding.
+      uint8_t bindingIndex,
+      // The index of the entry in the address table
+      uint8_t addressIndex,
+      // The message length
+      uint8_t messageLength,
+      // message
+      uint8_t *messageContents)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "incoming_message" -%}
+void {{ cb['function_name'] }}(
+      // Incoming message type
+      EmberIncomingMessageType type,
+      // The aps Frame
+      EmberApsFrame *apsFrame,
+      // The link quality
+      uint8_t lastHopLqi,
+      // The energy level
+      int8_t lastHopRssi,
+      // The sender of the message.
+      EmberNodeId sender,
+      // The index of a binding that matches the message
+      // matching binding.
+      uint8_t bindingIndex,
+      // The index of the entry in the address table
+      uint8_t addressIndex,
+      // The message length
+      uint8_t messageLength,
+      // message
+      uint8_t *messageContents)
+;
+{% endif -%}
+{% endfor -%}
+#else // !EZSP_HOST
+void emAfIncomingMessage(
+      // Incoming message type
+      EmberIncomingMessageType type,
+      // The aps Frame
+      EmberApsFrame *apsFrame,
+      // message
+      EmberMessageBuffer message)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "incoming_message" -%}
+void {{ cb['function_name'] }}(
+      // Incoming message type
+      EmberIncomingMessageType type,
+      // The aps Frame
+      EmberApsFrame *apsFrame,
+      // message
+      EmberMessageBuffer message)
+;
+{% endif -%}
+{% endfor -%}
+#endif // EZSP_HOST
+
+{# MESSAGE_SENT #}
+// Message Sent
+#ifdef EZSP_HOST
+void emAfMessageSent(
+      // Outgoing message type
+      EmberOutgoingMessageType type,
+      // Index or destination of the message
+      uint16_t indexOrDestination,
+      // The aps Frame
+      EmberApsFrame *apsFrame,
+      // Message tag
+      uint8_t messageTag,
+      // Message delivery status
+      EmberStatus status,
+      // The length of the messageContents
+      uint8_t messageLength,
+      // Message data
+      uint8_t *messageContents)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "message_sent" -%}
+void {{ cb['function_name'] }}(
+      // Outgoing message type
+      EmberOutgoingMessageType type,
+      // Index or destination of the message
+      uint16_t indexOrDestination,
+      // The aps Frame
+      EmberApsFrame *apsFrame,
+      // Message tag
+      uint8_t messageTag,
+      // Message delivery status
+      EmberStatus status,
+      // The length of the messageContents
+      uint8_t messageLength,
+      // Message data
+      uint8_t *messageContents)
+;
+{% endif -%}
+{% endfor -%}
+#else // !EZSP_HOST
+void emAfMessageSent(
+      // Outgoing message type
+      EmberOutgoingMessageType type,
+      // Index or destination of the message
+      uint16_t indexOrDestination,
+      // The aps Frame
+      EmberApsFrame *apsFrame,
+      // message
+      EmberMessageBuffer message,
+      // Message delivery status
+      EmberStatus status)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "message_sent" -%}
+void {{ cb['function_name'] }}(
+      // Outgoing message type
+      EmberOutgoingMessageType type,
+      // Index or destination of the message
+      uint16_t indexOrDestination,
+      // The aps Frame
+      EmberApsFrame *apsFrame,
+      // message
+      EmberMessageBuffer message,
+      // Message delivery status
+      EmberStatus status)
+;
+{% endif -%}
+{% endfor -%}
+#endif // EZSP_HOST
+
+
+{# TRUST_CENTER_JOIN #}
+// Trust Center Join
+void emAfTrustCenterJoin(
+      // Joining node's id
+      EmberNodeId newNodeId,
+      // Joining node's Eui64
+      EmberEUI64 newNodeEui64,
+      // Status
+      EmberDeviceUpdate status,
+      // Parent Id of the joining node
+      EmberNodeId parentOfNewNode)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "trust_center_join" -%}
+void {{ cb['function_name'] }}(
+      // Joining node's id
+      EmberNodeId newNodeId,
+      // Joining node's Eui64
+      EmberEUI64 newNodeEui64,
+      // Status
+      EmberDeviceUpdate status,
+      // Parent Id of the joining node
+      EmberNodeId parentOfNewNode)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# MARK_BUFFERS #}
+// Mark Buffers
+void emAfMarkBuffers(void)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "mark_buffers" -%}
+void {{ cb['function_name'] }}(void)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# PACKET_HANDOFF_INCOMING #}
+// Packet Handoff Incoming
+void emAfPacketHandoffIncoming(
+      EmberZigbeePacketType packetType,
+      EmberMessageBuffer packetBuffer,
+      uint8_t index,
+      // Return: 
+      void *data)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "packet_handoff_incoming" -%}
+void {{ cb['function_name'] }}(
+      EmberZigbeePacketType packetType,
+      EmberMessageBuffer packetBuffer,
+      uint8_t index,
+      // Return: 
+      void *data)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# PACKET_HANDOFF_OUTGOING #}
+// Packet Handoff Outgoing
+void emAfPacketHandoffOutgoing(
+      EmberZigbeePacketType packetType,
+      EmberMessageBuffer packetBuffer,
+      uint8_t index,
+      // Return: 
+      void *data)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "packet_handoff_outgoing" -%}
+void {{ cb['function_name'] }}(
+      EmberZigbeePacketType packetType,
+      EmberMessageBuffer packetBuffer,
+      uint8_t index,
+      // Return: 
+      void *data)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# INCOMING_MFG_TEST_MESSAGE #}
+// Incoming Mfg Test Message
+void emAfIncomingMfgTestMessage(
+      uint8_t messageType,
+      uint8_t dataLength,
+      // Return: 
+      uint8_t *data)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "incoming_mfg_test_message" -%}
+void {{ cb['function_name'] }}(
+      uint8_t messageType,
+      uint8_t dataLength,
+      // Return: 
+      uint8_t *data)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# OVERRIDE_INCOMING_ROUTE_RECORD #}
+// Override Incoming Route Record
+void emAfOverrideIncomingRouteRecord(
+      EmberNodeId source,
+      EmberEUI64 sourceEui,
+      uint8_t relayCount,
+      EmberMessageBuffer header,
+      uint8_t relayListIndex,
+      // Return: 
+      bool *consumed)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "override_incoming_route_record" -%}
+void {{ cb['function_name'] }}(
+      EmberNodeId source,
+      EmberEUI64 sourceEui,
+      uint8_t relayCount,
+      EmberMessageBuffer header,
+      uint8_t relayListIndex,
+      // Return: 
+      bool *consumed)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# OVERRIDE_APPEND_SOURCE_ROUTE #}
+// Override Append Source Route
+// Return: Added bytes
+void emAfOverrideAppendSourceRoute(
+      EmberNodeId destination,
+      // Return: 
+      EmberMessageBuffer *header,
+      // Return: 
+      bool *consumed)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "override_append_source_route" -%}
+void {{ cb['function_name'] }}(
+      EmberNodeId destination,
+      // Return: 
+      EmberMessageBuffer *header,
+      // Return: 
+      bool *consumed)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# OVERRIDE_FURTHUR_INDEX_FOR_SOURCE_ROUTE_ADD_ENTRY #}
+// Override Furthur Index For Source Route Add Entry
+void emAfOverrideFurthurIndexForSourceRouteAddEntry(
+      EmberNodeId id,
+      // Return: 
+      uint8_t *furtherIndex)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "override_furthur_index_for_source_route_add_entry" -%}
+void {{ cb['function_name'] }}(
+      EmberNodeId id,
+      // Return: 
+      uint8_t *furtherIndex)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# STACK_STATUS #}
+// Stack Status
+void emAfStackStatus(
+      // Stack status
+      EmberStatus status)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "stack_status" -%}
+void {{ cb['function_name'] }}(
+      // Stack status
+      EmberStatus status)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# ENERGY_SCAN_RESULT #}
+// Energy Scan Result
+void emAfEnergyScanResult(
+      // The 802.15.4 channel number that was scanned.
+      uint8_t channel,
+      // The maximum RSSI value found on the channel.
+      int8_t maxRssiValue)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "energy_scan_result" -%}
+void {{ cb['function_name'] }}(
+      // The 802.15.4 channel number that was scanned.
+      uint8_t channel,
+      // The maximum RSSI value found on the channel.
+      int8_t maxRssiValue)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# NETWORK_FOUND #}
+// Network Found
+void emAfNetworkFound(
+      // The parameters associated with the network found.
+      EmberZigbeeNetwork *networkFound,
+      // The link quality indication of the network found.
+      uint8_t lqi,
+      // The received signal strength indication of the network found.
+      int8_t rssi)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "network_found" -%}
+void {{ cb['function_name'] }}(
+      // The parameters associated with the network found.
+      EmberZigbeeNetwork *networkFound,
+      // The link quality indication of the network found.
+      uint8_t lqi,
+      // The received signal strength indication of the network found.
+      int8_t rssi)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# SCAN_COMPLETE #}
+// Scan Complete
+void emAfScanComplete(
+      // The channel on which the current error occurred. Undefined for the case
+      // of EMBER_SUCCESS.
+      uint8_t channel,
+      // The error condition that occurred on the current channel. Value will be
+      // EMBER_SUCCESS when the scan has completed.
+      EmberStatus status)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "scan_complete" -%}
+void {{ cb['function_name'] }}(
+      // The channel on which the current error occurred. Undefined for the case
+      // of EMBER_SUCCESS.
+      uint8_t channel,
+      // The error condition that occurred on the current channel. Value will be
+      // EMBER_SUCCESS when the scan has completed.
+      EmberStatus status)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# UNUSED_PAN_ID_FOUND #}
+// Unused Pan Id Found
+void emAfUnusedPanIdFound(
+      // The unused panID which has been found.
+      EmberPanId panId,
+      // The channel that the unused panID was found on.
+      uint8_t channel)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "unused_pan_id_found" -%}
+void {{ cb['function_name'] }}(
+      // The unused panID which has been found.
+      EmberPanId panId,
+      // The channel that the unused panID was found on.
+      uint8_t channel)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# CHILD_JOIN #}
+// Child Join
+#ifdef EZSP_HOST
+void emAfChildJoin(
+      // The index of the child of interest.
+      uint8_t index,
+      // True if the child is joining. False the child is leaving.
+      bool joining,
+      // The node ID of the child.
+      EmberNodeId childId,
+      // The EUI64 of the child.
+      EmberEUI64 childEui64,
+      // The node type of the child.
+      EmberNodeType childType)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "child_join" -%}
+void {{ cb['function_name'] }}(
+      // The index of the child of interest.
+      uint8_t index,
+      // True if the child is joining. False the child is leaving.
+      bool joining,
+      // The node ID of the child.
+      EmberNodeId childId,
+      // The EUI64 of the child.
+      EmberEUI64 childEui64,
+      // The node type of the child.
+      EmberNodeType childType)
+;
+{% endif -%}
+{% endfor -%}
+#else // !EZSP_HOST
+void emAfChildJoin(
+      // The index of the child of interest.
+      uint8_t index,
+      // True if the child is joining. False the child is leaving.
+      bool joining)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "child_join" -%}
+void {{ cb['function_name'] }}(
+      // The index of the child of interest.
+      uint8_t index,
+      // True if the child is joining. False the child is leaving.
+      bool joining)
+;
+{% endif -%}
+{% endfor -%}
+#endif // EZSP_HOST
+
+
+{# DUTY_CYCLE #}
+// Duty Cycle
+#ifdef EZSP_HOST
+void emAfDutyCycle(
+      // The channel page whose duty cycle state has changed.
+      uint8_t channelPage,
+      // The channel number whose duty cycle state has changed.
+      uint8_t channel,
+      // The current duty cycle state.
+      EmberDutyCycleState state,
+      // The total number of connected end devices that are being monitored for
+      // duty cycle.
+      uint8_t totalDevices,
+      // Consumed duty cycles of end devices that are being monitored. The first
+      // entry always be the local stack's nodeId, and thus the total aggregate
+      // duty cycle for the device.
+      EmberPerDeviceDutyCycle *arrayOfDeviceDutyCycles)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "duty_cycle" -%}
+void {{ cb['function_name'] }}(
+      // The channel page whose duty cycle state has changed.
+      uint8_t channelPage,
+      // The channel number whose duty cycle state has changed.
+      uint8_t channel,
+      // The current duty cycle state.
+      EmberDutyCycleState state,
+      // The total number of connected end devices that are being monitored for
+      // duty cycle.
+      uint8_t totalDevices,
+      // Consumed duty cycles of end devices that are being monitored. The first
+      // entry always be the local stack's nodeId, and thus the total aggregate
+      // duty cycle for the device.
+      EmberPerDeviceDutyCycle *arrayOfDeviceDutyCycles)
+;
+{% endif -%}
+{% endfor -%}
+#else // !EZSP_HOST
+void emAfDutyCycle(
+      // The channel page whose duty cycle state has changed.
+      uint8_t channelPage,
+      // The channel number whose duty cycle state has changed.
+      uint8_t channel,
+      // The current duty cycle state.
+      EmberDutyCycleState state)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "duty_cycle" -%}
+void {{ cb['function_name'] }}(
+      // The channel page whose duty cycle state has changed.
+      uint8_t channelPage,
+      // The channel number whose duty cycle state has changed.
+      uint8_t channel,
+      // The current duty cycle state.
+      EmberDutyCycleState state)
+;
+{% endif -%}
+{% endfor -%}
+#endif // EZSP_HOST
+
+
+{# REMOTE_SET_BINDING #}
+// Remote Set Binding
+// Return: ZDO response status.
+void emAfRemoteSetBinding(
+      // Return: The contents of the binding entry.
+      EmberBindingTableEntry *entry)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "remote_set_binding" -%}
+void {{ cb['function_name'] }}(
+      // Return: The contents of the binding entry.
+      EmberBindingTableEntry *entry)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# REMOTE_DELETE_BINDING #}
+// Remote Delete Binding
+// Return: ZDO response status
+void emAfRemoteDeleteBinding(
+      // The index of the binding whose deletion was requested.
+      uint8_t index)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "remote_delete_binding" -%}
+void {{ cb['function_name'] }}(
+      // The index of the binding whose deletion was requested.
+      uint8_t index)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# POLL_COMPLETE #}
+// Poll Complete
+void emAfPollComplete(
+      // An EmberStatus value: EMBER_SUCCESS - Data was received in response to
+      // the poll. EMBER_MAC_NO_DATA - No data was pending.
+      // EMBER_DELIVERY_FAILED - The poll message could not be sent.
+      // EMBER_MAC_NO_ACK_RECEIVED - The poll message was sent but not
+      // acknowledged by the parent.
+      EmberStatus status)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "poll_complete" -%}
+void {{ cb['function_name'] }}(
+      // An EmberStatus value: EMBER_SUCCESS - Data was received in response to
+      // the poll. EMBER_MAC_NO_DATA - No data was pending.
+      // EMBER_DELIVERY_FAILED - The poll message could not be sent.
+      // EMBER_MAC_NO_ACK_RECEIVED - The poll message was sent but not
+      // acknowledged by the parent.
+      EmberStatus status)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# POLL #}
+// Poll
+void emAfPoll(
+      // The node ID of the child that is requesting data.
+      EmberNodeId childId,
+      // True if transmit expected, false otherwise.
+      bool transmitExpected)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "poll" -%}
+void {{ cb['function_name'] }}(
+      // The node ID of the child that is requesting data.
+      EmberNodeId childId,
+      // True if transmit expected, false otherwise.
+      bool transmitExpected)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# DEBUG #}
+// Debug
+void emAfDebug(
+      // debug message
+      EmberMessageBuffer message)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "debug" -%}
+void {{ cb['function_name'] }}(
+      // debug message
+      EmberMessageBuffer message)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# INCOMING_MANY_TO_ONE_ROUTE_REQUEST #}
+// Incoming Many To One Route Request
+void emAfIncomingManyToOneRouteRequest(
+      // The short id of the concentrator.
+      EmberNodeId source,
+      // The EUI64 of the concentrator.
+      EmberEUI64 longId,
+      // The path cost to the concentrator. The cost may decrease as additional
+      // route request packets for this discovery arrive, but the callback is
+      // made only once.
+      uint8_t cost)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "incoming_many_to_one_route_request" -%}
+void {{ cb['function_name'] }}(
+      // The short id of the concentrator.
+      EmberNodeId source,
+      // The EUI64 of the concentrator.
+      EmberEUI64 longId,
+      // The path cost to the concentrator. The cost may decrease as additional
+      // route request packets for this discovery arrive, but the callback is
+      // made only once.
+      uint8_t cost)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# INCOMING_ROUTE_ERROR #}
+// Incoming Route Error
+void emAfIncomingRouteError(
+      // EMBER_SOURCE_ROUTE_FAILURE or EMBER_MANY_TO_ONE_ROUTE_FAILURE.
+      EmberStatus status,
+      // The short id of the remote node.
+      EmberNodeId target)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "incoming_route_error" -%}
+void {{ cb['function_name'] }}(
+      // EMBER_SOURCE_ROUTE_FAILURE or EMBER_MANY_TO_ONE_ROUTE_FAILURE.
+      EmberStatus status,
+      // The short id of the remote node.
+      EmberNodeId target)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# INCOMING_NETWORK_STATUS #}
+// Incoming Network Status
+void emAfIncomingNetworkStatus(
+      // One byte over-the-air error code from network status message
+      uint8_t errorCode,
+      // The short ID of the remote node
+      EmberNodeId target)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "incoming_network_status" -%}
+void {{ cb['function_name'] }}(
+      // One byte over-the-air error code from network status message
+      uint8_t errorCode,
+      // The short ID of the remote node
+      EmberNodeId target)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# INCOMING_ROUTE_RECORD #}
+// Incoming Route Record
+void emAfIncomingRouteRecord(
+      // The source of the route record.
+      EmberNodeId source,
+      // The EUI64 of the source.
+      EmberEUI64 sourceEui,
+      // The number of relays in relayList.
+      uint8_t relayCount,
+      // Header.
+      EmberMessageBuffer header,
+      // The relay List Index.
+      uint8_t relayListIndex)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "incoming_route_record" -%}
+void {{ cb['function_name'] }}(
+      // The source of the route record.
+      EmberNodeId source,
+      // The EUI64 of the source.
+      EmberEUI64 sourceEui,
+      // The number of relays in relayList.
+      uint8_t relayCount,
+      // Header.
+      EmberMessageBuffer header,
+      // The relay List Index.
+      uint8_t relayListIndex)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# ID_CONFLICT #}
+// Id Conflict
+void emAfIdConflict(
+      // The short id for which a conflict was detected
+      EmberNodeId conflictingId)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "id_conflict" -%}
+void {{ cb['function_name'] }}(
+      // The short id for which a conflict was detected
+      EmberNodeId conflictingId)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# MAC_PASSTHROUGH_MESSAGE #}
+// Mac Passthrough Message
+void emAfMacPassthroughMessage(
+      // The type of MAC passthrough message received.
+      EmberMacPassthroughType messageType,
+      // The raw message that was received.
+      EmberMessageBuffer message)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "mac_passthrough_message" -%}
+void {{ cb['function_name'] }}(
+      // The type of MAC passthrough message received.
+      EmberMacPassthroughType messageType,
+      // The raw message that was received.
+      EmberMessageBuffer message)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# STACK_TOKEN_CHANGED #}
+// Stack Token Changed
+void emAfStackTokenChanged(
+      // The address of the stack token that has changed.
+      uint16_t tokenAddress)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "stack_token_changed" -%}
+void {{ cb['function_name'] }}(
+      // The address of the stack token that has changed.
+      uint16_t tokenAddress)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# TIMER #}
+// Timer
+void emAfTimer(
+      // Which timer generated the callback (0 or 1).
+      uint8_t timerId)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "timer" -%}
+void {{ cb['function_name'] }}(
+      // Which timer generated the callback (0 or 1).
+      uint8_t timerId)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# COUNTER_ROLLOVER #}
+// Counter Rollover
+void emAfCounterRollover(
+      // Type of Counter
+      EmberCounterType type)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "counter_rollover" -%}
+void {{ cb['function_name'] }}(
+      // Type of Counter
+      EmberCounterType type)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# RAW_TRANSMIT_COMPLETE #}
+// Raw Transmit Complete
+void emAfRawTransmitComplete(
+      // message
+      EmberMessageBuffer message,
+      // EMBER_SUCCESS if the transmission was successful, or
+      // EMBER_DELIVERY_FAILED if not
+      EmberStatus status)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "raw_transmit_complete" -%}
+void {{ cb['function_name'] }}(
+      // message
+      EmberMessageBuffer message,
+      // EMBER_SUCCESS if the transmission was successful, or
+      // EMBER_DELIVERY_FAILED if not
+      EmberStatus status)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# SWITCH_NETWORK_KEY #}
+// Switch Network Key
+void emAfSwitchNetworkKey(
+      // The sequence number of the new network key.
+      uint8_t sequenceNumber)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "switch_network_key" -%}
+void {{ cb['function_name'] }}(
+      // The sequence number of the new network key.
+      uint8_t sequenceNumber)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# ZIGBEE_KEY_ESTABLISHMENT #}
+// Zigbee Key Establishment
+void emAfZigbeeKeyEstablishment(
+      // This is the IEEE address of the partner that the device successfully
+      // established a key with. This value is all zeros on a failure.
+      EmberEUI64 partner,
+      // This is the status indicating what was established or why the key
+      // establishment failed.
+      EmberKeyStatus status)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "zigbee_key_establishment" -%}
+void {{ cb['function_name'] }}(
+      // This is the IEEE address of the partner that the device successfully
+      // established a key with. This value is all zeros on a failure.
+      EmberEUI64 partner,
+      // This is the status indicating what was established or why the key
+      // establishment failed.
+      EmberKeyStatus status)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# GENERATE_CBKE_KEYS #}
+// Generate Cbke Keys
+void emAfGenerateCbkeKeys(
+      // The result of the CBKE operation.
+      EmberStatus status,
+      // Return: The generated ephemeral public key.
+      EmberPublicKeyData *ephemeralPublicKey)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "generate_cbke_keys" -%}
+void {{ cb['function_name'] }}(
+      // The result of the CBKE operation.
+      EmberStatus status,
+      // Return: The generated ephemeral public key.
+      EmberPublicKeyData *ephemeralPublicKey)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# CALCULATE_SMACS #}
+// Calculate Smacs
+void emAfCalculateSmacs(
+      // The Result of the CBKE operation.
+      EmberStatus status,
+      // Return: The calculated value of the initiator's SMAC
+      EmberSmacData *initiatorSmac,
+      // Return: The calculated value of the responder's SMAC
+      EmberSmacData *responderSmac)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "calculate_smacs" -%}
+void {{ cb['function_name'] }}(
+      // The Result of the CBKE operation.
+      EmberStatus status,
+      // Return: The calculated value of the initiator's SMAC
+      EmberSmacData *initiatorSmac,
+      // Return: The calculated value of the responder's SMAC
+      EmberSmacData *responderSmac)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# DSA_SIGN #}
+// Dsa Sign
+void emAfDsaSign(
+      // The result of the DSA signing operation.
+      EmberStatus status,
+      // The message and attached which includes the original message and the
+      // appended signature.
+      EmberMessageBuffer signedMessage)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "dsa_sign" -%}
+void {{ cb['function_name'] }}(
+      // The result of the DSA signing operation.
+      EmberStatus status,
+      // The message and attached which includes the original message and the
+      // appended signature.
+      EmberMessageBuffer signedMessage)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# DSA_VERIFY #}
+// Dsa Verify
+void emAfDsaVerify(
+      // The result of the DSA verification operation.
+      EmberStatus status)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "dsa_verify" -%}
+void {{ cb['function_name'] }}(
+      // The result of the DSA verification operation.
+      EmberStatus status)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# INCOMING_BOOTLOAD_MESSAGE #}
+// Incoming Bootload Message
+void emAfIncomingBootloadMessage(
+      // The EUI64 of the sending node.
+      EmberEUI64 longId,
+      // The bootload message that was sent.
+      EmberMessageBuffer message)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "incoming_bootload_message" -%}
+void {{ cb['function_name'] }}(
+      // The EUI64 of the sending node.
+      EmberEUI64 longId,
+      // The bootload message that was sent.
+      EmberMessageBuffer message)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# BOOTLOAD_TRANSMIT_COMPLETE #}
+// Bootload Transmit Complete
+void emAfBootloadTransmitComplete(
+      // The bootload message that was sent.
+      EmberMessageBuffer message,
+      // An EmberStatus value of EMBER_SUCCESS if an ACK was received from the
+      // destination or EMBER_DELIVERY_FAILED if no ACK was received.
+      EmberStatus status)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "bootload_transmit_complete" -%}
+void {{ cb['function_name'] }}(
+      // The bootload message that was sent.
+      EmberMessageBuffer message,
+      // An EmberStatus value of EMBER_SUCCESS if an ACK was received from the
+      // destination or EMBER_DELIVERY_FAILED if no ACK was received.
+      EmberStatus status)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# ZLL_NETWORK_FOUND #}
+// Zll Network Found
+void emAfZllNetworkFound(
+      // Return: Information about the network.
+      const EmberZllNetwork *networkInfo,
+      // Return: Device specific information.
+      const EmberZllDeviceInfoRecord *deviceInfo)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "zll_network_found" -%}
+void {{ cb['function_name'] }}(
+      // Return: Information about the network.
+      const EmberZllNetwork *networkInfo,
+      // Return: Device specific information.
+      const EmberZllDeviceInfoRecord *deviceInfo)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# ZLL_SCAN_COMPLETE #}
+// Zll Scan Complete
+void emAfZllScanComplete(
+      // Status of the operation.
+      EmberStatus status)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "zll_scan_complete" -%}
+void {{ cb['function_name'] }}(
+      // Status of the operation.
+      EmberStatus status)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# ZLL_ADDRESS_ASSIGNMENT #}
+// Zll Address Assignment
+void emAfZllAddressAssignment(
+      // Return: Address assignment information.
+      const EmberZllAddressAssignment *addressInfo)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "zll_address_assignment" -%}
+void {{ cb['function_name'] }}(
+      // Return: Address assignment information.
+      const EmberZllAddressAssignment *addressInfo)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# ZLL_TOUCH_LINK_TARGET #}
+// Zll Touch Link Target
+void emAfZllTouchLinkTarget(
+      // Return: Information about the network.
+      const EmberZllNetwork *networkInfo)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "zll_touch_link_target" -%}
+void {{ cb['function_name'] }}(
+      // Return: Information about the network.
+      const EmberZllNetwork *networkInfo)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# MAC_FILTER_MATCH_MESSAGE #}
+// Mac Filter Match Message
+void emAfMacFilterMatchMessage(
+      // Return: macFilterMatchStruct.
+      const EmberMacFilterMatchStruct *macFilterMatchStruct)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "mac_filter_match_message" -%}
+void {{ cb['function_name'] }}(
+      // Return: macFilterMatchStruct.
+      const EmberMacFilterMatchStruct *macFilterMatchStruct)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# D_GP_SENT #}
+// D Gp Sent
+void emAfDGpSent(
+      // An EmberStatus value indicating success or the reason for failure.
+      EmberStatus status,
+      // The handle of the GPDF.
+      uint8_t gpepHandle)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "d_gp_sent" -%}
+void {{ cb['function_name'] }}(
+      // An EmberStatus value indicating success or the reason for failure.
+      EmberStatus status,
+      // The handle of the GPDF.
+      uint8_t gpepHandle)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# PAN_ID_CONFLICT #}
+// Pan Id Conflict
+// Return: An EmberStatus value indicating success or the reason for failure.
+void emAfPanIdConflict(
+      // Number of conflict reports
+      int8_t conflictCount)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "pan_id_conflict" -%}
+void {{ cb['function_name'] }}(
+      // Number of conflict reports
+      int8_t conflictCount)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# ORPHAN_NOTIFICATION #}
+// Orphan Notification
+void emAfOrphanNotification(
+      // The 8 byte EUI64 of the sender.
+      EmberEUI64 longId)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "orphan_notification" -%}
+void {{ cb['function_name'] }}(
+      // The 8 byte EUI64 of the sender.
+      EmberEUI64 longId)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# COUNTER #}
+// Counter
+void emAfCounter(
+      // Type of Counter
+      EmberCounterType type,
+      // Counter Info and value
+      EmberCounterInfo Info)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "counter" -%}
+void {{ cb['function_name'] }}(
+      // Type of Counter
+      EmberCounterType type,
+      // Counter Info and value
+      EmberCounterInfo Info)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# MAC_PASSTHROUGH_FILTER #}
+// Mac Passthrough Filter
+// Return: True if mac passthrough filter was matched. False otherwise.
+void emAfMacPassthroughFilter(
+      // Return: Mac Header of the matched messgae
+      uint8_t *macHeader)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "mac_passthrough_filter" -%}
+void {{ cb['function_name'] }}(
+      // Return: Mac Header of the matched messgae
+      uint8_t *macHeader)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# GENERATE_CBKE_KEYS_HANDLER283K1 #}
+// Generate Cbke Keys Handler283k1
+void emAfGenerateCbkeKeysHandler283k1(
+      // The result of the CBKE operation.
+      EmberStatus status,
+      // Return: The generated ephemeral public key.
+      EmberPublicKey283k1Data *ephemeralPublicKey)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "generate_cbke_keys_handler283k1" -%}
+void {{ cb['function_name'] }}(
+      // The result of the CBKE operation.
+      EmberStatus status,
+      // Return: The generated ephemeral public key.
+      EmberPublicKey283k1Data *ephemeralPublicKey)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# CALCULATE_SMACS_HANDLER283K1 #}
+// Calculate Smacs Handler283k1
+void emAfCalculateSmacsHandler283k1(
+      // The Result of the CBKE operation.
+      EmberStatus status,
+      // Return: The calculated value of the initiator's SMAC
+      EmberSmacData *initiatorSmac,
+      // Return: The calculated value of the responder's SMAC
+      EmberSmacData *responderSmac)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "calculate_smacs_handler283k1" -%}
+void {{ cb['function_name'] }}(
+      // The Result of the CBKE operation.
+      EmberStatus status,
+      // Return: The calculated value of the initiator's SMAC
+      EmberSmacData *initiatorSmac,
+      // Return: The calculated value of the responder's SMAC
+      EmberSmacData *responderSmac)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# GPEP_INCOMING_MESSAGE #}
+// Gpep Incoming Message
+void emAfGpepIncomingMessage(
+      // The status of the GPDF receive.
+      EmberStatus status,
+      // The gpdLink value of the received GPDF.
+      uint8_t gpdLink,
+      // The GPDF sequence number.
+      uint8_t sequenceNumber,
+      // The address of the source GPD.
+      EmberGpAddress *addr,
+      // The security level of the received GPDF.
+      EmberGpSecurityLevel gpdfSecurityLevel,
+      // The securityKeyType used to decrypt/authenticate the incoming GPDF.
+      EmberGpKeyType gpdfSecurityKeyType,
+      // Whether the incoming GPDF had the auto-commissioning bit set.
+      bool autoCommissioning,
+      // Bidirectional information represented in bitfields, where bit0 holds
+      // the rxAfterTx of incoming gpdf and bit1 holds if tx queue is available
+      // for outgoing gpdf.
+      uint8_t bidirectionalInfo,
+      // The security frame counter of the incoming GDPF.
+      uint32_t gpdSecurityFrameCounter,
+      // The gpdCommandId of the incoming GPDF.
+      uint8_t gpdCommandId,
+      // The received MIC of the GPDF.
+      uint32_t mic,
+      // The proxy table index of the corresponding proxy table entry to the
+      // incoming GPDF.
+      uint8_t proxyTableIndex,
+      // The length of the GPD command payload.
+      uint8_t gpdCommandPayloadLength,
+      // The GPD command payload.
+      uint8_t *gpdCommandPayload)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "gpep_incoming_message" -%}
+void {{ cb['function_name'] }}(
+      // The status of the GPDF receive.
+      EmberStatus status,
+      // The gpdLink value of the received GPDF.
+      uint8_t gpdLink,
+      // The GPDF sequence number.
+      uint8_t sequenceNumber,
+      // The address of the source GPD.
+      EmberGpAddress *addr,
+      // The security level of the received GPDF.
+      EmberGpSecurityLevel gpdfSecurityLevel,
+      // The securityKeyType used to decrypt/authenticate the incoming GPDF.
+      EmberGpKeyType gpdfSecurityKeyType,
+      // Whether the incoming GPDF had the auto-commissioning bit set.
+      bool autoCommissioning,
+      // Bidirectional information represented in bitfields, where bit0 holds
+      // the rxAfterTx of incoming gpdf and bit1 holds if tx queue is available
+      // for outgoing gpdf.
+      uint8_t bidirectionalInfo,
+      // The security frame counter of the incoming GDPF.
+      uint32_t gpdSecurityFrameCounter,
+      // The gpdCommandId of the incoming GPDF.
+      uint8_t gpdCommandId,
+      // The received MIC of the GPDF.
+      uint32_t mic,
+      // The proxy table index of the corresponding proxy table entry to the
+      // incoming GPDF.
+      uint8_t proxyTableIndex,
+      // The length of the GPD command payload.
+      uint8_t gpdCommandPayloadLength,
+      // The GPD command payload.
+      uint8_t *gpdCommandPayload)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# RTOS_IDLE #}
+// Rtos Idle
+// Return: True or False.
+void emAfRtosIdle(
+      // Return: Idle time duration
+      uint32_t *idleTimeMs)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "rtos_idle" -%}
+void {{ cb['function_name'] }}(
+      // Return: Idle time duration
+      uint32_t *idleTimeMs)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# RTOS_STACK_WAKEUP_ISR #}
+// Rtos Stack Wakeup Isr
+void emAfRtosStackWakeupIsr(void)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "rtos_stack_wakeup_isr" -%}
+void {{ cb['function_name'] }}(void)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# RADIO_NEEDS_CALIBRATING #}
+// Radio Needs Calibrating
+void emAfRadioNeedsCalibrating(void)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "radio_needs_calibrating" -%}
+void {{ cb['function_name'] }}(void)
+;
+{% endif -%}
+{% endfor -%}
+
+
+{# SCAN_ERROR #}
+// Scan Error
+void emAfScanError(
+      // The error status of a scan
+      EmberStatus status)
+;
+{% for cb in zigbee_stack_callback -%}
+{% if cb['callback_type'] == "scan_error" -%}
+void {{ cb['function_name'] }}(
+      // The error status of a scan
+      EmberStatus status)
+;
+{% endif -%}
+{% endfor -%}
+

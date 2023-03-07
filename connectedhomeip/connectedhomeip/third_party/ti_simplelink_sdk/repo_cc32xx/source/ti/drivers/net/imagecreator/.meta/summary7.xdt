@@ -1,0 +1,17 @@
+
+% const sdevice = system.modules["/ti/drivers/net/imagecreator/new_design/WiFi/Radio"];
+% if (sdevice) {
+               FCC BO Offset             ETSI BO Offset             JP BO Offset
+    % for ( let i = 1; i < 14; ++i ) {
+        % const FCC11b      = sdevice.$static["FCC24channel" + i.toString() + "11b"];
+        % const FCClow      = sdevice.$static["FCC24channel" + i.toString() + "low"];
+        % const FCChigh     = sdevice.$static["FCC24channel" + i.toString() + "high"];
+        % const ETSI11b     = sdevice.$static["ETSI24channel" + i.toString() + "11b"];
+		% const ETSIlow     = sdevice.$static["ETSI24channel" + i.toString() + "low"];
+		% const ETSIhigh    = sdevice.$static["ETSI24channel" + i.toString() + "high"];
+		% const JP11b       = sdevice.$static["JP24channel" + i.toString() + "11b"];
+		% const JPlow       = sdevice.$static["JP24channel" + i.toString() + "low"];
+		% const JPhigh      = sdevice.$static["JP24channel" + i.toString() + "high"];
+`_.padEnd("Channel " + i.toString(), 10)` 11b `Number(FCC11b).toFixed(3)` L `Number(FCClow).toFixed(3)` H `Number(FCChigh).toFixed(3)`   11b `Number(ETSI11b).toFixed(3)` L `Number(ETSIlow).toFixed(3)` H `Number(ETSIhigh).toFixed(3)`   11b `Number(JP11b).toFixed(3)` L `Number(JPlow).toFixed(3)` H `Number(JPhigh).toFixed(3)`
+% }/*for*/
+% }

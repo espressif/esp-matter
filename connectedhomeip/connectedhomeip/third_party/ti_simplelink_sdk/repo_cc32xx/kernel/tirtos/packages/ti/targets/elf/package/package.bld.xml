@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/build.dtd -->
+<package name="ti.targets.elf" version="1, 0, 0" producerId="undefined">
+    <units>
+        <interface name="ITarget"/>
+        <module name="C64P"/>
+        <module name="C674"/>
+        <module name="C66"/>
+        <module name="C71"/>
+        <module name="C28_float"/>
+        <module name="C28_float64"/>
+    </units>
+    <sources>
+        <srcFile name="linkcmd.xdt"/>
+        <srcFile name="linkUtils.xs"/>
+        <srcFile name="std.h"/>
+    </sources>
+    <configscripts>
+    </configscripts>
+    <makefiles>
+        <srcFile name="package.mak" src="package.bld"/>
+        <srcFile name="package/package.xdc.dep" src="package.xdc"/>
+        <srcFile name="package/package.cfg.dep" src="package.xdc"/>
+        <srcFile name="package/rel/ti_targets_elf.tar.dep" src="package/rel/ti_targets_elf.xdc.inc"/>
+    </makefiles>
+    <targets>
+    </targets>
+    <libraries>
+    </libraries>
+    <configurations>
+    </configurations>
+    <executables>
+    </executables>
+    <tests>
+    </tests>
+    <releases relDir="package/rel/">
+    <release name="ti_targets_elf"
+        pname="ti_targets_elf.tar"
+        label="default"
+    >
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+        <file name="linkcmd.xdt"/>
+        <file name="linkUtils.xs"/>
+        <file name="std.h"/>
+        <file name="package/package.cfg.xdc.inc"/>
+    </release>
+    </releases>
+    <repositories>
+    </repositories>
+</package>

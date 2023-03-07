@@ -1,0 +1,582 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_bloat/bloat.gni")
+import("$dir_pw_build/python.gni")
+import("$dir_pw_build/python_action.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_chrono/backend.gni")
+import("$dir_pw_compilation_testing/negative_compilation_test.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_protobuf_compiler/proto.gni")
+import("$dir_pw_sync/backend.gni")
+import("$dir_pw_third_party/nanopb/nanopb.gni")
+import("$dir_pw_thread/backend.gni")
+import("$dir_pw_unit_test/test.gni")
+import("config.gni")
+import("internal/integration_test_ports.gni")
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+config("disable_global_mutex_config") {
+  defines = [ "PW_RPC_USE_GLOBAL_MUTEX=0" ]
+  visibility = [ ":*" ]
+}
+
+# Set pw_rpc_CONFIG to this to disable the global mutex. If additional options
+# are needed, a config target that sets those can depend on this.
+group("disable_global_mutex") {
+  public_configs = [ ":disable_global_mutex_config" ]
+}
+
+config("global_mutex_config") {
+  defines = [ "PW_RPC_USE_GLOBAL_MUTEX=1" ]
+  visibility = [ ":*" ]
+}
+
+# Set pw_rpc_CONFIG to this to always enable the global mutex. The mutex is
+# enabled by default, so this is a no-op.
+group("use_global_mutex") {
+  public_configs = [ ":global_mutex_config" ]
+}
+
+pw_source_set("config") {
+  sources = [ "public/pw_rpc/internal/config.h" ]
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ pw_rpc_CONFIG ]
+  visibility = [ "./*" ]
+  friend = [ "./*" ]
+}
+
+pw_source_set("log_config") {
+  sources = [ "public/pw_rpc/internal/log_config.h" ]
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ ":config" ]
+  visibility = [ "./*" ]
+  friend = [ "./*" ]
+}
+
+pw_source_set("server") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ ":common" ]
+  deps = [
+    ":log_config",
+    dir_pw_log,
+  ]
+  public = [
+    "public/pw_rpc/server.h",
+    "public/pw_rpc/service.h",
+  ]
+  sources = [
+    "public/pw_rpc/internal/hash.h",
+    "public/pw_rpc/internal/method.h",
+    "public/pw_rpc/internal/method_lookup.h",
+    "public/pw_rpc/internal/method_union.h",
+    "public/pw_rpc/internal/server_call.h",
+    "server.cc",
+    "server_call.cc",
+    "service.cc",
+  ]
+  friend = [ "./*" ]
+  allow_circular_includes_from = [ ":common" ]
+}
+
+pw_source_set("client") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    ":common",
+    dir_pw_result,
+    dir_pw_span,
+  ]
+  deps = [
+    ":log_config",
+    dir_pw_log,
+  ]
+  public = [
+    "public/pw_rpc/client.h",
+    "public/pw_rpc/internal/client_call.h",
+    "public/pw_rpc/internal/service_client.h",
+  ]
+  sources = [
+    "client.cc",
+    "client_call.cc",
+  ]
+  allow_circular_includes_from = [ ":common" ]
+}
+
+pw_source_set("client_server") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    ":client",
+    ":server",
+  ]
+  public = [ "public/pw_rpc/client_server.h" ]
+  sources = [ "client_server.cc" ]
+}
+
+pw_source_set("synchronous_client_api") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    ":client",
+    ":common",
+    "$dir_pw_chrono:system_clock",
+    "$dir_pw_sync:timed_thread_notification",
+  ]
+  public = [
+    "public/pw_rpc/synchronous_call.h",
+    "public/pw_rpc/synchronous_call_result.h",
+  ]
+}
+
+# Classes shared by the server and client.
+pw_source_set("common") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    ":config",
+    ":protos.pwpb",
+    "$dir_pw_containers:intrusive_list",
+    "$dir_pw_sync:lock_annotations",
+    "$dir_pw_toolchain:no_destructor",
+    dir_pw_assert,
+    dir_pw_bytes,
+    dir_pw_function,
+    dir_pw_span,
+    dir_pw_status,
+  ]
+
+  if (pw_sync_MUTEX_BACKEND != "") {
+    public_deps += [ "$dir_pw_sync:mutex" ]
+  }
+
+  deps = [
+    ":log_config",
+    dir_pw_log,
+  ]
+  public = [
+    "public/pw_rpc/channel.h",
+    "public/pw_rpc/method_id.h",
+    "public/pw_rpc/method_info.h",
+    "public/pw_rpc/packet_meta.h",
+    "public/pw_rpc/service_id.h",
+    "public/pw_rpc/writer.h",
+  ]
+  sources = [
+    "call.cc",
+    "channel.cc",
+    "channel_list.cc",
+    "endpoint.cc",
+    "packet.cc",
+    "packet_meta.cc",
+    "public/pw_rpc/internal/call.h",
+    "public/pw_rpc/internal/call_context.h",
+    "public/pw_rpc/internal/channel.h",
+    "public/pw_rpc/internal/channel_list.h",
+    "public/pw_rpc/internal/endpoint.h",
+    "public/pw_rpc/internal/lock.h",
+    "public/pw_rpc/internal/method_info.h",
+    "public/pw_rpc/internal/packet.h",
+    "public/pw_rpc/method_type.h",
+  ]
+  friend = [ "./*" ]
+}
+
+pw_source_set("benchmark") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ ":protos.raw_rpc" ]
+  public = [ "public/pw_rpc/benchmark.h" ]
+  sources = [ "benchmark.cc" ]
+}
+
+pw_source_set("fake_channel_output") {
+  public = [
+    "public/pw_rpc/internal/fake_channel_output.h",
+    "public/pw_rpc/payloads_view.h",
+  ]
+  sources = [ "fake_channel_output.cc" ]
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    ":common",
+    "$dir_pw_containers:filtered_view",
+    "$dir_pw_containers:vector",
+    "$dir_pw_containers:wrapped_iterator",
+    "$dir_pw_sync:mutex",
+    dir_pw_assert,
+    dir_pw_bytes,
+    dir_pw_function,
+  ]
+  deps = [ ":log_config" ]
+  visibility = [ "./*" ]
+}
+
+pw_source_set("client_server_testing") {
+  public = [ "public/pw_rpc/internal/client_server_testing.h" ]
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    ":client_server",
+    ":fake_channel_output",
+    "$dir_pw_bytes",
+    "$dir_pw_result",
+  ]
+  visibility = [ "./*" ]
+}
+
+pw_source_set("client_server_testing_threaded") {
+  public = [ "public/pw_rpc/internal/client_server_testing_threaded.h" ]
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    ":client_server_testing",
+    "$dir_pw_bytes",
+    "$dir_pw_result",
+    "$dir_pw_sync:binary_semaphore",
+    "$dir_pw_sync:lock_annotations",
+    "$dir_pw_sync:mutex",
+    "$dir_pw_thread:thread",
+  ]
+  visibility = [ "./*" ]
+}
+
+pw_source_set("test_helpers") {
+  public = [ "public/pw_rpc/test_helpers.h" ]
+  public_deps = [
+    ":fake_channel_output",
+    "$dir_pw_chrono:system_clock",
+    "$dir_pw_status",
+    "$dir_pw_sync:counting_semaphore",
+    "$dir_pw_thread:yield",
+    dir_pw_assert,
+  ]
+}
+
+# thread_testing target is kept for backward compatibility.
+# New code should use test_helpers instead.
+pw_source_set("thread_testing") {
+  public = [ "public/pw_rpc/thread_testing.h" ]
+  public_deps = [ ":test_helpers" ]
+}
+
+pw_source_set("test_utils") {
+  public = [
+    "public/pw_rpc/internal/fake_channel_output.h",
+    "public/pw_rpc/internal/method_impl_tester.h",
+    "public/pw_rpc/internal/method_info_tester.h",
+    "public/pw_rpc/internal/test_method.h",
+    "public/pw_rpc/internal/test_method_context.h",
+    "public/pw_rpc/internal/test_utils.h",
+    "pw_rpc_private/fake_server_reader_writer.h",
+  ]
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    ":client",
+    ":server",
+    "$dir_pw_containers:vector",
+    "raw:fake_channel_output",
+    "raw:server_api",
+    dir_pw_assert,
+    dir_pw_bytes,
+  ]
+  visibility = [ "./*" ]
+}
+
+pw_source_set("integration_testing") {
+  public = [
+    "public/pw_rpc/integration_test_socket_client.h",
+    "public/pw_rpc/integration_testing.h",
+  ]
+  sources = [ "integration_testing.cc" ]
+  public_deps = [
+    ":client",
+    "$dir_pw_hdlc:pw_rpc",
+    "$dir_pw_hdlc:rpc_channel_output",
+    "$dir_pw_stream:socket_stream",
+    "$dir_pw_unit_test:logging_event_handler",
+    dir_pw_assert,
+    dir_pw_function,
+    dir_pw_unit_test,
+  ]
+  deps = [ dir_pw_log ]
+}
+
+pw_executable("test_rpc_server") {
+  sources = [ "test_rpc_server.cc" ]
+  deps = [
+    ":benchmark",
+    ":log_config",
+    "system_server",
+    "system_server:socket",
+    dir_pw_log,
+  ]
+}
+
+pw_executable("client_integration_test") {
+  sources = [ "client_integration_test.cc" ]
+  deps = [
+    ":client",
+    ":integration_testing",
+    ":protos.raw_rpc",
+    "$dir_pw_sync:binary_semaphore",
+    dir_pw_log,
+    dir_pw_unit_test,
+  ]
+
+  deps += [ "pwpb:client_integration_test" ]
+
+  if (dir_pw_third_party_nanopb != "") {
+    deps += [ "nanopb:client_integration_test" ]
+  }
+}
+
+pw_python_action("cpp_client_server_integration_test") {
+  script = "py/pw_rpc/testing.py"
+  args = [
+    "--server",
+    "<TARGET_FILE(:test_rpc_server)>",
+    "--client",
+    "<TARGET_FILE(:client_integration_test)>",
+    "--",
+    "$pw_rpc_CPP_CLIENT_INTEGRATION_TEST_PORT",
+  ]
+  deps = [
+    ":client_integration_test",
+    ":test_rpc_server",
+  ]
+
+  stamp = true
+}
+
+pw_proto_library("protos") {
+  sources = [
+    "benchmark.proto",
+    "echo.proto",
+    "internal/packet.proto",
+  ]
+  inputs = [
+    "echo.options",
+    "benchmark.options",
+  ]
+  python_package = "py"
+  prefix = "pw_rpc"
+}
+
+pw_doc_group("docs") {
+  sources = [
+    "benchmark.rst",
+    "docs.rst",
+  ]
+  inputs = [
+    "benchmark.proto",
+    "echo.proto",
+    "internal/packet.proto",
+    "unary_rpc.svg",
+    "unary_rpc_cancelled.svg",
+    "server_streaming_rpc.svg",
+    "server_streaming_rpc_cancelled.svg",
+    "client_streaming_rpc.svg",
+    "client_streaming_rpc_cancelled.svg",
+    "bidirectional_streaming_rpc.svg",
+    "bidirectional_streaming_rpc_cancelled.svg",
+    "request_packets.svg",
+    "response_packets.svg",
+  ]
+  group_deps = [
+    "nanopb:docs",
+    "pwpb:docs",
+    "py:docs",
+    "ts:docs",
+  ]
+  report_deps = [ ":server_size" ]
+}
+
+pw_size_diff("server_size") {
+  title = "Pigweed RPC server size report"
+
+  binaries = [
+    {
+      target = "size_report:server_only"
+      base = "size_report:base"
+      label = "Server by itself"
+    },
+  ]
+
+  if (dir_pw_third_party_nanopb != "") {
+    binaries += [
+      {
+        target = "size_report:server_with_echo_service"
+        base = "size_report:base_with_nanopb"
+        label = "Server with a registered nanopb EchoService"
+      },
+    ]
+  }
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":call_test",
+    ":callback_test",
+    ":channel_test",
+    ":client_server_test",
+    ":test_helpers_test",
+    ":fake_channel_output_test",
+    ":method_test",
+    ":ids_test",
+    ":packet_test",
+    ":packet_meta_test",
+    ":server_test",
+    ":service_test",
+  ]
+  group_deps = [
+    "nanopb:tests",
+    "pwpb:tests",
+    "raw:tests",
+  ]
+}
+
+pw_proto_library("test_protos") {
+  sources = [
+    "pw_rpc_test_protos/no_package.proto",
+    "pw_rpc_test_protos/test.proto",
+  ]
+  inputs = [ "pw_rpc_test_protos/test.options" ]
+  visibility = [ "./*" ]
+}
+
+pw_test("call_test") {
+  deps = [
+    ":server",
+    ":test_utils",
+  ]
+  sources = [ "call_test.cc" ]
+}
+
+pw_test("callback_test") {
+  enable_if = pw_thread_THREAD_BACKEND == "$dir_pw_thread_stl:thread"
+  deps = [
+    ":client",
+    ":server",
+    ":test_protos.raw_rpc",
+    "$dir_pw_sync:binary_semaphore",
+    "$dir_pw_thread:sleep",
+    "$dir_pw_thread:test_threads",
+    "$dir_pw_thread_stl:test_threads",
+    "raw:client_testing",
+  ]
+  sources = [ "callback_test.cc" ]
+}
+
+pw_test("channel_test") {
+  deps = [
+    ":server",
+    ":test_utils",
+  ]
+  sources = [ "channel_test.cc" ]
+}
+
+pw_python_action("generate_ids_test") {
+  outputs = [ "$target_gen_dir/generated_ids_test.cc" ]
+
+  script = "py/tests/ids_test.py"
+  args = [ "--generate-cc-test" ] + rebase_path(outputs, root_build_dir)
+  python_deps = [
+    "$dir_pw_build/py",
+    "py",
+  ]
+}
+
+pw_test("ids_test") {
+  deps = [
+    ":generate_ids_test",
+    ":server",
+  ]
+  sources = get_target_outputs(":generate_ids_test")
+}
+
+pw_test("packet_test") {
+  deps = [
+    ":server",
+    dir_pw_bytes,
+    dir_pw_protobuf,
+  ]
+  sources = [ "packet_test.cc" ]
+}
+
+pw_test("packet_meta_test") {
+  deps = [
+    ":server",
+    dir_pw_bytes,
+  ]
+  sources = [ "packet_meta_test.cc" ]
+}
+
+pw_test("service_test") {
+  deps = [
+    ":protos.pwpb",
+    ":server",
+    dir_pw_assert,
+  ]
+  sources = [ "service_test.cc" ]
+}
+
+pw_test("client_server_test") {
+  deps = [
+    ":client_server",
+    ":test_utils",
+    "raw:server_api",
+  ]
+  sources = [ "client_server_test.cc" ]
+}
+
+pw_test("method_test") {
+  deps = [
+    ":server",
+    ":test_utils",
+  ]
+  sources = [ "method_test.cc" ]
+}
+
+pw_test("server_test") {
+  deps = [
+    ":protos.pwpb",
+    ":server",
+    ":test_utils",
+    dir_pw_assert,
+  ]
+  sources = [ "server_test.cc" ]
+}
+
+pw_test("fake_channel_output_test") {
+  deps = [ ":test_utils" ]
+  sources = [ "fake_channel_output_test.cc" ]
+}
+
+pw_test("test_helpers_test") {
+  deps = [
+    ":test_helpers",
+    "$dir_pw_result",
+    "$dir_pw_status",
+    "$dir_pw_sync:interrupt_spin_lock",
+    "$dir_pw_sync:lock_annotations",
+    "$dir_pw_sync:timed_thread_notification",
+    "pwpb:client_testing",
+    "pwpb:echo_service",
+    "pwpb:server_api",
+  ]
+  sources = [ "test_helpers_test.cc" ]
+  enable_if = pw_sync_TIMED_THREAD_NOTIFICATION_BACKEND != "" &&
+              pw_sync_COUNTING_SEMAPHORE_BACKEND != "" &&
+              pw_chrono_SYSTEM_CLOCK_BACKEND != ""
+}

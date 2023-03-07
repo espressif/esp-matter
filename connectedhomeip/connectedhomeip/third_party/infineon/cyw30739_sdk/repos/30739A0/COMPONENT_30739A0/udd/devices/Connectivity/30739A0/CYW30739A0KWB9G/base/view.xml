@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<baseview>
+  <mcu>CortexM4</mcu>
+  <vendor>Cypress</vendor>
+  <flash>1048576</flash>
+  <ram>524288</ram>
+  <package>134-WLCSP</package>
+  <minvoltage>1760</minvoltage>
+  <maxvoltage>3630</maxvoltage>
+  <description>The CYW30739A0KWB9G device.</description>
+</baseview>

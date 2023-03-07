@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/build.dtd -->
+<package name="ti.sysbios.rom.cortexm.cc26xx.cc26x2v2" version="1, 0, 0, 0" producerId="undefined">
+    <units>
+        <module name="CC26xx"/>
+    </units>
+    <sources>
+        <srcFile name="package/cfg/CC26xx_phase1_pem4f.c"/>
+        <srcFile name="package/cfg/CC26xx_pem4f.c"/>
+    </sources>
+    <configscripts>
+        <srcFile name="CC26xx_phase1.cfg"/>
+        <srcFile name="CC26xx.cfg"/>
+    </configscripts>
+    <makefiles>
+        <srcFile name="package.mak" src="package.bld"/>
+        <srcFile name="package/package.xdc.dep" src="package.xdc"/>
+        <srcFile name="package/package.cfg.dep" src="package.xdc"/>
+        <srcFile name="package/cfg/CC26xx_phase1_pem4f.mak" src="package.bld"/>
+        <srcFile name="package/cfg/CC26xx_phase1_pem4f.oem4f.dep" src="package/cfg/CC26xx_phase1_pem4f.c"/>
+        <srcFile name="package/cfg/CC26xx_phase1_pem4f.dep" src="package/cfg/CC26xx_phase1_pem4f.cfg"/>
+        <srcFile name="package/cfg/CC26xx_pem4f.mak" src="package.bld"/>
+        <srcFile name="package/cfg/CC26xx_pem4f.oem4f.dep" src="package/cfg/CC26xx_pem4f.c"/>
+        <srcFile name="package/cfg/CC26xx_pem4f.dep" src="package/cfg/CC26xx_pem4f.cfg"/>
+        <srcFile name="package/rel/ti_sysbios_rom_cortexm_cc26xx_cc26x2v2.tar.gz.dep" src="package/rel/ti_sysbios_rom_cortexm_cc26xx_cc26x2v2.xdc.inc"/>
+    </makefiles>
+    <targets>
+        <target name="ti.targets.arm.elf.M4F"
+            version="ti.targets.arm.elf.M4F{1,0,16.9,0"
+            rawVersion="16.9.0"
+            platform="ti.platforms.simplelink:CC2642:1"
+            isa="v7M4"
+            suffix="em4f"
+            rootDir="/db/vendors/ti/arm/16.9.0/Linux"
+            os="undefined"
+            rts="ti.targets.arm.rtsarm">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+    </targets>
+    <libraries>
+    </libraries>
+    <configurations>
+    <configuration name="CC26xx_phase1"
+        pname="CC26xx_phase1.pem4f"
+        target="ti.targets.arm.elf.M4F"
+        platform="ti.platforms.simplelink:CC2650"
+        profile="release"
+        isPartial="false"
+        xCfgScript="package/cfg/CC26xx_phase1_pem4f.cfg"
+        xCfgPrefix="package/cfg/CC26xx_phase1_pem4f"
+        cfgScript="CC26xx_phase1.cfg"
+        />
+    <configuration name="CC26xx"
+        pname="CC26xx.pem4f"
+        target="ti.targets.arm.elf.M4F"
+        platform="ti.platforms.simplelink:CC2650"
+        profile="release"
+        isPartial="false"
+        xCfgScript="package/cfg/CC26xx_pem4f.cfg"
+        xCfgPrefix="package/cfg/CC26xx_pem4f"
+        cfgScript="CC26xx.cfg"
+        />
+    </configurations>
+    <executables>
+    </executables>
+    <tests>
+    </tests>
+    <releases relDir="package/rel/">
+    <release name="ti_sysbios_rom_cortexm_cc26xx_cc26x2v2"
+        pname="../../../../../..//../exports/ti_sysbios_rom_cortexm_cc26xx_cc26x2v2.tar.gz"
+        label="default"
+    >
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+        <file name="golden"/>
+        <file name="CC26xx.cfg"/>
+        <file name="CC26xx.cfg.xs"/>
+        <file name="CC26xx_externs.xs"/>
+        <file name="CC26xx_rom_phase1_makefile.xdt"/>
+        <file name="CC26xx_custom_makefile.xdt"/>
+        <file name="CC26xx_custom_makefile_iar.xdt"/>
+        <file name="CC26xx_custom_outpolicies.cfg.xs"/>
+        <file name="CC26xx_custom_makefile_gnu.xdt"/>
+        <file name="CC26xx_custom_outpolicies_gnu.cfg.xs"/>
+        <file name="CC26xx_custom_makefile_clang.xdt"/>
+        <file name="CC26xx_custom_outpolicies_iar.cfg.xs"/>
+        <file name="linkcmd.xdt"/>
+        <file name="mangleAsmFile.xs"/>
+        <file name="processMapFile.xs"/>
+        <file name="mangleCFile.xs"/>
+        <file name="createRomFuncs.xs"/>
+        <file name="createLinkCmdFile.xs"/>
+        <file name="package/package.cfg.xdc.inc"/>
+    </release>
+    </releases>
+    <repositories>
+    </repositories>
+</package>

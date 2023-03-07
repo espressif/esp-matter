@@ -1,0 +1,62 @@
+{
+    "configFiles": {
+        "path": [
+            {
+                "_file": "device_definition.json",
+                "$": ".\/..\/config\/cc1312r7"
+            },
+            {
+                "_file": "device_description.json",
+                "$": ".\/..\/config\/cc1312r7"
+            },
+            {
+                "_file": "io_register_definition.json",
+                "$": ".\/..\/config\/cc1312r"
+            },
+            {
+                "_file": "ui_translation.json",
+                "$": ".\/..\/config\/cc1312r"
+            },
+            {
+                "_file": "targets.json",
+                "$": ".\/..\/config\/cc1312r7\/targets"
+            },
+            {
+                "_file": "pasettings.json",
+                "$": ".\/..\/config\/pa_tables\/cc13x2_cc26x2_r7"
+            },
+            {
+                "_file": "io_pin_definition.json",
+                "$": ".\/..\/config\/cc1312r7\/targets"
+            },
+            {
+                "_file": "param_definition.json",
+                "$": ".\/..\/config\/cc1312r7"
+            },
+            {
+                "_file": "param_cmd_mapping.json",
+                "$": ".\/..\/config\/cc1312r7"
+            },
+            {
+                "_file": "radio_par_definitions.json",
+                "$": ".\/..\/config\/cc1312r7"
+            },
+            {
+                "_file": "rf_command_definitions.json",
+                "$": ".\/..\/config\/cc1312r7"
+            },
+            {
+                "_file": "categories.json",
+                "$": ".\/..\/config\/cc1312r7\/cmd_settings"
+            },
+            {
+                "_file": "frontend_settings.json",
+                "$": ".\/..\/config\/cc1312r7\/cmd_settings"
+            },
+            {
+                "_file": "dummy_file_overrides.json",
+                "$": ".\/..\/config\/cc1312r7\/overrides"
+            }
+        ]
+    }
+}

@@ -1,0 +1,37 @@
+{
+    "headers": [
+        {
+            "tool_name": "scancode-toolkit",
+            "tool_version": "21.8.4",
+            "options": {
+                "input": [
+                    "."
+                ],
+                "--json-pp": "scancode_report.json",
+                "--license": true
+            },
+            "notice":
+                "Generated with ScanCode and provided on an \"AS IS\" BASIS, WITHOUT WARRANTIES\nOR CONDITIONS OF ANY KIND, either express or implied. No content created from\nScanCode should be considered or used as legal advice. Consult an Attorney\nfor any legal advice.\nScanCode is a free software code scanning tool from nexB Inc. and others.\nVisit https://github.com/nexB/scancode-toolkit/ for support and download.",
+            "start_timestamp": "2021-08-20T104237.170021",
+            "end_timestamp": "2021-08-20T105102.096248",
+            "duration": 504.92625164985657,
+            "message": null,
+            "errors": [
+                "Path: scancode_report.json"
+            ],
+            "extra_data": {
+                "files_count": 398
+            }
+        }
+    ],
+    "files": [
+        {
+            "path": "open-iot-sdk",
+            "type": "directory",
+            "licenses": [],
+            "license_expressions": [],
+            "percentage_of_license_text": 0,
+            "scan_errors": []
+        }
+    ]
+}

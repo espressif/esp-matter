@@ -1,0 +1,83 @@
+id: ot_platform_abstraction
+label: Platform Abstraction
+package: OpenThread
+category: OpenThread
+quality: production
+description: This component provides the abstraction layer between the OpenThread stack and Silicon Labs platform. It also adds support for additional features such as Wi-Fi coex and RTOS support
+provides:
+  - name: ot_platform_abstraction
+requires:
+  - name: ot_platform_abstraction_core
+  - name: cmsis_rtos2
+    condition:
+    - kernel
+  - name: fem_util
+    condition:
+    - custom_board_has_fem
+  - name: ot_coex
+    condition:
+    - rail_util_coex
+  - name: ot_ant_div
+    condition:
+    - rail_util_ant_div
+  - name: ot_subghz_board_support
+  - name: ot_subghz_phy
+    condition:
+    - hardware_board_supports_ot_subghz
+  - name: gatt_configuration
+    condition:
+    - bluetooth_stack
+config_file:
+  - path: protocol/openthread/config/sl_openthread_rtos_config.h
+    condition:
+      - kernel
+  - path: protocol/openthread/config/sl_openthread_subghz_config.h
+    condition:
+      - hardware_board_supports_ot_subghz
+toolchain_settings:
+  - option: preinclude
+    value: sl_openthread_rtos_config.h
+    condition:
+      - kernel
+  - option: preinclude
+    value: sl_openthread_subghz_config.h
+    condition:
+      - hardware_board_supports_ot_subghz
+include:
+  - path: protocol/openthread/platform-abstraction/rtos
+    file_list:
+      - path: sl_ot_rtos_adaptation.h
+        condition:
+          - kernel
+source:
+  - path: protocol/openthread/platform-abstraction/rtos/sl_ot_rtos_adaptation.c
+    condition:
+      - kernel
+define:
+  - name: RADIO_CONFIG_DMP_SUPPORT
+    value: 1
+    condition:
+      - rail_lib_multiprotocol
+  - name: "INCLUDE_xTimerPendFunctionCall"
+    value: 1
+    condition:
+      - freertos
+  - name: OPENTHREAD_CONFIG_PLATFORM_RADIO_COEX_ENABLE
+    value: 1
+    condition:
+      -  rail_util_coex
+  - name: SL_OPENTHREAD_PHY_SELECT_STACK_SUPPORT
+    value: 1
+    condition:
+      - rail_util_ieee802154_phy_select
+template_contribution:
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: sl_ot_rtos_adaptation.h
+      handler: sl_ot_rtos_init
+    condition:
+      - kernel
+  - name: ot_init
+    value: sl_ot_create_instance
+    priority: 0

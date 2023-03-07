@@ -1,0 +1,37 @@
+package: Zigbee
+description: Silicon Labs implementation of the On/Off server cluster. If the ZLL On/Off
+  server cluster component is also enabled, this component uses it for handling ZLL
+  enhancements. Otherwise, all ZLL extensions are disabled. This component requires
+  extending to integrate the software into the hardware that the on/off signals
+  will control.
+id: zigbee_on_off
+label: On/Off Server Cluster
+category: Zigbee|Cluster Library|Home Automation
+quality: extend
+provides:
+   - name: "zigbee_on_off"
+source:
+  - path: protocol/zigbee/app/framework/plugin/on-off/on-off.c
+  - path: protocol/zigbee/app/framework/plugin/on-off/on-off-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/on-off
+    file_list:
+      - path: on-off.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_on_off
+  - name: cluster_service
+    value:
+       cluster_id: "0x0006"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "SERVER"
+       service_function: "emberAfOnOffClusterServerCommandParse"
+  - name: cluster_functions
+    value:
+       cluster_name: OnOff
+       cluster_id: 0x0006
+       cluster_type: server
+       init_function: emberAfOnOffClusterServerInitCallback
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/on-off

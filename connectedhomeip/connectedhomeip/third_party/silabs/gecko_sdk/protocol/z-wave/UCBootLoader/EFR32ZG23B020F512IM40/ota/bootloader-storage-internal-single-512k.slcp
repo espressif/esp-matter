@@ -1,0 +1,49 @@
+# Silicon Labs Project Configuration Tools: slcp, v0, Component selection file.
+project_name: bootloader-storage-internal-single-512k
+label: bootloader-storage-internal-single-512k
+description: |
+  This sample configuration of the Gecko bootloader configures the bootloader to use the internal main flash to store firmware update images. The storage configuration is set up to store a single firmware update image at a time, in a single storage slot. The storage slot is configured to start at address 0x44000 (or 0x8044000 for device with 0x8000000 flash base), and have a size of 192 kB. This can be configured on the "Storage" tab.
+  This sample configuration works out-of-the-box with the "Local Storage Bootloader" option in Silicon Labs EmberZNet Application Builder projects as well as Bluetooth and Connect projects. The configuration is designed to be safe to use together with applications that use SimEE1, SimEE2, NVM3 or PStore as their NVM system. When changing the storage layout of the bootloader, take care to ensure that there is no overlap between the memory space the bootloader expects to use, and the memory space the application or NVM system expects to use.
+  For Silicon Labs EmberZNet Application Builder projects, the INTERNAL_STORAGE_SIZE_KB macro can be configured in the application to reserve space for the bootloader storage area. On 512 kB EFR32xG13 devices, this macro is by default set to 254 for applications using SimEE1, and 240 for applications using SimEE2.
+  Note: This sample configuration will not use all available flash space for bootloader storage. As the memory layout may differ between different application projects, this bootloader project has a safe configuration that ensures that it doesn't overlap with any application sample configuration. This comes at the expense of leaving some unused flash space. Always make sure to configure your bootloader to use the same area for storage as is set aside by your application.
+  If support for multiple storage slots is desired, the start address of the storage, configurable under "Software Components->Platform->Bootloader->Storage->Bootloader Storage Slot Setup", *must* be configured to provide the location for "bootload info", which is meta-information about the storage slots to tell the bootloader which storage slot to install the next firmware update from. See the "Internal Storage Bootloader (multiple images)" sample configuration for more information.
+  See UG489: Gecko Bootloader User's Guide to learn more about how to configure the bootloader, configure storage layout, enable security features, etc.
+category: Example|Bootloader
+package: bootloader
+quality: production
+tag: ["hardware:device:flash:512"]
+toolchain_settings: []
+component:
+  - { id: bootloader_token_management }
+  - { id: bootloader_crc }
+  - { id: bootloader_aes_sha_ecdsa }
+  - { id: bootloader_common_storage }
+  - { id: bootloader_internal_storage }
+  - { id: bootloader_app_upgrade_version }
+  - { id: bootloader_compression_lzma }
+  - { id: bootloader_storage_slots }
+  - { id: EFR32ZG23B020F512IM40 }
+  - { id: bootloader_debug }
+  - { id: bootloader_image_parser }
+  - { id: bootloader_core }
+other_file:
+  - { path: postbuild.sh }
+configuration:
+  # btl_core_cfg.h
+  - name: BOOTLOADER_ENFORCE_SIGNED_UPGRADE
+    value: 1
+  - name: BOOTLOADER_WRITE_DISABLE
+    value: 1
+  - name: BOOTLOADER_VERSION_MAIN_CUSTOMER
+    value: 1
+  # btl_storage_cfg.h
+  - name: BTL_STORAGE_BASE_ADDRESS
+    value: 134496256
+  # btl_storage_slot_cfg.h
+  - name: SLOT0_ENABLE
+    value: 1
+  - name: SLOT0_SIZE
+    value: 196608
+  - name: SLOT0_START
+    value: 134496256
+ui_hints: {}

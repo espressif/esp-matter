@@ -1,0 +1,149 @@
+package: Zigbee
+description: This is the implementation of the EmberZNet Serial Protocol (EZSP) for
+  communicating to an EFR32 chip configured as an NCP.  This protocol serializes the
+  Zigbee stack calls that operate below the Application Framework.
+label: EZSP Common
+quality: production
+id: zigbee_ezsp
+category: Zigbee|Utility
+ui_hints: {}
+template_file: []
+provides:
+  - name: "zigbee_ezsp_protocol"
+  - name: "zigbee_ezsp"
+  - name: "zigbee_host_application"
+requires:
+  - name: "zigbee_ezsp_serial_interface"
+  - name: "zigbee_gateway"
+  - name: "zigbee_hal"
+  - name: "zigbee_host_unix_printf"
+  - name: "device_host"
+  - name: "zigbee_zcl_framework_core"
+  - name: "zigbee_host_framework_common"
+  - name: "silabs_core_event_queue"
+  - name: "sl_system_init"
+  - name: "sl_system_process_action"
+  - name: "toolchain_gcc"
+recommends:
+  - id: zigbee_ezsp_spi
+
+define:
+  - name: "EZSP_HOST"
+  - name: "PLATFORM_HEADER"
+    value: "\"platform-header.h\""
+    unless:
+      - zigbee_host_simulation
+  # TEMPORARY define that can be used in the C code to keep the code building
+  # for app builder while we make changes to make it work within UC.
+  - name: "UC_BUILD"
+  - name: "GATEWAY_APP"
+    unless:
+      - zigbee_host_simulation
+
+source:
+  - path: "protocol/zigbee/app/util/ezsp/ezsp-callbacks.c"
+  - path: "protocol/zigbee/app/util/ezsp/ezsp-enum-decode.c"
+  - path: "protocol/zigbee/app/util/ezsp/ezsp-frame-utilities.c"
+  - path: "protocol/zigbee/app/util/ezsp/ezsp.c"
+  - path: "protocol/zigbee/app/util/ezsp/secure-ezsp-stub.c"
+    unless:
+      - zigbee_secure_ezsp
+  - path: "protocol/zigbee/app/ezsp-host/ezsp-host-io.c"
+    unless:
+      - zigbee_host_simulation
+  - path: "platform/service/legacy_hal/src/micro_host.c"
+    unless:
+      - zigbee_host_simulation
+  - path: "protocol/zigbee/app/ezsp-host/ezsp-host-queues.c"
+  - path: "protocol/zigbee/app/ezsp-host/ezsp-host-ui.c"
+  - path: "protocol/zigbee/app/framework/plugin-host/ezsp/ezsp-cb.c"
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_ezsp
+include:
+  - path: ./
+  - path: protocol/zigbee/
+  - path: protocol/zigbee/app/ezsp-host/
+    file_list:
+      - path: ezsp-host-common.h
+      - path: ezsp-host-configuration.h
+      - path: ezsp-host-io.h
+      - path: ezsp-host-priv.h
+      - path: ezsp-host-queues.h
+      - path: ezsp-host-ui.h
+  - path: protocol/zigbee/app/util/gateway/
+    file_list:
+      - path: backchannel.h
+      - path: gateway.h
+  - path: protocol/zigbee/app/util/ezsp/
+    file_list:
+      - path: serial-interface.h
+      - path: command-functions.h
+      - path: command-prototypes.h
+      - path: ezsp-enum-decode.h
+      - path: ezsp-enum.h
+      - path: ezsp-frame-utilities.h
+      - path: ezsp-host-configuration-defaults.h
+      - path: ezsp-protocol.h
+      - path: ezsp-utils.h
+      - path: ezsp.h
+      - path: rename-ezsp-functions.h
+      - path: secure-ezsp-host.h
+      - path: secure-ezsp-protocol.h
+      - path: secure-ezsp-token.h
+      - path: secure-ezsp-types.h
+  - path: protocol/zigbee/app/util/zigbee-framework/
+    file_list:
+      - path: zigbee-device-host.h
+  - path: protocol/zigbee/app/util/serial/
+    file_list:
+      - path: linux-serial.h
+      - path: cli.h
+      - path: command-interpreter2.h
+  - path: protocol/zigbee/stack/
+  - path: protocol/zigbee/stack/platform/host/
+    file_list:
+      - path: em_device.h
+    unless:
+      - zigbee_host_simulation
+  - path: protocol/zigbee/stack/include/
+    file_list:
+      - path: "ember-types.h"
+      - path: "ember.h"
+      - path: "error-def.h"
+      - path: "error.h"
+  - path: platform/radio/mac/
+  # Adding these base path before legacy_hal in "zigbee_ezsp"
+  - path: platform/base
+    condition:
+      - zigbee_host_simulation
+  - path: platform/base/hal
+    condition:
+      - zigbee_host_simulation
+  - path: platform/base/hal/plugin
+    condition:
+      - zigbee_host_simulation
+  - path: platform/service/legacy_hal/inc/
+    file_list:
+      - path: ember-printf-convert.h
+      - path: button.h
+      - path: em2xx-reset-defs.h
+      - path: led.h
+      - path: micro-common.h
+      - path: micro-types.h
+      - path: micro.h
+      - path: platform-header.h
+      - path: serial.h
+      - path: serial/serial.h
+      - path: bootloader-interface.h
+      - path: bootloader-interface-standalone.h
+      - path: bootloader-interface-app.h
+      - path: bootloader-eeprom.h
+  - path: platform/service/legacy_common_ash/inc/
+    file_list:
+      - path: ash-common.h
+  - path: platform/service/token_manager/inc/
+  - path: platform/emlib/inc/
+    file_list:
+      - path: em_core.h

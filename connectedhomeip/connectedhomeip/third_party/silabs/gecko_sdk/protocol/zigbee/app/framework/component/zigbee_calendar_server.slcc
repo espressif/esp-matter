@@ -1,0 +1,138 @@
+package: Zigbee
+description: This component is an implementation of the calendar server cluster.  It responds to requests
+  for the calendar data using data from the Calendar Common component.
+label: Calendar Server
+quality: production
+id: zigbee_calendar_server
+category: Zigbee|Cluster Library|Smart Energy
+provides:
+   - name: "zigbee_calendar_server"
+requires:
+   - name: "zigbee_calendar_common"
+source:
+  - path: protocol/zigbee/app/framework/plugin/calendar-server/calendar-server.c
+  - path: protocol/zigbee/app/framework/plugin/calendar-server/calendar-server-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/calendar-server/calendar-server-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/calendar-server
+    file_list:
+      - path: calendar-server.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_calendar_server
+  - name: cluster_service
+    value:
+       cluster_id: "0x0707"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "SERVER"       
+       service_function: "emberAfCalendarClusterServerCommandParse"    
+  - name: cli_group
+    value:
+      group: plugin
+      name: calendar-server
+      help: calendar-server related commands.
+  - name: cli_command
+    value:
+      group: calendar-server
+      name: publish-calendar
+      handler: emAfCalendarServerCliPublishCalendar
+      help: Publishes a calendar.
+      argument:
+      - type: uint16
+        help: The destination node ID
+      - type: uint8
+        help: The source endpoint
+      - type: uint8
+        help: The destination endpoint
+      - type: uint8
+        help: The index of the calendar within the calendar table
+  - name: cli_command
+    value:
+      group: calendar-server
+      name: publish-day-profiles
+      handler: emAfCalendarServerCliPublishDayProfiles
+      help: Publishes the day profiles of the specified day in the specified calendar.
+      argument:
+      - type: uint16
+        help: The destination node ID
+      - type: uint8
+        help: The source endpoint
+      - type: uint8
+        help: The destination endpoint
+      - type: uint8
+        help: The index of the calendar within the calendar table
+      - type: uint8
+        help: The index of the day in the calendar
+  - name: cli_command
+    value:
+      group: calendar-server
+      name: publish-week-profile
+      handler: emAfCalendarServerCliPublishWeekProfile
+      help: Publishes the week profile of the specified week in the specified calendar.
+      argument:
+      - type: uint16
+        help: The destination node ID
+      - type: uint8
+        help: The source endpoint
+      - type: uint8
+        help: The destination endpoint
+      - type: uint8
+        help: The index of the calendar within the calendar table
+      - type: uint8
+        help: The index of the week in the calendar
+  - name: cli_command
+    value:
+      group: calendar-server
+      name: publish-seasons
+      handler: emAfCalendarServerCliPublishSeasons
+      help: Publishes the seasons in the specified calendar.
+      argument:
+      - type: uint16
+        help: The destination node ID
+      - type: uint8
+        help: The source endpoint
+      - type: uint8
+        help: The destination endpoint
+      - type: uint8
+        help: The index of the calendar within the calendar table
+  - name: cli_command
+    value:
+      group: calendar-server
+      name: publish-special-days
+      handler: emAfCalendarServerCliPublishSpecialDays
+      help: Publishes the special days for the specified calendar.
+      argument:
+      - type: uint16
+        help: The destination node id
+      - type: uint8
+        help: The source endpoint
+      - type: uint8
+        help: The destination endpoint
+      - type: uint8
+        help: The index of the calendar within the calendar table
+  - name: cli_command
+    value:
+      group: calendar-server
+      name: cancel-calendar
+      handler: emberAfCalendarServerCliCancelCalendar
+      help: Invalidates the specified calendar and sends a cancel calendar.
+      argument:
+      - type: uint16
+        help: The destination node id
+      - type: uint8
+        help: The source endpoint
+      - type: uint8
+        help: The destination endpoint
+      - type: uint8
+  - name: cluster_functions
+    value:
+       cluster_name: Calendar
+       cluster_id: 0x707
+       cluster_type: server
+       init_function: emberAfCalendarClusterServerInitCallback
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/calendar-server

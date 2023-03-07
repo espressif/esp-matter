@@ -1,0 +1,23 @@
+!!omap
+- id: brd8016a
+- label: BRD8016A
+- package: platform
+- description: Board support for BRD8016A.
+- category: Platform|Board|Mainboard
+- quality: production
+- requires: []
+- provides:
+  - name: brd8016a
+  - name: hardware_board_mainboard_exp
+  - name: hardware_board_mainboard
+- recommends: []
+- template_contribution: []
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD8016A"'
+  - name: SL_BOARD_REV
+    value: '"A01"'
+- tag:
+  - board:pn:BRD8016
+  - board:variant:A
+  - board:revision:A01

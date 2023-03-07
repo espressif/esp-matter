@@ -1,0 +1,87 @@
+# Copyright (c) 2022, Arm Limited and Contributors. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+macro(get_target_platform_variables platform)
+    set(PLATFORM_STRING ${${platform}-STRING})
+    set(PLATFORM_VHT ${${platform}-VHT})
+    set(CMAKE_SYSTEM_PROCESSOR ${${platform}-CMAKE_SYSTEM_PROCESSOR})
+    set(CMSIS_device_header ${${platform}-CMSIS_device_header})
+    set(PLATFORM_FETCH ${${platform}-FETCH})
+    set(PLATFORM_LIBS ${${platform}-LIBS})
+    set(PLATFORM_STARTUP ${${platform}-STARTUP})
+    set(ROM_BASE ${${platform}-ROM_BASE})
+    set(ROM_SIZE ${${platform}-ROM_SIZE})
+    set(RAM_BASE ${${platform}-RAM_BASE})
+    set(RAM_SIZE ${${platform}-RAM_SIZE})
+    set(STACK_SIZE ${${platform}-STACK_SIZE})
+    set(HEAP_SIZE ${${platform}-HEAP_SIZE})
+    set(HTRUN_IMG_FORMAT ${${platform}-HTRUN_IMG_FORMAT})
+    set(HTRUN_ARGS ${${platform}-HTRUN_ARGS})
+    set(PLATFORM_FLASH ${${platform}-FLASH})
+endmacro()
+
+macro(get_tfm_target_platform_variables platform)
+    get_target_platform_variables(${platform})
+    set(ROM_BASE ${${platform}-TFM_NS_ROM_BASE})
+    set(ROM_SIZE ${${platform}-TFM_NS_ROM_SIZE})
+    set(RAM_BASE ${${platform}-TFM_NS_RAM_BASE})
+    set(RAM_SIZE ${${platform}-TFM_NS_RAM_SIZE})
+    set(PLATFORM_TFM_OPTS ${${platform}-TFM_OPTS})
+    set(PLATFORM_TFM_ADDRESSES ${${platform}-TFM_ADDRESSES})
+endmacro()
+
+# Corstone-300
+set(corstone-300-STRING "Corstone-300")
+set(corstone-300-VHT "VHT_Corstone_SSE-300_Ethos_U55")
+set(corstone-300-CMAKE_SYSTEM_PROCESSOR cortex-m55)
+set(corstone-300-CMSIS_device_header ARMCM55.h)
+set(corstone-300-FETCH "set(IOTSDK_MDH_ARM ON)")
+set(corstone-300-LIBS mdh-arm-an552-mps3)
+set(corstone-300-STARTUP mdh-arm-corstone-300-startup)
+set(corstone-300-ROM_BASE 0x00000000)
+set(corstone-300-ROM_SIZE 0x00080000)
+set(corstone-300-RAM_BASE 0x21000000)
+set(corstone-300-RAM_SIZE 0x00100000)
+set(corstone-300-STACK_SIZE 0x00001000)
+set(corstone-300-HEAP_SIZE 0x00001000)
+set(corstone-300-HTRUN_IMG_FORMAT .elf)
+set(corstone-300-HTRUN_ARGS "--micro=FVP_CS300_U55 --fm=MPS3")
+set(corstone-300-FLASH ${CMAKE_CURRENT_LIST_DIR}/common/mps3/flash.c)
+
+# Corstone-300 TF-M support
+# NS ROM base = NS image base + header size
+# NS ROM size = NS image size - header size - trailer size
+set(corstone-300-TFM_OPTS "set(TFM_PLATFORM arm/mps3/an552)")
+set(corstone-300-TFM_NS_ROM_BASE "(0x01060000 + 0x400)")
+set(corstone-300-TFM_NS_ROM_SIZE "(0x60000 - 0x400 - 0x800)")
+set(corstone-300-TFM_NS_RAM_BASE 0x21000000)
+set(corstone-300-TFM_NS_RAM_SIZE 0x00100000)
+set(corstone-300-TFM_ADDRESSES "0x10000000 0x11000000 0x01060000")
+
+# Corstone-310
+set(corstone-310-STRING "Corstone-310")
+set(corstone-310-CMAKE_SYSTEM_PROCESSOR cortex-m85)
+set(corstone-310-CMSIS_device_header ARMCM85.h)
+set(corstone-310-FETCH "set(IOTSDK_MDH_ARM ON)")
+set(corstone-310-LIBS mdh-arm-an555-mps3)
+set(corstone-310-STARTUP mdh-arm-corstone-310-startup)
+set(corstone-310-ROM_BASE 0x01000000)
+set(corstone-310-ROM_SIZE 0x00200000)
+set(corstone-310-RAM_BASE 0x21000000)
+set(corstone-310-RAM_SIZE 0x00200000)
+set(corstone-310-STACK_SIZE 0x00001000)
+set(corstone-310-HEAP_SIZE 0x00001000)
+set(corstone-310-HTRUN_IMG_FORMAT .elf)
+set(corstone-310-VHT "VHT_Corstone_SSE-310")
+set(corstone-310-HTRUN_ARGS "--micro=FVP_CS310 --fm=MPS3")
+set(corstone-310-FLASH ${CMAKE_CURRENT_LIST_DIR}/common/mps3/flash.c)
+
+# Corstone-310 TF-M support
+# NS ROM base = NS image base + header size
+# NS ROM size = NS image size - header size - trailer size
+set(corstone-310-TFM_OPTS "set(TFM_PLATFORM arm/mps3/corstone310_fvp)")
+set(corstone-310-TFM_NS_ROM_BASE "(0x010A0000 + 0x400)")
+set(corstone-310-TFM_NS_ROM_SIZE "(0x60000 - 0x400 - 0x800)")
+set(corstone-310-TFM_NS_RAM_BASE 0x21100000)
+set(corstone-310-TFM_NS_RAM_SIZE 0x00100000)
+set(corstone-310-TFM_ADDRESSES "0x11000000 0x11040000 0x010A0000")

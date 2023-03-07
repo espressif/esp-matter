@@ -1,0 +1,165 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) 2008,2020 Silicon Labs.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<zap>
+  <atomic>
+    <type id="0x00" name="no_data" size="0" description="No data"/>
+    <type id="0x08" name="data8" size="1" description="8-bit data" discrete="true"/>
+    <type id="0x09" name="data16" size="2" description="16-bit data" discrete="true"/>
+    <type id="0x0A" name="data24" size="3" description="24-bit data" discrete="true"/>
+    <type id="0x0B" name="data32" size="4" description="32-bit data" discrete="true"/>
+    <type id="0x0C" name="data40" size="5" description="40-bit data" discrete="true"/>
+    <type id="0x0D" name="data48" size="6" description="48-bit data" discrete="true"/>
+    <type id="0x0E" name="data56" size="7" description="56-bit data" discrete="true"/>
+    <type id="0x0F" name="data64" size="8" description="64-bit data" discrete="true"/>
+    <type id="0x10" name="boolean" size="1" description="Boolean" discrete="true"/>
+    <type id="0x18" name="bitmap8" size="1" description="8-bit bitmap" discrete="true"/>
+    <type id="0x19" name="bitmap16" size="2" description="16-bit bitmap" discrete="true"/>
+    <type id="0x1A" name="bitmap24" size="3" description="24-bit bitmap" discrete="true"/>
+    <type id="0x1B" name="bitmap32" size="4" description="32-bit bitmap" discrete="true"/>
+    <type id="0x1C" name="bitmap40" size="5" description="40-bit bitmap" discrete="true"/>
+    <type id="0x1D" name="bitmap48" size="6" description="48-bit bitmap" discrete="true"/>
+    <type id="0x1E" name="bitmap56" size="7" description="56-bit bitmap" discrete="true"/>
+    <type id="0x1F" name="bitmap64" size="8" description="64-bit bitmap" discrete="true"/>
+    <type id="0x20" name="int8u" size="1" description="Unsigned 8-bit integer"/>
+    <type id="0x21" name="int16u" size="2" description="Unsigned 16-bit integer"/>
+    <type id="0x22" name="int24u" size="3" description="Unsigned 24-bit integer"/>
+    <type id="0x23" name="int32u" size="4" description="Unsigned 32-bit integer"/>
+    <type id="0x24" name="int40u" size="5" description="Unsigned 40-bit integer"/>
+    <type id="0x25" name="int48u" size="6" description="Unsigned 48-bit integer"/>
+    <type id="0x26" name="int56u" size="7" description="Unsigned 56-bit integer"/>
+    <type id="0x27" name="int64u" size="8" description="Unsigned 64-bit integer"/>
+    <type id="0x28" name="int8s" size="1" description="Signed 8-bit integer" signed="true"/>
+    <type id="0x29" name="int16s" size="2" description="Signed 16-bit integer" signed="true"/>
+    <type id="0x2A" name="int24s" size="3" description="Signed 24-bit integer" signed="true"/>
+    <type id="0x2B" name="int32s" size="4" description="Signed 32-bit integer" signed="true"/>
+    <type id="0x2C" name="int40s" size="5" description="Signed 40-bit integer" signed="true"/>
+    <type id="0x2D" name="int48s" size="6" description="Signed 48-bit integer" signed="true"/>
+    <type id="0x2E" name="int56s" size="7" description="Signed 56-bit integer" signed="true"/>
+    <type id="0x2F" name="int64s" size="8" description="Signed 64-bit integer" signed="true"/>
+    <type id="0x30" name="enum8" size="1" description="8-bit enumeration" discrete="true"/>
+    <type id="0x31" name="enum16" size="2" description="16-bit enumeration" discrete="true"/>
+    <type id="0x38" name="float_semi" size="2" description="Semi-precision"/>
+    <type id="0x39" name="float_single" size="4" description="Single precision"/>
+    <type id="0x3A" name="float_double" size="8" description="Double precision"/>
+    <type id="0x41" name="octet_string" description="Octet string" discrete="true" string="true"/>
+    <type id="0x42" name="char_string" description="Character string" discrete="true" string="true" char="true"/>
+    <type id="0x43" name="long_octet_string" description="Long octet string" discrete="true" string="true" long="true"/>
+    <type id="0x44" name="long_char_string" description="Long character string" discrete="true" string="true" char="true" long="true"/>
+    <type id="0x48" name="array" description="Array" discrete="true"/>
+    <type id="0x4C" name="struct" description="Structure" discrete="true"/>
+    <type id="0x50" name="set" description="Set" discrete="true"/>
+    <type id="0x51" name="bag" description="Bag" discrete="true"/>
+    <type id="0xE0" name="time_of_day" size="4" description="Time of day"/>
+    <type id="0xE1" name="date" size="4" description="Date"/>
+    <type id="0xE2" name="utc_time" size="4" description="UTC Time"/>
+    <type id="0xE8" name="cluster_id" size="2" description="Cluster ID" discrete="true"/>
+    <type id="0xE9" name="attribute_id" size="2" description="Attribute ID" discrete="true"/>
+    <type id="0xEA" name="bacnet_oid" size="4" description="BACnet OID" discrete="true"/>
+    <type id="0xF0" name="ieee_address" size="8" description="IEEE address" discrete="true"/>
+    <type id="0xF1" name="security_key" size="16" description="128-bit security key" discrete="true"/>
+    <type id="0xFF" name="unknown" size="0" description="Unknown"/>
+    <type id="0xF9" description="Fabric Index" name="fabric_idx" size="1" discrete="true" />
+  </atomic>
+
+  <enum name="SimpleEnum" type="ENUM8">
+    <item name="aaa" value="0x00"/>
+    <item name="bbb" value="0x01"/>
+  </enum>
+
+  <enum name="TestEnum" type="ENUM8">
+    <cluster code="0xABCD"/>
+    <item name="A" value="0x00"/>
+    <item name="B" value="0x01"/>
+    <item name="C" value="0x02"/>
+    <item name="D" value="0x03"/>
+    <item name="E" value="0x04"/>
+  </enum>
+
+  <enum name="SparseEnum" type="ENUM8">
+    <cluster code="0xABCD"/>
+    <item name="Zero" value="0x00"/>
+    <item name="One" value="0x01"/>
+    <item name="Three" value="0x03"/>
+  </enum>
+
+  <enum name="LongerEnum" type="ENUM8">
+    <cluster code="0xABCD"/>
+    <item name="Zero" value="0x00"/>
+    <item name="One" value="0x01"/>
+    <item name="Three" value="0x03"/>
+    <item name="Fifty" value="50"/>
+  </enum>
+
+  <struct name="SimpleStruct">
+    <cluster code="0xABCD"/>
+    <cluster code="0xABCE"/>
+    <item name="a" type="INT8U" isNullable="true"/>
+    <item name="b" type="BOOLEAN"/>
+    <item name="c" enum="true" type="ENUM8"/>
+    <item name="d" type="OCTET_STRING"/>
+    <item name="e" type="CHAR_STRING"/>
+  </struct>   
+
+  <struct name="StructWithArray">
+    <cluster code="0xABCD"/>
+    <item name="a" type="INT8U"/>
+    <item name="b" type="BOOLEAN"/>
+    <item name="c" type="INT8U" array="true"/>
+  </struct>   
+
+  <struct name="NestedStruct">
+    <item name="a" type="INT8U"/>
+    <item name="b" type="BOOLEAN" isNullable="true"/>
+    <item name="c" type="SimpleStruct"/>
+   </struct>
+
+   <struct name="A">
+     <item name="x" type="INT8U"/>
+     <item name="b" type="B"/>
+     <item name="c" type="C"/>
+   </struct>
+   <struct name="B">
+     <item name="x" type="INT8U"/>
+     <item name="d" type="D"/>
+   </struct>
+   <struct name="C" isFabricScoped="true">
+     <item name="x" type="INT8U"/>
+   </struct>
+   <struct name="D">
+     <item name="x" type="INT8U"/>
+     <item name="c" type="C" isFabricSensitive="true"/>
+   </struct>
+
+  <struct name="Nest">
+    <item name="simple1" type="INT8U"/>
+    <item name="array" type="INT8U" array="true" isFabricSensitive="true"/>
+  </struct>
+  <struct name="DoubleNest">
+    <item name="simple1" type="INT8U"/>
+    <item name="complex" type="Nest" array="true"/>
+  </struct>
+  <struct name="FabricScoped" isFabricScoped="true">
+  </struct>
+
+  <bitmap name="TestBitmap" type="INT8U">
+    <field name="f1" mask="0x01"/>
+  </bitmap>
+  <bitmap name="ClusterBitmap" type="INT16U">
+    <cluster code="0xABCD"/>
+    <field name="f1" mask="0x01"/>
+  </bitmap>
+</zap>

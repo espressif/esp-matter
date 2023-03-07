@@ -1,0 +1,132 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_toolchain/generate_toolchain.gni")
+import("$dir_pw_unit_test/test.gni")
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("pw_stream") {
+  public_configs = [ ":public_include_path" ]
+  public = [
+    "public/pw_stream/memory_stream.h",
+    "public/pw_stream/null_stream.h",
+    "public/pw_stream/seek.h",
+    "public/pw_stream/stream.h",
+  ]
+  sources = [ "memory_stream.cc" ]
+  public_deps = [
+    dir_pw_assert,
+    dir_pw_bytes,
+    dir_pw_polyfill,
+    dir_pw_result,
+    dir_pw_span,
+    dir_pw_status,
+  ]
+}
+
+pw_source_set("socket_stream") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ ":pw_stream" ]
+  deps = [ dir_pw_log ]
+  sources = [ "socket_stream.cc" ]
+  public = [ "public/pw_stream/socket_stream.h" ]
+}
+
+pw_source_set("sys_io_stream") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    "$dir_pw_stream",
+    "$dir_pw_sys_io",
+  ]
+  public = [ "public/pw_stream/sys_io_stream.h" ]
+}
+
+pw_source_set("std_file_stream") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ ":pw_stream" ]
+  deps = [ "$dir_pw_assert" ]
+  public = [ "public/pw_stream/std_file_stream.h" ]
+  sources = [ "std_file_stream.cc" ]
+}
+
+pw_source_set("interval_reader") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    ":pw_stream",
+    dir_pw_assert,
+    dir_pw_status,
+  ]
+  public = [ "public/pw_stream/interval_reader.h" ]
+  sources = [ "interval_reader.cc" ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":interval_reader_test",
+    ":memory_stream_test",
+    ":seek_test",
+    ":stream_test",
+  ]
+
+  if (defined(pw_toolchain_SCOPE.is_host_toolchain) &&
+      pw_toolchain_SCOPE.is_host_toolchain) {
+    tests += [ ":std_file_stream_test" ]
+  }
+}
+
+pw_test("memory_stream_test") {
+  sources = [ "memory_stream_test.cc" ]
+  deps = [ ":pw_stream" ]
+}
+
+pw_test("std_file_stream_test") {
+  sources = [ "std_file_stream_test.cc" ]
+  deps = [
+    ":std_file_stream",
+    "$dir_pw_assert",
+    "$dir_pw_bytes",
+    "$dir_pw_containers",
+    "$dir_pw_random",
+    "$dir_pw_result",
+    "$dir_pw_status",
+    "$dir_pw_string",
+  ]
+}
+
+pw_test("seek_test") {
+  sources = [ "seek_test.cc" ]
+  deps = [ ":pw_stream" ]
+}
+
+pw_test("stream_test") {
+  sources = [ "stream_test.cc" ]
+  deps = [ ":pw_stream" ]
+}
+
+pw_test("interval_reader_test") {
+  sources = [ "interval_reader_test.cc" ]
+  deps = [ ":interval_reader" ]
+}

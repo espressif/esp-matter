@@ -1,0 +1,128 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+
+declare_args() {
+  # If compiling a project against an MCUXpresso SDK, this variable can be set
+  # to the name of the pw_source_set you create using `pw_mcuxpresso_sdk` to
+  # enable additional Pigweed support.
+  pw_third_party_mcuxpresso_SDK = ""
+}
+
+# Creates a source set for an MCUXpresso SDK.
+#
+# In addition to the named source set, two configs are created; one named
+# `${target_name}__defines` contains pre-processor definitions for the SDK
+# project and the other named `${target_name}__includes` defines the include
+# paths. These may be used to break circular dependencies.
+#
+# Args:
+#  manifest: The MCUXpresso SDK manifest XML file describing the components of
+#    the SDK.
+#
+#  sdk_dir: Optional path to directory containing the SDK. When ommitted the
+#    parent of `manifest` is used, which is usually the correct definition.
+#
+#  include: list of SDK components to include in the project.
+#
+#  exclude: Optional list of SDK components to exclude from the project.
+#
+#  allow_circular_includes_from, configs, deps, public_configs, public_deps:
+#    Optional extra properties for the source set.
+#
+# Example:
+#
+#   pw_mcuxpresso_sdk("sample_project_sdk") {
+#     manifest = "$dir_pw_third_party/mcuxpresso/EVK-MIMXRT595_manifest_v3_8.xml"
+#     include = [ "project_template.evkmimxrt595.MIMXRT595S" ]
+#   }
+#
+#   pw_executable("hello_world") {
+#     sources = [ "hello_world.cc "]
+#     deps = [ ":sample_project_sdk" ]
+#   }
+#
+template("pw_mcuxpresso_sdk") {
+  assert(defined(invoker.manifest), "pw_mcuxpresso_sdk requires a manifest")
+
+  if (defined(invoker.sdk_dir)) {
+    _sdk_dir = invoker.sdk_dir
+  } else {
+    _sdk_dir = get_path_info(invoker.manifest, "dir")
+  }
+
+  _script_args = [
+    "project",
+    rebase_path(invoker.manifest),
+    "--prefix=$_sdk_dir",
+  ]
+
+  if (defined(invoker.include)) {
+    foreach(dependency, invoker.include) {
+      _script_args += [
+        "--include",
+        dependency,
+      ]
+    }
+  }
+
+  if (defined(invoker.exclude)) {
+    foreach(dependency, invoker.exclude) {
+      _script_args += [
+        "--exclude",
+        dependency,
+      ]
+    }
+  }
+
+  # This script finds the components distributed with the SDK.
+  _script = "$dir_pw_build_mcuxpresso/py/pw_build_mcuxpresso/__main__.py"
+  _project = exec_script(_script, _script_args, "scope", [ invoker.manifest ])
+
+  config("${target_name}__defines") {
+    forward_variables_from(_project, [ "defines" ])
+  }
+
+  config("${target_name}__includes") {
+    forward_variables_from(_project, [ "include_dirs" ])
+  }
+
+  pw_source_set(target_name) {
+    forward_variables_from(_project,
+                           [
+                             "libs",
+                             "public",
+                             "sources",
+                           ])
+
+    public_configs = [
+      ":${target_name}__defines",
+      ":${target_name}__includes",
+    ]
+    if (defined(invoker.public_configs)) {
+      public_configs += invoker.public_configs
+    }
+
+    forward_variables_from(invoker,
+                           [
+                             "configs",
+                             "deps",
+                             "public_deps",
+                             "allow_circular_includes_from",
+                           ])
+  }
+}

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<demos xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://www.silabs.com/ss/Studio.ecore" xsi:noNamespaceSchemaLocation="http://www.silabs.com/ss/Demo.ecore">
+  <demo name="brd4161a.demo.rcp-spi-802154-blehci" label="Multiprotocol (OpenThread+Zigbee+BLE) - RCP (SPI)">
+    <model:description>This multiprotocol radio co-processor (RCP) application supports running OpenThread, Zigbee, and Bluetooth stacks simultaneously on a host processor. It uses concurrent multiprotocol (CMP) / multi-PAN functionality to run the 802.15.4 networks simultaneously on the same channel, and dynamic multiprotocol (DMP) to run the Bluetooth Link Layer simultaneously. The host stacks and the RCP communicate using the Co-Processor Communication protocol (CPC), which acts as a protocol multiplexer and serial transport layer. The host applications connect to the CPC daemon, which in turn connects to the EFR via a SPI link. Refer to *AN1333: Running Zigbee, OpenThread, and Bluetooth Concurrently on a Linux Host with a Multiprotocol Co-processor* for more information on running the multiprotocol RCP with different host applications.
+</model:description>
+    <property key="demos.blurb" value="Multiprotocol (OpenThread+Zigbee+BLE) - RCP (SPI)"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p432f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4161a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/openthread/demos/rcp-spi-802154-blehci/rcp-spi-802154-blehci-brd4161a.s37"/>
+    <property key="core.readmeFiles" value="sample-apps/ot-ncp/README-MP-DMP-RCP.md"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|RCP Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Thread"/>
+    <property key="core.quality" value="ALPHA"/>
+  </demo>
+  <demo name="brd4166a.demo.rcp-spi-802154-blehci" label="Multiprotocol (OpenThread+Zigbee+BLE) - RCP (SPI)">
+    <model:description>This multiprotocol radio co-processor (RCP) application supports running OpenThread, Zigbee, and Bluetooth stacks simultaneously on a host processor. It uses concurrent multiprotocol (CMP) / multi-PAN functionality to run the 802.15.4 networks simultaneously on the same channel, and dynamic multiprotocol (DMP) to run the Bluetooth Link Layer simultaneously. The host stacks and the RCP communicate using the Co-Processor Communication protocol (CPC), which acts as a protocol multiplexer and serial transport layer. The host applications connect to the CPC daemon, which in turn connects to the EFR via a SPI link. Refer to *AN1333: Running Zigbee, OpenThread, and Bluetooth Concurrently on a Linux Host with a Multiprotocol Co-processor* for more information on running the multiprotocol RCP with different host applications.
+</model:description>
+    <property key="demos.blurb" value="Multiprotocol (OpenThread+Zigbee+BLE) - RCP (SPI)"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p332f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4166a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/openthread/demos/rcp-spi-802154-blehci/rcp-spi-802154-blehci-brd4166a.s37"/>
+    <property key="core.readmeFiles" value="sample-apps/ot-ncp/README-MP-DMP-RCP.md"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|RCP Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Thread"/>
+    <property key="core.quality" value="ALPHA"/>
+  </demo>
+  <demo name="brd4168a.demo.rcp-spi-802154-blehci" label="Multiprotocol (OpenThread+Zigbee+BLE) - RCP (SPI)">
+    <model:description>This multiprotocol radio co-processor (RCP) application supports running OpenThread, Zigbee, and Bluetooth stacks simultaneously on a host processor. It uses concurrent multiprotocol (CMP) / multi-PAN functionality to run the 802.15.4 networks simultaneously on the same channel, and dynamic multiprotocol (DMP) to run the Bluetooth Link Layer simultaneously. The host stacks and the RCP communicate using the Co-Processor Communication protocol (CPC), which acts as a protocol multiplexer and serial transport layer. The host applications connect to the CPC daemon, which in turn connects to the EFR via a SPI link. Refer to *AN1333: Running Zigbee, OpenThread, and Bluetooth Concurrently on a Linux Host with a Multiprotocol Co-processor* for more information on running the multiprotocol RCP with different host applications.
+</model:description>
+    <property key="demos.blurb" value="Multiprotocol (OpenThread+Zigbee+BLE) - RCP (SPI)"/>
+    <property key="core.partCompatibility" value=".*efr32mg13p732f512gm48.*"/>
+    <property key="core.boardCompatibility" value="brd4168a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/openthread/demos/rcp-spi-802154-blehci/rcp-spi-802154-blehci-brd4168a.s37"/>
+    <property key="core.readmeFiles" value="sample-apps/ot-ncp/README-MP-DMP-RCP.md"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|RCP Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Thread"/>
+    <property key="core.quality" value="ALPHA"/>
+  </demo>
+  <demo name="brd4180a.demo.rcp-spi-802154-blehci" label="Multiprotocol (OpenThread+Zigbee+BLE) - RCP (SPI)">
+    <model:description>This multiprotocol radio co-processor (RCP) application supports running OpenThread, Zigbee, and Bluetooth stacks simultaneously on a host processor. It uses concurrent multiprotocol (CMP) / multi-PAN functionality to run the 802.15.4 networks simultaneously on the same channel, and dynamic multiprotocol (DMP) to run the Bluetooth Link Layer simultaneously. The host stacks and the RCP communicate using the Co-Processor Communication protocol (CPC), which acts as a protocol multiplexer and serial transport layer. The host applications connect to the CPC daemon, which in turn connects to the EFR via a SPI link. Refer to *AN1333: Running Zigbee, OpenThread, and Bluetooth Concurrently on a Linux Host with a Multiprotocol Co-processor* for more information on running the multiprotocol RCP with different host applications.
+</model:description>
+    <property key="demos.blurb" value="Multiprotocol (OpenThread+Zigbee+BLE) - RCP (SPI)"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a020f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4180a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/openthread/demos/rcp-spi-802154-blehci/rcp-spi-802154-blehci-brd4180a.s37"/>
+    <property key="core.readmeFiles" value="sample-apps/ot-ncp/README-MP-DMP-RCP.md"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|RCP Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Thread"/>
+    <property key="core.quality" value="ALPHA"/>
+  </demo>
+  <demo name="brd4304a.demo.rcp-spi-802154-blehci" label="Multiprotocol (OpenThread+Zigbee+BLE) - RCP (SPI)">
+    <model:description>This multiprotocol radio co-processor (RCP) application supports running OpenThread, Zigbee, and Bluetooth stacks simultaneously on a host processor. It uses concurrent multiprotocol (CMP) / multi-PAN functionality to run the 802.15.4 networks simultaneously on the same channel, and dynamic multiprotocol (DMP) to run the Bluetooth Link Layer simultaneously. The host stacks and the RCP communicate using the Co-Processor Communication protocol (CPC), which acts as a protocol multiplexer and serial transport layer. The host applications connect to the CPC daemon, which in turn connects to the EFR via a SPI link. Refer to *AN1333: Running Zigbee, OpenThread, and Bluetooth Concurrently on a Linux Host with a Multiprotocol Co-processor* for more information on running the multiprotocol RCP with different host applications.
+</model:description>
+    <property key="demos.blurb" value="Multiprotocol (OpenThread+Zigbee+BLE) - RCP (SPI)"/>
+    <property key="core.partCompatibility" value=".*mgm12p32f1024ga.*"/>
+    <property key="core.boardCompatibility" value="brd4304a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/openthread/demos/rcp-spi-802154-blehci/rcp-spi-802154-blehci-brd4304a.s37"/>
+    <property key="core.readmeFiles" value="sample-apps/ot-ncp/README-MP-DMP-RCP.md"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|RCP Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Thread"/>
+    <property key="core.quality" value="ALPHA"/>
+  </demo>
+  <demo name="brd4161a.demo.rcp-uart-802154-blehci" label="Multiprotocol (OpenThread+Zigbee+BLE) - RCP (UART)">
+    <model:description>This multiprotocol radio co-processor (RCP) application supports running OpenThread, Zigbee, and Bluetooth stacks simultaneously on a host processor. It uses concurrent multiprotocol (CMP) / multi-PAN functionality to run the 802.15.4 networks simultaneously on the same channel, and dynamic multiprotocol (DMP) to run the Bluetooth Link Layer simultaneously. The host stacks and the RCP communicate using the Co-Processor Communication protocol (CPC), which acts as a protocol multiplexer and serial transport layer. The host applications connect to the CPC daemon, which in turn connects to the EFR via a UART link. Refer to *AN1333: Running Zigbee, OpenThread, and Bluetooth Concurrently on a Linux Host with a Multiprotocol Co-processor* for more information on running the multiprotocol RCP with different host applications.
+</model:description>
+    <property key="demos.blurb" value="Multiprotocol (OpenThread+Zigbee+BLE) - RCP (UART)"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p432f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4161a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/openthread/demos/rcp-uart-802154-blehci/rcp-uart-802154-blehci-brd4161a.s37"/>
+    <property key="core.readmeFiles" value="sample-apps/ot-ncp/README-MP-DMP-RCP.md"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|RCP Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Thread"/>
+    <property key="core.quality" value="ALPHA"/>
+  </demo>
+  <demo name="brd4166a.demo.rcp-uart-802154-blehci" label="Multiprotocol (OpenThread+Zigbee+BLE) - RCP (UART)">
+    <model:description>This multiprotocol radio co-processor (RCP) application supports running OpenThread, Zigbee, and Bluetooth stacks simultaneously on a host processor. It uses concurrent multiprotocol (CMP) / multi-PAN functionality to run the 802.15.4 networks simultaneously on the same channel, and dynamic multiprotocol (DMP) to run the Bluetooth Link Layer simultaneously. The host stacks and the RCP communicate using the Co-Processor Communication protocol (CPC), which acts as a protocol multiplexer and serial transport layer. The host applications connect to the CPC daemon, which in turn connects to the EFR via a UART link. Refer to *AN1333: Running Zigbee, OpenThread, and Bluetooth Concurrently on a Linux Host with a Multiprotocol Co-processor* for more information on running the multiprotocol RCP with different host applications.
+</model:description>
+    <property key="demos.blurb" value="Multiprotocol (OpenThread+Zigbee+BLE) - RCP (UART)"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p332f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4166a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/openthread/demos/rcp-uart-802154-blehci/rcp-uart-802154-blehci-brd4166a.s37"/>
+    <property key="core.readmeFiles" value="sample-apps/ot-ncp/README-MP-DMP-RCP.md"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|RCP Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Thread"/>
+    <property key="core.quality" value="ALPHA"/>
+  </demo>
+  <demo name="brd4168a.demo.rcp-uart-802154-blehci" label="Multiprotocol (OpenThread+Zigbee+BLE) - RCP (UART)">
+    <model:description>This multiprotocol radio co-processor (RCP) application supports running OpenThread, Zigbee, and Bluetooth stacks simultaneously on a host processor. It uses concurrent multiprotocol (CMP) / multi-PAN functionality to run the 802.15.4 networks simultaneously on the same channel, and dynamic multiprotocol (DMP) to run the Bluetooth Link Layer simultaneously. The host stacks and the RCP communicate using the Co-Processor Communication protocol (CPC), which acts as a protocol multiplexer and serial transport layer. The host applications connect to the CPC daemon, which in turn connects to the EFR via a UART link. Refer to *AN1333: Running Zigbee, OpenThread, and Bluetooth Concurrently on a Linux Host with a Multiprotocol Co-processor* for more information on running the multiprotocol RCP with different host applications.
+</model:description>
+    <property key="demos.blurb" value="Multiprotocol (OpenThread+Zigbee+BLE) - RCP (UART)"/>
+    <property key="core.partCompatibility" value=".*efr32mg13p732f512gm48.*"/>
+    <property key="core.boardCompatibility" value="brd4168a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/openthread/demos/rcp-uart-802154-blehci/rcp-uart-802154-blehci-brd4168a.s37"/>
+    <property key="core.readmeFiles" value="sample-apps/ot-ncp/README-MP-DMP-RCP.md"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|RCP Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Thread"/>
+    <property key="core.quality" value="ALPHA"/>
+  </demo>
+  <demo name="brd4180a.demo.rcp-uart-802154-blehci" label="Multiprotocol (OpenThread+Zigbee+BLE) - RCP (UART)">
+    <model:description>This multiprotocol radio co-processor (RCP) application supports running OpenThread, Zigbee, and Bluetooth stacks simultaneously on a host processor. It uses concurrent multiprotocol (CMP) / multi-PAN functionality to run the 802.15.4 networks simultaneously on the same channel, and dynamic multiprotocol (DMP) to run the Bluetooth Link Layer simultaneously. The host stacks and the RCP communicate using the Co-Processor Communication protocol (CPC), which acts as a protocol multiplexer and serial transport layer. The host applications connect to the CPC daemon, which in turn connects to the EFR via a UART link. Refer to *AN1333: Running Zigbee, OpenThread, and Bluetooth Concurrently on a Linux Host with a Multiprotocol Co-processor* for more information on running the multiprotocol RCP with different host applications.
+</model:description>
+    <property key="demos.blurb" value="Multiprotocol (OpenThread+Zigbee+BLE) - RCP (UART)"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a020f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4180a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/openthread/demos/rcp-uart-802154-blehci/rcp-uart-802154-blehci-brd4180a.s37"/>
+    <property key="core.readmeFiles" value="sample-apps/ot-ncp/README-MP-DMP-RCP.md"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|RCP Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Thread"/>
+    <property key="core.quality" value="ALPHA"/>
+  </demo>
+  <demo name="brd4304a.demo.rcp-uart-802154-blehci" label="Multiprotocol (OpenThread+Zigbee+BLE) - RCP (UART)">
+    <model:description>This multiprotocol radio co-processor (RCP) application supports running OpenThread, Zigbee, and Bluetooth stacks simultaneously on a host processor. It uses concurrent multiprotocol (CMP) / multi-PAN functionality to run the 802.15.4 networks simultaneously on the same channel, and dynamic multiprotocol (DMP) to run the Bluetooth Link Layer simultaneously. The host stacks and the RCP communicate using the Co-Processor Communication protocol (CPC), which acts as a protocol multiplexer and serial transport layer. The host applications connect to the CPC daemon, which in turn connects to the EFR via a UART link. Refer to *AN1333: Running Zigbee, OpenThread, and Bluetooth Concurrently on a Linux Host with a Multiprotocol Co-processor* for more information on running the multiprotocol RCP with different host applications.
+</model:description>
+    <property key="demos.blurb" value="Multiprotocol (OpenThread+Zigbee+BLE) - RCP (UART)"/>
+    <property key="core.partCompatibility" value=".*mgm12p32f1024ga.*"/>
+    <property key="core.boardCompatibility" value="brd4304a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/protocol/openthread/demos/rcp-uart-802154-blehci/rcp-uart-802154-blehci-brd4304a.s37"/>
+    <property key="core.readmeFiles" value="sample-apps/ot-ncp/README-MP-DMP-RCP.md"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|RCP Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Thread"/>
+    <property key="core.quality" value="ALPHA"/>
+  </demo>
+</demos>

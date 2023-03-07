@@ -1,0 +1,22 @@
+id: pressure_driver_bmp280
+package: platform
+label: Pressure device driver for BMP280
+description: >
+  Pressure sensor driver for BMP280
+category: Platform|Board Drivers
+quality: production
+root_path: hardware/driver/pressure
+provides:
+  - name: pressure_device_driver
+  - name: pressure_driver_bmp280
+requires:
+  - name: bmp280_driver
+include:
+  - path: inc
+    file_list:
+    - path: sl_pressure.h
+source:
+  - path: src/sl_pressure_bmp280.c
+documentation:
+    docset: gecko-platform
+    document: hardware-driver/api/group-pressure

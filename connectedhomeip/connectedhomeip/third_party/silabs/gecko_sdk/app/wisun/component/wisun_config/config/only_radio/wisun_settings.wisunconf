@@ -1,0 +1,14 @@
+{
+  "networkName": null,
+  "networkSize": null,
+  "txOutputPower": null,
+  "macAddress": null,
+  "dwellInterval": null,
+  "macList": [],
+  "isDenyList": false,
+  "devicePrivateKey": null,
+  "deviceCertificate": null,
+  "caCertificate": null,
+  "radioConfPath": "../rail/radio_settings.radioconf",
+  "onlyRadioTab": true
+}

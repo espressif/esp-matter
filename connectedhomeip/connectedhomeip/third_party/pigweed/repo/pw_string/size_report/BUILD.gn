@@ -1,0 +1,137 @@
+# Copyright 2019 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+
+pw_executable("single_write_snprintf") {
+  sources = [ "format_single.cc" ]
+  deps = [
+    "$dir_pw_bloat:bloat_this_binary",
+    "..",
+  ]
+  defines = [ "USE_FORMAT=0" ]
+}
+
+pw_executable("single_write_format") {
+  sources = [ "format_single.cc" ]
+  deps = [
+    "$dir_pw_bloat:bloat_this_binary",
+    "..",
+  ]
+  defines = [ "USE_FORMAT=1" ]
+}
+
+pw_executable("multiple_writes_snprintf") {
+  sources = [ "format_multiple.cc" ]
+  deps = [
+    "$dir_pw_bloat:bloat_this_binary",
+    "..",
+  ]
+  defines = [ "USE_FORMAT=0" ]
+}
+
+pw_executable("multiple_writes_format") {
+  sources = [ "format_multiple.cc" ]
+  deps = [
+    "$dir_pw_bloat:bloat_this_binary",
+    "..",
+  ]
+  defines = [ "USE_FORMAT=1" ]
+}
+
+pw_executable("many_writes_snprintf") {
+  sources = [ "format_many_without_error_handling.cc" ]
+  deps = [
+    "$dir_pw_bloat:bloat_this_binary",
+    "..",
+  ]
+  defines = [ "USE_FORMAT=0" ]
+}
+
+pw_executable("many_writes_format") {
+  sources = [ "format_many_without_error_handling.cc" ]
+  deps = [
+    "$dir_pw_bloat:bloat_this_binary",
+    "..",
+  ]
+  defines = [ "USE_FORMAT=1" ]
+}
+
+pw_executable("build_string_with_snprintf_no_base_snprintf") {
+  sources = [ "string_builder_size_report.cc" ]
+  deps = [
+    "$dir_pw_bloat:bloat_this_binary",
+    "..",
+  ]
+  defines = [
+    "USE_STRING_BUILDER=0",
+    "PROVIDE_BASE_SNPRINTF=0",
+  ]
+}
+
+pw_executable("build_string_with_string_builder_no_base_snprintf") {
+  sources = [ "string_builder_size_report.cc" ]
+  deps = [
+    "$dir_pw_bloat:bloat_this_binary",
+    "..",
+  ]
+  defines = [
+    "USE_STRING_BUILDER=1",
+    "PROVIDE_BASE_SNPRINTF=0",
+  ]
+}
+
+pw_executable("build_string_with_snprintf") {
+  sources = [ "string_builder_size_report.cc" ]
+  deps = [
+    "$dir_pw_bloat:bloat_this_binary",
+    "..",
+  ]
+  defines = [
+    "USE_STRING_BUILDER=0",
+    "PROVIDE_BASE_SNPRINTF=1",
+  ]
+}
+
+pw_executable("build_string_with_string_builder") {
+  sources = [ "string_builder_size_report.cc" ]
+  deps = [
+    "$dir_pw_bloat:bloat_this_binary",
+    "..",
+  ]
+  defines = [
+    "USE_STRING_BUILDER=1",
+    "PROVIDE_BASE_SNPRINTF=1",
+  ]
+}
+
+pw_executable("build_string_incremental_with_snprintf") {
+  sources = [ "string_builder_size_report_incremental.cc" ]
+  deps = [
+    "$dir_pw_bloat:bloat_this_binary",
+    "..",
+  ]
+  defines = [ "USE_STRING_BUILDER=0" ]
+}
+
+pw_executable("build_string_incremental_with_string_builder") {
+  sources = [ "string_builder_size_report_incremental.cc" ]
+  deps = [
+    "$dir_pw_bloat:bloat_this_binary",
+    "..",
+  ]
+  defines = [ "USE_STRING_BUILDER=1" ]
+}

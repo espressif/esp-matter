@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2015 Bluetooth SIG, Inc. All rights reserved. -->
+<Descriptor xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/descriptor.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.descriptor.value_trigger_setting" name="Value Trigger Setting" uuid="290A" last-modified="2015-07-14" approved="Yes">
+    <InformativeText>
+        <Abstract>The value of the descriptor has two parts. Part one is a condition field and occupies one octet, and part two is the comparison value (trigger point) that the characteristic value is checked against.</Abstract>
+    </InformativeText>
+    <Value>
+        <Field name="Condition">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+            <Enumerations>
+                <InformativeText>Available Conditions</InformativeText>
+                <Enumeration key="0" value="None" description="The state is changed if the characteristic value is changed. (valid for: Digital, Analog)" />
+                <Enumeration key="1" value="Analog" description="Crossed a boundary. The state is changed if the value of the analog characteristic changes from less than to greater than a settable Analog value, or from greater than to less than a settable Analog value (valid for: Analog)" requires="C2"/>
+                <Enumeration key="2" value="Analog" description="On the boundary. The state is changed if the value of an analog characteristic changes from less than to equal to a settable Analog value, or from greater than to equal to a settable Analog value, or from equal to to less than or greater than a settable Analog value (valid for: Analog)" requires="C2" />
+                <Enumeration key="3" value="Analog" description="The state is changed if the value of the analog characteristic is changed more than a settable Analog value (valid for: Analog)" requires="C2"/>
+                <Enumeration key="4" value="Bit Mask" description="Mask then compare (logical-and of the Digital Input and the Bit Mask, condition is true if the result of this is different from the last stet) (valid for: Digital)" requires="C3" />
+                <Enumeration key="5" value="Analog Interval" description="Inside or outside the boundaries. The state is changed if the value of the analog characteristic changes from less than a settable Analog One value and greater than a settable Analog Two value to greater than a settable Analog One value or less than a settable Analog Two value (valid for: Analog)" requires="C4" />
+                <Enumeration key="6" value="Analog Interval" description="On the boundaries. The state is changed if the value of the analog characteristic changes from equal to a settable Analog One value or settable Analog Two value to any other value (valid for: Analog)" requires="C4" />
+                <Enumeration key="7" value="None" description="No value trigger.  This condition causes no state change regardless if the characteristic value changes.  It can be used for example when the value of one or more characteristic should not cause indication or notification of the Aggregate characteristic (valid for: Digital, Analog)" />
+                <ReservedForFutureUse start="8" end="255" />
+            </Enumerations>
+        </Field>
+       
+        <Field name="Value (Analog)">
+            <Requirement>C2</Requirement>
+            <Format>uint16</Format>
+        </Field>
+        <Field name="Value (Bit Mask)">
+            <Requirement>C3</Requirement>
+            <Reference>org.bluetooth.characteristic.digital</Reference>
+        </Field>
+         <Field name="Value (Analog Interval)">
+            <InformativeText>Analog One (uint16), Analog Two (uint16)</InformativeText>
+            <Requirement>C4</Requirement>
+            <Format>uint32</Format>
+        </Field>
+    </Value>
+</Descriptor>

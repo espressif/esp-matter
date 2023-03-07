@@ -1,0 +1,89 @@
+# Copyright 2019 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/module_config.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+
+declare_args() {
+  # The build target that overrides the default configuration options for this
+  # module. This should point to a source set that provides defines through a
+  # public config (which may -include a file or add defines directly).
+  pw_preprocessor_CONFIG = pw_build_DEFAULT_MODULE_CONFIG
+}
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+}
+
+pw_source_set("pw_preprocessor") {
+  public_configs = [ ":public_include_path" ]
+  public = [
+    "public/pw_preprocessor/arguments.h",
+    "public/pw_preprocessor/boolean.h",
+    "public/pw_preprocessor/compiler.h",
+    "public/pw_preprocessor/concat.h",
+    "public/pw_preprocessor/util.h",
+  ]
+  sources = [ "public/pw_preprocessor/internal/arg_count_impl.h" ]
+}
+
+pw_source_set("arch") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_preprocessor/arch.h" ]
+  public_deps = [ pw_preprocessor_CONFIG ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}
+
+# All pw_preprocessor test binaries.
+pw_test_group("tests") {
+  tests = [
+    ":arguments_test",
+    ":boolean_test",
+    ":compiler_test",
+    ":concat_test",
+    ":util_test",
+  ]
+}
+
+pw_test("arguments_test") {
+  deps = [ ":pw_preprocessor" ]
+  sources = [ "arguments_test.cc" ]
+}
+
+pw_test("boolean_test") {
+  deps = [ ":pw_preprocessor" ]
+  sources = [ "boolean_test.cc" ]
+}
+
+pw_test("compiler_test") {
+  deps = [ ":pw_preprocessor" ]
+  sources = [ "compiler_test.cc" ]
+}
+
+pw_test("concat_test") {
+  deps = [ ":pw_preprocessor" ]
+  sources = [ "concat_test.cc" ]
+}
+
+pw_test("util_test") {
+  deps = [ ":pw_preprocessor" ]
+  sources = [ "util_test.cc" ]
+}

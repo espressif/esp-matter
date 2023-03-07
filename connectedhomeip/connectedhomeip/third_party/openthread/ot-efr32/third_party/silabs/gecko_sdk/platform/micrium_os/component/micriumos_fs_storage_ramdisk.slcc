@@ -1,0 +1,24 @@
+id: micriumos_fs_storage_ramdisk
+package: micrium-fsxx
+description: Micrium OS File System Ramdisk Storage
+category: Services|Micrium|File System
+quality: production
+component_root_path: platform/micrium_os/fs
+source:
+  - path: source/storage/ramdisk/fs_ramdisk.c
+include:
+  - path: source
+    file_list:
+      - path: storage/ramdisk/fs_ramdisk_priv.h
+  - path: include
+    file_list:
+      - path: fs_ramdisk.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: FS_STORAGE_RAM_DISK
+provides:
+  - name: fs_storage_ramdisk
+  - name: fs_storage
+    allow_multiple: true
+requires:
+  - name: fs

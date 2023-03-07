@@ -1,0 +1,701 @@
+!!omap
+- id: brd4257a_config
+- label: brd4257a config
+- description: Configuration files for BRD4257A
+- package: platform
+- category: Platform|Board|Config
+- quality: production
+- ui_hints:
+    visibility: never
+- root_path: hardware/board/config
+- requires:
+  - name: brd4257a
+- provides:
+  - name: brd4257a_config
+- config_file:
+  - condition:
+    - brd4001a
+    override:
+      component: board_control
+      file_id: board_control_config
+    path: brd4257a_brd4001a/sl_board_control_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: board_control
+      file_id: board_control_config
+    path: brd4257a_brd4002a/sl_board_control_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: bootloader_ezsp_gpio_activation
+      file_id: ezsp_gpio_activation_cfg
+    path: brd4257a_brd4001a/btl_ezsp_gpio_activation_cfg.h
+  - condition:
+    - brd4001a
+    override:
+      component: bootloader_gpio_activation
+      file_id: btl_gpio_activation_cfg
+    path: brd4257a_brd4001a/btl_gpio_activation_cfg.h
+  - condition:
+    - brd4001a
+    override:
+      component: bootloader_spi_controller_usart_driver
+      file_id: btl_spi_controller_usart_driver_cfg
+    path: brd4257a_brd4001a/btl_spi_controller_usart_driver_cfg.h
+  - condition:
+    - brd4001a
+    override:
+      component: bootloader_spi_peripheral_usart_driver
+      file_id: btl_spi_peripheral_usart_driver_cfg
+    path: brd4257a_brd4001a/btl_spi_peripheral_usart_driver_cfg.h
+  - condition:
+    - brd4001a
+    override:
+      component: bootloader_uart_driver
+      file_id: btl_uart_driver_cfg
+    path: brd4257a_brd4001a/btl_uart_driver_cfg.h
+  - condition:
+    - brd4001a
+    override:
+      component: cpc_primary_driver_spi_usart
+      file_id: cpc_drv_spi_primary_config
+      instance: exp
+    path: brd4257a_brd4001a/sl_cpc_drv_primary_spi_usart_exp_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: cpc_primary_driver_uart_usart
+      file_id: cpc_drv_uart_primary_config
+      instance: vcom
+    path: brd4257a_brd4001a/sl_cpc_drv_primary_uart_usart_vcom_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: cpc_primary_driver_uart_usart
+      file_id: cpc_drv_uart_primary_config
+      instance: exp
+    path: brd4257a_brd4001a/sl_cpc_drv_primary_uart_usart_exp_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: cpc_secondary_driver_spi_usart
+      file_id: cpc_drv_secondary_spi_usart_config
+      instance: exp
+    path: brd4257a_brd4001a/sl_cpc_drv_secondary_spi_usart_exp_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: cpc_secondary_driver_uart_usart
+      file_id: cpc_drv_secondary_uart_usart_config
+      instance: vcom
+    path: brd4257a_brd4001a/sl_cpc_drv_secondary_uart_usart_vcom_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: cpc_secondary_driver_uart_usart
+      file_id: cpc_drv_secondary_uart_usart_config
+      instance: exp
+    path: brd4257a_brd4001a/sl_cpc_drv_secondary_uart_usart_exp_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: device_init_hfxo
+      file_id: device_init_hfxo_config
+    path: brd4257a_brd4001a/sl_device_init_hfxo_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: device_init_lfxo
+      file_id: device_init_lfxo_config
+    path: brd4257a_brd4001a/sl_device_init_lfxo_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: i2cspm
+      file_id: i2cspm_config
+      instance: sensor
+    path: brd4257a_brd4001a/sl_i2cspm_sensor_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: iostream_leuart
+      file_id: iostream_leuart_config
+      instance: vcom
+    path: brd4257a_brd4001a/sl_iostream_leuart_vcom_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: iostream_leuart
+      file_id: iostream_leuart_config
+      instance: exp
+    path: brd4257a_brd4001a/sl_iostream_leuart_exp_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: iostream_usart
+      file_id: iostream_usart_config
+      instance: vcom
+    path: brd4257a_brd4001a/sl_iostream_usart_vcom_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: iostream_usart
+      file_id: iostream_usart_config
+      instance: exp
+    path: brd4257a_brd4001a/sl_iostream_usart_exp_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: iot_flash
+      file_id: iot_flash_cfg
+      instance: msc
+    path: brd4257a_brd4001a/iot_flash_cfg_msc.h
+  - condition:
+    - brd4001a
+    override:
+      component: iot_flash
+      file_id: iot_flash_cfg
+      instance: exp
+    path: brd4257a_brd4001a/iot_flash_cfg_exp.h
+  - condition:
+    - brd4001a
+    override:
+      component: iot_flash
+      file_id: iot_flash_cfg
+      instance: spiflash
+    path: brd4257a_brd4001a/iot_flash_cfg_spiflash.h
+  - condition:
+    - brd4001a
+    override:
+      component: iot_i2c
+      file_id: iot_i2c_cfg
+      instance: sensor
+    path: brd4257a_brd4001a/iot_i2c_cfg_sensor.h
+  - condition:
+    - brd4001a
+    override:
+      component: iot_i2c
+      file_id: iot_i2c_cfg
+      instance: exp
+    path: brd4257a_brd4001a/iot_i2c_cfg_exp.h
+  - condition:
+    - brd4001a
+    override:
+      component: iot_i2c
+      file_id: iot_i2c_cfg
+      instance: test
+    path: brd4257a_brd4001a/iot_i2c_cfg_test.h
+  - condition:
+    - brd4001a
+    override:
+      component: iot_pwm
+      file_id: iot_pwm_cfg
+      instance: led0
+    path: brd4257a_brd4001a/iot_pwm_cfg_led0.h
+  - condition:
+    - brd4001a
+    override:
+      component: iot_pwm
+      file_id: iot_pwm_cfg
+      instance: led1
+    path: brd4257a_brd4001a/iot_pwm_cfg_led1.h
+  - condition:
+    - brd4001a
+    override:
+      component: iot_pwm
+      file_id: iot_pwm_cfg
+      instance: exp
+    path: brd4257a_brd4001a/iot_pwm_cfg_exp.h
+  - condition:
+    - brd4001a
+    override:
+      component: iot_spi
+      file_id: iot_spi_cfg
+      instance: exp
+    path: brd4257a_brd4001a/iot_spi_cfg_exp.h
+  - condition:
+    - brd4001a
+    override:
+      component: iot_spi
+      file_id: iot_spi_cfg
+      instance: loopback
+    path: brd4257a_brd4001a/iot_spi_cfg_loopback.h
+  - condition:
+    - brd4001a
+    override:
+      component: iot_uart
+      file_id: iot_uart_cfg
+      instance: vcom
+    path: brd4257a_brd4001a/iot_uart_cfg_vcom.h
+  - condition:
+    - brd4001a
+    override:
+      component: iot_uart
+      file_id: iot_uart_cfg
+      instance: exp
+    path: brd4257a_brd4001a/iot_uart_cfg_exp.h
+  - condition:
+    - brd4001a
+    override:
+      component: iot_uart
+      file_id: iot_uart_cfg
+      instance: loopback
+    path: brd4257a_brd4001a/iot_uart_cfg_loopback.h
+  - condition:
+    - brd4001a
+    override:
+      component: legacy_ncp_spi
+      file_id: legacy_ncp_spi_config
+    path: brd4257a_brd4001a/legacy_ncp_spi_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: memlcd_usart
+      file_id: sl_memlcd_usart_config
+    path: brd4257a_brd4001a/sl_memlcd_usart_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: mx25_flash_shutdown_usart
+      file_id: mx25_flash_shutdown_usart_config
+    path: brd4257a_brd4001a/sl_mx25_flash_shutdown_usart_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: ot_ncp_spidrv
+      file_id: sl_ncp_spidrv_usart_config
+    path: brd4257a_brd4001a/sl_ncp_spidrv_usart_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: pwm
+      file_id: pwm_config
+      instance: led0
+    path: brd4257a_brd4001a/sl_pwm_init_led0_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: pwm
+      file_id: pwm_config
+      instance: led1
+    path: brd4257a_brd4001a/sl_pwm_init_led1_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: rail_util_pa
+      file_id: rail_util_pa_config
+    path: brd4257a_brd4001a/sl_rail_util_pa_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: rail_util_pti
+      file_id: rail_util_pti_config
+    path: brd4257a_brd4001a/sl_rail_util_pti_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: simple_button
+      file_id: simple_button_config
+      instance: btn0
+    path: brd4257a_brd4001a/sl_simple_button_btn0_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: simple_button
+      file_id: simple_button_config
+      instance: btn1
+    path: brd4257a_brd4001a/sl_simple_button_btn1_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: simple_led
+      file_id: simple_led_config
+      instance: led0
+    path: brd4257a_brd4001a/sl_simple_led_led0_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: simple_led
+      file_id: simple_led_config
+      instance: led1
+    path: brd4257a_brd4001a/sl_simple_led_led1_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: spidrv
+      file_id: spidrv_config
+      instance: exp
+    path: brd4257a_brd4001a/sl_spidrv_exp_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: spidrv_usart
+      file_id: spidrv_usart_config
+      instance: exp
+    path: brd4257a_brd4001a/sl_spidrv_usart_exp_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: uartdrv_leuart
+      file_id: uartdrv_leuart_config
+      instance: vcom
+    path: brd4257a_brd4001a/sl_uartdrv_leuart_vcom_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: uartdrv_leuart
+      file_id: uartdrv_leuart_config
+      instance: exp
+    path: brd4257a_brd4001a/sl_uartdrv_leuart_exp_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: uartdrv_usart
+      file_id: uartdrv_usart_config
+      instance: vcom
+    path: brd4257a_brd4001a/sl_uartdrv_usart_vcom_config.h
+  - condition:
+    - brd4001a
+    override:
+      component: uartdrv_usart
+      file_id: uartdrv_usart_config
+      instance: exp
+    path: brd4257a_brd4001a/sl_uartdrv_usart_exp_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: bootloader_ezsp_gpio_activation
+      file_id: ezsp_gpio_activation_cfg
+    path: brd4257a_brd4002a/btl_ezsp_gpio_activation_cfg.h
+  - condition:
+    - brd4002a
+    override:
+      component: bootloader_gpio_activation
+      file_id: btl_gpio_activation_cfg
+    path: brd4257a_brd4002a/btl_gpio_activation_cfg.h
+  - condition:
+    - brd4002a
+    override:
+      component: bootloader_spi_controller_usart_driver
+      file_id: btl_spi_controller_usart_driver_cfg
+    path: brd4257a_brd4002a/btl_spi_controller_usart_driver_cfg.h
+  - condition:
+    - brd4002a
+    override:
+      component: bootloader_spi_peripheral_usart_driver
+      file_id: btl_spi_peripheral_usart_driver_cfg
+    path: brd4257a_brd4002a/btl_spi_peripheral_usart_driver_cfg.h
+  - condition:
+    - brd4002a
+    override:
+      component: bootloader_uart_driver
+      file_id: btl_uart_driver_cfg
+    path: brd4257a_brd4002a/btl_uart_driver_cfg.h
+  - condition:
+    - brd4002a
+    override:
+      component: cpc_primary_driver_spi_usart
+      file_id: cpc_drv_spi_primary_config
+      instance: exp
+    path: brd4257a_brd4002a/sl_cpc_drv_primary_spi_usart_exp_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: cpc_primary_driver_uart_usart
+      file_id: cpc_drv_uart_primary_config
+      instance: vcom
+    path: brd4257a_brd4002a/sl_cpc_drv_primary_uart_usart_vcom_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: cpc_primary_driver_uart_usart
+      file_id: cpc_drv_uart_primary_config
+      instance: exp
+    path: brd4257a_brd4002a/sl_cpc_drv_primary_uart_usart_exp_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: cpc_secondary_driver_spi_usart
+      file_id: cpc_drv_secondary_spi_usart_config
+      instance: exp
+    path: brd4257a_brd4002a/sl_cpc_drv_secondary_spi_usart_exp_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: cpc_secondary_driver_uart_usart
+      file_id: cpc_drv_secondary_uart_usart_config
+      instance: vcom
+    path: brd4257a_brd4002a/sl_cpc_drv_secondary_uart_usart_vcom_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: cpc_secondary_driver_uart_usart
+      file_id: cpc_drv_secondary_uart_usart_config
+      instance: exp
+    path: brd4257a_brd4002a/sl_cpc_drv_secondary_uart_usart_exp_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: device_init_hfxo
+      file_id: device_init_hfxo_config
+    path: brd4257a_brd4002a/sl_device_init_hfxo_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: device_init_lfxo
+      file_id: device_init_lfxo_config
+    path: brd4257a_brd4002a/sl_device_init_lfxo_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: i2cspm
+      file_id: i2cspm_config
+      instance: sensor
+    path: brd4257a_brd4002a/sl_i2cspm_sensor_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: iostream_leuart
+      file_id: iostream_leuart_config
+      instance: vcom
+    path: brd4257a_brd4002a/sl_iostream_leuart_vcom_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: iostream_leuart
+      file_id: iostream_leuart_config
+      instance: exp
+    path: brd4257a_brd4002a/sl_iostream_leuart_exp_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: iostream_usart
+      file_id: iostream_usart_config
+      instance: vcom
+    path: brd4257a_brd4002a/sl_iostream_usart_vcom_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: iostream_usart
+      file_id: iostream_usart_config
+      instance: exp
+    path: brd4257a_brd4002a/sl_iostream_usart_exp_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: iot_flash
+      file_id: iot_flash_cfg
+      instance: msc
+    path: brd4257a_brd4002a/iot_flash_cfg_msc.h
+  - condition:
+    - brd4002a
+    override:
+      component: iot_flash
+      file_id: iot_flash_cfg
+      instance: exp
+    path: brd4257a_brd4002a/iot_flash_cfg_exp.h
+  - condition:
+    - brd4002a
+    override:
+      component: iot_flash
+      file_id: iot_flash_cfg
+      instance: spiflash
+    path: brd4257a_brd4002a/iot_flash_cfg_spiflash.h
+  - condition:
+    - brd4002a
+    override:
+      component: iot_i2c
+      file_id: iot_i2c_cfg
+      instance: sensor
+    path: brd4257a_brd4002a/iot_i2c_cfg_sensor.h
+  - condition:
+    - brd4002a
+    override:
+      component: iot_i2c
+      file_id: iot_i2c_cfg
+      instance: exp
+    path: brd4257a_brd4002a/iot_i2c_cfg_exp.h
+  - condition:
+    - brd4002a
+    override:
+      component: iot_i2c
+      file_id: iot_i2c_cfg
+      instance: test
+    path: brd4257a_brd4002a/iot_i2c_cfg_test.h
+  - condition:
+    - brd4002a
+    override:
+      component: iot_pwm
+      file_id: iot_pwm_cfg
+      instance: led0
+    path: brd4257a_brd4002a/iot_pwm_cfg_led0.h
+  - condition:
+    - brd4002a
+    override:
+      component: iot_pwm
+      file_id: iot_pwm_cfg
+      instance: led1
+    path: brd4257a_brd4002a/iot_pwm_cfg_led1.h
+  - condition:
+    - brd4002a
+    override:
+      component: iot_pwm
+      file_id: iot_pwm_cfg
+      instance: exp
+    path: brd4257a_brd4002a/iot_pwm_cfg_exp.h
+  - condition:
+    - brd4002a
+    override:
+      component: iot_spi
+      file_id: iot_spi_cfg
+      instance: exp
+    path: brd4257a_brd4002a/iot_spi_cfg_exp.h
+  - condition:
+    - brd4002a
+    override:
+      component: iot_spi
+      file_id: iot_spi_cfg
+      instance: loopback
+    path: brd4257a_brd4002a/iot_spi_cfg_loopback.h
+  - condition:
+    - brd4002a
+    override:
+      component: iot_uart
+      file_id: iot_uart_cfg
+      instance: vcom
+    path: brd4257a_brd4002a/iot_uart_cfg_vcom.h
+  - condition:
+    - brd4002a
+    override:
+      component: iot_uart
+      file_id: iot_uart_cfg
+      instance: exp
+    path: brd4257a_brd4002a/iot_uart_cfg_exp.h
+  - condition:
+    - brd4002a
+    override:
+      component: iot_uart
+      file_id: iot_uart_cfg
+      instance: loopback
+    path: brd4257a_brd4002a/iot_uart_cfg_loopback.h
+  - condition:
+    - brd4002a
+    override:
+      component: legacy_ncp_spi
+      file_id: legacy_ncp_spi_config
+    path: brd4257a_brd4002a/legacy_ncp_spi_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: memlcd_usart
+      file_id: sl_memlcd_usart_config
+    path: brd4257a_brd4002a/sl_memlcd_usart_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: mx25_flash_shutdown_usart
+      file_id: mx25_flash_shutdown_usart_config
+    path: brd4257a_brd4002a/sl_mx25_flash_shutdown_usart_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: ot_ncp_spidrv
+      file_id: sl_ncp_spidrv_usart_config
+    path: brd4257a_brd4002a/sl_ncp_spidrv_usart_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: pwm
+      file_id: pwm_config
+      instance: led0
+    path: brd4257a_brd4002a/sl_pwm_init_led0_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: pwm
+      file_id: pwm_config
+      instance: led1
+    path: brd4257a_brd4002a/sl_pwm_init_led1_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: rail_util_pa
+      file_id: rail_util_pa_config
+    path: brd4257a_brd4002a/sl_rail_util_pa_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: rail_util_pti
+      file_id: rail_util_pti_config
+    path: brd4257a_brd4002a/sl_rail_util_pti_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: simple_button
+      file_id: simple_button_config
+      instance: btn0
+    path: brd4257a_brd4002a/sl_simple_button_btn0_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: simple_button
+      file_id: simple_button_config
+      instance: btn1
+    path: brd4257a_brd4002a/sl_simple_button_btn1_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: simple_led
+      file_id: simple_led_config
+      instance: led0
+    path: brd4257a_brd4002a/sl_simple_led_led0_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: simple_led
+      file_id: simple_led_config
+      instance: led1
+    path: brd4257a_brd4002a/sl_simple_led_led1_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: spidrv
+      file_id: spidrv_config
+      instance: exp
+    path: brd4257a_brd4002a/sl_spidrv_exp_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: spidrv_usart
+      file_id: spidrv_usart_config
+      instance: exp
+    path: brd4257a_brd4002a/sl_spidrv_usart_exp_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: uartdrv_leuart
+      file_id: uartdrv_leuart_config
+      instance: vcom
+    path: brd4257a_brd4002a/sl_uartdrv_leuart_vcom_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: uartdrv_leuart
+      file_id: uartdrv_leuart_config
+      instance: exp
+    path: brd4257a_brd4002a/sl_uartdrv_leuart_exp_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: uartdrv_usart
+      file_id: uartdrv_usart_config
+      instance: vcom
+    path: brd4257a_brd4002a/sl_uartdrv_usart_vcom_config.h
+  - condition:
+    - brd4002a
+    override:
+      component: uartdrv_usart
+      file_id: uartdrv_usart_config
+      instance: exp
+    path: brd4257a_brd4002a/sl_uartdrv_usart_exp_config.h

@@ -1,0 +1,54 @@
+id: "btmesh_ctl_server"
+label: "CTL Server"
+package: "Btmesh"
+description: >
+  Color Tunable Lighting (CTL) Server model. Used to support the control and
+  reporting functionality of a node with a light source that is dimmable and whose
+  color temperature can be selected.
+  
+  This component implements this control and reporting functionality, extending
+  on lighting server, and also provides callbacks on lighting related events.
+  
+  For more details about lighting, please see Lighting Server.
+category: "Bluetooth Mesh|Models|Lighting"
+quality: "production"
+root_path: "app/bluetooth/common/btmesh_ctl_server"
+config_file:
+  - path: btmesh_ctl_server.dcd
+    directory: btmeshconf
+  - path: "config/sl_btmesh_ctl_server_config.h"
+source:
+  - path: "sl_btmesh_ctl_signal_transition_handler.c"
+  - path: "sl_btmesh_ctl_server.c"
+include:
+  - path: ""
+    file_list:
+      - path: "sl_btmesh_ctl_server.h"
+      - path: "sl_btmesh_ctl_signal_transition_handler.h"
+provides:
+  - name: "btmesh_ctl_server"
+requires:
+  - name: "app_assert"
+  - name: "app_btmesh_util"
+  - name: "bluetooth_feature_nvm"
+  - name: "btmesh_feature_generic_server"
+  - name: "btmesh_feature_node"
+  - name: "btmesh_generic_server"
+  - name: "btmesh_lighting_server"
+  - name: "btmesh_stack"
+  - name: "simple_timer"
+recommends:
+  - id: "simple_timer"
+
+template_contribution:
+  - name: "btmesh_on_event"
+    value:
+      include: "sl_btmesh_ctl_server.h"
+      function: "sl_btmesh_ctl_server_on_event"
+    priority: -9
+  - name: btmesh_generic_handler
+    value:
+      name: ctl_server
+      count: 4
+  - name: component_catalog
+    value: "btmesh_ctl_server"

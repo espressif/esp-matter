@@ -1,0 +1,42 @@
+#
+# Stack protection yaml file: provides the quiz to turn
+# on stack protection in appbuilder.
+#
+---
+qStackProtection: {
+  architecture: efr32,
+  description: 'Do you wish to use stack protection with IAR? See Stack Protection for IAR plugin for more details.',
+  aStackProtectionNo: {
+    description: No.,
+    default: true,
+    replacement: [ stackProtection=, stackProtectionEwp=, stackProtectionSls= ],
+    plugins: [ -stack-protection-iar ]
+  },
+
+  aStackProtectionYes: {
+    description: Yes.,
+    macros: [-DSTACK_PROTECTION],
+    replacement: [ stackProtection=-stack_protection, stackProtectionEwp=<state>--stack_protection</state>, stackProtectionSls=--stack_protection ],
+    plugins: [ +stack-protection-iar ]
+  },
+
+}
+
+qStackProtection1: {
+  architecture: simulation,
+  description: 'Do you wish to use stack protection with IAR? See Stack Protection for IAR plugin for more details.',
+  aStackProtectionNo: {
+    description: No.,
+    default: true,
+    replacement: [ stackProtection=, stackProtectionEwp=, stackProtectionSls= ],
+    plugins: [ -stack-protection-iar ]
+  },
+
+  aStackProtectionYes: {
+    description: Yes.,
+    macros: [-DSTACK_PROTECTION],
+    replacement: [ stackProtection=-stack_protection, stackProtectionEwp=<state>--stack_protection</state>, stackProtectionSls=--stack_protection ],
+    plugins: [ +stack-protection-iar ]
+  },
+
+}

@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2011 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Ringer Setting" type="org.bluetooth.characteristic.ringer_setting" uuid="2A41">
+	<InformativeText>
+        <Abstract>            
+        The Ringer Setting characteristic defines the Setting of the Ringer.
+            Value 0, meaning "Ringer Silent"
+            Value 1, meaning "Ringer Normal"
+		</Abstract>
+        <Examples> 
+            <Example>The value 0x01 shall be interpreted as "Ringer Normal"</Example>
+	    </Examples>
+	</InformativeText>
+	<Value>
+		<Field name="Ringer Setting">
+        <Requirement>Mandatory</Requirement>
+        <Format>8bit</Format>
+        <Minimum>0</Minimum>
+        <Maximum>1</Maximum>
+        <Enumerations>
+            <Enumeration key="0" value="Ringer Silent" />
+            <Enumeration key="1" value="Ringer Normal" />
+            <ReservedForFutureUse start="2" end="255" />
+        </Enumerations>
+        </Field>
+	</Value>
+</Characteristic>

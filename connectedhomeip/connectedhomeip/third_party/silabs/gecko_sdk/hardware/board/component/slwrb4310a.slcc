@@ -1,0 +1,22 @@
+!!omap
+- id: slwrb4310a
+- label: SLWRB4310A
+- package: platform
+- description: Kit BSP support for the BGM220S Wireless Gecko Module Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4310a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4310A"'
+  - name: SL_KIT_REV
+    value: '"A06"'
+- tag:
+  - kit:opn:SLWRB4310A
+  - kit:pn:WRB4310
+  - kit:variant:A
+  - kit:revision:A06

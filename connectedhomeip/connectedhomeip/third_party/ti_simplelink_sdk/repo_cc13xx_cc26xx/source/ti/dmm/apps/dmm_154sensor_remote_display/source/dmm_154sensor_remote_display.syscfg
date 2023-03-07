@@ -1,0 +1,246 @@
+/*
+ * Copyright (c) 2019, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+
+
+/*
+ *  dmm_154sensor_remote_display.syscfg
+ */
+
+/* ======== RTOS ======== */
+var RTOS = scripting.addModule("/ti/drivers/RTOS");
+
+/* ======== RF Design ======== */
+var rfDesign = scripting.addModule("ti/devices/radioconfig/rfdesign");
+const rfDesignSettings = system.getScript("/ti/common/lprf_rf_design_settings.js").rfDesignSettings;
+for(var setting in rfDesignSettings)
+{
+    rfDesign[setting] = rfDesignSettings[setting];
+}
+
+/* ======== CCFG ======== */
+var CCFG  = scripting.addModule("/ti/devices/CCFG");
+const ccfgSettings = system.getScript("/ti/common/lprf_ccfg_settings.js").ccfgSettings;
+for(var setting in ccfgSettings)
+{
+    CCFG[setting] = ccfgSettings[setting];
+}
+
+/* ======== AESCCM ======== */
+var AESCCM = scripting.addModule("/ti/drivers/AESCCM");
+var aesccm = AESCCM.addInstance();
+aesccm.$name = "CONFIG_AESCCM0";
+
+/* ======== AESECB ======== */
+var AESECB = scripting.addModule("/ti/drivers/AESECB");
+var aesecb = AESECB.addInstance();
+aesecb.$name = "CONFIG_AESECB0";
+
+/* ======== ECDH ======== */
+var ECDH = scripting.addModule("/ti/drivers/ECDH");
+var ecdh = ECDH.addInstance();
+ecdh.$name = "CONFIG_ECDH0"
+
+/* ======== AESCTRDRBG ======== */
+var AESCTRDRBG = scripting.addModule("/ti/drivers/AESCTRDRBG");
+var aesctrdrbg = AESCTRDRBG.addInstance();
+aesctrdrbg.$name = "CONFIG_AESCTRDRBG_0";
+aesctrdrbg.aesctrObject.$name = "CONFIG_AESCTR_0";
+
+/* ======== UART ======== */
+var UART    = scripting.addModule("/ti/drivers/UART2");
+var uart1    = UART.addInstance();
+uart1.$hardware           = system.deviceData.board.components.XDS110UART;
+uart1.$name               = "CONFIG_DISPLAY_UART";
+
+/* ========== BUTTON ========= */
+var Button = scripting.addModule("/ti/drivers/apps/Button");
+
+var Button1 = Button.addInstance();
+Button1.$name = "CONFIG_BTN_LEFT";
+Button1.$hardware = system.deviceData.board.components["BTN-1"];
+Button1.gpioPin.$name = "CONFIG_GPIO_BTN1";
+Button1.gpioPin.pull = "Pull Up";
+
+var Button2 = Button.addInstance();
+Button2.$name = "CONFIG_BTN_RIGHT";
+Button2.$hardware = system.deviceData.board.components["BTN-2"];
+Button2.gpioPin.$name = "CONFIG_GPIO_BTN2";
+Button2.gpioPin.pull = "Pull Up";
+
+/* ========= LED ============ */
+var LED = scripting.addModule("/ti/drivers/apps/LED");
+
+var LED1 = LED.addInstance();
+LED1.$name = "CONFIG_LED_RED";
+LED1.$hardware = system.deviceData.board.components.LED_RED;
+LED1.gpioPin.$name = "CONFIG_GPIO_RLED";
+LED1.gpioPin.mode = "Output";
+LED1.gpioPin.callbackFunction = "";
+
+var LED2 = LED.addInstance();
+LED2.$name = "CONFIG_LED_GREEN";
+LED2.$hardware = system.deviceData.board.components.LED_GREEN;
+LED2.gpioPin.$name = "CONFIG_GPIO_GLED";
+LED2.gpioPin.mode = "Output";
+LED2.gpioPin.callbackFunction = "";
+
+/* ======== NVS ======== */
+var NVS = scripting.addModule("/ti/drivers/NVS");
+var nvs_int = NVS.addInstance();
+nvs_int.$name = "CONFIG_NVSINTERNAL";
+
+const deviceName = system.getScript("/ti/ti154stack/ti154stack_common.js").getLaunchPadFromDevice();
+
+if (deviceName.includes("R7") || deviceName.includes("P7"))
+{
+    nvs_int.internalFlash.regionBase = 0xAA000;
+}
+else
+{
+    nvs_int.internalFlash.regionBase = 0x52000;
+}
+nvs_int.internalFlash.regionSize = 0x4000;
+
+var nvs_ext = NVS.addInstance();
+nvs_ext.nvsType = "External";
+nvs_ext.$name = "CONFIG_NVSEXTERNAL";
+nvs_ext.externalFlash.$name = "ti_drivers_nvs_NVSSPI25X0";
+nvs_ext.externalFlash.regionSize = 0x100000;
+nvs_ext.externalFlash.verifyBufferSize = 64;
+nvs_ext.externalFlash.$hardware = system.deviceData.board.components.SPI_FLASH;
+
+var NVSSPI25XDevice1 = nvs_ext.externalFlash.spiFlashDevice;
+NVSSPI25XDevice1.$name = "CONFIG_NVS_SPI_0";
+NVSSPI25XDevice1.slaveSelectPinInstance.$name = "CONFIG_GPIO_SPI_SS";
+NVSSPI25XDevice1.slaveSelectPinInstance.mode = "Output";
+NVSSPI25XDevice1.slaveSelectPinInstance.callbackFunction = "";
+
+/* ======== SPI ======== */
+var SPI1 = NVSSPI25XDevice1.sharedSpiInstance;
+SPI1.$name = "CONFIG_SPI_0";
+SPI1.sclkPinInstance.$name = "CONFIG_PIN_SPI_SCLK";
+SPI1.misoPinInstance.$name = "CONFIG_PIN_SPI_MISO";
+SPI1.mosiPinInstance.$name = "CONFIG_PIN_SPI_MOSI";
+
+/* ======== RF ======== */
+var RF = scripting.addModule("/ti/drivers/RF");
+
+/* if an antenna component exists, assign it to the rf instance */
+if (system.deviceData.board && system.deviceData.board.components.RF) {
+    RF.$hardware = system.deviceData.board.components.RF;
+}
+
+/* ======== TRNG ======== */
+var TRNG = scripting.addModule("/ti/drivers/TRNG");
+var trng1 = TRNG.addInstance();
+var trng2 = TRNG.addInstance();
+
+/* ======== 15.4 Sensor ======== */
+var ti154stack = scripting.addModule("/ti/ti154stack/ti154stack");
+ti154stack.rfDesign = rfDesignSettings.rfDesign;
+ti154stack.project = "sensor";
+ti154stack.lockProject = true;
+
+/* ======== BLE ======== */
+var ble = scripting.addModule("/ti/ble5stack/ble");
+ble.rfDesign = rfDesignSettings.rfDesign;
+ble.deviceRole = "PERIPHERAL_CFG";
+ble.deviceName = "DMM 15.4 Sensor RD";
+ble.addressMode = "ADDRMODE_PUBLIC";
+ble.maxConnNum = 4;
+ble.numOfAdvSets = 1;
+ble.lockProject = true;
+ble.oneLibSizeOpt = false;
+ble.maxPDUSize = 255;
+ble.numOfDefAdvSets = 1;
+
+// Gap Advertising Flags
+ble.advSet1.advData1.GAP_ADTYPE_FLAGS = true;
+ble.advSet1.advData1.advertisingFlags = ["GAP_ADTYPE_FLAGS_BREDR_NOT_SUPPORTED","GAP_ADTYPE_FLAGS_GENERAL"];
+// More 16-bit UUIDs available
+ble.advSet1.advData1.GAP_ADTYPE_16BIT_MORE = true;
+ble.advSet1.advData1.numOfUUIDs16More = 1;
+ble.advSet1.advData1.UUID016More = 0x1190;
+// Complete local name
+ble.advSet1.scanRes1.GAP_ADTYPE_LOCAL_NAME_COMPLETE = true;
+ble.advSet1.scanRes1.completeLocalName = "DMM 15.4 Sensor RD";
+// Min and Max values of the connection interval - 2 octets Min, 2 octets Max (0xFFFF indicates no conn interval min or max)
+ble.advSet1.scanRes1.GAP_ADTYPE_SLAVE_CONN_INTERVAL_RANGE = true;
+// Min Connection Interval
+ble.advSet1.scanRes1.minConnInterval = 100;
+// Max Connection Interval
+ble.advSet1.scanRes1.maxConnInterval = 130;
+// TX Power Level
+ble.advSet1.scanRes1.GAP_ADTYPE_POWER_LEVEL = true;
+
+// Update Min Connection Interval (ms)
+ble.connUpdateParamsPeripheral.reqMinConnInt = 100;
+// Update Max Connection Interval (ms)
+ble.connUpdateParamsPeripheral.reqMaxConnInt = 130;
+
+/* ======== DMM ======== */
+var dmm = scripting.addModule("/ti/dmm/dmm");
+
+dmm.project = "ti_dmm_154sensor_remote_display";
+dmm.stackRoles = ["blePeripheral","ti154Sensor"];
+dmm.lockStackRoles = true;
+dmm.projectStackConfiguration = ["ble", "ti154stack"];
+
+dmm.numApplicationStates = 10;
+
+dmm.applicationState0 = "ANY";
+dmm.applicationState1 = "DMMPOLICY_BLE_IDLE";
+dmm.applicationState2 = "DMMPOLICY_BLE_ADV";
+dmm.applicationState3 = "DMMPOLICY_BLE_CONNECTING";
+dmm.applicationState4 = "DMMPOLICY_BLE_HIGH_BANDWIDTH";
+dmm.applicationState5 = "DMMPOLICY_BLE_CONNECTED";
+dmm.applicationState6 = "DMMPOLICY_BLE_OAD";
+
+dmm.applicationState7 = "DMMPOLICY_154_UNINIT";
+dmm.applicationState8 = "DMMPOLICY_154_PROVISIONING";
+dmm.applicationState9 = "DMMPOLICY_154_CONNECTED";
+
+dmm.numPolicies = 3;
+
+dmm.policy0.blePeripheral.applicationStates = ["applicationState6"];
+dmm.policy0.ti154Sensor.pause = "DMMPOLICY_PAUSED";
+dmm.policy0.ti154Sensor.applicationStates = ["applicationState0"];
+
+dmm.policy1.blePeripheral.applicationStates = ["applicationState3", "applicationState4"];
+dmm.policy1.blePeripheral.weight = 25;
+dmm.policy1.blePeripheral.appliedActivity = ["DMMPOLICY_APPLIED_ACTIVITY_BLE_CONNECTION"];
+dmm.policy1.ti154Sensor.applicationStates = ["applicationState0"];
+
+dmm.policy2.blePeripheral.applicationStates = ["applicationState0"];
+dmm.policy2.ti154Sensor.applicationStates = ["applicationState0"];
+dmm.policy2.ti154Sensor.weight = 1;

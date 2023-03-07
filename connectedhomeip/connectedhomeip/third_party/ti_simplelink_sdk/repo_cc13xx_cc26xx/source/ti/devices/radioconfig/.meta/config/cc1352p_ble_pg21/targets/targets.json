@@ -1,0 +1,28 @@
+{
+    "targets": {
+        "Default": "..\/..\/cc1352p\/targets\/target_launchxl-cc1352p_2_4_ghz.json:LAUNCHXL-CC1352P1",
+        "VirtualTarget": [
+            {
+                "_name": "LAUNCHXL-CC1352P1",
+                "Target": [
+                    "..\/..\/cc1352p\/targets\/target_launchxl-cc1352p_2_4_ghz.json",
+                    "..\/..\/cc1352p\/targets\/target_launchxl-cc1352p_2_4_ghz_highPA.json"
+                ]
+            },
+            {
+                "_name": "LAUNCHXL-CC1352P-2",
+                "Target": [
+                    "..\/..\/cc1352p\/targets\/target_launchxl-cc1352p_2_4_ghz.json",
+                    "..\/..\/cc1352p\/targets\/target_launchxl-cc1352p_2_4_ghz_highPA.json"
+                ]
+            },
+            {
+                "_name": "LAUNCHXL-CC1352P-4",
+                "Target": [
+                    "..\/..\/cc1352p\/targets\/target_launchxl-cc1352p_2_4_ghz.json",
+                    "..\/..\/cc1352p\/targets\/target_launchxl-cc1352p-4_highPA.json"
+                ]
+            }
+        ]
+    }
+}

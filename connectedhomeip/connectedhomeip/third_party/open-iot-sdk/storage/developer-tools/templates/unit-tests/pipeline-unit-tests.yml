@@ -1,0 +1,23 @@
+# Copyright (c) 2022 Arm Limited and Contributors. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+.unit-tests:
+  tags:
+    - iotmsw-amd64
+  image: ${OPEN_IOT_SDK_DOCKER_REGISTRY}/sanity:v1
+  stage: test
+  script:
+    - cmake -S . -B __build -GNinja -DENABLE_DEVELOPER_MODE=ON -DOPT_ENABLE_DOXYGEN=ON -DOPT_ENABLE_SANITIZER_LEAK=ON
+    - cmake --build __build
+    - ctest --test-dir __build --output-on-failure
+    - cmake --build __build --target covreport
+  coverage: /^\s*lines:\s*\d+.\d+\%/
+  artifacts:
+    name: ${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHA}
+    expire_in: 7 days
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: __build/coverage.xml
+    paths:
+      - __build/html/

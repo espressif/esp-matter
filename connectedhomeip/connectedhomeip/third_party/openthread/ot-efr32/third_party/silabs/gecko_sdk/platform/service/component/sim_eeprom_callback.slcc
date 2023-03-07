@@ -1,0 +1,19 @@
+id: sim_eeprom_callback
+label: Simulated EEPROM Callback
+package: platform
+description: Simulated EEPROM Callback.
+category: Services|Simulated EEPROM
+quality: production
+provides:
+  - name: sim_eeprom_callback
+requires:
+  - name: device_series_1
+root_path: ./
+source:
+  - path: platform/service/sim_eeprom/sim_eeprom_callback/src/sl_sim_eeprom_callback.c
+template_contribution:
+  - name: component_catalog
+    value: sim_eeprom_callback
+documentation:
+    docset: gecko-platform
+    document: service/api/group-simeeprom

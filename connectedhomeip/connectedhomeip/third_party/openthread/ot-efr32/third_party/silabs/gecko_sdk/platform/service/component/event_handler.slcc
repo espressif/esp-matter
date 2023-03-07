@@ -1,0 +1,55 @@
+id: event_handler
+label: Event Handler
+package: platform
+category: Platform|Service
+quality: production
+root_path: platform/service/event/
+template_file:
+  - path: template/sl_event_handler.h.jinja
+  - path: template/sl_event_handler.c.jinja
+provides:
+  - name: event_handler
+ui_hints:
+  visibility: never
+description: |
+  Provides a way for components to register event handlers with events.
+  Events are expected to be registered by the component providing the event
+  using the `event` template contribution key. Event handlers are registered
+  with an event using the `event_handler` template contribution key.
+  A template provided by this component generates the event handler function
+  for each event, which calls out to all registered event handlers.
+
+  Example:
+
+  ```yaml
+  template_contribution:
+    - name: event
+      value:
+        id: my_event
+        function:
+          name: my_event_handler
+          return: void
+    - name: event_handler
+      value:
+        event: my_event
+        include: foo.h
+        handler: sl_foo
+    - name: event_handler
+      value:
+        event: my_event
+        include: bar.h
+        handler: sl_bar
+  ```
+
+  generates
+
+  ```c
+  #include foo.h
+  #include bar.h
+
+  void my_event_handler(void)
+  {
+    sl_foo();
+    sl_bar();
+  }
+  ```

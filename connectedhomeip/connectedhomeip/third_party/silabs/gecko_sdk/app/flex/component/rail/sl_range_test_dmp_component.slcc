@@ -1,0 +1,52 @@
+id: "sl_range_test_dmp_component"
+label: "Flex - DMP Bluetooth for Range Test"
+package: "Flex"
+description: "Adds DMP Bluetooth support to Range Test."
+category: "Flex|RAIL|Extension"
+quality: "production"
+root_path: "app/flex/component/rail/sl_range_test_dmp_component"
+provides:
+  - name: sl_range_test_dmp_component
+
+requires:
+  - name: bluetooth_stack
+  - name: gatt_configuration
+  - name: bluetooth_feature_system
+  - name: bluetooth_feature_gap
+  - name: bluetooth_feature_legacy_advertiser
+  - name: bluetooth_feature_connection
+  - name: bluetooth_feature_gatt
+  - name: bluetooth_feature_gatt_server
+  - name: mbedtls_config
+  - name: mbedtls_aes
+  - name: mbedtls_slcrypto
+  - name: device_has_radio
+  - name: sl_simple_rail_os
+
+config_file:
+  - path: "range_test_measurement.xml"
+    directory: "btconf"
+  - path: "range_test_device_info.xml"
+    directory: "btconf"
+  - override:
+      component: gatt_configuration
+      file_id: gatt_configuration_file_id
+    path: gatt_configuration.btconf
+    directory: btconf
+
+source:
+  - path: "app_bluetooth.c"
+include:
+  - path: "."
+    file_list:
+    - "path": "app_bluetooth.h"
+
+#-------- Hides Component for user in Studio ---------
+ui_hints:
+  visibility: never
+
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: range_test_dmp_component

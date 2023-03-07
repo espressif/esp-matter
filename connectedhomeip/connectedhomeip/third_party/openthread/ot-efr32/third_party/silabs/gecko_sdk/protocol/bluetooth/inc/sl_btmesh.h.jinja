@@ -1,0 +1,44 @@
+#ifndef SL_BTMESH_H
+#define SL_BTMESH_H
+
+#include <stdbool.h>
+{%- if bluetooth_api_ncp_host is not defined %}
+#include "sl_power_manager.h"
+#include "sl_btmesh_config.h"
+{%- endif %}
+#include "sl_btmesh_api.h"
+#include "sl_btmesh_stack_init.h"
+#include "sl_bt_api.h"
+#include "sl_btmesh_bgapi.h"
+
+{%- if bluetooth_api_ncp_host is not defined %}
+{%- if btmesh_feature_proxy_server is defined %}
+
+#define SL_BTMESH_COMPONENT_ADVERTISERS ({{ btmesh_advertisers | sum(attribute='count')}} + SL_BTMESH_CONFIG_MAX_NETKEYS)
+{%- else %}
+
+#define SL_BTMESH_COMPONENT_ADVERTISERS {{ btmesh_advertisers | sum(attribute='count')}}
+{%- endif %}
+{%- endif %}
+
+#define SL_BTMESH_FEATURE_BITMASK {{ btmesh_feature_bitmask | sum(attribute='count')}}
+
+// Initialize Bluetooth core functionality
+void sl_btmesh_init(void);
+
+// Polls bluetooth stack for an event and processes it
+void sl_btmesh_step(void);
+
+// Processes a single bluetooth mesh event
+void sl_btmesh_process_event(sl_btmesh_msg_t *evt);
+
+bool sl_btmesh_can_process_event(uint32_t len);
+
+void sl_btmesh_on_event(sl_btmesh_msg_t* evt);
+{% if bluetooth_api_ncp_host is not defined %}
+// Power Manager related functions
+bool sli_btmesh_is_ok_to_sleep(void);
+sl_power_manager_on_isr_exit_t sli_btmesh_sleep_on_isr_exit(void);
+{%- endif %}
+
+#endif // SL_BTMESH_H

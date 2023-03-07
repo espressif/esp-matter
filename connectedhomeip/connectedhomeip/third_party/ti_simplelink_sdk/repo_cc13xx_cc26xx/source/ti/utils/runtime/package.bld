@@ -1,0 +1,108 @@
+/*
+ * Copyright (c) 2019-2020 Texas Instruments Incorporated - http://www.ti.com
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+ *  ======== package.bld ========
+ */
+
+var Build = xdc.useModule('xdc.bld.BuildEnvironment');
+var Pkg = xdc.useModule('xdc.bld.PackageContents');
+var Lib = xdc.useModule('xdc.bld.Library');
+
+Pkg.attrs.exportSrc = true;
+Pkg.generatedFiles.$add("lib/");
+
+Pkg.otherFiles = [
+    "Bench.h",
+    "Bench.rov.js",
+    "ExecGraphAdapter.rov.js",
+    "ExecGraphFilter.rov.js",
+    "ExecGraphLogger.rov.js",
+    "ExecGraphSettings.rov.js",
+    "ILogger.h",
+    "Log.h",
+    "LoggerText_s.c",
+    "LoggerText.h",
+    "LoggerText.rov.js",
+    ".meta/Bench.Config.c.xdt",
+    ".meta/Bench.Config.h.xdt",
+    ".meta/Bench.syscfg.js",
+    ".meta/Config.c.xdt",
+    ".meta/Config.h.xdt",
+    ".meta/ExecGraph.js.xdt",
+    ".meta/ExecGraphAdapter.js.xdt",
+    ".meta/ExecGraphAdapter.syscfg.js",
+    ".meta/ExecGraphFilter.js.xdt",
+    ".meta/ExecGraphFilter.syscfg.js",
+    ".meta/ExecGraphLogger.js.xdt",
+    ".meta/ExecGraphLogger.syscfg.js",
+    ".meta/ExecGraphSettings.js.xdt",
+    ".meta/ExecGraphSettings.syscfg.js",
+    ".meta/ExGr_SYSBIOS.syscfg.js",
+    ".meta/ExGr_XDCtools.syscfg.js",
+    ".meta/ExGr_tiutils.syscfg.js",
+    ".meta/GetLibs.syscfg.js",
+    ".meta/ILogger.syscfg.js",
+    ".meta/LogMain.syscfg.js",
+    ".meta/LogSite.Config.c.xdt",
+    ".meta/LogSite.Config.h.xdt",
+    ".meta/LogSite.cmd.xdt",
+    ".meta/LogSite.syscfg.js",
+    ".meta/LoggerText.Config.c.xdt",
+    ".meta/LoggerText.Config.h.xdt",
+    ".meta/LoggerText.syscfg.js",
+    ".meta/Makefile.xdt",
+    ".meta/model.gv.xdt",
+    ".meta/rov.js.xdt",
+    ".meta/runtime.component.js",
+    "package.bld"
+];
+
+var srcs = [
+    "LoggerText.c"
+];
+
+for (var i = 0; i < Build.targets.length; i++) {
+    var target = Build.targets[i];
+
+
+    for (var profile in target.profiles) {
+        var name = getLibDirectory(target.suffix) + "/runtime_" + profile;
+
+        var attrs = new Lib.Attrs();
+        attrs.profile = profile;        /* must set profile explicitly */
+        attrs.suffix = ".a";            /* suppress .a<suffix> extension */
+
+        var lib = Pkg.addLibrary(name, target, attrs);
+        lib.addObjects(srcs);
+    }
+}

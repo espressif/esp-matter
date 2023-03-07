@@ -1,0 +1,26 @@
+id: mbedtls_entropy_nvseed
+package: platform
+label: Device-Unique Seed Entropy Source
+description: >-
+  This component provides support for using entropy gathered from a device-unique seed.
+category: Platform|Security|Mbed TLS|Randomness
+quality: production
+component_root_path: util/third_party/crypto
+source:
+  - path: sl_component/sl_mbedtls_support/src/sl_entropy_nvseed.c
+provides:
+  - name: mbedtls_entropy_source
+    allow_multiple: true
+  - name: mbedtls_entropy_nvseed
+requires:
+  - name: device_has_devinfo
+  - name: nvm3_default
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_ENTROPY_NV_SEED
+  - name: mbedtls_config
+    value: MBEDTLS_PLATFORM_NV_SEED_ALT
+  - name: mbedtls_config
+    value: MBEDTLS_PLATFORM_STD_NV_SEED_READ sli_nv_seed_read
+  - name: mbedtls_config
+    value: MBEDTLS_PLATFORM_STD_NV_SEED_WRITE sli_nv_seed_write

@@ -1,0 +1,327 @@
+project_name: rail_soc_railtest
+label: "RAIL - SoC RAILtest"
+package: Flex
+description: "The RAILtest application (RAILtest) provides a simple tool for testing the radio and the functionality of the RAIL library via CLI. For more advanced usage, developers must write software against the RAIL library and create a custom radio configuration."
+category: RAIL Examples
+quality: production
+
+#---------------- UC/UP components -------------------
+component:
+  # hardware
+  - id: sl_system
+  - id: device_init
+  - id: mpu
+  # stdio
+  - id: printf
+  - id: iostream_recommended_stream
+  - id: iostream_retarget_stdio
+  # cli
+  - id: cli
+    instance:
+      - inst0
+  - id: cli_delay # non-blocking wait implementation for CLI use
+  # cli command storage
+  - id: cli_storage_ram
+    instance:
+      - inst0
+  # radio config
+  - id: radio_config_simple_rail_singlephy
+  # railtest
+  - id: rail_test_core
+  # rail util
+  - id: rail_util_init
+    instance:
+      - inst0
+  - id: rail_util_ant_div
+  - id: rail_util_dma
+  - id: rail_util_pa
+  - id: rail_util_pti
+  - id: rail_util_rf_path
+  - id: rail_util_rssi
+
+#----------------- Require list ----------------------
+requires:
+  - name: radio_config_singlephy_device_family_fgm23
+    condition:
+      - "device_family_fgm23"
+
+#----------------- Project files ---------------------
+source:
+  - path: main.c
+  - path: app.c
+
+include:
+  - path: .
+    file_list:
+    - path: app.h
+
+readme:
+  - path: ../../../documentation/example/rail/rail_soc_railtest/readme.md
+
+other_file:
+  - path: "hw_filter_tags.yaml"
+    condition:
+      - "add_hw_filter_to_project"
+
+#------------ Configuration overrides ----------------
+configuration:
+  - name: SL_STACK_SIZE
+    value: "2048"
+  - name: SL_HEAP_SIZE
+    value: "0"
+  # RX Buffer Size
+  - name: BUFFER_POOL_ALLOCATOR_POOL_SIZE
+    value: "5"
+  - name: BUFFER_POOL_ALLOCATOR_BUFFER_SIZE_MAX
+    value: "2098" # SL_RAIL_TEST_MAX_PACKET_LENGTH==2058
+                  # + sizeof(RailAppEvent_t)==40
+    condition:
+      - device_sdid_220
+  - name: BUFFER_POOL_ALLOCATOR_BUFFER_SIZE_MAX
+    value: "1064" # SL_RAIL_TEST_MAX_PACKET_LENGTH==1024
+                  # + sizeof(RailAppEvent_t)==40
+    unless:
+      - device_sdid_220
+
+  # stdio
+  #   for all
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+  #   per instance
+  - name: SL_IOSTREAM_USART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "(1)"
+    condition: [iostream_usart]
+  - name: SL_IOSTREAM_USART_VCOM_RESTRICT_ENERGY_MODE_TO_ALLOW_RECEPTION
+    value: "false" # Disable this so that the chip can enter EM2/3/4
+                   # and be woken by other wake sources, setting this
+                   # to true adds an EM1 requirement to the Power Manager.
+    condition: [iostream_usart]
+  - name: SL_IOSTREAM_USART_VCOM_FLOW_CONTROL_TYPE
+    value: "usartHwFlowControlNone"
+    condition: [iostream_usart]
+  - name: SL_IOSTREAM_EUSART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "(1)"
+    condition: [iostream_eusart]
+  - name: SL_IOSTREAM_EUSART_VCOM_RESTRICT_ENERGY_MODE_TO_ALLOW_RECEPTION
+    value: "false" # Disable this so that the chip can enter EM2/3/4
+                   # and be woken by other wake sources, setting this
+                   # to true adds an EM1 requirement to the Power Manager.
+    condition: [iostream_eusart]
+  - name: SL_IOSTREAM_EUSART_VCOM_FLOW_CONTROL_TYPE
+    value: "eusartHwFlowControlNone"
+    condition: [iostream_eusart]
+  # power manager
+  - name: SL_POWER_MANAGER_CONFIG_VOLTAGE_SCALING_FAST_WAKEUP
+    value: "1"
+    condition:
+      - device_series_1 # Enable wake from rfsense when in EM2 and EM3.
+  # cli
+  #   for all
+  - name: SL_CLI_LOCAL_ECHO
+    value: "(1)"
+  - name: SL_CLI_MAX_INPUT_ARGUMENTS
+    value: '20'
+  - name: SL_CLI_HELP_CMD_PRE
+    value: 0  # Format help text correctly.
+  - name: SL_CLI_HELP_CMD_SIZE
+    value: 20 # Format help text correctly.
+  #   per instance
+  - name: SL_CLI_INST0_IOSTREAM_HANDLE
+    value: "sl_iostream_vcom_handle"
+  # cli command storage
+  #   per instance
+  - name: SL_CLI_STORAGE_RAM_INST0_END_STRING
+    value: '"endScript"'
+  - name: SL_CLI_STORAGE_RAM_INST0_CLI_HANDLE
+    value: "sl_cli_inst0_handle"
+  - name: SL_CLI_STORAGE_NVM3_INST0_END_STRING
+    value: '"endScript"'
+  - name: SL_CLI_STORAGE_NVM3_INST0_CLI_HANDLE
+    value: "sl_cli_inst0_handle"
+  # rail utilities
+  #   per instance
+#------------- RAIL init, Project --------------------
+  - name: SL_RAIL_UTIL_INIT_INIT_COMPLETE_CALLBACK_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_BLE_SUPPORT_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_RADIO_CONFIG_SUPPORT_INST0_ENABLE
+    value: "1"
+    condition:
+      - a_radio_config
+    unless:
+      - device_sdid_200
+      - device_is_module
+  
+    # Provide proprietary support on FGM230 modules
+  - name: SL_RAIL_UTIL_INIT_RADIO_CONFIG_SUPPORT_INST0_ENABLE
+    value: "1"
+    condition:
+      - a_radio_config
+      - device_is_module
+      - device_family_fgm23
+#------------- RAIL init, Protocol -------------------
+  - name: SL_RAIL_UTIL_INIT_PROTOCOLS_INST0_ENABLE
+    value: "1"
+
+    # Non modules with a radio configuration
+    # should override default phy to proprietary.
+    # This is the most generally applicable case of
+    # overriding the default phy.
+  - name: SL_RAIL_UTIL_INIT_PROTOCOL_INST0_DEFAULT
+    value: "SL_RAIL_UTIL_PROTOCOL_PROPRIETARY"
+    condition:
+      - a_radio_config
+    unless:
+      - device_is_module
+      - device_sdid_200
+
+    #  Provide proprietary support on FGM230 modules
+  - name: SL_RAIL_UTIL_INIT_PROTOCOL_INST0_DEFAULT
+    value: "SL_RAIL_UTIL_PROTOCOL_PROPRIETARY"
+    condition:
+      - a_radio_config
+      - device_is_module
+      - device_family_fgm23
+
+    # Non modules without a radio configuration
+    # that don't have 2.4GHz band and support ZWave
+    # should override default phy to ZWave.
+    # Ex. zg13, zg14
+  - name: SL_RAIL_UTIL_INIT_PROTOCOL_INST0_DEFAULT
+    value: "SL_RAIL_UTIL_PROTOCOL_ZWAVE_EU"
+    condition:
+      - device_supports_zwave
+    unless:
+      - a_radio_config
+      - device_is_module
+      - device_has_radio_2g4hz
+
+    # Modules (regardless of presence of radio configuration)
+    # that don't have 2.4GHz band and support ZWave
+    # should override default phy to ZWave.
+    # Ex. zgm13
+  - name: SL_RAIL_UTIL_INIT_PROTOCOL_INST0_DEFAULT
+    value: "SL_RAIL_UTIL_PROTOCOL_ZWAVE_EU"
+    condition:
+      - device_is_module
+      - device_supports_zwave
+    unless:
+      - device_has_radio_2g4hz
+#------------- RAIL init, Calibrations ---------------
+  - name: SL_RAIL_UTIL_INIT_CALIBRATIONS_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_CALIBRATION_TEMPERATURE_NOTIFY_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_CALIBRATION_ONETIME_NOTIFY_INST0_ENABLE
+    value: "1"
+#------------- RAIL init, Auto Transitions -----------
+  - name: SL_RAIL_UTIL_INIT_TRANSITIONS_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_TRANSITION_INST0_TX_SUCCESS
+    value: "RAIL_RF_STATE_RX"
+  - name: SL_RAIL_UTIL_INIT_TRANSITION_INST0_TX_ERROR
+    value: "RAIL_RF_STATE_RX"
+  - name: SL_RAIL_UTIL_INIT_TRANSITION_INST0_RX_SUCCESS
+    value: "RAIL_RF_STATE_RX"
+  - name: SL_RAIL_UTIL_INIT_TRANSITION_INST0_RX_ERROR
+    value: "RAIL_RF_STATE_RX"
+#------------- RAIL init, Data Format ----------------
+  - name: SL_RAIL_UTIL_INIT_DATA_FORMATS_INST0_ENABLE
+    value: "1"
+#------------- RAIL init, Radio Events ---------------
+  - name: SL_RAIL_UTIL_INIT_EVENTS_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_PREAMBLE_DETECT_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_SYNC1_DETECT_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_SYNC2_DETECT_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_FILTER_PASSED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_PACKET_RECEIVED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_ADDRESS_FILTERED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_FRAME_ERROR_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_PACKET_ABORTED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_TIMEOUT_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_CHANNEL_HOPPING_COMPLETE_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TX_PACKET_SENT_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TX_ABORTED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TX_BLOCKED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TX_STARTED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RSSI_AVERAGE_DONE_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_FIFO_ALMOST_FULL_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_FIFO_FULL_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_FIFO_OVERFLOW_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TX_FIFO_ALMOST_EMPTY_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TX_UNDERFLOW_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TX_CHANNEL_CLEAR_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TX_CHANNEL_BUSY_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TX_CCA_RETRY_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TX_START_CCA_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_TX_SCHEDULED_RX_TX_STARTED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_SCHEDULED_RX_END_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_SCHEDULED_RX_MISSED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TX_SCHEDULED_TX_MISSED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_RX_ACK_TIMEOUT_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TXACK_PACKET_SENT_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TXACK_ABORTED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TXACK_BLOCKED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_TXACK_UNDERFLOW_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_IEEE802154_DATA_REQUEST_COMMAND_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_ZWAVE_BEAM_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_CAL_NEEDED_INST0_ENABLE
+    value: "1"
+  - name: SL_RAIL_UTIL_INIT_EVENT_DETECT_RSSI_THRESHOLD_DONE_INST0_ENABLE
+    value: "1"
+
+#--------------------- Toolchain ------------------------
+toolchain_settings:
+  - option: optimize
+    value: debug
+
+ui_hints:
+  highlight:
+    - path: "readme.md"
+    - path: "config/rail/radio_settings.radioconf"
+      focus: true
+
+filter:
+  - name: "Wireless Technology"
+    value: ["RAIL"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]

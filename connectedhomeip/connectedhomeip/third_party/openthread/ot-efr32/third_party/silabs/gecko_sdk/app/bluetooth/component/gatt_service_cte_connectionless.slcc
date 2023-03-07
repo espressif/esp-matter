@@ -1,0 +1,37 @@
+id: gatt_service_cte_connectionless
+label: Constant Tone Extension GATT Service (Connectionless)
+package: Bluetooth
+description: >
+  Constant Tone Extension GATT Service reference implementation for periodic advertising.
+
+  Limitations:
+
+  - The specification expects to maintain a list about the characteristic values for each client
+  and take the largest/smallest value. Insted of this the latest valid value will take effect.
+
+  - The Advertising Constant Tone Extension Transmit Duration characteristic is not implemented.
+category: Bluetooth|GATT
+quality: production
+root_path: app/bluetooth/common/gatt_service_cte_adv
+source:
+  - path: sl_gatt_service_cte_connectionless.c
+config_file:
+  - path: config/sl_gatt_service_cte_connectionless_config.h
+provides:
+  - name: gatt_service_cte_adv_implementation
+  - name: gatt_service_cte_connectionless
+requires:
+  - name: bluetooth_stack
+  - name: gatt_configuration
+  - name: bluetooth_feature_aoa_transmitter
+  - name: bluetooth_feature_extended_advertiser
+  - name: bluetooth_feature_periodic_advertiser
+  - name: app_assert
+  - name: gatt_service_cte_adv
+template_contribution:
+  - name: bluetooth_advertisers
+    value:
+      name: cte_advertiser
+      count: 1
+  - name: component_catalog
+    value: gatt_service_cte_connectionless

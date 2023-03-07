@@ -1,0 +1,21 @@
+id: bootloader_bgapi_uartdfu
+label: "BGAPI UART DFU"
+package: bootloader
+description: UART DFU for Bluetooth applications using the BGAPI protocol.
+category: Platform|Bootloader|Communication
+quality: production
+source:
+  - path: platform/bootloader/communication/bgapi-uart-dfu/btl_comm_bgapi.c
+  - path: platform/bootloader/communication/bgapi-uart-dfu/btl_comm_bgapi_common.c
+include:
+  - path: platform/bootloader/communication
+    file_list:
+    - path: bgapi-uart-dfu/btl_comm_bgapi.h
+    - path: btl_communication.h
+requires:
+  - name: status
+define:
+  - name: BOOTLOADER_SUPPORT_COMMUNICATION
+    value: 1
+provides:
+  - name: bootloader_bgapi_uartdfu

@@ -1,0 +1,24 @@
+SPI
+====
+
+概述
+--------
+
+串行外设接口（Serial Peripheral Interface Bus, SPI）是一种用于短程通信的同步串行通信接口规范，装置之间使用全双工模式通信，是一个主机和一个或多个从机的主从模式。需要至 少4根线，事实上3根也可以（单向传输时）,包括SDI（数据输入）、SDO（数据输出）、SCLK（时钟）、CS（片选）
+
+.. note::
+
+    spi更多资料请参考 `BL602参考手册 <https://dev.bouffalolab.com/media/doc/602/reference_manual/zh/html/content/SPI.html>`_ 。
+
+应用实例
+----------
+
+串口实例： ``customer_app/peripheral/demo_spi`` 。
+
+API参考
+----------
+
+.. include:: /_build/inc/hosal_spi.inc
+
+
+

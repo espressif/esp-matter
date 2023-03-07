@@ -1,0 +1,120 @@
+package: Zigbee
+description: This component provides support for reading and manipulating counters that
+  record different events in the stack.
+label: Counters
+quality: production
+id: zigbee_counters
+category: Zigbee|Utility
+provides:
+   - name: zigbee_counters
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/counters/config/counters-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/counters/counters-cli.c
+    condition:
+      - cli
+  - path: protocol/zigbee/app/framework/plugin/counters/counters-ota-host.c
+    condition:
+      - zigbee_ezsp
+  - path: protocol/zigbee/app/framework/plugin/counters/counters-host.c
+    condition:
+      - zigbee_ezsp
+  - path: protocol/zigbee/app/framework/plugin/counters/counters-ota.c
+    condition:
+      - zigbee_stack_common
+  - path: protocol/zigbee/app/framework/plugin/counters/counters-soc.c
+    condition:
+      - zigbee_stack_common
+  - path: protocol/zigbee/app/framework/plugin/counters/counters-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/counters
+    file_list:
+      - path: counters.h
+      - path: counters-cli.h
+      - path: counters-ota.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_counters
+  - name: zigbee_stack_callback
+    value:
+      callback_type: counter
+      function_name: emAfPluginCountersCounterCallback
+    unless:
+      - zigbee_ezsp
+  - name: zigbee_af_callback
+    value:
+      callback_type: local_data_init
+      function_name: emberAfPluginCountersInitCallback
+    unless:
+      - zigbee_ezsp
+  - name: zigbee_af_callback
+    value:
+      callback_type: init_done
+      function_name: emberAfPluginCountersInitCallback
+    condition:
+      - zigbee_ezsp
+  - name: cli_group
+    value:
+      group: plugin
+      name: counters
+      help: counters related commands.
+  - name: cli_command
+    value:
+      group: counters
+      name: print
+      handler: emberAfPluginCountersPrintCommand
+      help: Prints all counter values and clears them.
+  - name: cli_command
+    value:
+      group: counters
+      name: print-counter-type
+      handler: emberAfPluginCounterPrintCounterTypeCommand
+      help: Prints the value of this particular counter.
+      argument:
+      - type: uint8
+        help: The counter type to print
+  - name: cli_command
+    value:
+      group: counters
+      name: simple-print
+      handler: emberAfPluginCountersSimplePrintCommand
+      help: Prints all counter values.
+  - name: cli_command
+    value:
+      group: counters
+      name: clear
+      handler: emberAfPluginCountersClear
+      help: Clears all counter values.
+  - name: cli_command
+    value:
+      group: counters
+      name: print-thresholds
+      handler: emberAfPluginCountersPrintThresholdsCommand
+      help: Prints the thresholds of all the counters.
+  - name: cli_command
+    value:
+      group: counters
+      name: set-threshold
+      handler: emberAfPluginCountersSetThresholdCommand
+      help: Sets a threshold value for a particular type of counter.
+      argument:
+      - type: uint8
+        help: Type of counter
+      - type: uint16
+        help: Threshold Value
+  - name: cli_command
+    value:
+      group: counters
+      name: reset-thresholds
+      handler: emberAfPluginCountersResetThresholds
+      help: Resets all thresholds values to 0xFFFF.
+  - name: cli_command
+    value:
+      group: counters
+      name: send-request
+      handler: emberAfPluginCountersSendRequestCommand
+      help: Sends a request for OTA counters.
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/counters

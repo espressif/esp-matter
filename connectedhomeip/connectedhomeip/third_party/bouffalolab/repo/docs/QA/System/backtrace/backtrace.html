@@ -1,0 +1,317 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>backtrace工具使用 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../../index.html"/>
+        <link rel="up" title="&lt;no title&gt;" href="../index.html"/>
+        <link rel="next" title="&lt;no title&gt;" href="../../Tools/index.html"/>
+        <link rel="prev" title="配置Flash频率和cache大小" href="../flash_cache/flash_cache.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Examples/index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">QA</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../flash_cache/flash_cache.html">flash_cache</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">backtrace</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#addr2line">程序异常时，通过addr2line定位异常代码位置</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gdb-bts">gdb 下bts命令查看所有线程的堆栈信息</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Tools/ota/ota.html">如何用命令行生成ota文件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Other/index_faq.html">Other</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">QA</a> &raquo;</li>
+        
+          <li><a href="../index.html">&lt;no title&gt;</a> &raquo;</li>
+        
+      <li>backtrace工具使用</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/QA/System/backtrace/backtrace.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="backtrace">
+<h1>backtrace工具使用<a class="headerlink" href="#backtrace" title="永久链接至标题"></a></h1>
+<dl class="docutils">
+<dt>使用场景：</dt>
+<dd><ul class="first last simple">
+<li>程序发生exception</li>
+<li>使用GDB调试代码</li>
+</ul>
+</dd>
+</dl>
+<div class="section" id="addr2line">
+<h2>程序异常时，通过addr2line定位异常代码位置<a class="headerlink" href="#addr2line" title="永久链接至标题"></a></h2>
+<ul class="simple">
+<li>当程序异常时，会输出错误现场的函数调用栈和其他所有task的函数调用栈，我们可以通过这些信息分析程序异常原因，并且可以配合addr2line工具精确定位问题代码位置，addr2line是我们sdk中自带的工具链工具，可以根据exception输出的backtrace地址具体定位到我们的代码的哪一行，命令格式为</li>
+</ul>
+<dl class="docutils">
+<dt><code class="docutils literal notranslate"><span class="pre">riscv64-unknown-elf-addr2line</span> <span class="pre">-e</span> <span class="pre">customer_app/bl602_demo_event/build_out/****.elf</span> <span class="pre">-a</span> <span class="pre">-f</span> <span class="pre">程序地址（可加多个地址空格分开）</span></code></dt>
+<dd><ul class="first last simple">
+<li>示例如下</li>
+</ul>
+</dd>
+</dl>
+<div class="figure">
+<img alt="" src="../../../_images/img13.png" />
+</div>
+<div class="figure">
+<img alt="" src="../../../_images/img23.png" />
+</div>
+</div>
+<div class="section" id="gdb-bts">
+<h2>gdb 下bts命令查看所有线程的堆栈信息<a class="headerlink" href="#gdb-bts" title="永久链接至标题"></a></h2>
+<ul class="simple">
+<li>从命令行启动OpenOCD调试代理，其默认在3333端口等待GDB连接</li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">./tools/ide/openocd/linux64/bin/openocd</span> <span class="pre">-f</span> <span class="pre">tools/debug/if_bflb_link.cfg</span> <span class="pre">-f</span> <span class="pre">tools/debug/tgt_602_xip_attach.cfg</span></code></p>
+<div class="figure">
+<img alt="" src="../../../_images/img31.png" />
+</div>
+<ul class="simple">
+<li>启动GDB</li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">riscv64-unknown-elf-gdb</span> <span class="pre">-x</span> <span class="pre">tools/debug/602.init</span> <span class="pre">-se</span> <span class="pre">customer_app/bl602_demo_event/build_out/bl602_demo_event.elf</span></code></p>
+<div class="figure">
+<img alt="" src="../../../_images/img4.png" />
+</div>
+<ul class="simple">
+<li>连接OpenOCD</li>
+</ul>
+<p>在GDB命令行中输入 <code class="docutils literal notranslate"><span class="pre">target</span> <span class="pre">remote：3333</span></code></p>
+<div class="figure">
+<img alt="" src="../../../_images/img5.png" />
+</div>
+<ul class="simple">
+<li>输入命令 <code class="docutils literal notranslate"><span class="pre">bts</span></code> 查看所有线程堆栈信息, <code class="docutils literal notranslate"><span class="pre">bts</span></code> 是我们的自定义命令，当然gdb的其他调试命令都是可以正常使用的，如设置断点b，单步调试n，查看backtrace命令bt等</li>
+</ul>
+<div class="figure">
+<img alt="" src="../../../_images/img6.png" />
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../Tools/index.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../flash_cache/flash_cache.html" class="btn btn-neutral" title="配置Flash频率和cache大小" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

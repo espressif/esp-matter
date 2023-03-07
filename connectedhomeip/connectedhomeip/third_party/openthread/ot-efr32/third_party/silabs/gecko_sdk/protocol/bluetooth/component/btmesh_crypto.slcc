@@ -1,0 +1,105 @@
+id: "btmesh_crypto"
+label: "Bluetooth Mesh Stack Crypto"
+package: "Btmesh"
+description: "Bluetooth Mesh Stack Crypto"
+category: "Bluetooth Mesh"
+quality: "production"
+template_contribution:
+# All Series 2 except Lynx based devices
+  - name: psa_key_slots
+    value:
+      name: psa_key_slots_btmesh_stack
+      count: "(4 + 4 * (SL_BTMESH_CONFIG_MAX_NETKEYS + SL_BTMESH_CONFIG_MAX_FRIENDSHIPS) + 2 * SL_BTMESH_CONFIG_MAX_PROV_SESSIONS + SL_BTMESH_CONFIG_ITS_KEY_CACHE_SIZE)"
+    condition:
+      - psa_crypto
+      - "device_series_2"
+    unless:
+      - "device_sdid_205"
+# Lynx based devices
+  - name: psa_key_slots
+    value:
+      name: psa_key_slots_btmesh_stack
+      count: "(4 + 2 * SL_BTMESH_CONFIG_MAX_PROV_SESSIONS + SL_BTMESH_CONFIG_ITS_KEY_CACHE_SIZE)"
+    condition:
+      - psa_crypto
+      - "device_series_2"
+      - "device_sdid_205"
+# Regular node
+  - name: psa_its_files
+    value:
+      name: psa_its_files_btmesh_stack
+      count: "0x40"
+    condition:
+      - psa_crypto
+      - "device_series_2"
+    unless:
+      - "btmesh_feature_prov"
+# Provisioner node
+  - name: psa_its_files
+    value:
+      name: psa_its_files_btmesh_stack
+      count: "0x240"
+    condition:
+      - psa_crypto
+      - "device_series_2"
+      - "btmesh_feature_prov"
+requires:
+  - name: "mbedtls_cmac"
+    condition:
+      - "device_series_1"
+  - name: "mbedtls_ccm"
+    condition:
+      - "device_series_1"
+  - name: "mbedtls_ecdh"
+    condition:
+      - "device_series_1"
+  - name: "mbedtls_ecc"
+    condition:
+      - "device_series_1"
+  - name: "mbedtls_ecc_secp256r1"
+    condition:
+      - "device_series_1"
+  - name: "mbedtls_random"
+    condition:
+      - "device_series_1"
+  - name: "psa_crypto"
+    condition:
+      - "device_series_2"
+  - name: "psa_crypto_cmac"
+    condition:
+      - "device_series_2"
+  - name: "psa_crypto_ccm"
+    condition:
+      - "device_series_2"
+  - name: "psa_crypto_cipher_ecb"
+    condition:
+      - "device_series_2"
+  - name: "psa_crypto_ecdh"
+    condition:
+      - "device_series_2"
+  - name: "psa_crypto_ecc_secp256r1"
+    condition:
+      - "device_series_2"
+  - name: "psa_its"
+    condition:
+      - "device_series_2"
+  - name: "psa_crypto_hmac"
+    condition:
+      - "device_series_2"
+  - name: "psa_crypto_sha256"
+    condition:
+      - "device_series_2"
+  - name: "psa_crypto_sha1"
+    condition:
+      - "device_series_2"
+  - name: "mbedtls_hash"
+    condition:
+      - "device_series_1"
+  - name: "mbedtls_sha1"
+    condition:
+      - "device_series_1"
+  - name: "btmesh_feature_crypto_key_cache"
+    condition:
+      - "device_series_2"
+provides:
+  - name: "btmesh_crypto"

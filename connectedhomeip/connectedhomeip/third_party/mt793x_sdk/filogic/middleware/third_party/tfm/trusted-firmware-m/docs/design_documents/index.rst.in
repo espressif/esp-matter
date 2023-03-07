@@ -1,0 +1,30 @@
+Design Documents
+================
+
+.. toctree::
+    :maxdepth: 1
+    :caption: Accepted design documents
+    :glob:
+    :numbered:
+
+    @ACCEPTED_DD_LIST@
+
+.. toctree::
+    :maxdepth: 1
+    :caption: Draft design documents
+    :glob:
+    :numbered:
+
+    @DRAFT_DD_LIST@
+
+.. toctree::
+    :maxdepth: 1
+    :caption: Rejected design documents
+    :glob:
+    :numbered:
+
+    @REJECTED_DD_LIST@
+
+--------------
+
+*Copyright (c) 2019, Arm Limited. All rights reserved.*

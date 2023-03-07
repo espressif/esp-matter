@@ -1,0 +1,22 @@
+!!omap
+- id: slwrb4300b
+- label: SLWRB4300B
+- package: platform
+- description: Kit BSP support for the MGM111 Mighty Gecko Module Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4300b
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4300B"'
+  - name: SL_KIT_REV
+    value: '"A01"'
+- tag:
+  - kit:opn:SLWRB4300B
+  - kit:pn:WRB4300
+  - kit:variant:B
+  - kit:revision:A01

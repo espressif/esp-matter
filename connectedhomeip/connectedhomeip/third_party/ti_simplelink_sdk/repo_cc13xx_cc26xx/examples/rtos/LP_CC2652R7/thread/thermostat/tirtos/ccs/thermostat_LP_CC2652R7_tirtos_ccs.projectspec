@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectSpec>
+    <applicability>
+        <when>
+            <context
+                deviceFamily="ARM"
+                deviceId="Cortex M.CC2652R7"
+            />
+        </when>
+    </applicability>
+
+    <import spec="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/ti/thread/cc13x2_26x2/libopenthread_ftd/lib/ccs/m4f/libopenthread_ftd_cc13x2_26x2_ccs.projectspec"/>
+    <import spec="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/ti/thread/cc13x2_26x2/libopenthread_platform_utils_ftd/lib/ccs/m4f/libopenthread_platform_utils_ftd_cc13x2_26x2_ccs.projectspec"/>
+    <import spec="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/ti/thread/cc13x2_26x2/libmbedcrypto/lib/ccs/m4f/libmbedcrypto_cc13x2_26x2_ccs.projectspec"/>
+
+    <project
+        title="Thermostat Application using full thread device type"
+        name="thermostat_LP_CC2652R7_tirtos_ccs"
+        configurations="Debug"
+        toolChain="TI"
+        cgtVersion="TI_20.2.5.LTS"
+        connection="TIXDS110_Connection.xml"
+        device="Cortex M.CC2652R7"
+        ignoreDefaultDeviceSettings="true"
+        ignoreDefaultCCSSettings="true"
+        references="libopenthread_ftd_cc13x2_26x2_ccs,libopenthread_platform_utils_ftd_cc13x2_26x2_ccs,libmbedcrypto_cc13x2_26x2_ccs"
+        products="com.ti.SIMPLELINK_CC13XX_CC26XX_SDK;sysconfig"
+        compilerBuildOptions="
+            -I${PROJECT_ROOT}
+            -I${PROJECT_ROOT}/${ConfigName}
+            -mv7M3
+            --opt_for_speed=0
+            --abi=eabi
+            -me
+            -g
+            --c99
+            --gcc
+            --printf_support=nofloat
+            --gen_func_subsections=on
+            --gen_data_subsections=on
+            -DHAVE_CONFIG_H
+            -DBoard_EXCLUDE_NVS_EXTERNAL_FLASH
+            -DNVOCMP_POSIX_MUTEX
+            -DNVOCMP_NVPAGES=2
+            -DNDEBUG
+            -DBOARD_DISPLAY_USE_UART=1
+            -DMBEDTLS_CONFIG_FILE=&apos;&quot;mbedtls-config-cc13x2_26x2.h&quot;&apos;
+            -I${WORKSPACE_LOC}/libmbedcrypto_cc13x2_26x2_ccs/config
+            -i${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/examples/platforms
+            -i${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/include
+            -i${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/core
+            -i${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/third_party/mbedtls/repo/include
+            -i${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source
+            -i${PROJECT_ROOT}/platform/crypto
+            -DOPENTHREAD_FTD=1
+            -I${WORKSPACE_LOC}/libopenthread_ftd_cc13x2_26x2_ccs/config
+            -DOPENTHREAD_CONFIG_FILE=&apos;&quot;openthread-config-cc13x2_26x2-ftd.h&quot;&apos;
+            -DOPENTHREAD_PROJECT_CORE_CONFIG_FILE=&apos;&quot;openthread-core-cc13x2_26x2-config.h&quot;&apos;
+            -DTIOP_CUI=1
+            -DBOARD_DISPLAY_USE_LCD=1
+            -O4
+            -DDeviceFamily_CC13X2X7_CC26X2X7
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/ti/devices/cc13x2_cc26x2
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/ti/posix/ccs
+            --silicon_version=7M4
+            --code_state=16
+            --little_endian
+            --display_error_number
+            --diag_warning=255
+            --diag_wrap=off
+            --float_support=FPv4SPD16
+            --symdebug:dwarf
+            -I${CG_TOOL_ROOT}/include
+        "
+        linkerBuildOptions="
+            --unused_section_elimination=on
+            --heap_size=0
+            -i${WORKSPACE_LOC}/libopenthread_ftd_cc13x2_26x2_ccs/OptimizeSize
+            -i${WORKSPACE_LOC}/libopenthread_platform_utils_ftd_cc13x2_26x2_ccs/OptimizeSize
+            -i${WORKSPACE_LOC}/libmbedcrypto_cc13x2_26x2_ccs/OptimizeSize
+            -llibopenthread_ftd.a
+            -llibopenthread_platform_utils_ftd.a
+            -llibmbedcrypto.a
+            -l${PROJECT_BUILD_DIR}/syscfg/ti_utils_build_linker.cmd.genlibs
+            -i${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source
+            -i${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source
+            -i${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/kernel/tirtos/packages
+            -i${PROJECT_BUILD_DIR}/syscfg
+            -lti/devices/cc13x2x7_cc26x2x7/driverlib/bin/ccs/driverlib.lib
+            --warn_sections
+            --display_error_number
+            --diag_wrap=off
+            --rom_model
+            -i${CG_TOOL_ROOT}/lib
+            -llibc.a
+        "
+        enableSysConfigTool="true"
+        sysConfigBuildOptions="
+            --product ${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/.metadata/product.json
+            --compiler ccs
+        "
+        description="A simple application with thermostat functionality on a Thread network">
+        <property name="type" value="rtsc"/>
+        <property name="xdcToolsVersion" value="3_62_00_08"/>
+        <property name="target" value="ti.targets.arm.elf.M4F"/>
+        <property name="platform" value="ti.platforms.simplelink:CC1352R1F3"/>
+
+        <property name="buildProfile" value="release"/>
+        <property name="isHybrid" value="true"/>
+        <property name="configuroOptions" value=" --compileOptions &quot;${COMPILER_FLAGS} &quot;"/>
+        <file path="../../README.md" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../README.html" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../platform/alarm.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/alarm_micro.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/radio.h" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/diag.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/DIAG.md" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/entropy.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/misc.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/settings.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/system.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/system.h" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/radio.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/uart.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/debug_uart.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform">
+        </file>
+        <file path="../../platform/nv/crc.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform/nv">
+        </file>
+        <file path="../../platform/nv/crc.h" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform/nv">
+        </file>
+        <file path="../../platform/nv/nvocmp.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform/nv">
+        </file>
+        <file path="../../platform/nv/nvocmp.h" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform/nv">
+        </file>
+        <file path="../../platform/nv/nvintf.h" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform/nv">
+        </file>
+        <file path="../../thermostat.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../thermostat.h" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../images.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../images.h" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../tiop_ui.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../tiop_ui.h" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../cui.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../cui.h" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../tiop_app_defs.h" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../graphicext.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../graphicext.h" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../disp_utils.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../disp_utils.h" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../main.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../task_config.h" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../otstack.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../otstack.h" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../otsupport/otrtosapi.h" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="otsupport">
+        </file>
+        <file path="../../otsupport/otrtosapi.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="otsupport">
+        </file>
+        <file path="../../otsupport/otinstance.h" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="otsupport">
+        </file>
+        <file path="../../release.cfg" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../thermostat.syscfg" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/ti/boards/LP_CC2652R7/Board.html" openOnCreation="false" excludeFromBuild="false" action="link">
+        </file>
+        <file path="../../platform/crypto/aes_alt.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform/crypto">
+        </file>
+        <file path="../../platform/crypto/sha256_alt.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform/crypto">
+        </file>
+        <file path="../../platform/crypto/ecjpake_alt.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform/crypto">
+        </file>
+        <file path="../../platform/crypto/crypto_misc.c" openOnCreation="false" excludeFromBuild="false" action="copy" targetDirectory="platform/crypto">
+        </file>
+        <file path="../../tirtos/ccs/cc13x2x7_cc26x2x7_tirtos.cmd" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../tirtos/makefile.defs" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+    </project>
+</projectSpec>

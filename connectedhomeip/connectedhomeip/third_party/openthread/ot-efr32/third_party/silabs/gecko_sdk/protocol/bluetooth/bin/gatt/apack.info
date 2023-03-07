@@ -1,0 +1,13 @@
+# Bluetooth Config Advanced Configurator Adapter Pack Definition
+
+# Is used for SetupId
+id=btConfig
+label=Bluetooth Config Advanced Configurator Adapter Pack
+
+# Trigger file extension. No period.
+uc.triggerExtension=btconf
+
+# Standard generation function
+function(uc_generate) {
+  cmd=$(python) bgbuild.py ${contentFolder} -o ${generationOutput}
+}

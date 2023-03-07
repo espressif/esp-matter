@@ -1,0 +1,100 @@
+/***************************************************************************//**
+ * @file
+ * @brief Device initialization for clocks.
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2019 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ ******************************************************************************/
+#include "sl_device_init_clocks.h"
+
+#include "em_cmu.h"
+
+sl_status_t sl_device_init_clocks(void)
+{
+{%- if 's2' in device_init_clocks_arch %}
+{%- if 'clkin0' in device_init_clocks_present %}
+{%-  set hf_clock = 'cmuSelect_CLKIN0' %}
+{%- elif 'dpll' in device_init_clocks_present or 'hfrco' in device_init_clocks_present %}
+{%-  set hf_clock = 'cmuSelect_HFRCODPLL' %}
+{%- elif 'hfxo' in device_init_clocks_present %}
+{%-  set hf_clock = 'cmuSelect_HFXO' %}
+{%- else %}
+{%- set hf_clock = 'cmuSelect_HFRCODPLL' %}
+{%- endif %}
+{%- if 'lfxo' in device_init_clocks_present %}
+{%- set lf_clock = 'cmuSelect_LFXO' %}
+{%- else %}
+{%- set lf_clock = 'cmuSelect_LFRCO' %}
+{%- endif %}
+  CMU_ClockSelectSet(cmuClock_SYSCLK, {{ hf_clock }});
+#if defined(_CMU_EM01GRPACLKCTRL_MASK)
+  CMU_ClockSelectSet(cmuClock_EM01GRPACLK, {{ hf_clock }});
+#endif
+#if defined(_CMU_EM01GRPBCLKCTRL_MASK)
+  CMU_ClockSelectSet(cmuClock_EM01GRPBCLK, {{ hf_clock }});
+#endif
+  CMU_ClockSelectSet(cmuClock_EM23GRPACLK, {{ lf_clock }});
+  CMU_ClockSelectSet(cmuClock_EM4GRPACLK, {{ lf_clock }});
+#if defined(RTCC_PRESENT)
+  CMU_ClockSelectSet(cmuClock_RTCC, {{ lf_clock }});
+#endif
+#if defined(SYSRTC_PRESENT)
+  CMU_ClockSelectSet(cmuClock_SYSRTC, {{ lf_clock }});
+#endif
+  CMU_ClockSelectSet(cmuClock_WDOG0, {{ lf_clock }});
+#if WDOG_COUNT > 1
+  CMU_ClockSelectSet(cmuClock_WDOG1, {{ lf_clock }});
+#endif
+{% else %}
+{%- if 'clkin0' in device_init_clocks_present %}
+{%-  set hf_clock = 'cmuSelect_CLKIN0' %}
+{%- elif 'dpll' in device_init_clocks_present or 'hfrco' in device_init_clocks_present %}
+{%-  set hf_clock = 'cmuSelect_HFRCO' %}
+{%- elif 'hfxo' in device_init_clocks_present %}
+{%-  set hf_clock = 'cmuSelect_HFXO' %}
+{%- else %}
+{%- set hf_clock = 'cmuSelect_HFRCO' %}
+{%- endif %}
+{%- if 'lfxo' in device_init_clocks_present %}
+{%- set lf_clock = 'cmuSelect_LFXO' %}
+{%- elif 'plfrco' in device_init_clocks_present %}
+{%- set lf_clock = 'cmuSelect_PLFRCO' %}
+{%- else %}
+{%- set lf_clock = 'cmuSelect_LFRCO' %}
+{%- endif %}
+  CMU_ClockSelectSet(cmuClock_HF, {{ hf_clock }});
+
+  CMU_ClockEnable(cmuClock_HFLE, true);
+  CMU_ClockSelectSet(cmuClock_LFA, {{ lf_clock }});
+  CMU_ClockSelectSet(cmuClock_LFB, {{ lf_clock }});
+#if defined(_CMU_LFCCLKSEL_MASK)
+  CMU_ClockSelectSet(cmuClock_LFC, {{ lf_clock }});
+#endif
+#if defined(_CMU_LFECLKSEL_MASK)
+  CMU_ClockSelectSet(cmuClock_LFE, {{ lf_clock }});
+#endif
+{% endif %}
+  return SL_STATUS_OK;
+}

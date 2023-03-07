@@ -1,0 +1,34 @@
+id: health_thermometer
+label: Health Thermometer API
+package: Bluetooth
+description: API for the Health Thermometer GATT service
+category: Bluetooth|GATT
+quality: production
+root_path: app/bluetooth/common/health_thermometer
+config_file:
+  - path: config/sl_health_thermometer_config.h
+  - path: health_thermometer.xml
+    directory: btconf
+source:
+  - path: sl_health_thermometer.c
+include:
+  - path: .
+    file_list:
+      - path: sl_health_thermometer.h
+provides:
+  - name: health_thermometer
+requires:
+  - name: bluetooth_stack
+  - name: gatt_configuration
+  - name: bluetooth_feature_connection
+  - name: bluetooth_feature_gatt_server
+  - name: bluetooth_feature_system
+  - name: app_assert
+template_contribution:
+  - name: bluetooth_on_event
+    value:
+      include: sl_health_thermometer.h
+      function: sl_bt_ht_on_event
+    priority: 0
+  - name: component_catalog
+    value: health_thermometer

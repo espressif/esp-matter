@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="LoggingSetup" title="LoggingSetup" version="1">
+
+<page name="Logging" title="UIA Logging Configuration">
+<html><body>
+<table>
+  <tr>
+    <td>
+      <form>
+        <p>The LoggingSetup module is used to aid in configuring SYS/BIOS
+           logging using UIA and System Analyzer support for your application.
+           The LoggingSetup module automates the process of configuring an
+           application to use UIA events, and configures SYS/BIOS modules to
+           capture user-specified information such as CPU Load, Task Load and
+           Task Execution so that it can be displayed by System Analyzer.  It
+           also automates the creation of infrastructure modules such as
+           loggers, the ServiceManager and RTA modules to enable the capture
+           and upload of the events over a user-specified transport.
+           Both JTAG and Non-JTAG transports are supported.
+        </p>
+        <p></p>
+      </form>
+    </td>
+  </tr>
+  <tr><td colspan="2">
+    <control type="checkbox"
+             label="Add LoggingSetup to my configuration"
+             value="value:this.$used"
+             bold="true"/></td>
+  </tr>
+  <tr></tr>
+  <tr>
+    <td>
+      <h1>Built-in Software Instrumentation</h1>
+      <table>
+        <tr>
+          <td>
+            <control type="checkbox"
+                             label="RTOS Execution Analysis"
+                                                 bold="true"
+                             value="value:this.sysbiosTaskLogging"                                       
+                             enabled="value:this.$used"
+                             tooltip="value:this.sysbiosTaskLogging.$summary"/>
+          </td>
+          <td>
+            <control type="hyperlink"
+                         visible="value:true"
+                         link="http://processors.wiki.ti.com/index.php/UIA_2.0_LoggingSetup#ExecutionAnalysis"
+                         label="More Info..."/>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <control type="checkbox"
+                             label="Task Context (Always on)  "
+                             align="right"
+                             visible="value:this.sysbiosTaskLogging"                      
+                             value="value:true"
+                             tooltip="value:this.sysbiosSwiLogging.$summary"/>
+          </td>                   
+          <td>
+            <control type="checkbox"
+                             label="Swi Context"
+                             visible="value:this.sysbiosTaskLogging"                                             
+                             value="value:this.sysbiosSwiLogging"
+                             tooltip="value:this.sysbiosSwiLogging.$summary"/>
+          </td> 
+          <td>
+            <control type="checkbox"
+                             label="Hwi Context"
+                             visible="value:this.sysbiosTaskLogging"                                             
+                             value="value:this.sysbiosHwiLogging"
+                             tooltip="value:this.sysbiosHwiLogging.$summary"/>
+          </td>                   
+          <td>
+            <control type="checkbox"
+                             label="Semaphores"
+                             visible="value:this.sysbiosTaskLogging"
+                             value="value:this.sysbiosSemaphoreLogging"
+                             tooltip="value:this.sysbiosSemaphoreLogging.$summary"/>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <control type="checkbox"
+                         label="RTOS Load Analysis"
+                         bold="true"
+                         enabled="value:this.$used"
+                         value="value:this.loadLogging"
+                         tooltip="value:this.loadLogging.$summary"/>
+          </td>
+          <td>
+            <control type="hyperlink"
+                         visible="value:true"
+                         link="http://processors.wiki.ti.com/index.php/UIA_2.0_LoggingSetup#LoadAnalysis"
+                         label="More Info..."/>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <control type="checkbox"
+                           label=" CPU  Load  (Always on)     "
+                           align="right"
+                           visible="value:this.loadLogging"
+                           value="value:true"
+                           />
+          </td>
+          <td>
+            <control type="checkbox"
+                           label="Task Load  "
+                           visible="value:this.loadLogging"
+                           value="value:this.loadTaskLogging"
+                           tooltip="value:this.loadTaskLogging.$summary"/>
+          </td>
+          <td>
+            <control type="checkbox"
+                           label="Swi Load"
+                           visible="value:this.loadLogging"
+                           value="value:this.loadSwiLogging"
+                           tooltip="value:this.loadSwiLogging.$summary"/>
+          </td>
+          <td>
+            <control type="checkbox"
+                             label="Hwi Load"
+                             visible="value:this.loadLogging"
+                             value="value:this.loadHwiLogging"
+                             tooltip="value:this.loadHwiLogging.$summary"/>
+          </td> 
+          <td>
+            <control type="label"
+                             align="left"
+                             visible="value:false"
+                             label="                        Note--For the most accurate task load results, select both SWI and HWI."/>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <control type="checkbox"
+                             label="Task Profiler"
+                             bold="true"
+                             enabled="value:this.$used"
+                             value="value:this.enableTaskProfiler"
+                             tooltip="value:this.enableTaskProfiler.$summary"/>
+          </td>
+          <td>
+            <control type="hyperlink"
+                         visible="value:true"
+                         link="http://processors.wiki.ti.com/index.php/UIA_2.0_LoggingSetup#TaskProfiler"
+                         label="More Info..."/>
+          </td>
+        </tr>                          
+        <tr>
+          <td><form><p> </p></form></td>
+        </tr>                   
+        <tr>
+          <td>
+            <control type="checkbox"
+                     label="Context-Aware Function Profiler"
+                     bold="true"
+                     enabled="value:this.$used"
+                     value="value:this.enableContextAwareFunctionProfiler"
+                     tooltip="value:this.enableContextAwareFunctionProfiler.$summary"/>
+          </td>
+          <td>
+            <control type="hyperlink"
+                         visible="value:true"
+                         link="http://processors.wiki.ti.com/index.php/UIA_2.0_LoggingSetup#FunctionProfiler"
+                         label="More Info..."/>
+          </td>
+        </tr>                  
+      </table>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <h1>User-written Software Instrumentation</h1>
+      <form><p>Enable modules for use in instrumenting your application code.  Please click on the provided tutorial links for information on how to use these modules to instrument your software. </p></form>
+      <table>
+        <tr>
+          <td>
+            <control type="checkbox"
+                     label="Error, Warning, Info and Print Events (e.g. Log_print2)"
+                     enabled="value:this.$used"
+                     value="value:this.mainLogging"
+                     tooltip="value:this.mainLogging.$summary"/>
+          </td>
+          <td>
+            <control type="hyperlink"
+                         visible="value:true"
+                         link="http://processors.wiki.ti.com/index.php/UIA_2.0_LoggingSetup#PrintEvents"
+                         label="Tutorial..."/>
+          </td>		  
+        </tr>
+        <tr>
+          <td>
+            <control type="checkbox"
+                     label="Duration Analysis (Benchmarking)"
+                     enabled="value:this.$used"
+                     value="value:this.benchmarkLogging"
+                     tooltip="value:this.benchmarkLogging.$summary"/>
+          </td>
+          <td>
+            <control type="hyperlink"
+                         visible="value:true"
+                         link="http://processors.wiki.ti.com/index.php/UIA_2.0_LoggingSetup#Benchmarking"
+                         label="Tutorial..."/>
+          </td>		  
+        </tr>
+        <tr>
+          <td>
+            <control type="checkbox"
+                     label="Statistical Analysis (Counting and Graphing)"
+                     enabled="value:this.$used"
+                     value="value:this.countingAndGraphingLogging"
+                     tooltip="value:this.countingAndGraphingLogging.$summary"/>
+          </td>
+          <td>
+            <control type="hyperlink"
+                     visible="value:true"
+                     link="http://processors.wiki.ti.com/index.php/UIA_2.0_LoggingSetup#Counting"
+                     label="Tutorial..."/>
+          </td>		  
+        </tr>
+        <tr>
+          <td>
+            <control type="checkbox"
+                     label="Snapshot Events (e.g. to log memory blocks, dynamic strings)"
+                     enabled="value:this.$used"
+                     value="value:this.snapshotLogging"
+                     tooltip="value:this.snapshotLogging.$summary"/>
+          </td>
+          <td>
+            <control type="hyperlink"
+                     visible="value:true"
+                     link="http://processors.wiki.ti.com/index.php/UIA_2.0_LoggingSetup#Snapshots"
+                     label="Tutorial..."/>
+          </td>		  
+        </tr>
+        <tr>
+          <td><form><p> </p></form></td>
+        </tr>
+
+        <tr>
+          <td>
+            <control type="checkbox"
+                     label="Run-time Control of Event Logging"
+                     enabled="value:this.$used"
+                     value="value:this.mainLoggingRuntimeControl"
+                     tooltip="value:this.mainLoggingRuntimeControl.$summary"/>
+          </td>
+          <td>
+            <control type="hyperlink"
+                     visible="value:true"
+                     link="http://processors.wiki.ti.com/index.php/UIA_2.0_LoggingSetup#RuntimeControl"
+                     label="Tutorial..."/>
+          </td>		  
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <h1>Loggers</h1>
+      <form><p>LoggingSetup generates any loggers required by the below setting automatically.  If you wish to create and use different loggers, please go to the "Advanced" tab and assign them manually.  <a href="http://processors.wiki.ti.com/index.php/UIA_2.0_LoggingSetup#Loggers">More info...</a></p></form>
+      <table>
+        <tr>
+          <td><control type="droplist"
+               value="value:this.loggerType"
+               text="Logger Type"
+               tooltip="value:this.loggerType.$summary"/></td>
+        </tr>
+        <tr>
+          <td><form><p> </p></form></td>
+        </tr>
+        <tr>
+          <td>
+            <form><p>Please note, for some of the transport types you may need to add additional modules to your project (e.g. the NDK).</p></form>
+          </td>
+        </tr>
+        <tr>
+          <td><control type="hyperlink"
+                       link="ref:ti.uia.sysbios.LoggerIdle"
+                       label="Please click here to configure the LoggerIdle module (e.g. the transportFxn parameter)"
+                       enabled="value:this.loggerType==this.LoggerType_IDLE"/></td>
+
+        </tr>
+        <tr>
+          <td><control type="hyperlink"
+                       link="ref:ti.uia.sysbios.LoggerStreamer2"
+                       label="Please click here to configure the LoggerStreamer2 module (e.g. the transportFxn parameter)"
+                       enabled="value:this.loggerType==this.LoggerType_STREAMER2"/></td>
+
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <h1>Logger Buffer Sizes</h1>
+      <form><p>This section allows you to configure how much memory you wish to allocate on the target for use in storing software instrumentation events.  <a href="http://processors.wiki.ti.com/index.php/UIA_2.0_LoggingSetup#BufferSizes">More info...</a></p></form>
+      <table>
+        <tr>
+          <td><control type="label"
+                       label="Buffer Sizes (MAUs)"
+                       enabled="value:this.$used"
+                       bold="true"/>
+          </td>
+        </tr>
+        <tr><td></td>
+		  <!-- NOTE: If changes are made to the Logger Buffer label captions,
+               please update the writeUIAMetaData function in LoggingSetup.xs 
+			   used to generate the "BufferNames" section of the uia.xml 
+			   file so that System Analyzer can use consistent labelling 
+			   for the buffer names -->
+          <td><control type="label"
+               label="RTOS Load Events"
+               enabled="value:this.isLoadLoggerAutoCreated"
+               visible="value:this.loggerType != this.LoggerType_MIN &amp;&amp; 
+               this.loggerType != this.LoggerType_IDLE"
+               align="left"/></td>
+          <td><control type="editbox"
+               enabled="value:this.isLoadLoggerAutoCreated"
+               value="value:this.loadLoggerSize"
+               tooltip="value:this.loadLoggerSize.$summary"/></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><control type="label"
+               label="RTOS Execution Events"
+               enabled="value:this.isSysbiosLoggerAutoCreated"
+               visible="value:this.loggerType != this.LoggerType_MIN &amp;&amp;
+               this.loggerType != this.LoggerType_IDLE"
+               align="left"/></td>
+          <td><control type="editbox"
+               enabled="value:this.isSysbiosLoggerAutoCreated"
+               value="value:this.sysbiosLoggerSize"
+               visible="value:this.loggerType != this.LoggerType_MIN &amp;&amp;
+               this.loggerType != this.LoggerType_IDLE"
+               tooltip="value:this.sysbiosLoggerSize.$summary"/></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><control type="label"
+               label="User-written Log Events"
+               enabled="value:this.isMainLoggerAutoCreated"
+               visible="value:this.loggerType != this.LoggerType_MIN &amp;&amp;
+               this.loggerType != this.LoggerType_IDLE"
+               align="left"/></td>
+          <td><control type="editbox"
+               enabled="value:this.isMainLoggerAutoCreated"
+               value="value:this.mainLoggerSize"
+               visible="value:this.loggerType != this.LoggerType_MIN &amp;&amp;
+               this.loggerType != this.LoggerType_IDLE"
+               tooltip="value:this.mainLoggerSize.$summary"/></td>
+        </tr>
+        <tr>
+          <td><form><p> </p></form></td>
+        </tr>
+        <tr>
+          <td colspan="3"><control type="label"
+               label="Memory Section to place the buffers in"
+               bold="true"
+               enabled="value:this.$used"
+               visible="value:this.$used"/>
+          </td>
+        </tr>
+        <tr><td></td>
+          <td><control type="label"
+               label="Memory Section Name"
+               enabled="value:this.$used"
+               align="left"/></td>
+          <td><control type="editbox"
+               enabled="value:this.$used"
+               value="value:this.memorySectionName"
+               tooltip="value:this.memorySectionName.$summary"/></td>
+          <td>
+            <control type="hyperlink"
+                         visible="value:true"
+                         link="http://processors.wiki.ti.com/index.php/UIA_2.0_LoggingSetup#MemorySection"
+                         label="More info..."/>
+          </td>					   
+        </tr>
+        <tr>
+          <td><form><p> </p></form></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <h1>Multicore</h1>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <control type="checkbox"
+               label="Multicore Event Correlation"
+               enabled="value:this.showMulticoreEventCorrelationOption"
+               value="value:this.multicoreEventCorrelation"
+               tooltip="value:this.multicoreEventCorrelation.$summary"/>
+      </td>
+      <td><form><p><a href="http://processors.wiki.ti.com/index.php/UIA_2.0_LoggingSetup#Multicore">Tutorial...</a></p></form></td>
+    </tr>
+    <tr>
+      <td><control type="label"
+               label="Num cores running this application"
+               visible="value:this.showNumCoresOption"
+               align="right"/></td>
+      <td><control type="editbox"
+               visible="value:this.showNumCoresOption"
+               value="value:this.numCores"
+               tooltip="value:this.numCores.$summary"/></td>
+    </tr>
+</table>
+</body></html>
+</page>
+
+<properties name="Advanced" title="All Logging Options" enabled="true" visible="true" link="this"/>
+</gep>

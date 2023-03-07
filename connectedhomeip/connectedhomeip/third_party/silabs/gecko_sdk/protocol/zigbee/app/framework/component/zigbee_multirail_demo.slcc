@@ -1,0 +1,59 @@
+package: Zigbee
+description: This component provides the sample code for using dual RAIL instances. It
+  includes a simple CLI to demonstrate the functionality.
+label: Multiple RAIL Demo Code
+quality: production
+id: zigbee_multirail_demo
+category: Zigbee|Utility
+provides:
+   - name: "zigbee_multirail_demo"
+requires:
+   - name: "rail_lib_multiprotocol"
+
+source:
+  - path: protocol/zigbee/app/framework/plugin/multirail-demo/multirail-demo.c
+  - path: protocol/zigbee/app/framework/plugin/multirail-demo/multirail-demo-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/multirail-demo/multirail-demo-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/multirail-demo
+    file_list:
+      - path: multirail-demo.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_multirail_demo
+  - name: cli_group
+    value:
+      group: plugin
+      name: multirail
+      help: multirail related commands.
+  - name: cli_command
+    value:
+      group: multirail
+      name: init
+      handler: emberAfPluginMultirailDemoCliInit
+      help: Initializes the second RAIL instance.
+      argument:
+      - type: int16
+        help: Default TX power in deci-dBm (eg. -50 = -5dBm, 120 = -12 dBm)
+  - name: cli_command
+    value:
+      group: multirail
+      name: get-handle
+      handler: emberAfPluginMultirailDemoCliGetHandle
+      help: Prints the second RAIL handle.
+  - name: cli_command
+    value:
+      group: multirail
+      name: send
+      handler: emberAfPluginMultirailDemoCliSend
+      help: Sends a packet using the second RAIL instance.
+      argument:
+      - type: uint8
+        help: Channel (11-26, or 0 to use the current Zigbee channel)
+      - type: string
+        help: Packet data (empty string will send a default GPD packet)
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/multirail-demo

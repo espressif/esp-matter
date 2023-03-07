@@ -1,0 +1,10 @@
+test_suites
+    The various 'test_suite_XXX' programs from the 'tests' directory, executed
+    using 'make check' (Unix make) or 'make test' (Cmake), include test cases
+    (reference test vectors, sanity checks, malformed input for parsing
+    functions, etc.) for all modules.
+
+selftests
+    The 'programs/test/selftest' program runs the 'XXX_self_test()' functions
+    of each individual module. Most of them are included in the respective
+    test suite, but some slower ones are only included here.

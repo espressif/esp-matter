@@ -1,0 +1,96 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load(
+    "//pw_build:pigweed.bzl",
+    "pw_cc_library",
+    "pw_cc_test",
+)
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+pw_cc_library(
+    name = "pw_bytes",
+    srcs = [
+        "byte_builder.cc",
+    ],
+    hdrs = [
+        "public/pw_bytes/array.h",
+        "public/pw_bytes/byte_builder.h",
+        "public/pw_bytes/endian.h",
+        "public/pw_bytes/span.h",
+        "public/pw_bytes/units.h",
+    ],
+    includes = ["public"],
+    deps = [
+        ":bit",
+        "//pw_containers:iterator",
+        "//pw_polyfill",
+        "//pw_preprocessor",
+        "//pw_span",
+        "//pw_status",
+    ],
+)
+
+pw_cc_library(
+    name = "bit",
+    hdrs = ["public/pw_bytes/bit.h"],
+    includes = ["public"],
+)
+
+pw_cc_test(
+    name = "array_test",
+    srcs = ["array_test.cc"],
+    deps = [
+        ":pw_bytes",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "bit_test",
+    srcs = ["bit_test.cc"],
+    deps = [
+        ":bit",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "byte_builder_test",
+    srcs = ["byte_builder_test.cc"],
+    deps = [
+        ":pw_bytes",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "endian_test",
+    srcs = ["endian_test.cc"],
+    deps = [
+        ":pw_bytes",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "units_test",
+    srcs = ["units_test.cc"],
+    deps = [
+        ":pw_bytes",
+    ],
+)

@@ -1,0 +1,63 @@
+package: Zigbee
+description: A component for handling snapshots of the meter state in a Smart Energy network.
+label: Meter Snapshot Server
+quality: production
+id: zigbee_meter_snapshot_server
+category: Zigbee|Cluster Library|Smart Energy
+provides:
+   - name: "zigbee_meter_snapshot_server"
+requires:
+   - name: "zigbee_simple_metering_server"
+source:
+  - path: protocol/zigbee/app/framework/plugin/meter-snapshot-server/meter-snapshot-server.c
+  - path: protocol/zigbee/app/framework/plugin/meter-snapshot-server/meter-snapshot-server-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/meter-snapshot-server/meter-snapshot-server-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/meter-snapshot-server/
+    file_list:
+      - path: meter-snapshot-server.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_meter_snapshot_server
+  - name: cli_group
+    value:
+      group: plugin
+      name: meter-snapshot-server
+      help: meter-snapshot-server related commands
+  - name: cli_command
+    value:
+      group: meter-snapshot-server
+      name: take
+      handler: emAfMeterSnapshotServerCliTake
+      help: Takes a snapshot.
+      argument:
+      - type: uint8
+        help: The source endpoint
+      - type: uint32
+        help: The cause of the snapshot
+  - name: cli_command
+    value:
+      group: meter-snapshot-server
+      name: publish
+      handler: emAfMeterSnapshotServerCliPublish
+      help: Publishes a snapshot.
+      argument:
+      - type: uint16
+        help: The destination node id
+      - type: uint8
+        help: The source endpoint
+      - type: uint8
+        help: The destination endpoint
+      - type: uint32
+        help: The earliest time of a snapshot to be published
+      - type: uint32
+        help: The latest time of a snapshot to be published
+      - type: uint8
+        help: Identifies the snapshot to be published
+      - type: uint32
+        help: Select only snapshots that were taken due to a specific cause
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/meter-snapshot-server

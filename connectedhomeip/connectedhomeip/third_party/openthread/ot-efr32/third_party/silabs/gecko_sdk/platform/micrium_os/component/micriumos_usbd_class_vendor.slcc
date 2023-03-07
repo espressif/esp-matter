@@ -1,0 +1,21 @@
+id: micriumos_usbd_class_vendor
+label: USB Device Class - Vendor
+package: micrium-usbd
+description: Micrium OS USB Device Vendor Class
+category: Services|Micrium|USB
+quality: deprecated
+source:
+  - path: platform/micrium_os/usb/source/device/class/usbd_vendor.c
+include:
+  - path: platform/micrium_os
+    file_list:
+      - path: usb/include/device/usbd_vendor.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: USB_DEV_VENDOR
+provides:
+  - name: usbd_class_vendor
+  - name: usbd_class
+    allow_multiple: true
+requires:
+  - name: usbd

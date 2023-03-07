@@ -1,0 +1,20 @@
+id: micriumos_net_app_ftp_client
+label: Network Suite - FTP client
+package: micrium-tcpx
+description: Micrium OS Network TFTP client
+category: Services|Micrium|Network Suite
+quality: production
+component_root_path: platform/micrium_os/net
+source:
+  - path: source/ftp/ftp_client.c
+include:
+  - path: include
+    file_list:
+      - path: ftp_client.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: NET_FTP_CLIENT
+provides:
+  - name: net_app_ftp_client
+requires:
+  - name: net

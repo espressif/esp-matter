@@ -1,0 +1,52 @@
+package: Zigbee
+description: This component implements the client-side functionality of the Smart Energy
+  1.2 Device Management cluster.
+id: zigbee_device_management_client
+label: Device Management Client
+category: Zigbee|Cluster Library|Smart Energy
+quality: production
+provides:
+   - name: "zigbee_device_management_client"
+source:
+  - path: protocol/zigbee/app/framework/plugin/device-management-client/device-management-client.c
+  - path: protocol/zigbee/app/framework/plugin/device-management-client/device-management-client-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/device-management-client/device-management-client-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/device-management-client
+    file_list:
+      - path: device-management-client.h
+  - path: protocol/zigbee/app/framework/plugin/device-management-server
+    file_list:
+      - path: device-management-common.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_device_management_client
+  - name: cluster_service
+    value:
+       cluster_id: "0x0708"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "CLIENT"
+       service_function: "emberAfDeviceManagementClusterClientCommandParse"
+  - name: cli_group
+    value:
+      group: plugin
+      name: device-management-client
+      help: device-management-client related commands.
+  - name: cli_command
+    value:
+      group: device-management-client
+      name: print
+      handler: emAfDeviceManagementClientCliPrint
+      help: Prints the info relevant to device management.
+  - name: cluster_functions
+    value:
+      cluster_name: DeviceManagement
+      cluster_id: 0x708
+      cluster_type: client
+      init_function: emberAfDeviceManagementClusterClientInitCallback
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/device-management-client

@@ -1,0 +1,244 @@
+%%{
+/*
+ * Copyright (c) 2014-2016, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+    var LoggerIdle = xdc.module("ti.uia.sysbios.LoggerIdle");
+
+    var bytesInEventWord = 4;
+    var timestampSize = 2;    // Number of words in timestamp
+
+    var LoggerIdle_module = "ti_uia_sysbios_LoggerIdle_Module__state__V";
+
+    /* Number of 32-bit words in event without including the timestamp */
+    var write0EventSize = 2;
+    var write1EventSize = 3;
+    var write2EventSize = 4;
+    var write4EventSize = 6;
+    var write8EventSize = 10;
+
+    var eventType = (LoggerIdle.isTimestampEnabled) ?
+            "ti_uia_runtime_EventHdr_HdrType_EventWithTimestamp" :
+            "ti_uia_runtime_EventHdr_HdrType_Event";
+
+    function bits32ToBits8(bits32)
+    {
+        return ("((" + bits32 + ") * 4)");
+    }
+
+%%}
+%/*
+% *  ======== LoggerIdle.xdt ========
+% */
+
+#include <xdc/std.h>
+#include <xdc/runtime/Log.h>
+#include <xdc/runtime/Types.h>
+#include <xdc/runtime/Timestamp.h>
+#include <xdc/runtime/Startup.h>
+#include <xdc/runtime/System.h>
+#include <ti/sysbios/hal/Hwi.h>
+#include <ti/uia/runtime/EventHdr.h>
+#include <ti/uia/sysbios/LoggerIdle.h>
+
+
+/*
+ *  ======== isThereSpace =========
+ *  Returns true if there is enough space to write to the buffer.
+ */
+static inline Bool ti_uia_sysbios_LoggerIdle_isThereSpace(
+        UInt32 *writePtr, SizeT numBits32ToWrite)
+{
+    UInt32 space;
+
+    space = `LoggerIdle_module`.bufferRead - writePtr;
+
+    if (`LoggerIdle_module`.empty ||
+            (writePtr > `LoggerIdle_module`.bufferRead)) {
+        return (TRUE);
+    }
+
+    /*
+     *  bufferRead >= writePtr
+     *  Check the condition
+     *      LoggerIdle_module->bufferRead <= LoggerIdle_module->bufferEnd
+     *  (It seems like that condition cannot exist when this function is
+     *  called.)
+     */
+    if ((space >= numBits32ToWrite) && (`LoggerIdle_module`.bufferRead <=
+                `LoggerIdle_module`.bufferEnd)) {
+        return (TRUE);
+    }
+
+    return (FALSE);
+}
+
+/*
+ *  ======== writeStart =========
+ *  Writes the event header, timestamp and event and module ID for all events.
+ *
+ *  Checks if the event should be written and writes the event header.
+ *  If timestamps are enabled it writes timestamp, and for all types
+ *  write the event and module ID. Returns false if the event is not written.
+ */
+static inline UInt32 *ti_uia_sysbios_LoggerIdle_writeStart(
+        UInt32 *writePtr, SizeT numBits32ToWrite,
+        xdc_runtime_Log_Event evt, xdc_runtime_Types_ModuleId mid)
+{
+% if (LoggerIdle.isTimestampEnabled) {
+    xdc_runtime_Types_Timestamp64 tstamp;
+%}
+    UInt32 totalBits32ToWrite = numBits32ToWrite;
+    UInt32 length;
+
+    /* Logger is disabled. */
+    if (!`LoggerIdle_module`.enabled) {
+        return NULL;
+    }
+
+% if (LoggerIdle.isTimestampEnabled) {
+    totalBits32ToWrite += `timestampSize`;
+%}
+
+    /* Check if there's enough space for event with timestamp */
+    while (!ti_uia_sysbios_LoggerIdle_isThereSpace(writePtr,
+                   totalBits32ToWrite)) {
+        /*
+         *  Adjust bufferRead to the next record that won't be
+         *  overwritten
+         */
+        xdc_runtime_Assert_isTrue(`LoggerIdle_module`.bufferRead <
+                `LoggerIdle_module`.bufferPad, NULL);
+
+        /* Length in 32-bit words */
+        length = ti_uia_runtime_EventHdr_getLength(
+            *(`LoggerIdle_module`.bufferRead)) / 4;
+
+        `LoggerIdle_module`.bufferRead += length;
+
+        if ((Bits32)`LoggerIdle_module`.bufferRead >
+                (Bits32)`LoggerIdle_module`.bufferPad) {
+            `LoggerIdle_module`.bufferRead = `LoggerIdle_module`.idleBuffer;
+        }
+    }
+
+    /* Write timestamp event header */
+    *writePtr++ = ti_uia_runtime_EventHdr_genEventHdrWord1(
+                `bits32ToBits8("totalBits32ToWrite")`,
+                `LoggerIdle_module`.eventSequenceNum,
+                `eventType`);
+
+% if (LoggerIdle.isTimestampEnabled) {
+    /* Get and write the timestamp */
+    xdc_runtime_Timestamp_get64(&tstamp);
+    *writePtr++ = tstamp.lo;
+    *writePtr++ = tstamp.hi;
+%}
+
+    return (writePtr);
+}
+
+/*
+ *  ======== writeFinish =========
+ *  Incrememnt write pointer and mark buffer not empty.
+ */
+static inline Void ti_uia_sysbios_LoggerIdle_writeFinish(UInt32 *writePtr)
+{
+    /*
+     *  If write pointer is inside the pad, set the pad pointer to its
+     *  location and set the write pointer to the begining of the buffer.
+     *  Else increment the pointer normally.
+     */
+    if (writePtr > `LoggerIdle_module`.bufferEnd) {
+        `LoggerIdle_module`.bufferPad = (writePtr - 1);
+        `LoggerIdle_module`.bufferWrite = `LoggerIdle_module`.idleBuffer;
+    }
+    else {
+        `LoggerIdle_module`.bufferWrite = writePtr;
+    }
+    `LoggerIdle_module`.empty = FALSE;      /* Buffer now has data in it */
+}
+
+/*
+ *  ======== LoggerIdle_write =========
+ */
+Void ti_uia_sysbios_LoggerIdle_write__I(xdc_runtime_Log_Event evt,
+        xdc_runtime_Types_ModuleId mid,
+        IArg numEventWords,
+        IArg a1, IArg a2, IArg a3, IArg a4,
+        IArg a5, IArg a6, IArg a7, IArg a8)
+{
+    UInt key = ti_sysbios_hal_Hwi_disable();
+    register UInt32 *writePtr = `LoggerIdle_module`.bufferWrite;
+
+%   // NOTE: We are incrementing the count before checking that the logger
+%   // is enabled.  This will advance the sequence number even if the events
+%   // are not logged.
+    `LoggerIdle_module`.eventSequenceNum++;
+
+    if (writePtr == NULL) {
+        ti_sysbios_hal_Hwi_restore(key);
+        return;
+    }
+
+    if (!`LoggerIdle_module`.enabled) {
+        ti_sysbios_hal_Hwi_restore(key);
+        return;
+    }
+
+    writePtr = ti_uia_sysbios_LoggerIdle_writeStart(writePtr,
+            numEventWords, evt, mid);
+
+    *writePtr++ = xdc_runtime_Types_makeEvent(xdc_runtime_Log_getEventId(evt),
+            mid);
+
+    if (numEventWords >= `write1EventSize`) {
+        *writePtr++ = a1;
+
+        if (numEventWords >= `write2EventSize`) {
+            *writePtr++ = a2;
+
+            if (numEventWords >= `write4EventSize`) {
+                *writePtr++ = a3;
+                *writePtr++ = a4;
+
+                if (numEventWords == `write8EventSize`) {
+                    *writePtr++ = a5;
+                    *writePtr++ = a6;
+                    *writePtr++ = a7;
+                    *writePtr++ = a8;
+                }
+            }
+        }
+    }
+
+    ti_uia_sysbios_LoggerIdle_writeFinish(writePtr);
+
+    ti_sysbios_hal_Hwi_restore(key);
+}

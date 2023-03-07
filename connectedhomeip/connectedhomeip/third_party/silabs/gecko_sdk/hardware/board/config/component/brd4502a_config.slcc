@@ -1,0 +1,15 @@
+!!omap
+- id: brd4502a_config
+- label: brd4502a config
+- description: Configuration files for BRD4502A
+- package: platform
+- category: Platform|Board|Config
+- quality: production
+- ui_hints:
+    visibility: never
+- root_path: hardware/board/config
+- requires:
+  - name: brd4502a
+- provides:
+  - name: brd4502a_config
+- config_file: []

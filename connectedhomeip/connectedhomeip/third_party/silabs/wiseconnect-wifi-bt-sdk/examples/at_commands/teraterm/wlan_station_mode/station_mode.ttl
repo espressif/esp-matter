@@ -1,0 +1,140 @@
+TRUE = 1
+FALSE = 0
+
+
+message = 'This example demonstrates WLAN Station functionality 1. Run this demo 2. Run TCP client on your PC '
+messagebox message ''
+
+send '|'
+wait 'U'
+sendln 'U'
+mpause 200
+sendln '1'
+wait 'Loading Done'
+message = 'Firmware Loading Done Successfully' 
+messagebox message ''
+
+sendln 'at+rsi_opermode=0,1,4,0'
+wait 'OK' 'ERROR'
+if result == 2 then
+    goto error
+else 
+    messagebox 'Opermode Successful' ''
+endif
+
+inputbox 'Enter the band 0. 2.4GHz 1. 5GHz' 'BAND' 
+BAND = inputstr
+
+sendln 'at+rsi_band='BAND
+wait 'OK' 'ERROR'
+if result == 2 then
+    goto error
+else 
+    messagebox 'Band Successful' ''
+endif
+
+sendln 'at+rsi_init'
+setdebug 2     ; output is in binary, so best to display in hex format
+wait '4F 4B' '45 52' ; 'OK' or 'ER'
+setdebug 0
+if result == 2 then
+    goto error
+else 
+    messagebox 'Init Successful' ''
+endif
+
+inputbox 'Enter SSID to scan:' 'SSID' 
+SSID = inputstr
+
+attempts = 5
+:scan_again
+sendln 'at+rsi_scan=0,'SSID
+mpause 1000
+wait 'OK' 'ERROR'
+if result == 2 then
+    if attempts > 0 then
+        attempts = attempts - 1
+        goto scan_again
+    else
+        message = "Could not find "
+        strconcat message SSID
+        messagebox message "AP Not Found"
+        goto error
+    endif
+else 
+    messagebox 'Scan Successful' ''
+endif
+
+inputbox 'Enter PSK' 'PSK' 
+PSK = inputstr
+
+strlen PSK 
+;messagebox result ''
+int2str valstr result 
+;messagebox valstr "str"
+sendln 'at+rsi_PSK=4,'valstr','PSK
+wait 'OK' 'ERROR'
+if result == 2 then
+    goto error
+endif
+
+sendln 'at+rsi_join='SSID',0,2,6' ; Note: This only works for WPA2
+wait 'OKC' 'ERROR'
+if result == 2 then
+    goto error
+else 
+    messagebox 'Join Successful' ''
+endif
+
+; Request IP via DHCP.  Extract the IP address to present to user
+sendln 'at+rsi_ipconf=9'
+setdebug 2     ; output is in binary, so best to display in hex format
+waitregex '4F 4B .{18}(\h{2}) (\h{2}) (\h{2}) (\h{2})' '45 52' ; 'OK' or 'ER'
+setdebug 0
+if result == 2 then
+    goto error
+else 
+    messagebox 'Ipconfig Successful' ''
+endif
+
+strdim address_str 4
+
+; Add '$' so str2int will recognize these as hex values
+for i 0 3
+    address_str[i] = '$'
+next
+
+strconcat address_str[0] groupmatchstr1
+strconcat address_str[1] groupmatchstr2
+strconcat address_str[2] groupmatchstr3
+strconcat address_str[3] groupmatchstr4
+ 
+intdim address_int 4
+
+; convert hex strings to decimal ints
+for i 0 3
+    str2int address_int[i] address_str[i]
+next
+
+; convert decimal ints to decimal strings
+sprintf '%d.%d.%d.%d' address_int[0] address_int[1] address_int[2] address_int[3]
+address = inputstr
+
+pause 2
+sendln 'at+rsi_ltcp=5001'
+wait 'OK' 'ERROR'
+if result == 2 then
+    goto error
+endif
+
+message = 'Device is now listening for TCP Connections on address '
+strconcat message address
+strconcat message ' port 5001'
+messagebox message 'SUCCESS'
+goto endscript
+
+:error
+messagebox 'An error occurred, Please check your configuration and try again' 'ERROR'
+
+:endscript
+end

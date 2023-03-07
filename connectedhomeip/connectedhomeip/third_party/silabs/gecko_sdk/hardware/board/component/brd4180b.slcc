@@ -1,0 +1,62 @@
+!!omap
+- id: brd4180b
+- label: BRD4180B
+- package: platform
+- description: Board support for BRD4180B.
+- category: Platform|Board|Radio Board
+- quality: production
+- requires:
+  - name: efr32mg21a020f1024im32
+  - name: brd4180b_config
+  - name: hardware_board_mainboard
+- provides:
+  - name: brd4180b
+  - name: hardware_board
+  - name: hardware_board_rb
+  - name: hardware_board_from_stk
+  - name: hardware_board_from_slwrb4180b
+  - name: hardware_board_from_slwstk6006a
+  - name: hardware_board_has_vcom
+  - name: hardware_board_has_hfxo
+  - name: hardware_board_has_lfxo
+  - name: hardware_board_supports_rf_band_2400
+  - name: hardware_board_supports_1_rf_band
+  - name: hardware_board_default_rf_band
+  - name: hardware_board_default_rf_band_2400
+- recommends:
+  - id: brd4001a
+  - id: iostream_usart
+    instance:
+    - vcom
+  - id: bootloader_uart_driver
+  - id: ls013b7dh03
+  - id: memlcd_usart
+  - id: simple_led
+    instance:
+    - led0
+    - led1
+  - id: skrhaae010
+  - id: simple_button
+    instance:
+    - btn0
+    - btn1
+  - id: bootloader_spi_peripheral_usart_driver
+- template_contribution:
+  - name: board_default_init
+    value: sl_board_disable_vcom()
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD4180B"'
+  - name: SL_BOARD_REV
+    value: '"A03"'
+- tag:
+  - board:pn:BRD4180
+  - board:variant:B
+  - board:revision:A03
+  - board:device:efr32mg21a020f1024im32
+  - hardware:has:vcom
+  - hardware:has:pti
+  - hardware:has:display:ls013b7dh03
+  - hardware:has:led:2
+  - hardware:has:joystick:skrhaae010
+  - hardware:has:button:2

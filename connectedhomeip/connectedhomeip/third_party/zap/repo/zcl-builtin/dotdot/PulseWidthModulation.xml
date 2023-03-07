@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:derivedCluster
+  xmlns:zcl="http://zigbee.org/zcl/clusters"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:type="http://zigbee.org/zcl/types"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd"
+  id="001C" revision="1" name="PulseWidthModulation" inheritsFrom="Level">
+  <classification picsCode="PWM" />
+  <server>
+    <attributes>
+      <attribute ref="MinLevel" required="true" />
+      <attribute ref="MaxLevel" default="100" required="true">
+        <restriction>
+          <type:maxInclusive value="100" />
+        </restriction>
+      </attribute>
+      <attribute ref="CurrentFrequency" required="true" />
+      <attribute ref="MinFrequency" required="true" />
+      <attribute ref="MaxFrequency" required="true" />
+    </attributes>
+    <commands>
+      <command ref="MoveToClosestFrequency" required="true" />
+    </commands>
+  </server>
+</zcl:derivedCluster>

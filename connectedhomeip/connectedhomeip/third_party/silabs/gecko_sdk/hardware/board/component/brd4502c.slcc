@@ -1,0 +1,31 @@
+!!omap
+- id: brd4502c
+- label: BRD4502C
+- package: platform
+- description: Board support for BRD4502C.
+- category: Platform|Board|Radio Board
+- quality: production
+- requires:
+  - name: ezr32wg330f256r60
+  - name: brd4502c_config
+  - name: hardware_board_mainboard
+- provides:
+  - name: brd4502c
+  - name: hardware_board
+  - name: hardware_board_rb
+  - name: hardware_board_from_stk
+  - name: hardware_board_from_slwrb4502c
+  - name: hardware_board_from_slwstk6220a
+- recommends:
+  - id: brd4001a
+- template_contribution: []
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD4502C"'
+  - name: SL_BOARD_REV
+    value: '"A01"'
+- tag:
+  - board:pn:BRD4502
+  - board:variant:C
+  - board:revision:A01
+  - board:device:ezr32wg330f256r60

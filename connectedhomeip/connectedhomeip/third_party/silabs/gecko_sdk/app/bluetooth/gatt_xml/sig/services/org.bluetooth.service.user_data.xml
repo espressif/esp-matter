@@ -1,0 +1,608 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2014 Bluetooth SIG, Inc. All rights reserved. -->
+<Service xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.service.user_data" uuid="181C" name="User Data" last-modified="2014-06-10" approved="Yes">
+    <InformativeText>
+        <Abstract>This service exposes user-related data in the sports and fitness environment. This allows remote access and update of user data by a Client as well as the synchronization of user data between a Server and a Client.</Abstract>
+        <Summary>The User Data Service (UDS) exposes user-related data in the sports and fitness environment. This allows remote access and update of user data by a Client as well as the synchronization of user data between a Server and a Client.</Summary>
+	</InformativeText>
+    <Dependencies>
+        <Dependency>This service is not dependent upon any other services.</Dependency>
+	</Dependencies>
+    <GATTRequirements>
+        <Requirement subProcedure="Write Characteristic Value">Mandatory</Requirement>
+        <Requirement subProcedure="Read Long Characteristic Value">C.1</Requirement>
+        <Requirement subProcedure="Write Long Characteristic Value">C.1</Requirement>
+        <Requirement subProcedure="Notification">C.2</Requirement>
+        <Requirement subProcedure="Indication">Mandatory</Requirement>
+	</GATTRequirements>
+    <Note>
+        C.1: Mandatory if the Server exposes at least one characteristic with a size that may exceed the available space needed for the GATT operations of the minimum default ATT_MTU, otherwise optional (e.g. utf8-based characteristics).
+        C.2: Mandatory if the Server supports the update of one or more UDS Characteristic values (e.g. through its User Interface or any other out-of-band mechanism), otherwise, excluded from this version of the service.
+	</Note>
+    <Transports>
+        <Classic>true</Classic>
+        <LowEnergy>true</LowEnergy>
+        <HighSpeed>true</HighSpeed>
+	</Transports>
+    <ErrorCodes>
+       <ErrorCode name="User Data Access Not Permitted" code="0x80" Description="The user data access is not permitted (i.e. the user has not given consent in order to access these data)." ></ErrorCode>
+	</ErrorCodes>
+    <Characteristics>
+        <Characteristic type="org.bluetooth.characteristic.first_name" name="First Name">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.last_name" name="Last Name">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.email_address" name="Email Address">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.age" name="Age">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.date_of_birth" name="Date of Birth">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.gender" name="Gender">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.weight" name="Weight">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+           <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.height" name="Height">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.vo2_max" name="VO2 Max">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.heart_rate_max" name="Heart Rate Max">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.resting_heart_rate" name="Resting Heart Rate">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.maximum_recommended_heart_rate" name="Maximum Recommended Heart Rate">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.aerobic_threshold" name="Aerobic Threshold">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.anaerobic_threshold" name="Anaerobic Threshold">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.sport_type_for_aerobic_and_anaerobic_thresholds" name="Sport Type for Aerobic and Anaerobic Thresholds">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.date_of_threshold_assessment" name="Date of Threshold Assessment">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.waist_circumference" name="Waist Circumference">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.hip_circumference" name="Hip Circumference">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.fat_burn_heart_rate_lower_limit" name="Fat Burn Heart Rate Lower Limit">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.fat_burn_heart_rate_upper_limit" name="Fat Burn Heart Rate Upper Limit">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.aerobic_heart_rate_lower_limit" name="Aerobic Heart Rate Lower Limit">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.aerobic_heart_rate_upper_limit" name="Aerobic Heart Rate Upper Limit">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.anaerobic_heart_rate_lower_limit" name="Anaerobic Heart Rate Lower Limit">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.anaerobic_heart_rate_upper_limit" name="Anaerobic Heart Rate Upper Limit">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.five_zone_heart_rate_limits" name="Five Zone Heart Rate Limits">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.three_zone_heart_rate_limits" name="Three Zone Heart Rate Limits">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.two_zone_heart_rate_limit" name="Two Zone Heart Rate Limit">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.database_change_increment" name="Database Change Increment">
+            <InformativeText>C.3: The Notify property is Mandatory if the Server supports the update of one or more UDS Characteristic values (e.g. through its User Interface or any other out-of-band mechanism), otherwise, excluded from this version of the service.</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>C3</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory when written</Security>
+            </SecuritySettings>
+            <Descriptors>
+                <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+                    <Requirement>if_characteristic_supported</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>Mandatory</Write>
+					</Properties>
+				</Descriptor>
+                </Descriptors>
+            
+            
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.user_index" name="User Index">
+            <Requirement>Mandatory</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Excluded</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.user_control_point" name="User Control Point">
+            <Requirement>Mandatory</Requirement>
+            <Properties>
+                <Read>Excluded</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Mandatory</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+            <Descriptors>
+                <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+                    <Requirement>if_characteristic_supported</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>Mandatory</Write>
+					</Properties>
+				</Descriptor>
+                </Descriptors>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.language" name="Language">
+            <InformativeText>C.1:At least one UDS Characteristic shall be exposed.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <SecuritySettings>
+                 <Security>Encryption is mandatory</Security>
+            </SecuritySettings>
+		</Characteristic>
+	</Characteristics>
+    </Service>

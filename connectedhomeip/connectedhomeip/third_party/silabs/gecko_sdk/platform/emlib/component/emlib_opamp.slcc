@@ -1,0 +1,51 @@
+id: emlib_opamp
+label: OPAMP
+package: platform
+description: >
+  Operational Amplifier (OPAMP) peripheral API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_opamp.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_opamp.h"
+provides:
+  - name: emlib_opamp
+requires:
+  - name: device
+  - name: device_has_opamp
+    condition:
+    - device_series_0
+  - name: device_has_vdac
+    condition:
+    - device_series_1
+  - name: device_has_vdac
+    condition:
+    - device_series_2
+  - name: emlib_common
+  - name: emlib_system
+  - name: cmsis_core
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efm32gg/group-opamp
+      condition: [device_sdid_72]
+    - page: emlib/api/efm32tg/group-opamp
+      condition: [device_sdid_73]
+    - page: emlib/api/efm32lg/group-opamp
+      condition: [device_sdid_74]
+    - page: emlib/api/efr32xg12/group-opamp
+      condition: [device_sdid_84]
+    - page: emlib/api/efr32xg13/group-opamp
+      condition: [device_sdid_89]
+    - page: emlib/api/efr32xg14/group-opamp
+      condition: [device_sdid_95]
+    - page: emlib/api/efm32gg11/group-gpio
+      condition: [device_sdid_100]
+    - page: emlib/api/efm32tg11/group-gpio
+      condition: [device_sdid_103]
+    - page: emlib/api/efm32gg12/group-gpio
+      condition: [device_sdid_106]

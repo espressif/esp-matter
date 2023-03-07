@@ -1,0 +1,36 @@
+id: zigbee_security_link_keys
+label: Security link keys
+package: Zigbee
+category: Zigbee|Stack
+quality: production
+
+description: Provides management of APS link keys in the key table.  It is used by a trust center (coordinator) to manage link keys of devices in the network, or by non-trust-center devices wishing to manage partner link keys.
+
+provides:
+  - name: zigbee_security_link_keys
+
+requires:
+  - name: zigbee_security_link_keys_implementation
+  - name: zigbee_security_link_keys_library
+    condition:
+     - zigbee_force_libraries
+
+recommends:
+  - id: zigbee_security_link_keys_source
+
+include:
+  - path: protocol/zigbee/stack/include
+    file_list:
+      - path: security.h
+
+config_file:
+  - path: protocol/zigbee/stack/config/component_config/sl_zigbee_security_link_keys_config.h
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_security_link_keys
+
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/security-link-keys

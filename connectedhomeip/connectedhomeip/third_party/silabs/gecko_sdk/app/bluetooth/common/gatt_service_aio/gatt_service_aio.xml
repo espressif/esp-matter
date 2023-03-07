@@ -1,0 +1,44 @@
+<gatt>
+  <!--Automation IO-->
+  <service advertise="false" id="automation_io" name="Automation IO" requirement="mandatory" sourceId="org.bluetooth.service.automation_io" type="primary" uuid="1815">
+    <informativeText>Abstract:  The Automation IO service is used to expose the analog inputs/outputs and digital input/outputs of a generic IO module (IOM).  </informativeText>
+    
+    <!--Digital-->
+    <characteristic id="aio_digital_in" name="Digital" sourceId="org.bluetooth.characteristic.digital" uuid="2A56">
+      <informativeText>Summary:  The Digital characteristic is used to expose and change the state of an IO Module's digital signals.  </informativeText>
+      <value length="1" type="user" variable_length="false"/>
+      <properties notify="true" notify_requirement="optional" read="true" read_requirement="optional"/>
+      
+      <!--Characteristic Presentation Format-->
+      <descriptor name="Characteristic Presentation Format" sourceId="org.bluetooth.descriptor.gatt.characteristic_presentation_format" uuid="2904">
+        <properties const="true" const_requirement="optional" read="true" read_requirement="mandatory"/>
+        <value length="7" type="hex" variable_length="false">1B000027010200</value>
+      </descriptor>
+      
+      <!--Number of Digitals-->
+      <descriptor id="aio_num_of_digitals_in" name="Number of Digitals" sourceId="org.bluetooth.descriptor.number_of_digitals" uuid="2909">
+        <properties read="true" read_requirement="mandatory"/>
+        <value length="1" type="hex" variable_length="false"/>
+      </descriptor>
+    </characteristic>
+    
+    <!--Digital-->
+    <characteristic id="aio_digital_out" name="Digital" sourceId="org.bluetooth.characteristic.digital" uuid="2A56">
+      <informativeText>Summary:  The Digital characteristic is used to expose and change the state of an IO Module's digital signals.  </informativeText>
+      <value length="1" type="user" variable_length="false"/>
+      <properties read="true" read_requirement="optional" write="true" write_requirement="optional"/>
+      
+      <!--Characteristic Presentation Format-->
+      <descriptor name="Characteristic Presentation Format" sourceId="org.bluetooth.descriptor.gatt.characteristic_presentation_format" uuid="2904">
+        <properties const="true" const_requirement="optional" read="true" read_requirement="mandatory"/>
+        <value length="7" type="hex" variable_length="false">1B000027010100</value>
+      </descriptor>
+      
+      <!--Number of Digitals-->
+      <descriptor id="aio_num_of_digitals_out" name="Number of Digitals" sourceId="org.bluetooth.descriptor.number_of_digitals" uuid="2909">
+        <properties read="true" read_requirement="mandatory"/>
+        <value length="1" type="hex" variable_length="false"/>
+      </descriptor>
+    </characteristic>
+  </service>
+</gatt>

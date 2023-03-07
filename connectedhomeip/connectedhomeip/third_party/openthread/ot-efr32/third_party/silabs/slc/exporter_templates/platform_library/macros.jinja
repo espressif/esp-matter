@@ -1,0 +1,203 @@
+{% macro prepare_path(path) -%}
+    {%- set path = path | replace('\\', '/') | replace(' ', '\\ ') -%}
+
+    {#- Replace SDK_PATH with SILABS_GSDK_DIR #}
+    {%- set path = path | replace('(SDK_PATH)', '{SILABS_GSDK_DIR}') -%}
+
+    {#- Redirect OpenThread stack sources to the ot-efr32 openthread submodule #}
+    {%- set path = path | replace('${SILABS_GSDK_DIR}/util/third_party/openthread', '${PROJECT_SOURCE_DIR}/openthread') -%}
+
+    {#- Redirect PAL sources to the ot-efr32 PAL #}
+    {%- set path = path | replace('${SILABS_GSDK_DIR}/protocol/openthread/platform-abstraction/efr32', '${PROJECT_SOURCE_DIR}/src/src') -%}
+    {%- if not (("-Map=" in path) or ("--specs" in path) or ("linkerfile.ld" in path)) -%}
+{{path}}
+    {%- endif -%}
+{%- endmacro %}
+
+{%- macro compile_flags() %}
+    {#- --- C flags --- #}
+    {%- if EXT_CFLAGS %}
+    # GNU C flags
+    $<$<COMPILE_LANG_AND_ID:C,GNU>:
+    {%- for flag in EXT_CFLAGS %}
+        "SHELL:{{flag}}"
+    {%- endfor %}
+    >  {#- Close the genex #}
+    {%- endif -%} {# EXT_CFLAGS #}
+
+    {#- --- CXX flags --- #}
+    {%- if EXT_CXXFLAGS %}
+    # GNU CXX flags
+    $<$<COMPILE_LANG_AND_ID:CXX,GNU>:
+    {%- for flag in EXT_CXXFLAGS %}
+        "SHELL:{{flag}}"
+    {%- endfor %}
+    >  {#- Close the genex #}
+    {%- endif %} {# EXT_CXXFLAGS #}
+{%- endmacro %}
+
+{%- macro print_linker_flags() -%}
+    {#- --- Default flags --- #}
+    {%- if EXT_LD_FLAGS %}
+        {%- for flag in EXT_LD_FLAGS %}
+            {%- set flag = prepare_path(flag) -%}
+            {%- if flag %}
+    {{ flag }}
+            {%- endif %}
+        {%- endfor %}
+    {%- endif %}
+
+    {#- --- Debug build --- #}
+    {%- if EXT_DEBUG_LD_FLAGS %}
+    $<$<CONFIG:DEBUG>:
+        {%- for flag in EXT_DEBUG_LD_FLAGS %}
+            {%- set flag = prepare_path(flag) -%}
+            {%- if flag %}
+        {{ flag }}
+            {%- endif %}
+        {%- endfor %}
+    >
+    {%- endif %}
+
+    {#- --- Release build --- #}
+    {%- if EXT_RELEASE_LD_FLAGS %}
+    $<$<CONFIG:RELEASE>:
+        {%- for flag in EXT_RELEASE_LD_FLAGS %}
+            {%- set flag = prepare_path(flag) -%}
+            {%- if flag %}
+        {{ flag }}
+            {%- endif %}
+        {%- endfor %}
+    >
+    {%- endif %}
+{%- endmacro %}
+
+{%- macro print_all_jinja_vars() %}
+# ==============================================================================
+#  C_CXX_INCLUDES
+# ==============================================================================
+    {%- for include in C_CXX_INCLUDES %}
+#    {{ prepare_path(include) | replace('-I', '') | replace('\"', '') }}
+    {%- endfor %}
+
+# ==============================================================================
+#  SOURCES
+# ==============================================================================
+    {%- for source in (ALL_SOURCES | sort) %}
+#    {{ prepare_path(source) }}
+    {%- endfor %}
+
+# ==============================================================================
+#  C_CXX_DEFINES
+# ==============================================================================
+    {%- for define in C_CXX_DEFINES %}
+#    {{define}}={{C_CXX_DEFINES[define]}}
+    {%- endfor %}
+
+# ==============================================================================
+#  SYS_LIBS+USER_LIBS
+# ==============================================================================
+    {%- for lib_name in SYS_LIBS+USER_LIBS %}
+#    {{ prepare_path(lib_name) | replace('\\', '/') | replace(' ', '\\ ') | replace('"','') }}
+    {%- endfor %}
+
+# ==============================================================================
+#  EXT_CFLAGS
+# ==============================================================================
+    {%- for flag in EXT_CFLAGS %}
+#    {{flag}}
+    {%- endfor %}
+
+# ==============================================================================
+#  EXT_DEBUG_CFLAGS
+# ==============================================================================
+    {%- for flag in EXT_DEBUG_CFLAGS %}
+#    {{flag}}
+    {%- endfor %}
+
+# ==============================================================================
+#  EXT_RELEASE_CFLAGS
+# ==============================================================================
+    {%- for flag in EXT_RELEASE_CFLAGS %}
+#    {{flag}}
+    {%- endfor %}
+
+# ==============================================================================
+#  EXT_CXX_FLAGS
+# ==============================================================================
+    {%- for flag in EXT_CXX_FLAGS %}
+#    {{flag}}
+    {%- endfor %}
+
+# ==============================================================================
+#  EXT_DEBUG_CXX_FLAGS
+# ==============================================================================
+    {%- for flag in EXT_DEBUG_CXX_FLAGS %}
+#    {{flag}}
+    {%- endfor %}
+
+# ==============================================================================
+#  EXT_RELEASE_CXX_FLAGS
+# ==============================================================================
+    {%- for flag in EXT_RELEASE_CXX_FLAGS %}
+#    {{flag}}
+    {%- endfor %}
+
+# ==============================================================================
+#  EXT_ASM_FLAGS
+# ==============================================================================
+    {%- for flag in EXT_ASM_FLAGS %}
+#    {{flag}}
+    {%- endfor %}
+
+# ==============================================================================
+#  EXT_DEBUG_ASM_FLAGS
+# ==============================================================================
+    {%- for flag in EXT_DEBUG_ASM_FLAGS %}
+#    {{flag}}
+    {%- endfor %}
+
+# ==============================================================================
+#  EXT_RELEASE_ASM_FLAGS
+# ==============================================================================
+    {%- for flag in EXT_RELEASE_ASM_FLAGS %}
+#    {{flag}}
+    {%- endfor %}
+
+# ==============================================================================
+#  EXT_LD_FLAGS
+# ==============================================================================
+    {%- for flag in EXT_LD_FLAGS %}
+#    {{flag}}
+    {%- endfor %}
+
+# ==============================================================================
+#  EXT_DEBUG_LD_FLAGS
+# ==============================================================================
+    {%- for flag in EXT_DEBUG_LD_FLAGS %}
+#    {{flag}}
+    {%- endfor %}
+
+# ==============================================================================
+#  EXT_RELEASE_LD_FLAGS
+# ==============================================================================
+    {%- for flag in EXT_RELEASE_LD_FLAGS %}
+#    {{flag}}
+    {%- endfor %}
+{% endmacro %}
+
+{%- macro openthread_device_type() -%}
+    {%- for define in C_CXX_DEFINES %}
+        {%- if ( ("OPENTHREAD_RADIO" == define) or ("OPENTHREAD_FTD" == define) or ("OPENTHREAD_MTD" == define) or ("OPENTHREAD_COPROCESSOR" == define) ) %}
+        {{define}}={{C_CXX_DEFINES[define]}}
+        {%- endif %}
+    {%- endfor %}
+{%- endmacro %}
+
+{%- macro dict_contains_key_starting_with(dict, pattern) %}
+{%- for key in dict %}
+    {%- if key.startswith(pattern) %}
+    {{key}}={{dict[key]}}
+    {%- endif %}
+{%- endfor %}
+{%- endmacro %}

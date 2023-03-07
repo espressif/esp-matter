@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/build.dtd -->
+<package name="gnu.targets.arm" version="1, 0, 0" producerId="undefined">
+    <units>
+        <interface name="ITarget"/>
+        <interface name="IM"/>
+        <module name="GCArmv5T"/>
+        <module name="GCArmv6"/>
+        <module name="GCArmv7A"/>
+        <module name="GCArmv7AF"/>
+        <module name="M0"/>
+        <module name="M3"/>
+        <module name="M4"/>
+        <module name="M4F"/>
+        <module name="M33F"/>
+        <module name="A8F"/>
+        <module name="A9F"/>
+        <module name="A15F"/>
+        <module name="A53F"/>
+        <module name="A72F"/>
+    </units>
+    <sources>
+        <srcFile name="linkcmd.xdt"/>
+        <srcFile name="linkcmd_bm_v7a.xdt"/>
+        <srcFile name="linkUtils.xs"/>
+        <srcFile name="std.h"/>
+        <srcFile name="select.h"/>
+    </sources>
+    <configscripts>
+    </configscripts>
+    <makefiles>
+        <srcFile name="package.mak" src="package.bld"/>
+        <srcFile name="package/package.xdc.dep" src="package.xdc"/>
+        <srcFile name="package/package.cfg.dep" src="package.xdc"/>
+        <srcFile name="package/rel/gnu_targets_arm.tar.dep" src="package/rel/gnu_targets_arm.xdc.inc"/>
+    </makefiles>
+    <targets>
+    </targets>
+    <libraries>
+    </libraries>
+    <configurations>
+    </configurations>
+    <executables>
+    </executables>
+    <tests>
+    </tests>
+    <releases relDir="package/rel/">
+    <release name="gnu_targets_arm"
+        pname="gnu_targets_arm.tar"
+        label="default"
+    >
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+        <file name="runh"/>
+        <file name="_utils.xs"/>
+        <file name="linkcmd.xdt"/>
+        <file name="linkcmd_bm_v7a.xdt"/>
+        <file name="linkUtils.xs"/>
+        <file name="std.h"/>
+        <file name="select.h"/>
+        <file name="package/package.cfg.xdc.inc"/>
+    </release>
+    </releases>
+    <repositories>
+    </repositories>
+</package>

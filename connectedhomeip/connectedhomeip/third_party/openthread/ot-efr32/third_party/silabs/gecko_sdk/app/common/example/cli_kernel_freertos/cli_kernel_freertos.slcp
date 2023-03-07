@@ -1,0 +1,48 @@
+project_name: cli_kernel_freertos
+package: platform
+quality: production
+label: Platform - CLI Kernel FreeRTOS
+description: > 
+  This example project demonstrates how to use the CLI driver using a FreeRTOS Kernel.
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]
+source:
+  - path: app.c
+  - path: main.c
+  - path: cli.c
+include:
+  - path: .
+    file_list:
+    - path: app.h
+    - path: cli.h
+component:
+  - id: sl_system
+  - id: device_init
+  - id: freertos
+  - id: cli
+    instance: [inst]
+  - id: simple_led
+    instance: 
+        - led0
+        - led1
+  - id: sleeptimer
+  - id: iostream_stdlib_config
+  - id: iostream_retarget_stdio
+  - id: iostream_recommended_stream
+define:
+  - name: DEBUG_EFM
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+tag:
+  - hardware:component:led:2+
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1

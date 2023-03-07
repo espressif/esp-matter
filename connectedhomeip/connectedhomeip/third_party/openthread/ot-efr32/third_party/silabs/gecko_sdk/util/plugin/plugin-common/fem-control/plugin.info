@@ -1,0 +1,20 @@
+pluginDirectory=./
+
+plugin(fem-control) {
+  name=FEM Driver
+  category=HAL
+  root=./
+
+  architecture=efr32,simulation
+  description=API for configuring FEM control signals via PRS.
+
+  fem-control.c
+
+  providedApis=fem-control
+  api.fem-control.header=fem-control.h
+
+  setup(hwConfig) {
+    dependentHwConfModules=FEM
+  }
+}
+

@@ -1,0 +1,33 @@
+id: emlib_eusart
+label: EUSART
+package: platform
+description: >
+  Universal asynchronous receiver/transmitter (EUSART) peripheral API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_eusart.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_eusart.h"
+    - path: "em_eusart_compat.h"
+provides:
+  - name: emlib_eusart
+requires:
+  - name: device
+  - name: device_has_euart
+  - name: emlib_common
+  - name: emlib_cmu
+  - name: emlib_system
+  - name: cmsis_core
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efr32xg22/group-eusart
+      condition: [device_sdid_205]
+    - page: emlib/api/efr32xg23/group-eusart
+      condition: [device_sdid_210]
+    - page: emlib/api/efr32xg24/group-eusart
+      condition: [device_sdid_215]

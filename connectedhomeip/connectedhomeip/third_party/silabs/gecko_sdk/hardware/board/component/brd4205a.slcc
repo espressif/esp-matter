@@ -1,0 +1,71 @@
+!!omap
+- id: brd4205a
+- label: BRD4205A
+- package: platform
+- description: Board support for BRD4205A.
+- category: Platform|Board|Radio Board
+- quality: production
+- requires:
+  - name: zgm230sa27hnn
+  - name: brd4205a_config
+  - name: hardware_board_mainboard
+- provides:
+  - name: brd4205a
+  - name: hardware_board
+  - name: hardware_board_rb
+  - name: hardware_board_from_stk
+  - name: hardware_board_has_si70xx
+  - name: hardware_board_has_tempsensor
+  - name: hardware_board_has_vcom
+  - name: hardware_board_has_spiflash
+  - name: hardware_board_supports_rf_band_868
+  - name: hardware_board_supports_rf_band_914
+  - name: hardware_board_supports_rf_band_924
+  - name: hardware_board_supports_3_rf_bands
+  - name: hardware_board_default_rf_band
+  - name: hardware_board_default_rf_band_868
+- recommends:
+  - id: brd4002a
+  - id: iostream_eusart
+    instance:
+    - vcom
+  - id: bootloader_uart_driver
+  - id: i2cspm
+    instance:
+    - sensor
+  - id: ls013b7dh03
+  - id: memlcd_eusart
+  - id: simple_led
+    instance:
+    - led0
+    - led1
+    - led2
+    - led3
+    - led4
+  - id: simple_button
+    instance:
+    - btn0
+    - btn1
+  - id: mx25_flash_shutdown_eusart
+  - id: bootloader_spi_controller_usart_driver
+  - id: bootloader_spi_peripheral_usart_driver
+- template_contribution:
+  - name: board_default_init
+    value: sl_board_disable_vcom()
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD4205A"'
+  - name: SL_BOARD_REV
+    value: '"A00"'
+- tag:
+  - board:pn:BRD4205
+  - board:variant:A
+  - board:revision:A00
+  - board:device:zgm230sa27hnn
+  - hardware:has:vcom
+  - hardware:has:pti
+  - hardware:has:sensor:si7021
+  - hardware:has:display:ls013b7dh03
+  - hardware:has:led:5
+  - hardware:has:button:2
+  - hardware:has:memory:spi:mx25r8035f

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2016 Silicon Labs, http://www.silabs.com -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Silicon Labs OTA Control" type="com.silabs.characteristic.ota_control" uuid="F7BF3564-FB6D-4E53-88A4-5E37E0326063" last-modified="2016-11-15">
+    <InformativeText>
+        <Abstract>Silicon Labs OTA Control.</Abstract>
+    </InformativeText>
+    <Value>
+        <Field name="Control">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+        </Field>
+    </Value>
+</Characteristic>

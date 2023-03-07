@@ -1,0 +1,16 @@
+{
+  "packages": [
+    {
+      "path": "infra/rbe/client/${platform}",
+      "platforms": [
+        "linux-amd64",
+        "mac-amd64",
+        "mac-arm64",
+        "windows-amd64"
+      ],
+      "tags": [
+        "re_client_version:0.72.0.b874055-gomaip"
+      ]
+    }
+  ]
+}

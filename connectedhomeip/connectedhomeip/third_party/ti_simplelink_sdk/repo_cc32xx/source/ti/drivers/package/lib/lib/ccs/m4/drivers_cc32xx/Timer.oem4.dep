@@ -1,0 +1,24 @@
+package/lib/lib/ccs/m4/drivers_cc32xx/Timer.oem4: Timer.c /opt/conan/ticodegen/include/stdbool.h /opt/conan/ticodegen/include/stdint.h /opt/conan/ticodegen/include/stdlib.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/HwiP.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/SemaphoreP.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/ClockP.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/Timer.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/timer/TimerSupport.h /opt/conan/ticodegen/include/_ti_config.h /opt/conan/ticodegen/include/_stdint40.h /opt/conan/ticodegen/include/sys/stdint.h /opt/conan/ticodegen/include/sys/cdefs.h /opt/conan/ticodegen/include/sys/_types.h /opt/conan/ticodegen/include/xlocale/_stdlib.h /opt/conan/ticodegen/include/stddef.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/Power.h /opt/conan/ticodegen/include/linkage.h /opt/conan/ticodegen/include/machine/_stdint.h /opt/conan/ticodegen/include/sys/_stdint.h /opt/conan/ticodegen/include/machine/_types.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/utils/List.h /opt/conan/ticodegen/include/machine/_limits.h 
+Timer.c:
+/opt/conan/ticodegen/include/stdbool.h:
+/opt/conan/ticodegen/include/stdint.h:
+/opt/conan/ticodegen/include/stdlib.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/HwiP.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/SemaphoreP.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/ClockP.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/Timer.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/timer/TimerSupport.h:
+/opt/conan/ticodegen/include/_ti_config.h:
+/opt/conan/ticodegen/include/_stdint40.h:
+/opt/conan/ticodegen/include/sys/stdint.h:
+/opt/conan/ticodegen/include/sys/cdefs.h:
+/opt/conan/ticodegen/include/sys/_types.h:
+/opt/conan/ticodegen/include/xlocale/_stdlib.h:
+/opt/conan/ticodegen/include/stddef.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/Power.h:
+/opt/conan/ticodegen/include/linkage.h:
+/opt/conan/ticodegen/include/machine/_stdint.h:
+/opt/conan/ticodegen/include/sys/_stdint.h:
+/opt/conan/ticodegen/include/machine/_types.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/utils/List.h:
+/opt/conan/ticodegen/include/machine/_limits.h:

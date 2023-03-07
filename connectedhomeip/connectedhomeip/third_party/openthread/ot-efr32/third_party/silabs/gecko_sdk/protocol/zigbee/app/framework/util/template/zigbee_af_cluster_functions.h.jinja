@@ -1,0 +1,123 @@
+/*******************************************************************************
+ * @file zigbee_af_cluster_functions.h
+ * @brief Cluster action callback definitions
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2020 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * The licensor of this software is Silicon Laboratories Inc. Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement. This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
+ *
+ ******************************************************************************/
+//
+// *** Generated file. Do not edit! ***
+//
+
+#include "af.h"
+
+{# FUNCTION DECLARATIONS #}
+{% for cluster in cluster_functions -%}
+{% if cluster['init_function'] | length  -%}
+void {{ cluster['init_function'] }} (uint8_t endpoint);
+{% endif -%}
+{% if cluster['attribute_changed_function'] | length  -%}
+void {{ cluster['attribute_changed_function'] }} (uint8_t endpoint, EmberAfAttributeId attributeId);
+{% endif -%}
+{% if cluster['default_response_function'] | length  -%}
+void {{ cluster['default_response_function'] }} (uint8_t endpoint, uint8_t commandId, EmberAfStatus status);
+{% endif -%}
+{% if cluster['message_sent_function'] | length  -%}
+void {{ cluster['message_sent_function'] }} (EmberOutgoingMessageType type, uint16_t indexOrDestination, EmberApsFrame * apsFrame, uint16_t msgLen, uint8_t * message, EmberStatus status);
+{% endif -%}
+{% if cluster['manufacturer_specific_attribute_changed_function'] | length  -%}
+void {{ cluster['manufacturer_specific_attribute_changed_function'] }} (uint8_t endpoint, EmberAfAttributeId attributeId, uint16_t manufacturerCode);
+{% endif -%}
+{% if cluster['pre_attribute_changed_function'] | length  -%}
+EmberAfStatus {{ cluster['pre_attribute_changed_function'] }} (uint8_t endpoint, EmberAfAttributeId attributeId, EmberAfAttributeType attributeType, uint8_t size, uint8_t * value);
+{% endif -%}
+{% endfor -%}
+
+{# BUILD  FUNCTION STRUCTURES ARRAY #}
+// Array of cluster function (aka cluster action callbacks) structures.
+// Last entry is a dummy, otherwise an empty array would fail IAR builds.
+#define GENERATED_FUNCTION_STRUCTURES_ARRAY  { \
+  {% for cluster in cluster_functions -%}
+  {% set cid = cluster['cluster_id'] -%}
+  {% set side = '' -%}
+  {% set bit = '' -%}
+  {% set func = '' -%}
+  {% if cluster['cluster_type'] == "server"  -%}
+    {% set side = 'CLUSTER_MASK_SERVER' -%}
+  {% elif cluster['cluster_type'] == "client"  -%}
+    {% set side = 'CLUSTER_MASK_CLIENT' -%}
+  {% endif -%}
+  {% if cluster['init_function'] | length  -%}
+    {% set bit = 'CLUSTER_MASK_INIT_FUNCTION' -%}
+    {% set func = cluster['init_function'] -%}
+  {% elif cluster['attribute_changed_function'] | length  -%}
+    {% set bit = 'CLUSTER_MASK_ATTRIBUTE_CHANGED_FUNCTION' -%}
+    {% set func = cluster['attribute_changed_function'] -%}
+  {% elif cluster['default_response_function'] | length  -%}
+    {% set bit = 'CLUSTER_MASK_DEFAULT_RESPONSE_FUNCTION' -%}
+    {% set func = cluster['default_response_function'] -%}
+  {% elif cluster['message_sent_function'] | length  -%}
+    {% set bit = 'CLUSTER_MASK_MESSAGE_SENT_FUNCTION' -%}
+    {% set func = cluster['message_sent_function'] -%}
+  {% elif cluster['manufacturer_specific_attribute_changed_function'] | length  -%}
+    {% set bit = 'CLUSTER_MASK_MANUFACTURER_SPECIFIC_ATTRIBUTE_CHANGED_FUNCTION' -%}
+    {% set func = cluster['manufacturer_specific_attribute_changed_function'] -%}
+  {% elif cluster['pre_attribute_changed_function'] | length  -%}
+    {% set bit = 'CLUSTER_MASK_PRE_ATTRIBUTE_CHANGED_FUNCTION' -%}
+    {% set func = cluster['pre_attribute_changed_function'] -%}
+  {% endif -%}
+  {% if func | length -%}
+  {\
+    {{ cid }}u,\
+    ({{ side }} | {{ bit }}),\
+    (EmberAfGenericClusterFunction){{ func }}\
+  },\
+  {% endif -%}
+  {% endfor -%}
+  { 0x8000u,\
+    0x00u,\
+    (EmberAfGenericClusterFunction)((void *)0)\
+  }\
+}
+
+{# TEST FOR DUPLICATE CALLBACKS  #}
+// The following structure is not used anywhere in the code, its purpose is 
+// compile-time detection of duplicate cluster action callbacks.
+// Only a single instance of a given callback type (e.g. default_response_function)
+// can exist for a given cluster and side (client/server).
+// A compilation error in this structure indicates a duplicate "cluster_functions"
+// template contribution.
+{% if (cluster_functions | length) %}
+struct unused_structure {
+{% for cluster in cluster_functions -%}
+
+{% if cluster['init_function'] | length  -%}
+int clust_{{cluster['cluster_id']}}_{{cluster['cluster_type']}}_init_function; 
+{% endif -%}
+{% if cluster['attribute_changed_function'] | length  -%}
+int clust_{{cluster['cluster_id']}}_{{cluster['cluster_type']}}_attribute_changed_function; 
+{% endif -%}
+{% if cluster['default_response_function'] | length  -%}
+int clust_{{cluster['cluster_id']}}_{{cluster['cluster_type']}}_default_response_function;
+{% endif -%}
+{% if cluster['message_sent_function'] | length  -%}
+int clust_{{cluster['cluster_id']}}_{{cluster['cluster_type']}}_message_sent_function;
+{% endif -%}
+{% if cluster['manufacturer_specific_attribute_changed_function'] | length  -%}
+int clust_{{cluster['cluster_id']}}_{{cluster['cluster_type']}}_manufacturer_specific_attribute_changed_function;
+{% endif -%}
+{% if cluster['pre_attribute_changed_function'] | length  -%}
+int clust_{{cluster['cluster_id']}}_{{cluster['cluster_type']}}_pre_attribute_changed_function;
+{% endif -%}
+{% endfor -%}
+};
+{% endif %}

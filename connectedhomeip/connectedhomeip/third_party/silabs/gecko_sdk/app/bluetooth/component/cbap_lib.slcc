@@ -1,0 +1,49 @@
+id: cbap_lib
+label: Certificate Based Authentication and Pairing Library
+package: Bluetooth
+description: >
+  Handles the certificate and OOB data authentication.
+category: Bluetooth|Middleware
+quality: production
+ui_hints:
+  visibility: never
+root_path: app/bluetooth/common/cbap_lib
+include:
+  - path: .
+    file_list:
+      - path: sl_bt_cbap_lib.h
+library:
+  - path: "lib/cbap_CM33_gcc.a"
+    condition:
+      - "toolchain_gcc"
+      - "cortexm33"
+  - path: "lib/cbap_CM33_iar.a"
+    condition:
+      - "toolchain_iar"
+      - "cortexm33"
+requires:
+  - name: nvm3_lib
+  - name: nvm3_default
+  - name: mbedtls_asn1
+  - name: mbedtls_core
+  - name: mbedtls_ecc
+  - name: mbedtls_ecdsa
+  - name: mbedtls_hash
+  - name: mbedtls_pem
+  - name: mbedtls_sha1
+  - name: mbedtls_sha256
+  - name: mbedtls_x509
+  - name: psa_crypto
+  - name: psa_crypto_cmac
+  - name: psa_crypto_ccm
+  - name: psa_crypto_cipher_ecb
+  - name: psa_crypto_common
+  - name: psa_crypto_ecdh
+  - name: psa_crypto_ecdsa
+  - name: psa_crypto_ecc_secp256r1
+  - name: psa_its
+  - name: psa_crypto_hmac
+  - name: psa_crypto_sha256
+  - name: psa_crypto_sha1
+provides:
+  - name: cbap_lib

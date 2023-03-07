@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="com.silabs.sdk.exx32.external.lwip" label="lwIP" contentRoot="$(sdkInstallationPath:default())/util/third_party/lwIP">
+  <property key="category" value="efm32|Third party"/>
+  <includePath uri="lwip/src/include" />
+  <includePath uri="lwip-contrib/apps/chargen" />
+  <includePath uri="lwip-contrib/apps/httpserver" />
+  <includePath uri="lwip-contrib/apps/netio" />
+  <includePath uri="lwip-contrib/apps/ping" />
+  <includePath uri="lwip-contrib/apps/rtp" />
+  <includePath uri="lwip-contrib/apps/shell" />
+  <includePath uri="lwip-contrib/apps/socket_examples" />
+  <includePath uri="lwip-contrib/apps/tcpecho" />
+  <includePath uri="lwip-contrib/apps/tcpecho_raw" />
+  <includePath uri="lwip-contrib/apps/udpecho" />
+  <includePath uri="lwip-contrib/ports/efm32/" />
+  <includePath uri="lwip-contrib/ports/efm32/include" />
+  <folder name="lwip" uri="lwip" />
+  <folder name="lwip-contrib" uri="lwip-contrib" />
+</project>

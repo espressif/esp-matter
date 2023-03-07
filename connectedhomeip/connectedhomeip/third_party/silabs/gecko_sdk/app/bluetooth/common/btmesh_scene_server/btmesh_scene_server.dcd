@@ -1,0 +1,10 @@
+[
+      {
+        "name": "Main",
+        "location": "0x0000",
+        "sig_models" : [
+          {"mid":"0x1203", "name":"Scene Server"},
+          {"mid":"0x1204", "name":"Scene Setup Server"}
+        ]
+      }
+]

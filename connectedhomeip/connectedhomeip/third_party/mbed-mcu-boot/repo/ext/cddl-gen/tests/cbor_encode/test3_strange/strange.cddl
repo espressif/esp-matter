@@ -1,0 +1,78 @@
+
+Numbers = [
+	one: 1,
+	minustwo: -2,
+	fourtoten: 4..10,
+	twobytes: uint .size 2,
+	onetofourbytes: uint .size 1..4,
+	minusfivektoplustwohundred: -5000..200,
+	fourbillion: 0xEE6B2800,
+	negint: nint,
+	posint: uint,
+	integer: #6.65535(int),
+]
+
+Strings = [
+	hello: "hello",
+	threehundrebytebstr: bstr .size 300,
+	#6.0(tentothirtybytetstr: tstr .size 10..30),
+	cborNumbers: bstr .cbor Numbers,
+	cborseqPrimitives: bstr .cborseq Primitives,
+	?optCborStrings: bstr .cbor Strings,
+]
+
+Primitives = [
+	booltrue: true,
+	boolfalse: false,
+	boolval: bool,
+	nilval: nil,
+]
+
+Optional = [
+	#6.10(boolval: bool),
+	?optbool: bool,
+	?opttwo: 2,
+	manduint: uint,
+	*multi8: 8,
+]
+
+Group = (1,-2)
+MultiGroup = +(3,-4)
+Union = Group / MultiGroup / (3,4) / "\"hello\""
+
+Map = {
+	listkey: [5,6] => bool,
+	union: (7=>uint) / (-8=>uint),
+	twotothree: 2**3 nil => bstr,
+}
+
+NestedListMap = [*{?1 => 4}]
+NestedMapListMap = {+[] => [*{}]}
+
+Level1 = [Level2]
+Level2 = [2**3Level3]
+Level3 = [4**5Level4]
+Level4 = [0]
+
+Range = [
+	?optMinus5to5: -5..5,
+	?optStr3to6: tstr .size 3..6,
+	+multi8: 8,
+	+multiHello: "hello",
+	+multi0to10: 0..10
+]
+
+ValueRange = [
+	greater10: uint .gt 10,
+	less1000: int .lt 1000,
+	greatereqmin10: int .ge -10,
+	lesseq1: uint .le 1,
+	equal42: uint .eq 42,
+	equalstrworld: tstr .eq "world",
+]
+
+SingleBstr = bstr
+
+SingleInt = 52
+
+SingleInt2 = uint .lt 10

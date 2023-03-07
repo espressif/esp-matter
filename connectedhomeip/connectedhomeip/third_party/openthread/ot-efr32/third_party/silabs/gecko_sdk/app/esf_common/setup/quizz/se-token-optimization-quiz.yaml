@@ -1,0 +1,23 @@
+###
+# quizz options to switch between SE Token Optimization and standard stack token mappings
+###
+
+qSeTokenOptimization: {
+  architecture: [efr32mg1b132f256gm32, efr32mg1b132f256gm48, efr32mg1b132f256gm48-gb868-pro2dual, efr32mg1b232f256gm32, efr32mg1b232f256gm48, efr32mg1b632f256gm32, efr32mg1b632f256im32, efr32mg1b732f256gm32, efr32mg1b732f256im32, efr32mg1p132f256gm32, efr32mg1p132f256gm48, efr32mg1p132f256gm48-brd4300b, efr32mg1p132f256gm48-gb868-pro2dual, efr32mg1p133f256gm48, efr32mg1p133f256gm48-gb868-native, efr32mg1p232f256gm32, efr32mg1p232f256gm48, efr32mg1p233f256gm48, efr32mg1p632f256im32, efr32mg1p732f256gm32, efr32mg1p732f256im32, efr32mg1v132f256gm32, efr32mg1p632f256gm32, efr32mg1v132f256gm48, efr32mg1v132f256gm48-gb868-pro2dual, efr32mg1b131f256gm32, efr32mg1b131f256gm48, efr32mg1b132f256gj43, efr32mg1b231f256gm32, efr32mg1b231f256gm48, efr32mg1b232f256gj43, efr32mg1b232f256im48, efr32mg1p131f256gm48, efr32mg1p132f256gj43, efr32mg1p231f256gm48, efr32mg1p232f256gj43, efr32mg1v131f256gm32, efr32mg1v131f256gm48, mgm111a256v2, mgm111e256v2],
+  description: "Do you wish to switch to an optimized token mapping for Smart Energy Commshub?",
+  useDefaultAnswerForUnmatchedArchitecture: true,
+  aSeTokenOptimizationNo: {
+    description: "No. Please use the standard token mapping.",
+    default: true,
+    replacement: [ smartEnergyStackTokens= ]
+  },
+  aSeTokenOptimationYes: {
+    description: "Yes. (note: this option disables gp, multi-network, and zll functionality)",
+    macros: [ -DSMART_ENERGY_STACK_TOKENS, ],
+    plugins: [ -zll-library, +zll-stub-library,
+               -gp-library, +gp-stub-library,
+               -multi-network-library, +multi-network-stub-library,
+               -multi-pan-library, +multi-pan-stub-library],
+    replacement: [smartEnergyStackTokens=-smart_energy_stack_tokens]
+  }
+}

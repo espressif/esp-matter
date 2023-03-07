@@ -1,0 +1,169 @@
+/***************************************************************************//**
+ * @file  zap-cluster-command-parser.c
+ * @brief This file contains a set of generated functions that parse the
+ * incomming zcl command messages.
+ * This file is generated. Do not update file manually.
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2020 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * The licensor of this software is Silicon Laboratories Inc. Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement. This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
+ *
+ ******************************************************************************/
+
+#include "sl_component_catalog.h"
+#ifdef SL_CATALOG_ZIGBEE_ZCL_FRAMEWORK_CORE_PRESENT
+
+#include <stdint.h>
+
+#include "af.h"
+#include "zap-type.h"
+#include "zap-cluster-command-parser.h"
+#include "sl_signature_decode.h"
+
+// Generated interface function
+static EmberAfStatus sli_do_decode(EmberAfClusterCommand *cmd,
+                                   const sl_signature_t sig,
+                                   uint8_t *outputBuffer) {
+  sl_signature_decode_status_t ret;
+  ret = sl_signature_decode(cmd->buffer, 
+                            cmd->bufLen, 
+                            cmd->payloadStartIndex, 
+                            sig, 
+                            outputBuffer);
+  if ( ret == SL_SIGNATURE_DECODE_OK ) {
+    return EMBER_ZCL_STATUS_SUCCESS;
+  } else {
+    return EMBER_ZCL_STATUS_MALFORMED_COMMAND;
+  }
+}
+
+{{#zcl_commands_with_arguments sortBy="signature"}}{{#if argCount }}
+{{#if isSignatureSimple}}
+// Signature for {{name}} command
+static const sl_signature_t sig_{{as_underscore_lowercase clusterName}}_cluster_{{as_underscore_lowercase name}}_command = sl_zcl_{{as_underscore_lowercase clusterName}}_cluster_{{as_underscore_lowercase name}}_command_signature;
+{{/if}}
+// Command parser for {{name}} command
+EmberAfStatus zcl_decode_{{as_underscore_lowercase clusterName}}_cluster_{{as_underscore_lowercase name}}_command (EmberAfClusterCommand * cmd, sl_zcl_{{as_underscore_lowercase clusterName}}_cluster_{{as_underscore_lowercase name}}_command_t *cmd_struct) {
+{{#if isSignatureSimple}}
+  // Use signature-decoding mechanism to parse this command.
+  return sli_do_decode(cmd, sig_{{as_underscore_lowercase clusterName}}_cluster_{{as_underscore_lowercase name}}_command, (uint8_t*)cmd_struct);
+{{else}}
+  // Use classic mechanism to parse this command.
+  uint16_t payloadOffset = cmd->payloadStartIndex;
+{{#if_command_fixed_length id}}
+  // Command is fixed length
+  if (cmd->bufLen < payloadOffset + {{command_arguments_total_length this.id}}u) {
+    return EMBER_ZCL_STATUS_MALFORMED_COMMAND;
+  }
+{{else}}
+  // Not a fixed length command
+{{/if_command_fixed_length}}
+{{#zcl_command_arguments}}
+{{#unless isArray}}
+{{!--Not a fixed length command and command argument always present--}}
+            
+{{#if_command_not_fixed_length_command_argument_always_present parent.id this}}
+  if (cmd->bufLen < payloadOffset + {{zcl_string_type_return type short_string="emberAfStringLength(cmd->buffer + payloadOffset) + 1u)" long_string="emberAfGetLongString(cmd->buffer + payloadOffset) + 2u)" default=""}}
+{{#unless (is_zcl_string type)}}
+{{as_underlying_zcl_type type array="" one_byte="1" two_byte="2" three_byte="3" four_byte="4" short_string="" long_string="" ten_byte="10" eleven_byte="11" twelve_byte="12" thirten_byte="13" fourteen_byte="14" fifteen_byte="15" sixteen_byte="16" struct="0" defaul="0" zclCharFormatter="true"}}u)
+{{/unless}} 
+  {
+    return EMBER_ZCL_STATUS_MALFORMED_COMMAND;
+  }
+{{/if_command_not_fixed_length_command_argument_always_present}}
+{{!--Close: Not a fixed length command and command argument always present--}}
+
+{{!--Not a fixed length command, command argument introduced in a specific zcl spec version but no present if conditions for the command argument--}}
+{{#if_command_arg_not_always_present_no_presentif this}}
+  // - Argument is not present in all versions.
+  if (cmd->bufLen < payloadOffset + {{zcl_string_type_return type short_string="emberAfStringLength(cmd->buffer + payloadOffset) + 1u)" long_string="emberAfGetLongString(cmd->buffer + payloadOffset) + 2u)" default=""}}
+{{#unless (is_zcl_string type)}}
+{{as_underlying_zcl_type type array="" one_byte="1" two_byte="2" three_byte="3" four_byte="4" short_string="" long_string="" ten_byte="10" eleven_byte="11" twelve_byte="12" thirten_byte="13" fourteen_byte="14" fifteen_byte="15" sixteen_byte="16" struct="0" default="0" zclCharFormatter="true"}}u)
+{{/unless}} 
+  { 
+    cmd_struct->{{as_symbol label}} = {{as_underlying_zcl_type type array="NULL" one_byte="0xFF" two_byte="0xFFFF" three_byte="0xFFFFFFFF" four_byte="0xFFFFFFFF" five_byte="NULL" six_byte="NULL" seven_byte="NULL" eight_byte="NULL" nine_byte="NULL" short_string="NULL" long_string="NULL" ten_byte="NULL" eleven_byte="NULL" twelve_byte="NULL" thirten_byte="NULL" fourteen_byte="NULL" fifteen_byte="NULL" sixteen_byte="NULL" struct="NULL" default="NULL" zclCharFormatter="true"}};
+  } else {
+{{/if_command_arg_not_always_present_no_presentif}}
+{{!--Close: Not a fixed length command, command argument introduced in a specific zcl spec version but no present if conditions for the command argument--}}
+
+{{!--Not a fixed length command, command argument introduced in a specific zcl spec and present if conditions are present for the command argument--}}
+{{#if_command_arg_not_always_present_with_presentif this}}
+    // - Argument is conditionally present based on expression: {{add_prefix_to_all_strings presentIf "cmd_struct->"}}
+    // - Argument is not present in all versions
+    if (cmd->bufLen < payloadOffset + {{zcl_string_type_return type short_string="emberAfStringLength(cmd->buffer + payloadOffset) + 1u ||" long_string="emberAfGetLongString(cmd->buffer + payloadOffset) + 2u ||" default=""}}
+{{#unless (is_zcl_string type)}}
+{{as_underlying_zcl_type type array="" one_byte="1" two_byte="2" three_byte="3" four_byte="4" short_string="" long_string="" ten_byte="10" eleven_byte="11" twelve_byte="12" thirten_byte="13" fourteen_byte="14" fifteen_byte="15" sixteen_byte="16" struct="0" default="0" zclCharFormatter="true"}}u ||
+{{/unless}} !({{add_prefix_to_all_strings presentIf "cmd_struct->"}})) 
+    { 
+      cmd_struct->{{as_symbol label}} = {{as_underlying_zcl_type type array="NULL" one_byte="0xFF" two_byte="0xFFFF" three_byte="0xFFFFFFFF" four_byte="0xFFFFFFFF" five_byte="NULL" six_byte="NULL" seven_byte="NULL" eight_byte="NULL" nine_byte="NULL" short_string="NULL" long_string="NULL" ten_byte="NULL" eleven_byte="NULL" twelve_byte="NULL" thirten_byte="NULL" fourteen_byte="NULL" fifteen_byte="NULL" sixteen_byte="NULL" struct="NULL" default="NULL" zclCharFormatter="true"}};
+    } 
+    else 
+    {
+{{/if_command_arg_not_always_present_with_presentif}}
+{{!--Close: Not a fixed length command, command argument introduced in a specific zcl spec and present if conditions are present for the command argument--}}
+{{!--Not a fixed length command, command argument present in all zcl specifications and present if conditions are present for the command argument--}}
+{{#if_command_arg_always_present_with_presentif this}}
+      // - Argument is conditionally present based on expression: {{add_prefix_to_all_strings presentIf "cmd_struct->"}}
+      if (!({{add_prefix_to_all_strings presentIf "cmd_struct->"}})) { 
+        cmd_struct->{{as_symbol label}} = {{as_underlying_zcl_type type array="NULL" one_byte="0xFF" two_byte="0xFFFF" three_byte="0xFFFFFFFF" four_byte="0xFFFFFFFF" five_byte="NULL" six_byte="NULL" seven_byte="NULL" eight_byte="NULL" nine_byte="NULL" short_string="NULL" long_string="NULL" ten_byte="NULL" eleven_byte="NULL" twelve_byte="NULL" thirten_byte="NULL" fourteen_byte="NULL" fifteen_byte="NULL" sixteen_byte="NULL" struct="NULL" default="NULL" zclCharFormatter="true"}};
+      } else {
+{{/if_command_arg_always_present_with_presentif}}
+{{!--Close: Not a fixed length command, command argument present in all zcl specifications and present if conditions are present for the command argument--}}
+        cmd_struct->{{as_symbol label}} = {{as_underlying_zcl_type type 
+                                    array="cmd->buffer + payloadOffset;" 
+                                    one_byte="sli_decode_parse_one_byte(cmd, payloadOffset);"
+                                    two_byte="sli_decode_parse_two_bytes(cmd, payloadOffset);"
+                                    three_byte="sli_decode_parse_three_bytes(cmd, payloadOffset);"
+                                    four_byte="sli_decode_parse_four_bytes(cmd, payloadOffset);"
+                                    short_string="sli_decode_string(cmd, payloadOffset);"
+                                    long_string="sli_decode_long_string(cmd, payloadOffset);"
+                                    eight_byte="sli_decode_bytes(cmd, payloadOffset);"
+                                    sixteen_byte="sli_decode_bytes(cmd, payloadOffset);"
+                                    struct="sli_decode_bytes(cmd, payloadOffset);"
+                                    default="sli_decode_bytes(cmd, payloadOffset);"
+                                    zclCharFormatter="true"}}
+
+
+{{#unless (is_last_element index count)}}
+        payloadOffset+= {{#if (is_zcl_string type)}}{{zcl_string_type_return type short_string="emberAfStringLength(cmd->buffer + payloadOffset) + 1u" long_string="emberAfGetLongString(cmd->buffer + payloadOffset) + 2u" default=""}}{{else}}{{as_underlying_zcl_type type zclCharFormatter="true"}}u{{/if}};
+{{/unless}}
+{{#if_command_arg_not_always_present_no_presentif this}}
+      }
+{{/if_command_arg_not_always_present_no_presentif}}
+{{#if_command_arg_not_always_present_with_presentif this}}
+    }
+{{/if_command_arg_not_always_present_with_presentif}}
+{{#if_command_arg_always_present_with_presentif this}}
+  }
+{{/if_command_arg_always_present_with_presentif}}
+{{/unless}}
+{{#if isArray}}
+{{#if ./presentIf}}
+  if ( {{add_prefix_to_all_strings presentIf "cmd_struct->"}} ) {
+    // Array is conditionally present based on expression: {{add_prefix_to_all_strings presentIf "cmd_struct->"}}
+{{/if}}
+    cmd_struct->{{as_symbol label}} = cmd->buffer + payloadOffset;
+{{#if ./countArg}}
+    payloadOffset += {{add_prefix_to_all_strings ./countArg "cmd_struct->"}} * sizeof({{as_underlying_type type}});
+{{/if}}
+{{#if ./presentIf}}
+  } else {
+    cmd_struct->{{as_symbol label}} = NULL;
+  } 
+{{/if}}
+{{/if}}
+{{/zcl_command_arguments}}
+  return EMBER_ZCL_STATUS_SUCCESS;
+{{/if}}
+} 
+
+{{/if}}{{/zcl_commands_with_arguments}}
+
+#endif //End of SL_CATALOG_ZIGBEE_ZCL_FRAMEWORK_CORE_PRESENT

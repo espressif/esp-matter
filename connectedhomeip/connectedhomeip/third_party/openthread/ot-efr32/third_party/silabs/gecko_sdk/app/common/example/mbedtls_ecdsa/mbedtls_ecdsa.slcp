@@ -1,0 +1,55 @@
+project_name: mbedtls_ecdsa
+package: platform
+quality: production
+label: Platform - mbedTLS ECDSA
+description: >
+  This example uses hardware accelerators on the supported device to perform ECDSA
+  digital signaturewith mbedTLS.
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+source:
+   - path: main.c
+   - path: app.c
+   - path: app_ecdsa.c
+   - path: dummy_entropy.c
+     unless: [device_series_2]
+include:
+   - path: .
+     file_list:
+     - path: app.h
+     - path: app_ecdsa.h
+readme:
+   - path: readme.md
+ui_hints:
+   highlight: readme.md
+component:
+   - id: emlib_cmu
+   - id: emlib_chip
+   - id: mbedtls_random
+   - id: mbedtls_ecdsa
+   - id: mbedtls_ccm
+   - id: mbedtls_slcrypto
+   - id: mbedtls_ecc_secp192r1
+   - id: mbedtls_ecc_secp256r1
+   - id: sl_system
+   - id: sleeptimer
+   - id: device_init
+   - id: iostream_retarget_stdio
+   - id: iostream_recommended_stream
+configuration:
+   - name: SL_BOARD_ENABLE_VCOM
+     value: 1
+   - name: SL_IOSTREAM_USART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+     value: "true"
+     condition: [iostream_usart]
+   - name: SL_IOSTREAM_UART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+     value: "true"
+     condition: [iostream_uart]     
+define:
+   - name: DEBUG_EFM

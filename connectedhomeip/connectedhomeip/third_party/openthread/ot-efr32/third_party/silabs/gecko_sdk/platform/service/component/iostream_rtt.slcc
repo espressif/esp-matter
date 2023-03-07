@@ -1,0 +1,39 @@
+id: iostream_rtt
+package: platform
+label: "IO Stream: RTT"
+description: IO Stream over SEGGER Real-Time Transfer (RTT) communication protocol.
+category: Services|IO Stream
+quality: production
+root_path: platform/service/iostream
+provides:
+  - name: iostream_rtt
+  - name: iostream_transport_core
+    allow_multiple: true
+  - name: iostream_transport
+    allow_multiple: true
+requires:
+  - name: segger_rtt
+  - name: iostream
+include:
+  - path: inc
+    file_list:
+      - path: sl_iostream_rtt.h
+source:
+  - path: src/sl_iostream_rtt.c
+template_contribution:
+  - name: iostream_instances
+    value: rtt
+  - name: iostream_handles
+    value: rtt
+  - name: event_handler
+    value:
+      event: iostream_instance_init
+      include: sl_iostream_rtt.h
+      handler: sl_iostream_rtt_init
+  - name: iostream_instance_info
+    value:
+      include: sl_iostream_rtt.h
+      handler: sl_iostream_instance_rtt_info
+documentation:
+    docset: gecko-platform
+    document: service/api/group-iostream-rtt

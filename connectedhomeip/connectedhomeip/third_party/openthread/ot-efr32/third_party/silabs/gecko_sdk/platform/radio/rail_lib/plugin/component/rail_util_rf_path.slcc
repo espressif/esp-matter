@@ -1,0 +1,45 @@
+id: rail_util_rf_path
+label: RAIL Utility, RF Path
+description: Utility to aid with RAIL RF Path Support (e.g., device-internal RF path, device-external antenna diversity)
+package: platform
+category: Platform|Radio
+quality: production
+requires:
+  - name: device
+  - name: rail_lib
+provides:
+  - name: rail_util_rf_path
+documentation:
+  docset: rail
+  document: rail-util-rf-path
+config_file:
+  - path: platform/radio/rail_lib/plugin/rail_util_rf_path/config/efr32xg21/sl_rail_util_rf_path_config.h
+    file_id: rail_util_rf_path_config
+    condition:
+      - device_series_2
+      - device_sdid_200
+  - path: platform/radio/rail_lib/plugin/rail_util_rf_path/config/efr32xg23/sl_rail_util_rf_path_config.h
+    file_id: rail_util_rf_path_config
+    condition:
+      - device_series_2
+      - device_sdid_210
+  - path: platform/radio/rail_lib/plugin/rail_util_rf_path/config/efr32xg25/sl_rail_util_rf_path_config.h
+    file_id: rail_util_rf_path_config
+    condition:
+      - device_series_2
+      - device_sdid_220
+include:
+  - path: platform/radio/rail_lib/plugin/rail_util_rf_path
+    file_list:
+      - path: sl_rail_util_rf_path.h
+source:
+  - path: platform/radio/rail_lib/plugin/rail_util_rf_path/sl_rail_util_rf_path.c
+template_contribution:
+  - name: event_handler
+    value:
+      event: stack_init
+      include: sl_rail_util_rf_path.h
+      handler: sl_rail_util_rf_path_init
+    priority: -9010
+  - name: component_catalog
+    value: rail_util_rf_path

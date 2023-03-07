@@ -1,0 +1,803 @@
+%%{
+/*
+ * Copyright (c) 2013-2018, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+
+    var LoggerStreamer2 = xdc.module("ti.uia.sysbios.LoggerStreamer2");
+
+    var bytesInPtr = Program.build.target.stdTypes.t_Ptr.size;
+
+    // Number of UArg's in UIAPacket header
+    var hdrOffsetInWords;
+
+    var eventType = "ti_uia_runtime_";
+    var snapshotEventType = "ti_uia_runtime_";
+
+    if (LoggerStreamer2.isTimestampEnabled) {
+        eventType += "EventHdr_HdrType_EventWithTimestamp";
+        snapshotEventType += "EventHdr_HdrType_EventWithSnapshotIdAndTimestamp";
+    }
+    else {
+        eventType += "EventHdr_HdrType_Event";
+        snapshotEventType += "EventHdr_HdrType_EventWithSnapshotId";
+    }
+
+    var bits8InTS = (LoggerStreamer2.isTimestampEnabled) ? 8 : 0;
+    var eventHdrWords;
+
+    if (bytesInPtr == 8) {
+        hdrOffsetInWords = 2;
+        eventHdrWords = (LoggerStreamer2.isTimestampEnabled) ? 2 : 1;
+    }
+    else {
+        hdrOffsetInWords = 4;
+        eventHdrWords = (LoggerStreamer2.isTimestampEnabled) ? 4 : 2;
+    }
+
+    // Bits8 in Timestamp + Bits8 in writeMemory + Bits8 in event header,
+    // converted to UArgs
+    var headerSizeUArg = (bits8InTS + 8 + 6 * bytesInPtr) / bytesInPtr;
+
+    // Size in words
+    var write0EventSize = eventHdrWords;
+    var write1EventSize = write0EventSize + 1;
+    var write2EventSize = write0EventSize + 2;
+    var write4EventSize = write0EventSize + 4;
+    var write8EventSize = write0EventSize + 8;
+
+    var write0EventSizeInBytes = write0EventSize * bytesInPtr;
+    var write1EventSizeInBytes = write1EventSize * bytesInPtr;
+    var write2EventSizeInBytes = write2EventSize * bytesInPtr;
+    var write4EventSizeInBytes = write4EventSize * bytesInPtr;
+    var write8EventSizeInBytes = write8EventSize * bytesInPtr;
+
+    function bits32ToMau(bits32)
+    {
+        return ("((" + bits32 + ") * sizeof(Bits32))");
+    }
+
+
+    function uargToMau(uarg)
+    {
+        return ("((" + uarg + ") * sizeof(UArg))");
+    }
+
+    function bits32ToBits8(bits32)
+    {
+        return ("((" + bits32 + ") * 4)");
+    }
+
+    function uargToBits8(uarg)
+    {
+        return ("((" + bits32 + ") * 4)");
+    }
+
+%%}
+%/*
+% *  ======== LoggerStreamer2.xdt ========
+% */
+
+#include <xdc/std.h>
+
+#include <xdc/runtime/Log.h>
+#include <xdc/runtime/Types.h>
+#include <xdc/runtime/Timestamp.h>
+#include <xdc/runtime/Startup.h>
+#include <xdc/runtime/System.h>
+#include <ti/sysbios/hal/Hwi.h>
+#include <ti/uia/runtime/EventHdr.h>
+#include <ti/uia/runtime/UIAPacket.h>
+#include <ti/uia/sysbios/LoggerStreamer2.h>
+
+#include <string.h>  /* For memcpy */
+
+#ifdef xdc_target__isaCompatible_64P
+#include <c6x.h>
+#endif
+
+%if (LoggerStreamer2.isBadPacketDetectionEnabled) {
+#include <stdio.h>
+%}
+
+UInt16 ti_uia_sysbios_LoggerStreamer2_uiaPacketSequence = 0;
+
+/*
+ *  ======== ti_uia_sysbios_LoggerStreamer2_fillInTimestamp =========
+ */
+%if (LoggerStreamer2.isTimestampEnabled) {
+static inline UInt32 *ti_uia_sysbios_LoggerStreamer2_fillInTimestamp(
+                      UInt32 *ptr)
+{
+    UInt32 *writePtr = (UInt32 *)ptr;
+
+#ifndef xdc_target__isaCompatible_64P
+    xdc_runtime_Types_Timestamp64 tstamp;
+
+    xdc_runtime_Timestamp_get64(&tstamp);
+    *(writePtr++) = tstamp.lo;
+    *(writePtr++) = tstamp.hi;
+#else
+    *(writePtr++) = TSCL;
+    *(writePtr++) = TSCH;
+#endif
+    return (writePtr);
+}
+%}
+
+/*
+ *  ======== LoggerStreamer2_fillInEventHdrSnapshot =========
+ */
+static inline UInt32 *ti_uia_sysbios_LoggerStreamer2_fillInEventHdrSnapshot(
+        UInt32 *writePtr, SizeT numBits8ToWrite, Bits32 serial,
+        xdc_runtime_Log_Event evt, xdc_runtime_Types_ModuleId mid)
+{
+    *(writePtr++) = ti_uia_runtime_EventHdr_genEventHdrWord1(numBits8ToWrite,
+            serial, `snapshotEventType`);
+%if (LoggerStreamer2.isTimestampEnabled == true) {
+    writePtr = (UInt32 *)ti_uia_sysbios_LoggerStreamer2_fillInTimestamp(writePtr);
+%}
+    *(writePtr++) = ((evt) & 0xffff0000) | mid;
+
+    return (writePtr);
+}
+
+/*
+ *  ======== ti_uia_sysbios_LoggerStreamer2_filterOutEvent ========
+ *  Returns TRUE if the event should be filtered out.
+ *  TODO - Might be more clearly written as 'passesFilter'?
+ */
+Bool ti_uia_sysbios_LoggerStreamer2_filterOutEvent__E(xdc_runtime_Diags_Mask mask)
+{
+%if (LoggerStreamer2.filterByLevel == true) {
+    /*
+     * If filtering for the event's diags category is currently
+     * set to level1...
+     */
+    if (ti_uia_sysbios_LoggerStreamer2_Module__state__V.level1 & mask) {
+        /* If the event is lower than level1, filter it out. */
+        return (xdc_runtime_Diags_compareLevels(
+                    xdc_runtime_Diags_getLevel(mask),
+                    xdc_runtime_Diags_LEVEL1));
+    }
+    /*
+     * If filtering for the event's diags category is currently
+     * set to level2...
+     */
+    else if (ti_uia_sysbios_LoggerStreamer2_Module__state__V.level2 & mask) {
+        /* If the event is lower than level2, filter it out. */
+        return (xdc_runtime_Diags_compareLevels(
+                    xdc_runtime_Diags_getLevel(mask),
+                    xdc_runtime_Diags_LEVEL2));
+    }
+    /*
+     * If filtering for the event's diags category is currently
+     * set to level3...
+     */
+    else if (ti_uia_sysbios_LoggerStreamer2_Module__state__V.level3 & mask) {
+        /* If the event is lower than level3, filter it out. */
+        return (xdc_runtime_Diags_compareLevels(
+                    xdc_runtime_Diags_getLevel(mask),
+                    xdc_runtime_Diags_LEVEL3));
+    }
+    /*
+     * Otherwise, the filter level must be level4, which means that events of
+     * all levels should be logged.
+     */
+    else {
+        return (FALSE);
+    }
+
+%}
+%else {
+    return (FALSE);
+%}
+}
+
+/*
+ *  ======== LoggerStreamer2_writeStart ========
+ */
+static inline UArg *ti_uia_sysbios_LoggerStreamer2_writeStart(
+        ti_uia_sysbios_LoggerStreamer2_Object *obj,
+        xdc_runtime_Log_Event evt, xdc_runtime_Types_ModuleId mid,
+        UInt16 numBytes)
+{
+    UInt32 *writePtr = (UInt32 *)obj->write;
+
+%if (LoggerStreamer2.testForNullWrPtr) {
+    if (writePtr == NULL) {
+        return (NULL);
+    }
+%}
+%if (LoggerStreamer2.supportLoggerDisable == true) {
+    if (!obj->enabled) {
+        return (NULL);
+    }
+%}
+
+%if (LoggerStreamer2.filterByLevel == true) {
+    if (ti_uia_sysbios_LoggerStreamer2_filterOutEvent__E(
+            xdc_runtime_Log_getMask(evt))) {
+        return (NULL);
+    }
+%}
+    obj->seqNumber++;
+
+    *writePtr++ = ti_uia_runtime_EventHdr_genEventHdrWord1(
+            numBytes, obj->seqNumber, `eventType`);
+
+%if (LoggerStreamer2.isTimestampEnabled == true) {
+
+    writePtr = ti_uia_sysbios_LoggerStreamer2_fillInTimestamp(writePtr);
+%}
+    *writePtr++ = xdc_runtime_Types_makeEvent(xdc_runtime_Log_getEventId(evt),
+            mid);
+
+    return ((UArg *)writePtr);
+}
+
+/*
+ *  ======== ti_uia_sysbios_LoggerStreamer2_writeFinish ========
+ */
+static inline Void ti_uia_sysbios_LoggerStreamer2_writeFinish(
+        ti_uia_sysbios_LoggerStreamer2_Object *obj,
+        UArg *writePtr)
+{
+    if (writePtr > obj->end) {
+        /* Set UIA packet length and sequence number */
+        ti_uia_runtime_UIAPacket_setEventLengthFast(
+                (ti_uia_runtime_UIAPacket_Hdr*)obj->buffer,
+                (UInt32)((writePtr - obj->buffer) * `bytesInPtr`));
+        ti_uia_runtime_UIAPacket_setSequenceCountFast(
+                (ti_uia_runtime_UIAPacket_Hdr*)obj->buffer,
+                ti_uia_sysbios_LoggerStreamer2_uiaPacketSequence);
+
+        /*
+         *  Check if there is garbage data after the UIA packet
+         *  and add an invalid UIA header
+         */
+        if (obj->end + `write8EventSize` - writePtr > 0) {
+            ti_uia_runtime_UIAPacket_setInvalidHdr((UInt32 *)writePtr,
+                    (obj->end + `write8EventSize` - writePtr) * `bytesInPtr`);
+        }
+
+%if (LoggerStreamer2.testForNullWrPtr) {
+        /* Set the module write ptr to NULL to prevent log calls in exchange */
+        obj->write = NULL;
+%}
+%if (LoggerStreamer2.isBadPacketDetectionEnabled) {
+        ti_uia_sysbios_LoggerStreamer2_validatePacket(obj, obj->buffer,
+                obj->bufSize);
+%}
+        /* Send filled buffer to exchange function */
+        obj->buffer = (UArg *)obj->exchangeFxn(obj, (Ptr)obj->buffer);
+
+        /* Update ptrs to new buffer */
+        obj->write = obj->buffer + `hdrOffsetInWords`;
+        obj->end = obj->buffer + (obj->bufSize / sizeof(UArg)) - `write8EventSize`;
+        ti_uia_sysbios_LoggerStreamer2_uiaPacketSequence++;
+    }
+    else {
+        obj->write = writePtr;
+    }
+}
+
+/*
+ *  ======== ti_uia_sysbios_LoggerStreamer2_write0__E =========
+ */
+Void ti_uia_sysbios_LoggerStreamer2_write0__E(
+                                    ti_uia_sysbios_LoggerStreamer2_Object *obj,
+                                    xdc_runtime_Log_Event evt,
+                                    xdc_runtime_Types_ModuleId mid)
+{
+    UInt key = ti_sysbios_hal_Hwi_disable();
+    UArg *writePtr;
+
+    writePtr = ti_uia_sysbios_LoggerStreamer2_writeStart(obj, evt, mid,
+            `write0EventSizeInBytes`);
+
+%if (LoggerStreamer2.testForNullWrPtr ||
+%        LoggerStreamer2.supportLoggerDisable ||
+%        LoggerStreamer2.filterByLevel) {
+    if (writePtr == NULL) {
+        ti_sysbios_hal_Hwi_restore(key);
+        return;
+    }
+%}
+
+    ti_uia_sysbios_LoggerStreamer2_writeFinish(obj, writePtr);
+
+    ti_sysbios_hal_Hwi_restore(key);
+}
+
+/*
+ *  ======== ti_uia_sysbios_LoggerStreamer2_write1__E =========
+ */
+Void ti_uia_sysbios_LoggerStreamer2_write1__E(
+                                    ti_uia_sysbios_LoggerStreamer2_Object *obj,
+                                    xdc_runtime_Log_Event evt,
+                                    xdc_runtime_Types_ModuleId mid,
+                                    IArg a1)
+{
+    UInt key = ti_sysbios_hal_Hwi_disable();
+    UArg *writePtr = obj->write;
+
+    writePtr = ti_uia_sysbios_LoggerStreamer2_writeStart(obj, evt, mid,
+            `write1EventSizeInBytes`);
+
+%if (LoggerStreamer2.testForNullWrPtr ||
+%        LoggerStreamer2.supportLoggerDisable ||
+%        LoggerStreamer2.filterByLevel) {
+    if (writePtr == NULL) {
+        ti_sysbios_hal_Hwi_restore(key);
+        return;
+    }
+%}
+
+    *writePtr++ = (UArg)a1;
+
+    ti_uia_sysbios_LoggerStreamer2_writeFinish(obj, writePtr);
+
+    ti_sysbios_hal_Hwi_restore(key);
+}
+
+/*
+ *  ======== ti_uia_sysbios_LoggerStreamer2_write2__E =========
+ */
+Void ti_uia_sysbios_LoggerStreamer2_write2__E(
+                                    ti_uia_sysbios_LoggerStreamer2_Object *obj,
+                                    xdc_runtime_Log_Event evt,
+                                    xdc_runtime_Types_ModuleId mid,
+                                    IArg a1, IArg a2)
+{
+    UInt key = ti_sysbios_hal_Hwi_disable();
+    UArg *writePtr = obj->write;
+
+    writePtr = ti_uia_sysbios_LoggerStreamer2_writeStart(obj, evt, mid,
+            `write2EventSizeInBytes`);
+
+%if (LoggerStreamer2.testForNullWrPtr ||
+%        LoggerStreamer2.supportLoggerDisable ||
+%        LoggerStreamer2.filterByLevel) {
+    if (writePtr == NULL) {
+        ti_sysbios_hal_Hwi_restore(key);
+        return;
+    }
+%}
+    *writePtr++ = (UArg)a1;
+    *writePtr++ = (UArg)a2;
+
+    ti_uia_sysbios_LoggerStreamer2_writeFinish(obj, writePtr);
+
+    ti_sysbios_hal_Hwi_restore(key);
+}
+
+/*
+ *  ======== ti_uia_sysbios_LoggerStreamer2_write4__E =========
+ */
+Void ti_uia_sysbios_LoggerStreamer2_write4__E(
+                                    ti_uia_sysbios_LoggerStreamer2_Object *obj,
+                                    xdc_runtime_Log_Event evt,
+                                    xdc_runtime_Types_ModuleId mid,
+                                    IArg a1, IArg a2, IArg a3, IArg a4)
+{
+    UInt key = ti_sysbios_hal_Hwi_disable();
+    UArg *writePtr = obj->write;
+
+    writePtr = ti_uia_sysbios_LoggerStreamer2_writeStart(obj, evt, mid,
+            `write4EventSizeInBytes`);
+
+%if (LoggerStreamer2.testForNullWrPtr ||
+%        LoggerStreamer2.supportLoggerDisable ||
+%        LoggerStreamer2.filterByLevel) {
+    if (writePtr == NULL) {
+        ti_sysbios_hal_Hwi_restore(key);
+        return;
+    }
+%}
+    *writePtr++ = (UArg)a1;
+    *writePtr++ = (UArg)a2;
+    *writePtr++ = (UArg)a3;
+    *writePtr++ = (UArg)a4;
+
+    ti_uia_sysbios_LoggerStreamer2_writeFinish(obj, writePtr);
+
+    ti_sysbios_hal_Hwi_restore(key);
+}
+
+
+/*
+ *  ======== ti_uia_sysbios_LoggerStreamer2_write8__E =========
+ */
+Void ti_uia_sysbios_LoggerStreamer2_write8__E(
+        ti_uia_sysbios_LoggerStreamer2_Object *obj,
+        xdc_runtime_Log_Event evt,
+        xdc_runtime_Types_ModuleId mid,
+        IArg a1, IArg a2, IArg a3, IArg a4,
+        IArg a5, IArg a6, IArg a7, IArg a8)
+{
+    UInt key = ti_sysbios_hal_Hwi_disable();
+    UArg *writePtr = obj->write;
+
+    writePtr = ti_uia_sysbios_LoggerStreamer2_writeStart(obj, evt, mid,
+            `write8EventSizeInBytes`);
+
+%if (LoggerStreamer2.testForNullWrPtr ||
+%        LoggerStreamer2.supportLoggerDisable ||
+%        LoggerStreamer2.filterByLevel) {
+    if (writePtr == NULL) {
+        ti_sysbios_hal_Hwi_restore(key);
+        return;
+    }
+%}
+    *writePtr++ = (UArg)a1;
+    *writePtr++ = (UArg)a2;
+    *writePtr++ = (UArg)a3;
+    *writePtr++ = (UArg)a4;
+    *writePtr++ = (UArg)a5;
+    *writePtr++ = (UArg)a6;
+    *writePtr++ = (UArg)a7;
+    *writePtr++ = (UArg)a8;
+
+    ti_uia_sysbios_LoggerStreamer2_writeFinish(obj, writePtr);
+
+    ti_sysbios_hal_Hwi_restore(key);
+}
+/*
+ *  ======== ti_uia_sysbios_LoggerStreamer2_setFilterLevel__E ========
+ *  Sets the filter level for the given diags level.
+ *
+ *  LoggerStreamer2 maintains a separate filter level for every diags category.
+ *  This is accomplished by maintaining three masks, one for each of the levels
+ *  1 - 3, wich store the diags categories which are currently at that level.
+ *  There is no mask for level4; if the diags category is not found in levels
+ *  1-3, it is  assumed that the filtering level is level4.
+ *
+ *  This API is an instance function per the IFilterLogger interface, but
+ *  LoggerStreamer2 only maintains module-wide filter levels.
+ *
+ *  TODO - Should this be conditional on the 'filterByLevel' config?
+ */
+Void ti_uia_sysbios_LoggerStreamer2_setFilterLevel__E(ti_uia_sysbios_LoggerStreamer2_Object *obj,
+                xdc_runtime_Diags_Mask mask,
+                xdc_runtime_Diags_EventLevel filterLevel)
+{
+%if (LoggerStreamer2.filterByLevel == true) {
+
+    /*
+     * First, remove the bits in 'mask' from all of the current 'level' masks.
+     * Use level = (~(mask & level) & level) to remove 'mask' bits from all
+     * 'level's.
+     *    1. AND mask and level to get set of bits that appear in both
+     *    2. Take the inverse of this set and AND it with 'level' to disable
+     *       any bits which appear in 'mask'.
+     */
+    ti_uia_sysbios_LoggerStreamer2_Module__state__V.level1 = ~(ti_uia_sysbios_LoggerStreamer2_Module__state__V.level1 & mask) &
+            ti_uia_sysbios_LoggerStreamer2_Module__state__V.level1;
+    ti_uia_sysbios_LoggerStreamer2_Module__state__V.level2 = ~(ti_uia_sysbios_LoggerStreamer2_Module__state__V.level2 & mask) &
+            ti_uia_sysbios_LoggerStreamer2_Module__state__V.level2;
+    ti_uia_sysbios_LoggerStreamer2_Module__state__V.level3 = ~(ti_uia_sysbios_LoggerStreamer2_Module__state__V.level3 & mask) &
+            ti_uia_sysbios_LoggerStreamer2_Module__state__V.level3;
+
+    /* Enable the bits specified in 'mask' in the appropriate level. */
+    switch (filterLevel) {
+        case xdc_runtime_Diags_LEVEL1:
+            ti_uia_sysbios_LoggerStreamer2_Module__state__V.level1 |= mask;
+            break;
+        case xdc_runtime_Diags_LEVEL2:
+            ti_uia_sysbios_LoggerStreamer2_Module__state__V.level2 |= mask;
+            break;
+        case xdc_runtime_Diags_LEVEL3:
+            ti_uia_sysbios_LoggerStreamer2_Module__state__V.level3 |= mask;
+            break;
+        case xdc_runtime_Diags_LEVEL4:
+                break;
+        default: {
+            /* Raise an error that a bad filter level was received. */
+            xdc_runtime_Error_Block eb;
+            xdc_runtime_Error_init(&eb);
+            xdc_runtime_Error_raise(&eb, ti_uia_sysbios_LoggerStreamer2_E_badLevel, filterLevel, 0);
+            break;
+        }
+    }
+%}
+}
+
+/*
+ *  ======== ti_uia_sysbios_LoggerStreamer2_getFilterLevel__E ========
+ *  Returns the mask of diags categories which are set to the specified filter
+ *  level.
+ *
+ *  This API is an instance function per the IFilterLogger interface, but
+ *  LoggerStreamer2 only maintains module-wide filter levels.
+ */
+xdc_runtime_Diags_Mask ti_uia_sysbios_LoggerStreamer2_getFilterLevel__E (ti_uia_sysbios_LoggerStreamer2_Object *obj,
+                xdc_runtime_Diags_EventLevel level)
+{
+%if (LoggerStreamer2.filterByLevel == true) {
+
+    /* Return the mask of diags categories associated with 'level'. */
+    switch (level) {
+        case xdc_runtime_Diags_LEVEL1:
+            return (ti_uia_sysbios_LoggerStreamer2_Module__state__V.level1);
+        case xdc_runtime_Diags_LEVEL2:
+            return (ti_uia_sysbios_LoggerStreamer2_Module__state__V.level2);
+        case xdc_runtime_Diags_LEVEL3:
+            return (ti_uia_sysbios_LoggerStreamer2_Module__state__V.level3);
+        case xdc_runtime_Diags_LEVEL4:
+            /*
+             * Return the inverse of all the bits set in levels 1 - 3,
+             * and only return those bits which belong to the set of
+             * logging categories (excludes asserts and the two level bits).
+             */
+            return (~(ti_uia_sysbios_LoggerStreamer2_Module__state__V.level1 |
+                    ti_uia_sysbios_LoggerStreamer2_Module__state__V.level2 |
+                    ti_uia_sysbios_LoggerStreamer2_Module__state__V.level3) &
+                    xdc_runtime_Diags_ALL_LOGGING);
+        default: {
+            /* Raise an error to report the bad filter level. */
+            xdc_runtime_Error_Block eb;
+            xdc_runtime_Error_init(&eb);
+            xdc_runtime_Error_raise(&eb, ti_uia_sysbios_LoggerStreamer2_E_badLevel, level, 0);
+            return (0);
+        }
+    }
+%}
+%else {
+    return (0);
+%}
+
+}
+
+
+/*
+ *  ======== LoggerStreamer2_setModuleIdToRouteToStatusLogger ========
+ *  Specifies a module ID to route events to the statusLogger for.
+ *  Set mid to -1 for 'none', since a mid of 0 is used for Log_print events.
+ *  NOT IMPLEMENTED for LoggerStreamer2
+ */
+Void ti_uia_sysbios_LoggerStreamer2_setModuleIdToRouteToStatusLogger__E(xdc_runtime_Types_ModuleId mid)
+{
+}
+
+
+/*  ======== writeMemoryRange =========
+ *  logs a range of consecutive memory values.
+ *
+ *  Breaks up large blocks into a series of smaller blocks in order to limit the
+ *  maximum amount of time that interrupts are disabled.
+ */
+Void ti_uia_sysbios_LoggerStreamer2_writeMemoryRange__E(ti_uia_sysbios_LoggerStreamer2_Object *obj, xdc_runtime_Log_Event evt,
+                xdc_runtime_Types_ModuleId mid, UInt32 snapshotId,
+                IArg fileName, IArg lineNum, IArg fmt,
+                IArg startAdrs, UInt32 lengthInMAUs)
+{
+    Int i;
+    SizeT eventSizeUArg;
+    SizeT dataSizeUArg;
+    Ptr pAdrs = (Ptr)startAdrs;
+    SizeT headerSizeUArg;
+    SizeT lenAdjustedUArg;
+    Int numRecords;
+    UInt key;
+    UArg *writePtr = obj->write;
+
+%if (LoggerStreamer2.testForNullWrPtr) {
+    if (writePtr == NULL) {
+        return;
+    }
+%}
+
+%if (LoggerStreamer2.supportLoggerDisable == true) {
+    if (!obj->enabled) {
+        return;
+    }
+%}
+
+%if (LoggerStreamer2.filterByLevel == true) {
+    if (ti_uia_sysbios_LoggerStreamer2_filterOutEvent__E(xdc_runtime_Log_getMask(evt))) {
+        return;
+    }
+%}
+
+    /* Size of header in UArgs */
+    headerSizeUArg = `headerSizeUArg`;
+
+    /* Round up to UArg boundary */
+    lenAdjustedUArg = (lengthInMAUs + sizeof(UArg) - 1) / sizeof(UArg);
+
+    numRecords = (lenAdjustedUArg / (obj->maxEventSizeUArg - headerSizeUArg)) + 1;
+
+    for (i = 0; i < numRecords; i++) {
+        /*
+         * Update serial number even if the buffer is full or disabled.
+         * We do this because a reader (decoder) of the buffer needs to
+         * know if events have been missed, and the buffer might become
+         * un-FULL at some later time.
+         */
+        obj->seqNumber++;
+
+        if ((headerSizeUArg + lenAdjustedUArg) > obj->maxEventSizeUArg) {
+            dataSizeUArg = obj->maxEventSizeUArg - headerSizeUArg;
+            lenAdjustedUArg -= dataSizeUArg;
+        }
+        else {
+            dataSizeUArg = lenAdjustedUArg;
+        }
+        eventSizeUArg = dataSizeUArg + headerSizeUArg;
+
+        key = ti_sysbios_hal_Hwi_disable();
+        if ((writePtr + eventSizeUArg) >= obj->end) {
+            ti_uia_sysbios_LoggerStreamer2_flush(obj);
+            writePtr = obj->write;
+        }
+        if ((writePtr == NULL ) || ((writePtr + eventSizeUArg) >= obj->end)) {
+
+            obj->droppedEvents++;
+            ti_sysbios_hal_Hwi_restore(key);
+        }
+        else {
+            writePtr = (UArg *)ti_uia_sysbios_LoggerStreamer2_fillInEventHdrSnapshot(
+                    (UInt32 *)obj->write, eventSizeUArg * `bytesInPtr`,
+                    obj->seqNumber, evt, mid);
+            *(writePtr++) = fileName;
+            *(writePtr++) = lineNum;
+            *(writePtr++) = snapshotId;
+            *(writePtr++) = (UArg)pAdrs;
+            *(writePtr++) = ((((dataSizeUArg * sizeof(UArg))& 0x0FFFF)<<16) | (lengthInMAUs & 0x0FFFF));
+            *(writePtr++) = fmt;
+
+            memcpy(writePtr, pAdrs, dataSizeUArg * sizeof(UArg));
+            writePtr = writePtr + dataSizeUArg;
+            obj->write = writePtr;
+            pAdrs = (Ptr)((Char *)pAdrs + dataSizeUArg * sizeof(UArg));
+            ti_sysbios_hal_Hwi_restore(key);
+        }
+    }
+    obj->write = writePtr;
+}
+%if (LoggerStreamer2.isBadPacketDetectionEnabled) {
+static Char ti_uia_sysbios_LoggerStreamer2_badPacketReason[128] = "";
+static UInt32 ti_uia_sysbios_LoggerStreamer2_numPacketsChecked = 0;
+static UInt32 ti_uia_sysbios_LoggerStreamer2_numBadPacketsFound = 0;
+#ifndef UIAPacket_HdrType
+#define UIAPacket_HdrType ti_uia_runtime_UIAPacket_HdrType
+#endif
+#ifndef EventHdr_HdrType
+#define EventHdr_HdrType ti_uia_runtime_EventHdr_HdrType
+#endif
+%}
+
+Char* ti_uia_sysbios_LoggerStreamer2_validatePacket(
+        ti_uia_sysbios_LoggerStreamer2_Object *obj,
+        UInt32* pPacketBuffer, UInt32 numBytesInPacket)
+{
+%if (LoggerStreamer2.isBadPacketDetectionEnabled) {
+    Bool result = TRUE;
+    UInt32 packetLength = 0;
+    UInt32 eventLength = 0;
+    UInt32 invalidLength = 0;
+    UInt32 destAdrs = 0;
+    UInt32 senderAdrs = 0;
+    UInt32* pEvent = 0;
+    UInt32 eventWord1 = 0;
+
+    ti_uia_sysbios_LoggerStreamer2_numPacketsChecked++;
+    if (numBytesInPacket != obj->bufSize) {
+        result = FALSE;
+        sprintf(ti_uia_sysbios_LoggerStreamer2_badPacketReason,
+                "LoggerStreamer2_bufSize(%d) != numBytesInPacket(%d)",
+                obj->bufSize, numBytesInPacket);
+    }
+    if (result) {
+        ti_uia_runtime_UIAPacket_Hdr* hdr = (ti_uia_runtime_UIAPacket_Hdr*)pPacketBuffer;
+        /* 1. Check packet header */
+        if (ti_uia_runtime_UIAPacket_getHdrType(hdr) == ti_uia_runtime_UIAPacket_HdrType_EventPkt) {
+            destAdrs = ti_uia_runtime_UIAPacket_getDestAdrs(hdr);
+            senderAdrs = ti_uia_runtime_UIAPacket_getSenderAdrs(hdr);
+
+            packetLength = ti_uia_runtime_UIAPacket_getEventLength(hdr);
+            if (packetLength < numBytesInPacket) {
+
+                /* Verify that the rest of the packet is represented by an invalid packet of the correct length */
+                hdr = (ti_uia_runtime_UIAPacket_Hdr*)((UInt32)pPacketBuffer + (UInt32)packetLength);
+                if (ti_uia_runtime_UIAPacket_getHdrType(hdr) == ti_uia_runtime_UIAPacket_HdrType_InvalidData) {
+                    invalidLength = ti_uia_runtime_UIAPacket_getEventLength(hdr);
+                    if (invalidLength != numBytesInPacket - packetLength) {
+                        result = FALSE;
+                        sprintf(ti_uia_sysbios_LoggerStreamer2_badPacketReason,
+                                "invalid length: numBytesInPacket=%d,packetLength=%d",
+                                numBytesInPacket,packetLength);
+                    }
+                }
+            } else if (packetLength > numBytesInPacket) {
+                result = FALSE;
+                sprintf(ti_uia_sysbios_LoggerStreamer2_badPacketReason, "packetLength(%d) > numBytesInPacket(%d)",
+                        packetLength, numBytesInPacket);
+            }
+            if (result) {
+                /* packet header is ok - check the event headers */
+                pEvent = (UInt32* )((UInt32)pPacketBuffer + sizeof(ti_uia_runtime_UIAPacket_Hdr));
+                packetLength -= sizeof(ti_uia_runtime_UIAPacket_Hdr);
+                while ((result == TRUE) && (packetLength > 0)) {
+                    eventWord1 = *pEvent;
+                    if (ti_uia_runtime_EventHdr_getHdrType(eventWord1) == ti_uia_runtime_EventHdr_HdrType_EventWithTimestamp) {
+                        eventLength = ti_uia_runtime_EventHdr_getLength(eventWord1);
+                        if (eventLength > (`write8EventSize` * `bytesInPtr`)) {
+                            result = FALSE;
+                            sprintf(ti_uia_sysbios_LoggerStreamer2_badPacketReason, "eventLength(%d) > WRITE8_SIZE_IN_BYTES(%d)", eventLength,
+                                    `write8EventSize` * `bytesInPtr`);
+                        } else {
+                            packetLength -= eventLength;
+                        }
+                    } else {
+                        if (ti_uia_runtime_EventHdr_getHdrType(eventWord1) == ti_uia_runtime_EventHdr_HdrType_EventWithSnapshotIdAndTimestamp) {
+                            eventLength = ti_uia_runtime_EventHdr_getLength(eventWord1);
+
+                            if (eventLength > obj->maxEventSize) {
+                                result = FALSE;
+                                sprintf(ti_uia_sysbios_LoggerStreamer2_badPacketReason,
+                                        "eventLength(%d) > maxEventSize(%d).  eventWord1=0x%x",
+                                        eventLength, obj->maxEventSize, eventWord1);
+                            } else {
+                                packetLength -= eventLength;
+                            }
+                        } else {
+                            result = FALSE;
+                            sprintf(ti_uia_sysbios_LoggerStreamer2_badPacketReason, "bad event hdr type(%d)",
+                                    ti_uia_runtime_EventHdr_getHdrType(eventWord1));
+                        }
+                    }
+                    if (result){
+                        pEvent = (UInt32*)((UInt32)pEvent + eventLength);
+                    }
+                }
+            }
+        }
+    }
+    if (!result) {
+        printf("Bad packet detected: %s\n", ti_uia_sysbios_LoggerStreamer2_badPacketReason);
+        ti_uia_sysbios_LoggerStreamer2_numBadPacketsFound++;
+    }
+    if ((ti_uia_sysbios_LoggerStreamer2_numPacketsChecked & 0xfff)==0){
+        printf("Core %d: Num packets checked = %d. Num bad = %d\n", senderAdrs,
+                ti_uia_sysbios_LoggerStreamer2_numPacketsChecked, ti_uia_sysbios_LoggerStreamer2_numBadPacketsFound);
+    }
+
+    if (result) {
+        return(NULL);
+    }
+
+    /* set a breakpoint here to catch failures */
+    return (ti_uia_sysbios_LoggerStreamer2_badPacketReason);
+%}
+%else {
+    return (NULL);
+%}
+}

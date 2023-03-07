@@ -1,0 +1,42 @@
+project_name: dmadrv_baremetal
+package: platform
+quality: production
+label: Platform - DMADRV Bare-metal
+description: > 
+  This example project shows how to use DMADRV driver to transfer data between memory and a USART peripheral in a bare-metal configuration.
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]
+source:
+  - path: app.c
+  - path: main.c
+  - path: dmadrv_app.c
+include:
+  - path: .
+    file_list:
+    - path: app.h
+    - path: dmadrv_app.h
+component:
+  - id: sl_system
+  - id: device_init
+  - id: dmadrv
+  - id: power_manager
+  - id: sleeptimer
+  - id: iostream
+  - id: iostream_usart
+    instance:
+      - vcom
+define:
+  - name: DEBUG_EFM
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md

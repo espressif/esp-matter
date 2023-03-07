@@ -1,0 +1,16 @@
+.../tf_fuzz/calls directory contents:
+
+crypto_call.cpp  psa_call.cpp  security_call.cpp  sst_call.cpp
+crypto_call.hpp  psa_call.hpp  security_call.hpp  sst_call.hpp
+
+--------------------------------------------------------------------------------
+
+These classes define objects that describe everything needed to generate a PSA
+call.  In the future, it's probably possible to, instead of writing these calls
+out to a .c file, for target systems that can support sufficiently large memory
+footprints, to directly execute these PSA calls from the psa_call-subclass
+"tracker" objects.
+
+--------------
+
+*Copyright (c) 2019-2020, Arm Limited. All rights reserved.*

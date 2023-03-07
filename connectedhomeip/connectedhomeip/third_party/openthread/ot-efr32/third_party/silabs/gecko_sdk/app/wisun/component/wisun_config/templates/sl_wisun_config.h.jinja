@@ -1,0 +1,97 @@
+/***************************************************************************//**
+ * @file
+ * @brief
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ ******************************************************************************/
+#ifndef __SL_WISUN_CONFIG_H__
+#define __SL_WISUN_CONFIG_H__
+
+#include <stddef.h>
+#include "sl_wisun_types.h"
+{% if config.networkName is not none %}
+//! Wi-SUN network name
+#define WISUN_CONFIG_NETWORK_NAME               "{{config.networkName}}"
+{%- endif -%}
+{% if config.networkSize is not none %}
+
+//! Wi-SUN network size
+#define WISUN_CONFIG_NETWORK_SIZE               {{config.networkSize}}
+{%- endif -%}
+{% if config.txOutputPower is not none %}
+
+//! Wi-SUN TX output power
+#define WISUN_CONFIG_TX_POWER                   {{config.txOutputPower}}
+{%- endif -%}
+{% if config.dwellInterval is not none %}
+
+//! Wi-SUN DWELL Interval (15-255) default 255
+#define WISUN_CONFIG_DWELL_INTERVAL             {{config.dwellInterval}}U
+{%- endif -%}
+{% if config.macList|length > 0 %}
+
+//! Wi-SUN MAC list struct for allowed and denied mac addresses
+typedef struct {
+  const uint8_t mac_list_num;
+  const sl_wisun_mac_address_t mac_list[];
+} wisun_config_mac_list_t;
+{%- endif -%}
+{% if config.macAddress is not none %}
+
+#define WISUN_CONFIG_MAC_ADDRESS_PRESENT
+//! Wi-SUN MAC address
+extern const sl_wisun_mac_address_t wisun_config_mac_address;
+{%- endif -%}
+{% if (config.macList|length > 0) and (config.isDenyList is sameas false) %}
+
+#define WISUN_CONFIG_MAC_ALLOW_LIST_PRESENT 
+//! Wi-SUN MAC allow list
+extern const wisun_config_mac_list_t wisun_config_mac_allow_list;
+{%- endif -%}
+{% if (config.macList|length > 0) and (config.isDenyList is sameas true) %}
+
+#define WISUN_CONFIG_MAC_DENY_LIST_PRESENT
+//! Wi-SUN MAC deny list
+extern const wisun_config_mac_list_t wisun_config_mac_deny_list;
+{%- endif -%}
+
+{% if config.devicePrivateKey is not none %}
+
+//! Wi-SUN Device private key
+extern const uint8_t wisun_config_device_private_key[];
+{%- endif -%}
+{% if config.deviceCertificate is not none %}
+
+//! Wi-SUN Device certificate
+extern const uint8_t wisun_config_device_certificate[];
+{%- endif -%}
+{% if config.caCertificate is not none %}
+
+//! Wi-SUN CA certificate
+extern const uint8_t wisun_config_ca_certificate[];
+{%- endif %}
+
+#endif /* __SL_WISUN_CONFIG_H__ */

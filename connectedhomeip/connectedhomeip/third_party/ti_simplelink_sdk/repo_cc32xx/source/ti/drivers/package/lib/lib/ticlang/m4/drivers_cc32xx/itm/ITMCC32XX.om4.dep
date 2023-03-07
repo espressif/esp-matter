@@ -1,0 +1,4 @@
+package/lib/lib/ticlang/m4/drivers_cc32xx/./itm/ITMCC32XX.om4: itm/ITMCC32XX.c /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/ITM.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/DeviceFamily.h 
+itm/ITMCC32XX.c:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/ITM.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/DeviceFamily.h:

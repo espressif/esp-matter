@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.time_accuracy" uuid="2A12" name="Time Accuracy">
+	<InformativeText>
+	</InformativeText>
+	<Value>
+		<Field name="Accuracy">
+			<InformativeText>Accuracy (drift) of time information in steps of 1/8 of a second (125ms) compared to a reference time source. Valid range from 0 to 253 (0s to 31.5s). A value of 254 means Accuracy is out of range (&gt; 31.5s). A value of 255 means Accuracy is unknown.</InformativeText>
+			<Requirement>Mandatory</Requirement>
+			<Format>uint8</Format>
+			<BinaryExponent>-3</BinaryExponent>
+			<Minimum>0</Minimum>
+			<Maximum>253</Maximum>
+			<AdditionalValues>
+				<Enumeration key="254" value="Accuracy out of range" />
+				<Enumeration key="255" value="Accuracy Unknown" />
+			</AdditionalValues>
+		</Field>
+	</Value>
+</Characteristic>

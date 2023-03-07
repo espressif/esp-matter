@@ -1,0 +1,239 @@
+id: zigbee_dmp_tuning
+package: Zigbee
+label: "DMP Tuning and Testing"
+quality: "production"
+category: Zigbee|Utility
+
+description: Certain networking stack configurations can be crucial for proper networking
+  operation in multiprotocol use cases, such as transmission,
+  reception, connection and advertisement priorities. This component provides better
+  access to such stack configuration options, to help in tuning and
+  testing a DMP application. It provides three DMP configuration profiles for three
+  major use cases. These are Bluetooth LE (BLE) priority, Zigbee priority, and balanced priority.
+  These provide priority for BLE-over-Zigbee transmission and reception, priority for Zigbee-over-BLE connection, advertisement etc., and to provide
+  and a balanced priority configuration option, respectively. The component also provides
+  a way for users to manually configure the default value of these configuration options
+  (component option inputs) or to change them at run time over the CLI.
+
+provides:
+   - name: "zigbee_dmp_tuning"
+
+requires:
+  - name: bluetooth_stack
+  - name: zigbee_pro_stack_support
+
+config_file:
+  - path: protocol/zigbee/app/framework/plugin-soc/dmp-tuning/config/dmp-tuning-config.h
+
+source:
+  - path: protocol/zigbee/app/framework/plugin-soc/dmp-tuning/dmp-tuning.c
+  - path: protocol/zigbee/app/framework/plugin-soc/dmp-tuning/dmp-tuning-cli.c
+    condition:
+      - "cli"
+
+include:
+  - path: protocol/zigbee/app/framework/plugin-soc/dmp-tuning
+    file_list:
+      - path: dmp-tuning.h
+      - path: dmp-tuning-profiles.h
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_dmp_tuning
+
+  - name: zigbee_af_callback
+    value:
+      callback_type: init_done
+      function_name: emberAfPluginDmpTuningInitCallback
+
+  - name: cli_group
+    value:
+      name: dmp-tuning
+      group: plugin
+
+  - name: cli_group
+    value:
+      name: zigbee
+      group: dmp-tuning
+
+  - name: cli_command
+    value:
+      name: set-scheduler-priorities
+      group: zigbee
+      handler: emberAfPluginDmpTuningSetZigbeeSchedulerPrioritiesCommand
+      help: Sets scheduler priorities for Zigbee.
+      argument:
+      - type: uint8
+        help: Background RX priority
+      - type: uint8
+        help: Active RX priority
+      - type: uint8
+        help: Active TX priority
+
+  - name: cli_command
+    value:
+      name: get-scheduler-priorities
+      group: zigbee
+      handler: emberAfPluginDmpTuningGetZigbeeSchedulerPrioritiesCommand
+      help: Gets scheduler priorities for Zigbee.
+
+  - name: cli_command
+    value:
+      name: set-slip-time
+      group: zigbee
+      handler: emberAfPluginDmpTuningSetZigbeeSlipTimeCommand
+      help: Sets slip time for Zigbee.
+      argument:
+      - type: uint32
+        help: Slip time.
+
+  - name: cli_command
+    value:
+      name: get-slip-time
+      group: zigbee
+      handler: emberAfPluginDmpTuningGetZigbeeSlipTimeCommand
+      help: Gets slip time for Zigbee.
+
+  - name: cli_group
+    value:
+      name: ble
+      group: dmp-tuning
+
+  - name: cli_command
+    value:
+      name: set-advertisement-priorities
+      group: ble
+      handler: emberAfPluginDmpTuningSetBleAdvertisementPrioritiesCommand
+      help: Sets BLE advertisement scheduler priorities.
+      argument:
+      - type: uint8
+        help: Advertisement scheduler priority - Min
+      - type: uint8
+        help: Advertisement scheduler priority - Max
+
+  - name: cli_command
+    value:
+      name: get-advertisement-priorities
+      group: ble
+      handler: emberAfPluginDmpTuningGetBleAdvertisementPrioritiesCommand
+      help: Gets BLE advertisement scheduler priorities.
+
+  - name: cli_command
+    value:
+      name: set-scan-priorities
+      group: ble
+      handler: emberAfPluginDmpTuningSetBleScanPrioritiesCommand
+      help: Sets BLE scan scheduler priorities.
+      argument:
+      - type: uint8
+        help: Scan scheduler priority - Min
+      - type: uint8
+        help: Scan scheduler priority - Max
+
+  - name: cli_command
+    value:
+      name: get-scan-priorities
+      group: ble
+      handler: emberAfPluginDmpTuningGetBleScanPrioritiesCommand
+      help: Gets BLE scan scheduler priorities.
+
+  - name: cli_command
+    value:
+      name: set-connection-init-priorities
+      group: ble
+      handler: emberAfPluginDmpTuningSetBleConnectionInitPrioritiesCommand
+      help: Sets BLE connection init scheduler priorities
+      argument:
+      - type: uint8
+        help: Connection init scheduler priority - Min
+      - type: uint8
+        help: Connection init scheduler priority - Max
+
+  - name: cli_command
+    value:
+      name: get-connection-init-priorities
+      group: ble
+      handler: emberAfPluginDmpTuningGetBleConnectionInitPrioritiesCommand
+      help: Gets BLE connection init scheduler priorities.
+
+  - name: cli_command
+    value:
+      name: set-connection-priorities
+      group: ble
+      handler: emberAfPluginDmpTuningSetBleConnectionPrioritiesCommand
+      help: Sets BLE connection scheduler priorities.
+      argument:
+      - type: uint8
+        help: Connection scheduler priority - Min
+      - type: uint8
+        help: Connection scheduler priority - Max
+
+  - name: cli_command
+    value:
+      name: get-connection-priorities
+      group: ble
+      handler: emberAfPluginDmpTuningGetBleConnectionPrioritiesCommand
+      help: Gets BLE connection scheduler priorities.
+
+  - name: cli_command
+    value:
+      name: set-rail-priority-mapping
+      group: ble
+      handler: emberAfPluginDmpTuningSetBleRailMappingCommand
+      help: Sets BLE RAIL priority mapping.
+      argument:
+      - type: uint8
+        help: RAIL mapping offset
+      - type: uint8
+        help: RAIL mapping range
+
+  - name: cli_command
+    value:
+      name: get-rail-priority-mapping
+      group: ble
+      handler: emberAfPluginDmpTuningGetBleRailMappingCommand
+      help: Gets BLE RAIL priority mapping.
+
+  - name: cli_group
+    value:
+      name: rail
+      group: dmp-tuning
+
+  - name: cli_command
+    value:
+      name: get-scheduled-event-counters
+      group: rail
+      handler: emberAfPluginDmpTuningGetRailScheduledEventCounters
+      help: Gets the RAIL config (un)scheduled event counters.
+
+  - name: cli_command
+    value:
+      name: enable-config-scheduler-events
+      group: rail
+      handler: emberAfPluginDmpTuningEnableRailConfigSchedulerEvents
+      help: Enables the RAIL config scheduler events.
+
+  - name: cli_command
+    value:
+      name: disable-config-scheduler-events
+      group: rail
+      handler: emberAfPluginDmpTuningDisableRailConfigSchedulerEvents
+      help: Disables the RAIL config scheduler events.
+
+  - name: cli_command
+    value:
+      name: get-config-scheduler-events-enabled
+      group: rail
+      handler: emberAfPluginDmpTuningGetRailConfigSchedulerEventsEnabled
+      help: Gets the enable state of the RAIL config scheduler events.
+      
+  - name: cli_command
+    value:
+      name: stop-radio
+      group: rail
+      handler: emberAfPluginDmpTuningStopRadioCommand
+      help: Stops the Radio. Requires Reset to re-activate.
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/dmp-tuning

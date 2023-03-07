@@ -1,0 +1,26 @@
+id: bootloader_uart_xmodem
+label: "UART XMODEM"
+package: bootloader
+description: Firmware upgrade over UART using the XMODEM-CRC file transfer protocol
+category: Platform|Bootloader|Communication
+quality: production
+source:
+  - path: platform/bootloader/communication/xmodem-uart/btl_comm_xmodem.c
+  - path: platform/bootloader/communication/xmodem-uart/btl_comm_xmodem_common.c
+include:
+  - path: platform/bootloader/communication
+    file_list:
+    - path: xmodem-uart/btl_comm_xmodem.h
+    - path: btl_communication.h
+define:
+  - name: BOOTLOADER_SUPPORT_COMMUNICATION
+    value: 1
+provides:
+  - name: bootloader_uart_xmodem
+  - name: bootloader_nonsecure_incompatible
+    condition: [bootloader_core_nonsecure]
+requires:
+  - name: bootloader_xmodem_parser
+config_file:
+  - path: platform/bootloader/config/btl_xmodem_config.h
+    file_id: btl_uart_xmodem_config

@@ -1,0 +1,35 @@
+id: ncp_host_com
+label: NCP Host Communication Interface
+package: Bluetooth
+description: >
+  Component that provides the Bluetooth Network Co-Processor (NCP) host
+  communication interface.
+category: Bluetooth|NCP|Host
+quality: production
+root_path: app/bluetooth/common/ncp_host_com
+config_file:
+  - path: config/sl_ncp_host_com_config.h
+source:
+  - path: sl_ncp_host_com.c
+include:
+  - path: .
+    file_list:
+      - path: sl_ncp_host_com.h
+provides:
+  - name: ncp_host_com
+requires:
+  - name: bluetooth_api_ncp_host
+  - name: simple_com
+  - name: emlib_core
+  - name: app_assert
+template_contribution:
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: sl_ncp_host_com.h
+      handler: sl_ncp_host_com_init
+  - name: power_manager_handler
+    value:
+      event: is_ok_to_sleep
+      include: sl_ncp_host_com.h
+      handler: sl_ncp_host_is_ok_to_sleep

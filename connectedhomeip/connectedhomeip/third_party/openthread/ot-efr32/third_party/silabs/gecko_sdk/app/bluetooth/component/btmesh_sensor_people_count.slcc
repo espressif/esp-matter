@@ -1,0 +1,83 @@
+id: "btmesh_sensor_people_count"
+label: "People Count Sensor"
+package: "Btmesh"
+description: >
+  The People Count Sensor is an application-level software module that
+  simulates a people count sensor behavior. Provides interface for 
+  setting and getting and also for increasing and decreasing the
+  simulated people count value.
+category: "Bluetooth Mesh|Utility"
+quality: "production"
+root_path: "app/bluetooth/common/btmesh_sensor_people_count"
+source:
+  - path: "sl_btmesh_sensor_people_count.c"
+include:
+  - path: ""
+    file_list:
+      - path: "sl_btmesh_sensor_people_count.h"
+config_file:
+  - path: "config/sl_btmesh_sensor_people_count_config.h"
+provides:
+  - name: "btmesh_sensor_people_count"
+requires:
+  - name: "btmesh_sensor_server"
+
+template_contribution:
+  - name: cli_command
+    value:
+      group: peoplecount
+      name: increase
+      handler: people_count_increase_from_cli
+      shortcuts:
+        - name: i
+      help: "Increasing people count sensor value."
+    condition:
+      - "cli"
+
+  - name: cli_command
+    value:
+      group: peoplecount
+      name: decrease
+      handler: people_count_decrease_from_cli
+      shortcuts:
+        - name: d
+      help: "Decreasing people count sensor value."
+    condition:
+      - "cli"
+
+  - name: cli_command
+    value:
+      group: peoplecount
+      name: set
+      handler: people_count_set_from_cli
+      shortcuts:
+        - name: s
+      help: "Set people count sensor value"
+      argument:
+      - type: uint16
+        help: "People count sensor value"
+    condition:
+      - "cli"
+
+  - name: cli_command
+    value:
+      group: peoplecount
+      name: get
+      handler: people_count_get_from_cli
+      shortcuts:
+        - name: g
+      help: "Get people count sensor value"
+    condition:
+      - "cli"
+      
+  - name: cli_group
+    value:
+      name: peoplecount
+      help: "Controlling people count sensor value."
+      shortcuts:
+        - name: pc
+    condition:
+      - "cli"
+
+  - name: component_catalog
+    value: "btmesh_sensor_people_count"

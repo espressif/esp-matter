@@ -1,0 +1,188 @@
+{
+    "configFiles": {
+        "path": [
+            {
+                "_file": "device_definition.json",
+                "$": ".\/..\/config\/cc2652psip"
+            },
+            {
+                "_file": "device_description.json",
+                "$": ".\/..\/config\/cc2652psip"
+            },
+            {
+                "_file": "device_description.json",
+                "_phy": "ieee_15_4",
+                "$": ".\/..\/config\/cc2652psip_ieee_15_4_pg21"
+            },
+            {
+                "_file": "device_description.json",
+                "_phy": "ble",
+                "$": ".\/..\/config\/cc2652psip_ble_pg21"
+            },
+            {
+                "_file": "io_register_definition.json",
+                "$": ".\/..\/config\/cc1352r"
+            },
+            {
+                "_file": "ui_translation.json",
+                "$": ".\/..\/config\/cc1352r"
+            },
+            {
+                "_file": "targets.json",
+                "$": ".\/..\/config\/cc2652psip\/targets"
+            },
+            {
+                "_file": "pasettings.json",
+                "$": ".\/..\/config\/cc2652psip\/targets"
+            },
+            {
+                "_file": "io_pin_definition.json",
+                "$": ".\/..\/config\/cc2652psip\/targets"
+            },
+            {
+                "_file": "param_definition.json",
+                "$": ".\/..\/config\/cc2652psip_prop_pg21"
+            },
+            {
+                "_file": "param_definition.json",
+                "_phy": "ieee_15_4",
+                "$": ".\/..\/config\/cc2652psip_ieee_15_4_pg21"
+            },
+            {
+                "_file": "param_definition.json",
+                "_phy": "ble",
+                "$": ".\/..\/config\/cc2652psip_ble_pg21"
+            },
+            {
+                "_file": "param_cmd_mapping.json",
+                "$": ".\/..\/config\/cc1352p_prop_pg21"
+            },
+            {
+                "_file": "param_cmd_mapping.json",
+                "_phy": "ieee_15_4",
+                "$": ".\/..\/config\/cc1352p_ieee_15_4_pg21"
+            },
+            {
+                "_file": "param_cmd_mapping.json",
+                "_phy": "ble",
+                "$": ".\/..\/config\/cc1352p_ble_pg21"
+            },
+            {
+                "_file": "codegen.json",
+                "$": ".\/..\/config\/cc1352r_prop_pg21"
+            },
+            {
+                "_file": "easymode_settings.json",
+                "$": ".\/..\/config\/cc1352r_prop_pg21"
+            },
+            {
+                "_file": "easymode_settings.json",
+                "_phy": "ieee_15_4",
+                "$": ".\/..\/config\/cc1352r_ieee_15_4_pg21"
+            },
+            {
+                "_file": "easymode_settings.json",
+                "_phy": "ble",
+                "$": ".\/..\/config\/cc2652r"
+            },
+            {
+                "_file": "radio_par_definitions.json",
+                "$": ".\/..\/config\/cc1352r_prop_pg21"
+            },
+            {
+                "_file": "radio_par_definitions.json",
+                "_phy": "ieee_15_4",
+                "$": ".\/..\/config\/cc1352r_ieee_15_4_pg21"
+            },
+            {
+                "_file": "radio_par_definitions.json",
+                "_phy": "ble",
+                "$": ".\/..\/config\/cc2652r"
+            },
+            {
+                "_file": "register_definition.json",
+                "$": ".\/..\/config\/cc1352r_prop_pg21"
+            },
+            {
+                "_file": "register_definition.json",
+                "_phy": "ieee_15_4",
+                "$": ".\/..\/config\/cc1352r_ieee_15_4_pg21"
+            },
+            {
+                "_file": "register_definition.json",
+                "_phy": "ble",
+                "$": ".\/..\/config\/cc2652r"
+            },
+            {
+                "_file": "rf_command_definitions.json",
+                "$": ".\/..\/config\/cc1352p_prop_pg21"
+            },
+            {
+                "_file": "rf_command_definitions.json",
+                "_phy": "ieee_15_4",
+                "$": ".\/..\/config\/cc1352p_ieee_15_4_pg21"
+            },
+            {
+                "_file": "rf_command_definitions.json",
+                "_phy": "ble",
+                "$": ".\/..\/config\/cc1352p_ble_pg21"
+            },
+            {
+                "_file": "status_definition.json",
+                "$": ".\/..\/config\/cc1352r_prop_pg21"
+            },
+            {
+                "_file": "status_definition.json",
+                "_phy": "ieee_15_4",
+                "$": ".\/..\/config\/cc1352r_ieee_15_4_pg21"
+            },
+            {
+                "_file": "status_definition.json",
+                "_phy": "ble",
+                "$": ".\/..\/config\/cc2652r"
+            },
+            {
+                "_file": "categories.json",
+                "$": ".\/..\/config\/cc2652psip_prop_pg21\/cmd_settings"
+            },
+            {
+                "_file": "categories.json",
+                "_phy": "ieee_15_4",
+                "$": ".\/..\/config\/cc2652psip_ieee_15_4_pg21\/cmd_settings"
+            },
+            {
+                "_file": "categories.json",
+                "_phy": "ble",
+                "$": ".\/..\/config\/cc2652psip_ble_pg21\/cmd_settings"
+            },
+            {
+                "_file": "frontend_settings.json",
+                "$": ".\/..\/config\/cc2652psip_prop_pg21\/cmd_settings"
+            },
+            {
+                "_file": "frontend_settings.json",
+                "_phy": "ieee_15_4",
+                "$": ".\/..\/config\/cc2652psip_ieee_15_4_pg21\/cmd_settings"
+            },
+            {
+                "_file": "frontend_settings.json",
+                "_phy": "ble",
+                "$": ".\/..\/config\/cc2652psip_ble_pg21\/cmd_settings"
+            },
+            {
+                "_file": "dummy_file_overrides.json",
+                "$": ".\/..\/config\/cc2652psip_prop_pg21\/overrides"
+            },
+            {
+                "_file": "dummy_file_overrides.json",
+                "_phy": "ieee_15_4",
+                "$": ".\/..\/config\/cc2652psip_ieee_15_4_pg21\/overrides"
+            },
+            {
+                "_file": "dummy_file_overrides.json",
+                "_phy": "ble",
+                "$": ".\/..\/config\/cc2652psip_ble_pg21\/overrides"
+            }
+        ]
+    }
+}

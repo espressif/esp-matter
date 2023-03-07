@@ -1,0 +1,22 @@
+!!omap
+- id: slwrb4103a
+- label: SLWRB4103A
+- package: platform
+- description: Kit BSP support for the EFR32BG12 2.4 GHz 10 dBm Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4103a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4103A"'
+  - name: SL_KIT_REV
+    value: '"A02"'
+- tag:
+  - kit:opn:SLWRB4103A
+  - kit:pn:WRB4103
+  - kit:variant:A
+  - kit:revision:A02

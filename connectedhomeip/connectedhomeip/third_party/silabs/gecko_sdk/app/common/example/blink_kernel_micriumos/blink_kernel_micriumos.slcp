@@ -1,0 +1,38 @@
+project_name: blink_kernel_micriumos
+package: platform
+quality: production
+label: Platform - Blink Kernel Micrium OS
+description: > 
+  This example project shows how to blink an LED using a Micrium OS kernel task.
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]
+source:
+  - path: app.c
+  - path: main.c
+  - path: blink.c
+include:
+  - path: .
+    file_list:
+    - path: app.h
+    - path: blink.h
+component:
+  - id: sl_system
+  - id: device_init
+  - id: micriumos_kernel
+  - id: sleeptimer
+  - id: simple_led
+    instance: [led0]
+define:
+  - name: DEBUG_EFM
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+tag:
+  - hardware:component:led:1+

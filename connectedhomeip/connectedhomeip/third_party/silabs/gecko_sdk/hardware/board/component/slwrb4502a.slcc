@@ -1,0 +1,22 @@
+!!omap
+- id: slwrb4502a
+- label: SLWRB4502A
+- package: platform
+- description: Kit BSP support for the EZR32LG 868 MHz 13 dBm Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4502a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4502A"'
+  - name: SL_KIT_REV
+    value: '"A00"'
+- tag:
+  - kit:opn:SLWRB4502A
+  - kit:pn:WRB4502
+  - kit:variant:A
+  - kit:revision:A00

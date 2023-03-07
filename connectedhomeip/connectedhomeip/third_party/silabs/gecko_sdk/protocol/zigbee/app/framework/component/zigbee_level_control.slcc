@@ -1,0 +1,39 @@
+package: Zigbee
+description: Silicon Labs implementation of the Level Control server cluster.  If the ZLL
+  Level Control server cluster component is also enabled, this component uses it to handle ZLL enhancements. 
+  Otherwise, all ZLL extensions are disabled. It is not
+  intended for production but provides sample code to show how the cluster could be
+  implemented.
+label: Level Control Server Cluster
+quality: production
+id: zigbee_level_control
+category: Zigbee|Cluster Library|Common
+provides:
+   - name: "zigbee_level_control"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/level-control/config/level-control-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/level-control/level-control.c
+  - path: protocol/zigbee/app/framework/plugin/level-control/level-control-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/level-control
+    file_list:
+      - path: level-control.h  
+template_contribution:
+  - name: component_catalog
+    value: zigbee_level_control
+  - name: cluster_service
+    value:
+       cluster_id: "0x0008"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "SERVER"
+       service_function: "emberAfLevelControlClusterServerCommandParse"    
+  - name: cluster_functions
+    value:
+      cluster_name: LevelControl
+      cluster_id: 0x8
+      cluster_type: server
+      init_function: emberAfLevelControlClusterServerInitCallback
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/level-control

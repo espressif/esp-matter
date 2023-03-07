@@ -1,0 +1,40 @@
+name: freertos-pkcs11-psa CI
+
+on:
+  push:
+  pull_request:
+  schedule:
+  - cron: "0 4 * * *"
+
+jobs:
+  build:
+    name: Build cypress/CY8CKIT_064S0S2_4343W
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Clone
+      uses: actions/checkout@v1
+    - name: Install gnuarmemb
+      run: |
+        mkdir -p ~/bin
+        mkdir -p ~/opt
+        cd ..
+        wget -q https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/9-2019q4/RC2.1/gcc-arm-none-eabi-9-2019-q4-major-x86_64-linux.tar.bz2
+        tar -xaf gcc-arm-none-eabi-9-2019-q4-major-x86_64-linux.tar.bz2 -C ~/opt/
+        #echo "::add-path::~/bin:~/opt/gcc-arm-none-eabi-9-2019-q4-major/bin"
+        #echo "::add-path::~/opt/gcc-arm-none-eabi-9-2019-q4-major/bin"
+        echo "~/opt/gcc-arm-none-eabi-9-2019-q4-major/bin" >> $GITHUB_PATH
+    - name: Check gnuarmemb version
+      run: |
+        echo $PATH
+        arm-none-eabi-gcc --version
+    - name: Run build
+      run: |
+        set -x
+        pwd
+        ORGDIR=$PWD
+        ls -l
+        git describe --always
+        git log --oneline -n 5
+        cd ..
+        ls -l
+        $ORGDIR/.github/workflows/build.sh

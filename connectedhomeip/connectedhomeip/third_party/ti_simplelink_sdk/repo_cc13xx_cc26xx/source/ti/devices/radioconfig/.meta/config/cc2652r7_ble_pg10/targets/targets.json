@@ -1,0 +1,9 @@
+{
+    "targets": {
+        "Default": "..\/..\/cc2652r7\/targets\/target_cc2652r7-launchxl.json:LP_CC2652R7",
+        "VirtualTarget": {
+            "_name": "LP_CC2652R7",
+            "Target": "..\/..\/cc2652r7\/targets\/target_cc2652r7-launchxl.json"
+        }
+    }
+}

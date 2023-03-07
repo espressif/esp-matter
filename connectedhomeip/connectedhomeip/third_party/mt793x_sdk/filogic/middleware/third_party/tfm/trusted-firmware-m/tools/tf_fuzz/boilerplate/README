@@ -1,0 +1,17 @@
+.../tf_fuzz/boilerplate directory contents:
+
+boilerplate.cpp  boilerplate.hpp
+
+--------------------------------------------------------------------------------
+
+These are the C++ code to work with the customizable, "boilerplate" code
+snippets in the .../lib directory.  Actually, mostly what this code does is
+read these code snippets into an STL vector of, essentially, named strings.
+
+This is currently implemented as a vector of strings, with a parallel vector
+of const int array-index names.  A much better way, in hindsight, to manage
+the boilerplate code is in an STL "map" container.
+
+--------------
+
+*Copyright (c) 2019-2020, Arm Limited. All rights reserved.*

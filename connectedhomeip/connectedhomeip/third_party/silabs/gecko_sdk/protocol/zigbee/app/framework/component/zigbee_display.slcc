@@ -1,0 +1,44 @@
+id: zigbee_display
+package: Zigbee
+label: "Zigbee LCD Display"
+category: "Zigbee|Zigbee 3.0"
+quality: "production"
+description: "DMP applications use this component to display graphics on the LCD."
+
+provides:
+  - name: zigbee_display
+
+requires:
+  - name: app_assert
+  - name: dmd_memlcd
+  - name: glib
+
+source:
+  - path: "protocol/zigbee/app/framework/plugin/dmp-ui-demo/sl_dmp_ui.c"
+
+
+include:
+  - path: "protocol/zigbee/app/framework/plugin/dmp-ui-demo/"
+    file_list:
+      - path: "sl_dmp_ui.h"
+      - path: "sl_dmp_bitmaps.h"
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_display
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: sl_dmp_ui_init
+  - name: zigbee_af_callback
+    value:
+      callback_type: local_data_init
+      function_name: sl_dmp_ui_init
+  - name: zigbee_af_callback
+    value:
+      callback_type: init_done
+      function_name: sl_dmp_ui_init
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/dmp-ui

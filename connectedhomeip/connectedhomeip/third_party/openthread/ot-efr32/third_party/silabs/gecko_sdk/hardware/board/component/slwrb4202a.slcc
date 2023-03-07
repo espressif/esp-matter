@@ -1,0 +1,22 @@
+!!omap
+- id: slwrb4202a
+- label: SLWRB4202A
+- package: platform
+- description: Kit BSP support for the Z-Wave 700 - ZGM130S Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4202a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4202A"'
+  - name: SL_KIT_REV
+    value: '"A01"'
+- tag:
+  - kit:opn:SLWRB4202A
+  - kit:pn:WRB4202
+  - kit:variant:A
+  - kit:revision:A01

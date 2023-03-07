@@ -1,0 +1,47 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+package(default_visibility = ["//visibility:public"])
+
+# TODO(b/241456982): Not expected to build. We need a dependency on a
+# py_proto_library built from thread_proto, but that in turn depends on
+# creating a py_proto_library for tokenizer_proto.
+py_library(
+    name = "pw_thread",
+    srcs = [
+        "pw_thread/__init__.py",
+        "pw_thread/thread_analyzer.py",
+    ],
+    tags = ["manual"],
+    deps = [
+        "//pw_symbolizer/py:pw_symbolizer",
+        "//pw_thread:thread_proto_py_pb2",
+        "//pw_tokenizer/py:pw_tokenizer",
+    ],
+)
+
+# TODO(b/241456982): Not expected to build. We need a dependency on a
+# py_proto_library built from thread_proto, but that in turn depends on
+# creating a py_proto_library for tokenizer_proto.
+py_test(
+    name = "thread_analyzer_test",
+    srcs = [
+        "thread_analyzer_test.py",
+    ],
+    tags = ["manual"],
+    deps = [
+        ":pw_thread",
+        "//pw_thread:thread_proto_py_pb2",
+    ],
+)

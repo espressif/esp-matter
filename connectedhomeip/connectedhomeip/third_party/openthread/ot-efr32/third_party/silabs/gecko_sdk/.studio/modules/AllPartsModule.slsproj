@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="com.silabs.sdk.exx32.part" label="General Part Support" contentRoot=".">
+  <property key="category" value="efm32|common"/>
+  <macroDefinition name="$(partName:toUpper)" value="1" partCompatibility="mcu.arm.ef.32.*"/>
+  <macroDefinition name="$(partName:toUpper:stripEndChars(1))" value="1" partCompatibility="mcu.arm.ezr32.*"/>
+  <includePath uri="$(sdkInstallationPath:default())/platform/Device/SiliconLabs/$(partFamilyName:toUpper)/Include" partCompatibility="mcu.arm.e.*32.*" />
+  <folder name="CMSIS">
+  	<folder name="$(partFamilyName:toUpper)" partCompatibility="mcu.arm.e.*32.*" >
+	    <file name="startup_gcc_$(partFamilyName).s" uri="$(sdkInstallationPath:default())/platform/Device/SiliconLabs/$(partFamilyName:toUpper)/Source/GCC/startup_$(partFamilyName).S" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.gnu.*" />
+	    <file name="startup_iar_$(partFamilyName).s" uri="$(sdkInstallationPath:default())/platform/Device/SiliconLabs/$(partFamilyName:toUpper)/Source/IAR/startup_$(partFamilyName).s" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.iar.*" />
+	    <file name="system_$(partFamilyName).c" uri="$(sdkInstallationPath:default())/platform/Device/SiliconLabs/$(partFamilyName:toUpper)/Source/system_$(partFamilyName).c" />
+  	</folder>
+  </folder>
+  <toolOption toolId="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.linker.base" optionId="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.linker.nostdlibs" value="false" toolchainCompatibility="com.silabs.ss.tool.ide.arm.toolchain.gnu.*" />
+</project>

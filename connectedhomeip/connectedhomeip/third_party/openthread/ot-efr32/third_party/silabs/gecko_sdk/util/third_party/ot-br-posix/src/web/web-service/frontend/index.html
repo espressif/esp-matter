@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<!--
+  Copyright 2017 Openthread authors. All rights reserved.
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
+  1. Redistributions of source code must retain the above copyright
+     notice, this list of conditions and the following disclaimer.
+  2. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
+  3. Neither the name of the copyright holder nor the
+     names of its contributors may be used to endorse or promote products
+     derived from this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  POSSIBILITY OF SUCH DAMAGE.
+-->
+<html lang="en" ng-app="StarterApp">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <title>OpenThread Border Router</title>
+
+  <!-- Add to homescreen for Chrome on Android -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="icon" sizes="192x192" href="res/img/android-desktop.png">
+  <link rel="stylesheet" href="res/css/angular-material.min.css">
+
+  <!-- Add to homescreen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Material Design Lite">
+  <link rel="apple-touch-icon-precomposed" href="res/img/ios-desktop.png">
+
+  <!-- Tile icon for Win8 (144x144 + tile color) -->
+  <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+  <meta name="msapplication-TileColor" content="#3372DF">
+
+  <link rel="shortcut icon" href="res/img/favicon.png">
+
+  <!-- SEO: If your mobile URL is different from the desktop URL, add a canonical link to the desktop page https://developers.google.com/webmasters/smartphone-sites/feature-phones -->
+  <!--
+    <link rel="canonical" href="http://www.example.com/">
+    -->
+  <link rel="stylesheet" href="res/css/material.min.css">
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> -->
+  <link rel="stylesheet" href="res/css/styles.css">
+  <style>
+    #view-source {
+      position: fixed;
+      display: block;
+      right: 0;
+      bottom: 0;
+      margin-right: 40px;
+      margin-bottom: 40px;
+      z-index: 900;
+    }
+  </style>
+</head>
+
+<body ng-controller="AppCtrl">
+  <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+    <header class="demo-header mdl-layout__header mdl-color--indego-900 mdl-color-text---600">
+      <div class="mdl-layout__header-row">
+        <span class="mdl-layout-title">{{headerTitle}}</span>
+        <div class="mdl-layout-spacer"></div>
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
+
+        </div>
+      </div>
+    </header>
+    <div class="demo-drawer mdl-layout__drawer mdl-color--cyan-600 mdl-color-text--blue-grey-50">
+      <header class="demo-drawer-header">
+
+        <h4 style="margin: 18px 12px 12px 24px">OT Border Router</h4>
+      </header>
+      <nav class="demo-navigation mdl-navigation mdl-color--blue-grey-800">
+        <md-list flex>
+          <md-list-item md-ink-ripple class="mdl-navigation__link" ng-repeat="item in menu" ng-click="showPanels($index)" layout="row">
+            <div><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">{{item.icon}}</i>{{item.title}}
+            </div>
+          </md-list-item>
+        </md-list>
+        <div class="mdl-layout-spacer"></div>
+      </nav>
+    </div>
+    <main class="mdl-layout__content mdl-color--grey-100">
+      <div class="mdl-grid demo-content">
+
+        <div class="demo-charts mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid" ng-show="menu[0].show">
+          <div class="demo-charts mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid">
+            <img src="res/img/openthread_logo.png" height="100%" , width="100%">
+          </div>
+          <div class="demo-charts mdl-color--white  mdl-cell mdl-cell--12-col mdl-grid">
+            <h1>What is OpenThread?</h1>
+            <p><strong>...an open-source implementation of the Thread networking protocol.</strong>Nest has released OpenThread to make the technology used in Nest products more broadly available to developers to accelerate the development of products for the connected home.</p>
+            <p><strong>...OS and platform agnostic</strong>, with a narrow platform abstraction layer and a small memory footprint, making it highly portable.</p>
+            <p><strong>...a Thread Certified Component </strong>implementing all features defined in the Thread 1.1.1 specification. This specification defines an IPv6-based reliable, secure and low-power wireless device-to-device communication protocol for home applications.</p>
+          </div>
+
+          <div class="demo-charts mdl-color--white  mdl-cell mdl-cell--12-col mdl-grid">
+            <h4>What is OpenThread Border Router?</h4>
+            <p>In the context of a Thread Network, a Border Router is a device that provides connectivity of nodes in the Thread Network to other devices in external networks such as the wider Internet, local home and building IP networks, or virtual private networks (Figure 1).</p>
+            <img src="res/img/borderrouter.png" height="100%" , width="100%">
+          </div>
+        </div>
+
+        <div class="demo-charts mdl-color--white  mdl-cell mdl-cell--12-col mdl-shadow--2dp mdl-grid" ng-show="menu[1].show">
+          <h4>Available Thread Networks</h4>
+          <div class="mdl-cell--12-col">
+            <table class="mdl-data-table mdl-js-data-table" cellspacing="0" width="100%" ng-show="!isLoading">
+              <thead>
+                <tr>
+                  <th class="mdl-data-table__cell--non-numeric">No.</th>
+                  <th>Network Name</th>
+                  <th>Extended PAN ID</th>
+                  <th>PAN ID</th>
+                  <th>channel</th>
+                  <th>Hardware Address</th>
+                  <th>Action</th>
+
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="item in networksInfo track by $index">
+                  <td>{{$index}}</td>
+                  <td>{{item.nn}}</td>
+                  <td>{{item.xp}}</td>
+                  <td>{{item.pi}}</td>
+                  <td>{{item.ch}}</td>
+                  <td>{{item.ha}}</td>
+                  <td>
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-button show-modal" ng-click="showJoinDialog($event, $index, item)">Join</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="mdl-cell--12-col" style="margin-top: 50px" ng-show="isLoading&&menu[1].show" layout="row" layout-align="center center" ng-show="menu[1].show">
+           <md-progress-circular md-mode="indeterminate" md-diameter="100"></md-progress-circular>
+        </div>
+
+        <div layout="column" class="demo-charts mdl-color--white  mdl-cell mdl-cell--12-col mdl-shadow--2dp mdl-grid" ng-cloak ng-show="menu[2].show">
+          <h4>Form Thread Networks</h4>
+          <md-progress-linear md-mode="indeterminate" ng-show="menu[2].show&&isForming"></md-progress-linear>
+          <md-content layout-padding flex="100">
+            <form name="threadForm">
+              <div layout="row">
+                <md-input-container flex="50">
+                  <label>Network Name</label>
+                  <input required md-maxlength="16" name="networkName" ng-model="thread.networkName">
+                  <div ng-messages="threadForm.networkName.$error">
+                    <div ng-message="required">This is required.</div>
+                    <div ng-message="md-maxlength">The Network Name must be no more than 16 characters long.</div>
+                  </div>
+                </md-input-container>
+
+                <md-input-container flex="50">
+                  <label>Network Extended PAN ID</label>
+                  <input required maxlength="16" minlength="16" ng-pattern="/^[0-9a-fA-F]{16}$/" name="extPanId" ng-model="thread.extPanId">
+                  <div ng-messages="threadForm.extPanId.$error">
+                    <div ng-message="required">This is required.</div>
+                    <div ng-message-exp="['maxlength', 'minlength', 'pattern']">The Extended PAN ID must be 16 characters long.</div>
+                  </div>
+                </md-input-container>
+              </div>
+
+              <div layout="row">
+                <md-input-container flex="50">
+                  <label>PAN ID</label>
+                  <input required name="panId" ng-model="thread.panId" ng-pattern="/^0x[0-9a-fA-F]{4}$/">
+                  <div ng-messages="threadForm.panId.$error">
+                    <div ng-message="required">This is required.</div>
+                    <div ng-message-exp="['pattern']">The PAN ID must be 4 hexadecimal digits long.</div>
+                  </div>
+                </md-input-container>
+
+                <md-input-container flex="50">
+                  <label>Passphrase/Commissioner Credential</label>
+                  <input required name="passphrase" ng-minlength="6" maxlength="255" ng-model="thread.passphrase">
+                  <div ng-messages="threadForm.passphrase.$error">
+                    <div ng-message="required">This is required.</div>
+                    <div ng-message="minlength">The Passphrase must be a string between 6 and 255 characters.</div>
+                  </div>
+                </md-input-container>
+              </div>
+
+              <div layout="row">
+                <md-input-container flex="50">
+                  <label>Network Key</label>
+                  <input required minlength="32" maxlength="32" ng-pattern="/^[0-9a-fA-F]{32}$/" name="networkKey" ng-model="thread.networkKey">
+                  <div ng-messages="threadForm.NetworkKey.$error">
+                    <div ng-message-exp="['required', 'minlength', 'maxlength', 'pattern']">
+                      Network Key must be 32 hexadecimal digits long.
+                    </div>
+                  </div>
+                </md-input-container>
+
+                <md-input-container flex="50">
+                  <label>Channel</label>
+                  <input required name="channel" type="number" min="11" max="26" ng-model="thread.channel">
+                  <div ng-messages="threadForm.channel.$error">
+                    <div ng-message-exp="['required', 'min', 'max']">Channel must be in 11~26.</div>
+                  </div>
+                </md-input-container>
+              </div>
+
+              <div layout="row">
+                <md-input-container flex="100">
+                  <label>On-Mesh Prefix</label>
+                  <input required name="prefix" ng-model="thread.prefix" ng-pattern="/^(?!(::1?)(/\d*)?$)(?!([fF][eE]80:|[fF]{2}[0-9a-fA-F][0-9a-fA-F]:))(\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*)(/(1([01][0-9]|2[0-8]))|/([0-9][0-9]?))?$/">
+                  <div ng-messages="threadForm.prefix.$error">
+                    <div ng-message-exp="['required', 'pattern']">
+                      On-Mesh Prefix must match valid IPv6 prefix pattern.
+                    </div>
+                  </div>
+                </md-input-container>
+              </div>
+
+              <md-input-container class="md-block">
+                <md-checkbox name="defaultRoute" ng-model="thread.defaultRoute" required>
+                  Default Route
+                </md-checkbox>
+              </md-input-container>
+              <div>
+                <md-button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="submit" ng-click="showConfirm($event, (threadForm.networkName.$valid && threadForm.extPanId.$valid &&
+                threadForm.panId.$valid && threadForm.passphrase.$valid && threadForm.networkKey.$valid &&
+                threadForm.channel.$valid && threadForm.prefix.$valid))">Form</md-button>
+              </div>
+            </form>
+          </md-content>
+        </div>
+
+        <div class="demo-charts mdl-color--white  mdl-cell mdl-cell--12-col mdl-shadow--2dp mdl-grid" ng-show="menu[3].show">
+          <h4>Get Status</h4>
+          <md-list class="md-dense" flex=100>
+            <md-list-item class="md-3-line" ng-repeat="item in status">
+              <img ng-src="{{item.icon}}" class="md-avatar" alt="" />
+              <div class="md-list-item-text" layout="column">
+                <h3>{{ item.name }}</h3>
+                <h4>{{ item.value }}</h4>
+              </div>
+              <md-divider></md-divider>
+            </md-list-item>
+          </md-list>
+        </div>
+
+        <div class="demo-charts mdl-color--white  mdl-cell mdl-cell--12-col mdl-shadow--2dp mdl-grid" ng-show="menu[4].show">
+          <h4>Settings</h4>
+            <md-content layout-padding flex="100">
+              <form name="settingForm">
+                <div layout="row">
+                  <md-input-container flex="100">
+                    <label>On-Mesh Prefix</label>
+                    <input required name="prefix" ng-model="setting.prefix">
+                    <div ng-messages="settingForm.prefix.$error">
+                      <div ng-message="required">This is required.</div>
+                    </div>
+                  </md-input-container>
+                </div>
+
+                <md-input-container class="md-block">
+                  <md-checkbox name="defaultRoute" ng-model="setting.defaultRoute" required>
+                    Default Route
+                  </md-checkbox>
+                </md-input-container>
+                <div>
+                  <md-button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="submit" ng-click="showAddConfirm($event)">Add</md-button>
+                  <md-button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="submit" ng-click="showDeleteConfirm($event)">Delete</md-button>
+                </div>
+              </form>
+            </md-content>
+        </div>        
+        <div class="demo-charts mdl-color--white  mdl-cell mdl-cell--12-col mdl-shadow--2dp mdl-grid" ng-show="menu[5].show">
+          <h4>Commission</h4>
+            <md-content layout-padding flex="100">
+              <form name="commissionForm">
+                <div layout="row">
+                  <md-input-container flex="100">
+                    <label>Joiner PSKd</label>
+                    <input required name="pskd" ng-model="commission.pskd">
+                    <div ng-messages="commissionForm.pskd.$error">
+                      <div ng-message="required">This is required.</div>
+                    </div>
+                  </md-input-container>
+                </div>
+
+                <div>
+                  <md-button name="commissionButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="submit" ng-click="startCommission($event)">Start Commission</md-button>
+                </div>
+              </form>
+            </md-content>
+        </div>
+        <div class="demo-charts mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid" ng-show="menu[6].show">
+          <div>
+
+            <span class="status-title">&nbsp&nbspNetwork Name:&nbsp 
+            </span>
+            <span class="status-content" ng-if="basicInfo.NetworkName"> {{ basicInfo.NetworkName }}</span>
+            <span class="status-title">&nbsp&nbspLeader:&nbsp
+            </span>
+            <span class="status-content" ng-if="basicInfo.LeaderData"> {{ basicInfo.LeaderData.LeaderRouterId }}&nbsp&nbsp
+            </span>
+            
+            <span class="status-title">&nbsp&nbsp#Router:&nbsp
+            </span>
+
+            <span class="status-content"> {{ NumOfRouter }}&nbsp&nbsp
+            </span> &nbsp&nbsp&nbsp&nbsp
+
+
+
+
+            <button ng-disabled="!graphisReady" class="mdl-button mdl-js-button mdl-button--raised" ng-click="showTopology()">Reload</button>
+
+
+          </div>
+
+
+        </div>
+
+        <div class="mdl-graphs mdl-shadow--1dp  mdl-cell mdl-cell--9-col" ng-show="menu[6].show">
+          <div ng-show="graphisReady" class="d3graph" id="topograph">
+          </div>
+
+
+          <div ng-show="!graphisReady" class="load_content">
+            <div class="mdl-spinner mdl-js-spinner is-active"></div>
+
+
+          </div>
+
+        </div>
+        <div ng-show="graphisReady && menu[6].show " class="demo-cards  mdl-cell  mdl-cell--top mdl-cell--3-col mdl-cell--8-col-tablet mdl-grid mdl-grid--no-spacing">
+          <div class="demo-updates mdl-card mdl-shadow--1dp mdl-cell mdl-cell--3-col mdl-cell--3-col-tablet mdl-cell--12-col-desktop">
+            <div class="detailContainer">
+                <div class="detailElement" ng-if="isObject(detailList) && isObject(nodeDetailInfo)  "ng-repeat="(key, data) in detailList track by $index">
+
+                  <button ng-show="data.title" ng-click="clickList(key)" type="button" class="collapsible">{{ key }}</button>
+                  <div ng-show="data.content" ng-if= "data.title" class="detailContentContainer">
+
+                    <span class=detailContentValue ng-if=" !isObject(nodeDetailInfo[key])&&!isArray(nodeDetailInfo[key])">&nbsp&nbsp{{ nodeDetailInfo[key] }}</span>
+
+
+                    <ul class="a" ng-if="isArray(nodeDetailInfo[key])" ng-repeat="value in nodeDetailInfo[key] track by $index ">
+                      <li>
+
+                        <span ng-if="!isObject(value)&&!isArray(value )" class=detailContentValue>{{ value }}</span>
+
+                        <ul ng-if="isObject(value)" ng-repeat="(k1,v1) in value">
+                          <li>
+                            <span class="detailContentKey">{{ k1 }}: </span>
+
+                            <ul ng-if="isObject(v1)" ng-repeat="(k2,v2) in v1 track by $index">
+                              <li>
+                                <span class="detailContentKey">&nbsp{{ k2 }}: </span>
+                                <span class="detailContentValue">{{ v2 }} </span>
+
+                              </li>
+                            </ul>
+
+                            <span ng-if="!isObject(v1)&&!isArray(v1)" class="detailContentValue"> {{ v1 }}</span>
+                          </li>
+                        </ul>
+
+                      </li>
+                    </ul>
+
+
+
+                    <ul class="a" ng-if="isObject(nodeDetailInfo[key])" ng-repeat="(k,v) in nodeDetailInfo[key] track by $index">
+                      <li>
+                        <span class="detailContentKey">{{ k }}: </span>
+
+                        <span ng-if="!isObject(v)&&!isArray(v)" class="detailContentValue"> {{ v }}</span>
+                        <ul ng-if="isArray(v)" ng-repeat="v3 in v track by $index">
+                          <li>
+                            <ul ng-if="isObject(v3)" ng-repeat="(k4,v4) in v3 track by $index">
+
+                              <li>
+                                <span class="detailContentKey">&nbsp{{ k4 }}: </span>
+                                <span class="detailContentValue">{{ v4 }} </span>
+
+                              </li>
+                            </ul>
+
+                            <span ng-if="!isObject(v3)&&!isArray(v3)" class="detailContentValue"> {{ v1 }}</span>
+                          </li>
+                        </ul>
+
+                      </li>
+                    </ul>
+
+
+
+
+                  </div>
+               </div>
+
+
+             </div>
+          </div>
+
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="res/js/material.min.js"></script>
+  <script src="res/js/angular.min.js"></script>
+  <script src="res/js/angular-animate.min.js"></script>
+  <script src="res/js/angular-aria.min.js"></script>
+  <script src="res/js/angular-material.min.js"></script>
+  <script src="res/js/angular-messages.min.js"></script>
+  <script src="res/js/app.js"></script>
+  <script src="res/js/d3.min.js"></script>
+</body>
+
+</html>

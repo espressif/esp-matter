@@ -1,0 +1,172 @@
+project_name: bt_soc_voice
+package: Bluetooth
+label: Bluetooth - SoC Voice
+description: >
+  Voice over Bluetooth Low Energy sample application. It is supported by
+  Thunderboard Sense 2 and Thunderboard EFR32BG22 boards and demonstrates how to
+  send voice data over GATT, which is acquired from the on-board microphones.
+category: Bluetooth Examples
+quality: production
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Bluetooth"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+
+component:
+  - id: bluetooth_stack
+  - id: gatt_configuration
+  - id: bluetooth_feature_legacy_advertiser
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_gatt_server
+  - id: bluetooth_feature_sm
+  - id: bluetooth_feature_system
+  - id: in_place_ota_dfu
+  - id: bootloader_interface
+  - id: rail_util_pti
+  - id: app_log
+  - id: app_assert
+  - id: component_catalog
+  - id: iostream_usart
+    instance:
+      - vcom
+  - id: iostream_retarget_stdio
+  - id: printf
+  - id: mic_driver
+  - id: simple_button
+    instance:
+      - btn0
+  - id: simple_led
+    instance:
+      - led0
+  - id: cli
+    instance:
+      - example
+
+source:
+  - path: main.c
+  - path: app.c
+  - path: adpcm.c
+  - path: circular_buff.c
+  - path: filter.c
+  - path: voice.c
+
+include:
+  - path: .
+    file_list:
+      - path: app.h
+      - path: adpcm.h
+      - path: circular_buff.h
+      - path: filter.h
+      - path: voice.h
+
+readme:
+  - path: ../../documentation/example/soc_voice/readme.md
+
+config_file:
+  - override:
+      component: gatt_configuration
+      file_id: gatt_configuration_file_id
+    path: gatt_configuration.btconf
+    directory: btconf
+
+other_file:
+  - path: ../../script/create_bl_files.bat
+  - path: ../../script/create_bl_files.sh
+  - path: ../../documentation/example/soc_voice/readme_img0.png
+    folder: images
+  - path: ../../documentation/example/soc_voice/readme_img1.png
+    folder: images
+  - path: ../../documentation/example/soc_voice/readme_img2.png
+    folder: images
+  - path: ../../documentation/example/soc_voice/readme_img3.png
+    folder: images
+  - path: ../../documentation/example/soc_voice/readme_img4.png
+    folder: images
+  - path: ../../documentation/example/soc_voice/readme_img5.png
+    folder: images
+
+configuration:
+  - name: SL_STACK_SIZE
+    value: "2752"
+  - name: SL_HEAP_SIZE
+    value: "9200"
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+  - name: SL_UARTDRV_USART_VCOM_FLOW_CONTROL_TYPE
+    value: uartdrvFlowControlNone
+  - name: SL_MIC_PDM_DSR
+    value: "48"
+    condition:
+      - mic_pdm_driver
+  - name: SL_PSA_KEY_USER_SLOT_COUNT
+    value: "0"
+    condition:
+      - psa_crypto
+
+template_contribution:
+  - name: cli_command
+    value:
+      name: sample_rate
+      handler: cli_sample_rate
+      help: "Set sample rate in kHz"
+      shortcuts:
+        - name: s
+      argument:
+        - type: uint8
+          help: "Sample rate (8 or 16)"
+    condition:
+      - cli
+  - name: cli_command
+    value:
+      name: channels
+      handler: cli_channels
+      help: "Set channel count"
+      shortcuts:
+        - name: c
+      argument:
+        - type: uint8
+          help: "Channels (1 or 2)"
+    condition:
+      - cli
+  - name: cli_command
+    value:
+      name: filter
+      handler: cli_filter
+      help: "Set filter status"
+      shortcuts:
+        - name: f
+      argument:
+        - type: uint8
+          help: "Enable (1) / disable (0)"
+    condition:
+      - cli
+  - name: cli_command
+    value:
+      name: encoding
+      handler: cli_encoding
+      help: "Set encoding status"
+      shortcuts:
+        - name: e
+      argument:
+        - type: uint8
+          help: "Enable (1) / disable (0)"
+    condition:
+      - cli
+
+tag:
+  - prebuilt_demo
+  - hardware:rf:band:2400
+  - hardware:component:microphone
+  - hardware:component:button:1+
+  - hardware:component:led:1+
+  - hardware:component:vcom
+
+ui_hints:
+  highlight:
+    - path: config/btconf/gatt_configuration.btconf
+    - path: readme.md
+      focus: true

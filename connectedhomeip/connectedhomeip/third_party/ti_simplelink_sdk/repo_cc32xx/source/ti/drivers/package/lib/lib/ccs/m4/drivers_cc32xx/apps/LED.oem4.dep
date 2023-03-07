@@ -1,0 +1,25 @@
+package/lib/lib/ccs/m4/drivers_cc32xx/./apps/LED.oem4: apps/LED.c /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/GPIO.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/PWM.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/ClockP.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/apps/LED.h /opt/conan/ticodegen/include/stdint.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/DeviceFamily.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/gpio/GPIOCC32XX.h /opt/conan/ticodegen/include/arm_acle.h /opt/conan/ticodegen/include/stdbool.h /opt/conan/ticodegen/include/stddef.h /opt/conan/ticodegen/include/_ti_config.h /opt/conan/ticodegen/include/_stdint40.h /opt/conan/ticodegen/include/sys/stdint.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_types.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/gpio.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/pin.h /opt/conan/ticodegen/include/linkage.h /opt/conan/ticodegen/include/sys/cdefs.h /opt/conan/ticodegen/include/sys/_types.h /opt/conan/ticodegen/include/machine/_stdint.h /opt/conan/ticodegen/include/sys/_stdint.h /opt/conan/ticodegen/include/machine/_types.h /opt/conan/ticodegen/include/machine/_limits.h 
+apps/LED.c:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/GPIO.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/PWM.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/ClockP.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/apps/LED.h:
+/opt/conan/ticodegen/include/stdint.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/DeviceFamily.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/gpio/GPIOCC32XX.h:
+/opt/conan/ticodegen/include/arm_acle.h:
+/opt/conan/ticodegen/include/stdbool.h:
+/opt/conan/ticodegen/include/stddef.h:
+/opt/conan/ticodegen/include/_ti_config.h:
+/opt/conan/ticodegen/include/_stdint40.h:
+/opt/conan/ticodegen/include/sys/stdint.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/inc/hw_types.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/gpio.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/devices/cc32xx/driverlib/pin.h:
+/opt/conan/ticodegen/include/linkage.h:
+/opt/conan/ticodegen/include/sys/cdefs.h:
+/opt/conan/ticodegen/include/sys/_types.h:
+/opt/conan/ticodegen/include/machine/_stdint.h:
+/opt/conan/ticodegen/include/sys/_stdint.h:
+/opt/conan/ticodegen/include/machine/_types.h:
+/opt/conan/ticodegen/include/machine/_limits.h:

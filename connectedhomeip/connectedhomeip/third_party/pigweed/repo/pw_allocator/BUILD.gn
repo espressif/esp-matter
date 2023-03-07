@@ -1,0 +1,112 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+
+declare_args() {
+  pw_allocator_POISON_HEAP = false
+}
+
+config("default_config") {
+  include_dirs = [ "public" ]
+}
+
+config("enable_heap_poison") {
+  if (pw_allocator_POISON_HEAP) {
+    defines = [ "PW_ALLOCATOR_POISON_ENABLE=1" ]
+  }
+}
+
+group("pw_allocator") {
+  public_deps = [
+    ":block",
+    ":freelist",
+    ":freelist_heap",
+  ]
+}
+
+pw_source_set("block") {
+  public_configs = [ ":default_config" ]
+  configs = [ ":enable_heap_poison" ]
+  public = [ "public/pw_allocator/block.h" ]
+  public_deps = [
+    dir_pw_assert,
+    dir_pw_span,
+    dir_pw_status,
+  ]
+  sources = [ "block.cc" ]
+}
+
+pw_source_set("freelist") {
+  public_configs = [ ":default_config" ]
+  configs = [ ":enable_heap_poison" ]
+  public = [ "public/pw_allocator/freelist.h" ]
+  public_deps = [
+    "$dir_pw_containers:vector",
+    dir_pw_span,
+    dir_pw_status,
+  ]
+  sources = [ "freelist.cc" ]
+}
+
+pw_source_set("freelist_heap") {
+  public_configs = [ ":default_config" ]
+  configs = [ ":enable_heap_poison" ]
+  public = [ "public/pw_allocator/freelist_heap.h" ]
+  public_deps = [
+    ":block",
+    ":freelist",
+  ]
+  deps = [
+    dir_pw_assert,
+    dir_pw_log,
+    dir_pw_span,
+  ]
+  sources = [ "freelist_heap.cc" ]
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":block_test",
+    ":freelist_test",
+    ":freelist_heap_test",
+  ]
+}
+
+pw_test("block_test") {
+  configs = [ ":enable_heap_poison" ]
+  deps = [ ":block" ]
+  sources = [ "block_test.cc" ]
+}
+
+pw_test("freelist_test") {
+  configs = [ ":enable_heap_poison" ]
+  deps = [ ":freelist" ]
+  sources = [ "freelist_test.cc" ]
+}
+
+pw_test("freelist_heap_test") {
+  configs = [ ":enable_heap_poison" ]
+  deps = [ ":freelist_heap" ]
+  sources = [ "freelist_heap_test.cc" ]
+}
+
+pw_doc_group("docs") {
+  inputs = [ "doc_resources/pw_allocator_heap_visualizer_demo.png" ]
+  sources = [ "docs.rst" ]
+}

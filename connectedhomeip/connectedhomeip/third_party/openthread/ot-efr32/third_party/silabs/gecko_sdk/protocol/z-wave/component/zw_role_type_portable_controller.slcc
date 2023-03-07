@@ -1,0 +1,18 @@
+id: zw_portable_controller
+label: Z-Wave Portable Controller
+category: Z-Wave|Role Types
+description: Z-Wave Portable Controller Role Type is intended for portable controllers that can setup and maintain a Z-Wave network but do not require unsolicited reporting. It is typically used by home control remotes that control a few lights.
+package: Z-Wave
+quality: production
+define:
+  - name: ZW_CONTROLLER_PORTABLE
+  - name: ZW_CONTROLLER
+  - name: HOST_SECURITY_INCLUDED
+requires:
+  - name: mbedtls_sha1
+    condition: [device_series_1]
+  - name: psa_crypto_sha1
+    condition: [device_series_2]
+provides:
+  - name: zw_portable_controller
+  - name: zw_role_type

@@ -1,0 +1,44 @@
+id: "connect_ota_unicast_bootloader_server"
+label: "OTA Unicast Bootloader Server"
+package: "Flex"
+category: "Connect|OTA"
+quality: "production"
+description: "Implements the server side of the Connect OTA Unicast Bootloader protocol. The OTA Unicast Bootloader Server component should be used to distribute an image from the server to a target device (client) in a reliable unicast fashion and to instruct a target device to initiate a bootload."
+provides:
+  - name: "connect_ota_unicast_bootloader_server"
+requires:
+  - name: "connect_stack_common"
+source:
+      - path: "protocol/flex/ota-unicast-bootloader/ota-unicast-bootloader-server/ota-unicast-bootloader-server.c"
+      - path: "protocol/flex/ota-unicast-bootloader/ota-unicast-bootloader-server/ota-unicast-bootloader-server-cb.c"
+include:
+  - path: "protocol/flex/ota-unicast-bootloader"
+    file_list:
+      - path: "ota-unicast-bootloader-common-internal.h"
+      - path: "ota-unicast-bootloader-protocol.h"
+      - path: "ota-unicast-bootloader-types.h"
+  - path: "protocol/flex/ota-unicast-bootloader/ota-unicast-bootloader-server"
+    file_list:
+      - path: "ota-unicast-bootloader-server.h"
+      - path: "ota-unicast-bootloader-server-internal.h"
+config_file:
+  - path: "protocol/flex/ota-unicast-bootloader/ota-unicast-bootloader-server/config/ota-unicast-bootloader-server-config.h"
+template_contribution:
+  - name: stack_callback
+    value:
+      callback_type: "incoming_message"
+      function_name: "emAfPluginOtaUnicastBootloaderServerIncomingMessageCallback"
+  - name: stack_callback
+    value:
+      callback_type: "message_sent"
+      function_name: "emAfPluginOtaUnicastBootloaderServerMessageSentCallback"
+  - name: event_system
+    value:
+      event_control: "emAfPluginOtaUnicastBootloaderServerEventControl"
+      event_handler: "emAfPluginOtaUnicastBootloaderServerEventHandler"
+  - name: component_catalog
+    value: connect_ota_unicast_bootloader_server
+
+documentation:
+  docset: connect-stack
+  document: group-ota-unicast-bootloader-server

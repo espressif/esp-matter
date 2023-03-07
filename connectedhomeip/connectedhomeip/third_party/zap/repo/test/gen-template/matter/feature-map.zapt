@@ -1,0 +1,12 @@
+Test for feature map generation:
+
+{{#zcl_clusters}}
+Cluster: {{label}}
+{{#global_attribute_default code="0xFFFC"}}
+- default value: {{defaultValue}}
+- feature bits for the feature map attribute:
+{{#feature_bits}}
+    {{index}}: Bit {{bit}} is assigned to tag {{tag}} => value = {{value}}
+{{/feature_bits}}
+{{/global_attribute_default}}
+{{/zcl_clusters}}

@@ -1,0 +1,28 @@
+id: zigbee_cbke_dsa_verify
+label: CBKE DSA verify
+package: Zigbee
+category: Zigbee|Stack
+quality: production
+
+description: This library is a part of the CBKE library that manages 163k1 curve DSA Verification using the ECDSA algorithm.  It may used by the Zigbee OTA client cluster to verify signed upgrade images.
+
+provides:
+  - name: zigbee_cbke_dsa_verify
+
+requires:
+  - name: zigbee_cbke_dsa_verify_implementation
+  - name: zigbee_cbke_dsa_verify_library
+    condition:
+      - zigbee_force_libraries
+  - name: zigbee_cbke_163k1
+
+recommends:
+  - id: zigbee_cbke_dsa_verify_source
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_cbke_dsa_verify
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/cbke-dsa-verify

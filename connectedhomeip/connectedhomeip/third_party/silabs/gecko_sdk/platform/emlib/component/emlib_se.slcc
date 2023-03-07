@@ -1,0 +1,32 @@
+id: emlib_se
+label: SE
+package: platform
+description: >
+  Secure Element API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_se.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_se.h"
+provides:
+  - name: emlib_se
+requires:
+  - name: device
+  - name: device_series_2
+  - name: emlib_common
+  - name: cmsis_core
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efr32xg21/group-se
+      condition: [device_sdid_200]
+    - page: emlib/api/efr32xg22/group-se
+      condition: [device_sdid_205]
+    - page: emlib/api/efr32xg23/group-se
+      condition: [device_sdid_210]
+    - page: emlib/api/efr32xg24/group-se
+      condition: [device_sdid_215]

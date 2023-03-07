@@ -1,0 +1,22 @@
+!!omap
+- id: slwrb4302a
+- label: SLWRB4302A
+- package: platform
+- description: Kit BSP support for the BGM121 Blue Gecko Module Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4302a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4302A"'
+  - name: SL_KIT_REV
+    value: '"A02"'
+- tag:
+  - kit:opn:SLWRB4302A
+  - kit:pn:WRB4302
+  - kit:variant:A
+  - kit:revision:A02

@@ -1,0 +1,14 @@
+# Copyright (c) 2022 Arm Limited and Contributors. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+.autobot:
+  image: ${OPEN_IOT_SDK_DOCKER_REGISTRY}/sanity:v1
+  script:
+    - env
+    - repo_url=$(echo ${CI_REPOSITORY_URL}  | cut -d@ -f2)
+    - git remote set-url origin "https://${GITLAB_USER_ID}:${UPDATE_JOB_TOKEN}@${repo_url}"
+    - git config --global user.email "autobot-noreply@arm.com"
+    - git config --global user.name "autobot"
+    - python developer-tools/templates/autobot/update_components.py --server-url "${CI_SERVER_URL}" --private-token "${UPDATE_JOB_TOKEN}" --project-id "${CI_PROJECT_ID}" --target-branch "${CI_COMMIT_REF_NAME}"
+  rules:
+    - if: $UPDATE_COMPONENTS == "true"

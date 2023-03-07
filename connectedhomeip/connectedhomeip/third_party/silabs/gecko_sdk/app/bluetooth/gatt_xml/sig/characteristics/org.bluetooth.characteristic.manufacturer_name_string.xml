@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved.  -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.manufacturer_name_string" uuid="2A29" name="Manufacturer Name String" last-modified="2011-05-24" approved="Yes">
+	<InformativeText>
+        <Abstract>
+        The value of this characteristic is a UTF-8 string representing the name of the manufacturer of the device.            
+		</Abstract>
+    </InformativeText>
+	<Value>
+		<Field name="Manufacturer Name">
+			<Requirement>Mandatory</Requirement>
+			<Format>utf8s</Format>
+		</Field>
+	</Value>
+</Characteristic>

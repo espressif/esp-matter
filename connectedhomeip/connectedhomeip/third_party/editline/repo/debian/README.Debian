@@ -1,0 +1,9 @@
+editline for Debian
+----------------------
+
+This is packaged in typical Debian form with a shared library version and
+a static library version.  It will be a rare package that wishes to
+use the shared library form, the static one is only adds about 12.5kb
+to your program.
+
+ -- Jim Studt <jim@federated.com>, Fri,  5 May 2000 13:25:51 -0500

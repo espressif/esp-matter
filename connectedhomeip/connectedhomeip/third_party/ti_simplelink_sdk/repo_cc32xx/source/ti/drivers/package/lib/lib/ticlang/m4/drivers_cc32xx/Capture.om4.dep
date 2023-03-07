@@ -1,0 +1,4 @@
+package/lib/lib/ticlang/m4/drivers_cc32xx/Capture.om4: Capture.c /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/Capture.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/HwiP.h 
+Capture.c:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/Capture.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/HwiP.h:

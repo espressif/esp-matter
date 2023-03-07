@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!--  This file conforms to the DTD xdc/bld/build.dtd -->
+<package name="iar.rov.server" version="1, 0, 0" producerId="/db/ztree/library/trees/rov/rov-m39/src/">
+    <units>
+        <module name="CallBack"/>
+        <module name="CallStack"/>
+        <module name="Main"/>
+        <module name="Server"/>
+        <module name="SymbolTable"/>
+    </units>
+    <sources>
+    </sources>
+    <configscripts>
+    </configscripts>
+    <makefiles>
+        <srcFile name="package.mak" src="package.bld"/>
+        <srcFile name="package/package.xdc.dep" src="package.xdc"/>
+        <srcFile name="package/package.cfg.dep" src="package.xdc"/>
+        <srcFile name="package/rel/iar_rov_server,src.zip.dep" src="package/rel/iar_rov_server,src.xdc.inc"/>
+        <srcFile name="package/rel/iar_rov_server.zip.dep" src="package/rel/iar_rov_server.xdc.inc"/>
+    </makefiles>
+    <targets>
+    </targets>
+    <libraries>
+    </libraries>
+    <configurations>
+    </configurations>
+    <executables>
+    </executables>
+    <tests>
+    </tests>
+    <releases relDir="package/rel/">
+    <release name="iar_rov_server,src"
+        pname="../../..//../exports/iar_rov_server,src.zip"
+        label="undefined"
+    >
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+        <file name="java/package.jar"/>
+        <file name="package/package.cfg.xdc.inc"/>
+    </release>
+    <release name="iar_rov_server"
+        pname="../../..//../exports/iar_rov_server.zip"
+        label="default"
+    >
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+        <file name="java/package.jar"/>
+        <file name="package/package.cfg.xdc.inc"/>
+    </release>
+    </releases>
+    <repositories>
+    </repositories>
+</package>

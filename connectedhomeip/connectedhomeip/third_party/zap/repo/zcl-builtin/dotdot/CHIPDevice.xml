@@ -1,0 +1,2142 @@
+<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:device
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:type="http://zigbee.org/zcl/types" 
+	xmlns:zcl="http://zigbee.org/zcl/clusters"
+	xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd">
+  <deviceType>
+    <name>onoffswitch</name>
+    <domain>CHIP</domain>
+    <typeName>On/Off Switch</typeName>
+    <deviceId revision="1" editable="false">0x0000</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="true" server="false" clientLocked="true" serverLocked="true">OnOff</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Scenes</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Groups</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>levelcontrolswitch</name>
+    <domain>CHIP</domain>
+    <typeName>Level Control Switch</typeName>
+    <deviceId revision="1" editable="false">0x0001</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="true" server="false" clientLocked="true" serverLocked="true">OnOff</include>
+      <include client="true" server="false" clientLocked="true" serverLocked="true">Level</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">On/Off Switch Configuration</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Scenes</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Groups</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>onnoffoutput</name>
+    <domain>CHIP</domain>
+    <typeName>On/Off Output</typeName>
+    <deviceId revision="1" editable="false">0x0002</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">OnOff</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Scenes</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Groups</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>levelcontrollableoutput</name>
+    <domain>CHIP</domain>
+    <typeName>Level Controllable Output</typeName>
+    <deviceId revision="1" editable="false">0x0003</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">OnOff</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Level</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Scenes</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Groups</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>sceneselector</name>
+    <domain>CHIP</domain>
+    <typeName>Scene Selector</typeName>
+    <deviceId revision="1" editable="false">0x0004</deviceId>
+    <revision>1</revision>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="true" server="false" clientLocked="true" serverLocked="true">Scenes</include>
+      <include client="true" server="false" clientLocked="true" serverLocked="true">Groups</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>configurationtool</name>
+    <domain>CHIP</domain>
+    <typeName>Configuration Tool</typeName>
+    <deviceId revision="1" editable="false">0x0005</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="false" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Groups</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Scenes</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">IlluminanceLevelSensing</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">TemperatureMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">PressureMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">FlowMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">OccupancySensing</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">PumpConfigurationAndControl</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">ShadeConfiguration</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">ThermostatUserInterfaceConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>remotecontrol</name>
+    <domain>CHIP</domain>
+    <typeName>Remote Control</typeName>
+    <deviceId revision="1" editable="false">0x0006</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="false" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Alarms</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Metering</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">OnOff</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Level</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Groups</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Scenes</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">ColorControl</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">PumpConfigurationAndControl</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">ShadeConfiguration</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">On/Off Switch Configuration</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">TemperatureMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">IlluminanceLevelSensing</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">IlluminanceMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">WindowCovering</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">DoorLock</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Thermostat</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>combinedinterface</name>
+    <domain>CHIP</domain>
+    <typeName>Combined Interface</typeName>
+    <deviceId revision="1" editable="false">0x0007</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="false" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">ColorControl</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">PumpConfigurationAndControl</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">ShadeConfiguration</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">On/Off Switch Configuration</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">TemperatureMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">IlluminanceLevelSensing</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">IlluminanceMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">ThermostatUserInterfaceConfiguration</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Level</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Groups</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Scenes</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">WindowCovering</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">DoorLock</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Thermostat</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">OnOff</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>rangeextender</name>
+    <domain>CHIP</domain>
+    <typeName>Range Extender</typeName>
+    <deviceId revision="1" editable="false">0x0008</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>mainspoweroutlet</name>
+    <domain>CHIP</domain>
+    <typeName>Mains Power Outlet</typeName>
+    <deviceId revision="1" editable="false">0x0009</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">OnOff</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Scenes</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Groups</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>doorlock</name>
+    <domain>CHIP</domain>
+    <typeName>DoorLock</typeName>
+    <deviceId revision="1" editable="false">0x000A</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">DoorLock</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Scenes</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Groups</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>doorlockcontroller</name>
+    <domain>CHIP</domain>
+    <typeName>DoorLock Controller</typeName>
+    <deviceId revision="1" editable="false">0x000B</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="true" server="false" clientLocked="true" serverLocked="true">DoorLock</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Time</include>
+      <include client="true" server="false" clientLocked="true" serverLocked="true">Scenes</include>
+      <include client="true" server="false" clientLocked="true" serverLocked="true">Groups</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>simplesensor</name>
+    <domain>CHIP</domain>
+    <typeName>Simple Sensor</typeName>
+    <deviceId revision="1" editable="false">0x000C</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Binary Input (Basic)</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>consumptionawarenessdevice</name>
+    <domain>CHIP</domain>
+    <typeName>Consumption Awareness Device</typeName>
+    <deviceId revision="1" editable="false">0x000D</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="true" clientLocked="false" serverLocked="true">Metering</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>homegateway</name>
+    <domain>CHIP</domain>
+    <typeName>Home Gateway</typeName>
+    <deviceId revision="1" editable="false">0x0050</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="true" clientLocked="false" serverLocked="true">Time</include>
+      <include client="true" server="false" clientLocked="true" serverLocked="false">Metering</include>
+      <include client="true" server="false" clientLocked="true" serverLocked="true">Meter Identification</include>
+      <include client="true" server="false" clientLocked="true" serverLocked="true">Power Profile</include>
+      <include client="true" server="false" clientLocked="true" serverLocked="true">Appliance Statistics</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Appliance Control</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Appliance Identification</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Appliance Events and Alert</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Price</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>smartplug</name>
+    <domain>CHIP</domain>
+    <typeName>Smart Plug</typeName>
+    <deviceId revision="1" editable="false">0x0051</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">OnOff</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Metering</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Demand Response and Load Control</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Price</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>whitegoods</name>
+    <domain>CHIP</domain>
+    <typeName>White Goods</typeName>
+    <deviceId revision="1" editable="false">0x0052</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Meter Identification</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Price</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Power Profile</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Appliance Statistics</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Appliance Control</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Appliance Identification</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Appliance Events and Alert</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Metering</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>meterinterface</name>
+    <domain>CHIP</domain>
+    <typeName>Meter Interface</typeName>
+    <deviceId revision="1" editable="false">0x0053</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Metering</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Meter Identification</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Messaging</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Price</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>shade</name>
+    <domain>CHIP</domain>
+    <typeName>Shade</typeName>
+    <deviceId revision="1" editable="false">0x0200</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">ShadeConfiguration</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">OnOff</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Level</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Scenes</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Groups</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>shadecontroller</name>
+    <domain>CHIP</domain>
+    <typeName>Shade Controller</typeName>
+    <deviceId revision="1" editable="false">0x0201</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="true" server="false" clientLocked="true" serverLocked="true">OnOff</include>
+      <include client="true" server="false" clientLocked="true" serverLocked="true">Level</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">ShadeConfiguration</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Scenes</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Groups</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>windowcovering</name>
+    <domain>CHIP</domain>
+    <typeName>WindowCovering</typeName>
+    <deviceId revision="1" editable="false">0x0202</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">WindowCovering</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Scenes</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Groups</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>windowcoveringcontroller</name>
+    <domain>CHIP</domain>
+    <typeName>WindowCovering Controller</typeName>
+    <deviceId revision="1" editable="false">0x0203</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="true" server="false" clientLocked="true" serverLocked="true">WindowCovering</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Scenes</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Groups</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>heatingcoolingunit</name>
+    <domain>CHIP</domain>
+    <typeName>Heating Cooling Unit</typeName>
+    <deviceId revision="1" editable="false">0x0300</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">OnOff</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Thermostat</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">FanControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Level</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Groups</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>thermostat</name>
+    <domain>CHIP</domain>
+    <typeName>Thermostat</typeName>
+    <deviceId revision="1" editable="false">0x0301</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Thermostat</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Scenes</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Groups</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ThermostatUserInterfaceConfiguration</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">FanControl</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">TemperatureMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OccupancySensing</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Relative Humidity Measurement</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>tempsensor</name>
+    <domain>CHIP</domain>
+    <typeName>Temperature Sensor</typeName>
+    <deviceId revision="1" editable="false">0x0302</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">TemperatureMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Groups</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>pump</name>
+    <domain>CHIP</domain>
+    <typeName>Pump</typeName>
+    <deviceId revision="1" editable="false">0x0303</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">PumpConfigurationAndControl</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">OnOff</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Scenes</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Groups</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Level</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">PressureMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">TemperatureMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">FlowMeasurement</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>pumpcontroller</name>
+    <domain>CHIP</domain>
+    <typeName>Pump Controller</typeName>
+    <deviceId revision="1" editable="false">0x0304</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="true" server="false" clientLocked="true" serverLocked="true">PumpConfigurationAndControl</include>
+      <include client="true" server="false" clientLocked="true" serverLocked="true">OnOff</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Scenes</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Groups</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">PressureMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">TemperatureMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">FlowMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Level</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>pressuresensor</name>
+    <domain>CHIP</domain>
+    <typeName>Pressure Sensor</typeName>
+    <deviceId revision="1" editable="false">0x0305</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">PressureMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Groups</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>flowsensor</name>
+    <domain>CHIP</domain>
+    <typeName>Flow Sensor</typeName>
+    <deviceId revision="1" editable="false">0x0306</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">FlowMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Groups</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>iascie</name>
+    <domain>CHIP</domain>
+    <typeName>IAS Control and Indication Equipment</typeName>
+    <deviceId revision="1" editable="false">0x0400</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">IASACE</include>
+      <include client="true" server="false" clientLocked="true" serverLocked="true">IASWD</include>
+      <include client="true" server="false" clientLocked="true" serverLocked="true">IASZone</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Scenes</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Groups</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>iasace</name>
+    <domain>CHIP</domain>
+    <typeName>IAS Ancillary Control Equipment</typeName>
+    <deviceId revision="1" editable="false">0x0401</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">IASZone</include>
+      <include client="true" server="false" clientLocked="true" serverLocked="true">IASACE</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>iaszone</name>
+    <domain>CHIP</domain>
+    <typeName>IASZone</typeName>
+    <deviceId revision="1" editable="false">0x0402</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">IASZone</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>iasW</name>
+    <domain>CHIP</domain>
+    <typeName>IAS Warning</typeName>
+    <deviceId revision="1" editable="false">0x0403</deviceId>
+    <clusters lockOthers="true">
+      <include client="false" server="true" clientLocked="true" serverLocked="true">Basic</include>
+      <include client="true" server="true" clientLocked="true" serverLocked="true">Identify</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PowerConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">DeviceTemperatureConfiguration</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Alarms</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">IASWD</include>
+      <include client="false" server="true" clientLocked="true" serverLocked="true">IASZone</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Scenes</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">Groups</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">PollControl</include>
+      <include client="false" server="false" clientLocked="true" serverLocked="false">ElectricalMeasurement</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="true">Time</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">OTAUpgrade</include>
+      <include client="false" server="false" clientLocked="false" serverLocked="false">Partition</include>
+    </clusters>
+  </deviceType>
+
+<deviceType>
+    <name>onofflight</name>
+    <domain>CHIP</domain>
+    <typeName>On/Off Light</typeName>
+    <deviceId revision="1" editable="false">0x0100</deviceId>
+    <clusters lockOthers="true">
+      <include cluster="Basic" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>ZCLVersion</requireAttribute>
+        <requireAttribute>ApplicationVersion</requireAttribute>
+        <requireAttribute>StackVersion</requireAttribute>
+        <requireAttribute>HWVersion</requireAttribute>
+        <requireAttribute>ManufacturerName</requireAttribute>
+        <requireAttribute>ModelIdentifier</requireAttribute>
+        <requireAttribute>DateCode</requireAttribute>
+        <requireAttribute>PowerSource</requireAttribute>
+        <requireAttribute>GenericDevice-Class</requireAttribute>
+        <requireAttribute>GenericDevice-Type</requireAttribute>
+        <requireAttribute>ProductCode</requireAttribute>
+        <requireAttribute>ProductURL</requireAttribute>
+        <requireAttribute>SWBuildID</requireAttribute>
+      </include>
+      <include cluster="Identify" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>IdentifyTime</requireAttribute>
+        <requireCommand>Identify</requireCommand>
+        <requireCommand>IdentifyQuery</requireCommand>
+        <requireCommand>TriggerEffect</requireCommand>
+      </include>
+      <include cluster="Groups" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>NameSupport</requireAttribute>
+        <requireCommand>AddGroup</requireCommand>
+        <requireCommand>ViewGroup</requireCommand>
+        <requireCommand>GetGroupMembership</requireCommand>
+        <requireCommand>RemoveGroup</requireCommand>
+        <requireCommand>RemoveAllGroups</requireCommand>
+        <requireCommand>AddGroupIfIdentifying</requireCommand>
+      </include>
+      <include cluster="Scenes" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>SceneCount</requireAttribute>
+        <requireAttribute>CurrentScene</requireAttribute>
+        <requireAttribute>CurrentGroup</requireAttribute>
+        <requireAttribute>SceneValid</requireAttribute>
+        <requireAttribute>NameSupport</requireAttribute>
+        <requireCommand>AddScene</requireCommand>
+        <requireCommand>ViewScene</requireCommand>
+        <requireCommand>RemoveScene</requireCommand>
+        <requireCommand>RemoveAllScenes</requireCommand>
+        <requireCommand>StoreScene</requireCommand>
+        <requireCommand>RecallScene</requireCommand>
+        <requireCommand>GetSceneMembership</requireCommand>
+        <requireCommand>EnhancedAddScene</requireCommand>
+        <requireCommand>EnhancedViewScene</requireCommand>
+        <requireCommand>CopyScene</requireCommand>
+      </include>
+      <include cluster="OnOff" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>OnOff</requireAttribute>
+        <requireAttribute>GlobalSceneControl</requireAttribute>
+        <requireAttribute>OnTime</requireAttribute>
+        <requireAttribute>OffWaitTime</requireAttribute>
+        <requireAttribute>StartUpOnOff</requireAttribute>
+        <requireCommand>Off</requireCommand>
+        <requireCommand>On</requireCommand>
+        <requireCommand>Toggle</requireCommand>
+        <requireCommand>OffWithEffect</requireCommand>
+        <requireCommand>OnWithRecallGlobalScene</requireCommand>
+        <requireCommand>OnWithTimedOff</requireCommand>
+      </include>
+      <include cluster="Level" client="false" server="true" clientLocked="true" serverLocked="false"/>
+      <include cluster="OTAUpgrade" client="true" server="false" clientLocked="false" serverLocked="true"/>
+      <include cluster="OccupancySensing" client="true" server="false" clientLocked="false" serverLocked="true"/>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>dimmablelight</name>
+    <domain>CHIP</domain>
+    <typeName>Dimmable Light</typeName>
+    <deviceId revision="1" editable="false">0x0101</deviceId>
+    <clusters lockOthers="true">
+      <include cluster="Basic" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>ZCLVersion</requireAttribute>
+        <requireAttribute>ApplicationVersion</requireAttribute>
+        <requireAttribute>StackVersion</requireAttribute>
+        <requireAttribute>HWVersion</requireAttribute>
+        <requireAttribute>ManufacturerName</requireAttribute>
+        <requireAttribute>ModelIdentifier</requireAttribute>
+        <requireAttribute>DateCode</requireAttribute>
+        <requireAttribute>PowerSource</requireAttribute>
+        <requireAttribute>GenericDevice-Class</requireAttribute>
+        <requireAttribute>GenericDevice-Type</requireAttribute>
+        <requireAttribute>ProductCode</requireAttribute>
+        <requireAttribute>ProductURL</requireAttribute>
+        <requireAttribute>SWBuildID</requireAttribute>
+      </include>
+      <include cluster="Identify" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>IdentifyTime</requireAttribute>
+        <requireCommand>Identify</requireCommand>
+        <requireCommand>IdentifyQuery</requireCommand>
+        <requireCommand>TriggerEffect</requireCommand>
+      </include>
+      <include cluster="Groups" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>NameSupport</requireAttribute>
+        <requireCommand>AddGroup</requireCommand>
+        <requireCommand>ViewGroup</requireCommand>
+        <requireCommand>GetGroupMembership</requireCommand>
+        <requireCommand>RemoveGroup</requireCommand>
+        <requireCommand>RemoveAllGroups</requireCommand>
+        <requireCommand>AddGroupIfIdentifying</requireCommand>
+      </include>
+      <include cluster="Scenes" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>SceneCount</requireAttribute>
+        <requireAttribute>CurrentScene</requireAttribute>
+        <requireAttribute>CurrentGroup</requireAttribute>
+        <requireAttribute>SceneValid</requireAttribute>
+        <requireAttribute>NameSupport</requireAttribute>
+        <requireCommand>AddScene</requireCommand>
+        <requireCommand>ViewScene</requireCommand>
+        <requireCommand>RemoveScene</requireCommand>
+        <requireCommand>RemoveAllScenes</requireCommand>
+        <requireCommand>StoreScene</requireCommand>
+        <requireCommand>RecallScene</requireCommand>
+        <requireCommand>GetSceneMembership</requireCommand>
+        <requireCommand>EnhancedAddScene</requireCommand>
+        <requireCommand>EnhancedViewScene</requireCommand>
+        <requireCommand>CopyScene</requireCommand>
+      </include>
+      <include cluster="OnOff" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>OnOff</requireAttribute>
+        <requireAttribute>GlobalSceneControl</requireAttribute>
+        <requireAttribute>OnTime</requireAttribute>
+        <requireAttribute>OffWaitTime</requireAttribute>
+        <requireAttribute>StartUpOnOff</requireAttribute>
+        <requireCommand>Off</requireCommand>
+        <requireCommand>On</requireCommand>
+        <requireCommand>Toggle</requireCommand>
+        <requireCommand>OffWithEffect</requireCommand>
+        <requireCommand>OnWithRecallGlobalScene</requireCommand>
+        <requireCommand>OnWithTimedOff</requireCommand>
+      </include>
+      <include cluster="Level" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>CurrentLevel</requireAttribute>
+        <requireAttribute>Options</requireAttribute>
+        <requireAttribute>RemainingTime</requireAttribute>
+        <requireAttribute>StartUpCurrentLevel</requireAttribute>
+        <requireCommand>MoveToLevel</requireCommand>
+        <requireCommand>Move</requireCommand>
+        <requireCommand>Step</requireCommand>
+        <requireCommand>Stop</requireCommand>
+        <requireCommand>MoveToLevelWithOnOff</requireCommand>
+        <requireCommand>MoveWithOnOff</requireCommand>
+        <requireCommand>StepWithOnOff</requireCommand>
+        <requireCommand>StopWithOnOff</requireCommand>
+      </include>
+      <include cluster="OTAUpgrade" client="true" server="false" clientLocked="false" serverLocked="true"/>
+      <include cluster="OccupancySensing" client="true" server="false" clientLocked="false" serverLocked="true"/>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>colordimmablelight</name>
+    <domain>CHIP</domain>
+    <typeName>Color Dimmable Light</typeName>
+    <deviceId revision="1" editable="false">0x0102</deviceId>
+    <clusters lockOthers="true">
+      <include cluster="Basic" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>ZCLVersion</requireAttribute>
+        <requireAttribute>ApplicationVersion</requireAttribute>
+        <requireAttribute>StackVersion</requireAttribute>
+        <requireAttribute>HWVersion</requireAttribute>
+        <requireAttribute>ManufacturerName</requireAttribute>
+        <requireAttribute>ModelIdentifier</requireAttribute>
+        <requireAttribute>DateCode</requireAttribute>
+        <requireAttribute>PowerSource</requireAttribute>
+        <requireAttribute>GenericDevice-Class</requireAttribute>
+        <requireAttribute>GenericDevice-Type</requireAttribute>
+        <requireAttribute>ProductCode</requireAttribute>
+        <requireAttribute>ProductURL</requireAttribute>
+        <requireAttribute>SWBuildID</requireAttribute>
+      </include>
+      <include cluster="Identify" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>IdentifyTime</requireAttribute>
+        <requireCommand>Identify</requireCommand>
+        <requireCommand>IdentifyQuery</requireCommand>
+        <requireCommand>TriggerEffect</requireCommand>
+      </include>
+      <include cluster="Groups" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>NameSupport</requireAttribute>
+        <requireCommand>AddGroup</requireCommand>
+        <requireCommand>ViewGroup</requireCommand>
+        <requireCommand>GetGroupMembership</requireCommand>
+        <requireCommand>RemoveGroup</requireCommand>
+        <requireCommand>RemoveAllGroups</requireCommand>
+        <requireCommand>AddGroupIfIdentifying</requireCommand>
+      </include>
+      <include cluster="Scenes" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>SceneCount</requireAttribute>
+        <requireAttribute>CurrentScene</requireAttribute>
+        <requireAttribute>CurrentGroup</requireAttribute>
+        <requireAttribute>SceneValid</requireAttribute>
+        <requireAttribute>NameSupport</requireAttribute>
+        <requireCommand>AddScene</requireCommand>
+        <requireCommand>ViewScene</requireCommand>
+        <requireCommand>RemoveScene</requireCommand>
+        <requireCommand>RemoveAllScenes</requireCommand>
+        <requireCommand>StoreScene</requireCommand>
+        <requireCommand>RecallScene</requireCommand>
+        <requireCommand>GetSceneMembership</requireCommand>
+        <requireCommand>EnhancedAddScene</requireCommand>
+        <requireCommand>EnhancedViewScene</requireCommand>
+        <requireCommand>CopyScene</requireCommand>
+      </include>
+      <include cluster="OnOff" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>OnOff</requireAttribute>
+        <requireAttribute>GlobalSceneControl</requireAttribute>
+        <requireAttribute>OnTime</requireAttribute>
+        <requireAttribute>OffWaitTime</requireAttribute>
+        <requireAttribute>StartUpOnOff</requireAttribute>
+        <requireCommand>Off</requireCommand>
+        <requireCommand>On</requireCommand>
+        <requireCommand>Toggle</requireCommand>
+        <requireCommand>OffWithEffect</requireCommand>
+        <requireCommand>OnWithRecallGlobalScene</requireCommand>
+        <requireCommand>OnWithTimedOff</requireCommand>
+      </include>
+      <include cluster="Level" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>CurrentLevel</requireAttribute>
+        <requireAttribute>Options</requireAttribute>
+        <requireAttribute>RemainingTime</requireAttribute>
+        <requireAttribute>StartUpCurrentLevel</requireAttribute>
+        <requireCommand>MoveToLevel</requireCommand>
+        <requireCommand>Move</requireCommand>
+        <requireCommand>Step</requireCommand>
+        <requireCommand>Stop</requireCommand>
+        <requireCommand>MoveToLevelWithOnOff</requireCommand>
+        <requireCommand>MoveWithOnOff</requireCommand>
+        <requireCommand>StepWithOnOff</requireCommand>
+        <requireCommand>StopWithOnOff</requireCommand>
+      </include>
+      <include cluster="ColorControl" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>CurrentHue</requireAttribute>
+        <requireAttribute>CurrentSaturation</requireAttribute>
+        <requireAttribute>RemainingTime</requireAttribute>
+        <requireAttribute>CurrentX</requireAttribute>
+        <requireAttribute>CurrentY</requireAttribute>
+        <requireAttribute>ColorMode</requireAttribute>
+        <requireAttribute>Options</requireAttribute>
+        <requireAttribute>NumberOfPrimaries</requireAttribute>
+        <requireAttribute>Primary1X</requireAttribute>
+        <requireAttribute>Primary1Y</requireAttribute>
+        <requireAttribute>Primary1Intensity</requireAttribute>
+        <requireAttribute>Primary2X</requireAttribute>
+        <requireAttribute>Primary2Y</requireAttribute>
+        <requireAttribute>Primary2Intensity</requireAttribute>
+        <requireAttribute>Primary3X</requireAttribute>
+        <requireAttribute>Primary3Y</requireAttribute>
+        <requireAttribute>Primary3Intensity</requireAttribute>
+        <requireAttribute>Primary4X</requireAttribute>
+        <requireAttribute>Primary4Y</requireAttribute>
+        <requireAttribute>Primary4Intensity</requireAttribute>
+        <requireAttribute>Primary5X</requireAttribute>
+        <requireAttribute>Primary5Y</requireAttribute>
+        <requireAttribute>Primary5Intensity</requireAttribute>
+        <requireAttribute>Primary6X</requireAttribute>
+        <requireAttribute>Primary6Y</requireAttribute>
+        <requireAttribute>Primary6Intensity</requireAttribute>
+        <requireAttribute>EnhancedCurrentHue</requireAttribute>
+        <requireAttribute>EnhancedColorMode</requireAttribute>
+        <requireAttribute>ColorLoopActive</requireAttribute>
+        <requireAttribute>ColorLoopDirection</requireAttribute>
+        <requireAttribute>ColorLoopTime</requireAttribute>
+        <requireAttribute>ColorLoopStartEnhancedHue</requireAttribute>
+        <requireAttribute>ColorLoopStoredEnhancedHue</requireAttribute>
+        <requireAttribute>ColorCapabilities</requireAttribute>
+        <requireCommand>MoveToHue</requireCommand>
+        <requireCommand>MoveHue</requireCommand>
+        <requireCommand>StepHue</requireCommand>
+        <requireCommand>MoveToSaturation</requireCommand>
+        <requireCommand>MoveSaturation</requireCommand>
+        <requireCommand>StepSaturation</requireCommand>
+        <requireCommand>MoveToHueAndSaturation</requireCommand>
+        <requireCommand>MoveToColor</requireCommand>
+        <requireCommand>MoveColor</requireCommand>
+        <requireCommand>StepColor</requireCommand>
+        <requireCommand>EnhancedMoveToHue</requireCommand>
+        <requireCommand>EnhancedMoveHue</requireCommand>
+        <requireCommand>EnhancedStepHue</requireCommand>
+        <requireCommand>EnhancedMoveToHueAndSaturation</requireCommand>
+        <requireCommand>ColorLoopSet</requireCommand>
+        <requireCommand>StopMoveStep</requireCommand>
+      </include>
+      <include cluster="OTAUpgrade" client="true" server="false" clientLocked="false" serverLocked="true"/>
+      <include cluster="OccupancySensing" client="true" server="false" clientLocked="false" serverLocked="true"/>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>onofflightswitch</name>
+    <domain>CHIP</domain>
+    <typeName>On/Off Light Switch</typeName>
+    <deviceId revision="1" editable="false">0x0103</deviceId>
+    <clusters lockOthers="true">
+      <include cluster="Basic" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>ZCLVersion</requireAttribute>
+        <requireAttribute>ApplicationVersion</requireAttribute>
+        <requireAttribute>StackVersion</requireAttribute>
+        <requireAttribute>HWVersion</requireAttribute>
+        <requireAttribute>ManufacturerName</requireAttribute>
+        <requireAttribute>ModelIdentifier</requireAttribute>
+        <requireAttribute>DateCode</requireAttribute>
+        <requireAttribute>PowerSource</requireAttribute>
+        <requireAttribute>GenericDevice-Class</requireAttribute>
+        <requireAttribute>GenericDevice-Type</requireAttribute>
+        <requireAttribute>ProductCode</requireAttribute>
+        <requireAttribute>ProductURL</requireAttribute>
+        <requireAttribute>SWBuildID</requireAttribute>
+      </include>
+      <include cluster="Identify" client="true" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>IdentifyTime</requireAttribute>
+        <requireCommand>Identify</requireCommand>
+        <requireCommand>IdentifyQuery</requireCommand>
+        <requireCommand>TriggerEffect</requireCommand>
+      </include>
+      <include cluster="Groups" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+      <include cluster="Scenes" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+      <include cluster="OnOff" client="true" server="false" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="On/Off Switch Configuration" client="false" server="true" clientLocked="true" serverLocked="false">
+      </include>
+      <include cluster="OTAUpgrade" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>dimmerswitch</name>
+    <domain>CHIP</domain>
+    <typeName>Dimmer Switch</typeName>
+    <deviceId revision="1" editable="false">0x0104</deviceId>
+    <clusters lockOthers="true">
+      <include cluster="Basic" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>ZCLVersion</requireAttribute>
+        <requireAttribute>ApplicationVersion</requireAttribute>
+        <requireAttribute>StackVersion</requireAttribute>
+        <requireAttribute>HWVersion</requireAttribute>
+        <requireAttribute>ManufacturerName</requireAttribute>
+        <requireAttribute>ModelIdentifier</requireAttribute>
+        <requireAttribute>DateCode</requireAttribute>
+        <requireAttribute>PowerSource</requireAttribute>
+        <requireAttribute>GenericDevice-Class</requireAttribute>
+        <requireAttribute>GenericDevice-Type</requireAttribute>
+        <requireAttribute>ProductCode</requireAttribute>
+        <requireAttribute>ProductURL</requireAttribute>
+        <requireAttribute>SWBuildID</requireAttribute>
+      </include>
+      <include cluster="Identify" client="true" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>IdentifyTime</requireAttribute>
+        <requireCommand>Identify</requireCommand>
+        <requireCommand>IdentifyQuery</requireCommand>
+        <requireCommand>TriggerEffect</requireCommand>
+      </include>
+      <include cluster="Level" client="true" server="false" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="Groups" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+      <include cluster="Scenes" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+      <include cluster="OnOff" client="true" server="false" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="On/Off Switch Configuration" client="false" server="true" clientLocked="true" serverLocked="false">
+      </include>
+      <include cluster="OTAUpgrade" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>colordimmerswitch</name>
+    <domain>CHIP</domain>
+    <typeName>Color Dimmer Switch</typeName>
+    <deviceId revision="1" editable="false">0x0105</deviceId>
+    <clusters lockOthers="true">
+      <include cluster="Basic" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>ZCLVersion</requireAttribute>
+        <requireAttribute>ApplicationVersion</requireAttribute>
+        <requireAttribute>StackVersion</requireAttribute>
+        <requireAttribute>HWVersion</requireAttribute>
+        <requireAttribute>ManufacturerName</requireAttribute>
+        <requireAttribute>ModelIdentifier</requireAttribute>
+        <requireAttribute>DateCode</requireAttribute>
+        <requireAttribute>PowerSource</requireAttribute>
+        <requireAttribute>GenericDevice-Class</requireAttribute>
+        <requireAttribute>GenericDevice-Type</requireAttribute>
+        <requireAttribute>ProductCode</requireAttribute>
+        <requireAttribute>ProductURL</requireAttribute>
+        <requireAttribute>SWBuildID</requireAttribute>
+      </include>
+      <include cluster="Identify" client="true" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>IdentifyTime</requireAttribute>
+        <requireCommand>Identify</requireCommand>
+        <requireCommand>IdentifyQuery</requireCommand>
+        <requireCommand>TriggerEffect</requireCommand>
+      </include>
+      <include cluster="Level" client="true" server="false" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="ColorControl" client="true" server="false" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="Groups" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+      <include cluster="Scenes" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+      <include cluster="OnOff" client="true" server="false" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="On/Off Switch Configuration" client="false" server="true" clientLocked="true" serverLocked="false">
+      </include>
+      <include cluster="OTAUpgrade" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>lightsensor</name>
+    <domain>CHIP</domain>
+    <typeName>Light Sensor</typeName>
+    <deviceId revision="1" editable="false">0x0106</deviceId>
+    <clusters lockOthers="true">
+      <include cluster="Basic" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>ZCLVersion</requireAttribute>
+        <requireAttribute>ApplicationVersion</requireAttribute>
+        <requireAttribute>StackVersion</requireAttribute>
+        <requireAttribute>HWVersion</requireAttribute>
+        <requireAttribute>ManufacturerName</requireAttribute>
+        <requireAttribute>ModelIdentifier</requireAttribute>
+        <requireAttribute>DateCode</requireAttribute>
+        <requireAttribute>PowerSource</requireAttribute>
+        <requireAttribute>GenericDevice-Class</requireAttribute>
+        <requireAttribute>GenericDevice-Type</requireAttribute>
+        <requireAttribute>ProductCode</requireAttribute>
+        <requireAttribute>ProductURL</requireAttribute>
+        <requireAttribute>SWBuildID</requireAttribute>
+      </include>
+      <include cluster="Identify" client="true" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>IdentifyTime</requireAttribute>
+        <requireCommand>Identify</requireCommand>
+        <requireCommand>IdentifyQuery</requireCommand>
+        <requireCommand>TriggerEffect</requireCommand>
+      </include>
+      <include cluster="IlluminanceMeasurement" client="false" server="true" clientLocked="false" serverLocked="true">
+        <requireAttribute>MeasuredValue</requireAttribute>
+        <requireAttribute>MinMeasuredValue</requireAttribute>
+        <requireAttribute>MaxMeasuredValue</requireAttribute>
+      </include>
+      <include cluster="Groups" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+      <include cluster="OTAUpgrade" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>occupancysensor</name>
+    <domain>CHIP</domain>
+    <typeName>Occupancy Sensor</typeName>
+    <deviceId revision="1" editable="false">0x0107</deviceId>
+    <clusters lockOthers="true">
+      <include cluster="Basic" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>ZCLVersion</requireAttribute>
+        <requireAttribute>ApplicationVersion</requireAttribute>
+        <requireAttribute>StackVersion</requireAttribute>
+        <requireAttribute>HWVersion</requireAttribute>
+        <requireAttribute>ManufacturerName</requireAttribute>
+        <requireAttribute>ModelIdentifier</requireAttribute>
+        <requireAttribute>DateCode</requireAttribute>
+        <requireAttribute>PowerSource</requireAttribute>
+        <requireAttribute>GenericDevice-Class</requireAttribute>
+        <requireAttribute>GenericDevice-Type</requireAttribute>
+        <requireAttribute>ProductCode</requireAttribute>
+        <requireAttribute>ProductURL</requireAttribute>
+        <requireAttribute>SWBuildID</requireAttribute>
+      </include>
+      <include cluster="Identify" client="true" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>IdentifyTime</requireAttribute>
+        <requireCommand>Identify</requireCommand>
+        <requireCommand>IdentifyQuery</requireCommand>
+        <requireCommand>TriggerEffect</requireCommand>
+      </include>
+      <include cluster="OccupancySensing" client="false" server="true" clientLocked="false" serverLocked="true">
+        <requireAttribute>Occupancy</requireAttribute>
+        <requireAttribute>OccupancySensorType</requireAttribute>
+      </include>
+      <include cluster="Groups" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+      <include cluster="OTAUpgrade" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>onoffballast</name>
+    <domain>CHIP</domain>
+    <typeName>On/Off Ballast</typeName>
+    <deviceId revision="1" editable="false">0x0108</deviceId>
+    <clusters lockOthers="true">
+      <include cluster="Basic" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>ZCLVersion</requireAttribute>
+        <requireAttribute>ApplicationVersion</requireAttribute>
+        <requireAttribute>StackVersion</requireAttribute>
+        <requireAttribute>HWVersion</requireAttribute>
+        <requireAttribute>ManufacturerName</requireAttribute>
+        <requireAttribute>ModelIdentifier</requireAttribute>
+        <requireAttribute>DateCode</requireAttribute>
+        <requireAttribute>PowerSource</requireAttribute>
+        <requireAttribute>GenericDevice-Class</requireAttribute>
+        <requireAttribute>GenericDevice-Type</requireAttribute>
+        <requireAttribute>ProductCode</requireAttribute>
+        <requireAttribute>ProductURL</requireAttribute>
+        <requireAttribute>SWBuildID</requireAttribute>
+      </include>
+      <include cluster="PowerConfiguration" client="false" server="true" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="DeviceTemperatureConfiguration" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>CurrentTemperature</requireAttribute>
+      </include>
+      <include cluster="Identify" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>IdentifyTime</requireAttribute>
+        <requireCommand>Identify</requireCommand>
+        <requireCommand>IdentifyQuery</requireCommand>
+        <requireCommand>TriggerEffect</requireCommand>
+      </include>
+      <include cluster="Groups" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>NameSupport</requireAttribute>
+        <requireCommand>AddGroup</requireCommand>
+        <requireCommand>ViewGroup</requireCommand>
+        <requireCommand>GetGroupMembership</requireCommand>
+        <requireCommand>RemoveGroup</requireCommand>
+        <requireCommand>RemoveAllGroups</requireCommand>
+        <requireCommand>AddGroupIfIdentifying</requireCommand>
+      </include>
+      <include cluster="Scenes" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>SceneCount</requireAttribute>
+        <requireAttribute>CurrentScene</requireAttribute>
+        <requireAttribute>CurrentGroup</requireAttribute>
+        <requireAttribute>SceneValid</requireAttribute>
+        <requireAttribute>NameSupport</requireAttribute>
+        <requireCommand>AddScene</requireCommand>
+        <requireCommand>ViewScene</requireCommand>
+        <requireCommand>RemoveScene</requireCommand>
+        <requireCommand>RemoveAllScenes</requireCommand>
+        <requireCommand>StoreScene</requireCommand>
+        <requireCommand>RecallScene</requireCommand>
+        <requireCommand>GetSceneMembership</requireCommand>
+        <requireCommand>EnhancedAddScene</requireCommand>
+        <requireCommand>EnhancedViewScene</requireCommand>
+        <requireCommand>CopyScene</requireCommand>
+      </include>
+      <include cluster="OnOff" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>OnOff</requireAttribute>
+        <requireAttribute>GlobalSceneControl</requireAttribute>
+        <requireAttribute>OnTime</requireAttribute>
+        <requireAttribute>OffWaitTime</requireAttribute>
+        <requireAttribute>StartUpOnOff</requireAttribute>
+        <requireCommand>Off</requireCommand>
+        <requireCommand>On</requireCommand>
+        <requireCommand>Toggle</requireCommand>
+        <requireCommand>OffWithEffect</requireCommand>
+        <requireCommand>OnWithRecallGlobalScene</requireCommand>
+        <requireCommand>OnWithTimedOff</requireCommand>
+      </include>
+      <include cluster="BallastConfiguration" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>BallastStatus</requireAttribute>
+      </include>
+      <include cluster="Level" client="false" server="true" clientLocked="true" serverLocked="false">
+        <requireAttribute>CurrentLevel</requireAttribute>
+        <requireAttribute>Options</requireAttribute>
+        <requireAttribute>RemainingTime</requireAttribute>
+        <requireAttribute>StartUpCurrentLevel</requireAttribute>
+        <requireCommand>MoveToLevel</requireCommand>
+        <requireCommand>Move</requireCommand>
+        <requireCommand>Step</requireCommand>
+        <requireCommand>Stop</requireCommand>
+        <requireCommand>MoveToLevelWithOnOff</requireCommand>
+        <requireCommand>MoveWithOnOff</requireCommand>
+        <requireCommand>StepWithOnOff</requireCommand>
+        <requireCommand>StopWithOnOff</requireCommand>
+      </include>
+      <include cluster="IlluminanceLevelSensing" client="true" server="true" clientLocked="false" serverLocked="false">
+      </include>
+      <include cluster="OTAUpgrade" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+      <include cluster="IlluminanceMeasurement" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+      <include cluster="OccupancySensing" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>dimmableballast</name>
+    <domain>CHIP</domain>
+    <typeName>Dimmable Ballast</typeName>
+    <deviceId revision="1" editable="false">0x0109</deviceId>
+    <clusters lockOthers="true">
+      <include cluster="Basic" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>ZCLVersion</requireAttribute>
+        <requireAttribute>ApplicationVersion</requireAttribute>
+        <requireAttribute>StackVersion</requireAttribute>
+        <requireAttribute>HWVersion</requireAttribute>
+        <requireAttribute>ManufacturerName</requireAttribute>
+        <requireAttribute>ModelIdentifier</requireAttribute>
+        <requireAttribute>DateCode</requireAttribute>
+        <requireAttribute>PowerSource</requireAttribute>
+        <requireAttribute>GenericDevice-Class</requireAttribute>
+        <requireAttribute>GenericDevice-Type</requireAttribute>
+        <requireAttribute>ProductCode</requireAttribute>
+        <requireAttribute>ProductURL</requireAttribute>
+        <requireAttribute>SWBuildID</requireAttribute>
+      </include>
+      <include cluster="PowerConfiguration" client="false" server="true" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="DeviceTemperatureConfiguration" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>CurrentTemperature</requireAttribute>
+      </include>
+      <include cluster="Identify" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>IdentifyTime</requireAttribute>
+        <requireCommand>Identify</requireCommand>
+        <requireCommand>IdentifyQuery</requireCommand>
+        <requireCommand>TriggerEffect</requireCommand>
+      </include>
+      <include cluster="Groups" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>NameSupport</requireAttribute>
+        <requireCommand>AddGroup</requireCommand>
+        <requireCommand>ViewGroup</requireCommand>
+        <requireCommand>GetGroupMembership</requireCommand>
+        <requireCommand>RemoveGroup</requireCommand>
+        <requireCommand>RemoveAllGroups</requireCommand>
+        <requireCommand>AddGroupIfIdentifying</requireCommand>
+      </include>
+      <include cluster="Scenes" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>SceneCount</requireAttribute>
+        <requireAttribute>CurrentScene</requireAttribute>
+        <requireAttribute>CurrentGroup</requireAttribute>
+        <requireAttribute>SceneValid</requireAttribute>
+        <requireAttribute>NameSupport</requireAttribute>
+        <requireCommand>AddScene</requireCommand>
+        <requireCommand>ViewScene</requireCommand>
+        <requireCommand>RemoveScene</requireCommand>
+        <requireCommand>RemoveAllScenes</requireCommand>
+        <requireCommand>StoreScene</requireCommand>
+        <requireCommand>RecallScene</requireCommand>
+        <requireCommand>GetSceneMembership</requireCommand>
+        <requireCommand>EnhancedAddScene</requireCommand>
+        <requireCommand>EnhancedViewScene</requireCommand>
+        <requireCommand>CopyScene</requireCommand>
+      </include>
+      <include cluster="OnOff" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>OnOff</requireAttribute>
+        <requireAttribute>GlobalSceneControl</requireAttribute>
+        <requireAttribute>OnTime</requireAttribute>
+        <requireAttribute>OffWaitTime</requireAttribute>
+        <requireAttribute>StartUpOnOff</requireAttribute>
+        <requireCommand>Off</requireCommand>
+        <requireCommand>On</requireCommand>
+        <requireCommand>Toggle</requireCommand>
+        <requireCommand>OffWithEffect</requireCommand>
+        <requireCommand>OnWithRecallGlobalScene</requireCommand>
+        <requireCommand>OnWithTimedOff</requireCommand>
+      </include>
+      <include cluster="BallastConfiguration" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>BallastStatus</requireAttribute>
+      </include>
+      <include cluster="Level" client="false" server="true" clientLocked="false" serverLocked="true">
+        <requireAttribute>CurrentLevel</requireAttribute>
+        <requireAttribute>Options</requireAttribute>
+        <requireAttribute>RemainingTime</requireAttribute>
+        <requireAttribute>StartUpCurrentLevel</requireAttribute>
+        <requireCommand>MoveToLevel</requireCommand>
+        <requireCommand>Move</requireCommand>
+        <requireCommand>Step</requireCommand>
+        <requireCommand>Stop</requireCommand>
+        <requireCommand>MoveToLevelWithOnOff</requireCommand>
+        <requireCommand>MoveWithOnOff</requireCommand>
+        <requireCommand>StepWithOnOff</requireCommand>
+        <requireCommand>StopWithOnOff</requireCommand>
+      </include>
+      <include cluster="IlluminanceLevelSensing" client="true" server="true" clientLocked="false" serverLocked="false">
+      </include>
+      <include cluster="OTAUpgrade" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+      <include cluster="IlluminanceMeasurement" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+      <include cluster="OccupancySensing" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>onoffpluginunit</name>
+    <domain>CHIP</domain>
+    <typeName>On/Off Plug-in Unit</typeName>
+    <deviceId revision="1" editable="false">0x010A</deviceId>
+    <clusters lockOthers="true">
+      <include cluster="Basic" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>ZCLVersion</requireAttribute>
+        <requireAttribute>ApplicationVersion</requireAttribute>
+        <requireAttribute>StackVersion</requireAttribute>
+        <requireAttribute>HWVersion</requireAttribute>
+        <requireAttribute>ManufacturerName</requireAttribute>
+        <requireAttribute>ModelIdentifier</requireAttribute>
+        <requireAttribute>DateCode</requireAttribute>
+        <requireAttribute>PowerSource</requireAttribute>
+        <requireAttribute>GenericDevice-Class</requireAttribute>
+        <requireAttribute>GenericDevice-Type</requireAttribute>
+        <requireAttribute>ProductCode</requireAttribute>
+        <requireAttribute>ProductURL</requireAttribute>
+        <requireAttribute>SWBuildID</requireAttribute>
+      </include>
+      <include cluster="Identify" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>IdentifyTime</requireAttribute>
+        <requireCommand>Identify</requireCommand>
+        <requireCommand>IdentifyQuery</requireCommand>
+        <requireCommand>TriggerEffect</requireCommand>
+      </include>
+      <include cluster="Groups" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>NameSupport</requireAttribute>
+        <requireCommand>AddGroup</requireCommand>
+        <requireCommand>ViewGroup</requireCommand>
+        <requireCommand>GetGroupMembership</requireCommand>
+        <requireCommand>RemoveGroup</requireCommand>
+        <requireCommand>RemoveAllGroups</requireCommand>
+        <requireCommand>AddGroupIfIdentifying</requireCommand>
+      </include>
+      <include cluster="Scenes" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>SceneCount</requireAttribute>
+        <requireAttribute>CurrentScene</requireAttribute>
+        <requireAttribute>CurrentGroup</requireAttribute>
+        <requireAttribute>SceneValid</requireAttribute>
+        <requireAttribute>NameSupport</requireAttribute>
+        <requireCommand>AddScene</requireCommand>
+        <requireCommand>ViewScene</requireCommand>
+        <requireCommand>RemoveScene</requireCommand>
+        <requireCommand>RemoveAllScenes</requireCommand>
+        <requireCommand>StoreScene</requireCommand>
+        <requireCommand>RecallScene</requireCommand>
+        <requireCommand>GetSceneMembership</requireCommand>
+        <requireCommand>EnhancedAddScene</requireCommand>
+        <requireCommand>EnhancedViewScene</requireCommand>
+        <requireCommand>CopyScene</requireCommand>
+      </include>
+      <include cluster="OnOff" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>OnOff</requireAttribute>
+        <requireAttribute>GlobalSceneControl</requireAttribute>
+        <requireAttribute>OnTime</requireAttribute>
+        <requireAttribute>OffWaitTime</requireAttribute>
+        <requireAttribute>StartUpOnOff</requireAttribute>
+        <requireCommand>Off</requireCommand>
+        <requireCommand>On</requireCommand>
+        <requireCommand>Toggle</requireCommand>
+        <requireCommand>OffWithEffect</requireCommand>
+        <requireCommand>OnWithRecallGlobalScene</requireCommand>
+        <requireCommand>OnWithTimedOff</requireCommand>
+      </include>
+      <include cluster="Level" client="false" server="true" clientLocked="true" serverLocked="false">
+        <requireAttribute>CurrentLevel</requireAttribute>
+        <requireAttribute>Options</requireAttribute>
+        <requireAttribute>RemainingTime</requireAttribute>
+        <requireAttribute>StartUpCurrentLevel</requireAttribute>
+        <requireCommand>MoveToLevel</requireCommand>
+        <requireCommand>Move</requireCommand>
+        <requireCommand>Step</requireCommand>
+        <requireCommand>Stop</requireCommand>
+        <requireCommand>MoveToLevelWithOnOff</requireCommand>
+        <requireCommand>MoveWithOnOff</requireCommand>
+        <requireCommand>StepWithOnOff</requireCommand>
+        <requireCommand>StopWithOnOff</requireCommand>
+      </include>
+      <include cluster="OTAUpgrade" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>dimmablepluginunit</name>
+    <domain>CHIP</domain>
+    <typeName>Dimmable Plug-in Unit</typeName>
+    <deviceId revision="1" editable="false">0x010B</deviceId>
+    <clusters lockOthers="true">
+      <include cluster="Basic" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>ZCLVersion</requireAttribute>
+        <requireAttribute>ApplicationVersion</requireAttribute>
+        <requireAttribute>StackVersion</requireAttribute>
+        <requireAttribute>HWVersion</requireAttribute>
+        <requireAttribute>ManufacturerName</requireAttribute>
+        <requireAttribute>ModelIdentifier</requireAttribute>
+        <requireAttribute>DateCode</requireAttribute>
+        <requireAttribute>PowerSource</requireAttribute>
+        <requireAttribute>GenericDevice-Class</requireAttribute>
+        <requireAttribute>GenericDevice-Type</requireAttribute>
+        <requireAttribute>ProductCode</requireAttribute>
+        <requireAttribute>ProductURL</requireAttribute>
+        <requireAttribute>SWBuildID</requireAttribute>
+      </include>
+      <include cluster="Identify" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>IdentifyTime</requireAttribute>
+        <requireCommand>Identify</requireCommand>
+        <requireCommand>IdentifyQuery</requireCommand>
+        <requireCommand>TriggerEffect</requireCommand>
+      </include>
+      <include cluster="Groups" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>NameSupport</requireAttribute>
+        <requireCommand>AddGroup</requireCommand>
+        <requireCommand>ViewGroup</requireCommand>
+        <requireCommand>GetGroupMembership</requireCommand>
+        <requireCommand>RemoveGroup</requireCommand>
+        <requireCommand>RemoveAllGroups</requireCommand>
+        <requireCommand>AddGroupIfIdentifying</requireCommand>
+      </include>
+      <include cluster="Scenes" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>SceneCount</requireAttribute>
+        <requireAttribute>CurrentScene</requireAttribute>
+        <requireAttribute>CurrentGroup</requireAttribute>
+        <requireAttribute>SceneValid</requireAttribute>
+        <requireAttribute>NameSupport</requireAttribute>
+        <requireCommand>AddScene</requireCommand>
+        <requireCommand>ViewScene</requireCommand>
+        <requireCommand>RemoveScene</requireCommand>
+        <requireCommand>RemoveAllScenes</requireCommand>
+        <requireCommand>StoreScene</requireCommand>
+        <requireCommand>RecallScene</requireCommand>
+        <requireCommand>GetSceneMembership</requireCommand>
+        <requireCommand>EnhancedAddScene</requireCommand>
+        <requireCommand>EnhancedViewScene</requireCommand>
+        <requireCommand>CopyScene</requireCommand>
+      </include>
+      <include cluster="OnOff" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>OnOff</requireAttribute>
+        <requireAttribute>GlobalSceneControl</requireAttribute>
+        <requireAttribute>OnTime</requireAttribute>
+        <requireAttribute>OffWaitTime</requireAttribute>
+        <requireAttribute>StartUpOnOff</requireAttribute>
+        <requireCommand>Off</requireCommand>
+        <requireCommand>On</requireCommand>
+        <requireCommand>Toggle</requireCommand>
+        <requireCommand>OffWithEffect</requireCommand>
+        <requireCommand>OnWithRecallGlobalScene</requireCommand>
+        <requireCommand>OnWithTimedOff</requireCommand>
+      </include>
+      <include cluster="Level" client="false" server="true" clientLocked="false" serverLocked="true">
+        <requireAttribute>CurrentLevel</requireAttribute>
+        <requireAttribute>Options</requireAttribute>
+        <requireAttribute>RemainingTime</requireAttribute>
+        <requireAttribute>StartUpCurrentLevel</requireAttribute>
+        <requireCommand>MoveToLevel</requireCommand>
+        <requireCommand>Move</requireCommand>
+        <requireCommand>Step</requireCommand>
+        <requireCommand>Stop</requireCommand>
+        <requireCommand>MoveToLevelWithOnOff</requireCommand>
+        <requireCommand>MoveWithOnOff</requireCommand>
+        <requireCommand>StepWithOnOff</requireCommand>
+        <requireCommand>StopWithOnOff</requireCommand>
+      </include>
+      <include cluster="OTAUpgrade" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>colortemperaturelight</name>
+    <domain>CHIP</domain>
+    <typeName>Color Temperature Light</typeName>
+    <deviceId revision="1" editable="false">0x010C</deviceId>
+    <clusters lockOthers="true">
+      <include cluster="Basic" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>ZCLVersion</requireAttribute>
+        <requireAttribute>ApplicationVersion</requireAttribute>
+        <requireAttribute>StackVersion</requireAttribute>
+        <requireAttribute>HWVersion</requireAttribute>
+        <requireAttribute>ManufacturerName</requireAttribute>
+        <requireAttribute>ModelIdentifier</requireAttribute>
+        <requireAttribute>DateCode</requireAttribute>
+        <requireAttribute>PowerSource</requireAttribute>
+        <requireAttribute>GenericDevice-Class</requireAttribute>
+        <requireAttribute>GenericDevice-Type</requireAttribute>
+        <requireAttribute>ProductCode</requireAttribute>
+        <requireAttribute>ProductURL</requireAttribute>
+        <requireAttribute>SWBuildID</requireAttribute>
+      </include>
+      <include cluster="Identify" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>IdentifyTime</requireAttribute>
+        <requireCommand>Identify</requireCommand>
+        <requireCommand>IdentifyQuery</requireCommand>
+        <requireCommand>TriggerEffect</requireCommand>
+      </include>
+      <include cluster="Groups" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>NameSupport</requireAttribute>
+        <requireCommand>AddGroup</requireCommand>
+        <requireCommand>ViewGroup</requireCommand>
+        <requireCommand>GetGroupMembership</requireCommand>
+        <requireCommand>RemoveGroup</requireCommand>
+        <requireCommand>RemoveAllGroups</requireCommand>
+        <requireCommand>AddGroupIfIdentifying</requireCommand>
+      </include>
+      <include cluster="Scenes" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>SceneCount</requireAttribute>
+        <requireAttribute>CurrentScene</requireAttribute>
+        <requireAttribute>CurrentGroup</requireAttribute>
+        <requireAttribute>SceneValid</requireAttribute>
+        <requireAttribute>NameSupport</requireAttribute>
+        <requireCommand>AddScene</requireCommand>
+        <requireCommand>ViewScene</requireCommand>
+        <requireCommand>RemoveScene</requireCommand>
+        <requireCommand>RemoveAllScenes</requireCommand>
+        <requireCommand>StoreScene</requireCommand>
+        <requireCommand>RecallScene</requireCommand>
+        <requireCommand>GetSceneMembership</requireCommand>
+        <requireCommand>EnhancedAddScene</requireCommand>
+        <requireCommand>EnhancedViewScene</requireCommand>
+        <requireCommand>CopyScene</requireCommand>
+      </include>
+      <include cluster="OnOff" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>OnOff</requireAttribute>
+        <requireAttribute>GlobalSceneControl</requireAttribute>
+        <requireAttribute>OnTime</requireAttribute>
+        <requireAttribute>OffWaitTime</requireAttribute>
+        <requireAttribute>StartUpOnOff</requireAttribute>
+        <requireCommand>Off</requireCommand>
+        <requireCommand>On</requireCommand>
+        <requireCommand>Toggle</requireCommand>
+        <requireCommand>OffWithEffect</requireCommand>
+        <requireCommand>OnWithRecallGlobalScene</requireCommand>
+        <requireCommand>OnWithTimedOff</requireCommand>
+      </include>
+      <include cluster="Level" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>CurrentLevel</requireAttribute>
+        <requireAttribute>Options</requireAttribute>
+        <requireAttribute>RemainingTime</requireAttribute>
+        <requireAttribute>StartUpCurrentLevel</requireAttribute>
+        <requireCommand>MoveToLevel</requireCommand>
+        <requireCommand>Move</requireCommand>
+        <requireCommand>Step</requireCommand>
+        <requireCommand>Stop</requireCommand>
+        <requireCommand>MoveToLevelWithOnOff</requireCommand>
+        <requireCommand>MoveWithOnOff</requireCommand>
+        <requireCommand>StepWithOnOff</requireCommand>
+        <requireCommand>StopWithOnOff</requireCommand>
+      </include>
+      <include cluster="ColorControl" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>RemainingTime</requireAttribute>
+        <requireAttribute>ColorTemperatureMireds</requireAttribute>
+        <requireAttribute>ColorMode</requireAttribute>
+        <requireAttribute>Options</requireAttribute>
+        <requireAttribute>NumberOfPrimaries</requireAttribute>
+        <requireAttribute>Primary1X</requireAttribute>
+        <requireAttribute>Primary1Y</requireAttribute>
+        <requireAttribute>Primary1Intensity</requireAttribute>
+        <requireAttribute>Primary2X</requireAttribute>
+        <requireAttribute>Primary2Y</requireAttribute>
+        <requireAttribute>Primary2Intensity</requireAttribute>
+        <requireAttribute>Primary3X</requireAttribute>
+        <requireAttribute>Primary3Y</requireAttribute>
+        <requireAttribute>Primary3Intensity</requireAttribute>
+        <requireAttribute>Primary4X</requireAttribute>
+        <requireAttribute>Primary4Y</requireAttribute>
+        <requireAttribute>Primary4Intensity</requireAttribute>
+        <requireAttribute>Primary5X</requireAttribute>
+        <requireAttribute>Primary5Y</requireAttribute>
+        <requireAttribute>Primary5Intensity</requireAttribute>
+        <requireAttribute>Primary6X</requireAttribute>
+        <requireAttribute>Primary6Y</requireAttribute>
+        <requireAttribute>Primary6Intensity</requireAttribute>
+        <requireAttribute>EnhancedCurrentHue</requireAttribute>
+        <requireAttribute>ColorCapabilities</requireAttribute>
+        <requireAttribute>ColorTempPhysicalMinMireds</requireAttribute>
+        <requireAttribute>ColorTempPhysicalMaxMireds</requireAttribute>
+        <requireAttribute>CoupleColorTempToLevelMinMireds</requireAttribute>
+        <requireAttribute>StartUpColorTemperatureMireds</requireAttribute>
+        <requireCommand>MoveToHue</requireCommand>
+        <requireCommand>MoveHue</requireCommand>
+        <requireCommand>StepHue</requireCommand>
+        <requireCommand>MoveToSaturation</requireCommand>
+        <requireCommand>MoveSaturation</requireCommand>
+        <requireCommand>StepSaturation</requireCommand>
+        <requireCommand>MoveToHueAndSaturation</requireCommand>
+        <requireCommand>MoveToColor</requireCommand>
+        <requireCommand>MoveColor</requireCommand>
+        <requireCommand>StepColor</requireCommand>
+        <requireCommand>MoveToColorTemperature</requireCommand>
+        <requireCommand>EnhancedMoveToHue</requireCommand>
+        <requireCommand>EnhancedMoveHue</requireCommand>
+        <requireCommand>EnhancedStepHue</requireCommand>
+        <requireCommand>EnhancedMoveToHueAndSaturation</requireCommand>
+        <requireCommand>ColorLoopSet</requireCommand>
+        <requireCommand>StopMoveStep</requireCommand>
+        <requireCommand>MoveColorTemperature</requireCommand>
+        <requireCommand>StepColorTemperature</requireCommand>
+      </include>
+      <include cluster="OTAUpgrade" client="true" server="false" clientLocked="false" serverLocked="true"/>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>extendedcolorlight</name>
+    <domain>CHIP</domain>
+    <typeName>Extended Color Light</typeName>
+    <deviceId revision="1" editable="false">0x010D</deviceId>
+    <clusters lockOthers="true">
+      <include cluster="Basic" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>ZCLVersion</requireAttribute>
+        <requireAttribute>ApplicationVersion</requireAttribute>
+        <requireAttribute>StackVersion</requireAttribute>
+        <requireAttribute>HWVersion</requireAttribute>
+        <requireAttribute>ManufacturerName</requireAttribute>
+        <requireAttribute>ModelIdentifier</requireAttribute>
+        <requireAttribute>DateCode</requireAttribute>
+        <requireAttribute>PowerSource</requireAttribute>
+        <requireAttribute>GenericDevice-Class</requireAttribute>
+        <requireAttribute>GenericDevice-Type</requireAttribute>
+        <requireAttribute>ProductCode</requireAttribute>
+        <requireAttribute>ProductURL</requireAttribute>
+        <requireAttribute>SWBuildID</requireAttribute>
+      </include>
+      <include cluster="Identify" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>IdentifyTime</requireAttribute>
+        <requireCommand>Identify</requireCommand>
+        <requireCommand>IdentifyQuery</requireCommand>
+        <requireCommand>TriggerEffect</requireCommand>
+      </include>
+      <include cluster="Groups" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>NameSupport</requireAttribute>
+        <requireCommand>AddGroup</requireCommand>
+        <requireCommand>ViewGroup</requireCommand>
+        <requireCommand>GetGroupMembership</requireCommand>
+        <requireCommand>RemoveGroup</requireCommand>
+        <requireCommand>RemoveAllGroups</requireCommand>
+        <requireCommand>AddGroupIfIdentifying</requireCommand>
+      </include>
+      <include cluster="Scenes" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>SceneCount</requireAttribute>
+        <requireAttribute>CurrentScene</requireAttribute>
+        <requireAttribute>CurrentGroup</requireAttribute>
+        <requireAttribute>SceneValid</requireAttribute>
+        <requireAttribute>NameSupport</requireAttribute>
+        <requireCommand>AddScene</requireCommand>
+        <requireCommand>ViewScene</requireCommand>
+        <requireCommand>RemoveScene</requireCommand>
+        <requireCommand>RemoveAllScenes</requireCommand>
+        <requireCommand>StoreScene</requireCommand>
+        <requireCommand>RecallScene</requireCommand>
+        <requireCommand>GetSceneMembership</requireCommand>
+        <requireCommand>EnhancedAddScene</requireCommand>
+        <requireCommand>EnhancedViewScene</requireCommand>
+        <requireCommand>CopyScene</requireCommand>
+      </include>
+      <include cluster="OnOff" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>OnOff</requireAttribute>
+        <requireAttribute>GlobalSceneControl</requireAttribute>
+        <requireAttribute>OnTime</requireAttribute>
+        <requireAttribute>OffWaitTime</requireAttribute>
+        <requireAttribute>StartUpOnOff</requireAttribute>
+        <requireCommand>Off</requireCommand>
+        <requireCommand>On</requireCommand>
+        <requireCommand>Toggle</requireCommand>
+        <requireCommand>OffWithEffect</requireCommand>
+        <requireCommand>OnWithRecallGlobalScene</requireCommand>
+        <requireCommand>OnWithTimedOff</requireCommand>
+      </include>
+      <include cluster="Level" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>CurrentLevel</requireAttribute>
+        <requireAttribute>Options</requireAttribute>
+        <requireAttribute>RemainingTime</requireAttribute>
+        <requireAttribute>StartUpCurrentLevel</requireAttribute>
+        <requireCommand>MoveToLevel</requireCommand>
+        <requireCommand>Move</requireCommand>
+        <requireCommand>Step</requireCommand>
+        <requireCommand>Stop</requireCommand>
+        <requireCommand>MoveToLevelWithOnOff</requireCommand>
+        <requireCommand>MoveWithOnOff</requireCommand>
+        <requireCommand>StepWithOnOff</requireCommand>
+        <requireCommand>StopWithOnOff</requireCommand>
+      </include>
+      <include cluster="ColorControl" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>CurrentHue</requireAttribute>
+        <requireAttribute>CurrentSaturation</requireAttribute>
+        <requireAttribute>RemainingTime</requireAttribute>
+        <requireAttribute>CurrentX</requireAttribute>
+        <requireAttribute>CurrentY</requireAttribute>
+        <requireAttribute>ColorTemperatureMireds</requireAttribute>
+        <requireAttribute>ColorMode</requireAttribute>
+        <requireAttribute>Options</requireAttribute>
+        <requireAttribute>NumberOfPrimaries</requireAttribute>
+        <requireAttribute>Primary1X</requireAttribute>
+        <requireAttribute>Primary1Y</requireAttribute>
+        <requireAttribute>Primary1Intensity</requireAttribute>
+        <requireAttribute>Primary2X</requireAttribute>
+        <requireAttribute>Primary2Y</requireAttribute>
+        <requireAttribute>Primary2Intensity</requireAttribute>
+        <requireAttribute>Primary3X</requireAttribute>
+        <requireAttribute>Primary3Y</requireAttribute>
+        <requireAttribute>Primary3Intensity</requireAttribute>
+        <requireAttribute>Primary4X</requireAttribute>
+        <requireAttribute>Primary4Y</requireAttribute>
+        <requireAttribute>Primary4Intensity</requireAttribute>
+        <requireAttribute>Primary5X</requireAttribute>
+        <requireAttribute>Primary5Y</requireAttribute>
+        <requireAttribute>Primary5Intensity</requireAttribute>
+        <requireAttribute>Primary6X</requireAttribute>
+        <requireAttribute>Primary6Y</requireAttribute>
+        <requireAttribute>Primary6Intensity</requireAttribute>
+        <requireAttribute>EnhancedCurrentHue</requireAttribute>
+        <requireAttribute>EnhancedColorMode</requireAttribute>
+        <requireAttribute>ColorLoopActive</requireAttribute>
+        <requireAttribute>ColorLoopDirection</requireAttribute>
+        <requireAttribute>ColorLoopTime</requireAttribute>
+        <requireAttribute>ColorLoopStartEnhancedHue</requireAttribute>
+        <requireAttribute>ColorLoopStoredEnhancedHue</requireAttribute>
+        <requireAttribute>ColorCapabilities</requireAttribute>
+        <requireAttribute>ColorTempPhysicalMinMireds</requireAttribute>
+        <requireAttribute>ColorTempPhysicalMaxMireds</requireAttribute>
+        <requireAttribute>CoupleColorTempToLevelMinMireds</requireAttribute>
+        <requireAttribute>StartUpColorTemperatureMireds</requireAttribute>
+        <requireCommand>MoveToHue</requireCommand>
+        <requireCommand>MoveHue</requireCommand>
+        <requireCommand>StepHue</requireCommand>
+        <requireCommand>MoveToSaturation</requireCommand>
+        <requireCommand>MoveSaturation</requireCommand>
+        <requireCommand>StepSaturation</requireCommand>
+        <requireCommand>MoveToHueAndSaturation</requireCommand>
+        <requireCommand>MoveToColor</requireCommand>
+        <requireCommand>MoveColor</requireCommand>
+        <requireCommand>StepColor</requireCommand>
+        <requireCommand>MoveToColorTemperature</requireCommand>
+        <requireCommand>EnhancedMoveToHue</requireCommand>
+        <requireCommand>EnhancedMoveHue</requireCommand>
+        <requireCommand>EnhancedStepHue</requireCommand>
+        <requireCommand>EnhancedMoveToHueAndSaturation</requireCommand>
+        <requireCommand>ColorLoopSet</requireCommand>
+        <requireCommand>StopMoveStep</requireCommand>
+        <requireCommand>MoveColorTemperature</requireCommand>
+        <requireCommand>StepColorTemperature</requireCommand>
+      </include>
+      <include cluster="OTAUpgrade" client="true" server="false" clientLocked="false" serverLocked="true"/>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>lightlevelsensor</name>
+    <domain>CHIP</domain>
+    <typeName>Light Level Sensor</typeName>
+    <deviceId revision="1" editable="false">0x010E</deviceId>
+    <clusters lockOthers="true">
+      <include cluster="Basic" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>ZCLVersion</requireAttribute>
+        <requireAttribute>ApplicationVersion</requireAttribute>
+        <requireAttribute>StackVersion</requireAttribute>
+        <requireAttribute>HWVersion</requireAttribute>
+        <requireAttribute>ManufacturerName</requireAttribute>
+        <requireAttribute>ModelIdentifier</requireAttribute>
+        <requireAttribute>DateCode</requireAttribute>
+        <requireAttribute>PowerSource</requireAttribute>
+        <requireAttribute>GenericDevice-Class</requireAttribute>
+        <requireAttribute>GenericDevice-Type</requireAttribute>
+        <requireAttribute>ProductCode</requireAttribute>
+        <requireAttribute>ProductURL</requireAttribute>
+        <requireAttribute>SWBuildID</requireAttribute>
+      </include>
+      <include cluster="Identify" client="true" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>IdentifyTime</requireAttribute>
+        <requireCommand>Identify</requireCommand>
+        <requireCommand>IdentifyQuery</requireCommand>
+        <requireCommand>TriggerEffect</requireCommand>
+      </include>
+      <include cluster="IlluminanceLevelSensing" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>LevelStatus</requireAttribute>
+        <requireAttribute>IlluminanceTargetLevel</requireAttribute>
+      </include>
+      <include cluster="Groups" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+      <include cluster="OTAUpgrade" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>colorcontroller</name>
+    <domain>CHIP</domain>
+    <typeName>ColorController</typeName>
+    <deviceId revision="1" editable="false">0x0800</deviceId>
+    <clusters lockOthers="true">
+      <include cluster="Basic" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>ZCLVersion</requireAttribute>
+        <requireAttribute>ApplicationVersion</requireAttribute>
+        <requireAttribute>StackVersion</requireAttribute>
+        <requireAttribute>HWVersion</requireAttribute>
+        <requireAttribute>ManufacturerName</requireAttribute>
+        <requireAttribute>ModelIdentifier</requireAttribute>
+        <requireAttribute>DateCode</requireAttribute>
+        <requireAttribute>PowerSource</requireAttribute>
+        <requireAttribute>GenericDevice-Class</requireAttribute>
+        <requireAttribute>GenericDevice-Type</requireAttribute>
+        <requireAttribute>ProductCode</requireAttribute>
+        <requireAttribute>ProductURL</requireAttribute>
+        <requireAttribute>SWBuildID</requireAttribute>
+      </include>
+      <include cluster="Identify" client="true" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>IdentifyTime</requireAttribute>
+        <requireCommand>Identify</requireCommand>
+        <requireCommand>IdentifyQuery</requireCommand>
+        <requireCommand>TriggerEffect</requireCommand>
+      </include>
+      <include cluster="Groups" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+      <include cluster="OnOff" client="true" server="false" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="Level" client="true" server="false" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="ColorControl" client="true" server="false" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="OTAUpgrade" client="true" server="false" clientLocked="false" serverLocked="true"/>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>colorscenecontroller</name>
+    <domain>CHIP</domain>
+    <typeName>Color Scene Controller</typeName>
+    <deviceId revision="1" editable="false">0x0810</deviceId>
+    <clusters lockOthers="true">
+      <include cluster="Basic" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>ZCLVersion</requireAttribute>
+        <requireAttribute>ApplicationVersion</requireAttribute>
+        <requireAttribute>StackVersion</requireAttribute>
+        <requireAttribute>HWVersion</requireAttribute>
+        <requireAttribute>ManufacturerName</requireAttribute>
+        <requireAttribute>ModelIdentifier</requireAttribute>
+        <requireAttribute>DateCode</requireAttribute>
+        <requireAttribute>PowerSource</requireAttribute>
+        <requireAttribute>GenericDevice-Class</requireAttribute>
+        <requireAttribute>GenericDevice-Type</requireAttribute>
+        <requireAttribute>ProductCode</requireAttribute>
+        <requireAttribute>ProductURL</requireAttribute>
+        <requireAttribute>SWBuildID</requireAttribute>
+      </include>
+      <include cluster="Identify" client="true" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>IdentifyTime</requireAttribute>
+        <requireCommand>Identify</requireCommand>
+        <requireCommand>IdentifyQuery</requireCommand>
+        <requireCommand>TriggerEffect</requireCommand>
+      </include>
+      <include cluster="Groups" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+      <include cluster="Scenes" client="true" server="false" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="OnOff" client="true" server="false" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="Level" client="true" server="false" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="ColorControl" client="true" server="false" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="OTAUpgrade" client="true" server="false" clientLocked="false" serverLocked="true"/>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>noncolorcontroller</name>
+    <domain>CHIP</domain>
+    <typeName>Non ColorController</typeName>
+    <deviceId revision="1" editable="false">0x0820</deviceId>
+    <clusters lockOthers="true">
+      <include cluster="Basic" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>ZCLVersion</requireAttribute>
+        <requireAttribute>ApplicationVersion</requireAttribute>
+        <requireAttribute>StackVersion</requireAttribute>
+        <requireAttribute>HWVersion</requireAttribute>
+        <requireAttribute>ManufacturerName</requireAttribute>
+        <requireAttribute>ModelIdentifier</requireAttribute>
+        <requireAttribute>DateCode</requireAttribute>
+        <requireAttribute>PowerSource</requireAttribute>
+        <requireAttribute>GenericDevice-Class</requireAttribute>
+        <requireAttribute>GenericDevice-Type</requireAttribute>
+        <requireAttribute>ProductCode</requireAttribute>
+        <requireAttribute>ProductURL</requireAttribute>
+        <requireAttribute>SWBuildID</requireAttribute>
+      </include>
+      <include cluster="Identify" client="true" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>IdentifyTime</requireAttribute>
+        <requireCommand>Identify</requireCommand>
+        <requireCommand>IdentifyQuery</requireCommand>
+        <requireCommand>TriggerEffect</requireCommand>
+      </include>
+      <include cluster="Groups" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+      <include cluster="OnOff" client="true" server="false" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="Level" client="true" server="false" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="OTAUpgrade" client="true" server="false" clientLocked="false" serverLocked="true"/>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>noncolorscenecontroller</name>
+    <domain>CHIP</domain>
+    <typeName>Non Color Scene Controller</typeName>
+    <deviceId revision="1" editable="false">0x0830</deviceId>
+    <clusters lockOthers="true">
+      <include cluster="Basic" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>ZCLVersion</requireAttribute>
+        <requireAttribute>ApplicationVersion</requireAttribute>
+        <requireAttribute>StackVersion</requireAttribute>
+        <requireAttribute>HWVersion</requireAttribute>
+        <requireAttribute>ManufacturerName</requireAttribute>
+        <requireAttribute>ModelIdentifier</requireAttribute>
+        <requireAttribute>DateCode</requireAttribute>
+        <requireAttribute>PowerSource</requireAttribute>
+        <requireAttribute>GenericDevice-Class</requireAttribute>
+        <requireAttribute>GenericDevice-Type</requireAttribute>
+        <requireAttribute>ProductCode</requireAttribute>
+        <requireAttribute>ProductURL</requireAttribute>
+        <requireAttribute>SWBuildID</requireAttribute>
+      </include>
+      <include cluster="Identify" client="true" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>IdentifyTime</requireAttribute>
+        <requireCommand>Identify</requireCommand>
+        <requireCommand>IdentifyQuery</requireCommand>
+        <requireCommand>TriggerEffect</requireCommand>
+      </include>
+      <include cluster="Groups" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+      <include cluster="Scenes" client="true" server="false" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="OnOff" client="true" server="false" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="Level" client="true" server="false" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="OTAUpgrade" client="true" server="false" clientLocked="false" serverLocked="true"/>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>controlbridge</name>
+    <domain>CHIP</domain>
+    <typeName>Control Bridge</typeName>
+    <deviceId revision="1" editable="false">0x0840</deviceId>
+    <clusters lockOthers="true">
+      <include cluster="Basic" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>ZCLVersion</requireAttribute>
+        <requireAttribute>ApplicationVersion</requireAttribute>
+        <requireAttribute>StackVersion</requireAttribute>
+        <requireAttribute>HWVersion</requireAttribute>
+        <requireAttribute>ManufacturerName</requireAttribute>
+        <requireAttribute>ModelIdentifier</requireAttribute>
+        <requireAttribute>DateCode</requireAttribute>
+        <requireAttribute>PowerSource</requireAttribute>
+        <requireAttribute>GenericDevice-Class</requireAttribute>
+        <requireAttribute>GenericDevice-Type</requireAttribute>
+        <requireAttribute>ProductCode</requireAttribute>
+        <requireAttribute>ProductURL</requireAttribute>
+        <requireAttribute>SWBuildID</requireAttribute>
+      </include>
+      <include cluster="Identify" client="true" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>IdentifyTime</requireAttribute>
+        <requireCommand>Identify</requireCommand>
+        <requireCommand>IdentifyQuery</requireCommand>
+        <requireCommand>TriggerEffect</requireCommand>
+      </include>
+      <include cluster="Groups" client="true" server="false" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="Scenes" client="true" server="false" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="OnOff" client="true" server="false" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="Level" client="true" server="false" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="ColorControl" client="true" server="false" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="OTAUpgrade" client="true" server="true" clientLocked="false" serverLocked="false"/>
+      <include cluster="IlluminanceMeasurement" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+      <include cluster="IlluminanceLevelSensing" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+      <include cluster="OccupancySensing" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+    </clusters>
+  </deviceType>
+  <deviceType>
+    <name>onoffsensor</name>
+    <domain>CHIP</domain>
+    <typeName>On/off Sensor</typeName>
+    <deviceId revision="1" editable="false">0x0850</deviceId>
+    <clusters lockOthers="true">
+      <include cluster="Basic" client="false" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>ZCLVersion</requireAttribute>
+        <requireAttribute>ApplicationVersion</requireAttribute>
+        <requireAttribute>StackVersion</requireAttribute>
+        <requireAttribute>HWVersion</requireAttribute>
+        <requireAttribute>ManufacturerName</requireAttribute>
+        <requireAttribute>ModelIdentifier</requireAttribute>
+        <requireAttribute>DateCode</requireAttribute>
+        <requireAttribute>PowerSource</requireAttribute>
+        <requireAttribute>GenericDevice-Class</requireAttribute>
+        <requireAttribute>GenericDevice-Type</requireAttribute>
+        <requireAttribute>ProductCode</requireAttribute>
+        <requireAttribute>ProductURL</requireAttribute>
+        <requireAttribute>SWBuildID</requireAttribute>
+      </include>
+      <include cluster="Identify" client="true" server="true" clientLocked="true" serverLocked="true">
+        <requireAttribute>IdentifyTime</requireAttribute>
+        <requireCommand>Identify</requireCommand>
+        <requireCommand>IdentifyQuery</requireCommand>
+        <requireCommand>TriggerEffect</requireCommand>
+      </include>
+      <include cluster="OnOff" client="true" server="false" clientLocked="true" serverLocked="true">
+      </include>
+      <include cluster="Groups" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+      <include cluster="Scenes" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+      <include cluster="Level" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+      <include cluster="OTAUpgrade" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+      <include cluster="ColorControl" client="true" server="false" clientLocked="false" serverLocked="true">
+      </include>
+    </clusters>
+  </deviceType>
+</zcl:device>

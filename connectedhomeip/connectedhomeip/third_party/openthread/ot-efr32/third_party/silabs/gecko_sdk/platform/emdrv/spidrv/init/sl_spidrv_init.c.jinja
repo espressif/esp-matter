@@ -1,0 +1,138 @@
+#include "spidrv.h"
+#include "sl_spidrv_instances.h"
+#include "sl_assert.h"
+
+{# Include instance configs #}
+{%- for instance in spidrv_instances %}
+#include "sl_spidrv_{{instance}}_config.h"{% endfor -%}
+{%- for instance in spidrv_usart_instances %}
+#include "sl_spidrv_usart_{{instance}}_config.h"{% endfor -%}
+{%- for instance in spidrv_eusart_instances %}
+#include "sl_spidrv_eusart_{{instance}}_config.h"{% endfor -%}
+{%- for instance in spidrv_instances %}
+
+SPIDRV_HandleData_t sl_spidrv_{{instance}}_handle_data;
+SPIDRV_Handle_t sl_spidrv_{{instance}}_handle = &sl_spidrv_{{instance}}_handle_data;{% endfor %}
+{%- for instance in spidrv_usart_instances %}
+
+SPIDRV_HandleData_t sl_spidrv_usart_{{instance}}_handle_data;
+SPIDRV_Handle_t sl_spidrv_usart_{{instance}}_handle = &sl_spidrv_usart_{{instance}}_handle_data;{% endfor %}
+{%- for instance in spidrv_eusart_instances %}
+
+SPIDRV_HandleData_t sl_spidrv_eusart_{{instance}}_handle_data;
+SPIDRV_Handle_t sl_spidrv_eusart_{{instance}}_handle = &sl_spidrv_eusart_{{instance}}_handle_data;{% endfor %}
+{%- for instance in spidrv_instances %}
+
+SPIDRV_Init_t sl_spidrv_init_{{instance}} = {
+  .port = SL_SPIDRV_{{instance | upper}}_PERIPHERAL,
+#if defined(_USART_ROUTELOC0_MASK)
+  .portLocationTx = SL_SPIDRV_{{instance | upper}}_TX_LOC,
+  .portLocationRx = SL_SPIDRV_{{instance | upper}}_RX_LOC,
+  .portLocationClk = SL_SPIDRV_{{instance | upper}}_CLK_LOC,
+#if defined(SL_SPIDRV_{{instance | upper}}_CS_LOC)
+  .portLocationCs = SL_SPIDRV_{{instance | upper}}_CS_LOC,
+#endif
+#elif defined(_GPIO_USART_ROUTEEN_MASK)
+  .portTx = SL_SPIDRV_{{instance | upper}}_TX_PORT,
+  .portRx = SL_SPIDRV_{{instance | upper}}_RX_PORT,
+  .portClk = SL_SPIDRV_{{instance | upper}}_CLK_PORT,
+#if defined(SL_SPIDRV_{{instance | upper}}_CS_PORT)
+  .portCs = SL_SPIDRV_{{instance | upper}}_CS_PORT,
+#endif
+  .pinTx = SL_SPIDRV_{{instance | upper}}_TX_PIN,
+  .pinRx = SL_SPIDRV_{{instance | upper}}_RX_PIN,
+  .pinClk = SL_SPIDRV_{{instance | upper}}_CLK_PIN,
+#if defined(SL_SPIDRV_{{instance | upper}}_CS_PIN)
+  .pinCs = SL_SPIDRV_{{instance | upper}}_CS_PIN,
+#endif
+#else
+  .portLocation = SL_SPIDRV_{{instance | upper}}_ROUTE_LOC,
+#endif
+  .bitRate = SL_SPIDRV_{{instance | upper}}_BITRATE,
+  .frameLength = SL_SPIDRV_{{instance | upper}}_FRAME_LENGTH,
+  .dummyTxValue = 0,
+  .type = SL_SPIDRV_{{instance | upper}}_TYPE,
+  .bitOrder = SL_SPIDRV_{{instance | upper}}_BIT_ORDER,
+  .clockMode = SL_SPIDRV_{{instance | upper}}_CLOCK_MODE,
+  .csControl = SL_SPIDRV_{{instance | upper}}_CS_CONTROL,
+  .slaveStartMode = SL_SPIDRV_{{instance | upper}}_SLAVE_START_MODE,
+};{% endfor %}
+{%- for instance in spidrv_usart_instances %}
+
+SPIDRV_Init_t sl_spidrv_usart_init_{{instance}} = {
+  .port = SL_SPIDRV_USART_{{instance | upper}}_PERIPHERAL,
+#if defined(_USART_ROUTELOC0_MASK)
+  .portLocationTx = SL_SPIDRV_USART_{{instance | upper}}_TX_LOC,
+  .portLocationRx = SL_SPIDRV_USART_{{instance | upper}}_RX_LOC,
+  .portLocationClk = SL_SPIDRV_USART_{{instance | upper}}_CLK_LOC,
+#if defined(SL_SPIDRV_USART_{{instance | upper}}_CS_LOC)
+  .portLocationCs = SL_SPIDRV_USART_{{instance | upper}}_CS_LOC,
+#endif
+#elif defined(_GPIO_USART_ROUTEEN_MASK)
+  .portTx = SL_SPIDRV_USART_{{instance | upper}}_TX_PORT,
+  .portRx = SL_SPIDRV_USART_{{instance | upper}}_RX_PORT,
+  .portClk = SL_SPIDRV_USART_{{instance | upper}}_CLK_PORT,
+#if defined(SL_SPIDRV_USART_{{instance | upper}}_CS_PORT)
+  .portCs = SL_SPIDRV_USART_{{instance | upper}}_CS_PORT,
+#endif
+  .pinTx = SL_SPIDRV_USART_{{instance | upper}}_TX_PIN,
+  .pinRx = SL_SPIDRV_USART_{{instance | upper}}_RX_PIN,
+  .pinClk = SL_SPIDRV_USART_{{instance | upper}}_CLK_PIN,
+#if defined(SL_SPIDRV_USART_{{instance | upper}}_CS_PIN)
+  .pinCs = SL_SPIDRV_USART_{{instance | upper}}_CS_PIN,
+#endif
+#else
+  .portLocation = SL_SPIDRV_USART_{{instance | upper}}_ROUTE_LOC,
+#endif
+  .bitRate = SL_SPIDRV_USART_{{instance | upper}}_BITRATE,
+  .frameLength = SL_SPIDRV_USART_{{instance | upper}}_FRAME_LENGTH,
+  .dummyTxValue = 0,
+  .type = SL_SPIDRV_USART_{{instance | upper}}_TYPE,
+  .bitOrder = SL_SPIDRV_USART_{{instance | upper}}_BIT_ORDER,
+  .clockMode = SL_SPIDRV_USART_{{instance | upper}}_CLOCK_MODE,
+  .csControl = SL_SPIDRV_USART_{{instance | upper}}_CS_CONTROL,
+  .slaveStartMode = SL_SPIDRV_USART_{{instance | upper}}_SLAVE_START_MODE,
+};{% endfor %}
+{%- for instance in spidrv_eusart_instances %}
+
+SPIDRV_Init_t sl_spidrv_eusart_init_{{instance}} = {
+  .port = SL_SPIDRV_EUSART_{{instance | upper}}_PERIPHERAL,
+  .portTx = SL_SPIDRV_EUSART_{{instance | upper}}_TX_PORT,
+  .portRx = SL_SPIDRV_EUSART_{{instance | upper}}_RX_PORT,
+  .portClk = SL_SPIDRV_EUSART_{{instance | upper}}_SCLK_PORT,
+#if defined(SL_SPIDRV_EUSART_{{instance | upper}}_CS_PORT)
+  .portCs = SL_SPIDRV_EUSART_{{instance | upper}}_CS_PORT,
+#endif
+  .pinTx = SL_SPIDRV_EUSART_{{instance | upper}}_TX_PIN,
+  .pinRx = SL_SPIDRV_EUSART_{{instance | upper}}_RX_PIN,
+  .pinClk = SL_SPIDRV_EUSART_{{instance | upper}}_SCLK_PIN,
+#if defined(SL_SPIDRV_EUSART_{{instance | upper}}_CS_PIN)
+  .pinCs = SL_SPIDRV_EUSART_{{instance | upper}}_CS_PIN,
+#endif
+  .bitRate = SL_SPIDRV_EUSART_{{instance | upper}}_BITRATE,
+  .frameLength = SL_SPIDRV_EUSART_{{instance | upper}}_FRAME_LENGTH,
+  .dummyTxValue = 0,
+  .type = SL_SPIDRV_EUSART_{{instance | upper}}_TYPE,
+  .bitOrder = SL_SPIDRV_EUSART_{{instance | upper}}_BIT_ORDER,
+  .clockMode = SL_SPIDRV_EUSART_{{instance | upper}}_CLOCK_MODE,
+  .csControl = SL_SPIDRV_EUSART_{{instance | upper}}_CS_CONTROL,
+  .slaveStartMode = SL_SPIDRV_EUSART_{{instance | upper}}_SLAVE_START_MODE,
+};{% endfor %}
+
+void sl_spidrv_init_instances(void) {
+{%- for instance in spidrv_usart_instances %}
+#if !defined(SL_SPIDRV_EUSART_{{instance | upper}}_CS_PIN)
+  EFM_ASSERT(sl_spidrv_usart_init_{{instance}}.csControl == spidrvCsControlAuto);
+#endif{% endfor %}
+{%- for instance in spidrv_eusart_instances %}
+#if !defined(SL_SPIDRV_USART_{{instance | upper}}_CS_PIN)
+  EFM_ASSERT(sl_spidrv_eusart_init_{{instance}}.csControl == spidrvCsControlAuto);
+#endif {% endfor %}
+
+{%- for instance in spidrv_instances %}
+  SPIDRV_Init(sl_spidrv_{{instance}}_handle, &sl_spidrv_init_{{instance}});{% endfor %}
+{%- for instance in spidrv_usart_instances %}
+  SPIDRV_Init(sl_spidrv_usart_{{instance}}_handle, &sl_spidrv_usart_init_{{instance}});{% endfor %}
+{%- for instance in spidrv_eusart_instances %}
+  SPIDRV_Init(sl_spidrv_eusart_{{instance}}_handle, &sl_spidrv_eusart_init_{{instance}});{% endfor %}
+}

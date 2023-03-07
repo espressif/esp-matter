@@ -1,0 +1,20 @@
+id: "bluetooth_feature_legacy_advertiser"
+label: "Legacy Advertising"
+package: "Bluetooth"
+description: >
+  This component, corresponding to the "legacy_advertiser" class in Bluetooth APIs,
+  provides the legacy advertising feature. Specifically, this component enables
+  advertisements that use legacy advertising PDUs. Common advertising functionalities,
+  e.g., advertising set creation, and address settings etc., are provided by its
+  base component <bluetooth_feature_advertiser>.
+category: "Bluetooth|Feature"
+quality: "production"
+root_path: "protocol/bluetooth"
+requires:
+  - name: "bluetooth_controller"
+  - name: "bluetooth_feature_advertiser"
+provides:
+  - name: "bluetooth_feature_legacy_advertiser"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_legacy_advertiser

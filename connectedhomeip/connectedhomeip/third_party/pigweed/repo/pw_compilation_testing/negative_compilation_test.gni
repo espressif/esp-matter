@@ -1,0 +1,90 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/python_action.gni")
+import("$dir_pw_build/target_types.gni")
+
+declare_args() {
+  # Enables or disables negative compilation tests for the current toolchain.
+  # Disabled by default since negative compilation tests increase gn gen time
+  # significantly.
+  pw_compilation_testing_NEGATIVE_COMPILATION_ENABLED = false
+}
+
+# Declares a compilation failure test. If
+# pw_compilation_testing_NEGATIVE_COMPILATION_ENABLED is true, negative
+# complilation tests will be executed in the build. These tests pass if
+# compilation fails when #if block test cases are enabled in the code.
+#
+# Compilation failure tests may also be declared as part of a unit test in
+# pw_test by settin negative_compilation_tests = true.
+template("pw_cc_negative_compilation_test") {
+  assert(defined(invoker.sources) && invoker.sources != [],
+         "pw_cc_negative_compilation_test requires 'sources' to be provided")
+
+  if (pw_compilation_testing_NEGATIVE_COMPILATION_ENABLED) {
+    _out_dir = "$target_gen_dir/$target_name"
+
+    _args = [
+      "--output",
+      rebase_path(_out_dir, root_build_dir),
+      "--base",
+      get_label_info(":$target_name._base", "label_no_toolchain"),
+      "--name",
+      target_name,
+    ]
+
+    # List the source files as both a GN path and a file system path.
+    foreach(file, invoker.sources) {
+      _args += [ get_path_info(file, "abspath") + ";" +
+                 rebase_path(file, root_build_dir) ]
+    }
+
+    # Invoke the generator script, which generates a BUILD.gn file with a GN
+    # action for each NC test. The test names are returned as a list.
+    _tests = exec_script(
+            "$dir_pw_compilation_testing/py/pw_compilation_testing/generator.py",
+            _args,
+            "list lines",
+            invoker.sources)
+
+    # Create a group of the generated NC test targets.
+    group(target_name) {
+      deps = []
+      foreach(test, _tests) {
+        deps += [ "$_out_dir:$target_name.$test.negative_compilation_test" ]
+      }
+    }
+  } else {
+    # If compilation testing is disabled, only compile the base file, which the
+    # negative compilation test targets depend on. Use an action for this target
+    # so that depending on it will not link in any source files.
+    pw_python_action(target_name) {
+      script = "$dir_pw_build/py/pw_build/nop.py"
+      stamp = true
+      deps = [ ":$target_name._base" ]
+    }
+  }
+
+  # The base target is the sources with no tests enabled.
+  pw_source_set(target_name + "._base") {
+    forward_variables_from(invoker, "*")
+    if (!defined(deps)) {
+      deps = []
+    }
+    deps += [ "$dir_pw_compilation_testing:internal_pigweed_use_only" ]
+  }
+}

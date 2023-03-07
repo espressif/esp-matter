@@ -1,0 +1,50 @@
+id: tensorflow_lite_micro_optimized_kernels
+package: platform
+label: CMSIS-NN Optimized Kernels
+description: >
+  This component includes kernel implementations that are optimized for certain CPU
+  architectures using CMSIS-NN. By including this component, the optimized kernel implementations
+  will be used instead of the reference kernels.
+
+  The kernels which have optimized implementations are: add, conv, depthwise_conv,
+  fully_connected, mul, pooling and softmax. Remaining kernels fall back to using the
+  reference kernel implementations.
+category: Machine Learning|TensorFlow|Kernels
+quality: production
+provides:
+  - name: tensorflow_lite_micro_optimized_kernels
+  - name: tensorflow_kernel_implementation
+    allow_multiple: true
+  - name: tensorflow_kernel_optimized_add
+  - name: tensorflow_kernel_optimized_conv
+  - name: tensorflow_kernel_optimized_depthwise_conv
+  - name: tensorflow_kernel_optimized_fully_connected
+  - name: tensorflow_kernel_optimized_mul
+  - name: tensorflow_kernel_optimized_pooling
+  - name: tensorflow_kernel_optimized_softmax
+  - name: tensorflow_kernel_optimized_svdf
+requires:
+  - name: tensorflow_dependency_cmsis_nn
+  - name: tensorflow_lite_micro_reference_kernels
+root_path: util/third_party/tflite-micro/tensorflow/lite/micro/kernels/cmsis_nn
+source:
+  - path: add.cc
+    unless:
+      - tensorflow_kernel_accelerated_add
+  - path: conv.cc
+    unless:
+      - tensorflow_kernel_accelerated_conv
+  - path: depthwise_conv.cc
+    unless:
+      - tensorflow_kernel_accelerated_depthwise_conv
+  - path: fully_connected.cc
+    unless:
+      - tensorflow_kernel_accelerated_fully_connected
+  - path: mul.cc
+  - path: pooling.cc
+    unless:
+      - tensorflow_kernel_accelerated_pooling
+  - path: softmax.cc
+  - path: svdf.cc
+define:
+  - name: "CMSIS_NN"

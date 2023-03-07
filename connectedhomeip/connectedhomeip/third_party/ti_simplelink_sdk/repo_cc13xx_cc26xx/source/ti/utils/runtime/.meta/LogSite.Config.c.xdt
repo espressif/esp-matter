@@ -1,0 +1,129 @@
+%%{
+/*
+ * Copyright (c) 2019-2020 Texas Instruments Incorporated - http://www.ti.com
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+ *  ======== LogSite.Config.c.xdt ========
+ */
+%%}
+%%{
+    let LogSite = args[0];
+
+    function loggerHandle(inst)
+    {
+        let loggerModule = inst.loggerMod;
+        let idx = loggerIndex(loggerModule, inst.logger.$name);
+        return (loggerModule.slice(1).replace(/\//g, "_")+"_config["+idx+"]");
+    }
+
+    function loggerIndex(loggerModule, instName)
+    {
+        let Logger = system.modules[loggerModule];
+
+        for (let i = 0; i < Logger.$instances.length; i++) {
+            if (Logger.$instances[i].$name == instName) {
+                return (i);
+            }
+        }
+    }
+
+    function siteName(inst)
+    {
+        return ([ inst.module, "LogSite" ].join("_"));
+    }
+
+    function siteEnable(inst)
+    {
+        let enable = new Array();
+
+        if (inst.enable_INFO1) enable.push("Log_INFO1");
+        if (inst.enable_INFO2) enable.push("Log_INFO2");
+        if (inst.enable_INFO3) enable.push("Log_INFO3");
+        if (inst.enable_INFO4) enable.push("Log_INFO4");
+        if (inst.enable_INFO5) enable.push("Log_INFO5");
+        if (inst.enable_INFO6) enable.push("Log_INFO6");
+        if (inst.enable_WARN)  enable.push("Log_WARN");
+        if (inst.enable_ERROR) enable.push("Log_ERROR");
+        if (enable.length == 0) enable.push("0");
+
+        return (enable.join(" | "));
+    }
+
+    /* list of logger modules */
+    let loggerMods = new Array();
+
+    for (let i = 0; i < LogSite.$instances.length; i++) {
+        loggerMods.push(LogSite.$instances[i].loggerMod);
+    }
+
+    /* compute unique sorted array of logger modules */
+    loggerMods = loggerMods.sort().filter(function(elem, index, ary) {
+        return (index == ary.length - 1 || ary[index + 1] != elem);
+    });
+
+    /* make include path and config object declarations */
+    let decls = new Array();
+
+    for (let i = 0; i < loggerMods.length; i++) {
+        decls.push({
+            iname: loggerMods[i].slice(1),
+            uname: loggerMods[i].slice(1).replace(/\//g,"_"),
+            mname: loggerMods[i].match(/\/(\w+)$/)[1],
+            count: system.modules[loggerMods[i]].$instances.length
+        });
+    }
+%%}
+/*
+ *  ======== ti.utils.runtime/LogSite ========
+ */
+
+#include <ti/utils/runtime/Log.h>
+#include <ti/utils/runtime/ILogger.h>
+% for (let i = 0; i < decls.length; i++) {
+#include <`decls[i].iname`.h>
+% }
+
+% for (let i = 0; i < decls.length; i++) {
+extern `decls[i].mname`_Instance `decls[i].uname`_config[`decls[i].count`];
+% }
+
+/* instance specific symbols */
+% for (let i = 0; i < LogSite.$instances.length; i++) {
+%     let inst = LogSite.$instances[i];
+%     let cname = inst.loggerMod.slice(1).replace(/\//g, "_");
+const uint32_t        `siteName(inst)`_level = `siteEnable(inst)`;
+const ILogger_Handle  `siteName(inst)`_handle = &`loggerHandle(inst)`;
+extern void           `siteName(inst)`_event(ILogger_Handle, uint32_t, uintptr_t, uintptr_t, uintptr_t, uintptr_t, uintptr_t);
+extern void           `siteName(inst)`_printf(ILogger_Handle, uint32_t, uint32_t, ...);
+extern void           `siteName(inst)`_buf(ILogger_Handle, uint32_t, const char*, uint8_t *, size_t);
+
+% }

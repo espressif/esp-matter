@@ -1,0 +1,75 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pi_pico.gni")
+
+group("rp2_common") {
+  public_deps = [
+    "hardware_adc",
+    "hardware_base",
+    "hardware_claim",
+    "hardware_clocks",
+    "hardware_divider",
+    "hardware_dma",
+    "hardware_exception",
+    "hardware_flash",
+    "hardware_gpio",
+    "hardware_i2c",
+    "hardware_interp",
+    "hardware_irq",
+    "hardware_pio",
+    "hardware_pll",
+    "hardware_pwm",
+    "hardware_resets",
+    "hardware_rtc",
+    "hardware_spi",
+    "hardware_sync",
+    "hardware_timer",
+    "hardware_uart",
+    "hardware_vreg",
+    "hardware_watchdog",
+    "hardware_xosc",
+    "pico_bootrom",
+    "pico_platform",
+  ]
+
+  if (!PICO_BARE_METAL) {
+    public_deps += [
+      "boot_stage2",
+      "cmsis",
+      "pico_bit_ops",
+      "pico_bootsel_via_double_reset",
+      "pico_divider",
+      "pico_double",
+      "pico_fix",
+      "pico_float",
+      "pico_int64_ops",
+      "pico_malloc",
+      "pico_mem_ops",
+      "pico_multicore",
+      "pico_printf",
+      "pico_runtime",
+      "pico_standard_link",
+      "pico_stdio",
+      "pico_stdio_semihosting",
+      "pico_stdio_uart",
+      "pico_stdio_usb",
+      "pico_stdlib",
+      "pico_unique_id",
+      "tinyusb",
+    ]
+    # Not a real library:
+    #   pico_cxx_options
+  }
+}

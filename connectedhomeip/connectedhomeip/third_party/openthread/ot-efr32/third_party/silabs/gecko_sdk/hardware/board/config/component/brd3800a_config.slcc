@@ -1,0 +1,15 @@
+!!omap
+- id: brd3800a_config
+- label: brd3800a config
+- description: Configuration files for BRD3800A
+- package: platform
+- category: Platform|Board|Config
+- quality: production
+- ui_hints:
+    visibility: never
+- root_path: hardware/board/config
+- requires:
+  - name: brd3800a
+- provides:
+  - name: brd3800a_config
+- config_file: []

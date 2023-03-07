@@ -1,0 +1,28 @@
+{
+  "name": "CHIP Tests templates",
+  "version": "chip-v1",
+  "helpers": [
+    "common/StringHelper.js",
+    "templates/app/helper.js",
+    "templates/chip/helper.js",
+    "common/ClusterTestGeneration.js"
+  ],
+  "resources": {
+    "pics-metafile": "./yaml/x.yaml",
+    "certification-metadir": "./yaml/",
+    "test-metadir": "./yaml/"
+  },
+  "partials": [
+    {
+      "name": "header",
+      "path": "./header.zapt"
+    }
+  ],
+  "templates": [
+    {
+      "path": "simulated-cluster-objects.zapt",
+      "name": "Simulated Cluster Objects Commands header",
+      "output": "simulated-cluster-objects.h"
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+/***************************************************************************//**
+ * @file    iot_flash_desc.c.jinja
+ * @brief   Flash instance descriptors - auto-generated file.
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2021 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ ******************************************************************************/
+
+/*******************************************************************************
+ *                               INCLUDES
+ ******************************************************************************/
+
+/* standard C */
+#include "stddef.h"
+
+/* SPI driver layer */
+#include "iot_flash_desc.h"
+
+{% for instance in iot_flash_instances %}
+/* instance {{ instance }} config */
+#include "iot_flash_cfg_{{ instance }}.h"
+{% endfor %}
+
+/*******************************************************************************
+ *                            DESCRIPTOR LIST
+ ******************************************************************************/
+
+IotFlashDescriptor_t iot_flash_desc[] = {
+
+{% for instance in iot_flash_instances %}
+  /* instance {{ instance }} config */
+  {
+    /* instance number and type */
+    .lInstNum           = IOT_FLASH_CFG_{{ instance | upper }}_INST_NUM,
+    .lInstType          = IOT_FLASH_CFG_{{ instance | upper }}_INST_TYPE,
+
+    /* apply the following configs only if instance type is SPI */
+#if (IOT_FLASH_CFG_{{ instance | upper }}_INST_TYPE == 1)
+
+    /* defaults */
+    .ulDefaultBitrate   = IOT_FLASH_CFG_{{ instance | upper }}_SPI_BITRATE,
+    .ulDefaultFrameLen  = IOT_FLASH_CFG_{{ instance | upper }}_SPI_FRAME_LENGTH,
+    .xDefaultType       = IOT_FLASH_CFG_{{ instance | upper }}_SPI_TYPE,
+    .xDefaultBitOrder   = IOT_FLASH_CFG_{{ instance | upper }}_SPI_BIT_ORDER,
+    .xDefaultClockMode  = IOT_FLASH_CFG_{{ instance | upper }}_SPI_CLOCK_MODE,
+    .xDefaultCsControl  = IOT_FLASH_CFG_{{ instance | upper }}_SPI_CS_CONTROL,
+    .xDefaultSlaveStart = IOT_FLASH_CFG_{{ instance | upper }}_SPI_SLAVE_START_MODE,
+
+    /* selected peripheral */
+    .pxPeripheral       = IOT_FLASH_CFG_{{ instance | upper }}_SPI_PERIPHERAL,
+    .ucPeripheralNo     = IOT_FLASH_CFG_{{ instance | upper }}_SPI_PERIPHERAL_NO,
+
+    /* ports */
+    .xTxPort            = IOT_FLASH_CFG_{{ instance | upper }}_SPI_TX_PORT,
+    .xRxPort            = IOT_FLASH_CFG_{{ instance | upper }}_SPI_RX_PORT,
+    .xClkPort           = IOT_FLASH_CFG_{{ instance | upper }}_SPI_CLK_PORT,
+    .xCsPort            = IOT_FLASH_CFG_{{ instance | upper }}_SPI_CS_PORT,
+
+    /* pins */
+    .ucTxPin            = IOT_FLASH_CFG_{{ instance | upper }}_SPI_TX_PIN,
+    .ucRxPin            = IOT_FLASH_CFG_{{ instance | upper }}_SPI_RX_PIN,
+    .ucClkPin           = IOT_FLASH_CFG_{{ instance | upper }}_SPI_CLK_PIN,
+    .ucCsPin            = IOT_FLASH_CFG_{{ instance | upper }}_SPI_CS_PIN,
+
+    /* locations */
+#if (_SILICON_LABS_32B_SERIES < 2)
+    .ucTxLoc            = IOT_FLASH_CFG_{{ instance | upper }}_SPI_TX_LOC,
+    .ucRxLoc            = IOT_FLASH_CFG_{{ instance | upper }}_SPI_RX_LOC,
+    .ucClkLoc           = IOT_FLASH_CFG_{{ instance | upper }}_SPI_CLK_LOC,
+    .ucCsLoc            = IOT_FLASH_CFG_{{ instance | upper }}_SPI_CS_LOC,
+#endif
+
+#endif
+  },
+{% endfor %}
+
+};
+
+/*******************************************************************************
+ *                          iot_flash_desc_get
+ ******************************************************************************/
+
+IotFlashDescriptor_t *iot_flash_desc_get(int32_t lInstNum)
+{
+  int32_t lInstCount = sizeof(iot_flash_desc)/sizeof(IotFlashDescriptor_t);
+  int32_t lInstCur   = 0;
+
+  for (lInstCur = 0; lInstCur < lInstCount; lInstCur++) {
+    if (iot_flash_desc[lInstCur].lInstNum == lInstNum) {
+      return &iot_flash_desc[lInstCur];
+    }
+  }
+
+  return NULL;
+}

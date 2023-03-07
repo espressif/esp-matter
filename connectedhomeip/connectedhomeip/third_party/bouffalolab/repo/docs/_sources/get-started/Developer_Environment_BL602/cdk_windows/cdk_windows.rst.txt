@@ -1,0 +1,213 @@
+cdk调试指导
+===========
+
+.. _1下载安装:
+
+1.下载安装
+----------
+
+下载地址：\ `基础软件平台-剑池CDK
+(t-head.cn) <https://occ.t-head.cn/development/series/download?id=3864775351511420928&type=kind&softPlatformType=4#sticky>`__
+
+.. figure:: image/image-13.png
+   :alt: 
+
+.. _1-创建工程的workspace:
+
+1. 创建工程的workspace
+----------------------
+
+打开cdk软件，点击\ ``file->new->Multi-Project Workspace``\ 新建工程的workspace,操作如下图：
+
+.. figure:: image/image-1.png
+   :alt: 
+
+设置workspace的名字和工作目录
+
+.. figure:: image/image-2.png
+   :alt: 
+
+成功后如下显示：
+
+.. figure:: image/image-12.png
+   :alt: 
+
+.. _2在workspace下创建一个soc-project:
+
+2.在workspace下创建一个SOC project
+----------------------------------
+
+右键生成的workspace，添加一个SOC project，操作如下：
+
+.. figure:: image/image-3.png
+   :alt: 
+
+添加project的名字和相关硬件的信息和相关的描述，点击ok完成配置，操作如下图：
+
+.. figure:: image/image-4.png
+   :alt: 
+
+-  1号区：工程名字
+
+-  2号区：编程语言类型
+
+-  3号区：paoject类型
+
+-  4号区：芯片类型
+
+-  5号区：芯片框架类型
+
+-  6号区：相关描述
+
+-  7号区：硬件RAM相关地址与大小
+
+成功后如下显示：
+
+.. figure:: image/image-5.png
+   :alt: 
+
+.. _3向project添加相关代码:
+
+3.向project添加相关代码
+-----------------------
+
+右键新建成功的\ ``project->Add Source Folder``\ ，之后选择代码所在目录便可，现象如下：
+
+.. figure:: image/image-6.png
+   :alt: 
+
+成功后现象如下图，下图软件是新添加的：
+
+.. figure:: image/image-7.png
+   :alt: 
+
+.. _4配置工程相关参数进行调试:
+
+4.配置工程相关参数，进行调试
+----------------------------
+
+右键工程，点击\ ``Options for...``
+
+.. figure:: image/image-8.png
+   :alt: 
+
+.. _5配置debug相关参数:
+
+5.配置debug相关参数
+-------------------
+
+下图是要配置的各个参数：
+
+.. figure:: image/image-9.png
+   :alt: 
+
+关于openocd的\ ``settings...``\ 的相关配置参数：
+
+``Config Option：``\ 2号区，填写的是相关tools的配置，是debug目录下的关于openocd的配置文件，参数是：
+
+``-f worksapce\bl_demo_event\tools\debug\openocd_cfg\if_bflb_link_DVK.cfg``
+和\ ``-f worksapce\bl_demo_event\tools\debug\602``\ ，此处要填写这两个文件的绝对路径否则软件找不到
+
+.. figure:: image/image-10.png
+   :alt: 
+
+.. _6替换elf文件:
+
+6.替换elf文件
+-------------
+
+将其他平台上编译生成的elf文件放到工程下面的obj文件下，替换cdk这边的编译生成的文件，如下图所示：
+
+其中\ ``bl_demo_event.elf``\ 之前叫bl602_demo_event.elf，现在是替换了当前工程生成的文件。
+
+.. figure:: image/image-11.png
+   :alt: 
+
+.. _7debug调试:
+
+7.debug调试
+-----------
+
+配置完成后点击主页的下载调试，进行debug调试，操作如下：
+
+-  左侧是调试下载程序到板卡，快捷键是\ ``<Ctrl + F5>``
+
+-  右侧是调试不下载，快捷键是\ ``<Ctrl + Shift + F5>``
+
+.. figure:: image/image-14.png
+   :alt: 
+
+下载成功后会显示如下界面：
+
+.. figure:: image/image-15.png
+   :alt: 
+
+1号区：
+
+.. figure:: image/image-16.png
+   :alt: 
+
+-  全局断点（F9）
+
+-  使能全部断点
+
+-  关闭全部断点
+
+-  清除单个断点（Ctrl + Shift + F9）
+
+2号区
+
+.. figure:: image/image-17.png
+   :alt: 
+
+-  Step Into（F11）
+
+-  Step Over（F10）
+
+-  Step Out （Ctrl + F11）
+
+3号区
+
+.. figure:: image/image-18.png
+   :alt: 
+
+cpu内部寄存器
+
+4号区：
+
+-  Locals：当前调试所在位置的相关变量
+
+.. figure:: image/image-19.png
+   :alt: 
+
+-  Watches:用户想要查看追踪的变量信息
+
+.. figure:: image/image-20.png
+   :alt: 
+
+-  Callstack：该标签是查看当前堆栈相关的函数调用的相关信息
+
+.. figure:: image/image-21.png
+   :alt: 
+
+-  Memory：该标签是对硬件内存的查看，可以添加相关硬件地址，可以看到该地区数据的变化。
+
+.. figure:: image/image-22.png
+   :alt: 
+
+5号区
+
+-  断点
+
+.. figure:: image/image-23.png
+   :alt: 
+
+-  所处线程：当前PC指针所处的线程
+
+.. figure:: image/image-24.png
+   :alt: 
+
+-  Disassemble：PC指针所处位置
+
+.. figure:: image/image-25.png
+   :alt: 

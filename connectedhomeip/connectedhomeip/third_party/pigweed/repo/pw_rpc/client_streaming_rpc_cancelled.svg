@@ -1,0 +1,76 @@
+<!-- Originally created with blockdiag. -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkspace="http://www.inkscape.org/namespaces/inkscape" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 598 452" width="598px" height="452px">
+  <defs id="defs_block">
+    <filter height="1.504" id="filter_blur" inkspace:collect="always" width="1.1575" x="-0.07875" y="-0.252">
+      <feGaussianBlur id="feGaussianBlur3780" inkspace:collect="always" stdDeviation="4.2"/>
+    </filter>
+  </defs>
+  <title>Cancelled Client Streaming RPC</title>
+  <desc>seqdiag {
+  default_note_color = aliceblue;
+
+  client -&gt; server [
+      label = "start",
+      leftnote = "PacketType.REQUEST\nchannel ID\nservice ID\nmethod ID"
+  ];
+
+  client --&gt; server [
+      noactivate,
+      label = "messages (zero or more)",
+      leftnote = "PacketType.CLIENT_STREAM\nchannel ID\nservice ID\nmethod ID\npayload"
+  ];
+
+  client -&gt; server [
+      noactivate,
+      label = "cancel",
+      rightnote = "PacketType.CLIENT_ERROR\nchannel ID\nservice ID\nmethod ID\nstatus=CANCELLED"
+  ];
+}</desc>
+  <rect fill="rgb(0,0,0)" height="277" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1" width="8" x="209" y="153"/>
+  <rect fill="rgb(0,0,0)" height="277" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1" width="8" x="401" y="153"/>
+  <polygon fill="rgb(0,0,0)" points="64,126 189,126 197,134 197,180 64,180 64,126" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1"/>
+  <polygon fill="rgb(0,0,0)" points="27,220 189,220 197,228 197,287 27,287 27,220" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1"/>
+  <polygon fill="rgb(0,0,0)" points="421,327 577,327 585,335 585,394 421,394 421,327" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1"/>
+  <rect fill="rgb(0,0,0)" height="40" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1" width="128" x="149" y="46"/>
+  <rect fill="rgb(0,0,0)" height="40" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1" width="128" x="341" y="46"/>
+  <path d="M 210 80 L 210 440" fill="none" stroke="rgb(0,0,0)" stroke-dasharray="8 4"/>
+  <rect fill="moccasin" height="277" stroke="rgb(0,0,0)" width="8" x="206" y="147"/>
+  <path d="M 402 80 L 402 440" fill="none" stroke="rgb(0,0,0)" stroke-dasharray="8 4"/>
+  <rect fill="moccasin" height="277" stroke="rgb(0,0,0)" width="8" x="398" y="147"/>
+  <rect fill="rgb(255,255,255)" height="40" stroke="rgb(0,0,0)" width="128" x="146" y="40"/>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="37" x="210.5" y="66">client</text>
+  <rect fill="rgb(255,255,255)" height="40" stroke="rgb(0,0,0)" width="128" x="338" y="40"/>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="37" x="402.5" y="66">server</text>
+  <path d="M 218 147 L 394 147" fill="none" stroke="rgb(0,0,0)"/>
+  <polygon fill="rgb(0,0,0)" points="386,143 394,147 386,151" stroke="rgb(0,0,0)"/>
+  <polygon fill="rgb(240,248,255)" points="61,120 186,120 194,128 194,174 61,174 61,120" stroke="rgb(0,0,0)"/>
+  <path d="M 186 120 L 186 128" fill="none" stroke="rgb(0,0,0)"/>
+  <path d="M 186 128 L 194 128" fill="none" stroke="rgb(0,0,0)"/>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="109" x="123.5" y="133">PacketType.REQUEST</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="61" x="99.5" y="146">channel ID</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="61" x="99.5" y="159">service ID</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="55" x="96.5" y="172">method ID</text>
+  <path d="M 218 247 L 394 247" fill="none" stroke="rgb(0,0,0)" stroke-dasharray="4"/>
+  <polygon fill="rgb(0,0,0)" points="386,243 394,247 386,251" stroke="rgb(0,0,0)"/>
+  <polygon fill="rgb(240,248,255)" points="24,214 186,214 194,222 194,281 24,281 24,214" stroke="rgb(0,0,0)"/>
+  <path d="M 186 214 L 186 222" fill="none" stroke="rgb(0,0,0)"/>
+  <path d="M 186 222 L 194 222" fill="none" stroke="rgb(0,0,0)"/>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="146" x="105.0" y="227">PacketType.CLIENT_STREAM</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="61" x="62.5" y="240">channel ID</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="61" x="62.5" y="253">service ID</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="55" x="59.5" y="266">method ID</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="43" x="53.5" y="279">payload</text>
+  <path d="M 218 354 L 394 354" fill="none" stroke="rgb(0,0,0)"/>
+  <polygon fill="rgb(0,0,0)" points="386,350 394,354 386,358" stroke="rgb(0,0,0)"/>
+  <polygon fill="rgb(240,248,255)" points="418,321 574,321 582,329 582,388 418,388 418,321" stroke="rgb(0,0,0)"/>
+  <path d="M 574 321 L 574 329" fill="none" stroke="rgb(0,0,0)"/>
+  <path d="M 574 329 L 582 329" fill="none" stroke="rgb(0,0,0)"/>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="140" x="496.0" y="334">PacketType.CLIENT_ERROR</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="61" x="456.5" y="347">channel ID</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="61" x="456.5" y="360">service ID</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="55" x="453.5" y="373">method ID</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="97" x="474.5" y="386">status=CANCELLED</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="31" x="237.5" y="145">start</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="140" x="292.0" y="245">messages (zero or more)</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="37" x="240.5" y="352">cancel</text>
+</svg>

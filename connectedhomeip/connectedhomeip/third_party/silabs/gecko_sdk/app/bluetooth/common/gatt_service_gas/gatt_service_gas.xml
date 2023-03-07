@@ -1,0 +1,20 @@
+<gatt>
+  <!--IAQ-->
+  <service advertise="false" name="IAQ" requirement="mandatory" type="primary" uuid="efd658ae-c400-ef33-76e7-91b00019103b">
+    <informativeText/>
+    
+    <!--ECO2-->
+    <characteristic id="iaq_eco2" name="ECO2" uuid="efd658ae-c401-ef33-76e7-91b00019103b">
+      <informativeText/>
+      <value length="2" type="user" variable_length="false"/>
+      <properties read="true" read_requirement="optional"/>
+    </characteristic>
+    
+    <!--TVOC-->
+    <characteristic id="iaq_tvoc" name="TVOC" uuid="efd658ae-c402-ef33-76e7-91b00019103b">
+      <informativeText/>
+      <value length="2" type="user" variable_length="false"/>
+      <properties read="true" read_requirement="optional"/>
+    </characteristic>
+  </service>
+</gatt>

@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.local_time_information" uuid="2A0F" name="Local Time Information">
+	<InformativeText>
+	</InformativeText>
+	<Value>
+		<Field name="Time Zone">
+			<Requirement>Mandatory</Requirement>
+			<Reference>
+			org.bluetooth.characteristic.time_zone
+		</Reference>
+		</Field>
+		<Field name="Daylight Saving Time">
+			<Requirement>Mandatory</Requirement>
+			<Reference>
+			org.bluetooth.characteristic.dst_offset
+		</Reference>
+		</Field>
+	</Value>
+     <Note>
+    The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet.
+   </Note>
+</Characteristic>

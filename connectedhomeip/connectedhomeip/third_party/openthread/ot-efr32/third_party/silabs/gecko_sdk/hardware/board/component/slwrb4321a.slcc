@@ -1,0 +1,22 @@
+!!omap
+- id: slwrb4321a
+- label: SLWRB4321A
+- package: platform
+- description: Kit BSP support for the WGM160P Wi-Fi Module Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4321a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4321A"'
+  - name: SL_KIT_REV
+    value: '"A06"'
+- tag:
+  - kit:opn:SLWRB4321A
+  - kit:pn:WRB4321
+  - kit:variant:A
+  - kit:revision:A06

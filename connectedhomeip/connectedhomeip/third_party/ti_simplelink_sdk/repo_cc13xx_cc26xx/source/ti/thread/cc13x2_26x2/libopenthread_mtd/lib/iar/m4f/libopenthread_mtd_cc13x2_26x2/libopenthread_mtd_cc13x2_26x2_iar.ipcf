@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- IAR Project Connection File -->
+
+<iarProjectConnection version="1.2" name="libopenthread_mtd_cc13x2_26x2" oneShot="true"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="IarProjectConnection_1.2.xsd">
+
+    <asmIncludePath>
+        <path>$PROJ_DIR$</path>
+    </asmIncludePath>
+
+    <includePath>
+        <path>$PROJ_DIR$</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/examples/platforms</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/include</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/include</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/thread/cc13x2_26x2/libmbedcrypto/config</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/thread/cc13x2_26x2/libopenthread_mtd/config</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src</path>
+    </includePath>
+
+    <defines>
+        <define>DeviceFamily_CC13X2_CC26X2</define>
+        <define>HAVE_CONFIG_H</define>
+        <define>_BSD_SOURCE=1</define>
+        <define>_DEFAULT_SOURCE=1</define>
+        <define>MBEDTLS_CONFIG_FILE="mbedtls-config-cc13x2_26x2.h"</define>
+        <define>OPENTHREAD_MTD=1</define>
+        <define>OPENTHREAD_CONFIG_FILE="openthread-config-cc13x2_26x2-mtd.h"</define>
+        <define>OPENTHREAD_PROJECT_CORE_CONFIG_FILE="openthread-core-cc13x2_26x2-config.h"</define>
+    </defines>
+
+    <extraOptions>
+        <args>
+            <arg>--debug</arg>
+            <arg>--silent</arg>
+            <arg>-e</arg>
+            <arg>--aeabi</arg>
+            <arg>--thumb</arg>
+            <arg>--diag_suppress=Pa050</arg>
+        </args>
+    </extraOptions>
+
+    <linkerFile>
+        <override>false</override>
+    </linkerFile>
+
+    <linkerExtraOptions>
+        <args>
+        </args>
+    </linkerExtraOptions>
+
+    <customBuildTools>
+    </customBuildTools>
+
+    <heaps>
+        <heap> <!-- If omitted, id="0" -->
+            <size>0</size>
+        </heap>
+        <heap id="1">
+            <size>0</size>
+        </heap>
+    </heaps>
+    <stacks>
+        <stack> <!-- If omitted, id="0" -->
+            <size>512</size>
+        </stack>
+    </stacks>
+
+
+    <files>
+        <group name="config" build="true">
+            <path copyTo="$PROJ_DIR$/config/openthread-config-cc13x2_26x2-mtd.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/thread/cc13x2_26x2/libopenthread_mtd/config/openthread-config-cc13x2_26x2-mtd.h</path>
+            <path copyTo="$PROJ_DIR$/config/openthread-core-cc13x2_26x2-config.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/thread/cc13x2_26x2/libopenthread_mtd/config/openthread-core-cc13x2_26x2-config.h</path>
+        </group>
+        <group name="src/core" build="true">
+            <path reference="$PROJ_DIR$/src/core/openthread-core-config.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/openthread-core-config.h</path>
+        </group>
+        <group name="src/core/api" build="true">
+            <path reference="$PROJ_DIR$/src/core/api/backbone_router_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/backbone_router_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/backbone_router_ftd_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/backbone_router_ftd_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/border_agent_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/border_agent_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/border_router_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/border_router_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/channel_manager_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/channel_manager_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/channel_monitor_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/channel_monitor_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/child_supervision_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/child_supervision_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/coap_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/coap_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/coap_secure_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/coap_secure_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/commissioner_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/commissioner_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/crypto_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/crypto_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/dataset_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/dataset_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/dataset_ftd_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/dataset_ftd_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/diags_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/diags_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/dns_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/dns_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/entropy_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/entropy_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/heap_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/heap_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/icmp6_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/icmp6_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/instance_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/instance_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/ip6_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/ip6_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/jam_detection_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/jam_detection_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/joiner_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/joiner_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/link_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/link_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/link_raw_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/link_raw_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/logging_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/logging_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/message_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/message_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/netdata_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/netdata_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/netdiag_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/netdiag_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/network_time_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/network_time_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/random_crypto_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/random_crypto_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/random_noncrypto_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/random_noncrypto_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/server_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/server_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/sntp_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/sntp_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/tasklet_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/tasklet_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/thread_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/thread_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/thread_ftd_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/thread_ftd_api.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/api/udp_api.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/api/udp_api.cpp</path>
+        </group>
+        <group name="src/core/backbone_router" build="true">
+            <path reference="$PROJ_DIR$/src/core/backbone_router/leader.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/backbone_router/leader.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/backbone_router/leader.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/backbone_router/leader.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/backbone_router/local.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/backbone_router/local.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/backbone_router/local.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/backbone_router/local.hpp</path>
+        </group>
+        <group name="src/core/coap" build="true">
+            <path reference="$PROJ_DIR$/src/core/coap/coap.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/coap/coap.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/coap/coap.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/coap/coap.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/coap/coap_message.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/coap/coap_message.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/coap/coap_message.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/coap/coap_message.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/coap/coap_secure.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/coap/coap_secure.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/coap/coap_secure.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/coap/coap_secure.hpp</path>
+        </group>
+        <group name="src/core/common" build="true">
+            <path reference="$PROJ_DIR$/src/core/common/code_utils.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/code_utils.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/crc16.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/crc16.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/crc16.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/crc16.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/debug.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/debug.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/encoding.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/encoding.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/extension.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/extension.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/instance.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/instance.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/instance.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/instance.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/linked_list.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/linked_list.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/locator-getters.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/locator-getters.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/locator.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/locator.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/logging.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/logging.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/logging.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/logging.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/message.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/message.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/message.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/message.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/new.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/new.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/notifier.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/notifier.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/notifier.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/notifier.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/random.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/random.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/random_manager.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/random_manager.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/random_manager.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/random_manager.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/settings.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/settings.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/settings.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/settings.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/string.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/string.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/string.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/string.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/tasklet.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/tasklet.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/tasklet.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/tasklet.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/time.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/time.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/timer.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/timer.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/timer.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/timer.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/tlvs.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/tlvs.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/tlvs.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/tlvs.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/trickle_timer.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/trickle_timer.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/common/trickle_timer.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/common/trickle_timer.hpp</path>
+        </group>
+        <group name="src/core/config" build="true">
+            <path reference="$PROJ_DIR$/src/core/config/announce_sender.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/announce_sender.h</path>
+            <path reference="$PROJ_DIR$/src/core/config/backbone_router.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/backbone_router.h</path>
+            <path reference="$PROJ_DIR$/src/core/config/border_router.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/border_router.h</path>
+            <path reference="$PROJ_DIR$/src/core/config/channel_manager.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/channel_manager.h</path>
+            <path reference="$PROJ_DIR$/src/core/config/channel_monitor.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/channel_monitor.h</path>
+            <path reference="$PROJ_DIR$/src/core/config/child_supervision.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/child_supervision.h</path>
+            <path reference="$PROJ_DIR$/src/core/config/coap.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/coap.h</path>
+            <path reference="$PROJ_DIR$/src/core/config/commissioner.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/commissioner.h</path>
+            <path reference="$PROJ_DIR$/src/core/config/dhcp6_client.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/dhcp6_client.h</path>
+            <path reference="$PROJ_DIR$/src/core/config/dhcp6_server.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/dhcp6_server.h</path>
+            <path reference="$PROJ_DIR$/src/core/config/diag.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/diag.h</path>
+            <path reference="$PROJ_DIR$/src/core/config/dns_client.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/dns_client.h</path>
+            <path reference="$PROJ_DIR$/src/core/config/ip6.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/ip6.h</path>
+            <path reference="$PROJ_DIR$/src/core/config/joiner.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/joiner.h</path>
+            <path reference="$PROJ_DIR$/src/core/config/link_quality.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/link_quality.h</path>
+            <path reference="$PROJ_DIR$/src/core/config/link_raw.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/link_raw.h</path>
+            <path reference="$PROJ_DIR$/src/core/config/logging.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/logging.h</path>
+            <path reference="$PROJ_DIR$/src/core/config/mac.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/mac.h</path>
+            <path reference="$PROJ_DIR$/src/core/config/mle.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/mle.h</path>
+            <path reference="$PROJ_DIR$/src/core/config/openthread-core-config-check.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/openthread-core-config-check.h</path>
+            <path reference="$PROJ_DIR$/src/core/config/openthread-core-default-config.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/openthread-core-default-config.h</path>
+            <path reference="$PROJ_DIR$/src/core/config/parent_search.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/parent_search.h</path>
+            <path reference="$PROJ_DIR$/src/core/config/platform.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/platform.h</path>
+            <path reference="$PROJ_DIR$/src/core/config/sntp_client.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/sntp_client.h</path>
+            <path reference="$PROJ_DIR$/src/core/config/time_sync.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/time_sync.h</path>
+            <path reference="$PROJ_DIR$/src/core/config/tmf.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/config/tmf.h</path>
+        </group>
+        <group name="src/core/crypto" build="true">
+            <path reference="$PROJ_DIR$/src/core/crypto/aes_ccm.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/crypto/aes_ccm.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/crypto/aes_ccm.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/crypto/aes_ccm.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/crypto/aes_ecb.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/crypto/aes_ecb.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/crypto/aes_ecb.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/crypto/aes_ecb.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/crypto/ecdsa.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/crypto/ecdsa.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/crypto/ecdsa.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/crypto/ecdsa.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/crypto/hmac_sha256.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/crypto/hmac_sha256.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/crypto/hmac_sha256.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/crypto/hmac_sha256.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/crypto/mbedtls.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/crypto/mbedtls.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/crypto/mbedtls.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/crypto/mbedtls.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/crypto/pbkdf2_cmac.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/crypto/pbkdf2_cmac.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/crypto/pbkdf2_cmac.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/crypto/pbkdf2_cmac.h</path>
+            <path reference="$PROJ_DIR$/src/core/crypto/sha256.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/crypto/sha256.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/crypto/sha256.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/crypto/sha256.hpp</path>
+        </group>
+        <group name="src/core/diags" build="true">
+            <path reference="$PROJ_DIR$/src/core/diags/factory_diags.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/diags/factory_diags.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/diags/factory_diags.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/diags/factory_diags.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/diags/README.md">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/diags/README.md</path>
+        </group>
+        <group name="src/core/mac" build="true">
+            <path reference="$PROJ_DIR$/src/core/mac/channel_mask.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/mac/channel_mask.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/mac/channel_mask.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/mac/channel_mask.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/mac/data_poll_handler.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/mac/data_poll_handler.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/mac/data_poll_handler.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/mac/data_poll_handler.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/mac/data_poll_sender.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/mac/data_poll_sender.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/mac/data_poll_sender.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/mac/data_poll_sender.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/mac/link_raw.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/mac/link_raw.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/mac/link_raw.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/mac/link_raw.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/mac/mac.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/mac/mac.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/mac/mac.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/mac/mac.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/mac/mac_filter.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/mac/mac_filter.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/mac/mac_filter.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/mac/mac_filter.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/mac/mac_frame.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/mac/mac_frame.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/mac/mac_frame.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/mac/mac_frame.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/mac/mac_types.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/mac/mac_types.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/mac/mac_types.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/mac/mac_types.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/mac/sub_mac.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/mac/sub_mac.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/mac/sub_mac.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/mac/sub_mac.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/mac/sub_mac_callbacks.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/mac/sub_mac_callbacks.cpp</path>
+        </group>
+        <group name="src/core/meshcop" build="true">
+            <path reference="$PROJ_DIR$/src/core/meshcop/announce_begin_client.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/announce_begin_client.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/announce_begin_client.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/announce_begin_client.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/border_agent.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/border_agent.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/border_agent.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/border_agent.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/commissioner.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/commissioner.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/commissioner.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/commissioner.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/dataset.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/dataset.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/dataset.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/dataset.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/dataset_local.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/dataset_local.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/dataset_local.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/dataset_local.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/dataset_manager.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/dataset_manager.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/dataset_manager.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/dataset_manager.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/dataset_manager_ftd.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/dataset_manager_ftd.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/dtls.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/dtls.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/dtls.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/dtls.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/energy_scan_client.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/energy_scan_client.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/energy_scan_client.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/energy_scan_client.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/joiner.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/joiner.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/joiner.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/joiner.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/joiner_router.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/joiner_router.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/joiner_router.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/joiner_router.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/meshcop.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/meshcop.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/meshcop.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/meshcop.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/meshcop_leader.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/meshcop_leader.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/meshcop_leader.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/meshcop_leader.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/meshcop_tlvs.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/meshcop_tlvs.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/meshcop_tlvs.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/meshcop_tlvs.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/panid_query_client.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/panid_query_client.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/panid_query_client.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/panid_query_client.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/timestamp.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/timestamp.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/meshcop/timestamp.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/meshcop/timestamp.hpp</path>
+        </group>
+        <group name="src/core/net" build="true">
+            <path reference="$PROJ_DIR$/src/core/net/dhcp6.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/dhcp6.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/dhcp6_client.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/dhcp6_client.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/dhcp6_client.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/dhcp6_client.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/dhcp6_server.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/dhcp6_server.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/dhcp6_server.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/dhcp6_server.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/dns_client.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/dns_client.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/dns_client.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/dns_client.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/dns_headers.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/dns_headers.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/icmp6.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/icmp6.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/icmp6.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/icmp6.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/ip6.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/ip6.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/ip6.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/ip6.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/ip6_address.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/ip6_address.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/ip6_address.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/ip6_address.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/ip6_filter.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/ip6_filter.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/ip6_filter.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/ip6_filter.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/ip6_headers.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/ip6_headers.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/ip6_headers.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/ip6_headers.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/ip6_mpl.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/ip6_mpl.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/ip6_mpl.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/ip6_mpl.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/netif.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/netif.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/netif.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/netif.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/sntp_client.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/sntp_client.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/sntp_client.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/sntp_client.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/socket.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/socket.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/tcp.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/tcp.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/udp6.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/udp6.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/net/udp6.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/net/udp6.hpp</path>
+        </group>
+        <group name="src/core/radio" build="true">
+            <path reference="$PROJ_DIR$/src/core/radio/radio.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/radio/radio.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/radio/radio.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/radio/radio.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/radio/radio_callbacks.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/radio/radio_callbacks.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/radio/radio_platform.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/radio/radio_platform.cpp</path>
+        </group>
+        <group name="src/core/thread" build="true">
+            <path reference="$PROJ_DIR$/src/core/thread/address_resolver.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/address_resolver.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/address_resolver.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/address_resolver.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/announce_begin_server.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/announce_begin_server.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/announce_begin_server.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/announce_begin_server.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/announce_sender.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/announce_sender.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/announce_sender.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/announce_sender.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/child_table.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/child_table.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/child_table.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/child_table.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/energy_scan_server.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/energy_scan_server.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/energy_scan_server.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/energy_scan_server.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/indirect_sender.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/indirect_sender.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/indirect_sender.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/indirect_sender.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/indirect_sender_frame_context.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/indirect_sender_frame_context.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/key_manager.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/key_manager.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/key_manager.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/key_manager.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/link_quality.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/link_quality.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/link_quality.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/link_quality.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/lowpan.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/lowpan.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/lowpan.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/lowpan.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/mesh_forwarder.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/mesh_forwarder.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/mesh_forwarder.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/mesh_forwarder.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/mesh_forwarder_ftd.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/mesh_forwarder_ftd.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/mesh_forwarder_mtd.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/mesh_forwarder_mtd.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/mle.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/mle.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/mle.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/mle.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/mle_router.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/mle_router.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/mle_router.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/mle_router.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/mle_tlvs.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/mle_tlvs.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/mle_types.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/mle_types.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/mle_types.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/mle_types.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/network_data.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/network_data.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/network_data.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/network_data.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/network_data_leader.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/network_data_leader.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/network_data_leader.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/network_data_leader.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/network_data_leader_ftd.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/network_data_leader_ftd.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/network_data_leader_ftd.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/network_data_leader_ftd.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/network_data_local.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/network_data_local.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/network_data_local.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/network_data_local.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/network_data_notifier.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/network_data_notifier.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/network_data_notifier.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/network_data_notifier.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/network_data_tlvs.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/network_data_tlvs.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/network_diagnostic.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/network_diagnostic.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/network_diagnostic.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/network_diagnostic.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/network_diagnostic_tlvs.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/network_diagnostic_tlvs.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/panid_query_server.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/panid_query_server.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/panid_query_server.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/panid_query_server.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/router_table.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/router_table.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/router_table.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/router_table.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/src_match_controller.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/src_match_controller.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/src_match_controller.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/src_match_controller.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/thread_netif.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/thread_netif.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/thread_netif.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/thread_netif.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/thread_tlvs.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/thread_tlvs.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/thread_uri_paths.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/thread_uri_paths.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/time_sync_service.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/time_sync_service.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/time_sync_service.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/time_sync_service.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/topology.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/topology.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/thread/topology.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/thread/topology.hpp</path>
+        </group>
+        <group name="src/core/utils" build="true">
+            <path reference="$PROJ_DIR$/src/core/utils/channel_manager.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/utils/channel_manager.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/utils/channel_manager.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/utils/channel_manager.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/utils/channel_monitor.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/utils/channel_monitor.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/utils/channel_monitor.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/utils/channel_monitor.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/utils/child_supervision.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/utils/child_supervision.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/utils/child_supervision.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/utils/child_supervision.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/utils/flash.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/utils/flash.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/utils/flash.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/utils/flash.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/utils/heap.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/utils/heap.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/utils/heap.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/utils/heap.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/utils/jam_detector.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/utils/jam_detector.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/utils/jam_detector.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/utils/jam_detector.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/utils/otns.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/utils/otns.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/utils/otns.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/utils/otns.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/utils/parse_cmdline.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/utils/parse_cmdline.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/utils/parse_cmdline.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/utils/parse_cmdline.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/utils/slaac_address.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/utils/slaac_address.cpp</path>
+            <path reference="$PROJ_DIR$/src/core/utils/slaac_address.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/utils/slaac_address.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/utils/static_assert.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/utils/static_assert.hpp</path>
+            <path reference="$PROJ_DIR$/src/core/utils/wrap_string.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core/utils/wrap_string.h</path>
+        </group>
+        <group name="src/lib/platform" build="true">
+            <path reference="$PROJ_DIR$/src/lib/platform/exit_code.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/lib/platform/exit_code.c</path>
+            <path reference="$PROJ_DIR$/src/lib/platform/exit_code.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/lib/platform/exit_code.h</path>
+        </group>
+    </files>
+</iarProjectConnection>

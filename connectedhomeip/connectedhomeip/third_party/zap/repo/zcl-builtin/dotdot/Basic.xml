@@ -1,0 +1,238 @@
+﻿<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster xmlns:zcl="http://zigbee.org/zcl/clusters"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:type="http://zigbee.org/zcl/types"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd" 
+  id="0000" revision="2" name="Basic">
+  <classification role="utility" picsCode="B" />
+  <server>
+    <attributes>
+      <attribute id="0000" name="ZCLVersion" type="uint8" required="true" max="255" default="3" />
+      <attribute id="0001" name="ApplicationVersion" type="uint8" max="255" default="0" />
+      <attribute id="0002" name="StackVersion" type="uint8" max="255" default="0" />
+      <attribute id="0003" name="HWVersion" type="uint8" max="255" default="0" />
+      <attribute id="0004" name="ManufacturerName" type="string" default="">
+        <restriction>
+          <type:minLength value="0" />
+          <type:maxLength value="32" />
+        </restriction>
+      </attribute>
+      <attribute id="0005" name="ModelIdentifier" type="string" default="">
+        <restriction>
+          <type:minLength value="0" />
+          <type:maxLength value="32" />
+        </restriction>
+      </attribute>
+      <attribute id="0006" name="DateCode" type="string" default="">
+        <restriction>
+          <type:minLength value="0" />
+          <type:maxLength value="16" />
+        </restriction>
+      </attribute>
+      <attribute id="0007" name="PowerSource" type="enum8" required="true" default="0">
+        <restriction>
+          <type:enumeration value="00" name="Unknown" />
+          <type:enumeration value="01" name="SinglePhaseMains" />
+          <type:enumeration value="02" name="ThreePhaseMains" />
+          <type:enumeration value="03" name="Battery" />
+          <type:enumeration value="04" name="DCSource" />
+          <type:enumeration value="05" name="EmergencyMainsConstantlyPowered" />
+          <type:enumeration value="06" name="EmergencyMainsAndTransferSwitch" />
+          <type:enumeration value="80" name="UnknownWithBatteryBackup" />
+          <type:enumeration value="81" name="SinglePhaseMainsWithBatteryBackup" />
+          <type:enumeration value="82" name="ThreePhaseMainsWithBatteryBackup" />
+          <type:enumeration value="83" name="BatteryWithBatteryBackup" />
+          <type:enumeration value="84" name="DCSourceWithBatteryBackup" />
+          <type:enumeration value="85" name="EmergencyMainsConstantlyPoweredWithBatteryBackup" />
+          <type:enumeration value="86" name="EmergencyMainsAndTransferSwitchWithBatteryBackup" />
+        </restriction>
+      </attribute>
+      <attribute id="0008" name="GenericDevice-Class" type="enum8" default="255">
+        <restriction>
+          <type:enumeration value="00" name="Lighting" />
+        </restriction>
+      </attribute>
+      <attribute id="0009" name="GenericDevice-Type" type="enum8" default="255">
+        <restriction>
+          <type:enumeration value="00" name="Incandescent" />
+          <type:enumeration value="01" name="SpotlightHalogen" />
+          <type:enumeration value="02" name="HalogenBulb" />
+          <type:enumeration value="03" name="CFL" />
+          <type:enumeration value="04" name="LinearFluorescent" />
+          <type:enumeration value="05" name="LEDBulb" />
+          <type:enumeration value="06" name="SpotlightLED" />
+          <type:enumeration value="07" name="LEDStrip" />
+          <type:enumeration value="08" name="LEDTube" />
+          <type:enumeration value="09" name="GenericIndoorLuminaireOrLightFixture" />
+          <type:enumeration value="0A" name="GenericOutdoorLuminaireOrLightFixture" />
+          <type:enumeration value="0B" name="PendantLuminaireOrLightFixture" />
+          <type:enumeration value="0C" name="FloorStandingLuminaireOrLightFixture" />
+          <type:enumeration value="E0" name="GenericController" />
+          <type:enumeration value="E1" name="WallSwitch" />
+          <type:enumeration value="E2" name="PortableRemoteController" />
+          <type:enumeration value="E3" name="MotionSensorOrLightSensor" />
+          <type:enumeration value="F0" name="GenericActuator" />
+          <type:enumeration value="F1" name="WallSocket" />
+          <type:enumeration value="F2" name="GatewayOrBridge" />
+          <type:enumeration value="F3" name="PlugInUnit" />
+          <type:enumeration value="F4" name="RetrofitActuator" />
+          <type:enumeration value="FF" name="Unspecified" />
+        </restriction>
+      </attribute>
+      <attribute id="000A" name="ProductCode" type="octstr" default="" />
+      <attribute id="000B" name="ProductURL" type="string" default="" />
+      <attribute id="000C" name="ManufacturerVersionDetails" type="string" default="" />
+      <attribute id="000D" name="SerialNumber" type="string" default="" />
+      <attribute id="000E" name="ProductLabel" type="string" default="" />
+      <attribute id="0010" name="LocationDescription" type="string" writable="true" default="">
+        <restriction>
+          <type:minLength value="0" />
+          <type:maxLength value="16" />
+        </restriction>
+      </attribute>
+      <attribute id="0011" name="PhysicalEnvironment" type="enum8" writable="true" default="0">
+        <restriction>
+          <type:enumeration value="00" name="UnspecifiedEnvironment" />
+          <type:enumeration value="01" name="Deprecated" />
+          <type:enumeration value="02" name="Bar" />
+          <type:enumeration value="03" name="Courtyard" />
+          <type:enumeration value="04" name="Bathroom" />
+          <type:enumeration value="05" name="Bedroom" />
+          <type:enumeration value="06" name="BilliardRoom" />
+          <type:enumeration value="07" name="UtilityRoom" />
+          <type:enumeration value="08" name="Cellar" />
+          <type:enumeration value="09" name="StorageCloset" />
+          <type:enumeration value="0A" name="Theater" />
+          <type:enumeration value="0B" name="Office" />
+          <type:enumeration value="0C" name="Deck" />
+          <type:enumeration value="0D" name="Den" />
+          <type:enumeration value="0E" name="DiningRoom" />
+          <type:enumeration value="0F" name="ElectricalRoom" />
+          <type:enumeration value="10" name="Elevator" />
+          <type:enumeration value="11" name="Entry" />
+          <type:enumeration value="12" name="FamilyRoom" />
+          <type:enumeration value="13" name="MainFloor" />
+          <type:enumeration value="14" name="Upstairs" />
+          <type:enumeration value="15" name="Downstairs" />
+          <type:enumeration value="16" name="Basement/LowerLevel" />
+          <type:enumeration value="17" name="Gallery" />
+          <type:enumeration value="18" name="GameRoom" />
+          <type:enumeration value="19" name="Garage" />
+          <type:enumeration value="1A" name="Gym" />
+          <type:enumeration value="1B" name="Hallway" />
+          <type:enumeration value="1C" name="House" />
+          <type:enumeration value="1D" name="Kitchen" />
+          <type:enumeration value="1E" name="LaundryRoom" />
+          <type:enumeration value="1F" name="Library" />
+          <type:enumeration value="20" name="MasterBedroom" />
+          <type:enumeration value="21" name="MudRoom" />
+          <type:enumeration value="22" name="Nursery" />
+          <type:enumeration value="23" name="Pantry" />
+          <type:enumeration value="24" name="Office" />
+          <type:enumeration value="25" name="Outside" />
+          <type:enumeration value="26" name="Pool" />
+          <type:enumeration value="27" name="Porch" />
+          <type:enumeration value="28" name="SewingRoom" />
+          <type:enumeration value="29" name="SittingRoom" />
+          <type:enumeration value="2A" name="Stairway" />
+          <type:enumeration value="2B" name="Yard" />
+          <type:enumeration value="2C" name="Attic" />
+          <type:enumeration value="2D" name="HotTub" />
+          <type:enumeration value="2E" name="LivingRoom" />
+          <type:enumeration value="2F" name="Sauna" />
+          <type:enumeration value="30" name="ShopOrWorkshop" />
+          <type:enumeration value="31" name="GuestBedroom" />
+          <type:enumeration value="32" name="GuestBath" />
+          <type:enumeration value="33" name="PowderRoom" />
+          <type:enumeration value="34" name="BackYard" />
+          <type:enumeration value="35" name="FrontYard" />
+          <type:enumeration value="36" name="Patio" />
+          <type:enumeration value="37" name="Driveway" />
+          <type:enumeration value="38" name="SunRoom" />
+          <type:enumeration value="39" name="LivingRoom" />
+          <type:enumeration value="3A" name="Spa" />
+          <type:enumeration value="3B" name="Whirlpool" />
+          <type:enumeration value="3C" name="Shed" />
+          <type:enumeration value="3D" name="EquipmentStorage" />
+          <type:enumeration value="3E" name="HobbyOrCraftRoom" />
+          <type:enumeration value="3F" name="Fountain" />
+          <type:enumeration value="40" name="Pond" />
+          <type:enumeration value="41" name="ReceptionRoom" />
+          <type:enumeration value="42" name="BreakfastRoom" />
+          <type:enumeration value="43" name="Nook" />
+          <type:enumeration value="44" name="Garden" />
+          <type:enumeration value="45" name="Balcony" />
+          <type:enumeration value="46" name="PanicRoom" />
+          <type:enumeration value="47" name="Terrace" />
+          <type:enumeration value="48" name="Roof" />
+          <type:enumeration value="49" name="Toilet" />
+          <type:enumeration value="4A" name="ToiletMain" />
+          <type:enumeration value="4B" name="OutsideToilet" />
+          <type:enumeration value="4C" name="ShowerRoom" />
+          <type:enumeration value="4D" name="Study" />
+          <type:enumeration value="4E" name="FrontGarden" />
+          <type:enumeration value="4F" name="BackGarden" />
+          <type:enumeration value="50" name="Kettle" />
+          <type:enumeration value="51" name="Television" />
+          <type:enumeration value="52" name="Stove" />
+          <type:enumeration value="53" name="Microwave" />
+          <type:enumeration value="54" name="Toaster" />
+          <type:enumeration value="55" name="Vacuum" />
+          <type:enumeration value="56" name="Appliance" />
+          <type:enumeration value="57" name="FrontDoor" />
+          <type:enumeration value="58" name="BackDoor" />
+          <type:enumeration value="59" name="FridgeDoor" />
+          <type:enumeration value="60" name="MedicationCabinetDoor" />
+          <type:enumeration value="61" name="WardrobeDoor" />
+          <type:enumeration value="62" name="FrontCupboardDoor" />
+          <type:enumeration value="63" name="OtherDoor" />
+          <type:enumeration value="64" name="WaitingRoom" />
+          <type:enumeration value="65" name="TriageRoom" />
+          <type:enumeration value="66" name="DoctorsOffice" />
+          <type:enumeration value="67" name="PatientsPrivateRoom" />
+          <type:enumeration value="68" name="ConsultationRoom" />
+          <type:enumeration value="69" name="NurseStation" />
+          <type:enumeration value="6A" name="Ward" />
+          <type:enumeration value="6B" name="Corridor" />
+          <type:enumeration value="6C" name="OperatingTheatre" />
+          <type:enumeration value="6D" name="DentalSurgeryRoom" />
+          <type:enumeration value="6E" name="MedicalImagingRoom" />
+          <type:enumeration value="6F" name="DecontaminationRoom" />
+          <type:enumeration value="70" name="Atrium" />
+          <type:enumeration value="71" name="Mirror" />
+          <type:enumeration value="FF" name="UnknownEnvironment" />
+        </restriction>
+      </attribute>
+      <attribute id="0012" name="DeviceEnabled" type="bool" writable="true" default="1" />
+      <attribute id="0013" name="AlarmMask" type="map8" writable="true" default="0">
+        <bitmap>
+          <element name="GeneralHardwareFault" type="bool" mask="01" />
+          <element name="GeneralSoftwareFault" type="bool" mask="02" shiftRight="1" />
+        </bitmap>
+      </attribute>
+      <attribute id="0014" name="DisableLocalConfig" type="map8" writable="true" default="0">
+        <bitmap>
+          <element name="DisableResetToFactoryDefaults" type="bool" mask="01" />
+          <element name="DisableDeviceConfiguration" type="bool" mask="02" shiftRight="1" />
+        </bitmap>
+      </attribute>
+      <attribute id="4000" name="SWBuildID" type="string" default="">
+        <restriction>
+          <type:minLength value="0" />
+          <type:maxLength value="16" />
+        </restriction>
+      </attribute>
+    </attributes>
+    <commands>
+      <command id="00" name="ResetToFactoryDefaults" />
+    </commands>
+  </server>
+</zcl:cluster>

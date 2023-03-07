@@ -1,0 +1,35 @@
+id: wake_lock
+label: Wake-Lock
+package: Bluetooth
+description: >
+  Component that provides support for sleep and remote wake-up functionality.
+  The UART driver is not able to receive data in EM2 (deep sleep) mode, therefore an external signal is needed to wake the controller up before UART communication.
+  This component can be used with NCP host and NCP target applications. Waking up is automatic after signal arrival, but application has to decide about sleep.
+  This functionality requires two dedicated pins to work.
+category: Application|Utility
+quality: production
+root_path: app/bluetooth/common/wake_lock
+config_file:
+  - path: config/sl_wake_lock_config.h
+source:
+  - path: sl_wake_lock.c
+include:
+  - path: .
+    file_list:
+      - path: sl_wake_lock.h
+provides:
+  - name: wake_lock
+requires:
+  - name: power_manager
+  - name: gpiointerrupt
+  - name: sleeptimer
+  - name: component_catalog
+  - name: app_assert
+template_contribution:
+  - name: component_catalog
+    value: wake_lock
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: sl_wake_lock.h
+      handler: sl_wake_lock_init

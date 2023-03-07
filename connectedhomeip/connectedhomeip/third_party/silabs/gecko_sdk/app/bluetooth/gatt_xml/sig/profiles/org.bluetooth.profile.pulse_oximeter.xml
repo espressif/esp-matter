@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2015 Bluetooth SIG, Inc. All rights reserved. -->
+<Profile xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/profile.xsd" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    type="org.bluetooth.profile.pulse_oximeter"
+    name="Pulse Oximeter">
+    <InformativeText>
+        <Abstract>This Profile Specification defines a Pulse Oximeter (PLX) profile that enables a Collector device to connect and interact with a pulse oximeter intended for healthcare applications.</Abstract>
+        <Summary>This Profile is used to enable communications between a Pulse Oximeter (PLX) and a Collector. It contains guidance for finding, connecting to, receiving measurements from, and configuring a pulse oximeter that supports this profile.</Summary>
+	</InformativeText>
+	<Role name="Pulse Oximeter Sensor">
+		<Service type="org.bluetooth.service.pulse_oximeter">
+			<Declaration>PrimarySingleInstance</Declaration>
+			<Requirement>Mandatory</Requirement>			
+		</Service>
+		<Service type="org.bluetooth.service.device_information">
+			<Declaration>PrimarySingleInstance</Declaration>
+			<Requirement>Mandatory</Requirement>
+			<Characteristic type="org.bluetooth.characteristic.manufacturer_name_string">
+				<Requirement>Mandatory</Requirement>
+			</Characteristic>
+			<Characteristic type="org.bluetooth.characteristic.model_number_string">
+				<Requirement>Mandatory</Requirement>
+			</Characteristic>
+			<Characteristic type="org.bluetooth.characteristic.serial_number_string">
+				<Requirement>Optional</Requirement>
+			</Characteristic>
+			<Characteristic type="org.bluetooth.characteristic.system_id">
+				<Requirement>Optional</Requirement>
+			</Characteristic>
+			<Characteristic type="org.bluetooth.characteristic.hardware_revision_string">
+				<Requirement>Optional</Requirement>
+			</Characteristic>
+			<Characteristic type="org.bluetooth.characteristic.software_revision_string">
+				<Requirement>Optional</Requirement>
+			</Characteristic>
+			<Characteristic type="org.bluetooth.characteristic.firmware_revision_string">
+				<Requirement>Optional</Requirement>
+			</Characteristic>
+			<Characteristic type="org.bluetooth.characteristic.ieee_11073-20601_regulatory_certification_data_list">
+				<Requirement>Optional</Requirement>
+			</Characteristic>			
+		</Service>
+		<Service type="org.bluetooth.service.current_time">
+			<Declaration>Primary</Declaration>
+			<Requirement>Optional</Requirement>
+		</Service>
+		<Service type="org.bluetooth.service.bond_management">
+			<Declaration>Primary</Declaration>
+			<Requirement>Optional</Requirement>
+		</Service>
+		<Service type="org.bluetooth.service.battery_service">
+			<Declaration>Primary</Declaration>
+			<Requirement>Optional</Requirement>
+		</Service>
+	</Role>
+    <Role name="Collector">
+        <Client type="org.bluetooth.service.pulse_oximeter">
+			<Requirement>Mandatory</Requirement>
+		</Client>
+         <Client type="org.bluetooth.service.device_information">
+			<Requirement>Optional</Requirement>
+		</Client>
+		<Client type="org.bluetooth.service.bond_management">
+			<Requirement>Optional</Requirement>
+		</Client>
+        <Client type="org.bluetooth.service.current_time">
+			<Requirement>Optional</Requirement>
+		</Client>
+        <Client type="org.bluetooth.service.battery_service">
+			<Requirement>Optional</Requirement>
+		</Client>
+	</Role>
+</Profile>

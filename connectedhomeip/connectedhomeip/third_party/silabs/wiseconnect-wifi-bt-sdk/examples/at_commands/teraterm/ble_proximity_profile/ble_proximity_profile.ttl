@@ -1,0 +1,148 @@
+DEVICE_NAME = 'RS9116W_BLE'
+
+errorcode = 'Unknown' ; used in error reports
+
+message = 'This example demonstrates BLE Proximity Profile '
+messagebox message ''
+
+send '|'
+wait 'U'
+sendln 'U'
+mpause 200
+sendln '1'
+wait 'Loading Done'
+message = 'Firmware Loading Done Successfully' 
+messagebox message ''
+
+sendln 'at+rsi_opermode=851968,0,1,2147483648,2150629376,3221225472,0,1075773440'
+wait 'bt_loaded' 'ERROR'
+if result == 2 then
+    goto error
+endif
+
+strlen DEVICE_NAME
+int2str device_name_length result
+sendln 'at+rsibt_setlocalname='device_name_length','DEVICE_NAME
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+    errorcode = groupmatchstr1
+    goto error
+endif
+
+sendln 'at+rsibt_getlocalbdaddr?'
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+    errorcode = groupmatchstr1
+    goto error
+endif
+
+sendln 'at+rsibt_addservice=2,1803,3,30'
+waitregex 'OK (.+),' 'ERROR (\w{4})'
+if result == 1 then
+    service_id = groupmatchstr1
+else
+    errorcode = groupmatchstr1
+    goto error
+endif
+
+sendln 'at+rsibt_addattribute='service_id',B,2,2803,2,6,0,6,0,0C,00,06,2A'
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+    errorcode = groupmatchstr1
+    goto error
+endif
+
+sendln 'at+rsibt_addattribute='service_id',C,2,2A06,6,1,0,0'
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+    errorcode = groupmatchstr1
+    goto error
+endif
+
+sendln 'at+rsibt_setadvertisedata=10,2,1,6,C,9,52,53,39,31,31,36,57,5F,42,4C,45'
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+    errorcode = groupmatchstr1
+    goto error
+endif
+
+sendln 'at+rsibt_advertise=1,128,0,0,0,60,70,0,7'
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+    errorcode = groupmatchstr1
+    goto error
+endif
+ 
+waitln 'AT+RSIBT_LE_DEVICE_ENHANCE_CONNECTED' 
+if result == 1 then
+	messagebox 'Remote device connected to module successfully:'  ''
+	;goto endscript
+else
+    goto error
+endif
+
+;messagebox inputstr "str"
+strsplit inputstr ',' 
+;messagebox groupmatchstr2 "groupmatchstr2" ; ''
+Mac_addr = groupmatchstr2
+
+messagebox 'User need to select the Alert Level to indicate:' ''
+waitln 'AT+RSIBT_WRITE'
+;messagebox inputstr "s"
+strsplit inputstr ','
+;messagebox groupmatchstr5 "groupmatchstr5" ; ''
+str2int value groupmatchstr5
+;messagebox value ''
+if value == 0 then
+	messagebox 'No ALert selected' ''
+elseif value == 1 then
+	messagebox 'Mild Alert selected' ''
+elseif value ==2 then
+	messagebox 'High Alert selected' ''
+endif
+
+Threshould = -60
+While 1
+	sendln 'at+rsibt_getrssi='Mac_addr'?'
+	waitregex 'OK (.+)' 'ERROR (\w{4})'
+	if result == 1 then
+		RSSI = groupmatchstr1
+	else
+		errorcode = groupmatchstr1
+		goto error
+	endif
+
+	int2str str1 value
+	;messagebox RSSI ''
+	str2int Item RSSI
+	if Item > Threshould then
+		;messagebox 'No Alert selected' '' 
+		sendln 'at+rsibt_setlocalattvalue=C,1,0'
+		waitregex 'OK' 'ERROR (\w{4})'
+		if result == 2 then
+			errorcode = groupmatchstr1
+			goto error
+		endif
+	elseif Item < Threshould then
+		;messagebox 'High Alert selected' ''
+		sendln 'at+rsibt_setlocalattvalue=C,1,'str1''
+		waitregex 'OK' 'ERROR (\w{4})'
+		if result == 2 then
+			errorcode = groupmatchstr1
+			goto error
+		endif
+	else
+	endif
+endwhile
+
+goto endscript
+     
+:error
+errormsg = 'Error '
+strconcat errormsg errorcode
+strconcat errormsg '. Please check your configuration and try again.'
+messagebox errormsg 'ERROR'
+
+:endscript
+
+exit

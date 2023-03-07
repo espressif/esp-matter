@@ -1,0 +1,205 @@
+%%{
+/* 
+ *  Copyright (c) 2008 Texas Instruments and others.
+ *  All rights reserved. This program and the accompanying materials
+ *  are made available under the terms of the Eclipse Public License v1.0
+ *  which accompanies this distribution, and is available at
+ *  http://www.eclipse.org/legal/epl-v10.html
+ * 
+ *  Contributors:
+ *      Texas Instruments - initial implementation
+ * 
+ * */
+
+    /*
+     *  ======== ccs_exec.xdt ========
+     *  This template is used to generate a CCS project file that can be
+     *  used with CCS to debug executables produced via XDC tools.
+     *
+     *  This template is evaluated in the config domain (after the config
+     *  script completes and before linking the executable).
+     *
+     *  Preconditions:
+     *	    this	- the configured program object (xdc.Program)
+     *	    $args	- array of arguments passed to the template:
+     *			    $args[0] - the name of the executable being
+     *				       produced for this configuration
+     *
+     *	    environment	- hash table of XDC global parameters; e.g.,
+     *			  "xdc.path", "xdc.root", ...
+     *
+     *  Notes:
+     *  CCS locates source files using the following algorithm:
+     *	    1. File listed in the "Active Project"
+     *	    2. System include paths; i.e., the hard-coded BIOS, XDAIS, and RTDX
+     *	       include directories.
+     *	    3. files found along -I paths
+     *	    4. Other Open Projects; note that dependent projects are not
+     *	       open unless the .... is selected or they are explicitely opened
+     *	       via the generated GEL script.
+     *	    5. Directories specified in Source Search Dialog
+     *	    6. Project Directory
+     *	    7. Open Files (this is for CCSv2.40/v3.01)
+     */
+    var prog = this;
+
+    /* the following variable are used in the template below the '%%}' */
+    var GOAL = $args[0];
+    var CFGSCRIPT = prog.build.cfgScript;
+    var CLEANGOAL = "clean," + prog.build.target.suffix;
+    var PNAME = prog.name.replace(/\.([^\.]*$)/, "_$1");
+    var TARG = prog.build.target;
+    var CPUFAMILY;
+    if (TARG.isa.match(/^v\d/) != null) {
+        CPUFAMILY = "TMS470R" + (TARG.isa[1] - 3) + "X";
+    }
+    else {
+        CPUFAMILY = "TMS320C" + TARG.isa.substr(0, 2) + "XX";
+    }
+
+    var INCLUDEOPTS = "";
+    var XDC = environment["xdc.root"] + "/xdc"
+    if (environment["xdc.hostOS"] == "Windows") {
+	XDC = (XDC + ".exe").replace(/\//g, "\\");
+    }
+    
+    /* generate the include path from the package path */
+    var ppa = environment["xdc.path"].split(';');
+    for (var i = 0; i < ppa.length; i++) {
+	if (ppa[i] != "") {
+	    /* convert relative paths to absolute to assist CCS */
+	    if (ppa[i][0] == ".") {
+		var file = new java.io.File(ppa[i]);
+		ppa[i] = "" + file.getCanonicalPath();
+	    }
+	    INCLUDEOPTS += '-i"' + ppa[i] + '" ';
+	}
+    }
+
+    /* generate a list of all external package dependencies */
+    var xPkgs = {};
+    for (var i = 0; i < xdc.om.$packages.length; i++) {
+	var pkg = xdc.om.$packages[i].$orig;
+//	print("imported package " + pkg.$name);
+	var fname = pkg.packageBase + "package/" + pkg.$name + ".pjt";
+	var file = new java.io.File(fname);
+	if (file.exists()) {
+	    if (!file.isAbsolute()) {
+		fname = "" + file.getCanonicalPath();
+		fname = fname.replace(/\\/g, '/');
+	    }
+	    xPkgs[fname] = true;
+	}
+    }
+
+    /* generate GEL script that defines a XDC menu */
+    var cwd = "" + (new java.io.File(".")).getCanonicalPath();
+    cwd = cwd.replace(/\\/g, '/');
+    var file = new java.io.File(cwd + "/package/cfg/" + PNAME + ".gel");
+    file["delete"]();
+    var out = new java.io.FileWriter(file);
+    var pjtFile = cwd + "/package/cfg/" + PNAME + ".pjt";
+    out.write('XDC_open() {\n');
+    for (var i in xPkgs) {
+	out.write('    GEL_ProjectLoad("' + i + '");\n');
+    }
+    out.write('    GEL_ProjectLoad("' + pjtFile + '");\n');
+    out.write('    GEL_ProjectSetActive("' + pjtFile + '");\n');
+    out.write('}\n');
+    out.write('XDC_close() {\n');
+    for (var i in xPkgs) {
+	out.write('    GEL_ProjectClose("' + i + '");\n');
+    }
+    out.write('    GEL_ProjectClose("' + pjtFile + '");\n');
+    out.write('}\n');
+    out.write('menuitem "XDC Package"\n');
+    out.write('hotmenu load_executable () { GEL_Load("' + cwd + '/' + GOAL + '"); }\n');
+    out.write('hotmenu open_project () { XDC_open(); }\n');
+    out.write('hotmenu close_project () { XDC_close(); }\n');
+    out.close();
+%%}
+; Code Composer Project File, Version 2.0 (do not modify or remove this line)
+[Project Settings]
+ProjectName="`PNAME`"
+ProjectType=External
+CPUFamily=`CPUFAMILY`
+Tool="Compiler"
+Tool="CustomBuilder"
+Config="Executable"
+
+[Project Dependencies]
+%for (var i in xPkgs) {
+Source="`i`"
+%}
+
+%for (var i in xPkgs) {
+["`i`" Settings]
+ExcludeFromBuild=true
+
+%}
+
+;
+;  Specify the include path so CCS can find source files; without this 
+;  CCS gets very confused by files with the same name in different 
+;  directories.
+;
+["Compiler" Settings: "Executable"]
+Options=`INCLUDEOPTS`
+
+[External Makefile]
+ExtMakefile=../../package.bld
+
+;
+;  Name the source files that should show up in the project window; i.e., 
+;  the files we expect the user to edit within CCS.
+;
+[Source Files]
+Source="../../package.bld"
+Source="`PNAME + '.c'`"
+%if (CFGSCRIPT != null) {   /* legacy executables may not have a cfg script */
+Source="../../`CFGSCRIPT`"
+%}
+
+["../../package.bld" Settings: "Executable"]
+UseCustomBuild=true
+CustomBuildCmd=`XDC` `GOAL`
+
+; if no custom "clean" command is specified, rebuild all deletes the
+; following files before running the build command above.  
+;
+CustomBuildOutput="`GOAL`"
+
+;  Don't use 'xdc clean' command here because this also deletes the project
+;  file that is currently open.  This causes the command to hang waiting for
+;  CCS to close the file, which it doesn't do (of course).
+;
+;  Instead we only clean out those files associated with the target used to
+;  build the executable.
+;
+CustomCleanCmd=`XDC` `CLEANGOAL`
+;
+;  Always run the xdc command since this command is the one that tracks
+;  dependencies
+;
+Run=Always
+
+;
+;  We need to exclude these from the build or provide a command to run from
+;  the directory containing the file; otherwise CCS complains about not
+;  being able to "build" this file.  Adding a custom build step causes CCS
+;  to run this *in addition* to the project build above; thus we do nothing
+;
+["`PNAME + '.c'`" Settings: "Executable"]
+ExcludeFromBuild=true
+
+%if (CFGSCRIPT != null) {   /* legacy executables may not have a cfg script */
+["../../`CFGSCRIPT`" Settings: "Executable"]
+ExcludeFromBuild=true
+%}
+%%{
+/*
+ * @(#) ti.targets; 1, 0, 3,; 7-28-2021 06:57:38; /db/ztree/library/trees/xdctargets/xdctargets-w20/src/ xlibrary
+
+ */
+
+%%}

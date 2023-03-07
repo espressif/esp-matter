@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Device Name" type="org.bluetooth.characteristic.gap.device_name" last-modified="2013-05-29" uuid="2A00">
+	<InformativeText>
+        <Abstract><!--The Information included in this page is informative. The normative descriptions are contained in the applicable specification.--></Abstract>
+	<InformativeDisclaimer/>
+    </InformativeText>
+    
+    <Value>
+		<Field name="Name">
+			<Requirement>Mandatory</Requirement>
+			<Format>utf8s</Format>
+		</Field>
+	</Value>
+</Characteristic>

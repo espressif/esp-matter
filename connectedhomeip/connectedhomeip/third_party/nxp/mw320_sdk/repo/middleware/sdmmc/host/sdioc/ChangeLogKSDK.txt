@@ -1,0 +1,10 @@
+/*!
+@page middleware_log Middleware Change Log
+
+@section host_sdioc Host SDIOC driver for MCUXpresso SDK
+The current driver version is 2.0.0.
+
+  - 2.0.0
+    - Initial version
+
+*/

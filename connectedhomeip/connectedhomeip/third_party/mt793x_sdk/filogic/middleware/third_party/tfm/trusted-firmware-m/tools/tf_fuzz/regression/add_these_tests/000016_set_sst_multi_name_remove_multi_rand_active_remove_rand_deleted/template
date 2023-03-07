@@ -1,0 +1,6 @@
+purpose to show a more-interesting removal case;
+set sst name president george herbert walker bush data "no new taxes";
+remove sst *active;  // remove *some* active asset
+remove sst *active;  // remove *some other* active asset
+remove sst *active;  // remove *yet another* active asset
+remove sst *deleted;  // attempt to remove some asset that's already been removed

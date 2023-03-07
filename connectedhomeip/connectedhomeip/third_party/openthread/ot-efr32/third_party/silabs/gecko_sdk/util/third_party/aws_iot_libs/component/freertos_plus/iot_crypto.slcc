@@ -1,0 +1,29 @@
+id: iot_crypto
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|FreeRTOS Plus
+label: IoT Crypto
+description: FreeRTOS Plus Crypto Tools.
+
+package: amazon_platform
+quality: production
+
+provides:
+  - name: iot_crypto
+
+requires:
+  - name: core_pkcs11
+
+root_path: util/third_party/aws_iot_libs
+
+source:
+  - path: libraries/freertos_plus/standard/crypto/src/iot_crypto.c
+  - path: libraries/freertos_plus/standard/crypto/test/iot_test_crypto.c
+    condition: ["aws_tests_defs"]
+
+include:
+  - path: libraries/freertos_plus/standard/crypto/include
+    file_list:
+      - path: iot_crypto.h
+  - path: libraries/3rdparty/mbedtls_config
+    file_list:
+      - path: threading_alt.h

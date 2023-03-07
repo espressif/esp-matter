@@ -1,0 +1,28 @@
+package: Zigbee
+description: This component unicasts a permit joins message to joining devices.
+label: Permit Join Manager
+quality: production
+id: zigbee_permit_join_manager
+category: Zigbee|Utility
+provides:
+   - name: "zigbee_permit_join_manager"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/permit-join-manager/config/permit-join-manager-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/permit-join-manager/permit-join-manager.c
+template_contribution:
+  - name: component_catalog
+    value: zigbee_permit_join_manager
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emberAfPluginPermitJoinManagerInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: local_data_init
+      function_name: emberAfPluginPermitJoinManagerInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: zdo_message_received
+      function_name: emberAfPluginPermitJoinManagerZdoMessageReceivedCallback
+

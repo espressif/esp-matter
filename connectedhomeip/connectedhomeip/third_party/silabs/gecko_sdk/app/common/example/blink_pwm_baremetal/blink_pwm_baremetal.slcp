@@ -1,0 +1,38 @@
+project_name: blink_pwm_baremetal
+package: platform
+quality: production
+label: Platform - Blink PWM
+description: > 
+  This example project uses the PWM driver that uses a TIMER to gradually adjust the intensity of an LED up and down.
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]
+source:
+  - path: app.c
+  - path: main.c
+  - path: blink_pwm_app.c
+include:
+  - path: .
+    file_list:
+    - path: app.h
+    - path: blink_pwm_app.h
+component:
+  - id: sl_system
+  - id: device_init
+  - id: sleeptimer
+  - id: pwm
+    instance:
+      - led0
+define:
+  - name: DEBUG_EFM
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+tag:
+  - hardware:component:led:1+

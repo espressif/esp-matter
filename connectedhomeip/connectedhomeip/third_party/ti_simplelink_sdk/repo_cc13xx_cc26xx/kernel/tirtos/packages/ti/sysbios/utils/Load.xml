@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="CPU Load" title="CPU Load Monitor" version="1">
+
+<page name="Module" title="Module Settings">
+<html><body><table>
+  <tr>
+      <td><form>
+        <p>The Load module allows you to monitor in real-time the overall CPU load as well as the contributions from various threads in the system.</p>
+        <p> </p>
+      </form></td>
+  </tr>
+  <tr>
+    <td><control type="checkbox" label="Add the CPU load monitoring module to my configuration" value="value:this.$used" bold="true"/></td>
+  </tr>
+  <tr></tr>
+  <tr><td>
+    <h1>Threads to Monitor</h1>
+    <table>
+      <tr>
+        <td><control type="checkbox" 
+             label="Hardware interrupts (cumulative)"
+             value="value:this.hwiEnabled" 
+             tooltip="value:this.hwiEnabled.$summary"/></td>
+      </tr>
+      <tr>
+        <td><control type="checkbox" 
+             label="Software interrupts (cumulative)"
+             value="value:this.swiEnabled" 
+             tooltip="value:this.swiEnabled.$summary"/></td>
+      </tr>
+      <tr>
+        <td><control type="checkbox" 
+             label="Tasks (per Task)"
+             value="value:this.taskEnabled" 
+             tooltip="value:this.taskEnabled.$summary"/></td>
+      </tr>
+    </table>
+  </td>
+  <td>
+    <h1>Monitor Options</h1>
+    <table>
+      <tr>
+        <td colspan="2"><control type="checkbox" 
+             label="Update during idle"
+             value="value:this.updateInIdle" 
+             tooltip="value:this.updateInIdle.$summary"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="Averaging period (ms)" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.windowInMs" 
+             tooltip="value:this.windowInMs.$summary"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="Post update function" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.postUpdate"
+             tooltip="value:this.postUpdate.$summary"/></td>
+      </tr>
+    </table>
+  </td></tr>
+</table></body></html>
+</page>
+<properties name="Advanced" title="All Options" enabled="true" visible="true" link="this"/>
+</gep>
+

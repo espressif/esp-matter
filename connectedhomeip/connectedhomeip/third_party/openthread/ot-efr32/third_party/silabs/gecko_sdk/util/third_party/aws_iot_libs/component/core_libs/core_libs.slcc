@@ -1,0 +1,20 @@
+id: core_libs
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|Core Libraries
+label: All Core Libraries
+description: Lightweight embedded systems libraries used by AWS IoT modules.
+
+package: amazon_platform
+quality: production
+
+provides:
+  - name: core_libs
+
+requires:
+  - name: core_http
+  #- name: core_json
+  - name: core_mqtt
+  - name: core_pkcs11
+
+ui_hints:
+  visibility: never

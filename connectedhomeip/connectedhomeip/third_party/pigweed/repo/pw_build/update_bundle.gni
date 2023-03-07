@@ -1,0 +1,122 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/python_action.gni")
+
+# GN target that creates update bundles.
+#
+# Args:
+#   out: Filename at which to output the serialized update bundle.
+#   targets: List of targets mapping filenames to target names.
+#   persist: Optional boolean; if true, the raw tuf repo will be persisted to
+#       disk in the target out dir in addition to being serialized as a bundle.
+#   user_manifest: Optional path to an extra user-defined manifest file; if
+#       provided, this file will be included as a target payload, but handled
+#       specially. See the following file for details:
+#         pw_software_update/public/pw_software_update/bundled_update_backend.h
+#   targets_metadata_version: Optional manually-specified int version number for
+#       the targets metadata.
+#   targets_metadata_version_file: Optional manually-specified path/to/file
+#        containing int version number for the targets metadata. Cannot be
+#        specified together with targets_metadata_version
+#   signed_root_metadata: Optional path to a .pb file containing a serialized
+#       SignedRootMetadata (generated and signed via the tools in the
+#       pw_software_update Python module).
+#
+# Each target in targets should be a string formatted as follows:
+#   "/path/to/file > target_name"
+
+template("pw_update_bundle") {
+  assert(defined(invoker.out), "An output path must be provided via 'out'")
+  assert(defined(invoker.targets),
+         "A list of targets must be provided via 'targets'")
+  pw_python_action(target_name) {
+    _delimiter = ">"
+    forward_variables_from(invoker,
+                           [
+                             "deps",
+                             "public_deps",
+                           ])
+    _out_path = invoker.out
+    _persist_path = ""
+    if (defined(invoker.persist) && invoker.persist) {
+      _persist_path = "${target_out_dir}/${target_name}/tuf_repo"
+    }
+    module = "pw_software_update.update_bundle"
+    python_deps = [ "$dir_pw_software_update/py" ]
+    args = [
+      "--out",
+      rebase_path(_out_path),
+      "--targets",
+    ]
+    outputs = [ _out_path ]
+
+    foreach(tuf_target, invoker.targets) {
+      # Remove possible spaces around the delimiter before splitting
+      tuf_target = string_replace(tuf_target, " $_delimiter", _delimiter)
+      tuf_target = string_replace(tuf_target, "$_delimiter ", _delimiter)
+
+      tuf_target_list = []
+      tuf_target_list = string_split(tuf_target, _delimiter)
+      tuf_target_path = rebase_path(tuf_target_list[0], root_build_dir)
+      tuf_target_name = tuf_target_list[1]
+      assert(tuf_target_name != "user_manifest",
+             "The target name 'user_manifest' is reserved for special use.")
+      args += [ "${tuf_target_path} > ${tuf_target_name}" ]
+      if (_persist_path != "") {
+        outputs += [ "${_persist_path}/${tuf_target_name}" ]
+      }
+    }
+
+    if (defined(invoker.user_manifest)) {
+      args += [ rebase_path(invoker.user_manifest, root_build_dir) +
+                " > user_manifest" ]
+    }
+
+    if (_persist_path != "") {
+      args += [
+        "--persist",
+        rebase_path(_persist_path),
+      ]
+    }
+
+    if (defined(invoker.targets_metadata_version)) {
+      args += [
+        "--targets-metadata-version",
+        invoker.targets_metadata_version,
+      ]
+    }
+
+    if (defined(invoker.targets_metadata_version_file)) {
+      args += [
+        "--targets-metadata-version-file",
+        rebase_path(invoker.targets_metadata_version_file),
+      ]
+    }
+
+    assert(
+        !(defined(invoker.targets_metadata_version_file) &&
+              defined(invoker.targets_metadata_version)),
+        "Only one of targets_metadata_version and targets_metadata_version_file can be specified")
+
+    if (defined(invoker.signed_root_metadata)) {
+      args += [
+        "--signed-root-metadata",
+        rebase_path(invoker.signed_root_metadata),
+      ]
+    }
+  }
+}

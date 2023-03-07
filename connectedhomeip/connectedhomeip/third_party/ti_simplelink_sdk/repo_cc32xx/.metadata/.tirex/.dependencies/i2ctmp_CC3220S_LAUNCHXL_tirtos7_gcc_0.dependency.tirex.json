@@ -1,0 +1,16 @@
+[
+    {
+        "files": [
+            "+../../i2ctmp.c -> i2ctmp.c",
+            "+../../README.md -> README.md",
+            "+../../README.html -> README.html",
+            "+../../overview.rov.json -> overview.rov.json",
+            "+../main_tirtos.c -> main_tirtos.c",
+            "+../i2ctmp.syscfg -> i2ctmp.syscfg",
+            "+../../../../../../../source/ti/boards/CC3220S_LAUNCHXL/Board.html -> Board.html",
+            "+cc32xxs_tirtos7.lds -> cc32xxs_tirtos7.lds",
+            "+../../image.syscfg -> image.syscfg",
+            "+../../userFiles/dummy-root-ca-cert -> userFiles/dummy-root-ca-cert"
+        ]
+    }
+]

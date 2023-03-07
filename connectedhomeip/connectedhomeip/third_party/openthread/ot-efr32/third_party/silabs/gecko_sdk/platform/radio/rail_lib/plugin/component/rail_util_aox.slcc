@@ -1,0 +1,43 @@
+id: rail_util_aox
+label: RAIL Utility, AoX
+description: Utility to aid with Angle of Arrival/Departure (AoX) Configuration
+package: platform
+category: Platform|Radio
+quality: production
+requires:
+  - name: emlib_gpio
+  - name: rail_lib
+provides:
+  - name: rail_util_aox
+documentation:
+  docset: rail
+  document: rail-util-aox
+config_file:
+  - path: platform/radio/rail_lib/plugin/rail_util_aox/config/efr32xg22/sl_rail_util_aox_config.h
+    file_id: rail_util_aox_config
+    condition:
+      - device_series_2
+      - device_sdid_205
+  - path: platform/radio/rail_lib/plugin/rail_util_aox/config/efr32xg24/sl_rail_util_aox_config.h
+    file_id: rail_util_aox_config
+    condition:
+      - device_series_2
+      - device_sdid_215
+  - path: platform/radio/rail_lib/plugin/rail_util_aox/config/efr32xg27/sl_rail_util_aox_config.h
+    file_id: rail_util_aox_config
+    condition:
+      - device_series_2
+      - device_sdid_230
+include:
+  - path: platform/radio/rail_lib/plugin/rail_util_aox
+    file_list:
+      - path: sl_rail_util_aox.h
+source:
+  - path: platform/radio/rail_lib/plugin/rail_util_aox/sl_rail_util_aox.c
+template_contribution:
+  - name: event_handler
+    value:
+      event: stack_init
+      include: sl_rail_util_aox.h
+      handler: sl_rail_util_aox_init
+    priority: -9010

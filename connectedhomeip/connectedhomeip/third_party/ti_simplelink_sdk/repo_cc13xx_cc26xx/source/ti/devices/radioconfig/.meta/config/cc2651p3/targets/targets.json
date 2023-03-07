@@ -1,0 +1,21 @@
+{
+    "targets": {
+        "Default": "target_cc2651p3-launchxl.json:LP_CC2651P3",
+        "VirtualTarget": [
+            {
+                "_name": "LP_CC2651P3",
+                "Target": [
+                    "target_cc2651p3-launchxl.json",
+                    "target_cc2651p3-launchxl_highPA.json"
+                ]
+            },
+            {
+                "_name": "LP_CC2651P3, 10DBM",
+                "Target": [
+                    "target_cc2651p3-launchxl_10dbm.json",
+                    "target_cc2651p3-launchxl_10dbm_highPA.json"
+                ]
+            }
+        ]
+    }
+}

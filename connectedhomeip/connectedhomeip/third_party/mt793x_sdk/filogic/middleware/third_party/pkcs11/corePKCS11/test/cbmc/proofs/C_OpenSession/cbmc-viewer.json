@@ -1,0 +1,7 @@
+{ "expected-missing-functions":
+  [
+
+  ],
+  "proof-name": "C_OpenSession",
+  "proof-root": "test/cbmc/proofs"
+}

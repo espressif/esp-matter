@@ -1,0 +1,103 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_fuzzer/fuzzer.gni")
+import("$dir_pw_unit_test/test.gni")
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+group("pw_bluetooth_hci") {
+  public_deps = [
+    ":packet",
+    ":uart_transport",
+  ]
+}
+
+pw_source_set("packet") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_bluetooth_hci/packet.h" ]
+  public_deps = [
+    "$dir_pw_bytes:bit",
+    dir_pw_assert,
+    dir_pw_bytes,
+    dir_pw_result,
+    dir_pw_span,
+  ]
+  sources = [ "packet.cc" ]
+  deps = [ dir_pw_status ]
+}
+
+pw_source_set("uart_transport") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_bluetooth_hci/uart_transport.h" ]
+  sources = [ "uart_transport.cc" ]
+  public_deps = [
+    ":packet",
+    "$dir_pw_bytes:bit",
+    dir_pw_bytes,
+    dir_pw_function,
+    dir_pw_span,
+    dir_pw_status,
+  ]
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":packet_test",
+    ":uart_transport_test",
+    ":uart_transport_fuzzer",
+  ]
+}
+
+pw_test("packet_test") {
+  sources = [ "packet_test.cc" ]
+  deps = [
+    ":packet",
+    "$dir_pw_containers",
+    dir_pw_bytes,
+    dir_pw_status,
+  ]
+}
+
+pw_test("uart_transport_test") {
+  sources = [ "uart_transport_test.cc" ]
+  deps = [
+    ":packet",
+    ":uart_transport",
+    dir_pw_bytes,
+    dir_pw_status,
+  ]
+}
+
+pw_fuzzer("uart_transport_fuzzer") {
+  sources = [ "uart_transport_fuzzer.cc" ]
+  deps = [
+    ":packet",
+    ":uart_transport",
+    dir_pw_bytes,
+    dir_pw_status,
+    dir_pw_stream,
+  ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}

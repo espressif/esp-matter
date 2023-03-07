@@ -1,0 +1,38 @@
+id: mbedtls_config
+package: platform
+label: Configuration
+description: >-
+  This component includes the Mbed TLS configuration.
+category: Platform|Security|Mbed TLS
+quality: production
+component_root_path: util/third_party/crypto/sl_component/sl_mbedtls_support
+
+provides:
+  - name: mbedtls_config
+
+include:
+  - path: config
+    file_list:
+      - path: config-device-acceleration.h
+      - path: config-sl-crypto-all-acceleration.h
+
+template_file:
+  - path: config/template/mbedtls_config_autogen.h.jinja
+    unless: [tz_secure_key_library_s_app]
+  - path: config/template/sl_mbedtls_config_transform_autogen.h.jinja
+    unless: [tz_secure_key_library_s_app]
+
+config_file:
+  - path: config/template/mbedtls_config.h
+    file_id: mbedtls_config
+
+define:
+  - name: MBEDTLS_CONFIG_FILE
+    value: "<mbedtls_config.h>"
+    # Uses a custom test config.
+    unless: [test_mbedtls_classic_common]
+
+requires:
+  - name: emlib_se
+    condition: [device_has_semailbox]
+  - name: silabs_core_sl_malloc

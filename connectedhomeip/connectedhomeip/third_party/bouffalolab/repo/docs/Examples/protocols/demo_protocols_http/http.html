@@ -1,0 +1,347 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Http client &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Http client</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Examples/protocols/demo_protocols_http/http.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="http-client">
+<span id="http-index"></span><h1>Http client<a class="headerlink" href="#http-client" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<h2>总览<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<p>本示例主要介绍如何创建一个socket并连接到指定的Http服务器获取数据的过程。</p>
+</div>
+<div class="section" id="id2">
+<h2>准备和使用步骤<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<ul>
+<li><p class="first">使用之前需要准备可用的URL以及网络。</p>
+</li>
+<li><p class="first">使用步骤：</p>
+<ul>
+<li><p class="first">编译 <code class="docutils literal notranslate"><span class="pre">customer_app/sdk_app_http_client_socket</span></code> 工程并下载工程；</p>
+</li>
+<li><p class="first">在终端输入开启wifi的命令： <code class="docutils literal notranslate"><span class="pre">stack_wifi</span></code> ，输入连接wifi的命令： <code class="docutils literal notranslate"><span class="pre">wifi_sta_connect</span> <span class="pre">&lt;name&gt;</span> <span class="pre">&lt;key&gt;</span></code> ，并确认wifi连接成功（如输入：wifi_sta_connect bl_test_005 12345678）；</p>
+<div class="figure">
+<img alt="" src="../../../_images/image130.png" />
+</div>
+<div class="figure">
+<img alt="" src="../../../_images/image226.png" />
+</div>
+</li>
+<li><p class="first">使用 <code class="docutils literal notranslate"><span class="pre">http</span></code> 命令通过socket的方式进行下载。</p>
+<div class="figure">
+<img alt="" src="../../../_images/image319.png" />
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h2>应用实例<a class="headerlink" href="#id3" title="永久链接至标题"></a></h2>
+<ul class="simple">
+<li>通过 <code class="docutils literal notranslate"><span class="pre">hostname</span></code> 获取 <code class="docutils literal notranslate"><span class="pre">hostinfo</span></code></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>struct hostent *hostinfo = gethostbyname(hostname);
+if (!hostinfo) {
+    printf(&quot;gethostbyname Failed\r\n&quot;);
+    return -1;
+}
+</pre></div>
+</div>
+<ul class="simple">
+<li>创建一个 <code class="docutils literal notranslate"><span class="pre">socket</span></code> 连接并发送http请求。</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">((</span><span class="n">sockfd</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_STREAM</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;Error in socket</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="o">/*---</span><span class="n">Initialize</span> <span class="n">server</span> <span class="n">address</span><span class="o">/</span><span class="n">port</span> <span class="n">struct</span><span class="o">---*/</span>
+<span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dest</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">dest</span><span class="p">));</span>
+<span class="n">dest</span><span class="o">.</span><span class="n">sin_family</span> <span class="o">=</span> <span class="n">AF_INET</span><span class="p">;</span>
+<span class="n">dest</span><span class="o">.</span><span class="n">sin_port</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="n">PORT</span><span class="p">);</span>
+<span class="n">dest</span><span class="o">.</span><span class="n">sin_addr</span> <span class="o">=</span> <span class="o">*</span><span class="p">((</span><span class="n">struct</span> <span class="n">in_addr</span> <span class="o">*</span><span class="p">)</span> <span class="n">hostinfo</span><span class="o">-&gt;</span><span class="n">h_addr</span><span class="p">);</span>
+<span class="o">//</span><span class="n">char</span> <span class="n">ip</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+<span class="n">uint32_t</span> <span class="n">address</span> <span class="o">=</span> <span class="n">dest</span><span class="o">.</span><span class="n">sin_addr</span><span class="o">.</span><span class="n">s_addr</span><span class="p">;</span>
+<span class="n">char</span> <span class="o">*</span><span class="n">ip</span> <span class="o">=</span> <span class="n">inet_ntoa</span><span class="p">(</span><span class="n">address</span><span class="p">);</span>
+
+<span class="n">printf</span><span class="p">(</span><span class="s2">&quot;Server ip Address : </span><span class="si">%s</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ip</span><span class="p">);</span>
+<span class="o">/*---</span><span class="n">Connect</span> <span class="n">to</span> <span class="n">server</span><span class="o">---*/</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">connect</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span>
+         <span class="p">(</span><span class="n">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">dest</span><span class="p">,</span>
+         <span class="n">sizeof</span><span class="p">(</span><span class="n">dest</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;Error in connect</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="o">/*---</span><span class="n">Get</span> <span class="s2">&quot;Hello?&quot;</span><span class="o">---*/</span>
+<span class="n">memset</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MAXBUF</span><span class="p">);</span>
+<span class="n">char</span> <span class="n">wbuf</span><span class="p">[]</span>
+    <span class="o">=</span> <span class="s2">&quot;GET /ddm/ContentResource/music/204.mp3 HTTP/1.1</span><span class="se">\r\n</span><span class="s2">Host: nf.cr.dandanman.com</span><span class="se">\r\n</span><span class="s2">User-Agent: wmsdk</span><span class="se">\r\n</span><span class="s2">Accept: */*</span><span class="se">\r\n\r\n</span><span class="s2">&quot;</span><span class="p">;</span>
+<span class="n">write</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="n">wbuf</span><span class="p">,</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">wbuf</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>获取http响应的数据，完成时打印获取数据花费的时间和传输的速度。</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="n">recv_buffer</span><span class="p">,</span> <span class="n">BUFFER_SIZE</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;eof</span><span class="se">\n\r</span><span class="s2">&quot;</span><span class="p">);</span>
+        <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;ret = </span><span class="si">%d</span><span class="s2">, err = </span><span class="si">%d</span><span class="se">\n\r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ret</span><span class="p">,</span> <span class="n">errno</span><span class="p">);</span>
+        <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="n">total</span> <span class="o">+=</span> <span class="n">ret</span><span class="p">;</span>
+        <span class="o">/*</span><span class="n">use</span> <span class="n">less</span> <span class="n">debug</span><span class="o">*/</span>
+        <span class="k">if</span> <span class="p">(</span><span class="mi">0</span> <span class="o">==</span> <span class="p">((</span><span class="n">debug_counter</span><span class="o">++</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;total = </span><span class="si">%d</span><span class="s2">, ret = </span><span class="si">%d</span><span class="se">\n\r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">total</span><span class="p">,</span> <span class="n">ret</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="o">//</span><span class="n">vTaskDelay</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">total</span> <span class="o">&gt;</span> <span class="mi">82050000</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">ticks_end</span> <span class="o">=</span> <span class="n">xTaskGetTickCount</span><span class="p">();</span>
+            <span class="n">time_consumed</span> <span class="o">=</span> <span class="p">((</span><span class="n">uint32_t</span><span class="p">)(((</span><span class="n">int32_t</span><span class="p">)</span><span class="n">ticks_end</span><span class="p">)</span> <span class="o">-</span> <span class="p">((</span><span class="n">int32_t</span><span class="p">)</span><span class="n">ticks_start</span><span class="p">)))</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">;</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;Download comlete, total time </span><span class="si">%u</span><span class="s2"> s, speed </span><span class="si">%u</span><span class="s2"> Kbps</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="p">(</span><span class="n">unsigned</span> <span class="nb">int</span><span class="p">)</span><span class="n">time_consumed</span><span class="p">,</span>
+                    <span class="p">(</span><span class="n">unsigned</span> <span class="nb">int</span><span class="p">)(</span><span class="n">total</span> <span class="o">/</span> <span class="n">time_consumed</span> <span class="o">*</span> <span class="mi">8</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span>
+            <span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>关闭 <code class="docutils literal notranslate"><span class="pre">socket</span></code> 。</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">close</span><span class="p">(</span><span class="n">sockfd</span><span class="p">);</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>在 <code class="docutils literal notranslate"><span class="pre">customer_app/sdk_app_http_client_socket/sdk_app_http_client_socket/demo.c</span></code> 中 <code class="docutils literal notranslate"><span class="pre">static</span> <span class="pre">void</span> <span class="pre">_cli_init()</span></code> 的函数里调用 <code class="docutils literal notranslate"><span class="pre">http_client_cli_init()</span></code> 初始化http命令</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<model:MDescriptors xmlns:model="http://www.silabs.com/ss/Studio.ecore">
+  <descriptors label="Empty C Project" description="This example project shows an empty configuration that can be used as a starting point to add components and functionality." name="cExeProject">
+    <properties key="type" value="template"/>
+    <properties key="defaultName" value="empty"/>
+    <properties key="namespace" value="template.uc"/>
+    <properties key="ideCompatibility" value="simplicity-ide"/>
+    <properties key="template.projectFilePaths" value="example/empty/empty.slcp"/>
+    <properties key="core.boardCompatibility" value=".*"/>
+    <properties key="core.partCompatibility" value="(mcu.arm.ef[mr]32.*|mcu.arm.wf.*)"/>
+  </descriptors>
+  <descriptors label="Empty C++ Project" description="This example project shows an empty configuration that can be used as a starting point to add components and functionality." name="cppExeProject">
+    <properties key="type" value="template"/>
+    <properties key="defaultName" value="empty_cpp"/>
+    <properties key="namespace" value="template.uc"/>
+    <properties key="ideCompatibility" value="simplicity-ide"/>
+    <properties key="template.projectFilePaths" value="example/empty_cpp/empty_cpp.slcp"/>
+    <properties key="core.boardCompatibility" value=".*"/>
+    <properties key="core.partCompatibility" value="(mcu.arm.ef[mr]32.*|mcu.arm.wf.*)"/>
+  </descriptors>
+</model:MDescriptors>

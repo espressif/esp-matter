@@ -1,0 +1,22 @@
+!!omap
+- id: zgm230_rb4205b
+- label: ZGM230-RB4205B
+- package: platform
+- description: Kit BSP support for the ZGM230S Z-Wave SiP Module Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_zgm230-rb4205b
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"ZGM230-RB4205B"'
+  - name: SL_KIT_REV
+    value: '"A00"'
+- tag:
+  - kit:opn:ZGM230-RB4205B
+  - kit:pn:RB4205
+  - kit:variant:B
+  - kit:revision:A00

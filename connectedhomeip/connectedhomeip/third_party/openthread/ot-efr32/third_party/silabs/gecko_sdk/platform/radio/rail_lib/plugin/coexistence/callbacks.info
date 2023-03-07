@@ -1,0 +1,11 @@
+/** @brief Reports a change in radio state
+ *
+ * This function is called by the RAIL library to report changes in the radio
+ * states (Idle/Rx/Tx) according to PTA events.
+ *
+ * @param ccState bitmask of radio states
+ *
+ */
+void coexCoulombCounterEventCallback(uint16_t ccState)
+{
+}

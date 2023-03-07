@@ -1,0 +1,222 @@
+id: "zigbee_core_cli"
+label: "Zigbee Core CLI"
+package: "Zigbee"
+category: "Zigbee|Utility"
+quality: "production"
+description: "This component provides CLI commands for basic operations such as printing node information and messaging"
+
+provides:
+  - name: "zigbee_core_cli"
+requires:
+  - name: "zigbee_cli"
+config_file:
+  - path: protocol/zigbee/app/framework/common/config/zigbee_core_cli_config.h
+source:
+  - path: "protocol/zigbee/app/framework/cli/core-cli.c"
+    condition:
+      - "cli"
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_core_cli
+
+# Core CLI commands
+  - name: cli_command
+    value:
+      name: info
+      handler: emAfCliInfoCommand
+      help: "Prints information about the network state, clusters, and endpoints."
+  - name: cli_command
+    value:
+      name: libs
+      handler: printAllLibraryStatus
+      help: "Lists which optional libraries of the stack are implemented on this device."    
+  - name: cli_command
+    value:
+      name: bsend
+      handler: emAfCliBsendCommand
+      help: "Sends a message."
+      argument:
+      - type: uint8
+        help: "Source endpoint"
+  - name: cli_command
+    value:
+      name: send
+      handler: sli_zigbee_cli_send_command
+      help: "Sends a message."
+      argument:
+      - type: uint16
+        help: "Destination"
+      - type: uint8
+        help: "Source endpoint"
+      - type: uint8
+        help: "Destination endpoint"
+  - name: cli_command
+    value:
+      name: read
+      handler: sli_zigbee_zcl_read_cli_command
+      help: "Reads a message."
+      argument:
+      - type: uint8
+        help: "Endpoint"
+      - type: uint16
+        help: "Cluster ID"
+      - type: uint16
+        help: "Attribute ID"
+      - type: uint8
+        help: "1 if server direction, 0 if client direction"
+  - name: cli_command
+    value:
+      name: write
+      handler: sli_zigbee_zcl_write_cli_command
+      help: "Writes a message."
+      argument:
+      - type: uint8
+        help: "Endpoint"
+      - type: uint16
+        help: "Cluster ID"
+      - type: uint16
+        help: "Attribute ID"
+      - type: uint8
+        help: "Mask"
+      - type: uint8
+        help: "Data type"  
+      - type: hex
+        help: "Data byte"        
+  - name: cli_command
+    value:
+      name: reset
+      handler: resetCommand
+      help: "Resets the node."
+
+  - name: cli_command
+    value:
+      name: raw
+      handler: emAfCliRawCommand
+      help: "Creates a message by specifying the raw bytes. Use the send command to send the message once it has been created. Ex: raw 0x000F {00 0A 00 11 22 33 44 55} sends a message to cluster 15 (0x000F) of length 8 which includes the ZCL header."
+      argument:
+      - type: uint16
+        help: "ClusterId"  
+      - type: hex
+        help: "Data"
+  - name: cli_command
+    value:
+      name: send_multicast
+      handler: sli_zigbee_cli_send_command
+      help: "Sends a pre-buffered multicast message to a given group ID from a given endpoint."
+      argument:
+      - type: uint16
+        help: "groupId"  
+      - type: uint8
+        help: "src-endpoint"
+  - name: cli_command
+    value:
+      name: send-using-multicast-binding
+      handler: emAfCliSendUsingMulticastBindingCommand
+      help: "When sending using a binding, specifies whether a multicast binding should be used."
+      argument:
+      - type: uint8
+        help: "useMulticastBinding"
+  - name: cli_command
+    value:
+      name: timesync
+      handler: emAfCliTimesyncCommand
+      help: "Sends a read attr for the time of the device specified. It sets a flag so when it gets the response it writes the time to its own time attr."
+      argument:
+      - type: uint16
+        help: "Id"  
+      - type: uint8
+        help: "srcEndpoint"         
+      - type: uint8
+        help: "destEndpoint"
+  - name: cli_command
+    value:
+      name: get-pti-radio-config
+      handler: sli_get_pti_radio_config
+      help: "Returns PTI radio config information to determine the PHY type being used by RAIL.
+             return value is enum RAIL_IEEE802154_PtiRadioConfig_t 
+             e.g  RAIL_IEEE802154_PTI_RADIO_CONFIG_2P4GHZ = 0x00U
+                  RAIL_IEEE802154_PTI_RADIO_CONFIG_2P4GHZ_ANTDIV = 0x01U
+                  RAIL_IEEE802154_PTI_RADIO_CONFIG_2P4GHZ_COEX = 0x02U
+                  RAIL_IEEE802154_PTI_RADIO_CONFIG_2P4GHZ_ANTDIV_COEX = 0x03U"
+    condition:
+      - rail_util_ieee802154_phy_select
+  - name: cli_command
+    value:
+      name: config-cca-mode
+      handler: sli_zigbee_cli_config_cca_mode_command
+      help: "Set the configured 802.15.4 CCA mode in the radio. See documentation regarding RAIL_IEEE802154_CcaMode_t."
+      argument:
+      - type: uint8
+        help: "A RAIL_IEEE802154_CcaMode_t value"
+  - name: cli_command
+    value:
+      name: version
+      handler: sli_zigbee_cli_version_command
+      help: "Shows the version of the software."
+  - name: cli_group
+    value:
+      name: endpoints
+      help: "endpoint related commands."
+  - name: cli_command
+    value:
+      group: endpoints
+      name: print
+      handler: endpointPrint
+      help: "Print status of endpoints."
+  - name: cli_command
+    value:
+      group: endpoints
+      name: enable
+      handler: enableDisableEndpoint
+      help: "Enables the endpoint for ZCL messages."
+      argument:
+      - type: uint8
+        help: "Endpoint index"
+  - name: cli_command
+    value:
+      group: endpoints
+      name: disable
+      handler: enableDisableEndpoint
+      help: "Disable the endpoint for ZCL messages."
+      argument:
+      - type: uint8
+        help: "Endpoint index"
+  - name: cli_command
+    value:
+      name: events
+      handler: printEvents
+      help: "Print active events."
+  - name: cli_group
+    value:
+      name: security
+      help: "security related commands"
+  - name: cli_group
+    value:
+      group: security
+      name: mfg-token
+      help: "Get/set MFG token."
+  - name: cli_command
+    value:
+      group: mfg-token
+      name: get
+      handler: getSetMfgToken
+      help: "Print MFG token."
+  - name: cli_command
+    value:
+      group: mfg-token
+      name: set
+      handler: getSetMfgToken
+      help: "Set MFG token, CANNOT BE UNSET BY CLI."
+  - name: cli_command
+    value:
+      name: black-list
+      handler: blackListCommand
+      argument:
+      - type: uint32
+        help: "Blacklisted channel bitmask"
+      help: "Black lists a channel for scanning."
+    condition:
+     - zigbee_simulation
+    unless:
+     - zigbee_ezsp     

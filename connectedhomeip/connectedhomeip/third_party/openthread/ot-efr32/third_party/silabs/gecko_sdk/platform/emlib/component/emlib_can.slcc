@@ -1,0 +1,31 @@
+id: emlib_can
+label: CAN
+package: platform
+description: >
+  Controller Area Network (CAN) Peripheral API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_can.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_can.h"
+provides:
+  - name: emlib_can
+requires:
+  - name: device
+  - name: device_has_can
+  - name: emlib_cmu
+  - name: emlib_common
+  - name: cmsis_core
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efm32gg11/group-can
+      condition: [device_sdid_100]
+    - page: emlib/api/efm32tg11/group-can
+      condition: [device_sdid_103]
+    - page: emlib/api/efm32gg12/group-can
+      condition: [device_sdid_106]

@@ -1,0 +1,33 @@
+id: restrictions_profile_wisun_ofdm
+label: Restrictions - Wi-SUN OFDM Profile
+package: platform
+description: Component provides profile_wisun_ofdm.restriction configuration files by logic
+category: Platform|Radio Configuration
+quality: production
+root_path: platform/radio/radio_configuration/restrictions
+requires:
+  - name: rail_lib
+  - name: device_has_radio
+
+#------- Set provided component name
+provides:
+  - name: restrictions_profile_wisun_ofdm
+
+#-------- Include restriction config json file --------
+#
+# WiSUN profile restrictions
+# xg12 -> Profile: WiSUN (even if it's only FSK)
+# xg23 -> Profile: WiSUN (even if it's only FSK)
+# xg25 -> Profile: WiSUN_FSK, WiSUN_OFDM
+#
+config_file:
+  - path: profile_wisun_ofdm.restriction
+    directory: rail
+    condition:
+      - device_sdid_220
+
+#-------- Hides Component for user in Studio ---------
+ui_hints:
+  visibility: never
+
+

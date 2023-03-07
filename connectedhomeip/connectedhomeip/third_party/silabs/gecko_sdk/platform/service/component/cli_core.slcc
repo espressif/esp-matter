@@ -1,0 +1,69 @@
+id: cli_core
+label: "CLI: CLI Core"
+package: platform
+description: Command Line Interface core component.
+category: Services|CLI
+quality: production
+root_path: platform/service/cli/
+config_file:
+  - path: config/sl_cli_config.h
+include:
+  - path: inc
+    file_list:
+      - path: sl_cli.h
+      - path: sl_cli_command.h
+      - path: sl_cli_input.h
+      - path: sl_cli_tokenize.h
+      - path: sl_cli_types.h
+      - path: sl_cli_arguments.h
+  - path: src
+    file_list:
+      - path: sli_cli_arguments.h
+      - path: sli_cli_input.h
+      - path: sli_cli_io.h
+source:
+  - path: src/sl_cli_input.c
+  - path: src/sl_cli_tokenize.c
+  - path: src/sl_cli_command.c
+  - path: src/sl_cli.c
+  - path: src/sl_cli_io.c
+  - path: src/sl_cli_arguments.c
+provides:
+  - name: cli_core
+requires:
+  - name: component_catalog
+  - name: sl_string
+  - name: status
+  - name: iostream
+  - name: slist
+  - name: printf_integration
+  - name: sl_assert
+recommends:
+  - id: printf
+library:
+  - system: pthread
+    condition:
+      - linux
+      - device_host
+template_file:
+  - path: template/sl_cli_command_table.c.jinja
+  - path: template/sl_cli_command_table.html.jinja
+  - path: template/sl_cli_handles.h.jinja
+  - path: template/sl_cli_instances.c.jinja
+  - path: template/sl_cli_instances.h.jinja
+  - path: template/sli_cli_hooks.c.jinja
+template_contribution:
+  - name: event_handler
+    value:
+      event: service_init
+      include: sl_cli_instances.h
+      handler: sl_cli_instances_init
+    priority: 5
+  - name: event_handler
+    value:
+      event: service_process_action
+      include: sl_cli_instances.h
+      handler: sl_cli_instances_tick
+    priority: 1
+  - name: component_catalog
+    value: cli

@@ -1,0 +1,23 @@
+!!omap
+- id: slwrb4155a
+- label: SLWRB4155A
+- package: platform
+- description: Kit BSP support for the EFR32MG 2.4 GHz 13 dBm / Si4468 868-915 MHz
+    14 dBm Dual Band Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4155a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4155A"'
+  - name: SL_KIT_REV
+    value: '"A00"'
+- tag:
+  - kit:opn:SLWRB4155A
+  - kit:pn:WRB4155
+  - kit:variant:A
+  - kit:revision:A00

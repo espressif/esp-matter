@@ -1,0 +1,138 @@
+﻿
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>TI - HomePage</title>
+<link rel="stylesheet" type="text/css" href="css/font-awesome.css">
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet prefetch" href="/css/magnific-popup.css">
+<link rel="stylesheet" href="css/filebrowser-style.css">
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/js/jquery.magnific-popup.min.js"></script>
+<script type="text/javascript" src="data/elements.js"></script>
+<script type="text/javascript" src="js/filebrowser.js"></script>
+<script type="text/javascript" src="js/utils.js"></script>
+<script type="text/javascript" src="js/countrycode.js"></script>
+<script type="text/javascript" src="js/regdomain.js"></script>
+<script type="text/javascript" src="js/regdomain24.js"></script>
+<script type="text/javascript" src="js/projectlist.js"></script>
+<link href="fonts/open-sans/open-sans.css" rel="stylesheet" type="text/css">
+<link href="fonts/roboto/roboto.css" rel="stylesheet" type="text/css">
+</head>
+
+<script>
+    window.addEventListener('keydown', function (e) { if (e.which == 116) e.preventDefault() });
+</script>
+
+<body>
+<!-- wrapper -->
+<div class="wrapper">
+	<!-- left Content -->
+    <div id="leftContent" class="leftContent leftSideLogo">
+        <!--div id="ApplicationModeToggle" class="slideToggleAp" onclick="sliderToggleApp();"><div class="appMode appModeD">Advanced View</div><div class="appMode appModeP">Simple View</div><div class="slider sliderLeft"><div class="inSlider"><i class="fa fa-bars  fa-rotate-90"></i></div></div></!--div>-->
+    	<div class="lMainTitle"></div>
+        <!--div class="filterTree"><span></span><input type="text" placeholder="Filter Tree Nodes"></div-->
+       	<!-- tree -->
+        <ul class="fa-ul leftContentTree">
+        </ul>
+        <!--end tree -->
+        
+    </div>
+    <!-- end left Content -->
+    <!-- main Content -->
+    <div id="mainContent">
+         <h1 class="mainTitle"></h1>
+         <div class="mbot50"></div>
+		 <!--div id="mainContentData" style="width:648px;"></!--div>-->
+         <div id="mainContentData"></div>
+         <div class="mcFooter">
+             <div class="verNum">Version: 1.0.22.5_1</div>
+             <div class="copyRights">All rights reserved to Texas Instruments inc (c) - For more information go to our <a href="">Help Pages</a></div>
+         </div>
+    </div>
+    <!-- end main Content -->
+    <!-- right content -->
+    <div id="rightContent">
+        <div class="clear"></div>
+    	<div class="dStatusBox">
+			<div class="wTitle">
+         		<div class="dTitle">Device status</div><div class="dBtn"><i class="fa fa-caret-down fa-2x"></i><i class="fa fa-caret-up fa-2x"></i></div><div class="clear"></div>
+            </div>
+			<div class="cSbox" id="deviceStatusBox">
+            <div class="uStatus"><div class="uText jslink"><div class="uIcon"><i class="fa fa-unlink uRed" ></i></div>Connected: Off</div></div>
+			</div>
+
+        </div>
+        
+        <div class="dStatusBox SelectionsSummary">
+        	<div class="wTitle">
+         		<div class="dTitle">Selections Summary</div><div class="dBtn"><i class="fa fa-caret-down fa-2x"></i><i class="fa fa-caret-up fa-2x"></i></div><div class="clear"></div>
+            </div>
+            <div class="cSbox SelectionsSummaryIn">
+                <div class="uStatus">
+                	<div>Device Mode: <span>Station</span></div>
+               	</div>
+                <div class="uStatus">
+                	<div>Channel: <span>1</span></div>
+               	</div>
+                <div class="uStatus">
+                	<div>Device Mode: <span>Station</span></div>
+               	</div>
+                <div class="uStatus">
+                	<div>Channel: <span>1</span></div>
+               	</div>
+                <div class="uStatus">
+                	<div>Device Mode: <span>Station</span></div>
+               	</div>
+                <div class="uStatus">
+                	<div>Channel: <span>1</span></div>
+               	</div>
+            </div>
+        </div>
+        <table>
+        
+        
+        <tr>
+            <td>
+                <div id="ConnectBtn" class="regButtonI tooltip" data-tooltip="Connect/Disconnect" onclick="connectDeviceAPI();" ><i class="fa fa-link fa-2x"></i><span id="connectSpan">Connect</span></div>
+            </td> 
+        </tr>
+        <tr>
+            <td>
+                <div class="regButtonI tooltip" onclick="loadWelcome();" data-tooltip="Back to Welcome Page"><i class="fa fa-external-link-square fa-2x"></i>  Back</div>
+            </td>
+        </tr>  
+        <tr>
+            <td>
+                <div class="regButtonI tooltip" onclick="loadGenerataImage();" data-tooltip="Generate Image"><i class="fa fa-fire fa-2x"></i>   Burn</div>
+            </td>
+        </tr>   
+        <tr>
+            <td>
+                <div id="SaveProjectBtn" class="regButtonI tooltip" onclick="saveProjectAPI();" data-tooltip="Save Project"><i class="fa fa-floppy-o fa-2x"></i>   Save</div>
+            </td>
+        </tr>   
+        <tr>
+            <td>
+                <div id="BrowseBtn" class="regButtonI  tooltip" data-tooltip="User File Browser "><i class="fa  fa-folder-open-o fa-2x"></i> Online User Files</div>
+            </td>
+        </tr>  
+        <tr>
+            <td>
+                <div id="ToolsBtn" class="regButtonI tooltip" onclick="loadTools();" data-tooltip="Tools"><i class="fa fa-wrench fa-2x"></i>   Tools</div>      
+            </td>
+        </tr>  
+        </table>
+    </!--div>
+	<!--end right content -->
+</div>
+<!--end wrapper -->
+<div style="clear:both;"></div>
+<div id="fullOverlay" class="fullOverlay"></div>
+<script>
+</script>
+
+</body>
+</html>

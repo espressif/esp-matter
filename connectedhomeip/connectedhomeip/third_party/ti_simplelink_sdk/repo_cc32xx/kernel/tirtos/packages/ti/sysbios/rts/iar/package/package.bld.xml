@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/build.dtd -->
+<package name="ti.sysbios.rts.iar" version="1, 0, 0, 0" producerId="undefined">
+    <units>
+        <module name="MultithreadSupport"/>
+    </units>
+    <sources>
+        <srcFile name="package/package_ti.sysbios.rts.iar.c"/>
+        <srcFile name="MultithreadSupport.c"/>
+    </sources>
+    <configscripts>
+    </configscripts>
+    <makefiles>
+        <srcFile name="package.mak" src="package.bld"/>
+        <srcFile name="package/package.xdc.dep" src="package.xdc"/>
+        <srcFile name="package/package.cfg.dep" src="package.xdc"/>
+        <srcFile name="lib/debug/ti.sysbios.rts.iar.arm4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.rts.iar/package/package_ti.sysbios.rts.iar.orm4.dep" src="package/package_ti.sysbios.rts.iar.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.rts.iar/MultithreadSupport.orm4.dep" src="MultithreadSupport.c"/>
+        <srcFile name="package/rel/ti_sysbios_rts_iar.tar.dep" src="package/rel/ti_sysbios_rts_iar.xdc.inc"/>
+    </makefiles>
+    <targets>
+        <target name="iar.targets.arm.M4"
+            version="iar.targets.arm.M4{1,0,8.50,1"
+            rawVersion="8.50.1.245"
+            platform="ti.platforms.tiva:TM4C1294NCPDT:1"
+            isa="v7M4"
+            suffix="rm4"
+            rootDir="/scratch/xlibrary/.conan/data/iarcodegen/8.50.1.245-3/library-msp/ga/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9"
+            os="undefined"
+            rts="iar.targets.arm.rts">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+    </targets>
+    <libraries>
+    <library name="lib/debug/ti.sysbios.rts.iar"
+        pname="lib/debug/ti.sysbios.rts.iar.arm4"
+        profile="debug"
+        target="iar.targets.arm.M4"/>
+    </libraries>
+    <configurations>
+    </configurations>
+    <executables>
+    </executables>
+    <tests>
+    </tests>
+    <releases relDir="package/rel/">
+    <release name="ti_sysbios_rts_iar"
+        pname="ti_sysbios_rts_iar.tar"
+        label="default"
+        relScript="ti/sysbios/libFilter.xs">
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+        <file name="linkcmd.xdt"/>
+        <file name="MultithreadSupport.xdt"/>
+        <file name="package.bld"/>
+        <file name="package/package.cfg.xdc.inc"/>
+        <file name="lib/debug/ti.sysbios.rts.iar.arm4"/>
+        <file name="package/package_ti.sysbios.rts.iar.c"/>
+        <file name="MultithreadSupport.c"/>
+    </release>
+    </releases>
+    <repositories>
+    </repositories>
+</package>

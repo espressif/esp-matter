@@ -1,0 +1,72 @@
+﻿<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:type="http://zigbee.org/zcl/types"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xmlns:zcl="http://zigbee.org/zcl/clusters"
+  xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd"
+  id="0301" revision="2" name="BallastConfiguration">
+  <classification role="application" picsCode="BALCFG" primaryTransaction="1" />
+  <server>
+    <attributes>
+      <!-- Ballast Information Attribute Set -->
+      <attribute id="0000" name="PhysicalMinLevel" type="uint8" min="1" max="254" default="1" required="true" />
+      <attribute id="0001" name="PhysicalMaxLevel" type="uint8" min="1" max="254" default="254" required="true" />
+      <attribute id="0002" name="BallastStatus" type="map8" default="0">
+        <bitmap>
+          <element name="BallastNonOperational" type="bool" mask="01" />
+          <element name="LampFailure" type="bool" mask="02" shiftRight="1" />
+        </bitmap>
+      </attribute>
+      <!-- Ballast Settings Attribute Set -->
+      <attribute id="0010" name="MinLevel" type="uint8" min="1" max="254" writable="true" defaultRef="PhysicalMinLevel" required="true">
+        <restriction>
+          <type:minInclusiveRef ref="PhysicalMinLevel" />
+          <type:maxInclusiveRef ref="MaxLevel" />
+        </restriction>
+      </attribute>
+      <attribute id="0011" name="MaxLevel" type="uint8" min="1" max="254" writable="true" defaultRef="PhysicalMaxLevel" required="true">
+        <restriction>
+          <type:minInclusiveRef ref="MinLevel" />
+          <type:maxInclusiveRef ref="PhysicalMaxLevel" />
+        </restriction>
+      </attribute>
+      <!-- PowerOnLevel is deprecated -->
+      <attribute id="0012" name="PowerOnLevel" type="uint8" writable="true" max="254" defaultRef="PhysicalMaxLevel" deprecated="true" />
+      <!-- PowerOnFadeTime is deprecated -->
+      <attribute id="0013" name="PowerOnFadeTime" type="uint16" writable="true" max="65534" default="0" deprecated="true" />
+      <attribute id="0014" name="IntrinsicBallastFactor" type="uint8" max="254" writable="true" />
+      <attribute id="0015" name="BallastFactorAdjustment" type="uint8" min="100" max="255" writable="true" default="255" />
+      <!-- Lamp Information Attribute Set -->
+      <attribute id="0020" name="LampQuantity" type="uint8" max="254" />
+      <!-- Lamp Settings Attribute Set -->
+      <attribute id="0030" name="LampType" type="string" writable="true" default="">
+        <restriction>
+          <type:minLength value="0" />
+          <type:maxLength value="16" />
+        </restriction>
+      </attribute>
+      <attribute id="0031" name="LampManufacturer" type="string" writable="true" default="">
+        <restriction>
+          <type:minLength value="0" />
+          <type:maxLength value="16" />
+        </restriction>
+      </attribute>
+      <attribute id="0032" name="LampRatedHours" type="uint24" max="16777214" writable="true" default="16777215" />
+      <attribute id="0033" name="LampBurnHours" type="uint24" max="16777214" writable="true" default="0" />
+      <attribute id="0034" name="LampAlarmMode" type="map8" default="0" writable="true">
+        <bitmap>
+          <element name="LampBurnHours" type="bool" mask="01" />
+        </bitmap>
+      </attribute>
+      <attribute id="0035" name="LampBurnHoursTripPoint" type="uint24" max="16777214" writable="true" default="16777215" />
+    </attributes>
+  </server>
+</zcl:cluster>

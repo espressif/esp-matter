@@ -1,0 +1,13 @@
+{
+    "target": {
+        "Name": "LP_CC2674R10_FPGA",
+        "Revision": [],
+        "Description": "CC2674R10 FPGA LaunchPad.",
+        "DeviceName": "CC2674R10",
+        "DevicePackage": "FPGA",
+        "FrontEnd": "XD",
+        "PaSettings": "pasettings.json",
+        "RfDesign": "CC1354R10-7x7-XD7793-XD24",
+        "DefaultCategory": "Settings"
+    }
+}

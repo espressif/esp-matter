@@ -1,0 +1,387 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_arduino_build/arduino.gni")
+import("$dir_pw_bloat/bloat.gni")
+import("$dir_pw_build/facade.gni")
+import("$dir_pw_build/module_config.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_fuzzer/fuzzer.gni")
+import("$dir_pw_protobuf_compiler/proto.gni")
+import("$dir_pw_unit_test/test.gni")
+import("backend.gni")
+
+declare_args() {
+  # The build target that overrides the default configuration options for this
+  # module. This should point to a source set that provides defines through a
+  # public config (which may -include a file or add defines directly).
+  pw_tokenizer_CONFIG = pw_build_DEFAULT_MODULE_CONFIG
+}
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+config("linker_script") {
+  inputs = [ "pw_tokenizer_linker_sections.ld" ]
+
+  # Automatically add the tokenizer linker sections when cross-compiling or
+  # building for Linux. macOS and Windows executables are not supported.
+  if (current_os == "" || current_os == "freertos") {
+    ldflags = [
+      "-T",
+      rebase_path("pw_tokenizer_linker_sections.ld", root_build_dir),
+    ]
+  } else if (current_os == "linux" && !pw_toolchain_OSS_FUZZ_ENABLED) {
+    # When building for Linux, the linker provides a default linker script.
+    # The add_tokenizer_sections_to_default_script.ld wrapper includes the
+    # pw_tokenizer_linker_sections.ld script in a way that appends to the the
+    # default linker script instead of overriding it.
+    ldflags = [
+      "-T",
+      rebase_path("add_tokenizer_sections_to_default_script.ld",
+                  root_build_dir),
+    ]
+    lib_dirs = [ "." ]
+
+    inputs += [ "add_tokenizer_sections_to_default_script.ld" ]
+  }
+  visibility = [ ":*" ]
+}
+
+pw_source_set("config") {
+  public = [ "public/pw_tokenizer/config.h" ]
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ pw_tokenizer_CONFIG ]
+}
+
+pw_source_set("pw_tokenizer") {
+  public_configs = [ ":public_include_path" ]
+  all_dependent_configs = [ ":linker_script" ]
+  public_deps = [
+    ":config",
+    "$dir_pw_containers:to_array",
+    dir_pw_polyfill,
+    dir_pw_preprocessor,
+    dir_pw_span,
+  ]
+  deps = [ dir_pw_varint ]
+  public = [
+    "public/pw_tokenizer/encode_args.h",
+    "public/pw_tokenizer/hash.h",
+    "public/pw_tokenizer/tokenize.h",
+  ]
+  sources = [
+    "encode_args.cc",
+    "hash.cc",
+    "public/pw_tokenizer/internal/argument_types.h",
+    "public/pw_tokenizer/internal/argument_types_macro_4_byte.h",
+    "public/pw_tokenizer/internal/argument_types_macro_8_byte.h",
+    "public/pw_tokenizer/internal/pw_tokenizer_65599_fixed_length_128_hash_macro.h",
+    "public/pw_tokenizer/internal/pw_tokenizer_65599_fixed_length_256_hash_macro.h",
+    "public/pw_tokenizer/internal/pw_tokenizer_65599_fixed_length_80_hash_macro.h",
+    "public/pw_tokenizer/internal/pw_tokenizer_65599_fixed_length_96_hash_macro.h",
+    "public/pw_tokenizer/internal/tokenize_string.h",
+    "tokenize.cc",
+  ]
+  friend = [ ":*" ]
+}
+
+# As a temporary workaround, if no backend is set, use an empty test backend so
+# that the test can define the handler function.
+# TODO(hepler): Switch this to a facade test when available.
+if (pw_tokenizer_GLOBAL_HANDLER_BACKEND == "" &&
+    pw_tokenizer_GLOBAL_HANDLER_WITH_PAYLOAD_BACKEND == "") {
+  # This is an empty library to use as the backend for global_handler and
+  # global_handler_with_payload tests.
+  pw_source_set("test_backend") {
+    visibility = [ ":*" ]
+  }
+
+  pw_tokenizer_GLOBAL_HANDLER_BACKEND = ":test_backend"
+  pw_tokenizer_GLOBAL_HANDLER_WITH_PAYLOAD_BACKEND = ":test_backend"
+
+  enable_global_handler_test = true
+} else {
+  enable_global_handler_test = false
+}
+
+pw_facade("global_handler") {
+  backend = pw_tokenizer_GLOBAL_HANDLER_BACKEND
+
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_tokenizer/tokenize_to_global_handler.h" ]
+  sources = [ "tokenize_to_global_handler.cc" ]
+  public_deps = [ ":pw_tokenizer" ]
+}
+
+pw_facade("global_handler_with_payload") {
+  backend = pw_tokenizer_GLOBAL_HANDLER_WITH_PAYLOAD_BACKEND
+
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_tokenizer/tokenize_to_global_handler_with_payload.h" ]
+  sources = [ "tokenize_to_global_handler_with_payload.cc" ]
+  public_deps = [ ":pw_tokenizer" ]
+}
+
+pw_source_set("base64") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_tokenizer/base64.h" ]
+  sources = [ "base64.cc" ]
+  public_deps = [
+    ":pw_tokenizer",
+    "$dir_pw_string:string",
+    dir_pw_base64,
+    dir_pw_preprocessor,
+  ]
+}
+
+pw_source_set("decoder") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ dir_pw_span ]
+  deps = [
+    "$dir_pw_bytes:bit",
+    dir_pw_bytes,
+    dir_pw_varint,
+  ]
+  public = [
+    "public/pw_tokenizer/detokenize.h",
+    "public/pw_tokenizer/token_database.h",
+  ]
+  sources = [
+    "decode.cc",
+    "detokenize.cc",
+    "public/pw_tokenizer/internal/decode.h",
+    "token_database.cc",
+  ]
+  friend = [ ":*" ]
+}
+
+# Executable for generating test data for the C++ and Python detokenizers. This
+# target should only be built for the host.
+pw_executable("generate_decoding_test_data") {
+  deps = [
+    ":decoder",
+    ":pw_tokenizer",
+    dir_pw_varint,
+  ]
+  sources = [ "generate_decoding_test_data.cc" ]
+}
+
+# Executable for generating a test ELF file for elf_reader_test.py. A host
+# version of this binary is checked in for use in elf_reader_test.py.
+pw_executable("elf_reader_test_binary") {
+  deps = [
+    ":pw_tokenizer",
+    "$dir_pw_varint",
+  ]
+  sources = [ "py/elf_reader_test_binary.c" ]
+  ldflags = [ "-Wl,--unresolved-symbols=ignore-all" ]  # main is not defined
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":argument_types_test",
+    ":base64_test",
+    ":decode_test",
+    ":detokenize_fuzzer",
+    ":detokenize_test",
+    ":global_handlers_test",
+    ":hash_test",
+    ":simple_tokenize_test",
+    ":token_database_fuzzer",
+    ":token_database_test",
+    ":tokenize_test",
+  ]
+  group_deps = [ "$dir_pw_preprocessor:tests" ]
+}
+
+pw_test("argument_types_test") {
+  sources = [
+    "argument_types_test.cc",
+    "argument_types_test_c.c",
+    "pw_tokenizer_private/argument_types_test.h",
+  ]
+  deps = [ ":pw_tokenizer" ]
+
+  if (pw_arduino_build_CORE_PATH != "") {
+    remove_configs = [ "$dir_pw_build:strict_warnings" ]
+  }
+}
+
+pw_test("base64_test") {
+  sources = [ "base64_test.cc" ]
+  deps = [
+    ":base64",
+    dir_pw_span,
+  ]
+}
+
+pw_test("decode_test") {
+  sources = [
+    "decode_test.cc",
+    "pw_tokenizer_private/tokenized_string_decoding_test_data.h",
+    "pw_tokenizer_private/varint_decoding_test_data.h",
+  ]
+  deps = [
+    ":decoder",
+    "$dir_pw_varint",
+  ]
+
+  # TODO(tonymd): This fails on Teensyduino 1.54 beta core. It may be related to
+  # linking in stl functions. Will debug when 1.54 is released.
+  enable_if = pw_build_EXECUTABLE_TARGET_TYPE != "arduino_executable"
+}
+
+pw_test("detokenize_test") {
+  sources = [ "detokenize_test.cc" ]
+  deps = [ ":decoder" ]
+
+  # TODO(tonymd): This fails on Teensyduino 1.54 beta core. It may be related to
+  # linking in stl functions. Will debug when 1.54 is released.
+  enable_if = pw_build_EXECUTABLE_TARGET_TYPE != "arduino_executable"
+}
+
+pw_test("global_handlers_test") {
+  sources = [
+    "global_handlers_test.cc",
+    "global_handlers_test_c.c",
+    "pw_tokenizer_private/tokenize_test.h",
+  ]
+  deps = [
+    ":global_handler",
+    ":global_handler_with_payload",
+  ]
+
+  # TODO(hepler): Switch this to a facade test when available.
+  enable_if = enable_global_handler_test
+}
+
+pw_test("hash_test") {
+  sources = [
+    "hash_test.cc",
+    "pw_tokenizer_private/generated_hash_test_cases.h",
+  ]
+  deps = [ ":pw_tokenizer" ]
+}
+
+pw_test("simple_tokenize_test") {
+  sources = [ "simple_tokenize_test.cc" ]
+  deps = [
+    ":global_handler",
+    ":global_handler_with_payload",
+    ":pw_tokenizer",
+  ]
+}
+
+pw_test("token_database_test") {
+  sources = [ "token_database_test.cc" ]
+  deps = [ ":decoder" ]
+}
+
+pw_test("tokenize_test") {
+  sources = [
+    "pw_tokenizer_private/tokenize_test.h",
+    "tokenize_test.cc",
+    "tokenize_test_c.c",
+  ]
+  deps = [
+    ":pw_tokenizer",
+    "$dir_pw_varint",
+  ]
+}
+
+pw_fuzzer("token_database_fuzzer") {
+  sources = [ "token_database_fuzzer.cc" ]
+  deps = [
+    ":decoder",
+    "$dir_pw_fuzzer",
+    "$dir_pw_preprocessor",
+    dir_pw_span,
+  ]
+}
+
+pw_fuzzer("detokenize_fuzzer") {
+  sources = [ "detokenize_fuzzer.cc" ]
+  deps = [
+    ":decoder",
+    "$dir_pw_fuzzer",
+    "$dir_pw_preprocessor",
+  ]
+}
+
+pw_proto_library("proto") {
+  sources = [ "options.proto" ]
+  prefix = "pw_tokenizer/proto"
+  python_package = "py"
+}
+
+declare_args() {
+  # pw_JAVA_NATIVE_INTERFACE_INCLUDE_DIRS specifies the paths to use for
+  # building Java Native Interface libraries. If no paths are provided, targets
+  # that require JNI may not build correctly.
+  #
+  # Example JNI include paths for a Linux system:
+  #
+  #   pw_JAVA_NATIVE_INTERFACE_INCLUDE_DIRS = [
+  #     "/usr/local/buildtools/java/jdk/include/",
+  #     "/usr/local/buildtools/java/jdk/include/linux",
+  #   ]
+  #
+  pw_JAVA_NATIVE_INTERFACE_INCLUDE_DIRS = []
+}
+
+# Create a shared library for the tokenizer JNI wrapper. The include paths for
+# the JNI headers must be available in the system or provided with the
+# pw_JAVA_NATIVE_INTERFACE_INCLUDE_DIRS variable.
+pw_shared_library("detokenizer_jni") {
+  public_configs = [ ":public_include_path" ]
+  include_dirs = pw_JAVA_NATIVE_INTERFACE_INCLUDE_DIRS
+  sources = [ "java/dev/pigweed/tokenizer/detokenizer.cc" ]
+  public_deps = [
+    ":decoder",
+    "$dir_pw_preprocessor",
+  ]
+  deps = [ dir_pw_span ]
+}
+
+pw_doc_group("docs") {
+  sources = [
+    "docs.rst",
+    "proto.rst",
+  ]
+  inputs = [ "py/pw_tokenizer/encode.py" ]
+  report_deps = [ ":tokenizer_size_report" ]
+}
+
+# Pigweed tokenizer size report.
+pw_size_diff("tokenizer_size_report") {
+  title = "Pigweed tokenizer size report"
+  binaries = [
+    {
+      target = "size_report:tokenize_string"
+      base = "size_report:tokenize_string_base"
+      label = "tokenize a string"
+    },
+    {
+      target = "size_report:tokenize_string_expr"
+      base = "size_report:tokenize_string_expr_base"
+      label = "tokenize a string expression"
+    },
+  ]
+}

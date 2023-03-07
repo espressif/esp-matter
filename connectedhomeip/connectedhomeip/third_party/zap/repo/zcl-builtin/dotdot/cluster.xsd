@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<xs:schema targetNamespace="http://zigbee.org/zcl/clusters" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:type="http://zigbee.org/zcl/types" xmlns:zcl="http://zigbee.org/zcl/clusters">
+
+  <xs:import schemaLocation="type.xsd" namespace="http://zigbee.org/zcl/types" />
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace"
+    schemaLocation="http://www.w3.org/2001/03/xml.xsd" />
+
+  <xs:simpleType name="ClusterRole">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="application" />
+      <xs:enumeration value="utility" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="ClusterHierarchy">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="base" />
+      <xs:enumeration value="derived" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="PrimaryTransactionType">
+    <xs:restriction base="xs:unsignedByte">
+      <xs:minInclusive value="1" />
+      <xs:maxInclusive value="2" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="ClusterIdAlias">
+    <xs:attribute name="id" type="type:ClusterId" use="required" />
+    <xs:attribute name="name" type="type:NamedElement" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="ClusterIdAliasList">
+    <xs:sequence>
+      <xs:element name="alias" type="zcl:ClusterIdAlias" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="AbstractClassification">
+    <xs:attribute name="role" type="zcl:ClusterRole" use="optional" />
+    <xs:attribute name="picsCode" type="xs:string" use="required" />
+    <xs:attribute name="primaryTransaction" type="zcl:PrimaryTransactionType" use="optional" default="1" />
+  </xs:complexType>
+  
+  <xs:complexType name="Classification">
+    <xs:complexContent>
+      <xs:restriction base="zcl:AbstractClassification">
+        <xs:attribute name="role" type="zcl:ClusterRole" use="required" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="DerivedClassification">
+    <xs:complexContent>
+      <xs:restriction base="zcl:AbstractClassification">
+        <xs:attribute name="role" use="prohibited" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  
+
+  <xs:simpleType name="TagId">
+    <xs:restriction base="xs:unsignedInt">
+      <xs:maxInclusive value="65535" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="Attribute">
+    <xs:choice>
+      <xs:element name="bitmap" type="type:BitmapDefinition" minOccurs="0" maxOccurs="1" />
+      <xs:element name="restriction" type="type:RestrictionType" minOccurs="0" maxOccurs="1" />
+    </xs:choice>
+    <xs:attribute name="id" type="type:AttributeId" use="required" />
+    <xs:attribute name="name" type="type:NamedElement" use="required" />
+    <xs:attribute name="type" type="xs:string" use="required" />
+    <xs:attribute name="readable" type="xs:boolean" default="true" />
+    <xs:attribute name="writable" type="xs:boolean" default="false" />
+    <xs:attribute name="writeOptional" type="xs:boolean" default="false" />
+    <xs:attribute name="writableIf" type="type:DependencyExpression" default="true" />
+    <xs:attribute name="reportRequired" type="xs:boolean" default="false" />
+    <xs:attribute name="sceneRequired" type="xs:boolean" default="false" />
+    <xs:attribute name="required" type="xs:boolean" default="false" />
+    <xs:attribute name="requiredIf" type="type:DependencyExpression" default="false" />
+    <xs:attribute name="min" type="xs:integer" default="0" use="optional" />
+    <xs:attribute name="max" type="xs:integer" use="optional" />
+    <xs:attribute name="default" type="xs:string" />
+    <xs:attribute name="defaultRef" type="type:NamedElement" />
+    <xs:attribute name="deprecated" type="xs:boolean" use="optional" default="false" />
+  </xs:complexType>
+  
+  <xs:complexType name="DerivedAttribute">
+    <xs:choice>
+      <xs:element name="restriction" type="type:RestrictionType" minOccurs="0" maxOccurs="1" />
+    </xs:choice>
+    <xs:attribute name="ref" type="type:NamedElement" use="required" />
+    <xs:attribute name="reportRequired" type="xs:boolean" default="false" />
+    <xs:attribute name="sceneRequired" type="xs:boolean" default="false" />
+    <xs:attribute name="required" type="xs:boolean" default="false" />
+    <xs:attribute name="requiredIf" type="type:DependencyExpression" default="false" />
+    <xs:attribute name="default" type="xs:string" />
+    <xs:attribute name="defaultRef" type="type:NamedElement" />
+  </xs:complexType>
+
+  <xs:complexType name="DerivedAttributeList">
+    <xs:sequence>
+      <xs:element name="attribute" type="zcl:DerivedAttribute" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  
+    <xs:complexType name="AttributeList">
+    <xs:sequence>
+      <xs:element name="attribute" type="zcl:Attribute" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Command">
+    <xs:sequence>
+      <xs:element name="fields" type="type:CommandFieldList" minOccurs="0" maxOccurs="1" />
+      <xs:element name="tag" type="zcl:TagRef" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="id" type="type:CommandId" use="required" />
+    <xs:attribute name="name" type="type:NamedElement" use="required" />
+    <xs:attribute name="required" type="xs:boolean" default="false" />
+    <xs:attribute name="requiredIf" type="type:DependencyExpression" default="false" />
+    <xs:attribute name="deprecated" type="xs:boolean" use="optional" default="false" />
+  </xs:complexType>
+  
+  <xs:complexType name="DerivedCommand">
+    <xs:sequence>
+      <xs:element name="tag" type="zcl:TagRef" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>  
+    <xs:attribute name="ref" type="type:NamedElement" use="required" />
+    <xs:attribute name="required" type="xs:boolean" default="false" />
+    <xs:attribute name="requiredIf" type="type:DependencyExpression" default="false" />        
+  </xs:complexType>
+
+  <xs:complexType name="CommandList">
+    <xs:sequence>
+      <xs:element name="command" type="zcl:Command" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="DerivedCommandList">
+    <xs:sequence>
+      <xs:element name="command" type="zcl:DerivedCommand" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ClusterSide">
+    <xs:sequence>
+      <xs:element name="attributes" type="zcl:AttributeList" minOccurs="0" maxOccurs="1" />
+      <xs:element name="commands" type="zcl:CommandList" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+    <xs:attribute ref="xml:base" />
+  </xs:complexType>
+  
+  <xs:complexType name="DerivedClusterSide">
+    <xs:sequence>
+      <xs:element name="attributes" type="zcl:DerivedAttributeList" minOccurs="0" maxOccurs="1" />
+      <xs:element name="commands" type="zcl:DerivedCommandList" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Tag">
+    <xs:choice>
+      <xs:element name="bitmap" type="type:BitmapDefinition" minOccurs="0" maxOccurs="1" />
+      <xs:element name="restriction" type="type:RestrictionType" minOccurs="0" maxOccurs="1" />
+    </xs:choice>
+    <xs:attribute name="id" type="zcl:TagId" use="required" />
+    <xs:attribute name="name" type="type:NamedElement" use="required" />
+    <xs:attribute name="type" type="xs:string" use="required" />
+    <xs:attribute name="required" type="xs:boolean" default="false" />
+  </xs:complexType>
+
+  <xs:complexType name="TagList">
+    <xs:sequence>
+      <xs:element name="tag" type="zcl:Tag" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TagRef">
+    <xs:attribute name="ref" type="type:NamedElement" use="required" />
+    <xs:attribute name="required" type="xs:boolean" default="false" />
+    <xs:attribute name="requiredIf" type="type:DependencyExpression" default="false" />
+  </xs:complexType>
+
+  <xs:complexType name="ClusterType">
+  </xs:complexType>
+
+  <xs:element name="cluster">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="aliases" type="zcl:ClusterIdAliasList" minOccurs="0" maxOccurs="1" />
+        <xs:element name="classification" type="zcl:Classification" />
+        <xs:element ref="type:type" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="server" type="zcl:ClusterSide" minOccurs="0" maxOccurs="1" />
+        <xs:element name="client" type="zcl:ClusterSide" minOccurs="0" maxOccurs="1" />
+        <xs:element name="tags" type="zcl:TagList" minOccurs="0" maxOccurs="1" />
+      </xs:sequence>
+      <xs:attribute name="id" type="type:ClusterId" use="required" />
+      <xs:attribute name="revision" type="xs:unsignedShort" use="required" />
+      <xs:attribute name="name" type="type:NamedElement" use="required" />
+      <xs:attribute name="manufacturer" type="type:ManufacturerId" use="optional" />
+      <xs:attribute ref="xml:base" />
+    </xs:complexType>
+    <xs:keyref name="tagKeyRef" refer="zcl:tagKey">
+      <xs:selector xpath=".//server/commands/command/tag | .//client/commands/command/tag" />
+      <xs:field xpath="@ref" />
+    </xs:keyref>
+    <xs:key name="tagKey">
+      <xs:selector xpath=".//tags/tag" />
+      <xs:field xpath="@name"></xs:field>
+    </xs:key>
+    <xs:keyref name="defaultRef" refer="zcl:attributeKey">
+      <xs:selector xpath=".//server/attributes/attribute | .//client/attributes/attribute" />
+      <xs:field xpath="@defaultRef" />
+    </xs:keyref>
+    <xs:key name="attributeKey">
+      <xs:selector xpath=".//server/attributes/attribute | .//client/attributes/attribute" />
+      <xs:field xpath="@name" />
+    </xs:key>
+  </xs:element>
+  
+  <xs:element name="derivedCluster">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="aliases" type="zcl:ClusterIdAliasList" minOccurs="0" maxOccurs="1" />
+        <xs:element name="classification" type="zcl:DerivedClassification" />
+        <xs:element name="server" type="zcl:DerivedClusterSide" minOccurs="0" maxOccurs="1" />
+        <xs:element name="client" type="zcl:DerivedClusterSide" minOccurs="0" maxOccurs="1" />      
+      </xs:sequence>
+      <xs:attribute name="id" type="type:ClusterId" use="required" />
+      <xs:attribute name="revision" type="xs:unsignedShort" use="required" />
+      <xs:attribute name="name" type="type:NamedElement" use="required" />
+      <xs:attribute name="manufacturer" type="type:ManufacturerId" use="optional" />
+      <xs:attribute name="inheritsFrom" type="type:NamedElement" use="required" />
+      <xs:attribute ref="xml:base" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="global">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="type:type" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="attributes" type="zcl:AttributeList" minOccurs="0" maxOccurs="1" />
+        <xs:element name="commands" type="zcl:CommandList" minOccurs="0" maxOccurs="1" />
+      </xs:sequence>
+      <xs:attribute ref="xml:base" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="library">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="type:type" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element ref="zcl:global" minOccurs="1" maxOccurs="1" />
+        <xs:choice minOccurs="1" maxOccurs="unbounded">
+          <xs:element ref="zcl:cluster" />
+          <xs:element ref="zcl:derivedCluster" />
+        </xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+    <!-- Type Requirements -->
+    <xs:keyref name="attributeDataTypeRef" refer="zcl:dataType">
+      <xs:selector
+        xpath=".//zcl:cluster/server/attributes/attribute | .//zcl:cluster/client/attributes/attribute | .//zcl:global/attributes/attribute" />
+      <xs:field xpath="@type"></xs:field>
+    </xs:keyref>
+    <xs:keyref name="commandDataTypeRef" refer="zcl:dataType">
+      <xs:selector
+        xpath=".//zcl:cluster/server/commands/command/fields/field | .//zcl:cluster/client/commands/command/fields/field | .//zcl:global/commands/command/fields/field" />
+      <xs:field xpath="@type"></xs:field>
+    </xs:keyref>
+    
+    <xs:keyref name="derivedClusterNameRef" refer="zcl:clusterName">
+      <xs:selector
+        xpath=".//zcl:derivedCluster" />
+      <xs:field xpath="@inheritsFrom" />
+    </xs:keyref>
+    <xs:key name="clusterName">
+      <xs:selector xpath=".//zcl:cluster" />
+      <xs:field xpath="@name" />  
+    </xs:key>
+    
+    <xs:keyref name="tagDataTypeRef" refer="zcl:dataType">
+      <xs:selector xpath=".//zcl:cluster/tags/tag" />
+      <xs:field xpath="@type"></xs:field>
+    </xs:keyref>
+    <xs:key name="dataType">
+      <xs:selector xpath=".//type:type"></xs:selector>
+      <xs:field xpath="@short" />
+    </xs:key>
+
+    <xs:keyref name="typeDataTypeRef" refer="zcl:dataType">
+      <xs:selector xpath=".//type:type | .//zcl:cluster/type | .//zcl:global/type" />
+      <xs:field xpath="@inheritsFrom"></xs:field>
+    </xs:keyref>
+    
+    <xs:unique name="picsCode">
+      <xs:selector xpath=".//zcl:cluster/classification | .//zcl:derivedCluster/classification" />
+      <xs:field xpath="@picsCode" />
+    </xs:unique>
+  </xs:element>
+</xs:schema>

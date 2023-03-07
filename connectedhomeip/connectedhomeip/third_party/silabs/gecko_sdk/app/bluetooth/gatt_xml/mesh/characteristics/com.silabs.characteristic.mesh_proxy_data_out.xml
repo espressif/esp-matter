@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2016 Silicon Labs, http://www.silabs.com -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Mesh Proxy Data Out" type="com.silabs.characteristic.mesh_proxy_data_out" uuid="2ade" last-modified="2018-01-15">
+    <InformativeText>
+        <Abstract>The Mesh Proxy Data Out characteristic is used by the server to send Proxy PDUs to the client.</Abstract>
+    </InformativeText>
+    <Value>
+        <Field name="Data Out">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+        </Field>
+    </Value>
+</Characteristic>

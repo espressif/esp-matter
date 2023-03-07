@@ -1,0 +1,37 @@
+id: radio_config_range_test_sdid_210_868_915_phys
+label: Custom Radio Configuration for Range Test Dualband Ocelot
+package: platform
+description: Triggers Radio Configurator UI for setting a proper (Application - Die
+  - RF Band) Custom Radio Configurator
+category: Platform|Radio Configuration
+quality: production
+provides:
+- name: radio_config_range_test_sdid_210_868_915_phys
+- name: a_radio_config
+  allow_multiple: true
+ui_hints:
+  visibility: never
+template_contribution:
+- name: component_catalog
+  value: radio_config_range_test_double_ocelot
+- name: component_catalog
+  value: radio_config_simple_rail_singlephy
+config_file:
+- path: platform/radio/radio_configuration/Range_Test_sdid_210_868_915/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_supports_rf_band_868
+  - hardware_board_supports_rf_band_915
+  - device_sdid_210
+  unless:
+  - device_is_module
+  - device_sdid_200
+- path: platform/radio/radio_configuration/Range_Test_sdid_210_868_915/radio_settings.radioconf
+  directory: rail
+  condition:
+  - hardware_board_supports_rf_band_868
+  - hardware_board_supports_rf_band_914
+  - device_sdid_210
+  unless:
+  - device_is_module
+  - device_sdid_200

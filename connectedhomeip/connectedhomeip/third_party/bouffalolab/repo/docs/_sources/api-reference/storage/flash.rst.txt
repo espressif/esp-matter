@@ -1,0 +1,20 @@
+Flash
+====
+
+概述
+-------
+
+SDK中使用分区表保存flash各区的信息，包括引导程序、各种应用程序二进制文件、数据及文件系统等。
+
+应用实例
+----------
+
+flash实例： ``customer_app/peripheral/demo_flash`` 。
+
+API参考
+----------
+
+.. include:: /_build/inc/hosal_flash.inc
+
+
+

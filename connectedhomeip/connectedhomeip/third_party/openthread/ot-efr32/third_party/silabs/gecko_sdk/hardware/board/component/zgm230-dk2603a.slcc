@@ -1,0 +1,22 @@
+!!omap
+- id: zgm230_dk2603a
+- label: ZGM230-DK2603A
+- package: platform
+- description: Kit BSP support for the Z-Wave 800 Dev Kit.
+- category: Platform|Board|Kit|Development Kit
+- quality: production
+- requires:
+  - name: hardware_board_from_zgm230-dk2603a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_dk
+- define:
+  - name: SL_KIT_NAME
+    value: '"ZGM230-DK2603A"'
+  - name: SL_KIT_REV
+    value: '"A01"'
+- tag:
+  - kit:opn:ZGM230-DK2603A
+  - kit:pn:DK2603
+  - kit:variant:A
+  - kit:revision:A01

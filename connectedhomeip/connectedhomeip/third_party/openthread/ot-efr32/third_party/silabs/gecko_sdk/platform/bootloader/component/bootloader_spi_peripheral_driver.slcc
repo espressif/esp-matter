@@ -1,0 +1,16 @@
+id: bootloader_spi_peripheral_driver
+label: Bootloader SPI Peripheral Driver
+package: bootloader
+description: >
+  DMA-driven SPI Peripheral driver.
+category: Platform|Bootloader|Drivers
+quality: production
+source:
+  - path: platform/bootloader/driver/btl_driver_spi_peripheral_veneers.c
+    condition: [bootloader_core_secure]
+provides:
+  - name: bootloader_spi_peripheral_driver
+  - name: bootloader_nonsecure_incompatible
+    condition: [bootloader_core_nonsecure]
+requires:
+  - name: bootloader_spi_peripheral_transport

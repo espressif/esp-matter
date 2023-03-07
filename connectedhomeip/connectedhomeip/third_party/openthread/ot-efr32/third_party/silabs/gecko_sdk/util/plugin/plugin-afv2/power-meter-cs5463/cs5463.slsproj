@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="SDK.HAL.CS5463.BASE">
+  <module id="SDK.HAL.EMDRV.SPIDRV"/>
+  <folder name="cs5463">
+    <file name="power-meter-cs5463.c" partCompatibility=".*efr32(b|f|m)g(1){0,1}(1|2|3|4)(b|p|v)(132|232|233|332|333|432|433|532|632|732|733|131|133|032|231|431|832|932)f(128|256|1024|512|64|32)(g|i)(m|j|l)(32|48|43|56|68|125) .*efr32(b|f|m)g(1){0,1}(1|2|3|4)(b|p|v)(132|232|233|332|333|432|433|532|632|732|733|131|133|032|231|431|832|932)f(128|256|1024|512|64|32)(g|i)(m|j|l)(32|48|43|56|68|125)" uri="$(sdkInstallationPath)/util/plugin/plugin-afv2/power-meter-cs5463/power-meter-cs5463.c"/>
+  </folder>
+</project>

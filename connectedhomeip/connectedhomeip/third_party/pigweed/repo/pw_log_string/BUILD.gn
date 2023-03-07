@@ -1,0 +1,98 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/error.gni")
+import("$dir_pw_build/facade.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+import("backend.gni")
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+}
+
+config("backend_config") {
+  include_dirs = [ "public_overrides" ]
+}
+
+# This source set only provides pw_log's backend interface by invoking the
+# :handler facade.
+pw_source_set("pw_log_string") {
+  public_configs = [
+    ":backend_config",
+    ":public_include_path",
+  ]
+  public = [
+    "public/pw_log_string/log_string.h",
+    "public_overrides/pw_log_backend/log_backend.h",
+  ]
+  public_deps = [
+    ":handler",
+    "$dir_pw_preprocessor",
+  ]
+}
+
+pw_source_set("pw_log_string.impl") {
+  deps = [ ":handler.impl" ]
+}
+
+# This facade is a C API for string based logging which may be used to back
+# pw_log or for example to mix tokenized and string based logging.
+pw_facade("handler") {
+  backend = pw_log_string_HANDLER_BACKEND
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_log_string/handler.h" ]
+  public_deps = [ "$dir_pw_preprocessor" ]
+  sources = [ "handler.cc" ]
+
+  require_link_deps = [ ":handler.impl" ]
+}
+
+# Logging is low-level and ubiquitous. Because of this, it can often cause
+# circular dependencies. This target collects dependencies from the backend that
+# cannot be used because they would cause circular deps.
+#
+# This group ("$dir_pw_log_string:handler_impl") must be listed in
+# pw_build_LINK_DEPS if pw_log_string_HANDLER_BACKEND is set.
+#
+# pw_log_string:handler backends must provide their own "impl" target that
+# collects their actual dependencies. The backend "impl" group may be empty
+# if everything can go directly in the backend target without causing circular
+# dependencies.
+if (pw_log_string_HANDLER_BACKEND != "") {
+  pw_source_set("handler.impl") {
+    deps = [ get_label_info(pw_log_string_HANDLER_BACKEND,
+                            "label_no_toolchain") + ".impl" ]
+  }
+} else {
+  pw_error("handler.impl") {
+    message =
+        string_join(" ",
+                    [
+                      "To use pw_log_string:handler, please direct",
+                      "pw_log_string_HANDLER_BACKEND to the source set that",
+                      "implements the C API.",
+                    ])
+  }
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}
+
+pw_test_group("tests") {
+}

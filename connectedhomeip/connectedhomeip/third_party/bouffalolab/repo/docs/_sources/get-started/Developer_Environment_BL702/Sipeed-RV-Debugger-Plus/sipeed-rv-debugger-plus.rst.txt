@@ -1,0 +1,68 @@
+Sipeed RV-Debugger Plus 安装设置
+==================================
+
+本文档介绍Sipeed RV-Debugger Plus 调试器的驱动安装和设置。
+
+Sipeed RV-Debugger Plus 是矽速科技（Sipeed）基于BL702 SoC 开发的 JTAG + UART 的调试板。 RV-Debugger Plus 集成 JTAG 调试接口, 采用FTDI协议, 支持在线调试和仿真；
+调试器购买 `Sipeed官方店 <https://item.taobao.com/item.htm?spm=2013.1.0.0.2b8a653bWDNfZy&id=595953803239&scm=1007.12144.95220.42296_0_0&pvid=686803f7-d2ca-4cc5-a4ae-133f51c53420&utparam=%7B%22x_hestia_source%22%3A%2242296%22%2C%22x_object_type%22%3A%22item%22%2C%22x_hestia_subsource%22%3A%22default%22%2C%22x_mt%22%3A0%2C%22x_src%22%3A%2242296%22%2C%22x_pos%22%3A2%2C%22wh_pid%22%3A-1%2C%22x_pvid%22%3A%22686803f7-d2ca-4cc5-a4ae-133f51c53420%22%2C%22scm%22%3A%221007.12144.95220.42296_0_0%22%2C%22x_object_id%22%3A595953803239%7D>`_ 
+
+.. figure:: img/sipeed_rv_debugger_plus.png
+   :align: center
+   :width: 5.5in
+   :height: 3.5in
+   :alt: Sipeed RV-Debugger plus
+
+   Sipeed RV-Debugger plus
+
+.. important::  1. **硬件连接**  :  注意，在开始调试之前，先不要将调试器连接到目标板，仅通过 Type-C 接口连接至PC。正常情况下, 调试板上两个 LED 灯会同时闪烁一下然后熄灭; 此时如果调试器上有一个 LED 常亮，那么调试板进入了 Boot 模式, 请尝试将调试板断电重新上电，检查调试板状态是否正常 
+  #. **固件刷新** :  如果调试板一直不能正常使用，那么建议从 Sipeed 官方 `GitHub <https://github.com/sipeed/RV-Debugger-BL702>`_ 仓库获取固件，重新烧写；按住调试器上的 ``Boot`` 键不要释放，将调试器插入电脑上电，使调试器进入 Boot 模式，重新刷入固件后；断电重启
+
+**Windows**
+^^^^^^^^^^^^^^^^^^^
+
+Sipeed RV-Debugger Plus 调试器在 Windows 系统中使用时我们需要将驱动更换为 ``Win USB`` 驱动
+
+-  1. 首先，将调试器 Type-C USB 接口使用 USB 数据线连接到 PC 主机，打开 PC 的设备管理器，在端口一栏可以看到调试器被识别为两个串口（*注：不是开发板上的串口*）,
+
+      .. figure:: img/sipeed_rv_debugger_1.png
+         :align: center
+         :width: 5.5in
+         :height: 3.5in
+         :alt:
+
+      或者在 ``通用串行总线控制器`` 看到 ``USB Serial Converter A`` 和 ``USB Serial Converter B``
+   
+      .. figure:: img/sipeed_rv_debugger_4.png
+         :align: center
+         :width: 5.5in
+         :height: 1.5in
+         :alt:
+
+      .. important:: **可能出现的问题:**
+                  
+                  1. 调试器的端口号必须以 “``usb serial port``” 开头，如果插了多个类似的设备，请只留一个，确认调试器端口号
+                  2. 若在设备管理器中看到的串口名称为 “``USB 串行设备(COM*)``”，说明调试器进入了 ``Boot`` 模式。注意先不要将调试器连接到目标板，将调试器断电重新上电，此时在到设备管理器中看是否正常
+                  3. 若在设备管理器中没有显示串口，只显示其他设备，或者只在通用串行总线控制器中看到 ``USB Serial Converter A`` 和 ``USB Serial Converter B``,请到 `FTDI 官网 <https://ftdichip.com/drivers/vcp-drivers/>`_ 下载与系统匹配的驱动
+          
+-  2. 以上都没有问题后，从 sipeed 网站下载 ``zadig-2.4`` 替换驱动程序。下载地址：`http://dl.sipeed.com/MAIX/tools/sipeed-rv-debugger/zadig-2.4.exe <http://dl.sipeed.com/MAIX/tools/sipeed-rv-debugger/zadig-2.4.exe>`_
+
+-  3. 下载好双击打开 ``zadig-2.4.exe``，选择 Options 勾选 List All Devices.
+  
+      .. figure:: img/sipeed_rv_debugger_3.png
+         :align: center
+         :figwidth: 5.5in
+         :width: 5in
+         :height: 3in
+         :alt: 
+
+-  4. 找到 JTAG Debugger(Interface 0)，然后选择替换的驱动为 ``WinUSB`` 点击 Replace Driver 替换
+
+-  5. 再次打开设备管理器， 看到其中一个串口被替换成通用串行总线设备就说明安装成功
+
+      .. figure:: img/sipeed_rv_debugger_2.png
+         :align: center
+         :width: 5.5in
+         :height: 3.5in
+         :alt:
+
+-  6. 到这里 Sipeed RV-Debugger Plus 的设备驱动就更换好了，接下来就可以愉快的玩耍啦~

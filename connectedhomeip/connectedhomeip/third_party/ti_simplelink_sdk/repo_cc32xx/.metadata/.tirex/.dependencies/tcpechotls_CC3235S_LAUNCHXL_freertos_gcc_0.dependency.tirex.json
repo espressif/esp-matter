@@ -1,0 +1,22 @@
+[
+    {
+        "files": [
+            "+../../platform.c -> platform.c",
+            "+../../tcpEchoTLS.c -> tcpEchoTLS.c",
+            "+../../README.md -> README.md",
+            "+../../README.html -> README.html",
+            "+../../startsntp.c -> startsntp.c",
+            "+../../certs/certificate.h -> certs/certificate.h",
+            "+../../certs/caCert.pem -> certs/caCert.pem",
+            "+../../certs/caKey.pem -> certs/caKey.pem",
+            "+../../certs/serverCert.pem -> certs/serverCert.pem",
+            "+../../certs/serverKey.pem -> certs/serverKey.pem",
+            "+../main_freertos.c -> main_freertos.c",
+            "+../common.syscfg -> common.syscfg",
+            "+../../../../../../../source/ti/boards/CC3235S_LAUNCHXL/Board.html -> Board.html",
+            "+cc32xxs_freertos.lds -> cc32xxs_freertos.lds",
+            "+../../image.syscfg -> image.syscfg",
+            "+../../userFiles/dummy-root-ca-cert -> userFiles/dummy-root-ca-cert"
+        ]
+    }
+]

@@ -1,0 +1,19 @@
+id: "btmesh_feature_scheduler_server"
+label: "Scheduler Server Model"
+package: "Btmesh"
+description: "Enables Bluetooth Mesh Scheduler Model."
+category: "Bluetooth Mesh|Stack Classes"
+quality: "production"
+root_path: "protocol/bluetooth"
+
+requires:
+  - name: "btmesh_stack"
+  - name: "btmesh_core"
+  - name: "btmesh_feature_time_server"
+provides:
+  - name: "btmesh_feature_scheduler_server"
+template_contribution:
+  - name: btmesh_bgapi_class
+    value:
+      class: "scheduler_server"
+    priority: 1

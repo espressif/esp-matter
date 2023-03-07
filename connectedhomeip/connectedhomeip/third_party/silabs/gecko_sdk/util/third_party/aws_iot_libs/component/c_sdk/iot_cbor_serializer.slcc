@@ -1,0 +1,40 @@
+id: iot_cbor_serializer
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|IoT Cbor Serializer
+label: IoT Cbor Serializer
+description: IoT Cbor Serializer Filess
+
+package: amazon_platform
+quality: production
+
+provides:
+  - name: iot_cbor_serializer
+
+ui_hints:
+  visibility: never
+
+root_path: util/third_party/aws_iot_libs
+
+source:
+  - path: libraries/c_sdk/standard/serializer/src/cbor/iot_serializer_tinycbor_decoder.c
+  - path: libraries/c_sdk/standard/serializer/src/cbor/iot_serializer_tinycbor_encoder.c
+  - path: libraries/3rdparty/tinycbor/src/cborencoder.c
+  - path: libraries/3rdparty/tinycbor/src/cborencoder_close_container_checked.c
+  - path: libraries/3rdparty/tinycbor/src/cborerrorstrings.c
+  - path: libraries/3rdparty/tinycbor/src/cborparser.c
+  - path: libraries/3rdparty/tinycbor/src/cborparser_dup_string.c
+  - path: libraries/3rdparty/tinycbor/src/cborpretty.c
+  - path: libraries/3rdparty/tinycbor/src/cborpretty_stdio.c
+  - path: libraries/3rdparty/tinycbor/src/cborvalidation.c
+
+include:
+  - path: libraries/3rdparty/tinycbor/src
+    file_list:
+      - path: cbor.h
+      - path: cborinternal_p.h
+      - path: compilersupport_p.h
+      - path: tinycbor-version.h
+      - path: utf8_p.h
+
+define:
+  - name: IOT_CBOR_SERIALIZER

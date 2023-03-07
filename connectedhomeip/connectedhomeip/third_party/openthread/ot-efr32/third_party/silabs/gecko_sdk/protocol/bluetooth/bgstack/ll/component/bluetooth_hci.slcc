@@ -1,0 +1,90 @@
+id: "bluetooth_hci"
+label: Bluetooth Controller HCI
+package: Bluetooth
+description: "Provides HCI for Bluetooth Controller"
+
+category: Bluetooth|Controller
+quality: production
+root_path: protocol/bluetooth/bgstack/ll
+include:
+  - path: inc
+    file_list:
+      - path: sl_btctrl_hci.h
+      - path: sl_hci_common_transport.h
+      - path: sl_btctrl_hci_handler.h
+  - path: src/hci
+    file_list:
+      - path: hci_reset_interface.h
+      - path: hci_reset.h
+provides:
+  - name: "bluetooth_hci"
+requires:
+  - name: bluetooth_controller
+  - name: bluetooth_hci_sleep
+    condition:
+      - power_manager
+conflicts:
+  - name: bluetooth_stack
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_rcp
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: sl_btctrl_hci.h
+      handler: sl_bthci_init_upper     
+    priority: 3
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: sl_btctrl_hci.h
+      handler: sl_bthci_init_vs
+    priority: 4
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: sl_btctrl_hci.h
+      handler: sl_btctrl_hci_parser_init_default
+    priority: 5
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: sl_btctrl_hci.h
+      handler: sl_btctrl_hci_parser_init_conn
+    priority: 6
+    condition: [bluetooth_feature_connection]
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: sl_btctrl_hci.h
+      handler: sl_btctrl_hci_parser_init_adv
+    priority: 7
+    condition: [bluetooth_feature_advertiser]
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: sl_btctrl_hci.h
+      handler: sl_btctrl_hci_parser_init_phy
+    priority: 8
+    condition: [bluetooth_feature_connection_phy_update]
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: sl_btctrl_hci.h
+      handler: sl_btctrl_hci_parser_init_past
+    priority: 9
+    condition: [bluetooth_feature_advertiser_past]
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: sl_btctrl_hci.h
+      handler: sl_btctrl_hci_parser_init_past
+    priority: 10
+    condition: [bluetooth_feature_sync_past]
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: sl_btctrl_hci.h
+      handler: sl_btctrl_hci_parser_init_past
+    priority: 11
+    condition: [bluetooth_feature_past_receiver]

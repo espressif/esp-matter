@@ -1,0 +1,298 @@
+{
+    "parDefinition": {
+        "parGroup": [
+            {
+                "_name": "mainRfParameters",
+                "Parameter": [
+                    {
+                        "_name": "channel",
+                        "_type": "list",
+                        "Access": "R",
+                        "Label": "BLE Channel",
+                        "ListValues": {
+                            "Range": {
+                                "_step": "1",
+                                "Begin": "0",
+                                "End": "39"
+                            }
+                        },
+                        "DefValue": "37",
+                        "Tooltip": "The BLE Channel....",
+                        "Row": "0",
+                        "Dependencies": {
+                            "Dependency": [
+                                {
+                                    "_name": "ChannelFrequency",
+                                    "Type": "DT_CODE",
+                                    "Group": "Main",
+                                    "Parameter": "frequency"
+                                },
+                                {
+                                    "_name": "ContTxChannel",
+                                    "Type": "DT_EQUAL",
+                                    "Group": "ContTx",
+                                    "Parameter": "channel"
+                                },
+                                {
+                                    "_name": "PacketTxChannel",
+                                    "Type": "DT_EQUAL",
+                                    "Group": "PacketTx",
+                                    "Parameter": "channel"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "_name": "frequency",
+                        "_type": "list",
+                        "Access": "R\/W",
+                        "Label": "Frequency",
+                        "Unit": "MHz",
+                        "ListValues": {
+                            "_precision": "0",
+                            "Range": {
+                                "_step": "2",
+                                "Begin": "2402",
+                                "End": "2480"
+                            }
+                        },
+                        "DefValue": "2402",
+                        "Validation": {
+                            "_type": "minmax",
+                            "Min": "2360",
+                            "Max": "2500"
+                        },
+                        "Tooltip": "Frequency.",
+                        "Row": "0",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "ChannelFrequency",
+                                "Type": "DT_CODE",
+                                "Group": "Main",
+                                "Parameter": "channel"
+                            }
+                        }
+                    },
+                    {
+                        "_name": "whitening",
+                        "_type": "boolean",
+                        "Access": "R\/W",
+                        "Label": "Whitening",
+                        "DefValue": "true",
+                        "Tooltip": "Whitening",
+                        "Row": "0"
+                    },
+                    {
+                        "_name": "txPower",
+                        "_type": "list",
+                        "Access": "R",
+                        "Label": "TX Power",
+                        "ClassName": "DALRfParTxPowerCC13xx",
+                        "Unit": "dBm",
+                        "ListValues": [],
+                        "DefValue": "20",
+                        "Tooltip": "TX Power",
+                        "Row": "0",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "ContTxPower",
+                                "Type": "DT_EQUAL",
+                                "Group": "ContTx",
+                                "Parameter": "txPower"
+                            }
+                        }
+                    },
+                    {
+                        "_name": "txPowerHighPa",
+                        "_type": "bool",
+                        "Access": "R",
+                        "Label": "Enable high output power PA",
+                        "UrlHelp": ".\/..\/docs\/help\/tx_power_high_output_pa.html",
+                        "ClassName": "DALRfParTxPowerHighPa",
+                        "DefValue": "true",
+                        "CmdUpdate": "NO",
+                        "Tooltip": "Select either Normal or High Output Power mode.",
+                        "Row": "0",
+                        "Buddy": "txPower"
+                    },
+                    {
+                        "_name": "targetBoard",
+                        "_type": "list",
+                        "Visible": "NO",
+                        "CmdUpdate": "NO",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "targetBoardHighPA",
+                                "Type": "DT_CODE",
+                                "Group": "Main",
+                                "Parameter": "txPowerHighPa"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "_name": "ContTx",
+                "Parameter": [
+                    {
+                        "_name": "channel",
+                        "_type": "text",
+                        "Access": "R",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "ContTxChannel",
+                                "Type": "DT_EQUAL",
+                                "Group": "Main",
+                                "Parameter": "channel"
+                            }
+                        }
+                    },
+                    {
+                        "_name": "txPower",
+                        "_type": "text",
+                        "Access": "R",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "ContTxPower",
+                                "Type": "DT_EQUAL",
+                                "Group": "Main",
+                                "Parameter": "txPower"
+                            }
+                        }
+                    },
+                    {
+                        "_name": "modulated",
+                        "_type": "bool",
+                        "Access": "R\/W",
+                        "RFCommandMapping": "CMD_TX_TEST"
+                    }
+                ]
+            },
+            {
+                "_name": "PacketTx",
+                "Parameter": [
+                    {
+                        "_name": "channel",
+                        "_type": "text",
+                        "Access": "R",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "PacketTxChannel",
+                                "Type": "DT_EQUAL",
+                                "Group": "Main",
+                                "Parameter": "Channel"
+                            }
+                        }
+                    },
+                    {
+                        "_name": "txPower",
+                        "_type": "text",
+                        "Access": "R",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "ContTxPower",
+                                "Type": "DT_EQUAL",
+                                "Group": "Main",
+                                "Parameter": "txPower"
+                            }
+                        }
+                    },
+                    {
+                        "_name": "packetName",
+                        "_type": "text",
+                        "Access": "R",
+                        "Label": "Non-connectable advertising event."
+                    },
+                    {
+                        "_name": "packetLengthBle",
+                        "_type": "int",
+                        "Access": "R",
+                        "Label": "PDU Payload length",
+                        "DefValue": "30",
+                        "Tooltip": "The PDU payload includes the Extended header, Advertising address and the Advertising data."
+                    }
+                ]
+            },
+            {
+                "_name": "PacketRx",
+                "Parameter": {
+                    "_name": "accessAddress",
+                    "_type": "int",
+                    "Access": "R\/W",
+                    "DefValue": "0x8e89bed6"
+                }
+            },
+            {
+                "_name": "PacketView",
+                "Parameter": [
+                    {
+                        "_name": "preamble",
+                        "_type": "text",
+                        "Access": "R",
+                        "DefValue": "01010101...",
+                        "Tooltip": "The preamble is a fixed zero-one pattern of different length. 1Mbps: 1 byte, 2Mbps: 2 bytes, Coded: 80 bytes"
+                    },
+                    {
+                        "_name": "accessAddress",
+                        "_type": "composit",
+                        "Access": "R",
+                        "Label": "Access Address",
+                        "DefValue": "8e-89-be-d6",
+                        "Tooltip": "The Access Address is a fixed 32 bits pattern for advertising packets."
+                    },
+                    {
+                        "_name": "pduHeader",
+                        "_type": "int",
+                        "Access": "R",
+                        "Label": "PDU Header",
+                        "DefValue": "07 30",
+                        "CmdUpdate": "NO",
+                        "Tooltip": "PDU Header."
+                    },
+                    {
+                        "_name": "extendedHeader",
+                        "_type": "composit",
+                        "Access": "R",
+                        "Option": {
+                            "_name": "rfCommand",
+                            "$": "CMD_BLE5_ADV_AUX"
+                        },
+                        "Label": "Extended Header",
+                        "DefValue": "09 09 010203040506 babe",
+                        "CmdUpdate": "NO",
+                        "Tooltip": "Byte(1): Extended Header length. Byte(2): Extended header flags. Byte(3-8): Advertising Address. Byte(9-10): Adevertising Data Information"
+                    },
+                    {
+                        "_name": "advAddress",
+                        "_type": "composit",
+                        "Access": "R\/W",
+                        "Option": {
+                            "_name": "rfCommand",
+                            "$": "CMD_BLE_ADV_NC"
+                        },
+                        "Label": "Adv. Address",
+                        "DefValue": "010203040506",
+                        "CmdUpdate": "NO",
+                        "Tooltip": "Advertising address (Device address)."
+                    },
+                    {
+                        "_name": "advData",
+                        "_type": "composit",
+                        "Access": "R",
+                        "Label": "Adv. Data",
+                        "DefValue": "dummy",
+                        "CmdUpdate": "NO",
+                        "Tooltip": "Advertising Data."
+                    },
+                    {
+                        "_name": "crc",
+                        "_type": "text",
+                        "Access": "R",
+                        "DefValue": "xx xx xx",
+                        "Tooltip": "Cyclic redundancy check."
+                    }
+                ]
+            }
+        ]
+    }
+}

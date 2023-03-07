@@ -1,0 +1,14 @@
+id: zw_api_controller
+label: Z-Wave API Controller
+category: Z-Wave|API
+description: API for Controller
+package: Z-Wave
+quality: production
+ui_hints:
+  visibility: never
+include:
+  - path: "protocol/z-wave/ZWave/API"
+    file_list:
+      - path: "ZW_controller_api.h"
+provides:
+  - name: zw_api_controller

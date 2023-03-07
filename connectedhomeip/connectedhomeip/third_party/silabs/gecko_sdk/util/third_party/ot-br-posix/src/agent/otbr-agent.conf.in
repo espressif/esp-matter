@@ -1,0 +1,15 @@
+<!DOCTYPE busconfig PUBLIC "-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
+<busconfig>
+    <policy user="@OTBR_AGENT_USER@">
+        <allow own_prefix="io.openthread.BorderRouter"/>
+        <allow send_interface="io.openthread.BorderRouter"/>
+        <allow send_interface="org.freedesktop.DBus.Properties"/>
+        <allow send_interface="org.freedesktop.DBus.Introspectable"/>
+    </policy>
+    <policy group="@OTBR_AGENT_GROUP@">
+        <allow send_interface="io.openthread.BorderRouter"/>
+        <allow send_interface="org.freedesktop.DBus.Properties"/>
+        <allow send_interface="org.freedesktop.DBus.Introspectable"/>
+    </policy>
+</busconfig>

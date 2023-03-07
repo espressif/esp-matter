@@ -1,0 +1,18 @@
+id: zw_cc_firmwareupdate
+label: FirmwareUpdate Command Class
+category: Z-Wave|Command Classes
+description: >
+  Firmware Update Meta Data Command Class may be used to transfer
+  a firmware image to or from a Z-Wave node.
+package: Z-Wave
+quality: production
+source:
+  - path: protocol/z-wave/ZAF/CommandClasses/FirmwareUpdate/CC_FirmwareUpdate.c
+  - path: protocol/z-wave/ZAF/CommandClasses/FirmwareUpdate/ota_util.c
+include:
+  - path: protocol/z-wave/ZAF/CommandClasses/FirmwareUpdate/
+    file_list:
+     - path: CC_FirmwareUpdate.h
+     - path: ota_util.h
+provides:
+  - name: zw_cc_firmwareupdate

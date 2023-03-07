@@ -1,0 +1,32 @@
+{
+    "target": {
+        "Name": "LP_EM_CC2653P10",
+        "Revision": [],
+        "Description": "LP_EM_CC2653P10 LaunchPad",
+        "DeviceName": "CC2653P10",
+        "DevicePackage": "RSL 6x6",
+        "FrontEnd": "XD",
+        "PaSettings": "pasettings.json",
+        "RfDesign": "CC2652REM-7ID",
+        "DefaultCategory": "Settings",
+        "IoSettings": {
+            "_name": "RF Switch",
+            "IoPin": [
+                {
+                    "_name": "DIO29",
+                    "ControlFunction": "Input\/Output",
+                    "Idle": "Input tristate (Default)",
+                    "Tx": "Output high",
+                    "Rx": "Output high"
+                },
+                {
+                    "_name": "DIO30",
+                    "ControlFunction": "Input\/Output",
+                    "Idle": "Input tristate (Default)",
+                    "Tx": "Output low",
+                    "Rx": "Output low"
+                }
+            ]
+        }
+    }
+}

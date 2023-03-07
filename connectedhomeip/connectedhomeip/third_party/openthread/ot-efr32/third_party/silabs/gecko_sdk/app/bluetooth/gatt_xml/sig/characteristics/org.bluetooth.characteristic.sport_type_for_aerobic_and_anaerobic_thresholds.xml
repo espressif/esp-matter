@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Sport Type for Aerobic and Anaerobic Thresholds" type="org.bluetooth.characteristic.sport_type_for_aerobic_and_anaerobic_thresholds" uuid="2A93" last-modified="2014-06-10" approved="Yes">
+    <InformativeText>
+        <Abstract> Sport type enumeration(See note below). The values of the Sport Type for Aerobic and Anaerobic Thresholds characteristic are defined below</Abstract>
+	</InformativeText>
+    <Value>
+    <Field name="Sport Type for Aerobic and Anaerobic Thresholds">
+        <Requirement>Mandatory</Requirement>
+        <Format>uint8</Format>
+         <Enumerations>
+            <Enumeration key="0" value="Unspecified" />
+            <Enumeration key="1" value="Running (Treadmill)" />
+            <Enumeration key="2" value="Cycling (Ergometer) " />
+            <Enumeration key="3" value="Rowing (Ergometer)" />
+            <Enumeration key="4" value="Cross Training (Elliptical)" />
+            <Enumeration key="5" value="Climbing" />
+            <Enumeration key="6" value="Skiing" />
+            <Enumeration key="7" value="Skating" />
+            <Enumeration key="8" value="Arm exercising" />
+            <Enumeration key="9" value="Lower body exercising" />
+            <Enumeration key="10" value="Upper body exercising" />
+            <Enumeration key="11" value="Whole body exercising" />
+           <ReservedForFutureUse start="12" end="225" />
+		</Enumerations>
+    </Field>
+	</Value>
+    <Note>Aerobic Threshold and Anaerobic Threshold together with the Sport Type for Aerobic and Anaerobic Thresholds describe the metabolic thresholds of the user. The Sport Type for Aerobic and Anaerobic Thresholds identifies how the measurement was performed.</Note>
+</Characteristic>

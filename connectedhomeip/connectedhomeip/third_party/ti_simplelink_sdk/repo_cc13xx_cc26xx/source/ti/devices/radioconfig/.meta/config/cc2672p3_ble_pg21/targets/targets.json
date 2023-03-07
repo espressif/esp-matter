@@ -1,0 +1,12 @@
+{
+    "targets": {
+        "Default": "..\/..\/cc2672p3\/targets\/target_lp-cc2672p3_2_4_ghz.json:LP_CC2672P3",
+        "VirtualTarget": {
+            "_name": "LP_CC2672P3",
+            "Target": [
+                "..\/..\/cc2672p3\/targets\/target_lp-cc2672p3_2_4_ghz.json",
+                "..\/..\/cc2672p3\/targets\/target_lp-cc2672p3_highPA.json"
+            ]
+        }
+    }
+}

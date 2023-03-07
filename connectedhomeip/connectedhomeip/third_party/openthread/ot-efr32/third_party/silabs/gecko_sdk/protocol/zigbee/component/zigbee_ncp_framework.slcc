@@ -1,0 +1,169 @@
+id: zigbee_ncp_framework
+label: NCP Framework
+package: Zigbee
+category: Zigbee|NCP
+quality: production
+ui_hints:
+  visibility: never
+
+description: This component declares all required NCP application framework released source and header common files, stubs, NCP weak definitions, and template files for NCP callbacks needed for the NCP application.
+
+provides:
+  - name: zigbee_ncp_framework
+
+requires:
+  - name: zigbee_ncp
+  - name: legacy_bootloader_interface
+    condition:
+      - device_cortexm
+
+include:
+  - path: protocol/zigbee/app/em260
+    file_list:
+      - path: command-context.h
+      - path: serial-interface.h
+      - path: em260-callbacks.h
+      - path: command-handlers-cbke.h
+      - path: command-handlers-mfglib.h
+  - path: protocol/zigbee/app/xncp
+    file_list:
+      - path: xncp.h
+  - path: protocol/zigbee/app/util/ezsp
+    file_list:
+      - path: ezsp-protocol.h
+      - path: secure-ezsp-protocol.h
+      - path: secure-ezsp-types.h
+      - path: ezsp-enum.h
+      - path: ezsp-frame-utilities.h
+  - path: protocol/zigbee/app/framework/util
+    file_list:
+      - path: af-ncp-token.h
+  - path: protocol/zigbee/app/util/security
+    file_list:
+      - path: security.h
+
+source:
+  - path: protocol/zigbee/app/em260/em260-common.c
+  - path: protocol/zigbee/app/em260/serial-interface-uart.c
+    condition:
+      - zigbee_ncp_uart
+  - path: protocol/zigbee/app/framework/common/zigbee_ncp_framework_cb.c
+  - path: protocol/zigbee/app/em260/ncp-stack-stub.c
+  - path: protocol/zigbee/app/xncp/xncp-stubs.c
+    unless:
+      - zigbee_xncp
+  - path: protocol/zigbee/app/em260/command-handlers-secure-ezsp-stub.c
+    unless:
+      - zigbee_ncp_secure_ezsp
+  - path: protocol/zigbee/app/util/ezsp/secure-ezsp-stub.c
+    unless:
+      - zigbee_ncp_secure_ezsp
+ 
+define:
+  - name: EMBER_AF_NCP
+    value: 1
+
+template_file:
+  - path: protocol/zigbee/app/framework/common/template/zigbee_ncp_callback_dispatcher.h.jinja
+  - path: protocol/zigbee/app/framework/common/template/zigbee_ncp_callback_dispatcher.c.jinja
+  - path: protocol/zigbee/app/framework/util/template/zigbee_af_token_headers.h.jinja
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_ncp_framework
+  # The zigbee_ncp catalog entry is used with CPC right now
+  - name: component_catalog
+    value: zigbee_ncp
+  - name: event_handler
+    value:
+      event: stack_init
+      include: "zigbee_app_framework_common.h"
+      handler: sli_zigbee_ncp_init_callback
+    priority: -8997
+    unless:
+      - cmsis_rtos2    
+  - name: event_handler
+    value:
+      event: stack_process_action
+      include: "zigbee_app_framework_common.h"
+      handler: sli_zigbee_ncp_tick_callback
+    unless:
+      - cmsis_rtos2
+  # We have ash-ncp.c in legacy_ncp_ash.slcc and
+  # serial-interface-spi.c in zigbee_ncp_spi_source.slcc
+  # subscribing this is_ok_to_sleep handler. They are mutual exclusive
+  # based on what serial communication we choose for NCP.
+  - name: power_manager_handler
+    value:
+      event: is_ok_to_sleep
+      include: "serial-interface.h"
+      handler: serialOkToSleep
+  - name: zigbee_stack_callback
+    value:
+      callback_type: counter
+      function_name: emAfCounterCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: counter_rollover
+      function_name: emAfCounterRolloverCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: stack_token_changed
+      function_name: emAfStackTokenChangedCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: poll
+      function_name: emAfPollCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: poll_complete
+      function_name: emAfPollCompleteCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: unused_pan_id_found
+      function_name: emAfUnusedPanIdFoundCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: energy_scan_result
+      function_name: emAfEnergyScanResultCallback
+  # The priority has been set to -9900 here because
+  # when we call emAfPluginNetworkCreatorSecurityStackStatusCallback
+  # after form a network, the NodeID is not set to EMBER_TRUST_CENTER_NODE_ID
+  - name: zigbee_stack_callback
+    value:
+      callback_type: stack_status
+      function_name: emAfStackStatusCallback
+    priority: -9900
+  - name: zigbee_stack_callback
+    value:
+      callback_type: mark_buffers
+      function_name: emAfMarkBuffersCallback      
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: set_configuration_value
+      function_name: emberAfPluginEzspSetConfigurationValueCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: get_policy
+      function_name: emberAfPluginEzspPolicyCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: set_policy
+      function_name: emberAfPluginEzspPolicyCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: get_configuration_value
+      function_name: emberAfPluginEzspGetConfigurationValueCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: set_value
+      function_name: emberAfPluginEzspSetValueCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: get_value
+      function_name: emberAfPluginEzspGetValueCommandCallback    
+
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/ncp-framework

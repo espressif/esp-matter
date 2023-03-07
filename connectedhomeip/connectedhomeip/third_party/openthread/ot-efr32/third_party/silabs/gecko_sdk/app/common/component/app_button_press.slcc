@@ -1,0 +1,68 @@
+id: "app_button_press"
+label: "Button Press"
+package: "platform"
+description: "API for handling button presses of various lengths"
+category: "Application|Utility"
+quality: "production"
+root_path: "app/common/util/app_button_press"
+config_file:
+  - path: "config/app_button_press_config.h"
+source:
+  - path: "app_button_press.c"
+include:
+  - path: ""
+    file_list:
+      - path: "app_button_press.h"
+provides:
+  - name: "app_button_press"
+requires:
+  - name: "power_manager"
+  - name: "sleeptimer"
+  - name: "simple_button"  
+
+template_contribution: 
+  - name: cli_command
+    value:
+      group: button
+      name: press
+      handler: button_press_from_cli
+      shortcuts:
+        - name: p
+      help: "Emulating a button press"
+      argument:
+      - type: uint8
+        help: "Button: 0: BTN0, 1+: BTN1"
+      - type: uint8
+        help: "Press and hold duration: 0 - short, 1- medium, 2 - long, 3+ - verylong"
+    condition:
+      - "cli"
+
+  - name: cli_group
+    value:
+      name: button
+      help: "Emulating button events (various type of button presses)."
+      shortcuts:
+        - name: btn
+        - name: b
+    condition:
+      - "cli"
+  - name: event_handler
+    value:
+      event: service_process_action
+      include: app_button_press.h
+      handler: app_button_press_step
+  - name: power_manager_handler
+    value:
+      event: is_ok_to_sleep
+      include: app_button_press.h
+      handler: app_button_press_is_ok_to_sleep
+  - name: power_manager_handler
+    value:
+      event: sleep_on_isr_exit
+      include: app_button_press.h
+      handler: app_button_press_sleep_on_isr_exit
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: "app_button_press.h"
+      handler: "app_button_press_init"

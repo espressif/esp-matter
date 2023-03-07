@@ -1,0 +1,34 @@
+id: efp_driver
+package: platform
+label: EFP - Energy Friendly PMIC
+description: >
+  This component provides an API to configure and control EFP ICs in addition to a configurable instantiation structure for an EFP IC. The driver supports systems with multiple EFP ICs. The EFP is controlled by the host SoC using an I2C bus. 
+category: Platform|Board Drivers
+quality: production
+instantiable:
+  prefix: efp
+config_file:
+  - path: hardware/driver/efp/config/series0/sl_efp_{{instance}}_config.h
+    file_id: efp_config
+    condition: [device_series_0]
+  - path: hardware/driver/efp/config/series1/sl_efp_{{instance}}_config.h
+    file_id: efp_config
+    condition: [device_series_1]
+  - path: hardware/driver/efp/config/series2/sl_efp_{{instance}}_config.h
+    file_id: efp_config
+    condition: [device_series_2]
+requires:
+  - name: efp_driver_core
+provides:
+  - name: efp_driver
+    allow_multiple: true
+template_contribution:
+  - name: efp_instances
+    value: "{{instance}}"
+  - name: component_catalog
+    value: efp
+  - name: component_catalog
+    value: "{{instance}}"
+documentation:
+    docset: gecko-platform
+    document: hardware-driver/api/group-sl-efp

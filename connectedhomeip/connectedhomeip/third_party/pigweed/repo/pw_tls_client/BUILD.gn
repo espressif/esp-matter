@@ -1,0 +1,169 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+import("$dir_pw_build/facade.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_third_party/boringssl/boringssl.gni")
+import("$dir_pw_tls_client/configs.gni")
+import("$dir_pw_unit_test/test.gni")
+
+config("public_includes") {
+  include_dirs = [ "public" ]
+}
+
+pw_facade("pw_tls_client") {
+  backend = pw_tls_client_BACKEND
+  public_configs = [ ":public_includes" ]
+  public = [
+    "public/pw_tls_client/options.h",
+    "public/pw_tls_client/session.h",
+    "public/pw_tls_client/status.h",
+  ]
+  public_deps = [
+    "$dir_pw_assert",
+    "$dir_pw_bytes",
+    "$dir_pw_result",
+    "$dir_pw_status",
+    "$dir_pw_stream",
+    "$dir_pw_string",
+  ]
+}
+
+pw_facade("tls_entropy") {
+  backend = pw_tls_client_ENTROPY_BACKEND
+  public_configs = [ ":public_includes" ]
+  public = [ "public/pw_tls_client/entropy.h" ]
+  public_deps = [
+    "$dir_pw_bytes",
+    "$dir_pw_status",
+  ]
+}
+
+# A fake entropy source that does nothing. It should only be used for
+# demo and test purpose only. Production code shall not use it.
+pw_source_set("fake_entropy") {
+  public_deps = [ ":tls_entropy.facade" ]
+  sources = [ "fake_entropy.cc" ]
+  deps = [ "$dir_pw_log" ]
+}
+
+# The ":time" target wraps the time() and gettimeofday(), which are
+# commonly used by TLS libraries for expiration check.
+config("time_wrap") {
+  # Link options that wrap C time calls.
+  ldflags = [
+    "-Wl,--wrap=time",
+    "-Wl,--wrap=gettimeofday",
+  ]
+}
+
+pw_facade("time") {
+  backend = pw_tls_client_TIME_BACKEND
+  public_configs = [ ":time_wrap" ]
+  public = []
+
+  # The target should only be used by TLS libraries to obtain date time
+  visibility = [
+    ":*",
+    "$dir_pw_third_party/boringssl",
+    "$dir_pw_third_party/mbedtls",
+  ]
+}
+
+# The build time is obtained with a python script and put in a generated header
+# file. The header file is included in build_time.cc
+pw_python_action("generate_buid_time_header") {
+  header_output = "$target_gen_dir/$target_name/build_time.h"
+  script = "generate_build_time_header.py"
+  outputs = [
+    header_output,
+
+    # A output file that is never generated so that this action is always
+    # re-run. This is to make sure that the build time in the header is always
+    # up-to-date.
+    "$target_gen_dir/non_exists",
+  ]
+  args = [ rebase_path(header_output) ]
+}
+
+# The target provides a backend to :time that returns build time.
+pw_source_set("build_time") {
+  time_injection_outputs = get_target_outputs(":generate_buid_time_header")
+  include_dirs = [ get_path_info(time_injection_outputs[0], "dir") ]
+  sources = [ "build_time.cc" ]
+  deps = [
+    ":generate_buid_time_header",
+    ":time.facade",
+  ]
+}
+
+# TODO(b/235290724): Add a python target to generate source file from the
+# specified CRLSet file in `pw_tls_client_CRLSET_FILE`
+
+pw_source_set("crlset") {
+  public_configs = [ ":public_includes" ]
+  public = [ "public/pw_tls_client/crlset.h" ]
+  public_deps = [ dir_pw_bytes ]
+
+  # TODO(b/235290724): Add sources generated from a CRLSet file to build.
+}
+
+pw_source_set("test_server") {
+  sources = [ "test_server.cc" ]
+  public_configs = [ ":public_includes" ]
+  public = [ "public/pw_tls_client/test/test_server.h" ]
+  public_deps = [
+    "$dir_pw_bytes",
+    "$dir_pw_log",
+    "$dir_pw_stream",
+    "$dir_pw_third_party/boringssl",
+  ]
+}
+
+pw_test("test_server_test") {
+  enable_if = dir_pw_third_party_boringssl != ""
+  public_deps = [
+    ":test_data",
+    ":test_server",
+  ]
+  sources = [ "test_server_test.cc" ]
+}
+
+pw_python_action("generate_test_data") {
+  header_output = "$target_gen_dir/$target_name/test_certs_and_keys.h"
+  script = "py/pw_tls_client/generate_test_data.py"
+  python_deps = [ "py" ]
+  outputs = [ header_output ]
+  args = [ rebase_path(header_output) ]
+}
+
+config("test_data_includes") {
+  test_header_out = get_target_outputs(":generate_test_data")
+  include_dirs = [ get_path_info(test_header_out[0], "dir") ]
+}
+
+group("test_data") {
+  public_deps = [ ":generate_test_data" ]
+  public_configs = [ ":test_data_includes" ]
+}
+
+pw_test_group("tests") {
+  tests = [ ":test_server_test" ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}

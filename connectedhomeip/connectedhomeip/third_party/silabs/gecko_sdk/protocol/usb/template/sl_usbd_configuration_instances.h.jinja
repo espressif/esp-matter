@@ -1,0 +1,14 @@
+#ifndef SL_USBD_CONFIGURATION_INSTANCES_INIT
+#define SL_USBD_CONFIGURATION_INSTANCES_INIT
+
+/* configuration numbers assigned by the USB stack after init */
+{% for instance in usb_configuration_instances %}
+extern uint8_t sl_usbd_configuration_{{ instance }}_number;
+{% endfor %}
+
+/* init functions for all configuration instances */
+{% for instance in usb_configuration_instances %}
+void sli_usbd_configuration_{{ instance }}_init(void);
+{% endfor %}
+
+#endif

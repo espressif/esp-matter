@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.scan_interval_window" uuid="2A4F" name="Scan Interval Window" last-modified="2011-11-14" approved="Yes">
+  <InformativeText>
+    <Abstract>
+    The Scan Interval Window characteristic is used to store the scan parameters of the GATT Client. Included in this characteristic are the Scan Interval and Scan Window of the GATT Client device.
+		</Abstract>
+    <Summary>
+    The Scan Interval Window characteristic is used to store the scan parameters of the GATT Client.  The GATT Server can use these values to optimize its own advertisement rate and to minimize 
+    the rate of its own advertisements while also minimizing the latency of reconnections.
+    </Summary>
+  </InformativeText>
+  <Value>
+    <Field name="LE_Scan_Interval">
+      <InformativeText></InformativeText>
+      <Requirement>Mandatory</Requirement>
+      <Format>uint16</Format>
+    </Field>
+    <Field name="LE_Scan_Window">
+      <InformativeText></InformativeText>
+      <Requirement>Mandatory</Requirement>
+      <Format>uint16</Format>
+    </Field>
+  </Value>
+</Characteristic>

@@ -1,0 +1,44 @@
+id: iot_common_io
+category: Third Party|Amazon FreeRTOS - AWS Libraries|Common I/O
+label: All Common I/O Modules
+description: >
+  Silicon Labs' Implementation of Common I/O APIs.
+  Doc: https://docs.aws.amazon.com/freertos/latest/lib-ref/common-io/files.html
+package: amazon_platform
+quality: production
+ui_hints:
+  visibility: never
+root_path: util/third_party/aws_iot_libs
+config_file:
+  - path: vendors/siliconlabs/boards/all/aws_tests/config_files/iot_test_common_io_config.h
+    condition: ["aws_tests_defs"]
+
+source:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_test/iot_test_common_io.c
+    condition: ["aws_tests_defs"]
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_test/iot_test_common_io_setup.c
+    condition: ["aws_tests_defs"]
+
+include:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_test
+    file_list:
+      - path: iot_test_common_io_internal.h
+        condition: ["aws_tests_defs"]
+
+provides:
+  - name: iot_common_io
+requires:
+  - name: iot_adc
+  - name: iot_efuse
+  - name: iot_flash
+  - name: iot_gpio
+  - name: iot_i2c
+  - name: iot_power
+  - name: iot_pwm
+  - name: iot_reset
+  - name: iot_rtc
+  - name: iot_spi
+  - name: iot_timer
+  - name: iot_tsensor
+  - name: iot_uart
+  - name: iot_watchdog

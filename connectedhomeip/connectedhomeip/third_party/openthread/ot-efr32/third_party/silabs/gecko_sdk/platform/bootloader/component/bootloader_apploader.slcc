@@ -1,0 +1,29 @@
+id: bootloader_apploader
+label: "Bluetooth AppLoader OTA DFU"
+package: bootloader
+description: AppLoader provides Bluetooth OTA updates for applications.
+category: Platform|Bootloader|Communication
+quality: production
+source:
+  - path: platform/bootloader/communication/apploader/btl_apploader.c
+  - path: platform/bootloader/communication/apploader/btl_apploader_common.c
+include:
+  - path: platform/bootloader/communication
+    file_list:
+    - path: apploader/btl_apploader.h
+    - path: apploader/btl_apploader_callback.h
+    - path: btl_communication.h
+requires:
+  - name: status
+  - name: apploader_lib
+  - name: device_series_2
+  - name: device_supports_bluetooth
+define:
+  - name: BOOTLOADER_SUPPORT_COMMUNICATION
+    value: 1
+  - name: BOOTLOADER_APPLOADER
+    value: 1
+provides:
+  - name: bootloader_apploader
+  - name: bootloader_nonsecure_incompatible
+    condition: [bootloader_core_nonsecure]

@@ -1,0 +1,1659 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<demos xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://www.silabs.com/ss/Studio.ecore" xsi:noNamespaceSchemaLocation="http://www.silabs.com/ss/Demo.ecore">
+  <demo name="brd2601b.demo.bt_ncp" label="Bluetooth - NCP">
+    <model:description>Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - NCP"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b310f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd2601b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_ncp/bt_ncp-brd2601b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd2601b.s37"/>
+  </demo>
+  <demo name="brd2703a.demo.bt_ncp" label="Bluetooth - NCP">
+    <model:description>Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - NCP"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b210f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd2703a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_ncp/bt_ncp-brd2703a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd2703a.s37"/>
+  </demo>
+  <demo name="brd4100a.demo.bt_ncp" label="Bluetooth - NCP">
+    <model:description>Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - NCP"/>
+    <property key="core.partCompatibility" value=".*efr32bg1p232f256gm48.*"/>
+    <property key="core.boardCompatibility" value="brd4100a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_ncp/bt_ncp-brd4100a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4100a-combined.s37"/>
+  </demo>
+  <demo name="brd4104a.demo.bt_ncp" label="Bluetooth - NCP">
+    <model:description>Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - NCP"/>
+    <property key="core.partCompatibility" value=".*efr32bg13p632f512gm48.*"/>
+    <property key="core.boardCompatibility" value="brd4104a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_ncp/bt_ncp-brd4104a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4104a-combined.s37"/>
+  </demo>
+  <demo name="brd4108a.demo.bt_ncp" label="Bluetooth - NCP">
+    <model:description>Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - NCP"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4108a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_ncp/bt_ncp-brd4108a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4108a.s37"/>
+  </demo>
+  <demo name="brd4166a.demo.bt_ncp" label="Bluetooth - NCP">
+    <model:description>Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - NCP"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p332f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4166a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_ncp/bt_ncp-brd4166a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4166a-combined.s37"/>
+  </demo>
+  <demo name="brd4180b.demo.bt_ncp" label="Bluetooth - NCP">
+    <model:description>Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - NCP"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a020f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4180b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_ncp/bt_ncp-brd4180b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4180b.s37"/>
+  </demo>
+  <demo name="brd4181b.demo.bt_ncp" label="Bluetooth - NCP">
+    <model:description>Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - NCP"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a010f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4181b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_ncp/bt_ncp-brd4181b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4181b.s37"/>
+  </demo>
+  <demo name="brd4182a.demo.bt_ncp" label="Bluetooth - NCP">
+    <model:description>Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - NCP"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4182a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_ncp/bt_ncp-brd4182a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4182a.s37"/>
+  </demo>
+  <demo name="brd4183a.demo.bt_ncp" label="Bluetooth - NCP">
+    <model:description>Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - NCP"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im32.*"/>
+    <property key="core.boardCompatibility" value="brd4183a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_ncp/bt_ncp-brd4183a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4183a.s37"/>
+  </demo>
+  <demo name="brd4183c.demo.bt_ncp" label="Bluetooth - NCP">
+    <model:description>Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - NCP"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im32.*"/>
+    <property key="core.boardCompatibility" value="brd4183c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_ncp/bt_ncp-brd4183c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4183c.s37"/>
+  </demo>
+  <demo name="brd4184a.demo.bt_ncp" label="Bluetooth - NCP">
+    <model:description>Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - NCP"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4184a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_ncp/bt_ncp-brd4184a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4184a.s37"/>
+  </demo>
+  <demo name="brd4184b.demo.bt_ncp" label="Bluetooth - NCP">
+    <model:description>Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - NCP"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4184b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_ncp/bt_ncp-brd4184b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4184b.s37"/>
+  </demo>
+  <demo name="brd4195a.demo.bt_ncp" label="Bluetooth - NCP">
+    <model:description>Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - NCP"/>
+    <property key="core.partCompatibility" value=".*efr32mg21b010f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4195a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_ncp/bt_ncp-brd4195a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4195a.s37"/>
+  </demo>
+  <demo name="brd4196a.demo.bt_ncp" label="Bluetooth - NCP">
+    <model:description>Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - NCP"/>
+    <property key="core.partCompatibility" value=".*efr32mg21b020f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4196a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_ncp/bt_ncp-brd4196a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4196a.s37"/>
+  </demo>
+  <demo name="brd4305c.demo.bt_ncp" label="Bluetooth - NCP">
+    <model:description>Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - NCP"/>
+    <property key="core.partCompatibility" value=".*bgm13s22f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4305c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_ncp/bt_ncp-brd4305c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4305c.s37"/>
+  </demo>
+  <demo name="brd4306a.demo.bt_ncp" label="Bluetooth - NCP">
+    <model:description>Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - NCP"/>
+    <property key="core.partCompatibility" value=".*bgm13p22f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4306a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_ncp/bt_ncp-brd4306a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4306a.s37"/>
+  </demo>
+  <demo name="brd4308a.demo.bt_ncp" label="Bluetooth - NCP">
+    <model:description>Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - NCP"/>
+    <property key="core.partCompatibility" value=".*mgm210pa32jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_ncp/bt_ncp-brd4308a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4308a.s37"/>
+  </demo>
+  <demo name="brd4308b.demo.bt_ncp" label="Bluetooth - NCP">
+    <model:description>Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - NCP"/>
+    <property key="core.partCompatibility" value=".*mgm210pa22jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_ncp/bt_ncp-brd4308b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4308b.s37"/>
+  </demo>
+  <demo name="brd4310a.demo.bt_ncp" label="Bluetooth - NCP">
+    <model:description>Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - NCP"/>
+    <property key="core.partCompatibility" value=".*bgm220sc12wga.*"/>
+    <property key="core.boardCompatibility" value="brd4310a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_ncp/bt_ncp-brd4310a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4310a.s37"/>
+  </demo>
+  <demo name="brd4311a.demo.bt_ncp" label="Bluetooth - NCP">
+    <model:description>Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - NCP"/>
+    <property key="core.partCompatibility" value=".*bgm220pc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4311a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_ncp/bt_ncp-brd4311a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4311a.s37"/>
+  </demo>
+  <demo name="brd4312a.demo.bt_ncp" label="Bluetooth - NCP">
+    <model:description>Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - NCP"/>
+    <property key="core.partCompatibility" value=".*bgm220sc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4312a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_ncp/bt_ncp-brd4312a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4312a.s37"/>
+  </demo>
+  <demo name="brd4314a.demo.bt_ncp" label="Bluetooth - NCP">
+    <model:description>Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - NCP"/>
+    <property key="core.partCompatibility" value=".*bgm220pc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4314a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_ncp/bt_ncp-brd4314a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4314a.s37"/>
+  </demo>
+  <demo name="brd4330a.demo.bt_ncp" label="Bluetooth - NCP">
+    <model:description>Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - NCP"/>
+    <property key="core.partCompatibility" value=".*bgm220pc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4330a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_ncp/bt_ncp-brd4330a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4330a.s37"/>
+  </demo>
+  <demo name="brd4331a.demo.bt_ncp" label="Bluetooth - NCP">
+    <model:description>Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - NCP"/>
+    <property key="core.partCompatibility" value=".*bgm220sc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4331a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_ncp/bt_ncp-brd4331a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4331a.s37"/>
+  </demo>
+  <demo name="brd2601b.demo.bt_soc_blinky" label="Bluetooth - SoC Blinky">
+    <model:description>The classic blinky example using Bluetooth communication. Demonstrates a simple two-way data exchange over GATT. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Blinky"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b310f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd2601b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_blinky/bt_soc_blinky-brd2601b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_blinky/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd2601b.s37"/>
+  </demo>
+  <demo name="brd2703a.demo.bt_soc_blinky" label="Bluetooth - SoC Blinky">
+    <model:description>The classic blinky example using Bluetooth communication. Demonstrates a simple two-way data exchange over GATT. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Blinky"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b210f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd2703a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_blinky/bt_soc_blinky-brd2703a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_blinky/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd2703a.s37"/>
+  </demo>
+  <demo name="brd4100a.demo.bt_soc_blinky" label="Bluetooth - SoC Blinky">
+    <model:description>The classic blinky example using Bluetooth communication. Demonstrates a simple two-way data exchange over GATT. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Blinky"/>
+    <property key="core.partCompatibility" value=".*efr32bg1p232f256gm48.*"/>
+    <property key="core.boardCompatibility" value="brd4100a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_blinky/bt_soc_blinky-brd4100a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_blinky/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-ble/bootloader-storage-internal-ble-brd4100a-combined.s37"/>
+  </demo>
+  <demo name="brd4104a.demo.bt_soc_blinky" label="Bluetooth - SoC Blinky">
+    <model:description>The classic blinky example using Bluetooth communication. Demonstrates a simple two-way data exchange over GATT. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Blinky"/>
+    <property key="core.partCompatibility" value=".*efr32bg13p632f512gm48.*"/>
+    <property key="core.boardCompatibility" value="brd4104a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_blinky/bt_soc_blinky-brd4104a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_blinky/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-ble/bootloader-storage-internal-ble-brd4104a-combined.s37"/>
+  </demo>
+  <demo name="brd4108a.demo.bt_soc_blinky" label="Bluetooth - SoC Blinky">
+    <model:description>The classic blinky example using Bluetooth communication. Demonstrates a simple two-way data exchange over GATT. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Blinky"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4108a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_blinky/bt_soc_blinky-brd4108a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_blinky/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4108a.s37"/>
+  </demo>
+  <demo name="brd4166a.demo.bt_soc_blinky" label="Bluetooth - SoC Blinky">
+    <model:description>The classic blinky example using Bluetooth communication. Demonstrates a simple two-way data exchange over GATT. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Blinky"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p332f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4166a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_blinky/bt_soc_blinky-brd4166a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_blinky/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal/bootloader-storage-internal-brd4166a-combined.s37"/>
+  </demo>
+  <demo name="brd4180b.demo.bt_soc_blinky" label="Bluetooth - SoC Blinky">
+    <model:description>The classic blinky example using Bluetooth communication. Demonstrates a simple two-way data exchange over GATT. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Blinky"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a020f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4180b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_blinky/bt_soc_blinky-brd4180b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_blinky/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4180b.s37"/>
+  </demo>
+  <demo name="brd4181b.demo.bt_soc_blinky" label="Bluetooth - SoC Blinky">
+    <model:description>The classic blinky example using Bluetooth communication. Demonstrates a simple two-way data exchange over GATT. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Blinky"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a010f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4181b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_blinky/bt_soc_blinky-brd4181b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_blinky/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4181b.s37"/>
+  </demo>
+  <demo name="brd4182a.demo.bt_soc_blinky" label="Bluetooth - SoC Blinky">
+    <model:description>The classic blinky example using Bluetooth communication. Demonstrates a simple two-way data exchange over GATT. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Blinky"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4182a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_blinky/bt_soc_blinky-brd4182a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_blinky/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4182a.s37"/>
+  </demo>
+  <demo name="brd4183a.demo.bt_soc_blinky" label="Bluetooth - SoC Blinky">
+    <model:description>The classic blinky example using Bluetooth communication. Demonstrates a simple two-way data exchange over GATT. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Blinky"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im32.*"/>
+    <property key="core.boardCompatibility" value="brd4183a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_blinky/bt_soc_blinky-brd4183a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_blinky/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4183a.s37"/>
+  </demo>
+  <demo name="brd4183c.demo.bt_soc_blinky" label="Bluetooth - SoC Blinky">
+    <model:description>The classic blinky example using Bluetooth communication. Demonstrates a simple two-way data exchange over GATT. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Blinky"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im32.*"/>
+    <property key="core.boardCompatibility" value="brd4183c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_blinky/bt_soc_blinky-brd4183c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_blinky/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4183c.s37"/>
+  </demo>
+  <demo name="brd4184a.demo.bt_soc_blinky" label="Bluetooth - SoC Blinky">
+    <model:description>The classic blinky example using Bluetooth communication. Demonstrates a simple two-way data exchange over GATT. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Blinky"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4184a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_blinky/bt_soc_blinky-brd4184a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_blinky/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4184a.s37"/>
+  </demo>
+  <demo name="brd4184b.demo.bt_soc_blinky" label="Bluetooth - SoC Blinky">
+    <model:description>The classic blinky example using Bluetooth communication. Demonstrates a simple two-way data exchange over GATT. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Blinky"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4184b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_blinky/bt_soc_blinky-brd4184b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_blinky/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4184b.s37"/>
+  </demo>
+  <demo name="brd4195a.demo.bt_soc_blinky" label="Bluetooth - SoC Blinky">
+    <model:description>The classic blinky example using Bluetooth communication. Demonstrates a simple two-way data exchange over GATT. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Blinky"/>
+    <property key="core.partCompatibility" value=".*efr32mg21b010f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4195a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_blinky/bt_soc_blinky-brd4195a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_blinky/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4195a.s37"/>
+  </demo>
+  <demo name="brd4196a.demo.bt_soc_blinky" label="Bluetooth - SoC Blinky">
+    <model:description>The classic blinky example using Bluetooth communication. Demonstrates a simple two-way data exchange over GATT. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Blinky"/>
+    <property key="core.partCompatibility" value=".*efr32mg21b020f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4196a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_blinky/bt_soc_blinky-brd4196a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_blinky/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4196a.s37"/>
+  </demo>
+  <demo name="brd4305c.demo.bt_soc_blinky" label="Bluetooth - SoC Blinky">
+    <model:description>The classic blinky example using Bluetooth communication. Demonstrates a simple two-way data exchange over GATT. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Blinky"/>
+    <property key="core.partCompatibility" value=".*bgm13s22f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4305c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_blinky/bt_soc_blinky-brd4305c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_blinky/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-ble/bootloader-storage-internal-ble-brd4305c.s37"/>
+  </demo>
+  <demo name="brd4314a.demo.bt_soc_blinky" label="Bluetooth - SoC Blinky">
+    <model:description>The classic blinky example using Bluetooth communication. Demonstrates a simple two-way data exchange over GATT. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Blinky"/>
+    <property key="core.partCompatibility" value=".*bgm220pc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4314a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_blinky/bt_soc_blinky-brd4314a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_blinky/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4314a.s37"/>
+  </demo>
+  <demo name="brd4330a.demo.bt_soc_blinky" label="Bluetooth - SoC Blinky">
+    <model:description>The classic blinky example using Bluetooth communication. Demonstrates a simple two-way data exchange over GATT. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Blinky"/>
+    <property key="core.partCompatibility" value=".*bgm220pc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4330a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_blinky/bt_soc_blinky-brd4330a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_blinky/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4330a.s37"/>
+  </demo>
+  <demo name="brd4331a.demo.bt_soc_blinky" label="Bluetooth - SoC Blinky">
+    <model:description>The classic blinky example using Bluetooth communication. Demonstrates a simple two-way data exchange over GATT. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Blinky"/>
+    <property key="core.partCompatibility" value=".*bgm220sc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4331a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_blinky/bt_soc_blinky-brd4331a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_blinky/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4331a.s37"/>
+  </demo>
+  <demo name="brd4306a.demo.bt_soc_blinky_shared" label="Bluetooth - SoC Blinky">
+    <model:description>The classic blinky example using Bluetooth communication. Demonstrates a simple two-way data exchange over GATT. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Blinky"/>
+    <property key="core.partCompatibility" value=".*bgm13p22f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4306a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_blinky_shared/bt_soc_blinky_shared-brd4306a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_blinky/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-ble/bootloader-storage-internal-ble-brd4306a.s37"/>
+  </demo>
+  <demo name="brd4308a.demo.bt_soc_blinky_shared" label="Bluetooth - SoC Blinky">
+    <model:description>The classic blinky example using Bluetooth communication. Demonstrates a simple two-way data exchange over GATT. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Blinky"/>
+    <property key="core.partCompatibility" value=".*mgm210pa32jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_blinky_shared/bt_soc_blinky_shared-brd4308a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_blinky/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308a.s37"/>
+  </demo>
+  <demo name="brd4308b.demo.bt_soc_blinky_shared" label="Bluetooth - SoC Blinky">
+    <model:description>The classic blinky example using Bluetooth communication. Demonstrates a simple two-way data exchange over GATT. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Blinky"/>
+    <property key="core.partCompatibility" value=".*mgm210pa22jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_blinky_shared/bt_soc_blinky_shared-brd4308b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_blinky/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308b.s37"/>
+  </demo>
+  <demo name="brd4310a.demo.bt_soc_blinky_shared" label="Bluetooth - SoC Blinky">
+    <model:description>The classic blinky example using Bluetooth communication. Demonstrates a simple two-way data exchange over GATT. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Blinky"/>
+    <property key="core.partCompatibility" value=".*bgm220sc12wga.*"/>
+    <property key="core.boardCompatibility" value="brd4310a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_blinky_shared/bt_soc_blinky_shared-brd4310a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_blinky/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4310a.s37"/>
+  </demo>
+  <demo name="brd4311a.demo.bt_soc_blinky_shared" label="Bluetooth - SoC Blinky">
+    <model:description>The classic blinky example using Bluetooth communication. Demonstrates a simple two-way data exchange over GATT. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Blinky"/>
+    <property key="core.partCompatibility" value=".*bgm220pc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4311a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_blinky_shared/bt_soc_blinky_shared-brd4311a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_blinky/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4311a.s37"/>
+  </demo>
+  <demo name="brd4312a.demo.bt_soc_blinky_shared" label="Bluetooth - SoC Blinky">
+    <model:description>The classic blinky example using Bluetooth communication. Demonstrates a simple two-way data exchange over GATT. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Blinky"/>
+    <property key="core.partCompatibility" value=".*bgm220sc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4312a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_blinky_shared/bt_soc_blinky_shared-brd4312a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_blinky/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4312a.s37"/>
+  </demo>
+  <demo name="brd2601b.demo.bt_soc_xg24_dev_kit_brd2601b" label="Bluetooth - SoC EFR32xG24 Dev Kit (BRD2601B)">
+    <model:description>Demonstrates the features of the EFR32xG24 Dev Kit Board. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC EFR32xG24 Dev Kit (BRD2601B)"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b310f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd2601b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_xg24_dev_kit_brd2601b/bt_soc_xg24_dev_kit_brd2601b-brd2601b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thunderboard/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd2601b.s37"/>
+  </demo>
+  <demo name="brd4180b.demo.bt_soc_thermometer_mock" label="Bluetooth - SoC Thermometer (Mock)">
+    <model:description>Implements a GATT Server with the Health Thermometer Profile, which enables a Client device to connect and get temperature data. Temperature is read from the mock relative humidity and temperature sensor.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thermometer (Mock)"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a020f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4180b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thermometer_mock/bt_soc_thermometer_mock-brd4180b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thermometer/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4180b.s37"/>
+  </demo>
+  <demo name="brd4181b.demo.bt_soc_thermometer_mock" label="Bluetooth - SoC Thermometer (Mock)">
+    <model:description>Implements a GATT Server with the Health Thermometer Profile, which enables a Client device to connect and get temperature data. Temperature is read from the mock relative humidity and temperature sensor.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thermometer (Mock)"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a010f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4181b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thermometer_mock/bt_soc_thermometer_mock-brd4181b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thermometer/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4181b.s37"/>
+  </demo>
+  <demo name="brd4183a.demo.bt_soc_thermometer_mock" label="Bluetooth - SoC Thermometer (Mock)">
+    <model:description>Implements a GATT Server with the Health Thermometer Profile, which enables a Client device to connect and get temperature data. Temperature is read from the mock relative humidity and temperature sensor.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thermometer (Mock)"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im32.*"/>
+    <property key="core.boardCompatibility" value="brd4183a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thermometer_mock/bt_soc_thermometer_mock-brd4183a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thermometer/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4183a.s37"/>
+  </demo>
+  <demo name="brd4183c.demo.bt_soc_thermometer_mock" label="Bluetooth - SoC Thermometer (Mock)">
+    <model:description>Implements a GATT Server with the Health Thermometer Profile, which enables a Client device to connect and get temperature data. Temperature is read from the mock relative humidity and temperature sensor.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thermometer (Mock)"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im32.*"/>
+    <property key="core.boardCompatibility" value="brd4183c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thermometer_mock/bt_soc_thermometer_mock-brd4183c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thermometer/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4183c.s37"/>
+  </demo>
+  <demo name="brd4195a.demo.bt_soc_thermometer_mock" label="Bluetooth - SoC Thermometer (Mock)">
+    <model:description>Implements a GATT Server with the Health Thermometer Profile, which enables a Client device to connect and get temperature data. Temperature is read from the mock relative humidity and temperature sensor.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thermometer (Mock)"/>
+    <property key="core.partCompatibility" value=".*efr32mg21b010f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4195a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thermometer_mock/bt_soc_thermometer_mock-brd4195a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thermometer/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4195a.s37"/>
+  </demo>
+  <demo name="brd4196a.demo.bt_soc_thermometer_mock" label="Bluetooth - SoC Thermometer (Mock)">
+    <model:description>Implements a GATT Server with the Health Thermometer Profile, which enables a Client device to connect and get temperature data. Temperature is read from the mock relative humidity and temperature sensor.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thermometer (Mock)"/>
+    <property key="core.partCompatibility" value=".*efr32mg21b020f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4196a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thermometer_mock/bt_soc_thermometer_mock-brd4196a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thermometer/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4196a.s37"/>
+  </demo>
+  <demo name="brd4308a.demo.bt_soc_thermometer_mock" label="Bluetooth - SoC Thermometer (Mock)">
+    <model:description>Implements a GATT Server with the Health Thermometer Profile, which enables a Client device to connect and get temperature data. Temperature is read from the mock relative humidity and temperature sensor.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thermometer (Mock)"/>
+    <property key="core.partCompatibility" value=".*mgm210pa32jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thermometer_mock/bt_soc_thermometer_mock-brd4308a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thermometer/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308a.s37"/>
+  </demo>
+  <demo name="brd4308b.demo.bt_soc_thermometer_mock" label="Bluetooth - SoC Thermometer (Mock)">
+    <model:description>Implements a GATT Server with the Health Thermometer Profile, which enables a Client device to connect and get temperature data. Temperature is read from the mock relative humidity and temperature sensor.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thermometer (Mock)"/>
+    <property key="core.partCompatibility" value=".*mgm210pa22jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thermometer_mock/bt_soc_thermometer_mock-brd4308b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thermometer/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308b.s37"/>
+  </demo>
+  <demo name="brd4314a.demo.bt_soc_thermometer_mock" label="Bluetooth - SoC Thermometer (Mock)">
+    <model:description>Implements a GATT Server with the Health Thermometer Profile, which enables a Client device to connect and get temperature data. Temperature is read from the mock relative humidity and temperature sensor.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thermometer (Mock)"/>
+    <property key="core.partCompatibility" value=".*bgm220pc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4314a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thermometer_mock/bt_soc_thermometer_mock-brd4314a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thermometer/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4314a.s37"/>
+  </demo>
+  <demo name="brd4330a.demo.bt_soc_thermometer_mock" label="Bluetooth - SoC Thermometer (Mock)">
+    <model:description>Implements a GATT Server with the Health Thermometer Profile, which enables a Client device to connect and get temperature data. Temperature is read from the mock relative humidity and temperature sensor.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thermometer (Mock)"/>
+    <property key="core.partCompatibility" value=".*bgm220pc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4330a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thermometer_mock/bt_soc_thermometer_mock-brd4330a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thermometer/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4330a.s37"/>
+  </demo>
+  <demo name="brd4331a.demo.bt_soc_thermometer_mock" label="Bluetooth - SoC Thermometer (Mock)">
+    <model:description>Implements a GATT Server with the Health Thermometer Profile, which enables a Client device to connect and get temperature data. Temperature is read from the mock relative humidity and temperature sensor.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thermometer (Mock)"/>
+    <property key="core.partCompatibility" value=".*bgm220sc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4331a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thermometer_mock/bt_soc_thermometer_mock-brd4331a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thermometer/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4331a.s37"/>
+  </demo>
+  <demo name="brd2601b.demo.bt_soc_thermometer" label="Bluetooth - SoC Thermometer">
+    <model:description>Implements a GATT Server with the Health Thermometer Profile, which enables a Client device to connect and get temperature data. Temperature is read from the Si7021 digital relative humidity and temperature sensor of the WSTK or of the Thunderboard.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thermometer"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b310f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd2601b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thermometer/bt_soc_thermometer-brd2601b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thermometer/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd2601b.s37"/>
+  </demo>
+  <demo name="brd4100a.demo.bt_soc_thermometer" label="Bluetooth - SoC Thermometer">
+    <model:description>Implements a GATT Server with the Health Thermometer Profile, which enables a Client device to connect and get temperature data. Temperature is read from the Si7021 digital relative humidity and temperature sensor of the WSTK or of the Thunderboard.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thermometer"/>
+    <property key="core.partCompatibility" value=".*efr32bg1p232f256gm48.*"/>
+    <property key="core.boardCompatibility" value="brd4100a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thermometer/bt_soc_thermometer-brd4100a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thermometer/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-ble/bootloader-storage-internal-ble-brd4100a-combined.s37"/>
+  </demo>
+  <demo name="brd4104a.demo.bt_soc_thermometer" label="Bluetooth - SoC Thermometer">
+    <model:description>Implements a GATT Server with the Health Thermometer Profile, which enables a Client device to connect and get temperature data. Temperature is read from the Si7021 digital relative humidity and temperature sensor of the WSTK or of the Thunderboard.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thermometer"/>
+    <property key="core.partCompatibility" value=".*efr32bg13p632f512gm48.*"/>
+    <property key="core.boardCompatibility" value="brd4104a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thermometer/bt_soc_thermometer-brd4104a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thermometer/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single-512k/bootloader-storage-internal-single-512k-brd4104a-combined.s37"/>
+  </demo>
+  <demo name="brd4166a.demo.bt_soc_thermometer" label="Bluetooth - SoC Thermometer">
+    <model:description>Implements a GATT Server with the Health Thermometer Profile, which enables a Client device to connect and get temperature data. Temperature is read from the Si7021 digital relative humidity and temperature sensor of the WSTK or of the Thunderboard.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thermometer"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p332f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4166a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thermometer/bt_soc_thermometer-brd4166a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thermometer/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal/bootloader-storage-internal-brd4166a-combined.s37"/>
+  </demo>
+  <demo name="brd4182a.demo.bt_soc_thermometer" label="Bluetooth - SoC Thermometer">
+    <model:description>Implements a GATT Server with the Health Thermometer Profile, which enables a Client device to connect and get temperature data. Temperature is read from the Si7021 digital relative humidity and temperature sensor of the WSTK or of the Thunderboard.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thermometer"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4182a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thermometer/bt_soc_thermometer-brd4182a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thermometer/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4182a.s37"/>
+  </demo>
+  <demo name="brd4184a.demo.bt_soc_thermometer" label="Bluetooth - SoC Thermometer">
+    <model:description>Implements a GATT Server with the Health Thermometer Profile, which enables a Client device to connect and get temperature data. Temperature is read from the Si7021 digital relative humidity and temperature sensor of the WSTK or of the Thunderboard.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thermometer"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4184a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thermometer/bt_soc_thermometer-brd4184a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thermometer/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4184a.s37"/>
+  </demo>
+  <demo name="brd4184b.demo.bt_soc_thermometer" label="Bluetooth - SoC Thermometer">
+    <model:description>Implements a GATT Server with the Health Thermometer Profile, which enables a Client device to connect and get temperature data. Temperature is read from the Si7021 digital relative humidity and temperature sensor of the WSTK or of the Thunderboard.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thermometer"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4184b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thermometer/bt_soc_thermometer-brd4184b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thermometer/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4184b.s37"/>
+  </demo>
+  <demo name="brd4186b.demo.bt_soc_thermometer" label="Bluetooth - SoC Thermometer">
+    <model:description>Implements a GATT Server with the Health Thermometer Profile, which enables a Client device to connect and get temperature data. Temperature is read from the Si7021 digital relative humidity and temperature sensor of the WSTK or of the Thunderboard.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thermometer"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b010f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4186b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thermometer/bt_soc_thermometer-brd4186b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thermometer/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4186b.s37"/>
+  </demo>
+  <demo name="brd4187b.demo.bt_soc_thermometer" label="Bluetooth - SoC Thermometer">
+    <model:description>Implements a GATT Server with the Health Thermometer Profile, which enables a Client device to connect and get temperature data. Temperature is read from the Si7021 digital relative humidity and temperature sensor of the WSTK or of the Thunderboard.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thermometer"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b020f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4187b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thermometer/bt_soc_thermometer-brd4187b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thermometer/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4187b.s37"/>
+  </demo>
+  <demo name="brd4305c.demo.bt_soc_thermometer" label="Bluetooth - SoC Thermometer">
+    <model:description>Implements a GATT Server with the Health Thermometer Profile, which enables a Client device to connect and get temperature data. Temperature is read from the Si7021 digital relative humidity and temperature sensor of the WSTK or of the Thunderboard.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thermometer"/>
+    <property key="core.partCompatibility" value=".*bgm13s22f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4305c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thermometer/bt_soc_thermometer-brd4305c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thermometer/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single-512k/bootloader-storage-internal-single-512k-brd4305c.s37"/>
+  </demo>
+  <demo name="brd4306a.demo.bt_soc_thermometer" label="Bluetooth - SoC Thermometer">
+    <model:description>Implements a GATT Server with the Health Thermometer Profile, which enables a Client device to connect and get temperature data. Temperature is read from the Si7021 digital relative humidity and temperature sensor of the WSTK or of the Thunderboard.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thermometer"/>
+    <property key="core.partCompatibility" value=".*bgm13p22f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4306a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thermometer/bt_soc_thermometer-brd4306a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thermometer/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single-512k/bootloader-storage-internal-single-512k-brd4306a.s37"/>
+  </demo>
+  <demo name="brd4310a.demo.bt_soc_thermometer" label="Bluetooth - SoC Thermometer">
+    <model:description>Implements a GATT Server with the Health Thermometer Profile, which enables a Client device to connect and get temperature data. Temperature is read from the Si7021 digital relative humidity and temperature sensor of the WSTK or of the Thunderboard.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thermometer"/>
+    <property key="core.partCompatibility" value=".*bgm220sc12wga.*"/>
+    <property key="core.boardCompatibility" value="brd4310a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thermometer/bt_soc_thermometer-brd4310a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thermometer/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4310a.s37"/>
+  </demo>
+  <demo name="brd4311a.demo.bt_soc_thermometer" label="Bluetooth - SoC Thermometer">
+    <model:description>Implements a GATT Server with the Health Thermometer Profile, which enables a Client device to connect and get temperature data. Temperature is read from the Si7021 digital relative humidity and temperature sensor of the WSTK or of the Thunderboard.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thermometer"/>
+    <property key="core.partCompatibility" value=".*bgm220pc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4311a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thermometer/bt_soc_thermometer-brd4311a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thermometer/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4311a.s37"/>
+  </demo>
+  <demo name="brd4312a.demo.bt_soc_thermometer" label="Bluetooth - SoC Thermometer">
+    <model:description>Implements a GATT Server with the Health Thermometer Profile, which enables a Client device to connect and get temperature data. Temperature is read from the Si7021 digital relative humidity and temperature sensor of the WSTK or of the Thunderboard.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thermometer"/>
+    <property key="core.partCompatibility" value=".*bgm220sc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4312a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thermometer/bt_soc_thermometer-brd4312a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thermometer/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4312a.s37"/>
+  </demo>
+  <demo name="brd4104a.demo.bt_soc_throughput_display" label="Bluetooth - SoC Throughput">
+    <model:description>This example tests the throughput capabilities of the device and can be used to measure throughput between 2 *EFR32* devices, as well as between a device and a smartphone using EFR Connect mobile app, through the Throughput demo tile.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Throughput"/>
+    <property key="core.partCompatibility" value=".*efr32bg13p632f512gm48.*"/>
+    <property key="core.boardCompatibility" value="brd4104a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_throughput_display/bt_soc_throughput_display-brd4104a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_throughput/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single-512k/bootloader-storage-internal-single-512k-brd4104a-combined.s37"/>
+  </demo>
+  <demo name="brd4180b.demo.bt_soc_throughput_display" label="Bluetooth - SoC Throughput">
+    <model:description>This example tests the throughput capabilities of the device and can be used to measure throughput between 2 *EFR32* devices, as well as between a device and a smartphone using EFR Connect mobile app, through the Throughput demo tile.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Throughput"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a020f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4180b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_throughput_display/bt_soc_throughput_display-brd4180b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_throughput/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4180b.s37"/>
+  </demo>
+  <demo name="brd4181b.demo.bt_soc_throughput_display" label="Bluetooth - SoC Throughput">
+    <model:description>This example tests the throughput capabilities of the device and can be used to measure throughput between 2 *EFR32* devices, as well as between a device and a smartphone using EFR Connect mobile app, through the Throughput demo tile.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Throughput"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a010f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4181b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_throughput_display/bt_soc_throughput_display-brd4181b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_throughput/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4181b.s37"/>
+  </demo>
+  <demo name="brd4182a.demo.bt_soc_throughput_display" label="Bluetooth - SoC Throughput">
+    <model:description>This example tests the throughput capabilities of the device and can be used to measure throughput between 2 *EFR32* devices, as well as between a device and a smartphone using EFR Connect mobile app, through the Throughput demo tile.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Throughput"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4182a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_throughput_display/bt_soc_throughput_display-brd4182a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_throughput/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4182a.s37"/>
+  </demo>
+  <demo name="brd4186b.demo.bt_soc_throughput_display" label="Bluetooth - SoC Throughput">
+    <model:description>This example tests the throughput capabilities of the device and can be used to measure throughput between 2 *EFR32* devices, as well as between a device and a smartphone using EFR Connect mobile app, through the Throughput demo tile.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Throughput"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b010f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4186b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_throughput_display/bt_soc_throughput_display-brd4186b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_throughput/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4186b.s37"/>
+  </demo>
+  <demo name="brd4187b.demo.bt_soc_throughput_display" label="Bluetooth - SoC Throughput">
+    <model:description>This example tests the throughput capabilities of the device and can be used to measure throughput between 2 *EFR32* devices, as well as between a device and a smartphone using EFR Connect mobile app, through the Throughput demo tile.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Throughput"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b020f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4187b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_throughput_display/bt_soc_throughput_display-brd4187b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_throughput/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4187b.s37"/>
+  </demo>
+  <demo name="brd4195a.demo.bt_soc_throughput_display" label="Bluetooth - SoC Throughput">
+    <model:description>This example tests the throughput capabilities of the device and can be used to measure throughput between 2 *EFR32* devices, as well as between a device and a smartphone using EFR Connect mobile app, through the Throughput demo tile.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Throughput"/>
+    <property key="core.partCompatibility" value=".*efr32mg21b010f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4195a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_throughput_display/bt_soc_throughput_display-brd4195a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_throughput/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4195a.s37"/>
+  </demo>
+  <demo name="brd4196a.demo.bt_soc_throughput_display" label="Bluetooth - SoC Throughput">
+    <model:description>This example tests the throughput capabilities of the device and can be used to measure throughput between 2 *EFR32* devices, as well as between a device and a smartphone using EFR Connect mobile app, through the Throughput demo tile.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Throughput"/>
+    <property key="core.partCompatibility" value=".*efr32mg21b020f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4196a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_throughput_display/bt_soc_throughput_display-brd4196a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_throughput/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4196a.s37"/>
+  </demo>
+  <demo name="brd4305c.demo.bt_soc_throughput_display" label="Bluetooth - SoC Throughput">
+    <model:description>This example tests the throughput capabilities of the device and can be used to measure throughput between 2 *EFR32* devices, as well as between a device and a smartphone using EFR Connect mobile app, through the Throughput demo tile.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Throughput"/>
+    <property key="core.partCompatibility" value=".*bgm13s22f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4305c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_throughput_display/bt_soc_throughput_display-brd4305c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_throughput/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single-512k/bootloader-storage-internal-single-512k-brd4305c.s37"/>
+  </demo>
+  <demo name="brd4306a.demo.bt_soc_throughput_display" label="Bluetooth - SoC Throughput">
+    <model:description>This example tests the throughput capabilities of the device and can be used to measure throughput between 2 *EFR32* devices, as well as between a device and a smartphone using EFR Connect mobile app, through the Throughput demo tile.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Throughput"/>
+    <property key="core.partCompatibility" value=".*bgm13p22f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4306a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_throughput_display/bt_soc_throughput_display-brd4306a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_throughput/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single-512k/bootloader-storage-internal-single-512k-brd4306a.s37"/>
+  </demo>
+  <demo name="brd4308a.demo.bt_soc_throughput_display" label="Bluetooth - SoC Throughput">
+    <model:description>This example tests the throughput capabilities of the device and can be used to measure throughput between 2 *EFR32* devices, as well as between a device and a smartphone using EFR Connect mobile app, through the Throughput demo tile.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Throughput"/>
+    <property key="core.partCompatibility" value=".*mgm210pa32jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_throughput_display/bt_soc_throughput_display-brd4308a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_throughput/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308a.s37"/>
+  </demo>
+  <demo name="brd4308b.demo.bt_soc_throughput_display" label="Bluetooth - SoC Throughput">
+    <model:description>This example tests the throughput capabilities of the device and can be used to measure throughput between 2 *EFR32* devices, as well as between a device and a smartphone using EFR Connect mobile app, through the Throughput demo tile.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Throughput"/>
+    <property key="core.partCompatibility" value=".*mgm210pa22jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_throughput_display/bt_soc_throughput_display-brd4308b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_throughput/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4308b.s37"/>
+  </demo>
+  <demo name="brd4311a.demo.bt_soc_throughput_display" label="Bluetooth - SoC Throughput">
+    <model:description>This example tests the throughput capabilities of the device and can be used to measure throughput between 2 *EFR32* devices, as well as between a device and a smartphone using EFR Connect mobile app, through the Throughput demo tile.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Throughput"/>
+    <property key="core.partCompatibility" value=".*bgm220pc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4311a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_throughput_display/bt_soc_throughput_display-brd4311a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_throughput/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4311a.s37"/>
+  </demo>
+  <demo name="brd4312a.demo.bt_soc_throughput_display" label="Bluetooth - SoC Throughput">
+    <model:description>This example tests the throughput capabilities of the device and can be used to measure throughput between 2 *EFR32* devices, as well as between a device and a smartphone using EFR Connect mobile app, through the Throughput demo tile.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Throughput"/>
+    <property key="core.partCompatibility" value=".*bgm220sc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4312a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_throughput_display/bt_soc_throughput_display-brd4312a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_throughput/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4312a.s37"/>
+  </demo>
+  <demo name="brd2601b.demo.bt_soc_throughput_log" label="Bluetooth - SoC Throughput">
+    <model:description>This example tests the throughput capabilities of the device and can be used to measure throughput between 2 *EFR32* devices, as well as between a device and a smartphone using EFR Connect mobile app, through the Throughput demo tile.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Throughput"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b310f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd2601b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_throughput_log/bt_soc_throughput_log-brd2601b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_throughput/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd2601b.s37"/>
+  </demo>
+  <demo name="brd2703a.demo.bt_soc_throughput_log" label="Bluetooth - SoC Throughput">
+    <model:description>This example tests the throughput capabilities of the device and can be used to measure throughput between 2 *EFR32* devices, as well as between a device and a smartphone using EFR Connect mobile app, through the Throughput demo tile.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Throughput"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b210f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd2703a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_throughput_log/bt_soc_throughput_log-brd2703a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_throughput/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd2703a.s37"/>
+  </demo>
+  <demo name="brd4166a.demo.bt_soc_throughput_log" label="Bluetooth - SoC Throughput">
+    <model:description>This example tests the throughput capabilities of the device and can be used to measure throughput between 2 *EFR32* devices, as well as between a device and a smartphone using EFR Connect mobile app, through the Throughput demo tile.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Throughput"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p332f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4166a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_throughput_log/bt_soc_throughput_log-brd4166a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_throughput/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single/bootloader-storage-internal-single-brd4166a-combined.s37"/>
+  </demo>
+  <demo name="brd4108a.demo.bt_soc_throughput_log_single" label="Bluetooth - SoC Throughput">
+    <model:description>This example tests the throughput capabilities of the device and can be used to measure throughput between 2 *EFR32* devices, as well as between a device and a smartphone using EFR Connect mobile app, through the Throughput demo tile.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Throughput"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4108a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_throughput_log_single/bt_soc_throughput_log_single-brd4108a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_throughput/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4108a.s37"/>
+  </demo>
+  <demo name="brd4183a.demo.bt_soc_throughput_log_single" label="Bluetooth - SoC Throughput">
+    <model:description>This example tests the throughput capabilities of the device and can be used to measure throughput between 2 *EFR32* devices, as well as between a device and a smartphone using EFR Connect mobile app, through the Throughput demo tile.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Throughput"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im32.*"/>
+    <property key="core.boardCompatibility" value="brd4183a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_throughput_log_single/bt_soc_throughput_log_single-brd4183a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_throughput/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4183a.s37"/>
+  </demo>
+  <demo name="brd4184a.demo.bt_soc_throughput_log_single" label="Bluetooth - SoC Throughput">
+    <model:description>This example tests the throughput capabilities of the device and can be used to measure throughput between 2 *EFR32* devices, as well as between a device and a smartphone using EFR Connect mobile app, through the Throughput demo tile.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Throughput"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4184a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_throughput_log_single/bt_soc_throughput_log_single-brd4184a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_throughput/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4184a.s37"/>
+  </demo>
+  <demo name="brd4184b.demo.bt_soc_throughput_log_single" label="Bluetooth - SoC Throughput">
+    <model:description>This example tests the throughput capabilities of the device and can be used to measure throughput between 2 *EFR32* devices, as well as between a device and a smartphone using EFR Connect mobile app, through the Throughput demo tile.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Throughput"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4184b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_throughput_log_single/bt_soc_throughput_log_single-brd4184b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_throughput/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4184b.s37"/>
+  </demo>
+  <demo name="brd4314a.demo.bt_soc_throughput_log_single" label="Bluetooth - SoC Throughput">
+    <model:description>This example tests the throughput capabilities of the device and can be used to measure throughput between 2 *EFR32* devices, as well as between a device and a smartphone using EFR Connect mobile app, through the Throughput demo tile.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Throughput"/>
+    <property key="core.partCompatibility" value=".*bgm220pc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4314a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_throughput_log_single/bt_soc_throughput_log_single-brd4314a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_throughput/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4314a.s37"/>
+  </demo>
+  <demo name="brd4330a.demo.bt_soc_throughput_log_single" label="Bluetooth - SoC Throughput">
+    <model:description>This example tests the throughput capabilities of the device and can be used to measure throughput between 2 *EFR32* devices, as well as between a device and a smartphone using EFR Connect mobile app, through the Throughput demo tile.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Throughput"/>
+    <property key="core.partCompatibility" value=".*bgm220pc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4330a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_throughput_log_single/bt_soc_throughput_log_single-brd4330a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_throughput/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4330a.s37"/>
+  </demo>
+  <demo name="brd4331a.demo.bt_soc_throughput_log_single" label="Bluetooth - SoC Throughput">
+    <model:description>This example tests the throughput capabilities of the device and can be used to measure throughput between 2 *EFR32* devices, as well as between a device and a smartphone using EFR Connect mobile app, through the Throughput demo tile.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Throughput"/>
+    <property key="core.partCompatibility" value=".*bgm220sc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4331a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_throughput_log_single/bt_soc_throughput_log_single-brd4331a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_throughput/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4331a.s37"/>
+  </demo>
+  <demo name="brd4184a.demo.bt_soc_thunderboard_brd4184a" label="Bluetooth - SoC Thunderboard EFR32BG22 (BRD4184A)">
+    <model:description>Demonstrates the features of the Thunderboard EFR32BG22 Kit. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thunderboard EFR32BG22 (BRD4184A)"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4184a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thunderboard_brd4184a/bt_soc_thunderboard_brd4184a-brd4184a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thunderboard/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4184a.s37"/>
+  </demo>
+  <demo name="brd4184b.demo.bt_soc_thunderboard_brd4184b" label="Bluetooth - SoC Thunderboard EFR32BG22 (BRD4184B)">
+    <model:description>Demonstrates the features of the Thunderboard EFR32BG22 Kit. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thunderboard EFR32BG22 (BRD4184B)"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4184b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thunderboard_brd4184b/bt_soc_thunderboard_brd4184b-brd4184b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thunderboard/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4184b.s37"/>
+  </demo>
+  <demo name="brd4166a.demo.bt_soc_thunderboard_brd4166a" label="Bluetooth - SoC Thunderboard Sense 2">
+    <model:description>Demonstrates the features of the Thunderboard Sense 2 Kit. This can be tested with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Thunderboard Sense 2"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p332f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4166a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_thunderboard_brd4166a/bt_soc_thunderboard_brd4166a-brd4166a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_thunderboard/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single/bootloader-storage-internal-single-brd4166a-combined.s37"/>
+  </demo>
+  <demo name="brd2601b.demo.bt_soc_voice" label="Bluetooth - SoC Voice">
+    <model:description>Voice over Bluetooth Low Energy sample application. It is supported by Thunderboard Sense 2 and Thunderboard EFR32BG22 boards and demonstrates how to send voice data over GATT, which is acquired from the on-board microphones.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Voice"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b310f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd2601b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_voice/bt_soc_voice-brd2601b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_voice/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd2601b.s37"/>
+  </demo>
+  <demo name="brd4166a.demo.bt_soc_voice" label="Bluetooth - SoC Voice">
+    <model:description>Voice over Bluetooth Low Energy sample application. It is supported by Thunderboard Sense 2 and Thunderboard EFR32BG22 boards and demonstrates how to send voice data over GATT, which is acquired from the on-board microphones.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Voice"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p332f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4166a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_voice/bt_soc_voice-brd4166a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_voice/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single/bootloader-storage-internal-single-brd4166a-combined.s37"/>
+  </demo>
+  <demo name="brd4184b.demo.bt_soc_voice" label="Bluetooth - SoC Voice">
+    <model:description>Voice over Bluetooth Low Energy sample application. It is supported by Thunderboard Sense 2 and Thunderboard EFR32BG22 boards and demonstrates how to send voice data over GATT, which is acquired from the on-board microphones.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC Voice"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4184b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_voice/bt_soc_voice-brd4184b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_voice/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4184b.s37"/>
+  </demo>
+  <demo name="brd2601b.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b310f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd2601b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd2601b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd2601b.s37"/>
+  </demo>
+  <demo name="brd4100a.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*efr32bg1p232f256gm48.*"/>
+    <property key="core.boardCompatibility" value="brd4100a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd4100a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4100a-combined.s37"/>
+  </demo>
+  <demo name="brd4104a.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*efr32bg13p632f512gm48.*"/>
+    <property key="core.boardCompatibility" value="brd4104a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd4104a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4104a-combined.s37"/>
+  </demo>
+  <demo name="brd4108a.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4108a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd4108a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4108a.s37"/>
+  </demo>
+  <demo name="brd4166a.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p332f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4166a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd4166a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4166a-combined.s37"/>
+  </demo>
+  <demo name="brd4180b.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a020f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4180b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd4180b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4180b.s37"/>
+  </demo>
+  <demo name="brd4181b.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*efr32mg21a010f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4181b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd4181b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4181b.s37"/>
+  </demo>
+  <demo name="brd4182a.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4182a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd4182a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4182a.s37"/>
+  </demo>
+  <demo name="brd4183a.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im32.*"/>
+    <property key="core.boardCompatibility" value="brd4183a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd4183a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4183a.s37"/>
+  </demo>
+  <demo name="brd4183c.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*efr32mg22c224f512im32.*"/>
+    <property key="core.boardCompatibility" value="brd4183c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd4183c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4183c.s37"/>
+  </demo>
+  <demo name="brd4184a.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4184a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd4184a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4184a.s37"/>
+  </demo>
+  <demo name="brd4184b.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4184b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd4184b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4184b.s37"/>
+  </demo>
+  <demo name="brd4186b.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b010f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4186b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd4186b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4186b.s37"/>
+  </demo>
+  <demo name="brd4187b.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b020f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd4187b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd4187b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4187b.s37"/>
+  </demo>
+  <demo name="brd4195a.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*efr32mg21b010f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4195a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd4195a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4195a.s37"/>
+  </demo>
+  <demo name="brd4196a.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*efr32mg21b020f1024im32.*"/>
+    <property key="core.boardCompatibility" value="brd4196a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd4196a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4196a.s37"/>
+  </demo>
+  <demo name="brd4305c.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*bgm13s22f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4305c"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd4305c.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4305c.s37"/>
+  </demo>
+  <demo name="brd4306a.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*bgm13p22f512ga.*"/>
+    <property key="core.boardCompatibility" value="brd4306a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd4306a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4306a.s37"/>
+  </demo>
+  <demo name="brd4308a.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*mgm210pa32jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd4308a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4308a.s37"/>
+  </demo>
+  <demo name="brd4308b.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*mgm210pa22jia.*"/>
+    <property key="core.boardCompatibility" value="brd4308b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd4308b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4308b.s37"/>
+  </demo>
+  <demo name="brd4310a.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*bgm220sc12wga.*"/>
+    <property key="core.boardCompatibility" value="brd4310a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd4310a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4310a.s37"/>
+  </demo>
+  <demo name="brd4311a.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*bgm220pc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4311a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd4311a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4311a.s37"/>
+  </demo>
+  <demo name="brd4312a.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*bgm220sc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4312a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd4312a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4312a.s37"/>
+  </demo>
+  <demo name="brd4314a.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*bgm220pc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4314a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd4314a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4314a.s37"/>
+  </demo>
+  <demo name="brd4330a.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*bgm220pc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4330a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd4330a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4330a.s37"/>
+  </demo>
+  <demo name="brd4331a.demo.bt_soc_ibeacon" label="Bluetooth - SoC iBeacon">
+    <model:description>Sends non-connectable advertisements in iBeacon format. The iBeacon Service gives Bluetooth accessories a simple and convenient way to send iBeacons to smartphones. This example can be tested together with the EFR Connect mobile app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth - SoC iBeacon"/>
+    <property key="core.partCompatibility" value=".*bgm220sc22hna.*"/>
+    <property key="core.boardCompatibility" value="brd4331a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_soc_ibeacon/bt_soc_ibeacon-brd4331a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_ibeacon/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4331a.s37"/>
+  </demo>
+  <demo name="brd4185a.demo.bt_aoa_ncp_locator" label="Bluetooth AoA - NCP locator">
+    <model:description>Network Co-Processor (NCP) target application extended with CTE Receiver support. It enables Angle of Arrival (AoA) calculation. Use this application with Direction Finding host examples.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth AoA - NCP locator"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4185a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_aoa_ncp_locator/bt_aoa_ncp_locator-brd4185a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp_aoa_locator/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4185a.s37"/>
+  </demo>
+  <demo name="brd4191a.demo.bt_aoa_ncp_locator" label="Bluetooth AoA - NCP locator">
+    <model:description>Network Co-Processor (NCP) target application extended with CTE Receiver support. It enables Angle of Arrival (AoA) calculation. Use this application with Direction Finding host examples.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth AoA - NCP locator"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4191a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_aoa_ncp_locator/bt_aoa_ncp_locator-brd4191a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/ncp_aoa_locator/readme.md"/>
+    <property key="filters" value="Device\ Type|NCP Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-uart-bgapi/bootloader-uart-bgapi-brd4191a.s37"/>
+  </demo>
+  <demo name="brd2601b.demo.bt_aoa_soc_asset_tag" label="Bluetooth AoA - SoC Asset Tag">
+    <model:description>This sample app demonstrates a CTE (Constant Tone Extension) transmitter that can be used as an asset tag in a Direction Finding setup estimating Angle of Arrival (AoA).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth AoA - SoC Asset Tag"/>
+    <property key="core.partCompatibility" value=".*efr32mg24b310f1536im48.*"/>
+    <property key="core.boardCompatibility" value="brd2601b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_aoa_soc_asset_tag/bt_aoa_soc_asset_tag-brd2601b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_aoa_asset_tag/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd2601b.s37"/>
+  </demo>
+  <demo name="brd4184a.demo.bt_aoa_soc_asset_tag" label="Bluetooth AoA - SoC Asset Tag">
+    <model:description>This sample app demonstrates a CTE (Constant Tone Extension) transmitter that can be used as an asset tag in a Direction Finding setup estimating Angle of Arrival (AoA).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth AoA - SoC Asset Tag"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4184a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_aoa_soc_asset_tag/bt_aoa_soc_asset_tag-brd4184a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_aoa_asset_tag/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4184a.s37"/>
+  </demo>
+  <demo name="brd4184b.demo.bt_aoa_soc_asset_tag" label="Bluetooth AoA - SoC Asset Tag">
+    <model:description>This sample app demonstrates a CTE (Constant Tone Extension) transmitter that can be used as an asset tag in a Direction Finding setup estimating Angle of Arrival (AoA).
+</model:description>
+    <property key="demos.blurb" value="Bluetooth AoA - SoC Asset Tag"/>
+    <property key="core.partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <property key="core.boardCompatibility" value="brd4184b"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_aoa_soc_asset_tag/bt_aoa_soc_asset_tag-brd4184b.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_aoa_asset_tag/readme.md"/>
+    <property key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-apploader/bootloader-apploader-brd4184b.s37"/>
+  </demo>
+  <demo name="brd4164a.demo.bt_rail_dmp_soc_light_micriumos" label="Bluetooth RAIL DMP - SoC Light Micrium OS">
+    <model:description>This is a Dynamic Multiprotocol reference application demonstrating a light bulb that can be switched both via Bluetooth and via a Proprietary protocol. Can be tested with the EFR Connect mobile app and Flex (RAIL) Switch sample app.
+</model:description>
+    <property key="demos.blurb" value="Bluetooth RAIL DMP - SoC Light Micrium OS"/>
+    <property key="core.partCompatibility" value=".*efr32mg12p433f1024gl125.*"/>
+    <property key="core.boardCompatibility" value="brd4164a"/>
+    <property key="demos.imageFile" value="asset://com.silabs.sdk.stack.super_4.1.1/app/bluetooth/demos/bt_rail_dmp_soc_light_micriumos/bt_rail_dmp_soc_light_micriumos-brd4164a.s37"/>
+    <property key="core.readmeFiles" value="documentation/example/soc_light_rail_dmp/readme.md"/>
+    <property key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|RAIL"/>
+    <property key="core.quality" value="PRODUCTION"/>
+    <property key="demos.bootloaderFile" value="asset://com.silabs.sdk.stack.super_4.1.1/platform/bootloader/demos/bootloader-storage-internal-single/bootloader-storage-internal-single-brd4164a-combined.s37"/>
+  </demo>
+</demos>

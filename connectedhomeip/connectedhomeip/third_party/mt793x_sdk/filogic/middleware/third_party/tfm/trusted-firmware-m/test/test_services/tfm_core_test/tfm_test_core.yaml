@@ -1,0 +1,121 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2018-2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+{
+  "psa_framework_version": 1.0,
+  "name": "TFM_SP_CORE_TEST",
+  "type": "PSA-ROT",
+  "priority": "NORMAL",
+  "entry_point": "core_test_init",
+  "stack_size": "0x0380",
+  "mmio_regions": [
+    {
+      "name": "TFM_PERIPHERAL_FPGA_IO",
+      "permission": "READ-WRITE"
+    }
+  ],
+  "secure_functions": [
+    {
+      "name": "TFM_CORE_TEST_SFN",
+      "signal": "SPM_CORE_TEST_SFN",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CORE_TEST_SFN_INIT_SUCCESS",
+      "signal": "SPM_CORE_TEST_SFN_INIT_SUCCESS",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_CORE_TEST_SFN_DIRECT_RECURSION",
+      "signal": "SPM_CORE_TEST_SFN_DIRECT_RECURSION",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    }
+  ],
+  "services": [
+    {
+      "name": "SPM_CORE_TEST_INIT_SUCCESS",
+      "sid": "0x0000F020",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "SPM_CORE_TEST_DIRECT_RECURSION",
+      "sid": "0x0000F021",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "SPM_CORE_TEST_SS_TO_SS",
+      "sid": "0x0000F024",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "SPM_CORE_TEST_SS_TO_SS_BUFFER",
+      "sid": "0x0000F025",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "SPM_CORE_TEST_OUTVEC_WRITE",
+      "sid": "0x0000F026",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "SPM_CORE_TEST_PERIPHERAL_ACCESS",
+      "sid": "0x0000F027",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "SPM_CORE_TEST_GET_CALLER_CLIENT_ID",
+      "sid": "0x0000F028",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "SPM_CORE_TEST_SPM_REQUEST",
+      "sid": "0x0000F029",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "SPM_CORE_TEST_BLOCK",
+      "sid": "0x0000F02A",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "SPM_CORE_TEST_NS_THREAD",
+      "sid": "0x0000F02B",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    }
+  ],
+  "dependencies": [
+    "SPM_CORE_TEST_2_INVERT",
+    "SPM_CORE_TEST_2_GET_EVERY_SECOND_BYTE",
+    "SPM_CORE_TEST_2_SLAVE_SERVICE"
+  ]
+}

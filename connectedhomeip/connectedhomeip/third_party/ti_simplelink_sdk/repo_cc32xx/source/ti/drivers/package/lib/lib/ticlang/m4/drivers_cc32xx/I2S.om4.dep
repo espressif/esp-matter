@@ -1,0 +1,4 @@
+package/lib/lib/ticlang/m4/drivers_cc32xx/I2S.om4: I2S.c /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/I2S.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/utils/List.h 
+I2S.c:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/I2S.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/utils/List.h:

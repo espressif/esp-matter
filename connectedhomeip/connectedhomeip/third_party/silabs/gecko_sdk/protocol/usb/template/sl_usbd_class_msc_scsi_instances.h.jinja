@@ -1,0 +1,23 @@
+#ifndef SL_USBD_CLASS_MSC_SCSI_INSTANCES_INIT
+#define SL_USBD_CLASS_MSC_SCSI_INSTANCES_INIT
+
+#include "sl_usbd_class_msc_scsi.h"
+
+/* class numbers assigned by the USB stack after init */
+{% for instance in usb_msc_scsi_instances %}
+extern uint8_t sl_usbd_msc_scsi_{{ instance }}_number;
+{% endfor %}
+
+/* event handlers for all MSC SCSI instances */
+{% for instance in usb_msc_scsi_instances %}
+__WEAK void sl_usbd_msc_scsi_{{ instance }}_on_enable_event(void);
+__WEAK void sl_usbd_msc_scsi_{{ instance }}_on_disable_event(void);
+__WEAK void sl_usbd_msc_scsi_{{ instance }}_on_host_eject_event(uint8_t lu_nbr);
+{% endfor %}
+
+/* init functions for all MSC SCSI instances */
+{% for instance in usb_msc_scsi_instances %}
+void sli_usbd_msc_scsi_{{ instance }}_init(void);
+{% endfor %}
+
+#endif

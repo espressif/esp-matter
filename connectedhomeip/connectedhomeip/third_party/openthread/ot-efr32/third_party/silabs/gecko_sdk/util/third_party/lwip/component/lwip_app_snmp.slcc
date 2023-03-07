@@ -1,0 +1,55 @@
+id: lwip_app_snmp
+label: "snmp"
+pretty_name : "LWIP snmp high layer application"
+package: platform
+description: >
+    LWIP snmp high layer application specifically programmed with the lwIP low-level raw API.
+category: LwIP|apps
+quality: production
+provides:
+  - name: lwip_apps
+    allow_multiple: true
+  - name: lwip_app_snmp
+requires:
+  - name: lwip_core
+source:
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmp_asn1.c
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmp_asn1.h
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmp_core.c
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmp_core_priv.h
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmp_mib2.c
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmp_mib2_icmp.c
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmp_mib2_interfaces.c
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmp_mib2_ip.c
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmp_mib2_snmp.c
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmp_mib2_system.c
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmp_mib2_tcp.c
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmp_mib2_udp.c
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmp_msg.c
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmp_msg.h
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmp_netconn.c
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmp_pbuf_stream.c
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmp_pbuf_stream.h
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmp_raw.c
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmp_scalar.c
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmp_snmpv2_framework.c
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmp_snmpv2_usm.c
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmp_table.c
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmp_threadsync.c
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmp_traps.c
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmpv3.c
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmpv3_mbedtls.c
+  - path: util/third_party/lwip/lwip/src/apps/snmp/snmpv3_priv.h
+include:  
+  - path: util/third_party/lwip/lwip/src/include
+    file_list:
+    - path: lwip/apps/snmp.h
+    - path: lwip/apps/snmp_core.h
+    - path: lwip/apps/snmp_mib2.h
+    - path: lwip/apps/snmp_opts.h
+    - path: lwip/apps/snmp_scalar.h
+    - path: lwip/apps/snmp_snmpv2_framework.h
+    - path: lwip/apps/snmp_snmpv2_usm.h
+    - path: lwip/apps/snmp_table.h
+    - path: lwip/apps/snmp_threadsync.h
+    - path: lwip/apps/snmpv3.h

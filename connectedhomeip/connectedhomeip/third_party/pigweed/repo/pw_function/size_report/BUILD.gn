@@ -1,0 +1,74 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+
+_deps = [
+  "$dir_pw_bloat:bloat_this_binary",
+  "..:pw_function",
+]
+
+pw_executable("pointer_base") {
+  sources = [ "pointer_base.cc" ]
+  deps = _deps
+}
+
+pw_executable("basic_function") {
+  sources = [ "basic_function.cc" ]
+  deps = _deps
+}
+
+pw_executable("callable_size_base") {
+  sources = [ "callable_size.cc" ]
+  defines = [ "_BASE=1" ]
+  deps = _deps
+}
+
+pw_executable("callable_size_function_pointer") {
+  sources = [ "callable_size.cc" ]
+  defines = [ "_FUNCTION_POINTER=1" ]
+  deps = _deps
+}
+
+pw_executable("callable_size_static_lambda") {
+  sources = [ "callable_size.cc" ]
+  defines = [ "_STATIC_LAMBDA=1" ]
+  deps = _deps
+}
+
+pw_executable("callable_size_simple_lambda") {
+  sources = [ "callable_size.cc" ]
+  defines = [ "_SIMPLE_LAMBDA=1" ]
+  deps = _deps
+}
+
+pw_executable("callable_size_capturing_lambda") {
+  sources = [ "callable_size.cc" ]
+  defines = [ "_CAPTURING_LAMBDA=1" ]
+  deps = _deps
+}
+
+pw_executable("callable_size_multi_capturing_lambda") {
+  sources = [ "callable_size.cc" ]
+  defines = [ "_MULTI_CAPTURING_LAMBDA=1" ]
+  deps = _deps
+}
+
+pw_executable("callable_size_custom_class") {
+  sources = [ "callable_size.cc" ]
+  defines = [ "_CUSTOM_CLASS=1" ]
+  deps = _deps
+}

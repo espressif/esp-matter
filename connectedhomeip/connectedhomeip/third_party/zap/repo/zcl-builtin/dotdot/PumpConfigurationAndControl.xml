@@ -1,0 +1,97 @@
+﻿<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster xmlns:zcl="http://zigbee.org/zcl/clusters"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:type="http://zigbee.org/zcl/types"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd"
+  id="0200" revision="1" name="PumpConfigurationAndControl">
+  <classification role="application" picsCode="PCC" primaryTransaction="2" />
+  
+  <type:type short="PumpOperationMode" name="PumpOperationMode" id="30" inheritsFrom="enum8">
+    <restriction>
+      <type:enumeration value="00" name="Normal" />
+      <type:enumeration value="01" name="Minimum" />
+      <type:enumeration value="02" name="Maximum" />
+      <type:enumeration value="03" name="Local" />
+    </restriction>
+  </type:type>
+  
+  <type:type short="PumpControlMode" name="PumpControlMode" id="30" inheritsFrom="enum8">
+    <restriction>
+      <type:enumeration value="00" name="ConstantSpeed" />
+      <type:enumeration value="01" name="ConstantPressure" />
+      <type:enumeration value="02" name="ProportionalPressure" />
+      <type:enumeration value="03" name="ConstantFlow" />
+      <type:enumeration value="05" name="ConstantTemperature" />
+      <type:enumeration value="07" name="Automatic" />
+    </restriction>  
+  </type:type>
+  
+  <server>
+    <attributes>
+      <!-- Pump Information -->
+      <attribute id="0000" name="MaxPressure" type="int16" min="-32767" max="32767" required="true" />
+      <attribute id="0001" name="MaxSpeed" type="uint16" required="true" max="65534" />
+      <attribute id="0002" name="MaxFlow" type="uint16" required="true" max="65534" />
+      <attribute id="0003" name="MinConstPressure" type="int16" min="-32767" max="32767" />
+      <attribute id="0004" name="MaxConstPressure" type="int16" min="-32767" max="32767" />
+      <attribute id="0005" name="MinCompPressure" type="int16" min="-32767" max="32767" />
+      <attribute id="0006" name="MaxCompPressure" type="int16" min="-32767" max="32767" />
+      <attribute id="0007" name="MinConstSpeed" type="uint16" max="65534" />
+      <attribute id="0008" name="MaxConstSpeed" type="uint16" max="65534" />
+      <attribute id="0009" name="MinConstFlow" type="uint16" max="65534" />
+      <attribute id="000A" name="MaxConstFlow" type="uint16" max="65534" />
+      <attribute id="000B" name="MinConstTemp" type="int16" min="-27315" max="32767" />
+      <attribute id="000C" name="MaxConstTemp" type="int16" min="-27315" max="32767" />
+      <!-- Pump Dynamic Information -->
+      <attribute id="0010" name="PumpStatus" type="map16">
+        <bitmap>
+          <element name="DeviceFault" mask="0001" type="bool" />
+          <element name="SupplyFault" mask="0002" shiftRight="1" type="bool" />
+          <element name="SpeedLow" mask="0004" shiftRight="2" type="bool" />
+          <element name="SpeedHigh" mask="0008" shiftRight="3" type="bool" />
+          <element name="LocalOverride" mask="0010" shiftRight="4" type="bool" />
+          <element name="Running" mask="0020" shiftRight="5" type="bool" />
+          <element name="RemotePressure" mask="0040" shiftRight="6" type="bool" />
+          <element name="RemoteFlow" mask="0080" shiftRight="7" type="bool" />
+          <element name="RemoteTemperature" mask="0100" shiftRight="8" type="bool" />
+        </bitmap>
+      </attribute>
+      <attribute id="0011" name="EffectiveOperationMode" type="PumpOperationMode" required="true" />
+      <attribute id="0012" name="EffectiveControlMode" type="PumpControlMode" required="true" />
+      <attribute id="0013" name="Capacity" type="int16" min="0" max="32767" required="true" reportRequired="true" />
+      <attribute id="0014" name="Speed" type="uint16" max="65534" />
+      <attribute id="0015" name="LifetimeRunningHours" type="uint24" writable="true" max="16777214" default="0" />
+      <attribute id="0016" name="Power" type="uint24" writable="true" max="16777214" />
+      <attribute id="0017" name="LifetimeEnergyConsumed" type="uint32" max="4294967294" default="0" />
+      <!-- Pump Settings -->
+      <attribute id="0020" name="OperationMode" type="PumpOperationMode" writable="true" required="true" default="0" />
+      <attribute id="0021" name="ControlMode" type="PumpControlMode" writable="true" default="0" />
+      <attribute id="0022" name="AlarmMask" type="map16">
+        <bitmap>
+          <element name="SupplyVoltageTooLow" type="bool" mask="0001"  />
+          <element name="SupplyVoltageTooHigh" type="bool" mask="0002" shiftRight="1" />
+          <element name="PowerMissingPhase" type="bool" mask="0004" shiftRight="2" />
+          <element name="SystemPressureTooLow" type="bool" mask="0008" shiftRight="3" />
+          <element name="SystemPressureTooHigh" type="bool" mask="0010" shiftRight="4" />
+          <element name="DryRunning" type="bool" mask="0020" shiftRight="5" />
+          <element name="MotorTemperatureTooHigh" type="bool" mask="0040" shiftRight="6" />
+          <element name="PumpMotorHasFatalFailure" type="bool" mask="0080" shiftRight="7" />
+          <element name="ElectronicTemperatureTooHigh" type="bool" mask="0100" shiftRight="8" />
+          <element name="PumpBlocked" type="bool" mask="0200" shiftRight="9" />
+          <element name="SensorFailure" type="bool" mask="0400" shiftRight="10" />
+          <element name="ElectronicNonFatalFailure" type="bool" mask="0800" shiftRight="11" />
+          <element name="ElectronicFatalFailure" type="bool" mask="1000" shiftRight="12" />
+          <element name="GeneralFault" type="bool" mask="2000" shiftRight="13" />
+        </bitmap>
+      </attribute>
+    </attributes>
+  </server>
+</zcl:cluster>

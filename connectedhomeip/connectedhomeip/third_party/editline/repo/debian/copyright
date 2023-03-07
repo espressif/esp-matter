@@ -1,0 +1,32 @@
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: editline
+Upstream-Contact: Joachim Nilsson <troglobit@gmail.com>
+Source: http://github.com/troglobit/editline
+Comment: This package was originally debianized by Jim Studt <jim@federated.com>
+	 on Fri,  5 May 2000 13:25:51 -0500.  It was received from, then upstream
+	 author, Rich Salz <rsalz@shore.net>
+
+Files: *
+Copyright: 1992,1993 Simmule Turner and Rich Salz.
+License: C-News
+
+Files: debian/*
+Copyright: 2010-2020 Joachim Nilsson <troglobit@gmail.com>
+License: BSD-2-clause
+
+License: C-News
+ This software is not subject to any license of the American Telephone
+ and Telegraph Company or of the Regents of the University of California.
+ .
+ Permission is granted to anyone to use this software for any purpose on
+ any computer system, and to alter it and redistribute it freely, subject
+ to the following restrictions:
+ 1. The authors are not responsible for the consequences of use of this
+    software, no matter how awful, even if they arise from flaws in it.
+ 2. The origin of this software must not be misrepresented, either by
+    explicit claim or by omission.  Since few users ever read sources,
+    credits must appear in the documentation.
+ 3. Altered versions must be plainly marked as such, and must not be
+    misrepresented as being the original software.  Since few users
+    ever read sources, credits must appear in the documentation.
+ 4. This notice may not be removed or altered.

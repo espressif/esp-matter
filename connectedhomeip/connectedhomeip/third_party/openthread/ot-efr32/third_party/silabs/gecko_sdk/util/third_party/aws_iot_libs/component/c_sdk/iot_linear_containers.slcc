@@ -1,0 +1,21 @@
+id: iot_linear_containers
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|C SDK
+label: IoT Linear Containers
+description: C SDK Linear Containers Library.
+
+package: amazon_platform
+quality: production
+
+provides:
+  - name: iot_linear_containers
+
+requires:
+  - name: iot_config_common
+
+root_path: util/third_party/aws_iot_libs
+
+include:
+  - path: libraries/c_sdk/standard/common/include
+    file_list:
+      - path: iot_linear_containers.h

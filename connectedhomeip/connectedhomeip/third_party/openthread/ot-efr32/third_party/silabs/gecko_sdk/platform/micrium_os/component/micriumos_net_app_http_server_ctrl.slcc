@@ -1,0 +1,22 @@
+id: micriumos_net_app_http_server_ctrl
+label: Network Suite - HTTP Server Control Layer
+package: micrium-tcpx
+description: Micrium OS Network HTTP Server Control Layer
+category: Services|Micrium|Network Suite
+quality: production
+component_root_path: platform/micrium_os/net
+source:
+  - path: source/http/server/http_server_ctrl_layer_mem.c
+  - path: source/http/server/http_server_ctrl_layer_rest_cfg.c
+  - path: source/http/server/http_server_ctrl_layer.c
+include:
+  - path: source
+    file_list:
+      - path: http/server/http_server_ctrl_layer_priv.h
+  - path: include
+    file_list:
+      - path: http_server_addon_ctrl_layer.h
+provides:
+  - name: net_app_http_server_ctrl
+requires:
+  - name: net_app_http_server

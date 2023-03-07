@@ -1,0 +1,27 @@
+package: Zigbee
+description: A component that provides common functionalities between client and server
+  sides of the Green Power components.
+label: Green Power Common
+quality: production
+id: zigbee_green_power_common
+category: Zigbee|Green Power
+provides:
+   - name: zigbee_green_power_common
+   - name: zigbee_gp_util
+requires:
+   - name: zigbee_gp
+source:
+  - path: protocol/zigbee/app/framework/plugin/green-power-common/green-power-common.c
+  - path: protocol/zigbee/stack/gp/gp-util.c
+    condition:
+      - zigbee_ezsp
+include:
+  - path: protocol/zigbee/app/framework/plugin/green-power-common
+    file_list:
+      - path: green-power-common.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_green_power_common
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/green-power-common

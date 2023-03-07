@@ -1,0 +1,16 @@
+id: psa_crypto_aes
+package: platform
+label: AES Block Cipher
+description: >-
+  This component provides support for AES key type in PSA Crypto.
+category: Platform|Security|PSA Crypto|Encryption
+quality: production
+provides:
+  - name: psa_crypto_aes
+requires:
+  - name: psa_crypto
+  - name: mbedtls_aes
+    condition: [device_series_0]
+template_contribution:
+  - name: psa_crypto_config
+    value: PSA_WANT_KEY_TYPE_AES

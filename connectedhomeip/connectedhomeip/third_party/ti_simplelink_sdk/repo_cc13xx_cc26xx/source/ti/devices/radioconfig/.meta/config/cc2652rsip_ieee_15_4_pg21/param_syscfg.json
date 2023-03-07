@@ -1,0 +1,143 @@
+{
+    "configs": [
+        {
+            "name": "phyType",
+            "displayName": "PHY Type",
+            "description": "Selects the PHY setting",
+            "options": [
+                {
+                    "name": "ieee154",
+                    "displayName": "IEEE 802.15.4-2006, 250 kbps, OQPSK, DSSS = 1:8 (Release Candidate)"
+                }
+            ],
+            "default": "ieee154"
+        },
+        {
+            "name": "parent",
+            "displayName": "Parent",
+            "default": "Stack",
+            "hidden": true
+        },
+        {
+            "name": "permission",
+            "displayName": "Permission",
+            "default": "None",
+            "hidden": true,
+            "options": [
+                {
+                    "name": "None"
+                },
+                {
+                    "name": "ReadWrite"
+                },
+                {
+                    "name": "ReadOnly"
+                }
+            ]
+        },
+        {
+            "name": "frequency",
+            "displayName": "Channel - Frequency (MHz)",
+            "description": "Channel",
+            "default": "2405",
+            "options": [
+                {
+                    "displayName": "Channel 11 - 2405 MHz",
+                    "key": 2405,
+                    "name": 2405
+                },
+                {
+                    "displayName": "Channel 12 - 2410 MHz",
+                    "key": 2410,
+                    "name": 2410
+                },
+                {
+                    "displayName": "Channel 13 - 2415 MHz",
+                    "key": 2415,
+                    "name": 2415
+                },
+                {
+                    "displayName": "Channel 14 - 2420 MHz",
+                    "key": 2420,
+                    "name": 2420
+                },
+                {
+                    "displayName": "Channel 15 - 2425 MHz",
+                    "key": 2425,
+                    "name": 2425
+                },
+                {
+                    "displayName": "Channel 16 - 2430 MHz",
+                    "key": 2430,
+                    "name": 2430
+                },
+                {
+                    "displayName": "Channel 17 - 2435 MHz",
+                    "key": 2435,
+                    "name": 2435
+                },
+                {
+                    "displayName": "Channel 18 - 2440 MHz",
+                    "key": 2440,
+                    "name": 2440
+                },
+                {
+                    "displayName": "Channel 19 - 2445 MHz",
+                    "key": 2445,
+                    "name": 2445
+                },
+                {
+                    "displayName": "Channel 20 - 2450 MHz",
+                    "key": 2450,
+                    "name": 2450
+                },
+                {
+                    "displayName": "Channel 21 - 2455 MHz",
+                    "key": 2455,
+                    "name": 2455
+                },
+                {
+                    "displayName": "Channel 22 - 2460 MHz",
+                    "key": 2460,
+                    "name": 2460
+                },
+                {
+                    "displayName": "Channel 23 - 2465 MHz",
+                    "key": 2465,
+                    "name": 2465
+                },
+                {
+                    "displayName": "Channel 24 - 2470 MHz",
+                    "key": 2470,
+                    "name": 2470
+                },
+                {
+                    "displayName": "Channel 25 - 2475 MHz",
+                    "key": 2475,
+                    "name": 2475
+                },
+                {
+                    "displayName": "Channel 26 - 2480 MHz",
+                    "key": 2480,
+                    "name": 2480
+                }
+            ]
+        },
+        {
+            "name": "txPower",
+            "displayName": "TX Power (dBm)",
+            "description": "TX Power",
+            "default": "14",
+            "longDescription": ""
+        }
+    ],
+    "phys": {
+        "ieee": [
+            {
+                "file": "setting_ieee_802_15_4.json",
+                "name": "ieee154",
+                "description": "IEEE 802.15.4-2006, 250 kbps, OQPSK, DSSS = 1:8 (Release Candidate)"
+            }
+        ]
+    }
+}

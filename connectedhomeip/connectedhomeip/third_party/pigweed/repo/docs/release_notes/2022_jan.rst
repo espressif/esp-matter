@@ -1,0 +1,192 @@
+.. _docs-release-notes-2022-jan:
+
+===================================
+Pigweed: What's New in January 2022
+===================================
+Happy new year from the Pigweed team! We’re excited to share what we’ve been up
+to this month and we’re really looking forward to what 2022 will bring to the
+Pigweed community.
+
+:ref:`Pigweed<docs-root>` is a collection of libraries and tools for building
+robust embedded software, efficiently. Pigweed allows you to write code that
+runs transparently on both your host machine and tiny 32-bit microcontrollers
+like those in the :ref:`STM32<target-stm32f429i-disc1>` and
+:ref:`Arduino<target-arduino>` families, while giving you the comforts of modern
+software development traditionally lacking in embedded systems, like
+:ref:`easy unit testing<module-pw_unit_test>`,
+:ref:`powerful build systems<docs-build-system>`,
+:ref:`flexible logging<module-pw_log>`, and
+:ref:`reliable communication<module-pw_rpc>`.
+
+.. admonition:: Note
+   :class: warning
+
+   Many Pigweed modules are already shipping in commercial products, but it is
+   still an early access project. Find out if
+   :ref:`Pigweed is right for you<docs-concepts-right-for-my-project>`.
+
+Pigweed is a free and open source project and we welcome contributions! Join us
+on `Discord <https://discord.gg/M9NSeTA>`_ to share feedback, ask questions, and
+get involved with the Pigweed community!
+
+------------------------------
+Experimental Pigweed framework
+------------------------------
+.. admonition:: tl;dr
+   :class: checkmark
+
+   We’re starting the “whole OS” framework version of Pigweed! It’s not ready
+   for use yet but you might want to take a peek.
+
+Pigweed is designed to be highly modular—you can use as many or as few of the
+Pigweed modules as you need for your project, and those modules will work
+flexibly in any project structure. This works great when you want to add Pigweed
+super powers like hybrid host/target unit testing or RPC communication to an
+existing project. While Pigweed gives you nearly all of the tools you need to
+efficiently build a robust, reliable embedded project, until now we haven’t had
+a great solution for building a new project on Pigweed.
+
+The Pigweed framework assembles an opinionated project structure, build system,
+and development environment that does three key things:
+
+* Takes care of difficult but unproductive project plumbing issues like setting
+  up a target toolchain and providing support for
+  :ref:`OS abstractions<docs-os_abstraction_layers>`.
+
+* Configures Pigweed module backends that give you logging, asserts, threads,
+  dynamic memory allocation, and more, that work transparently both on host and
+  on target
+
+* Sets up a productive development environment with rich code analysis and
+  powerful device interaction tools
+
+You can experiment with this right now by checking out the ``pw_system``
+:ref:`documentation<module-pw_system>`. The experimental configuration leverages
+FreeRTOS and runs on the STM32F429I Discovery board. With a
+:ref:`few simple commands<target-stm32f429i-disc1-stm32cube>`, you can have a
+complete embedded development environment set up and focus on building your
+product.
+
+.. warning::
+
+   The Pigweed framework is still in very active development and you should
+   expect breaking changes in the future. If you’re experimenting with it, we
+   would love to hear from you! Join us on
+   `Discord <https://discord.gg/M9NSeTA>`_!
+
+-------------------------------------
+Support for plugins in ``pw_console``
+-------------------------------------
+Teams that use Pigweed quickly come to rely on the
+:ref:`console<module-pw_console>` as a vital tool for interacting with their
+devices via RPC. It’s now possible to tailor the console to meet your project’s
+specific needs through a new :ref:`plugin interface<module-pw_console-plugins>`.
+You can build your own menus, window panes, keybindings, and clickable buttons
+to truly make ``pw_console`` your own.
+
+How are you using the Pigweed console in your project? Let us know on
+`Discord <https://discord.gg/M9NSeTA>`_!
+
+------------------------------------
+Expanded support for Bazel and CMake
+------------------------------------
+Pigweed’s primary build system is
+`GN (Generate Ninja) <https://gn.googlesource.com/gn>`_, but to make it easier
+to use Pigweed modules in existing projects, we have been expanding support for
+the `Bazel <https://bazel.build/>`_ and `CMake <https://cmake.org/>`_ build
+systems. Right now, the best way to determine which build systems a module
+supports is to look out for ``BUILD.gn``, ``BUILD.bazel`` and ``CMakeLists.txt``
+files (respectively) in module directories. While we work on improving build
+system support and documentation, check out the
+:ref:`build system documentation<docs-build-system>` for more detailed
+information and join us on Discord for support.
+
+----------------------------------------
+Changes to the RPC ``ChannelOutput`` API
+----------------------------------------
+RPC endpoints use :ref:`ChannelOutput<module-pw_rpc-ChannelOutput>` instances to
+send packets encoding RPC data. To send an encoded RPC packet, we need a buffer
+containing the packet’s data. In the past, we could request a buffer by doing
+something like this:
+
+.. code-block:: cpp
+
+   auto buffer = pw::rpc::ChannelOutput::AcquireBuffer(buffer_size)
+   // fill in the buffer here
+   pw::rpc::ChannelOutput::SendAndReleaseBuffer(buffer)
+
+The ``ChannelOutput::AcquireBuffer`` and ``ChannelOutput::SendAndReleaseBuffer``
+methods are no longer part of ``ChannelOutput``’s public API, making its
+internal buffer private. Now, we create our own buffer and ``ChannelOutput`` is
+simply responsible for sending it:
+
+.. code-block:: cpp
+
+   auto buffer = ... // create your own local buffer with RPC packet data
+   pw::rpc::ChannelOutput::Send(buffer)
+
+This approach avoids several tricky concurrency issues related to buffer
+lifetimes, and simplifies the ``ChannelOutput`` API. It also opens up the
+possibility of projects managing RPC buffers in more flexible ways, e.g. via
+dynamically-allocated memory or separate shared memory mechanisms.
+
+.. warning::
+
+   This is a breaking change if you update pw_rpc, but one that can be fixed
+   quickly.
+
+We’re actively reviewing the RPC API with a view towards significantly improving
+it in the future. Share your input with us on
+`Discord <https://discord.gg/M9NSeTA>`_!
+
+------------
+More Updates
+------------
+* It’s now possible to generate a token database from a list of strings in a
+  JSON file for ``pw_tokenizer``. This can be useful when you need to tokenize
+  strings that can’t be parsed from compiled binaries.
+
+* ``pw_assert``‘s new ``pw_assert_tokenized`` backend provides a much more
+  space-efficient implementation compared to using ``pw_assert_log`` with
+  ``pw_log_tokenized``. However, there are trade offs to consider, so check out
+  the :ref:`documentation<module-pw_assert_tokenized>`.
+
+* CMake builds now support compile-time module configuration similar to GN
+  through the use of the ``pw_add_module_config`` and ``pw_set_module_config``
+  functions.
+
+* In ``pw_build``, it is now possible to set a specific working directory for
+  :ref:`pw_exec<module-pw_build-pw_exec>` actions.
+
+* ``pw_cpu_exception`` now supports the ARMv8M Mainline architecture in
+  ``pw_cpu_exception_cortex_m``. This allows us to take advantage of stack limit
+  boundary features in microcontrollers using that architecture, like Cortex M33
+  and M35P.
+
+------------
+Get Involved
+------------
+.. tip::
+
+   We welcome contributions from the community! Here are just a few
+   opportunities to get involved.
+
+* Pigweed now includes GN build files for
+  `TinyUSB <https://github.com/hathach/tinyusb>`_, a popular USB library for
+  embedded systems. Projects can now include it by cloning the TinyUSB
+  repository and configuring GN to build it. But right now, we lack interfaces
+  between TinyUSB and Pigweed abstractions like pw_stream. This is a great
+  opportunity to help get very useful functionality across the finish line.
+
+* We’re very interested in supporting the
+  `Raspberry Pi Pico <https://www.raspberrypi.com/products/raspberry-pi-pico/>`_
+  and the ecosystem of devices using the RP2040 microcontroller. We will be
+  working in earnest on this in the coming months and welcome anyone who wants
+  to lend a helping hand!
+
+* Evolving the Pigweed framework from its current experimental state to a
+  relatively complete embedded project platform is one of our major focuses this
+  year, and we want your help. That help can range from providing input on what
+  you’re looking for in a framework, to building small projects with it and
+  providing feedback, up to contributing directly to its development. Join us to
+  talk about it on `Discord <https://discord.gg/M9NSeTA>`_!

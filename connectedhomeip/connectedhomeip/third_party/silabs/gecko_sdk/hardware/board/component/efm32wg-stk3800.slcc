@@ -1,0 +1,22 @@
+!!omap
+- id: efm32wg_stk3800
+- label: EFM32WG-STK3800
+- package: platform
+- description: Kit BSP support for the EFM32 Wonder Gecko Starter Kit.
+- category: Platform|Board|Kit|Starter Kit
+- quality: production
+- requires:
+  - name: hardware_board_from_efm32wg-stk3800
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_stk
+- define:
+  - name: SL_KIT_NAME
+    value: '"EFM32WG-STK3800"'
+  - name: SL_KIT_REV
+    value: '"C01"'
+- tag:
+  - kit:opn:EFM32WG-STK3800
+  - kit:pn:STK3800
+  - kit:variant:A
+  - kit:revision:C01

@@ -1,0 +1,20 @@
+id: cmsis_os2_ext_task_register
+package: platform
+label: "Task registers abstraction layer"
+description: Component that provides task registers abstraction layer.
+category: Platform|Utilities
+quality: production
+ui_hints:
+  visibility: never
+root_path: platform/common
+include:
+  - path: inc/
+    file_list:
+      - path: sli_cmsis_os2_ext_task_register.h
+source:
+  - path: src/sli_cmsis_os2_ext_task_register.c
+provides:
+  - name: cmsis_os2_ext_task_register
+define:
+  - name: configNUM_SDK_THREAD_LOCAL_STORAGE_POINTERS
+    value: 2

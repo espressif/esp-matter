@@ -1,0 +1,17 @@
+id: "bluetooth_feature_l2cap"
+label: "L2CAP"
+package: "Bluetooth"
+description: >
+  This component provides the L2CAP Connection Oriented Channel feature.
+category: "Bluetooth|Stack"
+quality: "production"
+root_path: "protocol/bluetooth"
+requires:
+  - name: "bluetooth_stack"
+config_file:
+  - path: "config/sl_bluetooth_l2cap_config.h"
+provides:
+  - name: "bluetooth_feature_l2cap"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_l2cap

@@ -1,0 +1,45 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+# Tests for the generic pw_rpc client.
+
+licenses(["notice"])
+
+java_test(
+    name = "TransferClientTest",
+    size = "small",
+    srcs = ["TransferClientTest.java"],
+    test_class = "dev.pigweed.pw_transfer.TransferClientTest",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pw_log/java/main/dev/pigweed/pw_log",
+        "//pw_rpc/java/main/dev/pigweed/pw_rpc:client",
+        "//pw_rpc/java/test/dev/pigweed/pw_rpc:test_client",
+        "//pw_transfer:transfer_proto_java_lite",
+        "//pw_transfer/java/main/dev/pigweed/pw_transfer:client",
+        "@com_google_protobuf//java/lite",
+        "@maven//:com_google_code_findbugs_jsr305",
+        "@maven//:com_google_flogger_flogger_system_backend",
+        "@maven//:com_google_guava_guava",
+        "@maven//:com_google_truth_truth",
+        "@maven//:org_mockito_mockito_core",
+    ],
+)
+
+test_suite(
+    name = "pw_transfer",
+    tests = [
+        ":TransferClientTest",
+    ],
+)

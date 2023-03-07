@@ -1,0 +1,85 @@
+id: "nvm3_lib"
+label: "NVM3 Core"
+package: "platform"
+description: >
+  The NVM3 driver provides a means to write and read data objects
+  (key/value pairs) stored in flash. Wear-leveling is applied to reduce erase
+  and write cycles and maximize flash lifetime. The driver is resilient to
+  power loss and reset events, ensuring that objects retrieved from the driver
+  are always in a valid state. A single NVM3 instance can be shared among
+  several wireless stacks and application code, making it well-suited for
+  multiprotocol applications.
+
+
+  This component includes only the NVM3 driver core. To configure and create
+  the default instance of this driver, the NVM3 Default Instance component
+  should be included in the project.
+category: Services|NVM3
+quality: "production"
+source:
+  - path: "platform/emdrv/nvm3/src/nvm3_hal_flash.c"
+    unless: [trustzone_nonsecure]
+  - path: "platform/emdrv/nvm3/src/nvm3_lock.c"
+    unless: [trustzone_nonsecure]
+library:
+  - path: "platform/emdrv/nvm3/lib/libnvm3_CM0P_gcc.a"
+    condition:
+      - "toolchain_gcc"
+      - "cortexm0plus"
+    unless: [trustzone_nonsecure]
+  - path: "platform/emdrv/nvm3/lib/libnvm3_CM3_gcc.a"
+    condition:
+      - "toolchain_gcc"
+      - "cortexm3"
+    unless: [trustzone_nonsecure]
+  - path: "platform/emdrv/nvm3/lib/libnvm3_CM4_gcc.a"
+    condition:
+      - "toolchain_gcc"
+      - "cortexm4"
+    unless: [trustzone_nonsecure]
+  - path: "platform/emdrv/nvm3/lib/libnvm3_CM33_gcc.a"
+    condition:
+      - "toolchain_gcc"
+      - "cortexm33"
+    unless: [trustzone_nonsecure]
+  - path: "platform/emdrv/nvm3/lib/libnvm3_CM0P_iar.a"
+    condition:
+      - "toolchain_iar"
+      - "cortexm0plus"
+    unless: [trustzone_nonsecure]
+  - path: "platform/emdrv/nvm3/lib/libnvm3_CM3_iar.a"
+    condition:
+      - "toolchain_iar"
+      - "cortexm3"
+    unless: [trustzone_nonsecure]
+  - path: "platform/emdrv/nvm3/lib/libnvm3_CM4_iar.a"
+    condition:
+      - "toolchain_iar"
+      - "cortexm4"
+    unless: [trustzone_nonsecure]
+  - path: "platform/emdrv/nvm3/lib/libnvm3_CM33_iar.a"
+    condition:
+      - "toolchain_iar"
+      - "cortexm33"
+    unless: [trustzone_nonsecure]
+include:
+  - path: "platform/emdrv/nvm3/inc"
+    file_list:
+      - path: "nvm3.h"
+      - path: "nvm3_hal.h"
+      - path: "nvm3_hal_flash.h"
+      - path: "nvm3_lock.h"
+    unless: [trustzone_nonsecure]
+provides:
+  - name: "nvm3"
+  - name: "nvm3_lib"
+  - name: "nvm_system"
+requires:
+  - name: "emlib_msc"
+  - name: "ecode"
+template_contribution:
+  - name: component_catalog
+    value: nvm3
+documentation:
+    docset: gecko-platform
+    document: driver/api/group-nvm3

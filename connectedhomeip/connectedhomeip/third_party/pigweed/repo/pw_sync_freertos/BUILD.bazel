@@ -1,0 +1,386 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load(
+    "//pw_build:pigweed.bzl",
+    "pw_cc_library",
+)
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+pw_cc_library(
+    name = "binary_semaphore_headers",
+    hdrs = [
+        "public/pw_sync_freertos/binary_semaphore_inline.h",
+        "public/pw_sync_freertos/binary_semaphore_native.h",
+        "public_overrides/pw_sync_backend/binary_semaphore_inline.h",
+        "public_overrides/pw_sync_backend/binary_semaphore_native.h",
+    ],
+    includes = [
+        "public",
+        "public_overrides",
+    ],
+    target_compatible_with = [
+        "//pw_build/constraints/rtos:freertos",
+    ],
+    deps = [
+        # TODO(b/234876414): This should depend on FreeRTOS but our third parties currently
+        # do not have Bazel support.
+        "//pw_assert",
+        "//pw_chrono:system_clock",
+        "//pw_chrono_freertos:system_clock_headers",
+    ],
+)
+
+pw_cc_library(
+    name = "binary_semaphore",
+    srcs = [
+        "binary_semaphore.cc",
+    ],
+    target_compatible_with = [
+        "//pw_build/constraints/rtos:freertos",
+    ],
+    deps = [
+        ":binary_semaphore_headers",
+        "//pw_assert",
+        "//pw_interrupt:context",
+        "//pw_sync:binary_semaphore_facade",
+    ],
+)
+
+pw_cc_library(
+    name = "counting_semaphore_headers",
+    hdrs = [
+        "public/pw_sync_freertos/counting_semaphore_inline.h",
+        "public/pw_sync_freertos/counting_semaphore_native.h",
+        "public_overrides/pw_sync_backend/counting_semaphore_inline.h",
+        "public_overrides/pw_sync_backend/counting_semaphore_native.h",
+    ],
+    includes = [
+        "public",
+        "public_overrides",
+    ],
+    target_compatible_with = [
+        "//pw_build/constraints/rtos:freertos",
+    ],
+    deps = [
+        # TODO(b/234876414): This should depend on FreeRTOS but our third parties currently
+        # do not have Bazel support.
+        "//pw_assert",
+        "//pw_sync:counting_semaphore_facade",
+        "//pw_chrono:system_clock",
+        "//pw_chrono_freertos:system_clock_headers",
+    ],
+)
+
+pw_cc_library(
+    name = "counting_semaphore",
+    srcs = [
+        "counting_semaphore.cc",
+    ],
+    target_compatible_with = [
+        "//pw_build/constraints/rtos:freertos",
+    ],
+    deps = [
+        ":counting_semaphore_headers",
+        "//pw_assert",
+        "//pw_interrupt:context",
+        "//pw_sync:counting_semaphore_facade",
+    ],
+)
+
+pw_cc_library(
+    name = "mutex_headers",
+    hdrs = [
+        "public/pw_sync_freertos/mutex_inline.h",
+        "public/pw_sync_freertos/mutex_native.h",
+        "public_overrides/pw_sync_backend/mutex_inline.h",
+        "public_overrides/pw_sync_backend/mutex_native.h",
+    ],
+    includes = [
+        "public",
+        "public_overrides",
+    ],
+    target_compatible_with = [
+        "//pw_build/constraints/rtos:freertos",
+    ],
+    deps = [
+        # TODO(b/234876414): This should depend on FreeRTOS but our third parties currently
+        # do not have Bazel support.
+        "//pw_assert",
+    ],
+)
+
+pw_cc_library(
+    name = "mutex",
+    target_compatible_with = [
+        "//pw_build/constraints/rtos:freertos",
+    ],
+    deps = [
+        ":mutex_headers",
+        "//pw_sync:mutex_facade",
+    ],
+)
+
+pw_cc_library(
+    name = "thread_notification_headers",
+    hdrs = [
+        "public/pw_sync_freertos/config.h",
+        "public/pw_sync_freertos/thread_notification_inline.h",
+        "public/pw_sync_freertos/thread_notification_native.h",
+        "public_overrides/thread_notification/pw_sync_backend/thread_notification_inline.h",
+        "public_overrides/thread_notification/pw_sync_backend/thread_notification_native.h",
+    ],
+    includes = [
+        "public",
+        "public_overrides/thread_notification",
+    ],
+    target_compatible_with = [
+        "//pw_build/constraints/rtos:freertos",
+    ],
+    deps = [
+        "//pw_assert",
+        # TODO(b/234876414): This should depend on FreeRTOS but our third parties
+        # currently do not have Bazel support.
+        "//pw_interrupt:context",
+        "//pw_polyfill",
+        "//pw_sync:interrupt_spin_lock",
+        "//pw_sync:lock_annotations",
+    ],
+)
+
+pw_cc_library(
+    name = "thread_notification",
+    srcs = [
+        "thread_notification.cc",
+    ],
+    target_compatible_with = [
+        "//pw_build/constraints/rtos:freertos",
+    ],
+    deps = [
+        ":thread_notification_headers",
+        "//pw_assert",
+        "//pw_interrupt:context",
+        "//pw_sync:thread_notification_facade",
+    ],
+)
+
+pw_cc_library(
+    name = "timed_thread_notification_headers",
+    hdrs = [
+        "public/pw_sync_freertos/timed_thread_notification_inline.h",
+        "public_overrides/timed_thread_notification/pw_sync_backend/timed_thread_notification_inline.h",
+    ],
+    includes = [
+        "public",
+        "public_overrides/timed_thread_notification",
+    ],
+    target_compatible_with = [
+        "//pw_build/constraints/rtos:freertos",
+    ],
+    deps = [
+        # TODO(b/234876414): This should depend on FreeRTOS but our third parties
+        # currently do not have Bazel support.
+        "//pw_chrono:system_clock",
+        "//pw_sync:timed_thread_notification_facade",
+    ],
+)
+
+pw_cc_library(
+    name = "timed_thread_notification",
+    srcs = [
+        "timed_thread_notification.cc",
+    ],
+    target_compatible_with = [
+        "//pw_build/constraints/rtos:freertos",
+    ],
+    deps = [
+        ":timed_thread_notification_headers",
+        "//pw_assert",
+        "//pw_chrono_freertos:system_clock_headers",
+        "//pw_interrupt:context",
+        "//pw_sync:timed_thread_notification_facade",
+    ],
+)
+
+pw_cc_library(
+    name = "timed_mutex_headers",
+    hdrs = [
+        "public/pw_sync_freertos/timed_mutex_inline.h",
+        "public_overrides/pw_sync_backend/timed_mutex_inline.h",
+    ],
+    includes = [
+        "public",
+        "public_overrides",
+    ],
+    target_compatible_with = [
+        "//pw_build/constraints/rtos:freertos",
+    ],
+    deps = [
+        # TODO(b/234876414): This should depend on FreeRTOS but our third parties
+        # currently do not have Bazel support.
+        "//pw_chrono:system_clock",
+        "//pw_sync:timed_mutex_facade",
+    ],
+)
+
+pw_cc_library(
+    name = "timed_mutex",
+    srcs = [
+        "timed_mutex.cc",
+    ],
+    target_compatible_with = [
+        "//pw_build/constraints/rtos:freertos",
+    ],
+    deps = [
+        ":timed_mutex_headers",
+        "//pw_assert",
+        "//pw_chrono_freertos:system_clock_headers",
+        "//pw_interrupt:context",
+        "//pw_sync:timed_mutex_facade",
+    ],
+)
+
+pw_cc_library(
+    name = "interrupt_spin_lock_headers",
+    hdrs = [
+        "public/pw_sync_freertos/interrupt_spin_lock_inline.h",
+        "public/pw_sync_freertos/interrupt_spin_lock_native.h",
+        "public_overrides/pw_sync_backend/interrupt_spin_lock_inline.h",
+        "public_overrides/pw_sync_backend/interrupt_spin_lock_native.h",
+    ],
+    includes = [
+        "public",
+        "public_overrides",
+    ],
+    target_compatible_with = [
+        "//pw_build/constraints/rtos:freertos",
+    ],
+    # TODO(b/234876414): This should depend on FreeRTOS but our third parties
+    # currently do not have Bazel support.
+)
+
+pw_cc_library(
+    name = "interrupt_spin_lock",
+    srcs = [
+        "interrupt_spin_lock.cc",
+    ],
+    target_compatible_with = [
+        "//pw_build/constraints/rtos:freertos",
+    ],
+    deps = [
+        ":interrupt_spin_lock_headers",
+        "//pw_assert",
+        "//pw_interrupt:context",
+        "//pw_sync:interrupt_spin_lock_facade",
+    ],
+)
+
+# TODO(b/228998350): Figure out how to conditionally enable this test like GN
+#
+# You can instantiate this with your own implementation of
+# "//pw_thread:test_threads_header", see
+# ":thread_notification_test_with_static_threads" below as an example.
+# pw_cc_library(
+#     name = "thread_notification_test",
+#     srcs = [
+#         "thread_notification_test.cc",
+#     ],
+#     target_compatible_with = [
+#         "//pw_build/constraints/rtos:freertos",
+#     ],
+#     # TODO(b/234876414): This should depend on FreeRTOS but our third parties
+#     # currently do not have Bazel support.
+#     deps = [
+#         "//pw_chrono:system_clock",
+#         "//pw_sync:thread_notification",
+#         "//pw_thread:sleep",
+#         "//pw_thread:test_threads_header",
+#         "//pw_thread:thread",
+#         "//pw_unit_test",
+#     ],
+# )
+# This is only used for the python tests.
+filegroup(
+    name = "thread_notification_test",
+    srcs = [
+        "thread_notification_test.cc",
+    ],
+)
+
+# TODO(b/228998350): Figure out how to conditionally enable this test like GN
+# with:
+#    enable_if = pw_sync_THREAD_NOTIFICATION_BACKEND ==
+#                "$dir_pw_sync_freertos:thread_notification" &&
+#                pw_chrono_SYSTEM_CLOCK_BACKEND != "" &&
+#                pw_thread_THREAD_BACKEND != "" && pw_thread_SLEEP_BACKEND != ""
+#
+# pw_cc_test(
+#     name = "thread_notification_test_with_static_threads",
+#     target_compatible_with = [
+#         "//pw_build/constraints/rtos:freertos",
+#     ],
+#     deps = [
+#         ":thread_notification_test",
+#         "//pw_thread_freertos:static_test_threads",
+#     ],
+# )
+
+# TODO(b/228998350): Figure out how to conditionally enable this test like GN
+#
+# You can instantiate this with your own implementation of
+# "//pw_thread:test_threads_header", see
+# ":timed_thread_notification_test_with_static_threads" below as an example.
+#pw_cc_library(
+#    name = "timed_thread_notification_test",
+#    srcs = [
+#        "timed_thread_notification_test.cc",
+#    ],
+#    # TODO(b/234876414): This should depend on FreeRTOS but our third parties
+#    # currently do not have Bazel support.
+#    deps = [
+#        "//pw_chrono:system_clock",
+#        "//pw_sync:timed_thread_notification",
+#        "//pw_thread:sleep",
+#        "//pw_thread:test_threads_header",
+#        "//pw_thread:thread",
+#        "//pw_unit_test",
+#    ],
+#)
+filegroup(
+    name = "timed_thread_notification_test",
+    srcs = [
+        "timed_thread_notification_test.cc",
+    ],
+)
+
+# TODO(b/228998350): Figure out how to conditionally enable this test like GN
+# with:
+#    enable_if = pw_sync_TIMED_THREAD_NOTIFICATION_BACKEND ==
+#                "$dir_pw_sync_freertos:timed_thread_notification" &&
+#                pw_chrono_SYSTEM_CLOCK_BACKEND != "" &&
+#                pw_thread_THREAD_BACKEND != "" && pw_thread_SLEEP_BACKEND != ""
+#
+# pw_cc_test(
+#     name = "timed_thread_notification_test_with_static_threads",
+#     target_compatible_with = [
+#         "//pw_build/constraints/rtos:freertos",
+#     ],
+#     deps = [
+#         ":timed_thread_notification_test",
+#         "//pw_thread_freertos:static_test_threads",
+#     ],
+# )

@@ -1,0 +1,183 @@
+id: micriumos_net
+label: Micrium-Network Suite
+package: micrium-tcpx
+description: Micrium OS Network
+category: Services|Micrium|Network Suite
+quality: production
+component_root_path: platform/micrium_os/net
+config_file:
+  - path: ../cfg/net_cfg.h
+source:
+  - path: source/tcpip/net_arp.c
+  - path: source/tcpip/net_ascii.c
+  - path: source/tcpip/net_bsd.c
+  - path: source/tcpip/net_buf.c
+  - path: source/tcpip/net_cache.c
+  - path: source/tcpip/net_conn.c
+  - path: source/tcpip/net_ctr.c
+  - path: source/tcpip/net_dad.c
+  - path: source/tcpip/net_icmp.c
+  - path: source/tcpip/net_icmpv4.c
+  - path: source/tcpip/net_icmpv6.c
+  - path: source/tcpip/net_if.c
+  - path: source/tcpip/net_if_802x.c
+  - path: source/tcpip/net_if_ether.c
+    condition:
+      - net_driver_eth
+  - path: source/tcpip/net_if_loopback.c
+  - path: source/tcpip/net_if_wifi.c
+    condition:
+      - net_driver_wifi
+  - path: source/tcpip/net_igmp.c
+  - path: source/tcpip/net_ip.c
+  - path: source/tcpip/net_ipv4.c
+  - path: source/tcpip/net_ipv6.c
+  - path: source/tcpip/net_mldp.c
+  - path: source/tcpip/net_ndp.c
+  - path: source/tcpip/net_sock.c
+  - path: source/tcpip/net_stat.c
+  - path: source/tcpip/net_task.c
+  - path: source/tcpip/net_tcp.c
+  - path: source/tcpip/net_tmr.c
+  - path: source/tcpip/net_udp.c
+  - path: source/tcpip/net_util.c
+  - path: source/tcpip/net_wifi_mgr.c
+    condition:
+      - net_driver_wifi
+  - path: source/tcpip/net.c
+  - path: source/tcpip/net_app.c
+
+  - path: source/dns/dns_client_req.c
+  - path: source/dns/dns_client_task.c
+  - path: source/dns/dns_client.c
+  - path: source/dns/dns_client_cache.c
+
+  - path: source/util/net_fs_port_native.c
+  - path: source/util/net_sha1.c
+  - path: source/util/net_svc_task.c
+  - path: source/util/net_base64.c
+  - path: source/util/net_dict.c
+
+  - path: source/cmd/dns_client_cmd.c
+  - path: source/cmd/net_cmd.c
+  - path: source/cmd/net_cmd_args_parser.c
+  - path: source/cmd/net_cmd_output.c
+  - path: source/cmd/net_cmd_sock.c
+  - path: source/cmd/net_cmd_wifi.c
+    condition:
+      - net_driver_wifi
+  - path: source/dhcp/dhcp_client.c
+  - path: source/dhcp/dhcp.c
+include:
+  - path: source
+    file_list:
+      - path: tcpip/net_app_priv.h
+      - path: tcpip/net_arp_priv.h
+      - path: tcpip/net_ascii_priv.h
+      - path: tcpip/net_bsd_priv.h
+      - path: tcpip/net_buf_priv.h
+      - path: tcpip/net_cache_priv.h
+      - path: tcpip/net_conn_priv.h
+      - path: tcpip/net_ctr_priv.h
+      - path: tcpip/net_dad_priv.h
+      - path: tcpip/net_def_priv.h
+      - path: tcpip/net_icmp_priv.h
+      - path: tcpip/net_icmpv4_priv.h
+      - path: tcpip/net_icmpv6_priv.h
+      - path: tcpip/net_if_802x_priv.h
+      - path: tcpip/net_if_ether_priv.h
+        condition:
+          - net_driver_eth
+      - path: tcpip/net_if_loopback_priv.h
+      - path: tcpip/net_if_priv.h
+      - path: tcpip/net_if_wifi_priv.h
+        condition:
+          - net_driver_wifi
+      - path: tcpip/net_igmp_priv.h
+      - path: tcpip/net_ip_priv.h
+      - path: tcpip/net_ipv4_priv.h
+      - path: tcpip/net_ipv6_priv.h
+      - path: tcpip/net_mldp_priv.h
+      - path: tcpip/net_ndp_priv.h
+      - path: tcpip/net_priv.h
+      - path: tcpip/net_sock_priv.h
+      - path: tcpip/net_stat_priv.h
+      - path: tcpip/net_task_priv.h
+      - path: tcpip/net_tcp_priv.h
+      - path: tcpip/net_tmr_priv.h
+      - path: tcpip/net_type_priv.h
+      - path: tcpip/net_udp_priv.h
+      - path: tcpip/net_util_priv.h
+      - path: tcpip/net_wifi_mgr_priv.h
+        condition:
+          - net_driver_wifi
+      - path: dns/dns_client_req_priv.h
+      - path: dns/dns_client_task_priv.h
+      - path: dns/dns_client_cache_priv.h
+      - path: dns/dns_client_priv.h
+      - path: util/net_sha1_priv.h
+      - path: util/net_svc_task_priv.h
+      - path: util/net_base64_priv.h
+      - path: util/net_dict_priv.h
+      - path: cmd/dns_client_cmd_priv.h
+      - path: cmd/net_cmd_args_parser_priv.h
+      - path: cmd/net_cmd_output_priv.h
+      - path: cmd/net_cmd_priv.h
+      - path: dhcp/dhcp_client_priv.h
+      - path: dhcp/dhcp_priv.h
+  - path: include
+    file_list:
+      - path: dhcp.h
+      - path: dhcp_client.h
+      - path: dhcp_client_types.h
+      - path: dns_client.h
+      - path: net.h
+      - path: net_app.h
+      - path: net_arp.h
+      - path: net_ascii.h
+      - path: net_bsd.h
+      - path: net_buf.h
+      - path: net_cfg_net.h
+      - path: net_conn.h
+      - path: net_def.h
+      - path: net_fs.h
+      - path: net_icmp.h
+      - path: net_if.h
+      - path: net_if_ether.h
+        condition:
+          - net_driver_eth
+      - path: net_if_loopback.h
+      - path: net_if_wifi.h
+        condition:
+          - net_driver_wifi
+      - path: net_igmp.h
+      - path: net_ip.h
+      - path: net_ipv4.h
+      - path: net_ipv6.h
+      - path: net_mldp.h
+      - path: net_ndp.h
+      - path: net_secure.h
+      - path: net_sock.h
+      - path: net_stat.h
+      - path: net_tcp.h
+      - path: net_tmr.h
+      - path: net_type.h
+      - path: net_util.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: NET
+  - name: micriumos_component_avails
+    value: NET_IF_ETHER
+provides:
+  - name: net
+requires:
+  - name: micriumos_kernel
+  - name: common_platform_manager
+  - name: sleeptimer
+  - name: net_driver
+    condition:
+      - device_has_eth
+recommends:
+  - id: micriumos_net_driver_eth_gem
+    condition:
+      - device_has_eth

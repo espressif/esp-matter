@@ -1,0 +1,34 @@
+id: "sl_flex_rail_sleep"
+label: "Flex - RAIL Power Manager Sleep"
+package: "Flex"
+description: "Component that provides sleep init for RAIL when used with Power Manager."
+category: "Flex|RAIL|Utility"
+quality: "production"
+root_path: "app/flex/component/rail/sl_flex_rail_sleep"
+
+requires:
+  - name: power_manager
+  - name: device_has_radio
+
+include:
+  - path: ""
+    file_list:
+      - path: "sl_flex_rail_sleep.h"
+
+source:
+  - path: "sl_flex_rail_sleep.c"
+
+provides:
+  - name: "sl_flex_rail_sleep"
+
+#-------------- Template Contribution ----------------
+template_contribution:
+  - name: component_catalog
+    value: flex_rail_sleep
+#--------------------- BUTTON ------------------------
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: "sl_flex_rail_sleep.h"
+      handler: "sl_flex_rail_sleep_init"
+    priority: 2000

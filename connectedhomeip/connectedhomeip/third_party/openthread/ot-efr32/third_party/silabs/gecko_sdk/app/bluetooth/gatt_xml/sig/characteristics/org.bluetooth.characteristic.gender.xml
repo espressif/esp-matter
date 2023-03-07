@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Gender" type="org.bluetooth.characteristic.gender" uuid="2A8C" last-modified="2014-06-10" approved="Yes">
+    <InformativeText>
+        <Abstract>Gender of the user. The value of the Gender characteristic are defined below: 0:male,1:female, 2:Unspecified,3-225: RFU</Abstract>
+	</InformativeText>
+    <Value>
+    <Field name="Gender">
+        <Requirement>Mandatory</Requirement>
+        <Format>uint8</Format>
+            <Enumerations>
+            <Enumeration key="0" value="Male" />
+            <Enumeration key="1" value="Female" />
+            <Enumeration key="2" value="Unspecified" />
+           <ReservedForFutureUse start="3" end="225" />
+		</Enumerations>
+    </Field>
+	</Value>
+</Characteristic>

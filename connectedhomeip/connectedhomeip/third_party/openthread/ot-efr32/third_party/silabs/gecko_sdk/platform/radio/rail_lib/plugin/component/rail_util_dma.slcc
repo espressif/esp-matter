@@ -1,0 +1,30 @@
+id: rail_util_dma
+label: RAIL Utility, DMA
+description: Utility to aid with RAIL Direct Memory Access (DMA) Support
+package: platform
+category: Platform|Radio
+quality: production
+documentation:
+  docset: rail
+  document: rail-util-dma
+requires:
+  - name: dmadrv
+  - name: emlib_ldma
+  - name: rail_lib
+provides:
+  - name: rail_util_dma
+config_file:
+  - path: platform/radio/rail_lib/plugin/rail_util_dma/config/sl_rail_util_dma_config.h
+include:
+  - path: platform/radio/rail_lib/plugin/rail_util_dma
+    file_list:
+      - path: sl_rail_util_dma.h
+source:
+  - path: platform/radio/rail_lib/plugin/rail_util_dma/sl_rail_util_dma.c
+template_contribution:
+  - name: event_handler
+    value:
+      event: stack_init
+      include: sl_rail_util_dma.h
+      handler: sl_rail_util_dma_init
+    priority: -9010

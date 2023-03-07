@@ -1,0 +1,60 @@
+!!omap
+- id: brd4302a_a00
+- label: BRD4302A rev A00
+- package: platform
+- description: Board support for BRD4302A.
+- category: Platform|Board|Radio Board
+- quality: production
+- requires:
+  - name: bgm121a256v1
+  - name: brd4302a_config
+  - name: hardware_board_mainboard
+- provides:
+  - name: brd4302a_revision
+  - name: brd4302a_a00
+  - name: hardware_board
+  - name: hardware_board_rb
+  - name: hardware_board_has_si70xx
+  - name: hardware_board_has_tempsensor
+  - name: hardware_board_has_vcom
+  - name: hardware_board_has_spiflash
+  - name: hardware_board_supports_rf_band_2400
+  - name: hardware_board_supports_1_rf_band
+  - name: hardware_board_default_rf_band
+  - name: hardware_board_default_rf_band_2400
+- recommends:
+  - id: brd4001a
+  - id: i2cspm
+    instance:
+    - sensor
+  - id: ls013b7dh03
+  - id: simple_led
+    instance:
+    - led0
+    - led1
+  - id: skrhaae010
+  - id: simple_button
+    instance:
+    - btn0
+    - btn1
+- template_contribution:
+  - name: board_default_init
+    value: sl_board_disable_vcom()
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD4302A"'
+  - name: SL_BOARD_REV
+    value: '"A00"'
+- tag:
+  - board:pn:BRD4302
+  - board:variant:A
+  - board:revision:A00
+  - board:device:bgm121a256v1
+  - hardware:has:vcom
+  - hardware:has:pti
+  - hardware:has:sensor:si7021
+  - hardware:has:display:ls013b7dh03
+  - hardware:has:led:2
+  - hardware:has:joystick:skrhaae010
+  - hardware:has:button:2
+  - hardware:has:memory:spi:mx25r8035f

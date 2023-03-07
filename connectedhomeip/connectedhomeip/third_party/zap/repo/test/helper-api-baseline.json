@@ -1,0 +1,803 @@
+[
+  { "name": "access", "isDeprecated": false },
+  { "name": "access_aggregate", "isDeprecated": false },
+  { "name": "accessorGetterType", "isDeprecated": false, "category": "matter" },
+  { "name": "accessorTraitType", "isDeprecated": false, "category": "matter" },
+  { "name": "add_one", "isDeprecated": false },
+  { "name": "add_prefix_to_all_strings", "isDeprecated": false },
+  { "name": "add_to_accumulator", "isDeprecated": false },
+  { "name": "addOne", "isDeprecated": true },
+  { "name": "addToAccumulator", "isDeprecated": true },
+  { "name": "after", "isDeprecated": false },
+  {
+    "name": "all_cli_commands_for_user_enabled_clusters",
+    "isDeprecated": false
+  },
+  { "name": "all_commands_for_user_enabled_clusters", "isDeprecated": false },
+  { "name": "all_incoming_commands_for_cluster", "isDeprecated": false },
+  {
+    "name": "all_incoming_commands_for_cluster_combined",
+    "isDeprecated": true
+  },
+  { "name": "all_outgoing_commands_for_cluster", "isDeprecated": false },
+  {
+    "name": "all_user_cluster_attributes_for_generated_defaults",
+    "isDeprecated": false
+  },
+  {
+    "name": "all_user_cluster_attributes_irrespective_of_manufatucuring_specification",
+    "isDeprecated": false
+  },
+  {
+    "name": "all_user_cluster_attributes_min_max_defaults",
+    "isDeprecated": false
+  },
+  { "name": "all_user_cluster_commands", "isDeprecated": false },
+  {
+    "name": "all_user_cluster_commands_irrespective_of_manufaturing_specification",
+    "isDeprecated": false
+  },
+  { "name": "all_user_cluster_generated_attributes", "isDeprecated": false },
+  { "name": "all_user_cluster_generated_commands", "isDeprecated": false },
+  {
+    "name": "all_user_cluster_manufacturer_specific_attributes",
+    "isDeprecated": false
+  },
+  {
+    "name": "all_user_cluster_manufacturer_specific_commands",
+    "isDeprecated": false
+  },
+  {
+    "name": "all_user_cluster_non_manufacturer_specific_attributes",
+    "isDeprecated": false
+  },
+  {
+    "name": "all_user_cluster_non_manufacturer_specific_commands",
+    "isDeprecated": false
+  },
+  { "name": "all_user_clusters", "isDeprecated": false },
+  { "name": "all_user_clusters_irrespective_of_side", "isDeprecated": false },
+  { "name": "all_user_clusters_names", "isDeprecated": false },
+  { "name": "all_user_clusters_with_incoming_commands", "isDeprecated": false },
+  {
+    "name": "all_user_clusters_with_incoming_commands_combined",
+    "isDeprecated": true
+  },
+  { "name": "all_user_clusters_with_outgoing_commands", "isDeprecated": false },
+  {
+    "name": "all_user_incoming_commands_for_all_clusters",
+    "isDeprecated": false
+  },
+  { "name": "all_user_reportable_attributes", "isDeprecated": false },
+  { "name": "as_bytes", "isDeprecated": false },
+  { "name": "as_camel_cased", "isDeprecated": false },
+  { "name": "as_cli_type", "isDeprecated": false },
+  { "name": "as_delimited_macro", "isDeprecated": false },
+  { "name": "as_generated_default_macro", "isDeprecated": false },
+  { "name": "as_hex", "isDeprecated": false },
+  { "name": "as_last_word", "isDeprecated": false },
+  { "name": "as_offset", "isDeprecated": false },
+  { "name": "as_snake_case", "isDeprecated": false },
+  { "name": "as_spaced_lowercase", "isDeprecated": false },
+  { "name": "as_symbol", "isDeprecated": false },
+  { "name": "as_type", "isDeprecated": false },
+  { "name": "as_underlying_type", "isDeprecated": false },
+  { "name": "as_underlying_zcl_type", "isDeprecated": false },
+  {
+    "name": "as_underlying_zcl_type_ca_always_present_with_presentif",
+    "isDeprecated": true
+  },
+  {
+    "name": "as_underlying_zcl_type_ca_not_always_present_no_presentif",
+    "isDeprecated": true
+  },
+  {
+    "name": "as_underlying_zcl_type_ca_not_always_present_with_presentif",
+    "isDeprecated": true
+  },
+  {
+    "name": "as_underlying_zcl_type_command_argument_always_present",
+    "isDeprecated": true
+  },
+  {
+    "name": "as_underlying_zcl_type_command_argument_always_present_with_presentif",
+    "isDeprecated": true
+  },
+  {
+    "name": "as_underlying_zcl_type_command_argument_not_always_present_no_presentif",
+    "isDeprecated": true
+  },
+  {
+    "name": "as_underlying_zcl_type_command_argument_not_always_present_with_presentif",
+    "isDeprecated": true
+  },
+  {
+    "name": "as_underlying_zcl_type_command_is_not_fixed_length_but_command_argument_is_always_present",
+    "isDeprecated": true
+  },
+  {
+    "name": "as_underlying_zcl_type_if_command_is_not_fixed_length",
+    "isDeprecated": false
+  },
+  { "name": "as_underscore_lowercase", "isDeprecated": false },
+  { "name": "as_underscore_uppercase", "isDeprecated": false },
+  { "name": "as_uppercase", "isDeprecated": false },
+  { "name": "as_zcl_cli_type", "isDeprecated": false },
+  { "name": "asBasicType", "isDeprecated": false, "category": "matter" },
+  { "name": "asBytes", "isDeprecated": true },
+  { "name": "asCamelCased", "isDeprecated": true },
+  { "name": "asCliType", "isDeprecated": true },
+  { "name": "asDecodableType", "isDeprecated": false, "category": "matter" },
+  { "name": "asDelimitedCommand", "isDeprecated": false, "category": "matter" },
+  { "name": "asDelimitedMacro", "isDeprecated": true },
+  { "name": "asEncodableType", "isDeprecated": false, "category": "matter" },
+  { "name": "asGetterName", "isDeprecated": false, "category": "matter" },
+  { "name": "asHex", "isDeprecated": true },
+  { "name": "asJavaBoxedType", "isDeprecated": false, "category": "matter" },
+  { "name": "asJavaType", "isDeprecated": false, "category": "matter" },
+  { "name": "asJniBasicType", "isDeprecated": false, "category": "matter" },
+  { "name": "asJniClassName", "isDeprecated": false, "category": "matter" },
+  { "name": "asJniSignature", "isDeprecated": false, "category": "matter" },
+  {
+    "name": "asJniSignatureBasic",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "asJniType", "isDeprecated": false, "category": "matter" },
+  { "name": "asLastWord", "isDeprecated": true },
+  { "name": "asLowerCamelCase", "isDeprecated": false, "category": "matter" },
+  { "name": "asMEI", "isDeprecated": false, "category": "matter" },
+  {
+    "name": "asObjectiveCBasicType",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "asObjectiveCClass", "isDeprecated": false, "category": "matter" },
+  {
+    "name": "asObjectiveCNumberType",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "asObjectiveCType", "isDeprecated": false, "category": "matter" },
+  { "name": "asOffset", "isDeprecated": true },
+  { "name": "asPropertyValue", "isDeprecated": false, "category": "matter" },
+  { "name": "asPythonCType", "isDeprecated": false, "category": "matter" },
+  { "name": "asPythonType", "isDeprecated": false, "category": "matter" },
+  { "name": "assertSameTestType", "isDeprecated": false, "category": "matter" },
+  { "name": "asSpacedLowercase", "isDeprecated": true },
+  {
+    "name": "asStructPropertyName",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "asSymbol", "isDeprecated": true },
+  { "name": "asTestType", "isDeprecated": false, "category": "matter" },
+  { "name": "asType", "isDeprecated": true },
+  { "name": "asTypedExpression", "isDeprecated": false, "category": "matter" },
+  {
+    "name": "asTypedExpressionFromObjectiveC",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "asTypedLiteral", "isDeprecated": false, "category": "matter" },
+  { "name": "asTypeMaxValue", "isDeprecated": false, "category": "matter" },
+  { "name": "asTypeMinValue", "isDeprecated": false, "category": "matter" },
+  {
+    "name": "asUnderlyingBasicType",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "asUnderlyingType", "isDeprecated": true },
+  { "name": "asUnderlyingZclType", "isDeprecated": true },
+  { "name": "asUnderscoreLowercase", "isDeprecated": true },
+  { "name": "asUnderscoreUppercase", "isDeprecated": true },
+  { "name": "asUpperCamelCase", "isDeprecated": false, "category": "matter" },
+  { "name": "attribute_extension", "isDeprecated": false },
+  { "name": "attribute_mask", "isDeprecated": false },
+  { "name": "attribute_type_extension", "isDeprecated": false },
+  { "name": "backslash", "isDeprecated": false },
+  {
+    "name": "canHaveSimpleAccessors",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_access_elements",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_attribute_list_entryTypes",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_available_cluster_commands",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_client_clusters",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_cluster_command_arguments",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_cluster_command_arguments_with_structs_expanded",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_cluster_commands",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_cluster_response_arguments",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_cluster_responses",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_cluster_specific_structs",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "chip_clusters", "isDeprecated": false, "category": "matter" },
+  {
+    "name": "chip_endpoint_cluster_list",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_endpoint_clusters",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_endpoint_data_version_count",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_endpoint_generated_commands_list",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_endpoint_generated_functions",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "chip_endpoints", "isDeprecated": false, "category": "matter" },
+  {
+    "name": "chip_friendly_endpoint_type_name",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_has_client_clusters",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "chip_has_clusters", "isDeprecated": false, "category": "matter" },
+  {
+    "name": "chip_has_server_clusters",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_server_cluster_attributes",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_server_cluster_events",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_server_clusters",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_server_global_responses",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_server_has_list_attributes",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_server_has_reportable_attributes",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_shared_structs",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "chip_tests", "isDeprecated": false, "category": "matter" },
+  { "name": "chip_tests_config", "isDeprecated": false, "category": "matter" },
+  {
+    "name": "chip_tests_config_get_default_value",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_tests_config_get_type",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_tests_config_has",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_tests_item_parameters",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_tests_item_response_parameters",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_tests_item_responses",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "chip_tests_items", "isDeprecated": false, "category": "matter" },
+  {
+    "name": "chip_tests_iterate_constraints",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_tests_iterate_expected_list",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_tests_only_cluster_command_parameters",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_tests_only_cluster_commands",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_tests_only_cluster_response_parameters",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_tests_only_cluster_responses",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_tests_only_clusters",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "chip_tests_pics", "isDeprecated": false, "category": "matter" },
+  {
+    "name": "chip_tests_variables",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_tests_variables_get_type",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_tests_variables_has",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "chip_tests_variables_is_nullable",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "cleanse_label", "isDeprecated": false },
+  { "name": "cleanse_label_as_kebab_case", "isDeprecated": false },
+  { "name": "cleanseLabel", "isDeprecated": true },
+  { "name": "cleanseLabelAsKebabCase", "isDeprecated": true },
+  { "name": "cluster_extension", "isDeprecated": false },
+  { "name": "command_arguments_total_length", "isDeprecated": false },
+  { "name": "command_extension", "isDeprecated": false },
+  { "name": "command_mask", "isDeprecated": false },
+  {
+    "name": "commandHasRequiredField",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "concat", "isDeprecated": false, "category": "matter" },
+  { "name": "concatenate", "isDeprecated": false },
+  {
+    "name": "convertAttributeCallbackTypeToJavaName",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "convertBasicCTypeToJavaBoxedType",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "convertBasicCTypeToJniType",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "convertCTypeToJniSignature",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "data_type_for_bitmap", "isDeprecated": false },
+  { "name": "data_type_for_enum", "isDeprecated": false },
+  { "name": "dataTypeForBitmap", "isDeprecated": true },
+  { "name": "dataTypeForEnum", "isDeprecated": true },
+  { "name": "debug_object", "isDeprecated": false },
+  { "name": "default_access", "isDeprecated": false },
+  { "name": "device_type_extension", "isDeprecated": false },
+  { "name": "endpoint_attribute_count", "isDeprecated": false },
+  { "name": "endpoint_attribute_list", "isDeprecated": false },
+  { "name": "endpoint_attribute_long_defaults", "isDeprecated": false },
+  { "name": "endpoint_attribute_long_defaults_count", "isDeprecated": false },
+  {
+    "name": "endpoint_attribute_manufacturer_code_count",
+    "isDeprecated": false
+  },
+  { "name": "endpoint_attribute_manufacturer_codes", "isDeprecated": false },
+  { "name": "endpoint_attribute_min_max_count", "isDeprecated": false },
+  { "name": "endpoint_attribute_min_max_list", "isDeprecated": false },
+  { "name": "endpoint_cluster_count", "isDeprecated": false },
+  { "name": "endpoint_cluster_list", "isDeprecated": false },
+  { "name": "endpoint_cluster_manufacturer_code_count", "isDeprecated": false },
+  { "name": "endpoint_cluster_manufacturer_codes", "isDeprecated": false },
+  { "name": "endpoint_command_count", "isDeprecated": false },
+  { "name": "endpoint_command_list", "isDeprecated": false },
+  { "name": "endpoint_command_manufacturer_code_count", "isDeprecated": false },
+  { "name": "endpoint_command_manufacturer_codes", "isDeprecated": false },
+  { "name": "endpoint_config", "isDeprecated": false },
+  { "name": "endpoint_config_macros", "isDeprecated": false },
+  { "name": "endpoint_count", "isDeprecated": false },
+  { "name": "endpoint_fixed_device_type_array", "isDeprecated": false },
+  { "name": "endpoint_fixed_device_type_array_lengths", "isDeprecated": false },
+  { "name": "endpoint_fixed_device_type_array_offsets", "isDeprecated": false },
+  { "name": "endpoint_fixed_endpoint_array", "isDeprecated": false },
+  { "name": "endpoint_fixed_endpoint_type_array", "isDeprecated": false },
+  { "name": "endpoint_fixed_network_array", "isDeprecated": false },
+  { "name": "endpoint_fixed_profile_id_array", "isDeprecated": false },
+  { "name": "endpoint_largest_attribute_size", "isDeprecated": false },
+  { "name": "endpoint_reporting_config_default_count", "isDeprecated": false },
+  { "name": "endpoint_reporting_config_defaults", "isDeprecated": false },
+  { "name": "endpoint_singletons_size", "isDeprecated": false },
+  { "name": "endpoint_total_storage_size", "isDeprecated": false },
+  { "name": "endpoint_type_count", "isDeprecated": false },
+  { "name": "endpoint_type_identifier", "isDeprecated": false },
+  { "name": "endpoint_type_index", "isDeprecated": false },
+  { "name": "endpoint_types_list", "isDeprecated": false },
+  { "name": "ensureIsArray", "isDeprecated": false, "category": "matter" },
+  { "name": "event_extension", "isDeprecated": false },
+  { "name": "fail", "isDeprecated": false },
+  { "name": "feature_bits", "isDeprecated": false },
+  { "name": "first", "isDeprecated": false },
+  { "name": "first_unused_enum_value", "isDeprecated": false },
+  { "name": "format_value", "isDeprecated": false },
+  {
+    "name": "format_zcl_string_as_characters_for_generated_defaults",
+    "isDeprecated": false
+  },
+  { "name": "formatValue", "isDeprecated": true },
+  { "name": "future", "isDeprecated": false },
+  { "name": "generated_attribute_min_max_index", "isDeprecated": false },
+  { "name": "generated_attributes_min_max_index", "isDeprecated": true },
+  { "name": "generated_clustes_details", "isDeprecated": false },
+  { "name": "generated_default_index", "isDeprecated": false },
+  { "name": "generated_defaults_index", "isDeprecated": true },
+  { "name": "generated_endpoint_type_details", "isDeprecated": false },
+  {
+    "name": "getPythonFieldDefault",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "global_attribute_default", "isDeprecated": false },
+  { "name": "hasArguments", "isDeprecated": false, "category": "matter" },
+  { "name": "hasArguments", "isDeprecated": false, "category": "matter" },
+  { "name": "hasProperty", "isDeprecated": false, "category": "matter" },
+  {
+    "name": "hasSpecificAttributes",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "ident", "isDeprecated": true },
+  {
+    "name": "if_basic_global_response",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "if_ca_always_present_with_presentif", "isDeprecated": true },
+  { "name": "if_ca_not_always_present_no_presentif", "isDeprecated": true },
+  { "name": "if_ca_not_always_present_with_presentif", "isDeprecated": true },
+  { "name": "if_chip_complex", "isDeprecated": false, "category": "matter" },
+  { "name": "if_chip_enum", "isDeprecated": false, "category": "matter" },
+  { "name": "if_cluster_extension_false", "isDeprecated": false },
+  { "name": "if_cluster_extension_true", "isDeprecated": false },
+  {
+    "name": "if_command_arg_always_present_with_presentif",
+    "isDeprecated": false
+  },
+  {
+    "name": "if_command_arg_not_always_present_no_presentif",
+    "isDeprecated": false
+  },
+  {
+    "name": "if_command_arg_not_always_present_with_presentif",
+    "isDeprecated": false
+  },
+  { "name": "if_command_args_exist", "isDeprecated": false },
+  { "name": "if_command_argument_always_present", "isDeprecated": true },
+  {
+    "name": "if_command_argument_always_present_with_presentif",
+    "isDeprecated": true
+  },
+  {
+    "name": "if_command_argument_not_always_present_no_presentif",
+    "isDeprecated": true
+  },
+  {
+    "name": "if_command_argument_not_always_present_with_presentif",
+    "isDeprecated": true
+  },
+  { "name": "if_command_arguments_exist", "isDeprecated": true },
+  { "name": "if_command_arguments_have_fixed_length", "isDeprecated": false },
+  { "name": "if_command_discovery_enabled", "isDeprecated": false },
+  { "name": "if_command_extension_false", "isDeprecated": false },
+  { "name": "if_command_extension_true", "isDeprecated": false },
+  { "name": "if_command_fixed_length", "isDeprecated": false },
+  { "name": "if_command_is_fixed_length", "isDeprecated": true },
+  {
+    "name": "if_command_is_not_fixed_length_but_command_argument_is_always_present",
+    "isDeprecated": true
+  },
+  {
+    "name": "if_command_not_fixed_length_command_argument_always_present",
+    "isDeprecated": false
+  },
+  { "name": "if_future", "isDeprecated": false },
+  {
+    "name": "if_include_struct_item_value",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "if_is_atomic", "isDeprecated": false },
+  { "name": "if_is_bitmap", "isDeprecated": false },
+  { "name": "if_is_char_string", "isDeprecated": false },
+  { "name": "if_is_enum", "isDeprecated": false },
+  {
+    "name": "if_is_fabric_scoped_struct",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "if_is_long_string", "isDeprecated": false },
+  {
+    "name": "if_is_non_zero_default",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "if_is_number", "isDeprecated": false },
+  { "name": "if_is_octet_string", "isDeprecated": false },
+  { "name": "if_is_short_string", "isDeprecated": false },
+  { "name": "if_is_string", "isDeprecated": false },
+  {
+    "name": "if_is_strongly_typed_bitmap",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "if_is_strongly_typed_chip_enum",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "if_is_struct", "isDeprecated": false },
+  { "name": "if_manufacturing_specific_cluster", "isDeprecated": true },
+  { "name": "if_mfg_specific_cluster", "isDeprecated": false },
+  { "name": "incrementDepth", "isDeprecated": false, "category": "matter" },
+  { "name": "incrementDepth", "isDeprecated": false, "category": "matter" },
+  { "name": "indent", "isDeprecated": false },
+  { "name": "is_bitmap", "isDeprecated": false },
+  { "name": "is_client", "isDeprecated": false },
+  { "name": "is_command_available", "isDeprecated": false },
+  { "name": "is_command_default_response_disabled", "isDeprecated": false },
+  { "name": "is_command_default_response_enabled", "isDeprecated": false },
+  { "name": "is_defined", "isDeprecated": false },
+  { "name": "is_enabled", "isDeprecated": false },
+  { "name": "is_enum", "isDeprecated": false },
+  { "name": "is_equal", "isDeprecated": false },
+  { "name": "is_event", "isDeprecated": false },
+  { "name": "is_first_element", "isDeprecated": false },
+  { "name": "is_last_element", "isDeprecated": false },
+  { "name": "is_lowercase_equal", "isDeprecated": false },
+  { "name": "is_num_equal", "isDeprecated": false },
+  { "name": "is_number_greater_than", "isDeprecated": false },
+  { "name": "is_server", "isDeprecated": false },
+  { "name": "is_str_equal", "isDeprecated": false },
+  { "name": "is_string_underscored", "isDeprecated": false },
+  { "name": "is_struct", "isDeprecated": false },
+  { "name": "is_zcl_string", "isDeprecated": false },
+  { "name": "isBitmap", "isDeprecated": true },
+  { "name": "isCharString", "isDeprecated": false, "category": "matter" },
+  { "name": "isClient", "isDeprecated": true },
+  { "name": "isCommandAvailable", "isDeprecated": true },
+  { "name": "isEnabled", "isDeprecated": true },
+  { "name": "isEnum", "isDeprecated": true },
+  { "name": "isEqual", "isDeprecated": true },
+  { "name": "isEvent", "isDeprecated": true },
+  { "name": "isFirstElement", "isDeprecated": true },
+  { "name": "isHexString", "isDeprecated": false, "category": "matter" },
+  { "name": "isLastElement", "isDeprecated": true },
+  { "name": "isList", "isDeprecated": false, "category": "matter" },
+  { "name": "isLiteralNull", "isDeprecated": false, "category": "matter" },
+  { "name": "isLongString", "isDeprecated": false, "category": "matter" },
+  { "name": "isOctetString", "isDeprecated": false, "category": "matter" },
+  { "name": "isServer", "isDeprecated": true },
+  { "name": "isShortString", "isDeprecated": false, "category": "matter" },
+  { "name": "isStrEqual", "isDeprecated": true },
+  { "name": "isString", "isDeprecated": false, "category": "matter" },
+  { "name": "isStruct", "isDeprecated": true },
+  { "name": "isTestOnlyCluster", "isDeprecated": false, "category": "matter" },
+  { "name": "isWeaklyTypedEnum", "isDeprecated": false, "category": "matter" },
+  { "name": "iterate", "isDeprecated": false },
+  { "name": "iterate_accumulator", "isDeprecated": false },
+  { "name": "iterateAccumulator", "isDeprecated": true },
+  { "name": "last", "isDeprecated": false },
+  {
+    "name": "manufacturing_clusters_with_incoming_commands",
+    "isDeprecated": false
+  },
+  { "name": "meta_category", "isDeprecated": false, "category": "meta" },
+  { "name": "meta_stamp", "isDeprecated": false },
+  { "name": "middle", "isDeprecated": false },
+  { "name": "multiply", "isDeprecated": false },
+  { "name": "new_line", "isDeprecated": false },
+  { "name": "not_first", "isDeprecated": false },
+  { "name": "not_last", "isDeprecated": false },
+  { "name": "objCEnumItemLabel", "isDeprecated": false, "category": "matter" },
+  { "name": "objCEnumName", "isDeprecated": false, "category": "matter" },
+  {
+    "name": "octetStringEscapedForCLiteral",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "octetStringFromHexString",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "octetStringLengthFromHexString",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "pad", "isDeprecated": false, "category": "matter" },
+  { "name": "replace_string", "isDeprecated": false },
+  { "name": "set_future", "isDeprecated": false },
+  {
+    "name": "structs_with_cluster_name",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "template_option_with_code", "isDeprecated": false },
+  { "name": "template_options", "isDeprecated": false },
+  { "name": "toggle", "isDeprecated": false },
+  { "name": "token_next", "isDeprecated": false },
+  { "name": "tokens_context", "isDeprecated": false },
+  { "name": "trim_string", "isDeprecated": false },
+  {
+    "name": "typeAsDelimitedMacro",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "user_all_attributes", "isDeprecated": false },
+  { "name": "user_cluster_attributes", "isDeprecated": false },
+  { "name": "user_cluster_command_count_with_cli", "isDeprecated": false },
+  { "name": "user_cluster_commands", "isDeprecated": false },
+  { "name": "user_cluster_commands_all_endpoints", "isDeprecated": false },
+  { "name": "user_cluster_commands_with_cli", "isDeprecated": false },
+  { "name": "user_cluster_events", "isDeprecated": false },
+  { "name": "user_cluster_has_enabled_command", "isDeprecated": false },
+  { "name": "user_clusters", "isDeprecated": false },
+  { "name": "user_default_response_policy", "isDeprecated": false },
+  { "name": "user_endpoint_count_by_cluster", "isDeprecated": false },
+  { "name": "user_endpoint_type_count", "isDeprecated": false },
+  { "name": "user_endpoint_types", "isDeprecated": false },
+  { "name": "user_endpoints", "isDeprecated": false },
+  { "name": "user_manufacturer_code", "isDeprecated": false },
+  { "name": "user_session_key", "isDeprecated": false },
+  { "name": "utf8StringLength", "isDeprecated": false, "category": "matter" },
+  { "name": "zap_header", "isDeprecated": false },
+  {
+    "name": "zapTypeToDecodableClusterObjectType",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "zapTypeToEncodableClusterObjectType",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  {
+    "name": "zapTypeToPythonClusterObjectType",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "zcl_atomics", "isDeprecated": false },
+  { "name": "zcl_attributes", "isDeprecated": false },
+  { "name": "zcl_attributes_client", "isDeprecated": false },
+  { "name": "zcl_attributes_server", "isDeprecated": false },
+  { "name": "zcl_bitmap_items", "isDeprecated": false },
+  { "name": "zcl_bitmaps", "isDeprecated": false },
+  { "name": "zcl_cluster_largest_label_length", "isDeprecated": false },
+  { "name": "zcl_clusters", "isDeprecated": false },
+  { "name": "zcl_command_argument_data_type", "isDeprecated": false },
+  {
+    "name": "zcl_command_argument_type_to_cli_data_type",
+    "isDeprecated": false
+  },
+  {
+    "name": "zcl_command_argument_type_to_zcl_cli_data_type",
+    "isDeprecated": false
+  },
+  { "name": "zcl_command_arguments", "isDeprecated": false },
+  { "name": "zcl_command_arguments_count", "isDeprecated": false },
+  { "name": "zcl_command_tree", "isDeprecated": false },
+  { "name": "zcl_commands", "isDeprecated": false },
+  { "name": "zcl_commands_source_client", "isDeprecated": false },
+  { "name": "zcl_commands_source_server", "isDeprecated": false },
+  {
+    "name": "zcl_commands_that_need_timed_invoke",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "zcl_commands_with_arguments", "isDeprecated": false },
+  { "name": "zcl_commands_with_cluster_info", "isDeprecated": false },
+  { "name": "zcl_device_type_cluster_attributes", "isDeprecated": false },
+  { "name": "zcl_device_type_cluster_commands", "isDeprecated": false },
+  { "name": "zcl_device_type_clusters", "isDeprecated": false },
+  { "name": "zcl_device_types", "isDeprecated": false },
+  { "name": "zcl_enum_items", "isDeprecated": false },
+  { "name": "zcl_enums", "isDeprecated": false },
+  { "name": "zcl_event_fields", "isDeprecated": false },
+  { "name": "zcl_events", "isDeprecated": false },
+  {
+    "name": "zcl_events_fields_by_event_name",
+    "isDeprecated": false,
+    "category": "matter"
+  },
+  { "name": "zcl_global_commands", "isDeprecated": false },
+  { "name": "zcl_string_type_return", "isDeprecated": false },
+  { "name": "zcl_struct_items", "isDeprecated": false },
+  { "name": "zcl_struct_items_by_struct_name", "isDeprecated": false },
+  { "name": "zcl_structs", "isDeprecated": false }
+]

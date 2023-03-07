@@ -1,0 +1,76 @@
+project_name: tflite_micro_hello_world
+package: platform
+quality: production
+label: Machine Learning - TensorFlow Lite Micro - Hello World
+description: >
+  This application demonstrates a model trained to replicate a sine function. 
+  The model is continuously fed with values ranging from 0 to 2pi, and the 
+  output of the model is used to control the intensity of an LED. 
+category: Example|Machine Learning
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+  - name: "Capability"
+    value: ["Machine Learning"]
+include:
+  - path: .
+    file_list:
+      - path: app.h
+      - path: tflite_micro_hello_world.h
+  - path: hello_world/
+    file_list:
+      - path: constants.h 
+      - path: main_functions.h 
+      - path: hello_world_model_data.h 
+      - path: output_handler.h 
+source:
+  - path: main.c
+  - path: app.c
+  - path: tflite_micro_hello_world.c
+  - path: hello_world/sl_output_handler.cc
+  - path: hello_world/constants.cc
+  - path: hello_world/main_functions.cc
+  - path: hello_world/hello_world_model_data.cc
+other_file:
+  - path: hello_world/hello_world.tflite
+component:
+  - id: sl_system
+  - id: device_init
+  - id: tensorflow_lite_micro
+  - id: iostream_recommended_stream
+  - id: iostream_retarget_stdio
+  - id: pwm
+    instance:
+      - led0
+  - id: sleeptimer
+define:
+  - name: DEBUG_EFM
+  - name: TF_LITE_STATIC_MEMORY
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+  - name: SL_IOSTREAM_USART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "1"
+  - name: SL_IOSTREAM_UART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "1"
+  - name: SL_IOSTREAM_EUSART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "1"
+toolchain_settings:
+  - option: gcc_compiler_option
+    value: "-Wno-unused-parameter"
+  - option: gcc_compiler_option
+    value: "-Wno-missing-field-initializers"
+  - option: gcc_linker_option
+    value: "-u _printf_float"
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+tag:
+  - hardware:component:led:1+
+  - hardware:device:ram:16
+  - hardware:device:flash:160

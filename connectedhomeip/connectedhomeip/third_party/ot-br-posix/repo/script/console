@@ -1,0 +1,75 @@
+#!/bin/bash
+#
+#  Copyright (c) 2017, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+#   Description:
+#       This script starts all border router services in console mode.
+#
+
+# shellcheck source=script/_initrc
+. "$(dirname "$0")"/_initrc
+# shellcheck source=script/_ipforward
+. script/_ipforward
+# shellcheck source=script/_border_routing
+. script/_border_routing
+
+readonly TUN="${TUN:-wpan0}"
+readonly RADIO_URL="${RADIO_URL:-spinel+hdlc+uart:///dev/ttyUSB0}"
+
+killall_services()
+{
+    echo 'Closing services...'
+    sudo killall otbr-agent otbr-web || true
+}
+
+on_exit()
+{
+    killall_services
+    # shellcheck source=/dev/null
+    . "$AFTER_HOOK"
+}
+
+main()
+{
+    # shellcheck source=/dev/null
+    . "$BEFORE_HOOK"
+    if have systemctl; then
+        sudo systemctl stop otbr-web otbr-agent || true
+    fi
+    killall_services
+
+    trap on_exit INT TERM EXIT
+    accept_ra_enable
+    ipforward_enable
+    {
+        echo "otbr-agent -I $TUN -B ${INFRA_IF_NAME} -d 7 -v '${RADIO_URL}' &"
+        without WEB_GUI || echo "otbr-web -I $TUN &"
+        echo wait
+    } | sudo sh -s
+}
+
+main

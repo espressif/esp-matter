@@ -1,0 +1,49 @@
+id: "wfx_bus_spi"
+label: "WFx Bus SPI"
+package: "platform"
+category: "Wi-Fi"
+quality: "production"
+description: "SPI bus support"
+provides:
+  - name: "wfx_bus_spi"
+  - name: "wfx_bus_interface"
+requires:
+  - name: "wfx_fmac_driver"
+  - name: "dmadrv"
+  - name: "emlib_usart"
+  - name: "emlib_cmu"
+root_path: "platform/radio/wifi/wfx_fmac_driver"
+source:
+  - path: "bus/sl_wfx_bus_spi.c"
+  - path: "wfx_host/sl_wfx_host_spi.c"
+config_file:
+  - path: "config/sl_wfx_host_bus_pinout.h"
+    file_id: "sl_wfx_host_bus_pinout"
+  - override:
+      component: "wfx_bus_spi"
+      file_id: "sl_wfx_host_bus_pinout"
+    path: "config/brd2204a/spi/sl_wfx_host_bus_pinout.h"
+    condition: [brd2204a]
+  - override:
+      component: "wfx_bus_spi"
+      file_id: "sl_wfx_host_bus_pinout"
+    path: "config/brd416Xa/spi/sl_wfx_host_bus_pinout.h"
+    condition: [brd4161a]
+  - override:
+      component: "wfx_bus_spi"
+      file_id: "sl_wfx_host_bus_pinout"
+    path: "config/brd416Xa/spi/sl_wfx_host_bus_pinout.h"
+    condition: [brd4162a]
+  - override:
+      component: "wfx_bus_spi"
+      file_id: "sl_wfx_host_bus_pinout"
+    path: "config/brd416Xa/spi/sl_wfx_host_bus_pinout.h"
+    condition: [brd4163a]
+  - override:
+      component: "wfx_bus_spi"
+      file_id: "sl_wfx_host_bus_pinout"
+    path: "config/brd416Xa/spi/sl_wfx_host_bus_pinout.h"
+    condition: [brd4164a]
+template_contribution:
+  - name: component_catalog
+    value: wfx_bus_spi

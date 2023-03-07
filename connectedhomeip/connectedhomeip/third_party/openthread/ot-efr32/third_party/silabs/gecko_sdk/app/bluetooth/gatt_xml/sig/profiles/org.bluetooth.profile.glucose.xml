@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Profile xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/profile.xsd" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    type="org.bluetooth.profile.glucose"
+    name="Glucose">
+    <InformativeText>
+        <Abstract>This profile enables a device to connect and interact with a glucose sensor for use in consumer and professional healthcare applications.</Abstract>
+        <Summary>The Glucose Profile is used to enable a device to obtain glucose measurement and other data from a Glucose Sensor that exposes the Glucose Service.</Summary>
+	</InformativeText>
+	<Role name="Glucose Sensor">
+		<Service type="org.bluetooth.service.glucose">
+			<Declaration>Primary</Declaration>
+			<Requirement>Mandatory</Requirement>
+		</Service>
+		<Service type="org.bluetooth.service.device_information">
+			<Declaration>PrimarySingleInstance</Declaration>
+			<Requirement>Mandatory</Requirement>
+			<Characteristic type="org.bluetooth.characteristic.manufacturer_name_string">
+				<Requirement>Mandatory</Requirement>
+			</Characteristic>
+			<Characteristic type="org.bluetooth.characteristic.model_number_string">
+				<Requirement>Mandatory</Requirement>
+			</Characteristic>
+			<Characteristic type="org.bluetooth.characteristic.system_id">
+				<Requirement>Mandatory</Requirement>
+			</Characteristic>
+		</Service>
+	</Role>
+	<Role name="Collector">
+		<Client type="org.bluetooth.service.glucose">
+			<Requirement>Mandatory</Requirement>
+		</Client>
+		<Client type="org.bluetooth.service.device_information">
+			<Requirement>Optional</Requirement>
+		</Client>
+	</Role>
+</Profile>

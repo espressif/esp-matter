@@ -1,0 +1,14 @@
+id: bootloader_tz_secure
+label: "Bootloader TrustZone Secure"
+description: >
+   Set up bootloader configuration to create TrustZone Secure bootloader.
+package: platform
+category: Platform|Bootloader|TrustZone Secure
+quality: beta
+define:
+  - name: BOOTLOADER_SECURE
+    value: 1
+provides:
+  - name: bootloader_tz_secure
+requires:
+  - name: trustzone_secure

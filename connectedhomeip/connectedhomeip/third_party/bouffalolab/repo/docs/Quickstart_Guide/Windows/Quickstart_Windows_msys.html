@@ -1,0 +1,322 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>BL602 SDK Starter Guide &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Examples/index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>BL602 SDK Starter Guide</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/Quickstart_Guide/Windows/Quickstart_Windows_msys.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="bl602-sdk-starter-guide">
+<h1>BL602 SDK Starter Guide<a class="headerlink" href="#bl602-sdk-starter-guide" title="永久链接至标题"></a></h1>
+<p>本文档旨在指导用户搭建 BL602硬件开发的软件环境。</p>
+<div class="section" id="id1">
+<h2>编译环境的建立及代码的获取<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<ul>
+<li><p class="first">安装串口工具，此处选用的 <a class="reference external" href="https://gigenet.dl.sourceforge.net/project/scriptcommunicator/Windows/ScriptCommunicatorSetup_05_10_windows.zip">ScriptCommunicator</a></p>
+</li>
+<li><p class="first"><a class="reference external" href="https://sourceforge.net/projects/msys2/files/Base/x86_64/">获取MSYS2安装包</a></p>
+</li>
+<li><p class="first"><a class="reference external" href="https://www.msys2.org/">安装步骤</a></p>
+</li>
+<li><p class="first">打开MSYS2并安装make，输入命令：<code class="docutils literal notranslate"><span class="pre">pacman</span> <span class="pre">-S</span> <span class="pre">make</span></code>
+后回车，并根据提示直到安装完成</p>
+<div class="figure">
+<img alt="" src="../../_images/image145.png" />
+</div>
+<div class="figure">
+<img alt="" src="../../_images/image237.png" />
+</div>
+</li>
+<li><p class="first">打开MSYS2的安装目录并将SDK源代码放入<code class="docutils literal notranslate"><span class="pre">home</span></code>目录中的用户名文件夹下，下图中为<code class="docutils literal notranslate"><span class="pre">igor</span></code>文件夹</p>
+<div class="figure">
+<img alt="" src="../../_images/image328.png" />
+</div>
+<p><strong>注意</strong>：实例中使用的账户是<code class="docutils literal notranslate"><span class="pre">igor</span></code>，实际操作时可以根据<code class="docutils literal notranslate"><span class="pre">home</span></code>目录下的文件名确定当前用户名</p>
+</li>
+<li><p class="first">安装解压软件，命令：<code class="docutils literal notranslate"><span class="pre">pacman</span> <span class="pre">-S</span> <span class="pre">unzip</span></code>，还可选安装如下组件：<code class="docutils literal notranslate"><span class="pre">pacman</span> <span class="pre">-S</span> <span class="pre">git</span></code>、<code class="docutils literal notranslate"><span class="pre">pacman</span> <span class="pre">-S</span> <span class="pre">tmux</span></code>
+等</p>
+<div class="figure">
+<img alt="" src="../../_images/image424.png" />
+</div>
+<div class="figure">
+<img alt="" src="../../_images/image512.png" />
+</div>
+</li>
+<li><p class="first">对源文件压缩包进行解压，命令：<code class="docutils literal notranslate"><span class="pre">unzip</span> <span class="pre">bl_iot_sdk.zip</span></code></p>
+<div class="figure">
+<img alt="" src="../../_images/image64.png" />
+</div>
+<p><strong>注意</strong>：<code class="docutils literal notranslate"><span class="pre">unzip</span></code>之后文件名需要根据实际拿到的SDK文件名作出相应的修改</p>
+</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2>硬件连接<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<p>模块的相关引脚连接如下图所示，其中图一是模块的正面图，其标号1处用跳线帽短接，标号2处将左边两根排针短接，标号3处将上面的两根排针短接；图二是模块的背面图，将 <code class="docutils literal notranslate"><span class="pre">IO8</span></code> 和 <code class="docutils literal notranslate"><span class="pre">LOW</span></code> 两根排针短接。</p>
+<div class="figure">
+<img alt="" src="../../_images/image1311.png" />
+</div>
+<div class="figure">
+<img alt="" src="../../_images/image146.png" />
+</div>
+</div>
+<div class="section" id="id3">
+<h2>代码的编译和烧录<a class="headerlink" href="#id3" title="永久链接至标题"></a></h2>
+<ul>
+<li><p class="first">进入需要编译的工程目录，命令：<code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">customer_app/bl602_demo_event</span></code></p>
+<div class="figure">
+<img alt="" src="../../_images/image74.png" />
+</div>
+</li>
+<li><p class="first">进行编译，命令：<code class="docutils literal notranslate"><span class="pre">./genromap</span></code></p>
+<div class="figure">
+<img alt="" src="../../_images/image84.png" />
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="bin">
+<h2>bin文件下载<a class="headerlink" href="#bin" title="永久链接至标题"></a></h2>
+<ul>
+<li><p class="first">打开<code class="docutils literal notranslate"><span class="pre">bl_iot_sdk/tools/flash_tool</span></code>文件中的<code class="docutils literal notranslate"><span class="pre">BLDevCube.exe</span></code>程序</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">chip</span> <span class="pre">type</span></code>选择<code class="docutils literal notranslate"><span class="pre">BL602/604</span></code>，打开后界面参数参考下图配置：</p>
+<div class="figure">
+<img alt="" src="../../_images/image93.png" />
+</div>
+<p>点击<code class="docutils literal notranslate"><span class="pre">Create</span> <span class="pre">&amp;</span> <span class="pre">Download</span></code>，出现如下图所示表明下载成功：</p>
+<div class="figure">
+<img alt="" src="../../_images/image103.png" />
+</div>
+</li>
+<li><p class="first">打开串口终端，点击 <code class="docutils literal notranslate"><span class="pre">Settings</span></code> 配置为如下图所示，其中 <code class="docutils literal notranslate"><span class="pre">DTR</span></code> 需要勾选上， <code class="docutils literal notranslate"><span class="pre">RTS</span></code> 不勾选。</p>
+<div class="figure">
+<img alt="" src="../../_images/image1211.png" />
+</div>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

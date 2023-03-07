@@ -1,0 +1,22 @@
+id: silabs_core_memory_manager
+label: Memory Manager
+package: platform
+description: Silabs core is a collection of basic application utilities.
+category: Platform|Utilities
+quality: production
+include:
+  - path: util/silicon_labs/silabs_core/memory_manager
+    file_list:
+      - path: buffer_pool_allocator.h
+config_file:
+  - path: util/silicon_labs/silabs_core/memory_manager/config/buffer_pool_allocator_config.h
+source:
+  - path: util/silicon_labs/silabs_core/memory_manager/buffer_pool_allocator.c
+requires:
+  - name: cmsis_core
+  - name: emlib_core
+provides:
+  - name: silabs_core_memory_manager
+define:
+  - name: BUFFER_POOL_ALLOCATOR_USE_LOCAL_CONFIG_HEADER
+    value: "1"

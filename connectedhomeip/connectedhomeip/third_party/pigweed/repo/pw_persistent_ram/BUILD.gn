@@ -1,0 +1,87 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_bloat/bloat.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("pw_persistent_ram") {
+  public_configs = [ ":public_include_path" ]
+  public = [
+    "public/pw_persistent_ram/persistent.h",
+    "public/pw_persistent_ram/persistent_buffer.h",
+  ]
+  sources = [ "persistent_buffer.cc" ]
+  public_deps = [
+    dir_pw_assert,
+    dir_pw_bytes,
+    dir_pw_checksum,
+    dir_pw_preprocessor,
+    dir_pw_span,
+    dir_pw_stream,
+  ]
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":persistent_test",
+    ":persistent_buffer_test",
+  ]
+}
+
+pw_test("persistent_test") {
+  deps = [
+    ":pw_persistent_ram",
+    dir_pw_random,
+  ]
+  sources = [ "persistent_test.cc" ]
+}
+
+pw_test("persistent_buffer_test") {
+  deps = [
+    ":pw_persistent_ram",
+    dir_pw_random,
+  ]
+  sources = [ "persistent_buffer_test.cc" ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+  report_deps = [ ":persistent_size" ]
+}
+
+pw_size_diff("persistent_size") {
+  title = "pw::persistent_ram::Persistent"
+
+  binaries = [
+    {
+      target = "size_report:persistent"
+      base = "size_report:persistent_base"
+      label = "Persistent including pw_checksum's CRC16"
+    },
+    {
+      target = "size_report:persistent"
+      base = "size_report:persistent_base_with_crc16"
+      label = "Persistent without pw_checksum's CRC16"
+    },
+  ]
+}

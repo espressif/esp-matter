@@ -1,0 +1,132 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/exec.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_toolchain/generate_toolchain.gni")
+
+# Preprocess a linker script and turn it into a target.
+#
+# In lieu of direct GN support for linker scripts, this template makes it
+# possible to run the C Preprocessor on a linker script file so defines can
+# be properly evaluated before the linker script is passed to the dir_pw_build
+#
+# TODO(pwbug/53): This template serves as a stand-in until native GN support for
+# linker scripts is added.
+#
+# Args:
+#  linker_script: The linker script to send through the C preprocessor.
+#
+#  defines: Preprocessor defines to apply when running the C preprocessor.
+#
+#  cflags: Flags to pass to the C compiler.
+#
+#  includes: Include these files when running the C preprocessor.
+#
+#  inputs: Files that, when changed, should trigger a re-build of the linker
+#    script. linker_script and includes are implicitly added to this by the
+#    template.
+#
+# Example:
+#
+#   pw_linker_script("generic_linker_script") {
+#     defines = [
+#       "PW_HEAP_SIZE=1K",
+#       "PW_NOINIT_SIZE=512"
+#     ]
+#     linker_script = "basic_script.ld"
+#   }
+#
+template("pw_linker_script") {
+  assert(
+      defined(invoker.linker_script) && invoker.linker_script != "",
+      "$target_name did not set `linker_script` to refer to a valid linker " +
+          "script. This variable is required for linker script targets.")
+
+  _final_linker_script = "${target_gen_dir}/${target_name}_final.ld"
+
+  # This action invokes the C compiler provided by the target to preprocess the
+  # linker script.
+  pw_exec("${target_name}_preprocess") {
+    program = pw_toolchain_SCOPE.cxx
+    inputs = [ invoker.linker_script ]
+    args = [
+      # Run compiler in preprocessor-only mode.
+      "-E",
+
+      # Do not generate linemarkers in output.
+      "-P",
+
+      # Do not discard comments.
+      "-C",
+
+      # Treat the following file as a C file.
+      "-x",
+      "c",
+      rebase_path(invoker.linker_script, root_build_dir),
+    ]
+
+    # Trigger a re-generation of the linker script when these inputs change.
+    if (defined(invoker.inputs)) {
+      inputs += invoker.inputs
+    }
+
+    # Include any explicitly listed C flags.
+    if (defined(invoker.cflags)) {
+      args += invoker.cflags
+    }
+
+    # Include files from the command line.
+    if (defined(invoker.includes)) {
+      inputs += invoker.includes
+      foreach(include_file, invoker.includes) {
+        args += [ "-include" + rebase_path(include_file, root_build_dir) ]
+      }
+    }
+
+    # Add defines.
+    if (defined(invoker.defines)) {
+      foreach(compiler_define, invoker.defines) {
+        args += [ "-D${compiler_define}" ]
+      }
+    }
+
+    # Set output file.
+    args += [
+      "-o",
+      rebase_path(_final_linker_script, root_build_dir),
+    ]
+    outputs = [ _final_linker_script ]
+  }
+
+  # This config adds a the linker script produced by the preprocess action to
+  # the linker flags.
+  config("${target_name}_config") {
+    inputs = [ invoker.linker_script ]
+    if (!defined(invoker.ldflags)) {
+      ldflags = []
+    }
+    ldflags += [ "-T" + rebase_path(_final_linker_script, root_build_dir) ]
+  }
+
+  # The target that adds the linker script config to this library and everything
+  # that depends on it.
+  pw_source_set(target_name) {
+    inputs = [ _final_linker_script ]
+    all_dependent_configs = [ ":${target_name}_config" ]
+    deps = [ ":${target_name}_preprocess" ]
+  }
+}

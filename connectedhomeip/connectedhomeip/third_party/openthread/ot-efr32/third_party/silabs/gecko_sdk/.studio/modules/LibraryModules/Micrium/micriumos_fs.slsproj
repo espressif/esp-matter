@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="com.silabs.sdk.exx32.external.micriumos_fs" label="Micrium OS File System" contentRoot="$(sdkInstallationPath:default())/platform/micrium_os">
+  <property key="category" value="efm32|Middleware"/>
+  <includePath uri="." />
+
+  <folder name="fs" uri="fs" />
+</project>

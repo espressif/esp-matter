@@ -1,0 +1,33 @@
+id: bootloader_aes_sha_ecdsa
+label: Crypto
+package: bootloader
+description: >
+  Crypto operations for bootloader: AES, ECDSA and SHA
+category: Platform|Bootloader|Utils
+quality: production
+source:
+  - path: platform/bootloader/security/btl_security_aes.c
+  - path: platform/bootloader/security/btl_security_sha256.c
+  - path: platform/bootloader/security/btl_security_ecdsa.c
+  - path: platform/bootloader/security/sha/crypto_sha.c
+  - path: platform/bootloader/security/sha/cryptoacc_sha.c
+  - path: platform/bootloader/security/sha/se_sha.c
+  - path: platform/bootloader/security/sha/btl_sha256.c
+  - path: platform/bootloader/security/ecc/ecc.c
+include:
+  - path: platform/bootloader
+    file_list:
+      - path: security/btl_security_aes.h
+      - path: security/btl_security_ecdsa.h
+      - path: security/btl_security_sha256.h
+      - path: security/btl_security_tokens.h
+      - path: security/btl_security_types.h
+      - path: security/btl_security_aes.h
+      - path: security/ecc/ecc.h
+      - path: security/sha/btl_sha256.h
+requires:
+  - name: mbedtls_cipher_ctr
+provides:
+  - name: bootloader_aes_sha_ecdsa
+  - name: bootloader_nonsecure_incompatible
+    condition: [bootloader_core_nonsecure]

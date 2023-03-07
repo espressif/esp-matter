@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/build.dtd -->
+<package name="ti.sysbios.syncs" version="2, 0, 0, 0" producerId="undefined">
+    <units>
+        <module name="SyncSem"/>
+        <module name="SyncSwi"/>
+        <module name="SyncEvent"/>
+    </units>
+    <sources>
+        <srcFile name="package/package_ti.sysbios.syncs.c"/>
+        <srcFile name="SyncSem.c"/>
+        <srcFile name="SyncSwi.c"/>
+        <srcFile name="SyncEvent.c"/>
+    </sources>
+    <configscripts>
+    </configscripts>
+    <makefiles>
+        <srcFile name="package.mak" src="package.bld"/>
+        <srcFile name="package/package.xdc.dep" src="package.xdc"/>
+        <srcFile name="package/package.cfg.dep" src="package.xdc"/>
+        <srcFile name="lib/debug/ti.sysbios.syncs.aem4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.syncs/package/package_ti.sysbios.syncs.oem4.dep" src="package/package_ti.sysbios.syncs.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.syncs/SyncSem.oem4.dep" src="SyncSem.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.syncs/SyncSwi.oem4.dep" src="SyncSwi.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.syncs/SyncEvent.oem4.dep" src="SyncEvent.c"/>
+        <srcFile name="lib/debug/ti.sysbios.syncs.am4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.syncs/package/package_ti.sysbios.syncs.om4.dep" src="package/package_ti.sysbios.syncs.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.syncs/SyncSem.om4.dep" src="SyncSem.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.syncs/SyncSwi.om4.dep" src="SyncSwi.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.syncs/SyncEvent.om4.dep" src="SyncEvent.c"/>
+        <srcFile name="lib/debug/ti.sysbios.syncs.am4g.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.syncs/package/package_ti.sysbios.syncs.om4g.dep" src="package/package_ti.sysbios.syncs.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.syncs/SyncSem.om4g.dep" src="SyncSem.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.syncs/SyncSwi.om4g.dep" src="SyncSwi.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.syncs/SyncEvent.om4g.dep" src="SyncEvent.c"/>
+        <srcFile name="lib/debug/ti.sysbios.syncs.arm4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.syncs/package/package_ti.sysbios.syncs.orm4.dep" src="package/package_ti.sysbios.syncs.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.syncs/SyncSem.orm4.dep" src="SyncSem.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.syncs/SyncSwi.orm4.dep" src="SyncSwi.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.syncs/SyncEvent.orm4.dep" src="SyncEvent.c"/>
+        <srcFile name="package/rel/ti_sysbios_syncs.tar.dep" src="package/rel/ti_sysbios_syncs.xdc.inc"/>
+    </makefiles>
+    <targets>
+        <target name="ti.targets.arm.elf.M4"
+            version="ti.targets.arm.elf.M4{1,0,20.2,5"
+            rawVersion="20.2.5"
+            platform="ti.platforms.tiva:TM4C1294NCPDT:1"
+            isa="v7M4"
+            suffix="em4"
+            rootDir="/scratch/xlibrary/.conan/data/ticodegen/20.2.5.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c"
+            os="undefined"
+            rts="ti.targets.arm.rtsarm">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="ti.targets.arm.clang.M4"
+            version="ti.targets.arm.clang.M4{1,0,1.3,1"
+            rawVersion="TI Arm Clang Compiler 1.3.1.LTSTarget: arm-ti-none-eabi
+Thread model: posix
+InstalledDir: /scratch/xlibrary/.conan/data/tiarmllvm/1.3.1.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c/bin
+"
+            platform="ti.platforms.tiva:TM4C1294NCPDT:1"
+            isa="v7M4"
+            suffix="m4"
+            rootDir="/scratch/xlibrary/.conan/data/tiarmllvm/1.3.1.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c"
+            os="undefined"
+            rts="ti.targets.arm.rtsarm">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="gnu.targets.arm.M4"
+            version="gnu.targets.arm.M4{1,0,9.2,1"
+            rawVersion="9.2.1"
+            platform="ti.platforms.tiva:TM4C1294NCPDT"
+            isa="v7M4"
+            suffix="m4g"
+            rootDir="/scratch/xlibrary/.conan/data/arm-none-eabi-gcc/9.2019.q4.major-0/library-msp/ga/package/44fcf6b9a7fb86b2586303e3db40189d3b511830"
+            os="undefined"
+            rts="gnu.targets.arm.rtsv7M">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="iar.targets.arm.M4"
+            version="iar.targets.arm.M4{1,0,8.50,1"
+            rawVersion="8.50.1.245"
+            platform="ti.platforms.tiva:TM4C1294NCPDT:1"
+            isa="v7M4"
+            suffix="rm4"
+            rootDir="/scratch/xlibrary/.conan/data/iarcodegen/8.50.1.245-3/library-msp/ga/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9"
+            os="undefined"
+            rts="iar.targets.arm.rts">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+    </targets>
+    <libraries>
+    <library name="lib/debug/ti.sysbios.syncs"
+        pname="lib/debug/ti.sysbios.syncs.aem4"
+        profile="debug"
+        target="ti.targets.arm.elf.M4"/>
+    <library name="lib/debug/ti.sysbios.syncs"
+        pname="lib/debug/ti.sysbios.syncs.am4"
+        profile="debug"
+        target="ti.targets.arm.clang.M4"/>
+    <library name="lib/debug/ti.sysbios.syncs"
+        pname="lib/debug/ti.sysbios.syncs.am4g"
+        profile="debug"
+        target="gnu.targets.arm.M4"/>
+    <library name="lib/debug/ti.sysbios.syncs"
+        pname="lib/debug/ti.sysbios.syncs.arm4"
+        profile="debug"
+        target="iar.targets.arm.M4"/>
+    </libraries>
+    <configurations>
+    </configurations>
+    <executables>
+    </executables>
+    <tests>
+    </tests>
+    <releases relDir="package/rel/">
+    <release name="ti_sysbios_syncs"
+        pname="ti_sysbios_syncs.tar"
+        label="default"
+        relScript="ti/sysbios/libFilter.xs">
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+        <file name="package.bld"/>
+        <file name="SyncEvent.xml"/>
+        <file name="SyncSem.xml"/>
+        <file name="SyncSwi.xml"/>
+        <file name="package/package.cfg.xdc.inc"/>
+        <file name="lib/debug/ti.sysbios.syncs.aem4"/>
+        <file name="package/package_ti.sysbios.syncs.c"/>
+        <file name="SyncSem.c"/>
+        <file name="SyncSwi.c"/>
+        <file name="SyncEvent.c"/>
+        <file name="lib/debug/ti.sysbios.syncs.am4"/>
+        <file name="lib/debug/ti.sysbios.syncs.am4g"/>
+        <file name="lib/debug/ti.sysbios.syncs.arm4"/>
+    </release>
+    </releases>
+    <repositories>
+    </repositories>
+</package>

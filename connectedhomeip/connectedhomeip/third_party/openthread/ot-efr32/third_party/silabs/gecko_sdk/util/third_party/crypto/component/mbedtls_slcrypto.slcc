@@ -1,0 +1,153 @@
+id: mbedtls_slcrypto
+package: platform
+label: Drivers for Crypto Acceleration
+description: >-
+  This component enables hardware acceleration in Mbed TLS for EFM32 and
+  EFR32 devices.
+category: Platform|Security|Mbed TLS
+quality: production
+ui_hints:
+  visibility: never
+component_root_path: util/third_party/crypto
+source:
+  - path: sl_component/sl_mbedtls_support/src/sl_mbedtls.c
+  # Series 0 device support
+  - path: sl_component/sl_mbedtls_support/src/aes_aes.c
+    condition: [device_has_aes]
+  # Series 1 device support
+  - path: sl_component/sl_mbedtls_support/src/crypto_aes.c
+    condition: [mbedtls_aes, device_has_crypto]
+  - path: sl_component/sl_mbedtls_support/src/crypto_ecp.c
+    condition: [mbedtls_ecc, device_has_crypto]
+  - path: sl_component/sl_mbedtls_support/src/crypto_gcm.c
+    condition: [mbedtls_gcm, device_has_crypto]
+  - path: sl_component/sl_mbedtls_support/src/mbedtls_ccm.c
+    condition: [mbedtls_ccm, device_has_crypto]
+  - path: sl_component/sl_mbedtls_support/src/mbedtls_cmac.c
+    condition: [mbedtls_cmac, device_has_crypto]
+  - path: sl_component/sl_mbedtls_support/src/mbedtls_sha.c
+    condition: [mbedtls_sha_function, device_has_crypto]
+  # Series 2 device support with HSE
+  - path: sl_component/sl_mbedtls_support/src/se_aes.c
+    condition: [mbedtls_aes, device_has_semailbox]
+  - path: sl_component/sl_mbedtls_support/src/mbedtls_ccm.c
+    condition: [mbedtls_ccm, device_has_semailbox]
+  - path: sl_component/sl_mbedtls_support/src/mbedtls_cmac.c
+    condition: [mbedtls_cmac, device_has_semailbox]
+  - path: sl_component/sl_mbedtls_support/src/mbedtls_ecdsa_ecdh.c
+    condition: [mbedtls_ecc, device_has_semailbox]
+  - path: sl_component/sl_mbedtls_support/src/se_gcm.c
+    condition: [mbedtls_gcm, device_has_semailbox]
+  - path: sl_component/sl_mbedtls_support/src/se_jpake.c
+    condition: [mbedtls_jpake, device_has_semailbox]
+  - path: sl_component/sl_mbedtls_support/src/mbedtls_sha.c
+    condition: [mbedtls_sha_function, device_has_semailbox]
+  # Series 2 device support with VSE
+  - path: sl_component/sl_mbedtls_support/src/cryptoacc_aes.c
+    condition: [device_has_cryptoacc]
+  - path: sl_component/sl_mbedtls_support/src/mbedtls_ccm.c
+    condition: [device_has_cryptoacc]
+  - path: sl_component/sl_mbedtls_support/src/mbedtls_cmac.c
+    condition: [device_has_cryptoacc]
+  - path: sl_component/sl_mbedtls_support/src/mbedtls_ecdsa_ecdh.c
+    condition: [device_has_cryptoacc]
+  - path: sl_component/sl_mbedtls_support/src/cryptoacc_gcm.c
+    condition: [device_has_cryptoacc]
+  - path: sl_component/sl_mbedtls_support/src/mbedtls_sha.c
+    condition: [mbedtls_sha_function, device_has_cryptoacc]
+include:
+  - path: sl_component/sl_mbedtls_support/inc
+    file_list:
+      - path: aes_alt.h
+      - path: ccm_alt.h
+      - path: cmac_alt.h
+      - path: se_management.h
+        condition: [device_has_semailbox]
+      - path: sha1_alt.h
+      - path: sha256_alt.h
+      - path: sha512_alt.h
+      - path: sl_mbedtls.h
+      - path: threading_alt.h
+        unless: [iot_crypto]
+      # Series 1 device support
+      - path: gcm_alt.h
+        condition: [device_has_crypto]
+      # Series 2 device support with HSE
+      - path: gcm_alt.h
+        condition: [device_has_semailbox]
+      - path: ecjpake_alt.h
+        condition: [device_has_semailbox]
+      # Series 2 device support with Vault High security
+      - path: sha512_alt.h
+        condition: [device_security_vault]
+      # Series 2 device support with VSE
+      - path: gcm_alt.h
+        condition: [device_has_cryptoacc]
+requires:
+  - name: emlib_crypto
+    condition: [device_has_crypto]
+  - name: emlib_aes
+    condition: [device_has_aes]
+  - name: emlib_se
+    condition: [device_has_semailbox]
+  - name: cryptoacc_library
+    condition: [device_has_cryptoacc]
+  - name: se_manager
+    condition: [device_series_2]
+  - name: silabs_core_sl_malloc
+  - name: component_catalog
+  - name: psa_driver
+    condition: [device_series_1]
+  - name: psa_driver
+    condition: [device_series_2]
+  - name: enum
+    condition: [device_has_cryptoacc]
+provides:
+  - name: mbedtls_slcrypto
+  - name: mbedtls_slcrypto_driver
+  - name: tz_ns_incompatible
+    condition: [tz_secure_key_library_ns]
+template_contribution:
+# FreeRTOS (non-AWS IOT) threading support
+  - name: mbedtls_config
+    value: MBEDTLS_THREADING_C
+    condition: [freertos]
+    unless: [iot_crypto]
+  - name: mbedtls_config
+    value: MBEDTLS_THREADING_ALT
+    condition: [freertos]
+    unless: [iot_crypto]
+# FreeRTOS (AWS IOT) threading support
+  - name: mbedtls_config
+    value: MBEDTLS_THREADING_C
+    condition: [iot_crypto]
+  - name: mbedtls_config
+    value: MBEDTLS_THREADING_ALT
+    condition: [iot_crypto]
+  - name: mbedtls_config
+    value: THREADING_InitMutex mbedtls_mutex_init
+    condition: [iot_crypto]
+  - name: mbedtls_config
+    value: THREADING_FreeMutex mbedtls_mutex_free
+    condition: [iot_crypto]
+  - name: mbedtls_config
+    value: THREADING_TakeMutexBlocking mbedtls_mutex_lock
+    condition: [iot_crypto]
+  - name: mbedtls_config
+    value: THREADING_GiveMutex mbedtls_mutex_unlock
+    condition: [iot_crypto]
+# Micrium OS threading support
+  - name: mbedtls_config
+    value: MBEDTLS_THREADING_C
+    condition: [micriumos]
+  - name: mbedtls_config
+    value: MBEDTLS_THREADING_ALT
+    condition: [micriumos]
+  - name: event_handler
+    value:
+      event: service_init
+      include: sl_mbedtls.h
+      handler: sl_mbedtls_init
+documentation:
+  docset: mbed-tls
+  document: group-sl-crypto

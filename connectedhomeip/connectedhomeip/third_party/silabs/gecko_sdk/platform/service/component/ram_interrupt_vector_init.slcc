@@ -1,0 +1,26 @@
+id: ram_interrupt_vector_init
+label: "RAM interrupt vector initialization"
+package: platform
+description: >
+  The RAM interrupt vector init initialization component provides a service_init handler to initialize
+  the RAM interrupt vector.
+category: Services|Interrupt
+quality: production
+source:
+  - path: platform/service/ram_interrupt_vector_init/src/sl_ram_interrupt_vector_init.c
+include:
+  - path: platform/service/ram_interrupt_vector_init/inc
+    file_list:
+      - path: sl_ram_interrupt_vector_init.h
+provides:
+  - name: ram_interrupt_vector_init
+requires:
+  - name: emlib_common
+  - name: emlib_core
+template_contribution:
+  - name: event_handler
+    value:
+      event: platform_init
+      include: sl_ram_interrupt_vector_init.h
+      handler: sl_ram_interrupt_vector_init
+      priority: -1

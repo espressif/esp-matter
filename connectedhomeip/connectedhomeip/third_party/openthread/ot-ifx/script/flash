@@ -1,0 +1,131 @@
+#!/bin/bash
+#
+#  Copyright (c) 2021, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+
+main()
+{
+    local USAGE="Usage: $0 [-h] [-v] -p <serial port> -b <board> -d <device_type: ftd, mtd>"
+
+    # Parse input parameters
+    while getopts "p:b:d:hv" optchar; do
+        case "${optchar}" in
+            p)
+                local PORT="${OPTARG}"
+                ;;
+            b)
+                local BOARD="${OPTARG}"
+                echo "BOARD: $BOARD"
+                ;;
+            d)
+                local TARGET="infineon-ot-cli-${OPTARG}"
+                echo "TARGET: $TARGET"
+                ;;
+            v)
+                local VERBOSE=--verbose
+                ;;
+            *)
+                echo "${USAGE}"
+                exit 2
+                ;;
+        esac
+    done
+    shift $((OPTIND - 1))
+
+    if [ ! -v PORT ] || [ ! -v BOARD ] || [ ! -v TARGET ]; then
+        echo "${USAGE}"
+        exit 2
+    fi
+
+    # Parse the platform
+    board_leading_substring="cyw9"
+    IFX_PLATFORM="cyw${BOARD:${#board_leading_substring}:5}"
+
+    echo "IFX_PLATFORM: $IFX_PLATFORM"
+
+    # Set target script path
+    local IFX_SCRIPTS_DIR="$repo_dir/third_party/infineon/platform/$IFX_PLATFORM/scripts"
+
+    echo "IFX_SCRIPTS_DIR: $IFX_SCRIPTS_DIR"
+
+    local SDK_TOOLS_DIR=third_party/infineon/btsdk-tools
+
+    local IFX_MTB_TOOLS_DIR=
+    for dir in {${USERPROFILE:-${HOME}},/Applications}/ModusToolbox/tools_*; do
+        if [ -d "${dir}" ]; then
+            IFX_MTB_TOOLS_DIR="${dir}"
+            break
+        fi
+    done
+
+    if [[ $OSTYPE == "linux-gnu"* ]]; then
+        local SDK_TOOLS_SUB_DIR=Linux64
+    elif [[ $OSTYPE == "darwin"* ]]; then
+        local SDK_TOOLS_SUB_DIR=OSX
+    else
+        local SDK_TOOLS_SUB_DIR=Windows
+    fi
+
+    set +u
+    bash --norc --noprofile \
+        "${IFX_SCRIPTS_DIR}/bt_program.bash" \
+        --shell="${IFX_MTB_TOOLS_DIR}/modus-shell" \
+        --tools="${SDK_TOOLS_DIR}/${SDK_TOOLS_SUB_DIR}" \
+        --scripts="${IFX_SCRIPTS_DIR}" \
+        --hex="${OT_BUILDDIR}/${BOARD}/bin/${TARGET}_download.hex" \
+        --elf="${OT_BUILDDIR}/${BOARD}/bin/${TARGET}.elf" \
+        --uart="${PORT}" \
+        --direct=0 \
+        ${VERBOSE:-}
+    set -u
+}
+
+###################################################################################################
+#
+# Program Start
+#
+###################################################################################################
+
+set -euo pipefail
+
+# Keep folder information
+if [[ -n ${BASH_SOURCE[0]} ]]; then
+    script_path="${BASH_SOURCE[0]}"
+else
+    script_path="$0"
+fi
+
+script_dir="$(dirname "$(realpath "$script_path")")"
+repo_dir="$(dirname "$script_dir")"
+
+if [[ $OSTYPE == "cygwin" ]]; then
+    readonly OT_BUILDDIR=$(cygpath -m "${OT_CMAKE_BUILD_DIR:-$repo_dir/build}")
+else
+    readonly OT_BUILDDIR="${OT_CMAKE_BUILD_DIR:-$repo_dir/build}"
+fi
+
+main "$@"

@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.time_update_state" uuid="2A17" name="Time Update State">
+	<InformativeText>
+	</InformativeText>
+	<Value>
+		<Field name="Current State">
+			<Requirement>Mandatory</Requirement>
+			<Format>uint8</Format>
+			<Minimum>0</Minimum>
+			<Maximum>1</Maximum>
+			<Enumerations>
+				<Enumeration key="0" value="Idle" />
+				<Enumeration key="1" value="Update Pending" />
+				<Reserved start="2" end="255"/>
+			</Enumerations>
+		</Field>
+		<Field name="Result">
+			<Requirement>Mandatory</Requirement>
+			<Format>uint8</Format>
+			<Minimum>0</Minimum>
+			<Maximum>4</Maximum>
+			<Enumerations>
+				<Enumeration key="0" value="Successful" />
+				<Enumeration key="1" value="Canceled" />
+                <Enumeration key="2" value="No Connection To Reference" />
+				<Enumeration key="3" value="Reference responded with an error" />
+				<Enumeration key="4" value="Timeout" />
+                <Enumeration key="5" value="Update not attempted after reset" />
+				<Reserved start="6" end="255"/>
+			</Enumerations>
+		</Field>
+	</Value>
+   <Note>
+    The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet.
+   </Note>
+</Characteristic>

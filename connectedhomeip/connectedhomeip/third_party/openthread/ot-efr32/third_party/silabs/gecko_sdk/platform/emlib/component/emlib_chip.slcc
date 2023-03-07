@@ -1,0 +1,57 @@
+id: emlib_chip
+label: CHIP
+package: platform
+description: >
+  Chip Initialization API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_chip.h"
+provides:
+  - name: emlib_chip
+requires:
+  - name: device
+  - name: emlib_common
+  - name: emlib_system
+  - name: cmsis_core
+  - name: emlib_gpio
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efm32g/group-chip
+      condition: [device_sdid_71]
+    - page: emlib/api/efm32gg/group-chip
+      condition: [device_sdid_72]
+    - page: emlib/api/efm32tg/group-chip
+      condition: [device_sdid_73]
+    - page: emlib/api/efm32lg/group-chip
+      condition: [device_sdid_74]
+    - page: emlib/api/efm32zg/group-chip
+      condition: [device_sdid_76]
+    - page: emlib/api/efm32hg/group-chip
+      condition: [device_sdid_77]
+    - page: emlib/api/efr32xg1/group-chip
+      condition: [device_sdid_80]
+    - page: emlib/api/efr32xg12/group-chip
+      condition: [device_sdid_84]
+    - page: emlib/api/efr32xg13/group-chip
+      condition: [device_sdid_89]
+    - page: emlib/api/efr32xg14/group-chip
+      condition: [device_sdid_95]
+    - page: emlib/api/efm32gg11/group-chip
+      condition: [device_sdid_100]
+    - page: emlib/api/efm32tg11/group-chip
+      condition: [device_sdid_103]
+    - page: emlib/api/efm32gg12/group-chip
+      condition: [device_sdid_106]
+    - page: emlib/api/efr32xg21/group-chip
+      condition: [device_sdid_200]
+    - page: emlib/api/efr32xg22/group-chip
+      condition: [device_sdid_205]
+    - page: emlib/api/efr32xg23/group-chip
+      condition: [device_sdid_210]
+    - page: emlib/api/efr32xg24/group-chip
+      condition: [device_sdid_215]

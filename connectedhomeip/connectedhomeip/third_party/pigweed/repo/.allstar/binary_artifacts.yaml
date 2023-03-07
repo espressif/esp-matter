@@ -1,0 +1,4 @@
+# Ignore reason: Empty binaries used to test ELF parsing
+ignorePaths:
+- pw_tokenizer/py/elf_reader_test_binary.elf
+- pw_tokenizer/py/example_binary_with_tokenized_strings.elf

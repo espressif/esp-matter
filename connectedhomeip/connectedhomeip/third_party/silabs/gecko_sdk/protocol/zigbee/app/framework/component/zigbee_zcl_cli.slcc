@@ -1,0 +1,26 @@
+id: "zigbee_zcl_cli"
+label: "Zigbee ZCL CLI"
+package: "Zigbee"
+category: "Zigbee|Utility"
+quality: "production"
+description: "This component provides ZCL-related CLI commands"
+
+provides:
+  - name: "zigbee_zcl_cli"
+requires:
+  - name: "zigbee_cli"
+  - name: "zigbee_zcl_framework_core"
+source:
+  - path: "protocol/zigbee/app/framework/plugin/zcl_cli/zigbee-zcl-cli.c"
+    condition:
+      - "cli"
+  - path: "protocol/zigbee/app/framework/plugin/zcl_cli/zigbee-zcl-global-cli.c"
+  - path: "protocol/zigbee/app/framework/plugin/zcl_cli/zigbee-zcl-custom-cluster-cli.c"
+template_contribution:
+  - name: component_catalog
+    value: zigbee_zcl_cli
+  - name: zigbee_af_callback
+    value:
+      callback_type: init_done
+      function_name: sli_zigbee_zcl_cli_init
+    priority: -9600

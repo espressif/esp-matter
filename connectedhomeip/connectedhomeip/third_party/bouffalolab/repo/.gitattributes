@@ -1,0 +1,2 @@
+toolchain/* linguist-vendored
+flash_tool/BLDevCube filter=lfs diff=lfs merge=lfs -text

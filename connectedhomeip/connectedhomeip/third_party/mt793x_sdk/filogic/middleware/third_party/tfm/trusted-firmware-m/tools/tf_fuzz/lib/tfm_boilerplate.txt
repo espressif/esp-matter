@@ -1,0 +1,227 @@
+/*
+ * Copyright (c) 2019-2020, Arm Limited. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ *
+ */
+
+This file is a library text file of boilerplate-text snippets.  TF-Fuzz reads in these
+snippets and then performs targeted text substitutions upon them, to create the indi-
+vidual PSA commands, and other important code snippets.  This one in particular
+library-text file is what might be called the "personality module" for writing tests
+with TF-M syntax.
+
+Four extremely important things about this file:
+*  The individual text snippets are separated by "backtick" (AKA back-apostrophe)
+   characters (see below).  This means that text snippets of TF code can't use backtick
+   characters (reasonably safe for C code).
+*  The text snippets are *positional*.  The loop in boilerplate.cpp reads them in, in
+   the order they appear in this file, into a vector of strings.  The "const int"s in
+   boilerplate.hpp assign symbolic names to the vector indices.  It is therefore
+   *critical* that the, for example, 11th backtick-delineated text snippet in this file,
+   be read into the 11 string in this vector of strings!
+*  This first text snippet that you're now reading -- a README about this file -- is
+   ignored by this boilerplate.cpp loop;  it is not read into this vector of snippets.
+*  To make it easier to track the positional nature of the text snippets in this file,
+   the first three characters, plus the leading \n, of these snippets is trimmed off
+   and ignored.  These first three characters in each string comprise a sequence
+   number, for checking against the "const int" list in boilerplate.hpp.  So, these
+   tags are literally the exactly the 3 characters directly after the backtick termi-
+   nating the previous string.
+
+TO DO:  Hindsight-obvious:  This plus the table of constants in boilerplate.hpp should
+        be replaced with an STL map container!
+`000
+/*
+ * Copyright (c) 2019-2020, Arm Limited. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ *
+ */
+
+/*
+ * Test purpose:
+ *     $purpose
+ *
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+#include <stdint.h>
+
+#include "../sst/non_secure/ns_test_helpers.h"
+#include "psa/protected_storage.h"
+#include "test/framework/test_framework_helpers.h"
+#include "crypto_tests_common.h"
+#include "tfm_memory_utils.h"
+`001
+#include <stdint.h>
+
+static uint32_t shift_reg = 0x55555555;
+static int i;  /* generic counter variable */
+
+static void seed_hasher (void)
+{
+    shift_reg = 0x55555555;
+}
+
+static uint32_t lfsr_1b (uint32_t a_bit)
+{
+    int odd;
+    uint32_t polynomial = 0xb4bcd35c;
+
+    odd = ((shift_reg ^ a_bit) & 1) == 1;
+    shift_reg >>= 1;
+    if (odd == 1) {
+        shift_reg ^= polynomial;
+    }
+    if (shift_reg == 0) {
+        /* Should never happen, but... */
+        seed_hasher();
+    }
+    return shift_reg;
+}
+
+static uint32_t crc_byte (uint8_t a_byte)
+{
+    int i;
+    for (i = 0;  i < 8;  i++) {
+        lfsr_1b ((uint32_t) a_byte);
+        a_byte >>= 1;
+    }
+    return shift_reg;
+}
+
+`002
+
+/* This is not yet right for how to run a test;  need to register tests, etc. */
+
+void test_thread (struct test_result_t *ret) {
+    psa_status_t crypto_status;  // result from Crypto calls
+    psa_status_t sst_status;
+
+    /* To prevent unused variable warning, as the variable might not be used
+     * in this testcase
+     */
+    (void)sst_status;
+
+    crypto_status = psa_crypto_init();
+    if (crypto_status != PSA_SUCCESS) {
+        TEST_FAIL("Could not initialize Crypto.");
+        return;
+    }
+
+    TEST_LOG("Test $purpose");
+`003
+    static int $var = $init;
+`004
+    static uint8_t $var[] = "$init";
+`005
+    static uint8_t $var[2048] = "$init";
+`006
+    $type $var = $init;
+`007
+    TEST_LOG($message);
+`008
+    psa_ps_remove($uid);
+`009
+    if (sst_status != PSA_SUCCESS) {
+        TEST_FAIL("Failed to tear down an SST asset upon test completion.");
+        return;
+    }
+`010
+    psa_destroy_key($handle);
+`011
+    if (crypto_status != PSA_SUCCESS) {
+        TEST_FAIL("Failed to tear down a crypto asset upon test completion");
+        return;
+    }
+`012
+
+    /* Test completed */
+    ret->val = TEST_PASSED;
+}
+`013 PSA_SUCCESS`014 PSA_ERROR_DOES_NOT_EXIST`015
+    /* $op SST asset $description with data $data_source. */
+    sst_status = psa_ps_set($uid, $length, $data,
+                            $flags);
+`016
+    if (sst_status != $expect) {
+        TEST_FAIL("psa_ps_set() expected $expect.");
+        return;
+    }
+`017
+    sst_status = psa_ps_get($uid, $offset, $length, $act_data,
+                            &$act_length);
+`018
+    if (sst_status != $expect) {
+        TEST_FAIL("psa_ps_get() expected $expect.");
+        return;
+    }
+`019
+    if (sst_status != $expect) {
+        TEST_FAIL("psa_ps_get() expected $expect.");
+        return;
+    }
+    /* Check that the data is correct */
+    if (tfm_memcmp($act_data, $exp_data, $length) != 0) {
+        TEST_FAIL("Read data should be equal to result data");
+        return;
+    }
+`020
+    // Hash the actual data for later data-leak checking:
+    seed_hasher();
+    for (i = 0;  i < strlen((char *) $act_data_var);  ++i) {
+        crc_byte ($act_data_var[i]);
+    }
+    $hash_var = shift_reg;
+`021
+    sst_status = psa_ps_remove($uid);
+`022
+    if (sst_status != $expect) {
+        TEST_FAIL("psa_ps_remove() expected $expect.");
+        return;
+    }
+`023
+    crypto_status = psa_key_policy_set_usage(*$policy, $usage, $alg);
+`024
+    if (crypto_status != $expect) {
+        TEST_FAIL("psa_key_policy_set_usage() expected $expect.");
+        return;
+    }
+`025
+    crypto_status = psa_key_policy_get_usage(*$policy);
+`026
+    if (crypto_status != $expect) {
+        TEST_FAIL("psa_key_policy_set_usage() expected $expect.");
+        return;
+    }
+`027
+    crypto_status = psa_create_key($lifetime, *$handle);
+`028
+    if (crypto_status != $expect) {
+        TEST_FAIL("psa_create_key() expected $expect.");
+        return;
+    }
+`029
+    crypto_status = psa_get_key_information($handle, *$type, *$bits);
+`030
+    if (crypto_status != $expect) {
+        TEST_FAIL("psa_get_key_information() expected $expect.");
+        return;
+    }
+`031
+    if ($n_bits != $m_bits) {
+        TEST_FAIL("The number of key bits is different from expected");
+        return;
+    }
+`032
+    crypto_status = psa_destroy_key($handle);
+`033
+    if (crypto_status != $expect) {
+        TEST_FAIL("psa_destroy_key() expected $expect.");
+        return;
+    }
+`

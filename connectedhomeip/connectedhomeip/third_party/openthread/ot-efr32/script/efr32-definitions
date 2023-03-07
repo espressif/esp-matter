@@ -1,0 +1,133 @@
+#!/bin/bash
+#
+#  Copyright (c) 2021, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+
+if [[ -n ${BASH_SOURCE[0]} ]]; then
+    script_path="${BASH_SOURCE[0]}"
+else
+    script_path="$0"
+fi
+
+script_dir="$(dirname "$(realpath "$script_path")")"
+repo_dir="$(dirname "$script_dir")"
+sdk_dir="${repo_dir}/third_party/silabs/gecko_sdk/"
+
+efr32_device_regex=""
+efr32_device_regex+="\(efr32\)*"                               # Group 1 - efr32 (optional)
+efr32_device_regex+="\([[:alpha:]]\{2\}\)"                     # Group 2 - mg, bg, xg (product line)
+efr32_device_regex+="\(m*\)"                                   # Group 3 - m (optional, modules only)
+efr32_device_regex+="\([[:digit:]]\{1,2\}\)[[:digit:]]\{0,1\}" # Group 4 - 1, 12, 13, 21, 24, 210, 240 etc (series and configuration)
+efr32_device_regex+="\([[:alpha:]]\{1\}\)"                     # Group 5 - a, b, c, p, v (revision)
+efr32_device_regex+="\([[:alpha:]]\{0,1\}[[:digit:]]\{1,3\}\)" # Group 6 - xxx, a32, 032
+efr32_device_regex+="\(f[[:digit:]]\{1,\}\)*"                  # Group 7 - fXXX (flash size)
+efr32_device_regex+="\([[:alpha:]]\{2,3\}\)*"                  # Group 8 - im, gl, gm, jia, vna, etc
+efr32_device_regex+="\(f[[:digit:]]\{1,\}\)*"                  # Group 9 - 32, 40, 48, 68, 125
+efr32_device_regex+=".*"                                       # Rest of line
+readonly efr32_device_regex
+
+efr32_get_board_slcc()
+{
+    local -r \
+        doc="Gets the latest revision .slcc file for a efr32 board"
+    #
+    # Arg $1 -- efr32 board
+    if [ $# -ne 1 ] || [ -z "$1" ]; then
+        printf "%s\n\nUsage:\n\t%s <efr32_board> \n" "${doc}" "${FUNCNAME[0]}" >&2
+        return 1
+    fi
+    local board=$1
+
+    # Find component file for latest revision of board
+    local board_slcc
+    board_slcc=$(
+        find "${sdk_dir}"/hardware/board/component -type f \( -name "${board}*" ! -name '*_support.slcc' \) \
+            | sort --version-sort \
+            | tail -n 1
+    )
+    echo "${board_slcc}"
+}
+
+efr32_get_platforms()
+{
+    local platform_dir="$repo_dir/src" \
+        && find "$platform_dir" -type d -name '*efr32*' -exec basename {} \; | sort
+}
+
+efr32_check_platform()
+{
+    # Checks if a value is a valid efr32 platform
+    #
+    # Arg $1 -- value
+    local match=false
+    local platform="${1:-}"
+
+    for efr32_platform in $(efr32_get_platforms); do
+        if [[ $efr32_platform == "$platform" ]]; then
+            match=true
+            break
+        fi
+    done
+
+    if ! $match; then
+        set +x
+        printf "\n\nERROR: Invalid platform\n" >&2
+        printf "Valid platforms:\n" >&2
+        for platform in $(efr32_get_platforms); do
+            printf " - %s\n" "${platform}" >&2
+        done
+        set -x
+        return 2
+    fi
+    return 0
+}
+
+efr32_get_jlink_device()
+{
+    local -r \
+        doc="Gets the J-Link device type for a efr32 board"
+    #
+    # Arg $1 -- efr32 board
+    if [ $# -ne 1 ] || [ -z "$1" ]; then
+        printf "%s\n\nUsage:\n\t%s <efr32_board> \n" "${doc}" "${FUNCNAME[0]}" >&2
+        return 1
+    fi
+    local board=$1
+
+    # Find component file for latest revision of board
+    local board_slcc
+    board_slcc=$(efr32_get_board_slcc "${board}")
+
+    local jlink_device
+    jlink_device=$(
+        grep -Eo 'board:device:.*' "${board_slcc}" \
+            | sed "s/board:device:${efr32_device_regex}/\1\2\3\4\5xxx\7/" \
+            | tr "[:lower:]" "[:upper:]" \
+            | head -n 1
+    )
+    echo "${jlink_device}"
+}

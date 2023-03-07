@@ -1,0 +1,17 @@
+id: "bluetooth_feature_gatt"
+label: "GATT Client"
+package: "Bluetooth"
+description: >
+  GATT Client feature
+
+  Enables the ability to browse and manage attributes in a remote GATT server.
+category: "Bluetooth|Stack"
+quality: "production"
+root_path: "protocol/bluetooth"
+requires:
+  - name: "bluetooth_stack"
+provides:
+  - name: "bluetooth_feature_gatt"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_gatt

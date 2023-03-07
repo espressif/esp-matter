@@ -1,0 +1,38 @@
+default:
+    port0: '/dev/ttyUSB1'
+    port0_port_config:
+        baudrate: 2000000
+    flash:
+        flasher_root: "${SDK_ROOT}/tools/flash_tool"
+        flasher_exe: "${FLASHER_ROOT}/bflb_iot_tool_Rasp"
+        flash_config:
+            param:
+                interface_type: "Uart"
+                comport_uart: "/dev/ttyUSB1"
+                speed_uart: "2000000"
+                speed_jlink: "1000"
+                bl60x_brd: "IoTKitA"
+                bl60x_xtal: "40M"
+                verify: "True"
+                aes_key: ""
+                aes_iv: ""
+                addr: "0x0"
+            check_box:
+                partition_download: true
+                boot2_download: true
+                bin_download: true
+                media_download: false
+                use_romfs: false
+                mfg_download: false
+                ro_params_download: true
+                ckb_erase_all: false
+                encrypt: false
+                download_single: false
+            input_path:
+                pt_bin_input: ""
+                boot2_bin_input: ""
+                cfg2_bin_input: "${SDK_ROOT}/customer_app/component/easyflash/build_out/easyflash.bin"
+                meida_bin_input: ""
+                romfs_dir_input: ""
+                mfg_bin_input: ""
+                img_bin_input: ""

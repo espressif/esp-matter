@@ -1,0 +1,28 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+# This BUILDCONFIG file tells GN how to build upstream Pigweed. When starting a
+# new project, you'll need to copy this file to your project and then modify it
+# to fit your needs. Due to the way Pigweed handles file imports, you won't be
+# able to simply import this file in your own BUILDCONFIG.gn.
+
+# This is imported into a scope so as not to pollute the global variable space.
+_pigweed_directory = {
+  import("//build_overrides/pigweed.gni")
+}
+
+# The default toolchain is not used in Pigweed builds, so it is set to a
+# toolchain that cannot compile C/C++ code. The top-level BUILD.gn should stamp
+# a group with all of the build targets and their toolchains.
+set_default_toolchain("${_pigweed_directory.dir_pw_toolchain}/default")

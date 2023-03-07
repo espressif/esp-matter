@@ -1,0 +1,33 @@
+package: Zigbee
+description: Silicon Labs implementation of the Basic server cluster.  This component implements
+  the optional ResetToFactoryDefaults command, which allows any remote device in the
+  network to reset the local device.  When the application receives this command,
+  the component resets attributes managed by the framework to their default values
+  and then calls a callback so that the application can perform any other necessary
+  reset-related operations. The command is disruptive and not required, so Silicon Labs
+  recommends disabling this component for most production applications.
+id: zigbee_basic
+label: Basic Server Cluster
+category: Zigbee|Cluster Library|Common
+quality: production
+provides:
+   - name: "zigbee_basic"
+source:
+  - path: protocol/zigbee/app/framework/plugin/basic/basic.c
+  - path: protocol/zigbee/app/framework/plugin/basic/basic-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/basic
+    file_list:
+      - path: basic.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_basic
+  - name: cluster_service
+    value:
+       cluster_id: "0x0000"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "SERVER"
+       service_function: "emberAfBasicClusterServerCommandParse"
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/basic

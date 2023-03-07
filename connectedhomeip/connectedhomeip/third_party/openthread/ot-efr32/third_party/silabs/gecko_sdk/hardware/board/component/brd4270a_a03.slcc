@@ -1,0 +1,70 @@
+!!omap
+- id: brd4270a_a03
+- label: BRD4270A rev A03
+- package: platform
+- description: Board support for BRD4270A.
+- category: Platform|Board|Radio Board
+- quality: production
+- requires:
+  - name: efr32fg25b222f1920im56
+  - name: brd4270a_config
+  - name: hardware_board_mainboard
+- provides:
+  - name: brd4270a_revision
+  - name: brd4270a_a03
+  - name: hardware_board
+  - name: hardware_board_rb
+  - name: hardware_board_has_si70xx
+  - name: hardware_board_has_tempsensor
+  - name: hardware_board_has_vcom
+  - name: hardware_board_has_spiflash
+  - name: hardware_board_has_hfxo
+  - name: hardware_board_has_lfxo
+  - name: hardware_board_supports_rf_band_915
+  - name: hardware_board_supports_1_rf_band
+  - name: hardware_board_default_rf_band
+  - name: hardware_board_default_rf_band_915
+- recommends:
+  - id: brd4002a
+  - id: iostream_eusart
+    instance:
+    - vcom
+  - id: bootloader_euart_driver
+  - id: i2cspm
+    instance:
+    - sensor
+  - id: ls013b7dh03
+  - id: memlcd_eusart
+  - id: simple_led
+    instance:
+    - led0
+    - led1
+  - id: simple_button
+    instance:
+    - btn0
+    - btn1
+  - id: usb_device_driver_dwc_otg_fs
+  - id: mx25_flash_shutdown_eusart
+  - id: bootloader_spi_controller_eusart_driver
+  - id: bootloader_spi_peripheral_eusart_driver
+- template_contribution:
+  - name: board_default_init
+    value: sl_board_disable_vcom()
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD4270A"'
+  - name: SL_BOARD_REV
+    value: '"A03"'
+- tag:
+  - board:pn:BRD4270
+  - board:variant:A
+  - board:revision:A03
+  - board:device:efr32fg25b222f1920im56
+  - hardware:has:vcom
+  - hardware:has:pti
+  - hardware:has:sensor:si7021
+  - hardware:has:display:ls013b7dh03
+  - hardware:has:led:2
+  - hardware:has:button:2
+  - hardware:has:usb
+  - hardware:has:memory:spi:mx25r8035f

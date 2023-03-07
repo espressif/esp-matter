@@ -1,0 +1,50 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("pw_intrusive_ptr") {
+  public_configs = [ ":public_include_path" ]
+  public = [
+    "public/pw_intrusive_ptr/internal/ref_counted_base.h",
+    "public/pw_intrusive_ptr/intrusive_ptr.h",
+  ]
+  sources = [ "ref_counted_base.cc" ]
+  deps = [ "$dir_pw_assert" ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}
+
+pw_test_group("tests") {
+  tests = [ ":intrusive_ptr_test" ]
+}
+
+pw_test("intrusive_ptr_test") {
+  sources = [ "intrusive_ptr_test.cc" ]
+  deps = [ ":pw_intrusive_ptr" ]
+
+  # TODO(b/260624583): Fix this for //targets/rp2040
+  enable_if = pw_build_EXECUTABLE_TARGET_TYPE != "pico_executable"
+}

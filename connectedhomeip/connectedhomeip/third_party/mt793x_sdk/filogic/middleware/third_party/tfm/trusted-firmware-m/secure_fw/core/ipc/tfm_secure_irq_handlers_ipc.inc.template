@@ -1,0 +1,83 @@
+/*
+ * Copyright (c) 2019-2020, Arm Limited. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ *
+ */
+
+{{utilities.donotedit_warning}}
+
+{% for header in utilities.manifest_header_list %}
+#include "{{header}}"
+{% endfor %}
+#include "cmsis_compiler.h"
+{% macro _irq_record(partition_name, signal, line, priority) -%}
+{ {{ partition_name }}, {{ signal }}, {{ line }}, {{ priority }} },
+{%- endmacro %}
+
+/* Definitions of the signals of the IRQs (if any) */
+const struct tfm_core_irq_signal_data_t tfm_core_irq_signals[] = {
+{% for manifest in manifests %}
+    {% if manifest.manifest.irqs %}
+        {% if manifest.attr.conditional %}
+#ifdef {{manifest.attr.conditional}}
+        {% endif %}
+        {% for handler in manifest.manifest.irqs %}
+            {% set irq_data = namespace() %}
+            {% if handler.source %}
+                {% set irq_data.line = handler.source %}
+            {% else %}
+#error "Interrupt source isn't provided for 'irqs' in partition {{manifest.manifest.name}}"
+            {% endif %}
+            {% if handler.tfm_irq_priority %}
+                {% set irq_data.priority = handler.tfm_irq_priority %}
+            {% else %}
+                {% set irq_data.priority = "TFM_DEFAULT_SECURE_IRQ_PRIOTITY" %}
+            {% endif %}
+    {{ _irq_record(manifest.manifest.name, handler.signal, irq_data.line, irq_data.priority) }}
+        {% endfor %}
+        {% if manifest.attr.conditional %}
+#endif /* {{manifest.attr.conditional}} */
+        {% endif %}
+   {% endif %}
+{% endfor %}
+   {0, 0, (IRQn_Type) 0, 0}                         /* add dummy element to avoid non-standard empty array */
+};
+
+const size_t tfm_core_irq_signals_count = (sizeof(tfm_core_irq_signals) /
+                                           sizeof(*tfm_core_irq_signals)) - 1; /* adjust for the dummy element */
+
+/* Definitions of privileged IRQ handlers (if any) */
+{% for manifest in manifests %}
+    {% if manifest.manifest.irqs %}
+        {% if manifest.attr.conditional %}
+#ifdef {{manifest.attr.conditional}}
+        {% endif %}
+        {% for handler in manifest.manifest.irqs %}
+            {% if handler.source is number %}
+void irq_{{handler.source}}_Handler(void)
+            {% elif handler.source %}
+void {{handler.source}}_Handler(void)
+            {% else %}
+#error "Interrupt source isn't provided for 'irqs' in partition {{manifest.manifest.name}}"
+            {% endif %}
+{
+    __disable_irq();
+    /* It is OK to call tfm_irq_handler directly from here, as we are already
+     * in handler mode, and we will not be pre-empted as we disabled interrupts
+     */
+            {% if handler.source %}
+    tfm_irq_handler({{manifest.manifest.name}}, {{handler.signal}}, {{handler.source}});
+            {% else %}
+#error "Interrupt source isn't provided for 'irqs' in partition {{manifest.manifest.name}}"
+            {% endif %}
+    __enable_irq();
+}
+
+        {% endfor %}
+        {% if manifest.attr.conditional %}
+#endif /* {{manifest.attr.conditional}} */
+        {% endif %}
+
+    {% endif %}
+{% endfor %}

@@ -1,0 +1,159 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_compilation_testing/negative_compilation_test.gni")
+import("$dir_pw_perf_test/perf_test.gni")
+import("$dir_pw_rpc/system_server/backend.gni")
+import("$dir_pw_sys_io/backend.gni")
+import("$dir_pw_toolchain/arm_gcc/toolchains.gni")
+
+declare_args() {
+  # Enable the pw_target_runner for on-device testing.
+  pw_use_test_server = false
+}
+
+_target_config = {
+  # TODO(b/241565082): Enable NC testing in GN Windows when it is fixed.
+  pw_compilation_testing_NEGATIVE_COMPILATION_ENABLED = host_os != "win"
+
+  # Use the logging main.
+  pw_unit_test_MAIN = "$dir_pw_unit_test:logging_main"
+
+  # Use ARM Cycle Counts
+  pw_perf_test_TIMER_INTERFACE_BACKEND = "$dir_pw_perf_test:arm_cortex_timer"
+
+  # Configuration options for Pigweed executable targets.
+  pw_build_EXECUTABLE_TARGET_TYPE = "stm32f429i_executable"
+
+  pw_build_EXECUTABLE_TARGET_TYPE_FILE =
+      get_path_info("stm32f429i_executable.gni", "abspath")
+
+  # Path to the bloaty config file for the output binaries.
+  pw_bloat_BLOATY_CONFIG = "$dir_pw_boot_cortex_m/bloaty_config.bloaty"
+
+  if (pw_use_test_server) {
+    _test_runner_script = "py/stm32f429i_disc1_utils/unit_test_client.py"
+    pw_unit_test_AUTOMATIC_RUNNER =
+        get_path_info(_test_runner_script, "abspath")
+  }
+
+  # Facade backends
+  pw_assert_BACKEND = dir_pw_assert_basic
+  pw_boot_BACKEND = "$dir_pw_boot_cortex_m"
+  pw_cpu_exception_ENTRY_BACKEND =
+      "$dir_pw_cpu_exception_cortex_m:cpu_exception"
+  pw_cpu_exception_HANDLER_BACKEND = "$dir_pw_cpu_exception:basic_handler"
+  pw_cpu_exception_SUPPORT_BACKEND = "$dir_pw_cpu_exception_cortex_m:support"
+  pw_sync_INTERRUPT_SPIN_LOCK_BACKEND =
+      "$dir_pw_sync_baremetal:interrupt_spin_lock"
+  pw_sync_MUTEX_BACKEND = "$dir_pw_sync_baremetal:mutex"
+  pw_log_BACKEND = dir_pw_log_basic
+  pw_sys_io_BACKEND = dir_pw_sys_io_baremetal_stm32f429
+  pw_rpc_system_server_BACKEND = "$dir_pw_hdlc:hdlc_sys_io_system_server"
+  pw_malloc_BACKEND = dir_pw_malloc_freelist
+
+  pw_boot_cortex_m_LINK_CONFIG_DEFINES = [
+    "PW_BOOT_FLASH_BEGIN=0x08000200",
+    "PW_BOOT_FLASH_SIZE=1024K",
+
+    # TODO(b/235348465): Currently "pw_tokenizer/detokenize_test" requires at
+    # least 6K bytes in heap when using pw_malloc_freelist. The heap size
+    # required for tests should be investigated.
+    #
+    # TLS realted tests such as $dir_pw_third_party/boringssl:tests require
+    # much larger heap for dynamic allocation. The current number is an
+    # estimated requirement. The acutal required size will be further investigated
+    # when all TLS tests are in place.
+    "PW_BOOT_HEAP_SIZE=112K",
+    "PW_BOOT_MIN_STACK_SIZE=1K",
+    "PW_BOOT_RAM_BEGIN=0x20000000",
+    "PW_BOOT_RAM_SIZE=192K",
+    "PW_BOOT_VECTOR_TABLE_BEGIN=0x08000000",
+    "PW_BOOT_VECTOR_TABLE_SIZE=512",
+  ]
+
+  pw_build_LINK_DEPS = []
+  pw_build_LINK_DEPS = [
+    "$dir_pw_assert:impl",
+    "$dir_pw_cpu_exception:entry_impl",
+    "$dir_pw_log:impl",
+    "$dir_pw_toolchain/arm_gcc:arm_none_eabi_gcc_support",
+  ]
+
+  current_cpu = "arm"
+  current_os = ""
+}
+
+_toolchain_properties = {
+  final_binary_extension = ".elf"
+}
+
+_target_default_configs = [
+  "$dir_pw_build:extra_strict_warnings",
+  "$dir_pw_toolchain/arm_gcc:enable_float_printf",
+]
+
+pw_target_toolchain_stm32f429i_disc1 = {
+  _excluded_members = [
+    "defaults",
+    "name",
+  ]
+
+  debug = {
+    name = "stm32f429i_disc1_debug"
+    _toolchain_base = pw_toolchain_arm_gcc.cortex_m4f_debug
+    forward_variables_from(_toolchain_base, "*", _excluded_members)
+    forward_variables_from(_toolchain_properties, "*")
+    defaults = {
+      forward_variables_from(_toolchain_base.defaults, "*")
+      forward_variables_from(_target_config, "*")
+      default_configs += _target_default_configs
+    }
+  }
+
+  speed_optimized = {
+    name = "stm32f429i_disc1_speed_optimized"
+    _toolchain_base = pw_toolchain_arm_gcc.cortex_m4f_speed_optimized
+    forward_variables_from(_toolchain_base, "*", _excluded_members)
+    forward_variables_from(_toolchain_properties, "*")
+    defaults = {
+      forward_variables_from(_toolchain_base.defaults, "*")
+      forward_variables_from(_target_config, "*")
+      default_configs += _target_default_configs
+    }
+  }
+
+  size_optimized = {
+    name = "stm32f429i_disc1_size_optimized"
+    _toolchain_base = pw_toolchain_arm_gcc.cortex_m4f_size_optimized
+    forward_variables_from(_toolchain_base, "*", _excluded_members)
+    forward_variables_from(_toolchain_properties, "*")
+    defaults = {
+      forward_variables_from(_toolchain_base.defaults, "*")
+      forward_variables_from(_target_config, "*")
+      default_configs += _target_default_configs
+    }
+  }
+}
+
+# This list just contains the members of the above scope for convenience to make
+# it trivial to generate all the toolchains in this file via a
+# `generate_toolchains` target.
+pw_target_toolchain_stm32f429i_disc1_list = [
+  pw_target_toolchain_stm32f429i_disc1.debug,
+  pw_target_toolchain_stm32f429i_disc1.speed_optimized,
+  pw_target_toolchain_stm32f429i_disc1.size_optimized,
+]

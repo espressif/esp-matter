@@ -1,0 +1,169 @@
+***********
+快速入门
+***********
+
+本文档旨在指导用户搭建 BL602 (BL-HWC-G1)硬件开发的windows软件环境，通过一个简单的示例展示如何编译、下载固件至 BL602 开发板等步骤。
+
+.. note::
+	BL602-IoT-DVK-3S模组windows环境搭建请参考 `DVK-3S模组windows环境搭建 <../get_started_3S_windows/get_started_3S_windows.html>`__ 
+
+概述
+====
+
+BL602 是一款Wi-Fi +
+BLE组合的芯片组，用于低功耗和高性能应用开发。无线子系统包含2.4G无线电，Wi-Fi
+802.11b/g/n和BLE 5.0
+基带/MAC设计。微控制器子系统包含一个低功耗的32位RISC-V
+CPU，高速缓存和存储器。电源管理单元控制低功耗模式。此外，还支持各种安全性能。
+
+.. figure:: ./image/image-1.png
+   :alt: 
+
+准备工作
+========
+
+硬件：
+
+-  一款 **BL602** 开发板
+
+-  **USB 数据线** （usb转type-c）
+
+-  电脑（\ `linux环境搭建 <../../index_602.html>`__ \）
+
+开发板实物图
+============
+
+.. figure:: ./image/bl_hwc_g1.svg
+   :alt: 
+
+详细安装步骤
+============
+
+请根据下方详细步骤，完成安装过程。
+
+编译环境的建立及代码的获取
+--------------------------
+-  安装驱动jtag转usb驱动（驱动安装前先将设备连接电脑可以自动识别到相关设备），驱动下载网站：https://zadig.akeo.ie/
+
+.. figure:: ./image/驱动安装.png
+   :alt: 
+
+-  安装串口工具，网上搜索串口工具 ``sscom5.13.1``\ 下载使用
+
+-  获取MSYS2安装包\ https://sourceforge.net/projects/msys2/files/Base/x86_64/
+
+-  安装步骤 https://www.msys2.org/
+
+-  打开MSYS2并安装git，输入命令：\ ``pacman -S git``
+
+-  | 打开MSYS2并安装make，输入命令：\ ``pacman -S make``
+   | 后回车，并根据提示直到安装完成，当前我的安装路径是C盘。
+
+.. figure:: ./image/image-3.png
+   :alt: 
+
+.. figure:: ./image/image-4.png
+   :alt: 
+
+安装成功后会在相应的\ ``usr->bin``\ 路径下看到安装的工具。
+
+配置系统环境变量
+----------------
+
+在windows的搜索中，搜索系统环境变量，打开
+
+.. figure:: ./image/image-5.png
+   :alt: 
+
+然后选择\ ``高级->环境变量``\ ，打开新的界面，操作如下图：
+
+.. figure:: ./image/image-7.png
+   :alt: 
+
+双击\ ``PATH``\ 新添系统环境变量，此过程操作是通过界面进行操作的，还可以直接通过Windows终端命令行直接进行添加，在这就不介绍了。
+
+.. figure:: ./image/image-8.png
+   :alt: 
+
+将安装的\ ``msys64``\ 的路径下的\ ``usr/bin``\ 添加到Path中，添加完成后一路确定退出便可，操作如下：
+
+.. figure:: ./image/image-9.png
+   :alt: 
+
+.. figure:: ./image/image-10.png
+   :alt: 
+
+.. figure:: ./image/image-11.png
+   :alt: 
+
+然后在命令终端输入path便可以查看到新添的环境变量了，现象如下：
+
+.. figure:: ./image/image-12.png
+   :alt: 
+
+下载代码进行编译
+================
+
+打开编译工具，切换到您要保存代码的工作目录，操作如下：
+
+.. figure:: ./image/image-13.png
+   :alt: 
+
+下载代码，使用 ``git clone git@github.com:bouffalolab/bl_iot_sdk.git``
+命令克隆远程仓库(如果)
+
+.. figure:: ./image/image-14.png
+   :alt: 
+
+成功后，使用命令 ``cd bl_iot_sdk/``\ 进入到下载的代码目录，使用命令
+``git submodule update --init --recursive``\ 进行子仓库同步，操作如下显示：
+
+.. figure:: ./image/image-15.png
+   :alt: 
+
+同步完成后，便可以进入到对应的app目录进行编译了，操作如下：
+
+.. figure:: ./image/image-16.png
+   :alt: 
+
+成功现象如下：
+
+.. figure:: ./image/image-17.png
+   :alt: 
+
+.. note::
+
+    如果编译失败，需要将编译工具链加入环境变量，如msys安装在C:\msys64目录下，用户名是：admin，SDK在/d/bl_iot_sdk目录下，那么修改环境变量，在C：\msys64\home\admin\.bashrc中添加
+    ``PATH=/d/bl_iot_sdk/toolchain/riscv/MSYS/bin:$PATH`` 并重启电脑。
+
+下载编译好的程序到板卡
+======================
+
+打开 ``bl_iot_sdk/tools/flash_tool`` 文件中的 ``BLDevCube.exe``\\程序
+
+``chip type`` 选择 ``BL602/604`` ，打开后界面参数参考下图配置：
+
+.. figure:: ./image/image-18.png
+   :alt: 
+
+成功后会有log打印信息，现象如下：
+
+.. figure:: ./image/image-19.png
+   :alt: 
+
+使用串口工具查看
+================
+
+针对与loT DVK
+3S-MB和BL-HWC-G1两个板卡需要对串口的流控进行设置，既RTS和DTR两个引脚设置如下图：
+
+.. figure:: ./image/image-20.png
+   :alt: 
+
+设置成功打开如下显示：
+
+.. figure:: ./image/image-21.png
+   :alt: 
+
+**恭喜，您已完成BL602的入门学习！**                                                                 
+现在，您可以尝试使用 `Eclipse <../eclipse_windows/eclipse_windows.html>`__ 或 `Freedom studio <../freedom_windows/freedom_windows.html>`__ 进行debug。

@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Profile xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/profile.xsd" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    type="org.bluetooth.profile.scan_parameters"
+    name="Scan Parameters">
+    <InformativeText>
+        <Abstract>This profile defines how a Scan Client device with Bluetooth low energy wireless communications can write its scanning behavior to a Scan Server, and how a Scan Server can request updates of a Scan Client scanning behavior.</Abstract>
+        <Summary>The Scan Parameters Profile is used to provide devices with information to assist them in managing their connection idle timeout and advertising parameters to optimize for power consumption and/or reconnection latency.</Summary>
+	</InformativeText>
+	<Role name="Scan Server">
+		<Service type="org.bluetooth.service.scan_parameters">
+			<Declaration>PrimarySingleInstance</Declaration>
+			<Requirement>Mandatory</Requirement>
+		</Service>
+	</Role>
+    
+	<Role name="Scan Client">
+        <Client type="org.bluetooth.service.scan_parameters">
+			<Requirement>Mandatory</Requirement>
+		</Client>
+	</Role>
+</Profile>

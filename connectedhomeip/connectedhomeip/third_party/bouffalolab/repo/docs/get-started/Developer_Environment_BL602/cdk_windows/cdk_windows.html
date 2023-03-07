@@ -1,0 +1,404 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cdk调试指导 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Examples/index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+      <li>cdk调试指导</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/get-started/Developer_Environment_BL602/cdk_windows/cdk_windows.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="cdk">
+<h1>cdk调试指导<a class="headerlink" href="#cdk" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<span id="id2"></span><h2>1.下载安装<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<p>下载地址：<a class="reference external" href="https://occ.t-head.cn/development/series/download?id=3864775351511420928&amp;type=kind&amp;softPlatformType=4#sticky">基础软件平台-剑池CDK
+(t-head.cn)</a></p>
+<div class="figure">
+<img alt="" src="../../../_images/image-13.png" />
+</div>
+</div>
+<div class="section" id="workspace">
+<span id="id3"></span><h2>1. 创建工程的workspace<a class="headerlink" href="#workspace" title="永久链接至标题"></a></h2>
+<p>打开cdk软件，点击<code class="docutils literal notranslate"><span class="pre">file-&gt;new-&gt;Multi-Project</span> <span class="pre">Workspace</span></code>新建工程的workspace,操作如下图：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-1.png" />
+</div>
+<p>设置workspace的名字和工作目录</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-2.png" />
+</div>
+<p>成功后如下显示：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-12.png" />
+</div>
+</div>
+<div class="section" id="workspacesoc-project">
+<span id="id4"></span><h2>2.在workspace下创建一个SOC project<a class="headerlink" href="#workspacesoc-project" title="永久链接至标题"></a></h2>
+<p>右键生成的workspace，添加一个SOC project，操作如下：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-3.png" />
+</div>
+<p>添加project的名字和相关硬件的信息和相关的描述，点击ok完成配置，操作如下图：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-4.png" />
+</div>
+<ul class="simple">
+<li>1号区：工程名字</li>
+<li>2号区：编程语言类型</li>
+<li>3号区：paoject类型</li>
+<li>4号区：芯片类型</li>
+<li>5号区：芯片框架类型</li>
+<li>6号区：相关描述</li>
+<li>7号区：硬件RAM相关地址与大小</li>
+</ul>
+<p>成功后如下显示：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-5.png" />
+</div>
+</div>
+<div class="section" id="project">
+<span id="id5"></span><h2>3.向project添加相关代码<a class="headerlink" href="#project" title="永久链接至标题"></a></h2>
+<p>右键新建成功的<code class="docutils literal notranslate"><span class="pre">project-&gt;Add</span> <span class="pre">Source</span> <span class="pre">Folder</span></code>，之后选择代码所在目录便可，现象如下：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-6.png" />
+</div>
+<p>成功后现象如下图，下图软件是新添加的：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-7.png" />
+</div>
+</div>
+<div class="section" id="id6">
+<span id="id7"></span><h2>4.配置工程相关参数，进行调试<a class="headerlink" href="#id6" title="永久链接至标题"></a></h2>
+<p>右键工程，点击<code class="docutils literal notranslate"><span class="pre">Options</span> <span class="pre">for...</span></code></p>
+<div class="figure">
+<img alt="" src="../../../_images/image-8.png" />
+</div>
+</div>
+<div class="section" id="debug">
+<span id="id8"></span><h2>5.配置debug相关参数<a class="headerlink" href="#debug" title="永久链接至标题"></a></h2>
+<p>下图是要配置的各个参数：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-9.png" />
+</div>
+<p>关于openocd的<code class="docutils literal notranslate"><span class="pre">settings...</span></code>的相关配置参数：</p>
+<p><code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">Option：</span></code>2号区，填写的是相关tools的配置，是debug目录下的关于openocd的配置文件，参数是：</p>
+<p><code class="docutils literal notranslate"><span class="pre">-f</span> <span class="pre">worksapce\bl_demo_event\tools\debug\openocd_cfg\if_bflb_link_DVK.cfg</span></code>
+和<code class="docutils literal notranslate"><span class="pre">-f</span> <span class="pre">worksapce\bl_demo_event\tools\debug\602</span></code>，此处要填写这两个文件的绝对路径否则软件找不到</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-10.png" />
+</div>
+</div>
+<div class="section" id="elf">
+<span id="id9"></span><h2>6.替换elf文件<a class="headerlink" href="#elf" title="永久链接至标题"></a></h2>
+<p>将其他平台上编译生成的elf文件放到工程下面的obj文件下，替换cdk这边的编译生成的文件，如下图所示：</p>
+<p>其中<code class="docutils literal notranslate"><span class="pre">bl_demo_event.elf</span></code>之前叫bl602_demo_event.elf，现在是替换了当前工程生成的文件。</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-11.png" />
+</div>
+</div>
+<div class="section" id="id10">
+<span id="id11"></span><h2>7.debug调试<a class="headerlink" href="#id10" title="永久链接至标题"></a></h2>
+<p>配置完成后点击主页的下载调试，进行debug调试，操作如下：</p>
+<ul class="simple">
+<li>左侧是调试下载程序到板卡，快捷键是<code class="docutils literal notranslate"><span class="pre">&lt;Ctrl</span> <span class="pre">+</span> <span class="pre">F5&gt;</span></code></li>
+<li>右侧是调试不下载，快捷键是<code class="docutils literal notranslate"><span class="pre">&lt;Ctrl</span> <span class="pre">+</span> <span class="pre">Shift</span> <span class="pre">+</span> <span class="pre">F5&gt;</span></code></li>
+</ul>
+<div class="figure">
+<img alt="" src="../../../_images/image-14.png" />
+</div>
+<p>下载成功后会显示如下界面：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-15.png" />
+</div>
+<p>1号区：</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-16.png" />
+</div>
+<ul class="simple">
+<li>全局断点（F9）</li>
+<li>使能全部断点</li>
+<li>关闭全部断点</li>
+<li>清除单个断点（Ctrl + Shift + F9）</li>
+</ul>
+<p>2号区</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-17.png" />
+</div>
+<ul class="simple">
+<li>Step Into（F11）</li>
+<li>Step Over（F10）</li>
+<li>Step Out （Ctrl + F11）</li>
+</ul>
+<p>3号区</p>
+<div class="figure">
+<img alt="" src="../../../_images/image-18.png" />
+</div>
+<p>cpu内部寄存器</p>
+<p>4号区：</p>
+<ul class="simple">
+<li>Locals：当前调试所在位置的相关变量</li>
+</ul>
+<div class="figure">
+<img alt="" src="../../../_images/image-19.png" />
+</div>
+<ul class="simple">
+<li>Watches:用户想要查看追踪的变量信息</li>
+</ul>
+<div class="figure">
+<img alt="" src="../../../_images/image-20.png" />
+</div>
+<ul class="simple">
+<li>Callstack：该标签是查看当前堆栈相关的函数调用的相关信息</li>
+</ul>
+<div class="figure">
+<img alt="" src="../../../_images/image-21.png" />
+</div>
+<ul class="simple">
+<li>Memory：该标签是对硬件内存的查看，可以添加相关硬件地址，可以看到该地区数据的变化。</li>
+</ul>
+<div class="figure">
+<img alt="" src="../../../_images/image-22.png" />
+</div>
+<p>5号区</p>
+<ul class="simple">
+<li>断点</li>
+</ul>
+<div class="figure">
+<img alt="" src="../../../_images/image-23.png" />
+</div>
+<ul class="simple">
+<li>所处线程：当前PC指针所处的线程</li>
+</ul>
+<div class="figure">
+<img alt="" src="../../../_images/image-24.png" />
+</div>
+<ul class="simple">
+<li>Disassemble：PC指针所处位置</li>
+</ul>
+<div class="figure">
+<img alt="" src="../../../_images/image-25.png" />
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

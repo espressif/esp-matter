@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- IAR Project Connection File -->
+
+<iarProjectConnection version="1.2" name="libopenthread_ncp_ftd_cc13x2_26x2" oneShot="true"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="IarProjectConnection_1.2.xsd">
+
+    <asmIncludePath>
+        <path>$PROJ_DIR$</path>
+    </asmIncludePath>
+
+    <includePath>
+        <path>$PROJ_DIR$</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/examples/platforms</path>
+        <path>$SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/third_party/mbedtls/repo/include</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/include</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/thread/cc13x2_26x2/libmbedcrypto/config</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/thread/cc13x2_26x2/libopenthread_ftd/config</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/core</path>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src</path>
+    </includePath>
+
+    <defines>
+        <define>DeviceFamily_CC13X2_CC26X2</define>
+        <define>HAVE_CONFIG_H</define>
+        <define>_BSD_SOURCE=1</define>
+        <define>_DEFAULT_SOURCE=1</define>
+        <define>MBEDTLS_CONFIG_FILE="mbedtls-config-cc13x2_26x2.h"</define>
+        <define>OPENTHREAD_FTD=1</define>
+        <define>OPENTHREAD_SPINEL_CONFIG_OPENTHREAD_MESSAGE_ENABLE=1</define>
+        <define>OPENTHREAD_PROJECT_CORE_CONFIG_FILE="openthread-core-cc13x2_26x2-config.h"</define>
+        <define>OPENTHREAD_CONFIG_FILE="openthread-config-cc13x2_26x2-ftd.h"</define>
+    </defines>
+
+    <extraOptions>
+        <args>
+            <arg>--debug</arg>
+            <arg>--silent</arg>
+            <arg>-e</arg>
+            <arg>--aeabi</arg>
+            <arg>--thumb</arg>
+            <arg>--diag_suppress=Pa050</arg>
+        </args>
+    </extraOptions>
+
+    <linkerFile>
+        <override>false</override>
+    </linkerFile>
+
+    <linkerExtraOptions>
+        <args>
+        </args>
+    </linkerExtraOptions>
+
+    <customBuildTools>
+    </customBuildTools>
+
+    <heaps>
+        <heap> <!-- If omitted, id="0" -->
+            <size>0</size>
+        </heap>
+        <heap id="1">
+            <size>0</size>
+        </heap>
+    </heaps>
+    <stacks>
+        <stack> <!-- If omitted, id="0" -->
+            <size>512</size>
+        </stack>
+    </stacks>
+
+
+    <files>
+        <group name="src/lib/hdlc" build="true">
+            <path reference="$PROJ_DIR$/src/lib/hdlc/hdlc.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/lib/hdlc/hdlc.cpp</path>
+            <path reference="$PROJ_DIR$/src/lib/hdlc/hdlc.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/lib/hdlc/hdlc.hpp</path>
+        </group>
+        <group name="src/lib/spinel" build="true">
+            <path reference="$PROJ_DIR$/src/lib/spinel/openthread-spinel-config.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/lib/spinel/openthread-spinel-config.h</path>
+            <path reference="$PROJ_DIR$/src/lib/spinel/radio_spinel.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/lib/spinel/radio_spinel.hpp</path>
+            <path reference="$PROJ_DIR$/src/lib/spinel/radio_spinel_impl.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/lib/spinel/radio_spinel_impl.hpp</path>
+            <path reference="$PROJ_DIR$/src/lib/spinel/spinel.c">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/lib/spinel/spinel.c</path>
+            <path reference="$PROJ_DIR$/src/lib/spinel/spinel.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/lib/spinel/spinel.h</path>
+            <path reference="$PROJ_DIR$/src/lib/spinel/spinel_buffer.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/lib/spinel/spinel_buffer.cpp</path>
+            <path reference="$PROJ_DIR$/src/lib/spinel/spinel_buffer.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/lib/spinel/spinel_buffer.hpp</path>
+            <path reference="$PROJ_DIR$/src/lib/spinel/spinel_decoder.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/lib/spinel/spinel_decoder.cpp</path>
+            <path reference="$PROJ_DIR$/src/lib/spinel/spinel_decoder.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/lib/spinel/spinel_decoder.hpp</path>
+            <path reference="$PROJ_DIR$/src/lib/spinel/spinel_encoder.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/lib/spinel/spinel_encoder.cpp</path>
+            <path reference="$PROJ_DIR$/src/lib/spinel/spinel_encoder.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/lib/spinel/spinel_encoder.hpp</path>
+            <path reference="$PROJ_DIR$/src/lib/spinel/spinel_encrypter.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/lib/spinel/spinel_encrypter.hpp</path>
+            <path reference="$PROJ_DIR$/src/lib/spinel/spinel_interface.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/lib/spinel/spinel_interface.hpp</path>
+            <path reference="$PROJ_DIR$/src/lib/spinel/spinel_platform.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/lib/spinel/spinel_platform.h</path>
+        </group>
+        <group name="src/ncp" build="true">
+            <path reference="$PROJ_DIR$/src/ncp/changed_props_set.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/ncp/changed_props_set.cpp</path>
+            <path reference="$PROJ_DIR$/src/ncp/changed_props_set.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/ncp/changed_props_set.hpp</path>
+            <path reference="$PROJ_DIR$/src/ncp/example_vendor_hook.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/ncp/example_vendor_hook.cpp</path>
+            <path reference="$PROJ_DIR$/src/ncp/ncp_base.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/ncp/ncp_base.cpp</path>
+            <path reference="$PROJ_DIR$/src/ncp/ncp_base.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/ncp/ncp_base.hpp</path>
+            <path reference="$PROJ_DIR$/src/ncp/ncp_base_dispatcher.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/ncp/ncp_base_dispatcher.cpp</path>
+            <path reference="$PROJ_DIR$/src/ncp/ncp_base_ftd.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/ncp/ncp_base_ftd.cpp</path>
+            <path reference="$PROJ_DIR$/src/ncp/ncp_base_mtd.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/ncp/ncp_base_mtd.cpp</path>
+            <path reference="$PROJ_DIR$/src/ncp/ncp_base_radio.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/ncp/ncp_base_radio.cpp</path>
+            <path reference="$PROJ_DIR$/src/ncp/ncp_config.h">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/ncp/ncp_config.h</path>
+            <path reference="$PROJ_DIR$/src/ncp/ncp_spi.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/ncp/ncp_spi.cpp</path>
+            <path reference="$PROJ_DIR$/src/ncp/ncp_spi.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/ncp/ncp_spi.hpp</path>
+            <path reference="$PROJ_DIR$/src/ncp/ncp_uart.cpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/ncp/ncp_uart.cpp</path>
+            <path reference="$PROJ_DIR$/src/ncp/ncp_uart.hpp">$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/third_party/openthread/src/ncp/ncp_uart.hpp</path>
+        </group>
+    </files>
+</iarProjectConnection>

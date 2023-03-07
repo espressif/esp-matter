@@ -1,0 +1,38 @@
+# Include common configuration options.
+@INCLUDE_PATH = doc/config
+@INCLUDE = common
+
+# Basic project information.
+PROJECT_NAME = "Platform"
+PROJECT_BRIEF = "Platform portability layer"
+
+# Library documentation output directory.
+HTML_OUTPUT = platform
+
+# Generate Doxygen tag file for this library.
+GENERATE_TAGFILE = doc/output/platform.tag
+
+# Directories containing library source code.
+INPUT = doc/lib \
+        libraries/abstractions/platform/include/platform \
+        libraries/abstractions/platform/include/types \
+        libraries/c_sdk/standard/common/include \
+        freertos_kernel/include
+
+# Library file names.
+FILE_PATTERNS = platform.txt \
+                iot_clock.h \
+                iot_threads.h \
+                iot_network.h \
+                iot_metrics.h \
+                iot_platform_types.h \
+                atomic.txt \
+                iot_atomic.h \
+                atomic.h
+
+# External tag files required by this library.
+TAGFILES = doc/output/main.tag=../main \
+           doc/output/logging.tag=../logging \
+           doc/output/mqtt.tag=../mqtt \
+           doc/output/shadow.tag=../shadow \
+           doc/output/defender.tag=../defender

@@ -1,0 +1,259 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/module_config.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_protobuf_compiler/proto.gni")
+import("$dir_pw_toolchain/traits.gni")
+import("$dir_pw_unit_test/test.gni")
+
+declare_args() {
+  # The build target that overrides the default configuration options for this
+  # module. This should point to a source set that provides defines through a
+  # public config (which may -include a file or add defines directly).
+  pw_unit_test_CONFIG = pw_build_DEFAULT_MODULE_CONFIG
+}
+
+# This pool limits the maximum number of unit tests that may run in parallel.
+# Despite the fact that this is a single GN "target", each toolchain owns its
+# own version of this pool, meaning pw_unit_test_POOL_DEPTH may be set
+# differently across targets in a single build, and build steps in one toolchain
+# will not consume pool resources of steps from another toolchain.
+pool("unit_test_pool") {
+  depth = pw_unit_test_POOL_DEPTH
+}
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+}
+
+config("public_overrides_include_path") {
+  include_dirs = [ "public_overrides" ]
+}
+
+pw_source_set("config") {
+  public = [ "public/pw_unit_test/config.h" ]
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    dir_pw_polyfill,
+    pw_unit_test_CONFIG,
+  ]
+  visibility = [ ":*" ]
+}
+
+# pw_unit_test facade. This provides a GoogleTest-compatible test framework.
+pw_source_set("pw_unit_test") {
+  public_deps = [ pw_unit_test_GOOGLETEST_BACKEND ]
+}
+
+# Lightweight unit test backend that implements a subset of GoogleTest.
+pw_source_set("light") {
+  public_configs = [
+    ":public_include_path",
+    ":public_overrides_include_path",
+  ]
+  public_deps = [
+    ":config",
+    ":event_handler",
+    dir_pw_polyfill,
+    dir_pw_preprocessor,
+    dir_pw_span,
+  ]
+
+  # If C++17 is supported, depend on StringBuilder.
+  if (pw_toolchain_CXX_STANDARD >= pw_toolchain_STANDARD.CXX17) {
+    public_deps += [ "$dir_pw_string:builder" ]
+  }
+
+  deps = [ dir_pw_assert ]
+
+  public = [ "public_overrides/gtest/gtest.h" ]
+  sources = [
+    "framework.cc",
+    "public/pw_unit_test/internal/framework.h",
+  ]
+}
+
+pw_source_set("event_handler") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_unit_test/event_handler.h" ]
+}
+
+# Unit test event handler that provides GoogleTest-style output.
+pw_source_set("googletest_style_event_handler") {
+  public_deps = [
+    ":event_handler",
+    dir_pw_preprocessor,
+  ]
+  public = [ "public/pw_unit_test/googletest_style_event_handler.h" ]
+  sources = [ "googletest_style_event_handler.cc" ]
+}
+
+# Library providing an event handler which outputs human-readable text.
+pw_source_set("simple_printing_event_handler") {
+  public_deps = [
+    ":googletest_style_event_handler",
+    "$dir_pw_preprocessor",
+  ]
+  public = [ "public/pw_unit_test/simple_printing_event_handler.h" ]
+  sources = [ "simple_printing_event_handler.cc" ]
+}
+
+# Library providing a standard desktop main function for the pw_unit_test
+# framework. Unit test files can link against this library to build runnable
+# unit test executables.
+pw_source_set("simple_printing_main") {
+  deps = [
+    ":pw_unit_test",
+    ":simple_printing_event_handler",
+    "$dir_pw_sys_io",
+    dir_pw_span,
+  ]
+  sources = [ "simple_printing_main.cc" ]
+}
+
+pw_source_set("printf_event_handler") {
+  public_deps = [
+    ":googletest_style_event_handler",
+    dir_pw_preprocessor,
+  ]
+  public = [ "public/pw_unit_test/printf_event_handler.h" ]
+}
+
+pw_source_set("printf_main") {
+  deps = [
+    ":printf_event_handler",
+    ":pw_unit_test",
+  ]
+  sources = [ "printf_main.cc" ]
+}
+
+# Library providing an event handler which logs using pw_log.
+pw_source_set("logging_event_handler") {
+  public_deps = [
+    ":googletest_style_event_handler",
+    dir_pw_log,
+  ]
+  public = [ "public/pw_unit_test/logging_event_handler.h" ]
+  sources = [ "logging_event_handler.cc" ]
+}
+
+pw_source_set("logging_main") {
+  deps = [
+    ":logging_event_handler",
+    ":pw_unit_test",
+  ]
+  sources = [ "logging_main.cc" ]
+}
+
+config("rpc_service_backend_light") {
+  include_dirs = [ "rpc_light_public" ]
+}
+
+config("rpc_service_backend_gtest") {
+  include_dirs = [ "rpc_gtest_public" ]
+}
+
+pw_source_set("rpc_service") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    ":pw_unit_test",
+    ":unit_test_proto.pwpb",
+    ":unit_test_proto.raw_rpc",
+    "$dir_pw_containers:vector",
+  ]
+  deps = [ dir_pw_log ]
+  public = [ "public/pw_unit_test/unit_test_service.h" ]
+  sources = [ "unit_test_service.cc" ]
+  defines = []
+
+  if (pw_unit_test_GOOGLETEST_BACKEND == "$dir_pw_unit_test:light") {
+    public_configs += [ ":rpc_service_backend_light" ]
+    sources += [ "rpc_light_event_handler.cc" ]
+    public += [ "rpc_light_public/pw_unit_test/internal/rpc_event_handler.h" ]
+  } else {
+    public_configs += [ ":rpc_service_backend_gtest" ]
+    sources += [ "rpc_gtest_event_handler.cc" ]
+    public += [ "rpc_gtest_public/pw_unit_test/internal/rpc_event_handler.h" ]
+  }
+}
+
+pw_source_set("rpc_main") {
+  public_deps = [ ":pw_unit_test" ]
+  deps = [
+    ":rpc_service",
+    "$dir_pw_rpc/system_server",
+    dir_pw_log,
+  ]
+  sources = [ "rpc_main.cc" ]
+}
+
+pw_source_set("static_library_support") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ ":light" ]  # This library only works with the light backend
+  public = [ "public/pw_unit_test/static_library_support.h" ]
+  sources = [ "static_library_support.cc" ]
+}
+
+pw_executable("test_rpc_server") {
+  sources = [ "test_rpc_server.cc" ]
+  deps = [
+    ":pw_unit_test",
+    ":rpc_service",
+    "$dir_pw_rpc/system_server",
+    "$dir_pw_rpc/system_server:socket",
+    dir_pw_log,
+  ]
+}
+
+pw_proto_library("unit_test_proto") {
+  sources = [ "pw_unit_test_proto/unit_test.proto" ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}
+
+pw_test("framework_test") {
+  sources = [ "framework_test.cc" ]
+  deps = [ dir_pw_assert ]
+}
+
+pw_static_library("tests_in_archive") {
+  sources = [
+    "static_library_archived_tests.cc",
+    "static_library_missing_archived_tests.cc",
+  ]
+  deps = [ ":pw_unit_test" ]
+  visibility = [ ":*" ]
+}
+
+pw_test("static_library_support_test") {
+  sources = [ "static_library_support_test.cc" ]
+  deps = [
+    ":static_library_support",
+    ":tests_in_archive",
+    dir_pw_assert,
+  ]
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":framework_test",
+    ":static_library_support_test",
+  ]
+}

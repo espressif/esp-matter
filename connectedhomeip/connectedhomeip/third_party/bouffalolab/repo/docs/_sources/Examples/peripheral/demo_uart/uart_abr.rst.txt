@@ -1,0 +1,61 @@
+.. _uart_abr-index:
+
+UART_ABR
+==================
+
+总览
+----------------
+
+本示例主要介绍通过UART1自动时别波特率(注意cli将不能使用)。
+
+准备及使用步骤
+----------------
+- 使用步骤：
+ - 插入将板子的USB电源线，USB电源线默认连接UART0；
+ - 编译 ``customer_app/periperal/demo_uart`` 工程并下载工程，编译命令： ``genromap <chip name>``，<chip name>可选择 ``BL602`` , ``BL702``；
+ - 将模组作为uart1功能的两个gpio（BL602是gpio3和gpio4，BL702是gpio5和gpio10）分别连接外接串口的tx，rx；
+ - 打开一个串口终端窗口（波特率为2000000，用于接收和发送uart0消息，log口）；
+ - 在log串口终端输入 ``demo_hosal_uart_abr`` ，表示启动 UART_ABR的demo；
+ - 打开另外一个连接uart1串口的终端，设置任意波特率（如115200）发送16进制 ``0x55`` ，log口能够打印识别的波特率信息，并且在uart1串口终端可以接收到 ``OK`` ，表示说明演示成功。
+
+.. figure:: imgs/image4.png
+   :alt: 
+   
+应用实例
+----------------
+
+- 通过 ``HOSAL_UART_DEV_DECL`` 接口定义一个uart_dev的uart设备
+
+::
+
+    /**
+     *  Define a UART device,
+     *  TX pin : 4/10
+     *  RX pin : 3/5
+     *  baud : 2000000
+     */
+    #ifdef CONF_USER_BL702
+    HOSAL_UART_DEV_DECL(uart_dev_abr, 1, 10, 5, 2000000);
+    #elif CONF_USER_BL602
+    HOSAL_UART_DEV_DECL(uart_dev_abr, 1, 4, 3, 2000000);
+    #endif
+
+- 通过 ``hosal_uart_abr_get`` 接口获取串口波特率。
+
+::
+
+    /* Uart get baudrate */
+    hosal_uart_abr_get(&uart_dev_abr, HOSAL_UART_AUTOBAUD_0X55);
+
+- 通过 ``hosal_uart_init`` 接口初始化硬件uart_dev设备。
+
+::
+
+    /* Uart init device */
+    hosal_uart_init(&uart_dev);
+
+- 通过 ``hosal_uart_send`` 接口以及 ``hosal_uart_receive`` 接口来收发UART数据。
+
+::
+
+    hosal_uart_send(&uart_dev_abr, wData, 2);

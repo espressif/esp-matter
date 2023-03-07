@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Personality id="20x19_coex" name="GCI-SECI" version="1.0" path="Communication" xmlns="http://cypress.com/xsd/cyhwpersonality_v1">
+  <Dependencies>
+    <IpBlock name="20x19_coex" />
+    <Resource name="coex" />
+  </Dependencies>
+  <ExposedMembers />
+  <Parameters>
+    <ParamSignal port="in[0]" name="In" group="Pins" visible="true" desc="Coexistence input" canBeEmpty="false" />
+    <ParamSignal port="out[0]" name="Out" group="Pins" visible="true" desc="Coexistence output" canBeEmpty="false" />
+
+    <ParamString id="instNum" name="" group="" default="`${getInstNumber(&quot;coex&quot;)}`" visible="false" editable="false" desc="" />
+  </Parameters>
+
+  <DRCs/>
+
+  <ConfigFirmware>
+
+  </ConfigFirmware>
+</Personality>

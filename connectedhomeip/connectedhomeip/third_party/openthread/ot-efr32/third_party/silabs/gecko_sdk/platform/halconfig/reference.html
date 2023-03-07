@@ -1,0 +1,4284 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+body {
+  max-width: 980px;
+  border: 1px solid #ddd;
+  outline: 1300px solid #fff;
+  margin: 16px auto;
+}
+
+body .markdown-body
+{
+  padding: 45px;
+}
+
+@font-face {
+  font-family: fontawesome-mini;
+  src: url(data:font/woff;charset=utf-8;base64,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) format('woff');
+}
+
+@font-face {
+  font-family: octicons-anchor;
+  src: url(data:font/woff;charset=utf-8;base64,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) format('woff');
+}
+
+.markdown-body {
+  font-family: sans-serif;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  color: #333333;
+  overflow: hidden;
+  font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  word-wrap: break-word;
+}
+
+.markdown-body a {
+  background: transparent;
+}
+
+.markdown-body a:active,
+.markdown-body a:hover {
+  outline: 0;
+}
+
+.markdown-body b,
+.markdown-body strong {
+  font-weight: bold;
+}
+
+.markdown-body mark {
+  background: #ff0;
+  color: #000;
+  font-style: italic;
+  font-weight: bold;
+}
+
+.markdown-body sub,
+.markdown-body sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+.markdown-body sup {
+  top: -0.5em;
+}
+.markdown-body sub {
+  bottom: -0.25em;
+}
+
+.markdown-body h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+
+.markdown-body img {
+  border: 0;
+}
+
+.markdown-body hr {
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  height: 0;
+}
+
+.markdown-body pre {
+  overflow: auto;
+}
+
+.markdown-body code,
+.markdown-body kbd,
+.markdown-body pre,
+.markdown-body samp {
+  font-family: monospace, monospace;
+  font-size: 1em;
+}
+
+.markdown-body input {
+  color: inherit;
+  font: inherit;
+  margin: 0;
+}
+
+.markdown-body html input[disabled] {
+  cursor: default;
+}
+
+.markdown-body input {
+  line-height: normal;
+}
+
+.markdown-body input[type="checkbox"] {
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.markdown-body table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.markdown-body td,
+.markdown-body th {
+  padding: 0;
+}
+
+.markdown-body .codehilitetable {
+  border: 0;
+  border-spacing: 0;
+}
+
+.markdown-body .codehilitetable tr {
+  border: 0;
+}
+
+.markdown-body .codehilitetable pre,
+.markdown-body .codehilitetable div.codehilite {
+  margin: 0;
+}
+
+.markdown-body .linenos,
+.markdown-body .code,
+.markdown-body .codehilitetable td {
+  border: 0;
+  padding: 0;
+}
+
+.markdown-body td:not(.linenos) .linenodiv {
+  padding: 0 !important;
+}
+
+.markdown-body .code {
+  width: 100%;
+}
+
+.markdown-body .linenos div pre,
+.markdown-body .linenodiv pre,
+.markdown-body .linenodiv {
+  border: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  -webkit-border-top-left-radius: 3px;
+  -webkit-border-bottom-left-radius: 3px;
+  -moz-border-radius-topleft: 3px;
+  -moz-border-radius-bottomleft: 3px;
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+
+.markdown-body .code div pre,
+.markdown-body .code div {
+  border: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  -webkit-border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  -moz-border-radius-bottomright: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
+.markdown-body * {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.markdown-body input {
+  font: 13px Helvetica, arial, freesans, clean, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+  line-height: 1.4;
+}
+
+.markdown-body a {
+  color: #4183c4;
+  text-decoration: none;
+}
+
+.markdown-body a:hover,
+.markdown-body a:focus,
+.markdown-body a:active {
+  text-decoration: underline;
+}
+
+.markdown-body hr {
+  height: 0;
+  margin: 15px 0;
+  overflow: hidden;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.markdown-body hr:before,
+.markdown-body hr:after {
+  display: table;
+  content: " ";
+}
+
+.markdown-body hr:after {
+  clear: both;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  line-height: 1.1;
+}
+
+.markdown-body h1 {
+  font-size: 30px;
+}
+
+.markdown-body h2 {
+  font-size: 21px;
+}
+
+.markdown-body h3 {
+  font-size: 16px;
+}
+
+.markdown-body h4 {
+  font-size: 14px;
+}
+
+.markdown-body h5 {
+  font-size: 12px;
+}
+
+.markdown-body h6 {
+  font-size: 11px;
+}
+
+.markdown-body blockquote {
+  margin: 0;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  padding: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.markdown-body ol ol,
+.markdown-body ul ol {
+  list-style-type: lower-roman;
+}
+
+.markdown-body ul ul ol,
+.markdown-body ul ol ol,
+.markdown-body ol ul ol,
+.markdown-body ol ol ol {
+  list-style-type: lower-alpha;
+}
+
+.markdown-body dd {
+  margin-left: 0;
+}
+
+.markdown-body code,
+.markdown-body pre,
+.markdown-body samp {
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  font-size: 12px;
+}
+
+.markdown-body pre {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.markdown-body kbd {
+  background-color: #e7e7e7;
+  background-image: -moz-linear-gradient(#fefefe, #e7e7e7);
+  background-image: -webkit-linear-gradient(#fefefe, #e7e7e7);
+  background-image: linear-gradient(#fefefe, #e7e7e7);
+  background-repeat: repeat-x;
+  border-radius: 2px;
+  border: 1px solid #cfcfcf;
+  color: #000;
+  padding: 3px 5px;
+  line-height: 10px;
+  font: 11px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  display: inline-block;
+}
+
+.markdown-body>*:first-child {
+  margin-top: 0 !important;
+}
+
+.markdown-body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+.markdown-body .headeranchor-link {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: block;
+  padding-right: 6px;
+  padding-left: 30px;
+  margin-left: -30px;
+}
+
+.markdown-body .headeranchor-link:focus {
+  outline: none;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  position: relative;
+  margin-top: 1em;
+  margin-bottom: 16px;
+  font-weight: bold;
+  line-height: 1.4;
+}
+
+.markdown-body h1 .headeranchor,
+.markdown-body h2 .headeranchor,
+.markdown-body h3 .headeranchor,
+.markdown-body h4 .headeranchor,
+.markdown-body h5 .headeranchor,
+.markdown-body h6 .headeranchor {
+  display: none;
+  color: #000;
+  vertical-align: middle;
+}
+
+.markdown-body h1:hover .headeranchor-link,
+.markdown-body h2:hover .headeranchor-link,
+.markdown-body h3:hover .headeranchor-link,
+.markdown-body h4:hover .headeranchor-link,
+.markdown-body h5:hover .headeranchor-link,
+.markdown-body h6:hover .headeranchor-link {
+  height: 1em;
+  padding-left: 8px;
+  margin-left: -30px;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.markdown-body h1:hover .headeranchor-link .headeranchor,
+.markdown-body h2:hover .headeranchor-link .headeranchor,
+.markdown-body h3:hover .headeranchor-link .headeranchor,
+.markdown-body h4:hover .headeranchor-link .headeranchor,
+.markdown-body h5:hover .headeranchor-link .headeranchor,
+.markdown-body h6:hover .headeranchor-link .headeranchor {
+  display: inline-block;
+}
+
+.markdown-body h1 {
+  padding-bottom: 0.3em;
+  font-size: 2.25em;
+  line-height: 1.2;
+  border-bottom: 1px solid #eee;
+}
+
+.markdown-body h2 {
+  padding-bottom: 0.3em;
+  font-size: 1.75em;
+  line-height: 1.225;
+  border-bottom: 1px solid #eee;
+}
+
+.markdown-body h3 {
+  font-size: 1.5em;
+  line-height: 1.43;
+}
+
+.markdown-body h4 {
+  font-size: 1.25em;
+}
+
+.markdown-body h5 {
+  font-size: 1em;
+}
+
+.markdown-body h6 {
+  font-size: 1em;
+  color: #777;
+}
+
+.markdown-body p,
+.markdown-body blockquote,
+.markdown-body ul,
+.markdown-body ol,
+.markdown-body dl,
+.markdown-body table,
+.markdown-body pre,
+.markdown-body .admonition {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.markdown-body hr {
+  height: 4px;
+  padding: 0;
+  margin: 16px 0;
+  background-color: #e7e7e7;
+  border: 0 none;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  padding-left: 2em;
+}
+
+.markdown-body ul ul,
+.markdown-body ul ol,
+.markdown-body ol ol,
+.markdown-body ol ul {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.markdown-body li>p {
+  margin-top: 16px;
+}
+
+.markdown-body dl {
+  padding: 0;
+}
+
+.markdown-body dl dt {
+  padding: 0;
+  margin-top: 16px;
+  font-size: 1em;
+  font-style: italic;
+  font-weight: bold;
+}
+
+.markdown-body dl dd {
+  padding: 0 16px;
+  margin-bottom: 16px;
+}
+
+.markdown-body blockquote {
+  padding: 0 15px;
+  color: #777;
+  border-left: 4px solid #ddd;
+}
+
+.markdown-body blockquote>:first-child {
+  margin-top: 0;
+}
+
+.markdown-body blockquote>:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body table {
+  display: block;
+  width: 100%;
+  overflow: auto;
+  word-break: normal;
+  word-break: keep-all;
+}
+
+.markdown-body table th {
+  font-weight: bold;
+}
+
+.markdown-body table th,
+.markdown-body table td {
+  padding: 6px 13px;
+  border: 1px solid #ddd;
+}
+
+.markdown-body table tr {
+  background-color: #fff;
+  border-top: 1px solid #ccc;
+}
+
+.markdown-body table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+.markdown-body img {
+  max-width: 100%;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.markdown-body code,
+.markdown-body samp {
+  padding: 0;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+  margin: 0;
+  font-size: 85%;
+  background-color: rgba(0,0,0,0.04);
+  border-radius: 3px;
+}
+
+.markdown-body code:before,
+.markdown-body code:after {
+  letter-spacing: -0.2em;
+  content: "\00a0";
+}
+
+.markdown-body pre>code {
+  padding: 0;
+  margin: 0;
+  font-size: 100%;
+  word-break: normal;
+  white-space: pre;
+  background: transparent;
+  border: 0;
+}
+
+.markdown-body .codehilite {
+  margin-bottom: 16px;
+}
+
+.markdown-body .codehilite pre,
+.markdown-body pre {
+  padding: 16px;
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
+  background-color: #f7f7f7;
+  border-radius: 3px;
+}
+
+.markdown-body .codehilite pre {
+  margin-bottom: 0;
+  word-break: normal;
+}
+
+.markdown-body pre {
+  word-wrap: normal;
+}
+
+.markdown-body pre code {
+  display: inline;
+  max-width: initial;
+  padding: 0;
+  margin: 0;
+  overflow: initial;
+  line-height: inherit;
+  word-wrap: normal;
+  background-color: transparent;
+  border: 0;
+}
+
+.markdown-body pre code:before,
+.markdown-body pre code:after {
+  content: normal;
+}
+
+/* Admonition */
+.markdown-body .admonition {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  position: relative;
+  border-radius: 3px;
+  border: 1px solid #e0e0e0;
+  border-left: 6px solid #333;
+  padding: 10px 10px 10px 30px;
+}
+
+.markdown-body .admonition table {
+  color: #333;
+}
+
+.markdown-body .admonition p {
+  padding: 0;
+}
+
+.markdown-body .admonition-title {
+  font-weight: bold;
+  margin: 0;
+}
+
+.markdown-body .admonition>.admonition-title {
+  color: #333;
+}
+
+.markdown-body .attention>.admonition-title {
+  color: #a6d796;
+}
+
+.markdown-body .caution>.admonition-title {
+  color: #d7a796;
+}
+
+.markdown-body .hint>.admonition-title {
+  color: #96c6d7;
+}
+
+.markdown-body .danger>.admonition-title {
+  color: #c25f77;
+}
+
+.markdown-body .question>.admonition-title {
+  color: #96a6d7;
+}
+
+.markdown-body .note>.admonition-title {
+  color: #d7c896;
+}
+
+.markdown-body .admonition:before,
+.markdown-body .attention:before,
+.markdown-body .caution:before,
+.markdown-body .hint:before,
+.markdown-body .danger:before,
+.markdown-body .question:before,
+.markdown-body .note:before {
+  font: normal normal 16px fontawesome-mini;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  line-height: 1.5;
+  color: #333;
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding-top: 10px;
+  padding-left: 10px;
+}
+
+.markdown-body .admonition:before {
+  content: "\f056\00a0";
+  color: 333;
+}
+
+.markdown-body .attention:before {
+  content: "\f058\00a0";
+  color: #a6d796;
+}
+
+.markdown-body .caution:before {
+  content: "\f06a\00a0";
+  color: #d7a796;
+}
+
+.markdown-body .hint:before {
+  content: "\f05a\00a0";
+  color: #96c6d7;
+}
+
+.markdown-body .danger:before {
+  content: "\f057\00a0";
+  color: #c25f77;
+}
+
+.markdown-body .question:before {
+  content: "\f059\00a0";
+  color: #96a6d7;
+}
+
+.markdown-body .note:before {
+  content: "\f040\00a0";
+  color: #d7c896;
+}
+
+.markdown-body .admonition::after {
+  content: normal;
+}
+
+.markdown-body .attention {
+  border-left: 6px solid #a6d796;
+}
+
+.markdown-body .caution {
+  border-left: 6px solid #d7a796;
+}
+
+.markdown-body .hint {
+  border-left: 6px solid #96c6d7;
+}
+
+.markdown-body .danger {
+  border-left: 6px solid #c25f77;
+}
+
+.markdown-body .question {
+  border-left: 6px solid #96a6d7;
+}
+
+.markdown-body .note {
+  border-left: 6px solid #d7c896;
+}
+
+.markdown-body .admonition>*:first-child {
+  margin-top: 0 !important;
+}
+
+.markdown-body .admonition>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* progress bar*/
+.markdown-body .progress {
+  display: block;
+  width: 300px;
+  margin: 10px 0;
+  height: 24px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background-color: #ededed;
+  position: relative;
+  box-shadow: inset -1px 1px 3px rgba(0, 0, 0, .1);
+}
+
+.markdown-body .progress-label {
+  position: absolute;
+  text-align: center;
+  font-weight: bold;
+  width: 100%; margin: 0;
+  line-height: 24px;
+  color: #333;
+  text-shadow: 1px 1px 0 #fefefe, -1px -1px 0 #fefefe, -1px 1px 0 #fefefe, 1px -1px 0 #fefefe, 0 1px 0 #fefefe, 0 -1px 0 #fefefe, 1px 0 0 #fefefe, -1px 0 0 #fefefe, 1px 1px 2px #000;
+  -webkit-font-smoothing: antialiased !important;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.markdown-body .progress-bar {
+  height: 24px;
+  float: left;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background-color: #96c6d7;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), inset 0 -1px 0 rgba(0, 0, 0, .1);
+  background-size: 30px 30px;
+  background-image: -webkit-linear-gradient(
+    135deg, rgba(255, 255, 255, .4) 27%,
+    transparent 27%,
+    transparent 52%, rgba(255, 255, 255, .4) 52%,
+    rgba(255, 255, 255, .4) 77%,
+    transparent 77%, transparent
+  );
+  background-image: -moz-linear-gradient(
+    135deg,
+    rgba(255, 255, 255, .4) 27%, transparent 27%,
+    transparent 52%, rgba(255, 255, 255, .4) 52%,
+    rgba(255, 255, 255, .4) 77%, transparent 77%,
+    transparent
+  );
+  background-image: -ms-linear-gradient(
+    135deg,
+    rgba(255, 255, 255, .4) 27%, transparent 27%,
+    transparent 52%, rgba(255, 255, 255, .4) 52%,
+    rgba(255, 255, 255, .4) 77%, transparent 77%,
+    transparent
+  );
+  background-image: -o-linear-gradient(
+    135deg,
+    rgba(255, 255, 255, .4) 27%, transparent 27%,
+    transparent 52%, rgba(255, 255, 255, .4) 52%,
+    rgba(255, 255, 255, .4) 77%, transparent 77%,
+    transparent
+  );
+  background-image: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, .4) 27%, transparent 27%,
+    transparent 52%, rgba(255, 255, 255, .4) 52%,
+    rgba(255, 255, 255, .4) 77%, transparent 77%,
+    transparent
+  );
+}
+
+.markdown-body .progress-100plus .progress-bar {
+  background-color: #a6d796;
+}
+
+.markdown-body .progress-80plus .progress-bar {
+  background-color: #c6d796;
+}
+
+.markdown-body .progress-60plus .progress-bar {
+  background-color: #d7c896;
+}
+
+.markdown-body .progress-40plus .progress-bar {
+  background-color: #d7a796;
+}
+
+.markdown-body .progress-20plus .progress-bar {
+  background-color: #d796a6;
+}
+
+.markdown-body .progress-0plus .progress-bar {
+  background-color: #c25f77;
+}
+
+.markdown-body .candystripe-animate .progress-bar{
+  -webkit-animation: animate-stripes 3s linear infinite;
+  -moz-animation: animate-stripes 3s linear infinite;
+  animation: animate-stripes 3s linear infinite;
+}
+
+@-webkit-keyframes animate-stripes {
+  0% {
+    background-position: 0 0;
+  }
+
+  100% {
+    background-position: 60px 0;
+  }
+}
+
+@-moz-keyframes animate-stripes {
+  0% {
+    background-position: 0 0;
+  }
+
+  100% {
+    background-position: 60px 0;
+  }
+}
+
+@keyframes animate-stripes {
+  0% {
+    background-position: 0 0;
+  }
+
+  100% {
+    background-position: 60px 0;
+  }
+}
+
+.markdown-body .gloss .progress-bar {
+  box-shadow:
+    inset 0 4px 12px rgba(255, 255, 255, .7),
+    inset 0 -12px 0 rgba(0, 0, 0, .05);
+}
+
+/* Multimarkdown Critic Blocks */
+.markdown-body .critic_mark {
+  background: #ff0;
+}
+
+.markdown-body .critic_delete {
+  color: #c82829;
+  text-decoration: line-through;
+}
+
+.markdown-body .critic_insert {
+  color: #718c00 ;
+  text-decoration: underline;
+}
+
+.markdown-body .critic_comment {
+  color: #8e908c;
+  font-style: italic;
+}
+
+.markdown-body .headeranchor {
+  font: normal normal 16px octicons-anchor;
+  line-height: 1;
+  display: inline-block;
+  text-decoration: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.headeranchor:before {
+  content: '\f05c';
+}
+
+.markdown-body .task-list-item {
+  list-style-type: none;
+}
+
+.markdown-body .task-list-item+.task-list-item {
+  margin-top: 3px;
+}
+
+.markdown-body .task-list-item input {
+  margin: 0 4px 0.25em -20px;
+  vertical-align: middle;
+}
+
+/* Media */
+@media only screen and (min-width: 480px) {
+  .markdown-body {
+    font-size:14px;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .markdown-body {
+    font-size:16px;
+  }
+}
+
+@media print {
+  .markdown-body * {
+    background: transparent !important;
+    color: black !important;
+    filter:none !important;
+    -ms-filter: none !important;
+  }
+
+  .markdown-body {
+    font-size:12pt;
+    max-width:100%;
+    outline:none;
+    border: 0;
+  }
+
+  .markdown-body a,
+  .markdown-body a:visited {
+    text-decoration: underline;
+  }
+
+  .markdown-body .headeranchor-link {
+    display: none;
+  }
+
+  .markdown-body a[href]:after {
+    content: " (" attr(href) ")";
+  }
+
+  .markdown-body abbr[title]:after {
+    content: " (" attr(title) ")";
+  }
+
+  .markdown-body .ir a:after,
+  .markdown-body a[href^="javascript:"]:after,
+  .markdown-body a[href^="#"]:after {
+    content: "";
+  }
+
+  .markdown-body pre {
+    white-space: pre;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  .markdown-body pre,
+  .markdown-body blockquote {
+    border: 1px solid #999;
+    padding-right: 1em;
+    page-break-inside: avoid;
+  }
+
+  .markdown-body .progress,
+  .markdown-body .progress-bar {
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
+
+  .markdown-body .progress {
+    border: 1px solid #ddd;
+  }
+
+  .markdown-body .progress-bar {
+    height: 22px;
+    border-right: 1px solid #ddd;
+  }
+
+  .markdown-body tr,
+  .markdown-body img {
+    page-break-inside: avoid;
+  }
+
+  .markdown-body img {
+    max-width: 100% !important;
+  }
+
+  .markdown-body p,
+  .markdown-body h2,
+  .markdown-body h3 {
+    orphans: 3;
+    widows: 3;
+  }
+
+  .markdown-body h2,
+  .markdown-body h3 {
+    page-break-after: avoid;
+  }
+}
+</style>
+<title>HAL Configuration Reference</title></head>
+<body><article class="markdown-body"><h1 id="hal-configuration-reference">HAL Configuration Reference</h1>
+<p>The HAL Config framework is a set of standardized configuration options
+which can be used to initialize and customize hardware peripherals and
+drivers. These options, spanning from antenna diversity GPIO to enabling
+the watchdog, are constructed with three components:</p>
+<pre><code>Prefix_Module_Option
+</code></pre>
+
+<p><strong>Prefix</strong> - There are two prefixes for HAL config defines: BSP and HAL. As the name suggests, BSP (board support package) type options relate to the board design, for example GPIO route locations, clock/crystal options, and DCDC usage.</p>
+<p><strong>Module</strong> - There are 38 HAL config modules.
+Each module pertains to a set of hardware features based on an underlying
+peripheral and/or software enhancements. Core (Hardware Configurator) modules
+map directly onto peripherals present on the chip and will always be present
+on a chip which has that peripheral, while other modules might be stack-specific.</p>
+<p><em>Core Modules</em></p>
+<table>
+<thead>
+<tr>
+<th align="center"><a href="#acmp"><strong>ACMP</strong></a></th>
+<th align="center"><a href="#adc"><strong>ADC</strong></a></th>
+<th align="center"><a href="#cmu"><strong>CMU</strong></a></th>
+<th align="center"><a href="#csen"><strong>CSEN</strong></a></th>
+<th align="center"><a href="#dcdc"><strong>DCDC</strong></a></th>
+<th align="center"><a href="#emu"><strong>EMU</strong></a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><a href="#gpio"><strong>GPIO</strong></a></td>
+<td align="center"><a href="#i2c"><strong>I2C</strong></a></td>
+<td align="center"><a href="#idac"><strong>IDAC</strong></a></td>
+<td align="center"><a href="#leuart"><strong>LEUART</strong></a></td>
+<td align="center"><a href="#pa"><strong>PA</strong></a></td>
+<td align="center"><a href="#pti"><strong>PTI</strong></a></td>
+</tr>
+<tr>
+<td align="center"><a href="#timer"><strong>TIMER</strong></a></td>
+<td align="center"><a href="#uart"><strong>UART</strong></a></td>
+<td align="center"><a href="#usart"><strong>USART</strong></a></td>
+<td align="center"><a href="#vdac"><strong>VDAC</strong></a></td>
+<td align="center"><a href="#wdog"><strong>WDOG</strong></a></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+<p><em>HAL Modules</em></p>
+<table>
+<thead>
+<tr>
+<th align="center"><a href="#bootloader-entry"><strong>Bootloader Entry</strong></a></th>
+<th align="center"><a href="#button"><strong>Button</strong></a></th>
+<th align="center"><a href="#spi-flash"><strong>SPI Flash</strong></a></th>
+<th align="center"><a href="#i2c-sensor"><strong>I2C Sensor</strong></a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><a href="#i2c-i/o-expander"><strong>I2C I/O Expander</strong></a></td>
+<td align="center"><a href="#led"><strong>LED</strong></a></td>
+<td align="center"><a href="#spi-display"><strong>SPI Display</strong></a></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+<p><em>NCP Modules</em></p>
+<table>
+<thead>
+<tr>
+<th align="center"><a href="#spi-ncp"><strong>SPI NCP</strong></a></th>
+<th align="center"><a href="#uart-ncp"><strong>UART NCP</strong></a></th>
+</tr>
+</thead>
+
+</table>
+<p><em>Radio Modules</em></p>
+<table>
+<thead>
+<tr>
+<th align="center"><a href="#antenna-diversity"><strong>Antenna Diversity</strong></a></th>
+<th align="center"><a href="#coexistence"><strong>Coexistence</strong></a></th>
+<th align="center"><a href="#ezradiopro"><strong>EZRadioPro</strong></a></th>
+<th align="center"><a href="#external-fem"><strong>External FEM</strong></a></th>
+</tr>
+</thead>
+
+</table>
+<p><em>Serial Modules</em></p>
+<table>
+<thead>
+<tr>
+<th align="center"><a href="#serial"><strong>Serial</strong></a></th>
+<th align="center"><a href="#virtual-com-port"><strong>Virtual COM Port</strong></a></th>
+<th align="center"><a href="#virtual-uart"><strong>Virtual UART</strong></a></th>
+</tr>
+</thead>
+
+</table>
+<p><em>PWM Modules</em></p>
+<table>
+<thead>
+<tr>
+<th align="center"><a href="#pwm-lightbulb"><strong>PWM Lightbulb</strong></a></th>
+<th align="center"><a href="#color-pwm-lightbulb"><strong>Color PWM Lightbulb</strong></a></th>
+</tr>
+</thead>
+
+</table>
+<p><em>Third Party Modules</em></p>
+<table>
+<thead>
+<tr>
+<th align="center"><a href="#battery-monitor"><strong>Battery Monitor</strong></a></th>
+<th align="center"><a href="#cs5463-power-meter"><strong>CS5463 Power Meter</strong></a></th>
+<th align="center"><a href="#pyd1698-ir-sensor"><strong>PYD1698 IR Sensor</strong></a></th>
+</tr>
+</thead>
+
+</table>
+<p><strong>Option</strong> - Each module can be customized by defining configuration options. These might include enabling/disabling the module, specifying a peripheral signal route location, or mode to initialize the module. A full list of HAL Config options can be found below.</p>
+<h2 id="core-modules">Core modules</h2>
+<p>With core modules, pay close attention to the define names. When a peripheral has
+an instance number in the datasheet, the peripheral name in the define will get replaced
+by the peripheral name plus the instance number. For example, if the definition for an option
+on UART is BSP_UART_TX_PIN, each UART peripheral will generate its own define (e.g. 
+BSP_UART0_TX_PIN for UART0). This is valid for all of the defines in the core peripheral.</p>
+<h4 id="acmp">ACMP</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_ACMP_NEG</td>
+<td><halconfig_types.AportSingleChannel object at 0xffd4c610></td>
+<td>SERIES1</td>
+<td>Negative input selection</td>
+</tr>
+<tr>
+<td>BSP_ACMP_POS</td>
+<td><halconfig_types.AportSingleChannel object at 0xffd4c750></td>
+<td>SERIES1</td>
+<td>Positive input selection</td>
+</tr>
+</tbody>
+</table>
+<h4 id="adc">ADC</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_ADC_NEG</td>
+<td><halconfig_types.AportSingleChannel object at 0xffd4cc50></td>
+<td>SERIES1</td>
+<td>Negative input selection</td>
+</tr>
+<tr>
+<td>BSP_ADC_POS</td>
+<td><halconfig_types.AportSingleChannel object at 0xffd4cc10></td>
+<td>SERIES1</td>
+<td>Positive input selection</td>
+</tr>
+<tr>
+<td>BSP_ADC_SCAN_MASK</td>
+<td><halconfig_types.AportScanMode object at 0xffd4cc70></td>
+<td>SERIES1</td>
+<td>Scan input mask</td>
+</tr>
+<tr>
+<td>HAL_ADC_ENABLE</td>
+<td>[0, 1]</td>
+<td>SERIES1</td>
+<td>Enable ADC</td>
+</tr>
+</tbody>
+</table>
+<h4 id="cmu">CMU</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_CLK_HFXO_BOOST</td>
+<td>_CMU_CTRL_HFXOBOOST_50PCENT, _CMU_CTRL_HFXOBOOST_70PCENT, _CMU_CTRL_HFXOBOOST_80PCENT, _CMU_CTRL_HFXOBOOST_100PCENT</td>
+<td>SERIES0</td>
+<td>HFXO Boost</td>
+</tr>
+<tr>
+<td>BSP_CLK_HFXO_CTUNE</td>
+<td>uint16_t</td>
+<td>SERIES1</td>
+<td>HFXO CTUNE value</td>
+</tr>
+<tr>
+<td>BSP_CLK_HFXO_CTUNE_TOKEN</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO</td>
+<td>Calibrate HFXO CTUNE from mfg token</td>
+</tr>
+<tr>
+<td>BSP_CLK_HFXO_FREQ</td>
+<td>uint32_t</td>
+<td>None</td>
+<td>HFXO frequency (See datasheet for maximum)</td>
+</tr>
+<tr>
+<td>BSP_CLK_HFXO_INIT</td>
+<td>string</td>
+<td>None</td>
+<td>HFXO initialization settings struct</td>
+</tr>
+<tr>
+<td>BSP_CLK_HFXO_PRESENT</td>
+<td>[0, 1]</td>
+<td>None</td>
+<td>HFXO present on board</td>
+</tr>
+<tr>
+<td>BSP_CLK_LFXO_BOOST</td>
+<td>0, 2, 1, 3</td>
+<td>SERIES0</td>
+<td>LFXO Boost</td>
+</tr>
+<tr>
+<td>BSP_CLK_LFXO_CTUNE</td>
+<td>uint16_t</td>
+<td>SERIES1</td>
+<td>LFXO CTUNE value</td>
+</tr>
+<tr>
+<td>BSP_CLK_LFXO_FREQ</td>
+<td>uint32_t</td>
+<td>None</td>
+<td>LFXO frequency</td>
+</tr>
+<tr>
+<td>BSP_CLK_LFXO_INIT</td>
+<td>string</td>
+<td>None</td>
+<td>LFXO initialization settings struct</td>
+</tr>
+<tr>
+<td>BSP_CLK_LFXO_PRESENT</td>
+<td>[0, 1]</td>
+<td>None</td>
+<td>LFXO present on board</td>
+</tr>
+<tr>
+<td>HAL_CLK_HFCLK_SOURCE</td>
+<td>HAL_CLK_HFCLK_SOURCE_HFRCO, HAL_CLK_HFCLK_SOURCE_HFXO</td>
+<td>None</td>
+<td>HF clock source</td>
+</tr>
+<tr>
+<td>HAL_CLK_HFXO_AUTOSTART</td>
+<td>HAL_CLK_HFXO_AUTOSTART_NONE, HAL_CLK_HFXO_AUTOSTART_START, HAL_CLK_HFXO_AUTOSTART_SELECT</td>
+<td>SERIES1</td>
+<td>Start HFXO automatically on EM0/1 entry</td>
+</tr>
+<tr>
+<td>HAL_CLK_LFACLK_SOURCE</td>
+<td>HAL_CLK_LFCLK_SOURCE_DISABLED, HAL_CLK_LFCLK_SOURCE_LFRCO, HAL_CLK_LFCLK_SOURCE_LFXO, HAL_CLK_LFCLK_SOURCE_ULFRCO, HAL_CLK_LFCLK_SOURCE_HFLE, HAL_CLK_LFCLK_SOURCE_PLFRCO</td>
+<td>None</td>
+<td>LFA clock source</td>
+</tr>
+<tr>
+<td>HAL_CLK_LFBCLK_SOURCE</td>
+<td>HAL_CLK_LFCLK_SOURCE_DISABLED, HAL_CLK_LFCLK_SOURCE_LFRCO, HAL_CLK_LFCLK_SOURCE_LFXO, HAL_CLK_LFCLK_SOURCE_ULFRCO, HAL_CLK_LFCLK_SOURCE_HFLE, HAL_CLK_LFCLK_SOURCE_PLFRCO</td>
+<td>None</td>
+<td>LFB clock source</td>
+</tr>
+<tr>
+<td>HAL_CLK_LFCCLK_SOURCE</td>
+<td>HAL_CLK_LFCLK_SOURCE_DISABLED, HAL_CLK_LFCLK_SOURCE_LFRCO, HAL_CLK_LFCLK_SOURCE_LFXO, HAL_CLK_LFCLK_SOURCE_PLFRCO</td>
+<td>['efm32gg11b', 'efm32hg', 'ezr32hg']</td>
+<td>LFC clock source</td>
+</tr>
+<tr>
+<td>HAL_CLK_LFECLK_SOURCE</td>
+<td>HAL_CLK_LFCLK_SOURCE_DISABLED, HAL_CLK_LFCLK_SOURCE_LFRCO, HAL_CLK_LFCLK_SOURCE_LFXO, HAL_CLK_LFCLK_SOURCE_ULFRCO, HAL_CLK_LFCLK_SOURCE_PLFRCO</td>
+<td>SERIES1</td>
+<td>LFE clock source</td>
+</tr>
+</tbody>
+</table>
+<h4 id="csen">CSEN</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_CSEN_BONDED_MASK0</td>
+<td><halconfig_types.AportBondedMode object at 0xffdd04f0></td>
+<td>SERIES1</td>
+<td>Bonded input mask (0-31)</td>
+</tr>
+<tr>
+<td>BSP_CSEN_BONDED_MASK1</td>
+<td><halconfig_types.AportBondedMode object at 0xffdd0590></td>
+<td>SERIES1</td>
+<td>Bonded input mask (32-63)</td>
+</tr>
+<tr>
+<td>BSP_CSEN_SCAN_MASK0</td>
+<td><halconfig_types.AportScanMode object at 0xffdd04b0></td>
+<td>SERIES1</td>
+<td>Scan input mask (0-31)</td>
+</tr>
+<tr>
+<td>BSP_CSEN_SCAN_MASK1</td>
+<td><halconfig_types.AportScanMode object at 0xffdd05f0></td>
+<td>SERIES1</td>
+<td>Scan input mask (32-63)</td>
+</tr>
+<tr>
+<td>BSP_CSEN_SINGLE_INPUT</td>
+<td><halconfig_types.AportSingleChannel object at 0xffcf46d0></td>
+<td>SERIES1</td>
+<td>Single input selection</td>
+</tr>
+</tbody>
+</table>
+<h4 id="dcdc">DCDC</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_DCDC_INIT</td>
+<td>string</td>
+<td>SERIES1</td>
+<td>DCDC initialization options struct</td>
+</tr>
+<tr>
+<td>BSP_DCDC_PRESENT</td>
+<td>[0, 1]</td>
+<td>SERIES1</td>
+<td>Power circuit configured for DCDC</td>
+</tr>
+<tr>
+<td>HAL_DCDC_BYPASS</td>
+<td>[0, 1]</td>
+<td>SERIES1</td>
+<td>Bypass DCDC</td>
+</tr>
+</tbody>
+</table>
+<h4 id="emu">EMU</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HAL_EMU_EM01_VSCALE</td>
+<td>[0, 1]</td>
+<td>SERIES1, not ['efm32pg1b', 'efm32jg1b', 'efr32mg1', 'efr32bg1', 'efr32fg1']</td>
+<td>Enable voltage scaling in EM0/1</td>
+</tr>
+<tr>
+<td>HAL_EMU_EM23_VREG</td>
+<td>[0, 1]</td>
+<td>SERIES0</td>
+<td>Enable full VREG drive strength in EM2/3</td>
+</tr>
+<tr>
+<td>HAL_EMU_EM23_VSCALE</td>
+<td>HAL_EMU_EM23_VSCALE_FASTWAKEUP, HAL_EMU_EM23_VSCALE_LOWPOWER</td>
+<td>SERIES1, not ['efm32pg1b', 'efm32jg1b', 'efr32mg1', 'efr32bg1', 'efr32fg1']</td>
+<td>EM2/3 voltage scaling level</td>
+</tr>
+<tr>
+<td>HAL_EMU_ENABLE</td>
+<td>[0, 1]</td>
+<td>None</td>
+<td>Initialize EMU settings</td>
+</tr>
+</tbody>
+</table>
+<h4 id="gpio">GPIO</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_TRACE_DBGROUTE_LOC</td>
+<td>_GPIO_ROUTE_SWLOCATION_LOC0</td>
+<td>SERIES0, not ['efm32zg', 'efm32hg', 'ezr32hg']</td>
+<td>Serial Wire Output location (Series 0)</td>
+</tr>
+<tr>
+<td>BSP_TRACE_SWO_LOC</td>
+<td>_GPIO_ROUTELOC0_SWVLOC_LOC0</td>
+<td>SERIES1</td>
+<td>Serial Wire Output location (Series 1)</td>
+</tr>
+<tr>
+<td>BSP_TRACE_SWO_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>Serial Wire Output pin</td>
+</tr>
+<tr>
+<td>BSP_TRACE_SWO_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>Serial Wire Output port</td>
+</tr>
+</tbody>
+</table>
+<h4 id="i2c">I2C</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_I2C_SCL_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>I2C SCL pin</td>
+</tr>
+<tr>
+<td>BSP_I2C_SCL_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>I2C SCL port</td>
+</tr>
+<tr>
+<td>BSP_I2C_SCL_LOC</td>
+<td>_I2C_ROUTELOC0_SCLLOC_LOCn</td>
+<td>SERIES1</td>
+<td>I2C SCL location</td>
+</tr>
+<tr>
+<td>BSP_I2C_SDA_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>I2C SDA pin</td>
+</tr>
+<tr>
+<td>BSP_I2C_SDA_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>I2C SDA port</td>
+</tr>
+<tr>
+<td>BSP_I2C_SDA_LOC</td>
+<td>_I2C_ROUTELOC0_SDALOC_LOCn</td>
+<td>SERIES1</td>
+<td>I2C SDA location</td>
+</tr>
+<tr>
+<td>HAL_I2C_ENABLE</td>
+<td>[0, 1]</td>
+<td>None</td>
+<td>Enable I2C peripheral</td>
+</tr>
+<tr>
+<td>HAL_I2C_INIT_ENABLE</td>
+<td>[0, 1]</td>
+<td>None</td>
+<td>Enable I2C after init</td>
+</tr>
+<tr>
+<td>HAL_I2C_LOW_HIGH_RATIO</td>
+<td>_I2C_CTRL_CLHR_STANDARD, _I2C_CTRL_CLHR_ASYMMETRIC, _I2C_CTRL_CLHR_FAST</td>
+<td>None</td>
+<td>Clock Low/High ratio</td>
+</tr>
+<tr>
+<td>HAL_I2C_MASTER</td>
+<td>[0, 1]</td>
+<td>None</td>
+<td>I2C Master</td>
+</tr>
+<tr>
+<td>HAL_I2C_MAX_BUS_FREQ</td>
+<td>uint32_t</td>
+<td>None</td>
+<td>Bus frequency</td>
+</tr>
+<tr>
+<td>HAL_I2C_SLAVE_ADDRESS</td>
+<td>uint8_t</td>
+<td>None</td>
+<td>Slave address</td>
+</tr>
+</tbody>
+</table>
+<h4 id="idac">IDAC</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_IDAC_OUTPUT</td>
+<td><halconfig_types.AportSingleChannel object at 0xffcf40f0></td>
+<td>SERIES1</td>
+<td>Output selection</td>
+</tr>
+</tbody>
+</table>
+<h4 id="leuart">LEUART</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_LEUART_RX_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>RX pin</td>
+</tr>
+<tr>
+<td>BSP_LEUART_RX_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>RX port</td>
+</tr>
+<tr>
+<td>BSP_LEUART_RX_LOC</td>
+<td>_LEUART_ROUTELOC0_RXLOC_LOCn</td>
+<td>SERIES1</td>
+<td>RX location</td>
+</tr>
+<tr>
+<td>BSP_LEUART_TX_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>TX pin</td>
+</tr>
+<tr>
+<td>BSP_LEUART_TX_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>TX port</td>
+</tr>
+<tr>
+<td>BSP_LEUART_TX_LOC</td>
+<td>_LEUART_ROUTELOC0_TXLOC_LOCn</td>
+<td>SERIES1</td>
+<td>TX location</td>
+</tr>
+<tr>
+<td>HAL_LEUART_BAUD_RATE</td>
+<td>uint32_t</td>
+<td>None</td>
+<td>Baud rate</td>
+</tr>
+<tr>
+<td>HAL_LEUART_ENABLE</td>
+<td>[0, 1]</td>
+<td>None</td>
+<td>Enable LEUART</td>
+</tr>
+<tr>
+<td>HAL_LEUART_FLOW_CONTROL</td>
+<td>HAL_LEUART_FLOW_CONTROL_NONE, HAL_LEUART_FLOW_CONTROL_SW, HAL_LEUART_FLOW_CONTROL_HW</td>
+<td>None</td>
+<td>Flow control mode</td>
+</tr>
+<tr>
+<td>HAL_LEUART_RXSTART</td>
+<td>uint16_t</td>
+<td>None</td>
+<td>Release flow control threshold</td>
+</tr>
+<tr>
+<td>HAL_LEUART_RXSTOP</td>
+<td>uint16_t</td>
+<td>None</td>
+<td>Flow control threshold</td>
+</tr>
+<tr>
+<td>HAL_LEUART_RX_QUEUE_SIZE</td>
+<td>uint16_t</td>
+<td>None</td>
+<td>RX buffer size</td>
+</tr>
+<tr>
+<td>HAL_LEUART_TX_QUEUE_SIZE</td>
+<td>uint16_t</td>
+<td>None</td>
+<td>TX buffer size</td>
+</tr>
+</tbody>
+</table>
+<h4 id="pa">PA</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_PA_VOLTAGE</td>
+<td>uint16_t</td>
+<td>SERIES1, RADIO</td>
+<td>PA voltage (mV)</td>
+</tr>
+<tr>
+<td>HAL_PA_2P4_LOWPOWER</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO</td>
+<td>Use low power PA on 2.4 GHz</td>
+</tr>
+<tr>
+<td>HAL_PA_CURVE_HEADER</td>
+<td>string</td>
+<td>SERIES1, RADIO</td>
+<td>Custom PA curve header file</td>
+</tr>
+<tr>
+<td>HAL_PA_ENABLE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO</td>
+<td>Enable PA</td>
+</tr>
+<tr>
+<td>HAL_PA_POWER</td>
+<td>uint8_t</td>
+<td>SERIES1, RADIO</td>
+<td>Output power (raw units)</td>
+</tr>
+<tr>
+<td>HAL_PA_RAMP</td>
+<td>uint16_t</td>
+<td>SERIES1, RADIO</td>
+<td>Ramp time (us)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="pti">PTI</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_PTI_DCLK_PIN</td>
+<td>0-15</td>
+<td>SERIES1, RADIO</td>
+<td>DCLK pin</td>
+</tr>
+<tr>
+<td>BSP_PTI_DCLK_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1, RADIO</td>
+<td>DCLK port</td>
+</tr>
+<tr>
+<td>BSP_PTI_DCLK_LOC</td>
+<td>_FRC_ROUTELOC0_DCLKLOC_LOCn</td>
+<td>SERIES1, RADIO</td>
+<td>DCLK location</td>
+</tr>
+<tr>
+<td>BSP_PTI_DFRAME_PIN</td>
+<td>0-15</td>
+<td>SERIES1, RADIO</td>
+<td>DFRAME pin</td>
+</tr>
+<tr>
+<td>BSP_PTI_DFRAME_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1, RADIO</td>
+<td>DFRAME port</td>
+</tr>
+<tr>
+<td>BSP_PTI_DFRAME_LOC</td>
+<td>_FRC_ROUTELOC0_DFRAMELOC_LOCn</td>
+<td>SERIES1, RADIO</td>
+<td>DFRAME location</td>
+</tr>
+<tr>
+<td>BSP_PTI_DOUT_PIN</td>
+<td>0-15</td>
+<td>SERIES1, RADIO</td>
+<td>DOUT pin</td>
+</tr>
+<tr>
+<td>BSP_PTI_DOUT_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1, RADIO</td>
+<td>DOUT port</td>
+</tr>
+<tr>
+<td>BSP_PTI_DOUT_LOC</td>
+<td>_FRC_ROUTELOC0_DOUTLOC_LOCn</td>
+<td>SERIES1, RADIO</td>
+<td>DOUT location</td>
+</tr>
+<tr>
+<td>HAL_PTI_BAUD_RATE</td>
+<td>uint32_t</td>
+<td>SERIES1, RADIO</td>
+<td>PTI baud rate</td>
+</tr>
+<tr>
+<td>HAL_PTI_ENABLE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO</td>
+<td>Enable PTI peripheral</td>
+</tr>
+</tbody>
+</table>
+<h4 id="timer">TIMER</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_TIMER_CC0_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>TIMER Compare/Capture Channel 0 pin</td>
+</tr>
+<tr>
+<td>BSP_TIMER_CC0_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>TIMER Compare/Capture Channel 0 port</td>
+</tr>
+<tr>
+<td>BSP_TIMER_CC0_LOC</td>
+<td>_TIMER_ROUTELOC0_CC0LOC_LOCn</td>
+<td>SERIES1</td>
+<td>TIMER Compare/Capture Channel 0 location</td>
+</tr>
+<tr>
+<td>BSP_TIMER_CC1_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>TIMER Compare/Capture Channel 1 pin</td>
+</tr>
+<tr>
+<td>BSP_TIMER_CC1_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>TIMER Compare/Capture Channel 1 port</td>
+</tr>
+<tr>
+<td>BSP_TIMER_CC1_LOC</td>
+<td>_TIMER_ROUTELOC0_CC1LOC_LOCn</td>
+<td>SERIES1</td>
+<td>TIMER Compare/Capture Channel 1 location</td>
+</tr>
+<tr>
+<td>BSP_TIMER_CC2_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>TIMER Compare/Capture Channel 2 pin</td>
+</tr>
+<tr>
+<td>BSP_TIMER_CC2_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>TIMER Compare/Capture Channel 2 port</td>
+</tr>
+<tr>
+<td>BSP_TIMER_CC2_LOC</td>
+<td>_TIMER_ROUTELOC0_CC2LOC_LOCn</td>
+<td>SERIES1</td>
+<td>TIMER Compare/Capture Channel 2 location</td>
+</tr>
+<tr>
+<td>BSP_TIMER_CC3_PIN</td>
+<td>0-15</td>
+<td>SERIES1, TIMER1</td>
+<td>TIMER Compare/Capture Channel 3 pin</td>
+</tr>
+<tr>
+<td>BSP_TIMER_CC3_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1, TIMER1</td>
+<td>TIMER Compare/Capture Channel 3 port</td>
+</tr>
+<tr>
+<td>BSP_TIMER_CC3_LOC</td>
+<td>_TIMER_ROUTELOC0_CC3LOC_LOCn</td>
+<td>SERIES1, TIMER1</td>
+<td>TIMER Compare/Capture Channel 3 location</td>
+</tr>
+</tbody>
+</table>
+<h4 id="uart">UART</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_UART_RX_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>RX pin</td>
+</tr>
+<tr>
+<td>BSP_UART_RX_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>RX port</td>
+</tr>
+<tr>
+<td>BSP_UART_RX_LOC</td>
+<td>_UART_ROUTELOC0_RXLOC_LOCn</td>
+<td>SERIES1</td>
+<td>RX location</td>
+</tr>
+<tr>
+<td>BSP_UART_TX_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>TX pin</td>
+</tr>
+<tr>
+<td>BSP_UART_TX_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>TX port</td>
+</tr>
+<tr>
+<td>BSP_UART_TX_LOC</td>
+<td>_UART_ROUTELOC0_TXLOC_LOCn</td>
+<td>SERIES1</td>
+<td>TX location</td>
+</tr>
+<tr>
+<td>HAL_UART_BAUD_RATE</td>
+<td>uint32_t</td>
+<td>None</td>
+<td>Baud rate</td>
+</tr>
+<tr>
+<td>HAL_UART_ENABLE</td>
+<td>[0, 1]</td>
+<td>None</td>
+<td>Enable UART</td>
+</tr>
+<tr>
+<td>HAL_UART_FLOW_CONTROL</td>
+<td>HAL_UART_FLOW_CONTROL_NONE, HAL_UART_FLOW_CONTROL_SW, HAL_UART_FLOW_CONTROL_HW, HAL_UART_FLOW_CONTROL_HWUART</td>
+<td>None</td>
+<td>Flow control mode</td>
+</tr>
+<tr>
+<td>HAL_UART_RXSTART</td>
+<td>uint16_t</td>
+<td>None</td>
+<td>Release flow control threshold</td>
+</tr>
+<tr>
+<td>HAL_UART_RXSTOP</td>
+<td>uint16_t</td>
+<td>None</td>
+<td>Flow control threshold</td>
+</tr>
+<tr>
+<td>HAL_UART_RX_QUEUE_SIZE</td>
+<td>uint16_t</td>
+<td>None</td>
+<td>RX buffer size</td>
+</tr>
+<tr>
+<td>HAL_UART_TX_QUEUE_SIZE</td>
+<td>uint16_t</td>
+<td>None</td>
+<td>TX buffer size</td>
+</tr>
+</tbody>
+</table>
+<h4 id="usart">USART</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_USART_CLK_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>USART CLK pin</td>
+</tr>
+<tr>
+<td>BSP_USART_CLK_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>USART CLK port</td>
+</tr>
+<tr>
+<td>BSP_USART_CLK_LOC</td>
+<td>_USART_ROUTELOC0_CLKLOC_LOCn</td>
+<td>SERIES1</td>
+<td>USART CLK location</td>
+</tr>
+<tr>
+<td>BSP_USART_CS_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>USART CS pin</td>
+</tr>
+<tr>
+<td>BSP_USART_CS_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>USART CS port</td>
+</tr>
+<tr>
+<td>BSP_USART_CS_LOC</td>
+<td>_USART_ROUTELOC0_CSLOC_LOCn</td>
+<td>SERIES1</td>
+<td>USART CS location</td>
+</tr>
+<tr>
+<td>BSP_USART_CTS_PIN</td>
+<td>0-15</td>
+<td>SERIES1</td>
+<td>USART CTS pin</td>
+</tr>
+<tr>
+<td>BSP_USART_CTS_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1</td>
+<td>USART CTS port</td>
+</tr>
+<tr>
+<td>BSP_USART_CTS_LOC</td>
+<td>_USART_ROUTELOC1_CTSLOC_LOCn</td>
+<td>SERIES1</td>
+<td>USART CTS location</td>
+</tr>
+<tr>
+<td>BSP_USART_MISO_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>USART MISO pin</td>
+</tr>
+<tr>
+<td>BSP_USART_MISO_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>USART MISO port</td>
+</tr>
+<tr>
+<td>BSP_USART_MISO_LOC</td>
+<td>_USART_ROUTELOC0_RXLOC_LOCn</td>
+<td>SERIES1</td>
+<td>USART MISO location</td>
+</tr>
+<tr>
+<td>BSP_USART_MOSI_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>USART MOSI pin</td>
+</tr>
+<tr>
+<td>BSP_USART_MOSI_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>USART MOSI port</td>
+</tr>
+<tr>
+<td>BSP_USART_MOSI_LOC</td>
+<td>_USART_ROUTELOC0_TXLOC_LOCn</td>
+<td>SERIES1</td>
+<td>USART MOSI location</td>
+</tr>
+<tr>
+<td>BSP_USART_RTS_PIN</td>
+<td>0-15</td>
+<td>SERIES1</td>
+<td>USART RTS pin</td>
+</tr>
+<tr>
+<td>BSP_USART_RTS_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1</td>
+<td>USART RTS port</td>
+</tr>
+<tr>
+<td>BSP_USART_RTS_LOC</td>
+<td>_USART_ROUTELOC1_RTSLOC_LOCn</td>
+<td>SERIES1</td>
+<td>USART RTS location</td>
+</tr>
+<tr>
+<td>BSP_USART_RX_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>USART RX pin</td>
+</tr>
+<tr>
+<td>BSP_USART_RX_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>USART RX port</td>
+</tr>
+<tr>
+<td>BSP_USART_RX_LOC</td>
+<td>_USART_ROUTELOC0_RXLOC_LOCn</td>
+<td>SERIES1</td>
+<td>USART RX location</td>
+</tr>
+<tr>
+<td>BSP_USART_TX_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>USART TX pin</td>
+</tr>
+<tr>
+<td>BSP_USART_TX_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>USART TX port</td>
+</tr>
+<tr>
+<td>BSP_USART_TX_LOC</td>
+<td>_USART_ROUTELOC0_TXLOC_LOCn</td>
+<td>SERIES1</td>
+<td>USART TX location</td>
+</tr>
+<tr>
+<td>HAL_USART_BAUD_RATE</td>
+<td>uint32_t</td>
+<td>None</td>
+<td>Baud rate</td>
+</tr>
+<tr>
+<td>HAL_USART_ENABLE</td>
+<td>[0, 1]</td>
+<td>None</td>
+<td>Enable USART</td>
+</tr>
+<tr>
+<td>HAL_USART_FLOW_CONTROL</td>
+<td>HAL_USART_FLOW_CONTROL_NONE, HAL_USART_FLOW_CONTROL_SW, HAL_USART_FLOW_CONTROL_HW, HAL_USART_FLOW_CONTROL_HWUART</td>
+<td>None</td>
+<td>Flow control mode</td>
+</tr>
+<tr>
+<td>HAL_USART_FREQUENCY</td>
+<td>uint32_t</td>
+<td>None</td>
+<td>Frequency</td>
+</tr>
+<tr>
+<td>HAL_USART_RXSTART</td>
+<td>uint16_t</td>
+<td>None</td>
+<td>Release flow control threshold</td>
+</tr>
+<tr>
+<td>HAL_USART_RXSTOP</td>
+<td>uint16_t</td>
+<td>None</td>
+<td>Flow control threshold</td>
+</tr>
+<tr>
+<td>HAL_USART_RX_QUEUE_SIZE</td>
+<td>uint16_t</td>
+<td>None</td>
+<td>RX buffer size</td>
+</tr>
+<tr>
+<td>HAL_USART_TX_QUEUE_SIZE</td>
+<td>uint16_t</td>
+<td>None</td>
+<td>TX buffer size</td>
+</tr>
+</tbody>
+</table>
+<h4 id="vdac">VDAC</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_VDAC_OPA0_NEG</td>
+<td><halconfig_types.AportSingleChannel object at 0xffd63fb0></td>
+<td>SERIES1</td>
+<td>Negative input selection</td>
+</tr>
+<tr>
+<td>BSP_VDAC_OPA0_OUT</td>
+<td><halconfig_types.AportSingleChannel object at 0xffd63f90></td>
+<td>SERIES1</td>
+<td>Output selection</td>
+</tr>
+<tr>
+<td>BSP_VDAC_OPA0_POS</td>
+<td><halconfig_types.AportSingleChannel object at 0xffd63e70></td>
+<td>SERIES1</td>
+<td>Positive input selection</td>
+</tr>
+<tr>
+<td>BSP_VDAC_OPA1_NEG</td>
+<td><halconfig_types.AportSingleChannel object at 0xffd637b0></td>
+<td>SERIES1</td>
+<td>Negative input selection</td>
+</tr>
+<tr>
+<td>BSP_VDAC_OPA1_OUT</td>
+<td><halconfig_types.AportSingleChannel object at 0xffd637d0></td>
+<td>SERIES1</td>
+<td>Output selection</td>
+</tr>
+<tr>
+<td>BSP_VDAC_OPA1_POS</td>
+<td><halconfig_types.AportSingleChannel object at 0xffd636f0></td>
+<td>SERIES1</td>
+<td>Positive input selection</td>
+</tr>
+<tr>
+<td>BSP_VDAC_OPA2_NEG</td>
+<td><halconfig_types.AportSingleChannel object at 0xffd63bd0></td>
+<td>not ['efm32pg14b', 'efm32jg14b', 'efr32mg14', 'efr32bg14', 'efr32fg14']</td>
+<td>Negative input selection</td>
+</tr>
+<tr>
+<td>BSP_VDAC_OPA2_OUT</td>
+<td><halconfig_types.AportSingleChannel object at 0xffd63c30></td>
+<td>not ['efm32pg14b', 'efm32jg14b', 'efr32mg14', 'efr32bg14', 'efr32fg14']</td>
+<td>Output selection</td>
+</tr>
+<tr>
+<td>BSP_VDAC_OPA2_POS</td>
+<td><halconfig_types.AportSingleChannel object at 0xffd63b10></td>
+<td>not ['efm32pg14b', 'efm32jg14b', 'efr32mg14', 'efr32bg14', 'efr32fg14']</td>
+<td>Positive input selection</td>
+</tr>
+<tr>
+<td>BSP_VDAC_OPA3_NEG</td>
+<td><halconfig_types.AportSingleChannel object at 0xffd0b110></td>
+<td>['efm32gg11b', 'efm32tg11b']</td>
+<td>Negative input selection</td>
+</tr>
+<tr>
+<td>BSP_VDAC_OPA3_OUT</td>
+<td><halconfig_types.AportSingleChannel object at 0xffd0b190></td>
+<td>['efm32gg11b', 'efm32tg11b']</td>
+<td>Output selection</td>
+</tr>
+<tr>
+<td>BSP_VDAC_OPA3_POS</td>
+<td><halconfig_types.AportSingleChannel object at 0xffd63cf0></td>
+<td>['efm32gg11b', 'efm32tg11b']</td>
+<td>Positive input selection</td>
+</tr>
+</tbody>
+</table>
+<h4 id="wdog">WDOG</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HAL_WDOG_ENABLE</td>
+<td>[0, 1]</td>
+<td>None</td>
+<td>Enable watchdog</td>
+</tr>
+</tbody>
+</table>
+<h2 id="hal-modules">HAL modules</h2>
+<h6 id="back-to-top"><a href="#hal-configuration-reference-document">Back to top</a></h6>
+<h4 id="bootloader-entry">Bootloader Entry</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_BTL_BUTTON_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>Bootloader entry pin</td>
+</tr>
+<tr>
+<td>BSP_BTL_BUTTON_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>Bootloader entry port</td>
+</tr>
+<tr>
+<td>HAL_BTL_BUTTON_ENABLE</td>
+<td>[0, 1]</td>
+<td>None</td>
+<td>Enable bootloader entry via button press</td>
+</tr>
+</tbody>
+</table>
+<h4 id="button">Button</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_BUTTON_COUNT</td>
+<td>uint8_t</td>
+<td>None</td>
+<td>Number of buttons available on board</td>
+</tr>
+<tr>
+<td>BSP_BUTTONn_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>BUTTONn pin</td>
+</tr>
+<tr>
+<td>BSP_BUTTONn_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>BUTTONn port</td>
+</tr>
+<tr>
+<td>BSP_BUTTON_GPIO_DOUT</td>
+<td>HAL_GPIO_DOUT_LOW, HAL_GPIO_DOUT_HIGH</td>
+<td>None</td>
+<td>DOUT register value of button pins</td>
+</tr>
+<tr>
+<td>BSP_BUTTON_GPIO_MODE</td>
+<td>HAL_GPIO_MODE_INPUT, HAL_GPIO_MODE_INPUT_PULL, HAL_GPIO_MODE_INPUT_PULL_FILTER</td>
+<td>None</td>
+<td>MODE register value of button pins</td>
+</tr>
+<tr>
+<td>BSP_BUTTON_PRESENT</td>
+<td>[0, 1]</td>
+<td>None</td>
+<td>Buttons present on board</td>
+</tr>
+<tr>
+<td>HAL_BUTTON_COUNT</td>
+<td>uint8_t</td>
+<td>None</td>
+<td>Number of buttons to enable</td>
+</tr>
+<tr>
+<td>HAL_BUTTON_ENABLE</td>
+<td>array</td>
+<td>None</td>
+<td>List of button indices to enable</td>
+</tr>
+</tbody>
+</table>
+<h4 id="spi-flash">SPI Flash</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_EXTFLASH_CLK_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>SPI Flash CLK pin</td>
+</tr>
+<tr>
+<td>BSP_EXTFLASH_CLK_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>SPI Flash CLK port</td>
+</tr>
+<tr>
+<td>BSP_EXTFLASH_CLK_LOC</td>
+<td>_USART_ROUTELOC0_CLKLOC_LOCn</td>
+<td>SERIES1</td>
+<td>SPI Flash CLK location</td>
+</tr>
+<tr>
+<td>BSP_EXTFLASH_CS_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>SPI Flash CS pin</td>
+</tr>
+<tr>
+<td>BSP_EXTFLASH_CS_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>SPI Flash CS port</td>
+</tr>
+<tr>
+<td>BSP_EXTFLASH_CS_LOC</td>
+<td>_USART_ROUTELOC0_CSLOC_LOCn</td>
+<td>SERIES1</td>
+<td>SPI Flash CS location</td>
+</tr>
+<tr>
+<td>BSP_EXTFLASH_HOLD_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>Hold pin</td>
+</tr>
+<tr>
+<td>BSP_EXTFLASH_HOLD_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>Hold port</td>
+</tr>
+<tr>
+<td>BSP_EXTFLASH_INTERNAL</td>
+<td>0, 1</td>
+<td>None</td>
+<td>SPI Flash type</td>
+</tr>
+<tr>
+<td>BSP_EXTFLASH_MISO_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>SPI Flash MISO pin</td>
+</tr>
+<tr>
+<td>BSP_EXTFLASH_MISO_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>SPI Flash MISO port</td>
+</tr>
+<tr>
+<td>BSP_EXTFLASH_MISO_LOC</td>
+<td>_USART_ROUTELOC0_RXLOC_LOCn</td>
+<td>SERIES1</td>
+<td>SPI Flash MISO location</td>
+</tr>
+<tr>
+<td>BSP_EXTFLASH_MOSI_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>SPI Flash MOSI pin</td>
+</tr>
+<tr>
+<td>BSP_EXTFLASH_MOSI_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>SPI Flash MOSI port</td>
+</tr>
+<tr>
+<td>BSP_EXTFLASH_MOSI_LOC</td>
+<td>_USART_ROUTELOC0_TXLOC_LOCn</td>
+<td>SERIES1</td>
+<td>SPI Flash MOSI location</td>
+</tr>
+<tr>
+<td>BSP_EXTFLASH_USART</td>
+<td>HAL_SPI_PORT_USARTn</td>
+<td>None</td>
+<td>USART connected to SPI Flash</td>
+</tr>
+<tr>
+<td>BSP_EXTFLASH_WP_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>Write Protect pin</td>
+</tr>
+<tr>
+<td>BSP_EXTFLASH_WP_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>Write Protect port</td>
+</tr>
+</tbody>
+</table>
+<h4 id="i2c-sensor">I2C Sensor</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_I2CSENSOR_ENABLE_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>Sensor enable pin</td>
+</tr>
+<tr>
+<td>BSP_I2CSENSOR_ENABLE_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>Sensor enable port</td>
+</tr>
+<tr>
+<td>BSP_I2CSENSOR_PERIPHERAL</td>
+<td>HAL_I2C_PORT_I2Cn</td>
+<td>None</td>
+<td>I2C peripheral</td>
+</tr>
+<tr>
+<td>BSP_I2CSENSOR_SCL_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>I2C Sensor SCL pin</td>
+</tr>
+<tr>
+<td>BSP_I2CSENSOR_SCL_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>I2C Sensor SCL port</td>
+</tr>
+<tr>
+<td>BSP_I2CSENSOR_SCL_LOC</td>
+<td>_I2C_ROUTELOC0_SCLLOC_LOCn</td>
+<td>SERIES1</td>
+<td>I2C Sensor SCL location</td>
+</tr>
+<tr>
+<td>BSP_I2CSENSOR_SDA_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>I2C Sensor SDA pin</td>
+</tr>
+<tr>
+<td>BSP_I2CSENSOR_SDA_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>I2C Sensor SDA port</td>
+</tr>
+<tr>
+<td>BSP_I2CSENSOR_SDA_LOC</td>
+<td>_I2C_ROUTELOC0_SDALOC_LOCn</td>
+<td>SERIES1</td>
+<td>I2C Sensor SDA location</td>
+</tr>
+<tr>
+<td>HAL_I2CSENSOR_ENABLE</td>
+<td>[0, 1]</td>
+<td>None</td>
+<td>Enable I2C sensor</td>
+</tr>
+</tbody>
+</table>
+<h4 id="i2c-io-expander">I2C I/O Expander</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_IOEXP_PERIPHERAL</td>
+<td>HAL_I2C_PORT_I2Cn</td>
+<td>None</td>
+<td>IO expander I2C</td>
+</tr>
+<tr>
+<td>BSP_IOEXP_SCL_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>I2C I/O Expander SCL pin</td>
+</tr>
+<tr>
+<td>BSP_IOEXP_SCL_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>I2C I/O Expander SCL port</td>
+</tr>
+<tr>
+<td>BSP_IOEXP_SCL_LOC</td>
+<td>_I2C_ROUTELOC0_SCLLOC_LOCn</td>
+<td>SERIES1</td>
+<td>I2C I/O Expander SCL location</td>
+</tr>
+<tr>
+<td>BSP_IOEXP_SDA_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>I2C I/O Expander SDA pin</td>
+</tr>
+<tr>
+<td>BSP_IOEXP_SDA_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>I2C I/O Expander SDA port</td>
+</tr>
+<tr>
+<td>BSP_IOEXP_SDA_LOC</td>
+<td>_I2C_ROUTELOC0_SDALOC_LOCn</td>
+<td>SERIES1</td>
+<td>I2C I/O Expander SDA location</td>
+</tr>
+<tr>
+<td>BSP_IOEXP_WAKE_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>IOEXP wake pin</td>
+</tr>
+<tr>
+<td>BSP_IOEXP_WAKE_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>IOEXP wake port</td>
+</tr>
+<tr>
+<td>HAL_IOEXP_ENABLE</td>
+<td>[0, 1]</td>
+<td>None</td>
+<td>Enable IO expander</td>
+</tr>
+<tr>
+<td>HAL_IOEXP_VCOM_ENABLE</td>
+<td>[0, 1]</td>
+<td>None</td>
+<td>Enable VCOM via IO expander</td>
+</tr>
+</tbody>
+</table>
+<h4 id="led">LED</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_LED_COUNT</td>
+<td>uint8_t</td>
+<td>None</td>
+<td>Number of LEDs available on board</td>
+</tr>
+<tr>
+<td>BSP_LEDn_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>LEDn pin</td>
+</tr>
+<tr>
+<td>BSP_LEDn_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>LEDn port</td>
+</tr>
+<tr>
+<td>BSP_LED_PRESENT</td>
+<td>[0, 1]</td>
+<td>None</td>
+<td>LEDs present on board</td>
+</tr>
+<tr>
+<td>HAL_LED_COUNT</td>
+<td>uint8_t</td>
+<td>None</td>
+<td>Number of LEDs to initialize</td>
+</tr>
+<tr>
+<td>HAL_LED_ENABLE</td>
+<td>array</td>
+<td>None</td>
+<td>List of LED indices to initialize</td>
+</tr>
+</tbody>
+</table>
+<h4 id="spi-display">SPI Display</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_SPIDISPLAY_CLK_PIN</td>
+<td>0-15</td>
+<td>not efm32g</td>
+<td>SPI Display CLK pin</td>
+</tr>
+<tr>
+<td>BSP_SPIDISPLAY_CLK_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>not efm32g</td>
+<td>SPI Display CLK port</td>
+</tr>
+<tr>
+<td>BSP_SPIDISPLAY_CLK_LOC</td>
+<td>_USART_ROUTELOC0_CLKLOC_LOCn</td>
+<td>SERIES1, not efm32g</td>
+<td>SPI Display CLK location</td>
+</tr>
+<tr>
+<td>BSP_SPIDISPLAY_CS_PIN</td>
+<td>0-15</td>
+<td>not efm32g</td>
+<td>SPI Display CS pin</td>
+</tr>
+<tr>
+<td>BSP_SPIDISPLAY_CS_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>not efm32g</td>
+<td>SPI Display CS port</td>
+</tr>
+<tr>
+<td>BSP_SPIDISPLAY_CS_LOC</td>
+<td>_USART_ROUTELOC0_CSLOC_LOCn</td>
+<td>SERIES1, not efm32g</td>
+<td>SPI Display CS location</td>
+</tr>
+<tr>
+<td>BSP_SPIDISPLAY_DISPLAY</td>
+<td>HAL_DISPLAY_SHARP_LS013B7DH03, HAL_DISPLAY_SHARP_LS013B7DH06</td>
+<td>not efm32g</td>
+<td>Display type</td>
+</tr>
+<tr>
+<td>BSP_SPIDISPLAY_ENABLE_PIN</td>
+<td>0-15</td>
+<td>not efm32g</td>
+<td>Display enable pin</td>
+</tr>
+<tr>
+<td>BSP_SPIDISPLAY_ENABLE_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>not efm32g</td>
+<td>Display enable port</td>
+</tr>
+<tr>
+<td>BSP_SPIDISPLAY_EXTCOMIN_PIN</td>
+<td>0-15</td>
+<td>not efm32g</td>
+<td>EXTCOMIN pin</td>
+</tr>
+<tr>
+<td>BSP_SPIDISPLAY_EXTCOMIN_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>not efm32g</td>
+<td>EXTCOMIN port</td>
+</tr>
+<tr>
+<td>BSP_SPIDISPLAY_EXTCOMIN_PRS_CHANNEL</td>
+<td>PRS Channel</td>
+<td>not efm32g</td>
+<td>EXTCOMIN PRS channel PRS channel</td>
+</tr>
+<tr>
+<td>BSP_SPIDISPLAY_EXTCOMIN_PRS_PIN</td>
+<td>0-15</td>
+<td>not efm32g</td>
+<td>EXTCOMIN PRS channel pin</td>
+</tr>
+<tr>
+<td>BSP_SPIDISPLAY_EXTCOMIN_PRS_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>not efm32g</td>
+<td>EXTCOMIN PRS channel port</td>
+</tr>
+<tr>
+<td>BSP_SPIDISPLAY_EXTCOMIN_PRS_LOC</td>
+<td>_PRS_ROUTELOC0_CHnLOC_LOCm</td>
+<td>SERIES1, not efm32g</td>
+<td>EXTCOMIN PRS channel location</td>
+</tr>
+<tr>
+<td>BSP_SPIDISPLAY_EXTMODE_PIN</td>
+<td>0-15</td>
+<td>not efm32g</td>
+<td>EXTMODE pin</td>
+</tr>
+<tr>
+<td>BSP_SPIDISPLAY_EXTMODE_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>not efm32g</td>
+<td>EXTMODE port</td>
+</tr>
+<tr>
+<td>BSP_SPIDISPLAY_MISO_PIN</td>
+<td>0-15</td>
+<td>not efm32g</td>
+<td>SPI Display MISO pin</td>
+</tr>
+<tr>
+<td>BSP_SPIDISPLAY_MISO_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>not efm32g</td>
+<td>SPI Display MISO port</td>
+</tr>
+<tr>
+<td>BSP_SPIDISPLAY_MISO_LOC</td>
+<td>_USART_ROUTELOC0_RXLOC_LOCn</td>
+<td>SERIES1, not efm32g</td>
+<td>SPI Display MISO location</td>
+</tr>
+<tr>
+<td>BSP_SPIDISPLAY_MOSI_PIN</td>
+<td>0-15</td>
+<td>not efm32g</td>
+<td>SPI Display MOSI pin</td>
+</tr>
+<tr>
+<td>BSP_SPIDISPLAY_MOSI_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>not efm32g</td>
+<td>SPI Display MOSI port</td>
+</tr>
+<tr>
+<td>BSP_SPIDISPLAY_MOSI_LOC</td>
+<td>_USART_ROUTELOC0_TXLOC_LOCn</td>
+<td>SERIES1, not efm32g</td>
+<td>SPI Display MOSI location</td>
+</tr>
+<tr>
+<td>BSP_SPIDISPLAY_USART</td>
+<td>HAL_SPI_PORT_USARTn</td>
+<td>not efm32g</td>
+<td>USART port</td>
+</tr>
+<tr>
+<td>HAL_SPIDISPLAY_ENABLE</td>
+<td>[0, 1]</td>
+<td>not efm32g</td>
+<td>Enable SPI display</td>
+</tr>
+<tr>
+<td>HAL_SPIDISPLAY_EXTCOMIN_CALLBACK</td>
+<td>string</td>
+<td>not efm32g</td>
+<td>EXTCOMIN callback registration function</td>
+</tr>
+<tr>
+<td>HAL_SPIDISPLAY_EXTCOMIN_USE_CALLBACK</td>
+<td>[0, 1]</td>
+<td>not efm32g</td>
+<td>Toggle EXTCOMIN from software callback</td>
+</tr>
+<tr>
+<td>HAL_SPIDISPLAY_EXTCOMIN_USE_PRS</td>
+<td>[0, 1]</td>
+<td>not efm32g</td>
+<td>Autonomously toggle EXTCOMIN using PRS</td>
+</tr>
+<tr>
+<td>HAL_SPIDISPLAY_EXTMODE_EXTCOMIN</td>
+<td>[0, 1]</td>
+<td>not efm32g</td>
+<td>Use EXTCOMIN pin for polarity inversion</td>
+</tr>
+<tr>
+<td>HAL_SPIDISPLAY_EXTMODE_SPI</td>
+<td>[0, 1]</td>
+<td>not efm32g</td>
+<td>Use SPI command for polarity inversion</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ncp-modules">NCP modules</h2>
+<p><a href="#hal-configuration-reference-document"><strong>Back to top</strong></a></p>
+<h4 id="spi-ncp">SPI NCP</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_SPINCP_CLK_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>SPI NCP CLK pin</td>
+</tr>
+<tr>
+<td>BSP_SPINCP_CLK_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>SPI NCP CLK port</td>
+</tr>
+<tr>
+<td>BSP_SPINCP_CLK_LOC</td>
+<td>_USART_ROUTELOC0_CLKLOC_LOCn</td>
+<td>SERIES1</td>
+<td>SPI NCP CLK location</td>
+</tr>
+<tr>
+<td>BSP_SPINCP_CS_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>SPI NCP CS pin</td>
+</tr>
+<tr>
+<td>BSP_SPINCP_CS_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>SPI NCP CS port</td>
+</tr>
+<tr>
+<td>BSP_SPINCP_CS_LOC</td>
+<td>_USART_ROUTELOC0_CSLOC_LOCn</td>
+<td>SERIES1</td>
+<td>SPI NCP CS location</td>
+</tr>
+<tr>
+<td>BSP_SPINCP_MISO_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>SPI NCP MISO pin</td>
+</tr>
+<tr>
+<td>BSP_SPINCP_MISO_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>SPI NCP MISO port</td>
+</tr>
+<tr>
+<td>BSP_SPINCP_MISO_LOC</td>
+<td>_USART_ROUTELOC0_RXLOC_LOCn</td>
+<td>SERIES1</td>
+<td>SPI NCP MISO location</td>
+</tr>
+<tr>
+<td>BSP_SPINCP_MOSI_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>SPI NCP MOSI pin</td>
+</tr>
+<tr>
+<td>BSP_SPINCP_MOSI_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>SPI NCP MOSI port</td>
+</tr>
+<tr>
+<td>BSP_SPINCP_MOSI_LOC</td>
+<td>_USART_ROUTELOC0_TXLOC_LOCn</td>
+<td>SERIES1</td>
+<td>SPI NCP MOSI location</td>
+</tr>
+<tr>
+<td>BSP_SPINCP_NHOSTINT_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>nHOST_INT pin</td>
+</tr>
+<tr>
+<td>BSP_SPINCP_NHOSTINT_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>nHOST_INT port</td>
+</tr>
+<tr>
+<td>BSP_SPINCP_NWAKE_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>nWAKE pin</td>
+</tr>
+<tr>
+<td>BSP_SPINCP_NWAKE_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>nWAKE port</td>
+</tr>
+<tr>
+<td>BSP_SPINCP_USART_PORT</td>
+<td>HAL_SPI_PORT_USARTn</td>
+<td>None</td>
+<td>USART port</td>
+</tr>
+</tbody>
+</table>
+<h4 id="uart-ncp">UART NCP</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_UARTNCP_CTS_PIN</td>
+<td>0-15</td>
+<td>SERIES1</td>
+<td>UART NCP CTS pin</td>
+</tr>
+<tr>
+<td>BSP_UARTNCP_CTS_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1</td>
+<td>UART NCP CTS port</td>
+</tr>
+<tr>
+<td>BSP_UARTNCP_CTS_LOC</td>
+<td>_USART_ROUTELOC1_CTSLOC_LOCn</td>
+<td>SERIES1</td>
+<td>UART NCP CTS location</td>
+</tr>
+<tr>
+<td>BSP_UARTNCP_RTS_PIN</td>
+<td>0-15</td>
+<td>SERIES1</td>
+<td>UART NCP RTS pin</td>
+</tr>
+<tr>
+<td>BSP_UARTNCP_RTS_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1</td>
+<td>UART NCP RTS port</td>
+</tr>
+<tr>
+<td>BSP_UARTNCP_RTS_LOC</td>
+<td>_USART_ROUTELOC1_RTSLOC_LOCn</td>
+<td>SERIES1</td>
+<td>UART NCP RTS location</td>
+</tr>
+<tr>
+<td>BSP_UARTNCP_RX_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>UART NCP RX pin</td>
+</tr>
+<tr>
+<td>BSP_UARTNCP_RX_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>UART NCP RX port</td>
+</tr>
+<tr>
+<td>BSP_UARTNCP_RX_LOC</td>
+<td>_USART_ROUTELOC0_RXLOC_LOCn</td>
+<td>SERIES1</td>
+<td>UART NCP RX location</td>
+</tr>
+<tr>
+<td>BSP_UARTNCP_TX_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>UART NCP TX pin</td>
+</tr>
+<tr>
+<td>BSP_UARTNCP_TX_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>UART NCP TX port</td>
+</tr>
+<tr>
+<td>BSP_UARTNCP_TX_LOC</td>
+<td>_USART_ROUTELOC0_TXLOC_LOCn</td>
+<td>SERIES1</td>
+<td>UART NCP TX location</td>
+</tr>
+<tr>
+<td>BSP_UARTNCP_USART_PORT</td>
+<td>['HAL_SERIAL_PORT_USARTn', 'HAL_SERIAL_PORT_UARTn', 'HAL_SERIAL_PORT_LEUARTn']</td>
+<td>None</td>
+<td>UART port</td>
+</tr>
+</tbody>
+</table>
+<h2 id="radio-modules">Radio modules</h2>
+<p><a href="#hal-configuration-reference-document"><strong>Back to top</strong></a></p>
+<h4 id="antenna-diversity">Antenna Diversity</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_ANTDIV_NSEL_PIN</td>
+<td>0-15</td>
+<td>RADIO</td>
+<td>Complementary antenna select pin</td>
+</tr>
+<tr>
+<td>BSP_ANTDIV_NSEL_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>RADIO</td>
+<td>Complementary antenna select port</td>
+</tr>
+<tr>
+<td>BSP_ANTDIV_SEL_PIN</td>
+<td>0-15</td>
+<td>RADIO</td>
+<td>Antenna select pin</td>
+</tr>
+<tr>
+<td>BSP_ANTDIV_SEL_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>RADIO</td>
+<td>Antenna select port</td>
+</tr>
+<tr>
+<td>HAL_ANTDIV_ENABLE</td>
+<td>[0, 1]</td>
+<td>RADIO</td>
+<td>Enable antenna diversity. SEL signal must be defined, NSEL is optional.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="coexistence">Coexistence</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_COEX_GNT_ASSERT_LEVEL</td>
+<td>1, 0</td>
+<td>RADIO</td>
+<td>GRANT assert signal level</td>
+</tr>
+<tr>
+<td>BSP_COEX_GNT_PIN</td>
+<td>0-15</td>
+<td>RADIO</td>
+<td>GRANT signal pin</td>
+</tr>
+<tr>
+<td>BSP_COEX_GNT_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>RADIO</td>
+<td>GRANT signal port</td>
+</tr>
+<tr>
+<td>BSP_COEX_PRI_ASSERT_LEVEL</td>
+<td>1, 0</td>
+<td>RADIO</td>
+<td>PRIORITY assert signal level</td>
+</tr>
+<tr>
+<td>BSP_COEX_PRI_PIN</td>
+<td>0-15</td>
+<td>RADIO</td>
+<td>PRIORITY signal pin</td>
+</tr>
+<tr>
+<td>BSP_COEX_PRI_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>RADIO</td>
+<td>PRIORITY signal port</td>
+</tr>
+<tr>
+<td>BSP_COEX_REQ_ASSERT_LEVEL</td>
+<td>1, 0</td>
+<td>RADIO</td>
+<td>REQUEST assert signal level</td>
+</tr>
+<tr>
+<td>BSP_COEX_REQ_PIN</td>
+<td>0-15</td>
+<td>RADIO</td>
+<td>REQUEST signal pin</td>
+</tr>
+<tr>
+<td>BSP_COEX_REQ_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>RADIO</td>
+<td>REQUEST signal port</td>
+</tr>
+<tr>
+<td>BSP_COEX_RHO_ASSERT_LEVEL</td>
+<td>1, 0</td>
+<td>RADIO</td>
+<td>RHO assert signal level</td>
+</tr>
+<tr>
+<td>BSP_COEX_RHO_PIN</td>
+<td>0-15</td>
+<td>RADIO</td>
+<td>RHO signal pin</td>
+</tr>
+<tr>
+<td>BSP_COEX_RHO_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>RADIO</td>
+<td>RHO signal port</td>
+</tr>
+<tr>
+<td>HAL_COEX_ACKHOLDOFF</td>
+<td>[0, 1]</td>
+<td>RADIO</td>
+<td>Disable ACKing when GRANT deasserted, RHO asserted, or REQUEST not secured (shared REQUEST only)</td>
+</tr>
+<tr>
+<td>HAL_COEX_ENABLE</td>
+<td>[0, 1]</td>
+<td>RADIO</td>
+<td>Enable radio coexistence</td>
+</tr>
+<tr>
+<td>HAL_COEX_PRI_SHARED</td>
+<td>[0, 1]</td>
+<td>RADIO</td>
+<td>Enable PRIORITY shared mode</td>
+</tr>
+<tr>
+<td>HAL_COEX_REQ_BACKOFF</td>
+<td>uint8_t</td>
+<td>RADIO</td>
+<td>Max REQUEST backoff mask [0-255]</td>
+</tr>
+<tr>
+<td>HAL_COEX_REQ_SHARED</td>
+<td>[0, 1]</td>
+<td>RADIO</td>
+<td>Enable REQUEST shared mode</td>
+</tr>
+<tr>
+<td>HAL_COEX_REQ_WINDOW</td>
+<td>uint16_t</td>
+<td>RADIO</td>
+<td>Assert time between REQUEST and RX/TX start (us) [BLE only]</td>
+</tr>
+<tr>
+<td>HAL_COEX_RETRYRX_ENABLE</td>
+<td>[0, 1]</td>
+<td>RADIO</td>
+<td>Enable REQUEST receive retry</td>
+</tr>
+<tr>
+<td>HAL_COEX_RETRYRX_HIPRI</td>
+<td>[0, 1]</td>
+<td>RADIO</td>
+<td>REQUEST receive retry assert PRIORITY</td>
+</tr>
+<tr>
+<td>HAL_COEX_RETRYRX_TIMEOUT</td>
+<td>uint8_t</td>
+<td>RADIO</td>
+<td>REQUEST receive retry timeout(ms)</td>
+</tr>
+<tr>
+<td>HAL_COEX_RX_HIPRI</td>
+<td>[0, 1]</td>
+<td>RADIO</td>
+<td>Assert PRIORITY when receiving packet</td>
+</tr>
+<tr>
+<td>HAL_COEX_TX_ABORT</td>
+<td>[0, 1]</td>
+<td>RADIO</td>
+<td>Abort transmission mid-packet if GRANT is lost</td>
+</tr>
+<tr>
+<td>HAL_COEX_TX_HIPRI</td>
+<td>[0, 1]</td>
+<td>RADIO</td>
+<td>Assert PRIORITY when transmitting packet</td>
+</tr>
+</tbody>
+</table>
+<h4 id="ezradiopro">EZRadioPro</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_EZRADIOPRO_CLK_PIN</td>
+<td>0-15</td>
+<td>RADIO</td>
+<td>EZRadioPro CLK pin</td>
+</tr>
+<tr>
+<td>BSP_EZRADIOPRO_CLK_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>RADIO</td>
+<td>EZRadioPro CLK port</td>
+</tr>
+<tr>
+<td>BSP_EZRADIOPRO_CLK_LOC</td>
+<td>_USART_ROUTELOC0_CLKLOC_LOCn</td>
+<td>SERIES1, RADIO</td>
+<td>EZRadioPro CLK location</td>
+</tr>
+<tr>
+<td>BSP_EZRADIOPRO_CS_PIN</td>
+<td>0-15</td>
+<td>RADIO</td>
+<td>EZRadioPro CS pin</td>
+</tr>
+<tr>
+<td>BSP_EZRADIOPRO_CS_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>RADIO</td>
+<td>EZRadioPro CS port</td>
+</tr>
+<tr>
+<td>BSP_EZRADIOPRO_CS_LOC</td>
+<td>_USART_ROUTELOC0_CSLOC_LOCn</td>
+<td>SERIES1, RADIO</td>
+<td>EZRadioPro CS location</td>
+</tr>
+<tr>
+<td>BSP_EZRADIOPRO_INT_PIN</td>
+<td>0-15</td>
+<td>RADIO</td>
+<td>EZRadio Pro Interrupt pin</td>
+</tr>
+<tr>
+<td>BSP_EZRADIOPRO_INT_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>RADIO</td>
+<td>EZRadio Pro Interrupt port</td>
+</tr>
+<tr>
+<td>BSP_EZRADIOPRO_MISO_PIN</td>
+<td>0-15</td>
+<td>RADIO</td>
+<td>EZRadioPro MISO pin</td>
+</tr>
+<tr>
+<td>BSP_EZRADIOPRO_MISO_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>RADIO</td>
+<td>EZRadioPro MISO port</td>
+</tr>
+<tr>
+<td>BSP_EZRADIOPRO_MISO_LOC</td>
+<td>_USART_ROUTELOC0_RXLOC_LOCn</td>
+<td>SERIES1, RADIO</td>
+<td>EZRadioPro MISO location</td>
+</tr>
+<tr>
+<td>BSP_EZRADIOPRO_MOSI_PIN</td>
+<td>0-15</td>
+<td>RADIO</td>
+<td>EZRadioPro MOSI pin</td>
+</tr>
+<tr>
+<td>BSP_EZRADIOPRO_MOSI_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>RADIO</td>
+<td>EZRadioPro MOSI port</td>
+</tr>
+<tr>
+<td>BSP_EZRADIOPRO_MOSI_LOC</td>
+<td>_USART_ROUTELOC0_TXLOC_LOCn</td>
+<td>SERIES1, RADIO</td>
+<td>EZRadioPro MOSI location</td>
+</tr>
+<tr>
+<td>BSP_EZRADIOPRO_SDN_PIN</td>
+<td>0-15</td>
+<td>RADIO</td>
+<td>EZRadio Pro Shutdown pin</td>
+</tr>
+<tr>
+<td>BSP_EZRADIOPRO_SDN_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>RADIO</td>
+<td>EZRadio Pro Shutdown port</td>
+</tr>
+<tr>
+<td>BSP_EZRADIOPRO_USART</td>
+<td>HAL_SPI_PORT_USARTn</td>
+<td>RADIO</td>
+<td>USART port</td>
+</tr>
+<tr>
+<td>HAL_EZRADIOPRO_ENABLE</td>
+<td>[0, 1]</td>
+<td>RADIO</td>
+<td>Enable EZRadio Pro</td>
+</tr>
+<tr>
+<td>HAL_EZRADIOPRO_SHUTDOWN_SLEEP</td>
+<td>[0, 1]</td>
+<td>RADIO</td>
+<td>Shutdown radio when MCU is sleeping</td>
+</tr>
+</tbody>
+</table>
+<h4 id="external-fem">External FEM</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_FEM_BYPASS_PIN</td>
+<td>0-15</td>
+<td>SERIES1, RADIO</td>
+<td>Bypass pin</td>
+</tr>
+<tr>
+<td>BSP_FEM_BYPASS_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1, RADIO</td>
+<td>Bypass port</td>
+</tr>
+<tr>
+<td>BSP_FEM_RX_CHANNEL</td>
+<td>PRS Channel</td>
+<td>SERIES1, RADIO</td>
+<td>RX PRS channel PRS channel</td>
+</tr>
+<tr>
+<td>BSP_FEM_RX_PIN</td>
+<td>0-15</td>
+<td>SERIES1, RADIO</td>
+<td>RX PRS channel pin</td>
+</tr>
+<tr>
+<td>BSP_FEM_RX_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1, RADIO</td>
+<td>RX PRS channel port</td>
+</tr>
+<tr>
+<td>BSP_FEM_RX_LOC</td>
+<td>_PRS_ROUTELOC0_CHnLOC_LOCm</td>
+<td>SERIES1, RADIO</td>
+<td>RX PRS channel location</td>
+</tr>
+<tr>
+<td>BSP_FEM_SLEEP_CHANNEL</td>
+<td>PRS Channel</td>
+<td>SERIES1, RADIO</td>
+<td>Sleep PRS channel PRS channel</td>
+</tr>
+<tr>
+<td>BSP_FEM_SLEEP_PIN</td>
+<td>0-15</td>
+<td>SERIES1, RADIO</td>
+<td>Sleep PRS channel pin</td>
+</tr>
+<tr>
+<td>BSP_FEM_SLEEP_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1, RADIO</td>
+<td>Sleep PRS channel port</td>
+</tr>
+<tr>
+<td>BSP_FEM_SLEEP_LOC</td>
+<td>_PRS_ROUTELOC0_CHnLOC_LOCm</td>
+<td>SERIES1, RADIO</td>
+<td>Sleep PRS channel location</td>
+</tr>
+<tr>
+<td>BSP_FEM_TXPOWER_PIN</td>
+<td>0-15</td>
+<td>SERIES1, RADIO</td>
+<td>TX power pin</td>
+</tr>
+<tr>
+<td>BSP_FEM_TXPOWER_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1, RADIO</td>
+<td>TX power port</td>
+</tr>
+<tr>
+<td>BSP_FEM_TX_CHANNEL</td>
+<td>PRS Channel</td>
+<td>SERIES1, RADIO</td>
+<td>TX PRS channel PRS channel</td>
+</tr>
+<tr>
+<td>BSP_FEM_TX_PIN</td>
+<td>0-15</td>
+<td>SERIES1, RADIO</td>
+<td>TX PRS channel pin</td>
+</tr>
+<tr>
+<td>BSP_FEM_TX_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1, RADIO</td>
+<td>TX PRS channel port</td>
+</tr>
+<tr>
+<td>BSP_FEM_TX_LOC</td>
+<td>_PRS_ROUTELOC0_CHnLOC_LOCm</td>
+<td>SERIES1, RADIO</td>
+<td>TX PRS channel location</td>
+</tr>
+<tr>
+<td>HAL_FEM_BYPASS_ENABLE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO</td>
+<td>Enable bypass mode</td>
+</tr>
+<tr>
+<td>HAL_FEM_ENABLE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO</td>
+<td>Enable FEM</td>
+</tr>
+<tr>
+<td>HAL_FEM_RX_ACTIVE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO</td>
+<td>Enable RX mode</td>
+</tr>
+<tr>
+<td>HAL_FEM_TX_ACTIVE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO</td>
+<td>Enable TX mode</td>
+</tr>
+<tr>
+<td>HAL_FEM_TX_HIGH_POWER</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO</td>
+<td>Enable high power tx</td>
+</tr>
+</tbody>
+</table>
+<h2 id="serial-modules">Serial modules</h2>
+<p><a href="#hal-configuration-reference-document"><strong>Back to top</strong></a></p>
+<h4 id="serial">Serial</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_SERIAL_APP_CTS_PIN</td>
+<td>0-15</td>
+<td>SERIES1</td>
+<td>Serial CTS pin</td>
+</tr>
+<tr>
+<td>BSP_SERIAL_APP_CTS_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1</td>
+<td>Serial CTS port</td>
+</tr>
+<tr>
+<td>BSP_SERIAL_APP_CTS_LOC</td>
+<td>_USART_ROUTELOC1_CTSLOC_LOCn</td>
+<td>SERIES1</td>
+<td>Serial CTS location</td>
+</tr>
+<tr>
+<td>BSP_SERIAL_APP_PORT</td>
+<td>['HAL_SERIAL_PORT_USARTn', 'HAL_SERIAL_PORT_UARTn', 'HAL_SERIAL_PORT_LEUARTn', 'HAL_SERIAL_PORT_VUART']</td>
+<td>None</td>
+<td>Port for application serial communication</td>
+</tr>
+<tr>
+<td>BSP_SERIAL_APP_RTS_PIN</td>
+<td>0-15</td>
+<td>SERIES1</td>
+<td>Serial RTS pin</td>
+</tr>
+<tr>
+<td>BSP_SERIAL_APP_RTS_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1</td>
+<td>Serial RTS port</td>
+</tr>
+<tr>
+<td>BSP_SERIAL_APP_RTS_LOC</td>
+<td>_USART_ROUTELOC1_RTSLOC_LOCn</td>
+<td>SERIES1</td>
+<td>Serial RTS location</td>
+</tr>
+<tr>
+<td>BSP_SERIAL_APP_RX_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>Serial RX pin</td>
+</tr>
+<tr>
+<td>BSP_SERIAL_APP_RX_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>Serial RX port</td>
+</tr>
+<tr>
+<td>BSP_SERIAL_APP_RX_LOC</td>
+<td>_USART_ROUTELOC0_RXLOC_LOCn</td>
+<td>SERIES1</td>
+<td>Serial RX location</td>
+</tr>
+<tr>
+<td>BSP_SERIAL_APP_TX_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>Serial TX pin</td>
+</tr>
+<tr>
+<td>BSP_SERIAL_APP_TX_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>Serial TX port</td>
+</tr>
+<tr>
+<td>BSP_SERIAL_APP_TX_LOC</td>
+<td>_USART_ROUTELOC0_TXLOC_LOCn</td>
+<td>SERIES1</td>
+<td>Serial TX location</td>
+</tr>
+<tr>
+<td>BSP_SERIAL_ASSERT_CTS_PIN</td>
+<td>0-15</td>
+<td>SERIES1</td>
+<td>Serial CTS pin</td>
+</tr>
+<tr>
+<td>BSP_SERIAL_ASSERT_CTS_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1</td>
+<td>Serial CTS port</td>
+</tr>
+<tr>
+<td>BSP_SERIAL_ASSERT_CTS_LOC</td>
+<td>_USART_ROUTELOC1_CTSLOC_LOCn</td>
+<td>SERIES1</td>
+<td>Serial CTS location</td>
+</tr>
+<tr>
+<td>BSP_SERIAL_ASSERT_PORT</td>
+<td>['HAL_SERIAL_PORT_USARTn', 'HAL_SERIAL_PORT_UARTn', 'HAL_SERIAL_PORT_LEUARTn', 'HAL_SERIAL_PORT_VUART']</td>
+<td>SERIES1, RADIO</td>
+<td>Port for assert serial communication</td>
+</tr>
+<tr>
+<td>BSP_SERIAL_ASSERT_RTS_PIN</td>
+<td>0-15</td>
+<td>SERIES1</td>
+<td>Serial RTS pin</td>
+</tr>
+<tr>
+<td>BSP_SERIAL_ASSERT_RTS_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1</td>
+<td>Serial RTS port</td>
+</tr>
+<tr>
+<td>BSP_SERIAL_ASSERT_RTS_LOC</td>
+<td>_USART_ROUTELOC1_RTSLOC_LOCn</td>
+<td>SERIES1</td>
+<td>Serial RTS location</td>
+</tr>
+<tr>
+<td>BSP_SERIAL_ASSERT_RX_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>Serial RX pin</td>
+</tr>
+<tr>
+<td>BSP_SERIAL_ASSERT_RX_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>Serial RX port</td>
+</tr>
+<tr>
+<td>BSP_SERIAL_ASSERT_RX_LOC</td>
+<td>_USART_ROUTELOC0_RXLOC_LOCn</td>
+<td>SERIES1</td>
+<td>Serial RX location</td>
+</tr>
+<tr>
+<td>BSP_SERIAL_ASSERT_TX_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>Serial TX pin</td>
+</tr>
+<tr>
+<td>BSP_SERIAL_ASSERT_TX_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>Serial TX port</td>
+</tr>
+<tr>
+<td>BSP_SERIAL_ASSERT_TX_LOC</td>
+<td>_USART_ROUTELOC0_TXLOC_LOCn</td>
+<td>SERIES1</td>
+<td>Serial TX location</td>
+</tr>
+<tr>
+<td>HAL_SERIAL_LEUART0_ENABLE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO, ['LEUART0']</td>
+<td>Use LEUART0 for serial</td>
+</tr>
+<tr>
+<td>HAL_SERIAL_LEUART1_ENABLE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO, ['LEUART1']</td>
+<td>Use LEUART1 for serial</td>
+</tr>
+<tr>
+<td>HAL_SERIAL_RXWAKE_ENABLE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO</td>
+<td>Enable wake from activity on RX GPIO of application port</td>
+</tr>
+<tr>
+<td>HAL_SERIAL_UART0_ENABLE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO, ['UART0']</td>
+<td>Use UART0 for serial</td>
+</tr>
+<tr>
+<td>HAL_SERIAL_UART1_ENABLE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO, ['UART1']</td>
+<td>Use UART1 for serial</td>
+</tr>
+<tr>
+<td>HAL_SERIAL_USART0_ENABLE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO, ['USART0']</td>
+<td>Use USART0 for serial</td>
+</tr>
+<tr>
+<td>HAL_SERIAL_USART1_ENABLE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO, ['USART1']</td>
+<td>Use USART1 for serial</td>
+</tr>
+<tr>
+<td>HAL_SERIAL_USART2_ENABLE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO, ['USART2']</td>
+<td>Use USART2 for serial</td>
+</tr>
+<tr>
+<td>HAL_SERIAL_USART3_ENABLE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO, ['USART3']</td>
+<td>Use USART3 for serial</td>
+</tr>
+</tbody>
+</table>
+<h4 id="virtual-com-port">Virtual COM Port</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_VCOM_ENABLE_PIN</td>
+<td>0-15</td>
+<td>None</td>
+<td>VCOM enable pin</td>
+</tr>
+<tr>
+<td>BSP_VCOM_ENABLE_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>None</td>
+<td>VCOM enable port</td>
+</tr>
+<tr>
+<td>HAL_VCOM_ENABLE</td>
+<td>[0, 1]</td>
+<td>None</td>
+<td>Enable VCOM</td>
+</tr>
+</tbody>
+</table>
+<h4 id="virtual-uart">Virtual UART</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HAL_SERIAL_VUART_ENABLE</td>
+<td>[0, 1]</td>
+<td>RADIO</td>
+<td>Enable VUART/Semihosting</td>
+</tr>
+<tr>
+<td>HAL_VUART_TYPE</td>
+<td>HAL_VUART_TYPE_NONE, HAL_VUART_TYPE_SWO, HAL_VUART_TYPE_RTT</td>
+<td>RADIO</td>
+<td>VUART type</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pwm-modules">PWM modules</h2>
+<p><a href="#hal-configuration-reference-document"><strong>Back to top</strong></a></p>
+<h4 id="pwm-lightbulb">PWM Lightbulb</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_BULBPWM_CC0_PIN</td>
+<td>0-15</td>
+<td>SERIES1, RADIO</td>
+<td>PWM Lightbulb Compare/Capture Channel 0 pin</td>
+</tr>
+<tr>
+<td>BSP_BULBPWM_CC0_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1, RADIO</td>
+<td>PWM Lightbulb Compare/Capture Channel 0 port</td>
+</tr>
+<tr>
+<td>BSP_BULBPWM_CC0_LOC</td>
+<td>_TIMER_ROUTELOC0_CC0LOC_LOCn</td>
+<td>SERIES1, RADIO</td>
+<td>PWM Lightbulb Compare/Capture Channel 0 location</td>
+</tr>
+<tr>
+<td>BSP_BULBPWM_CC1_PIN</td>
+<td>0-15</td>
+<td>SERIES1, RADIO</td>
+<td>PWM Lightbulb Compare/Capture Channel 1 pin</td>
+</tr>
+<tr>
+<td>BSP_BULBPWM_CC1_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1, RADIO</td>
+<td>PWM Lightbulb Compare/Capture Channel 1 port</td>
+</tr>
+<tr>
+<td>BSP_BULBPWM_CC1_LOC</td>
+<td>_TIMER_ROUTELOC0_CC1LOC_LOCn</td>
+<td>SERIES1, RADIO</td>
+<td>PWM Lightbulb Compare/Capture Channel 1 location</td>
+</tr>
+<tr>
+<td>BSP_BULBPWM_CC2_PIN</td>
+<td>0-15</td>
+<td>SERIES1, RADIO</td>
+<td>PWM Lightbulb Compare/Capture Channel 2 pin</td>
+</tr>
+<tr>
+<td>BSP_BULBPWM_CC2_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1, RADIO</td>
+<td>PWM Lightbulb Compare/Capture Channel 2 port</td>
+</tr>
+<tr>
+<td>BSP_BULBPWM_CC2_LOC</td>
+<td>_TIMER_ROUTELOC0_CC2LOC_LOCn</td>
+<td>SERIES1, RADIO</td>
+<td>PWM Lightbulb Compare/Capture Channel 2 location</td>
+</tr>
+<tr>
+<td>BSP_BULBPWM_CC3_PIN</td>
+<td>0-15</td>
+<td>SERIES1, RADIO, TIMER1</td>
+<td>PWM Lightbulb Compare/Capture Channel 3 pin</td>
+</tr>
+<tr>
+<td>BSP_BULBPWM_CC3_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1, RADIO, TIMER1</td>
+<td>PWM Lightbulb Compare/Capture Channel 3 port</td>
+</tr>
+<tr>
+<td>BSP_BULBPWM_CC3_LOC</td>
+<td>_TIMER_ROUTELOC0_CC3LOC_LOCn</td>
+<td>SERIES1, RADIO, TIMER1</td>
+<td>PWM Lightbulb Compare/Capture Channel 3 location</td>
+</tr>
+<tr>
+<td>BSP_BULBPWM_TIMER</td>
+<td>TIMERn</td>
+<td>SERIES1, RADIO</td>
+<td>BULBPWM Timer module</td>
+</tr>
+<tr>
+<td>HAL_BULBPWM_ENABLE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO</td>
+<td>Enable BULBPWM</td>
+</tr>
+<tr>
+<td>HAL_BULBPWM_FREQUENCY</td>
+<td>uint16_t</td>
+<td>SERIES1, RADIO</td>
+<td>PWM frequency select</td>
+</tr>
+<tr>
+<td>HAL_BULBPWM_LOWTEMP_ENABLE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO</td>
+<td>Enable lowtemp PWM channel (CC1)</td>
+</tr>
+<tr>
+<td>HAL_BULBPWM_STATUS_ENABLE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO</td>
+<td>Enable status PWM channel (CC2)</td>
+</tr>
+<tr>
+<td>HAL_BULBPWM_WHITE_ENABLE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO</td>
+<td>Enable white PWM channel (CC0)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="color-pwm-lightbulb">Color PWM Lightbulb</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_BULBPWM_COLOR_CC0_PIN</td>
+<td>0-15</td>
+<td>SERIES1, RADIO</td>
+<td>Color PWM Lightbulb Compare/Capture Channel 0 pin</td>
+</tr>
+<tr>
+<td>BSP_BULBPWM_COLOR_CC0_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1, RADIO</td>
+<td>Color PWM Lightbulb Compare/Capture Channel 0 port</td>
+</tr>
+<tr>
+<td>BSP_BULBPWM_COLOR_CC0_LOC</td>
+<td>_TIMER_ROUTELOC0_CC0LOC_LOCn</td>
+<td>SERIES1, RADIO</td>
+<td>Color PWM Lightbulb Compare/Capture Channel 0 location</td>
+</tr>
+<tr>
+<td>BSP_BULBPWM_COLOR_CC1_PIN</td>
+<td>0-15</td>
+<td>SERIES1, RADIO</td>
+<td>Color PWM Lightbulb Compare/Capture Channel 1 pin</td>
+</tr>
+<tr>
+<td>BSP_BULBPWM_COLOR_CC1_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1, RADIO</td>
+<td>Color PWM Lightbulb Compare/Capture Channel 1 port</td>
+</tr>
+<tr>
+<td>BSP_BULBPWM_COLOR_CC1_LOC</td>
+<td>_TIMER_ROUTELOC0_CC1LOC_LOCn</td>
+<td>SERIES1, RADIO</td>
+<td>Color PWM Lightbulb Compare/Capture Channel 1 location</td>
+</tr>
+<tr>
+<td>BSP_BULBPWM_COLOR_CC2_PIN</td>
+<td>0-15</td>
+<td>SERIES1, RADIO</td>
+<td>Color PWM Lightbulb Compare/Capture Channel 2 pin</td>
+</tr>
+<tr>
+<td>BSP_BULBPWM_COLOR_CC2_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1, RADIO</td>
+<td>Color PWM Lightbulb Compare/Capture Channel 2 port</td>
+</tr>
+<tr>
+<td>BSP_BULBPWM_COLOR_CC2_LOC</td>
+<td>_TIMER_ROUTELOC0_CC2LOC_LOCn</td>
+<td>SERIES1, RADIO</td>
+<td>Color PWM Lightbulb Compare/Capture Channel 2 location</td>
+</tr>
+<tr>
+<td>BSP_BULBPWM_COLOR_CC3_PIN</td>
+<td>0-15</td>
+<td>SERIES1, RADIO, TIMER1</td>
+<td>Color PWM Lightbulb Compare/Capture Channel 3 pin</td>
+</tr>
+<tr>
+<td>BSP_BULBPWM_COLOR_CC3_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1, RADIO, TIMER1</td>
+<td>Color PWM Lightbulb Compare/Capture Channel 3 port</td>
+</tr>
+<tr>
+<td>BSP_BULBPWM_COLOR_CC3_LOC</td>
+<td>_TIMER_ROUTELOC0_CC3LOC_LOCn</td>
+<td>SERIES1, RADIO, TIMER1</td>
+<td>Color PWM Lightbulb Compare/Capture Channel 3 location</td>
+</tr>
+<tr>
+<td>BSP_BULBPWM_COLOR_TIMER</td>
+<td>TIMERn</td>
+<td>SERIES1, RADIO</td>
+<td>BULBPWM_COLOR Timer module</td>
+</tr>
+<tr>
+<td>HAL_BULBPWM_AMBER_ENABLE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO</td>
+<td>Enable amber PWM channel (CC3)</td>
+</tr>
+<tr>
+<td>HAL_BULBPWM_BLUE_ENABLE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO</td>
+<td>Enable blue PWM channel (CC2)</td>
+</tr>
+<tr>
+<td>HAL_BULBPWM_COLOR_ENABLE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO</td>
+<td>Enable BULBPWM_COLOR</td>
+</tr>
+<tr>
+<td>HAL_BULBPWM_COLOR_FREQUENCY</td>
+<td>uint16_t</td>
+<td>SERIES1, RADIO</td>
+<td>PWM frequency select</td>
+</tr>
+<tr>
+<td>HAL_BULBPWM_GREEN_ENABLE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO</td>
+<td>Enable green PWM channel (CC1)</td>
+</tr>
+<tr>
+<td>HAL_BULBPWM_RED_ENABLE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO</td>
+<td>Enable red PWM channel (CC0)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="third-party-modules">Third Party modules</h2>
+<p><a href="#hal-configuration-reference-document"><strong>Back to top</strong></a></p>
+<h4 id="battery-monitor">Battery Monitor</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_BATTERYMON_TX_ACTIVE_CHANNEL</td>
+<td>PRS Channel</td>
+<td>SERIES1, RADIO</td>
+<td>Battery monitor TX active PRS channel PRS channel</td>
+</tr>
+<tr>
+<td>BSP_BATTERYMON_TX_ACTIVE_PIN</td>
+<td>0-15</td>
+<td>SERIES1, RADIO</td>
+<td>Battery monitor TX active PRS channel pin</td>
+</tr>
+<tr>
+<td>BSP_BATTERYMON_TX_ACTIVE_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1, RADIO</td>
+<td>Battery monitor TX active PRS channel port</td>
+</tr>
+<tr>
+<td>BSP_BATTERYMON_TX_ACTIVE_LOC</td>
+<td>_PRS_ROUTELOC0_CHnLOC_LOCm</td>
+<td>SERIES1, RADIO</td>
+<td>Battery monitor TX active PRS channel location</td>
+</tr>
+<tr>
+<td>HAL_BATTERYMON_ENABLE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO</td>
+<td>Enable battery monitor</td>
+</tr>
+</tbody>
+</table>
+<h4 id="cs5463-power-meter">CS5463 Power Meter</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_CS5463_CLK_PIN</td>
+<td>0-15</td>
+<td>SERIES1, RADIO</td>
+<td>CS5463 Power Meter CLK pin</td>
+</tr>
+<tr>
+<td>BSP_CS5463_CLK_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1, RADIO</td>
+<td>CS5463 Power Meter CLK port</td>
+</tr>
+<tr>
+<td>BSP_CS5463_CLK_LOC</td>
+<td>_USART_ROUTELOC0_CLKLOC_LOCn</td>
+<td>SERIES1, RADIO</td>
+<td>CS5463 Power Meter CLK location</td>
+</tr>
+<tr>
+<td>BSP_CS5463_CS_PIN</td>
+<td>0-15</td>
+<td>SERIES1, RADIO</td>
+<td>CS5463 Power Meter CS pin</td>
+</tr>
+<tr>
+<td>BSP_CS5463_CS_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1, RADIO</td>
+<td>CS5463 Power Meter CS port</td>
+</tr>
+<tr>
+<td>BSP_CS5463_CS_LOC</td>
+<td>_USART_ROUTELOC0_CSLOC_LOCn</td>
+<td>SERIES1, RADIO</td>
+<td>CS5463 Power Meter CS location</td>
+</tr>
+<tr>
+<td>BSP_CS5463_MISO_PIN</td>
+<td>0-15</td>
+<td>SERIES1, RADIO</td>
+<td>CS5463 Power Meter MISO pin</td>
+</tr>
+<tr>
+<td>BSP_CS5463_MISO_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1, RADIO</td>
+<td>CS5463 Power Meter MISO port</td>
+</tr>
+<tr>
+<td>BSP_CS5463_MISO_LOC</td>
+<td>_USART_ROUTELOC0_RXLOC_LOCn</td>
+<td>SERIES1, RADIO</td>
+<td>CS5463 Power Meter MISO location</td>
+</tr>
+<tr>
+<td>BSP_CS5463_MOSI_PIN</td>
+<td>0-15</td>
+<td>SERIES1, RADIO</td>
+<td>CS5463 Power Meter MOSI pin</td>
+</tr>
+<tr>
+<td>BSP_CS5463_MOSI_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1, RADIO</td>
+<td>CS5463 Power Meter MOSI port</td>
+</tr>
+<tr>
+<td>BSP_CS5463_MOSI_LOC</td>
+<td>_USART_ROUTELOC0_TXLOC_LOCn</td>
+<td>SERIES1, RADIO</td>
+<td>CS5463 Power Meter MOSI location</td>
+</tr>
+<tr>
+<td>BSP_CS5463_USART_PORT</td>
+<td>HAL_SPI_PORT_USARTn</td>
+<td>SERIES1, RADIO</td>
+<td>CS5463 USART port</td>
+</tr>
+</tbody>
+</table>
+<h4 id="pyd1698-ir-sensor">PYD1698 IR Sensor</h4>
+<table>
+<thead>
+<tr>
+<th>Define</th>
+<th>Value</th>
+<th>Dependency</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BSP_PYD1698_DLINK_PIN</td>
+<td>0-15</td>
+<td>SERIES1, RADIO</td>
+<td>PYD1698 DLINK port pin</td>
+</tr>
+<tr>
+<td>BSP_PYD1698_DLINK_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1, RADIO</td>
+<td>PYD1698 DLINK port port</td>
+</tr>
+<tr>
+<td>BSP_PYD1698_INSTALLATION_JP_PIN</td>
+<td>0-15</td>
+<td>SERIES1, RADIO</td>
+<td>PYD1698 calibration mode pin</td>
+</tr>
+<tr>
+<td>BSP_PYD1698_INSTALLATION_JP_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1, RADIO</td>
+<td>PYD1698 calibration mode port</td>
+</tr>
+<tr>
+<td>BSP_PYD1698_SERIN_PIN</td>
+<td>0-15</td>
+<td>SERIES1, RADIO</td>
+<td>PYD1698 serial in pin</td>
+</tr>
+<tr>
+<td>BSP_PYD1698_SERIN_PORT</td>
+<td>GPIO_Port_TypeDef</td>
+<td>SERIES1, RADIO</td>
+<td>PYD1698 serial in port</td>
+</tr>
+<tr>
+<td>HAL_PYD1698_ENABLE</td>
+<td>[0, 1]</td>
+<td>SERIES1, RADIO</td>
+<td>Enable PYD1698 IR Sensor</td>
+</tr>
+</tbody>
+</table></article></body></html>

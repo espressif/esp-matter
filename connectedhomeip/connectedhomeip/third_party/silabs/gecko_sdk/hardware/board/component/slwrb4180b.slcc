@@ -1,0 +1,22 @@
+!!omap
+- id: slwrb4180b
+- label: SLWRB4180B
+- package: platform
+- description: Kit BSP support for the EFR32xG21 2.4 GHz 20 dBm Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4180b
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4180B"'
+  - name: SL_KIT_REV
+    value: '"A04"'
+- tag:
+  - kit:opn:SLWRB4180B
+  - kit:pn:WRB4180
+  - kit:variant:B
+  - kit:revision:A04

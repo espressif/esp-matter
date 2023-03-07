@@ -1,0 +1,121 @@
+id: "zigbee_host_framework_common"
+label: "Host Framework Common"
+package: "Zigbee"
+category: "Zigbee"
+quality: "production"
+description: "This component declares all the required application framework globals, initializes the Zigbee stack and dispatches stack callbacks calls as needed to the application components."
+
+provides:
+  - name: "zigbee_host_framework_common"
+requires:
+  - name: "zigbee_device_config"
+  - name: endianness
+
+source:
+  - path: protocol/zigbee/app/framework/util/af-host.c
+  - path: protocol/zigbee/app/framework/common/zigbee_app_framework_common.c
+  - path: protocol/zigbee/app/framework/common/zigbee_app_framework_host_cb.c
+  - path: protocol/zigbee/app/util/security/security-address-cache.c
+  - path: protocol/zigbee/app/framework/util/service-discovery-host.c
+  - path: protocol/zigbee/app/util/zigbee-framework/zigbee-device-host.c
+
+include:
+  - path: protocol/zigbee/app/framework/common
+    file_list:
+      - path: zigbee_app_framework_common.h
+      - path: zigbee_app_framework_event.h
+      - path: zigbee_app_framework_callback.h
+  - path: protocol/zigbee/stack/include
+    file_list:
+      - path: aes-mmo.h
+      - path: binding-table.h
+      - path: bootload.h
+      - path: byte-utilities.h
+      - path: cbke-crypto-engine.h
+      - path: ccm-star.h
+      - path: child.h
+      - path: ember-alternate-mac.h
+      - path: ember-debug.h
+      - path: ember-duty-cycle.h
+      - path: ember-random-api.h
+      - path: ember-static-struct.h
+      - path: gp-types.h
+      - path: library.h
+      - path: mac-layer.h
+      - path: message.h
+      - path: multi-network.h
+      - path: multi-phy.h
+      - path: network-formation.h
+      - path: raw-message.h
+      - path: source-route.h
+      - path: stack-info.h
+      - path: trust-center.h
+      - path: zigbee-device-stack.h
+      - path: zll-api.h
+      - path: zll-types.h
+  - path: protocol/zigbee/stack
+    file_list:
+      - path: config/config.h
+      - path: config/ember-configuration-defaults.h
+  # TODO These should be treated as internal headers, see EMZIGBEE-6706
+  - path: platform/radio/mac
+    file_list:
+      - path: mac-child.h
+      - path: mac-flat-header.h
+      - path: mac-header.h
+      - path: mac-packet-header.h
+      - path: mac-types.h
+      - path: mac-phy.h
+  - path: util/silicon_labs/silabs_core/
+    file_list:
+      - path: buffer_manager/legacy-packet-buffer.h
+      - path: buffer_manager/buffer-queue.h
+      - path: buffer_manager/buffer-management.h
+      - path: event_queue/event-queue.h
+
+define:
+  - name: "UC_BUILD"
+  - name: "USE_ZAP_CONFIG"
+    value: "1"
+
+toolchain_settings:
+  - option: gcc_compiler_option
+    value: "-Wno-unused-parameter"
+  - option: gcc_compiler_option
+    value: "-Wno-missing-field-initializers"
+  - option: gcc_compiler_option
+    value: "-Wno-missing-braces"
+  # EMZIGBEE-6659
+  - option: gcc_compiler_option
+    value: "-Wno-format"
+
+template_file:
+  - path: protocol/zigbee/app/framework/common/template/zigbee_stack_callback_dispatcher.h.jinja
+  - path: protocol/zigbee/app/framework/common/template/zigbee_stack_callback_dispatcher.c.jinja
+  - path: protocol/zigbee/app/framework/common/template/zigbee_common_callback_dispatcher.h.jinja
+  - path: protocol/zigbee/app/framework/common/template/zigbee_common_callback_dispatcher.c.jinja
+  - path: protocol/zigbee/app/framework/common/template/zigbee_host_callback_dispatcher.h.jinja
+  - path: protocol/zigbee/app/framework/common/template/zigbee_host_callback_dispatcher.c.jinja
+template_contribution:
+  - name: component_catalog
+    value: zigbee_app_framework_common
+  - name: event_handler
+    value:
+      event: stack_init
+      include: "zigbee_app_framework_common.h"
+      handler: sli_zigbee_app_framework_init_callback
+    priority: -8998
+  - name: event_handler
+    value:
+      event: stack_process_action
+      include: "zigbee_app_framework_common.h"
+      handler: sli_zigbee_app_framework_tick_callback
+  - name: zigbee_af_callback
+    value:
+      callback_type: tick
+      function_name: emAfHostFrameworkTick
+
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/host-framework-common

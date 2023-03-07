@@ -1,0 +1,125 @@
+id: mbedtls_source
+package: platform
+label: Source Code
+description: >-
+  This component includes the Mbed TLS libraries source code files.
+category: Platform|Security|Mbed TLS
+quality: production
+ui_hints:
+  visibility: never
+component_root_path: util/third_party/crypto/mbedtls
+
+provides:
+  - name: mbedtls_source
+  - name: tz_ns_incompatible
+    condition: [tz_secure_key_library_ns]
+
+requires:
+  - name: device
+  - name: mbedtls_slcrypto_driver
+    condition: [device_cortexm]
+  - name: silabs_core_sl_malloc
+    condition: [device_cortexm]
+
+recommends:
+  # The require + recommend approach is used for testing with older drivers.
+  - id: mbedtls_slcrypto
+    condition: [device_cortexm]
+
+source:
+  - path: library/constant_time.c
+  - path: library/threading.c
+  - path: library/platform.c
+  - path: library/platform_util.c
+
+include:
+  - path: include
+    file_list:
+      - path: mbedtls/aes.h
+      - path: mbedtls/aria.h
+      - path: mbedtls/asn1.h
+      - path: mbedtls/asn1write.h
+      - path: mbedtls/base64.h
+      - path: mbedtls/bignum.h
+      - path: mbedtls/build_info.h
+      - path: mbedtls/camellia.h
+      - path: mbedtls/ccm.h
+      - path: mbedtls/chacha20.h
+      - path: mbedtls/chachapoly.h
+      - path: mbedtls/check_config.h
+      - path: mbedtls/cipher.h
+      - path: mbedtls/cmac.h
+      - path: mbedtls/compat-2.x.h
+      - path: mbedtls/config_psa.h
+      - path: mbedtls/constant_time.h
+      - path: mbedtls/ctr_drbg.h
+      - path: mbedtls/debug.h
+      - path: mbedtls/des.h
+      - path: mbedtls/dhm.h
+      - path: mbedtls/ecdh.h
+      - path: mbedtls/ecdsa.h
+      - path: mbedtls/ecjpake.h
+      - path: mbedtls/ecp.h
+      - path: mbedtls/entropy.h
+      - path: mbedtls/error.h
+      - path: mbedtls/gcm.h
+      - path: mbedtls/hkdf.h
+      - path: mbedtls/hmac_drbg.h
+      - path: mbedtls/mbedtls_config.h
+      - path: mbedtls/md.h
+      - path: mbedtls/md5.h
+      - path: mbedtls/memory_buffer_alloc.h
+      - path: mbedtls/net_sockets.h
+      - path: mbedtls/nist_kw.h
+      - path: mbedtls/oid.h
+      - path: mbedtls/pem.h
+      - path: mbedtls/pk.h
+      - path: mbedtls/pkcs12.h
+      - path: mbedtls/pkcs5.h
+      - path: mbedtls/platform.h
+      - path: mbedtls/platform_time.h
+      - path: mbedtls/platform_util.h
+      - path: mbedtls/poly1305.h
+      - path: mbedtls/private_access.h
+      - path: mbedtls/psa_util.h
+      - path: mbedtls/ripemd160.h
+      - path: mbedtls/rsa.h
+      - path: mbedtls/sha1.h
+      - path: mbedtls/sha256.h
+      - path: mbedtls/sha512.h
+      - path: mbedtls/ssl.h
+      - path: mbedtls/ssl_cache.h
+      - path: mbedtls/ssl_ciphersuites.h
+      - path: mbedtls/ssl_cookie.h
+      - path: mbedtls/ssl_ticket.h
+      - path: mbedtls/threading.h
+      - path: mbedtls/timing.h
+      - path: mbedtls/version.h
+      - path: mbedtls/x509.h
+      - path: mbedtls/x509_crl.h
+      - path: mbedtls/x509_crt.h
+      - path: mbedtls/x509_csr.h
+
+  - path: library
+    file_list:
+      - path: bn_mul.h
+      - path: check_crypto_config.h
+      - path: cipher_wrap.h
+      - path: common.h
+      - path: constant_time_internal.h
+      - path: constant_time_invasive.h
+      - path: ecdh_misc.h
+      - path: ecp_internal_alt.h
+      - path: ecp_invasive.h
+      - path: entropy_poll.h
+      - path: md_wrap.h
+      - path: mps_common.h
+      - path: mps_error.h
+      - path: mps_reader.h
+      - path: mps_trace.h
+      - path: padlock.h
+      - path: pk_wrap.h
+      - path: rsa_alt_helpers.h
+      - path: ssl_debug_helpers_generated.h
+      - path: ssl_misc.h
+      - path: ssl_tls13_keys.h

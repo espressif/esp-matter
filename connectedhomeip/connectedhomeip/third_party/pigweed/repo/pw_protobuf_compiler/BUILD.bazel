@@ -1,0 +1,60 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@com_google_protobuf//:protobuf.bzl", "py_proto_library")
+load("//pw_build:pigweed.bzl", "pw_cc_test")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+# TODO(frolv): Figure out how to support nanopb and pwpb codegen in Bazel.
+filegroup(
+    name = "nanopb_test",
+    srcs = ["nanopb_test.cc"],
+)
+
+filegroup(
+    name = "pwpb_test",
+    srcs = ["pwpb_test.cc"],
+)
+
+py_proto_library(
+    name = "pw_protobuf_compiler_protos",
+    srcs = [
+        "pw_protobuf_compiler_protos/nested/more_nesting/test.proto",
+        "pw_protobuf_compiler_protos/test.proto",
+    ],
+)
+
+proto_library(
+    name = "test_protos",
+    srcs = [
+        "pw_protobuf_compiler_protos/nested/more_nesting/test.proto",
+        "pw_protobuf_compiler_protos/test.proto",
+    ],
+)
+
+pw_cc_test(
+    name = "nested_packages_test",
+    srcs = ["nested_packages_test.cc"],
+    deps = [
+        "//pw_protobuf_compiler/pw_nested_packages:aggregate_pw_proto.pwpb",
+        "//pw_protobuf_compiler/pw_nested_packages:aggregate_wrapper_pw_proto.pwpb",
+        "//pw_protobuf_compiler/pw_nested_packages/data_type/id:id_pw_proto.pwpb",
+        "//pw_protobuf_compiler/pw_nested_packages/data_type/thing:thing_pw_proto.pwpb",
+        "//pw_protobuf_compiler/pw_nested_packages/data_type/thing:type_of_thing_pw_proto.pwpb",
+        "//pw_unit_test",
+    ],
+)

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<contentItems xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="null http://www.silabs.com/ss/Studio.ecore">
+  <contentItemData name="" label="AN1135: Using Third Generation Non-Volatile Memory (NVM3) Data Storage" itemURI="asset://com.silabs.sdk.stack.super_4.1.1/app/wisun/documentation/an1135-using-third-generation-nonvolatile-memory.pdf" category="Application Notes" priority="20">
+    <description>Explains how NVM3 can be used as non-volatile data storage in various protocol implementations. </description>
+    <property key="core.category" value="Application Notes"/>
+    <property key="core.priority" value="20"/>
+    <property key="core.sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Proprietary Thread HomeKit Wi-SUN"/>
+    <property key="core.partCompatibility" value=".*efr32fg12.* .*efr32mg12.*"/>
+    <property key="core.boardCompatibility" value=".*"/>
+  </contentItemData>
+  <contentItemData name="" label="AN1311: Integrating Crypto Functionality Using PSA Crypto Compared to Mbed TLS" itemURI="asset://com.silabs.sdk.stack.super_4.1.1/app/wisun/documentation/an1311-mbedtls-psa-crypto-porting-guide.pdf" category="Application Notes" priority="50">
+    <description>Describes how to integrate crypto functionality into applications using PSA Crypto  compared to Mbed TLS.  </description>
+    <property key="core.category" value="Application Notes"/>
+    <property key="core.priority" value="50"/>
+    <property key="core.sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Proprietary Thread HomeKit Wi-SUN"/>
+    <property key="core.partCompatibility" value=".*efr32fg12.* .*efr32mg12.*"/>
+    <property key="core.boardCompatibility" value=".*"/>
+  </contentItemData>
+  <contentItemData name="" label="Transitioning to the Updated Gecko Bootloader in GSDK 4.0 and Higher" itemURI="asset://com.silabs.sdk.stack.super_4.1.1/app/wisun/documentation/an1326-gecko-bootloader-transitioning-guide.pdf" category="Application Notes" priority="15">
+    <description>Gecko Bootloader v2.x, introduced in GSDK 4.0, contains a number of changes compared to Gecko Bootloader v1.x. This document describes the differences between the versions, including how to configure the new Gecko Bootloader in Simplicity Studio 5.    </description>
+    <property key="core.category" value="Application Notes"/>
+    <property key="core.priority" value="15"/>
+    <property key="core.sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Proprietary Thread 32-bit\ MCU HomeKit Wi-SUN"/>
+    <property key="core.partCompatibility" value=".*efr32fg12.* .*efr32mg12.*"/>
+    <property key="core.boardCompatibility" value=".*"/>
+  </contentItemData>
+  <contentItemData name="" label="AN1330: Silicon Labs Wi-SUN Mesh Network Performance" itemURI="asset://com.silabs.sdk.stack.super_4.1.1/app/wisun/documentation/an1330-wi-sun-network-performance.pdf" category="Application Notes" priority="25">
+    <description>Describes the test environment and methods for testing Wi-SUN network performance. The results are intended to provide guidance on design practices and principles as well as expected field performance results. </description>
+    <property key="core.category" value="Application Notes"/>
+    <property key="core.priority" value="25"/>
+    <property key="core.partCompatibility" value=".*efr32fg12.* .*efr32mg12.*"/>
+    <property key="core.boardCompatibility" value=".*"/>
+  </contentItemData>
+  <contentItemData name="" label="AN1332: Silicon Labs Wi-SUN Network Setup and Configuration" itemURI="asset://com.silabs.sdk.stack.super_4.1.1/app/wisun/documentation/an1332-wi-sun-network-configuration.pdf" category="Application Notes" priority="14">
+    <description>Describes how to use the Silicon Labs Wi-SUN Linux border router or the EFR32 standalone border router demonstration. Covers the associated configuration and debugging tools.   </description>
+    <property key="core.category" value="Application Notes"/>
+    <property key="core.priority" value="14"/>
+    <property key="core.partCompatibility" value=".*efr32fg12.* .*efr32mg12.*"/>
+    <property key="core.boardCompatibility" value=".*"/>
+  </contentItemData>
+  <contentItemData name="" label="AN1364: Using the Wi-SUN Network Performance Measurement Application" itemURI="asset://com.silabs.sdk.stack.super_4.1.1/app/wisun/documentation/an1364-wi-sun-network-performance-measurement-app.pdf" category="Application Notes" priority="14">
+    <description>Describes how to use the Wi-SUN Network Performance Measurement Application from either the LCD output or the CLI, and includes suggestions for improving ping latency in a Wi-SUN network.   </description>
+    <property key="core.category" value="Application Notes"/>
+    <property key="core.priority" value="14"/>
+    <property key="core.partCompatibility" value=".*efr32fg12.* .*efr32mg12.*"/>
+    <property key="core.boardCompatibility" value=".*"/>
+  </contentItemData>
+  <contentItemData name="" label="Documentation Index" itemURI="asset://com.silabs.sdk.stack.super_4.1.1/app/wisun/documentation/slWi-SUN-index.html" category="Application Notes" priority="9">
+    <description>Provides an overview and hyperlinks to all packaged documentation.</description>
+    <property key="core.category" value="Application Notes"/>
+    <property key="core.priority" value="9"/>
+    <property key="core.partCompatibility" value=".*efr32fg12.* .*efr32mg12.*"/>
+    <property key="core.boardCompatibility" value=".*"/>
+  </contentItemData>
+  <contentItemData name="" label="QSG181: Silicon Labs Wi-SUN Quick-Start Guide" itemURI="asset://com.silabs.sdk.stack.super_4.1.1/app/wisun/documentation/qsg181-wi-sun-sdk-quick-start-guide.pdf" category="Quick Start Guides" priority="1">
+    <description>Describes how to get started with Wi-SUN development using the Silicon Labs Wi-SUN software development kit (SDK) and Simplicity Studio 5 with a compatible wireless starter kit (WSTK).     </description>
+    <property key="core.category" value="Quick Start Guides"/>
+    <property key="core.priority" value="1"/>
+    <property key="core.partCompatibility" value=".*efr32fg12.* .*efr32mg12.*"/>
+    <property key="core.boardCompatibility" value=".*"/>
+  </contentItemData>
+  <contentItemData name="" label="Silicon Labs Wi-SUN API Reference Guide" itemURI="asset://com.silabs.sdk.stack.super_4.1.1/app/wisun/documentation/API_WISUN_HTML/index.html" category="Reference Manuals" priority="30">
+    <description>Contains a comprehensive list of APIs used to interface to the Silicon Labs Wi-SUN stack. </description>
+    <property key="core.category" value="Reference Manuals"/>
+    <property key="core.priority" value="30"/>
+    <property key="core.partCompatibility" value=".*efr32fg12.* .*efr32mg12.*"/>
+    <property key="core.boardCompatibility" value=".*"/>
+  </contentItemData>
+  <contentItemData name="" label="UG495: Silicon Labs Wi-SUN Developer's Guide" itemURI="asset://com.silabs.sdk.stack.super_4.1.1/app/wisun/documentation/ug495-wi-sun-developers-guide.pdf" category="Reference Manuals" priority="10">
+    <description>Reference for those developing applications using the Silicon Labs Wi-SUN SDK. The guide covers guidelines to  develop an application on top of Silicon Labs Wi-SUN stack . The purpose of this document is to fill in the gaps  between the Silicon Labs Wi-SUN Field Area Network (FAN) API reference, Gecko Platform references, and  documentation for the target EFR32xG part.  </description>
+    <property key="core.category" value="Reference Manuals"/>
+    <property key="core.priority" value="10"/>
+    <property key="core.partCompatibility" value=".*efr32fg12.* .*efr32mg12.*"/>
+    <property key="core.boardCompatibility" value=".*"/>
+  </contentItemData>
+  <contentItemData name="" label="Wi-SUN SDK Release Notes" itemURI="asset://com.silabs.sdk.stack.super_4.1.1/app/wisun/documentation/Wi-SUN_Release_Notes.pdf" category="Release Notes" priority="1">
+    <description>Lists compatibility requirements and sources for all software components in the development environment.  Discusses the latest changes to the SiliconLabs Wi-SUN SDK, including added/deleted/deprecated features/API.  Reviews fixed and known issues.  </description>
+    <property key="core.category" value="Release Notes"/>
+    <property key="core.priority" value="1"/>
+    <property key="core.partCompatibility" value=".*efr32fg12.* .*efr32mg12.*"/>
+    <property key="core.boardCompatibility" value=".*"/>
+  </contentItemData>
+  <contentItemData name="" label="Gecko Platform Release Notes" itemURI="asset://com.silabs.sdk.stack.super_4.1.1/app/wisun/documentation/gecko-platform-release-notes.pdf" category="Release Notes" priority="1">
+    <description>A detailed overview of the changes, additions, and fixes in the Gecko Platform components.  The Gecko Platform includes EMLIB, EMDRV, RAIL Library, NVM3, and the component-based infrastructure. </description>
+    <property key="core.category" value="Release Notes"/>
+    <property key="core.priority" value="1"/>
+    <property key="core.sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Proprietary Thread Z-Wave 32-bit\ MCU HomeKit Wi-SUN"/>
+    <property key="core.partCompatibility" value=".*efr32fg12.* .*efr32mg12.*"/>
+    <property key="core.boardCompatibility" value=".*"/>
+  </contentItemData>
+  <contentItemData name="" label="UG103.05: IoT Endpoint Security Fundamentals" itemURI="asset://com.silabs.sdk.stack.super_4.1.1/app/wisun/documentation/ug103-05-fundamentals-security.pdf" category="User's Guides" priority="50">
+    <description>Introduces the security concepts that must be considered when implementing an Internet of Things (IoT)  system. Using the ioXt Alliance's eight security principles as a structure, it clearly delineates  the solutions Silicon Labs provides to support endpoint security and what you must do outside of  the Silicon Labs framework.  </description>
+    <property key="core.category" value="User's Guides"/>
+    <property key="core.priority" value="50"/>
+    <property key="core.sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Proprietary Thread Z-Wave HomeKit Wi-SUN"/>
+    <property key="core.partCompatibility" value=".*efr32fg12.* .*efr32mg12.*"/>
+    <property key="core.boardCompatibility" value=".*"/>
+  </contentItemData>
+  <contentItemData name="" label="UG103.06: Bootloader Fundamentals" itemURI="asset://com.silabs.sdk.stack.super_4.1.1/app/wisun/documentation/ug103-06-fundamentals-bootloading.pdf" category="User's Guides" priority="15">
+    <description>Introduces bootloading for Silicon Labs networking devices. Discusses the Gecko Bootloader as well  as legacy Ember and Bluetooth bootloaders, and describes the file formats used by each.  </description>
+    <property key="core.category" value="User's Guides"/>
+    <property key="core.priority" value="15"/>
+    <property key="core.sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Proprietary Thread HomeKit Wi-SUN"/>
+    <property key="core.partCompatibility" value=".*efr32fg12.* .*efr32mg12.*"/>
+    <property key="core.boardCompatibility" value=".*"/>
+  </contentItemData>
+  <contentItemData name="" label="UG103.07: Non-Volatile Data Storage Fundamentals" itemURI="asset://com.silabs.sdk.stack.super_4.1.1/app/wisun/documentation/ug103-07-non-volatile-data-storage-fundamentals.pdf" category="User's Guides" priority="20">
+    <description>Introduces non-volatile data storage using flash and the three different storage implementations offered  for Silicon Labs microcontrollers and SoCs: Simulated EEPROM, PS Store, and NVM3.   </description>
+    <property key="core.category" value="User's Guides"/>
+    <property key="core.priority" value="20"/>
+    <property key="core.sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Proprietary Thread HomeKit Wi-SUN"/>
+    <property key="core.partCompatibility" value=".*efr32fg12.* .*efr32mg12.*"/>
+    <property key="core.boardCompatibility" value=".*"/>
+  </contentItemData>
+  <contentItemData name="" label="UG162: Simplicity Commander Reference Guide" itemURI="asset://com.silabs.sdk.stack.super_4.1.1/app/wisun/documentation/ug162-simplicity-commander-reference-guide.pdf" category="User's Guides" priority="12">
+    <description>Describes how and when to use Simplicity Commander's Command-Line Interface.  </description>
+    <property key="core.category" value="User's Guides"/>
+    <property key="core.priority" value="12"/>
+    <property key="core.sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Proprietary Thread HomeKit Wi-SUN"/>
+    <property key="core.partCompatibility" value=".*efr32fg12.* .*efr32mg12.*"/>
+    <property key="core.boardCompatibility" value=".*"/>
+  </contentItemData>
+  <contentItemData name="" label="UG489: Silicon Labs Gecko Bootloader User's Guide for GSDK 4.0 and Higher" itemURI="asset://com.silabs.sdk.stack.super_4.1.1/app/wisun/documentation/ug489-gecko-bootloader-user-guide-gsdk-4.pdf" category="User's Guides" priority="15">
+    <description>Describes the high-level implementation of the Silicon Labs Gecko Bootloader for EFR32 SoCs and NCPs,  and provides information on how to get started using the Gecko Bootloader with Silicon Labs wireless protocol stacks in GSDK 4.0 and higher.  </description>
+    <property key="core.category" value="User's Guides"/>
+    <property key="core.priority" value="15"/>
+    <property key="core.sdkAndProtocolTags" value="Bluetooth Bluetooth\ Mesh Zigbee Proprietary Thread HomeKit Wi-SUN"/>
+    <property key="core.partCompatibility" value=".*efr32fg12.* .*efr32mg12.*"/>
+    <property key="core.boardCompatibility" value=".*"/>
+  </contentItemData>
+</contentItems>

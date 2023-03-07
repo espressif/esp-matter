@@ -1,0 +1,37 @@
+id: cli
+label: "CLI: Command Line Interface"
+package: platform
+description: >
+  The CLI component provides an API to create applications using a command
+  line interface. Configuration options allow enabling command history,
+  advanced input handling (autocompletion, arrows, delete, and so on), and
+  detailed help description for commands and arguments.
+category: Services|CLI
+quality: production
+instantiable:
+  prefix: inst
+root_path: platform/service/cli
+config_file:
+  - path: "config/sl_cli_config_{{instance}}.h"
+    file_id: sl_cli_config
+include:
+  - path: inc
+    file_list:
+      - path: sl_cli.h
+      - path: sl_cli_types.h
+provides:
+  - name: cli
+    allow_multiple: true
+requires:
+  - name: cli_core
+template_contribution:
+  - name: cli_instances
+    value: "{{instance}}"
+  - name: power_manager_handler
+    value:
+      event: is_ok_to_sleep
+      include: sl_cli_instances.h
+      handler: sl_cli_instances_is_ok_to_sleep
+documentation:
+    docset: gecko-platform
+    document: service/cli/overview

@@ -1,0 +1,32 @@
+# Copyright (c) 2022 Arm Limited and Contributors. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+- id: cppcheck
+  name: cppcheck
+  description: Run `cppcheck` against C/C++ source files
+  language: system
+  files: \.(c|cc|cpp|cu|c\+\+|cxx|tpp|txx)$
+  entry: cppcheck --error-exitcode=1
+  args: [
+      "--force",
+      "--std=c++14",
+      "--language=c++",
+      # enable everything except "information" level.
+      "--enable=style,performance,warning,portability",
+      "--template=gcc",
+      "--inline-suppr",
+      # Do not fail for internal cppcheck error
+      "--suppress=internalAstError",
+      # As we are passing list of suppression list, some files may
+      # not need to suppress any or all of the suppressions producing
+      # unmatchedSuppression by cppcheck. Ignore such cases.
+      "--suppress=unmatchedSuppression",
+      # useStlAlgorithm cannot be mandated in embedded projects
+      "--suppress=useStlAlgorithm"
+  ]
+
+- id: banned-api
+  name: banned-api
+  entry: banned-api-hook
+  description: Checks if source code uses banned apis
+  types_or: [c, c++]
+  language: python

@@ -1,0 +1,74 @@
+id: micriumos_usbh
+label: Micrium-USB Host
+package: micrium-usbh
+description: Micrium OS USB Host
+category: Services|Micrium|USB
+quality: deprecated
+component_root_path: platform/micrium_os/usb
+config_file:
+  - path: ../cfg/usbh_cfg.h
+source:
+  - path: source/usb_ctrlr.c
+  - path: source/host/cmd/usbh_cmd.c
+  - path: source/host/class/usbh_class_common.c
+  - path: source/host/core/usbh_core.c
+  - path: source/host/core/usbh_core_class.c
+  - path: source/host/core/usbh_core_config.c
+  - path: source/host/core/usbh_core_dev.c
+  - path: source/host/core/usbh_core_ep.c
+  - path: source/host/core/usbh_core_fnct.c
+  - path: source/host/core/usbh_core_hub.c
+  - path: source/host/core/usbh_core_if.c
+  - path: source/host/hcd/usbh_hcd_lib.c
+  - path: source/host/hcd/usbh_pbhci.c
+include:
+  - path: source
+    file_list:
+      - path: usb_ctrlr_priv.h
+      - path: host/class/usbh_class_common_priv.h
+      - path: host/class/usbh_class_core_priv.h
+      - path: host/class/usbh_class_ep_priv.h
+      - path: host/cmd/usbh_cmd_priv.h
+      - path: host/core/usbh_core_class_priv.h
+      - path: host/core/usbh_core_config_priv.h
+      - path: host/core/usbh_core_dev_priv.h
+      - path: host/core/usbh_core_ep_priv.h
+      - path: host/core/usbh_core_fnct_priv.h
+      - path: host/core/usbh_core_hub_priv.h
+      - path: host/core/usbh_core_if_priv.h
+      - path: host/core/usbh_core_priv.h
+      - path: host/core/usbh_core_types_priv.h
+      - path: host/hcd/usbh_hcd_core_priv.h
+      - path: host/hcd/usbh_hcd_hub_priv.h
+      - path: host/hcd/usbh_hcd_lib_priv.h
+      - path: host/hcd/usbh_pbhcd_priv.h
+
+  - path: include
+    file_list:
+      - path: usb_ctrlr.h
+      - path: host/usbh_class.h
+      - path: host/usbh_core.h
+      - path: host/usbh_core_config.h
+      - path: host/usbh_core_dev.h
+      - path: host/usbh_core_ep.h
+      - path: host/usbh_core_fnct.h
+      - path: host/usbh_core_handle.h
+      - path: host/usbh_core_hub.h
+      - path: host/usbh_core_if.h
+      - path: host/usbh_core_langid.h
+      - path: host/usbh_core_opt_def.h
+      - path: host/usbh_core_utils.h
+      - path: host/usbh_pbhci.h
+
+template_contribution:
+  - name: micriumos_component_avails
+    value: USB_HOST
+  - name: micriumos_component_avails
+    value: USB_HOST_PBHCI
+provides:
+  - name: usbh
+requires:
+  - name: micriumos_kernel
+  - name: usbh_driver
+  - name: usbh_class
+  - name: common_oplock

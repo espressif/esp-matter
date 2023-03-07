@@ -1,0 +1,61 @@
+#!/bin/bash
+#
+#  Copyright (c) 2020, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+
+#
+# This script tests dbus server.
+#
+
+set -euxo pipefail
+
+readonly OTBR_DBUS_SERVER_CONF=otbr-test-dbus-server.conf
+
+on_exit()
+{
+    pkill -f otbr-test-dbus-server || true
+    sudo rm "/etc/dbus-1/system.d/${OTBR_DBUS_SERVER_CONF}" || true
+}
+
+main()
+{
+    sudo rm -rf tmp
+    sudo install -m 644 "${CMAKE_CURRENT_SOURCE_DIR}/${OTBR_DBUS_SERVER_CONF}" /etc/dbus-1/system.d/
+    sudo service dbus reload
+    trap on_exit EXIT
+    ./otbr-test-dbus-server &
+    # wait for server ready.
+    sleep 2
+    dbus-send --system --dest=io.openthread.TestServer --type=method_call --print-reply /io/openthread/testobj io.openthread.Ping uint32:1 string:"Ping" | grep 'PingPong"'
+    dbus-send --system --dest=io.openthread.TestServer --type=method_call --print-reply /io/openthread/testobj org.freedesktop.DBus.Properties.Set string:io.openthread string:Count variant:int32:3
+    dbus-send --system --dest=io.openthread.TestServer --type=method_call --print-reply /io/openthread/testobj org.freedesktop.DBus.Properties.GetAll string:io.openthread | grep 'int32 3'
+    dbus-send --system --dest=io.openthread.TestServer --type=method_call --print-reply /io/openthread/testobj org.freedesktop.DBus.Properties.Get string:io.openthread string:Count | grep 'int32 3'
+    dbus-send --system --dest=io.openthread.TestServer --type=method_call --print-reply /io/openthread/testobj io.openthread.Ping | grep '"hello"'
+    wait
+}
+
+main "$@"

@@ -1,0 +1,25 @@
+Where to find complete joylink documentation?
+-------------------------------------------
+
+This README is just a fast "quick start" document. You can find more detailed
+documentation at http://www.jdsmart.com/joylink/
+
+Building joylink_dev_sdk
+--------------
+
+joylink_dev_sdk can be compiled and used on Linux, OSX, OpenBSD, NetBSD, FreeBSD.
+We support big endian and little endian architectures.
+
+It may compile on Linux. 
+
+step 1:
+    % edit Makefile.rule line like: "PROJECT_ROOT_PATH:=/XXX/joylink_dev_sdk_v1.3"
+    set PROJECT_ROOT_PATH as your project dir.
+
+step 2:
+    % make -f Make_jl
+
+step 3:
+    % sudo ./target/bin/jt 
+
+Enjoy!

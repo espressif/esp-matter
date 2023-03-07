@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectSpec>
+    <project
+        title="FreeRTOS build release configuration"
+        name="freertos_builds_cc32xx_release_ticlang"
+        device="Cortex M.CC3220SF"
+        toolChain="LLVM"
+        outputType="staticLibrary"
+        requiredVariables="FREERTOS_INSTALL_DIR"
+        compilerBuildOptions=" -I${PROJECT_ROOT} -I${FREERTOS_INSTALL_DIR}/FreeRTOS/Source/include -I${FREERTOS_INSTALL_DIR}/FreeRTOS/Source/portable/GCC/ARM_CM3 -I${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source/ti/posix/ticlang -I${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source -I${CG_TOOL_ROOT}/include -Oz -c -g -mcpu=cortex-m4 -mfloat-abi=soft"
+        ignoreDefaultDeviceSettings="true"
+        ignoreDefaultCCSSettings="true"
+        description="A FreeRTOS release configuration project">
+
+        <property name="products" value="com.ti.SIMPLELINK_CC32XX_SDK"/>
+        <property name="buildProfile" value="release"/>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source/ti/posix/freertos/clock.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="posix" >
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source/ti/posix/freertos/memory.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="posix" >
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source/ti/posix/freertos/mqueue.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="posix" >
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source/ti/posix/freertos/pthread_barrier.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="posix" >
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source/ti/posix/freertos/pthread_cond.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="posix" >
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source/ti/posix/freertos/pthread.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="posix" >
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source/ti/posix/freertos/pthread_mutex.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="posix" >
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source/ti/posix/freertos/pthread_rwlock.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="posix" >
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source/ti/posix/freertos/sched.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="posix" >
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source/ti/posix/freertos/semaphore.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="posix" >
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source/ti/posix/freertos/sleep.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="posix" >
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source/ti/posix/freertos/timer.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="posix" >
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source/ti/posix/freertos/PTLS.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="posix" >
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/source/ti/posix/freertos/aeabi_portable.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="posix" >
+        </file>
+        <file path="${FREERTOS_INSTALL_DIR}/FreeRTOS/Source/croutine.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="freertos" >
+        </file>
+        <file path="${FREERTOS_INSTALL_DIR}/FreeRTOS/Source/event_groups.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="freertos" >
+        </file>
+        <file path="${FREERTOS_INSTALL_DIR}/FreeRTOS/Source/list.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="freertos" >
+        </file>
+        <file path="${FREERTOS_INSTALL_DIR}/FreeRTOS/Source/queue.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="freertos" >
+        </file>
+        <file path="${FREERTOS_INSTALL_DIR}/FreeRTOS/Source/stream_buffer.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="freertos" >
+        </file>
+        <file path="${FREERTOS_INSTALL_DIR}/FreeRTOS/Source/tasks.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="freertos" >
+        </file>
+        <file path="${FREERTOS_INSTALL_DIR}/FreeRTOS/Source/timers.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="freertos" >
+        </file>
+        <file path="${FREERTOS_INSTALL_DIR}/FreeRTOS/Source/portable/MemMang/heap_4.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="freertos" >
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/kernel/freertos/dpl/AppHooks_freertos.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="dpl" >
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/kernel/freertos/dpl/ClockP_freertos.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="dpl" >
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/kernel/freertos/dpl/DebugP_freertos.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="dpl" >
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/kernel/freertos/dpl/MutexP_freertos.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="dpl" >
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/kernel/freertos/dpl/QueueP_freertos.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="dpl" >
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/kernel/freertos/dpl/SemaphoreP_freertos.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="dpl" >
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/kernel/freertos/dpl/StaticAllocs_freertos.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="dpl" >
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/kernel/freertos/dpl/SwiP_freertos.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="dpl" >
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/kernel/freertos/dpl/SystemP_freertos.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="dpl" >
+        </file>
+        <file path="${FREERTOS_INSTALL_DIR}/FreeRTOS/Source/portable/GCC/ARM_CM3/port.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="freertos/portable/GCC/ARM_CM3" >
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/kernel/freertos/dpl/HwiPCC32XX_freertos.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="dpl" >
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/kernel/freertos/dpl/PowerCC32XX_freertos.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="dpl" >
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR}/kernel/freertos/startup/startup_cc32xx_ticlang.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="freertos/startup" >
+        </file>
+        <file path="../FreeRTOSConfig.h" openOnCreation="false" excludeFromBuild="false" action="copy" >
+        </file>
+        <file path="../README.md" openOnCreation="false" excludeFromBuild="false" action="copy" >
+        </file>
+        <file path="../README.html" openOnCreation="false" excludeFromBuild="false" action="copy" >
+        </file>
+    </project>
+</projectSpec>

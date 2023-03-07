@@ -1,0 +1,11 @@
+id: trustzone_unaware
+label: "TrustZone Unaware"
+description: >
+  Used to signal that a project does not make active use of different TrustZone
+  security states.
+package: platform
+category: Platform|Common
+quality: production
+provides:
+  - name: trustzone_unaware
+  - name: trustzone_security_state

@@ -1,0 +1,498 @@
+/******************************************************************************
+
+ @file  cc26xx_app_oad_agama.icf
+
+ @brief IAR ARM Linker Configuration File - BLE OAD Application
+
+        Note: Code stack and heap are allocated by the Application/RTOS build.
+
+        Imported Symbols
+        Note: Linker defines are located in the IAR IDE project using
+        --config_def in Options->Linker->Extra Options, or placed in
+        Options->Linker-> Config->Configuration file symbol definitions.
+
+        CACHE_AS_RAM:       Disables use of Cache in favor of using the region
+                            as General Purpose RAM (GPRAM).
+        CCxxxx:             Device Name (e.g. CC2650). In order to define this
+                            symbol, the tool chain requires that it be set to
+                            a specific value, but in fact, the actual value does
+                            not matter as it is not used in the linker control
+                            file. The only way this symbol is used is based on
+                            whether it is defined or not, not its actual value.
+                            There are other linker symbols that do specifically
+                            set their value to 1 to indicate R1, and 2 to
+                            indicate R2, and these values are checked and do make
+                            a difference. However, it would appear confusing if
+                            the device name's value did not correspond to the
+                            value set in other linker symbols. In order to avoid
+                            this confusion, when the symbol is defined, it should
+                            be set to the value of the device's ROM that it
+                            corresponds so as to look and feel consistent. Please
+                            note that a device name symbol should always be
+                            defined to avoid side effects from default values
+                            that may not be correct for the device being used.
+        FLASH_ONLY_BUILD:   Build full BLE stack in flash only memory.
+        FLASH_ROM_BUILD:    Build Flash portion of BLE stack to work with
+                            ROM code.
+        ROM_BUILD:          Build ROM portion of BLE stack.
+        COMMON_ROM_BUILD:   Build of common ROM code.
+        TEST_ROM_IN_FLASH:  Build ROM code in Flash memory to test.
+        ICALL_RAM0_START:   RAM start of BLE stack.
+        ICALL_STACK0_START: Flash start of BLE stack.
+        PAGE_ALIGN:         Align the upper Flash boundry to a page boundary by
+                            taking the page floor of ICALL_STACK0_START.
+        USE_TIRTOS_ROM:     Defined internally in the build flow (see the end
+                            of this file for more information).
+
+        Exported Symbols
+        Note: Can be used as externs in C code.
+
+        STACK_TOP: Location of the top of RAM.
+        ROM_BASE_ADDR:        Location of start of ROM (where RT Init is
+                              expected).
+        RAM_BASE_ADDR:        Location of start of RAM (for ICall and JT
+                              pointers).
+        COMMON_RAM_BASE_ADDR: Location of start of RAM (for ICall and JT
+                              pointers).
+        PAGE_SIZE:            Size of Flash sector, in bytes.
+        NUM_SNV_PAGES:        Number of sectors used for Simple NV.
+
+ Group: WCS, BTS
+ Target Device: cc13xx_cc26xx
+
+ ******************************************************************************
+ 
+ Copyright (c) 2013-2022, Texas Instruments Incorporated
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+
+ *  Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+
+ *  Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+
+ *  Neither the name of Texas Instruments Incorporated nor the names of
+    its contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ ******************************************************************************
+ 
+ 
+ *****************************************************************************/
+
+////////////////////////////////////////////////////////////////////////////////
+// Memory Sizes
+////////////////////////////////////////////////////////////////////////////////
+define symbol FLASH_BASE            = 0x00000000;
+define symbol RAM_BASE              = 0x20000000;
+define symbol ROM_BASE              = 0x10000000;
+
+if ( isdefinedsymbol(CC2650) )
+{
+  define symbol RAM_SIZE            = 0x00005000; // 20K
+  define symbol FLASH_SIZE          = 0x00020000; // 128K
+  define symbol ROM_SIZE            = 0x0001C000; // 115K
+}
+else if ( isdefinedsymbol(CC2642) || isdefinedsymbol(CC13x2))
+{
+  define symbol RAM_SIZE            = 0x00014000; // 80K
+  define symbol FLASH_SIZE          = 0x00058000; // 352K
+  define symbol ROM_SIZE            = 0x00040000; // 256K
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Memory Definitions
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// RAM
+//
+define symbol RAM_START             = RAM_BASE;
+//define symbol RAM_RESERVED_START    = RAM_START + (RAM_SIZE >> 2);
+define symbol RAM_RESERVED_START    = RAM_START + RAM_SIZE;
+
+if ( isdefinedsymbol(ICALL_RAM0_START) )
+{
+  define symbol RAM_END             = (ICALL_RAM0_START-1);
+}
+else // default
+{
+  define symbol RAM_END             = RAM_RESERVED_START-1;
+}
+
+export symbol RAM_END;
+
+////////////////////////////////////////////////////////////////////////////////
+// Flash
+//
+
+define symbol WORD_SIZE             = 4;
+
+if ( isdefinedsymbol(CC2650) )
+{
+  define symbol PAGE_SIZE           = 0x1000;
+}
+else if ( isdefinedsymbol(CC2642)  || isdefinedsymbol(CC13x2) )
+{
+  define symbol PAGE_SIZE           = 0x2000;
+}
+export symbol PAGE_SIZE;
+
+if (isdefinedsymbol(PAGE_ALIGN))
+{
+  define symbol FLASH_MEM_ALIGN     = PAGE_SIZE;
+}
+else
+{
+  define symbol FLASH_MEM_ALIGN     = WORD_SIZE;
+}
+
+define symbol FLASH_START           = FLASH_BASE;
+
+if ( isdefinedsymbol(CC2650) )
+{
+  define symbol PAGE_MASK           = 0xFFFFF000;
+}
+else if ( isdefinedsymbol(CC2642) )
+{
+  define symbol PAGE_MASK           = 0xFFFFE000;
+}
+
+// Check if page alignment with the Stack image is required.
+// If so, do not link into a page shared by the Stack.
+if ( isdefinedsymbol(ICALL_STACK0_START) )
+{
+  if ( isdefinedsymbol(PAGE_ALIGN) )
+  {
+    define symbol ADJ_ICALL_STACK0_START = (ICALL_STACK0_START & PAGE_MASK);
+  }
+  else
+  {
+    define symbol ADJ_ICALL_STACK0_START = ICALL_STACK0_START;
+  }
+
+}
+
+if ( isdefinedsymbol(OAD_IMG_E) )  // RTOS in ROM
+{
+
+    // OAD specific
+    define symbol OAD_HDR_SIZE    = 0x50; // linker needs word alignment.
+    define symbol OAD_HDR_START   = FLASH_START;
+    define symbol OAD_HDR_END     = OAD_HDR_START + OAD_HDR_SIZE - 1;
+
+    define symbol ENTRY_SIZE      = 0x40;
+    define symbol ENTRY_START     = OAD_HDR_END + 1;
+    define symbol ENTRY_END       = ENTRY_START + ENTRY_SIZE - 1;
+
+
+    define symbol APP_START       = ENTRY_END + 1;
+
+    if ( isdefinedsymbol(ICALL_STACK0_START) )
+    {
+      define symbol FLASH_END           = (ADJ_ICALL_STACK0_START-1);
+    }
+    else
+    {
+      // If not stack is defined, Default includes all but last page, which is defined later.
+      define symbol FLASH_END         = FLASH_START + FLASH_SIZE - PAGE_SIZE - 1;
+    }
+
+}  // End of if ( isdefinedsymbol(OAD_IMG_E) )  // RTOS in ROM
+else if ( isdefinedsymbol(OAD_IMG_B) )  // RTOS in ROM
+{
+
+    if ( isdefinedsymbol(ICALL_STACK0_START) )
+    {
+
+       // OAD specific
+       define symbol OAD_HDR_SIZE    = 0x50; // linker needs word alignment.
+       define symbol OAD_HDR_START   = FLASH_START;
+       define symbol OAD_HDR_END     = OAD_HDR_START + OAD_HDR_SIZE - 1;
+
+       define symbol APP_START       = OAD_HDR_END + 1;
+       define symbol FLASH_END       = (ICALL_STACK0_START - 1);
+    }
+    else
+    {
+      // If not stack is defined, give image all flash excluding sector 31.
+      define symbol FLASH_END         = FLASH_START + FLASH_SIZE - 0x1001;
+    }
+
+}
+else // Persistent Image
+{
+  define symbol NUM_RESERVED_PAGES    = 1;
+  define symbol RESERVED_SIZE         = (NUM_RESERVED_PAGES * PAGE_SIZE);
+  define symbol RESERVED_END          = (FLASH_SIZE - 1);
+  define symbol RESERVED_START        = (RESERVED_END - RESERVED_SIZE + 1);
+
+  // Entry Section
+  define symbol ENTRY_END             = (RESERVED_START-1);
+  define symbol ENTRY_SIZE            = 0x40;
+  define symbol ENTRY_START           = RESERVED_START-ENTRY_SIZE;
+
+  export symbol ENTRY_START;
+  export symbol ENTRY_END;
+
+  define symbol FLASH_END       = (ENTRY_START - 1);
+
+
+  //  Export symbol to be used in hex file
+  export symbol FLASH_START;
+
+  define symbol IMAGE_END    = ENTRY_END;
+  export symbol IMAGE_END;
+
+  if ( isdefinedsymbol(NV_FLASH_PAGES) )
+  {
+    export symbol NV_FLASH_PAGES;
+    define symbol SNV_PAGES    = NV_FLASH_PAGES;
+    export symbol SNV_PAGES;
+  }
+  else
+  {
+    define symbol SNV_PAGES    = 0;
+    export symbol SNV_PAGES;
+  }
+
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Stack
+define symbol STACK_SIZE            = 0x400;
+define symbol STACK_START           = RAM_END + 1;
+define symbol STACK_END             = STACK_START - STACK_SIZE;
+//
+define symbol STACK_TOP             = RAM_END + 1;
+export symbol STACK_TOP;
+
+////////////////////////////////////////////////////////////////////////////////
+// Flash Interrupt Vector Table
+//
+
+define symbol INTVEC_NUM_ENTRIES   = 50 + 1; // first entry is stack location
+define symbol INTVEC_SIZE          = INTVEC_NUM_ENTRIES + 4;
+
+////////////////////////////////////////////////////////////////////////////////
+// Memory Regions
+////////////////////////////////////////////////////////////////////////////////
+
+define memory mem with size = 4G;
+
+if ( isdefinedsymbol(OAD_IMG_E) )
+{
+  define region RAM           = mem:[from RAM_START      to RAM_END];
+  define region FLASH_IMG_HDR = mem:[from OAD_HDR_START  to OAD_HDR_END];
+  define region ENTRY_FLASH   = mem:[from ENTRY_START    to ENTRY_END];
+  define region FLASH         = mem:[from APP_START      to FLASH_END];
+  //define region FLASH_LAST_PAGE       = mem:[from(FLASH_SIZE - PAGE_SIZE) to FLASH_SIZE-1];
+
+}
+else if ( isdefinedsymbol(OAD_IMG_B) )
+{
+  define region RAM           = mem:[from RAM_START      to RAM_END];
+  define region FLASH_IMG_HDR = mem:[from OAD_HDR_START  to OAD_HDR_END];
+  define region FLASH         = mem:[from APP_START      to (FLASH_END)];
+
+}
+else // Persistent Image
+{
+  define region RAM            = mem:[from RAM_START     to RAM_END];
+  define region ENTRY_FLASH    = mem:[from ENTRY_START  to ENTRY_END];
+  define region FLASH          = mem:[from FLASH_START  to (FLASH_END)];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Memory Placement
+////////////////////////////////////////////////////////////////////////////////
+
+if ( isdefinedsymbol(OAD_IMG_E) )
+{
+
+// CCFG
+//place at end of FLASH_LAST_PAGE { readonly section .ccfg };
+//keep { section .ccfg };
+
+  // Flash OAD Image Header
+  place at start of FLASH_IMG_HDR { readonly section .img_hdr };
+  keep                            { readonly section .img_hdr };
+
+
+  // Interrupt Vector Table
+  place at address mem:ENTRY_START { readonly section .intvec };
+  keep                             { readonly section .intvec };
+
+  define block ROSTK with alignment=WORD_SIZE{ ro };
+
+  // SNV Area
+  define block SNVSECT with alignment=PAGE_SIZE { ro section .snvSectors };
+  place at end of FLASH { block SNVSECT };
+
+  // All other pieces of codes:
+  place in FLASH {block ROSTK };
+
+  // RAM Vector Table
+  define block VTABLE { section .vtable_ram };
+
+  // RW Data
+  define block RWDATA { rw };
+
+  // Runtime Stack
+  define block CSTACK with alignment = 8, size = STACK_SIZE { section .stack };
+
+//  define section .heap_start            { public heapStart: };
+//  //place at end of RAM { block CSTACK };
+
+
+//  define section .heap_end              { public heapEnd: };
+//  define block   HEAP_END with size = 1 { section .heap_end };
+
+//  place at end of RAM { block HEAP_END };
+
+//  place in RAM { first block VTABLE,
+//                       block RWDATA,
+//                       block CSTACK,
+//                 last  section .heap_start
+ //                }; */
+  // RW Data
+//define block RWDATA { rw };
+
+define section .heap_start            { public heapStart: };
+define section .heap_end              { public heapEnd: };
+define block   HEAP_END with size = 1 { section .heap_end };
+
+  place at end of RAM { block HEAP_END };
+
+  place in RAM { first block VTABLE,
+                       block RWDATA,
+                       block CSTACK,
+                 last  section .heap_start
+                 };
+}
+else if ( isdefinedsymbol(OAD_IMG_B) )
+{
+  // Flash OAD Image Header
+  place at start of FLASH_IMG_HDR { readonly section .img_hdr };
+  keep                            { readonly section .img_hdr };
+
+
+  // Interrupt Vector Table
+  define block ENTRY_FLASH   { readonly section .intvec };
+  keep                       { readonly section .intvec };
+
+  define block ROCODE { ro };
+
+  define block ROSTK  { block ROCODE,
+                        block ENTRY_FLASH };
+
+  place in FLASH { block ROSTK };
+
+  // RAM Vector Table
+  define block VTABLE { section .vtable_ram };
+
+  // RW Data
+  define block RWDATA { rw };
+
+  // Runtime Stack
+  define block CSTACK with alignment = 8, size = STACK_SIZE { section .stack };
+
+  define section .heap_start            { public heapStart: };
+
+  define section .heap_end              { public heapEnd: };
+  define block   HEAP_END with size = 1 { section .heap_end };
+
+  place at end of RAM { block HEAP_END };
+
+  place in RAM { first block VTABLE,
+                       block RWDATA,
+                       block CSTACK,
+                 last  section .heap_start
+                 };
+
+}
+else // Persistent Image
+{
+  // Interrupt Vector Table
+  place at start of ENTRY_FLASH   { readonly section .intvec };
+  //define block ENTRY_FLASH   { readonly section .intvec };
+  keep  { readonly section .intvec };
+
+  define block FLASH_IMG_HDR  { ro section .img_hdr  };
+  define block ROCODE { ro };
+
+  define block ROSTK with alignment=PAGE_SIZE{ first block FLASH_IMG_HDR,
+                                               block ROCODE};  //,
+                                               //last block ENTRY_FLASH};
+  place at end of FLASH { block ROSTK };
+
+  // RAM Vector Table
+  define block VTABLE { section .vtable_ram };
+
+  // RW Data
+  define block RWDATA { rw };
+
+   // place at start of RAM { section .vtable_ram };
+
+  // Runtime Stack
+  define block CSTACK with alignment = 8, size = STACK_SIZE { section .stack };
+
+  define section .heap_start            { public heapStart: };
+
+  define section .heap_end              { public heapEnd: };
+  define block   HEAP_END with size = 1 { section .heap_end };
+
+  place at end of RAM { block HEAP_END };
+
+  place in RAM { first block VTABLE,
+                       block RWDATA,
+                       block CSTACK,
+                 last  section .heap_start
+                 };
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Initialization
+////////////////////////////////////////////////////////////////////////////////
+
+initialize by copy { readwrite };
+
+do not initialize
+{
+  section .noinit,
+  section .stack,
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// The USE_TIRTOS_ROM symbol is defined internally in the build flow (using
+// --config_def USE_TIRTOS_ROM=1) for TI-RTOS applications whose appBLE.cfg file
+// specifies to use the ROM.
+//
+if (isdefinedsymbol(USE_TIRTOS_ROM)) {
+     include "TIRTOS_ROM.icf";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// The following is used to Enable IAR to display RTOS ROV when auto-size heap
+// is being used. it will disable the check on teh validity of the RAM address.
+// if One wants to keep this check, and does not whish to use auto-size heap,
+// he may comments the lines bellow.
+define exported symbol __ROV_VALID_RANGE0_end__ =   RAM_BASE + RAM_SIZE;
+define exported symbol __ROV_VALID_RANGE0_start__ = RAM_BASE;

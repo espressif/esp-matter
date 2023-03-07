@@ -1,0 +1,204 @@
+<%+header%>
+
+<h2><%:Thread Overview%></h2>
+<br />
+
+<div class="cbi-section-node">
+	<div class="table">
+		<!-- physical device -->
+		<div class="tr cbi-rowstyle-2">
+			<div class="td col-1 center middle">
+				<span class="ifacebadge"><img src="<%=resource .. "/icons/wifi.png"%>" id="wpan0" /> <%:wpan0%></span>
+			</div>
+			<div class="td col-7 left middle">
+				<big><strong><%:Generic MAC 802.15.4 Thread%></strong></big><br />
+			</div>
+			<div class="td middle cbi-section-actions">
+				<div>
+					<div></div>
+					<form action="<%=url('admin/network/thread_scan')%>" method="post">
+						<input type="hidden" name="token" value="<%=token%>" />
+						<input type="submit" class="cbi-button cbi-button-action important" title="<%:Scan and join network%>" value="<%:Scan%>"/>
+					</form>
+					<form action="<%=url('admin/network/thread_create')%>" method="post">
+						<input type="hidden" name="token" value="<%=token%>" />
+						<input type="submit" class="cbi-button cbi-button-add" title="<%:Create new network%>" value="<%:Create%>"/>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- /physical device -->
+
+		<!-- network list -->
+		<div class="tr cbi-rowstyle-1">
+			<div class="td col-1 center middle">
+			</div>
+			<div class="td col-7 left middle" id="status">
+				<em><%: Collecting data... %></em>
+			</div>
+			<div class="td middle cbi-section-actions">
+				<div id="action">
+				</div>
+			</div>
+		</div>
+		<!-- /network list -->
+	</div>
+</div>
+
+<br />
+<h2><%:Neighbors%></h2>
+<br />
+
+<div class="table" id="neighbors">
+	<div class="tr table-titles">
+		<div class="th col-2 center"><%:Signal%></div>
+		<div class="th col-1 center"><%:Role%></div>
+		<div class="th col-4 center"><%:RLOC16%></div>
+		<div class="th col-2 center"><%:Age%></div>
+		<div class="th col-2 center"><%:Avg RSSI%></div>
+		<div class="th col-2 center"><%:Last RSSI%></div>
+	</div>
+	<div class="tr placeholder">
+		<div class="td"><em><%:Collecting data...%></em></div>
+	</div>
+</div>
+
+<div class="table" id="parent" style="display:none;">
+	<div class="tr table-titles">
+		<div class="th col-2 center"><%:Signal%></div>
+		<div class="th col-1 center"><%:Role%></div>
+		<div class="th col-4 center"><%:RLOC16%></div>
+		<div class="th col-2 center"><%:Age%></div>
+		<div class="th col-2 center"><%:LinkQualityIn%></div>
+		<div class="th col-2 center"><%:ExtAddress%></div>
+	</div>
+	<div class="tr placeholder">
+		<div class="td"><em><%:Collecting data...%></em></div>
+	</div>
+</div>
+<%+footer%>
+
+<script type="text/javascript" src="/luci-static/resources/handle_error.js"></script>
+<script type="text/javascript">//<![CDATA[
+	handle_error(GetURLParameter('error'));
+
+	XHR.poll(2, '<%=url('admin/network/thread_state')%>', null,
+		function(x, st)
+		{
+			var sheet = document.getElementById('status');
+			var action = document.getElementById('action');
+			if (st && sheet && action)
+			{
+					if(st.state != "disabled")
+					{
+						sheet.innerHTML = String.format(
+							'<strong><%:Network Name: %></strong> %s<%: | %>' +
+							'<strong><%:State: %></strong>%s<br />' +
+							'<strong><%:PAN ID: %></strong>%s<%:   |   %>' +
+							'<strong><%:Channel: %></strong>%d<br />',
+								st.networkname, st.state, st.panid, st.channel
+						);
+						action.innerHTML = String.format(
+							'<form class="inline" action="<%=url('admin/network/thread_stop')%>" method="post">' +
+								'<input type="hidden" name="token" value="<%=token%>" />' +
+								'<input type="submit" class="cbi-button cbi-button-neutral" title="<%:Disable this network%>" value="<%:Disable%>" />' +
+							'</form>' +
+							'<form class="inline" action="<%=url('admin/network/thread_setting')%>" method="post">' +
+								'<input type="hidden" name="token" value="<%=token%>" />' +
+								'<input type="submit" class="cbi-button cbi-button-action important" title="<%:Edit this network%>" value="<%:Edit%>"/>' +
+							'</form>' +
+							'<form class="inline" action="<%=url('admin/network/thread_view')%>" method="post">' +
+								'<input type="hidden" name="token" value="<%=token%>" />' +
+								'<input type="submit" class="cbi-button cbi-button-add" title="<%:View this network%>" value="<%:View%>"/>' +
+							'</form>'
+						);
+					}
+					else
+					{
+						sheet.innerHTML = String.format(
+							'<strong><%:Not connect to any Thread network%></strong><br />' +
+							'<%: Please Join or Create a Thread network.%>'
+						);
+					}
+			}
+		});
+	function percent_thread_signal(info){
+		var linkquality = Number(info.LinkQualityIn);
+
+		if (linkquality == 0)
+			return 0;
+		else if (linkquality == 1)
+			return 30;
+		else if(linkquality == 2)
+			return 60;
+		else
+			return 100;
+	}
+
+	function guess_thread_signal(info) {
+		var icon;
+		var scale = percent_thread_signal(info);
+
+		if (scale == 0)
+			icon = "<%=resource%>/icons/signal-0.png";
+		else if (scale == 30)
+			icon = "<%=resource%>/icons/signal-25-50.png";
+		else if (scale == 50)
+			icon = "<%=resource%>/icons/signal-50-75.png";
+		else
+			icon = "<%=resource%>/icons/signal-75-100.png";
+
+		return icon;
+	}
+
+	XHR.poll(2, '<%=url('admin/network/thread_neighbors')%>', null,
+		function(x, st)
+		{
+			if(st && st.state == 'child')
+			{
+				var tb = document.getElementById('parent');
+				document.getElementById('neighbors').style.display = "none";
+				if (tb)
+				{
+					var rows = [];
+					st.neighbor.forEach(function(bss) {
+						var icon = guess_thread_signal(bss);
+						var signal = percent_thread_signal(bss);
+						rows.push([
+							'<abbr title="LinkQualityIn: %s"><img src="%s" /><br /><small> %s%</small></abbr>'.format(bss.LinkQualityIn, icon, signal),
+							'<div class="col-1 center"> %s </div>'.format(bss.Role),
+							'<div class="col-4 center"> %s </div>'.format(bss.Rloc16),
+							'<div class="col-2 center"> %s </div>'.format(bss.Age),
+							'<div class="col-2 center"> %s </div>'.format(bss.LinkQualityIn),
+							'<div class="col-2 center"> %s </div>'.format(bss.ExtAddress),
+						]);
+					});
+					cbi_update_table(tb, rows, '<center><em><%:No information available%></em></center>');
+					tb.style.display = "table";
+				}
+			}
+			else if(st)
+			{
+				var tb = document.getElementById('neighbors');
+				document.getElementById('parent').style.display = "none";
+				if (tb)
+				{
+					var rows = [];
+					st.neighbor.forEach(function(bss) {
+						var icon = guess_thread_signal(bss);
+						var signal = percent_thread_signal(bss);
+						rows.push([
+							'<abbr title="LinkQualityIn: %s"><img src="%s" /><br /><small> %s%</small></abbr>'.format(bss.LinkQualityIn, icon, signal),
+							'<div class="col-1 center"> %s </div>'.format(bss.Role),
+							'<div class="col-4 center"> %s </div>'.format(bss.Rloc16),
+							'<div class="col-2 center"> %s </div>'.format(bss.Age),
+							'<div class="col-2 center"> %s </div>'.format(bss.AvgRssi),
+							'<div class="col-2 center"> %s </div>'.format(bss.LastRssi),
+						]);
+					});
+					cbi_update_table(tb, rows, '<center><em><%:No information available%></em></center>');
+					tb.style.display = "table";
+				}
+			}
+		});
+//]]></script>

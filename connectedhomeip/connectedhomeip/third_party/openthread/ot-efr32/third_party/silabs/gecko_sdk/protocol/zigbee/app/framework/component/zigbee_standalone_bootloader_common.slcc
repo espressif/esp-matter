@@ -1,0 +1,37 @@
+package: Zigbee
+description: Code common to both the client and server of the Silicon Labs standalone bootload
+  protocol.
+id: zigbee_standalone_bootloader_common
+label: Standalone Bootloader Common
+category: Zigbee|Utility|Standalone Bootloader
+quality: production
+provides:
+   - name: zigbee_standalone_bootloader_common
+source:
+  - path: protocol/zigbee/app/framework/plugin/standalone-bootloader-common/bootloader-protocol.c
+  - path: protocol/zigbee/app/framework/plugin/standalone-bootloader-common/bootloader-message-host.c
+    condition:
+      - zigbee_ezsp
+  - path: protocol/zigbee/app/framework/plugin/standalone-bootloader-common/bootloader-message-soc.c
+    condition:
+      - zigbee_stack_common
+  - path: protocol/zigbee/app/framework/plugin/standalone-bootloader-common/standalone-bootloader-common-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/standalone-bootloader-common
+    file_list:
+      - path: bootloader-protocol.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_standalone_bootloader_common
+  - name: zigbee_stack_callback
+    value: 
+      callback_type: incoming_bootload_message
+      function_name: emAfPluginStandaloneBootloaderCommonIncomingBootloadMessageCallback
+  - name: zigbee_stack_callback
+    value: 
+      callback_type: bootload_transmit_complete
+      function_name: emAfPluginStandaloneBootloaderCommonBootloadTransmitCompleteCallback
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/standalone-bootloader-common

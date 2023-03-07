@@ -1,0 +1,225 @@
+project_name: "Z3LightGPCombo"
+label: "Zigbee - SoC LightGPCombo"
+package: "Zigbee"
+category: "Zigbee Application"
+quality: "production"
+
+description: >
+  This is a Zigbee 3.0 light application with Green Power endpoint, Green Power Proxy and Sink functionality.
+author: "Silicon Laboratories, Inc."
+
+component:
+  - id: "cli"
+    instance:
+    - example
+  - id: "iostream_usart"
+    instance:
+      - vcom
+  - id: "zigbee_debug_print"
+  - id: "zigbee_pro_stack"
+  - id: "zigbee_source_route"
+  - id: "zigbee_binding_table"
+  - id: "zigbee_stack_diagnostics"
+  - id: "zigbee_gp"
+  - id: "zigbee_install_code"
+  - id: "zigbee_zll"
+  - id: "zigbee_zcl_framework_core"
+  - id: "zigbee_color_control_server"
+  - id: "zigbee_groups_server"
+  - id: "zigbee_identify"
+  - id: "zigbee_level_control"
+  - id: "zigbee_on_off"
+  - id: "zigbee_zll_on_off_server"
+  - id: "zigbee_counters"
+  - id: "zigbee_find_and_bind_target"
+  - id: "zigbee_green_power_common"
+  - id: "zigbee_green_power_client"
+  - id: "zigbee_green_power_server"
+  - id: "zigbee_green_power_translation_table"
+  - id: "zigbee_interpan"
+  - id: "zigbee_zll_commissioning_common"
+  - id: "zigbee_zll_commissioning_server"
+  - id: "zigbee_network_creator"
+  - id: "zigbee_network_creator_security"
+  - id: "zigbee_network_steering"
+  - id: "zigbee_reporting"
+  - id: "zigbee_zll_identify_server"
+  - id: "zigbee_zll_level_control_server"
+  - id: "zigbee_scenes"
+  - id: "zigbee_zll_scenes_server"
+  - id: "zigbee_basic"
+  - id: "zigbee_zll_utility_server"
+  - id: "zigbee_scan_dispatch"
+  - id: "zigbee_update_tc_link_key"
+  - id: "zigbee_debug_basic"
+  - id: simple_led
+    instance:
+      - led0
+      - led1
+  - id: simple_button
+    instance:
+      - btn0
+      - btn1
+  - id: "zigbee_multirail_demo"
+  - id: "zigbee_packet_handoff"
+
+
+configuration:
+  - name: EMBER_GP_PROXY_TABLE_SIZE
+    value: 5
+  - name: EMBER_GP_PROXY_TABLE_TOKEN_SIZE
+    value: 5
+  - name: EMBER_GP_SINK_TABLE_SIZE
+    value: 5
+  - name: EMBER_GP_SINK_TABLE_TOKEN_SIZE
+    value: 5
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: SL_IOSTREAM_USART_VCOM_FLOW_CONTROL_TYPE
+    value: usartHwFlowControlCtsAndRts
+  - name: SL_CLI_MAX_INPUT_ARGUMENTS
+    value: 16
+  - name: SLI_ZIGBEE_PRIMARY_NETWORK_DEVICE_TYPE
+    value: SLI_ZIGBEE_NETWORK_DEVICE_TYPE_ROUTER
+  - name: SLI_ZIGBEE_PRIMARY_NETWORK_SECURITY_TYPE
+    value: SLI_ZIGBEE_NETWORK_SECURITY_TYPE_3_0
+  - name: SL_CLI_PROMPT_STRING
+    value:  "\"Z3LightGPCombo>\""
+  - name: NVM3_DEFAULT_NVM_SIZE
+    value: 36864
+    condition:
+      - device_series_1
+  - name: NVM3_DEFAULT_NVM_SIZE
+    value: 32768
+    condition:
+      - device_series_2
+
+source:
+  - path: "main.c"
+  - path: "app.c"
+
+config_file:
+  - path: "config/zcl/zcl_config.zap"
+    file_id: zap_configuration_file_id
+    directory: "zcl"
+
+include:
+  - path: "./"
+
+# Use CUSTOM_TOKEN_HEADER macro to point to custom token definitions (optional)
+# - name: "CUSTOM_TOKEN_HEADER"
+#    value: "\"example_custom_tokens.h\""
+
+# Use CUSTOM_MFG_TOKEN_HEADER macro to point to custom manufacturing token
+# definitions (optional)
+# - name: "CUSTOM_MFG_TOKEN_HEADER"
+#    value: "\"example_custom_mfg_tokens.h\""
+
+# Custom CLI for this application
+template_contribution:
+  - name: cli_group
+    value:
+      name: custom
+      help: Custom commands
+  - name: cli_command
+    value:
+      group: custom
+      name: gpAppTxQInit
+      handler: gpAppGpTxQueueInit
+      help: Initialises the Application Gp Tx Queue
+    condition:
+      - zigbee_multirail_demo      
+  - name: cli_command
+    value:
+      group: custom
+      name: gpAppTxQSet
+      handler: gpAppGpTxQueueSet
+      help: Sets a packet on Application Gp Tx Queue
+      argument:
+      - type: uint8
+        help: GPD application ID (must be 0)
+      - type: uint32
+        help: GPD source ID
+      - type: uint8
+        help: GPD CommandId
+      - type: hex
+        help: GPD command payload
+    condition:
+      - zigbee_multirail_demo
+  - name: cli_command
+    value:
+      group: custom
+      name: gpAppTxQGet
+      handler: gpAppGpTxQueueGet
+      help: Gets a packet from Application Gp Tx Queue
+      argument:
+      - type: uint8
+        help: GPD application ID (must be 0)
+      - type: uint32
+        help: GPD source ID
+    condition:
+      - zigbee_multirail_demo
+  - name: cli_command
+    value:
+      group: custom
+      name: gpAppTxQRemove
+      handler: gpAppGpTxQueueRemove
+      help: Removes a packet from Application Gp Tx Queue
+      argument:
+      - type: uint8
+        help: GPD application ID (must be 0)
+      - type: uint32
+        help: GPD source ID
+    condition:
+      - zigbee_multirail_demo
+  - name: cli_command
+    value:
+      group: custom
+      name: gpAppTxQSetMaxSize
+      handler: gpAppGpSetTxQueueSize
+      help: Sets the Gp Queue Max Size
+      argument:
+      - type: uint8
+        help: Maximum Size of Gp Tx Queue
+    condition:
+      - zigbee_multirail_demo
+  - name: cli_command
+    value:
+      group: custom
+      name: gpAppTxQGetMaxSize
+      handler: gpAppGpGetTxQueueSize
+      help: Gets the Gp Queue Max Size
+    condition:
+      - zigbee_multirail_demo
+  - name: cli_command
+    value:
+      group: custom
+      name: gpAppTxQGetCount
+      handler: gpAppGpGetTxQueueCount
+      help: Gets the Gp Queue Counts
+    condition:
+      - zigbee_multirail_demo
+  - name: cli_command
+    value:
+      group: custom
+      name: gpAppPrintTxQ
+      handler: gpAppGpPrintTxQueue
+      help: Prints Gp Tx Queue
+    condition:
+      - zigbee_multirail_demo
+       
+readme:
+  - path: ./readme.html
+
+ui_hints:
+  highlight:
+    - path: readme.html
+      focus: false
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Zigbee"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]

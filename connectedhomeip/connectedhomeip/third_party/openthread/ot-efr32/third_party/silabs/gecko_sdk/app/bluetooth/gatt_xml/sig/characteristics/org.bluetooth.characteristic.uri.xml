@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2015 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+last-modified="2015-05-18" name="URI" type="org.bluetooth.characteristic.uri" uuid="2AB6" approved="Yes">
+    <InformativeText>
+        <Abstract>
+            The Uniform Resource Identifier (URI) Characteristic is used to configure the URI for a subsequent request.
+        </Abstract>
+    </InformativeText>
+    <Value>
+        <Field name="URI">
+            <InformativeText>
+                The URI to be used in the HTTP request.
+            </InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>utf8s</Format>
+        </Field>
+    </Value>
+</Characteristic>

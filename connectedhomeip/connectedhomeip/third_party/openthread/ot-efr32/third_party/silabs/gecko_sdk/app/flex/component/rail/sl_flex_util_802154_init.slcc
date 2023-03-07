@@ -1,0 +1,128 @@
+id: "sl_flex_util_802154_init"
+label: Flex - RAIL IEEE 802.15.4 Initialization
+package: "Flex"
+description: Utility to aid with IEEE 802.15.4 Protocol-Specific Configurations
+category: "Flex|RAIL|Utility"
+quality: production
+root_path: "app/flex/component/rail/sl_flex_util_802154_init"
+
+#-------- Hides Component for user in Studio ---------
+ui_hints:
+  visibility: never
+
+requires:
+  - name: rail_lib
+  - name: rail_util_callbacks
+  - name: rail_util_dma
+  - name: rail_util_pa
+  - name: rail_util_pti
+  - name: rail_util_rf_path
+  - name: rail_util_rssi
+  - name: app_log
+  - name: app_assert
+  - name: iostream_transport
+  - name: sl_flex_util_802154_protocol
+  
+provides:
+  - name: sl_flex_util_802154_init
+
+# todo: condition for different rf bands (custom boardss??? 2.4GHz)
+config_file:
+
+  # The board has only 2.4GHz RF band
+  - path: config/2p4/sl_flex_util_802154_init_config.h
+    condition:
+    - "hardware_board_supports_rf_band_2400"
+    unless:
+    - "hardware_board_supports_rf_band_868"
+    - "hardware_board_supports_rf_band_914"
+    - "hardware_board_supports_rf_band_915"
+    - "hardware_board_supports_rf_band_924"
+
+  # The board has only 868MHz RF band
+  - path: config/868/sl_flex_util_802154_init_config.h
+    condition:
+    - "hardware_board_supports_rf_band_868"
+    unless:
+    - "hardware_board_supports_rf_band_2400"
+    - "hardware_board_supports_rf_band_914"
+    - "hardware_board_supports_rf_band_915"
+    - "hardware_board_supports_rf_band_924"
+
+  # The board has only 915MHz RF band
+  - path: config/915/sl_flex_util_802154_init_config.h
+    condition:
+    - "hardware_board_supports_rf_band_915"
+    unless:
+    - "hardware_board_supports_rf_band_868"
+    - "hardware_board_supports_rf_band_914"
+    - "hardware_board_supports_rf_band_2400"
+    - "hardware_board_supports_rf_band_924"
+
+  # The board has 868MHz, 914MHz and 924MHz RF band (Z-wave)
+  - path: config/868_915/sl_flex_util_802154_init_config.h
+    condition:
+    - "hardware_board_supports_rf_band_868"
+    - "hardware_board_supports_rf_band_914"
+    - "hardware_board_supports_rf_band_924"
+    unless:
+    - "hardware_board_supports_rf_band_915"
+    - "hardware_board_supports_rf_band_2400"
+
+  # The board has 868MHz and 915MHz RF bands
+  - path: config/868_915/sl_flex_util_802154_init_config.h
+    condition:
+    - "hardware_board_supports_rf_band_868"
+    - "hardware_board_supports_rf_band_915"
+    unless:
+    - "hardware_board_supports_rf_band_924"
+    - "hardware_board_supports_rf_band_914"
+    - "hardware_board_supports_rf_band_2400"
+
+  # The board has 868MHz and 2.4GHz RF bands
+  - path: config/2p4_868/sl_flex_util_802154_init_config.h
+    condition:
+    - "hardware_board_supports_rf_band_868"
+    - "hardware_board_supports_rf_band_2400"
+    unless:
+    - "hardware_board_supports_rf_band_924"
+    - "hardware_board_supports_rf_band_914"
+    - "hardware_board_supports_rf_band_915"
+
+  # The board has 915MHz and 2.4GHz RF bands
+  - path: config/2p4_915/sl_flex_util_802154_init_config.h
+    condition:
+    - "hardware_board_supports_rf_band_915"
+    - "hardware_board_supports_rf_band_2400"
+    unless:
+    - "hardware_board_supports_rf_band_924"
+    - "hardware_board_supports_rf_band_914"
+    - "hardware_board_supports_rf_band_868"
+
+  # The board has 868MHz, 915MHz and 2.4GHz RF bands
+  - path: config/2p4_868_915/sl_flex_util_802154_init_config.h
+    condition:
+    - "hardware_board_supports_rf_band_868"
+    - "hardware_board_supports_rf_band_915"
+    - "hardware_board_supports_rf_band_2400"
+    unless:
+    - "hardware_board_supports_rf_band_924"
+    - "hardware_board_supports_rf_band_914"
+
+include:
+  - path: .
+    file_list:
+    - path: sl_flex_util_802154_init.h
+
+source:
+  - path: sl_flex_util_802154_init.c
+
+template_contribution:
+  - name: event_handler
+    value:
+      event: stack_init
+      include: sl_flex_util_802154_init.h
+      handler: sl_flex_util_init
+    priority: -9000
+  - name: component_catalog
+    value: sl_flex_util_802154_init

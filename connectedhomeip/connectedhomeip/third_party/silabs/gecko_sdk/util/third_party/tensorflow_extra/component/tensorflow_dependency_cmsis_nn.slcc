@@ -1,0 +1,109 @@
+id: tensorflow_dependency_cmsis_nn
+label: CMSIS NN
+package: platform
+description: >
+  CMSIS neural network library for TensorFlow Lite for microcontrollers.
+
+  This library has been patched by TensorFlow and Silicon Labs.
+category: Machine Learning|TensorFlow|Dependency
+quality: production
+provides:
+  - name: tensorflow_dependency_cmsis_nn
+root_path: util/third_party/tensorflow_extra
+requires:
+  - name: cmsis_dsp
+include:
+  - path: cmsis
+  - path: cmsis/CMSIS/NN/Include
+    file_list:
+      - path: arm_nn_math_types.h
+      - path: arm_nn_tables.h
+      - path: arm_nn_types.h
+      - path: arm_nnfunctions.h
+      - path: arm_nnsupportfunctions.h
+source:
+  - path: cmsis/CMSIS/NN/Source/ActivationFunctions/arm_nn_activations_q15.c
+  - path: cmsis/CMSIS/NN/Source/ActivationFunctions/arm_nn_activations_q7.c
+  - path: cmsis/CMSIS/NN/Source/ActivationFunctions/arm_relu6_s8.c
+  - path: cmsis/CMSIS/NN/Source/ActivationFunctions/arm_relu_q15.c
+  - path: cmsis/CMSIS/NN/Source/ActivationFunctions/arm_relu_q7.c
+  - path: cmsis/CMSIS/NN/Source/BasicMathFunctions/arm_elementwise_add_s16.c
+  - path: cmsis/CMSIS/NN/Source/BasicMathFunctions/arm_elementwise_add_s8.c
+  - path: cmsis/CMSIS/NN/Source/BasicMathFunctions/arm_elementwise_mul_s16.c
+  - path: cmsis/CMSIS/NN/Source/BasicMathFunctions/arm_elementwise_mul_s8.c
+  - path: cmsis/CMSIS/NN/Source/ConcatenationFunctions/arm_concatenation_s8_w.c
+  - path: cmsis/CMSIS/NN/Source/ConcatenationFunctions/arm_concatenation_s8_x.c
+  - path: cmsis/CMSIS/NN/Source/ConcatenationFunctions/arm_concatenation_s8_y.c
+  - path: cmsis/CMSIS/NN/Source/ConcatenationFunctions/arm_concatenation_s8_z.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_1_x_n_s8.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_1x1_HWC_q7_fast_nonsquare.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_HWC_q15_basic.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_HWC_q15_fast.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_HWC_q15_fast_nonsquare.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_HWC_q7_RGB.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_HWC_q7_basic.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_HWC_q7_basic_nonsquare.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_HWC_q7_fast.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_HWC_q7_fast_nonsquare.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_fast_s16.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_s16.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_s8.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_wrapper_s8.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_depthwise_conv_3x3_s8.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_depthwise_conv_s16.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_depthwise_conv_s8.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_depthwise_conv_s8_opt.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_depthwise_conv_u8_basic_ver1.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_depthwise_conv_wrapper_s8.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_depthwise_separable_conv_HWC_q7.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_depthwise_separable_conv_HWC_q7_nonsquare.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_nn_depthwise_conv_s8_core.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_nn_mat_mult_kernel_q7_q15.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_nn_mat_mult_kernel_q7_q15_reordered.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_nn_mat_mult_kernel_s8_s16.c
+  - path: cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_nn_mat_mult_s8.c
+  - path: cmsis/CMSIS/NN/Source/FullyConnectedFunctions/arm_fully_connected_mat_q7_vec_q15.c
+  - path: cmsis/CMSIS/NN/Source/FullyConnectedFunctions/arm_fully_connected_mat_q7_vec_q15_opt.c
+  - path: cmsis/CMSIS/NN/Source/FullyConnectedFunctions/arm_fully_connected_q15.c
+  - path: cmsis/CMSIS/NN/Source/FullyConnectedFunctions/arm_fully_connected_q15_opt.c
+  - path: cmsis/CMSIS/NN/Source/FullyConnectedFunctions/arm_fully_connected_q7.c
+  - path: cmsis/CMSIS/NN/Source/FullyConnectedFunctions/arm_fully_connected_q7_opt.c
+  - path: cmsis/CMSIS/NN/Source/FullyConnectedFunctions/arm_fully_connected_s16.c
+  - path: cmsis/CMSIS/NN/Source/FullyConnectedFunctions/arm_fully_connected_s8.c
+  - path: cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nn_accumulate_q7_to_q15.c
+  - path: cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nn_add_q7.c
+  - path: cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_padded_s8.c
+  - path: cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c
+  - path: cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c
+  - path: cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nn_mat_mul_core_4x_s8.c
+  - path: cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nn_mat_mul_kernel_s16.c
+  - path: cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nn_mat_mult_nt_t_s8.c
+  - path: cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nn_mult_q15.c
+  - path: cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nn_mult_q7.c
+  - path: cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nn_vec_mat_mult_t_s16.c
+  - path: cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nn_vec_mat_mult_t_s8.c
+  - path: cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nn_vec_mat_mult_t_svdf_s8.c
+  - path: cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nntables.c
+  - path: cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_q7_to_q15_no_shift.c
+  - path: cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_q7_to_q15_reordered_no_shift.c
+  - path: cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_q7_to_q15_reordered_with_offset.c
+  - path: cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_q7_to_q15_with_offset.c
+  - path: cmsis/CMSIS/NN/Source/PoolingFunctions/arm_avgpool_s16.c
+  - path: cmsis/CMSIS/NN/Source/PoolingFunctions/arm_avgpool_s8.c
+  - path: cmsis/CMSIS/NN/Source/PoolingFunctions/arm_max_pool_s16.c
+  - path: cmsis/CMSIS/NN/Source/PoolingFunctions/arm_max_pool_s8.c
+  - path: cmsis/CMSIS/NN/Source/PoolingFunctions/arm_pool_q7_HWC.c
+  - path: cmsis/CMSIS/NN/Source/ReshapeFunctions/arm_reshape_s8.c
+  - path: cmsis/CMSIS/NN/Source/SVDFunctions/arm_svdf_s8.c
+  - path: cmsis/CMSIS/NN/Source/SoftmaxFunctions/arm_nn_softmax_common_s8.c
+  - path: cmsis/CMSIS/NN/Source/SoftmaxFunctions/arm_softmax_q15.c
+  - path: cmsis/CMSIS/NN/Source/SoftmaxFunctions/arm_softmax_q7.c
+  - path: cmsis/CMSIS/NN/Source/SoftmaxFunctions/arm_softmax_s16.c
+  - path: cmsis/CMSIS/NN/Source/SoftmaxFunctions/arm_softmax_s8.c
+  - path: cmsis/CMSIS/NN/Source/SoftmaxFunctions/arm_softmax_s8_s16.c
+  - path: cmsis/CMSIS/NN/Source/SoftmaxFunctions/arm_softmax_u8.c
+  - path: cmsis/CMSIS/NN/Source/SoftmaxFunctions/arm_softmax_with_batch_q7.c
+ui_hints:
+  visibility: never

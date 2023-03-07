@@ -1,0 +1,30 @@
+id: restrictions_profile_long_range
+label: Restrictions - Long Range
+package: platform
+description: Component provides profile_long_range.restriction configuration files by logic
+category: Platform|Radio Configuration
+quality: production
+root_path: platform/radio/radio_configuration/restrictions
+requires:
+  - name: rail_lib
+  - name: device_has_radio
+
+#------- Set provided component name
+provides:
+  - name: restrictions_profile_long_range
+
+#-------- Include restriction config json file --------
+#
+# Long Range profile restrictions
+#
+config_file:
+  - path: profile_long_range.restriction
+    directory: rail
+    unless:
+      - device_sdid_200
+
+#-------- Hides Component for user in Studio ---------
+ui_hints:
+  visibility: never
+
+

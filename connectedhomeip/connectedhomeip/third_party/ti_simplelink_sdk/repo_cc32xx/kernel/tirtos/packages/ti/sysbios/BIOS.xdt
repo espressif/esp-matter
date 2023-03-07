@@ -1,0 +1,222 @@
+
+%%{
+/*
+ * Copyright (c) 2015-2019, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+*/
+%%}
+%/*
+% *  ======== BIOS.xdt ========
+% */
+%var BIOS = xdc.module("ti.sysbios.BIOS");
+%var BIOS_module = '(&ti_sysbios_BIOS_Module__state__V)';
+%
+Void ti_sysbios_BIOS_atExitFunc__I(Int stat);
+
+%var len = BIOS.startupFxns.length;
+%for (var i = 0; i < len; i++) {
+%    var cname = BIOS.startupFxns[i].$name;
+%    cname = cname.replace(/\./g,'_');
+extern Void `cname`(Void);
+%}
+%if (len != 0) {
+
+%}
+Void ti_sysbios_BIOS_startFunc__I(Void)
+{
+    /*
+     *  Check if XDC runtime startup functions have been called. If not, then
+     *  call BIOS_linkedWithIncorrectBootLibrary() function. This function
+     *  will spin forever.
+     */
+    if (xdc_runtime_Startup_rtsDone() != TRUE) {
+        ti_sysbios_BIOS_linkedWithIncorrectBootLibrary();
+    }
+
+    (void)xdc_runtime_System_atexit(
+        (xdc_runtime_System_AtexitHandler)ti_sysbios_BIOS_atExitFunc__I);
+%/* 
+% * Invoke BIOS.startupFxns, (mostly Timer_start() calls
+% * for statically created timers).
+% */
+%for (var i = 0; i < len; i++) {
+%    var cname = BIOS.startupFxns[i].$name;
+%    cname = cname.replace(/\./g,'_');
+    `cname`();
+%}
+%if (xdc.om['ti.sysbios.hal'].Hwi.$used > 0) {
+    ti_sysbios_hal_Hwi_startup();
+%}
+%if ((BIOS.swiEnabled == true) && (xdc.om['ti.sysbios.knl'].Swi.$used > 0)) {
+    ti_sysbios_knl_Swi_startup();
+%}
+%if ((BIOS.taskEnabled == true) && (xdc.om['ti.sysbios.utils'].Load.$used > 0) &&
+%     (xdc.om['ti.sysbios.utils'].Load.taskEnabled)) {
+    ti_sysbios_utils_Load_startup();
+%}
+%if ((BIOS.taskEnabled == true) && (xdc.om['ti.sysbios.knl'].Task.$used >0)) {
+    ti_sysbios_knl_Task_startup();
+%}
+%else {
+    ti_sysbios_knl_Idle_loop(0,0);
+%}
+}
+
+%if (Program.build.target.$name.match(/ti/)) {
+#include <_lock.h>
+%}
+
+%var mobj = '(&ti_sysbios_BIOS_Module__state__V)';
+Void ti_sysbios_BIOS_atExitFunc__I(Int notused)
+{
+%if ((BIOS.swiEnabled == true) && (xdc.om['ti.sysbios.knl'].Swi.$used > 0)) {
+    ti_sysbios_knl_Swi_disable();
+%}
+%if ((BIOS.taskEnabled == true) && (xdc.om['ti.sysbios.knl'].Task.$used >0)) {
+    (void)ti_sysbios_knl_Task_disable();
+%}
+    (void)ti_sysbios_BIOS_setThreadType(ti_sysbios_BIOS_ThreadType_Main);
+
+%if (Program.build.target.$name.match(/ti/)) {
+    if (`mobj`->rtsGate != NULL) {
+        _register_lock(_nop);
+        _register_unlock(_nop);
+    }
+%}
+}
+%if (Program.build.target.$name.match(/ti/)) {
+
+/*
+ *  ======== BIOS_rtsLock ========
+ *  Called by rts _lock() function
+ */
+Void ti_sysbios_BIOS_rtsLock()
+{
+    IArg key;
+
+    key = ti_sysbios_BIOS_RtsGateProxy_enter(`BIOS_module`->rtsGate);
+    if (`BIOS_module`->rtsGateCount == 0) {
+        `BIOS_module`->rtsGateKey = key;
+    }
+    /* Increment need not be atomic */
+    `BIOS_module`->rtsGateCount++;
+}
+
+/*
+ *  ======== BIOS_rtsUnLock ========
+ *  Called by rts _unlock() function
+ */
+Void ti_sysbios_BIOS_rtsUnlock()
+{
+%if (BIOS.assertsEnabled == true) {
+    xdc_runtime_Assert_isTrue((`BIOS_module`->rtsGateCount), NULL);
+
+%}
+    `BIOS_module`->rtsGateCount--;
+
+    if (`BIOS_module`->rtsGateCount == 0) {
+        ti_sysbios_BIOS_RtsGateProxy_leave(`BIOS_module`->rtsGate, `BIOS_module`->rtsGateKey);
+    }
+}
+
+/*
+ *  ======== BIOS_nullFunc ========
+ */
+Void ti_sysbios_BIOS_nullFunc__I(Void)
+{
+}
+
+/*
+ *  ======== BIOS_registerRTSLock ========
+ */
+Void ti_sysbios_BIOS_registerRTSLock(Void)
+{
+    if (`BIOS_module`->rtsGate != NULL) {
+        _register_lock(ti_sysbios_BIOS_rtsLock);
+        _register_unlock(ti_sysbios_BIOS_rtsUnlock);
+    }
+}
+
+/*
+ *  ======== BIOS_removeRTSLock ========
+ */
+Void ti_sysbios_BIOS_removeRTSLock(Void)
+{
+    if (`BIOS_module`->rtsGate != NULL) {
+        _register_lock(ti_sysbios_BIOS_nullFunc);
+        _register_unlock(ti_sysbios_BIOS_nullFunc);
+    }
+}
+%}
+
+/*
+ *  ======== BIOS_exitFunc ========
+ */
+Void ti_sysbios_BIOS_exitFunc(Int stat)
+{
+%if (Program.build.target.$name.match(/ti/)) {
+%    if (BIOS.rtsGateType != BIOS.NoLocking) {
+    /* remove the RTS lock */
+    ti_sysbios_BIOS_removeRTSLock();
+
+%    }
+%}
+    /* force thread type to 'Main' */
+    (void)ti_sysbios_BIOS_setThreadType(ti_sysbios_BIOS_ThreadType_Main);
+
+    xdc_runtime_System_exit(stat);
+}
+
+/*
+ *  ======== BIOS_errorRaiseHook ========
+ */
+Void ti_sysbios_BIOS_errorRaiseHook(xdc_runtime_Error_Block *eb)
+{
+    /*
+     * If this is an Assert thread, defang Gate threadtype check
+     */
+%if (xdc.module('xdc.runtime.Assert').$used) {
+    if (eb->id == xdc_runtime_Assert_E_assertFailed) {
+%    if (Program.build.target.$name.match(/ti/)) {
+%        if (BIOS.rtsGateType != BIOS.NoLocking) {
+        /* remove the RTS lock */
+        ti_sysbios_BIOS_removeRTSLock();
+%        }
+%    }
+        /* force thread type to 'Main' */
+        ti_sysbios_BIOS_setThreadType(ti_sysbios_BIOS_ThreadType_Main);
+    }
+%} // if Assert used
+%if (BIOS.installedErrorHook != null) {
+    /* Call the installed Error.raiseHook */
+    ti_sysbios_BIOS_installedErrorHook(eb);
+%}
+}

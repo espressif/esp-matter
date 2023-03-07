@@ -1,0 +1,36 @@
+id: emlib_vcmp
+label: VCMP
+package: platform
+description: >
+  Voltage Comparator (VCMP) peripheral API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_vcmp.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_vcmp.h"
+provides:
+  - name: emlib_vcmp
+requires:
+  - name: device
+  - name: device_has_vcmp
+  - name: emlib_common
+  - name: cmsis_core
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efm32g/group-vcmp
+      condition: [device_sdid_71]
+    - page: emlib/api/efm32gg/group-vcmp
+      condition: [device_sdid_72]
+    - page: emlib/api/efm32tg/group-vcmp
+      condition: [device_sdid_73]
+    - page: emlib/api/efm32lg/group-vcmp
+      condition: [device_sdid_74]
+    - page: emlib/api/efm32zg/group-vcmp
+      condition: [device_sdid_76]
+    - page: emlib/api/efm32hg/group-vcmp
+      condition: [device_sdid_77]

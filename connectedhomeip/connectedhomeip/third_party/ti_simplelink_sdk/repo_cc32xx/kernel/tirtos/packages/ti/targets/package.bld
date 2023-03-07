@@ -1,0 +1,17 @@
+/*
+ *  Copyright 2021 by Texas Instruments Incorporated.
+ *
+ */
+
+Pkg.attrs.relScript = "./local.rel";
+
+Pkg.otherSrcs = ['ccs_exec.xdt', 'linkcmd.xdt', 'linkUtils.xs', 'std.h',
+    'ccs_package.xdt', 'ccs_start.bat', 'ccs_start.pl'
+];
+
+Pkg.otherFiles = Pkg.otherSrcs;
+/*
+ *  @(#) ti.targets; 1, 0, 3,; 7-28-2021 06:57:38; /db/ztree/library/trees/xdctargets/xdctargets-w20/src/ xlibrary
+
+ */
+

@@ -1,0 +1,43 @@
+id: emlib_lesense
+label: LESENSE
+package: platform
+description: >
+  Low Energy Sensor (LESENSE) peripheral API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_lesense.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_lesense.h"
+provides:
+  - name: emlib_lesense
+requires:
+  - name: device
+  - name: device_has_lesense
+  - name: emlib_cmu
+  - name: emlib_common
+  - name: cmsis_core
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efm32gg/group-lesense
+      condition: [device_sdid_72]
+    - page: emlib/api/efm32tg/group-lesense
+      condition: [device_sdid_73]
+    - page: emlib/api/efm32lg/group-lesense
+      condition: [device_sdid_74]
+    - page: emlib/api/efr32xg12/group-lesense
+      condition: [device_sdid_84]
+    - page: emlib/api/efr32xg13/group-lesense
+      condition: [device_sdid_89]
+    - page: emlib/api/efr32xg14/group-lesense
+      condition: [device_sdid_95]
+    - page: emlib/api/efm32gg11/group-lesense
+      condition: [device_sdid_100]
+    - page: emlib/api/efm32gg12/group-lesense
+      condition: [device_sdid_106]
+    - page: emlib/api/efr32xg23/group-lesense
+      condition: [device_sdid_210]

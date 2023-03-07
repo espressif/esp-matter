@@ -1,0 +1,338 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>CLI Command Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,500;1,300;1,500&display=swap" rel="stylesheet"> 
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,500;1,300;1,500&display=swap" rel="stylesheet">
+<style>
+html, body, div, span, h1, h2, h3, h4, h5, h6, p, a, code, em, strong,
+ol, ul, li, article, aside, footer, header, menu, nav, section {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+body {
+  line-height: 1;
+  background: #f8f8f8;
+  font-family: Roboto, sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  padding-bottom: 36px;
+}
+ol, ul {
+  list-style: none;
+}
+strong {
+  font-weight: 500;
+}
+em {
+  font-style: italic;
+}
+
+.command {
+  background: #ffffff;
+  margin: 18px;
+  position: relative;
+  padding: 21px 24px 24px 24px;
+  min-width: 300px;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.27);
+  border-radius: 2px;
+}
+.command-header-bar {
+  position: absolute;
+  height: 32px;
+  width: 4px;
+  top: 24px;
+  left: 0;
+  background-color: #0086d9;
+}
+
+h1 {
+  font-size: 42px;
+  margin: 18px;
+  line-height: 54px;
+}
+h2 {
+  font-size: 36px;
+  margin: 18px;
+  padding-top: 18px;
+  line-height: 42px;
+}
+h3 {
+  font-size: 30px;
+  margin: 18px;
+  line-height: 36px;
+}
+h4 {
+  font-size: 24px;
+  margin: 18px;
+  line-height: 30px;
+}
+
+.command-header {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 18px;
+  color: #333333;
+  line-height: 38px;
+  padding-bottom: 8px;
+}
+.group-header {
+  font-family: 'Roboto Mono', monospace;
+  color: #444447;
+}
+
+.command-name {
+  font-weight: 500;
+}
+.command-argument {
+  padding-left: 12px;
+}
+.command-handler {
+  display:inline-block;
+  float: right;
+  font-size: 12px;
+  line-height: 38px;
+}
+.group-info > .help, .group-info > .alias-list {
+  margin: 0 18px;
+}
+
+.arguments-title {
+  font-weight: 500;
+  margin-top: 8px;
+  line-height: 20px;
+}
+.argument-list li {
+  margin-left: 12px;
+  line-height: 20px;
+}
+.argument-list .argument-name {
+  font-family: 'Roboto Mono', monospace;
+  display: inline-block;
+  width: 50px;
+}
+
+.aliases-title {
+  font-weight: 500;
+  margin-top: 8px;
+  line-height: 20px;
+  display: inline-block;
+}
+.alias-list .alias {
+  margin-left: 12px;
+  line-height: 20px;
+  font-family: 'Roboto Mono', monospace;
+}
+
+.search {
+  padding: 0 18px;
+  float: right;
+  font-size: 18px;
+}
+
+#search {
+  padding: 12px;
+  border: 1px solid #acacac;
+  border-radius: 2px;
+  width: 300px;
+  font-size: 16px;
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 300;
+}
+
+</style>
+</head>
+
+<!--
+Example syntax (.slcc or .slcp) for populating this file:
+
+  template_contribution:
+    - name: cli_command          # Register a command
+      value:
+        name: status             # Name of command
+        handler: status_command  # Function to be called. Must be defined
+        help: "Prints status"    # Optional help description
+        shortcuts:               # Optional shorcut list
+          - name: st
+        argument:                # Argument list, if apliccable
+          - type: uint8          # Variable type
+            help: "Channel"      # Optional description
+          - type: string
+            help: "Text"
+    - name: cli_group            # Register a group
+      value:
+        name: shell              # Group name
+        help: "Shell commands"   # Optional help description
+        shortcuts:               # Optional shorcuts
+          - name: sh
+    - name: cli_command
+      value:
+        name: repeat
+        handler: repeat_cmd
+        help: "Repeat commands"
+        shortcuts:
+          - name: r
+          - name: rep
+        group: shell            # Associate command with group
+        argument:
+          - type: string
+            help: "Text"
+          - type: additional
+            help: "More text"
+-->
+
+{%- set types = {
+  'uint8': 'u8',
+  'uint16': 'u16',
+  'uint32': 'u32',
+  'int8': 'i8',
+  'int16': 'i16',
+  'int32': 'i32',
+  'string': 'str',
+  'hex': 'hex',
+  'uint8opt': '[u8]',
+  'uint16opt': '[u16]',
+  'uint32opt': '[u32]',
+  'int8opt': '[i8]',
+  'int16opt': '[i16]',
+  'int32opt': '[i32]',
+  'stringopt': '[str]',
+  'hexopt': '[hex]',
+  'additional': '+',
+  'wildcard': '*',
+} %}
+
+<body>
+<div class="search">
+<input type="text" tabindex="0" id="search" placeholder="Search for command..." />
+</div>
+<h1>CLI Command Reference</h1>
+
+{% macro render_command(cmd, group=None, group_alias=None) -%}
+{%- if cmd.shortcuts %}
+  {%- if group_alias %}
+    {% set alias = group_alias + ' ' + cmd.shortcuts[0].name|string %}
+  {%- else %}
+    {% set alias = cmd.shortcuts[0].name|string %}
+  {%- endif %}
+{%- else %}
+  {%- if group_alias %}
+    {% set alias = group_alias + ' ' + cmd.name|string %}
+  {%- else %}
+    {% set alias = cmd.name|string %}
+  {%- endif %}
+{%- endif %}
+{%- if group %}
+  {% set name = group + ' ' + cmd.name|string %}
+{%- else %}
+  {% set name = cmd.name|string %}
+{%- endif %}
+  <div class="command">
+    <div class="command-header-bar"></div>
+    <div class="command-header">
+      <span class="command-name">{{name}}</span>
+      {%- for arg in cmd.argument %}
+        <span class="command-argument">{{types[arg.type.lower()]}}</span>
+      {%- endfor %}
+      <span class="command-handler">{{cmd.handler}}</span>
+    </div>
+    <div class="command-info">
+      <div class="help">{{cmd.help}}</div>
+      {% if alias != name %}
+      <div class="alias-list">
+      <span class="aliases-title">Alias</span>
+      <span class="alias">{{alias}}</span>
+      </div>
+      {% endif %}
+      {% if cmd.argument %}
+      <div class="argument-list">
+      <div class="arguments-title">Arguments</div>
+      <ul>
+      {%- for arg in cmd.argument %}
+        <li>
+        <span class="argument-name">{{types[arg.type.lower()].lstrip('[').rstrip(']')}}</span>
+        {%- if arg.type.lower().endswith('opt') %}<em>(optional)</em> {% endif %}
+        {%- if arg.help %}{{arg.help}}{% endif %}
+        {%- if arg.type.lower() == 'additional' %} <em>(zero or more of previous argument)</em>{% endif %}
+        {%- if arg.type.lower() == 'wildcard' %} <em>(zero or more arbitrary arguments)</em>{% endif %}
+        </li>
+      {%- endfor %}
+      </ul>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+{%- endmacro %}
+
+<div class="command-list">
+{%- for command in cli_command | rejectattr('group') %}
+{{ render_command(command) }}
+{%- endfor %}
+{%- set already_handled = [] -%}
+{# Iterate through all groups that aren't part of a group (i.e. top level groups) #}
+{%- set current_group = namespace(name='', alias='') %}
+{%- for group in cli_group | rejectattr('group') recursive -%}
+{%- if group.name not in already_handled %}
+{%- set current_group.name = current_group.name + ' ' + group.name %}
+{%- if group.shortcuts %}
+  {%- set current_group.alias = current_group.alias + ' ' + group.shortcuts[0].name %}
+{%- else %}
+  {%- set current_group.alias = current_group.alias + ' ' + group.name %}
+{%- endif %}
+<div class="group">
+  <div class="group-header">
+    <h{{loop.depth+1}} class="group-name">{{current_group.name}}</h{{loop.depth+1}}>
+  </div>
+  <div class="group-info">
+    {% if group.help %}<span class="help">{{group.help}}</span>{% endif %}
+    {#
+    {% if current_group.alias != current_group.name %}
+    <div class="alias-list">
+    <span class="aliases-title">Alias</span>
+    <span class="alias">{{current_group.alias}}</span>
+    </div>
+    {% endif %}
+    #}
+    <div class="command-list">
+    {%- for command in cli_command if command.group == group.name %}
+    {{ render_command(command, group=current_group.name, group_alias=current_group.alias) }}
+    {%- endfor %}
+    {# Check if any other group reference this group #}
+    {%- set outer_loop = loop -%}
+    {%- for sub_group in cli_group if sub_group.group and sub_group.group == group.name -%}
+      {%- if sub_group.name not in already_handled and sub_group.name -%}
+        {{ outer_loop([sub_group]) }}
+      {%- endif -%}
+    {%- endfor -%}
+    </div>
+  </div>
+  {%- if already_handled.append(group.name) -%}
+  {# This block does nothing, it only exists to append to already_handled. #}
+  {%- endif %}
+  {%- set current_group.name = '' %}
+  {%- set current_group.alias = '' %}
+</div>
+{%- endif %}{# group.name not in already_handled #}
+{%- endfor -%}
+</div>
+
+<script>
+searchbar = document.getElementById('search');
+searchbar.addEventListener('input', function(e) {
+  value = e.target.value.toLowerCase();
+  commands = document.querySelectorAll('.command-name');
+  commands.forEach(function(el) {
+    if (el.textContent.trim().toLowerCase().includes(value)) {
+      el.closest('.command').style.display = 'block';
+    } else {
+      el.closest('.command').style.display = 'none';
+    }
+  });
+});
+</script>
+</body>
+</html>

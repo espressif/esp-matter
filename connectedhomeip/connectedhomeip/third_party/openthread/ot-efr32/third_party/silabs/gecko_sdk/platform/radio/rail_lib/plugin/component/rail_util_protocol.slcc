@@ -1,0 +1,48 @@
+id: rail_util_protocol
+label: RAIL Utility, Protocol
+description: Utility to aid with Protocol-Specific Configurations
+package: platform
+category: Platform|Radio
+quality: production
+documentation:
+  docset: rail
+  document: rail-util-protocol
+requires:
+  - name: rail_lib
+provides:
+  - name: rail_util_protocol
+config_file:
+  - path: platform/radio/rail_lib/plugin/rail_util_protocol/config/efr32xg1x/sl_rail_util_protocol_config.h
+    condition:
+      - device_series_1
+  - path: platform/radio/rail_lib/plugin/rail_util_protocol/config/efr32xg21/sl_rail_util_protocol_config.h
+    condition:
+      - device_series_2
+      - device_sdid_200
+  - path: platform/radio/rail_lib/plugin/rail_util_protocol/config/efr32xg22/sl_rail_util_protocol_config.h
+    condition:
+      - device_series_2
+      - device_sdid_205
+  - path: platform/radio/rail_lib/plugin/rail_util_protocol/config/efr32xg23/sl_rail_util_protocol_config.h
+    condition:
+      - device_series_2
+      - device_sdid_210
+  - path: platform/radio/rail_lib/plugin/rail_util_protocol/config/efr32xg24/sl_rail_util_protocol_config.h
+    condition:
+      - device_series_2
+      - device_sdid_215
+  - path: platform/radio/rail_lib/plugin/rail_util_protocol/config/efr32xg25/sl_rail_util_protocol_config.h
+    condition:
+      - device_series_2
+      - device_sdid_220
+  - path: platform/radio/rail_lib/plugin/rail_util_protocol/config/efr32xg27/sl_rail_util_protocol_config.h
+    condition:
+      - device_series_2
+      - device_sdid_230
+include:
+  - path: platform/radio/rail_lib/plugin/rail_util_protocol
+    file_list:
+      - path: sl_rail_util_protocol.h
+      - path: sl_rail_util_protocol_types.h
+source:
+  - path: platform/radio/rail_lib/plugin/rail_util_protocol/sl_rail_util_protocol.c

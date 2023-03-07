@@ -1,0 +1,80 @@
+BL602 SDK Starter Guide
+=======================
+
+本文档旨在指导用户搭建 BL602 硬件开发的软件环境。
+
+编译环境的建立及代码的获取
+--------------------------
+
+-  打开终端，安装make，命令：\ ``sudo apt-get update``\ 、\ ``sudo apt-get install make``
+
+.. figure:: imgs/image1.png
+   :alt:
+
+.. figure:: imgs/image2.png
+   :alt:
+
+-  安装串口工具此处选用的\ ``Gtkterm``
+   可以执行命令：\ ``sudo apt-get install gtkterm``
+
+-  安装解压软件，命令：\ ``sudo apt-get install unzip``
+
+.. figure:: imgs/image3.png
+   :alt:
+
+-  进入SDK文件所在的目录后开始解压，命令：\ ``cd work``\ 、\ ``unzip bl_iot_sdk.zip``
+
+**注意**\ ：\ ``cd``\ 之后的文件名为SDK所在的目录名（如本例中，SDK源文件放在\ ``work``\ 文件夹下）根据实际情况修改；\ ``unzip``\ 之后文件名需要根据实际拿到的SDK文件名作出相应的修改
+
+-  检查源代码解压之后的根目录状态，先用\ ``cd bl_iot_sdk``\ 命令进入源文件目录，再用\ ``ls``\ 命令检查目录状态
+
+硬件连接
+---------
+
+模块的相关引脚连接如下图所示，其中图一是模块的正面图，其标号1处用跳线帽短接，标号2处将左边两根排针短接，标号3处将上面的两根排针短接；图二是模块的背面图，将 ``IO8`` 和 ``LOW`` 两根排针短接。
+
+.. figure:: imgs/image11.png
+   :alt:
+
+.. figure:: imgs/image12.png
+   :alt:
+
+代码的编译和烧录
+----------------
+
+-  进入需要编译的工程目录，命令：\ ``cd customer_app/bl602_demo_event``\ ，进行编译，命令\ ``./genromap``
+
+   .. figure:: imgs/image4.png
+      :alt:
+
+-  查看编译生成的build\_out文件夹，命令：\ ``ls build_out``
+
+   .. figure:: imgs/image5.png
+      :alt:
+
+bin文件下载
+-----------
+
+-  进入\ ``/bl_iot_sdk/tools/flash_tool``\ 目录下，双击名为 ``BLDevCube`` 的可执行文件。
+
+-  ``chip type``\ 选择BL602/604，打开后界面参数参考下图配置：
+
+   .. figure:: imgs/image7.png
+      :alt:
+
+   点击\ ``Create & Download``\ ，出现如下图所示表明下载成功：
+
+   .. figure:: imgs/image8.png
+      :alt:
+
+下载完成后，打开串口终端Gtkterm，配置如下：
+
+.. figure:: imgs/image9.png
+   :alt:
+
+保证终端右下角的\ ``DTR``\ 是黑色状态， ``RTS`` 为灰色状态， ``DTR`` 可以通过快捷键 ``F7`` 控制， ``RTS`` 可以通过快捷键 ``F8`` 控制，最终配置如下图所示。
+
+.. figure:: imgs/image10.png
+   :alt:
+
+

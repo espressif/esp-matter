@@ -1,0 +1,55 @@
+.. _dac_dma-index:
+
+DAC_DMA
+==================
+
+总览
+----------------
+
+本示例主要介绍DAC开启DMA播放音频的使用方法。
+
+准备及使用步骤
+----------------
+- 使用步骤：
+ - 插入将板子的USB电源线，USB电源线默认连接UART0；
+ - 将板子的gpio13引脚接入喇叭正极，GND接喇叭负极；
+ - 进入 ``customer_app/periperal/demo_dac`` 目录，执行 ``./genromap`` 命令编译工程并下载工程,烧录如下图所示；
+ - 打开一个串口终端窗口（波特率为2000000，用于接收和发送uart消息）；
+ - 串口终端输入 ``demo_hosal_dac_dma`` ，表示启动 ``hosal_dac_dma`` 的demo；
+ - 此时可以听到几秒的音频。
+
+.. figure:: imgs/image1.png
+    :alt: 
+
+.. figure:: imgs/image2.png
+   :alt: 
+
+应用实例
+----------------
+
+- 通过 ``hosal_dac_init`` 初始化dac。
+
+::
+
+    ret = hosal_dac_init(&dac0);
+    if (ret != 0) {
+        hosal_dac_finalize(&dac0);
+        blog_error("hosal dac init failed!\r\n");
+        return;
+    }
+
+- 通过 ``hosal_dac_dma_cb_reg`` 接口注册dma传输完成的callback函数。
+::
+
+    hosal_dac_dma_cb_reg(&dac0, user_cb, &dac0);
+
+- 通过 ``hosal_dac_dma_start`` 接口开启dma传输。
+
+::
+
+    ret = hosal_dac_dma_start(&dac0, p_u32addr, bufsize);
+    if (ret != 0) {
+        hosal_dac_finalize(&dac0);
+        blog_error("dac start failed \r\n");
+        return;
+    }

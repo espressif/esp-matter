@@ -1,0 +1,404 @@
+
+%%{
+
+
+
+const ble = system.modules["/ti/ble5stack/ble"].$static;
+
+const common = system.getScript("/ti/ble5stack/ble_common.js");
+
+%%}
+
+#include <bcomdef.h>
+#include <gapgattserver.h>
+#include <gap_advertiser.h>
+#include <gapbondmgr.h>
+#include "ti_ble_config.h"
+
+% if (ble){
+
+
+
+uint8_t attDeviceName[GAP_DEVICE_NAME_LEN]= "`ble.deviceName`";
+
+
+% if(ble.addressMode == "ADDRMODE_RANDOM" || ble.addressMode == "ADDRMODE_RP_WITH_RANDOM_ID")
+% {
+uint8_t pRandomAddress[6] = `common.addPeerAddress(common.reverseBytes(ble.randomAddress.toString(16).replace(/:/g,'')))`;
+% }
+% else
+% {
+uint8_t * pRandomAddress = NULL;
+% }
+
+% if (ble.deviceRole != "BROADCASTER_CFG" && ble.deviceRole != "OBSERVER_CFG" && ble.deviceRole != "BROADCASTER_CFG+OBSERVER_CFG" && ble.bondManager == true){
+/*********************************************************************
+ * Bond Manager Configuration
+ */
+
+uint8_t pairMode                =    `ble.bondPairing`;
+uint8_t mitm                    =    `ble.bondMITMProtection`;
+uint8_t ioCap                   =    `ble.bondIOCaps`;
+uint8_t bonding                 =    `ble.bonding`;
+uint8_t secureConnection        =    `ble.secureConn`;
+uint8_t authenPairingOnly       =    `ble.authenPairingOnly`;
+uint8_t autoSyncWL              =    `ble.syncWLWithBondDev`;
+% if(ble.secureConn != "GAPBOND_SECURE_CONNECTION_NONE" && !ble.eccDebugKeys)
+% {
+uint8_t eccReGenPolicy          =    `ble.ECCKeyRegenPolicy`;
+% }
+uint8_t KeySize                 =    `ble.LTKSize`;
+uint8_t removeLRUBond           =    `ble.lruBondRep`;
+%
+% if(ble.deviceRole.includes("CENTRAL_CFG"))
+% {
+uint8_t bondFailAction          =    `ble.bondFailAction`;
+% }
+uint8_t KeyDistList             =    `ble.keyDistList.join(" | ")`;
+% if(ble.secureConn != "GAPBOND_SECURE_CONNECTION_NONE" && ble.allowDebugKeys)
+% {
+uint8_t eccDebugKeys            =    `ble.eccDebugKeys`;
+% }
+uint8_t allowDebugKeys          =    `ble.allowDebugKeys`;
+uint8_t eraseBondWhileInConn    =    `ble.eraseBondWhileInConn`;
+
+void setBondManagerParameters()
+{
+    GAPBondMgr_SetParameter(GAPBOND_PAIRING_MODE, sizeof(uint8_t), &pairMode);
+    GAPBondMgr_SetParameter(GAPBOND_MITM_PROTECTION, sizeof(uint8_t), &mitm);
+    GAPBondMgr_SetParameter(GAPBOND_IO_CAPABILITIES, sizeof(uint8_t), &ioCap);
+    GAPBondMgr_SetParameter(GAPBOND_BONDING_ENABLED, sizeof(uint8_t), &bonding);
+    GAPBondMgr_SetParameter(GAPBOND_SECURE_CONNECTION, sizeof(uint8_t), &secureConnection);
+    // Set Authenticated Pairing Only mode
+    GAPBondMgr_SetParameter(GAPBOND_AUTHEN_PAIRING_ONLY, sizeof(uint8_t), &authenPairingOnly);
+    // Set Auto Whitelist Sync
+    GAPBondMgr_SetParameter(GAPBOND_AUTO_SYNC_WL, sizeof(uint8_t), &autoSyncWL);
+    %
+    % if(ble.secureConn != "GAPBOND_SECURE_CONNECTION_NONE" && !ble.eccDebugKeys)
+    % {
+    GAPBondMgr_SetParameter(GAPBOND_ECCKEY_REGEN_POLICY, sizeof(uint8_t), &eccReGenPolicy);
+    % }
+    %
+    GAPBondMgr_SetParameter(GAPBOND_KEYSIZE, sizeof(uint8_t), &KeySize);
+    GAPBondMgr_SetParameter(GAPBOND_LRU_BOND_REPLACEMENT, sizeof(uint8_t), &removeLRUBond);
+    %
+    % if(ble.deviceRole.includes("CENTRAL_CFG"))
+    % {
+    GAPBondMgr_SetParameter(GAPBOND_BOND_FAIL_ACTION, sizeof(uint8_t), &bondFailAction);
+    % }
+    GAPBondMgr_SetParameter(GAPBOND_KEY_DIST_LIST, sizeof(uint8_t), &KeyDistList);
+    % if(ble.secureConn != "GAPBOND_SECURE_CONNECTION_NONE" && ble.allowDebugKeys)
+    % {
+    // Set Secure Connection Debug Keys
+    GAPBondMgr_SetParameter(GAPBOND_SC_HOST_DEBUG, sizeof(uint8_t), &eccDebugKeys);
+    % }
+    // Set Allow Debug Keys
+    GAPBondMgr_SetParameter(GAPBOND_ALLOW_DEBUG_KEYS, sizeof(uint8_t), &allowDebugKeys);
+    // Set the Erase bond While in Active Connection Flag
+    GAPBondMgr_SetParameter(GAPBOND_ERASE_BOND_IN_CONN, sizeof(uint8_t), &eraseBondWhileInConn);
+}
+
+%}
+%
+% if (ble.hideBroadcasterGroup == false){
+%
+% for(let i = 1; i <= ble.numOfAdvSets; i++)
+% {
+
+GapAdv_params_t `ble["advSet"+i]["advParam"+i].name` = {
+% if(ble["advSet"+i]["advParam"+i].eventProps.length == 0)
+% {
+  .eventProps =   0,
+% }
+% else
+% {
+  .eventProps =   `ble["advSet"+i]["advParam"+i].eventProps.join(" | ")`,
+% }
+  .primIntMin =   `(ble["advSet"+i]["advParam"+i].primIntMin)/0.625`,
+  .primIntMax =   `(ble["advSet"+i]["advParam"+i].primIntMax)/0.625`,
+  .primChanMap =  `common.getChanMap(ble["advSet"+i]["advParam"+i].primChanMap)`,
+  .peerAddrType = `ble["advSet"+i]["advParam"+i].peerAddrType`,
+  .peerAddr =     `common.addPeerAddress(ble["advSet"+i]["advParam"+i].peerAddr.toString(16).replace(/:/g,''))`,
+  .filterPolicy = `ble["advSet"+i]["advParam"+i].filterPolicy`,
+  .txPower =      `common.checkTXPower(ble["advSet"+i]["advParam"+i].txPower,ble["advSet"+i]["advParam"+i].txPowerValue)`,
+  .primPhy =      `ble["advSet"+i]["advParam"+i].primPhy`,
+  .secPhy =       `ble["advSet"+i]["advParam"+i].secPhy`,
+  .sid =          `ble["advSet"+i]["advParam"+i].sid`
+};
+
+% let modules = [ble["advSet"+i]["advData"+i], ble["advSet"+i]["scanRes"+i]];
+% for(let index = 0; index < modules.length; index++)
+% {
+% if(modules[index] && (common.advDataTotalLength(modules[index], modules[index].$module.config) > 0))
+% {
+% let length = 0;
+% let module = modules[index];
+% if(index == 0)
+% {
+uint8_t `ble["advSet"+i]["advData"+i].name`[] =
+% }
+% else
+% {
+uint8_t `ble["advSet"+i]["scanRes"+i].name`[] =
+% }
+%
+{
+% if(module.GAP_ADTYPE_LOCAL_NAME_SHORT)
+%{
+% length = 1 + module.shortenedLocalName.length;
+  0x`common.addZeroFromLeft(length.toString(16))`,
+  GAP_ADTYPE_LOCAL_NAME_SHORT,
+% for(let i = 0; i < module.shortenedLocalName.length; i++)
+%{
+%
+  '`module.shortenedLocalName[i]`',
+%}
+
+%}
+% if(module.GAP_ADTYPE_LOCAL_NAME_COMPLETE)
+%{
+% length = 1 + module.completeLocalName.length;
+  0x`common.addZeroFromLeft(length.toString(16))`,
+  GAP_ADTYPE_LOCAL_NAME_COMPLETE,
+% for(let i = 0; i < module.completeLocalName.length; i++)
+%{
+%
+  '`module.completeLocalName[i]`',
+%}
+
+%}
+% if(module.GAP_ADTYPE_FLAGS)
+%{
+  0x02,
+  GAP_ADTYPE_FLAGS,
+  `module.advertisingFlags.join(" | ")`,
+
+%}
+% if(module.GAP_ADTYPE_16BIT_MORE)
+%{
+% length = 1 + 2*module.numOfUUIDs16More;
+  0x`common.addZeroFromLeft(length.toString(16))`,
+  GAP_ADTYPE_16BIT_MORE,
+% for(let i = 0; i < module.numOfUUIDs16More; i++)
+%{
+  LO_UINT16(0x`(module["UUID"+i+"16More"]).toString(16).padStart(4, "0")`),
+  HI_UINT16(0x`(module["UUID"+i+"16More"]).toString(16).padStart(4, "0")`),
+%}
+
+%}
+% if(module.GAP_ADTYPE_16BIT_COMPLETE)
+%{
+% length = 1 + 2*module.numOfUUIDs16Complete;
+  0x`common.addZeroFromLeft(length.toString(16))`,
+  GAP_ADTYPE_16BIT_COMPLETE,
+% for(let i = 0; i < module.numOfUUIDs16Complete; i++)
+%{
+  LO_UINT16(0x`(module["UUID"+i+"16Complete"]).toString(16).padStart(4, "0")`),
+  HI_UINT16(0x`(module["UUID"+i+"16Complete"]).toString(16).padStart(4, "0")`),
+%}
+
+%}
+% if(module.GAP_ADTYPE_32BIT_MORE)
+%{
+% length = 1 + 4*module.numOfUUIDs32More;
+  0x`common.addZeroFromLeft(length.toString(16))`,
+  GAP_ADTYPE_32BIT_MORE,
+% for(let i = 0; i < module.numOfUUIDs32More; i++)
+%{
+  BREAK_UINT32(0x`(module["UUID"+i+"32More"]).toString(16).padStart(8, "0")`,0),
+  BREAK_UINT32(0x`(module["UUID"+i+"32More"]).toString(16).padStart(8, "0")`,1),
+  BREAK_UINT32(0x`(module["UUID"+i+"32More"]).toString(16).padStart(8, "0")`,2),
+  BREAK_UINT32(0x`(module["UUID"+i+"32More"]).toString(16).padStart(8, "0")`,3),
+%}
+
+%}
+% if(module.GAP_ADTYPE_32BIT_COMPLETE)
+%{
+% length = 1 + 4*module.numOfUUIDs32Complete;
+  0x`common.addZeroFromLeft(length.toString(16))`,
+  GAP_ADTYPE_32BIT_COMPLETE,
+% for(let i = 0; i < module.numOfUUIDs32Complete; i++)
+%{
+  BREAK_UINT32(0x`(module["UUID"+i+"32Complete"]).toString(16).padStart(8, "0")`,0),
+  BREAK_UINT32(0x`(module["UUID"+i+"32Complete"]).toString(16).padStart(8, "0")`,1),
+  BREAK_UINT32(0x`(module["UUID"+i+"32Complete"]).toString(16).padStart(8, "0")`,2),
+  BREAK_UINT32(0x`(module["UUID"+i+"32Complete"]).toString(16).padStart(8, "0")`,3),
+%}
+
+%}
+% if(module.GAP_ADTYPE_128BIT_MORE)
+%{
+% length = 1 + 16*module.numOfUUIDs128More;
+  0x`common.addZeroFromLeft(length.toString(16))`,
+  GAP_ADTYPE_128BIT_MORE,
+% for(let i = 0; i < module.numOfUUIDs128More; i++)
+%{
+  `common.advDataHexValues((module["UUID"+i+"128More"]).toString(16).padStart(32, "0"))`
+%}
+
+%}
+% if(module.GAP_ADTYPE_128BIT_COMPLETE)
+%{
+% length = 1 + 16*module.numOfUUIDs128Complete;
+  0x`common.addZeroFromLeft(length.toString(16))`,
+  GAP_ADTYPE_128BIT_COMPLETE,
+% for(let i = 0; i < module.numOfUUIDs128Complete; i++)
+%{
+  `common.advDataHexValues((module["UUID"+i+"128Complete"]).toString(16).padStart(32, "0"))`
+%}
+
+%}
+% if(module.GAP_ADTYPE_POWER_LEVEL)
+%{
+% length = 2;
+  0x0`length`,
+  GAP_ADTYPE_POWER_LEVEL,
+  `module.TXPower`,
+
+%}
+% if(module.GAP_ADTYPE_SLAVE_CONN_INTERVAL_RANGE)
+%{
+% length = 5;
+  0x0`length`,
+  GAP_ADTYPE_SLAVE_CONN_INTERVAL_RANGE,
+  LO_UINT16(`module.minConnInterval/1.25`),
+  HI_UINT16(`module.minConnInterval/1.25`),
+  LO_UINT16(`module.maxConnInterval/1.25`),
+  HI_UINT16(`module.maxConnInterval/1.25`),
+
+%}
+% if(module.GAP_ADTYPE_SERVICES_LIST_16BIT)
+%{
+% length = 1 + 2*module.numOfUUIDs16SS;
+  0x`common.addZeroFromLeft(length.toString(16))`,
+  GAP_ADTYPE_SERVICES_LIST_16BIT,
+% for(let i = 0; i < module.numOfUUIDs16SS; i++)
+%{
+  // Service Solicitation 16-bit - UUID `i`
+  LO_UINT16(0x`(module["UUID"+i+"16SS"]).toString(16).padStart(4, "0")`),
+  HI_UINT16(0x`(module["UUID"+i+"16SS"]).toString(16).padStart(4, "0")`),
+%}
+
+%}
+% if(module.GAP_ADTYPE_SERVICES_LIST_128BIT)
+%{
+% length = 1 + 16*module.numOfUUIDs128SS;
+  0x`common.addZeroFromLeft(length.toString(16))`,
+  GAP_ADTYPE_SERVICES_LIST_128BIT,
+% for(let i = 0; i < module.numOfUUIDs128SS; i++)
+%{
+  // Service Solicitation 128-bit - UUID `i`
+  `common.advDataHexValues((module["UUID"+i+"128SS"]).toString(16).padStart(32, "0"))`
+%}
+
+%}
+% if(module.GAP_ADTYPE_SERVICE_DATA)
+%{
+% length = 1 + 2*module.numOfUUIDs16SD;
+% for(let i = 0; i < module.numOfUUIDs16SD; i++)
+%{
+% length += _.divide(common.addZeroFromLeft(module["UUID"+i+"16SDData"].toString(16)).length,2);
+%}
+  0x`common.addZeroFromLeft(length.toString(16))`,
+  GAP_ADTYPE_SERVICE_DATA,
+% for(let i = 0; i < module.numOfUUIDs16SD; i++)
+%{
+  // Service Data 16-bit - UUID `i`
+  `common.advDataHexValues((module["UUID"+i+"16SD"]).toString(16).padStart(4, "0"))`
+  // Service Data 16-bit - Data `i`
+  `common.advDataHexValues(common.addZeroFromLeft((module["UUID"+i+"16SDData"]).toString(16)))`
+%}
+
+%}
+% if(module.GAP_ADTYPE_SERVICE_DATA_32BIT)
+%{
+% length = 1 + 4*module.numOfUUIDs32SD;
+% for(let i = 0; i < module.numOfUUIDs32SD; i++)
+%{
+% length += _.divide(common.addZeroFromLeft(module["UUID"+i+"32SDData"].toString(16)).length,2);
+%}
+  0x`common.addZeroFromLeft(length.toString(16))`,
+  GAP_ADTYPE_SERVICE_DATA_32BIT,
+% for(let i = 0; i < module.numOfUUIDs32SD; i++)
+%{
+  // Service Data 32-bit - UUID `i`
+  `common.advDataHexValues((module["UUID"+i+"32SD"]).toString(16).padStart(8, "0"))`
+  // Service Data 32-bit - Data `i`
+  `common.advDataHexValues(common.addZeroFromLeft((module["UUID"+i+"32SDData"]).toString(16)))`
+%}
+
+%}
+% if(module.GAP_ADTYPE_SERVICE_DATA_128BIT)
+%{
+% length = 1 + 16*module.numOfUUIDs128SD;
+% for(let i = 0; i < module.numOfUUIDs128SD; i++)
+%{
+% length += _.divide(common.addZeroFromLeft(module["UUID"+i+"128SDData"].toString(16)).length,2);
+%}
+  0x`common.addZeroFromLeft(length.toString(16))`,
+  GAP_ADTYPE_SERVICE_DATA_128BIT,
+% for(let i = 0; i < module.numOfUUIDs128SD; i++)
+%{
+  `common.advDataHexValues((module["UUID"+i+"128SD"]).toString(16).padStart(32, "0"))`
+  `common.advDataHexValues(common.addZeroFromLeft((module["UUID"+i+"128SDData"]).toString(16)))`
+%}
+
+%}
+% if(module.GAP_ADTYPE_PUBLIC_TARGET_ADDR)
+%{
+% length = 1 + 6*module.numOfPublicAddresses;
+  0x`common.addZeroFromLeft(length.toString(16))`,
+  GAP_ADTYPE_PUBLIC_TARGET_ADDR,
+% for(let i = 0; i < module.numOfPublicAddresses; i++)
+%{
+  `common.advDataHexValues(module["publicAddress"+i].toString(16).replace(/:/g,''))`
+%}
+
+%}
+% if(module.GAP_ADTYPE_RANDOM_TARGET_ADDR)
+%{
+% length = 1 + 6*module.numOfRandomAddresses;
+  0x`common.addZeroFromLeft(length.toString(16))`,
+  GAP_ADTYPE_RANDOM_TARGET_ADDR,
+% for(let i = 0; i < module.numOfRandomAddresses; i++)
+%{
+  `common.advDataHexValues(module["randomAddress"+i].toString(16).replace(/:/g,''))`
+%}
+
+%}
+% if(module.GAP_ADTYPE_APPEARANCE)
+%{
+% length = 3;
+  0x0`length`,
+  GAP_ADTYPE_APPEARANCE,
+  LO_UINT16(0x`common.addZeroFromLeft(module.appearanceValue.toString(16))`),
+  HI_UINT16(0x`common.addZeroFromLeft(module.appearanceValue.toString(16))`),
+
+%}
+% if(module.GAP_ADTYPE_ADV_INTERVAL)
+%{
+% length = 3;
+  0x0`length`,
+  GAP_ADTYPE_ADV_INTERVAL,
+  LO_UINT16(`_.divide(module.advIntValue, 0.625)`),
+  HI_UINT16(`_.divide(module.advIntValue, 0.625)`),
+
+%}
+% if(module.GAP_ADTYPE_MANUFACTURER_SPECIFIC)
+%{
+% length = 3 + _.divide(common.addZeroFromLeft(module.additionalData.toString(16)).length,2);
+  0x`common.addZeroFromLeft(length.toString(16))`,
+  GAP_ADTYPE_MANUFACTURER_SPECIFIC,
+  //Company Identifier
+  `common.advDataHexValues(module.companyIdentifier.toString(16).padStart(4, "0"))`
+  //Additional Data
+  `common.advDataHexValues(common.addZeroFromLeft(module.additionalData.toString(16)))`
+
+%}
+};
+
+%}
+%}
+% }
+% }
+%}

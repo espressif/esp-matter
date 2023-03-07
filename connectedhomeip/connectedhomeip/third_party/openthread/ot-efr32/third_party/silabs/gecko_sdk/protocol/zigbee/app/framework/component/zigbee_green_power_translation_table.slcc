@@ -1,0 +1,169 @@
+package: Zigbee
+description: A component implementing the translation table functionality of the Green
+  Power cluster.
+label: Green Power Translation Table
+quality: production
+id: zigbee_green_power_translation_table
+category: Zigbee|Green Power
+provides:
+   - name: "zigbee_green_power_translation_table"
+requires:
+   - name: "zigbee_green_power_server"
+   - name: "zigbee_green_power_common"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/green-power-translation-table/config/green-power-translation-table-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/green-power-translation-table/green-power-translation-table-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/green-power-translation-table/green-power-translation-table.c
+  - path: protocol/zigbee/app/framework/plugin/green-power-translation-table/green-power-translation-table-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/green-power-translation-table
+    file_list:
+      - path: green-power-translation-table.h
+      - path: green-power-translation-table-tokens.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_green_power_translation_table
+  - name: zigbee_af_callback
+    value:
+      callback_type: local_data_init
+      function_name: emberAfPluginGreenPowerTranslationTableInitCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: stack_status
+      function_name: emberAfPluginGreenPowerTranslationTableStackStatusCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: green-power-server
+      help: green-power-server related commands.
+  - name: cli_command
+    value:
+      group: green-power-server
+      name: table-clear
+      handler: emberAfPluginGreenPowerServerCliClearTranslationTranslationTable
+      help: Clears all entries within the translation table.
+  - name: cli_command
+    value:
+      group: green-power-server
+      name: table-set
+      handler: emberAfPluginGreenPowerServerCliSetTranslationTable
+      help: Sets  entry at index within the translation table.
+      argument:
+      - type: uint8
+        help: Index to translation table
+      - type: uint16
+      - type: hex
+      - type: uint8
+      - type: uint32
+      - type: uint8
+      - type: uint8
+        help: The endpoint for which the translation is valid
+      - type: uint16
+      - type: uint16
+      - type: uint16
+      - type: uint8
+      - type: hex
+      - type: uint8
+      - type: hex
+  - name: cli_command
+    value:
+      group: green-power-server
+      name: table-remove-endpoint
+      handler: emberAfPluginGreenPowerServerCliRemoveGpdEndpoint
+      help: Removes GPD  entry from the translation table for the specified endpoint.
+      argument:
+      - type: uint8
+      - type: uint32
+      - type: hex
+      - type: uint8
+      - type: uint8
+        help: The endpoint for which the translation is valid
+  - name: cli_command
+    value:
+      group: green-power-server
+      name: table-print
+      handler: emberAfPluginGreenPowerServerCliTranslationTablePrint
+      help: Prints all entries of the translation table.
+  - name: cli_command
+    value:
+      group: green-power-server
+      name: additionalInfoTable-clearAll
+      handler: emberAfPluginGreenPowerServerCliClearAdditionalInfoBlockTable
+      help: Clears all entries within the additionalInfoTable.
+  - name: cli_command
+    value:
+      group: green-power-server
+      name: additionalInfoTable-setEntry
+      handler: emberAfPluginGreenPowerServerCliSetAdditionalInfoBlockTableEntry
+      help: Sets entry at index within the additionalInfoTable.
+      argument:
+      - type: uint8
+        help: Index to additionalInfoBlock table
+      - type: uint8
+      - type: uint8
+      - type: string
+  - name: cli_command
+    value:
+      group: green-power-server
+      name: additionalInfoTable-clearEntry
+      handler: emberAfPluginGreenPowerServerCliClearAdditionalInfoBlockTableEntry
+      help: Clears entry at index within the additionalInfoTable.
+      argument:
+      - type: uint8
+        help: Index to additionalInfoBlock table
+  - name: cli_command
+    value:
+      group: green-power-server
+      name: additionalInfoTable-print
+      handler: emberAfPluginGreenPowerServerCliAdditionalInfoBlockTablePrint
+      help: Prints all entries of the additionalInfoTable.
+  - name: cli_command
+    value:
+      group: green-power-server
+      name: customizedTable-clearAll
+      handler: emberAfPluginGreenPowerServerCliClearCustomizedTable
+      help: Clears all entries within the customizedTable.
+  - name: cli_command
+    value:
+      group: green-power-server
+      name: customizedTable-setEntry
+      handler: emberAfPluginGreenPowerServerCliSetCustomizedTableEntry
+      help: Sets entry at index within the customizedTable.
+      argument:
+      - type: uint8
+        help: Index to customized table
+      - type: uint8
+      - type: uint8
+        help: The endpoint for which the translation is valid
+      - type: uint16
+      - type: uint16
+      - type: uint8
+      - type: uint16
+      - type: uint8
+      - type: uint8
+      - type: string
+  - name: cli_command
+    value:
+      group: green-power-server
+      name: customizedTable-clearEntry
+      handler: emberAfPluginGreenPowerServerCliClearCustomizedTableEntry
+      help: Clears entry at index within the customizedTable.
+      argument:
+      - type: uint8
+        help: Index to customized table
+  - name: cli_command
+    value:
+      group: green-power-server
+      name: customizedTable-print
+      handler: emberAfPluginGreenPowerServerCliCustomizedTablePrint
+      help: Prints all entries of the customizedTable.
+  - name: token_header
+    value: app/framework/plugin/green-power-translation-table/green-power-translation-table-tokens.h
+ 
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/green-power-translation-table

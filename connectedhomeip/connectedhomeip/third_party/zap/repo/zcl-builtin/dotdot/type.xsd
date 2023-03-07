@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<xs:schema targetNamespace="http://zigbee.org/zcl/types" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:zclType="http://zigbee.org/zcl/types">
+
+  <xs:simpleType name="NamedElement">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[A-Za-z0-9\-]*" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="DependencyExpression">
+    <xs:restriction base="xs:string"></xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="AttributeId">
+    <xs:restriction base="xs:hexBinary">
+      <xs:length value="2" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="ClusterId">
+    <xs:restriction base="xs:hexBinary">
+      <xs:length value="2" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="CommandId">
+    <xs:restriction base="xs:hexBinary">
+      <xs:length value="1" />
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="ManufacturerId">
+    <xs:restriction base="xs:hexBinary">
+      <xs:length value="2" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="BitmapDefinition">
+    <xs:sequence>
+      <xs:element type="zclType:BitmapField" name="element" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="BitmapField">
+    <xs:sequence>
+      <xs:element name="restriction" type="zclType:RestrictionType" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+    <xs:attribute name="name" type="zclType:NamedElement" use="required" />
+    <xs:attribute name="type" type="xs:string" use="required" />
+    <xs:attribute name="mask" type="xs:hexBinary" use="required" />
+    <xs:attribute name="shiftRight" type="xs:unsignedByte" use="optional" default="0" />
+  </xs:complexType>
+
+  <xs:complexType name="CommandField">
+    <xs:choice>
+      <xs:element name="bitmap" type="zclType:BitmapDefinition" minOccurs="0" maxOccurs="1" />
+      <xs:element name="restriction" type="zclType:RestrictionType" minOccurs="0" maxOccurs="1" />
+    </xs:choice>
+    <xs:attribute name="name" type="zclType:NamedElement" use="required" />
+    <xs:attribute name="type" type="xs:string" use="required" />
+    <xs:attribute name="array" type="xs:boolean" use="optional" default="false" />
+    <xs:attribute name="arrayLengthSize" type="xs:unsignedByte" use="optional" default="1" />
+    <!-- The use of this is discouraged, and should not be used in the case
+     the count and array are adjacent
+     -->
+    <xs:attribute name="arrayLengthField" type="zclType:NamedElement" use="optional" default="" />
+    <xs:attribute name="presentIf" type="zclType:DependencyExpression" use="optional" default="true" />
+    <xs:attribute name="deprecated" type="xs:boolean" use="optional" default="false" />
+  </xs:complexType>
+
+  <xs:complexType name="CommandFieldList">
+    <xs:sequence>
+      <xs:element name="field" type="zclType:CommandField" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="DataTypeId">
+    <xs:restriction base="xs:hexBinary">
+      <xs:length value="1" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="positiveUnsignedLong">
+    <xs:restriction base="xs:unsignedLong">
+      <xs:minInclusive value="1" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Need To Define The Types Configurations -->
+  <!-- How To Do The Type -->
+
+  <xs:element name="facet" abstract="true" />
+
+  <xs:group name="simpleRestrictModel">
+    <xs:sequence>
+      <xs:element ref="zclType:facet" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:group>
+
+  <xs:complexType name="abstractFacet">
+    <xs:attribute name="value" use="optional" />
+    <xs:attribute name="fixed" type="xs:boolean" default="false" use="optional" />
+    <xs:attribute name="name" type="xs:string" use="optional" />
+    <xs:anyAttribute />
+  </xs:complexType>
+
+  <xs:complexType name="facet">
+    <xs:complexContent>
+      <xs:restriction base="zclType:abstractFacet">
+        <xs:attribute name="value" use="required" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="noFixedFacet">
+    <xs:complexContent>
+      <xs:restriction base="zclType:facet">
+        <xs:attribute name="fixed" use="prohibited" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="enumerationType">
+    <xs:complexContent>
+      <xs:restriction base="zclType:noFixedFacet">
+        <xs:attribute name="value" type="xs:hexBinary" use="required" />
+        <xs:attribute name="name" type="xs:string" use="required" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="minExclusive" type="zclType:facet" id="minExclusive" substitutionGroup="zclType:facet">
+    <xs:annotation>
+      <xs:documentation source="http://www.w3.org/TR/xmlschema11-2/#element-minExclusive" />
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="minInclusive" type="zclType:facet" id="minInclusive" substitutionGroup="zclType:facet">
+    <xs:annotation>
+      <xs:documentation source="http://www.w3.org/TR/xmlschema11-2/#element-minInclusive" />
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="maxExclusive" type="zclType:facet" id="maxExclusive" substitutionGroup="zclType:facet">
+    <xs:annotation>
+      <xs:documentation source="http://www.w3.org/TR/xmlschema11-2/#element-maxExclusive" />
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="maxInclusive" type="zclType:facet" id="maxInclusive" substitutionGroup="zclType:facet">
+    <xs:annotation>
+      <xs:documentation source="http://www.w3.org/TR/xmlschema11-2/#element-maxInclusive" />
+    </xs:annotation>
+  </xs:element>
+
+  <xs:complexType name="numFacet">
+    <xs:complexContent>
+      <xs:restriction base="zclType:facet">
+        <xs:attribute name="value" type="xs:unsignedLong" use="required" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="intFacet">
+    <xs:complexContent>
+      <xs:restriction base="zclType:facet">
+        <xs:attribute name="value" type="xs:integer" use="required" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="totalDigits" id="totalDigits" substitutionGroup="zclType:facet">
+    <xs:annotation>
+      <xs:documentation source="http://www.w3.org/TR/xmlschema11-2/#element-totalDigits" />
+    </xs:annotation>
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:restriction base="zclType:numFacet">
+          <xs:attribute name="value" type="zclType:positiveUnsignedLong" use="required" />
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="fractionDigits" type="zclType:numFacet" id="fractionDigits"
+    substitutionGroup="zclType:facet">
+    <xs:annotation>
+      <xs:documentation source="http://www.w3.org/TR/xmlschema11-2/#element-fractionDigits" />
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="length" type="zclType:numFacet" id="length" substitutionGroup="zclType:facet">
+    <xs:annotation>
+      <xs:documentation source="http://www.w3.org/TR/xmlschema11-2/#element-length" />
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="minLength" type="zclType:numFacet" id="minLength" substitutionGroup="zclType:facet">
+    <xs:annotation>
+      <xs:documentation source="http://www.w3.org/TR/xmlschema11-2/#element-minLength" />
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="maxLength" type="zclType:numFacet" id="maxLength" substitutionGroup="zclType:facet">
+    <xs:annotation>
+      <xs:documentation source="http://www.w3.org/TR/xmlschema11-2/#element-maxLength" />
+    </xs:annotation>
+  </xs:element>
+  
+  <xs:element name="special" id="special" substitutionGroup="zclType:facet">
+    <xs:annotation>
+      <xs:documentation source="http://www.w3.org/TR/xmlschema11-2/#element-maxInclusive" />
+    </xs:annotation>
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:restriction base="zclType:abstractFacet">
+          <xs:attribute name="value" use="required" />
+          <xs:attribute name="name" type="xs:string" use="required" />
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="invalid" type="zclType:facet" id="invalid" substitutionGroup="zclType:facet" />
+
+  <xs:element name="enumeration" type="zclType:enumerationType" id="enumeration"
+    substitutionGroup="zclType:facet">
+    <xs:annotation>
+      <xs:documentation source="http://www.w3.org/TR/xmlschema11-2/#element-enumeration" />
+    </xs:annotation>
+  </xs:element>
+
+  <xs:element name="pattern" id="pattern" substitutionGroup="zclType:facet">
+    <xs:annotation>
+      <xs:documentation source="http://www.w3.org/TR/xmlschema11-2/#element-pattern" />
+    </xs:annotation>
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:restriction base="zclType:noFixedFacet">
+          <xs:attribute name="value" type="xs:string" use="required" />
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="enumeratedRange" id="enumeratedRange" 
+    substitutionGroup="zclType:facet">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:restriction base="zclType:abstractFacet">
+          <xs:attribute name="value" use="prohibited" />
+          <xs:attribute name="min" type="xs:hexBinary" use="required" />
+          <xs:attribute name="max" type="xs:hexBinary" use="required" />
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="minInclusiveRef" id="minInclusiveRef"
+    substitutionGroup="zclType:facet">
+    <xs:complexType>
+        <xs:complexContent>
+            <xs:restriction base="zclType:abstractFacet">
+                <xs:attribute name="value" use="prohibited" />
+                <xs:attribute name="ref" type="xs:string"
+                use="required" />
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="minExclusiveRef" id="minExclusiveRef"
+    substitutionGroup="zclType:facet">
+    <xs:complexType>
+        <xs:complexContent>
+            <xs:restriction base="zclType:abstractFacet">
+                <xs:attribute name="value" use="prohibited" />
+                <xs:attribute name="ref" type="xs:string"
+                use="required" />
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="maxInclusiveRef" id="maxInclusiveRef"
+    substitutionGroup="zclType:facet">
+    <xs:complexType>
+        <xs:complexContent>
+            <xs:restriction base="zclType:abstractFacet">
+                <xs:attribute name="value" use="prohibited" />
+                <xs:attribute name="ref" type="xs:string"
+                use="required" />
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="maxExclusiveRef" id="maxExclusiveRef"
+    substitutionGroup="zclType:facet">
+    <xs:complexType>
+        <xs:complexContent>
+            <xs:restriction base="zclType:abstractFacet">
+                <xs:attribute name="value" use="prohibited" />
+                <xs:attribute name="ref" type="xs:string"
+                use="required" />
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="minInclusiveExpression" id="minInclusiveExpression"
+    substitutionGroup="zclType:facet">
+    <xs:complexType>
+      <xs:attribute name="expression" type="zclType:DependencyExpression" />
+    </xs:complexType>  
+  </xs:element>
+  
+  <xs:element name="maxInclusiveExpression" id="maxInclusiveExpression"
+    substitutionGroup="zclType:facet">
+    <xs:complexType>
+      <xs:attribute name="expression" type="zclType:DependencyExpression" />
+    </xs:complexType>  
+  </xs:element>  
+  
+  <xs:element name="minExclusiveExpression" id="minExclusiveExpression"
+    substitutionGroup="zclType:facet">
+    <xs:complexType>
+      <xs:attribute name="expression" type="zclType:DependencyExpression" />
+    </xs:complexType>  
+  </xs:element>
+  
+  <xs:element name="maxExclusiveExpression" id="maxExclusiveExpression"
+    substitutionGroup="zclType:facet">
+    <xs:complexType>
+      <xs:attribute name="expression" type="zclType:DependencyExpression" />
+    </xs:complexType>  
+  </xs:element>  
+
+  <xs:element name="complexConstraint" id="complexConstraint"
+    substitutionGroup="zclType:facet">
+    <xs:complexType>
+      <xs:attribute name="expression" type="zclType:DependencyExpression" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="sequence" id="sequence" substitutionGroup="zclType:facet">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="zclType:CommandFieldList" />
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="RestrictionType">
+    <xs:group ref="zclType:simpleRestrictModel" />
+  </xs:complexType>
+
+  <xs:complexType name="ZigbeeDataType">
+    <xs:choice>
+      <xs:element name="bitmap" type="zclType:BitmapDefinition" minOccurs="0" maxOccurs="1" />
+      <xs:element name="restriction" type="zclType:RestrictionType" minOccurs="0" maxOccurs="1" />
+    </xs:choice>
+    <xs:attribute name="id" type="zclType:DataTypeId" use="required" />
+    <xs:attribute name="name" type="xs:string" use="required" />
+    <xs:attribute name="short" type="xs:string" use="required" />
+    <xs:attribute name="discrete" type="xs:boolean" default="false" use="optional" />
+    <xs:attribute name="inheritsFrom" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:element name="type" type="zclType:ZigbeeDataType" />
+
+</xs:schema>

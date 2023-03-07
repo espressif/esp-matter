@@ -1,0 +1,109 @@
+project_name: bt_soc_throughput_display
+package: Bluetooth
+label: Bluetooth - SoC Throughput
+description: >
+  This example tests the throughput capabilities of the device and can be used
+  to measure throughput between 2 *EFR32* devices, as well as between a device
+  and a smartphone using EFR Connect mobile app, through the Throughput demo
+  tile.
+category: Bluetooth Examples
+quality: production
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Bluetooth"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+
+component:
+  - id: bluetooth_stack
+  - id: in_place_ota_dfu
+  - id: bootloader_interface
+  - id: app_assert
+  - id: app_log
+  - id: iostream_usart
+    instance:
+      - vcom
+  - id: component_catalog
+  - id: mpu
+  - id: simple_button
+    instance:
+      - btn0
+      - btn1
+  - id: throughput_peripheral
+  - id: throughput_central
+  - id: throughput_ui
+  - id: cli
+    instance:
+      - example
+
+source:
+  - path: main.c
+  - path: app.c
+
+include:
+  - path: .
+    file_list:
+      - path: app.h
+
+config_file:
+  - override:
+      component: gatt_configuration
+      file_id: gatt_configuration_file_id
+    path: gatt_configuration.btconf
+    directory: btconf
+
+readme:
+  - path: ../../documentation/example/soc_throughput/readme.md
+
+other_file:
+  - path: ../../script/create_bl_files.bat
+  - path: ../../script/create_bl_files.sh
+  - path: ../../documentation/example/soc_throughput/readme_img0.png
+    folder: images
+  - path: ../../documentation/example/soc_throughput/readme_img1.jpg
+    folder: images
+  - path: ../../documentation/example/soc_throughput/readme_img2.jpg
+    folder: images
+  - path: ../../documentation/example/soc_throughput/readme_img3.jpg
+    folder: images
+  - path: ../../documentation/example/soc_throughput/readme_img4.gif
+    folder: images
+  - path: ../../documentation/example/soc_throughput/readme_img5.jpg
+    folder: images
+  - path: ../../documentation/example/soc_throughput/readme_img6.jpg
+    folder: images
+  - path: ../../documentation/example/soc_throughput/readme_img7.jpg
+    folder: images
+  - path: ../../documentation/example/soc_throughput/readme_img8.png
+    folder: images
+  - path: ../../documentation/example/soc_throughput/readme_img9.png
+    folder: images
+
+configuration:
+  - name: SL_STACK_SIZE
+    value: "2752"
+  - name: SL_HEAP_SIZE
+    value: "9200"
+  - name: SL_BT_CONFIG_USER_ADVERTISERS
+    value: "2"
+  - name: SL_BOARD_ENABLE_DISPLAY
+    value: "1"
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+    condition:
+      - iostream_usart
+
+tag:
+  - hardware:rf:band:2400
+  - hardware:component:button:2+
+  - hardware:component:display:ls013b7dh03
+  - prebuilt_demo
+
+ui_hints:
+  highlight:
+    - path: config/btconf/gatt_configuration.btconf
+    - path: readme.md
+      focus: true

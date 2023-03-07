@@ -1,0 +1,25 @@
+id: tz_service_syscfg
+package: platform
+label: SYSCFG interface for TrustZone secure library
+description: >-
+  This component includes API that provides access to SYSCFG registers.
+category: Platform|Security|TrustZone
+quality: beta
+component_root_path: util/third_party/crypto/sl_component/sl_trustzone/
+
+provides:
+  - name: tz_service_syscfg
+
+include:
+  - path: inc/common
+    file_list:
+      - path: sli_tz_service_syscfg.h
+
+source:
+  - path: src/sli_tz_service_syscfg.c
+    condition: [trustzone_secure]
+
+requires:
+  - name: tz_util
+  - name: emlib_syscfg
+    condition: [trustzone_secure]

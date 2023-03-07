@@ -1,0 +1,25 @@
+Trusted Firmware Fuzzer (TF-Fuzz) starting...
+
+Info:  random seed was not specified.
+
+Using seed value of \d+ \(0x[a-f\d]+\).
+Purpose line:  to create and show an asset
+ASSET_IDENTIFIER:  "snortwaggle"
+SST-asset identifier list:  "data"
+SST-create from random data
+Set SST command:  "*"
+Set command:  "*"
+Command with no expect:  ";"
+ASSET_IDENTIFIER:  "snortwaggle"
+SST-asset identifier list:  "check"
+LITERAL:  "almost certainly not *this*"
+SST-read check against literal:  "almost certainly not *this*"
+Read SST command:  ""almost certainly not *this*""
+Read command:  ""almost certainly not *this*""
+Command with no expect:  ";"
+Lines:  Line number 4.
+Lines:  Line number 4.
+Lines:  Line number 4.
+Writing test file, test.c.
+
+TF-Fuzz test generation complete.

@@ -1,0 +1,30 @@
+.. _ota-index:
+
+ota
+==================
+
+总览
+------
+
+本示例主要介绍如何使用702的ota功能。
+
+使用步骤
+-----------
+
+- 将702板子插上网线。
+
+- ``customer_app/bl702_demo_event`` 包含了ota的相关命令，由条件编译控制，我们要打开编译的宏，子目录中的geneth编译脚本完成了此项工作，我们只需用geneth脚本编译即可，编译好下载工程，ota文件在我们点击烧写工具的  ``creat & download`` 的时候生成并保存在tools/flash_tool/bl702/ota目录下。
+
+- 打开电脑终端，进入你的工程目录，执行 ``cat tools/flash_tool/bl702/ota/FW_OTA.bin.xz.hash | nc -l 3333`` 命令，监听3333端口的连接准备发送数据。
+
+    .. figure:: imgs/img1.png
+       :alt: 
+
+- 打开串口，输入命令 ``ota_tcp_api <你的pc ip地址> <ota 文件大小>`` , 可以在tools/flash_tool/bl702/ota目录下右键属性查看ota文件大小，对于此命令我们只关心FW_OTA.bin.xz.hash文件的大小。
+
+    .. figure:: imgs/img2.png
+       :alt: 
+       
+- ota完成之后会自动重启。
+
+

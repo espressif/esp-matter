@@ -1,0 +1,126 @@
+{% extends "base.j2" %}
+{% block filename %}{{filename}}.c{% endblock %}
+{% block title %}{{title}}{% endblock %}
+{% block content -%}
+#include "em_device.h"
+#include "{{filename}}.h"
+
+uint32_t RAILCb_CalcSymbolRate(RAIL_Handle_t railHandle)
+{
+  (void) railHandle;
+  return 0U;
+}
+
+uint32_t RAILCb_CalcBitRate(RAIL_Handle_t railHandle)
+{
+  (void) railHandle;
+  return 0U;
+}
+
+{%- for phyConfigEntryName, phyConfigEntry in phyConfigEntries.items() %}
+{% if phyConfigEntry.frameLengthList %}
+static uint16_t {{phyConfigEntryName}}LenList[] = { {{""}}
+  {%- for length in phyConfigEntry.frameLengthList -%}
+    {{length|int}}{{", "}}
+  {%- endfor -%}
+{{""}} };
+static RAIL_FrameType_t {{phyConfigEntryName}}_frameTypeConfig = {
+  (uint16_t *)&{{phyConfigEntryName}}LenList[0], {{phyConfigEntry.frameType.offset}}, {{phyConfigEntry.frameType.mask}}, {{phyConfigEntry.frameType.isValid|listToHexEncoding}}, {{phyConfigEntry.frameType.addressFilter|listToHexEncoding}}
+};
+{% else %}
+void RAILCb_ConfigFrameTypeLength(RAIL_Handle_t railHandle,
+                                  const RAIL_FrameType_t *frameType)
+{
+  (void) railHandle;
+  (void) frameType;
+}
+{% endif %}
+{%- if phyConfigEntry.frameCodingTable %}
+uint32_t frameCodingTable[] = {
+  {%- for items in phyConfigEntry.frameCodingTable|batch(4) %}
+  {{ items|join(", ") -}},
+  {%- endfor %}
+};
+{% endif %}
+static const uint8_t {{phyConfigEntryName}}_irCalConfig[] = {
+  {{phyConfigEntry.irCalConfig|length}}{{", "}}
+  {%- for value in phyConfigEntry.irCalConfig[:-1] -%}
+    {{value|int}}{{", "}}
+  {%- endfor %}
+  {{-phyConfigEntry.irCalConfig|last|int}}
+};
+
+static const uint32_t {{phyConfigEntryName}}_phyInfo[] = {
+  {{phyConfigEntry.phyInfo.phyInfoData.version}}UL,
+  {{"0x{:08X}".format(phyConfigEntry.phyInfo.phyInfoData.freqOffsetFactor_fxp)}}UL, // {{phyConfigEntry.phyInfo.phyInfoData.freqOffsetFactor}}
+{%- if phyConfigEntry.frameLengthList %}
+  (uint32_t) &{{phyConfigEntryName}}_frameTypeConfig,
+{%- else %}
+  (uint32_t) NULL,
+{%- endif %}
+  (uint32_t) {{phyConfigEntryName}}_irCalConfig,
+#ifdef RADIO_CONFIG_ENABLE_TIMING
+  (uint32_t) &{{phyConfigEntryName}}_timing,
+#else
+  (uint32_t) NULL,
+#endif
+  {{"0x{:08X}".format(phyConfigEntry.phyInfo.phyInfoData.antDivRxAutoConfig)}}UL,
+  {{phyConfigEntry.phyInfo.phyInfoData.src1Denominator}}UL,
+  {{phyConfigEntry.phyInfo.phyInfoData.src2Denominator}}UL,
+  {{phyConfigEntry.phyInfo.phyInfoData.txBaudRate|int}}UL,
+  ({{phyConfigEntry.phyInfo.phyInfoData.baudPerSymbol}}UL << 8) | {{phyConfigEntry.phyInfo.phyInfoData.bitsPerSymbol}}UL,
+  {{"0x{:08X}".format(phyConfigEntry.phyInfo.phyInfoData.synthCache)}}UL,
+};
+{% if phyConfigEntry.fecEnabled and phyConfigEntry.convDecodeBufferSize > 0 %}
+__ALIGNED(4) uint8_t convDecodeBuffer[{{phyConfigEntry.convDecodeBufferSize}}];
+{% endif %}
+{%- for entryName, entry in phyConfigEntry.dynamicSlicerConfigEntries.items() %}
+uint32_t {{entryName}}[] = {
+  {{"0x{:04X}{:04X}UL".format(entry.level, entry.threshold)}},
+  (uint32_t) {{"&%s"|format(entry.next.name) if entry.next.name else "0UL"}},
+};
+{% endfor %}
+const uint32_t {{phyConfigEntryName}}[] = {
+{%- for entryName, entry in phyConfigEntry.modemConfigEntries.items() %}
+  {%- set firstValue = entry.encodedValues|first %}
+  {%- set remainingValues = entry.encodedValues[1:] %}
+  {{"0x{:08X}UL, ".format(entry.encodedAction)}}
+  {{- "0x{:08X}UL,".format(firstValue) if firstValue is number else "(uint32_t) &{},".format(firstValue._uniqueName|default(firstValue.name|default(firstValue)))}}
+  {%- for value in remainingValues %}
+     /* {{"{:04X}".format(entry.encodedAction|formatActionAddress(loop.index))}} */ {{"0x{:08X}UL,".format(value) if value is number else "(uint32_t) &{},".format(value._uniqueName|default(value.name|default(value)))}}
+  {%- endfor -%}
+{% endfor %}
+
+  0xFFFFFFFFUL,
+};
+
+RAIL_ChannelConfigEntryAttr_t {{phyConfigEntryName}}_entryAttr = {
+  { 0xFFFFFFFFUL }
+};
+
+const RAIL_ChannelConfigEntry_t {{phyConfigEntryName}}_channels[] = {
+  {%- for entryName, entry in phyConfigEntry.channelConfigEntries.items() %}
+  {
+    .phyConfigDeltaAdd = NULL,
+    .baseFrequency = {{entry.baseFrequency|int}},
+    .channelSpacing = {{entry.channelSpacing|int}},
+    .physicalChannelOffset = {{entry.physicalChannelOffset|int}},
+    .channelNumberStart = {{entry.channelNumberStart|int}},
+    .channelNumberEnd = {{entry.channelNumberEnd|int}},
+    .maxPower = RAIL_TX_POWER_MAX,
+    .attr = &{{phyConfigEntryName}}_entryAttr
+  },
+  {%- endfor %}
+};
+
+const RAIL_ChannelConfig_t {{phyConfigEntryName}}_channelConfig = {
+  {{phyConfigEntryName}},
+  NULL,
+  {{phyConfigEntryName}}_channels,
+  {{phyConfigEntry.channelConfigEntries|length}}
+};
+const RAIL_ChannelConfig_t *channelConfigs[] = {
+  &{{phyConfigEntryName}}_channelConfig,
+};
+{% endfor -%}
+{% endblock %}

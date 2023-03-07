@@ -1,0 +1,45 @@
+// Copyright 2021 The Pigweed Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not
+// use this file except in compliance with the License. You may obtain a copy of
+// the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations under
+// the License.
+syntax = "proto3";
+
+package pw.rpc.test1;
+
+message Request {
+  uint32 magic_number = 1;
+}
+
+message Response {
+  enum Result {
+    FAILED = 0;
+    FAILED_MISERABLY = 1;
+    I_DONT_WANT_TO_TALK_ABOUT_IT = 2;
+  }
+
+  Result result = 1;
+  string payload = 2;
+}
+
+service TheTestService {
+  // Unary RPC for testing
+  rpc SomeUnary(Request) returns (Response) {}
+
+  // Server streaming RPC for testing
+  rpc SomeServerStreaming(Request) returns (stream Response) {}
+
+  // Client streaming RPC for testing
+  rpc SomeClientStreaming(stream Request) returns (Response) {}
+
+  // Bidirectional streaming RPC for testing
+  rpc SomeBidiStreaming(stream Request) returns (stream Response) {}
+}

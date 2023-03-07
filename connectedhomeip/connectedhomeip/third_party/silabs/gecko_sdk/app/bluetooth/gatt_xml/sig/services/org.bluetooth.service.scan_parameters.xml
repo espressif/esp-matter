@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Service xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.service.scan_parameters" uuid="1813" name="Scan Parameters" last-modified="2011-11-23" approved="Yes">
+  <InformativeText>
+    <Abstract>This service enables a GATT Client to store the LE scan parameters it is using on a GATT Server device so that the GATT Server can  utilize the information to adjust behavior to optimize power consumption and/or reconnection latency</Abstract>
+    <Summary>The Scan Parameters Service enables a GATT Server device to expose a characteristic for the GATT Client to write its scan interval and scan window on the GATT Server device.</Summary>
+  </InformativeText>
+  <Dependencies>
+    <Dependency>This service has no dependencies on other GATT-based services.</Dependency>
+  </Dependencies>
+  <GATTRequirements>
+    <Requirement subProcedure="Read Characteristic Value">Excluded</Requirement>
+    <Requirement subProcedure="Read Long Characteristic Value">Excluded</Requirement>
+    <Requirement subProcedure="Write Without Response">Mandatory</Requirement>
+    <Requirement subProcedure="Write Characteristic Value">Excluded</Requirement>
+    <Requirement subProcedure="Notifications">C1</Requirement>
+    <Requirement subProcedure="Read Characteristic Descriptors">Excluded</Requirement>
+    <Requirement subProcedure="Write Characteristic Descriptors">C1</Requirement>
+  </GATTRequirements>
+  <Note>C1: Mandatory if Scan Refresh characteristic is supported, otherwise optional.</Note>
+  <Transports>
+    <Classic>false</Classic>
+    <LowEnergy>true</LowEnergy>
+  </Transports>
+  
+  <Characteristics>
+    <Characteristic name="Scan Interval Window " type="org.bluetooth.characteristic.scan_interval_window">
+      <InformativeText>The Scan Interval Window characteristic is used to store the scan parameters of the Client. Included in this characteristic are the Scan Interval and Scan Window of the Client.</InformativeText>
+      <Requirement>Mandatory</Requirement>
+      <Properties>
+        <Read>Excluded</Read>
+        <Write>Excluded</Write>
+        <WriteWithoutResponse>Mandatory</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Excluded</ReliableWrite>
+        <Notify>Excluded</Notify>
+        <Indicate>Excluded</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Excluded</Broadcast>
+      </Properties>
+    </Characteristic>
+    
+    <Characteristic name="Scan Refresh" type="org.bluetooth.characteristic.scan_refresh">
+      <InformativeText>The Scan Refresh characteristic is used to notify the Client that the Server requires the Scan Interval Window characteristic to be written with the latest values upon notification.</InformativeText>
+      <Requirement>Optional</Requirement>
+      <Properties>
+        <Read>Excluded</Read>
+        <Write>Excluded</Write>
+        <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Excluded</ReliableWrite>
+        <Notify>Mandatory</Notify>
+        <Indicate>Excluded</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Excluded</Broadcast>
+      </Properties>
+        <Descriptors>
+                <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+                    <Requirement>if_characteristic_supported</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>Mandatory</Write>
+                    </Properties>
+                </Descriptor>
+            </Descriptors>
+        
+    </Characteristic>
+    
+   </Characteristics>
+  </Service>

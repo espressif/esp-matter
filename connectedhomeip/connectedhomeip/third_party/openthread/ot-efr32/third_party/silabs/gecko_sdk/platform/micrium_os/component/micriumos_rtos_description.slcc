@@ -1,0 +1,12 @@
+id: micriumos_rtos_description
+label: RTOS Description
+package: micrium-krnx
+description: RTOS Description
+category: RTOS|Micrium OS|Common
+ui_hints:
+  visibility: never
+quality: production
+provides:
+  - name: rtos_description
+template_file:
+  - path: platform/micrium_os/cfg/rtos_description.h.jinja

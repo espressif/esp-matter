@@ -1,0 +1,15 @@
+!!omap
+- id: MGM210P032JNA_config
+- label: MGM210P032JNA config
+- description: Configuration files for MGM210P032JNA
+- package: platform
+- category: Platform|Device|MGM21|Config
+- quality: production
+- ui_hints:
+    visibility: never
+- root_path: hardware/module/config
+- requires:
+  - name: mgm210p032jna
+- provides:
+  - name: MGM210P032JNA_config
+- config_file: []

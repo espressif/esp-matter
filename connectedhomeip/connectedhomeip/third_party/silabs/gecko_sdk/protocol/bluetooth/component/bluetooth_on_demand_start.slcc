@@ -1,0 +1,21 @@
+id: "bluetooth_on_demand_start"
+label: "Bluetooth on-demand start"
+package: "Bluetooth"
+description: >
+  Allows the application to start or stop the Bluetooth stack on demand. If this
+  component is not included in the build, the Bluetooth stack is automatically
+  started when it's initialized and is never stopped.
+  
+  See the Bluetooth API reference manual section "System", commands
+  sl_bt_system_start_bluetooth() and sl_bt_system_stop_bluetooth() for more
+  details.
+category: "Bluetooth|Stack"
+quality: "production"
+root_path: "protocol/bluetooth"
+requires:
+  - name: "bluetooth_stack"
+provides:
+  - name: "bluetooth_on_demand_start"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_on_demand_start

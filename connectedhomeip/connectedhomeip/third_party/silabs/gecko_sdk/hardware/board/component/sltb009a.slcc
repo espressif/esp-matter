@@ -1,0 +1,22 @@
+!!omap
+- id: sltb009a
+- label: SLTB009A
+- package: platform
+- description: Kit BSP support for the Thunderboard EFM32GG12.
+- category: Platform|Board|Kit|Thunderboard
+- quality: production
+- requires:
+  - name: hardware_board_from_sltb009a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_tb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLTB009A"'
+  - name: SL_KIT_REV
+    value: '"A02"'
+- tag:
+  - kit:opn:SLTB009A
+  - kit:pn:TB009
+  - kit:variant:A
+  - kit:revision:A02

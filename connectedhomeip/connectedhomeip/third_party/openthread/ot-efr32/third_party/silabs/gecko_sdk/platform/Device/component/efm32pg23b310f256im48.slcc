@@ -1,0 +1,225 @@
+!!omap
+- id: EFM32PG23B310F256IM48
+- package: platform
+- description: Silicon Labs CMSIS-Device part headers for EFM32PG23B310F256IM48.
+- category: Platform|Device|EFM32PG23
+- quality: production
+- define:
+  - name: EFM32PG23B310F256IM48
+    unless:
+    - device_content_override
+- source:
+  - path: platform/Device/SiliconLabs/EFM32PG23/Source/system_efm32pg23.c
+    unless:
+    - device_content_override
+  - path: platform/Device/SiliconLabs/EFM32PG23/Source/startup_efm32pg23.c
+    unless:
+    - device_content_override
+- include:
+  - file_list:
+    - path: efm32pg23b310f256im48.h
+    - path: efm32pg23_acmp.h
+    - path: efm32pg23_amuxcp.h
+    - path: efm32pg23_buram.h
+    - path: efm32pg23_burtc.h
+    - path: efm32pg23_cmu.h
+    - path: efm32pg23_dcdc.h
+    - path: efm32pg23_devinfo.h
+    - path: efm32pg23_dma_descriptor.h
+    - path: efm32pg23_dpll.h
+    - path: efm32pg23_emu.h
+    - path: efm32pg23_eusart.h
+    - path: efm32pg23_fsrco.h
+    - path: efm32pg23_gpcrc.h
+    - path: efm32pg23_gpio.h
+    - path: efm32pg23_gpio_port.h
+    - path: efm32pg23_hfrco.h
+    - path: efm32pg23_hfxo.h
+    - path: efm32pg23_i2c.h
+    - path: efm32pg23_iadc.h
+    - path: efm32pg23_icache.h
+    - path: efm32pg23_keyscan.h
+    - path: efm32pg23_lcd.h
+    - path: efm32pg23_lcdrf.h
+    - path: efm32pg23_ldma.h
+    - path: efm32pg23_ldmaxbar.h
+    - path: efm32pg23_ldmaxbar_defines.h
+    - path: efm32pg23_lesense.h
+    - path: efm32pg23_letimer.h
+    - path: efm32pg23_lfrco.h
+    - path: efm32pg23_lfxo.h
+    - path: efm32pg23_mailbox.h
+    - path: efm32pg23_mpahbram.h
+    - path: efm32pg23_msc.h
+    - path: efm32pg23_pcnt.h
+    - path: efm32pg23_prs.h
+    - path: efm32pg23_prs_signals.h
+    - path: efm32pg23_scratchpad.h
+    - path: efm32pg23_semailbox.h
+    - path: efm32pg23_smu.h
+    - path: efm32pg23_syscfg.h
+    - path: efm32pg23_sysrtc.h
+    - path: efm32pg23_timer.h
+    - path: efm32pg23_ulfrco.h
+    - path: efm32pg23_usart.h
+    - path: efm32pg23_vdac.h
+    - path: efm32pg23_wdog.h
+    - path: em_device.h
+    - path: system_efm32pg23.h
+    path: platform/Device/SiliconLabs/EFM32PG23/Include/
+    unless:
+    - device_content_override
+- provides:
+  - name: efm32pg23b310f256im48
+  - name: device
+  - name: device_series_2
+  - name: device_sdid_210
+  - name: device_family_efm32pg23
+  - name: device_cortexm
+  - name: device_arm
+  - name: cortexm33
+  - name: armv8m.main
+  - name: device_security_vault
+  - name: device_dcdc_buck
+  - name: device_has_acmp
+  - name: device_has_acmp0
+  - name: device_has_acmp1
+  - name: device_has_amuxcp
+  - name: device_has_amuxcp0
+  - name: device_has_buram
+  - name: device_has_burtc
+  - name: device_has_cmu
+  - name: device_has_dcdc
+  - name: device_has_devinfo
+  - name: device_has_dmem
+  - name: device_has_dpll
+  - name: device_has_dpll0
+  - name: device_has_emu
+  - name: device_has_euart
+  - name: device_has_eusart
+  - name: device_has_eusart0
+  - name: device_has_eusart1
+  - name: device_has_eusart2
+  - name: device_has_fsrco
+  - name: device_has_gpcrc
+  - name: device_has_gpio
+  - name: device_has_hfrco
+  - name: device_has_hfrco0
+  - name: device_has_hfrcoem2
+  - name: device_has_hfrcoem23
+  - name: device_has_hfxo
+  - name: device_has_hfxo0
+  - name: device_has_hostmailbox
+  - name: device_has_i2c
+  - name: device_has_i2c0
+  - name: device_has_i2c1
+  - name: device_has_iadc
+  - name: device_has_iadc0
+  - name: device_has_icache
+  - name: device_has_icache0
+  - name: device_has_keyscan
+  - name: device_has_lcd
+  - name: device_has_lcdrf
+  - name: device_has_ldma
+  - name: device_has_ldmaxbar
+  - name: device_has_lesense
+  - name: device_has_letimer
+  - name: device_has_letimer0
+  - name: device_has_lfrco
+  - name: device_has_lfxo
+  - name: device_has_msc
+  - name: device_has_pcnt
+  - name: device_has_pcnt0
+  - name: device_has_prs
+  - name: device_has_scratchpad
+  - name: device_has_semailbox
+  - name: device_has_smu
+  - name: device_has_syscfg
+  - name: device_has_sysrtc
+  - name: device_has_sysrtc0
+  - name: device_has_timer
+  - name: device_has_timer0
+  - name: device_has_timer1
+  - name: device_has_timer2
+  - name: device_has_timer3
+  - name: device_has_timer4
+  - name: device_has_uart
+  - name: device_has_ulfrco
+  - name: device_has_usart
+  - name: device_has_usart0
+  - name: device_has_vdac
+  - name: device_has_vdac0
+  - name: device_has_wdog
+  - name: device_has_wdog0
+  - name: device_has_wdog1
+  - name: device_has_dwt
+  - name: device_has_emu_temp_sensor
+  - name: device_has_fpu
+  - name: device_has_mpu
+  - name: device_compute_basic
+- recommends:
+  - id: trustzone_unaware
+- requires:
+  - name: cmsis_core
+- template_contribution:
+  - name: device_opn
+    value: EFM32PG23B310F256IM48
+  - name: device_arch
+    value: armv8m.main
+  - name: device_cpu
+    value: cortexm33
+  - name: device_series
+    value: 2
+  - name: device_family
+    value: efm32pg23
+  - name: device_flash_addr
+    value: 134217728
+  - name: device_flash_size
+    value: 262144
+  - name: device_flash_page_size
+    value: 8192
+  - name: device_ram_addr
+    value: 536870912
+  - name: device_ram_size
+    value: 65536
+  - name: device_fpu
+    value: true
+  - name: device_mpu
+    value: true
+  - name: default_stack_size
+    value: 4096
+  - name: default_heap_size
+    value: 2048
+- tag:
+  - device:opn:efm32pg23b310f256im48
+- toolchain_settings:
+  - option: device_opn
+    value: efm32pg23b310f256im48
+  - option: architecture
+    value: armv8-mml
+  - option: cpu
+    value: cortex-m33
+  - option: fpu
+    value: fpv5-sp
+  - option: cmse
+    unless:
+    - trustzone_nonsecure
+    value: enabled
+- config_file:
+  - condition:
+    - custom_radio_config
+    directory: rail
+    path: platform/Device/config/210/device.yaml
+- metadata:
+    device:
+      memory:
+      - name: Main Flash
+        page_size: 8192
+        size: 262144
+        start: 134217728
+        type: non-volatile
+      - name: RAM
+        size: 65536
+        start: 536870912
+        type: volatile
+      opn: efm32pg23b310f256im48

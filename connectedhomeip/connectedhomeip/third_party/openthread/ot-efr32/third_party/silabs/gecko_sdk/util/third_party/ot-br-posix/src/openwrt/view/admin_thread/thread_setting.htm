@@ -1,0 +1,399 @@
+<%-
+	local ubus = require "ubus"
+	local sys = require "luci.sys"
+	local utl = require "luci.util"
+
+	function connect_ubus(methods)
+		local result
+		local conn = ubus.connect()
+
+		if not conn then
+			error("Failed to connect to ubusd")
+		end
+
+		result = conn:call("otbr", methods, {})
+
+		return result
+	end
+
+	function threadget(action)
+		local result = connect_ubus(action)
+		
+		return result
+	end
+
+	local state = threadget("state").State
+
+
+
+	function addrlist()
+		local k, v
+		local l = { }
+
+		local addrlist = connect_ubus("macfilteraddr").addrlist
+
+		for k, v in pairs(addrlist) do
+			l[#l+1] = v
+		end
+
+		return l
+	end
+
+
+-%>
+<%+header%>
+
+<h2><%:Thread Network: %><%=threadget("networkname").NetworkName%><%: (wpan0)%></h2>
+<div> The Network Configuration section covers physical settings of the Thread Network such as channel, PAN ID. Per interface related settings like networkkey or MAC-filter are grouped in the Interface Configuration.</div>
+<br />
+
+<form class="inline" action="<%=url('admin/network/thread_handler_setting')%>" method="post" id="settingForm" name="settingForm" onsubmit="return validateForm()">
+	<h3><%:Network Configuration%></h3>
+	<br />
+	<ul class="cbi-tabmenu">
+		<li class="cbi-tab" id="generaltab"><a href="javascript:generalSetting();"><%:General Setup%></a></li>
+		<li class="cbi-tab-disabled" id="advancedtab"><a href="javascript:advancedSetting();"><%:Advanced Settings%></a></li>
+	</ul>
+
+	<input type="hidden" name="submitcontent" id="submitcontent" />
+	<input type="hidden" name="removeAddrIndex" id="removeAddrIndex" />
+	<input type="hidden" name="token" value="<%=token%>" />
+	<!-- General Setup -->
+	<div style="width:80%;margin-left:10%;" id="generaldiv">
+		<div class="cbi-value">
+			<label class="cbi-value-title" style="margin-right:5%;">Thread Name</label>
+			<div class="cbi-value-title">
+				<input type="text" name="threadname" value="<%=threadget("networkname").NetworkName%>" style="width:30%;"/>
+			</div>
+		</div>
+		<div class="cbi-value">
+			<label class="cbi-value-title" style="margin-right:5%;">Status</label>
+			<div class="cbi-value-title">
+				<span class="ifacebadge large" style="padding:2%;">
+					<span>
+					<strong>PAN ID: </strong>
+						<%=threadget("panid").PanId%>
+					<br>
+					<strong>Extended PAN ID: </strong>
+						<%=threadget("extpanid").ExtPanId%>
+					<br>
+					<strong>State:  </strong>
+						<%=state%>
+					<br>
+					<strong>Channel: </strong>
+						<%=threadget("channel").Channel%>
+					<span>
+				</span>
+			</div>
+		</div>
+		<div class="cbi-value">
+			<% if state == "disabled" then %>
+			<label class="cbi-value-title" style="margin-right:5%;">Thread network is disabled</label>
+			<div class="cbi-value-field">
+				<input class="cbi-button cbi-button-add" type="submit" id="enable" name="enable" value="Enable" />
+			</div>
+			<% else %>
+			<label class="cbi-value-title" style="margin-right:5%;">Thread network is enabled</label>
+			<div class="cbi-value-field">
+				<input class="cbi-button cbi-button-reset" type="submit" id="disable" name="disable" value="Disable" />
+			</div>
+			<% end %>
+		</div>
+		<div class="cbi-value">
+			<label class="cbi-value-title" style="margin-right:5%;">Protocol</label>
+			<div class="cbi-value-field">
+				<select style="width:30%;" id="protocol" name="protocol">
+					<option value>unmanaged</option>
+				</select>
+			</div>
+		</div>
+	</div>
+
+	<!-- Advanced Settings -->
+	<div style="width:70%;margin-left:10%;display:none;" id="advanceddiv">
+		<div class="cbi-value">
+			<label class="cbi-value-title" style="margin-right:5%;">Channel</label>
+			<div class="cbi-value-title">
+				<input type="text" name="channel" value="<%=threadget("channel").Channel%>" style="width:50%;"/>
+			</div>
+		</div>
+		<div class="cbi-value">
+			<label class="cbi-value-title" style="margin-right:5%;">PAN ID</label>
+			<div class="cbi-value-title">
+				<input type="text" name="panid" value="<%=threadget("panid").PanId%>" style="width:50%;"/>
+			</div>
+		</div>
+		<div class="cbi-value">
+			<label class="cbi-value-title" style="margin-right:5%;">Extended PAN ID</label>
+			<div class="cbi-value-title">
+				<input type="text" name="extpanid" value="<%=threadget("extpanid").ExtPanId%>" style="width:50%;"/>
+			</div>
+		</div>
+		<div class="cbi-value">
+			<% if state == 'disabled' then %>
+			<label class="cbi-value-title" style="margin-right:5%;">Mode</label>
+			<div class="cbi-value-title">
+			<input type="text" name="mode" value="<%=threadget("mode").Mode%>" style="width:50%;"/>
+			</div>
+			<div style="margin-left:30%;margin-top:1%;">
+				<span><img src="<%=resource .. "/cbi/help.gif"%>"/><%:set the thread device mode value, must be consist of 'r', 's', 'd', 'n'.%></span>
+			</div>
+			<% else %>
+			<label class="cbi-value-title" style="margin-right:5%;">Mode</label>
+			<div class="cbi-value-title">
+			<input type="text" name="mode" value="<%=threadget("mode").Mode%>" readonly="readonly" style="width:50%;"/>
+			</div>
+			<div style="margin-left:30%;margin-top:1%;">
+				<span><img src="<%=resource .. "/cbi/help.gif"%>"/><%:can not change mode when thread network is started.%></span>
+			</div>
+			<% end %>
+		</div>
+		<div class="cbi-value" style="display:none">
+			<label class="cbi-value-title" style="margin-right:5%;">State</label>
+			<div class="cbi-value-field">
+				<select style="width:30%;" id="state" name="state" value="<%=state%>">
+					<option value="disabled">disabled</option>
+					<option value="leader">leader</option>
+					<option value="router">router</option>
+					<option value="child">child</option>
+				</select>
+			</div>
+		</div>
+		<div class="cbi-value">
+			<label class="cbi-value-title" style="margin-right:5%;">PartitionId</label>
+			<div class="cbi-value-title">
+			<%=threadget("partitionid").Partitionid%>
+			</div>
+			<div style="margin-left:30%;margin-top:1%;">
+				<span><img src="<%=resource .. "/cbi/help.gif"%>"/><%:can not change partitionid when thread network is started.%></span>
+			</div>
+		</div>
+		<div class="cbi-value">
+			<label class="cbi-value-title" style="margin-right:5%;">Leave</label>
+			<div class="cbi-value-field">
+				<input class="cbi-button cbi-button-reset" type="submit" id="leave" name="leave" value="LEAVE" />
+			</div>
+			<div style="margin-left:30%;margin-top:1%;">
+				<span><img src="<%=resource .. "/cbi/help.gif"%>"/><%:This will delete all the existed Configuration of your thread network!%></span>
+			</div>
+		</div>
+	</div>
+
+	<h3><%:Interface Configuration%></h3>
+	<br />
+	<ul class="cbi-tabmenu">
+		<li class="cbi-tab" id="securitytab"><a href="javascript:securitySetting();"><%:Thread Security%></a></li>
+		<li class="cbi-tab-disabled" id="macfiltertab"><a href="javascript:macfilterSetting();"><%:MAC-Filter%></a></li>
+	</ul>
+	<br/>
+
+	<!-- Thread Security -->
+	<div style="width:60%;margin-left:10%;" id="securitydiv">
+		<div class="cbi-value">
+			<label class="cbi-value-title" style="margin-right:5%;">Network Key</label>
+			<div class="cbi-value-title">
+				<input type="text" name="networkkey" value="<%=threadget("networkkey").Networkkey%>" style="width:60%;"/>
+			</div>
+		</div>
+		<div class="cbi-value">
+			<label class="cbi-value-title" style="margin-right:5%;">Network Password</label>
+			<div class="cbi-value-title">
+				<input type="text" name="pskc" value="<%=threadget("pskc").pskc%>" style="width:60%;"/>
+			</div>
+		</div>
+	</div>
+
+	<!-- MAC Filter -->
+	<div style="width:60%;margin-left:10%;display:none;" id="macfilterdiv">
+		<div class="cbi-value">
+			<label class="cbi-value-title" style="margin-right:1%;">Protocol</label>
+			<div class="cbi-value-field">
+				<select style="width:30%;" id="macfilterselect" name="macfilterselect" onchange='macselectchange()' autocomplete="off">
+					<option value="disable">Disable</option>
+					<option value="allowlist">Allowlist</option>
+					<option value="denylist">Denylist</option>
+				</select>
+			</div>
+		</div>
+		<div class="cbi-value" id="macfilterlistdiv" style="display:none;">
+			<div class="table">
+				<label class="cbi-value-title" style="margin-right:1%;">Existed Address</label>
+				<div class="cbi-value-field">
+					<!-- addr list -->
+					<% for i, addr in ipairs(addrlist()) do %>
+					<input type="hidden" id="macfilterremove" name="macfilterremove" value="<%=addr%>" />
+					<% if i == 1 then %>
+					<div class="tr">
+						<div class="center" style="margin-top:15px;"><%=addr%></div>
+						<div class="th cbi-section-actions">
+							<input class="cbi-button cbi-button-reset" type="submit" id="removeAddr<%=i%>" name="removeAddr<%=i%>" value="<%:Remove%>" />
+						</div>
+					</div>
+					<% else %>
+					<div class="tr cbi-rowstyle-<%=1 + ((i-1) % 2)%>">
+						<div class="td col-2 center"><%=addr%></div>
+						<div class="td cbi-section-actions">
+							<input class="cbi-button cbi-button-reset" type="submit" id="removeAddr<%=i%>" name="removeAddr<%=i%>" value="<%:Remove%>" />
+						</div>
+					</div>
+					<% end %>
+					<% end %>
+					<!-- /addr list -->
+				</div>
+			</div>
+
+			<div class="cbi-value">
+				<div class="cbi-value-field">
+					<input class="cbi-button cbi-button-reset" type="submit" id="clearAddr" name="clearAddr" value="<%:Clear%>" />
+					<span style="margin-left:3%"><img src="<%=resource .. "/cbi/help.gif"%>" style="margin-right:2%"/><%:This will clear all existed macfilter address!%></span>
+				</div>
+			</div>
+
+			<label class="cbi-value-title" style="margin-right:1%;">Add Address</label>
+			<div class="cbi-value-field">
+				<div class="table">
+					<div class="tr table-titles">
+						<label><input type="text" id="macfilteradd" name="macfilteradd"/></label>
+						<input class="cbi-button cbi-button-add" type="submit" id="addAddr" name="addAddr" value="<%:Add%>" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="cbi-page-actions right">
+		<input class="cbi-button cbi-button-neutral" style="float:left;" type="button" onclick="window.location.href='thread'" value="<%:Back to Overview%>" />
+		<input class="cbi-button cbi-button-apply" type="submit" id="save" value="<%:Save & Apply%>" />
+		<input class="cbi-button cbi-button-reset" type="reset" value="<%:Reset%>" />
+	</div>
+
+</form>
+
+<%+footer%>
+
+<script type="text/javascript" src="/luci-static/resources/handle_error.js"></script>
+<script type="text/javascript">//<![CDATA[
+	handle_error(GetURLParameter('error'));
+
+	var macfilterstate = "<%=threadget("macfilterstate").state%>";
+	var macselect = document.querySelector('#macfilterselect');
+
+	if(macselect) {
+		macselect.value = macfilterstate;
+		var opt = macselect.options[macselect.selectedIndex];
+
+		if(opt.value == "disable")
+		{
+			document.getElementById('macfilterlistdiv').style.display = "none";
+		}
+		else
+		{
+			document.getElementById('macfilterlistdiv').style.display = "block";
+		}
+	}
+
+	function macselectchange()
+	{
+		var macselect = document.querySelector('#macfilterselect');
+
+		if(macselect) {
+			var opt = macselect.options[macselect.selectedIndex];
+			if(opt.value == "disable")
+			{
+				document.getElementById('macfilterlistdiv').style.display = "none";
+			}
+			else
+			{
+				document.getElementById('macfilterlistdiv').style.display = "block";
+			}
+		}
+	}
+
+	function generalSetting() {
+		document.getElementById('generaldiv').style.display = "block";
+		document.getElementById('advanceddiv').style.display = "none";
+		document.getElementById('generaltab').className = "cbi-tab";
+		document.getElementById('advancedtab').className = "cbi-tab-disabled";
+	}
+
+	function advancedSetting() {
+		document.getElementById('generaldiv').style.display = "none";
+		document.getElementById('advanceddiv').style.display = "block";
+		document.getElementById('generaltab').className = "cbi-tab-disabled";
+		document.getElementById('advancedtab').className = "cbi-tab";
+	}
+
+	function securitySetting() {
+		document.getElementById('securitydiv').style.display = "block";
+		document.getElementById('macfilterdiv').style.display = "none";
+		document.getElementById('securitytab').className = "cbi-tab";
+		document.getElementById('macfiltertab').className = "cbi-tab-disabled";
+	}
+
+	function macfilterSetting() {
+		document.getElementById('securitydiv').style.display = "none";
+		document.getElementById('macfilterdiv').style.display = "block";
+		document.getElementById('securitytab').className = "cbi-tab-disabled";
+		document.getElementById('macfiltertab').className = "cbi-tab";
+	}
+
+	document.getElementById('settingForm').addEventListener('submit', function() {
+		var length = document.activeElement.id.length;
+		document.getElementById('submitcontent').value = document.activeElement.id.substring(0, 10);
+		document.getElementById('removeAddrIndex').value = document.activeElement.id.substring(10, length);
+	});
+
+	function validateForm()
+	{
+		var activeElement = document.activeElement.id;
+		if(activeElement == "addAddr")
+		{
+			var addr = document.forms["settingForm"]["macfilteradd"].value;
+			if(addr.length != 16)
+			{
+				alert("Address length must be 16 bytes");
+				return false;
+			}
+		}
+		else if(activeElement.substring(0, 10) != "removeAddr")
+		{
+			var panid = document.forms["settingForm"]["panid"].value;
+			if (isNaN(panid)) {
+				alert("panid must be a number");
+				return false;
+			}
+
+			var extpanid = document.forms["settingForm"]["extpanid"].value;
+			var re = /^[0-9a-f]+$/;
+			var OK = re.exec(extpanid);
+			if (!OK) {
+				alert("extpanid must be a number");
+				return false;
+			}
+			if (extpanid.length != 16) {
+				alert("extpanid length must be 16 bytes");
+				return false;
+			}
+
+			var mode = document.forms["settingForm"]["mode"].value;
+			var re = /^[rsdn]+$/;
+			var OK = re.exec(mode);
+			if (!OK) {
+				alert("mode must be consist of 'r', 's', 'd', 'n'");
+				return false;
+			}
+
+			var networkkey = document.forms["settingForm"]["networkkey"].value;
+			if (networkkey.length != 32) {
+				alert("Networkkey length must be 32 bytes");
+				return false;
+			}
+
+			var pskc = document.forms["settingForm"]["pskc"].value;
+			if (pskc.length != 32) {
+				alert("Network password length must be 32 bytes");
+				return false;
+			}
+		}
+	}
+//]]></script>

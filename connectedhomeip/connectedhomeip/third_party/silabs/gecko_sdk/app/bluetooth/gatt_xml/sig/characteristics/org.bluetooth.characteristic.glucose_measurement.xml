@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Liquid XML Studio Designer Edition 9.1.10.3537 (http://www.liquid-technologies.com) -->
+<!--Copyright 2011 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Glucose Measurement" type="org.bluetooth.characteristic.glucose_measurement" uuid="2A18" last-modified="2012-02-20" approved="Yes">
+    <InformativeText>
+        <Summary>
+            The Glucose Measurement characteristic is a variable length structure containing a Flags field, a Sequence Number field, a Base Time field and, based upon the contents of the Flags field,
+            may contain a Time Offset field, Glucose Concentration field, Type-Sample Location field and a Sensor Status Annunciation field.
+        </Summary>
+    </InformativeText>
+    <Value>
+        <Field name="Flags">
+            <InformativeText>These flags define which data fields are present in the Characteristic value</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>8bit</Format>
+            
+            <BitField>
+                <Bit index="0" size="1" name="Time Offset Present">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" requires="C1" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="1" size="1" name="Glucose Concentration, Type and Sample Location Present">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" requires="C2" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="2" size="1" name="Glucose Concentration Units">
+                    <Enumerations>
+                        <Enumeration key="0" value="kg/L" requires="C3" />
+                        <Enumeration key="1" value="mol/L" requires="C4" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="3" size="1" name="Sensor Status Annunciation Present">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" requires="C5" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="4" size="1" name="Context Information Follows">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <ReservedForFutureUse index="5" size="3" />
+            </BitField>
+        </Field>
+        <Field name="Sequence Number">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint16</Format>
+        </Field>
+        <Field name="Base Time">
+            <Requirement>Mandatory</Requirement>
+            <Reference>org.bluetooth.characteristic.date_time</Reference>
+        </Field>
+        <Field name="Time Offset">
+            <InformativeText>C1: Field exists if the key of bit 0 of the Flags field is set to 1</InformativeText>
+            <Requirement>C1</Requirement>
+            <Format>sint16</Format>
+            <Unit>org.bluetooth.unit.time.minute</Unit>
+           
+            <!--<Enumerations>
+                <Enumeration key="32767" value="Overrun" />
+                <Enumeration key="32768" value="Underrun" />
+                <Enumeration_Range start="0" end="32766" name="Time offset in minutes" />
+                <Enumeration_Range start="32769" end="65535" name="Time offset in minutes" />
+            </Enumerations>-->
+            
+        </Field>        
+        <Field name="Glucose Concentration - units of kg/L">
+            <InformativeText>
+			C2: Field exists if the key of bit 1 of the Flags field is set to 1,
+			C3: Field exists if the key of bit 2 of the Flags field is set to 0
+			</InformativeText>
+			<Requirement>C2</Requirement>
+            <Requirement>C3</Requirement>
+            <Format>SFLOAT</Format>
+            <Unit>org.bluetooth.unit.mass_density.kilogram_per_litre</Unit>            
+        </Field>        
+        <Field name="Glucose Concentration - units of mol/L">
+            <InformativeText>
+			C2: Field exists if the key of bit 1 of the Flags field is set to 1,
+			C4: Field exists if the key of bit 2 of the Flags field is set to 1
+			</InformativeText>
+			<Requirement>C2</Requirement>
+            <Requirement>C4</Requirement>
+            <Format>SFLOAT</Format>
+            <Unit>org.bluetooth.unit.mass_density.mole_per_litre</Unit>
+           
+        </Field>        
+        <Field name="Type">
+            <InformativeText>C2: Field exists if the key of bit 1 of the Flags field is set to 1</InformativeText>
+            <Requirement>C2</Requirement>
+            <Format>nibble</Format>
+            <Enumerations>
+                <Enumeration key="0" value="Reserved for future use" />
+                <Enumeration key="1" value="Capillary Whole blood" />
+                <Enumeration key="2" value="Capillary Plasma" />
+                <Enumeration key="3" value="Venous Whole blood" />
+                <Enumeration key="4" value="Venous Plasma" />
+                <Enumeration key="5" value="Arterial Whole blood" />
+                <Enumeration key="6" value="Arterial Plasma" />
+                <Enumeration key="7" value="Undetermined Whole blood" />
+                <Enumeration key="8" value="Undetermined Plasma" />
+                <Enumeration key="9" value="Interstitial Fluid (ISF)" />
+                <Enumeration key="10" value="Control Solution" />
+                <ReservedForFutureUse start="11" end="15" />
+            </Enumerations>
+        </Field>		
+		<Field name="Sample Location">
+            <InformativeText>C2: Field exists if the key of bit 1 of the Flags field is set to 1</InformativeText>
+            <Requirement>C2</Requirement>
+            <Format>nibble</Format>
+            <Enumerations>
+                <Enumeration key="0" value="Reserved for future use" />
+                <Enumeration key="1" value="Finger" />
+                <Enumeration key="2" value="Alternate Site Test (AST)" />
+                <Enumeration key="3" value="Earlobe" />
+                <Enumeration key="4" value="Control solution" />
+                <Enumeration key="15" value="Sample Location value not available" />
+                <ReservedForFutureUse start="5" end="14" />
+            </Enumerations>
+        </Field>
+        <Field name="Sensor Status Annunciation">
+            <InformativeText>C5: Field exists if the key of bit 3 of the Flags field is set to 1</InformativeText>
+            <Requirement>C5</Requirement>
+            <Format>16bit</Format>
+            
+            <BitField>
+                <Bit index="0" size="1" name="Device battery low at time of measurement">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                
+                <Bit index="1" size="1" name="Sensor malfunction or faulting at time of measurement">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                
+                <Bit index="2" size="1" name="Sample size for blood or control solution insufficient at time of measurement">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                
+                <Bit index="3" size="1" name="Strip insertion error">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                
+                <Bit index="4" size="1" name="Strip type incorrect for device">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                
+                <Bit index="5" size="1" name="Sensor result higher than the device can process">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                
+                <Bit index="6" size="1" name="Sensor result lower than the device can process">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                
+                <Bit index="7" size="1" name="Sensor temperature too high for valid test/result at time of measurement">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                
+                <Bit index="8" size="1" name="Sensor temperature too low for valid test/result at time of measurement">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                
+                <Bit index="9" size="1" name="Sensor read interrupted because strip was pulled too soon at time of measurement">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                
+                <Bit index="10" size="1" name="General device fault has occurred in the sensor">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                
+                <Bit index="11" size="1" name="Time fault has occurred in the sensor and time may be inaccurate">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" />
+                    </Enumerations>
+                </Bit>
+                <ReservedForFutureUse index="12" size="4" />                
+            </BitField>
+        </Field>
+    </Value>
+    <Note>
+        The fields in the above table, reading from top to bottom, are shown in the order of LSO to MSO, where LSO = Least Significant Octet and MSO = Most Significant Octet.
+        Where fields with the format 'nibble' have been defined in the above table, the fields are shown in the order of Least Significant Nibble first, when reading the table from top to bottom.  Where the characteristic definition contains two adjacent nibbles and the service specification has defined that that pair of nibbles comprise a single octet, the Least Significant Nibble means the four bits numbered 0, 1, 2 and 3 of the octet and the Most Significant Nibble means the four bits numbered 4, 5, 6 and 7 of that octet.
+    </Note>
+</Characteristic>

@@ -1,0 +1,346 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_assert/backend.gni")
+import("$dir_pw_bloat/bloat.gni")
+import("$dir_pw_boot/backend.gni")
+import("$dir_pw_build/cc_library.gni")
+import("$dir_pw_chrono/backend.gni")
+import("$dir_pw_interrupt/backend.gni")
+import("$dir_pw_log/backend.gni")
+import("$dir_pw_log_string/backend.gni")
+import("$dir_pw_malloc/backend.gni")
+import("$dir_pw_sync/backend.gni")
+import("$dir_pw_sys_io/backend.gni")
+import("$dir_pw_thread/backend.gni")
+import("$dir_pw_toolchain/arm_gcc/toolchains.gni")
+import("$dir_pw_toolchain/generate_toolchain.gni")
+import("$dir_pw_toolchain/host_clang/toolchains.gni")
+import("$dir_pw_toolchain/host_gcc/toolchains.gni")
+import("$dir_pw_unit_test/test.gni")
+import("backend.gni")
+import("freertos_backends.gni")
+import("stl_backends.gni")
+
+# This scope is essentially an enum for pw_system_target's `cpu` selection.
+PW_SYSTEM_CPU = {
+  CORTEX_M0PLUS = "cortex-m0plus"
+  CORTEX_M4F = "cortex-m4f"
+  CORTEX_M3 = "cortex-m3"
+  CORTEX_M7F = "cortex-m7f"
+
+  # Native builds for the host CPU.
+  NATIVE = "native"
+}
+
+# This scope is essentially an enum for pw_system_target's `scheduler`
+# selection.
+PW_SYSTEM_SCHEDULER = {
+  FREERTOS = "freertos"
+
+  # Native uses the host OS's native scheduler and OS primitives as provided
+  # through the Standard Template Library.
+  NATIVE = "native"
+}
+
+# Defines a target toolchain, automatically setting many required build
+# arguments to simplify instantiation of a target.
+#
+# Args:
+#  cpu: (required) The architecture to target.
+#    Supported choices: PW_SYSTEM_CPU.CORTEX_M7F, PW_SYSTEM_CPU.CORTEX_M4F, PW_SYSTEM_CPU.CORTEX_M3, PW_SYSTEM_CPU.NATIVE
+#  scheduler: (required) The scheduler implementation and API to use for this
+#    target.
+#    Supported choices: PW_SYSTEM_SCHEDULER.FREERTOS, PW_SYSTEM_SCHEDULER.NATIVE
+#  system_toolchain: Override the default toolchain selection.
+#  use_pw_malloc: Whether or not to replace the default malloc implementation
+#    with pw_malloc. Defaults enabled for supported targets.
+#  link_deps: Additional link-time dependencies required for all executables.
+#    This is a list of source sets.
+#  build_args: Additional overrides for GN build arguments.
+#  global_configs: Configs that will be globally applied to all pw_source_set,
+#    pw_static_library, and pw_executable targets.
+template("pw_system_target") {
+  _OPTIMIZATION_LEVELS = {
+    SIZE_OPTIMIZED = "size_optimized"
+    SPEED_OPTIMIZED = "speed_optimized"
+    DEBUG = "debug"
+  }
+
+  # Generic defaults.
+  _default_configs = [ "$dir_pw_build:extra_strict_warnings" ]
+  if (defined(invoker.global_configs)) {
+    foreach(cfg, invoker.global_configs) {
+      _default_configs += [ get_path_info(cfg, "abspath") ]
+    }
+  }
+
+  _link_deps = [
+    "$dir_pw_assert:impl",
+    "$dir_pw_log:impl",
+  ]
+  if (defined(invoker.link_deps)) {
+    _link_deps += invoker.link_deps
+  }
+  _final_binary_extension = ""
+
+  _default_build_args = {
+    pw_system_RPC_SERVER_BACKEND = "$dir_pw_system:hdlc_rpc_server"
+    pw_system_IO_BACKEND = "$dir_pw_system:sys_io_target_io"
+
+    # TODO(amontanez): This should be set to pw_assert_log ASAP.
+    pw_assert_BACKEND = dir_pw_assert_basic
+
+    # TODO(amontanez): This should be set to pw_log_tokenized when support
+    # is added.
+    pw_log_BACKEND = dir_pw_log_basic
+
+    # TODO(amontanez): This should be set to a "$dir_pw_unit_test:rpc_main"
+    # when RPC is working.
+    pw_unit_test_MAIN = "$dir_pw_unit_test:logging_main"
+  }
+
+  # Populate architecture-specific build args.
+  assert(
+      defined(invoker.cpu),
+      "Please select a `cpu` for $target_name. Options: PW_SYSTEM_CPU.CORTEX_M7, PW_SYSTEM_CPU.CORTEX_M4F, PW_SYSTEM_CPU.CORTEX_M3, PW_SYSTEM_CPU.NATIVE")
+  if (invoker.cpu == PW_SYSTEM_CPU.CORTEX_M7F) {
+    _current_cpu = "arm"
+    _default_configs += [ "$dir_pw_toolchain/arm_gcc:enable_float_printf" ]
+    _arch_build_args = {
+      pw_bloat_BLOATY_CONFIG = "$dir_pw_boot_cortex_m/bloaty_config.bloaty"
+      pw_boot_BACKEND = "$dir_pw_boot_cortex_m:armv7m"
+      pw_interrupt_CONTEXT_BACKEND = "$dir_pw_interrupt_cortex_m:context_armv7m"
+    }
+
+    if (defined(invoker.system_toolchain)) {
+      _system_toolchain = invoker.system_toolchain
+    } else {
+      _system_toolchain = pw_toolchain_arm_gcc
+    }
+
+    _final_binary_extension = ".elf"
+
+    _toolchains = [
+      {
+        toolchain_base = _system_toolchain.cortex_m7f_debug
+        level_name = _OPTIMIZATION_LEVELS.DEBUG
+      },
+      {
+        toolchain_base = _system_toolchain.cortex_m7f_size_optimized
+        level_name = _OPTIMIZATION_LEVELS.SIZE_OPTIMIZED
+      },
+      {
+        toolchain_base = _system_toolchain.cortex_m7f_speed_optimized
+        level_name = _OPTIMIZATION_LEVELS.SPEED_OPTIMIZED
+      },
+    ]
+  } else if (invoker.cpu == PW_SYSTEM_CPU.CORTEX_M4F) {
+    _current_cpu = "arm"
+    _default_configs += [ "$dir_pw_toolchain/arm_gcc:enable_float_printf" ]
+    _arch_build_args = {
+      pw_bloat_BLOATY_CONFIG = "$dir_pw_boot_cortex_m/bloaty_config.bloaty"
+      pw_boot_BACKEND = "$dir_pw_boot_cortex_m:armv7m"
+      pw_interrupt_CONTEXT_BACKEND = "$dir_pw_interrupt_cortex_m:context_armv7m"
+    }
+
+    if (defined(invoker.system_toolchain)) {
+      _system_toolchain = invoker.system_toolchain
+    } else {
+      _system_toolchain = pw_toolchain_arm_gcc
+    }
+
+    _final_binary_extension = ".elf"
+
+    _toolchains = [
+      {
+        toolchain_base = _system_toolchain.cortex_m4f_debug
+        level_name = _OPTIMIZATION_LEVELS.DEBUG
+      },
+      {
+        toolchain_base = _system_toolchain.cortex_m4f_size_optimized
+        level_name = _OPTIMIZATION_LEVELS.SIZE_OPTIMIZED
+      },
+      {
+        toolchain_base = _system_toolchain.cortex_m4f_speed_optimized
+        level_name = _OPTIMIZATION_LEVELS.SPEED_OPTIMIZED
+      },
+    ]
+  } else if (invoker.cpu == PW_SYSTEM_CPU.CORTEX_M3) {
+    _current_cpu = "arm"
+    _arch_build_args = {
+      pw_bloat_BLOATY_CONFIG = "$dir_pw_boot_cortex_m/bloaty_config.bloaty"
+      pw_boot_BACKEND = "$dir_pw_boot_cortex_m:armv7m"
+      pw_interrupt_CONTEXT_BACKEND = "$dir_pw_interrupt_cortex_m:context_armv7m"
+    }
+
+    if (defined(invoker.system_toolchain)) {
+      _system_toolchain = invoker.system_toolchain
+    } else {
+      _system_toolchain = pw_toolchain_arm_gcc
+    }
+
+    _final_binary_extension = ".elf"
+
+    _toolchains = [
+      {
+        toolchain_base = _system_toolchain.cortex_m3_debug
+        level_name = _OPTIMIZATION_LEVELS.DEBUG
+      },
+      {
+        toolchain_base = _system_toolchain.cortex_m3_size_optimized
+        level_name = _OPTIMIZATION_LEVELS.SIZE_OPTIMIZED
+      },
+      {
+        toolchain_base = _system_toolchain.cortex_m3_speed_optimized
+        level_name = _OPTIMIZATION_LEVELS.SPEED_OPTIMIZED
+      },
+    ]
+  } else if (invoker.cpu == PW_SYSTEM_CPU.CORTEX_M0PLUS) {
+    _current_cpu = "arm"
+    _arch_build_args = {
+      pw_bloat_BLOATY_CONFIG = "$dir_pw_boot_cortex_m/bloaty_config.bloaty"
+      pw_boot_BACKEND = "$dir_pw_boot_cortex_m:armv7m"
+      pw_interrupt_CONTEXT_BACKEND = "$dir_pw_interrupt_cortex_m:context_armv7m"
+    }
+
+    if (defined(invoker.system_toolchain)) {
+      _system_toolchain = invoker.system_toolchain
+    } else {
+      _system_toolchain = pw_toolchain_arm_gcc
+    }
+
+    # This creates a double .elf.elf extension for the rp2040 target.
+    # _final_binary_extension = ".elf"
+
+    _toolchains = [
+      {
+        toolchain_base = _system_toolchain.cortex_m0plus_debug
+        level_name = _OPTIMIZATION_LEVELS.DEBUG
+      },
+      {
+        toolchain_base = _system_toolchain.cortex_m0plus_size_optimized
+        level_name = _OPTIMIZATION_LEVELS.SIZE_OPTIMIZED
+      },
+      {
+        toolchain_base = _system_toolchain.cortex_m0plus_speed_optimized
+        level_name = _OPTIMIZATION_LEVELS.SPEED_OPTIMIZED
+      },
+    ]
+  } else if (invoker.cpu == PW_SYSTEM_CPU.NATIVE) {
+    _current_cpu = host_cpu
+    _arch_build_args = {
+      pw_log_BACKEND = dir_pw_log_string
+      pw_log_string_HANDLER_BACKEND = "$dir_pw_system:log_backend"
+      pw_sys_io_BACKEND = "$dir_pw_sys_io_stdio"
+      pw_system_IO_BACKEND = "$dir_pw_system:socket_target_io"
+    }
+    _link_deps += [ "$dir_pw_log_string:handler.impl" ]
+
+    if (defined(invoker.system_toolchain)) {
+      _system_toolchain = invoker.system_toolchain
+    } else if (host_os == "win") {
+      _system_toolchain = pw_toolchain_host_gcc
+    } else {
+      _system_toolchain = pw_toolchain_host_clang
+    }
+
+    _toolchains = [
+      {
+        toolchain_base = _system_toolchain.debug
+        level_name = _OPTIMIZATION_LEVELS.DEBUG
+      },
+      {
+        toolchain_base = _system_toolchain.size_optimized
+        level_name = _OPTIMIZATION_LEVELS.SIZE_OPTIMIZED
+      },
+      {
+        toolchain_base = _system_toolchain.speed_optimized
+        level_name = _OPTIMIZATION_LEVELS.SPEED_OPTIMIZED
+      },
+    ]
+  }
+  assert(defined(_arch_build_args),
+         "Unknown cpu choice for $target_name: `${invoker.cpu}`")
+
+  # Populate OS-specific build args.
+  assert(
+      defined(invoker.scheduler),
+      "Please select an `scheduler` for $target_name. Options: PW_SYSTEM_SCHEDULER.FREERTOS, PW_SYSTEM_SCHEDULER.NATIVE")
+  if (invoker.scheduler == PW_SYSTEM_SCHEDULER.FREERTOS) {
+    _current_os = "freertos"
+    _os_build_args = PW_SYSTEM_FREERTOS_BACKENDS
+  } else if (invoker.scheduler == PW_SYSTEM_SCHEDULER.NATIVE) {
+    _current_os = host_os
+    _os_build_args = PW_SYSTEM_STL_BACKENDS
+  }
+  assert(defined(_os_build_args),
+         "Unknown scheduler choice for $target_name: `${invoker.scheduler}`")
+
+  # Configure malloc defaults.
+  _use_pw_malloc = false
+  if (defined(invoker.use_pw_malloc)) {
+    _use_pw_malloc = invoker.use_pw_malloc
+  } else if (invoker.cpu != PW_SYSTEM_CPU.NATIVE) {
+    _use_pw_malloc = true
+  }
+
+  if (_use_pw_malloc) {
+    _default_configs += [ "$dir_pw_malloc:pw_malloc_wrapper_config" ]
+    _link_deps += [ dir_pw_malloc ]
+    _malloc_build_args = {
+      pw_malloc_BACKEND = dir_pw_malloc_freelist
+    }
+  } else {
+    _malloc_build_args = {
+    }
+  }
+
+  foreach(toolchain_and_level, _toolchains) {
+    # Clear from previous iteration.
+    _base = {
+    }
+    _base = toolchain_and_level.toolchain_base
+
+    generate_toolchain("${target_name}.${toolchain_and_level.level_name}") {
+      forward_variables_from(_base,
+                             "*",
+                             [
+                               "defaults",
+                               "name",
+                             ])
+      final_binary_extension = _final_binary_extension
+      defaults = {
+        current_os = _current_os
+        current_cpu = _current_cpu
+        forward_variables_from(_base.defaults, "*")
+        forward_variables_from(_default_build_args, "*")
+        forward_variables_from(_arch_build_args, "*")
+        forward_variables_from(_os_build_args, "*")
+        forward_variables_from(_malloc_build_args, "*")
+        default_configs += _default_configs
+        if (!defined(pw_build_LINK_DEPS)) {
+          pw_build_LINK_DEPS = []
+        }
+        pw_build_LINK_DEPS += _link_deps
+
+        if (defined(invoker.build_args)) {
+          forward_variables_from(invoker.build_args, "*")
+        }
+      }
+    }
+  }
+}

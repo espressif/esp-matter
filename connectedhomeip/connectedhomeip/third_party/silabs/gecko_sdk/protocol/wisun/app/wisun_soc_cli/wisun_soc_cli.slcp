@@ -1,0 +1,431 @@
+project_name: "wisun_soc_cli"
+label: "Wi-SUN - CLI example"
+description: "The Wi-SUN CLI (Command-Line Interface) sample application allows developers to easily evaluate the Wi-SUN stack APIs.
+The Wi-SUN command line interface provides a serial interface to a number of the Wi-SUN stack functions.
+For example, it can be used to connect the Wi-SUN device to a Wi-SUN border router and exchange IP packets."
+package: "wisun"
+category: "Wi-SUN Examples"
+quality: "production"
+
+component:
+  - id: "segger_rtt"
+  - id: "wisun_stack"
+  - id: "wisun_stack_debug"
+  - id: "wisun_full_radioconf"
+  - id: "wisun_test_certificates"
+  - id: "wisun_rb_detection"
+  - id: "wisun_default_phy"
+  - id: "wisun_rf_test"
+  - id: "wisun_cli"
+  - id: "wisun_config"
+  - id: "sl_system"
+  - id: "device_init"
+  - id: "micriumos_kernel"
+  - id: "sleeptimer"
+  - id: "nvm3_default"
+  - id: "slist"
+  - id: "silabs_core_sl_malloc"
+  - id: "sl_wisun_cli_util"
+  - id: "iostream_retarget_stdio"
+  - id: "iostream_stdlib_config"
+  - id: "iostream_recommended_stream"
+  - id: "cli"
+    instance:
+      - vcom
+  - id: "rail_util_pa"
+
+requires:
+  - name: freertos_heap_3
+    condition: [freertos]
+  - name: "wisun_stack_mode_switch"
+    condition: [device_sdid_220]
+  - name: "sl_wisun_mode_switch"
+    condition: [device_sdid_220]
+
+source:
+  - path: "app.c"
+  - path: "main.c"
+  - path: "app_cli.c"
+  - path: "app_settings.c"
+
+include:
+  - path: "."
+    file_list:
+    - path: "app.h"
+    - path: "app_cli.h"
+    - path: "app_settings.h"
+
+define:
+  - name: "DEBUG_EFM_USER"
+  - name: "WISUN_CLI_SAMPLE_APP"
+
+configuration:
+  - name: "SL_BOARD_ENABLE_VCOM"
+    value: "1"
+  - name: "SL_IOSTREAM_USART_VCOM_FLOW_CONTROL_TYPE"
+    value: "usartHwFlowControlNone"
+    condition: [iostream_usart]
+  - name: "SL_IOSTREAM_USART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF"
+    value: "1"
+    condition: [iostream_usart]
+  - name: SL_IOSTREAM_EUSART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "true"
+    condition: [iostream_eusart]
+  - name: SL_IOSTREAM_EUSART_VCOM_RESTRICT_ENERGY_MODE_TO_ALLOW_RECEPTION
+    value: "false" # Disable this so that the chip can enter EM2/3/4
+                   # and be woken by other wake sources, setting this
+                   # to true adds an EM1 requirement to the Power Manager.
+    condition: [iostream_eusart]
+  - name: SL_IOSTREAM_EUSART_VCOM_RX_BUFFER_SIZE
+    value: "128" # Increase from default 32 to account for automated command
+                 # storage entry and for when long command strings are
+                 # interrupted by chip interrupts.
+    condition: [iostream_eusart]
+  - name: SL_IOSTREAM_EUSART_VCOM_FLOW_CONTROL_TYPE
+    value: "eusartHwFlowControlNone"
+    condition: [iostream_eusart]
+  - name: CPU_CFG_TS_32_EN
+    value: "1"
+  - name: OS_CFG_DBG_EN
+    value: "1"
+  - name: OS_CFG_TS_EN
+    value: "1"
+  - name: OS_CFG_SCHED_ROUND_ROBIN_EN
+    value: "1"
+  - name: OS_CFG_STAT_TASK_EN
+    value: "1"
+  - name: OS_CFG_TASK_PROFILE_EN
+    value: "1"
+  - name: "OS_CFG_APP_HOOKS_EN"
+    value: "1"
+    condition: [micriumos_kernel]
+  - name: "SL_HEAP_SIZE"
+    value: "0xD000"
+  - name: "WISUN_CLI_AUTO_SAVE"
+    value: "0"
+
+template_contribution:
+  - name: "event_handler"
+    value:
+      event: "internal_app_init"
+      include: "app_cli.h"
+      handler: "app_cli_init"
+  - name: "cli_command"
+    value:
+      name: "about"
+      handler: "app_about"
+      help: "Get info about the running app"
+      shortcuts:
+        - name: "a"
+# -------------------------------
+  - name: "cli_group"
+    value:
+      name: "wisun"
+      help: "Wi-SUN commands"
+      shortcuts:
+        - name: "w"
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "connect"
+      handler: "app_connect"
+      help: "Connect to a Wi-SUN network: w c"
+      shortcuts:
+        - name: "c"
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "disconnect"
+      handler: "app_disconnect"
+      help: "Disconnect from the Wi-SUN network: w d"
+      shortcuts:
+        - name: "d"
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "ping"
+      handler: "app_ping"
+      help: "Ping a remote host: w p"
+      shortcuts:
+        - name: "p"
+      argument:
+        - type: string
+          help: "Remote address"
+#       - type: wildcard
+#         help: "Count"
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "tcp_client"
+      handler: "app_tcp_client"
+      help: "Open a TCP client socket: w tc"
+      shortcuts:
+        - name: "tc"
+      argument:
+        - type: string
+          help: "Remote address"
+        - type: uint16
+          help: "Remote port"
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "tcp_server"
+      handler: "app_tcp_server"
+      help: "Open a TCP server socket: w ts"
+      shortcuts:
+        - name: "ts"
+      argument:
+        - type: uint16
+          help: "Local port"
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "udp_client"
+      handler: "app_udp_client"
+      help: "Open a UDP client socket: w uc"
+      shortcuts:
+        - name: "uc"
+      argument:
+        - type: string
+          help: "Remote address"
+        - type: uint16
+          help: "Remote port"
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "udp_server"
+      handler: "app_udp_server"
+      help: "Open a UDP server socket: w us"
+      shortcuts:
+        - name: "us"
+      argument:
+        - type: uint16
+          help: "Local port"
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "socket_close"
+      handler: "app_socket_close"
+      help: "Close a socket: w sc"
+      shortcuts:
+        - name: "sc"
+      argument:
+        - type: uint32
+          help: "Socket Id"
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "socket_read"
+      handler: "app_socket_read"
+      help: "Read from a socket: w sr"
+      shortcuts:
+        - name: "sr"
+      argument:
+        - type: uint32
+          help: "Socket Id"
+        - type: uint16
+          help: "Amount of bytes to read"
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "socket_write"
+      handler: "app_socket_write"
+      help: "Write to a socket: w sw"
+      shortcuts:
+        - name: "sw"
+      argument:
+        - type: uint32
+          help: "Socket Id"
+        - type: string
+          help: "Data to write"
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "socket_writeto"
+      handler: "app_socket_writeto"
+      help: "Write to a socket to a specific host: w swt"
+      shortcuts:
+        - name: "swt"
+      argument:
+        - type: uint32
+          help: "Socket Id"
+        - type: string
+          help: "Remote address"
+        - type: uint16
+          help: "Remote port"
+        - type: string
+          help: "Data to write"
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "socket_list"
+      handler: "app_socket_list"
+      help: "List open sockets: w sl"
+      shortcuts:
+        - name: "sl"
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "socket_set_option"
+      handler: "app_socket_set_option"
+      help: "Set a socket option: w ss"
+      shortcuts:
+        - name: "ss"
+      argument:
+        - type: uint32
+          help: "Socket Id"
+        - type: string
+          help: "Option"
+        - type: string
+          help: "Option data"
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "mac_allow"
+      handler: "app_mac_allow"
+      help: "Add a MAC address to the list of allowed addresses, (FF:FF:FF:FF:FF:FF:FF:FF) clears the whitelist: w ma"
+      shortcuts:
+        - name: "ma"
+      argument:
+        - type: string
+          help: "MAC address"
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "mac_deny"
+      handler: "app_mac_deny"
+      help: "Add a MAC address to the list of denied addresses: w md"
+      shortcuts:
+        - name: "md"
+      argument:
+        - type: string
+          help: "MAC address"
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "socket_get_option"
+      handler: "app_socket_get_option"
+      help: "Get a socket option: w sg"
+      shortcuts:
+        - name: "sg"
+      argument:
+        - type: wildcard
+          help: empty | [uint32] Socket Id [string] Option
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "clear_credential_cache"
+      handler: "app_clear_credential_cache"
+      help: "Clear the credential cache: w ccc"
+      shortcuts:
+        - name: "ccc"
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "reset_statistics"
+      handler: "app_reset_statistics"
+      help: "Reset the statistics: w rs"
+      shortcuts:
+        - name: "rs"
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "set_trace_level"
+      handler: "app_set_trace_level"
+      help: "Set the trace level: w tl"
+      shortcuts:
+        - name: "tl"
+      argument:
+        - type: string
+          help: "List of ID,level; such as 1,none;4,info to configure group ID 1 with no log and group ID 4 with INFO level. Can also use all,info to set all groups to INFO level"
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "set_unicast_tx_mode"
+      handler: "app_set_unicast_tx_mode"
+      help: "configure unicast tx mode:"
+      argument:
+        - type: uint8
+          help: "mode: 0=default, 1=slot"
+# -------------------------------
+  - name: "cli_group"
+    value:
+      name: "rftest"
+      help: "RF test commands"
+      shortcuts:
+        - name: "rft"
+  - name: "cli_command"
+    value:
+      group: "rftest"
+      name: "start_stream"
+      handler: "app_rftest_start_stream"
+      help: "Start an RF test stream: rft strs"
+      argument:
+        - type: uint16
+          help: "Channel Id"
+      shortcuts:
+        - name: "[strs] "
+  - name: "cli_command"
+    value:
+      group: "rftest"
+      name: "stop_stream"
+      handler: "app_rftest_stop_stream"
+      help: "Stop an RF test stream: rft stps"
+      shortcuts:
+        - name: "stps"
+  - name: "cli_command"
+    value:
+      group: "rftest"
+      name: "start_tone"
+      handler: "app_rftest_start_tone"
+      help: "Start an RF test tone: rft strt"
+      argument:
+        - type: uint16
+          help: "Channel Id"
+      shortcuts:
+        - name: "strt"
+  - name: "cli_command"
+    value:
+      group: "rftest"
+      name: "stop_tone"
+      handler: "app_rftest_stop_tone"
+      help: "Stop an RF test tone: rft stpt"
+      shortcuts:
+        - name: "stpt"
+  - name: "cli_command"
+    value:
+      group: "rftest"
+      name: "set_tx_power"
+      handler: "app_rftest_set_tx_power"
+      help: "Set Tx Power for RF test: rft sttx"
+      argument:
+        - type: int8
+          help: "Tx Power (dBm)"
+      shortcuts:
+        - name: "sttx"
+
+readme:
+  - path: ../../../../app/wisun/documentation/example/wisun_cli/readme.md
+
+other_file:
+  - path: ../../../../app/wisun/documentation/example/wisun_cli/readme_img0.png
+
+toolchain_settings:
+  - option: optimize
+    value: debug
+
+ui_hints:
+  highlight:
+    - path: readme.md
+      focus: true
+
+tag:
+  - prebuilt_demo
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Wi-SUN"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]

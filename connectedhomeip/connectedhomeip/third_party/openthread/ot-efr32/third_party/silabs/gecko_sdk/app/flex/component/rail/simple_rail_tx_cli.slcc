@@ -1,0 +1,27 @@
+id: "simple_rail_tx_cli"
+label: "Simple RAIL Tx CLI"
+package: "Flex"
+description: "Adds RAIL transmit functionality via cli - it triggers the state machine of Simple RAIL Tx component with a cli event.
+              The component can be used with Blink and Flex (RAIL) - Empty Example applications only."
+category: "Flex|RAIL|Utility"
+quality: "production"
+root_path: "app/flex/component/rail/simple_rail_tx_cli"
+
+provides:
+  - name: "simple_rail_tx_cli"
+requires:
+  - name: "simple_rail_tx"
+  - name: "cli"
+source:
+  - path: "simple_rail_tx_cli.c"
+
+template_contribution:
+
+  - name: cli_command
+    value:
+      name: send
+      handler: cli_send_packet
+      help: "Send a given packet"
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: simple_rail_tx_cli

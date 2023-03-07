@@ -1,0 +1,163 @@
+#!/usr/bin/env node
+//
+// If you uncomment the line in `zap-generate.js` that looks like this:
+//   //  .then(() => scriptUtil.addToJsonFile('/tmp/gen.log', cmdArgs))
+// then it will produce gen.log file.
+// This script can then be used to take that file and produce a sdk.json out of it.
+//
+// Note: this was used in Matter SDK migration, but it is useful, yet not without
+// some modifications for future cases. That's why this script is commited here.
+//
+// It is NOT part of zap runtime or anything, it's just a quick hack.
+
+const fs = require('fs')
+const fsp = fs.promises
+const path = require('path')
+const os = require('os')
+
+// This points to the root of the SDK.
+const sdkRoot = path.join(os.homedir(), 'git/matter')
+
+async function read() {
+  let data = await fsp.readFile('/tmp/gen.log')
+  let json = JSON.parse(data)
+  let allParsed = []
+  for (let one of json) {
+    let parsed = {}
+    for (let x = 0; x < one.length; x++) {
+      if (one[x] == '-z') {
+        parsed.zcl = path.relative(sdkRoot, one[x + 1])
+      } else if (one[x] == '-g') {
+        parsed.gen = path.relative(sdkRoot, one[x + 1])
+      } else if (one[x] == '-i') {
+        parsed.input = path.relative(sdkRoot, one[x + 1])
+      } else if (one[x] == '-o') {
+        parsed.output = path.relative(sdkRoot, one[x + 1])
+      }
+    }
+    allParsed.push(parsed)
+  }
+
+  let final = {}
+  final.zcl = {}
+  for (let one of allParsed) {
+    if (!Object.values(final.zcl).includes(one.zcl)) {
+      let key = 'z' + Object.keys(final.zcl).length
+      if (one.zcl.includes('extensions')) {
+        key = 'main_ext'
+      } else {
+        key = 'main'
+      }
+      final.zcl[key] = one.zcl
+    }
+  }
+
+  final.templates = {}
+  for (let one of allParsed) {
+    if (!Object.values(final.templates).includes(one.gen)) {
+      let key = 't' + Object.keys(final.templates).length
+      if (one.gen.includes('java')) {
+        key = 'java'
+      } else if (one.gen.includes('python')) {
+        key = 'python'
+      } else if (one.gen.includes('darwin')) {
+        if (one.gen.includes('CHIP')) {
+          key = 'darwin-chip'
+        } else if (one.gen.includes('test')) {
+          key = 'darwin-test'
+        } else {
+          key = 'darwin'
+        }
+      } else if (one.gen.includes('chip-tool')) {
+        if (one.gen.includes('test')) {
+          key = 'chip-tool-test'
+        } else {
+          key = 'chip-tool'
+        }
+      } else if (one.gen.includes('app/common')) {
+        key = 'app-common'
+      } else if (one.gen.includes('app/tests')) {
+        key = 'app-test'
+      } else if (one.gen.includes('placeholder')) {
+        key = 'placeholder'
+      } else if (one.gen.includes('app/zap-templates')) {
+        key = 'app-zap'
+      }
+      final.templates[key] = one.gen
+    }
+  }
+
+  final.zapFiles = {}
+  for (let one of allParsed) {
+    if (!Object.values(final.zapFiles).includes(one.input)) {
+      let key = 'z' + Object.keys(final.zapFiles).length
+      if (one.input.includes('controller-clusters.zap')) {
+        key = 'controller'
+      } else if (one.input.startsWith('examples/placeholder')) {
+        if (one.input.includes('app1')) key = 'app1'
+        else key = 'app2'
+      } else if (one.input.startsWith('examples/chef')) {
+        key = path.basename(one.input, '.zap')
+        key = 'chef_' + key.substring(9, key.length - 11)
+      } else if (one.input.startsWith('examples')) {
+        key = path.basename(one.input, '.zap')
+      }
+      final.zapFiles[key] = one.input
+    }
+  }
+
+  final.generation = []
+
+  for (let one of allParsed) {
+    let out = one.output
+    let input = Object.keys(final.zapFiles).find(
+      (key) => final.zapFiles[key] === one.input
+    )
+
+    let zcl = Object.keys(final.zcl).find((key) => final.zcl[key] === one.zcl)
+
+    let template = Object.keys(final.templates).find(
+      (key) => final.templates[key] === one.gen
+    )
+
+    let thisOne = {
+      zapFile: input,
+      output: out,
+      zcl: zcl,
+      template: template,
+    }
+    // Find existing one with same zapFile and output and zcl
+    let existing = final.generation.find((x) => {
+      return (
+        x.zapFile == thisOne.zapFile &&
+        x.output == thisOne.output &&
+        x.zcl == thisOne.zcl
+      )
+    })
+    if (existing) {
+      let ct = existing.template
+      if (Array.isArray(ct)) {
+        ct.push(thisOne.template)
+      } else {
+        existing.template = [existing.template, thisOne.template]
+      }
+    } else {
+      final.generation.push(thisOne)
+    }
+
+    final.generation.sort((a, b) => {
+      let cmp = a.zapFile.localeCompare(b.zapFile)
+      if (cmp != 0) return cmp
+      cmp = a.output.localeCompare(b.output)
+      if (cmp != 0) return cmp
+
+      cmp = a.zcl.localeCompare(b.zcl)
+      if (cmp != 0) return cmp
+      return a.template.localeCompare(b.template)
+    })
+  }
+
+  console.log(JSON.stringify(final, null, 2))
+}
+
+read().then(() => {})

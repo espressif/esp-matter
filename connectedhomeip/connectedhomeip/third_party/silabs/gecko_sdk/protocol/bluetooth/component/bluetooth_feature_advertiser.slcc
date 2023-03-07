@@ -1,0 +1,43 @@
+id: "bluetooth_feature_advertiser"
+label: "Advertising Base Feature"
+package: "Bluetooth"
+description: >
+  This Bluetooth advertising component, corresponding to the "advertiser" class
+  in Bluetooth APIs, is the base of legacy, extended and periodic advertisings.
+  Functionalities in this component include advertising set creation, advertising
+  parameter and address settings etc. The application must choose which advertising
+  types are needed based on its use cases.
+  The <bluetooth_feature_legacy_advertiser> component provides the legacy advertising
+  feature. The <bluetooth_feature_extended_advertiser> component provides the extended
+  advertising feature. And the <bluetooth_feature_periodic_advertiser> component provides
+  the periodic advertising feature.
+  When the <bluetooth_feature_legacy_advertiser>, <bluetooth_feature_extended_advertiser>,
+  or <bluetooth_feature_periodic_advertiser> component is included by the application, some
+  commands of the "advertiser" class whose behaviors vary by specific advertising types
+  are no longer supported. See the Bluetooth API reference for more details. When none
+  of the three components is included, all commands of the "advertiser" class are
+  functional for providing the backwards compatibility.
+category: "Bluetooth|Feature"
+quality: "production"
+root_path: "protocol/bluetooth"
+config_file:
+  - path: "config/sl_bluetooth_advertiser_config.h"
+requires:
+  - name: "bluetooth_controller"
+provides:
+  - name: "bluetooth_feature_advertiser"
+  - name: "bluetooth_feature_peripheral_connection"
+  - name: "bluetooth_feature_connection_creation"
+    allow_multiple: true
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_advertiser
+  - name: component_catalog
+    value: bluetooth_extended_advertising_incompatible
+    condition:
+      - "device_sdid_80"
+  - name: bluetooth_controller_init
+    value:
+      include: "sl_bluetooth_advertiser_config.h"
+      function: sl_btctrl_init_adv()
+    priority: 3

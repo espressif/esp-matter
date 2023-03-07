@@ -1,0 +1,24 @@
+id: veml6035_driver
+package: platform
+label: VEML6035 - Ambient Light Sensor
+description: >
+  Driver for the Vishay VEML6035 ambient light sensor
+category: Platform|Board Drivers
+quality: production
+root_path: hardware/driver/veml6035
+provides:
+  - name: veml6035_driver
+requires:
+  - name: i2cspm_core
+  - name: sleeptimer
+  - name: status
+  - name: enum
+include:
+  - path: inc
+    file_list:
+      - path: sl_veml6035.h
+source:
+  - path: src/sl_veml6035.c
+documentation:
+    docset: gecko-platform
+    document: hardware-driver/api/group-veml6035

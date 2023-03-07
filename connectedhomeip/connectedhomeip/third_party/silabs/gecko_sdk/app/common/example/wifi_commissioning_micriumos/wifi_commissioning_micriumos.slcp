@@ -1,0 +1,99 @@
+project_name: wifi_commissioning_micriumos
+package: platform
+quality: production
+label: Platform - Wi-Fi Commissioning on Micrium OS kernel
+description: >
+  Demonstrates how to setup a Wi-Fi station using the WF200 Wi-Fi station/softAP combo feature. The application exposes a Wi-Fi access point and a web server to configure the station.
+
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+component:
+  - id: simple_button
+    instance: [btn0, btn1]
+  - id: simple_led
+    instance: [led0, led1]
+  - id: iostream_recommended_stream
+  - id: iostream_retarget_stdio
+  - id: dmadrv
+  - id: sleeptimer
+  - id: board_control
+  - id: device_init
+  - id: device_init_clocks
+  - id: device_init_hfrco
+  - id: sl_system
+  - id: sl_system_init
+  - id: micriumos_bsp
+  - id: micriumos_kernel
+  - id: micriumos_common_lib
+  - id: micriumos_io_core
+  - id: wfx_fmac_driver
+  - id: lwip_core
+  - id: lwip_port_micriumos
+  - id: lwip_api
+  - id: lwip_netif_ethernet
+  - id: lwip_app_http
+  - id: lwip_app_lwiperf
+source:
+  - path: app.c
+  - path: app_webpage.c
+  - path: app_wifi_commissioning.c
+  - path: app_wifi_events.c
+  - path: lwip_host/ethernetif.c
+  - path: lwip_host/apps/dhcp_client.c
+  - path: lwip_host/apps/dhcp_server.c
+  - path: main.c
+include:
+  - path: .
+    file_list:
+    - path: app.h
+    - path: app_webpage.h
+    - path: app_wifi_commissioning.h
+    - path: app_wifi_events.h
+  - path: lwip_host
+    file_list:
+    - path: ethernetif.h
+    - path: lwipopts.h
+  - path: lwip_host/apps
+    file_list:
+    - path: dhcp_client.h
+    - path: dhcp_server.h
+  - path: lwip_host/webpage
+    file_list:
+    - path: httpfsdata.h
+configuration:
+  - name: LIB_MEM_CFG_HEAP_SIZE
+    value: 32000
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: OS_CFG_TS_EN
+    value: 0
+  - name: SL_IOSTREAM_USART_VCOM_RESTRICT_ENERGY_MODE_TO_ALLOW_RECEPTION
+    value: 0
+    condition: [iostream_usart]      
+  - name: SL_IOSTREAM_UART_VCOM_RESTRICT_ENERGY_MODE_TO_ALLOW_RECEPTION
+    value: 0
+    condition: [iostream_uart]      
+  - name: SL_POWER_MANAGER_CONFIG_VOLTAGE_SCALING_FAST_WAKEUP
+    value: 1
+    condition: [power_manager]
+  - name: SL_POWER_MANAGER_LOWEST_EM_ALLOWED
+    value: 2
+    condition: [power_manager] 
+define:
+  - name: "DEBUG_EFM"
+tag:
+  - hardware:component:led:2+
+  - hardware:component:button:2+
+readme:
+  - path: readme.md
+toolchain_settings:
+  - option: optimize
+    value: speed
+ui_hints:
+  highlight: readme.md

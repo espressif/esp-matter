@@ -1,0 +1,35 @@
+id: tz_service_common
+package: platform
+description: >-
+  This component component includes files and functionality common to all secure
+  services.
+category: Platform|Security|TrustZone
+ui_hints:
+  visibility: never
+quality: beta
+component_root_path: util/third_party/crypto/trusted-firmware-m
+
+provides:
+  - name: tz_service_common
+
+requires:
+  - name: trustzone_secure
+  - name: psa_crypto
+  - name: sl_assert
+  - name: tz_common
+
+include:
+  - path: interface/include
+    file_list:
+      - path: psa_config.h
+      - path: tfm_api.h
+      - path: psa/client.h
+      - path: psa/crypto_client_struct.h
+      - path: psa/error.h
+
+  - path: secure_fw/partitions/lib/sprt/include
+    file_list:
+      - path: sli_tz_iovec_check.h
+
+source:
+  - path: secure_fw/partitions/lib/sprt/sli_tz_iovec_check.c

@@ -1,0 +1,480 @@
+<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<?xml-stylesheet type="text/xsl" href="zcldisplay.xsl"?>
+<zcl:library xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:zcl="http://zigbee.org/zcl/clusters"
+  xmlns:type="http://zigbee.org/zcl/types"
+  xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd">
+
+  <!-- Tools need to process XML includes first see https://stackoverflow.com/questions/1098116/xinclude-schema-namespace-validation 
+    for how to enable this in the eclipse validation config. -->
+  <!-- types? -->
+  <type:type id="00" short="nodata" name="No data" />
+  <type:type id="08" short="data8" name="8-bit data" discrete="true" />
+  <type:type id="09" short="data16" name="16-bit data" discrete="true" />
+  <type:type id="0a" short="data24" name="24-bit data" discrete="true" />
+  <type:type id="0b" short="data32" name="32-bit data" discrete="true" />
+  <type:type id="0c" short="data40" name="40-bit data" discrete="true" />
+  <type:type id="0d" short="data48" name="48-bit data" discrete="true" />
+  <type:type id="0e" short="data56" name="56-bit data" discrete="true" />
+  <type:type id="0f" short="data64" name="64-bit data" discrete="true" />
+  <type:type id="10" short="bool" name="Boolean" discrete="true">
+    <restriction>
+      <type:invalid value="255" />
+    </restriction>
+  </type:type>
+  <type:type id="18" short="map8" name="8-bit bitmap" discrete="true" />
+  <type:type id="19" short="map16" name="16-bit bitmap" discrete="true" />
+  <type:type id="1a" short="map24" name="24-bit bitmap" discrete="true" />
+  <type:type id="1b" short="map32" name="32-bit bitmap" discrete="true" />
+  <type:type id="1c" short="map40" name="40-bit bitmap" discrete="true" />
+  <type:type id="1d" short="map48" name="48-bit bitmap" discrete="true" />
+  <type:type id="1e" short="map56" name="56-bit bitmap" discrete="true" />
+  <type:type id="1f" short="map64" name="64-bit bitmap" discrete="true" />
+  <type:type id="20" short="uint8" name="Unsigned  8-bit integer">
+    <restriction>
+      <type:minInclusive value="0" />
+      <type:maxInclusive value="254" />
+      <type:invalid value="255" />
+    </restriction>
+  </type:type>
+  <type:type id="21" short="uint16" name="Unsigned 16-bit integer">
+    <restriction>
+      <type:minInclusive value="0" />
+      <type:maxInclusive value="65534" />
+      <type:invalid value="65535" />
+    </restriction>
+  </type:type>
+  <type:type id="22" short="uint24" name="Unsigned 24-bit integer">
+    <restriction>
+      <type:minInclusive value="0" />
+      <type:maxInclusive value="16777214" />
+      <type:invalid value="16777215" />
+    </restriction>
+  </type:type>
+  <type:type id="23" short="uint32" name="Unsigned 32-bit integer">
+    <restriction>
+      <type:minInclusive value="0" />
+      <type:maxInclusive value="4294967294" />
+      <type:invalid value="4294967295" />
+    </restriction>
+  </type:type>
+  <type:type id="24" short="uint40" name="Unsigned 40-bit integer">
+    <restriction>
+      <type:minInclusive value="0" />
+      <type:maxInclusive value="1099511627774" />
+      <type:invalid value="1099511627775" />
+    </restriction>
+  </type:type>
+  <type:type id="25" short="uint48" name="Unsigned 48-bit integer">
+    <restriction>
+      <type:minInclusive value="0" />
+      <type:maxInclusive value="281474976710654" />
+      <type:invalid value="281474976710655" />
+    </restriction>
+  </type:type>
+  <type:type id="26" short="uint56" name="Unsigned 56-bit integer">
+    <restriction>
+      <type:minInclusive value="0" />
+      <type:maxInclusive value="72057594037927934" />
+      <type:invalid value="72057594037927935" />
+    </restriction>
+  </type:type>
+  <type:type id="27" short="uint64" name="Unsigned 64-bit integer">
+    <restriction>
+      <type:minInclusive value="0" />
+      <type:maxInclusive value="18446744073709551614" />
+      <type:invalid value="18446744073709551615" />
+    </restriction>
+  </type:type>
+  <type:type id="28" short="int8" name="Signed 8-bit integer">
+    <restriction>
+      <type:minInclusive value="-127" />
+      <type:maxInclusive value="127" />
+      <type:invalid value="-128" />
+    </restriction>
+  </type:type>
+  <type:type id="29" short="int16" name="Signed 16-bit integer">
+    <restriction>
+      <type:minInclusive value="-32767" />
+      <type:maxInclusive value="32767" />
+      <type:invalid value="-32768" />
+    </restriction>
+  </type:type>
+  <type:type id="2a" short="int24" name="Signed 24-bit integer">
+    <restriction>
+      <type:minInclusive value="-8388607" />
+      <type:maxInclusive value="8388607" />
+      <type:invalid value="-8388608" />
+    </restriction>
+  </type:type>
+  <type:type id="2b" short="int32" name="Signed 32-bit integer">
+    <restriction>
+      <type:minInclusive value="-2147483647" />
+      <type:maxInclusive value="2147483647" />
+      <type:invalid value="-2147483648" />
+    </restriction>
+  </type:type>
+  <type:type id="2c" short="int40" name="Signed 40-bit integer">
+    <restriction>
+      <type:minInclusive value="-549755813887" />
+      <type:maxInclusive value="549755813887" />
+      <type:invalid value="-549755813888" />
+    </restriction>
+  </type:type>
+  <type:type id="2d" short="int48" name="Signed 48-bit integer">
+    <restriction>
+      <type:minInclusive value="-140737488355327" />
+      <type:maxInclusive value="140737488355327" />
+      <type:invalid value="-140737488355328" />
+    </restriction>
+  </type:type>
+  <type:type id="2e" short="int56" name="Signed 56-bit integer">
+    <restriction>
+      <type:minInclusive value="-36028797018963967" />
+      <type:maxInclusive value="36028797018963967" />
+      <type:invalid value="-36028797018963968" />
+    </restriction>
+  </type:type>
+  <type:type id="2f" short="int64" name="Signed 64-bit integer">
+    <restriction>
+      <type:minInclusive value="-9223372036854775807" />
+      <type:maxInclusive value="9223372036854775807" />
+      <type:invalid value="-9223372036854775808" />
+    </restriction>
+  </type:type>
+  <type:type id="30" short="enum8" name="8-bit enumeration" discrete="true">
+    <restriction>
+      <type:invalid value="255" />
+    </restriction>
+  </type:type>
+  <type:type id="31" short="enum16" name="16-bit enumeration" discrete="true">
+    <restriction>
+      <type:invalid value="65535" />
+    </restriction>
+  </type:type>
+  
+  <!-- Floating Point -->
+  <type:type id="38" short="semi" name="Semi-precision">
+    <!-- Not sure how to restrict as it's not really a standard type -->
+    <restriction>
+      <type:minInclusive value="-6.5504E+04"/>
+      <type:maxInclusive value="6.5504E+04"/>
+      <type:enumeratedRange max="7fff" min="7c01" name="NaN" />
+      <type:enumeratedRange max="ffff" min="fc01" name="NegativeNaN" />
+      <type:special name="Infinity" value="7c00" />
+      <type:special name="NegativeInfinity" value="fc00" />
+    </restriction>
+  </type:type>
+  <type:type id="39" short="single" name="Single precision">
+    <restriction>
+      <type:minInclusive value="-3.402823E+38" />
+      <type:maxInclusive value="3.402823E+38" />
+      <type:enumeratedRange max="7fffffff" min="7f800001" name="NaN" />
+      <type:enumeratedRange max="ffffffff" min="ff800001" name="NegativeNaN" />
+      <type:special name="Infinity" value="7f800000" />
+      <type:special name="NegativeInfinity" value="ff800000" />
+    </restriction>
+  </type:type>
+  <type:type id="3a" short="double" name="Double precision">
+    <restriction>
+      <type:minInclusive value="-1.80E+308" />
+      <type:maxInclusive value="1.80E+308" />
+      <type:enumeratedRange max="7fffffffffffffff" min="fff0000000000001" name="NaN" />
+      <type:enumeratedRange max="ffffffffffffffff" min="fff0000000000001" name="NegativeNaN" />
+      <type:special name="Infinity" value="7ff0000000000000" />
+      <type:special name="NegativeInfinity" value="fff0000000000000" />
+    </restriction>
+  </type:type>
+  
+  <!-- String Discrete -->
+  <type:type id="41" short="octstr" name="Octet string" discrete="true" />
+  <type:type id="42" short="string" name="Character string" discrete="true" />
+  <type:type id="43" short="octstr16" name="Long octet string" discrete="true" />
+  <type:type id="44" short="string16" name="Long character string" discrete="true" />
+
+  <!-- Sequences (Not Used By Standard Zigbee Clusters, unavailable in ZCL over IP) -->
+  <type:type id="48" short="array" name="Array" discrete="true" />
+  <type:type id="49" short="struct" name="Structure" discrete="true" />
+  
+  <!-- Collections -->
+  <type:type id="50" short="set" name="Set" discrete="true" />
+  <type:type id="51" short="bag" name="Bag" discrete="true" />
+  
+  <!-- Time -->
+  <type:type id="e0" short="ToD" name="Time of day">
+    <restriction>
+      <type:minInclusive value="0" />
+      <type:maxInclusive value="4294967294" />
+      <type:invalid value="4294967295" />
+    </restriction>
+  </type:type>
+  <type:type id="e1" short="date" name="Date">
+    <restriction>
+      <type:minInclusive value="0" />
+      <type:maxInclusive value="4294967294" />
+      <type:invalid value="4294967295" />
+    </restriction>
+  </type:type>
+  <type:type id="e2" short="UTC" name="UTCTime">
+    <restriction>
+      <type:minInclusive value="0" />
+      <type:maxInclusive value="4294967294" />
+      <type:invalid value="4294967295" />
+    </restriction>
+  </type:type>
+  <!-- Identifiers -->
+  <type:type id="e8" short="clusterId" name="Cluster ID" discrete="true">
+    <restriction>
+      <type:minInclusive value="0" />
+      <type:maxInclusive value="65534" />
+      <type:invalid value="65535" />
+    </restriction>
+  </type:type>
+  <type:type id="e9" short="attribId" name="Attribute ID" discrete="true">
+    <restriction>
+      <type:minInclusive value="0" />
+      <type:maxInclusive value="65534" />
+      <type:invalid value="65535" />
+    </restriction>
+  </type:type>
+  <type:type id="ea" short="bacOID" name="BACnet OID" discrete="true">
+    <restriction>
+      <type:minInclusive value="0" />
+      <type:maxInclusive value="4294967294" />
+      <type:invalid value="4294967295" />
+    </restriction>
+  </type:type>
+  <!-- Misc -->
+  <type:type id="f0" short="eui64" name="IEEE address" discrete="true">
+    <restriction>
+      <type:length value="8" />
+    </restriction>
+  </type:type>
+  <type:type id="f1" short="key128" name="128-bit security key" discrete="true">
+    <restriction>
+      <type:length value="16" />
+    </restriction>
+  </type:type>
+  <!-- Opaque (not defined since there is no ID -->
+  <!-- Unknown -->
+  <type:type id="ff" short="unk" name="Unknown" />
+
+  <!-- ZCL Data Types -->
+  <type:type id="30" short="zclType" name="ZCL Types" discrete="true" inheritsFrom="enum8">
+    <restriction>
+      <type:enumeration name="nodata" value="00" />
+      <type:enumeration name="data8" value="08" />
+      <type:enumeration name="data16" value="09" />
+      <type:enumeration name="data24" value="0a" />
+      <type:enumeration name="data32" value="0b" />
+      <type:enumeration name="data40" value="0c" />
+      <type:enumeration name="data48" value="0d" />
+      <type:enumeration name="data56" value="0e" />
+      <type:enumeration name="data64" value="0f" />
+      <type:enumeration name="bool" value="10" />
+      <type:enumeration name="map8" value="18" />
+      <type:enumeration name="map16" value="19" />
+      <type:enumeration name="map24" value="1a" />
+      <type:enumeration name="map32" value="1b" />
+      <type:enumeration name="map40" value="1c" />
+      <type:enumeration name="map48" value="1d" />
+      <type:enumeration name="map56" value="1e" />
+      <type:enumeration name="map64" value="1f" />
+      <type:enumeration name="uint8" value="20" />
+      <type:enumeration name="uint16" value="21" />
+      <type:enumeration name="uint24" value="22" />
+      <type:enumeration name="uint32" value="23" />
+      <type:enumeration name="uint40" value="24" />
+      <type:enumeration name="uint48" value="25" />
+      <type:enumeration name="uint56" value="26" />
+      <type:enumeration name="uint64" value="27" />
+      <type:enumeration name="int8" value="28" />
+      <type:enumeration name="int16" value="29" />
+      <type:enumeration name="int24" value="2a" />
+      <type:enumeration name="int32" value="2b" />
+      <type:enumeration name="int40" value="2c" />
+      <type:enumeration name="int48" value="2d" />
+      <type:enumeration name="int56" value="2e" />
+      <type:enumeration name="int64" value="2f" />
+      <type:enumeration name="enum8" value="30" />
+      <type:enumeration name="enum16" value="31" />
+      <type:enumeration name="semi" value="38" />
+      <type:enumeration name="single" value="39" />
+      <type:enumeration name="double" value="3a" />
+      <type:enumeration name="octstr" value="41" />
+      <type:enumeration name="string" value="42" />
+      <type:enumeration name="octstr16" value="43" />
+      <type:enumeration name="string16" value="44" />
+      <type:enumeration name="array" value="48" />
+      <type:enumeration name="struct" value="4c" />
+      <type:enumeration name="set" value="50" />
+      <type:enumeration name="bag" value="51" />
+      <type:enumeration name="ToD" value="e0" />
+      <type:enumeration name="date" value="e1" />
+      <type:enumeration name="UTC" value="e2" />
+      <type:enumeration name="clusterId" value="e8" />
+      <type:enumeration name="attribId" value="e9" />
+      <type:enumeration name="bacOID" value="ea" />
+      <type:enumeration name="eui64" value="f0" />
+      <type:enumeration name="key128" value="f1" />
+      <type:enumeration name="unk" value="ff" />
+    </restriction>
+  </type:type>
+  
+  <!-- AttributeReportingStatus Enum Values -->
+  <type:type id="30" short="attributeReportingStatus" name="Attribute Reporting Status" discrete="true" inheritsFrom="enum8">
+    <restriction>
+      <type:enumeration name="Pending" value="00" />
+      <type:enumeration name="Complete" value="01"/>
+    </restriction>
+  </type:type>
+
+  <!-- ZCL Status Codes -->
+  <type:type id="30" short="zclStatus" name="ZCL Status" discrete="true" inheritsFrom="enum8">
+    <restriction>
+      <type:enumeration name="SUCCESS" value="00" />
+      <type:enumeration name="FAILURE" value="01" />
+      <type:enumeration name="NOT_AUTHORIZED" value="7e" /> <!-- 0x7e -->
+      <type:enumeration name="MALFORMED_COMMAND" value="80" /> <!-- 0x80 -->
+      <type:enumeration name="UNSUP_CLUSTER_COMMAND" value="81" /> <!-- 0x81 -->
+      <type:enumeration name="UNSUP_GENERAL_COMMAND" value="82" /> <!-- 0x82 -->
+      <type:enumeration name="UNSUP_MANUF_CLUSTER_COMMAND" value="83" /> <!-- 0x83 -->
+      <type:enumeration name="UNSUP_MANUF_GENERAL_COMMAND" value="84" /> <!-- 0x84 -->
+      <type:enumeration name="INVALID_FIELD" value="85" /><!-- 0x85 -->
+      <type:enumeration name="UNSUPPORTED_ATTRIBUTE" value="86" /><!-- 0x86 -->
+      <type:enumeration name="INVALID_VALUE" value="87" /><!-- 0x87 -->
+      <type:enumeration name="READ_ONLY" value="88" /><!-- 0x88 -->
+      <type:enumeration name="INSUFFICIENT_SPACE" value="89" /><!-- 0x89 -->
+      <type:enumeration name="DUPLICATE_EXISTS" value="8a" /><!-- 0x8a -->
+      <type:enumeration name="NOT_FOUND" value="8b" /> <!-- 0x8b -->
+      <type:enumeration name="UNREPORTABLE_ATTRIBUTE" value="8c" /> <!-- 0x8c -->
+      <type:enumeration name="INVALID_DATA_TYPE" value="8d" /><!-- 0x8d -->
+      <type:enumeration name="INVALID_SELECTOR" value="8e" /><!-- 0x8e -->
+      <type:enumeration name="WRITE_ONLY" value="8f" /><!-- 0x8f -->
+      <type:enumeration name="INCONSISTENT_STARTUP_STATE" value="90" /><!-- 0x90 -->
+      <type:enumeration name="DEFINED_OUT_OF_BAND" value="91" /><!-- 0x91 -->
+      <type:enumeration name="INCONSISTENT" value="92" /><!-- 0x92 -->
+      <type:enumeration name="ACTION_DENIED" value="93" /><!-- 0x93 -->
+      <type:enumeration name="TIMEOUT" value="94" /><!-- 0x94 -->
+      <type:enumeration name="ABORT" value="95" /><!-- 0x95 -->
+      <type:enumeration name="INVALID_IMAGE" value="96" /><!-- 0x96 -->
+      <type:enumeration name="WAIT_FOR_DATA" value="97" /><!-- 0x97 -->
+      <type:enumeration name="NO_IMAGE_AVAILABLE" value="98" /><!-- 0x98 -->
+      <type:enumeration name="REQUIRE_MORE_IMAGE" value="99" /><!-- 0x99 -->
+      <type:enumeration name="NOTIFICATION_PENDING" value="9a" /><!-- 0x9a -->
+      <type:enumeration name="HARDWARE_FAILURE" value="c0" /><!-- 0xc0 -->
+      <type:enumeration name="SOFTWARE_FAILURE" value="c1" /><!-- 0xc1 -->
+      <type:enumeration name="CALIBRATION_ERROR" value="c2" /><!-- 0xc2 -->
+      <type:enumeration name="UNSUPPORTED_CLUSTER" value="c3" /><!-- 0xc3 -->
+      <type:enumeration name="LIMIT_REACHED" value="c4" /><!-- 0xc4 -->
+    </restriction>
+  </type:type>
+
+  <type:type id="30" short="ProfileIntervalPeriod" name="Profile Interval Period" discrete="true"
+    inheritsFrom="enum8">
+    <restriction>
+      <type:enumeration value="00" name="Daily" />
+      <type:enumeration value="01" name="60Minutes" />
+      <type:enumeration value="02" name="30Minutes" />
+      <type:enumeration value="03" name="15Minutes" />
+      <type:enumeration value="04" name="10Minutes" />
+      <type:enumeration value="05" name="7dot5Minutes" />
+      <type:enumeration value="06" name="5Minutes" />
+      <type:enumeration value="07" name="2dot5Minutes" />
+    </restriction>
+  </type:type>
+
+  <!-- IAS types used by both IAS Zone and IAS ACE clusters. -->
+  <type:type short="IasZoneType" name="IasZoneType" id="31" inheritsFrom="enum16">
+    <restriction>
+      <type:enumeration name="StandardCIE" value="0000"/>
+      <type:enumeration name="MotionSensor" value="000D"/>
+      <type:enumeration name="ContactSwitch" value="0015"/>
+      <type:enumeration name="DoorOrWindowHandle" value="0016"/>
+      <type:enumeration name="FireSensor" value="0028"/>
+      <type:enumeration name="WaterSensor" value="002A"/>
+      <type:enumeration name="CarbonMonoxideSensor" value="002B"/>
+      <type:enumeration name="PersonalEmergencyDevice" value="002C"/>
+      <type:enumeration name="VibrationOrMovementSensor" value="002D"/>
+      <type:enumeration name="RemoteControl" value="010F"/>
+      <type:enumeration name="KeyFob" value="0115"/>
+      <type:enumeration name="Keypad" value="021D"/>
+      <type:enumeration name="StandardWarningDevice" value="0225"/>
+      <type:enumeration name="GlassBreakSensor" value="0226"/>
+      <type:enumeration name="SecurityRepeater" value="0229"/>
+      <type:enumeratedRange name="ManufacturerSpecific" min="8000" max="FFFE" />
+      <type:enumeration name="Invalid" value="FFFF"/>
+    </restriction>
+  </type:type>
+
+  <type:type short="IasZoneStatus" name="IasZoneStatus" id="19" inheritsFrom="map16">
+    <bitmap>
+      <element name="Alarm1" type="bool" mask="0001" shiftRight="0" />
+      <element name="Alarm2" type="bool" mask="0002" shiftRight="1" />
+      <element name="Tamper" type="bool" mask="0004" shiftRight="2" />
+      <element name="BatteryLow" type="bool" mask="0008" shiftRight="3" />
+      <element name="SupervisionNotify" type="bool" mask="0010" shiftRight="4" />
+      <element name="RestoreNotify" type="bool" mask="0020" shiftRight="5" />
+      <element name="Trouble" type="bool" mask="0040" shiftRight="6" />
+      <element name="ACMainsFault" type="bool" mask="0080" shiftRight="7" />
+      <element name="Test" type="bool" mask="0100" shiftRight="8" />
+      <element name="BatteryDefect" type="bool" mask="0200" shiftRight="9" />
+    </bitmap>
+  </type:type>
+
+  <xi:include href="global.xml" parse="xml" />
+  <xi:include href="ZigbeeDevice.xml" parse="xml" />
+  <xi:include href="CHIPDevice.xml" parse="xml" />
+  <xi:include href="../shared/manufacturers.xml" parse="xml" />
+  <xi:include href="Basic.xml" parse="xml" />
+  <xi:include href="PowerConfiguration.xml" parse="xml" />
+  <xi:include href="DeviceTemperatureConfiguration.xml" parse="xml" />
+  <xi:include href="Identify.xml" parse="xml" />
+  <xi:include href="Groups.xml" parse="xml" />
+  <xi:include href="Scenes.xml" parse="xml" />
+  <xi:include href="OnOff.xml" parse="xml" />
+  <xi:include href="Level.xml" parse="xml" />
+  <xi:include href="Alarms.xml" parse="xml" />
+  <xi:include href="Time.xml" parse="xml" />
+  <xi:include href="Diagnostics.xml" parse="xml" />
+  <xi:include href="PollControl.xml" parse="xml" />
+  <xi:include href="LevelControlForLighting.xml" parse="xml" />
+  <xi:include href="PulseWidthModulation.xml" parse="xml" />
+  <xi:include href="IlluminanceMeasurement.xml" parse="xml" />
+  <xi:include href="IlluminanceLevelSensing.xml" parse="xml" />
+  <xi:include href="TemperatureMeasurement.xml" parse="xml" />
+  <xi:include href="PressureMeasurement.xml" parse="xml" />
+  <xi:include href="FlowMeasurement.xml" parse="xml" />
+  <xi:include href="WaterContentMeasurement.xml" parse="xml" />
+  <xi:include href="OccupancySensing.xml" parse="xml" />
+  <xi:include href="ElectricalMeasurement.xml" parse="xml" />
+  <xi:include href="ElectricalConductivityMeasurement.xml" parse="xml" />
+  <xi:include href="pHMeasurement.xml" parse="xml" />
+  <xi:include href="WindSpeedMeasurement.xml" parse="xml" />
+  <xi:include href="ColorControl.xml" parse="xml" />
+  <xi:include href="BallastConfiguration.xml" parse="xml" />
+  <xi:include href="PumpConfigurationAndControl.xml" parse="xml" />
+  <xi:include href="Thermostat.xml" parse="xml" />
+  <xi:include href="FanControl.xml" parse="xml" />
+  <xi:include href="DehumidificationControl.xml" parse="xml" />
+  <xi:include href="ThermostatUserInterfaceConfiguration.xml" parse="xml" />
+  <xi:include href="ShadeConfiguration.xml" parse="xml" />
+  <xi:include href="DoorLock.xml" parse="xml" />
+  <xi:include href="WindowCovering.xml" parse="xml" />
+  <xi:include href="BarrierControl.xml" parse="xml" />
+  <xi:include href="IASZone.xml" parse="xml" />
+  <xi:include href="IASACE.xml" parse="xml" />
+  <xi:include href="IASWD.xml" parse="xml" />
+  <xi:include href="Commissioning.xml" parse="xml" />
+  <xi:include href="TouchlinkCommissioning.xml" parse="xml" />
+  <xi:include href="OTAUpgrade.xml" parse="xml" />
+  <xi:include href="ConcentrationMeasurement.xml" parse="xml"/>
+
+</zcl:library>

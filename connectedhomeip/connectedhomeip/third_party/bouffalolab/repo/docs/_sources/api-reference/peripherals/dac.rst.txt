@@ -1,0 +1,25 @@
+DAC
+====
+
+概述
+--------
+
+数模转换器（digital-to-analog converter，通常称为DAC）是一种数字与模拟转换器，，FIFO深度为1，支持2路DAC调制输出。 可用于音频播放，常规的模拟信号调制。
+
+.. note::
+
+    dac更多资料请参考 `BL602参考手册 <https://dev.bouffalolab.com/media/doc/602/reference_manual/zh/html/content/DAC.html>`_ 。
+
+应用实例
+----------
+
+DAC实例： ``customer_app/peripheral/demo_dac`` 。
+
+API参考
+----------
+
+.. include:: /_build/inc/hosal_dac.inc
+
+
+
+

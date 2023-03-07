@@ -1,0 +1,21 @@
+RNG
+====
+
+概述
+--------
+
+随机数生成器(Random number generation),可以生成指定长度的随机数。
+
+
+应用实例
+----------
+
+串口实例： ``customer_app/peripheral/demo_rng`` 。
+
+API参考
+----------
+
+.. include:: /_build/inc/hosal_rng.inc
+
+
+

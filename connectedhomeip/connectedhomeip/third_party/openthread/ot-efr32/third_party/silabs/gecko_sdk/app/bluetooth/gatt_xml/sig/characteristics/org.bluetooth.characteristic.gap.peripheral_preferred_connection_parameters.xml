@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Peripheral Preferred Connection Parameters" type="org.bluetooth.characteristic.gap.peripheral_preferred_connection_parameters" last-modified="2013-05-29" uuid="2A04">
+	<InformativeText>
+        <Abstract><!--The Information included in this page is informative. The normative descriptions are contained in the applicable specification.--></Abstract>
+	    <InformativeDisclaimer/>
+    </InformativeText>
+	<Value>
+		<Field name="Minimum Connection Interval">
+			<InformativeText>connInterval_min = Minimum Connection Interval * 1.25 ms</InformativeText>
+			<Requirement>Mandatory</Requirement>
+			<Format>uint16</Format>
+			<Minimum>6</Minimum>
+			<Maximum>3200</Maximum>
+			<AdditionalValues>
+				<Enumeration key="65535" value="no specific minimum"/>
+			</AdditionalValues>
+		</Field>
+		<Field name="Maximum Connection Interval">
+			<InformativeText>connInterval_max = Maximum Connection Interval * 1.25 ms. and is equal or greater than the Minimum Connection Interval</InformativeText>
+			<Requirement>Mandatory</Requirement>
+			<Format>uint16</Format>
+			<Minimum>6</Minimum>
+			<Maximum>3200</Maximum>
+			<AdditionalValues>
+				<Enumeration key="65535" value="no specific maximum"/>
+			</AdditionalValues>
+		</Field>
+		<Field name="Slave Latency">
+			<Requirement>Mandatory</Requirement>
+			<Format>uint16</Format>
+			<Minimum>0</Minimum>
+			<Maximum>1000</Maximum>
+		</Field>
+		<Field name="Connection Supervision Timeout Multiplier">
+			<Requirement>Mandatory</Requirement>
+			<Format>uint16</Format>
+			<Minimum>10</Minimum>
+			<Maximum>3200</Maximum>
+			<AdditionalValues>
+				<Enumeration key="65535" value="no specific value requested"/>
+			</AdditionalValues>
+		</Field>
+	</Value>
+</Characteristic>

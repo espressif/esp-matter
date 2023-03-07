@@ -1,0 +1,43 @@
+id: tz_service_psa_its
+package: platform
+label: PSA ITS support for TrustZone secure library
+description: >-
+  This component includes the PSA Internal Trusted Storage support for TrustZone secure library.
+category: Platform|Security|TrustZone
+quality: beta
+component_root_path: util/third_party/crypto/trusted-firmware-m
+
+provides:
+  - name: tz_service_psa_its
+
+requires:
+  - name: tz_service_common
+    condition: [trustzone_secure]
+  - name: psa_its
+    condition: [trustzone_secure]
+
+include:
+  - path: ../sl_component/sl_trustzone/inc/common
+    file_list:
+      - path: sli_tz_service_its.h
+
+  - path: interface/include
+    condition: [trustzone_secure]
+    file_list:
+      - path: psa/internal_trusted_storage.h
+      - path: psa/storage_common.h
+
+  - path: secure_fw/partitions/internal_trusted_storage
+    condition: [trustzone_secure]
+    file_list:
+      - path: tfm_its_req_mngr.h
+
+source:
+  - path: secure_fw/partitions/internal_trusted_storage/sl_its_secure.c
+    condition: [trustzone_secure]
+  - path: interface/src/tfm_its_func_api.c
+    condition: [trustzone_nonsecure]
+
+template_contribution:
+  - name: component_catalog
+    value: tz_service_psa_its

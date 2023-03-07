@@ -1,0 +1,10 @@
+This template tests the missing helper fail case.
+Templates should fail if helper has a typo.
+
+{{non_existent_helper}}
+
+{{#another_non_existent_helper}}
+not a content
+{{/another_non_existent_helper}}
+
+Should not get here...

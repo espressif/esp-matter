@@ -1,0 +1,23 @@
+id: "wisun_default_phy"
+label: "Default PHY"
+package: "wisun"
+category: "Wi-SUN"
+quality: "production"
+description: "Default PHY based on radio board"
+root_path: "app/wisun/component/default_phy"
+
+ui_hints:
+  visibility: never
+
+provides:
+  - name: "wisun_default_phy"
+
+config_file:
+  - path: "config/sl_default_phy.h"
+
+requires:
+  - name: "wisun_rb_detection"
+
+template_contribution:
+  - name: component_catalog
+    value: wisun_default_phy

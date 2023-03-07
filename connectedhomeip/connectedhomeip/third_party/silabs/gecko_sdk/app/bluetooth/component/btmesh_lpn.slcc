@@ -1,0 +1,39 @@
+id: "btmesh_lpn"
+label: "Low Power Node"
+package: "Btmesh"
+description: >
+  Low Power component enables Bluetooth Mesh Low Power Node (LPN) Feature for the node.
+  LPNs consume less power by remaining in sleep for the majority of their operation cycle,
+  waking up to poll incoming messages from a Friend Node. LPN operation can be achieved only by having an established friendship.
+  Numerous timing and queue parameters can be configured in Simplicity Studio, more details can be found on the configuration panel
+  or in sl_btmesh_lpn_config.h. Several callback functions, which can be implemented in the application,
+  are available for initialization and friendship related events. More details about the functions can be found in sl_btmesh_lpn.h.
+  LPN functionality can be enabled or disabled during runtime via node configuration.
+category: "Bluetooth Mesh|Features"
+quality: "production"
+root_path: "app/bluetooth/common/btmesh_lpn"
+config_file:
+  - path: "config/sl_btmesh_lpn_config.h"
+source:
+  - path: "sl_btmesh_lpn.c"
+include:
+  - path: ""
+    file_list:
+      - path: "sl_btmesh_lpn.h"
+provides:
+  - name: "btmesh_lpn"
+requires:
+  - name: "app_assert"
+  - name: "app_btmesh_util"
+  - name: "btmesh_feature_lpn"
+  - name: "btmesh_feature_node"
+  - name: "btmesh_stack"
+  - name: "simple_timer"
+recommends:
+  - id: "simple_timer"
+  
+template_contribution:
+  - name: "btmesh_on_event"
+    value:
+      include: "sl_btmesh_lpn.h"
+      function: "sl_btmesh_lpn_on_event"

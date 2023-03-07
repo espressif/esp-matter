@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="com.silabs.sdk.exx32.external.USB" label="Gecko USB Stack" contentRoot="$(sdkInstallationPath:default())/platform/middleware/usb_gecko">
+	<property key="category" value="efm32|Middleware"/>
+	<includePath uri="inc" />
+	<folder name="emusb" uri="src" includeAllFiles="true" />
+</project>

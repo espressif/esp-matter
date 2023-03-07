@@ -1,0 +1,24 @@
+id: iot_logging_headers
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|C SDK
+label: IoT Logging Headers
+description: C SDK Logging Headers for IoT Logging Component.
+
+package: amazon_platform
+quality: production
+
+provides:
+  - name: iot_logging_headers
+
+requires:
+  - name: iot_config_common
+
+root_path: util/third_party/aws_iot_libs
+
+include:
+  - path: libraries/c_sdk/standard/common/include
+    file_list:
+      - path: iot_logging_setup.h
+  - path: libraries/c_sdk/standard/common/include/private
+    file_list:
+      - path: iot_logging.h

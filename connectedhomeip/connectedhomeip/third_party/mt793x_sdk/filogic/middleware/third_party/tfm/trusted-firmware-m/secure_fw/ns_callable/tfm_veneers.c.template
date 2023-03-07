@@ -1,0 +1,54 @@
+/*
+ * Copyright (c) 2018-2020, Arm Limited. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ *
+ */
+
+{{utilities.donotedit_warning}}
+
+#include "tfm_secure_api.h"
+#include "secure_fw/spm/spm_partition_defs.h"
+
+{% for manifest in manifests %}
+    {% if manifest.attr.conditional %}
+#ifdef {{manifest.attr.conditional}}
+    {% endif %}
+/******** {{manifest.manifest.name}} ********/
+    {% for sec_func in manifest.manifest.secure_functions %}
+psa_status_t {{sec_func.signal.lower()}}(psa_invec *, size_t, psa_outvec *, size_t);
+    {% endfor %}
+    {% if manifest.attr.conditional %}
+#endif /* {{manifest.attr.conditional}} */
+    {% endif %}
+
+{% endfor %}
+
+#define TFM_VENEER_FUNCTION(partition_name, sfn_name) \
+    __tfm_secure_gateway_attributes__ \
+    psa_status_t tfm_##sfn_name##_veneer(psa_invec *in_vec, \
+                                         size_t in_len, \
+                                         psa_outvec *out_vec, \
+                                         size_t out_len) \
+    { \
+        bool is_ns = tfm_core_is_ns_client(); \
+      \
+        TFM_CORE_IOVEC_SFN_REQUEST(partition_name, \
+                                   is_ns, \
+                                   (void *) sfn_name, \
+                                   in_vec, in_len, out_vec, out_len); \
+    }
+
+{% for manifest in manifests %}
+    {% if manifest.attr.conditional %}
+#ifdef {{manifest.attr.conditional}}
+    {% endif %}
+/******** {{manifest.manifest.name}} ********/
+    {% for sec_func in manifest.manifest.secure_functions %}
+TFM_VENEER_FUNCTION({{manifest.manifest.name}}, {{sec_func.signal.lower()}})
+    {% endfor %}
+    {% if manifest.attr.conditional %}
+#endif /* {{manifest.attr.conditional}} */
+    {% endif %}
+
+{% endfor %}

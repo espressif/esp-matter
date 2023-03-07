@@ -1,0 +1,16 @@
+id: bit
+label: "Bit Operations Library"
+package: platform
+description: Library of different bit operations
+category: Platform|Utilities
+quality: production
+root_path: platform/common
+include:
+  - path: inc
+    file_list:
+      - path: sl_bit.h
+provides:
+  - name: bit
+documentation:
+  docset: gecko-platform
+  document: common/api/group-bit

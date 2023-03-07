@@ -1,0 +1,250 @@
+%%{
+/*
+ * Copyright (c) 2020-2021, Texas Instruments Incorporated - http://www.ti.com
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+
+/*
+ *  ======== BIOS_config.c.xdt ========
+ */
+    let BIOS = system.modules["/ti/sysbios/BIOS"];
+    let BIOSStartUserFuncs = system.modules["/ti/sysbios/BIOSStartUserFuncs"];
+    let startFuncs = BIOSStartUserFuncs.$instances;
+
+    let maxPri = 0;
+
+    /* Sort all the startup functions, ignoring type */
+    for (let i = 0; i < startFuncs.length; i++) {
+        let inst = startFuncs[i];
+        if (maxPri <= inst.priority) {
+            maxPri = inst.priority + 1;
+        }
+    }
+    startFuncs.sort(function(a,b) {
+        var ap = a.priority == null ? maxPri : a.priority;
+        var bp = b.priority == null ? maxPri : b.priority;
+        return (ap - bp);
+    });
+%%}
+/*
+ *  ======== ti_sysbios_config.c ========
+ *  Configured BIOS module definitions
+ *
+ *  DO NOT EDIT - This file is generated
+ *  by the SysConfig tool.
+ */
+
+#include <stddef.h>
+#include <stdint.h>
+
+#include "ti_sysbios_config.h"
+
+% /* compute a canonical order for the used modules */
+% let keys = Object.keys(system.modules).sort();
+%
+%   /* loop over all modules in the current configuration */
+%   for (let i = 0; i < keys.length; i++) {
+%       let mod = system.modules[keys[i]];
+%       /* Find modules that contribute to the SYS/BIOS configuration */
+%       if (mod.getCFiles && !mod.noHeader && keys[i].match("ti/sysbios")) {
+#include <`keys[i].substring(1)`.h>
+%       }
+%   }
+
+% /* compute a canonical order for the used modules */
+% let skeys = Object.keys(system.modules).sort();
+% /*
+%  * Place Startup at end of module list so that all headers have been included
+%  * prior to expanding Startup functions.
+%  *
+%  * For some reason, splice() doesn't work on skeys so we must manually
+%  * build a new array
+%  */
+% keys = [];
+% for (let i = 0; i < skeys.length; i++) {
+%   if (skeys[i] != '/ti/sysbios/runtime/Startup') {
+%       keys.push(skeys[i]);
+%   }
+% }
+% if (skeys.length) {
+%     keys.push('/ti/sysbios/runtime/Startup');
+% }
+%
+% /* loop over all modules in the current configuration */
+% for (let i = 0; i < keys.length; i++) {
+    % let mod = system.modules[keys[i]];
+    %  /* Find modules that contribute to BIOS configuration */
+    % if (mod.templates && mod.templates.bios_config_c) {
+        % /* load its template and expand it with args */
+        % let gen = system.getTemplate(mod.templates.bios_config_c);
+`gen(mod)`
+        % }
+% }
+/* BIOS module definitions */
+
+% let constructHeap = false;
+% if (BIOS.$static.heapBaseAddr != "")  {
+%     constructHeap = true;
+%     if (isNaN(BIOS.$static.heapBaseAddr)) {
+extern char `BIOS.$static.heapBaseAddr`;
+extern char `BIOS.$static.heapEndAddr`;
+%     }
+% }
+% else if (BIOS.$static.heapSize != 0) {
+%     constructHeap = true;
+char BIOS_heap[BIOS_heapSize_D] __attribute__ ((aligned(8)));
+% }
+%
+% if (BIOS.$static.heapType == "HeapCallback") {
+%     constructHeap = true;
+% }
+
+% if (constructHeap) {
+%     if (BIOS.$static.heapType == "HeapMin") {
+HeapMin_Object BIOS_heapMinObject;
+%     }
+%     if (BIOS.$static.heapType == "HeapMem") {
+HeapMem_Object BIOS_heapMemObject;
+%     }
+%     if (BIOS.$static.heapType == "HeapCallback") {
+HeapCallback_Object BIOS_heapCallbackObject;
+%     }
+%
+%     if (BIOS.$static.heapTrackEnabled) {
+
+HeapTrack_Object BIOS_heapTrackObject;
+%     }
+% }
+
+/*
+ *  ======== BIOS_init ========
+ *  Perform any initialization needed before using any BIOS APIs
+ */
+void BIOS_init(void)
+{
+    if (BIOS_module->initDone) {
+        return;
+    }
+    BIOS_module->initDone = true;
+
+% if (constructHeap) {
+%     if (BIOS.$static.heapBaseAddr != "") {
+%        if (isNaN(BIOS.$static.heapBaseAddr)) {
+    char *buf = &`BIOS.$static.heapBaseAddr`;
+    size_t size = &`BIOS.$static.heapEndAddr` - &`BIOS.$static.heapBaseAddr`;
+%        }
+%        else {
+    char *buf = (char *)`BIOS.$static.heapBaseAddr`;
+    size_t size = `BIOS.$static.heapEndAddr` - `BIOS.$static.heapBaseAddr`;
+%        }
+%     }
+%     else if (BIOS.$static.heapSize != 0) {
+    char *buf = BIOS_heap;
+    size_t size = BIOS_heapSize_D;
+%     }
+%     if (BIOS.$static.heapType == "HeapMin") {
+    HeapMin_Params heapMinParams;
+
+    HeapMin_init();
+
+    HeapMin_Params_init(&heapMinParams);
+    heapMinParams.buf = buf;
+    heapMinParams.size = size;
+
+    Memory_defaultHeapInstance = (IHeap_Handle)HeapMin_construct(
+        &BIOS_heapMinObject, &heapMinParams);
+%     }
+%     if (BIOS.$static.heapType == "HeapMem") {
+    HeapMem_Params heapMemParams;
+
+    HeapMem_init();
+
+    HeapMem_Params_init(&heapMemParams);
+    heapMemParams.buf = buf;
+    heapMemParams.size = size;
+
+    Memory_defaultHeapInstance = (IHeap_Handle)HeapMem_construct(
+        &BIOS_heapMemObject, &heapMemParams);
+%     }
+%     if (BIOS.$static.heapType == "HeapCallback") {
+    HeapCallback_init();
+
+    Memory_defaultHeapInstance = (IHeap_Handle)HeapCallback_construct(
+        &BIOS_heapCallbackObject, NULL);
+%     }
+%
+%     if (BIOS.$static.heapTrackEnabled && BIOS.$static.heapType != "HeapUser") {
+
+    HeapTrack_Params heapTrackParams;
+
+    HeapTrack_init();
+
+    HeapTrack_Params_init(&heapTrackParams);
+    heapTrackParams.heap = Memory_defaultHeapInstance;
+
+    Memory_defaultHeapInstance = (IHeap_Handle)HeapTrack_construct(
+        &BIOS_heapTrackObject, &heapTrackParams);
+%     }
+% }
+}
+% if (startFuncs.length != 0) {
+
+/* BIOS_start() user functions */
+%   for (let i = 0; i < startFuncs.length; i++) {
+%       let inst = startFuncs[i];
+%       if (inst.externRequired) {
+extern void `inst.startupFxn`(void);
+%       }
+%   }
+
+void BIOS_startUserFuncs()
+{
+%   for (let i = 0; i < startFuncs.length; i++) {
+%       let inst = startFuncs[i];
+    `inst.startupFxn`();
+%   }
+}
+
+% }
+
+% if (BIOS.$static.compileFiles == true) {
+%   /* loop over all modules in the current configuration */
+%   for (let i = 0; i < keys.length; i++) {
+%       let mod = system.modules[keys[i]];
+%       /* Find modules that contribute to the SYS/BIOS configuration */
+%       if (mod.getCFiles) {
+%           let files = mod.getCFiles();
+%           for (let index in files) {
+#include <`files[index]`>
+%           }
+%       }
+%   }
+% }

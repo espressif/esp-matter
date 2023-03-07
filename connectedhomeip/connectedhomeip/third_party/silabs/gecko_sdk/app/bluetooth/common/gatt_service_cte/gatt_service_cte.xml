@@ -1,0 +1,15 @@
+<gatt>
+  <!--Constant Tone Extension Service-->
+  <service advertise="true" id="cte" name="Constant Tone Extension Service" requirement="mandatory" sourceId="" type="primary" uuid="184A" instance_id="cte_s1">
+    <informativeText>The Constant Tone Extension Service allows a client to configure the Constant Tone Extension transmitted by a server, both on a connection and on the advertising channels.</informativeText>
+    
+    <!--Constant Tone Extension Enable-->
+    <characteristic const="false" id="cte_enable" name="Constant Tone Extension Enable" sourceId="" uuid="2BAD">
+      <informativeText/>
+      <value length="1" type="user" variable_length="false"/>
+      <properties>
+        <write authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+  </service>
+</gatt>

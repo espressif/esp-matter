@@ -1,0 +1,21 @@
+id: micriumos_usbh_class_usb2ser_silabs
+label: Micrium-USB Host Class - USB-to-Serial for Silicon Labs adapters
+package: micrium-usbh
+description: Micrium OS USB Host USB-to-Serial Class - Driver for Silicon Labs adapters
+category: Services|Micrium|USB
+quality: deprecated
+source:
+  - path: platform/micrium_os/usb/source/host/class/usbh_usb2ser_silabs.c
+include:
+  - path: platform/micrium_os
+    file_list:
+      - path: usb/include/host/usbh_usb2ser_silabs.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: USB_HOST_USB2SER_SILABS
+provides:
+  - name: usbh_class_usb2ser_silabs
+  - name: usbh_class_usb2ser_drv
+    allow_multiple: true
+requires:
+  - name: usbh_class_usb2ser

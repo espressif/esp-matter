@@ -1,0 +1,24 @@
+id: "btmesh_feature_lpn"
+label: "LPN"
+package: "Btmesh"
+description: "Enables Bluetooth Mesh low-power operation."
+category: "Bluetooth Mesh|Stack Classes"
+quality: "production"
+root_path: "protocol/bluetooth/component"
+
+requires:
+  - name: "btmesh_stack"
+  - name: "btmesh_feature_node"
+  - name: component_catalog
+provides:
+  - name: "btmesh_feature_lpn"
+template_contribution:
+  - name: btmesh_bgapi_class
+    value:
+      class: "lpn"
+    priority: 1
+  - name: btmesh_feature_bitmask
+    value:
+      count: 8
+  - name: component_catalog
+    value: btmesh_feature_lpn

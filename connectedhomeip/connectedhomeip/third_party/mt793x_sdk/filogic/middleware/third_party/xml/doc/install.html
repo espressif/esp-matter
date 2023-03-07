@@ -1,0 +1,119 @@
+<html>
+<body>
+
+<h1 align='right'><a name='INSTALL'><img src="1.gif" align="right"
+hspace="10" width="100" height="100" alt="1"></a>Building,
+Installing, and Packaging Mini-XML</h1>
+
+<p>This chapter describes how to build, install, and package
+Mini-XML on your system from the source archive. You will need an
+ANSI/ISO-C compatible compiler to build Mini-XML - GCC works, as
+do most vendors' C compilers. If you are building Mini-XML on
+Windows, we recommend using the Visual C++ environment with the
+supplied solution file. For other operating systems, you'll need a
+POSIX-compatible shell and <tt>make</tt> program in addition to
+the C compiler.</p>
+
+<h2>Compiling Mini-XML</h2>
+
+<p>Mini-XML comes with both an autoconf-based configure script
+and a Visual C++ solution that can be used to compile the library
+and associated tools.</p>
+
+<h3>Compiling with Visual C++</h3>
+
+<p>Open the <VAR>mxml.sln</VAR> solution in the <VAR>vcnet</VAR>
+folder. Choose the desired build configuration, "Debug" (the
+default) or "Release", and then choose <VAR>Build Solution</VAR>
+from the <VAR>Build</VAR> menu.</p>
+
+<h3>Compiling with Command-Line Tools</h3>
+
+<p>Type the following command to configure the Mini-XML source
+code for your system:</p>
+
+<pre>
+    <kbd>./configure ENTER</kbd>
+</pre>
+
+<p>The default install prefix is <var>/usr/local</var>, which
+can be overridden using the <kbd>--prefix</kbd> option:</p>
+
+<pre>
+    <kbd>./configure --prefix=/foo ENTER</kbd>
+</pre>
+
+<p>Other configure options can be found using the
+<kbd>--help</kbd> option:</p>
+
+<pre>
+    <kbd>./configure --help ENTER</kbd>
+</pre>
+
+<p>Once you have configured the software, use the
+<tt>make(1)</tt> program to do the build and run the test
+program to verify that things are working, as follows:</p>
+
+<pre>
+    <kbd>make ENTER</kbd>
+</pre>
+
+
+<h2>Installing Mini-XML</h2>
+
+<p>If you are using Visual C++, copy the <VAR>mxml.lib</VAR> and
+and <VAR>mxml.h</VAR> files to the Visual C++ <VAR>lib</VAR> and
+<VAR>include<VAR> directories, respectively.</p>
+
+<p>Otherwise, use the <tt>make</tt> command with the
+<kbd>install</kbd> target to install Mini-XML in the configured
+directories:</p>
+
+<pre>
+    <kbd>make install ENTER</kbd>
+</pre>
+
+
+<h2>Creating Mini-XML Packages</h2>
+
+<p>Mini-XML includes two files that can be used to create binary
+packages. The first file is <var>mxml.spec</var> which is used
+by the <tt>rpmbuild(8)</tt> software to create Red Hat Package
+Manager ("RPM") packages which are commonly used on Linux. Since
+<tt>rpmbuild</tt> wants to compile the software on its own, you
+can provide it with the Mini-XML tar file to build the
+package:</p>
+
+<pre>
+    <kbd>rpmbuild -ta mxml-<i>version</i>.tar.gz ENTER</kbd>
+</pre>
+
+<p>The second file is <var>mxml.list</var> which is used by the
+<tt>epm(1)</tt> program to create software packages in a variety
+of formats. The <tt>epm</tt> program is available from the
+following URL:</p>
+
+<pre>
+    <a href="http://www.epmhome.org/">http://www.epmhome.org/</a>
+</pre>
+
+<p>Use the <tt>make</tt> command with the <kbd>epm</kbd> target
+to create portable and native packages for your system:</p>
+
+<pre>
+    <kbd>make epm ENTER</kbd>
+</pre>
+
+<p>The packages are stored in a subdirectory named
+<var>dist</var> for your convenience. The portable packages
+utilize scripts and tar files to install the software on the
+target system. After extracting the package archive, use the
+<var>mxml.install</var> script to install the software.</p>
+
+<p>The native packages will be in the local OS's native format:
+RPM for Red Hat Linux, DPKG for Debian Linux, PKG for Solaris,
+and so forth. Use the corresponding commands to install the
+native packages.</p>
+
+</body>
+</html>

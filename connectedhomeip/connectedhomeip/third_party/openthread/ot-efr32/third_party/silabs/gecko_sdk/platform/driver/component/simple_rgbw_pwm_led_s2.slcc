@@ -1,0 +1,13 @@
+id: simple_rgbw_pwm_led_s2
+label: Simple RGBW PWM LED
+package: platform
+category: Platform|Driver|LED
+quality: production
+description: Workarround for removing this component for serie2
+root_path: platform/driver/leddrv/
+ui_hints:
+  visibility: never
+instantiable:
+  prefix: inst
+requires:
+  - name: device_series_1

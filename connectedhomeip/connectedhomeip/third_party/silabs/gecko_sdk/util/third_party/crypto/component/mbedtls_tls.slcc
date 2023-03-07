@@ -1,0 +1,82 @@
+id: mbedtls_tls
+package: platform
+label: TLS Client
+description: >-
+  This component provides support for using TLS (as a client) in Mbed TLS.
+category: Platform|Security|Mbed TLS|Upper Layer
+quality: production
+source:
+  - path: util/third_party/crypto/mbedtls/library/ssl_cache.c
+  - path: util/third_party/crypto/mbedtls/library/ssl_ciphersuites.c
+  - path: util/third_party/crypto/mbedtls/library/ssl_cli.c
+  - path: util/third_party/crypto/mbedtls/library/ssl_cookie.c
+  - path: util/third_party/crypto/mbedtls/library/ssl_msg.c
+  - path: util/third_party/crypto/mbedtls/library/ssl_srv.c
+  - path: util/third_party/crypto/mbedtls/library/ssl_ticket.c
+  - path: util/third_party/crypto/mbedtls/library/ssl_tls.c
+include:
+  - path: util/third_party/crypto/mbedtls/include
+    file_list:
+      - path: mbedtls/ssl.h
+      - path: mbedtls/ssl_cache.h
+      - path: mbedtls/ssl_ciphersuites.h
+      - path: mbedtls/ssl_cookie.h
+      - path: mbedtls/ssl_ticket.h
+      - path: mbedtls/debug.h
+      - path: mbedtls/net_sockets.h
+  - path: util/third_party/crypto/mbedtls/library
+    file_list:
+      - path: ssl_debug_helpers_generated.h
+      - path: ssl_misc.h
+provides:
+  - name: mbedtls_tls
+  # Will not become compatible until upper layer TLS code only uses PSA APIs.
+  - name: tz_ns_incompatible
+    condition: [tz_secure_key_library_ns]
+requires:
+  - name: mbedtls_hash
+  - name: mbedtls_cipher
+  - name: mbedtls_cipher_cbc
+  - name: mbedtls_ccm
+  - name: mbedtls_ecc
+  - name: mbedtls_x509
+  - name: mbedtls_random
+  - name: mbedtls_core
+  - name: mbedtls_ecdh
+    condition: [psa_crypto_ecdh]
+  - name: mbedtls_ecdsa
+    condition: [psa_crypto_ecdsa]
+  - name: mbedtls_ecc_secp192r1
+    condition: [psa_crypto_ecc_secp192r1]
+  - name: mbedtls_ecc_secp224r1
+    condition: [psa_crypto_ecc_secp224r1]
+  - name: mbedtls_ecc_secp256r1
+    condition: [psa_crypto_ecc_secp256r1]
+  - name: mbedtls_ecc_secp384r1
+    condition: [psa_crypto_ecc_secp384r1]
+  - name: mbedtls_ecc_secp521r1
+    condition: [psa_crypto_ecc_secp521r1]
+  - name: mbedtls_ecc_curve25519
+    condition: [psa_crypto_ecc_curve25519]
+  - name: mbedtls_sha1
+    condition: [psa_crypto_sha1]
+  - name: mbedtls_sha256
+    condition: [psa_crypto_sha224]
+  - name: mbedtls_sha256
+    condition: [psa_crypto_sha256]
+  - name: mbedtls_sha512
+    condition: [psa_crypto_sha384]
+  - name: mbedtls_sha512
+    condition: [psa_crypto_sha512]
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_SSL_TLS_C
+  - name: mbedtls_config
+    value: MBEDTLS_SSL_CLI_C
+  - name: mbedtls_config
+    value: MBEDTLS_SSL_PROTO_TLS1_2
+  - name: mbedtls_config
+    value: MBEDTLS_SSL_KEEP_PEER_CERTIFICATE
+documentation:
+  docset: mbed-tls
+  document: group-ssltls-communication-module

@@ -1,0 +1,25 @@
+id: micriumos_io_serial
+label: Micrium OS Input-Output Serial Module
+package: micrium-ioxx
+description: Micrium OS IO Serial
+category: Services|Micrium|IO
+quality: production
+component_root_path: platform/micrium_os/io
+source:
+  - path: source/serial/serial.c
+include:
+  - path: source
+    file_list:
+      - path: serial/serial_ctrlr_priv.h
+      - path: serial/serial_priv.h
+  - path: include
+    file_list:
+      - path: serial.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: IO_SERIAL
+provides:
+  - name: io_serial
+requires:
+  - name: io_core
+  - name: common_platform_manager

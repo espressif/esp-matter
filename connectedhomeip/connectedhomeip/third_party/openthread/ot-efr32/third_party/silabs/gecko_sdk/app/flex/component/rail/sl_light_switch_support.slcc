@@ -1,0 +1,23 @@
+id: "sl_light_switch_support"
+label: "Flex - Light, Switch Support"
+package: "Flex"
+description: "Support component for Light and Switch sample applications."
+category: "Flex|RAIL|Core"
+quality: "production"
+root_path: "app/flex/component/rail/sl_light_switch_support"
+include:
+  - path: ""
+    file_list:
+      - path: "sl_light_switch_support.h"
+source:
+  - path: "sl_light_switch_support.c"
+provides:
+  - name: "light_switch_support"
+
+requires:
+  - name: "device_has_radio"
+
+#-------- Hides Component for user in Studio ---------
+ui_hints:
+  visibility: never
+  

@@ -1,0 +1,166 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load(
+    "//pw_build:pigweed.bzl",
+    "pw_cc_facade",
+    "pw_cc_library",
+    "pw_cc_test",
+)
+load("//pw_protobuf_compiler:proto.bzl", "pw_proto_library")
+load("@com_google_protobuf//:protobuf.bzl", "py_proto_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+pw_cc_library(
+    name = "epoch",
+    hdrs = [
+        "public/pw_chrono/epoch.h",
+    ],
+    includes = ["public"],
+)
+
+pw_cc_facade(
+    name = "system_clock_facade",
+    hdrs = [
+        "public/pw_chrono/internal/system_clock_macros.h",
+        "public/pw_chrono/system_clock.h",
+    ],
+    includes = ["public"],
+    deps = [
+        ":epoch",
+        "//pw_preprocessor",
+    ],
+)
+
+pw_cc_library(
+    name = "system_clock",
+    srcs = [
+        "system_clock.cc",
+    ],
+    deps = [
+        ":system_clock_facade",
+        "@pigweed_config//:pw_chrono_system_clock_backend",
+    ],
+)
+
+pw_cc_library(
+    name = "system_clock_backend_multiplexer",
+    visibility = ["@pigweed_config//:__pkg__"],
+    deps = select({
+        "//pw_build/constraints/rtos:freertos": ["//pw_chrono_freertos:system_clock"],
+        "//pw_build/constraints/rtos:embos": ["//pw_chrono_embos:system_clock"],
+        "//pw_build/constraints/rtos:threadx": ["//pw_chrono_threadx:system_clock"],
+        "//conditions:default": ["//pw_chrono_stl:system_clock"],
+    }),
+)
+
+pw_cc_library(
+    name = "system_timer_facade",
+    hdrs = [
+        "public/pw_chrono/system_timer.h",
+    ],
+    includes = ["public"],
+    deps = [
+        ":system_clock",
+        "//pw_function",
+    ],
+)
+
+pw_cc_library(
+    name = "system_timer",
+    deps = [
+        ":system_timer_facade",
+        "@pigweed_config//:pw_chrono_system_timer_backend",
+    ],
+)
+
+pw_cc_library(
+    name = "system_timer_backend_multiplexer",
+    visibility = ["@pigweed_config//:__pkg__"],
+    deps = select({
+        "//pw_build/constraints/rtos:freertos": ["//pw_chrono_freertos:system_timer"],
+        "//pw_build/constraints/rtos:embos": ["//pw_chrono_embos:system_timer"],
+        "//conditions:default": ["//pw_chrono_stl:system_timer"],
+    }),
+)
+
+proto_library(
+    name = "chrono_proto",
+    srcs = [
+        "chrono.proto",
+    ],
+    import_prefix = "pw_chrono_protos",
+    strip_import_prefix = "//pw_chrono",
+)
+
+py_proto_library(
+    name = "chrono_proto_pb2",
+    srcs = ["chrono.proto"],
+)
+
+pw_proto_library(
+    name = "chrono_proto_cc",
+    deps = [":chrono_proto"],
+)
+
+pw_cc_library(
+    name = "simulated_system_clock",
+    hdrs = [
+        "public/pw_chrono/simulated_system_clock.h",
+    ],
+    deps = [
+        ":system_clock",
+        "//pw_sync:interrupt_spin_lock",
+    ],
+)
+
+pw_cc_test(
+    name = "simulated_system_clock_test",
+    srcs = [
+        "simulated_system_clock_test.cc",
+    ],
+    deps = [
+        ":simulated_system_clock",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "system_clock_facade_test",
+    srcs = [
+        "system_clock_facade_test.cc",
+        "system_clock_facade_test_c.c",
+    ],
+    deps = [
+        ":system_clock",
+        "//pw_preprocessor",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "system_timer_facade_test",
+    srcs = [
+        "system_timer_facade_test.cc",
+    ],
+    deps = [
+        ":system_clock",
+        ":system_timer",
+        "//pw_sync:thread_notification",
+        "//pw_unit_test",
+    ],
+)

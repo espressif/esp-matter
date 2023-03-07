@@ -1,0 +1,36 @@
+id: si446x_radio_usart
+package: platform
+label: Si446x Radio with usart
+description: >
+  Provides functions/globals to configure Si446x radio using USART SPI.
+category: Platform|Board Drivers
+quality: alpha
+root_path: hardware/driver/si446x_radio
+provides:
+  - name: si446x_radio_usart
+  - name: si446x_radio_driver
+requires:
+  - name: emlib_cmu
+  - name: emlib_core
+  - name: emlib_gpio
+  - name: emlib_usart
+  - name: gpiointerrupt
+  - name: spidrv_core
+include:
+  - path: inc
+    file_list:
+      - path: sl_si446x_radio.h
+source:
+  - path: src/sl_si446x_radio_usart/sl_si446x_radio.c
+config_file:
+  - path: config/s1/sl_si446x_radio_usart_config.h
+    file_id: si446x_radio_usart_config
+    condition: [device_series_1]
+  - path: config/s2/sl_si446x_radio_usart/sl_si446x_radio_usart_config.h
+    file_id: si446x_radio_usart_config
+    condition: [device_series_2]
+template_contribution:
+  - name: component_catalog
+    value: si446x_radio
+  - name: component_catalog
+    value: si446x_radio_usart

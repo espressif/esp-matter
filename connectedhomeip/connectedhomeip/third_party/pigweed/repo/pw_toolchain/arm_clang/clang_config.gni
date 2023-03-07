@@ -1,0 +1,83 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+_script_path =
+    get_path_info("../py/pw_toolchain/clang_arm_toolchain.py", "abspath")
+
+# This template generates a config that can be used to target ARM cores using
+# a clang compiler.
+#
+# Clang isn't a plug-and-play experience for Cortex-M baremetal targets; it's
+# missing C runtime libraries, C/C++ standard libraries, and a few other
+# things. This template uses the provided cflags, asmflags, ldflags, etc. to
+# generate a config that pulls the missing components from an arm-none-eabi-gcc
+# compiler on the system PATH. The end result is a clang-based compiler that
+# pulls in gcc-provided headers and libraries to complete the toolchain.
+#
+# Args:
+#   - asmflags, cflags, cflags_c, cflags_cc, ldflags: These flags are used to
+#         locate the correct architecture-specific libraries/headers. To
+#         properly drive the script, provide all architecture flags (e.g. -mcpu,
+#         -mabi, -mthumb, -mfloat-abi, -mfpu) in at least one of these
+#         variables.
+#
+# Generated targets:
+#   - $target_name: The final config to use with your clang toolchain.
+template("pw_clang_arm_config") {
+  config(target_name) {
+    # Pull all the compiler flags into a single list.
+    _compiler_flags = []
+    forward_variables_from(invoker, "*")
+    if (defined(asmflags)) {
+      _compiler_flags += asmflags
+    } else {
+      asmflags = []
+    }
+    if (defined(cflags)) {
+      _compiler_flags += cflags
+    } else {
+      cflags = []
+    }
+    if (defined(cflags_c)) {
+      _compiler_flags += cflags_c
+    } else {
+      cflags_c = []
+    }
+    if (defined(cflags_cc)) {
+      _compiler_flags += cflags_cc
+    } else {
+      cflags_cc = []
+    }
+    if (defined(ldflags)) {
+      _compiler_flags += ldflags
+    } else {
+      ldflags = []
+    }
+
+    # Invoke the script that will generate clang flags based on the current
+    # compiler version and desired arch.
+    _script_flags = [
+      "--gn-scope",
+      "--cflags",
+      "--ldflags",
+      "--",
+    ]
+    _script_flags += _compiler_flags
+    _arm_flags = exec_script(_script_path, _script_flags, "scope")
+
+    cflags += _arm_flags.cflags
+    ldflags += _arm_flags.cflags
+    ldflags += _arm_flags.ldflags
+  }
+}

@@ -1,0 +1,75 @@
+id: radio_config_brd_wisun_singlephy
+label: Custom Radio Configuration for wisun singlephy application based on boards
+package: platform
+description: Triggers Radio Configurator UI for setting a proper based on radio boards
+category: Platform|Radio Configuration
+quality: production
+provides:
+- name: radio_config_brd_wisun_singlephy
+- name: a_radio_config
+ui_hints:
+  visibility: never
+template_contribution:
+- name: component_catalog
+  value: radio_config_simple_wisun_singlephy
+config_file:
+
+#EU_1_1a/radio_settings based on boards
+- path: platform/radio/radio_configuration/WiSUN/brd_wisun_singlephy/device_sdid_84/EU_1_1a/radio_settings.radioconf
+  directory: rail
+  condition:
+  - brd4163a
+- path: platform/radio/radio_configuration/WiSUN/brd_wisun_singlephy/device_sdid_84/EU_1_1a/radio_settings.radioconf
+  directory: rail
+  condition:
+  - brd4254a
+- path: platform/radio/radio_configuration/WiSUN/brd_wisun_singlephy/device_sdid_220/EU_1_1a/radio_settings.radioconf
+  directory: rail
+  condition:
+  - brd4271a
+
+#NA_1_1b/radio_settings based on boards
+- path: platform/radio/radio_configuration/WiSUN/brd_wisun_singlephy/device_sdid_84/NA_1_1b/radio_settings.radioconf
+  directory: rail
+  condition:
+  - brd4164a
+- path: platform/radio/radio_configuration/WiSUN/brd_wisun_singlephy/device_sdid_84/NA_1_1b/radio_settings.radioconf
+  directory: rail
+  condition:
+  - brd4170a
+- path: platform/radio/radio_configuration/WiSUN/brd_wisun_singlephy/device_sdid_84/NA_1_1b/radio_settings.radioconf
+  directory: rail
+  condition:
+  - brd4253a
+- path: platform/radio/radio_configuration/WiSUN/brd_wisun_singlephy/device_sdid_220/NA_1_1b/radio_settings.radioconf
+  directory: rail
+  condition:
+  - brd4270a
+- path: platform/radio/radio_configuration/WiSUN/brd_wisun_singlephy/device_sdid_220/NA_1_1b/radio_settings.radioconf
+  directory: rail
+  condition:
+  - brd4270b
+
+#CN_1_1b/radio_settings based on boards
+- path: platform/radio/radio_configuration/WiSUN/brd_wisun_singlephy/device_sdid_84/CN_1_1b/radio_settings.radioconf
+  directory: rail
+  condition:
+  - brd4172a
+- path: platform/radio/radio_configuration/WiSUN/brd_wisun_singlephy/device_sdid_220/CN_1_1b/radio_settings.radioconf
+  directory: rail
+  condition:
+  - brd4272a
+
+# radio settings based on IC chips
+- path: platform/radio/radio_configuration/WiSUN/brd_wisun_singlephy/device_sdid_84/NA_1_1b/radio_settings.radioconf
+  directory: rail
+  condition:
+  - device_sdid_84
+  unless:
+  - hardware_board
+- path: platform/radio/radio_configuration/WiSUN/brd_wisun_singlephy/device_sdid_220/NA_1_1b/radio_settings.radioconf
+  directory: rail
+  condition:
+  - device_sdid_220
+  unless:
+  - hardware_board

@@ -1,0 +1,37 @@
+package: Zigbee
+description: A component implementing the network support functionality of the Green Power device.
+label: Green Power Device Network Support
+quality: production
+id: zigbee_gpd_network_support
+category: Zigbee|Green Power Device
+
+provides:
+   - name: "zigbee_gpd_network_support"
+# The "802_15_4_stack" is added in `provides` for exclusivity. This will ensure to raise conflict
+# if a user tries to add the the GPD component into a Zigbee PRO application. The reason for not
+# allowing the GPD component to be pulled into a Zigbee PRO application is that RAIL is used by
+# both.
+   - name: "802_15_4_stack"
+
+requires:
+  - name: device_supports_zigbee
+    condition:
+      - device_cortexm
+
+source:
+  - path: "protocol/zigbee/app/gpd/components/gpd-nv.c"
+  - path: "protocol/zigbee/app/gpd/components/gpd-nwk.c"
+  - path: "protocol/zigbee/app/gpd/components/gpd-rail-wrapper.c"
+  - path: "protocol/zigbee/app/gpd/components/gpd-security.c"
+  - path: "protocol/zigbee/app/gpd/components/gpd-send-receive.c"
+  - path: "protocol/zigbee/app/gpd/components/gpd-cb.c"
+
+include:
+  - path: "protocol/zigbee/app/gpd/components"
+    file_list:
+      - path: "gpd-components-common.h"
+      - path: "gpd-cb.h"
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_gpd_network_support

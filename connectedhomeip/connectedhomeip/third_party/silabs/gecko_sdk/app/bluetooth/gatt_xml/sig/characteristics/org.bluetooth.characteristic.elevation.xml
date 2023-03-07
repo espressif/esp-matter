@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+name="Elevation" type="org.bluetooth.characteristic.elevation" uuid="2A6C" last-modified="2014-11-20" approved="Yes">
+    <Value>
+    <Field name="Elevation">
+            <InformativeText>Unit is in meters with a resolution of 0.01 m</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>sint24</Format>
+            <Unit>org.bluetooth.unit.length.meter</Unit>
+            <DecimalExponent>-2</DecimalExponent>
+    </Field>
+</Value>
+</Characteristic>

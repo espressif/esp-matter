@@ -1,0 +1,56 @@
+id: bluetooth_hci_uart
+label: HCI UART Handler
+package: Bluetooth
+description: UART Handler for HCI
+
+category: Bluetooth|Controller
+quality: production
+root_path: protocol/bluetooth/bgstack/ll/utils/hci_packet
+source:
+  - path: uart/src/sl_hci_packet.c
+  - path: uart/src/sl_hci_fifo.c
+  - path: uart/src/sl_hci_uart.c
+  - path: uart/src/sl_hci_uart_rtos.c
+    condition:
+      - "kernel"      
+include:
+  - path: inc
+    file_list:
+      - path: sl_btctrl_hci_packet.h
+  - path: uart/inc
+    file_list:
+      - path: sl_btctrl_hci_uart_rtos.h
+        condition:
+          - "kernel"
+  - path: uart/src
+    file_list:
+      - path: sl_hci_fifo.h
+      - path: sl_hci_uart.h
+provides:
+  - name: bluetooth_hci_uart
+requires:
+  - name: uartdrv_usart
+  - name: bluetooth_hci
+conflicts:
+  - name: bluetooth_hci_cpc
+template_contribution:
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: sl_hci_common_transport.h
+      handler: hci_common_transport_init
+    priority: 2
+  - name: event_handler
+    value:
+      event: service_process_action
+      include: sl_btctrl_hci_packet.h
+      handler: sl_btctrl_hci_packet_read
+    priority: 1
+  - name: event_handler
+    value:
+      event: stack_init
+      include: "sl_btctrl_hci_uart_rtos.h"
+      handler: "sl_btctrl_hci_uart_rtos_init"
+    priority: -1000
+    condition:
+      - "kernel"      

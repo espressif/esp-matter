@@ -1,0 +1,32 @@
+id: core_mqtt
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|Core Libraries
+label: CoreMQTT Library
+description: Lightweight MQTT client library for embedded devices.
+
+package: amazon_platform
+quality: production
+
+provides:
+  - name: core_mqtt
+
+root_path: util/third_party/aws_iot_libs
+
+source:
+  - path: libraries/coreMQTT/source/core_mqtt.c
+  - path: libraries/coreMQTT/source/core_mqtt_serializer.c
+  - path: libraries/coreMQTT/source/core_mqtt_state.c
+
+include:
+  - path: libraries/coreMQTT/source/include
+    file_list:
+      - path: core_mqtt.h
+      - path: core_mqtt_serializer.h
+      - path: core_mqtt_state.h
+  - path: libraries/coreMQTT/source/interface
+    file_list:
+      - path: transport_interface.h
+
+config_file:
+  - path: libraries/coreMQTT/source/include/core_mqtt_config_defaults.h
+    file_id: core_mqtt_config_default

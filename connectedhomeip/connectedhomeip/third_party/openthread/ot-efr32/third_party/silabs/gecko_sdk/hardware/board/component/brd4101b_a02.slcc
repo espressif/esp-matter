@@ -1,0 +1,58 @@
+!!omap
+- id: brd4101b_a02
+- label: BRD4101B rev A02
+- package: platform
+- description: Board support for BRD4101B.
+- category: Platform|Board|Radio Board
+- quality: production
+- requires:
+  - name: efr32bg1b232f256gj43
+  - name: brd4101b_config
+  - name: hardware_board_mainboard
+- provides:
+  - name: brd4101b_revision
+  - name: brd4101b_a02
+  - name: hardware_board
+  - name: hardware_board_rb
+  - name: hardware_board_has_vcom
+  - name: hardware_board_has_spiflash
+  - name: hardware_board_has_hfxo
+  - name: hardware_board_has_lfxo
+  - name: hardware_board_supports_rf_band_2400
+  - name: hardware_board_supports_1_rf_band
+  - name: hardware_board_default_rf_band
+  - name: hardware_board_default_rf_band_2400
+- recommends:
+  - id: brd4001a
+  - id: iostream_usart
+    instance:
+    - vcom
+  - id: bootloader_uart_driver
+  - id: ls013b7dh03
+  - id: memlcd_usart
+  - id: simple_button
+    instance:
+    - btn0
+    - btn1
+  - id: mx25_flash_shutdown_usart
+  - id: bootloader_spi_controller_usart_driver
+  - id: bootloader_spi_peripheral_usart_driver
+- template_contribution:
+  - name: board_default_init
+    value: sl_board_disable_vcom()
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD4101B"'
+  - name: SL_BOARD_REV
+    value: '"A02"'
+- tag:
+  - board:pn:BRD4101
+  - board:variant:B
+  - board:revision:A02
+  - board:device:efr32bg1b232f256gj43
+  - hardware:has:vcom
+  - hardware:has:pti
+  - hardware:has:display:ls013b7dh03
+  - hardware:has:led:0
+  - hardware:has:button:2
+  - hardware:has:memory:spi:mx25r8035f

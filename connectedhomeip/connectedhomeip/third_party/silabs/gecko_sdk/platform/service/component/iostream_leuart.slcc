@@ -1,0 +1,46 @@
+id: iostream_leuart
+label: "IO Stream: LEUART"
+package: platform
+description: IO Stream over Low Energy Universal Asynchronous Receiver Transceiver (LEUART) communication protocol.
+category: Services|IO Stream
+quality: production
+instantiable:
+  prefix: inst
+root_path: platform/service/iostream
+config_file:
+  - path: "config/s0/sl_iostream_leuart_{{instance}}_config.h"
+    file_id: iostream_leuart_config
+    condition: [device_series_0]
+  - path: "config/s1/sl_iostream_leuart_{{instance}}_config.h"
+    file_id: iostream_leuart_config
+    condition: [device_series_1]
+  - path: "config/s2/sl_iostream_leuart_{{instance}}_config.h"
+    file_id: iostream_leuart_config
+    condition: [device_series_2]
+provides:
+  - name: iostream_leuart
+    allow_multiple: true
+  - name: iostream_transport
+    allow_multiple: true
+requires:
+  - name: iostream_leuart_core
+template_contribution:
+  - name: iostream_leuart_instances
+    value: "{{instance}}"
+  - name: event_handler
+    value:
+      event: iostream_instance_init
+      include: sl_iostream_init_leuart_instances.h
+      handler: sl_iostream_leuart_init_instances
+  - name: iostream_instance_info
+    value:
+      include: sl_iostream_init_leuart_instances.h
+      handler: "sl_iostream_instance_{{instance}}_info"
+  - name: power_manager_handler
+    value:
+      event: sleep_on_isr_exit
+      include: sl_iostream_init_leuart_instances.h
+      handler: "sl_iostream_leuart_{{instance}}_sleep_on_isr_exit"
+documentation:
+    docset: gecko-platform
+    document: service/api/group-iostream-leuart

@@ -1,0 +1,127 @@
+/*
+ * Copyright (c) 2015-2022, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+ *  ======== package.bld ========
+ */
+
+/* Get deviceWare directories from XDCARGS */
+var xdcArgs = java.lang.System.getenv("XDCARGS");
+var xdcArgParser = xdc.loadCapsule("ti/drivers/xdcArgParser.xs");
+var deviceWareOpts = xdcArgParser.getDeviceWareOpts(xdcArgs);
+var libBuilder = xdc.loadCapsule("ti/drivers/libBuilder.xs");
+
+/* List of files (besides *.c files) which need to be packaged with drivers */
+var packageFiles = [
+    "libBuilder.xs",
+    "package.bld",
+    "xdcArgParser.xs",
+    "sources_common.xs"
+];
+
+/* Generate libraries for products which have been defined */
+if (deviceWareOpts.cc26xxware) {
+
+    /* Get source and header file lists */
+    var cc26xxSources = xdc.loadCapsule("ti/drivers/sources_cc26xx.xs");
+
+    /* Package CC26XX sources file list for rebuilding in the field */
+    packageFiles.push("sources_cc26xx.xs");
+
+    packageFiles = packageFiles.concat(cc26xxSources.cc26x4SecureInterfaceList);
+    packageFiles = packageFiles.concat(cc26xxSources.cc26x4HdrList);
+    packageFiles = packageFiles.concat(cc26xxSources.cc26x2HdrList);
+    packageFiles = packageFiles.concat(cc26xxSources.cc26x1HdrList);
+
+    libBuilder.makeLibs("drivers_cc13x1", libBuilder.cc26x1Targets,
+        cc26xxSources.cc26x1SrcList, " -DDeviceFamily_CC13X1");
+
+    libBuilder.makeLibs("drivers_cc26x1", libBuilder.cc26x1Targets,
+        cc26xxSources.cc26x1SrcList, " -DDeviceFamily_CC26X1");
+
+    libBuilder.makeLibs("drivers_cc13x2", libBuilder.cc26xxTargets,
+        cc26xxSources.cc26x2SrcList, " -DDeviceFamily_CC13X2");
+
+    libBuilder.makeLibs("drivers_cc26x2", libBuilder.cc26xxTargets,
+        cc26xxSources.cc26x2SrcList, " -DDeviceFamily_CC26X2");
+
+    libBuilder.makeLibs("drivers_cc13x2x7", libBuilder.cc26xxTargets,
+        cc26xxSources.cc26x2SrcList, " -DDeviceFamily_CC13X2X7");
+
+    libBuilder.makeLibs("drivers_cc26x2x7", libBuilder.cc26xxTargets,
+        cc26xxSources.cc26x2SrcList, " -DDeviceFamily_CC26X2X7");
+
+    libBuilder.makeLibs("drivers_cc13x4", libBuilder.cc26x4Targets,
+        cc26xxSources.cc26x4SrcList.concat(cc26xxSources.cc26x4SecureOnlySrcList), " -DDeviceFamily_CC13X4");
+
+    libBuilder.makeLibs("drivers_cc13x4_spe", libBuilder.cc26x4Targets,
+        cc26xxSources.cc26x4SrcList.concat(cc26xxSources.cc26x4NonsecureSrcList), " -DDeviceFamily_CC13X4 -DSPE_ENABLED=1");
+
+    libBuilder.makeLibs("drivers_cc26x4", libBuilder.cc26x4Targets,
+        cc26xxSources.cc26x4SrcList.concat(cc26xxSources.cc26x4SecureOnlySrcList), " -DDeviceFamily_CC26X4");
+
+    libBuilder.makeLibs("drivers_cc26x4_spe", libBuilder.cc26x4Targets,
+        cc26xxSources.cc26x4SrcList.concat(cc26xxSources.cc26x4NonsecureSrcList), " -DDeviceFamily_CC26X4 -DSPE_ENABLED=1");
+}
+
+if (deviceWareOpts.cc23xxware) {
+
+    /* Get source and header file lists */
+    var cc23xxSources = xdc.loadCapsule("ti/drivers/sources_cc23xx.xs");
+
+    /* Package CC23XX sources file list for rebuilding in the field */
+    packageFiles.push("sources_cc23xx.xs");
+
+    packageFiles = packageFiles.concat(cc23xxSources.cc23xxHdrList);
+
+    libBuilder.makeLibs("drivers_cc23x0", libBuilder.cc23xxTargets,
+        cc23xxSources.cc23xxSrcList, " -DDeviceFamily_CC23X0");
+}
+
+if (deviceWareOpts.cc32xxware) {
+
+    /* Get source and header file lists */
+    var cc32xxSources = xdc.loadCapsule("ti/drivers/sources_cc32xx.xs");
+
+    /* Package CC32XX sources file list for rebuilding in the field */
+    packageFiles.push("sources_cc32xx.xs");
+
+    var copts = " -DUSE_CC3220_ROM_DRV_API -DDeviceFamily_CC3220";
+
+    packageFiles = packageFiles.concat(cc32xxSources.cc32xxHdrList);
+
+    libBuilder.makeLibs("drivers_cc32xx", libBuilder.cc32xxTargets,
+        cc32xxSources.cc32xxSrcList, copts);
+}
+
+Pkg.otherFiles = packageFiles;
+Pkg.attrs.exportSrc = true;

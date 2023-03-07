@@ -1,0 +1,422 @@
+#!/bin/bash
+#
+#  Copyright (c) 2017, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+
+AP_CONN="BorderRouter-AP"
+ETH_CONN="BorderRouter-Eth"
+
+AP_HELPER_SCRIPT="/etc/NetworkManager/dispatcher.d/ap-helper"
+DHCPV6_HELPER_SCRIPT="/etc/NetworkManager/dispatcher.d/dhcpv6-helper"
+
+create_ap_connection()
+{
+    IFNAME=$(nmcli d | grep wifi | cut -d" " -f1)
+
+    sudo nmcli c add type wifi ifname "${IFNAME}" con-name ${AP_CONN} ssid ${AP_CONN}
+    sudo nmcli c modify ${AP_CONN} 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared ipv6.method auto
+    sudo nmcli c modify ${AP_CONN} wifi-sec.key-mgmt wpa-psk
+    sudo nmcli c modify ${AP_CONN} wifi-sec.proto rsn
+    sudo nmcli c modify ${AP_CONN} wifi-sec.psk "12345678"
+}
+
+create_eth_connection()
+{
+    IFNAME=$(nmcli d | grep ethernet | cut -d" " -f1 | grep -v usb)
+
+    sudo nmcli c add type ethernet ifname "${IFNAME}" con-name ${ETH_CONN}
+    sudo nmcli c modify ${ETH_CONN} ipv6.method ignore
+}
+
+create_ap_helper_script()
+{
+    sudo tee ${AP_HELPER_SCRIPT} <<EOF
+#!/bin/sh
+#
+#  Copyright (c) 2017, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+
+set -euxo pipefail
+
+NAME="ap-helper"
+
+IFNAME=\$1
+ACTION=\$2
+
+AP_CONN="${AP_CONN}"
+
+DHCP_START="10.42.0.2"
+DHCP_END="10.42.0.8"
+
+ROUTER_IP="10.42.0.1"
+
+DNS1=\${ROUTER_IP}
+DNS2="8.8.8.8"
+
+
+log()
+{
+    logger -t "\${NAME}[\${\$}]" \$*
+}
+
+disable_accept_ra()
+{
+    log "Disable accepting Router Advertisements on the interface: '\${IFNAME}'"
+    sysctl -w net.ipv6.conf.\${IFNAME}.accept_ra=1
+}
+
+start_dnsmasq()
+{
+    log "Starting 'dnsmasq' on the interface: '\${IFNAME}'"
+    /usr/sbin/dnsmasq -i \${IFNAME} -a \${ROUTER_IP} -b -z -K -F\${DHCP_START},\${DHCP_END},24h -p0 -O3,\${ROUTER_IP} -O6,\${DNS1},\${DNS2}
+}
+
+kill_dnsmasq()
+{
+    local DNSMASQ_PID=\`pidof dnsmasq\`
+
+    if [ -n \${DNSMASQ_PID} ]; then
+        log "Killing 'dnsmasq' process with PID: '\${DNSMASQ_PID}'"
+        kill -9 \${DNSMASQ_PID}
+    else
+        log "'dnsmasq' is not running"
+    fi
+}
+
+release_dhcpcd()
+{
+    log "Releasing 'dhcpcd' on the interface: '\${IFNAME}'"
+    /sbin/dhcpcd -6 -k \${IFNAME}
+}
+
+handle_action_up()
+{
+    case \${IFNAME} in
+    wlan*)
+        if [ \${CONNECTION_ID} = \${AP_CONN} ]; then
+            release_dhcpcd
+            disable_accept_ra
+            start_dnsmasq
+        fi
+        ;;
+    *)
+        ;;
+    esac
+}
+
+handle_action_down()
+{
+    case \${IFNAME} in
+    wlan*)
+        if [ \${CONNECTION_ID} = \${AP_CONN} ]; then
+            kill_dnsmasq
+        fi
+        ;;
+    *)
+        log "Skipping action: '\${ACTION}' on the interface: '\${IFNAME}'"
+        ;;
+    esac
+}
+
+
+case \${ACTION} in
+up)
+    handle_action_up
+    ;;
+down)
+    handle_action_down
+    ;;
+*)
+    log "Unsupported action: '\${ACTION}'"
+    ;;
+esac
+EOF
+}
+
+create_dhcpv6_helper_script()
+{
+    sudo tee ${DHCPV6_HELPER_SCRIPT} <<EOF
+#!/bin/sh
+#
+#  Copyright (c) 2017, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+#   Description:
+#       This script manipulates DHCPv6-PD configuration.
+#
+
+set -euxo pipefail
+
+NAME="dhcpv6-helper"
+
+IFNAME=\$1
+ACTION=\$2
+
+AP_CONN="${AP_CONN}"
+
+DHCPCD_INTERFACES="/tmp/dhcpcd_interfaces"
+
+
+log()
+{
+    logger -t "\${NAME}[\${\$}]" \$*
+}
+
+enable_accept_ra()
+{
+    log "Enable accepting Router Advertisements on the interface: '\${IFNAME}'"
+    sysctl -w net.ipv6.conf.\${IFNAME}.accept_ra=2
+}
+
+kill_dnsmasq()
+{
+    local DNSMASQ_PID=\`pidof dnsmasq\`
+
+    log "Killing 'dnsmasq' process with PID: '\${DNSMASQ_PID}'"
+    kill -9 \${DNSMASQ_PID}
+}
+
+start_dhcpcd()
+{
+    log "Starting 'dhcpcd' on the interface: '\${IFNAME}'"
+    /sbin/dhcpcd -6 -b -K -E \${IFNAME}
+
+    # Add interface to active dhcpcd interfaces.
+    sed -i "/\${IFNAME}/d" \${DHCPCD_INTERFACES}
+    echo "\${IFNAME}" >> \${DHCPCD_INTERFACES}
+}
+
+release_dhcpcd()
+{
+    log "Releasing 'dhcpcd' on the interface: '\${IFNAME}'"
+    /sbin/dhcpcd -6 -k \${IFNAME}
+
+    # Remove interface from active dhcpcd interfaces.
+    sed -i "/\${IFNAME}/d" \${DHCPCD_INTERFACES}
+}
+
+handle_action_up()
+{
+    case \${IFNAME} in
+    enp*)
+        enable_accept_ra
+        start_dhcpcd
+        ;;
+    eth*)
+        enable_accept_ra
+        start_dhcpcd
+        ;;
+    wlan*)
+        if ! [ \${CONNECTION_ID} = \${AP_CONN} ]; then
+            enable_accept_ra
+            start_dhcpcd
+        fi
+        ;;
+    *)
+        ;;
+    esac
+
+}
+
+handle_action_down()
+{
+    case \${IFNAME} in
+    enp*)
+        release_dhcpcd
+        ;;
+    eth*)
+        release_dhcpcd
+        ;;
+    wlan*)
+        if ! [ \${CONNECTION_ID} = \${AP_CONN} ]; then
+            release_dhcpcd
+        fi
+        ;;
+    *)
+        log "Skipping action: '\${ACTION}' on the interface: '\${IFNAME}'"
+        ;;
+    esac
+}
+
+case \${ACTION} in
+up)
+    handle_action_up
+    ;;
+down)
+    handle_action_down
+    ;;
+*)
+    log "Unsupported action: '\${ACTION}'"
+    ;;
+esac
+EOF
+}
+
+network_manager_install()
+{
+    with NETWORK_MANAGER || return 0
+
+    if ! have systemctl; then
+        echo "This script requires systemctl!"
+        return 0
+    fi
+
+    if with DNS64; then
+        # bind9 provides DNS service
+        sudo sed -i 's/^#port=5353/port=0/g' /etc/dnsmasq.conf
+        sudo systemctl restart dnsmasq
+    fi
+
+    sudo systemctl daemon-reload
+
+    sudo systemctl stop wpa_supplicant || true
+    sudo systemctl disable wpa_supplicant || true
+
+    sudo systemctl stop dhcpcd || true
+    sudo systemctl disable dhcpcd || true
+
+    sudo systemctl daemon-reload
+
+    sudo systemctl start NetworkManager || die "Failed to start NetworkManager."
+    sudo systemctl enable NetworkManager || die "Failed to enable NetworkManager."
+
+    # Create AP connection only on raspbian platform.
+    if [ "$PLATFORM" = raspbian ] || with NETWORK_MANAGER_WIFI; then
+        create_ap_helper_script
+        sudo chmod a+x ${AP_HELPER_SCRIPT}
+
+        create_ap_connection
+    fi
+
+    create_dhcpv6_helper_script
+    sudo chmod a+x ${DHCPV6_HELPER_SCRIPT}
+
+    create_eth_connection
+
+    sudo systemctl daemon-reload
+    sudo systemctl restart NetworkManager
+
+    sleep 15
+
+    if [ "$PLATFORM" = raspbian ] || with NETWORK_MANAGER_WIFI; then
+        sudo nmcli c up ${AP_CONN}
+    fi
+
+    sudo nmcli c up ${ETH_CONN}
+}
+
+network_manager_uninstall()
+{
+    with NETWORK_MANAGER || return 0
+
+    if with DNS64; then
+        sudo systemctl stop dnsmasq
+        # revert changes to dnsmasq
+        sudo sed -i 's/^port=0/#port=5353/g' /etc/dnsmasq.conf
+    fi
+
+    if ! have systemctl; then
+        echo "This script requires systemctl!"
+        return 0
+    fi
+
+    if ! systemctl is-active NetworkManager; then
+        sudo systemctl daemon-reload
+        sudo systemctl start NetworkManager
+    fi
+
+    if [ "$PLATFORM" = raspbian ] || with NETWORK_MANAGER_WIFI; then
+        sudo nmcli c down ${AP_CONN} || true
+        sudo nmcli c delete ${AP_CONN} || true
+    fi
+
+    sudo nmcli c down ${ETH_CONN} || true
+    sudo nmcli c delete ${ETH_CONN} || true
+
+    sudo systemctl disable NetworkManager || die 'Failed to disable NetworkManager!'
+    sudo systemctl stop NetworkManager || die 'Failed to stop NetworkManager!'
+
+    sudo rm ${AP_HELPER_SCRIPT} || true
+    sudo rm ${DHCPV6_HELPER_SCRIPT} || true
+
+    sudo systemctl daemon-reload
+
+    sudo systemctl start dhcpcd || true
+    sudo systemctl enable dhcpcd || true
+
+    sudo systemctl start wpa_supplicant || true
+    sudo systemctl enable wpa_supplicant || true
+}

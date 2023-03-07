@@ -1,0 +1,134 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_android_toolchain/android.gni")
+import("$dir_pw_toolchain/generate_toolchain.gni")
+
+# Creates an Android toolchain target.
+#
+# Arguments are forwarded to $generate_toolchain.
+template("pw_generate_android_toolchain") {
+  assert(pw_android_toolchain_NDK_PATH != "",
+         "pw_android_toolchain_NDK_PATH is not set")
+  assert(defined(invoker.defaults), "toolchain is missing 'defaults'")
+  invoker_toolchain_args = invoker.defaults
+
+  # Build _clang_prefix from "host_os" and "host_cpu".
+  _host_os = ""
+  if (host_os == "linux") {
+    _host_os = "linux"
+  } else if (host_os == "mac") {
+    _host_os = "darwin"
+  } else if (host_os == "win") {
+    _host_os = "windows"
+  }
+
+  _host_cpu = ""
+  if (host_cpu == "x64") {
+    _host_cpu = "-x86_64"
+  }
+
+  _clang_prefix = "${pw_android_toolchain_NDK_PATH}/toolchains/llvm/prebuilt/${_host_os}${_host_cpu}/bin/"
+
+  # Build _tool_name_root from "_ndk_cpu" and "api_level".
+  if (defined(invoker_toolchain_args.api_level)) {
+    _api_level = invoker_toolchain_args.api_level
+  } else {
+    _api_level = pw_android_toolchain_API_LEVEL
+  }
+
+  assert(defined(invoker_toolchain_args.current_cpu),
+         "toolchain.defaults is missing 'current_cpu'")
+  if (invoker_toolchain_args.current_cpu == "arm") {
+    _tool_name_root = "armv7a-linux-androideabi${_api_level}-"
+  } else if (invoker_toolchain_args.current_cpu == "arm64") {
+    _tool_name_root = "aarch64-linux-android${_api_level}-"
+  } else if (invoker_toolchain_args.current_cpu == "x86") {
+    _tool_name_root = "i686-linux-android${_api_level}-"
+  } else if (invoker_toolchain_args.current_cpu == "x64") {
+    _tool_name_root = "x86_64-linux-android${_api_level}-"
+  } else {
+    assert(false, "toolchain.defaults.current_cpu unknown or invalid")
+  }
+
+  generate_toolchain(target_name) {
+    ar = _clang_prefix + "llvm-ar"
+    cc = _clang_prefix + _tool_name_root + "clang"
+    cxx = _clang_prefix + _tool_name_root + "clang++"
+
+    forward_variables_from(invoker,
+                           "*",
+                           [
+                             "defaults",
+                             "name",
+                           ])
+    defaults = {
+      current_os = "android"
+      forward_variables_from(invoker_toolchain_args, "*")
+    }
+  }
+}
+
+# Creates a series of Android toolchain targets with common compiler options.
+#
+# Args:
+#   toolchains: List of scopes defining each of the desired tolchains.
+#   The scope must contain a "name" variable; other variables are forwared to
+#   $generate_toolchain.
+template("pw_generate_android_toolchains") {
+  not_needed([ "target_name" ])
+  assert(
+      defined(invoker.toolchains),
+      "pw_generate_android_toolchains must be called with a list of toolchains")
+
+  # Create a target for each of the desired toolchains.
+  foreach(_toolchain, invoker.toolchains) {
+    # If the toolchain defines a CPU, use that, otherwise expand to all of the
+    # CPU targets an NDK may contain and prepend the CPU name.
+    _current_cpu = ""
+    if (defined(_toolchain.defaults)) {
+      invoker_toolchain_args = {
+      }
+      invoker_toolchain_args = _toolchain.defaults
+      if (defined(invoker_toolchain_args.current_cpu)) {
+        _current_cpu = invoker_toolchain_args.current_cpu
+      }
+    }
+
+    if (_current_cpu != "") {
+      pw_generate_android_toolchain(_toolchain.name) {
+        forward_variables_from(_toolchain, "*", [ "name" ])
+      }
+    } else {
+      foreach(_current_cpu, pw_android_toolchain_cpu_targets) {
+        pw_generate_android_toolchain("${_current_cpu}_${_toolchain.name}") {
+          forward_variables_from(_toolchain,
+                                 "*",
+                                 [
+                                   "defaults",
+                                   "name",
+                                 ])
+          defaults = {
+            current_cpu = _current_cpu
+            if (defined(_toolchain.defaults)) {
+              forward_variables_from(_toolchain.defaults, "*")
+            }
+          }
+        }
+      }
+    }
+  }
+}

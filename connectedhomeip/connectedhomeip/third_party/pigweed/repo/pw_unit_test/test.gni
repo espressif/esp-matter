@@ -1,0 +1,469 @@
+# Copyright 2019 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/python_action.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_compilation_testing/negative_compilation_test.gni")
+import("$dir_pw_toolchain/host_clang/toolchains.gni")
+
+declare_args() {
+  # The GoogleTest implementation to use for Pigweed unit tests. This library
+  # provides "gtest/gtest.h" and related headers. Defaults to
+  # pw_unit_test:light, which implements a subset of GoogleTest.
+  #
+  # Type: string (GN path to a source set)
+  # Usage: toolchain-controlled only
+  pw_unit_test_GOOGLETEST_BACKEND = "$dir_pw_unit_test:light"
+
+  # Implementation of a main function for ``pw_test`` unit test binaries. Must
+  # be set to an appropriate target for the pw_unit_test backend.
+  #
+  # Type: string (GN path to a source set)
+  # Usage: toolchain-controlled only
+  pw_unit_test_MAIN = "$dir_pw_unit_test:simple_printing_main"
+
+  # Path to a test runner to automatically run unit tests after they are built.
+  #
+  # If set, a ``pw_test`` target's ``<target_name>.run`` action will invoke the
+  # test runner specified by this argument, passing the path to the unit test to
+  # run. If this is unset, the ``pw_test`` target's ``<target_name>.run`` step
+  # will do nothing.
+  #
+  # Targets that don't support parallelized execution of tests (e.g. a on-device
+  # test runner that must flash a device and run the test in serial) should
+  # set pw_unit_test_POOL_DEPTH to 1.
+  #
+  # Type: string (name of an executable on the PATH, or path to an executable)
+  # Usage: toolchain-controlled only
+  pw_unit_test_AUTOMATIC_RUNNER = ""
+
+  # Optional list of arguments to forward to the automatic runner.
+  #
+  # Type: list of strings (args to pass to pw_unit_test_AUTOMATIC_RUNNER)
+  # Usage: toolchain-controlled only
+  pw_unit_test_AUTOMATIC_RUNNER_ARGS = []
+
+  # Optional timeout to apply when running tests via the automatic runner.
+  # Timeout is in seconds. Defaults to empty which means no timeout.
+  pw_unit_test_AUTOMATIC_RUNNER_TIMEOUT = ""
+
+  # The maximum number of unit tests that may be run concurrently for the
+  # current toolchain. Setting this to 0 disables usage of a pool, allowing
+  # unlimited parallelization.
+  #
+  # Note: A single target with two toolchain configurations (e.g. release/debug)
+  #       will use two separate test runner pools by default. Set
+  #       pw_unit_test_POOL_TOOLCHAIN to the same toolchain for both targets to
+  #       merge the pools and force serialization.
+  #
+  # Type: integer
+  # Usage: toolchain-controlled only
+  pw_unit_test_POOL_DEPTH = 0
+
+  # The toolchain to use when referring to the pw_unit_test runner pool. When
+  # this is disabled, the current toolchain is used. This means that every
+  # toolchain will use its own pool definition. If two toolchains should share
+  # the same pool, this argument should be by one of the toolchains to the GN
+  # path of the other toolchain.
+  #
+  # Type: string (GN path to a toolchain)
+  # Usage: toolchain-controlled only
+  pw_unit_test_POOL_TOOLCHAIN = ""
+
+  # The name of the GN target type used to build pw_unit_test executables.
+  #
+  # Type: string (name of a GN template)
+  # Usage: toolchain-controlled only
+  pw_unit_test_EXECUTABLE_TARGET_TYPE = "pw_executable"
+
+  # The path to the .gni file that defines pw_unit_test_EXECUTABLE_TARGET_TYPE.
+  #
+  # If pw_unit_test_EXECUTABLE_TARGET_TYPE is not the default of
+  # `pw_executable`, this .gni file is imported to provide the template
+  # definition.
+  #
+  # Type: string (path to a .gni file)
+  # Usage: toolchain-controlled only
+  pw_unit_test_EXECUTABLE_TARGET_TYPE_FILE = ""
+}
+
+if (pw_unit_test_EXECUTABLE_TARGET_TYPE != "pw_executable" &&
+    pw_unit_test_EXECUTABLE_TARGET_TYPE_FILE != "") {
+  import(pw_unit_test_EXECUTABLE_TARGET_TYPE_FILE)
+}
+
+# Defines a target if enable_if is true. Otherwise, it defines that target as
+# <target_name>.DISABLED and creates an empty <target_name> group. This can be
+# used to conditionally create targets without having to conditionally add them
+# to groups. This results in simpler BUILD.gn files.
+template("pw_internal_disableable_target") {
+  assert(defined(invoker.enable_if),
+         "`enable_if` is required for pw_internal_disableable_target")
+  assert(defined(invoker.target_type),
+         "`target_type` is required for pw_internal_disableable_target")
+
+  if (invoker.enable_if) {
+    _actual_target_name = target_name
+  } else {
+    _actual_target_name = target_name + ".DISABLED"
+
+    # If the target is disabled, create an empty target in its place. Use an
+    # action with the original target's sources as inputs to ensure that
+    # the source files exist (even if they don't compile).
+    pw_python_action(target_name) {
+      script = "$dir_pw_build/py/pw_build/nop.py"
+      stamp = true
+
+      inputs = []
+      if (defined(invoker.sources)) {
+        inputs += invoker.sources
+      }
+      if (defined(invoker.public)) {
+        inputs += invoker.public
+      }
+    }
+  }
+
+  target(invoker.target_type, _actual_target_name) {
+    forward_variables_from(invoker,
+                           "*",
+                           [
+                             "negative_compilation_tests",
+                             "enable_if",
+                             "target_type",
+                           ])
+
+    # Remove "" from dependencies. This allows disabling targets if a variable
+    # (e.g. a backend) is empty.
+    if (defined(public_deps)) {
+      public_deps += [ "" ]
+      public_deps -= [ "" ]
+    }
+    if (defined(deps)) {
+      deps += [ "" ]
+      deps -= [ "" ]
+    }
+  }
+}
+
+# Creates a library and an executable target for a unit test with pw_unit_test.
+#
+# <target_name>.lib contains the provided test sources as a library, which can
+# then be linked into a test executable.
+# <target_name> is a standalone executable which contains only the test sources
+# specified in the pw_unit_test_template.
+#
+# If the pw_unit_test_AUTOMATIC_RUNNER variable is set, this template also
+# creates a "${test_name}.run" target which runs the unit test executable after
+# building it.
+#
+# Args:
+#   - enable_if: (optional) Conditionally enables or disables this test. The
+#         test target and *.run target do nothing when the test is disabled. The
+#         disabled test can still be built and run with the
+#         <target_name>.DISABLED and <target_name>.DISABLED.run targets.
+#         Defaults to true (enable_if).
+#   - All of the regular "executable" target args are accepted.
+#
+template("pw_test") {
+  # This is required in order to reference the pw_test template's target name
+  # within the test_metadata of the metadata group below. The group() definition
+  # creates a new scope where the "target_name" variable is set to its target,
+  # shadowing the one in this scope.
+  _test_target_name = target_name
+
+  _test_is_enabled = !defined(invoker.enable_if) || invoker.enable_if
+  _is_coverage_run =
+      pw_toolchain_COVERAGE_ENABLED &&
+      filter_include(pw_toolchain_SANITIZERS, [ "coverage" ]) == [ "coverage" ]
+  if (_is_coverage_run) {
+    _profraw_path = "$target_out_dir/test/$_test_target_name.profraw"
+  }
+
+  # Always set the output_dir as pigweed is not compatible with shared
+  # bin directories for tests.
+  _test_output_dir = "${target_out_dir}/test"
+  if (defined(invoker.output_dir)) {
+    _test_output_dir = invoker.output_dir
+  }
+
+  _test_main = pw_unit_test_MAIN
+  if (defined(invoker.test_main)) {
+    _test_main = invoker.test_main
+  }
+
+  # The unit test code as a source_set.
+  pw_internal_disableable_target("$target_name.lib") {
+    target_type = "pw_source_set"
+    enable_if = _test_is_enabled
+    forward_variables_from(invoker, "*", [ "metadata" ])
+
+    if (!defined(deps)) {
+      deps = []
+    }
+    deps += [ dir_pw_unit_test ]
+
+    if (defined(invoker.negative_compilation_tests) &&
+        invoker.negative_compilation_tests) {
+      deps += [
+        ":$_test_target_name.nc_test",
+        "$dir_pw_compilation_testing:internal_pigweed_use_only",
+      ]
+    }
+  }
+
+  pw_internal_disableable_target(_test_target_name) {
+    target_type = pw_unit_test_EXECUTABLE_TARGET_TYPE
+    enable_if = _test_is_enabled
+
+    # Metadata for this test when used as part of a pw_test_group target.
+    metadata = {
+      tests = [
+        {
+          type = "test"
+          test_name = _test_target_name
+          test_directory = rebase_path(_test_output_dir, root_build_dir)
+        },
+      ]
+
+      # N.B.: This is placed here instead of in $_test_target_name._run because
+      # pw_test_group only forwards the metadata from _test_target_name and not
+      # _test_target_name._run or _test_target_name.run.
+      if (_is_coverage_run) {
+        profraws = [
+          {
+            type = "profraw"
+            path = rebase_path(_profraw_path, root_build_dir)
+          },
+        ]
+      }
+    }
+
+    deps = [ ":$_test_target_name.lib" ]
+    if (_test_main != "") {
+      deps += [ _test_main ]
+    }
+
+    output_dir = _test_output_dir
+  }
+
+  if (defined(invoker.negative_compilation_tests) &&
+      invoker.negative_compilation_tests) {
+    pw_cc_negative_compilation_test("$target_name.nc_test") {
+      forward_variables_from(invoker, "*")
+
+      # Add a dependency on pw_unit_test since it is implied for pw_unit_test
+      # targets.
+      if (!defined(deps)) {
+        deps = []
+      }
+      deps += [ dir_pw_unit_test ]
+    }
+  }
+
+  if (pw_unit_test_AUTOMATIC_RUNNER != "") {
+    # When the automatic runner is set, create an action which runs the unit
+    # test executable using the test runner script.
+    if (_test_is_enabled) {
+      _test_to_run = _test_target_name
+    } else {
+      # Create a run target for the .DISABLED version of the test.
+      _test_to_run = _test_target_name + ".DISABLED"
+
+      # Create a placeholder .run target for the regular version of the test.
+      group(_test_target_name + ".run") {
+        deps = [ ":$_test_target_name" ]
+      }
+    }
+
+    pw_python_action(_test_to_run + "._run") {
+      # Optionally limit max test runner concurrency.
+      if (pw_unit_test_POOL_DEPTH != 0) {
+        _pool_toolchain = current_toolchain
+        if (pw_unit_test_POOL_TOOLCHAIN != "") {
+          _pool_toolchain = pw_unit_test_POOL_TOOLCHAIN
+        }
+        pool = "$dir_pw_unit_test:unit_test_pool($_pool_toolchain)"
+      }
+
+      deps = [ ":$_test_target_name" ]
+      inputs = [ pw_unit_test_AUTOMATIC_RUNNER ]
+      module = "pw_unit_test.test_runner"
+      python_deps = [
+        "$dir_pw_cli/py",
+        "$dir_pw_unit_test/py",
+      ]
+      args = [
+        "--runner",
+        rebase_path(pw_unit_test_AUTOMATIC_RUNNER, root_build_dir),
+        "--test",
+        "<TARGET_FILE(:$_test_to_run)>",
+      ]
+      if (pw_unit_test_AUTOMATIC_RUNNER_TIMEOUT != "") {
+        args += [
+          "--timeout",
+          pw_unit_test_AUTOMATIC_RUNNER_TIMEOUT,
+        ]
+      }
+      if (_is_coverage_run) {
+        args += [
+          "--coverage-profraw",
+          rebase_path(_profraw_path, root_build_dir),
+        ]
+      }
+      if (pw_unit_test_AUTOMATIC_RUNNER_ARGS != []) {
+        args += [ "--" ] + pw_unit_test_AUTOMATIC_RUNNER_ARGS
+      }
+
+      outputs = []
+      if (_is_coverage_run) {
+        outputs += [ _profraw_path ]
+      }
+      stamp = true
+    }
+
+    group(_test_to_run + ".run") {
+      public_deps = [ ":$_test_to_run._run" ]
+    }
+  } else {
+    group(_test_target_name + ".run") {
+      public_deps = [ ":$_test_target_name" ]
+    }
+  }
+}
+
+# Defines a related collection of unit tests.
+#
+# pw_test_group targets output a JSON metadata file for the Pigweed test runner.
+#
+# Args:
+#   - tests: List of pw_test targets for each of the tests in the group.
+#   - group_deps: (optional) pw_test_group targets on which this group depends.
+#   - enable_if: (optional) Conditionally enables or disables this test group.
+#         If false, an empty group is created. Defaults to true.
+template("pw_test_group") {
+  _group_target = target_name
+  _group_deps_metadata = []
+  if (defined(invoker.tests)) {
+    _deps = invoker.tests
+  } else {
+    _deps = []
+  }
+
+  # Allow empty pw_test_groups with no tests or group_deps.
+  if (!defined(invoker.tests) && !defined(invoker.group_deps)) {
+    not_needed("*")
+  }
+
+  _group_is_enabled = !defined(invoker.enable_if) || invoker.enable_if
+
+  if (_group_is_enabled) {
+    if (defined(invoker.group_deps)) {
+      # If the group specified any other group dependencies, create a metadata
+      # entry for each of them indicating that they are another group and a
+      # group target to collect that metadata.
+      foreach(dep, invoker.group_deps) {
+        _group_deps_metadata += [
+          {
+            type = "dep"
+            group = get_label_info(dep, "label_no_toolchain")
+          },
+        ]
+      }
+
+      _deps += invoker.group_deps
+    }
+
+    group(_group_target + ".lib") {
+      deps = []
+      foreach(_target, _deps) {
+        _dep_target = get_label_info(_target, "label_no_toolchain")
+        _dep_toolchain = get_label_info(_target, "toolchain")
+        deps += [ "$_dep_target.lib($_dep_toolchain)" ]
+      }
+    }
+
+    _metadata_group_target = "${target_name}_pw_test_group_metadata"
+    group(_metadata_group_target) {
+      metadata = {
+        group_deps = _group_deps_metadata
+        self = [
+          {
+            type = "self"
+            name = get_label_info(":$_group_target", "label_no_toolchain")
+          },
+        ]
+
+        # Metadata from the group's own unit test targets is forwarded through
+        # the group dependencies group. This entry is listed as a "walk_key" in
+        # the generated file so that only test targets' metadata (not group
+        # targets) appear in the output.
+        if (defined(invoker.tests)) {
+          propagate_metadata_from = invoker.tests
+        }
+      }
+      deps = _deps
+    }
+
+    _test_group_deps = [ ":$_metadata_group_target" ]
+
+    generated_file(_group_target) {
+      outputs = [ "$target_out_dir/$target_name.testinfo.json" ]
+      data_keys = [
+        "group_deps",
+        "self",
+        "tests",
+      ]
+      walk_keys = [ "propagate_metadata_from" ]
+      output_conversion = "json"
+      deps = _test_group_deps
+    }
+
+    # If automatic test running is enabled, create a *.run group that collects
+    # all of the individual *.run targets and groups.
+    if (pw_unit_test_AUTOMATIC_RUNNER != "") {
+      group(_group_target + ".run") {
+        deps = [ ":$_group_target" ]
+        foreach(_target, _deps) {
+          _dep_target = get_label_info(_target, "label_no_toolchain")
+          _dep_toolchain = get_label_info(_target, "toolchain")
+          deps += [ "$_dep_target.run($_dep_toolchain)" ]
+        }
+      }
+    }
+  } else {  # _group_is_enabled
+    # Create empty groups for the tests to avoid pulling in any dependencies.
+    group(_group_target) {
+    }
+    group(_group_target + ".lib") {
+    }
+
+    if (pw_unit_test_AUTOMATIC_RUNNER != "") {
+      group(_group_target + ".run") {
+      }
+    }
+
+    not_needed("*")
+    not_needed(invoker, "*")
+  }
+
+  # All of the tests in this group and its dependencies bundled into a single
+  # test binary.
+  pw_test(_group_target + ".bundle") {
+    deps = [ ":$_group_target.lib" ]
+    enable_if = _group_is_enabled
+  }
+}

@@ -1,0 +1,15 @@
+upgrade:
+  - sdk:
+      id: gecko_sdk
+      version: "4.0.2"
+    component:
+      - trigger: zigbee_multi_network_stub
+        description: >
+          The zigbee_multi_network_stub component has been deprecated. No action is needed.
+        remove:
+          - zigbee_multi_network_stub
+      - trigger: zigbee_multi_pan_stub
+        description: >
+          The zigbee_multi_pan_stub component has been deprecated. No action is needed.
+        remove:
+          - zigbee_multi_pan_stub

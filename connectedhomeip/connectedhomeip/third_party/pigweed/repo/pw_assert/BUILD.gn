@@ -1,0 +1,233 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/facade.gni")
+import("$dir_pw_build/module_config.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+import("backend.gni")
+
+declare_args() {
+  # The build target that overrides the default configuration options for this
+  # module. This should point to a source set that provides defines through a
+  # public config (which may -include a file or add defines directly).
+  pw_assert_CONFIG = pw_build_DEFAULT_MODULE_CONFIG
+}
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+config("assert_backend_overrides") {
+  include_dirs = [ "assert_compatibility_public_overrides" ]
+  visibility = [ ":*" ]
+}
+
+config("print_and_abort_check_backend_overrides") {
+  include_dirs = [ "print_and_abort_check_public_overrides" ]
+  visibility = [ ":*" ]
+}
+
+config("print_and_abort_assert_backend_overrides") {
+  include_dirs = [ "print_and_abort_assert_public_overrides" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("config") {
+  public = [ "public/pw_assert/config.h" ]
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ pw_assert_CONFIG ]
+}
+
+# Depending on dir_pw_assert provides both assert and check.
+group("pw_assert") {
+  public_deps = [
+    ":assert",
+    ":check",
+    ":config",
+  ]
+}
+
+# Wrap :pw_assert with facade-style targets, so it can be used as if it were
+# created with pw_facade.
+group("facade") {
+  public_deps = [
+    ":assert",
+    ":check.facade",
+  ]
+}
+
+group("pw_assert.facade") {
+  public_deps = [ ":facade" ]
+}
+
+# Provides the rich PW_CHECK macros.
+pw_facade("check") {
+  backend = pw_assert_BACKEND
+  public_configs = [ ":public_include_path" ]
+  public = [
+    "public/pw_assert/check.h",
+    "public/pw_assert/internal/check_impl.h",
+    "public/pw_assert/short.h",
+  ]
+  public_deps = [
+    ":config",
+    dir_pw_preprocessor,
+  ]
+
+  require_link_deps = [ ":impl" ]
+}
+
+# Provide "pw_assert/assert.h" in its own source set, so it can be used without
+# depending on pw_assert_BACKEND.
+pw_facade("assert") {
+  backend = pw_assert_LITE_BACKEND
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_assert/assert.h" ]
+  public_deps = [ ":config" ]
+}
+
+# This backend to pw_assert's PW_ASSERT()/PW_DASSERT() macros provides backwards
+# compatibility with pw_assert's previous C-symbol based API.
+#
+# Warning: The assert facade is in a transitional state, and this target is
+# likely to be removed as the pw_assert API is reassessed. (b/235149326)
+pw_source_set("assert_compatibility_backend") {
+  public_configs = [ ":assert_backend_overrides" ]
+  public_deps = [ dir_pw_preprocessor ]
+  public = [
+    "assert_compatibility_public_overrides/pw_assert_backend/assert_backend.h",
+  ]
+}
+
+group("assert_compatibility_backend.impl") {
+}
+
+pw_source_set("print_and_abort") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ ":config" ]
+  public = [ "public/pw_assert/internal/print_and_abort.h" ]
+  visibility = [ ":*" ]
+}
+
+# This backend to pw_assert's PW_CHECK()/PW_DCHECK() macros prints the assert
+# expression, evaluated expression, file/line number, function, and user message
+# with printf, then aborts. It is intended for use with host builds.
+pw_source_set("print_and_abort_check_backend") {
+  public_configs = [ ":print_and_abort_check_backend_overrides" ]
+  public_deps = [ ":print_and_abort" ]
+  public = [
+    "print_and_abort_check_public_overrides/pw_assert_backend/check_backend.h",
+  ]
+}
+
+group("print_and_abort_check_backend.impl") {
+}
+
+# This backend to pw_assert's PW_ASSERT()/PW_DASSERT() macros prints the assert
+# expression, file/line number, and function with printf, then aborts. It is
+# intended for use with host builds.
+pw_source_set("print_and_abort_assert_backend") {
+  public_configs = [ ":print_and_abort_assert_backend_overrides" ]
+  public_deps = [
+    ":config",
+    ":print_and_abort",
+  ]
+  public = [ "print_and_abort_assert_public_overrides/pw_assert_backend/assert_backend.h" ]
+}
+
+group("print_and_abort_assert_backend.impl") {
+}
+
+# pw_assert is low-level and ubiquitous. Because of this, it can often cause
+# circular dependencies. This target collects dependencies from the backend that
+# cannot be used because they would cause circular deps.
+#
+# This group ("$dir_pw_assert:impl") must listed in pw_build_LINK_DEPS if
+# pw_assert_BACKEND is set.
+#
+# pw_assert backends must provide their own "impl" target that collects their
+# actual dependencies. The backend "impl" group may be empty if everything can
+# go directly in the backend target without causing circular dependencies.
+group("impl") {
+  public_deps = []
+
+  if (pw_assert_BACKEND != "") {
+    public_deps +=
+        [ get_label_info(pw_assert_BACKEND, "label_no_toolchain") + ".impl" ]
+  }
+  if (pw_assert_LITE_BACKEND != "") {
+    public_deps += [ get_label_info(pw_assert_LITE_BACKEND,
+                                    "label_no_toolchain") + ".impl" ]
+  }
+}
+
+# Note: While this is technically a test, doesn't verify any of the output and
+# is more of a compile test. The results can be visually verified if desired.
+pw_test("assert_test") {
+  configs = [ ":public_include_path" ]
+  sources = [ "assert_test.cc" ]
+  deps = [ ":pw_assert" ]
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":assert_test",
+    ":assert_backend_compile_test",
+    ":assert_facade_test",
+  ]
+}
+
+# The assert facade test doesn't require a backend since a fake one is
+# provided. However, since this doesn't depend on the backend it re-includes
+# the facade headers.
+pw_test("assert_facade_test") {
+  configs = [ ":public_include_path" ]  # For internal/check_impl.h
+  sources = [
+    "assert_facade_test.cc",
+    "fake_backend.cc",
+    "public/pw_assert/internal/check_impl.h",
+    "pw_assert_test/fake_backend.h",
+  ]
+  deps = [
+    ":pw_assert",
+    dir_pw_span,
+    dir_pw_status,
+    dir_pw_string,
+  ]
+  negative_compilation_tests = true
+
+  # TODO(frolv): Fix this test on the QEMU target.
+  enable_if = pw_build_EXECUTABLE_TARGET_TYPE != "lm3s6965evb_executable"
+}
+
+pw_test("assert_backend_compile_test") {
+  enable_if = pw_assert_BACKEND != ""
+  deps = [
+    ":pw_assert",
+    dir_pw_status,
+    pw_assert_BACKEND,
+  ]
+  sources = [
+    "assert_backend_compile_test.cc",
+    "assert_backend_compile_test_c.c",
+  ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}

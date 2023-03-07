@@ -1,0 +1,72 @@
+!!omap
+- id: brd4166a
+- label: BRD4166A
+- package: platform
+- description: Board support for BRD4166A.
+- category: Platform|Board|Thunderboard
+- quality: production
+- requires:
+  - name: efr32mg12p332f1024gl125
+  - name: brd4166a_config
+- provides:
+  - name: brd4166a
+  - name: hardware_board
+  - name: hardware_board_tb
+  - name: hardware_board_from_tb
+  - name: hardware_board_from_sltb004a
+  - name: hardware_board_has_si70xx
+  - name: hardware_board_has_tempsensor
+  - name: hardware_board_has_vcom
+  - name: hardware_board_has_spiflash
+  - name: hardware_board_has_hfxo
+  - name: hardware_board_has_lfxo
+  - name: hardware_board_supports_rf_band_2400
+  - name: hardware_board_supports_1_rf_band
+  - name: hardware_board_default_rf_band
+  - name: hardware_board_default_rf_band_2400
+- recommends:
+  - id: iostream_usart
+    instance:
+    - vcom
+  - id: bootloader_uart_driver
+  - id: i2cspm
+    instance:
+    - sensor
+  - id: pressure_driver_bmp280
+  - id: mic_i2s_driver
+  - id: simple_led
+    instance:
+    - led0
+    - led1
+  - id: simple_button
+    instance:
+    - btn0
+    - btn1
+  - id: mx25_flash_shutdown_usart
+  - id: bootloader_spi_controller_usart_driver
+  - id: bootloader_spi_peripheral_usart_driver
+  - id: imu_driver_icm20648
+- template_contribution: []
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD4166A"'
+  - name: SL_BOARD_REV
+    value: '"D03"'
+- tag:
+  - board:pn:BRD4166
+  - board:variant:A
+  - board:revision:D03
+  - board:device:efr32mg12p332f1024gl125
+  - hardware:has:vcom
+  - hardware:has:pti
+  - hardware:has:sensor:si7021
+  - hardware:has:sensor:si7210
+  - hardware:has:sensor:si1133
+  - hardware:has:sensor:bmp280
+  - hardware:has:sensor:ccs811
+  - hardware:has:sensor:ics-43434
+  - hardware:has:microphone
+  - hardware:has:led:2
+  - hardware:has:button:2
+  - hardware:has:memory:spi:mx25r8035f
+  - hardware:has:imu

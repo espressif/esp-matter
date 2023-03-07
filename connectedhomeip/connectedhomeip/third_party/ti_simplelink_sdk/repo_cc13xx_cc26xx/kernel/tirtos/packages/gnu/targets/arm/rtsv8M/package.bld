@@ -1,0 +1,28 @@
+/*
+ *  Copyright 2021 by Texas Instruments Incorporated.
+ *
+ */
+
+var RtsBuild = xdc.loadCapsule('xdc/runtime/build.xs');
+var KnlBuild = xdc.loadCapsule('xdc/runtime/knl/build.xs');
+
+Pkg.makePrologue = RtsBuild.makePrologue;
+Pkg.otherFiles = ['boot.asm', 'startup.c', 'syscalls.c',
+                  'package.bld'];
+Pkg.otherSrcs = Pkg.otherFiles;
+
+var cobjs = RtsBuild.c_objs.concat(KnlBuild.c_objs);
+for (var i = 0; i < Build.targets.length; i++) {
+    var targ = Build.targets[i];
+    if (targ.rts == Pkg.name) {
+        Pkg.addLibrary("lib/" + Pkg.name, targ).addObjects(cobjs);
+        Pkg.addLibrary("lib/boot", targ).addObjects(["boot", "startup"]);
+        Pkg.addLibrary("lib/syscalls", targ).addObjects(["syscalls"]);
+    }
+}
+
+/*
+ *  @(#) gnu.targets.arm.rtsv8M; 1, 0, 0,; 7-28-2021 07:05:40; /db/ztree/library/trees/xdctargets/xdctargets-w20/src/ xlibrary
+
+ */
+

@@ -1,0 +1,238 @@
+%%{
+/*
+ * Copyright (c) 2013-2014, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+    var ENABLE = 1;
+
+    var LoggerMin = xdc.module("ti.uia.loggers.LoggerMin");
+    var Program = xdc.module('xdc.cfg.Program');
+
+    var bytesInChar = Program.build.target.bitsPerChar / 8;
+
+    var bytesInEventWord = 4;
+    var hdrOffsetInWords = 1;
+    var timestampSize = LoggerMin.timestampSize * bytesInEventWord;
+    var endpointId = LoggerMin.endpointId;
+
+    var LoggerMin_module = "ti_uia_loggers_LoggerMin_Module__state__V";
+
+    var numBytesWrite0 = bytesInEventWord * 2;
+    var numBytesWrite1 = numBytesWrite0 + bytesInEventWord;
+    var numBytesWrite2 = numBytesWrite1 + bytesInEventWord;
+    var numBytesWrite4 = numBytesWrite2 + 2 * bytesInEventWord;
+    var numBytesWrite8 = numBytesWrite4 + 4 * bytesInEventWord;
+%%}
+%/*
+% *  ======== LoggerMin.xdt ========
+% */
+
+#include <xdc/std.h>
+#include <xdc/runtime/Log.h>
+#include <xdc/runtime/Types.h>
+#include <xdc/runtime/Timestamp.h>
+#include <xdc/runtime/Startup.h>
+#include <xdc/runtime/System.h>
+#include <ti/sysbios/hal/Hwi.h>
+#include <ti/uia/runtime/EventHdr.h>
+#include <ti/uia/runtime/UIAPacket.h>
+#include <ti/uia/loggers/LoggerMin.h>
+
+
+/*
+ *  ======== LoggerMin_flush =========
+ */
+Void ti_uia_loggers_LoggerMin_flush__E()
+{
+    register UInt32* bufferPtr = `LoggerMin_module`.start;
+
+    /* Set UIA packet length of the completed packet */
+    ti_uia_runtime_UIAPacket_setMinEventPacketLength(
+            (ti_uia_runtime_UIAPacket_Hdr*)bufferPtr,
+            (((UInt32)`LoggerMin_module`.write - (UInt32)bufferPtr)) * `bytesInChar`,
+            `endpointId`);
+
+    /* Update ptr to new buffer */
+    `LoggerMin_module`.write = bufferPtr + `hdrOffsetInWords`;
+}
+
+% if (LoggerMin.timestampSize != LoggerMin.TimestampSize_NONE) {
+/*
+ *  ======== LoggerMin_genTimestamp ========
+ */
+Ptr ti_uia_loggers_LoggerMin_genTimestamp__I(Ptr writePtr)
+{
+    UInt32 *next = (UInt32 *)writePtr;
+% if (LoggerMin.timestampSize == LoggerMin.TimestampSize_64b) {
+    xdc_runtime_Types_Timestamp64 tstamp;
+
+    xdc_runtime_Timestamp_get64(&tstamp);
+    *next++ = tstamp.lo;
+    *next++ = tstamp.hi;
+%}
+% else if (LoggerMin.timestampSize == LoggerMin.TimestampSize_32b) {
+    *next++ = xdc_runtime_Timestamp_get32();
+%}
+    return ((Ptr)next);
+}
+%}
+
+
+/*
+ *  ======== LoggerMin_write =========
+ */
+Void ti_uia_loggers_LoggerMin_write__E(
+    xdc_runtime_Log_Event evt,
+    xdc_runtime_Types_ModuleId mid, IArg numBytesInEvent,
+        IArg p1, IArg p2, IArg p3, IArg p4, IArg p5, IArg p6, IArg p7, IArg p8)
+{
+    UInt key = ti_sysbios_hal_Hwi_disable();
+    register UInt32 *writePtr = `LoggerMin_module`.write;
+    UInt32 totalBytesInEvent;
+
+% if (LoggerMin.supportLoggerDisable) {
+    if (!`LoggerMin_module`.enabled) {
+        ti_sysbios_hal_Hwi_restore(key);
+        return;
+    }
+% }
+    /* Add the number of bytes in the timestamp (0, 4, or 8) */
+    totalBytesInEvent = numBytesInEvent + `timestampSize`;
+
+    if (((UInt32)writePtr +
+                (totalBytesInEvent + `bytesInEventWord`) / (4 / sizeof(UInt32))) >=
+            (UInt32)`LoggerMin_module`.end) {
+
+        ti_uia_runtime_UIAPacket_setMinEventPacketLength(
+            (ti_uia_runtime_UIAPacket_Hdr*)`LoggerMin_module`.start,
+            (((UInt32)`LoggerMin_module`.write -
+                    (UInt32)`LoggerMin_module`.start)) * `bytesInChar`,
+            `endpointId`);
+
+        writePtr = `LoggerMin_module`.start + `hdrOffsetInWords`;
+    }
+
+    *writePtr++ = ti_uia_runtime_EventHdr_genEventWithPrevLenHdrWord1(
+        totalBytesInEvent,
+        `LoggerMin_module`.numBytesInPrevEvent,
+        `LoggerMin_module`.eventSequenceNum,
+        `LoggerMin_module`.eventType);
+
+% if (LoggerMin.timestampSize != LoggerMin.TimestampSize_NONE) {
+    writePtr = (UInt32 *)ti_uia_loggers_LoggerMin_genTimestamp((Ptr)writePtr);
+% }
+
+    *writePtr++ = xdc_runtime_Types_makeEvent(xdc_runtime_Log_getEventId(evt),
+            mid);
+
+    if (numBytesInEvent >= `numBytesWrite1`) {
+        *writePtr++ = p1;
+
+        if (numBytesInEvent >= `numBytesWrite2`) {
+            *writePtr++ = p2;
+
+            if (numBytesInEvent >= `numBytesWrite4`) {
+                *writePtr++ = p3;
+                *writePtr++ = p4;
+
+                if (numBytesInEvent == `numBytesWrite8`) {
+                    *writePtr++ = p5;
+                    *writePtr++ = p6;
+                    *writePtr++ = p7;
+                    *writePtr++ = p8;
+                }
+            }
+        }
+    }
+
+    `LoggerMin_module`.eventSequenceNum++;
+    `LoggerMin_module`.numBytesInPrevEvent = totalBytesInEvent;
+
+    /*
+     *  Start the EventHdr for the next event with this event's length
+     *  in the 'previous event length' field.
+     */
+    *writePtr = ti_uia_runtime_EventHdr_genEventWithPrevLenHdrWord1(
+        0,
+        `LoggerMin_module`.numBytesInPrevEvent,
+        `LoggerMin_module`.eventSequenceNum,
+        ti_uia_runtime_EventHdr_HdrType_EventWithPrevLenWithNoTimestamp);
+
+    `LoggerMin_module`.write = writePtr;
+
+    ti_sysbios_hal_Hwi_restore(key);
+}
+
+
+% if (!ENABLE) {
+/*
+ *  ======== LoggerMin_disable ========
+ */
+xdc_Bool ti_uia_loggers_LoggerMin_disable__E(ti_uia_loggers_LoggerMin_Object *obj)
+{
+%if (LoggerMin.supportLoggerDisable == true) {
+    UInt key;
+    Bool prev;
+
+    key = ti_sysbios_hal_Hwi_disable();
+    prev = `LoggerMin_module`.enabled;
+    `LoggerMin_module`.enabled = FALSE;
+    ti_sysbios_hal_Hwi_restore(key);
+
+    return (prev);
+%}
+%else {
+	return(FALSE);
+%}
+
+}
+
+
+/*
+ *  ======== LoggerMin_enable ========
+ */
+xdc_Bool ti_uia_loggers_LoggerMin_enable__E(ti_uia_loggers_LoggerMin_Object *obj)
+{
+%if (LoggerMin.supportLoggerDisable == true) {
+    UInt key;
+    Bool prev;
+
+    key = ti_sysbios_hal_Hwi_disable();
+    prev = `LoggerMin_module`.enabled;
+    `LoggerMin_module`.enabled = TRUE;
+    ti_sysbios_hal_Hwi_restore(key);
+
+    return (prev);
+%}
+%else {
+	return(FALSE);
+%}
+}
+
+%}  // ENABLE

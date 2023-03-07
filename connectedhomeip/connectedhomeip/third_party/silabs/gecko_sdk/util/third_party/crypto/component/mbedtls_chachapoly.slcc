@@ -1,0 +1,36 @@
+id: mbedtls_chachapoly
+package: platform
+label: ChaChaPoly Algorithm
+description: >-
+  This component provides support for authenticated encryption and decryption with
+  ChaChaPoly using Mbed TLS. This component also provides support for the ChaCha20
+  stream cipher and Poly1305 message authentication codes.
+category: Platform|Security|Mbed TLS|Authenticated Encryption
+quality: production
+source:
+  - path: util/third_party/crypto/mbedtls/library/chachapoly.c
+    unless: [trustzone_nonsecure]
+  - path: util/third_party/crypto/mbedtls/library/chacha20.c
+    unless: [trustzone_nonsecure]
+  - path: util/third_party/crypto/mbedtls/library/poly1305.c
+    unless: [trustzone_nonsecure]
+include:
+  - path: util/third_party/crypto/mbedtls/include
+    file_list:
+      - path: mbedtls/chachapoly.h
+      - path: mbedtls/chacha20.h
+      - path: mbedtls/poly1305.h
+    unless: [trustzone_nonsecure]
+provides:
+  - name: mbedtls_chachapoly
+  - name: mbedtls_chacha20
+  - name: mbedtls_poly1305
+requires:
+  - name: mbedtls_core
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_CHACHAPOLY_C
+  - name: mbedtls_config
+    value: MBEDTLS_CHACHA20_C
+  - name: mbedtls_config
+    value: MBEDTLS_POLY1305_C

@@ -1,0 +1,28 @@
+#ifndef SL_IOSTREAM_HANDLES_H
+#define SL_IOSTREAM_HANDLES_H
+#include "sl_iostream.h"
+{# Deduplicate includes before printing #include statements -#}
+{% set includes = [] -%}
+{% for instance_info in iostream_instance_info -%}
+  {% if 'include' in instance_info and instance_info['include'] not in includes -%}
+    {% if includes.append(instance_info['include']) %}{% endif -%}
+  {% endif -%}
+{% endfor -%}
+{%- for include in includes -%}
+#include "{{include}}"
+{% endfor %}
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+extern const sl_iostream_instance_info_t *sl_iostream_instances_info[];
+extern const uint32_t sl_iostream_instances_count;
+
+sl_iostream_t *sl_iostream_get_handle(char *name);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif // SL_IOSTREAM_HANDLES_H

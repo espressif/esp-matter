@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/build.dtd -->
+<package name="ti.sysbios.knl" version="2, 0, 0, 0" producerId="undefined">
+    <units>
+        <module name="Clock"/>
+        <module name="Idle"/>
+        <module name="Intrinsics"/>
+        <module name="Event"/>
+        <module name="Mailbox"/>
+        <module name="Queue"/>
+        <module name="Semaphore"/>
+        <module name="Swi"/>
+        <module name="Task"/>
+    </units>
+    <sources>
+        <srcFile name="package/package_ti.sysbios.knl.c"/>
+        <srcFile name="Clock.c"/>
+        <srcFile name="Idle.c"/>
+        <srcFile name="Intrinsics.c"/>
+        <srcFile name="Swi.c"/>
+        <srcFile name="Task.c"/>
+        <srcFile name="Event.c"/>
+        <srcFile name="Semaphore.c"/>
+        <srcFile name="Mailbox.c"/>
+        <srcFile name="Queue.c"/>
+    </sources>
+    <configscripts>
+    </configscripts>
+    <makefiles>
+        <srcFile name="package.mak" src="package.bld"/>
+        <srcFile name="package/package.xdc.dep" src="package.xdc"/>
+        <srcFile name="package/package.cfg.dep" src="package.xdc"/>
+        <srcFile name="lib/debug/ti.sysbios.knl.aem4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/package/package_ti.sysbios.knl.oem4.dep" src="package/package_ti.sysbios.knl.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Clock.oem4.dep" src="Clock.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Idle.oem4.dep" src="Idle.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Intrinsics.oem4.dep" src="Intrinsics.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Swi.oem4.dep" src="Swi.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Task.oem4.dep" src="Task.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Event.oem4.dep" src="Event.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Semaphore.oem4.dep" src="Semaphore.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Mailbox.oem4.dep" src="Mailbox.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Queue.oem4.dep" src="Queue.c"/>
+        <srcFile name="lib/debug/ti.sysbios.knl.am4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/package/package_ti.sysbios.knl.om4.dep" src="package/package_ti.sysbios.knl.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Clock.om4.dep" src="Clock.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Idle.om4.dep" src="Idle.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Intrinsics.om4.dep" src="Intrinsics.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Swi.om4.dep" src="Swi.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Task.om4.dep" src="Task.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Event.om4.dep" src="Event.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Semaphore.om4.dep" src="Semaphore.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Mailbox.om4.dep" src="Mailbox.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Queue.om4.dep" src="Queue.c"/>
+        <srcFile name="lib/debug/ti.sysbios.knl.am4g.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/package/package_ti.sysbios.knl.om4g.dep" src="package/package_ti.sysbios.knl.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Clock.om4g.dep" src="Clock.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Idle.om4g.dep" src="Idle.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Intrinsics.om4g.dep" src="Intrinsics.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Swi.om4g.dep" src="Swi.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Task.om4g.dep" src="Task.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Event.om4g.dep" src="Event.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Semaphore.om4g.dep" src="Semaphore.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Mailbox.om4g.dep" src="Mailbox.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Queue.om4g.dep" src="Queue.c"/>
+        <srcFile name="lib/debug/ti.sysbios.knl.arm4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/package/package_ti.sysbios.knl.orm4.dep" src="package/package_ti.sysbios.knl.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Clock.orm4.dep" src="Clock.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Idle.orm4.dep" src="Idle.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Intrinsics.orm4.dep" src="Intrinsics.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Swi.orm4.dep" src="Swi.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Task.orm4.dep" src="Task.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Event.orm4.dep" src="Event.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Semaphore.orm4.dep" src="Semaphore.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Mailbox.orm4.dep" src="Mailbox.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.knl/Queue.orm4.dep" src="Queue.c"/>
+        <srcFile name="package/rel/ti_sysbios_knl.tar.dep" src="package/rel/ti_sysbios_knl.xdc.inc"/>
+    </makefiles>
+    <targets>
+        <target name="ti.targets.arm.elf.M4"
+            version="ti.targets.arm.elf.M4{1,0,20.2,5"
+            rawVersion="20.2.5"
+            platform="ti.platforms.tiva:TM4C1294NCPDT:1"
+            isa="v7M4"
+            suffix="em4"
+            rootDir="/scratch/xlibrary/.conan/data/ticodegen/20.2.5.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c"
+            os="undefined"
+            rts="ti.targets.arm.rtsarm">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="ti.targets.arm.clang.M4"
+            version="ti.targets.arm.clang.M4{1,0,1.3,1"
+            rawVersion="TI Arm Clang Compiler 1.3.1.LTSTarget: arm-ti-none-eabi
+Thread model: posix
+InstalledDir: /scratch/xlibrary/.conan/data/tiarmllvm/1.3.1.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c/bin
+"
+            platform="ti.platforms.tiva:TM4C1294NCPDT:1"
+            isa="v7M4"
+            suffix="m4"
+            rootDir="/scratch/xlibrary/.conan/data/tiarmllvm/1.3.1.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c"
+            os="undefined"
+            rts="ti.targets.arm.rtsarm">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="gnu.targets.arm.M4"
+            version="gnu.targets.arm.M4{1,0,9.2,1"
+            rawVersion="9.2.1"
+            platform="ti.platforms.tiva:TM4C1294NCPDT"
+            isa="v7M4"
+            suffix="m4g"
+            rootDir="/scratch/xlibrary/.conan/data/arm-none-eabi-gcc/9.2019.q4.major-0/library-msp/ga/package/44fcf6b9a7fb86b2586303e3db40189d3b511830"
+            os="undefined"
+            rts="gnu.targets.arm.rtsv7M">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="iar.targets.arm.M4"
+            version="iar.targets.arm.M4{1,0,8.50,1"
+            rawVersion="8.50.1.245"
+            platform="ti.platforms.tiva:TM4C1294NCPDT:1"
+            isa="v7M4"
+            suffix="rm4"
+            rootDir="/scratch/xlibrary/.conan/data/iarcodegen/8.50.1.245-3/library-msp/ga/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9"
+            os="undefined"
+            rts="iar.targets.arm.rts">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+    </targets>
+    <libraries>
+    <library name="lib/debug/ti.sysbios.knl"
+        pname="lib/debug/ti.sysbios.knl.aem4"
+        profile="debug"
+        target="ti.targets.arm.elf.M4"/>
+    <library name="lib/debug/ti.sysbios.knl"
+        pname="lib/debug/ti.sysbios.knl.am4"
+        profile="debug"
+        target="ti.targets.arm.clang.M4"/>
+    <library name="lib/debug/ti.sysbios.knl"
+        pname="lib/debug/ti.sysbios.knl.am4g"
+        profile="debug"
+        target="gnu.targets.arm.M4"/>
+    <library name="lib/debug/ti.sysbios.knl"
+        pname="lib/debug/ti.sysbios.knl.arm4"
+        profile="debug"
+        target="iar.targets.arm.M4"/>
+    </libraries>
+    <configurations>
+    </configurations>
+    <executables>
+    </executables>
+    <tests>
+    </tests>
+    <releases relDir="package/rel/">
+    <release name="ti_sysbios_knl"
+        pname="ti_sysbios_knl.tar"
+        label="default"
+        relScript="ti/sysbios/libFilter.xs">
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+        <file name="package.bld"/>
+        <file name="Clock.xdt"/>
+        <file name="Clock.xml"/>
+        <file name="Intrinsics__prologue.h"/>
+        <file name="Intrinsics__epilogue.h"/>
+        <file name="Mailbox.xml"/>
+        <file name="Queue.xml"/>
+        <file name="Task.xml"/>
+        <file name="Task.xdt"/>
+        <file name="Task__prologue.h"/>
+        <file name="Task__epilogue.h"/>
+        <file name="Task_smp.c"/>
+        <file name="Swi.xml"/>
+        <file name="Swi_smp.c"/>
+        <file name="Idle.xml"/>
+        <file name="Semaphore.xml"/>
+        <file name="Event__prologue.h"/>
+        <file name="Event__epilogue.h"/>
+        <file name="Event.xml"/>
+        <file name="package/package.cfg.xdc.inc"/>
+        <file name="lib/debug/ti.sysbios.knl.aem4"/>
+        <file name="package/package_ti.sysbios.knl.c"/>
+        <file name="Clock.c"/>
+        <file name="Idle.c"/>
+        <file name="Intrinsics.c"/>
+        <file name="Swi.c"/>
+        <file name="Task.c"/>
+        <file name="Event.c"/>
+        <file name="Semaphore.c"/>
+        <file name="Mailbox.c"/>
+        <file name="Queue.c"/>
+        <file name="lib/debug/ti.sysbios.knl.am4"/>
+        <file name="lib/debug/ti.sysbios.knl.am4g"/>
+        <file name="lib/debug/ti.sysbios.knl.arm4"/>
+    </release>
+    </releases>
+    <repositories>
+    </repositories>
+</package>

@@ -1,0 +1,26 @@
+id: ml_cmsis_dsp_rfft_q15
+label: cmsis_dsp_rfft
+package: platform
+description: >
+  Includes parts of the CMSIS DSP library required to calculate RFFT on
+  Q15 types.
+
+  This library has been patched
+category: Machine Learning|Utilities
+quality: production
+provides:
+  - name: ml_cmsis_dsp_rfft_q15
+  - name: frontend_fft_implementation
+requires:
+  - name: device_has_fpu
+    condition: [device_cortexm]
+  - name: cmsis_dsp
+    condition: [device_cortexm]
+root_path: util/third_party/tensorflow_extra
+source:
+  - path: microfrontend/sl_ml_fft.cc
+    condition: [device_cortexm]
+  - path: microfrontend/sl_ml_fft_stub.cc
+    condition: [simulation]
+ui_hints:
+  visibility: never

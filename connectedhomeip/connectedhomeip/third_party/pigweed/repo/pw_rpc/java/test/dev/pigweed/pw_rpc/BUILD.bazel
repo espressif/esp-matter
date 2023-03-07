@@ -1,0 +1,145 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+# Tests for the generic pw_rpc client.
+
+licenses(["notice"])
+
+java_library(
+    name = "test_client",
+    testonly = True,
+    srcs = ["TestClient.java"],
+    visibility = [
+        "__pkg__",
+        "//pw_transfer/java/test/dev/pigweed/pw_transfer:__pkg__",
+    ],
+    deps = [
+        "//pw_rpc:packet_proto_java_lite",
+        "//pw_rpc/java/main/dev/pigweed/pw_rpc:client",
+        "@com_google_protobuf//java/lite",
+        "@maven//:com_google_code_findbugs_jsr305",
+        "@maven//:com_google_guava_guava",
+    ],
+)
+
+java_test(
+    name = "ClientTest",
+    size = "small",
+    srcs = ["ClientTest.java"],
+    test_class = "dev.pigweed.pw_rpc.ClientTest",
+    deps = [
+        ":test_proto_java_proto_lite",
+        "//pw_rpc:packet_proto_java_lite",
+        "//pw_rpc/java/main/dev/pigweed/pw_rpc:client",
+        "@com_google_protobuf//java/lite",
+        "@maven//:com_google_flogger_flogger_system_backend",
+        "@maven//:com_google_guava_guava",
+        "@maven//:com_google_truth_truth",
+        "@maven//:org_mockito_mockito_core",
+    ],
+)
+
+java_test(
+    name = "IdsTest",
+    size = "small",
+    srcs = ["IdsTest.java"],
+    test_class = "dev.pigweed.pw_rpc.IdsTest",
+    deps = [
+        "//pw_rpc/java/main/dev/pigweed/pw_rpc:client",
+        "@maven//:com_google_flogger_flogger_system_backend",
+        "@maven//:com_google_truth_truth",
+    ],
+)
+
+java_test(
+    name = "PacketsTest",
+    size = "small",
+    srcs = ["PacketsTest.java"],
+    test_class = "dev.pigweed.pw_rpc.PacketsTest",
+    deps = [
+        "//pw_rpc:packet_proto_java_lite",
+        "//pw_rpc/java/main/dev/pigweed/pw_rpc:client",
+        "@com_google_protobuf//java/lite",
+        "@maven//:com_google_flogger_flogger_system_backend",
+        "@maven//:com_google_truth_truth",
+    ],
+)
+
+java_test(
+    name = "RpcManagerTest",
+    size = "small",
+    srcs = ["RpcManagerTest.java"],
+    test_class = "dev.pigweed.pw_rpc.RpcManagerTest",
+    deps = [
+        ":test_proto_java_proto_lite",
+        "//pw_rpc:packet_proto_java_lite",
+        "//pw_rpc/java/main/dev/pigweed/pw_rpc:client",
+        "@com_google_protobuf//java/lite",
+        "@maven//:com_google_flogger_flogger_system_backend",
+        "@maven//:com_google_truth_truth",
+        "@maven//:org_mockito_mockito_core",
+    ],
+)
+
+java_test(
+    name = "StreamObserverCallTest",
+    size = "small",
+    srcs = ["StreamObserverCallTest.java"],
+    test_class = "dev.pigweed.pw_rpc.StreamObserverCallTest",
+    deps = [
+        ":test_proto_java_proto_lite",
+        "//pw_rpc:packet_proto_java_lite",
+        "//pw_rpc/java/main/dev/pigweed/pw_rpc:client",
+        "@maven//:com_google_flogger_flogger_system_backend",
+        "@maven//:com_google_truth_truth",
+        "@maven//:org_mockito_mockito_core",
+    ],
+)
+
+java_test(
+    name = "StreamObserverMethodClientTest",
+    size = "small",
+    srcs = ["StreamObserverMethodClientTest.java"],
+    test_class = "dev.pigweed.pw_rpc.StreamObserverMethodClientTest",
+    deps = [
+        ":test_proto_java_proto_lite",
+        "//pw_rpc/java/main/dev/pigweed/pw_rpc:client",
+        "@com_google_protobuf//java/lite",
+        "@maven//:com_google_flogger_flogger_system_backend",
+        "@maven//:com_google_truth_truth",
+        "@maven//:org_mockito_mockito_core",
+    ],
+)
+
+test_suite(
+    name = "pw_rpc",
+    tests = [
+        ":ClientTest",
+        ":IdsTest",
+        ":PacketsTest",
+        ":RpcManagerTest",
+        ":StreamObserverCallTest",
+        ":StreamObserverMethodClientTest",
+    ],
+)
+
+proto_library(
+    name = "test_proto",
+    srcs = ["test.proto"],
+)
+
+java_lite_proto_library(
+    name = "test_proto_java_proto_lite",
+    deps = [":test_proto"],
+)

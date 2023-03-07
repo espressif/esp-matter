@@ -1,0 +1,27 @@
+id: "bluetooth_feature_connection"
+label:  "Connection"
+package: "Bluetooth"
+description: >
+  Bluetooth connection feature
+category: "Bluetooth|Feature"
+quality: "production"
+root_path: "protocol/bluetooth"
+config_file:
+  - path: "config/sl_bluetooth_connection_config.h"
+requires:
+  - name: "bluetooth_controller"
+  - name: "bluetooth_feature_connection_creation"
+provides:
+  - name: "bluetooth_feature_connection"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_connection
+  - name: component_catalog
+    value: bluetooth_connection_phy_update_incompatible
+    condition:
+      - "device_sdid_80"
+  - name: bluetooth_controller_init
+    value:
+      include: "sl_bluetooth_connection_config.h"
+      function: sl_btctrl_init_conn()
+    priority: 5

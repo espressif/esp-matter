@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="com.silabs.sdk.exx32.common.emlib" label="EFM Peripheral Support" contentRoot="$(sdkInstallationPath:default())/platform/emlib">
+  <property key="category" value="efm32|Common"/>
+  <folder name="emlib" uri="src" includeAllFiles="true" />
+  <includePath uri="inc" />
+</project>

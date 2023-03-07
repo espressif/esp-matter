@@ -1,0 +1,17 @@
+{
+  "packages": [
+    {
+      "path": "infra/3pp/tools/nodejs/${platform}",
+      "platforms": [
+        "linux-amd64",
+        "linux-arm64",
+        "mac-amd64",
+        "mac-arm64",
+        "windows-amd64"
+      ],
+      "tags": [
+        "version:2@18.4.0"
+      ]
+    }
+  ]
+}

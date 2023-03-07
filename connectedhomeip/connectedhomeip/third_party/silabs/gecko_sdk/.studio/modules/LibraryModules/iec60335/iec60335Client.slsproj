@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="com.silabs.sdk.exx32.external.iec60335" label="IEC 60335" toolchainCompatibility="IAR" contentRoot="$(sdkInstallationPath:default())/util/third_party/iec60335_classb/lib">
+  <property key="category" value="efm32|Third party"/>
+  <includePath uri="inc" />
+  <folder name="Iec60335" uri="src" includeAllFiles="true" />
+</project>

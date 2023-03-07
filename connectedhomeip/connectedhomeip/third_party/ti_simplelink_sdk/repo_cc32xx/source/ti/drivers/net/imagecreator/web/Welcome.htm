@@ -1,0 +1,188 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>TI - HomePage</title>
+<link rel="stylesheet" type="text/css" href="css/font-awesome.css">
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet" type="text/css" href="css/magnific-popup.css">
+<script src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/jquery.magnific-popup.min.js"></script>
+<link href="fonts/open-sans/open-sans.css" rel="stylesheet" type="text/css">
+<link href="fonts/roboto/roboto.css" rel="stylesheet" type="text/css">
+
+<style>
+body {
+	font-family: 'Roboto';
+}
+</style>
+</head>
+
+<body>
+<!-- wrapper -->
+<div class="wrapper">
+<div class="homeContainer">
+<div class="homeLeftContent leftSideLogo">
+    <div class="lMainTitle"></div>
+</div>
+    	
+  <div class="homeContent">
+    <h1 class="mainTitle">Welcome to SimpleLink™<br>Wi-Fi® Image Creator</h1>
+	<div class="subtitle">Create & program images to your CC31xx/CC32xx devices easily</div>
+	<input type="file" id="fileReader" name="file" style="visibility: hidden;width: 0px;height: 0px;">
+    <div class="openContainer">
+   	<div class="openContent mright75">
+    	<div class="openProjImg" onClick="projectManagement();"><i class="fa fa-folder-open-o fa-3x leftIcon"></i><div class="inTitle">Manage Projects</div><div class="inSub">Open/Import/Export/Rename/Delete</div></div>
+    	<div class="subTitle" onClick="openProjectsPopup();">Recent Projects</div>
+		<div id='recentProjectsDiv' class="projScrollBox">
+		</div>
+    </div>
+   	<div class="openContent">
+    	<div class="openProjImg" onClick="openProjectImage();" ><i class="fa fa-file-image-o fa-3x leftIcon"></i><div class="inTitle">Program Image</div><div class="inSub">Program image from an image file</div></div>
+    	<div class="subTitle"><!--Recent Images--></div>
+		<div id='recentImagesDiv'>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div class="openContent mtop75 mright92">
+    	<div class="openProjImg" onClick="createNewProject();"><i class="fa fa-file-o fa-3x leftIcon"></i><div class="inTitle">New Project</div><div class="inSub">Start a blank project with new settings</div></div>
+    </div>
+    <div class="openContent mtop75">
+    	<div class="openProjImg" onClick="openTools();"><i class="fa fa-wrench fa-3x leftIcon"></i><div class="inTitle">Tools</div><div class="inSub">Open tools</div></div>
+    </div>
+    <div class="clear"></div>
+    <div class="mtop100"></div>
+    <div class="mcFooter">
+   		<div class="verNum">Version: 1.0.22.5_1</div>
+		<div class="copyRights">All rights reserved to Texas Instruments inc (c) - For more information go to our <a href="">Help Pages</a></div>
+    </div>
+   </div>
+  </div>
+</div>
+</div>
+<script>
+
+window.addEventListener('keydown', function (e) { if (e.which == 116) e.preventDefault() });
+
+//run this on load
+$(function() {
+localStorage.setItem('projectName',  '');
+//localStorage.setItem('projectLoaded', 'false');
+
+$.post("/api/1/flash/getRecentProjectList",   { },
+					function(data,status){
+						//if return sucess and has data
+						if(status=='success' && data.ok){
+							//loop results
+                            var parent = $('#recentProjectsDiv');
+							for (var i=0; i< data.ok.length;i++){
+								var html="";
+                                
+								html+='<div class="recentFile" onClick="openProject(\''+data.ok[i]+'\')">';
+								html+='<i class="fa fa-folder-open-o leftIcon"></i><div class="inTitle">'+data.ok[i]+'</div></div>';
+                                $('#recentProjectsDiv').append(html);
+							}
+                            
+						}
+					});
+});
+//function new project
+function createNewProject(){
+	//erase local storage
+    localStorage.setItem('projectName', '');
+    //go to new project page
+    window.location.href = '/index.htm?page=newproject';
+}
+
+//function open image
+function openTools(){
+    //localStorage.setItem('projectName',  'Tools');
+    localStorage.setItem('projectName',  '');
+    window.location.href ='/index.htm?page=toolssignfile';
+}
+
+//function open image
+function openProjectImage(){
+	//erase local storage
+	//localStorage.setItem('projectName',  'ProjectImg');
+	//go to new project page
+	window.location.href ='/index.htm?page=openProjImg';
+}
+
+function openProjectsPopup()
+{
+$(function() {
+$.post("/api/1/flash/getProjectList",   { },
+					function(data,status){
+						//if return sucess and has data
+						if(status=='success' && data.ok){
+							
+                            
+                            var html='<div class="white-popup-small">'
+                            html +='	<div class="wrapPopup">';
+                            html +='	<div class="center-block"id="progStatus1">';
+                            
+                            
+                            //loop results
+							for (var i=0; i< data.ok.length;i++){
+								var html_t="";
+								html_t+='<div class="recentFile" onClick="openProject(\''+data.ok[i]+'\')">';
+								html_t+='<i class="fa fa-folder-open-o leftIcon"></i><div class="inTitle">'+data.ok[i]+'</div></div>';
+                                html +=html_t;
+							}
+                                                        
+                            html +='</div>';
+                            html +='		</div>';
+                            html +='	</div>';
+                            html +='	<div class="clear" />';
+                            html +='</div>';
+                            
+                            $.magnificPopup.open({
+                                items: {
+                                src:html,
+                                type: 'inline',
+                                },
+                                
+                                modal: true,
+                            });
+						}
+					});
+});
+}
+function openProject(projectname) {
+    localStorage.setItem('projectName', projectname);
+    window.location.href = '/index.htm?page=simplemode';
+}
+
+function projectManagement() {
+    localStorage.setItem('projectName',  '');
+    window.location.href ='/index.htm?page=projectmanagement';
+}
+function handleFileSelect(evt) {
+    var files = evt.target.files; // FileList object
+
+    // Loop through the FileList 
+    for (var i = 0, f; f = files[i]; i++) {
+      var reader = new FileReader();
+	// Closure to capture the file information.
+      reader.onload = (function(theFile) {
+        return function(e) {
+			try{
+				//save in the local storage as string
+				localStorage.setItem('project', e.target.result);
+				window.location.href ='/index.htm?page=programimageconnected';
+			}
+			catch(e){}
+		};
+      })(f);
+
+      // Read in the image file as a data URL.
+      reader.readAsText(f);
+	  
+    }
+}
+//when name of file is selected call the function
+document.getElementById('fileReader').addEventListener('change', handleFileSelect, false);
+</script>
+</body>
+</html>

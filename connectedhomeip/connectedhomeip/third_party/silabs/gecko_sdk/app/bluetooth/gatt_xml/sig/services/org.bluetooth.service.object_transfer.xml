@@ -1,0 +1,276 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2015 Bluetooth SIG, Inc. All rights reserved.-->
+<Service xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.service.object_transfer" uuid="1825" name="Object Transfer Service" last-modified="2015-11-17" approved="Yes">
+    <InformativeText>
+        <Abstract>This service provides management and control features supporting bulk data transfers which occur via a separate L2CAP connection oriented channel. The Client is enabled to create and delete objects and to execute an action using the currently selected object. The selected object can be written, updated or read via an Object Transfer Channel opened by the Client. The generation of a checksum covering a part or the whole of the object contents is included as an optional feature. This service provides a general method for a Client to select and initiate the transfer of any type of object.</Abstract>
+        <Summary>.</Summary>
+	</InformativeText>
+    <Dependencies>
+        <Dependency>This service is not dependent upon any other services.</Dependency>
+	</Dependencies>
+    <GATTRequirements>
+        <Requirement subProcedure="Write Characteristic Value">Mandatory</Requirement>
+        <Requirement subProcedure="Read Characteristic Descriptor">Mandatory</Requirement>
+        <Requirement subProcedure="Write Characteristic Descriptor">Mandatory</Requirement>
+        <Requirement subProcedure="Indication">Mandatory</Requirement>
+        <Requirement subProcedure="Read Long Characteristic Value">C1</Requirement>
+        <Requirement subProcedure="Write Long Characteristic Value">C2</Requirement>
+	</GATTRequirements>
+      <Note>
+        C1: Mandatory if the Server supports an Object Name characteristic value that may exceed (ATT_MTU-1) octets in length, where ATT_MTU is the default size for the transport being used; optional otherwise.
+        C2: Mandatory if the Server supports an Object Name characteristic value that may exceed (ATT_MTU-3) octets in length, where ATT_MTU is the default size for the transport being used, and the characteristic is writable; optional otherwise.
+	  </Note>
+    <Transports>
+        <Classic>true</Classic>
+        <LowEnergy>true</LowEnergy>
+        <HighSpeed>true</HighSpeed>
+	</Transports>
+    <ErrorCodes>
+        <ErrorCode name="Write Request Rejected" code="0x80" Description="An attempt was made to write a value that is invalid or not supported by this Server for a reason other than the attribute permissions."/>
+        <ErrorCode name="Object Not Selected" code="0x81" Description="An attempt was made to read or write to an Object Metadata characteristic while the Current Object was an Invalid Object (see Section 1.8 in the PDF sepcification)."/>
+        <ErrorCode name="Concurrency Limit Exceeded" code="0x82" Description="The Server is unable to service the Read Request or Write Request because it exceeds the concurrency limit of the service."/>
+        <ErrorCode name="Object Name Already Exists" code="0x83" Description="The requested object name was rejected because the name was already in use by an existing object on the Server."/>
+	</ErrorCodes>
+    <Characteristics>
+        <Characteristic type="org.bluetooth.characteristic.ots_feature" name="OTS Feature">
+            <Requirement>Mandatory</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Excluded</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+                <ExtendedProperties>Excluded</ExtendedProperties>
+			</Properties>
+            <SecuritySettings>
+                <Security>Encryption is mandatory</Security>
+			</SecuritySettings>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.object_name" name="Object Name">
+            <InformativeText>
+                C1:Mandatory if the Server is capable of storing more than one object within the context of this instance of the service; optional otherwise.
+                C3:Mandatory if the OACP Create op code is supported; optional otherwise.
+			</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>C3</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+                <ExtendedProperties>Excluded</ExtendedProperties>
+			</Properties>
+            <SecuritySettings>
+                <Security>Encryption is mandatory</Security>
+			</SecuritySettings>
+           </Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.object_type" name="Object Type">
+            <Requirement>Mandatory</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Excluded</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+                <ExtendedProperties>Excluded</ExtendedProperties>
+			</Properties>
+            <SecuritySettings>
+                <Security>Encryption is mandatory</Security>
+			</SecuritySettings>
+        </Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.object_size" name="Object Size">
+            <Requirement>Mandatory</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Excluded</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+                <ExtendedProperties>Excluded</ExtendedProperties>
+			</Properties>
+            <SecuritySettings>
+                <Security>Encryption is mandatory</Security>
+			</SecuritySettings>
+        </Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.object_first_created" name="Object First-Created">
+            <InformativeText>
+                C3: Mandatory if the OACP Create op code is supported; optional otherwise.
+			</InformativeText>
+            <Requirement>Optional</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>C3</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+                <ExtendedProperties>Excluded</ExtendedProperties>
+			</Properties>
+            <SecuritySettings>
+                <Security>Encryption is mandatory</Security>
+			</SecuritySettings>
+        </Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.object_last_modified" name="Object Last-Modified">
+            <InformativeText>
+                C4: Mandatory if the Server does not have access to a real time clock; excluded otherwise.
+			</InformativeText>
+            <Requirement>Optional</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>C4</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+                <ExtendedProperties>Excluded</ExtendedProperties>
+			</Properties>
+            <SecuritySettings>
+                <Security>Encryption is mandatory</Security>
+			</SecuritySettings>
+        </Characteristic>
+       
+        
+     
+        <Characteristic type="org.bluetooth.characteristic.object_id" name="Object ID">
+            <InformativeText>
+                C1: Mandatory if the Server is capable of storing more than one object; excluded otherwise.
+			</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Excluded</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+                <ExtendedProperties>Excluded</ExtendedProperties>
+			</Properties>
+            <SecuritySettings>
+                <Security>Encryption is mandatory</Security>
+			</SecuritySettings>
+        </Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.object_properties" name="Object Properties">
+            <Requirement>Mandatory</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Optional</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+                <ExtendedProperties>Excluded</ExtendedProperties>
+			</Properties>
+            <SecuritySettings>
+                <Security>Encryption is mandatory</Security>
+			</SecuritySettings>
+        </Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.object_action_control_point" name="Object Action Control Point">
+            <Requirement>Mandatory</Requirement>
+            <Properties>
+                <Read>Excluded</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Mandatory</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+                <ExtendedProperties>Excluded</ExtendedProperties>
+			</Properties>
+            <SecuritySettings>
+                <Security>Encryption is mandatory</Security>
+			</SecuritySettings>
+        </Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.object_list_control_point" name="Object List Control Point">
+            <InformativeText>
+                C1:Mandatory if the Server is capable of storing more than one object within the context of this instance of the service; optional otherwise.
+			</InformativeText>
+            <Requirement>C1</Requirement>
+            <Properties>
+                <Read>Excluded</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Mandatory</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+                <ExtendedProperties>Excluded</ExtendedProperties>
+			</Properties>
+            <SecuritySettings>
+                <Security>Encryption is mandatory</Security>
+			</SecuritySettings>
+        </Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.object_list_filter" name="Object List Filter">
+            <InformativeText>
+                C2:Optional if the Server is capable of storing more than one object; excluded otherwise.
+			</InformativeText>
+            <Requirement>C2</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+                <ExtendedProperties>Excluded</ExtendedProperties>
+			</Properties>
+            <SecuritySettings>
+                <Security>Encryption is mandatory</Security>
+			</SecuritySettings>
+        </Characteristic>
+       
+        <Characteristic type="org.bluetooth.characteristic.object_changed" name="Object Changed">
+            <Requirement>Optional</Requirement>
+            <Properties>
+                <Read>Excluded</Read>
+                <Write>Excluded</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Mandatory</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+                <ExtendedProperties>Excluded</ExtendedProperties>
+			</Properties>
+            <SecuritySettings>
+                <Security>Encryption is mandatory</Security>
+			</SecuritySettings>
+        </Characteristic>
+	</Characteristics>
+   </Service>

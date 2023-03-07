@@ -1,0 +1,127 @@
+id: bootloader_interface
+label: Bootloader Application Interface
+package: bootloader
+description: >
+  This component must be added to a project in order to use the Gecko Bootloader.
+  When this component is part of a project a part of flash memory will be reserved
+  for Bootloader usage in the application linker file unless this component is part
+  of the non-secure application. This component also provides
+  a bootloader interface for interacting with the Gecko Bootloader.
+
+  Note: This component is not required for Gecko Bootloader projects. This component
+  is only required for application projects that need Gecko Bootloader support
+category: Platform|Bootloader
+quality: production
+source:
+  - path: platform/bootloader/api/btl_interface.c
+    unless: [trustzone_nonsecure]
+  - path: platform/bootloader/api/btl_interface_storage.c
+    unless: [trustzone_nonsecure]
+  - path: platform/bootloader/api/btl_interface_nsc.c
+    condition: [trustzone_secure]
+  - path: platform/bootloader/api/btl_interface_ns.c
+    condition: [trustzone_nonsecure]
+include:
+  - path: platform/bootloader
+  - path: platform/bootloader/api
+    file_list:
+    - path: application_properties.h
+    - path: btl_errorcode.h
+    - path: btl_interface.h
+    - path: btl_interface_parser.h
+    - path: btl_interface_storage.h
+    - path: btl_reset_info.h
+provides:
+  - name: bootloader_interface
+requires:
+  - name: cmsis_core
+  - name: device
+  - name: component_catalog
+  - name: trustzone_security_state
+    condition: [device_series_2]
+  - name: bootloader_app_properties
+    condition: [trustzone_secure]
+  - name: bootloader_app_properties
+    condition: [trustzone_unaware]
+  - name: bootloader_app_properties
+    condition: [device_series_1]
+
+define:
+  - name: BOOTLOADER_APPLOADER
+    value: 1
+    condition: [apploader, device_series_2]
+
+config_file:
+  - path: platform/bootloader/config/btl_interface_cfg.h
+    unless: [trustzone_nonsecure]
+  - path: platform/bootloader/config/s2/btl_interface/btl_interface_cfg_s2c1.h
+    file_id: btl_interface_config
+    condition: [device_sdid_200]
+    unless: [trustzone_nonsecure, apploader]
+  - path: platform/bootloader/config/s2/btl_interface/btl_interface_cfg_s2c2.h
+    file_id: btl_interface_config
+    condition: [device_sdid_205]
+    unless: [trustzone_nonsecure, apploader]
+  - path: platform/bootloader/config/s2/btl_interface/btl_interface_cfg_s2c3.h
+    file_id: btl_interface_config
+    condition: [device_sdid_210]
+    unless: [trustzone_nonsecure, apploader]
+  - path: platform/bootloader/config/s2/btl_interface/btl_interface_cfg_s2c4.h
+    file_id: btl_interface_config
+    condition: [device_sdid_215]
+    unless: [trustzone_nonsecure, apploader]
+template_contribution:
+  - name: component_catalog
+    value: gecko_bootloader_interface
+  - name: event_handler
+    value:
+      event: platform_init
+      include: btl_interface.h
+      handler: bootloader_init
+    priority: -8000
+    unless: [trustzone_nonsecure]
+
+  # Series-1
+  - name: bootloader_size
+    value: 16384
+    condition: [device_sdid_80]
+  - name: bootloader_size
+    value: 18432
+    condition: [device_sdid_89, bootloader_in_main_flash]
+  - name: bootloader_size
+    value: 18432
+    condition: [device_sdid_95, bootloader_in_main_flash]
+
+  # Series-2
+  - name: bootloader_size
+    value: 16384
+    condition: [device_sdid_200]
+    unless: [apploader, trustzone_secure, trustzone_nonsecure]
+  - name: bootloader_size
+    value: 24576
+    condition: [device_sdid_205]
+    unless: [apploader, trustzone_secure, trustzone_nonsecure]
+  - name: bootloader_size
+    value: 24576
+    condition: [device_sdid_210]
+    unless: [apploader, trustzone_secure, trustzone_nonsecure]
+  - name: bootloader_size
+    value: 24576
+    condition: [device_sdid_215]
+    unless: [apploader, trustzone_secure, trustzone_nonsecure]
+  - name: bootloader_size
+    value: 24576
+    condition: [device_sdid_220]
+    unless: [apploader, trustzone_secure, trustzone_nonsecure]
+  - name: bootloader_size
+    value: 24576
+    condition: [device_sdid_230]
+    unless: [apploader, trustzone_secure, trustzone_nonsecure]
+  - name: bootloader_size
+    value: 73728
+    condition: [apploader, device_series_2]
+    unless: [trustzone_secure, trustzone_nonsecure]
+
+documentation:
+  docset: mcu-bootloader
+  document: group-Interface

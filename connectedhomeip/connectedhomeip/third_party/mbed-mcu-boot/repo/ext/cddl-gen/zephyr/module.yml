@@ -1,0 +1,6 @@
+name: cddl-gen
+
+build:
+  cmake-ext: True
+  kconfig-ext: True
+

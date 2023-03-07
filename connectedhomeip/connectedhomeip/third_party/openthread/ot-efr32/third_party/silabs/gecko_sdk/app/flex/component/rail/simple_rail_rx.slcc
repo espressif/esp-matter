@@ -1,0 +1,51 @@
+id: "simple_rail_rx"
+label: "Simple RAIL Rx"
+package: "Flex"
+description: "Adds minimalist RAIL receive functionality with a RAIL event callback (only Rx events are handled) and a receive state machine.
+              The payload and the channel is hardcoded.
+              The component can be used with Blink and Flex (RAIL) - Empty Example applications only."
+category: "Flex|RAIL|Utility"
+quality: "production"
+root_path: "app/flex/component/rail/simple_rail_rx"
+
+provides:
+  - name: "simple_rail_rx"
+requires:
+  - name: "rail_util_pa"
+  - name: "app_log"
+  - name: "printf"
+  - name: "iostream_transport"
+  - name: "radio_config_simple_rail_singlephy"
+  - name: "status"
+  - name: "device_has_radio"
+source:
+  - path: "simple_rail_rx.c"
+include:
+  - path: "."
+    file_list:
+    - "path": "simple_rail_rx.h"
+
+template_contribution:
+  - name: rail_util_callbacks
+    value:
+      event: rail_event
+      include: simple_rail_rx.h
+      handler: sl_simple_rail_rx_on_event
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: "simple_rail_rx.h"
+      handler: "sl_simple_rail_rx_init"
+    priority: 100
+  - name: event_handler
+    value:
+      event: internal_app_process_action
+      include: "simple_rail_rx.h"
+      handler: "sl_simple_rail_rx_tick"
+    priority: 0
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: simple_rail_rx
+
+validation_helper:
+  - path: "simple_rail_rx_validation.lua"

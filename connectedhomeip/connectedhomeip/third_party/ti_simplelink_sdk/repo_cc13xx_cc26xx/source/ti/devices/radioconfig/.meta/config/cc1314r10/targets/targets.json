@@ -1,0 +1,9 @@
+{
+    "targets": {
+        "Default": "target_lp_cc1314r10_rgz.json",
+        "Target": [
+            "target_lp_cc1314r10_rgz.json",
+            "target_lp_em_cc1314r10.json"
+        ]
+    }
+}

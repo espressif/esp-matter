@@ -1,0 +1,28 @@
+id: zigbee_packet_validate
+label: Packet validation
+package: Zigbee
+category: Zigbee|Stack
+quality: production
+
+description: Provides validation of all IEEE 802.15.4, Zigbee NWK and Zigbee APS layer messages.  It ensures malformed messages are not processed by dropping any that violate the standard.
+
+provides:
+  - name: zigbee_packet_validate
+
+requires:
+  - name: zigbee_packet_validate_implementation
+  - name: zigbee_packet_validate_library
+    condition:
+     - zigbee_force_libraries
+
+recommends:
+  - id: zigbee_packet_validate_source
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_packet_validate
+
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/packet-validate

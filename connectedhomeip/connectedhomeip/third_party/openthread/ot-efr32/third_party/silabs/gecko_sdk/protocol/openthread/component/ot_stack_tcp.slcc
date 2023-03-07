@@ -1,0 +1,29 @@
+id: ot_stack_tcp
+label: Stack (TCP)
+package: OpenThread
+category: OpenThread
+quality: production
+description: This component provides the OpenThread TCP support
+provides:
+  - name: ot_stack_tcp
+ui_hints:
+  visibility: never
+root_path: util/third_party/openthread/third_party/tcplp
+source:
+      - path: bsdtcp/cc/cc_newreno.c
+      - path: bsdtcp/tcp_input.c
+      - path: bsdtcp/tcp_output.c
+      - path: bsdtcp/tcp_reass.c
+      - path: bsdtcp/tcp_sack.c
+      - path: bsdtcp/tcp_subr.c
+      - path: bsdtcp/tcp_timer.c
+      - path: bsdtcp/tcp_timewait.c
+      - path: bsdtcp/tcp_usrreq.c
+      - path: lib/bitmap.c
+      - path: lib/cbuf.c
+      - path: lib/lbuf.c
+toolchain_settings:
+  - option: gcc_compiler_option
+    value: "-Wno-sign-compare"
+  - option: gcc_compiler_option
+    value: "-Wno-unused-parameter"

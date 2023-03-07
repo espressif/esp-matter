@@ -1,0 +1,223 @@
+# Copyright 2019 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_bloat/bloat.gni")
+import("$dir_pw_build/module_config.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+
+declare_args() {
+  # The build target that overrides the default configuration options for this
+  # module. This should point to a source set that provides defines through a
+  # public config (which may -include a file or add defines directly).
+  pw_string_CONFIG = pw_build_DEFAULT_MODULE_CONFIG
+}
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+}
+
+config("enable_decimal_float_expansion_config") {
+  defines = [ "PW_STRING_ENABLE_DECIMAL_FLOAT_EXPANSION=1" ]
+}
+
+pw_source_set("enable_decimal_float_expansion") {
+  public_configs = [ ":enable_decimal_float_expansion_config" ]
+}
+
+pw_source_set("config") {
+  public = [ "public/pw_string/internal/config.h" ]
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ pw_string_CONFIG ]
+}
+
+group("pw_string") {
+  public_deps = [
+    ":builder",
+    ":format",
+    ":to_string",
+  ]
+}
+
+pw_source_set("builder") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_string/string_builder.h" ]
+  sources = [ "string_builder.cc" ]
+  public_deps = [
+    ":format",
+    ":string",
+    ":to_string",
+    ":util",
+    dir_pw_preprocessor,
+    dir_pw_span,
+    dir_pw_status,
+  ]
+}
+
+pw_source_set("format") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_string/format.h" ]
+  sources = [ "format.cc" ]
+  public_deps = [
+    dir_pw_preprocessor,
+    dir_pw_span,
+    dir_pw_status,
+  ]
+}
+
+pw_source_set("string") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_string/string.h" ]
+  sources = [
+    "public/pw_string/internal/string_common_functions.inc",
+    "public/pw_string/internal/string_impl.h",
+  ]
+  public_deps = [
+    dir_pw_assert,
+    dir_pw_polyfill,
+  ]
+}
+
+pw_source_set("to_string") {
+  public_configs = [ ":public_include_path" ]
+  public = [
+    "public/pw_string/to_string.h",
+    "public/pw_string/type_to_string.h",
+  ]
+  sources = [ "type_to_string.cc" ]
+  public_deps = [
+    ":config",
+    ":format",
+    ":util",
+    dir_pw_span,
+    dir_pw_status,
+  ]
+}
+
+pw_source_set("util") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_string/util.h" ]
+  sources = [ "public/pw_string/internal/length.h" ]
+  public_deps = [
+    ":string",
+    dir_pw_assert,
+    dir_pw_result,
+    dir_pw_span,
+    dir_pw_status,
+  ]
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":string_test",
+    ":format_test",
+    ":string_builder_test",
+    ":to_string_test",
+    ":type_to_string_test",
+    ":util_test",
+  ]
+  group_deps = [
+    "$dir_pw_preprocessor:tests",
+    "$dir_pw_status:tests",
+  ]
+}
+
+pw_test("format_test") {
+  deps = [ ":format" ]
+  sources = [ "format_test.cc" ]
+}
+
+pw_test("string_test") {
+  deps = [ ":string" ]
+  sources = [ "string_test.cc" ]
+  negative_compilation_tests = true
+}
+
+pw_test("string_builder_test") {
+  deps = [ ":builder" ]
+  sources = [ "string_builder_test.cc" ]
+}
+
+pw_test("to_string_test") {
+  deps = [
+    ":config",
+    ":pw_string",
+  ]
+  sources = [ "to_string_test.cc" ]
+}
+
+pw_test("type_to_string_test") {
+  deps = [ ":to_string" ]
+  sources = [ "type_to_string_test.cc" ]
+}
+
+pw_test("util_test") {
+  deps = [ ":util" ]
+  sources = [ "util_test.cc" ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+  report_deps = [
+    ":format_size_report",
+    ":string_builder_size_report",
+  ]
+}
+
+pw_size_diff("format_size_report") {
+  title = "Using pw::string::Format instead of snprintf"
+
+  binaries = [
+    {
+      target = "size_report:single_write_format"
+      base = "size_report:single_write_snprintf"
+      label = "Format instead of snprintf once, return size"
+    },
+    {
+      target = "size_report:multiple_writes_format"
+      base = "size_report:multiple_writes_snprintf"
+      label = "Format instead of snprintf 10 times, handle errors"
+    },
+    {
+      target = "size_report:many_writes_format"
+      base = "size_report:many_writes_snprintf"
+      label = "Format instead of snprintf 50 times, no error handling"
+    },
+  ]
+}
+
+pw_size_diff("string_builder_size_report") {
+  title = "Using pw::StringBuilder instead of snprintf"
+
+  binaries = [
+    {
+      target = "size_report:build_string_with_string_builder"
+      base = "size_report:build_string_with_snprintf"
+      label = "Total StringBuilder cost when used alongside snprintf"
+    },
+    {
+      target = "size_report:build_string_with_string_builder_no_base_snprintf"
+      base = "size_report:build_string_with_snprintf_no_base_snprintf"
+      label = "StringBuilder cost when completely replacing snprintf"
+    },
+    {
+      target = "size_report:build_string_incremental_with_string_builder"
+      base = "size_report:build_string_incremental_with_snprintf"
+      label = "Incremental cost relative to snprintf for 10 strings"
+    },
+  ]
+}

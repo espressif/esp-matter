@@ -1,0 +1,101 @@
+// Copyright 2022 The Pigweed Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not
+// use this file except in compliance with the License. You may obtain a copy of
+// the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations under
+// the License.
+
+syntax = "proto3";
+
+package pw.chrono;
+
+option java_outer_classname = "Chrono";
+
+message EpochType {
+  enum Enum {
+    UNKNOWN = 0;
+
+    TIME_SINCE_BOOT = 1;
+
+    // Time since 00:00:00 UTC, Thursday, 1 January 1970, including leap
+    // seconds.
+    UTC_WALL_CLOCK = 2;
+
+    // Time since 00:00:00, 6 January 1980 UTC. Leap seconds are not inserted
+    // into GPS. Thus, every time a leap second is inserted into UTC, UTC
+    // falls another second behind GPS.
+    GPS_WALL_CLOCK = 3;
+
+    // Time since 00:00:00, 1 January 1958, and is offset 10 seconds ahead of
+    // UTC at that date (i.e., its epoch, 1958-01-01 00:00:00 TAI, is
+    // 1957-12-31 23:59:50 UTC). Leap seconds are not inserted into TAI. Thus,
+    // every time a leap second is inserted into UTC, UTC falls another second
+    // behind TAI.
+    TAI_WALL_CLOCK = 4;
+  };
+}
+
+// A representation of a clock's parameters.
+//
+// There are two major components to representing a steady, monotonic clock:
+//
+//   1. A representation of the clock's period.
+//   2. A representation of the clock's epoch.
+//
+// To support a wide range of clock configurations, ClockParameters represents
+// a clock's period as fractions of a second. Concretely:
+//
+//   Clock period (seconds) =
+//       tick_period_seconds_numerator / tick_period_seconds_denominator
+//
+// So a simple 1KHz clock can be represented as:
+//
+//   tick_period_seconds_numerator = 1
+//   tick_period_seconds_denominator = 1000
+//   Clock period = 1 / 1000 = 0.001 seconds
+//   Clock frequency = 1 / 0.001 = 1,000 Hz
+//
+// Failing to specify one or both of the period members of a ClockParameters
+// message leaves the configuration specification incomplete and invalid.
+//
+// While clock period alone is enough to represent a duration if given a number
+// of ticks, an epoch is required to make a clock represent a time point.
+// EpochType optionally provides this information. Specifying an EpochType
+// defines what a tick count of `0` represents. Some epoch types (e.g. UTC, GPS,
+// TAI) allow the clock to resolve to real-world time points. If the EpochType
+// is relative to boot or unknown, however, the clock is only sufficiently
+// specified for relative time measurement without additional external
+// information.
+message ClockParameters {
+  int32 tick_period_seconds_numerator = 1;    // Required
+  int32 tick_period_seconds_denominator = 2;  // Required
+  optional EpochType.Enum epoch_type = 3;
+}
+
+// A point in time relative to a clock's epoch.
+message TimePoint {
+  // The duration that has elapsed (number of clock ticks) since the epoch,
+  // where the tick period and epoch are specified by the clock parameters.
+  //
+  // The meaning of `timestamp` is unspecified without an associated
+  // ClockParameters.
+  int64 timestamp = 1;                   // Required
+  ClockParameters clock_parameters = 2;  // Required
+}
+
+// The time of a snapshot capture. Supports multiple timestamps to
+// cover multiple time bases or clocks (e.g. time since boot, time
+// from epoch, etc).
+//
+// This is an overlay proto for Snapshot, see more details here:
+// https://pigweed.dev/pw_snapshot/proto_format.html#module-specific-data
+message SnapshotTimestamps {
+  repeated TimePoint timestamps = 22;
+}

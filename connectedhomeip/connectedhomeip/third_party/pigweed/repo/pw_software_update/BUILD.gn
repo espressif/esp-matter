@@ -1,0 +1,231 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/module_config.gni")
+import("$dir_pw_crypto/backend.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_protobuf_compiler/proto.gni")
+import("$dir_pw_third_party/nanopb/nanopb.gni")
+import("$dir_pw_third_party/protobuf/protobuf.gni")
+import("$dir_pw_thread/backend.gni")
+import("$dir_pw_unit_test/test.gni")
+
+declare_args() {
+  # The build target that overrides the default configuration options for this
+  # module. This should point to a source set that provides defines through a
+  # public config (which may -include a file or add defines directly).
+  pw_software_update_CONFIG = pw_build_DEFAULT_MODULE_CONFIG
+}
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("config") {
+  public = [ "public/pw_software_update/config.h" ]
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ pw_software_update_CONFIG ]
+}
+
+pw_proto_library("protos") {
+  deps = [
+    "$dir_pw_protobuf:common_protos",
+    "$dir_pw_tokenizer:proto",
+  ]
+
+  if (dir_pw_third_party_protobuf != "") {
+    # nanopb does not automatically generate the well-known types. If we have
+    # a checkout of the protobuf repo, add it here so we can enable the nanopb
+    # targets.
+    deps += [ "$dir_pw_third_party/protobuf:wellknown_types" ]
+  }
+
+  sources = [
+    "bundled_update.proto",
+    "tuf.proto",
+    "update_bundle.proto",
+  ]
+  inputs = [ "bundled_update.options" ]
+  prefix = "pw_software_update"
+  python_package = "py"
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}
+
+if (pw_crypto_SHA256_BACKEND != "" && pw_crypto_ECDSA_BACKEND != "") {
+  pw_source_set("openable_reader") {
+    public_configs = [ ":public_include_path" ]
+    public_deps = [ dir_pw_stream ]
+    public = [ "public/pw_software_update/openable_reader.h" ]
+  }
+
+  pw_source_set("blob_store_openable_reader") {
+    public_configs = [ ":public_include_path" ]
+    public_deps = [
+      ":openable_reader",
+      dir_pw_blob_store,
+    ]
+    public = [ "public/pw_software_update/blob_store_openable_reader.h" ]
+  }
+
+  pw_source_set("update_bundle") {
+    public_configs = [ ":public_include_path" ]
+    public_deps = [
+      ":blob_store_openable_reader",
+      ":openable_reader",
+      "$dir_pw_stream:interval_reader",
+      dir_pw_protobuf,
+      dir_pw_result,
+      dir_pw_status,
+      dir_pw_stream,
+    ]
+    public = [
+      "public/pw_software_update/bundled_update_backend.h",
+      "public/pw_software_update/manifest_accessor.h",
+      "public/pw_software_update/update_bundle_accessor.h",
+    ]
+    deps = [
+      ":config",
+      ":protos.pwpb",
+      "$dir_pw_crypto:ecdsa",
+      "$dir_pw_crypto:sha256",
+      dir_pw_log,
+      dir_pw_string,
+    ]
+    sources = [
+      "manifest_accessor.cc",
+      "update_bundle_accessor.cc",
+    ]
+  }
+} else {
+  group("openable_reader") {
+  }
+  group("blob_store_openable_reader") {
+  }
+  group("update_bundle") {
+  }
+}
+
+if (dir_pw_third_party_nanopb != "" && dir_pw_third_party_protobuf != "") {
+  pw_source_set("bundled_update_service") {
+    public_configs = [ ":public_include_path" ]
+    public_deps = [
+      ":protos.nanopb_rpc",
+      ":update_bundle",
+      dir_pw_result,
+      dir_pw_status,
+      dir_pw_work_queue,
+    ]
+    deps = [
+      ":config",
+      ":protos.pwpb",
+      "$dir_pw_sync:borrow",
+      "$dir_pw_sync:lock_annotations",
+      "$dir_pw_sync:mutex",
+      dir_pw_log,
+      dir_pw_string,
+      dir_pw_tokenizer,
+    ]
+    public = [ "public/pw_software_update/bundled_update_service.h" ]
+    sources = [ "bundled_update_service.cc" ]
+  }
+} else {
+  group("bundled_update_service") {
+  }
+}
+
+pw_source_set("bundled_update_service_pwpb") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    ":protos.pwpb_rpc",
+    ":update_bundle",
+    dir_pw_result,
+    dir_pw_status,
+    dir_pw_work_queue,
+  ]
+  deps = [
+    ":config",
+    ":protos.pwpb",
+    "$dir_pw_sync:borrow",
+    "$dir_pw_sync:lock_annotations",
+    "$dir_pw_sync:mutex",
+    dir_pw_log,
+    dir_pw_string,
+    dir_pw_tokenizer,
+  ]
+  public = [ "public/pw_software_update/bundled_update_service_pwpb.h" ]
+  sources = [ "bundled_update_service_pwpb.cc" ]
+}
+
+pw_python_action("generate_test_bundle") {
+  header_output = "$target_gen_dir/$target_name/test_bundles.h"
+  script = "py/pw_software_update/generate_test_bundle.py"
+  python_deps = [
+    ":protos.python",
+    "py",
+  ]
+  outputs = [ header_output ]
+  args = [ rebase_path(header_output) ]
+}
+
+config("generated_test_bundle_include") {
+  _generated_outputs = get_target_outputs(":generate_test_bundle")
+  include_dirs = [ get_path_info(_generated_outputs[0], "dir") ]
+}
+
+all_dependency_met =
+    dir_pw_third_party_nanopb != "" && dir_pw_third_party_protobuf != "" &&
+    pw_thread_THREAD_BACKEND != "" && pw_crypto_SHA256_BACKEND != "" &&
+    pw_crypto_ECDSA_BACKEND != ""
+
+pw_test("update_bundle_test") {
+  enable_if = all_dependency_met
+  sources = [ "update_bundle_test.cc" ]
+  public_deps = [
+    ":blob_store_openable_reader",
+    ":bundled_update_service",
+    ":generate_test_bundle",
+    ":update_bundle",
+    "$dir_pw_kvs:fake_flash",
+    "$dir_pw_kvs:fake_flash_test_key_value_store",
+    dir_pw_blob_store,
+  ]
+  configs = [ ":generated_test_bundle_include" ]
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":bundled_update_service_pwpb_test",
+    ":bundled_update_service_test",
+    ":update_bundle_test",
+  ]
+}
+
+pw_test("bundled_update_service_test") {
+  enable_if = all_dependency_met
+  sources = [ "bundled_update_service_test.cc" ]
+  public_deps = [ ":bundled_update_service" ]
+}
+
+pw_test("bundled_update_service_pwpb_test") {
+  enable_if = pw_thread_THREAD_BACKEND != "" &&
+              pw_crypto_SHA256_BACKEND != "" && pw_crypto_ECDSA_BACKEND != ""
+  sources = [ "bundled_update_service_pwpb_test.cc" ]
+  public_deps = [ ":bundled_update_service_pwpb" ]
+}

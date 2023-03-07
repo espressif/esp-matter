@@ -1,0 +1,38 @@
+project_name: cpc_secondary_vcom_micriumos
+package: platform
+quality: production
+label: Platform - CPC Secondary with Micrium OS
+description: > 
+  This simple example project shows how to open user endpoints in a Micrium OS task with
+  security disabled. By connecting a host running a CPCd instance to the secondary's VCOM port,
+  the user can send data to the user endpoints, and verify that it is echoed back.
+category: Example|Platform
+source:
+  - path: app.c
+  - path: main.c
+  - path: cpc_app.c
+include:
+  - path: .
+    file_list:
+    - path: app.h
+    - path: cpc_app.h
+component:
+  - id: sl_system
+  - id: device_init
+  - id: micriumos_kernel
+  - id: cpc_secondary
+  - id: cpc_security_secondary_none
+  - id: cpc_secondary_recommended_interface
+define:
+  - name: DEBUG_EFM
+configuration:
+  - name: OS_CFG_FLAG_MODE_CLR_EN
+    value: 1
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+tag:
+  - hardware:device:ram:40

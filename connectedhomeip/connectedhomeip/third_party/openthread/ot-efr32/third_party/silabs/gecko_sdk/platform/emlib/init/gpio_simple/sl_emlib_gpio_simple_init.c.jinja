@@ -1,0 +1,20 @@
+#include "sl_emlib_gpio_simple_init.h"
+{% for inst in emlib_gpio_simple_init -%}
+#include "sl_emlib_gpio_init_{{inst}}_config.h"
+{% endfor -%}
+
+#include "em_gpio.h"
+#include "em_cmu.h"
+
+void sl_emlib_gpio_simple_init(void)
+{
+  CMU_ClockEnable(cmuClock_GPIO, true);
+
+{%- for inst in emlib_gpio_simple_init %}
+  GPIO_PinModeSet(SL_EMLIB_GPIO_INIT_{{ inst | upper }}_PORT,
+                  SL_EMLIB_GPIO_INIT_{{ inst | upper }}_PIN,
+                  SL_EMLIB_GPIO_INIT_{{ inst | upper }}_MODE,
+                  SL_EMLIB_GPIO_INIT_{{ inst | upper }}_DOUT);
+{% endfor -%}
+
+}

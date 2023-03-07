@@ -1,0 +1,18 @@
+id: sl_assert
+package: platform
+label: "Assert Functions"
+description: Component that provides assert functions.
+category: Platform|Utilities
+quality: production
+root_path: platform/common
+include:
+  - path: inc
+    file_list:
+      - path: sl_assert.h
+source:
+  - path: src/sl_assert.c
+provides:
+  - name: sl_assert
+documentation:
+  docset: gecko-platform
+  document: common/api/group-assert

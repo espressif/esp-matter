@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="up" title="FatFs" href="../00index_e.html">
+<link rel="alternate" hreflang="ja" title="Japanese" href="../ja/sfile.html">
+<link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
+<title>FatFs - FIL</title>
+</head>
+
+<body>
+
+<div class="para">
+<h2>FIL</h2>
+<p>The FIL structure (file object) holds state of an open file. It is created by f_open function and discarded by f_close function. There is no member that can be changed by the application program except for <tt>cltbl</tt>. Note that a sector buffer is defined in this structure under non-tiny configuration so that the FIL structures should not be defined as auto variable.</p>
+
+<pre>
+typedef struct {
+    FATFS*  fs;           <span>/* Pointer to the owner file system object */</span>
+    WORD    id;           <span>/* Owner file system mount ID */</span>
+    BYTE    flag;         <span>/* File status flags */</span>
+    BYTE    pad1;
+    DWORD   fptr;         <span>/* File read/write pointer (Byte offset origin from top of the file) */</span>
+    DWORD   fsize;        <span>/* File size */</span>
+    DWORD   org_clust;    <span>/* File start cluster */</span>
+    DWORD   curr_clust;   <span>/* Current cluster */</span>
+    DWORD   dsect;        <span>/* Current data sector */</span>
+#if !_FS_READONLY
+    DWORD   dir_sect;     <span>/* Sector containing the directory entry */</span>
+    BYTE*   dir_ptr;      <span>/* Ponter to the directory entry in the window */</span>
+#endif
+#if _USE_FASTSEEK
+    DWORD*  cltbl;        <span>/* Pointer to the cluster link map table */</span>
+#endif
+#if _FS_SHARE
+    UINT    lockid;       <span>/* File lock ID */</span>
+#endif
+#if !_FS_TINY
+    BYTE    buf[_MAX_SS]; <span>/* Data read/write buffer */</span>
+#endif
+} FIL;
+</pre>
+
+</div>
+
+<p class="foot"><a href="../00index_e.html">Return</a></p>
+</body>
+</html>

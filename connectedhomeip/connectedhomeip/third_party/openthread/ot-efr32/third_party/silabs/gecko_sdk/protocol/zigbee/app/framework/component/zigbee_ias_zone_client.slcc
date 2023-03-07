@@ -1,0 +1,61 @@
+package: Zigbee
+description: An implementation of a client for IAS Zone that configures and keeps
+  track of IAS Zone Servers.  This requires extending to handle server notifications
+  that might actually trigger some behavior on the client (e.g., alarm).
+label: IAS Zone Client
+quality: extend
+id: zigbee_ias_zone_client
+category: Zigbee|Cluster Library|Home Automation
+provides:
+   - name: "zigbee_ias_zone_client"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/ias-zone-client/config/ias-zone-client-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/ias-zone-client/ias-zone-client.c
+  - path: protocol/zigbee/app/framework/plugin/ias-zone-client/ias-zone-client-cli.c
+    condition:
+      - "cli"
+include:
+  - path: protocol/zigbee/app/framework/plugin/ias-zone-client
+    file_list:
+      - path: ias-zone-client.h  
+template_contribution:
+  - name: component_catalog
+    value: zigbee_ias_zone_client
+  - name: cluster_service
+    value:
+       cluster_id: "0x0500"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "CLIENT"
+       service_function: "emberAfIasZoneClusterClientCommandParse"        
+  - name: zigbee_af_callback
+    value:
+      callback_type: zdo_message_received
+      function_name: emberAfPluginIasZoneClientZdoMessageReceivedCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: ias-zone-client
+      help: ias-zone-client related commands.
+  - name: cli_command
+    value:
+      group: ias-zone-client
+      name: print-servers
+      handler: emAfPluginIasZoneClientPrintServersCommand
+      help: Prints the known IAS Zone Servers.
+  - name: cli_command
+    value:
+      group: ias-zone-client
+      name: clear-all
+      handler: emAfPluginIasZoneClientClearAllServersCommand
+      help: Clears all known IAS Zone Servers from a local device.
+  - name: cluster_functions
+    value:
+      cluster_name: IasZone
+      cluster_id: 0x500
+      cluster_type: client
+      init_function: emberAfIasZoneClusterClientInitCallback
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/ias-zone-client

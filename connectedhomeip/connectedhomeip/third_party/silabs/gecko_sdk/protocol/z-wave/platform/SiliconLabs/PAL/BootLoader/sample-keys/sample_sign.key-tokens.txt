@@ -1,0 +1,28 @@
+#
+# This token file declares what values are programmed for manufacturing
+# tokens on the chip. It can be read back by the "flash" or "convert" commands.
+#
+# Lines are composed of one of the following forms:
+#   <token-name> : <data>
+#   <token-name> : !ERASE!
+#
+# Omitted tokens are left untouched and not programmed on the chip.
+# Token names are case INsensitive.  All integer values are interpreted as hexadecimal
+# numbers in BIG-endian format and must be prefixed with '0x'.  Blank lines and 
+# lines beginning with '#' are ignored.
+# Byte arrays are given in hexadecimal format, without a leading 0x.
+# Specifying !ERASE! for the data sets that token to all F's.
+#
+#
+# The token data can be in one of three main forms: byte-array, integer, or string.
+# Byte-arrays are a series of hexadecimal numbers of the required length.
+# Integers are BIG endian hexadecimal numbers.
+# String data is a quoted set of ASCII characters.
+#
+
+#'MFG_SIGNED_BOOTLOADER_KEY_X (Manufacture token space for storing ECDSA signed bootloader key (X-point).)' token group
+MFG_SIGNED_BOOTLOADER_KEY_X : 847B6E1D255864383A9F3139527B06B4BAB64EE27D3D94FEAED0B56D421DA652
+
+#'MFG_SIGNED_BOOTLOADER_KEY_Y (Manufacture token space for storing ECDSA signed bootloader key (Y-point).)' token group
+MFG_SIGNED_BOOTLOADER_KEY_Y : DEC3F8D2E53D9DDFEF807050451E0C8642748F7907D3904BAA39D9FECBD98338
+

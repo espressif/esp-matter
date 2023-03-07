@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wi-Fi web configuration</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="webconfig.css">
+</head>
+
+<body onload="checkIfFirefox();">
+    <div id="page_main">
+
+        <div id="page_header" class="header_banner">
+            <div class="header_container row">
+                <div class="logo col-4">
+                    <a href="http://www.nxp.com" title="NXP"><img src="NXP_logo.png" alt="NXP Semiconductor" width="100%" height="auto"></a>
+                </div>
+                <div class="header_text col-8">
+					Wi-Fi web configuration
+                </div>
+            </div>
+        </div>
+
+        <div class="page_body">
+
+            <div class="row">
+                <div class="col-4">
+                    <div class="menu_row">
+                        <div id="board_info">
+                            <span id="boardName">Board</span><br>
+                            <span id="boardIP">IP</span><br>
+                        </div>
+                        <div id="board_status">
+                            <div>
+                         Current Wi-Fi Mode:
+                            </div>
+                            <div class="statusIndicator" id="statusAP">AP</div>
+                            <div class="statusIndicator" id="statusCLI">Client</div>
+                        </div>
+
+                    </div>
+                    <div class="menu_row">
+                        <button type="button" name="main_b" class="menu_button" id="scan_button" onclick="scan()">Scan Wi-fi Networks</button>
+                        <br>
+                        <button type="button" name="main_b" class="menu_button" onclick="open_clear_board_dialogue()">Clear Board settings</button>
+                    </div>
+                </div>
+
+                <div id="p_content" class="page_content col-8">
+
+
+                    <div id='section_networks'>
+
+                        <h3> Available Wi-Fi Networks - Click to Join:</h3>
+                        <input type="checkbox" id="all_nets" name="scales" onclick="renderDuplicates();">
+                        <label for="all_nets">Show All networks</label>
+                        <div id="wifi_list">
+                            <div id='wif_no_networks'>No Networks Availabel</div>
+                        </div>
+
+                    </div>
+
+                    <h4>Description</h3>
+                    <p>
+                       By default, the board creates an Access Point and starts a server which provides this web interface.
+                    </p>
+                    <p>
+                        This interface shows you nearby available Wi-Fi networks. Clicking on the one you would like to connect to allows you to enter the credentials. The board will then switch to client mode and attempt to connect to it.
+                    </p>
+                    <p>
+                        If connection is successful, the credentials are stored in board flash memory so that next time the board starts up, it connects directly to the configured Wi-Fi network.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer row">
+            NXP Semiconductors
+        </div>
+
+
+<!-- Banners ------------------------------------>
+<!--*******************************************-->
+<!--*******************************************-->
+<!----------------------------------------------->
+
+
+<!-- Scan loading banner -->
+        <div id="loader_page" class="banner_background" style="display:none;">
+            <h2> Scanning....</h2>
+            <div class="loader">
+            </div>
+        </div>
+
+
+
+        <div id="ap_password_page" class="banner_background" style="display:none;" onclick='closeDialogue("ap_password_page");'>
+            <div id="ap_password_page_dialogue" class="banner_dialogue">
+                <h2>Enter Credentials</h2>
+
+                <div>
+                    <label for=post_ssid>SSID:</label>
+                    <input id="post_ssid" value="SSID" type="text" name="post_ssid" readonly>
+                </div>
+                <div id="password_input_field">
+                    <label for=post_passphrase>Password:</label>
+                    <input id="post_password" value="Password" type="password" name="post_passphrase" maxlength="63">
+                    <span>
+                    <input type="checkbox" onclick="showPassword()">Show Password
+                    </span>
+                </div>
+                <span id="post_errors"></span><br>
+                 <button value="" onclick="validateForm()">Connect</button>
+            </div>
+        </div>
+
+        <div id="clear_confirm" class="banner_background" style="display:none;" onclick="closeDialogue('clear_confirm');();">
+            <div id="clear_confirm_dialogue" class="banner_dialogue">
+                <h2>Clearing settings... Are you sure?</h2>
+                <p>This will clear the saved Wi-Fi credentials from the board flash and reset the board back to AP mode. You will have to manually reconnect to the board access point.</p>
+
+                <button class="menu_button warning" type="submit" value="" onclick="clear_config()">Clear</button>
+                <button class="menu_button" type="submit" value="" onclick="closeDialogue('clear_confirm')">Cancel</button>
+
+            </div>
+        </div>
+
+
+
+        <div id="mode_switch_loader" class="banner_background" style="display:none;">
+            <div id="mode_switch_dialogue" class="banner_dialogue">
+                <h2>Attempting connection to <span id="mode_switch_network_name"></span> Network</h2>
+                <p>You will get disconnected from the current Wi-Fi Access-point while the board switches as a client to your selected network.</p>
+                 <p>Please connect your device to that network to continue.</p>
+
+                <div class="loader">
+                </div>
+
+            </div>
+        </div>
+
+
+        <div id="error_banner" class="banner_background" style="display:none;" onclick="closeDialogue('error_banner');">
+            <div id="error_banner_dialogue" class="banner_dialogue">
+                <h2 id="error_title">An Error has occurred</h2>
+                <p id="error_msg"> </p>
+
+            </div>
+        </div>
+
+        <div id="success_banner" class="banner_background" style="display:none;" onclick="closeDialogue('success_banner');">
+            <div id="success_banner_dialogue" class="banner_dialogue">
+                <h2 id="success_title">Success!</h2>
+                <p id="success_msg"> </p>
+
+            </div>
+        </div>
+
+        <div id="clientJoin_banner" class="banner_background" style="display:none;" onclick="closeDialogue('clientJoin_banner');">
+            <div id="clientJoin_banner_dialogue" class="banner_dialogue">
+                <h2>First reset back to AP mode</h2>
+                <p> You are currently in Client mode. Please, first reset the board back to AP mode and try again.</p>
+                <p>Note that this will also clear the saved SSID.</p>
+                <button type="button" name="main_b" class="menu_button warning" onclick="clear_config();">Reset to AP mode</button></li>
+                <button type="button" name="main_b" class="menu_button" onclick="closeDialogue('clientJoin_banner');">Cancel</button></li>
+
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="webconfig.js"></script>
+
+</body>
+</html>

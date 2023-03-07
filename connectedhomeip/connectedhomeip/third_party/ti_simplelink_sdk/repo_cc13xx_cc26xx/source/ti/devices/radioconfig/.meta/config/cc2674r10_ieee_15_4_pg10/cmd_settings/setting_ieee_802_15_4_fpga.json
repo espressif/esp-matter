@@ -1,0 +1,355 @@
+{
+    "setting": {
+        "Name": "IEEE 802.15.4-2006, 250 kbps, OQPSK, DSSS = 1:8 (FPGA)",
+        "Description": "IEEE 802.15.4 O-QPSK DSSS PHY (250 kbps) at 2450 MHz band",
+        "Frequency": "2405",
+        "Patch": {
+            "Define": "RF_MODE_AUTO",
+            "Cpe": "rf_patch_cpe_multi_protocol",
+            "Mce": [],
+            "Rfe": []
+        },
+        "Command": [
+            {
+                "_name": "CMD_RADIO_SETUP",
+                "Field": [
+                    {
+                        "_name": "commandNo",
+                        "$": "CMD_RADIO_SETUP"
+                    },
+                    {
+                        "_name": "status",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pNextOp",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTime",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerType",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.bEnaCmd",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerNo",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.pastTrig",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "condition.rule",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "condition.nSkip",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "mode",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "loDivider",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "config.frontEndMode",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "config.biasMode",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "config.analogCfgMode",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "config.bNoFsPowerUp",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "txPower",
+                        "$": "0x001F"
+                    },
+                    {
+                        "_name": "pRegOverride",
+                        "$": "0"
+                    }
+                ],
+                "OverrideField": {
+                    "_name": "pRegOverride",
+                    "Block": {
+                        "_name": "override_fpga_ieee.json",
+                        "Element32b": [
+                            {
+                                "_type": "ELEMENT",
+                                "_comment": "Thor FPGA: Set the DCDC ctrl for RX",
+                                "$": "0x000088c3"
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "_comment": "Thor FPGA: Set the DCDC ctrl for TX",
+                                "$": "0x000088d3"
+                            },
+                            {
+                                "_type": "HW_REG_OVERRIDE",
+                                "_comment": "Enable demodulator wired input",
+                                "$": "0x51E4,0x0001"
+                            },
+                            {
+                                "_type": "HW_REG_OVERRIDE",
+                                "_comment": "Output digital baseband signal on RFC_GPO0",
+                                "$": "0x1110,0x0004"
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "_comment": "Disable digital transmitter",
+                                "$": "0x00000083"
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "_comment": "Disable synth programming",
+                                "$": "0x00800403"
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "_comment": "Compensate syncTimeAdjust for wired mode",
+                                "$": "0x02CF02A3"
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                "_name": "CMD_FS",
+                "Field": [
+                    {
+                        "_name": "commandNo",
+                        "$": "CMD_FS"
+                    },
+                    {
+                        "_name": "status",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pNextOp",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTime",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerType",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.bEnaCmd",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerNo",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.pastTrig",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "condition.rule",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "condition.nSkip",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "frequency",
+                        "$": "2405"
+                    },
+                    {
+                        "_name": "fractFreq",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "synthConf.bTxMode",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "synthConf.refFreq",
+                        "$": "0"
+                    }
+                ]
+            },
+            {
+                "_name": "CMD_IEEE_TX",
+                "_function": "SendPacket",
+                "Field": [
+                    {
+                        "_name": "commandNo",
+                        "$": "CMD_IEEE_TX"
+                    },
+                    {
+                        "_name": "status",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pNextOp",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTime",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerType",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.bEnaCmd",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerNo",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.pastTrig",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "condition.rule",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "condition.nSkip",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "txOpt",
+                        "$": "0x00"
+                    },
+                    {
+                        "_name": "payloadLen",
+                        "$": "0x1e"
+                    },
+                    {
+                        "_name": "timeStamp",
+                        "$": "0x00000000"
+                    }
+                ]
+            },
+            {
+                "_name": "CMD_IEEE_RX",
+                "Field": [
+                    {
+                        "_name": "commandNo",
+                        "$": "CMD_IEEE_RX"
+                    },
+                    {
+                        "_name": "status",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pNextOp",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTime",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerType",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.bEnaCmd",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.triggerNo",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "startTrigger.pastTrig",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "condition.rule",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "condition.nSkip",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "condition.nSkip",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "rxConfig",
+                        "$": "0x30"
+                    },
+                    {
+                        "_name": "frameFiltOpt",
+                        "$": "0x300"
+                    },
+                    {
+                        "_name": "frameTypes",
+                        "$": "0xFF"
+                    },
+                    {
+                        "_name": "ccaOpt",
+                        "$": "0x18"
+                    },
+                    {
+                        "_name": "ccaRssiThr",
+                        "$": "100"
+                    },
+                    {
+                        "_name": "numExtEntries",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "numShortEntries",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pExtEntryList",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pShortEntryList",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "localExtAddr",
+                        "$": "0x12345678"
+                    },
+                    {
+                        "_name": "localShortAddr",
+                        "$": "0xABBA"
+                    },
+                    {
+                        "_name": "endTrigger",
+                        "$": "1"
+                    },
+                    {
+                        "_name": "endTime",
+                        "$": "0"
+                    }
+                ]
+            }
+        ]
+    }
+}

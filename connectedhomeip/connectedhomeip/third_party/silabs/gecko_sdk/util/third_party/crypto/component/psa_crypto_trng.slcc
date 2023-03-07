@@ -1,0 +1,72 @@
+id: psa_crypto_trng
+package: platform
+label: TRNG
+description: >-
+  This component provides support for using a hardware TRNG as the sole
+  Random Number Generator in PSA Crypto.
+category: Platform|Security|PSA Crypto|Randomness
+quality: production
+ui_hints:
+  visibility: never
+component_root_path: util/third_party/crypto/sl_component/sl_psa_driver
+include:
+  - path: inc
+    unless: [trustzone_nonsecure]
+    file_list:
+      - path: sli_crypto_trng_driver.h
+        condition: [device_has_trng]
+      # Contains the declaration of mbedtls_psa_external_get_random().
+      - path: sli_psa_driver_common.h
+source:
+  - path: src/sli_psa_trng.c
+    unless: [trustzone_nonsecure]
+  - path: src/sli_crypto_trng_driver.c
+    condition: [device_has_trng]
+    unless: [trustzone_nonsecure]
+provides:
+  - name: psa_crypto_trng
+    condition: [device_series_2]
+  # Need to write this as an explicit list of SDIDs instead of device_has_trng
+  # because SDID 95 (EFR32xG14) is declared as having a TRNG, but the errata
+  # preclude us from using it.
+  - name: psa_crypto_trng
+    condition: [device_sdid_84]
+  - name: psa_crypto_trng
+    condition: [device_sdid_89]
+  - name: psa_crypto_trng
+    condition: [device_sdid_100]
+  - name: psa_crypto_trng
+    condition: [device_sdid_103]
+  - name: psa_crypto_trng
+    condition: [device_sdid_106]
+requires:
+  # There exists a use case for using this component without the PSA Crypto
+  # core. Because of that, we cannot require psa_crypto from here.
+  - name: psa_crypto_common
+    condition: [trustzone_unaware]
+  - name: psa_crypto_common
+    condition: [trustzone_secure]
+  - name: device
+  - name: emlib_cmu
+    condition: [device_has_trng]
+template_contribution:
+  - name: psa_crypto_config
+    value: MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG
+    condition: [device_series_2]
+    # EFR32xG2x have TRNG
+  - name: psa_crypto_config
+    value: MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG
+    condition: [device_sdid_84]
+    # EFR32xG12 has unconditionally functional TRNG
+  - name: psa_crypto_config
+    value: MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG
+    condition: [device_sdid_100]
+    # EFM32GG11 has unconditionally functional TRNG
+  - name: psa_crypto_config
+    value: MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG
+    condition: [device_sdid_103]
+    # EFM32TG11 has unconditionally functional TRNG
+  - name: psa_crypto_config
+    value: MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG
+    condition: [device_sdid_106]
+    # EFM32TG12 has unconditionally functional TRNG

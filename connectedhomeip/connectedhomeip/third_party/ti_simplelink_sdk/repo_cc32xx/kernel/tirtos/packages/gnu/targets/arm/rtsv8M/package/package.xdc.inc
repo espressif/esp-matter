@@ -1,0 +1,15 @@
+package.xdc
+package.xs
+Settings.xdc
+package/gnu.targets.arm.rtsv8M.sch
+package/.vers_g200
+package/.vers_r200
+package/.vers_b200
+package/.xdc-K04
+package/gnu_targets_arm_rtsv8M.java
+package/gnu_targets_arm_rtsv8M.class
+package/package_gnu.targets.arm.rtsv8M.c
+package/package.defs.h
+Settings.h
+package/internal/Settings.xdc.h
+package/gnu.targets.arm.rtsv8M.ccs

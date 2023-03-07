@@ -1,0 +1,49 @@
+id: "sl_flex_util_ble_init"
+label: Flex - RAIL BLE Initialization
+package: "Flex"
+description: Utility to aid with BLE Protocol-Specific Configurations
+category: "Flex|RAIL|Utility"
+quality: production
+root_path: "app/flex/component/rail/sl_flex_util_ble_init"
+
+#-------- Hides Component for user in Studio ---------
+ui_hints:
+  visibility: never
+
+requires:
+  - name: rail_lib
+  - name: sl_flex_util_ble_protocol
+  - name: rail_util_callbacks
+  - name: rail_util_dma
+  - name: rail_util_pa
+  - name: rail_util_pti
+  - name: rail_util_rf_path
+  - name: rail_util_rssi
+  - name: app_log
+  - name: app_assert
+  - name: iostream_transport
+  - name: device_has_radio_2g4hz
+provides:
+  - name: sl_flex_util_ble_init
+
+
+config_file:
+  - path: config/sl_flex_util_ble_init_config.h
+
+include:
+  - path: .
+    file_list:
+    - path: sl_flex_util_ble_init.h
+
+source:
+  - path: sl_flex_util_ble_init.c
+
+template_contribution:
+  - name: event_handler
+    value:
+      event: stack_init
+      include: sl_flex_util_ble_init.h
+      handler: sl_flex_util_init
+    priority: -9000
+  - name: component_catalog
+    value: sl_flex_util_ble_init

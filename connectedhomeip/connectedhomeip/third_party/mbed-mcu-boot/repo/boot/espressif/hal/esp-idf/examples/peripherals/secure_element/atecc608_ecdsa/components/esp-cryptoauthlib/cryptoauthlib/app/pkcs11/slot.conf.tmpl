@@ -1,0 +1,28 @@
+# Reserved Configuration for a device
+# The objects in this file will be created and marked as undeletable
+# These are processed in order. Configuration parameters must be comma
+# delimited and may not contain spaces
+
+# Set a label for this slot (optional) - will default to <slot>ABC so
+# 0.conf will have a default label 00ABC
+#label = MCHP
+
+# Configure the device interface for an enabled HAL
+# hid,i2c,<address>
+# i2c,<address>,<bus>
+# spi,<select_line>,<baud>
+interface = hid,i2c,0x6c
+
+# Configure the device type - base part number (optional)
+device = ATECC608A-TFLXTLS
+
+#Configure open slots for additional pkcs11 objects (optional)
+#freeslots = 1,2,3
+
+# Manually configure keys into device locations (slots/handles)
+
+# Slot 0 is the primary private key
+#object = private,device,0
+
+# Slot 15 is a public key
+#object = public,root,15

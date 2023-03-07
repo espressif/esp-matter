@@ -1,0 +1,316 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>FDT &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+      <li>FDT</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Examples/system/demo_system_fdt/fdt.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="fdt">
+<span id="fdt-index"></span><h1>FDT<a class="headerlink" href="#fdt" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<h2>总览<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<p>本示例主要介绍如何从fdt文件中获取相关的配置。</p>
+</div>
+<div class="section" id="id2">
+<h2>使用步骤<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<ul class="simple">
+<li>编译 <code class="docutils literal notranslate"><span class="pre">customer_app/sdk_app_fdt</span></code> 工程并下载对应的bin文件；</li>
+<li>使用 <code class="docutils literal notranslate"><span class="pre">fdt</span></code> 命令将fdt文件中的wifi配置解析出来，并且打印出整个文件内容。</li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h2>应用实例<a class="headerlink" href="#id3" title="永久链接至标题"></a></h2>
+<p>本实例为了方便测试，将dts文件转换成数组的形式存放，转换命令 <code class="docutils literal notranslate"><span class="pre">xxd</span> <span class="pre">-i</span> <span class="pre">demo.dts</span> <span class="pre">&gt;</span> <span class="pre">demo.c</span></code>。</p>
+<ul class="simple">
+<li>以wifi为例，通过 <code class="docutils literal notranslate"><span class="pre">wifi</span></code> 这个根节点获取其 <code class="docutils literal notranslate"><span class="pre">offset</span></code></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>wifi_offset = fdt_subnode_offset(fdt, 0, &quot;wifi&quot;);
+if (!(wifi_offset &gt; 0)) {
+   log_error(&quot;wifi NULL.\r\n&quot;);
+}
+</pre></div>
+</div>
+<ul class="simple">
+<li>通过获取的 <code class="docutils literal notranslate"><span class="pre">wifi_offset</span></code> 获取子节点的 <code class="docutils literal notranslate"><span class="pre">offset</span></code></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">offset1</span> <span class="o">=</span> <span class="n">fdt_subnode_offset</span><span class="p">(</span><span class="n">fdt</span><span class="p">,</span> <span class="n">wifi_offset</span><span class="p">,</span> <span class="s2">&quot;ap&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>通过获取的 <code class="docutils literal notranslate"><span class="pre">offset1</span></code> 获取相关的属性信息</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>// wifi-&gt;ap-&gt;ssid = string
+countindex = fdt_stringlist_count(fdt, offset1, &quot;ssid&quot;);
+if (countindex &gt; 0) {
+    for (i = 0; i &lt; countindex; i++) {
+        result = fdt_stringlist_get(fdt, offset1, &quot;ssid&quot;, i, &amp;lentmp);
+        if (lentmp &gt; 0) {/* !NULL */
+            log_info(&quot;ap string[%d] = %s, lentmp = %d\r\n&quot;, i, result, lentmp);
+        }
+    }
+} else {
+    log_error(&quot;ap NULL.\r\n&quot;);
+}
+// wifi-&gt;ap-&gt;pwd = string
+countindex = fdt_stringlist_count(fdt, offset1, &quot;pwd&quot;);
+if (countindex &gt; 0) {
+    for (i = 0; i &lt; countindex; i++) {
+        result = fdt_stringlist_get(fdt, offset1, &quot;pwd&quot;, i, &amp;lentmp);
+        if (lentmp &gt; 0) {/* !NULL */
+            log_info(&quot;pwd string[%d] = %s, lentmp = %d\r\n&quot;, i, result, lentmp);
+        }
+    }
+} else {
+    log_error(&quot;pwd NULL.\r\n&quot;);
+}
+</pre></div>
+</div>
+<p>属性信息为字符串格式时参照如上code，为u32格式时参照如下code</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">//</span> <span class="n">wifi</span><span class="o">-&gt;</span><span class="n">ap</span><span class="o">-&gt;</span><span class="n">ap_channel</span> <span class="o">=</span> <span class="n">u32</span>
+<span class="n">addr_prop</span> <span class="o">=</span> <span class="n">fdt_getprop</span><span class="p">(</span><span class="n">fdt</span><span class="p">,</span> <span class="n">offset1</span><span class="p">,</span> <span class="s2">&quot;ap_channel&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">lentmp</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">addr_prop</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">log_info</span><span class="p">(</span><span class="s2">&quot;ap_channel = </span><span class="si">%ld</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fdt32_to_cpu</span><span class="p">(</span><span class="o">*</span><span class="n">addr_prop</span><span class="p">));</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="n">log_error</span><span class="p">(</span><span class="s2">&quot;ap_channel NULL.</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>dump文件信息</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">blfdtdump</span><span class="p">(</span><span class="n">tc_wifi_dtb</span><span class="p">,</span> <span class="n">TC_WIFI_DTB_LEN</span><span class="p">,</span> <span class="n">true</span><span class="p">,</span> <span class="n">true</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>其中 <code class="docutils literal notranslate"><span class="pre">tc_wifi_dtb</span></code> 为数组的基地址， <code class="docutils literal notranslate"><span class="pre">TC_WIFI_DTB_LEN</span></code> 为数组的大小。</p>
+<p>下图为dump下来的部分信息，与源文件对应信息一致。</p>
+<blockquote>
+<div><div class="figure">
+<img alt="" src="../../../_images/image137.png" />
+</div>
+</div></blockquote>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

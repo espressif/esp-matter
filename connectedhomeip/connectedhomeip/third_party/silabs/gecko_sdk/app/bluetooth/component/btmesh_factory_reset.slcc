@@ -1,0 +1,69 @@
+id: "btmesh_factory_reset"
+label: "Factory Reset"
+package: "Btmesh"
+description: >
+ The Factory Reset is an application-level software module that
+ manages two types of device resets. The Factory Reset provides possibility
+ for node reset and full reset. Node reset removes all the keys and other
+ settings that have been configured for this node previously. Full reset removes
+ all NVM data as well. Callback is available for both reset types. After callback
+ execution the node reboots itself. After reboot in both reset cases the node
+ enters to unprovisioned state. These interface functions are available also
+ for CLI calls.
+category: "Bluetooth Mesh|Utility"
+quality: "production"
+root_path: "app/bluetooth/common/btmesh_factory_reset"
+source:
+  - path: "sl_btmesh_factory_reset.c"
+include:
+  - path: ""
+    file_list:
+      - path: "sl_btmesh_factory_reset.h"
+provides:
+  - name: "btmesh_factory_reset"
+requires:
+  - name: "app_assert"
+  - name: "bluetooth_feature_nvm"
+  - name: "bluetooth_feature_system"
+  - name: "btmesh_feature_node"
+  - name: "btmesh_stack"
+  - name: "simple_timer"
+recommends:
+  - id: "simple_timer"
+
+template_contribution: 
+  - name: "btmesh_on_event"
+    value:
+      include: "sl_btmesh_factory_reset.h"
+      function: "sl_btmesh_factory_reset_on_event"
+
+  - name: cli_command
+    value:
+      group: factory
+      name: full_reset
+      handler: factory_reset_from_cli
+      shortcuts:
+        - name: r
+      help: "Triggers a factory reset that erase all NVM keys"
+    condition:
+      - "cli"
+
+  - name: cli_command
+    value:
+      group: factory
+      name: node_reset
+      handler: node_reset_from_cli
+      shortcuts:
+        - name: n
+      help: "Triggers a node reset that erase all mesh stack data"
+    condition:
+      - "cli"
+
+  - name: cli_group
+    value:
+      name: factory
+      help: "Factory functions (e.g. factory reset)."
+      shortcuts:
+        - name: f
+    condition:
+      - "cli"

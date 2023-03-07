@@ -1,0 +1,945 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>BLE &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../index.html"/>
+        <link rel="up" title="&lt;no title&gt;" href="index.html"/>
+        <link rel="next" title="QA" href="../../QA/index.html"/>
+        <link rel="prev" title="&lt;no title&gt;" href="index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Examples/index.html">Example</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Components</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../System/Coredump.html">Coredump</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../System/Libc.html">Libc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../System/Start.html">Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Middleware/yloop.html">yloop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Middleware/vfs.html">vfs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Middleware/devicetree.html">dts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Middleware/blog.html">blog</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ble_stack</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#api">API参考</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">数据结构参考</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Components</a> &raquo;</li>
+        
+          <li><a href="index.html">&lt;no title&gt;</a> &raquo;</li>
+        
+      <li>BLE</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/Components/BLE/ble_stack.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ble">
+<span id="ble-index"></span><h1>BLE<a class="headerlink" href="#ble" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<h2>概述<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<ul>
+<li><dl class="first docutils">
+<dt>BLE支持的特性：</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt>蓝牙HOST特性</dt>
+<dd><ul class="first simple">
+<li>GAP支持的角色：Peripheral与Central，Observer与Broadcaster</li>
+</ul>
+<ul class="last simple">
+<li>GATT支持的角色：Server与Client</li>
+<li>支持配对包括蓝牙4.2中的安全连接特性</li>
+<li>支持永久存储蓝牙特定的设置和数据</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>蓝牙mesh特性</dt>
+<dd><ul class="first simple">
+<li>支持Relay, Friend Node, Low-Power Node (LPN) and GATT Proxy角色</li>
+</ul>
+<ul class="last simple">
+<li>支持两种Provisioning bearers(PB-ADV &amp; PB-GATT)</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>BLE协议栈的架构：</dt>
+<dd><blockquote class="first">
+<div><div class="figure">
+<img alt="../../_images/image1.png" src="../../_images/image1.png" />
+</div>
+</div></blockquote>
+<ul class="last">
+<li><dl class="first docutils">
+<dt>总共有3个主要层，共同构成了一个完整的蓝牙低能耗协议栈</dt>
+<dd><ul class="first simple">
+<li>Host：这一层位于应用程序之下,由多个(非实时)网络和传输协议组成，使应用程序能够以标准和互操作的方式与对等设备通信。</li>
+</ul>
+<ul class="simple">
+<li>Controller：控制器实现了链路层(LE LL)，这是一种低层次的实时协议，它与无线电硬件一起提供了空中通信的标准互操作。LL处理包的接收和传输，保证数据的传递，并处理所有LL控制程序。</li>
+</ul>
+<ul class="last simple">
+<li>Radio Hardware：实现所需的模拟和数字基带功能块，允许链路层固件在频谱的2.4GHz波段发送和接收。</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>主控Host：</dt>
+<dd><blockquote class="first">
+<div><div class="figure">
+<img alt="../../_images/image2.png" src="../../_images/image2.png" />
+</div>
+</div></blockquote>
+<ul class="last simple">
+<li><dl class="first docutils">
+<dt>蓝牙Host层实现了所有高级协议和配置文件，最重要的是它为应用程序提供了高级API</dt>
+<dd><ul class="first last">
+<li>HCI:Host与controller接口</li>
+<li>L2CAP:逻辑链路控制和适应协议</li>
+<li>GATT:通用属性配置层（Generic Attribute Profile）</li>
+<li>GAP:通用访问配置层（Generic Access Profile）</li>
+<li>SMP:安全管理器配置层（Security Manager Specification）</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>应用Application</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>应用层是用户开发实际蓝牙应用的地方，包含必要的协议栈参数设置，以及各种功能函数的调用。我们分别从蓝牙从机和蓝牙主机两种设备来分析。</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt>蓝牙从机</dt>
+<dd><ul class="first last">
+<li>相关硬件和基础服务初始化</li>
+<li>设置广播参数：广播数据，广播间隔，扫描回应等参数或者数据</li>
+<li>设置Profile：添加从机服务、特征值，还有设置回调函数用于接收主机数据等</li>
+<li>设置配对参数（可选）</li>
+<li>启动广播，开始运行</li>
+<li>等待相关事件，及事件处理，例如收到主机发来的数据，被链接等等</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>蓝牙主机</dt>
+<dd><ul class="first last">
+<li>相关硬件和基础服务初始化</li>
+<li>设置扫描参数</li>
+<li>设置连接参数</li>
+<li>设置配对参数（可选）</li>
+<li>启动协议栈，开始运行</li>
+<li>等待相关事件，及事件处理，例如扫描事件，从机的Notify事件等等。</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="api">
+<h2>API参考<a class="headerlink" href="#api" title="永久链接至标题"></a></h2>
+<ul class="simple">
+<li>API介绍</li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">ble_controller_init(uint8_t</span> <span class="pre">task_priority)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      controller层初始化
+* @param[in]    task_priority：  任务优先级
+* @return       空
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">hci_driver_init(void)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      HCI接口驱动初始化
+* @param[in]    空
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_enable(bt_ready_cb_t</span> <span class="pre">cb)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      Ble使能
+* @param[in]    cb：如果成功调用回调函数
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<dl class="docutils">
+<dt><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_le_adv_start(const</span> <span class="pre">struct</span> <span class="pre">bt_le_adv_param</span> <span class="pre">*param,const</span> <span class="pre">struct</span> <span class="pre">bt_data</span> <span class="pre">*ad,</span> <span class="pre">size_t</span> <span class="pre">ad_len,</span></code></dt>
+<dd><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">struct</span> <span class="pre">bt_data</span> <span class="pre">*sd,</span> <span class="pre">size_t</span> <span class="pre">sd_len)</span></code></dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      开启BLE广播
+*
+* @param[in]    param:  指向广播配置参数指针
+* @param[in]    ad:     指向广播包中数据指针
+* @param[in]    ad_len: 广播包中数据的长度
+* @param[in]    sd:     指向扫描响应包数据指针
+* @param[in]    sd_len: 扫描响应包数据的长度
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_le_adv_update_data(const</span> <span class="pre">struct</span> <span class="pre">bt_data</span> <span class="pre">*ad,</span> <span class="pre">size_t</span> <span class="pre">ad_len,const</span> <span class="pre">struct</span> <span class="pre">bt_data</span> <span class="pre">*sd,</span> <span class="pre">size_t</span> <span class="pre">sd_len)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      更新BLE广播数据
+* @param[in]    ad:     指向广播包中数据指针
+* @param[in]    ad_len: 广播包中数据的长度
+* @param[in]    sd:     指向扫描响应包数据指针
+* @param[in]    sd_len: 扫描响应包数据的长度
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_le_adv_stop(void)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      停止BLE广播
+* @param[in]    空
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_le_scan_start(const</span> <span class="pre">struct</span> <span class="pre">bt_le_scan_param</span> <span class="pre">*param,</span> <span class="pre">bt_le_scan_cb_t</span> <span class="pre">cb)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      开启BLE扫描
+* @param[in]    param:  指向扫描参数的指针
+* @param[in]    cb:     扫描回调函数
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_le_scan_stop(void)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      停止BLE扫描
+* @param[in]    空
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_le_whitelist_add(const</span> <span class="pre">bt_addr_le_t</span> <span class="pre">*addr)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      通过地址添加设备到白名单列表中
+* @param[in]    addr:指向需要添加设备地址的指针
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_le_whitelist_rem(const</span> <span class="pre">bt_addr_le_t</span> <span class="pre">*addr)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      从白名单列表中移除设备
+* @param[in]    addr:指向需要移除设备地址的指针
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_le_whitelist_clear(void)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      清除白名单列表
+* @param[in]    空
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_le_set_chan_map(u8_t</span> <span class="pre">chan_map[5])</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      设置(LE)通道映射
+* @param[in]    chan_map：通道数组
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_unpair(u8_t</span> <span class="pre">id,</span> <span class="pre">const</span> <span class="pre">bt_addr_le_t</span> <span class="pre">*addr)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      清除配对信息
+* @param[in]    id：    本地标识(大多只是默认的BT ID)
+* @param[in]    addr：  远端设备地址，NULL或者BT_ADDR_LE_ANY清除所有远端设备
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_conn_get_info(const</span> <span class="pre">struct</span> <span class="pre">bt_conn</span> <span class="pre">*conn,</span> <span class="pre">struct</span> <span class="pre">bt_conn_info</span> <span class="pre">*info)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      获取当前连接设备的信息
+* @param[in]    conn：  指向当前连接的指针
+* @param[in]    info：  指向当前连接设备信息的指针
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_conn_get_remote_dev_info(struct</span> <span class="pre">bt_conn_info</span> <span class="pre">*info)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      获取已连接设备的信息
+* @param[in]    info：  指向当前连接设备信息的指针
+* @return       已连接设备的个数
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_conn_le_param_update(struct</span> <span class="pre">bt_conn</span> <span class="pre">*conn,const</span> <span class="pre">struct</span> <span class="pre">bt_le_conn_param</span> <span class="pre">*param)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      更新连接参数
+* @param[in]    conn：  指向当前连接的指针
+* @param[in]    param： 指向连接参数的指针
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_conn_disconnect(struct</span> <span class="pre">bt_conn</span> <span class="pre">*conn,</span> <span class="pre">u8_t</span> <span class="pre">reason)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      断开当前连接
+* @param[in]    conn：  指向当前连接的指针
+* @param[in]    reason：断开当前连接的原因
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">bt_conn</span> <span class="pre">*bt_conn_create_le(const</span> <span class="pre">bt_addr_le_t</span> <span class="pre">*peer,const</span> <span class="pre">struct</span> <span class="pre">bt_le_conn_param</span> <span class="pre">*param)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      创建连接
+* @param[in]    peer：  需要连接设备地址的指针
+* @param[in]    param： 指向连接参数指针
+* @return       成功：有效的连接对象，否则失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_conn_create_auto_le(const</span> <span class="pre">struct</span> <span class="pre">bt_le_conn_param</span> <span class="pre">*param)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      自动创建连接白名单列表中的设备
+* @param[in]    param： 指向连接参数指针
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_conn_create_auto_stop(void)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      停止自动创建连接白名单列表中的设备
+* @param[in]    空
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_le_set_auto_conn(const</span> <span class="pre">bt_addr_le_t</span> <span class="pre">*addr,const</span> <span class="pre">struct</span> <span class="pre">bt_le_conn_param</span> <span class="pre">*param)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      自动创建连接远端设备
+* @param[in]    addr：  远端设备地址指针
+* @param[in]    param： 指向连接参数指针
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">bt_conn</span> <span class="pre">*bt_conn_create_slave_le(const</span> <span class="pre">bt_addr_le_t</span> <span class="pre">*peer,const</span> <span class="pre">struct</span> <span class="pre">bt_le_adv_param</span> <span class="pre">*param)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      发起定向的广播包给远端设备
+* @param[in]    peer：  远端设备地址指针
+* @param[in]    param： 指向广播参数的指针
+* @return       成功：有效的连接对象，否则失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_conn_set_security(struct</span> <span class="pre">bt_conn</span> <span class="pre">*conn,</span> <span class="pre">bt_security_t</span> <span class="pre">sec)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      设置连接安全等级
+* @param[in]    conn：  指向连接对象的指针
+* @param[in]    sec：   安全等级
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">bt_security_t</span> <span class="pre">bt_conn_get_security(struct</span> <span class="pre">bt_conn</span> <span class="pre">*conn)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      获取当前连接的安全等级
+* @param[in]    conn：  指向连接对象的指针
+* @return       安全级别
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">u8_t</span> <span class="pre">bt_conn_enc_key_size(struct</span> <span class="pre">bt_conn</span> <span class="pre">*conn)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      获取当前连接的加密key的大小
+* @param[in]    conn：  指向连接对象的指针
+* @return       加密key的大小
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">bt_conn_cb_register(struct</span> <span class="pre">bt_conn_cb</span> <span class="pre">*cb)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      注册连接回调函数
+* @param[in]    cb：  连接回调函数
+* @return       空
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">bt_set_bondable(bool</span> <span class="pre">enable)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      设置/清除SMP配对请求/响应数据认证需求中的绑定标志
+* @param[in]    enable：  1，使能，0：不使能
+* @return       空
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_conn_auth_cb_register(const</span> <span class="pre">struct</span> <span class="pre">bt_conn_auth_cb</span> <span class="pre">*cb)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      注册认证回调函数
+* @param[in]    cb： 回调函数指针
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_conn_auth_passkey_entry(struct</span> <span class="pre">bt_conn</span> <span class="pre">*conn,</span> <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">passkey)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      用密钥回复对方
+* @param[in]    conn：    连接对象指针
+* @param[in]    passkey： 输入的密钥
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_conn_auth_cancel(struct</span> <span class="pre">bt_conn</span> <span class="pre">*conn)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      取消认证过程
+* @param[in]    conn：    连接对象指针
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_conn_auth_passkey_confirm(struct</span> <span class="pre">bt_conn</span> <span class="pre">*conn)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      如果密码匹配，回复对方
+* @param[in]    conn：    连接对象的指针
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_conn_auth_pincode_entry(struct</span> <span class="pre">bt_conn</span> <span class="pre">*conn,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*pin)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      用PIN码进行回复对方
+* @param[in]    conn：  连接对象的指针
+* @param[in]    pin：   PIN码的指针
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_le_read_rssi(u16_t</span> <span class="pre">handle,int8_t</span> <span class="pre">*rssi)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      读取对方RSSI值
+* @param[in]    handle：连接的句柄值
+* @param[in]    rssi：  rssi的指针
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_get_local_address(bt_addr_le_t</span> <span class="pre">*adv_addr)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      读取本机的地址
+* @param[in]    adv_addr：  指向地址的指针
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">bt_set_tx_pwr(int8_t</span> <span class="pre">power)</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/**
+* function      设置本机发射功率
+* @param[in]    power：  功率值
+* @return       0:成功，!=0:失败
+*/
+</pre></div>
+</div>
+</div>
+<div class="section" id="id2">
+<h2>数据结构参考<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">bt_le_adv_param</span></code>数据结构：</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/**</span> <span class="n">LE</span> <span class="n">Advertising</span> <span class="n">Parameters</span><span class="o">.</span> <span class="o">*/</span>
+<span class="n">struct</span> <span class="n">bt_le_adv_param</span> <span class="p">{</span>
+    <span class="o">/**</span> <span class="n">Local</span> <span class="n">identity</span> <span class="o">*/</span>
+    <span class="n">u8_t</span>  <span class="nb">id</span><span class="p">;</span>
+
+    <span class="o">/**</span> <span class="n">Bit</span><span class="o">-</span><span class="n">field</span> <span class="n">of</span> <span class="n">advertising</span> <span class="n">options</span> <span class="o">*/</span>
+    <span class="n">u8_t</span>  <span class="n">options</span><span class="p">;</span>
+
+    <span class="o">/**</span> <span class="n">Minimum</span> <span class="n">Advertising</span> <span class="n">Interval</span> <span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="mf">0.625</span><span class="p">)</span> <span class="o">*/</span>
+    <span class="n">u16_t</span> <span class="n">interval_min</span><span class="p">;</span>
+
+    <span class="o">/**</span> <span class="n">Maximum</span> <span class="n">Advertising</span> <span class="n">Interval</span> <span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="mf">0.625</span><span class="p">)</span> <span class="o">*/</span>
+    <span class="n">u16_t</span> <span class="n">interval_max</span><span class="p">;</span>
+
+    <span class="c1">#if defined(CONFIG_BT_STACK_PTS)</span>
+    <span class="n">u8_t</span>  <span class="n">addr_type</span><span class="p">;</span>
+    <span class="c1">#endif</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>此数据结构用来配置广播参数，包括本地识别id、广播选项位域、广播间隙等，其中广播选项位域有如下枚举类型参数可选:</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">enum</span> <span class="p">{</span>
+    <span class="o">/**</span> <span class="n">Convenience</span> <span class="n">value</span> <span class="n">when</span> <span class="n">no</span> <span class="n">options</span> <span class="n">are</span> <span class="n">specified</span><span class="o">.</span> <span class="o">*/</span>
+    <span class="n">BT_LE_ADV_OPT_NONE</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+
+    <span class="o">/**</span> <span class="n">Advertise</span> <span class="k">as</span> <span class="n">connectable</span><span class="o">.</span> <span class="n">Type</span> <span class="n">of</span> <span class="n">advertising</span> <span class="ow">is</span> <span class="n">determined</span> <span class="n">by</span>
+        <span class="o">*</span> <span class="n">providing</span> <span class="n">SCAN_RSP</span> <span class="n">data</span> <span class="ow">and</span><span class="o">/</span><span class="ow">or</span> <span class="n">enabling</span> <span class="n">local</span> <span class="n">privacy</span> <span class="n">support</span><span class="o">.</span>
+        <span class="o">*/</span>
+    <span class="n">BT_LE_ADV_OPT_CONNECTABLE</span> <span class="o">=</span> <span class="n">BIT</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+
+    <span class="o">/**</span> <span class="n">Don</span><span class="s1">&#39;t try to resume connectable advertising after a connection.</span>
+        <span class="o">*</span>  <span class="n">This</span> <span class="n">option</span> <span class="ow">is</span> <span class="n">only</span> <span class="n">meaningful</span> <span class="n">when</span> <span class="n">used</span> <span class="n">together</span> <span class="k">with</span>
+        <span class="o">*</span>  <span class="n">BT_LE_ADV_OPT_CONNECTABLE</span><span class="o">.</span> <span class="n">If</span> <span class="nb">set</span> <span class="n">the</span> <span class="n">advertising</span> <span class="n">will</span> <span class="n">be</span> <span class="n">stopped</span>
+        <span class="o">*</span>  <span class="n">when</span> <span class="n">bt_le_adv_stop</span><span class="p">()</span> <span class="ow">is</span> <span class="n">called</span> <span class="ow">or</span> <span class="n">when</span> <span class="n">an</span> <span class="n">incoming</span> <span class="p">(</span><span class="n">slave</span><span class="p">)</span>
+        <span class="o">*</span>  <span class="n">connection</span> <span class="n">happens</span><span class="o">.</span> <span class="n">If</span> <span class="n">this</span> <span class="n">option</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">set</span> <span class="n">the</span> <span class="n">stack</span> <span class="n">will</span>
+        <span class="o">*</span>  <span class="n">take</span> <span class="n">care</span> <span class="n">of</span> <span class="n">keeping</span> <span class="n">advertising</span> <span class="n">enabled</span> <span class="n">even</span> <span class="k">as</span> <span class="n">connections</span>
+        <span class="o">*</span>  <span class="n">occur</span><span class="o">.</span>
+        <span class="o">*/</span>
+    <span class="n">BT_LE_ADV_OPT_ONE_TIME</span> <span class="o">=</span> <span class="n">BIT</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+
+    <span class="o">/**</span> <span class="n">Advertise</span> <span class="n">using</span> <span class="n">the</span> <span class="n">identity</span> <span class="n">address</span> <span class="k">as</span> <span class="n">the</span> <span class="n">own</span> <span class="n">address</span><span class="o">.</span>
+        <span class="o">*</span>  <span class="nd">@warning</span> <span class="n">This</span> <span class="n">will</span> <span class="n">compromise</span> <span class="n">the</span> <span class="n">privacy</span> <span class="n">of</span> <span class="n">the</span> <span class="n">device</span><span class="p">,</span> <span class="n">so</span> <span class="n">care</span>
+        <span class="o">*</span>           <span class="n">must</span> <span class="n">be</span> <span class="n">taken</span> <span class="n">when</span> <span class="n">using</span> <span class="n">this</span> <span class="n">option</span><span class="o">.</span>
+        <span class="o">*/</span>
+    <span class="n">BT_LE_ADV_OPT_USE_IDENTITY</span> <span class="o">=</span> <span class="n">BIT</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+
+    <span class="o">/**</span> <span class="n">Advertise</span> <span class="n">using</span> <span class="n">GAP</span> <span class="n">device</span> <span class="n">name</span> <span class="o">*/</span>
+    <span class="n">BT_LE_ADV_OPT_USE_NAME</span> <span class="o">=</span> <span class="n">BIT</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
+
+    <span class="o">/**</span> <span class="n">Use</span> <span class="n">low</span> <span class="n">duty</span> <span class="n">directed</span> <span class="n">advertising</span> <span class="n">mode</span><span class="p">,</span> <span class="n">otherwise</span> <span class="n">high</span> <span class="n">duty</span> <span class="n">mode</span>
+        <span class="o">*</span>  <span class="n">will</span> <span class="n">be</span> <span class="n">used</span><span class="o">.</span> <span class="n">This</span> <span class="n">option</span> <span class="ow">is</span> <span class="n">only</span> <span class="n">effective</span> <span class="n">when</span> <span class="n">used</span> <span class="k">with</span>
+        <span class="o">*</span>  <span class="n">bt_conn_create_slave_le</span><span class="p">()</span><span class="o">.</span>
+        <span class="o">*/</span>
+    <span class="n">BT_LE_ADV_OPT_DIR_MODE_LOW_DUTY</span> <span class="o">=</span> <span class="n">BIT</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span>
+
+    <span class="o">/**</span> <span class="n">Enable</span> <span class="n">use</span> <span class="n">of</span> <span class="n">Resolvable</span> <span class="n">Private</span> <span class="n">Address</span> <span class="p">(</span><span class="n">RPA</span><span class="p">)</span> <span class="k">as</span> <span class="n">the</span> <span class="n">target</span> <span class="n">address</span>
+        <span class="o">*</span>  <span class="ow">in</span> <span class="n">directed</span> <span class="n">advertisements</span> <span class="n">when</span> <span class="n">CONFIG_BT_PRIVACY</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">enabled</span><span class="o">.</span>
+        <span class="o">*</span>  <span class="n">This</span> <span class="ow">is</span> <span class="n">required</span> <span class="k">if</span> <span class="n">the</span> <span class="n">remote</span> <span class="n">device</span> <span class="ow">is</span> <span class="n">privacy</span><span class="o">-</span><span class="n">enabled</span> <span class="ow">and</span>
+        <span class="o">*</span>  <span class="n">supports</span> <span class="n">address</span> <span class="n">resolution</span> <span class="n">of</span> <span class="n">the</span> <span class="n">target</span> <span class="n">address</span> <span class="ow">in</span> <span class="n">directed</span>
+        <span class="o">*</span>  <span class="n">advertisement</span><span class="o">.</span>
+        <span class="o">*</span>  <span class="n">It</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">responsibility</span> <span class="n">of</span> <span class="n">the</span> <span class="n">application</span> <span class="n">to</span> <span class="n">check</span> <span class="n">that</span> <span class="n">the</span> <span class="n">remote</span>
+        <span class="o">*</span>  <span class="n">device</span> <span class="n">supports</span> <span class="n">address</span> <span class="n">resolution</span> <span class="n">of</span> <span class="n">directed</span> <span class="n">advertisements</span> <span class="n">by</span>
+        <span class="o">*</span>  <span class="n">reading</span> <span class="n">its</span> <span class="n">Central</span> <span class="n">Address</span> <span class="n">Resolution</span> <span class="n">characteristic</span><span class="o">.</span>
+        <span class="o">*/</span>
+    <span class="n">BT_LE_ADV_OPT_DIR_ADDR_RPA</span> <span class="o">=</span> <span class="n">BIT</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span>
+
+    <span class="o">/**</span> <span class="n">Use</span> <span class="n">whitelist</span> <span class="n">to</span> <span class="nb">filter</span> <span class="n">devices</span> <span class="n">that</span> <span class="n">can</span> <span class="n">request</span> <span class="n">scan</span> <span class="n">response</span>
+        <span class="o">*</span>  <span class="n">data</span><span class="o">.</span>
+        <span class="o">*/</span>
+    <span class="n">BT_LE_ADV_OPT_FILTER_SCAN_REQ</span> <span class="o">=</span> <span class="n">BIT</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span>
+
+    <span class="o">/**</span> <span class="n">Use</span> <span class="n">whitelist</span> <span class="n">to</span> <span class="nb">filter</span> <span class="n">devices</span> <span class="n">that</span> <span class="n">can</span> <span class="n">connect</span><span class="o">.</span> <span class="o">*/</span>
+    <span class="n">BT_LE_ADV_OPT_FILTER_CONN</span> <span class="o">=</span> <span class="n">BIT</span><span class="p">(</span><span class="mi">7</span><span class="p">),</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>如果需要发送一个广播包，配置可以如下：</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">param</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">param</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="p">(</span><span class="n">BT_LE_ADV_OPT_CONNECTABLE</span> <span class="o">|</span> <span class="n">BT_LE_ADV_OPT_USE_NAME</span> <span class="o">|</span> <span class="n">BT_LE_ADV_OPT_ONE_TIME</span><span class="p">);</span>
+<span class="n">param</span><span class="o">.</span><span class="n">interval_min</span> <span class="o">=</span> <span class="mh">0x00a0</span><span class="p">;</span>
+<span class="n">param</span><span class="o">.</span><span class="n">interval_max</span> <span class="o">=</span> <span class="mh">0x00f0</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">bt_data</span></code>数据结构：</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">bt_data</span> <span class="p">{</span>
+    <span class="n">u8_t</span> <span class="nb">type</span><span class="p">;</span>
+    <span class="n">u8_t</span> <span class="n">data_len</span><span class="p">;</span>
+    <span class="n">const</span> <span class="n">u8_t</span> <span class="o">*</span><span class="n">data</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>此数据结构用来填充广播包中的数据，具体的数据包类型可以参考如下：</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Service</span> <span class="n">UUID</span>
+<span class="n">Local</span> <span class="n">Name</span>
+<span class="n">Flags</span>
+<span class="n">Manufacturer</span> <span class="n">Specific</span> <span class="n">Data</span>
+<span class="n">TX</span> <span class="n">Power</span> <span class="n">Level</span>
+<span class="n">Secure</span> <span class="n">Simple</span> <span class="n">Pairing</span> <span class="n">OOB</span>
+<span class="n">Security</span> <span class="n">Manager</span> <span class="n">OOB</span>
+<span class="n">Security</span> <span class="n">Manager</span> <span class="n">TK</span> <span class="n">Value</span>
+<span class="n">Slave</span> <span class="n">Connection</span> <span class="n">Interval</span> <span class="n">Range</span>
+<span class="n">Service</span> <span class="n">Solicitation</span>
+<span class="n">Service</span> <span class="n">Data</span>
+<span class="n">Appearance</span>
+<span class="n">Public</span> <span class="n">Target</span> <span class="n">Address</span>
+<span class="n">Random</span> <span class="n">Target</span> <span class="n">Address</span>
+<span class="n">Advertising</span> <span class="n">Interval</span>
+<span class="n">LE</span> <span class="n">Bluetooth</span> <span class="n">Device</span> <span class="n">Address</span>
+<span class="n">LE</span> <span class="n">Role</span>
+<span class="n">Uniform</span> <span class="n">Resource</span> <span class="n">Identifier</span>
+<span class="n">LE</span> <span class="n">Supported</span> <span class="n">Features</span>
+<span class="n">Channel</span> <span class="n">Map</span> <span class="n">Update</span> <span class="n">Indication</span>
+</pre></div>
+</div>
+<p>用该数据结构配置一个广播包数据，如下所示：</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">bt_data</span> <span class="n">ad_discov</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">BT_DATA_BYTES</span><span class="p">(</span><span class="n">BT_DATA_FLAGS</span><span class="p">,</span> <span class="p">(</span><span class="n">BT_LE_AD_GENERAL</span> <span class="o">|</span> <span class="n">BT_LE_AD_NO_BREDR</span><span class="p">)),</span>
+    <span class="n">BT_DATA</span><span class="p">(</span><span class="n">BT_DATA_NAME_COMPLETE</span><span class="p">,</span> <span class="s2">&quot;BL602-BLE-DEV&quot;</span><span class="p">,</span> <span class="mi">13</span><span class="p">),</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">bt_le_scan_param</span></code>数据结构：</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/**</span> <span class="n">LE</span> <span class="n">scan</span> <span class="n">parameters</span> <span class="o">*/</span>
+<span class="n">struct</span> <span class="n">bt_le_scan_param</span> <span class="p">{</span>
+    <span class="o">/**</span> <span class="n">Scan</span> <span class="nb">type</span> <span class="p">(</span><span class="n">BT_LE_SCAN_TYPE_ACTIVE</span> <span class="ow">or</span> <span class="n">BT_LE_SCAN_TYPE_PASSIVE</span><span class="p">)</span> <span class="o">*/</span>
+    <span class="n">u8_t</span>  <span class="nb">type</span><span class="p">;</span>
+
+    <span class="o">/**</span> <span class="n">Bit</span><span class="o">-</span><span class="n">field</span> <span class="n">of</span> <span class="n">scanning</span> <span class="nb">filter</span> <span class="n">options</span><span class="o">.</span> <span class="o">*/</span>
+    <span class="n">u8_t</span>  <span class="n">filter_dup</span><span class="p">;</span>
+
+    <span class="o">/**</span> <span class="n">Scan</span> <span class="n">interval</span> <span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="mf">0.625</span> <span class="n">ms</span><span class="p">)</span> <span class="o">*/</span>
+    <span class="n">u16_t</span> <span class="n">interval</span><span class="p">;</span>
+
+    <span class="o">/**</span> <span class="n">Scan</span> <span class="n">window</span> <span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="mf">0.625</span> <span class="n">ms</span><span class="p">)</span> <span class="o">*/</span>
+    <span class="n">u16_t</span> <span class="n">window</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>此数据结构用来填充扫描参数，
+type：为扫描类型有2种类型BT_LE_SCAN_TYPE_ACTIVE（0x01）、BT_LE_SCAN_TYPE_PASSIVE(0x00)。
+filter_dup：0x00,除定向广告外，接受所有广播和扫描响应，0x01,只接收白名单列表中设备的广播和扫描响应。
+interval：扫描间隙。
+window：扫描窗口。</p>
+<p>如果开启扫描请求，可以配置如下：</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">scan_param</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">BT_LE_SCAN_TYPE_PASSIVE</span>
+<span class="n">scan_param</span><span class="o">.</span><span class="n">filter_dup</span> <span class="o">=</span> <span class="mh">0x00</span>
+<span class="n">interval</span><span class="o">=</span><span class="n">BT_GAP_SCAN_SLOW_INTERVAL_1</span>
+<span class="n">window</span><span class="o">=</span><span class="n">BT_GAP_SCAN_SLOW_WINDOW_1</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">bt_le_conn_param</span></code>数据结构：</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/**</span> <span class="n">Connection</span> <span class="n">parameters</span> <span class="k">for</span> <span class="n">LE</span> <span class="n">connections</span> <span class="o">*/</span>
+<span class="n">struct</span> <span class="n">bt_le_conn_param</span> <span class="p">{</span>
+    <span class="n">u16_t</span> <span class="n">interval_min</span><span class="p">;</span>
+    <span class="n">u16_t</span> <span class="n">interval_max</span><span class="p">;</span>
+    <span class="n">u16_t</span> <span class="n">latency</span><span class="p">;</span>
+    <span class="n">u16_t</span> <span class="n">timeout</span><span class="p">;</span>
+
+    <span class="c1">#if defined(CONFIG_BT_STACK_PTS)</span>
+    <span class="n">u8_t</span>  <span class="n">own_address_type</span><span class="p">;</span>
+    <span class="c1">#endif</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>此数据结构用来填充连接参数，interval_min：连接间隙最少值（0x0018），interval_max：连接间隙最大值(0x0028)，
+latency：指定为连接事件数的连接允许的最大从延迟。
+timeout：连接超时时间。</p>
+<p>配置该数据结构，如下：</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span>interval_min=BT_GAP_INIT_CONN_INT_MIN（0x0018）
+interval_max=BT_GAP_INIT_CONN_INT_MAX(0x0028)
+latency=0
+timeout=400
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">bt_conn</span></code>数据结构：</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">bt_conn</span> <span class="p">{</span>
+    <span class="n">u16_t</span>                   <span class="n">handle</span><span class="p">;</span>
+    <span class="n">u8_t</span>                    <span class="nb">type</span><span class="p">;</span>
+    <span class="n">u8_t</span>                    <span class="n">role</span><span class="p">;</span>
+
+    <span class="n">ATOMIC_DEFINE</span><span class="p">(</span><span class="n">flags</span><span class="p">,</span> <span class="n">BT_CONN_NUM_FLAGS</span><span class="p">);</span>
+
+    <span class="o">/*</span> <span class="n">Which</span> <span class="n">local</span> <span class="n">identity</span> <span class="n">address</span> <span class="n">this</span> <span class="n">connection</span> <span class="n">uses</span> <span class="o">*/</span>
+    <span class="n">u8_t</span>                    <span class="nb">id</span><span class="p">;</span>
+
+<span class="c1">#if defined(CONFIG_BT_SMP) || defined(CONFIG_BT_BREDR)</span>
+    <span class="n">bt_security_t</span>           <span class="n">sec_level</span><span class="p">;</span>
+    <span class="n">bt_security_t</span>           <span class="n">required_sec_level</span><span class="p">;</span>
+    <span class="n">u8_t</span>                    <span class="n">encrypt</span><span class="p">;</span>
+<span class="c1">#endif /* CONFIG_BT_SMP || CONFIG_BT_BREDR */</span>
+
+    <span class="o">/*</span> <span class="n">Connection</span> <span class="n">error</span> <span class="ow">or</span> <span class="n">reason</span> <span class="k">for</span> <span class="n">disconnect</span> <span class="o">*/</span>
+    <span class="n">u8_t</span>                    <span class="n">err</span><span class="p">;</span>
+
+    <span class="n">bt_conn_state_t</span>         <span class="n">state</span><span class="p">;</span>
+
+    <span class="n">u16_t</span>                   <span class="n">rx_len</span><span class="p">;</span>
+    <span class="n">struct</span> <span class="n">net_buf</span>          <span class="o">*</span><span class="n">rx</span><span class="p">;</span>
+
+    <span class="o">/*</span> <span class="n">Sent</span> <span class="n">but</span> <span class="ow">not</span> <span class="n">acknowledged</span> <span class="n">TX</span> <span class="n">packets</span> <span class="k">with</span> <span class="n">a</span> <span class="n">callback</span> <span class="o">*/</span>
+    <span class="n">sys_slist_t</span>             <span class="n">tx_pending</span><span class="p">;</span>
+    <span class="o">/*</span> <span class="n">Sent</span> <span class="n">but</span> <span class="ow">not</span> <span class="n">acknowledged</span> <span class="n">TX</span> <span class="n">packets</span> <span class="n">without</span> <span class="n">a</span> <span class="n">callback</span> <span class="n">before</span>
+    <span class="o">*</span> <span class="n">the</span> <span class="nb">next</span> <span class="n">packet</span> <span class="p">(</span><span class="k">if</span> <span class="nb">any</span><span class="p">)</span> <span class="ow">in</span> <span class="n">tx_pending</span><span class="o">.</span>
+    <span class="o">*/</span>
+    <span class="n">u32_t</span>                   <span class="n">pending_no_cb</span><span class="p">;</span>
+
+    <span class="o">/*</span> <span class="n">Completed</span> <span class="n">TX</span> <span class="k">for</span> <span class="n">which</span> <span class="n">we</span> <span class="n">need</span> <span class="n">to</span> <span class="n">call</span> <span class="n">the</span> <span class="n">callback</span> <span class="o">*/</span>
+    <span class="n">sys_slist_t</span>             <span class="n">tx_complete</span><span class="p">;</span>
+    <span class="n">struct</span> <span class="n">k_work</span>           <span class="n">tx_complete_work</span><span class="p">;</span>
+
+
+    <span class="o">/*</span> <span class="n">Queue</span> <span class="k">for</span> <span class="n">outgoing</span> <span class="n">ACL</span> <span class="n">data</span> <span class="o">*/</span>
+    <span class="n">struct</span> <span class="n">k_fifo</span>           <span class="n">tx_queue</span><span class="p">;</span>
+
+    <span class="o">/*</span> <span class="n">Active</span> <span class="n">L2CAP</span> <span class="n">channels</span> <span class="o">*/</span>
+    <span class="n">sys_slist_t</span>             <span class="n">channels</span><span class="p">;</span>
+
+    <span class="n">atomic_t</span>                <span class="n">ref</span><span class="p">;</span>
+
+    <span class="o">/*</span> <span class="n">Delayed</span> <span class="n">work</span> <span class="k">for</span> <span class="n">connection</span> <span class="n">update</span> <span class="ow">and</span> <span class="n">other</span> <span class="n">deferred</span> <span class="n">tasks</span> <span class="o">*/</span>
+    <span class="n">struct</span> <span class="n">k_delayed_work</span>   <span class="n">update_work</span><span class="p">;</span>
+
+    <span class="n">union</span> <span class="p">{</span>
+        <span class="n">struct</span> <span class="n">bt_conn_le</span>   <span class="n">le</span><span class="p">;</span>
+<span class="c1">#if defined(CONFIG_BT_BREDR)</span>
+        <span class="n">struct</span> <span class="n">bt_conn_br</span>   <span class="n">br</span><span class="p">;</span>
+        <span class="n">struct</span> <span class="n">bt_conn_sco</span>  <span class="n">sco</span><span class="p">;</span>
+<span class="c1">#endif</span>
+    <span class="p">};</span>
+
+<span class="c1">#if defined(CONFIG_BT_REMOTE_VERSION)</span>
+    <span class="n">struct</span> <span class="n">bt_conn_rv</span> <span class="p">{</span>
+        <span class="n">u8_t</span>  <span class="n">version</span><span class="p">;</span>
+        <span class="n">u16_t</span> <span class="n">manufacturer</span><span class="p">;</span>
+        <span class="n">u16_t</span> <span class="n">subversion</span><span class="p">;</span>
+    <span class="p">}</span> <span class="n">rv</span><span class="p">;</span>
+<span class="c1">#endif</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>此数据结构为当前连接数据结构，其中包括BLE蓝牙连接相关的参数，连接成功后该数据结构可以被用户调用。</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../QA/index.html" class="btn btn-neutral float-right" title="QA" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="&lt;no title&gt;" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

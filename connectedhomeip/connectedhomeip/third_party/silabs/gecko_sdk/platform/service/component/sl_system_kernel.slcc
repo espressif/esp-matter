@@ -1,0 +1,85 @@
+id: sl_system_kernel
+label: System Kernel
+package: platform
+category: Services|System Setup
+quality: production
+root_path: platform/service/system/
+source:
+  - path: src/sl_system_kernel.c
+include:
+  - path: inc
+    file_list:
+      - path: sl_system_kernel.h
+provides:
+  - name: sl_system_kernel
+template_contribution:
+  - name: event
+    value:
+      id: kernel_start
+      function:
+        name: sl_kernel_start
+        return: void
+    priority: -5000
+documentation:
+    docset: gecko-platform
+    document: service/api/group-system
+description: |
+  System Kernel component provides a function for starting the kernel:
+
+    * sl_system_kernel_start().
+
+  This function calls a functions that is automatically generated
+  and located in `$autogen/sl_event_handler.c`. Handlers can be registered
+  for the following events using the Event Handler API provided by the
+  Event Handler component:
+
+    * kernel_start -> sl_kernel_start()
+
+  The event is fired when `sl_system_kernel_start()` is called.
+
+  Usage example:
+
+  ```c
+  \#include sl_component_catalog.h
+  \#include sl_system_init.h
+  \#include sl_power_manager.h
+  \#include app.h
+  \#if defined(SL_CATALOG_POWER_MANAGER_PRESENT)
+  \#include sl_power_manager.h
+  \#endif
+  \#if defined(SL_CATALOG_KERNEL_PRESENT)
+  \#include sl_system_kernel.h
+  \#else // SL_CATALOG_KERNEL_PRESENT
+  \#include sl_system_process_action.h
+  \#endif // SL_CATALOG_KERNEL_PRESENT
+
+  int main(void)
+  {
+    // Initialize Silicon Labs device, system, service(s) and protocol stack(s).
+    // Note that if the kernel is present, processing task(s) will be created by
+    // this call.
+    sl_system_init();
+
+    // Initialize the application.
+    app_init();
+
+  \#if defined(SL_CATALOG_KERNEL_PRESENT)
+    // Start the kernel. Task(s) created in app_init() will start running.
+    sl_system_kernel_start();
+  \#else // SL_CATALOG_KERNEL_PRESENT
+    while (1) {
+      // Do not remove this call: Silicon Labs components process action routine
+      // must be called from the super loop.
+      sl_system_process_action();
+
+      // Application process.
+      app_process_action();
+
+  \#if defined(SL_CATALOG_POWER_MANAGER_PRESENT)
+      // Let the CPU go to sleep if the system allows it.
+      sl_power_manager_sleep();
+  \#endif
+    }
+  \#endif // SL_CATALOG_KERNEL_PRESENT
+  }
+  ```

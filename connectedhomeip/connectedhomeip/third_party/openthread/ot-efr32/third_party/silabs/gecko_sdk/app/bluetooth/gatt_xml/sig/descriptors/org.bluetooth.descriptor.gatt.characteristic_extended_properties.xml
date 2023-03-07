@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Created with Liquid XML Studio Developer Edition 8.1.7.2743 (http://www.liquid-technologies.com) -->
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Descriptor xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/descriptor.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.descriptor.gatt.characteristic_extended_properties" uuid="2900" name="Characteristic Extended Properties">
+  <InformativeText>
+    <Abstract>
+        The Characteristic Extended Properties descriptor defines additional Characteristic Properties.            
+		</Abstract>
+    <InformativeDisclaimer/>
+    <Summary>
+        If the Characteristic Extended Properties bit of the Characteristic Properties is set, then this descriptor exists.
+        The Characteristic Extended Properties descriptor is a bit field defining Reliable Write and Writeable Auxiliaries are enabled for the Characteristic.
+        This descriptor is readable without authentication and authorization being required.            
+		</Summary>
+  </InformativeText>
+  <Value>
+    <Field name="Properties">
+      <Requirement>Mandatory</Requirement>
+      <Format>16bit</Format>
+      <Minimum>0</Minimum>
+      <Maximum>3</Maximum>
+      <BitField>
+        <Bit index="0" size="1">
+          <Enumerations>
+            <Enumeration key="0" value="Reliable Write disabled" />
+            <Enumeration key="1" value="Reliable Write enabled" />
+          </Enumerations>
+        </Bit>
+        <Bit index="1" size="1">
+          <Enumerations>
+            <Enumeration key="0" value="Writable Auxiliaries disabled" />
+            <Enumeration key="1" value="Writable Auxiliaries enabled" />
+          </Enumerations>
+        </Bit>
+        <ReservedForFutureUse index="2" size="1" />
+        <ReservedForFutureUse index="3" size="1" />
+        <ReservedForFutureUse index="4" size="1" />
+        <ReservedForFutureUse index="5" size="1" />
+        <ReservedForFutureUse index="6" size="1" />
+        <ReservedForFutureUse index="7" size="1" />
+        <ReservedForFutureUse index="8" size="1" />
+        <ReservedForFutureUse index="9" size="1" />
+        <ReservedForFutureUse index="10" size="1" />
+        <ReservedForFutureUse index="11" size="1" />
+        <ReservedForFutureUse index="12" size="1" />
+        <ReservedForFutureUse index="13" size="1" />
+        <ReservedForFutureUse index="14" size="1" />
+        </BitField>
+    </Field>
+  </Value>
+</Descriptor>

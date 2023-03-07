@@ -1,0 +1,23 @@
+#ifndef SL_USBD_CLASS_VENDOR_INSTANCES_INIT
+#define SL_USBD_CLASS_VENDOR_INSTANCES_INIT
+
+#include "sl_usbd_class_vendor.h"
+
+/* class numbers assigned by the USB stack after init */
+{% for instance in usb_vendor_instances %}
+extern uint8_t sl_usbd_vendor_{{ instance }}_number;
+{% endfor %}
+
+/* event handlers for all vendor instances */
+{% for instance in usb_vendor_instances %}
+__WEAK void sl_usbd_vendor_{{ instance }}_on_enable_event(void);
+__WEAK void sl_usbd_vendor_{{ instance }}_on_disable_event(void);
+__WEAK void sl_usbd_vendor_{{ instance }}_on_setup_request_event(const sl_usbd_setup_req_t *p_setup_req);
+{% endfor %}
+
+/* init functions for all vendor instances */
+{% for instance in usb_vendor_instances %}
+void sli_usbd_vendor_{{ instance }}_init(void);
+{% endfor %}
+
+#endif

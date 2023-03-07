@@ -1,0 +1,26 @@
+id: zw_zaf
+label: Z-Wave ZAF Component
+category: Z-Wave
+description: ZAF configuration component
+package: Z-Wave
+quality: production
+config_file:
+  # For series 1
+  - path: protocol/z-wave/platform/SiliconLabs/PAL/config/zw_zaf/s1/zaf_config.h
+    file_id: zaf_config
+    condition: [device_series_1]
+  # For series 2
+  - path: protocol/z-wave/platform/SiliconLabs/PAL/config/zw_zaf/s2/zaf_config.h
+    file_id: zaf_config
+    condition: [device_series_2]  
+include:
+  - path: "protocol/z-wave/ZAF/config/"
+    file_list:
+      - path: "zaf_config_api.h"
+source:
+  - path: "protocol/z-wave/ZAF/config/zaf_config_api.c"
+requires:
+  - name: zw_cc
+  - name: zw_apputilities
+provides:
+  - name: zw_zaf

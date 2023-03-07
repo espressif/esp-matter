@@ -1,0 +1,159 @@
+%%{
+/*
+ * Copyright (c) 2018-2020, Texas Instruments Incorporated - http://www.ti.com
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+
+/*
+ *  ======== ADCBufCC26XX.Board.c.xdt ========
+ */
+
+    /* passed by /ti/drivers/templates/Board.c.xdt */
+    let ADCBuf = args[0];
+    let instances = ADCBuf.$instances;
+    if (instances.length == 0) return;
+
+    /* get ti/drivers common utility functions */
+    let Common = system.getScript("/ti/drivers/Common.js");
+
+    let declarations = Common.genBoardDeclarations(instances);
+    let localInstance = [];
+
+    /* We must gather all channels to generate their declarations */
+    /*
+     * Only one ADCBuf instance exist due to one ADC peripheral on CC26XX
+     * Add all channels to the array of instance objects.
+     */
+    for (let i = 0; i < instances[0].channels; i++) {
+        if (instances[0]["adcBufChannel" + i]) {
+            localInstance.push(instances[0]["adcBufChannel" + i]);
+        }
+    }
+    /*
+     * The order of these channels are added here MUST match the order they
+     * are generated below in the 'channels' array
+     */
+    if (instances[0].adcBufChannelBattery) {
+        localInstance.push(instances[0].adcBufChannelBattery);
+    }
+    if (instances[0].adcBufChannelDecoupling) {
+        localInstance.push(instances[0].adcBufChannelDecoupling);
+    }
+    if (instances[0].adcBufChannelGround) {
+        localInstance.push(instances[0].adcBufChannelGround);
+    }
+
+    /* Append channel declarations */
+    declarations += "\n" + Common.genBoardDeclarations(localInstance);
+
+    /* CONFIG_XXXCOUNT string, derived from defaultInstanceName */
+    let countDef = ADCBuf.defaultInstanceName + "COUNT";
+
+    /* localize the object names with this device ID */
+    let devId = system.deviceData.deviceId;
+    let driver = "CC26X2";
+
+    if (/CC(?:13|26).0/.test(devId)) {
+        driver = 'CC26XX';
+    }
+%%}
+/*
+ *  =============================== ADCBuf ===============================
+ */
+
+#include <ti/drivers/ADCBuf.h>
+#include <ti/drivers/adcbuf/ADCBuf`driver`.h>
+
+#define `countDef` `instances.length`
+
+/*
+ *  ======== adcbufCC26XXObjects ========
+ */
+ADCBuf`driver`_Object adcbufCC26XXbjects[`countDef`];
+
+/*
+ *  ======== ADCBuf Channel Lut ========
+ */
+% for (let i = 0; i < instances.length; i++) {
+    % let inst = instances[i];
+    % let finalChannels = ADCBuf.getChannels(inst);
+    % let numChannels = finalChannels.size;
+ADCBuf`driver`_AdcChannelLutEntry adcBufCC26XXChannelLut`i`[`numChannels`] = {
+    % for (let channel of finalChannels) {
+    /* `channel.name` */
+    %   if (channel.comment) {
+    /* `channel.comment` */
+    %   }
+    { `channel.dio`, `channel.comp` },
+    % }
+};
+
+% }
+/*
+ *  ======== adcbufCC26XXHWAttrs ========
+ */
+const ADCBuf`driver`_HWAttrs adcbufCC26XXHWAttrs[`countDef`] = {
+% for (let i = 0; i < instances.length; i++) {
+    % let inst = instances[i];
+    /* `inst.$name` */
+    % /* The ADCBuf instance can't share a timer instance. It always receives
+    %  * an 'A' side timer (ie. GPTA) */
+    % let timer = inst.timerInstance.timer.$solution.peripheralName; /* GPTM0 */
+    % timer = timer.replace('GPTM','');
+    {
+        .intPriority = `Common.intPriority2Hex(inst.interruptPriority)`,
+        .swiPriority = `Common.swiPriority2Int(inst.softwareInterruptPriority)`,
+        .adcChannelLut = adcBufCC26XXChannelLut`i`,
+    % if (driver == "CC26X2") {
+        .gpTimerUnit = `inst.timerInstance.$name`,
+        .acquireADCSem = `inst.acquireADCSem`
+    % }
+    },
+% }
+};
+
+/*
+ *  ======== ADCBuf_config ========
+ */
+const ADCBuf_Config ADCBuf_config[`countDef`] = {
+% for (let i = 0; i < instances.length; i++) {
+    % let inst = instances[i];
+    /* `inst.$name` */
+    {
+        .fxnTablePtr = &ADCBuf`driver`_fxnTable,
+        .object = &adcbufCC26XXbjects[`inst.$name`],
+        .hwAttrs = &adcbufCC26XXHWAttrs[`inst.$name`]
+    },
+% }
+};
+
+`declarations`
+const uint_least8_t ADCBuf_count = `countDef`;

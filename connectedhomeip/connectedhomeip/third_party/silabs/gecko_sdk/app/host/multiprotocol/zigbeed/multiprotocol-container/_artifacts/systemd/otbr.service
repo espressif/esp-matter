@@ -1,0 +1,17 @@
+[Unit]
+Description=OpenThread Border Router service
+BindsTo=cpcd.service
+After=cpcd.service
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/app/etc/docker/docker_entrypoint.sh --radio-url spinel+cpc://cpcd_0?iid=2
+# This service shall be considered active after start
+RemainAfterExit=yes
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=otbr
+
+[Install]
+WantedBy=multi-user.target

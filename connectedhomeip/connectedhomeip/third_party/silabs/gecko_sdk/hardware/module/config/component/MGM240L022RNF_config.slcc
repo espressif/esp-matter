@@ -1,0 +1,32 @@
+!!omap
+- id: MGM240L022RNF_config
+- label: MGM240L022RNF config
+- description: Configuration files for MGM240L022RNF
+- package: platform
+- category: Platform|Device|MGM24|Config
+- quality: production
+- ui_hints:
+    visibility: never
+- root_path: hardware/module/config
+- requires:
+  - name: mgm240l022rnf
+- provides:
+  - name: MGM240L022RNF_config
+- config_file:
+  - override:
+      component: device_init_hfxo
+      file_id: device_init_hfxo_config
+    path: MGM240L022RNF/sl_device_init_hfxo_config.h
+  - override:
+      component: iot_flash
+      file_id: iot_flash_cfg
+      instance: msc
+    path: MGM240L022RNF/iot_flash_cfg_msc.h
+  - override:
+      component: rail_util_pa
+      file_id: rail_util_pa_config
+    path: MGM240L022RNF/sl_rail_util_pa_config.h
+  - override:
+      component: device_init_dcdc
+      file_id: device_init_dcdc_config
+    path: MGM240L022RNF/sl_device_init_dcdc_config.h

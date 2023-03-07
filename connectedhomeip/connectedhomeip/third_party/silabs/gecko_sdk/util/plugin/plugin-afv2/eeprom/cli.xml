@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<cli>
+  <group id="plugin-eeprom" name="Plugin Commands: EEPROM">
+    <description>
+      The EEPROM plugin provides CLI commands to display details about the current EEPROM part.
+    </description>
+  </group>
+  <command cli="plugin eeprom data-print" functionName="emAfEepromDataPrintCommand" group="plugin-eeprom">
+    <description>
+      Print raw bytes stored in the EEPROM
+    </description>
+    <arg name="offset" type="INT32U" description="The offset within the EEPROM to print."/>
+  </command>
+  <command cli="plugin eeprom status" functionName="emAfEepromStatusCommand" group="plugin-eeprom">
+    <description>
+      Print the state of the EEPROM driver.
+    </description>
+  </command>
+  <command cli="plugin eeprom info" functionName="emAfEepromInfoCommand" group="plugin-eeprom">
+    <description>
+      Print detailed info about the EEPROM part.
+    </description>
+  </command>
+</cli>

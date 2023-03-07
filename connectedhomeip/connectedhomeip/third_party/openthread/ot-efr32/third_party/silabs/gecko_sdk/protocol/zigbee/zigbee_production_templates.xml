@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="ASCII"?>
+<model:MDescriptors xmlns:model="http://www.silabs.com/ss/Studio.ecore">
+  <descriptors name="MpZ3TcCustomTcHost" label="Zigbee - Host MpZ3TcCustomTcHost" description="This is a multi-PAN Z3 coordinator on network 1 and custom (no) security  coordinator on network 2.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.zigbee.app.framework.scenarios.multipan.MpZ3TcCustomTcHost.MpZ3TcCustomTcHost.slcp"/>
+    <properties key="projectFilePaths" value="app/framework/scenarios/multipan/MpZ3TcCustomTcHost/MpZ3TcCustomTcHost.slcp"/>
+    <properties key="readmeFiles" value="app/framework/scenarios/multipan/MpZ3TcCustomTcHost/readme.html"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*host.*"/>
+    <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc"/>
+    <properties key="category" value="Zigbee Host Application"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|Host Project\ Difficulty|Advanced Wireless\ Technology|Zigbee"/>
+  </descriptors>
+  <descriptors name="DynamicMultiprotocolLight" label="Zigbee - SoC DynamicMultiprotocolLight" description="This is a sample application demonstrating a light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.zigbee.app.framework.scenarios.multiprotocol.DynamicMultiprotocolLight.DynamicMultiprotocolLight.slcp"/>
+    <properties key="projectFilePaths" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLight/DynamicMultiprotocolLight.slcp"/>
+    <properties key="readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLight/readme.html"/>
+    <properties key="boardCompatibility" value="brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4190a brd4195a brd4196a brd4197a brd4305d brd4305e com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Zigbee Application"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+  </descriptors>
+  <descriptors name="DynamicMultiprotocolLightMinimal" label="Zigbee - SoC DynamicMultiprotocolLightMinimal" description="This is a sample application demonstrating a light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LED or buttons.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.zigbee.app.framework.scenarios.multiprotocol.DynamicMultiprotocolLight.DynamicMultiprotocolLightMinimal.slcp"/>
+    <properties key="projectFilePaths" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLight/DynamicMultiprotocolLightMinimal.slcp"/>
+    <properties key="readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLight/readme.html"/>
+    <properties key="boardCompatibility" value="brd4188a brd4188b brd4194a brd4304a brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4316a brd4317a brd4319a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Zigbee Application"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+  </descriptors>
+  <descriptors name="DynamicMultiprotocolLightSed" label="Zigbee - SoC DynamicMultiprotocolLightSed" description="This is a sample application demonstrating a sleepy light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.zigbee.app.framework.scenarios.multiprotocol.DynamicMultiprotocolLightSed.DynamicMultiprotocolLightSed.slcp"/>
+    <properties key="projectFilePaths" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLightSed/DynamicMultiprotocolLightSed.slcp"/>
+    <properties key="readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLightSed/readme.html"/>
+    <properties key="boardCompatibility" value="brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4190a brd4195a brd4196a brd4197a brd4305d brd4305e com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Zigbee Application"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+  </descriptors>
+  <descriptors name="DynamicMultiprotocolLightSedMinimal" label="Zigbee - SoC DynamicMultiprotocolLightSedMinimal" description="This is a sample application demonstrating a sleepy light application using dynamic multiprotocol (Zigbee + Bluetooth LE) and NVM3 for persistent storage. This application does not use LCD, LEDs or buttons.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.zigbee.app.framework.scenarios.multiprotocol.DynamicMultiprotocolLightSed.DynamicMultiprotocolLightSedMinimal.slcp"/>
+    <properties key="projectFilePaths" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLightSed/DynamicMultiprotocolLightSedMinimal.slcp"/>
+    <properties key="readmeFiles" value="app/framework/scenarios/multiprotocol/DynamicMultiprotocolLightSed/readme.html"/>
+    <properties key="boardCompatibility" value="brd4188a brd4188b brd4194a brd4304a brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4316a brd4317a brd4319a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Zigbee Application"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Capability|Multiprotocol Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth Wireless\ Technology|Zigbee"/>
+  </descriptors>
+  <descriptors name="XncpLedHost" label="Zigbee - Host XncpLedHost" description="This is a demonstration of a UNIX HOST controlling an LED on an NCP.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.zigbee.app.framework.scenarios.xncp.XncpLed.XncpLedHost.slcp"/>
+    <properties key="projectFilePaths" value="app/framework/scenarios/xncp/XncpLed/XncpLedHost.slcp"/>
+    <properties key="readmeFiles" value="app/framework/scenarios/xncp/XncpLed/readme.html"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*host.*"/>
+    <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc"/>
+    <properties key="category" value="Zigbee Host Application"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|Host Project\ Difficulty|Advanced Wireless\ Technology|Zigbee"/>
+  </descriptors>
+  <descriptors name="Z3Gateway" label="Zigbee - Host Gateway" description="This is a Zigbee 3.0 gateway application for a Unix host.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.zigbee.app.framework.scenarios.z3.Z3Gateway.Z3Gateway.slcp"/>
+    <properties key="projectFilePaths" value="app/framework/scenarios/z3/Z3Gateway/Z3Gateway.slcp"/>
+    <properties key="readmeFiles" value="app/framework/scenarios/z3/Z3Gateway/readme.html"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*host.*"/>
+    <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc"/>
+    <properties key="category" value="Zigbee Host Application"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|Host Project\ Difficulty|Beginner Wireless\ Technology|Zigbee"/>
+  </descriptors>
+  <descriptors name="Z3GatewayGPCombo" label="Zigbee - Host GatewayGPCombo" description="This is a Zigbee 3.0 gateway Green Power Combo application for a Unix host.  &#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.zigbee.app.framework.scenarios.z3.Z3GatewayGPCombo.Z3GatewayGPCombo.slcp"/>
+    <properties key="projectFilePaths" value="app/framework/scenarios/z3/Z3GatewayGPCombo/Z3GatewayGPCombo.slcp"/>
+    <properties key="readmeFiles" value="app/framework/scenarios/z3/Z3GatewayGPCombo/readme.html"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*host.*"/>
+    <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc"/>
+    <properties key="category" value="Zigbee Host Application"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|Host Project\ Difficulty|Advanced Wireless\ Technology|Zigbee"/>
+  </descriptors>
+  <descriptors name="Z3Light" label="Zigbee - SoC Light" description="This is a Zigbee 3.0 light application using NVM3 as the persistent storage.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.zigbee.app.framework.scenarios.z3.Z3Light.Z3Light.slcp"/>
+    <properties key="projectFilePaths" value="app/framework/scenarios/z3/Z3Light/Z3Light.slcp"/>
+    <properties key="readmeFiles" value="app/framework/scenarios/z3/Z3Light/readme.html"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd2703a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4166c brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4183a brd4183c brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4194a brd4195a brd4196a brd4197a brd4304a brd4305d brd4305e brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4311b brd4316a brd4317a brd4319a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Zigbee Application"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Zigbee"/>
+  </descriptors>
+  <descriptors name="Z3LightGPCombo" label="Zigbee - SoC LightGPCombo" description="This is a Zigbee 3.0 light application with Green Power endpoint, Green Power Proxy and Sink functionality.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.zigbee.app.framework.scenarios.z3.Z3LightGPCombo.Z3LightGPCombo.slcp"/>
+    <properties key="projectFilePaths" value="app/framework/scenarios/z3/Z3LightGPCombo/Z3LightGPCombo.slcp"/>
+    <properties key="readmeFiles" value="app/framework/scenarios/z3/Z3LightGPCombo/readme.html"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd2703a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4166c brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4183a brd4183c brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188b brd4190a brd4194a brd4195a brd4196a brd4197a brd4304a brd4305d brd4305e brd4306d brd4308a brd4308c brd4308d brd4309a brd4309b brd4311b brd4316a brd4317a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Zigbee Application"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Zigbee"/>
+  </descriptors>
+  <descriptors name="Z3Switch" label="Zigbee - SoC Switch" description="This is a Zigbee 3.0 switch application using NVM3 as the persistent storage.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.zigbee.app.framework.scenarios.z3.Z3Switch.Z3Switch.slcp"/>
+    <properties key="projectFilePaths" value="app/framework/scenarios/z3/Z3Switch/Z3Switch.slcp"/>
+    <properties key="readmeFiles" value="app/framework/scenarios/z3/Z3Switch/readme.html"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd2703a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4166c brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4183a brd4183c brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4194a brd4195a brd4196a brd4197a brd4304a brd4305d brd4305e brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4311b brd4316a brd4317a brd4319a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*rm21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Zigbee Application"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Zigbee"/>
+  </descriptors>
+  <descriptors name="Z3SwitchWithVoice" label="Zigbee - SoC SwitchWithVoice" description="Zigbee 3.0 Switch with Voice&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.zigbee.app.framework.scenarios.z3.Z3SwitchWithVoice.Z3SwitchWithVoice.slcp"/>
+    <properties key="projectFilePaths" value="app/framework/scenarios/z3/Z3SwitchWithVoice/Z3SwitchWithVoice.slcp"/>
+    <properties key="readmeFiles" value="app/framework/scenarios/z3/Z3SwitchWithVoice/readme.html"/>
+    <properties key="boardCompatibility" value="brd2601b com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32mg24.*"/>
+    <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc"/>
+    <properties key="category" value="Zigbee Application"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Capability|Machine\ Learning Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Zigbee"/>
+  </descriptors>
+  <descriptors name="ZigbeeMinimal" label="Zigbee - SoC ZigbeeMinimal" description="This is a Zigbee minimal SoC network-layer application suitable as a  starting point for new application development.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.zigbee.app.framework.scenarios.z3.ZigbeeMinimal.ZigbeeMinimal.slcp"/>
+    <properties key="projectFilePaths" value="app/framework/scenarios/z3/ZigbeeMinimal/ZigbeeMinimal.slcp"/>
+    <properties key="readmeFiles" value="app/framework/scenarios/z3/ZigbeeMinimal/readme.html"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd2703a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4166c brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4183a brd4183c brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4194a brd4195a brd4196a brd4197a brd4304a brd4305d brd4305e brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4311b brd4316a brd4317a brd4319a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Zigbee Application"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Zigbee"/>
+  </descriptors>
+  <descriptors name="ZigbeeMinimalHost" label="Zigbee - Host ZigbeeMinimalHost" description="This is a minimal Zigbee 3.0 gateway application for a Unix host, providing only network-layer functionality and requiring the addition of application-layer  functionality.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.zigbee.app.framework.scenarios.z3.ZigbeeMinimalHost.ZigbeeMinimalHost.slcp"/>
+    <properties key="projectFilePaths" value="app/framework/scenarios/z3/ZigbeeMinimalHost/ZigbeeMinimalHost.slcp"/>
+    <properties key="readmeFiles" value="app/framework/scenarios/z3/ZigbeeMinimalHost/readme.html"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*host.*"/>
+    <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc"/>
+    <properties key="category" value="Zigbee Application"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|Host Project\ Difficulty|Advanced Wireless\ Technology|Zigbee"/>
+  </descriptors>
+  <descriptors name="StandardizedRfTesting" label="Zigbee - SoC StandardizedRfTesting" description="This is a pre-standardization implementation of Zigbee's RF testing standard.  It utilizes the TIS (Total Isotropic Sensitivity)/ TRP (Total Radiated Power)  testing interfaces and is optional for Zigbee certifications. This application adheres to the Zigbee RF Performance Test Spec v1.0.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.zigbee.app.framework.scenarios.zha.StandardizedRfTesting.StandardizedRfTesting.slcp"/>
+    <properties key="projectFilePaths" value="app/framework/scenarios/zha/StandardizedRfTesting/StandardizedRfTesting.slcp"/>
+    <properties key="readmeFiles" value="app/framework/scenarios/zha/StandardizedRfTesting/readme.html"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd2703a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4166c brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4183a brd4183c brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4194a brd4195a brd4196a brd4197a brd4304a brd4305d brd4305e brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4311b brd4316a brd4317a brd4319a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Zigbee Application"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Zigbee"/>
+  </descriptors>
+  <descriptors name="gpd-sensor" label="Zigbee - SoC GPD Sensor" description="This is a Green Power Sensor Device that pairs with a GP Combo or Sink device and sends gpd reports periodically.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.zigbee.app.gpd.sample-app.gpd-sensor.gpd-sensor.slcp"/>
+    <properties key="projectFilePaths" value="app/gpd/sample-app/gpd-sensor/gpd-sensor.slcp"/>
+    <properties key="readmeFiles" value="app/gpd/sample-app/gpd-sensor/readme.html"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd2703a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4166c brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4183a brd4183c brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4194a brd4195a brd4196a brd4197a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Zigbee Application"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Zigbee"/>
+  </descriptors>
+  <descriptors name="gpd-switch" label="Zigbee - SoC GPD Switch" description="This is a Green Power On/Off Switch Device that pairs with a GP Combo or Sink Light and controls its operation.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.zigbee.app.gpd.sample-app.gpd-switch.gpd-switch.slcp"/>
+    <properties key="projectFilePaths" value="app/gpd/sample-app/gpd-switch/gpd-switch.slcp"/>
+    <properties key="readmeFiles" value="app/gpd/sample-app/gpd-switch/readme.html"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd2703a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4166c brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4183a brd4183c brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4194a brd4195a brd4196a brd4197a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Zigbee Application"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Zigbee"/>
+  </descriptors>
+  <descriptors name="mp-ncp-spi" label="Zigbee - NCP mp-ncp-spi" description="The multi-PAN application provides support to form two personal area networks  on same channel on single radio. This multi-PAN network coprocessor (NCP)  application supports communication with a host application over a SPI interface.  This NCP application can be built as configured, or optionally can be augmented  with customized extensions for initialization, main loop processing, event  definition/handling, and messaging with the host.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.zigbee.app.ncp.sample-app.mp-ncp-spi.mp-ncp-spi.slcp"/>
+    <properties key="projectFilePaths" value="app/ncp/sample-app/mp-ncp-spi/mp-ncp-spi.slcp"/>
+    <properties key="readmeFiles" value="app/ncp/sample-app/mp-ncp-spi/readme.html"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd2703a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4166c brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4183a brd4183c brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4194a brd4195a brd4196a brd4197a brd4304a brd4305d brd4305e brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4311b brd4316a brd4317a brd4319a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Zigbee Application"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|NCP Project\ Difficulty|Advanced Wireless\ Technology|Zigbee"/>
+  </descriptors>
+  <descriptors name="mp-ncp-uart-hw" label="Zigbee - NCP mp-ncp-uart-hw" description="The multi-PAN application provides support to form two personal area networks  on same channel on single radio. This multi-PAN network coprocessor (NCP)  application supports communication with a host application over a UART  interface with hardware flow control. This NCP application can be built as  configured, or optionally can be augmented with customized extensions for  initialization, main loop processing, event definition/handling, and messaging  with the host.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.zigbee.app.ncp.sample-app.mp-ncp-uart-hw.mp-ncp-uart-hw.slcp"/>
+    <properties key="projectFilePaths" value="app/ncp/sample-app/mp-ncp-uart-hw/mp-ncp-uart-hw.slcp"/>
+    <properties key="readmeFiles" value="app/ncp/sample-app/mp-ncp-uart-hw/readme.html"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd2703a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4166c brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4183a brd4183c brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4194a brd4195a brd4196a brd4197a brd4304a brd4305d brd4305e brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4311b brd4316a brd4317a brd4319a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Zigbee Application"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|NCP Project\ Difficulty|Advanced Wireless\ Technology|Zigbee"/>
+  </descriptors>
+  <descriptors name="ncp-spi" label="Zigbee - NCP ncp-spi" description="This network coprocessor (NCP) application supports communication with a host application over a SPI interface.  This NCP application can be built as configured, or optionally can be augmented with customized extensions for initialization, main loop processing, event definition/handling, and messaging with the host.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.zigbee.app.ncp.sample-app.ncp-spi.ncp-spi.slcp"/>
+    <properties key="projectFilePaths" value="app/ncp/sample-app/ncp-spi/ncp-spi.slcp"/>
+    <properties key="readmeFiles" value="app/ncp/sample-app/ncp-spi/readme.html"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd2703a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4166c brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4183a brd4183c brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4194a brd4195a brd4196a brd4197a brd4304a brd4305d brd4305e brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4311b brd4316a brd4317a brd4319a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Zigbee Application"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Zigbee"/>
+  </descriptors>
+  <descriptors name="ncp-uart-hw-gp-multi-rail" label="Zigbee - NCP ncp-uart-hw-gp-multi-rail" description="This network co-processor (NCP) application uses the multiple RAIL demo component (multirail-demo), which uses the second RAIL handle to schedule a pre-configured outgoing Green Power device frame (GPDF) in response to an incoming bidirectional GPDF with its rx-after-tx bit set.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.zigbee.app.ncp.sample-app.ncp-uart-hw-gp-multi-rail.ncp-uart-hw-gp-multi-rail.slcp"/>
+    <properties key="projectFilePaths" value="app/ncp/sample-app/ncp-uart-hw-gp-multi-rail/ncp-uart-hw-gp-multi-rail.slcp"/>
+    <properties key="readmeFiles" value="app/ncp/sample-app/ncp-uart-hw-gp-multi-rail/readme.html"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd2703a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4166c brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4183a brd4183c brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4194a brd4195a brd4196a brd4197a brd4304a brd4305d brd4305e brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4311b brd4316a brd4317a brd4319a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Zigbee Application"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|NCP Project\ Difficulty|Advanced Wireless\ Technology|Zigbee"/>
+  </descriptors>
+  <descriptors name="ncp-uart-hw" label="Zigbee - NCP ncp-uart-hw" description="This network coprocessor (NCP) application supports communication with a host application over a UART interface with hardware flow control. This NCP application can be built as configured, or optionally can be augmented with customized extensions for initialization, main loop processing, event definition/handling, and messaging with the host.&#xA;Steps to create a ECC enabled application for Smart Energy Profile application: 1) Download the side package 'EmberZnet-Smart-Energy.zip' 2) Extract the side package over installed SDK. 3) Enable 'CBKE 163k1' and/or 'CBKE 283k1' components depending on the use case. 4) Build the application.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.zigbee.app.ncp.sample-app.ncp-uart-hw.ncp-uart-hw.slcp"/>
+    <properties key="projectFilePaths" value="app/ncp/sample-app/ncp-uart-hw/ncp-uart-hw.slcp"/>
+    <properties key="readmeFiles" value="app/ncp/sample-app/ncp-uart-hw/readme.html"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd2703a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4166c brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4183a brd4183c brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4194a brd4195a brd4196a brd4197a brd4304a brd4305d brd4305e brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4311b brd4316a brd4317a brd4319a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Zigbee Application"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|NCP Project\ Difficulty|Advanced Wireless\ Technology|Zigbee"/>
+  </descriptors>
+  <descriptors name="xncp-led-ncp" label="Zigbee - NCP xncp-led-ncp" description="An extensible network co-processor (xNCP) application with an LED controlled by a HOST.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.zigbee.app.ncp.sample-app.xncp-led.xncp-led-ncp.slcp"/>
+    <properties key="projectFilePaths" value="app/ncp/sample-app/xncp-led/xncp-led-ncp.slcp"/>
+    <properties key="readmeFiles" value="app/ncp/sample-app/xncp-led/readme.html"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd2703a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4166c brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4180z brd4181a brd4181b brd4181c brd4182a brd4183a brd4183c brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4194a brd4195a brd4196a brd4197a brd4304a brd4305d brd4305e brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4311b brd4316a brd4317a brd4319a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Zigbee Application"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|NCP Project\ Difficulty|Advanced Wireless\ Technology|Zigbee"/>
+  </descriptors>
+  <descriptors name="zigbeed" label="Zigbee - Host zigbeed" description="Zigbeed is a Zigbee Stack daemon that runs on a Linux host processor. It communicates with an 802.15.4 RCP via CPCd, and exposes an EZSP interface to a Zigbee host app. See AN1333 for more information.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="protocol.zigbee.app.zigbeed.zigbeed.slcp"/>
+    <properties key="projectFilePaths" value="app/zigbeed/zigbeed.slcp"/>
+    <properties key="readmeFiles" value="app/zigbeed/readme.html"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*host.*"/>
+    <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc"/>
+    <properties key="category" value="Zigbee Host Application"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Capability|Multiprotocol Device\ Type|Host Project\ Difficulty|Beginner Wireless\ Technology|Zigbee"/>
+  </descriptors>
+</model:MDescriptors>

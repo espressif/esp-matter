@@ -1,0 +1,23 @@
+!!omap
+- id: MGM13S12F512GN_config
+- label: MGM13S12F512GN config
+- description: Configuration files for MGM13S12F512GN
+- package: platform
+- category: Platform|Device|MGM13|Config
+- quality: production
+- ui_hints:
+    visibility: never
+- root_path: hardware/module/config
+- requires:
+  - name: mgm13s12f512gn
+- provides:
+  - name: MGM13S12F512GN_config
+- config_file:
+  - override:
+      component: rail_util_pa
+      file_id: rail_util_pa_config
+    path: MGM13S12F512GN/sl_rail_util_pa_config.h
+  - override:
+      component: device_init_hfxo
+      file_id: device_init_hfxo_config
+    path: MGM13S12F512GN/sl_device_init_hfxo_config.h

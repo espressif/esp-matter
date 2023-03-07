@@ -1,0 +1,131 @@
+project_name: "Z3Light"
+label: "Zigbee - SoC Light"
+package: "Zigbee"
+category: "Zigbee Application"
+quality: "production"
+
+description: >
+  This is a Zigbee 3.0 light application using NVM3 as the persistent storage.
+author: "Silicon Laboratories, Inc."
+
+component:
+  - id: "cli"
+    instance:
+    - example
+  - id: "iostream_usart"
+    instance:
+      - vcom
+  - id: "zigbee_debug_print"
+  - id: "zigbee_pro_stack"
+  - id: "zigbee_source_route"
+  - id: "zigbee_binding_table"
+  - id: "zigbee_stack_diagnostics"
+  - id: "zigbee_gp"
+  - id: "zigbee_install_code"
+  - id: "zigbee_zll"
+  - id: "zigbee_zcl_framework_core"
+  - id: "zigbee_color_control_server"
+  - id: "zigbee_groups_server"
+  - id: "zigbee_identify"
+  - id: "zigbee_level_control"
+  - id: "zigbee_on_off"
+  - id: "zigbee_zll_on_off_server"
+  - id: "zigbee_counters"
+  - id: "zigbee_find_and_bind_target"
+  - id: "zigbee_green_power_common"
+  - id: "zigbee_green_power_client"
+  - id: "zigbee_interpan"
+  - id: "zigbee_zll_commissioning_common"
+  - id: "zigbee_zll_commissioning_server"
+  - id: "zigbee_network_creator"
+  - id: "zigbee_network_creator_security"
+  - id: "zigbee_network_steering"
+  - id: "zigbee_reporting"
+  - id: "zigbee_zll_identify_server"
+  - id: "zigbee_zll_level_control_server"
+  - id: "zigbee_scenes"
+  - id: "zigbee_zll_scenes_server"
+  - id: "zigbee_basic"
+  - id: "zigbee_zll_utility_server"
+  - id: "zigbee_scan_dispatch"
+  - id: "zigbee_update_tc_link_key"
+  - id: "zigbee_debug_basic"
+  # -- LEDs and Buttons GPIO Conflcit Note --
+  # Some of the development boards (and modules) have limited GPIO to be used by
+  # appplication and share the exact same port/pin definition between leds and
+  # buttons. These are defined in the board configuration as indexed instances.
+  # The simple_led and simple_button components instantiate the same order of
+  # configuration from boards. So led0 and btn0 instances end up using the same
+  # GPIO configuration in that case. To avoid this conflict, in this slcp, led0
+  # and btn1 are instanciated (and not led0 and btn0) as default instances.
+  - id: simple_led
+    instance:
+      - led0
+  - id: simple_button
+    instance:
+      - btn1
+  # -- End of LED and BUtton GPIO Conflcit Note --
+  - id: "zigbee_application_bootloader"
+
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: SL_IOSTREAM_USART_VCOM_FLOW_CONTROL_TYPE
+    value: usartHwFlowControlCtsAndRts
+  - name: SL_CLI_MAX_INPUT_ARGUMENTS
+    value: 16
+  - name: SLI_ZIGBEE_PRIMARY_NETWORK_DEVICE_TYPE
+    value: SLI_ZIGBEE_NETWORK_DEVICE_TYPE_ROUTER
+  - name: SLI_ZIGBEE_PRIMARY_NETWORK_SECURITY_TYPE
+    value: SLI_ZIGBEE_NETWORK_SECURITY_TYPE_3_0
+  - name: SL_CLI_PROMPT_STRING
+    value:  "\"Z3Light>\""
+  - name: NVM3_DEFAULT_NVM_SIZE
+    value: 36864
+    condition:
+      - device_series_1
+  - name: NVM3_DEFAULT_NVM_SIZE
+    value: 32768
+    condition:
+      - device_series_2
+
+source:
+  - path: "main.c"
+  - path: "app.c"
+
+config_file:
+  - path: "config/zcl/zcl_config.zap"
+    file_id: zap_configuration_file_id
+    directory: "zcl"
+
+include:
+  - path: "./"
+
+# Use CUSTOM_TOKEN_HEADER macro to point to custom token definitions (optional)
+# - name: "CUSTOM_TOKEN_HEADER"
+#    value: "\"example_custom_tokens.h\""
+
+# Use CUSTOM_MFG_TOKEN_HEADER macro to point to custom manufacturing token
+# definitions (optional)
+# - name: "CUSTOM_MFG_TOKEN_HEADER"
+#    value: "\"example_custom_mfg_tokens.h\""
+
+tag:
+  - prebuilt_demo
+
+readme:
+  - path: ./readme.html
+
+ui_hints:
+  highlight:
+    - path: readme.html
+      focus: false
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Zigbee"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]
+

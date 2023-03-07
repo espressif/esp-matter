@@ -1,0 +1,21 @@
+id: lwip_app_sntp
+label: "sntp"
+pretty_name : "LWIP sntp high layer application"
+package: platform
+description: >
+    LWIP sntp high layer application specifically programmed with the lwIP low-level raw API.
+category: LwIP|apps
+quality: production
+provides:
+  - name: lwip_apps
+    allow_multiple: true
+  - name: lwip_app_sntp
+requires:
+  - name: lwip_core
+source:
+  - path: util/third_party/lwip/lwip/src/apps/sntp/sntp.c
+include:  
+  - path: util/third_party/lwip/lwip/src/include
+    file_list:
+    - path: lwip/apps/sntp.h
+    - path: lwip/apps/sntp_opts.h

@@ -1,0 +1,13 @@
+package/package.bld.xml
+package/build.cfg
+package/package.xdc.inc
+boot.asm
+auto_init.asm
+clang_startup.c
+boot_cortex_m.c
+package/package.cfg.xdc.inc
+lib/ti.targets.arm.rtsarm.aem4
+lib/boot.aem4
+lib/auto_init.aem4
+lib/ti.targets.arm.rtsarm.am4
+lib/startup.am4

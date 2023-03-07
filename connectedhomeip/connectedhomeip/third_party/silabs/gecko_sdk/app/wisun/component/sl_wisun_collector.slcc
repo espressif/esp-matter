@@ -1,0 +1,99 @@
+id: "sl_wisun_collector"
+label: "Collector application"
+package: "wisun"
+description: "This component containes the common source of Wi-SUN Collector applications.
+The component provides the CoAP sources as well for Wi-SUN - SoC CoAP Collector app.
+There is an additional config file for CoAP collector too, according to the reqired CoAP component, it is included also."
+category: "Wi-SUN|Application"
+quality: "production"
+root_path: "app/wisun/component/meter_collector_common"
+provides:
+  - name: sl_wisun_collector
+
+source:
+  - path: "sli_wisun_meter_collector.c"
+  - path: "sl_wisun_collector.c"
+  - path: "sl_wisun_coap_collector.c"
+    condition:
+      - "sl_wisun_coap"
+  - path: "sl_wisun_collector_cli.c"
+    condition:
+      - "sl_wisun_app_cli"
+  - path: "sl_wisun_coap_collector_cli.c"
+    condition:
+      - "sl_wisun_app_cli"
+      - "sl_wisun_coap"
+
+include:
+  - path: "."
+    file_list:
+    - path: "sli_wisun_meter_collector.h"
+    - path: "sl_wisun_collector.h"
+    - path: "sl_wisun_coap_collector.h"
+      condition:
+        - "sl_wisun_coap"
+
+config_file:
+  - path: "config/sl_wisun_meter_collector_config.h"
+  - path: "config/sl_wisun_collector_config.h"
+  - path: "config/sl_wisun_coap_meter_collector_config.h"
+    condition:
+      - "sl_wisun_coap"
+
+requires:
+  - name: "sl_wisun_socket"
+  - name: "sl_wisun_app_core"
+
+ui_hints:
+  visibility: never  
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+
+  - name: "cli_group"
+    value:
+      name: "wisun"
+      help: "Wi-SUN commands"
+      shortcuts:
+        - name: "w"
+
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "register_meter"
+      handler: "app_register_meter"
+      help: "Register meter for measurement loop"
+      shortcuts:
+        - name: "a"
+      argument:
+        - type: string
+          help: "Meter address"
+
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "remove_meter"
+      handler: "app_remove_meter"
+      help: "Remove meter from measurement loop"
+      shortcuts:
+        - name: "a"
+      argument:
+        - type: string
+          help: "Meter address"
+
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "led_toggle"
+      handler: "app_led_toggle"
+      help: "Toggle LED on remote meter"
+      shortcuts:
+        - name: "l"
+      argument:
+        - type: string
+          help: "Meter address"
+        - type: uint8
+          help: "LED ID, it can be '0' or '1'"
+
+  - name: component_catalog
+    value: wisun_collector

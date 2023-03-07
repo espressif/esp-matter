@@ -1,0 +1,10 @@
+package/lib/lib/ticlang/m4/slnetsock_debug/slnetutils.om4: slnetutils.c /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/unistd.h slnetutils.h slnetif.h slneterr.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/types.h slnetsock.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/_internal.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/time.h 
+slnetutils.c:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/unistd.h:
+slnetutils.h:
+slnetif.h:
+slneterr.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/types.h:
+slnetsock.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/_internal.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/time.h:

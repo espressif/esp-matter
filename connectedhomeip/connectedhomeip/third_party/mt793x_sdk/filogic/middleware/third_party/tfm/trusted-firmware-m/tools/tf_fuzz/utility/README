@@ -1,0 +1,15 @@
+.../tf_fuzz/utility directory contents:
+
+compute.cpp      find_or_create_asset.hpp  randomization.cpp  string_ops.hpp
+compute.hpp      gibberish.cpp             randomization.hpp
+data_blocks.cpp  gibberish.hpp             Source.cpp
+data_blocks.hpp  interactive.c             string_ops.cpp
+
+--------------------------------------------------------------------------------
+
+As its name implies, this .../utility directory just contains various utility-
+compute "stuff."
+
+--------------
+
+*Copyright (c) 2019-2020, Arm Limited. All rights reserved.*

@@ -1,0 +1,20 @@
+id: zw_cc_multilevelsensor
+label: Multilevel sensor Command Class
+category: Z-Wave|Command Classes
+description: >
+  Multilevel Sensor Command Class  is used to advertise numerical sensor readings.
+package: Z-Wave
+quality: production
+source:
+  - path: protocol/z-wave/ZAF/CommandClasses/MultilevelSensor/CC_MultilevelSensor_Support.c
+  - path: protocol/z-wave/ZAF/CommandClasses/MultilevelSensor/CC_MultilevelSensor_SensorHandlerTypes.c
+  - path: protocol/z-wave/ZAF/CommandClasses/MultilevelSensor/CC_MultilevelSensor_SensorHandler.c
+include:
+  - path: protocol/z-wave/ZAF/CommandClasses/MultilevelSensor/
+    file_list:
+     - path: CC_MultilevelSensor_Support.h
+     - path: CC_MultilevelSensor_SensorHandlerTypes.h
+     - path: CC_MultilevelSensor_SensorHandler.h
+     - path: CC_MultilevelSensor_Configuration.h
+provides:
+  - name: zw_cc_multilevelsensor

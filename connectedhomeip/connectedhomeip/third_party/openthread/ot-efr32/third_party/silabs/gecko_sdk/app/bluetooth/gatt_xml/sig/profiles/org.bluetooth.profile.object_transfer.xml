@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2016 Bluetooth SIG, Inc. All rights reserved. -->
+<Profile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/profile.xsd"
+  name="Object Transfer"
+  type="org.bluetooth.profile.object_transfer">
+  <InformativeText>
+    <Abstract>This Bluetooth profile defines fundamental requirements to enable an Object Client to create and delete objects and to execute a variety of actions using the currently selected object such as reading object data from or writing object data to an Object Server that exposes the Object Transfer Service. This profile is designed to be referenced by a higher layer specification to enable a variety of object transfer use cases.</Abstract>
+    <InformativeDisclaimer />
+    <Summary>The Object Transfer Profile defines fundamental requirements to enable an Object Client to create and delete objects and to execute a variety of actions using the currently selected object such as reading object data from or writing object data to an Object Server that exposes the Object Transfer Service. This profile is designed to be referenced by a higher layer specification to enable a variety of object transfer use cases.</Summary>
+    <Examples />
+  </InformativeText>
+  <Role
+    name="Object Server">
+    <Service
+      type="org.bluetooth.service.object_transfer">
+      <Declaration>PrimaryOfSecondary</Declaration>
+      <Requirement>Mandatory</Requirement>
+    </Service>
+  </Role>
+  <Role
+    name="Object Client">
+    <Client
+      type="org.bluetooth.service.object_transfer">
+      <Requirement>Mandatory</Requirement>
+    </Client>
+  </Role>
+</Profile>

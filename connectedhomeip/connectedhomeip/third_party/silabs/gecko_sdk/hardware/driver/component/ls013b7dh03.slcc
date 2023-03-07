@@ -1,0 +1,15 @@
+id: ls013b7dh03
+package: platform
+label: Monochrome Sharp Memory LCD
+description: >
+  Driver for Sharp Memory LCD LS013B7DH03. This display is a 128x128 monochrome display.
+category: Platform|Board Drivers
+quality: production
+root_path: hardware/driver
+include:
+  - path: memlcd/src/ls013b7dh03
+    file_list:
+      - path: sl_memlcd_display.h
+provides:
+  - name: ls013b7dh03
+  - name: memlcd_screen

@@ -1,0 +1,56 @@
+
+SIMPLELINK_CC32XX_SDK_INSTALL_DIR ?= $(abspath ../../../../../..)
+
+include $(SIMPLELINK_CC32XX_SDK_INSTALL_DIR)/imports.mak
+
+ROOT=$(SIMPLELINK_CC32XX_SDK_INSTALL_DIR)/source/ti/net/ota
+
+#
+# Source path
+#
+VPATH = $(ROOT)/source:$(ROOT)/source/CdnVendors
+
+CC = "$(CCS_ARMCOMPILER)/bin/armcl"
+AR = "$(CCS_ARMCOMPILER)/bin/armar"
+
+STDINC = "$(CCS_ARMCOMPILER)/include"
+
+#
+# Include path
+#
+IPATH  = -I$(ROOT)
+IPATH += -I$(ROOT)/source
+IPATH += -I$(ROOT)/source/CdnVendors
+IPATH += -I$(ROOT)/../../../
+IPATH += -I$(ROOT)/../../drivers/net/wifi
+ifdef SIMPLELINK_MSP432_SDK_INSTALL_DIR
+IPATH += -I$(SIMPLELINK_MSP432_SDK_INSTALL_DIR)/source
+endif
+IPATH += -I$(STDINC)
+
+CFLAGS = -c -qq -pdsw225 -ms -g --endian=little -mv7M4 --float_support=vfplib --symdebug:dwarf -I$(IPATH)
+
+CFILES = \
+    CdnClient.c \
+    OtaArchive.c \
+    OtaHttpClient.c \
+    OtaJson.c \
+    OtaLib.c \
+    CdnDropboxV2.c \
+    CdnGithub.c
+
+OBJCFILES = $(CFILES:.c=.obj)
+
+ota.a: $(OBJCFILES)
+	@ echo ar $@ ...
+	@ $(RM) $@ > $(DEVNULL) 2>&1
+	@ $(AR) rq $@ $(OBJCFILES)
+
+%.obj:%.c
+	@ echo cc $@ ...
+	@ $(CC) $(CFLAGS) $<
+
+clean:
+	@ echo cleaning ...
+	@ $(RM) *.obj > $(DEVNULL) 2>&1
+	@ $(RM) *.a > $(DEVNULL) 2>&1

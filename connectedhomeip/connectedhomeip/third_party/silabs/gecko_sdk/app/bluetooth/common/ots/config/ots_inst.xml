@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<gatt>
+  <!--Object Transfer Service {{instance}} Capabilities-->
+  <capabilities_declare>
+    <capability enable="false">ots_{{instance}}_capability_support_multiple_objects</capability>
+    <capability enable="false">ots_{{instance}}_capability_support_object_first_created</capability>
+    <capability enable="false">ots_{{instance}}_capability_support_object_last_modified</capability>
+    <capability enable="false">ots_{{instance}}_capability_support_object_changed</capability>
+    <capability enable="false">ots_{{instance}}_capability_support_object_list_filter</capability>
+  </capabilities_declare>
+  <!--Object Transfer Service-->
+  <service advertise="false" id="ots_{{instance}}" name="Object Transfer Service" requirement="mandatory" sourceId="org.bluetooth.service.object_transfer" type="primary" uuid="1825">
+    <informativeText>This service provides management and control features supporting bulk data transfers that occur via a separate L2CAP connection-oriented channel. The Client is enabled to create and delete objects and to execute actions using the currently selected object. The selected object can be written, updated, or read via an Object Transfer Channel opened by the Client. The generation of a checksum covering a part or the whole of the object's contents is included as an optional feature. This service provides a general method for a Client to select and initiate the transfer of any type of object.</informativeText>
+    
+    <!--OTS Feature-->
+    <characteristic const="false" id="ots_{{instance}}_ots_feature" name="OTS Feature" sourceId="org.bluetooth.characteristic.ots_feature" uuid="2ABD">
+      <informativeText>The OTS Feature characteristic exposes which optional features are supported by the Server implementation. The first half contains a bitfield of OACP Features, and the second part contains a bitfield of OLCP Features. The first 4 byte unsigned value declares support for OACP Create Op Code (bit 0), OACP Delete Op Code (bit 1), OACP Calculate Checksum Op Code (bit 2), OACP Execute Op Code (bit 3), OACP Read Op Code (bit 4), OACP Write Op Code (bit 5), OACP Write Op Code (bit 5), Appending Additional Data to Objects (bit 6), Truncation of Objects (bit 7), Patching of Objects (bit 8), OACP Abort Op Code (bit 9). The second 4 byte unsigned value declares support for OLCP Go To Op Code (bit 0), OLCP Order Op Code (bit 1), OLCP Request Number of Objects Op Code (bit 2), OLCP Clear Marking Op Code (bit 3).</informativeText>
+      <value type="user" length="8" variable_length="false"/>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="true"/>
+      </properties>
+    </characteristic>
+    
+    <!--Object Name-->
+    <characteristic const="false" id="ots_{{instance}}_object_name" name="Object Name" sourceId="org.bluetooth.characteristic.object_name" uuid="2ABE">
+      <informativeText>The Object Name characteristic exposes the name of the Current Object. The Object Name characteristic returns its associated value when read.</informativeText>
+      <value type="user" length="255" variable_length="true"/>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="true"/>
+        <write authenticated="false" bonded="false" encrypted="true"/>
+      </properties>
+    </characteristic>
+    
+    <!--Object Type-->
+    <characteristic const="false" id="ots_{{instance}}_object_type" name="Object Type" sourceId="org.bluetooth.characteristic.object_type" uuid="2ABF">
+      <informativeText>This characteristic exposes the type of the Current Object, identifying the object type by UUID. Contains either a 16-bit or 128-bit UUID that identifies the type of the Current Object.  The Object Client can detect whether a UUID using the 16-bit format (2 octets) or 128-bit format (16 octets) has been received by checking the length of the Object Type characteristic value.</informativeText>
+      <value type="user" length="16" variable_length="true"/>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="true"/>
+      </properties>
+    </characteristic>
+    
+    <!--Object Size-->
+    <characteristic const="false" id="ots_{{instance}}_object_size" name="Object Size" sourceId="org.bluetooth.characteristic.object_size" uuid="2AC0">
+      <informativeText>The Object Size characteristic exposes the current size as well as the allocated size of the Current Object. The value consists of two UINT32 type fields - "Current Size" and "Allocated Size" fields. The value of the Current Size field represents an integer number of octets equal to the actual size of the object. The value of "Current Size" shall be less than or equal to the value of "Allocated Size". The value of the Allocated Size field is equal to the number of octets that have been allocated by the Server for the object's contents. This value indicates the amount of memory the Server has reserved for holding the object's contents.</informativeText>
+      <value type="user" length="8" variable_length="false"/>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="true"/>
+      </properties>
+    </characteristic>
+    
+    <!--Object First-Created-->
+    <characteristic const="false" id="ots_{{instance}}_object_first_created" name="Object First-Created" sourceId="org.bluetooth.characteristic.object_first_created" uuid="2AC1">
+      <informativeText>The Object First-Created characteristic exposes a value representing a date and time when the object contents were first created. The date and time value is represented in Coordinated Universal Time (UTC) according to the Date Time characteristic type (0x2A08).</informativeText>
+      <value type="user" length="7" variable_length="false"/>
+      <capabilities>
+        <capability>ots_{{instance}}_capability_support_object_first_created</capability>
+      </capabilities>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="true"/>
+        <write authenticated="false" bonded="false" encrypted="true"/>
+      </properties>
+    </characteristic>
+    
+    <!--Object Last-Modified-->
+    <characteristic const="false" id="ots_{{instance}}_object_last_modified" name="Object Last-Modified" sourceId="org.bluetooth.characteristic.object_last_modified" uuid="2AC2">
+      <informativeText>The Object Last-Modified characteristic exposes a value representing a date and time when the object content was last modified. The date and time value is represented in Coordinated Universal Time (UTC) according to the Date Time characteristic type (0x2A08).</informativeText>
+      <value type="user" length="7" variable_length="false"/>
+      <capabilities>
+        <capability>ots_{{instance}}_capability_support_object_last_modified</capability>
+      </capabilities>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="true"/>
+        <write authenticated="false" bonded="false" encrypted="true"/>
+      </properties>
+    </characteristic>
+    
+    <!--Object ID-->
+    <characteristic const="false" id="ots_{{instance}}_object_id" name="Object ID" sourceId="org.bluetooth.characteristic.object_id" uuid="2AC3">
+      <informativeText>The Object ID characteristic exposes an integer value which is the Object ID of the Current Object. The Object ID is a LUID (Locally Unique Identifier). The allocated Object ID shall be unique on the Server and shall be a UINT48 value in the range 0x000000000100 to 0xFFFFFFFFFFFF. The value 0x000000000000 is reserved for the Directory Listing Object. The values 0x000000000001 to 0x0000000000FF are reserved for future use.</informativeText>
+      <value type="user" length="6" variable_length="false"/>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="true"/>
+      </properties>
+    </characteristic>
+    
+    <!--Object Properties-->
+    <characteristic const="false" id="ots_{{instance}}_object_properties" name="Object Properties" sourceId="org.bluetooth.characteristic.object_properties" uuid="2AC4">
+      <informativeText>This characteristic exposes a bit field representing the properties of the Current Object. Delete (bit 0), Execute (bit 1), Read (bit 2), Write (bit 3), Append (bit 4), Truncate (bit 5), Patch (bit 6), Mark (bit 7) </informativeText>
+      <value type="user" length="4" variable_length="false"/>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="true"/>
+        <write authenticated="false" bonded="false" encrypted="true"/>
+      </properties>
+    </characteristic>
+    
+    <!--Object Action Control Point-->
+    <characteristic const="false" id="ots_{{instance}}_object_action_control_point" name="Object Action Control Point" sourceId="org.bluetooth.characteristic.object_action_control_point" uuid="2AC5">
+      <informativeText>The Object Client can access procedures on the Current Object by writing the Object Action Control Point (OACP) and receive a response using indications. The value of the Object Action Control Point (OACP) starts with an opcode of UINT8 type that points to the associated procedure. The Opcodes are Create (0x01), Delete (0x02), Calculate Checksum (0x03), Execute (0x04), Read (0x05), Write (0x06), Abort (0x07), Response Code (0x60).</informativeText>
+      <value type="user" length="21" variable_length="true"/>
+      <properties>
+        <write authenticated="false" bonded="false" encrypted="true"/>
+        <indicate authenticated="false" bonded="false" encrypted="true"/>
+      </properties>
+    </characteristic>
+    
+    <!--Object List Control Point-->
+    <characteristic const="false" id="ots_{{instance}}_object_list_control_point" name="Object List Control Point" sourceId="org.bluetooth.characteristic.object_list_control_point" uuid="2AC6">
+      <informativeText>The Object Client can access object selection and listing features by writing the Object List Control Point (OLCP) and get response using indications. The value of the Object List Control Point (OLCP) starts with an opcode of UINT8 type that points to the associated procedure. The Opcodes are First (0x01), Last (0x02), Previous (0x03), Next (0x04), Go To (0x05), Order (0x06), Request Number of Objects (0x07), Clear Marking (0x08), Response Code (0x70).</informativeText>
+      <value type="user" length="7" variable_length="true"/>
+      <capabilities>
+        <capability>ots_{{instance}}_capability_support_multiple_objects</capability>
+      </capabilities>
+      <properties>
+        <write authenticated="false" bonded="false" encrypted="true"/>
+        <indicate authenticated="false" bonded="false" encrypted="true"/>
+      </properties>
+    </characteristic>
+    
+    <!--Object List Filter-->
+    <characteristic const="false" id="ots_{{instance}}_object_list_filter" name="Object List Filter" sourceId="org.bluetooth.characteristic.object_list_filter" uuid="2AC7">
+      <informativeText>The filter conditions defined in this characteristic determine which objects are included in or excluded from the list of objects. The Object List Filter characteristics can modify the behavior of the Object List Control Point. The Object List Filter characteristics thus enable criteria to be set that determine which objects are exposed to the Object Client. The Object List Filter characteristic is a variable length characteristic that contains up to two fields: a Filter field and a Parameter field. The filter field of the UINT8 type defines the filter to apply.</informativeText>
+      <value type="user" length="1" variable_length="false"/>
+      <capabilities>
+        <capability>ots_{{instance}}_capability_support_object_list_filter</capability>
+      </capabilities>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="true"/>
+        <write authenticated="false" bonded="false" encrypted="true"/>
+      </properties>
+    </characteristic>
+    
+    <!--Object Changed-->
+    <characteristic const="false" id="ots_{{instance}}_object_changed" name="Object Changed" sourceId="org.bluetooth.characteristic.object_changed" uuid="2AC8">
+      <informativeText>The Object Changed characteristic enables an Object Client to receive an indication if the contents and/or metadata of one or more objects are changed while the Client is connected without the change being made by an action of the Client itself. This allows the Client to know that the object database has changed while it is connected. A Flags field is included in the characteristic value. This is used to show the nature of the change. Source of Change(bit 0), Change occurred to the object contents (bit 1), Change occurred to the object metadata(bit 2), Object Creation (bit 3), Object Deletion (bit 4).</informativeText>
+      <value type="user" length="7" variable_length="false"/>
+      <capabilities>
+        <capability>ots_{{instance}}_capability_support_object_changed</capability>
+      </capabilities>
+      <properties>
+        <indicate authenticated="false" bonded="false" encrypted="true"/>
+      </properties>
+    </characteristic>
+  </service>
+</gatt>

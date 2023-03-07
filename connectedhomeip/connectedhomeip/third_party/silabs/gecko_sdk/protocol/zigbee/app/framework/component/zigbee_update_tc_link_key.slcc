@@ -1,0 +1,56 @@
+package: Zigbee
+description: This component provides the functionality to update the trust center link
+  key of a device on a Zigbee R21+ network. The device also requests the trust center
+  link key periodically if the trust center is pre-R21. After the trust center is upgraded
+  to R21+, if not already R21+, the periodic request for a trust center link key update
+  passes and the link key is updated.
+label: Update TC Link Key
+quality: production
+id: zigbee_update_tc_link_key
+category: Zigbee|Zigbee 3.0
+provides:
+   - name: "zigbee_update_tc_link_key"
+requires:
+   - name: "zigbee_network_steering"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/update-tc-link-key/config/update-tc-link-key-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/update-tc-link-key/update-tc-link-key.c
+  - path: protocol/zigbee/app/framework/plugin/update-tc-link-key/update-tc-link-key-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/update-tc-link-key/update-tc-link-key-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/update-tc-link-key
+    file_list:
+      - path: update-tc-link-key.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_update_tc_link_key
+  - name: zigbee_stack_callback
+    value:
+      callback_type: zigbee_key_establishment
+      function_name: emberAfPluginUpdateTcLinkKeyZigbeeKeyEstablishmentCallback      
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emAfPluginUpdateTcLinkKeyBeginTcLinkKeyUpdateInit    
+  - name: cli_group
+    value:
+      group: plugin
+      name: update-tc-link-key
+      help: update-tc-link-key related commands
+  - name: cli_command
+    value:
+      group: update-tc-link-key
+      name: timer
+      handler: emberAfPluginSetTCLinkKeyUpdateTimerCommand
+      help: This sets the the amount of time between subsequent trust center link key updates in milliseconds.
+      argument:
+      - type: uint32
+        help: The amount of time between subsequent trust center link key updates in milliseconds
+
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/update-tc-link-key

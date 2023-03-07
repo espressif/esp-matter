@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="com.silabs.sdk.exx32.common.peripheral" label="EFM Peripheral Support" contentRoot="$(sdkInstallationPath:default())/platform/peripheral">
+  <property key="category" value="efm32|Common"/>
+  <folder name="peripheral" uri="src" includeAllFiles="true" />
+  <includePath uri="inc" />
+</project>

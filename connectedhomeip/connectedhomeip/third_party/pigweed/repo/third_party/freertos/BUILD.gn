@@ -1,0 +1,208 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/error.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("freertos.gni")
+
+# This file defines a GN source_set for an external installation of freertos.
+# To use, checkout the freertos source into a directory, then set the build arg
+# dir_pw_third_party_freertos to point to that directory. The freertos library
+# will be available in GN at "$dir_pw_third_party/freertos".
+if (dir_pw_third_party_freertos == "") {
+  group("freertos") {
+  }
+} else if (pw_third_party_freertos_PORT == "") {
+  pw_error("freertos") {
+    message_lines = [
+      "FreeRTOS is being used by $current_toolchain, but pw_third_party_freertos_PORT is not set.",
+      "If this toolchain is intentionally using FreeRTOS, ensure your toolchain configuration for this target sets pw_third_party_freertos_PORT.",
+    ]
+  }
+} else if (pw_third_party_freertos_CONFIG == "") {
+  pw_error("freertos") {
+    message_lines = [
+      "FreeRTOS is being used by $current_toolchain, but pw_third_party_freertos_CONFIG is not set.",
+      "If this toolchain is intentionally using FreeRTOS, ensure your toolchain configuration for this target sets pw_third_party_freertos_CONFIG.",
+    ]
+  }
+} else {
+  config("disable_warnings") {
+    cflags = [
+      "-Wno-unused-parameter",
+      "-Wno-cast-qual",
+      "-Wno-int-in-bool-context",
+    ]
+    visibility = [ ":*" ]
+  }
+
+  config("public_includes") {
+    include_dirs = [ "$dir_pw_third_party_freertos/include" ]
+    visibility = [ ":*" ]
+  }
+
+  pw_source_set("freertos") {
+    public_configs = [ ":public_includes" ]
+    allow_circular_includes_from = [
+      pw_third_party_freertos_PORT,
+      ":freertos_tasks",
+    ]
+    public_deps = [
+      pw_third_party_freertos_CONFIG,
+      pw_third_party_freertos_PORT,
+    ]
+    public = [
+      "$dir_pw_third_party_freertos/include/FreeRTOS.h",
+      "$dir_pw_third_party_freertos/include/StackMacros.h",
+      "$dir_pw_third_party_freertos/include/croutine.h",
+      "$dir_pw_third_party_freertos/include/deprecated_definitions.h",
+      "$dir_pw_third_party_freertos/include/event_groups.h",
+      "$dir_pw_third_party_freertos/include/list.h",
+      "$dir_pw_third_party_freertos/include/message_buffer.h",
+      "$dir_pw_third_party_freertos/include/mpu_prototypes.h",
+      "$dir_pw_third_party_freertos/include/mpu_wrappers.h",
+      "$dir_pw_third_party_freertos/include/portable.h",
+      "$dir_pw_third_party_freertos/include/projdefs.h",
+      "$dir_pw_third_party_freertos/include/queue.h",
+      "$dir_pw_third_party_freertos/include/semphr.h",
+      "$dir_pw_third_party_freertos/include/stack_macros.h",
+      "$dir_pw_third_party_freertos/include/stream_buffer.h",
+      "$dir_pw_third_party_freertos/include/task.h",
+      "$dir_pw_third_party_freertos/include/timers.h",
+    ]
+    configs = [ ":disable_warnings" ]
+    sources = [
+      "$dir_pw_third_party_freertos/croutine.c",
+      "$dir_pw_third_party_freertos/event_groups.c",
+      "$dir_pw_third_party_freertos/list.c",
+      "$dir_pw_third_party_freertos/queue.c",
+      "$dir_pw_third_party_freertos/stream_buffer.c",
+      "$dir_pw_third_party_freertos/timers.c",
+    ]
+    deps = [ ":freertos_tasks" ]
+  }
+
+  # In order to link against internal kernel data structures through the use of
+  # extern "C", statics can be optionally disabled for the tasks.c source file
+  # to enable use of things like pw_thread_freertos/util.h's ForEachThread.
+  config("disable_statics") {
+    cflags = [
+      "-Dstatic=",
+      "-DPW_THIRD_PARTY_FREERTOS_NO_STATICS=1",
+    ]
+    visibility = [ ":*" ]
+  }
+
+  pw_source_set("freertos_tasks") {
+    public_configs = [ ":public_includes" ]
+    configs = [ ":disable_warnings" ]
+    if (pw_third_party_freertos_DISABLE_TASKS_STATICS) {
+      configs += [ ":disable_statics" ]
+    }
+    sources = [ "$dir_pw_third_party_freertos/tasks.c" ]
+    deps = [
+      pw_third_party_freertos_CONFIG,
+      pw_third_party_freertos_PORT,
+    ]
+  }
+
+  # ARM CM7 port of FreeRTOS
+  config("arm_cm7_includes") {
+    include_dirs = [ "$dir_pw_third_party_freertos/portable/GCC/ARM_CM7/r0p1" ]
+    visibility = [ ":arm_cm7" ]
+  }
+
+  pw_source_set("arm_cm7") {
+    public_configs = [
+      ":arm_cm7_includes",
+      ":public_includes",
+    ]
+    public_deps = [ pw_third_party_freertos_CONFIG ]
+    public =
+        [ "$dir_pw_third_party_freertos/portable/GCC/ARM_CM7/r0p1/portmacro.h" ]
+    sources =
+        [ "$dir_pw_third_party_freertos/portable/GCC/ARM_CM7/r0p1/port.c" ]
+    configs = [ ":disable_warnings" ]
+  }
+
+  # ARM CM4F port of FreeRTOS.
+  config("arm_cm4f_includes") {
+    include_dirs = [ "$dir_pw_third_party_freertos/portable/GCC/ARM_CM4F" ]
+    visibility = [ ":arm_cm4f" ]
+  }
+
+  pw_source_set("arm_cm4f") {
+    public_configs = [
+      ":arm_cm4f_includes",
+      ":public_includes",
+    ]
+    public_deps = [ pw_third_party_freertos_CONFIG ]
+    public =
+        [ "$dir_pw_third_party_freertos/portable/GCC/ARM_CM4F/portmacro.h" ]
+    sources = [ "$dir_pw_third_party_freertos/portable/GCC/ARM_CM4F/port.c" ]
+    configs = [ ":disable_warnings" ]
+  }
+
+  # ARM CM3 port of FreeRTOS.
+  config("arm_cm3_includes") {
+    include_dirs = [ "$dir_pw_third_party_freertos/portable/GCC/ARM_CM3" ]
+    visibility = [ ":arm_cm3" ]
+  }
+
+  pw_source_set("arm_cm3") {
+    public_configs = [
+      ":arm_cm3_includes",
+      ":public_includes",
+    ]
+    public_deps = [ pw_third_party_freertos_CONFIG ]
+    public = [ "$dir_pw_third_party_freertos/portable/GCC/ARM_CM3/portmacro.h" ]
+    sources = [ "$dir_pw_third_party_freertos/portable/GCC/ARM_CM3/port.c" ]
+    configs = [ ":disable_warnings" ]
+  }
+
+  # ARM CM0 port of FreeRTOS.
+  config("arm_cm0_includes") {
+    include_dirs = [ "$dir_pw_third_party_freertos/portable/GCC/ARM_CM0" ]
+    visibility = [ ":arm_cm0" ]
+  }
+
+  pw_source_set("arm_cm0") {
+    public_configs = [
+      ":arm_cm0_includes",
+      ":public_includes",
+    ]
+    public_deps = [ pw_third_party_freertos_CONFIG ]
+    public = [ "$dir_pw_third_party_freertos/portable/GCC/ARM_CM0/portmacro.h" ]
+    sources = [ "$dir_pw_third_party_freertos/portable/GCC/ARM_CM0/port.c" ]
+    configs = [ ":disable_warnings" ]
+  }
+}
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("config_assert") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ dir_pw_assert ]
+  public = [ "public/pw_third_party/freertos/config_assert.h" ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}

@@ -1,0 +1,32 @@
+id: "sl_flex_util_ble_protocol"
+label: Flex - RAIL BLE Protocol
+package: "Flex"
+description: Utility to aid with BLE Protocol-Specific Configurations
+category: "Flex|RAIL|Utility"
+quality: production
+root_path: "app/flex/component/rail/sl_flex_util_ble_protocol"
+
+#-------- Hides Component for user in Studio ---------
+ui_hints:
+  visibility: never
+
+requires:
+  - name: rail_lib
+  - name: device_has_radio_2g4hz
+provides:
+  - name: sl_flex_util_ble_protocol
+
+config_file:
+  - path: config/sl_flex_util_ble_protocol_config.h
+
+include:
+  - path: "."
+    file_list:
+      - path: sl_flex_util_ble_protocol.h
+      - path: sl_flex_util_ble_protocol_types.h
+source:
+  - path: sl_flex_util_ble_protocol.c
+
+template_contribution:
+  - name: component_catalog
+    value: sl_flex_util_ble_protocol

@@ -1,0 +1,31 @@
+id: "connect_radio_stream_cli"
+label: "Radio Stream (Cli)"
+package: "Flex"
+category: "Connect"
+quality: "production"
+description: "This component provides Radio Stream CLI commands."
+provides:
+  - name: "connect_radio_stream_cli"
+requires:
+  - name: "connect_radio_stream"
+  - name: "cli"
+  - name: "connect_debug_print"
+source:
+  - path: "protocol/flex/stack-cli/radio-stream-cli.c"
+
+template_contribution:
+  - name: cli_command
+    value:
+      name: start_tx_stream
+      handler: start_tx_stream_command
+      help: "Start RAIL TX stream mode"
+      argument:
+      - type: uint8
+        help: "mode. 0 = PN9, 1 = CW"
+      - type: uint16
+        help: "Channel"
+  - name: cli_command
+    value:
+      name: stop_tx_stream
+      handler: stop_tx_stream_command
+      help: "Stop RAIL TX stream mode"

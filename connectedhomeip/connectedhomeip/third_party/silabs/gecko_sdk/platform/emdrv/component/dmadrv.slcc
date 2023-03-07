@@ -1,0 +1,72 @@
+id: "dmadrv"
+label: "DMADRV"
+package: "platform"
+description: >
+  The Direct Memory Access (DMA) driver is used configure and control the DMA and
+  LDMA peripherals to perform data transfers between memory regions and/or peripherals.
+  The driver handles central management of the DMA channels and interrupt vector which
+  allows sharing DMA resources between several users.
+category: "Platform|Driver"
+quality: "production"
+config_file:
+- path: "platform/emdrv/dmadrv/config/s0_8ch/dmadrv_config.h"
+  condition: [ 'device_sdid_71' ]
+- path: "platform/emdrv/dmadrv/config/s0_12ch/dmadrv_config.h"
+  condition: [ 'device_sdid_72' ]
+- path: "platform/emdrv/dmadrv/config/s0_8ch/dmadrv_config.h"
+  condition: [ 'device_sdid_73' ]
+- path: "platform/emdrv/dmadrv/config/s0_12ch/dmadrv_config.h"
+  condition: [ 'device_sdid_74' ]
+- path: "platform/emdrv/dmadrv/config/s0_4ch/dmadrv_config.h"
+  condition: [ 'device_sdid_76' ]
+- path: "platform/emdrv/dmadrv/config/s0_6ch/dmadrv_config.h"
+  condition: [ 'device_sdid_77' ]
+- path: "platform/emdrv/dmadrv/config/s1_8ch/dmadrv_config.h"
+  condition: [ 'device_sdid_80' ]
+- path: "platform/emdrv/dmadrv/config/s1_8ch/dmadrv_config.h"
+  condition: [ 'device_sdid_84' ]
+- path: "platform/emdrv/dmadrv/config/s1_8ch/dmadrv_config.h"
+  condition: [ 'device_sdid_89' ]
+- path: "platform/emdrv/dmadrv/config/s1_8ch/dmadrv_config.h"
+  condition: [ 'device_sdid_95' ]
+- path: "platform/emdrv/dmadrv/config/s1_24ch/dmadrv_config.h"
+  condition: [ 'device_sdid_100' ]
+- path: "platform/emdrv/dmadrv/config/s1_8ch_tg11/dmadrv_config.h"
+  condition: [ 'device_sdid_103' ]
+- path: "platform/emdrv/dmadrv/config/s1_12ch/dmadrv_config.h"
+  condition: [ 'device_sdid_106' ]
+- path: "platform/emdrv/dmadrv/config/s2_8ch/dmadrv_config.h"
+  condition: [ 'device_sdid_200' ]
+- path: "platform/emdrv/dmadrv/config/s2_8ch/dmadrv_config.h"
+  condition: [ 'device_sdid_205' ]
+- path: "platform/emdrv/dmadrv/config/s2_8ch/dmadrv_config.h"
+  condition: [ 'device_sdid_210' ]
+- path: "platform/emdrv/dmadrv/config/s2_8ch/dmadrv_config.h"
+  condition: [ 'device_sdid_215' ]
+- path: "platform/emdrv/dmadrv/config/s2_16ch/dmadrv_config.h"
+  condition: [ 'device_sdid_220' ]
+- path: "platform/emdrv/dmadrv/config/s2_8ch/dmadrv_config.h"
+  condition: [ 'device_sdid_230' ]
+source:
+- path: "platform/emdrv/dmadrv/src/dmadrv.c"
+- path: "platform/emdrv/dmadrv/src/dmactrl.c"
+  condition: ["device_series_0"]
+include:
+  - path: "platform/emdrv/dmadrv/inc"
+    file_list:
+    - path: "dmadrv.h"
+    - path: "dmactrl.h"
+      condition: ["device_series_0"]
+provides:
+  - name: "dmadrv"
+requires:
+  - name: "emlib_dma"
+    condition: ["device_has_dma"]
+  - name: "emlib_ldma"
+    condition: ["device_has_ldma"]
+  - name: "emlib_cmu"
+  - name: "ecode"
+  - name: "enum"
+documentation:
+    docset: gecko-platform
+    document: driver/api/group-dmadrv

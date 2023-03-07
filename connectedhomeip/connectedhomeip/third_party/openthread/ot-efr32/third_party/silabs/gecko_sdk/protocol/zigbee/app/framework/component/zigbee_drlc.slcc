@@ -1,0 +1,100 @@
+package: Zigbee
+description: Silicon Labs implementation of the demand response load control cluster including
+  the load control event table for scheduling and triggering load control events.
+  This component contains the client side of the DRLC cluster only.  It requires extending
+  to integrate the software and hardware pieces that will reduce load.
+label: Demand Response Load Control Cluster Client
+quality: extend
+id: zigbee_drlc
+category: Zigbee|Cluster Library|Smart Energy
+provides:
+   - name: zigbee_drlc
+requires:
+   - name: zigbee_esi_management
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/drlc/config/drlc-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/drlc/demand-response-load-control.c
+  - path: protocol/zigbee/app/framework/plugin/drlc/load-control-event-table.c
+  - path: protocol/zigbee/app/framework/plugin/drlc/drlc-cli.c
+    condition:
+      - cli
+  - path: protocol/zigbee/app/framework/plugin/drlc/load-control-event-table-host.c
+    condition:
+      - zigbee_ezsp
+  - path: protocol/zigbee/app/framework/plugin/drlc/load-control-event-table-soc.c
+    condition:
+      - zigbee_stack_common
+  - path: protocol/zigbee/app/framework/plugin/drlc/drlc-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/drlc
+    file_list:
+      - path: demand-response-load-control.h
+      - path: load-control-event-table.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_drlc
+  - name: zigbee_stack_callback
+    value:
+      callback_type: dsa_sign
+      function_name: emAfDemandResponseLoadControlClusterDsaSignCallback
+  - name: cluster_service
+    value:
+       cluster_id: "0x0701"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "CLIENT"       
+       service_function: "emberAfDemandResponseLoadControlClusterClientCommandParse"      
+  - name: cli_group
+    value:
+      group: plugin
+      name: drlc
+      help: drlc related commands.
+  - name: cli_group
+    value:
+      group: drlc
+      name: opt
+      help: opt related commands.
+  - name: cli_command
+    value:
+      group: opt
+      name: in
+      handler: emberAfPluginDrlcOptCommand
+      help: Modifies the entry in the clients load control event table to opt in for a scheduled load control event.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint32
+        help: The ID of the event that the user is opting in or out of
+  - name: cli_command
+    value:
+      group: opt
+      name: out
+      handler: emberAfPluginDrlcOptCommand
+      help: Modifies the entry in the clients load control event table to opt out of a scheduled load control event.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+      - type: uint32
+        help: The ID of the event that the user is opting in or out of
+  - name: cli_command
+    value:
+      group: drlc
+      name: print
+      handler: emberAfPluginDrlcPrintCommand
+      help: Prints the Demand Response Load Control Table.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+  - name: cli_command
+    value:
+      group: drlc
+      name: clear
+      handler: emberAfPluginDrlcClearCommand
+      help: Clears the load control event table.
+      argument:
+      - type: uint8
+        help: The relevant endpoint
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/drlc-client

@@ -1,0 +1,194 @@
+package: Zigbee
+description: The CLI for running manufacturing library commands.
+label: Manufacturing Library CLI
+quality: production
+id: zigbee_manufacturing_library_cli
+category: Zigbee|Utility
+provides:
+   - name: "zigbee_mfglib_cli"
+   - name: "zigbee_manufacturing_library_cli"
+requires:
+   - name: "zigbee_mfglib"
+source:
+  - path: protocol/zigbee/app/framework/plugin/manufacturing-library-cli/manufacturing-library-cli-soc.c
+    condition:
+      - zigbee_stack_common
+  - path: protocol/zigbee/app/framework/plugin/manufacturing-library-cli/manufacturing-library-cli-host.c
+    condition:
+      - zigbee_ezsp
+include:
+  - path: protocol/zigbee/app/framework/plugin/manufacturing-library-cli
+    file_list:
+      - path: manufacturing-library-cli-plugin.h
+      - path: manufacturing-library-cli-tokens.h
+define:
+  - name: EZSP_APPLICATION_HAS_MFGLIB_HANDLER
+    condition:
+      - zigbee_ezsp
+template_contribution:
+  - name: component_catalog
+    value: zigbee_manufacturing_library_cli
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emAfPluginManufacturingLibraryCliInitCallback    
+  - name: cli_group
+    value:
+      group: plugin
+      name: mfglib
+      help: mfglib related commands
+  - name: cli_command
+    value:
+      group: mfglib
+      name: start
+      handler: emAfMfglibStartCommand
+      help: Start the mfglib test mode.
+      argument:
+      - type: int8
+        help: Use the Rx callback.
+  - name: cli_command
+    value:
+      group: mfglib
+      name: stop
+      handler: emAfMfglibStopCommand
+      help: Stop the mfglib test mode.
+  - name: cli_group
+    value:
+      group: mfglib
+      name: tone
+      help: tone related commands
+  - name: cli_command
+    value:
+      group: tone
+      name: start
+      handler: emAfMfglibToneStartCommand
+      help: Starts a tone test.
+  - name: cli_command
+    value:
+      group: tone
+      name: stop
+      handler: emAfMfglibToneStopCommand
+      help: Stops the tone test.
+  - name: cli_command
+    value:
+      group: mfglib
+      name: status
+      handler: emAfMfglibStatusCommand
+      help: Prints the current status of the manufacturing library.
+  - name: cli_command
+    value:
+      group: mfglib
+      name: set-channel
+      handler: emAfMfglibSetChannelCommand
+      help: Sets the channel used by the manufacturing library for testing.
+      argument:
+      - type: uint8
+        help: The 802.15.4 channel number.
+  - name: cli_command
+    value:
+      group: mfglib
+      name: set-power
+      handler: emAfMfglibSetPowerAndModeCommand
+      help: Set the power level and mode for the manufacturing test.
+      argument:
+      - type: int8
+        help: The power level
+      - type: uint16
+        help: The power mode
+  - name: cli_group
+    value:
+      group: mfglib
+      name: stream
+      help: stream related commands
+  - name: cli_command
+    value:
+      group: stream
+      name: start
+      handler: emAfMfglibStreamStartCommand
+      help: Start the stream test.
+  - name: cli_command
+    value:
+      group: stream
+      name: stop
+      handler: emAfMfglibStreamStopCommand
+      help: Stop the stream test.
+  - name: cli_group
+    value:
+      group: mfglib
+      name: send
+      help: send related commands
+  - name: cli_command
+    value:
+      group: send
+      name: random
+      handler: emAfMfglibSendCommand
+      help: Send a series of test packets with random data..
+      argument:
+      - type: uint16
+        help: The number of packets to send.
+      - type: uint8
+        help: The length of the packet to send.
+  - name: cli_command
+    value:
+      group: send
+      name: test
+      handler: emAfMfglibSendCommand
+      help: Send a series of test packets with fixed data.
+      argument:
+      - type: uint16
+        help: The number of packets to send.
+      - type: uint8
+        help: The length of the packet to send.
+  - name: cli_command
+    value:
+      group: send
+      name: message
+      handler: emAfMfglibSendMessageCommand
+      help: Send a test message with the specified data in it.
+      argument:
+      - type: hex
+        help: The hex data to send, up to 16 bytes.
+      - type: uint16
+        help: The number of packets to send.
+  - name: cli_command
+    value:
+      group: mfglib
+      name: sleep
+      handler: emAfMfglibSleepCommand
+      help: Sleep.
+      argument:
+      - type: uint16
+        help: Sleep duration (mS).
+  - name: cli_command
+    value:
+      group: mfglib
+      name: programEui
+      handler: emAfMfglibProgramEuiCommand
+      help: Program EUI.
+      argument:
+      - type: hex
+        help: IEEE address to program.
+  - name: cli_command
+    value:
+      group: mfglib
+      name: mfgenable
+      handler: emAfMfglibEnableMfglib
+      help: Enable mfglib.
+      argument:
+      - type: uint8
+        help: 1 = enable, 0 = disable.
+  - name: cli_command
+    value:
+      group: mfglib
+      name: set-options
+      handler: emAfMfglibSetOptions
+      help: Sets options in the manufacturing library for testing.
+      argument:
+      - type: uint8
+        help: The options bitmask (0 = normal transmit, 1 = CSMA transmit).
+  - name: token_header
+    value: app/framework/plugin/manufacturing-library-cli/manufacturing-library-cli-tokens.h
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/manufacturing-library-cli

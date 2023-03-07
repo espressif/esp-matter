@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/build.dtd -->
+<package name="ti.sysbios.interfaces" version="2, 0, 0, 0" producerId="undefined">
+    <units>
+        <interface name="ICore"/>
+        <interface name="IHwi"/>
+        <interface name="ITaskSupport"/>
+        <interface name="ITimer"/>
+        <interface name="ITimerSupport"/>
+        <interface name="ITimestamp"/>
+        <interface name="IIntrinsicsSupport"/>
+        <interface name="ICache"/>
+        <interface name="ISettings"/>
+        <interface name="IPower"/>
+        <interface name="IRomDevice"/>
+        <interface name="ISeconds"/>
+    </units>
+    <sources>
+    </sources>
+    <configscripts>
+    </configscripts>
+    <makefiles>
+        <srcFile name="package.mak" src="package.bld"/>
+        <srcFile name="package/package.xdc.dep" src="package.xdc"/>
+        <srcFile name="package/package.cfg.dep" src="package.xdc"/>
+        <srcFile name="package/rel/ti_sysbios_interfaces.tar.dep" src="package/rel/ti_sysbios_interfaces.xdc.inc"/>
+    </makefiles>
+    <targets>
+    </targets>
+    <libraries>
+    </libraries>
+    <configurations>
+    </configurations>
+    <executables>
+    </executables>
+    <tests>
+    </tests>
+    <releases relDir="package/rel/">
+    <release name="ti_sysbios_interfaces"
+        pname="ti_sysbios_interfaces.tar"
+        label="default"
+    >
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+        <file name="package.bld"/>
+        <file name="package/package.cfg.xdc.inc"/>
+    </release>
+    </releases>
+    <repositories>
+    </repositories>
+</package>

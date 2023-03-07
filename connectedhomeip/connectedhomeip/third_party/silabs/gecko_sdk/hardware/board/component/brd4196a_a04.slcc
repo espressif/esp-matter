@@ -1,0 +1,60 @@
+!!omap
+- id: brd4196a_a04
+- label: BRD4196A rev A04
+- package: platform
+- description: Board support for BRD4196A.
+- category: Platform|Board|Radio Board
+- quality: production
+- requires:
+  - name: efr32mg21b020f1024im32
+  - name: brd4196a_config
+  - name: hardware_board_mainboard
+- provides:
+  - name: brd4196a_revision
+  - name: brd4196a_a04
+  - name: hardware_board
+  - name: hardware_board_rb
+  - name: hardware_board_has_vcom
+  - name: hardware_board_has_hfxo
+  - name: hardware_board_has_lfxo
+  - name: hardware_board_supports_rf_band_2400
+  - name: hardware_board_supports_1_rf_band
+  - name: hardware_board_default_rf_band
+  - name: hardware_board_default_rf_band_2400
+- recommends:
+  - id: brd4001a
+  - id: iostream_usart
+    instance:
+    - vcom
+  - id: bootloader_uart_driver
+  - id: ls013b7dh03
+  - id: memlcd_usart
+  - id: simple_led
+    instance:
+    - led0
+    - led1
+  - id: skrhaae010
+  - id: simple_button
+    instance:
+    - btn0
+    - btn1
+  - id: bootloader_spi_peripheral_usart_driver
+- template_contribution:
+  - name: board_default_init
+    value: sl_board_disable_vcom()
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD4196A"'
+  - name: SL_BOARD_REV
+    value: '"A04"'
+- tag:
+  - board:pn:BRD4196
+  - board:variant:A
+  - board:revision:A04
+  - board:device:efr32mg21b020f1024im32
+  - hardware:has:vcom
+  - hardware:has:pti
+  - hardware:has:display:ls013b7dh03
+  - hardware:has:led:2
+  - hardware:has:joystick:skrhaae010
+  - hardware:has:button:2

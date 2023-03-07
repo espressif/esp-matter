@@ -1,0 +1,336 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                name="CGM Measurement"
+                type="org.bluetooth.characteristic.cgm_measurement"
+                uuid="2AA7"
+                last-modified="2014-11-17"
+                approved="Yes">
+    <InformativeText>
+        <Summary>The CGM Measurement characteristic is a variable length structure containing one or more CGM Measurement records, each comprising a Size field, a Flags Field, a Glucose Concentration field, a Time Offset field, a Sensor Status Annunciation field (optional), a CGM Trend Information Field (optional), a CGM Quality Field (optional), and an E2E-CRC Field (mandatory if this feature is supported). </Summary>
+    </InformativeText>
+    <Value>
+         <Field name="Size">
+            <InformativeText>The Size Field represents the size of the CGM Measurement record. In minimum the size is 6 octets and is enlarged by more octets indicated by the Flags Field (Sensor Status Annunciation Field, CGM Trend Information Field and CGM Quality Field) and the E2E-CRC Supported bit in CGM Feature. The Size Field itself is included in the overall length calculation.</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+        </Field>
+        
+        <Field name="Flags">
+            <Requirement>Mandatory</Requirement>
+            <Format>8bit</Format>
+            <BitField>
+                <Bit index="0"
+                     size="1"
+                     name="CGM Trend Information Present">
+                    <Enumerations>
+                        <Enumeration key="0"
+                                     value="False" />
+                        <Enumeration key="1"
+                                     value="True" requires="C1" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="1"
+                     size="1"
+                     name="CGM Quality Present">
+                    <Enumerations>
+                        <Enumeration key="0"
+                                     value="False" />
+                        <Enumeration key="1"
+                                     value="True" requires="C2" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="5"
+                     size="1"
+                     name="Sensor Status Annunciation Field, Warning-Octet present">
+                    <Enumerations>
+                        <Enumeration key="0"
+                                     value="False" />
+                        <Enumeration key="1"
+                                     value="True" requires="C4"/>
+                    </Enumerations>
+                </Bit>
+                <Bit index="6"
+                     size="1"
+                     name="Sensor Status Annunciation Field, Cal/Temp-Octet present">
+                    <Enumerations>
+                        <Enumeration key="0"
+                                     value="False" />
+                        <Enumeration key="1"
+                                     value="True" requires="C4"/>
+                    </Enumerations>
+                </Bit>
+                <Bit index="7"
+                     size="1"
+                     name="Sensor Status Annunciation Field, Status-Octet present">
+                    <Enumerations>
+                        <Enumeration key="0"
+                                     value="False" />
+                        <Enumeration key="1"
+                                     value="True" requires="C4"/>
+                    </Enumerations>
+                </Bit>
+                <ReservedForFutureUse index="2"
+                                      size="3" />
+            </BitField>
+        </Field>
+        <Field name="CGM Glucose Concentration">
+            <InformativeText>The CGM Glucose Concentration Field contains the CGM glucose concentration in mg/dL as a SFLOAT data type. The SFLOAT-Type is a 16-bit word comprising a signed 4-bit integer exponent followed by a signed 12-bit Mantissa, each in twos-complement form.</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>SFLOAT</Format>
+            <Unit>org.bluetooth.unit.mass_density.milligram_per_decilitre</Unit>
+            <DecimalExponent>0</DecimalExponent>
+        </Field>
+        <Field name="Time Offset">
+            <InformativeText>The following values are defined for the Time Offset Field, specifying the relative time difference of the single CGM values to the session start time. Value: (0x0000 - 0xFFFF), Description: (Time offset in minutes as offset to the Session Start Time).</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            
+            <Format>uint16</Format>
+            
+            <Unit>org.bluetooth.unit.time.minute</Unit>
+            
+            <DecimalExponent>0</DecimalExponent>
+            
+        </Field>
+        <Field name="Sensor Status Annunciation">
+            <InformativeText>The Sensor Status Annunciation Field is an optional field comprising up to three octets. It is only attached if one or more bits are set to "1". Only the affected octet(s) shall be added and indicated by the Flags Field. The Sensor Status Annunciation Field shall be attached to every CGM Measurement Record to which the status applies.</InformativeText>
+            <Requirement>C4</Requirement>
+            <Format>variable</Format>
+            <Description>The format "Variable" is Defined by the Service Specification</Description>
+            <BitField>
+                <Bit index="0"
+                     size="1"
+                     name="Session Stopped">
+                    <Enumerations>
+                        <Enumeration key="0"
+                                     value="False" />
+                        <Enumeration key="1"
+                                     value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="1"
+                     size="1"
+                     name="Device Battery Low">
+                    <Enumerations>
+                        <Enumeration key="0"
+                                     value="False" />
+                        <Enumeration key="1"
+                                     value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="2"
+                     size="1"
+                     name="Sensor type incorrect for device">
+                    <Enumerations>
+                        <Enumeration key="0"
+                                     value="False" />
+                        <Enumeration key="1"
+                                     value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="3"
+                     size="1"
+                     name="Sensor malfunction">
+                    <Enumerations>
+                        <Enumeration key="0"
+                                     value="False" />
+                        <Enumeration key="1"
+                                     value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="4"
+                     size="1"
+                     name="Device Specific Alert">
+                    <Enumerations>
+                        <Enumeration key="0"
+                                     value="False" />
+                        <Enumeration key="1"
+                                     value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="5"
+                     size="1"
+                     name="General device fault has occurred in the sensor">
+                    <Enumerations>
+                        <Enumeration key="0"
+                                     value="False" />
+                        <Enumeration key="1"
+                                     value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="8"
+                     size="1"
+                     name="Time synchronization between sensor and collector required">
+                    <Enumerations>
+                        <Enumeration key="0"
+                                     value="False" />
+                        <Enumeration key="1"
+                                     value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="9"
+                     size="1"
+                     name="Calibration not allowed">
+                    <Enumerations>
+                        <Enumeration key="0"
+                                     value="False" />
+                        <Enumeration key="1"
+                                     value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="10"
+                     size="1"
+                     name="Calibration recommended">
+                    <Enumerations>
+                        <Enumeration key="0"
+                                     value="False" />
+                        <Enumeration key="1"
+                                     value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="11"
+                     size="1"
+                     name="Calibration required">
+                    <Enumerations>
+                        <Enumeration key="0"
+                                     value="False" />
+                        <Enumeration key="1"
+                                     value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="12"
+                     size="1"
+                     name="Sensor Temperature too high for valid test/result at time of measurement">
+                    <Enumerations>
+                        <Enumeration key="0"
+                                     value="False" />
+                        <Enumeration key="1"
+                                     value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="13"
+                     size="1"
+                     name="Sensor temperature too low for valid test/result at time of measurement">
+                    <Enumerations>
+                        <Enumeration key="0"
+                                     value="False" />
+                        <Enumeration key="1"
+                                     value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="16"
+                     size="1"
+                     name="Sensor result lower than the Patient Low level">
+                    <Enumerations>
+                        <Enumeration key="0"
+                                     value="False" />
+                        <Enumeration key="1"
+                                     value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="17"
+                     size="1"
+                     name="Sensor result higher than the Patient High level">
+                    <Enumerations>
+                        <Enumeration key="0"
+                                     value="False" />
+                        <Enumeration key="1"
+                                     value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="18"
+                     size="1"
+                     name="Sensor result lower than the Hypo level">
+                    <Enumerations>
+                        <Enumeration key="0"
+                                     value="False" />
+                        <Enumeration key="1"
+                                     value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="19"
+                     size="1"
+                     name="Sensor result higher than the Hyper level">
+                    <Enumerations>
+                        <Enumeration key="0"
+                                     value="False" />
+                        <Enumeration key="1"
+                                     value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="20"
+                     size="1"
+                     name="Sensor Rate of Decrease exceeded">
+                    <Enumerations>
+                        <Enumeration key="0"
+                                     value="False" />
+                        <Enumeration key="1"
+                                     value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="21"
+                     size="1"
+                     name="Sensor Rate of Increase exceeded">
+                    <Enumerations>
+                        <Enumeration key="0"
+                                     value="False" />
+                        <Enumeration key="1"
+                                     value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="22"
+                     size="1"
+                     name="Sensor result lower than the device can process">
+                    <Enumerations>
+                        <Enumeration key="0"
+                                     value="False" />
+                        <Enumeration key="1"
+                                     value="True" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="23"
+                     size="1"
+                     name="Sensor result higher than the device can process">
+                    <Enumerations>
+                        <Enumeration key="0"
+                                     value="False" />
+                        <Enumeration key="1"
+                                     value="True" />
+                    </Enumerations>
+                </Bit>
+                <ReservedForFutureUse index="6"
+                                      size="2" />
+                <ReservedForFutureUse index="14"
+                                      size="2" />
+            </BitField>
+        </Field>
+        <Field name="CGM Trend Information">
+            <InformativeText>The CGM Trend Information Field contains the CGM Trend information in (mg/dL)/min as an SFLOAT data type. This field is optional if the device supports CGM Trend information (Bit 15 in CGM Feature is set to 1) otherwise excluded.</InformativeText>
+            <Requirement>C1</Requirement>
+            <Format>SFLOAT</Format>
+            <Unit>org.bluetooth.unit.mass_density.milligram_per_decilitre</Unit>
+            <DecimalExponent>0</DecimalExponent>
+        </Field>
+        <Field name="CGM Quality">
+            <InformativeText>This field contains the CGM Quality information in % as an SFLOAT data type. The SFLOAT-Type is a 16-bit word comprising a signed 4-bit integer exponent followed by a signed 12-bit Mantissa, each in twos-complement form. This field is optional if the device supports CGM Quality (Bit 16 in CGM Feature is set to 1) otherwise excluded.</InformativeText>
+            <Requirement>C2</Requirement>
+            <Format>SFLOAT</Format>
+            <Unit>org.bluetooth.unit.percentage</Unit>
+            <DecimalExponent>0</DecimalExponent>
+        </Field>
+        <Field name="E2E-CRC">
+            <InformativeText>If the device supports E2E-safety (E2E-CRC Supported bit is set in CGM Feature), the measurement is secured by a CRC calculated over all fields. The computation of the CRC is done using a CRC-CCITT generator polynomial g(D)=D16+D12+D5+1 (i.e.210041 in octal representation) with a seed of 0xFFFF. This field is mandatory if the device supports E2E-CRC (Bit 12 in CGM Feature is set to 1) otherwise excluded.</InformativeText>
+            <Requirement>C3</Requirement>
+            <Format>uint16</Format>
+            
+        </Field>
+    </Value>
+    <Note>
+            The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet
+            C1:	Optional if device supports CGM Trend Information (Bit 15 is set in CGM Feature) otherwise excluded.
+            C2:	Optional if device supports CGM Quality (Bit 16 is set in CGM Feature) otherwise excluded.
+            C3:	Mandatory if device supports E2E-CRC (Bit 12 is set in CGM Feature) otherwise excluded.
+            C4:	Optional if  bit 5 or bit 6 or bit 7 of the flgas field is set to "1", otherwise excluded.
+    </Note>
+</Characteristic>

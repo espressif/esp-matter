@@ -1,0 +1,12 @@
+.../tf_fuzz/tests directory contents:
+
+example_template  sstReads  sstSets
+
+--------------------------------------------------------------------------------
+
+These are perhaps more examples of test-template files, more than organized
+tests as such.
+
+--------------
+
+*Copyright (c) 2019-2020, Arm Limited. All rights reserved.*

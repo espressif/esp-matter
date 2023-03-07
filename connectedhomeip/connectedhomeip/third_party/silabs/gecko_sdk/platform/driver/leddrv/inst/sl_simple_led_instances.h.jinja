@@ -1,0 +1,33 @@
+/***************************************************************************//**
+ * @file
+ * @brief LED Driver Instances
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2019 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * The licensor of this software is Silicon Laboratories Inc. Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement. This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
+ *
+ ******************************************************************************/
+
+#ifndef SL_SIMPLE_LED_INSTANCES_H
+#define SL_SIMPLE_LED_INSTANCES_H
+
+#include "sl_simple_led.h"
+
+{% for inst in simple_led_instance -%}
+extern const sl_led_t sl_led_{{ inst | lower }};
+{% endfor %}
+extern const sl_led_t *sl_simple_led_array[];
+
+#define SL_SIMPLE_LED_COUNT {{ simple_led_instance | length }}
+#define SL_SIMPLE_LED_INSTANCE(n) (sl_simple_led_array[n])
+
+void sl_simple_led_init_instances(void);
+
+#endif // SL_SIMPLE_LED_INIT_H

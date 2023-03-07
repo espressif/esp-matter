@@ -1,0 +1,22 @@
+id: ot_debug_channel
+label: Debug Channel
+package: OpenThread
+category: OpenThread
+quality: production
+description: This component provides a set of APIs for printing to the debug channel. Information printed to the debug channel can be viewed using the Network Analyzer feature of Simplicity Studio
+provides:
+  - name: ot_debug_channel
+requires:
+  - name: iostream_debug
+include:
+  - path: protocol/openthread/include/util
+    file_list:
+      - path: byte_util.h
+      - path: debug_channel.h
+source:
+  - path: protocol/openthread/src/util/byte_util.c
+  - path: protocol/openthread/src/util/debug_channel.c
+
+template_contribution:
+  - name: component_catalog
+    value: ot_debug_channel

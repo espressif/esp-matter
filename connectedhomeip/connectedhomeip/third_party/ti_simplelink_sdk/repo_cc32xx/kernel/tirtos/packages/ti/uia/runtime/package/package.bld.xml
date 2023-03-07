@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/build.dtd -->
+<package name="ti.uia.runtime" version="1, 0, 0, 2" producerId="undefined">
+    <units>
+        <interface name="ICtxFilterCallback"/>
+        <interface name="ILoggerSnapshot"/>
+        <interface name="IUIATimestampProvider"/>
+        <interface name="IUIATraceSyncProvider"/>
+        <interface name="IUIATraceSyncClient"/>
+        <interface name="IServiceMgrSupport"/>
+        <interface name="IUIATransfer"/>
+        <module name="CtxFilter"/>
+        <module name="EventHdr"/>
+        <module name="LogCtxChg"/>
+        <module name="LogSnapshot"/>
+        <module name="LogSync"/>
+        <module name="LoggerSM"/>
+        <module name="LoggerTypes"/>
+        <module name="MultiCoreTypes"/>
+        <module name="QueueDescriptor"/>
+        <module name="UIAMetaData"/>
+        <module name="UIAPacket"/>
+        <module name="ServiceMgr"/>
+        <module name="Transport"/>
+    </units>
+    <sources>
+        <srcFile name="package/package_ti.uia.runtime.c"/>
+        <srcFile name="CtxFilter.c"/>
+        <srcFile name="LoggerSM.c"/>
+        <srcFile name="LogSnapshot.c"/>
+        <srcFile name="LogSync.c"/>
+        <srcFile name="QueueDescriptor.c"/>
+        <srcFile name="ServiceMgr.c"/>
+        <srcFile name="UIAPacket.c"/>
+    </sources>
+    <configscripts>
+    </configscripts>
+    <makefiles>
+        <srcFile name="package.mak" src="package.bld"/>
+        <srcFile name="package/package.xdc.dep" src="package.xdc"/>
+        <srcFile name="package/package.cfg.dep" src="package.xdc"/>
+        <srcFile name="lib/release/ti.uia.runtime.aem4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/package/package_ti.uia.runtime.oem4.dep" src="package/package_ti.uia.runtime.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/CtxFilter.oem4.dep" src="CtxFilter.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/LoggerSM.oem4.dep" src="LoggerSM.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/LogSnapshot.oem4.dep" src="LogSnapshot.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/LogSync.oem4.dep" src="LogSync.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/QueueDescriptor.oem4.dep" src="QueueDescriptor.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/ServiceMgr.oem4.dep" src="ServiceMgr.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/UIAPacket.oem4.dep" src="UIAPacket.c"/>
+        <srcFile name="lib/release/ti.uia.runtime.am4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/package/package_ti.uia.runtime.om4.dep" src="package/package_ti.uia.runtime.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/CtxFilter.om4.dep" src="CtxFilter.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/LoggerSM.om4.dep" src="LoggerSM.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/LogSnapshot.om4.dep" src="LogSnapshot.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/LogSync.om4.dep" src="LogSync.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/QueueDescriptor.om4.dep" src="QueueDescriptor.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/ServiceMgr.om4.dep" src="ServiceMgr.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/UIAPacket.om4.dep" src="UIAPacket.c"/>
+        <srcFile name="lib/release/ti.uia.runtime.am4g.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/package/package_ti.uia.runtime.om4g.dep" src="package/package_ti.uia.runtime.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/CtxFilter.om4g.dep" src="CtxFilter.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/LoggerSM.om4g.dep" src="LoggerSM.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/LogSnapshot.om4g.dep" src="LogSnapshot.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/LogSync.om4g.dep" src="LogSync.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/QueueDescriptor.om4g.dep" src="QueueDescriptor.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/ServiceMgr.om4g.dep" src="ServiceMgr.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/UIAPacket.om4g.dep" src="UIAPacket.c"/>
+        <srcFile name="lib/release/ti.uia.runtime.arm4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/package/package_ti.uia.runtime.orm4.dep" src="package/package_ti.uia.runtime.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/CtxFilter.orm4.dep" src="CtxFilter.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/LoggerSM.orm4.dep" src="LoggerSM.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/LogSnapshot.orm4.dep" src="LogSnapshot.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/LogSync.orm4.dep" src="LogSync.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/QueueDescriptor.orm4.dep" src="QueueDescriptor.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/ServiceMgr.orm4.dep" src="ServiceMgr.c"/>
+        <srcFile name="package/lib/lib/release/ti.uia.runtime/UIAPacket.orm4.dep" src="UIAPacket.c"/>
+        <srcFile name="package/rel/ti_uia_runtime.tar.dep" src="package/rel/ti_uia_runtime.xdc.inc"/>
+    </makefiles>
+    <targets>
+        <target name="ti.targets.arm.elf.M4"
+            version="ti.targets.arm.elf.M4{1,0,20.2,5"
+            rawVersion="20.2.5"
+            platform="ti.platforms.tiva:TM4C1294NCPDT:1"
+            isa="v7M4"
+            suffix="em4"
+            rootDir="/scratch/xlibrary/.conan/data/ticodegen/20.2.5.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c"
+            os="undefined"
+            rts="ti.targets.arm.rtsarm">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="ti.targets.arm.clang.M4"
+            version="ti.targets.arm.clang.M4{1,0,1.3,1"
+            rawVersion="TI Arm Clang Compiler 1.3.1.LTSTarget: arm-ti-none-eabi
+Thread model: posix
+InstalledDir: /scratch/xlibrary/.conan/data/tiarmllvm/1.3.1.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c/bin
+"
+            platform="ti.platforms.tiva:TM4C1294NCPDT:1"
+            isa="v7M4"
+            suffix="m4"
+            rootDir="/scratch/xlibrary/.conan/data/tiarmllvm/1.3.1.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c"
+            os="undefined"
+            rts="ti.targets.arm.rtsarm">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="gnu.targets.arm.M4"
+            version="gnu.targets.arm.M4{1,0,9.2,1"
+            rawVersion="9.2.1"
+            platform="ti.platforms.tiva:TM4C1294NCPDT"
+            isa="v7M4"
+            suffix="m4g"
+            rootDir="/scratch/xlibrary/.conan/data/arm-none-eabi-gcc/9.2019.q4.major-0/library-msp/ga/package/44fcf6b9a7fb86b2586303e3db40189d3b511830"
+            os="undefined"
+            rts="gnu.targets.arm.rtsv7M">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="iar.targets.arm.M4"
+            version="iar.targets.arm.M4{1,0,8.50,1"
+            rawVersion="8.50.1.245"
+            platform="ti.platforms.tiva:TM4C1294NCPDT:1"
+            isa="v7M4"
+            suffix="rm4"
+            rootDir="/scratch/xlibrary/.conan/data/iarcodegen/8.50.1.245-3/library-msp/ga/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9"
+            os="undefined"
+            rts="iar.targets.arm.rts">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+    </targets>
+    <libraries>
+    <library name="lib/release/ti.uia.runtime"
+        pname="lib/release/ti.uia.runtime.aem4"
+        profile="release"
+        target="ti.targets.arm.elf.M4"/>
+    <library name="lib/release/ti.uia.runtime"
+        pname="lib/release/ti.uia.runtime.am4"
+        profile="release"
+        target="ti.targets.arm.clang.M4"/>
+    <library name="lib/release/ti.uia.runtime"
+        pname="lib/release/ti.uia.runtime.am4g"
+        profile="release"
+        target="gnu.targets.arm.M4"/>
+    <library name="lib/release/ti.uia.runtime"
+        pname="lib/release/ti.uia.runtime.arm4"
+        profile="release"
+        target="iar.targets.arm.M4"/>
+    </libraries>
+    <configurations>
+    </configurations>
+    <executables>
+    </executables>
+    <tests>
+    </tests>
+    <releases relDir="package/rel/">
+    <release name="ti_uia_runtime"
+        pname="ti_uia_runtime.tar"
+        label="default"
+    >
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+        <file name="package.bld"/>
+        <file name="LogUC.h"/>
+        <file name="java/package.jar"/>
+        <file name="ServiceMgr.xml"/>
+        <file name="package/package.cfg.xdc.inc"/>
+        <file name="lib/release/ti.uia.runtime.aem4"/>
+        <file name="package/package_ti.uia.runtime.c"/>
+        <file name="CtxFilter.c"/>
+        <file name="LoggerSM.c"/>
+        <file name="LogSnapshot.c"/>
+        <file name="LogSync.c"/>
+        <file name="QueueDescriptor.c"/>
+        <file name="ServiceMgr.c"/>
+        <file name="UIAPacket.c"/>
+        <file name="lib/release/ti.uia.runtime.am4"/>
+        <file name="lib/release/ti.uia.runtime.am4g"/>
+        <file name="lib/release/ti.uia.runtime.arm4"/>
+    </release>
+    </releases>
+    <repositories>
+    </repositories>
+</package>

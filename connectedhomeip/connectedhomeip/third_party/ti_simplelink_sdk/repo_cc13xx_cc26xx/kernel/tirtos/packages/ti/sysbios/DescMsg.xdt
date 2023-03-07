@@ -1,0 +1,113 @@
+%%{
+/*
+ * Copyright (c) 2013, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+%%}
+%/*
+% *  ======== DescMsg.xdt ========
+% */
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>Descriptor messages</title>
+  <link href="" rel="stylesheet" type="text/css">
+  <style type="text/css">
+    p {
+        font-family: Helvetica,Arial,sans-serif;
+        color: rgb(82, 82, 82);
+        padding-top: 0px;
+        margin-top: 0px;
+        padding-bottom: 0px;
+        margin-bottom: 20px;
+    }
+    h1 {
+        font-family: Helvetica,Arial,sans-serif;
+        margin-bottom: 25px;
+        color: rgb(204, 0, 0);
+    }
+    h2 {
+        font-family: Helvetica,Arial,sans-serif;
+        color: rgb(180, 0, 0);
+        padding-top: 0px;
+        margin-top: 0px;
+        padding-bottom: 0px;
+        margin-bottom: 5px;
+    }
+  </style></head>
+
+
+  <body>
+      <h1>List of descriptor messages: </h1>
+      <h2>Error descriptor messages: </h2>
+      <ul>
+%for (var i = 0 ; i < this.emsg.length; i++) {
+%var msg = this.emsg[i];
+%var path = msg.mod.$package.packageBase.replace(/packages/, "docs/cdoc")
+%   + msg.mod.$name.substring(msg.mod.$name.lastIndexOf(".") + 1) + ".html";
+          <li>`msg.new`: <br>
+               <ul>
+               <li>Module: <a href="file:///`path`">`msg.mod.$name`</a></li>
+               <li>Message: `msg.orig`</li>
+               </ul>
+         </li>
+%}
+      </ul>
+      <h2>Assert descriptor messages: </h2>
+      <ul>
+%
+%for (var i = 0 ; i < this.amsg.length; i++) {
+%var msg = this.amsg[i];
+%var path = msg.mod.$package.packageBase.replace(/packages/, "docs/cdoc")
+%   + msg.mod.$name.substring(msg.mod.$name.lastIndexOf(".") + 1) + ".html";
+          <li>`msg.new`: <br>
+               <ul>
+               <li>Module: <a href="file:///`path`">`msg.mod.$name`</a></li>
+               <li>Message: `msg.orig`</li>
+               </ul>
+         </li>
+%}
+      </ul>
+      <h2>Log descriptor messages: </h2>
+      <ul>
+%
+%for (var i = 0 ; i < this.lmsg.length; i++) {
+%var msg = this.lmsg[i];
+%var path = msg.mod.$package.packageBase.replace(/packages/, "docs/cdoc")
+%   + msg.mod.$name.substring(msg.mod.$name.lastIndexOf(".") + 1) + ".html";
+          <li>`msg.new`: <br>
+               <ul>
+               <li>Module: <a href="file:///`path`">`msg.mod.$name`</a></li>
+               <li>Message: `msg.orig`</li>
+               </ul>
+         </li>
+%}
+      </ul>
+  </body>
+</html>

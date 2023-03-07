@@ -1,0 +1,17 @@
+id: segger_systemview_freertos
+label: SEGGER SystemView for FreeRTOS
+package: platform
+description: SEGGER SystemView sample for FreeRTOS
+category: Platform|Utilities|SystemView
+quality: production
+ui_hints:
+  visibility: never
+source:
+  - path: util/third_party/segger/systemview/Sample/FreeRTOSV10/Config/Cortex-M/SEGGER_SYSVIEW_Config_FreeRTOS.c
+  - path: util/third_party/segger/systemview/Sample/FreeRTOSV10/SEGGER_SYSVIEW_FreeRTOS.c
+include:
+  - path: util/third_party/segger/systemview/Sample/FreeRTOSV10/
+    file_list:
+      - path: SEGGER_SYSVIEW_FreeRTOS.h
+provides:
+  - name: segger_systemview_freertos

@@ -1,0 +1,29 @@
+project_name: bootloader-apploader-nonsecure
+package: bootloader
+quality: beta
+label: Bootloader - SoC Bluetooth AppLoader OTA DFU Non-Secure part of Bootloader using TrustZone
+description: >
+  TrustZone is used to split into a Secure and Non-Secure bootloader. This is the non-secure part of the bootloader. The secure part of the bootloader, which contains the core functionalities needs to be built separately and used together with the non-secure part of the bootloader.
+
+category: Example|Bootloader
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+  - name: "MCU"
+    value: ["Bootloader"]
+
+
+component:
+  - id: bootloader_core_nonsecure
+  - id: bootloader_apploader_nonsecure
+  - id: bootloader_image_parser_nonsecure
+  - id: bootloader_include_parser_nonsecure
+
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+tag:
+  - "companion:bootloader-apploader-secure.slcp"

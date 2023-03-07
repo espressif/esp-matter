@@ -1,0 +1,17 @@
+[
+    {
+        "files": [
+            "+../../json_app.c -> json_app.c",
+            "+../../README.md -> README.md",
+            "+../../README.html -> README.html",
+            "+../../uart_term.c -> uart_term.c",
+            "+../../uart_term.h -> uart_term.h",
+            "+../main_tirtos.c -> main_tirtos.c",
+            "+../common.syscfg -> common.syscfg",
+            "+../../../../../../../source/ti/boards/CC3220S_LAUNCHXL/Board.html -> Board.html",
+            "+cc32xxs_tirtos.lds -> cc32xxs_tirtos.lds",
+            "+../../image.syscfg -> image.syscfg",
+            "+../../userFiles/dummy-root-ca-cert -> userFiles/dummy-root-ca-cert"
+        ]
+    }
+]

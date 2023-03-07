@@ -1,0 +1,132 @@
+project_name: "Z3Gateway"
+label: "Zigbee - Host Gateway"
+package: "Zigbee"
+category: "Zigbee Host Application"
+quality: "production"
+
+description: >
+  This is a Zigbee 3.0 gateway application for a Unix host.
+author: "Silicon Laboratories, Inc." 
+
+component:
+  - id: "cli"
+    instance:
+    - example
+  - id: "native"
+  - id: "iostream_stdio"
+  - id: "zigbee_address_table"
+  - id: "zigbee_basic"
+  - id: "zigbee_color_control_server"
+  - id: "zigbee_concentrator"
+  - id: "zigbee_counters"
+  - id: "zigbee_ezmode_commissioning"
+  - id: "zigbee_ezsp"
+  - id: "zigbee_ezsp_uart"
+  - id: "zigbee_file_descriptor_dispatch"
+  - id: "zigbee_green_power_client"
+  - id: "zigbee_green_power_common"
+  - id: "zigbee_ias_zone_client"
+  - id: "zigbee_identify"
+  - id: "zigbee_identify_feedback"
+  - id: "zigbee_level_control"
+  - id: "zigbee_ncp_configuration"
+  - id: "zigbee_network_creator"
+  - id: "zigbee_network_creator_security"
+  - id: "zigbee_network_steering"
+  - id: "zigbee_on_off"
+  - id: "zigbee_ota_server"
+  - id: "zigbee_ota_server_policy"
+  - id: "zigbee_ota_common"
+  - id: "zigbee_ota_storage_common"
+  - id: "zigbee_ota_storage_posix_filesystem"
+  - id: "zigbee_poll_control_client"
+  - id: "zigbee_reporting"
+  - id: "zigbee_scan_dispatch"
+  - id: "zigbee_update_tc_link_key"
+  - id: "zigbee_simple_metering_client"
+  - id: "zigbee_stack_diagnostics"
+  - id: "zigbee_test_harness"
+  - id: "zigbee_time_server"
+  - id: "zigbee_trust_center_nwk_key_update_broadcast"
+  - id: "zigbee_trust_center_nwk_key_update_periodic"
+  - id: "zigbee_trust_center_nwk_key_update_unicast"
+  - id: "zigbee_debug_print"
+
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: SL_IOSTREAM_USART_VCOM_FLOW_CONTROL_TYPE
+    value: usartHwFlowControlCtsAndRts
+  - name: SL_CLI_MAX_INPUT_ARGUMENTS
+    value: 16
+  - name: SLI_ZIGBEE_PRIMARY_NETWORK_DEVICE_TYPE
+    value: SLI_ZIGBEE_NETWORK_DEVICE_TYPE_COORDINATOR_OR_ROUTER
+  - name: SLI_ZIGBEE_PRIMARY_NETWORK_SECURITY_TYPE
+    value: SLI_ZIGBEE_NETWORK_SECURITY_TYPE_3_0
+  - name: SL_CLI_PROMPT_STRING
+    value:  "\"Z3Gateway>\""
+  - name: EMBER_KEY_TABLE_SIZE
+    value: 4
+  - name: SL_ZIGBEE_EVENT_DEBUG_ENABLED
+    value: 1
+
+include:
+  - path: "./"
+ 
+source:
+  - path: "main.c"
+  - path: "app.c"
+
+config_file:
+  - path: "config/zcl/zcl_config.zap"
+
+# Custom CLI for this application
+template_contribution:
+  - name: cli_group
+    value:
+      name: custom
+      help: Custom commands
+  - name: cli_command
+    value:
+      group: custom
+      name: tokdump
+      handler: mfgappTokenDump
+  - name: cli_command
+    value:
+      group: custom
+      name: changeNwkKey
+      handler: changeNwkKeyCommand
+  - name: cli_command
+    value:
+      group: custom
+      name: printNextKey
+      handler: printNextKeyCommand
+  - name: cli_command
+    value:
+      group: custom
+      name: version
+      handler: versionCommand
+  - name: cli_command
+    value:
+      group: custom
+      name: txPower
+      handler: setTxPowerCommand
+      argument:
+      - type: int8 
+
+readme:
+  - path: ./readme.html
+
+ui_hints:
+  highlight:
+    - path: readme.html
+      focus: false
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Zigbee"]
+  - name: "Device Type"
+    value: ["Host"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]
+

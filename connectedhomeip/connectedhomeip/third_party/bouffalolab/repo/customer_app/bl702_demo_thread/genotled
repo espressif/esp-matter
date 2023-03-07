@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# build for demo image
+# build options, 
+#   CONFIG_FTD, for thread device type
+#       1, build for thread FTD image, 
+#       0, build for thread MTD image. demo app set rx-on-when-idle = false, so it's build a sed device. (not, currently, the device sleep is not supported)
+#   CONFIG_PREFIX, for cli command line build, 
+#       1, build cli command with openthread command and bouffalolab command, and make openthread command set as the subset of bouffalolab command 'otc', such as `otc state`
+#       0, build cli command with only openthread command, type openthread official command directly, such as state
+#   CONFIG_OTDEMO for demo image
+#       1, build for UDP demo image
+#       2, build for coap demo image
+#   CONFIG_PP, polling period for SED role, and valid for MTD device type whic FTD=0
+#       0, do not enable SED role which means rx-on-when-idle=true
+#       > 0, polling period with unit micro second
+CONFIG_FTD=1
+CONFIG_PREFIX=0
+CONFIG_OTDEMO=1
+
+CONFIG_PP=3000
+
+jobs=4
+if (( $1 -eq "" )); then
+jobs=$1
+fi
+
+if [ ! -f "build_out" ];then
+mkdir build_out
+fi
+
+make CONFIG_OTDEMO=$CONFIG_OTDEMO CONFIG_FTD=$CONFIG_FTD CONFIG_PREFIX=$CONFIG_PREFIX CONFIG_PP=$CONFIG_PP CONFIG_FLASH_SIZE=0x100000 CONFIG_MANUFACTURER_ID=0xFFFF -j $jobs 2>&1 | tee build_out/make.log
+
+exit $?

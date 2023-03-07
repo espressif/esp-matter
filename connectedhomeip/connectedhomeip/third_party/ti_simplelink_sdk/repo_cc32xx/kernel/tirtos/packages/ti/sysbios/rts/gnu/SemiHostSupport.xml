@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="SemiHostSupport" title="SemiHosting Support" version="1">
+
+<page name="Module" title="Module Settings">
+<html><body><table>
+  <tr>
+      <td><form>
+        <p>This module does the required setup for supporting Semi-Hosted SYS/BIOS
+           applications for all Cortex-A and Cortex-M GNU targets.</p>
+        <p> </p>
+      </form></td>
+  </tr>
+  <tr>
+    <td><control type="checkbox" label="Add the SemiHostSupport module to my configuration" value="value:this.$used" bold="true"
+                 tooltip="value:'Note: If this module is used, the application should link with librdimon RTS library. For more info please see SemiHostSupport module cdoc.'"/></td>
+  </tr>
+  <tr></tr>
+</table></body></html>
+</page>
+</gep>
+

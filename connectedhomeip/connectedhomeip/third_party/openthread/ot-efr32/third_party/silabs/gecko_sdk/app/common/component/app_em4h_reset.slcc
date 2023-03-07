@@ -1,0 +1,25 @@
+id: app_em4h_reset
+label: EM4H-Reset
+package: platform
+description: Component that provides unlatch pin retention when returning from EM4.
+category: Application|Utility
+quality: production
+provides:
+  - name: app_em4h_reset
+requires:
+  - name: emlib_emu
+  - name: device
+root_path: app/common/util/app_em4h
+source:
+  - path: "app_em4h.c"
+include:
+  - path: .
+    file_list:
+      - path: app_em4h.h
+template_contribution:
+  - name: event_handler
+    value:
+      event: platform_init
+      include: app_em4h.h
+      handler: app_unlatch_pin_retention
+    priority: -9980

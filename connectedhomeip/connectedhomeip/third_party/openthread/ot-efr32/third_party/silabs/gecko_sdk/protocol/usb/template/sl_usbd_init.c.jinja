@@ -1,0 +1,67 @@
+//****************************************************************************
+// Includes.
+
+#include "sl_status.h"
+
+{% if ('usb_device_core' in usbd_init)  %}
+#include "sl_usbd_core.h"
+{% endif %}
+
+{% if ('usb_device_cdc' in usbd_init)  %}
+#include "sl_usbd_class_cdc.h"
+{% endif %}
+
+{% if ('usb_device_cdc_acm' in usbd_init)  %}
+#include "sl_usbd_class_cdc_acm.h"
+{% endif %}
+
+{% if ('usb_device_hid' in usbd_init)  %}
+#include "sl_usbd_class_hid.h"
+{% endif %}
+
+{% if ('usb_device_msc' in usbd_init)  %}
+#include "sl_usbd_class_msc.h"
+{% endif %}
+
+{% if ('usb_device_msc_scsi' in usbd_init)  %}
+#include "sl_usbd_class_msc_scsi.h"
+{% endif %}
+
+{% if ('usb_device_vendor' in usbd_init)  %}
+#include "sl_usbd_class_vendor.h"
+{% endif %}
+
+//****************************************************************************
+// Global functions.
+
+/* USB initialization function */
+void sli_usbd_init(void)
+{
+{% if ('usb_device_core' in usbd_init)  %}
+  sl_usbd_core_init();
+{% endif %}
+
+{% if ('usb_device_cdc' in usbd_init)  %}
+  sl_usbd_cdc_init();
+{% endif %}
+
+{% if ('usb_device_cdc_acm' in usbd_init)  %}
+  sl_usbd_cdc_acm_init();
+{% endif %}
+
+{% if ('usb_device_hid' in usbd_init)  %}
+  sl_usbd_hid_init();
+{% endif %}
+
+{% if ('usb_device_msc' in usbd_init)  %}
+  sl_usbd_msc_init();
+{% endif %}
+
+{% if ('usb_device_msc_scsi' in usbd_init)  %}
+  sl_usbd_msc_scsi_init();
+{% endif %}
+
+{% if ('usb_device_vendor' in usbd_init)  %}
+  sl_usbd_vendor_init();
+{% endif %}
+}

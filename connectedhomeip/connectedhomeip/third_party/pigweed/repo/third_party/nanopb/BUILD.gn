@@ -1,0 +1,81 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/python.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_protobuf_compiler/proto.gni")
+import("nanopb.gni")
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}
+
+# This file defines a GN source_set for an external installation of nanopb.
+# To use, checkout the nanopb source into a directory, then set the build arg
+# dir_pw_third_party_nanopb to point to that directory. The nanopb library
+# will be available in GN at "$dir_pw_third_party/nanopb".
+if (dir_pw_third_party_nanopb != "") {
+  config("includes") {
+    include_dirs = [ dir_pw_third_party_nanopb ]
+  }
+
+  pw_source_set("nanopb") {
+    public_configs = [ ":includes" ]
+    public = [
+      "$dir_pw_third_party_nanopb/pb.h",
+      "$dir_pw_third_party_nanopb/pb_common.h",
+      "$dir_pw_third_party_nanopb/pb_decode.h",
+      "$dir_pw_third_party_nanopb/pb_encode.h",
+    ]
+    public_deps = [ pw_third_party_nanopb_CONFIG ]
+    sources = [
+      "$dir_pw_third_party_nanopb/pb_common.c",
+      "$dir_pw_third_party_nanopb/pb_decode.c",
+      "$dir_pw_third_party_nanopb/pb_encode.c",
+    ]
+  }
+
+  pw_proto_library("proto") {
+    strip_prefix = "$dir_pw_third_party_nanopb/generator/proto"
+    sources = [ "$dir_pw_third_party_nanopb/generator/proto/nanopb.proto" ]
+    python_module_as_package = "nanopb_pb2"
+  }
+
+  # Generates nanopb_pb2.py, which is needed to compile protobufs with Nanopb.
+  pw_python_script("generate_nanopb_proto") {
+    sources = [ "generate_nanopb_proto.py" ]
+    pylintrc = "$dir_pigweed/.pylintrc"
+    mypy_ini = "$dir_pigweed/.mypy.ini"
+    action = {
+      args = [ rebase_path(dir_pw_third_party_nanopb, root_build_dir) ]
+      stamp = true
+    }
+  }
+} else {
+  group("nanopb") {
+  }
+  pw_python_group("generate_nanopb_proto") {
+  }
+}
+
+config("disable_error_messages_config") {
+  defines = [ "PB_NO_ERRMSG=1" ]
+}
+
+pw_source_set("disable_error_messages") {
+  public_configs = [ ":disable_error_messages_config" ]
+}

@@ -1,0 +1,33 @@
+id: c_sdk
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|C SDK
+label: All C SDK Modules
+description: C SDK for Embedded Devices for AWS IoT integration.
+
+package: amazon_platform
+quality: production
+
+provides:
+  - name: c_sdk
+
+ui_hints:
+  visibility: never
+
+root_path: util/third_party/aws_iot_libs
+
+requires:
+  - name: iot_appversion32
+  - name: iot_atomic
+  - name: iot_config_common
+  - name: iot_default_root_certificates
+  - name: iot_device_metrics
+  - name: iot_doubly_linked_list
+  - name: iot_error
+  - name: iot_init
+  - name: iot_lib_init
+  - name: iot_linear_containers
+  - name: iot_logging_headers
+  - name: iot_network_types
+  - name: iot_static_memory
+  - name: iot_taskpool
+  - name: iot_https_client

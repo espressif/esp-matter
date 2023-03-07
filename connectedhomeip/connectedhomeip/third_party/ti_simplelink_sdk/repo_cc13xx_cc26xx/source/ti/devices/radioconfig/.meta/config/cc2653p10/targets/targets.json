@@ -1,0 +1,12 @@
+{
+    "targets": {
+        "Default": "target_lp_cc2653p10.json:LP_EM_CC2653P10",
+        "VirtualTarget": {
+            "_name": "LP_EM_CC2653P10",
+            "Target": [
+                "target_lp_cc2653p10.json",
+                "target_lp_cc2653p10_highPA.json"
+            ]
+        }
+    }
+}

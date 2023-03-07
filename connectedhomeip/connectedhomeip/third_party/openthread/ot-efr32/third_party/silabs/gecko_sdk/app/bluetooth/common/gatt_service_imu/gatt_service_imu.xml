@@ -1,0 +1,27 @@
+<gatt>
+  <!--IMU-->
+  <service advertise="false" name="IMU" requirement="mandatory" type="primary" uuid="a4e649f4-4be5-11e5-885d-feff819cdc9f">
+    <informativeText/>
+    
+    <!--Acceleration-->
+    <characteristic id="imu_acceleration" name="Acceleration" uuid="c4c1f6e2-4be5-11e5-885d-feff819cdc9f">
+      <informativeText/>
+      <value length="6" type="utf-8" variable_length="false"/>
+      <properties notify="true" notify_requirement="optional"/>
+    </characteristic>
+    
+    <!--Orientation-->
+    <characteristic id="imu_orientation" name="Orientation" uuid="b7c4b694-bee3-45dd-ba9f-f3b5e994f49a">
+      <informativeText/>
+      <value length="6" type="utf-8" variable_length="false"/>
+      <properties notify="true" notify_requirement="optional"/>
+    </characteristic>
+    
+    <!--Control Point-->
+    <characteristic id="imu_control_point" name="Control Point" uuid="71e30b8c-4131-4703-b0a0-b0bbba75856b">
+      <informativeText/>
+      <value length="3" type="user" variable_length="false"/>
+      <properties const="false" const_requirement="optional" indicate="true" indicate_requirement="optional" write="true" write_requirement="optional"/>
+    </characteristic>
+  </service>
+</gatt>

@@ -1,0 +1,23 @@
+!!omap
+- id: xg24_rb4188a
+- label: XG24-RB4188A
+- package: platform
+- description: Kit BSP support for the EFR32xG24 2.4 GHz 20 dBm Antenna Diversity
+    Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_xg24-rb4188a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"XG24-RB4188A"'
+  - name: SL_KIT_REV
+    value: '"A02"'
+- tag:
+  - kit:opn:xG24-RB4188A
+  - kit:pn:RB4188
+  - kit:variant:A
+  - kit:revision:A02

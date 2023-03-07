@@ -1,0 +1,16 @@
+id: bootloader_serial_driver_nonsecure
+label: Bootloader Serial Driver (Non-Secure)
+package: bootloader
+description: >
+  DMA-driven Serial driver.
+category: Platform|Bootloader|TrustZone NonSecure|Drivers
+quality: beta
+source:
+  - path: platform/bootloader/driver/btl_serial_driver_ns.c
+include:
+  - path: platform/bootloader
+    file_list:
+    - path: driver/btl_serial_driver.h
+provides:
+  - name: bootloader_serial_driver
+  - name: bootloader_serial_driver_nonsecure

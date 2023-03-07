@@ -1,0 +1,46 @@
+id: iot_rtc
+category: Third Party|Amazon FreeRTOS - AWS Libraries|Common I/O
+label: IoT RTC
+description: >
+  Silicon Labs' Implementation of Amazon Common I/O RTC API
+  Doc: https://docs.aws.amazon.com/freertos/latest/lib-ref/common-io/files.html
+package: amazon_platform
+quality: production
+instantiable:
+  prefix: inst
+provides:
+  - name: iot_rtc
+    allow_multiple: true
+requires:
+  - name: freertos
+  - name: device_init
+  - name: sleeptimer
+  - name: status
+  - name: common_io_validation_lib
+root_path: util/third_party/aws_iot_libs
+config_file:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_rtc/config/iot_rtc_cfg_{{instance}}.h
+    file_id: iot_rtc_cfg
+
+source:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_rtc/source/iot_rtc_drv.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_rtc/source/iot_rtc_hal.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_rtc/test/iot_rtc_test.c
+    condition: ["aws_tests_defs"]
+
+include:
+  - path: libraries/abstractions/common_io/include
+    file_list:
+      - path: iot_rtc.h
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_rtc/include
+    file_list:
+      - path: iot_rtc_desc.h
+      - path: iot_rtc_drv.h
+
+template_file:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_rtc/template/iot_rtc_desc.c.jinja
+template_contribution:
+  - name: iot_rtc_instances
+    value: "{{instance}}"
+validation_helper:
+  - path: script/iot_rtc_validation.lua

@@ -1,0 +1,32 @@
+{
+    "target": {
+        "Name": "LP_CC1311P3",
+        "Revision": [],
+        "Description": "LP_CC1311P3 LP. 7XD: 7x7 VQFN48 package, external bias, differential output. 7793: 770-930 MHz band.",
+        "DeviceName": "CC1311P3",
+        "DevicePackage": "VQFN 7x7",
+        "FrontEnd": "XD",
+        "PaSettings": "pasettings.json",
+        "RfDesign": "LP-CC1311P3",
+        "DefaultCategory": "Settings for Proprietary 779 - 930 MHz",
+        "IoSettings": {
+            "_name": "RF Switch",
+            "IoPin": [
+                {
+                    "_name": "DIO29",
+                    "ControlFunction": "Input\/Output",
+                    "Idle": "Input tristate (Default)",
+                    "Tx": "Output high",
+                    "Rx": "Output high"
+                },
+                {
+                    "_name": "DIO30",
+                    "ControlFunction": "Input\/Output",
+                    "Idle": "Input tristate (Default)",
+                    "Tx": "Output low",
+                    "Rx": "Output low"
+                }
+            ]
+        }
+    }
+}

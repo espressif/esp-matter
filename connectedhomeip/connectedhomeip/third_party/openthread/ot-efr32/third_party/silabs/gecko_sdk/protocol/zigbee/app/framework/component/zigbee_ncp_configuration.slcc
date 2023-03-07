@@ -1,0 +1,76 @@
+package: Zigbee
+description: "This component controls how the Network Co-processor is configured.  It
+  is only applicable to host-based applications (not SoC). Users of this component should
+  make sure that their NCP can support the configuration values that are set here
+  as configuration options. For more information regarding table size limits for the default
+  released NCP binary application, see UG100: EZSP Reference
+  Guide. To use an NCP with a different configuration, build
+  an xNCP application using the NCP Application Framework."
+id: zigbee_ncp_configuration
+label: NCP Configuration
+category: Zigbee|Utility
+quality: production
+
+provides:
+  - name: zigbee_ncp_configuration
+  - name: zigbee_binding
+    condition:
+      - zigbee_ncp_configuration
+  - name: zigbee_source_route
+    condition:
+      - zigbee_ncp_configuration   
+  - name: zigbee_cbke_163k1
+    condition:
+      - zigbee_ncp_configuration   
+  - name: zigbee_cbke_283k1
+    condition:
+      - zigbee_ncp_configuration   
+  - name: zigbee_ecc_curve_support
+    condition:
+      - zigbee_ncp_configuration
+  - name: zigbee_cbke_dsa_verify
+    condition:
+      - zigbee_ncp_configuration   
+  - name: zigbee_gp
+    condition:
+      - zigbee_ncp_configuration   
+  - name: zigbee_mfglib
+    condition:
+      - zigbee_ncp_configuration   
+  - name: zigbee_multi_network
+    condition:
+      - zigbee_ncp_configuration   
+  - name: zigbee_multi_pan
+    condition:
+      - zigbee_ncp_configuration   
+  - name: zigbee_zigbee_pro
+    condition:
+      - zigbee_ncp_configuration   
+  - name: zigbee_zigbee_pro_routing
+    condition:
+      - zigbee_ncp_configuration
+  - name: zigbee_zll
+    condition:
+      - zigbee_ncp_configuration   
+  - name: zigbee_security
+    condition:
+      - zigbee_ncp_configuration   
+
+requires:
+  - name: device_host
+  - name: zigbee_ezsp
+
+config_file:
+  - path: protocol/zigbee/app/framework/plugin-host/ncp-configuration/config/ncp-configuration-config.h
+
+source:
+  - path: protocol/zigbee/app/framework/plugin-host/ncp-configuration/ncp-configuration.c
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_ncp_configuration
+  - name: zigbee_af_callback
+    value:
+      callback_type: ncp_init
+      function_name: emberAfPluginNcpConfigurationNcpInitCallback
+

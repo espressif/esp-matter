@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2013 Bluetooth SIG, Inc. All rights reserved. -->
+<Profile xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/profile.xsd" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    type="org.bluetooth.profile.alert_notification"
+    name="Alert Notification">
+    <InformativeText>
+        <Abstract>This profile enables a client device to receive different types of alerts and event information, as well as information on the count of new alerts and unread items, which exist in the server device.</Abstract>
+        <Summary>The Alert Notification profile allows a device like a watch to obtain information from a cellphone about incoming calls, missed calls and SMS/MMS messages. The information may include the caller ID for an incoming call or the sender’s ID for email/SMS/MMS but not the message. This profile also enables the client device to get information about the number of unread messages on the server device.</Summary>
+    </InformativeText>
+    
+	<Role name="Alert Notification Server">
+		<Service type="org.bluetooth.service.alert_notification">
+			<Declaration>PrimarySingleInstance</Declaration>
+			<Requirement>Mandatory</Requirement>
+		</Service>
+       
+	</Role>
+	<Role name="Alert Notification Client">
+		<Client type="org.bluetooth.service.alert_notification">
+			<Requirement>Mandatory</Requirement>
+		</Client>
+	</Role>
+    
+</Profile>

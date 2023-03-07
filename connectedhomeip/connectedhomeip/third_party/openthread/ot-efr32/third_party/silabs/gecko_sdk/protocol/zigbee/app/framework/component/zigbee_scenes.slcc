@@ -1,0 +1,72 @@
+package: Zigbee
+description: Silicon Labs implementation of the Scenes server cluster.  This component supports
+  commands for setting up and recalling scenes.  Scenes are stored in a table and
+  each scene consists of a set of values for attributes in other clusters. Clusters
+  that extend the scene table do so through extension field sets. This component supports
+  extensions for the On/Off, Level Control, Thermostat, Color Control, Door Lock,
+  and Window Covering clusters. If the application includes any of these clusters,
+  the component automatically includes and manages the attributes in those clusters. For
+  example, if the application includes the On/Off server cluster, the component
+  saves and recalls the On/Off attribute as part of saving or recalling scenes. Some
+  ZLL extensions are implemented in this component and will be included automatically
+  for ZLL applications. If the ZLL Scenes server cluster component is also enabled,
+  this component uses it for handling some additional ZLL enhancements. Otherwise,
+  these ZLL extensions are disabled.  This component requires extending in order to interact
+  with the actual hardware.
+label: Scenes Server Cluster
+quality: extend
+id: zigbee_scenes
+category: Zigbee|Cluster Library|Common
+provides:
+   - name: "zigbee_scenes"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/scenes/config/scenes-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/scenes/scenes.c
+  - path: protocol/zigbee/app/framework/plugin/scenes/scenes-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/scenes/scenes-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/scenes
+    file_list:
+      - path: scenes.h
+      - path: scenes-tokens.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_scenes
+  - name: cli_group
+    value:
+      group: plugin
+      name: scenes
+      help: scenes related commands.
+  - name: cli_command
+    value:
+      group: scenes
+      name: print
+      handler: sli_plugin_scenes_server_print_info
+      help: Prints information about the contents of the scenes table.
+  - name: cli_command
+    value:
+      group: scenes
+      name: clear
+      handler: sli_plugin_scenes_server_clear
+      help: Clears the scenes table on every endpoint.
+  - name: token_header
+    value: app/framework/plugin/scenes/scenes-tokens.h
+  - name: cluster_functions
+    value:
+      cluster_name: Scenes
+      cluster_id: 0x5
+      cluster_type: server
+      init_function: emberAfScenesClusterServerInitCallback
+  - name: cluster_service
+    value:
+       cluster_id: "0x0005"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "SERVER"
+       service_function: "emberAfScenesClusterServerCommandParse"
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/scenes-server

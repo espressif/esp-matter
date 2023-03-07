@@ -1,0 +1,607 @@
+[
+    {
+        "target": "iar.targets.arm.M.*",
+        "device": "^CC13.*|^CC26.*|^CC32.*",
+        "platform": "ti.platforms.simplelink"
+    },
+    {
+        "target": "iar.targets.arm.M4F",
+        "device": "^MSP432.*",
+        "platform": "ti.platforms.msp432"
+    },
+    {
+        "target": "iar.targets.arm.M.*",
+        "platform": "ti.platforms.tiva"
+    },
+
+
+    {
+        "target": "ti.targets.C28_large",
+        "device": "TMS320F2802\\d{1,2}",
+        "platform": "ti.platforms.control28027"
+    },
+    {
+        "target": "ti.targets.C28_large",
+        "device": "TMS320F2803[0-5]",
+        "platform": "ti.platforms.control28035"
+    },
+    {
+        "target": "ti.targets.C28_float",
+        "device": "TMS320(F2806|F28PLC)",
+        "platform": "ti.platforms.control28069"
+    },
+    {
+        "target": "ti.targets.C28_large",
+        "device": "TMS320F2823[245]",
+        "platform": "ti.platforms.ezdsp28235"
+    },
+    {
+        "target": "ti.targets.C28_float",
+        "device": "TMS320F2833",
+        "platform": "ti.platforms.ezdsp28335"
+    },
+    {
+        "target": "ti.targets.C28_float",
+        "device": "TMS320F2833",
+        "platform": "ti.platforms.control28335"
+    },
+    {
+        "target": "ti.targets.C28_float",
+        "device": "TMS320C2834",
+        "platform": "ti.platforms.control28346"
+    },
+    {
+        "target": "ti.targets.C28_float",
+        "device": "F28M35",
+        "platform": "ti.platforms.concertoC28"
+    },
+    {
+        "target": "ti.targets.C28.*",
+        "platform": "ti.platforms.tms320x28"
+    },
+
+
+    {
+        "target": "ti.targets.arm.elf.M3",
+        "device": "F28M35",
+        "platform": "ti.platforms.concertoM3"
+    },
+    {
+        "target": "ti.targets.arm.elf.M3",
+        "device": "OMAP443",
+        "platform": "ti.platforms.sdp4430"
+    },
+    {
+        "target": "ti.targets.arm.elf.M3",
+        "device": "TMS320C6A8149",
+        "platform": "ti.platforms.evmC6A8149"
+    },
+    {
+        "target": "ti.targets.arm.elf.M3",
+        "device": "DM814[68x]",
+        "platform": "ti.platforms.evmDM8148"
+    },
+    {
+        "target": "ti.targets.arm.elf.M3",
+        "device": "TMS320C6A816[78]|DM816(x|[5-8])",
+        "platform": "ti.platforms.evmDM8168"
+    },
+    {
+        "target": "ti.targets.arm.elf.M3",
+        "device": "TMS320C6A816[78]|DM816(x|[5-8])",
+        "platform": "ti.platforms.simDM8168"
+    },
+    {
+        "target": "ti.targets.arm.elf.M3",
+        "device": "TI811x",
+        "platform": "ti.platforms.evmTI811X"
+    },
+    {
+        "target": "ti.targets.arm.elf.M3",
+        "device": "TI813x",
+        "platform": "ti.platforms.evmTI813X"
+    },
+    {
+        "target": "ti.targets.arm.elf.M3",
+        "device": "TI814x",
+        "platform": "ti.platforms.evmTI814X"
+    },
+    {
+        "target": "ti.targets.arm.elf.M3",
+        "device": "TI816x",
+        "platform": "ti.platforms.evmTI816X"
+    },
+    {
+        "target": "ti.targets.arm.elf.M3",
+        "platform": "ti.platforms.simCM3"
+    },
+    {
+        "target": "ti.targets.arm.elf.R4F",
+        "device": "^AWR14.*",
+        "platform": "ti.platforms.cortexR:AWR14XX"
+    },
+    {
+        "target": "ti.targets.arm.elf.R4F",
+        "device": "^AWR16.*",
+        "platform": "ti.platforms.cortexR:AWR16XX"
+    },
+    {
+        "target": "ti.targets.arm.elf.R4F",
+        "device": "^IWR14.*",
+        "platform": "ti.platforms.cortexR:IWR14XX"
+    },
+    {
+        "target": "ti.targets.arm.elf.R4F",
+        "device": "^IWR16.*",
+        "platform": "ti.platforms.cortexR:IWR16XX"
+    },
+    {
+        "target": "ti.targets.arm.elf.R5F",
+        "platform": "ti.platforms.cortexR"
+    },
+    {
+        "target": "ti.targets.arm.elf.M(3|4)",
+        "device": "^(LM3S|LM4F|SC01)",
+        "platform": "ti.platforms.stellaris"
+    },
+    {
+        "target": "gnu.targets.arm.M(3|4)",
+        "device": "^(LM3S|LM4F|SC01)",
+        "platform": "ti.platforms.tiva"
+    },
+    {
+        "target": "ti.targets.arm.elf.M(3|4)$",
+        "device": "^CC13.*|^CC26.*|^CC32.*",
+        "platform": "ti.platforms.simplelink"
+    },
+    {
+        "target": "ti.targets.arm.elf.M4F",
+        "device": "^MSP432.*",
+        "platform": "ti.platforms.msp432"
+    },
+    {
+        "target": "ti.targets.arm.elf.M4",
+        "device": "OMAP543",
+        "platform": "ti.platforms.sdp5430"
+    },
+    {
+        "target": "ti.targets.arm.elf.M4",
+        "device": "DRA7XX",
+        "platform": "ti.platforms.evmDRA7XX"
+    },
+    {
+        "target": "ti.targets.arm.elf.M4",
+        "device": "AM571",
+        "platform": "ti.platforms.evmAM571X"
+    },
+    {
+        "target": "ti.targets.arm.elf.M4",
+        "device": "AM571",
+        "platform": "ti.platforms.evmAM571X"
+    },
+    {
+        "target": "ti.targets.arm.elf.M4",
+        "device": "AM572",
+        "platform": "ti.platforms.evmAM572X"
+    },
+    {
+        "target": "ti.targets.arm.elf.M4",
+        "device": "TDA3XX",
+        "platform": "ti.platforms.evmTDA3XX"
+    },
+    {
+        "target": "ti.targets.arm.elf.M4",
+        "device": "Vayu",
+        "platform": "ti.platforms.simVayu"
+    },
+    {
+        "target": "ti.targets.arm.elf.M4",
+        "device": "^SC4CE|TM4C1",
+        "platform": "ti.platforms.tiva"
+    },
+    {
+        "target": "gnu.targets.arm.M4",
+        "device": "^SC4CE|TM4C1",
+        "platform": "ti.platforms.tiva"
+    },
+    {
+        "target": "gnu.targets.arm.M(3|4)$",
+        "device": "^CC13.*|^CC26.*|^CC32.*",
+        "platform": "ti.platforms.simplelink"
+    },
+    {
+        "target": "gnu.targets.arm.M4F",
+        "device": "^MSP432.*",
+        "platform": "ti.platforms.msp432"
+    },
+    {
+        "target": "ti.targets.arm.elf.Arm9",
+        "device": "OMAPL137",
+        "platform": "ti.platforms.evmOMAPL137"
+    },
+    {
+        "target": "ti.targets.arm.elf.Arm9",
+        "device": "OMAPL138",
+        "platform": "ti.platforms.evmOMAPL138"
+    },
+    {
+        "target": "ti.targets.arm.elf.Arm9",
+        "device": "TMS320DM35[057]",
+        "platform": "ti.platforms.evmDM355"
+    },
+    {
+        "target": "ti.targets.arm.elf.Arm9",
+        "device": "TMS320DM36[58]",
+        "platform": "ti.platforms.evmDM365"
+    },
+    {
+        "target": "ti.targets.arm.elf.Arm9",
+        "device": "DA830",
+        "platform": "ti.platforms.evmDA830"
+    },
+    {
+        "target": "ti.targets.arm.elf.Arm9",
+        "device": "DA850",
+        "platform": "ti.platforms.evmDA850"
+    },
+    {
+        "target": "ti.targets.arm.elf.A8|gnu.targets.arm.A8",
+        "platform": "ti.platforms.beaglebone"
+    },
+    {
+        "target": "ti.targets.arm.elf.A8|gnu.targets.arm.A8",
+        "platform": "ti.platforms.evmAM3359"
+    },
+    {
+        "target": "ti.targets.arm.elf.A8|gnu.targets.arm.A8",
+        "platform": "ti.platforms.evmAM3505"
+    },
+    {
+        "target": "ti.targets.arm.elf.A8|gnu.targets.arm.A8",
+        "platform": "ti.platforms.evmAM3517"
+    },
+    {
+        "target": "ti.targets.arm.elf.A8|gnu.targets.arm.A8",
+        "platform": "ti.platforms.sdp3430"
+    },
+    {
+        "target": "ti.targets.arm.elf.A8|gnu.targets.arm.A8",
+        "platform": "ti.platforms.evm3530"
+    },
+    {
+        "target": "ti.targets.arm.elf.A8|gnu.targets.arm.A8",
+        "platform": "ti.platforms.evmDM8148"
+    },
+    {
+        "target": "ti.targets.arm.elf.A8|gnu.targets.arm.A8",
+        "platform": "ti.platforms.evmC6A8149"
+    },
+    {
+        "target": "ti.targets.arm.elf.A8|gnu.targets.arm.A8",
+        "platform": "ti.platforms.evmDM8168"
+    },
+    {
+        "target": "ti.targets.arm.elf.A8|gnu.targets.arm.A8",
+        "platform": "ti.platforms.evmTI811X"
+    },
+    {
+        "target": "ti.targets.arm.elf.A8|gnu.targets.arm.A8",
+        "platform": "ti.platforms.evmTI813X"
+    },
+    {
+        "target": "ti.targets.arm.elf.A8|gnu.targets.arm.A8",
+        "platform": "ti.platforms.evmTI814X"
+    },
+    {
+        "target": "ti.targets.arm.elf.A8|gnu.targets.arm.A8",
+        "platform": "ti.platforms.evmTI816X"
+    },
+    {
+        "target": "ti.targets.arm.elf.A8|gnu.targets.arm.A8",
+        "platform": "ti.platforms.simDM8168"
+    },
+    {
+        "target": "gnu.targets.arm.A9F",
+        "platform": "ti.platforms.sdp4430"
+    },
+    {
+        "target": "gnu.targets.arm.A9F",
+        "platform": "ti.platforms.evmAM437X"
+    },
+    {
+        "target": "gnu.targets.arm.A15F",
+        "platform": "ti.platforms.sdp5430"
+    },
+    {
+        "target": "gnu.targets.arm.A15F",
+        "platform": "ti.platforms.evmDRA7XX"
+    },
+    {
+        "target": "gnu.targets.arm.A15F",
+        "platform": "ti.platforms.evmAM571X"
+    },
+    {
+        "target": "gnu.targets.arm.A15F",
+        "platform": "ti.platforms.evmAM572X"
+    },
+    {
+        "target": "gnu.targets.arm.A15F",
+        "platform": "ti.platforms.evmTCI6636K2H"
+    },
+    {
+        "target": "gnu.targets.arm.A15F",
+        "platform": "ti.platforms.evmTCI66AK2G02"
+    },
+    {
+         "target": "gnu.targets.arm.A53F",
+         "platform": "ti.platforms.cortexA"
+    },
+    {
+        "target": "ti.targets(.elf)?.C64P",
+        "device": "TMS320C642[14]",
+        "platform": "ti.platforms.evm6424"
+    },
+    {
+        "target": "ti.targets(.elf)?.C64P",
+        "device": "C6472",
+        "platform": "ti.platforms.evm6472"
+    },
+    {
+        "target": "ti.targets(.elf)?.C64P",
+        "device": "C6474",
+        "platform": "ti.platforms.evm6474"
+    },
+    {
+        "target": "ti.targets(.elf)?.C64P",
+        "device": "DM643[1-7]",
+        "platform": "ti.platforms.evmDM6437"
+    },
+    {
+        "target": "ti.targets(.elf)?.C64P",
+        "device": "DM64[0-8]",
+        "platform": "ti.platforms.evmDM648"
+    },
+    {
+        "target": "ti.targets(.elf)?.C64P",
+        "device": "C645[45]",
+        "platform": "ti.platforms.dsk6455"
+    },
+    {
+        "target": "ti.targets(.elf)?.C64P",
+        "device": "TMS320C645[24]",
+        "platform": "ti.platforms.evm6452"
+    },
+    {
+        "target": "ti.targets(.elf)?.C64P",
+        "device": "TMS320C6457",
+        "platform": "ti.platforms.evm6457"
+    },
+    {
+        "target": "ti.targets(.elf)?.C64P",
+        "device": "TCI6482",
+        "platform": "ti.platforms.dskTCI6482"
+    },
+    {
+        "target": "ti.targets(.elf)?.C64P",
+        "device": "TCI6484",
+        "platform": "ti.platforms.evmTCI6484"
+    },
+    {
+        "target": "ti.targets(.elf)?.C64P",
+        "device": "TCI648[6-7]",
+        "platform": "ti.platforms.evmTCI6486"
+    },
+    {
+        "target": "ti.targets(.elf)?.C64P",
+        "device": "TCI648[7-8]",
+        "platform": "ti.platforms.evmTCI6488"
+    },
+    {
+        "target": "ti.targets(.elf)?.C64P",
+        "device": "OMAP343",
+        "platform": "ti.platforms.sdp3430"
+    },
+    {
+        "target": "ti.targets(.elf)?.C64P",
+        "device": "OMAP353",
+        "platform": "ti.platforms.evm3530"
+    },
+    {
+        "target": "ti.targets(.elf)?.C64P",
+        "platform": "ti.platforms.sim64Pxx"
+    },
+
+
+    {
+        "target": "ti.targets(.elf)?.C66",
+        "device": "TCI6608",
+        "platform": "ti.platforms.simTCI6608"
+    },
+    {
+        "target": "ti.targets(.elf)?.C66",
+        "device": "TCI661[48]",
+        "platform": "ti.platforms.evm6614"
+    },
+    {
+        "target": "ti.targets(.elf)?.C66",
+        "device": "TCI661[68]",
+        "platform": "ti.platforms.simTCI6616"
+    },
+    {
+        "target": "ti.targets(.elf)?.C66",
+        "device": "TCI663[04]",
+        "platform": "ti.platforms.evmTCI6630K2L"
+    },
+    {
+        "target": "ti.targets(.elf)?.C66",
+        "device": "TCI663[46]",
+        "platform": "ti.platforms.evmTCI6636K2H"
+    },
+    {
+        "target": "ti.targets(.elf)?.C66",
+        "device": "TCI663[48]",
+        "platform": "ti.platforms.evmTCI6638K2K"
+    },
+    {
+        "target": "ti.targets(.elf)?.C66",
+        "device": "TMS320C665[457]",
+        "platform": "ti.platforms.evm6657"
+    },
+    {
+        "target": "ti.targets(.elf)?.C66",
+        "device": "TMS320C667[0-4]",
+        "platform": "ti.platforms.evm6670"
+    },
+    {
+        "target": "ti.targets(.elf)?.C66",
+        "device": "TMS320C667[1-8]",
+        "platform": "ti.platforms.evm6678"
+    },
+    {
+        "target": "ti.targets(.elf)?.C66",
+        "device": "66AK2",
+        "platform": "ti.platforms.evmC66AK2E"
+    },
+    {
+        "target": "ti.targets(.elf)?.C66",
+        "device": "66AK2",
+        "platform": "ti.platforms.evmTCI66AK2G02"
+    },
+    {
+        "target": "ti.targets(.elf)?.C66",
+        "device": "DRA7XX",
+        "platform": "ti.platforms.evmDRA7XX"
+    },
+    {
+        "target": "ti.targets(.elf)?.C66",
+        "device": "AM571",
+        "platform": "ti.platforms.evmAM571X"
+    },
+    {
+        "target": "ti.targets(.elf)?.C66",
+        "device": "AM572",
+        "platform": "ti.platforms.evmAM572X"
+    },
+    {
+        "target": "ti.targets(.elf)?.C66",
+        "device": "TDA3XX",
+        "platform": "ti.platforms.evmTDA3XX"
+    },
+    {
+        "target": "ti.targets(.elf)?.C66",
+        "platform": "ti.platforms.simVayu"
+    },
+    {
+        "target": "ti.targets(.elf)?.C66",
+        "platform": "ti.platforms.simKepler"
+    },
+    {
+        "target": "ti.targets(.elf)?.C674",
+        "device": "C6742",
+        "platform": "ti.platforms.evm6748"
+    },
+    {
+        "target": "ti.targets(.elf)?.C674",
+        "device": "C6743",
+        "platform": "ti.platforms.evm6747"
+    },
+    {
+        "target": "ti.targets(.elf)?.C674",
+        "device": "C6745",
+        "platform": "ti.platforms.evm6747"
+    },
+    {
+        "target": "ti.targets(.elf)?.C674",
+        "device": "C6746",
+        "platform": "ti.platforms.evm6748"
+    },
+    {
+        "target": "ti.targets(.elf)?.C674",
+        "device": "C6747",
+        "platform": "ti.platforms.evm6747"
+    },
+    {
+        "target": "ti.targets(.elf)?.C674",
+        "device": "C6748",
+        "platform": "ti.platforms.evm6748"
+    },
+    {
+        "target": "ti.targets(.elf)?.C674",
+        "device": "TMS320C6A8149",
+        "platform": "ti.platforms.evmC6A8149"
+    },
+    {
+        "target": "ti.targets(.elf)?.C674",
+        "device": "DM814[68x]",
+        "platform": "ti.platforms.evmDM8148"
+    },
+    {
+        "target": "ti.targets(.elf)?.C674",
+        "device": "TI811x",
+        "platform": "ti.platforms.evmTI811X"
+    },
+    {
+        "target": "ti.targets(.elf)?.C674",
+        "device": "TI814x",
+        "platform": "ti.platforms.evmTI814X"
+    },
+    {
+        "target": "ti.targets(.elf)?.C674",
+        "device": "TI816x",
+        "platform": "ti.platforms.evmTI816X"
+    },
+    {
+        "target": "ti.targets(.elf)?.C674",
+        "device": "TMS320C6A816[78]|DM816(x|[5-8])",
+        "platform": "ti.platforms.evmDM8168"
+    },
+    {
+        "target": "ti.targets(.elf)?.C674",
+        "device": "TMS320C6A816[78]|DM816(x|[5-8])",
+        "platform": "ti.platforms.simDM8168"
+    },
+    {
+        "target": "ti.targets(.elf)?.C674",
+        "device": "DA830",
+        "platform": "ti.platforms.evmDA830"
+    },
+    {
+        "target": "ti.targets(.elf)?.C674",
+        "device": "DA850",
+        "platform": "ti.platforms.evmDA850"
+    },
+    {
+        "target": "ti.targets(.elf)?.C674",
+        "device": "OMAPL137",
+        "platform": "ti.platforms.evmOMAPL137"
+    },
+    {
+        "target": "ti.targets(.elf)?.C674",
+        "device": "OMAPL138",
+        "platform": "ti.platforms.evmOMAPL138"
+    },
+    {
+        "target": "ti.targets(.elf)?.C674",
+        "device": "AWR16.*",
+        "platform": "ti.platforms.c6x:AWR16XX"
+    },
+    {
+        "target": "ti.targets(.elf)?.C674",
+        "device": "IWR16.*",
+        "platform": "ti.platforms.c6x:IWR16XX"
+    },
+    {
+        "target": "ti.targets(.elf)?.C64T",
+        "device": "OMAP443",
+        "platform": "ti.platforms.sdp4430"
+    },
+    {
+        "target": "ti.targets(.elf)?.C64T",
+        "device": "OMAP543",
+        "platform": "ti.platforms.sdp5430"
+    },
+    {
+        "target": "ti.targets(.elf)?.C64T",
+        "platform": "ti.platforms.simTesla"
+    },
+]

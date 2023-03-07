@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="loading" title="loading" version="1">
+<page name="loading ..." title="Loading ...">
+    <control height="96" width="400" type="label" bold="true" label="Loading, please wait ..."></control>
+</page>
+</gep>

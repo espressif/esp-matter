@@ -1,0 +1,42 @@
+id: "btmesh_sensor_client"
+label: "Sensor Client"
+package: "Btmesh"
+description: >
+  Used to support the functionality of a node that can monitor sensor data and
+  configure a set of sensors on another node.
+  
+  Sensor Client can connect to multiple Sensor Servers. It may operate on states
+  defined by Sensor Server model and Sensor Setup model via Sensor messages.
+  
+  This component supports temperature, people count, and illuminance data. It
+  provides callback functions for receiving these data, for events, such as
+  when Sensor Server discovery has started, when a device is found.
+  There is an interface to change the current property listened to and request
+  data on said property.
+category: "Bluetooth Mesh|Models|Sensors"
+quality: "production"
+root_path: "app/bluetooth/common/btmesh_sensor_client"
+source:
+  - path: "sl_btmesh_sensor_client.c"
+include:
+  - path: ""
+    file_list:
+      - path: "sl_btmesh_sensor_client.h"
+config_file:
+  - path: "config/sl_btmesh_sensor_client_config.h"
+  - path: btmesh_sensor_client.dcd
+    directory: btmeshconf
+provides:
+  - name: "btmesh_sensor_client"
+requires:
+  - name: "app_assert"
+  - name: "app_btmesh_util"
+  - name: "btmesh_feature_node"
+  - name: "btmesh_feature_sensor_client"
+  - name: "btmesh_stack"
+
+template_contribution:
+  - name: "btmesh_on_event"
+    value:
+      include: "sl_btmesh_sensor_client.h"
+      function: "sl_btmesh_handle_sensor_client_on_event"

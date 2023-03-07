@@ -1,0 +1,468 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pi_pico.gni")
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_arduino_build/arduino.gni")
+import("$dir_pw_build/host_tool.gni")
+import("$dir_pw_build/python.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_perf_test/perf_test.gni")
+import("$dir_pw_rpc/config.gni")
+import("$dir_pw_rust/rust.gni")
+import("$dir_pw_third_party/mcuxpresso/mcuxpresso.gni")
+import("$dir_pw_toolchain/c_optimization.gni")
+import("$dir_pw_toolchain/generate_toolchain.gni")
+import("$dir_pw_toolchain/non_c_toolchain.gni")
+import("$dir_pw_unit_test/test.gni")
+
+# Main build file for upstream Pigweed.
+
+declare_args() {
+  # The default C++ optimization level for building upstream Pigweed targets.
+  #
+  # Must be one of "debug", "size_optimized", or "speed_optimized".
+  pw_DEFAULT_C_OPTIMIZATION_LEVEL = "debug"
+
+  # The C++ optimization levels for which to generate targets.
+  #
+  # Supported levels are "debug", "size_optimized", or "speed_optimized".
+  pw_C_OPTIMIZATION_LEVELS = [
+    "debug",
+    "size_optimized",
+  ]
+
+  # List of application image GN targets specific to the Pigweed target.
+  pw_TARGET_APPLICATIONS = []
+}
+
+# This toolchain is used to force some dependencies to not be parsed by the
+# default toolchain. This is desirable because the default toolchain generates
+# build steps for all parsed targets, not just desired dependencies.
+if (current_toolchain == default_toolchain) {
+  pw_non_c_toolchain("non_default_toolchain") {
+  }
+}
+
+# List any optimization levels in pw_C_OPTIMIZATION_LEVELS that are not in
+# pw_toolchain_SUPPORTED_C_OPTIMIZATION_LEVELS. This is accomplished by adding
+# all supported levels to the selected levels, then removing all supported
+# levels. The remaining list contains only the unsupported levels.
+_unknown_optimization_levels =
+    pw_C_OPTIMIZATION_LEVELS + pw_toolchain_SUPPORTED_C_OPTIMIZATION_LEVELS -
+    pw_toolchain_SUPPORTED_C_OPTIMIZATION_LEVELS
+
+assert(_unknown_optimization_levels == [],
+       "pw_C_OPTIMIZATION_LEVELS includes unsupported optimization levels: " +
+           "$_unknown_optimization_levels")
+
+# Assert that the selected pw_DEFAULT_C_OPTIMIZATION_LEVEL is in the
+# pw_toolchain_SUPPORTED_C_OPTIMIZATION_LEVELS list. This is done by adding then
+# removing all instances of the selected levels from the supported levels list.
+# If the resulting list did not change, then no supported levels were removed,
+# indicating that pw_DEFAULT_C_OPTIMIZATION_LEVEL is not a supported value.
+assert(pw_toolchain_SUPPORTED_C_OPTIMIZATION_LEVELS +
+           [ pw_DEFAULT_C_OPTIMIZATION_LEVEL ] -
+           [ pw_DEFAULT_C_OPTIMIZATION_LEVEL ] !=
+           pw_toolchain_SUPPORTED_C_OPTIMIZATION_LEVELS,
+       "pw_DEFAULT_C_OPTIMIZATION_LEVEL (\"$pw_DEFAULT_C_OPTIMIZATION_LEVEL" +
+           "\") must be one of the supported values: " +
+           "$pw_toolchain_SUPPORTED_C_OPTIMIZATION_LEVELS")
+
+# Enumerate all of the different targets that upstream Pigweed will build by
+# default. Downstream projects should not depend on this target; this target is
+# exclusively to facilitate easy upstream development and testing.
+group("default") {
+  deps = [
+    ":check_modules",
+    ":docs",
+    ":host",
+    ":pi_pico",
+    ":python.lint",
+    ":python.tests",
+    ":static_analysis",
+    ":stm32f429i",
+  ]
+}
+
+# Verify that this BUILD.gn file is only used by Pigweed itself.
+assert(get_path_info("//", "abspath") == get_path_info(".", "abspath"),
+       "Pigweed's top-level BUILD.gn may only be used when building upstream " +
+           "Pigweed. To pull all Pigweed code into your build, import " +
+           "\$dir_pigweed/modules.gni and create a top-level pw_test_group " +
+           "that depends on the tests in pw_modules_tests. See " +
+           "https://pigweed.dev/build_system.html for details.")
+
+_update_or_check_modules_lists = {
+  script = "$dir_pw_build/py/pw_build/generate_modules_lists.py"
+  args = [
+    rebase_path(".", root_build_dir),
+    rebase_path("PIGWEED_MODULES", root_build_dir),
+    rebase_path("$dir_pw_build/generated_pigweed_modules_lists.gni",
+                root_build_dir),
+  ]
+  inputs = [
+    "$dir_pw_build/generated_pigweed_modules_lists.gni",
+    "PIGWEED_MODULES",
+  ]
+}
+
+# There are races if the module check and module file update are run at the same
+# time. Force them to be serialized to prevent races. As long as the generated
+# module file is up to date, they'll pass.
+pool("module_check_pool") {
+  depth = 1
+}
+
+# Check that PIGWEED_MODULES is up-to-date and sorted.
+action("check_modules") {
+  forward_variables_from(_update_or_check_modules_lists, "*")
+  outputs = [ "$target_gen_dir/$target_name.passed" ]
+  args += [ "--warn-only" ] + rebase_path(outputs, root_build_dir)
+  pool = ":module_check_pool"
+}
+
+# Run this command after adding an item to PIGWEED_MODULES to update the
+# generated .gni with Pigweed modules lists.
+action("update_modules") {
+  forward_variables_from(_update_or_check_modules_lists, "*")
+  outputs = [ "$target_gen_dir/$target_name.ALWAYS_RERUN" ]  # Never created
+  pool = ":module_check_pool"
+}
+
+group("pw_system_demo") {
+  deps = [ "$dir_pw_system:system_examples(:non_default_toolchain)" ]
+}
+
+group("pi_pico") {
+  if (PICO_SRC_DIR != "") {
+    deps = [ ":pw_module_tests(targets/rp2040)" ]
+  }
+}
+
+_internal_toolchains = "$dir_pigweed/targets/host/pigweed_internal"
+
+# This template generates a group that builds pigweed_default with a particular
+# toolchain.
+template("_build_pigweed_default_at_all_optimization_levels") {
+  _toolchain_prefix = invoker.toolchain_prefix
+
+  group(target_name) {
+    deps = [
+      ":pigweed_default(${_toolchain_prefix}$pw_DEFAULT_C_OPTIMIZATION_LEVEL)",
+    ]
+  }
+
+  foreach(optimization, pw_C_OPTIMIZATION_LEVELS) {
+    group(target_name + "_$optimization") {
+      deps = [ ":pigweed_default($_toolchain_prefix$optimization)" ]
+    }
+  }
+}
+
+# Select a default toolchain based on host OS.
+if (host_os == "linux") {
+  _default_toolchain_prefix = "$_internal_toolchains:pw_strict_host_clang_"
+} else if (host_os == "mac") {
+  _default_toolchain_prefix = "$_internal_toolchains:pw_strict_host_clang_"
+} else if (host_os == "win") {
+  _default_toolchain_prefix = "$_internal_toolchains:pw_strict_host_gcc_"
+} else {
+  assert(false, "Please define a host config for your system: $host_os")
+}
+
+# Below are a list of GN targets you can build to force Pigweed to build for a
+# specific Pigweed target.
+_build_pigweed_default_at_all_optimization_levels("host") {
+  toolchain_prefix = _default_toolchain_prefix
+}
+
+_build_pigweed_default_at_all_optimization_levels("host_clang") {
+  toolchain_prefix = "$_internal_toolchains:pw_strict_host_clang_"
+}
+
+# GCC is only supported for Windows. Pigweed doesn't yet provide a Windows
+# clang toolchain, and Pigweed does not provide gcc toolchains for macOS and
+# Linux.
+if (host_os == "win") {
+  _build_pigweed_default_at_all_optimization_levels("host_gcc") {
+    toolchain_prefix = "$_internal_toolchains:pw_strict_host_gcc_"
+  }
+}
+
+if (pw_third_party_mcuxpresso_SDK != "") {
+  _build_pigweed_default_at_all_optimization_levels("mimxrt595") {
+    toolchain_prefix = "$dir_pigweed/targets/mimxrt595_evk:mimxrt595_evk_"
+  }
+}
+
+_build_pigweed_default_at_all_optimization_levels("stm32f429i") {
+  toolchain_prefix = "$dir_pigweed/targets/stm32f429i_disc1:stm32f429i_disc1_"
+}
+
+if (pw_arduino_build_CORE_PATH != "") {
+  _build_pigweed_default_at_all_optimization_levels("arduino") {
+    toolchain_prefix = "$dir_pigweed/targets/arduino:arduino_"
+  }
+}
+
+_build_pigweed_default_at_all_optimization_levels("qemu_gcc") {
+  toolchain_prefix =
+      "$dir_pigweed/targets/lm3s6965evb_qemu:lm3s6965evb_qemu_gcc_"
+}
+
+# TODO(b/244604080): Inline string tests are too big to fit in the QEMU firmware
+# except under a size-optimized build. For now, only build size-optimized.
+#
+# _build_pigweed_default_at_all_optimization_levels("qemu_clang") {
+#   toolchain_prefix =
+#       "$dir_pigweed/targets/lm3s6965evb_qemu:lm3s6965evb_qemu_clang_"
+# }
+group("qemu_clang_size_optimized") {
+  deps = [ ":pigweed_default($dir_pigweed/targets/lm3s6965evb_qemu:lm3s6965evb_qemu_clang_size_optimized)" ]
+}
+group("qemu_clang") {
+  deps = [ ":qemu_clang_size_optimized" ]
+}
+
+# Run clang-tidy on pigweed_default with pw_strict_host_clang_debug toolchain options.
+# Make sure to invoke gn clean out when any relevant .clang-tidy
+# file is updated.
+group("static_analysis") {
+  # Static analysis is only supported on Linux and macOS using clang-tidy.
+  if (host_os != "win") {
+    _toolchain = "$_internal_toolchains:pw_strict_host_clang_debug"
+    deps = [ ":pigweed_default($_toolchain.static_analysis)" ]
+  }
+}
+
+group("docs") {
+  deps = [ "$dir_pigweed/docs($dir_pigweed/targets/docs)" ]
+}
+
+# Tests larger than unit tests, typically run in a specific configuration.
+group("integration_tests") {
+  _default_tc = _default_toolchain_prefix + pw_DEFAULT_C_OPTIMIZATION_LEVEL
+  deps = [
+    "$dir_pw_rpc:cpp_client_server_integration_test($_default_tc)",
+    "$dir_pw_rpc/py:python_client_cpp_server_test.action($_default_tc)",
+    "$dir_pw_unit_test/py:rpc_service_test.action($_default_tc)",
+  ]
+}
+
+# OSS-Fuzz uses this target to build fuzzers alone.
+group("fuzzers") {
+  # Fuzzing is only supported on Linux and MacOS using clang.
+  if (host_os != "win") {
+    deps = [ ":pw_module_tests($dir_pigweed/targets/host:host_clang_fuzz)" ]
+  }
+}
+
+group("asan") {
+  if (host_os != "win") {
+    deps = [ ":pw_module_tests.run($dir_pigweed/targets/host:host_clang_asan)" ]
+  }
+}
+
+# TODO(b/234876100): msan will not work until the C++ standard library included
+# in the sysroot has a variant built with msan.
+group("msan") {
+  # TODO(b/259695498): msan doesn't work on macOS yet.
+  if (host_os != "win" && host_os != "mac" && host_os != "linux") {
+    deps = [ ":pw_module_tests.run($dir_pigweed/targets/host:host_clang_msan)" ]
+  }
+}
+
+group("tsan") {
+  if (host_os != "win") {
+    deps = [ ":pw_module_tests.run($dir_pigweed/targets/host:host_clang_tsan)" ]
+  }
+}
+
+group("ubsan") {
+  # TODO(b/259695498): ubsan doesn't work on macOS yet.
+  if (host_os != "win" && host_os != "mac") {
+    deps =
+        [ ":pw_module_tests.run($dir_pigweed/targets/host:host_clang_ubsan)" ]
+  }
+}
+
+group("ubsan_heuristic") {
+  # TODO(b/259695498): ubsan_heuristic doesn't work on macOS yet.
+  if (host_os != "win" && host_os != "mac") {
+    deps = [ ":pw_module_tests.run($dir_pigweed/targets/host:host_clang_ubsan_heuristic)" ]
+  }
+}
+
+group("runtime_sanitizers") {
+  if (host_os != "win") {
+    deps = [
+      ":asan",
+      ":tsan",
+      ":ubsan",
+
+      # TODO(b/234876100): msan will not work until the C++ standard library
+      # included in the sysroot has a variant built with msan.
+      # ":msan",
+
+      # No ubsan_heuristic, which may have false positives.
+    ]
+  }
+}
+
+pw_python_group("python") {
+  python_deps = [
+    "$dir_pw_env_setup:python($pw_build_PYTHON_TOOLCHAIN)",
+    "$dir_pw_env_setup:target_support_packages($pw_build_PYTHON_TOOLCHAIN)",
+  ]
+}
+
+group("pigweed_pypi_distribution") {
+  deps = [ "$dir_pw_env_setup:pypi_pigweed_python_source_tree($pw_build_PYTHON_TOOLCHAIN)" ]
+}
+
+# Build host-only tooling.
+group("host_tools") {
+  deps = [
+    "$dir_pw_target_runner/go:simple_client(:non_default_toolchain)",
+    "$dir_pw_target_runner/go:simple_server(:non_default_toolchain)",
+  ]
+
+  if (pw_rust_ENABLE_EXPERIMENTAL_BUILD) {
+    deps += [
+      "$dir_pw_rust/example:hello($dir_pigweed/targets/host:host_clang_debug)",
+    ]
+  }
+}
+
+# By default, Pigweed will build this target when invoking ninja.
+group("pigweed_default") {
+  deps = []
+
+  # Prevent the default toolchain from parsing any other BUILD.gn files.
+  if (current_toolchain != default_toolchain) {
+    deps = [ ":apps" ]
+    if (pw_unit_test_AUTOMATIC_RUNNER == "") {
+      # Without a test runner defined, build the tests but don't run them.
+      deps += [ ":pw_module_tests" ]
+    } else {
+      # With a test runner, depend on the run targets so they run with the
+      # build.
+      deps += [ ":pw_module_tests.run" ]
+    }
+
+    # Add performance tests to the automatic build
+    deps += [ ":pw_perf_tests" ]
+
+    # Trace examples currently only support running on non-windows host
+    if (defined(pw_toolchain_SCOPE.is_host_toolchain) &&
+        pw_toolchain_SCOPE.is_host_toolchain && host_os != "win") {
+      deps += [
+        "$dir_pw_trace:trace_example_basic",
+        "$dir_pw_trace_tokenized:trace_tokenized_example_basic",
+        "$dir_pw_trace_tokenized:trace_tokenized_example_filter",
+        "$dir_pw_trace_tokenized:trace_tokenized_example_rpc",
+        "$dir_pw_trace_tokenized:trace_tokenized_example_trigger",
+      ]
+    }
+  }
+}
+
+group("cpp14_compatibility") {
+  _cpp14_toolchain = "$_internal_toolchains:pw_strict_host_clang_debug_cpp14"
+  deps = [
+    ":cpp14_modules($_cpp14_toolchain)",
+    ":cpp14_tests.run($_cpp14_toolchain)",
+  ]
+}
+
+# Build Pigweed with -std=c++20 to ensure compatibility. Compile with
+# optimizations since the compiler tends to catch more errors with optimizations
+# enabled than without.
+group("cpp20_compatibility") {
+  _cpp20_tc = "$_internal_toolchains:pw_strict_host_clang_size_optimized_cpp20"
+  deps = [
+    ":apps($_cpp20_tc)",
+    ":pw_module_tests.run($_cpp20_tc)",
+  ]
+}
+
+group("build_with_pw_minimal_cpp_stdlib") {
+  _toolchain = "$_internal_toolchains:pw_strict_host_clang_size_optimized_minimal_cpp_stdlib"
+
+  # This list of supported modules is incomplete.
+  deps = [
+    "$dir_pw_status($_toolchain)",
+    "$dir_pw_tokenizer($_toolchain)",
+  ]
+}
+
+# The default toolchain is not used for compiling C/C++ code.
+if (current_toolchain != default_toolchain) {
+  group("apps") {
+    # Application images built for all targets.
+    deps = [ "$dir_pw_hdlc/rpc_example" ]
+
+    # Add target-specific images.
+    deps += pw_TARGET_APPLICATIONS
+
+    # Add the pw_tool target to be built on host.
+    if (defined(pw_toolchain_SCOPE.is_host_toolchain) &&
+        pw_toolchain_SCOPE.is_host_toolchain) {
+      deps += [ "$dir_pw_tool" ]
+    }
+  }
+
+  # All Pigweed modules that can be built using gn. Not built by default.
+  group("pw_modules") {
+    deps = pw_modules
+  }
+
+  # Targets for all module unit test groups.
+  pw_test_group("pw_module_tests") {
+    group_deps = pw_module_tests
+  }
+
+  group("pw_perf_tests") {
+    deps = [
+      "$dir_pw_checksum:perf_tests",
+      "$dir_pw_perf_test:perf_test_tests_test",
+    ]
+  }
+
+  # Modules that support C++14.
+  # TODO(hepler): pw_kvs is supposed to compile as C++14, but does not.
+  group("cpp14_modules") {
+    public_deps = [
+      dir_pw_polyfill,
+      dir_pw_preprocessor,
+      dir_pw_tokenizer,
+      dir_pw_varint,
+    ]
+  }
+
+  # Tests that support C++14.
+  pw_test_group("cpp14_tests") {
+    group_deps = [
+      "$dir_pw_polyfill:tests",
+      "$dir_pw_span:tests",
+    ]
+    tests = [
+      "$dir_pw_tokenizer:simple_tokenize_test",
+      "$dir_pw_containers:to_array_test",
+      "$dir_pw_string:string_test",
+    ]
+  }
+}

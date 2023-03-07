@@ -1,0 +1,33 @@
+id: device_init_usbpll
+label: "Device Init: USB PLL"
+package: platform
+description: >
+  Device init for USB PLL configures the phase-lock loop for the USB module.
+  It is designed to give a high accurary 48Mhz clock with HFXO as the input reference clock.
+category: Services|Device Initialization
+quality: production
+root_path: platform/service/device_init/
+include:
+  - path: inc
+    file_list:
+      - path: sl_device_init_usbpll.h
+source:
+  - path: src/sl_device_init_usbpll_s2.c
+    condition: [device_series_2]
+provides:
+  - name: device_init_usbpll
+requires:
+  - name: emlib_cmu
+  - name: status
+  - name: device_series_2
+  - name: device_has_usbpll
+template_contribution:
+  - name: event_handler
+    value:
+      event: platform_init
+      include: sl_device_init_usbpll.h
+      handler: sl_device_init_usbpll
+    priority: -9545
+documentation:
+    docset: gecko-platform
+    document: service/api/group-device-init-usbpll

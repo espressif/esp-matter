@@ -1,0 +1,49 @@
+id: i2cspm
+package: platform
+label: I2CSPM
+description: >
+  This is an I2C Simple Polled Master driver that supports master mode with
+  a single bus-master only. It blocks while waiting for the transfer to 
+  complete, polling for completion in EM0. 
+
+
+  This component is instantiable, meaning that several named instances can be 
+  created. For each instance a configuration is generated along with an 
+  initialization struct set according to this configuration. These instance
+  defines and variables are available in a generated header file, 
+  sl_i2cspm_instances.h.
+
+
+  If the Services->Runtime->System Setup->System Init component is included in
+  a project, the driver instances will be initialized automatically, using the
+  instance configurations, during the sl_system_init() call in main.c.
+
+
+  Selecting this component will also include the I2CSPM Core component, which is 
+  the implementation of the I2CSPM driver itself.
+category: Platform|Driver|I2C
+quality: production
+root_path: platform/driver/i2cspm
+instantiable:
+  prefix: inst
+config_file:
+  - path: "config/s0/sl_i2cspm_{{instance}}_config.h"
+    file_id: i2cspm_config
+    condition: [device_series_0]
+  - path: "config/s1/sl_i2cspm_{{instance}}_config.h"
+    file_id: i2cspm_config
+    condition: [device_series_1]
+  - path: "config/s2/sl_i2cspm_{{instance}}_config.h"
+    file_id: i2cspm_config
+    condition: [device_series_2]
+provides:
+  - name: i2cspm
+    allow_multiple: true
+requires:
+  - name: i2cspm_core
+template_contribution:
+  - name: i2cspm_instances
+    value: "{{instance}}"
+documentation:
+    docset: gecko-platform
+    document: driver/api/group-i2cspm

@@ -1,0 +1,26 @@
+id: app_queue
+category: Application|Utility
+label:       Application Queue
+description: >
+  The Application Queue simplifies the implementation of homogeneous queues. It provides 
+  an API for static allocation of fixed-size elements. The implementation is based on a 
+  circular buffer of fixed-size items. A buffer overflow callback can be passed to the
+  queue in order to handle overflow events as requested.
+package: platform
+quality: alpha
+
+provides:
+  - name: app_queue
+
+requires:
+  - name: slist
+
+root_path: app/common/util/app_queue
+
+include:
+  - path: .
+    file_list: 
+      - path: app_queue.h
+
+source:
+  - path: app_queue.c

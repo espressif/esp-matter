@@ -1,0 +1,97 @@
+project_name: "MpZ3TcCustomTcHost"
+label: "Zigbee - Host MpZ3TcCustomTcHost"
+package: "Zigbee"
+category: "Zigbee Host Application"
+quality: "production"
+
+description: >
+  This is a multi-PAN Z3 coordinator on network 1 and custom (no) security 
+  coordinator on network 2.
+author: "Silicon Laboratories, Inc."
+
+component:
+  - id: "cli"
+    instance:
+    - example
+  - id: "native"
+  - id: "iostream_stdio"
+  - id: "zigbee_address_table"
+  - id: "zigbee_button_joining"
+  - id: "zigbee_concentrator"
+  - id: "zigbee_ezsp"
+  - id: "zigbee_ezsp_uart"
+  - id: "zigbee_file_descriptor_dispatch"
+  - id: "zigbee_find_and_bind_target"
+  - id: "zigbee_form_and_join"
+  - id: "zigbee_fragmentation"
+  - id: "zigbee_general_response_commands"
+  - id: "zigbee_identify"
+  - id: "zigbee_interpan"
+  - id: "zigbee_ncp_configuration"
+  - id: "zigbee_network_creator"
+  - id: "zigbee_network_creator_security"
+  - id: "zigbee_update_tc_link_key"
+  - id: "zigbee_network_find"
+  - id: "zigbee_scan_dispatch"
+  - id: "zigbee_stack_diagnostics"
+  - id: "zigbee_zcl_framework_core"
+  - id: "zigbee_debug_print"
+  - id: "zigbee_groups_server"
+  - id: "zigbee_level_control"
+
+include:
+  - path: "./"
+ 
+source:
+  - path: "main.c"
+  - path: "app.c"
+
+config_file:
+  - path: "config/zcl/zcl_config.zap"
+
+configuration:
+  - name: EMBER_AF_PLUGIN_TIME_SERVER_MASTER
+    value: 1
+  - name: EMBER_BINDING_TABLE_SIZE
+    value: 10
+  - name: EMBER_KEY_TABLE_SIZE
+    value: 6
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: SL_IOSTREAM_USART_VCOM_FLOW_CONTROL_TYPE
+    value: usartHwFlowControlCtsAndRts
+  - name: SL_CLI_MAX_INPUT_ARGUMENTS
+    value: 16
+  - name: SL_ZIGBEE_DEBUG_PRINTS_ZCL_LEGACY_AF_DEBUG_ENABLED
+    value: 1
+  - name: SLI_ZIGBEE_PRIMARY_NETWORK_DEVICE_TYPE
+    value: SLI_ZIGBEE_NETWORK_DEVICE_TYPE_COORDINATOR_OR_ROUTER
+  - name: SLI_ZIGBEE_PRIMARY_NETWORK_SECURITY_TYPE
+    value: SLI_ZIGBEE_NETWORK_SECURITY_TYPE_3_0
+  - name: EMBER_AF_PLUGIN_NETWORK_CREATOR_SECURITY_ALLOW_HA_DEVICES_TO_STAY
+    value: 1
+  - name: SLI_ZIGBEE_SECONDARY_NETWORK_ENABLED
+    value: 1
+  - name: SLI_ZIGBEE_SECONDARY_NETWORK_DEVICE_TYPE
+    value: SLI_ZIGBEE_NETWORK_DEVICE_TYPE_COORDINATOR_OR_ROUTER
+  - name: SLI_ZIGBEE_SECONDARY_NETWORK_SECURITY_TYPE
+    value: SLI_ZIGBEE_NETWORK_SECURITY_TYPE_NO_SECURITY
+  - name: SL_CLI_PROMPT_STRING
+    value:  "\"MpZ3TcCustomTcHost>\""
+
+readme:
+  - path: ./readme.html
+
+ui_hints:
+  highlight:
+    - path: readme.html
+      focus: false
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Zigbee"]
+  - name: "Device Type"
+    value: ["Host"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+

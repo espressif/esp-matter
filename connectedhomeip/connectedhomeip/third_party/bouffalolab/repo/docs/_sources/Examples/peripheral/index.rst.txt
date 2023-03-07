@@ -1,0 +1,24 @@
+Peripherals
+***************
+
+.. toctree::
+   :maxdepth: 2
+
+   GPIO <demo_gpio/gpio>
+   DAC <demo_dac/dac>
+   DAC_DMA <demo_dac/dac_dma>
+   Flash <demo_flash/flash>
+   Flash_BUS <demo_flash/flash_busaddr>
+   I2C_Master <demo_i2c/i2c_master>
+   I2C_Master_Mem <demo_i2c/i2c_master_mem>
+   PWM <demo_pwm/pwm>
+   RNG <demo_rng/rng>
+   RTC_BCD <demo_rtc/rtc_BCD>
+   RTC_DEC <demo_rtc/rtc_DEC>
+   SPI <demo_spi/spi_dma>
+   UART_DMA <demo_uart/uart_dma>
+   UART_echo <demo_uart/uart_echo>
+   UART_int <demo_uart/uart_int>
+   UART_abr <demo_uart/uart_abr>
+   WDG <demo_wdg/wdg>
+   TIMER <demo_timer/timer>

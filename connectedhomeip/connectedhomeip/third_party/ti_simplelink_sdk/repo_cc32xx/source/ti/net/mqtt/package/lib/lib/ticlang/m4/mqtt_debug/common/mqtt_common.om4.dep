@@ -1,0 +1,5 @@
+package/lib/lib/ticlang/m4/mqtt_debug/common/mqtt_common.om4: common/mqtt_common.c common/mqtt_common.h ../../../ti/net/slnetsock.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/time.h 
+common/mqtt_common.c:
+common/mqtt_common.h:
+../../../ti/net/slnetsock.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/posix/ticlang/sys/time.h:

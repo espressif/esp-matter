@@ -1,0 +1,34 @@
+package: Zigbee
+description: Silicon Labs implementation of AES-CMAC. See AN875 for more information.
+label: AES-CMAC
+quality: production
+id: zigbee_aes_cmac
+category: Zigbee|Utility
+provides:
+   - name: "zigbee_aes_cmac"
+requires:
+   - name: "zigbee_aes"
+   - name: "zigbee_aes_software"
+     condition:
+       - "operating_system"
+   - name: "zigbee_aes_software"
+     condition:
+       - "native"
+   - name: "zigbee_aes_software"
+     condition:
+       - "zigbee_simulation_or_zigbee_stack_unix"
+recommends:
+  - id: "zigbee_aes_psa"
+source:
+  - path: protocol/zigbee/app/framework/plugin/aes-cmac/aes-cmac.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/aes-cmac
+    file_list:
+      - path: aes-cmac.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_aes_cmac
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/aes-cmac

@@ -1,0 +1,21 @@
+id: micriumos_net_app_telnet_server
+label: Network Suite - Telnet Server
+package: micrium-tcpx
+description: Micrium OS Network Telnet Server
+category: Services|Micrium|Network Suite
+quality: production
+component_root_path: platform/micrium_os/net
+source:
+  - path: source/telnet/telnet_server.c
+include:
+  - path: include
+    file_list:
+      - path: telnet_server.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: NET_TELNET_SERVER
+provides:
+  - name: net_app_telnet_server
+requires:
+  - name: net
+  - name: common_shell

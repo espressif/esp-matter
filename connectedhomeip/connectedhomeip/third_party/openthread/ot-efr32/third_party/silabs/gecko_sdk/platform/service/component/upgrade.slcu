@@ -1,0 +1,19 @@
+upgrade:
+  - sdk:
+      id: gecko_sdk
+      version: "4.1.0"
+    component:
+      - trigger: cpc_secondary_driver_spi
+        description: >
+          Component cpc_secondary_driver_spi now requires a subcomponent that specify the peripheral type.
+        add:
+          - cpc_secondary_driver_spi_usart
+        remove:
+          - cpc_secondary_driver_spi
+      - trigger: cpc_secondary_driver_uart
+        description: >
+          Component cpc_secondary_driver_uart now requires a subcomponent that specify the peripheral type.
+        add:
+          - cpc_secondary_driver_uart_usart
+        remove:
+          - cpc_secondary_driver_uart

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ASCII"?>
+<model:MDescriptors xmlns:model="http://www.silabs.com/ss/Studio.ecore">
+  <descriptors name="amazon_aws_tests" label="Amazon AWS - Platform Tests" description="Project to run AWS Tests on Silicon Labs boards.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.amazon.example.amazon_aws_tests.amazon_aws_tests.slcp"/>
+    <properties key="projectFilePaths" value="example/amazon_aws_tests/amazon_aws_tests.slcp"/>
+    <properties key="readmeFiles" value=""/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd4180a brd4180b brd4181a brd4181b brd4181c brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm22.* .*efm32g.* .*efm32gg.* .*efm32gg11b.* .*efm32gg12b.* .*efm32hg.* .*efm32lg.* .*efm32pg12b.* .*efm32pg1b.* .*efm32pg22.* .*efm32pg23.* .*efm32tg.* .*efm32tg11b.* .*efm32wg.* .*efm32zg.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg21.* .*efr32bg22.* .*efr32fg12p.* .*efr32fg13p.* .*efr32fg14p.* .*efr32fg1p.* .*efr32fg22.* .*efr32fg23.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*efr32mr21.* .*efr32zg13l.* .*efr32zg13p.* .*efr32zg13s.* .*efr32zg14p.* .*efr32zg23.* .*fgm23.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*zgm13.* .*zgm23.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Example|AWS IoT"/>
+    <properties key="quality" value="ALPHA"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Ecosystem|Amazon MCU|Operating\ Systems Project\ Difficulty|Advanced"/>
+  </descriptors>
+</model:MDescriptors>

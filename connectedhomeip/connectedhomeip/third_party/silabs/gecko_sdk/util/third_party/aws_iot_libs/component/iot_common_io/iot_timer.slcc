@@ -1,0 +1,48 @@
+id: iot_timer
+label: IoT Timer
+description: >
+  Silicon Labs' Implementation of Amazon Common I/O Timer API
+  Doc: https://docs.aws.amazon.com/freertos/latest/lib-ref/common-io/files.html
+category: Third Party|Amazon FreeRTOS - AWS Libraries|Common I/O
+package: amazon_platform
+quality: production
+instantiable:
+  prefix: inst
+provides:
+  - name: iot_timer
+    allow_multiple: true
+requires:
+  - name: freertos
+  - name: device_init
+  - name: sleeptimer
+  - name: status
+  - name: atomic
+  - name: cmsis_core
+  - name: common_io_validation_lib
+root_path: util/third_party/aws_iot_libs
+config_file:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_timer/config/iot_timer_cfg_{{instance}}.h
+    file_id: iot_timer_cfg
+
+source:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_timer/source/iot_timer_drv.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_timer/source/iot_timer_hal.c
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_timer/test/iot_timer_test.c
+    condition: ["aws_tests_defs"]
+
+include:
+  - path: libraries/abstractions/common_io/include
+    file_list:
+      - path: iot_timer.h
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_timer/include
+    file_list:
+      - path: iot_timer_desc.h
+      - path: iot_timer_drv.h
+
+template_file:
+  - path: vendors/siliconlabs/boards/all/ports/common_io/iot_timer/template/iot_timer_desc.c.jinja
+template_contribution:
+  - name: iot_timer_instances
+    value: "{{instance}}"
+validation_helper:
+  - path: script/iot_timer_validation.lua

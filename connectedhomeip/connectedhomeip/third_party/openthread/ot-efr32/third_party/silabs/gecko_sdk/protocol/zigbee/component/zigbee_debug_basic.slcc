@@ -1,0 +1,34 @@
+id: zigbee_debug_basic
+label: Debug Basic
+package: Zigbee
+category: Zigbee|Stack
+quality: production
+
+description: This component provides basic debug support for the stack to send messages to the backchannel, which can be captured by Network Analyzer and displayed. The features are Node reset message, assert output, core dump output, virtual UART input and output, basic node information request and response (NodeInfo events).
+
+provides:
+  - name: zigbee_debug_basic
+
+requires:
+  - name: zigbee_debug_basic_implementation
+  - name: zigbee_debug_basic_library
+    condition:
+      - zigbee_force_libraries
+  - name: iostream_debug
+  - name: legacy_hal
+
+include:
+  - path: protocol/zigbee/stack/framework
+    file_list:
+      - path: zigbee_debug_channel.h
+
+recommends:
+  - id: zigbee_debug_basic_source
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_debug_basic
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/debug-basic

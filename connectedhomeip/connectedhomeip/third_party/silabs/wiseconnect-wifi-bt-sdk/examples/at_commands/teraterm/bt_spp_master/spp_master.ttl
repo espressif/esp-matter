@@ -1,0 +1,86 @@
+TRUE = 1
+FALSE = 0
+
+module_name= "SPP_MASTER"
+message= 'This example demonstrates BT Master functionality.\n1. Run this demo\n2. Run Bluetooth SPP Manager in andorid phone and start deiscovery mode\n'
+
+messagebox message 'BT SPP Master Example'
+
+send '|'
+wait 'U'
+sendln 'U'
+mpause 200
+sendln '1'
+wait 'Loading Done'
+message = 'Firmware Loading Done Successfully' 
+messagebox message ''
+
+
+sendln 'at+rsi_opermode=327680,0,1,2147483648,2150629376,1073741824'
+wait 'OK' 'ERROR'
+if result == 2 then
+	goto error
+endif
+
+mpause 200
+sendln 'at+rsibt_setconnmode=1'
+wait 'OK'  'ERROR'
+if result == 2 then
+	goto error
+endif
+
+mpause 200
+sendln 'at+rsibt_setdiscvmode=1'
+wait 'OK'  'ERROR'
+if result == 2 then
+	goto error
+endif
+
+mpause 200
+sendln 'at+rsibt_setprofilemode=1'
+wait 'OK'  'ERROR'
+if result == 2 then
+	goto error
+endif
+
+mpause 200
+sendln 'at+rsibt_setlocalname=10,'module_name
+wait 'OK'  'ERROR'
+if result == 2 then
+	goto error
+endif
+
+inputbox 'Enter the BD address of remote device in XX-XX-XX-XX-XX-XX format' 'phone'
+phone = inputstr
+
+mpause 200
+sendln 'at+rsibt_bond='phone''
+;wait 'OK' 'ERROR'
+;if result == 2 then
+;	goto error
+;endif
+
+strdim dialog 4
+dialog[0] = 'Send Usrpincode Response'
+dialog[1] = 'Send Userlinkkey Response'
+dialog[2] = 'Send Data'
+dialog[3] = 'SPP Connect'
+
+while TRUE
+    listbox 'Connect to the module using your phone.'#10'Respond to AT+RSIBT_USRPINCODEREQ with Option 1.'#10'Respond to AT+RSIBT_USRLINKKEYREQ with Option 2.'#10'When prompted, enter the pin 1234 on your phone.'#10'Press "Byte stream mode" on your phone to chat' 'Choose an Action' dialog
+
+    if result == 0 then
+        sendln 'at+rsibt_usrpincode='phone',1,1234'
+    elseif result == 1 then
+        sendln 'at+rsibt_usrlinkkey='phone',0,1234'
+    elseif result == 2 then
+        sendln 'at+rsibt_spptx=5,HELLO'
+	elseif result ==3 then
+        sendln 'at+rsibt_sppconn='phone''	
+    else
+        break
+    endif
+endwhile
+
+:error
+messagebox 'An error occured, Please check your configuration and try again''ERROR'

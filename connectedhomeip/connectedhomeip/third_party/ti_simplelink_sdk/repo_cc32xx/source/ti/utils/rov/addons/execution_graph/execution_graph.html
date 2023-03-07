@@ -1,0 +1,150 @@
+<!--
+    By Polymer's specification, this element's id must contain a dash
+    and should be globally unique
+-->
+<dom-module id="xdc-rov-polymerUI-examples-execution-graph">
+  <template>
+
+    <!-- include common rov view styles -->
+    <style include="ti-rov-viewStyles"></style>
+
+    <!-- CSS rules for this element -->
+    <style is="custom-style">
+
+      :host {
+        display: inline-block;
+        backgroundColor: white;
+        position: absolute;
+      }
+
+      #graph {
+        min-width: 270px;
+        min-height: 200px;
+      }
+
+      #closeButton { /* close button element styling */
+        padding-top: 0px;
+        float: right;
+      }
+
+      #viewLabel { /* style of name shown in tool bar */
+        margin-left: 15px;
+        font-size: 16px;
+        font-weight: bold;
+        font-family: var(--rovFontFamily);
+      }
+
+      #viewPaperCard { /* style of top-level container (paper-card) */
+        margin-top:8px;
+        margin-right:0px;
+        border: 1px solid #D3D3D3;
+      }
+
+      /* this addon's content style */
+      #viewContentDiv {
+        display: block;
+        position: absolute;
+        top: 36px;
+        bottom: 0px;
+        width: 100%;
+        margin-top:0px;
+        margin-bottom: 0px;
+      }
+    </style>
+
+    <paper-dialog id="customViewOptionsMenuDialog"
+        style="position:fixed;margin-right:0px;">
+      <div style="margin-top:16px;">
+          <paper-icon-button id="closeViewOptionsButton" title="Close"
+              on-click="closeViewOptions" icon="close" role="button"
+              tabindex="0"></paper-icon-button>
+      </div>
+      <paper-listbox id="customViewOptionsMenu" class="attachedListbox"
+          on-iron-select="customViewOptionsMenuItemSelected">
+        <paper-item id="onSave" class="viewOptionsMenuItem">
+          <paper-button class="viewOptionsMenuButton">
+            <iron-icon class="viewOptionsMenuButtonIcon" icon="file-download">
+                </iron-icon>
+            <label class="viewOptionsMenuButtonLabel" style="cursor:pointer;"
+                title="Save the current view in your downloads directory">
+                Save data displayed in view</label>
+          </paper-button>
+        </paper-item>
+        <paper-item id="dividerItem" class="viewOptionsMenuItem"
+            style="cursor:default">
+          <div class="viewOptionsMenuButtonChar">/</div>
+          <label class="viewOptionsMenuButtonLabel">Repeat divider</label>
+          <input type="number" id="dividerInput" value="{{repeatDivider}}"
+              min="1" max="32" on-change="dividerChanged"
+              disabled$="{{!repeatRefreshEnabled}}"></input>
+          <iron-icon id="dividerDisableIcon" class="dividerToggleIcon"
+              icon="av:stop" title="Disable repeat refresh in this view"
+              on-click="dividerToggleClicked"
+              hidden$="{{!repeatRefreshEnabled}}"></iron-icon>
+          <iron-icon id="dividerEnableIcon" class="dividerToggleIcon"
+              icon="autorenew" title="Enable repeat refresh in this view"
+              on-click="dividerToggleClicked"
+              hidden$="{{repeatRefreshEnabled}}"></iron-icon>
+        </paper-item>
+        <paper-item id="modeBarItem" class="viewOptionsMenuItem">
+          <paper-checkbox class="viewOptionsCheckbox" id="modeBarCheckbox"
+              on-change="onModeBar">Show plotly mode bar</paper-checkbox>
+        </paper-item>
+      </paper-listbox>
+    </paper-dialog>
+
+    <!-- local DOM for this element -->
+    <paper-card id="viewPaperCard" style="min-width: 410px;min-height: 310px;"
+        elevation="2" on-click="viewClicked" on-dragover="viewDragOver">
+
+      <!-- define the toolbar region that responds to drag actions -->
+      <div id="dragDiv" style="margin-top:2px;position:relative;"
+          draggable="{{draggable}}" on-mousedown="viewDragMouseDown">
+
+        <!-- display a label within the toolbar of this element -->
+        <label id="viewLabel">Execution Graph</label>
+
+        <!-- add the standard view buttons to this element -->
+        <paper-icon-button id="refreshButton" class="viewToobarButton"
+            hidden$="{{viewRefresh}}" icon="refresh" on-click="onRefresh"
+            role="button" tabindex="0" title="Refresh view">
+            </paper-icon-button>
+        <paper-spinner-lite id="refreshSpinner" hidden$="{{!viewRefresh}}"
+            active></paper-spinner-lite>
+        <paper-icon-button id="customViewMenuButton" class="viewToobarButton"
+            icon="menu" on-click="viewOptionsMenuClicked" role="button"
+            tabindex="0"  title="View options"></paper-icon-button>
+        <paper-icon-button id="zoomInButton" class="viewToobarButton"
+            icon="add-circle-outline" on-click="zoomIn" role="button"
+            tabindex="0" title="Zoom In"></paper-icon-button>
+        <paper-icon-button id="zoomOutButton" class="viewToobarButton"
+            icon="remove-circle-outline" on-click="zoomOut" role="button"
+            tabindex="0" title="Zoom Out"></paper-icon-button>
+        <paper-icon-button id="zoomRestButton" class="viewToobarButton"
+            icon="settings-overscan" on-click="zoomReset" role="button"
+            tabindex="0" title="Zoom Reset"></paper-icon-button>
+        <paper-icon-button id="closeButton" class="viewToobarButton"
+            icon="close" on-click="closeView" role="button" tabindex="0"
+            title="Close view"></paper-icon-button>
+      </div>
+
+     <!-- Place your content here -->
+      <div id="viewContentDiv">
+        <div id="graph"></div>
+      </div>
+
+      <!-- enable resizing for the paper-card element -->
+      <div class="resizerTopRight" on-mousedown="resizerClicked" hidden$="{{resizeViewsDisabled}}"></div>
+      <div class="resizerTopLeft" on-mousedown="resizerClicked" hidden$="{{resizeViewsDisabled}}"></div>
+      <div class="resizerBottomLeft" on-mousedown="resizerClicked" hidden$="{{resizeViewsDisabled}}"></div>
+      <div class="resizerBottomRight" on-mousedown="resizerClicked" hidden$="{{resizeViewsDisabled}}"></div>
+      <ti-rov-viewoptions id="rovViewOptions"></ti-rov-viewoptions>
+    </paper-card>
+
+  </template>
+
+  <!-- load this element's code  -->
+  <script src="ExecGraph.js"></script>
+  <script src="execution_graph.js"></script>
+
+</dom-module>

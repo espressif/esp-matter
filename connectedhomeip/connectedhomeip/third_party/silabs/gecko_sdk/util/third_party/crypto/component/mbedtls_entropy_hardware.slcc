@@ -1,0 +1,79 @@
+id: mbedtls_entropy_hardware
+package: platform
+label: Hardware Entropy Source
+description: >-
+  This component provides support for using entropy gathered from a strict
+  hardware entropy source (TRNG, radio or ADC) on Silicon Labs devices.
+category: Platform|Security|Mbed TLS|Randomness
+quality: production
+component_root_path: util/third_party/crypto
+source:
+  - path: sl_component/sl_mbedtls_support/src/sl_entropy_hardware.c
+    unless: [trustzone_nonsecure]
+provides:
+  - name: mbedtls_entropy_source
+    allow_multiple: true
+    condition: [device_series_2]
+  - name: mbedtls_entropy_source
+    allow_multiple: true
+    condition: [device_sdid_84]
+  - name: mbedtls_entropy_source
+    allow_multiple: true
+    condition: [device_sdid_100]
+  - name: mbedtls_entropy_source
+    allow_multiple: true
+    condition: [device_sdid_103]
+  - name: mbedtls_entropy_source
+    allow_multiple: true
+    condition: [device_sdid_106]
+  - name: mbedtls_entropy_source
+    allow_multiple: true
+    condition: [mbedtls_entropy_adc]
+  - name: mbedtls_entropy_source
+    allow_multiple: true
+    condition: [rail_lib]
+  - name: mbedtls_entropy_hardware
+    allow_multiple: true
+    condition: [device_series_2]
+  - name: mbedtls_entropy_hardware
+    allow_multiple: true
+    condition: [device_sdid_84]
+  - name: mbedtls_entropy_hardware
+    allow_multiple: true
+    condition: [device_sdid_100]
+  - name: mbedtls_entropy_hardware
+    allow_multiple: true
+    condition: [device_sdid_103]
+  - name: mbedtls_entropy_hardware
+    allow_multiple: true
+    condition: [device_sdid_106]
+  - name: mbedtls_entropy_hardware
+    allow_multiple: true
+    condition: [mbedtls_entropy_adc]
+  - name: mbedtls_entropy_hardware
+    allow_multiple: true
+    condition: [rail_lib]
+requires:
+  - name: device
+  # Include TRNG driver for all devices with a functional TRNG
+  - name: psa_crypto_trng
+    condition: [device_series_2]
+  - name: psa_crypto_trng
+    condition: [device_sdid_84]
+  - name: psa_crypto_trng
+    condition: [device_sdid_89]
+  - name: psa_crypto_trng
+    condition: [device_sdid_100]
+  - name: psa_crypto_trng
+    condition: [device_sdid_103]
+  - name: psa_crypto_trng
+    condition: [device_sdid_106]
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_ENTROPY_HARDWARE_ALT
+  - name: mbedtls_config
+    value: MBEDTLS_ENTROPY_RAIL_PRESENT
+    condition: [rail_lib]
+documentation:
+  docset: mbed-tls
+  document: group-rng-module

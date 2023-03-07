@@ -1,0 +1,260 @@
+{
+    "frontends": {
+        "FrontEnd": [
+            {
+                "_name": "ID",
+                "Command": {
+                    "_name": "CMD_BLE5_RADIO_SETUP_PA",
+                    "Field": [
+                        {
+                            "_name": "config.frontEndMode",
+                            "$": "0"
+                        },
+                        {
+                            "_name": "config.biasMode",
+                            "$": "0"
+                        }
+                    ],
+                    "OverrideField": {
+                        "_name": "pRegOverrideCommon"
+                    }
+                }
+            },
+            {
+                "_name": "XD",
+                "Command": {
+                    "_name": "CMD_BLE5_RADIO_SETUP_PA",
+                    "Field": [
+                        {
+                            "_name": "config.frontEndMode",
+                            "$": "0"
+                        },
+                        {
+                            "_name": "config.biasMode",
+                            "$": "1"
+                        }
+                    ],
+                    "OverrideField": {
+                        "_name": "pRegOverrideCommon"
+                    }
+                }
+            },
+            {
+                "_name": "IS_RFP",
+                "Command": {
+                    "_name": "CMD_BLE5_RADIO_SETUP_PA",
+                    "Field": [
+                        {
+                            "_name": "config.frontEndMode",
+                            "$": "1"
+                        },
+                        {
+                            "_name": "config.biasMode",
+                            "$": "0"
+                        }
+                    ],
+                    "OverrideField": [
+                        {
+                            "_name": "pRegOverrideCommon"
+                        },
+                        {
+                            "_name": "pRegOverride1Mbps",
+                            "Block": {
+                                "_name": "override_frontend_is_1mbps_2mbps.json",
+                                "Element32b": {
+                                    "_type": "ELEMENT",
+                                    "_comment": "RX: Set RSSI offset to adjust reported RSSI by +3 dB",
+                                    "$": "0x000308A3"
+                                }
+                            }
+                        },
+                        {
+                            "_name": "pRegOverride2Mbps",
+                            "Block": {
+                                "_name": "override_frontend_is_1mbps_2mbps.json",
+                                "Element32b": {
+                                    "_type": "ELEMENT",
+                                    "_comment": "RX: Set RSSI offset to adjust reported RSSI by +3 dB",
+                                    "$": "0x000308A3"
+                                }
+                            }
+                        },
+                        {
+                            "_name": "pRegOverrideCoded",
+                            "Block": {
+                                "_name": "override_frontend_is_coded.json",
+                                "Element32b": {
+                                    "_type": "ELEMENT",
+                                    "_comment": "RX: Set RSSI offset to adjust reported RSSI by +2 dB",
+                                    "$": "0x000408A3"
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "_name": "IS_RFN",
+                "Command": {
+                    "_name": "CMD_BLE5_RADIO_SETUP_PA",
+                    "Field": [
+                        {
+                            "_name": "config.frontEndMode",
+                            "$": "2"
+                        },
+                        {
+                            "_name": "config.biasMode",
+                            "$": "0"
+                        }
+                    ],
+                    "OverrideField": [
+                        {
+                            "_name": "pRegOverrideCommon"
+                        },
+                        {
+                            "_name": "pRegOverride1Mbps",
+                            "Block": {
+                                "_name": "override_frontend_is_1mbps_2mbps.json",
+                                "Element32b": {
+                                    "_type": "ELEMENT",
+                                    "_comment": "RX: Set RSSI offset to adjust reported RSSI by +3 dB",
+                                    "$": "0x000308A3"
+                                }
+                            }
+                        },
+                        {
+                            "_name": "pRegOverride2Mbps",
+                            "Block": {
+                                "_name": "override_frontend_is_1mbps_2mbps.json",
+                                "Element32b": {
+                                    "_type": "ELEMENT",
+                                    "_comment": "RX: Set RSSI offset to adjust reported RSSI by +3 dB",
+                                    "$": "0x000308A3"
+                                }
+                            }
+                        },
+                        {
+                            "_name": "pRegOverrideCoded",
+                            "Block": {
+                                "_name": "override_frontend_is_coded.json",
+                                "Element32b": {
+                                    "_type": "ELEMENT",
+                                    "_comment": "RX: Set RSSI offset to adjust reported RSSI by +2 dB",
+                                    "$": "0x000408A3"
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "_name": "XS_RFP",
+                "Command": {
+                    "_name": "CMD_BLE5_RADIO_SETUP_PA",
+                    "Field": [
+                        {
+                            "_name": "config.frontEndMode",
+                            "$": "1"
+                        },
+                        {
+                            "_name": "config.biasMode",
+                            "$": "1"
+                        }
+                    ],
+                    "OverrideField": [
+                        {
+                            "_name": "pRegOverrideCommon"
+                        },
+                        {
+                            "_name": "pRegOverride1Mbps",
+                            "Block": {
+                                "_name": "override_frontend_is_1mbps_2mbps.json",
+                                "Element32b": {
+                                    "_type": "ELEMENT",
+                                    "_comment": "RX: Set RSSI offset to adjust reported RSSI by +3 dB",
+                                    "$": "0x000308A3"
+                                }
+                            }
+                        },
+                        {
+                            "_name": "pRegOverride2Mbps",
+                            "Block": {
+                                "_name": "override_frontend_is_1mbps_2mbps.json",
+                                "Element32b": {
+                                    "_type": "ELEMENT",
+                                    "_comment": "RX: Set RSSI offset to adjust reported RSSI by +3 dB",
+                                    "$": "0x000308A3"
+                                }
+                            }
+                        },
+                        {
+                            "_name": "pRegOverrideCoded",
+                            "Block": {
+                                "_name": "override_frontend_is_coded.json",
+                                "Element32b": {
+                                    "_type": "ELEMENT",
+                                    "_comment": "RX: Set RSSI offset to adjust reported RSSI by +2 dB",
+                                    "$": "0x000408A3"
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "_name": "XS_RFN",
+                "Command": {
+                    "_name": "CMD_BLE5_RADIO_SETUP_PA",
+                    "Field": [
+                        {
+                            "_name": "config.frontEndMode",
+                            "$": "2"
+                        },
+                        {
+                            "_name": "config.biasMode",
+                            "$": "1"
+                        }
+                    ],
+                    "OverrideField": [
+                        {
+                            "_name": "pRegOverrideCommon"
+                        },
+                        {
+                            "_name": "pRegOverride1Mbps",
+                            "Block": {
+                                "_name": "override_frontend_is_1mbps_2mbps.json",
+                                "Element32b": {
+                                    "_type": "ELEMENT",
+                                    "_comment": "RX: Set RSSI offset to adjust reported RSSI by +3 dB",
+                                    "$": "0x000308A3"
+                                }
+                            }
+                        },
+                        {
+                            "_name": "pRegOverride2Mbps",
+                            "Block": {
+                                "_name": "override_frontend_is_1mbps_2mbps.json",
+                                "Element32b": {
+                                    "_type": "ELEMENT",
+                                    "_comment": "RX: Set RSSI offset to adjust reported RSSI by +3 dB",
+                                    "$": "0x000308A3"
+                                }
+                            }
+                        },
+                        {
+                            "_name": "pRegOverrideCoded",
+                            "Block": {
+                                "_name": "override_frontend_is_coded.json",
+                                "Element32b": {
+                                    "_type": "ELEMENT",
+                                    "_comment": "RX: Set RSSI offset to adjust reported RSSI by +2 dB",
+                                    "$": "0x000408A3"
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

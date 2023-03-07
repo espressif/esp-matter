@@ -1,0 +1,63 @@
+id: "wisun_rcp"
+label: "Wi-SUN Border Router  RCP"
+description: "Provide Wi-SUN Border Router RCP"
+package: "wisun"
+category: "Wi-SUN"
+quality: "production"
+root_path: "protocol/wisun/app/wisun_rcp"
+
+ui_hints:
+  visibility: never
+
+requires:
+  - name: "sl_system"
+  - name: "nvm3"
+  - name: "wisun_mac"
+  - name: "wisun_radioconf"
+  - name: "micriumos_kernel"
+  - name: "dmadrv"
+  - name: "emlib_usart"
+    condition:
+      - device_sdid_84
+  - name: "emlib_eusart"
+    condition:
+      - device_sdid_220
+  - name: "wisun_br_rcp_implementation"
+
+recommends:
+  - id: "wisun_br_rcp_sources"
+
+provides:
+  - name: "wisun_rcp"
+
+include:
+  - path: "."
+    file_list:
+      - path: "sl_micrium_debug.h"
+      - path: "sl_ring.h"
+      - path: "sl_wsrcp.h"
+      - path: "sl_wsrcp_crc.h"
+      - path: "sl_wsrcp_log.h"
+      - path: "sl_wsrcp_mac.h"
+      - path: "sl_wsrcp_utils.h"
+      - path: "sl_wsrcp_uart.h"
+      - path: "sl_wsrcp_uart_config.h"
+
+source:
+  - path: "sl_micrium_debug.c"
+  - path: "sl_ring.c"
+  - path: "sl_wsrcp.c"
+  - path: "sl_wsrcp_os_main.c"
+  - path: "sl_wsrcp_crc.c"
+  - path: "sl_wsrcp_uart.c"
+  - path: "sl_wsrcp_usart.c"
+    condition: [emlib_usart]
+  - path: "sl_wsrcp_eusart.c"
+    condition: [emlib_eusart]
+
+template_contribution:
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: "sl_wsrcp.h"
+      handler: "wisun_rcp_init"

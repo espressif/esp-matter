@@ -1,0 +1,22 @@
+!!omap
+- id: sltb004a
+- label: SLTB004A
+- package: platform
+- description: Kit BSP support for the Thunderboard Sense 2.
+- category: Platform|Board|Kit|Thunderboard
+- quality: production
+- requires:
+  - name: hardware_board_from_sltb004a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_tb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLTB004A"'
+  - name: SL_KIT_REV
+    value: '"B06"'
+- tag:
+  - kit:opn:SLTB004A
+  - kit:pn:TB004
+  - kit:variant:A
+  - kit:revision:B06

@@ -1,0 +1,203 @@
+# Copyright (c) 2020 Project CHIP Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build_overrides/chip.gni")
+import("//build_overrides/nlio.gni")
+
+import("${chip_root}/build/chip/buildconfig_header.gni")
+import("common_flags.gni")
+
+declare_args() {
+  # Enable strict schema checks.
+  enable_im_pretty_print =
+      is_debug && (current_os == "linux" || current_os == "mac" ||
+                   current_os == "ios" || current_os == "android")
+
+  # Logging verbosity control for Access Control implementation
+  #
+  # If set to > 0, it is desired to get additional logging on all
+  # access control checks for better debugging ability.
+  #
+  # If set to > 1, it is desired to log every single check
+  chip_access_control_policy_logging_verbosity = 0
+  if (is_debug && (current_os == "linux" || current_os == "mac")) {
+    chip_access_control_policy_logging_verbosity = 2
+  }
+
+  chip_enable_session_resumption = true
+
+  # By default, the resources used by each fabric is unlimited if they are allocated on heap. This flag is for checking the resource usage even when they are allocated on heap to increase code coverage in integration tests.
+  chip_im_force_fabric_quota_check = false
+}
+
+buildconfig_header("app_buildconfig") {
+  header = "AppBuildConfig.h"
+  header_dir = "app"
+
+  defines = [
+    "CHIP_CONFIG_IM_PRETTY_PRINT=${enable_im_pretty_print}",
+    "CHIP_CONFIG_IM_FORCE_FABRIC_QUOTA_CHECK=${chip_im_force_fabric_quota_check}",
+    "CHIP_CONFIG_ENABLE_SESSION_RESUMPTION=${chip_enable_session_resumption}",
+    "CHIP_CONFIG_ACCESS_CONTROL_POLICY_LOGGING_VERBOSITY=${chip_access_control_policy_logging_verbosity}",
+  ]
+}
+
+source_set("app_config") {
+  sources = [ "AppConfig.h" ]
+
+  public_deps = [ ":app_buildconfig" ]
+}
+
+static_library("app") {
+  output_name = "libCHIPDataModel"
+
+  sources = [
+    "AttributeAccessInterface.cpp",
+    "AttributePathExpandIterator.cpp",
+    "AttributePathExpandIterator.h",
+    "AttributePathParams.h",
+    "AttributePersistenceProvider.h",
+    "BufferedReadCallback.cpp",
+    "CASEClient.cpp",
+    "CASEClient.h",
+    "CASEClientPool.h",
+    "CASESessionManager.cpp",
+    "CASESessionManager.h",
+    "ChunkedWriteCallback.cpp",
+    "ChunkedWriteCallback.h",
+    "ClusterStateCache.cpp",
+    "ClusterStateCache.h",
+    "CommandHandler.cpp",
+    "CommandResponseHelper.h",
+    "CommandSender.cpp",
+    "DefaultAttributePersistenceProvider.cpp",
+    "DeferredAttributePersistenceProvider.cpp",
+    "DeviceProxy.cpp",
+    "DeviceProxy.h",
+    "EventManagement.cpp",
+    "EventPathParams.h",
+    "FailSafeContext.cpp",
+    "FailSafeContext.h",
+    "GlobalAttributes.h",
+    "InteractionModelEngine.cpp",
+    "InteractionModelRevision.h",
+    "InteractionModelTimeout.h",
+    "MessageDef/ArrayBuilder.cpp",
+    "MessageDef/ArrayParser.cpp",
+    "MessageDef/AttributeDataIB.cpp",
+    "MessageDef/AttributeDataIB.h",
+    "MessageDef/AttributeDataIBs.cpp",
+    "MessageDef/AttributeDataIBs.h",
+    "MessageDef/AttributePathIB.cpp",
+    "MessageDef/AttributePathIB.h",
+    "MessageDef/AttributePathIBs.cpp",
+    "MessageDef/AttributePathIBs.h",
+    "MessageDef/AttributeReportIB.cpp",
+    "MessageDef/AttributeReportIB.h",
+    "MessageDef/AttributeReportIBs.cpp",
+    "MessageDef/AttributeReportIBs.h",
+    "MessageDef/AttributeStatusIB.cpp",
+    "MessageDef/AttributeStatusIB.h",
+    "MessageDef/AttributeStatusIBs.cpp",
+    "MessageDef/AttributeStatusIBs.h",
+    "MessageDef/Builder.cpp",
+    "MessageDef/Builder.h",
+    "MessageDef/ClusterPathIB.cpp",
+    "MessageDef/ClusterPathIB.h",
+    "MessageDef/CommandDataIB.cpp",
+    "MessageDef/CommandPathIB.cpp",
+    "MessageDef/CommandStatusIB.cpp",
+    "MessageDef/DataVersionFilterIB.cpp",
+    "MessageDef/DataVersionFilterIB.h",
+    "MessageDef/DataVersionFilterIBs.cpp",
+    "MessageDef/DataVersionFilterIBs.h",
+    "MessageDef/EventDataIB.cpp",
+    "MessageDef/EventDataIB.h",
+    "MessageDef/EventFilterIB.cpp",
+    "MessageDef/EventFilterIBs.cpp",
+    "MessageDef/EventPathIB.cpp",
+    "MessageDef/EventPathIB.h",
+    "MessageDef/EventPathIBs.cpp",
+    "MessageDef/EventPathIBs.h",
+    "MessageDef/EventReportIB.cpp",
+    "MessageDef/EventReportIB.h",
+    "MessageDef/EventReportIBs.cpp",
+    "MessageDef/EventReportIBs.h",
+    "MessageDef/EventStatusIB.cpp",
+    "MessageDef/EventStatusIB.h",
+    "MessageDef/InvokeRequestMessage.cpp",
+    "MessageDef/InvokeRequests.cpp",
+    "MessageDef/InvokeResponseIB.cpp",
+    "MessageDef/InvokeResponseIBs.cpp",
+    "MessageDef/InvokeResponseMessage.cpp",
+    "MessageDef/ListBuilder.cpp",
+    "MessageDef/ListParser.cpp",
+    "MessageDef/MessageBuilder.cpp",
+    "MessageDef/MessageBuilder.h",
+    "MessageDef/MessageDefHelper.cpp",
+    "MessageDef/MessageDefHelper.h",
+    "MessageDef/MessageParser.cpp",
+    "MessageDef/MessageParser.h",
+    "MessageDef/Parser.cpp",
+    "MessageDef/Parser.h",
+    "MessageDef/ReadRequestMessage.cpp",
+    "MessageDef/ReadRequestMessage.h",
+    "MessageDef/ReportDataMessage.cpp",
+    "MessageDef/ReportDataMessage.h",
+    "MessageDef/StatusIB.cpp",
+    "MessageDef/StatusIB.h",
+    "MessageDef/StatusResponseMessage.cpp",
+    "MessageDef/StructBuilder.cpp",
+    "MessageDef/StructParser.cpp",
+    "MessageDef/SubscribeRequestMessage.cpp",
+    "MessageDef/SubscribeResponseMessage.cpp",
+    "MessageDef/TimedRequestMessage.cpp",
+    "MessageDef/WriteRequestMessage.cpp",
+    "MessageDef/WriteResponseMessage.cpp",
+    "OTAUserConsentCommon.h",
+    "OperationalSessionSetup.cpp",
+    "OperationalSessionSetup.h",
+    "OperationalSessionSetupPool.h",
+    "ReadClient.cpp",
+    "ReadHandler.cpp",
+    "RequiredPrivilege.cpp",
+    "RequiredPrivilege.h",
+    "StatusResponse.cpp",
+    "StatusResponse.h",
+    "TimedHandler.cpp",
+    "TimedHandler.h",
+    "TimedRequest.cpp",
+    "TimedRequest.h",
+    "WriteClient.cpp",
+    "WriteHandler.cpp",
+    "reporting/Engine.cpp",
+    "reporting/Engine.h",
+    "reporting/reporting.h",
+  ]
+
+  public_deps = [
+    ":app_config",
+    "${chip_root}/src/access",
+    "${chip_root}/src/lib/address_resolve",
+    "${chip_root}/src/lib/support",
+    "${chip_root}/src/messaging",
+    "${chip_root}/src/protocols/secure_channel",
+    "${chip_root}/src/system",
+    "${nlio_root}:nlio",
+  ]
+
+  cflags = [ "-Wconversion" ]
+
+  public_configs = [ "${chip_root}/src:includes" ]
+}

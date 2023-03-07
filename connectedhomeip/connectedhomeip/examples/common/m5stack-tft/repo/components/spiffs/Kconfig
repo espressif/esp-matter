@@ -1,0 +1,27 @@
+menu "TFT SPIFFS"
+
+config SPIFFS_BASE_ADDR
+    int "SPIFFS Base address"
+    range 1048576 33546240
+    default 0x180000
+    help
+	Starting address of the SPIFFS area in ESP32 Flash
+
+config SPIFFS_SIZE
+    int "SPIFFS Size in bytes"
+    range 262144 2097152
+    default 1048576
+
+config SPIFFS_LOG_BLOCK_SIZE
+    int "SPIFFS Logical block size"
+    range 4096 65536
+    default 8192
+
+config SPIFFS_LOG_PAGE_SIZE
+    int "SPIFFS Logical page size"
+    range 256 2048
+    default 256
+    help
+	Set it to the physical page size og the used SPI Flash chip.
+
+endmenu

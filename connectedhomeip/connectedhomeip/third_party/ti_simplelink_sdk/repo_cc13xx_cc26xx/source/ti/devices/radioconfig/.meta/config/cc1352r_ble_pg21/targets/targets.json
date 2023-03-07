@@ -1,0 +1,15 @@
+{
+    "targets": {
+        "Default": "..\/..\/cc1352r\/targets\/target_launchxl-cc1352r1_2_4_ghz.json:LAUNCHXL-CC1352R1-2_4GHZ",
+        "VirtualTarget": [
+            {
+                "_name": "LAUNCHXL-CC1352R1-2_4GHZ",
+                "Target": "..\/..\/cc1352r\/targets\/target_launchxl-cc1352r1_2_4_ghz.json"
+            },
+            {
+                "_name": "LPSTK-CC1352R1-2_4GHZ",
+                "Target": "..\/..\/cc1352r\/targets\/target_lpstk-cc1352r1_2_4_ghz.json"
+            }
+        ]
+    }
+}

@@ -1,0 +1,54 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2018-2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+{
+  "psa_framework_version": 1.0,
+  "name": "TFM_SP_IPC_SERVICE_TEST",
+  "type": "PSA-ROT",
+  "priority": "HIGH",
+  "entry_point": "ipc_service_test_main",
+  "stack_size": "0x0220",
+  "secure_functions": [
+  ],
+  "services" : [
+    {
+      "name": "IPC_SERVICE_TEST_BASIC",
+      "sid": "0x0000F080",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "IPC_SERVICE_TEST_PSA_ACCESS_APP_MEM",
+      "sid": "0x0000F081",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "IPC_SERVICE_TEST_PSA_ACCESS_APP_READ_ONLY_MEM",
+      "sid": "0x0000F082",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "IPC_SERVICE_TEST_APP_ACCESS_PSA_MEM",
+      "sid": "0x0000F083",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "IPC_SERVICE_TEST_CLIENT_PROGRAMMER_ERROR",
+      "sid": "0x0000F084",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    }
+  ]
+}

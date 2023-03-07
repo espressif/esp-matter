@@ -1,0 +1,9 @@
+[
+  {
+    "name": "selectLimit",
+    "arguments": {
+      "id": "ProfilSelector",
+      "enabled": ["wisun_fan_1_0"]
+    }
+  }
+]

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.heart_rate_control_point" name="Heart Rate Control Point" uuid="2A39">
+	<InformativeText>
+	</InformativeText>
+	<Value>
+		<Field name="Heart Rate Control Point">
+           
+			<Requirement>Mandatory</Requirement>
+			<Format>8bit</Format>
+			
+			<Enumerations>
+				<Enumeration key="1" value="Reset Energy Expended: resets the value of the Energy Expended field in the Heart Rate Measurement characteristic to 0"/>
+				<ReservedForFutureUse start="2" end="255"/>
+				<Reserved start="0" end="0"/>
+			</Enumerations>
+		</Field>
+	</Value>
+</Characteristic>

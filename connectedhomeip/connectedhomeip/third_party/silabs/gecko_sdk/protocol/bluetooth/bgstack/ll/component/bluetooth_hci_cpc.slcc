@@ -1,0 +1,52 @@
+id: bluetooth_hci_cpc
+label: HCI CPC component 
+package: Bluetooth
+description: CPC component for HCI
+
+category: Bluetooth|Controller
+quality: alpha
+root_path: protocol/bluetooth/bgstack/ll/utils/hci_packet
+source:
+  - path: cpc/src/sl_hci_packet.c
+  - path: cpc/src/sl_hci_cpc.c
+  - path: cpc/src/sl_hci_cpc_rtos.c
+    condition:
+      - "kernel"
+include:
+  - path: inc
+    file_list:
+      - path: sl_btctrl_hci_packet.h
+  - path: cpc/inc
+    file_list:
+      - path: sl_btctrl_hci_cpc_rtos.h
+  - path: cpc/src
+    file_list:
+      - path: sl_hci_cpc.h
+provides:
+  - name: bluetooth_hci_cpc
+requires:
+  - name: cpc_secondary
+  - name: bluetooth_hci
+conflicts:
+  - name: bluetooth_hci_uart
+template_contribution:
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: sl_hci_common_transport.h
+      handler: hci_common_transport_init
+    priority: 2
+  - name: event_handler
+    value:
+      event: service_process_action
+      include: sl_btctrl_hci_packet.h
+      handler: sl_btctrl_hci_packet_read
+    priority: 1
+  - name: event_handler
+    value:
+      event: stack_init
+      include: "sl_btctrl_hci_cpc_rtos.h"
+      handler: "sl_btctrl_hci_cpc_rtos_init"
+    priority: -1000
+    condition:
+      - "kernel"

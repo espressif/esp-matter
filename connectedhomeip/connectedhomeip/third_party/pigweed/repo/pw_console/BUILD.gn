@@ -1,0 +1,45 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+
+pw_doc_group("docs") {
+  inputs = [
+    "images/calculator_plugin.svg",
+    "images/clock_plugin1.svg",
+    "images/clock_plugin2.svg",
+    "images/2048_plugin1.svg",
+    "images/command_runner_main_menu.svg",
+    "images/pw_system_boot.png",
+    "images/python_completion.png",
+    "images/serial_debug.svg",
+    "py/pw_console/plugins/calc_pane.py",
+    "py/pw_console/plugins/clock_pane.py",
+    "py/pw_console/plugins/twenty48_pane.py",
+  ]
+  sources = [
+    "docs.rst",
+    "embedding.rst",
+    "internals.rst",
+    "plugins.rst",
+    "py/pw_console/docs/user_guide.rst",
+    "testing.rst",
+  ]
+}
+
+pw_test_group("tests") {
+}

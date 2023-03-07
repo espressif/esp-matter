@@ -1,0 +1,42 @@
+﻿<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster xmlns:zcl="http://zigbee.org/zcl/clusters"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:type="http://zigbee.org/zcl/types"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd"
+  id="0204" revision="1" name="ThermostatUserInterfaceConfiguration">
+  <classification role="application" picsCode="TSUIC" primaryTransaction="1" />
+  <server>
+    <attributes>
+      <attribute id="0000" name="TemperatureDisplayMode" type="enum8" writable="true" required="true" default="0">
+        <restriction>
+          <type:enumeration value="00" name="Celsius" />
+          <type:enumeration value="01" name="Fahrenheit" />
+        </restriction>
+      </attribute>
+      <attribute id="0001" name="KeypadLockout" type="enum8" writable="true" required="true" default="0">
+        <restriction>
+          <type:enumeration value="00" name="None" />
+          <type:enumeration value="01" name="Level1" />
+          <type:enumeration value="02" name="Level2" />
+          <type:enumeration value="03" name="Level3" />
+          <type:enumeration value="04" name="Level4" />
+          <type:enumeration value="05" name="Level5" />
+        </restriction>
+      </attribute>
+      <attribute id="0002" name="ScheduleProgrammingVisibility" type="enum8" writable="true" default="0">
+        <restriction>
+          <type:enumeration value="00" name="LocalEnabled" />
+          <type:enumeration value="01" name="LocalDisabled" />
+        </restriction>
+      </attribute>
+    </attributes>
+  </server>
+</zcl:cluster>

@@ -1,0 +1,22 @@
+!!omap
+- id: slwrb4181c
+- label: SLWRB4181C
+- package: platform
+- description: Kit BSP support for the EFR32xG21B 2.4 GHz 10 dBm Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4181c
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4181C"'
+  - name: SL_KIT_REV
+    value: '"A03"'
+- tag:
+  - kit:opn:SLWRB4181C
+  - kit:pn:WRB4181
+  - kit:variant:C
+  - kit:revision:A03

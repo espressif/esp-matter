@@ -1,0 +1,26 @@
+id: "apploader_util"
+label: "AppLoader Utility"
+package: "Bluetooth"
+description: >
+  This component provides utility functions related to OTA DFU, such as a
+  unified API for resetting the device to DFU mode.
+category: "Bluetooth|OTA"
+quality: "production"
+root_path: "protocol/bluetooth"
+include:
+  - path: "inc/"
+    file_list:
+      - path: "sl_apploader_util.h"
+source:
+  - path: "src/sl_apploader_util_s1.c"
+    condition: [device_series_1]
+  - path: "src/sl_apploader_util_s2.c"
+    condition: [device_series_2]
+requires:
+  - name: bootloader_interface
+    condition: [device_series_2]
+provides:
+  - name: "apploader_util"
+template_contribution:
+  - name: component_catalog
+    value: apploader_util

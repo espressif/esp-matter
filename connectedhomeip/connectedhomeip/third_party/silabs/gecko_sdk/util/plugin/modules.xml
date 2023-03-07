@@ -1,0 +1,19 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<model:MDescriptors xmlns:model="http://www.silabs.com/ss/Studio.ecore">
+  <descriptors name="SDK.HAL.CS5463.BASE" label="CS5463" propertyScope="module">
+    <description>CS5463 Power Meter</description>
+    <properties key="module.clientModelURI" value="./plugin-afv2/power-meter-cs5463/cs5463.slsproj"/>
+    <properties key="module.category" value="HAL Config"/>
+  </descriptors>
+  <descriptors name="SDK.HAL.FEM.BASE" label="FEM" propertyScope="module">
+    <description>FEM control</description>
+    <properties key="module.clientModelURI" value="./plugin-common/fem-control/fem-base.slsproj"/>
+    <properties key="module.category" value="HAL Config"/>
+  </descriptors>
+  <descriptors name="SDK.HAL.FEM.FLEX" label="FEM(FLEX)" propertyScope="module">
+    <description>FEM control</description>
+    <properties key="module.clientModelURI" value="./plugin-common/fem-control/fem-flex.slsproj"/>
+    <properties key="module.category" value="HAL Config"/>
+    <properties key="module.category" value="HAL Config"/>
+  </descriptors>
+</model:MDescriptors>

@@ -1,0 +1,433 @@
+[
+    {
+        "CompilerBuildOptionsPattern": "--cpu=Cortex-M3($|\\s)",
+        "baseTargetName": "M3",
+        "packageName": "iar.targets.arm"
+    },
+    {
+        "CompilerBuildOptionsPattern": "--cpu=Cortex-M4.*--fpu=VFPv4_sp",
+        "baseTargetName": "M4F",
+        "packageName": "iar.targets.arm"
+    },
+    {
+        "CompilerBuildOptionsPattern": "--fpu=VFPv4_sp.*--cpu=Cortex-M4",
+        "baseTargetName": "M4F",
+        "packageName": "iar.targets.arm"
+    },
+    {
+        "CompilerBuildOptionsPattern": "--cpu=Cortex-M4.*--fpu=none",
+        "baseTargetName": "M4",
+        "packageName": "iar.targets.arm"
+    },
+    {
+        "CompilerBuildOptionsPattern": "--fpu=none.*--cpu=Cortex-M4",
+        "baseTargetName": "M4",
+        "packageName": "iar.targets.arm"
+    },
+    {
+        "CompilerBuildOptionsPattern": "--cpu=Cortex-M4($|\\s)",
+        "baseTargetName": "M4",
+        "packageName": "iar.targets.arm"
+    },
+    {
+        "CompilerBuildOptionsPattern": "--cpu=Cortex-M4F($|\\s)",
+        "baseTargetName": "M4F",
+        "packageName": "iar.targets.arm"
+    },
+    {
+        "baseTargetName": "M4F",
+        "deviceFamilyPattern": "MSP432.*",
+        "elf": "true",
+        "toolChain": "TI",
+        "packageName": "ti.targets.arm"
+    },
+    {
+        "CompilerBuildOptionsPattern": "--float_support=fpu32($|\\s)",
+        "baseTargetName": "C28_float",
+        "deviceFamilyPattern": "C2000.*",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "CompilerBuildOptionsPattern": "--large_memory_model($|\\s)",
+        "baseTargetName": "C28_large",
+        "deviceFamilyPattern": "C2000.*",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "baseTargetName": "C28_float",
+        "deviceFamilyPattern": "C2000.*",
+        "deviceNamePattern": "TMS320[CF]283[0-9][0-9]$",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "baseTargetName": "C28_float",
+        "deviceFamilyPattern": "C2000.*",
+        "deviceNamePattern": "F28M3.*",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "baseTargetName": "C28_large",
+        "deviceFamilyPattern": "C2000.*",
+        "deviceNamePattern": "TMS320[CF]282[0-9][0-9]$",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "baseTargetName": "C28_large",
+        "deviceFamilyPattern": "C2000.*",
+        "deviceNamePattern": "TMS320[CF]28[01][0-9]$",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "baseTargetName": "C28_large",
+        "deviceFamilyPattern": "C2000.*",
+        "deviceNamePattern": "TMS320[CF]2802[0-9][0-9]?$",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "baseTargetName": "C28_large",
+        "deviceFamilyPattern": "C2000.*",
+        "deviceNamePattern": "TMS320[CF]2803[0-9]$",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "baseTargetName": "C28_large",
+        "deviceFamilyPattern": "C2000.*",
+        "deviceNamePattern": "TMS320[CF]2805[0-9][FM]?$",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "baseTargetName": "C28_float",
+        "deviceFamilyPattern": "C2000.*",
+        "deviceNamePattern": "TMS320[CF]2806[0-9]$",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "baseTargetName": "C28_large",
+        "deviceFamilyPattern": "C2000.*",
+        "deviceNamePattern": "TMS320R281[0-9]$",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "CompilerBuildOptionsPattern": "~((--float_support=fpu32($|\\s))|(--large_memory_model($|\\s)))",
+        "baseTargetName": "C28",
+        "deviceFamilyPattern": "C2000.*",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "baseTargetName": "C28_large",
+        "deviceVariant": "C28XX",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "baseTargetName": "M4F",
+        "deviceNamePattern": "CC26\\d2.*|CC13\\d2.*",
+        "deviceFamilyPattern": "ARM.*",
+        "elf": "true",
+        "toolChain": "TI",
+        "packageName": "ti.targets.arm"
+    },
+    {
+        "CompilerBuildOptionsPattern": "-silicon_version=7M3($|\\s)",
+        "baseTargetName": "M3",
+        "deviceFamilyPattern": "ARM.*",
+        "elf": "true",
+        "toolChain": "TI",
+        "packageName": "ti.targets.arm"
+    },
+    {
+        "CompilerBuildOptionsPattern": "-silicon_version=7A8($|\\s)",
+        "baseTargetName": "A8Fnv",
+        "deviceFamilyPattern": "ARM.*",
+        "elf": "true",
+        "toolChain": "TI",
+        "packageName": "ti.targets.arm"
+    },
+    {
+        "CompilerBuildOptionsPattern": "--float_support=FPv4SPD16($|\\s)",
+        "baseTargetName": "M4F",
+        "deviceFamilyPattern": "ARM.*",
+        "elf": "true",
+        "toolChain": "TI",
+        "packageName": "ti.targets.arm"
+    },
+    {
+        "CompilerBuildOptionsPattern": "-silicon_version=7M4($|\\s)",
+        "baseTargetName": "M4",
+        "deviceFamilyPattern": "ARM.*",
+        "elf": "true",
+        "toolChain": "TI",
+        "packageName": "ti.targets.arm"
+    },
+    {
+        "CompilerBuildOptionsPattern": "-silicon_version=5e($|\\s)",
+        "baseTargetName": "Arm9",
+        "deviceFamilyPattern": "ARM.*",
+        "elf": "true",
+        "toolChain": "TI",
+        "packageName": "ti.targets.arm"
+    },
+    {
+        "baseTargetName": "M3",
+        "deviceFamilyPattern": "ARM.*",
+        "deviceNamePattern": "LM3.*",
+        "elf": "true",
+        "toolChain": "TI",
+        "packageName": "ti.targets.arm"
+    },
+    {
+        "baseTargetName": "M3",
+        "deviceFamilyPattern": "ARM.*",
+        "deviceNamePattern": "F28M3.*",
+        "elf": "true",
+        "toolChain": "TI",
+        "packageName": "ti.targets.arm"
+    },
+    {
+        "baseTargetName": "M4F",
+        "deviceFamilyPattern": "ARM.*",
+        "deviceNamePattern": "LM4.*",
+        "elf": "true",
+        "toolChain": "TI",
+        "packageName": "ti.targets.arm"
+    },
+    {
+        "CompilerBuildOptionsPattern": "--silicon_version=7R4",
+        "baseTargetName": "R4F",
+        "deviceFamilyPattern": "ARM.*",
+        "deviceNamePattern": "(A|I)WR1.*",
+        "elf": "true",
+        "toolChain": "TI",
+        "packageName": "ti.targets.arm"
+    },
+    {
+        "CompilerBuildOptionsPattern": "-silicon_version=7R5($|\\s)",
+        "baseTargetName": "R5F",
+        "deviceFamilyPattern": "ARM.*",
+        "deviceNamePattern": "RM57D8.*",
+        "elf": "true",
+        "toolChain": "TI",
+        "packageName": "ti.targets.arm"
+    },
+    {
+        "CompilerBuildOptionsPattern": "-silicon_version=7R5($|\\s)",
+        "baseTargetName": "R5F",
+        "deviceFamilyPattern": "ARM.*",
+        "deviceNamePattern": "AM65.*",
+        "elf": "true",
+        "toolChain": "TI",
+        "packageName": "ti.targets.arm"
+    },
+    {
+        "baseTargetName": "Arm7",
+        "deviceVariant": "ARM7",
+        "elf": "true",
+        "toolChain": "TI",
+        "packageName": "ti.targets.arm"
+    },
+    {
+        "baseTargetName": "Arm9",
+        "deviceVariant": "ARM9",
+        "elf": "true",
+        "toolChain": "TI",
+        "packageName": "ti.targets.arm"
+    },
+    {
+        "baseTargetName": "A8Fnv",
+        "deviceVariant": "CORTEX_A8",
+        "elf": "true",
+        "toolChain": "TI",
+        "packageName": "ti.targets.arm"
+    },
+    {
+        "baseTargetName": "M3",
+        "deviceVariant": "CORTEX_M3",
+        "elf": "true",
+        "toolChain": "TI",
+        "packageName": "ti.targets.arm"
+    },
+    {
+        "CompilerBuildOptionsPattern": "-silicon_version=674",
+        "baseTargetName": "C674",
+        "deviceFamilyPattern": "C6000.*",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "CompilerBuildOptionsPattern": "-silicon_version=64[+Pp]",
+        "baseTargetName": "C64P",
+        "deviceFamilyPattern": "C6000.*",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "CompilerBuildOptionsPattern": "-silicon_version=640",
+        "baseTargetName": "C64",
+        "deviceFamilyPattern": "C6000.*",
+        "elf": "false",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "CompilerBuildOptionsPattern": "-silicon_version=670",
+        "baseTargetName": "C67",
+        "deviceFamilyPattern": "C6000.*",
+        "elf": "false",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "CompilerBuildOptionsPattern": "-silicon_version=67[+Pp]",
+        "baseTargetName": "C67P",
+        "deviceFamilyPattern": "C6000.*",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "CompilerBuildOptionsPattern": "-silicon_version=66",
+        "baseTargetName": "C66",
+        "deviceFamilyPattern": "C6000.*",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "CompilerBuildOptionsPattern": "-silicon_version=tesla",
+        "baseTargetName": "C64T",
+        "deviceFamilyPattern": "C6000.*",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "baseTargetName": "C66",
+        "deviceFamilyPattern": "C6000.*",
+        "deviceNamePattern": "TMS320TCI66.*",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "baseTargetName": "C64P",
+        "deviceVariant": "C64XPLUS",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "baseTargetName": "C67P",
+        "deviceVariant": "C67XPLUS",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "baseTargetName": "C64",
+        "deviceVariant": "C64XX",
+        "elf": "false",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "baseTargetName": "C62",
+        "deviceVariant": "C62XX",
+        "elf": "false",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "baseTargetName": "C67",
+        "deviceVariant": "C67XX",
+        "elf": "false",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "baseTargetName": "C674",
+        "deviceVariant": "C674X",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "baseTargetName": "C66",
+        "deviceVariant": "C66XX",
+        "toolChain": "TI",
+        "packageName": "ti.targets"
+    },
+    {
+        "baseTargetName": "ARP32",
+        "deviceFamilyPattern": "ARP32.*",
+        "toolChain": "TI",
+        "packageName": "ti.targets.arp32"
+    },
+    {
+        "baseTargetName": "ARP32",
+        "deviceFamilyPattern": "EVE.*",
+        "toolChain": "TI",
+        "packageName": "ti.targets.arp32"
+    },
+    {
+        "baseTargetName": "ARP32",
+        "deviceVariant": "ARP32",
+        "toolChain": "TI",
+        "packageName": "ti.targets.arp32"
+    },
+    {
+        "baseTargetName": "M4F",
+        "deviceFamilyPattern": "MSP432.*",
+        "toolChain": "GNU",
+        "packageName": "gnu.targets.arm"
+    },
+    {
+        "GNUCompilerBuildOptions": "-mcpu=cortex-m3",
+        "baseTargetName": "M3",
+        "deviceFamilyPattern": "ARM.*",
+        "toolChain": "GNU",
+        "packageName": "gnu.targets.arm"
+    },
+    {
+        "GNUCompilerBuildOptions": "-mcpu=cortex-m4.*-mfloat-abi=soft",
+        "baseTargetName": "M4",
+        "deviceFamilyPattern": "ARM.*",
+        "toolChain": "GNU",
+        "packageName": "gnu.targets.arm"
+    },
+    {
+        "GNUCompilerBuildOptions": "-mcpu=cortex-m4.*-mfloat-abi=hard",
+        "baseTargetName": "M4F",
+        "deviceFamilyPattern": "ARM.*",
+        "toolChain": "GNU",
+        "packageName": "gnu.targets.arm"
+    },
+    {
+        "GNUCompilerBuildOptions": "-mcpu=cortex-a8",
+        "baseTargetName": "A8F",
+        "toolChain": "GNU",
+        "packageName": "gnu.targets.arm"
+    },
+    {
+        "GNUCompilerBuildOptions": "-mcpu=cortex-a9",
+        "baseTargetName": "A9F",
+        "toolChain": "GNU",
+        "packageName": "gnu.targets.arm"
+    },
+    {
+        "GNUCompilerBuildOptions": "-mcpu=cortex-a15",
+        "baseTargetName": "A15F",
+        "toolChain": "GNU",
+        "packageName": "gnu.targets.arm"
+    },
+    {
+        "GNUCompilerBuildOptions": "-mcpu=cortex-a53+fp+simd",
+        "baseTargetName": "A53F",
+        "toolChain": "GNU",
+        "packageName": "gnu.targets.arm"
+    }
+]

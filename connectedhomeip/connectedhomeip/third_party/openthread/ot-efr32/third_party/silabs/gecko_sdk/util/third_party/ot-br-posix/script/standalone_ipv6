@@ -1,0 +1,316 @@
+#!/bin/bash
+#
+#  Copyright (c) 2017, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+#----------------------------------------
+# Purpose:
+#  To understand the purpose of this script see: print_big_ugly_warning() below.
+#----------------------------------------
+#
+
+# remember the name of this script
+SCRIPT_NAME=$0
+
+CWD=$(pwd)
+DATE=$(date)
+
+# shellcheck source=script/_initrc
+. "$(dirname "$0")"/_initrc
+
+ETH0_IPV6_BASE_PREFIX=fd11:33
+
+debug_echo()
+{
+    if [ x"${_DEBUG_IPV6}" == x"true" ]; then
+        echo "${@}"
+    fi
+}
+
+determine_eth0_name()
+{
+    ETH0_NAME=''
+
+    #
+    # this gives us a sorted list of network interface names
+    for devname in $(
+        cd /sys/class/net || exit
+        ls
+    ); do
+        # We want the physical device
+        # Not things like "usb0" or "wpan0"
+        # And we assume the first one is what we want
+        debug_echo "Consider: ${devname}"
+        ignore=false
+        case ${devname} in
+            usb* | can* | wpan* | br* | wlan* | lo)
+                # by name we can ignore USB-gadget, CANbus, Thread, wireless and loopback
+                ignore=true
+                ;;
+            *)
+                ignore=false
+                ;;
+        esac
+
+        if $ignore; then
+            debug_echo "Ignore ${devname} by name"
+            continue
+        fi
+
+        debug_echo "Consider: ${devname}"
+        if [ ! -L /sys/class/net/"${devname}"/device ]; then
+            debug_echo "Not a DEVICE ${devname}"
+            continue
+        fi
+
+        type=$(cat /sys/class/net/"${devname}"/type)
+        # Type1 = ARPHRD_ETHER
+        if [ "$type" -ne 1 ]; then
+            debug_echo "Not ARPHRD_ETHER"
+            continue
+        fi
+        # We assume the first thing we find is our device
+        ETH0_NAME=${devname}
+        break
+    done
+
+    if [ -z "${ETH0_NAME}" ]; then
+        echo "Cannot determine ETH0 name...."
+        exit 1
+    fi
+    echo "Assuming: Primary ETHERNET name is $ETH0_NAME"
+}
+
+install_radvd()
+{
+    echo "Fetching RADVD..."
+    echo "apt-get install --no-install-recommends radvd"
+    sudo apt-get install --no-install-recommends radvd
+}
+
+choose_random_eth0_address()
+{
+    # steps below are
+    #   Using "od" see http://man7.org/linux/man-pages/man1/od.1.html
+    #      read from /dev/urandom
+    #
+    # We use /dev/urandom not /dev/random for these reasons:
+    # 1) This is for private (not public) test purposes
+    # 2) urandom might stall ... and not give us bytes
+    #
+    # We want data in 16bit hex, hence: --format=x2
+    # We want only 4 bytes, hence --read-bytes=4
+    #
+    # The output looks like:
+    #      0000000 1234 5678
+    #      0000008
+    #
+    # head gives us the first line
+    # cut gives us the items 2 and 3 on the line
+    # tr  converts the space into a ':'
+    #
+    RANDOM_32BIT_VALUE=$(od --read-bytes=4 --format=x2 /dev/urandom \
+        | head -1 \
+        | cut -d' ' -f2,3 \
+        | tr ' ' ':')
+
+    # thus, "RANDOM_32BIT_VALUE=1234:5678"
+
+    # We'll use this for the radvd config
+    ETH0_IPV6_PREFIX=${ETH0_IPV6_BASE_PREFIX}:${RANDOM_32BIT_VALUE}
+
+    # and this for the static network address
+    ETH0_IPV6_STATIC_ADDRESS=${ETH0_IPV6_PREFIX}::1
+}
+
+configure_radvd()
+{
+    # this creates a configuration file for radvd
+    CFG_FILE=/etc/radvd.conf
+    if [ -f $CFG_FILE ]; then
+        echo "radvd config file exists: $CFG_FILE"
+        echo "SKIPPING radvd configuration"
+    else
+        sudo tee -a /etc/radvd.conf <<__EOF__
+#
+# This RADVD configuration file was created
+# by the OpenThread configuration script $SCRIPT_NAME
+# Executed in the directory ${CWD} on ${DATE}
+#
+# The purpose is to configure IPV6 in an issolated and
+# standalone network configuration for the purpose of test only
+#
+# This is by no means a complete IPv6 configuration
+# it is sufficent to allow coap transactions
+# with thread devices on the thread mesh network
+# attched to this boarder router
+#
+interface ${ETH0_NAME} {
+    # We want to send router adverts
+    AdvSendAdvert on;
+
+    # This is not a proper IPv6 router
+    # it is only for openthread
+    AdvDefaultPreference low;
+
+    # We should advertize this prefix
+    prefix ${ETH0_IPV6_PREFIX}::/64 {
+         # we want this "on link"
+         AdvOnLink on;
+         # devices should self-assign addresses with this prefix
+         AdvAutonomous on;
+         AdvRouterAddr on;
+    };
+};
+__EOF__
+    fi
+}
+
+assign_eth0_static_ipv6()
+{
+
+    # this creates a static IPv6 address for Eth0
+    sudo tee -a /etc/network/interfaces <<__EOF__
+
+# This configuration was created by
+# the openthread ${SCRIPT_NAME}
+# executing in the directory ${CWD}
+# and executed on ${DATE}
+#
+# for the purposes of testing ipv6 addresses
+# in an issolated network configuration
+
+# ensure ETH0 is configured at boot
+auto ${ETH0_NAME}
+
+# Configure the IPv6 address static
+# Note: IPv4 is not effected by this
+iface ${ETH0_NAME} inet6 static
+    address ${ETH0_IPV6_STATIC_ADDRESS}
+    netmask 64
+__EOF__
+
+}
+
+# on BBB we do this.
+# other platforms might do something simular
+bbb_main()
+{
+    install_radvd
+    determine_eth0_name
+    choose_random_eth0_address
+    configure_radvd
+    assign_eth0_static_ipv6
+
+    echo "You should now reboot your Device"
+}
+
+print_big_ugly_warning()
+{
+    # Scare our victim.
+
+    cat <<_EOF_
+
+Please understand the purpose of this script.
+
+This script is not intended to be an complete and proper IPv6
+configuration script.
+
+This is only hack that turns on just enough IPv6 to perform simple
+CoAP requests on or across an issolated test network to the Thread
+network.
+
+The example issolated test network consists of these parts:
+
+1) A thread RF radio network.
+
+2) The OpenThread Border router attached to the Thread network
+
+3) The Openthread Border router would typically be connected
+   to a residential home network in some way (wifi, or wired)
+
+   In this case, it is connected to a router that is not
+   connected to an upstream provider - it is issolated.
+
+4) In order to test & develop applications other things on the
+   "home/test network" need to talk to the various Thread end nodes
+   via IPv6
+
+   Examples include:
+
+   * Laptop, or desktop machine
+   * Android/Apple Phone or Tablet
+   * other network devices
+
+To test/develop your applications a means for these other devices on
+your test network to talk to devices on the Thread Network must exist.
+
+The problem:
+
+
+   Most home network routers provide only IPv4 services. They most
+   typically assume the upstream ISP network provider will provide
+   IPv6 addresses and configuration. A test network is often issolated
+   and not connected to the large world wide web, it is completely an
+   island. The upstream ISP provider does not exist.
+
+   In the end something needs to provide a minimal IPv6 configuration.
+
+=========================================================
+The above is the purpose of this ipv6 standalone hack script
+
+Never consider this script a proper IPv6 configuration.
+=========================================================
+
+It is only a quick hack that enables enough IPv6 to work such that:
+
+1) Your local test laptop/cellphone has an IPv6 address and
+2) can perform CoAP transfers between a node on thread network
+
+Now that you have read and understood the above, execute this script
+again like this:
+
+      ${SCRIPT_NAME}   enable_ipv6_hack
+
+_EOF_
+
+}
+
+# ensure user/victim has read the ugly warning.
+if [ "${1}" != "enable_ipv6_hack" ]; then
+    print_big_ugly_warning
+    exit 1
+fi
+
+# platforms specifc
+case ${PLATFORM} in
+    "beagleboneblack")
+        bbb_main
+        ;;
+    *)
+        die "Unsupported/unknown platform ${PLATFORM}"
+        ;;
+esac

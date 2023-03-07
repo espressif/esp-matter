@@ -1,0 +1,22 @@
+id: "btmesh_feature_lc_server"
+label: "Light Control Server Model"
+package: "Btmesh"
+description: "Enables Bluetooth Mesh LC Server Model."
+category: "Bluetooth Mesh|Stack Classes"
+quality: "production"
+root_path: "protocol/bluetooth"
+
+requires:
+  - name: "btmesh_stack"
+  - name: "btmesh_feature_lc_setup_server"
+  - name: "btmesh_feature_generic_server"
+  - name: "btmesh_core"
+provides:
+  - name: "btmesh_feature_lc_server"
+  - name: "btmesh_lighting_model"
+    allow_multiple: true
+template_contribution:
+  - name: btmesh_bgapi_class
+    value:
+      class: "lc_server"
+    priority: 1

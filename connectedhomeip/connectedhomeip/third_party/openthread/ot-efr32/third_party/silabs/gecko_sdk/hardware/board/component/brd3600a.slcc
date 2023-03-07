@@ -1,0 +1,29 @@
+!!omap
+- id: brd3600a
+- label: BRD3600A
+- package: platform
+- description: Board support for BRD3600A.
+- category: Platform|Board|MCU Plugin Board
+- quality: production
+- requires:
+  - name: efm32gg990f1024
+  - name: brd3600a_config
+  - name: hardware_board_dk
+- provides:
+  - name: brd3600a
+  - name: hardware_board
+  - name: hardware_board_mcuplugin
+  - name: hardware_board_from_dk
+  - name: hardware_board_from_efm32gg-dk3750
+- recommends: []
+- template_contribution: []
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD3600A"'
+  - name: SL_BOARD_REV
+    value: '"A05"'
+- tag:
+  - board:pn:BRD3600
+  - board:variant:A
+  - board:revision:A05
+  - board:device:efm32gg990f1024

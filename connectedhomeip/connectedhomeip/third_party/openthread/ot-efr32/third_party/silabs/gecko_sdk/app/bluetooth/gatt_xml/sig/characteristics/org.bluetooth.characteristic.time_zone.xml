@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Time Zone" type="org.bluetooth.characteristic.time_zone" uuid="2A0E">
+	<InformativeText>
+	</InformativeText>
+	<Value>
+		<Field name="Time Zone">
+			<Requirement>Mandatory</Requirement>
+			<Format>sint8</Format>
+			<Minimum>-48</Minimum>
+			<Maximum>56</Maximum>
+			<Enumerations>
+				<Enumeration key="-48" value="UTC-12:00" />
+				<Enumeration key="-44" value="UTC-11:00" />
+				<Enumeration key="-40" value="UTC-10:00" />
+				<Enumeration key="-38" value="UTC-9:30" />
+				<Enumeration key="-36" value="UTC-9:00" />
+				<Enumeration key="-32" value="UTC-8:00" />
+				<Enumeration key="-28" value="UTC-7:00" />
+				<Enumeration key="-24" value="UTC-6:00" />
+				<Enumeration key="-20" value="UTC-5:00" />
+				<Enumeration key="-18" value="UTC-4:30" />
+				<Enumeration key="-16" value="UTC-4:00" />
+				<Enumeration key="-14" value="UTC-3:30" />
+				<Enumeration key="-12" value="UTC-3:00" />
+				<Enumeration key="-8" value="UTC-2:00" />
+				<Enumeration key="-4" value="UTC-1:00" />
+				<Enumeration key="0" value="UTC+0:00" />
+				<Enumeration key="4" value="UTC+1:00" />
+				<Enumeration key="8" value="UTC+2:00" />
+				<Enumeration key="12" value="UTC+3:00" />
+				<Enumeration key="14" value="UTC+3:30" />
+				<Enumeration key="16" value="UTC+4:00" />
+				<Enumeration key="18" value="UTC+4:30" />
+				<Enumeration key="20" value="UTC+5:00" />
+				<Enumeration key="22" value="UTC+5:30" />
+				<Enumeration key="23" value="UTC+5:45" />
+				<Enumeration key="24" value="UTC+6:00" />
+				<Enumeration key="26" value="UTC+6:30" />
+				<Enumeration key="28" value="UTC+7:00" />
+				<Enumeration key="32" value="UTC+8:00" />
+				<Enumeration key="35" value="UTC+8:45" />
+				<Enumeration key="36" value="UTC+9:00" />
+				<Enumeration key="38" value="UTC+9:30" />
+				<Enumeration key="40" value="UTC+10:00" />
+				<Enumeration key="42" value="UTC+10:30" />
+				<Enumeration key="44" value="UTC+11:00" />
+				<Enumeration key="46" value="UTC+11:30" />
+				<Enumeration key="48" value="UTC+12:00" />
+				<Enumeration key="51" value="UTC+12:45" />
+				<Enumeration key="52" value="UTC+13:00" />
+				<Enumeration key="56" value="UTC+14:00" />
+			</Enumerations>
+            <AdditionalValues>
+				<Enumeration key="-128" value="time zone offset is not known"/>
+			</AdditionalValues> 
+		</Field>
+	</Value>
+</Characteristic>

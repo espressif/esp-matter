@@ -1,0 +1,31 @@
+Source: editline
+Section: devel
+Priority: optional
+Build-Depends: debhelper (>= 10), libtool
+Maintainer: Joachim Nilsson <troglobit@gmail.com>
+Standards-Version: 4.3.0
+
+Package: libeditline-dev
+Architecture: any
+Section: libdevel
+Depends: libeditline1 (= ${binary:Version}), ${misc:Depends}
+Description: development files for libeditline
+ This is a line-editing library. It can be linked into almost any program
+ to provide command-line editing and recall. It is call-compatible with a
+ subset of the FSF readline library, but it is a fraction of the size (and
+ offers fewer features).
+ .
+ This package contains the developer files: static libraries, headers,
+ manpages.
+
+Package: libeditline1
+Architecture: any
+Section: libs
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: line editing library similar to readline
+ This is a line-editing library. It can be linked into almost any program
+ to provide command-line editing and recall. It is call-compatible with a
+ subset of the FSF readline library, but it is a fraction of the size (and
+ offers fewer features).
+ .
+ This package contains the runtime library only.

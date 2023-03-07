@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="Clock" title="SYS/BIOS Clock" version="1">
+
+<page name="Module" title="Module Settings">
+<html><body><table>
+  <tr><td><table><tr>
+    <td><control type="label" 
+      label=" NOTE! Configuration of the Clock module has been disabled.  See the SYS/BIOS 'Enable Clock Manager' setting under"
+      visible="value:!ti.sysbios.BIOS.clockEnabled"
+      align="left"
+      bold="true"/>
+    </td>
+    <td><control type="hyperlink" 
+      link="ti.sysbios.BIOS" 
+      page="Runtime" 
+      bold="true"
+      visible="value:!ti.sysbios.BIOS.clockEnabled"
+      label="'Threading Options'"/>
+    </td>
+    </tr></table></td>
+  </tr>
+  <tr>
+      <td><form>
+        <p>The Clock module allows you to define one or more periodic functions that are run in the context <br/>of a Swi (software interrupt) thread.</p>
+      </form></td>
+  </tr>
+  <tr></tr>
+  <tr>
+    <td><control type="checkbox" 
+      label="Add the Clock support module to my configuration" 
+      value="value:this.$used" 
+      enabled="value:ti.sysbios.BIOS.clockEnabled"
+      bold="true"/>
+    </td>
+  </tr>
+  <tr></tr>
+  <tr><td>
+    <h1>Time Base</h1>
+    <table>
+      <tr>
+        <td><control type="radiogroup" 
+             value="value:this.tickSource" 
+             tooltip="value:this.tickSource.$summary"
+             enabled="value:ti.sysbios.BIOS.clockEnabled"/>
+        </td>
+      </tr>
+      <tr></tr>
+      <tr>
+        <td><form>
+           <p>When the Clock Manager is enabled, the Time Base setting will follow the user's configuration.<br/>
+           When the Clock Manager is disabled, the Time Base setting will be internally forced to <br/>
+           "The Clock module is disabled".</p>
+        </form></td>
+      </tr>
+      <tr>
+        <td><control type="label" 
+             label=" See the SYS/BIOS 'Enable Clock Manager' setting under"/>
+        </td>
+        <td><control type="hyperlink" 
+             link="ti.sysbios.BIOS" 
+             page="Runtime" 
+             label="'Threading Options'."/>
+        </td>
+      </tr>
+      <tr></tr>
+    </table>
+    <h1>Timer Control</h1>
+    <table>
+      <tr>
+        <td><control type="label" label="Tick period (us)" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.tickPeriod" 
+             tooltip="value:this.tickPeriod.$summary"
+             enabled="value:ti.sysbios.BIOS.clockEnabled &amp;&amp; this.tickSource!=this.TickSource_NULL"/>
+        </td>
+      </tr>
+      <tr>
+        <td><control type="label" label="Timer Id" align="left"/></td>
+        <td><control type="droplist" 
+             labels="ANY;0;1;2;3;4;5;6;7"
+             values="-1;0;1;2;3;4;5;6;7"
+             text="value:this.timerId" 
+             tooltip="value:this.timerId.$summary"
+             enabled="value:ti.sysbios.BIOS.clockEnabled  &amp;&amp; this.tickSource==this.TickSource_TIMER"/>
+        </td>
+      </tr>
+      <tr>
+        <td><control type="label" label="Tick mode" align="left"/></td>
+        <td><control type="droplist" 
+             value="value:this.tickMode"
+             enabled="value:ti.sysbios.BIOS.clockEnabled &amp;&amp; this.tickSource==this.TickSource_TIMER &amp;&amp; this.timerSupportsDynamic"
+             tooltip="value:this.tickMode.$summary" />
+        </td>
+      </tr>
+    </table>
+    </td><td>
+    <h1>Scheduling</h1>
+    <table>
+      <tr>
+        <td><control type="label" label="Swi priority" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:this.swiPriority" 
+             tooltip="value:this.swiPriority.$summary"
+             enabled="value:ti.sysbios.BIOS.clockEnabled"/>
+        </td>
+      </tr>
+    </table>
+    <form><p>The priority above sets the priority for all Clock functions independent of their period.  Higher numbers have higher priority.</p></form>
+  </td></tr>
+</table></body></html>
+</page>
+
+<page name="Instance" title="Instance Settings" DPI="10" enabled="value:ti.sysbios.BIOS.clockEnabled">
+<html><body><table>
+  <tr>
+    <td>
+      <h1>Portable Clocks</h1>
+      <table><tr>
+        <td><control type="listbox" sort="true" id="master" text="value:this.$activeInstance" width="10" height="15" align="fill" labels="value:this"/></td>
+        <td>
+          <control type="pushbutton" label="Add ..." align="fill" link="action:New" 
+                enabled="value:ti.sysbios.BIOS.clockEnabled&amp;&amp;this.$used"/>
+          <control type="pushbutton" label="Remove" align="fill" link="action:Delete" context="value:widget.master.selection"/>
+        </td>
+      </tr>
+      </table>
+    </td>
+    <td context="value:widget.master.selection">
+      <h1>Required Settings</h1>
+      <table>
+        <tr>
+          <td><control type="label" label="Handle" align="left"/></td>
+          <td><control type="editbox" 
+               value="value:this.instance.name"
+               tooltip="Handle name"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Function" align="left"/></td>
+          <td><control type="editbox" 
+               value="value:this.create.clockFxn"
+               tooltip="value:this.create.clockFxn.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Initial timeout" align="left"/></td>
+          <td><control type="editbox" 
+             value="value:this.create.timeout"
+             tooltip="value:this.create.timeout.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Period" align="left"/></td>
+          <td><control type="editbox" 
+             value="value:this.period"
+             tooltip="value:this.period.$summary"/></td>
+        </tr>
+        <tr>
+          <td colspan="2"><control type="checkbox"
+             label="Start at boot time when instance is created"
+             value="value:this.startFlag"
+             tooltip="value:this.startFlag.$summary"/></td>
+        </tr>
+      </table>
+      <h1>Thread Context</h1>
+      <table>
+        <tr>
+          <td><control type="label" label="Argument" align="left"/></td>
+          <td><control type="editbox" 
+             value="value:this.arg"
+             tooltip="value:this.arg.$summary"/></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table></body></html>
+</page>
+<properties name="Advanced" title="All Options" enabled="value:ti.sysbios.BIOS.clockEnabled" visible="true" link="this" />
+</gep>
+

@@ -1,0 +1,253 @@
+;
+; Copyright (c) 2020 Nordic Semiconductor ASA
+;
+; SPDX-License-Identifier: Apache-2.0
+;
+
+OuterWrapper = {
+      authenticationWrapper: AuthenticationWrapper / nil,
+      manifest:              bstr .cbor Manifest,
+      ? preInstallExt:       bstr .cbor PreInstallationInfo,
+      ? installExt:          bstr .cbor InstallationInfo,
+      ? postInstallExt:      bstr .cbor PostInstallationInfo,
+      ? textExt:             bstr .cborseq Text,
+      ? coswidExt:           bstr .cbor concise-software-identity
+  }
+  authenticationWrapper = 1
+  manifest = 2
+  preInstallExt = 3
+  installExt = 4
+  postInstallExt = 5
+  textExt = 6
+  coswidExt = 7
+
+  AuthenticationWrapper = COSE_Sig
+
+  TextInfo = int
+
+  concise-software-identity = int
+
+  COSE_Mac0 = [
+        Headers,
+        payload : bstr / nil,
+        tag : bstr,
+     ]
+
+  Headers = (
+      protected : empty_or_serialized_map,
+      unprotected : {
+          ? kid: 4 => bstr
+      }
+  )
+
+  label = int
+  values = int
+
+  label_value = label => values
+
+  header_map = {
+      Generic_Headers,
+      * label_value
+  }
+
+  COSE_Sig0 = [
+        Headers,
+        signature : bstr,
+     ]
+  COSE_Sig = [
+        Headers,
+        payload : bstr / nil,
+        signatures : [+COSE_Sig0],
+     ]
+  COSE_Signature = int
+  COSE_Encrypt = int
+  COSE_Encrypt0 = int
+
+  empty_or_serialized_map = (bstr .cbor header_map) / (bstr .size 0)
+
+  Generic_Headers = (
+     ? algorithm_identifier: 1 => int / tstr,
+     ? criticality: 2 => [+label],
+     ? content_type: 3 => tstr / int,
+     ? key_identifier: 4 => bstr,
+     ? IV: 5 => bstr,
+     ? Partial_IV: 6 => bstr,
+     ? counter_signature: 7 => COSE_Signature / [+COSE_Signature]
+  )
+  COSE_Digest = COSE_Mac0
+
+  Manifest = {
+      manifestVersion : 1,
+      sequence        : SequenceNumber,
+      ? preInstall    : PreInstallationInfo / COSE_Digest,
+      ? dependencies  : [* DependencyInfo],
+      ? payloads      : [* PayloadInfo],
+      ? install       : InstallationInfo / COSE_Digest,
+      ? postInstall   : PostInstallationInfo / COSE_Digest,
+      ? text          : TextInfo / COSE_Digest,
+      ? coswid        : concise-software-identity / COSE_Digest
+  }
+
+  manifestVersion = 1
+  sequence        = 2
+  preInstall      = 3
+  dependencies    = 4
+  payloads        = 5
+  install         = 6
+  postInstall     = 7
+  text            = 8
+  coswid          = 9
+
+  SequenceNumber = uint
+
+  DependencyInfo = {
+      depDigest  : COSE_Digest,         ; digest of the resource
+      depScope   : ComponentIdentifier, ; where the dependency's
+                                        ; payloads will be applied
+      ? depUris  : UriList              ; where to find the resource
+                                       ; applied
+  }
+  depDigest = 1
+  depScope  = 2
+  depUris   = 3
+
+  PrioritizedUri = (priority: int, uri: tstr)
+  UriList = [ + PrioritizedUri ]
+  ComponentIdentifier = [* bstr]
+
+  PayloadInfo = {
+      payloadComponent:       ComponentIdentifier,
+      payloadSize:            (uint / nil),
+      payloadDigest:          COSE_Digest,
+      ? regenInfo : {
+          regenDigest:        COSE_Digest,
+          regenType:          int,
+          ? regenParameters:  bstr,
+      },
+  }
+  payloadComponent = 1
+  payloadSize      = 2
+  payloadDigest    = 3
+  regenInfo        = 4
+  regenDigest      = 5
+  regenType        = 6
+  regenParameters  = 7
+
+  RegenType = LocationLengthRegenType /
+              FileListRegenType /
+              KeyListRegenType /
+              CustomRegenType
+
+  LocationLengthRegenType = 1
+  FileListRegenType       = 2
+  KeyListRegenType        = 3
+  CustomRegenType         = nint
+
+  RegenParameters = LocationLengthRegenParameters /
+                    FileListRegenParameters /
+                    KeyListRegenParameters /
+                    CustomRegenParameters
+  LocationLength = [ location: uint, length: uint ]
+  LocationLengthRegenParameters = [ * LocationLength ]
+  FileListRegenParameters       = [ * file: tstr ]
+  KeyListRegenParameters        = [ * key: tstr ]
+  CustomRegenParameters         = bstr
+
+  PreInstallationInfo = {
+      ? preConditions : [ * PreCondition ],
+      ? preDirectives : [ * PreDirective ]
+  }
+  preConditions = 1
+  preDirectives = 2
+
+  PreCondition    = IdCondition /
+                    TimeCondition /
+                    ImageCondition /
+                    BatteryLevelCondition /
+                    CustomCondition
+
+  IdCondition     = [ vendor : 1, id: Uuid ] /
+                    [ class  : 2, id: Uuid ] /
+                    [ device : 3, id: Uuid ]
+  Uuid = bstr .size 16
+
+  TimeCondition   = [useBy: 4,
+                     time:       Timestamp]
+  ImageCondition  = [ currentContent : 6 ,
+                     digest: COSE_Digest / nil,
+                     location: ComponentIdentifier ] /
+                    [ notCurrentContent : 7 ,
+                     digest: COSE_Digest / nil,
+                     location: ComponentIdentifier ]
+  BatteryLevelCondition = [ batteryLevel: 8,
+                            level: uint ]
+  CustomCondition = [nint,
+                     customParameters: bstr]
+
+  Timestamp       = uint
+
+  PreDirective = WaitUntilDirective /
+                 DayOfWeekDirective /
+                 TimeOfDayDirective /
+                 BatteryLevelDirective /
+                 ExternalPowerDirective /
+                 CustomDirective
+
+  WaitUntilDirective     = [ 1,
+                             timestamp: uint ]
+  DayOfWeekDirective     = [ 2, day: 0..6 ]
+  TimeOfDayDirective     = [ 3, hours: 0..23,
+                                ? minutes: 0..59,
+                                ? seconds: 0..59 ]
+  BatteryLevelDirective  = [ 4, level: uint]
+  ExternalPowerDirective = [ 5 ]
+  NetworkDisconnectDirective = [ 6 ]
+  CustomDirective        = [ nint,
+                             ? customParameters: bstr ]
+
+  InstallationInfo = {
+     payloadInstallationInfo : [ * PayloadInstallationInfo ],
+  }
+  payloadInstallationInfo = 1
+
+  PayloadInstallationInfo = {
+     installComponent :          ComponentIdentifier,
+     payloadProcessors :         [ * Processor ],
+     ? allowOverride :           bool,
+     ? payloadInstaller:  {
+         payloadInstallerID:           [ * int ],
+         ? payloadInstallerParameters: bstr,
+     }
+  }
+  installComponent = 1
+  payloadProcessors = 2
+  allowOverride = 3
+  payloadInstaller = 4
+  payloadInstallerID = 5
+  payloadInstallerParameters = 6
+
+  Processor       = {
+      processorID:       ProcessorID,
+      ?parameters:        COSE_Digest / COSE_Encrypt / COSE_Encrypt0 /
+                         int / tstr / bstr / nil,
+      inputs:            UriList / ComponentIdentifier / {int => int},
+  }
+  processorID = 1
+  parameters  = 2
+  inputs      = 3
+
+  ProcessorID = [ * int ]
+
+  PostInstallationInfo = {
+      ? postConditions : [ * PostCondition ],
+      ? postDirectives : [ * PostDirective ]
+  }
+  postConditions = 1
+  postDirectives = 2
+
+  PostCondition   = ImageCondition / CustomCondition
+  PostDirective   = CustomDirective
+
+  Text = {
+      * int => tstr
+  }

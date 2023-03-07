@@ -1,0 +1,42 @@
+id: psa_crypto_ecdh
+package: platform
+label: ECDH
+description: >-
+  This component provides support for key agreement with ECDH in PSA Crypto.
+category: Platform|Security|PSA Crypto|Key Exchange
+quality: production
+provides:
+  - name: psa_crypto_ecdh
+requires:
+  - name: psa_crypto_ecc
+  - name: mbedtls_ecdh
+    condition: [device_series_0]
+  - name: mbedtls_ecdh
+    condition: [device_series_1]
+  # EFR32xG21 (SDID:200) does not support acceleration of the SECP224R1 curve.
+  - name: mbedtls_ecdh
+    condition: [device_sdid_200, psa_crypto_ecc_secp224r1]
+  - name: mbedtls_ecdh
+    condition: [device_security_se, psa_crypto_ecc_secp384r1]
+  - name: mbedtls_ecdh
+    condition: [device_security_se, psa_crypto_ecc_secp521r1]
+  # X25519 has not always been supported on xG21A/xG23A devices. For the
+  # time being, we will choose an approach where we always include SW fallback.
+  # This will change in the future as more users can be assumed to have upgraded
+  # their SE FWs.
+  - name: mbedtls_ecdh
+    condition: [device_security_se, psa_crypto_ecc_curve25519, device_sdid_200]
+  - name: mbedtls_ecdh
+    condition: [device_security_se, psa_crypto_ecc_curve25519, device_sdid_210]
+  - name: mbedtls_ecdh
+    condition: [device_security_rot, psa_crypto_ecc_secp384r1]
+  - name: mbedtls_ecdh
+    condition: [device_security_rot, psa_crypto_ecc_secp521r1]
+  - name: mbedtls_ecdh
+    condition: [device_security_rot, psa_crypto_ecc_curve25519]
+template_contribution:
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_ECDH
+  - name: psa_crypto_config
+    value: "MBEDTLS_PSA_BUILTIN_ALG_ECDH 1"
+    condition: [mbedtls_ecdh]

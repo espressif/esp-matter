@@ -1,0 +1,46 @@
+id: "sl_wisun_socket"
+label: "POSIX-compliant Socket"
+package: "wisun"
+description: "This component provides a POSIX-like API and the appropriate socket handler."
+category: "Wi-SUN|Wi-SUN Services"
+quality: "production"
+root_path: "app/wisun/component/socket"
+provides:
+  - name: sl_wisun_socket
+
+source:
+  - path: "external_socket.c"
+  - path: "socket.c"
+  - path: "socket_event.c"
+  - path: "socket_hnd.c"
+
+include:
+  - path: "."
+    file_list:
+    - "path": "external_socket.h"
+    - "path": "socket.h"
+    - "path": "socket_hnd.h"
+
+requires:
+  - name: "errno"
+  - name: "sl_wisun_event_mgr"    # for handling socket events
+
+config_file:
+  - path: "config/socket_config.h"
+
+
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------ socket_handler_init
+  - name: "event_handler"
+    value:
+      event: "internal_app_init"
+      include: "socket_hnd.h"
+      handler: "socket_handler_init"
+
+  - name: component_catalog
+    value: wisun_socket
+
+documentation:
+  docset: wisun
+  document: wisun-stack-api/sl-wisun-socket-api

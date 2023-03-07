@@ -1,0 +1,4 @@
+package/lib/lib/ticlang/m4/drivers_cc32xx/./utils/StructRingBuf.om4: utils/StructRingBuf.c /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/utils/StructRingBuf.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/HwiP.h 
+utils/StructRingBuf.c:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/utils/StructRingBuf.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/HwiP.h:

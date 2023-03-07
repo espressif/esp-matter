@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<gep name="SYS/BIOS Overview" title="SYS/BIOS Overview" version="1">
+  <page name="Overview" title="Overview" DPI="2540">
+    <control type="bitmap" image="Overview.svg" width="18256" height="14288"/>
+    <control type="label" label="Threads" left="5080" top="399" width="3175" height="635" fontHeight="12"/>
+    <control type="hotspot" link="ref:ti.sysbios.knl.Swi" align="center" tooltip="Deferred function calls (executed with interrupts enabled)" left="10160" top="3368" width="2540" height="1270" italic="true"/>
+    <control type="label" label="Synchronization" left="5080" top="5565" width="4763" height="635" fontHeight="12"/>
+    <control type="hotspot" link="ref:ti.sysbios.knl.Task" align="center" tooltip="Threads that can block on semaphores" left="6350" top="3368" width="2540" height="1270" fontHeight="10" italic="true"/>
+    <control type="hotspot" link="ref:ti.sysbios.hal.Timer" align="center" tooltip="Portable Timer interrupt service routine support" left="13970" top="1394" width="2540" height="1270" italic="true"/>
+    <control type="hotspot" link="ref:ti.sysbios.knl.Clock" align="center" tooltip="Periodic functions" left="10160" top="1395" width="2540" height="1270" italic="true"/>
+    <control type="hotspot" link="ref:ti.sysbios.knl.Idle" align="center" tooltip="Background idle functions" left="6350" top="1395" width="2540" height="1270" italic="true"/>
+    <control type="hotspot" link="ref:ti.sysbios.knl.Event" align="center" tooltip="Multi-event synchronization support" left="10160" top="6588" width="2540" height="1270" italic="true"/>
+    <control type="hotspot" link="ref:ti.sysbios.knl.Mailbox" align="center" tooltip="Basic fixed size mailbox communication" left="13970" top="6588" width="2540" height="1270" italic="true"/>
+    <control type="hotspot" link="ref:ti.sysbios.BIOS" page="Runtime" align="center" tooltip="Overall SYS/BIOS configuration and setup" left="1588" top="1905" width="2223" height="2223" italic="true"/>
+    <control type="label" label="Diagnostics" left="635" top="8803" width="3493" height="635" fontHeight="12"/>
+    <control type="label" label="Memory Mangement" left="5080" top="8803" width="4763" height="635" fontHeight="12"/>
+    <control type="hotspot" link="ref:xdc.runtime.Memory" align="center" tooltip="Runtime memory management" left="8255" top="9684" width="2540" height="1270" italic="true"/>
+    <control type="hotspot" link="ref:ti.sysbios.heaps.HeapMem" align="center" tooltip="Variable length first-fit memory management" left="6350" top="11906" width="2540" height="1270" italic="true"/>
+    <control type="hotspot" link="ref:ti.sysbios.heaps.HeapBuf" align="center" tooltip="Deterministic fixed size allocator" left="10160" top="11906" width="2540" height="1270" italic="true"/>
+    <control type="hotspot" link="ref:ti.sysbios.heaps.HeapMultiBuf" align="center" tooltip="Generalized fixed size allocator" left="13970" top="11906" width="2540" height="1270" italic="true"/>
+    <control type="label" label="Startup" left="635" top="5565" width="3175" height="635" fontHeight="12"/>
+    <control type="hotspot" link="ref:ti.sysbios.BIOS" page="Error Handling" align="center" tooltip="Error handling and realtime assertion support" left="1270" top="9747" width="2540" height="889" italic="true"/>
+    <control type="hotspot" link="ref:ti.sysbios.utils.Load" align="center" tooltip="Realtime data logging support" left="1270" top="11017" width="2540" height="889" italic="true"/>
+    <control type="hotspot" link="ref:xdc.runtime.Startup" align="center" tooltip="System startup/initialization hooks" left="1270" top="7440" width="2540" height="577" italic="true"/>
+    <control type="hotspot" link="value:ti.sysbios.family.Settings.bootModule" align="center" enabled="value:ti.sysbios.family.Settings.bootModule != &apos;null&apos;" tooltip="System startup/initialization hooks" left="1270" top="6458" width="2540" height="577" italic="true"/>
+    <control type="hotspot" link="ref:ti.sysbios.hal.Hwi" align="center" tooltip="Portable interrupt service routine support" left="13970" top="3368" width="2540" height="1270" italic="true"/>
+    <control type="hotspot" link="ref:ti.sysbios.knl.Semaphore" align="center" tooltip="Binary and counting semaphore support" left="6350" top="6588" width="2540" height="1270" italic="true"/>
+    <control type="hotspot" link="ref:xdc.runtime.Timestamp" align="center" tooltip="Portable Timestamp support" left="1270" top="12256" width="2540" height="889" italic="true"/>
+    <control type="hotspot" link="ref:ti.sysbios.hal.Cache" align="center" tooltip="Portable Cache Manager" enabled="value:ti.sysbios.family.Settings.cacheDelegate != ti.sysbios.hal.CacheNull" left="12065" top="9684" width="2540" height="1270" italic="true"/>
+  </page>
+
+</gep>

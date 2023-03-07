@@ -1,0 +1,77 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/module_config.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+
+declare_args() {
+  # The build target that overrides the default configuration options for this
+  # module. This should point to a source set that provides defines through a
+  # public config (which may -include a file or add defines directly).
+  pw_chrono_threadx_CONFIG = pw_build_DEFAULT_MODULE_CONFIG
+}
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+config("backend_config") {
+  include_dirs = [ "public_overrides" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("config") {
+  public = [ "public/pw_chrono_threadx/config.h" ]
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    "$dir_pw_third_party/threadx",
+    pw_chrono_threadx_CONFIG,
+  ]
+}
+
+# This target provides the backend for pw::chrono::SystemClock.
+pw_source_set("system_clock") {
+  public_configs = [
+    ":public_include_path",
+    ":backend_config",
+  ]
+  public = [
+    "public/pw_chrono_threadx/system_clock_config.h",
+    "public/pw_chrono_threadx/system_clock_constants.h",
+    "public_overrides/pw_chrono_backend/system_clock_config.h",
+  ]
+  public_deps = [
+    ":config",
+    "$dir_pw_chrono:epoch",
+    "$dir_pw_chrono:system_clock.facade",
+    "$dir_pw_third_party/threadx",
+  ]
+  sources = [ "system_clock.cc" ]
+  deps = [
+    "$dir_pw_chrono:system_clock.facade",
+    "$dir_pw_sync:interrupt_spin_lock",
+  ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}
+
+pw_test_group("tests") {
+}

@@ -1,0 +1,41 @@
+id: "wisun_mac"
+label: "Wi-SUN MAC"
+description: "Provide Wi-SUN MAC"
+package: "wisun"
+category: "Wi-SUN"
+quality: "production"
+root_path: "protocol/wisun/stack"
+
+ui_hints:
+  visibility: never
+
+requires:
+  - name: "device_supports_wisun"
+  - name: "rail_lib_singleprotocol"
+  - name: "rail_util_pa"
+  - name: "cmsis_rtos2"
+  - name: "nvm3"
+  - name: "slist"
+  - name: "sl_wisun_trace_util"
+  - name: "sl_wisun_ns_list"
+  - name: "rail_util_pti"
+  - name: "wisun_mac_implementation"
+  - name: "wisun_crypto"
+recommends:
+  - id: "wisun_mac_sources"
+
+provides:
+  - name: "wisun_mac"
+
+define:
+  - name: "MBED_CONF_NANOSTACK_CONFIGURATION"
+    value: "ws_router"
+  - name: "MBED_TRACE_MAX_LEVEL"
+    value: "TRACE_ACTIVE_LEVEL_ALL"
+  - name: "MBED_CONF_MBED_TRACE_ENABLE"
+    value: "1"
+
+include:
+  - path: "inc"
+    file_list:
+        - path: "sl_wisun_types.h"

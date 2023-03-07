@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="User Control Point" type="org.bluetooth.characteristic.user_control_point" uuid="2A9F" last-modified="2014-06-10" approved="Yes">
+    <InformativeText>This definition is shown in the User Data Service Section 3.4 and its subsections.</InformativeText>
+</Characteristic>

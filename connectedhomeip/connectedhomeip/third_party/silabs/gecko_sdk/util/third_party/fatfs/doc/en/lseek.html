@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="up" title="FatFs" href="../00index_e.html">
+<link rel="alternate" hreflang="ja" title="Japanese" href="../ja/lseek.html">
+<link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
+<title>FatFs - f_lseek</title>
+</head>
+
+<body>
+
+<div class="para">
+<h2>f_lseek</h2>
+<p>The f_lseek function moves the file read/write pointer of an open file object. It can also be used to increase the file size (cluster pre-allocation).</p>
+
+<pre>
+FRESULT f_lseek (
+  FIL* <em>FileObject</em>,   <span>/* Pointer to the file object structure */</span>
+  DWORD <em>Offset</em>       <span>/* File offset in unit of byte */</span>
+);
+</pre>
+</div>
+
+<div class="para">
+<h4>Parameters</h4>
+<dl class="par">
+<dt>FileObject</dt>
+<dd>Pointer to the open file object.</dd>
+<dt>Offset</dt>
+<dd>Number of bytes where from start of the file</dd>
+</dl>
+</div>
+
+
+<div class="para">
+<h4>Return Values</h4>
+<dl class="ret">
+<dt>FR_OK (0)</dt>
+<dd>The function succeeded.</dd>
+<dt>FR_DISK_ERR</dt>
+<dd>The function failed due to an error in the disk function.</dd>
+<dt>FR_INT_ERR</dt>
+<dd>The function failed due to a wrong FAT structure or an internal error.</dd>
+<dt>FR_NOT_READY</dt>
+<dd>The disk drive cannot work due to no medium in the drive or any other reason.</dd>
+<dt>FR_INVALID_OBJECT</dt>
+<dd>The file object is invalid.</dd>
+<dt>FR_NOT_ENOUGH_CORE</dt>
+<dd>Insufficient size of link map table for the file.</dd>
+</dl>
+</div>
+
+
+<div class="para">
+<h4>Description</h4>
+<p>The f_lseek function moves the file read/write pointer of an open file. The offset can be specified in only origin from top of the file. When an offset above the file size is specified in write mode, the file size is increased and the data in the expanded area is undefined. This is suitable to create a large file quickly, for fast write operation. After the f_lseek function succeeded, member fptr in the file object should be checked in order to make sure the read/write pointer has been moved correctry. In case of fptr is not the expected value, either of followings has been occured.</p>
+<ul>
+<li>End of file. The specified Offset was clipped at the file size because the file has been opened in read-only mode.</li>
+<li>Disk full. There is insufficient free space on the volume to expand the file size.</li>
+</ul>
+<p>When <tt>_USE_FASTSEEK</tt> is set to 1 and <tt>cltbl</tt> member in the file object is not NULL, the fast seek feature is enabled. This feature enables fast backward/long seek operations without FAT access by cluster link information stored on the user defined table. The cluster link information must be created prior to do the fast seek. The required size of the table is (number of fragments + 1) * 2 items. For example, when the file is fragmented in 5, 12 items will be required to store the cluster link information. The file size cannot be expanded when the fast seek feature is enabled.</p>
+</div>
+
+
+<div class="para">
+<h4>QuickInfo</h4>
+<p>Available when <tt>_FS_MINIMIZE &lt;= 2</tt>.</p>
+</div>
+
+
+<div class="para">
+<h4>Example</h4>
+<pre>
+    <span>/* Move to offset of 5000 from top of the file */</span>
+    res = f_lseek(file, 5000);
+
+    <span>/* Move to end of the file to append data */</span>
+    res = f_lseek(file, file-&gt;fsize);
+
+    <span>/* Forward 3000 bytes */</span>
+    res = f_lseek(file, file-&gt;fptr + 3000);
+
+    <span>/* Rewind 2000 bytes (take care on overflow) */</span>
+    res = f_lseek(file, file-&gt;fptr - 2000);
+</pre>
+<pre>
+    <span>/* Cluster pre-allocation (to prevent buffer overrun on streaming write) */</span>
+
+    res = f_open(file, recfile, FA_CREATE_NEW | FA_WRITE); <span>/* Create a file */</span>
+
+    res = f_lseek(file, PRE_SIZE);         <span>/* Pre-allocate clusters */</span>
+    if (res || file-&gt;fptr != PRE_SIZE) ... <span>/* Check if the file size has been increased correctly */</span>
+
+    res = f_lseek(file, DATA_START);       <span>/* Record data stream without cluster allocation delay */</span>
+    ...
+
+    res = f_truncate(file);                <span>/* Truncate unused area */</span>
+    res = f_lseek(file, 0);                <span>/* Put file header */</span>
+    ...
+
+    res = f_close(file);
+</pre>
+<pre>
+    <span>/* Using fast seek feature */</span>
+
+    DWORD lktbl[SZ_TBL];                   <span>/* Link map table buffer */</span>
+
+    res = f_lseek(&amp;file, ofs1);            <span>/* This is normal seek (file.cltbl == NULL on file open) */</span>
+
+    file.cltbl = lktbl;                    <span>/* Enable fast seek feature */</span>
+    lktbl[0] = SZ_TBL;                     <span>/* Set table size to the first item */</span>
+    res = f_lseek(&amp;file, CREATE_LINKMAP);  <span>/* Create cluster link map table */</span>
+    ...
+
+    res = f_lseek(&amp;file, ofs2);            <span>/* This is fast seek (file.cltbl != NULL) */</span>
+</pre>
+</div>
+
+
+<div class="para">
+<h4>See Also</h4>
+<p><tt><a href="open.html">f_open</a>, <a href="truncate.html">f_truncate</a>, <a href="sfile.html">FIL</a></tt></p>
+</div>
+
+<p class="foot"><a href="../00index_e.html">Return</a></p>
+</body>
+</html>

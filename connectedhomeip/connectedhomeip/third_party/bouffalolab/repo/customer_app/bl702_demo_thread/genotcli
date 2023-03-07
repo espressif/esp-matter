@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# build for demo image
+# build options, 
+#   CONFIG_FTD, for thread device type
+#       1, build for thread FTD image, 
+#       0, build for thread MTD image
+#   CONFIG_PREFIX, for cli command line build, 
+#       1, build cli command with openthread command and bouffalolab command, and make openthread command set as the subset of bouffalolab command 'otc', such as `otc state` 
+#       0, build cli command with only openthread command, type openthread official command directly, such as state
+#   CONFIG_USB_CDC, for cli command line build,
+#       1, enable CDC  
+#       0, disable CDC
+#   CONFIG_BT_OAD_SERVER, for cli command line build, 
+#       1, enable OTA upgrade feature over BLE
+#       0, disable OTA upgrade feature over BLE
+CONFIG_FTD=1
+CONFIG_PREFIX=0
+CONFIG_USB_CDC=0
+CONFIG_BT_OAD_SERVER=0
+
+jobs=4
+if (( $1 -eq "" )); then
+jobs=$1
+fi
+
+if [ ! -d build_out ]; then
+mkdir build_out
+fi
+
+if [ $CONFIG_BT_OAD_SERVER -eq "1" ]; then
+make CONFIG_BT=1 CONFIG_BT_OAD_SERVER=1 CONFIG_FTD=$CONFIG_FTD CONFIG_PREFIX=$CONFIG_PREFIX CONFIG_USB_CDC=$CONFIG_USB_CDC -j $jobs 2>&1 | tee build_out/make.log
+else
+make CONFIG_FTD=$CONFIG_FTD CONFIG_PREFIX=$CONFIG_PREFIX CONFIG_USB_CDC=$CONFIG_USB_CDC  -j $jobs 2>&1 | tee build_out/make.log
+fi
+
+exit $?

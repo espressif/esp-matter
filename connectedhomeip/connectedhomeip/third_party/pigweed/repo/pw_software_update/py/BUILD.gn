@@ -1,0 +1,65 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/python.gni")
+
+pw_python_package("py") {
+  generate_setup = {
+    metadata = {
+      name = "pw_software_update"
+      version = "0.0.1"
+    }
+    options = {
+      install_requires = [
+        "cryptography",
+        "google-cloud-storage",
+      ]
+      tests_require = [
+        "cryptography",
+        "google-cloud-storage",
+      ]
+    }
+  }
+
+  sources = [
+    "pw_software_update/__init__.py",
+    "pw_software_update/cli.py",
+    "pw_software_update/dev_sign.py",
+    "pw_software_update/generate_test_bundle.py",
+    "pw_software_update/keys.py",
+    "pw_software_update/metadata.py",
+    "pw_software_update/remote_sign.py",
+    "pw_software_update/root_metadata.py",
+    "pw_software_update/update_bundle.py",
+    "pw_software_update/verify.py",
+  ]
+
+  tests = [
+    "cli_test.py",
+    "dev_sign_test.py",
+    "keys_test.py",
+    "metadata_test.py",
+    "remote_sign_test.py",
+    "root_metadata_test.py",
+    "update_bundle_test.py",
+    "verify_test.py",
+  ]
+
+  pylintrc = "$dir_pigweed/.pylintrc"
+  mypy_ini = "$dir_pigweed/.mypy.ini"
+
+  proto_library = "..:protos"
+}

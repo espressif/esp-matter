@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ASCII"?>
+<device:XMLDevice xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:device="http://www.silabs.com/ss/hwconfig/document/device.ecore" name="MGM210L022JIF" partId="mcu.arm.efr32.mg21.mgm210l022jif" contextId="com.silabs.sdk.stack.super">
+  <mode name="DefaultMode">
+    <property object="BTL_BUTTON" propertyId="BTL_BUTTON.BSP_BTL_BUTTON.PIN" value="PA04"/>
+    <property object="BUTTON" propertyId="BUTTON.BSP_BUTTON0.PIN" value="PA04"/>
+    <property object="BUTTON" propertyId="BUTTON.BSP_BUTTON1.PIN" value="PD01"/>
+    <property object="BUTTON" propertyId="BUTTON.HAL_BUTTON_COUNT.INT" value="2"/>
+    <property object="BUTTON" propertyId="BUTTON.HAL_BUTTON_ENABLE.ARRAY" value="0, 1"/>
+
+    <property object="CMU" propertyId="ABPeripheral.included" value="true"/>
+    <property object="CMU" propertyId="CMU.BSP_CLK_HFXO_CTUNE.INT" value="133"/>
+    <property object="CMU" propertyId="CMU.BSP_CLK_HFXO_PRESENT.BOOL" value="1"/>
+    <property object="CMU" propertyId="CMU.BSP_CLK_LFXO_PRESENT.BOOL" value="0"/>
+
+    <property object="DefaultMode" propertyId="mode.diagramLocation" value="100, 100"/>
+    
+    <property object="GPIO" propertyId="GPIO.BSP_TRACE_SWO.PIN" value="PA03"/>
+
+    <property object="LED" propertyId="LED.BSP_LED0.PIN" value="PA04"/>
+    <property object="LED" propertyId="LED.BSP_LED1.PIN" value="PD01"/>
+    <property object="LED" propertyId="LED.HAL_LED_COUNT.INT" value="2"/>
+    <property object="LED" propertyId="LED.BSP_LED_POLARITY.ENUM" value="0"/>
+
+    <property object="PA" propertyId="PA.HAL_PA_SELECTION.ENUM" value="HAL_PA_SELECTION_MP"/>
+
+    <property object="PTI" propertyId="PTI.BSP_PTI_DFRAME.PIN" value="PC05"/>
+    <property object="PTI" propertyId="PTI.BSP_PTI_DOUT.PIN" value="PC04"/>
+    
+    <property object="SERIAL" propertyId="SERIAL.BSP_SERIAL_APP_PORT.MOD" value="USART0"/>
+
+    <property object="UARTNCP" propertyId="UARTNCP.BSP_UARTNCP_USART_PORT.MOD" value="USART0"/>
+
+    <property object="USART0" propertyId="USART.BSP_USART_TX.PIN" value="PC00"/>
+    <property object="USART0" propertyId="USART.BSP_USART_RX.PIN" value="PC01"/>
+    <property object="USART0" propertyId="USART.BSP_USART_CTS.PIN" value="PC03"/>
+    <property object="USART0" propertyId="USART.BSP_USART_RTS.PIN" value="PC02"/>
+    
+    <property object="VCOM" propertyId="VCOM.BSP_VCOM_ENABLE.PIN" value="PD00"/>
+  </mode>
+  <modeTransition>
+    <property object="RESET &#x2192; DefaultMode" propertyId="modeTransition.source" value="RESET"/>
+    <property object="RESET &#x2192; DefaultMode" propertyId="modeTransition.target" value="DefaultMode"/>
+  </modeTransition>
+</device:XMLDevice>

@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2011 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Alert Status" type="org.bluetooth.characteristic.alert_status" 
+uuid="2A3F" last-modified="2011-08-30" approved="Yes">
+	<InformativeText>
+        <Abstract>            
+        The Alert Status characteristic defines the Status of alert.
+            - Bit 0, meaning "Ringer State"
+            - Bit 1, meaning "Vibrator State"
+            - Bit 2, meaning "Display Alert Status"
+		</Abstract>
+        <Examples> 
+            <Example>Bit 0, 0 meaning "Ringer State" not active, 1 meaning "Ringer State" active</Example>
+	        <Example>Bit 1, 0 meaning "Vibrator State" not active, 1 meaning "Vibrator State" active</Example>
+            <Example>Bit 2, 0 meaning "Display Alert State" not active, 1 meaning "Display Alert State" active</Example>
+		</Examples>
+	</InformativeText>
+	<Value>
+		<Field name="Alert Status">
+            <Requirement>Mandatory</Requirement>
+			<Format>uint8</Format>
+			<Minimum>0</Minimum>
+			<Maximum>2</Maximum>
+            
+			<BitField>
+                <Bit index="0" size="1" name="Ringer State">
+                    <Enumerations>
+                        <Enumeration key="0" value="Ringer State not active" />
+                        <Enumeration key="1" value="Ringer State active" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="1" size="1" name="Vibrate State">
+                    <Enumerations>
+                        <Enumeration key="0" value="Vibrate State not active" />
+                        <Enumeration key="1" value="Vibrate State active" />
+                    </Enumerations>
+                </Bit>    
+                <Bit index="2" size="1" name="Display Alert Status">
+                    <Enumerations>
+                        <Enumeration key="0" value="Display Alert Status not active" />
+                        <Enumeration key="1" value="Display Alert Status State active" />
+                    </Enumerations>
+                </Bit>   
+               <ReservedForFutureUse index="3" size="5"></ReservedForFutureUse>
+            </BitField>
+        </Field>
+	</Value>
+</Characteristic>

@@ -1,0 +1,6 @@
+**/build*/
+**/__pycache__/
+*.egg*
+playground*
+types_playground*
+dist/

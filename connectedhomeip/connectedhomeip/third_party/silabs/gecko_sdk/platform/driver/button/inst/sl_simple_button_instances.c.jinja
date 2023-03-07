@@ -1,0 +1,63 @@
+/***************************************************************************//**
+ * @file
+ * @brief Simple Button Driver Instances
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2019 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * The licensor of this software is Silicon Laboratories Inc.  Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement.  This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
+ *
+ ******************************************************************************/
+
+#include "sl_simple_button.h"
+{% for inst in simple_button_instance | sort -%}
+#include "sl_simple_button_{{ inst }}_config.h"
+{% endfor -%}
+
+{% for inst in simple_button_instance | sort %}
+sl_simple_button_context_t simple_{{ inst | lower }}_context = {
+  .state = 0,
+  .history = 0,
+  .port = SL_SIMPLE_BUTTON_{{ inst | upper }}_PORT,
+  .pin = SL_SIMPLE_BUTTON_{{ inst | upper }}_PIN,
+  .mode = SL_SIMPLE_BUTTON_{{ inst | upper }}_MODE,
+};
+
+const sl_button_t sl_button_{{ inst | lower }} = {
+  .context = &simple_{{ inst | lower }}_context,
+  .init = sl_simple_button_init,
+  .get_state = sl_simple_button_get_state,
+  .poll = sl_simple_button_poll_step,
+  .enable = sl_simple_button_enable,
+  .disable = sl_simple_button_disable,
+};
+{%- endfor %}
+
+// the table of buttons and button count are generated as a
+// convenience for the application
+const sl_button_t *sl_simple_button_array[] = {
+{%- for inst in simple_button_instance | sort %}
+  &sl_button_{{ inst | lower }}{% if not loop.last %}, {% endif %}
+{%- endfor %}
+};
+const uint8_t simple_button_count = {{ simple_button_instance | length }};
+
+void sl_simple_button_init_instances(void)
+{
+  {%- for inst in simple_button_instance %}
+  sl_button_init(&sl_button_{{ inst | lower }});
+  {%- endfor %}
+}
+
+void sl_simple_button_poll_instances(void)
+{
+  {%- for inst in simple_button_instance %}
+  sl_button_poll_step(&sl_button_{{ inst | lower }});
+  {%- endfor %}
+}

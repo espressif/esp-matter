@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="up" title="FatFs" href="../00index_j.html">
+<link rel="alternate" hreflang="en" title="English" href="../en/sdir.html">
+<link rel="stylesheet" href="../css_j.css" type="text/css" media="screen" title="ELM Default">
+<title>FatFs - DIR</title>
+</head>
+
+<body>
+
+<div class="para">
+<h2>DIR</h2>
+<p><tt>DIR</tt>構造体は、f_opendir(), f_readdir()のワーク・エリアとして使用されます。アプリケーションから変更可能なメンバはありません。</p>
+<pre>
+typedef struct {
+    FATFS*  fs;        <span>/* 親ファイル・システム・オブジェクトへのポインタ */</span>
+    WORD    id;        <span>/* 親ファイル・システム・オブジェクトのマウントID */</span>
+    WORD    index;     <span>/* 次に読み出すディレクトリ・インデックス番号 */</span>
+    DWORD   sclust;    <span>/* ディレクトリ開始クラスタ (0:ルート) */</span>
+    DWORD   clust;     <span>/* 現在のクラスタ番号 */</span>
+    DWORD   sect;      <span>/* 現在のセクタ番号 */</span>
+    BYTE*   dir;       <span>/* 現在のSFNエントリへのポインタ */</span>
+    BYTE*   fn;        <span>/* SFNバッファへのポインタ (in/out) {file[8],ext[3],status[1]} */</span>
+#if _USE_LFN
+    WCHAR*  lfn;       <span>/* LFNバッファへのポインタ */</span>
+    WORD    lfn_idx;   <span>/* 最後にマッチしたLFNエントリのインデックス (0xFFFF:無効) */</span>
+#endif
+} DIR;
+</pre>
+</div>
+
+<p class="foot"><a href="../00index_j.html">戻る</a></p>
+</body>
+</html>

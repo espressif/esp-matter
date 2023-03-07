@@ -1,0 +1,9 @@
+purpose to shuffle the deck;
+set sst name Shiva Brahma Vishnu Ganapati data *;
+shuffle {
+    remove sst *active;
+    set sst name Brahma data "I am the creator";
+    set sst name Shiva data "I am the destroyer";
+    set sst name Vishnu data "I am the sustainer";
+    remove sst name Ganapati;
+}

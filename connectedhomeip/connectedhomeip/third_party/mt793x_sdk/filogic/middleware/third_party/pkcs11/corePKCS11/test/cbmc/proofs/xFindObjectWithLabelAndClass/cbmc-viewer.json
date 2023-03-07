@@ -1,0 +1,7 @@
+{ "expected-missing-functions":
+  [
+
+  ],
+  "proof-name": "xFindObjectWithLabelAndClass",
+  "proof-root": "test/cbmc/proofs"
+}

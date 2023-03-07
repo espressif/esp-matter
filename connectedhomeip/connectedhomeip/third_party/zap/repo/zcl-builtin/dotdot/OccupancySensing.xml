@@ -1,0 +1,54 @@
+﻿<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:type="http://zigbee.org/zcl/types"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xmlns:zcl="http://zigbee.org/zcl/clusters"
+  xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd"
+  id="0406" revision="2" name="OccupancySensing">
+  <classification role="application" picsCode="OCC" primaryTransaction="2" />
+  <server>
+    <attributes>
+      <!-- Occupancy Sensor Information Set -->
+      <attribute id="0000" name="Occupancy" type="map8" reportRequired="true" required="true">
+        <bitmap>
+          <element name="SensedOccupancy" type="bool" mask="01" />
+        </bitmap>
+      </attribute>
+      <attribute id="0001" name="OccupancySensorType" type="enum8" default="MS" required="true">
+        <restriction>
+          <type:enumeration value="00" name="PIR" />
+          <type:enumeration value="01" name="Ultrasonic" />
+          <type:enumeration value="02" name="PIRAndUltrasonic" />
+          <type:enumeration value="03" name="PhysicalContact" />
+        </restriction>
+      </attribute>
+      <attribute id="0002" name="OccupancySensorTypeBitmap" type="map8" required="true">
+        <bitmap>
+          <element name="PIR" type="bool" mask="01" />
+          <element name="Ultrasonic" type="bool" mask="02" shiftRight="1" />
+          <element name="PhysicalContact" type="bool" mask="04" shiftRight="2" />
+        </bitmap>
+      </attribute>
+      <!-- PIR Configuration Set -->
+      <attribute id="0010" name="PIROccupiedToUnoccupiedDelay" type="uint16" max="65534" writable="true" default="0" />
+      <attribute id="0011" name="PIRUnoccupiedToOccupiedDelay" type="uint16" max="65534" writable="true" default="0" />
+      <attribute id="0012" name="PIRUnoccupiedToOccupiedThreshold" type="uint8" min="1" max="254" writable="true" default="1" />
+      <!-- Ultrasonic Configuration Set -->
+      <attribute id="0020" name="UltrasonicOccupiedToUnoccupiedDelay" type="uint16" max="65534" writable="true" default="0" />
+      <attribute id="0021" name="UltrasonicUnoccupiedToOccupiedDelay" type="uint16" max="65534" writable="true" default="0" />
+      <attribute id="0022" name="UltrasonicUnoccupiedToOccupiedThreshold" type="uint8" min="1" max="254" writable="true" default="1" />
+      <!-- Physical Contact Configuration Set -->
+      <attribute id="0030" name="PhysicalContactOccupiedToUnoccupiedDelay" type="uint16" max="65534" writable="true" default="0" />
+      <attribute id="0031" name="PhysicalContactUnoccupiedToOccupiedDelay" type="uint16" max="65534" writable="true" default="0" />
+      <attribute id="0032" name="PhysicalContactUnoccupiedToOccupiedThreshold" type="uint8" min="1" max="254" writable="true" default="1" />
+    </attributes>
+  </server>
+</zcl:cluster>

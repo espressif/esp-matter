@@ -1,0 +1,22 @@
+id: bootloader_image_parser
+label: Image Parser
+package: bootloader
+description: >
+  Image parser
+category: Platform|Bootloader|Core
+quality: production
+source:
+  - path: platform/bootloader/core/btl_bootload.c
+  - path: platform/bootloader/parser/gbl/btl_gbl_custom_tags.c
+  - path: platform/bootloader/parser/gbl/btl_gbl_parser.c
+  - path: platform/bootloader/parser/gbl/btl_gbl_parser_veneers.c
+    condition: [bootloader_core_secure]
+provides:
+  - name: bootloader_image_parser
+  - name: bootloader_nonsecure_incompatible
+    condition: [bootloader_core_nonsecure]
+requires:
+  - name: bootloader_crc
+  - name: bootloader_aes_sha_ecdsa
+  - name: bootloader_token_management
+  - name: bootloader_include_parser

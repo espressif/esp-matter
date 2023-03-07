@@ -1,0 +1,6 @@
+Pkg.attrs.exportAll = true;
+
+Pkg.otherFiles = ["java/package.jar"];
+
+/* Include custom.mak for building Java code. */
+Pkg.makeEpilogue = "include custom.mak";

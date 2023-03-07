@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2011 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Alert Category ID Bit Mask" type="org.bluetooth.characteristic.alert_category_id_bit_mask" 
+uuid="2A42">
+	<InformativeText>
+        <Abstract>Categories of alerts/messages.</Abstract>
+        <Summary>The value of the characteristic is a bit mask implemented as an array of unsigned 8 bit integers. The Alert Category ID Bit Mask characteristic defines one bit for each predefined category ID.</Summary>
+        <Examples> 
+            <Example>The value 0x03 is interpreted as "Simple Alert and Email bits set"</Example>
+		</Examples>
+	</InformativeText>
+	<Value>
+		<Field name="Category ID Bit Mask 0">
+            <Requirement>Mandatory</Requirement>
+			<Format>uint8</Format>
+			<BitField>
+                <Bit index="0" size="1" name="Simple Alert">
+                    <Enumerations>
+                        <Enumeration key="0" value="Not Supported" />
+                        <Enumeration key="1" value="Supported" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="1" size="1" name="Email">
+                    <Enumerations>
+                        <Enumeration key="0" value="Not Supported" />
+                        <Enumeration key="1" value="Supported" />
+                    </Enumerations>
+                </Bit>    
+                <Bit index="2" size="1" name="News">
+                    <Enumerations>
+                        <Enumeration key="0" value="Not Supported" />
+                        <Enumeration key="1" value="Supported" />
+                    </Enumerations>
+                </Bit>
+                
+                <Bit index="3" size="1" name="Call">
+                    <Enumerations>
+                        <Enumeration key="0" value="Not Supported" />
+                        <Enumeration key="1" value="Supported" />
+                    </Enumerations>
+                </Bit>   
+                
+                 <Bit index="4" size="1" name="Missed Call">
+                    <Enumerations>
+                       <Enumeration key="0" value="Not Supported" />
+                       <Enumeration key="1" value="Supported" /> 
+                    </Enumerations>
+                </Bit>   
+                
+                 <Bit index="5" size="1" name="SMS/MMS">
+                    <Enumerations>
+                       <Enumeration key="0" value="Not Supported" />
+                       <Enumeration key="1" value="Supported" /> 
+                    </Enumerations>
+                </Bit>   
+                
+                 <Bit index="6" size="1" name="Voice Mail">
+                    <Enumerations>
+                        <Enumeration key="0" value="Not Supported" />
+                        <Enumeration key="1" value="Supported" />
+                    </Enumerations>
+                </Bit>   
+                 <Bit index="7" size="1" name="Schedule">
+                    <Enumerations>
+                        <Enumeration key="0" value="Not Supported" />
+                        <Enumeration key="1" value="Supported" />
+                    </Enumerations>
+                </Bit>   
+            </BitField>
+        </Field>
+        
+        <Field name="Category ID Bit Mask 1">
+            <Requirement>Optional</Requirement>
+			<Format>uint8</Format>
+			<BitField>
+                <Bit index="0" size="1" name="High Prioritized Alert">
+                    <Enumerations>
+                        <Enumeration key="0" value="Not Supported" />
+                        <Enumeration key="1" value="Supported" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="1" size="1" name="Instant Message">
+                    <Enumerations>
+                        <Enumeration key="0" value="Not Supported" />
+                        <Enumeration key="1" value="Supported" />
+                    </Enumerations>
+                </Bit>    
+                <ReservedForFutureUse index="2" size="6"></ReservedForFutureUse>
+            </BitField>
+        </Field>
+	</Value>
+    <Note>If second octet is not present it is interpreted as all 0'es</Note>
+    <Note>The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet.</Note>
+</Characteristic>

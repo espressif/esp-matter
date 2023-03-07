@@ -1,0 +1,150 @@
+package: Zigbee
+description: Silicon Labs implementation of the Zigbee Over-the-air Bootload Client Cluster
+  (a multi-hop, application bootloader). This implementation finds the OTA server
+  in the network, periodically queries the server for a new image to download, downloads
+  the data, and then waits for the server command to tell it to upgrade. Optionally
+  it can cryptographically verify the image before upgrade.
+label: OTA Bootload Cluster Client
+quality: production
+id: zigbee_ota_client
+category: Zigbee|Over-The-Air Bootloading
+provides:
+  - name: "zigbee_ota_client"
+requires:
+  - name: "zigbee_ota_common"
+  - name: "zigbee_ota_storage_common"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/ota-client/config/ota-client-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/ota-client/ota-client.c
+  - path: protocol/zigbee/app/framework/plugin/ota-client/ota-client-signature-verify.c
+  - path: protocol/zigbee/app/framework/plugin/ota-client/ota-client-page-request.c
+  - path: protocol/zigbee/app/framework/plugin/ota-client/ota-client-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/ota-client/ota-client-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/ota-client
+    file_list:
+      - path: ota-client.h
+      - path: ota-client-page-request.h
+      - path: ota-client-signature-verify.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_ota_client
+  - name: cluster_service
+    value:
+       cluster_id: "0x0019"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "CLIENT"
+       service_function: "emberAfOtaClusterClientCommandParse"    
+  - name: zigbee_stack_callback
+    value:
+      callback_type: stack_status
+      function_name: emberAfPluginOtaClientStackStatusCallback
+  - name: cluster_functions
+    value:
+       cluster_name: OtaBootload
+       cluster_id: 0x0019 
+       cluster_type: client
+       init_function: emberAfOtaBootloadClusterClientInitCallback
+  - name: cluster_functions
+    value:
+       cluster_name: OtaBootload
+       cluster_id: 0x0019 
+       cluster_type: client
+       default_response_function: emberAfOtaBootloadClusterClientDefaultResponseCallback       
+  - name: cli_group
+    value:
+      group: plugin
+      name: ota-client
+      help: ota-client related commands.
+  - name: cli_command
+    value:
+      group: ota-client
+      name: bootload
+      handler: otaCliBootload
+      help: Bootloads the image at the specified index by calling the OTA bootload callback.
+      argument:
+      - type: uint8
+        help: The index at which to begin bootloading the image
+  - name: cli_command
+    value:
+      group: ota-client
+      name: verify
+      handler: otaCliVerify
+      help: Performs signature verification on the image at the specified index.
+      argument:
+      - type: uint8
+        help: The index at which to begin verification of the image
+  - name: cli_command
+    value:
+      group: ota-client
+      name: info
+      handler: otaPrintClientInfo
+      help: Prints the manufacturer ID, Image Type ID, and Version information that are used when a query next image is sent to the server by the client.
+  - name: cli_command
+    value:
+      group: ota-client
+      name: start
+      handler: otaStartClientCommand
+      help: Starts the OTA client state machine. The state machine discovers the OTA server, queries for new images, downloads the images and waits for the server command to upgrade.
+  - name: cli_command
+    value:
+      group: ota-client
+      name: stop
+      handler: otaStopClientCommand
+      help: Stops the OTA state machine.
+  - name: cli_command
+    value:
+      group: ota-client
+      name: status
+      handler: emAfOtaClientPrintState
+      help: Prints information on the current state of the OTA client download.
+  - name: cli_command
+    value:
+      group: ota-client
+      name: block-test
+      handler: emAfSendImageBlockRequestTest
+      help: Sends an image block request for a file the server should not have.  Test harness only (test case 9.5.6 - Missing File)
+  - name: cli_command
+    value:
+      group: ota-client
+      name: page-request
+      handler: setPageRequest
+      help: Can be used to dynamically turn off sending page requests on the client side, if the server doesn't support this feature.
+      argument:
+      - type: uint8
+        help: Boolean value turning on (1) or off (0) the page request flag
+  - name: cli_command
+    value:
+      group: ota-client
+      name: pause-at
+      handler: setPausePercentage
+      help: For testing, can be used to pause the update at a set percentage.
+      argument:
+      - type: uint8
+    condition:
+      - zigbee_simulation
+  - name: cli_command
+    value:
+      group: ota-client
+      name: upgrade-request
+      handler: otaSendUpgradeRequest
+      help: Sends an UpgradeEndRequest to an OTA server.
+  - name: cli_command
+    value:
+      group: ota-client
+      name: disable-downgrades
+      handler: emAfOtaClientDisableDowngrades
+      help: Disables OTA downgrades.
+  - name: cli_command
+    value:
+      group: ota-client
+      name: enable-downgrades
+      handler: emAfOtaClientEnableDowngrades
+      help: Enables OTA downgrades.
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/ota-client

@@ -1,0 +1,6 @@
+package/lib/lib/ticlang/m4/drivers_cc32xx/./nvs/NVSRAM.om4: nvs/NVSRAM.c /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/HwiP.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/SemaphoreP.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/NVS.h /vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/nvs/NVSRAM.h 
+nvs/NVSRAM.c:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/HwiP.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/dpl/SemaphoreP.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/NVS.h:
+/vagrant/2022_Q1_14_2_22/sdk_root/source/ti/drivers/nvs/NVSRAM.h:

@@ -1,0 +1,12 @@
+upgrade:
+  - sdk:
+      id: gecko_sdk
+      version: "3.3.0"
+    component:
+      - trigger: imu_driver
+        description: >
+          Component imu_driver now requires a subcomponent that offers the imu_device_driver functionality.
+        add:
+          - imu_driver_icm20648
+        remove:
+          - imu_driver

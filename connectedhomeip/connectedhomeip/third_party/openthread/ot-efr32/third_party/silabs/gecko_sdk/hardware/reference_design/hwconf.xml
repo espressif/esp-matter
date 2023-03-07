@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding = "UTF-8" ?>
+<contentItems>
+  <!-- Occupancy -->
+	<contentItemData>
+		<property key="partCompatibility" value="mcu.arm.efr32.mg1.efr32mg1p232f256gm48"/>
+		<property key="boardCompatibility" value="rd-0078-0101"/>
+		<property key="installationPath" value="./ist_a0078/ist_a0078_efr32mg1p232f256gm48.hwconf"/>
+	</contentItemData>
+
+	<contentItemData>
+		<property key="partCompatibility" value="mcu.arm.efr32.mg12.efr32mg12p432f1024gm48"/>
+		<property key="boardCompatibility" value="rd-0099-0201"/>
+		<property key="installationPath" value="./ist_a0099/ist_a0099_efr32mg12p432f1024gm48.hwconf"/>
+	</contentItemData>
+  <!-- Lighting -->
+	<contentItemData>
+		<property key="partCompatibility" value="mcu.arm.efr32.mg1.efr32mg1p732f256im32"/>
+		<property key="boardCompatibility" value="rd-0085-0201"/>
+		<property key="installationPath" value="./ist_a0085/ist_a0085_efr32mg1p732f256im32.hwconf"/>
+	</contentItemData>
+
+	<contentItemData>
+		<property key="partCompatibility" value="mcu.arm.efr32.mg12.efr32mg12p432f1024(g|i)m48"/>
+		<property key="boardCompatibility" value="rd-0098-0401"/>
+		<property key="installationPath" value="./ist_a0098/ist_a0098_efr32mg12p432f1024im48.hwconf"/>
+	</contentItemData>
+  <!-- Outlet -->
+	<contentItemData>
+		<property key="partCompatibility" value="mcu.arm.efr32.mg1.efr32mg1p232f256gm48"/>
+		<property key="boardCompatibility" value="rd-0051-0101"/>
+		<property key="installationPath" value="./ist_a0051/ist_a0051_efr32mg1p232f256gm48.hwconf"/>
+	</contentItemData>
+	<contentItemData>
+		<property key="partCompatibility" value="mcu.arm.efr32.mg12.efr32mg12p432f1024gm48"/>
+		<property key="boardCompatibility" value="rd-0100-0201"/>
+		<property key="installationPath" value="./ist_a0100/ist_a0100_efr32mg12p432f1024gm48.hwconf"/>
+	</contentItemData>
+  <!-- CapTouchSensor -->
+	<contentItemData>
+		<property key="partCompatibility" value="mcu.arm.efr32.mg12.efr32mg12p432f1024gm48"/>
+		<property key="boardCompatibility" value="rd-0072-0201"/>
+		<property key="installationPath" value="./ist_a0072/ist_a0072_efr32mg12p432f1024gm48.hwconf"/>
+	</contentItemData>
+</contentItems>

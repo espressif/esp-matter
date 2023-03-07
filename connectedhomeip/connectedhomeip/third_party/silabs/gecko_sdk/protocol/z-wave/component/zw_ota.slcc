@@ -1,0 +1,23 @@
+id: "zw_ota"
+label: Z-Wave OTA
+package: Z-Wave
+description: |-
+  ZW OTA component to be used by application that support OTA
+category: Z-Wave
+quality: production
+root_path: protocol/z-wave
+provides:
+  - name: "zw_ota"
+requires:
+  - name: flash_storage
+config_file:
+  - path: platform/SiliconLabs/PAL/config/zw_ota/s1/sl_storage_config.h
+    condition: [device_series_1]
+    override:
+      component: flash_storage
+      file_id: storage_config
+  - path: platform/SiliconLabs/PAL/config/zw_ota/s2/sl_storage_config.h
+    condition: [device_series_2]
+    override:
+      component: flash_storage
+      file_id: storage_config

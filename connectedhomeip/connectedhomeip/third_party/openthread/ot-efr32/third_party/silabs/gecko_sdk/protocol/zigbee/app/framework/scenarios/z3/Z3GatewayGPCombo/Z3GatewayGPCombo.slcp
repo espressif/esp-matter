@@ -1,0 +1,227 @@
+project_name: "Z3GatewayGPCombo"
+label: "Zigbee - Host GatewayGPCombo"
+package: "Zigbee"
+category: "Zigbee Host Application"
+quality: "production"
+
+description: >
+  This is a Zigbee 3.0 gateway Green Power Combo application for a Unix host.  
+author: "Silicon Laboratories, Inc."
+
+component:
+  - id: "cli"
+    instance:
+    - example
+  - id: "native"
+  - id: "iostream_stdio"
+  - id: "zigbee_address_table"
+  - id: "zigbee_basic"
+  - id: "zigbee_color_control_server"
+  - id: "zigbee_concentrator"
+  - id: "zigbee_counters"
+  - id: "zigbee_ezmode_commissioning"
+  - id: "zigbee_ezsp"
+  - id: "zigbee_ezsp_uart"
+  - id: "zigbee_file_descriptor_dispatch"
+  - id: "zigbee_green_power_client"
+  - id: "zigbee_green_power_common"
+  - id: "zigbee_green_power_server"
+  - id: "zigbee_green_power_translation_table"
+  - id: "zigbee_ias_zone_client"
+  - id: "zigbee_identify"
+  - id: "zigbee_identify_feedback"
+  - id: "zigbee_level_control"
+  - id: "zigbee_ncp_configuration"
+  - id: "zigbee_network_creator"
+  - id: "zigbee_network_creator_security"
+  - id: "zigbee_network_steering"
+  - id: "zigbee_on_off"
+  - id: "zigbee_ota_server"
+  - id: "zigbee_ota_server_policy"
+  - id: "zigbee_ota_common"
+  - id: "zigbee_ota_storage_common"
+  - id: "zigbee_ota_storage_posix_filesystem"
+  - id: "zigbee_poll_control_client"
+  - id: "zigbee_reporting"
+  - id: "zigbee_scan_dispatch"
+  - id: "zigbee_update_tc_link_key"
+  - id: "zigbee_simple_metering_client"
+  - id: "zigbee_stack_diagnostics"
+  - id: "zigbee_test_harness"
+  - id: "zigbee_time_server"
+  - id: "zigbee_trust_center_nwk_key_update_broadcast"
+  - id: "zigbee_trust_center_nwk_key_update_periodic"
+  - id: "zigbee_trust_center_nwk_key_update_unicast"
+  - id: "zigbee_debug_print"
+  - id: "zigbee_aes_cmac"
+  - id: "zigbee_ccm_software"
+
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: SL_IOSTREAM_USART_VCOM_FLOW_CONTROL_TYPE
+    value: usartHwFlowControlCtsAndRts
+  - name: SL_CLI_MAX_INPUT_ARGUMENTS
+    value: 16
+  - name: SLI_ZIGBEE_PRIMARY_NETWORK_DEVICE_TYPE
+    value: SLI_ZIGBEE_NETWORK_DEVICE_TYPE_COORDINATOR_OR_ROUTER
+  - name: SLI_ZIGBEE_PRIMARY_NETWORK_SECURITY_TYPE
+    value: SLI_ZIGBEE_NETWORK_SECURITY_TYPE_3_0
+  - name: SL_CLI_PROMPT_STRING
+    value:  "\"Z3GatewayGPCombo>\""
+  - name: EMBER_KEY_TABLE_SIZE
+    value: 4
+  - name: EMBER_GP_SINK_TABLE_SIZE
+    value: 25
+  - name: EMBER_GP_SINK_TABLE_TOKEN_SIZE
+    value: 25
+  - name: EMBER_GP_PROXY_TABLE_SIZE
+    value: 25
+  - name: EMBER_GP_PROXY_TABLE_TOKEN_SIZE
+    value: 25
+  - name: EMBER_BROADCAST_TABLE_SIZE
+    value: 35
+  - name: EMBER_AF_PLUGIN_GREEN_POWER_SERVER_HIDDEN_PROXY_ZCL_MESSAGE_SRC_ENDPOINT
+    value: 1
+  - name: EZSP_HOST_SOURCE_ROUTE_TABLE_SIZE
+    value: 100
+
+include:
+  - path: "./"
+  - path: ../../../../xncp
+    file_list:
+      - path: xncp-sample-custom-ezsp-protocol.h
+ 
+source:
+  - path: "main.c"
+  - path: "app.c"
+
+config_file:
+  - path: "config/zcl/zcl_config.zap"
+
+# Custom CLI for this application
+template_contribution:
+  - name: cli_group
+    value:
+      name: custom
+      help: Custom commands
+  - name: cli_command
+    value:
+      group: custom
+      name: tokdump
+      handler: mfgappTokenDump
+  - name: cli_command
+    value:
+      group: custom
+      name: changeNwkKey
+      handler: changeNwkKeyCommand
+  - name: cli_command
+    value:
+      group: custom
+      name: printNextKey
+      handler: printNextKeyCommand
+  - name: cli_command
+    value:
+      group: custom
+      name: version
+      handler: versionCommand
+  - name: cli_command
+    value:
+      group: custom
+      name: txPower
+      handler: setTxPowerCommand
+      argument:
+      - type: int8
+  - name: cli_command
+    value:
+      group: custom
+      name: gpAppTxQInit
+      handler: gpAppGpTxQueueInit
+      help: Initialises the Application Gp Tx Queue
+  - name: cli_command
+    value:
+      group: custom
+      name: gpAppTxQSet
+      handler: gpAppGpTxQueueSet
+      help: Sets a packet on Application Gp Tx Queue
+      argument:
+      - type: uint8
+        help: GPD application ID (must be 0)
+      - type: uint32
+        help: GPD source ID
+      - type: uint8
+        help: GPD CommandId
+      - type: hex
+        help: GPD command payload
+  - name: cli_command
+    value:
+      group: custom
+      name: gpAppTxQGet
+      handler: gpAppGpTxQueueGet
+      help: Gets a packet from Application Gp Tx Queue
+      argument:
+      - type: uint8
+        help: GPD application ID (must be 0)
+      - type: uint32
+        help: GPD source ID
+  - name: cli_command
+    value:
+      group: custom
+      name: gpAppTxQRemove
+      handler: gpAppGpTxQueueRemove
+      help: Removes a packet from Application Gp Tx Queue
+      argument:
+      - type: uint8
+        help: GPD application ID (must be 0)
+      - type: uint32
+        help: GPD source ID
+  - name: cli_command
+    value:
+      group: custom
+      name: gpAppTxQSetMaxSize
+      handler: gpAppGpSetTxQueueSize
+      help: Sets the Gp Queue Max Size
+      argument:
+      - type: uint8
+        help: Maximum Size of Gp Tx Queue
+  - name: cli_command
+    value:
+      group: custom
+      name: gpAppTxQGetMaxSize
+      handler: gpAppGpGetTxQueueSize
+      help: Gets the Gp Queue Max Size
+  - name: cli_command
+    value:
+      group: custom
+      name: gpAppTxQGetCount
+      handler: gpAppGpGetTxQueueCount
+      help: Gets the Gp Queue Counts
+  - name: cli_command
+    value:
+      group: custom
+      name: gpAppGpSendGpRaw
+      handler: gpAppGpSendGpRaw
+      help: Sends a raw packet using App rail handle
+      argument:
+      - type: uint8
+        help: Channel
+      - type: uint8
+        help: Delay in milliseconds
+      - type: hex
+        help: MPDU
+
+readme:
+  - path: ./readme.html
+
+ui_hints:
+  highlight:
+    - path: readme.html
+      focus: false
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Zigbee"]
+  - name: "Device Type"
+    value: ["Host"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]

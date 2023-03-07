@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2011 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Appearance" type="org.bluetooth.characteristic.gap.appearance" uuid="2A01" last-modified="2014-05-21" approved="Yes">
+    <InformativeText>
+        <Abstract>
+            The external appearance of this device. The values are composed of a category (10-bits) and sub-categories (6-bits).
+        </Abstract>
+        <InformativeDisclaimer />
+    </InformativeText>
+    <Value>
+        <Field name="Category">
+            <Requirement>Mandatory</Requirement>
+            <Format>16bit</Format>
+            <Enumerations>
+                <Enumeration key="0" value="Unknown" description="None" />
+                <Enumeration key="64" value="Generic Phone" description="Generic category" />
+                <Enumeration key="128" value="Generic Computer" description="Generic category" />
+                <Enumeration key="192" value="Generic Watch" description="Generic category" />
+                <Enumeration key="193" value="Watch: Sports Watch" description="Watch subtype" />
+                <Enumeration key="256" value="Generic Clock" description="Generic category" />
+                <Enumeration key="320" value="Generic Display" description="Generic category" />
+                <Enumeration key="384" value="Generic Remote Control" description="Generic category" />
+                <Enumeration key="448" value="Generic Eye-glasses" description="Generic category" />
+                <Enumeration key="512" value="Generic Tag" description="Generic category" />
+                <Enumeration key="576" value="Generic Keyring" description="Generic category" />
+                <Enumeration key="640" value="Generic Media Player" description="Generic category" />
+                <Enumeration key="704" value="Generic Barcode Scanner" description="Generic category" />
+                <Enumeration key="768" value="Generic Thermometer" description="Generic category" />
+                <Enumeration key="769" value="Thermometer: Ear" description="Thermometer subtype" />
+                <Enumeration key="832" value="Generic Heart rate Sensor" description="Generic category" />
+                <Enumeration key="833" value="Heart Rate Sensor: Heart Rate Belt" description="Heart Rate Sensor subtype" />
+                <!-- Added Blood pressure support on December 09, 2011 -->
+                <Enumeration key="896" value="Generic Blood Pressure" description="Generic category" />
+                <Enumeration key="897" value="Blood Pressure: Arm" description="Blood Pressure subtype" />
+                <Enumeration key="898" value="Blood Pressure: Wrist" description="Blood Pressure subtype" />
+                <!-- Added HID Related appearance values on January 03, 2012 approved by BARB -->
+                <Enumeration key="960" value="Human Interface Device (HID)" description="HID Generic" />
+                <Enumeration key="961" value="Keyboard" description="HID subtype" />
+                <Enumeration key="962" value="Mouse" description="HID subtype" />
+                <Enumeration key="963" value="Joystick" description="HID subtype" />
+                <Enumeration key="964" value="Gamepad" description="HID subtype" />
+                <Enumeration key="965" value="Digitizer Tablet" description="HID subtype" />
+                <Enumeration key="966" value="Card Reader" description="HID subtype" />
+                <Enumeration key="967" value="Digital Pen" description="HID subtype" />
+                <Enumeration key="968" value="Barcode Scanner" description="HID subtype" />
+                <!-- Added Generic Glucose Meter value on May 10, 2012 approved by BARB -->
+                <Enumeration key="1024" value="Generic Glucose Meter" description="Generic category" />
+                <!-- Added additional appearance values on June 26th, 2012 approved by BARB -->
+                <Enumeration key="1088" value="Generic: Running Walking Sensor" description="Generic category" />
+                <Enumeration key="1089" value="Running Walking Sensor: In-Shoe" description="Running Walking Sensor subtype" />
+                <Enumeration key="1090" value="Running Walking Sensor: On-Shoe" description="Running Walking Sensor subtype" />
+                <Enumeration key="1091" value="Running Walking Sensor: On-Hip" description="Running Walking Sensor subtype" />
+                <Enumeration key="1152" value="Generic: Cycling" description="Generic category" />
+                <Enumeration key="1153" value="Cycling: Cycling Computer" description="Cycling subtype" />
+                <Enumeration key="1154" value="Cycling: Speed Sensor" description="Cycling subtype" />
+                <Enumeration key="1155" value="Cycling: Cadence Sensor" description="Cycling subtype" />
+                <Enumeration key="1156" value="Cycling: Power Sensor" description="Cycling subtype" />
+                <Enumeration key="1157" value="Cycling: Speed and Cadence Sensor" description="Cycling subtype" />
+                <!-- Added appearance values for Pulse Oximeter on July 30th, 2013 approved by BARB -->
+                <Enumeration key="3136" value="Generic: Pulse Oximeter" description="Pulse Oximeter Generic Gategory" />
+                <Enumeration key="3137" value="Fingertip" description="Pulse Oximeter subtype" />
+                <Enumeration key="3138" value="Wrist Worn" description="Pulse Oximeter subtype" />
+                <!-- Added appearance values for Generic Weight Scale on May 21, 2014 approved by BARB -->
+                <Enumeration key="3200" value="Generic: Weight Scale" description="Weight Scale Generic Category" />
+                <!-- Added appearance values for L&N on July 30th, 2013 approved by BARB -->
+                <Enumeration key="5184" value="Generic: Outdoor Sports Activity" description="Outdoor Sports Activity Generic Category" />
+                <Enumeration key="5185" value="Location Display Device" description="Outdoor Sports Activity subtype" />
+                <Enumeration key="5186" value="Location and Navigation Display Device" description="Outdoor Sports Activity subtype" />
+                <Enumeration key="5187" value="Location Pod" description="Outdoor Sports Activity subtype" />
+                <Enumeration key="5188" value="Location and Navigation Pod" description="Outdoor Sports Activity subtype" />
+                <!-- Added appearance values for Generic Environmental Sensor on May 21, 2014 approved by BARB 
+                <Enumeration key="5696" value="Generic: Environmental Sensor" description="Environmental Sensor Generic Category" />-->
+            </Enumerations>
+        </Field>
+    </Value>
+</Characteristic>

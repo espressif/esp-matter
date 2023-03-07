@@ -1,0 +1,65 @@
+{
+  "description": "Zigbee Silabs ZCL data",
+  "category": "zigbee",
+  "version": 1,
+  "xmlRoot": [
+    ".",
+    "../../../../app/zcl/"
+  ],
+  "xmlFile": [
+    "ami-devices.xml",
+    "ami.xml",
+    "cba-devices.xml",
+    "cba.xml",
+    "general.xml",
+    "green-power-devices.xml",
+    "green-power.xml",
+    "ha-devices.xml",
+    "ha.xml",
+    "hc-devices.xml",
+    "hc.xml",
+    "lo-devices.xml",
+    "ota.xml",
+    "sample-extensions.xml",
+    "silabs.xml",
+    "ta.xml",
+    "ta-devices.xml",
+    "types.xml",
+    "wwah-silabs-devices.xml",
+    "wwah-silabs.xml",
+    "z3-nfr.xml",
+    "zll-devices.xml",
+    "zll.xml"
+  ],
+  "supportCustomZclDevice": true,
+  "manufacturersXml": "manufacturers.xml",
+  "options": {
+    "text": {
+      "defaultResponsePolicy": [
+        "Always",
+        "Conditional",
+        "Never"
+      ]
+    },
+    "bool": [
+      "commandDiscovery"
+    ]
+  },
+  "defaults": {
+    "text": {
+      "manufacturerCodes": "0x1049",
+      "defaultResponsePolicy": "always"
+    },
+    "bool": {
+      "commandDiscovery": true
+    }
+  },
+  "ZCLDataTypes": [
+    "ARRAY",
+    "BITMAP",
+    "ENUM",
+    "NUMBER",
+    "STRING",
+    "STRUCT"
+  ]
+}

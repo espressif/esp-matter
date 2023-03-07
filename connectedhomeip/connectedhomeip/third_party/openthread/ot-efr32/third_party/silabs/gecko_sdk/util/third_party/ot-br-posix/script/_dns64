@@ -1,0 +1,157 @@
+#!/bin/bash
+#
+#  Copyright (c) 2017, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+#   Description:
+#       This script manipulates dns64 configuration.
+#
+
+BIND_CONF_OPTIONS=/etc/bind/named.conf.options
+NAT64_PREFIX=64:ff9b::/96
+
+DNS64_NAMESERVER_ADDR=127.0.0.1
+DNS64_CONF="dns64 $(echo $NAT64_PREFIX | tr \"/\" \"/\") { clients { thread; }; recursive-only yes; };"
+
+# Currently solution was verified only on raspbian and ubuntu.
+#
+without NAT64 || test "$PLATFORM" = ubuntu || test "$PLATFORM" = beagleboneblack || test "$PLATFORM" = raspbian || die "dns64 is not tested under $PLATFORM."
+
+if [ "$PLATFORM" = raspbian ]; then
+    RESOLV_CONF_HEAD=/etc/resolv.conf.head
+elif [ "$PLATFORM" = beagleboneblack ]; then
+    RESOLV_CONF_HEAD=/etc/resolvconf/resolv.conf.d/head
+elif [ "$PLATFORM" = ubuntu ]; then
+    RESOLV_CONF_HEAD=/etc/resolvconf/resolv.conf.d/head
+fi
+
+dns64_update_resolvconf()
+{
+    if [ "$PLATFORM" = ubuntu ]; then
+        sudo resolvconf -u || true
+    elif [ "$PLATFORM" = beagleboneblack ]; then
+        sudo resolvconf -u || true
+    elif [ "$PLATFORM" = raspbian ]; then
+        if systemctl is-enabled NetworkManager; then
+            sudo systemctl restart NetworkManager || true
+        fi
+
+        if systemctl is-enabled dhcpcd; then
+            sudo systemctl restart dhcpcd || true
+        fi
+    fi
+}
+
+_detect_service_name()
+{
+    dpkg -L bind9 | grep /etc/init.d/ | cut -d/ -f4
+}
+
+dns64_install()
+{
+    with NAT64 && with DNS64 || return 0
+
+    test -f $BIND_CONF_OPTIONS || die 'Cannot find bind9 configuration file!'
+    sudo sed -i '/^};/i\\tlisten-on-v6 { thread; };' $BIND_CONF_OPTIONS
+    sudo sed -i '/^\tlisten-on-v6 { a/d' $BIND_CONF_OPTIONS
+    sudo sed -i '/^};/i\\tallow-query { any; };' $BIND_CONF_OPTIONS
+    sudo sed -i '/^};/i\\tallow-recursion { thread; };' $BIND_CONF_OPTIONS
+    sudo sed -i '/^};/i\\tforwarders { 8.8.8.8; 8.8.8.4; };' $BIND_CONF_OPTIONS
+    sudo sed -i '/^};/i\\tforward only;' $BIND_CONF_OPTIONS
+    sudo sed -i '/^};/i\\t'"$DNS64_CONF" $BIND_CONF_OPTIONS
+    sudo sed -i '1s/^/acl thread {\n\tfe80::\/16;\n\tfc00::\/7;\n\t127.0.0.1;\n};\n\n/' $BIND_CONF_OPTIONS
+
+    service_name="$(_detect_service_name)"
+
+    if without DOCKER; then
+        sudo sh -c "echo \"nameserver $DNS64_NAMESERVER_ADDR\" >> $RESOLV_CONF_HEAD"
+    fi
+
+    if have systemctl; then
+        sudo systemctl stop dnsmasq || true
+        sudo systemctl disable dnsmasq || true
+        sudo systemctl enable "${service_name}" || true
+        sudo systemctl is-enabled "${service_name}" || die 'Failed to enable bind9!'
+        sudo systemctl start "${service_name}" || die 'Failed to start bind9!'
+    fi
+
+    if without DOCKER; then
+        dns64_update_resolvconf
+    fi
+}
+
+dns64_uninstall()
+{
+    with NAT64 && with DNS64 || return 0
+
+    service_name="$(_detect_service_name)"
+
+    dns64_stop
+    sudo sed -i '/^\tlisten-on-v6/d' $BIND_CONF_OPTIONS
+    sudo sed -i '/^\tallow-query/d' $BIND_CONF_OPTIONS
+    sudo sed -i '/^\tallow-recursion/d' $BIND_CONF_OPTIONS
+    sudo sed -i '/^\tforward/d' $BIND_CONF_OPTIONS
+    sudo sed -i '/^};/i\\tlisten-on-v6 { any; };' $BIND_CONF_OPTIONS
+    sudo sed -i '/^\tdns64/d' $BIND_CONF_OPTIONS
+    sudo sed -i '/^acl/,/^options/{/^options/!d}' $BIND_CONF_OPTIONS
+
+    sudo sed -i '/^nameserver '$DNS64_NAMESERVER_ADDR'/d' $RESOLV_CONF_HEAD || true
+
+    if without DOCKER; then
+        dns64_update_resolvconf
+    fi
+
+    if have systemctl; then
+        sudo systemctl stop "${service_name}" || true
+        sudo systemctl disable "${service_name}" || true
+    fi
+}
+
+dns64_start()
+{
+    with NAT64 && with DNS64 || return 0
+
+    service_name="$(_detect_service_name)"
+
+    if have systemctl; then
+        sudo systemctl start "${service_name}" || die 'Failed to start bind9!'
+    elif command -v service; then
+        sudo service "${service_name}" start || die 'Failed to start bind9!'
+    fi
+}
+
+dns64_stop()
+{
+    with NAT64 && with DNS64 || return 0
+
+    service_name="$(_detect_service_name)"
+
+    if have systemctl; then
+        sudo systemctl stop "${service_name}" || true
+    elif command -v service; then
+        sudo service "${service_name}" stop || true
+    fi
+}

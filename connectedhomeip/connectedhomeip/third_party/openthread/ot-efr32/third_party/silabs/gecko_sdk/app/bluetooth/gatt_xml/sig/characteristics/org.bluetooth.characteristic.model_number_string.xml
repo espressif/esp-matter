@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Liquid XML Studio Designer Edition 9.1.10.3537 (http://www.liquid-technologies.com) -->
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved.  -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.model_number_string" uuid="2A24" name="Model Number String" last-modified="2011-05-24" approved="Yes">
+    <InformativeText>
+        <Abstract>
+            The value of this characteristic is a UTF-8 string representing the model number assigned by the device vendor.
+        </Abstract>
+    </InformativeText>
+    <Value>
+        <Field name="Model Number">
+            <Requirement>Mandatory</Requirement>
+            <Format>utf8s</Format>
+        </Field>
+    </Value>
+</Characteristic>

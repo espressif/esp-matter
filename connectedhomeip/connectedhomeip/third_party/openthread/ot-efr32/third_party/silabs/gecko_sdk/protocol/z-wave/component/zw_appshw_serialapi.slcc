@@ -1,0 +1,25 @@
+id: zw_appshw_serialapi
+label: SerialAPI AppsHw
+category: Z-Wave|AppsHw
+description: AppsHw for SerialAPI application
+package: Z-Wave
+quality: production
+config_file:
+  # For series 1
+  - path: protocol/z-wave/platform/SiliconLabs/AppsHw/inc/SerialAPI/config/s1/serial_api_config.h
+    file_id: serial_api_config
+    condition: [device_series_1]
+  # For series 2
+  - path: protocol/z-wave/platform/SiliconLabs/AppsHw/inc/SerialAPI/config/s2/serial_api_config.h
+    file_id: serial_api_config
+    condition: [device_series_2]
+source:
+  - path: "protocol/z-wave/platform/SiliconLabs/AppsHw/src/SerialAPI/SerialAPI_hw.c"
+include:
+  - path: "protocol/z-wave/Apps/SerialAPI"
+    file_list:
+      - path: "SerialAPI_hw.h"
+provides:
+  - name: zw_appshw_serialapi
+requires:
+  - name: zw_appshw

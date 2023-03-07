@@ -1,0 +1,17 @@
+id: psa_crypto_tls12_prf
+package: platform
+label: TLS 1.2 PRF
+description: >-
+  This component provides support for the pseudorandom function (PRF) specified
+  in TLS 1.2 for use with PSA Crypto. This PSA Crypto functionality uses a Mbed
+  TLS backend.
+category: Platform|Security|PSA Crypto|Upper Layer
+quality: production
+provides:
+  - name: psa_crypto_tls12_prf
+requires:
+  - name: psa_crypto
+  - name: psa_crypto_hmac
+template_contribution:
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_TLS12_PRF

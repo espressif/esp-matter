@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2011 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Sensor Location" type="org.bluetooth.characteristic.sensor_location" uuid="2A5D" last-modified="2016-03-01" approved="Yes">
+    <InformativeText>
+        <Summary>
+            The Sensor Location characteristic is used to expose the location of the sensor.
+        </Summary>
+    </InformativeText>
+    <Value>
+        <Field name="Sensor Location">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+            <Enumerations>
+                <Enumeration key="0" value="Other" />
+                <Enumeration key="1" value="Top of shoe" />
+                <Enumeration key="2" value="In shoe" />
+                <Enumeration key="3" value="Hip" />
+                <Enumeration key="4" value=" Front Wheel" />          
+                <Enumeration key="5" value="Left Crank" />
+                <Enumeration key="6" value="Right Crank" />
+                <Enumeration key="7" value="Left Pedal" />
+                <Enumeration key="8" value="Right Pedal" />
+                <Enumeration key="9" value=" Front Hub" />
+                <Enumeration key="10" value="Rear Dropout" />
+                <Enumeration key="11" value="Chainstay" />
+                <Enumeration key="12" value="Rear Wheel" />
+                <Enumeration key="13" value="Rear Hub" />
+                <Enumeration key="14" value="Chest" />
+                <Enumeration key="15" value="Spider" />
+                <Enumeration key="16" value="Chain Ring" />
+                <ReservedForFutureUse start="17" end="255" />
+            </Enumerations>
+        </Field>
+    </Value>
+</Characteristic>

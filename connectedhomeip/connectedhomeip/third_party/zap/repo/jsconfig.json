@@ -1,0 +1,4 @@
+{
+  "include": ["./src/**/*", "./src-electron/**/*", "./src-shared/**/*"],
+  "exclude": ["node_modules", "**/node_modules/*"]
+}

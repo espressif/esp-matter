@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2011 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Unread Alert Status" type="org.bluetooth.characteristic.unread_alert_status" 
+uuid="2A45">
+	<InformativeText>
+        <Abstract>This characteristic shows how many numbers of unread alerts exist in the specific category in the device.</Abstract>
+        <Summary>This characteristic consists of "Category ID" and "uint8" which shows the number of unread alerts/messages.</Summary>
+        <Examples> 
+            <Example>The value 0x01, 0x04 are interpreted that the server has 4 unread messages in Email category.</Example>
+		</Examples>
+	</InformativeText>
+	<Value>
+        <Field name="Category ID">
+            <InformativeText>The value shows the category for unread alert count</InformativeText>
+            <Requirement>Mandatory</Requirement>
+			<Reference>org.bluetooth.characteristic.alert_category_id</Reference>
+        </Field>
+        
+        <Field name="Unread count">
+            <InformativeText>
+			    How many unread alerts exist on the server.
+                If the value is 255, it means Unread count is greater than 254.
+            </InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            
+        </Field>
+	</Value>
+    
+     <Note>The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet.</Note>
+</Characteristic>

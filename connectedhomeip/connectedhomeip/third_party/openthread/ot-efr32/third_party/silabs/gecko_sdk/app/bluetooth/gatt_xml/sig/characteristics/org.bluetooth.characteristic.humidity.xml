@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+name="Humidity" type="org.bluetooth.characteristic.humidity" uuid="2A6F" last-modified="2014-11-20" approved="Yes">
+    <Value>
+     <Field name="Humidity">
+        <InformativeText>Unit is in percent with a resolution of 0.01 percent</InformativeText>
+        <Requirement>Mandatory</Requirement>
+        <Format>uint16</Format>
+        <Unit>org.bluetooth.unit.percentage</Unit>
+        <DecimalExponent>-2</DecimalExponent>
+	</Field>
+        
+	</Value>
+    </Characteristic>

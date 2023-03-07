@@ -1,0 +1,25 @@
+id: micriumos_net_secure_mbedtls
+label: Network Suite - Secure port for mbedTLS
+package: micrium-tcpx
+description: Micrium OS Network Secure port for mbedTLS
+category: Services|Micrium|Network Suite
+quality: production
+component_root_path: platform/micrium_os/net
+#config_file:
+#  - path: ../../micrium_os_example/net/mbedtls_config/config.h
+source:
+  - path: source/ssl_tls/net_secure_priv.h
+  - path: source/ssl_tls/net_secure_mbedtls.c
+include:
+  - path: include
+    file_list:
+      - path: net_secure.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: NET_SSL_TLS
+  - name: micriumos_component_avails
+    value: NET_SSL_TLS_MBEDTLS
+provides:
+  - name: net_secure_mbedtls
+requires:
+  - name: net

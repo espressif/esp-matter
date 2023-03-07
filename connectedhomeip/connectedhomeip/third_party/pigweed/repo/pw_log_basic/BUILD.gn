@@ -1,0 +1,81 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/module_config.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+
+declare_args() {
+  # The build target that overrides the default configuration options for this
+  # module. This should point to a source set that provides defines through a
+  # public config (which may -include a file or add defines directly).
+  pw_log_basic_CONFIG = pw_build_DEFAULT_MODULE_CONFIG
+}
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+}
+
+config("backend_config") {
+  include_dirs = [ "public_overrides" ]
+}
+
+# pw_log_basic only provides the backend's interface. The implementation is
+# pulled in through pw_build_LINK_DEPS.
+pw_source_set("pw_log_basic") {
+  public_configs = [
+    ":backend_config",
+    ":public_include_path",
+  ]
+  public = [
+    "public/pw_log_basic/log_basic.h",
+    "public_overrides/pw_log_backend/log_backend.h",
+  ]
+  public_deps = [ dir_pw_preprocessor ]
+}
+
+# The log backend deps that might cause circular dependencies, since
+# pw_log is so ubiquitous. These deps are kept separate so they can be
+# depended on from elsewhere.
+pw_source_set("pw_log_basic.impl") {
+  deps = [
+    ":pw_log_basic",
+    "$dir_pw_log:facade",
+    dir_pw_string,
+    dir_pw_sys_io,
+    pw_log_basic_CONFIG,
+  ]
+
+  # Use emoji log levels if they've been enabled.
+  _use_emoji = getenv("PW_EMOJI")
+  defines = []
+  if (_use_emoji == "1") {
+    defines += [ "PW_EMOJI=1" ]
+  }
+
+  sources = [
+    "log_basic.cc",
+    "pw_log_basic_private/config.h",
+  ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}
+
+pw_test_group("tests") {
+}

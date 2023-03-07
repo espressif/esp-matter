@@ -1,0 +1,99 @@
+project_name: micriumos_net
+package: mcu
+quality: production
+label: MCU Example - Micrium OS Network
+description: >
+  MicriumOS Network example.
+
+  This example shows how to use the Micrium OS network stack with the ETH 
+  peripheral on the EFM32GG11B starter kit. This example will initialize 
+  the RMII interface to the external PHY and setup a 100 Mbit connection.
+
+category: Example|MCU Example
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+component:
+  - id: micriumos_bsp
+  - id: micriumos_bsp_net_ether
+  - id: micriumos_common_lib
+  - id: micriumos_common_auth
+  - id: micriumos_kernel
+  - id: micriumos_net
+  - id: sl_system
+  - id: device_init
+  - id: simple_led
+    instance: [led0]
+  - id: "iostream_usart"
+    instance: [vcom]
+  - id: iostream_retarget_stdio
+  - id: iostream_stdlib_config
+  - id: sleeptimer
+  - id: segger_systemview
+  - id: glib
+  - id: board_control
+
+source:
+  - path: ex_main.c
+  - path: common/common/ex_common_init.c
+  - path: net/ex_network.c
+  - path: net/core/ex_net_core.c
+  - path: net/core/ex_net_sock_tcp_client.c
+  - path: net/core/ex_net_sock_tcp_server.c
+  - path: net/core/ex_net_sock_udp_client.c
+  - path: net/core/ex_net_sock_udp_server.c
+  - path: graphics.c
+include:
+  - path: .
+    file_list:
+    - path: ex_description.h
+    - path: common/common/ex_common.h
+    - path: net/ex_network.h
+    - path: net/core/ex_net_core.h
+    - path: net/core/ex_net_sock.h
+    - path: graphics.h
+configuration:
+#------------- Micrium OS / SystemView --------------------
+  - name: CPU_CFG_TS_32_EN
+    value: "1"
+  - name: OS_CFG_DBG_EN
+    value: "1"
+  - name: OS_CFG_TS_EN
+    value: "1"
+  - name: OS_CFG_SCHED_ROUND_ROBIN_EN
+    value: "1"
+  - name: OS_CFG_STAT_TASK_EN
+    value: "1"
+  - name: OS_CFG_TASK_PROFILE_EN
+    value: "1"
+  - name: LIB_MEM_CFG_HEAP_SIZE
+    value: 131072
+  - name: NET_IF_CFG_WAIT_SETUP_READY_EN
+    value: 0
+  - name: NET_IPv6_CFG_DAD_EN
+    value: 0
+  - name: NET_MCAST_CFG_IPv4_RX_EN
+    value: 0
+  - name: NET_MCAST_CFG_IPv4_TX_EN
+    value: 0
+  - name: OS_CFG_TMR_EN
+    value: 1
+  - name: RTOS_ERR_CFG_EXT_EN
+    value: 0
+  - name: SL_BOARD_ENABLE_DISPLAY
+    value: 1
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+define:
+  - name: "DEBUG_EFM"
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+tag:
+  - hardware:component:eth
+  - prebuilt_demo

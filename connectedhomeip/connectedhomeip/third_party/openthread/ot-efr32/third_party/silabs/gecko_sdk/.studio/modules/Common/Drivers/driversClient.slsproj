@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="com.silabs.sdk.exx32.common.drivers" label="Board Support Drivers" contentRoot="$(sdkInstallationPath:default())/hardware/kit/common">
+  <property key="category" value="efm32|Common"/>
+  <includePath uri="drivers" />
+  <folder name="Drivers" uri="drivers" includeAllFiles="true" includeAllFolders="false" />
+</project>

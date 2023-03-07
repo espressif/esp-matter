@@ -1,0 +1,19 @@
+id: psa_crypto_sha224
+package: platform
+label: SHA-224
+description: >-
+  This component provides support for the SHA-224 hash algorithm in PSA Crypto.
+category: Platform|Security|PSA Crypto|Hashing
+quality: production
+provides:
+  - name: psa_crypto_sha224
+requires:
+  - name: psa_crypto
+  - name: mbedtls_sha256
+    condition: [device_series_0]
+template_contribution:
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_SHA_224
+  - name: psa_crypto_config
+    value: "MBEDTLS_PSA_BUILTIN_ALG_SHA_224 1"
+    condition: [mbedtls_sha256]

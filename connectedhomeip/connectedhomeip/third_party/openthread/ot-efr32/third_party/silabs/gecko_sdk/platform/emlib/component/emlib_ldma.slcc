@@ -1,0 +1,46 @@
+id: emlib_ldma
+label: LDMA
+package: platform
+description: >
+  Linked Direct Memory Access (LDMA) peripheral API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_ldma.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_ldma.h"
+provides:
+  - name: emlib_ldma
+requires:
+  - name: device
+  - name: device_has_ldma
+  - name: emlib_cmu
+  - name: emlib_common
+  - name: emlib_core
+  - name: cmsis_core
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efr32xg1/group-ldma
+      condition: [device_sdid_80]
+    - page: emlib/api/efr32xg12/group-ldma
+      condition: [device_sdid_84]
+    - page: emlib/api/efr32xg13/group-ldma
+      condition: [device_sdid_89]
+    - page: emlib/api/efr32xg14/group-ldma
+      condition: [device_sdid_95]
+    - page: emlib/api/efm32gg11/group-ldma
+      condition: [device_sdid_100]
+    - page: emlib/api/efm32gg12/group-ldma
+      condition: [device_sdid_106]
+    - page: emlib/api/efr32xg21/group-ldma
+      condition: [device_sdid_200]
+    - page: emlib/api/efr32xg22/group-ldma
+      condition: [device_sdid_205]
+    - page: emlib/api/efr32xg23/group-ldma
+      condition: [device_sdid_210]
+    - page: emlib/api/efr32xg24/group-ldma
+      condition: [device_sdid_215]

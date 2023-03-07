@@ -1,0 +1,8 @@
+LIBRARY iothub_client_dll
+EXPORTS
+    IoTHubModuleClient_LL_CreateFromEnvironment
+    IoTHubModuleClient_CreateFromEnvironment
+    IoTHubModuleClient_DeviceMethodInvokeAsync
+    IoTHubModuleClient_LL_DeviceMethodInvoke
+    IoTHubModuleClient_ModuleMethodInvokeAsync
+    IoTHubModuleClient_LL_ModuleMethodInvoke

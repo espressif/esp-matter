@@ -1,0 +1,108 @@
+id: ot_platform_abstraction_core
+label: Platform Abstraction (Core)
+package: OpenThread
+category: OpenThread
+quality: production
+description: This component provides the abstraction layer between the OpenThread stack and Silicon Labs platform
+provides:
+  - name: ot_platform_abstraction_core
+  # NOTE: The 'wireless_stack' provide was moved here from 'ot_stack_source' to support building modules using the ot-efr32 GitHub repo
+  - name: wireless_stack
+    allow_multiple: true
+requires:
+  - name: cpp_support
+  - name: sl_system_init
+  - name: sl_system_process_action
+  - name: sli_protocol_crypto
+  - name: device_init
+  - name: device_init_core
+  - name: component_catalog
+  - name: rail_lib
+  - name: rail_util_pa
+  - name: rail_util_rssi
+  - name: emlib_msc
+  - name: emlib_rmu
+  - name: sleeptimer
+  - name: mpu
+  - name: nvm3_default
+  - name: silabs_core_sl_malloc
+  - name: toolchain_gcc
+  - name: device_supports_thread
+    # Temporary workaround for building cert libs with Series 2 generic OPNs
+    unless: [ot_cert_build]
+  - name: ot_platform_abstraction_source
+    unless: [ot_cert_libs]
+ui_hints:
+  visibility: never
+include:
+  - path: util/third_party/openthread/examples/platforms
+    file_list:
+      - path: openthread-system.h
+  - path: util/third_party/openthread/examples/platforms/utils
+    file_list:
+      - path: code_utils.h
+      - path: uart.h
+  - path: protocol/openthread/platform-abstraction/efr32
+    file_list:
+      - path: board_config.h
+      - path: openthread-core-efr32-config.h
+      - path: openthread-core-efr32-config-check.h
+      - path: platform-efr32.h
+      - path: sleep.h
+        condition:
+          - power_manager
+source:
+      - path: protocol/openthread/platform-abstraction/efr32/uartdrv_uart.c
+        condition:
+          - uartdrv_usart
+      - path: protocol/openthread/platform-abstraction/efr32/iostream_uart.c
+        condition:
+          - iostream_usart
+      - path: protocol/openthread/platform-abstraction/efr32/sleep.c
+        condition:
+          - power_manager
+library:
+  - path: "protocol/openthread/libs/libsl_openthread_efr32mg1x_gcc.a"
+    condition:
+      - toolchain_gcc
+      - device_series_1
+  - path: "protocol/openthread/libs/libsl_openthread_efr32mg2x_gcc.a"
+    condition:
+      - toolchain_gcc
+      - device_series_2
+define:
+  - name: OPENTHREAD_PROJECT_CORE_CONFIG_FILE
+    value: "\"openthread-core-efr32-config.h\""
+  - name: OPENTHREAD_CORE_CONFIG_PLATFORM_CHECK_FILE
+    value: "\"openthread-core-efr32-config-check.h\""
+template_file:
+  - path: protocol/openthread/src/template/sl_ot_init.c.jinja
+  - path: protocol/openthread/include/template/sl_ot_init.h.jinja
+template_contribution:
+  - name: power_manager_handler
+    value:
+      event: is_ok_to_sleep
+      include: sleep.h
+      handler: sl_ot_is_ok_to_sleep
+    condition:
+      - power_manager
+    unless:
+      - kernel
+  - name: event_handler
+    value:
+      event: stack_init
+      include: platform-efr32.h
+      handler: sl_ot_sys_init
+    priority: -10
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: sl_ot_init.h
+      handler: sl_ot_init
+    unless:
+      - kernel
+  - name: ot_init
+    value: sl_ot_sleep_init
+    priority: 10
+    condition:
+      - power_manager

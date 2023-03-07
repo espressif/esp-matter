@@ -1,0 +1,24 @@
+/*
+ * Copyright (c) 2018-2019, Arm Limited. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ *
+ */
+
+//This file is the main page for the Doxygen based reference guide.
+
+/*!
+\mainpage TF-M Reference Manual
+
+This document gives a reference for the TF-M core and services. This guide does
+not cover the non-secure application example, the boot-loader and the target
+platform implementations.
+
+\htmlonly
+Please use the menu on the left or on the top of the page for navigation.
+
+If information of a specific item is needed, then please use the search box
+top-right.
+\endhtmlonly
+
+*/

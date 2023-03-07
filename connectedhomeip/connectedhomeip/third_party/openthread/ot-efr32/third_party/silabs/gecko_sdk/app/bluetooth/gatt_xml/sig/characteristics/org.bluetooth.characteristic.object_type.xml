@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2015 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Object Type" type="org.bluetooth.characteristic.object_type" 
+uuid="2ABF" last-modified="2015-11-23" approved="Yes">
+    <Value>
+        <Field name="Object Type">
+            <InformativeText>Refer to note below for 16-bit values</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            
+            <Format>gatt_uuid</Format>
+            <Description> 
+            
+			</Description>
+            <DecimalExponent>0</DecimalExponent>
+          </Field>
+	</Value>
+    <Note>
+        <p>The fields in the above table, reading from top to bottom, are shown in the order of LSO to MSO, where LSO = Least Significant Octet and MSO = Most Significant Octet.</p>
+	</Note>
+    <Note>
+        <p>Description: Unspecified Object Type, 16-bit UUID: &lt;&lt; Unspecified Object Type &gt;&gt; </p>
+        <p>Description: Firmware, 16-bit UUID: &lt;&lt; Firmware &gt;&gt; </p>
+        <p>Description: Route Object in GPS eXchange Format v1.1, 16-bit UUID: &lt;&lt; Route GPX &gt;&gt; </p>
+        <p>Description: Track Object in GPS eXchange Format v1.1, 16-bit UUID: &lt;&lt; Track GPX &gt;&gt; </p>
+        
+	</Note>
+</Characteristic>

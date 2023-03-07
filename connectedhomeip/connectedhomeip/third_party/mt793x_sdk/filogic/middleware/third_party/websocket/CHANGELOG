@@ -1,0 +1,18 @@
+Changes on version 1.2.2 (current):
+- Fix problem with TCP transmission stick package. Thanks to ljia310.
+
+Changes on version 1.2.1:
+- Fix allocating string memory.
+
+Changes on version 1.2.0:
+- Rename source files to avoid duplication with other software.
+
+Changes on version 1.1.0:
+- Add Objective-C client.
+
+Changes on version 1.0.0:
+- Stable release.
+
+Changes on version 0.0.1:
+- Initial implementation.
+

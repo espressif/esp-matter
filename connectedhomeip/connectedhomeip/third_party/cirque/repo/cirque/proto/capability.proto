@@ -1,0 +1,59 @@
+// Copyright 2020 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+
+syntax = "proto3";
+
+package cirque.proto;
+
+message WeaveCapability {
+  string weave_certificate_path = 1;
+  string target_path = 2;
+}
+
+message ThreadCapability {
+  int32 petition_id = 1; // 0 for default behavior
+  bool rcp_mode = 2; // False for default behavior
+  repeated string daemons = 3; // leave empty for default behavior
+}
+
+message WiFiCapability {
+}
+
+message XvncCapability {
+  bool localhost = 1;
+  int32 display_id = 2; // 0 for auto select
+  int32 docker_display_id = 3;
+}
+
+message InteractiveCapability {
+}
+
+message LanAccessCapability {
+  bool internal_lan = 1; // False for default behavior
+}
+
+message MountPair {
+  string host_path = 1;
+  string target_path = 2;
+}
+
+message MountCapability {
+  repeated MountPair mount_pairs = 1;
+}
+
+message TrafficControlCapability {
+  int32 latency_ms = 1;
+  int32 loss_rate = 2;
+}

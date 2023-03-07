@@ -1,0 +1,28 @@
+id: peripheral_keyscan
+label: KEYSCAN
+package: platform
+description: >
+  KEYSCAN Peripheral API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/peripheral"
+source:
+  - path: "src/peripheral_keyscan.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "peripheral_keyscan.h"
+provides:
+  - name: peripheral_keyscan
+requires:
+  - name: device
+  - name: device_has_keyscan
+  - name: emlib_common
+  - name: cmsis_core
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efr32xg23/group-keyscan
+      condition: [device_sdid_210]
+    - page: emlib/api/efr32xg24/group-keyscan
+      condition: [device_sdid_215]

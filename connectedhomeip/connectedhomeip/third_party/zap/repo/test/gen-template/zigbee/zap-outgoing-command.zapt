@@ -1,0 +1,6 @@
+{{#all_user_clusters_with_outgoing_commands}}
+{{clusterName}} {{clusterSide}} Cluster Outgoing commands
+{{#all_outgoing_commands_for_cluster clusterName clusterSide isMfgSpecific="false"}}
+Outgoing Command: {{commandName}}
+{{/all_outgoing_commands_for_cluster}}
+{{/all_user_clusters_with_outgoing_commands}}

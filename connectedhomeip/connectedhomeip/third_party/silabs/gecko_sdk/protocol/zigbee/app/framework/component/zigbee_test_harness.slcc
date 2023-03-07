@@ -1,0 +1,552 @@
+package: Zigbee
+description: This component implements software for support of non-standard test-harness
+  behavior to induce failure conditions and verify certified device behavior. This
+  handles negative key establishment test cases for timeout and sending bad messages,
+  mangling OTA upgrade images, starting/stopping the trust center keepalive, initiating
+  network key updates, and testing ZCL attributes.
+label: Test Harness
+quality: production
+id: zigbee_test_harness
+category: Zigbee|Utility|Testing
+provides:
+   - name: zigbee_test_harness
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/test-harness/config/test-harness-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/test-harness/test-harness.c
+  - path: protocol/zigbee/app/framework/plugin/test-harness/read-write-attributes.c
+  - path: protocol/zigbee/app/framework/plugin/test-harness/test-harness-host.c
+    condition:
+      - zigbee_ezsp
+  - path: protocol/zigbee/app/framework/plugin/test-harness/test-harness-soc.c
+    condition:
+      - zigbee_stack_common
+include:
+  - path: protocol/zigbee/app/framework/plugin/test-harness
+    file_list:
+      - path: test-harness.h
+      - path: test-harness-cli.h
+  - path: protocol/zigbee/app/xncp-test-harness
+    file_list:
+      - path: xncp-test-harness.h
+    condition:
+      - zigbee_ezsp
+template_contribution:
+  - name: component_catalog
+    value: zigbee_test_harness
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emAfPluginTestHarnessInitCallback     
+  - name: cli_group
+    value:
+      group: plugin
+      name: test-harness
+      help: test-harness related commands.
+  - name: cli_command
+    value:
+      group: test-harness
+      name: status
+      handler: emberAfPluginTestHarnessStatusCommand
+      help: Displays the current status of the test harness.
+  - name: cli_group
+    value:
+      group: test-harness
+      name: aps-sec-for-cluster
+      help: aps-sec-for-cluster related commands.
+  - name: cli_command
+    value:
+      group: aps-sec-for-cluster
+      name: "on"
+      handler: emberAfPluginTestHarnessSetApsSecurityForClusterCommand
+      help: Turns on automatic APS security for the specified cluster.
+      argument:
+      - type: uint16
+        help: The cluster ID to add APS security to automatically
+  - name: cli_command
+    value:
+      group: aps-sec-for-cluster
+      name: "off" # quoting as a workaround for EMZIGBEE-6470
+      handler: emberAfPluginTestHarnessSetApsSecurityForClusterCommand
+      help: Turns off automatic APS security for the previously specified cluster.
+  - name: cli_group
+    value:
+      group: test-harness
+      name: attr
+      help: attr related commands.
+  - name: cli_command
+    value:
+      group: attr
+      name: options
+      handler: setOptionsCommand
+      help: Sets the options for the attributes tests.
+      argument:
+      - type: uint8
+      - type: uint16
+  - name: cli_command
+    value:
+      group: attr
+      name: set-dest
+      handler: setDestinationCommand
+      help: Sets the destination for the attributes tests.
+      argument:
+      - type: uint16
+      - type: uint8
+  - name: cli_command
+    value:
+      group: attr
+      name: start-test
+      handler: startTestCommand
+      help: Starts the attributes test.
+      argument:
+      - type: uint16
+      - type: uint16
+      - type: uint16
+      - type: int8
+  - name: cli_group
+    value:
+      group: test-harness
+      name: registration
+      help: registration related commands.
+  - name: cli_command
+    value:
+      group: registration
+      name: "on"
+      handler: emberAfPluginTestHarnessSetRegistrationCommand
+      help: Turns on automatic SE registration.
+  - name: cli_command
+    value:
+      group: registration
+      name: "off" # quoting as a workaround for EMZIGBEE-6470
+      handler: emberAfPluginTestHarnessSetRegistrationCommand
+      help: Turns off automatic SE registration.
+  - name: cli_group
+    value:
+      group: test-harness
+      name: key-establishment
+      help: key-establishment related commands.
+  - name: cli_command
+    value:
+      group: key-establishment
+      name: normal-mode
+      handler: emberAfPluginTestHarnessKeyEstablishmentSetModeCommand
+      help: Sets the key establishment mode to normal.
+  - name: cli_command
+    value:
+      group: key-establishment
+      name: no-resources
+      handler: emberAfPluginTestHarnessKeyEstablishmentSetModeCommand
+      help: All received KE requests will be responded with no resources.
+  - name: cli_command
+    value:
+      group: key-establishment
+      name: out-of-sequence
+      handler: emberAfPluginTestHarnessKeyEstablishmentSetModeCommand
+      help: All received KE requests will be responded with no resources.
+      argument:
+      - type: uint8
+        help: The out-of-sequence command ID to send
+  - name: cli_command
+    value:
+      group: key-establishment
+      name: timeout
+      handler: emberAfPluginTestHarnessKeyEstablishmentSetModeCommand
+      help: Artificially creates a timeout by delaying an outgoing message.
+  - name: cli_command
+    value:
+      group: key-establishment
+      name: delay-cbke
+      handler: emberAfPluginTestHarnessKeyEstablishmentSetModeCommand
+      help: Changes the advertised delays by the local device for CBKE.
+      argument:
+      - type: uint16
+        help: Set the actual delay that occurs
+      - type: uint16
+        help: Sets the advertised delay sent to the partner of key establishment
+  - name: cli_command
+    value:
+      group: key-establishment
+      name: default-resp
+      handler: emberAfPluginTestHarnessKeyEstablishmentSetModeCommand
+      help: Sends a default response error message in response to initiate KE.
+  - name: cli_command
+    value:
+      group: key-establishment
+      name: new-key-policy
+      handler: emberAfPluginTestHarnessKeyEstablishmentSetModeCommand
+      help: Sets the policy of whether the TC allows new KE requests.
+      argument:
+      - type: uint8
+        help: Allows / disallows new key establishment requests
+  - name: cli_command
+    value:
+      group: key-establishment
+      name: reset-aps-fc
+      handler: emberAfPluginTestHarnessKeyEstablishmentSetModeCommand
+      help: Forces the local device to reset its outgoing APS FC.
+  - name: cli_command
+    value:
+      group: key-establishment
+      name: adv-aps-fc
+      handler: emberAfPluginTestHarnessKeyEstablishmentSetModeCommand
+      help: Advances the local devices outgoing APS FC by 4096.
+  - name: cli_group
+    value:
+      group: key-establishment
+      name: cert-mangle
+      help: cert-mangle related commands.
+  - name: cli_command
+    value:
+      group: cert-mangle
+      name: length
+      handler: emberAfPluginTestHarnessCertMangleCommand
+      help: Mangles the length of the certificate.
+      argument:
+      - type: int8
+        help: The positive or negative change in length
+  - name: cli_command
+    value:
+      group: cert-mangle
+      name: issuer
+      handler: emberAfPluginTestHarnessCertMangleCommand
+      help: Changes the issuer in the certificate.
+      argument:
+      - type: hex
+        help: The EUI64 of the issuer (big endian)
+  - name: cli_command
+    value:
+      group: cert-mangle
+      name: corrupt
+      handler: emberAfPluginTestHarnessCertMangleCommand
+      help: Corrupts a single byte in the cert.
+      argument:
+      - type: uint8
+        help: The index of the certificate byte to corrupt
+  - name: cli_command
+    value:
+      group: cert-mangle
+      name: change-byte
+      handler: emberAfPluginTestHarnessCertMangleCommand
+      help: Changes a single byte in the cert.
+      argument:
+      - type: uint8
+        help: The index of the certificate byte to change
+      - type: uint8
+        help: The new value of the certificate byte
+  - name: cli_command
+    value:
+      group: cert-mangle
+      name: subject
+      handler: emberAfPluginTestHarnessCertMangleCommand
+      help: Changes the subject (EUI64) of the cert.
+      argument:
+      - type: hex
+        help: The EUI64 of the subject (big endian)
+  - name: cli_command
+    value:
+      group: key-establishment
+      name: suite
+      handler: emberAfPluginTestHarnessKeyEstablishmentSelectSuiteCommand
+      help: Selects between the CBKE 163k1 and 283k1 suites.
+      argument:
+      - type: uint16
+        help: Holds the type        of key establishment suite. It can be EMBER_AF_CBKE_KEY_ESTABLISHMENT_SUITE_163K1,        EMBER_AF_CBKE_KEY_ESTABLISHMENT_SUITE_283K1, or        EMBER_AF_INVALID_KEY_ESTABLISHMENT_SUITE
+  - name: cli_command
+    value:
+      group: key-establishment
+      name: set-available-suite
+      handler: emberAfPluginTestHarnessKeyEstablishmentSetAvailableSuiteCommand 
+      help: Selects between the CBKE 163k1 and 283k1 suites.
+      argument:
+      - type: uint16
+        help: Holds the type        of key establishment suite. It can be EMBER_AF_CBKE_KEY_ESTABLISHMENT_SUITE_163K1,        EMBER_AF_CBKE_KEY_ESTABLISHMENT_SUITE_283K1, or        EMBER_AF_INVALID_KEY_ESTABLISHMENT_SUITE
+  - name: cli_command
+    value:
+      group: key-establishment
+      name: key-mangle
+      handler: emberAfPluginTestHarnessKeyEstablishmentKeyMangleCommand
+      help: Mangles the length of the ephemeral key.
+      argument:
+      - type: int8
+        help: The positive or negative change in length
+  - name: cli_group
+    value:
+      group: test-harness
+      name: price
+      help: price related commands.
+  - name: cli_command
+    value:
+      group: price
+      name: send-new-fields
+      handler: emberAfPluginTestHarnessPriceSendNewFieldsCommand
+      help: Controls whether the new SE 1.1 price fields are included.
+      argument:
+      - type: uint8
+        help: Boolean indicating whether to send new fields
+  - name: cli_command
+    value:
+      group: price
+      name: send-se10-fields
+      handler: emberAfPluginTestHarnessPriceSendNewFieldsCommand
+      help: Controls whether the new SE 1.1 price fields are included.
+      argument:
+      - type: uint8
+        help: Boolean indicating whether to send new fields
+  - name: cli_group
+    value:
+      group: test-harness
+      name: tc-keepalive
+      help: tc-keepalive related commands.
+  - name: cli_command
+    value:
+      group: tc-keepalive
+      name: send
+      handler: emberAfPluginTestHarnessTcKeepaliveSendCommand
+      help: Sends a Trust Center Keepalive.
+  - name: cli_command
+    value:
+      group: tc-keepalive
+      name: start
+      handler: emberAfPluginTestHarnessTcKeepaliveStartStopCommand
+      help: Starts the TC keepalive state machine.
+  - name: cli_command
+    value:
+      group: tc-keepalive
+      name: stop
+      handler: emberAfPluginTestHarnessTcKeepaliveStartStopCommand
+      help: Stops the TC keepalive state machine.
+  - name: cli_group
+    value:
+      group: test-harness
+      name: ota
+      help: ota related commands.
+  - name: cli_command
+    value:
+      group: ota
+      name: image-mangle
+      handler: emberAfPluginTestHarnessOtaImageMangleCommand
+      help: Mangles the Simple Storage RAM OTA image.
+      argument:
+      - type: uint16
+        help: The byte index into the OTA image that will be mangled
+  # Avoid CLI name conflicts with zigbee_concentrator component
+  - name: cli_command
+    value:
+      group: test-harness
+      name: concentrator-start
+      handler: emberAfPluginTestHarnessConcentratorStartStopCommand
+      help: Starts the concentrators periodic broadcasts
+  - name: cli_command
+    value:
+      group: test-harness
+      name: concentrator-stop
+      handler: emberAfPluginTestHarnessConcentratorStartStopCommand
+      help: Stops the concentrators periodic broadcasts
+  - name: cli_group
+    value:
+      group: test-harness
+      name: key-update
+      help: key-update related commands.
+  - name: cli_command
+    value:
+      group: key-update
+      name: unicast
+      handler: emberAfPluginTestHarnessKeyUpdateCommand
+      help: Changes TC NWK key update mechanism to unicast with APS security.
+  - name: cli_command
+    value:
+      group: key-update
+      name: broadcast
+      handler: emberAfPluginTestHarnessKeyUpdateCommand
+      help: Changes TC NWK key update mechanism to broadcast.
+  - name: cli_command
+    value:
+      group: key-update
+      name: now
+      handler: emberAfPluginTestHarnessKeyUpdateCommand
+      help: Starts a TC NWK key update now.
+  - name: cli_group
+    value:
+      group: test-harness
+      name: stack
+      help: stack related commands.
+  - name: cli_group
+    value:
+      group: stack
+      name: limit-beacons
+      help: limit-beacons related commands.
+  - name: cli_command
+    value:
+      group: limit-beacons
+      name: "on"
+      handler: emberAfPluginTestHarnessLimitBeaconsOnOffCommand
+      help: Enables a limit to the max number of outgoing beacons.
+  - name: cli_command
+    value:
+      group: limit-beacons
+      name: "off" # quoting as a workaround for EMZIGBEE-6470
+      handler: emberAfPluginTestHarnessLimitBeaconsOnOffCommand
+      help: Disables a limit to the max number of outgoing beacons.
+  - name: cli_group
+    value:
+      group: test-harness
+      name: channel-mask
+      help: channel-mask related commands
+  - name: cli_command
+    value:
+      group: channel-mask
+      name: clear
+      handler: emberAfPluginTestHarnessChannelMaskResetClearAllCommand
+      help: Clears the channel mask used by network find.
+    condition:
+      - zigbee_network_find
+  - name: cli_command
+    value:
+      group: channel-mask
+      name: reset
+      handler: emberAfPluginTestHarnessChannelMaskResetClearAllCommand
+      help: Resets the channel mask back to the app default.
+    condition:
+      - zigbee_network_find
+  - name: cli_command
+    value:
+      group: channel-mask
+      name: all
+      handler: emberAfPluginTestHarnessChannelMaskResetClearAllCommand
+      help: Sets the channel mask to all channels.
+    condition:
+      - zigbee_network_find
+  - name: cli_command
+    value:
+      group: channel-mask
+      name: add
+      handler: emberAfPluginTestHarnessChannelMaskAddOrRemoveCommand
+      help: Adds a channel to the mask.
+      argument:
+      - type: uint8
+        help: The 802.15.4 chanel to add
+    condition:
+      - zigbee_network_find
+  - name: cli_command
+    value:
+      group: channel-mask
+      name: remove
+      handler: emberAfPluginTestHarnessChannelMaskAddOrRemoveCommand
+      help: Removes a channel from the mask.
+      argument:
+      - type: uint8
+        help: The 802.15.4 chanel to remove
+    condition:
+      - zigbee_network_find
+  - name: cli_group
+    value:
+      group: test-harness
+      name: endpoint
+      help: endpoint related commands.
+  - name: cli_command
+    value:
+      group: endpoint
+      name: enable
+      handler: emberAfPluginTestHarnessEnableDisableEndpointCommand
+      help: Enables the endpoint to receive messages and be discovered.
+      argument:
+      - type: uint8
+        help: The endpoint number
+  - name: cli_command
+    value:
+      group: endpoint
+      name: disable
+      handler: emberAfPluginTestHarnessEnableDisableEndpointCommand
+      help: Disables the endpoint to receive messages and be discovered.
+      argument:
+      - type: uint8
+        help: The endpoint number
+  - name: cli_command
+    value:
+      group: endpoint
+      name: status
+      handler: emberAfPluginTestHarnessEndpointStatusCommand
+      help: Disables the endpoint to receive messages and be discovered.
+  - name: cli_command
+    value:
+      group: endpoint
+      name: cluster-endpoint-index
+      handler: emberAfPluginTestHarnessClusterEndpointIndexCommand
+      help: Gets the cluster endpoint index.
+      argument:
+      - type: uint8
+        help: The local endpoint of the cluster
+      - type: uint16
+        help: The cluster whose index is needed
+      - type: uint8
+        help: 0 for client-side attributes or 1 for server-side attributes
+  - name: cli_group
+    value:
+      group: test-harness
+      name: radio
+      help: radio related commands.
+  - name: cli_command
+    value:
+      group: radio
+      name: "on"
+      handler: emberAfPluginTestHarnessRadioOnOffCommand
+      help: Turns on the radio if it was previously turned off.
+  - name: cli_command
+    value:
+      group: radio
+      name: "off" # quoting as a workaround for EMZIGBEE-6470
+      handler: emberAfPluginTestHarnessRadioOnOffCommand
+      help: Turns off the radio so that no messages are sent.
+  - name: cli_command
+    value:
+      group: test-harness
+      name: set-radio-power
+      handler: emberAfPluginTestHarnessSetRadioPower
+      help: Sets the radio power.
+      argument:
+      - type: uint8
+        help: The radio power to set
+  - name: cli_command
+    value:
+      group: test-harness
+      name: add-child
+      handler: emberAfPluginTestHarnessAddChildCommand
+      help: Adds a child to the child table.
+      argument:
+      - type: uint16
+        help: The shortId of the child device
+      - type: hex
+        help: The EUI64 of the child (big endian)
+      - type: uint8
+        help: The node type of the child device
+  - name: cli_command
+    value:
+      group: test-harness
+      name: set-compliance-revision
+      handler: emberAfPluginTestHarnessSetNodeDescriptorComplianceRevision
+      help: Sets a compliance revision for a device such that the device can act as pre-R21 or R21+ for testing purposes. The reason for doing this is because the end device may send a node descriptor request and the hub will respond with the node descriptor response, which will include the hubs compliance revision. If the compliance revision of the hub is R21+, only then will the TC link key request be made by the end device.
+      argument:
+      - type: uint8
+        help: The compliance version
+  - name: cli_command
+    value:
+      group: test-harness
+      name: set-max-children
+      handler: emberAfPluginTestHarnessSetMaxChildren
+      help: Sets the maximum children supported by the local node.
+      argument:
+      - type: uint8
+        help: The maximum number of children to support
+  - name: cli_command
+    value:
+      group: test-harness
+      name: set-neighbor-table-size
+      handler: emberAfPluginTestHarnessSetNeighborTableSize
+      help: Sets the neighbor table size.
+      argument:
+      - type: uint8
+        help: The size of the neighbor table
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/test-harness

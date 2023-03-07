@@ -1,0 +1,18 @@
+Trusted Firmware Fuzzer (TF-Fuzz) starting...
+
+Info:  random seed was not specified.
+
+Using seed value of \d+ \(0x[a-f\d]+\).
+Purpose line:  to show that TF-Fuzz can infer results
+ASSET_IDENTIFIER:  "jonathan"
+SST-asset identifier list:  "data"
+LITERAL:  "I am the man"
+SST-create from literal data:  ""I am the man""
+Set SST command:  ""I am the man""
+Set command:  ""I am the man""
+Command with no expect:  ";"
+Lines:  Line number 3.
+Lines:  Line number 3.
+Writing test file, test.c.
+
+TF-Fuzz test generation complete.

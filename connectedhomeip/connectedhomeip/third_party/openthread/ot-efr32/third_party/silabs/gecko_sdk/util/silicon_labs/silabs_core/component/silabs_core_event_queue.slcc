@@ -1,0 +1,15 @@
+id: silabs_core_event_queue
+package: platform
+description: Ember queue-based event system.
+category: Platform|Util
+quality: production
+include:
+  - path: util/silicon_labs/silabs_core
+  - path: util/silicon_labs/silabs_core/event_queue
+    file_list:
+      - path: event-queue.h
+      
+source:
+  - path: util/silicon_labs/silabs_core/event_queue/event-queue.c
+provides:
+  - name: silabs_core_event_queue

@@ -1,0 +1,90 @@
+id: zigbee_zll
+label: Zigbee light link
+package: Zigbee
+category: Zigbee|Stack
+quality: production
+
+description: Provides the functionality to support Zigbee Light Link (ZLL) functionality on a device.
+
+provides:
+  - name: zigbee_zll
+  - name: zigbee_zll_for_exclusivity
+
+requires:
+  - name: zigbee_zll_implementation
+  - name: zigbee_zll_library
+    condition:
+     - zigbee_force_libraries
+
+recommends:
+  - id: zigbee_zll_source
+
+include:
+  - path: protocol/zigbee/stack/include
+    file_list:
+      - path: zll-api.h
+      - path: zll-types.h
+  - path: protocol/zigbee/stack/zll
+    file_list:
+      - path: zll-token-config.h
+  - path: protocol/zigbee/app/em260
+    file_list:
+      - path: command-handlers-zll.h
+
+config_file:
+  - path: protocol/zigbee/stack/config/component_config/sl_zigbee_light_link_config.h
+
+source:
+  - path: protocol/zigbee/app/em260/command-handlers-zll-generated.c
+    condition:
+      - zigbee_ncp
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_light_link
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: set_configuration_value
+      function_name: emberAfPluginEzspZllConfigurationValueCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: get_policy
+      function_name: emberAfPluginEzspZllPolicyCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: set_policy
+      function_name: emberAfPluginEzspZllPolicyCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: get_configuration_value
+      function_name: emberAfPluginEzspZllConfigurationValueCommandCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: zll_touch_link_target
+      function_name: emAfZllTouchLinkTargetCallback
+    condition:  
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: zll_address_assignment
+      function_name: emAfZllAddressAssignmentCallback
+    condition:  
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: zll_scan_complete
+      function_name: emAfZllScanCompleteCallback
+    condition:  
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: zll_network_found
+      function_name: emAfZllNetworkFoundCallback
+    condition:  
+       - zigbee_ncp
+
+
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/zll

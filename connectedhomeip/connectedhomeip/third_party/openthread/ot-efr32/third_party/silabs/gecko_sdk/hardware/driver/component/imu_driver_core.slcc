@@ -1,0 +1,24 @@
+id: imu_driver_core
+package: platform
+label: IMU - Inertial Measurement Unit Core
+description: >
+  Intertial Measurement Unit driver core
+category: Platform|Board Drivers
+quality: production
+ui_hints:
+  visibility: never
+root_path: hardware/driver/imu
+provides: 
+  - name: imu_driver_core
+requires:
+  - name: sleeptimer
+  - name: status
+  - name: imu_device_driver
+include:
+  - path: inc
+    file_list:
+      - path: sl_imu.h
+source:
+  - path: src/sl_imu_dcm.c
+  - path: src/sl_imu_fuse.c
+  - path: src/sl_imu_math.c

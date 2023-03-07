@@ -1,0 +1,35 @@
+[
+    {
+        "files": [
+            "+../../../../../../source/ti/posix/freertos/clock.c -> posix/clock.c",
+            "+../../../../../../source/ti/posix/freertos/memory.c -> posix/memory.c",
+            "+../../../../../../source/ti/posix/freertos/mqueue.c -> posix/mqueue.c",
+            "+../../../../../../source/ti/posix/freertos/pthread_barrier.c -> posix/pthread_barrier.c",
+            "+../../../../../../source/ti/posix/freertos/pthread_cond.c -> posix/pthread_cond.c",
+            "+../../../../../../source/ti/posix/freertos/pthread.c -> posix/pthread.c",
+            "+../../../../../../source/ti/posix/freertos/pthread_mutex.c -> posix/pthread_mutex.c",
+            "+../../../../../../source/ti/posix/freertos/pthread_rwlock.c -> posix/pthread_rwlock.c",
+            "+../../../../../../source/ti/posix/freertos/sched.c -> posix/sched.c",
+            "+../../../../../../source/ti/posix/freertos/semaphore.c -> posix/semaphore.c",
+            "+../../../../../../source/ti/posix/freertos/sleep.c -> posix/sleep.c",
+            "+../../../../../../source/ti/posix/freertos/timer.c -> posix/timer.c",
+            "+../../../../../../source/ti/posix/freertos/PTLS.c -> posix/PTLS.c",
+            "+../../../../../../source/ti/posix/freertos/aeabi_portable.c -> posix/aeabi_portable.c",
+            "+../../../../dpl/AppHooks_freertos.c -> dpl/AppHooks_freertos.c",
+            "+../../../../dpl/ClockP_freertos.c -> dpl/ClockP_freertos.c",
+            "+../../../../dpl/DebugP_freertos.c -> dpl/DebugP_freertos.c",
+            "+../../../../dpl/MutexP_freertos.c -> dpl/MutexP_freertos.c",
+            "+../../../../dpl/QueueP_freertos.c -> dpl/QueueP_freertos.c",
+            "+../../../../dpl/SemaphoreP_freertos.c -> dpl/SemaphoreP_freertos.c",
+            "+../../../../dpl/StaticAllocs_freertos.c -> dpl/StaticAllocs_freertos.c",
+            "+../../../../dpl/SwiP_freertos.c -> dpl/SwiP_freertos.c",
+            "+../../../../dpl/SystemP_freertos.c -> dpl/SystemP_freertos.c",
+            "+../../../../dpl/HwiPCC32XX_freertos.c -> dpl/HwiPCC32XX_freertos.c",
+            "+../../../../dpl/PowerCC32XX_freertos.c -> dpl/PowerCC32XX_freertos.c",
+            "+../../../../startup/startup_cc32xx_ccs.c -> freertos/startup/startup_cc32xx_ccs.c",
+            "+../FreeRTOSConfig.h -> FreeRTOSConfig.h",
+            "+../README.md -> README.md",
+            "+../README.html -> README.html"
+        ]
+    }
+]

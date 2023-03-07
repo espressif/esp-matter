@@ -1,0 +1,173 @@
+%%{
+/*
+ * Copyright (c) 2018-2021, Texas Instruments Incorporated - http://www.ti.com
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+
+/*
+ *  ======== SPICC26XXDMA.Board.c.xdt ========
+ */
+
+    /* passed by /ti/drivers/templates/Board.c.xdt */
+    let SPI = args[0];
+    let instances = SPI.$instances;
+    if (instances.length == 0) return;
+
+    /* get ti/drivers common utility functions */
+    let Common = system.getScript('/ti/drivers/Common.js');
+
+    let declarations = Common.genBoardDeclarations(instances);
+
+    /* CONFIG_XXXCOUNT string, derived from defaultInstanceName */
+    let countDef = SPI.defaultInstanceName + 'COUNT';
+
+    /* localize the object names with this device ID */
+    let devId = system.deviceData.deviceId;
+
+    let attrsVer = '';
+    let driver = '';  /* String to attach to the driver include name */
+    if (devId.match(/CC13.[12]/) || devId.match(/CC26.[12]/)) {
+        driver = 'CC26X2';
+    }
+    else if (devId.match(/CC13.4/) || devId.match(/CC26.4/) || devId.match(/CC2653/)) {
+        driver = 'CC26X4';
+    }
+    else {
+        driver = 'CC26XX';
+        attrsVer = 'V1';
+    }
+
+%%}
+/*
+ *  =============================== SPI DMA ===============================
+ */
+#include <ti/drivers/SPI.h>
+#include <ti/drivers/spi/SPI`driver`DMA.h>
+#include <ti/drivers/dma/UDMACC26XX.h>
+
+#include <ti/devices/DeviceFamily.h>
+#include DeviceFamily_constructPath(driverlib/ioc.h)
+
+#define `countDef` `instances.length`
+
+/*
+ *  ======== spi`driver`DMAObjects ========
+ */
+SPI`driver`DMA_Object spi`driver`DMAObjects[`countDef`];
+
+/*
+ * ======== spi`driver`DMA uDMA Table Entries  ========
+ */
+% for (let i = 0; i < instances.length; i++) {
+    % let inst = instances[i];
+    % let spi = inst.spi;
+    % let name = spi.$solution.peripheralName;
+    % /* Get the index of the SPI instance by extracting the last character */
+    % let spiIndex = name.slice(name.length - 1);
+    % /* Use SSI for driverlib access since CC26X4 changed the peripheral name but we did not change driverlib */
+    % let ssiName = name.replace("SPI", "SSI");
+ALLOCATE_CONTROL_TABLE_ENTRY(dmaSpi`spiIndex`TxControlTableEntry, UDMA_CHAN_`ssiName`_TX);
+ALLOCATE_CONTROL_TABLE_ENTRY(dmaSpi`spiIndex`RxControlTableEntry, UDMA_CHAN_`ssiName`_RX);
+ALLOCATE_CONTROL_TABLE_ENTRY(dmaSpi`spiIndex`TxAltControlTableEntry, (UDMA_CHAN_`ssiName`_TX | UDMA_ALT_SELECT));
+ALLOCATE_CONTROL_TABLE_ENTRY(dmaSpi`spiIndex`RxAltControlTableEntry, (UDMA_CHAN_`ssiName`_RX | UDMA_ALT_SELECT));
+
+%}
+
+/*
+ *  ======== spi`driver`DMAHWAttrs ========
+ */
+const SPI`driver`DMA_HWAttrs`attrsVer` spi`driver`DMAHWAttrs[`countDef`] = {
+% for (let i = 0; i < instances.length; i++) {
+    % let inst = instances[i];
+    % let spi = inst.spi;
+    % let name = spi.$solution.peripheralName;
+    % /* Get the index of the SPI instance by extracting the last character */
+    % let spiIndex = name.slice(name.length - 1);
+    % /* Use SSI for driverlib access since CC26X4 changed the peripheral name but we did not change driverlib */
+    % let ssiName = name.replace("SPI", "SSI");
+    /* `inst.$name` */
+    % if (inst.$hardware) {
+    %    if (inst.$hardware.displayName) {
+    /* `inst.$hardware.displayName` */
+    %    }
+    % }
+    {
+        .baseAddr = `name`_BASE,
+        .intNum = INT_`ssiName`_COMB,
+        .intPriority = `Common.intPriority2Hex(inst.dmaInterruptPriority)`,
+        .swiPriority = `Common.swiPriority2Int(inst.softwareInterruptPriority)`,
+        .powerMngrId = PowerCC26XX_PERIPH_`ssiName`,
+        .defaultTxBufValue = `inst.defaultTxBufferValue`,
+        .rxChannelBitMask = 1<<UDMA_CHAN_`ssiName`_RX,
+        .txChannelBitMask = 1<<UDMA_CHAN_`ssiName`_TX,
+        .dmaTxTableEntryPri = &dmaSpi`spiIndex`TxControlTableEntry,
+        .dmaRxTableEntryPri = &dmaSpi`spiIndex`RxControlTableEntry,
+        .dmaTxTableEntryAlt = &dmaSpi`spiIndex`TxAltControlTableEntry,
+        .dmaRxTableEntryAlt = &dmaSpi`spiIndex`RxAltControlTableEntry,
+        .minDmaTransferSize = `inst.minDmaTransferSize`,
+        .txPinMux   = IOC_PORT_MCU_`ssiName`_TX,
+        .rxPinMux   = IOC_PORT_MCU_`ssiName`_RX,
+        .clkPinMux  = IOC_PORT_MCU_`ssiName`_CLK,
+        .csnPinMux  = IOC_PORT_MCU_`ssiName`_FSS,
+        .mosiPin = `inst.mosiPinInstance.$name`,
+        .misoPin = `inst.misoPinInstance.$name`,
+        .clkPin  = `inst.sclkPinInstance.$name`,
+    % if (inst.mode != 'Three Pin') {
+        .csnPin  = `inst.ssPinInstance.$name`
+    % } else {
+        .csnPin  = GPIO_INVALID_INDEX
+    % }
+    },
+% }
+};
+
+/*
+ *  ======== SPI_config ========
+ */
+const SPI_Config SPI_config[`countDef`] = {
+% for (let i = 0; i < instances.length; i++) {
+    % let inst = instances[i];
+    /* `inst.$name` */
+    % if (inst.$hardware) {
+    %    if (inst.$hardware.displayName) {
+    /* `inst.$hardware.displayName` */
+    %    }
+    % }
+    {
+        .fxnTablePtr = &SPI`driver`DMA_fxnTable,
+        .object = &spi`driver`DMAObjects[`inst.$name`],
+        .hwAttrs = &spi`driver`DMAHWAttrs[`inst.$name`]
+    },
+% }
+};
+
+`declarations`
+const uint_least8_t SPI_count = `countDef`;

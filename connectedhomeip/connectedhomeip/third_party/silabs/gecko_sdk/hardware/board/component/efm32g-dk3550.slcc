@@ -1,0 +1,22 @@
+!!omap
+- id: efm32g_dk3550
+- label: EFM32G-DK3550
+- package: platform
+- description: Kit BSP support for the EFM32 Gecko Development Kit.
+- category: Platform|Board|Kit|Development Kit
+- quality: production
+- requires:
+  - name: hardware_board_from_efm32g-dk3550
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_dk
+- define:
+  - name: SL_KIT_NAME
+    value: '"EFM32G-DK3550"'
+  - name: SL_KIT_REV
+    value: '"A06"'
+- tag:
+  - kit:opn:EFM32G-DK3550
+  - kit:pn:DK3550
+  - kit:variant:A
+  - kit:revision:A06

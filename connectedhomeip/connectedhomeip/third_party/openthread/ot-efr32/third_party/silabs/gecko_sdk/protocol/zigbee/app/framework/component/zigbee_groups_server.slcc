@@ -1,0 +1,60 @@
+package: Zigbee
+description: Silicon Labs implementation of Groups server cluster. This component supports
+  receiving commands to add, retrieve, or modify the APS multicast group membership.
+  Each group requires a binding table entry, so the binding table should be large
+  enough to accommodate groups as well as any other bindings created during normal
+  operation.
+label: Groups Server Cluster
+quality: production
+id: zigbee_groups_server
+category: Zigbee|Cluster Library|Common
+provides:
+   - name: "zigbee_groups_server"
+requires:
+   - name: "zigbee_binding"
+source:
+  - path: protocol/zigbee/app/framework/plugin/groups-server/groups-server.c
+  - path: protocol/zigbee/app/framework/plugin/groups-server/groups-server-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/groups-server/groups-server-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/groups-server
+    file_list:
+      - path: groups-server.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_groups_server
+  - name: cli_group
+    value:
+      group: plugin
+      name: groups-server
+      help: groups-server related commands.
+  - name: cli_command
+    value:
+      group: groups-server
+      name: print
+      handler: emAfGroupsServerCliPrint
+      help: Prints information about the contents of the groups table.
+  - name: cli_command
+    value:
+      group: groups-server
+      name: clear
+      handler: emAfGroupsServerCliClear
+      help: Clears the groups table on every endpoint
+  - name: cluster_functions
+    value:
+      cluster_name: Groups
+      cluster_id: 0x4
+      cluster_type: server
+      init_function: emberAfGroupsClusterServerInitCallback
+  - name: cluster_service
+    value:
+       cluster_id: "0x0004"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "SERVER"
+       service_function: "emberAfGroupsClusterServerCommandParse"
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/groups-server

@@ -1,0 +1,20 @@
+id: "sl_flex_images_for_lcd"
+label: "Flex - LCD Images"
+package: "Flex"
+description: "Images for LCD used by FLEX sample apps."
+category: "Flex|Common|Utility"
+quality: "production"
+root_path: "app/flex/component/common/sl_flex_images_for_lcd"
+include:
+  - path: "."
+    file_list:
+      - path: "sl_flex_images.h"
+provides:
+  - name: "sl_flex_images_for_lcd"
+requires:
+  - name: "device_has_radio"
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: flex_images_for_lcd

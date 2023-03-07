@@ -1,0 +1,22 @@
+id: "mbedtls_nist_kw"
+package: "wisun"
+label: "Mbed TLS Support for NIST Key Wrap"
+description: "This component provides support for NIST key wrap functions using Mbed TLS"
+category: "Platform|Security"
+quality: "production"
+root_path: "protocol/wisun/stack"
+
+source:
+  - path: "mbedtls/nist_kw.c"
+include:
+  - path: "."
+    file_list:
+      - path: "mbedtls/nist_kw.h"
+provides:
+  - name: "mbedtls_nist_kw"
+    allow_multiple: true
+requires:
+  - name: "mbedtls_aes"
+template_contribution:
+  - name: "mbedtls_config"
+    value: "MBEDTLS_NIST_KW_C"

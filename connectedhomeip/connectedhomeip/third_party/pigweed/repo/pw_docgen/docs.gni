@@ -1,0 +1,153 @@
+# Copyright 2019 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/input_group.gni")
+import("$dir_pw_build/python_action.gni")
+
+declare_args() {
+  # Whether or not the current target should build docs.
+  pw_docgen_BUILD_DOCS = false
+
+  # Set to enable Google Analytics tracking of generated docs.
+  pw_docs_google_analytics_id = ""
+}
+
+# Defines a group of documentation files and assets.
+#
+# Args:
+#   sources: Source files for the documentation (.rst or .md).
+#   inputs: Additional resource files for the docs, such as images.
+#   group_deps: Other pw_doc_group targets on which this group depends.
+#   report_deps: Report card targets on which documentation depends.
+#   other_deps: Dependencies on any other types of targets.
+template("pw_doc_group") {
+  if (defined(invoker.sources)) {
+    _sources = invoker.sources
+  } else {
+    _sources = []
+  }
+
+  if (defined(invoker.inputs)) {
+    _inputs = invoker.inputs
+  } else {
+    _inputs = []
+  }
+
+  assert(defined(invoker.sources) || defined(invoker.inputs),
+         "pw_doc_group requires at least one of sources or inputs")
+
+  _all_deps = []
+  if (defined(invoker.group_deps)) {
+    _all_deps += invoker.group_deps
+  }
+  if (defined(invoker.report_deps)) {
+    _all_deps += invoker.report_deps
+  }
+  if (defined(invoker.other_deps)) {
+    _all_deps += invoker.other_deps
+  }
+
+  # Create a group containing the source and input files so that docs are
+  # rebuilt on file modifications.
+  pw_input_group(target_name) {
+    metadata = {
+      pw_doc_sources = rebase_path(_sources, root_build_dir)
+      pw_doc_inputs = rebase_path(_inputs, root_build_dir)
+    }
+    deps = _all_deps
+    inputs = _sources + _inputs
+  }
+}
+
+# Creates a target to build HTML documentation from groups of sources.
+#
+# Args:
+#   deps: List of pw_doc_group targets.
+#   sources: Top-level documentation .rst source files.
+#   conf: Configuration script (conf.py) for Sphinx.
+#   output_directory: Path to directory to which HTML output is rendered.
+template("pw_doc_gen") {
+  assert(defined(invoker.deps),
+         "pw_doc_gen requires doc groups as dependencies")
+  assert(defined(invoker.sources) && invoker.sources != [],
+         "pw_doc_gen requires a 'sources' list with at least one .rst source")
+  assert(defined(invoker.conf),
+         "pw_doc_gen requires a 'conf' argument pointing a top-level conf.py")
+  assert(defined(invoker.output_directory),
+         "pw_doc_gen requires an 'output_directory' argument")
+
+  # Collects all dependency metadata into a single JSON file.
+  _metadata_file_target = "${target_name}_metadata"
+  generated_file(_metadata_file_target) {
+    outputs = [ "$target_gen_dir/$target_name.json" ]
+    data_keys = [
+      "pw_doc_sources",
+      "pw_doc_inputs",
+    ]
+    output_conversion = "json"
+    deps = invoker.deps
+  }
+
+  _script_args = [
+    "--gn-root",
+    rebase_path("//", root_build_dir),
+    "--gn-gen-root",
+    rebase_path(root_gen_dir, root_build_dir) + "/",
+    "--sphinx-build-dir",
+    rebase_path("$target_gen_dir/pw_docgen_tree", root_build_dir),
+    "--conf",
+    rebase_path(invoker.conf, root_build_dir),
+    "--out-dir",
+    rebase_path(invoker.output_directory, root_build_dir),
+  ]
+
+  # Enable Google Analytics if a measurement ID is provided
+  if (pw_docs_google_analytics_id != "") {
+    _script_args += [
+      "--google-analytics-id",
+      pw_docs_google_analytics_id,
+    ]
+  }
+
+  # Metadata JSON file path.
+  _script_args += [ "--metadata" ]
+  _script_args +=
+      rebase_path(get_target_outputs(":$_metadata_file_target"), root_build_dir)
+
+  _script_args += rebase_path(invoker.sources, root_build_dir)
+
+  # Required to set the PYTHONPATH for any automodule/class/function RST
+  # directives.
+  _python_metadata_deps = [ "$dir_pw_docgen/py" ]
+  if (defined(invoker.python_metadata_deps)) {
+    _python_metadata_deps += invoker.python_metadata_deps
+  }
+
+  if (pw_docgen_BUILD_DOCS) {
+    pw_python_action(target_name) {
+      script = "$dir_pw_docgen/py/pw_docgen/docgen.py"
+      args = _script_args
+      deps = [ ":$_metadata_file_target" ]
+      python_metadata_deps = _python_metadata_deps
+      inputs = [ invoker.conf ]
+      inputs += invoker.sources
+      stamp = true
+    }
+  } else {
+    group(target_name) {
+    }
+  }
+}

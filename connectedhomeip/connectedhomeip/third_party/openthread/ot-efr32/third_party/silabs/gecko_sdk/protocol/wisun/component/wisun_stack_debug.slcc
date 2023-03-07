@@ -1,0 +1,22 @@
+id: "wisun_stack_debug"
+label: "Stack Debug & Traces Plugin"
+description: "Add trace and debug functionalities to Wi-SUN stack"
+package: "wisun"
+category: "Wi-SUN|Wi-SUN Plugin"
+quality: "production"
+root_path: "protocol/wisun/stack"
+
+requires:
+  - name: "device_supports_wisun"
+
+provides:
+  - name: "wisun_stack_debug"
+
+include:
+- path: "inc/"
+  file_list:
+    - path: "sl_wisun_trace_api.h"
+
+documentation:
+  docset: wisun
+  document: wisun-stack-api/sl-wisun-trace-api

@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster xmlns:zcl="http://zigbee.org/zcl/clusters"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:type="http://zigbee.org/zcl/types"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd"
+  id="040C" revision="1" name="CarbonMonoxide">
+  <aliases>
+      <alias id="040C" name="CarbonMonoxide" />
+      <alias id="040D" name="CarbonDioxide" />
+      <alias id="040E" name="Ethylene" />
+      <alias id="040F" name="EthyleneOxide" />
+      <alias id="0410" name="Hydrogen" />
+      <alias id="0411" name="HydrogenSulfide" />
+      <alias id="0412" name="NitricOxide" />
+      <alias id="0413" name="NitrogenDioxide" />
+      <alias id="0414" name="Oxygen" />
+      <alias id="0415" name="Ozone" />
+      <alias id="0416" name="SulfurDioxide" />
+      <alias id="0417" name="DissolvedOxygen" />
+      <alias id="0418" name="Bromate" />
+      <alias id="0419" name="Chloramines" />
+      <alias id="041A" name="Chlorine" />
+      <alias id="041B" name="FecalColiformAndEColi" />
+      <alias id="041C" name="Fluoride" />
+      <alias id="041D" name="HaloaceticAcids" />
+      <alias id="041E" name="TotalTrihalomethanes" />
+      <alias id="041F" name="TotalColiformBacteria" />
+      <alias id="0420" name="Turbidity" />
+      <alias id="0421" name="Copper" />
+      <alias id="0422" name="Lead" />
+      <alias id="0423" name="Manganese" />
+      <alias id="0424" name="Sulfate" />
+      <alias id="0425" name="Bromodichloromethane" />
+      <alias id="0426" name="Bromoform" />
+      <alias id="0427" name="Chlorodibromomethane" />
+      <alias id="0428" name="Chloroform" />
+      <alias id="0429" name="Sodium" />
+      <alias id="042A" name="PM25" />
+      <alias id="042B" name="Formaldehyde" />
+  </aliases>
+  <classification role="application" picsCode="CONC" primaryTransaction="2" />
+  <server>
+    <attributes>
+      <attribute id="0000" name="MeasuredValue" type="single" reportRequired="true" required="true" >
+        <restriction>
+          <type:minInclusiveRef ref="MinMeasuredValue" />
+          <type:maxInclusiveRef ref="MaxMeasuredValue" />
+        </restriction>
+       </attribute>
+      <attribute id="0001" name="MinMeasuredValue" type="single" required="true" min="0" >
+        <restriction>
+          <type:maxExclusiveRef ref="MaxMeasuredValue" />
+        </restriction>
+       </attribute>
+      <attribute id="0002" name="MaxMeasuredValue" type="single" required="true" max="1" >
+        <restriction>
+          <type:minExclusiveRef ref="MinMeasuredValue" />
+        </restriction>
+       </attribute>
+      <attribute id="0003" name="Tolerance" type="single" />
+    </attributes>
+  </server>
+</zcl:cluster>

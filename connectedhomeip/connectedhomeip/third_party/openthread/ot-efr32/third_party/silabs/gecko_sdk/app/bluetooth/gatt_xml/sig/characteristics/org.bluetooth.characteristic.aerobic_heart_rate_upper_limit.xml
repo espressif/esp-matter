@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Aerobic Heart Rate Upper Limit" type="org.bluetooth.characteristic.aerobic_heart_rate_upper_limit" uuid="2A84" last-modified="2014-06-10" approved="Yes">
+    <InformativeText>
+        <Abstract>Upper limit of the heart rate where the user enhances his endurance while exercising</Abstract>
+	</InformativeText>
+    <Value>
+    <Field name="Aerobic Heart Rate Upper Limit">
+        <InformativeText>
+            Unit is in beats per minute with a resolution of 1
+		</InformativeText>
+        <Requirement>Mandatory</Requirement>
+        <Format>uint8</Format>
+        <Unit>org.bluetooth.unit.period.beats_per_minute</Unit>
+        <DecimalExponent>0</DecimalExponent>
+    </Field>
+	</Value>
+    
+</Characteristic>

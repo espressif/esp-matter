@@ -1,0 +1,20 @@
+# Copyright (c) 2022 Arm Limited and Contributors. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+variables:
+  GITLINT_TEMPLATE_DIR: $CI_PROJECT_DIR
+
+.gitlint-check:
+  tags:
+    - iotmsw-amd64
+  image: ${OPEN_IOT_SDK_DOCKER_REGISTRY}/sanity:v1
+  stage: quality_check
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+  script:
+    - |
+      if [[ "$CI_PROJECT_NAME" != "developer-tools" ]]; then
+        GITLINT_TEMPLATE_DIR=${CI_PROJECT_DIR}/developer-tools
+      fi
+    - git fetch origin $CI_MERGE_REQUEST_TARGET_BRANCH_NAME
+    - gitlint --commits "origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME..$CI_COMMIT_SHA" --extra-path ${GITLINT_TEMPLATE_DIR}/templates/gitlint/gitlint-user-rules.py -c body-invalid-words.invalid-words=$PROTECTED_WORDS_LIST --config ${GITLINT_TEMPLATE_DIR}/.gitlint

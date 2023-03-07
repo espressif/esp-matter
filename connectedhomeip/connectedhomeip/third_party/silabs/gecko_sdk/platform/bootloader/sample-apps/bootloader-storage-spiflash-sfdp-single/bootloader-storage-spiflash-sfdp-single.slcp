@@ -1,0 +1,47 @@
+project_name: bootloader-storage-spiflash-sfdp-single
+package: bootloader
+quality: production
+label: Bootloader - SoC SPI Flash Storage using SFDP (single image)
+description: >
+  This sample configuration of the Gecko bootloader configures the bootloader to use an external SPI flash to store firmware update images. The SPI flash type is detected automatically by querying the SFDP parameter table present inside the flash memory. The storage configuration is set up to store a single firmware update image at a time, in a single storage slot. The storage slot is configured to start at address 0x0 of the SPI flash, and have a size of 512 kB. This can be configured on the "Storage" tab.
+
+category: Example|Bootloader
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+  - name: "MCU"
+    value: ["Bootloader"]
+
+
+component:
+  - id: bootloader_core
+  - id: bootloader_crc
+  - id: bootloader_aes_sha_ecdsa
+  - id: bootloader_delay_driver
+  - id: bootloader_image_parser
+  - id: bootloader_common_storage_single
+  - id: bootloader_token_management
+  - id: bootloader_spiflash_storage_sfdp
+  - id: bootloader_spi_controller_driver
+  - id: bootloader_debug
+
+configuration:
+  - name: BTL_STORAGE_BASE_ADDRESS
+    value: 0
+  - name: SLOT0_ENABLE
+    value: 1
+  - name: SLOT0_START
+    value: 0
+  - name: SLOT0_SIZE
+    value: 524288
+tag:
+  - hardware:component:memory:spi
+
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+other_file:
+  - path: ../../script/postbuild/postbuild.sh

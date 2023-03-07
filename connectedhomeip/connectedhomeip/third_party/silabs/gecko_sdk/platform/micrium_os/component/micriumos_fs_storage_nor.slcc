@@ -1,0 +1,30 @@
+id: micriumos_fs_storage_nor
+package: micrium-fsxx
+description: Micrium OS File System NOR Storage
+category: Services|Micrium|File System
+quality: production
+component_root_path: platform/micrium_os/fs
+source:
+  - path: source/storage/nor/fs_nor.c
+  - path: source/storage/nor/fs_nor_ftl.c
+include:
+  - path: source
+    file_list:
+      - path: storage/nor/fs_nor_ftl_priv.h
+      - path: storage/nor/fs_nor_priv.h
+  - path: include
+    file_list:
+      - path: fs_nor.h
+      - path: fs_nor_ftl.h
+      - path: fs_nor_phy_drv.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: FS_STORAGE_NOR
+provides:
+  - name: fs_storage_nor
+  - name: fs_storage
+    allow_multiple: true
+requires:
+  - name: fs
+validation_helper:
+  - path: fs_nor_driver_validation.lua

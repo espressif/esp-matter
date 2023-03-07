@@ -1,0 +1,34 @@
+/** @brief Called upon the status change of over heat condition.
+ *
+ * This function is called upon the status change of over heat condition.
+ *
+ * @param status  OVER_HEAT_TO_NORMAL (0):changed from over heat to normal;
+ *                NORMAL_TO_OVER_HEAT (1):over heat occurred.
+ *
+ */
+void halPowerMeterOverHeatStatusChangeCallback(uint8_t status)
+{
+}
+
+/** @brief Called upon the status change of over current condition.
+ *
+ * This function is called upon the status change of over current condition.
+ *
+ * @param status OVER_CURRENT_TO_NORMAL (0):changed from over current to normal;
+ *               NORMAL_TO_OVER_CURRENT (1):over current occurred.
+ *
+ */
+void halPowerMeterOverCurrentStatusChangeCallback(uint8_t status)
+{
+}
+
+/** @brief Called when calibration is complete.
+ *
+ * This function is called upon a calibration procedure is done.
+ *
+ * @param gainSetting gain setting
+ *
+ */
+void halPowerMeterCalibrationFinishedCallback(uint16_t gainSetting)
+{
+}

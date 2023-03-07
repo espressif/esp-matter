@@ -1,0 +1,66 @@
+id: psa_its
+package: platform
+label: PSA Persistent Storage Support (ITS)
+description: >-
+  This component provides an implementation of the PSA ITS (Internal Trusted
+  Storage) API based on Silicon Labs NVM3. For example, this component is
+  required for enabling the use of persistent key storage in PSA Crypto.
+category: Platform|Security|PSA Crypto
+quality: production
+component_root_path: util/third_party/crypto
+
+provides:
+  - name: psa_its
+
+requires:
+  - name: psa_crypto_common
+    condition: [trustzone_unaware]
+  - name: psa_crypto_common
+    condition: [trustzone_secure]
+    
+  - name: nvm3_default
+    condition: [trustzone_unaware]
+  - name: nvm3_default
+    condition: [trustzone_nonsecure]
+  - name: tz_secure_nvm3_s
+    condition: [trustzone_secure]
+  
+  # The following algorithms are only used for ITS encryption in TZ secure apps.
+  # The condition, however, is on trustzone_nonsecure because it is for the NS
+  # project that the PSA Crypto configuration is generated; and the only parts
+  # that we depend on from these components lie in their config contributions.
+  - name: psa_crypto_cmac
+    condition: [trustzone_nonsecure]
+  - name: psa_crypto_gcm
+    condition: [trustzone_nonsecure]
+  - name: psa_builtin_key_support_se
+    condition: [trustzone_nonsecure, device_has_semailbox]
+
+include:
+  # These complicated conditions are required in order to avoid conflicts with
+  # TF-M, which also contains these exact header files (with slightly different
+  # content).
+  - path: sl_component/sl_psa_driver/inc
+    condition: [trustzone_unaware]
+    file_list:
+      - path: psa/internal_trusted_storage.h
+      - path: psa/error.h
+  - path: sl_component/sl_psa_driver/inc
+    condition: [trustzone_secure]
+    unless: [tz_service_psa_its]
+    file_list:
+      - path: psa/internal_trusted_storage.h
+      - path: psa/error.h
+
+source:
+  - path: sl_component/sl_psa_driver/src/sl_psa_its_nvm3.c
+    unless: [trustzone_nonsecure]
+
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_PSA_CRYPTO_STORAGE_C
+
+  - name: psa_its_files
+    value:
+      name: psa_its_files_minimum
+      count: 1

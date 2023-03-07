@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Personality id="20x19_armio" name="ARM IO" version="1.0" path="Communication" xmlns="http://cypress.com/xsd/cyhwpersonality_v1">
+  <Dependencies>
+    <IpBlock name="20x19_armio" />
+    <Resource name="armio" />
+  </Dependencies>
+  <ExposedMembers />
+  <Parameters>
+
+    <Repeat count="8">
+      <ParamSignal port="bt_gpio[$idx]" name="BT_GPIO_$idx" group="Pins" visible="`${hasVisibleOption(&quot;bt_gpio[$idx]&quot;)}`" desc="ARM internal IO $idx." canBeEmpty="true" />
+      <ParamBool id="hasArmioConnection$idx" name="" group="Hidden" default="`${hasConnection(&quot;bt_gpio&quot;, $idx)}`" visible="false" editable="false" desc="" />
+	  </Repeat>
+
+    <ParamString id="instNum" name="" group="" default="`${getInstNumber(&quot;armio&quot;)}`" visible="false" editable="false" desc="" />
+  </Parameters>
+
+  <DRCs>
+    <DRC type="ERROR" text="At least one amp signal must be connected if ARM IO peripheral is active" condition="`${!(hasArmioConnection0 || hasArmioConnection1 || hasArmioConnection2 || hasArmioConnection3 || hasArmioConnection4 || hasArmioConnection5 || hasArmioConnection6 || hasArmioConnection7)}`" />
+  </DRCs>
+
+  <ConfigFirmware>
+
+  </ConfigFirmware>
+</Personality>

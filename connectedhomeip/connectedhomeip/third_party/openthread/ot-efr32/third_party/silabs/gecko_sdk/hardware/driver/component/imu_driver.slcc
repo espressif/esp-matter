@@ -1,0 +1,15 @@
+id: imu_driver
+package: platform
+label: IMU - Inertial Measurement Unit
+description: >
+  Intertial Measurement Unit driver
+category: Platform|Board Drivers
+quality: production
+root_path: hardware/driver/imu
+provides:
+  - name: imu_driver
+requires:
+  - name: imu_device_driver
+documentation:
+    docset: gecko-platform
+    document: hardware-driver/api/group-imu

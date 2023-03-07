@@ -1,0 +1,236 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
+
+package(default_visibility = ["//visibility:public"])
+
+py_library(
+    name = "event_count_history",
+    srcs = ["pw_console/widgets/event_count_history.py"],
+)
+
+py_library(
+    name = "pyserial_wrapper",
+    srcs = ["pw_console/pyserial_wrapper.py"],
+    deps = [
+        ":event_count_history",
+    ],
+)
+
+py_library(
+    name = "pw_console",
+    srcs = [
+        "pw_console/__init__.py",
+        "pw_console/__main__.py",
+        "pw_console/command_runner.py",
+        "pw_console/console_app.py",
+        "pw_console/console_log_server.py",
+        "pw_console/console_prefs.py",
+        "pw_console/docs/__init__.py",
+        "pw_console/embed.py",
+        "pw_console/filter_toolbar.py",
+        "pw_console/get_pw_console_app.py",
+        "pw_console/help_window.py",
+        "pw_console/html/__init__.py",
+        "pw_console/key_bindings.py",
+        "pw_console/log_filter.py",
+        "pw_console/log_line.py",
+        "pw_console/log_pane.py",
+        "pw_console/log_pane_saveas_dialog.py",
+        "pw_console/log_pane_selection_dialog.py",
+        "pw_console/log_pane_toolbars.py",
+        "pw_console/log_screen.py",
+        "pw_console/log_store.py",
+        "pw_console/log_view.py",
+        "pw_console/mouse.py",
+        "pw_console/pigweed_code_style.py",
+        "pw_console/plugin_mixin.py",
+        "pw_console/plugins/__init__.py",
+        "pw_console/plugins/bandwidth_toolbar.py",
+        "pw_console/plugins/calc_pane.py",
+        "pw_console/plugins/clock_pane.py",
+        "pw_console/plugins/twenty48_pane.py",
+        "pw_console/progress_bar/__init__.py",
+        "pw_console/progress_bar/progress_bar_impl.py",
+        "pw_console/progress_bar/progress_bar_state.py",
+        "pw_console/progress_bar/progress_bar_task_counter.py",
+        "pw_console/pw_ptpython_repl.py",
+        "pw_console/python_logging.py",
+        "pw_console/quit_dialog.py",
+        "pw_console/repl_pane.py",
+        "pw_console/search_toolbar.py",
+        "pw_console/style.py",
+        "pw_console/templates/__init__.py",
+        "pw_console/test_mode.py",
+        "pw_console/text_formatting.py",
+        "pw_console/widgets/__init__.py",
+        "pw_console/widgets/border.py",
+        "pw_console/widgets/checkbox.py",
+        "pw_console/widgets/mouse_handlers.py",
+        "pw_console/widgets/table.py",
+        "pw_console/widgets/window_pane.py",
+        "pw_console/widgets/window_pane_toolbar.py",
+        "pw_console/window_list.py",
+        "pw_console/window_manager.py",
+    ],
+    data = [
+        "pw_console/docs/user_guide.rst",
+        "pw_console/html/index.html",
+        "pw_console/html/main.js",
+        "pw_console/html/style.css",
+        "pw_console/py.typed",
+        "pw_console/templates/keybind_list.jinja",
+        "pw_console/templates/repl_output.jinja",
+    ],
+    imports = ["."],
+    deps = [
+        ":event_count_history",
+        ":pyserial_wrapper",
+        "//pw_cli/py:pw_cli",
+        "//pw_log_tokenized/py:pw_log_tokenized",
+    ],
+)
+
+py_binary(
+    name = "pw_console_test_mode",
+    srcs = [
+        "pw_console/__main__.py",
+    ],
+    main = "pw_console/__main__.py",
+    deps = [
+        ":pw_console",
+    ],
+)
+
+py_test(
+    name = "command_runner_test",
+    size = "small",
+    srcs = [
+        "command_runner_test.py",
+    ],
+    deps = [
+        ":pw_console",
+    ],
+)
+
+py_test(
+    name = "console_app_test",
+    size = "small",
+    srcs = [
+        "console_app_test.py",
+    ],
+    deps = [
+        ":pw_console",
+    ],
+)
+
+py_test(
+    name = "console_prefs_test",
+    size = "small",
+    srcs = [
+        "console_prefs_test.py",
+    ],
+    deps = [
+        ":pw_console",
+    ],
+)
+
+py_test(
+    name = "help_window_test",
+    size = "small",
+    srcs = [
+        "help_window_test.py",
+    ],
+    deps = [
+        ":pw_console",
+    ],
+)
+
+py_test(
+    name = "log_filter_test",
+    size = "small",
+    srcs = [
+        "log_filter_test.py",
+    ],
+    deps = [
+        ":pw_console",
+    ],
+)
+
+py_test(
+    name = "log_store_test",
+    size = "small",
+    srcs = [
+        "log_store_test.py",
+    ],
+    deps = [
+        ":pw_console",
+    ],
+)
+
+py_test(
+    name = "log_view_test",
+    size = "small",
+    srcs = [
+        "log_view_test.py",
+    ],
+    deps = [
+        ":pw_console",
+    ],
+)
+
+py_test(
+    name = "repl_pane_test",
+    size = "small",
+    srcs = [
+        "repl_pane_test.py",
+    ],
+    deps = [
+        ":pw_console",
+    ],
+)
+
+py_test(
+    name = "table_test",
+    size = "small",
+    srcs = [
+        "table_test.py",
+    ],
+    deps = [
+        ":pw_console",
+    ],
+)
+
+py_test(
+    name = "text_formatting_test",
+    size = "small",
+    srcs = [
+        "text_formatting_test.py",
+    ],
+    deps = [
+        ":pw_console",
+    ],
+)
+
+py_test(
+    name = "window_manager_test",
+    size = "small",
+    srcs = [
+        "window_manager_test.py",
+    ],
+    deps = [
+        ":pw_console",
+    ],
+)

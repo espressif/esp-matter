@@ -1,0 +1,29 @@
+id: iot_logging
+
+category:    Third Party|Amazon FreeRTOS - AWS Libraries|Logging
+label:       IoT Logging
+description: Task for IoT Logging on FreeRTOS
+
+package: amazon_platform
+quality: alpha
+
+provides:
+  - name: iot_logging
+
+requires:
+  - name: iot_logging_headers
+  - name: iot_platform_types
+  - name: iot_clock
+
+root_path: util/third_party/aws_iot_libs
+
+source:
+  - path: libraries/logging/iot_logging.c
+  - path: libraries/logging/iot_logging_task_dynamic_buffers.c
+
+include:
+  - path: libraries/logging/include
+    file_list:
+      - path: iot_logging_task.h
+      - path: logging_levels.h
+      - path: logging_stack.h

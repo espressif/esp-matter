@@ -1,0 +1,30 @@
+id: dmd_memlcd
+label: GLIB driver for SHARP Memory LCD
+package: platform
+description: >
+  This component is the GLIB dot matrix display driver that support SHARP memory
+  LCD displays on the STK and WSTK. This component supports both monochrome and
+  3 bit rgb displays.
+category: Platform|Driver
+quality: production
+root_path: platform/middleware/glib
+source:
+  - path: dmd/display/dmd_memlcd.c
+include:
+  - path: dmd
+    file_list:
+      - path: dmd.h
+  - path: .
+    file_list:
+      - path: em_types.h
+requires:
+  - name: memlcd_driver
+provides:
+  - name: dmd_driver
+  - name: dmd_memlcd
+template_contribution:
+  - name: component_catalog
+    value: dmd_memlcd
+documentation:
+    docset: gecko-platform
+    document: middleware/api/group-dmd

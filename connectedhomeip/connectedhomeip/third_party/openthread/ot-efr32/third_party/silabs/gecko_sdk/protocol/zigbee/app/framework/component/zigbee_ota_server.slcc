@@ -1,0 +1,187 @@
+package: Zigbee
+description: Silicon Labs implementation of the Zigbee Over-the-air Bootload Server Cluster
+  (a multi-hop, application bootloader). This implementation serves up a file from
+  an OTA storage device and sends the data to clients. It also controls when they
+  can upgrade to the downloaded file.
+label: OTA Bootload Cluster Server
+quality: production
+id: zigbee_ota_server
+category: Zigbee|Over-The-Air Bootloading
+provides:
+   - name: "zigbee_ota_server"
+requires:
+   - name: "zigbee_ota_common"
+   - name: "zigbee_ota_storage_common"
+   - name: "zigbee_ota_storage_simple"
+   - name: "zigbee_ota_server_policy"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/ota-server/config/ota-server-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/ota-server/ota-server.c
+  - path: protocol/zigbee/app/framework/plugin/ota-server/ota-server-page-request.c
+  - path: protocol/zigbee/app/framework/plugin/ota-server/ota-server-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/ota-server/ota-server-dynamic-block-period.c
+  - path: protocol/zigbee/app/framework/plugin/ota-server/ota-server-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/ota-server
+    file_list:
+      - path: ota-server.h
+      - path: ota-server-dynamic-block-period.h
+  - path: protocol/zigbee/app/framework/plugin/ota-storage-simple
+    file_list:
+      - path: ota-storage-simple-driver.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_ota_server
+  - name: cluster_service
+    value:
+       cluster_id: "0x0019"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "SERVER"
+       service_function: "emberAfOtaClusterServerCommandParse"
+  - name: zigbee_af_callback
+    value:
+      callback_type: tick
+      function_name: emberAfOtaServerTick   
+  - name: cli_group
+    value:
+      group: plugin
+      name: ota-server
+      help: ota-server related commands.
+  - name: cli_command
+    value:
+      group: ota-server
+      name: notify
+      handler: otaImageNotifyCommand
+      help: Sends an OTA Image Notify message to the specified destination indicating a new version of an image is available for download.
+      argument:
+      - type: uint16
+        help: The node ID (can be a broadcast address) to which this OTA Notify message should be sent
+      - type: uint8
+        help: Target endpoint for the OTA Notify message (only meaningful for non-broadcast target destination)
+      - type: uint8
+        help: Specifies which parameters to include in the OTA Notify cluster command payload (0 = jitter value only; 1 = jitter and manufacturer id; 2 = jitter, mfr id, and device id; 3 = jitter, mfr id, device id, and firmware version)
+      - type: uint8
+        help: Corresponds to QueryJitter parameter in the OTA Upgrade cluster specification. Indicates whether the client receiving Image Notify Command should send in Query Next Image Request command or not.
+      - type: uint16
+        help: Manufacturer ID for the image being advertised (should match the mfr ID in the OTA files header)
+      - type: uint16
+        help: Image type ID for the image being advertised (should match the image type ID from the OTA files header)
+      - type: uint32
+        help: Firmware version of the image being advertised (should match the version from the OTA files header)
+  - name: cli_command
+    value:
+      group: ota-server
+      name: upgrade
+      handler: otaSendUpgradeCommand
+      help: Instructs a device to upgrade now.
+      argument:
+      - type: uint16
+        help: Short destination to send message
+      - type: uint8
+        help: Endpoint destination to send message
+      - type: uint16
+        help: Manufacturer ID for the image (0xFFFF for wildcard)
+      - type: uint16
+        help: Image type for the image (0xFFFF for wildcard)
+      - type: uint32
+        help: File version for the image (0xFFFFFFFF for wildcard)
+  - name: cli_group
+    value:
+      group: ota-server
+      name: policy
+      help: policy related commands
+  - name: cli_command
+    value:
+      group: policy
+      name: print
+      handler: emAfOtaServerPolicyPrint
+      help: Prints the polices used by the OTA Server Policy component.
+  - name: cli_command
+    value:
+      group: policy
+      name: query
+      handler: setPolicy
+      help: Sets the policy used by the OTA Server Policy component when it receives a query request from the client.
+      argument:
+      - type: uint8
+        help: 0 Upgrade if server has newer (default), 1 Downgrade if server has older, 2       Reinstall if server has same, 3 No next version (no next image is available for download)
+  - name: cli_command
+    value:
+      group: policy
+      name: upgrade
+      handler: setPolicy
+      help: Sets the policy used by the OTA Server Policy component when it receives an upgrade end request.
+      argument:
+      - type: uint8
+        help: 0 Upgrade Now (default), 1 Upgrade in 2       minutes, 2 Ask me later to upgrade, 3 Abort Upgrade (send default response)
+  - name: cli_command
+    value:
+      group: policy
+      name: page-req-miss
+      handler: setPolicy
+      help: Sets the modulus number of blocks not to respond to. This is used in testing to simulate a device that fails to receive certain blocks from an Image Page Request message.
+      argument:
+      - type: uint8
+        help: The block modulus number to skip sending when responding to an Image Page Request. E.g. if 2, every other block will not be sent. 0 turns the feature off.
+  - name: cli_command
+    value:
+      group: policy
+      name: page-req-sup
+      handler: setPolicy
+      help: Sets whether the Page Request feature is supported or not.
+      argument:
+      - type: uint8
+        help: 1 if Page Request is supported, 0 if unsupported
+  - name: cli_command
+    value:
+      group: policy
+      name: block-request
+      handler: setPolicy
+      help: Sets the policy used by the ota-server Policy component when it receives an image block request.
+      argument:
+      - type: uint8
+        help: 0 Send block (default), 1 Delay download once for 2 minutes, 2 Always abort download after first block
+  - name: cli_command
+    value:
+      group: policy
+      name: image-req-min-period
+      handler: setPolicy
+      help: Sets the Minimum Block Period.
+      argument:
+      - type: uint16
+        help: The minimum block period in milliseconds
+  - name: cli_command
+    value:
+      group: policy
+      name: client-delay-units
+      handler: otaServerSetClientDelayUnits
+      help: For testing, forces the server to treat the Minimum Block Period in a certain unit (see ota-server-policy.h for values).
+      argument:
+      - type: uint8
+        help: The unit to treat the minimum block period field
+    condition:
+      - zigbee_simulation
+  - name: cli_command
+    value:
+      group: ota-server
+      name: load-file
+      handler: emAfOtaLoadFileCommand
+      help: Loads a file.
+      argument:
+      - type: string
+        help: The file name
+    condition:
+      - zigbee_simulation
+  - name: cluster_functions
+    value:
+      cluster_name: OtaBootload
+      cluster_id: 0x0019
+      cluster_type: server
+      init_function: emberAfOtaBootloadClusterServerInitCallback
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/ota-server

@@ -1,0 +1,290 @@
+[
+  {
+    "clusterCode": "11073 protocol tunnel-server",
+    "value": [
+      "zigbee_hc_11073_tunnel"
+    ]
+  },
+  {
+    "clusterCode": "barrier control-server",
+    "value": [
+      "zigbee_barrier_control_server"
+    ]
+  },
+  {
+    "clusterCode": "basic-server",
+    "value": [
+      "zigbee_basic"
+    ]
+  },
+  {
+    "clusterCode": "calendar-client",
+    "value": [
+      "zigbee_calendar_client"
+    ]
+  },
+  {
+    "clusterCode": "calendar-server",
+    "value": [
+      "zigbee_calendar_server"
+    ]
+  },
+  {
+    "clusterCode": "color control-server",
+    "value": [
+      "zigbee_color_control_server"
+    ]
+  },
+  {
+    "clusterCode": "demand response and load control-client",
+    "value": [
+      "zigbee_drlc"
+    ]
+  },
+  {
+    "clusterCode": "demand response and load control-server",
+    "value": [
+      "zigbee_drlc_server"
+    ]
+  },
+  {
+    "clusterCode": "device management-client",
+    "value": [
+      "zigbee_device_management_client"
+    ]
+  },
+  {
+    "clusterCode": "device management-server",
+    "value": [
+      "zigbee_device_management_server"
+    ]
+  },
+  {
+    "clusterCode": "diagnostics-server",
+    "value": [
+      "zigbee_diagnostic_server"
+    ]
+  },
+  {
+    "clusterCode": "door lock-server",
+    "value": [
+      "zigbee_door_lock_server"
+    ]
+  },
+  {
+    "clusterCode": "events-client",
+    "value": [
+      "zigbee_events_client"
+    ]
+  },
+  {
+    "clusterCode": "events-server",
+    "value": [
+      "zigbee_events_server"
+    ]
+  },
+  {
+    "clusterCode": "green power-client",
+    "value": [
+      "zigbee_green_power_client"
+    ]
+  },
+  {
+    "clusterCode": "green power-server",
+    "value": [
+      "zigbee_green_power_server"
+    ]
+  },
+  {
+    "clusterCode": "groups-client",
+    "value": [
+      "zigbee_groups_client"
+    ]
+  },
+  {
+    "clusterCode": "groups-server",
+    "value": [
+      "zigbee_groups_server"
+    ]
+  },
+  {
+    "clusterCode": "ias zone-client",
+    "value": [
+      "zigbee_ias_zone_client"
+    ]
+  },
+  {
+    "clusterCode": "ias zone-server",
+    "value": [
+      "zigbee_ias_zone_server"
+    ]
+  },
+  {
+    "clusterCode": "identify-client",
+    "value": [
+      "zigbee_find_and_bind_initiator"
+    ]
+  },
+  {
+    "clusterCode": "identify-server",
+    "value": [
+      "zigbee_zll_identify_server"
+    ]
+  },
+  {
+    "clusterCode": "key establishment-client",
+    "value": [
+      "zigbee_key_establishment"
+    ]
+  },
+  {
+    "clusterCode": "key establishment-server",
+    "value": [
+      "zigbee_key_establishment"
+    ]
+  },
+  {
+    "clusterCode": "level control-server",
+    "value": [
+      "zigbee_zll_level_control_server"
+    ]
+  },
+  {
+    "clusterCode": "messaging-client",
+    "value": [
+      "zigbee_messaging_client"
+    ]
+  },
+  {
+    "clusterCode": "messaging-server",
+    "value": [
+      "zigbee_messaging_server"
+    ]
+  },
+  {
+    "clusterCode": "on/off-server",
+    "value": [
+      "zigbee_on_off"
+    ]
+  },
+  {
+    "clusterCode": "over the air bootloading-client",
+    "value": [
+      "zigbee_ota_client"
+    ]
+  },
+  {
+    "clusterCode": "over the air bootloading-server",
+    "value": [
+      "zigbee_ota_server"
+    ]
+  },
+  {
+    "clusterCode": "poll control-client",
+    "value": [
+      "zigbee_poll_control_client"
+    ]
+  },
+  {
+    "clusterCode": "poll control-server",
+    "value": [
+      "zigbee_poll_control_server"
+    ]
+  },
+  {
+    "clusterCode": "prepayment-client",
+    "value": [
+      "zigbee_prepayment_client"
+    ]
+  },
+  {
+    "clusterCode": "prepayment-server",
+    "value": [
+      "zigbee_prepayment_server"
+    ]
+  },
+  {
+    "clusterCode": "price-client",
+    "value": [
+      "zigbee_price_client"
+    ]
+  },
+  {
+    "clusterCode": "price-server",
+    "value": [
+      "zigbee_price_server"
+    ]
+  },
+  {
+    "clusterCode": "scenes-client",
+    "value": [
+      "zigbee_scenes_client"
+    ]
+  },
+  {
+    "clusterCode": "scenes-server",
+    "value": [
+      "zigbee_scenes"
+    ]
+  },
+  {
+    "clusterCode": "simple metering-client",
+    "value": [
+      "zigbee_simple_metering_client"
+    ]
+  },
+  {
+    "clusterCode": "simple metering-server",
+    "value": [
+      "zigbee_simple_metering_server"
+    ]
+  },
+  {
+    "clusterCode": "sl works with all hubs-server",
+    "value": [
+      "zigbee_wwah_server_silabs"
+    ]
+  },
+  {
+    "clusterCode": "sub-ghz-client",
+    "value": [
+      "zigbee_sub_ghz_client"
+    ]
+  },
+  {
+    "clusterCode": "sub-ghz-server",
+    "value": [
+      "zigbee_sub_ghz_server"
+    ]
+  },
+  {
+    "clusterCode": "time-server",
+    "value": [
+      "zigbee_time_server"
+    ]
+  },
+  {
+    "clusterCode": "tunneling-client",
+    "value": [
+      "zigbee_tunneling_client"
+    ]
+  },
+  {
+    "clusterCode": "tunneling-server",
+    "value": [
+      "zigbee_tunneling_server"
+    ]
+  },
+  {
+    "clusterCode": "zll commissioning-client",
+    "value": [
+      "zigbee_zll_commissioning_client"
+    ]
+  },
+  {
+    "clusterCode": "zll commissioning-server",
+    "value": [
+      "zigbee_zll_commissioning_server"
+    ]
+  }
+]

@@ -1,0 +1,119 @@
+id: sl_system_process_action
+label: System Process Action
+package: platform
+category: Services|System Setup
+quality: production
+root_path: platform/service/system
+source:
+  - path: src/sl_system_process_action.c
+    unless: [kernel]
+include:
+  - path: inc
+    unless: [kernel]
+    file_list:
+      - path: sl_system_process_action.h
+provides:
+  - name: sl_system_process_action
+requires:
+  - name: event_handler
+template_contribution:
+  - name: event
+    unless: [kernel]
+    value:
+      id: platform_process_action
+      function:
+        name: sl_platform_process_action
+        return: void
+    priority: -4000
+  - name: event
+    unless: [kernel]
+    value:
+      id: service_process_action
+      function:
+        name: sl_service_process_action
+        return: void
+    priority: -3990
+  - name: event
+    unless: [kernel]
+    value:
+      id: stack_process_action
+      function:
+        name: sl_stack_process_action
+        return: void
+    priority: -3980
+  - name: event
+    unless: [kernel]
+    value:
+      id: internal_app_process_action
+      function:
+        name: sl_internal_app_process_action
+        return: void
+    priority: -3970
+documentation:
+    docset: gecko-platform
+    document: service/api/group-system
+description: |
+  System Process Action component provides a function for running the products
+  from a super loop:
+
+    * sl_system_process_action().
+
+  This function calls a set of functions that are automatically generated
+  and located in `$autogen/sl_event_handler.c`. Handlers can be registered
+  for the following events using the Event Handler API provided by the
+  Event Handler component:
+
+    * platform_process_action     -> sl_platform_process_action()
+    * service_process_action      -> sl_service_process_action()
+    * stack_process_action        -> sl_stack_process_action()
+    * internal_app_process_action -> sl_internal_process_action()
+
+  These events are fired in the order listed above when `sl_system_process_action()`
+  is called.
+
+  Usage example:
+
+  ```c
+  \#include sl_component_catalog.h
+  \#include sl_system_init.h
+  \#include sl_power_manager.h
+  \#include app.h
+  \#if defined(SL_CATALOG_POWER_MANAGER_PRESENT)
+  \#include sl_power_manager.h
+  \#endif
+  \#if defined(SL_CATALOG_KERNEL_PRESENT)
+  \#include sl_system_kernel.h
+  \#else // SL_CATALOG_KERNEL_PRESENT
+  \#include sl_system_process_action.h
+  \#endif // SL_CATALOG_KERNEL_PRESENT
+
+  int main(void)
+  {
+    // Initialize Silicon Labs device, system, service(s) and protocol stack(s).
+    // Note that if the kernel is present, processing task(s) will be created by
+    // this call.
+    sl_system_init();
+
+    // Initialize the application.
+    app_init();
+
+  \#if defined(SL_CATALOG_KERNEL_PRESENT)
+    // Start the kernel. Task(s) created in app_init() will start running.
+    sl_system_kernel_start();
+  \#else // SL_CATALOG_KERNEL_PRESENT
+    while (1) {
+      // Do not remove this call: Silicon Labs components process action routine
+      // must be called from the super loop.
+      sl_system_process_action();
+
+      // Application process.
+      app_process_action();
+
+  \#if defined(SL_CATALOG_POWER_MANAGER_PRESENT)
+      // Let the CPU go to sleep if the system allows it.
+      sl_power_manager_sleep();
+  \#endif
+    }
+  \#endif // SL_CATALOG_KERNEL_PRESENT
+  }
+  ```

@@ -1,0 +1,91 @@
+id: "sl_connect_sdk_ota_bootloader_test_common"
+label: "OTA Bootloader Test Common"
+package: "Flex"
+category: "Connect|Test"
+quality: "production"
+description: "Contains some general OTA Bootloader related functions that are needed by the OTA broadcast and unicast bootloader plugins as well."
+root_path: "app/flex/component/connect/sl_connect_sdk_ota_bootloader_test_common"
+provides:
+  - name: "sl_connect_sdk_ota_bootloader_test_common"
+requires:
+  - name: "cli"
+  - name: "app_log"
+  - name: "sl_connect_sdk_ota_bootloader_interface"
+source:
+  - path: "sl_connect_sdk_ota_bootloader_test_common.c"
+include:
+  - path: "."  
+    file_list:
+      - path: "sl_connect_sdk_ota_bootloader_test_common.h"
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: sl_connect_sdk_ota_bootloader_test_common
+  - name: cli_command
+    value:
+      name: bootloader_get_version
+      handler: cli_bootloader_get_version
+      help: ""
+  - name: cli_command
+    value:
+      name: bootloader_init
+      handler: cli_bootloader_init
+      help: ""
+  - name: cli_command
+    value:
+      name: bootloader_sleep
+      handler: cli_bootloader_sleep
+      help: ""
+  - name: cli_command
+    value:
+      name: bootloader_flash_erase
+      handler: cli_bootloader_flash_erase
+      help: ""
+  - name: cli_command
+    value:
+      name: bootloader_validate_image
+      handler: cli_bootloader_validate_image
+      help: ""
+  - name: cli_command
+    value:
+      name: bootloader_flash_image
+      handler: cli_bootloader_flash_image
+      help: ""
+  - name: cli_command
+    value:
+      name: bootloader_flash_erase_slot
+      handler: cli_bootloader_flash_erase_slot
+      help: ""
+      argument:
+      - type: uint32
+        help: ""
+  - name: cli_command
+    value:
+      name: bootloader_flash_read
+      handler: cli_bootloader_flash_read
+      help: ""
+      argument:
+      - type: uint32
+        help: ""
+      - type: uint8
+        help: ""
+  - name: cli_command
+    value:
+      name: bootloader_flash_write
+      handler: cli_bootloader_flash_write
+      help: ""
+      argument:
+      - type: uint32
+        help: ""
+      - type: hex
+        help: ""
+  - name: cli_command
+    value:
+      name: bootloader_set_tag
+      handler: cli_bootloader_set_tag
+      help: ""
+      argument:
+      - type: uint8
+        help: ""
+

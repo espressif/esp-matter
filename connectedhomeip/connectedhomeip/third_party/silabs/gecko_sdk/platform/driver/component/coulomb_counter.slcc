@@ -1,0 +1,36 @@
+id: coulomb_counter
+package: platform
+label: Coulomb Counter
+description: Component that provides API to use Coulomb Counter.
+category: Platform|Driver
+quality: production
+root_path: platform/driver/coulomb
+include:
+  - path: inc
+    file_list:
+      - path: sl_coulomb_counter.h
+source:
+  - path: src/sl_coulomb_counter.c
+  - path: src/sl_coulomb_counter_hal_efp.c
+  - path: src/sli_coulomb_counter.h
+requires:
+  - name: efp_driver
+  - name: slist
+  - name: status
+provides:
+  - name: coulomb_counter
+config_file:
+  - path: config/sl_coulomb_counter_config.h
+template_contribution:
+  - name: event_handler
+    value:
+      event: driver_init
+      include: "sl_coulomb_counter.h"
+      handler: sl_coulomb_counter_init
+    priority: 5000
+  - name: component_catalog
+    value: coulomb_counter
+    priority: 5000
+documentation:
+    docset: gecko-platform
+    document: driver/api/group-coulomb-counter

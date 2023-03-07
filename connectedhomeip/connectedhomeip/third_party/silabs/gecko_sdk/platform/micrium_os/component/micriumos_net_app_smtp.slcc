@@ -1,0 +1,28 @@
+id: micriumos_net_app_smtp
+label: Network Suite - SMTP client
+package: micrium-tcpx
+description: Micrium OS Network SMTP client
+category: Services|Micrium|Network Suite
+quality: production
+component_root_path: platform/micrium_os/net
+source:
+  - path: source/smtp/smtp_client.c
+  - path: source/cmd/smtp_client_cmd.c
+    condition:
+      - common_shell
+include:
+  - path: source
+    file_list:
+      - path: cmd/smtp_client_cmd_priv.h
+        condition:
+          - common_shell
+  - path: include
+    file_list:
+      - path: smtp_client.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: NET_SMTP_CLIENT
+provides:
+  - name: net_app_smtp
+requires:
+  - name: net

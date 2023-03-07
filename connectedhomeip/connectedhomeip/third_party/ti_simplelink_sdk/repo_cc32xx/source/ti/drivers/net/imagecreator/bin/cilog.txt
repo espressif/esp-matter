@@ -1,0 +1,2 @@
+start /wait cmd.exe /c C:\ti\simplelink_cc32xx_sdk_5_10_00_00_eng\source\ti\drivers\net\imagecreator\bin\/create_image__v10.bat C:\Users\a0220067\AppData\Local\TI_pinmux\pinmuxExternalComFile.json C:\ti\simplelink_cc32xx_sdk_5_10_00_00_eng\source\ti\drivers\net\imagecreator\bin\\..\..\..\..\..\..\. ./../../../../../../tools/standalone_sysconfig/generated_images/CC3220S.sli 
+0 

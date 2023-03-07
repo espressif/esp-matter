@@ -1,0 +1,88 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pi_pico.gni")
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_system/system_target.gni")
+import("$dir_pw_tokenizer/backend.gni")
+import("$dir_pw_toolchain/arm_gcc/toolchains.gni")
+import("$dir_pw_toolchain/generate_toolchain.gni")
+
+if (current_toolchain != default_toolchain) {
+  pw_source_set("pre_init") {
+    remove_configs = [ "$dir_pw_build:strict_warnings" ]
+
+    deps = [
+      "$PICO_ROOT/src/common/pico_base",
+      "$PICO_ROOT/src/common/pico_stdlib",
+      "$PICO_ROOT/src/rp2_common/pico_malloc",
+      "$dir_pw_string",
+      "$dir_pw_system",
+      "$dir_pw_third_party/freertos",
+    ]
+    sources = [ "boot.cc" ]
+  }
+
+  config("config_includes") {
+    include_dirs = [ "config" ]
+  }
+
+  config("rp2040_hal_config") {
+    inputs = [ "config/rp2040_hal_config.h" ]
+    cflags = [ "-include" +
+               rebase_path("config/rp2040_hal_config.h", root_build_dir) ]
+  }
+
+  pw_source_set("rp2040_freertos_config") {
+    public_configs = [ ":config_includes" ]
+    public_deps = [ "$dir_pw_third_party/freertos:config_assert" ]
+    public = [ "config/FreeRTOSConfig.h" ]
+  }
+}
+
+pw_system_target("rp2040_pw_system") {
+  cpu = PW_SYSTEM_CPU.CORTEX_M0PLUS
+  scheduler = PW_SYSTEM_SCHEDULER.FREERTOS
+  use_pw_malloc = false
+  global_configs = [ ":rp2040_hal_config" ]
+
+  build_args = {
+    pw_build_EXECUTABLE_TARGET_TYPE = "pico_executable"
+    pw_build_EXECUTABLE_TARGET_TYPE_FILE =
+        get_path_info("$dir_pigweed/targets/rp2040/pico_executable.gni",
+                      "abspath")
+
+    pw_log_BACKEND = dir_pw_log_tokenized
+    pw_tokenizer_GLOBAL_HANDLER_WITH_PAYLOAD_BACKEND =
+        "$dir_pw_system:log_backend.impl"
+
+    pw_third_party_freertos_CONFIG =
+        "$dir_pigweed/targets/rp2040_pw_system:rp2040_freertos_config"
+    pw_third_party_freertos_PORT = "$dir_pw_third_party/freertos:arm_cm0"
+
+    pw_sys_io_BACKEND = dir_pw_sys_io_stdio
+    pw_build_LINK_DEPS += [
+      "$dir_pigweed/targets/rp2040_pw_system:pre_init",
+      "$dir_pw_assert:impl",
+      "$dir_pw_log:impl",
+    ]
+  }
+}
+
+pw_doc_group("target_docs") {
+  sources = [ "target_docs.rst" ]
+}

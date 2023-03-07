@@ -1,0 +1,171 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load(
+    "//pw_build:pigweed.bzl",
+    "pw_cc_facade",
+    "pw_cc_library",
+    "pw_cc_test",
+)
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+pw_cc_facade(
+    name = "sha256_facade",
+    hdrs = [
+        "public/pw_crypto/sha256.h",
+    ],
+    includes = ["public"],
+    deps = [
+        "//pw_assert",
+        "//pw_bytes",
+        "//pw_log",
+        "//pw_status",
+        "//pw_stream",
+    ],
+)
+
+pw_cc_library(
+    name = "sha256",
+    deps = [
+        ":sha256_facade",
+        "@pigweed_config//:pw_crypto_sha256_backend",
+    ],
+)
+
+pw_cc_library(
+    name = "sha256_mbedtls",
+    srcs = ["sha256_mbedtls.cc"],
+    hdrs = [
+        "public/pw_crypto/sha256_mbedtls.h",
+        "public_overrides/mbedtls/pw_crypto/sha256_backend.h",
+    ],
+    includes = ["public_overrides/mbedtls"],
+    # TODO(b/236321905): Requires BUILD.bazel files for mbedtls
+    tags = ["manual"],
+    deps = [":sha256_facade"],
+)
+
+pw_cc_library(
+    name = "sha256_boringssl",
+    srcs = ["sha256_boringssl.cc"],
+    hdrs = [
+        "public/pw_crypto/sha256_boringssl.h",
+        "public_overrides/boringssl/pw_crypto/sha256_backend.h",
+    ],
+    includes = [
+        "public",
+        "public_overrides/boringssl",
+    ],
+    deps = [
+        ":sha256_facade",
+        "//pw_log",
+        "@boringssl//:ssl",
+    ],
+)
+
+pw_cc_test(
+    name = "sha256_test",
+    srcs = ["sha256_test.cc"],
+    deps = [
+        ":sha256",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_library(
+    name = "sha256_mock",
+    srcs = ["sha256_mock.cc"],
+    hdrs = [
+        "public/pw_crypto/sha256_mock.h",
+        "public_overrides/mock/pw_crypto/sha256_backend.h",
+    ],
+    includes = [
+        "public",
+        "public_overrides/mock",
+    ],
+    deps = [":sha256_facade"],
+)
+
+pw_cc_test(
+    name = "sha256_mock_test",
+    srcs = ["sha256_mock_test.cc"],
+    # TODO(b/236321905): Requires BUILD.bazel files for mbedtls
+    tags = ["manual"],
+    deps = [
+        ":sha256_mock",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_facade(
+    name = "ecdsa_facade",
+    hdrs = [
+        "public/pw_crypto/ecdsa.h",
+    ],
+    includes = ["public"],
+    deps = [
+        "//pw_bytes",
+        "//pw_status",
+    ],
+)
+
+pw_cc_library(
+    name = "ecdsa",
+    deps = [
+        ":ecdsa_facade",
+        "@pigweed_config//:pw_crypto_ecdsa_backend",
+    ],
+)
+
+pw_cc_library(
+    name = "ecdsa_mbedtls",
+    srcs = ["ecdsa_mbedtls.cc"],
+    # TODO(b/236321905): Requires BUILD.bazel files for mbedtls
+    tags = ["manual"],
+    deps = [":ecdsa_facade"],
+)
+
+pw_cc_library(
+    name = "ecdsa_boringssl",
+    srcs = ["ecdsa_boringssl.cc"],
+    deps = [
+        ":ecdsa_facade",
+        "//pw_log",
+        "@boringssl//:ssl",
+    ],
+)
+
+pw_cc_library(
+    name = "ecdsa_uecc",
+    srcs = [
+        "ecdsa_uecc.cc",
+    ],
+    deps = [
+        ":ecdsa_facade",
+        "//pw_log",
+        "@micro_ecc//:uecc",
+    ],
+)
+
+pw_cc_test(
+    name = "ecdsa_test",
+    srcs = ["ecdsa_test.cc"],
+    deps = [
+        ":ecdsa",
+        "//pw_unit_test",
+    ],
+)

@@ -1,0 +1,43 @@
+id: toolchain_gcc
+label: GCC Toolchain
+package: platform
+description: Toolchain support for GCC
+category: Platform|Toolchain
+quality: production
+root_path: platform/common
+tag:
+  - toolchain:id:gcc
+provides:
+  - name: toolchain
+  - name: toolchain_gcc
+  - name: toolchain_supports_arm
+  - name: toolchain_supports_host
+requires:
+  - name: toolchain_variant
+  - name: toolchain_variant_arm
+    condition: [device_cortexm]
+  - name: toolchain_variant_host
+    condition: [device_host]
+  - name: sl_memory
+    condition: [device_cortexm]
+template_file:
+  - path: toolchain/gcc/linkerfile.ld.jinja
+    condition: [device_cortexm]
+    unless: [memory_layout_legacy_hal]
+  - path: toolchain/gcc/linkerfile_base.ld.jinja
+    condition: [device_cortexm, memory_layout_legacy_hal]
+library:
+  - system: gcc
+    condition: [device_cortexm]
+  - system: c
+  - system: m
+  - system: nosys
+    condition: [device_cortexm]
+toolchain_settings:
+  - option: linkerfile
+    value: autogen/linkerfile.ld
+    condition: [device_cortexm]
+    unless: [memory_layout_legacy_hal]
+  - option: linkerfile
+    value: autogen/linkerfile_base.ld
+    condition: [device_cortexm, memory_layout_legacy_hal]

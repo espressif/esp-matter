@@ -1,0 +1,25 @@
+id: bootloader_spi_peripheral_eusart_driver
+label: Bootloader SPI Peripheral Eusart Driver
+package: bootloader
+description: >
+  DMA-driven SPI Peripheral Eusart driver.
+category: Platform|Bootloader|Drivers
+quality: production
+source:
+  - path: platform/bootloader/driver/btl_driver_spi_peripheral_eusart.c
+define:
+  - name: BTL_SPI_EUSART_ENABLE
+include:
+  - path: platform/bootloader/driver
+    file_list:
+      - path: btl_driver_spi_peripheral.h
+provides:
+  - name: bootloader_spi_peripheral_eusart_driver
+  - name: bootloader_spi_peripheral_transport
+  - name: bootloader_nonsecure_incompatible
+    condition: [bootloader_core_nonsecure]
+requires:
+  - name: bootloader_delay_driver
+config_file:
+  - path: platform/bootloader/config/btl_spi_peripheral_eusart_driver_cfg.h
+    file_id: btl_spi_peripheral_eusart_driver_cfg

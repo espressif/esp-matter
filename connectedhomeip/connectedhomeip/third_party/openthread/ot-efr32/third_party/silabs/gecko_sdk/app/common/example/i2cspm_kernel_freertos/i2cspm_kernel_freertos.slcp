@@ -1,0 +1,50 @@
+project_name: i2cspm_kernel_freertos
+package: platform
+quality: production
+label: Platform - I2C Simple Polled Master on FreeRTOS Kernel
+description: > 
+  This example project demonstrates how to use the I2C Simple Polled Master driver using the Si7021 Relative Humidity and Temperature Sensor in a FreeRTOS kernel task.
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]
+source:
+  - path: app.c
+  - path: main.c
+  - path: i2cspm.c
+include:
+  - path: .
+    file_list:
+    - path: app.h
+    - path: i2cspm.h
+component:
+  - id: sl_system
+  - id: device_init
+  - id: freertos
+  - id: i2cspm
+    instance: [sensor]
+  - id: simple_led
+    instance: 
+        - led0
+        - led1
+  - id: iostream_stdlib_config
+  - id: iostream_retarget_stdio
+  - id: iostream_recommended_stream
+define:
+  - name: DEBUG_EFM
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+tag:
+  - hardware:component:led:2+
+  - hardware:component:sensor:si7021
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: SL_BOARD_ENABLE_SENSOR_RHT
+    value: 1

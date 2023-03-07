@@ -1,0 +1,8 @@
+#include "sl_ot_init.h"
+
+void sl_ot_init(void)
+{
+  {%- for function_name in ot_init %}
+  {{ function_name }}();
+  {%- endfor %}
+}

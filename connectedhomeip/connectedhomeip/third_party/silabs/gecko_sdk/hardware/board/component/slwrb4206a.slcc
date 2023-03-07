@@ -1,0 +1,22 @@
+!!omap
+- id: slwrb4206a
+- label: SLWRB4206A
+- package: platform
+- description: Kit BSP support for the Z-Wave 700 – EFR32ZG14 Long Range Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4206a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4206A"'
+  - name: SL_KIT_REV
+    value: '"A03"'
+- tag:
+  - kit:opn:SLWRB4206A
+  - kit:pn:WRB4206
+  - kit:variant:A
+  - kit:revision:A03

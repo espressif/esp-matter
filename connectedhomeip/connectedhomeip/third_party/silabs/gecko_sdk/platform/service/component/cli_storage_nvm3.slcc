@@ -1,0 +1,30 @@
+id: cli_storage_nvm3
+label: "CLI: Storage in NVM3"
+package: platform
+description: A component that let the applicaiton store cli commands in flash using NVM3. Flash commands are automatically executed at initialization.
+category: Services|CLI
+quality: production
+instantiable:
+  prefix: inst
+root_path: platform/service/cli_storage
+config_file:
+  - path: "config/sl_cli_storage_nvm3_config_{{instance}}.h"
+    file_id: sl_cli_storage_nvm3_config
+include:
+  - path: inc
+    file_list:
+      - path: sl_cli_storage_nvm3.h
+source:
+  - path: src/sl_cli_storage_nvm3.c
+requires:
+  - name: cli_core
+  - name: cli_storage_nvm3_core
+provides:
+  - name: cli_storage_nvm3_instances
+    allow_multiple: true
+template_contribution:
+  - name: cli_storage_nvm3_instances
+    value: "{{instance}}"
+documentation:
+    docset: gecko-platform
+    document: service/api/group-cli-storage-nvm3

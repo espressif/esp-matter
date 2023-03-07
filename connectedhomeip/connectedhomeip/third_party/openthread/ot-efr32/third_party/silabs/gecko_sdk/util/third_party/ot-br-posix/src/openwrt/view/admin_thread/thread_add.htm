@@ -1,0 +1,80 @@
+<%-
+	local ubus = require "ubus"
+	local sys = require "luci.sys"
+	local utl = require "luci.util"
+
+
+	function connect_ubus(methods)
+		local result
+		local conn = ubus.connect()
+
+		if not conn then
+			error("Failed to connect to ubusd")
+		end
+
+		result = conn:call("otbr", methods, {})
+
+		return result
+	end
+
+	function threadget(action)
+		local result = connect_ubus(action)
+
+		return result
+	end
+-%>
+<%+header%>
+
+<h2><%:Add Joiner in Network: %><%=threadget("networkname").NetworkName%></h2>
+<br />
+
+<br/><br/>
+
+<form class="inline" action="<%=url('admin/network/thread_add_joiner')%>" method="post" id="addForm" name="addForm" onsubmit="return validateForm()">
+<div style="width:90%;margin-left:5%;">
+	<div class="cbi-value">
+		<label class="cbi-value-title" style="margin-right:5%;">New Joiner Credential</label>
+		<div class="cbi-value-title">
+			<input type="text" name="pskd" value="J01NME" style="width:40%;"/>
+		</div>
+		<div style="margin-left:25%;margin-top:1%;">
+			<span><img src="<%=resource .. "/cbi/help.gif"%>"/><%:The Joiner Credential is a device-specific string of all uppercase alphanumeric characters(0-9 and A-Y, excluding I, O, Q and Z for readability), with a length between 6 and 32 characters.%></span>
+		</div>
+	</div>
+	<div class="cbi-value">
+		<label class="cbi-value-title" style="margin-right:5%;">Restrict to a Specific Joiner</label>
+		<div class="cbi-value-title">
+			<input type="text" name="eui64" value="2157d22254527111" style="width:40%;"/>
+		</div>
+		<div style="margin-left:25%;margin-top:1%;">
+			<span><img src="<%=resource .. "/cbi/help.gif"%>"/><%:To restrict commissioning to a specific Joiner device, which is the devices factory-assigned IEEE EUI-64, use the eui64 parameter to get the EUI-64. You can input '*' to unrestrict to the specific joiner%></span>
+		</div>
+	</div>
+	<div class="cbi-value">
+		<label class="cbi-value-title" style="margin-right:5%;">Timeout</label>
+		<div class="cbi-value-title">
+			<input type="text" name="timeout" value="120" style="width:40%;"/>
+		</div>
+	</div>
+</div>
+<div class="cbi-page-actions right">
+	<input class="cbi-button cbi-button-neutral" style="float:left;" type="button" onclick="window.location.href='thread_view'" value="<%:Back to View%>" />
+	<input type="hidden" name="token" value="<%=token%>" />
+	<input class="cbi-button cbi-button-add important" type="submit" value="<%:Add%>" />
+</div>
+</form>
+
+<%+footer%>
+<script type="text/javascript" src="/luci-static/resources/handle_error.js"></script>
+<script type="text/javascript">//<![CDATA[
+	handle_error(GetURLParameter('error'));
+	function validateForm()
+	{
+		var eui64 = document.forms["addForm"]["eui64"].value;
+		if(eui64.length != 16 && eui64 != "*")
+		{
+			alert("eui64 length must be 16 bytes or '*'");
+			return false;
+		}
+	}
+//]]></script>

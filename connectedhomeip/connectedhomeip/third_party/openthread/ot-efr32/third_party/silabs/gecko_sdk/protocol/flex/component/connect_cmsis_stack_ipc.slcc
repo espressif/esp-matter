@@ -1,0 +1,55 @@
+id: "connect_cmsis_stack_ipc"
+label: "CMSIS Stack IPC"
+package: "Flex"
+category: "Connect"
+quality: "production"
+description: "Provides an IPC for the Connect stack APIs. If this component is enabled, the stack will be running with CMSIS with the chosen RTOS implementation as a task and the application framework will run as a separate task. APIs are invoked at the application framework using an IPC, similarly stack callbacks are communicated to the application framework task using an IPC. The application can also define up to 3 custom tasks."
+
+ui_hints:
+  visibility: never
+
+provides:
+  - name: "connect_cmsis_stack_ipc"
+  - name: "connect_idle_sleep"
+requires:
+  - name: "cmsis_rtos2"
+  - name: "connect_stack_common"
+  - name: "nvm3"
+source:
+  - path: "protocol/flex/cmsis-stack-ipc/cmsis-rtos-af-task.c"
+  - path: "protocol/flex/cmsis-stack-ipc/cmsis-rtos-ipc-api-gen.c"
+  - path: "protocol/flex/cmsis-stack-ipc/cmsis-rtos-ipc-cb-gen.c"
+  - path: "protocol/flex/cmsis-stack-ipc/cmsis-rtos-ipc-common.c"
+  - path: "protocol/flex/cmsis-stack-ipc/cmsis-rtos-support.c"
+  - path: "protocol/flex/cmsis-stack-ipc/cmsis-rtos-vncp-task.c"
+
+  # OS application hooks: these could be generated in the future.
+  - path: "protocol/flex/cmsis-stack-ipc/os_app_hooks.c"
+
+include:
+  - path: "protocol/flex/cmsis-stack-ipc"
+    file_list:
+      - path: "cmsis-rtos-ipc-api-gen.h"
+      - path: "cmsis-rtos-support-gen.h"
+      - path: "cmsis-rtos-support.h"
+config_file:
+  - path: "protocol/flex/cmsis-stack-ipc/config/cmsis-rtos-ipc-config.h"
+define:
+  - name: "CMSISRTOS"
+  - name: "SKIP_API_RENAME"
+template_contribution:
+  - name: stack_callback
+    value:
+      callback_type: "stack_isr"
+      function_name: "emberAfPluginCmsisRtosStackIsr"
+  - name: stack_callback
+    value:
+      callback_type: "mark_application_buffers"
+      function_name: "emAfPluginCmsisRtosMarkBuffersCallback"
+  - name: component_catalog
+    value: connect_cmsis_stack_ipc
+  - name: event_handler
+    value:
+      event: stack_init
+      include: "cmsis-rtos-support.h"
+      handler: emberAfPluginCmsisRtosIpcInit

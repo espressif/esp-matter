@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="SYS/BIOS" title="SYS/BIOS" version="1">
+
+<page name="Device Support" title="Device-specific SYS/BIOS Options">
+<html><body>
+<table>
+  <tr><td>
+    <h1>Timer Configuration</h1>
+        <form><p>Use the links below to navigate to device specific timer configuration options.  These options allow you to control which and how many timer peripherals are used by SYS/BIOS.</p></form>
+      <table>
+      <tr>
+        <td><control type="label" label="Timer Interrupt Control" align="left"/></td>
+        <td><control type="hyperlink" link="value:ti.sysbios.family.Settings.timerDelegate" label="Timer"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="Timestamp Configuration" align="left"/></td>
+        <td><control type="hyperlink" link="value:ti.sysbios.family.Settings.timestampDelegate" label="Timestamp Provider"/></td>
+      </tr>
+      </table>
+    </td>
+    <td>
+      <h1>Interrupts</h1>
+          <form><p>Use the link below to navigate to the device specific interrupt support module.</p></form>
+        <table>
+        <tr>
+          <td><control type="label" label="Hardware Interrupt Support" align="left"/></td>
+          <td><control type="hyperlink" link="value:ti.sysbios.family.Settings.hwiDelegate" label="Hwi"/></td>
+        </tr>
+      </table>
+  </td></tr>
+  <tr><td>
+      <h1>Additional Device Specific Modules</h1>
+      <form><p>Use the links below to navigate to other device specific modules.  Some of these modules are not available on every devices.  If the link below is inactive, then the module is not supported for your device.</p></form>
+      <table>
+        <tr>
+          <td><control type="label" label="Boot Support" align="left"/></td>
+          <td><control type="hyperlink" link="value:ti.sysbios.family.Settings.bootModule" label="Boot"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Cache Support" align="left"/></td>
+          <td><control type="hyperlink" link="value:ti.sysbios.family.Settings.cacheDelegate" label="Cache"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="MMU Support" align="left"/></td>
+          <td><control type="hyperlink" link="value:ti.sysbios.family.Settings.mmuModule" label="MMU"/></td>
+        </tr>
+      </table>
+  </td></tr>
+</table></body></html>
+</page>
+</gep>

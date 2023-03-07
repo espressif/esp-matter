@@ -1,0 +1,24 @@
+id: iostream_stdlib_config
+label: "IO Stream: STDLIB Configuration"
+package: platform
+description: Disable newlib/nanolib line buffering
+category: Services|IO Stream
+quality: production
+component_root_path: platform/service/iostream
+include:
+  - path: inc
+    file_list:
+      - path: sl_iostream_stdlib_config.h
+source:
+  - path: src/sl_iostream_stdlib_config.c
+provides:
+  - name: iostream_stdlib_config
+template_contribution:
+  - name: event_handler
+    value:
+      event: service_init
+      include: sl_iostream_stdlib_config.h
+      handler: sl_iostream_stdlib_disable_buffering
+documentation:
+    docset: gecko-platform
+    document: service/api/group-iostream-stdlib-cfg

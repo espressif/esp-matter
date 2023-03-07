@@ -1,0 +1,40 @@
+id: iostream_eusart
+label: "IO Stream: EUSART"
+package: platform
+description: IO Stream over Enhanced Universal Synchronous Asynchronous Receiver Transceiver (EUSART) communication protocol.
+category: Services|IO Stream
+quality: production
+instantiable:
+  prefix: inst
+root_path: platform/service/iostream
+config_file:
+  - path: "config/s2/sl_iostream_eusart_{{instance}}_config.h"
+    file_id: iostream_eusart_config
+    condition: [device_series_2]
+provides:
+  - name: iostream_eusart
+    allow_multiple: true
+  - name: iostream_transport
+    allow_multiple: true
+requires:
+  - name: iostream_eusart_core
+template_contribution:
+  - name: iostream_eusart_instances
+    value: "{{instance}}"
+  - name: event_handler
+    value:
+      event: iostream_instance_init
+      include: sl_iostream_init_eusart_instances.h
+      handler: sl_iostream_eusart_init_instances
+  - name: iostream_instance_info
+    value:
+      include: sl_iostream_init_eusart_instances.h
+      handler: "sl_iostream_instance_{{instance}}_info"
+  - name: power_manager_handler
+    value:
+      event: sleep_on_isr_exit
+      include: sl_iostream_init_eusart_instances.h
+      handler: "sl_iostream_eusart_{{instance}}_sleep_on_isr_exit"
+documentation:
+    docset: gecko-platform
+    document: service/api/group-iostream-eusart

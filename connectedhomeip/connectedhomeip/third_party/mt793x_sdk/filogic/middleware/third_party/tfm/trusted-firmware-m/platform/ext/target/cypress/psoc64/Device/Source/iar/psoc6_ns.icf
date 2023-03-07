@@ -1,0 +1,53 @@
+/*
+ * Copyright (c) 2020 Arm Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ *
+ * This file is derivative of ../armclang/psoc6_ns.sct
+ */
+
+#include "region_defs.h"
+
+define memory mem with size = 4G;
+
+define region NS_CODE_region =   mem:[from NS_CODE_START size NS_CODE_SIZE];
+
+define region NS_RAM_region  =   mem:[from NS_DATA_START size NS_DATA_SIZE];
+
+#if defined (NS_DATA_SHARED_START)
+    /* Shared memory data */
+define region TFM_SHARED_MEM =   mem:[from NS_DATA_SHARED_START size NS_DATA_SHARED_SIZE];
+#endif
+
+define block ARM_LIB_STACK_MSP  with alignment = 8, size = NS_MSP_STACK_SIZE { };
+define block ARM_LIB_STACK      with alignment = 8, size = NS_PSP_STACK_SIZE { };
+define block HEAP               with alignment = 8, size = NS_HEAP_SIZE { };
+define block TFM_RAM_CODE       with alignment = 32 { readonly section .ramfunc };
+
+define block ER_CODE            with alignment = 8 {readonly};
+place at address mem:NS_CODE_START { readonly section .intvec };
+define block ER_DATA with maximum size = 0x10000, alignment = 8 {readwrite};
+
+do not initialize  { section .noinit };
+initialize by copy { readwrite };
+if (isdefinedsymbol(__USE_DLIB_PERTHREAD))
+{
+  // Required in a multi-threaded application
+  initialize by copy with packing = none { section __DLIB_PERTHREAD };
+}
+
+place in NS_CODE_region  { block ER_CODE };
+place in NS_RAM_region   { block ER_DATA, block ARM_LIB_STACK_MSP, block ARM_LIB_STACK, block HEAP,
+                           block TFM_RAM_CODE,
+                         };

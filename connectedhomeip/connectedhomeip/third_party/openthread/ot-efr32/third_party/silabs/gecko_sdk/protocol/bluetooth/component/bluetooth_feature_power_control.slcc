@@ -1,0 +1,28 @@
+id: "bluetooth_feature_power_control"
+label:  "LE Power Control"
+package: "Bluetooth"
+description: >
+  Bluetooth LE Power Control feature
+category: "Bluetooth|Feature"
+quality: "production"
+root_path: "protocol/bluetooth"
+config_file:
+  - path: "config/sl_bt_power_control_config.h"
+source:
+  # TODO, BG-10780: The special init file is only used in the controller-only build.
+  # The host stack build handles the init via the new feature definition mechanism.
+  - path: "src/sl_bt_power_control_init.c"
+    unless:
+      - "bluetooth_stack"
+requires:
+  - name: "bluetooth_feature_connection"
+provides:
+  - name: "bluetooth_feature_power_control"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_power_control
+  - name: bluetooth_controller_init
+    value:
+      include: sl_bt_power_control_config.h
+      function: "sl_bt_init_power_control()"
+    priority: 10

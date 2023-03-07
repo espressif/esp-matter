@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectSpec>
+    <applicability>
+        <when>
+            <context
+                deviceFamily="ARM"
+                deviceId="com.ti.ccstudio.deviceModel.TMS470.CustomTMS470Device"
+            />
+        </when>
+    </applicability>
+
+    <project
+        title="libopenthread_ncp_ftd_cc13x4_26x4"
+        name="libopenthread_ncp_ftd_cc13x4_26x4_ticlang"
+        configurations="OptimizeSize"
+        toolChain="TICLANG"
+        outputType="staticLibrary"
+        artifactName="libopenthread_ncp_ftd"
+        artifactExtension="a"
+        endianness="little"
+        device="com.ti.ccstudio.deviceModel.TMS470.CustomTMS470Device"
+        ignoreDefaultDeviceSettings="true"
+        ignoreDefaultCCSSettings="true"
+        products="com.ti.SIMPLELINK_CC13XX_CC26XX_SDK"
+        compilerBuildOptions="
+            -I${PROJECT_ROOT}
+            -Oz
+            -g
+            -gdwarf-3
+            -gstrict-dwarf
+            -Wall
+            -Wno-ti-macros
+            -ffunction-sections
+            -Wextra
+            -Wshadow
+            -Werror
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/examples/platforms
+            -DHAVE_CONFIG_H -D_BSD_SOURCE=1 -D_DEFAULT_SOURCE=1
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/third_party/mbedtls
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/third_party/mbedtls/repo/include
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/include
+            -DMBEDTLS_CONFIG_FILE=&apos;&quot;mbedtls-config-cc13x4_26x4.h&quot;&apos;
+            -I${WorkspaceDirPath}/libmbedcrypto_cc13x4_26x4_ticlang/config
+            -DDeviceFamily_CC13X4_CC26X4
+            -DOPENTHREAD_FTD=1
+            -DOPENTHREAD_SPINEL_CONFIG_OPENTHREAD_MESSAGE_ENABLE=1
+            -DOPENTHREAD_PROJECT_CORE_CONFIG_FILE=&apos;&quot;openthread-core-cc13x4_26x4-config.h&quot;&apos;
+            -DOPENTHREAD_CONFIG_FILE=&apos;&quot;openthread-config-cc13x4_26x4-ftd.h&quot;&apos;
+            -I${WorkspaceDirPath}/libopenthread_ftd_cc13x4_26x4_ticlang/config
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/core
+            -I${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src
+            -mcpu=cortex-m33
+            -mfloat-abi=hard
+            -mfpu=fpv5-sp-d16
+        "
+        description="this is the openthread ncp (network-coprocessor) (mode: ncp/ftd) library">
+
+        <property name="isHybrid" value="true"/>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/ncp/ncp_config.h" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/ncp">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/ncp/changed_props_set.cpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/ncp">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/ncp/example_vendor_hook.cpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/ncp">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/ncp/ncp_base.cpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/ncp">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/ncp/ncp_base_dispatcher.cpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/ncp">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/ncp/ncp_base_ftd.cpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/ncp">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/ncp/ncp_base_mtd.cpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/ncp">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/ncp/ncp_base_radio.cpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/ncp">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/ncp/ncp_spi.cpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/ncp">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/ncp/ncp_uart.cpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/ncp">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/ncp/changed_props_set.hpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/ncp">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/ncp/ncp_base.hpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/ncp">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/ncp/ncp_spi.hpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/ncp">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/ncp/ncp_uart.hpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/ncp">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/lib/hdlc/hdlc.cpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/lib/hdlc">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/lib/hdlc/hdlc.hpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/lib/hdlc">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/lib/spinel/openthread-spinel-config.h" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/lib/spinel">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/lib/spinel/spinel.h" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/lib/spinel">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/lib/spinel/spinel_platform.h" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/lib/spinel">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/lib/spinel/spinel.c" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/lib/spinel">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/lib/spinel/spinel_buffer.cpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/lib/spinel">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/lib/spinel/spinel_decoder.cpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/lib/spinel">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/lib/spinel/spinel_encoder.cpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/lib/spinel">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/lib/spinel/radio_spinel.hpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/lib/spinel">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/lib/spinel/radio_spinel_impl.hpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/lib/spinel">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/lib/spinel/spinel_buffer.hpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/lib/spinel">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/lib/spinel/spinel_decoder.hpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/lib/spinel">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/lib/spinel/spinel_encoder.hpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/lib/spinel">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/lib/spinel/spinel_encrypter.hpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/lib/spinel">
+        </file>
+        <file path="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/third_party/openthread/src/lib/spinel/spinel_interface.hpp" openOnCreation="false" excludeFromBuild="false" action="link" targetDirectory="src/lib/spinel">
+        </file>
+    </project>
+</projectSpec>

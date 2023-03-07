@@ -1,0 +1,52 @@
+/***************************************************************************//**
+ * @file
+ * @brief LED Driver Instances
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2019 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * The licensor of this software is Silicon Laboratories Inc.  Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement.  This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
+ *
+ ******************************************************************************/
+
+#include "sl_simple_led.h"
+#include "em_gpio.h"
+{% for inst in simple_led_instance | sort -%}
+#include "sl_simple_led_{{ inst }}_config.h"
+{% endfor -%}
+
+{% for inst in simple_led_instance | sort %}
+sl_simple_led_context_t simple_{{ inst | lower }}_context = {
+  .port = SL_SIMPLE_LED_{{ inst | upper }}_PORT,
+  .pin = SL_SIMPLE_LED_{{ inst | upper }}_PIN,
+  .polarity = SL_SIMPLE_LED_{{ inst | upper }}_POLARITY,
+};
+
+const sl_led_t sl_led_{{ inst | lower }} = {
+  .context = &simple_{{ inst | lower }}_context,
+  .init = sl_simple_led_init,
+  .turn_on = sl_simple_led_turn_on,
+  .turn_off = sl_simple_led_turn_off,
+  .toggle = sl_simple_led_toggle,
+  .get_state = sl_simple_led_get_state,
+};
+{%- endfor %}
+
+const sl_led_t *sl_simple_led_array[] = {
+{%- for inst in simple_led_instance | sort %}
+  &sl_led_{{ inst | lower }}{% if not loop.last %},{% endif %}
+{%- endfor %}
+};
+
+void sl_simple_led_init_instances(void)
+{
+  {%- for inst in simple_led_instance %}
+  sl_led_init(&sl_led_{{ inst | lower }});
+  {%- endfor %}
+}

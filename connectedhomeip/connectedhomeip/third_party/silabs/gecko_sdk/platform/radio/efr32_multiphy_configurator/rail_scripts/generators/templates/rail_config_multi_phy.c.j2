@@ -1,0 +1,370 @@
+{% extends "base.j2" %}
+{% block filename %}{{filename}}.c{% endblock %}
+{% block title %}{{title}}{% endblock %}
+{% block content -%}
+#include "em_device.h"
+#include "{{filename}}.h"
+{%- if multiPhyConfig.commonStructures.convDecodeBufferSize > 0 %}
+
+__ALIGNED(4) uint8_t convDecodeBuffer[{{multiPhyConfig.commonStructures.convDecodeBufferSize}}];
+{%- endif %}
+{%- if not rail_internal %}
+
+uint32_t RAILCb_CalcSymbolRate(RAIL_Handle_t railHandle)
+{
+  (void) railHandle;
+  return 0U;
+}
+
+uint32_t RAILCb_CalcBitRate(RAIL_Handle_t railHandle)
+{
+  (void) railHandle;
+  return 0U;
+}
+{%- endif %}
+{% set ns = namespace(renderRAILCb_ConfigFrameTypeLength = not rail_internal) -%}
+{% for frameLengthListEntryName, frameLengthListEntry in multiPhyConfig.commonStructures.frameLengthEntries.items() %}
+static uint16_t {{frameLengthListEntryName}}[] = { {{""}}
+  {%- for value in frameLengthListEntry[:-1] -%}
+    {{value|int}}{{", "}}
+  {%- endfor -%}
+  {{-frameLengthListEntry|last-}}
+{{""}} };
+{% else %}
+{%- if ns.renderRAILCb_ConfigFrameTypeLength %}
+void RAILCb_ConfigFrameTypeLength(RAIL_Handle_t railHandle,
+                                  const RAIL_FrameType_t *frameType)
+{
+  (void) railHandle;
+  (void) frameType;
+}
+{% endif %}
+{%- endfor %}
+{%- for frameTypeEntryName, frameTypeEntry in multiPhyConfig.commonStructures.frameTypeEntries.items() %}
+static RAIL_FrameType_t {{frameTypeEntryName}} = {
+  (uint16_t *)&{{frameTypeEntry.frameLen.value._uniqueName}}[0], {{frameTypeEntry.offset}}, {{frameTypeEntry.mask}}, {{frameTypeEntry.isValid|listToHexEncoding}}, {{frameTypeEntry.addressFilter|listToHexEncoding}}
+};
+{% endfor %}
+{%- for frameCodingTableEntryName, frameCodingTableEntry in multiPhyConfig.commonStructures.frameCodingTableEntries.items() %}
+uint32_t {{frameCodingTableEntryName}}[] = {
+  {%- for items in frameCodingTableEntry|batch(4) %}
+  {{ items|join(", ") -}},
+  {%- endfor %}
+};
+{% endfor %}
+{%- for irCalConfigEntryName, irCalConfigEntry in multiPhyConfig.commonStructures.irCalConfigEntries.items() %}
+static const uint8_t {{irCalConfigEntryName}}[] = {
+  {{irCalConfigEntry|length}}{{", "}}
+  {%- for value in irCalConfigEntry[:-1] -%}
+    {{value|int}}{{", "}}
+  {%- endfor %}
+  {{-irCalConfigEntry|last}}
+};
+{% endfor %}
+{%- for txIrCalConfigEntryName, txIrCalConfigEntry in multiPhyConfig.commonStructures.txIrCalConfigEntries.items() %}
+static const uint8_t {{txIrCalConfigEntryName}}[{{txIrCalConfigEntry|length + 1}}] = {
+  {{ "0x{0[0]:02x}, 0x{0[1]:02x}, ".format( txIrCalConfigEntry[0] | int | split16 )-}}
+  {% for value in txIrCalConfigEntry[1:-1] -%}
+    {{value|int}}{{", "}}
+  {%- endfor %}
+  {{-txIrCalConfigEntry|last}}
+};
+{% endfor %}
+{%- for rffpllConfigEntryName, rffpllConfigEntry in multiPhyConfig.commonStructures.rffpllConfigEntries.items() %}
+static const uint32_t {{rffpllConfigEntryName}}[] = {
+  {% for value in rffpllConfigEntry[:-1] -%}
+    {{ value|int}}{{", "}}
+  {%- endfor -%}
+  {{rffpllConfigEntry|last}}
+};
+{% endfor %}
+{%- for dcdcRetimingConfigEntryName, dcdcRetimingConfigEntry in multiPhyConfig.commonStructures.dcdcRetimingConfigEntries.items() %}
+static const uint8_t {{dcdcRetimingConfigEntryName}}[] = {
+  {{dcdcRetimingConfigEntry|length}}{{", "}}
+  {%- for value in dcdcRetimingConfigEntry[:-1] -%}
+    {{value|int}}{{", "}}
+  {%- endfor %}
+  {{-dcdcRetimingConfigEntry|last}}
+};
+{% endfor %}
+{%- for timingConfigEntryName, timingConfigEntry in multiPhyConfig.commonStructures.timingConfigEntries.items() %}
+static const int32_t {{timingConfigEntryName}}[] = {
+  {% for value in timingConfigEntry[:-1] -%}
+    {{ value|int}}{{", "}}
+  {%- endfor -%}
+  {{timingConfigEntry|last}}
+};
+{% endfor %}
+{%- for newHfxoRetimingConfigEntryName, newHfxoRetimingConfigEntry in multiPhyConfig.commonStructures.hfxoRetimingTableEntries.items() -%}
+{# comment newHfxoRetimingConfigEntryName #}
+static const uint8_t {{newHfxoRetimingConfigEntryName}}[] = {
+  {{((newHfxoRetimingConfigEntry.hfxoRetimingInfoConfigEntries | length) | int )}}{{", 0, 0, 0, "}}
+  {%- for hfxoRetimingInfoConfigEntryName, hfxoRetimingInfoConfigEntry in newHfxoRetimingConfigEntry.hfxoRetimingInfoConfigEntries.items() %}
+    {%- for key, value in hfxoRetimingInfoConfigEntry.items() %}
+      {%- if key == "dpllClock" -%}
+        {{ "0x{0[0]:02x}, 0x{0[1]:02x}, 0x{0[2]:02x}, 0x{0[3]:02x}, ".format( value | int | split32 )}}
+      {%- else -%}
+        {{value | int}}{{", "}}
+      {%- endif -%}
+    {%- endfor -%}
+    {{"0, 0, "}}
+  {%- endfor -%}
+  {%- set lastBand = newHfxoRetimingConfigEntry.hfxoRetimingBandConfigEntries | last %}
+  {%- for hfxoRetimingBandConfigEntryName, hfxoRetimingBandConfigEntry in newHfxoRetimingConfigEntry.hfxoRetimingBandConfigEntries.items() %}
+    {%- set lastKey = hfxoRetimingBandConfigEntry|last %}
+    {%- for key, value in hfxoRetimingBandConfigEntry.items() %}
+      {%- if key == "loFreqUpperRange" -%}
+        {{ "0x{0[0]:02x}, 0x{0[1]:02x}, ".format( value | int | split16 )}}
+      {%- elif ((lastKey == key) and (lastBand == hfxoRetimingBandConfigEntryName)) -%}
+        {{value | int}}
+      {%- else -%}
+        {{value | int}}{{", "}}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endfor %}
+};
+{% endfor %}
+{%- for entryName, entry in multiPhyConfig.commonStructures.railChannelConfigEntryAttrEntries.items() %}
+static RAIL_ChannelConfigEntryAttr_t {{entryName}} = {
+#if RAIL_SUPPORTS_OFDM_PA
+  {
+    {%- if entry.calValues > 1 %}
+#ifdef RADIO_CONFIG_ENABLE_IRCAL_MULTIPLE_RF_PATHS
+    {
+    {%- for i in range(entry.calValues) -%}
+      {%- if i == 0 -%}
+        {{" 0xFFFFFFFFUL, "}}
+      {%- else -%}
+        {{"0xFFFFFFFFUL, "}}
+      {%- endif -%}
+    {%- endfor -%}
+    },
+#else
+    { 0xFFFFFFFFUL },
+#endif // RADIO_CONFIG_ENABLE_IRCAL_MULTIPLE_RF_PATHS
+    {%- else %}
+    { 0xFFFFFFFFUL },
+    {%- endif %}
+    { 0xFFFFFFFFUL, 0xFFFFFFFFUL }
+  }
+#else // RAIL_SUPPORTS_OFDM_PA
+  {%- if entry.calValues > 1 %}
+#ifdef RADIO_CONFIG_ENABLE_IRCAL_MULTIPLE_RF_PATHS
+  {
+  {%- for i in range(entry.calValues) -%}
+    {%- if i == 0 -%}
+      {{" 0xFFFFFFFFUL, "}}
+    {%- else -%}
+      {{"0xFFFFFFFFUL, "}}
+    {%- endif -%}
+  {%- endfor -%}
+  },
+#else
+  { 0xFFFFFFFFUL },
+#endif // RADIO_CONFIG_ENABLE_IRCAL_MULTIPLE_RF_PATHS
+  {%- else %}
+  { 0xFFFFFFFFUL },
+  {%- endif %}
+#endif // RAIL_SUPPORTS_OFDM_PA
+};
+{% endfor %}
+{%- for phyInfoEntryName, phyInfoEntry in multiPhyConfig.commonStructures.phyInfoEntries.items() %}
+static const uint32_t {{phyInfoEntryName}}[] = {
+  {{phyInfoEntry.phyInfoData.version}}UL,
+  {{"0x{:08X}".format(phyInfoEntry.phyInfoData.freqOffsetFactor_fxp)}}UL, // {{phyInfoEntry.phyInfoData.freqOffsetFactor}}
+{%- if phyInfoEntry.phyInfoData.frameTypeConfig %}
+  (uint32_t) &{{phyInfoEntry.phyInfoData.frameTypeConfig._uniqueName}},
+{%- else %}
+  (uint32_t) NULL,
+{%- endif %}
+  (uint32_t) {{phyInfoEntry.phyInfoData.irCalConfig._uniqueName}},
+{%- if phyInfoEntry.phyInfoData.timingConfig %}
+  (uint32_t) {{phyInfoEntry.phyInfoData.timingConfig._uniqueName}},
+{%- else %}
+  (uint32_t) NULL,
+{%- endif %}
+  {{"0x{:08X}".format(phyInfoEntry.phyInfoData.antDivRxAutoConfig)}}UL,
+  {{phyInfoEntry.phyInfoData.src1Denominator}}UL,
+  {{phyInfoEntry.phyInfoData.src2Denominator}}UL,
+  {{phyInfoEntry.phyInfoData.txBaudRate|int}}UL,
+  {{"0x{:08X}".format(phyInfoEntry.phyInfoData.rateInfo)}}UL,
+  {{"0x{:08X}".format(phyInfoEntry.phyInfoData.synthCache)}}UL,
+{%- if phyInfoEntry.phyInfoData.dcdcRetimingConfig %}
+  (uint32_t) {{phyInfoEntry.phyInfoData.dcdcRetimingConfig._uniqueName}},
+{%- else %}
+  (uint32_t) NULL,
+{%- endif %}
+{%- if phyInfoEntry.phyInfoData.hfxoRetimingConfig %}
+  (uint32_t) {{phyInfoEntry.phyInfoData.hfxoRetimingConfig._uniqueName}},
+{%- else %}
+  (uint32_t) NULL,
+{%- endif %}
+{%- if phyInfoEntry.phyInfoData.zWaveChannelHopTiming %}
+  {{phyInfoEntry.phyInfoData.zWaveChannelHopTiming}}UL,
+{%- else %}
+  (uint32_t) NULL,
+{%- endif %}
+  {{phyInfoEntry.phyInfoData.paParams}}UL,
+  {{phyInfoEntry.phyInfoData.psmMaxSleepUs}}UL,
+  {{phyInfoEntry.phyInfoData.rxBaudRate|int}}UL,
+{%- if phyInfoEntry.phyInfoData.rffpllConfig %}
+  (uint32_t) {{phyInfoEntry.phyInfoData.rffpllConfig._uniqueName}},
+{%- else %}
+  (uint32_t) NULL,
+{%- endif %}
+{%- if phyInfoEntry.phyInfoData.txIrCalConfig %}
+  (uint32_t) {{phyInfoEntry.phyInfoData.txIrCalConfig._uniqueName}},
+{%- else %}
+  (uint32_t) NULL,
+{%- endif %}
+};
+{% endfor %}
+{%- for dynamicSlicerTableEntryName, dynamicSlicerTableEntry in multiPhyConfig.commonStructures.dynamicSlicerTableEntries.items() %}
+{%- for dynamicSlicerConfigEntryName, dynamicSlicerConfigEntry in dynamicSlicerTableEntry.items() %}
+uint32_t {{dynamicSlicerConfigEntryName}}[] = {
+  {{"0x{:04X}{:04X}UL".format(dynamicSlicerConfigEntry.level, dynamicSlicerConfigEntry.threshold)}},
+  (uint32_t) {{"&%s"|format(dynamicSlicerConfigEntry.next.name) if dynamicSlicerConfigEntry.next.name else "0UL"}},
+};
+{% endfor %}
+{%- endfor %}
+{%- for modemConfigName, modemConfig in multiPhyConfig.commonStructures.modemConfigEntriesBase.items() %}
+const uint32_t {{modemConfigName}}[] = {
+{%- for entryName, entry in modemConfig.items() %}
+  {%- set firstValue = entry.encodedValues|first %}
+  {%- set remainingValues = entry.encodedValues[1:] %}
+  {{"0x{:08X}UL, ".format(entry.encodedAction)}}
+  {%- if rail_internal -%}
+    {{- "0x{:08X}UL,".format(firstValue) if firstValue is number else "(uint32_t) &{},".format(firstValue.value|default(firstValue._uniqueName|default(firstValue.name|default(firstValue))))}}
+    {{- " /* {} */".format(entry.encodedRegNames[0])}}
+    {%- for value in remainingValues %}
+  /*    {{"{:04X}".format(entry.encodedAction|formatActionAddress(loop.index))}} */ {{"0x{:08X}UL,".format(value) if value is number else "(uint32_t) &{},".format(value.value|default(value._uniqueName|default(value.name|default(value))))}}{{" /* {} */".format(entry.encodedRegNames[loop.index])}}
+    {%- endfor -%}
+  {%- else -%}
+    {{- "0x{:08X}UL,".format(firstValue) if firstValue is number else "(uint32_t) &{},".format(firstValue.value|default(firstValue._uniqueName|default(firstValue.name|default(firstValue))))}}
+    {%- for value in remainingValues %}
+  /*    {{"{:04X}".format(entry.encodedAction|formatActionAddress(loop.index))}} */ {{"0x{:08X}UL,".format(value) if value is number else "(uint32_t) &{},".format(value.value|default(value._uniqueName|default(value.name|default(value))))}}
+    {%- endfor -%}
+  {%- endif -%}
+{% endfor %}
+  0xFFFFFFFFUL,
+};
+{% endfor %}
+
+{%- for modemConfigName, modemConfig in multiPhyConfig.commonStructures.modemConfigEntries.items() %}
+const uint32_t {{modemConfigName}}[] = {
+{%- for entryName, entry in modemConfig.items() %}
+  {%- set firstValue = entry.encodedValues|first %}
+  {%- set remainingValues = entry.encodedValues[1:] %}
+  {{"0x{:08X}UL, ".format(entry.encodedAction)}}
+  {%- if rail_internal -%}
+    {{- "0x{:08X}UL,".format(firstValue) if firstValue is number else "(uint32_t) &{},".format(firstValue.value|default(firstValue._uniqueName|default(firstValue.name|default(firstValue))))}}
+    {{- " /* {} */".format(entry.encodedRegNames[0])}}
+    {%- for value in remainingValues %}
+  /*    {{"{:04X}".format(entry.encodedAction|formatActionAddress(loop.index))}} */ {{"0x{:08X}UL,".format(value) if value is number else "(uint32_t) &{},".format(value.value|default(value._uniqueName|default(value.name|default(value))))}}{{" /* {} */".format(entry.encodedRegNames[loop.index])}}
+    {%- endfor -%}
+  {%- else -%}
+    {{- "0x{:08X}UL,".format(firstValue) if firstValue is number else "(uint32_t) &{},".format(firstValue.value|default(firstValue._uniqueName|default(firstValue.name|default(firstValue)))) -}}
+    {%- for value in remainingValues %}
+  /*    {{"{:04X}".format(entry.encodedAction|formatActionAddress(loop.index))}} */ {{"0x{:08X}UL,".format(value) if value is number else "(uint32_t) &{},".format(value.value|default(value._uniqueName|default(value.name|default(value))))}}
+    {%- endfor -%}
+  {%- endif -%}
+{% endfor %}
+  0xFFFFFFFFUL,
+};
+{% endfor %}
+
+{%- for modemConfigName, modemConfig in multiPhyConfig.commonStructures.modemConfigEntriesSubtract.items() %}
+const uint32_t {{modemConfigName}}[] = {
+{%- for entryName, entry in modemConfig.items() %}
+  {%- set firstValue = entry.encodedValues|first %}
+  {%- set remainingValues = entry.encodedValues[1:] %}
+  {{"0x{:08X}UL, ".format(entry.encodedAction)}}
+  {%- if rail_internal -%}
+    {{- "0x{:08X}UL,".format(firstValue) if firstValue is number else "(uint32_t) &{},".format(firstValue.value|default(firstValue._uniqueName|default(firstValue.name|default(firstValue))))}}
+    {{- " /* {} */".format(entry.encodedRegNames[0])}}
+    {%- for value in remainingValues %}
+  /*    {{"{:04X}".format(entry.encodedAction|formatActionAddress(loop.index))}} */ {{"0x{:08X}UL,".format(value) if value is number else "(uint32_t) &{},".format(value.value|default(value._uniqueName|default(value.name|default(value))))}}{{" /* {} */".format(entry.encodedRegNames[loop.index])}}
+    {%- endfor -%}
+  {%- else -%}
+    {{- "0x{:08X}UL,".format(firstValue) if firstValue is number else "(uint32_t) &{},".format(firstValue.value|default(firstValue._uniqueName|default(firstValue.name|default(firstValue))))}}
+    {%- for value in remainingValues %}
+  /*    {{"{:04X}".format(entry.encodedAction|formatActionAddress(loop.index))}} */ {{"0x{:08X}UL,".format(value) if value is number else "(uint32_t) &{},".format(value.value|default(value._uniqueName|default(value.name|default(value))))}}
+    {%- endfor -%}
+  {%- endif -%}
+{% endfor %}
+  0xFFFFFFFFUL,
+};
+{% endfor %}
+{%- for multiPhyConfigEntryName, multiPhyConfigEntry in multiPhyConfig.multiPhyConfigEntries.items() %}
+const RAIL_ChannelConfigEntry_t {{multiPhyConfigEntryName}}_channels[] = {
+  {%- for entryName, entry in multiPhyConfigEntry.channelConfigEntries.items() %}
+  {
+    .phyConfigDeltaAdd = {{entry.modemConfigDeltaAdd._uniqueName|default("NULL")}},
+    .baseFrequency = {{entry.baseFrequency|int}},
+    .channelSpacing = {{entry.channelSpacing|int}},
+    {% if entry.physicalChannelOffset == "SAME_AS_FIRST_CHANNEL" -%}
+    .physicalChannelOffset = {{entry.channelNumberStart|int}},
+    {%- else -%}
+    .physicalChannelOffset = {{entry.physicalChannelOffset}},
+    {%- endif %}
+    .channelNumberStart = {{entry.channelNumberStart|int}},
+    .channelNumberEnd = {{entry.channelNumberEnd|int}},
+    .maxPower = {{entry.maxPower}},
+    .attr = &{{entry.attr._uniqueName}},
+#ifdef RADIO_CONFIG_ENABLE_CONC_PHY
+    .entryType = {{entry.entryType|int}},
+#endif
+#ifdef RADIO_CONFIG_ENABLE_STACK_INFO
+    .stackInfo = {{entry.stackInfo.name if entry.stackInfo else "NULL"}},
+#endif
+  },
+  {%- endfor %}
+};
+{% endfor %}
+{%- for multiPhyConfigEntryName, multiPhyConfigEntry in multiPhyConfig.multiPhyConfigEntries.items() %}
+const RAIL_ChannelConfig_t {{multiPhyConfigEntryName}}_channelConfig = {
+  .phyConfigBase = {{(multiPhyConfigEntry.channelConfig.modemConfigBase._uniqueName)}},
+  .phyConfigDeltaSubtract = {{multiPhyConfigEntry.channelConfig.modemConfigDeltaSubtract._uniqueName|default("NULL")}},
+  .configs = {{multiPhyConfigEntryName}}_channels,
+  .length = {{multiPhyConfigEntry.channelConfig.length}}U,
+  .signature = {{multiPhyConfigEntry.channelConfig.signature}}UL,
+};
+{% endfor %}
+{%- if not rail_internal %}
+const RAIL_ChannelConfig_t *channelConfigs[] = {
+{%- for multiPhyConfigEntryName, multiPhyConfigEntry in multiPhyConfig.multiPhyConfigEntries.items() %}
+  &{{multiPhyConfigEntryName}}_channelConfig,
+{%- endfor %}
+  NULL
+};
+{% endif %}
+
+{%- if multiPhyConfig.commonStructures.modeSwitchPhyModeIds|length %}
+const uint8_t wisun_modeSwitchPhrsLength = WISUN_MODESWITCHPHRS_ARRAY_SIZE;
+
+const RAIL_IEEE802154_ModeSwitchPhr_t wisun_modeSwitchPhrs[WISUN_MODESWITCHPHRS_ARRAY_SIZE] = {
+{%- for phyModeId, phr in multiPhyConfig.commonStructures.modeSwitchPhyModeIds.items() %}
+  {
+    .phyModeId = {{phyModeId}}U,
+    .phr = {{phr}}U,
+  },
+{%- endfor %}
+};
+{%- endif %}
+
+#ifdef RADIO_CONFIG_ENABLE_STACK_INFO
+{%- for stackInfoName, stackInfoEntry in multiPhyConfig.commonStructures.stackInfoEntries.items() %}
+const uint8_t {{stackInfoName}}[{{stackInfoEntry|length}}] = {
+{%- for element in stackInfoEntry[:-1] -%}
+  {{"0x{0[0]:02x}, ".format(element | split32)}}
+{%- endfor -%}
+{{-"0x{0[0]:02x}".format(stackInfoEntry|last | split32)-}}
+};
+{% endfor %}
+#endif // RADIO_CONFIG_ENABLE_STACK_INFO
+
+{% if accelerationBufferSize > 0 -%}
+uint32_t {{protocol}}AccelerationBuffer[{{accelerationBufferSize}}];
+{%- endif %}
+{% raw %}{% endraw %}
+{%- endblock %}

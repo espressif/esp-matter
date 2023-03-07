@@ -1,0 +1,180 @@
+#
+#  Copyright (c) 2020, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+
+name: Build
+
+on:
+  push:
+    branches-ignore:
+      - 'dependabot/**'
+  pull_request:
+    branches:
+      - 'main'
+
+jobs:
+
+  cancel-previous-runs:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: rokroskar/workflow-run-cleanup-action@master
+      env:
+        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      if: "github.ref != 'refs/heads/main'"
+
+  pretty:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Bootstrap
+      run: BUILD_TARGET=pretty-check tests/scripts/bootstrap.sh
+    - name: Check
+      run: script/make-pretty check
+
+  android-check:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Check (Border Agent with mDNSResponder)
+      run: >
+        docker run --rm --env OTBR_MDNS=mDNSResponder -v $PWD:/build/ot-br-posix -v $PWD/third_party/openthread/repo:/build/external/openthread openthread/android-trusty bash -c
+        "BUILD_TARGET=android-check ot-br-posix/tests/scripts/bootstrap.sh && \
+         ot-br-posix/tests/scripts/check-android-build"
+
+  check:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        build_type: ["Debug", "Release"]
+        mdns: ["mDNSResponder", "avahi"]
+    env:
+      BUILD_TARGET: check
+      OTBR_BUILD_TYPE: ${{ matrix.build_type }}
+      OTBR_MDNS: ${{ matrix.mdns }}
+      OTBR_OPTIONS: "-DOTBR_SRP_ADVERTISING_PROXY=ON"
+      OTBR_COVERAGE: 1
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Bootstrap
+      run: tests/scripts/bootstrap.sh
+    - name: Run
+      run: script/test build check
+    - name: Codecov
+      uses: codecov/codecov-action@v2
+
+  rest-check:
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+      matrix:
+        rest: ["rest-off", ""]
+    env:
+      BUILD_TARGET: check
+      OTBR_REST: ${{ matrix.rest }}
+      OTBR_MDNS: mDNSResponder
+      OTBR_OPTIONS: "-DOTBR_SRP_ADVERTISING_PROXY=ON -DOTBR_DNSSD_DISCOVERY_PROXY=ON"
+      OTBR_COVERAGE: 1
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Bootstrap
+      run: tests/scripts/bootstrap.sh
+    - name: Run
+      run: script/test build check
+    - name: Codecov
+      uses: codecov/codecov-action@v2
+
+  script-check:
+    runs-on: ubuntu-20.04
+    env:
+      BUILD_TARGET: script-check
+      OTBR_COVERAGE: 1
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Bootstrap
+      run: tests/scripts/bootstrap.sh
+    - name: Run
+      run: tests/scripts/check-scripts
+    - name: Codecov
+      uses: codecov/codecov-action@v2
+
+  scan-build:
+    runs-on: ubuntu-20.04
+    env:
+      BUILD_TARGET: scan-build
+      CC: clang
+      CXX: clang++
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Bootstrap
+      run: tests/scripts/bootstrap.sh
+    - name: Run
+      run: tests/scripts/check-scan-build
+
+  package:
+    runs-on: ubuntu-18.04
+    env:
+      BUILD_TARGET: package
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Bootstrap
+      run: |
+        tests/scripts/bootstrap.sh
+        sudo pip3 install --system -U cmake==3.10.3
+        cmake --version | grep 3.10.3
+    - name: Build
+      run: script/test package
+
+  simulation:
+    runs-on: ubuntu-latest
+    env:
+      BUILD_TARGET: check
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Bootstrap
+      run: tests/scripts/bootstrap.sh
+    - name: Build
+      run: |
+        script/bootstrap
+        script/test build
+    - name: Run
+      run: |
+        script/test simulation

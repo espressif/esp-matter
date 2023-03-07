@@ -1,0 +1,29 @@
+!!omap
+- id: brd3800a
+- label: BRD3800A
+- package: platform
+- description: Board support for BRD3800A.
+- category: Platform|Board|MCU Plugin Board
+- quality: production
+- requires:
+  - name: efm32wg990f256
+  - name: brd3800a_config
+  - name: hardware_board_dk
+- provides:
+  - name: brd3800a
+  - name: hardware_board
+  - name: hardware_board_mcuplugin
+  - name: hardware_board_from_dk
+  - name: hardware_board_from_efm32wg-dk3850
+- recommends: []
+- template_contribution: []
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD3800A"'
+  - name: SL_BOARD_REV
+    value: '"A00"'
+- tag:
+  - board:pn:BRD3800
+  - board:variant:A
+  - board:revision:A00
+  - board:device:efm32wg990f256

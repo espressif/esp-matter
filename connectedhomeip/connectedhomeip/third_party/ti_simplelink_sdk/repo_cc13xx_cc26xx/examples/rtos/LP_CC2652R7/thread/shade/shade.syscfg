@@ -1,0 +1,196 @@
+/*
+ * Copyright (c) 2018, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+// @cliArgs --board /ti/boards/LP_CC2652R7 --rtos tirtos
+
+/*
+ *  shade.syscfg
+ */
+ 
+/* Boosterpacks */
+if (system.deviceData.deviceId !== "CC2652P1FSIP")
+{
+	var BOOSTXL_SHARP128 = scripting.addHardware("/ti/boards/boosterpacks/BOOSTXL-SHARP128");
+}
+
+
+/* Modules */
+var AESECB    = scripting.addModule("/ti/drivers/AESECB");
+var Button    = scripting.addModule("/ti/drivers/apps/Button");
+var Device    = scripting.addModule("/ti/devices/CCFG");
+var Display   = scripting.addModule("/ti/display/Display");
+var DMA       = scripting.addModule("/ti/drivers/DMA");
+var ECDH      = scripting.addModule("/ti/drivers/ECDH");
+var ECDSA     = scripting.addModule("/ti/drivers/ECDSA");
+var ECJPAKE   = scripting.addModule("/ti/drivers/ECJPAKE");
+var LED       = scripting.addModule("/ti/drivers/apps/LED");
+var NVS       = scripting.addModule("/ti/drivers/NVS");
+var Power     = scripting.addModule("/ti/drivers/Power");
+var RF        = scripting.addModule("/ti/drivers/RF");
+var RFDesign  = scripting.addModule("ti/devices/radioconfig/rfdesign");
+var SHA2      = scripting.addModule("/ti/drivers/SHA2");
+var Watchdog  = scripting.addModule("/ti/drivers/Watchdog");
+var TRNG      = scripting.addModule("/ti/drivers/TRNG");
+var Thread    = scripting.addModule("/ti/thread/thread");
+
+
+/* Instances */
+var AESECB     = AESECB.addInstance();
+var Button1    = Button.addInstance();
+var Button2    = Button.addInstance();
+var Display1   = Display.addInstance();
+var ECDH       = ECDH.addInstance();
+var ECDSA      = ECDSA.addInstance();
+var ECJPAKE    = ECJPAKE.addInstance();
+var LED1       = LED.addInstance();
+var LED2       = LED.addInstance();
+var NVS1       = NVS.addInstance();
+var SHA21      = SHA2.addInstance();
+var TRNG1      = TRNG.addInstance();
+var Watchdog1  = Watchdog.addInstance();
+if (system.deviceData.deviceId !== "CC2652P1FSIP")
+{
+    var Display2   = Display.addInstance();
+}
+
+/* CCFG */
+const ccfgSettings = system.getScript("/ti/common/lprf_ccfg_settings.js").ccfgSettings;
+for(var setting in ccfgSettings)
+{
+    Device[setting] = ccfgSettings[setting];
+}
+
+/* Left Button */
+Button1.$name                       = "CONFIG_BTN_LEFT";
+Button1.$hardware                   = system.deviceData.board.components["BTN-1"];
+Button1.gpioPin.$name               = "CONFIG_GPIO_BTN1";
+Button1.gpioPin.pull                = "Pull Up";
+
+/* Right Button */
+Button2.$name                       = "CONFIG_BTN_RIGHT";
+Button2.$hardware                   = system.deviceData.board.components["BTN-2"];
+Button2.gpioPin.$name               = "CONFIG_GPIO_BTN2";
+Button2.gpioPin.pull                = "Pull Up";
+
+/* Configuration */
+/* Display */
+Display1.$name                              = "CONFIG_DISPLAY";
+Display1.uartBufferSize                     = 128; // UART Display Buffer Size (in bytes)
+Display1.$hardware                          = system.deviceData.board.components.XDS110UART; // Use Hardware
+Display1.uart.$name                         = "CONFIG_DISPLAY_UART";
+Display1.uart.uart.$assign                  = "UART0"; // Use Peripheral
+Display1.uart.txPinInstance.$name           = "CONFIG_PIN_UART_TX";
+Display1.uart.txPinInstance.mode            = "Output";
+Display1.uart.txPinInstance.outputState     = "High";
+Display1.uart.txPinInstance.outputStrength  = "Low";
+Display1.uart.rxPinInstance.$name           = "CONFIG_PIN_UART_RX";
+Display1.uart.rxPinInstance.mode            = "Input";
+Display1.uart.rxPinInstance.pull            = "Pull Down";
+
+
+if (system.deviceData.deviceId !== "CC2652P1FSIP")
+{
+    Display2.$name            = "CONFIG_DISPLAY_LCD";
+    Display2.$hardware        = BOOSTXL_SHARP128.components.SHARP_LCD_DISPLAY;
+    Display2.lcdEnable.$name  = "CONFIG_GPIO_LCD_ENABLE";
+    Display2.lcdEnable.mode   = "Output";
+    Display2.lcdPower.$name   = "CONFIG_GPIO_LCD_POWER";
+    Display2.lcdPower.mode    = "Output";
+    Display2.lcdSS.$name      = "CONFIG_GPIO_LCD_CS";
+    Display2.lcdSS.mode       = "Output";
+
+    /* SPI for Display2 (LCD) */
+    var SPI1                    = Display2.spi; // Create reference
+    SPI1.$name                  = "CONFIG_SPI_0";
+    SPI1.defaultTxBufferValue   = "0xFF"; // Default Tx Buffer Value (Provide in 0xh format)
+    SPI1.spi.$assign            = "SSI0"; // Use Peripheral
+    SPI1.sclkPinInstance.$name  = "CONFIG_PIN_SPI_SCLK";
+    SPI1.sclkPinInstance.mode   = "Input";
+    SPI1.sclkPinInstance.pull   = "Pull Down";
+    SPI1.misoPinInstance.$name  = "CONFIG_PIN_SPI_MISO";
+    SPI1.misoPinInstance.mode   = "Input";
+    SPI1.misoPinInstance.pull   = "Pull Down";
+    SPI1.mosiPinInstance.$name  = "CONFIG_PIN_SPI_MOSI";
+    SPI1.mosiPinInstance.mode   = "Input";
+    SPI1.mosiPinInstance.pull   = "Pull Down";
+}
+
+/* Red LED */
+LED1.$name                      = "CONFIG_LED_RED";
+LED1.$hardware                  = system.deviceData.board.components.LED_RED;
+LED1.gpioPin.$name              = "CONFIG_GPIO_RLED";
+LED1.gpioPin.mode               = "Output";
+LED1.gpioPin.callbackFunction   = "";
+
+
+/* Green LED */
+LED2.$name                      = "CONFIG_LED_GREEN";
+LED2.$hardware                  = system.deviceData.board.components.LED_GREEN;
+LED2.gpioPin.$name              = "CONFIG_GPIO_GLED";
+LED2.gpioPin.mode               = "Output";
+LED2.gpioPin.callbackFunction   = "";
+
+
+/* RF */
+/* if an antenna component exists, assign it to the rf instance */
+if (system.deviceData.board && system.deviceData.board.components.RF) {
+    RF.$hardware = system.deviceData.board.components.RF;
+}
+
+const rfDesignSettings = system.getScript("/ti/common/lprf_rf_design_settings.js").rfDesignSettings;
+for(var setting in rfDesignSettings)
+{
+    RFDesign[setting] = rfDesignSettings[setting];
+}
+
+
+/* NVS */
+NVS1.$name                                 = "CONFIG_NVSINTERNAL";
+NVS1.internalFlash.regionBase              = 0x52000; // Base Address of Region
+NVS1.internalFlash.regionSize              = 0x4000; // Size of Region (in bytes)
+
+
+/* Watchdog */
+Watchdog1.$name             = "CONFIG_WATCHDOG0";
+Watchdog1.period            = 1000;
+Watchdog1.watchdog.$assign  = "WDT0";
+
+/* TRNG */
+TRNG1.$name  = "CONFIG_TRNG_0";
+
+/* Thread */
+Thread.deviceType            = "mtd";
+Thread.deviceTypeReadOnly    = true;
+Thread.pm.powerModeOperation = "alwaysOn";
+Thread.security.pskd         = "SHADEEX1";
+Thread.network.setNetwork    = false;
+Thread.rf.rfDesign           = rfDesignSettings.rfDesign;
+

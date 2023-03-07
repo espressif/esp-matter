@@ -1,0 +1,20 @@
+id: micriumos_entropy
+label: Entropy Module
+package: micrium-krnx
+description: Micrium OS Entropy module that generates random data using RNGs.
+category: Services|Micrium|Entropy
+quality: production
+component_root_path: platform/micrium_os/entropy
+source:
+  - path: source/entropy.c
+include:
+  - path: include
+    file_list:
+      - path: entropy.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: ENTROPY
+provides:
+  - name: micriumos_entropy
+requires:
+  - name: common_platform_manager

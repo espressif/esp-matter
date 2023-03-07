@@ -1,0 +1,250 @@
+{{#zcl_global_commands}}
+{{#if (is_str_equal source "either")}}
+/** @brief Command description for {{label}}
+*
+* Command: {{label}}
+* @param clusterId EmberAfClusterId*/
+{{#zcl_command_arguments}}
+// @param {{name}} {{as_underlying_zcl_type type}}
+{{#if isArray}}// @param {{name}}Len uint16_t {{/if}}
+{{/zcl_command_arguments}}
+#define emberAfFillCommandGlobalServerToClient{{name}}(clusterId, \
+{{#zcl_command_arguments}}
+  {{#if isArray}}
+  {{name}}, {{name}}Len{{#not_last}},{{/not_last~}}
+  {{else}}
+  {{name}}{{#not_last}},{{/not_last~}}
+  {{/if~}}
+{{/zcl_command_arguments}}) \
+emberAfFillExternalBuffer((ZCL_GLOBAL_COMMAND \
+                           | ZCL_FRAME_CONTROL_SERVER_TO_CLIENT {{#is_command_default_response_disabled .}} | ZCL_DISABLE_DEFAULT_RESPONSE_MASK{{/is_command_default_response_disabled}}), \
+                           clusterId, \
+                           ZCL_{{as_delimited_macro label}}_COMMAND_ID, \
+                           "{{#zcl_command_arguments}}{{as_underlying_zcl_type type array="b" one_byte="u" two_byte="v" three_byte="x" four_byte="w" short_string="s" long_string="l" ten_byte="A" eleven_byte="B" twelve_byte="C" thirten_byte="D" fourteen_byte="E" fifteen_byte="F" sixteen_byte="G" struct="b" defaul="b" zclCharFormatter="true"}}{{/zcl_command_arguments}}"{{#if_command_args_exist this.id}},{{/if_command_args_exist}} \
+                           {{#zcl_command_arguments}}
+							  {{#if isArray}}
+							  {{name}}, {{name}}Len{{#not_last}},{{/not_last~}}
+							  {{else}}
+							  {{name}}{{#not_last}},{{/not_last~}}
+							  {{/if~}}
+						   {{/zcl_command_arguments}});
+
+/** @brief Command description for {{label}}
+*
+* Command: {{label}}
+* @param clusterId EmberAfClusterId*/
+{{#zcl_command_arguments}}
+// @param {{name}} {{as_underlying_zcl_type type}}
+{{#if isArray}}// @param {{name}}Len uint16_t {{/if}}
+{{/zcl_command_arguments}}
+#define emberAfFillCommandGlobalClientToServer{{name}}(clusterId, \
+{{#zcl_command_arguments}}
+  {{#if isArray}}
+  {{name}}, {{name}}Len{{#not_last}},{{/not_last~}}
+  {{else}}
+  {{name}}{{#not_last}},{{/not_last~}}
+  {{/if~}}
+{{/zcl_command_arguments}}) \
+emberAfFillExternalBuffer((ZCL_GLOBAL_COMMAND \
+                           | ZCL_FRAME_CONTROL_CLIENT_TO_SERVER{{#is_command_default_response_disabled .}} | ZCL_DISABLE_DEFAULT_RESPONSE_MASK{{/is_command_default_response_disabled}}), \
+                           clusterId, \
+                           ZCL_{{as_delimited_macro label}}_COMMAND_ID, \
+                           "{{#zcl_command_arguments}}{{as_underlying_zcl_type type array="b" one_byte="u" two_byte="v" three_byte="x" four_byte="w" short_string="s" long_string="l" ten_byte="A" eleven_byte="B" twelve_byte="C" thirten_byte="D" fourteen_byte="E" fifteen_byte="F" sixteen_byte="G" struct="b" defaul="b" zclCharFormatter="true"}}{{/zcl_command_arguments}}"{{#if_command_args_exist this.id}},{{/if_command_args_exist}} \
+                           {{#zcl_command_arguments}}
+							  {{#if isArray}}
+							  {{name}}, {{name}}Len{{#not_last}},{{/not_last~}}
+							  {{else}}
+							  {{name}}{{#not_last}},{{/not_last~}}
+							  {{/if~}}
+						   {{/zcl_command_arguments}});
+{{else}}
+
+/** @brief Command description for {{label}}
+*
+* Command: {{label}}
+* @param clusterId EmberAfClusterId*/
+{{#zcl_command_arguments}}
+// @param {{name}} {{as_underlying_zcl_type type}}
+{{#if isArray}}// @param {{name}}Len uint16_t {{/if}}
+{{/zcl_command_arguments}}
+{{#if (is_client source)}}
+#define emberAfFillCommandGlobalClientToServer{{name}}(clusterId, \
+{{#zcl_command_arguments}}
+  {{#if isArray}}
+  {{name}}, {{name}}Len{{#not_last}},{{/not_last~}}
+  {{else}}
+  {{name}}{{#not_last}},{{/not_last~}}
+  {{/if~}}
+{{/zcl_command_arguments}}) \
+emberAfFillExternalBuffer((ZCL_GLOBAL_COMMAND \
+                           | ZCL_FRAME_CONTROL_CLIENT_TO_SERVER{{#is_command_default_response_disabled .}} | ZCL_DISABLE_DEFAULT_RESPONSE_MASK{{/is_command_default_response_disabled}}), \
+                           clusterId, \
+                           ZCL_{{as_delimited_macro label}}_COMMAND_ID, \
+                           "{{#zcl_command_arguments}}{{as_underlying_zcl_type type array="b" one_byte="u" two_byte="v" three_byte="x" four_byte="w" short_string="s" long_string="l" ten_byte="A" eleven_byte="B" twelve_byte="C" thirten_byte="D" fourteen_byte="E" fifteen_byte="F" sixteen_byte="G" struct="b" defaul="b" zclCharFormatter="true"}}{{/zcl_command_arguments}}"{{#if_command_args_exist this.id}},{{/if_command_args_exist}} \
+                           {{#zcl_command_arguments}}
+							  {{#if isArray}}
+							  {{name}}, {{name}}Len{{#not_last}},{{/not_last~}}
+							  {{else}}
+							  {{name}}{{#not_last}},{{/not_last~}}
+							  {{/if~}}
+						   {{/zcl_command_arguments}});
+
+{{else}}
+#define emberAfFillCommandGlobalServerToClient{{name}}(clusterId, \
+{{#zcl_command_arguments}}
+  {{#if isArray}}
+  {{name}}, {{name}}Len{{#not_last}},{{/not_last~}}
+  {{else}}
+  {{name}}{{#not_last}},{{/not_last~}}
+  {{/if~}}
+{{/zcl_command_arguments}}) \
+emberAfFillExternalBuffer((ZCL_GLOBAL_COMMAND \
+                           | ZCL_FRAME_CONTROL_SERVER_TO_CLIENT{{#is_command_default_response_disabled .}} | ZCL_DISABLE_DEFAULT_RESPONSE_MASK{{/is_command_default_response_disabled}}), \
+                           clusterId, \
+                           ZCL_{{as_delimited_macro label}}_COMMAND_ID, \
+                           "{{#zcl_command_arguments}}{{as_underlying_zcl_type type array="b" one_byte="u" two_byte="v" three_byte="x" four_byte="w" short_string="s" long_string="l" ten_byte="A" eleven_byte="B" twelve_byte="C" thirten_byte="D" fourteen_byte="E" fifteen_byte="F" sixteen_byte="G" struct="b" defaul="b" zclCharFormatter="true"}}{{/zcl_command_arguments}}"{{#if_command_args_exist this.id}},{{/if_command_args_exist}} \
+                           {{#zcl_command_arguments}}
+							  {{#if isArray}}
+							  {{name}}, {{name}}Len{{#not_last}},{{/not_last~}}
+							  {{else}}
+							  {{name}}{{#not_last}},{{/not_last~}}
+							  {{/if~}}
+						   {{/zcl_command_arguments}});
+
+{{/if}}
+
+{{/if}}
+{{/zcl_global_commands}}
+/** @} END Global Commands */
+
+
+// Cluster Specific Commands
+
+{{#zcl_clusters}}
+{{#zcl_commands}}
+{{#if (is_str_equal source "either")}}
+/** @brief {{description}}
+* Cluster: {{../label}}, {{../caption}}
+* Command: {{name}}*/
+{{#zcl_command_arguments}}
+// @param {{name}} {{as_underlying_zcl_type type}}
+{{#if isArray}}// @param {{name}}Len uint16_t {{/if}}
+{{/zcl_command_arguments}}
+#define emberAfFillCommand{{as_camel_cased ../define false}}ServerToClient{{name}}( \
+{{#zcl_command_arguments}}
+  {{#if isArray}}
+  {{name}}, {{name}}Len{{#not_last}},{{/not_last~}}
+  {{else}}
+  {{name}}{{#not_last}},{{/not_last~}}
+  {{/if~}}
+{{/zcl_command_arguments}}) \
+emberAfFillExternal{{#if_mfg_specific_cluster ../id}}ManufacturerSpecific{{/if_mfg_specific_cluster}}Buffer((ZCL_CLUSTER_SPECIFIC_COMMAND{{#if_mfg_specific_cluster ../id}} | ZCL_MANUFACTURER_SPECIFIC_MASK{{/if_mfg_specific_cluster}} \
+                           | ZCL_FRAME_CONTROL_SERVER_TO_CLIENT{{#is_command_default_response_disabled .}} | ZCL_DISABLE_DEFAULT_RESPONSE_MASK{{/is_command_default_response_disabled}}), \
+                           ZCL_{{as_delimited_macro ../define}}_ID, {{backslash}}{{new_line 1}}
+                           {{~#if_mfg_specific_cluster ../id~}}
+                           {{../manufacturerCode}}, \
+                           {{/if_mfg_specific_cluster}}
+                           ZCL_{{as_delimited_macro name}}_COMMAND_ID, \
+                           "{{#zcl_command_arguments}}{{as_underlying_zcl_type type array="b" one_byte="u" two_byte="v" three_byte="x" four_byte="w" short_string="s" long_string="l" ten_byte="A" eleven_byte="B" twelve_byte="C" thirten_byte="D" fourteen_byte="E" fifteen_byte="F" sixteen_byte="G" struct="b" defaul="b" zclCharFormatter="true"}}{{/zcl_command_arguments}}"{{#if_command_args_exist this.id}},{{/if_command_args_exist}} \
+                           {{#zcl_command_arguments}}
+							  {{#if isArray}}
+							  {{name}}, {{name}}Len{{#not_last}},{{/not_last~}}
+							  {{else}}
+							  {{name}}{{#not_last}},{{/not_last~}}
+							  {{/if~}}
+						   {{/zcl_command_arguments}});
+
+/** @brief {{description}}
+* Cluster: {{../label}}, {{../caption}}
+* Command: {{name}}*/
+{{#zcl_command_arguments}}
+// @param {{name}} {{as_underlying_zcl_type type}}
+{{#if isArray}}// @param {{name}}Len uint16_t {{/if}}
+{{/zcl_command_arguments}}
+#define emberAfFillCommand{{as_camel_cased ../define false}}ClientToServer{{name}}( \
+{{#zcl_command_arguments}}
+  {{#if isArray}}
+  {{name}}, {{name}}Len{{#not_last}},{{/not_last~}}
+  {{else}}
+  {{name}}{{#not_last}},{{/not_last~}}
+  {{/if~}}
+{{/zcl_command_arguments}}) \
+emberAfFillExternal{{#if_mfg_specific_cluster ../id}}ManufacturerSpecific{{/if_mfg_specific_cluster}}Buffer((ZCL_CLUSTER_SPECIFIC_COMMAND{{#if_mfg_specific_cluster ../id}} | ZCL_MANUFACTURER_SPECIFIC_MASK{{/if_mfg_specific_cluster}} \
+                           | ZCL_FRAME_CONTROL_CLIENT_TO_SERVER{{#is_command_default_response_disabled .}} | ZCL_DISABLE_DEFAULT_RESPONSE_MASK{{/is_command_default_response_disabled}}), \
+                           ZCL_{{as_delimited_macro ../define}}_ID, {{backslash}}{{new_line 1}}
+                           {{~#if_mfg_specific_cluster ../id~}}
+                           {{../manufacturerCode}}, \
+                           {{/if_mfg_specific_cluster}}
+                           ZCL_{{as_delimited_macro name}}_COMMAND_ID, \
+                           "{{#zcl_command_arguments}}{{as_underlying_zcl_type type array="b" one_byte="u" two_byte="v" three_byte="x" four_byte="w" short_string="s" long_string="l" ten_byte="A" eleven_byte="B" twelve_byte="C" thirten_byte="D" fourteen_byte="E" fifteen_byte="F" sixteen_byte="G" struct="b" defaul="b" zclCharFormatter="true"}}{{/zcl_command_arguments}}"{{#if_command_args_exist this.id}},{{/if_command_args_exist}} \
+                           {{#zcl_command_arguments}}
+							  {{#if isArray}}
+							  {{name}}, {{name}}Len{{#not_last}},{{/not_last~}}
+							  {{else}}
+							  {{name}}{{#not_last}},{{/not_last~}}
+							  {{/if~}}
+						   {{/zcl_command_arguments}});
+{{else}}
+
+/** @brief {{description}}
+* Cluster: {{../label}}, {{../caption}}
+* Command: {{name}}*/
+{{#zcl_command_arguments}}
+// @param {{name}} {{as_underlying_zcl_type type}}
+{{#if isArray}}// @param {{name}}Len uint16_t {{/if}}
+{{/zcl_command_arguments}}
+{{#if (is_client source)}}
+#define emberAfFillCommand{{as_camel_cased ../define false}}{{name}}( \
+{{#zcl_command_arguments}}
+  {{#if isArray}}
+  {{name}}, {{name}}Len{{#not_last}},{{/not_last~}}
+  {{else}}
+  {{name}}{{#not_last}},{{/not_last~}}
+  {{/if~}}
+{{/zcl_command_arguments}}) \
+emberAfFillExternal{{#if_mfg_specific_cluster ../id}}ManufacturerSpecific{{/if_mfg_specific_cluster}}Buffer((ZCL_CLUSTER_SPECIFIC_COMMAND{{#if_mfg_specific_cluster ../id}} | ZCL_MANUFACTURER_SPECIFIC_MASK{{/if_mfg_specific_cluster}} \
+                           | ZCL_FRAME_CONTROL_CLIENT_TO_SERVER{{#is_command_default_response_disabled .}} | ZCL_DISABLE_DEFAULT_RESPONSE_MASK{{/is_command_default_response_disabled}}), \
+                           ZCL_{{as_delimited_macro ../define}}_ID, {{backslash}}{{new_line 1}}
+                           {{~#if_mfg_specific_cluster ../id~}}
+                           {{../manufacturerCode}}, \
+                           {{/if_mfg_specific_cluster}}
+                           ZCL_{{as_delimited_macro name}}_COMMAND_ID, \
+                           "{{#zcl_command_arguments}}{{as_underlying_zcl_type type array="b" one_byte="u" two_byte="v" three_byte="x" four_byte="w" short_string="s" long_string="l" ten_byte="A" eleven_byte="B" twelve_byte="C" thirten_byte="D" fourteen_byte="E" fifteen_byte="F" sixteen_byte="G" struct="b" defaul="b" zclCharFormatter="true"}}{{/zcl_command_arguments}}"{{#if_command_args_exist this.id}},{{/if_command_args_exist}} \
+                           {{#zcl_command_arguments}}
+							  {{#if isArray}}
+							  {{name}}, {{name}}Len{{#not_last}},{{/not_last~}}
+							  {{else}}
+							  {{name}}{{#not_last}},{{/not_last~}}
+							  {{/if~}}
+						   {{/zcl_command_arguments}});
+
+{{else}}
+#define emberAfFillCommand{{as_camel_cased ../define false}}{{name}}( \
+{{#zcl_command_arguments}}
+  {{#if isArray}}
+  {{name}}, {{name}}Len{{#not_last}},{{/not_last~}}
+  {{else}}
+  {{name}}{{#not_last}},{{/not_last~}}
+  {{/if~}}
+{{/zcl_command_arguments}}) \
+emberAfFillExternal{{#if_mfg_specific_cluster ../id}}ManufacturerSpecific{{/if_mfg_specific_cluster}}Buffer((ZCL_CLUSTER_SPECIFIC_COMMAND{{#if_mfg_specific_cluster ../id}} | ZCL_MANUFACTURER_SPECIFIC_MASK{{/if_mfg_specific_cluster}} \
+                           | ZCL_FRAME_CONTROL_SERVER_TO_CLIENT{{#is_command_default_response_disabled .}} | ZCL_DISABLE_DEFAULT_RESPONSE_MASK{{/is_command_default_response_disabled}}), \
+                           ZCL_{{as_delimited_macro ../define}}_ID, {{backslash}}{{new_line 1}}
+                           {{~#if_mfg_specific_cluster ../id~}}
+                           {{../manufacturerCode}}, \
+                           {{/if_mfg_specific_cluster}}
+                           ZCL_{{as_delimited_macro name}}_COMMAND_ID, \
+                           "{{#zcl_command_arguments}}{{as_underlying_zcl_type type array="b" one_byte="u" two_byte="v" three_byte="x" four_byte="w" short_string="s" long_string="l" ten_byte="A" eleven_byte="B" twelve_byte="C" thirten_byte="D" fourteen_byte="E" fifteen_byte="F" sixteen_byte="G" struct="b" defaul="b" zclCharFormatter="true"}}{{/zcl_command_arguments}}"{{#if_command_args_exist this.id}},{{/if_command_args_exist}} \
+                           {{#zcl_command_arguments}}
+							  {{#if isArray}}
+							  {{name}}, {{name}}Len{{#not_last}},{{/not_last~}}
+							  {{else}}
+							  {{name}}{{#not_last}},{{/not_last~}}
+							  {{/if~}}
+						   {{/zcl_command_arguments}});
+
+{{/if}}
+
+{{/if}}
+{{/zcl_commands}}
+{{/zcl_clusters}}

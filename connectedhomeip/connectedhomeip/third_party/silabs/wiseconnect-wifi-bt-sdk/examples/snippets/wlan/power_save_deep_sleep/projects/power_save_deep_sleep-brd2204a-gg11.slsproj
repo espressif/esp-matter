@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="power_save_deep_sleep_brd2204a-gg11" boardCompatibility="brd2204a" partCompatibility="mcu.arm.efm32.gg11.*" toolchainCompatibility="" contentRoot="../../../../../">
+  <module id="com.silabs.sdk.exx32.board">
+    <exclude pattern=".*" />
+  </module>
+  <module id="com.silabs.sdk.exx32.common.CMSIS">
+    <exclude pattern=".*" />
+  </module>
+  <module id="com.silabs.sdk.exx32.common.emlib">
+    <include pattern="emlib/em_cmu.c" />
+    <include pattern="emlib/em_emu.c" />
+    <include pattern="emlib/em_gpio.c" />
+    <include pattern="emlib/em_core.c" />
+    <include pattern="emlib/em_ldma.c" />
+    <include pattern="emlib/em_system.c" />
+    <include pattern="emlib/em_usart.c" />
+	<include pattern="emlib/em_rtcc.c" />
+  </module>
+  
+  <module id="com.silabs.sdk.exx32.common.emdrv">
+    <include pattern="Drivers/tempdrv.c" />
+  </module>
+  <module id="com.silabs.sdk.exx32.common.bsp">
+    <exclude pattern=".*" />
+  </module>
+  <module id="com.silabs.sdk.exx32.common.platform">
+    <exclude pattern=".*" />
+  </module>
+  <module id="com.silabs.sdk.exx32.part">
+    <include pattern="CMSIS/.*/startup_.*_.*.s" />
+    <include pattern="CMSIS/.*/system_.*.c" />
+  </module>
+  <folder name="power_save_deep_sleep" >
+  	<file name="rsi_wlan_power_save_profile.c" uri="examples/snippets/wlan/power_save_deep_sleep/rsi_wlan_power_save_profile.c" />
+  	
+  	<file name="rsi_wlan_config.h" uri="examples/snippets/wlan/power_save_deep_sleep/rsi_wlan_config.h" />
+  	
+  </folder>
+  
+  <folder name="platform">
+    <folder name="hal" uri="platforms/efm32/hal" includeAllFiles="true" includeAllFolders="true" />
+    <folder name="sdio" uri="platforms/efm32/sdio" includeAllFiles="true" includeAllFolders="true" />
+    <folder name="board" uri="platforms/efm32/boards/brd2204a-gg11" includeAllFiles="true" includeAllFolders="true" />
+	 <folder name="autogen" uri="platforms/efm32/autogen" includeAllFiles="true" includeAllFolders="true" />
+	  <folder name="gecko_sdk_3.1.1" uri="platforms/efm32/gecko_sdk_3.1.1" includeAllFiles="true" includeAllFolders="true" />
+	 
+  </folder>
+  <folder name="sapi/include" uri="sapi/include" includeAllFiles="true" includeAllFolders="true"/>
+  
+  
+  <includePath uri="$(isCopySources?$(projectLocation):.)/sapi/include"/>
+  <includePath uri="$(isCopySources?$(projectLocation):.)/sapi/network/protocols"/>
+  
+  <folder name="sapi/common" uri="sapi/common" includeAllFiles="true" includeAllFolders="true"/>
+  <folder name="sapi/crypto" uri="sapi/crypto" includeAllFiles="true" includeAllFolders="true"/>
+  <folder name="sapi/driver" uri="sapi/driver" includeAllFiles="true" includeAllFolders="true"/>
+  <folder name="sapi/driver/device_interface" uri="sapi/driver/device_interface" includeAllFiles="true" includeAllFolders="true"/>
+  <folder name="sapi/network/socket" uri="sapi/network/socket" includeAllFiles="true" includeAllFolders="true"/>
+  <folder name="sapi/wlan" uri="sapi/wlan" includeAllFiles="true" includeAllFolders="true"/>
+  <folder name="sapi/logging" uri="sapi/logging" includeAllFiles="true" includeAllFolders="true"/>
+  <folder name="utilities/advanced_logging/firmware_logging" uri="utilities/advanced_logging/firmware_logging" includeAllFiles="true" includeAllFolders="true"/>
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  <file name="sapi/network/protocols/rsi_dns.c" uri="sapi/network/protocols/rsi_dns.c" />
+  <file name="sapi/network/protocols/rsi_emb_mqtt_client.c" uri="sapi/network/protocols/rsi_emb_mqtt_client.c" />
+  <file name="sapi/network/protocols/rsi_raw_data.c" uri="sapi/network/protocols/rsi_raw_data.c" />
+  <file name="sapi/network/protocols/rsi_http_ota_fw_up.c" uri="sapi/network/protocols/rsi_http_ota_fw_up.c" />
+  <file name="sapi/network/protocols/rsi_dhcp_user_class.c" uri="sapi/network/protocols/rsi_dhcp_user_class.c" />
+  
+  
+  <includePath uri="$(isCopySources?$(projectLocation):.)/sapi/network/protocols"/>
+  
+  
+  
+  
+  <file name="sapi/rtos/freertos_wrapper/rsi_os_wrapper.c" uri="sapi/rtos/freertos_wrapper/rsi_os_wrapper.c" />
+  <file name="sapi/rtos/freertos_wrapper/port.c" uri="sapi/rtos/freertos_wrapper/port.c" />
+  
+  <file name="sapi/rtos/freertos_wrapper/portmacro.h" uri="sapi/rtos/freertos_wrapper/portmacro.h" />
+  
+  <includePath uri="$(isCopySources?$(projectLocation):.)/sapi/rtos/freertos_wrapper"/>
+  
+  <folder name="third_party/freertos/include" uri="third_party/freertos/include" includeAllFiles="true" includeAllFolders="true"/>
+  <file name="third_party/freertos/croutine.c" uri="third_party/freertos/croutine.c" />
+  <file name="third_party/freertos/event_groups.c" uri="third_party/freertos/event_groups.c" />
+  <file name="third_party/freertos/list.c" uri="third_party/freertos/list.c" />
+  <file name="third_party/freertos/queue.c" uri="third_party/freertos/queue.c" />
+  <file name="third_party/freertos/stream_buffer.c" uri="third_party/freertos/stream_buffer.c" />
+  <file name="third_party/freertos/tasks.c" uri="third_party/freertos/tasks.c" />
+  <file name="third_party/freertos/timers.c" uri="third_party/freertos/timers.c" />
+  <file name="third_party/freertos/portable/MemMang/heap_4.c" uri="third_party/freertos/portable/MemMang/heap_4.c" />
+  
+  <includePath uri="$(isCopySources?$(projectLocation):.)/third_party/freertos/include"/>
+  <includePath uri="$(isCopySources?$(projectLocation):.)/third_party/freertos/portable"/>
+  
+  <includePath uri="$(isCopySources?$(projectLocation)/power_save_deep_sleep:./examples/snippets/wlan/power_save_deep_sleep)"/>
+  
+  <includePath uri="$(projectLocation)/platform/autogen"/>
+  <includePath uri="$(projectLocation)/platform/board"/>
+   <includePath uri="$(projectLocation)/platform/sdio"/>
+   <includePath uri="$(projectLocation)/platform/gecko_sdk_3.1.1/platform/service/iostream/inc"/>
+   <includePath uri="$(projectLocation)/platform/gecko_sdk_3.1.1/platform/service/device_init/inc"/>
+   <includePath uri="$(projectLocation)/platform/gecko_sdk_3.1.1/platform/service/system/inc"/>
+   <includePath uri="$(projectLocation)/platform/gecko_sdk_3.1.1/hardware/board/inc"/>
+   <includePath uri="$(projectLocation)/platform/hal"/>
+
+  
+   <macroDefinition name="WISECONNECT" />
+   <macroDefinition name="RSI_SAMPLE_HAL" />
+   <macroDefinition name="RSI_DEBUG_PRINTS" />
+   <macroDefinition name="RSI_WLAN_ENABLE" />
+  
+  
+   <macroDefinition name="RSI_WLAN_API_ENABLE" />
+   <macroDefinition name="RSI_WITH_OS" />
+  
+  
+  
+  <toolOption toolId="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.assembler.base" optionId="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.assembler.flags" value="-c -x assembler-with-cpp -mfloat-abi=softfp -mfpu=fpv4-sp-d16 "/>
+  <toolOption toolId="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.linker.base" optionId="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.linker.floatingpoint.type" value="floatingpoint.type.softfp"/>
+  <toolOption toolId="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.linker.base" optionId="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.linker.clibs" value="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.linker.baseclibs"/>
+  
+</project>

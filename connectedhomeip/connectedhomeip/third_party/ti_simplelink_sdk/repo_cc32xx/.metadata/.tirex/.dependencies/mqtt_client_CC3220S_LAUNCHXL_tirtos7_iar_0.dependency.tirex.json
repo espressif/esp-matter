@@ -1,0 +1,31 @@
+[
+    {
+        "files": [
+            "+../../ifmod/debug_if.h -> debug_if.h",
+            "+../../ifmod/httpsrv_if.c -> httpsrv_if.c",
+            "+../../ifmod/httpsrv_if.h -> httpsrv_if.h",
+            "+../../ifmod/mqtt_if.c -> mqtt_if.c",
+            "+../../ifmod/mqtt_if.h -> mqtt_if.h",
+            "+../../ifmod/ota_if.c -> ota_if.c",
+            "+../../ifmod/ota_if.h -> ota_if.h",
+            "+../../ifmod/ota_vendor_dropbox.c -> ota_vendor_dropbox.c",
+            "+../../ifmod/ota_vendor_github.c -> ota_vendor_github.c",
+            "+../../ifmod/ota_vendors.h -> ota_vendors.h",
+            "+../../ifmod/uart_if.c -> uart_if.c",
+            "+../../ifmod/uart_if.h -> uart_if.h",
+            "+../../ifmod/utils_if.c -> utils_if.c",
+            "+../../ifmod/utils_if.h -> utils_if.h",
+            "+../../ifmod/wifi_if.c -> wifi_if.c",
+            "+../../ifmod/wifi_if.h -> wifi_if.h",
+            "+../../../../../../../source/ti/boards/CC3220S_LAUNCHXL/Board.html -> Board.html",
+            "+cc32xxs_tirtos7.icf -> cc32xxs_tirtos7.icf",
+            "+../main_tirtos.c -> main_tirtos.c",
+            "+../mqtt_client.syscfg -> mqtt_client.syscfg",
+            "+../../mqtt_client_app.c -> mqtt_client_app.c",
+            "+../../ota_settings.h -> ota_settings.h",
+            "+../../README.html -> README.html",
+            "+../../README.md -> README.md",
+            "+../../wifi_settings.h -> wifi_settings.h"
+        ]
+    }
+]

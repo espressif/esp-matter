@@ -1,0 +1,18 @@
+[Unit]
+Description=Cpcd service
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=root
+ExecStart=/usr/bin/stdbuf -o0 /usr/local/bin/cpcd
+ExecStop=/bin/kill -WINCH ${MAINPID}
+PIDFile=/run/cpcd.pid
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=cpcd
+
+[Install]
+WantedBy=multi-user.target

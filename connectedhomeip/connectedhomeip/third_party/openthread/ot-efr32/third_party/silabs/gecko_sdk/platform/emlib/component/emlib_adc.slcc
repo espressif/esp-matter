@@ -1,0 +1,52 @@
+id: emlib_adc
+label: ADC
+package: platform
+description: >
+  Analog to Digital Converter (ADC) Peripheral API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_adc.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_adc.h"
+provides:
+  - name: emlib_adc
+requires:
+  - name: device
+  - name: device_has_adc
+  - name: emlib_common
+  - name: emlib_cmu
+  - name: cmsis_core
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efm32g/group-adc
+      condition: [device_sdid_71]
+    - page: emlib/api/efm32gg/group-adc
+      condition: [device_sdid_72]
+    - page: emlib/api/efm32tg/group-adc
+      condition: [device_sdid_73]
+    - page: emlib/api/efm32lg/group-adc
+      condition: [device_sdid_74]
+    - page: emlib/api/efm32zg/group-adc
+      condition: [device_sdid_76]
+    - page: emlib/api/efm32hg/group-adc
+      condition: [device_sdid_77]
+    - page: emlib/api/efr32xg1/group-adc
+      condition: [device_sdid_80]
+    - page: emlib/api/efr32xg12/group-adc
+      condition: [device_sdid_84]
+    - page: emlib/api/efr32xg13/group-adc
+      condition: [device_sdid_89]
+    - page: emlib/api/efr32xg14/group-adc
+      condition: [device_sdid_95]
+    - page: emlib/api/efm32gg11/group-adc
+      condition: [device_sdid_100]
+    - page: emlib/api/efm32tg11/group-adc
+      condition: [device_sdid_103]
+    - page: emlib/api/efm32gg12/group-adc
+      condition: [device_sdid_106]
+    - page: emlib/api/efr32xg21/group-adc

@@ -1,0 +1,9 @@
+# Copyright (c) 2022 Arm Limited and Contributors. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+---
+Checks:          'clang-diagnostic-*,clang-analyzer-*,llvm-*,-llvm-else-after-return,readability-braces-around-statements'
+WarningsAsErrors: '*'
+HeaderFilterRegex: '(blockdevice\/|common\/|kvstore\/)'
+AnalyzeTemporaryDtors: false
+...

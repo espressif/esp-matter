@@ -1,0 +1,48 @@
+#!/usr/bin/env python3
+#-------------------------------------------------------------------------------
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+import argparse
+import os
+import sys
+
+import yaml
+from ecdsa import SigningKey
+from iatverifier.util import read_token_map, convert_map_to_token
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('source', help='Token source in YAML format')
+    parser.add_argument('-o', '--outfile',
+                        help='''Output file for the compiled token. If this is not
+                        specified, the token will be written to standard output.''')
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('-k', '--keyfile',
+                       help='''Path to the key in PEM format that should be used to
+                       sign the token. If this is not specified, the token will be
+                       unsigned.''')
+    group.add_argument('-r', '--raw', action='store_true',
+                       help='''Generate raw CBOR and do not create a signature
+                       or COSE wrapper.''')
+    args = parser.parse_args()
+
+    token_map = read_token_map(args.source)
+    if args.keyfile:
+        with open(args.keyfile) as fh:
+            signing_key = SigningKey.from_pem(fh.read())
+    else:
+        signing_key = None
+
+    if args.outfile:
+        with open(args.outfile, 'wb') as wfh:
+            convert_map_to_token(token_map, signing_key, wfh, args.raw)
+    else:
+        with os.fdopen(sys.stdout.fileno(), 'wb') as wfh:
+            convert_map_to_token(token_map, signing_key, wfh, args.raw)
+
+

@@ -1,0 +1,54 @@
+id: device_init_dpll
+label: "Device Init: DPLL"
+package: platform
+description: >
+  Device init for DPLL configures and enables the phase-lock loop for the main
+  HFRCO oscillator, using HFXO, LFXO or CLKIN0 as the reference clock.
+category: Services|Device Initialization
+quality: production
+root_path: platform/service/device_init/
+config_file:
+  - path: config/s2/sdid200/sl_device_init_dpll_config.h
+    file_id: device_init_dpll_config
+    condition: [device_sdid_200]
+  - path: config/s2/sdid205/sl_device_init_dpll_config.h
+    file_id: device_init_dpll_config
+    condition: [device_sdid_205]
+  - path: config/s2/sdid210/sl_device_init_dpll_config.h
+    file_id: device_init_dpll_config
+    condition: [device_sdid_210]
+  - path: config/s2/sdid215/sl_device_init_dpll_config.h
+    file_id: device_init_dpll_config
+    condition: [device_sdid_215]
+  - path: config/s2/sdid220/sl_device_init_dpll_config.h
+    file_id: device_init_dpll_config
+    condition: [device_sdid_220]
+  - path: config/s2/sdid230/sl_device_init_dpll_config.h
+    file_id: device_init_dpll_config
+    condition: [device_sdid_230]
+include:
+  - path: inc
+    file_list:
+      - path: sl_device_init_dpll.h
+source:
+  - path: src/sl_device_init_dpll_s2.c
+    condition: [device_series_2]
+provides:
+  - name: device_init_dpll
+  - name: device_init_hfrco
+requires:
+  - name: emlib_cmu
+  - name: status
+  - name: device_series_2
+template_contribution:
+  - name: event_handler
+    value:
+      event: platform_init
+      include: sl_device_init_dpll.h
+      handler: sl_device_init_dpll
+    priority: -9550
+  - name: device_init_clocks_present
+    value: dpll
+documentation:
+    docset: gecko-platform
+    document: service/api/group-device-init-dpll

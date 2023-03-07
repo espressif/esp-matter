@@ -1,0 +1,5 @@
+*.o
+cli
+testit
+excallback
+fileman

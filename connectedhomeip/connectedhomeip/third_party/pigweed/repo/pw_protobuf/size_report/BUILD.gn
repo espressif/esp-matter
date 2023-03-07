@@ -1,0 +1,219 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_bloat/bloat.gni")
+import("$dir_pw_build/target_types.gni")
+
+_decoder_partial = {
+  deps = [
+    "$dir_pw_bloat:bloat_this_binary",
+    "$dir_pw_preprocessor",
+    "$dir_pw_protobuf",
+  ]
+  sources = [ "decoder_partial.cc" ]
+}
+
+pw_source_set("proto_bloat") {
+  public = [ "proto_bloat.h" ]
+  deps = [
+    "$dir_pw_containers",
+    "$dir_pw_preprocessor",
+    "$dir_pw_protobuf",
+    "$dir_pw_status",
+    "$dir_pw_stream",
+  ]
+  sources = [ "proto_bloat.cc" ]
+}
+
+pw_executable("proto_base") {
+  deps = [
+    ":proto_bloat",
+    "$dir_pw_bloat:bloat_this_binary",
+  ]
+  sources = [ "proto_base.cc" ]
+}
+
+pw_executable("encode_decode_core") {
+  deps = [
+    ":proto_bloat",
+    "$dir_pw_bloat:bloat_this_binary",
+  ]
+  sources = [ "encode_decode_core.cc" ]
+}
+
+pw_executable("message_core") {
+  deps = [
+    ":proto_bloat",
+    "$dir_pw_bloat:bloat_this_binary",
+  ]
+  sources = [ "message_core.cc" ]
+}
+
+pw_executable("messages_no_codegen") {
+  defines = [ "_PW_PROTOBUF_SIZE_REPORT_NO_CODEGEN=1" ]
+  deps = [
+    ":proto_bloat",
+    "$dir_pw_bloat:bloat_this_binary",
+    "..:codegen_test_protos.pwpb",
+  ]
+  sources = [ "simple_codegen_comparison.cc" ]
+}
+
+pw_executable("messages_wire_format") {
+  defines = [ "_PW_PROTOBUF_SIZE_REPORT_WIRE_FORMAT=1" ]
+  deps = [
+    ":proto_bloat",
+    "$dir_pw_bloat:bloat_this_binary",
+    "..:codegen_test_protos.pwpb",
+  ]
+  sources = [ "simple_codegen_comparison.cc" ]
+}
+
+pw_executable("messages_message") {
+  defines = [ "_PW_PROTOBUF_SIZE_REPORT_MESSAGE=1" ]
+  deps = [
+    ":proto_bloat",
+    "$dir_pw_bloat:bloat_this_binary",
+    "..:codegen_test_protos.pwpb",
+  ]
+  sources = [ "simple_codegen_comparison.cc" ]
+}
+
+pw_executable("oneof_no_codegen") {
+  defines = [ "_PW_PROTOBUF_SIZE_REPORT_NO_CODEGEN=1" ]
+  deps = [
+    ":proto_bloat",
+    "$dir_pw_bloat:bloat_this_binary",
+    "..:codegen_test_protos.pwpb",
+  ]
+  sources = [ "oneof_codegen_comparison.cc" ]
+}
+
+pw_executable("oneof_wire_format") {
+  defines = [ "_PW_PROTOBUF_SIZE_REPORT_WIRE_FORMAT=1" ]
+  deps = [
+    ":proto_bloat",
+    "$dir_pw_bloat:bloat_this_binary",
+    "..:codegen_test_protos.pwpb",
+  ]
+  sources = [ "oneof_codegen_comparison.cc" ]
+}
+
+pw_executable("oneof_message") {
+  defines = [ "_PW_PROTOBUF_SIZE_REPORT_MESSAGE=1" ]
+  deps = [
+    ":proto_bloat",
+    "$dir_pw_bloat:bloat_this_binary",
+    "..:codegen_test_protos.pwpb",
+  ]
+  sources = [ "oneof_codegen_comparison.cc" ]
+}
+
+pw_toolchain_size_diff("decoder_partial") {
+  base_executable = pw_bloat_empty_base
+  diff_executable = _decoder_partial
+  title = "Size of all decoder methods"
+}
+
+pw_toolchain_size_diff("decoder_incremental") {
+  base_executable = _decoder_partial
+  diff_executable = {
+    deps = [
+      "$dir_pw_bloat:bloat_this_binary",
+      "$dir_pw_preprocessor",
+      "$dir_pw_protobuf:pw_protobuf",
+    ]
+    sources = [ "decoder_incremental.cc" ]
+  }
+  title = "Adding more fields to decode callback"
+}
+
+pw_size_diff("simple_codegen_size_comparison") {
+  title = "Pigweed protobuf codegen size report"
+  source_filter = "pw::protobuf_size_report::*"
+  binaries = [
+    {
+      target = ":messages_no_codegen"
+      base = ":message_core"
+      label = "Direct wire-format proto encoder"
+    },
+    {
+      target = ":messages_wire_format"
+      base = ":message_core"
+      label = "Generated wrapped wire-format encoder"
+    },
+    {
+      target = ":messages_message"
+      base = ":message_core"
+      label = "Generated message encoder"
+    },
+  ]
+}
+
+pw_size_diff("oneof_codegen_size_comparison") {
+  title = "Pigweed protobuf codegen size report"
+  source_filter = "pw::protobuf_size_report::*"
+  binaries = [
+    {
+      target = ":oneof_no_codegen"
+      base = ":message_core"
+      label = "Direct wire-format proto encoder"
+    },
+    {
+      target = ":oneof_wire_format"
+      base = ":message_core"
+      label = "Generated wrapped wire-format encoder"
+    },
+    {
+      target = ":oneof_message"
+      base = ":message_core"
+      label = "Generated message encoder"
+    },
+  ]
+}
+
+pw_size_diff("message_size_report") {
+  title = "Pigweed protobuf message size report"
+  binaries = [
+    {
+      target = ":one_message_struct_write_vs_base"
+      base = ":proto_base"
+      label = "Message encoder flash cost (incl. wire-format encoder)"
+    },
+    {
+      target = ":one_message_struct_write_vs_encoder"
+      base = ":encoder_full"
+      label = "Message encoder flash cost (excl. wire-format encoder)"
+    },
+  ]
+}
+
+pw_size_diff("protobuf_overview") {
+  title = "Pigweed protobuf encoder size report"
+  source_filter = "pw::protobuf::*|section .code"
+  binaries = [
+    {
+      target = ":encode_decode_core"
+      base = ":proto_base"
+      label = "Full wire-format proto encode/decode library"
+    },
+    {
+      target = ":message_core"
+      base = ":proto_base"
+      label = "Including table-based `Message` encoder and decoder"
+    },
+  ]
+}

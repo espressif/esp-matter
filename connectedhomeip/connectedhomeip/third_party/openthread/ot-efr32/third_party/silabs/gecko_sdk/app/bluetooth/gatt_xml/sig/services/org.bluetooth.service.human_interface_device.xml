@@ -1,0 +1,238 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Created with Liquid XML Studio Designer Edition 9.1.2.3326 (http://www.liquid-technologies.com) -->
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Service xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.service.human_interface_device" uuid="1812" name="Human Interface Device" last-modified="2011-11-23" approved="Yes">
+    <InformativeText>
+        <Abstract>This service exposes the HID reports and other HID data intended for HID Hosts and HID Devices.</Abstract>
+        <Summary>The HID Service exposes characteristics required for a HID Device to transfer HID report descriptors and reports to a HID Host. This also exposes the characteristics for a HID Host to write to a Device. The Human Interface Device Service is instantiated as a Primary Service. </Summary>
+    </InformativeText>
+    <Dependencies>
+        <Dependency>This service has no dependencies on other GATT-based services.</Dependency>
+    </Dependencies>
+    <GATTRequirements>
+        <Requirement subProcedure="Read Long Characteristic Value">Mandatory</Requirement>
+        <Requirement subProcedure="Write Without Response">Mandatory</Requirement>
+        <Requirement subProcedure="Write Characteristic Value">Mandatory</Requirement>
+        <Requirement subProcedure="Notifications">Mandatory</Requirement>
+        <Requirement subProcedure="Read Characteristic Descriptors">Mandatory</Requirement>
+        <Requirement subProcedure="Write Characteristic Descriptors">Mandatory</Requirement>
+    </GATTRequirements>
+    <Transports>
+        <Classic>false</Classic>
+        <LowEnergy>true</LowEnergy>
+    </Transports>
+
+    <Characteristics>
+        <Characteristic name="Protocol Mode" type="org.bluetooth.characteristic.protocol_mode">
+            <InformativeText>
+                The Protocol Mode characteristic is used to expose the current protocol mode of the HID Service with which it is associated, or to set the desired protocol mode of the HID Service
+                Only a single instance of this characteristic shall exist as part of the HID Service.
+                C4: Mandatory for HID Devices supporting Boot Protocol Mode, otherwise optional.
+            </InformativeText>
+            <Requirement>C4</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Excluded</Write>
+                <WriteWithoutResponse>Mandatory</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+            </Properties>
+        </Characteristic>
+        <Characteristic name="Report" type="org.bluetooth.characteristic.report">
+            <InformativeText>
+                The Report characteristic is used to exchange data between a HID Device and a HID Host.
+                Note: Mandatory to support at least one Report Type (Input Report, Output Report, or Feature Report) if the Report characteristic is supported.
+            </InformativeText>
+            <Requirement>Optional</Requirement>
+            <Properties>
+                <InformationText>For Input Reports:</InformationText>
+                <Read>Mandatory</Read>
+                <Write>Optional</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Mandatory</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+            </Properties>
+            <Properties>
+                <InformationText>For Output Reports:</InformationText>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Mandatory</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            
+            <Properties>
+                <InformationText>For Feature Reports:</InformationText>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <Descriptors>
+                <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+                    <Requirement>if_notify_or_indicate_supported</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>Mandatory</Write>
+                    </Properties>
+                </Descriptor>
+                <Descriptor name="Report Reference" type="org.bluetooth.descriptor.report_reference">
+                    <InformativeText>The Report Reference characteristic descriptor is used to provide the Report ID and Report Type for the Report characteristic value.</InformativeText>
+                    <Requirement>if_characteristic_supported</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>Excluded</Write>
+                    </Properties>
+                </Descriptor>
+            </Descriptors>
+        </Characteristic>
+        <Characteristic name="Report Map" type="org.bluetooth.characteristic.report_map">
+            <InformativeText>The Report Map characteristic value contains formatting and other information for Input Report, Output Report and Feature Report data transferred between a HID Device and HID Host.</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Excluded</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+            </Properties>
+            <Descriptors>
+                <Descriptor name="External Report Reference" type="org.bluetooth.descriptor.external_report_reference">
+                    <Requirement>Optional</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>Excluded</Write>
+                    </Properties>
+                </Descriptor>
+            </Descriptors>
+        </Characteristic>
+        <Characteristic name="Boot Keyboard Input Report" type="org.bluetooth.characteristic.boot_keyboard_input_report">
+            <InformativeText>
+                The Boot Report Reference characteristic is used to provide HID Hosts operating in Boot Protocol Mode with a simplified method of discovering certain HID Service characteristics. Only a single instance of this characteristic exists as part of the HID Service.
+                C2: Mandatory for HID Devices operating as keyboards, else excluded.
+            </InformativeText>
+            <Requirement>C2</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Optional</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Mandatory</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+            </Properties>
+            <Descriptors>
+                <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+                    <Requirement>Mandatory</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>Mandatory</Write>
+                    </Properties>
+                </Descriptor>
+            </Descriptors>
+        </Characteristic>
+        <Characteristic name="Boot Keyboard Output Report" type="org.bluetooth.characteristic.boot_keyboard_output_report">
+            <InformativeText>
+                The Boot Report Reference characteristic is used to provide HID Hosts operating in Boot Protocol Mode with a simplified method of discovering certain HID Service characteristics. Only a single instance of this characteristic exists as part of the HID Service.
+                C2: Mandatory for HID Devices operating as keyboards, else excluded.
+            </InformativeText>
+            <Requirement>C2</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Mandatory</Write>
+                <WriteWithoutResponse>Mandatory</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+            </Properties>
+        </Characteristic>
+        <Characteristic name="Boot Mouse Input Report" type="org.bluetooth.characteristic.boot_mouse_input_report">
+            <InformativeText>
+                The Boot Report Reference characteristic is used to provide HID Hosts operating in Boot Protocol Mode with a simplified method of discovering certain HID Service characteristics. Only a single instance of this characteristic exists as part of the HID Service.
+                C3:Mandatory for HID Devices operating as mice, else excluded.
+            </InformativeText>
+            <Requirement>C3</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Optional</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Mandatory</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+            </Properties>
+            <Descriptors>
+                <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+                    <Requirement>Mandatory</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>Mandatory</Write>
+                    </Properties>
+                </Descriptor>
+            </Descriptors>
+        </Characteristic>
+        <Characteristic name="HID Information" type="org.bluetooth.characteristic.hid_information">
+            <InformativeText>The HID Information characteristic is used to hold a set of values known as the HID Device's HID Attributes</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Excluded</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+            </Properties>
+        </Characteristic>
+        <Characteristic name="HID Control Point" type="org.bluetooth.characteristic.hid_control_point">
+            <InformativeText>
+                The HID Control Point characteristic is a control-point attribute that defines the following HID Commands when written:
+                - Suspend ( Refer to Section 7.4.2, Bluetooth HID Profile Specification 1.0)
+                - Exit Suspend (Refer to Section 7.4.2, Bluetooth HID Profile Specification 1.0)
+                There are no response codes defined for the Suspend and Exit Suspend commands.
+            </InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Properties>
+                <Read>Excluded</Read>
+                <Write>Excluded</Write>
+                <WriteWithoutResponse>Mandatory</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+            </Properties>
+        </Characteristic>
+    </Characteristics>
+</Service>

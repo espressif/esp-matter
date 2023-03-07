@@ -1,0 +1,32 @@
+id: "tempdrv"
+label: "TEMPDRV"
+package: "platform"
+description: >
+  The Temperature Driver measures the temperature using the EMU internal temperature
+  sensor which is present on some EFR32 and EFM32 devices. Application specific callback
+  functions can be registered and will be called on given temperature thresholds.
+  The EMU internal temperature sensor is running in EM0-EM4H and is capable of waking
+  up the core on temperature change. The EMU temperature sensor is running continuously
+  and measurements are taken every 250 ms. For devices where errata EMU_E201 applies,
+  the temperature driver implements a workaround where EMU settings are adjusted according
+  to the measured temperature. More information on this errata workaround can be found in
+  application note AN1027. 
+category: "Platform|Driver"
+quality: "production"
+config_file:
+- path: "platform/emdrv/tempdrv/config/tempdrv_config.h"
+source:
+- path: "platform/emdrv/tempdrv/src/tempdrv.c"
+include:
+  - path: "platform/emdrv/tempdrv/inc"
+    file_list:
+      - path: "tempdrv.h"
+provides:
+  - name: "tempdrv"
+requires:
+  - name: "emlib_emu"
+  - name: "ecode"
+  - name: "device_has_emu_temp_sensor"
+documentation:
+    docset: gecko-platform
+    document: driver/api/group-tempdrv

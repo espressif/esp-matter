@@ -1,0 +1,63 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+{
+  "name": "PSA FF Test secure partition manifests",
+  "type": "manifest_list",
+  "version_major": 0,
+  "version_minor": 1,
+  "manifest_list": [
+   {
+      "name": "PSA FF Test Client Partition",
+      "short_name": "PSA_FF_TEST_CLIENT",
+      "manifest": "../psa-arch-tests/api-tests/platform/manifests/client_partition_psa.json",
+      "tfm_extensions": true,
+      "tfm_partition_ipc": true,
+      "conditional": "PSA_API_TEST_IPC",
+      "version_major": 0,
+      "version_minor": 1,
+      "pid": 271,
+      "linker_pattern": {
+        "library_list":[
+          "*client_partition.a"
+        ]
+      }
+    },
+    {
+      "name": "PSA FF Test Server Partition",
+      "short_name": "PSA_FF_TEST_SERVER",
+      "manifest": "../psa-arch-tests/api-tests/platform/manifests/server_partition_psa.json",
+      "tfm_extensions": true,
+      "tfm_partition_ipc": true,
+      "conditional": "PSA_API_TEST_IPC",
+      "version_major": 0,
+      "version_minor": 1,
+      "pid": 272,
+      "linker_pattern": {
+        "library_list":[
+          "*server_partition.a"
+        ]
+      }
+    },
+    {
+      "name": "PSA FF Test Driver Partition",
+      "short_name": "PSA_FF_TEST_DRIVER",
+      "manifest": "../psa-arch-tests/api-tests/platform/manifests/driver_partition_psa.json",
+      "tfm_extensions": true,
+      "tfm_partition_ipc": true,
+      "conditional": "PSA_API_TEST_IPC",
+      "version_major": 0,
+      "version_minor": 1,
+      "pid": 273,
+      "linker_pattern": {
+        "library_list":[
+          "*driver_partition.a"
+        ]
+      }
+    }
+  ]
+}

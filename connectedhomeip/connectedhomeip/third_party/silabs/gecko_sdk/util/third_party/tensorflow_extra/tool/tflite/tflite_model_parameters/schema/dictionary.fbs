@@ -1,0 +1,174 @@
+/*
+ * Flatbuffer Dictionary Schema
+ *
+ * This defines a schema for mapping a
+ * Python dictionary to a flatbuffer.
+ *
+ * The dictionary entries are key/value pairs where:
+ * - key - Name of parameter as a string
+ * - value - Value of parameter as a specific scalar data type
+ * 
+ */
+
+/*
+ * Boolean value
+ */
+table BoolValue
+{
+    value : bool;
+}
+
+/*
+ * Signed int8
+ */
+table Int8Value
+{
+    value : int8;
+}
+
+/*
+ * Unsigned int8
+ */
+table Uint8Value
+{
+    value : uint8;
+}
+
+/*
+ * Signed int16
+ */
+table Int16Value
+{
+    value : int16;
+}
+
+/*
+ * Unsigned int16
+ */
+table Uint16Value
+{
+    value : uint16;
+}
+
+/*
+ * Signed int32
+ */
+table Int32Value
+{
+    value : int32;
+}
+
+/*
+ * Unsigned int32
+ */
+table Uint32Value
+{
+    value : uint32;
+}
+
+/*
+ * Signed int64
+ */
+table Int64Value
+{
+    value : int64;
+}
+
+/*
+ * Unsigned int64
+ */
+table Uint64Value
+{
+    value : uint64;
+}
+
+/*
+ * Float32
+ */
+table FloatValue
+{
+    value : float;
+}
+
+/*
+ * Float64
+ */
+table DoubleValue
+{
+    value : double;
+}
+
+/*
+ *  Binary array (i.e. binary blob)
+ */
+table BinaryValue
+{
+    data : [uint8];
+}
+
+/*
+ * Printable string
+ */
+table StringValue
+{
+    data : string;
+}
+
+/*
+ * List of strings
+ */
+table StringList
+{
+    data : [string];
+}
+
+/*
+* Dictionary value
+*
+* A value has a specific data type
+*/
+union Value
+{
+    boolean : BoolValue,
+    i8  : Int8Value,
+    u8  : Uint8Value,
+    i16 : Int16Value,
+    u16 : Uint16Value,
+    i32 : Int32Value,
+    u32 : Uint32Value,
+    i64 : Int64Value,
+    u64 : Uint64Value,
+    f32 : FloatValue,
+    f64 : DoubleValue,
+    str : StringValue,
+    str_list : StringList,
+    bin : BinaryValue
+}
+
+/*
+* Dictionary Entry
+*
+* An entry has a string key
+* and a value which has a specific scalar data type
+*/
+table Entry
+{
+    key : string;  // The dictionary key
+    value : Value; // The scalar data type
+}
+
+/*
+* Flatbuffer Dictionary
+*
+* This provides a container for key/value pairs.
+*/
+table Dictionary
+{
+    schema_version: uint8; // Schema version of this flatbuffer specification
+                           // Allows for future expansion
+                           // Currently schema_version=1
+    entries : [Entry];     // List of dictionary entries
+}
+
+
+root_type Dictionary;

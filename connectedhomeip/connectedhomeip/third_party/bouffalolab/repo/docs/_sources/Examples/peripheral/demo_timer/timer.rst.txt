@@ -1,0 +1,99 @@
+.. _timer-index:
+
+timer
+==================
+
+总览
+----------------
+
+本示例主要介绍timer的使用方法。
+
+准备及使用步骤
+----------------
+- 使用步骤：
+ - 给板子插上USB电源线，USB电源线默认连接UART0；
+ - 编译 ``customer_app/periperal/demo_timer`` 工程并下载工程；
+ - 打开一个串口终端窗口（波特率为2000000，用于接收和发送uart消息）。
+ - 串口终端输入 ``demo_hosal_timer_start`` ，启动timer的demo程序，demo中定时100us反转gpio3的电平。
+
+    .. figure:: imgs/image1.png
+	   :align: center
+
+    .. figure:: imgs/image2.png
+	   :align: center
+
+ - 串口中输入 ``demo_hosal_timer_stop`` 停掉timer。
+ 
+应用实例
+----------------
+- 示例代码
+
+::
+
+    #include <stdio.h>
+    #include <cli.h>
+    #include <hosal_timer.h>
+    #include <bl_gpio.h>
+    #include <blog.h>
+   
+    hosal_timer_dev_t timer;
+    
+    void timer_callback(void *arg)
+    {
+        static int i = 0;
+        if (i % 2) {
+            bl_gpio_output_set(3,0);
+        } else {
+            bl_gpio_output_set(3,1);
+        }
+        i++;
+    }
+    
+    void demo_hosal_timer_start(void)
+    {
+        timer.port = 0;
+        timer.config.period = 100; /* 100us */
+        timer.config.reload_mode = TIMER_RELOAD_PERIODIC;
+        timer.config.cb =timer_callback;
+        timer.config.arg = NULL;
+        bl_gpio_enable_output(3, 1, 0);
+        hosal_timer_init(&timer);
+        hosal_timer_start(&timer);
+    }
+    
+    void demo_hosal_timer_stop(void)
+    {
+        hosal_timer_stop(&timer);
+        hosal_timer_finalize(&timer);
+    }
+
+- 通过 ``hosal_pwm_timer_t`` 定义一个timer的设备，需要设置timer的port(通道0或1）对应timer0和timer1，设定timer的定时时间，定时模式，回调函数。
+
+::
+
+    hosal_timer_dev_t timer;
+    timer.port = 0;
+    timer.config.period = 100; /* 100us */
+    timer.config.reload_mode = TIMER_RELOAD_PERIODIC;
+    timer.config.cb =timer_callback;
+    timer.config.arg = NULL;
+
+    
+- 通过 ``hosal_timer_init`` 初始化timer。
+
+::
+ 
+    hosal_timer_init(&timer);
+  
+- 通过 ``hosal_timer_start`` 开始输出timer计时。
+
+::
+
+    hosal_timer_start(&timer);
+    
+- 调用 ``hosal_timer_stop`` 来停止timer。
+
+::
+
+    hosal_timer_stop(&timer);
+    

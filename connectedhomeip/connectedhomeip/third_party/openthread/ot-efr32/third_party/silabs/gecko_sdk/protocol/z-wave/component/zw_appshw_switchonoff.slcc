@@ -1,0 +1,18 @@
+id: zw_appshw_switchonoff
+label: SwitchOnOff AppsHw
+category: Z-Wave|AppsHw
+description: AppsHw for SwitchOnOff application
+package: Z-Wave
+quality: production
+ui_hints:
+  visibility: never
+source:
+  - path: "protocol/z-wave/platform/SiliconLabs/AppsHw/src/SwitchOnOff/SwitchOnOff_hw.c"
+include:
+  - path: "protocol/z-wave/Apps/SwitchOnOff"
+    file_list:
+      - path: "SwitchOnOff_hw.h"
+provides:
+  - name: zw_appshw_switchonoff
+requires:
+  - name: zw_appshw

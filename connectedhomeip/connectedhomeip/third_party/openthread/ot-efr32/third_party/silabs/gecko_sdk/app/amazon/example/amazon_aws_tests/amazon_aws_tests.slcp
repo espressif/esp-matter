@@ -1,0 +1,40 @@
+project_name: amazon_aws_tests
+label: Amazon AWS - Platform Tests
+description: "Project to run AWS Tests on Silicon Labs boards."
+quality: alpha
+package: amazon_platform
+category: Example|AWS IoT
+source:
+  - path: "../../../../util/third_party/aws_iot_libs/vendors/siliconlabs/boards/all/aws_tests/application_code/main.c"
+component:
+  - id: freertos
+  - id: aws_tests_core
+  - id: iostream_usart
+    instance: [vcom]
+define:
+  - name: SL_IOSTREAM_UART_FLUSH_TX_BUFFER
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: SL_IOSTREAM_USART_VCOM_BAUDRATE
+    value: 9800
+  - name: SL_IOSTREAM_USART_VCOM_RESTRICT_ENERGY_MODE_TO_ALLOW_RECEPTION
+    value: 0
+  - name: SL_IOSTREAM_USART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: 1
+  - name: SL_MBEDTLS_SSL_IN_CONTENT_LEN
+    value: 5000
+  - name: SL_MBEDTLS_SSL_OUT_CONTENT_LEN
+    value: 5000
+  - name: SL_STACK_SIZE
+    value: 500
+  - name: SL_HEAP_SIZE
+    value: 0
+
+filter:
+  - name: "Ecosystem"
+    value: ["Amazon"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+  - name: "MCU"
+    value: ["Operating Systems"]

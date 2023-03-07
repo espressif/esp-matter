@@ -1,0 +1,213 @@
+#ISD afv6
+{setupId:zclAfv2
+intMap:ReportTableSize = 5
+intMap:Endpoint = 10
+intMap:DeviceVersion = 0
+intMap:DefaultDestinationEndpoint = 10
+intMap:ProfileId = -1
+intMap:DeviceId = -1
+intMap:DefaultResponsePolicy = 0
+intMap:ManufacturingCode = 4098
+boolMap:EnableStandardReporting = false
+boolMap:EnableInterPanSend = false
+boolMap:EnableInterPanReceive = false
+boolMap:SupportCommandDiscovery = true
+boolMap:EnableKeySwitch = false
+boolMap:LowRamConcentrator = true
+boolMap:EnableAttributeRangeChecking = false
+boolMap:ReceiveSupportedZdoRequests = false
+boolMap:HandleUnsupportedZdoRequests = false
+boolMap:HandleEndpointZdoRequests = false
+boolMap:HandleBindingZdoRequests = false
+boolMap:LegacyCli = false
+boolMap:AddCustomCli = false
+boolMap:IncludeCommandDescriptions = true
+boolMap:GenerateCallbacksFile = true
+beginAttrList:OPTIONAL
+  cl:0x0702, at:0x0001, di:server, mf:0x0000
+  cl:0x0702, at:0x0002, di:server, mf:0x0000
+  cl:0x0702, at:0x0003, di:server, mf:0x0000
+  cl:0x0702, at:0x0004, di:server, mf:0x0000
+  cl:0x0702, at:0x0005, di:server, mf:0x0000
+  cl:0x0702, at:0x0006, di:server, mf:0x0000
+  cl:0x0702, at:0x0007, di:server, mf:0x0000
+  cl:0x0702, at:0x0008, di:server, mf:0x0000
+  cl:0x0702, at:0x0009, di:server, mf:0x0000
+  cl:0x0702, at:0x0301, di:server, mf:0x0000
+  cl:0x0702, at:0x0302, di:server, mf:0x0000
+  cl:0x0702, at:0x0304, di:server, mf:0x0000
+  cl:0x0702, at:0x0305, di:server, mf:0x0000
+  cl:0x0702, at:0x0400, di:server, mf:0x0000
+  cl:0x0702, at:0x0401, di:server, mf:0x0000
+  cl:0x0702, at:0x0402, di:server, mf:0x0000
+  cl:0x0702, at:0x0403, di:server, mf:0x0000
+  cl:0x0702, at:0x0404, di:server, mf:0x0000
+  cl:0x0702, at:0x0405, di:server, mf:0x0000
+  cl:0x0702, at:0x0406, di:server, mf:0x0000
+  cl:0x0702, at:0x0407, di:server, mf:0x0000
+  cl:0x0702, at:0x0408, di:server, mf:0x0000
+  cl:0x0702, at:0x0500, di:server, mf:0x0000
+endAttrList:OPTIONAL
+beginAttrList:BOUNDED
+  cl:0x0000, at:0x0007, di:server, mf:0x0000
+  cl:0x0702, at:0x0000, di:server, mf:0x0000
+  cl:0x0702, at:0x0001, di:server, mf:0x0000
+  cl:0x0702, at:0x0002, di:server, mf:0x0000
+  cl:0x0702, at:0x0003, di:server, mf:0x0000
+  cl:0x0702, at:0x0004, di:server, mf:0x0000
+  cl:0x0702, at:0x0006, di:server, mf:0x0000
+  cl:0x0702, at:0x0005, di:server, mf:0x0000
+  cl:0x0702, at:0x0200, di:server, mf:0x0000
+  cl:0x0702, at:0x0300, di:server, mf:0x0000
+  cl:0x0702, at:0x0301, di:server, mf:0x0000
+  cl:0x0702, at:0x0302, di:server, mf:0x0000
+  cl:0x0702, at:0x0303, di:server, mf:0x0000
+  cl:0x0702, at:0x0305, di:server, mf:0x0000
+  cl:0x0702, at:0x0306, di:server, mf:0x0000
+  cl:0x0702, at:0x0304, di:server, mf:0x0000
+  cl:0x0702, at:0x0400, di:server, mf:0x0000
+  cl:0x0702, at:0x0401, di:server, mf:0x0000
+  cl:0x0702, at:0x0402, di:server, mf:0x0000
+  cl:0x0702, at:0x0403, di:server, mf:0x0000
+  cl:0x0702, at:0x0404, di:server, mf:0x0000
+  cl:0x0702, at:0x0407, di:server, mf:0x0000
+  cl:0x0702, at:0x0408, di:server, mf:0x0000
+  cl:0x0702, at:0x0500, di:server, mf:0x0000
+  cl:0x0800, at:0x0000, di:client, mf:0x0000
+  cl:0x0800, at:0x0000, di:server, mf:0x0000
+  cl:0x0000, at:0x0000, di:server, mf:0x0000
+endAttrList:BOUNDED
+configuredNetwork:*type:ZIGBEE_PRO, name:Primary
+beginEndpointType:Primary
+device:zcustom
+deviceId:-1
+profileId:-1
+overrideClientCluster:0x0000,no
+overrideClientCluster:0x0001,no
+overrideClientCluster:0x0002,no
+overrideClientCluster:0x0003,no
+overrideClientCluster:0x0004,no
+overrideClientCluster:0x0005,no
+overrideClientCluster:0x0006,no
+overrideClientCluster:0x0007,no
+overrideClientCluster:0x0008,no
+overrideClientCluster:0x0009,no
+overrideClientCluster:0x000A,no
+overrideClientCluster:0x000B,no
+overrideClientCluster:0x000F,no
+overrideClientCluster:0x0015,no
+overrideClientCluster:0x0019,no
+overrideClientCluster:0x001A,no
+overrideClientCluster:0x001B,no
+overrideClientCluster:0x0020,no
+overrideClientCluster:0x0100,no
+overrideClientCluster:0x0101,no
+overrideClientCluster:0x0102,no
+overrideClientCluster:0x0200,no
+overrideClientCluster:0x0201,no
+overrideClientCluster:0x0202,no
+overrideClientCluster:0x0203,no
+overrideClientCluster:0x0204,no
+overrideClientCluster:0x0300,no
+overrideClientCluster:0x0301,no
+overrideClientCluster:0x0400,no
+overrideClientCluster:0x0401,no
+overrideClientCluster:0x0402,no
+overrideClientCluster:0x0403,no
+overrideClientCluster:0x0404,no
+overrideClientCluster:0x0405,no
+overrideClientCluster:0x0406,no
+overrideClientCluster:0x0500,no
+overrideClientCluster:0x0501,no
+overrideClientCluster:0x0502,no
+overrideClientCluster:0x0600,no
+overrideClientCluster:0x0601,no
+overrideClientCluster:0x0614,no
+overrideClientCluster:0x0700,no
+overrideClientCluster:0x0701,no
+overrideClientCluster:0x0702,no
+overrideClientCluster:0x0703,yes
+overrideClientCluster:0x0704,no
+overrideClientCluster:0x0800,yes
+overrideClientCluster:0x0B00,no
+overrideClientCluster:0x0B01,no
+overrideClientCluster:0x0B02,no
+overrideClientCluster:0x0B04,no
+overrideClientCluster:0x0B05,no
+overrideClientCluster:0x1000,no
+overrideMfgClientCluster:0xFC00,0x1002,no
+overrideServerCluster:0x0000,yes
+overrideServerCluster:0x0001,no
+overrideServerCluster:0x0002,no
+overrideServerCluster:0x0003,no
+overrideServerCluster:0x0004,no
+overrideServerCluster:0x0005,no
+overrideServerCluster:0x0006,no
+overrideServerCluster:0x0007,no
+overrideServerCluster:0x0008,no
+overrideServerCluster:0x0009,no
+overrideServerCluster:0x000A,no
+overrideServerCluster:0x000B,no
+overrideServerCluster:0x000F,no
+overrideServerCluster:0x0015,no
+overrideServerCluster:0x0019,no
+overrideServerCluster:0x001A,no
+overrideServerCluster:0x001B,no
+overrideServerCluster:0x0020,no
+overrideServerCluster:0x0100,no
+overrideServerCluster:0x0101,no
+overrideServerCluster:0x0102,no
+overrideServerCluster:0x0200,no
+overrideServerCluster:0x0201,no
+overrideServerCluster:0x0202,no
+overrideServerCluster:0x0203,no
+overrideServerCluster:0x0204,no
+overrideServerCluster:0x0300,no
+overrideServerCluster:0x0301,no
+overrideServerCluster:0x0400,no
+overrideServerCluster:0x0401,no
+overrideServerCluster:0x0402,no
+overrideServerCluster:0x0403,no
+overrideServerCluster:0x0404,no
+overrideServerCluster:0x0405,no
+overrideServerCluster:0x0406,no
+overrideServerCluster:0x0500,no
+overrideServerCluster:0x0501,no
+overrideServerCluster:0x0502,no
+overrideServerCluster:0x0600,no
+overrideServerCluster:0x0601,no
+overrideServerCluster:0x0614,no
+overrideServerCluster:0x0700,no
+overrideServerCluster:0x0701,no
+overrideServerCluster:0x0702,yes
+overrideServerCluster:0x0703,yes
+overrideServerCluster:0x0704,no
+overrideServerCluster:0x0800,yes
+overrideServerCluster:0x0B00,no
+overrideServerCluster:0x0B01,no
+overrideServerCluster:0x0B02,no
+overrideServerCluster:0x0B04,no
+overrideServerCluster:0x0B05,no
+overrideServerCluster:0x1000,no
+overrideMfgServerCluster:0xFC00,0x1002,no
+endEndpointType
+configuredEndpoint:*ep:1,pi: 265,di:1281,dv:0,ept:Primary,nwk:Primary
+callbacks:emberAfRegistrationCallback
+callbacks:emberAfSimpleMeteringClusterMirrorRemovedCallback
+callbacks:emberAfSimpleMeteringClusterRequestMirrorResponseCallback
+callbacks:emberAfPluginEndDeviceSupportPollCompletedCallback
+callbacks:emberAfPluginIdleSleepOkToSleepCallback
+callbacks:emberAfPluginIdleSleepWakeUpCallback
+callbacks:emberAfPluginIdleSleepOkToIdleCallback
+callbacks:emberAfPluginIdleSleepActiveCallback
+callbacks:emberAfPluginNetworkFindGetRadioPowerForChannelCallback
+callbacks:emberAfPluginNetworkFindJoinCallback
+callbacks:emberAfPluginSimpleMeteringServerProcessNotificationFlagsCallback
+callbacks:emberAfPluginMessagingClientDisplayMessageCallback
+callbacks:emberAfPluginMessagingClientCancelMessageCallback
+callbacks:emberAfPluginNetworkFindFinishedCallback
+callbacks:emberAfPluginSimpleMeteringClientRequestMirrorCallback
+callbacks:emberAfPluginSimpleMeteringClientRemoveMirrorCallback
+}
+{setupId:zclCustomizer
+}

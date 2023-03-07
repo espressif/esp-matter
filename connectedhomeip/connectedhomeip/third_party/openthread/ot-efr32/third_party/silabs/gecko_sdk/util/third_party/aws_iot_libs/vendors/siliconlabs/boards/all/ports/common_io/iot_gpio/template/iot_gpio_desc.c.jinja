@@ -1,0 +1,92 @@
+/***************************************************************************//**
+ * @file    iot_gpio_desc.c.jinja
+ * @brief   GPIO instance descriptors - auto-generated file.
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2021 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ ******************************************************************************/
+
+/*******************************************************************************
+ *                               INCLUDES
+ ******************************************************************************/
+
+/* standard C */
+#include "stddef.h"
+
+/* GPIO driver layer */
+#include "iot_gpio_desc.h"
+
+{% for instance in iot_gpio_instances %}
+/* instance {{ instance }} config */
+#include "iot_gpio_cfg_{{ instance }}.h"
+{% endfor %}
+
+/*******************************************************************************
+ *                            DESCRIPTOR LIST
+ ******************************************************************************/
+
+IotGpioDescriptor iot_gpio_desc[] = {
+
+{% for instance in iot_gpio_instances %}
+  /* instance {{ instance }} config */
+  {
+    .is_open = false,
+    .instance_id = IOT_GPIO_CFG_{{ instance | upper }}_INST_NUM,
+    .port = IOT_GPIO_CFG_{{ instance | upper }}_PORT,
+    .pin = IOT_GPIO_CFG_{{ instance | upper }}_PIN,
+    .direction = IOT_GPIO_CFG_{{ instance | upper }}_DIRECTION,
+    .out_mode = IOT_GPIO_CFG_{{ instance | upper }}_OUTPUT,
+    .pull = IOT_GPIO_CFG_{{ instance | upper }}_PULL,
+    .int_number = IOT_GPIO_CFG_{{ instance | upper }}_INTERRUPT_NUMBER,
+    .interrupt = IOT_GPIO_CFG_{{ instance | upper }}_INTERRUPT_TRIGGER,
+    .callback = NULL,
+    .context = NULL,
+  },
+{% endfor %}
+
+};
+
+#define IOT_GPIO_MAX_COUNT  (sizeof(iot_gpio_desc) / sizeof(IotGpioDescriptor))
+/*******************************************************************************
+ *                     iot_gpio_desc_get_table_size
+ ******************************************************************************/
+uint32_t iot_gpio_desc_get_table_size(void)
+{
+  return IOT_GPIO_MAX_COUNT;
+}
+/*******************************************************************************
+ *                          iot_gpio_desc_get
+ ******************************************************************************/
+
+IotGpioDescriptor *iot_gpio_desc_get(int32_t instance_id)
+{
+  for (uint32_t i = 0; i < IOT_GPIO_MAX_COUNT; i++) {
+    if (iot_gpio_desc[i].instance_id == instance_id) {
+      return &iot_gpio_desc[i];
+    }
+  }
+
+  return NULL;
+}

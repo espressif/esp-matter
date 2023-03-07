@@ -1,0 +1,33 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+config PIGWEED_ROUTER_STATIC_ROUTER
+    bool "Enable the Pigweed static router library (pw_router.static_router)"
+    select PIGWEED_METRIC
+    select PIGWEED_ROUTER_EGRESS
+    select PIGWEED_ROUTER_PACKET_PARSER
+    select PIGWEED_SYNC_MUTEX
+    select PIGWEED_LOG
+
+config PIGWEED_ROUTER_EGRESS
+    bool "Enable the Pigweed router egress library (pw_router.egress)"
+    select PIGWEED_BYTES
+
+config PIGWEED_ROUTER_PACKET_PARSER
+    bool "Enable the Pigweed router packet parser library (pw_router.packet_parser)"
+    select PIGWEED_BYTES
+
+config PIGWEED_ROUTER_EGRESS_FUNCTION
+    bool "Enable the Pigweed router egress function library (pw_router.egress_function)"
+    select PIGWEED_RPC_EGRESS

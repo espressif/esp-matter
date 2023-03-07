@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Descriptor xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/descriptor.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.descriptor.gatt.characteristic_aggregate_format" uuid="2905" name="Characteristic Aggregate Format">
+    <InformativeText>
+        <Abstract>
+        The Characteristic Aggregate Format descriptor defines the format of an aggregated Characteristic Value.            
+		</Abstract>
+        <InformativeDisclaimer/>
+        <Summary>
+        Only one Characteristic Aggregate Format descriptor exists in a characteristic definition.
+        This descriptor consists of a list of Attribute Handles pointing to Characteristic Presentation Format declarations.
+        This descriptor is read only and does not require authentication or authorization.
+        The list of Attribute Handles is the concatenation of multiple 16-bit Attribute Handle values into a single Attribute Value.
+        If more than one Characteristic Presentation Format declarations exist, then there is one Characteristic Aggregate Format declaration.
+        However, a Characteristic Aggregate Format descriptor can be present even if there aren't any Presentation Format descriptors in the characteristic definition.
+        The order of the Attribute Handles in the list is significant.            
+		</Summary>
+        <Examples>
+            <Example>
+            If 3 Characteristic Presentation Format declarations exist at Attribute Handles 0x40, 0x50 and 0x60, the Characteris Aggregate Format Value is 0x405060.
+		    </Example>
+        </Examples>
+    </InformativeText>
+    <Value>
+        <Field name="List of Handles">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint16</Format>
+            <Repeated>true</Repeated>
+        </Field>
+    </Value>
+</Descriptor>

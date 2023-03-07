@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Profile xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/profile.xsd" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    type="org.bluetooth.profile.health_thermometer"
+    name="Health Thermometer">
+    <InformativeText>
+        <Abstract>This profile enables a Collector device to connect and interact with a Thermometer sensor for use in healthcare applications.</Abstract>
+        <Summary>The Health Thermometer Profile is used to enable a data collection device to obtain data from a thermometer sensor that exposes the Health Thermometer Service.</Summary>
+	</InformativeText>
+	<Role name="Thermometer">
+		<Service type="org.bluetooth.service.health_thermometer">
+			<Declaration>Primary</Declaration>
+			<Requirement>Mandatory</Requirement>
+		</Service>
+		<Service type="org.bluetooth.service.device_information">
+			<Declaration>PrimarySingleInstance</Declaration>
+			<Requirement>Mandatory</Requirement>
+			<Characteristic type="org.bluetooth.characteristic.manufacturer_name_string">
+				<Requirement>Mandatory</Requirement>
+			</Characteristic>
+			<Characteristic type="org.bluetooth.characteristic.model_number_string">
+				<Requirement>Mandatory</Requirement>
+			</Characteristic>
+			<Characteristic type="org.bluetooth.characteristic.system_id">
+				<Requirement>Mandatory</Requirement>
+			</Characteristic>
+		</Service>
+	</Role>
+	<Role name="Collector">
+		<Client type="org.bluetooth.service.health_thermometer">
+			<Requirement>Mandatory</Requirement>
+		</Client>
+		<Client type="org.bluetooth.service.device_information">
+			<Requirement>Optional</Requirement>
+		</Client>
+	</Role>
+</Profile>

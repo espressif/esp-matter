@@ -1,0 +1,58 @@
+id: emlib_timer
+label: TIMER
+package: platform
+description: >
+  Timer/counter (TIMER) peripheral API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_timer.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_timer.h"
+provides:
+  - name: emlib_timer
+requires:
+  - name: device
+  - name: device_has_timer
+  - name: emlib_common
+  - name: cmsis_core
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efm32g/group-timer
+      condition: [device_sdid_71]
+    - page: emlib/api/efm32gg/group-timer
+      condition: [device_sdid_72]
+    - page: emlib/api/efm32tg/group-timer
+      condition: [device_sdid_73]
+    - page: emlib/api/efm32lg/group-timer
+      condition: [device_sdid_74]
+    - page: emlib/api/efm32zg/group-timer
+      condition: [device_sdid_76]
+    - page: emlib/api/efm32hg/group-timer
+      condition: [device_sdid_77]
+    - page: emlib/api/efr32xg1/group-timer
+      condition: [device_sdid_80]
+    - page: emlib/api/efr32xg12/group-timer
+      condition: [device_sdid_84]
+    - page: emlib/api/efr32xg13/group-timer
+      condition: [device_sdid_89]
+    - page: emlib/api/efr32xg14/group-timer
+      condition: [device_sdid_95]
+    - page: emlib/api/efm32gg11/group-timer
+      condition: [device_sdid_100]
+    - page: emlib/api/efm32tg11/group-timer
+      condition: [device_sdid_103]
+    - page: emlib/api/efm32gg12/group-timer
+      condition: [device_sdid_106]
+    - page: emlib/api/efr32xg21/group-timer
+      condition: [device_sdid_200]
+    - page: emlib/api/efr32xg22/group-timer
+      condition: [device_sdid_205]
+    - page: emlib/api/efr32xg23/group-timer
+      condition: [device_sdid_210]
+    - page: emlib/api/efr32xg24/group-timer
+      condition: [device_sdid_215]

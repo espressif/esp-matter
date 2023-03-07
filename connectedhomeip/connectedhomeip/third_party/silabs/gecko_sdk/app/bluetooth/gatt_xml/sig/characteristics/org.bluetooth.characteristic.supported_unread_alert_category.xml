@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2011 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Supported Unread Alert Category" type="org.bluetooth.characteristic.supported_unread_alert_category" 
+uuid="2A48">
+	<InformativeText>
+        <Abstract>Category that the server supports for unread alert.</Abstract>
+        <Summary>This characteristic uses the Alert Category ID Bit Mask Characteristic.  If bit(s) is/are set, it means the server supports the corresponded categories for unread alert.</Summary>
+        <Examples> 
+            <Example>The value 0x03 is interpreted that this server supports "Simple Alert" and "Email" categories for unread alert.</Example>
+		</Examples>
+	</InformativeText>
+	<Value>
+        <Field name="Category ID Bit Mask">
+            <Requirement>Mandatory</Requirement>
+			<Reference>org.bluetooth.characteristic.alert_category_id_bit_mask</Reference>
+        </Field>
+	</Value>
+</Characteristic>

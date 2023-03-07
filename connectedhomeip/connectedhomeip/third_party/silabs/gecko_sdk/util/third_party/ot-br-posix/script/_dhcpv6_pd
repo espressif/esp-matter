@@ -1,0 +1,363 @@
+#!/bin/bash
+#
+#  Copyright (c) 2017, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+#   Description:
+#       This script manipulates DHCPv6-PD configuration.
+#
+#
+# Currently solution was verified only on raspbian.
+#
+
+if [ "$PLATFORM" = "ubuntu" ]; then
+    WAN_INTERFACE="enp0s3"
+else
+    WAN_INTERFACE="eth0"
+fi
+
+WLAN_INTERFACE="wlan0"
+WPAN_INTERFACE="wpan0"
+
+DHCPCD_CONF="/etc/dhcpcd.conf"
+DHCPCD_CONF_BACKUP="$DHCPCD_CONF.orig"
+
+NCP_STATE_NOTIFIER="/usr/sbin/ncp_state_notifier"
+NCP_STATE_DISPATCHER="/etc/ncp_state_notifier/dispatcher.d"
+
+NCP_STATE_NOTIFIER_SERVICE_NAME="ncp_state_notifier.service"
+NCP_STATE_NOTIFIER_SERVICE="/etc/systemd/system/${NCP_STATE_NOTIFIER_SERVICE_NAME}"
+
+DHCPCD_RELOADER="${NCP_STATE_DISPATCHER}/dhcpcd_reloader"
+
+without DHCPV6_PD || test "$PLATFORM" = beagleboneblack || test "$PLATFORM" = raspbian || test "$PLATFORM" = ubuntu || die "DHCPv6-PD is not tested under $PLATFORM."
+
+create_dhcpcd_conf_with_dhcpv6_pd()
+{
+    sudo tee ${DHCPCD_CONF} <<EOF
+# A sample configuration for dhcpcd.
+# See dhcpcd.conf(5) for details.
+
+# Allow users of this group to interact with dhcpcd via the control socket.
+#controlgroup wheel
+
+# Inform the DHCP server of our hostname for DDNS.
+hostname
+
+# Use the hardware address of the interface for the Client ID.
+#clientid
+# or
+# Use the same DUID + IAID as set in DHCPv6 for DHCPv4 ClientID as per RFC4361.
+duid
+
+# Rapid commit support.
+# Safe to enable by default because it requires the equivalent option set
+# on the server to actually work.
+option rapid_commit
+
+# A list of options to request from the DHCP server.
+option domain_name_servers, domain_name, domain_search, host_name
+option classless_static_routes
+# Most distributions have NTP support.
+option ntp_servers
+# Respect the network MTU.
+# Some interface drivers reset when changing the MTU so disabled by default.
+#option interface_mtu
+
+# A ServerID is required by RFC2131.
+require dhcp_server_identifier
+
+# Generate Stable Private IPv6 Addresses instead of hardware based ones
+slaac hwaddr
+
+# A hook script is provided to lookup the hostname if not set by the DHCP
+# server, but it should not be run by default.
+nohook lookup-hostname
+nohook wpa_supplicant
+
+denyinterfaces nat*
+
+noipv6rs
+
+interface $WPAN_INTERFACE
+nodhcp
+nodhcp6
+
+interface $WAN_INTERFACE
+iaid 1
+ipv6rs
+ia_na 2
+ia_pd 3/::/63 $WPAN_INTERFACE/1
+
+EOF
+
+    if [ "$PLATFORM" = "raspbian" ] || with NETWORK_MANAGER_WIFI; then
+        sudo tee -a ${DHCPCD_CONF} <<EOF
+interface $WLAN_INTERFACE
+iaid 4
+ipv6rs
+ia_na 5
+ia_pd 6/::/63 $WPAN_INTERFACE/1
+EOF
+    fi
+}
+
+create_ncp_state_notifier_script()
+{
+    sudo tee ${NCP_STATE_NOTIFIER} <<EOF
+#!/bin/sh
+#
+#  Copyright (c) 2017, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+#   Description:
+#       This script notifies about NCP state changes.
+#
+
+set -euxo pipefail
+
+PID=\$\$
+NAME="ncp_state_notifier"
+
+DISPATCHER_PATH="${NCP_STATE_DISPATCHER}"
+
+echo \${PID} > "/tmp/\${NAME}.pid"
+
+if [ -z \${IFACE} ]; then
+    IFACE=${WPAN_INTERFACE}
+fi
+
+OTBR_PATH="/io/openthread/BorderRouter/\${IFACE}"
+
+WATCH1="type='signal', interface=org.freedesktop.DBus.Properties, path=\${OTBR_PATH}, member='PropertiesChanged'"
+
+notify_about_state()
+{
+    logger -t "\${NAME}[\${PID}]" "Notifying about change state to: \${1} on the interface: \${2}"
+
+    for SCRIPT in \`find \${DISPATCHER_PATH} -type f\`; do
+        logger -t "\${NAME}[\${PID}]" "Running script: \${SCRIPT}"
+        .\${SCRIPT} \${1} \${2}
+    done
+}
+
+process_output()
+{
+    local NEXT_LINE_IS_STATE=0
+
+    while read -r LINE; do
+        if echo \${LINE} | grep -q "NCP:State"; then
+            NEXT_LINE_IS_STATE=1
+            continue
+        fi
+
+        if [ \${NEXT_LINE_IS_STATE} -eq 1 ]; then
+            NEXT_LINE_IS_STATE=1
+
+            STATE=\`echo \${LINE} | cut -d'"' -f2\`
+            notify_about_state \${STATE} \${IFACE}
+        fi
+    done
+}
+
+dbus-monitor --system "\${WATCH1}" | process_output
+EOF
+}
+
+create_dhcpcd_reloader_script()
+{
+    sudo tee ${DHCPCD_RELOADER} <<EOF
+#!/bin/sh
+#
+#  Copyright (c) 2017, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+#   Description:
+#       This script reloads dhcpcd.
+#
+
+PID=\$\$
+NAME="dhcpcd_reloader"
+
+DHCPCD_INTERFACES="/tmp/dhcpcd_interfaces"
+
+STATE=\$1
+
+if [ \${STATE} = "associated" ]; then
+    if systemctl is-active NetworkManager; then
+        logger -t "\${NAME}[\${PID}]" "NetworkManager: active"
+
+        if ! [ -f \${DHCPCD_INTERFACES} ]; then
+            exit 1
+        fi
+
+        for interface in \`cat \${DHCPCD_INTERFACES}\`; do
+            logger -t "\${NAME}[\${PID}]" "dhcpcd: rebind on the interface: \${interface}"
+            /sbin/dhcpcd -6 -n \${interface}
+        done
+    fi
+
+    if systemctl is-active dhcpcd; then
+        logger -t "\${NAME}[\${PID}]" "dhcpcd: reload"
+
+        sudo systemctl reload-daemon
+        sudo systemctl force-reload dhcpcd
+    fi
+fi
+EOF
+}
+
+create_ncp_state_notifier_service()
+{
+    sudo tee ${NCP_STATE_NOTIFIER_SERVICE} <<EOF
+[Unit]
+Description=Daemon call scripts on every NCP state change
+After=otbr-agent.service
+ConditionPathExists=${NCP_STATE_NOTIFIER}
+
+[Service]
+ExecStart=/bin/sh ${NCP_STATE_NOTIFIER}
+PIDFile=/tmp/ncp_state_notifier.pid
+KillMode=control-group
+
+[Install]
+WantedBy=multi-user.target
+EOF
+}
+
+dhcpv6_pd_install()
+{
+    with DHCPV6_PD || return 0
+
+    # Create backup of the default configuration of dhcpcd
+    sudo mv ${DHCPCD_CONF} ${DHCPCD_CONF_BACKUP}
+
+    create_dhcpcd_conf_with_dhcpv6_pd
+
+    create_ncp_state_notifier_script
+    sudo chmod +x ${NCP_STATE_NOTIFIER}
+
+    sudo mkdir -p ${NCP_STATE_DISPATCHER}
+
+    create_dhcpcd_reloader_script
+    sudo chmod +x ${DHCPCD_RELOADER}
+
+    if have systemctl; then
+        create_ncp_state_notifier_service
+
+        sudo systemctl daemon-reload
+
+        if systemctl is-active NetworkManager; then
+            sudo systemctl restart NetworkManager || die "Unable to restart NetworkManager!"
+        fi
+
+        if systemctl is-active dhcpcd; then
+            sudo systemctl restart dhcpcd || die 'Unable to restart dhcpcd!'
+        fi
+
+        sudo systemctl start ${NCP_STATE_NOTIFIER_SERVICE_NAME} || die "Unable to start ${NCP_STATE_NOTIFIER_SERVICE_NAME}!"
+        sudo systemctl enable ${NCP_STATE_NOTIFIER_SERVICE_NAME} || die "Unable to enable ${NCP_STATE_NOTIFIER_SERVICE_NAME}!"
+    fi
+}
+
+dhcpv6_pd_uninstall()
+{
+    with DHCPV6_PD || return 0
+
+    if have systemctl; then
+        sudo systemctl disable ${NCP_STATE_NOTIFIER_SERVICE_NAME} || true
+        sudo systemctl stop ${NCP_STATE_NOTIFIER_SERVICE_NAME} || true
+
+        sudo rm ${NCP_STATE_NOTIFIER_SERVICE} || true
+    fi
+
+    sudo rm ${NCP_STATE_NOTIFIER} || true
+    sudo rm ${DHCPCD_RELOADER} || true
+
+    sudo rm -r ${NCP_STATE_DISPATCHER} || true
+
+    # Restore backup of the default configuration of dhcpcd
+    sudo mv ${DHCPCD_CONF_BACKUP} ${DHCPCD_CONF} || true
+
+    # Restart dhcpcd or NetworkManager
+    if have systemctl; then
+        sudo systemctl daemon-reload
+
+        if systemctl is-active NetworkManager; then
+            sudo systemctl restart NetworkManager || true
+        fi
+
+        if systemctl is-active dhcpcd; then
+            sudo systemctl restart dhcpcd || true
+        fi
+    fi
+}

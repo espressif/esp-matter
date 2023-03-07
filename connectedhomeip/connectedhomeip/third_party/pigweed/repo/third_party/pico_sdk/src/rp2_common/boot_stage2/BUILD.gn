@@ -1,0 +1,115 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pi_pico.gni")
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/exec.gni")
+import("$dir_pw_build/python_action.gni")
+import("$dir_pw_build/target_types.gni")
+
+# TODO(amontanez): This can go away if the GN build can be upstreamed to the
+# Pi Pico repo.
+_CWD = "${PICO_SRC_DIR}/src/rp2_common/boot_stage2"
+
+config("public_include_dirs") {
+  include_dirs = [
+    "${_CWD}/include",
+    "${_CWD}/asminclude",
+  ]
+}
+
+# The upstream boot_stage2.ld doesn't specify the binary entry point or
+# mark the required sections as KEEP(), so they're optimized out with
+# Pigweed's aggressive default optimizations.
+#
+# Because of Pigweed's pw_build_DEFAULT_CONFIGS behavior, this flag
+# needs to be a config rather than just an ldflag of boot_stage2_elf to ensure
+# the flag is ordered properly.
+config("no_gc_sections") {
+  ldflags = [ "-Wl,--no-gc-sections" ]
+}
+
+pw_executable("boot_stage2_elf") {
+  _linker_script_path = rebase_path("${_CWD}/boot_stage2.ld", root_build_dir)
+
+  # Compile as position-independent.
+  cflags = [ "-fPIC" ]
+  asmflags = cflags
+
+  ldflags = cflags
+  ldflags += [
+    "-T${_linker_script_path}",
+    "-nostartfiles",
+  ]
+
+  public_configs = [ ":public_include_dirs" ]
+  configs = [ ":no_gc_sections" ]
+
+  is_boot_stage2 = true
+
+  public = [ "${_CWD}/include/boot_stage2/config.h" ]
+
+  deps = [ "${PICO_ROOT}/src/common/pico_base" ]
+
+  # The correct assembly file is pulled in by compile_time_choice.S.
+  inputs = [
+    "${_CWD}/boot_stage2.ld",
+    "${_CWD}/boot2_at25sf128a.S",
+    "${_CWD}/boot2_generic_03h.S",
+    "${_CWD}/boot2_is25lp080.S",
+    "${_CWD}/boot2_usb_blinky.S",
+    "${_CWD}/boot2_w25q080.S",
+    "${_CWD}/boot2_w25x10cl.S",
+  ]
+  sources = [ "${_CWD}/compile_time_choice.S" ]
+}
+
+pw_exec("boot_stage2_bin") {
+  _out_bin = "${target_out_dir}/boot_stage2.bin"
+  program = "arm-none-eabi-objcopy"
+  args = [
+    "-Obinary",
+    "<TARGET_FILE(:boot_stage2_elf)>",
+    rebase_path(_out_bin, root_build_dir),
+  ]
+  outputs = [ _out_bin ]
+  deps = [ ":boot_stage2_elf" ]
+}
+
+pw_python_action("boot_stage2_padded") {
+  _src_bin = get_target_outputs(":boot_stage2_bin")
+  _out_asm = "${target_out_dir}/boot_stage2.S"
+  script = "${_CWD}/pad_checksum"
+  args = [
+    "-s",
+    "0xffffffff",
+    rebase_path(_src_bin[0], root_build_dir),
+    rebase_path(_out_asm, root_build_dir),
+  ]
+  outputs = [ _out_asm ]
+  deps = [ ":boot_stage2_bin" ]
+}
+
+pw_source_set("boot_stage2_asm") {
+  deps = [ ":boot_stage2_padded" ]
+  sources = get_target_outputs(":boot_stage2_padded")
+}
+
+group("boot_stage2") {
+  public_deps = [
+    ":boot_stage2_asm",
+    ":boot_stage2_elf",
+  ]
+}

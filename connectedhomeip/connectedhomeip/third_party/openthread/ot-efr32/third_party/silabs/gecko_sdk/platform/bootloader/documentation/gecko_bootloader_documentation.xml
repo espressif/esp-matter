@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<contentItems>
+  <contentItemData
+    priority="1"
+    category="API References"
+    itemURI="https://docs.silabs.com/mcu-bootloader/latest/"
+    label="Gecko Bootloader API Reference Guide"
+    description="Contains a comprehensive reference for the APIs of Silicon Labs Gecko Bootloader, including the Gecko Bootloader Application Interface used to interface with the bootloader from a running application, as well as the APIs used to implement bootloader functionality."
+  >
+  <properties key="boardCompatibility" value=".*"/>
+  <properties key="partCompatibility" value="mcu.arm"/>
+  </contentItemData>
+</contentItems>

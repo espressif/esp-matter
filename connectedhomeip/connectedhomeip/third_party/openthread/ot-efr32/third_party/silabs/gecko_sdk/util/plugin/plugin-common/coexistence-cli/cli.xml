@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<cli>
+  <group id="plugin-coexistence" name="Plugin Commands: Coexistence">
+    <description>
+      The coexistence commands allow you run-time reconfigure coexistence PTA 
+    </description>
+  </group>
+  <command cli="plugin coexistence get-pta-state" functionName="emberAfPluginCoexistenceGetPtaState" group="plugin-coexistence">
+    <description>
+      Get the PTA enable/disable state
+    </description>
+  </command>
+  <command cli="plugin coexistence set-pta-state" functionName="emberAfPluginCoexistenceSetPtaState" group="plugin-coexistence">
+    <description>
+      Set the PTA enable/disable state
+    </description>
+	<arg name="state" type="INT8U" description="PTA state (0=>disable, 1=>enable)" />
+  </command>
+  <command cli="plugin coexistence get-pta-options" functionName="emberAfPluginCoexistenceGetPtaOptions" group="plugin-coexistence">
+    <description>
+      Get the PTA Options
+    </description>
+  </command>
+  <command cli="plugin coexistence set-pta-options" functionName="emberAfPluginCoexistenceSetPtaOptions" group="plugin-coexistence">
+    <description>
+      Set the PTA Options
+    </description>
+	<arg name="state" type="INT32U" description="PTA Options (see AN1017 Section 4.2)" />
+  </command>
+  <command cli="plugin coexistence get-pwm-state" functionName="emberAfPluginCoexistenceGetPwmState" group="plugin-coexistence">
+    <description>
+      Get the PTA PWM state
+    </description>
+  </command>
+  <command cli="plugin coexistence set-pwm-state" functionName="emberAfPluginCoexistenceSetPwmState" group="plugin-coexistence">
+    <description>
+      Set the PTA PWM state
+    </description>
+	<arg name="pwmPeriod_halfms" type="INT8U" description="PWM period (0.5ms resolution)" />
+	<arg name="pwmPulse_DC" type="INT8U" description="PWM duty-cycle (%)" />
+	<arg name="pwmPriority" type="INT8U" description="PWM priority (0=low|1=high)" />
+  </command>
+  <command cli="plugin coexistence get-dp-state" functionName="emberAfPluginCoexistenceGetDpState" group="plugin-coexistence">
+    <description>
+      Get the PTA Directional PRIORITY state
+    </description>
+  </command>
+  <command cli="plugin coexistence set-dp-state" functionName="emberAfPluginCoexistenceSetDpState" group="plugin-coexistence">
+    <description>
+      Set the PTA Directional PRIORITY state
+    </description>
+	<arg name="pulseWidth" type="INT8U" description="Directional PRIORITY pulse width (us) [0=>bypass]" />
+  </command>
+  <command cli="plugin coexistence reset-counters" functionName="emberAfPluginCoexistenceClearCounters" group="plugin-coexistence">
+    <description>
+      Reset all counters
+    </description>
+  </command>
+  <command cli="plugin coexistence result-counters" functionName="emberAfPluginCoexistencePrintCounters" group="plugin-coexistence">
+    <description>
+      Print coexistence specific counters
+    </description>
+  </command>
+  <command cli="plugin coexistence get-phy-state" functionName="emberAfPluginCoexistenceGetPhyState" group="plugin-coexistence">
+    <description>
+      Get the PTA PHY Select state
+    </description>
+  </command>
+  <command cli="plugin coexistence set-phy-state" functionName="emberAfPluginCoexistenceSetPhyState" group="plugin-coexistence">
+    <description>
+      Set the PTA PHY Select state
+    </description>
+  <arg name="timeout" type="INT8U" description="PHY Select Timeout (us) [0=>standard PHY, 1-254=>Timeout to switch to standard PHY after WiFi TX, 255=>Coexistence optimized PHY]" />
+  </command>
+  <command cli="plugin coexistence set-gpio-input" functionName="emberAfPluginCoexistenceSetGpioInputOverride" group="plugin-coexistence">
+    <description>
+      Override the input value of a coexistence GPIO.
+    </description>
+  <arg name="gpioIndex" type="INT8U" description="GPIO port to override" />
+  <arg name="enabled" type="INT8U" description="Input override value of selected port" />
+  </command>
+  <command cli="plugin coexistence get-gpio-input" functionName="emberAfPluginCoexistenceGetGpioInputOverride" group="plugin-coexistence">
+    <description>
+      Get the input value of a coexistence GPIO.
+    </description>
+  <arg name="gpioIndex" type="INT8U" description="GPIO index" />
+  </command>
+  <command cli="plugin coexistence get-active-phy" functionName="emberAfPluginCoexistenceGetActivePhy" group="plugin-coexistence">
+    <description>
+      Get the active RAIL PHY
+    </description>
+  </command>
+</cli>

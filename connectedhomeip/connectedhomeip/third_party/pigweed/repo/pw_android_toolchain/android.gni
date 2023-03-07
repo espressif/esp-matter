@@ -1,0 +1,35 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+declare_args() {
+  # Enable building with an Android toolchain by setting to the full path of
+  # an Android NDK.
+  pw_android_toolchain_NDK_PATH = ""
+
+  # Set to the default minimum version of the Android SDK to compile support
+  # for. This will change which compiler from the NDK is used, and can be
+  # overriden on a per-toolchain basis using `api_level` within a toolchain's
+  # defaults.
+  pw_android_toolchain_API_LEVEL = 21
+}
+
+# Android NDKs contain toolchains for the following multiple targets.
+# `pw_generate_android_toolchains` will create toolchains for each of these
+# targets if a toolchain scope's defaults does not contain `current_cpu`.
+pw_android_toolchain_cpu_targets = [
+  "arm",
+  "arm64",
+  "x64",
+  "x86",
+]

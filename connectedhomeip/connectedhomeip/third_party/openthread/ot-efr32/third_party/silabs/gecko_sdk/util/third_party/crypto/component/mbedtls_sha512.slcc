@@ -1,0 +1,32 @@
+id: mbedtls_sha512
+package: platform
+label: SHA-384 and SHA-512
+description: >-
+  This component provides support for SHA-384 and SHA-512 hash functions using Mbed TLS.
+category: Platform|Security|Mbed TLS|Hashing
+quality: production
+source:
+  - path: util/third_party/crypto/mbedtls/library/sha512.c
+    unless: [trustzone_nonsecure]
+include:
+  - path: util/third_party/crypto/mbedtls/include
+    file_list:
+      - path: mbedtls/sha512.h
+    unless: [trustzone_nonsecure]
+provides:
+  - name: mbedtls_sha512
+  - name: mbedtls_hash_function
+    allow_multiple: true
+  - name: mbedtls_sha_function
+    allow_multiple: true
+requires:
+  - name: mbedtls_core
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_SHA384_C
+  - name: mbedtls_config
+    value: MBEDTLS_SHA512_C
+documentation:
+  docset: mbed-tls
+  document:
+    - page: group-sl-crypto-sha512

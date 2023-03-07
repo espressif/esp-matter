@@ -1,0 +1,21 @@
+id: micriumos_usbh_class_msc
+label: Micrium-USB Host Class - MSC
+package: micrium-usbh
+description: Micrium OS USB Host MSC Class
+category: Services|Micrium|USB
+quality: deprecated
+source:
+  - path: platform/micrium_os/usb/source/host/class/usbh_msc.c
+include:
+  - path: platform/micrium_os
+    file_list:
+      - path: usb/include/host/usbh_msc.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: USB_HOST_MSC
+provides:
+  - name: usbh_class_msc
+  - name: usbh_class
+    allow_multiple: true
+requires:
+  - name: usbh

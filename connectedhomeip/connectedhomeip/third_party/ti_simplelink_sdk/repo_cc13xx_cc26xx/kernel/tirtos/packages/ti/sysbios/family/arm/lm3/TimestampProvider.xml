@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="LM3/Timestamp" title="LM3 Timestamp Management" version="1">
+
+<page name="Module" title="Module Settings">
+<html><body><table>
+  <tr>
+      <td><form>
+        <p>The TimestampProvider module provides device-specific time services for the <a href="http://rtsc.eclipse.org/cdoc-tip/index.html#xdc/runtime/Timestamp.html">Timestamp</a> module.</p>
+        <p> </p>
+      </form></td>
+  </tr>
+  <tr>
+    <td><control type="checkbox" label="Add the LM3-specific Timestamp management module to my configuration" value="value:this.$used" bold="true"/></td>
+  </tr>
+  <tr><td>
+      <h1>Time Base</h1>
+        <table>
+        <tr>
+          <td><control type="label" label="Use Clock's timer" align="left"/></td>
+          <td><control type="checkbox" 
+               enabled="value:this.$used"
+               value="value:this.useClockTimer" 
+               tooltip="value:this.useClockTimer.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Timer Id" align="left"/></td>
+          <td><control type="droplist"
+               enabled="value:!this.useClockTimer"
+               labels="ANY;0;1;2;3"
+               values="-1;0;1;2;3"
+               text="value:this.timerId"
+               tooltip="value:this.timerId.$summary"/></td>
+        </tr>
+      </table>
+  </td></tr>
+</table></body></html>
+</page>
+<properties name="Advanced" title="All Options" enabled="true" visible="true" link="this"/>
+</gep>
+

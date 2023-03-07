@@ -1,0 +1,29 @@
+id: bootloader_spiflash_storage_sfdp
+label: SPI Flash Storage SFDP
+package: bootloader
+description: >
+  Storage component using SPI flash with JEDEC SFDP standard
+category: Platform|Bootloader|Storage
+quality: production
+source:
+  - path: platform/bootloader/storage/spiflash_sfdp/btl_storage_spiflash_sfdp.c
+  - path: platform/bootloader/storage/btl_callbacks_stub.c
+include:
+  - path: platform/bootloader/storage/spiflash_sfdp
+    file_list:
+    - path: btl_storage_spiflash_sfdp.h
+    - path: btl_storage_spiflash_configs_sfdp.h
+define:
+  - name: BOOTLOADER_SUPPORT_STORAGE
+    value: 1
+  - name: BOOTLOADER_SUPPORT_EXTERNAL_STORAGE
+    value : 1
+provides:
+  - name: bootloader_spiflash_storage_sfdp
+  - name: bootloader_nonsecure_incompatible
+    condition: [bootloader_core_nonsecure]
+requires:
+  - name: bootloader_crc
+  - name: bootloader_spi_controller_driver
+  - name: bootloader_storage_slots
+

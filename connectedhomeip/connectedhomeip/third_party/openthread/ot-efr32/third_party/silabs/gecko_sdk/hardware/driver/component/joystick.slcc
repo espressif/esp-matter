@@ -1,0 +1,33 @@
+id: joystick
+label: Joystick
+package: platform
+description: >
+  The Joystick Driver provides an implementation of the Analog Joystick API.
+
+  This driver supports the Joystick Hardware present on Wireless Pro Kit (BRD4002A)
+
+category: Platform|Board Drivers
+quality: production
+root_path: hardware/driver/joystick/
+source:
+  - path: src/sl_joystick.c
+include:
+  - path: inc
+    file_list:
+      - path: sl_joystick.h
+config_file:
+  - path: "config/sl_joystick_config.h"
+    file_id: joystick_config
+provides:
+  - name: joystick
+    allow_multiple: false
+requires:
+  - name: emlib_gpio
+  - name: emlib_iadc
+  - name: emlib_cmu
+  - name: emlib_common
+  - name: status
+  - name: component_catalog 
+template_contribution:
+  - name: component_catalog
+    value: joystick

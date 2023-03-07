@@ -1,0 +1,125 @@
+/*
+ * Copyright (c) 2018-2021, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+// @cliArgs --board /ti/boards/LP_CC2652R7 --rtos freertos
+
+/*
+ *  i2secho.syscfg
+ */
+
+var board = system.deviceData.board.name;
+
+/* ======== CC3200 Audio BoosterPack ======== */
+if (!board.match(/CC13.[12]|CC2651P|CC2653P/)) {
+    var CC3200AUDBOOST = scripting.addHardware("/ti/boards/boosterpacks/CC3200AUDBOOST");
+}
+
+/* ======== TIRTOS7 ======== */
+if (system.getRTOS() === "tirtos7") {
+    const tirtos7_release_syscfg_js = system.getScript("tirtos7_release.syscfg.js");
+}
+
+/* ======== GPIO ========
+ * Add the GPIO LED for boards that support it. The CC32XX LaunchPads
+ * have a pin conflict between I2S and the GPIO for the LED.
+ */
+if (!board.match(/CC32/)) {
+    var GPIO = scripting.addModule("/ti/drivers/GPIO");
+    var gpio = GPIO.addInstance();
+    gpio.$hardware = system.deviceData.board.components.LED0;
+    gpio.$name = "CONFIG_GPIO_LED_0";
+}
+
+/* ======== I2C ======== */
+var I2C = scripting.addModule("/ti/drivers/I2C");
+var i2c = I2C.addInstance();
+i2c.$name = "CONFIG_I2C_0";
+
+if (!board.match(/CC13.[12]|CC2651P|CC2653P/)) {
+    i2c.$hardware = CC3200AUDBOOST.components.CC3200AUDBOOST_I2C;
+}
+else {
+    i2c.i2c.sdaPin.$assign = "boosterpack.10";
+    i2c.i2c.sclPin.$assign = "boosterpack.9";
+}
+
+/* ======== I2S ======== */
+var I2S = scripting.addModule("/ti/drivers/I2S");
+var i2s = I2S.addInstance();
+i2s.interruptPriority = "2";
+i2s.$name = "CONFIG_I2S_0";
+
+
+/*
+ * Assign I2S pins manually for all CC13x2 LaunchPads
+ * Signal names and wiring below are taken from
+ * http://www.ti.com/lit/pdf/swru383, Figure 2-1.
+ *
+ * Other boards will use the CC3200AUDBOOST directly from SysCfg
+ */
+if (!board.match(/CC13.[12]|CC2651P|CC2653P/)) {
+    i2s.$hardware = CC3200AUDBOOST.components.CC3200AUDBOOST_I2S;
+}
+else {
+
+    /*
+     * All CC13x2 LaunchPads must jumper SD0/DIN as this conflicts with the
+     * sub-1 GHz RF port.
+     */
+    i2s.i2s.SD0Pin.$assign = "DIO25";               // CC3200AUDBOOST DIN
+
+    if (board.match(/CC1312/) || board.match(/CC1352R/)) {
+
+        /*
+         * "R" variant LaunchPads may use SCK/BCLK and WS/FYSNC as is
+         * but have different mappings for SD1
+         * (due CC1352 having a 2.4GHz RF port)
+         */
+        i2s.i2s.SCKPin.$assign = "DIO30";           // CC3200AUDBOOST BCLK
+        i2s.i2s.WSPin.$assign =  "DIO29";           // CC3200AUDBOOST FSYNC
+
+        if (board.match(/CC1312/)) {
+            i2s.i2s.SD1Pin.$assign = "DIO1";       // CC3200AUDBOOST DOUT
+        } else if (board.match(/CC1352R/)) {
+            i2s.i2s.SD1Pin.$assign = "DIO26";      // CC3200AUDBOOST DOUT
+        }
+    } else if (board.match(/CC1352P/) || board.match(/CC1311P/) || board.match(/CC2651P/) || board.match(/CC2653P/)) {
+
+        /*
+         * "P" variant LaunchPads must use jumpers for all I2S signals because
+         * there are conflicts between the I2S pins required by the BoosterPack
+         * and the RF ports and the RF switch signals on the LaunchPad
+         */
+        i2s.i2s.SD1Pin.$assign = "DIO26";           // CC3200AUDBOOST DOUT
+        i2s.i2s.SCKPin.$assign = "DIO27";           // CC3200AUDBOOST BCLK
+        i2s.i2s.WSPin.$assign =  "DIO16";           // CC3200AUDBOOST FSYNC
+    }
+}

@@ -1,0 +1,330 @@
+id: "apploader"
+label: "AppLoader Support for Applications"
+package: "Bluetooth"
+description: >
+  Bluetooth AppLoader application for OTA DFU.
+
+  On series 1 devices, this component adds AppLoader binary to the application.
+
+  On series 2 and above devices, it moves the application start address to give space for an AppLoader OTA DFU
+  Bootloader. It also requires a Gecko Bootloader with an AppLoader OTA DFU plugin to be present on the device.
+
+  AppLoader is a minimal version of the Bluetooth stack designed to enable device firmware updates over BLE connections
+  It allows to update application using in-place update where the old application is directly overwritten with the new one.
+category: "Bluetooth|OTA"
+quality: "production"
+root_path: "protocol/bluetooth"
+include: []
+source: []
+requires:
+  - name: device_supports_bluetooth
+library:
+#EFR32BG1B
+  - path: "lib/EFR32BG1B/GCC/binapploader.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32bg1b"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32BG1B/GCC/binapploader_nvm3.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32bg1b"
+      - "nvm3"
+  - path: "lib/EFR32BG1B/IAR/binapploader.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32bg1b"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32BG1B/IAR/binapploader_nvm3.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32bg1b"
+      - "nvm3"
+#EFR32BG1P
+  - path: "lib/EFR32BG1P/GCC/binapploader.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32bg1p"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32BG1P/GCC/binapploader_nvm3.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32bg1p"
+      - "nvm3"
+  - path: "lib/EFR32BG1P/IAR/binapploader.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32bg1p"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32BG1P/IAR/binapploader_nvm3.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32bg1p"
+      - "nvm3"
+#BGM1
+  - path: "lib/EFR32BG1P/GCC/binapploader.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_bgm1"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32BG1P/GCC/binapploader_nvm3.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_bgm1"
+      - "nvm3"
+  - path: "lib/EFR32BG1P/IAR/binapploader.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_bgm1"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32BG1P/IAR/binapploader_nvm3.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_bgm1"
+      - "nvm3"
+#EFR32MG1P
+  - path: "lib/EFR32MG1P/GCC/binapploader.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32mg1p"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32MG1P/GCC/binapploader_nvm3.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32mg1p"
+      - "nvm3"
+  - path: "lib/EFR32MG1P/IAR/binapploader.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32mg1p"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32MG1P/IAR/binapploader_nvm3.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32mg1p"
+      - "nvm3"
+#MGM1
+  - path: "lib/EFR32MG1P/GCC/binapploader.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_mgm1"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32MG1P/GCC/binapploader_nvm3.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_mgm1"
+      - "nvm3"
+  - path: "lib/EFR32MG1P/IAR/binapploader.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_mgm1"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32MG1P/IAR/binapploader_nvm3.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_mgm1"
+      - "nvm3"
+#EFR32BG12P
+  - path: "lib/EFR32BG12P/GCC/binapploader.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32bg12p"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32BG12P/GCC/binapploader_nvm3.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32bg12p"
+      - "nvm3"
+  - path: "lib/EFR32BG12P/IAR/binapploader.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32bg12p"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32BG12P/IAR/binapploader_nvm3.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32bg12p"
+      - "nvm3"
+#EFR32MG12P
+  - path: "lib/EFR32MG12P/GCC/binapploader.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32mg12p"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32MG12P/GCC/binapploader_nvm3.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32mg12p"
+      - "nvm3"
+  - path: "lib/EFR32MG12P/IAR/binapploader.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32mg12p"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32MG12P/IAR/binapploader_nvm3.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32mg12p"
+      - "nvm3"
+#MGM12
+  - path: "lib/EFR32MG12P/GCC/binapploader.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_mgm12"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32MG12P/GCC/binapploader_nvm3.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_mgm12"
+      - "nvm3"
+  - path: "lib/EFR32MG12P/IAR/binapploader.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_mgm12"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32MG12P/IAR/binapploader_nvm3.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_mgm12"
+      - "nvm3"
+#EFR32BG13P
+  - path: "lib/EFR32BG13P/GCC/binapploader.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32bg13p"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32BG13P/GCC/binapploader_nvm3.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32bg13p"
+      - "nvm3"
+  - path: "lib/EFR32BG13P/IAR/binapploader.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32bg13p"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32BG13P/IAR/binapploader_nvm3.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32bg13p"
+      - "nvm3"
+#BGM13
+  - path: "lib/EFR32BG13P/GCC/binapploader.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_bgm13"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32BG13P/GCC/binapploader_nvm3.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_bgm13"
+      - "nvm3"
+  - path: "lib/EFR32BG13P/IAR/binapploader.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_bgm13"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32BG13P/IAR/binapploader_nvm3.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_bgm13"
+      - "nvm3"
+#EFR32MG13P
+  - path: "lib/EFR32MG13P/GCC/binapploader.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32mg13p"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32MG13P/GCC/binapploader_nvm3.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32mg13p"
+      - "nvm3"
+  - path: "lib/EFR32MG13P/IAR/binapploader.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32mg13p"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32MG13P/IAR/binapploader_nvm3.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32mg13p"
+      - "nvm3"
+#MGM13
+  - path: "lib/EFR32MG13P/GCC/binapploader.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_mgm13"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32MG13P/GCC/binapploader_nvm3.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_mgm13"
+      - "nvm3"
+  - path: "lib/EFR32MG13P/IAR/binapploader.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_mgm13"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32MG13P/IAR/binapploader_nvm3.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_mgm13"
+      - "nvm3"
+#EFR32MG14P
+  - path: "lib/EFR32MG14P/GCC/binapploader.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32mg14p"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32MG14P/GCC/binapploader_nvm3.o"
+    condition:
+      - "toolchain_gcc"
+      - "device_family_efr32mg14p"
+      - "nvm3"
+  - path: "lib/EFR32MG14P/IAR/binapploader.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32mg14p"
+    unless:
+      - "nvm3"
+  - path: "lib/EFR32MG14P/IAR/binapploader_nvm3.o"
+    condition:
+      - "toolchain_iar"
+      - "device_family_efr32mg14p"
+      - "nvm3"
+provides:
+  - name: "apploader"
+template_contribution:
+  - name: "apploader_enable"
+    value: 1
+    condition: [device_series_1]
+  - name: "apploader_size"
+    value: 4096
+    condition: [device_series_1]
+

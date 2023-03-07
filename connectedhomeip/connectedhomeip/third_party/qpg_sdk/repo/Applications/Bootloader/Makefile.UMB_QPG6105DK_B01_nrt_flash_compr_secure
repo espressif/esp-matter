@@ -1,0 +1,433 @@
+#Generated from:
+# $(BASEDIR)/../../Applications/Bootloader/UserModeBootloader_QPG6105DK_B01_compr_secure_armgccemb.py
+
+ifndef BASEDIR
+BASEDIR:=$(abspath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
+endif
+# Global vars
+OS_USED?=LINUX
+GPHUB_ROOT?=/builds/291/0/depot/gpHub
+ROOTDIR?=$(BASEDIR)/../..
+WORKDIR?=$(BASEDIR)/../../Work/UMB_QPG6105DK_B01_nrt_flash_compr_secure
+ENV_PATH?=$(BASEDIR)/../..
+PYTHON_BIN?=/usr/bin/python3
+CURRENT_CONF:=UserModeBootloader_QPG6105DK_B01_compr_secure_armgccemb.py
+EXTRA_CONF:=
+
+CONFIG_HEADER:=$(BASEDIR)/../../Applications/Bootloader/gen/UMB_QPG6105DK_B01_nrt_flash_compr_secure/qorvo_config.h
+INTERNALS_HEADER:=$(BASEDIR)/../../Applications/Bootloader/gen/UMB_QPG6105DK_B01_nrt_flash_compr_secure/qorvo_internals.h
+PREINCLUDE_HEADER:=$(BASEDIR)/../../Applications/Bootloader/gen/UMB_QPG6105DK_B01_nrt_flash_compr_secure/qorvo_config.h
+
+PREBUILD_SCRIPT:=
+
+POSTBUILD_SCRIPT:=$(BASEDIR)/../../Applications/Bootloader/UMB_QPG6105DK_B01_nrt_flash_compr_secure_postbuild.sh
+
+FLAGS=
+# Build variables
+ARMCHIP=K8E
+MCU=cortex-m4
+PRODUCTID?=QPG6105
+SRC_DISABLE_ALIGNMENT_ERROR+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src/cryptodma.c
+SRC_DISABLE_ALIGNMENT_ERROR+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src/memcmp.c
+SRC_DISABLE_ALIGNMENT_ERROR+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src/sx_derive_key_alg.c
+SRC_DISABLE_ALIGNMENT_ERROR+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src/sx_rng.c
+
+# Main target file
+APPFILE:=$(WORKDIR)/UMB_QPG6105DK_B01_nrt_flash_compr_secure.hex
+
+
+# Compiler specifics
+COMPILER?=armgccemb
+COMPILER_VERSION:=9_2019-q4-major
+TOOLCHAIN?=/usr
+PROGRAMMER?=xsif
+PROGRAM_EXT:=hex
+LIB_EXT:=a
+
+SRC=
+SRC_NOWARNING=
+ASRC=
+INC=
+AINC=
+LIB=
+
+# Application defines
+APPNAME:=UMB_QPG6105DK_B01_nrt_flash_compr_secure
+SRC_APP:=
+SRC_APP+=$(BASEDIR)/../../Applications/Bootloader/src/default_handlers_bl.c
+SRC_APP+=$(BASEDIR)/../../Applications/Bootloader/src/ivt_bl.c
+SRC_APP+=$(BASEDIR)/../../Applications/Bootloader/src/userModeBootloader.c
+SRC_APP+=$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/halCortexM4/k8e/src/hal_CLK.c
+SRC_APP+=$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/halCortexM4/k8e/src/hal_wait.c
+SRC_APP+=$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/halCortexM4/src/hal_MutexBareMetal.c
+SRC_APP+=$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/halCortexM4/src/hal_user_license.c
+SRC_APP+=$(BASEDIR)/../../Components/Qorvo/HAL_RF/gphal/k8e/src/gpHal_Flash.c
+SRC_APP+=$(BASEDIR)/../../Components/Qorvo/HAL_RF/gphal/k8e/src/gpHal_MISC.c
+SRC_APP+=$(BASEDIR)/../../Components/Qorvo/HAL_RF/gphal/k8e/src/gpHal_Rap.c
+SRC_APP+=$(BASEDIR)/../../Components/Qorvo/OS/gpVersion/src/gpVersion_versionInfo.c
+SRC+=$(SRC_APP)
+ASRC_APP:=
+ASRC_APP+=$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/halCortexM4/k8e/src/hal_wait_gcc.S
+ASRC_APP+=$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/halCortexM4/k8e/src/handlers_gcc.S
+ASRC+=$(ASRC_APP)
+INC_APP:=
+INC_APP+=-I$(BASEDIR)/../../Applications/Bootloader/gen/UMB_QPG6105DK_B01_nrt_flash_compr_secure
+INC_APP+=-I$(BASEDIR)/../../Applications/Bootloader/inc
+INC_APP+=-I$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/halCortexM4/inc
+INC_APP+=-I$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/halCortexM4/k8e/src
+INC_APP+=-I$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/inc
+INC_APP+=-I$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/inc/compiler/ARMGCCEMB
+INC+=$(INC_APP)
+AINC_APP:=
+AINC_APP+=-I$(BASEDIR)/../../Applications/Bootloader/gen/UMB_QPG6105DK_B01_nrt_flash_compr_secure
+AINC+=$(AINC_APP)
+SRC_NOWARNING+=$(SRC_APP)
+
+#Compilation flags are defined in $(BASEDIR)/../../Applications/Bootloader/gen/UMB_QPG6105DK_B01_nrt_flash_compr_secure/qorvo_config.h
+FLAGS+=-DGP_CONFIG_HEADER
+LINKERSCRIPT:=$(BASEDIR)/../../Applications/Bootloader/gen/UMB_QPG6105DK_B01_nrt_flash_compr_secure/UMB_QPG6105DK_B01_nrt_flash_compr_secure.ld
+APPFIRMWARE:=
+
+COMPS:=
+
+#Component sources
+#Depends on:
+# src: gpLog
+COMPS+=gpAssert
+SRC_gpAssert:=
+SRC_gpAssert+=$(BASEDIR)/../../Components/Qorvo/OS/gpAssert/src/gpAssert.c
+SRC+=$(SRC_gpAssert)
+INC_gpAssert:=
+INC_gpAssert+=-I$(BASEDIR)/../../Components/Qorvo/OS/gpAssert/inc
+INC+=$(INC_gpAssert)
+SRC_NOWARNING+=$(SRC_gpAssert)
+
+#Depends on:
+# src: 
+COMPS+=gpBaseComps
+SRC_gpBaseComps:=
+SRC_gpBaseComps+=$(BASEDIR)/../../Components/Qorvo/OS/gpBaseComps/src/gpBaseComps_StackInit.c
+SRC+=$(SRC_gpBaseComps)
+INC_gpBaseComps:=
+INC_gpBaseComps+=-I$(BASEDIR)/../../Components/Qorvo/OS/gpBaseComps/inc
+INC+=$(INC_gpBaseComps)
+SRC_NOWARNING+=$(SRC_gpBaseComps)
+
+#Depends on:
+# src: 
+COMPS+=gpBsp
+INC_gpBsp:=
+INC_gpBsp+=-I$(BASEDIR)/../../Components/Qorvo/BSP/gpBsp/inc
+INC_gpBsp+=-I$(BASEDIR)/../../Components/Qorvo/BSP/gpBsp/inc/BLE
+INC_gpBsp+=-I$(BASEDIR)/../../Components/Qorvo/BSP/gpBsp/inc/FTS
+INC_gpBsp+=-I$(BASEDIR)/../../Components/Qorvo/BSP/gpBsp/inc/FoundationAndSilicon
+INC_gpBsp+=-I$(BASEDIR)/../../Components/Qorvo/BSP/gpBsp/inc/Gateway
+INC_gpBsp+=-I$(BASEDIR)/../../Components/Qorvo/BSP/gpBsp/inc/PTC
+INC_gpBsp+=-I$(BASEDIR)/../../Components/Qorvo/BSP/gpBsp/inc/PeripheralExamples
+INC_gpBsp+=-I$(BASEDIR)/../../Components/Qorvo/BSP/gpBsp/inc/RemoteControl
+INC_gpBsp+=-I$(BASEDIR)/../../Components/Qorvo/BSP/gpBsp/inc/SmartHomeAndLighting
+INC+=$(INC_gpBsp)
+
+#Depends on:
+# src: gpPd, gphal
+COMPS+=gpEncryption
+INC_gpEncryption:=
+INC_gpEncryption+=-I$(BASEDIR)/../../Components/Qorvo/BaseUtils/gpEncryption/inc
+INC+=$(INC_gpEncryption)
+
+#Depends on:
+# src: gpAssert
+COMPS+=gpLog
+INC_gpLog:=
+INC_gpLog+=-I$(BASEDIR)/../../Components/Qorvo/OS/gpLog/inc
+INC+=$(INC_gpLog)
+
+#Depends on:
+# src: gpLog, gpAssert, gphal
+COMPS+=gpPad
+INC_gpPad:=
+INC_gpPad+=-I$(BASEDIR)/../../Components/Qorvo/HAL_RF/gpPad/inc
+INC+=$(INC_gpPad)
+
+#Depends on:
+# src: gpLog, gpAssert
+# inc: gpSched, gphal
+COMPS+=gpPd
+INC_gpPd:=
+INC_gpPd+=-I$(BASEDIR)/../../Components/Qorvo/HAL_RF/gpPd/inc
+INC+=$(INC_gpPd)
+
+#Depends on:
+# src: gpLog, gpAssert, gpWmrk
+# inc: gpPd
+COMPS+=gpPoolMem
+SRC_gpPoolMem:=
+SRC_gpPoolMem+=$(BASEDIR)/../../Components/Qorvo/OS/gpPoolMem/src/gpPoolMem.c
+SRC_gpPoolMem+=$(BASEDIR)/../../Components/Qorvo/OS/gpPoolMem/src/gpPoolMem_data.c
+SRC_gpPoolMem+=$(BASEDIR)/../../Components/Qorvo/OS/gpPoolMem/src/gpPoolMem_impl.c
+SRC+=$(SRC_gpPoolMem)
+INC_gpPoolMem:=
+INC_gpPoolMem+=-I$(BASEDIR)/../../Components/Qorvo/OS/gpPoolMem/inc
+INC+=$(INC_gpPoolMem)
+SRC_NOWARNING+=$(SRC_gpPoolMem)
+
+#Depends on:
+# src: gpLog, gpSched, gphal
+COMPS+=gpRandom
+INC_gpRandom:=
+INC_gpRandom+=-I$(BASEDIR)/../../Components/Qorvo/BaseUtils/gpRandom/inc
+INC+=$(INC_gpRandom)
+
+#Depends on:
+# src: 
+COMPS+=gpReset
+INC_gpReset:=
+INC_gpReset+=-I$(BASEDIR)/../../Components/Qorvo/OS/gpReset/inc
+INC+=$(INC_gpReset)
+
+#Depends on:
+# src: gpAssert, gphal, gpLog
+COMPS+=gpRxArbiter
+INC_gpRxArbiter:=
+INC_gpRxArbiter+=-I$(BASEDIR)/../../Components/Qorvo/802_15_4/gpRxArbiter/inc
+INC+=$(INC_gpRxArbiter)
+
+#Depends on:
+# src: gpAssert, gpLog, gpUtils
+COMPS+=gpSched
+INC_gpSched:=
+INC_gpSched+=-I$(BASEDIR)/../../Components/Qorvo/OS/gpSched/inc
+INC_gpSched+=-I$(BASEDIR)/../../Components/Qorvo/OS/gpSched/src
+INC+=$(INC_gpSched)
+
+#Depends on:
+# src: gpLog, gpTls, silexCryptoSoc
+COMPS+=gpSecureBoot
+SRC_gpSecureBoot:=
+SRC_gpSecureBoot+=$(BASEDIR)/../../Components/Qorvo/Bootloader/gpSecureBoot/src/gpSecureBoot.c
+SRC+=$(SRC_gpSecureBoot)
+INC_gpSecureBoot:=
+INC_gpSecureBoot+=-I$(BASEDIR)/../../Components/Qorvo/Bootloader/gpSecureBoot/inc
+INC+=$(INC_gpSecureBoot)
+SRC_NOWARNING+=$(SRC_gpSecureBoot)
+
+#Depends on:
+# src: gpLog, gpAssert
+COMPS+=gpStat
+INC_gpStat:=
+INC_gpStat+=-I$(BASEDIR)/../../Components/Qorvo/BaseUtils/gpStat/inc
+INC+=$(INC_gpStat)
+
+#Depends on:
+# src: gpAssert, gpPoolMem, silexCryptoSoc
+COMPS+=gpTls
+SRC_gpTls:=
+SRC_gpTls+=$(BASEDIR)/../../Components/Qorvo/BaseUtils/gpTls/src/gpTls.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/aes.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/aesni.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/arc4.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/aria.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/asn1parse.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/asn1write.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/base64.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/bignum.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/blowfish.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/camellia.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/ccm.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/chacha20.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/chachapoly.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/cipher.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/cipher_wrap.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/cmac.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/ctr_drbg.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/des.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/dhm.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/ecdh.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/ecdsa.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/ecjpake.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/ecp.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/ecp_curves.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/entropy.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/entropy_poll.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/error.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/gcm.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/havege.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/hkdf.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/hmac_drbg.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/md.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/md2.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/md4.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/md5.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/md_wrap.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/memory_buffer_alloc.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/nist_kw.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/oid.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/padlock.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/pem.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/pk.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/pk_wrap.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/pkcs12.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/pkcs5.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/pkparse.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/pkwrite.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/platform.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/platform_util.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/poly1305.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/ripemd160.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/rsa.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/rsa_internal.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/sha1.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/sha256.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/sha512.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/threading.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/timing.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/version.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/version_features.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/library/xtea.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/mbedtls_alt/aes_alt.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/mbedtls_alt/ccm_alt.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/mbedtls_alt/dhm_alt.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/mbedtls_alt/ecjpake_alt.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/mbedtls_alt/ecp_alt.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/mbedtls_alt/gcm_alt.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/mbedtls_alt/rsa_alt.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/mbedtls_alt/sha1_alt.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/mbedtls_alt/sha256_alt.c
+SRC_gpTls+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/mbedtls_alt/sha512_alt.c
+SRC+=$(SRC_gpTls)
+INC_gpTls:=
+INC_gpTls+=-I$(BASEDIR)/../../Components/Qorvo/BaseUtils/gpTls/inc
+INC_gpTls+=-I$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/include
+INC_gpTls+=-I$(BASEDIR)/../../Components/ThirdParty/ARM/mbedtls/v2.14/include/mbedtls
+INC_gpTls+=-I$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/include
+INC_gpTls+=-I$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/mbedtls_alt
+INC+=$(INC_gpTls)
+SRC_NOWARNING+=$(SRC_gpTls)
+
+#Depends on:
+# src: gpUtils, lzma, gpSecureBoot
+# inc: gphal
+COMPS+=gpUpgrade
+SRC_gpUpgrade:=
+SRC_gpUpgrade+=$(BASEDIR)/../../Components/Qorvo/Bootloader/gpUpgrade/src/gpUpgrade_OtaArea.c
+SRC_gpUpgrade+=$(BASEDIR)/../../Components/Qorvo/Bootloader/gpUpgrade/src/gpUpgrade_SecureBoot.c
+SRC_gpUpgrade+=$(BASEDIR)/../../Components/Qorvo/Bootloader/gpUpgrade/src/gpUpgrade_flash.c
+SRC_gpUpgrade+=$(BASEDIR)/../../Components/Qorvo/Bootloader/gpUpgrade/src/gpUpgrade_hash.c
+SRC_gpUpgrade+=$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/halCortexM4/k8e/src/rom_access_gcc.S
+SRC+=$(SRC_gpUpgrade)
+INC_gpUpgrade:=
+INC_gpUpgrade+=-I$(BASEDIR)/../../Components/Qorvo/Bootloader/gpUpgrade/inc
+INC+=$(INC_gpUpgrade)
+SRC_NOWARNING+=$(SRC_gpUpgrade)
+
+#Depends on:
+# src: gpAssert, gpLog
+COMPS+=gpUtils
+SRC_gpUtils:=
+SRC_gpUtils+=$(BASEDIR)/../../Components/Qorvo/BaseUtils/gpUtils/src/gpUtils_LL.c
+SRC_gpUtils+=$(BASEDIR)/../../Components/Qorvo/BaseUtils/gpUtils/src/gpUtils_LLext.c
+SRC_gpUtils+=$(BASEDIR)/../../Components/Qorvo/BaseUtils/gpUtils/src/gpUtils_base64.c
+SRC_gpUtils+=$(BASEDIR)/../../Components/Qorvo/BaseUtils/gpUtils/src/gpUtils_crc.c
+SRC_gpUtils+=$(BASEDIR)/../../Components/Qorvo/BaseUtils/gpUtils/src/gpUtils_crc32.c
+SRC+=$(SRC_gpUtils)
+INC_gpUtils:=
+INC_gpUtils+=-I$(BASEDIR)/../../Components/Qorvo/BaseUtils/gpUtils/inc
+INC+=$(INC_gpUtils)
+SRC_NOWARNING+=$(SRC_gpUtils)
+
+#Depends on:
+# src: 
+COMPS+=gpVersion
+INC_gpVersion:=
+INC_gpVersion+=-I$(BASEDIR)/../../Components/Qorvo/OS/gpVersion/inc
+INC_gpVersion+=-I$(BASEDIR)/../../Components/Qorvo/OS/gpVersion/src
+INC+=$(INC_gpVersion)
+
+#Depends on:
+# src: gpLog, gpAssert
+COMPS+=gpWmrk
+INC_gpWmrk:=
+INC_gpWmrk+=-I$(BASEDIR)/../../Components/Qorvo/BaseUtils/gpWmrk/inc
+INC+=$(INC_gpWmrk)
+
+#Depends on:
+# src: gpAssert, gpReset, silexCryptoSoc, gpSched, gpRandom
+# inc: gpStat, gpBsp, gpEncryption, gpPd, gpPad, gpRxArbiter
+COMPS+=gphal
+INC_gphal:=
+INC_gphal+=-I$(BASEDIR)/../../Components/Qorvo/HAL_RF/gphal/inc
+INC_gphal+=-I$(BASEDIR)/../../Components/Qorvo/HAL_RF/gphal/inc/gen
+INC_gphal+=-I$(BASEDIR)/../../Components/Qorvo/HAL_RF/gphal/k8e/inc
+INC_gphal+=-I$(BASEDIR)/../../Components/Qorvo/HAL_RF/gphal/k8e/src
+INC_gphal+=-I$(BASEDIR)/../../Components/Qorvo/HAL_RF/gphal/src
+INC+=$(INC_gphal)
+AINC_gphal:=
+AINC_gphal+=-I$(BASEDIR)/../../Components/Qorvo/HAL_RF/gphal/k8e/inc
+AINC+=$(AINC_gphal)
+
+#Depends on:
+# src: gpAssert, gphal
+# inc: gpBsp
+COMPS+=halCortexM4
+INC_halCortexM4:=
+INC_halCortexM4+=-I$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/halCortexM4/inc
+INC_halCortexM4+=-I$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/halCortexM4/k8e/inc
+INC_halCortexM4+=-I$(BASEDIR)/../../Components/ThirdParty/TOOL_CMSIS/CMSIS/Core/Include
+INC+=$(INC_halCortexM4)
+
+#Depends on:
+# src: 
+COMPS+=lzma
+SRC_lzma:=
+SRC_lzma+=$(BASEDIR)/../../Components/Qorvo/Bootloader/lzma/src/lzma.c
+SRC_lzma+=$(BASEDIR)/../../Components/Qorvo/Bootloader/lzma/src/lzma_gpHal_Flash.c
+SRC+=$(SRC_lzma)
+ASRC_lzma:=
+ASRC_lzma+=$(BASEDIR)/../../Components/Qorvo/Bootloader/lzma/asrc/lzma-decompression-v4-GCC.S
+ASRC_lzma+=$(BASEDIR)/../../Components/Qorvo/Bootloader/lzma/asrc/lzma-decompression-v4-output-GCC.S
+ASRC+=$(ASRC_lzma)
+INC_lzma:=
+INC_lzma+=-I$(BASEDIR)/../../Components/Qorvo/Bootloader/lzma/inc
+INC_lzma+=-I$(BASEDIR)/../../Components/Qorvo/Bootloader/lzma/src
+INC+=$(INC_lzma)
+SRC_NOWARNING+=$(SRC_lzma)
+
+#Depends on:
+# src: gpAssert, gpLog
+COMPS+=silexCryptoSoc
+SRC_silexCryptoSoc:=
+SRC_silexCryptoSoc+=$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/silexCryptoSoc/src/silexCryptoSoc_Init.c
+SRC_silexCryptoSoc+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src/ba414e_config.c
+SRC_silexCryptoSoc+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src/ba431_config.c
+SRC_silexCryptoSoc+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src/crypto_nonrom.c
+SRC_silexCryptoSoc+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src/cryptodma.c
+SRC_silexCryptoSoc+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src/cryptolib_types.c
+SRC_silexCryptoSoc+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src/memcmp.c
+SRC_silexCryptoSoc+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src/padding.c
+SRC_silexCryptoSoc+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src/sx_aes.c
+SRC_silexCryptoSoc+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src/sx_dh_alg.c
+SRC_silexCryptoSoc+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src/sx_drbg_hash.c
+SRC_silexCryptoSoc+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src/sx_ecc_curves.c
+SRC_silexCryptoSoc+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src/sx_ecc_keygen_alg.c
+SRC_silexCryptoSoc+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src/sx_ecdsa_alg.c
+SRC_silexCryptoSoc+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src/sx_hash.c
+SRC_silexCryptoSoc+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src/sx_jpake_alg.c
+SRC_silexCryptoSoc+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src/sx_math.c
+SRC_silexCryptoSoc+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src/sx_pk_integrity.c
+SRC_silexCryptoSoc+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src/sx_primitives.c
+SRC_silexCryptoSoc+=$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src/sx_rng.c
+SRC+=$(SRC_silexCryptoSoc)
+INC_silexCryptoSoc:=
+INC_silexCryptoSoc+=-I$(BASEDIR)/../../Components/Qorvo/HAL_PLATFORM/silexCryptoSoc/inc
+INC_silexCryptoSoc+=-I$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/include
+INC_silexCryptoSoc+=-I$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src
+INC+=$(INC_silexCryptoSoc)
+AINC_silexCryptoSoc:=
+AINC_silexCryptoSoc+=-I$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/include
+AINC_silexCryptoSoc+=-I$(BASEDIR)/../../Components/ThirdParty/Silex/cryptosoc/libcryptosoc/src
+AINC+=$(AINC_silexCryptoSoc)
+SRC_NOWARNING+=$(SRC_silexCryptoSoc)
+
+
+-include $(BASEDIR)/custom.mk
+include $(ENV_PATH)/make/gpcommon.mk

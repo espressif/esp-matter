@@ -1,0 +1,38 @@
+[
+    {
+        "rootMacroName": "COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR",
+        "compilerIncludePath": [ ],
+        "compilerSymbols": [ ],
+        "linkerSearchPath": [ ],
+
+        "properties": {
+            "rtsc.repoMacroName": "COM_TI_SIMPLELINK_CC32XX_SDK_INSTALL_DIR_REPOS",
+            "rtsc.repositories": [
+				".;${XDCROOT}/packages",
+                "source",
+                "kernel/tirtos/packages",
+                "kernel/tirtos7/packages",
+                "."
+            ],
+            "rtsc.platformMappingsFile": "./kernel/tirtos/etc/platforms.json",
+            "rtsc.targetMappingsFile": "./kernel/tirtos/etc/targets.json"
+        },
+
+        "helpTocs": [
+            "docs/tocs/toc_top.xml",
+            "docs/tocs/bios_eclipse_cdoc_toc.xml",
+            "docs/tocs/toc.xml",
+            "docs/tocs/uia_eclipse_cdoc_toc.xml"
+        ],
+
+        "docs": [
+            ".",
+            "docs",
+            "docs/drivers/doxygen/html",
+            "docs/tirtos/sysbios/cdoc",
+            "docs/tirtos/sysbios",
+            "docs/tirtos/uia",
+            "docs/tirtos/uia/cdoc"
+        ]
+    }
+]

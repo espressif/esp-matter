@@ -1,0 +1,41 @@
+project_name: spidrv_eusart_master_kernel_micriumos
+package: platform
+quality: production
+label: Platform - SPIDRV Master on Micrium OS kernel using EUSART
+description: > 
+  This example project demonstrates how to use the master mode of the Serial Peripheral Interface driver in a Micrium OS kernel task.
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+source:
+  - path: app.c
+  - path: main.c
+  - path: spidrv_master_micriumos.c
+include:
+  - path: .
+    file_list:
+    - path: app.h
+    - path: spidrv_master_micriumos.h
+component:
+  - id: sl_system
+  - id: device_init
+  - id: micriumos_kernel
+  - id: spidrv_eusart
+    instance: [exp]
+  - id: iostream_stdlib_config
+  - id: iostream_retarget_stdio
+  - id: iostream_recommended_stream
+define:
+  - name: DEBUG_EFM
+readme:
+  - path: readme.md
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+ui_hints:
+  highlight: readme.md

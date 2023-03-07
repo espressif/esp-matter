@@ -1,0 +1,19 @@
+!!omap
+- id: brd4301a
+- label: BRD4301A
+- package: platform
+- description: Board support for BRD4301A.
+- category: Platform|Board|Radio Board
+- quality: production
+- requires:
+  - name: brd4301a_revision
+- provides:
+  - name: brd4301a
+  - name: hardware_board_from_stk
+  - name: hardware_board_from_slwrb4301a
+  - name: hardware_board_from_slwstk6101a
+  - name: hardware_board_from_slwstk6101b
+- recommends:
+  - id: brd4301a_a01
+- ui_hints:
+    visibility: never

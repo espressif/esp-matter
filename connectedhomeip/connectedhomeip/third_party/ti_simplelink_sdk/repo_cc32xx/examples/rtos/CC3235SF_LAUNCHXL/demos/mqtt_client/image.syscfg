@@ -1,0 +1,143 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "CC3235SF" --package "Default" --part "Default" --ccxxImageMode --product "simplelink_cc32xx_sdk@6_10_00_05"
+ * @versions {"data":"2020052512","timestamp":"2020052512","tool":"1.12.0","templates":"2020052512"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const General     = scripting.addModule("/ti/drivers/net/imagecreator/new_design/Device/General");
+const Ota         = scripting.addModule("/ti/drivers/net/imagecreator/new_design/Device/Ota");
+const Network     = scripting.addModule("/ti/drivers/net/imagecreator/new_design/NetworkServices/Network");
+const CertStore   = scripting.addModule("/ti/drivers/net/imagecreator/new_design/UserFiles/CertStore");
+const MCUImage    = scripting.addModule("/ti/drivers/net/imagecreator/new_design/UserFiles/MCUImage");
+const ServicePack = scripting.addModule("/ti/drivers/net/imagecreator/new_design/UserFiles/ServicePack");
+const fileTree    = scripting.addModule("/ti/drivers/net/imagecreator/new_design/UserFiles/fileTree");
+const fileTree0   = fileTree.addInstance();
+const fileTree1   = fileTree.addInstance();
+const fileTree2   = fileTree.addInstance();
+const fileTree3   = fileTree.addInstance();
+const fileTree4   = fileTree.addInstance();
+const fileTree5   = fileTree.addInstance();
+const fileTree6   = fileTree.addInstance();
+const fileTree7   = fileTree.addInstance();
+const fileTree8   = fileTree.addInstance();
+const fileTree9   = fileTree.addInstance();
+const fileTree10  = fileTree.addInstance();
+const fileTree11  = fileTree.addInstance();
+const fileTree12  = fileTree.addInstance();
+const fileTree13  = fileTree.addInstance();
+const fileTree14  = fileTree.addInstance();
+const fileTree15  = fileTree.addInstance();
+const fileTree16  = fileTree.addInstance();
+const fileTree17  = fileTree.addInstance();
+const fileTree18  = fileTree.addInstance();
+const fileTree19  = fileTree.addInstance();
+const Mac         = scripting.addModule("/ti/drivers/net/imagecreator/new_design/WiFi/Mac");
+const Radio       = scripting.addModule("/ti/drivers/net/imagecreator/new_design/WiFi/Radio");
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+General.ModeSelect = "development";
+fileTree.rootDirCfg = "userFiles";
+
+fileTree0.$name              = "ti_drivers_net_imagecreator_new_design_UserFiles_fileTree0";
+fileTree0.filePathCfg        = scripting.forceWrite("sys\\mcubootinfo.bin");
+fileTree0.failSafeCfg        = true;
+fileTree0.secureCfg          = true;
+fileTree0.publicWriteCfg     = true;
+fileTree0.noSignatureTestCfg = true;
+fileTree0.includeOTA         = true;
+
+fileTree2.$name       = "ti_drivers_net_imagecreator_new_design_UserFiles_fileTree2";
+fileTree2.filePathCfg = scripting.forceWrite("dummy-root-ca-cert-key");
+fileTree2.failSafeCfg = true;
+fileTree2.includeOTA  = false;
+
+fileTree3.$name       = "ti_drivers_net_imagecreator_new_design_UserFiles_fileTree3";
+fileTree3.filePathCfg = scripting.forceWrite("dummy_ota_vendor_cert.der");
+fileTree3.failSafeCfg = true;
+fileTree3.includeOTA  = false;
+
+fileTree4.$name       = "ti_drivers_net_imagecreator_new_design_UserFiles_fileTree4";
+fileTree4.filePathCfg = scripting.forceWrite("www\\help.html");
+fileTree4.failSafeCfg = true;
+fileTree4.includeOTA  = false;
+
+fileTree5.$name       = "ti_drivers_net_imagecreator_new_design_UserFiles_fileTree5";
+fileTree5.filePathCfg = scripting.forceWrite("www\\index.html");
+fileTree5.failSafeCfg = true;
+fileTree5.includeOTA  = false;
+
+fileTree6.$name       = "ti_drivers_net_imagecreator_new_design_UserFiles_fileTree6";
+fileTree6.filePathCfg = scripting.forceWrite("www\\ota.html");
+fileTree6.failSafeCfg = true;
+fileTree6.includeOTA  = false;
+
+fileTree7.$name       = "ti_drivers_net_imagecreator_new_design_UserFiles_fileTree7";
+fileTree7.filePathCfg = scripting.forceWrite("www\\settings.html");
+fileTree7.failSafeCfg = true;
+fileTree7.includeOTA  = false;
+
+fileTree8.$name       = "ti_drivers_net_imagecreator_new_design_UserFiles_fileTree8";
+fileTree8.filePathCfg = scripting.forceWrite("www\\js\\jquery.min.js");
+fileTree8.failSafeCfg = true;
+fileTree8.includeOTA  = false;
+
+fileTree9.$name       = "ti_drivers_net_imagecreator_new_design_UserFiles_fileTree9";
+fileTree9.filePathCfg = scripting.forceWrite("www\\js\\scripts.js");
+fileTree9.failSafeCfg = true;
+fileTree9.includeOTA  = false;
+
+fileTree10.$name       = "ti_drivers_net_imagecreator_new_design_UserFiles_fileTree10";
+fileTree10.filePathCfg = scripting.forceWrite("www\\images\\tilogo.gif");
+fileTree10.failSafeCfg = true;
+fileTree10.includeOTA  = false;
+
+fileTree11.$name       = "ti_drivers_net_imagecreator_new_design_UserFiles_fileTree11";
+fileTree11.filePathCfg = scripting.forceWrite("www\\images\\icons\\help.png");
+fileTree11.failSafeCfg = true;
+fileTree11.includeOTA  = false;
+
+fileTree12.$name       = "ti_drivers_net_imagecreator_new_design_UserFiles_fileTree12";
+fileTree12.filePathCfg = scripting.forceWrite("www\\images\\icons\\menu.png");
+fileTree12.failSafeCfg = true;
+fileTree12.includeOTA  = false;
+
+fileTree13.$name       = "ti_drivers_net_imagecreator_new_design_UserFiles_fileTree13";
+fileTree13.filePathCfg = scripting.forceWrite("www\\images\\icons\\wireless.png");
+fileTree13.failSafeCfg = true;
+fileTree13.includeOTA  = false;
+
+fileTree14.$name       = "ti_drivers_net_imagecreator_new_design_UserFiles_fileTree14";
+fileTree14.filePathCfg = scripting.forceWrite("www\\images\\icons\\wirelessfull.png");
+fileTree14.failSafeCfg = true;
+fileTree14.includeOTA  = false;
+
+fileTree15.$name       = "ti_drivers_net_imagecreator_new_design_UserFiles_fileTree15";
+fileTree15.filePathCfg = scripting.forceWrite("www\\css\\style.css");
+fileTree15.failSafeCfg = true;
+fileTree15.includeOTA  = false;
+
+fileTree16.$name       = "ti_drivers_net_imagecreator_new_design_UserFiles_fileTree16";
+fileTree16.filePathCfg = scripting.forceWrite("dummy-root-ca-cert");
+fileTree16.failSafeCfg = true;
+fileTree16.includeOTA  = false;
+
+fileTree17.$name       = "ti_drivers_net_imagecreator_new_design_UserFiles_fileTree17";
+fileTree17.filePathCfg = scripting.forceWrite("ota.dat");
+fileTree17.failSafeCfg = true;
+fileTree17.includeOTA  = false;
+
+fileTree18.$name       = "ti_drivers_net_imagecreator_new_design_UserFiles_fileTree18";
+fileTree18.filePathCfg = scripting.forceWrite("DigiCert_High_Assurance_CA.der");
+fileTree18.failSafeCfg = true;
+fileTree18.includeOTA  = false;
+
+fileTree19.$name       = "ti_drivers_net_imagecreator_new_design_UserFiles_fileTree19";
+fileTree19.filePathCfg = scripting.forceWrite("RootCACerts.pem");
+fileTree19.failSafeCfg = true;
+fileTree19.includeOTA  = false;

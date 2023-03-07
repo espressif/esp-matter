@@ -1,0 +1,115 @@
+project_name: "XncpLedHost"
+label: "Zigbee - Host XncpLedHost"
+package: "Zigbee"
+category: "Zigbee Host Application"
+quality: "production"
+
+description: >
+  This is a demonstration of a UNIX HOST controlling an LED on an NCP.
+author: "Silicon Laboratories, Inc."
+
+component:
+  - id: "cli"
+    instance:
+    - example
+  - id: "native"
+  - id: "iostream_stdio"
+  - id: "zigbee_address_table"
+  - id: "zigbee_concentrator"
+  - id: "zigbee_counters"
+  - id: "zigbee_ezsp"
+  - id: "zigbee_ezsp_uart"
+  - id: "zigbee_file_descriptor_dispatch"
+  - id: "zigbee_form_and_join"
+  - id: "zigbee_gateway"
+  - id: "zigbee_identify"
+  - id: "zigbee_identify_feedback"
+  - id: "zigbee_ncp_configuration"
+  - id: "zigbee_network_find"
+  - id: "zigbee_price_common"
+  - id: "zigbee_zcl_framework_core"
+  - id: "zigbee_debug_print"  
+
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: SL_IOSTREAM_USART_VCOM_FLOW_CONTROL_TYPE
+    value: usartHwFlowControlCtsAndRts
+  - name: SL_CLI_MAX_INPUT_ARGUMENTS
+    value: 16
+  - name: SLI_ZIGBEE_PRIMARY_NETWORK_DEVICE_TYPE
+    value: SLI_ZIGBEE_NETWORK_DEVICE_TYPE_COORDINATOR_OR_ROUTER
+  - name: SLI_ZIGBEE_PRIMARY_NETWORK_SECURITY_TYPE
+    value: SLI_ZIGBEE_NETWORK_SECURITY_TYPE_HA
+  - name: SL_CLI_PROMPT_STRING
+    value:  "\"XncpLedHost>\""
+
+source:
+  - path: "main.c"
+  - path: "app.c"
+
+config_file:
+  - path: "config/zcl/zcl_config.zap"
+    file_id: zap_configuration_file_id
+    directory: "zcl"
+
+include:
+  - path: "./"
+  - path: ../../../../ncp/sample-app/xncp-led
+    file_list:
+      - path: led-protocol.h
+
+template_contribution:
+  - name: cli_group
+    value:
+      name: custom
+  - name: cli_command
+    value:
+      group: custom
+      name: get-led
+      handler: getLedCommand
+      help: Get the state of an LED on the NCP.
+  - name: cli_command
+    value:
+      group: custom
+      name: set-led
+      handler: setLedCommand
+      help: Set the state of an LED on the NCP using a custom LED protocol command.
+      argument:
+      - type: uint8
+  - name: cli_command
+    value:
+      group: custom
+      name: get-frequency
+      handler: getFrequencyCommand
+      help: Get the current frequency of the LED strobe on the NCP.
+  - name: cli_command
+    value:
+      group: custom
+      name: set-frequency
+      handler: setFrequencyCommand
+      help: Set the frequency of the LED strobe on the NCP.
+      argument:
+      - type: uint32
+  - name: cli_command
+    value:
+      group: custom
+      name: get-info
+      handler: getInfoCommand
+      help: Display the XNCP information on the CLI.
+
+readme:
+  - path: ./readme.html
+
+ui_hints:
+  highlight:
+    - path: readme.html
+      focus: false
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Zigbee"]
+  - name: "Device Type"
+    value: ["Host"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]

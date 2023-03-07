@@ -1,0 +1,34 @@
+id: "btmesh_friend"
+label: "Friend"
+package: "Btmesh"
+description: >
+  Friend component enables Bluetooth Mesh Friend Feature for the node. Friend nodes are required when
+  Low Power Nodes (LPN) are present in the mesh network. When a friendship is established between an LPN and Friend node,
+  the friend node starts to store incoming messages targeted for the LPN. These mesages are forwarded to the LPN upon request.
+  Logging for these messages can be enabled as a configuration option in Simplicity Studio.
+  Callback functions are provided for friendship establishment and termination.
+  Friend functionality can be enabled or disabled during runtime via node configuration.
+category: "Bluetooth Mesh|Features"
+quality: "production"
+root_path: "app/bluetooth/common/btmesh_friend"
+config_file:
+  - path: "config/sl_btmesh_friend_config.h"
+source:
+  - path: "sl_btmesh_friend.c"
+include:
+  - path: ""
+    file_list:
+      - path: "sl_btmesh_friend.h"
+provides:
+  - name: "btmesh_friend"
+requires:
+  - name: "app_btmesh_util"
+  - name: "btmesh_feature_friend"
+  - name: "btmesh_feature_node"
+  - name: "btmesh_stack"
+  
+template_contribution:
+  - name: "btmesh_on_event"
+    value:
+      include: "sl_btmesh_friend.h"
+      function: "sl_btmesh_friend_on_event"

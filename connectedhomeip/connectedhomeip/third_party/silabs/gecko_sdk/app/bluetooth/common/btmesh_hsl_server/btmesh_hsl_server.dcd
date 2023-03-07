@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Main",
+    "location": "0x0000",
+    "sig_models": [
+      { "mid": "0x1307", "name": "Light HSL Server" },
+      { "mid": "0x1308", "name": "Light HSL Setup Server" }
+    ]
+  },
+  {
+    "name": "Hue",
+    "location": "0x0000",
+    "sig_models": [
+      { "mid": "0x1002", "name": "Generic Level Server" },
+      { "mid": "0x130a", "name": "Light HSL Hue Server" }
+    ]
+  },
+  {
+    "name": "Saturation",
+    "location": "0x0000",
+    "sig_models": [
+      { "mid": "0x1002", "name": "Generic Level Server" },
+      { "mid": "0x130b", "name": "Light HSL Saturation Server" }
+    ]
+  }
+]

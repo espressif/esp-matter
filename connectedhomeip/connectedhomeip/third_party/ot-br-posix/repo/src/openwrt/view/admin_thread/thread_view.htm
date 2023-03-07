@@ -1,0 +1,390 @@
+<%-
+	local ubus = require "ubus"
+	local sys = require "luci.sys"
+	local utl = require "luci.util"
+
+	function connect_ubus(methods)
+		local result
+		local conn = ubus.connect()
+
+		if not conn then
+			error("Failed to connect to ubusd")
+		end
+
+		result = conn:call("otbr", methods, {})
+
+		return result
+	end
+
+	function threadget(action)
+		local result = connect_ubus(action)
+
+		return result
+	end
+-%>
+
+<%+header%>
+
+<h2><%:Thread View: %><%=threadget("networkname").NetworkName%><%: (wpan0)%></h2>
+<div>This is the list and topograph of your thread network.</div>
+<br />
+
+<ul class="cbi-tabmenu">
+	<li class="cbi-tab" id="listtab" style="width:15%;text-align:center;"><a href="javascript:showlist();"><%:List%></a></li>
+	<li class="cbi-tab-disabled" id="graphtab" style="width:15%;text-align:center;"><a href="javascript:showgraph();"><%:Topology Graph%></a></li>
+</ul>
+
+<!-- list div -->
+<div style="width:100%;" id="listdiv">
+	<!-- leader list -->
+	<h3><%: Leader Situation of Network%></h3><br />
+	<div class="cbi-map" style="width:90%;margin-left:5%;">
+		<div class="cbi-section">
+			<div class="table">
+				<div class="tr table-titles" style="background-color:#eee;">
+					<div class="th col-3 center"><%:Leader Router Id%></div>
+					<div class="th col-3 center"><%:Partition Id%></div>
+					<div class="th col-2 center"><%:Weighting%></div>
+					<div class="th col-2 center"><%:Data Version%></div>
+					<div class="th col-2 center"><%:Stable Data Version%></div>
+				</div>
+
+				<!-- leader situatioin -->
+				<% leader = threadget("leaderdata").leaderdata %>
+				<div class="tr cbi-rowstyle-2%>" style="border:solid 1px #ddd; border-top:hidden;">
+					<div class="td col-3 center"><%=leader.LeaderRouterId%></div>
+					<div class="td col-3 center"><%=leader.PartitionId%></div>
+					<div class="td col-2 center"><%=leader.Weighting%></div>
+					<div class="td col-2 center"><%=leader.DataVersion%></div>
+					<div class="td col-2 center"><%=leader.StableDataVersion%></div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<br />
+	<h3><%: Neighbor Situation of Network%></h3><br />
+	<!-- neighbor list -->
+	<div class="table" id="neighbors" style="width:90%;margin-left:5%;">
+		<div class="tr table-titles" style="background-color:#eee;">
+			<div class="th col-2 center"><%:RLOC16%></div>
+			<div class="th col-2 center"><%:Role%></div>
+			<div class="th col-2 center"><%:Age%></div>
+			<div class="th col-2 center"><%:Avg RSSI%></div>
+			<div class="th col-2 center"><%:Last RSSI%></div>
+			<div class="th col-2 center"><%:Mode%></div>
+			<div class="th col-4 center"><%:Extended MAC%></div>
+			<div class="th cbi-section-actions">&#160;</div>
+		</div>
+		<div class="tr placeholder">
+			<div class="td"><em><%:Collecting data...%></em></div>
+		</div>
+	</div>
+	<!--/neighbor list-->
+
+	<!-- parent list -->
+	<div class="table" id="parent" style="width:90%;margin-left:5%;display:none;">
+		<div class="tr table-titles" style="background-color:#eee;">
+			<div class="th col-2 center"><%:RLOC16%></div>
+			<div class="th col-2 center"><%:Role%></div>
+			<div class="th col-2 center"><%:Age%></div>
+			<div class="th col-2 center"><%:LinkQualityIn%></div>
+			<div class="th col-4 center"><%:ExtAddress%></div>
+			<div class="th cbi-section-actions">&#160;</div>
+		</div>
+		<div class="tr placeholder">
+			<div class="td"><em><%:Collecting data...%></em></div>
+		</div>
+	</div>
+	<!--/parent list-->
+</div>
+
+<!-- graph div -->
+<div style="width:100%;margin-left:5%;display:none;" id="graphdiv">
+	<div style="width:20%"><svg id="topologyLegend"></svg></div>
+	<svg width="960" height="500" id="graph"></svg>
+</div>
+
+<div class="cbi-page-actions right" style="margin-top:10%;">
+	<form class="inline" action="<%=url('admin/network/thread')%>" method="get">
+		<input class="cbi-button cbi-button-neutral" type="submit" value="<%:Back to overview%>" />
+	</form>
+	<form class="inline" action="<%=url('admin/network/thread_add')%>" method="post">
+		<input type="hidden" name="token" value="<%=token%>" />
+		<input class="cbi-button cbi-button-add" type="submit" value="<%:Add%>" />
+	</form>
+</div>
+<%+footer%>
+
+<script src='http://d3js.org/d3.v4.min.js'></script>
+<script type="text/javascript" src="/luci-static/resources/handle_error.js"></script>
+<script type="text/javascript">//<![CDATA[
+	handle_error(GetURLParameter('error'));
+
+	var svg = d3.select("#graph"),
+		width = +svg.attr("width"),
+		height = +svg.attr("height"),
+		color = d3.scaleOrdinal(d3.schemeCategory10);
+
+	function getRloc(rloc, localrloc) {
+		if(rloc == localrloc) return rloc + " ( your device )";
+		else return rloc;
+	}
+	function getColor(role) {
+		if(role == 'ftd') return "#90EE90";
+		else if(role == 'mtd') return "#FFDAB9";
+		else if(role == 'router') return "#87CEFA";
+		else if(role == 'leader') return "#FFA07A";
+		else if(role == 'joiner') return "#778899";
+	}
+	var nodes, links;
+	var simulation = d3.forceSimulation(nodes)
+		.force("charge", d3.forceManyBody().strength(-1000))
+		.force("link", d3.forceLink(links).distance(200))
+		.force("x", d3.forceX())
+		.force("y", d3.forceY())
+		.alphaTarget(1)
+		.on("tick", ticked);
+
+	var g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")"),
+		link = g.append("g").attr("stroke", "#eee").attr("stroke-width", 1.5).selectAll(".link"),
+		node = g.append("g").attr("stroke", "#fff").attr("stroke-width", 1.5).selectAll(".node"),
+ 		text = g.append("g").selectAll(".text");
+
+	var legend = d3.select("#topologyLegend");
+
+	legend.append("circle").attr("cx",50).attr("cy",30).attr("r", 6).style("fill", getColor("leader"));
+	legend.append("circle").attr("cx",50).attr("cy",50).attr("r", 6).style("fill", getColor("router"));
+	legend.append("circle").attr("cx",50).attr("cy",70).attr("r", 4).style("fill", getColor("ftd"));
+	legend.append("circle").attr("cx",50).attr("cy",90).attr("r", 4).style("fill", getColor("mtd"));
+	legend.append("circle").attr("cx",50).attr("cy",110).attr("r", 4).style("fill", getColor("joiner"));
+	legend.append("text").attr("x", 60).attr("y", 35).text("leader").style("font-size", "15px").attr("alignment-baseline","middle");
+	legend.append("text").attr("x", 60).attr("y", 55).text("router").style("font-size", "15px").attr("alignment-baseline","middle");
+	legend.append("text").attr("x", 60).attr("y", 75).text("FTD child").style("font-size", "15px").attr("alignment-baseline","middle");
+	legend.append("text").attr("x", 60).attr("y", 95).text("MTD child").style("font-size", "15px").attr("alignment-baseline","middle");
+	legend.append("text").attr("x", 60).attr("y", 115).text("new joiner").style("font-size", "15px").attr("alignment-baseline","middle");
+
+	function update_graph(nodes, links, localrloc) {
+		node = node.data(nodes, function(d) { return d.rloc;});
+		node.exit().remove();
+		node = node.enter().append("circle")
+				.attr("fill", function(d) { return getColor(d.role); })
+				.attr("r", function(d) {
+						return (d.role == 'router' || d.role == 'leader' ? 10 : 7);
+				})
+				.merge(node);
+
+		link = link.data(links, function(d) { return d.source.rloc + "-" + d.target.rloc; });
+		link.exit().remove();
+		link = link.enter().append("line").merge(link);
+
+		text = text.data(nodes, function(d) { return getRloc(d.rloc, localrloc); });
+		text.exit().remove();
+		text = text.enter().append('text')
+			.attr("fill", "black")
+			.attr("dx", 20)
+			.attr("dy", 8)
+			.text(function(d) { return getRloc(d.rloc, localrloc); })
+			.merge(text);
+
+		simulation.nodes(nodes);
+		simulation.force("link").links(links);
+		simulation.alpha(1).restart();
+	}
+
+	function ticked() {
+		node.attr("cx", function(d) { return d.x; })
+				.attr("cy", function(d) { return d.y; })
+		link.attr("x1", function(d) { return d.source.x; })
+				.attr("y1", function(d) { return d.source.y; })
+				.attr("x2", function(d) { return d.target.x; })
+				.attr("y2", function(d) { return d.target.y; });
+		text.attr("x",function(d){ return d.x; })
+				.attr("y",function(d){ return d.y; });
+	}
+
+	function showlist() {
+		document.getElementById('listdiv').style.display = "block";
+		document.getElementById('graphdiv').style.display = "none";
+		document.getElementById('listtab').className = "cbi-tab";
+		document.getElementById('graphtab').className = "cbi-tab-disabled";
+	}
+
+	function showgraph() {
+		document.getElementById('listdiv').style.display = "none";
+		document.getElementById('graphdiv').style.display = "block";
+		document.getElementById('listtab').className = "cbi-tab-disabled";
+		document.getElementById('graphtab').className = "cbi-tab";
+	}
+
+	function getRole(rloc, leader) {
+		if(parseInt(rloc) == leader) return 'leader';
+		else if((parseInt(rloc) & 0xff) == 0) return 'router';
+		else return 'ftd';
+	}
+
+	XHR.poll(5, '<%=url('admin/network/thread_graph')%>', null,
+		function(x, st)
+		{
+			if(st)
+			{
+				nodes = [];
+				links = [];
+
+				var leaderRloc = st.leader << 10;
+				var localrloc = st.rloc16;
+				// get local informatioin
+				st.connect.forEach(function(bss) {
+					var localIndex = getNodesIndex(bss.rloc);
+					if(localIndex == -1)
+					{
+						nodes.push( {
+							rloc: bss.rloc,
+							role: getRole(bss.rloc, leaderRloc)
+						} );
+						localIndex = getNodesIndex(bss.rloc);
+					}
+					bss.childdata.forEach(function(child) {
+						if(getNodesIndex(child.rloc) == -1)
+						{
+							nodes.push( {
+								rloc: child.rloc,
+								role: (((child.mode & 0x2) >> 1 == 1) ? 'ftd' : 'mtd')
+							} );
+						}
+						links.push( {
+							source: localIndex,
+							target: getNodesIndex(child.rloc)
+						} );
+					});
+					bss.routedata.forEach(function(router) {
+						if(getNodesIndex(router.rloc) == -1)
+						{
+							nodes.push( {
+								rloc: router.rloc,
+								role: getRole(router.rloc, leaderRloc)
+							} );
+						}
+						links.push( {
+							source: localIndex,
+							target: getNodesIndex(router.rloc)
+						} );
+					});
+				});
+
+				var i;
+				for(i = 0;i < st.joinernum;i++) {
+					nodes.push( {
+						rloc: "new joiner" + i.toString(),
+						role: 'joiner'
+					} );
+				}
+
+				update_graph(nodes, links, localrloc);
+			}
+		});
+
+	function getNodesIndex(targetRloc)
+	{
+		var i;
+		for (i = 0; i < nodes.length; i++)
+		{
+			if(nodes[i].rloc == targetRloc)
+				return Number(i);
+		}
+		return Number(-1);
+	}
+
+	XHR.poll(2, '<%=url('admin/network/thread_neighbors')%>', null,
+		function(x, st)
+		{
+			if (st && st.state == 'child')
+			{
+				var tb = document.getElementById('parent');
+				document.getElementById('neighbors').style.display = "none";
+				if(tb)
+				{
+					var rows = [];
+
+					st.neighbor.forEach(function(bss) {
+						rows.push([
+						'<div class="col-2 center"> %s </div>'.format(bss.Rloc16),
+						'<div class="col-2 center"> %s </div>'.format(transRole(bss.Role)),
+						'<div class="col-2 center"> %s </div>'.format(bss.Age),
+						'<div class="col-2 center"> %s </div>'.format(bss.LinkQualityIn),
+						'<div class="col-4 center"> %s </div>'.format(bss.ExtAddress),
+						]);
+					});
+					var joiner;
+					for (joiner = 0; joiner < st.joinernum; joiner++) {
+						rows.push([
+						'<div class="col-2 center"> Pending </div>',
+						'<div class="col-2 center"> New Joiner </div>',
+						'<div class="col-2 center"> Pending </div>',
+						'<div class="col-2 center"> Pending </div>',
+						'<div class="col-4 center"> %s </div>'.format(st.joinerlist[joiner].isAny ? "*" : st.joinerlist[joiner].eui64),
+						'<div class="th cbi-section-actions">' +
+						'<form action="<%=url('admin/network/joiner_remove')%>" method="post">' +
+							'<input type="hidden" name="token" value="<%=token%>" />' +
+							'<input type="hidden" name="isAny" value="%d" />'.format(st.joinerlist[joiner].isAny) +
+							'<input type="hidden" name="eui64" value="%s" />'.format(st.joinerlist[joiner].isAny ? "*" : st.joinerlist[joiner].eui64) +
+							'<input class="cbi-button cbi-button-reset" type="submit" value="<%:Remove%>" />' +
+						'</form>' +
+						'</div>'
+						]);
+					}
+					cbi_update_table(tb, rows, '<center><em><%:No information available%></em></center>');
+					tb.style.display = "table";
+				}
+			}
+			else if(st)
+			{
+				var tb = document.getElementById('neighbors');
+				document.getElementById('parent').style.display = "none";
+				if(tb)
+				{
+					var rows = [];
+
+					st.neighbor.forEach(function(bss) {
+						rows.push([
+						'<div class="col-2 center"> %s </div>'.format(bss.Rloc16),
+						'<div class="col-2 center"> %s </div>'.format(transRole(bss.Role)),
+						'<div class="col-2 center"> %s </div>'.format(bss.Age),
+						'<div class="col-2 center"> %s </div>'.format(bss.AvgRssi),
+						'<div class="col-2 center"> %s </div>'.format(bss.LastRssi),
+						'<div class="col-2 center"> %s </div>'.format(bss.Mode),
+						'<div class="col-4 center"> %s </div>'.format(bss.ExtAddress)
+						]);
+					});
+					var joiner;
+					for (joiner = 0; joiner < st.joinernum; joiner++) {
+						rows.push([
+						'<div class="col-2 center"> Pending </div>',
+						'<div class="col-2 center"> New Joiner </div>',
+						'<div class="col-2 center"> Pending </div>',
+						'<div class="col-2 center"> Pending </div>',
+						'<div class="col-2 center"> Pending </div>',
+						'<div class="col-2 center"> Pending </div>',
+						'<div class="col-4 center"> %s </div>'.format(st.joinerlist[joiner].isAny ? "*" : st.joinerlist[joiner].eui64),
+						'<div class="th cbi-section-actions">' +
+						'<form action="<%=url('admin/network/joiner_remove')%>" method="post">' +
+							'<input type="hidden" name="token" value="<%=token%>" />' +
+							'<input type="hidden" name="isAny" value="%d" />'.format(st.joinerlist[joiner].isAny) +
+							'<input type="hidden" name="eui64" value="%s" />'.format(st.joinerlist[joiner].isAny ? "*" : st.joinerlist[joiner].eui64) +
+							'<input class="cbi-button cbi-button-reset" type="submit" value="<%:Remove%>" />' +
+						'</form>' +
+						'</div>'
+						]);
+					}
+					cbi_update_table(tb, rows, '<center><em><%:No information available%></em></center>');
+					tb.style.display = "table";
+				}
+			}
+		});
+
+	function transRole(info) {
+		if(info == "C") return 'Child';
+		else if(info == "R") return "Router";
+		else return "Pending";
+	}
+//]]></script>

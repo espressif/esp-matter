@@ -1,0 +1,66 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+declare_args() {
+  # stm32cube_xx install directories
+  dir_pw_third_party_stm32cube_f0 = ""
+  dir_pw_third_party_stm32cube_f1 = ""
+  dir_pw_third_party_stm32cube_f2 = ""
+  dir_pw_third_party_stm32cube_f3 = ""
+  dir_pw_third_party_stm32cube_f4 = ""
+  dir_pw_third_party_stm32cube_f7 = ""
+  dir_pw_third_party_stm32cube_g0 = ""
+  dir_pw_third_party_stm32cube_g4 = ""
+  dir_pw_third_party_stm32cube_h7 = ""
+  dir_pw_third_party_stm32cube_l0 = ""
+  dir_pw_third_party_stm32cube_l1 = ""
+  dir_pw_third_party_stm32cube_l4 = ""
+  dir_pw_third_party_stm32cube_l5 = ""
+  dir_pw_third_party_stm32cube_wb = ""
+  dir_pw_third_party_stm32cube_wl = ""
+
+  # The currently selected stm32cube_xx package
+  # This can be selected by the target by doing something like:
+  #  dir_pw_third_party_stm32cube = dir_pw_third_party_stm32cube_f4
+  dir_pw_third_party_stm32cube = ""
+
+  # The Product specified in as much detail as possible.
+  # i.e. "stm32f429zit", "stm32l552ze", "stm32f207zg", etc.
+  pw_third_party_stm32cube_PRODUCT = ""
+
+  # pw_source_set with `stm32{family}xx_hal_conf.h`
+  # The default uses the in-tree `stm32{family}xx_hal_conf_template.h`.
+  pw_third_party_stm32cube_CONFIG =
+      "$dir_pw_third_party/stm32cube:hal_config_template"
+
+  # pw_source_set containing timebase
+  # The default uses the in-tree `stm32{family}xx_hal_timebase_tim_template.c`
+  pw_third_party_stm32cube_TIMEBASE =
+      "$dir_pw_third_party/stm32cube:hal_timebase_template"
+
+  # pw_source_set containing cmsis init logic
+  # The default uses the in-tree `system_stm32{family}xx.c`
+  pw_third_party_stm32cube_CMSIS_INIT =
+      "$dir_pw_third_party/stm32cube:cmsis_init_template"
+
+  # pw_source_set containing the core initization logic. This normally includes
+  # a `startup_stm32{...}.s` + a dependent `pw_linker_script`. The default
+  # `core_init_template` uses the upstream startup and linker script matching
+  # $pw_third_party_stm32cube_PRODUCT. If set to "", you must provide your own
+  # linker/startup logic somewhere else in the build.
+  pw_third_party_stm32cube_CORE_INIT =
+      "$dir_pw_third_party/stm32cube:core_init_template"
+}

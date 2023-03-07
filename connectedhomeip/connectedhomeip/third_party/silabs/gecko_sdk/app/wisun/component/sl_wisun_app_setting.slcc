@@ -1,0 +1,38 @@
+id: "sl_wisun_app_setting"
+label: "Setting"
+package: "wisun"
+description: "Provides an interface to handle the settings, such as network name, network size and TX power."
+category: "Wi-SUN|Wi-SUN Services"
+quality: "production"
+root_path: "app/wisun/component/app_setting"
+provides:
+  - name: sl_wisun_app_setting
+
+source:
+  - path: "sl_wisun_app_setting.c"
+
+include:
+  - path: "."
+    file_list:
+    - path: "sl_wisun_app_setting.h"
+
+requires:
+  - name: "wisun_default_phy"
+    condition:
+      - "wisun_full_radioconf"
+  - name: "sl_wisun_cli_util"
+  - name: "wisun_config"
+
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+  - name: "event_handler"
+    value:
+      event: "internal_app_init"
+      include: "sl_wisun_app_setting.h"
+      handler: "app_wisun_setting_init"
+    unless: 
+      - "wisun_cli"
+
+  - name: component_catalog
+    value: wisun_app_setting

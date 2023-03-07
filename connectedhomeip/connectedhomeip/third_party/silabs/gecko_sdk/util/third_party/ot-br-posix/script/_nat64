@@ -1,0 +1,251 @@
+#!/bin/bash
+#
+#  Copyright (c) 2017, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+#   Description:
+#       This script manipulates nat64 configuration.
+#
+
+NAT64_SERVICE="${NAT64_SERVICE:-tayga}"
+TAYGA_DEFAULT=/etc/default/tayga
+TAYGA_CONF=/etc/tayga.conf
+TAYGA_IPV4_ADDR=192.168.255.1
+TAYGA_IPV6_ADDR=fdaa:bb:1::1
+TAYGA_TUN_V6_ADDR=fdaa:bb:1::2
+NAT64_PREFIX=64:ff9b::/96
+DYNAMIC_POOL="${NAT64_DYNAMIC_POOL:-192.168.255.0/24}"
+NAT44_SERVICE=/etc/init.d/otbr-nat44
+WLAN_IFNAMES="${INFRA_IF_NAME:-eth0}"
+
+# Currently solution was verified only on raspbian and ubuntu.
+#
+#without NAT64 || test $PLATFORM = ubuntu || test $PLATFORM = raspbian || die "nat64 is not tested under $PLATFORM."
+
+tayga_install()
+{
+    test -f $TAYGA_DEFAULT -a -f $TAYGA_CONF || die 'Cannot find tayga configuration file!'
+    sudo sed -i 's/^RUN="no"/RUN="yes"/' $TAYGA_DEFAULT
+    sudo sed -i 's/^IPV4_TUN_ADDR=""/IPV4_TUN_ADDR="'$TAYGA_IPV4_ADDR'"/' $TAYGA_DEFAULT
+    sudo sed -i 's/^IPV6_TUN_ADDR=""/IPV6_TUN_ADDR="'$TAYGA_TUN_V6_ADDR'"/' $TAYGA_DEFAULT
+    sudo sed -i 's/^prefix /##prefix /' $TAYGA_CONF
+    sudo sed -i '/^##prefix /a prefix '$NAT64_PREFIX $TAYGA_CONF
+    sudo sed -i '/^#ipv6-addr/a ipv6-addr '$TAYGA_IPV6_ADDR $TAYGA_CONF
+    sudo sed -i 's/^dynamic-pool /##dynamic-pool /' $TAYGA_CONF
+    sudo sed -i '/^##dynamic-pool /a dynamic-pool '"$DYNAMIC_POOL" $TAYGA_CONF
+
+    if have systemctl; then
+        sudo systemctl restart tayga || die 'Unable to restart taga service!'
+        sudo systemctl enable tayga || die 'Unable to enable taga service!'
+    fi
+}
+
+tayga_uninstall()
+{
+    sudo sed -i 's/^RUN="yes"/RUN="no"/' $TAYGA_DEFAULT
+    sudo sed -i 's/^IPV4_TUN_ADDR="'$TAYGA_IPV4_ADDR'"/IPV4_TUN_ADDR=""/' $TAYGA_DEFAULT
+    sudo sed -i '/^prefix /d' $TAYGA_CONF
+    if grep "##prefix " $TAYGA_CONF; then
+        sudo sed -i 's/^##prefix /prefix /' $TAYGA_CONF
+    else
+        sudo sed -i 's/^# prefix /prefix /' $TAYGA_CONF
+    fi
+    sudo sed -i '/^ipv6-addr '$TAYGA_IPV6_ADDR'/d' $TAYGA_CONF
+    if grep "##dynamic-pool " $TAYGA_CONF; then
+        sudo sed -i '/^dynamic-pool /d' $TAYGA_CONF
+        sudo sed -i 's/^##dynamic-pool /dynamic-pool /' $TAYGA_CONF
+    fi
+}
+
+tayga_start()
+{
+    if with DOCKER; then
+        service tayga start || die 'Failed to start tayga'
+    elif have systemctl; then
+        sudo systemctl start tayga || die 'Failed to start tayga!'
+        sudo systemctl enable tayga || die 'Failed to enable tayga!'
+    fi
+}
+
+tayga_stop()
+{
+    if with DOCKER; then
+        service tayga stop || true
+    elif have systemctl; then
+        sudo systemctl stop tayga || true
+    fi
+}
+
+# Although Tayga also configures a NAT44 iptables route, this NAT44 service is used with Tayga
+# due to some history reason. It might be removed when native NAT64 service is ready.
+nat44_install()
+{
+    sudo tee $NAT44_SERVICE <<EOF
+#! /bin/sh
+#
+#  Copyright (c) 2017, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+### BEGIN INIT INFO
+# Provides:          otbr-nat44
+# Required-Start:    tayga
+# Required-Stop:
+# Should-Start:
+# Should-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: iptables NAT44
+# Description:       NAT44 is require for OpenThread border router
+#                    to connect to arbitrary IPv4 endpoints.
+### END INIT INFO
+
+. /lib/lsb/init-functions
+. /lib/init/vars.sh
+
+case "\$1" in
+    start)
+EOF
+    for IFNAME in $WLAN_IFNAMES; do
+        echo "      iptables -t nat -A POSTROUTING -o $IFNAME -j MASQUERADE" | sudo tee -a $NAT44_SERVICE
+    done
+    sudo tee -a $NAT44_SERVICE <<EOF
+        ;;
+    restart|reload|force-reload)
+        echo "Error: argument '\$1' not supported" >&2
+        exit 3
+        ;;
+    stop|status)
+        # No-op
+        ;;
+    *)
+        echo "Usage: \$0 start|stop" >&2
+        exit 3
+        ;;
+esac
+EOF
+    sudo chmod a+x $NAT44_SERVICE
+    if have systemctl; then
+        sudo systemctl enable otbr-nat44 || die 'Unable to enable nat44 service!'
+    fi
+}
+
+nat44_uninstall()
+{
+    if have systemctl; then
+        sudo systemctl disable otbr-nat44 || true
+    fi
+
+    # systemctl disable doesn't remove sym-links
+    if have update-rc.d; then
+        sudo update-rc.d otbr-nat44 remove || true
+    fi
+    test ! -f $NAT44_SERVICE || sudo rm $NAT44_SERVICE
+}
+
+nat44_start()
+{
+    if [ "$NAT64_SERVICE" = tayga ] && have systemctl; then
+        sudo systemctl start otbr-nat44 || die 'Failed to start NAT44!'
+    else
+        sudo iptables -t nat -A POSTROUTING -s "$DYNAMIC_POOL" -j MASQUERADE || die 'Failed to start NAT44!'
+    fi
+}
+
+nat44_stop()
+{
+    if [ "$NAT64_SERVICE" = tayga ] && have systemctl; then
+        sudo systemctl stop otbr-nat44 || true
+    else
+        sudo iptables -t nat -D POSTROUTING -s "$DYNAMIC_POOL" -j MASQUERADE || true
+    fi
+}
+
+nat64_install()
+{
+    with NAT64 || return 0
+
+    if [ "$NAT64_SERVICE" = tayga ]; then
+        tayga_install
+        nat44_install
+    fi
+}
+
+nat64_uninstall()
+{
+    with NAT64 || return 0
+
+    nat64_stop
+
+    if [ "$NAT64_SERVICE" = tayga ]; then
+        tayga_uninstall
+        nat44_uninstall
+    fi
+}
+
+nat64_start()
+{
+    with NAT64 || return 0
+
+    if [ "$NAT64_SERVICE" = tayga ]; then
+        tayga_start
+    fi
+
+    nat44_start
+}
+
+nat64_stop()
+{
+    with NAT64 || return 0
+
+    if [ "$NAT64_SERVICE" = tayga ]; then
+        tayga_stop
+    fi
+
+    nat44_stop
+}

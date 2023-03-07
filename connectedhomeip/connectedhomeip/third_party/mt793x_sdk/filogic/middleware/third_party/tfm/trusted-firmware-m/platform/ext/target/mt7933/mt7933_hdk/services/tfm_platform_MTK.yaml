@@ -1,0 +1,41 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2018-2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+{
+  "psa_framework_version": 1.0,
+  "name": "TFM_SP_PLATFORM_MTK",
+  "type": "PSA-ROT",
+  "priority": "NORMAL",
+  "entry_point": "platform_sp_MTK_init",
+  "stack_size": "0x0400",
+  "services": [
+    {
+      "name": "TFM_SP_PLATFORM_MTK_HW_ACCELERATOR",
+      "signal": "PLATFORM_SP_MTK_HW_ACCELERATOR_SIG",
+      "sid": "0x00000040",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+  ],
+  "secure_functions": [
+    {
+      "name": "TFM_SP_PLATFORM_MTK_HAL_AES_ECB_ENCRYPT",
+      "signal": "TFM_HAL_AES_ECB_ENCRYPT",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "TFM_SP_PLATFORM_MTK_HAL_AES_ECB_ENCRYPT",
+      "signal": "TFM_HAL_TRNG_RANDOM_GENERATE",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    }
+  ]
+}

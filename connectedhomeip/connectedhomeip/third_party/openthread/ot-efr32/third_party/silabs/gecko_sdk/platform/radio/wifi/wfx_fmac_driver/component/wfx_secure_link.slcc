@@ -1,0 +1,37 @@
+id: "wfx_secure_link"
+label: "WFx Secure Link"
+package: "platform"
+category: "Wi-Fi"
+quality: "production"
+description: "Secure Link host interface support"
+provides:
+  - name: "wfx_secure_link"
+requires:
+  - name: "wfx_fmac_driver"
+  - name: "mbedtls_ecc_curve25519"
+  - name: "mbedtls_random"
+  - name: "mbedtls_ccm"
+  - name: "mbedtls_hash"
+  - name: "mbedtls_ecdh"
+  - name: "mbedtls_sha512"
+root_path: "platform/radio/wifi/wfx_fmac_driver"
+include:
+  - path: "secure_link/"
+    file_list:
+      - path: "sl_wfx_secure_link.h"
+source:
+      - path: "secure_link/sl_wfx_secure_link.c"
+      - path: "wfx_host/sl_wfx_host_crypto.c"
+      - path: "wfx_host/sl_wfx_secure_link_task.c"
+        condition:
+          - micriumos
+config_file:
+  - path: "config/sl_wfx_secure_link_configuration.h"
+    file_id: "sl_wfx_secure_link_configuration"
+template_contribution:
+  - name: component_catalog
+    value: wfx_secure_link
+
+documentation:
+  docset: wifi/wf200/rtos
+  document: group-secure-link

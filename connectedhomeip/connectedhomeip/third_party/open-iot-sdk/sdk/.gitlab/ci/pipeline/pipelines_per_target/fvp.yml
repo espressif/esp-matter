@@ -1,0 +1,58 @@
+# Copyright (c) 2021-2022 Arm Limited and Contributors. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+# This file contains the single Downstream pipeline for FVP target
+# The file acts as a template file to run a single preset configuration
+
+workflow:
+  rules:
+    - when: always
+
+include:
+  - local: .gitlab/ci/pipeline/.job_templates.yml
+
+build GCC_ARM FVP:
+  extends: .build
+  stage: build
+  tags:
+    - iotmsw-amd64
+  image: ${OPEN_IOT_SDK_DOCKER_REGISTRY}/gcc-arm:10.3-2021.10
+  rules:
+    - if: $TOOLCHAIN == "arm-none-eabi-gcc"
+
+build ARM FVP:
+  extends: .build
+  stage: build
+  tags:
+    - iotmsw-amd64
+  image: ${OPEN_IOT_SDK_DOCKER_REGISTRY}/armc6:6.18
+  rules:
+    - if: $TOOLCHAIN == "armclang"
+
+test Corstone-300 FVP:
+  extends: .test
+  stage: test
+  tags:
+    - iotmsw-amd64
+  image: ${OPEN_IOT_SDK_DOCKER_REGISTRY}/fvp-corstone300:11.16
+
+  # pass RUN_TEST_STAGE as FALSE from upstream pipeline
+  # if test stage needs to be skipped
+  rules:
+    - if: $RUN_TEST_STAGE != "FALSE" && $PLATFORM == "corstone-300"
+
+  resource_group: fvp_testing
+
+test Corstone-310 FVP:
+  extends: .test
+  stage: test
+  tags:
+    - iotmsw-amd64
+  image: ${OPEN_IOT_SDK_DOCKER_REGISTRY}/fvp-corstone310:11.17-internal
+
+  # pass RUN_TEST_STAGE as FALSE from upstream pipeline
+  # if test stage needs to be skipped
+  rules:
+    - if: $RUN_TEST_STAGE != "FALSE" && $PLATFORM == "corstone-310"
+
+  resource_group: fvp_testing

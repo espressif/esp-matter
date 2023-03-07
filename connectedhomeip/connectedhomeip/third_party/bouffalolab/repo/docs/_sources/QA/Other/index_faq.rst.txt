@@ -1,0 +1,8 @@
+============
+常见问题汇总
+============
+
+-------------------
+
+- BL702 可参考  `BL702常见问题汇总 <https://dev.bouffalolab.com/media/doc/faq/702/html/index.html>`_ 
+- BL602 可参考  `BL602常见问题汇总 <https://dev.bouffalolab.com/media/doc/faq/602/html/index.html>`_ 

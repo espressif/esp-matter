@@ -1,0 +1,21 @@
+id: zw_cc_supervision
+label: Supervision Command Class
+category: Z-Wave|Command Classes
+description: >
+  Supervision Command Class allows a sending node to request application-level
+  delivery confirmation from a receiving node.
+  
+  The delivery confirmation includes relevant application-level status
+  information in the confirmation message.
+package: Z-Wave
+quality: production
+source:
+  - path: protocol/z-wave/ZAF/CommandClasses/Supervision/CC_Supervision.c
+include:
+  - path: protocol/z-wave/ZAF/CommandClasses/Supervision/
+    file_list:
+    - path: CC_Supervision.h
+provides:
+  - name: zw_cc_supervision
+requires:
+  - name: zw_core

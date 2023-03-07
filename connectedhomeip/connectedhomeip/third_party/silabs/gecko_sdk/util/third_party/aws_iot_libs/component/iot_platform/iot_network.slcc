@@ -1,0 +1,31 @@
+id: iot_network
+
+category:    Third Party|Amazon FreeRTOS - AWS Libraries|Platform
+label:       IoT Network
+description: IoT Platform - Networking API for FreeRTOS.
+
+package: amazon_platform
+quality: alpha
+
+provides:
+  - name: iot_network
+
+requires:
+  - name: iot_config_common
+  - name: iot_error
+  - name: iot_tls
+  - name: iot_logging
+
+root_path: util/third_party/aws_iot_libs
+
+source:
+  - path: libraries/abstractions/platform/freertos/iot_network_freertos.c
+
+include:
+  - path: libraries/abstractions/platform/include
+    file_list:
+      - path: platform/iot_network.h
+  - path: libraries/abstractions/platform/freertos/include
+    file_list:
+      - path: platform/iot_network_freertos.h
+      - path: platform/iot_network_ble.h

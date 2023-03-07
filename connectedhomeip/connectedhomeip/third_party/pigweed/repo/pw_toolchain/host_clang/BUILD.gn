@@ -1,0 +1,138 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+import("//build_overrides/pigweed_environment.gni")
+
+# See https://github.com/google/sanitizers
+config("sanitize_address") {
+  cflags = [ "-fsanitize=address" ]
+  ldflags = cflags
+}
+
+config("sanitize_memory") {
+  cflags = [
+    "-fsanitize=memory",
+
+    # Do not optimizes tail recursive calls to get better call stack.
+    "-fno-optimize-sibling-calls",
+
+    # Enable check after destruction detection.
+    "-fsanitize-memory-use-after-dtor",
+  ]
+  ldflags = cflags
+}
+
+config("sanitize_undefined") {
+  cflags = [
+    "-fsanitize=undefined",
+
+    # Store the stack frame pointer in a register to get proper debug
+    # information.
+    "-fno-omit-frame-pointer",
+
+    # Exit the program on check failure. (The default is to continue execution,
+    # which prevents test frameworks from realizing the test has failed.)
+    "-fno-sanitize-recover=undefined",
+  ]
+  ldflags = cflags
+}
+
+# UBsan configuration that enables additional checks. These checks are
+# heuristic and may not correspond to undefined behavior.
+config("sanitize_undefined_heuristic") {
+  sanitizers = [
+    # Base checks for undefined behaviour.
+    "undefined",
+
+    # Checks for undefined or suspicious integer behavior.
+    "integer",
+
+    # Checks for floating point division by zero.
+    "float-divide-by-zero",
+
+    # Checks for suspicious behavior of implicit conversions.
+    "implicit-conversion",
+
+    # Checks for null as function arg, lvalue and return type.
+    "nullability",
+  ]
+  cflags = [
+    "-fsanitize=" + string_join(",", sanitizers),
+
+    # Store the stack frame pointer in a register to get proper debug
+    # information.
+    "-fno-omit-frame-pointer",
+  ]
+  ldflags = cflags
+}
+
+config("sanitize_thread") {
+  cflags = [ "-fsanitize=thread" ]
+  ldflags = cflags
+}
+
+config("sanitize_coverage") {
+  cflags = [
+    "-fprofile-instr-generate",
+    "-fcoverage-mapping",
+  ]
+  ldflags = cflags
+}
+
+# Locate XCode's sysroot for Clang.
+config("xcode_sysroot") {
+  if (current_os == "mac") {
+    _xcode_sysroot = exec_script("$dir_pw_build/py/pw_build/exec.py",
+                                 [
+                                   "--",
+                                   "/usr/bin/xcrun",
+                                   "--show-sdk-path",
+                                 ],
+                                 "trim string")
+    cflags = [ "--sysroot=$_xcode_sysroot" ]
+    ldflags = cflags
+  }
+}
+
+config("linux_sysroot") {
+  if (current_os == "linux") {
+    cflags = [ "--sysroot=" +
+               rebase_path(pw_env_setup_CIPD_PIGWEED, root_build_dir) +
+               "/clang_sysroot/" ]
+    ldflags = cflags
+  }
+}
+
+# The CIPD provided Clang/LLVM toolchain must link against the matched
+# libc++ which is also from CIPD. However, by default, Clang on Mac (but
+# not on Linux) will fall back to the system libc++, which is
+# incompatible due to an ABI change.
+#
+# Pull the appropriate paths from our Pigweed env setup.
+config("no_system_libcpp") {
+  if (current_os == "mac") {
+    install_dir = pw_env_setup_CIPD_PIGWEED
+    assert(install_dir != "",
+           "You forgot to activate the Pigweed environment; " +
+               "did you source pw_env_setup/setup.sh?")
+    ldflags = [
+      # Force dropping the system libc++
+      "-nostdlib++",
+
+      # Use the libc++ from CIPD.
+      rebase_path(pw_env_setup_CIPD_PIGWEED + "/lib/libc++.a", root_build_dir),
+    ]
+  }
+}

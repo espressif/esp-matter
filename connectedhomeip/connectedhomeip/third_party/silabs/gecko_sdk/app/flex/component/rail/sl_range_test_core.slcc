@@ -1,0 +1,55 @@
+id: "sl_range_test_core"
+label: "Flex - Range Test Core"
+package: "Flex"
+description: "Adds all file what are needed for Range Test sample app."
+category: "Flex|RAIL|Core"
+quality: "production"
+root_path: "app/flex/component/rail/sl_range_test_core"
+
+requires:
+  - name: "device_has_radio"
+  - name: "sleeptimer"
+
+source:
+  - path: "app_button.c"
+    condition:
+      - "simple_button"
+  - path: "app_graphics.c"
+    condition:
+      - "glib"
+  - path: "app_init.c"
+  - path: "app_measurement.c"
+  - path: "app_menu.c"
+  - path: "app_process.c"
+include:
+  - path: "."
+    file_list:
+    - "path": "app_button.h"
+      condition:
+        - "simple_button"
+    - "path": "app_graphics.h"
+      condition:
+        - "glib"
+    - "path": "app_init.h"
+    - "path": "app_measurement.h"
+    - "path": "app_menu.h"
+    - "path": "app_process.h"
+
+#-------- Hides Component for user in Studio ---------
+ui_hints:
+  visibility: never
+
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: range_test_core
+#--------------------- BUTTON ------------------------
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: "app_button.h"
+      handler: "init_button_delay"
+    priority: 2000
+    condition:
+      - "simple_button"

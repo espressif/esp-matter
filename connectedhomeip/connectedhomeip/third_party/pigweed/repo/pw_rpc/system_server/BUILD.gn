@@ -1,0 +1,42 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/facade.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("backend.gni")
+
+config("public_includes") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+pw_facade("system_server") {
+  backend = pw_rpc_system_server_BACKEND
+  public_configs = [ ":public_includes" ]
+  public_deps = [
+    "$dir_pw_rpc:server",
+    dir_pw_bytes,
+    dir_pw_function,
+    dir_pw_result,
+  ]
+  public = [ "public/pw_rpc_system_server/rpc_server.h" ]
+}
+
+pw_source_set("socket") {
+  public_configs = [ ":public_includes" ]
+  public = [ "public/pw_rpc_system_server/socket.h" ]
+  deps = [ ":system_server" ]
+}

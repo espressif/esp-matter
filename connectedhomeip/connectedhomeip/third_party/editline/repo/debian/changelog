@@ -1,0 +1,140 @@
+editline (1.17.1) stable; urgency=medium
+
+  * Fix multiline representing as one line
+  * Fix missing content in libedtline1, introduced in 1.16.0
+  * Update packaging to latest std version
+
+ -- Joachim Nilsson <troglobit@gmail.com>  Sun, 23 Feb 2020 18:46:41 +0100
+
+editline (1.17.0) unstable; urgency=medium
+
+  * Simple multi-line support
+  * Handle internal realloc() errors better
+  * Fix return value from read_history() and write_history()
+  * Fix potential NULL pointer dereference in key binging lookup
+
+ -- Joachim Nilsson <troglobit@gmail.com>  Sun, 05 Jan 2020 09:47:34 +0100
+
+editline (1.16.1) unstable; urgency=medium
+
+  * Minor bug fix and documentation update release.
+  * Add missing pkg-config .pc file to -dev package
+
+ -- Joachim Nilsson <troglobit@gmail.com>  Fri, 07 Jun 2019 11:45:50 +0200
+
+editline (1.16.0) unstable; urgency=medium
+
+  * New upstream release, v1.60.0
+    + Event loop support
+    + New GNU Readline compat functions and callbacks
+    + Minor compat fixes for movement and deletion
+  * Bump .so/ABI version => libeditline1
+  * New maintainer, upstream author
+
+ -- Joachim Nilsson <troglobit@gmail.com>  Sun, 16 Sep 2018 09:45:53 +0200
+
+editline (1.15.3-1) unstable; urgency=medium
+
+  * New upstream bug fix release, v1.15.3
+
+ -- Joachim Nilsson <troglobit@gmail.com>  Thu, 07 Sep 2017 01:24:19 +0200
+
+editline (1.15.2-1) unstable; urgency=medium
+
+  * New upstream bug fix release, v1.15.2
+
+ -- Joachim Nilsson <troglobit@gmail.com>  Wed, 06 Jun 2016 20:04:35 +0200
+
+editline (1.15.1-1) unstable; urgency=medium
+
+  * New upstream bug fix release, v1.15.1
+
+ -- Joachim Nilsson <troglobit@gmail.com>  Wed, 16 Nov 2015 21:17:17 +0200
+
+editline (1.15.0-1) unstable; urgency=medium
+
+  * New upstream release, v1.15.0
+
+ -- Joachim Nilsson <troglobit@gmail.com>  Wed, 10 Sep 2015 13:26:03 +0200
+
+editline (1.14.2-1) unstable; urgency=low
+
+  * Minor bugfix release:
+    + Fix `el_no_echo` bug causing secrets to leak when disabling no-echo
+    + Handle `EINTR` in syscalls better
+
+ -- Joachim Nilsson <troglobit@gmail.com>  Sun, 14 Sep 2014 04:27:25 +0200
+
+editline (1.14.1-1) unstable; urgency=low
+
+  * New release.
+    + Minor fixes to key binding.
+    + Check signals and custom keys before acting on them in readline().
+    + Update maintainer email address.
+
+ -- Joachim Nilsson <troglobit@gmail.com>  Mon, 8  Jul 2013 17:04:00 +0100
+
+editline (1.14.0-1) unstable; urgency=low
+
+  * Update to new configure based build.
+
+ -- Joachim Nilsson <joachim.nilsson@vmlinux.org>  Wed, 11 Aug 2010 13:28:00 +0100
+
+editline (1.12-6) unstable; urgency=low
+
+  * Switch package format to 3.0 (quilt).
+  * 200_fix-truncation-at-64-char.diff: fix invalid 64-char truncation in
+    batch mode, courtesy of Mark O'Donohue. Thanks to Damyan Ivanov for
+    forwarding the patch from Ubuntu (Closes: #508640).
+
+ -- Sam Hocevar <sho@debian.org>  Sun, 03 Jan 2010 15:45:34 +0100
+
+editline (1.12-5) unstable; urgency=low
+
+  * New maintainer (Closes: #229962).
+  * debian/changelog:
+    + Removed emacs helper variables.
+  * debian/control:
+    + Set policy to 3.6.1.0.
+    + Set debhelper build dependency to (>= 4.0).
+    + Use the default dh_shlibs information, since the API is rock stable
+      (Closes: #131139).
+    + Removed the libc6-dev dependency in the -dev package.
+    + Rephrased the short and long descriptions.
+  * debian/copyright:
+    + Replaced "Author(s)" with "Author".
+  * debian/rules:
+    + Removed obsolete call to dh_suidregister.
+    + Use debian/compat instead of DH_COMPAT.
+  * include_editline.h:
+    + Added a minimalist /usr/include/editline.h (Closes: #129544).
+  * Makefile:
+    + Call libtool with the proper --mode flags.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Sat, 31 Jan 2004 22:32:35 +0100
+
+editline (1.12-4) unstable; urgency=low
+
+  * Add a Build-Depends for debhelper and libtool.  Thought those
+    were baseline.  closes: #117780
+
+ -- Jim Studt <jim@federated.com>  Thu, 15 Nov 2001 19:00:00 -0600
+
+editline (1.12-3) unstable; urgency=low
+
+  * Make man pages not be in the shared library package.
+
+ -- Jim Studt <jim@federated.com>  Sat, 13 Jan 2001 00:03:53 -0600
+
+editline (1.12-2) unstable; urgency=low
+
+  * Patch to not declare read() and write(), it fails on alphas.
+
+ -- Jim Studt <jim@federated.com>  Tue, 12 Sep 2000 16:39:34 -0500
+
+editline (1.12-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Jim Studt <jim@federated.com>  Fri,  5 May 2000 13:25:51 -0500
+

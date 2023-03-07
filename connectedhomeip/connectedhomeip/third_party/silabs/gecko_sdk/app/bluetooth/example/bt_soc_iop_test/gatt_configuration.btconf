@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--Custom BLE GATT-->
+<gatt generic_attribute_service="true" header="gatt_db.h" name="Custom BLE GATT" out="gatt_db.c" prefix="gattdb_">
+  <!--Generic Access-->
+  <service advertise="false" name="Generic Access" requirement="mandatory" sourceId="org.bluetooth.service.generic_access" type="primary" uuid="1800">
+    <informativeText>Abstract: The generic_access service contains generic information about the device. All available Characteristics are readonly. </informativeText>
+    
+    <!--Device Name-->
+    <characteristic const="false" id="device_name" name="Device Name" sourceId="org.bluetooth.characteristic.gap.device_name" uuid="2A00">
+      <informativeText/>
+      <value length="10" type="utf-8" variable_length="false">IOP_Test_1</value>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+        <write authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--Appearance-->
+    <characteristic const="true" name="Appearance" sourceId="org.bluetooth.characteristic.gap.appearance" uuid="2A01">
+      <informativeText>Abstract: The external appearance of this device. The values are composed of a category (10-bits) and sub-categories (6-bits). </informativeText>
+      <value length="2" type="hex" variable_length="false">0000</value>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+  </service>
+  
+  <!--Device Information-->
+  <service advertise="false" name="Device Information" requirement="mandatory" sourceId="org.bluetooth.service.device_information" type="primary" uuid="180A">
+    <informativeText>Abstract: The Device Information Service exposes manufacturer and/or vendor information about a device. Summary: This service exposes manufacturer information about a device. The Device Information Service is instantiated as a Primary Service. Only one instance of the Device Information Service is exposed on a device. </informativeText>
+    
+    <!--Manufacturer Name String-->
+    <characteristic const="true" name="Manufacturer Name String" sourceId="org.bluetooth.characteristic.manufacturer_name_string" uuid="2A29">
+      <informativeText>Abstract: The value of this characteristic is a UTF-8 string representing the name of the manufacturer of the device. </informativeText>
+      <value length="12" type="utf-8" variable_length="false">Silicon Labs</value>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--Model Number String-->
+    <characteristic const="false" id="model_number_string" name="Model Number String" sourceId="org.bluetooth.characteristic.model_number_string" uuid="2A24">
+      <informativeText>Abstract: The value of this characteristic is a UTF-8 string representing the model number assigned by the device vendor. </informativeText>
+      <value length="10" type="utf-8" variable_length="true">Blue Gecko</value>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--System ID-->
+    <characteristic const="true" id="system_id" name="System ID" sourceId="org.bluetooth.characteristic.system_id" uuid="2A23">
+      <informativeText>Abstract: The SYSTEM ID characteristic consists of a structure with two fields. The first field are the LSOs and the second field contains the MSOs. This is a 64-bit structure which consists of a 40-bit manufacturer-defined identifier concatenated with a 24 bit unique Organizationally Unique Identifier (OUI). The OUI is issued by the IEEE Registration Authority (http://standards.ieee.org/regauth/index.html) and is required to be used in accordance with IEEE Standard 802-2001.6 while the least significant 40 bits are manufacturer defined.       If System ID generated based on a Bluetooth Device Address, it is required to be done as follows. System ID and the Bluetooth Device Address have a very similar structure: a Bluetooth Device Address is 48 bits in length and consists of a 24 bit Company Assigned Identifier (manufacturer defined identifier) concatenated with a 24 bit Company Identifier (OUI). In order to encapsulate a Bluetooth Device Address as System ID, the Company Identifier is concatenated with 0xFFFE followed by the Company Assigned Identifier of the Bluetooth Address. For more guidelines related to EUI-64, refer to http://standards.ieee.org/develop/regauth/tut/eui64.pdf. Examples: If the system ID is based of a Bluetooth Device Address with a Company Identifier (OUI) is 0x123456 and the Company Assigned Identifier is 0x9ABCDE, then the System Identifier is required to be 0x123456FFFE9ABCDE. </informativeText>
+      <value length="6" type="hex" variable_length="false">000102030405</value>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+  </service>
+  
+  <!--Silicon Labs IOP Test-->
+  <service advertise="false" id="iop_test_generic" name="Silicon Labs IOP Test" requirement="mandatory" sourceId="custom.type" type="primary" uuid="6a2857fe-9092-4e97-8aae-c028e5b361a8">
+    <informativeText>Generic information about the IOP test procedure</informativeText>
+    
+    <!--IOP Test Stack Version-->
+    <characteristic const="false" id="iop_test_stack_version" name="IOP Test Stack Version" sourceId="custom.type" uuid="9e453fb5-42ee-4ed0-aaa4-74e11fc2c79f">
+      <informativeText>The semantic versioning number of the Bluetooth stack.</informativeText>
+      <value length="8" type="hex" variable_length="false"/>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--IOP Test Connection Parameters-->
+    <characteristic const="false" id="iop_test_connection" name="IOP Test Connection Parameters" sourceId="custom.type" uuid="6cb60323-2d62-473d-8815-b73df2ee3517">
+      <informativeText>Contains the connection parameters. Byte[9:8]: Supervision timeout. Byte[7:6]: Responder latency. Byte[5:4]: Connection interval. Byte[3:2]: PDU size. Byte[1:0]: MTU size.</informativeText>
+      <value length="0" type="user" variable_length="false"/>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+  </service>
+  
+  <!--Silicon Labs IOP Test Properties-->
+  <service advertise="false" id="iop_test_property" name="Silicon Labs IOP Test Properties" requirement="mandatory" sourceId="custom.type" type="primary" uuid="75247986-db67-4e19-b0e3-df8e8170be68">
+    <informativeText>Contains characteristics for a subset of simple test cases.</informativeText>
+    
+    <!--IOP Test Read Only Length 1-->
+    <characteristic const="false" id="iop_test_readonly_len_1" name="IOP Test Read Only Length 1" sourceId="custom.type" uuid="b3319040-a720-44ce-84ec-d1a69420bbfb">
+      <informativeText>Test procedure: Read the characteristic. Pass if value is 0x55. Fail if value is something else or read operation fails.</informativeText>
+      <value length="1" type="hex" variable_length="false">55</value>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--IOP Test Read Only Length 255-->
+    <characteristic const="false" id="iop_test_readonly_len_255" name="IOP Test Read Only Length 255" sourceId="custom.type" uuid="b3319040-a720-44ce-84ec-d1a69420bbfc">
+      <informativeText>Value data: The first byte value is 0 and the subsequent bytes will previous one +1 (e.g. byte 0 value is, byte 1 value is 1 ... and byte 255 value is 255). Test procedure: Read the characteristic. Pass if all 255 bytes match the value described above. Fail if value is something else or read operation fails.</informativeText>
+      <value length="255" type="hex" variable_length="false">000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFE</value>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--IOP Test Write Only Length 1-->
+    <characteristic const="false" id="iop_test_writeonly_len_1" name="IOP Test Write Only Length 1" sourceId="custom.type" uuid="38333e40-1d8f-47df-a850-9ced9508be27">
+      <informativeText>Test procedure: Write 1 byte to the characteristic with value 0. Pass if the operation does not generate an error on the remote side. Fail if an error is generated.</informativeText>
+      <value length="1" type="hex" variable_length="false"/>
+      <properties>
+        <write authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--IOP Test Write Only Length 255-->
+    <characteristic const="false" id="iop_test_writeonly_len_255" name="IOP Test Write Only Length 255" sourceId="custom.type" uuid="38333e40-1d8f-47df-a850-9ced9508be28">
+      <informativeText>Test procedure: Write 255 bytes to the characteristic with value 0. Pass if the operation does not generate an error on the remote side. Fail if an error is generated.</informativeText>
+      <value length="255" type="hex" variable_length="false"/>
+      <properties>
+        <write authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--IOP Test Write Without Response Length 1-->
+    <characteristic const="false" id="iop_test_writewoutresp_len_1" name="IOP Test Write Without Response Length 1" sourceId="custom.type" uuid="b8c15871-f456-40bc-9785-c144af510fa6">
+      <informativeText>Test procedure: Write 1 byte without response to the characteristic with value 0. Pass if the operation does not generate an error on the remote side. Fail if an error is generated.</informativeText>
+      <value length="1" type="hex" variable_length="false">00</value>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+        <write_no_response authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--IOP Test Write Without Response Length 255-->
+    <characteristic const="false" id="iop_test_writewoutresp_len_255" name="IOP Test Write Without Response Length 255" sourceId="custom.type" uuid="b8c15871-f456-40bc-9785-c144af510fa7">
+      <informativeText>Test procedure: Write 255 bytes without response to the characteristic with value 0. Pass if the operation does not generate an error on the remote side. Fail if an error is generated.</informativeText>
+      <value length="255" type="hex" variable_length="false"/>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+        <write_no_response authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--IOP Test Notify Length 1-->
+    <characteristic const="false" id="iop_test_notify_len_1" name="IOP Test Notify Length 1" sourceId="custom.type" uuid="14d56543-42e5-4771-a7f3-526dc92463a2">
+      <informativeText>Test procedure: First subscribe to notifications on the characteristic which shall trigger a one-shot 100ms timer on the embedded firmware. Once the timer expires the notification shall be sent with defined value. Pass if the the subscription is done successfully, notification is received within 200ms after subscribing and the value is 0x55. Fail if subscription fails or notification is not received within 200ms or value is not 0x55.</informativeText>
+      <value length="1" type="hex" variable_length="false">55</value>
+      <properties>
+        <notify authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--IOP Test Notify Length MTU-3-->
+    <characteristic const="false" id="iop_test_notify_len_mtu_3" name="IOP Test Notify Length MTU-3" sourceId="custom.type" uuid="14d56543-42e5-4771-a7f3-526dc92463a3">
+      <informativeText>Test procedure: First subscribe to notifications on the characteristic which shall trigger a one-shot 100ms timer on the embedded firmware. Once the timer expires the notification shall be sent. The amount of bytes sent shall be MTU - 3 bytes (maximum supported by a notification) where the first byte value is 0 and the subsequent bytes will previous one +1 (e.g. byte 0 value is, byte 1 value is 1 ... and byte N value is N). Pass if the subscription is done successfully, notification is received within 200ms after subscribing and the value matches as described above. Fail if subscription fails or notification is not received within 200ms or value is not as described above.</informativeText>
+      <value length="255" type="hex" variable_length="false"/>
+      <properties>
+        <notify authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--IOP Test Indicate Length 1-->
+    <characteristic const="false" id="iop_test_indicate_len_1" name="IOP Test Indicate Length 1" sourceId="custom.type" uuid="2f1a964e-22f4-4e03-9edf-751c74f5793c">
+      <informativeText>Test procedure: First subscribe to indications on the characteristic which shall trigger a one-shot 100ms timer on the embedded firmware. Once the timer expires the indication shall be sent with defined value. Pass if the the subscription is done successfully, indication is received within 200ms after subscribing and the value is 0x55. Fail if subscription fails or indication is not received within 200ms or value is not 0x55.</informativeText>
+      <value length="1" type="hex" variable_length="false">55</value>
+      <properties>
+        <indicate authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--IOP Test Indicate Length MTU-3-->
+    <characteristic const="false" id="iop_test_indicate_len_mtu_3" name="IOP Test Indicate Length MTU-3" sourceId="custom.type" uuid="2f1a964e-22f4-4e03-9edf-751c74f5793d">
+      <informativeText>First subscribe to indications on the characteristic which shall trigger a one-shot 100ms timer on the embedded firmware. Once the timer expires the indication shall be sent. The amount of bytes sent shall be MTU - 3 bytes (maximum supported by an indication) where the first byte value is 0 and the subsequent bytes will previous one +1 (e.g. byte 0 value is, byte 1 value is 1 ... and byte N value is N). Pass if the the subscription is done successfully, indication is received within 200ms after subscribing and the value matches as described above. Fail if subscription fails or indication is not received within 200ms or value is not as described above.</informativeText>
+      <value length="255" type="hex" variable_length="false"/>
+      <properties>
+        <indicate authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+  </service>
+  
+  <!--Silicon Labs IOP Test Characteristics Types-->
+  <service advertise="false" id="iop_test_char_type" name="Silicon Labs IOP Test Characteristics Types" requirement="mandatory" sourceId="custom.type" type="primary" uuid="3976265f-098c-4253-a2cd-99c16eb13f5c">
+    <informativeText>Contains characteristics for a subset of simple test cases.</informativeText>
+    
+    <!--IOP Test Length 1-->
+    <characteristic const="false" id="iop_test_len_1" name="IOP Test Length 1" sourceId="custom.type" uuid="999ef454-a850-427f-a87f-e72bc00471ff">
+      <informativeText>Test procedure: Write 1 byte with value 0x55 then read value back. Pass if value read is 0x55. Fail if value is something else or write/read operation fails.</informativeText>
+      <value length="1" type="hex" variable_length="false">00</value>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+        <write authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--IOP Test Length 255-->
+    <characteristic const="false" id="iop_test_len_255" name="IOP Test Length 255" sourceId="custom.type" uuid="d4138f32-397d-407c-8275-a5dad47e4de6">
+      <informativeText>Test procedure: Write 255 bytes where the first byte value is 0 and the subsequent bytes will previous one +1 (e.g. byte 0 value is, byte 1 value is 1 ... and byte 255 value is 255). Read values back. Pass if all 255 bytes match the value described above. Fail if value is something else or read operation fails.</informativeText>
+      <value length="255" type="hex" variable_length="false"/>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+        <write authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--IOP Test Length Variable 4-->
+    <characteristic const="false" id="iop_test_len_variable_4" name="IOP Test Length Variable 4" sourceId="custom.type" uuid="df8ff726-2022-4f9c-8b4d-96fd4acd3c71">
+      <informativeText>Test procedure 1: Write 1 byte with value 0x55 and read back. Pass if get only 1 byte (so the length is 1) with value 0x55. Fail if you get more than 1 byte or the value is different. Test procedure 2: Write 4 bytes with value 0x66 and read back. Pass if get 4 bytes (so the length is 4) with value 0x66. Fail if you get less than 4 bytes or the value is different.</informativeText>
+      <value length="4" type="hex" variable_length="true">00</value>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+        <write authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--IOP Test Const Length 1-->
+    <characteristic const="true" id="iop_test_const_len_1" name="IOP Test Const Length 1" sourceId="custom.type" uuid="d4138f32-397d-407c-8275-a5dad47e4de7">
+      <informativeText>Test procedure 1: Read 1 byte. Pass if the value is 0x55. Fail if the value is different. Test procedure 2: Write value 0. Pass if you get ATT error code 0x03 'Write Not Permitted" (5.1 Core spec, page 2302). Fail if you don't get that error code.</informativeText>
+      <value length="1" type="hex" variable_length="false">55</value>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+        <write authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--IOP Test Const Length 255-->
+    <characteristic const="true" id="iop_test_const_len_255" name="IOP Test Const Length 255" sourceId="custom.type" uuid="d4138f32-397d-407c-8275-a5dad47e4de8">
+      <informativeText>Test procedure 1: Read 255 byte. Pass if the value is 0x000102...FF. Fail if the values are different. Test procedure 2: Write value 0 to all bytes. Pass if you get ATT error code 0x03 'Write Not Permitted" (5.1 Core spec, page 2302). Fail if you don't get that error code.</informativeText>
+      <value length="255" type="hex" variable_length="false">000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFE</value>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+        <write authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--IOP Test User Len 1-->
+    <characteristic const="false" id="iop_test_user_len_1" name="IOP Test User Len 1" sourceId="custom.type" uuid="bb250d1b-154a-4aed-bfde-0c5e8d577064">
+      <informativeText>Test procedure: Write 1 byte with value 0x55 then read value back. Pass if value read is 0x55. Fail if value is something else or write /read operation fails. Note: with user type the data must be saved at the application level.</informativeText>
+      <value length="0" type="user" variable_length="false"/>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+        <write authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--IOP Test User Len 255-->
+    <characteristic const="false" id="iop_test_user_len_255" name="IOP Test User Len 255" sourceId="custom.type" uuid="bb250d1b-154a-4aed-bfde-0c5e8d57705e">
+      <informativeText>Test procedure: Write 255 bytes where the first byte value is 0 and the subsequent bytes will previous one +1 (e.g. byte 0 value is, byte 1 value is 1 ... and byte 255 value is 255). Pass if value read is as described above. Fail if value is something else or write/read operation fails.</informativeText>
+      <value length="0" type="user" variable_length="false"/>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+        <write authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--IOP Test User Len Variable 4-->
+    <characteristic const="false" id="iop_test_user_len_var_4" name="IOP Test User Len Variable 4" sourceId="custom.type" uuid="bb250d1b-154a-4aed-bfde-0c5e8d57705f">
+      <informativeText>Test procedure 1: Write 1 byte with value 0x55 and read back. Pass if get only 1 byte (so the length is 1) with value 0x55. Fail if you get more than 1 byte or the value is different. Test procedure 2: Write 4 bytes with value 0x66 and read back. Pass if get 4 bytes (so the length is 4) with value 0x66. Fail if you get less than 4 bytes or the value is different.</informativeText>
+      <value length="0" type="user" variable_length="false"/>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="false"/>
+        <write authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+  </service>
+  
+  <!--Silicon Labs Phase 3-->
+  <service advertise="false" id="iop_test_phase3" name="Silicon Labs Phase 3" requirement="mandatory" sourceId="" type="primary" uuid="0b282ff4-5347-472b-93da-f579103420fa">
+    <informativeText>Contains characteristics for throughput, security and GATT caching tests.</informativeText>
+    
+    <!--IOP Test Phase3 Control-->
+    <characteristic const="false" id="iop_test_phase3_control" name="IOP Test Phase3 Control" sourceId="" uuid="148fd3c4-a00f-3905-d743-e94268e757e3">
+      <informativeText>Byte[0]: Chooses mobile OS type. Byte[1]: Changes security level. Byte[2]: Reserved.</informativeText>
+      <value length="0" type="user" variable_length="false"/>
+      <properties>
+        <write authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--IOP Test Throughput - GATT Notification-->
+    <characteristic const="false" id="iop_test_throughput" name="IOP Test Throughput - GATT Notification" sourceId="" uuid="47b73dd6-dee3-4da1-9be0-f5c539a9a4be">
+      <informativeText>Remote writes which OS it runs on into "IOP Test Phase3 Control" characteristic. Remote enables notification for "IOP Test Throughput - GATT Notification" characteristic. Device sends notification with data of an array with PDU - 4 - 3 byte with increased value continuously. Remote receives packages from device in 5s then disable notification for "IOP Test Throughput - GATT Notification" characteristic. Remote calculates throughput speed (byte/s).</informativeText>
+      <value length="244" type="hex" variable_length="false"/>
+      <properties>
+        <notify authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+
+    <!--IOP Test Security - Pairing-->
+    <characteristic const="false" id="iop_test_encrypted" name="IOP Test Security - Pairing" sourceId="" uuid="8824e363-7392-4bfc-81b6-3e58104cb2b0">
+      <informativeText>Remote writes value 0x000100 into the "IOP Test Phase3 Control" characteristic to change secure mode in firmware to encrypted and reconnect with device. Remote pairs with device with just works mode. Remote reads "IOP Test Security - Pairing" characteristic which has an encrypted read property.</informativeText>
+      <value length="0" type="hex" variable_length="false">55</value>
+      <properties>
+        <read authenticated="false" bonded="false" encrypted="true"/>
+      </properties>
+    </characteristic>
+    
+    <!--IOP Test Security - Authentication-->
+    <characteristic const="false" id="iop_test_authenticated" name="IOP Test Security - Authentication" sourceId="" uuid="d14a264f-cdac-c2a4-dce5-9b9ca2073aba">
+      <informativeText>Remote writes value 0x000200 into the "IOP Test Phase3 Control" characteristic to change secure mode in firmware to authenticated and reconnect with device. Remote pairs with device with authenticatied mode by entering passkey 123456. Remote reads "IOP Test Security - Authentication" characteristic which has an authenticated read property.</informativeText>
+      <value length="0" type="hex" variable_length="false">55</value>
+      <properties>
+        <read authenticated="true" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+    
+    <!--IOP Test Security - Bonding-->
+    <characteristic const="false" id="iop_test_bonded" name="IOP Test Security - Bonding" sourceId="" uuid="6a978442-f37b-a07c-1a5f-0e6f15a5fc83">
+      <informativeText>Remote writes value 0x000300 into "IOP Test Phase3 Control" characteristic to change secure mode in firmware to bonded and reconnect with device. Remote pairs with device with bonded mode by entering passkey 123456. Remote reads "IOP Test Security - Bonding" characteristic which has a bonded read property.</informativeText>
+      <value length="0" type="hex" variable_length="false">55</value>
+      <properties>
+        <read authenticated="false" bonded="true" encrypted="false"/>
+      </properties>
+    </characteristic>
+  </service>
+</gatt>

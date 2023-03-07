@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Last Name" type="org.bluetooth.characteristic.last_name" uuid="2A90" last-modified="2014-06-10" approved="Yes">
+    <InformativeText>
+        <Abstract>Last name of the user. See Note below.</Abstract>
+	</InformativeText>
+    <Value>
+    <Field name="Last Name">
+        <Requirement>Mandatory</Requirement>
+        <Format>utf8s</Format>
+        <Unit>org.bluetooth.unit.unitless</Unit>
+    </Field>
+	</Value>
+    <Note>The length of the utf8s-based UDS Characteristic is variable and may exceed the default ATT_MTU defined in the Core Specification.</Note>
+</Characteristic>

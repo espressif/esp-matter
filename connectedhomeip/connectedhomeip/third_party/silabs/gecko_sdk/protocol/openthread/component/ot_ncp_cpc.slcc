@@ -1,0 +1,47 @@
+id: ot_ncp_cpc
+label: NCP CPC
+package: OpenThread
+category: OpenThread
+quality: production
+description: This component provides Co-Processor Communication (CPC) support for the OpenThread stack. It requires that the OpenThread NCP component be included with the project. Currently only the OpenThread RCP stack is supported.
+provides:
+  - name: ot_ncp_cpc
+requires:
+  - name: ot_stack
+  - name: ot_ncp
+  - name: cpc_secondary
+  - name: ot_coex
+    unless:
+      - "zigbee_ncp_cpc"
+  - name: mbedtls_entropy_adc
+    condition:
+      - "device_family_efr32mg1"
+recommends:
+  - id: ot_stack_rcp
+root_path: util/third_party/openthread/src
+include:
+  - path: ncp
+    file_list:
+      - path: ncp_cpc.hpp
+source:
+      - path: ncp/ncp_cpc.cpp
+
+template_contribution:
+  - name: component_catalog
+    value: 15_4_ncp
+
+define:
+  - name: OPENTHREAD_CONFIG_NCP_HDLC_ENABLE
+    value: 0
+  - name: OPENTHREAD_CONFIG_NCP_CPC_ENABLE
+    value: 1
+  - name: OPENTHREAD_CONFIG_COPROCESSOR_RPC_OUTPUT_BUFFER_SIZE
+    value: 512
+    condition:
+    - "device_family_efr32mg1"
+
+toolchain_settings:
+  - option: optimize
+    value: speed
+    condition:
+    - "device_family_efr32mg1"

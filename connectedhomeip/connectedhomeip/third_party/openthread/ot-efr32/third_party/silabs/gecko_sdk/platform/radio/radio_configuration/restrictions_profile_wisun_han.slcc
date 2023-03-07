@@ -1,0 +1,35 @@
+id: restrictions_profile_wisun_han
+label: Restrictions - Wi-SUN FSK Profile
+package: platform
+description: Component provides profile_wisun_han.restriction configuration files by logic
+category: Platform|Radio Configuration
+quality: production
+root_path: platform/radio/radio_configuration/restrictions
+requires:
+  - name: rail_lib
+  - name: device_has_radio
+
+#------- Set provided component name
+provides:
+  - name: restrictions_profile_wisun_han
+
+#-------- Include restriction config json file --------
+config_file:
+  - path: profile_wisun_han.restriction
+    directory: rail
+    condition:
+      - device_sdid_84
+  - path: profile_wisun_han.restriction
+    directory: rail
+    condition:
+      - device_sdid_210
+  - path: profile_wisun_han.restriction
+    directory: rail
+    condition:
+      - device_sdid_220
+
+#-------- Hides Component for user in Studio ---------
+ui_hints:
+  visibility: never
+
+

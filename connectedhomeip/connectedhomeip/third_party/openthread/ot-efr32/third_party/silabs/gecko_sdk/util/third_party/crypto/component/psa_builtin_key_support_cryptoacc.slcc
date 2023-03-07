@@ -1,0 +1,19 @@
+id: psa_builtin_key_support_cryptoacc
+package: platform
+label: Built-In Keys
+description: >-
+  This component provides support for using the PUF-derived key through the
+  PSA Crypto API (using the built-in key functionality).
+category: Platform|Security|PSA Crypto
+quality: production
+requires:
+  - name: psa_crypto
+  - name: psa_driver
+  - name: device_has_cryptoacc
+  - name: device_has_sepuf
+provides:
+  - name: psa_builtin_key_support_cryptoacc
+  - name: psa_builtin_key_support
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_PSA_CRYPTO_BUILTIN_KEYS

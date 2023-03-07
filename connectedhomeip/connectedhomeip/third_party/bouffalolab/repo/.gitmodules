@@ -1,0 +1,16 @@
+[submodule "components"]
+	path = components
+	url = https://github.com/bouffalolab/bl_iot_sdk-components.git
+	branch = main
+[submodule "docs"]
+	path = docs
+	url = https://github.com/bouffalolab/bl_iot_sdk-docs.git
+	branch = main
+[submodule "tools"]
+	path = tools
+	url = https://github.com/bouffalolab/bl_iot_sdk-tools.git
+	branch = main
+[submodule "customer_app"]
+	path = customer_app
+	url = https://github.com/bouffalolab/bl_iot_sdk-customer_app.git
+	branch = main

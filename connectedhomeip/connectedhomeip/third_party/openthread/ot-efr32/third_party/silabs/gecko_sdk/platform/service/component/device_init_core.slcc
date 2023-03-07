@@ -1,0 +1,22 @@
+id: device_init_core
+label: Chip Initialization
+package: platform
+description: >
+  This initialization configures the device to a state as similar to later 
+  revisions as possible to improve software compatibility with newer parts.
+category: Services|Device Initialization
+quality: production
+provides:
+  - name: device_init_core
+requires:
+  - name: emlib_chip
+template_contribution:
+  - name: event_handler
+    value:
+      event: platform_init
+      include: em_chip.h
+      handler: CHIP_Init
+    priority: -9999
+documentation:
+    docset: gecko-platform
+    document: service/api/group-device-init

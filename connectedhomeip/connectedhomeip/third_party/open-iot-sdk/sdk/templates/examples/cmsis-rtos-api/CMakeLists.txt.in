@@ -1,0 +1,104 @@
+# Copyright (c) 2021-2022, Arm Limited and Contributors. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+cmake_minimum_required(VERSION 3.21.0 FATAL_ERROR)
+
+# Set config variables for the project and dependencies
+set(CMAKE_SYSTEM_PROCESSOR @CMAKE_SYSTEM_PROCESSOR@)
+@RTOS_FETCH@
+@PLATFORM_FETCH@
+
+include(FetchContent)
+
+# Toolchain files need to exist before first call to project
+FetchContent_Declare(iotsdk-toolchains
+    GIT_REPOSITORY  @TOOLCHAINS_URL@
+    GIT_TAG         @TOOLCHAINS_TAG@
+    SOURCE_DIR      ${CMAKE_BINARY_DIR}/toolchains
+)
+FetchContent_MakeAvailable(iotsdk-toolchains)
+
+# Declare top-level project
+project(iotsdk-example-cmsis-rtos-api)
+
+# Set executable suffix to be toolchain-independent for ease of documentation
+# and testing. This needs to be done after first call to project().
+set(CMAKE_EXECUTABLE_SUFFIX .elf)
+
+# Add Open IoT SDK
+FetchContent_Declare(open-iot-sdk
+    GIT_REPOSITORY  @IOTSDK_URL@
+    GIT_TAG         @IOTSDK_TAG@
+)
+FetchContent_MakeAvailable(open-iot-sdk)
+
+# Add Open IoT SDK modules to path
+list(APPEND CMAKE_MODULE_PATH ${open-iot-sdk_SOURCE_DIR}/cmake)
+
+# Add the project_options tool for code quality checks on this example.
+# In a user's own project, the use of project_options is entirely optional.
+FetchContent_Declare(project_options
+    GIT_REPOSITORY  @PROJECT_OPTIONS_URL@
+    GIT_TAG         @PROJECT_OPTIONS_TAG@
+)
+FetchContent_MakeAvailable(project_options)
+include(${project_options_SOURCE_DIR}/Index.cmake)
+include(${project_options_SOURCE_DIR}/src/DynamicProjectOptions.cmake)
+
+# Apply Open IoT SDK's default compiler warnings to this example via project_options
+include(${open-iot-sdk_SOURCE_DIR}/cmake/warning_flags.cmake)
+set(COMPILER_WARNINGS ${IOTSDK_WARNING_FLAGS} ${IOTSDK_WARNING_AS_ERRORS_FLAGS})
+dynamic_project_options(
+    CLANG_WARNINGS  ${COMPILER_WARNINGS}
+    GCC_WARNINGS    ${COMPILER_WARNINGS}
+)
+
+include(ElfToBin)
+include(CTest)
+
+# Configure component properties
+
+# CMSIS 5 require projects to provide configuration macros via RTE_Components.h
+# and CMSIS_device_header. The macro CMSIS_device_header is not automatically set
+# based on CMAKE_SYSTEM_PROCESSOR in the place where cmsis-core is first defined,
+# because a project may want to provide its own device header.
+target_compile_definitions(cmsis-core INTERFACE CMSIS_device_header="@CMSIS_device_header@")
+
+# Add RTOS configuration headers
+@RTOS_HEADER_INCLUDE@
+
+# Add example application
+add_executable(iotsdk-example-cmsis-rtos-api main.c)
+target_link_libraries(iotsdk-example-cmsis-rtos-api
+    mcu-driver-hal
+    mcu-driver-bootstrap
+
+    iotsdk-serial-retarget
+
+    @RTOS_LIBS@
+    @PLATFORM_LIBS@
+    @PLATFORM_STARTUP@
+
+    # SDK project options/warnings (this is optional)
+    project_options
+    project_warnings
+)
+if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
+    set(linker_script ${CMAKE_CURRENT_LIST_DIR}/gcc.ld)
+    target_link_options(iotsdk-example-cmsis-rtos-api PRIVATE -T ${linker_script})
+elseif(CMAKE_C_COMPILER_ID STREQUAL "ARMClang")
+    set(linker_script ${CMAKE_CURRENT_LIST_DIR}/armclang.sct)
+    target_link_options(iotsdk-example-cmsis-rtos-api PRIVATE --scatter=${linker_script})
+endif()
+set_target_properties(iotsdk-example-cmsis-rtos-api PROPERTIES LINK_DEPENDS ${linker_script})
+target_elf_to_bin(iotsdk-example-cmsis-rtos-api)
+
+add_test(
+    NAME    iotsdk-example-cmsis-rtos-api
+    COMMAND htrun
+        --image-path=iotsdk-example-cmsis-rtos-api@HTRUN_IMG_FORMAT@
+        --compare-log=${CMAKE_CURRENT_LIST_DIR}/test.log
+        @HTRUN_COMMON_ARGUMENTS@
+        @HTRUN_ARGS@
+    COMMAND_EXPAND_LISTS
+)

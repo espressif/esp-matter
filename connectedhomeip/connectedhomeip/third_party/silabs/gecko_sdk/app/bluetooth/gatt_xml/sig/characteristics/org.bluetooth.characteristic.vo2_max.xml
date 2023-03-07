@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="VO2 Max" type="org.bluetooth.characteristic.vo2_max" uuid="2A96" last-modified="2014-06-10" approved="Yes">
+    <InformativeText>
+        <Abstract>Maximal Oxygen uptake of a user</Abstract>
+	</InformativeText>
+    <Value>
+    <Field name="VO2 Max">
+        <InformativeText>
+            Unit is in Milliliter per kilogram per minutes with a resolution of 1 .
+		</InformativeText>
+        <Requirement>Mandatory</Requirement>
+        <Format>uint8</Format>
+        <DecimalExponent>0</DecimalExponent>
+    </Field>
+	</Value>
+</Characteristic>

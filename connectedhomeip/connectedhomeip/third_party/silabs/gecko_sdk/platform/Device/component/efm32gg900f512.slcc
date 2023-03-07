@@ -1,0 +1,198 @@
+!!omap
+- id: EFM32GG900F512
+- package: platform
+- description: Silicon Labs CMSIS-Device part headers for EFM32GG900F512.
+- category: Platform|Device|EFM32GG
+- quality: production
+- define:
+  - name: EFM32GG900F512
+    unless:
+    - device_content_override
+- source:
+  - path: platform/Device/SiliconLabs/EFM32GG/Source/system_efm32gg.c
+    unless:
+    - device_content_override
+  - path: platform/Device/SiliconLabs/EFM32GG/Source/startup_efm32gg.c
+    unless:
+    - device_content_override
+  - condition:
+    - toolchain_arm
+    path: platform/Device/SiliconLabs/EFM32GG/Source/ARM/startup_efm32gg.s
+    unless:
+    - device_content_override
+- include:
+  - file_list:
+    - path: efm32gg900f512.h
+    - path: efm32gg_acmp.h
+    - path: efm32gg_adc.h
+    - path: efm32gg_aes.h
+    - path: efm32gg_af_pins.h
+    - path: efm32gg_af_ports.h
+    - path: efm32gg_burtc.h
+    - path: efm32gg_burtc_ret.h
+    - path: efm32gg_calibrate.h
+    - path: efm32gg_cmu.h
+    - path: efm32gg_dac.h
+    - path: efm32gg_devinfo.h
+    - path: efm32gg_dma.h
+    - path: efm32gg_dma_ch.h
+    - path: efm32gg_dma_descriptor.h
+    - path: efm32gg_dmactrl.h
+    - path: efm32gg_dmareq.h
+    - path: efm32gg_ebi.h
+    - path: efm32gg_emu.h
+    - path: efm32gg_etm.h
+    - path: efm32gg_gpio.h
+    - path: efm32gg_gpio_p.h
+    - path: efm32gg_i2c.h
+    - path: efm32gg_lcd.h
+    - path: efm32gg_lesense.h
+    - path: efm32gg_lesense_buf.h
+    - path: efm32gg_lesense_ch.h
+    - path: efm32gg_lesense_st.h
+    - path: efm32gg_letimer.h
+    - path: efm32gg_leuart.h
+    - path: efm32gg_msc.h
+    - path: efm32gg_pcnt.h
+    - path: efm32gg_prs.h
+    - path: efm32gg_prs_ch.h
+    - path: efm32gg_prs_signals.h
+    - path: efm32gg_rmu.h
+    - path: efm32gg_romtable.h
+    - path: efm32gg_rtc.h
+    - path: efm32gg_timer.h
+    - path: efm32gg_timer_cc.h
+    - path: efm32gg_uart.h
+    - path: efm32gg_usart.h
+    - path: efm32gg_usb.h
+    - path: efm32gg_usb_diep.h
+    - path: efm32gg_usb_doep.h
+    - path: efm32gg_usb_hc.h
+    - path: efm32gg_vcmp.h
+    - path: efm32gg_wdog.h
+    - path: em_device.h
+    - path: system_efm32gg.h
+    path: platform/Device/SiliconLabs/EFM32GG/Include/
+    unless:
+    - device_content_override
+- provides:
+  - name: efm32gg900f512
+  - name: device
+  - name: device_series_0
+  - name: device_sdid_72
+  - name: device_family_efm32gg
+  - name: device_cortexm
+  - name: device_arm
+  - name: cortexm3
+  - name: armv7m
+  - name: device_has_acmp
+  - name: device_has_acmp0
+  - name: device_has_acmp1
+  - name: device_has_adc
+  - name: device_has_adc0
+  - name: device_has_aes
+  - name: device_has_bu
+  - name: device_has_burtc
+  - name: device_has_calibrate
+  - name: device_has_cmu
+  - name: device_has_dac
+  - name: device_has_dac0
+  - name: device_has_devinfo
+  - name: device_has_dma
+  - name: device_has_ebi
+  - name: device_has_emu
+  - name: device_has_etm
+  - name: device_has_gpio
+  - name: device_has_i2c
+  - name: device_has_i2c0
+  - name: device_has_i2c1
+  - name: device_has_lcd
+  - name: device_has_lesense
+  - name: device_has_letimer
+  - name: device_has_letimer0
+  - name: device_has_leuart
+  - name: device_has_leuart0
+  - name: device_has_leuart1
+  - name: device_has_msc
+  - name: device_has_opamp
+  - name: device_has_pcnt
+  - name: device_has_pcnt0
+  - name: device_has_pcnt1
+  - name: device_has_pcnt2
+  - name: device_has_prs
+  - name: device_has_rmu
+  - name: device_has_romtable
+  - name: device_has_rtc
+  - name: device_has_timer
+  - name: device_has_timer0
+  - name: device_has_timer1
+  - name: device_has_timer2
+  - name: device_has_timer3
+  - name: device_has_uart
+  - name: device_has_uart0
+  - name: device_has_uart1
+  - name: device_has_usart
+  - name: device_has_usart0
+  - name: device_has_usart1
+  - name: device_has_usart2
+  - name: device_has_usb
+  - name: device_has_vcmp
+  - name: device_has_wdog
+  - name: device_has_dwt
+  - name: device_has_mpu
+- requires:
+  - name: cmsis_core
+- template_contribution:
+  - name: device_opn
+    value: EFM32GG900F512
+  - name: device_arch
+    value: armv7m
+  - name: device_cpu
+    value: cortexm3
+  - name: device_series
+    value: 0
+  - name: device_family
+    value: efm32gg
+  - name: device_flash_addr
+    value: 0
+  - name: device_flash_size
+    value: 524288
+  - name: device_flash_page_size
+    value: 4096
+  - name: device_ram_addr
+    value: 536870912
+  - name: device_ram_size
+    value: 131072
+  - name: device_mpu
+    value: true
+  - name: default_stack_size
+    value: 4096
+  - name: default_heap_size
+    value: 2048
+- tag:
+  - device:opn:efm32gg900f512
+- toolchain_settings:
+  - option: device_opn
+    value: efm32gg900f512
+  - option: architecture
+    value: armv7-m
+  - option: cpu
+    value: cortex-m3
+- config_file:
+  - condition:
+    - custom_radio_config
+    directory: rail
+    path: platform/Device/config/72/device.yaml
+- metadata:
+    device:
+      memory:
+      - name: Main Flash
+        page_size: 4096
+        size: 524288
+        start: 0
+        type: non-volatile
+      - name: RAM
+        size: 131072
+        start: 536870912
+        type: volatile
+      opn: efm32gg900f512

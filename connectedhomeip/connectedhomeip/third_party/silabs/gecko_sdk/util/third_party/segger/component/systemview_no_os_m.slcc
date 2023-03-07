@@ -1,0 +1,13 @@
+id: segger_systemview_no_os_m
+label: SEGGER SystemView for No OS on Cortex-M
+package: platform
+description: SEGGER SystemView sample for No OS on Cortex-M0
+category: Platform|Utilities|SystemView
+quality: production
+ui_hints:
+  visibility: never
+source:
+  - path: util/third_party/segger/systemview/Sample/NoOS/Config/Cortex-M/SEGGER_SYSVIEW_Config_NoOS.c
+    unless: [kernel, cortexm0plus]
+provides:
+  - name: segger_systemview_no_os_m

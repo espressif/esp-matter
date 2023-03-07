@@ -1,0 +1,39 @@
+{{> header}}
+{{#if (chip_has_client_clusters)}}
+
+  public static String clusterIdToName(long clusterId) {
+    {{#chip_client_clusters}}
+    if (clusterId == {{code}}L) {
+      return "{{asUpperCamelCase name}}";
+    }
+    {{/chip_client_clusters}}
+    return "";
+  }
+  public static String attributeIdToName(long clusterId, long attributeId) {
+    {{#chip_client_clusters}}
+    if (clusterId == {{code}}L) {
+      {{#chip_server_cluster_attributes}}
+      if (attributeId == {{code}}L) {
+        return "{{asUpperCamelCase name}}";
+      }
+      {{/chip_server_cluster_attributes}}
+      return "";
+    }
+    {{/chip_client_clusters}}
+    return "";
+  }
+  public static String eventIdToName(long clusterId, long eventId) {
+    {{#chip_client_clusters}}
+    if (clusterId == {{code}}L) {
+      {{#chip_server_cluster_events}}
+      if (eventId == {{code}}L) {
+        return "{{asUpperCamelCase name}}";
+      }
+      {{/chip_server_cluster_events}}
+      return "";
+    }
+    {{/chip_client_clusters}}
+    return "";
+  }
+}
+{{/if}}

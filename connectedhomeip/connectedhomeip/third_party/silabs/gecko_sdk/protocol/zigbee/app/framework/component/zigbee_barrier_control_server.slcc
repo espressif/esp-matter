@@ -1,0 +1,107 @@
+package: Zigbee
+description: Silicon Labs implementation of the Barrier Control server cluster.
+id: zigbee_barrier_control_server
+label: Barrier Control Server Cluster
+category: Zigbee|Cluster Library|Home Automation
+quality: production
+provides:
+   - name: "zigbee_barrier_control_server"
+requires:
+   - name: "zigbee_reporting"
+source:
+  - path: protocol/zigbee/app/framework/plugin/barrier-control-server/barrier-control-server.c
+  - path: protocol/zigbee/app/framework/plugin/barrier-control-server/barrier-control-server-cli.c
+    condition:
+      - "cli"
+include:
+  - path: protocol/zigbee/app/framework/plugin/barrier-control-server
+    file_list:
+      - path: barrier-control-server.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_barrier_control_server
+  - name: cluster_service
+    value:
+       cluster_id: "0x0103"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "SERVER"       
+       service_function: "emberAfBarrierControlClusterServerCommandParse"    
+  - name: cli_group
+    value:
+      group: plugin
+      name: barrier-control-server
+      help: barrier-control-server related commands
+  - name: cli_command
+    value:
+      group: barrier-control-server
+      name: status
+      handler: emAfPluginBarrierControlServerStatusCommand
+      help: Prints out the status of the Barrier Control server cluster implementation.
+      argument:
+      - type: uint8
+        help: The endpoint from which to receive status
+  - name: cli_command
+    value:
+      group: barrier-control-server
+      name: open
+      handler: emAfPluginBarrierControlServerOpenOrCloseCommand
+      help: Notifies the component that the barrier has been opened manually.
+      argument:
+      - type: uint8
+        help: The endpoint on which the barrier has been opened
+  - name: cli_command
+    value:
+      group: barrier-control-server
+      name: close
+      handler: emAfPluginBarrierControlServerOpenOrCloseCommand
+      help: Notifies the component that the barrier has been closed manually.
+      argument:
+      - type: uint8
+        help: The endpoint on which the barrier has been closed
+  - name: cli_command
+    value:
+      group: barrier-control-server
+      name: remote-lockout
+      handler: emAfPluginBarrierControlServerSafetyStatusCommand
+      help: Simulates or clears a remote lockout event on the barrier (i.e., sets or clears the RemoteLockout bit in the SafetyStatus attribute).
+      argument:
+      - type: uint8
+        help: The endpoint on which to simulate this remote lockout event
+      - type: uint8
+        help: Whether to set (1) or clear (0) the remote lockout state
+  - name: cli_command
+    value:
+      group: barrier-control-server
+      name: tamper-detected
+      handler: emAfPluginBarrierControlServerSafetyStatusCommand
+      help: Simulates or clears a tamper-detected event on the barrier (i.e., sets or clears the TamperDetected bit in the SafetyStatus attribute).
+      argument:
+      - type: uint8
+        help: The endpoint on which to simulate this tamper-detected event
+      - type: uint8
+        help: Whether to set (1) or clear (0) the tamper detected state
+  - name: cli_command
+    value:
+      group: barrier-control-server
+      name: failed-communication
+      handler: emAfPluginBarrierControlServerSafetyStatusCommand
+      help: Simulates or clears a failed communication event on the barrier (i.e., sets or clears the FailedCommunication bit in the SafetyStatus attribute).
+      argument:
+      - type: uint8
+        help: The endpoint on which to simulate this failed communication event
+      - type: uint8
+        help: Whether to set (1) or clear (0) the failed communication state
+  - name: cli_command
+    value:
+      group: barrier-control-server
+      name: position-failure
+      handler: emAfPluginBarrierControlServerSafetyStatusCommand
+      help: Simulates or clears a position failure event on the barrier (i.e., sets or clears the PositionFailure bit in the SafetyStatus attribute).
+      argument:
+      - type: uint8
+        help: The endpoint on which to simulate this position failure event
+      - type: uint8
+        help: Whether to set (1) or clear (0) the position failure state
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/barrier-control-server

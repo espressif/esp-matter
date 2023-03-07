@@ -1,0 +1,76 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2001-2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+# designed to be used by any test in host/src/test that wishes to use the test pal layer.
+$(info adding test suite pal of board[${TEST_BOARD}] product[${TEST_PRODUCT}] no_pal[${NO_PAL}])
+
+################ Proj defines
+
+ifneq ($(findstring cc312,$(PROJ_NAME)),)
+TEST_PROJ_NAME = cc3x
+TEST_PROJ_SPEC_NAME = cc312_r1
+TEST_PROJ_SOURCES_BASIC = test_proj.c
+TEST_PROJ_SOURCES_BASIC += test_proj_map.c
+TEST_PROJ_SOURCES_BASIC += test_proj_hw.c
+TEST_PROJ_SOURCES += test_proj_otp.c
+TEST_PROJ_SOURCES += test_proj_otp_data.c
+TEST_PROJ_SOURCES += $(TEST_PROJ_SOURCES_BASIC)
+PROJ_VPATH = $(HOST_PROJ_ROOT)/src/tests/proj
+PROJ_VPATH += $(HOST_PROJ_ROOT)/src/tests/proj/$(TEST_PROJ_NAME)
+PROJ_VPATH += $(HOST_PROJ_ROOT)/src/tests/proj/$(TEST_PROJ_NAME)/$(TEST_PROJ_SPEC_NAME)
+TEST_PROJ_INCLUDE = $(HOST_PROJ_ROOT)/src/tests/proj/$(TEST_PROJ_NAME)
+TEST_PROJ_INCLUDE += $(HOST_PROJ_ROOT)/src/tests/proj/$(TEST_PROJ_NAME)/$(TEST_PROJ_SPEC_NAME)
+TEST_PROJ_INCLUDE += $(HOST_PROJ_ROOT)/src/tests/proj
+TEST_PROJ_INCLUDE += $(SHARED_INCDIR)/include/proj/$(TEST_PROJ_NAME)
+ifeq (,$(findstring sbrom, $(PROJ_NAME)))
+ifeq (,$(findstring llhw, $(PROJ_NAME)))
+ifeq (,$(findstring freertos, $(PROJ_NAME)))
+TEST_CCLIB_SOURCES += test_proj_cclib.c
+TEST_CCLIB_INCLUDE += $(SHARED_INCDIR)/crypto_api
+TEST_CCLIB_INCLUDE += $(SHARED_INCDIR)/crypto_api/cc3x
+TEST_CCLIB_INCLUDE += $(HOST_PROJ_ROOT)/src/cc3x_lib
+endif
+endif
+endif
+PROJ_SOURCES = $(TEST_PROJ_SOURCES) $(TEST_CCLIB_SOURCES)
+PROJ_INCLUDE = $(TEST_PROJ_INCLUDE) $(TEST_CCLIB_INCLUDE)
+endif
+
+################ Test helper defines
+TESTS_HELPER_INCLUDE = $(HOST_SRCDIR)/tests/tests_helper
+TESTS_HELPER_VPATH = $(HOST_SRCDIR)/tests/tests_helper
+TESTS_HELPER_SOURCES = tests_file.c
+TESTS_HELPER_SOURCES += tests_memory.c
+
+################ TestAL defines
+
+PAL_OS = $(subst cc_,,$(TEE_OS))
+$(info TEE_OS[${TEE_OS}]  PAL_OS[${PAL_OS}])
+
+TEST_AL_INCLUDE = $(SHARED_DIR)/hw/include
+TEST_AL_INCLUDE += $(SHARED_INCDIR)/pal
+TEST_AL_INCLUDE += $(SHARED_INCDIR)/pal/$(PAL_OS)
+TEST_AL_INCLUDE += $(SHARED_INCDIR)/pal/$(PAL_OS)/include
+
+ifneq ($(NO_PAL),1)
+TEST_AL_INCLUDE += $(HOST_LIBDIR)
+TEST_AL_INCLUDE += $(HOST_SRCDIR)/hal
+TEST_AL_INCLUDE += $(HOST_SRCDIR)/hal/$(TEST_PRODUCT)
+TEST_AL_INCLUDE += $(HOST_SRCDIR)/tests/infrastructure_suite/pal/include
+TEST_AL_INCLUDE += $(HOST_SRCDIR)/tests/infrastructure_suite/hal/include
+TEST_AL_INCLUDE += $(HOST_SRCDIR)/tests/TestAL/pal/include
+TEST_AL_INCLUDE += $(HOST_SRCDIR)/tests/TestAL/hal/include
+
+TEST_AL_LIBS = tests_pal
+TEST_AL_LIBS += tests_hal
+TEST_AL_LITE_LIBS = tests_pal_lite
+TEST_AL_LITE_LIBS += tests_hal_lite
+endif
+
+################ ATIS defines
+ATIS_INCLUDE = $(HOST_PROJ_ROOT)/src/tests/atis
+ATIS_LIB = atis

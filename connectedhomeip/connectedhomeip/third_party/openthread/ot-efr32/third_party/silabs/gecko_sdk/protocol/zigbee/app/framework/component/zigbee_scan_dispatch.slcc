@@ -1,0 +1,39 @@
+package: Zigbee
+description: This component allows the existence of multiple consumers of the stack 802.15.4
+  scan results.
+label: Scan Dispatch
+quality: production
+id: zigbee_scan_dispatch
+category: Zigbee|Network Form and Join
+provides:
+   - name: "zigbee_scan_dispatch"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/scan-dispatch/config/scan-dispatch-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/scan-dispatch/scan-dispatch.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/scan-dispatch
+    file_list:
+      - path: scan-dispatch.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_scan_dispatch
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emAfPluginScanDispatchInitCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: energy_scan_result
+      function_name: emAfPluginScanDispatchEnergyScanResultCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: scan_complete
+      function_name: emAfPluginScanDispatchScanCompleteCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: network_found
+      function_name: emAfPluginScanDispatchNetworkFoundCallback
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/scan-dispatch

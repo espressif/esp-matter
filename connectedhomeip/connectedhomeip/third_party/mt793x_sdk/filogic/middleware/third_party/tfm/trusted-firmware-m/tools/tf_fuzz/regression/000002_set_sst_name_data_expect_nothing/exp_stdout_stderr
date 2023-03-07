@@ -1,0 +1,19 @@
+Trusted Firmware Fuzzer (TF-Fuzz) starting...
+
+Info:  random seed was not specified.
+
+Using seed value of \d+ \(0x[a-f\d]+\).
+Purpose line:  to give assets a human name
+ASSET_IDENTIFIER:  "forecast"
+SST-asset identifier list:  "data"
+LITERAL:  "sunny with a 30% chance of weather!"
+SST-create from literal data:  ""sunny with a 30% chance of weather!""
+Set SST command:  ""sunny with a 30% chance of weather!""
+Set command:  ""sunny with a 30% chance of weather!""
+Expect nothing clause:  "nothing"
+Command with expect:  ";"
+Lines:  Line number 3.
+Lines:  Line number 3.
+Writing test file, test.c.
+
+TF-Fuzz test generation complete.

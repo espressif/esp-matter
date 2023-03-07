@@ -1,0 +1,155 @@
+%%{
+/*
+ * Copyright (c) 2020-2021, Texas Instruments Incorporated - http://www.ti.com
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+
+/*
+ *  ======== BIOS_config.h.xdt ========
+ */
+
+    let BIOS = system.modules["/ti/sysbios/BIOS"];
+    let BIOSStartUserFuncs = system.modules["/ti/sysbios/BIOSStartUserFuncs"];
+    let startFuncs = BIOSStartUserFuncs.$instances;
+%%}
+/*
+ *  ======== ti_sysbios_config.h ========
+ *  Configured BIOS module declarations
+ *
+ *  The macros defined herein are intended for use by applications which
+ *  directly include this header. These macros should NOT be hard coded or
+ *  copied into library source code.
+ *
+ *  Symbols declared as const are intended for use with libraries.
+ *  Library source code must extern the correct symbol--which is resolved
+ *  when the application is linked.
+ *
+ *  DO NOT EDIT - This file is generated
+ *  by the SysConfig tool.
+ */
+#ifndef ti_sysbios_config_h
+#define ti_sysbios_config_h
+
+#include <stdint.h>
+
+/* support C++ sources */
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* BIOS module definitions */
+
+% if (BIOS.$static.logsEnabled == false) {
+#define xdc_runtime_Log_DISABLE_ALL 1
+% }
+
+#define BIOS_assertsEnabled_D `BIOS.$static.assertsEnabled.toString()`
+#define BIOS_cpuFrequency_D `BIOS.$static.cpuFrequency`
+#define BIOS_runtimeCreatesEnabled_D `BIOS.$static.runtimeCreatesEnabled.toString()`
+#define BIOS_taskEnabled_D `(!BIOS.$static.disableTask).toString()`
+#define BIOS_swiEnabled_D `(!BIOS.$static.disableSwi).toString()`
+#define BIOS_clockEnabled_D `(!BIOS.$static.disableClock).toString()`
+#define BIOS_psaEnabled_D `BIOS.$static.psaEnabled.toString()`
+#define BIOS_heapSize_D 0x`(BIOS.$static.heapSize).toString(16)`
+#define BIOS_rtsLockType_D `BIOS.$static.rtsGateType`
+#define BIOS_numStartUserFuncs_D `startFuncs.length`
+
+% switch (BIOS.$static.rtsGateType) {
+%   case "BIOS_GateHwi":
+#define BIOS_RTS_GATE_STRUCT GateHwi_Struct
+#define BIOS_RTS_GATE_HANDLE(x) GateHwi_handle(x)
+#define BIOS_RTS_GATE_ENTER(x) GateHwi_enter(x)
+#define BIOS_RTS_GATE_LEAVE(x,y) GateHwi_leave(x,y)
+#define BIOS_RTS_GATE_CONSTRUCT(x,y) GateHwi_construct(x,y)
+%       break;
+%   case "BIOS_GateSwi":
+#define BIOS_RTS_GATE_STRUCT GateSwi_Struct
+#define BIOS_RTS_GATE_HANDLE(x) GateSwi_handle(x)
+#define BIOS_RTS_GATE_ENTER(x) GateSwi_enter(x)
+#define BIOS_RTS_GATE_LEAVE(x,y) GateSwi_leave(x,y)
+#define BIOS_RTS_GATE_CONSTRUCT(x,y) GateSwi_construct(x,y)
+%       break;
+%   case "BIOS_GateMutex":
+#define BIOS_RTS_GATE_STRUCT GateMutex_Struct
+#define BIOS_RTS_GATE_HANDLE(x) GateMutex_handle(x)
+#define BIOS_RTS_GATE_ENTER(x) GateMutex_enter(x)
+#define BIOS_RTS_GATE_LEAVE(x,y) GateMutex_leave(x,y)
+#define BIOS_RTS_GATE_CONSTRUCT(x,y) GateMutex_construct(x,y)
+%       break;
+%   case "BIOS_GateMutexPri":
+#define BIOS_RTS_GATE_STRUCT GateMutexPri_Struct
+#define BIOS_RTS_GATE_HANDLE(x) GateMutexPri_handle(x)
+#define BIOS_RTS_GATE_ENTER(x) GateMutexPri_enter(x)
+#define BIOS_RTS_GATE_LEAVE(x,y) GateMutexPri_leave(x,y)
+#define BIOS_RTS_GATE_CONSTRUCT(x,y) GateMutexPri_construct(x,y)
+%       break;
+%   default:
+#define BIOS_RTS_GATE_NONE
+#define BIOS_RTS_GATE_STRUCT GateMutex_Struct
+#define BIOS_RTS_GATE_HANDLE(x) GateMutex_handle(x)
+#define BIOS_RTS_GATE_ENTER(x) GateMutex_enter(x)
+#define BIOS_RTS_GATE_LEAVE(x,y) GateMutex_leave(x,y)
+#define BIOS_RTS_GATE_CONSTRUCT(x,y) GateMutex_construct(x,y)
+%       break;
+% }
+
+/* ensure Error and Assert defines come before dependent modules */
+
+% if (system.modules["/ti/sysbios/runtime/Error"]) {
+%   let Error = system.modules["/ti/sysbios/runtime/Error"];
+`system.getTemplate(Error.templates.bios_config_h)(Error)`
+% }
+%
+% if (system.modules["/ti/sysbios/runtime/Assert"]) {
+%   let Assert = system.modules["/ti/sysbios/runtime/Assert"];
+`system.getTemplate(Assert.templates.bios_config_h)(Assert)`
+% }
+%
+% /* compute a canonical order for the used modules */
+% let keys = Object.keys(system.modules).sort();
+%
+% /* loop over all modules in the current configuration */
+% for (let i = 0; i < keys.length; i++) {
+%   if (keys[i] == "/ti/sysbios/runtime/Error" || keys[i] == "/ti/sysbios/runtime/Assert") {
+%       continue;
+%   }
+%   let mod = system.modules[keys[i]];
+%   if (mod.templates && mod.templates.bios_config_h) {
+%       /* load its template and expand it */
+%       let gen = system.getTemplate(mod.templates.bios_config_h);
+`gen(mod)`
+%   }
+% }
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* include guard */

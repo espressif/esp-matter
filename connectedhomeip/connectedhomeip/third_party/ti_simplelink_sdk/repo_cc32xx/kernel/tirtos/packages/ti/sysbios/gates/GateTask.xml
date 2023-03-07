@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="GateTask" title="Task Gate" version="1">
+
+<page name="Module" title="Module Settings">
+<html><body><table>
+  <tr>
+      <td><form>
+        <p>GateTask uses disabling and enabling of tasks as the resource locking 
+           mechanism. This gate can be used whenever the resource is being shared
+           by Tasks. This gate cannot be used by a Hwi or Swi.</p>
+        <p> </p>
+      </form></td>
+  </tr>
+  <tr>
+    <td><control type="checkbox" label="Add the GateTask module to my configuration" value="value:this.$used" bold="true"/></td>
+  </tr>
+  <tr></tr>
+</table></body></html>
+</page>
+</gep>
+

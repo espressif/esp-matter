@@ -1,0 +1,41 @@
+id: emlib_vdac
+label: VDAC
+package: platform
+description: >
+  Digital to Analog Converter (VDAC) Peripheral API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_vdac.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_vdac.h"
+provides:
+  - name: emlib_vdac
+requires:
+  - name: device
+  - name: device_has_vdac
+  - name: emlib_cmu
+  - name: emlib_common
+  - name: cmsis_core
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efr32xg12/group-vdac
+      condition: [device_sdid_84]
+    - page: emlib/api/efr32xg13/group-vdac
+      condition: [device_sdid_89]
+    - page: emlib/api/efr32xg14/group-vdac
+      condition: [device_sdid_95]
+    - page: emlib/api/efm32gg11/group-vdac
+      condition: [device_sdid_100]
+    - page: emlib/api/efm32tg11/group-vdac
+      condition: [device_sdid_103]
+    - page: emlib/api/efm32gg12/group-vdac
+      condition: [device_sdid_106]
+    - page: emlib/api/efr32xg23/group-vdac
+      condition: [device_sdid_210]
+    - page: emlib/api/efr32xg24/group-vdac
+      condition: [device_sdid_215]

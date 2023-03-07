@@ -1,0 +1,104 @@
+id: emlib
+label: EMLIB Peripheral HAL
+package: platform
+description: >
+  The lowest level hardware abstraction layer for EFM32 microcontrollers, 
+  EZR32/EFR32 SoCs and xGM modules.
+
+  This component will install all compatible EMLIB modules.
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+provides:
+  - name: emlib
+requires:
+  - name: device
+  - name: emlib_acmp
+    condition: [ 'device_has_acmp' ]
+  - name: emlib_adc
+    condition: [ 'device_has_adc' ]
+  - name: emlib_aes
+    condition: [ 'device_has_aes' ]
+  - name: emlib_burtc
+    condition: [ 'device_has_burtc' ]
+  - name: emlib_can
+    condition: [ 'device_has_can' ]
+  - name: emlib_chip
+  - name: emlib_cmu
+    condition: [ 'device_has_cmu' ]
+  - name: emlib_common
+  - name: emlib_core
+  - name: emlib_cryotimer
+    condition: [ 'device_has_cryotimer' ]
+  - name: emlib_crypto
+    condition: [ 'device_has_crypto' ]
+  - name: emlib_csen
+    condition: [ 'device_has_csen' ]
+  - name: emlib_dac
+    condition: [ 'device_has_dac' ]
+  - name: emlib_dbg
+  - name: emlib_dma
+    condition: [ 'device_has_dma' ]
+  - name: emlib_ebi
+    condition: [ 'device_has_ebi' ]
+  - name: emlib_emu
+    condition: [ 'device_has_emu' ]
+  - name: emlib_eusart
+    condition: [ 'device_has_euart' ]
+  - name: emlib_gpcrc
+    condition: [ 'device_has_gpcrc' ]
+  - name: emlib_gpio
+    condition: [ 'device_has_gpio' ]
+  - name: emlib_i2c
+    condition: [ 'device_has_i2c' ]
+  - name: emlib_iadc
+    condition: [ 'device_has_iadc' ]
+  - name: emlib_idac
+    condition: [ 'device_has_idac' ]
+  - name: emlib_lcd
+    condition: [ 'device_has_lcd' ]
+  - name: emlib_ldma
+    condition: [ 'device_has_ldma' ]
+  - name: emlib_lesense
+    condition: [ 'device_has_lesense' ]
+  - name: emlib_letimer
+    condition: [ 'device_has_letimer' ]
+  - name: emlib_leuart
+    condition: [ 'device_has_leuart' ]
+  - name: emlib_msc
+    condition: [ 'device_has_msc' ]
+  - name: emlib_opamp
+    condition: [ 'device_has_opamp' ]
+  - name: emlib_opamp
+    condition: [ 'device_has_vdac' ]
+  - name: emlib_pcnt
+    condition: [ 'device_has_pcnt' ]
+  - name: emlib_prs
+    condition: [ 'device_has_prs' ]
+  - name: emlib_qspi
+    condition: [ 'device_has_qspi' ]
+  - name: emlib_rmu
+    condition: [ 'device_has_rmu', 'device_series_0' ]
+  - name: emlib_rmu
+    condition: [ 'device_has_rmu', 'device_series_1' ]
+  - name: emlib_rmu
+    condition: [ 'device_has_emu', 'device_series_2' ]
+  - name: emlib_rtc
+    condition: [ 'device_has_rtc' ]
+  - name: emlib_rtcc
+    condition: [ 'device_has_rtcc' ]
+  - name: emlib_se
+    condition: [ 'device_series_2' ]
+  - name: emlib_smu
+    condition: [ 'device_has_smu' ]
+  - name: emlib_system
+  - name: emlib_timer
+    condition: [ 'device_has_timer' ]
+  - name: emlib_usart
+    condition: [ 'device_has_uart' ]
+  - name: emlib_vcmp
+    condition: [ 'device_has_vcmp' ]
+  - name: emlib_vdac
+    condition: [ 'device_has_vdac' ]
+  - name: emlib_wdog
+    condition: [ 'device_has_wdog' ]

@@ -1,0 +1,16 @@
+#
+# XIP Platform configuration
+#
+
+ENTRY "Data" = "g_ef_execute_enable"
+{
+  "Address" = 0x00200d84
+  "Data" =
+   COMMENTED_BYTES
+     {
+        <hex>
+        01
+     } END_COMMENTED_BYTES
+}
+# End XIP Platform configurtion
+#

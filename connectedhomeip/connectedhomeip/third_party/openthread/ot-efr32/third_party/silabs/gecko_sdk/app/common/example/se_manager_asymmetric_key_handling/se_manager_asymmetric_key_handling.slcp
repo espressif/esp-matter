@@ -1,0 +1,59 @@
+project_name: se_manager_asymmetric_key_handling
+package: platform
+quality: production
+label: Platform - SE Manager Asymmetric Key Handling
+description: >
+  This example project demonstrates the asymmetric key handling API of SE Manager.
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+source:
+  - path: main.c
+  - path: app_init.c
+  - path: app_process.c
+  - path: app_se_manager_asymmetric_key_handling.c
+include:
+  - path: .
+    file_list:
+    - path: app_init.h
+    - path: app_process.h
+    - path: app_se_manager_macro.h
+    - path: app_se_manager_asymmetric_key_handling.h
+readme:
+  - path: readme.md
+ui_hints:
+  highlight:
+    - path: readme.md
+      focus: true
+component:
+  - id: sl_string
+  - id: status_string
+  - id: se_manager
+  - id: sl_system
+  - id: device_init
+  - id: device_init_hfrco
+  - id: printf
+  - id: iostream_retarget_stdio
+  - id: iostream_recommended_stream
+requires:
+  - name: device_has_semailbox
+configuration:
+  - name: SL_STATUS_STRING_ENABLE_BLUETOOTH
+    value: 0
+  - name: SL_STATUS_STRING_ENABLE_WIFI
+    value: 0
+  - name: SL_DEVICE_INIT_HFRCO_BAND
+    value: cmuHFRCODPLLFreq_38M0Hz
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+define:
+  - name: DEBUG_EFM
+  - name: SE_MANAGER_PRINT
+toolchain_settings:
+  - option: optimize
+    value: debug

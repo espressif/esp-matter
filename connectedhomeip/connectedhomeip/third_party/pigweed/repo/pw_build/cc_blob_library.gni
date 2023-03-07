@@ -1,0 +1,110 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/python_action.gni")
+import("$dir_pw_build/target_types.gni")
+
+# Turns binary blobs into a C++ source_set library of hard-coded byte arrays.
+# The byte arrays are constant initialized and are safe to access at any time,
+# including before main().
+#
+#   blobs           A list of scopes, where each scope corresponds to a binary
+#                   blob to be transformed from file to byte array. This is a
+#                   required field. Blob fields include:
+#
+#                   symbol_name [required]: The C++ symbol for the byte array.
+#
+#                   file_path [required]: The file path for the binary blob.
+#
+#                   linker_section [optional]: If present, places the byte array
+#                     in the specified linker section.
+#
+#                   alignas [optional]: If present, the byte array is aligned as
+#                     specified. The value of this argument is used verbatim
+#                     in an alignas() specifier for the blob byte array.
+#
+#   out_header      The header file to generate. Users will include this file
+#                   exactly as it is written here to reference the byte arrays.
+#
+#   namespace       The C++ namespace in which to place the generated blobs.
+#
+template("pw_cc_blob_library") {
+  assert(defined(invoker.blobs), "pw_cc_blob_library requires 'blobs'")
+  assert(defined(invoker.out_header),
+         "pw_cc_blob_library requires an 'out_header'")
+  assert(defined(invoker.namespace),
+         "pw_cc_blob_library requires a 'namespace'")
+
+  _blobs = []
+  _blob_files = []
+  foreach(blob, invoker.blobs) {
+    assert(defined(blob.symbol_name), "Each 'blob' requires a 'symbol_name'")
+    assert(defined(blob.file_path), "Each 'blob' requires a 'file_path'")
+    _blob_files += [ blob.file_path ]
+    blob.file_path = rebase_path(blob.file_path, root_build_dir)
+    _blobs += [ blob ]
+  }
+
+  _out_dir = "$target_gen_dir/$target_name"
+  _blob_json_file = "$_out_dir/blobs.json"
+  write_file(_blob_json_file, _blobs, "json")
+
+  _header = "$_out_dir/public/${invoker.out_header}"
+  _source = "$_out_dir/" + get_path_info(invoker.out_header, "name") + ".cc"
+
+  pw_python_action("$target_name._gen") {
+    forward_variables_from(invoker,
+                           [
+                             "deps",
+                             "public_deps",
+                           ])
+    module = "pw_build.generate_cc_blob_library"
+    python_deps = [ "$dir_pw_build/py" ]
+
+    args = [
+      "--blob-file",
+      rebase_path(_blob_json_file, root_build_dir),
+      "--namespace=${invoker.namespace}",
+      "--header-include=${invoker.out_header}",
+      "--out-header",
+      rebase_path(_header, root_build_dir),
+      "--out-source",
+      rebase_path(_source, root_build_dir),
+    ]
+
+    inputs = [ _blob_json_file ] + _blob_files
+    outputs = [
+      _header,
+      _source,
+    ]
+  }
+
+  config("$target_name._include_path") {
+    include_dirs = [ "$_out_dir/public" ]
+    visibility = [ ":*" ]
+  }
+
+  pw_source_set(target_name) {
+    public = [ _header ]
+    sources = [ _source ]
+    public_configs = [ ":$target_name._include_path" ]
+    deps = [
+      ":$target_name._gen",
+      dir_pw_preprocessor,
+    ]
+    forward_variables_from(invoker, [ "visibility" ])
+  }
+}

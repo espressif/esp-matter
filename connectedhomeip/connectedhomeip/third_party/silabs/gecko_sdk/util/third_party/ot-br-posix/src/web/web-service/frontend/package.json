@@ -1,0 +1,20 @@
+{
+  "name": "otbr-web",
+  "version": "1.0.0",
+  "description": "OpenThread Border Router Web GUI",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "angular": "^1.8.0",
+    "angular-animate": "^1.6.4",
+    "angular-aria": "^1.6.4",
+    "angular-material": "^1.1.4",
+    "angular-messages": "^1.6.4",
+    "d3": "^3.5.17",
+    "material-design-lite": "^1.3.0"
+  }
+}

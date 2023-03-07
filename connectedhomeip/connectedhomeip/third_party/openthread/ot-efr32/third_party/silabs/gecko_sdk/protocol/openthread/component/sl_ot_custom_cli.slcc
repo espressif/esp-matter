@@ -1,0 +1,23 @@
+id: sl_ot_custom_cli
+label: SL Custom CLI
+package: OpenThread
+category: OpenThread
+quality: production
+description: This component adds SL CLI commands.
+ui_hints:
+  visibility: never
+requires:
+  - name: ot_stack
+  - name: ot_cli
+provides:
+  - name: sl_ot_custom_cli
+include:
+  - path: protocol/openthread/include
+    file_list:
+      - path: sl_ot_custom_cli.h
+template_file:
+  - path: protocol/openthread/src/template/sl_ot_custom_cli.c.jinja
+template_contribution:
+  - name: ot_init
+    value: sl_ot_custom_cli_init
+    priority: 21

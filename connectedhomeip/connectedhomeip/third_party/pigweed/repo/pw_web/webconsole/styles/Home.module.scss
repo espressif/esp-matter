@@ -1,0 +1,75 @@
+/*
+ * Copyright 2022 The Pigweed Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+.container {
+  padding: 1rem;
+  overflow: hidden;
+  height: 100vh;
+}
+
+.main {
+  min-height: 100vh;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.toolbar {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+
+  .logo {
+    margin: 0;
+    line-height: 1.15;
+    font-size: 1rem;
+
+    &>span {
+      color: #D475D4;
+      font-size: 1.5rem;
+    }
+  }
+}
+
+.description {
+  margin: 4rem 0;
+  line-height: 1.5;
+  font-size: 1.5rem;
+}
+
+.grid {
+  display: flex;
+  flex-grow: 1;
+  background-color: #2c313a;
+    border-radius: 10px;
+
+  &>div {
+    flex-grow: 1;
+    padding: 1rem;
+    max-width: 50vw;
+  }
+
+  &>div:first-child {
+    border-right: 1px solid #414141;
+  }
+}
+
+@media (max-width: 600px) {
+  .grid {
+    width: 100%;
+    flex-direction: column;
+  }
+}

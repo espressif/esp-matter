@@ -1,0 +1,32 @@
+{
+    "target": {
+        "Name": "LP_CC2651P3, 10DBM-HIGH-PA",
+        "Revision": [],
+        "Description": "CC2651P3 LP. 10 dBm High PA. 7x7 VQFN48 package. External bias, differential output. 2.4 GHz frequency band.",
+        "DeviceName": "CC2651P3",
+        "DevicePackage": "VQFN 7x7",
+        "FrontEnd": "XD",
+        "PaSettings": "pasettings.json",
+        "RfDesign": "CC2651-P3EM-5XS24-PA24_10dBm",
+        "DefaultCategory": "Settings",
+        "IoSettings": {
+            "_name": "RF Switch",
+            "IoPin": [
+                {
+                    "_name": "DIO28",
+                    "ControlFunction": "Input\/Output",
+                    "Idle": "Input tristate (Default)",
+                    "Tx": "Output low",
+                    "Rx": "Output high"
+                },
+                {
+                    "_name": "DIO29",
+                    "ControlFunction": "Input\/Output",
+                    "Idle": "Input tristate (Default)",
+                    "Tx": "Output high",
+                    "Rx": "Output low"
+                }
+            ]
+        }
+    }
+}

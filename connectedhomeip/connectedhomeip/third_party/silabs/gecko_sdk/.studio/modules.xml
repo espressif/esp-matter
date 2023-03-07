@@ -1,0 +1,162 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<model:MDescriptors xmlns:model="http://www.silabs.com/ss/Studio.ecore">
+  <descriptors name="com.silabs.sdk.exx32.common.CMSIS" label="CMSIS DSP" propertyScope="module">
+    <description>CMSIS DSP</description>
+    <properties key="module.clientModelURI" value="./modules/Common/CMSIS/CMSISClient.slsproj"/>
+    <properties key="module.category" value="efm32|Common"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.common.CMSISExamples" label="CMSIS Examples" propertyScope="module">
+    <description>CMSIS Examples</description>
+    <properties key="module.clientModelURI" value="./modules/Common/CMSIS/CMSISExamplesClient.slsproj"/>
+    <properties key="module.category" value="efm32|Common"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.common.bsp" label="Board Support Package" propertyScope="module">
+    <description>The BSP provides an API for board controllers, I/O control for buttons, LEDs, etc and trace control for EFM32, EZR32 and EFR32 kits.</description>
+    <properties key="module.clientModelURI" value="./modules/Common/BSP/bspClient.slsproj"/>
+    <properties key="module.category" value="efm32|Common"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.common.drivers" label="Board Support Drivers" propertyScope="module">
+    <description>Drivers and support modules for board components such as displays, sensors and memories on EFM32, EZR32 and EFR32 kits.</description>
+    <properties key="module.clientModelURI" value="./modules/Common/Drivers/driversClient.slsproj"/>
+    <properties key="module.category" value="efm32|Common"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.common.emdrv" label="energyAware Drivers" propertyScope="module">
+    <description>EMDRV is a set of function specific high performance drivers for EFM32, EZR32 and EFR32 on-chip peripherals. Drivers are typically DMA based and are using all available low-energy features. For most drivers, the API offers both synchronous and asynchronous functions. The APIs are fully reentrant and callback based.</description>
+    <properties key="module.clientModelURI" value="./modules/Common/emdrv/emdrvClient.slsproj"/>
+    <properties key="module.category" value="efm32|Common"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.common.efp" label="EFP Drivers" propertyScope="module">
+    <description>The EFP drivers provides a way for applications to access the EFP registers and perform some common functions.</description>
+    <properties key="module.clientModelURI" value="./modules/Common/EFP/efpClient.slsproj"/>
+    <properties key="module.category" value="efm32|Common"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.common.platform" label="Platform" propertyScope="module">
+    <description>Platform Common</description>
+    <properties key="module.clientModelURI" value="./modules/Common/Platform/platformClient.slsproj"/>
+    <properties key="module.category" value="efm32|Common"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.common.emdrv.nvm3" label="NVM3" propertyScope="module">
+    <description>The NVM3 driver provides a way for an application to safely store and
+   retrieve variable size objects in a page based non-volatile memory.
+   Objects are identified with 20-bit object identifiers denoted as keys.
+
+   The driver is designed to use pages in a sequential order to provide equal
+   usage and wear. The driver is resilient to power loss or reset events,
+   ensuring that objects retrieved from the driver are in a valid state. A
+   valid object will always be the last successfully stored object. NVM3 can
+   detect NVM defects and mark pages as unusable. NVM3 will continue to operate
+   on good pages after defect pages are detected.</description>
+    <properties key="module.clientModelURI" value="./modules/Common/emdrv/nvm3.slsproj"/>
+    <properties key="module.category" value="efm32|Common"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.common.emlib" label="EFM Peripheral Support" propertyScope="module">
+    <description>emlib provides peripheral support for Silicon Labs 32 bit MCUs</description>
+    <properties key="module.clientModelURI" value="./modules/Common/emlib/emlibClient.slsproj"/>
+    <properties key="module.category" value="efm32|Common"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.common.peripheral" label="EFM Peripheral Support" propertyScope="module">
+    <description>peripheral provides peripheral support for Silicon Labs 32 bit MCUs</description>
+    <properties key="module.clientModelURI" value="./modules/Common/peripheral/peripheralClient.slsproj"/>
+    <properties key="module.category" value="efm32|Common"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.external.FreeRTOS" label="FreeRTOS" propertyScope="module">
+    <description>FreeRTOS is a real time operating system</description>
+    <properties key="module.clientModelURI" value="./modules/LibraryModules/FreeRTOS/FreeRTOSClient.slsproj"/>
+    <properties key="module.category" value="efm32|Third party"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.external.RTX" label="Keil RTX RTOS" propertyScope="module">
+    <description>Keil RTX real time operating system</description>
+    <properties key="module.clientModelURI" value="./modules/LibraryModules/RTX/RTXClient.slsproj"/>
+    <properties key="module.category" value="efm32|Third party"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.external.Si114xHRM" label="Si114x Heart Rate Monitor" propertyScope="module">
+    <description>Si114x Heart Rate Monitor</description>
+    <properties key="module.clientModelURI" value="./modules/LibraryModules/si114xhrm/si114xhrmClient.slsproj"/>
+    <properties key="module.category" value="efm32|Middleware"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.external.USB" label="Gecko USB Stack" propertyScope="module">
+    <description>Gecko USB Stack</description>
+    <properties key="module.clientModelURI" value="./modules/Common/USB/USBClient.slsproj"/>
+    <properties key="module.category" value="efm32|Middleware"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.external.emwin" label="emWin" propertyScope="module">
+    <description>Graphic Library with Graphical User Interface</description>
+    <properties key="module.clientModelURI" value="./modules/LibraryModules/emwin/emwinClient.slsproj"/>
+    <properties key="module.category" value="efm32|Third party"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.external.fatfs" label="FatFs" propertyScope="module">
+    <description>FatFs - Generic FAT File System Module</description>    
+    <properties key="module.clientModelURI" value="./modules/LibraryModules/fatfs/fatfsClient.slsproj"/>
+    <properties key="module.category" value="efm32|Third party"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.external.glib" label="GLib" propertyScope="module">
+    <description>Graphics library for the EFM32</description>
+    <properties key="module.clientModelURI" value="./modules/LibraryModules/glib/glibClient.slsproj"/>
+    <properties key="module.category" value="efm32|Middleware"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.external.iec60335" label="IEC 60335" propertyScope="module">
+    <description>IEC 60335</description>
+    <properties key="module.clientModelURI" value="./modules/LibraryModules/iec60335/iec60335Client.slsproj"/>
+    <properties key="module.category" value="efm32|Third party"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.external.lwip" label="lwIP" propertyScope="module">
+    <description>Lightweight TCP/IP stack</description>
+    <properties key="module.clientModelURI" value="./modules/LibraryModules/lwip/lwipClient.slsproj"/>
+    <properties key="module.category" value="efm32|Third party"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.external.uCos2" label="Micrium uC/OS II" propertyScope="module">
+    <description>Micrium uC/OS-II real time operating system</description>
+    <properties key="module.clientModelURI" value="./modules/LibraryModules/Micrium/uCos2Client.slsproj"/>
+    <properties key="module.category" value="efm32|Third party"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.external.uCos3" label="Micrium uC/OS III" propertyScope="module">
+    <description>Micrium uC/OS-III real time operating system</description>
+    <properties key="module.clientModelURI" value="./modules/LibraryModules/Micrium/uCos3Client.slsproj"/>
+    <properties key="module.category" value="efm32|Third party"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.external.micriumos" label="Micrium OS" propertyScope="module">
+    <description>Micrium OS real time operating system</description>
+    <properties key="module.clientModelURI" value="./modules/LibraryModules/Micrium/micriumos.slsproj"/>
+    <properties key="module.category" value="efm32|Middleware"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.external.micriumos_fs" label="Micrium OS File System" propertyScope="module">
+    <description>Micrium OS File System</description>
+    <properties key="module.clientModelURI" value="./modules/LibraryModules/Micrium/micriumos_fs.slsproj"/>
+    <properties key="module.category" value="efm32|Middleware"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.external.micriumos_net" label="Micrium OS Net" propertyScope="module">
+    <description>Micrium OS Net</description>
+    <properties key="module.clientModelURI" value="./modules/LibraryModules/Micrium/micriumos_net.slsproj"/>
+    <properties key="module.category" value="efm32|Middleware"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.external.micriumos_usbd" label="Micrium OS USB Device" propertyScope="module">
+    <description>Micrium OS USB Device</description>
+    <properties key="module.clientModelURI" value="./modules/LibraryModules/Micrium/micriumos_usbd.slsproj"/>
+    <properties key="module.category" value="efm32|Middleware"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.external.micriumos_usbh" label="Micrium OS USB Host" propertyScope="module">
+    <description>Micrium OS USB Host</description>
+    <properties key="module.clientModelURI" value="./modules/LibraryModules/Micrium/micriumos_usbh.slsproj"/>
+    <properties key="module.category" value="efm32|Middleware"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.board " label="General Board Support" propertyScope="module">
+    <description>General Board Support</description>
+    <properties key="module.clientModelURI" value="./modules/AllBoardsModule.slsproj"/>
+    <properties key="module.category" value="efm32|Common"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.part" label="General Part Support" propertyScope="module">
+    <description>General Part Support</description>
+    <properties key="module.clientModelURI" value="./modules/AllPartsModule.slsproj"/>
+    <properties key="module.category" value="efm32|Common"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.external.cslib" label="cslib" propertyScope="module">
+    <description>Capacitive sense library</description>
+    <properties key="module.clientModelURI" value="./modules/LibraryModules/cslib/cslibClient.slsproj"/>
+    <properties key="module.category" value="efm32|Middleware"/>
+  </descriptors>
+  <descriptors name="com.silabs.sdk.exx32.external.usbxpress" label="USBXpress" propertyScope="module">
+    <description>USBXpress</description>
+    <properties key="module.clientModelURI" value="./modules/LibraryModules/usbxpress/usbxpressClient.slsproj"/>
+    <properties key="module.category" value="efm32|Middleware"/>
+  </descriptors>
+</model:MDescriptors>

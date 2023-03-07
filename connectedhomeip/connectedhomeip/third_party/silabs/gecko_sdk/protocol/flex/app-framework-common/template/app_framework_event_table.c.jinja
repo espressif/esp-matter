@@ -1,0 +1,33 @@
+#include "stack/include/ember-types.h"
+
+{# EXTERN DECLARATIONS #}
+{% for evt in event_system -%}
+extern EmberEventControl {{ evt['event_control'] }};
+void {{ evt['event_handler'] }}(void);
+{% endfor -%}
+
+void(*emAppEventsHandlerPtrTable[6])(void) = { NULL, NULL , NULL, NULL, NULL, NULL };
+
+{% for i in range(6) -%}
+EmberEventControl allocateEvent{{ i }} = { EMBER_EVENT_INACTIVE, 0, 0 };
+void allocateEvent{{ i }}Handler(void)
+{
+  if (emAppEventsHandlerPtrTable[{{ i }}]) {
+    emAppEventsHandlerPtrTable[{{ i }}]();
+  }
+}
+{% endfor -%}
+
+{# EVENT ARRAY DECLARATION #}
+const EmberEventData emAppEvents[] = {
+{% for evt in event_system -%}
+  { &{{ evt['event_control'] }}, {{ evt['event_handler'] }} },
+{% endfor -%}
+{% for i in range(6) -%}
+  { &allocateEvent{{ i }}, allocateEvent{{ i }}Handler },
+{% endfor -%}
+  { NULL, NULL }
+};
+
+const uint8_t emAfEventTableOffset = {{ event_system|count }};
+uint8_t emAfEventTableHandleIndex = 0;

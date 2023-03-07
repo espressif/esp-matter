@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="ASCII"?>
+<model:MDescriptors xmlns:model="http://www.silabs.com/ss/Studio.ecore">
+  <descriptors name="btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty" description="An NCP Target C application that makes it possible for the NCP Host Controller to access the Bluetooth Mesh stack via UART. It provides access to the host layer via BGAPI and not to the link layer via HCI.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_ncp_empty.btmesh_ncp_empty.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_ncp_empty/btmesh_ncp_empty.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <properties key="boardCompatibility" value="brd2601b brd4103a brd4104a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4186c brd4187c brd4188b brd4190a brd4194a brd4195a brd4196a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4316a brd4317a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm24.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg24.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg24.* .*efr32mg27.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_ncp_empty" label="Bluetooth Mesh - NCP Empty" description="Demonstrates the bare minimum needed for an NCP Target C application.  This example is recommended for EFR32xG22, which has limited RAM and flash, and therefore some of the stack classes are disabled by default.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_ncp_empty.btmesh_ncp_empty_xg22.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_ncp_empty/btmesh_ncp_empty_xg22.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_ncp_empty/readme.md"/>
+    <properties key="boardCompatibility" value="brd4108a brd4182a brd4183a brd4183c brd4184a brd4184b brd4311a brd4311b brd4312a brd4314a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm22.*hna.* .*efr32bg22.*f512.* .*efr32mg22.* .*mgm22.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|NCP Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_soc_empty" label="Bluetooth Mesh - SoC Empty" description="Demonstrates the bare minimum needed for a Bluetooth Mesh C application. The application starts Unprovisioned Device Beaconing after booting, and then waits to be provisioned.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_soc_empty.btmesh_soc_empty.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_soc_empty/btmesh_soc_empty.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_soc_empty/readme.md"/>
+    <properties key="boardCompatibility" value="brd2601b brd4103a brd4104a brd4108a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183c brd4184a brd4184b brd4186c brd4187c brd4188b brd4190a brd4194a brd4195a brd4196a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4311a brd4311b brd4312a brd4314a brd4316a brd4317a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm22.*hna.* .*bgm24.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg22.*f512.* .*efr32bg24.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Beginner Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_soc_hsl" label="Bluetooth Mesh - SoC HSL Light" description="An out-of-the-box software demo where the LEDs of the mainboard can be switched on and off, and their lighting intensity, hue, and saturation can be set. The example also tries to establish friendship as a Friend node.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_soc_hsl.btmesh_soc_hsl_brd2601b.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_soc_hsl/btmesh_soc_hsl_brd2601b.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_soc_hsl/readme.md"/>
+    <properties key="boardCompatibility" value="brd2601b"/>
+    <properties key="partCompatibility" value=".*efr32mg24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_soc_hsl" label="Bluetooth Mesh - SoC HSL Light" description="An out-of-the-box software demo where the LEDs of the Thunderboard Sense 2 can be switched on and off, and their lighting intensity, hue, and saturation can be set. The example also tries to establish friendship as a Friend node.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_soc_hsl.btmesh_soc_hsl_brd4166a.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_soc_hsl/btmesh_soc_hsl_brd4166a.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_soc_hsl/readme.md"/>
+    <properties key="boardCompatibility" value="brd4166a"/>
+    <properties key="partCompatibility" value=".*efr32mg12p.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_soc_hsl" label="Bluetooth Mesh - SoC HSL Light" description="An out-of-the-box software demo where the LEDs of the mainboard can be switched on and off, and their lighting intensity, hue, and saturation can be set. The example also tries to establish friendship as a Friend node.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_soc_hsl.btmesh_soc_hsl_display.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_soc_hsl/btmesh_soc_hsl_display.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_soc_hsl/readme.md"/>
+    <properties key="boardCompatibility" value="brd4103a brd4104a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4180a brd4180b brd4181a brd4181b brd4181c brd4186c brd4187c brd4188b brd4190a brd4194a brd4195a brd4196a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4316a brd4317a"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm24.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg24.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg24.* .*efr32mg27.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_soc_hsl" label="Bluetooth Mesh - SoC HSL Light" description="An out-of-the-box software demo where the LEDs of the mainboard can be switched on and off, and their lighting intensity, hue, and saturation can be set. The example also tries to establish friendship as a Friend node.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_soc_hsl.btmesh_soc_hsl_log.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_soc_hsl/btmesh_soc_hsl_log.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_soc_hsl/readme.md"/>
+    <properties key="boardCompatibility" value="brd4179b brd4309a brd4309b"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm24.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg24.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg24.* .*efr32mg27.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_soc_light" label="Bluetooth Mesh - SoC Light" description="An out-of-the-box software demo where the LEDs of the mainboard can be switched on and off, and their lighting intensity, color temperature, and delta UV can be set.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_soc_light.btmesh_soc_light_brd2601b.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_soc_light/btmesh_soc_light_brd2601b.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_soc_light/readme.md"/>
+    <properties key="boardCompatibility" value="brd2601b"/>
+    <properties key="partCompatibility" value=".*efr32mg24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_soc_light" label="Bluetooth Mesh - SoC Light" description="An out-of-the-box software demo where the LEDs of the Thunderboard Sense 2 board can be switched on and off, and their lighting intensity, color temperature, and delta UV can be set.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_soc_light.btmesh_soc_light_brd4166a.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_soc_light/btmesh_soc_light_brd4166a.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_soc_light/readme.md"/>
+    <properties key="boardCompatibility" value="brd4166a"/>
+    <properties key="partCompatibility" value=".*efr32mg12p.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_soc_light" label="Bluetooth Mesh - SoC Light" description="An out-of-the-box software demo where the LEDs of the WSTK can be switched on and off, and their lighting intensity, color temperature, and delta UV can be set.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_soc_light.btmesh_soc_light_display.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_soc_light/btmesh_soc_light_display.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_soc_light/readme.md"/>
+    <properties key="boardCompatibility" value="brd4103a brd4104a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4180a brd4180b brd4181a brd4181b brd4181c brd4186c brd4187c brd4188b brd4190a brd4194a brd4195a brd4196a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4316a brd4317a"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm24.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg24.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg24.* .*efr32mg27.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_soc_light" label="Bluetooth Mesh - SoC Light" description="An out-of-the-box software demo where the LEDs of the mainboard can be switched on and off, and their lighting intensity, color temperature, and delta UV can be set.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_soc_light.btmesh_soc_light_log.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_soc_light/btmesh_soc_light_log.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_soc_light/readme.md"/>
+    <properties key="boardCompatibility" value="brd4179b brd4309a brd4309b"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm24.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg24.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg24.* .*efr32mg27.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client" description="This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_soc_sensor_client.btmesh_soc_sensor_client_display.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_soc_sensor_client/btmesh_soc_sensor_client_display.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <properties key="boardCompatibility" value="brd4103a brd4104a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4186c brd4187c brd4188b brd4190a brd4194a brd4195a brd4196a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4311a brd4311b brd4312a brd4316a brd4317a"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm22.*hna.* .*bgm24.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg22.*f512.* .*efr32bg24.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client" description="This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_soc_sensor_client.btmesh_soc_sensor_client_log.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_soc_sensor_client/btmesh_soc_sensor_client_log.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <properties key="boardCompatibility" value="brd2601b brd4166a brd4179b brd4309a brd4309b"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm22.*hna.* .*bgm24.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg22.*f512.* .*efr32bg24.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_soc_sensor_client" label="Bluetooth Mesh - SoC Sensor Client" description="This example demonstrates the Bluetooth Mesh Sensor Client Model. It collects and displays sensor measurement data from remote device(s) (e.g., btmesh_soc_sensor_server).&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_soc_sensor_client.btmesh_soc_sensor_client_log_single.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_soc_sensor_client/btmesh_soc_sensor_client_log_single.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_soc_sensor_client/readme.md"/>
+    <properties key="boardCompatibility" value="brd4108a brd4183a brd4183c brd4184a brd4184b brd4314a"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm22.*hna.* .*bgm24.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg22.*f512.* .*efr32bg24.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server" description="This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature, people count, and illuminance, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_soc_sensor_server.btmesh_soc_sensor_server_brd2601b.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_soc_sensor_server/btmesh_soc_sensor_server_brd2601b.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <properties key="boardCompatibility" value="brd2601b"/>
+    <properties key="partCompatibility" value=".*efr32mg24b310f1536im48.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server" description="This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature and people count, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_soc_sensor_server.btmesh_soc_sensor_server_display.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_soc_sensor_server/btmesh_soc_sensor_server_display.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <properties key="boardCompatibility" value="brd4103a brd4104a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4167a brd4168a brd4170a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4177a brd4182a brd4186c brd4187c brd4188b brd4190a brd4194a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4311a brd4311b brd4312a brd4316a brd4317a"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm22.*hna.* .*bgm24.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg22.*f512.* .*efr32bg24.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server" description="This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature and people count, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_soc_sensor_server.btmesh_soc_sensor_server_mock_display.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_soc_sensor_server/btmesh_soc_sensor_server_mock_display.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <properties key="boardCompatibility" value="brd4171a brd4176a brd4180a brd4180b brd4181a brd4181b brd4181c brd4195a brd4196a brd4308a brd4308b brd4308c brd4308d"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm22.*hna.* .*bgm24.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg22.*f512.* .*efr32bg24.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server" description="This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature and people count, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_soc_sensor_server.btmesh_soc_sensor_server_mock_log.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_soc_sensor_server/btmesh_soc_sensor_server_mock_log.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <properties key="boardCompatibility" value="brd4179b brd4309a brd4309b"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm22.*hna.* .*bgm24.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg22.*f512.* .*efr32bg24.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server" description="This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature and people count, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_soc_sensor_server.btmesh_soc_sensor_server_mock_log_single.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_soc_sensor_server/btmesh_soc_sensor_server_mock_log_single.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <properties key="boardCompatibility" value="brd4108a brd4183a brd4183c brd4314a"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm22.*hna.* .*bgm24.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg22.*f512.* .*efr32bg24.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server" description="This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature, people count, and illuminance, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_soc_sensor_server.btmesh_soc_sensor_server_tbbg22a.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_soc_sensor_server/btmesh_soc_sensor_server_tbbg22a.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <properties key="boardCompatibility" value="brd4184a"/>
+    <properties key="partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server" description="This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature, people count, and illuminance, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_soc_sensor_server.btmesh_soc_sensor_server_tbbg22b.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_soc_sensor_server/btmesh_soc_sensor_server_tbbg22b.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <properties key="boardCompatibility" value="brd4184b"/>
+    <properties key="partCompatibility" value=".*efr32bg22c224f512im40.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_soc_sensor_server" label="Bluetooth Mesh - SoC Sensor Server" description="This example demonstrates the Bluetooth Mesh Sensor Server Model and Sensor Setup Server Model. It measures temperature, people count, and illuminance, and sends the measurement data to a remote device (e.g., btmesh_soc_sensor_client).&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_soc_sensor_server.btmesh_soc_sensor_server_tbsense.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_soc_sensor_server/btmesh_soc_sensor_server_tbsense.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_soc_sensor_server/readme.md"/>
+    <properties key="boardCompatibility" value="brd4166a"/>
+    <properties key="partCompatibility" value=".*efr32mg12p332f1024gl125.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch" description="An out-of-the-box Software Demo where the device acts as a switch. Push Button presses or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_soc_switch.btmesh_soc_switch_display.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_soc_switch/btmesh_soc_switch_display.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <properties key="boardCompatibility" value="brd4103a brd4104a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4186c brd4187c brd4188b brd4190a brd4194a brd4195a brd4196a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4311a brd4311b brd4312a brd4316a brd4317a"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm22.*hna.* .*bgm24.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg22.*f512.* .*efr32bg24.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch" description="An out-of-the-box Software Demo where the device acts as a switch. Push Button presses or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_soc_switch.btmesh_soc_switch_log.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_soc_switch/btmesh_soc_switch_log.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <properties key="boardCompatibility" value="brd2601b brd4166a brd4179b brd4309a brd4309b"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm22.*hna.* .*bgm24.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg22.*f512.* .*efr32bg24.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_soc_switch" label="Bluetooth Mesh - SoC Switch" description="An out-of-the-box Software Demo where the device acts as a switch. Push Button presses (only PB0 is functional) or CLI commands can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_soc_switch.btmesh_soc_switch_log_single.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_soc_switch/btmesh_soc_switch_log_single.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_soc_switch/readme.md"/>
+    <properties key="boardCompatibility" value="brd4108a brd4183a brd4183c brd4184a brd4184b brd4314a"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm22.*hna.* .*bgm24.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg22.*f512.* .*efr32bg24.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power" description="An out-of-the-box Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD.Push Button presses can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_soc_switch.btmesh_soc_switch_low_power.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_soc_switch/btmesh_soc_switch_low_power.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <properties key="boardCompatibility" value="brd2601b brd4103a brd4104a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4186c brd4187c brd4188b brd4190a brd4194a brd4195a brd4196a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4311a brd4311b brd4312a brd4316a brd4317a"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm22.*hna.* .*bgm24.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg22.*f512.* .*efr32bg24.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+  <descriptors name="btmesh_soc_switch_low_power" label="Bluetooth Mesh - SoC Switch Low Power" description="A Software Demo where the device acts as a switch. It is optimized for low current consumption with disabled CLI, logging, and LCD. Button presses (only PB0 is functional) can control the state, lightness, and color temperature of the LEDs and scenes on a remote device.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="solutionReferenceId" value="app.bluetooth.example.btmesh_soc_switch.btmesh_soc_switch_low_power_single.slcp"/>
+    <properties key="projectFilePaths" value="example/btmesh_soc_switch/btmesh_soc_switch_low_power_single.slcp"/>
+    <properties key="readmeFiles" value="documentation/example/btmesh_soc_switch/readme_low_power.md"/>
+    <properties key="boardCompatibility" value="brd4108a brd4183a brd4183c brd4184a brd4184b brd4314a"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm22.*hna.* .*bgm24.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg22.*f512.* .*efr32bg24.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Mesh Examples"/>
+    <properties key="quality" value="PRODUCTION"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="filters" value="Device\ Type|SoC Project\ Difficulty|Advanced Wireless\ Technology|Bluetooth\ Mesh"/>
+  </descriptors>
+</model:MDescriptors>

@@ -1,0 +1,55 @@
+id: emlib_pcnt
+label: PCNT
+package: platform
+description: >
+  Pulse Counter (PCNT) peripheral API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_pcnt.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_pcnt.h"
+provides:
+  - name: emlib_pcnt
+requires:
+  - name: device
+  - name: device_has_pcnt
+  - name: emlib_cmu
+  - name: emlib_common
+  - name: cmsis_core
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efm32g/group-pcnt
+      condition: [device_sdid_71]
+    - page: emlib/api/efm32gg/group-pcnt
+      condition: [device_sdid_72]
+    - page: emlib/api/efm32tg/group-pcnt
+      condition: [device_sdid_73]
+    - page: emlib/api/efm32lg/group-pcnt
+      condition: [device_sdid_74]
+    - page: emlib/api/efm32zg/group-pcnt
+      condition: [device_sdid_76]
+    - page: emlib/api/efm32hg/group-pcnt
+      condition: [device_sdid_77]
+    - page: emlib/api/efr32xg1/group-pcnt
+      condition: [device_sdid_80]
+    - page: emlib/api/efr32xg12/group-pcnt
+      condition: [device_sdid_84]
+    - page: emlib/api/efr32xg13/group-pcnt
+      condition: [device_sdid_89]
+    - page: emlib/api/efr32xg14/group-pcnt
+      condition: [device_sdid_95]
+    - page: emlib/api/efm32gg11/group-pcnt
+      condition: [device_sdid_100]
+    - page: emlib/api/efm32tg11/group-pcnt
+      condition: [device_sdid_103]
+    - page: emlib/api/efm32gg12/group-pcnt
+      condition: [device_sdid_106]
+    - page: emlib/api/efr32xg23/group-pcnt
+      condition: [device_sdid_210]
+    - page: emlib/api/efr32xg24/group-pcnt
+      condition: [device_sdid_215]

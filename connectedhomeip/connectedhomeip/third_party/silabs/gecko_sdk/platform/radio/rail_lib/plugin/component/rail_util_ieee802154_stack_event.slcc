@@ -1,0 +1,31 @@
+id: rail_util_ieee802154_stack_event
+label: RAIL Utility, IEEE802.15.4 stack event configuration
+description: Utility to aid with IEEE802.15.4 stack event Configuration
+package: platform
+category: Platform|Radio
+quality: production
+ui_hints:
+  visibility: never
+requires:
+  - name: device
+  - name: status
+  - name: emlib_common
+  - name: rail_lib
+provides:
+  - name: rail_util_ieee802154_stack_event
+documentation:
+  docset: rail
+  document: rail-util-ieee802154-stack-event
+include:
+  - path: platform/radio/rail_lib/plugin/rail_util_ieee802154
+    file_list:
+      - path: sl_rail_util_ieee802154_stack_event.h
+source:
+  - path: platform/radio/rail_lib/plugin/rail_util_ieee802154/sl_rail_util_ieee802154_rail_event.c
+    condition:
+      - rail_test_core
+template_file:
+  - path: platform/radio/rail_lib/plugin/rail_util_ieee802154/sl_rail_util_ieee802154_stack_event.c.jinja
+template_contribution:
+  - name: component_catalog
+    value: rail_util_ieee802154_stack_event

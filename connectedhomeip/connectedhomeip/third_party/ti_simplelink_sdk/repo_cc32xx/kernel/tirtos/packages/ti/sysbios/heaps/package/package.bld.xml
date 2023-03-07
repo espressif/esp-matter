@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/build.dtd -->
+<package name="ti.sysbios.heaps" version="2, 0, 0, 0" producerId="undefined">
+    <units>
+        <module name="HeapBuf"/>
+        <module name="HeapMem"/>
+        <module name="HeapMultiBuf"/>
+        <module name="HeapNull"/>
+        <module name="HeapTrack"/>
+        <module name="HeapCallback"/>
+    </units>
+    <sources>
+        <srcFile name="package/package_ti.sysbios.heaps.c"/>
+        <srcFile name="HeapBuf.c"/>
+        <srcFile name="HeapMem.c"/>
+        <srcFile name="HeapMultiBuf.c"/>
+        <srcFile name="HeapNull.c"/>
+        <srcFile name="HeapTrack.c"/>
+        <srcFile name="HeapCallback.c"/>
+    </sources>
+    <configscripts>
+    </configscripts>
+    <makefiles>
+        <srcFile name="package.mak" src="package.bld"/>
+        <srcFile name="package/package.xdc.dep" src="package.xdc"/>
+        <srcFile name="package/package.cfg.dep" src="package.xdc"/>
+        <srcFile name="lib/debug/ti.sysbios.heaps.aem4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/package/package_ti.sysbios.heaps.oem4.dep" src="package/package_ti.sysbios.heaps.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/HeapBuf.oem4.dep" src="HeapBuf.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/HeapMem.oem4.dep" src="HeapMem.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/HeapMultiBuf.oem4.dep" src="HeapMultiBuf.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/HeapNull.oem4.dep" src="HeapNull.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/HeapTrack.oem4.dep" src="HeapTrack.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/HeapCallback.oem4.dep" src="HeapCallback.c"/>
+        <srcFile name="lib/debug/ti.sysbios.heaps.am4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/package/package_ti.sysbios.heaps.om4.dep" src="package/package_ti.sysbios.heaps.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/HeapBuf.om4.dep" src="HeapBuf.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/HeapMem.om4.dep" src="HeapMem.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/HeapMultiBuf.om4.dep" src="HeapMultiBuf.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/HeapNull.om4.dep" src="HeapNull.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/HeapTrack.om4.dep" src="HeapTrack.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/HeapCallback.om4.dep" src="HeapCallback.c"/>
+        <srcFile name="lib/debug/ti.sysbios.heaps.am4g.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/package/package_ti.sysbios.heaps.om4g.dep" src="package/package_ti.sysbios.heaps.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/HeapBuf.om4g.dep" src="HeapBuf.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/HeapMem.om4g.dep" src="HeapMem.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/HeapMultiBuf.om4g.dep" src="HeapMultiBuf.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/HeapNull.om4g.dep" src="HeapNull.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/HeapTrack.om4g.dep" src="HeapTrack.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/HeapCallback.om4g.dep" src="HeapCallback.c"/>
+        <srcFile name="lib/debug/ti.sysbios.heaps.arm4.mak" src="package.bld"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/package/package_ti.sysbios.heaps.orm4.dep" src="package/package_ti.sysbios.heaps.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/HeapBuf.orm4.dep" src="HeapBuf.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/HeapMem.orm4.dep" src="HeapMem.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/HeapMultiBuf.orm4.dep" src="HeapMultiBuf.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/HeapNull.orm4.dep" src="HeapNull.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/HeapTrack.orm4.dep" src="HeapTrack.c"/>
+        <srcFile name="package/lib/lib/debug/ti.sysbios.heaps/HeapCallback.orm4.dep" src="HeapCallback.c"/>
+        <srcFile name="package/rel/ti_sysbios_heaps.tar.dep" src="package/rel/ti_sysbios_heaps.xdc.inc"/>
+    </makefiles>
+    <targets>
+        <target name="ti.targets.arm.elf.M4"
+            version="ti.targets.arm.elf.M4{1,0,20.2,5"
+            rawVersion="20.2.5"
+            platform="ti.platforms.tiva:TM4C1294NCPDT:1"
+            isa="v7M4"
+            suffix="em4"
+            rootDir="/scratch/xlibrary/.conan/data/ticodegen/20.2.5.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c"
+            os="undefined"
+            rts="ti.targets.arm.rtsarm">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="ti.targets.arm.clang.M4"
+            version="ti.targets.arm.clang.M4{1,0,1.3,1"
+            rawVersion="TI Arm Clang Compiler 1.3.1.LTSTarget: arm-ti-none-eabi
+Thread model: posix
+InstalledDir: /scratch/xlibrary/.conan/data/tiarmllvm/1.3.1.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c/bin
+"
+            platform="ti.platforms.tiva:TM4C1294NCPDT:1"
+            isa="v7M4"
+            suffix="m4"
+            rootDir="/scratch/xlibrary/.conan/data/tiarmllvm/1.3.1.LTS-0/library-msp/ga/package/be241241e9d4718e5bab4eb33935bbb69606bb0c"
+            os="undefined"
+            rts="ti.targets.arm.rtsarm">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="gnu.targets.arm.M4"
+            version="gnu.targets.arm.M4{1,0,9.2,1"
+            rawVersion="9.2.1"
+            platform="ti.platforms.tiva:TM4C1294NCPDT"
+            isa="v7M4"
+            suffix="m4g"
+            rootDir="/scratch/xlibrary/.conan/data/arm-none-eabi-gcc/9.2019.q4.major-0/library-msp/ga/package/44fcf6b9a7fb86b2586303e3db40189d3b511830"
+            os="undefined"
+            rts="gnu.targets.arm.rtsv7M">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+        <target name="iar.targets.arm.M4"
+            version="iar.targets.arm.M4{1,0,8.50,1"
+            rawVersion="8.50.1.245"
+            platform="ti.platforms.tiva:TM4C1294NCPDT:1"
+            isa="v7M4"
+            suffix="rm4"
+            rootDir="/scratch/xlibrary/.conan/data/iarcodegen/8.50.1.245-3/library-msp/ga/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9"
+            os="undefined"
+            rts="iar.targets.arm.rts">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+    </targets>
+    <libraries>
+    <library name="lib/debug/ti.sysbios.heaps"
+        pname="lib/debug/ti.sysbios.heaps.aem4"
+        profile="debug"
+        target="ti.targets.arm.elf.M4"/>
+    <library name="lib/debug/ti.sysbios.heaps"
+        pname="lib/debug/ti.sysbios.heaps.am4"
+        profile="debug"
+        target="ti.targets.arm.clang.M4"/>
+    <library name="lib/debug/ti.sysbios.heaps"
+        pname="lib/debug/ti.sysbios.heaps.am4g"
+        profile="debug"
+        target="gnu.targets.arm.M4"/>
+    <library name="lib/debug/ti.sysbios.heaps"
+        pname="lib/debug/ti.sysbios.heaps.arm4"
+        profile="debug"
+        target="iar.targets.arm.M4"/>
+    </libraries>
+    <configurations>
+    </configurations>
+    <executables>
+    </executables>
+    <tests>
+    </tests>
+    <releases relDir="package/rel/">
+    <release name="ti_sysbios_heaps"
+        pname="ti_sysbios_heaps.tar"
+        label="default"
+        relScript="ti/sysbios/libFilter.xs">
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+        <file name="package.bld"/>
+        <file name="HeapMem.xml"/>
+        <file name="HeapBuf.xml"/>
+        <file name="HeapMultiBuf.xml"/>
+        <file name="HeapNull.xml"/>
+        <file name="HeapTrack.xml"/>
+        <file name="package/package.cfg.xdc.inc"/>
+        <file name="lib/debug/ti.sysbios.heaps.aem4"/>
+        <file name="package/package_ti.sysbios.heaps.c"/>
+        <file name="HeapBuf.c"/>
+        <file name="HeapMem.c"/>
+        <file name="HeapMultiBuf.c"/>
+        <file name="HeapNull.c"/>
+        <file name="HeapTrack.c"/>
+        <file name="HeapCallback.c"/>
+        <file name="lib/debug/ti.sysbios.heaps.am4"/>
+        <file name="lib/debug/ti.sysbios.heaps.am4g"/>
+        <file name="lib/debug/ti.sysbios.heaps.arm4"/>
+    </release>
+    </releases>
+    <repositories>
+    </repositories>
+</package>

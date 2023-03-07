@@ -1,0 +1,394 @@
+# YAML
+---
+RAILModel:
+  name: RAIL_Model
+  version: 1.0
+  RAILModelObjectCollection:
+    name: multiPhyConfig
+    _elements:
+
+      - RAILModelObjectArray:
+          name: multiPhyConfigEntries
+
+          _elements:
+
+            - RAILModelObjectCollection:
+                name: multiPhyConfigEntry
+                _elements:
+
+                  - RAILModelInfo:
+                      name: phyName
+                  - RAILModelInfo:
+                      name: profile
+                  - RAILModelObjectArray:
+                      name: phyConfigEntries
+                      _elements:
+
+                        - RAILModelObjectCollection:
+                            name: phyConfigEntry
+                            _elements:
+                              - RAILModelInfo:
+                                  name: xtalFrequency
+                              - RAILModelInfo:
+                                  name: baseFrequency
+                              - RAILModelInfo:
+                                  name: bitrate
+                              - RAILModelInfo:
+                                  name: modType
+                              - RAILModelInfo:
+                                  name: deviation
+                              - RAILModelInfo:
+                                  name: synthResolution
+                              - RAILModelInfo:
+                                  name: fecEnabled
+                              - RAILModelInfo:
+                                  name: convDecodeBufferSize
+                              - RAILModelInfo:
+                                  name: frameLengthEntry
+                              - RAILModelInfo:
+                                  name: frameTypeEntry
+                              - RAILModelInfo:
+                                  name: frameCodingTableEntry
+                              - RAILModelInfo:
+                                  name: dynamicSlicerTableEntry
+                              - RAILModelInfo:
+                                  name: irCalConfigEntry
+                              - RAILModelInfo:
+                                  name: txIrCalConfigEntry
+                              - RAILModelInfo:
+                                  name: timingConfigEntry
+                              - RAILModelInfo:
+                                  name: dcdcRetimingConfigEntry
+                              - RAILModelInfo:
+                                  name: rffpllConfigEntry
+                              - RAILModelInfo:
+                                  name: hfxoRetimingTableEntry
+                              - RAILModelInfo:
+                                  name: channelConfigEntryAttr
+                              - RAILModelInfo:
+                                  name: phyInfoEntry
+                              - RAILModelInfo:
+                                  name: modemConfigEntry
+                              - RAILModelInfo:
+                                  name: modemConfigEntryBase
+                              - RAILModelInfo:
+                                  name: modemConfigEntrySubtract
+                              - RAILModelInfo:
+                                  name: entryType
+                              - RAILModelInfo:
+                                  name: phyModeId
+                              - RAILModelInfo:
+                                  name: modeSwitchPhr
+                              - RAILModelInfo:
+                                  name: stackInfo
+
+                  - RAILModelObjectArray:
+                      name: channelConfigEntries
+                      _elements:
+                        - RAILModelStruct:
+                            name: channelConfigEntry
+                            _fields:
+                              - name: modemConfigDeltaAdd
+                                dataType: FieldDataType.UINT32_T
+                                isPtr: True
+                              - name: baseFrequency
+                                dataType: FieldDataType.UINT32_T
+                                isPtr: False
+                              - name: channelSpacing
+                                dataType: FieldDataType.UINT32_T
+                                isPtr: False
+                              - name: physicalChannelOffset
+                                dataType: FieldDataType.UINT16_T
+                                isPtr: False
+                              - name: channelNumberStart
+                                dataType: FieldDataType.UINT16_T
+                                isPtr: False
+                              - name: channelNumberEnd
+                                dataType: FieldDataType.UINT16_T
+                                isPtr: False
+                              - name: maxPower
+                                dataType: FieldDataType.INT16_T
+                                isPtr: False
+                              - name: attr
+                                dataType: FieldDataType.UINT32_T
+                                isPtr: True
+                              - name: entryType
+                                dataType: FieldDataType.UINT32_T
+                                isPtr: False
+                              - name: stackInfo
+                                dataType: FieldDataType.UINT8_T
+                                isPtr: True
+
+                  - RAILModelStruct:
+                      name: channelConfig
+                      _fields:
+                        - name: modemConfigBase
+                          dataType: FieldDataType.UINT32_T
+                          isPtr: True
+                        - name: modemConfigDeltaSubtract
+                          dataType: FieldDataType.UINT32_T
+                          isPtr: True
+                        - name: channelConfigEntries
+                          dataType: FieldDataType.UINT32_T
+                          isPtr: True
+                        - name: length
+                          dataType: FieldDataType.UINT32_T
+                          isPtr: False
+                        - name: signature
+                          dataType: FieldDataType.UINT32_T
+                          isPtr: False
+
+      - RAILModelObjectCollection:
+          name: commonStructures
+          _elements:
+
+            - RAILModelInfo:
+                name: modeSwitchPhyModeIds
+
+            - RAILModelInfo:
+                name: convDecodeBufferSize
+
+            - RAILModelObjectArray:
+                name: frameLengthEntries
+                _elements:
+                  - RAILModelSimpleArray:
+                      name: frameLengthList
+                      dataType: FieldDataType.UINT16_T
+
+            - RAILModelObjectArray:
+                name: frameTypeEntries
+                _elements:
+                  - RAILModelStruct:
+                      name: frameType
+                      _fields:
+                        - name: offset
+                          dataType: FieldDataType.UINT8_T
+                          isPtr: False
+                        - name: mask
+                          dataType: FieldDataType.UINT8_T
+                          isPtr: False
+                        - name: frameLen
+                          dataType: FieldDataType.UINT16_T
+                          isPtr: True
+                        - name: isValid
+                          dataType: FieldDataType.UINT8_T
+                          isArray: True
+                        - name: addressFilter
+                          dataType: FieldDataType.UINT8_T
+                          isArray: True
+                        - name: variableAddrLoc
+                          dataType: FieldDataType.BOOL
+                          isPtr: False
+
+            - RAILModelObjectArray:
+                name: frameCodingTableEntries
+                _elements:
+                  - RAILModelSimpleArray:
+                      name: frameCodingTable
+                      dataType: FieldDataType.UINT32_T
+
+            - RAILModelObjectArray:
+                name: dynamicSlicerTableEntries
+                _elements:
+                  - RAILModelObjectArray:
+                      name: dynamicSlicerConfigEntries
+                      _elements:
+                        - RAILModelStruct:
+                            name: dynamicSlicerConfig
+                            _fields:
+                              - name: threshold
+                                dataType: FieldDataType.UINT16_T
+                                isPtr: False
+                              - name: level
+                                dataType: FieldDataType.UINT16_T
+                                isPtr: False
+                              - name: next
+                                dataType: FieldDataType.UINT32_T
+                                isPtr: True
+
+            - RAILModelObjectArray:
+                name: irCalConfigEntries
+                _elements:
+                  - RAILModelSimpleArray:
+                      name: irCalConfig
+                      dataType: FieldDataType.UINT8_T
+
+            - RAILModelObjectArray:
+                name: txIrCalConfigEntries
+                _elements:
+                  - RAILModelSimpleArray:
+                      name: txIrCalConfig
+                      dataType: FieldDataType.UINT8_T
+
+            - RAILModelObjectArray:
+                name: rffpllConfigEntries
+                _elements:
+                  - RAILModelSimpleArray:
+                      name: rffpllConfig
+                      dataType: FieldDataType.UINT32_T
+
+            - RAILModelObjectArray:
+                name: dcdcRetimingConfigEntries
+                _elements:
+                  - RAILModelSimpleArray:
+                      name: dcdcRetimingConfig
+                      dataType: FieldDataType.UINT8_T
+
+            - RAILModelObjectArray:
+                name: timingConfigEntries
+                _elements:
+                  - RAILModelSimpleArray:
+                      name: timingConfig
+                      dataType: FieldDataType.INT32_T
+
+            - RAILModelObjectArray:
+                name: hfxoRetimingTableEntries
+                _elements:
+                  - RAILModelObjectCollection:
+                      name: hfxoRetimingConfigEntries
+                      _elements:
+                        - RAILModelObjectArray:
+                            name: hfxoRetimingInfoConfigEntries
+                            _elements:
+                              - RAILModelStruct:
+                                  name: hfxoRetimingInfoConfigStruct
+                                  _fields:
+                                    - name: dpllClock
+                                      dataType: FieldDataType.UINT16_T
+                                    - name: numBand
+                                      dataType: FieldDataType.UINT8_T
+                                    - name: offset
+                                      dataType: FieldDataType.UINT8_T
+
+                        - RAILModelObjectArray:
+                            name: hfxoRetimingBandConfigEntries
+                            _elements:
+                              - RAILModelStruct:
+                                  name: hfxoRetimingBandConfigStruct
+                                  _fields:
+                                    - name: loFreqUpperRange
+                                      dataType: FieldDataType.UINT16_T
+                                    - name: valid
+                                      dataType: FieldDataType.UINT8_T
+                                    - name: sMuxDiv
+                                      dataType: FieldDataType.UINT8_T
+                                    - name: hfxoLimitL
+                                      dataType: FieldDataType.UINT8_T
+                                    - name: hfxoLimitH
+                                      dataType: FieldDataType.UINT8_T
+
+            - RAILModelObjectArray:
+                name: railChannelConfigEntryAttrEntries
+                _elements:
+                  - RAILModelStruct:
+                      name: railChannelConfigEntryAttr
+                      _fields:
+                        - name: calValues
+                          dataType: FieldDataType.UINT32_T
+                          isPtr: False
+                          isArray: True
+
+            - RAILModelObjectArray:
+                name: phyInfoEntries
+                _elements:
+                  - RAILModelObjectCollection:
+                      name: phyInfo
+                      _elements:
+                        - RAILModelStruct:
+                            name: phyInfoData
+                            _fields:
+                              - name: version
+                                dataType: FieldDataType.UINT32_T
+                              - name: freqOffsetFactor
+                                dataType: FieldDataType.UINT32_T
+                              - name: freqOffsetFactor_fxp
+                                dataType: FieldDataType.UINT32_T
+                              - name: frameTypeConfig
+                                dataType: FieldDataType.UINT8_T
+                                isPtr: True
+                              - name: irCalConfig
+                                dataType: FieldDataType.UINT8_T
+                                isPtr: True
+                              - name: txIrCalConfig
+                                dataType: FieldDataType.UINT8_T
+                                isPtr: True
+                              - name: timingConfig
+                                dataType: FieldDataType.UINT32_T
+                                isPtr: True
+                              - name: antDivRxAutoConfig
+                                dataType: FieldDataType.UINT32_T
+                              - name: src1Denominator
+                                dataType: FieldDataType.UINT32_T
+                              - name: src2Denominator
+                                dataType: FieldDataType.UINT32_T
+                              - name: txBaudRate
+                                dataType: FieldDataType.UINT32_T
+                              - name: rxBaudRate
+                                dataType: FieldDataType.UINT32_T
+                              - name: rateInfo
+                                dataType: FieldDataType.UINT32_T
+                              - name: baudPerSymbol
+                                dataType: FieldDataType.UINT8_T
+                              - name: bitsPerSymbol
+                                dataType: FieldDataType.UINT8_T
+                              - name: synthCache
+                                dataType: FieldDataType.UINT32_T
+                              - name: dcdcRetimingConfig
+                                dataType: FieldDataType.UINT8_T
+                                isPtr: True
+                              - name: hfxoRetimingConfig
+                                dataType: FieldDataType.UINT8_T
+                                isPtr: True
+                              - name: zWaveChannelHopTiming
+                                dataType: FieldDataType.UINT32_T
+                              - name: paParams
+                                dataType: FieldDataType.UINT32_T
+                              - name: psmMaxSleepUs
+                                dataType: FieldDataType.UINT32_T
+                              - name: rffpllConfig
+                                dataType: FieldDataType.UINT8_T
+                                isPtr: True
+
+            - RAILModelObjectArray:
+                name: modemConfigEntries
+                _elements:
+                  - RAILModelObjectArray:
+                      # Define an anchor here to reuse later as an alias
+                      &modemConfig
+                      name: modemConfig
+                      _elements:
+                        - RAILModelStruct:
+                            name: modemConfigEntry
+                            _fields:
+                              - name: encodedAction
+                                dataType: FieldDataType.UINT32_T
+                              - name: encodedValues
+                                dataType: FieldDataType.UINT32_T
+                                isArray: True
+                              - name: encodedRegNames
+                                dataType: FieldDataType.STRING
+                                isArray: True
+
+            - RAILModelObjectArray:
+                name: modemConfigEntriesBase
+                _elements:
+                  - RAILModelObjectArray:
+                      *modemConfig
+
+            - RAILModelObjectArray:
+                name: modemConfigEntriesSubtract
+                _elements:
+                  - RAILModelObjectArray:
+                      *modemConfig
+
+            - RAILModelSimpleArray:
+                name: channelConfigArray
+                dataType: FieldDataType.UINT32_T
+                isPtr: True
+
+            - RAILModelObjectArray:
+                name: stackInfoEntries
+                _elements:
+                  - RAILModelSimpleArray:
+                      name: stackInfo
+                      dataType: FieldDataType.UINT8_T

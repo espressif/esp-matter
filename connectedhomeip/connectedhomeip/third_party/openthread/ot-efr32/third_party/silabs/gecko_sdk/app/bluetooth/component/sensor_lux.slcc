@@ -1,0 +1,26 @@
+id: sensor_lux
+label: Ambient light sensor
+package: Bluetooth
+description: Ambient light sensor driver abstraction designed for Thunderboard.
+category: Application|Sensor
+quality: production
+root_path: app/bluetooth/common/sensor_lux
+source:
+  - path: sl_sensor_lux.c
+include:
+  - path: .
+    file_list:
+      - path: sl_sensor_lux.h
+config_file:
+  - path: "config/sl_sensor_lux_config.h"
+    condition: [btmesh_stack]
+provides:
+  - name: sensor_lux
+requires:
+  - name: sensor_select
+  - name: veml6035_driver
+  - name: i2cspm
+  - name: app_assert
+template_contribution:
+  - name: component_catalog
+    value: sensor_lux

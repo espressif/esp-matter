@@ -1,0 +1,145 @@
+%%{
+/*
+ * Copyright (c) 2018-2021, Texas Instruments Incorporated - http://www.ti.com
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+
+/*
+ *  ======== ADCCC26XX.Board.c.xdt ========
+ */
+
+    /* passed by /ti/drivers/templates/Board.c.xdt */
+    let ADC = args[0];
+    let instances = ADC.$instances;
+    if (instances.length == 0) return;
+
+    /* get Common /ti/drivers utility functions */
+    let Common = system.getScript("/ti/drivers/Common.js");
+
+    let declarations = Common.genBoardDeclarations(instances);
+
+    /* CONFIG_XXXCOUNT string, derived from defaultInstanceName */
+    let countDef = ADC.defaultInstanceName + "COUNT";
+
+    let map = {
+        "Fixed"   : "ADCCC26XX_FIXED_REFERENCE",
+        "VDDS"    : "ADCCC26XX_VDDS_REFERENCE",
+        "Manual"  : "ADCCC26XX_TRIGGER_MANUAL",
+        "2.7 us"  : "ADCCC26XX_SAMPLING_DURATION_2P7_US",
+        "5.3 us"  : "ADCCC26XX_SAMPLING_DURATION_5P3_US",
+        "10.6 us" : "ADCCC26XX_SAMPLING_DURATION_10P6_US",
+        "21.3 us" : "ADCCC26XX_SAMPLING_DURATION_21P3_US",
+        "42.6 us" : "ADCCC26XX_SAMPLING_DURATION_42P6_US",
+        "85.3 us" : "ADCCC26XX_SAMPLING_DURATION_85P3_US",
+        "170 us"  : "ADCCC26XX_SAMPLING_DURATION_170_US",
+        "341 us"  : "ADCCC26XX_SAMPLING_DURATION_341_US",
+        "682 us"  : "ADCCC26XX_SAMPLING_DURATION_682_US",
+        "1.37 ms" : "ADCCC26XX_SAMPLING_DURATION_1P37_MS",
+        "2.73 ms" : "ADCCC26XX_SAMPLING_DURATION_2P73_MS",
+        "5.46 ms" : "ADCCC26XX_SAMPLING_DURATION_5P46_MS",
+        "10.9 ms" : "ADCCC26XX_SAMPLING_DURATION_10P9_MS",
+        "Battery Channel"    : "ADC_COMPB_IN_VDDS",
+        "Decoupling Channel" : "ADC_COMPB_IN_DCOUPL",
+        "Ground Channel"     : "ADC_COMPB_IN_VSS"
+    };
+%%}
+/*
+ *  =============================== ADC ===============================
+ */
+
+#include <ti/drivers/ADC.h>
+#include <ti/drivers/adc/ADCCC26XX.h>
+
+#define `countDef` `instances.length`
+
+/*
+ *  ======== adcCC26xxObjects ========
+ */
+ADCCC26XX_Object adcCC26xxObjects[`countDef`];
+
+/*
+ *  ======== adcCC26xxHWAttrs ========
+ */
+const ADCCC26XX_HWAttrs adcCC26xxHWAttrs[`countDef`] = {
+% for (let i = 0; i < instances.length; i++) {
+    % let inst = instances[i];
+    % let packagePin, auxIn, pin;
+    % if (inst.internalSignal === "None") {
+    %     packagePin = parseInt(inst.adc.adcPin.$solution.packagePinName);
+    %     auxIn = system.deviceData.devicePins[packagePin].attributes.alias_name;
+    %     auxIn = "ADC_COMPB_IN_" + auxIn.replace("_", "IO");
+    %     pin = inst.adcPinInstance.$name;
+    % }
+    % else {
+    %     pin = "PIN_UNASSIGNED";
+    %     auxIn = map[inst.internalSignal];
+    % }
+    /* `inst.$name` */
+    % if (inst.$hardware) {
+    %    if (inst.$hardware.displayName) {
+    /* `inst.$hardware.displayName` */
+    %    }
+    % }
+    {
+        .adcDIO              = `pin`,
+        .adcCompBInput       = `auxIn`,
+        .refSource           = `map[inst.referenceSource]`,
+        .samplingDuration    = `map[inst.samplingDuration]`,
+        .inputScalingEnabled = `inst.inputScaling`,
+        .refVoltage          = `inst.referenceVoltage`,
+        .triggerSource       = `map[inst.triggerSource]`,
+        .returnAdjustedVal   = `inst.adjustSampleValue`
+    },
+% }
+};
+
+/*
+ *  ======== ADC_config ========
+ */
+const ADC_Config ADC_config[`countDef`] = {
+% for (let i = 0; i < instances.length; i++) {
+    % let inst = instances[i];
+    /* `inst.$name` */
+    % if (inst.$hardware) {
+    %    if (inst.$hardware.displayName) {
+    /* `inst.$hardware.displayName` */
+    %    }
+    % }
+    {
+        .fxnTablePtr = &ADCCC26XX_fxnTable,
+        .object = &adcCC26xxObjects[`inst.$name`],
+        .hwAttrs = &adcCC26xxHWAttrs[`inst.$name`]
+    },
+% }
+};
+
+`declarations`
+const uint_least8_t ADC_count = `countDef`;

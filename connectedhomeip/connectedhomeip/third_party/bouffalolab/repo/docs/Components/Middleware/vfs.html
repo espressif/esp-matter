@@ -1,0 +1,617 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>AOS VFS &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../index.html"/>
+        <link rel="up" title="&lt;no title&gt;" href="index.html"/>
+        <link rel="next" title="device tree" href="devicetree.html"/>
+        <link rel="prev" title="yloop" href="yloop.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Examples/index.html">Example</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Components</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../System/Coredump.html">Coredump</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../System/Libc.html">Libc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../System/Start.html">Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="yloop.html">yloop</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">vfs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">概要</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vfs">VFS提供的标准接口</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">VFS的数据结构</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aos-open">以aos_open为例介绍其文件打开方式</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">将驱动文件或者文件系统加载到VFS当中</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">示例代码</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">总结</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="devicetree.html">dts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="blog.html">blog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../BLE/ble_stack.html">ble_stack</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Components</a> &raquo;</li>
+        
+          <li><a href="index.html">&lt;no title&gt;</a> &raquo;</li>
+        
+      <li>AOS VFS</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/Components/Middleware/vfs.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="aos-vfs">
+<h1>AOS VFS<a class="headerlink" href="#aos-vfs" title="永久链接至标题"></a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="#id1">概要</a></li>
+<li><a class="reference internal" href="#vfs">VFS提供的标准接口</a></li>
+<li><a class="reference internal" href="#id2">VFS的数据结构</a></li>
+<li><a class="reference internal" href="#aos-open">以aos_open为例介绍其文件打开方式</a></li>
+<li><a class="reference internal" href="#id3">将驱动文件或者文件系统加载到VFS当中</a></li>
+<li><a class="reference internal" href="#id4">示例代码</a></li>
+<li><a class="reference internal" href="#id5">总结</a></li>
+</ul>
+<div class="section" id="id1">
+<h2>概要<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<p>VFS存在的意义，屏蔽掉底层文件系统的差异，为应用层提供标准的系统调用接口。</p>
+</div>
+<div class="section" id="vfs">
+<h2>VFS提供的标准接口<a class="headerlink" href="#vfs" title="永久链接至标题"></a></h2>
+<p>基本通用的UNIX接口都已经实现了。之所以具有前缀<code class="docutils literal notranslate"><span class="pre">aos_</span></code>。是因为这些都是对外的接口，在AliOS
+Things的代码命名规则中规定：所有的对外接口都需要加上前缀<code class="docutils literal notranslate"><span class="pre">aos_</span></code></p>
+<p>aos_open</p>
+<p>aos_close</p>
+<p>aos_read</p>
+<p>aos_write</p>
+<p>aos_ioctl</p>
+<p>aos_poll</p>
+<p>aos_fcnt</p>
+<p>aos_lseek</p>
+<p>aos_sync</p>
+<p>aos_stat</p>
+<p>aos_unlink</p>
+<p>aos_rename</p>
+<p>aos_opendir</p>
+<p>aos_closedir</p>
+<p>aos_readdir</p>
+<p>aos_mkdir</p>
+</div>
+<div class="section" id="id2">
+<h2>VFS的数据结构<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">inode_t</span></code>数据结构</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/*</span> <span class="n">this</span> <span class="n">structure</span> <span class="n">represents</span> <span class="n">inode</span> <span class="k">for</span> <span class="n">driver</span> <span class="ow">and</span> <span class="n">fs</span><span class="o">*/</span>
+<span class="n">typedef</span> <span class="n">struct</span> <span class="p">{</span>
+    <span class="n">union</span> <span class="n">inode_ops_t</span> <span class="n">ops</span><span class="p">;</span>     <span class="o">/*</span> <span class="n">inode</span> <span class="n">operations</span> <span class="o">*/</span>
+    <span class="n">void</span>             <span class="o">*</span><span class="n">i_arg</span><span class="p">;</span>   <span class="o">/*</span> <span class="n">per</span> <span class="n">inode</span> <span class="n">private</span> <span class="n">data</span> <span class="o">*/</span>
+    <span class="n">char</span>             <span class="o">*</span><span class="n">i_name</span><span class="p">;</span>  <span class="o">/*</span> <span class="n">name</span> <span class="n">of</span> <span class="n">inode</span> <span class="o">*/</span>
+    <span class="nb">int</span>               <span class="n">i_flags</span><span class="p">;</span> <span class="o">/*</span> <span class="n">flags</span> <span class="k">for</span> <span class="n">inode</span> <span class="o">*/</span>
+    <span class="n">uint8_t</span>           <span class="nb">type</span><span class="p">;</span>    <span class="o">/*</span> <span class="nb">type</span> <span class="k">for</span> <span class="n">inode</span> <span class="o">*/</span>
+    <span class="n">uint8_t</span>           <span class="n">refs</span><span class="p">;</span>    <span class="o">/*</span> <span class="n">refs</span> <span class="k">for</span> <span class="n">inode</span> <span class="o">*/</span>
+<span class="p">}</span> <span class="n">inode_t</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>因为VFS虚拟文件系统将文件和目录都当做文件来看待，上述的数据结构是索引节点类型，其具有节点具有的操作方法、节点的数据存放指针、节点的名称（即节点路径名/dev/null）、节点类型、节点被引用的次数。</p>
+<p>在<code class="docutils literal notranslate"><span class="pre">inode_t</span></code>结构体当中，ops是针对索引节点的操作方法，具体如下：</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">union</span> <span class="n">inode_ops_t</span> <span class="p">{</span>
+
+    <span class="n">const</span> <span class="n">file_ops_t</span> <span class="o">*</span><span class="n">i_ops</span><span class="p">;</span>  <span class="o">/*</span> <span class="n">char</span> <span class="n">driver</span> <span class="n">operations</span> <span class="o">*/</span>
+
+    <span class="n">const</span> <span class="n">fs_ops_t</span>   <span class="o">*</span><span class="n">i_fops</span><span class="p">;</span> <span class="o">/*</span> <span class="n">FS</span> <span class="n">operations</span> <span class="o">*/</span>
+
+<span class="p">};</span>
+<span class="n">typedef</span> <span class="n">const</span> <span class="n">struct</span> <span class="n">file_ops</span> <span class="n">file_ops_t</span><span class="p">;</span> <span class="o">/*</span> <span class="n">针对文件的操作方法</span> <span class="o">*/</span>
+<span class="n">typedef</span> <span class="n">const</span> <span class="n">struct</span> <span class="n">fs_ops</span>   <span class="n">fs_ops_t</span><span class="p">;</span>   <span class="o">/*</span> <span class="n">针对目录的操作方法</span> <span class="o">*/</span>
+<span class="n">struct</span> <span class="n">file_ops</span> <span class="p">{</span>
+    <span class="nb">int</span>     <span class="p">(</span><span class="o">*</span><span class="nb">open</span><span class="p">)</span>  <span class="p">(</span><span class="n">inode_t</span> <span class="o">*</span><span class="n">node</span><span class="p">,</span> <span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">);</span>
+    <span class="nb">int</span>     <span class="p">(</span><span class="o">*</span><span class="n">close</span><span class="p">)</span> <span class="p">(</span><span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">);</span>
+    <span class="n">ssize_t</span> <span class="p">(</span><span class="o">*</span><span class="n">read</span><span class="p">)</span>  <span class="p">(</span><span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">nbytes</span><span class="p">);</span>
+    <span class="n">ssize_t</span> <span class="p">(</span><span class="o">*</span><span class="n">write</span><span class="p">)</span> <span class="p">(</span><span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="n">const</span> <span class="n">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">nbytes</span><span class="p">);</span>
+    <span class="nb">int</span>     <span class="p">(</span><span class="o">*</span><span class="n">ioctl</span><span class="p">)</span> <span class="p">(</span><span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="nb">int</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">unsigned</span> <span class="n">long</span> <span class="n">arg</span><span class="p">);</span>
+<span class="c1">#ifdef AOS_CONFIG_VFS_POLL_SUPPORT</span>
+    <span class="nb">int</span>     <span class="p">(</span><span class="o">*</span><span class="n">poll</span><span class="p">)</span>  <span class="p">(</span><span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="nb">bool</span> <span class="n">flag</span><span class="p">,</span> <span class="n">poll_notify_t</span> <span class="n">notify</span><span class="p">,</span> <span class="n">struct</span> <span class="n">pollfd</span> <span class="o">*</span><span class="n">fd</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
+<span class="c1">#endif</span>
+<span class="p">};</span>
+<span class="n">struct</span> <span class="n">fs_ops</span> <span class="p">{</span>
+    <span class="nb">int</span>             <span class="p">(</span><span class="o">*</span><span class="nb">open</span><span class="p">)</span>     <span class="p">(</span><span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">path</span><span class="p">,</span> <span class="nb">int</span> <span class="n">flags</span><span class="p">);</span>
+    <span class="nb">int</span>             <span class="p">(</span><span class="o">*</span><span class="n">close</span><span class="p">)</span>    <span class="p">(</span><span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">);</span>
+    <span class="n">ssize_t</span>         <span class="p">(</span><span class="o">*</span><span class="n">read</span><span class="p">)</span>     <span class="p">(</span><span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="n">char</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="n">size_t</span> <span class="nb">len</span><span class="p">);</span>
+    <span class="n">ssize_t</span>         <span class="p">(</span><span class="o">*</span><span class="n">write</span><span class="p">)</span>    <span class="p">(</span><span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="n">size_t</span> <span class="nb">len</span><span class="p">);</span>
+    <span class="n">off_t</span>           <span class="p">(</span><span class="o">*</span><span class="n">lseek</span><span class="p">)</span>    <span class="p">(</span><span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="n">off_t</span> <span class="n">off</span><span class="p">,</span> <span class="nb">int</span> <span class="n">whence</span><span class="p">);</span>
+    <span class="nb">int</span>             <span class="p">(</span><span class="o">*</span><span class="n">sync</span><span class="p">)</span>     <span class="p">(</span><span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">);</span>
+    <span class="nb">int</span>             <span class="p">(</span><span class="o">*</span><span class="n">stat</span><span class="p">)</span>     <span class="p">(</span><span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">path</span><span class="p">,</span> <span class="n">struct</span> <span class="n">stat</span> <span class="o">*</span><span class="n">st</span><span class="p">);</span>
+    <span class="nb">int</span>             <span class="p">(</span><span class="o">*</span><span class="n">unlink</span><span class="p">)</span>   <span class="p">(</span><span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">path</span><span class="p">);</span>
+    <span class="nb">int</span>             <span class="p">(</span><span class="o">*</span><span class="n">rename</span><span class="p">)</span>   <span class="p">(</span><span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">oldpath</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">newpath</span><span class="p">);</span>
+    <span class="n">aos_dir_t</span>      <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">opendir</span><span class="p">)</span>  <span class="p">(</span><span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">path</span><span class="p">);</span>
+    <span class="n">aos_dirent_t</span>   <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">readdir</span><span class="p">)</span>  <span class="p">(</span><span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="n">aos_dir_t</span> <span class="o">*</span><span class="nb">dir</span><span class="p">);</span>
+    <span class="nb">int</span>             <span class="p">(</span><span class="o">*</span><span class="n">closedir</span><span class="p">)</span> <span class="p">(</span><span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="n">aos_dir_t</span> <span class="o">*</span><span class="nb">dir</span><span class="p">);</span>
+    <span class="nb">int</span>             <span class="p">(</span><span class="o">*</span><span class="n">mkdir</span><span class="p">)</span>    <span class="p">(</span><span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">path</span><span class="p">);</span>
+    <span class="nb">int</span>             <span class="p">(</span><span class="o">*</span><span class="n">rmdir</span><span class="p">)</span>    <span class="p">(</span><span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">path</span><span class="p">);</span>
+    <span class="n">void</span>            <span class="p">(</span><span class="o">*</span><span class="n">rewinddir</span><span class="p">)(</span><span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="n">aos_dir_t</span> <span class="o">*</span><span class="nb">dir</span><span class="p">);</span>
+    <span class="n">long</span>            <span class="p">(</span><span class="o">*</span><span class="n">telldir</span><span class="p">)</span>  <span class="p">(</span><span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="n">aos_dir_t</span> <span class="o">*</span><span class="nb">dir</span><span class="p">);</span>
+    <span class="n">void</span>            <span class="p">(</span><span class="o">*</span><span class="n">seekdir</span><span class="p">)</span>  <span class="p">(</span><span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="n">aos_dir_t</span> <span class="o">*</span><span class="nb">dir</span><span class="p">,</span> <span class="n">long</span> <span class="n">loc</span><span class="p">);</span>
+    <span class="nb">int</span>             <span class="p">(</span><span class="o">*</span><span class="n">ioctl</span><span class="p">)</span>    <span class="p">(</span><span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="nb">int</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">unsigned</span> <span class="n">long</span> <span class="n">arg</span><span class="p">);</span>
+    <span class="nb">int</span>             <span class="p">(</span><span class="o">*</span><span class="n">statfs</span><span class="p">)</span>   <span class="p">(</span><span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">path</span><span class="p">,</span> <span class="n">struct</span> <span class="n">statfs</span> <span class="o">*</span><span class="n">suf</span><span class="p">);</span>
+    <span class="nb">int</span>             <span class="p">(</span><span class="o">*</span><span class="n">access</span><span class="p">)</span>   <span class="p">(</span><span class="n">file_t</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">path</span><span class="p">,</span> <span class="nb">int</span> <span class="n">amode</span><span class="p">);</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">file_t</span></code>数据结构</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">struct</span> <span class="p">{</span>
+    <span class="n">inode_t</span>    <span class="o">*</span><span class="n">node</span><span class="p">;</span>   <span class="o">/*</span> <span class="n">node</span> <span class="k">for</span> <span class="n">file</span> <span class="o">*/</span>
+    <span class="n">void</span>       <span class="o">*</span><span class="n">f_arg</span><span class="p">;</span>  <span class="o">/*</span> <span class="n">f_arg</span> <span class="k">for</span> <span class="n">file</span> <span class="o">*/</span>
+    <span class="n">size_t</span>     <span class="n">offset</span><span class="p">;</span> <span class="o">/*</span> <span class="n">offset</span> <span class="k">for</span> <span class="n">file</span> <span class="o">*/</span>
+<span class="p">}</span> <span class="n">file_t</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>上述的<code class="docutils literal notranslate"><span class="pre">file_t</span></code>数据结构用于描述一个被打开的文件，因为系统当中同一个系统当中，同一个文件可能被多个程序打开，但是打开的每一个文件都会唯一的执行特定的索引节点，即最终的物理文件只有一份。</p>
+</div>
+<div class="section" id="aos-open">
+<h2>以aos_open为例介绍其文件打开方式<a class="headerlink" href="#aos-open" title="永久链接至标题"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">aos_open</span></code>是对外的接口，外部函数可以直接使用该接口实现对于文件的打开操作，而不用去关心底层文件系统的实现细节。其代码如下所示：</p>
+<p>其输入参数为：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">path</span><span class="p">;</span> <span class="n">即文件路径名</span>
+<span class="nb">int</span> <span class="n">flags</span><span class="p">;</span> <span class="n">即操作标志</span> <span class="n">比如只读</span> <span class="n">只写</span> <span class="n">读写等</span>
+</pre></div>
+</div>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span>int aos_open(const char *path, int flags)
+{
+    file_t  *file;
+    inode_t *node;
+    size_t len = 0;
+    int ret = VFS_SUCCESS;
+
+    if (path == NULL) {
+        return -EINVAL;
+    }
+
+    len = strlen(path);
+    if (len &gt; PATH_MAX) { /* 文件路径名不允许超过256个字节 */
+        return -ENAMETOOLONG;
+    }
+    /* 获取互斥锁，该互斥锁在vfs_init函数中创建 */
+    if ((ret = krhino_mutex_lock(&amp;g_vfs_mutex, RHINO_WAIT_FOREVER)) != 0) {
+        return ret;
+    }
+    /* 根据路径名传参，打开索引节点，具体函数实现会在下文介绍 */
+    node = inode_open(path);
+
+    if (node == NULL) {
+        krhino_mutex_unlock(&amp;g_vfs_mutex);
+
+#ifdef IO_NEED_TRAP
+        return trap_open(path, flags);
+#else
+        return -ENOENT;
+#endif
+    }
+
+    node-&gt;i_flags = flags;
+    /*因为用户操作的文件都是在内存中新建立的文件（文件对象会反过来指向索引节点
+        即一个文件可能被多个程序打开）。所以需要根据索引接点对象新建立一个文件对象
+    */
+    file = new_file(node);
+    /* 释放互斥锁 */
+    krhino_mutex_unlock(&amp;g_vfs_mutex);
+
+    if (file == NULL) {
+        return -ENFILE;
+    }
+    /* 根据节点类型判断该路径名指向是一个文件还是一个目录，因为文件对象和目录对象虽然都是节点
+    但是其操作方法有些差别，见前文中的目录和文件操作方法 */
+    if (INODE_IS_FS(node)) {
+        if ((node-&gt;ops.i_fops-&gt;open) != NULL) {
+            ret = (node-&gt;ops.i_fops-&gt;open)(file, path, flags);
+        }
+
+    } else {
+        if ((node-&gt;ops.i_ops-&gt;open) != NULL) {
+            ret = (node-&gt;ops.i_ops-&gt;open)(node, file);
+        }
+    }
+
+    if (ret != VFS_SUCCESS) {
+        del_file(file);
+        return ret;
+    }
+    /* 获得文件句柄 */
+    return get_fd(file);
+}
+</pre></div>
+</div>
+<ul class="simple">
+<li>inode_open 在inode_open函数用于根据文件路径名打开对应的节点。
+其输入参数为： <code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">*</span> <span class="pre">path;</span> <span class="pre">文件路径名</span></code> 输出参数为：
+<code class="docutils literal notranslate"><span class="pre">inode_t;</span> <span class="pre">对应的节点</span></code></li>
+</ul>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">static</span> <span class="n">inode_t</span> <span class="n">g_vfs_dev_nodes</span><span class="p">[</span><span class="n">AOS_CONFIG_VFS_DEV_NODES</span><span class="p">];</span>
+<span class="n">inode_t</span> <span class="o">*</span><span class="n">inode_open</span><span class="p">(</span><span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">path</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="nb">int</span> <span class="n">e</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">inode_t</span> <span class="o">*</span><span class="n">node</span><span class="p">;</span>
+    <span class="o">/*</span><span class="n">AOS_CONFIG_VFS_DEV_NODES该宏定义为25</span><span class="o">.</span>
+        <span class="n">即在保存节点的数组g_vfs_dev_nodes中仅仅会保存25个节点</span>
+    <span class="o">*/</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">e</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">e</span> <span class="o">&lt;</span> <span class="n">AOS_CONFIG_VFS_DEV_NODES</span><span class="p">;</span> <span class="n">e</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">g_vfs_dev_nodes</span><span class="p">[</span><span class="n">e</span><span class="p">];</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">i_name</span> <span class="o">==</span> <span class="n">NULL</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">continue</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="o">/*</span> <span class="n">判断该节点是一个目录还是一个文件</span> <span class="o">*/</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">INODE_IS_TYPE</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">VFS_TYPE_FS_DEV</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">((</span><span class="n">strncmp</span><span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">i_name</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">i_name</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+                <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">strlen</span><span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">i_name</span><span class="p">))</span> <span class="o">==</span> <span class="s1">&#39;/&#39;</span><span class="p">))</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="n">node</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">i_name</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="n">node</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>new_file
+在new_file()函数中，完成的主要功能就是新建立一个file_t的结构体定义和初始化。
+其输入参数是： inode_t *node; 上个函数中得到的节点 输出参数是：
+file_t 类型。用于后续获取文件句柄</li>
+</ul>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span>static file_t files[MAX_FILE_NUM];
+#define MAX_FILE_NUM (AOS_CONFIG_VFS_DEV_NODES * 2)
+file_t *new_file(inode_t *node)
+{
+    file_t *f;
+    int idx;
+    /* 在file数组当中新建立一个数据项。且保证该数组未满。即打开的文件数量是有限的 */
+    for (idx = 0; idx &lt; MAX_FILE_NUM; idx++) {
+        f = &amp;files[idx];
+
+        if (f-&gt;node == NULL) {
+            goto got_file;
+        }
+    }
+
+    return NULL;
+
+got_file:
+    f-&gt;node = node;
+    f-&gt;f_arg = NULL;
+    f-&gt;offset = 0;
+    inode_ref(node);
+    return f;
+}
+</pre></div>
+</div>
+<p>所有的系统调用函数（类似于aos_open）都位于vfs.c文件中。</p>
+</div>
+<div class="section" id="id3">
+<h2>将驱动文件或者文件系统加载到VFS当中<a class="headerlink" href="#id3" title="永久链接至标题"></a></h2>
+<p>在vfs_register.c文件中定义的函数：</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">int</span> <span class="n">aos_register_driver</span><span class="p">(</span><span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">path</span><span class="p">,</span> <span class="n">file_ops_t</span> <span class="o">*</span><span class="n">ops</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+<span class="nb">int</span> <span class="n">aos_register_fs</span><span class="p">(</span><span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">path</span><span class="p">,</span> <span class="n">fs_ops_t</span> <span class="o">*</span><span class="n">ops</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>上述两个函数分别是将驱动文件或者是文件系统类型装载到VFS当中的函数。外部程序（例如sensor驱动程序）可以调用这两个接口将驱动文件加载的VFS当中去。</p>
+<p>以aos_register_driver为例进行介绍：</p>
+<p>其输入参数为： 驱动文件路径名 const char * path （/dev/null）</p>
+<p>驱动操作方法 file_ops_t *ops
+（不需要实现全部的方法，实现必要的方法，其余置NULL即可）</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span>int aos_register_driver(const char *path, file_ops_t *ops, void *arg)
+{
+    inode_t *node = NULL;
+    int err, ret;
+
+    err = krhino_mutex_lock(&amp;g_vfs_mutex, RHINO_WAIT_FOREVER);
+    if (err != 0) {
+        return err;
+    }
+//在g_vfs_dev_nodes数组中寻找一个空的数组项，返回其指针给node，并将path的路径名赋给node--&gt;name
+    ret = inode_reserve(path, &amp;node);
+    if (ret == VFS_SUCCESS) {
+        /* now populate it with char specific information */
+        INODE_SET_CHAR(node);
+
+        node-&gt;ops.i_ops = ops;
+        node-&gt;i_arg     = arg;
+    }
+
+    /* step out critical area for type is allocated */
+    err = krhino_mutex_unlock(&amp;g_vfs_mutex);
+    if (err != 0) {
+        if (node-&gt;i_name != NULL) {
+            krhino_mm_free(node-&gt;i_name);
+        }
+
+        memset(node, 0, sizeof(inode_t));
+        return err;
+    }
+
+    return ret;
+}
+</pre></div>
+</div>
+</div>
+<div class="section" id="id4">
+<h2>示例代码<a class="headerlink" href="#id4" title="永久链接至标题"></a></h2>
+<p>vfs的操作类linux中操作，
+这里举例<code class="docutils literal notranslate"><span class="pre">aos_open</span></code>、<code class="docutils literal notranslate"><span class="pre">aos_close</span></code>、<code class="docutils literal notranslate"><span class="pre">aos_read</span></code>、<code class="docutils literal notranslate"><span class="pre">aos_write</span></code></p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span>void bl_test_uart0(void)
+{
+    int fd;
+    int length;
+    char buf_recv[128];
+
+    /* 首先打开相关文件，对应到UART0 */
+    fd = aos_open(&quot;/dev/ttyS0&quot;, 0);
+    if (fd &lt; 0) {
+        log_error(&quot;open err.\r\n&quot;);
+        return;
+    }
+
+    while (1) {
+        /* 读取UART0中的数据 */
+        length = aos_read(fd, buf_recv, sizeof(buf_recv));
+        if (length &gt; 0) {
+
+            log_info(&quot;recv len = %d\r\n&quot;, length);
+
+            /* 直到收到&#39;exit&#39;才会主动结束循环，并close相关文件 */
+            if (memcmp(buf_recv, &quot;exit&quot;, 5) == 0) {
+                aos_close(fd);
+                break;
+            }
+
+            /* UART0将收到的数据回传过去 */
+            aos_write(fd, buf_recv, length);
+        }
+        vTaskDelay(100);
+    }
+}
+</pre></div>
+</div>
+</div>
+<div class="section" id="id5">
+<h2>总结<a class="headerlink" href="#id5" title="永久链接至标题"></a></h2>
+<ul class="simple">
+<li>VFS的一把重要的互斥锁 对VFS的相关操作都需要获取该互斥锁才能够进行。
+<code class="docutils literal notranslate"><span class="pre">kmutex_t</span> <span class="pre">g_vfs_mutex;</span></code></li>
+<li>VFS的两个重要的数组结构 如下所示：第一个数组是保存节点的数组结构。
+第二个数组是保存文件对象的数组结构。和用户直接相关的是第二个数组结构</li>
+</ul>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">static</span> <span class="n">inode_t</span> <span class="n">g_vfs_dev_nodes</span><span class="p">[</span><span class="n">AOS_CONFIG_VFS_DEV_NODES</span><span class="p">];</span>
+<span class="n">static</span> <span class="n">file_t</span> <span class="n">files</span><span class="p">[</span><span class="n">MAX_FILE_NUM</span><span class="p">];</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>使用者只需关心的文件 vfs_register.c文件用于注册 vfs.c
+文件用于各种标准操作。</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="devicetree.html" class="btn btn-neutral float-right" title="device tree" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="yloop.html" class="btn btn-neutral" title="yloop" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

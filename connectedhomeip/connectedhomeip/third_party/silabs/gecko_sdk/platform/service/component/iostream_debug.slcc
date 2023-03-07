@@ -1,0 +1,35 @@
+id: iostream_debug
+package: platform
+label: "IO Stream debug"
+description: IO Stream debug.
+category: Services|IO Stream
+quality: production
+root_path: platform/service/iostream
+provides:
+  - name: iostream_debug
+  - name: iostream_transport_core
+    allow_multiple: true
+  - name: iostream_transport
+    allow_multiple: true    
+requires:
+  - name: iostream
+  - name: debug_swo
+include:
+  - path: inc
+    file_list:
+      - path: sl_iostream_debug.h
+      - path: sli_iostream_swo_itm_8.h
+      - path: sl_iostream_swo_itm_8.h
+source:
+  - path: src/sl_iostream_debug.c
+  - path: src/sl_iostream_swo_itm_8.c
+template_contribution:
+  - name: event_handler
+    value:
+      event: iostream_instance_init
+      include: sl_iostream_debug.h
+      handler: sl_iostream_debug_init
+  - name: iostream_instance_info
+    value:
+      include: sl_iostream_debug.h
+      handler: sl_iostream_instance_debug_info

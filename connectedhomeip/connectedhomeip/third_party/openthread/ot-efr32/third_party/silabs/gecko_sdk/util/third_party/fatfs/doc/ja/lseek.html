@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="up" title="FatFs" href="../00index_j.html">
+<link rel="alternate" hreflang="en" title="English" href="../en/lseek.html">
+<link rel="stylesheet" href="../css_j.css" type="text/css" media="screen" title="ELM Default">
+<title>FatFs - f_lseek</title>
+</head>
+
+<body>
+
+<div class="para">
+<h2>f_lseek</h2>
+<p>ファイルのリード/ライト・ポインタを移動します。</p>
+<pre>
+FRESULT f_lseek (
+  FIL* <em>FileObject</em>,    <span>/* ファイル・オブジェクト構造体へのポインタ */</span>
+  DWORD <em>Offset</em>        <span>/* 移動先オフセット */</span>
+);
+</pre>
+</div>
+
+<div class="para">
+<h4>引数</h4>
+<dl class="par">
+<dt>FileObject</dt>
+<dd>対象となるファイル・オブジェクト構造体へのポインタを指定します。</dd>
+<dt>Offset</dt>
+<dd>移動先のオフセット（リード/ライト・ポインタ）値。ファイル先頭からのオフセットをバイト単位で指定します。</dd>
+</dl>
+</div>
+
+
+<div class="para">
+<h4>戻り値</h4>
+<dl class="ret">
+<dt>FR_OK (0)</dt>
+<dd>正常終了。</dd>
+<dt>FR_DISK_ERR</dt>
+<dd>ディスク・エラーによる失敗。</dd>
+<dt>FR_INT_ERR</dt>
+<dd>不正なFAT構造または内部エラーによる失敗。</dd>
+<dt>FR_NOT_READY</dt>
+<dd>メディアがセットされていないなど、物理ドライブが動作不能状態。</dd>
+<dt>FR_INVALID_OBJECT</dt>
+<dd>無効なファイル・オブジェクト。</dd>
+<dt>FR_NOT_ENOUGH_CORE</dt>
+<dd>リンク・マップ・テーブルのサイズが不足。</dd>
+</dl>
+</div>
+
+
+<div class="para">
+<h4>解説</h4>
+<p>ファイルのリード/ライト・ポインタ(ファイル・オブジェクト内のfptrメンバで、次に読み出し・書き込みされるバイトのオフセットを示す)を移動します。オフセットの原点はファイル先頭です。書き込みモードでファイル・サイズより大きな値を指定すると、そこまでファイル・サイズが拡張され、拡張された部分のデータは未定義となります。データを遅延無く高速に書き込みたいときは、予めこの関数で必要なサイズまでファイル・サイズを拡張しておくと良いでしょう。f_lseek関数が正常終了したあとは、リード/ライト・ポインタが正しく移動したかfptrをチェックするべきです。リード/ライト・ポインタが指定より小さいときは、次の原因が考えられます。</p>
+<ul>
+<li>非書き込みモードまたは高速シーク・モードのため、ファイル・サイズでクリップされた。</li>
+<li>ファイル拡張中にディスクが満杯になった。</li>
+</ul>
+<p><tt>_USE_FASTSEEK</tt>に1が指定されていて、且つファイル・オブジェクトの<tt>cltbl</tt>メンバがNULL以外のとき、高速シーク・モードになります。これはファイルのクラスタ情報をアプリケーションの指定した配列に保持しておくことにより、FATにアクセスすることなく後方シークやロング・シークを高速に行う機能です。高速シーク動作を行う前には、配列を初期化しておく必要があります。必要な配列サイズ(要素数)は、(ファイルの分割数 + 1) * 2 です。たとえば、ファイルが5つに分断されているときに必要な配列サイズは、12要素となります。高速シーク使用時はファイル・サイズの拡張はできません。</p>
+</div>
+
+
+<div class="para">
+<h4>対応情報</h4>
+<p><tt>_FS_MINIMIZE &lt; 3</tt>のとき使用可能です。</p>
+</div>
+
+
+<div class="para">
+<h4>使用例</h4>
+<pre>
+    <span>/* ファイル・オフセット5000へ移動 */</span>
+    res = f_lseek(&amp;file, 5000, 0);
+
+    <span>/* ファイル追記の準備 (ファイル終端へ移動) */</span>
+    res = f_lseek(&amp;file, file.fsize, 0);
+
+    <span>/* 3000バイト進める */</span>
+    res = f_lseek(&amp;file, file.fptr + 3000, 0);
+
+    <span>/* 2000バイト戻す (オーバーフローに注意) */</span>
+    res = f_lseek(&amp;file, file.fptr - 2000, 0);
+</pre>
+<pre>
+    <span>/* クラスタ先行割り当て (ストリーミング・ライト時のバッファ・オーバーラン防止) */</span>
+
+    res = f_open(&amp;file, "record.wav", FA_CREATE_NEW | FA_WRITE); <span>/* ファイル作成 */</span>
+
+    res = f_lseek(&amp;file, MAX_SIZE, 0);     <span>/* 十分なクラスタの先行割り当て */</span>
+    if (res || file.fptr != PRE_SIZE) .... <span>/* 正しくファイルが拡張されたかチェック */</span>
+
+    res = f_lseek(&amp;file, DATA_START, 0);   <span>/* データ・ストリームの記録(アロケーションディレイ無し) */</span>
+    ...
+
+    res = f_truncate(&amp;file);               <span>/* 不要領域の切り捨て */</span>
+    res = f_lseek(&amp;file, 0, 0);            <span>/* ヘッダの記録 */</span>
+    ...
+
+    res = f_close(&amp;file);
+</pre>
+<pre>
+    <span>/* 高速シーク機能を使う */</span>
+
+    DWORD lktbl[SZ_TBL];                   <span>/* リンク・マップ・テーブル格納バッファ */</span>
+
+    res = f_lseek(&amp;file, ofs1);            <span>/* 通常シーク (オープン時は file.cltbl == NULL) */</span>
+
+    file.cltbl = lktbl;                    <span>/* 高速シーク機能の有効化 */</span>
+    lktbl[0] = SZ_TBL;                     <span>/* 先頭要素に配列要素数をセット */</span>
+    res = f_lseek(&amp;file, CREATE_LINKMAP);  <span>/* リンク・マップ・テーブルの作成 */</span>
+
+    res = f_lseek(&amp;file, ofs2);            <span>/* 高速シーク (file.cltbl != NULL) */</span>
+</pre>
+</div>
+
+
+<div class="para">
+<h4>参照</h4>
+<p><tt><a href="open.html">f_open</a>, <a href="sfile.html">FIL</a></tt></p>
+</div>
+
+<p class="foot"><a href="../00index_j.html">戻る</a></p>
+</body>
+</html>

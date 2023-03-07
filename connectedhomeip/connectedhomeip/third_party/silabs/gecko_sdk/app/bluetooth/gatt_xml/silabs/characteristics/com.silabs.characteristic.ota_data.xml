@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2016 Silicon Labs, http://www.silabs.com -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Silicon Labs OTA Data" type="com.silabs.characteristic.ota_data" uuid="984227F3-34FC-4045-A5D0-2C581F81A153" last-modified="2016-11-15">
+    <InformativeText>
+        <Abstract>Silicon Labs OTA Data.</Abstract>
+    </InformativeText>
+    <Value>
+        <Field name="Data0">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+        </Field>
+        <Field name="Data1">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+        </Field>
+        <Field name="Data2">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+        </Field>
+        <Field name="Data3">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+        </Field>
+        <Field name="Data4">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+        </Field>
+        <Field name="Data5">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+        </Field>
+        <Field name="Data6">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+        </Field>
+        <Field name="Data7">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+        </Field>
+        <Field name="Data8">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+        </Field>
+        <Field name="Data9">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+        </Field>
+        <Field name="Data10">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+        </Field>
+        <Field name="Data11">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+        </Field>
+        <Field name="Data12">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+        </Field>
+        <Field name="Data13">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+        </Field>
+        <Field name="Data14">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+        </Field>
+        <Field name="Data15">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+        </Field>
+        <Field name="Data16">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+        </Field>
+        <Field name="Data17">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+        </Field>
+        <Field name="Data18">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+        </Field>
+        <Field name="Data19">
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+        </Field>
+    </Value>
+</Characteristic>

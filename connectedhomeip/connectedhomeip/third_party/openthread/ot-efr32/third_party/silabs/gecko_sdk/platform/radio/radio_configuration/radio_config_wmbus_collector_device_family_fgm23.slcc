@@ -1,0 +1,22 @@
+id: radio_config_wmbus_collector_device_family_fgm23
+label: Custom Radio Configuration for Range Test Dualband Ocelot
+package: platform
+description: Triggers Radio Configurator UI for setting a proper (Application - Die
+  - RF Band) Custom Radio Configurator
+category: Platform|Radio Configuration
+quality: production
+provides:
+- name: radio_config_wmbus_collector_device_family_fgm23
+- name: a_radio_config
+  allow_multiple: true
+ui_hints:
+  visibility: never
+template_contribution:
+- name: component_catalog
+  value: radio_config_wmbus_collector
+config_file:
+- path: platform/radio/radio_configuration/Mbus/wmbus_collector_868/device_sdid_210/rf_band_868/radio_settings.radioconf
+  directory: rail
+  condition:
+  - device_family_fgm23
+

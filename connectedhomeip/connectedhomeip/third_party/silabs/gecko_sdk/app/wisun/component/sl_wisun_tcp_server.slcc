@@ -1,0 +1,24 @@
+id: "sl_wisun_tcp_server"
+label: "TCP Server"
+package: "wisun"
+description: "This component contains the TCP Server configuration. The listener port and the receive buffer size can be configured."
+category: "Wi-SUN|Application"
+quality: "production"
+root_path: "app/wisun/component/tcp_server"
+provides:
+  - name: sl_wisun_tcp_server
+
+config_file:
+  - path: "config/sl_wisun_tcp_server_config.h"
+
+requires:
+  - name: "sl_wisun_socket"
+  - name: "sl_wisun_app_core"
+
+ui_hints:
+  visibility: never  
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: wisun_tcp_server

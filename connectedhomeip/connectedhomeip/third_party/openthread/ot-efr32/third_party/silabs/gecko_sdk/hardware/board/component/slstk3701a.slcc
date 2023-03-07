@@ -1,0 +1,22 @@
+!!omap
+- id: slstk3701a
+- label: SLSTK3701A
+- package: platform
+- description: Kit BSP support for the EFM32GG11 Giant Gecko Starter Kit.
+- category: Platform|Board|Kit|Starter Kit
+- quality: production
+- requires:
+  - name: hardware_board_from_slstk3701a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_stk
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLSTK3701A"'
+  - name: SL_KIT_REV
+    value: '"B00"'
+- tag:
+  - kit:opn:SLSTK3701A
+  - kit:pn:STK3701
+  - kit:variant:A
+  - kit:revision:B00

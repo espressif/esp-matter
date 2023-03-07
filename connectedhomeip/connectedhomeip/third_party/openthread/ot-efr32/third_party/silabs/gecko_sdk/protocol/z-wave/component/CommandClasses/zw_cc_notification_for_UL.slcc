@@ -1,0 +1,15 @@
+id: zw_cc_notification_for_UL
+label: Special Notification Command Class for UL testtool application 
+category: Z-Wave|Command Classes
+description: Modified Notification Command Class component only for UL testtol! Do not release this file!
+package: Z-Wave
+quality: internal
+source:
+  - path: protocol/z-wave/ZAF/CommandClasses/Notification/notification.c
+include:
+  - path: protocol/z-wave/ZAF/CommandClasses/Notification/
+    file_list:
+    - path: CC_Notification.h
+    - path: notification.h
+provides:
+  - name: zw_cc_notification_for_UL

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ASCII"?>
+<device:XMLDevice xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:device="http://www.silabs.com/ss/hwconfig/document/device.ecore" name="BGM220PC22HNA" partId="mcu.arm.efr32.bg22.bgm220pc22hna" contextId="com.silabs.sdk.stack.super">
+  <mode name="DefaultMode">
+    <property object="BTL_BUTTON" propertyId="BTL_BUTTON.BSP_BTL_BUTTON.PIN" value="PC07"/>
+    <property object="BUTTON" propertyId="BUTTON.BSP_BUTTON0.PIN" value="PC07"/>
+    <property object="BUTTON" propertyId="BUTTON.HAL_BUTTON_COUNT.INT" value="1"/>
+    <property object="BUTTON" propertyId="BUTTON.HAL_BUTTON_ENABLE.ARRAY" value="0"/>
+
+    <property object="DCDC" propertyId="ABPeripheral.included" value="true"/>
+
+    <property object="DefaultMode" propertyId="mode.diagramLocation" value="100, 100"/>
+
+    <property object="GPIO" propertyId="GPIO.BSP_TRACE_SWO.PIN" value="PA03"/>
+
+    <property object="I2C0" propertyId="I2C.BSP_I2C_SCL.PIN" value="PD02"/>
+    <property object="I2C0" propertyId="I2C.BSP_I2C_SDA.PIN" value="PD03"/>
+
+    <property object="LED" propertyId="LED.BSP_LED0.PIN" value="PA04"/>
+    <property object="LED" propertyId="LED.HAL_LED_COUNT.INT" value="1"/>
+    <property object="LED" propertyId="LED.BSP_LED_POLARITY.ENUM" value="0"/>
+
+    <property object="PTI" propertyId="PTI.BSP_PTI_DOUT.PIN" value="PC04"/>
+    <property object="PTI" propertyId="PTI.BSP_PTI_DFRAME.PIN" value="PC05"/>
+
+    <property object="SERIAL" propertyId="SERIAL.BSP_SERIAL_APP_PORT.MOD" value="USART1"/>
+
+    <property object="UARTNCP" propertyId="UARTNCP.BSP_UARTNCP_USART_PORT.MOD" value="USART1"/>
+
+    <property object="USART0" propertyId="USART.BSP_USART_MOSI.PIN" value="PC00"/>
+    <property object="USART0" propertyId="USART.BSP_USART_MISO.PIN" value="PC01"/>
+    <property object="USART0" propertyId="USART.BSP_USART_CLK.PIN" value="PC02"/>
+    <property object="USART0" propertyId="USART.BSP_USART_CS.PIN" value="PC03"/>
+    <property object="USART0" propertyId="USART.hal_usart_mode.ENUM" value="spi"/>
+
+    <property object="USART1" propertyId="USART.BSP_USART_TX.PIN" value="PA05"/>
+    <property object="USART1" propertyId="USART.BSP_USART_RX.PIN" value="PA06"/>
+    <property object="USART1" propertyId="USART.BSP_USART_CTS.PIN" value="PA08"/>
+    <property object="USART1" propertyId="USART.BSP_USART_RTS.PIN" value="PA07"/>
+
+  </mode>
+  <modeTransition>
+    <property object="RESET &#x2192; DefaultMode" propertyId="modeTransition.source" value="RESET"/>
+    <property object="RESET &#x2192; DefaultMode" propertyId="modeTransition.target" value="DefaultMode"/>
+  </modeTransition>
+</device:XMLDevice>

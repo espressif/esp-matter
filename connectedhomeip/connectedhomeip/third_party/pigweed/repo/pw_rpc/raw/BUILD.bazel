@@ -1,0 +1,197 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load(
+    "//pw_build:pigweed.bzl",
+    "pw_cc_library",
+    "pw_cc_test",
+)
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+pw_cc_library(
+    name = "server_api",
+    srcs = [
+        "method.cc",
+    ],
+    hdrs = [
+        "public/pw_rpc/raw/internal/method.h",
+        "public/pw_rpc/raw/internal/method_union.h",
+        "public/pw_rpc/raw/server_reader_writer.h",
+    ],
+    includes = ["public"],
+    deps = [
+        "//pw_bytes",
+        "//pw_rpc",
+        "//pw_rpc:internal_packet_cc.pwpb",
+        "//pw_status",
+    ],
+)
+
+pw_cc_library(
+    name = "client_api",
+    hdrs = ["public/pw_rpc/raw/client_reader_writer.h"],
+    includes = ["public"],
+    deps = [
+        "//pw_bytes",
+        "//pw_rpc",
+        "//pw_rpc:internal_packet_cc.pwpb",
+    ],
+)
+
+pw_cc_library(
+    name = "fake_channel_output",
+    hdrs = ["public/pw_rpc/raw/fake_channel_output.h"],
+    includes = ["public"],
+    deps = [
+        ":server_api",
+        "//pw_assert",
+        "//pw_containers",
+    ],
+)
+
+pw_cc_library(
+    name = "test_method_context",
+    hdrs = ["public/pw_rpc/raw/test_method_context.h"],
+    includes = ["public"],
+    deps = [
+        ":fake_channel_output",
+        ":server_api",
+        "//pw_assert",
+        "//pw_containers:vector",
+        "//pw_preprocessor",
+        "//pw_rpc",
+        "//pw_rpc:internal_test_utils",
+    ],
+)
+
+pw_cc_library(
+    name = "client_testing",
+    srcs = ["client_testing.cc"],
+    hdrs = ["public/pw_rpc/raw/client_testing.h"],
+    deps = [
+        ":test_method_context",
+        "//pw_assert",
+        "//pw_bytes",
+        "//pw_log",
+        "//pw_rpc",
+    ],
+)
+
+pw_cc_test(
+    name = "client_test",
+    srcs = [
+        "client_test.cc",
+    ],
+    deps = [
+        ":client_api",
+        ":client_testing",
+        "//pw_rpc:internal_test_utils",
+    ],
+)
+
+pw_cc_test(
+    name = "client_reader_writer_test",
+    srcs = ["client_reader_writer_test.cc"],
+    deps = [
+        ":client_api",
+        ":client_testing",
+        "//pw_rpc:pw_rpc_test_cc.raw_rpc",
+    ],
+)
+
+pw_cc_test(
+    name = "codegen_test",
+    srcs = [
+        "codegen_test.cc",
+    ],
+    deps = [
+        ":client_api",
+        ":client_testing",
+        ":server_api",
+        ":test_method_context",
+        "//pw_protobuf",
+        "//pw_rpc:internal_test_utils",
+        "//pw_rpc:pw_rpc_test_cc.pwpb",
+        "//pw_rpc:pw_rpc_test_cc.raw_rpc",
+    ],
+)
+
+pw_cc_test(
+    name = "method_test",
+    srcs = [
+        "method_test.cc",
+    ],
+    deps = [
+        ":server_api",
+        "//pw_containers",
+        "//pw_protobuf",
+        "//pw_rpc:internal_test_utils",
+        "//pw_rpc:pw_rpc_test_cc.pwpb",
+    ],
+)
+
+pw_cc_test(
+    name = "method_info_test",
+    srcs = [
+        "method_info_test.cc",
+    ],
+    deps = [
+        "//pw_rpc:internal_test_utils",
+        "//pw_rpc:pw_rpc_test_cc.raw_rpc",
+    ],
+)
+
+pw_cc_test(
+    name = "method_union_test",
+    srcs = [
+        "method_union_test.cc",
+    ],
+    deps = [
+        ":server_api",
+        "//pw_protobuf",
+        "//pw_rpc:internal_test_utils",
+        "//pw_rpc:pw_rpc_test_cc.pwpb",
+    ],
+)
+
+pw_cc_test(
+    name = "server_reader_writer_test",
+    srcs = ["server_reader_writer_test.cc"],
+    deps = [
+        ":test_method_context",
+        "//pw_rpc:internal_test_utils",
+        "//pw_rpc:pw_rpc_test_cc.pwpb",
+        "//pw_rpc:pw_rpc_test_cc.raw_rpc",
+    ],
+)
+
+# Negative compilation testing is not supported by Bazel. Build this as a
+# regular unit for now test.
+pw_cc_test(
+    name = "service_nc_test",
+    srcs = ["service_nc_test.cc"],
+    deps = ["//pw_rpc:pw_rpc_test_cc.raw_rpc"],
+)
+
+pw_cc_test(
+    name = "stub_generation_test",
+    srcs = ["stub_generation_test.cc"],
+    deps = [
+        "//pw_rpc:pw_rpc_test_cc.pwpb",
+        "//pw_rpc:pw_rpc_test_cc.raw_rpc",
+    ],
+)

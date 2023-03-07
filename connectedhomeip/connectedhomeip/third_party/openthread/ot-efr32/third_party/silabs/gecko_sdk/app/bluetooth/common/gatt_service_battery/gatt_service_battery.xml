@@ -1,0 +1,25 @@
+<gatt>
+  <!--Battery Service-->
+  <service advertise="true" id="battery_service" name="Battery Service" requirement="mandatory" sourceId="org.bluetooth.service.battery_service" type="primary" uuid="180F">
+    <informativeText>Abstract:  The Battery Service exposes the state of a battery within a device.  Summary:  The Battery Service exposes the Battery State and Battery Level of a single battery or set of batteries in a device.  </informativeText>
+    
+    <!--Battery Level-->
+    <characteristic id="batt_measurement" name="Battery Level" sourceId="org.bluetooth.characteristic.battery_level" uuid="2A19">
+      <informativeText>Abstract:  The current charge level of a battery. 100% represents fully charged while 0% represents fully discharged.  </informativeText>
+      <value length="1" type="user" variable_length="false"/>
+      <properties const="false" const_requirement="optional" notify="true" notify_requirement="optional" read="true" read_requirement="mandatory"/>
+    </characteristic>
+  </service>
+  
+  <!--Power Source-->
+  <service advertise="false" id="power_source" name="Power Source" requirement="mandatory" type="primary" uuid="ec61a454-ed00-a5e8-b8f9-de9ec026ec51">
+    <informativeText/>
+    
+    <!--Power Source-->
+    <characteristic id="power_source_type" name="Power Source" uuid="ec61a454-ed01-a5e8-b8f9-de9ec026ec51">
+      <informativeText/>
+      <value length="1" type="user" variable_length="false"/>
+      <properties read="true" read_requirement="optional"/>
+    </characteristic>
+  </service>
+</gatt>

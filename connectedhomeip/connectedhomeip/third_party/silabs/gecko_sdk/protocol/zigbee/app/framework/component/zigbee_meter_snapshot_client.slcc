@@ -1,0 +1,18 @@
+package: Zigbee
+description: A component for processing snapshots of the meter state in a Smart Energy network.
+  The component is only intended to assist with debugging, as the implemented callbacks
+  simply parse responses and print the results.
+label: Meter Snapshot Client
+quality: production
+id: zigbee_meter_snapshot_client
+category: Zigbee|Cluster Library|Smart Energy
+provides:
+   - name: "zigbee_meter_snapshot_client"
+requires:
+   - name: "zigbee_simple_metering_client"
+source:
+  - path: protocol/zigbee/app/framework/plugin/meter-snapshot-client/meter-snapshot-client.c
+template_contribution:
+  - name: component_catalog
+    value: zigbee_meter_snapshot_client
+

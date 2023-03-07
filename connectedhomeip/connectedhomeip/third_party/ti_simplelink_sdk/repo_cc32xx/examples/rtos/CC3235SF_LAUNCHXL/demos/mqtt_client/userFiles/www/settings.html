@@ -1,0 +1,512 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-16">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Local OTA</title>
+
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+// toggle slide
+	var oddClick = false;
+	$(".menuTop").click(function() {
+		oddClick = !oddClick;
+		oddClick ? $("nav.tmenuNav").slideDown(250) : $("nav.tmenuNav").slideUp(100);
+	});
+	$("ul.mMenu").css( "height", ($( document ).height() -  $( ".headerIn" ).outerHeight()));
+	
+	
+	
+});
+</script>
+<style>
+
+  html
+  {
+    margin:0;
+    padding:0;
+    color: #666;
+    background: #fff;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    font-weight: lighter;
+  }
+
+  nav. tivav
+  {
+    padding:12px;
+    color:#fff;
+    background:#333;
+    font-size: 180%;
+    font-weight: lighter;
+  }
+
+  ul.tiul
+  { 
+    margin:0;
+    padding:0;
+    list-style: none;
+  }
+
+  form
+  { 
+    margin:1em;
+  }
+  
+  ul.tiul li, .ns
+  {
+    color: #777;
+    background: #fff;
+    padding:10px;
+	font-size: 110%;
+    border-bottom: 1px solid #777;
+    font-weight: lighter;
+    float: left;
+  }
+
+  ul.tiul li:hover, ul.tiul li:active, ul.tiul .s
+  {
+    color: #000;
+    background: #ddd;
+    font-weight: bolder;
+    border-bottom: 3px solid #36a;
+  }
+
+  h2
+  {
+    margin:0;
+    padding: 4px;
+    color: #fff;
+    background: -webkit-linear-gradient(left,#36a,#fff); /* For Safari 5.1 to 6.0 */
+    background: linear-gradient(to right,#36a,#fff);     /* Standard syntax (must be last) */
+	text-indent:5px;
+    border-radius: 0px;
+    font-size: 110%;
+    font-weight: lighter;
+  }
+
+  .c
+  {
+    margin:1% auto;
+    padding:1%;
+    width:96%;
+    left: 1%;
+    overflow:auto;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;    
+    box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff;
+  }
+ 
+  table 
+  {
+    font-size: inherit;
+  }
+  
+  #l
+  {
+    width:30%;
+  }
+
+  #r
+  {
+    width:50%;
+  }
+  
+  @media all and (max-width: 6in), all and (max-device-width: 640px) 
+  {
+	html{font-size: 36px;}
+	input,select{font-size: 100%;}
+  }
+</style>
+
+<script>
+
+var menu = ["Status", "Profiles", "Device", "Network", "Tools", "Stations"];
+var q =    ["Settings will take effect after reset", "<sup>Value between 0-15 (15=highest)</sup>"];
+var objs = [  { 
+                "Device": {"Device Name":"__SL_G_S.B", "Device Mode":"__SL_G_S.D", "MAC Address":"__SL_G_N.D", "Build No.":"__SL_G_V.A.__SL_G_V.B.__SL_G_V.C.__SL_G_V.D" }, 
+                "Station": {"IPv4 Parameters:":"","DHCP State":"__SL_G_N.E", "IPv4 Address":"__SL_G_N.A", "Subnet Mask":"__SL_G_N.B", "Default Gateway":"__SL_G_N.C", "DNS Server":"__SL_G_N.H","":"", "IPv6 Parameters:":"","Local Address State":"__SL_G_LSO","Local IPv6 Address":"__SL_G_LSK","Global Address State":"__SL_G_LSD","Global IPv6 Address":"__SL_G_LSG","DNS IPv6 Address":"__SL_G_LSP"},
+                "AP":{"Channel":"__SL_G_W.A", "SSID":"__SL_G_W.B", "Security Type":"__SL_G_W.C", "Domain Name":"__SL_G_S.C", "IPv4 Address":"__SL_G_N.P", "Subnet Mask":"__SL_G_N.Q","Default Gateway":"__SL_G_N.T","DNS Server":"__SL_G_N.U", "":"", "DHCP Server:":"", "- Start Address":"__SL_G_N.I", "- Last Address":"__SL_G_N.J", "- Lease Time":"__SL_G_N.K sec"},
+                "Wifi Direct":{"Device Name":"__SL_G_R.A", "Channel":"__SL_G_R.E", "Role Preference":"__SL_G_R.L"},
+                "System":{"f":"wlan/set_time", "System Uptime": [5,"SysUpTime"], "Time and Date":[5,"TimeAndDate"], "":[0,"S.J",getDateToArray()], " ":[2,"Set Time to Current"]}				
+              },
+              {
+                "Add Profile":{"f":"wlan/profile_add", "SSID":[4,"N.L","Refreshing...","",""], "":[1,"P.A",""], " ":"<sup>Enter SSID or select from list</sup>", "Security Type":[4,"P.B","Open","0","","WEP","1","","WPA/WPA2","2",""], "Security Key":[1,"P.C",""], "Profile Priority":[1,"P.D",""], "  ":q[1], "   ":[2,"Add"]},
+                "Confirm Profile":{"f":"wlan/confirm_req", "Confirmation Result":"__SL_G_MCH", "":"", " ":[2,"Confirm"]},
+                "Add Wifi Direct":{"f":"wlan/profile_p2p", "Remote Device Name":[1,"P.A",""], "Security Type":[4,"P.B","Push Button","6","","PIN Keypad","7","","PIN Display","8",""], "PIN Code":[1,"P.C",""],"":"<sup>Digits only (0-9)</sup>", "Profile Priority":[1,"P.D",""]," ":q[1], "  ":[2,"Add"]},
+                "Add Enterprise":{"f":"wlan/profile_eap", "SSID":[1,"P.H",""], "Identity":[1,"P.I",""], "Anonymous Identity":[1,"P.J",""], "EAP Method":[4,"P.M","TLS","TLS","","TTLS","TTLS","","PEAP0","PEAP0","","PEAP1","PEAP1","","FAST","FAST",""], "Phase 2 Authentication":[4,"P.N","None","None","","TLS","TLS","","MSCHAPV2","MSCHAPV2","","PSK","PSK",""], "Provisioning":[4,"P.O","None","None","","0","0","","1","1","","2","2",""], "":"<sup>For 'FAST' method only, otherwise use 'None'</sup>", "Password":[1,"P.K",""], "Profile Priority":[1,"P.L",""], " ":q[1], "  ":[2,"Add"]},
+                "Profiles":{"f":"wlan/profile_del", "1. Security: __SL_G_PS1, Priority: __SL_G_PP1":[3,"1","__SL_G_PN1","PRR"],"2. Security: __SL_G_PS2, Priority: __SL_G_PP2":[3,"2","__SL_G_PN2","PRR"],"3. Security: __SL_G_PS3, Priority: __SL_G_PP3":[3,"3","__SL_G_PN3","PRR"],"4. Security: __SL_G_PS4, Priority: __SL_G_PP4":[3,"4","__SL_G_PN4","PRR"],"5. Security: __SL_G_PS5, Priority: __SL_G_PP5":[3,"5","__SL_G_PN5","PRR"],"6. Security: __SL_G_PS6, Priority: __SL_G_PP6":[3,"6","__SL_G_PN6","PRR"],"7. Security: __SL_G_PS7, Priority: __SL_G_PP7":[3,"7","__SL_G_PN7","PRR"], "":[2,"Remove Selected Profiles"]},
+                "Remove Profiles":{"f":"wlan/profile_del_all", "":[2,"Remove All Profiles"]}				
+              },
+              {
+				"Device Mode":{"f":"wlan/set_mode", "Device Mode":[4,"S.D","Station","Station","__SL_G_S.E","AP","AP","__SL_G_S.F","Wifi Direct","P2P","__SL_G_S.G"], "":[2,"Apply"], " ":q[0]},
+				"Connection Policy":{"f":"wlan/policy_set", "Connection Policy":[3,"Set","Auto Start","P.E","__SL_G_P.E"],"":[3,"Set","Fast Connect","P.F","__SL_G_P.F"]," ":[3,"Set","Any Wifi Direct","P.G","__SL_G_P.G"],"  ":[3,"Set","Auto Smart Config","P.P","__SL_G_P.P"],"   ":[3,"Set","Auto Provisioning","P.Q","__SL_G_P.Q"],"    ":[2,"Set Connection Policy"]},
+                "AP Configuration":{"f":"wlan/ap_cfg", "Channel":[1,"W.A","__SL_G_W.A"], "SSID":[1,"W.B","__SL_G_W.B"], "Security Mode":[4,"W.C","Open","0","__SL_G_W.D","WEP","1","__SL_G_W.E","WPA/WPA2","2","__SL_G_W.F"], "SSID Mode":[4,"W.H","Public","0","__SL_G_W.I","Hidden","1","__SL_G_W.J"], "Password":[1,"W.G",""], "":[2,"Apply"], " ":q[0]},
+                "Wifi Direct Configuration":{"f":"wlan/p2p_cfg", "Device Name":"__SL_G_R.A", "Channel":[4,"R.E","1","1","__SL_G_R.W","6","6","__SL_G_R.X","11","11","__SL_G_R.Y"], "Role Preference":[4,"R.L","Group Owner","GO","__SL_G_R.M","Client","CL","__SL_G_R.O","Negotiate","NEG","__SL_G_R.N"], "":[2,"Apply"]}
+              },
+              { 
+			    "Device Name":{"f":"netapp/set_urn", "Device Name":[1,"S.B","__SL_G_S.B"], "Domain Name":[1,"S.C","__SL_G_S.C"], "":[2,"Apply"]},
+                "Station & Client IPv4":{"f":"netapp/netcfg_sta", "DHCP Client":[4,"N.D","Static","Static","__SL_G_N.F","DHCP","DHCP","__SL_G_N.G","LLA DHCP","LLA DHCP","__SL_G_N.L"], "IPv4 Address":[1,"N.A","__SL_G_N.A"], "Subnet Mask":[1,"N.B","__SL_G_N.B"], "Default Gateway":[1,"N.C","__SL_G_N.C"],"DNS Server":[1,"N.H","__SL_G_N.H"],"":[2,"Apply"], " ":q[0]},
+				"Station & Client IPv6":{"f":"netapp/netcfg_sta_ipv6","Local Address State":[4,"I.S","Disable","Disable","__SL_G_LV6","Static","Static","__SL_G_LSC","Stateless","Stateless","__SL_G_LSS","Statefull","Statefull","__SL_G_LSF"], "Local Address IPv6 Address":[1,"I.L","__SL_G_LSK"],"Global Address State":[4,"I.G","Disable","Disable","__SL_G_N.Z","Static","Static","__SL_G_N.R","Statefull","Statefull","__SL_G_N.O","Stateless","Stateless","__SL_G_N.S"], "Global Address IPv6 Address":[1,"I.B","__SL_G_LSG"], "Global Address DNS Server":[1,"I.K","__SL_G_LSP"],"":[2,"Apply"], " ":q[0]},
+                "AP & Group-owner":{"f":"netapp/netcfg_ap", "IPv4 Address":[1,"N.P","__SL_G_N.P"],"Subnet Mask":[1,"N.Q","__SL_G_N.Q"], "Default Gateway":[1,"N.T","__SL_G_N.T"],"DNS Server":[1,"N.U","__SL_G_N.U"], "":"", "DHCP Server:":"", "- Start Address":[1,"N.I","__SL_G_N.I"],"- Last Address":[1,"N.J","__SL_G_N.J"], "- Lease Time":[1,"N.K","__SL_G_N.K"], " ":"<sup>Value in seconds, minimum 60 seconds</sup>","  ":[2,"Apply"], "   ":q[0]}                                
+              },
+              { 
+                "Ping Test":{"f":"netapp/ping", "IP Address":[1,"T.A","__SL_G_T.A"], "Packet Size":[1,"T.B","__SL_G_T.B"], "":"<sup>bytes (32-1472)</sup>", "Number Of Pings":[1,"T.C","__SL_G_T.C"], " ":"<sup>Value between 1-255 (0=Unlimted)</sup>", "  ":[2,"Ping"]},
+				"Stop Test":{"f":"netapp/ping_stop", "":[2,"Stop Pinging"]},
+                "Test Results":{"f":"netapp/ping_res", "Pings sent":"__SL_G_T.D", "Pings Received":"__SL_G_T.E", "Test Duration":"__SL_G_T.F sec", "":[2,"Refresh"]}
+              },
+              { 
+                "Stations":{"f":"wlan/station_action", "Max AP Stations":[4,"C.B","4 stations","4","__SL_G_SR4","3 stations","3","__SL_G_SR3","2 stations","2","__SL_G_SR2","1 station","1","__SL_G_SR1"], "1. MAC: __SL_G_CM1, IP: __SL_G_CI1, NAME: __SL_G_CN1":[3,"1","Disconnect","CRR"], " ":[3,"1","DenyList","CRL"],"2. MAC: __SL_G_CM2, IP: __SL_G_CI2, NAME: __SL_G_CN2":[3,"2","Disconnect","CRR"], "  ":[3,"2","DenyList","CRL"],"3. MAC: __SL_G_CM3, IP: __SL_G_CI3, NAME: __SL_G_CN3":[3,"3","Disconnect","CRR"], "   ":[3,"3","DenyList","CRL"], "4. MAC: __SL_G_CM4, IP: __SL_G_CI4, NAME: __SL_G_CN4":[3,"4","Disconnect","CRR"], "    ":[3,"4","DenyList","CRL"],"":[2,"Apply selection"]},
+                "DenyList":{"f":"wlan/ap_aclist", "Mode":[4,"C.M","DenyList","1","__SL_G_SM1","Disable","0","__SL_G_SM0"], "List size":"__SL_G_CLS", "1. MAC: __SL_G_CL1":[3,"1","Remove","CRS"],"2. MAC: __SL_G_CL2":[3,"2","Remove","CRS"],"3. MAC: __SL_G_CL3":[3,"3","Remove","CRS"], "4. MAC: __SL_G_CL4":[3,"4","Remove","CRS"], "5. MAC: __SL_G_CL5":[3,"5","Remove","CRS"], "6. MAC: __SL_G_CL6":[3,"6","Remove","CRS"], "7. MAC: __SL_G_CL7":[3,"7","Remove","CRS"], "8. MAC: __SL_G_CL8":[3,"8","Remove","CRS"],"":[2,"Apply selection"]},
+              }
+           ];
+
+function ce(x){return document.createElement(x);}
+function ge(x){return document.getElementById(x);}
+function ac(x,y){x.appendChild(y);}
+
+function renderObj(d, o)
+{
+  var i, j, k, x, y;
+  var pst = "__SL_G_PST";
+  
+  for (x in o)
+  {
+    var z = o[x];
+	
+    if ((typeof(z) == 'object') && !Array.isArray(z))
+    {
+		if((x=="Confirm Profile")&&("0"==pst)) continue;
+		
+		i = ce('div');
+		i.className = 'c';
+
+		j = ce('h2');
+		j.innerHTML = x;
+		ac(i,j);
+
+		j = ce('form');
+		if ("f" in z)
+		{
+			j.method = "POST";
+			j.name = "SimpleLink Configuration";
+			j.action = "api/1/" + z.f;
+		}
+		ac(i,j);
+
+		k = ce('input');
+		k.type = "hidden";
+		k.name = "__SL_P_S.R";
+		if ("r" in z){
+		k.value = z.r; //redirect
+		}else{
+		k.value = "index.html"; //default
+		}
+		ac(j,k);
+
+		k = ce('table');
+		k.width="100%";
+		ac(j,k);
+		
+		ac(d,i);
+		renderObj(i, z);
+    }
+    else
+    {
+	  if((x=="f")||(x=="r")) continue;
+
+      i = ce('tr');
+      ac(d.children[1].children[1],i);
+	  
+      k = ce('td');
+      k.innerHTML = x;
+	  k.id = 'l';
+      ac(i,k);
+
+	  k = ce('td');
+	  k.id = 'r';
+      ac(i,k);
+	  
+	  if(Array.isArray(z))
+	  {
+		  switch(z[0])
+		  {
+		    case 0: //hidden input
+			case 1: //input
+			i = ce('input');
+			i.type = "text";
+			if (z[0]==0){
+			i.type = "hidden";
+			}			
+			i.name = "__SL_P_" + z[1];
+			i.id = i.name;
+			i.value = z[2];
+			ac(k,i);
+			break;
+
+			case 2: //submit button
+			i = ce('input');
+			i.value = z[1];
+			i.name = z[1];
+			i.type = "submit";
+			ac(k,i);
+			break;
+
+			case 3: //check box
+			i = ce('input');
+			i.type = "checkbox";
+			i.value = z[1];
+			i.name = "__SL_P_" + z[3];
+			if (z[4] == "Checked"){
+			i.checked = true;
+			}
+			j = document.createTextNode(z[2])
+			ac(k,i);
+			ac(k,j);
+			break;
+
+			case 4: //drop down list		
+			i = ce('select');
+			i.name = "__SL_P_" + z[1];
+			i.id = i.name;
+			if (z[1]=="N.L"){
+			i.addEventListener('change', ssidSel, false);
+			}
+			y = 2;
+			while(y < z.length)
+			{
+			  j = ce('option');
+			  j.innerHTML=z[y];
+			  j.value=z[y+1];
+			  ac(i,j);
+			  if ((z[y+2] == "selected")||(z[y+2] == "Checked")){
+			  i.selectedIndex = (y-2)/3;
+			  }
+			  y = y + 3;
+			}
+			ac(k,i);
+			break;
+
+			case 5: //dynamic text
+			i = ce('div');
+			i.id = z[1];
+			ac(k,i);
+		  }
+	  }
+	  else // not array
+	  {
+		// display text
+	    i = ce('div');
+		i.innerHTML = z;
+        ac(k,i);
+	  }
+    }
+  }
+}
+
+function cbLoad()
+{
+  var o, i, j, x;
+  var last = "__SL_G_RDT";
+  var mode = "__SL_G_S.D";
+  if ("Unknown Token"==last){last=0;}
+  
+  //load user
+  if ((typeof(u_menu)=='object')&&(typeof(u_objs)=='object'))
+  {
+    menu = menu.concat(u_menu);
+    objs = objs.concat(u_objs);
+  }
+  
+  o = ge("m");
+  for (x=0; x<menu.length; x++)
+  {
+    if ((x == 5) && (mode == "Station"))
+		continue;
+    // Add menu item
+    i = ce('li');
+    i.id = 'm'+x;
+    i.className = (x != last) ? 'ns' : 's';
+    i.addEventListener('click', cbClick, false);
+    i.innerHTML = menu[x];
+    ac(o,i);
+ 
+    // Add page content
+    i = ce('div');
+    i.id = 'd' + x;
+    i.style.display = (x != last) ? 'none' : 'block';
+    ac(o.parentNode.parentNode,i);
+
+    renderObj(i, objs[x]);
+  }
+
+  ge("ie").style.display="none";
+  getT();
+  setTimeout(startApScan,2000);
+  var a = (0 != last) ? 0 : 7000;
+  setTimeout(updateNetList,a);
+}
+
+function updateNetList()
+{
+	var x,j,i,k;
+	if (window.XMLHttpRequest)
+	{
+		// empty network list
+		i = ge("__SL_P_N.L");
+		while(i.hasChildNodes()){
+		i.removeChild(i.lastChild);
+		}
+		
+		j = ce('option');
+		j.innerHTML = "Refreshing...";
+		j.value = "";
+		ac(i,j);
+						
+		// get new list
+		x=new XMLHttpRequest();
+		x.onreadystatechange=function()
+		{
+			if (x.readyState==4 && x.status==200)
+			{
+				var s = x.responseText.split(";");
+				j.innerHTML = "Select Network";
+				for (k=0; k<(s.length - 1); k++)
+				{
+					var t = s[k];
+					if(t[0] != 'X')
+					{
+						j = ce('option');
+						j.value = t;
+						j.innerHTML = t.slice(1);
+						ac(i,j);
+					}
+				}
+				setTimeout(updateNetList,20000);
+			}
+		}
+		x.open("GET","netlist.txt" + "?" + (new Date()).getTime(),true);
+		x.send();
+	}
+}
+
+function ssidSel()
+{
+	var x = ge("__SL_P_N.L");
+	ge("__SL_P_P.A").value = x.value.slice(1);
+	ge("__SL_P_P.B").value = x.value[0];
+}
+
+function cbClick(e)
+{ 
+  for (x=0; x<menu.length; x++)
+  {
+    if (x == parseInt(e.target.id[1]))
+    {
+      ge('m'+x).className = 's';
+      ge('d'+x).style.display = 'block';
+    }
+    else
+    {
+      ge('m'+x).className = 'ns';
+      ge('d'+x).style.display = 'none';
+    }
+  }
+}
+
+var deltaT;
+var upT = new Date();
+
+function getT()
+{
+	var s = "__SL_G_S.J"; //system time
+	s = s.split(",");
+	var slT = new Date(s[0],(s[1]-1),s[2],s[3],s[4],s[5]);
+	var sysT = new Date();
+	deltaT = sysT.getTime() - slT.getTime();
+	
+	s = "__SL_G_S.A"; //system uptime
+	upT.setTime(upT.getTime() - s);
+
+	updtaeT();
+}
+
+function updtaeT()
+{
+    var t = new Date();
+	t.setTime(t.getTime() - deltaT);
+	ge('TimeAndDate').innerHTML = t.toLocaleString();
+	
+	t = new Date();
+	var ms = t.getTime() - upT.getTime();
+	var d = Math.floor(ms/86400000);
+	ms -= d*86400000;
+	var h = Math.floor(ms/3600000);
+	ms -= h*3600000;
+	var m = Math.floor(ms/60000);
+	ms -= m*60000;
+	var s = Math.floor(ms/1000);
+	m = (m < 10) ? "0"+m : m;
+	s = (s < 10) ? "0"+s : s;
+	ge('SysUpTime').innerHTML = d+" days "+h+":"+m+":"+s;
+
+	setTimeout(updtaeT,1000);
+}
+
+function getDateToArray()
+{
+	var d = new Date();
+	var a = new Array(d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds());
+	return a.toString();
+}
+
+function startApScan()
+{
+	if (window.XMLHttpRequest)
+	{
+		var x=new XMLHttpRequest();
+		x.onreadystatechange= function(){}
+		x.open("POST","/api/1/wlan/en_ap_scan",true);
+		x.send("__SL_P_SC1=20&__SL_P_SC2=7");
+	}
+}
+
+</script>
+
+
+</head>
+
+<body onload="cbLoad()" style="background-color:#eee;">
+<div id="popUpcontainer"></div>
+<div id="wrapPopBox"><div id="popUpcontainerBoxIn">
+	<a id="popUpcontainerClose">X</a>	
+	<div id="popUpcontentBox"></div>
+</div>
+</div>
+<!-- wrapper -->
+<div class="wrapper">
+    <nav class="tmenuNav">
+        <ul class="mMenu">
+            <li><a href="ota.html">OTA</a></li>
+            <li><a href="settings.html">Settings</a></li>
+        </ul>
+    </nav>
+    <div class="headerIn"><div class="menuTop"></div><h1>Local OTA</h1></div>
+	<div class="headerInSub"><div id="wireless" class="wirelessFullSignal"></div><a href="help.html" id="help"></a><div class="subTitle">Demo</div></div>
+    
+<!--end wrapper -->
+</div>
+<div style="clear:both;"></div>
+
+
+  <nav class="tivav"><b>__SL_G_S.B</b></nav>
+  <h3 id="ie">Browser not supported.</h3>
+  <div style="margin-bottom:58px"><ul class="tiul" id="m"></ul></div>
+
+<br><br>
+</body>
+</html>

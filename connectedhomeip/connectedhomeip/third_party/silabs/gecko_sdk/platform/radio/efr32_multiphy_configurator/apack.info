@@ -1,0 +1,13 @@
+# Radio Config Advanced Configurator Adapter Pack Definition
+
+# Is used for SetupId
+id=radioConfig
+label=Radio Config Advanced Configurator Adapter Pack
+
+# Trigger file extension. No period.
+uc.triggerExtension=radioconf
+
+# Standard generation function
+function(uc_generate) {
+  cmd=$(python) Efr32RadioConfiguratorUcAdapter.py ${contentFolder} -o ${generationOutput}
+}

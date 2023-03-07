@@ -1,0 +1,709 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ADC &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../index.html"/>
+        <link rel="up" title="外设 API" href="index.html"/>
+        <link rel="next" title="协议 API" href="../protocols/index.html"/>
+        <link rel="prev" title="GPIO" href="gpio.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">BL602 API 参考</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../ble/index.html">蓝牙</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../network/index.html">连网</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">外设</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="dac.html">DAC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="i2c.html">I2C</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pwm.html">PWM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rng.html">RNG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rtc.html">RTC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spi.html">SPI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="uart.html">UART</a></li>
+<li class="toctree-l3"><a class="reference internal" href="timer.html">TIMER</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wdg.html">WDG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gpio.html">GPIO</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ADC</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">概述</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">应用实例</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#api">API参考</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../protocols/index.html">协议</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../storage/index.html">存储</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../system/index.html">系统</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../Examples/index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">BL602 API 参考</a> &raquo;</li>
+        
+          <li><a href="index.html">外设 API</a> &raquo;</li>
+        
+      <li>ADC</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/api-reference/peripherals/adc.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="adc">
+<h1>ADC<a class="headerlink" href="#adc" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<h2>概述<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<p>模数转换器（analog-to-digital converter，通常称为ADC）是一种模拟与数字转换器，支持12路外部模拟输入和若干内部模拟信号选择。 ADC支持以下四种模式：单次单通道转换、连续单通道转换、单次多通道转换和连续多通道转换模式。 转换结果为12/14/16bits左对齐模式。ADC拥有深度为32的FIFO，支持多种中断和DMA操作。 ADC除了用于普通模拟信号测量外，还可以用于测量供电电压， 此外ADC还可以通过测量内/外部二极管电压用于温度检测。</p>
+<div class="admonition note">
+<p class="first admonition-title">注解</p>
+<p class="last">adc更多资料请参考 <a class="reference external" href="https://dev.bouffalolab.com/media/doc/602/reference_manual/zh/html/content/ADC.html">BL602参考手册</a> 。</p>
+</div>
+</div>
+<div class="section" id="id2">
+<h2>应用实例<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<p>ADC实例： <code class="docutils literal notranslate"><span class="pre">customer_app/peripheral/demo_adc</span></code> 。</p>
+</div>
+<div class="section" id="api">
+<h2>API参考<a class="headerlink" href="#api" title="永久链接至标题"></a></h2>
+<div class="section" id="header-file">
+<h3>Header File<a class="headerlink" href="#header-file" title="永久链接至标题"></a></h3>
+<ul class="simple">
+<li><span class="xref std std-doc">components/platform/hosal/include/hosal_adc.h</span></li>
+</ul>
+</div>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="永久链接至标题"></a></h3>
+<dl class="function">
+<dt id="_CPPv414hosal_adc_initP15hosal_adc_dev_t">
+<span id="_CPPv314hosal_adc_initP15hosal_adc_dev_t"></span><span id="_CPPv214hosal_adc_initP15hosal_adc_dev_t"></span><span id="hosal_adc_init__hosal_adc_dev_tP"></span><span class="target" id="group__hosal__adc_1gaa4922645a8d60d233704a2bc22f355c5"></span>int <code class="descname">hosal_adc_init</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_adc_dev_t" title="hosal_adc_dev_t">hosal_adc_dev_t</a> *<em>adc</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414hosal_adc_initP15hosal_adc_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Initialises an ADC interface, Prepares an ADC hardware interface for sampling. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">adc</span></code>: the interface which should be initialised</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv421hosal_adc_add_channelP15hosal_adc_dev_t8uint32_t">
+<span id="_CPPv321hosal_adc_add_channelP15hosal_adc_dev_t8uint32_t"></span><span id="_CPPv221hosal_adc_add_channelP15hosal_adc_dev_t8uint32_t"></span><span id="hosal_adc_add_channel__hosal_adc_dev_tP.uint32_t"></span><span class="target" id="group__hosal__adc_1ga3b6559b7cd678b61b09d462902ff6ca1"></span>int <code class="descname">hosal_adc_add_channel</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_adc_dev_t" title="hosal_adc_dev_t">hosal_adc_dev_t</a> *<em>adc</em>, uint32_t <em>channel</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421hosal_adc_add_channelP15hosal_adc_dev_t8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Add a channel to an ADC interface. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">adc</span></code>: the interface which should be sampled </li>
+<li><code class="docutils literal notranslate"><span class="pre">channel</span></code>: adc channel</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv424hosal_adc_remove_channelP15hosal_adc_dev_t8uint32_t">
+<span id="_CPPv324hosal_adc_remove_channelP15hosal_adc_dev_t8uint32_t"></span><span id="_CPPv224hosal_adc_remove_channelP15hosal_adc_dev_t8uint32_t"></span><span id="hosal_adc_remove_channel__hosal_adc_dev_tP.uint32_t"></span><span class="target" id="group__hosal__adc_1ga055cbc4475e75d46da125edba25fb3e6"></span>int <code class="descname">hosal_adc_remove_channel</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_adc_dev_t" title="hosal_adc_dev_t">hosal_adc_dev_t</a> *<em>adc</em>, uint32_t <em>channel</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv424hosal_adc_remove_channelP15hosal_adc_dev_t8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Remove a channel to an ADC interface. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">adc</span></code>: the interface which should be sampled </li>
+<li><code class="docutils literal notranslate"><span class="pre">channel</span></code>: adc channel</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv420hosal_adc_device_getv">
+<span id="_CPPv320hosal_adc_device_getv"></span><span id="_CPPv220hosal_adc_device_getv"></span><span id="hosal_adc_device_get__void"></span><span class="target" id="group__hosal__adc_1gae42e855c6e2d75a3f304ae28f10fb4d7"></span><a class="reference internal" href="#_CPPv415hosal_adc_dev_t" title="hosal_adc_dev_t">hosal_adc_dev_t</a> *<code class="descname">hosal_adc_device_get</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420hosal_adc_device_getv" title="永久链接至目标"></a><br /></dt>
+<dd><p>Takes adc device handle from an ADC interface. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>other get adc device success</li>
+<li>NULL if an error occurred with any step </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv419hosal_adc_value_getP15hosal_adc_dev_t8uint32_t8uint32_t">
+<span id="_CPPv319hosal_adc_value_getP15hosal_adc_dev_t8uint32_t8uint32_t"></span><span id="_CPPv219hosal_adc_value_getP15hosal_adc_dev_t8uint32_t8uint32_t"></span><span id="hosal_adc_value_get__hosal_adc_dev_tP.uint32_t.uint32_t"></span><span class="target" id="group__hosal__adc_1ga4f82225b1f1f592b404255309b80c76b"></span>int <code class="descname">hosal_adc_value_get</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_adc_dev_t" title="hosal_adc_dev_t">hosal_adc_dev_t</a> *<em>adc</em>, uint32_t <em>channel</em>, uint32_t <em>timeout</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419hosal_adc_value_getP15hosal_adc_dev_t8uint32_t8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Takes a single sample from an ADC interface. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>other get adc data success</li>
+<li>-1 if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">adc</span></code>: the interface which should be sampled </li>
+<li><code class="docutils literal notranslate"><span class="pre">channel</span></code>: adc channel </li>
+<li><code class="docutils literal notranslate"><span class="pre">timeout</span></code>: ms timeout</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv424hosal_adc_tsen_value_getP15hosal_adc_dev_t">
+<span id="_CPPv324hosal_adc_tsen_value_getP15hosal_adc_dev_t"></span><span id="_CPPv224hosal_adc_tsen_value_getP15hosal_adc_dev_t"></span><span id="hosal_adc_tsen_value_get__hosal_adc_dev_tP"></span><span class="target" id="group__hosal__adc_1gaf1f01cdb14765324693538f287b2c492"></span>int <code class="descname">hosal_adc_tsen_value_get</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_adc_dev_t" title="hosal_adc_dev_t">hosal_adc_dev_t</a> *<em>adc</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv424hosal_adc_tsen_value_getP15hosal_adc_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Takes a tsen sample from an ADC interface. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>other get adc data success</li>
+<li>-1 if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">adc</span></code>: the interface which should be sampled</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv423hosal_adc_sample_cb_regP15hosal_adc_dev_t14hosal_adc_cb_t">
+<span id="_CPPv323hosal_adc_sample_cb_regP15hosal_adc_dev_t14hosal_adc_cb_t"></span><span id="_CPPv223hosal_adc_sample_cb_regP15hosal_adc_dev_t14hosal_adc_cb_t"></span><span id="hosal_adc_sample_cb_reg__hosal_adc_dev_tP.hosal_adc_cb_t"></span><span class="target" id="group__hosal__adc_1gac2f8b81cd3943342178557f6df46fb73"></span>int <code class="descname">hosal_adc_sample_cb_reg</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_adc_dev_t" title="hosal_adc_dev_t">hosal_adc_dev_t</a> *<em>adc</em>, <a class="reference internal" href="#_CPPv414hosal_adc_cb_t" title="hosal_adc_cb_t">hosal_adc_cb_t</a> <em>cb</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv423hosal_adc_sample_cb_regP15hosal_adc_dev_t14hosal_adc_cb_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>ADC sampling cb register. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">adc</span></code>: the ADC interface </li>
+<li><code class="docutils literal notranslate"><span class="pre">cb</span></code>: Non-zero pointer is the sample callback handler NULL pointer for send unregister operation adc in cb must be the same pointer with adc pointer passed to hosal_adc_sample_cb_reg driver must notify upper layer by calling cb if ADC data is ready in HW or memory(DMA)</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv415hosal_adc_startP15hosal_adc_dev_tPv8uint32_t">
+<span id="_CPPv315hosal_adc_startP15hosal_adc_dev_tPv8uint32_t"></span><span id="_CPPv215hosal_adc_startP15hosal_adc_dev_tPv8uint32_t"></span><span id="hosal_adc_start__hosal_adc_dev_tP.voidP.uint32_t"></span><span class="target" id="group__hosal__adc_1ga0f3e31af5a10d83bce653807d990fb6a"></span>int <code class="descname">hosal_adc_start</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_adc_dev_t" title="hosal_adc_dev_t">hosal_adc_dev_t</a> *<em>adc</em>, void *<em>data</em>, uint32_t <em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415hosal_adc_startP15hosal_adc_dev_tPv8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>ADC sampling start. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">adc</span></code>: the ADC interface </li>
+<li><code class="docutils literal notranslate"><span class="pre">data</span></code>: adc data buffer </li>
+<li><code class="docutils literal notranslate"><span class="pre">size</span></code>: data buffer size aligned with resolution (until the next power of two)</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv414hosal_adc_stopP15hosal_adc_dev_t">
+<span id="_CPPv314hosal_adc_stopP15hosal_adc_dev_t"></span><span id="_CPPv214hosal_adc_stopP15hosal_adc_dev_t"></span><span id="hosal_adc_stop__hosal_adc_dev_tP"></span><span class="target" id="group__hosal__adc_1ga5c52f964d039256e05a9f36d9593a7dc"></span>int <code class="descname">hosal_adc_stop</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_adc_dev_t" title="hosal_adc_dev_t">hosal_adc_dev_t</a> *<em>adc</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414hosal_adc_stopP15hosal_adc_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>ADC sampling stop. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">adc</span></code>: the ADC interface</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv418hosal_adc_finalizeP15hosal_adc_dev_t">
+<span id="_CPPv318hosal_adc_finalizeP15hosal_adc_dev_t"></span><span id="_CPPv218hosal_adc_finalizeP15hosal_adc_dev_t"></span><span id="hosal_adc_finalize__hosal_adc_dev_tP"></span><span class="target" id="group__hosal__adc_1ga2a5ab981212f82c1a08ac0844e57954c"></span>int <code class="descname">hosal_adc_finalize</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv415hosal_adc_dev_t" title="hosal_adc_dev_t">hosal_adc_dev_t</a> *<em>adc</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418hosal_adc_finalizeP15hosal_adc_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>De-initialises an ADC interface, Turns off an ADC hardware interface. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">adc</span></code>: the interface which should be de-initialised</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="structures">
+<h3>Structures<a class="headerlink" href="#structures" title="永久链接至标题"></a></h3>
+<dl class="class">
+<dt id="_CPPv416hosal_adc_data_t">
+<span id="_CPPv316hosal_adc_data_t"></span><span id="_CPPv216hosal_adc_data_t"></span><span id="hosal_adc_data_t"></span><span class="target" id="structhosal__adc__data__t"></span><em class="property">struct </em><code class="descname">hosal_adc_data_t</code><a class="headerlink" href="#_CPPv416hosal_adc_data_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>ADC data type. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N16hosal_adc_data_t4sizeE">
+<span id="_CPPv3N16hosal_adc_data_t4sizeE"></span><span id="_CPPv2N16hosal_adc_data_t4sizeE"></span><span id="hosal_adc_data_t::size__uint32_t"></span><span class="target" id="group__hosal__adc_1ga1e5c689dbf475d1f5eb8b8cd8cd216e6"></span>uint32_t <code class="descname">size</code><a class="headerlink" href="#_CPPv4N16hosal_adc_data_t4sizeE" title="永久链接至目标"></a><br /></dt>
+<dd><p>sampled data size </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16hosal_adc_data_t4dataE">
+<span id="_CPPv3N16hosal_adc_data_t4dataE"></span><span id="_CPPv2N16hosal_adc_data_t4dataE"></span><span id="hosal_adc_data_t::data__voidP"></span><span class="target" id="group__hosal__adc_1gaac8490c0e8c3090df1d1d6dd1dcc2c77"></span>void *<code class="descname">data</code><a class="headerlink" href="#_CPPv4N16hosal_adc_data_t4dataE" title="永久链接至目标"></a><br /></dt>
+<dd><p>sampled data, aligned with resolution (until the next power of two) </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv418hosal_adc_config_t">
+<span id="_CPPv318hosal_adc_config_t"></span><span id="_CPPv218hosal_adc_config_t"></span><span id="hosal_adc_config_t"></span><span class="target" id="structhosal__adc__config__t"></span><em class="property">struct </em><code class="descname">hosal_adc_config_t</code><a class="headerlink" href="#_CPPv418hosal_adc_config_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Define ADC config args. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N18hosal_adc_config_t13sampling_freqE">
+<span id="_CPPv3N18hosal_adc_config_t13sampling_freqE"></span><span id="_CPPv2N18hosal_adc_config_t13sampling_freqE"></span><span id="hosal_adc_config_t::sampling_freq__uint32_t"></span><span class="target" id="group__hosal__adc_1ga647bf3b87d12ca8e73811697ce5f7353"></span>uint32_t <code class="descname">sampling_freq</code><a class="headerlink" href="#_CPPv4N18hosal_adc_config_t13sampling_freqE" title="永久链接至目标"></a><br /></dt>
+<dd><p>sampling frequency in Hz </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N18hosal_adc_config_t3pinE">
+<span id="_CPPv3N18hosal_adc_config_t3pinE"></span><span id="_CPPv2N18hosal_adc_config_t3pinE"></span><span id="hosal_adc_config_t::pin__uint32_t"></span><span class="target" id="group__hosal__adc_1ga0aa9d7e7b7bbed06dc3fcc12d4bde83f"></span>uint32_t <code class="descname">pin</code><a class="headerlink" href="#_CPPv4N18hosal_adc_config_t3pinE" title="永久链接至目标"></a><br /></dt>
+<dd><p>adc pin </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N18hosal_adc_config_t4modeE">
+<span id="_CPPv3N18hosal_adc_config_t4modeE"></span><span id="_CPPv2N18hosal_adc_config_t4modeE"></span><span id="hosal_adc_config_t::mode__hosal_adc_sample_mode_t"></span><span class="target" id="group__hosal__adc_1ga3e725c637f440df8a3678600f21b23e3"></span><a class="reference internal" href="#_CPPv423hosal_adc_sample_mode_t" title="hosal_adc_sample_mode_t">hosal_adc_sample_mode_t</a> <code class="descname">mode</code><a class="headerlink" href="#_CPPv4N18hosal_adc_config_t4modeE" title="永久链接至目标"></a><br /></dt>
+<dd><p>adc sampling mode </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N18hosal_adc_config_t17sample_resolutionE">
+<span id="_CPPv3N18hosal_adc_config_t17sample_resolutionE"></span><span id="_CPPv2N18hosal_adc_config_t17sample_resolutionE"></span><span id="hosal_adc_config_t::sample_resolution__uint8_t"></span><span class="target" id="group__hosal__adc_1ga06f6676cece492d2bcc3b6dc3f2fcf14"></span>uint8_t <code class="descname">sample_resolution</code><a class="headerlink" href="#_CPPv4N18hosal_adc_config_t17sample_resolutionE" title="永久链接至目标"></a><br /></dt>
+<dd><p>adc sampling resolution </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv415hosal_adc_dev_t">
+<span id="_CPPv315hosal_adc_dev_t"></span><span id="_CPPv215hosal_adc_dev_t"></span><span id="hosal_adc_dev_t"></span><span class="target" id="structhosal__adc__dev__t"></span><em class="property">struct </em><code class="descname">hosal_adc_dev_t</code><a class="headerlink" href="#_CPPv415hosal_adc_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Define ADC dev hosal handle. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N15hosal_adc_dev_t4portE">
+<span id="_CPPv3N15hosal_adc_dev_t4portE"></span><span id="_CPPv2N15hosal_adc_dev_t4portE"></span><span id="hosal_adc_dev_t::port__uint8_t"></span><span class="target" id="group__hosal__adc_1ga2cea9547ea7e41b7792120225a1ef558"></span>uint8_t <code class="descname">port</code><a class="headerlink" href="#_CPPv4N15hosal_adc_dev_t4portE" title="永久链接至目标"></a><br /></dt>
+<dd><p>adc port </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15hosal_adc_dev_t6configE">
+<span id="_CPPv3N15hosal_adc_dev_t6configE"></span><span id="_CPPv2N15hosal_adc_dev_t6configE"></span><span id="hosal_adc_dev_t::config__hosal_adc_config_t"></span><span class="target" id="group__hosal__adc_1gaf1d45fc039727d5d69a955d8ea4afdbf"></span><a class="reference internal" href="#_CPPv418hosal_adc_config_t" title="hosal_adc_config_t">hosal_adc_config_t</a> <code class="descname">config</code><a class="headerlink" href="#_CPPv4N15hosal_adc_dev_t6configE" title="永久链接至目标"></a><br /></dt>
+<dd><p>adc config </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15hosal_adc_dev_t8dma_chanE">
+<span id="_CPPv3N15hosal_adc_dev_t8dma_chanE"></span><span id="_CPPv2N15hosal_adc_dev_t8dma_chanE"></span><span id="hosal_adc_dev_t::dma_chan__hosal_dma_chan_t"></span><span class="target" id="group__hosal__adc_1gae28239a53871c3756568acd32ddd3913"></span>hosal_dma_chan_t <code class="descname">dma_chan</code><a class="headerlink" href="#_CPPv4N15hosal_adc_dev_t8dma_chanE" title="永久链接至目标"></a><br /></dt>
+<dd><p>adc dma channel </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15hosal_adc_dev_t2cbE">
+<span id="_CPPv3N15hosal_adc_dev_t2cbE"></span><span id="_CPPv2N15hosal_adc_dev_t2cbE"></span><span id="hosal_adc_dev_t::cb__hosal_adc_irq_t"></span><span class="target" id="group__hosal__adc_1ga4a86ce2621870dcca30c4813d71d30c4"></span><a class="reference internal" href="#_CPPv415hosal_adc_irq_t" title="hosal_adc_irq_t">hosal_adc_irq_t</a> <code class="descname">cb</code><a class="headerlink" href="#_CPPv4N15hosal_adc_dev_t2cbE" title="永久链接至目标"></a><br /></dt>
+<dd><p>adc callback </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15hosal_adc_dev_t5p_argE">
+<span id="_CPPv3N15hosal_adc_dev_t5p_argE"></span><span id="_CPPv2N15hosal_adc_dev_t5p_argE"></span><span id="hosal_adc_dev_t::p_arg__voidP"></span><span class="target" id="group__hosal__adc_1gacbeadc9da132ef487bc19ef32992d7c1"></span>void *<code class="descname">p_arg</code><a class="headerlink" href="#_CPPv4N15hosal_adc_dev_t5p_argE" title="永久链接至目标"></a><br /></dt>
+<dd><p>p_arg data </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15hosal_adc_dev_t4privE">
+<span id="_CPPv3N15hosal_adc_dev_t4privE"></span><span id="_CPPv2N15hosal_adc_dev_t4privE"></span><span id="hosal_adc_dev_t::priv__voidP"></span><span class="target" id="group__hosal__adc_1ga599d31ee772c9761d251c748d7bcd200"></span>void *<code class="descname">priv</code><a class="headerlink" href="#_CPPv4N15hosal_adc_dev_t4privE" title="永久链接至目标"></a><br /></dt>
+<dd><p>priv data </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="macros">
+<h3>Macros<a class="headerlink" href="#macros" title="永久链接至标题"></a></h3>
+<dl class="macro">
+<dt id="c.HOSAL_WAIT_FOREVER">
+<span class="target" id="group__hosal__adc_1ga03a3226ba9abb7c61df22cf5d162624d"></span><code class="descname">HOSAL_WAIT_FOREVER</code><a class="headerlink" href="#c.HOSAL_WAIT_FOREVER" title="永久链接至目标"></a></dt>
+<dd><p>Define the wait forever timeout macro. </p>
+</dd></dl>
+
+</div>
+<div class="section" id="type-definitions">
+<h3>Type Definitions<a class="headerlink" href="#type-definitions" title="永久链接至标题"></a></h3>
+<dl class="type">
+<dt id="_CPPv417hosal_adc_event_t">
+<span id="_CPPv317hosal_adc_event_t"></span><span id="_CPPv217hosal_adc_event_t"></span><span id="hosal_adc_event_t"></span><span class="target" id="group__hosal__adc_1ga29b5ce1628a1bfa087652ec82e3cc6b9"></span><em class="property">typedef </em><em class="property">enum</em> <a class="reference internal" href="#_CPPv418__ADC_INT_EVENTS__" title="__ADC_INT_EVENTS__">__ADC_INT_EVENTS__</a> <code class="descname">hosal_adc_event_t</code><a class="headerlink" href="#_CPPv417hosal_adc_event_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>ADC interrupt events. </p>
+</dd></dl>
+
+<dl class="type">
+<dt id="_CPPv415hosal_adc_irq_t">
+<span id="_CPPv315hosal_adc_irq_t"></span><span id="_CPPv215hosal_adc_irq_t"></span><span id="hosal_adc_irq_t"></span><span class="target" id="group__hosal__adc_1ga342ab818959ffd8e34e8e100ea66c431"></span><em class="property">typedef </em>void (*<code class="descname">hosal_adc_irq_t</code>)<span class="sig-paren">(</span>void *parg<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415hosal_adc_irq_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>ADC interrupt function. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">parg</span></code>: Set the custom parameters specified </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="type">
+<dt id="_CPPv414hosal_adc_cb_t">
+<span id="_CPPv314hosal_adc_cb_t"></span><span id="_CPPv214hosal_adc_cb_t"></span><span id="hosal_adc_cb_t"></span><span class="target" id="group__hosal__adc_1ga003e9c81e612664bc5792fa0b86256e2"></span><em class="property">typedef </em>void (*<code class="descname">hosal_adc_cb_t</code>)<span class="sig-paren">(</span><a class="reference internal" href="#_CPPv417hosal_adc_event_t" title="hosal_adc_event_t">hosal_adc_event_t</a> event, void *data, uint32_t size<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414hosal_adc_cb_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>ADC interrupt callback. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">parg</span></code>: Set the custom parameters specified when the callback function is set </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="enumerations">
+<h3>Enumerations<a class="headerlink" href="#enumerations" title="永久链接至标题"></a></h3>
+<dl class="type">
+<dt id="_CPPv418__ADC_INT_EVENTS__">
+<span id="_CPPv318__ADC_INT_EVENTS__"></span><span id="_CPPv218__ADC_INT_EVENTS__"></span><span id="__ADC_INT_EVENTS__"></span><span class="target" id="group__hosal__adc_1ga1814a286be4766be5c62e551d8442f2d"></span><em class="property">enum </em><code class="descname">__ADC_INT_EVENTS__</code><a class="headerlink" href="#_CPPv418__ADC_INT_EVENTS__" title="永久链接至目标"></a><br /></dt>
+<dd><p>ADC interrupt events. </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv416HOSAL_ADC_INT_OV">
+<span id="_CPPv316HOSAL_ADC_INT_OV"></span><span id="_CPPv216HOSAL_ADC_INT_OV"></span><span class="target" id="group__hosal__adc_1gga1814a286be4766be5c62e551d8442f2da6dfda1b256955b4dcea86c736e434621"></span><code class="descname">HOSAL_ADC_INT_OV</code><a class="headerlink" href="#_CPPv416HOSAL_ADC_INT_OV" title="永久链接至目标"></a><br /></dt>
+<dd><p>Overrun error. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv417HOSAL_ADC_INT_EOS">
+<span id="_CPPv317HOSAL_ADC_INT_EOS"></span><span id="_CPPv217HOSAL_ADC_INT_EOS"></span><span class="target" id="group__hosal__adc_1gga1814a286be4766be5c62e551d8442f2daa81f75690c5a040d971442f04a45ddfe"></span><code class="descname">HOSAL_ADC_INT_EOS</code><a class="headerlink" href="#_CPPv417HOSAL_ADC_INT_EOS" title="永久链接至目标"></a><br /></dt>
+<dd><p>End of sample. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv421HOSAL_ADC_INT_DMA_TRH">
+<span id="_CPPv321HOSAL_ADC_INT_DMA_TRH"></span><span id="_CPPv221HOSAL_ADC_INT_DMA_TRH"></span><span class="target" id="group__hosal__adc_1gga1814a286be4766be5c62e551d8442f2da2325bc634feb62f1e19e0a2e29b8c179"></span><code class="descname">HOSAL_ADC_INT_DMA_TRH</code><a class="headerlink" href="#_CPPv421HOSAL_ADC_INT_DMA_TRH" title="永久链接至目标"></a><br /></dt>
+<dd><p>DMA transceive half. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv421HOSAL_ADC_INT_DMA_TRC">
+<span id="_CPPv321HOSAL_ADC_INT_DMA_TRC"></span><span id="_CPPv221HOSAL_ADC_INT_DMA_TRC"></span><span class="target" id="group__hosal__adc_1gga1814a286be4766be5c62e551d8442f2da4311b3d288f0357216e1af94b69b1deb"></span><code class="descname">HOSAL_ADC_INT_DMA_TRC</code><a class="headerlink" href="#_CPPv421HOSAL_ADC_INT_DMA_TRC" title="永久链接至目标"></a><br /></dt>
+<dd><p>DMA transceive complete. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv421HOSAL_ADC_INT_DMA_TRE">
+<span id="_CPPv321HOSAL_ADC_INT_DMA_TRE"></span><span id="_CPPv221HOSAL_ADC_INT_DMA_TRE"></span><span class="target" id="group__hosal__adc_1gga1814a286be4766be5c62e551d8442f2da77fba199a9fecdc2287b9f727a8b41f5"></span><code class="descname">HOSAL_ADC_INT_DMA_TRE</code><a class="headerlink" href="#_CPPv421HOSAL_ADC_INT_DMA_TRE" title="永久链接至目标"></a><br /></dt>
+<dd><p>&#64;briefDMA transceive error </p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="type">
+<dt id="_CPPv423hosal_adc_sample_mode_t">
+<span id="_CPPv323hosal_adc_sample_mode_t"></span><span id="_CPPv223hosal_adc_sample_mode_t"></span><span id="hosal_adc_sample_mode_t"></span><span class="target" id="group__hosal__adc_1ga36d7499e6af1a81b9d6c2932f40c0af8"></span><em class="property">enum </em><code class="descname">hosal_adc_sample_mode_t</code><a class="headerlink" href="#_CPPv423hosal_adc_sample_mode_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>ADC MODE type. </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv418HOSAL_ADC_ONE_SHOT">
+<span id="_CPPv318HOSAL_ADC_ONE_SHOT"></span><span id="_CPPv218HOSAL_ADC_ONE_SHOT"></span><span class="target" id="group__hosal__adc_1gga36d7499e6af1a81b9d6c2932f40c0af8a4e906fa697eb854a9242e42ccf4a2265"></span><code class="descname">HOSAL_ADC_ONE_SHOT</code><a class="headerlink" href="#_CPPv418HOSAL_ADC_ONE_SHOT" title="永久链接至目标"></a><br /></dt>
+<dd><p>Single time sampling. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv418HOSAL_ADC_CONTINUE">
+<span id="_CPPv318HOSAL_ADC_CONTINUE"></span><span id="_CPPv218HOSAL_ADC_CONTINUE"></span><span class="target" id="group__hosal__adc_1gga36d7499e6af1a81b9d6c2932f40c0af8aaecdbda7d2dbc9b77958a49c3f5235fb"></span><code class="descname">HOSAL_ADC_CONTINUE</code><a class="headerlink" href="#_CPPv418HOSAL_ADC_CONTINUE" title="永久链接至目标"></a><br /></dt>
+<dd><p>Continuous sampling. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../protocols/index.html" class="btn btn-neutral float-right" title="协议 API" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="gpio.html" class="btn btn-neutral" title="GPIO" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

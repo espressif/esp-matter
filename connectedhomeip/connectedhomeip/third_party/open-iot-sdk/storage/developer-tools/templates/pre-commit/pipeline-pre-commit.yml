@@ -1,0 +1,10 @@
+# Copyright (c) 2022 Arm Limited and Contributors. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+.pre-commit-check:
+  tags:
+    - iotmsw-amd64
+  image: ${OPEN_IOT_SDK_DOCKER_REGISTRY}/sanity:v1
+  script:
+    - pre-commit run --all-files --verbose --show-diff-on-failure
+  stage: quality_check

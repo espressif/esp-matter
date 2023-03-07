@@ -1,0 +1,22 @@
+!!omap
+- id: slwrb4207a
+- label: SLWRB4207A
+- package: platform
+- description: Kit BSP support for the Z-Wave 700 – ZGM130S Long Range Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4207a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4207A"'
+  - name: SL_KIT_REV
+    value: '"A02"'
+- tag:
+  - kit:opn:SLWRB4207A
+  - kit:pn:WRB4207
+  - kit:variant:A
+  - kit:revision:A02

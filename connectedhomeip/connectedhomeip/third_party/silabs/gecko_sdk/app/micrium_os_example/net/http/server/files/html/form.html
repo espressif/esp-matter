@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+        "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <title>&micro;C/HTTPs</title>
+    <meta name="generator" content="BBEdit 9.3">
+    <link rel="stylesheet" type="text/css" href="uc_style.css">
+</head>
+
+<body>
+
+    <div id="pagewrapper">
+        <div id="topbanner">
+            <img src="logo.gif" alt="" width="212" height="41">
+        </div>
+
+        <div id="pagebody">
+
+            <form id="htmlForm" action="form_submit" method="POST">
+            <p>
+                <br>
+                First name:
+                <input type="text" name="firstname">
+                <br>
+                Last name:
+                <input type="text" name="lastname">
+                <br><br>
+                <input type="submit" value="Submit" class="bluebutton">
+            </p>
+            </form>
+
+            <div id="column1">
+            </div>
+
+            <div id="right_align">
+                <BR> <BR>
+                <p><a href="index.html"><button class="bluebutton">Return to Main Page</button></a></p>
+            </div>
+
+            <div id="clear">
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var form = document.getElementById("htmlForm");
+        form.addEventListener('submit', function(event) {
+            var data    = new FormData(form);
+            var request = new XMLHttpRequest();
+            request.open('POST', '/form_submit', true);
+            request.onload = function() {
+                if (request.status >= 200 && request.status < 400) {
+                    // Success!
+                    var resp = JSON.parse(request.responseText);
+                    var div  = document.getElementById("column1");
+                    div.innerHTML = '<p> Your name is ' + resp.user["first name"] + ' ' + resp.user["last name"] + '</p>';
+                } else {
+                    // We reached our target server, but it returned an error
+                }
+            };
+
+            request.onerror = function() {
+                // There was a connection error of some sort
+            };
+
+            request.send(data);
+
+            event.preventDefault();
+        }, false);
+    }, false);
+    </script>
+
+</body>
+</html>

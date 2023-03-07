@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<contentItems
+xmlns="http://www.silabs.com/ss/ContentItem.ecore"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.silabs.com/ss/ContentItem.ecore file:/C:/Users/CAOWENS/Documents/ssv4/contentItems.xsd">
+  <contentItemData
+    priority="8"
+    category="API References"
+    itemURI="https://docs.silabs.com/micrium/latest/micrium-usb-device-api/"
+    label="USB Device API Reference"
+    description="API Reference for Micrium OS USB-Device"
+  ></contentItemData>
+  <contentItemData
+    priority="7"
+    category="API References"
+    itemURI="https://docs.silabs.com/micrium/latest/micrium-usb-controller-api/"
+    label="USB Controller API Reference"
+    description="API Reference for Micrium OS USB's Controller Interface"
+  ></contentItemData>
+</contentItems>

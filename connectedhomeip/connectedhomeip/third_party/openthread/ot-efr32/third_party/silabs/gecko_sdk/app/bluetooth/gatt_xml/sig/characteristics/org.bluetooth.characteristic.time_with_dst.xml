@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.time_with_dst" uuid="2A11" name="Time with DST">
+	<InformativeText>
+	</InformativeText>
+	<Value>
+		<Field name="Date Time">
+			<Requirement>Mandatory</Requirement>
+			<Reference>
+			org.bluetooth.characteristic.date_time
+		</Reference>
+		</Field>
+		<Field name="DST Offset">
+			<Requirement>Mandatory</Requirement>
+			<Reference>
+			org.bluetooth.characteristic.dst_offset
+		</Reference>
+		</Field>
+	</Value>
+    <Note>
+    The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet.
+   </Note>
+</Characteristic>

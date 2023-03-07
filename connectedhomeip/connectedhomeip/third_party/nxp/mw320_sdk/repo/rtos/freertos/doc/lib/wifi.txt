@@ -1,0 +1,175 @@
+/**
+@mainpage
+
+The Wi-Fi interface API provides a common abstraction layer that enables applications to communicate with the lower-level wireless stack. Wi-Fi chip sets differ in features, driver implementations, and APIs. The common Wi-Fi interface simplifies application development and porting for all supported Wi-Fi chip sets. The interface provides a primary API for managing all aspects of Wi-Fi devices.
+*/
+
+/**
+@config_page{SecureSockets}
+@config_brief{Wifi library}
+
+@brief The Wi-Fi Management library does not have a configuration file provided, but the following identifiers must be \c \#define'd in any application using the Wi-Fi Management library.  Example values for these identifiers can be found in aws_wifi_config.h from the AWS FreeRTOS demo for the specific board being used.
+
+Note that some of these identifiers are only utilized by certain ports of the Wi-Fi library and may not have an effect on all boards.
+
+@section wificonfigMAX_CONNECTED_STATIONS
+@brief Maximum number of connected stations in Access Point mode.
+
+__Example value:__ 4
+
+@section wificonfigMAX_NETWORK_PROFILES
+@brief Maximum number of network profiles stored in Non Volatile memory, set to zero if not supported.
+
+__Example value:__ 0
+
+@section wificonfigMAX_SSID_LEN
+@brief Maximum length of SSID for access points (used to allocate memory for SSID strings), not including a NULL terminator.
+
+__Example value:__ 32
+
+@section wificonfigMAX_BSSID_LEN
+@brief Maximum length of BSSID for access points (used to allocate memory for BSSID strings), not including a NULL terminator.
+
+__Example value:__ 6
+
+@section wificonfigMAX_PASSPHRASE_LEN
+@brief Maximum length of passphrase for access points (used to allocate memory for passphrase strings), not including a NULL terminator.
+
+__Example value:__ 32
+
+This length is designated by the Wi-Fi driver as both the WPA PSK and Passphrase length.
+
+@section wificonfigMAX_SEMAPHORE_WAIT_TIME_MS
+@brief Maximum time to wait in milliseconds for obtaining the Wi-Fi semaphore before failing the operation.
+
+__Example value:__ 60000
+
+*/
+
+/**
+@functions_page{wifi, WiFi}
+@functions_brief{wifi}
+- @function_name{wifi_function_wifi_on}
+@function_brief{wifi_function_wifi_on}
+- @function_name{wifi_function_wifi_off}
+@function_brief{wifi_function_wifi_off}
+- @function_name{wifi_function_wifi_connectap}
+@function_brief{wifi_function_wifi_connectap}
+- @function_name{wifi_function_wifi_disconnect}
+@function_brief{wifi_function_wifi_disconnect}
+- @function_name{wifi_function_wifi_reset}
+@function_brief{wifi_function_wifi_reset}
+- @function_name{wifi_function_wifi_setmode}
+@function_brief{wifi_function_wifi_setmode}
+- @function_name{wifi_function_wifi_getmode}
+@function_brief{wifi_function_wifi_getmode}
+- @function_name{wifi_function_wifi_networkadd}
+@function_brief{wifi_function_wifi_networkadd}
+- @function_name{wifi_function_wifi_networkget}
+@function_brief{wifi_function_wifi_networkget}
+- @function_name{wifi_function_wifi_networkdelete}
+@function_brief{wifi_function_wifi_networkdelete}
+- @function_name{wifi_function_wifi_ping}
+@function_brief{wifi_function_wifi_ping}
+- @function_name{wifi_function_wifi_getip}
+@function_brief{wifi_function_wifi_getip}
+- @function_name{wifi_function_wifi_getmac}
+@function_brief{wifi_function_wifi_getmac}
+- @function_name{wifi_function_wifi_gethostip}
+@function_brief{wifi_function_wifi_gethostip}
+- @function_name{wifi_function_wifi_scan}
+@function_brief{wifi_function_wifi_scan}
+- @function_name{wifi_function_wifi_startap}
+@function_brief{wifi_function_wifi_startap}
+- @function_name{wifi_function_wifi_stopap}
+@function_brief{wifi_function_wifi_stopap}
+- @function_name{wifi_function_wifi_configureap}
+@function_brief{wifi_function_wifi_configureap}
+- @function_name{wifi_function_wifi_setpmmode}
+@function_brief{wifi_function_wifi_setpmmode}
+- @function_name{wifi_function_wifi_getpmmode}
+@function_brief{wifi_function_wifi_getpmmode}
+- @function_name{wifi_function_wifi_isconnected}
+@function_brief{wifi_function_wifi_isconnected}
+- @function_name{wifi_function_wifi_registernetworkstatechangeeventcallback}
+@function_brief{wifi_function_wifi_registernetworkstatechangeeventcallback}
+*/
+
+/**
+@function_page{WIFI_On,wifi,wifi_on}
+@function_snippet{wifi,wifi_on,iot_wifi.h}
+@copydoc WIFI_On
+@function_page{WIFI_Off,wifi,wifi_off}
+@function_snippet{wifi,wifi_off,iot_wifi.h}
+@copydoc WIFI_Off
+@function_page{WIFI_ConnectAP,wifi,wifi_connectap}
+@function_snippet{wifi,wifi_connectap,iot_wifi.h}
+@copydoc WIFI_ConnectAP
+@function_page{WIFI_Disconnect,wifi,wifi_disconnect}
+@function_snippet{wifi,wifi_disconnect,iot_wifi.h}
+@copydoc WIFI_Disconnect
+@function_page{WIFI_Reset,wifi,wifi_reset}
+@function_snippet{wifi,wifi_reset,iot_wifi.h}
+@copydoc WIFI_Reset
+@function_page{WIFI_SetMode,wifi,wifi_setmode}
+@function_snippet{wifi,wifi_setmode,iot_wifi.h}
+@copydoc WIFI_SetMode
+@function_page{WIFI_GetMode,wifi,wifi_getmode}
+@function_snippet{wifi,wifi_getmode,iot_wifi.h}
+@copydoc WIFI_GetMode
+@function_page{WIFI_NetworkAdd,wifi,wifi_networkadd}
+@function_snippet{wifi,wifi_networkadd,iot_wifi.h}
+@copydoc WIFI_NetworkAdd
+@function_page{WIFI_NetworkGet,wifi,wifi_networkget}
+@function_snippet{wifi,wifi_networkget,iot_wifi.h}
+@copydoc WIFI_NetworkGet
+@function_page{WIFI_NetworkDelete,wifi,wifi_networkdelete}
+@function_snippet{wifi,wifi_networkdelete,iot_wifi.h}
+@copydoc WIFI_NetworkDelete
+@function_page{WIFI_Ping,wifi,wifi_ping}
+@function_snippet{wifi,wifi_ping,iot_wifi.h}
+@copydoc WIFI_Ping
+@function_page{WIFI_GetIP,wifi,wifi_getip}
+@function_snippet{wifi,wifi_getip,iot_wifi.h}
+@copydoc WIFI_GetIP
+@function_page{WIFI_GetMAC,wifi,wifi_getmac}
+@function_snippet{wifi,wifi_getmac,iot_wifi.h}
+@copydoc WIFI_GetMAC
+@function_page{WIFI_GetHostIP,wifi,wifi_gethostip}
+@function_snippet{wifi,wifi_gethostip,iot_wifi.h}
+@copydoc WIFI_GetHostIP
+@function_page{WIFI_Scan,wifi,wifi_scan}
+@function_snippet{wifi,wifi_scan,iot_wifi.h}
+@copydoc WIFI_Scan
+@function_page{WIFI_StartAP,wifi,wifi_startap}
+@function_snippet{wifi,wifi_startap,iot_wifi.h}
+@copydoc WIFI_StartAP
+@function_page{WIFI_StopAP,wifi,wifi_stopap}
+@function_snippet{wifi,wifi_stopap,iot_wifi.h}
+@copydoc WIFI_StopAP
+@function_page{WIFI_ConfigureAP,wifi,wifi_configureap}
+@function_snippet{wifi,wifi_configureap,iot_wifi.h}
+@copydoc WIFI_ConfigureAP
+@function_page{WIFI_SetPMMode,wifi,wifi_setpmmode}
+@function_snippet{wifi,wifi_setpmmode,iot_wifi.h}
+@copydoc WIFI_SetPMMode
+@function_page{WIFI_GetPMMode,wifi,wifi_getpmmode}
+@function_snippet{wifi,wifi_getpmmode,iot_wifi.h}
+@copydoc WIFI_GetPMMode
+@function_page{WIFI_IsConnected,wifi,wifi_isconnected}
+@function_snippet{wifi,wifi_isconnected,iot_wifi.h}
+@copydoc WIFI_IsConnected
+@function_page{WIFI_RegisterNetworkStateChangeEventCallback,wifi,wifi_registernetworkstatechangeeventcallback}
+@function_snippet{wifi,wifi_registernetworkstatechangeeventcallback,iot_wifi.h}
+@copydoc WIFI_RegisterNetworkStateChangeEventCallback
+*/
+
+/**
+@enums_group{wifi}
+@enums_brief{WiFi library}
+
+@paramstructs_group{wifi}
+@paramstructs_brief{wifi,wifi}
+@returnstructs_group{wifi}
+@returnstructs_brief{wifi}
+*/

@@ -1,0 +1,64 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2018-2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+{
+  "psa_framework_version": 1.0,
+  "name": "TFM_SP_AUDIT_LOG",
+  "type": "PSA-ROT",
+  "priority": "NORMAL",
+  "entry_point": "audit_core_init",
+  "stack_size": "0x0200",
+  "mmio_regions" : [
+    {
+      "name": "TFM_PERIPHERAL_UART1",
+      "permission": "READ-WRITE",
+      "conditional": "AUDIT_UART_REDIRECTION"
+    }
+  ],
+  "secure_functions": [
+    {
+      "name": "TFM_AUDIT_RETRIEVE_RECORD",
+      "signal": "AUDIT_CORE_RETRIEVE_RECORD",
+      "sid": "0x00000000",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_AUDIT_ADD_RECORD",
+      "signal": "AUDIT_CORE_ADD_RECORD",
+      "sid": "0x00000001",
+      "non_secure_clients": false,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_AUDIT_GET_INFO",
+      "signal": "AUDIT_CORE_GET_INFO",
+      "sid": "0x00000002",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_AUDIT_GET_RECORD_INFO",
+      "signal": "AUDIT_CORE_GET_RECORD_INFO",
+      "sid": "0x00000003",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+    {
+      "name": "TFM_AUDIT_DELETE_RECORD",
+      "signal": "AUDIT_CORE_DELETE_RECORD",
+      "sid": "0x00000004",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    }
+  ]
+}

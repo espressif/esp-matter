@@ -1,0 +1,7 @@
+{ "expected-missing-functions":
+  [
+
+  ],
+  "proof-name": "C_SignInit",
+  "proof-root": "test/cbmc/proofs"
+}

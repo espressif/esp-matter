@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.report" uuid="2A4D" name="Report" last-modified="2011-11-14" approved="Yes">
+  <InformativeText>
+    <Abstract>
+      The Report characteristic is used to exchange data between a HID Device and a HID Host.
+		</Abstract>
+    <Summary>
+      The Report characteristic value contains Input Report, Output Report or Feature Report data to be transferred between the HID Device and HID Host.
+    </Summary>
+  </InformativeText>
+  <Value>
+    <Field name="Report Value">
+      <Requirement>Mandatory</Requirement>
+      <Format>uint8</Format>
+        <Repeated>true</Repeated>
+    </Field>
+  </Value>
+</Characteristic>

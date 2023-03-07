@@ -1,0 +1,364 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/module_config.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_protobuf_compiler/proto.gni")
+import("$dir_pw_rpc/internal/integration_test_ports.gni")
+import("$dir_pw_thread/backend.gni")
+import("$dir_pw_toolchain/generate_toolchain.gni")
+import("$dir_pw_unit_test/test.gni")
+
+declare_args() {
+  # The build target that overrides the default configuration options for this
+  # module. This should point to a source set that provides defines through a
+  # public config (which may -include a file or add defines directly).
+  pw_transfer_CONFIG = pw_build_DEFAULT_MODULE_CONFIG
+}
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("config") {
+  public = [ "public/pw_transfer/internal/config.h" ]
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    "$dir_pw_chrono:system_timer",
+    pw_transfer_CONFIG,
+  ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("pw_transfer") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    ":core",
+    ":proto.raw_rpc",
+    dir_pw_assert,
+    dir_pw_bytes,
+    dir_pw_result,
+    dir_pw_status,
+    dir_pw_stream,
+  ]
+  deps = [ dir_pw_log ]
+  public = [ "public/pw_transfer/transfer.h" ]
+  sources = [ "transfer.cc" ]
+}
+
+pw_source_set("client") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    ":core",
+    ":proto.raw_rpc",
+    dir_pw_assert,
+    dir_pw_function,
+    dir_pw_stream,
+  ]
+  deps = [ dir_pw_log ]
+  public = [ "public/pw_transfer/client.h" ]
+  sources = [ "client.cc" ]
+}
+
+pw_source_set("core") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    ":config",
+    ":proto.pwpb",
+    "$dir_pw_chrono:system_clock",
+    "$dir_pw_preprocessor",
+    "$dir_pw_rpc:client",
+    "$dir_pw_rpc/raw:client_api",
+    "$dir_pw_rpc/raw:server_api",
+    "$dir_pw_sync:binary_semaphore",
+    "$dir_pw_sync:timed_thread_notification",
+    "$dir_pw_thread:thread_core",
+    dir_pw_assert,
+    dir_pw_bytes,
+    dir_pw_result,
+    dir_pw_span,
+    dir_pw_status,
+    dir_pw_stream,
+  ]
+  deps = [
+    dir_pw_log,
+    dir_pw_protobuf,
+    dir_pw_varint,
+  ]
+  public = [
+    "public/pw_transfer/handler.h",
+    "public/pw_transfer/rate_estimate.h",
+    "public/pw_transfer/transfer_thread.h",
+  ]
+  sources = [
+    "chunk.cc",
+    "client_context.cc",
+    "context.cc",
+    "public/pw_transfer/internal/chunk.h",
+    "public/pw_transfer/internal/client_context.h",
+    "public/pw_transfer/internal/context.h",
+    "public/pw_transfer/internal/event.h",
+    "public/pw_transfer/internal/protocol.h",
+    "public/pw_transfer/internal/server_context.h",
+    "rate_estimate.cc",
+    "server_context.cc",
+    "transfer_thread.cc",
+  ]
+  friend = [ ":*" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("atomic_file_transfer_handler") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_transfer/atomic_file_transfer_handler.h" ]
+  sources = [ "atomic_file_transfer_handler.cc" ]
+  public_deps = [
+    ":core",
+    "$dir_pw_stream:std_file_stream",
+  ]
+  deps = [
+    ":atomic_file_transfer_handler_internal",
+    dir_pw_log,
+  ]
+}
+
+pw_source_set("atomic_file_transfer_handler_internal") {
+  sources = [ "pw_transfer_private/filename_generator.h" ]
+  friend = [ ":*" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("test_helpers") {
+  public_deps = [
+    ":core",
+    dir_pw_containers,
+  ]
+  sources = [ "pw_transfer_private/chunk_testing.h" ]
+  friend = [ ":*" ]
+  visibility = [ ":*" ]
+}
+
+pw_proto_library("proto") {
+  sources = [ "transfer.proto" ]
+  python_package = "py"
+  prefix = "pw_transfer"
+}
+
+pw_test_group("tests") {
+  tests = []
+
+  # pw_transfer requires threading.
+  if (pw_thread_THREAD_BACKEND != "") {
+    tests += [
+      ":chunk_test",
+      ":client_test",
+      ":transfer_thread_test",
+    ]
+
+    # TODO(b/235345886): Fix transfer tests on Windows and non-host builds.
+    if (defined(pw_toolchain_SCOPE.is_host_toolchain) &&
+        pw_toolchain_SCOPE.is_host_toolchain && host_os != "win") {
+      tests += [
+        ":handler_test",
+        ":atomic_file_transfer_handler_test",
+        ":transfer_test",
+      ]
+    }
+  }
+}
+
+pw_test("chunk_test") {
+  sources = [ "chunk_test.cc" ]
+  deps = [ ":core" ]
+}
+
+pw_test("handler_test") {
+  sources = [ "handler_test.cc" ]
+  deps = [ ":pw_transfer" ]
+}
+
+pw_test("atomic_file_transfer_handler_test") {
+  sources = [ "atomic_file_transfer_handler_test.cc" ]
+  deps = [
+    ":atomic_file_transfer_handler",
+    ":atomic_file_transfer_handler_internal",
+    ":pw_transfer",
+    "$dir_pw_random",
+    "$dir_pw_string",
+  ]
+}
+
+pw_test("transfer_test") {
+  enable_if = pw_thread_THREAD_BACKEND == "$dir_pw_thread_stl:thread"
+  sources = [ "transfer_test.cc" ]
+  deps = [
+    ":proto.pwpb",
+    ":pw_transfer",
+    ":test_helpers",
+    "$dir_pw_assert",
+    "$dir_pw_containers",
+    "$dir_pw_rpc:test_helpers",
+    "$dir_pw_rpc/raw:test_method_context",
+    "$dir_pw_thread:thread",
+  ]
+}
+
+pw_test("transfer_thread_test") {
+  enable_if = pw_thread_THREAD_BACKEND == "$dir_pw_thread_stl:thread"
+  sources = [ "transfer_thread_test.cc" ]
+  deps = [
+    ":core",
+    ":proto.raw_rpc",
+    ":pw_transfer",
+    ":test_helpers",
+    "$dir_pw_rpc:test_helpers",
+    "$dir_pw_rpc/raw:client_testing",
+    "$dir_pw_rpc/raw:test_method_context",
+    "$dir_pw_thread:thread",
+  ]
+}
+
+pw_test("client_test") {
+  enable_if = pw_thread_THREAD_BACKEND == "$dir_pw_thread_stl:thread"
+  sources = [ "client_test.cc" ]
+  deps = [
+    ":client",
+    ":test_helpers",
+    "$dir_pw_rpc:test_helpers",
+    "$dir_pw_rpc/raw:client_testing",
+    "$dir_pw_thread:sleep",
+    "$dir_pw_thread:thread",
+  ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+  inputs = [
+    "transfer.proto",
+    "read.svg",
+    "write.svg",
+  ]
+}
+
+pw_proto_library("test_server_proto") {
+  sources = [ "test_server.proto" ]
+  prefix = "pw_transfer_test"
+  deps = [ "$dir_pw_protobuf:common_protos" ]
+}
+
+pw_executable("test_rpc_server") {
+  sources = [ "test_rpc_server.cc" ]
+  deps = [
+    ":atomic_file_transfer_handler",
+    ":pw_transfer",
+    ":test_server_proto.raw_rpc",
+    "$dir_pw_rpc/system_server",
+    "$dir_pw_rpc/system_server:socket",
+    "$dir_pw_stream:std_file_stream",
+    "$dir_pw_thread:thread",
+    dir_pw_log,
+  ]
+}
+
+pw_executable("integration_test_server") {
+  sources = [ "integration_test/server.cc" ]
+  deps = [
+    ":pw_transfer",
+    "$dir_pw_assert",
+    "$dir_pw_rpc/system_server",
+    "$dir_pw_rpc/system_server:socket",
+    "$dir_pw_stream",
+    "$dir_pw_stream:std_file_stream",
+    "$dir_pw_thread:thread",
+    "$dir_pw_thread_stl:thread",
+    dir_pw_log,
+  ]
+}
+
+pw_executable("integration_test_client") {
+  sources = [ "integration_test/client.cc" ]
+  deps = [
+    ":client",
+    "$dir_pw_rpc:integration_testing",
+    "$dir_pw_stream:std_file_stream",
+    "$dir_pw_sync:binary_semaphore",
+    "$dir_pw_thread:thread",
+    dir_pw_assert,
+    dir_pw_log,
+    dir_pw_status,
+  ]
+}
+
+# TODO(b/228516801): Make this actually work; this is just a placeholder.
+pw_python_script("integration_test_python_client") {
+  sources = [ "integration_test/python_client.py" ]
+}
+
+# TODO(b/228516801): Make this actually work; this is just a placeholder.
+pw_python_script("integration_test_proxy") {
+  sources = [ "integration_test/proxy.py" ]
+}
+
+# TODO(b/228516801): Make this actually work; this is just a placeholder.
+pw_python_script("integration_test_proxy_test") {
+  sources = [ "integration_test/proxy_test.py" ]
+}
+
+# TODO(b/228516801): Make this actually work; this is just a placeholder.
+pw_python_script("integration_test_fixture") {
+  sources = [ "integration_test/test_fixture.py" ]
+}
+
+# TODO(b/228516801): Make this actually work; this is just a placeholder.
+pw_python_script("cross_language_small_test") {
+  sources = [ "integration_test/cross_language_small_test.py" ]
+}
+
+# TODO(b/228516801): Make this actually work; this is just a placeholder.
+pw_python_script("cross_language_medium_read_test") {
+  sources = [ "integration_test/cross_language_medium_read_test.py" ]
+}
+
+# TODO(b/228516801): Make this actually work; this is just a placeholder.
+pw_python_script("cross_language_medium_write_test") {
+  sources = [ "integration_test/cross_language_medium_write_test.py" ]
+}
+
+# TODO(b/228516801): Make this actually work; this is just a placeholder.
+pw_python_script("cross_language_large_read_test") {
+  sources = [ "integration_test/cross_language_large_read_test.py" ]
+}
+
+# TODO(b/228516801): Make this actually work; this is just a placeholder.
+pw_python_script("cross_language_large_write_test") {
+  sources = [ "integration_test/cross_language_large_write_test.py" ]
+}
+
+# TODO(b/228516801): Make this actually work; this is just a placeholder.
+pw_python_script("multi_transfer_test") {
+  sources = [ "integration_test/multi_transfer_test.py" ]
+}
+
+# TODO(b/228516801): Make this actually work; this is just a placeholder.
+pw_python_script("expected_errors_test") {
+  sources = [ "integration_test/expected_errors_test.py" ]
+}
+
+# TODO(b/228516801): Make this actually work; this is just a placeholder.
+pw_python_script("legacy_binaries_test") {
+  sources = [ "integration_test/legacy_binaries_test.py" ]
+}

@@ -1,0 +1,12 @@
+id: zw_cc_deviceresetlocally
+label: DeviceResetLocally Command Class
+category: Z-Wave|Command Classes
+description: >
+  Device Reset Locally Command Class is used to notify lifeline associations, i.e. central controller
+  that a Z-Wave device is resetting its network specific parameters.
+package: Z-Wave
+quality: production
+source:
+  - path: protocol/z-wave/ZAF/CommandClasses/DeviceResetLocally/CC_DeviceResetLocally.c
+provides:
+  - name: zw_cc_deviceresetlocally

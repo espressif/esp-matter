@@ -1,0 +1,62 @@
+package: Zigbee
+description: A component for mirroring attributes of a sleepy meter in a Smart Energy
+  network.  The device is expected to be a configured as mirror server on as many
+  endpoints as are allocated as meters.  Those endpoints must be contiguous.
+label: Meter Mirror
+quality: production
+id: zigbee_meter_mirror
+category: Zigbee|Cluster Library|Smart Energy
+provides:
+   - name: "zigbee_meter_mirror"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/meter-mirror/config/meter-mirror-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/meter-mirror/meter-mirror.c
+  - path: protocol/zigbee/app/framework/plugin/meter-mirror/meter-mirror-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/meter-mirror/meter-mirror-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/meter-mirror
+    file_list:
+      - path: meter-mirror.h    
+template_contribution:
+  - name: component_catalog
+    value: zigbee_meter_mirror
+  - name: cluster_service
+    value:
+      cluster_id: "0x0702"
+      mfg_id: "NOT_MFG_SPECIFIC"
+      side: "CLIENT"
+      service_function: "emAfMeterMirrorSimpleMeteringClusterClientCommandParse"
+  - name: zigbee_af_callback
+    value:
+      callback_type: init_done
+      function_name: emberAfPluginMeterMirrorInitCallback
+  - name: zigbee_stack_callback
+    value:
+      callback_type: stack_status
+      function_name: emberAfPluginMeterMirrorStackStatusCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: meter-mirror
+      help: meter-mirror related commands
+  - name: cli_command
+    value:
+      group: meter-mirror
+      name: status
+      handler: emAfPluginMeterMirrorStatusCommand
+      help: Prints the status of all mirrors.
+  - name: cli_command
+    value:
+      group: meter-mirror
+      name: remove
+      handler: emAfPluginMeterMirrorRemoveCommand
+      help: Manually removes a registered mirror at the specified endpoint.
+      argument:
+      - type: uint8
+        help: The endpoint of the mirror to remove.
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/meter-mirror

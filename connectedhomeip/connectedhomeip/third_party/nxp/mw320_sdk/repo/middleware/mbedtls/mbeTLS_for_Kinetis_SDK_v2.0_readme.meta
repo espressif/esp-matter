@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metadata>
+  <components>
+    <component name="mbeTLS_for_Kinetis_SDK_v2_0_readme" requires="nda middleware.mbedtls" provides="documentation" type="documentation" version="1.0.0">
+      <source path="./">
+        <files mask="mbeTLS_for_Kinetis_SDK_v2.0_readme.meta"/>
+        <files mask="mbeTLS_for_Kinetis_SDK_v2.0_readme.txt"/>
+      </source>
+    </component>
+  </components>
+</metadata>

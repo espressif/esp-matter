@@ -1,0 +1,18 @@
+id: psa_crypto_cipher_xts
+package: platform
+label: XTS Mode
+description: >-
+  This component provides support for the XTS cipher mode in PSA Crypto.
+category: Platform|Security|PSA Crypto|Encryption
+quality: production
+provides:
+  - name: psa_crypto_cipher_xts
+requires:
+  - name: psa_crypto_aes
+  - name: mbedtls_cipher_xts
+template_contribution:
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_XTS
+  - name: psa_crypto_config
+    value: "MBEDTLS_PSA_BUILTIN_ALG_XTS 1"
+    condition: [mbedtls_cipher_xts]

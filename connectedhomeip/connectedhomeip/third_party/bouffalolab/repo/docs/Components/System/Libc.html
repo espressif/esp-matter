@@ -1,0 +1,828 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>BL libc &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../index.html"/>
+        <link rel="up" title="&lt;no title&gt;" href="index.html"/>
+        <link rel="next" title="BL IOT SDK启动链接及FreeRTOS简要分析" href="Start.html"/>
+        <link rel="prev" title="Core dump" href="Coredump.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Examples/index.html">Example</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Components</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Coredump.html">Coredump</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Libc</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">1. 背景</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#api">2. API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#support">2.1 Support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#not-support">2.2 Not support</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">3. 测试</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#stack-used">3.1 stack used</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#io">3.2 IO</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id10">3.3 random</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#memory">3.4 memory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Start.html">Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Middleware/yloop.html">yloop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Middleware/vfs.html">vfs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Middleware/devicetree.html">dts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Middleware/blog.html">blog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../BLE/ble_stack.html">ble_stack</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Components</a> &raquo;</li>
+        
+          <li><a href="index.html">&lt;no title&gt;</a> &raquo;</li>
+        
+      <li>BL libc</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/Components/System/Libc.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="bl-libc">
+<h1>BL libc<a class="headerlink" href="#bl-libc" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<span id="id2"></span><h2>1. 背景<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<p><strong>问题</strong></p>
+<ul class="simple">
+<li>在使用编译器自带的newlibc中的C库函数时，会出现stack溢出的现象</li>
+<li>一些客户在不熟悉sdk
+api的情况下，错误的使用C库函数自带的API，比如<code class="docutils literal notranslate"><span class="pre">malloc</span></code></li>
+</ul>
+<p>为了解决这些问题，将编译器的newlibc改为newlibc-nano，并使用sdk现有API适配部分C库函数，以提高sdk接口通用性，减少客户使用过程中可能出现的错误。</p>
+</div>
+<div class="section" id="api">
+<span id="id3"></span><h2>2. API<a class="headerlink" href="#api" title="永久链接至标题"></a></h2>
+<div class="section" id="support">
+<span id="id4"></span><h3>2.1 Support<a class="headerlink" href="#support" title="永久链接至标题"></a></h3>
+<div class="section" id="mkdir">
+<h4>mkdir<a class="headerlink" href="#mkdir" title="永久链接至标题"></a></h4>
+<ul class="simple">
+<li>创建目录</li>
+</ul>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">int</span>  <span class="n">mkdir</span> <span class="p">(</span><span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">_path</span><span class="p">,</span> <span class="n">mode_t</span> <span class="n">__mode</span> <span class="p">)</span>
+<span class="p">{</span>
+<span class="c1">#ifndef CONF_VFS_ENABLE</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="c1">#else</span>
+    <span class="nb">int</span> <span class="n">rc</span><span class="p">;</span>
+
+    <span class="n">rc</span> <span class="o">=</span> <span class="n">aos_mkdir</span><span class="p">(</span><span class="n">_path</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">rc</span><span class="p">;</span>
+<span class="c1">#endif</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="open">
+<h4>open<a class="headerlink" href="#open" title="永久链接至标题"></a></h4>
+<ul class="simple">
+<li>打开文件</li>
+</ul>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">int</span> <span class="n">_open_r</span><span class="p">(</span><span class="n">struct</span> <span class="n">_reent</span> <span class="o">*</span><span class="n">ptr</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">file</span><span class="p">,</span> <span class="nb">int</span> <span class="n">flags</span><span class="p">,</span> <span class="nb">int</span> <span class="n">mode</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="c1">#ifndef CONF_VFS_ENABLE</span>
+    <span class="o">/*</span> <span class="k">return</span> <span class="s2">&quot;not supported&quot;</span> <span class="o">*/</span>
+    <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span> <span class="o">=</span> <span class="n">ENOSYS</span><span class="p">;</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="c1">#else</span>
+    <span class="nb">int</span> <span class="n">rc</span><span class="p">;</span>
+
+    <span class="n">rc</span> <span class="o">=</span> <span class="n">aos_open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">flags</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">rc</span><span class="p">;</span>
+<span class="c1">#endif</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="clsoe">
+<h4>clsoe<a class="headerlink" href="#clsoe" title="永久链接至标题"></a></h4>
+<ul class="simple">
+<li>关闭文件</li>
+</ul>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">int</span> <span class="n">_close_r</span><span class="p">(</span><span class="n">struct</span> <span class="n">_reent</span> <span class="o">*</span><span class="n">ptr</span><span class="p">,</span> <span class="nb">int</span> <span class="n">fd</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="c1">#ifndef CONF_VFS_ENABLE</span>
+    <span class="o">/*</span> <span class="k">return</span> <span class="s2">&quot;not supported&quot;</span> <span class="o">*/</span>
+    <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span> <span class="o">=</span> <span class="n">ENOSYS</span><span class="p">;</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="c1">#else</span>
+    <span class="k">return</span> <span class="n">aos_close</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
+<span class="c1">#endif</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="read">
+<h4>read<a class="headerlink" href="#read" title="永久链接至标题"></a></h4>
+<ul class="simple">
+<li>读取数据到buf</li>
+</ul>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">_ssize_t</span> <span class="n">_read_r</span><span class="p">(</span><span class="n">struct</span> <span class="n">_reent</span> <span class="o">*</span><span class="n">ptr</span><span class="p">,</span> <span class="nb">int</span> <span class="n">fd</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">nbytes</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="c1">#ifndef CONF_VFS_ENABLE</span>
+    <span class="o">/*</span> <span class="k">return</span> <span class="s2">&quot;not supported&quot;</span> <span class="o">*/</span>
+    <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span> <span class="o">=</span> <span class="n">ENOSYS</span><span class="p">;</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="c1">#else</span>
+    <span class="n">_ssize_t</span> <span class="n">rc</span><span class="p">;</span>
+
+    <span class="n">rc</span> <span class="o">=</span> <span class="n">aos_read</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">nbytes</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">rc</span><span class="p">;</span>
+<span class="c1">#endif</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="write">
+<span id="write-1"></span><h4>write<a class="headerlink" href="#write" title="永久链接至标题"></a></h4>
+<ul class="simple">
+<li>写数据到文件</li>
+</ul>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">_ssize_t</span> <span class="n">_write_r</span><span class="p">(</span><span class="n">struct</span> <span class="n">_reent</span> <span class="o">*</span><span class="n">ptr</span><span class="p">,</span> <span class="nb">int</span> <span class="n">fd</span><span class="p">,</span> <span class="n">const</span> <span class="n">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">nbytes</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="c1">#ifndef CONF_VFS_ENABLE</span>
+    <span class="o">/*</span> <span class="k">return</span> <span class="s2">&quot;not supported&quot;</span> <span class="o">*/</span>
+    <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span> <span class="o">=</span> <span class="n">ENOSYS</span><span class="p">;</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="c1">#else</span>
+    <span class="n">_ssize_t</span> <span class="n">rc</span><span class="p">;</span>
+
+    <span class="n">rc</span> <span class="o">=</span> <span class="n">aos_write</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">nbytes</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">rc</span><span class="p">;</span>
+<span class="c1">#endif</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="rename">
+<h4>rename<a class="headerlink" href="#rename" title="永久链接至标题"></a></h4>
+<ul class="simple">
+<li>重命名文件</li>
+</ul>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">int</span> <span class="n">_rename_r</span><span class="p">(</span><span class="n">struct</span> <span class="n">_reent</span> <span class="o">*</span><span class="n">ptr</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">old</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">new</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="c1">#ifndef CONF_VFS_ENABLE</span>
+    <span class="o">/*</span> <span class="k">return</span> <span class="s2">&quot;not supported&quot;</span> <span class="o">*/</span>
+    <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span> <span class="o">=</span> <span class="n">ENOSYS</span><span class="p">;</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="c1">#else</span>
+    <span class="nb">int</span> <span class="n">rc</span><span class="p">;</span>
+
+    <span class="n">rc</span> <span class="o">=</span> <span class="n">aos_rename</span><span class="p">(</span><span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">rc</span><span class="p">;</span>
+<span class="c1">#endif</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="lseek">
+<h4>lseek<a class="headerlink" href="#lseek" title="永久链接至标题"></a></h4>
+<ul class="simple">
+<li>改变读写一个文件时读写指针位置</li>
+</ul>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">_off_t</span> <span class="n">_lseek_r</span><span class="p">(</span><span class="n">struct</span> <span class="n">_reent</span> <span class="o">*</span><span class="n">ptr</span><span class="p">,</span> <span class="nb">int</span> <span class="n">fd</span><span class="p">,</span> <span class="n">_off_t</span> <span class="n">pos</span><span class="p">,</span> <span class="nb">int</span> <span class="n">whence</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="c1">#ifndef CONF_VFS_ENABLE</span>
+    <span class="o">/*</span> <span class="k">return</span> <span class="s2">&quot;not supported&quot;</span> <span class="o">*/</span>
+    <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span> <span class="o">=</span> <span class="n">ENOSYS</span><span class="p">;</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="c1">#else</span>
+    <span class="n">_off_t</span> <span class="n">rc</span><span class="p">;</span>
+
+    <span class="n">rc</span> <span class="o">=</span> <span class="n">aos_lseek</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">whence</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">rc</span><span class="p">;</span>
+<span class="c1">#endif</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="stat">
+<h4>stat<a class="headerlink" href="#stat" title="永久链接至标题"></a></h4>
+<ul class="simple">
+<li>获取文件状态</li>
+</ul>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">int</span> <span class="n">_stat_r</span><span class="p">(</span><span class="n">struct</span> <span class="n">_reent</span> <span class="o">*</span><span class="n">ptr</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">file</span><span class="p">,</span> <span class="n">struct</span> <span class="n">stat</span> <span class="o">*</span><span class="n">pstat</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="c1">#ifndef CONF_VFS_ENABLE</span>
+    <span class="o">/*</span> <span class="k">return</span> <span class="s2">&quot;not supported&quot;</span> <span class="o">*/</span>
+    <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span> <span class="o">=</span> <span class="n">ENOSYS</span><span class="p">;</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="c1">#else</span>
+    <span class="nb">int</span> <span class="n">rc</span><span class="p">;</span>
+
+    <span class="n">rc</span> <span class="o">=</span> <span class="n">aos_stat</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">pstat</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">rc</span><span class="p">;</span>
+<span class="c1">#endif</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="unlink">
+<h4>unlink<a class="headerlink" href="#unlink" title="永久链接至标题"></a></h4>
+<ul class="simple">
+<li>删除文件</li>
+</ul>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">int</span> <span class="n">_unlink_r</span><span class="p">(</span><span class="n">struct</span> <span class="n">_reent</span> <span class="o">*</span><span class="n">ptr</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">file</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="c1">#ifndef CONF_VFS_ENABLE</span>
+    <span class="o">/*</span> <span class="k">return</span> <span class="s2">&quot;not supported&quot;</span> <span class="o">*/</span>
+    <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span> <span class="o">=</span> <span class="n">ENOSYS</span><span class="p">;</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="c1">#else</span>
+    <span class="k">return</span> <span class="n">aos_unlink</span><span class="p">(</span><span class="n">file</span><span class="p">);</span>
+<span class="c1">#endif</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="malloc">
+<h4>malloc<a class="headerlink" href="#malloc" title="永久链接至标题"></a></h4>
+<ul class="simple">
+<li>申请内存</li>
+</ul>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span> <span class="o">*</span><span class="n">_malloc_r</span><span class="p">(</span><span class="n">struct</span> <span class="n">_reent</span> <span class="o">*</span><span class="n">ptr</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">size</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">void</span><span class="o">*</span> <span class="n">result</span><span class="p">;</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="n">void</span><span class="o">*</span><span class="p">)</span><span class="n">pvPortMalloc</span><span class="p">(</span><span class="n">size</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">==</span> <span class="n">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span> <span class="o">=</span> <span class="n">ENOMEM</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="free">
+<h4>free<a class="headerlink" href="#free" title="永久链接至标题"></a></h4>
+<ul class="simple">
+<li>释放内存</li>
+</ul>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span> <span class="n">_free_r</span><span class="p">(</span><span class="n">struct</span> <span class="n">_reent</span> <span class="o">*</span><span class="n">ptr</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">addr</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">vPortFree</span><span class="p">(</span><span class="n">addr</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="realloc">
+<h4>realloc<a class="headerlink" href="#realloc" title="永久链接至标题"></a></h4>
+<ul class="simple">
+<li>重新申请内存</li>
+</ul>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span> <span class="o">*</span><span class="n">_realloc_r</span><span class="p">(</span><span class="n">struct</span> <span class="n">_reent</span> <span class="o">*</span><span class="n">ptr</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">old</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">newlen</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">void</span><span class="o">*</span> <span class="n">result</span><span class="p">;</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="n">void</span><span class="o">*</span><span class="p">)</span><span class="n">pvPortRealloc</span><span class="p">(</span><span class="n">old</span><span class="p">,</span> <span class="n">newlen</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">==</span> <span class="n">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span> <span class="o">=</span> <span class="n">ENOMEM</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="calloc">
+<h4>calloc<a class="headerlink" href="#calloc" title="永久链接至标题"></a></h4>
+<ul class="simple">
+<li>申请空内存</li>
+</ul>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span> <span class="o">*</span><span class="n">_calloc_r</span><span class="p">(</span><span class="n">struct</span> <span class="n">_reent</span> <span class="o">*</span><span class="n">ptr</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">size</span><span class="p">,</span> <span class="n">size_t</span> <span class="nb">len</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">void</span><span class="o">*</span> <span class="n">result</span><span class="p">;</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="n">void</span><span class="o">*</span><span class="p">)</span><span class="n">pvPortCalloc</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="nb">len</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">==</span> <span class="n">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span> <span class="o">=</span> <span class="n">ENOMEM</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="abort">
+<h4>abort<a class="headerlink" href="#abort" title="永久链接至标题"></a></h4>
+<ul class="simple">
+<li>退出程序<code class="docutils literal notranslate"><span class="pre">abort()</span></code>、<code class="docutils literal notranslate"><span class="pre">exit()</span></code></li>
+</ul>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span> <span class="n">__attribute__</span> <span class="p">((</span><span class="n">noreturn</span><span class="p">))</span> <span class="n">_exit</span> <span class="p">(</span><span class="nb">int</span> <span class="n">status</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">portABORT</span><span class="p">();</span>
+    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="random">
+<h4>random<a class="headerlink" href="#random" title="永久链接至标题"></a></h4>
+<ul class="simple">
+<li>生成一个<code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">&lt;</span> <span class="pre">num</span> <span class="pre">&lt;</span> <span class="pre">RAND_MAX</span></code>的随机数</li>
+</ul>
+<blockquote>
+<div>使用RNG模块</div></blockquote>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">long</span> <span class="n">random</span> <span class="p">(</span><span class="n">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">long</span> <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">g_bl_sec_sha_mutex</span> <span class="o">==</span> <span class="n">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">bl_sec_init</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="n">long</span><span class="p">)</span><span class="n">bl_rand</span><span class="p">();</span>
+
+    <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="not-support">
+<span id="id5"></span><h3>2.2 Not support<a class="headerlink" href="#not-support" title="永久链接至标题"></a></h3>
+<p>以下函数仅提供符号，未实现实际功能</p>
+<div class="section" id="sbrk">
+<h4>sbrk<a class="headerlink" href="#sbrk" title="永久链接至标题"></a></h4>
+<ul class="simple">
+<li>调整<code class="docutils literal notranslate"><span class="pre">data</span> <span class="pre">segment</span></code>大小</li>
+</ul>
+<blockquote>
+<div>大部分我们使用的是malloc和free函数来分配和释放内存。这样能够提高程序的性能，不是每次分配内存都调用brk或sbrk，而是重用前面空闲的内存空间。brk和sbrk分配的堆空间类似于缓冲池，每次malloc从缓冲池获得内存，如果缓冲池不够了，再调用brk或sbrk扩充缓冲池，直到达到缓冲池大小的上限，free则将应用程序使用的内存空间归还给缓冲池。</div></blockquote>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span> <span class="o">*</span><span class="n">_sbrk_r</span><span class="p">(</span><span class="n">struct</span> <span class="n">_reent</span> <span class="o">*</span><span class="n">ptr</span><span class="p">,</span> <span class="n">ptrdiff_t</span> <span class="n">incr</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="getpid">
+<h4>getpid<a class="headerlink" href="#getpid" title="永久链接至标题"></a></h4>
+<ul class="simple">
+<li>取得进程识别码</li>
+</ul>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span> <span class="o">*</span><span class="n">_sbrk_r</span><span class="p">(</span><span class="n">struct</span> <span class="n">_reent</span> <span class="o">*</span><span class="n">ptr</span><span class="p">,</span> <span class="n">ptrdiff_t</span> <span class="n">incr</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">void</span> <span class="o">*</span><span class="n">ret</span><span class="p">;</span>
+    <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span> <span class="o">=</span> <span class="n">ENOMEM</span><span class="p">;</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">void</span> <span class="o">*</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="execve">
+<h4>execve<a class="headerlink" href="#execve" title="永久链接至标题"></a></h4>
+<ul class="simple">
+<li>execve（执行文件）在父进程中fork一个子进程，在子进程中调用exec函数启动新的程序</li>
+</ul>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">int</span> <span class="n">_execve_r</span><span class="p">(</span><span class="n">struct</span> <span class="n">_reent</span> <span class="o">*</span><span class="n">ptr</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span> <span class="n">name</span><span class="p">,</span> <span class="n">char</span> <span class="o">*</span><span class="n">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">,</span> <span class="n">char</span> <span class="o">*</span><span class="n">const</span> <span class="o">*</span><span class="n">env</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="o">/*</span> <span class="k">return</span> <span class="s2">&quot;not supported&quot;</span> <span class="o">*/</span>
+    <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span> <span class="o">=</span> <span class="n">ENOSYS</span><span class="p">;</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="fcntl">
+<h4>fcntl<a class="headerlink" href="#fcntl" title="永久链接至标题"></a></h4>
+<ul class="simple">
+<li>改变文件性质</li>
+</ul>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">int</span> <span class="n">_fcntl_r</span><span class="p">(</span><span class="n">struct</span> <span class="n">_reent</span> <span class="o">*</span><span class="n">ptr</span><span class="p">,</span> <span class="nb">int</span> <span class="n">fd</span><span class="p">,</span> <span class="nb">int</span> <span class="n">cmd</span><span class="p">,</span> <span class="nb">int</span> <span class="n">arg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="o">/*</span> <span class="k">return</span> <span class="s2">&quot;not supported&quot;</span> <span class="o">*/</span>
+    <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span> <span class="o">=</span> <span class="n">ENOSYS</span><span class="p">;</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="fstat">
+<h4>fstat<a class="headerlink" href="#fstat" title="永久链接至标题"></a></h4>
+<ul class="simple">
+<li>由文件描述词取得文件状态</li>
+</ul>
+<blockquote>
+<div>fstat与stat区别在于fstat系统调用接受的是
+一个“文件描述符”，stat可以调用完整的文件路径</div></blockquote>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">int</span> <span class="n">_fstat_r</span><span class="p">(</span><span class="n">struct</span> <span class="n">_reent</span> <span class="o">*</span><span class="n">ptr</span><span class="p">,</span> <span class="nb">int</span> <span class="n">fd</span><span class="p">,</span> <span class="n">struct</span> <span class="n">stat</span> <span class="o">*</span><span class="n">pstat</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="o">/*</span> <span class="k">return</span> <span class="s2">&quot;not supported&quot;</span> <span class="o">*/</span>
+    <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span> <span class="o">=</span> <span class="n">ENOSYS</span><span class="p">;</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="srandom">
+<h4>srandom<a class="headerlink" href="#srandom" title="永久链接至标题"></a></h4>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">srandom</span></code>
+函数将其参数设置为由<code class="docutils literal notranslate"><span class="pre">random</span></code>返回的新伪随机整数序列的种子，同一个种子会得到相同的随机数</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="id6">
+<span id="id7"></span><h2>3. 测试<a class="headerlink" href="#id6" title="永久链接至标题"></a></h2>
+<p><strong>$BL_IOT_SDK_PATH/customer_app/sdk_app_libc</strong></p>
+<div class="section" id="stack-used">
+<span id="id8"></span><h3>3.1 stack used<a class="headerlink" href="#stack-used" title="永久链接至标题"></a></h3>
+<ul class="simple">
+<li>Task stack: 10*1024(Kb)</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="51%" />
+<col width="31%" />
+<col width="18%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Func</th>
+<th class="head">newlibc-nano</th>
+<th class="head">newlibc</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>none</td>
+<td>69</td>
+<td>69</td>
+</tr>
+<tr class="row-odd"><td>printf</td>
+<td>137</td>
+<td>195</td>
+</tr>
+<tr class="row-even"><td>strstr/printf</td>
+<td>137</td>
+<td>195</td>
+</tr>
+<tr class="row-odd"><td>strstr/printf/sscanf</td>
+<td>250</td>
+<td>1403</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="io">
+<span id="id9"></span><h3>3.2 IO<a class="headerlink" href="#io" title="永久链接至标题"></a></h3>
+<p>Write data to the serial port</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="45%" />
+<col width="55%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Func</th>
+<th class="head">result</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>open</td>
+<td>ok</td>
+</tr>
+<tr class="row-odd"><td>write</td>
+<td>ok</td>
+</tr>
+<tr class="row-even"><td>read</td>
+<td>ok</td>
+</tr>
+<tr class="row-odd"><td>fsync</td>
+<td>ok</td>
+</tr>
+<tr class="row-even"><td>close</td>
+<td>ok</td>
+</tr>
+</tbody>
+</table>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">static</span> <span class="n">void</span> <span class="n">cmd_write</span><span class="p">(</span><span class="n">char</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="nb">int</span> <span class="nb">len</span><span class="p">,</span> <span class="nb">int</span> <span class="n">argc</span><span class="p">,</span> <span class="n">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;Usage: write DATA to /dev/ttyS0</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nb">int</span> <span class="n">fd</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/dev/ttyS0&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">fd</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">write</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">strlen</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]));</span>
+
+        <span class="n">fsync</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
+
+        <span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id10">
+<span id="id11"></span><h3>3.3 random<a class="headerlink" href="#id10" title="永久链接至标题"></a></h3>
+<p>Generate random numbers</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Func</th>
+<th class="head">result</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>random</td>
+<td>ok</td>
+</tr>
+</tbody>
+</table>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">static</span> <span class="n">void</span> <span class="n">cmd_random</span><span class="p">(</span><span class="n">char</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="nb">int</span> <span class="nb">len</span><span class="p">,</span> <span class="nb">int</span> <span class="n">argc</span><span class="p">,</span> <span class="n">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">long</span> <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">random</span><span class="p">();</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">**********random test rand[</span><span class="si">%08x</span><span class="s2">]**************</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="memory">
+<span id="id12"></span><h3>3.4 memory<a class="headerlink" href="#memory" title="永久链接至标题"></a></h3>
+<p>Malloc memory and free</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="54%" />
+<col width="46%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Func</th>
+<th class="head">result</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>malloc</td>
+<td>ok</td>
+</tr>
+<tr class="row-odd"><td>free</td>
+<td>ok</td>
+</tr>
+<tr class="row-even"><td>realloc</td>
+<td>ok</td>
+</tr>
+</tbody>
+</table>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">static</span> <span class="n">void</span> <span class="n">cmd_mem</span><span class="p">(</span><span class="n">char</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="nb">int</span> <span class="nb">len</span><span class="p">,</span> <span class="nb">int</span> <span class="n">argc</span><span class="p">,</span> <span class="n">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">void</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span>
+
+    <span class="n">p</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="o">==</span> <span class="n">NULL</span><span class="p">)</span>
+        <span class="n">merror</span><span class="p">(</span><span class="s2">&quot;malloc (10) failed.&quot;</span><span class="p">);</span>
+
+    <span class="o">/*</span> <span class="n">realloc</span> <span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">free</span> <span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">.</span>  <span class="o">*/</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">realloc</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="o">!=</span> <span class="n">NULL</span><span class="p">)</span>
+        <span class="n">merror</span><span class="p">(</span><span class="s2">&quot;realloc (p, 0) failed.&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Start.html" class="btn btn-neutral float-right" title="BL IOT SDK启动链接及FreeRTOS简要分析" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Coredump.html" class="btn btn-neutral" title="Core dump" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

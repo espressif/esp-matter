@@ -1,0 +1,36 @@
+id: bootloader_spi_controller_usart_driver
+label: Bootloader SPI Controller Usart Driver
+package: bootloader
+description: >
+  Simple Blocking SPI Usart Controller
+category: Platform|Bootloader|Drivers
+quality: production
+source:
+  - path: platform/bootloader/driver/btl_driver_spi_controller_usart.c
+define:
+  - name: BTL_SPI_USART_ENABLE
+include:
+  - path: platform/bootloader/driver
+    file_list:
+    - path: btl_driver_spi_controller.h
+provides:
+  - name: bootloader_spi_controller_usart_driver
+  - name: bootloader_spi_controller_transport
+  - name: bootloader_nonsecure_incompatible
+    condition: [bootloader_core_nonsecure]
+requires:
+  - name: bootloader_delay_driver
+config_file:
+  - path: platform/bootloader/config/btl_spi_controller_usart_driver_cfg.h
+    file_id: btl_spi_controller_usart_driver_cfg
+    unless:
+     - brd4154a
+     - brd4165b
+  - path: platform/bootloader/config/brd4154a/btl_spi_controller_usart_driver_cfg.h
+    file_id: btl_spi_controller_usart_driver_cfg
+    condition:
+     - brd4154a
+  - path: platform/bootloader/config/brd4165b/btl_spi_controller_usart_driver_cfg.h
+    file_id: btl_spi_controller_usart_driver_cfg
+    condition:
+     - brd4165b

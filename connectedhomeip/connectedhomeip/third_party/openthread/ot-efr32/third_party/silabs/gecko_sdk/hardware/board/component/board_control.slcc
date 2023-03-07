@@ -1,0 +1,67 @@
+id: board_control
+label: Board Control
+description: >
+  Provides initialization of Silicon Labs boards and functionality for enabling board features, like VCOM, sensors and display.
+package: "platform"
+category: Platform|Board
+quality: production
+root_path: hardware/board
+provides:
+  - name: board_control
+requires:
+  - name: emlib_cmu
+  - name: emlib_gpio
+  - name: enum
+  - name: status
+  - name: component_catalog
+  - name: mx25_flash_shutdown_driver
+    condition:
+      - hardware_board_has_spiflash
+  - name : configuration_over_swo
+    condition:
+      - hardware_board_mainboard_wstk
+source:
+  - path: src/sl_board_init.c
+  - path: src/sl_board_control_gpio.c
+    condition: [hardware_board_rb]
+  - path: src/sl_board_control_gpio.c
+    condition: [hardware_board_tb]
+  - path: src/sl_board_control_gpio.c
+    condition: [hardware_board_stk]
+  - path: src/sl_board_control_stub.c
+    unless:
+      - hardware_board_tb
+      - hardware_board_rb
+      - hardware_board_stk
+include:
+  - path: inc
+    file_list:
+      - path: sl_board_control.h
+      - path: sl_board_init.h
+template_file:
+  - path: src/sl_board_default_init.c.jinja
+config_file:
+  - path: config/sl_board_control_config.h
+    file_id: board_control_config
+template_contribution:
+  - name: event_handler
+    value:
+      event: platform_init
+      include: "sl_board_init.h"
+      handler: "sl_board_preinit"
+    priority: -9900
+  - name: event_handler
+    value:
+      event: platform_init
+      include: "sl_board_init.h"
+      handler: "sl_board_init"
+    priority: -9000
+  - name: event_handler
+    value:
+      event: service_init
+      include: "sl_board_control.h"
+      handler: "sl_board_configure_vcom"
+    priority: -4999
+documentation:
+    docset: gecko-platform
+    document: hardware-board/api/group-board-control

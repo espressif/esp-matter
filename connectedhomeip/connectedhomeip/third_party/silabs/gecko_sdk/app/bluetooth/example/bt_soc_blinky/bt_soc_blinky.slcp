@@ -1,0 +1,99 @@
+project_name: bt_soc_blinky
+package: Bluetooth
+label: Bluetooth - SoC Blinky
+description: >
+  The classic blinky example using Bluetooth communication. Demonstrates a
+  simple two-way data exchange over GATT. This can be tested with the EFR
+  Connect mobile app.
+category: Bluetooth Examples
+quality: production
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Bluetooth"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]
+
+component:
+  - id: bluetooth_stack
+  - id: gatt_configuration
+  - id: bluetooth_feature_legacy_advertiser
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_gatt_server
+  - id: bluetooth_feature_system
+  - id: in_place_ota_dfu
+  - id: bootloader_interface
+  - id: rail_util_pti
+  - id: app_assert
+  - id: component_catalog
+  - id: mpu
+  - id: simple_button
+    instance:
+      - btn0
+  - id: simple_led
+    instance:
+      - led0
+  - id: iostream_usart
+    instance:
+      - vcom
+  - id: app_log
+
+source:
+  - path: main.c
+  - path: app.c
+
+include:
+  - path: .
+    file_list:
+      - path: app.h
+
+config_file:
+  - override:
+      component: gatt_configuration
+      file_id: gatt_configuration_file_id
+    path: gatt_configuration.btconf
+    directory: btconf
+
+readme:
+  - path: ../../documentation/example/soc_blinky/readme.md
+
+other_file:
+  - path: ../../script/create_bl_files.bat
+  - path: ../../script/create_bl_files.sh
+  - path: ../../documentation/example/soc_blinky/readme_img0.png
+    folder: images
+  - path: ../../documentation/example/soc_blinky/readme_img1.jpg
+    folder: images
+  - path: ../../documentation/example/soc_blinky/readme_img2.jpg
+    folder: images
+  - path: ../../documentation/example/soc_blinky/readme_img3.jpg
+    folder: images
+  - path: ../../documentation/example/soc_blinky/readme_img4.jpg
+    folder: images
+  - path: ../../documentation/example/soc_blinky/readme_img5.gif
+    folder: images
+
+configuration:
+  - name: SL_STACK_SIZE
+    value: "2752"
+  - name: SL_HEAP_SIZE
+    value: "9200"
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+    condition:
+      - iostream_usart
+
+tag:
+  - prebuilt_demo
+  - hardware:rf:band:2400
+  - hardware:component:button:1+
+  - hardware:component:led:1+
+  - hardware:!shared:button:led
+
+ui_hints:
+  highlight:
+    - path: config/btconf/gatt_configuration.btconf
+    - path: readme.md
+      focus: true

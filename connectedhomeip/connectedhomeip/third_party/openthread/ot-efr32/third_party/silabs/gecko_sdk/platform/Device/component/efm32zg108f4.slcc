@@ -1,0 +1,153 @@
+!!omap
+- id: EFM32ZG108F4
+- package: platform
+- description: Silicon Labs CMSIS-Device part headers for EFM32ZG108F4.
+- category: Platform|Device|EFM32ZG
+- quality: production
+- define:
+  - name: EFM32ZG108F4
+    unless:
+    - device_content_override
+- source:
+  - path: platform/Device/SiliconLabs/EFM32ZG/Source/system_efm32zg.c
+    unless:
+    - device_content_override
+  - path: platform/Device/SiliconLabs/EFM32ZG/Source/startup_efm32zg.c
+    unless:
+    - device_content_override
+  - condition:
+    - toolchain_arm
+    path: platform/Device/SiliconLabs/EFM32ZG/Source/ARM/startup_efm32zg.s
+    unless:
+    - device_content_override
+- include:
+  - file_list:
+    - path: efm32zg108f4.h
+    - path: efm32zg_acmp.h
+    - path: efm32zg_adc.h
+    - path: efm32zg_aes.h
+    - path: efm32zg_af_pins.h
+    - path: efm32zg_af_ports.h
+    - path: efm32zg_calibrate.h
+    - path: efm32zg_cmu.h
+    - path: efm32zg_devinfo.h
+    - path: efm32zg_dma.h
+    - path: efm32zg_dma_ch.h
+    - path: efm32zg_dma_descriptor.h
+    - path: efm32zg_dmactrl.h
+    - path: efm32zg_dmareq.h
+    - path: efm32zg_emu.h
+    - path: efm32zg_gpio.h
+    - path: efm32zg_gpio_p.h
+    - path: efm32zg_i2c.h
+    - path: efm32zg_idac.h
+    - path: efm32zg_leuart.h
+    - path: efm32zg_msc.h
+    - path: efm32zg_pcnt.h
+    - path: efm32zg_prs.h
+    - path: efm32zg_prs_ch.h
+    - path: efm32zg_prs_signals.h
+    - path: efm32zg_rmu.h
+    - path: efm32zg_romtable.h
+    - path: efm32zg_rtc.h
+    - path: efm32zg_timer.h
+    - path: efm32zg_timer_cc.h
+    - path: efm32zg_usart.h
+    - path: efm32zg_vcmp.h
+    - path: efm32zg_wdog.h
+    - path: em_device.h
+    - path: system_efm32zg.h
+    path: platform/Device/SiliconLabs/EFM32ZG/Include/
+    unless:
+    - device_content_override
+- provides:
+  - name: efm32zg108f4
+  - name: device
+  - name: device_series_0
+  - name: device_sdid_76
+  - name: device_family_efm32zg
+  - name: device_cortexm
+  - name: device_arm
+  - name: cortexm0plus
+  - name: armv6m
+  - name: device_has_acmp
+  - name: device_has_acmp0
+  - name: device_has_calibrate
+  - name: device_has_cmu
+  - name: device_has_devinfo
+  - name: device_has_dma
+  - name: device_has_emu
+  - name: device_has_gpio
+  - name: device_has_i2c
+  - name: device_has_i2c0
+  - name: device_has_leuart
+  - name: device_has_leuart0
+  - name: device_has_msc
+  - name: device_has_pcnt
+  - name: device_has_pcnt0
+  - name: device_has_prs
+  - name: device_has_rmu
+  - name: device_has_romtable
+  - name: device_has_rtc
+  - name: device_has_timer
+  - name: device_has_timer0
+  - name: device_has_timer1
+  - name: device_has_uart
+  - name: device_has_usart
+  - name: device_has_usart1
+  - name: device_has_vcmp
+  - name: device_has_wdog
+- requires:
+  - name: cmsis_core
+- template_contribution:
+  - name: device_opn
+    value: EFM32ZG108F4
+  - name: device_arch
+    value: armv6m
+  - name: device_cpu
+    value: cortexm0plus
+  - name: device_series
+    value: 0
+  - name: device_family
+    value: efm32zg
+  - name: device_flash_addr
+    value: 0
+  - name: device_flash_size
+    value: 4096
+  - name: device_flash_page_size
+    value: 1024
+  - name: device_ram_addr
+    value: 536870912
+  - name: device_ram_size
+    value: 2048
+  - name: default_stack_size
+    value: 512
+  - name: default_heap_size
+    value: 128
+- tag:
+  - device:opn:efm32zg108f4
+- toolchain_settings:
+  - option: device_opn
+    value: efm32zg108f4
+  - option: architecture
+    value: armv6-m
+  - option: cpu
+    value: cortex-m0+
+- config_file:
+  - condition:
+    - custom_radio_config
+    directory: rail
+    path: platform/Device/config/76/device.yaml
+- metadata:
+    device:
+      memory:
+      - name: Main Flash
+        page_size: 1024
+        size: 4096
+        start: 0
+        type: non-volatile
+      - name: RAM
+        size: 2048
+        start: 536870912
+        type: volatile
+      opn: efm32zg108f4

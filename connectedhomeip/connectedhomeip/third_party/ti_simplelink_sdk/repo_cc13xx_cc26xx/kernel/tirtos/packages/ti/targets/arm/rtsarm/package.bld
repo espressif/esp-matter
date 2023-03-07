@@ -1,0 +1,43 @@
+/*
+ *  Copyright 2021 by Texas Instruments Incorporated.
+ *
+ */
+
+var RtsBuild = xdc.loadCapsule('xdc/runtime/build.xs');
+var KnlBuild = xdc.loadCapsule('xdc/runtime/knl/build.xs');
+
+Pkg.makePrologue = RtsBuild.makePrologue;
+Pkg.otherFiles = ['boot.asm', 'auto_init.asm', 'clang_startup.c', 'boot_cortex_m.c'];
+Pkg.otherSrcs = Pkg.otherFiles;
+
+var attrs = {
+    profile: Pkg.attrs.profile == "debug" ? "debug" : "release",
+    copts: "--symdebug:dwarf --optimize_with_debug -ms"
+};
+
+var cobjs = RtsBuild.c_objs.concat(KnlBuild.c_objs);
+for (var i = 0; i < Build.targets.length; i++) {
+    var targ = Build.targets[i];
+    if (targ.rts == Pkg.name) {
+        if (targ.$name.match("ti.targets.arm.clang")) {
+            attrs.copts = "";
+            Pkg.addLibrary("lib/" + Pkg.name, targ, attrs).addObjects(cobjs);
+            if (targ.$name.match("R5F")) {
+                Pkg.addLibrary("lib/startup", targ).addObjects(["clang_startup", "boot_non_cortex_m"]);
+            }
+            else {
+                Pkg.addLibrary("lib/startup", targ).addObjects(["clang_startup", "boot_cortex_m"]);
+            }
+        }
+        else {
+            Pkg.addLibrary("lib/" + Pkg.name, targ, attrs).addObjects(cobjs);
+            Pkg.addLibrary("lib/boot", targ).addObjects(["boot"]);
+            Pkg.addLibrary("lib/auto_init", targ).addObjects(["auto_init"]);
+        }
+    }
+}
+/*
+ *  @(#) ti.targets.arm.rtsarm; 1, 0, 0,; 7-28-2021 07:05:52; /db/ztree/library/trees/xdctargets/xdctargets-w20/src/ xlibrary
+
+ */
+

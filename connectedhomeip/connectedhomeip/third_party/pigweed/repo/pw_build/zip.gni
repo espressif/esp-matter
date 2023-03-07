@@ -1,0 +1,135 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/python_action.gni")
+
+# Takes a set of input sources and zips them up to a .zip output.
+#
+# Users can either pass in specific input files or entire directories.
+# This target type also supports renaming files as well as specifing
+# desired zip destination directories for each input source.
+#
+# Args:
+#   deps: Dependencies for this target.
+#
+#   inputs: List of input files following the custom input formatting
+#      convention. See below for syntax.
+#
+#   dirs: List of directories to be completely zipped up following the same
+#     input formatting convention. See below for syntax.
+#
+#   output: Filename of artifact .zip file produced by script's execution.
+#
+# Each input follows the following convention:
+#   /source_path > /zip_destination/
+#
+# All directories are expected to be end with a '/'. Inputs must always specify
+# both a source and a destination. Destinations are expected to have a leading
+# '/' which stands for the root of the archive.
+#
+# Example:
+#   Let's say we have the following structure for a //source/ directory:
+#
+#     source/
+#     ├── file1.txt
+#     ├── file2.txt
+#     ├── file3.txt
+#     └── some_dir/
+#         ├── file4.txt
+#         └── some_other_dir/
+#             └── file5.txt
+#
+#   And we create the following build target:
+#
+#     import("$dir_pw_build/zip.gni")
+#
+#     pw_zip("target_name") {
+#       inputs = [
+#         "//source/file1.txt > /",             # Copied to the zip root dir.
+#         "//source/file2.txt > /renamed.txt",  # File renamed.
+#         "//source/file3.txt > /bar/",         # File moved to the /bar/ dir.
+#       ]
+#
+#       dirs = [
+#         "//source/some_dir/ > /bar/some_dir/",  # Whole /some_dir/ contents
+#                                                 # copied as /bar/some_dir/.
+#       ]
+#
+#       # Note on output: if the specific output directory isn't defined
+#       # (such as output = "zoo.zip") then the .zip will output to the
+#       # same directory as the BUILD.gn file that called the target.
+#       output = "//$target_out_dir/foo.zip",  # Where the foo.zip will end up
+#     }
+#
+#   This will result in a .zip file called foo.zip stored in //$target_out_dir
+#   with the following structure:
+#
+#     foo.zip
+#     ├── bar/
+#     │   ├── file3.txt
+#     │   └── some_dir/
+#     │       ├── file4.txt
+#     │       └── some_other_dir/
+#     │           └── file5.txt
+#     ├── file1.txt
+#     └── renamed.txt
+#
+template("pw_zip") {
+  _delimiter = ">"
+  pw_python_action(target_name) {
+    forward_variables_from(invoker,
+                           [
+                             "deps",
+                             "public_deps",
+                           ])
+    script = "$dir_pw_build/py/pw_build/zip.py"
+
+    args = [ "--out_filename" ]
+    args += [ rebase_path(invoker.output, root_build_dir) ]
+
+    inputs = []
+    args += [ "--input_list" ]
+    if (defined(invoker.inputs)) {
+      foreach(input, invoker.inputs) {
+        # Adding spaces around our delimiter is great for readability,
+        # but not great for the string split: remove the spacing.
+        input = string_replace(input, " $_delimiter", _delimiter)
+        input = string_replace(input, "$_delimiter ", _delimiter)
+
+        input_list = []
+        input_list = string_split(input, _delimiter)
+        inputs += [ input_list[0] ]
+        input_list[0] = rebase_path(input_list[0], root_build_dir)
+
+        # Pass rebased and delimited path to script.
+        args += [ string_join(_delimiter, input_list) ]
+      }
+    }
+
+    if (defined(invoker.dirs)) {
+      foreach(dir, invoker.dirs) {
+        # Adding spaces around our delimiter is great for readability,
+        # but not great for the string split: remove the spacing.
+        dir = string_replace(dir, " $_delimiter", _delimiter)
+        dir = string_replace(dir, "$_delimiter ", _delimiter)
+
+        args += [ rebase_path(dir, root_build_dir) ]
+      }
+    }
+
+    outputs = [ invoker.output ]
+  }
+}

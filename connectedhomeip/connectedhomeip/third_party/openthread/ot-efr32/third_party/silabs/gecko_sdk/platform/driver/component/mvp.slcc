@@ -1,0 +1,66 @@
+id: mvp
+label: MVP Driver
+package: platform
+description: >
+  This component provides a driver for using the MVP hardware capable of
+  accelerating mathematical operations. This component can be used to accelerate
+  machine learning kernel operations as well as other general math operations.
+
+  The API of this component is marked as internal, and is used to implement
+  acceleration for TensorFlow Lite Micro. See the TensorFlow Lite Micro component
+  for Machine Learning APIs.
+category: Platform|Driver
+quality: production
+root_path: platform/driver/mvp/
+config_file:
+  - path: config/sl_mvp_config.h
+source:
+  - path: src/sl_mvp.c
+  - path: src/sl_mvp_power.c
+  - path: src/sl_mvp_math.c
+  - path: src/sl_mvp_util.c
+  - path: src/sl_mvp_program_area.c
+  - path: src/sl_mvp_ml_add.c
+  - path: src/sl_mvp_ml_fully_connected.c
+  - path: src/sl_mvp_ml_pooling.c
+  - path: src/sl_mvp_ml_conv2d.c
+  - path: src/sl_mvp_ml_depthwise_conv2d.c
+  - path: src/sli_mvp_ml_depthwise_conv2d.cc
+  - path: src/sli_mvp_ml_depthwise_conv2d_opt.c
+  - path: src/sl_mvp_ml_transpose_conv2d.c
+include:
+  - path: inc
+    file_list:
+      - path: sl_mvp.h
+      - path: sl_mvp_power.h
+      - path: sl_mvp_types.h
+      - path: sl_mvp_math.h
+      - path: sl_mvp_util.h
+      - path: sl_mvp_program_area.h
+      - path: sl_mvp_ml_add.h
+      - path: sl_mvp_ml_fully_connected.h
+      - path: sl_mvp_ml_pooling.h
+      - path: sl_mvp_ml_conv2d.h
+      - path: sl_mvp_ml_depthwise_conv2d.h
+      - path: sl_mvp_ml_transpose_conv2d.h
+provides:
+  - name: mvp
+requires:
+  - name: emlib_common
+  - name: status
+  - name: dmadrv
+  - name: component_catalog
+  - name: device_has_mvp
+toolchain_settings:
+  - option: fp16
+    value: enabled
+  - option: gcc_compiler_option
+    value: -mfp16-format=ieee
+template_contribution:
+  - name: component_catalog
+    value: mvp
+  - name: event_handler
+    value:
+      event: driver_init
+      include: "sl_mvp.h"
+      handler: sli_mvp_init

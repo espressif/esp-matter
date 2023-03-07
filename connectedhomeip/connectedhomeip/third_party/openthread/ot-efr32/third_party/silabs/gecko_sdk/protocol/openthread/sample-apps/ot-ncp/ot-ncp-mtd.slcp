@@ -1,0 +1,56 @@
+project_name: ot-ncp-mtd
+label: OpenThread - NCP (MTD)
+package: OpenThread
+description:  >
+  This is a simple OpenThread Minimal Thread Device NCP application. This is equivalent to the ot-ncp-mtd application in the OpenThread GitHub repo.
+category: OpenThread Examples
+quality: production
+
+component:
+  - id: brd4001a
+  - id: ot_reference_device
+  - id: ot_stack_mtd
+  - id: ot_ncp_source
+  - id: uartdrv_usart
+    instance:
+      - vcom
+  - id: rail_util_pti
+
+include:
+  - path: .
+    file_list:
+    - path: app.h
+  - path: ../../../../util/third_party/openthread/src/lib/platform
+    file_list:
+    - path: reset_util.h
+
+source:
+  - path: main.c
+  - path: app.c
+
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: SL_MBEDTLS_KEY_EXCHANGE_ECDHE_ECDSA_ENABLED
+    value: 1
+  - name: SL_MBEDTLS_KEY_EXCHANGE_PSK_ENABLED
+    value: 1
+
+tag:
+  - prebuilt_demo
+  
+readme:
+  - path: ./README-OT-NCP.md
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Thread"]
+  - name: "Device Type"
+    value: ["NCP"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+
+ui_hints:
+  highlight:
+    - path: ./README-OT-NCP.md
+      focus: true

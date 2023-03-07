@@ -1,0 +1,70 @@
+diff --git a/teensy3/WCharacter.h b/teensy3/WCharacter.h
+index 5bfe697..7c500c1 100644
+--- a/teensy3/WCharacter.h
++++ b/teensy3/WCharacter.h
+@@ -61,7 +61,7 @@ inline boolean isAlpha(int c)
+ // that fits into the ASCII character set.
+ inline boolean isAscii(int c)
+ {
+-  return ( isascii (c) == 0 ? false : true);
++  return ((c & ~0x7F) != 0 ? false : true);
+ }
+ 
+ 
+@@ -143,7 +143,7 @@ inline boolean isHexadecimalDigit(int c)
+ // ASCII character set, by clearing the high-order bits.
+ inline int toAscii(int c)
+ {
+-  return toascii (c);
++  return (c & 0x7F);
+ }
+ 
+ 
+diff --git a/teensy3/avr_functions.h b/teensy3/avr_functions.h
+index 977c5e9..55c426c 100644
+--- a/teensy3/avr_functions.h
++++ b/teensy3/avr_functions.h
+@@ -95,7 +95,7 @@ static inline void eeprom_update_block(const void *buf, void *addr, uint32_t len
+ char * ultoa(unsigned long val, char *buf, int radix);
+ char * ltoa(long val, char *buf, int radix);
+ 
+-#if defined(_NEWLIB_VERSION) && (__NEWLIB__ < 2 || __NEWLIB__ == 2 && __NEWLIB_MINOR__ < 2)
++#if defined(__STRICT_ANSI__) || (defined(_NEWLIB_VERSION) && (__NEWLIB__ < 2 || __NEWLIB__ == 2 && __NEWLIB_MINOR__ < 2))
+ static inline char * utoa(unsigned int val, char *buf, int radix) __attribute__((always_inline, unused));
+ static inline char * utoa(unsigned int val, char *buf, int radix) { return ultoa(val, buf, radix); }
+ static inline char * itoa(int val, char *buf, int radix) __attribute__((always_inline, unused));
+diff --git a/teensy4/WCharacter.h b/teensy4/WCharacter.h
+index 5bfe697..7c500c1 100644
+--- a/teensy4/WCharacter.h
++++ b/teensy4/WCharacter.h
+@@ -61,7 +61,7 @@ inline boolean isAlpha(int c)
+ // that fits into the ASCII character set.
+ inline boolean isAscii(int c)
+ {
+-  return ( isascii (c) == 0 ? false : true);
++  return ((c & ~0x7F) != 0 ? false : true);
+ }
+ 
+ 
+@@ -143,7 +143,7 @@ inline boolean isHexadecimalDigit(int c)
+ // ASCII character set, by clearing the high-order bits.
+ inline int toAscii(int c)
+ {
+-  return toascii (c);
++  return (c & 0x7F);
+ }
+ 
+ 
+diff --git a/teensy4/avr_functions.h b/teensy4/avr_functions.h
+index fb6ca11..3b34391 100644
+--- a/teensy4/avr_functions.h
++++ b/teensy4/avr_functions.h
+@@ -97,7 +97,7 @@ static inline void eeprom_update_block(const void *buf, void *addr, uint32_t len
+ char * ultoa(unsigned long val, char *buf, int radix);
+ char * ltoa(long val, char *buf, int radix);
+ 
+-#if defined(_NEWLIB_VERSION) && (__NEWLIB__ < 2 || __NEWLIB__ == 2 && __NEWLIB_MINOR__ < 2)
++#if defined(__STRICT_ANSI__) || (defined(_NEWLIB_VERSION) && (__NEWLIB__ < 2 || __NEWLIB__ == 2 && __NEWLIB_MINOR__ < 2))
+ static inline char * utoa(unsigned int val, char *buf, int radix) __attribute__((always_inline, unused));
+ static inline char * utoa(unsigned int val, char *buf, int radix) { return ultoa(val, buf, radix); }
+ static inline char * itoa(int val, char *buf, int radix) __attribute__((always_inline, unused));

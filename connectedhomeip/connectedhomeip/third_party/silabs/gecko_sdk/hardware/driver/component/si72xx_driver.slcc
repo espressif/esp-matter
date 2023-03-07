@@ -1,0 +1,21 @@
+id: si72xx_driver
+package: platform
+label: Si72xx - Hall Effect Sensor
+description: >
+  Driver for the Silicon Labs Si72xx Hall effect sensor
+category: Platform|Board Drivers
+quality: production
+root_path: hardware/driver/si72xx
+provides:
+  - name: si72xx_driver
+include:
+  - path: inc
+    file_list:
+      - path: sl_si72xx.h
+source:
+  - path: src/sl_si72xx.c
+requires:
+  - name: i2cspm
+documentation:
+    docset: gecko-platform
+    document: hardware-driver/api/group-si72xx

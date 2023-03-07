@@ -1,0 +1,93 @@
+id: zigbee_cbke_core
+label: CBKE core
+package: Zigbee
+category: Zigbee|Stack
+quality: production
+
+description: Certificate-Based Key Exchange Library. It provides support for managing the Elliptic Curve Cryptography (ECC) operations.  It provides key agreement and ephemeral key generation interfaces with the ability to save the generated link key key.  It is used by the Smart Energy 1.x Profile to authenticate and authorize devices.
+
+provides:
+  - name: zigbee_cbke_core
+
+requires:
+  - name: zigbee_cbke_core_implementation
+  - name: zigbee_cbke_core_library
+    condition:
+      - zigbee_force_libraries
+  - name: zigbee_security_link_keys
+  # The CBKE Core library requires the selection of either the CBKE 163k1 library,
+  # the CBKE 283k1 library, or both libraries. The current recommended library is
+  # selected as CBKE 283k1.
+  - name: zigbee_ecc_curve_support
+
+recommends:
+  - id: zigbee_cbke_core_source
+  - id: zigbee_cbke_283k1
+
+include:
+  - path: protocol/zigbee/stack/include
+    file_list:
+      - path: cbke-crypto-engine.h
+  - path: protocol/zigbee/app/em260
+    file_list:
+      - path: command-handlers-cbke.h
+        condition:
+          - zigbee_ncp
+
+source:
+  - path: protocol/zigbee/app/em260/command-handlers-certificate-based-key-exchange-cbke-generated.c
+    condition:
+      - zigbee_ncp
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_cbke_core
+  - name: zigbee_stack_callback
+    value:
+      callback_type: dsa_sign
+      function_name: emAfDsaSignCallback
+    condition:  
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: dsa_verify
+      function_name: emAfDsaVerifyCallback
+    condition:  
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: generate_cbke_keys
+      function_name: emAfGenerateCbkeKeysCallback
+    condition:  
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: calculate_smacs
+      function_name: emAfCalculateSmacsCallback
+    condition:  
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: generate_cbke_keys_handler283k1
+      function_name: emAfGenerateCbkeKeysCallback283k1
+    condition:  
+       - zigbee_ncp
+  - name: zigbee_stack_callback
+    value:
+      callback_type: calculate_smacs_handler283k1
+      function_name: emAfCalculateSmacsCallback283k1
+    condition:  
+       - zigbee_ncp
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: set_configuration_value
+      function_name: emberAfPluginEzspCbkeConfigurationValueCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: get_configuration_value
+      function_name: emberAfPluginEzspCbkeConfigurationValueCommandCallback
+
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/cbke-core

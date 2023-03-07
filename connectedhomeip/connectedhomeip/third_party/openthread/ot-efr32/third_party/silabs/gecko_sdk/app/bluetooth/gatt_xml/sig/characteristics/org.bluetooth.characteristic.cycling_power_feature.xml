@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- <?xml-stylesheet type="text/xsl" href="FieldBasedDisplay.xslt"?> -->
+<!--Copyright 2016 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Cycling Power Feature" type="org.bluetooth.characteristic.cycling_power_feature" uuid="2A65" last-modified="2016-05-03" approved="Yes">
+  <InformativeText>
+    <Summary>The CP Feature characteristic is used to report a list of features supported by the device.</Summary>
+  </InformativeText>
+  <Value>
+    <Field name="Cycling Power Feature">
+      <Requirement>Mandatory</Requirement>
+      <Format>32bit</Format>
+      <BitField>
+        <Bit index="0" size="1" name="Pedal Power Balance Supported">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="1" size="1" name="Accumulated Torque Supported">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="2" size="1" name="Wheel Revolution Data Supported">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="3" size="1" name="Crank Revolution Data Supported">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="4" size="1" name="Extreme Magnitudes Supported">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="5" size="1" name="Extreme Angles Supported">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="6" size="1" name="Top and Bottom Dead Spot Angles Supported">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="7" size="1" name="Accumulated Energy Supported">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="8" size="1" name="Offset Compensation Indicator Supported">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="9" size="1" name="Offset Compensation Supported">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="10" size="1" name="Cycling Power Measurement Characteristic Content Masking Supported">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="11" size="1" name="Multiple Sensor Locations Supported">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="12" size="1" name="Crank Length Adjustment Supported ">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="13" size="1" name="Chain Length Adjustment Supported">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="14" size="1" name="Chain Weight Adjustment Supported">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="15" size="1" name="Span Length Adjustment Supported">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="16" size="1" name="Sensor Measurement Context">
+          <Enumerations>
+            <Enumeration key="0" value="Force based" />
+            <Enumeration key="1" value="Torque based" />
+          </Enumerations>
+        </Bit>
+        <Bit index="17" size="1" name="Instantaneous Measurement Direction Supported">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="18" size="1" name="Factory Calibration Date Supported">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="19" size="1" name="Enhanced Offset Compensation Supported">
+          <Enumerations>
+            <Enumeration key="0" value="False" />
+            <Enumeration key="1" value="True" />
+          </Enumerations>
+        </Bit>
+        <Bit index="20" size="2" name="Distribute System Support">
+          <Enumerations>
+            <Enumeration key="0" value="Unspecified (legacy sensor)" />
+            <Enumeration key="1" value="Not for use in a distributed system" />
+            <Enumeration key="2" value="Can be used in a distributed system" />
+            <Enumeration key="3" value="RFU" />
+          </Enumerations>
+        </Bit>
+        <ReservedForFutureUse index="22" size="10" />
+      </BitField>
+    </Field>
+  </Value>
+  <Note>
+        The fields in the above table, reading from top to bottom, are shown in the order of LSO to MSO, where LSO = Least Significant Octet and MSO = Most Significant Octet. 
+        The Least Significant Octet represents the eight bits numbered 0 to 7.
+    </Note>
+</Characteristic>

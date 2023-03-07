@@ -1,0 +1,162 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load(
+    "//pw_build:pigweed.bzl",
+    "pw_cc_facade",
+    "pw_cc_library",
+    "pw_cc_test",
+)
+load("//pw_protobuf_compiler:proto.bzl", "pw_proto_library")
+load("//pw_build/bazel_internal:py_proto_library.bzl", "py_proto_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+pw_cc_facade(
+    name = "facade",
+    hdrs = [
+        "public/pw_log/config.h",
+        "public/pw_log/levels.h",
+        "public/pw_log/log.h",
+        "public/pw_log/options.h",
+        "public/pw_log/short.h",
+        "public/pw_log/shorter.h",
+    ],
+    includes = ["public"],
+    deps = [
+        "//pw_preprocessor",
+    ],
+)
+
+pw_cc_library(
+    name = "pw_log",
+    deps = [
+        ":facade",
+        "@pigweed_config//:pw_log_backend",
+    ],
+)
+
+pw_cc_library(
+    name = "glog_adapter",
+    hdrs = [
+        "public/pw_log/glog_adapter.h",
+        "public/pw_log/glog_adapter_config.h",
+        "public/pw_log/internal/glog_adapter.h",
+    ],
+    includes = ["public"],
+    deps = [
+        "//pw_assert",
+        "//pw_log",
+        "//pw_preprocessor",
+        "//pw_string",
+    ],
+)
+
+pw_cc_library(
+    name = "proto_utils",
+    srcs = [
+        "proto_utils.cc",
+    ],
+    hdrs = [
+        "public/pw_log/proto_utils.h",
+    ],
+    deps = [
+        ":facade",
+        ":log_proto_cc.pwpb",
+        "//pw_bytes",
+        "//pw_log_tokenized:headers",
+        "//pw_protobuf",
+        "//pw_result",
+    ],
+)
+
+proto_library(
+    name = "log_proto",
+    srcs = [
+        "log.proto",
+    ],
+    import_prefix = "pw_log/proto",
+    strip_import_prefix = "//pw_log",
+    deps = [
+        "//pw_protobuf:common_proto",
+        "//pw_tokenizer:tokenizer_proto",
+    ],
+)
+
+# TODO(b/241456982): Not expected to build yet.
+py_proto_library(
+    name = "log_proto_py_pb2",
+    tags = ["manual"],
+    deps = [":log_proto"],
+)
+
+java_lite_proto_library(
+    name = "log_java_proto_lite",
+    deps = [":log_proto"],
+)
+
+pw_proto_library(
+    name = "log_proto_cc",
+    deps = [":log_proto"],
+)
+
+pw_cc_library(
+    name = "backend_multiplexer",
+    visibility = ["@pigweed_config//:__pkg__"],
+    deps = ["//pw_log_basic"],
+)
+
+pw_cc_test(
+    name = "test",
+    srcs = [
+        "basic_log_test.cc",
+        "basic_log_test_plain_c.c",
+    ],
+    deps = [
+        ":facade",
+        ":pw_log",
+        "//pw_preprocessor",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "glog_adapter_test",
+    srcs = [
+        "glog_adapter_test.cc",
+    ],
+    deps = [
+        ":glog_adapter",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "proto_utils_test",
+    srcs = [
+        "proto_utils_test.cc",
+    ],
+    deps = [
+        ":facade",
+        ":log_proto_cc.pwpb",
+        ":proto_utils",
+        "//pw_containers",
+        "//pw_preprocessor",
+        "//pw_protobuf",
+        "//pw_protobuf:bytes_utils",
+        "//pw_unit_test",
+    ],
+)

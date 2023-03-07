@@ -1,0 +1,36 @@
+﻿<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster xmlns:zcl="http://zigbee.org/zcl/clusters"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:type="http://zigbee.org/zcl/types"
+  xmlns:xi="http://www.w3.org/2001/XInclude" xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd"
+  id="0409" revision="1" name="PhMeasurement">
+  <classification role="application" picsCode="PH" primaryTransaction="2" />
+  <server>
+    <attributes>
+      <attribute id="0000" name="MeasuredValue" type="uint16" reportRequired="true" required="true" default="65535">
+        <restriction>
+          <type:minInclusiveRef ref="MinMeasuredValue" />
+          <type:maxInclusiveRef ref="MaxMeasuredValue" />
+        </restriction>
+      </attribute>
+      <attribute id="0001" name="MinMeasuredValue" type="uint16" required="true" default="65535">
+        <restriction>
+          <type:maxExclusiveRef ref="MaxMeasuredValue" />
+        </restriction>
+      </attribute>
+      <attribute id="0002" name="MaxMeasuredValue" type="uint16" max="1400" required="true" default="65535">
+        <restriction>
+          <type:minExclusiveRef ref="MinMeasuredValue" />
+        </restriction>
+      </attribute>
+      <attribute id="0003" name="Tolerance" type="uint16" max="200" default=""/>
+    </attributes>
+  </server>
+</zcl:cluster>

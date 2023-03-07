@@ -1,0 +1,40 @@
+package: Zigbee
+description: This is a simple Over-the-air bootload cluster storage module that stores
+  only ONE file in the storage device (for use by the client or server component). It
+  requires a storage driver. Silicon Labs provides two, an EEPROM version and a RAM version.
+label: OTA Simple Storage Module
+quality: production
+id: zigbee_ota_storage_simple
+category: Zigbee|Over-The-Air Bootloading
+provides:
+   - name: "zigbee_ota_storage_simple"
+requires:
+   - name: "zigbee_ota_storage_common"
+   - name: "zigbee_ota_common"
+   - name: "zigbee_ota_storage_implementation"
+recommends:
+   - id: "zigbee_ota_storage_simple_eeprom"
+     condition: 
+      - zigbee_stack_common
+   - id: "zigbee_ota_storage_simple_ram"
+     condition: 
+      - zigbee_simulation
+source:
+  - path: protocol/zigbee/app/framework/plugin/ota-storage-simple/ota-storage-simple.c
+  - path: protocol/zigbee/app/framework/plugin/ota-storage-simple/ota-storage-simple-simulation.c
+    condition:
+      - zigbee_simulation
+include:
+  - path: protocol/zigbee/app/framework/plugin/ota-storage-simple
+    file_list:
+      - path: ota-storage-simple-driver.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_ota_storage_simple
+  - name: zigbee_af_callback
+    value:
+      callback_type: init_done
+      function_name: emAfPluginOtaStorageSimpleInitCallback    
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/ota-storage-simple

@@ -1,0 +1,10 @@
+[
+    {
+        "files": [
+            "+makefile.defs -> makefile.defs",
+            "+../debug.cfg -> debug.cfg",
+            "+../README.md -> README.md",
+            "+../README.html -> README.html"
+        ]
+    }
+]

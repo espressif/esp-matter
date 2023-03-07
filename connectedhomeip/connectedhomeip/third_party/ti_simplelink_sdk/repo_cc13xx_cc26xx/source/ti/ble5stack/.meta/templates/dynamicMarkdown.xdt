@@ -1,0 +1,28 @@
+Please note:
+*	Each service is **dual emphasis** and his characteristics are in a bullet list below.
+*	The list changes dynamically.
+
+Here are all the services and characteristics added:
+
+%%{
+let serviceMod  = system.modules['/ti/ble5stack/templates/gatt_builder/Service'];
+
+var modulesInstancesJSON = _.chain(pmux.modules)
+                            .map(function(mod){
+                                return [mod.$instances]
+                            })
+                            .flattenDeep()
+                                .filter( function(inst){
+                                    return !!inst;
+                                })
+                            .filter(function(inst){
+                                    return inst.$name.startsWith('Characteristic') || inst.$name.startsWith('Service');
+                                })
+                            .groupBy(function(inst){return (inst.$name.startsWith('Service'))? (inst.$name) : (inst.$ownedBy.$name);}).toArray()
+                            .flattenDeep()
+                            .map(function(inst){ return ((inst.$name.startsWith('Service'))? (inst.$name + ":   " + "   **" + inst.name + "**") : ("*	" +inst.name) );})
+                            .join("\n\n")
+                            .value();
+%%}
+
+`modulesInstancesJSON`

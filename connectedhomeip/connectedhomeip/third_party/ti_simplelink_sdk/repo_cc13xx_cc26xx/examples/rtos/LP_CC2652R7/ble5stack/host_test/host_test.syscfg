@@ -1,0 +1,181 @@
+/*
+ * Copyright (c) 2018, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+// @cliArgs --board /ti/boards/LP_CC2652R7 --rtos tirtos
+
+
+/*
+ *  host_test.syscfg
+ */
+
+const lpName = system.getScript("/ti/ble5stack/ble_common.js").getBoardOrLaunchPadName(true);
+
+/* ======== RTOS ======== */
+var RTOS = scripting.addModule("/ti/drivers/RTOS");
+
+/* ======== AESCCM ======== */
+var AESCCM = scripting.addModule("/ti/drivers/AESCCM");
+var aesccm = AESCCM.addInstance();
+aesccm.$name = "CONFIG_AESCCM0";
+
+/* ======== AESECB ======== */
+var AESECB = scripting.addModule("/ti/drivers/AESECB");
+var aesecb = AESECB.addInstance();
+aesecb.$name = "CONFIG_AESECB0";
+
+/* ======== ECDH ======== */
+var ECDH = scripting.addModule("/ti/drivers/ECDH");
+var ecdh = ECDH.addInstance();
+ecdh.$name = "CONFIG_ECDH0"
+
+/* ======== AESCTRDRBG ======== */
+var AESCTRDRBG = scripting.addModule("/ti/drivers/AESCTRDRBG");
+var aesctrdrbg = AESCTRDRBG.addInstance();
+aesctrdrbg.$name = "CONFIG_AESCTRDRBG_0";
+aesctrdrbg.aesctrObject.$name = "CONFIG_AESCTR_0";
+
+/* ======== Display ======== */
+var Display = scripting.addModule("/ti/display/Display");
+var displayUART = Display.addInstance();
+displayUART.$hardware = system.deviceData.board.components.XDS110UART;
+displayUART.enableANSI = true;
+displayUART.uartBufferSize = 128;
+displayUART.useUART2 = false;
+displayUART.uart.txPinInstance.outputState = "High";
+displayUART.uart.$name = "CONFIG_DISPLAY_UART";
+displayUART.uart.txPinInstance.$name = "CONFIG_PIN_UART_TX";
+displayUART.uart.rxPinInstance.$name = "CONFIG_PIN_UART_RX";
+
+/* ======== GPIO ======== */
+var GPIO = scripting.addModule("/ti/drivers/PIN");
+
+var gpio0 = GPIO.addInstance();
+gpio0.$hardware = system.deviceData.board.components.BUTTON0;
+gpio0.mode = "Input";
+gpio0.$name = "CONFIG_GPIO_BTN1";
+
+var gpio1 = GPIO.addInstance();
+gpio1.$hardware = system.deviceData.board.components.BUTTON1;
+gpio1.mode = "Input";
+gpio1.$name = "CONFIG_GPIO_BTN2";
+
+/* ======== NVS ======== */
+var NVS = scripting.addModule("/ti/drivers/NVS");
+var nvs = NVS.addInstance();
+nvs.internalFlash.regionBase   = 0x48000;
+nvs.internalFlash.regionSize   = 0x4000;
+nvs.$name = "CONFIG_NVSINTERNAL";
+
+/* ======== RF ======== */
+var RF = scripting.addModule("/ti/drivers/RF");
+
+/* if an antenna component exists, assign it to the rf instance */
+if (system.deviceData.board && system.deviceData.board.components.RF) {
+    RF.$hardware = system.deviceData.board.components.RF;
+}
+
+/* ======== POWER ======== */
+var Power = scripting.addModule("/ti/drivers/Power");
+if(lpName == "LP_CC2652RB")
+{
+  Power.calibrateRCOSC_LF = false;
+  Power.calibrateRCOSC_HF = false;
+}
+
+/* ======== SPI ======== */
+var SPI = scripting.addModule("/ti/drivers/SPI");
+var spi0 = SPI.addInstance();
+spi0.$name = "CONFIG_SPI_0";
+spi0.$hardware = system.deviceData.board.components.LP_SPI;
+
+/* ======== TRNG ======== */
+var TRNG = scripting.addModule("/ti/drivers/TRNG");
+var trng = TRNG.addInstance();
+
+/* ======== Device ======== */
+// Temporarily disable ti_devices_config.c generation
+var device = scripting.addModule("ti/devices/CCFG");
+const ccfgSettings = system.getScript("/ti/common/lprf_ccfg_settings.js").ccfgSettings;
+for(var setting in ccfgSettings)
+{
+    device[setting] = ccfgSettings[setting];
+}
+const bleCcfgSettings = system.getScript("/ti/ble5stack/ble_common.js").centralRoleCcfgSettings;
+for(var setting in bleCcfgSettings)
+{
+    device[setting] = bleCcfgSettings[setting];
+}
+
+/* ======== RF Design ======== */
+var rfDesign = scripting.addModule("ti/devices/radioconfig/rfdesign");
+const rfDesignSettings = system.getScript("/ti/common/lprf_rf_design_settings.js").rfDesignSettings;
+for(var setting in rfDesignSettings)
+{
+    rfDesign[setting] = rfDesignSettings[setting];
+}
+
+const radioSettings = system.getScript("/ti/ble5stack/ble_common.js").getRadioScript(rfDesign.rfDesign,system.deviceData.deviceId);
+const bleRfDesignSettings = radioSettings.rfDesignParams;
+for(var setting in bleRfDesignSettings)
+{
+    rfDesign[setting] = bleRfDesignSettings[setting];
+}
+
+/* ======== Radio ======== */
+var custom = scripting.addModule("/ti/devices/radioconfig/custom");
+var bleRadioSetModule;
+
+if(rfDesignSettings.rfDesign == "LAUNCHXL-CC1352P-4" || rfDesignSettings.rfDesign == "LP_CC2652PSIP" || rfDesignSettings.rfDesign == "LP_CC1352P7-4")
+{
+    custom.ble = ["bt5le2mp10"];
+    bleRadioSetModule = custom.radioConfigbt5le2mp10;
+}
+else
+{
+    custom.ble = ["bt5le2m"];
+    bleRadioSetModule = custom.radioConfigbt5le2m;
+}
+
+
+const bleRadioSettings = radioSettings.radioConfigParams;
+for(var setting in bleRadioSettings)
+{
+    bleRadioSetModule.codeExportConfig[setting] = bleRadioSettings[setting];
+}
+
+if(rfDesignSettings.rfDesign == "LAUNCHXL-CC1352P-2" || rfDesignSettings.rfDesign == "LAUNCHXL-CC1352P-4" || rfDesignSettings.rfDesign == "LP_CC2652PSIP" || rfDesignSettings.rfDesign == "LP_CC1352P7-4" || rfDesignSettings.rfDesign == "LP_CC2651P3")
+{
+    bleRadioSetModule.highPA = true;
+	if(rfDesignSettings.rfDesign == "LAUNCHXL-CC1352P-4" || rfDesignSettings.rfDesign == "LP_CC2652PSIP" || rfDesignSettings.rfDesign == "LP_CC1352P7-4")
+	{
+        bleRadioSetModule.txPowerHi = "10";
+	}
+}

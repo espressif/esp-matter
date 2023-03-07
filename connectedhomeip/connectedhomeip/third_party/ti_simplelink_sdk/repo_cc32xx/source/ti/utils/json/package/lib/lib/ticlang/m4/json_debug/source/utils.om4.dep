@@ -1,0 +1,5 @@
+package/lib/lib/ticlang/m4/json_debug/source/utils.om4: source/utils.c ./parse_common.h ./utils.h ./json_engine.h 
+source/utils.c:
+./parse_common.h:
+./utils.h:
+./json_engine.h:

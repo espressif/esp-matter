@@ -1,0 +1,14 @@
+id: cpc_secondary_recommended_interface
+label: "CPC: Recommended interface"
+package: platform
+description: CPC Recommended Interface
+category: Services|Co-Processor Communication|Secondary Device
+quality: production
+ui_hints:
+  visibility: never
+provides:
+- name: cpc_secondary_recommended_interface
+requires:
+- name: cpc_secondary_driver
+- name: cpc_recommend_vcom_eusart
+- name: cpc_recommend_vcom_usart

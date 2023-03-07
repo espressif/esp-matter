@@ -1,0 +1,22 @@
+package: Zigbee
+description: This component utilizes behavior defined in the specification, but not tested
+  in compliance, to update the trust center link key of legacy HA devices. This component
+  makes use of the Device Database component to be notified when a device joins the
+  network of a trust center. When a node joins, this component checks the stack revision
+  of the node. If the node's stack revision is not R21 or greater, the component 
+  forcefully updates the joining device's trust center link key via a Transport Key
+  APS command. Note that this component is meant to be using on a trust center only (i.e.,
+  not on a joining device).
+label: HA Device Trust Center Link Key Update
+quality: production
+id: zigbee_update_ha_tc_link_key
+category: Zigbee|Zigbee 3.0
+provides:
+   - name: "zigbee_update_ha_tc_link_key"
+requires:
+   - name: "zigbee_device_database"
+source:
+  - path: protocol/zigbee/app/framework/plugin/update-ha-tc-link-key/update-ha-tc-link-key.c  
+template_contribution:
+  - name: component_catalog
+    value: zigbee_update_ha_tc_link_key

@@ -1,0 +1,19 @@
+id: mbedtls_ecc_secp192r1
+package: platform
+label: secp192r1
+description: >-
+  This component adds support for the secp192r1 elliptic curve,
+  a 192-bit prime field Weierstrass curve, in Mbed TLS.
+category: Platform|Security|Mbed TLS|Elliptic Curves
+quality: production
+provides:
+  - name: mbedtls_ecc_secp192r1
+  - name: mbedtls_ecc_curve
+    allow_multiple: true
+requires:
+  - name: mbedtls_ecc
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_ECP_DP_SECP192R1_ENABLED
+  - name: mbedtls_mpi_max
+    value: 24

@@ -1,0 +1,47 @@
+project_name: power_manager_kernel_micriumos
+package: platform
+quality: production
+label: Platform - Power Manager Kernel with Micrium OS
+description: > 
+  This example project demonstrates use of the Power Manager module
+  in a Micrium OS kernel task.
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]
+source:
+  - path: app.c
+  - path: main.c
+  - path: power_manager_app.c
+include:
+  - path: .
+    file_list:
+    - path: app.h
+    - path: power_manager_app.h
+component:
+  - id: sl_system
+  - id: device_init
+  - id: micriumos_kernel
+  - id: power_manager
+  - id: sleeptimer
+  - id: simple_button
+    instance:
+      - btn0
+      - btn1
+define:
+  - name: DEBUG_EFM
+configuration:
+  - name: SL_POWER_MANAGER_DEBUG
+    value: 1
+  - name: SL_POWER_MANAGER_LOWEST_EM_ALLOWED
+    value: 3
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+tag:
+  - hardware:component:button:2+

@@ -1,0 +1,26 @@
+id: iot_threads
+
+category:    Third Party|Amazon FreeRTOS - AWS Libraries|Platform
+label:       IoT Threads
+description: IoT Platform - Threads API for FreeRTOS.
+
+package: amazon_platform
+quality: alpha
+
+provides:
+  - name: iot_threads
+
+requires:
+  - name: iot_logging
+
+root_path: util/third_party/aws_iot_libs
+
+source:
+  - path: libraries/abstractions/platform/freertos/iot_threads_freertos.c
+  - path: libraries/abstractions/platform/test/iot_test_platform_threads.c
+    condition: ["aws_tests_defs"]
+
+include:
+  - path: libraries/abstractions/platform/include
+    file_list:
+      - path: platform/iot_threads.h

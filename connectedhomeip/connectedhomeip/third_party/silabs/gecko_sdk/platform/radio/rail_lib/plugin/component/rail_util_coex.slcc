@@ -1,0 +1,196 @@
+id: rail_util_coex
+label: RAIL Utility, Coexistence
+description: Utility to aid with RAIL Coexistence Support
+package: platform
+category: Platform|Radio
+quality: production
+requires:
+  - name: device
+  - name: rail_lib
+  - name: gpiointerrupt
+  - name: emlib_common
+  - name: emlib_core
+  - name: emlib_gpio
+  - name: emlib_prs
+  - name: emlib_timer
+  - name: emlib_cmu
+  - name: rail_util_coex_cli
+    condition:
+      - cli
+      - rail_test_core
+  - name: rail_util_ieee802154_stack_event
+    condition:
+      - ot_stack
+  - name: rail_util_ieee802154_stack_event
+    condition:
+      - zigbee_pro_stack_support
+  - name: rail_util_ieee802154_phy_select
+    condition:
+      - ot_stack
+  - name: rail_util_ieee802154_phy_select
+    condition:
+      - zigbee_pro_stack_support
+  - name: status
+  - name: ustimer
+provides:
+  - name: rail_util_coex
+documentation:
+  docset: rail
+  document: rail-util-coex
+config_file:
+  - path: platform/radio/rail_lib/plugin/coexistence/config/efr32xg1/sl_rail_util_coex_config.h
+    condition:
+      - device_series_1
+      - device_sdid_80
+    file_id: rail_util_coex_config
+  - path: platform/radio/rail_lib/plugin/coexistence/config/efr32xg1x/sl_rail_util_coex_config.h
+    condition:
+      - device_series_1
+    unless:
+      - device_sdid_80
+    file_id: rail_util_coex_config
+  - path: platform/radio/rail_lib/plugin/coexistence/config/efr32xg2x/sl_rail_util_coex_config.h
+    condition:
+      - device_series_2
+    file_id: rail_util_coex_config
+  - path: platform/radio/rail_lib/plugin/coexistence/config/sl_rail_util_coex_common_config.h
+    file_id: rail_util_coex_common_config
+include:
+  - path: platform/radio/rail_lib/plugin
+  - path: platform/radio/rail_lib/plugin/coexistence/common
+    file_list:
+      - path: coexistence.h
+  - path: platform/radio/rail_lib/plugin/coexistence/hal/efr32
+    file_list:
+      - path: coexistence-hal.h
+  - path: platform/radio/rail_lib/plugin/coexistence/protocol/ble
+    file_list:
+      - path: coexistence-ble.h
+      - path: coexistence-ble-ll.h
+    condition:
+      - bluetooth_controller
+  - path: platform/radio/rail_lib/plugin/coexistence/protocol/ble
+    file_list:
+      - path: coexistence-ble.h
+      - path: coexistence-ble-ll.h
+    condition:
+      - rail_test_core      
+  - path: platform/radio/rail_lib/plugin/coexistence/protocol/ieee802154_uc
+    file_list:
+      - path: coexistence-802154.h
+    condition:
+      - ot_stack
+  - path: platform/radio/rail_lib/plugin/coexistence/protocol/ieee802154_uc
+    file_list:
+      - path: coexistence-802154.h
+    condition:
+      - rail_test_core
+  - path: platform/radio/rail_lib/plugin/coexistence/protocol/ieee802154_uc
+    file_list:
+      - path: coexistence-802154.h
+    condition:
+      - zigbee_pro_stack_support
+  - path: protocol/zigbee/stack/include/
+    file_list:
+      - path: ember-types.h
+    condition:
+      - zigbee_pro_stack_support
+source:
+  - path: platform/radio/rail_lib/plugin/coexistence/common/coexistence.c
+  - path: platform/radio/rail_lib/plugin/coexistence/common/coexistence-pwm.c
+  - path: platform/radio/rail_lib/plugin/coexistence/hal/efr32/coexistence-directional-priority.c
+  - path: platform/radio/rail_lib/plugin/coexistence/hal/efr32/coexistence-hal.c
+  - path: platform/radio/rail_lib/plugin/coexistence/protocol/ble/coexistence-ble.c
+    condition:
+      - bluetooth_controller
+  - path: platform/radio/rail_lib/plugin/coexistence/protocol/ble/coexistence-ble-counters.c
+    condition:
+      - bluetooth_controller
+  - path: platform/radio/rail_lib/plugin/coexistence/protocol/ble/coexistence-ble.c
+    condition:
+      - rail_test_core
+  - path: platform/radio/rail_lib/plugin/coexistence/protocol/ble/coexistence-ble-counters.c
+    condition:
+      - rail_test_core
+  - path: platform/radio/rail_lib/plugin/coexistence/protocol/ieee802154_uc/coexistence-802154.c
+    condition:
+      - ot_stack
+  - path: platform/radio/rail_lib/plugin/coexistence/protocol/ieee802154_uc/coexistence-802154.c
+    condition:
+      - rail_test_core
+  - path: platform/radio/rail_lib/plugin/coexistence/protocol/ieee802154_uc/coexistence-802154.c
+    condition:
+      - zigbee_pro_stack_support
+  - path: platform/radio/rail_lib/plugin/coexistence/protocol/ieee802154_uc/sl_zigbee_coexistence_cb.c
+    condition:
+      - zigbee_pro_stack_support
+template_file:
+  - path: platform/radio/rail_lib/plugin/coexistence/common/coexistence_event.c.jinja
+template_contribution:
+  - name: event_handler
+    value:
+      event: stack_init
+      include: "coexistence-802154.h"
+      handler: sl_rail_util_coex_init
+    priority: -9010
+    condition:
+      - zigbee_pro_stack_support
+  - name: rail_util_coex_callbacks
+    value:
+      handler: sli_bt_coex_radio_callback
+      event_filter: sli_bt_coex_event_filter
+    priority: -9010
+    condition:
+      - bluetooth_controller
+  - name: rail_util_coex_callbacks
+    value:
+      handler: sli_bt_coex_radio_callback
+      event_filter: sli_bt_coex_event_filter
+    priority: -9010
+    condition:
+      - rail_test_core
+  - name: rail_util_coex_callbacks
+    value:
+      include: "coexistence-802154.h"
+      handler: sli_rail_util_ieee802154_coex_on_event
+      event_filter: sli_rail_util_ieee802154_coex_event_filter
+    priority: -9010
+    condition:
+      - ot_stack
+  - name: rail_util_coex_callbacks
+    value:
+      include: "coexistence-802154.h"
+      handler: sli_rail_util_ieee802154_coex_on_event
+      event_filter: sli_rail_util_ieee802154_coex_event_filter
+    priority: -9010
+    condition:
+      - rail_test_core
+  - name: rail_util_coex_callbacks
+    value:
+      include: "coexistence-802154.h"
+      handler: sli_rail_util_ieee802154_coex_on_event
+      event_filter: sli_rail_util_ieee802154_coex_event_filter
+    priority: -9010
+    condition:
+      - zigbee_pro_stack_support      
+  - name: rail_util_coex_callbacks
+    value:
+      include: "coexistence-802154.h"
+      handler: sli_rail_util_ieee802154_coex_on_event
+      event_filter: sli_rail_util_ieee802154_coex_event_filter
+    condition:
+      - zigbee_pro_stack_support            
+  - name: rail_util_ieee802154_callbacks
+    value:
+      include: coexistence-802154.h
+      handler: sl_rail_util_coex_on_event
+    priority: -9010
+  - name: rail_util_ieee802154_phy_select_callbacks
+    value:
+      include: coexistence-802154.h
+      runtime_phy_select: SL_RAIL_UTIL_COEX_RUNTIME_PHY_SELECT
+      get_phy_select: sl_rail_util_coex_is_coex_phy_selected
+      radio_config: SL_RAIL_UTIL_RADIO_CONFIG_154_2P4_COEX
+    priority: -9010
+  - name: component_catalog
+    value: rail_util_coex

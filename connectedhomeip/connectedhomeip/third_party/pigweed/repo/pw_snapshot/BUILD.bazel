@@ -1,0 +1,120 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load(
+    "//pw_build:pigweed.bzl",
+    "pw_cc_library",
+    "pw_cc_test",
+)
+load("//pw_protobuf_compiler:proto.bzl", "pw_proto_library")
+load("//pw_build/bazel_internal:py_proto_library.bzl", "py_proto_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+pw_cc_library(
+    name = "uuid",
+    srcs = [
+        "uuid.cc",
+    ],
+    hdrs = [
+        "public/pw_snapshot/uuid.h",
+    ],
+    includes = ["public"],
+    deps = [
+        ":metadata_proto_cc.pwpb",
+        "//pw_bytes",
+        "//pw_protobuf",
+        "//pw_status",
+    ],
+)
+
+proto_library(
+    name = "metadata_proto",
+    srcs = [
+        "pw_snapshot_protos/snapshot_metadata.proto",
+    ],
+    import_prefix = "pw_snapshot_metadata_proto",
+    strip_import_prefix = "//pw_snapshot/pw_snapshot_protos",
+    deps = [
+        "//pw_tokenizer:tokenizer_proto",
+    ],
+)
+
+# TODO(b/241456982): Not expected to build yet.
+py_proto_library(
+    name = "metadata_proto_py_pb2",
+    tags = ["manual"],
+    deps = [":metadata_proto"],
+)
+
+proto_library(
+    name = "snapshot_proto",
+    srcs = [
+        "pw_snapshot_protos/snapshot.proto",
+    ],
+    import_prefix = "pw_snapshot_protos",
+    strip_import_prefix = "//pw_snapshot/pw_snapshot_protos",
+    deps = [
+        ":metadata_proto",
+        "//pw_chrono:chrono_proto",
+        "//pw_cpu_exception_cortex_m:cpu_state_protos",
+        "//pw_log:log_proto",
+        "//pw_thread:thread_proto",
+    ],
+)
+
+# TODO(b/241456982): Not expected to build yet.
+py_proto_library(
+    name = "snapshot_proto_py_pb2",
+    tags = ["manual"],
+    deps = [":snapshot_proto"],
+)
+
+pw_proto_library(
+    name = "metadata_proto_cc",
+    deps = [":snapshot_proto"],
+)
+
+pw_proto_library(
+    name = "snapshot_proto_cc",
+    deps = [":snapshot_proto"],
+)
+
+pw_cc_test(
+    name = "cpp_compile_test",
+    srcs = [
+        "cpp_compile_test.cc",
+    ],
+    deps = [
+        ":snapshot_proto_cc.pwpb",
+        "//pw_unit_test",
+    ],
+)
+
+pw_cc_test(
+    name = "uuid_test",
+    srcs = [
+        "uuid_test.cc",
+    ],
+    deps = [
+        ":metadata_proto_cc.pwpb",
+        ":uuid",
+        "//pw_bytes",
+        "//pw_protobuf",
+        "//pw_result",
+        "//pw_status",
+    ],
+)

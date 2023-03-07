@@ -1,0 +1,198 @@
+project_name: connect_bt_dmp_soc_light
+label: "Connect Bluetooth DMP - SoC Light"
+package: Flex
+description: "The purpose of the application is to demonstrate a simple wireless communication between two or more boards, using the connect SDK.
+In combination with the Connect-Switch sample application, it creates a basic light functionality, where the LEDs can be toggled on the Light node.
+After power up, the Light (network coordinator) create its own local network, and the Switch modules (low power end-nodes) can join to this network, and control the Light node. 
+If a local network is established with the - form - CLI command, the Switch nodes can join with the - join - CLI command.
+After that point, the Light can be controlled with pushing the PB1 button on any connected Switch node."
+category: Connect Examples
+quality: production
+
+#---------------- UC/UP components -------------------
+component:
+  - id: sl_system
+  - id: sl_memory
+  - id: device_init
+  - id: radio_config_simple_connect_singlephy
+  - id: app_log
+  - id: app_assert
+  - id: legacy_hal
+  - id: token_manager
+  - id: cli
+    instance:
+      - "example"
+  # Connect components
+  - id: connect_debug_print
+  - id: connect_app_framework_common
+  - id: connect_stack_common
+  - id: connect_aes_security
+  - id: connect_mac_queue
+  - id: connect_stack_counters
+  - id: connect_poll
+  - id: connect_parent_support
+  - id: connect_frequency_hopping
+  - id: connect_ble_cli
+  - id: connect_cmsis_stack_ipc
+  - id: micriumos_kernel
+  - id: sl_light_switch_core
+  
+#------------Memory Protection Unit-------------------
+  - id: mpu
+#---------------------- I/O --------------------------
+  - id: simple_led
+    instance:
+      - led0
+
+#---------------Workaround for DMP issue -------------
+  - id: nvm3_lib
+#-----------Need while connect uses printf -----------
+  - id: printf
+  - id: iostream_recommended_stream
+  - id: iostream_retarget_stdio
+#-------------- Restriction rules -------------------
+  - id: restrictions_profile_connect
+  - id: restrictions_profile_long_range
+
+#----------------- Require list ----------------------
+requires:
+  - name: a_radio_config
+    condition:
+      - device_is_module
+
+#----------------- Project files ---------------------
+include:
+  - path: .
+    file_list:
+    - path: app_init.h
+    - path: app_process.h
+
+source:
+  - path: main.c
+  - path: app_cli.c
+  - path: app_init.c
+  - path: app_process.c
+  - path: app_bluetooth.c
+
+config_file:
+  - override:
+      component: gatt_configuration
+      file_id: gatt_configuration_file_id
+    path: gatt_configuration.btconf
+    directory: btconf
+
+other_file:
+  - path: "../../../../script/connect_create_gbl_image.bat"
+  - path: "../../../../script/connect_create_gbl_image.sh"
+  - path: "hw_filter_tags.yaml"
+    condition:
+      - "add_hw_filter_to_project"
+
+readme:
+  - path: ../../../../documentation/example/connect/connect_dmp_light_switch/readme.md
+
+#------------ Configuration overrides ----------------
+configuration:
+#----------------- OS --------------------------------
+  - name: SL_STACK_SIZE
+    value: "2048"
+    unless:
+      - "device_sdid_200"
+  - name: SL_STACK_SIZE
+    value: "3000"
+    condition:
+      - "device_sdid_200"
+  - name: SL_HEAP_SIZE
+    value: "16000"
+  - name: APP_LOG_PREFIX_ENABLE
+    value: "0"
+#----------------- USART configs ---------------------
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+  - name: SL_IOSTREAM_USART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "(1)"
+  - name: SL_IOSTREAM_USART_VCOM_FLOW_CONTROL_TYPE
+    value: "usartHwFlowControlNone"
+  - name: SL_IOSTREAM_EUSART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "(1)"
+  - name: SL_IOSTREAM_EUSART_VCOM_FLOW_CONTROL_TYPE
+    value: "eusartHwFlowControlNone"
+
+#-------------- Template Contribution ----------------
+template_contribution:
+#------------------ CLI commands ---------------------
+ - name: cli_command
+   value:
+      name: form
+      handler: cli_form
+      help: "Forms a network with a default address"
+ - name: cli_command
+   value:
+      name: leave
+      handler: cli_leave
+      help: "Forget the current network and revert to EMBER_NO_NETWORK"
+ - name: cli_command
+   value:
+      name: reset
+      handler: cli_reset
+      help: "Reset the hardware"
+ - name: cli_command
+   value: 
+      name: info
+      handler: cli_info
+      help: "MCU ID, Network state, Node ID, PAN ID, Channel ID, etc."
+ - name: cli_command
+   value: 
+      name: set_pan_id
+      handler: cli_set_pan_id
+      help: "Set the PAN ID of the node"
+      argument:
+      - type: uint16
+        help: "2 byte PAN ID"
+ - name: cli_command
+   value: 
+      name: set_channel
+      handler: cli_set_channel
+      help: "Set the communication channel"
+      argument:
+      - type: uint16
+        help: "2 byte channel number"
+ - name: cli_command
+   value:
+      name: set_tx_options
+      handler: cli_set_tx_option
+      help: "Set Tx options"
+      argument:
+      - type: uint8
+        help: "Security(0x01) MAC Ack(0x02) High Prio(0x04)"
+ - name: cli_command
+   value:
+      name: set_key
+      handler: cli_set_security_key
+      help: "Set security key"
+      argument:
+      - type: hex
+        help: "Security key (size:EMBER_ENCRYPTION_KEY_SIZE)"
+ - name: cli_command
+   value:
+      name: unset_key
+      handler: cli_unset_security_key
+      help: "Unset current security key"
+#--------------------- Toolchain ------------------------
+toolchain_settings:
+  - option: optimize
+    value: debug
+ui_hints:
+  highlight:
+    - path: "config/btconf/gatt_configuration.btconf"
+      focus: true
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Connect", "Bluetooth"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Capability"
+    value: ["Multiprotocol"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]

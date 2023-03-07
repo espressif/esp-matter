@@ -1,0 +1,39 @@
+id: "connect_parent_support_library"
+label: "Parent Support (Library)"
+package: "Flex"
+category: "Connect"
+quality: "production"
+ui_hints:
+  visibility: never
+description: "Provides the Connect Parent Support library."
+provides:
+  - name: "connect_parent_support_implementation"
+requires:
+  - name: "connect_parent_support"
+library:
+  - path: "protocol/flex/libs/libconnect-parent-support-library-efr32xg1-iar.a"
+    condition:
+      - "toolchain_iar"
+      - device_series_1
+      - device_sdid_80
+  - path: "protocol/flex/libs/libconnect-parent-support-library-efr32xg1x-iar.a"
+    condition:
+      - "toolchain_iar"
+      - device_series_1
+  - path: "protocol/flex/libs/libconnect-parent-support-library-efr32xg2x-iar.a"
+    condition:
+      - "toolchain_iar"
+      - device_series_2
+  - path: "protocol/flex/libs/libconnect-parent-support-library-efr32xg1-gcc.a"
+    condition:
+      - "toolchain_gcc"
+      - device_series_1
+      - device_sdid_80
+  - path: "protocol/flex/libs/libconnect-parent-support-library-efr32xg1x-gcc.a"
+    condition:
+      - "toolchain_gcc"
+      - device_series_1
+  - path: "protocol/flex/libs/libconnect-parent-support-library-efr32xg2x-gcc.a"
+    condition:
+      - "toolchain_gcc"
+      - device_series_2

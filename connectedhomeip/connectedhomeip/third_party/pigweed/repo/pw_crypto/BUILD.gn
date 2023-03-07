@@ -1,0 +1,200 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_bloat/bloat.gni")
+import("$dir_pw_build/facade.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_crypto/backend.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+
+config("default_config") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+pw_facade("sha256") {
+  backend = pw_crypto_SHA256_BACKEND
+  public_configs = [ ":default_config" ]
+  public = [ "public/pw_crypto/sha256.h" ]
+  public_deps = [
+    "$dir_pw_bytes",
+    "$dir_pw_log",
+    "$dir_pw_status",
+    "$dir_pw_stream",
+  ]
+  deps = [ "$dir_pw_assert" ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+  report_deps = [ ":size_report" ]
+}
+
+pw_size_diff("size_report") {
+  title = "pw::crypto Size Report"
+  base = "$dir_pw_bloat:bloat_base"
+
+  binaries = []
+
+  if (pw_crypto_SHA256_BACKEND != "") {
+    binaries += [
+      {
+        target = "size_report:sha256_simple"
+        label = "SHA256 ($pw_crypto_SHA256_BACKEND)"
+      },
+    ]
+  }
+
+  if (pw_crypto_ECDSA_BACKEND != "") {
+    binaries += [
+      {
+        target = "size_report:ecdsa_p256_verify"
+        label = "ECDSA P256 Verify ($pw_crypto_ECDSA_BACKEND)"
+      },
+    ]
+  }
+
+  if (binaries == []) {
+    binaries += [
+      {
+        target = "$dir_pw_bloat:bloat_base"
+        label = "No backend is selected."
+      },
+    ]
+  }
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":sha256_test",
+    ":sha256_mock_test",
+    ":ecdsa_test",
+  ]
+}
+
+# Sha256 tests against the selected real backend.
+pw_test("sha256_test") {
+  enable_if = pw_crypto_SHA256_BACKEND != ""
+  deps = [ ":sha256" ]
+  sources = [ "sha256_test.cc" ]
+}
+
+config("mock_config") {
+  visibility = [ ":*" ]
+  include_dirs = [ "public_overrides/mock" ]
+}
+
+pw_source_set("sha256_mock") {
+  public_configs = [ ":mock_config" ]
+  public = [
+    "public/pw_crypto/sha256_mock.h",
+    "public_overrides/mock/pw_crypto/sha256_backend.h",
+  ]
+  sources = [ "sha256_mock.cc" ]
+  public_deps = [ ":sha256.facade" ]
+}
+
+# Sha256 frontend tests against a mocked backend.
+pw_test("sha256_mock_test") {
+  # Depend on ":sha256.facade" instead of ":sha256" to bypass normal backend
+  # selection via `pw_crypto_SHA256_BACKEND`.
+  deps = [
+    ":sha256.facade",
+    ":sha256_mock",
+  ]
+  sources = [ "sha256_mock_test.cc" ]
+}
+
+config("mbedtls_config") {
+  visibility = [ ":*" ]
+  include_dirs = [ "public_overrides/mbedtls" ]
+}
+
+pw_source_set("sha256_mbedtls") {
+  public_configs = [ ":mbedtls_config" ]
+  public = [
+    "public/pw_crypto/sha256_mbedtls.h",
+    "public_overrides/mbedtls/pw_crypto/sha256_backend.h",
+  ]
+  sources = [ "sha256_mbedtls.cc" ]
+  public_deps = [
+    ":sha256.facade",
+    "$dir_pw_third_party/mbedtls",
+  ]
+}
+
+config("boringssl_config") {
+  visibility = [ ":*" ]
+  include_dirs = [ "public_overrides/boringssl" ]
+}
+
+pw_source_set("sha256_boringssl") {
+  public_configs = [ ":boringssl_config" ]
+  public = [
+    "public/pw_crypto/sha256_boringssl.h",
+    "public_overrides/boringssl/pw_crypto/sha256_backend.h",
+  ]
+  sources = [ "sha256_boringssl.cc" ]
+  public_deps = [
+    ":sha256.facade",
+    "$dir_pw_third_party/boringssl",
+  ]
+}
+
+pw_facade("ecdsa") {
+  backend = pw_crypto_ECDSA_BACKEND
+  public_configs = [ ":default_config" ]
+  public = [ "public/pw_crypto/ecdsa.h" ]
+  public_deps = [
+    "$dir_pw_bytes",
+    "$dir_pw_status",
+  ]
+}
+
+pw_source_set("ecdsa_mbedtls") {
+  sources = [ "ecdsa_mbedtls.cc" ]
+  deps = [
+    "$dir_pw_function",
+    "$dir_pw_log",
+    "$dir_pw_third_party/mbedtls",
+  ]
+  public_deps = [ ":ecdsa.facade" ]
+}
+
+pw_source_set("ecdsa_boringssl") {
+  sources = [ "ecdsa_boringssl.cc" ]
+  deps = [
+    "$dir_pw_log",
+    "$dir_pw_third_party/boringssl",
+  ]
+  public_deps = [ ":ecdsa.facade" ]
+}
+
+pw_source_set("ecdsa_uecc") {
+  sources = [ "ecdsa_uecc.cc" ]
+  deps = [
+    "$dir_pw_log",
+    "$dir_pw_third_party/micro_ecc",
+  ]
+  public_deps = [ ":ecdsa.facade" ]
+}
+
+pw_test("ecdsa_test") {
+  enable_if = pw_crypto_ECDSA_BACKEND != ""
+  deps = [ ":ecdsa" ]
+  sources = [ "ecdsa_test.cc" ]
+}

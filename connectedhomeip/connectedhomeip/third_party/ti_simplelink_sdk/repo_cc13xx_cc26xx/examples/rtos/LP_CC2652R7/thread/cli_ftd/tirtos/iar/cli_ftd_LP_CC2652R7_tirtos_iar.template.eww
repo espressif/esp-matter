@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<workspace>
+    <project>
+        <path>$WS_DIR$/cli_ftd_LP_CC2652R7_tirtos_iar.ewp</path>
+    </project>
+    <project>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/thread/cc13x2_26x2/libopenthread_cli_ftd/lib/iar/m4f/libopenthread_cli_ftd_cc13x2_26x2/libopenthread_cli_ftd_cc13x2_26x2_iar.ewp</path>
+    </project>
+    <project>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/thread/cc13x2_26x2/libopenthread_ftd/lib/iar/m4f/libopenthread_ftd_cc13x2_26x2/libopenthread_ftd_cc13x2_26x2_iar.ewp</path>
+    </project>
+    <project>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/thread/cc13x2_26x2/libopenthread_platform_utils_ftd/lib/iar/m4f/libopenthread_platform_utils_ftd_cc13x2_26x2/libopenthread_platform_utils_ftd_cc13x2_26x2_iar.ewp</path>
+    </project>
+    <project>
+        <path>$COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR$/source/ti/thread/cc13x2_26x2/libmbedcrypto/lib/iar/m4f/libmbedcrypto_cc13x2_26x2/libmbedcrypto_cc13x2_26x2_iar.ewp</path>
+    </project>
+    <batchBuild>
+        <batchDefinition>
+            <name>cli_ftd</name>
+            <member>
+                <project>libopenthread_cli_ftd_cc13x2_26x2_iar</project>
+                <configuration>OptimizeSize</configuration>
+            </member>
+            <member>
+                <project>libopenthread_ftd_cc13x2_26x2_iar</project>
+                <configuration>OptimizeSize</configuration>
+            </member>
+            <member>
+                <project>libopenthread_platform_utils_ftd_cc13x2_26x2_iar</project>
+                <configuration>OptimizeSize</configuration>
+            </member>
+            <member>
+                <project>libmbedcrypto_cc13x2_26x2_iar</project>
+                <configuration>OptimizeSize</configuration>
+            </member>
+            <member>
+                <project>cli_ftd_LP_CC2652R7_tirtos_iar</project>
+                <configuration>Debug</configuration>
+            </member>
+        </batchDefinition>
+    </batchBuild>
+</workspace>

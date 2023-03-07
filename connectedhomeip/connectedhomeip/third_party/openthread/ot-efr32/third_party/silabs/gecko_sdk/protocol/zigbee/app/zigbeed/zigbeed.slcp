@@ -1,0 +1,113 @@
+project_name: "zigbeed"
+label: "Zigbee - Host zigbeed"
+package: "Zigbee"
+category: "Zigbee Host Application"
+quality: "production"
+
+description: >
+  Zigbeed is a Zigbee Stack daemon that runs on a Linux host processor.
+  It communicates with an 802.15.4 RCP via CPCd, and exposes an EZSP
+  interface to a Zigbee host app. See AN1333 for more information.
+
+component:
+  - id: "zigbee_pro_stack"
+  - id: "zigbee_source_route"
+  - id: "zigbee_binding_table"
+  - id: "zigbee_end_device_bind"
+  - id: "zigbee_packet_validate"
+  - id: "zigbee_gp"
+  - id: "zigbee_security_link_keys"
+  - id: "zigbee_zll"
+  - id: "zigbee_install_code"
+  - id: "zigbee_app_framework_common"
+  - id: "zigbee_ncp_uart_hardware"
+  - id: "zigbee_xncp"
+  - id: "toolchain_gcc"
+  - id: "zigbee_stack_unix"
+  - id: "zigbee_mfglib"
+  # not required by zigbeed, but could be enabled
+  - id: "zigbee_r22_support"
+  - id: "zigbee_token_interface"
+
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: SL_IOSTREAM_USART_VCOM_FLOW_CONTROL_TYPE
+    value: usartHwFlowControlCtsAndRts
+  - name: SL_CLI_MAX_INPUT_ARGUMENTS
+    value: 16
+  - name: EMBER_BINDING_TABLE_SIZE
+    value: 128
+  - name: EMBER_MAX_END_DEVICE_CHILDREN
+    value: 64
+  - name: EMBER_SOURCE_ROUTE_TABLE_SIZE
+    value: 254  
+  - name: EMBER_ROUTE_TABLE_SIZE
+    value: 254
+  - name: EMBER_DISCOVERY_TABLE_SIZE
+    value: 64
+  - name: EMBER_ADDRESS_TABLE_SIZE
+    value: 128 
+  - name: EMBER_NEIGHBOR_TABLE_SIZE
+    value: 26              
+  - name: EMBER_PACKET_BUFFER_COUNT
+    value: 255
+  - name: EMBER_CUSTOM_MAC_FILTER_TABLE_SIZE
+    value: 64  
+  - name: EMBER_MAC_FILTER_TABLE_SIZE
+    value: 32    
+  - name: EMBER_CHILD_TABLE_SIZE
+    value: 64
+  - name: EMBER_AF_PLUGIN_ZIGBEE_PRO_STACK_CHILD_TABLE_SIZE
+    value: 64
+  - name:  EMBER_KEY_TABLE_SIZE
+    value: 128
+  - name:  EMBER_APS_UNICAST_MESSAGE_COUNT
+    value: 32
+  - name:  EMBER_APS_MESSAGE_COUNT
+    value: 64     
+
+
+include:
+  - path: "./"
+    file_list:
+      - path: zigbeed_configuration.h
+      - path: openthread-config-generic.h
+
+source:
+  - path: "main.c"
+  - path: "app.c"
+  - path: "zigbeed_custom_ezsp_commands.c"
+
+define:
+  - name: "EMBER_APPLICATION_HAS_TRUST_CENTER_JOIN_HANDLER"
+  - name: "EMBER_AF_ZC_AND_ZR_DEVICE_COUNT"
+    value: "1"
+  - name: "EMBER_AF_API_EZSP_PROTOCOL"
+    value: "\"../../util/ezsp/ezsp-protocol.h\""
+  - name: "EMBER_AF_API_EZSP"
+    value: "\"../../em260/command-context.h\""
+  - name: "EMBER_AF_API_EZSP_SECURE"
+    value: "\"../../util/ezsp/secure-ezsp-protocol.h\""
+  - name: "EMBER_AF_API_EMBER_TYPES"
+    value: "\"../../../stack/include/ember-types.h\""
+  - name: "EMBER_AF_API_STACK"
+    value: "\"../../../stack/include/ember.h\""
+
+readme:
+ - path: ./readme.html
+
+ui_hints:
+  highlight:
+    - path: readme.html
+      focus: false
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Zigbee"]
+  - name: "Device Type"
+    value: ["Host"]
+  - name: "Capability"
+    value: ["Multiprotocol"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]

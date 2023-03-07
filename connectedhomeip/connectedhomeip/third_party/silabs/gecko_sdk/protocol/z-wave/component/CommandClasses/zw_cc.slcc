@@ -1,0 +1,25 @@
+id: zw_cc
+label: Command Classes
+category: Z-Wave|Command Classes
+description: >
+ Source files mandatory for end devices.
+ This component contains source files from all command clases that cannot be removed from the app,
+ regardless if specific command Class component has been installed or not.  
+package: Z-Wave
+quality: production
+ui_hints:
+  visibility: never
+include:
+  - path: protocol/z-wave/ZAF/CommandClasses/Indicator/
+    file_list:
+     - path: CC_Indicator.h
+  - path: protocol/z-wave/ZAF/CommandClasses/DeviceResetLocally/
+    file_list:
+     - path: CC_DeviceResetLocally.h     
+source:
+  - path: protocol/z-wave/ZAF/CommandClasses/Indicator/CC_Indicator_weak.c
+  - path: protocol/z-wave/ZAF/CommandClasses/DeviceResetLocally/CC_DeviceResetLocally_weak.c
+provides:
+  - name: zw_cc
+requires:
+  - name: zw_core

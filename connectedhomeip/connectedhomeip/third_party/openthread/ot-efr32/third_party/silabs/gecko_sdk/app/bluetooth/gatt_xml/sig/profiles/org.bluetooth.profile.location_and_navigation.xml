@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Profile xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/profile.xsd" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    type="org.bluetooth.profile.location_and_navigation"
+    name="Location and Navigation">
+	<InformativeText>
+	<Abstract>This profile enables a Collector device to connect and interact with a Location and Navigation Sensor for use in outdoor activity applications.</Abstract>
+	<Summary>The Location and Navigation Profile is used to enable a Collector to interact with a Location and Navigation Sensor (LN Sensor) that exposes the Location and Navigation Service for use in outdoor activity applications.</Summary>
+	</InformativeText>
+		<Role name="LN Sensor">
+			<Service type="org.bluetooth.service.location_and_navigation">
+				<Declaration>PrimarySingleInstance</Declaration>
+				<Requirement>Mandatory</Requirement>
+			</Service>
+			
+		</Role>
+		<Role name="Collector">
+		<Client type="org.bluetooth.service.location_and_navigation">
+            <Requirement>Mandatory</Requirement>
+		</Client>
+        
+		</Role>
+	</Profile>

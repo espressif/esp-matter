@@ -1,0 +1,163 @@
+.gradient
+{
+	background: rgb(0,0,0); /* Old browsers */
+}
+
+.menu_button
+{
+	text-decoration: none;
+	font-size: 18;
+	color: rgb(0,0,0);
+	text-shadow: 0px 1px 1px rgba(255,255,255,0.3), 
+	             0px 0px 0px rgba(0,0,0,0.7);
+	border-radius: 2px;
+	border-style: none;
+	box-shadow: 3px 3px 10px #888888;
+	display : block;
+	margin : 2px;
+	padding: 3px;
+	width: 193px;
+	line-height:30px;
+	background: rgb(249, 181, 0);
+
+}
+
+.menu_button:hover
+{
+	text-decoration: none;
+	color: rgba(248,248,248,0.9);
+	text-shadow: 0px 1px 1px rgba(0,0,0,0.3), 
+	             0px 0px 0px rgba(255,255,255,1);
+	z-index: 50;
+}
+
+.menu_button:focus
+{
+	outline: 0;
+}
+
+.header_banner
+{
+	margin: auto;
+	box-shadow: 0px 3px 8px #888888;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	height: 50px;
+}
+
+.header_container
+{
+	margin:auto;
+	width:840px;
+	height: 100%;
+}
+
+.logo
+{
+	margin: auto; 
+	width: 217px;
+	height: 100%;
+	text-align: center;
+	float: left;
+}
+
+.header_text
+{
+	height: calc(50% - 15px);
+	margin-left: 217px;
+	font-size: 38px;
+	text-align: left;
+	padding-top: 15px;
+	padding-left: 12px;
+	font-weight: bolder;
+	font-style: normal;
+	color: rgba(240,240,240,1);
+}
+
+.page_body
+{
+	margin: auto;
+	margin-top: 2px;
+	width: 840px
+}
+
+.page_content
+{
+	width: 600px; 
+	text-align: left; 
+	min-height: 50%;  
+	padding: 8px; 
+	margin: 2px; 
+	margin-left:221px; 
+	margin-right:221px; 
+	border-left: 1px solid #C3CFD1;
+}
+
+.menu
+{
+	float: left;
+	width: 200px; 
+/*	height: 100%; */
+	padding: 8px; 
+	margin: 2px;
+}
+
+.footer
+{
+	margin: auto;
+	line-height: 23px;
+	border: 1px solid #C3CFD1;
+	font-size: .9em;
+	width: 840px;
+}
+
+.rtc_data
+{
+	font-size: 50;
+	font-weight: bolder;
+	text-align: center;
+}
+
+body {
+	background-color: #FFF;
+	font-family: Verdana Neue, Helvetica, Arial, sans-serif;
+	font-weight: normal;
+	color: #666;
+	margin: 0px;
+}
+
+h1 {
+	line-height: 28px;
+	margin: 0px;
+	padding: 0px;
+	text-indent: 0px;
+	color: #E66A08;
+}
+
+h2 {
+	color: #EA802C;
+	margin-top: 0px;
+}
+
+p
+{
+	text-align: justify;
+}
+
+#lnv {
+	padding: 0px 0px 1px 1px;
+	margin: 0px;
+	list-style: none;
+	float : left;
+	width : 199px;
+	display: block;
+}
+
+#lnv li { /* all list items */
+	position : relative;
+	float : left;
+	line-height : 30px;
+	margin: 1px;
+	padding: 0px;
+	width: 197px;
+}

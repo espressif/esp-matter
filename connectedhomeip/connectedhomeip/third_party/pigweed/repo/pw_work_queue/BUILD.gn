@@ -1,0 +1,90 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/facade.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_thread/backend.gni")
+import("$dir_pw_unit_test/test.gni")
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("pw_work_queue") {
+  public_configs = [ ":public_include_path" ]
+  public = [
+    "public/pw_work_queue/internal/circular_buffer.h",
+    "public/pw_work_queue/work_queue.h",
+  ]
+  public_deps = [
+    "$dir_pw_sync:interrupt_spin_lock",
+    "$dir_pw_sync:lock_annotations",
+    "$dir_pw_sync:thread_notification",
+    "$dir_pw_thread:thread",
+    dir_pw_function,
+    dir_pw_metric,
+    dir_pw_span,
+    dir_pw_status,
+  ]
+  sources = [ "work_queue.cc" ]
+}
+
+pw_source_set("test_thread") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_work_queue/test_thread.h" ]
+  public_deps = [ "$dir_pw_thread:thread" ]
+}
+
+# To instantiate this test based on a selected thread backend to provide
+# test_thread you can create a pw_test target which depends on this
+# pw_source_set and a pw_source_set which provides the implementation of
+# test_thread. See ":stl_work_queue_test" as an example.
+pw_source_set("work_queue_test") {
+  sources = [ "work_queue_test.cc" ]
+  deps = [
+    ":pw_work_queue",
+    ":test_thread",
+    dir_pw_log,
+    dir_pw_unit_test,
+  ]
+}
+
+pw_test_group("tests") {
+  tests = [ ":stl_work_queue_test" ]
+}
+
+pw_source_set("stl_test_thread") {
+  sources = [ "stl_test_thread.cc" ]
+  deps = [
+    ":test_thread",
+    "$dir_pw_thread:thread",
+    "$dir_pw_thread_stl:thread",
+  ]
+}
+
+pw_test("stl_work_queue_test") {
+  enable_if = pw_thread_THREAD_BACKEND == "$dir_pw_thread_stl:thread"
+  deps = [
+    ":stl_test_thread",
+    ":work_queue_test",
+  ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}

@@ -1,0 +1,72 @@
+id: slot_manager
+package: Zigbee
+label: Slot Manager
+description: |-
+  The Slot Manager utility manages storage slots in flash (internal or external SPI flash). This feature is used with the Gecko Bootloader. A bootloader built with storage slots is necessary for Slot Manager to function. The Zigbee over-the-air bootloading feature uses Slot Manager to save to and boot from storage slots.
+category: Platform|Utilities
+quality: production
+provides:
+  - name: slot_manager
+requires:
+  - name: bootloader_interface
+include:
+  - path: util/plugin/slot-manager
+    file_list: 
+      - path: slot-manager.h
+      - path: slot-manager-cli.h
+source:
+  - path: util/plugin/slot-manager/slot-manager.c
+  - path: util/plugin/slot-manager/slot-manager-cli.c
+template_contribution:
+  - name: component_catalog
+    value: slot_manager
+  - name: zigbee_af_callback
+    value:
+      callback_type: init_done
+      function_name: emberAfPluginSlotManagerInitCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: slot-manager
+      help: Slot Manager related commands
+  - name: cli_command
+    value:
+      group: slot-manager
+      name: boot-slot
+      handler: emAfPluginSlotManagerCliBootloadSlot
+      help: Boots the image in the specified slot ID.
+      argument:
+      - type: uint32
+        help: Storage slot number
+  - name: cli_command
+    value:
+      group: slot-manager
+      name: erase-slot
+      handler: emAfPluginSlotManagerCliEraseSlot
+      help: Erases the specified slot ID.
+      argument:
+      - type: uint32
+        help: Storage slot number
+  - name: cli_command
+    value:
+      group: slot-manager
+      name: ext-flash-info
+      handler: emAfPluginSlotManagerCliPrintExternalFlashInfo
+      help: Prints flash storage information.
+  - name: cli_command
+    value:
+      group: slot-manager
+      name: read
+      handler: emAfPluginSlotManagerCliReadExtFlash
+      help: Reads raw data from flash storage.
+      argument:
+      - type: uint32
+        help: Address to read
+      - type: uint8
+        help: Number of bytes to read
+  - name: cli_command
+    value:
+      group: slot-manager
+      name: slots-info
+      handler: emAfPluginSlotManagerCliPrintSlotsInfo
+      help: Prints information for all available slots.

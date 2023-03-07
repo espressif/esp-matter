@@ -1,0 +1,86 @@
+package: Zigbee
+description: This is a test implementation of the simple metering server. This component
+  should only be used for testing but is helpful to test devices that require inter-operation
+  with a working meter. It supports the required current summation delivered attribute
+  (0x0000), but optionally the following attributes as well, if they are selected
+  in the project - current
+  tier 1 summation delivered (0x0100), battery life remaining (0x0201), hours in operation
+  (0x0202), and instantaneous demand (0x0400).
+label: Simple Metering Server
+quality: production
+id: zigbee_simple_metering_server
+category: Zigbee|Cluster Library|Smart Energy
+provides:
+   - name: "zigbee_simple_metering_server"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/simple-metering-server/config/simple-metering-server-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/simple-metering-server/simple-metering-server.c
+  - path: protocol/zigbee/app/framework/plugin/simple-metering-server/simple-metering-server-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/simple-metering-server/simple-metering-server-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/simple-metering-server
+    file_list:
+      - path: simple-metering-server.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_simple_metering_server
+  - name: cluster_service
+    value:
+       cluster_id: "0x0702"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "SERVER"       
+       service_function: "emberAfSimpleMeteringClusterServerCommandParse"    
+  - name: cli_group
+    value:
+      group: plugin
+      name: simple-metering-server
+      help: simple-metering-server related commands.
+  - name: cli_command
+    value:
+      group: simple-metering-server
+      name: configure-mirror
+      handler: emAfPluginSimpleMeteringServerCliConfigureMirror
+      help: Sends the configure mirror command to the Metering client.
+      argument:
+      - type: uint16
+        help: The network address of the server to which the request will be sent
+      - type: uint8
+        help: The local endpoint from which the request will be sent
+      - type: uint8
+        help: The remote endpoint to which the request will be sent
+      - type: uint32
+        help: The issuer event ID as specified by the device
+      - type: uint32
+        help: 3 bytes of Reporting Interval value
+      - type: uint8
+        help: Mirror Notification Reporting value
+      - type: uint8
+        help: Mirror Notification Reporting value
+  - name: cli_command
+    value:
+      group: simple-metering-server
+      name: toggle-fast-poll-mode
+      handler: emAfPluginSimpleMeteringCliDisableFastPolling
+      help: Disables fast polling mode for testing.
+      argument:
+      - type: uint8
+        help: 1 to enable, 0 to disable fast polling mode
+  - name: cluster_functions
+    value:
+      cluster_name: SimpleMetering
+      cluster_id: 0x702
+      cluster_type: server
+      init_function: emberAfSimpleMeteringClusterServerInitCallback
+  - name: cluster_functions
+    value:
+      cluster_name: SimpleMetering
+      cluster_id: 0x702
+      cluster_type: server 
+      default_response_function: emberAfSimpleMeteringClusterServerDefaultResponseCallback       
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/simple-metering-server

@@ -1,0 +1,147 @@
+id: psa_crypto
+label: PSA Crypto
+package: platform
+quality: production
+component_root_path: util/third_party/crypto/mbedtls
+category: Platform|Security|PSA Crypto
+
+description:
+  "This component provides the PSA Crypto API, a high-level interface to various \
+  cryptographic functions.\n
+
+  Silicon Labs aims to provide hardware acceleration drivers for all \
+  operations/algorithms that are supported by hardware accelerators. The set of \
+  accelerated functions differs between devices, please refer to the individual \
+  device's reference manuals for more information. If hardware acceleration is \
+  not available, the software implementations in the Mbed TLS library are used \
+  as 'fallback' implementations.\n
+
+  Algorithms need to be enabled in order to be supported. This is done by \
+  including the components corresponding to the wanted primitives, key types, \
+  functionality, etc. that live in the different 'Platform|Security|PSA Crypto' \
+  subcategories.\n
+
+  If a device does not support hardware acceleration of a requested function, \
+  the corresponding Mbed TLS component under 'Platform|Security|Mbed TLS' will \
+  be included. If hardware acceleration is enabled, but the option to fallback \
+  to a software implementation is still required, it is possible to manually \
+  enable the Mbed TLS components. Do note that doing this will result in a \
+  potentially significant code size increase.\n
+
+  Based on the selected sub-components, the PSA Crypto configuration file will \
+  be auto-generated and included where necessary."
+
+provides:
+  # 'psa_crypto' should not be required directly by user applications.
+  # Instead the user should require the 'psa_crypto_xxx' components that provides
+  # specific PSA Crypto function configurations (contributes PSA_WANT_xxx).
+  - name: psa_crypto
+
+  # 'mbedtls' is replaced by 'psa_crypto' but still maintained here for backwards
+  # compatibility. New user applications should not depend on it, since it may be
+  # deprecated in a future major release.
+  - name: mbedtls
+    condition: [psa_crypto]
+
+requires:
+  - name: mbedtls_core
+  - name: psa_crypto_config
+  - name: psa_crypto_source
+    condition: [trustzone_unaware]
+  - name: psa_crypto_source
+    condition: [trustzone_secure]
+  - name: psa_driver
+    condition: [device_series_1]
+  - name: psa_driver
+    condition: [device_series_2]
+
+  # PSA Crypto API headers (from TF-M) are provided by the TZ NS interface
+  # component.
+  - name: psa_crypto_common
+    condition: [trustzone_unaware]
+  - name: psa_crypto_common
+    condition: [trustzone_secure]
+
+  # Inclusion of source and config components depends on which TZ state we are
+  # targeting. For apps that do not make active use of TZ, a dummy state
+  # (trustzone_unaware) should be used. 
+  - name: trustzone_security_state
+
+  # For devices with non-errata TRNG, specifically include the PSA
+  # TRNG provider, which will act as the authoritative entropy source
+  - name: psa_crypto_trng
+    condition: [device_series_2]
+  - name: psa_crypto_trng
+    condition: [device_sdid_84]
+  - name: psa_crypto_trng
+    condition: [device_sdid_100]
+  - name: psa_crypto_trng
+    condition: [device_sdid_103]
+  - name: psa_crypto_trng
+    condition: [device_sdid_106]
+  # For all devices which don't have a fully-qualified TRNG, the PSA
+  # Core needs to rely on mbed TLS's DRBG implementation
+  - name: mbedtls_random
+    condition: [device_series_0]
+  - name: mbedtls_random
+    condition: [device_sdid_80]
+  - name: mbedtls_random
+    condition: [device_sdid_89]
+  - name: mbedtls_random
+    condition: [device_sdid_95]
+
+recommends:
+  # Assume that projects are TZ unaware unless a state is explicitly included.
+  - id: trustzone_unaware
+
+template_contribution:
+  
+  # Init of the PSA Crypto core should come after that of Mbed TLS.
+  # Init of PSA Crypto is handled inside of the SKL secure main.
+  # We are not able to provide automated initialization of PSA Crypto if RAIL is
+  # relied on for entropy. This is because we in turn cannot rely on RAIL being
+  # initialized at the time of the service init. The duplicated entries with
+  # different conditions are meant to reflect this.
+  - name: event_handler
+    value:
+      event: service_init
+      include: psa/crypto.h
+      handler: psa_crypto_init
+    priority: 1
+    condition: [trustzone_unaware, psa_crypto_trng]
+    unless: [device_sdid_89, zigbee_aes_psa, zigbee_ccm_psa]
+  - name: event_handler
+    value:
+      event: service_init
+      include: psa/crypto.h
+      handler: psa_crypto_init
+    priority: 1
+    condition: [trustzone_unaware, mbedtls_entropy_adc]
+    unless: [rail_lib, zigbee_aes_psa, zigbee_ccm_psa]
+  - name: event_handler
+    value:
+      event: service_init
+      include: psa/crypto.h
+      handler: psa_crypto_init
+    priority: 1
+    condition: [trustzone_unaware, mbedtls_entropy_nvseed]
+    unless: [rail_lib, zigbee_aes_psa, zigbee_ccm_psa]
+
+  - name: mbedtls_config
+    value: MBEDTLS_PSA_CRYPTO_C
+
+  - name: mbedtls_config
+    value: MBEDTLS_USE_PSA_CRYPTO
+    condition: [trustzone_unaware]
+
+  - name: mbedtls_config
+    value: MBEDTLS_CIPHER_C
+
+  - name: psa_key_slots
+    value:
+      name: psa_key_slots_minimum
+      count: 1
+
+  # Add a component catalog entry to allow build-time detection of PSA core presence
+  - name: component_catalog
+    value: psa_crypto

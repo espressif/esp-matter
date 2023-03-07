@@ -1,0 +1,69 @@
+id: freertos_posix
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|FreeRTOS Plus
+label: FreeRTOS+ POSIX
+description: FreeRTOS Plus POSIX implementation.
+
+package: amazon_platform
+quality: production
+
+provides:
+  - name: freertos_posix
+
+requires:
+  - name: iot_doubly_linked_list
+
+root_path: util/third_party/aws_iot_libs
+
+source:
+  - path: libraries/freertos_plus/standard/freertos_plus_posix/source/FreeRTOS_POSIX_clock.c
+  - path: libraries/freertos_plus/standard/freertos_plus_posix/source/FreeRTOS_POSIX_mqueue.c
+  - path: libraries/freertos_plus/standard/freertos_plus_posix/source/FreeRTOS_POSIX_pthread_barrier.c
+  - path: libraries/freertos_plus/standard/freertos_plus_posix/source/FreeRTOS_POSIX_pthread_cond.c
+  - path: libraries/freertos_plus/standard/freertos_plus_posix/source/FreeRTOS_POSIX_pthread_mutex.c
+  - path: libraries/freertos_plus/standard/freertos_plus_posix/source/FreeRTOS_POSIX_pthread.c
+  - path: libraries/freertos_plus/standard/freertos_plus_posix/source/FreeRTOS_POSIX_sched.c
+  - path: libraries/freertos_plus/standard/freertos_plus_posix/source/FreeRTOS_POSIX_semaphore.c
+  - path: libraries/freertos_plus/standard/freertos_plus_posix/source/FreeRTOS_POSIX_timer.c
+  - path: libraries/freertos_plus/standard/freertos_plus_posix/source/FreeRTOS_POSIX_unistd.c
+  - path: libraries/freertos_plus/standard/freertos_plus_posix/source/FreeRTOS_POSIX_utils.c
+  - path: libraries/freertos_plus/standard/freertos_plus_posix/test/iot_test_posix_clock.c
+    condition: ["aws_tests_defs"]
+  - path: libraries/freertos_plus/standard/freertos_plus_posix/test/iot_test_posix_mqueue.c
+    condition: ["aws_tests_defs"]
+  - path: libraries/freertos_plus/standard/freertos_plus_posix/test/iot_test_posix_pthread.c
+    condition: ["aws_tests_defs"]
+  - path: libraries/freertos_plus/standard/freertos_plus_posix/test/iot_test_posix_semaphore.c
+    condition: ["aws_tests_defs"]
+  - path: libraries/freertos_plus/standard/freertos_plus_posix/test/iot_test_posix_stress.c
+    condition: ["aws_tests_defs"]
+  - path: libraries/freertos_plus/standard/freertos_plus_posix/test/iot_test_posix_timer.c
+    condition: ["aws_tests_defs"]
+  - path: libraries/freertos_plus/standard/freertos_plus_posix/test/iot_test_posix_unistd.c
+    condition: ["aws_tests_defs"]
+  - path: libraries/freertos_plus/standard/freertos_plus_posix/test/iot_test_posix_utils.c
+    condition: ["aws_tests_defs"]
+
+include:
+  - path: libraries/freertos_plus/standard/freertos_plus_posix/include
+    file_list:
+      - path: FreeRTOS_POSIX_internal.h
+      - path: FreeRTOS_POSIX_portable_default.h
+      - path: FreeRTOS_POSIX_types.h
+      - path: FreeRTOS_POSIX.h
+  - path: libraries/abstractions/posix/include
+    file_list:
+      - path: FreeRTOS_POSIX/sys/types.h
+      - path: FreeRTOS_POSIX/errno.h
+      - path: FreeRTOS_POSIX/fcntl.h
+      - path: FreeRTOS_POSIX/mqueue.h
+      - path: FreeRTOS_POSIX/pthread.h
+      - path: FreeRTOS_POSIX/sched.h
+      - path: FreeRTOS_POSIX/semaphore.h
+      - path: FreeRTOS_POSIX/signal.h
+      - path: FreeRTOS_POSIX/time.h
+      - path: FreeRTOS_POSIX/unistd.h
+      - path: FreeRTOS_POSIX/utils.h
+  - path: libraries/abstractions/posix/include/FreeRTOS_POSIX
+    file_list:
+      - path: pthread.h

@@ -1,0 +1,22 @@
+!!omap
+- id: xg23_rb4210a
+- label: XG23-RB4210A
+- package: platform
+- description: Kit BSP support for the xG23 868-915 MHz 20 dBm Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_xg23-rb4210a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"XG23-RB4210A"'
+  - name: SL_KIT_REV
+    value: '"A01"'
+- tag:
+  - kit:opn:xG23-RB4210A
+  - kit:pn:RB4210
+  - kit:variant:A
+  - kit:revision:A01

@@ -1,0 +1,25 @@
+package: Zigbee
+description: Implements the sender side of the Xmodem-CRC protocol for either over-the-air
+  messages or using the SPI/UART between host and NCP.
+id: zigbee_xmodem_sender
+label: Xmodem Sender
+category: Zigbee|Utility
+quality: production
+provides:
+   - name: "zigbee_xmodem_sender"
+source:
+  - path: protocol/zigbee/app/framework/plugin/xmodem-sender/xmodem-sender.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/xmodem-sender
+    file_list:
+      - path: xmodem-sender.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_xmodem_sender
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emAfPluginXmodemSenderInitCallback  
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/xmodem-sender

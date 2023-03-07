@@ -1,0 +1,62 @@
+id: "wisun_rb_detection"
+label: "Wi-SUN Radio Board detection"
+package: "wisun"
+category: "Wi-SUN"
+quality: "production"
+description: "Radio board template contributions to the component catablog"
+
+ui_hints:
+  visibility: never
+
+provides:
+  - name: "wisun_rb_detection"
+
+template_contribution:
+  - name: component_catalog
+    value: "BRD4163A"
+    condition:
+    - "brd4163a"
+  - name: component_catalog
+    value: "BRD4164A"
+    condition:
+    - "brd4164a"
+  - name: component_catalog
+    value: "BRD4170A"
+    condition:
+    - "brd4170a"
+  - name: component_catalog
+    value: "BRD4172A"
+    condition:
+    - "brd4172a"
+  - name: component_catalog
+    value: "BRD4173A"
+    condition:
+    - "brd4173a"
+  - name: component_catalog
+    value: "BRD4253A"
+    condition:
+    - "brd4253a"
+  - name: component_catalog
+    value: "BRD4254A"
+    condition:
+    - "brd4254a"
+  - name: component_catalog
+    value: "BRD4270A"
+    condition:
+    - "brd4270a"
+  - name: component_catalog
+    value: "BRD4270B"
+    condition:
+    - "brd4270b"
+  - name: component_catalog
+    value: "BRD4271A"
+    condition:
+    - "brd4271a"
+  - name: component_catalog
+    value: "BRD4272A"
+    condition:
+    - "brd4272a"
+  - name: component_catalog
+    value: "BRD4273A"
+    condition:
+    - "brd4273a"

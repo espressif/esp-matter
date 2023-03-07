@@ -1,0 +1,20 @@
+id: slist
+label: "Single Link List"
+package: platform
+description: Component that provides single link list functionality.
+category: Platform|Utilities
+quality: production
+root_path: platform/common
+include:
+  - path: inc
+    file_list:
+      - path: sl_slist.h
+source:
+  - path: src/sl_slist.c
+provides:
+  - name: slist
+requires:
+  - name: emlib_common
+documentation:
+  docset: gecko-platform
+  document: common/api/group-slist

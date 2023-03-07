@@ -1,0 +1,35 @@
+id: ember_bootloader_interface
+label: Ember Bootloader Application Interface
+package: bootloader
+description: Interface for interacting with the Ember bootloader.
+category: Platform|Bootloader
+quality: production
+source:
+  - path: platform/bootloader/api/ember_btl_interface.c
+  - path: platform/bootloader/api/ember_btl_common.c
+config_file:
+  - path: "platform/bootloader/config/sl_ember_bootloader_interface_config.h"
+    file_id: "ember_bootloader_interface_config"
+include:
+  - path: platform/bootloader/api
+    file_list:
+    - path: ember_btl_interface.h
+    - path: btl_errorcode.h
+provides:
+  - name: ember_bootloader_interface
+requires:
+  - name: device
+  - name: cmsis_core
+  - name: memory_layout_legacy_hal
+  - name: device_sdid_80
+template_file:
+  - path: platform/bootloader/api/sl_ember_btl_device_info.h.jinja
+template_contribution:
+# Linkerfile
+  - name: bootloader_size
+    value: 16384
+    condition:
+      - device_sdid_80
+# Catalog
+  - name: component_catalog
+    value: EMBER_BOOTLOADER

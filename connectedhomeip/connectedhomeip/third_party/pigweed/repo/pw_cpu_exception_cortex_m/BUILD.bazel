@@ -1,0 +1,179 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load(
+    "//pw_build:pigweed.bzl",
+    "pw_cc_library",
+    "pw_cc_test",
+)
+load("@com_google_protobuf//:protobuf.bzl", "py_proto_library")
+load("//pw_protobuf_compiler:proto.bzl", "pw_proto_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+pw_cc_library(
+    name = "config",
+    hdrs = ["pw_cpu_exception_cortex_m_private/config.h"],
+)
+
+pw_cc_library(
+    name = "cpu_state",
+    hdrs = ["public/pw_cpu_exception_cortex_m/cpu_state.h"],
+    includes = ["public"],
+    deps = [
+        "//pw_preprocessor",
+        "//pw_preprocessor:cortex_m",
+    ],
+)
+
+pw_cc_library(
+    name = "util",
+    srcs = ["util.cc"],
+    hdrs = ["public/pw_cpu_exception_cortex_m/util.h"],
+    includes = ["public"],
+    target_compatible_with = select({
+        "@platforms//cpu:armv7-m": [],
+        "@platforms//cpu:armv7e-m": [],
+        "@platforms//cpu:armv7e-mf": [],
+        "@platforms//cpu:armv8-m": [],
+        "//conditions:default": ["@platforms//:incompatible"],
+    }),
+    deps = [
+        ":config",
+        ":cortex_m_constants",
+        ":cpu_state",
+        "//pw_log",
+        "//pw_preprocessor:cortex_m",
+    ],
+)
+
+pw_cc_library(
+    name = "support",
+    srcs = ["support.cc"],
+    deps = [
+        ":config",
+        ":cortex_m_constants",
+        ":cpu_state",
+        ":util",
+        "//pw_log",
+        "//pw_preprocessor",
+        "//pw_preprocessor:cortex_m",
+        "//pw_string",
+    ],
+)
+
+pw_cc_library(
+    name = "proto_dump",
+    srcs = ["proto_dump.cc"],
+    hdrs = ["public/pw_cpu_exception_cortex_m/proto_dump.h"],
+    includes = ["public"],
+    deps = [
+        ":config",
+        ":cpu_state",
+        ":cpu_state_protos_cc.pwpb",
+        ":support",
+        "//pw_protobuf",
+        "//pw_status",
+        "//pw_stream",
+    ],
+)
+
+proto_library(
+    name = "cpu_state_protos",
+    srcs = ["pw_cpu_exception_cortex_m_protos/cpu_state.proto"],
+    import_prefix = "pw_cpu_exception_cortex_m_protos",
+    strip_import_prefix = "//pw_cpu_exception_cortex_m/pw_cpu_exception_cortex_m_protos",
+)
+
+py_proto_library(
+    name = "cpu_state_protos_pb2",
+    srcs = ["pw_cpu_exception_cortex_m_protos/cpu_state.proto"],
+)
+
+pw_proto_library(
+    name = "cpu_state_protos_cc",
+    deps = [":cpu_state_protos"],
+)
+
+pw_cc_library(
+    name = "cpu_exception",
+    srcs = ["entry.cc"],
+    hdrs = [
+        "public/pw_cpu_exception_cortex_m/cpu_state.h",
+        "public_overrides/pw_cpu_exception_backend/state.h",
+    ],
+    includes = ["public"],
+    deps = [
+        ":config",
+        ":cpu_state",
+        ":cortex_m_constants",
+        ":proto_dump",
+        ":support",
+        ":util",
+        # TODO(b/242183021): Need to add support for facades/backends to Bazel.
+        # "//pw_cpu_exception",
+        "//pw_preprocessor",
+        "//pw_preprocessor:cortex_m",
+    ],
+)
+
+pw_cc_library(
+    name = "snapshot",
+    srcs = ["snapshot.cc"],
+    hdrs = ["public/pw_cpu_exception_cortex_m/snapshot.h"],
+    deps = [
+        ":config",
+        ":cortex_m_constants",
+        ":cpu_state",
+        ":cpu_state_protos_cc.pwpb",
+        ":proto_dump",
+        ":util",
+        "//pw_log",
+        "//pw_protobuf",
+        "//pw_status",
+        "//pw_thread:snapshot",
+        "//pw_thread:thread_cc.pwpb",
+    ],
+)
+
+pw_cc_library(
+    name = "cortex_m_constants",
+    hdrs = ["pw_cpu_exception_cortex_m_private/cortex_m_constants.h"],
+    visibility = ["//visibility:private"],
+    deps = ["//pw_preprocessor:cortex_m"],
+)
+
+pw_cc_test(
+    name = "cpu_exception_entry_test",
+    srcs = [
+        "exception_entry_test.cc",
+    ],
+    deps = [
+        ":cpu_exception",
+        ":cpu_state",
+    ],
+)
+
+pw_cc_test(
+    name = "util_test",
+    srcs = [
+        "util_test.cc",
+    ],
+    deps = [
+        ":cpu_state",
+        ":util",
+    ],
+)

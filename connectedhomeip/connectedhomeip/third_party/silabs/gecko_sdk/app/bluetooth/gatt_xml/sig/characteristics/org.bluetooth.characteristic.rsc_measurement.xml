@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2011 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="RSC Measurement" type="org.bluetooth.characteristic.rsc_measurement" uuid="2A53" last-modified="2012-09-29" approved="Yes">
+    <InformativeText>
+        <Summary>The RSC Measurement characteristic (RSC refers to Running Speed and Cadence) is a variable length structure containing a Flags field, an Instantaneous Speed field and an Instantaneous Cadence field and, based on the contents of the Flags field, may contain a Stride Length field and a Total Distance field.</Summary>
+    </InformativeText>
+    <Value>
+        <Field name="Flags">
+            <InformativeText>These flags define which data fields are present in the Characteristic value.</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>8bit</Format>
+            <BitField>
+                <Bit index="0" size="1" name="Instantaneous Stride Length Present">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" requires="C1" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="1" size="1" name="Total Distance Present">
+                    <Enumerations>
+                        <Enumeration key="0" value="False" />
+                        <Enumeration key="1" value="True" requires="C2" />
+                    </Enumerations>
+                </Bit>
+                <Bit index="2" size="1" name="Walking or Running Status bits">
+                    <Enumerations>
+                        <Enumeration key="0" value="Walking" />
+                        <Enumeration key="1" value="Running" />
+                    </Enumerations>
+                </Bit>
+                <ReservedForFutureUse index="3" size="5" />
+            </BitField>
+        </Field>
+        <Field name="Instantaneous Speed">
+            <InformativeText>Unit is in m/s with a resolution of 1/256 s</InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>uint16</Format>
+            <Unit>org.bluetooth.unit.velocity.metres_per_second</Unit>
+        </Field>
+        <Field name="Instantaneous Cadence">
+            <InformativeText>Unit is in 1/minute (or RPM) with a resolutions of 1 1/min (or 1 RPM) </InformativeText>
+            <Requirement>Mandatory</Requirement>
+            <Format>uint8</Format>
+            <Unit>org.bluetooth.unit.angular_velocity.revolution_per_minute</Unit>
+        </Field>
+        <Field name="Instantaneous Stride Length">
+            <InformativeText>
+			   C1: Field exists if the key of bit 0 of the Flags field is set to 1.
+               - Unit is in meter with a resolution of 1/100 m (or centimeter).
+			</InformativeText>
+            <Requirement>C1</Requirement>
+            <Format>uint16</Format>
+            <Unit>org.bluetooth.unit.length.meter</Unit>
+        </Field>
+        <Field name="Total Distance">
+            <InformativeText>
+               C2: Field exists if the key of bit 1 of the Flags field is set to 1.
+               - Unit is in meter with a resolution of 1/10 m (or decimeter).
+            </InformativeText>
+            <Requirement>C2</Requirement>
+            <Format>uint32</Format>
+            <Unit>org.bluetooth.unit.length.meter</Unit>
+        </Field>
+    </Value>
+    <Note>The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet.</Note>
+</Characteristic>

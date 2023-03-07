@@ -1,0 +1,15 @@
+[submodule "openthread"]
+	path = openthread
+	url = https://github.com/openthread/openthread.git
+[submodule "third_party/infineon/platform/cyw30739/30739a0"]
+	path = third_party/infineon/platform/cyw30739/30739a0
+	url = https://github.com/Infineon/OT-Matter-30739A0.git
+[submodule "third_party/infineon/platform/cyw30739/bsp/cyw930739m2evb-01/TARGET_CYW930739M2EVB-01"]
+	path = third_party/infineon/platform/cyw30739/bsp/cyw930739m2evb-01/TARGET_CYW930739M2EVB-01
+	url = https://github.com/Infineon/OT-Matter-TARGET_CYW930739M2EVB-01.git
+[submodule "third_party/infineon/btsdk-tools"]
+	path = third_party/infineon/btsdk-tools
+	url = https://github.com/Infineon/btsdk-tools.git
+[submodule "third_party/infineon/btsdk-include"]
+	path = third_party/infineon/btsdk-include
+	url = https://github.com/Infineon/btsdk-include.git

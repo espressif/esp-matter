@@ -1,0 +1,148 @@
+id: rail_util_pa
+label: RAIL Utility, PA
+description: Utility to aid with RAIL RF Power Amplifier (PA) Support
+package: platform
+category: Platform|Radio
+quality: production
+requires:
+  - name: rail_lib
+  - name: emlib_cmu
+  - name: device
+  - name: emlib_common
+provides:
+  - name: rail_util_pa
+documentation:
+  docset: rail
+  document: rail-util-pa
+define:
+  - name: SL_RAIL_UTIL_PA_CONFIG_HEADER
+    value: '<sl_rail_util_pa_config.h>'
+config_file:
+  - path: platform/radio/rail_lib/plugin/pa-conversions/efr32xg1x/config/sl_rail_util_pa_config.h
+    condition:
+      - device_series_1
+    unless:
+      - fpga
+    file_id: rail_util_pa_config
+  - path: platform/radio/rail_lib/plugin/pa-conversions/efr32xg21/config/sl_rail_util_pa_config.h
+    condition:
+      - device_series_2
+      - device_sdid_200
+    unless:
+      - fpga
+    file_id: rail_util_pa_config
+  - path: platform/radio/rail_lib/plugin/pa-conversions/efr32xg22/config/sl_rail_util_pa_config.h
+    condition:
+      - device_series_2
+      - device_sdid_205
+    unless:
+      - fpga
+    file_id: rail_util_pa_config
+  - path: platform/radio/rail_lib/plugin/pa-conversions/efr32xg23/config/sl_rail_util_pa_config.h
+    condition:
+      - device_series_2
+      - device_sdid_210
+    unless:
+      - fpga
+    file_id: rail_util_pa_config
+  - path: platform/radio/rail_lib/plugin/pa-conversions/efr32xg24/config/sl_rail_util_pa_config.h
+    condition:
+      - device_series_2
+      - device_sdid_215
+    unless:
+      - fpga
+      - device_is_module
+    file_id: rail_util_pa_config
+  - path: platform/radio/rail_lib/plugin/pa-conversions/efr32xg24/config/module/sl_rail_util_pa_config.h
+    condition:
+      - device_series_2
+      - device_sdid_215
+      - device_is_module
+    unless:
+      - fpga
+    file_id: rail_util_pa_config
+  - path: platform/radio/rail_lib/plugin/pa-conversions/efr32xg25/config/sl_rail_util_pa_config.h
+    condition:
+      - device_series_2
+      - device_sdid_220
+    unless:
+      - fpga
+    file_id: rail_util_pa_config
+  - path: platform/radio/rail_lib/plugin/pa-conversions/efr32xg27/config/sl_rail_util_pa_config.h
+    condition:
+      - device_series_2
+      - device_sdid_230
+    unless:
+      - fpga
+    file_id: rail_util_pa_config
+  - path: platform/radio/rail_lib/plugin/pa-conversions/fpga/config/sl_rail_util_pa_config.h
+    condition:
+      - fpga
+    file_id: rail_util_pa_config
+include:
+  - path: platform/radio/rail_lib/plugin/pa-conversions
+    file_list:
+      - path: pa_conversions_efr32.h
+      - path: pa_curve_types_efr32.h
+      - path: pa_curves_efr32.h
+  - path: platform/radio/rail_lib/plugin/pa-conversions/efr32xg1x
+    file_list:
+      - path: sl_rail_util_pa_curves.h
+    condition:
+      - device_series_1
+  - path: platform/radio/rail_lib/plugin/pa-conversions/efr32xg21
+    file_list:
+      - path: sl_rail_util_pa_curves.h
+    condition:
+      - device_series_2
+      - device_sdid_200
+  - path: platform/radio/rail_lib/plugin/pa-conversions/efr32xg22
+    file_list:
+      - path: sl_rail_util_pa_curves.h
+    condition:
+      - device_series_2
+      - device_sdid_205
+  - path: platform/radio/rail_lib/plugin/pa-conversions/efr32xg23
+    file_list:
+      - path: sl_rail_util_pa_curves_14dbm.h
+      - path: sl_rail_util_pa_curves_20dbm.h
+      - path: sl_rail_util_pa_curves_10dbm_434M.h
+    condition:
+      - device_series_2
+      - device_sdid_210
+  - path: platform/radio/rail_lib/plugin/pa-conversions/efr32xg24
+    file_list:
+      - path: sl_rail_util_pa_curves_10dbm.h
+      - path: sl_rail_util_pa_curves_20dbm.h
+    condition:
+      - device_series_2
+      - device_sdid_215
+  - path: platform/radio/rail_lib/plugin/pa-conversions/efr32xg25
+    file_list:
+      - path: sl_rail_util_pa_curves.h
+    condition:
+      - device_series_2
+      - device_sdid_220
+  - path: platform/radio/rail_lib/plugin/pa-conversions/efr32xg27
+    file_list:
+      - path: sl_rail_util_pa_curves.h
+    condition:
+      - device_series_2
+      - device_sdid_230
+source:
+  - path: platform/radio/rail_lib/plugin/pa-conversions/pa_conversions_efr32.c
+  - path: platform/radio/rail_lib/plugin/pa-conversions/pa_curves_efr32.c
+    unless:
+      - device_is_module
+template_contribution:
+  - name: event_handler
+    value:
+      event: stack_init
+      include: pa_conversions_efr32.h
+      handler: sl_rail_util_pa_init
+    priority: -9010
+  - name: rail_util_callbacks
+    value:
+      event: channel_config_change
+      include: pa_conversions_efr32.h
+      handler: sl_rail_util_pa_on_channel_config_change

@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2015 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+name="Object Changed" type="org.bluetooth.characteristic.object_changed" uuid="2AC8" last-modified="2015-11-23" approved="Yes">
+    <InformativeText>The Object Changed characteristic is defined in the Object Transfer Service Section 3.6 and its sub-sections.</InformativeText>
+</Characteristic>

@@ -1,0 +1,37 @@
+id: emlib_dma
+label: DMA
+package: platform
+description: >
+  Direct Memory Access (DMA) API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_dma.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_dma.h"
+provides:
+  - name: emlib_dma
+requires:
+  - name: device
+  - name: device_has_dma
+  - name: emlib_common
+  - name: emlib_cmu
+  - name: cmsis_core
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efm32g/group-dma
+      condition: [device_sdid_71]
+    - page: emlib/api/efm32gg/group-dma
+      condition: [device_sdid_72]
+    - page: emlib/api/efm32tg/group-dma
+      condition: [device_sdid_73]
+    - page: emlib/api/efm32lg/group-dma
+      condition: [device_sdid_74]
+    - page: emlib/api/efm32zg/group-dma
+      condition: [device_sdid_76]
+    - page: emlib/api/efm32hg/group-dma
+      condition: [device_sdid_77]

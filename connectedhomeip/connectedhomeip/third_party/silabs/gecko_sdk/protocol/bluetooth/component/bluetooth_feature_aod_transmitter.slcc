@@ -1,0 +1,22 @@
+id: "bluetooth_feature_aod_transmitter"
+label: "AoD Transmitter"
+package: "Bluetooth"
+description: >
+  The Bluetooth Angle of Departure (AoD) Constant Tone Extension (CTE) transmission feature
+category: "Bluetooth|Stack|Direction Finding"
+quality: "alpha"
+root_path: "protocol/bluetooth"
+requires:
+  - name: bluetooth_controller
+  - name: device_supports_bluetooth_cte
+  - name: device_supports_bluetooth_antenna_switching
+  - name: rail_util_aox
+provides:
+  - name: "bluetooth_feature_aod_transmitter"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_aod_transmitter
+  - name: bluetooth_controller_init
+    value:
+      function: "sl_btctrl_init_cte()"
+    priority: 10

@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Profile xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/profile.xsd" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    type="org.bluetooth.profile.phone_alert_status"
+    name="Phone Alert Status">
+    <InformativeText>
+        <Abstract>This profile enables a PUID device to alert its user about the alert status of a phone connected to the PUID device.</Abstract>
+        <Summary>The Phone Alert Status profile is used to obtain the Phone Alert Status exposed by the Phone Alert Status service in the peer device. The information of Alert Status and Ringer Setting of a phone can be received and changed by the Phone Alert Status service. This profile also enables the device to configure ringer status on the peer device.</Summary>
+	</InformativeText>
+	<Role name="Phone Alert">
+		<Service type="org.bluetooth.service.phone_alert_status">
+			<Declaration>Primary</Declaration>
+			<Requirement>Mandatory</Requirement>
+            <Characteristic type="org.bluetooth.characteristic.alert_status">
+				<Requirement>Mandatory</Requirement>
+			</Characteristic>
+			<Characteristic type="org.bluetooth.characteristic.ringer_control_point">
+				<Requirement>Mandatory</Requirement>
+			</Characteristic>
+			<Characteristic type="org.bluetooth.characteristic.ringer_setting">
+				<Requirement>Mandatory</Requirement>
+             </Characteristic>
+		</Service>
+		
+	</Role>
+	<Role name="Phone Alert Client">
+		<Client type="org.bluetooth.service.phone_alert_status">
+			<Requirement>Mandatory</Requirement>
+		</Client>
+		
+	</Role>
+</Profile>

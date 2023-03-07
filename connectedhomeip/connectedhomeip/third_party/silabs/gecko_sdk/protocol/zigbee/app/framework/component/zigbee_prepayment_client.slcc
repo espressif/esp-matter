@@ -1,0 +1,30 @@
+package: Zigbee
+description: This component implements the client-side functionality of the Smart Energy
+  1.2 Prepayment cluster.
+id: zigbee_prepayment_client
+label: Prepayment Client
+category: Zigbee|Cluster Library|Smart Energy
+quality: production
+provides:
+   - name: "zigbee_prepayment_client"
+source:
+  - path: protocol/zigbee/app/framework/plugin/prepayment-client/prepayment-client.c
+  - path: protocol/zigbee/app/framework/plugin/prepayment-client/prepayment-client-cli.c
+    condition:
+      - "cli"
+include:
+  - path: protocol/zigbee/app/framework/plugin/prepayment-client
+    file_list:
+      - path: prepayment-client.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_prepayment_client
+  - name: cluster_service
+    value:
+       cluster_id: "0x0705"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "CLIENT"
+       service_function: "emberAfPrepaymentClusterClientCommandParse"
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/prepayment-client

@@ -1,0 +1,13 @@
+!!omap
+- id: cpc_secondary_recommends
+- label: cpc_recommends
+- description: CPC recommend
+- package: platform
+- category: Services|Co-Processor Communication|Secondary Device
+- quality: production
+- ui_hints:
+    visibility: never
+- provides:
+  - name: cpc_secondary_recommends
+- recommends:
+  - id: cpc_security_secondary

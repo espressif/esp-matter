@@ -1,0 +1,234 @@
+<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster xmlns:zcl="http://zigbee.org/zcl/clusters" 
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+             xmlns:type="http://zigbee.org/zcl/types" 
+             xmlns:xi="http://www.w3.org/2001/XInclude" 
+             xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd" 
+             id="0B04" revision="2" name="ElectricalMeasurement">
+  <classification role="application" picsCode="EMR" primaryTransaction="1" />
+  <!--  For any measurement cluster with MeasuredValue, MinMeasuredValue and MaxMeasuredValue attributes, the 
+        following SHALL be always be true:
+          If both are defined, then MaxMeasuredValue SHALL be greater than MinMeasuredValue.
+          If MaxMeasuredValue is known, then MeasuredValue SHALL be less than or equal to MaxMeasuredValue.
+          If MinMeasuredValue is known, then MeasuredValue SHALL be greater than or equal to MinMeasuredValue. -->
+  <server>
+    <attributes>
+      <!-- Basic Information (00xx) -->
+      <attribute id="0000" name="MeasurementType" type="map32" required="true" default="00000000" >
+        <bitmap>
+          <element name="ActiveMeasurementAC" type="bool" mask="00000001" />
+          <element name="ReactiveMeasurementAC" type="bool" mask="00000002" shiftRight="1" />
+          <element name="ApparentMeasurementAC" type="bool" mask="00000004" shiftRight="2" />
+          <element name="PhaseAMeasurement" type="bool" mask="00000008" shiftRight="3" />
+          <element name="PhaseBMeasurement" type="bool" mask="00000010" shiftRight="4" />
+          <element name="PhaseCMeasurement" type="bool" mask="00000020" shiftRight="5" />
+          <element name="DCMeasurement" type="bool" mask="00000040" shiftRight="6" />
+          <element name="HarmonicsMeasurement" type="bool" mask="00000080" shiftRight="7" />
+          <element name="PowerQualityMeasurement" type="bool" mask="00000100" shiftRight="8" />
+        </bitmap>
+      </attribute>
+      <!-- DC Measurement (01xx) -->
+      <attribute id="0100" name="DCVoltage" type="int16" min="-32767" default="-32768" reportRequired="true" />
+      <attribute id="0101" name="DCVoltageMin" type="int16" min="-32767" default="-32768" />
+      <attribute id="0102" name="DCVoltageMax" type="int16" min="-32767" default="-32768" />
+      <attribute id="0103" name="DCCurrent" type="int16" min="-32767" default="-32768" reportRequired="true" />
+      <attribute id="0104" name="DCCurrentMin" type="int16" min="-32767" default="-32768" />
+      <attribute id="0105" name="DCCurrentMax" type="int16" min="-32767" default="-32768" />
+      <attribute id="0106" name="DCPower" type="int16" min="-32767" default="-32768" reportRequired="true" />
+      <attribute id="0107" name="DCPowerMin" type="int16" min="-32767" default="-32768" />
+      <attribute id="0108" name="DCPowerMax" type="int16" min="-32767" default="-32768" />
+      <!-- DC Formatting (02xx) -->
+      <!-- If a multiplier or divisor attribute is present, its corresponding divisor or multiplier attribute shall be implemented as well. -->
+      <attribute id="0200" name="DCVoltageMultiplier" type="uint16" min="1" default="1" reportRequired="true" requiredIf="implements(DCVoltageDivisor)" />
+      <attribute id="0201" name="DCVoltageDivisor" type="uint16" min="1" default="1" reportRequired="true" requiredIf="implements(DCVoltageMultiplier)" />
+      <attribute id="0202" name="DCCurrentMultiplier" type="uint16" min="1" default="1" reportRequired="true" requiredIf="implements(DCCurrentDivisor)" />
+      <attribute id="0203" name="DCCurrentDivisor" type="uint16" min="1" default="1" reportRequired="true" requiredIf="implements(DCCurrentMultiplier)" />
+      <attribute id="0204" name="DCPowerMultiplier" type="uint16" min="1" default="1" reportRequired="true" requiredIf="implements(DCPowerDivisor)" />
+      <attribute id="0205" name="DCPowerDivisor" type="uint16" min="1" default="1" reportRequired="true" requiredIf="implements(DCPowerMultiplier)" />
+      <!-- AC (Non-phase Specific) Measurements (03xx) -->
+      <attribute id="0300" name="ACFrequency" type="uint16" default="65535" reportRequired="true" />
+      <attribute id="0301" name="ACFrequencyMin" type="uint16" default="65535" />
+      <attribute id="0302" name="ACFrequencyMax" type="uint16" default="65535" />
+      <attribute id="0303" name="NeutralCurrent" type="uint16" default="65535" reportRequired="true" />
+      <attribute id="0304" name="TotalActivePower" type="int32" min="-8388607" max="8388607" reportRequired="true" />
+      <attribute id="0305" name="TotalReactivePower" type="int32" min="-8388607" max="8388607" reportRequired="true" />
+      <attribute id="0306" name="TotalApparentPower" type="uint32" max="16777215" reportRequired="true" />
+      <attribute id="0307" name="Measured1stHarmonicCurrent" type="int16" default="-32768" reportRequired="true" />
+      <attribute id="0308" name="Measured3rdHarmonicCurrent" type="int16" default="-32768" reportRequired="true" />
+      <attribute id="0309" name="Measured5thHarmonicCurrent" type="int16" default="-32768" reportRequired="true" />
+      <attribute id="030a" name="Measured7thHarmonicCurrent" type="int16" default="-32768" reportRequired="true" />
+      <attribute id="030b" name="Measured9thHarmonicCurrent" type="int16" default="-32768" reportRequired="true" />
+      <attribute id="030c" name="Measured11thHarmonicCurrent" type="int16" default="-32768" reportRequired="true" />
+      <attribute id="030d" name="MeasuredPhase1stHarmonicCurrent" type="int16" default="-32768" reportRequired="true" />
+      <attribute id="030e" name="MeasuredPhase3rdHarmonicCurrent" type="int16" default="-32768" reportRequired="true" />
+      <attribute id="030f" name="MeasuredPhase5thHarmonicCurrent" type="int16" default="-32768" reportRequired="true" />
+      <attribute id="0310" name="MeasuredPhase7thHarmonicCurrent" type="int16" default="-32768" reportRequired="true" />
+      <attribute id="0311" name="MeasuredPhase9thHarmonicCurrent" type="int16" default="-32768" reportRequired="true" />
+      <attribute id="0312" name="MeasuredPhase11thHarmonicCurrent" type="int16" default="-32768" reportRequired="true" />
+      <!-- AC (Non-phase Specific) Formatting (04xx) -->
+      <attribute id="0400" name="ACFrequencyMultiplier" type="uint16" min="1" default="1" reportRequired="true" requiredIf="implements(ACFrequencyDivisor)" />
+      <attribute id="0401" name="ACFrequencyDivisor" type="uint16" min="1" default="1" reportRequired="true" requiredIf="implements(ACFrequencyMultiplier)" />
+      <attribute id="0402" name="PowerMultiplier" type="uint32" max="16777215" default="1" reportRequired="true" requiredIf="implements(PowerDivisor)" />
+      <attribute id="0403" name="PowerDivisor" type="uint32" max="16777215" default="1" reportRequired="true" requiredIf="implements(PowerMultiplier)" />
+      <attribute id="0404" name="HarmonicCurrentMultiplier" type="int8" min="-127" default="0" reportRequired="true" />
+      <attribute id="0405" name="PhaseHarmonicCurrentMultiplier" type="int8" min="-127" default="0" reportRequired="true" />
+      <!-- AC (Single Phase or Phase A) Measurements (05xx) -->
+      <attribute id="0501" name="LineCurrent" type="uint16" default="65535" reportRequired="true" />
+      <attribute id="0502" name="ActiveCurrent" type="int16" default="-32768" reportRequired="true" />
+      <attribute id="0503" name="ReactiveCurrent" type="int16" default="-32768" reportRequired="true" />
+      <attribute id="0505" name="RMSVoltage" type="uint16" default="65535" reportRequired="true" />
+      <attribute id="0506" name="RMSVoltageMin" type="uint16" default="65535" />
+      <attribute id="0507" name="RMSVoltageMax" type="uint16" default="65535" />
+      <attribute id="0508" name="RMSCurrent" type="uint16" default="65535" reportRequired="true" />
+      <attribute id="0509" name="RMSCurrentMin" type="uint16" default="65535" />
+      <attribute id="050a" name="RMSCurrentMax" type="uint16" default="65535" />
+      <attribute id="050b" name="ActivePower" type="int16" default="-32768" reportRequired="true" />
+      <attribute id="050c" name="ActivePowerMin" type="int16" default="-32768" />
+      <attribute id="050d" name="ActivePowerMax" type="int16" default="-32768" />
+      <attribute id="050e" name="ReactivePower" type="int16" default="-32768" reportRequired="true" />
+      <attribute id="050f" name="ApparentPower" type="uint16" default="65535" reportRequired="true" />
+      <attribute id="0510" name="PowerFactor" type="int8" min="-100" max="100" default="0" />
+      <attribute id="0511" name="AverageRMSVoltageMeasurementPeriod" type="uint16" default="0" writable="true" />
+      <attribute id="0512" name="AverageRMSOverVoltageCounter" type="uint16" default="0" writable="true" />
+      <attribute id="0513" name="AverageRMSUnderVoltageCounter" type="uint16" default="0" writable="true" />
+      <attribute id="0514" name="RMSExtremeOverVoltagePeriod" type="uint16" default="0" writable="true" />
+      <attribute id="0515" name="RMSExtremeUnderVoltagePeriod" type="uint16" default="0" writable="true" />
+      <attribute id="0516" name="RMSVoltageSagPeriod" type="uint16" default="0" writable="true" />
+      <attribute id="0517" name="RMSVoltageSwellPeriod" type="uint16" default="0" writable="true" />
+      <!-- AC Formatting (06xx) -->
+      <attribute id="0600" name="ACVoltageMultiplier" type="uint16" min="1" default="1" reportRequired="true" requiredIf="implements(ACVoltageDivisor)" />
+      <attribute id="0601" name="ACVoltageDivisor" type="uint16" min="1" default="1" reportRequired="true" requiredIf="implements(ACVoltageMultiplier)" />
+      <attribute id="0602" name="ACCurrentMultiplier" type="uint16" min="1" default="1" reportRequired="true" requiredIf="implements(ACCurrentDivisor)" />
+      <attribute id="0603" name="ACCurrentDivisor" type="uint16" min="1" default="1" reportRequired="true" requiredIf="implements(ACCurrentMultiplier)" />
+      <attribute id="0604" name="ACPowerMultiplier" type="uint16" min="1" default="1" reportRequired="true" requiredIf="implements(ACPowerDivisor)" />
+      <attribute id="0605" name="ACPowerDivisor" type="uint16" min="1" default="1" reportRequired="true" requiredIf="implements(ACPowerMultiplier)" />
+      <!-- DC Manufacturer Threshold Alarms (07xx) -->
+      <attribute id="0700" name="DCOverloadAlarmsMask" type="map8" default="0" writable="true" >
+        <bitmap>
+          <element name="VoltageOverload" type="bool" mask="01" />
+          <element name="CurrentOverload" type="bool" mask="02" shiftRight="1" />
+        </bitmap>
+      </attribute>
+      <attribute id="0701" name="DCVoltageOverload" type="int16" default="-1" />
+      <attribute id="0702" name="DCCurrentOverload" type="int16" default="-1" />
+      <!-- AC Manufacturer Threshold Alarms (08xx) -->
+      <attribute id="0800" name="ACAlarmsMask" type="map16" default="0000" writable="true" >
+        <bitmap>
+          <element name="VoltageOverload" type="bool" mask="0001" />
+          <element name="CurrentOverload" type="bool" mask="0002" shiftRight="1" />
+          <element name="ActivePowerOverload" type="bool" mask="0004" shiftRight="2" />
+          <element name="ReactivePowerOverload" type="bool" mask="0008" shiftRight="3" />
+          <element name="AverageRMSOverVoltage" type="bool" mask="0010" shiftRight="4" />
+          <element name="AverageRMSUnderVoltage" type="bool" mask="0020" shiftRight="5" />
+          <element name="RMSExtremeOverVoltage" type="bool" mask="0040" shiftRight="6" />
+          <element name="RMSExtremeUnderVoltage" type="bool" mask="0080" shiftRight="7" />
+          <element name="RMSVoltageSag" type="bool" mask="0100" shiftRight="8" />
+          <element name="RMSVoltageSwell" type="bool" mask="0200" shiftRight="9" />
+        </bitmap>
+      </attribute>
+      <attribute id="0801" name="ACVoltageOverload" type="int16" default="-1" />
+      <attribute id="0802" name="ACCurrentOverload" type="int16" default="-1" />
+      <attribute id="0803" name="ACActivePowerOverload" type="int16" default="-1" />
+      <attribute id="0804" name="ACReactivePowerOverload" type="int16" default="-1" />
+      <attribute id="0805" name="AverageRMSOverVoltage" type="int16" />
+      <attribute id="0806" name="AverageRMSUnderVoltage" type="int16" />
+      <attribute id="0807" name="RMSExtremeOverVoltage" type="int16" writable="true" />
+      <attribute id="0808" name="RMSExtremeUnderVoltage" type="int16" writable="true" />
+      <attribute id="0809" name="RMSVoltageSag" type="int16" writable="true" />
+      <attribute id="080a" name="RMSVoltageSwell" type="int16" writable="true" />
+      <!-- AC Phase B Measurements (09xx) -->
+      <attribute id="0901" name="LineCurrentPhB" type="uint16" default="65535" reportRequired="true" />
+      <attribute id="0902" name="ActiveCurrentPhB" type="int16" default="-32768" reportRequired="true" />
+      <attribute id="0903" name="ReactiveCurrentPhB" type="int16" default="-32768" reportRequired="true" />
+      <attribute id="0905" name="RMSVoltagePhB" type="uint16" default="65535" reportRequired="true" />
+      <attribute id="0906" name="RMSVoltageMinPhB" type="uint16" default="32768" />
+      <attribute id="0907" name="RMSVoltageMaxPhB" type="uint16" default="32768" />
+      <attribute id="0908" name="RMSCurrentPhB" type="uint16" default="65535" reportRequired="true" />
+      <attribute id="0909" name="RMSCurrentMinPhB" type="uint16" default="65535" />
+      <attribute id="090a" name="RMSCurrentMaxPhB" type="uint16" default="65535" />
+      <attribute id="090b" name="ActivePowerPhB" type="int16" default="-32768" reportRequired="true" />
+      <attribute id="090c" name="ActivePowerMinPhB" type="int16" default="-32768" />
+      <attribute id="090d" name="ActivePowerMaxPhB" type="int16" default="-32768" />
+      <attribute id="090e" name="ReactivePowerPhB" type="int16" default="-32768" reportRequired="true" />
+      <attribute id="090f" name="ApparentPowerPhB" type="uint16" default="65535" reportRequired="true" />
+      <attribute id="0910" name="PowerFactorPhB" type="int8" min="-100" max="100" default="0" />
+      <attribute id="0911" name="AverageRMSVoltageMeasurementPeriodPhB" type="uint16" default="0" writable="true" />
+      <attribute id="0912" name="AverageRMSOverVoltageCounterPhB" type="uint16" default="0" writable="true" />
+      <attribute id="0913" name="AverageRMSUnderVoltageCounterPhB" type="uint16" default="0" writable="true" />
+      <attribute id="0914" name="RMSExtremeOverVoltagePeriodPhB" type="uint16" default="0" writable="true" />
+      <attribute id="0915" name="RMSExtremeUnderVoltagePeriodPhB" type="uint16" default="0" writable="true" />
+      <attribute id="0916" name="RMSVoltageSagPeriodPhB" type="uint16" default="0" writable="true" />
+      <attribute id="0917" name="RMSVoltageSwellPeriodPhB" type="uint16" default="0" writable="true" />
+      <!-- AC Phase C Measurements (0Axx) -->
+      <attribute id="0a01" name="LineCurrentPhC" type="uint16" default="65535" reportRequired="true" />
+      <attribute id="0a02" name="ActiveCurrentPhC" type="int16" default="-32768" reportRequired="true" />
+      <attribute id="0a03" name="ReactiveCurrentPhC" type="int16" default="-32768" reportRequired="true" />
+      <attribute id="0a05" name="RMSVoltagePhC" type="uint16" default="65535" reportRequired="true" />
+      <attribute id="0a06" name="RMSVoltageMinPhC" type="uint16" default="32768" />
+      <attribute id="0a07" name="RMSVoltageMaxPhC" type="uint16" default="32768" />
+      <attribute id="0a08" name="RMSCurrentPhC" type="uint16" default="65535" reportRequired="true" />
+      <attribute id="0a09" name="RMSCurrentMinPhC" type="uint16" default="65535" />
+      <attribute id="0a0a" name="RMSCurrentMaxPhC" type="uint16" default="65535" />
+      <attribute id="0a0b" name="ActivePowerPhC" type="int16" default="-32768" reportRequired="true" />
+      <attribute id="0a0c" name="ActivePowerMinPhC" type="int16" default="-32768" />
+      <attribute id="0a0d" name="ActivePowerMaxPhC" type="int16" default="-32768" />
+      <attribute id="0a0e" name="ReactivePowerPhC" type="int16" default="-32768" reportRequired="true" />
+      <attribute id="0a0f" name="ApparentPowerPhC" type="uint16" default="65535" reportRequired="true" />
+      <attribute id="0a10" name="PowerFactorPhC" type="int8" min="-100" max="100" default="0" />
+      <attribute id="0a11" name="AverageRMSVoltageMeasurementPeriodPhC" type="uint16" default="0" writable="true" />
+      <attribute id="0a12" name="AverageRMSOverVoltageCounterPhC" type="uint16" default="0" writable="true" />
+      <attribute id="0a13" name="AverageRMSUnderVoltageCounterPhC" type="uint16" default="0" writable="true" />
+      <attribute id="0a14" name="RMSExtremeOverVoltagePeriodPhC" type="uint16" default="0" writable="true" />
+      <attribute id="0a15" name="RMSExtremeUnderVoltagePeriodPhC" type="uint16" default="0" writable="true" />
+      <attribute id="0a16" name="RMSVoltageSagPeriodPhC" type="uint16" default="0" writable="true" />
+      <attribute id="0a17" name="RMSVoltageSwellPeriodPhC" type="uint16" default="0" writable="true" />
+    </attributes>
+    <commands>
+      <command id="00" name="GetProfileInfoResponse">
+        <fields>
+          <field name="ProfileCount" type="uint8" />
+          <field name="ProfileIntervalPeriod" type="ProfileIntervalPeriod" />
+          <field name="MaxNumberOfIntervals" type="uint8" />
+          <field name="ListOfAttributes" type="attribId" array="true" arrayLengthSize="0" />
+        </fields>
+      </command>
+      <command id="01" name="GetMeasurementProfileResponse" >
+        <fields>
+          <field name="StartTime" type="UTC" />
+          <field name="Status" type="enum8" >
+            <restriction>
+              <type:enumeration value="00" name="Success" />
+              <type:enumeration value="01" name="AttributeProfileNotSupported" />
+              <type:enumeration value="02" name="InvalidStartTime" />
+              <type:enumeration value="03" name="MoreIntervalsRequestedThanCanBeReturned" />
+              <type:enumeration value="04" name="NoIntervalsAvailableForTheRequestedTime" />
+            </restriction>
+          </field>
+          <field name="ProfileIntervalPeriod" type="ProfileIntervalPeriod" />
+          <field name="NumberOfIntervalsDelivered" type="uint8" />
+          <field name="AttributeId" type="attribId" /> 
+          <field name="Intervals" type="unk" array="true" arrayLengthSize="0" />
+        </fields>
+      </command>
+    </commands>
+  </server>
+  <client>
+    <commands>
+      <command id="00" name="GetProfileInfo" />
+      <command id="01" name="GetMeasurementProfile" >
+        <fields>
+          <field name="AttributeID" type="attribId" /> 
+          <field name="StartTime" type="UTC" /> 
+          <field name="NumberOfIntervals" type="uint8" /> 
+        </fields>
+      </command>
+    </commands>
+  </client>
+</zcl:cluster>

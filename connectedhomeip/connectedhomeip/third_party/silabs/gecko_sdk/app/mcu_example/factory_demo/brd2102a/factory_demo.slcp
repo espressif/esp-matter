@@ -1,0 +1,72 @@
+project_name: factory_demo
+package: mcu
+quality: production
+label: MCU Example - Factory Demo (Previously known as 'helges_demo')
+description: This example project demonstrates a wide range of features
+  of the EFM32TG11 MCU and the SLSTK3301A Starter Kit.
+
+category: Example|MCU Example
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+component:
+  - id: sl_system
+  - id: device_init
+  - id: simple_led
+    instance: [led0, led1]
+  - id: emlib_acmp
+  - id: emlib_adc
+  - id: emlib_common
+  - id: emlib_core
+  - id: emlib_cryotimer
+  - id: emlib_csen
+  - id: emlib_emu
+  - id: emlib_gpio
+  - id: emlib_i2c
+  - id: emlib_lcd
+  - id: emlib_lesense
+  - id: emlib_rmu
+  - id: emlib_rtcc
+  - id: emlib_system
+  - id: emlib_vdac
+  - id: si70xx_driver
+  - id: si72xx_driver
+  - id: i2cspm
+    instance: [sensor]
+  - id: simple_button
+    instance: [btn0, btn1]
+source:
+  - path: segmentlcd.c
+  - path: app_bumode.c
+  - path: app_csen.c
+  - path: app_rtcc.c
+  - path: app_sensor.c
+  - path: main.c
+include:
+  - path: .
+    file_list:
+    - path: segmentlcd.h
+    - path: app_bumode.h
+    - path: app_csen.h
+    - path: app_rtcc.h
+    - path: app_sensor.h
+    - path: segmentlcdconfig.h
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+configuration:
+  - name: SL_BOARD_ENABLE_DISPLAY
+    value: 1
+  - name: SL_BOARD_ENABLE_SENSOR_RHT
+    value: 1
+  - name: SL_BOARD_ENABLE_SENSOR_HALL
+    value: 1
+define:
+  - name: DEBUG_EFM
+tag:
+  - prebuilt_demo

@@ -1,0 +1,71 @@
+// Copyright 2020 The Pigweed Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not
+// use this file except in compliance with the License. You may obtain a copy of
+// the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations under
+// the License.
+syntax = "proto3";
+
+package pw.metric.proto;
+
+// A metric, described by the name (path + name), and the value.
+//
+// This flattened representation, while more complicated than the obvious tree
+// structure alternative, enables streaming metrics from the device in low
+// memory or low compute situations.
+message Metric {
+  // The token path from the root. The last token is the metric name, and
+  // previous tokens are the parent group names. This could be converted from
+  // the tokens into a string; for example the token path {0xfaff, 0xabcd}:
+  //
+  //  - The group is 0xfaff (root, parent)
+  //  - The metric is 0xabcd
+  //
+  // Given the token database, this might be converted into:
+  //
+  //   /i2c_bus_1/failed_transactions
+  //
+  // Note: This uses a repeated fixed32 instead of a "Oneof" with the string
+  // path to reduce the encoded size. Using a repeated Oneof name { str,
+  // fixed32 } would cost approximately 6N bytes for N path elements, vs 2 + 4N
+  // bytes in the packed case.
+  repeated fixed32 token_path = 1;
+
+  // The string path from the root. Similar to token path, but with strings.
+  // Note: This is currently unsupported.
+  repeated string string_path = 2;
+
+  // The metric value. This field should be omitted when used as a query.
+  oneof value {
+    float as_float = 3;
+    uint32 as_int = 4;
+  };
+}
+
+message MetricRequest {
+  // Metrics or the groups matched to the given paths are returned.  The intent
+  // is to support matching semantics, with at least subsetting to e.g. collect
+  // all the metrics in a group and its children. We may also implement
+  // wildcard matchers.
+  //
+  // Value fields in the metrics will be ignored, since this is a query.
+  //
+  // Note: This is currently unsupported.
+  repeated Metric metrics = 1;
+}
+
+message MetricResponse {
+  repeated Metric metrics = 1;
+}
+
+service MetricService {
+  // Returns metrics or groups matching the requested paths.
+  rpc Get(MetricRequest) returns (stream MetricResponse) {}
+}

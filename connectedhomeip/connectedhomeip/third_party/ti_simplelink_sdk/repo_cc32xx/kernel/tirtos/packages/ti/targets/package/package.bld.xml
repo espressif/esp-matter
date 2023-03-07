@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/build.dtd -->
+<package name="ti.targets" version="1, 0, 3" producerId="undefined">
+    <units>
+        <interface name="ITarget"/>
+        <module name="C28"/>
+        <module name="C28_large"/>
+        <module name="C28_float"/>
+        <module name="C64P"/>
+        <module name="C674"/>
+        <module name="C66"/>
+    </units>
+    <sources>
+        <srcFile name="ccs_exec.xdt"/>
+        <srcFile name="linkcmd.xdt"/>
+        <srcFile name="linkUtils.xs"/>
+        <srcFile name="std.h"/>
+        <srcFile name="ccs_package.xdt"/>
+        <srcFile name="ccs_start.bat"/>
+        <srcFile name="ccs_start.pl"/>
+    </sources>
+    <configscripts>
+    </configscripts>
+    <makefiles>
+        <srcFile name="package.mak" src="package.bld"/>
+        <srcFile name="package/package.xdc.dep" src="package.xdc"/>
+        <srcFile name="package/package.cfg.dep" src="package.xdc"/>
+        <srcFile name="package/rel/ti_targets.tar.dep" src="package/rel/ti_targets.xdc.inc"/>
+    </makefiles>
+    <targets>
+    </targets>
+    <libraries>
+    </libraries>
+    <configurations>
+    </configurations>
+    <executables>
+    </executables>
+    <tests>
+    </tests>
+    <releases relDir="package/rel/">
+    <release name="ti_targets"
+        pname="ti_targets.tar"
+        label="default"
+        relScript="./local.rel">
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+        <file name="ccs_exec.xdt"/>
+        <file name="linkcmd.xdt"/>
+        <file name="linkUtils.xs"/>
+        <file name="std.h"/>
+        <file name="ccs_package.xdt"/>
+        <file name="ccs_start.bat"/>
+        <file name="ccs_start.pl"/>
+        <file name="package/package.cfg.xdc.inc"/>
+    </release>
+    </releases>
+    <repositories>
+    </repositories>
+</package>

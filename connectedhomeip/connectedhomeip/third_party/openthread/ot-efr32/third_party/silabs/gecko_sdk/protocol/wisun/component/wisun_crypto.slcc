@@ -1,0 +1,54 @@
+id: "wisun_crypto"
+label: "Wi-SUN Crypto"
+description:
+  "This component provides the dependencies for Wi-SUN cryptographic services, \
+  such as encryption and hash functions."
+package: "wisun"
+category: "Wi-SUN"
+quality: "production"
+root_path: "protocol/wisun/stack"
+
+requires:
+  - name: "psa_crypto"
+  - name: "psa_crypto_aes"
+  - name: "psa_crypto_ccm"
+  - name: "psa_crypto_ecc"
+  - name: "psa_crypto_ecc_secp256r1"
+  - name: "psa_crypto_ecdh"
+  - name: "psa_crypto_ecdsa"
+  - name: "psa_crypto_hmac"
+  - name: "psa_crypto_sha1"
+  - name: "psa_crypto_sha256"
+  - name: "psa_crypto_tls12_prf"
+  - name: "psa_its"
+  - name: "mbedtls_aes"
+  - name: "mbedtls_core"
+  - name: "mbedtls_ccm"
+  - name: "mbedtls_ecc"
+  - name: "mbedtls_ecdh"
+  - name: "mbedtls_ecdsa"
+  - name: "mbedtls_ecc_secp256r1"
+  - name: "mbedtls_sha256"
+  - name: "mbedtls_nist_kw"
+  - name: "mbedtls_tls"
+  # Legacy APIs that can be removed after PSA integration is finished
+  - name: "mbedtls_pki"
+
+provides:
+  - name: "wisun_crypto"
+
+template_contribution:
+  - name: "mbedtls_config"
+    value: "MBEDTLS_X509_CHECK_EXTENDED_KEY_USAGE"
+  - name: "mbedtls_config"
+    value: "MBEDTLS_SSL_EXPORT_KEYS"
+  - name: "mbedtls_config"
+    value: "MBEDTLS_KEY_EXCHANGE_ECDHE_ECDSA_ENABLED"
+  - name: "psa_key_slots"
+    value:
+      name: "psa_key_slots_wisun_stack"
+      count: "6"
+  - name: "psa_its_files"
+    value:
+      name: psa_its_files_wisun_stack
+      count: "6"

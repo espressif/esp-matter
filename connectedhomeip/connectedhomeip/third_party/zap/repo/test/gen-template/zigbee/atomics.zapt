@@ -1,0 +1,10 @@
+{{#zcl_atomics}}
+-----
+Name: {{name}}
+Size: {{size}}
+Macro: {{asDelimitedMacro name}}
+Id: {{asHex atomicId 2}}
+Description: {{description}}
+C type: {{asUnderlyingType name}}
+
+{{/zcl_atomics}}

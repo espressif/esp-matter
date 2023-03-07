@@ -1,0 +1,53 @@
+id: rail_util_init
+label: RAIL Utility, Initialization
+description: Utility to aid with RAIL Initialization Support
+package: platform
+category: Platform|Radio
+quality: production
+instantiable:
+  prefix: inst
+requires:
+  - name: rail_lib
+  - name: rail_util_protocol
+  - name: rail_util_init_core
+  - name: rail_util_callbacks
+provides:
+  - name: rail_util_init
+    allow_multiple: true
+documentation:
+  docset: rail
+  document: rail-util-init
+config_file:
+  - path: "platform/radio/rail_lib/plugin/rail_util_init/config/efr32xg1x/sl_rail_util_init_{{instance}}_config.h"
+    condition:
+      - device_series_1
+  - path: "platform/radio/rail_lib/plugin/rail_util_init/config/efr32xg21/sl_rail_util_init_{{instance}}_config.h"
+    condition:
+      - device_series_2
+      - device_sdid_200
+  - path: "platform/radio/rail_lib/plugin/rail_util_init/config/efr32xg22/sl_rail_util_init_{{instance}}_config.h"
+    condition:
+      - device_series_2
+      - device_sdid_205
+  - path: "platform/radio/rail_lib/plugin/rail_util_init/config/efr32xg23/sl_rail_util_init_{{instance}}_config.h"
+    condition:
+      - device_series_2
+      - device_sdid_210
+  - path: "platform/radio/rail_lib/plugin/rail_util_init/config/efr32xg24/sl_rail_util_init_{{instance}}_config.h"
+    condition:
+      - device_series_2
+      - device_sdid_215
+  - path: "platform/radio/rail_lib/plugin/rail_util_init/config/efr32xg25/sl_rail_util_init_{{instance}}_config.h"
+    condition:
+      - device_series_2
+      - device_sdid_220
+  - path: "platform/radio/rail_lib/plugin/rail_util_init/config/efr32xg27/sl_rail_util_init_{{instance}}_config.h"
+    condition:
+      - device_series_2
+      - device_sdid_230
+
+template_contribution:
+  - name: rail_util_init_instance
+    value: "{{instance}}"
+  - name: component_catalog
+    value: rail_util_init

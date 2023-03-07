@@ -1,0 +1,25 @@
+id: legacy_ncp_spi
+label: SPI NCP Configuration
+package: platform
+description: Legacy SPI implementation for NCP.
+category: Services
+quality: production
+root_path: platform/service/legacy_ncp_spi
+define:
+  - name: LEGACY_NCP_SPI
+    value: 1
+provides:
+  - name: legacy_ncp_spi
+source:
+  - path: src/spi-protocol.c
+include:
+  - path: inc
+    file_list:
+    - path: spi-protocol.h
+    - path: spi-protocol-device.h
+config_file:
+  - path: config/legacy_ncp_spi_config.h
+    file_id: legacy_ncp_spi_config
+template_contribution:
+  - name: component_catalog
+    value: legacy_ncp_spi

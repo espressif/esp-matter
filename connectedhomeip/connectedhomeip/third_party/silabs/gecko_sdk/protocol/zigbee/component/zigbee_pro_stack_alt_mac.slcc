@@ -1,0 +1,46 @@
+id: zigbee_pro_stack_alt_mac
+label: Pro Stack Alt MAC
+package: Zigbee
+category: Zigbee|Stack|Pro Core
+quality: production
+
+description: Provides Zigbee PRO stack functionality along with APIs to interface with alternate MAC.
+
+provides:
+  - name: zigbee_pro_stack_alt_mac
+  - name: zigbee_pro_stack_support
+
+requires:
+  - name: zigbee_pro_stack_alt_mac_implementation
+  - name: zigbee_pro_stack_alt_mac_library
+    condition:
+     - zigbee_force_libraries
+  - name: zigbee_stack_common
+  - name: zigbee_phy_2_4
+
+recommends:
+  - id: zigbee_pro_stack_alt_mac_source
+
+include:
+  - path: protocol/zigbee/stack/include/
+    file_list:
+      - path: ember-alternate-mac.h
+
+config_file:
+  - path: protocol/zigbee/stack/config/component_config/sl_zigbee_pro_stack_alt_mac_config.h
+
+validation_helper:
+  # NCP doesn't have DEVICE_TYPE before it connects to Host
+  # so we don't run the validation script for NCP
+  - path: protocol/zigbee/component/scripts/zigbee_pro_stack_alt_mac_validation.lua
+    unless:
+      - zigbee_ncp
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_pro_stack_alt_mac
+
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/pro-stack-alt-mac

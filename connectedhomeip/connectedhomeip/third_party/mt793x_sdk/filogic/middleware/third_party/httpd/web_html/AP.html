@@ -1,0 +1,46 @@
+<html>
+<head>
+<script>
+function Config_load()
+{
+
+document.getElementById("demo").innerHTML="Load AP SSID,Password value";
+document.getElementById("ELEM_SSID").value="<% CGI_MT7687AP_SSID(); %>";
+document.getElementById("ELEM_PASSWORD").value="<% CGI_MT7687AP_PASSWD(); %>";
+document.getElementById("ELEM_SSID2").value="<% CGI_MT7687AP_SSID(); %>";
+document.getElementById("ELEM_PASSWORD2").value="<% CGI_MT7687AP_PASSWD(); %>";
+}
+</script>
+</head>
+
+<body onload="Config_load()">
+<h1>HTTP Server Sample Page</h1>
+<p id="demo">My First JavaScript Function</p>
+
+AP mode Configure</br>
+<form action=" " method="get">
+<input type=hidden name="CMD" value="CMD2">
+NOTE: This web is only for demo.The auth mode of AP is WPA-PSK/WPA2-PSK ;and the encrypt type is TKIP/AES in default.<br />
+SSID:<input id="ELEM_SSID" type="text" name="Ssid" /><br />
+Password:<input id="ELEM_PASSWORD"  type="text" name="WpaPsk" /><br />
+<input type="submit" onclick="javascript:alert('Configure OK, Please reboot!');return true;" value="save by get method" /></form>
+<br />
+
+AP mode Configure</br>
+<form action=" " method="post">
+<input type=hidden name="CMD" value="CMD2">
+NOTE: This web is only for demo.The auth mode of AP is WPA-PSK/WPA2-PSK ;and the encrypt type is TKIP/AES in default.<br />
+SSID:<input id="ELEM_SSID2" type="text" name="Ssid" /><br />
+Password:<input id="ELEM_PASSWORD2"  type="text" name="WpaPsk" /><br />
+<input type="submit" onclick="javascript:alert('Configure OK, Please reboot!');return true;"value="save by post method" /></form>
+<br />
+
+<form action=" " method="get">
+<input type=hidden name="CMD" value="CMD3">
+<input type="submit" onclick="javascript:alert('Start reboot!');return true;"value="Reload" /></form>
+<br />
+
+</body>
+</html>
+
+

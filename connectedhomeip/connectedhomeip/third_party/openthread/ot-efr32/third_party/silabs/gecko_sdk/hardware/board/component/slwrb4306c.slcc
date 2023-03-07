@@ -1,0 +1,22 @@
+!!omap
+- id: slwrb4306c
+- label: SLWRB4306C
+- package: platform
+- description: Kit BSP support for the MGM13P02 Mighty Gecko Module Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4306c
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4306C"'
+  - name: SL_KIT_REV
+    value: '"A01"'
+- tag:
+  - kit:opn:SLWRB4306C
+  - kit:pn:WRB4306
+  - kit:variant:C
+  - kit:revision:A01

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Personality id="20x19_pwm" name="PWM" version="1.0" path="Digital Functions" xmlns="http://cypress.com/xsd/cyhwpersonality_v1">
+  <Dependencies>
+    <IpBlock name="20x19_pwm" />
+    <Resource name="pwm" />
+  </Dependencies>
+  <ExposedMembers />
+  <Parameters>
+    <ParamDoc id="apiDoc" name="Configuration Help" group="Peripheral Documentation" default="file:///`${cy_libs_path()}`/docs/group___pwm_driver.html" linkText="Open PWM Documentation" visible="true" desc="Opens the Hardware Driver Documentation" />
+
+    <ParamSignal port="pwm[0]" name="PWM" group="Pins" visible="true" desc="The PWM output." canBeEmpty="false" />
+
+    <ParamString id="instNum" name="" group="" default="`${getInstNumber(&quot;pwm&quot;)}`" visible="false" editable="false" desc="" />
+  </Parameters>
+
+  <DRCs/>
+
+  <ConfigFirmware>
+
+  </ConfigFirmware>
+</Personality>

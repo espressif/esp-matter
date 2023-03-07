@@ -1,0 +1,129 @@
+/***************************************************************************//**
+ * @file
+ * @brief
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ ******************************************************************************/
+#include "sl_wisun_config.h"
+{% if config.macAddress is not none %}
+
+//! Wi-SUN MAC address
+const sl_wisun_mac_address_t wisun_config_mac_address = {
+  // {{config.macAddress}}
+  .address = {
+    {%- for mac in macAddress -%}
+    0x{{ mac }}{%- if loop.index0 < loop.length - 1 -%}{{", "}}{%- endif -%}
+    {%- endfor -%}
+  }
+};
+{%- endif -%}
+{% if (config.macList|length > 0) and (config.isDenyList is sameas false) %}
+
+//! Wi-SUN MAC allow list
+const wisun_config_mac_list_t wisun_config_mac_allow_list = {
+  .mac_list_num = {% for allowed_mac in config.macList -%}
+    {% if loop.index == loop.length -%}
+        {{loop.length}}u
+    {%- endif -%}
+  {% endfor %},
+  .mac_list = {
+    {%- for addr in macList %}
+    {
+      // {{config.macList[loop.index0]}}
+      .address = {
+        {%- for mac in addr -%}
+        0x{{ mac }}{%- if loop.index0 < loop.length - 1 -%}{{", "}}{%- endif -%}
+        {%- endfor -%}
+      }
+    }{%- if loop.index0 < loop.length - 1 -%}{{","}}{%- endif -%}
+    {%- endfor %}
+  }
+};
+{%- endif -%}
+
+{% if (config.macList|length > 0) and (config.isDenyList is sameas true) %}
+
+//! Wi-SUN MAC deny list
+const wisun_config_mac_list_t wisun_config_mac_deny_list = {
+  .mac_list_num = {% for denied_mac in config.macList -%}
+    {% if loop.index == loop.length -%}
+        {{loop.length}}u
+    {%- endif -%}
+  {% endfor %},
+  .mac_list = {
+    {%- for addr in macList %}
+    {
+      // {{config.macList[loop.index0]}}
+      .address = {
+        {%- for mac in addr -%}
+        0x{{ mac }}{%- if loop.index0 < loop.length - 1 -%}{{", "}}{%- endif -%}
+        {%- endfor -%}
+      }
+    }{%- if loop.index0 < loop.length - 1 -%}{{","}}{%- endif -%}
+    {%- endfor %}
+  }
+};
+{%- endif -%}
+
+{% if config.devicePrivateKey is not none %}
+
+//! Wi-SUN Device private key
+const uint8_t wisun_config_device_private_key[] = {
+{%- if "\n" in config.devicePrivateKey and "\r\n" in config.devicePrivateKey %}
+"{{config.devicePrivateKey | replace('\r\n', '\\r\\n"\n"')}}"
+{%- elif "\n" in config.devicePrivateKey %}
+"{{config.devicePrivateKey | replace('\n', '\\r\\n"\n"')}}"
+{%- else %}
+"{{config.devicePrivateKey}}"
+{%- endif %}
+};
+{%- endif -%}
+{% if config.deviceCertificate is not none %}
+
+//! Wi-SUN Device certificate
+const uint8_t wisun_config_device_certificate[] = {
+{%- if "\n" in config.deviceCertificate and "\r\n" in config.deviceCertificate %}
+"{{config.deviceCertificate | replace('\r\n', '\\r\\n"\n"')}}"
+{%- elif "\n" in config.deviceCertificate %}
+"{{config.deviceCertificate | replace('\n', '\\r\\n"\n"')}}"
+{%- else %}
+"{{config.deviceCertificate}}"
+{%- endif %}
+};
+{%- endif -%}
+{% if config.caCertificate is not none %}
+
+//! Wi-SUN CA certificate
+const uint8_t wisun_config_ca_certificate[] = {
+{%- if "\n" in config.caCertificate and "\r\n" in config.caCertificate %}
+"{{config.caCertificate | replace('\r\n', '\\r\\n"\n"')}}"
+{%- elif "\n" in config.caCertificate %}
+"{{config.caCertificate | replace('\n', '\\r\\n"\n"')}}"
+{%- else %}
+"{{config.caCertificate}}"
+{%- endif %}
+};
+{%- endif -%}

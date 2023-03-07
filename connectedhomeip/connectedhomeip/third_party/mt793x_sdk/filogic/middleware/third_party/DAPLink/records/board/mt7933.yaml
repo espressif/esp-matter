@@ -1,0 +1,9 @@
+common:
+    sources:
+        board:
+            - source/board/mt7933.c
+        family:
+            - source/family/mtk/mt7933/target.c
+            - source/family/mtk/mt7933/target_reset.c
+    macros:
+        - BOARD_MT7933

@@ -1,0 +1,24 @@
+#include "sl_iostream.h"
+
+// Instance(s) handle and context variable {# Generate iostream handle(s) #}
+{% for instance in iostream_dummy_instances %}
+sl_iostream_t *sl_iostream_dummy_{{ instance }}_handle;
+static sl_iostream_t dummy_{{ instance }};
+sl_iostream_t *sl_iostream_dummy_{{ instance }}_handle = &dummy_{{ instance }};
+sl_iostream_instance_info_t sl_iostream_instance_dummy_{{ instance }}_info = {
+  .handle = &dummy_{{ instance }},
+  .name = "dummy_{{ instance }}",
+  .type = SL_IOSTREAM_TYPE_UNDEFINED,
+  .periph_id = 0,
+};
+{% endfor %}
+{# Init function #}
+void sl_iostream_dummy_init_instances(void)
+{
+  // Instantiate dummy instance(s)
+  {% for instance in iostream_dummy_instances %}
+  dummy_{{ instance }}.write = NULL;
+  dummy_{{ instance }}.read = NULL;
+  dummy_{{ instance }}.context = NULL;
+  {% endfor %}
+}

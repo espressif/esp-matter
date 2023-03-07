@@ -1,0 +1,132 @@
+project_name: micriumos_webmic
+package: mcu
+quality: production
+label: MCU Example - Micrium OS Webmic
+description: >
+  Example usage of microphones and MicriumOS HTTP server
+
+  This example shows how to sample data from the microphone and also how to
+  stream that data on a web server using uC/HTTPs.
+
+  The audio is sampled from on-kit microphones by using LDMA.
+  The sampled audio waveform is displayed on LCD. 
+  Sampling and encoding is performed in the main os task.
+  Configuration can be found in common_declarations.h and config.h.
+  For info on encoding, see IETFs and xiphs rfc6716, rfc7845 and rfc3533.
+
+category: Example|MCU Example
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+component:
+  - id: micriumos_bsp
+  - id: micriumos_bsp_net_ether  
+  - id: micriumos_common_lib
+  - id: micriumos_common_auth  
+  - id: micriumos_kernel
+  - id: micriumos_net
+  - id: micriumos_net_app_http_server  
+  - id: sl_system
+  - id: device_init  
+  - id: iostream_usart
+    instance: [vcom]
+  - id: iostream_retarget_stdio
+  - id: iostream_stdlib_config    
+  - id: sleeptimer
+  - id: dmadrv
+  - id: segger_systemview
+  - id: glib
+  - id: board_control  
+
+source:
+  - path: main.c
+  - path: network.c
+  - path: webserver.c
+  - path: mic_i2s.c  
+  - path: graphics.c
+  - path: images.c
+include:
+  - path: .
+    file_list:
+    - path: common_declarations.h
+    - path: network.h
+    - path: webserver.h
+    - path: mic_config.h
+    - path: mic_i2s.h
+    - path: graphics.h
+    - path: images.h    
+  - path: libs/include  
+    file_list:
+    - path: opus.h
+    - path: opus_custom.h
+    - path: opus_defines.h
+    - path: opus_multistream.h
+    - path: opus_types.h
+    - path: ogg/config_types.h
+    - path: ogg/ogg.h
+    - path: ogg/os_types.h
+library:
+  - path: libs/libogg_gcc.a  
+    condition:
+    - "toolchain_gcc"  
+  - path: libs/libogg_iar.a     
+    condition:
+    - "toolchain_iar"   
+  - path: libs/libogg_keil.lib   
+    condition: 
+    - "toolchain_segger"       
+  - path: libs/libopus_gcc.a   
+    condition:
+    - "toolchain_gcc"
+  - path: libs/libopus_iar.a   
+    condition:
+    - "toolchain_iar"  
+  - path: libs/libopus_keil.lib 
+    condition:
+    - "toolchain_segger"        
+configuration:
+  - name: SL_BOARD_ENABLE_DISPLAY
+    value: 1
+#------------- Micrium OS / SystemView --------------------
+  - name: CPU_CFG_TS_32_EN
+    value: "1"
+  - name: OS_CFG_DBG_EN
+    value: "1"
+  - name: OS_CFG_TS_EN
+    value: "1"
+  - name: OS_CFG_SCHED_ROUND_ROBIN_EN
+    value: "1"
+  - name: OS_CFG_STAT_TASK_EN
+    value: "1"
+  - name: OS_CFG_TASK_PROFILE_EN
+    value: "1"
+  - name: LIB_MEM_CFG_HEAP_SIZE
+    value: 262144
+  - name: NET_IF_CFG_WAIT_SETUP_READY_EN
+    value: 0
+  - name: NET_IPv6_CFG_EN
+    value: 0 
+  - name: NET_IPv6_CFG_ADDR_AUTO_CFG_EN
+    value: 0  
+  - name: NET_IPv6_CFG_DAD_EN
+    value: 0
+  - name: NET_MCAST_CFG_IPv4_RX_EN
+    value: 0
+  - name: NET_MCAST_CFG_IPv4_TX_EN
+    value: 0
+  - name: OS_CFG_TMR_EN
+    value: 1
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1    
+define:
+  - name: "DEBUG_EFM"
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+tag:
+  - hardware:component:eth

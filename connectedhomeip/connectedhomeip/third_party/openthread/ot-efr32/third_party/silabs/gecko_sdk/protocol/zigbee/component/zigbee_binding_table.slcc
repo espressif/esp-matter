@@ -1,0 +1,70 @@
+id: zigbee_binding_table
+label: Binding table
+package: Zigbee
+category: Zigbee|Stack
+quality: production
+
+description: Provides the ZDO Binding Table command parsing and storage of binding table entries.
+
+provides:
+  - name: zigbee_binding_table
+  - name: zigbee_binding
+
+requires:
+  - name: zigbee_binding_table_implementation
+  - name: zigbee_binding_table_library
+    condition:
+      - zigbee_force_libraries
+
+recommends:
+  - id: zigbee_binding_table_source
+
+include:
+  - path: protocol/zigbee/stack/include
+    file_list:
+      - path: binding-table.h
+  - path: protocol/zigbee/app/em260/
+    file_list:
+      - path: command-handlers-binding.h
+
+config_file:
+  - path: protocol/zigbee/stack/config/component_config/sl_zigbee_binding_table_config.h
+
+source:
+  - path: protocol/zigbee/app/em260/command-handlers-binding-generated.c
+    condition:
+      - zigbee_ncp
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_binding_table
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: set_configuration_value
+      function_name: emberAfPluginEzspBindingConfigurationValueCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: get_policy
+      function_name: emberAfPluginEzspBindingPolicyCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: set_policy
+      function_name: emberAfPluginEzspBindingPolicyCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: get_configuration_value
+      function_name: emberAfPluginEzspBindingConfigurationValueCommandCallback
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: modify_memory_allocation
+      function_name: emInitializeBindingTable
+  
+  - name: zigbee_ncp_callback
+    value:
+      callback_type: permit_host_to_ncp_frame
+      function_name: emberAfPluginEzspBindingPermitHostToNcpFrameCallback
+          
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/binding-table

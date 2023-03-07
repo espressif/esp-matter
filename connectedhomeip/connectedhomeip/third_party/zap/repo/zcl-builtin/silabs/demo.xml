@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<configurator>
+  <domain name="CHIP"/>
+  <cluster>
+    <name>Demo</name>
+    <domain>General</domain>
+    <!-- Configure where to display the cluster into the ZAP UI -->
+    <description>The Demo Cluster is used to show how to define a simple cluster for the CHIP codebase</description>
+    <code>0xF005</code>
+    <!-- Unique code for the cluster -->
+    <define>DEMO_CLUSTER</define>
+    <client init="false" tick="false">true</client>
+    <server init="false" tick="false">true</server>
+    <command source="client" code="0x00" name="SayHelloFromClient" optional="false">
+      <description>Send a hello command to the server</description>
+      <arg name="numberOfTimes" type="INT8U"/>
+    </command>
+    <command source="client" code="0x00" name="SayHelloFromClient" optional="false">
+      <description>Send a hello command to the client</description>
+      <arg name="numberOfTimes" type="INT8U"/>
+    </command>
+    <event code="0x0001" name="HelloEvent" priority="info" side="server">
+      <description>Example test event</description>
+      <field id="1" name="arg1" type="INT8U"/>
+      <field id="2" name="arg2" type="INT32U"/>
+      <field id="3" name="arg3" type="CHAR_STRING"/>
+    </event>
+  </cluster>
+</configurator>

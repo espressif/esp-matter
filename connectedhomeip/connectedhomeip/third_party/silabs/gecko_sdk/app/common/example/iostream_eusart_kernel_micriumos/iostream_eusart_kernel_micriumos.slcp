@@ -1,0 +1,46 @@
+project_name: iostream_eusart_kernel_micriumos
+package: platform
+quality: production
+label: Platform - I/O Stream EUSART on Micrium OS kernel
+description: >
+  This example project uses the I/O Stream service running in a Micrium OS kernel task to demonstrate
+  the use of EUSART communication over the virtual COM port (VCOM). The application will echo back any
+  characters it receives over the serial connection. The VCOM serial port can be used either over USB
+  or by connecting to port 4902 if the kit is connected via Ethernet. 
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]
+source:
+  - path: app.c
+  - path: main.c
+  - path: app_iostream_eusart.c
+include:
+  - path: .
+    file_list:
+    - path: app.h
+    - path: app_iostream_eusart.h
+component:
+  - id: sl_system
+  - id: device_init
+  - id: micriumos_kernel
+  - id: sleeptimer
+  - id: iostream
+  - id: iostream_retarget_stdio
+  - id: iostream_eusart
+    instance: [vcom]
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: SL_IOSTREAM_EUSART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: 1
+define:
+  - name: DEBUG_EFM
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md

@@ -1,0 +1,25 @@
+GPIO
+====
+
+概述
+--------
+
+通用型之输入输出（General-purpose input/output，通常称为GPIO），GPIO管理功能提供GPIO控制寄存器，实现软件对 GPIO 属性的配置，使用户能够方便地操作 GPIO。每个GPIO可以配置为输入、输出和可选功能三种模式。在每个模式下(除模拟可选功能)，提供设置上拉，下拉，浮空三种端口状态，此外GPIO还提供中断功能，可以配置为上升沿触发，下降沿触发或者高电平/低电平触发。
+
+.. note::
+
+    gpio更多资料请参考 `BL602参考手册的3.2.5 GPIO概述 <https://dev.bouffalolab.com/media/doc/602/reference_manual/zh/html/content/GLB.html>`_ 。
+   
+应用实例
+----------
+
+GPIO实例： ``customer_app/peripheral/demo_gpio`` 。
+
+API参考
+----------
+
+.. include:: /_build/inc/hosal_gpio.inc
+
+
+
+

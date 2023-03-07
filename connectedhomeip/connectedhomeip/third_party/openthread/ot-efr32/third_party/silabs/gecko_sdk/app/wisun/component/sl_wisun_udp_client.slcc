@@ -1,0 +1,94 @@
+id: "sl_wisun_udp_client"
+label: "UDP Client"
+package: "wisun"
+description: "This component contains functions of Wi-SUN UDP Client apps.
+The functions are used as CLI callbacks for UDP socket creation, close, read and write."
+category: "Wi-SUN|Application"
+quality: "production"
+root_path: "app/wisun/component/udp_client"
+provides:
+  - name: sl_wisun_udp_client
+
+source:
+  - path: "sl_wisun_udp_client.c"
+  - path: "sl_wisun_udp_client_cli.c"
+    condition:
+      - "sl_wisun_app_cli"
+
+include:
+  - path: "."
+    file_list:
+    - path: "sl_wisun_udp_client.h"
+
+requires:
+  - name: "sl_wisun_socket"
+  - name: "sl_wisun_app_core"
+
+ui_hints:
+  visibility: never  
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+
+  - name: "cli_group"
+    value:
+      name: "wisun"
+      help: "Wi-SUN commands"
+      shortcuts:
+        - name: "w"
+
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "udp_client"
+      handler: "app_udp_client"
+      help: "Open a UDP client socket"
+      shortcuts:
+        - name: "uc"
+
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "socket_close"
+      handler: "app_socket_close"
+      help: "Close a socket"
+      shortcuts:
+        - name: "sc"
+      argument:
+        - type: uint32
+          help: "Socket Id"
+
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "socket_write"
+      handler: "app_socket_write"
+      help: "Write to a socket"
+      shortcuts:
+        - name: "sw"
+      argument:
+        - type: uint32
+          help: "Socket Id"
+        - type: string
+          help: "Remote address"
+        - type: uint16
+          help: "Remote port"
+        - type: string
+          help: "Data to write"
+
+  - name: "cli_command"
+    value:
+      group: "wisun"
+      name: "socket_read"
+      handler: "app_socket_read"
+      help: "Read from a socket"
+      shortcuts:
+        - name: "sr"
+      argument:
+        - type: uint32
+          help: "Socket Id"
+        - type: uint16
+          help: "Amount of bytes to read"
+
+  - name: component_catalog
+    value: wisun_udp_client

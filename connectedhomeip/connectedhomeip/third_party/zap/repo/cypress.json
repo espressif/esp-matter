@@ -1,0 +1,13 @@
+{
+  "viewportWidth": 1080,
+  "viewportHeight": 920,
+  "video": false,
+  "ignoreTestFiles": [
+    "**/file_open.spec.js",
+    "**/*.test.js",
+    "**/*.xml",
+    "**/*.zap",
+    "**/custom_xml.spec.js",
+    "**/check-cluster-attributes-singleton-in-zigbee-mode.spec.js"
+  ]
+}

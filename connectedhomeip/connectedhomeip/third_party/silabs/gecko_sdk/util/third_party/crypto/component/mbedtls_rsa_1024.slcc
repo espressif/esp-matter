@@ -1,0 +1,16 @@
+id: mbedtls_rsa_1024
+package: platform
+label: RSA-1024
+description: >-
+  This component adds support for 1024-bit RSA operations.
+category: Platform|Security|Mbed TLS|RSA
+quality: alpha
+provides:
+  - name: mbedtls_rsa_1024
+  - name: mbedtls_rsa_size
+    allow_multiple: true
+requires:
+  - name: mbedtls_rsa
+template_contribution:
+  - name: mbedtls_mpi_max
+    value: 128

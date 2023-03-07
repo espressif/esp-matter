@@ -1,0 +1,136 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/module_config.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_thread/backend.gni")
+import("$dir_pw_unit_test/test.gni")
+
+declare_args() {
+  # The build target that overrides the default configuration options for this
+  # module. This should point to a source set that provides defines through a
+  # public config (which may -include a file or add defines directly).
+  pw_multisink_CONFIG = pw_build_DEFAULT_MODULE_CONFIG
+}
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("config") {
+  public = [ "public/pw_multisink/config.h" ]
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ pw_multisink_CONFIG ]
+}
+
+pw_source_set("pw_multisink") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_multisink/multisink.h" ]
+  public_deps = [
+    ":config",
+    "$dir_pw_sync:interrupt_spin_lock",
+    "$dir_pw_sync:lock_annotations",
+    "$dir_pw_sync:mutex",
+    dir_pw_bytes,
+    dir_pw_containers,
+    dir_pw_function,
+    dir_pw_result,
+    dir_pw_ring_buffer,
+    dir_pw_status,
+  ]
+  deps = [
+    dir_pw_assert,
+    dir_pw_log,
+    dir_pw_varint,
+  ]
+  sources = [ "multisink.cc" ]
+}
+
+pw_source_set("util") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_multisink/util.h" ]
+  public_deps = [
+    ":pw_multisink",
+    "$dir_pw_log:protos.pwpb",
+    dir_pw_status,
+  ]
+  deps = [
+    dir_pw_bytes,
+    dir_pw_function,
+  ]
+  sources = [ "util.cc" ]
+}
+
+pw_source_set("test_thread") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_multisink/test_thread.h" ]
+  public_deps = [ "$dir_pw_thread:thread" ]
+}
+
+# Tests that use threads.
+# To instantiate this test based on a thread backend, create a pw_test target
+# that depends on this pw_source_set and a pw_source_set that provides the
+# implementaiton of test_thread. See :stl_multisink_test as an example.
+pw_source_set("multisink_threaded_test") {
+  sources = [ "multisink_threaded_test.cc" ]
+  deps = [
+    ":pw_multisink",
+    ":test_thread",
+    "$dir_pw_string",
+    "$dir_pw_thread:thread",
+    "$dir_pw_thread:yield",
+    "$dir_pw_unit_test",
+  ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}
+
+pw_test("multisink_test") {
+  sources = [ "multisink_test.cc" ]
+  deps = [
+    ":pw_multisink",
+    dir_pw_function,
+    dir_pw_status,
+  ]
+}
+
+pw_source_set("stl_test_thread") {
+  sources = [ "stl_test_thread.cc" ]
+  deps = [
+    ":test_thread",
+    "$dir_pw_thread:thread",
+    "$dir_pw_thread_stl:thread",
+  ]
+}
+
+pw_test("stl_multisink_threaded_test") {
+  enable_if = pw_thread_THREAD_BACKEND == "$dir_pw_thread_stl:thread"
+  deps = [
+    ":multisink_threaded_test",
+    ":stl_test_thread",
+  ]
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":multisink_test",
+    ":stl_multisink_threaded_test",
+  ]
+}

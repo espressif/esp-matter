@@ -1,0 +1,25 @@
+id: "bluetooth_feature_extended_advertiser"
+label: "Extended Advertising"
+package: "Bluetooth"
+description: >
+  This component, corresponding to the "extended_advertiser" class in Bluetooth APIs,
+  provides the extended advertising feature. Specifically, this component enables
+  advertisements that use extended advertising PDUs. Common advertising functionalities,
+  e.g., advertising set creation, and address settings etc., are provided by its
+  base component <bluetooth_feature_advertiser>.
+category: "Bluetooth|Feature"
+quality: "production"
+root_path: "protocol/bluetooth"
+requires:
+  - name: "bluetooth_controller"
+  - name: "bluetooth_feature_advertiser"
+  - name: "device_supports_bluetooth_advertising_extensions"
+provides:
+  - name: "bluetooth_feature_extended_advertiser"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_extended_advertiser
+  - name: bluetooth_controller_init
+    value:
+      function: sl_btctrl_init_adv_ext()
+    priority: 7

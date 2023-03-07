@@ -1,0 +1,25 @@
+id: button
+label: Generic Button API
+package: platform
+description: >
+  This component provides a generic button API. In addition, a button driver 
+  implementation component such as the Simple Button component should be
+  included in the project to implement full button handling.
+category: Platform|Driver|Button
+quality: production
+root_path: platform/driver/button/
+source:
+  - path: src/sl_button.c
+include:
+  - path: inc
+    file_list:
+      - path: sl_button.h
+provides:
+  - name: button
+requires:
+  - name: emlib_common
+  - name: status
+  - name: component_catalog
+documentation:
+    docset: gecko-platform
+    document: driver/api/group-button

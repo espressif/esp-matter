@@ -1,0 +1,128 @@
+/*
+ * Copyright (c) 2012-2018, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+/*
+ *  ======== package.bld ========
+ *
+ */
+
+var BiosBuild = xdc.loadCapsule("ti/sysbios/Build.xs");
+
+var objList = [
+    "Clobber_asm",
+    "IntrinsicsSupport_asm",
+    "TaskSupport.c",
+    "TaskSupport_asm",
+    "Hwi.c",
+    "Hwi_asm",
+    "Hwi_asm_switch",
+    "Timer.c",
+    "TimestampProvider.c",
+    "Power.c"
+];
+
+/* generate makefiles */
+
+var trgFilter = {
+    field: "$name",
+    list: [ "ti.targets.arm.elf.M3",
+            "ti.targets.arm.elf.M4",
+            "ti.targets.arm.elf.M4F",
+          ]
+};
+
+/* generate ti target libs */
+BiosBuild.buildLibs(objList, undefined, trgFilter, arguments);
+
+/*
+ * Gnu Target Libs
+ */
+var objList = [
+    "Clobber_asm_gnu",
+    "IntrinsicsSupport_asm_gnu",
+    "TaskSupport.c",
+    "TaskSupport_asm_gnu",
+    "Hwi.c",
+    "Hwi_asm_gnu",
+    "Hwi_asm_switch_gnu",
+    "Timer.c",
+    "TimestampProvider.c",
+    "Power.c",
+];
+
+var trgFilter = {
+    field: "$name",
+    list: [ "gnu.targets.arm.M3",
+            "gnu.targets.arm.M4",
+            "gnu.targets.arm.M4F",
+            "ti.targets.arm.clang.M3",
+            "ti.targets.arm.clang.M4",
+            "ti.targets.arm.clang.M4F",
+          ]
+};
+
+/* generate gnu target libs */
+BiosBuild.buildLibs(objList, undefined, trgFilter, arguments);
+
+/*
+ * IAR Target Libs
+ */
+var objList = [
+    "Clobber_asm_iar",
+    "IntrinsicsSupport_asm_iar",
+    "TaskSupport.c",
+    "TaskSupport_asm_iar",
+    "Hwi.c",
+    "Hwi_asm_iar",
+    "Hwi_asm_switch_iar",
+    "Power.c",
+];
+
+var trgFilter = {
+    field: "$name",
+    list: [ "iar.targets.arm.M3",
+            "iar.targets.arm.M4",
+            "iar.targets.arm.M4F",
+          ]
+};
+
+/* generate iar target libs */
+BiosBuild.buildLibs(objList, undefined, trgFilter, arguments);
+
+Pkg.otherFiles = [ "package.bld", "linkcmd.xdt", 
+                   "Hwi__epilogue.h", "Hwi__prologue.h",
+                   "Hwi_smp.c",
+                   "Hwi_link.xdt", "doc-files",
+                   "Hwi.xml", "Timer.xml" ];
+
+/* include source files in the release package */
+Pkg.attrs.exportSrc = true;
+Pkg.attrs.exportCfg = true;

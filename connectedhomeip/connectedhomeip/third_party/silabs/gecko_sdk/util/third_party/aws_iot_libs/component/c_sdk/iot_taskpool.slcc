@@ -1,0 +1,36 @@
+id: iot_taskpool
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|C SDK
+label: IoT Task Pool
+description: C SDK Task Pool Utility.
+
+package: amazon_platform
+quality: production
+
+provides:
+  - name: iot_taskpool
+
+requires:
+  - name: iot_config_common
+  - name: iot_threads
+  - name: iot_error
+  - name: iot_init
+
+root_path: util/third_party/aws_iot_libs
+
+source:
+  - path: libraries/c_sdk/standard/common/taskpool/iot_taskpool.c
+  - path: libraries/c_sdk/standard/common/taskpool/iot_taskpool_static_memory.c
+  - path: libraries/c_sdk/standard/common/test/iot_tests_taskpool.c
+    condition: ["aws_tests_defs"]
+
+include:
+  - path: libraries/c_sdk/standard/common/include
+    file_list:
+      - path: iot_taskpool.h
+  - path: libraries/c_sdk/standard/common/include/private
+    file_list:
+      - path: iot_taskpool_internal.h
+  - path: libraries/c_sdk/standard/common/include/types
+    file_list:
+      - path: iot_taskpool_types.h

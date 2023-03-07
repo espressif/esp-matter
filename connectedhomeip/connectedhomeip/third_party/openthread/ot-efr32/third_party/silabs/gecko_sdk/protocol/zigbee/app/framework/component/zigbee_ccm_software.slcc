@@ -1,0 +1,20 @@
+package: Zigbee
+description: Software implementation of CCM.
+label: CCM (Software)
+id: zigbee_ccm_software
+category: Zigbee|Utility
+quality: production
+provides:
+   - name: "zigbee_ccm_star"
+   - name: "zigbee_ccm_software"
+source:
+  - path: protocol/zigbee/stack/framework/ccm-star.c
+
+include:
+  - path: protocol/zigbee/stack/include
+    file_list:
+      - path: ccm-star.h
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_ccm_software

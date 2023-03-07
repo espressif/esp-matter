@@ -1,0 +1,54 @@
+id: usb_device_class_msc_scsi
+category: Protocol|USB|Device
+label: USB MSC SCSI Class
+description: >
+  This module allows you to create instances of the USB MSC SCSI class.
+package: usb
+quality: production
+instantiable:
+  prefix: msc_scsi
+component_root_path: protocol/usb
+config_file:
+  - path: config/sl_usbd_class_{{instance}}_config.h
+source:
+  - path: src/sl_usbd_class_msc.c
+  - path: src/sl_usbd_class_msc_os.c
+  - path: src/sl_usbd_class_msc_scsi.c
+include:
+  - path: inc
+    file_list:
+      - path: sl_usbd_class_msc.h
+      - path: sl_usbd_class_msc_scsi.h
+  - path: src
+    file_list:
+      - path: sli_usbd_class_msc.h
+provides:
+  - name: usb_device_class_msc_scsi
+  - name: usb_device_class
+    allow_multiple: true
+requires:
+  - name: usb_device_configuration
+  - name: usb_device_core
+  - name: usb_device
+template_file:
+  - path: template/sl_usbd_class_msc_scsi_instances.h.jinja
+  - path: template/sl_usbd_class_msc_scsi_instances.c.jinja
+template_contribution:
+  - name: component_catalog
+    value: usb_device_msc
+  - name: component_catalog
+    value: usb_device_msc_scsi
+  - name: usbd_init
+    value: usb_device_msc
+  - name: usbd_init
+    value: usb_device_msc_scsi
+  - name: usb_msc_scsi_instances
+    value: "{{instance}}"
+  - name: event_handler
+    value:
+      event: stack_init
+      include: sl_usbd_class_msc_scsi_instances.h
+      handler: sli_usbd_msc_scsi_{{instance}}_init
+    priority: 10
+validation_helper:
+  - path: script/sl_usbd_class_msc_scsi_validation.lua

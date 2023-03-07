@@ -1,0 +1,5 @@
+This software makes use of the Eigen 3.3.4 C++ template library for linear
+algebra, which is licensed under Mozilla Public License 2.0 available at
+https://www.mozilla.org/en-US/MPL/2.0/. The source code for the Eigen
+library can be accessed at https://bitbucket.org/eigen/eigen/. No changes 
+have been made to the source code of the library.

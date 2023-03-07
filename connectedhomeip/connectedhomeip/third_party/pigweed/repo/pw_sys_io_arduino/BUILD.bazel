@@ -1,0 +1,42 @@
+# Copyright 2019 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+load(
+    "//pw_build:pigweed.bzl",
+    "pw_cc_library",
+)
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+pw_cc_library(
+    name = "pw_sys_io_arduino",
+    srcs = ["sys_io_arduino.cc"],
+    hdrs = ["public/pw_sys_io_arduino/init.h"],
+    # TODO(b/259149817): Get this to build
+    tags = ["manual"],
+    deps = [
+        "//pw_preprocessor",
+        "//pw_sys_io",
+    ],
+)
+
+# Used in targets/arduino
+pw_cc_library(
+    name = "pw_sys_io_arduino_header",
+    hdrs = ["public/pw_sys_io_arduino/init.h"],
+    includes = ["public"],
+    visibility = ["//visibility:public"],
+)

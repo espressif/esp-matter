@@ -1,0 +1,11 @@
+id: zw_role_type_always_on
+label: Z-Wave Role Type Always On
+category: Z-Wave|Role Types
+description: Z-Wave Role Type Always On Slave (AOS) Role Type is intended for mains powered devices that are always reachable, for example light switch.
+package: Z-Wave
+quality: production
+requires:
+  - name: zw_end_device
+provides:
+  - name: zw_role_type_always_on
+  - name: zw_role_type

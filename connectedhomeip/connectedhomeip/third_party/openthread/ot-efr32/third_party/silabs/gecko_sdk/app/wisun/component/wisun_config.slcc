@@ -1,0 +1,47 @@
+id: wisun_config
+label: "Wi-SUN Configuration"
+package: wisun
+description: "The component allows to use configuration and its tools for set up the Wi-SUN settings, certificates and radio."
+category: Wi-SUN|Application
+quality: production
+root_path: "app/wisun/component/wisun_config"
+provides:
+- name: wisun_config
+
+config_file:
+# default values are in wisunconf
+- path: config/wisun_settings.wisunconf
+  directory: wisun
+  unless:
+    - "wisun_full_radioconf"
+    - "sl_wisun_empty"
+
+# for applications that use full radio configuration except nwk meas app
+- path: config/only_radio/wisun_settings.wisunconf
+  directory: wisun
+  condition:
+    - "wisun_full_radioconf"
+  unless:
+    - "sl_wisun_network_measurement"
+
+# the empty app should only show the radio tab
+- path: config/only_radio/wisun_settings.wisunconf
+  directory: wisun
+  condition:
+    - "sl_wisun_empty"
+  unless:
+    - "sl_wisun_network_measurement"
+
+# default values are in wisunconf for nwk meas app
+- path: config/wisun_settings.wisunconf
+  directory: wisun
+  condition:
+    - "sl_wisun_network_measurement"
+
+ui_hints:
+  visibility: never
+
+template_contribution:
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: wisun_config

@@ -1,0 +1,14 @@
+id: toolchain_variant_host
+label: Toolchain for host
+package: platform
+description: Toolchain support for host devices
+category: Platform|Toolchain
+quality: production
+tag:
+  - toolchain:variant:host
+provides:
+  - name: toolchain_variant
+  - name: toolchain_variant_host
+toolchain_settings:
+  - option: device_type
+    value: host

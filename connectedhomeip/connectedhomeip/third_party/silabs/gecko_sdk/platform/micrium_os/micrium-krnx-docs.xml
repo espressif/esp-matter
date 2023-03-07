@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<contentItems
+xmlns="http://www.silabs.com/ss/ContentItem.ecore"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.silabs.com/ss/ContentItem.ecore file:/C:/Users/CAOWENS/Documents/ssv4/contentItems.xsd">
+  <contentItemData
+    priority="2"
+    category="Getting Started"
+    itemURI="https://docs.silabs.com/micrium/latest/micrium-general-concepts/"
+    label="General Concepts"
+    description="Description of general concepts that are used throughout Micrium OS products"
+  ></contentItemData>
+  <contentItemData
+    priority="1"
+    category="API References"
+    itemURI="https://docs.silabs.com/micrium/latest/micrium-kernel-api/"
+    label="Kernel API Reference"
+    description="API Reference for Micrium OS Kernel"
+  ></contentItemData>
+  <contentItemData
+    priority="4"
+    category="API References"
+    itemURI="https://docs.silabs.com/micrium/latest/micrium-io-api/"
+    label="IO API Reference"
+    description="API Reference for Micrium OS IO"
+  ></contentItemData>
+  <contentItemData
+    priority="2"
+    category="API References"
+    itemURI="https://docs.silabs.com/micrium/latest/micrium-cpu-api/"
+    label="CPU API Reference"
+    description="API Reference for Micrium OS CPU"
+  ></contentItemData>
+  <contentItemData
+    priority="3"
+    category="API References"
+    itemURI="https://docs.silabs.com/micrium/latest/micrium-common-api/"
+    label="Common API Reference"
+    description="API Reference for Micrium OS Common"
+  ></contentItemData>
+</contentItems>

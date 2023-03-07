@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Profile xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/profile.xsd" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    type="org.bluetooth.profile.hid_over_gatt"
+    name="HID OVER GATT">
+    <InformativeText>
+        <Abstract>This profile defines how a device with Bluetooth low energy wireless communications can support HID services over the Bluetooth low energy protocol stack using the Generic Attribute Profile.</Abstract>
+        <Summary>The HID over GATT profile defines the procedures and features to be used by Bluetooth low energy HID Devices using GATT and Bluetooth HID Hosts using GATT.</Summary>
+	</InformativeText>
+	<Role name="HID Device">
+		<Service type="org.bluetooth.service.human_interface_device">
+			<Declaration>Primary</Declaration>
+			<Requirement>Mandatory</Requirement>			
+				<Include>
+				<service type="org.bluetooth.service.battery_service">
+					<Declaration>Primary</Declaration>
+					<Requirement>Mandatory</Requirement>
+				</service>
+			</Include>
+
+		</Service>
+		<Service type="org.bluetooth.service.device_information">
+			<Declaration>PrimarySingleInstance</Declaration>
+			<Requirement>Mandatory</Requirement>
+		</Service>
+		<Service type="org.bluetooth.service.scan_parameters">
+			<Declaration>PrimarySingleInstance</Declaration>
+			<Requirement>Optional</Requirement>
+		</Service>
+	</Role>
+    
+	<Role name="Boot Host">
+        <Client type="org.bluetooth.service.human_interface_device">
+			<Requirement>Mandatory</Requirement>
+		</Client>
+        <Client type="org.bluetooth.service.device_information">
+			<Requirement>Mandatory</Requirement>
+		</Client>
+        <Client type="org.bluetooth.service.scan_parameters">
+			<Requirement>Optional</Requirement>
+		</Client>
+        <Client type="org.bluetooth.service.battery_service">
+			<Requirement>Mandatory</Requirement>
+		</Client>
+	</Role>
+    <Role name="Report Host">
+        <Client type="org.bluetooth.service.human_interface_device">
+			<Requirement>Mandatory</Requirement>
+		</Client>
+        <Client type="org.bluetooth.service.device_information">
+			<Requirement>Mandatory</Requirement>
+		</Client>
+        <Client type="org.bluetooth.service.scan_parameters">
+			<Requirement>Optional</Requirement>
+		</Client>
+        <Client type="org.bluetooth.service.battery_service">
+			<Requirement>Mandatory</Requirement>
+		</Client>
+	</Role>
+</Profile>

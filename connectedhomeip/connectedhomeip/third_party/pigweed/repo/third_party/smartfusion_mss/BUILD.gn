@@ -1,0 +1,112 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+import("$dir_pw_build/linker_script.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_third_party/smartfusion_mss/mss.gni")
+
+declare_args() {
+  pw_target_smartfusion2_LINK_CONFIG_DEFINES = []
+}
+
+if (dir_pw_third_party_smartfusion_mss != "") {
+  # The list currently includes all source files for build.
+  smartfusion_mss_sources = [
+    "exported_firmware/CMSIS/startup_gcc/startup_m2sxxx.S",
+    "exported_firmware/CMSIS/system_m2sxxx.c",
+    "exported_firmware/drivers/mss_can/mss_can.c",
+    "exported_firmware/drivers/mss_ethernet_mac/m88e1340_phy.c",
+    "exported_firmware/drivers/mss_ethernet_mac/mss_ethernet_mac.c",
+    "exported_firmware/drivers/mss_gpio/mss_gpio.c",
+    "exported_firmware/drivers/mss_hpdma/mss_hpdma.c",
+    "exported_firmware/drivers/mss_i2c/mss_i2c.c",
+    "exported_firmware/drivers/mss_nvm/mss_nvm.c",
+    "exported_firmware/drivers/mss_rtc/mss_rtc.c",
+    "exported_firmware/drivers/mss_spi/mss_spi.c",
+    "exported_firmware/drivers/mss_sys_services/mss_comblk.c",
+    "exported_firmware/drivers/mss_sys_services/mss_sys_services.c",
+    "exported_firmware/drivers/mss_uart/mss_uart.c",
+    "exported_firmware/drivers/mss_usb/mss_usb_common_cif.c",
+    "exported_firmware/drivers/mss_usb/mss_usb_device.c",
+    "exported_firmware/drivers/mss_usb/mss_usb_device_cdc.c",
+    "exported_firmware/drivers/mss_usb/mss_usb_device_cif.c",
+    "exported_firmware/drivers/mss_usb/mss_usb_device_hid.c",
+    "exported_firmware/drivers/mss_usb/mss_usb_device_msd.c",
+    "exported_firmware/drivers/mss_usb/mss_usb_device_printer.c",
+    "exported_firmware/drivers/mss_usb/mss_usb_device_rndis.c",
+    "exported_firmware/drivers/mss_usb/mss_usb_device_vendor.c",
+    "exported_firmware/drivers/mss_usb/mss_usb_host.c",
+    "exported_firmware/drivers/mss_usb/mss_usb_host_cif.c",
+    "exported_firmware/drivers/mss_usb/mss_usb_host_msc.c",
+    "exported_firmware/drivers_config/sys_config/sys_config.c",
+  ]
+
+  liberosoc_configs = [
+    {
+      name = "default"
+      config_header = "configs/config_default.h"
+    },
+    {
+      name = "debug"
+      config_header = "configs/config_debug.h"
+    },
+  ]
+
+  foreach(ele, liberosoc_configs) {
+    config_name = ele.name + "_config"
+    config(config_name) {
+      # Custom config file is specified by macro liberosoc_CONFIG_FILE
+      # for liberosoc
+      defines = [ "liberosoc_CONFIG_FILE=\"${ele.config_header}\"" ]
+    }
+
+    srcset_name = ele.name + "_config_srcset"
+    pw_source_set(srcset_name) {
+      public = [
+        "configs/config_pigweed_common.h",
+        ele.config_header,
+      ]
+      public_configs = [
+        ":${config_name}",
+        ":smartfusion_mss_common_config",
+      ]
+    }
+  }
+
+  config("smartfusion_mss_common_config") {
+    include_dirs = [
+      "$dir_pw_third_party_smartfusion_mss/exported_firmware/CMSIS/V4.5/Include",
+      "$dir_pw_third_party_smartfusion_mss/exported_firmware/drivers",
+      "$dir_pw_third_party_smartfusion_mss/exported_firmware/CMSIS",
+      "$dir_pw_third_party/smartfusion_mss",
+    ]
+    cflags = [
+      "-Wno-error=cast-qual",
+      "-Wno-error=redundant-decls",
+      "-w",
+    ]
+  }
+
+  pw_source_set("smartfusion_mss") {
+    sources = []
+    foreach(source, smartfusion_mss_sources) {
+      sources += [ "$dir_pw_third_party_smartfusion_mss/" + source ]
+    }
+    public_deps = [ ":${pw_third_party_smartfusion_mss_CONFIG}_config_srcset" ]
+  }
+} else {
+  group("smartfusion_mss") {
+  }
+}

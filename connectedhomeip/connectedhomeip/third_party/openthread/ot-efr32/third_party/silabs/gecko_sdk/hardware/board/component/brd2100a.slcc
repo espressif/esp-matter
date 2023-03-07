@@ -1,0 +1,50 @@
+!!omap
+- id: brd2100a
+- label: BRD2100A
+- package: platform
+- description: Board support for BRD2100A.
+- category: Platform|Board|Starter Kit
+- quality: production
+- requires:
+  - name: efm32tg840f32
+  - name: brd2100a_config
+- provides:
+  - name: brd2100a
+  - name: hardware_board
+  - name: hardware_board_stk
+  - name: hardware_board_from_stk
+  - name: hardware_board_from_efm32tg-stk3300
+  - name: hardware_board_has_vcom
+  - name: hardware_board_has_hfxo
+  - name: hardware_board_has_lfxo
+- recommends:
+  - id: iostream_usart
+    instance:
+    - vcom
+  - id: bootloader_uart_driver
+  - id: simple_led
+    instance:
+    - led0
+  - id: simple_button
+    instance:
+    - btn0
+    - btn1
+  - id: bootloader_spi_peripheral_usart_driver
+- template_contribution: []
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD2100A"'
+  - name: SL_BOARD_REV
+    value: '"B02"'
+- tag:
+  - board:pn:BRD2100
+  - board:variant:A
+  - board:revision:B02
+  - board:device:efm32tg840f32
+  - hardware:has:vcom
+  - hardware:has:led:1
+  - hardware:has:button:2
+  - hardware:has:touch
+  - hardware:has:lcd
+  - hardware:has:lesense:lc
+  - hardware:has:lesense:light

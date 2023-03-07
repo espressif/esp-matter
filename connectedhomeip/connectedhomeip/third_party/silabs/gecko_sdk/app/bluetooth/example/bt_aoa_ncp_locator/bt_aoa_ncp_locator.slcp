@@ -1,0 +1,91 @@
+project_name: bt_aoa_ncp_locator
+package: Bluetooth
+label: Bluetooth AoA - NCP locator
+description: >
+  Network Co-Processor (NCP) target application extended with CTE Receiver
+  support. It enables Angle of Arrival (AoA) calculation. Use this application
+  with Direction Finding host examples.
+category: Bluetooth AoX Examples
+quality: production
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Bluetooth"]
+  - name: "Device Type"
+    value: ["NCP"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+
+component:
+  - id: bluetooth_stack
+  - id: bluetooth_feature_legacy_advertiser
+  - id: bluetooth_feature_extended_advertiser
+  - id: bluetooth_feature_periodic_advertiser
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_dfu
+  - id: bluetooth_feature_gap
+  - id: bluetooth_feature_gatt
+  - id: bluetooth_feature_gatt_server
+  - id: bluetooth_feature_nvm
+  - id: bluetooth_feature_scanner
+  - id: bluetooth_feature_sm
+  - id: bluetooth_feature_sync
+  - id: bluetooth_feature_system
+  - id: bluetooth_feature_aoa_receiver
+  - id: ncp
+  - id: uartdrv_usart
+    instance:
+      - vcom
+  - id: mpu
+  - id: bootloader_interface
+  - id: sl_system
+  - id: device_init
+
+source:
+  - path: main.c
+  - path: app.c
+
+include:
+  - path: .
+    file_list:
+      - path: app.h
+
+readme:
+  - path: ../../documentation/example/ncp_aoa_locator/readme.md
+
+other_file:
+  - path: ../../script/create_bl_files.bat
+  - path: ../../script/create_bl_files.sh
+  - path: ../../documentation/example/ncp_aoa_locator/readme_img0.png
+    folder: images
+  - path: ../../documentation/example/ncp_aoa_locator/readme_img1.png
+    folder: images
+  - path: ../../documentation/example/ncp_aoa_locator/readme_img2.png
+    folder: images
+
+configuration:
+  - name: SL_STACK_SIZE
+    value: "2752"
+  - name: SL_HEAP_SIZE
+    value: "10000"
+  - name: SL_BT_CONFIG_USER_ADVERTISERS
+    value: 4
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: SL_UARTDRV_USART_VCOM_FLOW_CONTROL_TYPE
+    value: uartdrvFlowControlHw
+  - name: SL_BT_CONFIG_MAX_PERIODIC_ADVERTISING_SYNC
+    value: 8
+  - name: SL_PSA_KEY_USER_SLOT_COUNT
+    value: "0"
+    condition:
+      - psa_crypto
+
+tag:
+  - prebuilt_demo
+  - hardware:rf:band:2400
+
+ui_hints:
+  highlight:
+    - path: readme.md
+      focus: true

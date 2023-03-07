@@ -1,0 +1,13 @@
+# TensorFlow Lite Micro Advanced Configurator Adapter Pack Definition
+
+# Is used for SetupId
+id=tflite
+label=TensorFlow Lite Micro Advanced Configurator Adapter Pack
+
+# Trigger file extension. No period.
+uc.triggerExtension=tflite
+
+# Standard generation function
+function(uc_generate) {
+  cmd=$(python) tflite.py -i ${contentFolder} -o ${generationOutput}
+}

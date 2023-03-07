@@ -1,0 +1,109 @@
+Secure Remote Password Authentication with the new SRP API
+----------------------------------------------------------
+
+The new SRP API is defined in "srp.h".  To get a sense of
+how things are laid out, here is an simple example of how a
+client and server might use the SRP API to establish a securely
+authenticated session:
+
+Client                             Server
+------                             ------
+
+SRP_initialize_library();          SRP_initialize_library();
+
+[Call this once at the beginning of your application.]
+
+SRP * c_srp =                      SRP * s_srp =
+  SRP_new(SRP6_client_method());     SRP_new(SRP6_server_method())
+
+[Use SRP_new to initialize a new authentication context for
+ the session on each side.  In this example, we are using SRP-6.]
+
+                                   SRP_set_server_lookup(s_srp,
+                                     SRP_SERVER_system_lookup());
+
+[Tell the server to use the system lookup method (i.e. files,
+ NIS, etc. depending on how the library was built) to map usernames
+ to password file entries.  If you want to use something else, like
+ LDAP or external database, supply the lookup object here.]
+
+char * username =
+  prompt_for_username();           char * username =
+send_to_server(username);       =>   recv_from_client();
+
+[The client should prompt for the username and send it to the
+ server at this point.]
+
+SRP_set_username(c_srp,            SRP_set_username(s_srp,
+  username);                         username);
+
+[Tell the SRP context what username is being used to authenticate.]
+
+str N = recv_from_server();     <= send_to_client(s_srp->modulus);
+str g = recv_from_server();     <= send_to_client(s_srp->generator);
+str salt = recv_from_server();  <= send_to_client(s_srp->salt);
+
+[Send the user's parameters to the client.  These are sent as
+ octet strings.]
+
+SRP_set_params(c_srp, N.data, N.len,
+  g.data, g.len, salt.data, salt.len);
+
+[Feed the parameters to the client context.  If any problem is
+ detected with the parameters, this will return an error.]
+
+char * password =
+  prompt_for_password();
+SRP_set_auth_password(c_srp, password);
+
+[Get the password and supply it to the client context.  This will
+ be used to compute the session key.]
+
+cstr * pub = cstr_new();            cstr * pub = cstr_new();
+SRP_gen_pub(c_srp, &pub);           SRP_gen_pub(s_srp, &pub);
+send_to_server(pub);            <=> send_to_client(pub);
+
+[On each side, generate a random secret value and obtain the
+ corresponding public value, and send the public value.]
+
+recv_from_server(pub);              recv_from_client(pub);
+cstr * skey = cstr_new();           cstr * skey = cstr_new();
+SRP_compute_key(c_srp, &skey,       SRP_compute_key(s_srp, &skey,
+  pub->data, pub->length);            pub->data, pub->length);
+
+[Get the other side's public value and compute the session key
+ based on it.  If the client used the correct password, both
+ side should have the same value in "skey", the session key.]
+
+[Note that "skey" is a method-dependent hash of the mutually
+ calculated secret key value.  The raw integer value of this
+ quantity is still available in srp->key on each side.]
+
+[The following step is optional, designed to confirm that
+ both sides have the same session key and thus sucessfully
+ negotiated SRP with the correct password.]
+
+cstr * resp = cstr_new();
+SRP_respond(c_srp, &resp);           cstr * resp = cstr_new();
+send_to_server(resp);             => read_from_client(resp);
+                                     if(!SRP_OK(SRP_verify(s_srp,
+                                       resp->data, resp->len)))
+                                         abort_with_error();
+                                     SRP_respond(s_srp, &resp);
+recv_from_server(resp);           <= send_to_client(resp);
+if(!SRP_OK(SRP_verify(c_srp,
+  resp->data, resp->len)))
+    abort_with_error();
+
+[If both sides pass this stage without error, we have established
+ authentication and can communicate securely with the shared
+ session key.]
+
+cstr_free(resp);                     cstr_free(resp);
+cstr_free(pub);                      cstr_free(pub);
+/* ... */                            /* ... */
+SRP_free(c_srp);                     SRP_free(s_srp);
+
+[Don't forget to clean up!]
+
+----------------------------------------------------------------------

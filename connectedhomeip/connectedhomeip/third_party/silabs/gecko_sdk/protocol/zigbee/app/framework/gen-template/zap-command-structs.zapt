@@ -1,0 +1,99 @@
+/***************************************************************************//**
+ * @file  zap-command-structs.h
+ * @brief This file contains a set of generated command structs for all incoming
+ commands to handle incomming zcl messages.
+ * This file is generated. Do not update file manually.
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2020 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * The licensor of this software is Silicon Laboratories Inc. Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement. This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
+ *
+ ******************************************************************************/
+#ifndef __ZAP_COMMAND_STRUCTS_H__
+#define __ZAP_COMMAND_STRUCTS_H__ 1
+
+/**
+ * @defgroup zcl_command_structs ZCL Command Structures
+ * @ingroup command
+ * @brief Application Framework command structs reference
+ * 
+ * This document describes the generated command structs that 
+ * are used to hold data when over-the-air command payload is parsed.
+ */
+
+/**
+ *
+ * @addtogroup zcl_command_structs
+ * @{
+ */
+
+#include "sl_component_catalog.h"
+#ifdef SL_CATALOG_ZIGBEE_ZCL_FRAMEWORK_CORE_PRESENT
+
+#include "sl_signature_decode.h"
+
+#define ZAP_SIGNATURE_TYPE_INT8U        (SL_SIGNATURE_FIELD_1_BYTE)
+#define ZAP_SIGNATURE_TYPE_INT8S        (SL_SIGNATURE_FIELD_1_BYTE)
+#define ZAP_SIGNATURE_TYPE_ENUM8        (SL_SIGNATURE_FIELD_1_BYTE)
+#define ZAP_SIGNATURE_TYPE_BITMAP8      (SL_SIGNATURE_FIELD_1_BYTE)
+#define ZAP_SIGNATURE_TYPE_BOOLEAN      (SL_SIGNATURE_FIELD_1_BYTE)
+
+#define ZAP_SIGNATURE_TYPE_INT16U       (SL_SIGNATURE_FIELD_2_BYTES)
+#define ZAP_SIGNATURE_TYPE_DATA16       (SL_SIGNATURE_FIELD_2_BYTES)
+#define ZAP_SIGNATURE_TYPE_INT16S       (SL_SIGNATURE_FIELD_2_BYTES)
+#define ZAP_SIGNATURE_TYPE_ENUM16       (SL_SIGNATURE_FIELD_2_BYTES)
+#define ZAP_SIGNATURE_TYPE_BITMAP16     (SL_SIGNATURE_FIELD_2_BYTES)
+#define ZAP_SIGNATURE_TYPE_CLUSTER_ID   (SL_SIGNATURE_FIELD_2_BYTES)
+
+#define ZAP_SIGNATURE_TYPE_INT24U    (SL_SIGNATURE_FIELD_3_BYTES)
+#define ZAP_SIGNATURE_TYPE_ENUM24    (SL_SIGNATURE_FIELD_3_BYTES)
+#define ZAP_SIGNATURE_TYPE_BITMAP24  (SL_SIGNATURE_FIELD_3_BYTES)
+
+#define ZAP_SIGNATURE_TYPE_INT32U       (SL_SIGNATURE_FIELD_4_BYTES)
+#define ZAP_SIGNATURE_TYPE_INT32S       (SL_SIGNATURE_FIELD_4_BYTES)
+#define ZAP_SIGNATURE_TYPE_ENUM32       (SL_SIGNATURE_FIELD_4_BYTES)
+#define ZAP_SIGNATURE_TYPE_BITMAP32     (SL_SIGNATURE_FIELD_4_BYTES)
+#define ZAP_SIGNATURE_TYPE_UTC_TIME     (SL_SIGNATURE_FIELD_4_BYTES)
+#define ZAP_SIGNATURE_TYPE_TIME_OF_DAY  (SL_SIGNATURE_FIELD_4_BYTES)
+
+#define ZAP_SIGNATURE_TYPE_OCTET_STRING  (SL_SIGNATURE_FIELD_STRING)
+#define ZAP_SIGNATURE_TYPE_CHAR_STRING   (SL_SIGNATURE_FIELD_STRING)
+#define ZAP_SIGNATURE_TYPE_LONG_STRING   (SL_SIGNATURE_FIELD_LONG_STRING)
+#define ZAP_SIGNATURE_TYPE_ARRAY         (SL_SIGNATURE_FIELD_POINTER)
+#define ZAP_SIGNATURE_TYPE_POINTER       (SL_SIGNATURE_FIELD_POINTER)
+
+// TODO: These need to be validated. Not sure we copy them out.
+#define ZAP_SIGNATURE_TYPE_IEEE_ADDRESS (SL_SIGNATURE_FIELD_MASK_BLOB | 0x08)
+#define ZAP_SIGNATURE_TYPE_SECURITY_KEY (SL_SIGNATURE_FIELD_MASK_BLOB | 0x10)
+
+{{#zcl_commands_with_arguments sortBy="signature"}}{{#if argCount }}
+/** @brief Structure for ZCL command "{{commandName}}" from "{{clusterName}}" 
+ */
+typedef struct __zcl_{{as_underscore_lowercase clusterName}}_cluster_{{as_underscore_lowercase commandName}}_command {
+    {{#zcl_command_arguments}}
+  {{as_underlying_zcl_type type struct="uint8_t *" array="uint8_t *"}} {{as_symbol label}};
+    {{/zcl_command_arguments}}
+} sl_zcl_{{as_underscore_lowercase clusterName}}_cluster_{{as_underscore_lowercase commandName}}_command_t;
+{{#if isSignatureSimple}}
+
+#define sl_zcl_{{as_underscore_lowercase clusterName}}_cluster_{{as_underscore_lowercase commandName}}_command_signature  { \
+  {{argCount}}, \
+{{#zcl_command_arguments}}  ({{#if isOptional}}SL_SIGNATURE_FIELD_MASK_OPTIONAL_FIELD|{{/if}}ZAP_SIGNATURE_TYPE_{{as_underscore_uppercase baseType}}), offsetof(sl_zcl_{{as_underscore_lowercase ../clusterName}}_cluster_{{as_underscore_lowercase ../commandName}}_command_t, {{as_symbol label}}), \
+{{/zcl_command_arguments}}
+}
+{{/if}}
+
+{{/if}}{{/zcl_commands_with_arguments}}
+
+#endif //End of SL_CATALOG_ZIGBEE_ZCL_FRAMEWORK_CORE_PRESENT
+
+/** @} END addtogroup */
+#endif // __ZAP_COMMAND_STRUCTS_H__
+

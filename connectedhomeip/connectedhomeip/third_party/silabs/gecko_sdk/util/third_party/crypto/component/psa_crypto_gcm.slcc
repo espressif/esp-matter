@@ -1,0 +1,24 @@
+id: psa_crypto_gcm
+package: platform
+label: GCM
+description:
+  "This component provides support for the GCM authenticated encryption \
+  algorithm in PSA Crypto.\n
+
+  Note: Silicon Labs' hardware can only handle IV's of the recommended \
+  length equal to 12 bytes. If support for other lengths is required, use \
+  the 'GCM with Non-Recommended IV Lengths' component."
+category: Platform|Security|PSA Crypto|Authenticated Encryption
+quality: production
+provides:
+  - name: psa_crypto_gcm
+requires:
+  - name: psa_crypto_aes
+  - name: mbedtls_gcm
+    condition: [device_series_0]
+template_contribution:
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_GCM
+  - name: psa_crypto_config
+    value: "MBEDTLS_PSA_BUILTIN_ALG_GCM 1"
+    condition: [mbedtls_gcm]

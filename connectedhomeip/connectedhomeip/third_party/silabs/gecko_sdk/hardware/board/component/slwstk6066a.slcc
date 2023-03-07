@@ -1,0 +1,23 @@
+!!omap
+- id: slwstk6066a
+- label: SLWSTK6066A
+- package: platform
+- description: Kit BSP support for the EFR32 Flex Gecko 2.4 GHz Wireless Starter Kit.
+- category: Platform|Board|Kit|Wireless Starter Kit
+- quality: production
+- requires:
+  - name: brd4001a
+  - name: hardware_board_from_slwstk6066a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_stk
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWSTK6066A"'
+  - name: SL_KIT_REV
+    value: '"C00"'
+- tag:
+  - kit:opn:SLWSTK6066A
+  - kit:pn:WSTK6066
+  - kit:variant:A
+  - kit:revision:C00

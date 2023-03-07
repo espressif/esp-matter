@@ -1,0 +1,32 @@
+[
+    {
+        "files": [
+            "+../../../../../../source/ti/posix/freertos/clock.c -> clock.c",
+            "+../../../../../../source/ti/posix/freertos/memory.c -> memory.c",
+            "+../../../../../../source/ti/posix/freertos/mqueue.c -> mqueue.c",
+            "+../../../../../../source/ti/posix/freertos/pthread_barrier.c -> pthread_barrier.c",
+            "+../../../../../../source/ti/posix/freertos/pthread_cond.c -> pthread_cond.c",
+            "+../../../../../../source/ti/posix/freertos/pthread.c -> pthread.c",
+            "+../../../../../../source/ti/posix/freertos/pthread_mutex.c -> pthread_mutex.c",
+            "+../../../../../../source/ti/posix/freertos/pthread_rwlock.c -> pthread_rwlock.c",
+            "+../../../../../../source/ti/posix/freertos/sched.c -> sched.c",
+            "+../../../../../../source/ti/posix/freertos/semaphore.c -> semaphore.c",
+            "+../../../../../../source/ti/posix/freertos/sleep.c -> sleep.c",
+            "+../../../../../../source/ti/posix/freertos/timer.c -> timer.c",
+            "+../../../../../../source/ti/posix/freertos/Mtx.c -> Mtx.c",
+            "+../../../../dpl/AppHooks_freertos.c -> AppHooks_freertos.c",
+            "+../../../../dpl/ClockP_freertos.c -> ClockP_freertos.c",
+            "+../../../../dpl/DebugP_freertos.c -> DebugP_freertos.c",
+            "+../../../../dpl/MutexP_freertos.c -> MutexP_freertos.c",
+            "+../../../../dpl/QueueP_freertos.c -> QueueP_freertos.c",
+            "+../../../../dpl/SemaphoreP_freertos.c -> SemaphoreP_freertos.c",
+            "+../../../../dpl/StaticAllocs_freertos.c -> StaticAllocs_freertos.c",
+            "+../../../../dpl/SwiP_freertos.c -> SwiP_freertos.c",
+            "+../../../../dpl/SystemP_freertos.c -> SystemP_freertos.c",
+            "+../../../../dpl/HwiPCC32XX_freertos.c -> HwiPCC32XX_freertos.c",
+            "+../../../../dpl/PowerCC32XX_freertos.c -> PowerCC32XX_freertos.c",
+            "+../../../../startup/startup_cc32xx_iar.c -> startup_cc32xx_iar.c",
+            "+../FreeRTOSConfig.h -> FreeRTOSConfig.h"
+        ]
+    }
+]

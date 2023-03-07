@@ -1,0 +1,16 @@
+id: bootloader_spi_peripheral_driver_nonsecure
+label: Bootloader SPI Peripheral Driver (Non-Secure)
+package: bootloader
+description: >
+  DMA-driven SPI Peripheral driver.
+category: Platform|Bootloader|TrustZone NonSecure|Drivers
+quality: beta
+source:
+  - path: platform/bootloader/driver/btl_driver_spi_peripheral_ns.c
+include:
+  - path: platform/bootloader
+    file_list:
+    - path: driver/btl_driver_spi_peripheral.h
+provides:
+  - name: bootloader_spi_peripheral_driver
+  - name: bootloader_spi_peripheral_driver_nonsecure

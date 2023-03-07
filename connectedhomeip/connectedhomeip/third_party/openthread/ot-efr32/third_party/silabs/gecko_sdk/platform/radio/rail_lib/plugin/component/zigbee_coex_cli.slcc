@@ -1,0 +1,146 @@
+id: zigbee_coex_cli
+label: Zigbee Utility, Coexistence CLI
+description: Zigbee Coexistence CLI
+package: platform
+category: Platform|Radio
+quality: production
+requires:
+  - name: cli
+  - name: rail_util_coex
+  - name: zigbee_counters
+provides:
+  - name: zigbee_coex_cli
+source:
+  - path: platform/radio/rail_lib/plugin/coexistence/protocol/ieee802154_uc/sl_zigbee_coexistence_cli.c
+template_contribution:
+# CLI Commands < plugin coexistence >
+  - name: cli_group
+    value:
+      group: plugin
+      name: coexistence
+      help: "The coexistence commands allow you run-time reconfigure coexistence PTA" 
+# CLI Commands < plugin coexistence get-pta-state >
+  - name: cli_command
+    value:
+      group: coexistence
+      name: get-pta-state
+      handler: emberAfPluginCoexistenceGetPtaState
+      help: "Get the PTA enable/disable state"
+# CLI Commands < plugin coexistence set-pta-state >
+  - name: cli_command
+    value:
+      group: coexistence
+      name: set-pta-state
+      handler: emberAfPluginCoexistenceSetPtaState
+      help: "Set the PTA enable/disable state"
+      argument:
+        - type: uint8
+          help: "PTA state (0=>disable, 1=>enable)"
+# CLI Commands < plugin coexistence get-pta-options >
+  - name: cli_command
+    value:
+      group: coexistence
+      name: get-pta-options
+      handler: emberAfPluginCoexistenceGetPtaOptions
+      help: "Get the PTA Options"
+# CLI Commands < plugin coexistence set-pta-options >
+  - name: cli_command
+    value:
+      group: coexistence
+      name: set-pta-options
+      handler: emberAfPluginCoexistenceSetPtaOptions
+      help: "Set the PTA Options"
+      argument:
+        - type: uint32
+          help: "PTA Options (see AN1017 Section 4.2)"
+# CLI Commands < plugin coexistence get-pwm-state >
+  - name: cli_command
+    value:
+      group: coexistence
+      name: get-pwm-state
+      handler: emberAfPluginCoexistenceGetPwmState
+      help: "Get the PTA PWM state"
+# CLI Commands < plugin coexistence set-pwm-state >
+  - name: cli_command
+    value:
+      group: coexistence
+      name: set-pwm-state
+      handler: emberAfPluginCoexistenceSetPwmState
+      help: "Set the PTA PWM state"
+      argument:
+        - type: uint8
+          help: "PWM period (0.5ms resolution)"
+        - type: uint8
+          help: "PWM duty-cycle (%)"
+        - type: uint8
+          help: "PWM priority (0=low|1=high)"
+# CLI Commands < plugin coexistence get-dp-state >
+  - name: cli_command
+    value:
+      group: coexistence
+      name: get-dp-state
+      handler: emberAfPluginCoexistenceGetDpState
+      help: "Get the PTA Directional PRIORITY state"
+# CLI Commands < plugin coexistence set-dp-state >
+  - name: cli_command
+    value:
+      group: coexistence
+      name: set-dp-state
+      handler: emberAfPluginCoexistenceSetDpState
+      help: "Set the PTA Directional PRIORITY state"
+      argument:
+        - type: uint8
+          help: "Directional PRIORITY pulse width (us) [0=>bypass]"
+# CLI Commands < plugin coexistence reset-counters >
+  - name: cli_command
+    value:
+      group: coexistence
+      name: reset-counters
+      handler: emberAfPluginCoexistenceClearCounters
+      help: "Reset all counters"
+# CLI Commands < plugin coexistence result-counters >
+  - name: cli_command
+    value:
+      group: coexistence
+      name: result-counters
+      handler: emberAfPluginCoexistencePrintCounters
+      help: "Print coexistence specific counters"
+# CLI Commands < plugin coexistence get-phy-state >
+  - name: cli_command
+    value:
+      group: coexistence
+      name: get-phy-state
+      handler: emberAfPluginCoexistenceGetPhyState
+      help: "Get the PTA PHY Select state"
+# CLI Commands < plugin coexistence set-phy-state >
+  - name: cli_command
+    value:
+      group: coexistence
+      name: set-phy-state
+      handler: emberAfPluginCoexistenceSetPhyState
+      help: "Set the PTA PHY Select state"
+      argument:
+        - type: uint8
+          help: "PHY Select Timeout (us) [0=>standard PHY, 1-254=>Timeout to switch to standard PHY after WiFi TX, 255=>Coexistence optimized PHY]"
+# CLI Commands < plugin coexistence set-gpio-input >
+  - name: cli_command
+    value:
+      group: coexistence
+      name: set-gpio-input
+      handler: emberAfPluginCoexistenceSetGpioInputOverride
+      help: "Override the input value of a coexistence GPIO."
+      argument:
+        - type: uint8
+          help: "GPIO port to override"
+        - type: uint8
+          help: "Input override value of selected port"
+# CLI Commands < plugin coexistence get-gpio-input >
+  - name: cli_command
+    value:
+      group: coexistence
+      name: get-gpio-input
+      handler: emberAfPluginCoexistenceGetGpioInputOverride
+      help: "Get the input value of a coexistence GPIO."
+      argument:
+        - type: uint8
+          help: "GPIO index"

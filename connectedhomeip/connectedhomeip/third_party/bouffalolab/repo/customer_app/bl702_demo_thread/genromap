@@ -1,0 +1,3 @@
+#!/bin/sh
+make CONFIG_FTD=1 CONFIG_PREFIX=0 -j
+exit $?

@@ -1,0 +1,55 @@
+project_name: dci_swd_programming
+package: platform
+quality: production
+label: Platform - Series 2 DCI and SWD Programming
+description: >
+  This example project demonstrates the DCI and SWD Programming on Series 2 devices.
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+source:
+  - path: main.c
+  - path: app_init.c
+  - path: app_process.c
+  - path: app_dci_swd.c
+  - path: app_dci_task.c
+  - path: app_firmware_image.c
+  - path: app_prog_error.c
+  - path: app_swd_task.c
+include:
+  - path: .
+    file_list:
+    - path: app_init.h
+    - path: app_process.h
+    - path: app_dci_swd.h
+    - path: app_dci_task.h
+    - path: app_firmware_image.h
+    - path: app_prog_error.h
+    - path: app_swd_task.h
+readme:
+  - path: readme.md
+ui_hints:
+  highlight:
+    - path: readme.md
+      focus: true
+component:
+  - id: udelay
+  - id: sl_system
+  - id: device_init
+  - id: device_init_hfrco
+  - id: printf
+  - id: iostream_retarget_stdio
+  - id: iostream_recommended_stream
+configuration:
+  - name: SL_DEVICE_INIT_HFRCO_BAND
+    value: cmuHFRCODPLLFreq_80M0Hz
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+toolchain_settings:
+  - option: optimize
+    value: debug

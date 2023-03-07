@@ -1,0 +1,32 @@
+id: device_init_nvic
+label: "Device Init: NVIC"
+package: platform
+description: >
+  Device initialization for the Nested Vector Interrupt Controller (NVIC). This component
+  sets all NVIC interrupts to a default priority.
+category: Services|Device Initialization
+quality: production
+root_path: platform/service/device_init
+include:
+  - path: inc
+    file_list:
+      - path: sl_device_init_nvic.h
+source:
+  - path: src/sl_device_init_nvic.c
+provides:
+  - name: device_init_nvic
+requires:
+  - name: status
+  - name: emlib_core
+template_contribution:
+  - name: event_handler
+    value:
+      event: platform_init
+      include: sl_device_init_nvic.h
+      handler: sl_device_init_nvic
+    priority: -9998
+  - name: component_catalog
+    value: device_init_nvic
+documentation:
+    docset: gecko-platform
+    document: service/api/group-device-init-nvic

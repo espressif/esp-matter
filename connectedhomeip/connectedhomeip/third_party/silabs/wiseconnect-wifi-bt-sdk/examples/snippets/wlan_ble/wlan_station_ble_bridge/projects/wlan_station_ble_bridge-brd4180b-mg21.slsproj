@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="wlan_station_ble_bridge_brd4180b-mg21" boardCompatibility="brd4180b" partCompatibility="mcu.arm.efr32.mg21.*" toolchainCompatibility="" contentRoot="../../../../../">
+  <module id="com.silabs.sdk.exx32.board">
+    <exclude pattern=".*" />
+  </module>
+  <module id="com.silabs.sdk.exx32.common.CMSIS">
+    <exclude pattern=".*" />
+  </module>
+  <module id="com.silabs.sdk.exx32.common.emlib">
+    <include pattern="emlib/em_cmu.c" />
+    <include pattern="emlib/em_emu.c" />
+    <include pattern="emlib/em_gpio.c" />
+    <include pattern="emlib/em_core.c" />
+    <include pattern="emlib/em_ldma.c" />
+    <include pattern="emlib/em_system.c" />
+    <include pattern="emlib/em_usart.c" />
+	<include pattern="emlib/em_rtcc.c" />
+  </module>
+  <module id="com.silabs.sdk.exx32.common.emdrv">
+    <include pattern="Drivers/tempdrv.c" />
+  </module>
+  <module id="com.silabs.sdk.exx32.common.bsp">
+    <exclude pattern=".*" />
+  </module>
+  <module id="com.silabs.sdk.exx32.common.platform">
+    <exclude pattern=".*" />
+  </module>
+  <module id="com.silabs.sdk.exx32.part">
+    <include pattern="CMSIS/.*/startup_.*_.*.s" />
+    <include pattern="CMSIS/.*/system_.*.c" />
+  </module>
+  <folder name="wlan_station_ble_bridge" >
+  	<file name="rsi_ble_app.c" uri="examples/snippets/wlan_ble/wlan_station_ble_bridge/rsi_ble_app.c" />
+  	<file name="rsi_wlan_app.c" uri="examples/snippets/wlan_ble/wlan_station_ble_bridge/rsi_wlan_app.c" />
+  	<file name="main.c" uri="examples/snippets/wlan_ble/wlan_station_ble_bridge/main.c" />
+  	
+  	<file name="rsi_wlan_config.h" uri="examples/snippets/wlan_ble/wlan_station_ble_bridge/rsi_wlan_config.h" />
+  	<file name="rsi_bt_config.h" uri="examples/snippets/wlan_ble/wlan_station_ble_bridge/rsi_bt_config.h" />
+  	<file name="rsi_ble_config.h" uri="examples/snippets/wlan_ble/wlan_station_ble_bridge/rsi_ble_config.h" />
+  	
+  </folder>
+  
+  <folder name="platform">
+    <folder name="hal" uri="platforms/efx32/hal" includeAllFiles="true" includeAllFolders="true" />
+    <folder name="core" uri="platforms/efx32/core" includeAllFiles="true" includeAllFolders="true" />
+    <folder name="board" uri="platforms/efx32/boards/brd4180b-mg21" includeAllFiles="true" includeAllFolders="true" />
+  </folder>
+  <folder name="sapi/include" uri="sapi/include" includeAllFiles="true" includeAllFolders="true"/>
+  
+  
+  <includePath uri="$(isCopySources?$(projectLocation):.)/sapi/include"/>
+  <includePath uri="$(isCopySources?$(projectLocation):.)/sapi/network/protocols"/>
+  
+  <folder name="sapi/common" uri="sapi/common" includeAllFiles="true" includeAllFolders="true"/>
+  <folder name="sapi/crypto" uri="sapi/crypto" includeAllFiles="true" includeAllFolders="true"/>
+  <folder name="sapi/driver" uri="sapi/driver" includeAllFiles="true" includeAllFolders="true"/>
+  <folder name="sapi/driver/device_interface" uri="sapi/driver/device_interface" includeAllFiles="true" includeAllFolders="true"/>
+  <folder name="sapi/network/socket" uri="sapi/network/socket" includeAllFiles="true" includeAllFolders="true"/>
+  <folder name="sapi/wlan" uri="sapi/wlan" includeAllFiles="true" includeAllFolders="true"/>
+  <folder name="sapi/logging" uri="sapi/logging" includeAllFiles="true" includeAllFolders="true"/>
+  <folder name="utilities/advanced_logging/firmware_logging" uri="utilities/advanced_logging/firmware_logging" includeAllFiles="true" includeAllFolders="true"/>
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <folder name="sapi/bluetooth" uri="sapi/bluetooth" includeAllFiles="true" includeAllFolders="true"/>
+  
+  <file name="sapi/bluetooth/rsi_bt_spp_apis.c" uri="sapi/bluetooth/rsi_bt_spp_apis.c" />
+  <file name="sapi/bluetooth/rsi_bt_gap_apis.c" uri="sapi/bluetooth/rsi_bt_gap_apis.c" />
+  <file name="sapi/bluetooth/rsi_ble_gap_apis.c" uri="sapi/bluetooth/rsi_ble_gap_apis.c" />
+  <file name="sapi/bluetooth/rsi_bt_common_apis.c" uri="sapi/bluetooth/rsi_bt_common_apis.c" />
+  <file name="sapi/bluetooth/rsi_ble_gatt_apis.c" uri="sapi/bluetooth/rsi_ble_gatt_apis.c" />
+  <file name="sapi/bluetooth/rsi_bt_avrcp_apis.c" uri="sapi/bluetooth/rsi_bt_avrcp_apis.c" />
+  <file name="sapi/bluetooth/rsi_bt_a2dp_apis.c" uri="sapi/bluetooth/rsi_bt_a2dp_apis.c" />
+  
+  
+  
+  
+  
+  
+  <file name="sapi/network/protocols/rsi_dns.c" uri="sapi/network/protocols/rsi_dns.c" />
+  <file name="sapi/network/protocols/rsi_emb_mqtt_client.c" uri="sapi/network/protocols/rsi_emb_mqtt_client.c" />
+  <file name="sapi/network/protocols/rsi_raw_data.c" uri="sapi/network/protocols/rsi_raw_data.c" />
+  <file name="sapi/network/protocols/rsi_http_ota_fw_up.c" uri="sapi/network/protocols/rsi_http_ota_fw_up.c" />
+  <file name="sapi/network/protocols/rsi_dhcp_user_class.c" uri="sapi/network/protocols/rsi_dhcp_user_class.c" />
+  
+  
+  <includePath uri="$(isCopySources?$(projectLocation):.)/sapi/network/protocols"/>
+  
+  
+  
+  
+  
+  
+  
+  <folder name="resources/certificates" uri="resources/certificates" includeAllFiles="true" includeAllFolders="true"/>
+  
+  <includePath uri="$(isCopySources?$(projectLocation):.)/resources/certificates"/>
+  
+  <includePath uri="$(isCopySources?$(projectLocation)/wlan_station_ble_bridge:./examples/snippets/wlan_ble/wlan_station_ble_bridge)"/>
+  
+  <includePath uri="$(projectLocation)/platform/core"/>
+  <includePath uri="$(projectLocation)/platform/board"/>
+   <macroDefinition name="WISECONNECT" />
+   <macroDefinition name="RSI_SAMPLE_HAL" />
+   <macroDefinition name="RSI_DEBUG_PRINTS" />
+   <macroDefinition name="RSI_WLAN_ENABLE" />
+  
+  
+   <macroDefinition name="RSI_WLAN_API_ENABLE" />
+   <macroDefinition name="RSI_BLE_ENABLE" />
+  
+  
+  
+  <toolOption toolId="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.assembler.base" optionId="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.assembler.flags" value="-c -x assembler-with-cpp -mfloat-abi=softfp -mfpu=fpv4-sp-d16 "/>
+  <toolOption toolId="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.linker.base" optionId="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.linker.floatingpoint.type" value="floatingpoint.type.softfp"/>
+  <toolOption toolId="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.linker.base" optionId="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.linker.clibs" value="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.linker.baseclibs"/>
+  
+</project>

@@ -1,0 +1,15 @@
+!!omap
+- id: brd3302a_config
+- label: brd3302a config
+- description: Configuration files for BRD3302A
+- package: platform
+- category: Platform|Board|Config
+- quality: production
+- ui_hints:
+    visibility: never
+- root_path: hardware/board/config
+- requires:
+  - name: brd3302a
+- provides:
+  - name: brd3302a_config
+- config_file: []

@@ -1,0 +1,1 @@
+common_io_validation.validate_instance_numbers("iot_timer")

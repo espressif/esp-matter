@@ -1,0 +1,66 @@
+id: "sl_connect_sdk_ota_broadcast_bootloader_test"
+label: "OTA Broadcast Bootloader Test"
+package: "Flex"
+category: "Connect|Test"
+quality: "production"
+description: "Demonstrates how to use the OTA Broadcast Bootloader components (server and/or client). It also provides CLI commands for accessing the external flash part and controlling the OTA bootloader process and from CLI."
+root_path: "app/flex/component/connect/sl_connect_sdk_ota_broadcast_bootloader_test"
+provides:
+  - name: "sl_connect_sdk_ota_broadcast_bootloader_test"
+requires:
+  - name: "sl_connect_sdk_ota_bootloader_interface"
+  - name: "sl_connect_sdk_ota_bootloader_test_common"
+source:
+  - path: "sl_connect_sdk_ota_broadcast_bootloader_test.c"
+define:
+  - name: "SL_CATALOG_CONNECT_OTA_BROADCAST_BOOTLOADER_CLIENT"
+    condition: ["connect_ota_broadcast_bootloader_client"]
+    value: "\"ota-broadcast-bootloader-client.h\""
+  - name: "SL_CATALOG_CONNECT_OTA_BROADCAST_BOOTLOADER_SERVER"
+    condition: ["connect_ota_broadcast_bootloader_server"]  
+    value: "\"ota-broadcast-bootloader-server.h\""
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: sl_connect_sdk_ota_broadcast_bootloader_test
+  - name: event_system
+    value:
+      event_control: "emAfPluginOtaBootloaderTestEventControl"
+      event_handler: "emAfPluginOtaBootloaderTestEventHandler"
+  - name: cli_command
+    value:
+      name: bootloader_broadcast_set_target
+      handler: cli_bootloader_broadcast_set_target
+      help: "Sets up a target node at the given index in the list of target nodes."
+      argument:
+      - type: uint8
+        help: "Target index in the target list"
+      - type: uint16
+        help: "Target node ID"
+  - name: cli_command
+    value:
+      name: bootloader_broadcast_distribute
+      handler: cli_bootloader_broadcast_broadcast_distribute
+      help: "Initiates a broadcast image distribution over the air, describing the image with the given image tag, sent to the given number of nodes set up in the target list."
+      argument:
+      - type: uint32
+        help: "Size of the GBL image ditributed, in bytes"
+      - type: uint8
+        help: "Image tag"
+      - type: uint8
+        help: "Target list length"
+  - name: cli_command
+    value:
+      name: bootloader_broadcast_request_bootload
+      handler: cli_bootloader_broadcast_request_bootload
+      help: "Server-side request is sent to all target nodes to flash the received image and restart."
+      argument:
+      - type: uint32
+        help: "Bootload the nodes delay with the given time in milliseconds"
+      - type: uint16
+        help: "Bootload only the nodes with the given image tag"
+      - type: uint16
+        help: "Target list length"
+
+

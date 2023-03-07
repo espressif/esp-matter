@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.local_north_coordinate" 
+uuid="2AB0" name="Local North Coordinate" last-modified="2015-05-19" approved="Yes">
+	<InformativeText>
+        <Abstract>The Local North characteristic describes the North coordinate of the device using local coordinate system.</Abstract>
+	</InformativeText>
+	<Value>
+		<Field name="Local North Coordinate">
+			<Requirement>Mandatory</Requirement>
+			<Format>sint16</Format>
+		</Field>
+	</Value>
+</Characteristic>

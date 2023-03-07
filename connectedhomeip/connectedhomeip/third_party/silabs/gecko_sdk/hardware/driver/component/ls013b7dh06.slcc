@@ -1,0 +1,17 @@
+id: ls013b7dh06
+package: platform
+label: Color Sharp Memory LCD
+description: >
+  Driver for Sharp Memory LCD LS013B7DH06. This display is a 128x128 rgb display
+  with 3 bit used for color. So there are 8 different colors supported for each
+  pixel on the screen.
+category: Platform|Board Drivers
+quality: production
+root_path: hardware/driver
+include:
+  - path: memlcd/src/ls013b7dh06
+    file_list:
+      - path: sl_memlcd_display.h
+provides:
+  - name: ls013b7dh06
+  - name: memlcd_screen

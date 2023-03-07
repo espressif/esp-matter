@@ -1,0 +1,20 @@
+[
+    {
+        "files": [
+            "+../../certs/caCert.pem -> caCert.pem",
+            "+../../certs/caKey.pem -> caKey.pem",
+            "+../../certs/certificate.h -> certificate.h",
+            "+../../certs/serverCert.pem -> serverCert.pem",
+            "+../../certs/serverKey.pem -> serverKey.pem",
+            "+../../../../../../../source/ti/boards/CC3235SF_LAUNCHXL/Board.html -> Board.html",
+            "+cc32xxsf_freertos.icf -> cc32xxsf_freertos.icf",
+            "+../common.syscfg -> common.syscfg",
+            "+../main_freertos.c -> main_freertos.c",
+            "+../../platform.c -> platform.c",
+            "+../../README.html -> README.html",
+            "+../../README.md -> README.md",
+            "+../../startsntp.c -> startsntp.c",
+            "+../../tcpEchoTLS.c -> tcpEchoTLS.c"
+        ]
+    }
+]

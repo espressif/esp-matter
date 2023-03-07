@@ -1,0 +1,13 @@
+id: iostream_recommended_stream
+label: "IO Stream: Recommended Stream"
+package: platform
+description: IO Stream Recommended Stream
+category: Services|IO Stream
+quality: production
+ui_hints:
+  visibility: never
+root_path: platform/service/iostream
+provides:
+  - name: iostream_recommended_stream
+requires:
+  - name: iostream_transport

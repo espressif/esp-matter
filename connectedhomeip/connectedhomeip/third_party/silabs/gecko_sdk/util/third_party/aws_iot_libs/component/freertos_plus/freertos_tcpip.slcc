@@ -1,0 +1,124 @@
+id: freertos_tcpip
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|FreeRTOS Plus
+label: FreeRTOS+ TCP/IP
+description: >
+  FreeRTOS Plus TCP/IP Stack.
+
+  Note: The version provided with Gecko SDK is present for running aws_test and validate the 
+  low-level implementation of IoT API. This module is not used internally by any Silicon Labs 
+  component.
+  Be aware that The FreeRTOS + TCPIP used by aws_test contains the following security vulnerability:
+
+  CVE-2018-16523 - "Amazon Web Services (AWS) FreeRTOS through 1.3.1, FreeRTOS up to 
+  V10.0.1 (with FreeRTOS+TCP), and WITTENSTEIN WHIS Connect middleware TCP/IP component 
+  allow division by zero in prvCheckOptions."
+
+  CVE-2018-16524 - "Amazon Web Services (AWS) FreeRTOS through 1.3.1, FreeRTOS up to 
+  V10.0.1 (with FreeRTOS+TCP), and WITTENSTEIN WHIS Connect middleware TCP/IP component 
+  allow information disclosure during parsing of TCP options in prvCheckOptions."
+
+  CVE-2018-16525 - "Amazon Web Services (AWS) FreeRTOS through 1.3.1, FreeRTOS up to 
+  V10.0.1 (with FreeRTOS+TCP), and WITTENSTEIN WHIS Connect middleware TCP/IP component 
+  allow remote attackers to execute arbitrary code or leak information because of a Buffer 
+  Overflow during parsing of DNS\LLMNR packets in prvParseDNSReply."
+
+  CVE-2018-16526 - "Amazon Web Services (AWS) FreeRTOS through 1.3.1, FreeRTOS up to 
+  V10.0.1 (with FreeRTOS+TCP), and WITTENSTEIN WHIS Connect middleware TCP/IP component 
+  allow remote attackers to leak information or execute arbitrary code because of a 
+  Buffer Overflow during generation of a protocol checksum in usGenerateProtocolChecksum 
+  and prvProcessIPPacket."
+
+  CVE-2018-16527 - "Amazon Web Services (AWS) FreeRTOS through 1.3.1, FreeRTOS up to 
+  V10.0.1 (with FreeRTOS+TCP), and WITTENSTEIN WHIS Connect middleware TCP/IP component 
+  allow information disclosure during parsing of ICMP packets in prvProcessICMPPacket."
+
+  CVE-2018-16598 - "An issue was discovered in Amazon Web Services (AWS) FreeRTOS through 
+  1.3.1, FreeRTOS up to V10.0.1 (with FreeRTOS+TCP), and WITTENSTEIN WHIS Connect middleware 
+  TCP/IP component. In xProcessReceivedUDPPacket and prvParseDNSReply, any received DNS 
+  response is accepted, without confirming it matches a sent DNS request."
+
+  CVE-2018-16599 - "An issue was discovered in Amazon Web Services (AWS) FreeRTOS through 
+  1.3.1, FreeRTOS up to V10.0.1 (with FreeRTOS+TCP), and WITTENSTEIN WHIS Connect middleware 
+  TCP/IP component. Out of bounds memory access during parsing of NBNS packets in prvTreatNBNS 
+  can be used for information disclosure."
+
+  CVE-2018-16600 - "An issue was discovered in Amazon Web Services (AWS) FreeRTOS through 1.3.1, 
+  FreeRTOS up to V10.0.1 (with FreeRTOS+TCP), and WITTENSTEIN WHIS Connect middleware TCP/IP 
+  component. Out of bounds memory access during parsing of ARP packets in eARPProcessPacket 
+  can be used for information disclosure."
+
+  CVE-2018-16601 - "An issue was discovered in Amazon Web Services (AWS) FreeRTOS through 
+  1.3.1, FreeRTOS up to V10.0.1 (with FreeRTOS+TCP), and WITTENSTEIN WHIS Connect middleware 
+  TCP/IP component. A crafted IP header triggers a full memory space copy in prvProcessIPPacket, 
+  leading to denial of service and possibly remote code execution."
+
+  CVE-2018-16602 - "An issue was discovered in Amazon Web Services (AWS) FreeRTOS through 
+  1.3.1, FreeRTOS up to V10.0.1 (with FreeRTOS+TCP), and WITTENSTEIN WHIS Connect middleware 
+  TCP/IP component. Out of bounds memory access during parsing of DHCP responses in 
+  prvProcessDHCPReplies can be used for information disclosure."
+
+  CVE-2018-16603 - "	An issue was discovered in Amazon Web Services (AWS) FreeRTOS through 
+  1.3.1, FreeRTOS up to V10.0.1 (with FreeRTOS+TCP), and WITTENSTEIN WHIS Connect middleware 
+  TCP/IP component. Out of bounds access to TCP source and destination port fields in 
+  xProcessReceivedTCPPacket can leak data back to an attacker."
+
+package: amazon_platform
+quality: production
+
+provides:
+  - name: freertos_tcpip
+
+requires:
+  - name: iot_config_common
+  - name: segger_rtt
+
+root_path: util/third_party/aws_iot_libs
+
+source:
+  - path: libraries/freertos_plus/standard/freertos_plus_tcp/FreeRTOS_ARP.c
+  - path: libraries/freertos_plus/standard/freertos_plus_tcp/FreeRTOS_DHCP.c
+  - path: libraries/freertos_plus/standard/freertos_plus_tcp/FreeRTOS_DNS.c
+  - path: libraries/freertos_plus/standard/freertos_plus_tcp/FreeRTOS_IP.c
+  - path: libraries/freertos_plus/standard/freertos_plus_tcp/FreeRTOS_Sockets.c
+  - path: libraries/freertos_plus/standard/freertos_plus_tcp/FreeRTOS_Stream_Buffer.c
+  - path: libraries/freertos_plus/standard/freertos_plus_tcp/FreeRTOS_TCP_IP.c
+  - path: libraries/freertos_plus/standard/freertos_plus_tcp/FreeRTOS_TCP_WIN.c
+  - path: libraries/freertos_plus/standard/freertos_plus_tcp/FreeRTOS_UDP_IP.c
+  - path: libraries/freertos_plus/standard/freertos_plus_tcp/portable/BufferManagement/BufferAllocation_2.c
+  - path: tests/integration_test/test_freertos_tcp.c
+    condition: ["aws_tests_defs"]
+  - path: vendors/siliconlabs/boards/all/ports/wifi/netif.c
+
+include:
+  - path: libraries/freertos_plus/standard/freertos_plus_tcp/include
+    file_list:
+      - path: FreeRTOS_ARP.h
+      - path: FreeRTOS_DHCP.h
+      - path: FreeRTOS_DNS.h
+      - path: FreeRTOS_errno_TCP.h
+      - path: FreeRTOS_IP_Private.h
+      - path: FreeRTOS_IP.h
+      - path: FreeRTOS_Sockets.h
+      - path: FreeRTOS_Stream_Buffer.h
+      - path: FreeRTOS_TCP_IP.h
+      - path: FreeRTOS_TCP_WIN.h
+      - path: FreeRTOS_UDP_IP.h
+      - path: FreeRTOSIPConfigDefaults.h
+      - path: IPTraceMacroDefaults.h
+      - path: NetworkBufferManagement.h
+      - path: NetworkInterface.h
+  - path: libraries/freertos_plus/standard/freertos_plus_tcp/portable/Compiler/GCC
+    file_list:
+      - path: pack_struct_end.h
+      - path: pack_struct_start.h
+  - path: tests/integration_test
+    file_list:
+      - path: freertos_tcp_test_access_declare.h
+      - path: freertos_tcp_test_access_dns_define.h
+      - path: freertos_tcp_test_access_tcp_define.h
+    condition: ["aws_tests_defs"]
+
+define:
+  - { name: BUFFER_SIZE_UP, value: 512 }
+  - { name: BUFFER_SIZE_DOWN, value: 512 }

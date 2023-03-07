@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.hid_information" uuid="2A4A" name="HID Information" last-modified="2011-11-14" approved="Yes">
+  <InformativeText>
+    <Abstract>
+    The HID Information Characteristic returns the HID attributes when read.
+		</Abstract>
+    <Summary>
+    The HID Information Characteristic contains the HID attributes.  The value of this Characteristic is static and can be cached for the lifetime of the bond between the HID device and the HID host.
+		</Summary>
+  </InformativeText>
+  <Value>
+    <Field name="bcdHID">
+        <InformativeText>16-bit unsigned integer representing version number of base USB HID Specification implemented by HID Device</InformativeText>
+      <Requirement>Mandatory</Requirement>
+      <Format>uint16</Format>
+    </Field>
+    
+    <Field name="bCountryCode">
+      <InformativeText>Identifies which country the hardware is localized for. Most hardware is not localized and thus this value would be zero (0).</InformativeText>
+      <Requirement>Mandatory</Requirement>
+      <Format>8bit</Format>
+    </Field>
+    
+    <Field name="Flags">
+      <Requirement>Mandatory</Requirement>
+      <Format>8bit</Format>
+      <BitField>
+        <Bit index="0" size="1" name="RemoteWake">
+          <Enumerations>
+            <Enumeration key="0" value="The device is not designed to be capable of providing wake-up signal to a HID host"/>
+            <Enumeration key="1" value="The device is designed to be capable of providing wake-up signal to a HID host"/>
+          </Enumerations>
+        </Bit>    
+        
+        <Bit index="1" size="1" name="NormallyConnectable">
+          <Enumerations>
+            <Enumeration key="0" value="The device is not normally connectable"/>
+            <Enumeration key="1" value="The device is normally connectable"/>
+          </Enumerations>
+        </Bit>    
+        <ReservedForFutureUse index="2" size="6"></ReservedForFutureUse>
+      </BitField>
+    </Field>
+  </Value>
+  <Note>
+    The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet.
+  </Note>
+</Characteristic>

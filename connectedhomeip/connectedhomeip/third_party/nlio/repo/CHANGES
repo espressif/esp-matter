@@ -1,0 +1,54 @@
+1.1.9 (2020-08-06)
+
+        * Address an issue with preprocessor endianness detection and
+          setting NLBYTEORDER that always led defaulting to
+          NLBYTEORDER_LITTLE_ENDIAN.
+
+        * Address an issue with nlByteOrderSwap16LittleToHost when
+          NLBYTEORDER is set to NLBYTEORDER_BIG_ENDIAN.
+
+1.1.8 (2020-05-11)
+
+        * Updated to nlbuild-autotools 1.7.3.
+
+1.1.7 (2020-04-30)
+
+        * Updated to nlbuild-autotools 1.7.2.
+
+        * Leverage NLFOREIGN_SUBDIR_DEPENDENCIES for nlunit-test
+          rather than SUBDIRS in third_party.
+
+1.1.6 (2019-05-24)
+
+        * Updated to nlbuild-autotools 1.6.11.
+
+1.1.5 (2019-04-30)
+
+        * Updated to nlbuild-autotools 1.6.9.
+
+1.1.4 (2019-04-09)
+
+        * Updated to nlbuild-autotools 1.6.6.
+
+        * Addressed a documentation typo.
+
+1.1.3 (2018-11-19)
+
+        * Updated to nlbuild-autotools 1.6.5.
+
+1.1.2 (2018-11-15)
+
+        * Updated to nlbuild-autotools 1.6.4.
+
+1.1.1 (2018-04-26)
+
+        * Updated to nlbuild-autotools 1.5.2.
+
+1.1 (2018-04-19)
+
+        * Updated to utilize nlbuild-autotools 1.5.0, removing inlined
+          copy of nlunit-test in the process.
+
+1.0 (2017-06-29)
+
+	* First public release to Github.

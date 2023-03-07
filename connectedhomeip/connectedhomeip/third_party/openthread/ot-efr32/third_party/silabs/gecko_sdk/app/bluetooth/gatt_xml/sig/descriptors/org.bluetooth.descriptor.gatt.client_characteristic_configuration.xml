@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Descriptor xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/descriptor.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration" uuid="2902" name="Client Characteristic Configuration">
+    <InformativeText>
+        <Abstract>
+        The Client Characteristic Configuration descriptor defines how the characteristic may be configured by a specific client.            
+		</Abstract>
+        <InformativeDisclaimer/>
+        <Summary>
+        This descriptor shall be persistent across connections for bonded devices.
+        The Client Characteristic Configuration descriptor is unique for each client. A client may read and write this descriptor to determine and set the configuration for that client.
+        Authentication and authorization may be required by the server to write this descriptor.
+        The default value for the Client Characteristic Configuration descriptor is 0x00. Upon connection of non-binded clients, this descriptor is set to the default value.
+		</Summary>
+	</InformativeText>
+    <Value>
+        <Field name="Properties">
+            <Requirement>Mandatory</Requirement>
+            <Format>16bit</Format>
+            <Minimum>0</Minimum>
+            <Maximum>3</Maximum>
+            <BitField>
+                <Bit index="0" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="Notifications disabled" />
+                        <Enumeration key="1" value="Notifications enabled" />
+					</Enumerations>
+                </Bit>
+                <Bit index="1" size="1">
+                    <Enumerations>
+                        <Enumeration key="0" value="Indications disabled" />
+                        <Enumeration key="1" value="Indications enabled" />
+					</Enumerations>
+                </Bit>
+                <ReservedForFutureUse index="2" size="1" />
+                <ReservedForFutureUse index="3" size="1" />
+                <ReservedForFutureUse index="4" size="1" />
+                <ReservedForFutureUse index="5" size="1" />
+                <ReservedForFutureUse index="6" size="1" />
+                <ReservedForFutureUse index="7" size="1" />
+                <ReservedForFutureUse index="8" size="1" />
+                <ReservedForFutureUse index="9" size="1" />
+                <ReservedForFutureUse index="10" size="1" />
+                <ReservedForFutureUse index="11" size="1" />
+                <ReservedForFutureUse index="12" size="1" />
+                <ReservedForFutureUse index="13" size="1" />
+                <ReservedForFutureUse index="14" size="1" />
+                <ReservedForFutureUse index="15" size="1" />
+            </BitField>
+        </Field>
+    </Value>
+</Descriptor>

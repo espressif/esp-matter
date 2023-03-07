@@ -1,0 +1,155 @@
+DEVICE_NAME = 'RS9116W_BLE'
+
+errorcode = 'Unknown' ; used in error reports
+
+message = 'This example demonstrates BLE_Heart_Rate profile functionality'
+messagebox message ''
+
+send '|'
+wait 'U'
+sendln 'U'
+mpause 200
+sendln '1'
+wait 'Loading Done'
+message = 'Firmware Loading Done Successfully' 
+messagebox message ''
+
+
+
+sendln 'at+rsi_opermode=851968,0,1,2147483648,2150629376,3221225472,0,1075773440'
+wait 'bt_loaded' 'ERROR'
+if result == 2 then
+    goto error
+endif
+
+strlen DEVICE_NAME
+int2str device_name_length result
+sendln 'at+rsibt_setlocalname='device_name_length','DEVICE_NAME
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+    errorcode = groupmatchstr1
+    goto error
+endif
+
+sendln 'at+rsibt_getlocalbdaddr?'
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+    errorcode = groupmatchstr1
+    goto error
+endif
+
+sendln 'at+rsibt_addservice=2,180D,3,30'
+waitregex 'OK (.+),' 'ERROR (\w{4})'
+if result == 1 then
+    service_id = groupmatchstr1
+else
+    errorcode = groupmatchstr1
+    goto error
+endif
+
+sendln 'at+rsibt_addattribute='service_id',B,2,2803,10,6,0,10,0,0C,00,37,2A'
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+    errorcode = groupmatchstr1
+    goto error
+endif
+
+sendln 'at+rsibt_addattribute='service_id',C,2,2A37,1A,3,0,0,0,0'
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+    errorcode = groupmatchstr1
+    goto error
+endif
+
+
+sendln 'at+rsibt_addattribute='service_id',D,2,2902,A,2,0,0,0'
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+    errorcode = groupmatchstr1
+    goto error
+endif
+
+sendln 'at+rsibt_setadvertisedata=10,2,1,6,C,9,52,53,39,31,31,36,57,5F,42,4C,45'
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+    errorcode = groupmatchstr1
+    goto error
+endif
+
+sendln 'at+rsi_fwversion?'
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+    errorcode = groupmatchstr1
+    goto error
+endif
+
+sendln 'at+rsibt_advertise=1,128,0,0,0,60,70,0,7'
+waitregex 'OK' 'ERROR (\w{4})'
+if result == 2 then
+    errorcode = groupmatchstr1
+    goto error
+endif
+
+waitln 'AT+RSIBT_LE_DEVICE_ENHANCE_CONNECTED' 
+if result == 1 then
+	messagebox 'Remote device connected to module successfully:'  ''
+	;goto endscript
+else
+    goto error
+endif
+
+
+while 1
+mpause 500
+:Enable
+	messagebox 'Waiting to enable the notifications' ''
+	waitln 'AT+RSIBT_WRITE' 'ERROR'
+	if result == 2 then
+		goto error
+	endif
+	i = 0
+	strsplit inputstr ',' 
+	strcompare groupmatchstr5 '1' 
+	if result=0 then
+		while (i < 10)
+		 sendln 'at+rsibt_setlocalattvalue=C,1,4D'
+		 waitregex 'OK' 'ERROR (\w{4})'
+		 if result == 2 then
+			errorcode = groupmatchstr1
+			goto error
+		 endif
+		 i = i+1
+		 mpause 500
+		endwhile 
+	endif
+	messagebox 'Waiting to disable the notifications' ''	
+	waitln 'AT+RSIBT_WRITE' 'ERROR'
+	if result == 2 then
+		goto error
+	endif
+	strsplit inputstr ',' 
+	;messagebox groupmatchstr5 "groupmatchstr5" 
+	strcompare groupmatchstr5 '0'
+	if result=0 then
+		goto Enable
+	endif		
+endwhile
+
+goto endscript
+
+mpause 1000
+     
+
+:error
+errormsg = 'Error '
+strconcat errormsg errorcode
+strconcat errormsg '. Please check your configuration and try again.'
+messagebox errormsg 'ERROR'
+
+
+
+
+
+:endscript
+
+exit

@@ -1,0 +1,23 @@
+id: sensor_hall
+label: Hall effect sensor
+package: Bluetooth
+description: Hall effect sensor driver abstraction designed for Thunderboard.
+category: Application|Sensor
+quality: production
+root_path: app/bluetooth/common/sensor_hall
+source:
+  - path: sl_sensor_hall.c
+include:
+  - path: .
+    file_list:
+      - path: sl_sensor_hall.h
+provides:
+  - name: sensor_hall
+requires:
+  - name: sensor_select
+  - name: si7210_driver
+  - name: i2cspm
+  - name: app_assert
+template_contribution:
+  - name: component_catalog
+    value: sensor_hall

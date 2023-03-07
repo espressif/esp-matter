@@ -1,0 +1,18 @@
+id: "connect_aes_security"
+label: "AES Security"
+package: "Flex"
+category: "Connect"
+quality: "production"
+description: "Provides encryption and authentication functionality based on the AES encryption algorithm (hardware acceleration)."
+provides:
+  - name: "connect_aes_security"
+requires:
+  - name: "connect_stack_common"
+  - name: "connect_aes_security_implementation"
+  - name: "mbedtls_ccm"
+  - name: "psa_crypto"
+recommends:
+  - id: "connect_aes_security_source"
+template_contribution:
+  - name: component_catalog
+    value: connect_aes_security

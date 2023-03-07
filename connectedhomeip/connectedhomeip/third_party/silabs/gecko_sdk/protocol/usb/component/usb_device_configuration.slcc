@@ -1,0 +1,34 @@
+id: usb_device_configuration
+category: Protocol|USB|Device
+label: USB Configuration
+description: >
+  This component creates a new USB configuration descriptor to which
+  you can attach class instances. The USB standard specification
+  requires at least one configuration to exist in your project.
+package: usb
+quality: production
+instantiable:
+  prefix: configuration
+component_root_path: protocol/usb
+config_file:
+  - path: "config/sl_usbd_{{instance}}_config.h"
+provides:
+  - name: usb_device_configuration
+    allow_multiple: true
+requires:
+  - name: usb_device_core
+  - name: usb_device
+template_file:
+  - path: template/sl_usbd_configuration_instances.h.jinja
+  - path: template/sl_usbd_configuration_instances.c.jinja
+template_contribution:
+  - name: component_catalog
+    value: usb_device_configuration
+  - name: usb_configuration_instances
+    value: "{{instance}}"
+  - name: event_handler
+    value:
+      event: stack_init
+      include: sl_usbd_configuration_instances.h
+      handler: sli_usbd_configuration_{{instance}}_init
+    priority: 1

@@ -1,0 +1,11 @@
+docker >= 4.1.0
+flask >= 1.1.0
+googleapis-common-protos
+grpcio-tools
+grpcio-status == 1.30.0
+protobuf >= 3.12.0, < 4.0.0
+pycodestyle >= 2.5.0
+pylint == 2.4
+pyroute2 >= 0.5.7
+six >= 1.12
+toml

@@ -1,0 +1,57 @@
+!!omap
+- id: brd2102a
+- label: BRD2102A
+- package: platform
+- description: Board support for BRD2102A.
+- category: Platform|Board|Starter Kit
+- quality: production
+- requires:
+  - name: efm32tg11b520f128gm80
+  - name: brd2102a_config
+- provides:
+  - name: brd2102a
+  - name: hardware_board
+  - name: hardware_board_stk
+  - name: hardware_board_from_stk
+  - name: hardware_board_from_slstk3301a
+  - name: hardware_board_has_si70xx
+  - name: hardware_board_has_tempsensor
+  - name: hardware_board_has_vcom
+  - name: hardware_board_has_hfxo
+  - name: hardware_board_has_lfxo
+- recommends:
+  - id: iostream_usart
+    instance:
+    - vcom
+  - id: bootloader_uart_driver
+  - id: i2cspm
+    instance:
+    - sensor
+  - id: simple_led
+    instance:
+    - led0
+    - led1
+  - id: simple_button
+    instance:
+    - btn0
+    - btn1
+  - id: bootloader_spi_peripheral_usart_driver
+- template_contribution: []
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD2102A"'
+  - name: SL_BOARD_REV
+    value: '"A06"'
+- tag:
+  - board:pn:BRD2102
+  - board:variant:A
+  - board:revision:A06
+  - board:device:efm32tg11b520f128gm80
+  - hardware:has:vcom
+  - hardware:has:sensor:si7021
+  - hardware:has:sensor:si7210
+  - hardware:has:led:2
+  - hardware:has:button:2
+  - hardware:has:touch
+  - hardware:has:lcd
+  - hardware:has:lesense:lc

@@ -1,0 +1,111 @@
+project_name: "wisun_soc_meter"
+label: "Wi-SUN - SoC Meter"
+description: "The Wi-SUN Meter sample application demonstrates the use of a UDP socket to emulate a metering-like application. 
+The Meter sends sensor measurements (temperature and relative humidity from the SI7021 I2C sensor and dummy lux values) to a Collector device in the same Wi-SUN network."
+package: "wisun"
+category: "Wi-SUN Examples"
+quality: "production"
+
+component:
+# for wisun stack and default components
+  - id: "segger_rtt"
+  - id: "wisun_stack"
+  - id: "wisun_util"
+  - id: "wisun_stack_debug"
+  - id: "sl_system"
+  - id: "device_init"
+  - id: "slist"
+  - id: "sleeptimer"
+  - id: "nvm3_default"
+  - id: "micriumos_kernel"
+  - id: "silabs_core_sl_malloc"
+# radio config
+  - id: "radio_config_brd_wisun_singlephy"
+  - id: "restrictions_profile_wisun_han"
+  - id: "restrictions_profile_wisun_fan_1_0"
+  # - id: "restrictions_profile_wisun_ofdm" # xg25
+# SDK components
+  - id: "sl_wisun_app_cli"
+  - id: "sl_wisun_ping"
+  - id: "sl_wisun_meter"
+  - id: cli
+    instance:
+    - example
+
+requires:
+  - name: "cmsis_rtos2"
+  - name: freertos_heap_3
+    condition: [freertos]
+source:
+  - path: "app.c"
+  - path: "app_init.c"
+  - path: "app_custom_callback.c"
+  - path: "main.c"
+include:
+  - path: "."
+    file_list:
+    - path: "app.h"
+    - path: "app_init.h"
+    - path: "app_custom_callback.h"
+define:
+  - name: "DEBUG_EFM"
+  
+# note: here is the cli configuration but the cli components required in the app_cli.
+configuration:
+  - name: "SL_BOARD_ENABLE_VCOM"
+    value: "1"
+  - name: "SL_IOSTREAM_USART_VCOM_FLOW_CONTROL_TYPE"
+    value: "usartHwFlowControlNone"
+  - name: "SL_IOSTREAM_USART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF"
+    value: "1"
+  - name: SL_CLI_LOCAL_ECHO
+    value: "(1)"
+  - name: "SL_IOSTREAM_EUSART_VCOM_FLOW_CONTROL_TYPE"
+    value: "eusartHwFlowControlNone"
+  - name: "SL_IOSTREAM_EUSART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF"
+    value: "1"
+  - name: "OS_CFG_APP_HOOKS_EN"
+    value: "1"
+    condition: [micriumos_kernel]
+  - name: "SL_HEAP_SIZE"
+    value: "0xD000"
+  - name: "configUSE_POSIX_ERRNO"
+    value: "1"
+    condition: [freertos]
+  - name: "OS_CFG_ERRNO_EN"
+    value: "1"
+    condition: [micriumos_kernel]
+  - name: "APP_PROJECT_INFO_WISUN_VERSION_ENABLED"
+    value: "1"
+  - name: "APP_PROJECT_INFO_MBEDTLS_VERSION_ENABLED"
+    value: "1"
+    
+readme:
+  - path: ../../documentation/example/wisun_soc_meter/readme.md
+
+other_file:
+  - path: ../../documentation/example/wisun_soc_meter/readme_img0.png
+  - path: ../../documentation/example/wisun_soc_meter/readme_img1.png
+  - path: hw_filter_tags.yaml
+    condition:
+      - "add_hw_filter_to_project"
+
+ui_hints:
+  highlight:
+    - path: "config/wisun/wisun_settings.wisunconf"
+    - path: readme.md
+      focus: true
+
+#--------------------- Toolchain ------------------------
+toolchain_settings:
+  - option: optimize
+    value: debug
+
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Wi-SUN"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]

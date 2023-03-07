@@ -1,0 +1,23 @@
+!!omap
+- id: brd8022a
+- label: BRD8022A
+- package: platform
+- description: Board support for BRD8022A.
+- category: Platform|Board|Expansion Board
+- quality: production
+- requires: []
+- provides:
+  - name: brd8022a
+  - name: hardware_board_wfx
+  - name: hardware_board_exp
+- recommends: []
+- template_contribution: []
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD8022A"'
+  - name: SL_BOARD_REV
+    value: '"A06"'
+- tag:
+  - board:pn:BRD8022
+  - board:variant:A
+  - board:revision:A06

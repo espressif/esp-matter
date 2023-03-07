@@ -1,0 +1,105 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("pw_polyfill") {
+  public_configs = [ ":public_include_path" ]
+  remove_public_deps = [ "*" ]
+  public_deps = [ ":standard_library" ]
+  public = [
+    "public/pw_polyfill/language_feature_macros.h",
+    "public/pw_polyfill/standard.h",
+  ]
+}
+
+config("cstddef_overrides_config") {
+  include_dirs = [ "cstddef_public_overrides" ]
+  cflags = [ "-Wno-gnu-include-next" ]
+  visibility = [ ":*" ]
+}
+
+config("iterator_overrides_config") {
+  include_dirs = [ "iterator_public_overrides" ]
+  cflags = [ "-Wno-gnu-include-next" ]
+  visibility = [ ":*" ]
+}
+
+config("standard_library_public") {
+  include_dirs = [ "standard_library_public" ]
+}
+
+# Provides <cstddef>'s std::byte for C++14.
+pw_source_set("cstddef") {
+  public_configs = [
+    ":standard_library_public",
+    ":cstddef_overrides_config",
+  ]
+  public_deps = [ ":standard_library" ]
+  remove_public_deps = [ "*" ]
+  public = [ "cstddef_public_overrides/cstddef" ]
+  sources = [ "standard_library_public/pw_polyfill/standard_library/cstddef.h" ]
+}
+
+# Provides <iterator>'s std::data and std::size for C++14.
+pw_source_set("iterator") {
+  public_configs = [
+    ":standard_library_public",
+    ":iterator_overrides_config",
+  ]
+  public_deps = [ ":standard_library" ]
+  remove_public_deps = [ "*" ]
+  public = [ "iterator_public_overrides/iterator" ]
+  sources =
+      [ "standard_library_public/pw_polyfill/standard_library/iterator.h" ]
+}
+
+pw_source_set("standard_library") {
+  public_configs = [ ":standard_library_public" ]
+  remove_public_deps = [ "*" ]
+  public =
+      [ "standard_library_public/pw_polyfill/standard_library/namespace.h" ]
+  visibility = [ ":*" ]
+}
+
+pw_test_group("tests") {
+  tests = [ ":test" ]
+  group_deps = [ "$dir_pw_span:tests" ]
+}
+
+pw_test("test") {
+  deps = [ ":pw_polyfill" ]
+
+  # Do not depend on :cstddef and :iterator since they override library headers.
+  # Instead, add their include path and list them as sources.
+  configs = [ ":standard_library_public" ]
+  sources = [
+    "standard_library_public/pw_polyfill/standard_library/cstddef.h",
+    "standard_library_public/pw_polyfill/standard_library/iterator.h",
+    "test.cc",
+  ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}

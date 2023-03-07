@@ -1,0 +1,148 @@
+package: Zigbee
+description: A component implementing a CLI for the Green Power device application framework.
+label: Green Power Device AF CLI
+quality: production
+id: zigbee_gpd_af_cli
+category: Zigbee|Green Power Device
+
+provides:
+   - name: "zigbee_gpd_af_cli"
+requires:
+   - name: "zigbee_gpd_application_support"
+   - name: "zigbee_debug_print"
+   - name: "cli"
+
+source:
+  - path: "protocol/zigbee/app/gpd/plugin/cli/gpd-uc-af-cli.c"
+    condition:
+      - "cli"
+
+include:
+  - path: "protocol/zigbee/app/gpd/components"
+    file_list:
+      - path: "gpd-components-common.h"
+
+#-------------- Template Contribution ----------------
+template_contribution:
+#------------------ CLI commands ---------------------
+  - name: component_catalog
+    value: zigbee_gpd_af_cli
+
+  - name: cli_group
+    value:
+      name: node
+      help: "gpd node related commands"
+
+  - name: cli_command
+    value:
+      name: reset
+      handler: emberGpdAfCliResetCommand
+      help: Resets the node.
+  - name: cli_command
+    value:
+      name: info
+      group: node
+      handler: emberGpdAfCliNodeInfo
+      help: Prints the GPD node information.
+  - name: cli_command
+    value:
+      name: channel-req
+      group: node
+      handler: emberGpdAfCliChannelReq
+      help: Sends out a channel request command from the GPD.
+  - name: cli_command
+    value:
+      name: comm
+      group: node
+      handler: emberGpdAfCliCommReq
+      help: Sends out a commissioning request and moves the commissioning state machine based on the parameter provided.
+      argument:
+      - type: uint8
+        help: 0x00 - Decommission, 0x01 = A single commissioning GPDF, 0xFF = Start automatic commissioning process
+  - name: cli_command
+    value:
+      name: set-addr
+      group: node
+      handler: emberGpdAfCliNodeSetAddr
+      help: Sets the address of the GPD node.
+      argument:
+      - type: hex
+        help: array of 8 bit data, where AppId = arg[0], if AppId = 0 then SrcId = arg[1-4] but if AppId = 2 then Endpoint = arg[1] and EUI = arg[2-9]
+  - name: cli_command
+    value:
+      name: set-ac
+      group: node
+      handler: emberGpdAfCliNodeSetAutoComm
+      help: Sets the auto-commission parameter of the GPD node.
+      argument:
+      - type: uint8
+        help: Auto-commissioning parameter of the GPD node
+  - name: cli_command
+    value:
+      name: set-bidir-param
+      group: node
+      handler: emberGpdAfCliNodeSetBiDirParam
+      help: Sets bidirectional parameter of the GPD node.
+      argument:
+      - type: uint8
+        help: rx-after-tx flag.
+      - type: uint8
+        help: rx-offset in milliseconds.
+      - type: uint8
+        help: rxwindow in milliseconds.
+  - name: cli_command
+    value:
+      name: set-channel
+      group: node
+      handler: emberGpdAfCliNodeSetChannel
+      help: Sets the channel of operation for unidirectional GPD or channel for bidirectional commissioning.
+      argument:
+      - type: uint8
+        help: GPD channel from 11 to 26
+  - name: cli_command
+    value:
+      name: set-sec-key-type
+      group: node
+      handler: emberGpdAfCliNodeSetSecKeyType
+      help: Sets the bidirectional commissioning key type.
+      argument:
+      - type: uint8
+        help: Key type between 0 and 7
+  - name: cli_command
+    value:
+      name: set-sec-key
+      group: node
+      handler: emberGpdAfCliNodeSetSecKey
+      help: Sets the bidirectional key.
+      argument:
+      - type: hex
+        help: 128 bit key
+  - name: cli_command
+    value:
+      name: set-sec-fc
+      group: node
+      handler: emberGpdAfCliNodeSetSecFc
+      help: Sets security frame counter.
+      argument:
+      - type: uint32
+        help: Sec frame counter
+  - name: cli_command
+    value:
+      name: set-sec-level
+      group: node
+      handler: emberGpdAfCliNodeSetSecLevel
+      help: Sets security level. 0 = No security, 1 = RESERVED, 2 = Authentication only, 3 = Encrypted and Authenticated
+      argument:
+      - type: uint8
+        help: Sec level between 0 to 3.
+  - name: cli_command
+    value:
+      name: send-gpdf
+      handler: emberGpdAfCliSendGpdf
+      help: Sends out a GPD command based on the set GPD parameters.
+      argument:
+      - type: uint8
+        help: Frame type 0 = Data frame, 1 = Maintenance frame.
+      - type: hex
+        help: Command payload
+

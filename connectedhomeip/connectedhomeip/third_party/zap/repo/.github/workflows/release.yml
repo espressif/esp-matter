@@ -1,0 +1,264 @@
+name: Build and release packages
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+    branches: [master]
+
+env:
+  ZAP_TEST_TIMEOUT: 3600000
+  ZAP_TEMPSTATE: 1
+  BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
+  P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+  TRUSTED_CERTIFICATE_BASE64: ${{ secrets.TRUSTED_CERTIFICATE_BASE64 }}
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  KEYCHAIN_PASSWORD: silabs
+
+jobs:
+  release:
+    runs-on: ${{ matrix.os }}
+
+    # Platforms to build on/for
+    strategy:
+      matrix:
+        os: [macos-11, ubuntu-latest]
+      fail-fast: false
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v3.0.0
+        with:
+          node-version: 16.x
+          cache: 'npm'
+
+      - name: Prepare Linux build environment
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          sudo ./src-script/install-packages-ubuntu
+          sudo apt-get install --fix-missing xvfb
+
+      - name: Prepare macOS build environment
+        if: startsWith(matrix.os, 'macos')
+        run: ./src-script/install-packages-osx
+
+      - name: Prepare macOS certificate
+        if: startsWith(matrix.os, 'macos')
+        run: |
+          # create variables
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+
+          if [ -n "$P12_PASSWORD" ]; then
+            # import certificate and provisioning profile from secrets
+            echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode --output ${RUNNER_TEMP}/build_certificate.p12
+            echo -n "$TRUSTED_CERTIFICATE_BASE64" | base64 --decode --output ${RUNNER_TEMP}/trusted_certificate.cer
+
+            # create temporary keychain
+            security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+            security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+            security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+
+            # import certificate to keychain
+            security import ${RUNNER_TEMP}/trusted_certificate.cer -P "$P12_PASSWORD" -k $KEYCHAIN_PATH -A
+            security import ${RUNNER_TEMP}/build_certificate.p12 -P "$P12_PASSWORD" -k $KEYCHAIN_PATH -A
+
+            security find-identity -v
+            security list-keychain -d user -s $KEYCHAIN_PATH
+          fi
+
+      - name: Initialize...
+        run: |
+          npm rebuild canvas --update-binary
+          npm rebuild libxmljs --update-binary
+          npm ci
+          npm run version-stamp
+
+      - name: Building frontend / backend
+        run: |
+          npm run build
+
+      - name: Build & Release for Windows / Mac universal binary on macOS
+        if: startsWith(matrix.os, 'macos')
+        run: |
+          npm run pack:win
+          npm run pkg:win
+          mv dist/zap-win.exe zap-cli-win.exe
+          ./node_modules/7zip-bin/mac/x64/7za a dist/zap-win.zip zap-cli-win.exe
+          rm zap-cli-win.exe
+
+          npm run pack:mac
+          npm run pkg:mac
+          mv dist/zap-macos zap-cli-macos
+          ./node_modules/7zip-bin/mac/x64/7za a dist/zap-mac.zip zap-cli-macos
+          rm zap-cli-macos
+
+        env:
+          GH_TOKEN: ${{ secrets.github_token }}
+
+          # macOS notarization API key
+          # CSC_LINK: ${{ secrets.api_key_id }}
+          # CSC_KEY_PASSWORD: ${{ secrets.api_key_issuer_id }}
+
+      - name: Build & Release for Linux
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          npm run pack:linux
+          npm run pkg:linux
+          mv dist/zap-linux zap-cli-linux
+          ./node_modules/7zip-bin/linux/x64/7za a dist/zap-linux.zip zap-cli-linux
+
+        env:
+          GH_TOKEN: ${{ secrets.github_token }}
+
+          # macOS notarization API key
+          # CSC_LINK: ${{ secrets.api_key_id }}
+          # CSC_KEY_PASSWORD: ${{ secrets.api_key_issuer_id }}
+
+      - name: ZAP version (macOS) - Getter
+        id: zap_version_mac
+        if: startsWith(matrix.os, 'macos')
+        run: |
+          unzip dist/zap-mac.zip -d dist/zap-mac
+          ./dist/zap-mac/zap.app/Contents/MacOS/zap --version
+          echo "::set-output name=version::$(./dist/zap-mac/zap.app/Contents/MacOS/zap --version)"
+          rm -rf dist/zap-mac
+      - name: ZAP version (macOS) - Verify exe running
+        uses: nick-fields/assert-action@v1
+        if: startsWith(matrix.os, 'macos')
+        with:
+          expected: 'Version'
+          actual: ${{ steps.zap_version_mac.outputs.version }}
+          comparison: contains
+      - name: ZAP version (macOS) - Verify version stamp
+        uses: nick-fields/assert-action@v1
+        if: startsWith(matrix.os, 'macos')
+        with:
+          expected: '0.0.0'
+          actual: ${{ steps.zap_version_mac.outputs.version }}
+          comparison: notContains
+
+      - name: ZAP version (Linux) - Getter
+        id: zap_version_linux
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          unzip dist/zap-linux.zip -d dist/zap-linux
+          ./dist/zap-linux/zap --version
+          echo "::set-output name=version::$(./dist/zap-linux/zap --version)"
+          rm -rf dist/zap-linux
+      - name: ZAP version (Linux) - Verify exe running
+        uses: nick-fields/assert-action@v1
+        if: startsWith(matrix.os, 'ubuntu')
+        with:
+          expected: 'Version'
+          actual: ${{ steps.zap_version_linux.outputs.version }}
+          comparison: contains
+      - name: ZAP version (Linux) - Verify version stamp
+        uses: nick-fields/assert-action@v1
+        if: startsWith(matrix.os, 'ubuntu')
+        with:
+          expected: '0.0.0'
+          actual: ${{ steps.zap_version_linux.outputs.version }}
+          comparison: notContains
+
+      - name: Setup Linux package for adapter pack test
+        id: linux_apack_setup
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          echo "::set-output name=linuxBaseDir::$(./node_modules/7zip-bin/linux/x64/7za l ./dist/zap-linux.zip | grep apack.json)"
+          echo "::set-output name=linuxAsarDir::$(npx asar l ./dist/linux-unpacked/resources/app.asar | grep apack.json)"
+      - name: Verify apack.json exists in Linux package .zip package
+        uses: nick-fields/assert-action@v1
+        if: startsWith(matrix.os, 'ubuntu')
+        with:
+          expected: 'apack.json'
+          actual: ${{ steps.linux_apack_setup.outputs.linuxBaseDir }}
+          comparison: contains
+      - name: Verify apack.json exists in Linux package .zip package's app.asar archive
+        uses: nick-fields/assert-action@v1
+        if: startsWith(matrix.os, 'ubuntu')
+        with:
+          expected: 'apack.json'
+          actual: ${{ steps.linux_apack_setup.outputs.linuxAsarDir }}
+          comparison: contains
+
+      - name: Setup macOS/Windows package for adapter pack test
+        id: nonlinux_apack_setup
+        if: startsWith(matrix.os, 'macos')
+        run: |
+          echo "::set-output name=winBaseDir::$(./node_modules/7zip-bin/mac/x64/7za l ./dist/zap-win.zip | grep apack.json)"
+          echo "::set-output name=winAsarDir::$(npx asar l ./dist/win-unpacked/resources/app.asar | grep apack.json)"
+          echo "::set-output name=macBaseDir::$(./node_modules/7zip-bin/mac/x64/7za l ./dist/zap-mac.zip | grep apack.json)"
+          echo "::set-output name=macX64AsarDir::$(npx asar l ./dist/mac-universal/zap.app/Contents/Resources/app-x64.asar | grep apack.json)"
+          echo "::set-output name=macArm64AsarDir::$(npx asar l ./dist/mac-universal/zap.app/Contents/Resources/app-arm64.asar | grep apack.json)"
+      - run: echo "${{ steps.nonlinux_apack_setup.outputs.winBaseDir }}"
+      - name: Verify apack.json exists in Windows .zip package
+        uses: nick-fields/assert-action@v1.1.0
+        if: startsWith(matrix.os, 'macos')
+        with:
+          expected: 'apack.json'
+          actual: ${{ steps.nonlinux_apack_setup.outputs.winBaseDir }}
+          comparison: contains
+      - name: Verify apack.json exists in Windows .zip package's app.asar archive
+        uses: nick-fields/assert-action@v1.1.0
+        if: startsWith(matrix.os, 'macos')
+        with:
+          expected: 'apack.json'
+          actual: ${{ steps.nonlinux_apack_setup.outputs.winAsarDir }}
+          comparison: contains
+      - name: Verify apack.json exists in macOS .zip package
+        uses: nick-fields/assert-action@v1.1.0
+        if: startsWith(matrix.os, 'macos')
+        with:
+          expected: 'apack.json'
+          actual: ${{ steps.nonlinux_apack_setup.outputs.macBaseDir }}
+          comparison: contains
+      - name: Verify apack.json exists in macOS .zip package's app-x64.asar archive
+        uses: nick-fields/assert-action@v1.1.0
+        if: startsWith(matrix.os, 'macos')
+        with:
+          expected: 'apack.json'
+          actual: ${{ steps.nonlinux_apack_setup.outputs.macX64AsarDir }}
+          comparison: contains
+      - name: Verify apack.json exists in macOS .zip package's app-arm64.asar archive
+        uses: nick-fields/assert-action@v1.1.0
+        if: startsWith(matrix.os, 'macos')
+        with:
+          expected: 'apack.json'
+          actual: ${{ steps.nonlinux_apack_setup.outputs.macArm64AsarDir }}
+          comparison: contains
+
+      - name: Archive Windows .zip file
+        uses: actions/upload-artifact@v2
+        if: startsWith(matrix.os, 'macos')
+        with:
+          name: zap-win-zip
+          path: dist/zap*-win.zip
+      - name: Archive macOS .zip file
+        uses: actions/upload-artifact@v2
+        if: startsWith(matrix.os, 'macos')
+        with:
+          name: zap-mac-zip
+          path: dist/zap*-mac.zip
+      - name: Archive Linux .zip file
+        uses: actions/upload-artifact@v2
+        if: startsWith(matrix.os, 'ubuntu')
+        with:
+          name: zap-linux-zip
+          path: dist/zap*-linux.zip
+      - name: Archive Linux .rpm file
+        uses: actions/upload-artifact@v2
+        if: startsWith(matrix.os, 'ubuntu')
+        with:
+          name: zap-linux-rpm
+          path: dist/zap*.rpm
+      - name: Archive Linux .deb file
+        uses: actions/upload-artifact@v2
+        if: startsWith(matrix.os, 'ubuntu')
+        with:
+          name: zap-linux-deb
+          path: dist/zap*.deb

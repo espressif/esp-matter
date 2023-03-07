@@ -1,0 +1,54 @@
+package: Zigbee
+description: This is a driver for the Over-the-air simple storage module component. It
+  uses an EEPROM as the underlying storage device. It provides a means to record
+  data being read or written, as well as metadata with information about
+  how far along a client download is. It can be used either by an OTA Client or an
+  OTA Server. Note that this component assumes that the flash storage does not have read-modify-write support. Users should ensure this value matches the flash storage device used by the application. A mismatch between the project-configured value and the actual flash storage support value will result in an application that asserts upon startup.
+label: OTA Simple Storage EEPROM Driver
+quality: production
+id: zigbee_ota_storage_simple_eeprom
+category: Zigbee|Over-The-Air Bootloading
+provides:
+   - name: "zigbee_ota_storage_simple_eeprom"
+   - name: "zigbee_ota_storage_implementation"
+requires:
+   - name: "zigbee_ota_common"
+   - name: "zigbee_ota_storage_common"
+   - name: "zigbee_ota_storage_simple"
+   # TODO: EMZIGBEE-7084 - update/confirm this require once the "eeprom" plugin is ported
+   - name: "util_eeprom"
+   - name: "legacy_bootloader_interface"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/ota-storage-simple-eeprom/config/ota-storage-simple-eeprom-config.h
+validation_helper:
+  - path: protocol/zigbee/app/framework/component/scripts/zigbee_ota_storage_simple_eeprom_validation.lua
+source:
+  - path: protocol/zigbee/app/framework/plugin/ota-storage-simple-eeprom/ota-storage-eeprom.c
+  - path: protocol/zigbee/app/framework/plugin/ota-storage-simple-eeprom/ota-storage-eeprom-page-erase.c
+  - path: protocol/zigbee/app/framework/plugin/ota-storage-simple-eeprom/ota-storage-eeprom-read-modify-write.c
+  - path: protocol/zigbee/app/framework/plugin/ota-storage-simple-eeprom/ota-storage-simple-eeprom-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/ota-storage-simple-eeprom
+    file_list:
+      - path: ota-storage-eeprom.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_ota_storage_simple_eeprom
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emAfPluginOtaStorageSimpleEepromInitCallback    
+  - name: cli_group
+    value:
+      group: plugin
+      name: ota-storage-eeprom
+      help: ota-storage-eeprom related commands.
+  - name: cli_command
+    value:
+      group: ota-storage-eeprom
+      name: wipe
+      handler: emAfOtaWipeStorageDeviceCommand
+      help: Wipes all data in the storage device.
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/ota-storage-eeprom

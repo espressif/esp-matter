@@ -1,0 +1,358 @@
+/*
+ * Copyright (c) 2019-2020, Arm Limited. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ *
+ */
+
+{{utilities.donotedit_warning}}
+
+#ifndef __TFM_SPM_DB_INC__
+#define __TFM_SPM_DB_INC__
+
+#include "spm_api.h"
+#include "psa_manifest/sid.h"
+
+{# Produce a build error if heap_size is presented in the manifest, because of the dynamic memory allocation is not supported now. #}
+{% for manifest in manifests %}
+    {% if manifest.manifest.heap_size %}
+#error "Please do not add 'heap_size' for partition '{{manifest.manifest.name}}', the dynamic memory allocation is not supported now!"
+    {% endif %}
+{% endfor %}
+/**************************************************************************/
+/** IRQ count per partition */
+/**************************************************************************/
+{% for manifest in manifests %}
+    {% if manifest.attr.conditional %}
+#ifdef {{manifest.attr.conditional}}
+    {% endif %}
+    {% if manifest.manifest.irqs %}
+#define TFM_PARTITION_{{manifest.manifest.name}}_IRQ_COUNT {{manifest.manifest.irqs | length() }}
+    {% else %}
+#define TFM_PARTITION_{{manifest.manifest.name}}_IRQ_COUNT 0
+    {% endif %}
+    {% if manifest.attr.conditional %}
+#endif /* {{manifest.attr.conditional}} */
+    {% endif %}
+
+{% endfor %}
+/**************************************************************************/
+/** Declarations of partition init functions */
+/**************************************************************************/
+#ifdef TFM_PSA_API
+extern void tfm_nspm_thread_entry(void);
+#endif
+
+{% for manifest in manifests %}
+    {% if manifest.attr.conditional %}
+#ifdef {{manifest.attr.conditional}}
+    {% endif %}
+extern void {{manifest.manifest.entry_point}}(void);
+    {% if manifest.attr.conditional %}
+#endif /* {{manifest.attr.conditional}} */
+    {% endif %}
+
+{% endfor %}
+/**************************************************************************/
+/** Memory region declarations */
+/**************************************************************************/
+#ifdef TFM_PSA_API
+REGION_DECLARE(Image$$, ARM_LIB_STACK, $$ZI$$Base);
+REGION_DECLARE(Image$$, ARM_LIB_STACK, $$ZI$$Limit);
+
+{% for manifest in manifests %}
+    {% if manifest.attr.conditional %}
+#ifdef {{manifest.attr.conditional}}
+    {% endif %}
+REGION_DECLARE(Image$$, {{manifest.manifest.name}}_LINKER, $$Base);
+REGION_DECLARE(Image$$, {{manifest.manifest.name}}_LINKER, $$Limit);
+REGION_DECLARE(Image$$, {{manifest.manifest.name}}_LINKER, $$RO$$Base);
+REGION_DECLARE(Image$$, {{manifest.manifest.name}}_LINKER, $$RO$$Limit);
+REGION_DECLARE(Image$$, {{manifest.manifest.name}}_LINKER, _DATA$$RW$$Base);
+REGION_DECLARE(Image$$, {{manifest.manifest.name}}_LINKER, _DATA$$RW$$Limit);
+REGION_DECLARE(Image$$, {{manifest.manifest.name}}_LINKER, _DATA$$ZI$$Base);
+REGION_DECLARE(Image$$, {{manifest.manifest.name}}_LINKER, _DATA$$ZI$$Limit);
+REGION_DECLARE(Image$$, {{manifest.manifest.name}}_LINKER, _STACK$$ZI$$Base);
+REGION_DECLARE(Image$$, {{manifest.manifest.name}}_LINKER, _STACK$$ZI$$Limit);
+    {% if manifest.attr.conditional %}
+#endif /* {{manifest.attr.conditional}} */
+    {% endif %}
+
+{% endfor %}
+#endif /* defined(TFM_PSA_API) */
+
+#ifndef TFM_PSA_API
+/**************************************************************************/
+/** Context stacks for IRQ handling */
+/**************************************************************************/
+/* The max size of the context stack can be calculated as a function of the IRQ
+ * count of the secure partition:
+ *
+ * max_stack_size = intr_ctx_size + (IRQ_CNT * (intr_ctx_size + hndl_ctx_size))
+ *
+ * where:
+ *   intr_ctx: Frame pushed when the partition is interrupted
+ *   hndl_ctx: Frame pushed when the partition is handling an interrupt
+ */
+static uint32_t ns_interrupt_ctx_stack[
+        sizeof(struct interrupted_ctx_stack_frame_t) / sizeof(uint32_t)];
+
+static uint32_t tfm_core_interrupt_ctx_stack[
+        sizeof(struct interrupted_ctx_stack_frame_t) / sizeof(uint32_t)];
+
+{% for manifest in manifests %}
+    {% if manifest.attr.conditional %}
+#ifdef {{manifest.attr.conditional}}
+    {% endif %}
+static uint32_t ctx_stack_{{manifest.manifest.name}}[
+        (sizeof(struct interrupted_ctx_stack_frame_t) +
+            (TFM_PARTITION_{{manifest.manifest.name}}_IRQ_COUNT) * (
+                sizeof(struct interrupted_ctx_stack_frame_t) +
+                sizeof(struct handler_ctx_stack_frame_t)
+        )) / sizeof(uint32_t)];
+    {% if manifest.attr.conditional %}
+#endif /* {{manifest.attr.conditional}} */
+    {% endif %}
+
+{% endfor %}
+
+uint32_t *ctx_stack_list[] =
+{
+    ns_interrupt_ctx_stack,
+    tfm_core_interrupt_ctx_stack,
+{% for manifest in manifests %}
+    {% if manifest.attr.conditional %}
+#ifdef {{manifest.attr.conditional}}
+    {% endif %}
+    ctx_stack_{{manifest.manifest.name}},
+    {% if manifest.attr.conditional %}
+#endif /* {{manifest.attr.conditional}} */
+    {% endif %}
+{% endfor %}
+};
+#endif /* !defined(TFM_PSA_API) */
+
+/**************************************************************************/
+/** Dependencies array for Secure Partition */
+/**************************************************************************/
+{% for manifest in manifests %}
+    {% if manifest.manifest.dependencies %}
+        {% if manifest.attr.conditional %}
+#ifdef {{manifest.attr.conditional}}
+        {% endif %}
+static int32_t dependencies_{{manifest.manifest.name}}[] =
+{
+        {% for dependence in manifest.manifest.dependencies %}
+            {% for service in manifest.manifest.services %}
+                {% if dependence == service.name %}
+#error "Please DO NOT include SP's own RoT Service '{{dependence}}', which will cause a deadlock!"
+                {% endif %}
+            {% endfor %}
+    {{dependence}}_SID,
+        {% endfor %}
+};
+        {% if manifest.attr.conditional %}
+#endif /* {{manifest.attr.conditional}} */
+        {% endif %}
+
+    {% endif %}
+{% endfor %}
+/**************************************************************************/
+/** The static data of the partition list */
+/**************************************************************************/
+const struct spm_partition_static_data_t static_data_list[] =
+{
+    {
+#ifdef TFM_PSA_API
+        .psa_framework_version = 0x0100,
+#endif /* defined(TFM_PSA_API) */
+        .partition_id         = TFM_SP_NON_SECURE_ID,
+#ifdef TFM_PSA_API
+#if TFM_MULTI_CORE_TOPOLOGY
+        .partition_flags      = SPM_PART_FLAG_PSA_ROT | SPM_PART_FLAG_IPC,
+#else
+        .partition_flags      = SPM_PART_FLAG_APP_ROT | SPM_PART_FLAG_IPC,
+#endif
+        .partition_priority   = TFM_PRIORITY_LOW,
+        .partition_init       = tfm_nspm_thread_entry,
+#else
+        .partition_flags      = 0,
+#endif
+    },
+
+#ifndef TFM_PSA_API
+    {
+        .partition_id         = TFM_SP_CORE_ID,
+        .partition_flags      = SPM_PART_FLAG_APP_ROT | SPM_PART_FLAG_PSA_ROT,
+    },
+#endif
+
+{% for manifest in manifests %}
+    {% if manifest.attr.conditional %}
+#ifdef {{manifest.attr.conditional}}
+    {% endif %}
+    {{'{'}}
+#ifdef TFM_PSA_API
+    {% if manifest.manifest.psa_framework_version == 1.0 %}
+        .psa_framework_version = 0x0100,
+    {% else %}
+        .psa_framework_version = 0,
+    {% endif %}
+#endif /* defined(TFM_PSA_API) */
+        .partition_id         = {{manifest.manifest.name}},
+    {% if manifest.attr.tfm_partition_ipc %}
+        .partition_flags      = SPM_PART_FLAG_IPC
+    {% else %}
+        .partition_flags      = 0
+    {% endif %}
+    {% if manifest.manifest.type == "APPLICATION-ROT" %}
+                              | SPM_PART_FLAG_APP_ROT
+    {% elif manifest.manifest.type == "PSA-ROT" %}
+                              | SPM_PART_FLAG_PSA_ROT | SPM_PART_FLAG_APP_ROT
+    {% else %}
+#error "Unsupported type '{{manifest.manifest.type}}' for partition '{{manifest.manifest.name}}'!"
+    {% endif %}
+                              ,
+        .partition_priority   = TFM_PRIORITY({{manifest.manifest.priority}}),
+        .partition_init       = {{manifest.manifest.entry_point}},
+        .dependencies_num     = {{manifest.manifest.dependencies | length()}},
+    {% if manifest.manifest.dependencies %}
+        .p_dependencies       = dependencies_{{manifest.manifest.name}},
+    {% else %}
+        .p_dependencies       = NULL,
+    {% endif %}
+    {{'},'}}
+    {% if manifest.attr.conditional %}
+#endif /* {{manifest.attr.conditional}} */
+    {% endif %}
+
+{% endfor %}
+};
+
+/**************************************************************************/
+/** The platform data of the partition list */
+/**************************************************************************/
+{% for manifest in manifests %}
+    {% if manifest.manifest.mmio_regions %}
+        {% if manifest.attr.conditional %}
+#ifdef {{manifest.attr.conditional}}
+        {% endif %}
+const struct tfm_spm_partition_platform_data_t *
+    platform_data_list_{{manifest.manifest.name}}[] =
+{
+        {% for region in manifest.manifest.mmio_regions %}
+            {% if region.conditional %}
+#ifdef {{region.conditional}}
+            {% endif %}
+    {{region.name}},
+            {% if region.conditional %}
+#endif /* {{region.conditional}} */
+            {% endif %}
+        {% endfor %}
+    NULL
+};
+        {% if manifest.attr.conditional %}
+#endif /* {{manifest.attr.conditional}} */
+        {% endif %}
+
+    {% endif %}
+{% endfor %}
+const struct tfm_spm_partition_platform_data_t **platform_data_list_list[] =
+{
+    NULL,
+
+#ifndef TFM_PSA_API
+    NULL,
+#endif
+
+{% for manifest in manifests %}
+    {% if manifest.attr.conditional %}
+#ifdef {{manifest.attr.conditional}}
+    {% endif %}
+    {% if manifest.manifest.mmio_regions %}
+    platform_data_list_{{manifest.manifest.name}},
+    {% else %}{# if manifest.manifest.mmio_regions #}
+    NULL,
+    {% endif %}{# if manifest.manifest.mmio_regions #}
+    {% if manifest.attr.conditional %}
+#endif /* {{manifest.attr.conditional}} */
+    {% endif %}
+
+{% endfor %}
+};
+
+/**************************************************************************/
+/** The memory data of the partition list */
+/**************************************************************************/
+#ifdef TFM_PSA_API
+const struct tfm_spm_partition_memory_data_t memory_data_list[] =
+{
+    {
+        .stack_bottom         = PART_REGION_ADDR(ARM_LIB_STACK, $$ZI$$Base),
+        .stack_top            = PART_REGION_ADDR(ARM_LIB_STACK, $$ZI$$Limit),
+        .rw_start             = PART_REGION_ADDR(ARM_LIB_STACK, $$ZI$$Base),
+    },
+{% for manifest in manifests %}
+    {% if manifest.attr.conditional %}
+#ifdef {{manifest.attr.conditional}}
+    {% endif %}
+    {{'{'}}
+        .code_start           = PART_REGION_ADDR({{manifest.manifest.name}}_LINKER, $$Base),
+        .code_limit           = PART_REGION_ADDR({{manifest.manifest.name}}_LINKER, $$Limit),
+        .ro_start             = PART_REGION_ADDR({{manifest.manifest.name}}_LINKER, $$RO$$Base),
+        .ro_limit             = PART_REGION_ADDR({{manifest.manifest.name}}_LINKER, $$RO$$Limit),
+        .rw_start             = PART_REGION_ADDR({{manifest.manifest.name}}_LINKER, _DATA$$RW$$Base),
+        .rw_limit             = PART_REGION_ADDR({{manifest.manifest.name}}_LINKER, _DATA$$RW$$Limit),
+        .zi_start             = PART_REGION_ADDR({{manifest.manifest.name}}_LINKER, _DATA$$ZI$$Base),
+        .zi_limit             = PART_REGION_ADDR({{manifest.manifest.name}}_LINKER, _DATA$$ZI$$Limit),
+        .stack_bottom         = PART_REGION_ADDR({{manifest.manifest.name}}_LINKER, _STACK$$ZI$$Base),
+        .stack_top            = PART_REGION_ADDR({{manifest.manifest.name}}_LINKER, _STACK$$ZI$$Limit),
+    {{'},'}}
+    {% if manifest.attr.conditional %}
+#endif /* {{manifest.attr.conditional}} */
+    {% endif %}
+
+{% endfor %}
+};
+#endif /* defined(TFM_PSA_API) */
+
+/**************************************************************************/
+/** The partition list for the DB */
+/**************************************************************************/
+static struct spm_partition_desc_t partition_list [] =
+{
+    {{'{{0}}'}}, /* placeholder for Non-secure internal partition */
+#ifndef TFM_PSA_API
+    {{'{{0}}'}},   /* placeholder for TF-M Core internal partition */
+#endif
+
+{% for manifest in manifests %}
+    /* -----------------------------------------------------------------------*/
+    /* - Partition DB record for {{manifest.manifest.name}} */
+    /* -----------------------------------------------------------------------*/
+    {% if manifest.attr.conditional %}
+#ifdef {{manifest.attr.conditional}}
+    {% endif %}
+    {{'{'}}
+    /* Runtime data */
+        .runtime_data             = {0},
+        .static_data              = NULL,
+        .platform_data_list       = NULL,
+    {{'},'}}
+    {% if manifest.attr.conditional %}
+#endif /* {{manifest.attr.conditional}} */
+    {% endif %}
+
+{% endfor %}
+};
+
+struct spm_partition_db_t g_spm_partition_db = {
+    .is_init = 0,
+    .partition_count = sizeof(partition_list) / sizeof(partition_list[0]),
+#ifndef TFM_PSA_API
+    .running_partition_idx = 0,
+#endif
+    .partitions = partition_list,
+};
+
+#endif /* __TFM_SPM_DB_INC__ */

@@ -1,0 +1,20 @@
+id: "zigbee_cluster_service"
+label: "Zigbee Cluster Service"
+package: "Zigbee"
+category: "Zigbee|Utility"
+quality: production
+description: "This component is used to enable the cluster service mechanism."
+provides:
+  - name: "zigbee_cluster_service"
+
+include:
+  - path: protocol/zigbee/app/framework/service-function
+    file_list:
+      - path: sl_service_function.h    
+
+source:
+  - path: "protocol/zigbee/app/framework/service-function/sl_service_function.c"
+
+template_file:
+  - path: "protocol/zigbee/app/framework/service-function/template/sl_cluster_service_gen.c.jinja"
+  - path: "protocol/zigbee/app/framework/service-function/template/sl_cluster_service_gen.h.jinja"

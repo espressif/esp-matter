@@ -1,0 +1,21 @@
+id: emlib_syscfg
+label: SYSCFG
+package: platform
+description: >
+  SYSCFG API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_syscfg.h"
+
+provides:
+  - name: emlib_syscfg
+
+requires:
+  - name: emlib_common
+  - name: tz_service_syscfg
+    condition: [trustzone_nonsecure]

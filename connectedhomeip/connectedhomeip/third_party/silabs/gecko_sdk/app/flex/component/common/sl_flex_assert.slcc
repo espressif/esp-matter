@@ -1,0 +1,22 @@
+id: "sl_flex_assert"
+label: "Flex - Assert"
+package: "Flex"
+description: "The component provides assert, warning and info functionality via printf what could be simply uninstalled when the development is completed i.e. at production."
+category: "Flex|Common|Utility"
+quality: "production"
+root_path: "app/flex/component/common/sl_flex_assert"
+config_file:
+  - path: "config/sl_flex_assert_config.h"
+include:
+  - path: ""
+    file_list:
+      - path: "sl_flex_assert.h"
+provides:
+  - name: "sl_flex_assert"
+requires:
+  - name: "device_has_radio"
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: flex_assert

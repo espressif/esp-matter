@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- ***************************************************************************************************************** -->
+<!--
+Boundary Config XML file
+
+<For Advanced User's Only>
+Valid ranges only indicate the range accepted by this application.
+It is possible to enter xml values that will not work for your device at run time.
+It is possible to enter xml values that prevent your device from building.
+It is possible to enter xml values that cause unpredictable results.
+The flexibility in values is provided to support future changes in the targets.
+
+<Key for tag data notes>
+(1) String cannot be empty or all white space
+(2) If string is set to "not_used" target data operations are supressed
+
+Summary of XML tags:
+====================
+<boundary_config>Config File Data<\boundary_config>
+
+  ===================================================================
+  XML Version
+  ===================================================================
+
+  <version>XML layout version</version>
+    Do Not Modify
+
+  ===================================================================
+  General Settings
+  ===================================================================
+
+  <general_cfg_data> Start general config data
+
+    <create_flash_boundary>true or false</create_flash_boundary>
+    <backup_cfg_files>true or false</backup_cfg_files>
+    <create_ram_boundary>true or false</create_ram_boundary>
+    <ram_margin_bytes>UInt16</ram_margin_bytes>
+    <ram_alignment_value>byte - valid values = 0,2,4,8,16</ram_alignment_value>
+    <create_nv_boundary>true or false</create_nv_boundary>
+
+  </general_cfg_data> End general config data
+
+  ===================================================================
+  Shared Settings
+  ===================================================================
+  Contains Sharedsettings
+  <shared>
+    Target strings used to find the indicated data and generate output data
+      Valid Entries:
+        Ascii Text
+    <flash_boundary_head>target string (1)</flash_boundary_head>
+    <ram_boundary_head>target string (1)</ram_boundary_head>
+    <nv_boundary_head>target string (1)</nv_boundary_head>
+    <boundary_mid>target string</boundary_mid>
+    <boundary_tail>target string</boundary_tail>
+  </shared>
+
+  ===================================================================
+  IAR Settings
+  ===================================================================
+  Contains Iar handing settings
+  <iar>
+    Target strings used to find the indicated data
+      Valid Entries:
+        Ascii Text
+    <map_file_data>
+      <read_only_code>target string (1)(2)</read_only_code>
+      <read_only_data>target string (1)(2)</read_only_data>
+      <read_write_data>target string (1)(2)</read_write_data>
+      <ram_end_addr>target string (1)(2)</ram_end_addr>
+    </map_file_data>
+
+    Target strings used to find the indicated data
+      Valid Entries:
+        Ascii Text
+    <lcf_file_data>
+      <chip_name>target string (1)</chip_name>
+      <flash_size>target string (1)(2)</flash_size>
+      <ram_size>target string (1)(2)</ram_size>
+      <page_size>target string (1)(2)</page_size>
+      <reserved_pages>target string (1)(2)</reserved_pages>
+      <nv_pages>target string (1)(2)</nv_pages>
+    </lcf_file_data>
+
+    Target strings used to find the indicated data and generate output data
+      Valid Entries:
+        Ascii Text
+    <cfg_file_data>
+      <auto_gen_marker>string (1)(2)</auto_gen_marker>
+      <compiler_comment1>string (2)</compiler_comment1>
+      <compiler_comment2>string (2)</compiler_comment2>
+      <compiler_option>string</compiler_option>
+      <linker_comment1>string (2)</linker_comment1>
+      <linker_comment2>string (2)</linker_comment2>
+      <linker_option>string</linker_option>
+    </cfg_file_data>
+  </iar>
+
+  ===================================================================
+  CCS Settings
+  ===================================================================
+  Contains Ccs handing settings
+  <ccs>
+    Target strings used to find the indicated data
+      Valid Entries:
+        Ascii Text
+    <map_file_data>
+      <read_only_code>target string (1)(2)</read_only_code>
+      <read_only_data>target string (1)(2)</read_only_data>
+      <read_write_data>target string (1)(2)</read_write_data>
+      <ram_end_addr>target string (1)(2)</ram_end_addr>
+    </map_file_data>
+
+    Target strings used to find the indicated data
+      Valid Entries:
+        Ascii Text
+    <lcf_file_data>
+      <chip_name>target string (1)</chip_name>
+      <flash_size>target string (1)(2)</flash_size>
+      <ram_size>target string (1)(2)</ram_size>
+      <page_size>target string (1)(2)</page_size>
+      <reserved_pages>target string (1)(2)</reserved_pages>
+      <nv_pages>target string (1)(2)</nv_pages>
+    </lcf_file_data>
+
+    Target strings used to find the indicated data and generate output data
+      Valid Entries:
+        Ascii Text
+    <cfg_file_data>
+      <auto_gen_marker>string (1)(2)</auto_gen_marker>
+      <compiler_comment1>string (2)</compiler_comment1>
+      <compiler_comment2>string (2)</compiler_comment2>
+      <compiler_option>string</compiler_option>
+      <linker_comment1>string (2)</linker_comment1>
+      <linker_comment2>string (2)</linker_comment2>
+      <linker_option>string</linker_option>
+    </cfg_file_data>
+  </ccs>
+
+  ===================================================================
+  ===================================================================
+ -->
+<!-- ***************************************************************************************************************** -->
+<boundary_config>
+  <!-- ***************************************************************************************************************** -->
+  <!-- XML Version -->
+  <!-- ***************************************************************************************************************** -->
+  <version>1.0.2</version>
+  <!-- ***************************************************************************************************************** -->
+  <!-- General -->
+  <!-- ***************************************************************************************************************** -->
+  <general_cfg_data>
+    <create_flash_boundary>true</create_flash_boundary>
+    <backup_cfg_files>true</backup_cfg_files>
+    <create_ram_boundary>true</create_ram_boundary>
+    <ram_margin_bytes>42</ram_margin_bytes>
+    <ram_alignment_value>4</ram_alignment_value>
+    <create_nv_boundary>true</create_nv_boundary>
+  </general_cfg_data>
+  <!-- ***************************************************************************************************************** -->
+  <!-- Shared -->
+  <!-- ***************************************************************************************************************** -->
+  <shared>
+    <flash_boundary_head>ICALL_STACK0_ADDR=</flash_boundary_head>
+    <ram_boundary_head>ICALL_RAM0_ADDR=</ram_boundary_head>
+    <nv_boundary_head>SNV_FIRST_PAGE=</nv_boundary_head>
+    <boundary_mid>0x</boundary_mid>
+    <boundary_tail></boundary_tail>
+  </shared>
+  <!-- ***************************************************************************************************************** -->
+  <!-- IAR Settings -->
+  <!-- ***************************************************************************************************************** -->
+  <iar>
+    <map_file_data>
+      <read_only_code>bytes of readonly  code memory</read_only_code>
+      <read_only_data>bytes of readonly  data memory</read_only_data>
+      <read_write_data>bytes of readwrite data memory</read_write_data>
+      <ram_end_addr>"P2":  place in [from</ram_end_addr>
+    </map_file_data>
+    <lcf_file_data>
+      <chip_name>isdefinedsymbol(</chip_name>
+      <flash_size>define symbol FLASH_SIZE</flash_size>
+      <ram_size>define symbol RAM_SIZE</ram_size>
+      <page_size>define symbol PAGE_SIZE</page_size>
+      <reserved_pages>define symbol NUM_RESERVED_PAGES</reserved_pages>
+      <nv_pages>not_used</nv_pages>
+    </lcf_file_data>
+    <cfg_file_data>
+      <auto_gen_marker>/* WARNING - Do not modify this line. Modifications below this line can be overwritten by the Boundary tool */</auto_gen_marker>
+      <compiler_line1>/* IAR Compiler Command Line Options */</compiler_line1>
+      <compiler_line2>/* Auto-generated compiler option(s) */</compiler_line2>
+      <compiler_line3> </compiler_line3>
+      <compiler_option>-D </compiler_option>
+      <linker_line1>/* IAR Linker Command Line Options */</linker_line1>
+      <linker_line2>/* Auto-generated linker option(s) */</linker_line2>
+      <linker_line3> </linker_line3>
+      <linker_option>--config_def </linker_option>
+    </cfg_file_data>
+  </iar>
+  <!-- ***************************************************************************************************************** -->
+  <!-- CCS Settings -->
+  <!-- ***************************************************************************************************************** -->
+  <ccs>
+    <map_file_data>
+      <read_only_code>  FLASH               </read_only_code>
+      <read_only_data>not_used</read_only_data>
+      <read_write_data>  SRAM                </read_write_data>
+      <ram_end_addr>  SRAM                </ram_end_addr>
+    </map_file_data>
+    <lcf_file_data>
+      <chip_name>not_used</chip_name>
+      <flash_size>#define FLASH_SIZE</flash_size>
+      <ram_size>#define RAM_SIZE</ram_size>
+      <page_size>#define PAGE_SIZE</page_size>
+      <reserved_pages>#define NUM_RESERVED_PAGES</reserved_pages>
+      <nv_pages>not_used</nv_pages>
+    </lcf_file_data>
+    <cfg_file_data>
+      <auto_gen_marker>/* WARNING - Do not modify this line. Modifications below this line can be overwritten by the Boundary tool */</auto_gen_marker>
+      <compiler_line1>/* CCS Compiler Command Line Options */</compiler_line1>
+      <compiler_line2>/* Auto-generated compiler option(s) */</compiler_line2>
+      <compiler_line3> </compiler_line3>
+      <compiler_option>--define=</compiler_option>
+      <linker_line1>/* CCS Linker Command Line Options */</linker_line1>
+      <linker_line2>/* Auto-generated linker option(s) */</linker_line2>
+      <linker_line3> </linker_line3>
+      <linker_option>--define=</linker_option>
+    </cfg_file_data>
+  </ccs>
+  <!-- ***************************************************************************************************************** -->
+  <!-- ***************************************************************************************************************** -->
+</boundary_config>
+

@@ -1,0 +1,20 @@
+id: "btmesh_feature_sensor_client"
+label: "Sensor Client Model"
+package: "Btmesh"
+description: "Enables Bluetooth Mesh Sensor Client Model."
+category: "Bluetooth Mesh|Stack Classes"
+quality: "production"
+root_path: "protocol/bluetooth"
+
+requires:
+  - name: "btmesh_stack"
+  - name: "btmesh_core"
+provides:
+  - name: "btmesh_feature_sensor_client"
+  - name: "btmesh_sensor_model"
+    allow_multiple: true
+template_contribution:
+  - name: btmesh_bgapi_class
+    value:
+      class: "sensor_client"
+    priority: 1

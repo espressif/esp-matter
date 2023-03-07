@@ -1,0 +1,30 @@
+package: Zigbee
+description: Silicon Labs implementation of a GBZ message controller. This component extracts 
+  ZCL commands by parsing the elemental GBZ components of the GBZ message.
+  Processing of encrypted GBZ message is not supported.
+label: GBZ Message Controller
+quality: production
+id: zigbee_gbz_message_controller
+category: Zigbee|Great Britain Companion Specification
+provides:
+   - name: "zigbee_gbz_message_controller"
+requires:
+   - name: "zigbee_key_establishment"
+   - name: "zigbee_gbcs_compatibility"
+source:
+  - path: protocol/zigbee/app/framework/plugin/gbz-message-controller/gbz-message-controller.c
+  - path: protocol/zigbee/app/framework/plugin/gbz-message-controller/gbz-message-controller-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/gbz-message-controller/gbz-message-controller-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/gbz-message-controller
+    file_list:
+      - path: gbz-message-controller.h  
+template_contribution:
+  - name: component_catalog
+    value: zigbee_gbz_message_controller
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/gbz-message-controller

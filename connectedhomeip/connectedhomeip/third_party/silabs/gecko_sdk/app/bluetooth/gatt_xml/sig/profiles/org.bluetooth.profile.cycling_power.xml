@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Profile xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/profile.xsd" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    type="org.bluetooth.profile.cycling_power"
+    name="Cycling Power">
+    <InformativeText>
+        <Abstract>This profile enables a Collector device to connect and interact with a Cycling Power Sensor for use in sports and fitness applications.</Abstract>
+        <Summary>The Cycling Power Profile is used to enable a data collection device to obtain data from a Cycling Power Sensor (CP Sensor) that exposes the Cycling Power Service .</Summary>
+	</InformativeText>
+    <Role name="CP Sensor">
+        <Service type="org.bluetooth.service.cycling_power">
+            <Declaration>PrimarySingleInstance</Declaration>
+            <Requirement>Mandatory</Requirement>
+		</Service>    
+	</Role>
+    <Role name="Collector">
+        <Client type="org.bluetooth.service.cycling_power">
+            <Requirement>Mandatory</Requirement>
+		</Client>
+	</Role>
+    <Role name="CP Broadcast Reciever"></Role>
+    <Role name="Broadcast Reciever"></Role>
+</Profile>

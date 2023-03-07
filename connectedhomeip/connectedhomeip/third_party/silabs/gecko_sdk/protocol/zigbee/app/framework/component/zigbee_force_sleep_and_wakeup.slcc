@@ -1,0 +1,21 @@
+package: Zigbee
+description: Component to force device to sleep and wake up
+id: zigbee_force_sleep_and_wakeup
+label: Force sleep and wake up
+category: Zigbee
+quality: production
+provides:
+   - name: "zigbee_force_sleep_and_wakeup"
+source:
+  - path: protocol/zigbee/app/framework/plugin/force-sleep-wakeup/force-sleep-wakeup.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/force-sleep-wakeup
+    file_list:
+      - path: force-sleep-wakeup.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_force_sleep_and_wakeup
+  - name: cli_command
+    value:
+      name: force-sleep
+      handler: sli_zigbee_app_framework_force_sleep_cli_handler

@@ -1,0 +1,166 @@
+!!omap
+- id: EFM32HG210F32
+- package: platform
+- description: Silicon Labs CMSIS-Device part headers for EFM32HG210F32.
+- category: Platform|Device|EFM32HG
+- quality: production
+- define:
+  - name: EFM32HG210F32
+    unless:
+    - device_content_override
+- source:
+  - path: platform/Device/SiliconLabs/EFM32HG/Source/system_efm32hg.c
+    unless:
+    - device_content_override
+  - path: platform/Device/SiliconLabs/EFM32HG/Source/startup_efm32hg.c
+    unless:
+    - device_content_override
+  - condition:
+    - toolchain_arm
+    path: platform/Device/SiliconLabs/EFM32HG/Source/ARM/startup_efm32hg.s
+    unless:
+    - device_content_override
+- include:
+  - file_list:
+    - path: efm32hg210f32.h
+    - path: efm32hg_acmp.h
+    - path: efm32hg_adc.h
+    - path: efm32hg_aes.h
+    - path: efm32hg_af_pins.h
+    - path: efm32hg_af_ports.h
+    - path: efm32hg_calibrate.h
+    - path: efm32hg_cmu.h
+    - path: efm32hg_devinfo.h
+    - path: efm32hg_dma.h
+    - path: efm32hg_dma_ch.h
+    - path: efm32hg_dma_descriptor.h
+    - path: efm32hg_dmactrl.h
+    - path: efm32hg_dmareq.h
+    - path: efm32hg_emu.h
+    - path: efm32hg_gpio.h
+    - path: efm32hg_gpio_p.h
+    - path: efm32hg_i2c.h
+    - path: efm32hg_idac.h
+    - path: efm32hg_leuart.h
+    - path: efm32hg_msc.h
+    - path: efm32hg_mtb.h
+    - path: efm32hg_pcnt.h
+    - path: efm32hg_prs.h
+    - path: efm32hg_prs_ch.h
+    - path: efm32hg_prs_signals.h
+    - path: efm32hg_rmu.h
+    - path: efm32hg_romtable.h
+    - path: efm32hg_rtc.h
+    - path: efm32hg_timer.h
+    - path: efm32hg_timer_cc.h
+    - path: efm32hg_usart.h
+    - path: efm32hg_usb.h
+    - path: efm32hg_usb_diep.h
+    - path: efm32hg_usb_doep.h
+    - path: efm32hg_vcmp.h
+    - path: efm32hg_wdog.h
+    - path: em_device.h
+    - path: system_efm32hg.h
+    path: platform/Device/SiliconLabs/EFM32HG/Include/
+    unless:
+    - device_content_override
+- provides:
+  - name: efm32hg210f32
+  - name: device
+  - name: device_series_0
+  - name: device_sdid_77
+  - name: device_family_efm32hg
+  - name: device_cortexm
+  - name: device_arm
+  - name: cortexm0plus
+  - name: armv6m
+  - name: device_has_acmp
+  - name: device_has_acmp0
+  - name: device_has_adc
+  - name: device_has_adc0
+  - name: device_has_aes
+  - name: device_has_calibrate
+  - name: device_has_cmu
+  - name: device_has_devinfo
+  - name: device_has_dma
+  - name: device_has_emu
+  - name: device_has_gpio
+  - name: device_has_i2c
+  - name: device_has_i2c0
+  - name: device_has_idac
+  - name: device_has_idac0
+  - name: device_has_leuart
+  - name: device_has_leuart0
+  - name: device_has_msc
+  - name: device_has_mtb
+  - name: device_has_pcnt
+  - name: device_has_pcnt0
+  - name: device_has_prs
+  - name: device_has_rmu
+  - name: device_has_romtable
+  - name: device_has_rtc
+  - name: device_has_timer
+  - name: device_has_timer0
+  - name: device_has_timer1
+  - name: device_has_timer2
+  - name: device_has_uart
+  - name: device_has_usart
+  - name: device_has_usart0
+  - name: device_has_usart1
+  - name: device_has_usble
+  - name: device_has_vcmp
+  - name: device_has_wdog
+- requires:
+  - name: cmsis_core
+- template_contribution:
+  - name: device_opn
+    value: EFM32HG210F32
+  - name: device_arch
+    value: armv6m
+  - name: device_cpu
+    value: cortexm0plus
+  - name: device_series
+    value: 0
+  - name: device_family
+    value: efm32hg
+  - name: device_flash_addr
+    value: 0
+  - name: device_flash_size
+    value: 32768
+  - name: device_flash_page_size
+    value: 1024
+  - name: device_ram_addr
+    value: 536870912
+  - name: device_ram_size
+    value: 4096
+  - name: default_stack_size
+    value: 768
+  - name: default_heap_size
+    value: 256
+- tag:
+  - device:opn:efm32hg210f32
+- toolchain_settings:
+  - option: device_opn
+    value: efm32hg210f32
+  - option: architecture
+    value: armv6-m
+  - option: cpu
+    value: cortex-m0+
+- config_file:
+  - condition:
+    - custom_radio_config
+    directory: rail
+    path: platform/Device/config/77/device.yaml
+- metadata:
+    device:
+      memory:
+      - name: Main Flash
+        page_size: 1024
+        size: 32768
+        start: 0
+        type: non-volatile
+      - name: RAM
+        size: 4096
+        start: 536870912
+        type: volatile
+      opn: efm32hg210f32

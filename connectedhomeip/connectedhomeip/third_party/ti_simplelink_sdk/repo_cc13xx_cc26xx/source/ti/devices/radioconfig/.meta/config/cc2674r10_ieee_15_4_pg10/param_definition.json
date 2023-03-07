@@ -1,0 +1,217 @@
+{
+    "parDefinition": {
+        "parGroup": [
+            {
+                "_name": "mainRfParameters",
+                "Parameter": [
+                    {
+                        "_name": "channel",
+                        "_type": "list",
+                        "Access": "R",
+                        "Label": "IEEE Channel",
+                        "ListValues": {
+                            "Range": {
+                                "_step": "1",
+                                "Begin": "11",
+                                "End": "26"
+                            }
+                        },
+                        "DefValue": "11",
+                        "Tooltip": "The IEEE 802.15.4 Channel",
+                        "Row": "0",
+                        "Dependencies": {
+                            "Dependency": [
+                                {
+                                    "_name": "ChannelFrequencyIeee154",
+                                    "Type": "DT_CODE",
+                                    "Group": "Main",
+                                    "Parameter": "frequency"
+                                },
+                                {
+                                    "_name": "ContTxChannel",
+                                    "Type": "DT_EQUAL",
+                                    "Group": "ContTx",
+                                    "Parameter": "channel"
+                                },
+                                {
+                                    "_name": "PacketTxChannel",
+                                    "Type": "DT_EQUAL",
+                                    "Group": "PacketTx",
+                                    "Parameter": "channel"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "_name": "frequency",
+                        "_type": "list",
+                        "Access": "R\/W",
+                        "Label": "Frequency",
+                        "Unit": "MHz",
+                        "ListValues": {
+                            "_precision": "0",
+                            "Range": {
+                                "_step": "5",
+                                "Begin": "2405",
+                                "End": "2480"
+                            }
+                        },
+                        "DefValue": "2405",
+                        "Validation": {
+                            "_type": "minmax",
+                            "Min": "2360",
+                            "Max": "2500"
+                        },
+                        "Tooltip": "Frequency.",
+                        "Row": "0",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "ChannelFrequencyIeee154",
+                                "Type": "DT_CODE",
+                                "Group": "Main",
+                                "Parameter": "channel"
+                            }
+                        }
+                    },
+                    {
+                        "_name": "txPower",
+                        "_type": "list",
+                        "Access": "R",
+                        "Label": "TX Power",
+                        "Unit": "dBm",
+                        "ListValues": [],
+                        "DefValue": "5",
+                        "Tooltip": "TX Power",
+                        "Row": "0",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "ContTxPower",
+                                "Type": "DT_EQUAL",
+                                "Group": "ContTx",
+                                "Parameter": "txPower"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "_name": "ContTx",
+                "Parameter": [
+                    {
+                        "_name": "channel",
+                        "_type": "text",
+                        "Access": "R",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "ContTxChannel",
+                                "Type": "DT_EQUAL",
+                                "Group": "Main",
+                                "Parameter": "channel"
+                            }
+                        }
+                    },
+                    {
+                        "_name": "txPower",
+                        "_type": "text",
+                        "Access": "R",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "ContTxPower",
+                                "Type": "DT_EQUAL",
+                                "Group": "Main",
+                                "Parameter": "txPower"
+                            }
+                        }
+                    },
+                    {
+                        "_name": "modulated",
+                        "_type": "bool",
+                        "Access": "R\/W"
+                    }
+                ]
+            },
+            {
+                "_name": "PacketTx",
+                "Parameter": [
+                    {
+                        "_name": "channel",
+                        "_type": "text",
+                        "Access": "R",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "PacketTxChannel",
+                                "Type": "DT_EQUAL",
+                                "Group": "Main",
+                                "Parameter": "Channel"
+                            }
+                        }
+                    },
+                    {
+                        "_name": "txPower",
+                        "_type": "text",
+                        "Access": "R",
+                        "Dependencies": {
+                            "Dependency": {
+                                "_name": "ContTxPower",
+                                "Type": "DT_EQUAL",
+                                "Group": "Main",
+                                "Parameter": "txPower"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "_name": "PacketView",
+                "Parameter": [
+                    {
+                        "_name": "preamble",
+                        "_type": "text",
+                        "Access": "R",
+                        "Label": "Preamble      (32 bit)",
+                        "DefValue": "01010101...",
+                        "Tooltip": "The preamble bit sequence."
+                    },
+                    {
+                        "_name": "packetLengthTx",
+                        "_type": "int",
+                        "Access": "R\/W",
+                        "Label": "Packet Length",
+                        "DefValue": "30",
+                        "Validation": {
+                            "_type": "minmax",
+                            "Min": "0",
+                            "Max": "128"
+                        },
+                        "Tooltip": "Packet Length should be given as a decimal value."
+                    },
+                    {
+                        "_name": "phyHeader",
+                        "_type": "int",
+                        "Access": "R\/W",
+                        "Label": "SFD",
+                        "DefValue": "A7",
+                        "CmdUpdate": "NO",
+                        "Tooltip": "The Start of Frame Delimiter."
+                    },
+                    {
+                        "_name": "pktData",
+                        "_type": "composit",
+                        "Access": "R",
+                        "Label": "Packet Data",
+                        "Tooltip": "Packet Data.",
+                        "DefValue": "255",
+                        "CmdUpdate": "NO"
+                    },
+                    {
+                        "_name": "crc",
+                        "_type": "text",
+                        "Access": "R",
+                        "DefValue": "xx xx",
+                        "Tooltip": "Cyclic redundancy check."
+                    }
+                ]
+            }
+        ]
+    }
+}

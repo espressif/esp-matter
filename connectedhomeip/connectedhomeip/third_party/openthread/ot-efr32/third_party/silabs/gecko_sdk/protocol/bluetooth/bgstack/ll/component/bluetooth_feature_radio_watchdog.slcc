@@ -1,0 +1,20 @@
+id: bluetooth_feature_radio_watchdog
+label: Bluetooth Radio Watchdog
+package: Bluetooth
+description: Radio watchdog feature
+
+category: Bluetooth|Controller
+quality: production
+provides:
+  - name: bluetooth_radio_watchdog
+requires:
+  - name: bluetooth_controller
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_radio_watchdog
+  - name: bluetooth_controller_init
+    value:
+      include: "sl_btctrl_linklayer.h"
+      function: "sl_btctrl_enable_radio_watchdog()"
+    priority: 10    
+

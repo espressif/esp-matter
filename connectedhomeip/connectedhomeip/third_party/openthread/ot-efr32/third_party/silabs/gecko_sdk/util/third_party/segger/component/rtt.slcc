@@ -1,0 +1,26 @@
+id: "segger_rtt"
+label: "SEGGER RTT"
+package: "platform"
+description: "SEGGER RTT"
+category: "Platform|Utilities|RTT"
+quality: "production"
+config_file:
+  - path: "util/third_party/segger/systemview/Config/SEGGER_RTT_Conf.h"
+source:
+  - path: "util/third_party/segger/systemview/SEGGER/SEGGER_RTT.c"
+include:
+  - path: "util/third_party/segger/systemview/SEGGER"
+    file_list:
+      - path: "SEGGER.h"
+      - path: "SEGGER_RTT.h"
+provides:
+  - name: "segger_rtt"
+define:
+  - name: "RTT_USE_ASM"
+    value: "0"
+  - name: "SEGGER_RTT_SECTION"
+    value: "\"SEGGER_RTT\""
+    condition: [toolchain_gcc]
+template_contribution:
+  - name: linker_rtt_section
+    value: 1

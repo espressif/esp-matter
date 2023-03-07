@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Anaerobic Threshold" type="org.bluetooth.characteristic.anaerobic_threshold" uuid="2A83" last-modified="2014-06-10" approved="Yes">
+    <InformativeText>
+        <Abstract>Second metabolic threshold</Abstract>
+	</InformativeText>
+    <Value>
+    <Field name="Anaerobic Threshold">
+        <InformativeText>
+            The Unit is beats per minute with a resolution of 1
+		</InformativeText>
+        <Requirement>Mandatory</Requirement>
+        <Format>uint8</Format>
+        <Unit>org.bluetooth.unit.period.beats_per_minute</Unit>
+        <DecimalExponent>0</DecimalExponent>
+    </Field>
+	</Value>
+    <Note>Aerobic Threshold and Anaerobic Threshold together with the Sport Type for Aerobic and Anaerobic Thresholds describe the metabolic thresholds of the user. The Sport Type for Aerobic and Anaerobic Thresholds identifies how the measurement was performed.</Note>
+</Characteristic>

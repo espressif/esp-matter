@@ -1,0 +1,21 @@
+id: zw_cc_powerlevel
+label: PowerLevel Command Class
+category: Z-Wave|Command Classes
+description: >
+  Powerlevel Command Class defines RF transmit power controlling Commands
+  useful when installing or testing a network.
+
+  The Commands makes it possible for supporting controllers to set/get
+  the RF transmit power level of a node and test specific links between nodes
+  with a specific RF transmit power level.
+
+  NOTE: This Command Class is only used in an installation or test situation
+
+package: Z-Wave
+quality: production
+source:
+  - path: protocol/z-wave/ZAF/CommandClasses/PowerLevel/CC_PowerLevel.c
+provides:
+  - name: zw_cc_powerlevel
+requires:
+  - name: zw_core

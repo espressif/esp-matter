@@ -1,0 +1,31 @@
+Trusted Firmware Fuzzer (TF-Fuzz) starting...
+
+Info:  random seed was not specified.
+
+Using seed value of \d+ \(0x[a-f\d]+\).
+Purpose line:  to illustrate deleting assets
+ASSET_IDENTIFIER:  "george"
+SST-asset identifier list:  "data"
+SST-create from random data
+Set SST command:  "*"
+Set command:  "*"
+Command with no expect:  ";"
+ASSET_IDENTIFIER:  "george"
+SST-asset identifier list:  ";"
+SST-remove arguments:  ";"
+Remove SST command:  ";"
+Remove command:  ";"
+Command with no expect:  ";"
+ASSET_IDENTIFIER:  "george"
+SST-asset identifier list:  ";"
+SST-remove arguments:  ";"
+Remove SST command:  ";"
+Remove command:  ";"
+Command with no expect:  ";"
+Lines:  Line number 5.
+Lines:  Line number 5.
+Lines:  Line number 5.
+Lines:  Line number 5.
+Writing test file, test.c.
+
+TF-Fuzz test generation complete.

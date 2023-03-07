@@ -1,0 +1,27 @@
+id: cycle_counter
+package: platform
+label: Cycle Counter
+description: Component that provides interface to DWT cycle counter.
+category: Platform|Driver
+quality: production
+root_path: platform/driver/cycle_counter
+include:
+  - path: inc
+    file_list:
+      - path: sl_cycle_counter.h
+source:
+  - path: src/sl_cycle_counter.c
+requires:
+  - name: status
+  - name: device_has_dwt
+provides:
+  - name: cycle_counter
+template_contribution:
+  - name: event_handler
+    value:
+      event: driver_init
+      include: "sl_cycle_counter.h"
+      handler: sl_cycle_counter_enable
+    priority: -20
+  - name: component_catalog
+    value: cycle_counter

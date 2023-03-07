@@ -1,0 +1,22 @@
+!!omap
+- id: efm32lg_stk3600
+- label: EFM32LG-STK3600
+- package: platform
+- description: Kit BSP support for the EFM32 Leopard Gecko Starter Kit.
+- category: Platform|Board|Kit|Starter Kit
+- quality: production
+- requires:
+  - name: hardware_board_from_efm32lg-stk3600
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_stk
+- define:
+  - name: SL_KIT_NAME
+    value: '"EFM32LG-STK3600"'
+  - name: SL_KIT_REV
+    value: '"C01"'
+- tag:
+  - kit:opn:EFM32LG-STK3600
+  - kit:pn:STK3600
+  - kit:variant:A
+  - kit:revision:C01

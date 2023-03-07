@@ -1,0 +1,29 @@
+package: Zigbee
+description: API to use the PSA Crypto implementation of CCM.
+label: CCM (PSA)
+id: zigbee_ccm_psa
+category: Zigbee|Utility
+quality: production
+
+provides:
+   - name: "zigbee_ccm_star"
+   - name: "zigbee_ccm_psa"
+requires:
+   - name: "psa_crypto_ccm"
+   - name: "psa_driver"
+   - name: "psa_crypto_common"
+   # ATM this is required in order to include the generated MbedTLS config file.
+   # The platform security team should make changes so that this is not required
+   # in the future.
+   - name: "mbedtls_core"
+source:
+  - path: protocol/zigbee/stack/framework/ccm-star.c
+
+include:
+  - path: protocol/zigbee/stack/include
+    file_list:
+      - path: ccm-star.h
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_ccm_psa

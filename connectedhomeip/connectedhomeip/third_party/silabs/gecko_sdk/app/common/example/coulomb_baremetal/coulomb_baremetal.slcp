@@ -1,0 +1,81 @@
+project_name: coulomb_baremetal
+package: platform
+quality: production
+label: Platform - Coulomb Counter Bare-metal
+description: >
+  This example project shows how to use coulomb counter in a bare-metal configuration.
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]
+source:
+  - path: app.c
+  - path: main.c
+  - path: coulomb_app.c
+include:
+  - path: .
+    file_list:
+    - path: app.h
+    - path: coulomb_app.h
+component:
+  - id: sl_system
+  - id: efp_driver
+    instance: [efp0]
+  - id: coulomb_counter
+  - id: device_init
+  - id: nvm3_lib
+  - id: nvm3_default
+  - id: sleeptimer
+  - id: cli
+    instance: [vcom]
+  - id: iostream_stdlib_config
+  - id: iostream_retarget_stdio
+  - id: iostream_recommended_stream
+define:
+  - name: DEBUG_EFM
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: SL_COULOMB_COUNTER_OUTPUT_USE_EFP_VOB_EM0
+    value: 0
+  - name: SL_COULOMB_COUNTER_OUTPUT_USE_EFP_VOB_EM2
+    value: 0
+  - name: SL_COULOMB_COUNTER_OUTPUT_USE_EFP_VOC
+    value: 0
+toolchain_settings:
+  - option: gcc_linker_option
+    value: -u _printf_float
+template_contribution:
+  - name: cli_command
+    value:
+      name: coulomb_get
+      handler: coulomb_app_get
+      help: "Return coulombs consumed since last boot."
+  - name: cli_command
+    value:
+      name: coulomb_calibrate
+      handler: coulomb_app_calibrate
+      help: "Calibrate coulomb counter."
+  - name: cli_command
+    value:
+      name: coulomb_get_total
+      handler: coulomb_app_get_total
+      help: "Return coulombs consumed over device's lifetime."
+  - name: cli_command
+    value:
+      name: coulomb_update_total
+      handler: coulomb_app_update_total
+      help: "Read coulomb counters and update total value."
+  - name: cli_command
+    value:
+      name: coulomb_reset_total
+      handler: coulomb_app_reset_total
+      help: "Reset total counter to zero."
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md

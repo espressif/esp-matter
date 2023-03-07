@@ -1,0 +1,46 @@
+id: power_manager_core
+label: "Power Manager: Core"
+package: platform
+description: Power Manager core (no handler generation)
+category: Services
+quality: production
+ui_hints:
+  visibility: never
+source:
+  - path: platform/service/power_manager/src/sl_power_manager.c
+  - path: platform/service/power_manager/src/sl_power_manager_debug.c
+  - path: platform/service/power_manager/src/sl_power_manager_hal_s0_s1.c
+    condition: [device_series_0]
+  - path: platform/service/power_manager/src/sl_power_manager_hal_s0_s1.c
+    condition: [device_series_1]
+  - path: platform/service/power_manager/src/sl_power_manager_hal_s2.c
+    condition: [device_series_2]
+  - path: platform/service/power_manager/src/sli_power_manager_private.h
+include:
+  - path: platform/service/power_manager/inc
+    file_list:
+      - path: sl_power_manager.h
+      - path: sl_power_manager_debug.h
+      - path: sli_power_manager.h
+provides:
+  - name: power_manager_core
+requires:
+  - name: emlib_cmu
+  - name: emlib_emu
+  - name: sl_assert
+  - name: status
+  - name: slist
+  - name: atomic
+  - name: enum
+  - name: sleeptimer
+  - name: hfxo_manager
+    condition: [device_series_2]
+template_contribution:
+  - name: event_handler
+    value:
+      event: platform_init
+      include: sl_power_manager.h
+      handler: sl_power_manager_init
+    priority: 1000
+  - name: component_catalog
+    value: power_manager

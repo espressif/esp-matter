@@ -1,0 +1,157 @@
+﻿<?xml version="1.0"?>
+<!-- 
+Zigbee Alliance owns the copyright to the text and content displayed or 
+included in this document (including in PDF, XML files and other formats) in 
+all forms of media, which copyright is protected by the copyright laws of the 
+United States and by international treaties.  Full text of licensing terms 
+applicable to this document can be found in the LICENSE.md file.
+-->
+<zcl:cluster
+  xmlns:zcl="http://zigbee.org/zcl/clusters"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:type="http://zigbee.org/zcl/types"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xsi:schemaLocation="http://zigbee.org/zcl/clusters cluster.xsd http://zigbee.org/zcl/types type.xsd"
+  id="0015" revision="1" name="Commissioning">
+  <classification role="utility" picsCode="CS" />
+  
+  <type:type short="CSKey" name="CSKey" id="f1" inheritsFrom="key128">
+    <restriction>
+      <type:special value="00000000000000000000000000000000" name="KeyUnspecified" />
+    </restriction>
+  </type:type>
+  
+  <server>
+    <attributes>
+    <!-- Startup Parameters Attribute Set -->
+      <attribute id="0000" name="ShortAddress" type="uint16" max="65527" writable="true" required="true" />
+      <attribute id="0001" name="ExtendedPANId" type="EUI64" max="18446744073709551615" default="18446744073709551616" writable="true" required="true">
+        <restriction>
+          <type:special value="ffffffffffffffff" name="PANIdUnspecified" />
+        </restriction>
+      </attribute>
+      <attribute id="0002" name="PANId" type="uint16" writable="true" required="true" />
+      <attribute id="0003" name="ChannelMask" type="map32" writable="true" required="true" />
+      <attribute id="0004" name="ProtocolVersion" type="uint8" writable="true" required="true">
+        <restriction>
+          <type:enumeration value="02" name="Zigbee2006OrLater" />
+        </restriction>
+      </attribute>
+      <attribute id="0005" name="StackProfile" type="uint8" writable="true" required="true">
+        <restriction>
+          <type:enumeration value="01" name="ZigbeeStackProfile" />
+          <type:enumeration value="02" name="ZigbeeProStackProfile" />
+        </restriction>
+      </attribute>
+      <attribute id="0006" name="StartupControl" type="enum8" writable="true" required="true">
+        <restriction>
+          <type:enumeration value="00" name="OnANetwork" />
+          <type:enumeration value="01" name="FormNetwork" />
+          <type:enumeration value="02" name="RejoinNetwork" />
+          <type:enumeration value="03" name="JoinUsingMACAssociation" />
+        </restriction>
+      </attribute>
+      <attribute id="0010" name="TrustCenterAddress" type="EUI64" default="0" writable="true" required="true">
+        <restriction>
+          <type:special value="0000000000000000" name="AddressUnspecified" />
+        </restriction>
+      </attribute>
+      <attribute id="0011" name="TrustCenterMasterKey" type="CSKey" default="0" writable="true" />
+      <attribute id="0012" name="NetworkKey" type="CSKey" default="0" writable="true" required="true" />
+      <attribute id="0013" name="UseInsecureJoin" type="bool" default="true" writable="true" required="true" />
+      <attribute id="0014" name="PreconfiguredLinkKey" type="CSKey" default="0" writable="true" required="true" />
+      <attribute id="0015" name="NetworkKeySeqNum" type="uint8" default="0" writable="true" required="true" />
+      <attribute id="0016" name="NetworkKeyType" type="enum8" writable="true" required="true">
+        <restriction>
+          <type:enumeration value="01" name="StandardKey" />
+        </restriction>
+      </attribute>
+      <attribute id="0017" name="NetworkManagerAddress" type="uint16" default="0" writable="true" required="true" />
+      <!-- Join Parameters Attribute Set -->
+      <attribute id="0020" name="ScanAttempts" type="uint8" min="1" default="5" writable="true" />
+      <attribute id="0021" name="TimeBetweenScans" type="uint16" min="1" default="100" writable="true" />
+      <attribute id="0022" name="RejoinInterval" type="uint16" min="1" default="60" writable="true">
+        <restriction>
+          <type:maxInclusiveRef ref="MaxRejoinInterval" />
+        </restriction>
+      </attribute>
+      <attribute id="0023" name="MaxRejoinInterval" type="uint16" min="1" default="3600" writable="true" />
+      <!-- End Device Parameters Attribute Set -->
+      <attribute id="0030" name="IndirectPollRate" type="uint16" writable="true" />
+      <attribute id="0031" name="ParentRetryThreshold" type="uint8" />
+      <!-- Concentrator Parameters Attribute Set -->
+      <attribute id="0040" name="ConcentratorFlag" type="bool" default="false" writable="true" />
+      <attribute id="0041" name="ConcentratorRadius" type="uint8" default="15" writable="true" />
+      <attribute id="0042" name="ConcentratorDiscoveryTime" type="uint8" default="0" writable="true" />
+    </attributes>
+    <commands>
+      <command id="00" name="RestartDevice" required="true">
+        <fields>
+          <field name="Options" type="map8">
+            <bitmap>
+              <element name="StartupMode" type="enum8" mask="07">
+                <restriction>
+                  <type:enumeration value="00" name="RestartUsingStartupParameters" />
+                  <type:enumeration value="01" name="RestartUsingCurrentState" />
+                </restriction>
+              </element>
+              <element name="Immediate" type="bool" mask="08" shiftRight="3" />
+            </bitmap>
+          </field>
+          <field name="Delay" type="uint8" />
+          <field name="Jitter" type="uint8" />
+        </fields>
+      </command>
+      <command id="01" name="SaveStartupParameters">
+        <fields>
+          <!-- Options field is reserved -->
+          <field name="Options" type="map8" />
+          <field name="Index" type="uint8" />
+        </fields>
+      </command>
+      <command id="02" name="RestoreStartupParameters">
+        <fields>
+          <!-- Options field is reserved -->
+          <field name="Options" type="map8" />
+          <field name="Index" type="uint8" />
+        </fields>
+      </command>
+      <command id="03" name="ResetStartupParameters" required="true">
+        <fields>
+          <field name="Options" type="map8">
+            <bitmap>
+              <element name="ResetCurrent" type="bool" mask="01" />
+              <element name="ResetAll" type="bool" mask="02" shiftRight="1" />
+              <element name="EraseIndex" type="bool" mask="04" shiftRight="2" />
+            </bitmap>
+          </field>
+          <field name="Index" type="uint8" />
+        </fields>
+      </command>
+    </commands>
+  </server>
+  <client>
+    <commands>
+      <command id="00" name="RestartDeviceResponse" required="true">
+        <fields>
+          <field name="Status" type="zclStatus" />
+        </fields>
+      </command>
+      <command id="01" name="SaveStartupParametersResponse" required="true">
+        <fields>
+          <field name="Status" type="zclStatus" />
+        </fields>
+      </command>
+      <command id="02" name="RestoreStartupParametersResponse" required="true">
+        <fields>
+          <field name="Status" type="zclStatus" />
+        </fields>
+      </command>
+      <command id="03" name="ResetStartupParametersResponse" required="true">
+        <fields>
+          <field name="Status" type="zclStatus" />
+        </fields>
+      </command>
+    </commands>
+  </client>
+</zcl:cluster>

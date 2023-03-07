@@ -1,0 +1,90 @@
+package: Zigbee
+description: Silicon Labs implementation of Tunneling server cluster.  This component requires
+  extending to integrate the software that processes the tunneled data.  Note
+  if the maximum transfer size requires fragmentation, manually include
+  the Fragmentation component and configure it to support the tunnel data size.  Additionally,
+  the component uses the address table to communicate with clients, so you must manually
+  configure the address table size so that it accommodates active tunnels managed by
+  this component as well as any other entries created during normal operation. The Tunneling
+  cluster test specification suggests that implementations support the test protocol
+  (protocol id 199, manufacturer code 0xFFFF). If you do not support it, you need
+  some other means of proving two-way communications works and is verifiable. If
+  test protocol support is enabled, the component automatically handles requests
+  for the test protocol and these messages will not fall through to the application.
+label: Tunneling Server Cluster
+quality: extend
+id: zigbee_tunneling_server
+category: Zigbee|Cluster Library|Smart Energy
+provides:
+   - name: "zigbee_tunneling_server"
+requires:
+   - name: "zigbee_address_table"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/tunneling-server/config/tunneling-server-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/tunneling-server/tunneling-server.c
+  - path: protocol/zigbee/app/framework/plugin/tunneling-server/tunneling-server-cli.c
+    condition:
+      - "cli"
+  - path: protocol/zigbee/app/framework/plugin/tunneling-server/tunneling-server-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/tunneling-server
+    file_list:
+      - path: tunneling-server.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_tunneling_server
+  - name: cluster_service
+    value:
+       cluster_id: "0x0704"
+       mfg_id: "NOT_MFG_SPECIFIC"
+       side: "SERVER"       
+       service_function: "emberAfTunnelingClusterServerCommandParse"
+  - name: zigbee_stack_callback
+    value:
+      callback_type: stack_status
+      function_name: emberAfPluginTunnelingServerStackStatusCallback
+  - name: cli_group
+    value:
+      group: plugin
+      name: tunneling-server
+      help: tunneling-server related commands.
+  - name: cli_command
+    value:
+      group: tunneling-server
+      name: transfer
+      handler: emAfPluginTunnelingServerCliTransfer
+      help: Transfers data to a client through a Tunneling cluster tunnel.
+      argument:
+      - type: uint16
+        help: The identifier of the tunnel through which to send the data
+      - type: hex
+        help: The data to send through the tunnel
+  - name: cli_command
+    value:
+      group: tunneling-server
+      name: busy
+      handler: emberAfPluginTunnelingServerToggleBusyCliCommand
+      help: This command can be used as a test harness for testing a clients handling of a server that returns busy.
+  - name: cli_command
+    value:
+      group: tunneling-server
+      name: print
+      handler: emAfPluginTunnelingServerPrintCliCommand
+      help: Prints the status of active tunnels.
+  - name: cluster_functions
+    value:
+      cluster_name: Tunneling
+      cluster_id: 0x704
+      cluster_type: server
+      init_function: emberAfTunnelingClusterServerInitCallback
+  - name: cluster_functions
+    value:
+      cluster_name: Tunneling
+      cluster_id: 0x704
+      cluster_type: server
+      attribute_changed_function: emberAfTunnelingClusterServerAttributeChangedCallback
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/tunneling-server

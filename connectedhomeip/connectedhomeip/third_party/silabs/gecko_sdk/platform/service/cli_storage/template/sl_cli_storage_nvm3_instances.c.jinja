@@ -1,0 +1,54 @@
+#include "sl_cli_handles.h"
+#include "sl_cli_storage_nvm3_instances.h"
+
+{% for instance in cli_storage_nvm3_instances %}#include "sl_cli_storage_nvm3_config_{{ instance }}.h"
+{% endfor %}
+//****************************************************************************
+// Macros
+
+#if !defined(min)
+#define min(a,b) ((a < b) ? a : b)
+#endif
+
+//****************************************************************************
+// Variables
+
+// The default handle is used for cli commands that do not specify instances.
+static cli_storage_nvm3_handle_t default_handle = NULL;
+
+{# Generate cli handle and context variable(s) #}
+{% for instance in cli_storage_nvm3_instances %}// Instance variables for {{ instance }}
+static cli_storage_nvm3_t {{ instance }}_instance;
+{% endfor %}
+
+//****************************************************************************
+// Global functions.
+
+cli_storage_nvm3_handle_t sl_cli_storage_nvm3_instances_convert_handle(sl_cli_handle_t cli_handle)
+{
+  {% for instance in cli_storage_nvm3_instances %}
+  if ({{ instance }}_instance.cli_handle == cli_handle) {
+    return &{{ instance }}_instance;
+  }
+  {% endfor %}
+  return default_handle;
+}
+
+void sl_cli_storage_nvm3_instances_init(void)
+{
+  {% for instance in cli_storage_nvm3_instances %}// Initialize {{ instance }}
+  default_handle = &{{ instance }}_instance;
+  {{ instance }}_instance.cli_handle           = SL_CLI_STORAGE_NVM3_{{ instance | upper }}_CLI_HANDLE;
+  {{ instance }}_instance.prompt               = SL_CLI_STORAGE_NVM3_{{ instance | upper }}_PROMPT;
+  {{ instance }}_instance.end_string           = SL_CLI_STORAGE_NVM3_{{ instance | upper }}_END_STRING;
+  {{ instance }}_instance.key_offset           = SL_CLI_STORAGE_NVM3_{{ instance | upper }}_KEY_OFFSET;
+  {{ instance }}_instance.key_count            = SL_CLI_STORAGE_NVM3_{{ instance | upper }}_KEY_COUNT;
+  {{ instance }}_instance.execute_while_define = SL_CLI_STORAGE_NVM3_{{ instance | upper }}_EXECUTE;
+  // Some simple configuration calculations
+  {{ instance }}_instance.key_offset           = min({{ instance }}_instance.key_offset, SL_CLI_STORAGE_NVM3_KEY_COUNT - 1);
+  {{ instance }}_instance.key_count            = min({{ instance }}_instance.key_count, SL_CLI_STORAGE_NVM3_KEY_COUNT - {{ instance }}_instance.key_offset);
+  {{ instance }}_instance.key_next             = {{ instance }}_instance.key_offset;
+  // Initialize the instance.
+  sl_cli_storage_nvm3_init(&{{ instance }}_instance);
+  {% endfor %}
+}

@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Service xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.service.health_thermometer" uuid="1809" name="Health Thermometer">
+  <InformativeText>
+    <Abstract>The Health Thermometer service exposes temperature and other data from a thermometer intended for healthcare and fitness applications.</Abstract>
+    <Summary>The Health Thermometer service is instantiated as a Primary Service. There are one or more instantiations of the Health Thermometer service per device claiming conformance with this specification. </Summary>
+  </InformativeText>
+  <Dependencies>
+    <Dependency>This service is not dependent upon any other services.</Dependency>
+  </Dependencies>
+  <GATTRequirements>
+    <Requirement subProcedure="Write Characteristic Value">Mandatory if the Write property for the Measurement Interval characteristic is supported, otherwise excluded for this service.</Requirement>
+    <Requirement subProcedure="Notifications">Mandatory if the Intermediate Temperature characteristic is supported, otherwise excluded for this service.</Requirement>
+    <Requirement subProcedure="Indications">Mandatory</Requirement>
+    <Requirement subProcedure="Read Characteristic Descriptors">Mandatory</Requirement>
+    <Requirement subProcedure="Write Characteristic Descriptors">Mandatory</Requirement>
+  </GATTRequirements>
+  <Transports>
+    <Classic>false</Classic>
+    <LowEnergy>true</LowEnergy>
+  </Transports>
+  <ErrorCodes>
+    <ErrorCode name="Out of Range" code="0x80">The value is considered invalid and outside of the range allowed by the characteristic.</ErrorCode>
+  </ErrorCodes>
+  <Characteristics>
+    <Characteristic name="Temperature Measurement" type="org.bluetooth.characteristic.temperature_measurement">
+      <InformativeText>This characteristic is used to send a temperature measurement.</InformativeText>
+      <Requirement>Mandatory</Requirement>
+      <Properties>
+        <Read>Excluded</Read>
+        <Write>Excluded</Write>
+        <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Excluded</ReliableWrite>
+        <Notify>Excluded</Notify>
+        <Indicate>Mandatory</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Excluded</Broadcast>
+      </Properties>
+      <Descriptors>
+        <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+          <Requirement>Mandatory</Requirement>
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Mandatory</Write>
+          </Properties>
+        </Descriptor>
+      </Descriptors>
+    </Characteristic>
+    <Characteristic name="Temperature Type" type="org.bluetooth.characteristic.temperature_type">
+      <InformativeText>This characteristic is used to describe the type of temperature measurement in relation to the location on the human body at which the temperature was measured.</InformativeText>
+      <Requirement>Optional</Requirement>
+      <Properties>
+        <Read>Mandatory</Read>
+        <Write>Excluded</Write>
+        <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Excluded</ReliableWrite>
+        <Notify>Excluded</Notify>
+        <Indicate>Excluded</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Excluded</Broadcast>
+      </Properties>
+    </Characteristic>
+    <Characteristic name="Intermediate Temperature" type="org.bluetooth.characteristic.intermediate_temperature">
+      <InformativeText>This characteristic is used to send intermediate temperature values to a device for display purposes while the measurement is in progress.</InformativeText>
+      <Requirement>Optional</Requirement>
+      <Properties>
+        <Read>Excluded</Read>
+        <Write>Excluded</Write>
+        <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Excluded</ReliableWrite>
+        <Notify>Mandatory</Notify>
+        <Indicate>Excluded</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Excluded</Broadcast>
+      </Properties>
+      <Descriptors>
+        <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+          <Requirement>if_characteristic_supported</Requirement>
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Mandatory</Write>
+          </Properties>
+        </Descriptor>
+      </Descriptors>
+    </Characteristic>
+    <Characteristic name="Measurement Interval" type="org.bluetooth.characteristic.measurement_interval">
+      <InformativeText>This characteristic is used to enable and control the interval between consecutive temperature measurements.</InformativeText>
+      <Requirement>Optional</Requirement>
+      <Properties>
+        <Read>Mandatory</Read>
+        <Write>Optional</Write>
+        <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Excluded</ReliableWrite>
+        <Notify>Excluded</Notify>
+        <Indicate>Optional</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Excluded</Broadcast>
+      </Properties>
+      <SecuritySettings>
+        <Security>Writable With Authentication</Security>
+      </SecuritySettings>
+      <Descriptors>
+        <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+          <Requirement>if_notify_or_indicate_supported</Requirement>
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Mandatory</Write>
+          </Properties>
+        </Descriptor>
+        <Descriptor name="Valid Range" type="org.bluetooth.descriptor.valid_range">
+          <Requirement>if_characteristic_write_supported</Requirement>
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Excluded</Write>
+          </Properties>
+        </Descriptor>
+      </Descriptors>
+    </Characteristic>
+  </Characteristics>
+</Service>

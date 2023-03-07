@@ -1,0 +1,269 @@
+/*
+ * Copyright (c) 2013-2019, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * */
+
+/*
+ *  ======== package.bld ========
+ */
+
+var commonBld = xdc.loadCapsule("ti/uia/build/common.bld");
+
+var objList_IpcNdk = [
+    "IpcMP",
+    "TransportFile",
+    "TransportNdk",
+    "Adaptor",
+    "LoggerStreamer",
+    "LoggerStreamer2",
+    "LoggerIdle",
+];
+
+var trgFilter = {
+    field: "isa",
+    list: [
+        "64", "64P", "64T", "66", "674","v5T", "v7A", "v7M", "v7M4",
+        "v7A8", "v7A9", "v7A15", "v7R", "v6M", "71"
+    ],
+};
+
+/* File list for building with NDK support, but no Ipc (eg, for TivaC) */
+var objList_Ndk = [
+//    "IpcMP",
+    "TransportFile",
+    "TransportNdk",
+    "Adaptor",
+    "LoggerStreamer",
+    "LoggerStreamer2",
+    "LoggerIdle",
+];
+
+var objList_NoNdk = [
+//    "IpcMP",
+//    "TransportFile",
+//    "TransportNdk",
+//    "Adaptor",
+    "LoggerStreamer",
+    "LoggerStreamer2",
+    "LoggerIdle",
+];
+
+var ipc = null;
+var ndk = null;
+
+/*
+ *  Include v8M (M33F) in the No NDK builds.  Building TransportNdk for
+ *  M33F causes a posix build error:
+ *  #error Incompatible compiler: use this include path (.../ti/posix/ccs) only
+ *  '../include/time.h' file not found
+ */
+var trgFilter_NoNdk = {
+    field: "isa",
+    list: [
+        "28",
+        "28FP",
+        "arp32",
+        "430X",
+        "v8M"
+    ],
+};
+
+/*
+ *  If ipc or ndk are not in the package path, don't add the
+ *  NDK transport to the library.
+ */
+try {
+    ipc = xdc.getPackageRepository('ti.sdo.ipc');
+}
+catch (e) {
+    /*
+     * Non-fatal remark.  Ipc is not in the package path.
+     */
+    print("Remark:  ti.sdo.ipc package not found." /* + e */);
+};
+
+try {
+    ndk = xdc.getPackageRepository('ti.ndk');
+
+    /* Reference the NDK headers */
+    Pkg.uses = ["ti/ndk/inc"];
+}
+catch (e) {
+    /*
+     * Non-fatal remark.  Ipc is not in the package path.
+     */
+    print("Remark:  ti.sdo.ndk package not found." /* + e */);
+};
+
+var objList;
+
+if (ndk && ipc) {
+    print("***** Building ti.uia.sysbios with NDK and IPC support");
+    objList = objList_IpcNdk;
+}
+else if (ndk) {
+    print("***** Building ti.uia.sysbios with NDK support");
+    objList = objList_Ndk;
+}
+else {
+    print("***** Building ti.uia.sysbios WITHOUT NDK support");
+    objList = objList_NoNdk;
+}
+
+var profile = "release";
+
+for (var i = 0; i < Build.targets.length; i++) {
+    var targ = Build.targets[i];
+
+    /* skip target if not supported */
+    if (supportsTarget(targ, trgFilter)) {
+        var posixDir;
+        var copts = "";
+
+        if (targ.$name.match(/ti.targets.arm.clang/)) {
+            posixDir = "ticlang";
+        }
+        else if (targ.$name.match(/^ti/)) {
+            posixDir = "ccs";
+        }
+        else if (targ.$name.match(/^gnu/)) {
+            posixDir = "gcc";
+            copts = " -std=c99";
+        }
+        else if (targ.$name.match(/^iar/)) {
+            posixDir = "iar";
+        }
+        else {
+            throw("Unsupported target: " + targ.$name);
+        }
+
+        var libOptions = {
+            incs: posixIncs + "/" + posixDir,
+            copts: copts
+        }
+
+        var lib = Pkg.addLibrary('lib/' + profile + '/' + Pkg.name,
+                targ, libOptions);
+        lib.addObjects(objList);
+    }
+
+    if (supportsTarget(targ, trgFilter_NoNdk)) {
+        var lib = Pkg.addLibrary('lib/' + profile + '/' + Pkg.name, targ);
+        lib.addObjects(objList_NoNdk);
+    }
+}
+
+/* 64-bit target, only LoggerStreamer2 is supported */
+var objList_A53 = [
+    "LoggerStreamer2",
+];
+
+var trgFilter_A53 = {
+    field: "isa",
+    list: [
+        "v8A"
+    ],
+};
+
+/* generate makefiles */
+commonBld.buildLibs(objList_A53, undefined, trgFilter_A53, arguments);
+
+/*
+ *  ======== supportsTarget ========
+ *  Returns true if target is in the filter object. If filter
+ *  is null or empty, that's taken to mean all targets are supported.
+ */
+function supportsTarget(target, filter)
+{
+    var list, field;
+
+    if (filter == null) {
+        return true;
+    }
+
+    /*
+     * For backwards compatibility, we support filter as an array of
+     * target names.  The preferred approach is to specify filter as
+     * an object with 'field' and 'list' elements.
+     *
+     * Old form:
+     *     var trgFilter = [ "Arm9", "Arm9t", "Arm9t_big_endian" ]
+     *
+     * New (preferred) form:
+     *
+     *     var trgFilter = {
+     *         field: "isa",
+     *         list: [ "v5T", "v7R" ]
+     *     };
+     *
+     */
+    if (filter instanceof Array) {
+        list = filter;
+        field = "name";
+    }
+    else {
+        list = filter.list;
+        field = filter.field;
+    }
+
+    if (list == null || field == null) {
+        throw("invalid filter parameter, must specify list and field!");
+    }
+
+    if (field == "noIsa") {
+        if (String(','+list.toString()+',').match(','+target["isa"]+',')) {
+            return (false);
+        }
+        return (true);
+    }
+
+    /*
+     * add ',' at front and and tail of list and field strings to allow
+     * use of simple match API.  For example, the string is updated to:
+     * ',v5T,v7R,' to allow match of ',v5t,'.
+     */
+    if (String(','+list.toString()+',').match(','+target[field]+',')) {
+        return (true);
+    }
+
+    return (false);
+}
+
+Pkg.otherFiles = [ "package.bld", "TransportFile.h", "TransportNdk.h",
+                   "LoggingSetup.xml", "LoggerIdle.xml", "LoggerStreamer.xml",
+                   "LoggerStreamer2.xml",
+		   "java/package.jar"];
+
+/* Include custom.mak for building Java code. */
+Pkg.makeEpilogue = "include custom.mak";
+
+/* include source files in the release package */
+Pkg.attrs.exportSrc = true;
+Pkg.attrs.exportCfg = true;

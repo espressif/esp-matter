@@ -1,0 +1,18 @@
+id: sl_string
+package: platform
+label: "String Functions"
+description: Component that provides safe string functions.
+category: Platform|Utilities
+quality: production
+root_path: platform/common
+include:
+  - path: inc
+    file_list:
+      - path: sl_string.h
+source:
+  - path: src/sl_string.c
+provides:
+  - name: sl_string
+documentation:
+  docset: gecko-platform
+  document: common/api/group-string

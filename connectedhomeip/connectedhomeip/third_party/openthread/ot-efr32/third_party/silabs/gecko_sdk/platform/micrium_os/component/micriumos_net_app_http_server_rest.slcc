@@ -1,0 +1,23 @@
+id: micriumos_net_app_http_server_rest
+label: Network Suite - HTTP Server REST
+package: micrium-tcpx
+description: Micrium OS Network HTTP Server REST module
+category: Services|Micrium|Network Suite
+quality: production
+component_root_path: platform/micrium_os/net
+source:
+  - path: source/http/server/http_server_rest_hook_cfg.c
+  - path: source/http/server/http_server_rest_mem.c
+  - path: source/http/server/http_server_rest.c
+include:
+  - path: source
+    file_list:
+      - path: http/server/http_server_rest_priv.h
+  - path: include
+    file_list:
+      - path: http_server_addon_rest.h
+provides:
+  - name: net_app_http_server_rest
+requires:
+  - name: net_app_http_server
+  - name: common_collections

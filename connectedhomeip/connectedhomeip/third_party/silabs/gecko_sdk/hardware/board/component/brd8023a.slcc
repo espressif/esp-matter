@@ -1,0 +1,23 @@
+!!omap
+- id: brd8023a
+- label: BRD8023A
+- package: platform
+- description: Board support for BRD8023A.
+- category: Platform|Board|Expansion Board
+- quality: production
+- requires: []
+- provides:
+  - name: brd8023a
+  - name: hardware_board_wfx
+  - name: hardware_board_exp
+- recommends: []
+- template_contribution: []
+- define:
+  - name: SL_BOARD_NAME
+    value: '"BRD8023A"'
+  - name: SL_BOARD_REV
+    value: '"B01"'
+- tag:
+  - board:pn:BRD8023
+  - board:variant:A
+  - board:revision:B01

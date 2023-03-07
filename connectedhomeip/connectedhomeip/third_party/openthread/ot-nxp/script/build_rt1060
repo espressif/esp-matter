@@ -1,0 +1,109 @@
+#!/bin/bash
+#
+#  Copyright (c) 2020, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+
+set -exo pipefail
+
+OT_CMAKE_NINJA_TARGET=${OT_CMAKE_NINJA_TARGET:-}
+
+readonly OT_SRCDIR="$(pwd)"
+readonly OT_OPTIONS=(
+    "-DCMAKE_TOOLCHAIN_FILE=src/imx_rt/rt1060/arm-none-eabi.cmake"
+    "-DCMAKE_BUILD_TYPE=MinSizeRel"
+    "-DOT_PLATFORM=external"
+    "-DOT_SLAAC=ON"
+    "-DOT_THREAD_VERSION=1.1"
+    "-DOT_EXTERNAL_MBEDTLS=nxp-rt1060-mbedtls"
+    "-DOT_STACK_ENABLE_LOG=OFF"
+    "-DOT_APP_NCP=OFF"
+    "-DOT_APP_RCP=OFF"
+    "-DOT_RCP=OFF"
+    # Default OT app cli is disabled, instead a freeRTOS version of the CLI is built
+    "-DOT_APP_CLI=OFF"
+    "-DOT_APP_CLI_FREERTOS=ON"
+    "-DOT_BUILD_RT=ON"
+    "-DOT_BUILD_RT1060=ON"
+    "-DOT_COMPILE_WARNING_AS_ERROR=ON"
+)
+
+build()
+{
+    local builddir="${OT_CMAKE_BUILD_DIR:-build_rt1060}"
+
+    mkdir -p "${builddir}"
+    cd "${builddir}"
+
+    # shellcheck disable=SC2068
+    # Default OT app cli is disabled, instead a freeRTOS version of the CLI is built
+    cmake -GNinja "$@" "${OT_SRCDIR}"
+
+    if [[ -n ${OT_CMAKE_NINJA_TARGET[*]} ]]; then
+        ninja "${OT_CMAKE_NINJA_TARGET[@]}"
+    else
+        ninja
+    fi
+
+    cd "${OT_SRCDIR}"
+}
+
+main()
+{
+
+    # check if environmental variable NXP_RT1060_SDK_ROOT is set
+    #     if not, then use "../../../" as a possible path
+    # then  check if NXP_RT1060_SDK_ROOT contains a valid SDK
+    #     if SW-Content-Register.txt is found
+    #         then NXP_RT1060_SDK_ROOT points to a released SDK
+    #     else if .gitignore is found
+    #         then NXP_RT1060_SDK_ROOT points to a cloned repository
+
+    if [ -z "$NXP_RT1060_SDK_ROOT" ]; then
+        NXP_RT1060_SDK_ROOT="../../../"
+    fi
+
+    if [ -f $NXP_RT1060_SDK_ROOT/SW-Content-Register.txt ]; then
+        SDK_RELEASE=ON
+    elif [ -f $NXP_RT1060_SDK_ROOT/.gitmodules ]; then
+        SDK_RELEASE=OFF
+    else
+        echo "Could not found a valid SDK package!"
+        return
+    fi
+
+    echo "NXP_RT1060_SDK_ROOT set to " $NXP_RT1060_SDK_ROOT
+
+    local options=("${OT_OPTIONS[@]}")
+
+    options+=("$@")
+
+    options+=("-DSDK_RELEASE=$SDK_RELEASE")
+
+    build "${options[@]}"
+}
+
+main "$@"

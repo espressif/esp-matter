@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Created with Liquid XML Studio Developer Edition 8.1.7.2743 (http://www.liquid-technologies.com) -->
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.temperature_measurement" uuid="2A1C" name="Temperature Measurement">
+  <InformativeText>
+    <Abstract>
+    The Temperature Measurement characteristic is a variable length structure containing a Flags field, a Temperature Measurement Value field and, based upon the contents of the Flags field, optionally a Time Stamp field and/or a Temperature Type field.            
+		</Abstract>
+    <Summary>
+    The flags is the first field sent followed by the Temperature Measurement Value.            
+		</Summary>
+    <Examples>
+      <Example>
+      If the value of bit 1 of the Flags field is 0 and bit 2 is 0, the structure of the Temperature Measurement characteristic consists of two fields in this order; Flags and Temperature Measurement Value.
+    </Example>
+      <Example>
+      If the value of bit 1 of the Flags field is 1 (Time Stamp) and bit 2 is 0, the structure of the Temperature Measurement characteristic consists of three fields in this order: Flags, Temperature Measurement Value and Time Stamp.
+    </Example>
+      <Example>
+      If the value of bit 1 of the Flags field is 1 and bit 2 is 1 (Time Stamp and Temperature Type), the structure of the Temperature Measurement characteristic consists of four fields in this order: Flags, Temperature Measurement Value, Time Stamp and Temperature Type.
+    </Example>
+      <Example>
+      If the value of bit 1 of the Flags field is 0 and bit 2 is 1 (Temperature Type), the structure of the Temperature Measurement characteristic consists of three fields in this order: Flags, Temperature Measurement Value and Temperature Type.
+    </Example>
+    </Examples>
+  </InformativeText>
+  <Value>
+    <Field name="Flags">
+      <InformativeText></InformativeText>
+      <Requirement>Mandatory</Requirement>
+      <Format>8bit</Format>
+      <BitField>
+        <Bit index="0" size="1" name="Temperature Units Flag">
+          <Enumerations>
+            <Enumeration key="0" value="Temperature Measurement Value in units of Celsius" requires="C1" />
+            <Enumeration key="1" value="Temperature Measurement Value in units of Fahrenheit" requires="C2" />
+          </Enumerations>
+        </Bit>
+        <Bit index="1" size="1" name="Time Stamp Flag">
+          <Enumerations>
+            <Enumeration key="0" value="Time Stamp field not present" />
+            <Enumeration key="1" value="Time Stamp field present" requires="C3" />
+          </Enumerations>
+        </Bit>
+        <Bit index="2" size="1" name="Temperature Type Flag">
+          <Enumerations>
+            <Enumeration key="0" value="Temperature Type field not present" />
+            <Enumeration key="1" value="Temperature Type field present" requires="C4" />
+          </Enumerations>
+        </Bit>
+        <ReservedForFutureUse index="3" size="1" />
+        <ReservedForFutureUse index="4" size="1" />
+        <ReservedForFutureUse index="5" size="1" />
+        <ReservedForFutureUse index="6" size="1" />
+        <ReservedForFutureUse index="7" size="1" />
+      </BitField>
+    </Field>
+    <Field name="Temperature Measurement Value (Celsius)">
+      <InformativeText>This field is only included if the flags bit 0 is 0.
+</InformativeText>
+      <Requirement>C1</Requirement>
+      <Format>FLOAT</Format>
+      <Unit>org.bluetooth.unit.thermodynamic_temperature.degree_celsius</Unit>
+    </Field>
+    <Field name="Temperature Measurement Value (Fahrenheit)">
+      <InformativeText>This field is only included if the flags bit 0 is 1.</InformativeText>
+      <Requirement>C2</Requirement>
+      <Format>FLOAT</Format>
+      <Unit>org.bluetooth.unit.thermodynamic_temperature.degree_fahrenheit</Unit>
+    </Field>
+    <Field name="Time Stamp">
+      <InformativeText>If the flags bit 1 is 1 this field is included. If it is 0, this field is not included</InformativeText>
+      <Requirement>C3</Requirement>
+      <Reference>org.bluetooth.characteristic.date_time</Reference>
+    </Field>
+    <Field name="Temperature Type">
+      <InformativeText>If the flags bit 2 is set to 1 this field is included. If it is 0, this field is not included</InformativeText>
+      <Requirement>C4</Requirement>
+      <Reference>org.bluetooth.characteristic.temperature_type</Reference>
+    </Field>
+  </Value>
+  <InformativeText>
+    Note: The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet.
+  </InformativeText>
+</Characteristic>

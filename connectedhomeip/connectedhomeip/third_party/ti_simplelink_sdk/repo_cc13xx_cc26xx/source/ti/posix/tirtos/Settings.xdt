@@ -1,0 +1,97 @@
+%%{
+/*
+ * Copyright (c) 2016-2018 Texas Instruments Incorporated - http://www.ti.com
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+*/
+%%}
+%/*
+% *  ======== Settings.xdt ========
+% */
+%if (Program.build.target.$name.match(/gnu/)) {
+%
+%/*  The function below is a work-around for a GCC link order
+% *  problem. See SYSBIOS-292 for a description.
+% */
+%
+/*  Fabricate external function declarations to avoid including
+ *  the POSIX header files, because they require -std=c99 compile
+ *  option. This option is new with GCC v7. We don't want to force
+ *  users to add this option when compiling this file (big.c).
+ *
+ *  Nota Bene: The ti.sysbios.hal.Seconds module injects time.h into
+ *  big.c. When building with package.bld (e.g. benchloop), this will
+ *  find TI-POSIX time.h which declares clock_gettime() and timer_delete().
+ *  However, when building the kernel (i.e. SDK build flow), time.h is
+ *  found in GNU target libs install, in which case these functions are
+ *  not declared. The condition below handles these cases.
+ */
+
+#include <time.h>
+
+#ifndef ti_posix_gcc_time__include
+extern int clock_gettime(clockid_t, struct timespec *);
+extern int timer_delete(timer_t);
+#endif
+
+extern void mq_close(void);
+extern void pthread_attr_destroy(void);
+extern void pthread_barrierattr_init(void);
+extern void pthread_condattr_init(void);
+extern void pthread_key_delete(void);
+extern void pthread_mutexattr_destroy(void);
+extern void pthread_rwlockattr_destroy(void);
+extern void sched_yield(void);
+extern void sem_destroy(void);
+extern void sleep(void);
+
+/*
+ *  ======== ti_sysbios_posix_dummyFxn ========
+ *  This function will ensure that posix functions will be linked in
+ *  if they are used. It calls one function from each posix source file.
+ *  This function should never be called.
+ */
+void ti_sysbios_posix_dummyFxn(void)
+{
+    /* call one function from each posix source file */
+    clock_gettime((clockid_t)0, NULL);  /* clock.c */
+    mq_close();                         /* mqueue.c */
+    pthread_attr_destroy();             /* pthread.c */
+    pthread_barrierattr_init();         /* pthread_barrier.c */
+    pthread_condattr_init();            /* pthread_cond.c */
+    pthread_key_delete();               /* pthread_key.c */
+    pthread_mutexattr_destroy();        /* pthread_mutex.c */
+    pthread_rwlockattr_destroy();       /* pthread_rwlock.c */
+    sched_yield();                      /* sched.c */
+    sem_destroy();                      /* semaphore.c */
+    sleep();                            /* sleep.c */
+    timer_delete((timer_t)NULL);        /* timer.c */
+}
+%}

@@ -1,0 +1,31 @@
+id: mbedtls_aes
+package: platform
+label: AES Block Cipher
+description: >-
+  This component provides support for the AES block cipher using Mbed TLS.
+category: Platform|Security|Mbed TLS|Encryption
+quality: production
+source:
+  - path: util/third_party/crypto/mbedtls/library/aes.c
+    unless: [trustzone_nonsecure]
+include:
+  - path: util/third_party/crypto/mbedtls/include
+    file_list:
+      - path: mbedtls/aes.h
+    unless: [trustzone_nonsecure]
+  - path: util/third_party/crypto/mbedtls/library
+    file_list:
+      - path: padlock.h
+    unless: [trustzone_nonsecure]
+provides:
+  - name: mbedtls_aes
+  - name: mbedtls_block_cipher
+    allow_multiple: true
+requires:
+  - name: mbedtls_core
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_AES_C
+documentation:
+  docset: mbed-tls
+  document: group-sl-crypto-aes

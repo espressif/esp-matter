@@ -1,0 +1,82 @@
+# Copyright (c) 2022, Arm Limited and Contributors. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+# CMSIS 5 require projects to provide configuration macros via RTE_Components.h
+# and CMSIS_device_header. The macro CMSIS_device_header is not automatically set
+# based on CMAKE_SYSTEM_PROCESSOR in the place where cmsis-core is first defined,
+# because a project may want to provide its own device header.
+
+# CMSIS Core
+target_compile_definitions(cmsis-core
+    INTERFACE
+        CMSIS_device_header="@CMSIS_device_header@"
+)
+
+# Mbed TLS
+target_include_directories(mbedtls-config
+    INTERFACE
+        mbedtls-user-config
+)
+
+target_link_libraries(mbedtls-config
+    INTERFACE
+        mbedtls-threading-cmsis-rtos
+)
+
+target_compile_definitions(mbedtls-config
+    INTERFACE
+        MBEDTLS_CONFIG_FILE="mbedtls_config.h"
+)
+
+# LWIP
+# lwipcore requires the config defined by lwip-cmsis-port
+target_link_libraries(lwipcore
+    PRIVATE
+        lwip-cmsis-port
+)
+
+target_include_directories(lwipopts
+    INTERFACE
+        lwip-user-config
+)
+
+# provide method to use for tracing by the lwip port (optional)
+target_compile_definitions(lwipopts
+    INTERFACE
+        DEBUG_PRINT=printf
+)
+
+# Bind socket interface to implementation
+target_link_libraries(cmsis-sockets-api INTERFACE lwip-sockets)
+
+target_compile_definitions(mdh-arm-an552-mps3
+    INTERFACE
+        LAN91C111_RFS_MULTICAST_SUPPORT
+)
+
+# Link the emac factory to LwIP port
+target_link_libraries(lwip-cmsis-port PUBLIC iotsdk-emac-factory)
+
+# Core MQTT
+target_include_directories(coreMQTT-config
+    INTERFACE
+        "aws-configs"
+)
+
+target_link_libraries(coreMQTT-config
+    INTERFACE
+        pw_log
+)
+
+# Pigweed
+target_link_libraries(pw_log
+    PUBLIC
+        pw_log_mcu_driver_hal
+)
+target_link_libraries(pw_log_mcu_driver_hal
+    PRIVATE
+    pw_log_mdh_cmsis_rtos_lock
+)
+
+# RTOS configuration
+@RTOS_HEADER_INCLUDE@

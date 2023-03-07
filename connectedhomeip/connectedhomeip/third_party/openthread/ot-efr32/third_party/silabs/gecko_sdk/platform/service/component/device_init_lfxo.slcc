@@ -1,0 +1,50 @@
+id: device_init_lfxo
+label: "Device Init: LFXO"
+package: platform
+description: >
+  Device initialization for LFXO - Low Frequency Crystal Oscillator.
+category: Services|Device Initialization
+quality: production
+root_path: platform/service/device_init/
+config_file:
+  - path: config/s0/sl_device_init_lfxo_config.h
+    file_id: device_init_lfxo_config
+    condition: [device_series_0]
+    unless: [device_sdid_72]
+  - path: config/s0/efm32gg/sl_device_init_lfxo_config.h
+    file_id: device_init_lfxo_config
+    condition: [device_sdid_72]
+  - path: config/s1/sl_device_init_lfxo_config.h
+    file_id: device_init_lfxo_config
+    condition: [device_series_1]
+  - path: config/s2/sl_device_init_lfxo_config.h
+    file_id: device_init_lfxo_config
+    condition: [device_series_2]
+include:
+  - path: inc
+    file_list:
+      - path: sl_device_init_lfxo.h
+source:
+  - path: src/sl_device_init_lfxo_s0.c
+    condition: [device_series_0]
+  - path: src/sl_device_init_lfxo_s1.c
+    condition: [device_series_1]
+  - path: src/sl_device_init_lfxo_s2.c
+    condition: [device_series_2]
+provides:
+  - name: device_init_lfxo
+requires:
+  - name: emlib_cmu
+  - name: status
+template_contribution:
+  - name: event_handler
+    value:
+      event: platform_init
+      include: sl_device_init_lfxo.h
+      handler: sl_device_init_lfxo
+    priority: -9600
+  - name: device_init_clocks_present
+    value: lfxo
+documentation:
+    docset: gecko-platform
+    document: service/api/group-device-init-lfxo

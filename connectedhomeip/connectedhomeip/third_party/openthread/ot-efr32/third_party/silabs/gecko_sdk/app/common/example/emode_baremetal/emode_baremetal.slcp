@@ -1,0 +1,55 @@
+project_name: emode_baremetal
+package: platform
+quality: production
+label: Platform - Emode Bare-metal
+description: > 
+  Demo for energy mode current consumption testing.
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+source:
+  - path: main.c
+  - path: app.c
+  - path: lcd_setup.c
+  - path: emodes.c
+include:
+  - path: .
+    file_list:
+    - path: app.h
+    - path: lcd_setup.h
+    - path: emodes.h
+component:
+  - id: sl_system
+  - id: device_init
+  - id: board_control
+  - id: memlcd_usart
+  - id: dmd_memlcd
+  - id: glib
+  - id: coremark
+  - id: simple_button
+    instance:
+      - btn0
+      - btn1
+  - id: emlib_timer
+  - id: app_em4h_reset
+requires:
+  - name: emlib_cryotimer
+    condition:
+      - device_has_cryotimer
+  - name: peripheral_sysrtc
+    condition:
+      - "device_has_sysrtc"
+define:
+  - name: DEBUG_EFM
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+tag:
+  - hardware:component:display
+  - hardware:component:button:2+

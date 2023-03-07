@@ -1,0 +1,18 @@
+快速入门
+========
+
+准备工作
+--------
+
+-  硬件：
+
+   一款 BL602 开发板 PC（Windows、Linux 或 Mac OS）
+
+Starter Guide
+-------------
+
+-  `Linux <Linux/Quickstart_Linux_ubuntu.html>`__
+-  `Linux <Linux/Quickstart_DVK-1S_Linux_ubuntu.html>`__
+-  `Windows <Windows/Quickstart_Windows_msys.html>`__
+-  `Windows <Windows/Quickstart_DVK-1S_Windows_msys.html>`__
+

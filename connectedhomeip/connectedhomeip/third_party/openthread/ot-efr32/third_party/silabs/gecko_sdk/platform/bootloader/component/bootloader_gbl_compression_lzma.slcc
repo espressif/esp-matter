@@ -1,0 +1,28 @@
+id: bootloader_compression_lzma
+label: GBL Compression (LZMA)
+package: bootloader
+description: >
+  Support LZMA compressed GBL upgrade files
+category: Platform|Bootloader|Core
+quality: production
+source:
+  - path: platform/bootloader/parser/compression/btl_decompress_lzma.c
+  - path: platform/bootloader/parser/compression/lzma/LzmaDec.c
+include:
+  - path: platform/bootloader/parser/compression
+    file_list:
+    - path: lzma/LzmaDec.h
+    - path: lzma/Precomp.h
+    - path: lzma/7zTypes.h
+    - path: lzma/Compiler.h
+    - path: btl_decompress_lzma.h
+define:
+  - name: BTL_PARSER_SUPPORT_LZMA
+    value: 1
+  - name: _LZMA_SIZE_OPT
+provides:
+  - name: bootloader_compression_lzma
+  - name: bootloader_nonsecure_incompatible
+    condition: [bootloader_core_nonsecure]
+  - name: bootloader_secure_incompatible
+    condition: [bootloader_core_secure]

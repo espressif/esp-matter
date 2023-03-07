@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) 2021 Project CHIP Authors
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<configurator>
+  <domain name="Test" spec="test-0.0"/>
+  <cluster>
+    <name>Test 1</name>
+    <domain>Test</domain>
+    <description>Test 1 description</description>
+    <code>0xABCD</code>
+    <define>TEST_1</define>
+    <client tick="false" init="false">false</client>
+    <server tick="false" init="false">true</server>
+    <struct name="FabricScopedStruct" isFabricScoped="true">
+      <cluster code="0xABCD"/>
+    </struct>
+    <attribute side="server" code="0x0000" define="AT1" type="LIST" entryType="FabricScopedStruct" writable="false" optional="true">
+      <!-- Fabric scoped attributes are lists with a struct which contains a fabric_idx field. -->
+      <description>at1</description>
+      <access op="write" role="manage" modifier="fabric-scoped"/>
+    </attribute>
+    <attribute side="server" code="0x0001" define="AT2" type="INT16U" writable="false" optional="true" isNullable="true" reportingPolicy="mandatory">
+      <description>at2</description>
+      <access modifier="fabric-sensitive"/>
+    </attribute>
+    <command source="client" code="0x01" name="TestCommand1" optional="false" isFabricScoped="true">
+      <description>TestCmd1</description>
+      <arg name="A" type="INT8U" isNullable="true"/>
+      <arg name="B" type="CHAR_STRING"/>
+    </command>
+    <event code="0x0001" name="HelloEvent" priority="info" side="server">
+      <description>Example test event</description>
+      <field id="1" name="arg1" type="INT8U" isNullable="true"/>
+      <field id="2" name="arg2" type="INT32U" array="true"/>
+      <field id="3" name="arg3" type="CHAR_STRING"/>
+    </event>
+  </cluster>
+  <cluster>
+    <name>Test 2</name>
+    <domain>Test</domain>
+    <description>Test 2 description</description>
+    <code>0xABCE</code>
+    <define>TEST_2</define>
+    <client tick="false" init="false">false</client>
+    <server tick="false" init="false">true</server>
+    <attribute side="server" code="0x0000" define="AT1" type="LIST" entryType="FabricScopedStruct" writable="false" optional="true">
+      <!-- Fabric scoped attributes are lists with a struct which contains a fabric_idx field. -->
+      <description>at1</description>
+      <access op="write" role="manage" modifier="fabric-scoped"/>
+    </attribute>
+    <attribute side="server" code="0x0001" define="AT2" type="INT16U" writable="false" optional="true" isNullable="true" reportingPolicy="prohibited">
+      <description>at2</description>
+      <access modifier="fabric-sensitive"/>
+    </attribute>
+    <command source="client" code="0x01" name="TestCommand1" optional="false">
+      <description>TestCmd1</description>
+      <arg name="A" type="INT8U" isNullable="true"/>
+      <arg name="B" type="CHAR_STRING"/>
+    </command>
+    <event code="0x0001" name="HelloEvent" priority="info" side="server" isFabricSensitive="true">
+      <description>Example test event</description>
+      <field id="1" name="arg1" type="INT8U" isNullable="true"/>
+      <field id="2" name="arg2" type="INT32U" array="true"/>
+      <field id="3" name="arg3" type="CHAR_STRING"/>
+    </event>
+  </cluster>
+</configurator>

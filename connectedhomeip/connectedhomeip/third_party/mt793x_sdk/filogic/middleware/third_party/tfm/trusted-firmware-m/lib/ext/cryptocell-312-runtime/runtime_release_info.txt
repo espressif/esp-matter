@@ -1,0 +1,4 @@
+Release Tag = cc312r1-1.3.0-rel-rc10-20190708-1221
+mbedtls.d81c.tgz
+sw-cc312-1.3.0.6227ff8b22.tgz
+sw-cc312_integration_tests-1.1.0.6227ff8b22.tgz

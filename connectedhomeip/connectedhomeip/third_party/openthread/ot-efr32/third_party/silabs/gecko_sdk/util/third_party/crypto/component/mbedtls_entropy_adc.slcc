@@ -1,0 +1,32 @@
+id: mbedtls_entropy_adc
+package: platform
+label: ADC Entropy Source
+description: >-
+  This component provides support for using entropy gathered from the ADC
+  of an EFM32 or EFR32 Series 1 device. When using this entropy source,
+  the instance number of the ADC to use for entropy collection is set to
+  0 (i.e. ADC0) by default, but can be overridden through defining
+  MBEDTLS_ENTROPY_ADC_INSTANCE manually to the instance number (0 or 1) to use.
+category: Platform|Security|Mbed TLS|Randomness
+quality: production
+component_root_path: util/third_party/crypto
+source:
+  - path: sl_component/sl_mbedtls_support/src/sl_entropy_adc.c
+include:
+  - path: sl_component/sl_mbedtls_support/inc
+    file_list:
+      - path: sl_entropy_adc.h
+provides:
+  - name: mbedtls_entropy_source
+    allow_multiple: true
+  - name: mbedtls_entropy_adc
+requires:
+  - name: device_series_1
+  - name: emlib_adc
+  - name: mbedtls_entropy_hardware
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_ENTROPY_ADC_C
+documentation:
+  docset: mbed-tls
+  document: group-sl-entropy-adc

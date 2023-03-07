@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Personality id="20x19_bluetooth" name="Bluetooth" version="1.0" path="Communication" xmlns="http://cypress.com/xsd/cyhwpersonality_v1">
+  <Dependencies>
+    <IpBlock name="20x19_bluetooth" />
+    <Resource name="bluetooth" />
+  </Dependencies>
+  <ExposedMembers />
+  <Parameters>
+    <ParamDoc id="apiDoc" name="Configuration Help" group="Peripheral Documentation" default="file:///`${cy_libs_path()}`/docs/group__wicedbt.html" linkText="Open Bluetooth Documentation" visible="true" desc="Opens the Hardware Driver Documentation" />
+    <ParamString id="instNum" name="" group="" default="`${getInstNumber(&quot;bluetooth&quot;)}`" visible="false" editable="false" desc="" />
+  </Parameters>
+
+  <DRCs/>
+
+  <ConfigFirmware>
+  </ConfigFirmware>
+</Personality>

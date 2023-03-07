@@ -1,0 +1,27 @@
+id: mbedtls_gcm
+package: platform
+label: GCM
+description: >-
+  This component provides support for authenticated encryption and decryption
+  in GCM mode for block ciphers using Mbed TLS.
+category: Platform|Security|Mbed TLS|Authenticated Encryption
+quality: production
+source:
+  - path: util/third_party/crypto/mbedtls/library/gcm.c
+    unless: [trustzone_nonsecure]
+include:
+  - path: util/third_party/crypto/mbedtls/include
+    file_list:
+      - path: mbedtls/gcm.h
+    unless: [trustzone_nonsecure]
+provides:
+  - name: mbedtls_gcm
+requires:
+  - name: mbedtls_cipher
+  - name: mbedtls_core
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_GCM_C
+documentation:
+  docset: mbed-tls
+  document: group-sl-crypto-gcm

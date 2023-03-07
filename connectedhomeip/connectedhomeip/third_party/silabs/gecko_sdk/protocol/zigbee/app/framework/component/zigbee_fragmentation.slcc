@@ -1,0 +1,71 @@
+package: Zigbee
+description: This component supports sending long packets through fragmentation and reassembly.
+label: Fragmentation
+quality: production
+id: zigbee_fragmentation
+category: Zigbee|Utility
+provides:
+   - name: zigbee_fragmentation
+requires:
+   - name: zigbee_address_table
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/fragmentation/config/fragmentation-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/fragmentation/fragmentation.c
+  - path: protocol/zigbee/app/framework/plugin/fragmentation/fragmentation-cli.c
+    condition:
+      - cli
+  - path: protocol/zigbee/app/framework/plugin/fragmentation/fragmentation-host.c
+    condition:
+      - zigbee_ezsp
+  - path: protocol/zigbee/app/framework/plugin/fragmentation/fragmentation-soc.c
+    condition:
+      - zigbee_stack_common
+include:
+  - path: protocol/zigbee/app/framework/plugin/fragmentation
+    file_list:
+      - path: fragmentation.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_fragmentation
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emberAfPluginFragmentationInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: local_data_init
+      function_name: emberAfPluginFragmentationInitCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: ncp_init
+      function_name: emberAfPluginFragmentationNcpInitCallback
+    condition:
+      - zigbee_ezsp
+  - name: cli_group
+    value:
+      group: plugin
+      name: fragmentation
+      help: fragmentation related commands.
+  - name: cli_command
+    value:
+      group: fragmentation
+      name: set-rx-window-size
+      handler: emAfPluginFragmentationSetWindowSizeCommand
+      help: Sets the receive window size.  By definition in the Smart Energy profile it must be set to 1 but this allows it to be changed.
+      argument:
+      - type: uint8
+        help: The max number of the blocks received before an APS ack is generated
+  - name: cli_command
+    value:
+      group: fragmentation
+      name: artificial-block-drop
+      handler: emAfPluginFragmentationArtificialBlockDropCommand
+      help: Artificially drops the block number defined by the passed argument only once, and then allows it upon a retry.
+      argument:
+      - type: uint8
+        help: The block number to artificially drop to force a retry - set to 0xFF to disable
+
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/fragmentation

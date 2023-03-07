@@ -1,0 +1,60 @@
+//****************************************************************************
+// Includes.
+
+#include "sl_status.h"
+#include "sl_usbd_core.h"
+
+/* template headers */
+#include "sl_usbd_configuration_instances.h"
+
+/* include config file for the instances */
+{% for instance in usb_configuration_instances %}
+#include "sl_usbd_{{ instance }}_config.h"
+{% endfor %}
+
+//****************************************************************************
+// Global variables.
+
+/* configuration numbers assigned by the USB stack after init */
+{% for instance in usb_configuration_instances %}
+uint8_t sl_usbd_configuration_{{ instance }}_number = 0;
+{% endfor %}
+
+//****************************************************************************
+// Global functions.
+
+{# Generate initialization functions for all configurations #}
+{% for instance in usb_configuration_instances %}
+/* initialize {{ instance }} instance */
+void sli_usbd_configuration_{{ instance }}_init()
+{
+  uint8_t                  attrib  = 0;
+  uint16_t                 power   = 0;
+  sl_usbd_device_speed_t   speed   = SL_USBD_DEVICE_SPEED_FULL;
+  const char              *name    = NULL;
+  uint8_t                  number  = 0;
+
+  /* configuration attributes */
+#if SL_USB_CONFIGURATION_{{ instance | upper }}_POWER_SOURCE == 1
+  attrib |= SL_USBD_DEV_ATTRIB_SELF_POWERED;
+#endif
+#if SL_USB_CONFIGURATION_{{ instance | upper }}_REMOTE_WAKEUP == 1
+  attrib |= SL_USBD_DEV_ATTRIB_REMOTE_WAKEUP;
+#endif
+
+  /* configuration maximum power (mA) */
+  power = SL_USB_CONFIGURATION_{{ instance | upper }}_MAXIMUM_POWER;
+
+  /* configuration speed */
+  speed = SL_USBD_DEVICE_SPEED_FULL;
+
+  /* configuration name */
+  name = SL_USB_CONFIGURATION_{{ instance | upper }}_NAME;
+
+  /* create the configuration descriptor */
+  sl_usbd_core_add_configuration(attrib, power, speed, name, &number);
+
+  /* store the configuration number globally */
+  sl_usbd_configuration_{{ instance }}_number = number;
+}
+{% endfor %}

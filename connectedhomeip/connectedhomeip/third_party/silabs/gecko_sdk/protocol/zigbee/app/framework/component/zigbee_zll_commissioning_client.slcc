@@ -1,0 +1,50 @@
+package: Zigbee
+description: Client-side implementation of the Zigbee 3.0 Touchlink commissioning.
+  mechanism.
+label: ZLL Commissioning Client
+quality: production
+id: zigbee_zll_commissioning_client
+category: Zigbee|Zigbee Light Link
+provides:
+   - name: "zigbee_zll_commissioning_client"
+requires:
+   - name: "zigbee_zll"
+   - name: "zigbee_interpan"
+   - name: "zigbee_zll_commissioning_common"
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/zll-commissioning-client/config/zll-commissioning-client-config.h
+source:
+  - path: protocol/zigbee/app/framework/plugin/zll-commissioning-client/zll-commissioning-client.c
+  - path: protocol/zigbee/app/framework/plugin/zll-commissioning-client/zll-commissioning-client-cb.c
+include:
+  - path: protocol/zigbee/app/framework/plugin/zll-commissioning-client
+    file_list:
+      - path: zll-commissioning-client.h
+template_contribution:
+  - name: component_catalog
+    value: zigbee_zll_commissioning_client
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emAfPluginZllCommissioningClientInitCallback
+  - name: zigbee_stack_callback
+    value: 
+      callback_type: zll_address_assignment
+      function_name: emAfZllAddressAssignmentCallback
+    unless:
+      - zigbee_ezsp
+  - name: zigbee_stack_callback
+    value: 
+      callback_type: zll_network_found
+      function_name: emAfZllNetworkFoundCallback
+    unless:
+      - zigbee_ezsp
+  - name: zigbee_stack_callback
+    value: 
+      callback_type: zll_scan_complete
+      function_name: emAfZllScanCompleteCallback
+    unless:
+      - zigbee_ezsp
+documentation:
+  docset: zigbee
+  document: zigbee-af-api/zll-commissioning-client

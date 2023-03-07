@@ -1,0 +1,21 @@
+pluginDirectory=./
+
+plugin(dmp-demo-ui) {
+  name=DMP Demo UI Functions
+  category=Utility
+  quality=test
+  root=./
+
+  architecture=efr32,simulation
+  description=This plugin provides utility functions for the LCD user interface of the Dynamic Multiprotocol (DMP) application.
+
+  dmp-ui.c
+
+  providedApis=dmp-demo-ui
+  api.dmp-demo-ui.header=dmp-ui.h
+
+  setup(additionalFiles) {
+    PATH(ABSOLUTE):$STACK/util/plugin/
+  }
+}
+

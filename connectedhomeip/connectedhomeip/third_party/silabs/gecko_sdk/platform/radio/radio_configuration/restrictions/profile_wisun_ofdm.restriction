@@ -1,0 +1,9 @@
+[
+  {
+    "name": "selectLimit",
+    "arguments": {
+      "id": "ProfilSelector",
+      "enabled": ["WiSUN_OFDM"]
+    }
+  }
+]

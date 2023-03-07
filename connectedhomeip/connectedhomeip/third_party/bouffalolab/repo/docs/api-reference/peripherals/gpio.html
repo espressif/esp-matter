@@ -1,0 +1,584 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>GPIO &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../index.html"/>
+        <link rel="up" title="外设 API" href="index.html"/>
+        <link rel="next" title="ADC" href="adc.html"/>
+        <link rel="prev" title="WDG" href="wdg.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">BL602 API 参考</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../ble/index.html">蓝牙</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../network/index.html">连网</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">外设</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="dac.html">DAC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="i2c.html">I2C</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pwm.html">PWM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rng.html">RNG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rtc.html">RTC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spi.html">SPI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="uart.html">UART</a></li>
+<li class="toctree-l3"><a class="reference internal" href="timer.html">TIMER</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wdg.html">WDG</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">GPIO</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">概述</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">应用实例</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#api">API参考</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="adc.html">ADC</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../protocols/index.html">协议</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../storage/index.html">存储</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../system/index.html">系统</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../Examples/index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">BL602 API 参考</a> &raquo;</li>
+        
+          <li><a href="index.html">外设 API</a> &raquo;</li>
+        
+      <li>GPIO</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/api-reference/peripherals/gpio.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="gpio">
+<h1>GPIO<a class="headerlink" href="#gpio" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<h2>概述<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<p>通用型之输入输出（General-purpose input/output，通常称为GPIO），GPIO管理功能提供GPIO控制寄存器，实现软件对 GPIO 属性的配置，使用户能够方便地操作 GPIO。每个GPIO可以配置为输入、输出和可选功能三种模式。在每个模式下(除模拟可选功能)，提供设置上拉，下拉，浮空三种端口状态，此外GPIO还提供中断功能，可以配置为上升沿触发，下降沿触发或者高电平/低电平触发。</p>
+<div class="admonition note">
+<p class="first admonition-title">注解</p>
+<p class="last">gpio更多资料请参考 <a class="reference external" href="https://dev.bouffalolab.com/media/doc/602/reference_manual/zh/html/content/GLB.html">BL602参考手册的3.2.5 GPIO概述</a> 。</p>
+</div>
+</div>
+<div class="section" id="id2">
+<h2>应用实例<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<p>GPIO实例： <code class="docutils literal notranslate"><span class="pre">customer_app/peripheral/demo_gpio</span></code> 。</p>
+</div>
+<div class="section" id="api">
+<h2>API参考<a class="headerlink" href="#api" title="永久链接至标题"></a></h2>
+<div class="section" id="header-file">
+<h3>Header File<a class="headerlink" href="#header-file" title="永久链接至标题"></a></h3>
+<ul class="simple">
+<li><span class="xref std std-doc">components/platform/hosal/include/hosal_gpio.h</span></li>
+</ul>
+</div>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="永久链接至标题"></a></h3>
+<dl class="function">
+<dt id="_CPPv415hosal_gpio_initP16hosal_gpio_dev_t">
+<span id="_CPPv315hosal_gpio_initP16hosal_gpio_dev_t"></span><span id="_CPPv215hosal_gpio_initP16hosal_gpio_dev_t"></span><span id="hosal_gpio_init__hosal_gpio_dev_tP"></span><span class="target" id="group__hosal__gpio_1gad547c4deabbdb26320795a6cd00cdc95"></span>int <code class="descname">hosal_gpio_init</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv416hosal_gpio_dev_t" title="hosal_gpio_dev_t">hosal_gpio_dev_t</a> *<em>gpio</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415hosal_gpio_initP16hosal_gpio_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Initialises a GPIO pin. </p>
+<p><dl class="docutils">
+<dt><strong>Note</strong></dt>
+<dd>Prepares a GPIO pin for use.</dd>
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">gpio</span></code>: the gpio pin which should be initialised</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv421hosal_gpio_output_setP16hosal_gpio_dev_t7uint8_t">
+<span id="_CPPv321hosal_gpio_output_setP16hosal_gpio_dev_t7uint8_t"></span><span id="_CPPv221hosal_gpio_output_setP16hosal_gpio_dev_t7uint8_t"></span><span id="hosal_gpio_output_set__hosal_gpio_dev_tP.uint8_t"></span><span class="target" id="group__hosal__gpio_1gaebe588bc3634067db236992f50bc38c3"></span>int <code class="descname">hosal_gpio_output_set</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv416hosal_gpio_dev_t" title="hosal_gpio_dev_t">hosal_gpio_dev_t</a> *<em>gpio</em>, uint8_t <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421hosal_gpio_output_setP16hosal_gpio_dev_t7uint8_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Set GPIO output high or low. </p>
+<p><dl class="docutils">
+<dt><strong>Note</strong></dt>
+<dd>Using this function on a gpio pin which is set to input mode is undefined.</dd>
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">gpio</span></code>: the gpio pin which should be set </li>
+<li><code class="docutils literal notranslate"><span class="pre">value</span></code>: 0 : output low | &gt;0 : output high</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv420hosal_gpio_input_getP16hosal_gpio_dev_tP7uint8_t">
+<span id="_CPPv320hosal_gpio_input_getP16hosal_gpio_dev_tP7uint8_t"></span><span id="_CPPv220hosal_gpio_input_getP16hosal_gpio_dev_tP7uint8_t"></span><span id="hosal_gpio_input_get__hosal_gpio_dev_tP.uint8_tP"></span><span class="target" id="group__hosal__gpio_1ga47ef1fc97c4fc590578948726a568942"></span>int <code class="descname">hosal_gpio_input_get</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv416hosal_gpio_dev_t" title="hosal_gpio_dev_t">hosal_gpio_dev_t</a> *<em>gpio</em>, uint8_t *<em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420hosal_gpio_input_getP16hosal_gpio_dev_tP7uint8_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Get the state of an input GPIO pin. Using this function on a gpio pin which is set to output mode will return an undefined value. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">gpio</span></code>: the gpio pin which should be read </li>
+<li><code class="docutils literal notranslate"><span class="pre">value</span></code>: gpio value</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv418hosal_gpio_irq_setP16hosal_gpio_dev_t24hosal_gpio_irq_trigger_t24hosal_gpio_irq_handler_tPv">
+<span id="_CPPv318hosal_gpio_irq_setP16hosal_gpio_dev_t24hosal_gpio_irq_trigger_t24hosal_gpio_irq_handler_tPv"></span><span id="_CPPv218hosal_gpio_irq_setP16hosal_gpio_dev_t24hosal_gpio_irq_trigger_t24hosal_gpio_irq_handler_tPv"></span><span id="hosal_gpio_irq_set__hosal_gpio_dev_tP.hosal_gpio_irq_trigger_t.hosal_gpio_irq_handler_t.voidP"></span><span class="target" id="group__hosal__gpio_1ga1772cbeb7f6380dcb0c825e459bd4ffd"></span>int <code class="descname">hosal_gpio_irq_set</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv416hosal_gpio_dev_t" title="hosal_gpio_dev_t">hosal_gpio_dev_t</a> *<em>gpio</em>, <a class="reference internal" href="#_CPPv424hosal_gpio_irq_trigger_t" title="hosal_gpio_irq_trigger_t">hosal_gpio_irq_trigger_t</a> <em>trigger_type</em>, <a class="reference internal" href="#_CPPv424hosal_gpio_irq_handler_t" title="hosal_gpio_irq_handler_t">hosal_gpio_irq_handler_t</a> <em>handler</em>, void *<em>arg</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418hosal_gpio_irq_setP16hosal_gpio_dev_t24hosal_gpio_irq_trigger_t24hosal_gpio_irq_handler_tPv" title="永久链接至目标"></a><br /></dt>
+<dd><p>Enables an interrupt trigger for an input GPIO pin. Using this function on a gpio pin which is set to output mode is undefined. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">gpio</span></code>: the gpio pin which will provide the interrupt trigger </li>
+<li><code class="docutils literal notranslate"><span class="pre">trigger</span></code>: the type of trigger (rising/falling edge or both) </li>
+<li><code class="docutils literal notranslate"><span class="pre">handler</span></code>: a function pointer to the interrupt handler </li>
+<li><code class="docutils literal notranslate"><span class="pre">arg</span></code>: an argument that will be passed to the interrupt handler</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv419hosal_gpio_irq_maskP16hosal_gpio_dev_t7uint8_t">
+<span id="_CPPv319hosal_gpio_irq_maskP16hosal_gpio_dev_t7uint8_t"></span><span id="_CPPv219hosal_gpio_irq_maskP16hosal_gpio_dev_t7uint8_t"></span><span id="hosal_gpio_irq_mask__hosal_gpio_dev_tP.uint8_t"></span><span class="target" id="group__hosal__gpio_1gae0cd6585f9c8e038a68ceead22f474d1"></span>int <code class="descname">hosal_gpio_irq_mask</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv416hosal_gpio_dev_t" title="hosal_gpio_dev_t">hosal_gpio_dev_t</a> *<em>gpio</em>, uint8_t <em>mask</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419hosal_gpio_irq_maskP16hosal_gpio_dev_t7uint8_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Clear an interrupt status for an input GPIO pin. Using this function on a gpio pin which has generated a interrupt. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">gpio</span></code>: the gpio pin which provided the interrupt trigger </li>
+<li><code class="docutils literal notranslate"><span class="pre">mask</span></code>: 0 : mask | 1 : umask</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv419hosal_gpio_finalizeP16hosal_gpio_dev_t">
+<span id="_CPPv319hosal_gpio_finalizeP16hosal_gpio_dev_t"></span><span id="_CPPv219hosal_gpio_finalizeP16hosal_gpio_dev_t"></span><span id="hosal_gpio_finalize__hosal_gpio_dev_tP"></span><span class="target" id="group__hosal__gpio_1ga22312a257ab94410306015b8b2f0b294"></span>int <code class="descname">hosal_gpio_finalize</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv416hosal_gpio_dev_t" title="hosal_gpio_dev_t">hosal_gpio_dev_t</a> *<em>gpio</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419hosal_gpio_finalizeP16hosal_gpio_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>Set a GPIO pin in default state. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li>0 on success</li>
+<li>EIO if an error occurred with any step </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">gpio</span></code>: the gpio pin which should be deinitialised</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="structures">
+<h3>Structures<a class="headerlink" href="#structures" title="永久链接至标题"></a></h3>
+<dl class="class">
+<dt id="_CPPv414hosal_gpio_ctx">
+<span id="_CPPv314hosal_gpio_ctx"></span><span id="_CPPv214hosal_gpio_ctx"></span><span id="hosal_gpio_ctx"></span><span class="target" id="structhosal__gpio__ctx"></span><em class="property">struct </em><code class="descname">hosal_gpio_ctx</code><a class="headerlink" href="#_CPPv414hosal_gpio_ctx" title="永久链接至目标"></a><br /></dt>
+<dd><p>hosal gpio ctx, use for multi gpio irq </p>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv416hosal_gpio_dev_t">
+<span id="_CPPv316hosal_gpio_dev_t"></span><span id="_CPPv216hosal_gpio_dev_t"></span><span id="hosal_gpio_dev_t"></span><span class="target" id="structhosal__gpio__dev__t"></span><em class="property">struct </em><code class="descname">hosal_gpio_dev_t</code><a class="headerlink" href="#_CPPv416hosal_gpio_dev_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>GPIO dev struct. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N16hosal_gpio_dev_t4portE">
+<span id="_CPPv3N16hosal_gpio_dev_t4portE"></span><span id="_CPPv2N16hosal_gpio_dev_t4portE"></span><span id="hosal_gpio_dev_t::port__uint8_t"></span><span class="target" id="structhosal__gpio__dev__t_1ae11dfce8b7ab18130504bd9ae7354e92"></span>uint8_t <code class="descname">port</code><a class="headerlink" href="#_CPPv4N16hosal_gpio_dev_t4portE" title="永久链接至目标"></a><br /></dt>
+<dd><p>gpio port </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16hosal_gpio_dev_t6configE">
+<span id="_CPPv3N16hosal_gpio_dev_t6configE"></span><span id="_CPPv2N16hosal_gpio_dev_t6configE"></span><span id="hosal_gpio_dev_t::config__hosal_gpio_config_t"></span><span class="target" id="structhosal__gpio__dev__t_1ae950eef369cc7944b4c80077168824f2"></span><a class="reference internal" href="#_CPPv419hosal_gpio_config_t" title="hosal_gpio_config_t">hosal_gpio_config_t</a> <code class="descname">config</code><a class="headerlink" href="#_CPPv4N16hosal_gpio_dev_t6configE" title="永久链接至目标"></a><br /></dt>
+<dd><p>gpio config </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16hosal_gpio_dev_t4privE">
+<span id="_CPPv3N16hosal_gpio_dev_t4privE"></span><span id="_CPPv2N16hosal_gpio_dev_t4privE"></span><span id="hosal_gpio_dev_t::priv__voidP"></span><span class="target" id="structhosal__gpio__dev__t_1ab6e09e5cdbc6abf7de0b2ff9e6d41b9b"></span>void *<code class="descname">priv</code><a class="headerlink" href="#_CPPv4N16hosal_gpio_dev_t4privE" title="永久链接至目标"></a><br /></dt>
+<dd><p>priv data </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="type-definitions">
+<h3>Type Definitions<a class="headerlink" href="#type-definitions" title="永久链接至标题"></a></h3>
+<dl class="type">
+<dt id="_CPPv424hosal_gpio_irq_handler_t">
+<span id="_CPPv324hosal_gpio_irq_handler_t"></span><span id="_CPPv224hosal_gpio_irq_handler_t"></span><span id="hosal_gpio_irq_handler_t"></span><span class="target" id="group__hosal__gpio_1ga03f3416a8a001f55aa3942227e571809"></span><em class="property">typedef </em>void (*<code class="descname">hosal_gpio_irq_handler_t</code>)<span class="sig-paren">(</span>void *arg<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv424hosal_gpio_irq_handler_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>GPIO interrupt callback handler. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">parg</span></code>: ：Set the custom parameters specified </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="type">
+<dt id="_CPPv416hosal_gpio_ctx_t">
+<span id="_CPPv316hosal_gpio_ctx_t"></span><span id="_CPPv216hosal_gpio_ctx_t"></span><span id="hosal_gpio_ctx_t"></span><span class="target" id="group__hosal__gpio_1ga7b0a1b606a593125137bdbea620c192f"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv414hosal_gpio_ctx" title="hosal_gpio_ctx">hosal_gpio_ctx</a> <code class="descname">hosal_gpio_ctx_t</code><a class="headerlink" href="#_CPPv416hosal_gpio_ctx_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>hosal gpio ctx, use for multi gpio irq </p>
+</dd></dl>
+
+</div>
+<div class="section" id="enumerations">
+<h3>Enumerations<a class="headerlink" href="#enumerations" title="永久链接至标题"></a></h3>
+<dl class="type">
+<dt id="_CPPv419hosal_gpio_config_t">
+<span id="_CPPv319hosal_gpio_config_t"></span><span id="_CPPv219hosal_gpio_config_t"></span><span id="hosal_gpio_config_t"></span><span class="target" id="group__hosal__gpio_1gab4f4585d2fbdaa72b33ba5b3b1a66c73"></span><em class="property">enum </em><code class="descname">hosal_gpio_config_t</code><a class="headerlink" href="#_CPPv419hosal_gpio_config_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>gpio config struct </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv411ANALOG_MODE">
+<span id="_CPPv311ANALOG_MODE"></span><span id="_CPPv211ANALOG_MODE"></span><span class="target" id="group__hosal__gpio_1ggab4f4585d2fbdaa72b33ba5b3b1a66c73a573555272804ba377743db9aded8d7b7"></span><code class="descname">ANALOG_MODE</code><a class="headerlink" href="#_CPPv411ANALOG_MODE" title="永久链接至目标"></a><br /></dt>
+<dd><p>Used as a function pin, input and output analog. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv413INPUT_PULL_UP">
+<span id="_CPPv313INPUT_PULL_UP"></span><span id="_CPPv213INPUT_PULL_UP"></span><span class="target" id="group__hosal__gpio_1ggab4f4585d2fbdaa72b33ba5b3b1a66c73a216a93afe99e50de6479ebb0b059b7b7"></span><code class="descname">INPUT_PULL_UP</code><a class="headerlink" href="#_CPPv413INPUT_PULL_UP" title="永久链接至目标"></a><br /></dt>
+<dd><p>Input with an internal pull-up resistor - use with devices that actively drive the signal low - e.g. button connected to ground. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv415INPUT_PULL_DOWN">
+<span id="_CPPv315INPUT_PULL_DOWN"></span><span id="_CPPv215INPUT_PULL_DOWN"></span><span class="target" id="group__hosal__gpio_1ggab4f4585d2fbdaa72b33ba5b3b1a66c73abfb3f0ac0be847179f83c296304abe78"></span><code class="descname">INPUT_PULL_DOWN</code><a class="headerlink" href="#_CPPv415INPUT_PULL_DOWN" title="永久链接至目标"></a><br /></dt>
+<dd><p>Input with an internal pull-down resistor - use with devices that actively drive the signal high - e.g. button connected to a power rail. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv420INPUT_HIGH_IMPEDANCE">
+<span id="_CPPv320INPUT_HIGH_IMPEDANCE"></span><span id="_CPPv220INPUT_HIGH_IMPEDANCE"></span><span class="target" id="group__hosal__gpio_1ggab4f4585d2fbdaa72b33ba5b3b1a66c73ae9cfc0d8287c9234a918a79643eaf265"></span><code class="descname">INPUT_HIGH_IMPEDANCE</code><a class="headerlink" href="#_CPPv420INPUT_HIGH_IMPEDANCE" title="永久链接至目标"></a><br /></dt>
+<dd><p>Input - must always be driven, either actively or by an external pullup resistor. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv416OUTPUT_PUSH_PULL">
+<span id="_CPPv316OUTPUT_PUSH_PULL"></span><span id="_CPPv216OUTPUT_PUSH_PULL"></span><span class="target" id="group__hosal__gpio_1ggab4f4585d2fbdaa72b33ba5b3b1a66c73ae09d3850455bcbe93ce8b2aa6b77c7bc"></span><code class="descname">OUTPUT_PUSH_PULL</code><a class="headerlink" href="#_CPPv416OUTPUT_PUSH_PULL" title="永久链接至目标"></a><br /></dt>
+<dd><p>Output actively driven high and actively driven low - must not be connected to other active outputs - e.g. LED output. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv425OUTPUT_OPEN_DRAIN_NO_PULL">
+<span id="_CPPv325OUTPUT_OPEN_DRAIN_NO_PULL"></span><span id="_CPPv225OUTPUT_OPEN_DRAIN_NO_PULL"></span><span class="target" id="group__hosal__gpio_1ggab4f4585d2fbdaa72b33ba5b3b1a66c73a462c61b5b91da95b5d8c353b86884381"></span><code class="descname">OUTPUT_OPEN_DRAIN_NO_PULL</code><a class="headerlink" href="#_CPPv425OUTPUT_OPEN_DRAIN_NO_PULL" title="永久链接至目标"></a><br /></dt>
+<dd><p>Output actively driven low but is high-impedance when set high - can be connected to other open-drain/open-collector outputs. Needs an external pull-up resistor. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv425OUTPUT_OPEN_DRAIN_PULL_UP">
+<span id="_CPPv325OUTPUT_OPEN_DRAIN_PULL_UP"></span><span id="_CPPv225OUTPUT_OPEN_DRAIN_PULL_UP"></span><span class="target" id="group__hosal__gpio_1ggab4f4585d2fbdaa72b33ba5b3b1a66c73a73accd40b7649ed9d9d4300af7fd9bf6"></span><code class="descname">OUTPUT_OPEN_DRAIN_PULL_UP</code><a class="headerlink" href="#_CPPv425OUTPUT_OPEN_DRAIN_PULL_UP" title="永久链接至目标"></a><br /></dt>
+<dd><p>Output actively driven low and is pulled high with an internal resistor when set high - can be connected to other open-drain/open-collector outputs. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv420OUTPUT_OPEN_DRAIN_AF">
+<span id="_CPPv320OUTPUT_OPEN_DRAIN_AF"></span><span id="_CPPv220OUTPUT_OPEN_DRAIN_AF"></span><span class="target" id="group__hosal__gpio_1ggab4f4585d2fbdaa72b33ba5b3b1a66c73a55b1cc47130ff7ca2a37f763a9991355"></span><code class="descname">OUTPUT_OPEN_DRAIN_AF</code><a class="headerlink" href="#_CPPv420OUTPUT_OPEN_DRAIN_AF" title="永久链接至目标"></a><br /></dt>
+<dd><p>Alternate Function Open Drain Mode. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv419OUTPUT_PUSH_PULL_AF">
+<span id="_CPPv319OUTPUT_PUSH_PULL_AF"></span><span id="_CPPv219OUTPUT_PUSH_PULL_AF"></span><span class="target" id="group__hosal__gpio_1ggab4f4585d2fbdaa72b33ba5b3b1a66c73a3a8a4f098c2f7ae71f8c339616005843"></span><code class="descname">OUTPUT_PUSH_PULL_AF</code><a class="headerlink" href="#_CPPv419OUTPUT_PUSH_PULL_AF" title="永久链接至目标"></a><br /></dt>
+<dd><p>Alternate Function Push Pull Mode. </p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="type">
+<dt id="_CPPv424hosal_gpio_irq_trigger_t">
+<span id="_CPPv324hosal_gpio_irq_trigger_t"></span><span id="_CPPv224hosal_gpio_irq_trigger_t"></span><span id="hosal_gpio_irq_trigger_t"></span><span class="target" id="group__hosal__gpio_1gacbec1edb4b20de0f2225a56c77f12196"></span><em class="property">enum </em><code class="descname">hosal_gpio_irq_trigger_t</code><a class="headerlink" href="#_CPPv424hosal_gpio_irq_trigger_t" title="永久链接至目标"></a><br /></dt>
+<dd><p>GPIO interrupt trigger. </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv424HOSAL_IRQ_TRIG_NEG_PULSE">
+<span id="_CPPv324HOSAL_IRQ_TRIG_NEG_PULSE"></span><span id="_CPPv224HOSAL_IRQ_TRIG_NEG_PULSE"></span><span class="target" id="group__hosal__gpio_1ggacbec1edb4b20de0f2225a56c77f12196ae2217c4c05a0097b74e1ae30e4c5189d"></span><code class="descname">HOSAL_IRQ_TRIG_NEG_PULSE</code><a class="headerlink" href="#_CPPv424HOSAL_IRQ_TRIG_NEG_PULSE" title="永久链接至目标"></a><br /></dt>
+<dd><p>GPIO negedge pulse trigger interrupt. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv424HOSAL_IRQ_TRIG_POS_PULSE">
+<span id="_CPPv324HOSAL_IRQ_TRIG_POS_PULSE"></span><span id="_CPPv224HOSAL_IRQ_TRIG_POS_PULSE"></span><span class="target" id="group__hosal__gpio_1ggacbec1edb4b20de0f2225a56c77f12196aea48968ffad814e27bd26b308685ee88"></span><code class="descname">HOSAL_IRQ_TRIG_POS_PULSE</code><a class="headerlink" href="#_CPPv424HOSAL_IRQ_TRIG_POS_PULSE" title="永久链接至目标"></a><br /></dt>
+<dd><p>GPIO posedge pulse trigger interrupt. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv424HOSAL_IRQ_TRIG_NEG_LEVEL">
+<span id="_CPPv324HOSAL_IRQ_TRIG_NEG_LEVEL"></span><span id="_CPPv224HOSAL_IRQ_TRIG_NEG_LEVEL"></span><span class="target" id="group__hosal__gpio_1ggacbec1edb4b20de0f2225a56c77f12196a67d0066a65e69de253983818379a39ed"></span><code class="descname">HOSAL_IRQ_TRIG_NEG_LEVEL</code><a class="headerlink" href="#_CPPv424HOSAL_IRQ_TRIG_NEG_LEVEL" title="永久链接至目标"></a><br /></dt>
+<dd><p>GPIO negedge level trigger interrupt (32k 3T) </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv424HOSAL_IRQ_TRIG_POS_LEVEL">
+<span id="_CPPv324HOSAL_IRQ_TRIG_POS_LEVEL"></span><span id="_CPPv224HOSAL_IRQ_TRIG_POS_LEVEL"></span><span class="target" id="group__hosal__gpio_1ggacbec1edb4b20de0f2225a56c77f12196a028659567928e75d86adb6d66c72b89f"></span><code class="descname">HOSAL_IRQ_TRIG_POS_LEVEL</code><a class="headerlink" href="#_CPPv424HOSAL_IRQ_TRIG_POS_LEVEL" title="永久链接至目标"></a><br /></dt>
+<dd><p>GPIO posedge level trigger interrupt (32k 3T) </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="adc.html" class="btn btn-neutral float-right" title="ADC" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="wdg.html" class="btn btn-neutral" title="WDG" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

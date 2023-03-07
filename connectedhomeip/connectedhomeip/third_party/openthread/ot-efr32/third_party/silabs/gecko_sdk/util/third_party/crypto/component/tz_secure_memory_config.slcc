@@ -1,0 +1,42 @@
+id: tz_secure_memory_config
+package: platform
+description: >-
+  This component provides memory configuration for the TrustZone secure key library application
+category: Platform|Security|TrustZone
+ui_hints:
+  visibility: never
+quality: beta
+
+provides:
+  - name: tz_secure_memory_config
+
+# Provide the desired memory configuration for the TrustZone Non-secure application.
+
+# Note: the lower boundary of the non-secure memory region (marking the end
+# of the secure/non-secure callable memory region) needs to be aligned with a
+# granularity of 4K Bytes. This is a hard requirement stemming from hardware
+# limitations. Additionally, there is a soft requirement on the boundary to be
+# aligned at a flash page boundary. If this is not respected, the first part
+# of the NS application (that shares a flash page with the secure memory
+# region) will be locked as part of the TZ setup routine. This should not be a
+# problem for most applications though, since there should not be any need for
+# manual flash writes to this area.
+
+define:
+  # Flash offset start address of the Non-secure application
+  - name: TZ_NS_FLASH_OFFSET
+    value: 0x0
+
+  # RAM offset start address of the Non-secure application
+  - name: TZ_NS_RAM_OFFSET
+    value: 0x0
+
+template_contribution:
+  - name: memory_flash_start
+    value: 0x0
+  - name: memory_flash_size
+    value: 0x0
+  - name: memory_ram_start
+    value: 0x0
+  - name: memory_ram_size
+    value: 0x0

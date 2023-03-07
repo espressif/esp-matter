@@ -1,0 +1,62 @@
+
+SIMPLELINK_CC32XX_SDK_INSTALL_DIR ?= $(abspath ../../../../../..)
+
+include $(SIMPLELINK_CC32XX_SDK_INSTALL_DIR)/imports.mak
+
+ROOT=$(SIMPLELINK_CC32XX_SDK_INSTALL_DIR)/source/ti/net/atcmd
+
+#
+# Source path
+#
+VPATH = $(ROOT)
+
+CC = "$(IAR_ARMCOMPILER)/bin/iccarm"
+ASM = "$(IAR_ARMCOMPILER)/bin/iasmarm"
+AR = "$(IAR_ARMCOMPILER)/bin/iarchive"
+
+STDINC = "$(IAR_ARMCOMPILER)/include"
+
+#
+# Include path
+#
+IPATH  = -I$(ROOT)
+IPATH += -I$(ROOT)/../../../
+IPATH += -I$(ROOT)/../../drivers/net/wifi
+IPATH += -I$(SIMPLELINK_CC32XX_SDK_INSTALL_DIR)/source/ti/posix/iar
+ifdef COM_TI_SIMPLELINK_MSP432_SDK_INSTALL_DIR
+IPATH += -I$(COM_TI_SIMPLELINK_MSP432_SDK_INSTALL_DIR)/source
+endif
+IPATH += -I$(STDINC)
+
+CFLAGS = -Dewarm  --debug --silent --aeabi --cpu=Cortex-M4 --diag_suppress=Pa050,Go005 --endian=little -e --thumb $(IPATH)
+
+CFILES = \
+    atcmd_defs.c \
+    atcmd_device.c \
+    atcmd_wlan.c \
+    atcmd_socket.c \
+    atcmd_file.c \
+    atcmd_netapp.c \
+    atcmd_netcfg.c \
+    atcmd_netutil.c \
+    atcmd_event.c \
+    atcmd_gen.c \
+    atcmd.c \
+    atcmd_mqtt.c \
+    atcmd_http.c
+
+OBJCFILES = $(CFILES:.c=.obj)
+
+atcmd.a: $(OBJCFILES)
+	@ echo ar $@ ...
+	@ $(RM) $@ > $(DEVNULL) 2>&1
+	@ $(AR) --silent -o $@ $(OBJCFILES)
+
+%.obj:%.c
+	@ echo cc $@ ...
+	@ $(CC) $(CFLAGS) $< -o $@
+
+clean:
+	@ echo cleaning ...
+	@ $(RM) *.obj > $(DEVNULL) 2>&1
+	@ $(RM) *.a > $(DEVNULL) 2>&1

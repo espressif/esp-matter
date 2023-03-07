@@ -1,0 +1,118 @@
+#!/bin/bash
+#
+#  Copyright (c) 2018, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+
+set -eux
+
+check_otbr_agent()
+{
+    sudo dbus-send --system \
+        --dest=org.freedesktop.DBus \
+        --type=method_call \
+        --print-reply \
+        /org/freedesktop/DBus \
+        org.freedesktop.DBus.ListNames | grep -q '"io.openthread.BorderRouter.wpan0"'
+}
+
+check_upstart()
+{
+    echo 'Verify Upstart notification'
+    UPSTART_JOB=otbr-agent sudo -E otbr-agent -d7 -v "spinel+hdlc+forkpty://$(command -v ot-rcp)?forkpty-arg=2" &
+    sleep 2
+    UPSTART_JOB_PID=$!
+
+    if [[ "$(ps --no-headers -o s "${UPSTART_JOB_PID}")" != T ]]; then
+        echo 'otbr-agent is not in Stopped state'
+        false
+    fi
+
+    echo 'Continue otbr-agent'
+    sudo pkill -SIGCONT -P "${UPSTART_JOB_PID}"
+    sudo kill -SIGCONT "${UPSTART_JOB_PID}"
+    sleep 2
+
+    if [[ "$(ps --no-headers -o s "${UPSTART_JOB_PID}")" == T ]]; then
+        echo 'otbr-agent did not continue'
+        false
+    fi
+    sudo pkill -P "${UPSTART_JOB_PID}"
+    wait
+}
+
+main()
+{
+    RELEASE=1 ./script/bootstrap
+    ./script/bootstrap
+    INFRA_IF_NAME=eth0 BACKBONE_ROUTER=0 NAT64=1 ./script/setup
+    # re-run to ensure the script can run successfully multiple times
+    INFRA_IF_NAME=eth0 BACKBONE_ROUTER=0 NAT64=1 ./script/setup
+    SOCAT_OUTPUT=/tmp/ot-socat
+
+    if ! command -v ot-rcp; then
+        third_party/openthread/repo/script/cmake-build simulation -DOT_COVERAGE=OFF
+        PATH=$PATH:build/simulation/examples/apps/ncp
+    fi
+
+    check_upstart
+
+    socat -d -d pty,raw,echo=0 pty,raw,echo=0 >/dev/null 2>$SOCAT_OUTPUT &
+    while true; do
+        if [[ "$(head -n2 $SOCAT_OUTPUT | wc -l)" == 2 ]]; then
+            RCP_PTY=$(head -n1 $SOCAT_OUTPUT | grep -o '/dev/.\+')
+            HOST_PTY=$(head -n2 $SOCAT_OUTPUT | tail -n1 | grep -o '/dev/.\+')
+            break
+        fi
+        echo 'Waiting for socat ready...'
+        sleep 1
+    done
+    echo "RCP_PTY: ${RCP_PTY}"
+    echo "HOST_PTY: ${HOST_PTY}"
+
+    # shellcheck disable=SC2094
+    ot-rcp 1 >"${RCP_PTY}" <"${RCP_PTY}" &
+
+    INFRA_IF_NAME=eth0 RADIO_URL="spinel+hdlc+uart://${HOST_PTY}" ./script/console &
+    SERVICES_PID=$!
+    sudo service tayga start
+    echo 'Waiting for services to be ready...'
+    sleep 30
+    check_otbr_agent
+    netstat -an | grep 80
+    pidof tayga
+    kill "${SERVICES_PID}"
+    sudo killall otbr-web || true
+    sudo killall otbr-agent || true
+    sudo service tayga stop || true
+    killall ot-rcp
+    killall socat
+    jobs
+    echo 'Waiting for services to end...'
+    wait
+}
+
+main "$@"

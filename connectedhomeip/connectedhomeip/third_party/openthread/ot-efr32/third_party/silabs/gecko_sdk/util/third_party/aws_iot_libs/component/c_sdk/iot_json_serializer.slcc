@@ -1,0 +1,23 @@
+id: iot_json_serializer
+
+category: Third Party|Amazon FreeRTOS - AWS Libraries|IoT json Serializer
+label: IoT json Serializer
+description: IoT json Serializer Filess
+
+package: amazon_platform
+quality: production
+
+provides:
+  - name: iot_json_serializer
+
+ui_hints:
+  visibility: never
+
+root_path: util/third_party/aws_iot_libs
+
+source:
+  - path: libraries/c_sdk/standard/serializer/src/json/iot_serializer_json_decoder.c
+  - path: libraries/c_sdk/standard/serializer/src/json/iot_serializer_json_encoder.c
+
+define:
+  - name: IOT_JSON_SERIALIZER

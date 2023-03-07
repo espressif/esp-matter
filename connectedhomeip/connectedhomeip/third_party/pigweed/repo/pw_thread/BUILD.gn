@@ -1,0 +1,246 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/facade.gni")
+import("$dir_pw_build/module_config.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_protobuf_compiler/proto.gni")
+import("$dir_pw_unit_test/test.gni")
+import("backend.gni")
+
+declare_args() {
+  # The build target that overrides the default configuration options for this
+  # module. This should point to a source set that provides defines through a
+  # public config (which may -include a file or add defines directly).
+  pw_thread_CONFIG = pw_build_DEFAULT_MODULE_CONFIG
+}
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("config") {
+  public_deps = [ pw_thread_CONFIG ]
+  public = [ "public/pw_thread/config.h" ]
+  public_configs = [ ":public_include_path" ]
+  visibility = [ ":*" ]
+}
+
+pw_facade("id") {
+  backend = pw_thread_ID_BACKEND
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_thread/id.h" ]
+}
+
+pw_facade("sleep") {
+  backend = pw_thread_SLEEP_BACKEND
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_thread/sleep.h" ]
+  public_deps = [
+    "$dir_pw_chrono:system_clock",
+    "$dir_pw_preprocessor",
+  ]
+  sources = [ "sleep.cc" ]
+}
+
+pw_facade("thread") {
+  backend = pw_thread_THREAD_BACKEND
+  public_configs = [ ":public_include_path" ]
+  public = [
+    "public/pw_thread/detached_thread.h",
+    "public/pw_thread/thread.h",
+  ]
+  public_deps = [
+    ":id",
+    ":thread_core",
+  ]
+  sources = [ "thread.cc" ]
+}
+
+pw_source_set("thread_core") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_thread/thread_core.h" ]
+}
+
+pw_facade("thread_iteration") {
+  backend = pw_thread_THREAD_ITERATION_BACKEND
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_thread/thread_iteration.h" ]
+  public_deps = [
+    ":thread_info",
+    "$dir_pw_function",
+    "$dir_pw_status",
+  ]
+}
+
+pw_facade("yield") {
+  backend = pw_thread_YIELD_BACKEND
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_thread/yield.h" ]
+  public_deps = [ "$dir_pw_preprocessor" ]
+  sources = [ "yield.cc" ]
+}
+
+pw_source_set("snapshot") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    "$dir_pw_thread:protos.pwpb",
+    dir_pw_bytes,
+    dir_pw_function,
+    dir_pw_protobuf,
+    dir_pw_status,
+  ]
+  public = [ "public/pw_thread/snapshot.h" ]
+  sources = [ "snapshot.cc" ]
+  deps = [
+    ":config",
+    dir_pw_log,
+  ]
+}
+
+pw_source_set("thread_info") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ dir_pw_span ]
+  public = [ "public/pw_thread/thread_info.h" ]
+  deps = [ ":config" ]
+}
+
+pw_source_set("thread_snapshot_service") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_thread/thread_snapshot_service.h" ]
+  public_deps = [
+    ":protos.pwpb",
+    ":protos.raw_rpc",
+    ":thread_info",
+    "$dir_pw_rpc/raw:server_api",
+    "$dir_pw_status:pw_status",
+  ]
+  sources = [
+    "pw_thread_private/thread_snapshot_service.h",
+    "thread_snapshot_service.cc",
+  ]
+  deps = [
+    ":config",
+    ":thread_iteration",
+    "$dir_pw_log",
+    "$dir_pw_protobuf",
+    "$dir_pw_rpc/raw:server_api",
+    "$dir_pw_span",
+    "$dir_pw_status:pw_status",
+  ]
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":id_facade_test",
+    ":sleep_facade_test",
+    ":thread_info_test",
+    ":yield_facade_test",
+    ":thread_snapshot_service_test",
+  ]
+}
+
+pw_test("id_facade_test") {
+  enable_if = pw_thread_ID_BACKEND != ""
+  sources = [ "id_facade_test.cc" ]
+  deps = [ ":id" ]
+}
+
+pw_test("thread_snapshot_service_test") {
+  enable_if = pw_thread_THREAD_ITERATION_BACKEND != ""
+  sources = [
+    "pw_thread_private/thread_snapshot_service.h",
+    "thread_snapshot_service_test.cc",
+  ]
+  deps = [
+    ":protos.pwpb",
+    ":thread_iteration",
+    "$dir_pw_protobuf",
+    "$dir_pw_span",
+    "$dir_pw_sync:thread_notification",
+    "$dir_pw_thread:thread_info",
+    "$dir_pw_thread:thread_snapshot_service",
+  ]
+}
+
+pw_test("sleep_facade_test") {
+  enable_if = pw_thread_SLEEP_BACKEND != "" && pw_thread_ID_BACKEND != ""
+  sources = [
+    "sleep_facade_test.cc",
+    "sleep_facade_test_c.c",
+  ]
+  deps = [
+    ":id",
+    ":sleep",
+    "$dir_pw_chrono:system_clock",
+  ]
+}
+
+pw_source_set("test_threads") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_thread/test_threads.h" ]
+  public_deps = [ ":thread" ]
+}
+
+# To instantiate this facade test based on a selected backend to provide
+# test_threads you can create a pw_test target which depends on this
+# pw_source_set and a pw_source_set which provides the implementation of
+# test_threads. See "$dir_pw_thread_stl:thread_backend_test" as an example.
+pw_source_set("thread_facade_test") {
+  sources = [ "thread_facade_test.cc" ]
+  deps = [
+    ":id",
+    ":sleep",
+    ":test_threads",
+    ":thread",
+    "$dir_pw_sync:binary_semaphore",
+    dir_pw_unit_test,
+  ]
+}
+
+pw_test("thread_info_test") {
+  sources = [ "thread_info_test.cc" ]
+  deps = [
+    ":thread_info",
+    dir_pw_span,
+  ]
+}
+
+pw_test("yield_facade_test") {
+  enable_if = pw_thread_YIELD_BACKEND != "" && pw_thread_ID_BACKEND != ""
+  sources = [
+    "yield_facade_test.cc",
+    "yield_facade_test_c.c",
+  ]
+  deps = [
+    ":id",
+    ":yield",
+  ]
+}
+
+pw_proto_library("protos") {
+  sources = [
+    "pw_thread_protos/thread.proto",
+    "pw_thread_protos/thread_snapshot_service.proto",
+  ]
+  deps = [ "$dir_pw_tokenizer:proto" ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}

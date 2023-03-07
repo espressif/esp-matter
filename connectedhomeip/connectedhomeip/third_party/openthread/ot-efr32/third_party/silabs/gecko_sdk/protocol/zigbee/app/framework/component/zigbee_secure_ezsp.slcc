@@ -1,0 +1,70 @@
+package: Zigbee
+description: This component provides an implementation of the Secure EZSP protocol. This
+  component require the NCP to support Secure EZSP commands. This is achieved by building
+  the NCP image with the Secure EZSP component.
+label: EZSP Secure Protocol
+quality: production
+id: zigbee_secure_ezsp
+category: Zigbee|Utility
+toolchain_settings: []
+ui_hints: {}
+template_file: []
+provides:
+   - name: "zigbee_ezsp_secure"
+   - name: "zigbee_secure_ezsp"
+requires:
+   - name: "zigbee_ezsp"
+   - name: "device_host"
+config_file:
+  - path: "protocol/zigbee/app/framework/plugin-host/secure-ezsp/config/secure-ezsp-config.h"
+source:
+    - path: "protocol/zigbee/app/framework/plugin-host/secure-ezsp/secure-ezsp-cb.c"
+    - path: "protocol/zigbee/app/framework/plugin-host/secure-ezsp/secure-ezsp-cli.c"
+    - path: "protocol/zigbee/app/util/ezsp/secure-ezsp.c"
+    - path: "protocol/zigbee/app/util/ezsp/secure-ezsp-host.c"
+    - path: "protocol/zigbee/app/util/secure-ezsp/aes-mmo.c"
+    - path: "protocol/zigbee/app/util/secure-ezsp/hmac.c"
+    - path: "protocol/zigbee/app/util/secure-ezsp/802-15-4-ccm.c"
+include:
+    - path: protocol/zigbee/app/util/ezsp
+      file_list:
+      - path: secure-ezsp-protocol.h
+    - path: protocol/zigbee/app/util/secure-ezsp
+      file_list:
+      - path: aes.h
+      - path: 802-15-4-ccm.h
+      - path: hmac.h
+template_contribution:
+  - name: token_header
+    value: app/util/ezsp/secure-ezsp-token.h
+  - name: component_catalog
+    value: zigbee_secure_ezsp
+  - name: cli_group
+    value:
+      group: plugin
+      name: secure-ezsp
+      help: secure-ezsp related commands
+  - name: cli_command
+    value:
+      group: secure-ezsp
+      name: set_security_key
+      handler: emberAfPluginSecureEzspSetSecurityKeyCommand
+      help: Set the Security Key of the Secure EZSP Protocol.
+      argument:
+      - type: uint32
+        help: The security type to be used for the Secure EZSP Protocol.
+  - name: cli_command
+    value:
+      group: secure-ezsp
+      name: set_security_parameters
+      handler: emberAfPluginSecureEzspSetSecurityParametersCommand
+      help: Set the Host-side Security Parameters of the Secure EZSP Protocol.
+      argument:
+      - type: uint32
+        help: The security level to be used for the Secure EZSP communication.
+  - name: cli_command
+    value:
+      group: secure-ezsp
+      name: reset_to_factory_defaults
+      handler: emberAfPluginSecureEzspResetToFactoryDefaultsCommand
+      help: Reset the NCP to factory default.

@@ -1,0 +1,101 @@
+project_name: bt_rcp_cpc
+package: Bluetooth
+label: Bluetooth - RCP CPC
+description: >
+  Radio Co-Processor (RCP) target application. Runs the Bluetooth Controller
+  (i.e. the Link Layer only) and provides access to it using the standard HCI
+  (Host-Controller Interface) over CPC (Co-Processor Communication) protocol
+  through UART connection.
+category: Bluetooth Examples
+quality: production
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Bluetooth"]
+  - name: "Device Type"
+    value: ["RCP"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+
+component:
+  - id: bluetooth_hci_cpc
+  - id: cpc_secondary
+  - id: cpc_secondary_driver_uart_usart
+    instance:
+      - vcom
+  - id: board_control
+  - id: cpc_security_secondary_none
+  - id: sl_system
+  - id: bluetooth_controller
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_legacy_advertiser
+  - id: bluetooth_feature_extended_advertiser
+  - id: bluetooth_feature_periodic_advertiser
+  - id: bluetooth_feature_connection_phy_update
+  - id: bluetooth_feature_legacy_scanner
+  - id: bluetooth_feature_extended_scanner
+  - id: device_init
+  - id: bootloader_interface
+
+source:
+  - path: app.c
+  - path: main.c
+
+include:
+  - path: .
+    file_list:
+      - path: app.h
+
+readme:
+  - path: ../../documentation/example/rcp_cpc/readme.md
+
+other_file:
+  - path: ../../documentation/example/rcp_cpc/readme_img0.png
+    folder: images
+  - path: ../../documentation/example/rcp_cpc/readme_img1.png
+    folder: images
+  - path: ../../documentation/example/rcp_cpc/readme_img2.png
+    folder: images
+
+configuration:
+  - name: SL_STACK_SIZE
+    value: 2752
+  - name: SL_HEAP_SIZE
+    value: "16000"
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: SL_BT_CONFIG_USER_ADVERTISERS
+    value: 2
+  - name: SL_CPC_RX_BUFFER_MAX_COUNT
+    value: 5
+  - name: SL_CPC_DRV_UART_VCOM_RX_QUEUE_SIZE
+    value: 5
+  - name: SL_UARTDRV_USART_VCOM_FLOW_CONTROL_TYPE
+    value: uartdrvFlowControlNone
+  - name: SL_DEVICE_INIT_LFXO_TIMEOUT
+    value: _CMU_LFXOCTRL_TIMEOUT_4KCYCLES
+    condition: ["device_sdid_80"]
+  - name: SL_DEVICE_INIT_LFXO_TIMEOUT
+    value: _CMU_LFXOCTRL_TIMEOUT_4KCYCLES
+    condition: ["device_sdid_84"]
+  - name: SL_DEVICE_INIT_LFXO_TIMEOUT
+    value: _CMU_LFXOCTRL_TIMEOUT_4KCYCLES
+    condition: ["device_sdid_89"]
+  - name: SL_DEVICE_INIT_LFXO_TIMEOUT
+    value: cmuLfxoStartupDelay_4KCycles
+    condition: ["device_sdid_200"]
+  - name: SL_DEVICE_INIT_LFXO_TIMEOUT
+    value: cmuLfxoStartupDelay_4KCycles
+    condition: ["device_sdid_205"]
+  - name: SL_PSA_KEY_USER_SLOT_COUNT
+    value: "0"
+    condition:
+      - psa_crypto
+
+tag:
+  - hardware:rf:band:2400
+
+ui_hints:
+  highlight:
+    - path: readme.md
+      focus: true

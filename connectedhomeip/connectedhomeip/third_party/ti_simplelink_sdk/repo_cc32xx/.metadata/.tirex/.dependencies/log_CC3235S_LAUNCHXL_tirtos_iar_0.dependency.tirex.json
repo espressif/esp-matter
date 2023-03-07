@@ -1,0 +1,13 @@
+[
+    {
+        "files": [
+            "+../../../../../../../source/ti/boards/CC3235S_LAUNCHXL/Board.html -> Board.html",
+            "+cc32xxs_tirtos.icf -> cc32xxs_tirtos.icf",
+            "+../../log.c -> log.c",
+            "+../log.syscfg -> log.syscfg",
+            "+../main_tirtos.c -> main_tirtos.c",
+            "+../../README.html -> README.html",
+            "+../../README.md -> README.md"
+        ]
+    }
+]

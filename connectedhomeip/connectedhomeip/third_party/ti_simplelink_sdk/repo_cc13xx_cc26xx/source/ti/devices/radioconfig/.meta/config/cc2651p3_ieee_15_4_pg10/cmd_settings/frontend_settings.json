@@ -1,0 +1,180 @@
+{
+    "frontends": {
+        "FrontEnd": [
+            {
+                "_name": "ID",
+                "Command": {
+                    "_name": "CMD_RADIO_SETUP_PA",
+                    "Field": [
+                        {
+                            "_name": "config.frontEndMode",
+                            "$": "0"
+                        },
+                        {
+                            "_name": "config.biasMode",
+                            "$": "0"
+                        }
+                    ],
+                    "OverrideField": {
+                        "_name": "pRegOverride"
+                    }
+                }
+            },
+            {
+                "_name": "XD",
+                "Command": {
+                    "_name": "CMD_RADIO_SETUP_PA",
+                    "Field": [
+                        {
+                            "_name": "config.frontEndMode",
+                            "$": "0"
+                        },
+                        {
+                            "_name": "config.biasMode",
+                            "$": "1"
+                        }
+                    ],
+                    "OverrideField": {
+                        "_name": "pRegOverride"
+                    }
+                }
+            },
+            {
+                "_name": "IS_RFP",
+                "Command": {
+                    "_name": "CMD_RADIO_SETUP_PA",
+                    "Field": [
+                        {
+                            "_name": "config.frontEndMode",
+                            "$": "1"
+                        },
+                        {
+                            "_name": "config.biasMode",
+                            "$": "0"
+                        }
+                    ],
+                    "OverrideField": {
+                        "_name": "pRegOverride",
+                        "Block": {
+                            "_name": "override_frontend_is.json",
+                            "Element32b": [
+                                {
+                                    "_type": "MCE_RFE_OVERRIDE",
+                                    "_comment": "MCE ROM bank 1, RFE ROM bank 1",
+                                    "$": "0,1,0,0,1,0"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "_comment": "Rx: Set RSSI offset to adjust reported RSSI by +5 dB",
+                                    "$": "0x000508A3"
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            {
+                "_name": "IS_RFN",
+                "Command": {
+                    "_name": "CMD_RADIO_SETUP_PA",
+                    "Field": [
+                        {
+                            "_name": "config.frontEndMode",
+                            "$": "2"
+                        },
+                        {
+                            "_name": "config.biasMode",
+                            "$": "0"
+                        }
+                    ],
+                    "OverrideField": {
+                        "_name": "pRegOverride",
+                        "Block": {
+                            "_name": "override_frontend_is.json",
+                            "Element32b": [
+                                {
+                                    "_type": "MCE_RFE_OVERRIDE",
+                                    "_comment": "MCE ROM bank 1, RFE ROM bank 1",
+                                    "$": "0,1,0,0,1,0"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "_comment": "Rx: Set RSSI offset to adjust reported RSSI by +5 dB",
+                                    "$": "0x000508A3"
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            {
+                "_name": "XS_RFP",
+                "Command": {
+                    "_name": "CMD_RADIO_SETUP_PA",
+                    "Field": [
+                        {
+                            "_name": "config.frontEndMode",
+                            "$": "1"
+                        },
+                        {
+                            "_name": "config.biasMode",
+                            "$": "1"
+                        }
+                    ],
+                    "OverrideField": {
+                        "_name": "pRegOverride",
+                        "Block": {
+                            "_name": "override_frontend_is.json",
+                            "Element32b": [
+                                {
+                                    "_type": "MCE_RFE_OVERRIDE",
+                                    "_comment": "MCE ROM bank 1, RFE ROM bank 1",
+                                    "$": "0,1,0,0,1,0"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "_comment": "Rx: Set RSSI offset to adjust reported RSSI by +5 dB",
+                                    "$": "0x000508A3"
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            {
+                "_name": "XS_RFN",
+                "Command": {
+                    "_name": "CMD_RADIO_SETUP_PA",
+                    "Field": [
+                        {
+                            "_name": "config.frontEndMode",
+                            "$": "2"
+                        },
+                        {
+                            "_name": "config.biasMode",
+                            "$": "1"
+                        }
+                    ],
+                    "OverrideField": {
+                        "_name": "pRegOverride",
+                        "Block": {
+                            "_name": "override_frontend_is.json",
+                            "Element32b": [
+                                {
+                                    "_type": "MCE_RFE_OVERRIDE",
+                                    "_comment": "MCE ROM bank 1, RFE ROM bank 1",
+                                    "$": "0,1,0,0,1,0"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "_comment": "Rx: Set RSSI offset to adjust reported RSSI by +5 dB",
+                                    "$": "0x000508A3"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        ]
+    }
+}

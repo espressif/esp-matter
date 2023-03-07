@@ -1,0 +1,27 @@
+id: "bluetooth_controller_rtos_adaptation"
+label: "Bluetooth Core"
+package: "Bluetooth"
+description: >
+  Bluetooth RTOS adaptation for running Bluetooth Controller with an RTOS Kernel.
+category: "Bluetooth|RTOS"
+quality: "production"
+root_path: "protocol/bluetooth/bgstack/ll/utils/rtos"
+config_file:
+  - path: "config/sl_btctrl_rtos_config.h"
+include:
+  - path: "inc/"
+    file_list:
+      - path: "sl_btctrl_rtos.h"
+source:
+  - path: "src/sl_btctrl_rtos.c"
+requires:
+  - name: bluetooth_controller
+template_contribution:
+  - name: event_handler
+    value:
+      event: stack_init
+      include: "sl_btctrl_rtos.h"
+      handler: "sl_btctrl_rtos_init"
+    priority: -1000
+provides:
+  - name: "bluetooth_controller_rtos_adaptation"

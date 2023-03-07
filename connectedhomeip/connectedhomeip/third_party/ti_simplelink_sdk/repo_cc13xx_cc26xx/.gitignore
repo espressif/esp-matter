@@ -1,0 +1,48 @@
+# VS Code Configs
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# Platforms
+.DS_Store
+
+# Temporary Directories
+.tmp/
+
+# Xcode, other development environment stuff
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xcuserstate
+project.xcworkspace/
+xcuserdata/
+*.xcodeproj/*
+*.xcworkspace/*
+TAGS
+
+# Text editors
+.*.sw[a-z]
+
+# Patch files
+*.rej
+*.orig
+
+# C-Lion / IDEA files
+.idea/**
+
+# Python bytecodes
+__pycache__
+*.pyc
+*.egg-info
+
+# VSCode java extensions
+.project
+
+# clangd index files
+.cache
+
+# backup files
+*~

@@ -1,0 +1,14 @@
+package.xdc
+Platform.xdc
+Platform.xs
+Platform.xdt
+package/ti.platforms.cortexM.sch
+package/.vers_g200
+package/.vers_r200
+package/.vers_b200
+package/.xdc-K04
+package/ti_platforms_cortexM.java
+package/ti_platforms_cortexM.class
+package/package_ti.platforms.cortexM.c
+package/package.defs.h
+package/ti.platforms.cortexM.ccs

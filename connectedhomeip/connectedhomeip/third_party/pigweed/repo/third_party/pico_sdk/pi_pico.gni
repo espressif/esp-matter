@@ -1,0 +1,34 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+declare_args() {
+  # PIGWEED ONLY: Since Pigweed doesn't host 3p code, this points to the actual
+  # location of the Pi Pico source. If the GN build is ever upstreamed, this
+  # variable would not be needed.
+  PICO_SRC_DIR = ""
+}
+
+# Actual Pi Pico build configuration options.
+declare_args() {
+  PICO_BARE_METAL = false
+  PICO_BOARD = "\"rp2040\""
+  PICO_BOARD_HEADER_DIR = get_path_info("src/boards", "abspath")
+
+  # TODO(amontanez): This needs to be thought through fully.
+  PICO_GENERATED_CONFIG = get_path_info("src/rp2040:rp2040_config", "abspath")
+
+  # TODO(amontanez): This needs to be thought through fully, but can wait until
+  # a Pi Pico successor that requires it.
+  PICO_PLATFORM_DIR = get_path_info("src/rp2040", "abspath")
+}

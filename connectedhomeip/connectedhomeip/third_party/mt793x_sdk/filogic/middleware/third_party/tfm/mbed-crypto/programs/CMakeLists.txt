@@ -1,0 +1,7 @@
+add_subdirectory(aes)
+add_subdirectory(hash)
+add_subdirectory(pkey)
+add_subdirectory(psa)
+add_subdirectory(random)
+add_subdirectory(test)
+add_subdirectory(util)

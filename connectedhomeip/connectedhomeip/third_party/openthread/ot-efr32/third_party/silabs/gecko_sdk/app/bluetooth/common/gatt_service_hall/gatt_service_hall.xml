@@ -1,0 +1,27 @@
+<gatt>
+  <!--Hall Effect-->
+  <service advertise="false" name="Hall Effect" requirement="mandatory" type="primary" uuid="f598dbc5-2f00-4ec5-9936-b3d1aa4f957f">
+    <informativeText/>
+    
+    <!--State-->
+    <characteristic id="hall_state" name="State" uuid="f598dbc5-2f01-4ec5-9936-b3d1aa4f957f">
+      <informativeText/>
+      <value length="1" type="user" variable_length="false"/>
+      <properties notify="true" notify_requirement="optional" read="true" read_requirement="optional"/>
+    </characteristic>
+    
+    <!--Field Strength-->
+    <characteristic id="hall_field_strength" name="Field Strength" uuid="f598dbc5-2f02-4ec5-9936-b3d1aa4f957f">
+      <informativeText>Magnetic field strength in micro tesla (uT)</informativeText>
+      <value length="4" type="user" variable_length="false"/>
+      <properties notify="true" notify_requirement="optional" read="true" read_requirement="optional"/>
+    </characteristic>
+    
+    <!--Control Point-->
+    <characteristic id="hall_control_point" name="Control Point" uuid="f598dbc5-2f03-4ec5-9936-b3d1aa4f957f">
+      <informativeText/>
+      <value length="2" type="user" variable_length="false"/>
+      <properties write="true" write_requirement="optional"/>
+    </characteristic>
+  </service>
+</gatt>

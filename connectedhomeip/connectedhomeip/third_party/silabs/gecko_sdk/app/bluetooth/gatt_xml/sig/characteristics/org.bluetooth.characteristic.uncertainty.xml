@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2015 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Uncertainty" 
+type="org.bluetooth.characteristic.uncertainty" uuid="2AB4" last-modified="2015-05-19" approved="Yes">
+    <InformativeText>
+        <Abstract>The Uncertainty characteristic describes the uncertainty of the location information the device exposes.</Abstract>
+	</InformativeText>
+<Value>
+		<Field name="Uncertainty">
+   			<Requirement>Mandatory</Requirement>
+			<Format>uint8</Format>
+			<BitField>
+				<Bit index="0" size="1" name="Stationary">
+					<Enumerations>
+						<Enumeration key="0" value="stationary"/>
+						<Enumeration key="1" value="mobile"/>
+					</Enumerations>
+				</Bit>
+				<Bit index="1" size="3" name="Update Time">
+					<Enumerations>
+						<Enumeration key="0" value="upto 3s"/>
+						<Enumeration key="1" value="upto 4s"/>
+						<Enumeration key="2" value="upto 6s"/>
+						<Enumeration key="3" value="upto 12s"/>
+						<Enumeration key="4" value="upto 28s"/>
+						<Enumeration key="5" value="upto 89s"/>
+						<Enumeration key="6" value="upto 426s"/>
+						<Enumeration key="7" value="3541s"/>
+					</Enumerations>
+				</Bit>
+				<Bit index="4" size="3" name="Precision">
+					<Enumerations>
+						<Enumeration key="0" value="less than 0.1m" description="Ideal"/>
+						<Enumeration key="1" value="0.1-1m" description="Excellent"/>
+						<Enumeration key="2" value="1-2m" description="Good"/>
+						<Enumeration key="3" value="2-5m" description="Moderate"/>
+						<Enumeration key="4" value="5-10m" description="Fair"/>
+						<Enumeration key="5" value="10-50m" description="Poor"/>
+						<Enumeration key="6" value="greater than 50m" description="Useless"/>
+						<Enumeration key="7" value="N/A" description="RFU"/>
+					</Enumerations>
+				</Bit>
+				<ReservedForFutureUse index="7" size="1"/>
+			</BitField>
+		</Field>
+	</Value>
+  </Characteristic>

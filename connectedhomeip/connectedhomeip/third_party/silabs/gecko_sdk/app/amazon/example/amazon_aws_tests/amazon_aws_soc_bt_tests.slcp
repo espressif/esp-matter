@@ -1,0 +1,93 @@
+project_name: amazon_aws_soc_bt_tests
+label: Amazon AWS - SoC Bluetooth Tests
+description: "Project to run AWS Tests including BLE tests on Silicon Labs boards."
+quality: alpha
+package: amazon_bluetooth
+category: Example|AWS IoT
+
+source:
+  - path: "../../../../util/third_party/aws_iot_libs/vendors/siliconlabs/boards/all/aws_tests/application_code/main.c"
+component:
+  - id: toolchain_gcc
+  - id: freertos
+  - id: aws_tests_core
+  - id: iostream_usart
+    instance: [vcom]
+  # AFR - Bluetooth components
+  - id: bluetooth_on_demand_start
+  - id: bluetooth_rtos_adaptation
+  - id: iot_ble
+  # Bluetooth features
+  - id: bluetooth_feature_dynamic_gattdb
+  - id: bluetooth_feature_system
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_gatt
+  - id: bluetooth_feature_gatt_server
+  - id: bluetooth_feature_advertiser
+  - id: bluetooth_feature_sm
+  - id: bluetooth_feature_nvm
+  # CommonIO instances
+  #- id: iot_uart
+  #  instance: [loopback]
+  #- id: printf
+define:
+  - name: SL_IOSTREAM_UART_FLUSH_TX_BUFFER
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: SL_IOSTREAM_USART_VCOM_BAUDRATE
+    value: 115200
+  - name: SL_IOSTREAM_USART_VCOM_FLOW_CONTROL_TYPE
+    value: usartHwFlowControlNone
+  - name: SL_IOSTREAM_USART_VCOM_RESTRICT_ENERGY_MODE_TO_ALLOW_RECEPTION
+    value: 0
+  - name: SL_IOSTREAM_USART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: 1
+  - name: SL_MBEDTLS_SSL_IN_CONTENT_LEN
+    value: 5000
+  - name: SL_MBEDTLS_SSL_OUT_CONTENT_LEN
+    value: 5000
+  - name: SL_STACK_SIZE
+    value: 2752
+  - name: SL_HEAP_SIZE
+    value: 8000
+  - name: configTIMER_TASK_STACK_DEPTH
+    value: "500"
+  - name: SL_BT_GATTDB_INCLUDE_STATIC_DATABASE
+    value: "0"
+  # FreeRTOS configs
+  - name: configTOTAL_HEAP_SIZE                   
+    value: 30000
+  # AWS Test runner config
+  - name: AWS_TEST_RUNNER_DELAY_MS
+    value: 5000
+  # AWS Test cases
+  - name: testrunnerFULL_BLE_ENABLED
+    value: 1
+  # Bluetooth HAL settings
+  - name: SL_BT_HAL_DEFAULT_IO_CAPABILITIES
+    value: sm_io_capability_displayyesno
+  - name: SL_BT_HAL_DEFAULT_SECURITY_CONFIG_BONDING_REQUIRES_MITM_PROTECTION
+    value: 1
+  - name: SL_BT_HAL_DEFAULT_SECURITY_CONFIG_ENCRYPTION_REQUIRES_BONDING
+    value: 1
+  - name: SL_BT_HAL_DEFAULT_SECURITY_CONFIG_SECURE_CONNECTIONS_ONLY
+    value: 1
+  - name: SL_BT_HAL_DEFAULT_SECURITY_CONFIG_BONDING_REQUESTS_NEED_TO_BE_CONFIRMED
+    value: 0
+  - name: SL_BT_HAL_DEFAULT_SECURITY_CONFIG_CONNECTIONS_ONLY_FROM_BONDED_DEVICES
+    value: 0
+tag:
+  - hardware:device:ram:64
+  - hardware:rf:band:2400
+  - hardware:device:sdid:200|205|215
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Bluetooth"]
+  - name: "Ecosystem"
+    value: ["Amazon"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]

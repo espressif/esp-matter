@@ -1,0 +1,68 @@
+.. _rng-index:
+
+RNG
+==================
+
+总览
+----------------
+
+本示例主要介绍rng的用法。
+
+准备及使用步骤
+----------------
+- 使用步骤：
+ - 插入将板子的USB电源线；
+ - 编译 ``customer_app/periperal/demo_rng`` 工程并下载工程；
+ - 打开一个串口终端窗口（波特率为2000000）。
+ - 串口终端输入 ``demo_hosal_rng``。
+ - 此时会打印产生的8个随机数，表示该demo成功运行。
+
+.. figure:: imgs/image.png
+   :alt: 
+
+应用实例
+----------------
+- 示例代码
+
+::
+
+  #include <stdio.h>
+  #include <cli.h>
+  #include <hosal_rng.h>
+  #include <blog.h>
+
+  /**
+   * hal rng demo
+   */
+
+  void demo_hosal_rng(void)
+  {
+      uint8_t buf[8];
+      int ret = -1;
+
+      /*init rng */
+      hosal_rng_init();
+
+      /*fill random value into buf */
+      ret = hosal_random_num_read(buf, sizeof(buf)/sizeof(buf[0]));
+      if (ret != 0) {
+          blog_error("rng read error\r\n");
+      }
+      for (int i = 0; i < sizeof(buf)/sizeof(buf[0]); i++) {
+          blog_info("%d \r\n", buf[i]);
+      }
+  }
+  
+- 通过 ``hosal_rng_init`` 初始化。
+
+- 使用 ``hosal_random_num_read`` 向指定内存中产生指定字节的随机数。
+
+::
+
+
+  uint8_t buf[8];
+  hosal_rng_init();
+  hosal_random_num_read(buf, sizeof(buf)/sizeof(buf[0]));
+
+    
+

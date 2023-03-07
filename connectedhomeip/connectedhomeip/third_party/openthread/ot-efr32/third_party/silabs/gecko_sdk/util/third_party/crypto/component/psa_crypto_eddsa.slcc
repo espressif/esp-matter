@@ -1,0 +1,17 @@
+id: psa_crypto_eddsa
+package: platform
+label: EdDSA
+description: >-
+  This component provides support for signature generation and verification
+  with EdDSA in PSA Crypto.
+category: Platform|Security|PSA Crypto|Signatures
+quality: production
+provides:
+  - name: psa_crypto_eddsa
+requires:
+  - name: psa_crypto
+  - name: device_has_semailbox
+  - name: psa_crypto_ecc_edwards_curve
+template_contribution:
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_EDDSA

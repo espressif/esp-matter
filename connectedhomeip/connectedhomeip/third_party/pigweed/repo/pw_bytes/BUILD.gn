@@ -1,0 +1,106 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_bloat/bloat.gni")
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("pw_bytes") {
+  public_configs = [ ":public_include_path" ]
+  public = [
+    "public/pw_bytes/array.h",
+    "public/pw_bytes/byte_builder.h",
+    "public/pw_bytes/endian.h",
+    "public/pw_bytes/span.h",
+    "public/pw_bytes/units.h",
+  ]
+  sources = [ "byte_builder.cc" ]
+  public_deps = [
+    "$dir_pw_bytes:bit",
+    "$dir_pw_containers:iterator",
+    dir_pw_preprocessor,
+    dir_pw_span,
+    dir_pw_status,
+  ]
+}
+
+pw_source_set("bit") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_bytes/bit.h" ]
+  remove_public_deps = [ "*" ]
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":array_test",
+    ":bit_test",
+    ":byte_builder_test",
+    ":endian_test",
+    ":units_test",
+  ]
+  group_deps = [
+    "$dir_pw_preprocessor:tests",
+    "$dir_pw_status:tests",
+  ]
+}
+
+pw_test("array_test") {
+  deps = [ ":pw_bytes" ]
+  sources = [ "array_test.cc" ]
+}
+
+pw_test("bit_test") {
+  deps = [ ":bit" ]
+  sources = [ "bit_test.cc" ]
+}
+
+pw_test("byte_builder_test") {
+  deps = [ ":pw_bytes" ]
+  sources = [ "byte_builder_test.cc" ]
+}
+
+pw_test("endian_test") {
+  deps = [ ":pw_bytes" ]
+  sources = [ "endian_test.cc" ]
+}
+
+pw_test("units_test") {
+  deps = [ ":pw_bytes" ]
+  sources = [ "units_test.cc" ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+  report_deps = [ ":byte_builder_size_report" ]
+}
+
+pw_size_diff("byte_builder_size_report") {
+  title = "Using pw::ByteBuilder"
+
+  binaries = [
+    {
+      target = "size_report:with_byte_builder"
+      base = "size_report:without_byte_builder"
+      label = "Using ByteBuilder vs not using it"
+    },
+  ]
+}

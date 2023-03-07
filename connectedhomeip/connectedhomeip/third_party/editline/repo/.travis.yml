@@ -1,0 +1,34 @@
+# Travis CI integration
+# Defaults to GNU GCC and autotools: ./configure && make && make test
+language: c
+
+# We don't need to install packages, use dockerized build, quicker
+sudo: false
+
+# Test build with both GCC and Clang (LLVM)
+compiler:
+  - gcc
+  - clang
+
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "iFll6pD0lzVYVRUlbPBGOTB0xqoEsC0BeUdftfRQdnEssruWOEKtf3VH6gSNRu8QMPeTCNhl4fsWUJhnowZgoobi/XcsXxFv/oJQZ1sa7cQUXizeEYUmsDZxUiw/sNsWlUz6dBKPepQStYyOK/tJLQ1GfLi1ESTPt6anokMVDbk="
+
+addons:
+  coverity_scan:
+    project:
+      name: "troglobit/editline"
+      description: "A small line editing library"
+    notification_email: troglobit@gmail.com
+    build_command_prepend: "./autogen.sh && ./configure --enable-sigstop --enable-terminal-bell"
+    build_command:   "make clean all"
+    branch_pattern: dev
+
+# We don't store generated files (configure and Makefile) in GIT,
+# so we must customize the default build script to run ./autogen.sh
+script:
+  - ./autogen.sh
+  - ./configure --enable-sigstop --enable-terminal-bell 
+  - make clean all

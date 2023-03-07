@@ -1,0 +1,88 @@
+-
+  id: 0
+  name: Get Applications Info
+  macro: INCLUDE_GET_APPS_INFO
+  origin: Mobile App
+  destination: Any App
+  description: A command sent to request information for all applications on the remote device.
+  handler: mpsiHandleMessageGetAppsInfo
+-
+  id: 1
+  name: Applications Info
+  macro: INCLUDE_APPS_INFO
+  origin: Any App
+  destination: Mobile App
+  description: Returns the slot ID, application ID (BLE, ZigBee, etc), version number, and maximum message ID understood by each application, both the one running and those in storage. The entry with a slot ID of 0xFF indicates that this image is the currently running image.
+  handler: mpsiHandleMessageAppsInfo
+-
+  id: 2
+  name: Bootload Slot
+  macro: INCLUDE_BOOTLOAD_SLOT
+  origin: Mobile App
+  destination: Any App
+  description: This triggers the device to bootload the application in the passed slot ID.
+  handler: mpsiHandleMessageBootloadSlot
+-
+  id: 3
+  name: Error
+  macro: INCLUDE_ERROR
+  origin: BLE JD or Any TC App
+  destination: Mobile App
+  description: This command is sent to indicate an error at the MPSI layer to the Mobile App. Typically, this will be sent in response to having processed a received MPSI message that caused some issue (message ID not supported, message formatted incorrectly, etc).
+  handler: mpsiHandleMessageError
+-
+  id: 4
+  name: Initiate Joining
+  macro: INCLUDE_INITIATE_JOINING
+  origin: Any App
+  destination: Any App except Mobile App
+  description: Attempt to join a network with current parameters. For BLE, this is interpreted as send BLE advertisements for up to the amount of minutes specified by the Option parameter and wait for BLE pairing.
+  handler: mpsiHandleMessageInitiateJoining
+-
+  id: 5
+  name: Get ZigBee Joining Device Info
+  macro: INCLUDE_GET_ZIGBEE_JOINING_DEVICE_INFO
+  origin: Mobile App
+  destination: BLE App
+  description: A command sent to request the device EUI and installation code for joining the ZigBee device to a network.
+  handler: mpsiHandleMessageGetZigbeeJoiningDeviceInfo
+-
+  id: 6
+  name: ZigBee Joining Device Info
+  macro: INCLUDE_ZIGBEE_JOINING_DEVICE_INFO
+  origin: BLE App
+  destination: Mobile App
+  description: The EUI and installation code for the ZigBee joining device.
+  handler: mpsiHandleMessageZigbeeJoiningDeviceInfo
+-
+  id: 7
+  name: Set ZigBee Joining Device Info
+  macro: INCLUDE_SET_ZIGBEE_JOINING_DEVICE_INFO
+  origin: Mobile App
+  destination: ZigBee App (TC)
+  description: Convert an install code to link key and add to the Trust Center's local link key table.
+  handler: mpsiHandleMessageSetZigbeeJoiningDeviceInfo
+-
+  id: 8
+  name: Get ZigBee Trust Center Joining Credentials
+  macro: INCLUDE_GET_ZIGBEE_TRUST_CENTER_JOINING_CREDENTIALS
+  origin: Mobile App
+  destination: ZigBee App (TC)
+  description: A command sent to request the ZigBee network parameters and open the network for joining. The parameters returned can be used by a joining device to join the ZigBee network. On the Trust Center, this command generates a random key and sets it into the transient key table paired with a wildcard EUI64. This key, along with the channel mask and extended PAN ID, are passed along in the response to this message. The network is then opened for joining for 5 minutes.
+  handler: mpsiHandleMessageGetZigbeeTrustCenterJoiningCredentials
+-
+  id: 9
+  name: ZigBee Trust Center Joining Credentials
+  macro: INCLUDE_ZIGBEE_TRUST_CENTER_JOINING_CREDENTIALS
+  origin: ZigBee App (TC)
+  destination: Mobile App
+  description: The channel mask, extended PAN ID, and link key that are used to join the ZigBee network.
+  handler: mpsiHandleMessageZigbeeTrustCenterJoiningCredentials
+-
+  id: 10
+  name: Set ZigBee Trust Center Joining Credentials
+  macro: INCLUDE_SET_ZIGBEE_TRUST_CENTER_JOINING_CREDENTIALS
+  origin: Mobile App
+  destination: ZigBee App
+  description: Connect to a ZigBee network on the channel mask specified that matches the extended PAN specified using the link key specified.
+  handler: mpsiHandleMessageSetZigbeeTrustCenterJoiningCredentials

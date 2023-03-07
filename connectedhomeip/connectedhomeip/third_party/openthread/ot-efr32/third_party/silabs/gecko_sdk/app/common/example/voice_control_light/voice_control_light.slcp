@@ -1,0 +1,87 @@
+project_name: voice_control_light
+package: platform
+quality: production
+label: Machine Learning - Voice Control Light
+description: >
+  This application uses TensorFlow Lite for Microcontrollers to detect the spoken 
+  words "on" and "off" from audio data recorded on the microphone in a Micrium OS 
+  kernel task. The detected keywords are used to control an LED on the board. 
+category: Example|Machine Learning
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+  - name: "Capability"
+    value: ["Machine Learning"]
+include:
+  - path: .
+    file_list:
+      - path: app.h
+      - path: voice_control_light.h
+      - path: recognize_commands.h
+source:
+  - path: main.c
+  - path: app.c
+  - path: voice_control_light.cc
+  - path: recognize_commands.cc
+component:
+  - id: sl_system
+  - id: device_init
+  - id: tensorflow_lite_micro
+  - id: ml_audio_feature_generation
+  - id: printf
+  - id: iostream_recommended_stream
+  - id: iostream_retarget_stdio
+  - id: simple_led
+    instance: [led0]
+  - id: status
+  - id: micriumos_kernel
+  - id: power_manager
+  - id: sleeptimer
+config_file:
+  - path: config/recognize_commands_config.h
+  - path: "tflite_models/tflite/keyword_spotting_on_off.tflite"
+    file_id: flatbuffer_file_id
+    directory: "tflite"
+    unless: [tensorflow_lite_micro_accelerated_kernels]
+  - path: "tflite_models/tflite/keyword_spotting_on_off_v2.tflite"
+    file_id: flatbuffer_file_id
+    directory: "tflite"
+    condition: [tensorflow_lite_micro_accelerated_kernels]
+define:
+  - name: DEBUG_EFM
+  - name: TF_LITE_STATIC_MEMORY
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+  - name: SL_BOARD_ENABLE_SENSOR_MICROPHONE
+    value: "1"
+  - name: SL_IOSTREAM_USART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "1"
+    condition: [iostream_usart]
+  - name: SL_IOSTREAM_UART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "1"
+    condition: [iostream_uart]
+  - name: SL_ML_AUDIO_FEATURE_GENERATION_AUDIO_BUFFER_SIZE
+    value: "4096"
+  - name: SL_TFLITE_MICRO_ARENA_SIZE
+    value: "50000"
+  - name: SL_HEAP_SIZE
+    value: "0x2000"
+toolchain_settings:
+  - option: gcc_compiler_option
+    value: "-Wno-unused-parameter"
+  - option: gcc_compiler_option
+    value: "-Wno-missing-field-initializers"
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+tag:
+  - hardware:component:led:1+
+  - hardware:component:microphone
+  - hardware:device:ram:56
+  - hardware:device:flash:130

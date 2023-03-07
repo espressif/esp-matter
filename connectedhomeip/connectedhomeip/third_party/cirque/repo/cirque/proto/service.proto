@@ -1,0 +1,112 @@
+// Copyright 2020 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "cirque/proto/device.proto";
+
+package cirque.proto;
+
+message CreateCirqueHomeRequest {
+}
+
+message CreateCirqueHomeResponse {
+  string home_id = 1;
+}
+
+message CreateCirqueDeviceRequest {
+  string home_id = 1;
+
+  DeviceSpecification specification = 2;
+}
+
+message CreateCirqueDeviceResponse {
+  CirqueDevice device = 1;
+}
+
+message ExecuteDeviceCommandRequest {
+  string home_id = 1;
+  string device_id = 2;
+  string command = 3;
+  bool   streaming = 4;
+}
+
+message ExecuteDeviceCommandResponse {
+  string output = 1;
+}
+
+message ListCirqueHomesRequest {
+}
+
+message ListCirqueHomesResponse {
+  repeated string home_id = 1;
+}
+
+message ListCirqueHomeDevicesRequest {
+  string home_id = 1;
+}
+
+message ListCirqueHomeDevicesResponse {
+  repeated CirqueDevice devices = 1;
+}
+
+message QueryCirqueDeviceRequest {
+  string home_id = 1;
+  string device_id = 2;
+}
+
+message QueryCirqueDeviceResponse {
+  CirqueDevice device = 1;
+}
+
+message StopCirqueDeviceRequest {
+  string home_id = 1;
+  string device_id = 2;
+}
+
+message StopCirqueHomeRequest {
+  string home_id = 1;
+}
+
+message GetCirqueDeviceLogRequest {
+  string home_id = 1;
+  string device_id = 2;
+  uint32 tail = 3; // Return the last n lines of log, same as `tail -n`. Zero for all the lines
+}
+
+message GetCirqueDeviceLogResponse {
+  string log = 1;
+}
+
+service CirqueService {
+  rpc CreateCirqueHome(CreateCirqueHomeRequest) returns (CreateCirqueHomeResponse) {}
+
+  rpc CreateCirqueDevice(CreateCirqueDeviceRequest) returns (CreateCirqueDeviceResponse) {}
+
+  rpc ExecuteDeviceCommand(ExecuteDeviceCommandRequest) returns (ExecuteDeviceCommandResponse) {}
+
+  rpc ListCirqueHomes(ListCirqueHomesRequest) returns (ListCirqueHomesResponse) {}
+
+  rpc ListCirqueHomeDevices(ListCirqueHomeDevicesRequest) returns (ListCirqueHomeDevicesResponse) {}
+
+  rpc QueryCirqueDevice(QueryCirqueDeviceRequest) returns (QueryCirqueDeviceResponse) {}
+
+  rpc StopCirqueDevice(StopCirqueDeviceRequest) returns (google.protobuf.Empty) {}
+
+  rpc StopCirqueHome(StopCirqueHomeRequest) returns (google.protobuf.Empty) {}
+
+  rpc GetCirqueDeviceLog(GetCirqueDeviceLogRequest) returns (GetCirqueDeviceLogResponse) {}
+}

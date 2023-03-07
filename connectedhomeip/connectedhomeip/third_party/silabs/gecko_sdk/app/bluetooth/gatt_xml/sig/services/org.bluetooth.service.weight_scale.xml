@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2014 Bluetooth SIG, Inc. All rights reserved. -->
+<Service xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.service.weight_scale" 
+last-modified="2014-10-17" uuid="181D" name="Weight Scale">
+<InformativeText>
+    <Abstract>This service exposes weight and related data from a weight scale intended for consumer healthcare and sports/fitness applications.</Abstract>
+    <Summary>The Weight Scale (WS) Service exposes weight and related data from a weight scale (Server) intended for consumer healthcare as well as sports/fitness applications.</Summary>
+</InformativeText>
+    <Dependencies>
+        <Dependency>This service is not dependent upon any other services.</Dependency>
+	</Dependencies>
+<GATTRequirements>
+    <Requirement subProcedure="Indications">Mandatory</Requirement>
+    <Requirement subProcedure="Read Characteristic Descriptors">Mandatory</Requirement>
+    <Requirement subProcedure="Write Characteristic Descriptors">Mandatory</Requirement>
+</GATTRequirements>
+    <Transports>
+        <Classic>true</Classic>
+        <LowEnergy>true</LowEnergy>
+        <HighSpeed>true</HighSpeed>
+	</Transports>
+    <Characteristics>
+        <Characteristic type="org.bluetooth.characteristic.weight_scale_feature" name="Weight Scale Feature">
+            <Requirement>Mandatory</Requirement>
+            <Properties>
+                <Read>Mandatory</Read>
+                <Write>Excluded</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Excluded</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+		</Characteristic>
+        <Characteristic type="org.bluetooth.characteristic.weight_measurement" name="Weight Measurement">
+            <Requirement>Mandatory</Requirement>
+            <Properties>
+                <Read>Excluded</Read>
+                <Write>Excluded</Write>
+                <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+                <SignedWrite>Excluded</SignedWrite>
+                <ReliableWrite>Excluded</ReliableWrite>
+                <Notify>Excluded</Notify>
+                <Indicate>Mandatory</Indicate>
+                <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+                <Broadcast>Excluded</Broadcast>
+			</Properties>
+            <Descriptors>
+                <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+                    <Requirement>if_indicate_supported</Requirement>
+                    <Properties>
+                        <Read>Mandatory</Read>
+                        <Write>Mandatory</Write>
+					</Properties>
+				</Descriptor>
+                </Descriptors>
+		</Characteristic>        
+	</Characteristics>
+    </Service>

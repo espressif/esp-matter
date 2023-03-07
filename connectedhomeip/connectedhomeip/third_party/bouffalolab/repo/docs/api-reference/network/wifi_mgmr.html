@@ -1,0 +1,1130 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Wi-Fi Manager &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../index.html"/>
+        <link rel="up" title="连网 API" href="index.html"/>
+        <link rel="next" title="外设 API" href="../peripherals/index.html"/>
+        <link rel="prev" title="连网 API" href="index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_602.html">BL602快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_702.html">BL702快速入门</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">BL602 API 参考</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../ble/index.html">蓝牙</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">连网</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Wi-Fi</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">概述</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">应用实例</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#api">API参考</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../peripherals/index.html">外设</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../protocols/index.html">协议</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../storage/index.html">存储</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../system/index.html">系统</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../Examples/index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resources.html">相关资源</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">关于</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../languages.html">Languages/语言</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">BL602 API 参考</a> &raquo;</li>
+        
+          <li><a href="index.html">连网 API</a> &raquo;</li>
+        
+      <li>Wi-Fi Manager</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/api-reference/network/wifi_mgmr.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="wi-fi-manager">
+<h1>Wi-Fi Manager<a class="headerlink" href="#wi-fi-manager" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<h2>概述<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<p>本文档介绍bl_iot_sdk的WiFi联网功能。主要包括</p>
+<ul class="simple">
+<li>基站模式（即 STA 模式或 Wi-Fi 客户端模式），此时 BL_IoT 连接到接入点 (AP)。</li>
+<li>AP 模式（即 Soft-AP 模式或接入点模式），此时基站连接到 BL_IoT。</li>
+<li>AP-STA 共存模式（BL_IoT 既是接入点，同时又作为基站连接到另外一个接入点）。</li>
+<li>上述模式的各种安全模式（WPA、WPA2 及 WEP（AP模式不支持））。</li>
+<li>扫描接入点（包括主动扫描及被动扫描）。</li>
+<li>使用混杂模式监控 IEEE802.11 Wi-Fi 数据包。</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2>应用实例<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<p>BL_IoT的实例 <code class="docutils literal notranslate"><span class="pre">bl602_demo_wifi</span></code> 目录下包含了一个应用程序，该demo介绍了如何使用BL_IoT模组连接到AP等一系列wifi操作。该实例实现的主要思路如下：</p>
+<div class="figure">
+<img alt="" src="../../_images/wifi_mgmr-1.png" />
+</div>
+<ul class="simple">
+<li>在主函数 <code class="docutils literal notranslate"><span class="pre">bfl_main()</span></code> 中创建一个 <code class="docutils literal notranslate"><span class="pre">aos_loop_proc()</span></code> 线程，在此线程中调用 <code class="docutils literal notranslate"><span class="pre">aos_register_event_filter()</span></code> 接口注册一个 <code class="docutils literal notranslate"><span class="pre">EV_WIFI</span></code> 事件的监听函数 <code class="docutils literal notranslate"><span class="pre">event_cb_wifi_event()</span></code> ；</li>
+<li>首先用户在终端中输入 <code class="docutils literal notranslate"><span class="pre">stack_wifi</span></code> 命令后，在 <code class="docutils literal notranslate"><span class="pre">cmd_stack_wifi()</span></code> 函数中创建一个 <code class="docutils literal notranslate"><span class="pre">wifi_main()</span></code> 的线程，接着调用 <code class="docutils literal notranslate"><span class="pre">aos_post_event()</span></code> 接口发布 <code class="docutils literal notranslate"><span class="pre">CODE_WIFI_ON_INIT_DONE</span></code> 事件后， <code class="docutils literal notranslate"><span class="pre">event_cb_wifi_event()</span></code> 会被调用，并进入case <code class="docutils literal notranslate"><span class="pre">CODE_WIFI_ON_INIT_DONE</span></code> 分支从而调用 <code class="docutils literal notranslate"><span class="pre">wifi_mgmr_start_background()</span></code> 开启WiFi Manager，同时发布 <code class="docutils literal notranslate"><span class="pre">CODE_WIFI_ON_MGMR_DONE</span></code> 事件，进入case <code class="docutils literal notranslate"><span class="pre">CODE_WIFI_ON_MGMR_DONE</span></code> 分支调用 <code class="docutils literal notranslate"><span class="pre">_connect_wifi()</span></code> 函数，此函数先判断easyflash中是否设置了可连接的ssid，如果设置了则会自动进行wifi连接，没有设置则需手动输命令设置；</li>
+<li>如用户在终端中输入 <code class="docutils literal notranslate"><span class="pre">wifi_sta_connect</span></code> 命令，会调用相应的api实现。如需实现wifi相关的其他功能可通过调用对应api来实现。</li>
+</ul>
+</div>
+<div class="section" id="api">
+<h2>API参考<a class="headerlink" href="#api" title="永久链接至标题"></a></h2>
+<div class="section" id="header-file">
+<h3>Header File<a class="headerlink" href="#header-file" title="永久链接至标题"></a></h3>
+<ul class="simple">
+<li><span class="xref std std-doc">components/network/wifi_manager/bl60x_wifi_driver/include/wifi_mgmr_ext.h</span></li>
+</ul>
+</div>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="永久链接至标题"></a></h3>
+<dl class="function">
+<dt id="_CPPv417wifi_mgmr_psk_calPcPciPc">
+<span id="_CPPv317wifi_mgmr_psk_calPcPciPc"></span><span id="_CPPv217wifi_mgmr_psk_calPcPciPc"></span><span id="wifi_mgmr_psk_cal__cP.cP.i.cP"></span><span class="target" id="wifi__mgmr__ext_8h_1a475450373e2cb5d94e4324d157c0a8ff"></span>int <code class="descname">wifi_mgmr_psk_cal</code><span class="sig-paren">(</span>char *<em>password</em>, char *<em>ssid</em>, int <em>ssid_len</em>, char *<em>output</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417wifi_mgmr_psk_calPcPciPc" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv418wifi_mgmr_drv_initP11wifi_conf_t">
+<span id="_CPPv318wifi_mgmr_drv_initP11wifi_conf_t"></span><span id="_CPPv218wifi_mgmr_drv_initP11wifi_conf_t"></span><span id="wifi_mgmr_drv_init__wifi_conf_tP"></span><span class="target" id="wifi__mgmr__ext_8h_1a9a93d907d15100308ced89f39a525747"></span>int <code class="descname">wifi_mgmr_drv_init</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv411wifi_conf_t" title="wifi_conf_t">wifi_conf_t</a> *<em>conf</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418wifi_mgmr_drv_initP11wifi_conf_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv414wifi_mgmr_initv">
+<span id="_CPPv314wifi_mgmr_initv"></span><span id="_CPPv214wifi_mgmr_initv"></span><span id="wifi_mgmr_init__void"></span><span class="target" id="wifi__mgmr__ext_8h_1a93bce170923e799022cfa71e11fadc0d"></span>int <code class="descname">wifi_mgmr_init</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414wifi_mgmr_initv" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv415wifi_mgmr_startv">
+<span id="_CPPv315wifi_mgmr_startv"></span><span id="_CPPv215wifi_mgmr_startv"></span><span id="wifi_mgmr_start__void"></span><span class="target" id="wifi__mgmr__ext_8h_1a0d6e9697839e0f964c7855c3f83502c0"></span>void <code class="descname">wifi_mgmr_start</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415wifi_mgmr_startv" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv426wifi_mgmr_start_backgroundP11wifi_conf_t">
+<span id="_CPPv326wifi_mgmr_start_backgroundP11wifi_conf_t"></span><span id="_CPPv226wifi_mgmr_start_backgroundP11wifi_conf_t"></span><span id="wifi_mgmr_start_background__wifi_conf_tP"></span><span class="target" id="wifi__mgmr__ext_8h_1a46ec9cb15fe796d57504a66961287d70"></span>void <code class="descname">wifi_mgmr_start_background</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv411wifi_conf_t" title="wifi_conf_t">wifi_conf_t</a> *<em>conf</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv426wifi_mgmr_start_backgroundP11wifi_conf_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv431wifi_mgmr_get_wifi_channel_confP11wifi_conf_t">
+<span id="_CPPv331wifi_mgmr_get_wifi_channel_confP11wifi_conf_t"></span><span id="_CPPv231wifi_mgmr_get_wifi_channel_confP11wifi_conf_t"></span><span id="wifi_mgmr_get_wifi_channel_conf__wifi_conf_tP"></span><span class="target" id="wifi__mgmr__ext_8h_1a46c666f0f4938a9957f8a08edf446524"></span>void <code class="descname">wifi_mgmr_get_wifi_channel_conf</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv411wifi_conf_t" title="wifi_conf_t">wifi_conf_t</a> *<em>wifi_chan_conf</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv431wifi_mgmr_get_wifi_channel_confP11wifi_conf_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv420wifi_mgmr_sta_enablev">
+<span id="_CPPv320wifi_mgmr_sta_enablev"></span><span id="_CPPv220wifi_mgmr_sta_enablev"></span><span id="wifi_mgmr_sta_enable__void"></span><span class="target" id="wifi__mgmr__ext_8h_1a93ed3444ef5b622c3d0b067675738f8f"></span><a class="reference internal" href="#_CPPv416wifi_interface_t" title="wifi_interface_t">wifi_interface_t</a> <code class="descname">wifi_mgmr_sta_enable</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420wifi_mgmr_sta_enablev" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv421wifi_mgmr_sta_disableP16wifi_interface_t">
+<span id="_CPPv321wifi_mgmr_sta_disableP16wifi_interface_t"></span><span id="_CPPv221wifi_mgmr_sta_disableP16wifi_interface_t"></span><span id="wifi_mgmr_sta_disable__wifi_interface_tP"></span><span class="target" id="wifi__mgmr__ext_8h_1a9fd101a9dee105f16609ded1e5adc86f"></span>int <code class="descname">wifi_mgmr_sta_disable</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv416wifi_interface_t" title="wifi_interface_t">wifi_interface_t</a> *<em>interface</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421wifi_mgmr_sta_disableP16wifi_interface_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv423wifi_mgmr_sta_netif_getv">
+<span id="_CPPv323wifi_mgmr_sta_netif_getv"></span><span id="_CPPv223wifi_mgmr_sta_netif_getv"></span><span id="wifi_mgmr_sta_netif_get__void"></span><span class="target" id="wifi__mgmr__ext_8h_1a7fded644294d4c3e4ccccab7f0367622"></span><em class="property">struct</em> netif *<code class="descname">wifi_mgmr_sta_netif_get</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv423wifi_mgmr_sta_netif_getv" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv422wifi_mgmr_ap_netif_getv">
+<span id="_CPPv322wifi_mgmr_ap_netif_getv"></span><span id="_CPPv222wifi_mgmr_ap_netif_getv"></span><span id="wifi_mgmr_ap_netif_get__void"></span><span class="target" id="wifi__mgmr__ext_8h_1ace3113a85f3330959a22c170190a5a04"></span><em class="property">struct</em> netif *<code class="descname">wifi_mgmr_ap_netif_get</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422wifi_mgmr_ap_netif_getv" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv421wifi_mgmr_sta_mac_setAL6E_7uint8_t">
+<span id="_CPPv321wifi_mgmr_sta_mac_setAL6E_7uint8_t"></span><span id="_CPPv221wifi_mgmr_sta_mac_setA6_7uint8_t"></span><span id="wifi_mgmr_sta_mac_set__uint8_tA"></span><span class="target" id="wifi__mgmr__ext_8h_1a1a2ab92e701eb7b923729175e4c9fc78"></span>int <code class="descname">wifi_mgmr_sta_mac_set</code><span class="sig-paren">(</span>uint8_t <em>mac</em>[6]<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421wifi_mgmr_sta_mac_setAL6E_7uint8_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv421wifi_mgmr_sta_mac_getAL6E_7uint8_t">
+<span id="_CPPv321wifi_mgmr_sta_mac_getAL6E_7uint8_t"></span><span id="_CPPv221wifi_mgmr_sta_mac_getA6_7uint8_t"></span><span id="wifi_mgmr_sta_mac_get__uint8_tA"></span><span class="target" id="wifi__mgmr__ext_8h_1ac87dda7d6fbfc0dca2a264f62221f68f"></span>int <code class="descname">wifi_mgmr_sta_mac_get</code><span class="sig-paren">(</span>uint8_t <em>mac</em>[6]<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421wifi_mgmr_sta_mac_getAL6E_7uint8_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv420wifi_mgmr_sta_ip_getP8uint32_tP8uint32_tP8uint32_t">
+<span id="_CPPv320wifi_mgmr_sta_ip_getP8uint32_tP8uint32_tP8uint32_t"></span><span id="_CPPv220wifi_mgmr_sta_ip_getP8uint32_tP8uint32_tP8uint32_t"></span><span id="wifi_mgmr_sta_ip_get__uint32_tP.uint32_tP.uint32_tP"></span><span class="target" id="wifi__mgmr__ext_8h_1a86d110013112abec4d01948707bdd7c1"></span>int <code class="descname">wifi_mgmr_sta_ip_get</code><span class="sig-paren">(</span>uint32_t *<em>ip</em>, uint32_t *<em>gw</em>, uint32_t *<em>mask</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420wifi_mgmr_sta_ip_getP8uint32_tP8uint32_tP8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv420wifi_mgmr_sta_ip_set8uint32_t8uint32_t8uint32_t8uint32_t8uint32_t">
+<span id="_CPPv320wifi_mgmr_sta_ip_set8uint32_t8uint32_t8uint32_t8uint32_t8uint32_t"></span><span id="_CPPv220wifi_mgmr_sta_ip_set8uint32_t8uint32_t8uint32_t8uint32_t8uint32_t"></span><span id="wifi_mgmr_sta_ip_set__uint32_t.uint32_t.uint32_t.uint32_t.uint32_t"></span><span class="target" id="wifi__mgmr__ext_8h_1a150ba2391eede5bc46becb686a393fcc"></span>int <code class="descname">wifi_mgmr_sta_ip_set</code><span class="sig-paren">(</span>uint32_t <em>ip</em>, uint32_t <em>mask</em>, uint32_t <em>gw</em>, uint32_t <em>dns1</em>, uint32_t <em>dns2</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420wifi_mgmr_sta_ip_set8uint32_t8uint32_t8uint32_t8uint32_t8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv421wifi_mgmr_sta_dns_getP8uint32_tP8uint32_t">
+<span id="_CPPv321wifi_mgmr_sta_dns_getP8uint32_tP8uint32_t"></span><span id="_CPPv221wifi_mgmr_sta_dns_getP8uint32_tP8uint32_t"></span><span id="wifi_mgmr_sta_dns_get__uint32_tP.uint32_tP"></span><span class="target" id="wifi__mgmr__ext_8h_1a99c13f79e0f7ed330cdf136fdfcf84fc"></span>int <code class="descname">wifi_mgmr_sta_dns_get</code><span class="sig-paren">(</span>uint32_t *<em>dns1</em>, uint32_t *<em>dns2</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421wifi_mgmr_sta_dns_getP8uint32_tP8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv422wifi_mgmr_sta_ip_unsetv">
+<span id="_CPPv322wifi_mgmr_sta_ip_unsetv"></span><span id="_CPPv222wifi_mgmr_sta_ip_unsetv"></span><span id="wifi_mgmr_sta_ip_unset__void"></span><span class="target" id="wifi__mgmr__ext_8h_1a535dfcb0d0cb696cd2edc2a92f845d8a"></span>int <code class="descname">wifi_mgmr_sta_ip_unset</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422wifi_mgmr_sta_ip_unsetv" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv425wifi_mgmr_sta_connect_extP16wifi_interface_tPcPcPK16ap_connect_adv_t">
+<span id="_CPPv325wifi_mgmr_sta_connect_extP16wifi_interface_tPcPcPK16ap_connect_adv_t"></span><span id="_CPPv225wifi_mgmr_sta_connect_extP16wifi_interface_tPcPcPK16ap_connect_adv_t"></span><span id="wifi_mgmr_sta_connect_ext__wifi_interface_tP.cP.cP.ap_connect_adv_tCP"></span><span class="target" id="wifi__mgmr__ext_8h_1a1217b60d0f32998f5fe0295137d2dc84"></span>int <code class="descname">wifi_mgmr_sta_connect_ext</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv416wifi_interface_t" title="wifi_interface_t">wifi_interface_t</a> *<em>wifi_interface</em>, char *<em>ssid</em>, char *<em>passphr</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv416ap_connect_adv_t" title="ap_connect_adv_t">ap_connect_adv_t</a> *<em>conn_adv_param</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv425wifi_mgmr_sta_connect_extP16wifi_interface_tPcPcPK16ap_connect_adv_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv425wifi_mgmr_sta_connect_midP16wifi_interface_tPcPcPcP7uint8_t7uint8_t7uint8_t7uint8_t8uint32_t">
+<span id="_CPPv325wifi_mgmr_sta_connect_midP16wifi_interface_tPcPcPcP7uint8_t7uint8_t7uint8_t7uint8_t8uint32_t"></span><span id="_CPPv225wifi_mgmr_sta_connect_midP16wifi_interface_tPcPcPcP7uint8_t7uint8_t7uint8_t7uint8_t8uint32_t"></span><span id="wifi_mgmr_sta_connect_mid__wifi_interface_tP.cP.cP.cP.uint8_tP.uint8_t.uint8_t.uint8_t.uint32_t"></span><span class="target" id="wifi__mgmr__ext_8h_1a8c4e24e9bd287025b8ab55ceede54b17"></span>int <code class="descname">wifi_mgmr_sta_connect_mid</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv416wifi_interface_t" title="wifi_interface_t">wifi_interface_t</a> *<em>wifi_interface</em>, char *<em>ssid</em>, char *<em>psk</em>, char *<em>pmk</em>, uint8_t *<em>mac</em>, uint8_t <em>band</em>, uint8_t <em>chan_id</em>, uint8_t <em>use_dhcp</em>, uint32_t <em>flags</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv425wifi_mgmr_sta_connect_midP16wifi_interface_tPcPcPcP7uint8_t7uint8_t7uint8_t7uint8_t8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv421wifi_mgmr_sta_connectP16wifi_interface_tPcPcPcP7uint8_t7uint8_t7uint8_t">
+<span id="_CPPv321wifi_mgmr_sta_connectP16wifi_interface_tPcPcPcP7uint8_t7uint8_t7uint8_t"></span><span id="_CPPv221wifi_mgmr_sta_connectP16wifi_interface_tPcPcPcP7uint8_t7uint8_t7uint8_t"></span><span id="wifi_mgmr_sta_connect__wifi_interface_tP.cP.cP.cP.uint8_tP.uint8_t.uint8_t"></span><span class="target" id="wifi__mgmr__ext_8h_1a29e9bb10a72cfab0f4341afcad0cd5be"></span>int <code class="descname">wifi_mgmr_sta_connect</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv416wifi_interface_t" title="wifi_interface_t">wifi_interface_t</a> *<em>wifi_interface</em>, char *<em>ssid</em>, char *<em>psk</em>, char *<em>pmk</em>, uint8_t *<em>mac</em>, uint8_t <em>band</em>, uint8_t <em>chan_id</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421wifi_mgmr_sta_connectP16wifi_interface_tPcPcPcP7uint8_t7uint8_t7uint8_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv424wifi_mgmr_sta_disconnectv">
+<span id="_CPPv324wifi_mgmr_sta_disconnectv"></span><span id="_CPPv224wifi_mgmr_sta_disconnectv"></span><span id="wifi_mgmr_sta_disconnect__void"></span><span class="target" id="wifi__mgmr__ext_8h_1ac31e2c34913cf3dff447a114b6d558a5"></span>int <code class="descname">wifi_mgmr_sta_disconnect</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv424wifi_mgmr_sta_disconnectv" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv421wifi_sta_ip4_addr_getP8uint32_tP8uint32_tP8uint32_tP8uint32_t">
+<span id="_CPPv321wifi_sta_ip4_addr_getP8uint32_tP8uint32_tP8uint32_tP8uint32_t"></span><span id="_CPPv221wifi_sta_ip4_addr_getP8uint32_tP8uint32_tP8uint32_tP8uint32_t"></span><span id="wifi_sta_ip4_addr_get__uint32_tP.uint32_tP.uint32_tP.uint32_tP"></span><span class="target" id="wifi__mgmr__ext_8h_1a7881a7324284ad9030482216239e059b"></span>int <code class="descname">wifi_sta_ip4_addr_get</code><span class="sig-paren">(</span>uint32_t *<em>addr</em>, uint32_t *<em>mask</em>, uint32_t *<em>gw</em>, uint32_t *<em>dns</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421wifi_sta_ip4_addr_getP8uint32_tP8uint32_tP8uint32_tP8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv422wifi_mgmr_sta_ps_enter8uint32_t">
+<span id="_CPPv322wifi_mgmr_sta_ps_enter8uint32_t"></span><span id="_CPPv222wifi_mgmr_sta_ps_enter8uint32_t"></span><span id="wifi_mgmr_sta_ps_enter__uint32_t"></span><span class="target" id="wifi__mgmr__ext_8h_1a82c470916b8c89caa7b77b2c039bb989"></span>int <code class="descname">wifi_mgmr_sta_ps_enter</code><span class="sig-paren">(</span>uint32_t <em>ps_level</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422wifi_mgmr_sta_ps_enter8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv421wifi_mgmr_sta_ps_exitv">
+<span id="_CPPv321wifi_mgmr_sta_ps_exitv"></span><span id="_CPPv221wifi_mgmr_sta_ps_exitv"></span><span id="wifi_mgmr_sta_ps_exit"></span><span class="target" id="wifi__mgmr__ext_8h_1aeff2b3e0845bbf51d621fb7b4f26e00c"></span>int <code class="descname">wifi_mgmr_sta_ps_exit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421wifi_mgmr_sta_ps_exitv" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv432wifi_mgmr_sta_autoconnect_enablev">
+<span id="_CPPv332wifi_mgmr_sta_autoconnect_enablev"></span><span id="_CPPv232wifi_mgmr_sta_autoconnect_enablev"></span><span id="wifi_mgmr_sta_autoconnect_enable__void"></span><span class="target" id="wifi__mgmr__ext_8h_1a82f61bdbb7a4be6a85884b9b9e2e8805"></span>int <code class="descname">wifi_mgmr_sta_autoconnect_enable</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv432wifi_mgmr_sta_autoconnect_enablev" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv433wifi_mgmr_sta_autoconnect_disablev">
+<span id="_CPPv333wifi_mgmr_sta_autoconnect_disablev"></span><span id="_CPPv233wifi_mgmr_sta_autoconnect_disablev"></span><span id="wifi_mgmr_sta_autoconnect_disable__void"></span><span class="target" id="wifi__mgmr__ext_8h_1a62e7697dbba576d7d2c8a55e8c3edb3e"></span>int <code class="descname">wifi_mgmr_sta_autoconnect_disable</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv433wifi_mgmr_sta_autoconnect_disablev" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv422wifi_mgmr_sta_ssid_setPc">
+<span id="_CPPv322wifi_mgmr_sta_ssid_setPc"></span><span id="_CPPv222wifi_mgmr_sta_ssid_setPc"></span><span id="wifi_mgmr_sta_ssid_set__cP"></span><span class="target" id="wifi__mgmr__ext_8h_1a85c6297a7e7d393047917f051fefe920"></span>void <code class="descname">wifi_mgmr_sta_ssid_set</code><span class="sig-paren">(</span>char *<em>ssid</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422wifi_mgmr_sta_ssid_setPc" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv425wifi_mgmr_sta_passphr_setPc">
+<span id="_CPPv325wifi_mgmr_sta_passphr_setPc"></span><span id="_CPPv225wifi_mgmr_sta_passphr_setPc"></span><span id="wifi_mgmr_sta_passphr_set__cP"></span><span class="target" id="wifi__mgmr__ext_8h_1a79e5c9396c6c38d0dfac87cb7af35937"></span>void <code class="descname">wifi_mgmr_sta_passphr_set</code><span class="sig-paren">(</span>char *<em>passphr</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv425wifi_mgmr_sta_passphr_setPc" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv421wifi_mgmr_sta_psk_setPc">
+<span id="_CPPv321wifi_mgmr_sta_psk_setPc"></span><span id="_CPPv221wifi_mgmr_sta_psk_setPc"></span><span id="wifi_mgmr_sta_psk_set__cP"></span><span class="target" id="wifi__mgmr__ext_8h_1ad12352ae143027c976964ae2d4853f7c"></span>void <code class="descname">wifi_mgmr_sta_psk_set</code><span class="sig-paren">(</span>char *<em>psk</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421wifi_mgmr_sta_psk_setPc" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv434wifi_mgmr_sta_connect_ind_stat_getP37wifi_mgmr_sta_connect_ind_stat_info_t">
+<span id="_CPPv334wifi_mgmr_sta_connect_ind_stat_getP37wifi_mgmr_sta_connect_ind_stat_info_t"></span><span id="_CPPv234wifi_mgmr_sta_connect_ind_stat_getP37wifi_mgmr_sta_connect_ind_stat_info_t"></span><span id="wifi_mgmr_sta_connect_ind_stat_get__wifi_mgmr_sta_connect_ind_stat_info_tP"></span><span class="target" id="wifi__mgmr__ext_8h_1ab816ce6dda5059a5f296a967840026d4"></span>void <code class="descname">wifi_mgmr_sta_connect_ind_stat_get</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv437wifi_mgmr_sta_connect_ind_stat_info_t" title="wifi_mgmr_sta_connect_ind_stat_info_t">wifi_mgmr_sta_connect_ind_stat_info_t</a> *<em>wifi_mgmr_ind_stat</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv434wifi_mgmr_sta_connect_ind_stat_getP37wifi_mgmr_sta_connect_ind_stat_info_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv419wifi_mgmr_ap_enablev">
+<span id="_CPPv319wifi_mgmr_ap_enablev"></span><span id="_CPPv219wifi_mgmr_ap_enablev"></span><span id="wifi_mgmr_ap_enable__void"></span><span class="target" id="wifi__mgmr__ext_8h_1ae53dde1cad89da198cf1a2eb89919cb6"></span><a class="reference internal" href="#_CPPv416wifi_interface_t" title="wifi_interface_t">wifi_interface_t</a> <code class="descname">wifi_mgmr_ap_enable</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419wifi_mgmr_ap_enablev" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv420wifi_mgmr_ap_mac_setAL6E_7uint8_t">
+<span id="_CPPv320wifi_mgmr_ap_mac_setAL6E_7uint8_t"></span><span id="_CPPv220wifi_mgmr_ap_mac_setA6_7uint8_t"></span><span id="wifi_mgmr_ap_mac_set__uint8_tA"></span><span class="target" id="wifi__mgmr__ext_8h_1a706f56dad6dbaf3e7a52a7c831f71182"></span>int <code class="descname">wifi_mgmr_ap_mac_set</code><span class="sig-paren">(</span>uint8_t <em>mac</em>[6]<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420wifi_mgmr_ap_mac_setAL6E_7uint8_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv420wifi_mgmr_ap_mac_getAL6E_7uint8_t">
+<span id="_CPPv320wifi_mgmr_ap_mac_getAL6E_7uint8_t"></span><span id="_CPPv220wifi_mgmr_ap_mac_getA6_7uint8_t"></span><span id="wifi_mgmr_ap_mac_get__uint8_tA"></span><span class="target" id="wifi__mgmr__ext_8h_1ac769b20993179f82a95db7da4b4b3abd"></span>int <code class="descname">wifi_mgmr_ap_mac_get</code><span class="sig-paren">(</span>uint8_t <em>mac</em>[6]<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420wifi_mgmr_ap_mac_getAL6E_7uint8_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv419wifi_mgmr_ap_ip_getP8uint32_tP8uint32_tP8uint32_t">
+<span id="_CPPv319wifi_mgmr_ap_ip_getP8uint32_tP8uint32_tP8uint32_t"></span><span id="_CPPv219wifi_mgmr_ap_ip_getP8uint32_tP8uint32_tP8uint32_t"></span><span id="wifi_mgmr_ap_ip_get__uint32_tP.uint32_tP.uint32_tP"></span><span class="target" id="wifi__mgmr__ext_8h_1a35a4378218c48d73e7bcd696fb8f94e1"></span>int <code class="descname">wifi_mgmr_ap_ip_get</code><span class="sig-paren">(</span>uint32_t *<em>ip</em>, uint32_t *<em>gw</em>, uint32_t *<em>mask</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419wifi_mgmr_ap_ip_getP8uint32_tP8uint32_tP8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv417wifi_mgmr_ap_stopP16wifi_interface_t">
+<span id="_CPPv317wifi_mgmr_ap_stopP16wifi_interface_t"></span><span id="_CPPv217wifi_mgmr_ap_stopP16wifi_interface_t"></span><span id="wifi_mgmr_ap_stop__wifi_interface_tP"></span><span class="target" id="wifi__mgmr__ext_8h_1a035f1a4e0856edd75cc61de97a594c81"></span>int <code class="descname">wifi_mgmr_ap_stop</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv416wifi_interface_t" title="wifi_interface_t">wifi_interface_t</a> *<em>interface</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417wifi_mgmr_ap_stopP16wifi_interface_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv418wifi_mgmr_ap_startP16wifi_interface_tPciPci">
+<span id="_CPPv318wifi_mgmr_ap_startP16wifi_interface_tPciPci"></span><span id="_CPPv218wifi_mgmr_ap_startP16wifi_interface_tPciPci"></span><span id="wifi_mgmr_ap_start__wifi_interface_tP.cP.i.cP.i"></span><span class="target" id="wifi__mgmr__ext_8h_1a79eba0f7c57c0fd2b4baacb1027f3106"></span>int <code class="descname">wifi_mgmr_ap_start</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv416wifi_interface_t" title="wifi_interface_t">wifi_interface_t</a> *<em>interface</em>, char *<em>ssid</em>, int <em>hidden_ssid</em>, char *<em>passwd</em>, int <em>channel</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418wifi_mgmr_ap_startP16wifi_interface_tPciPci" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv422wifi_mgmr_ap_start_advP16wifi_interface_tPciPci7uint8_t">
+<span id="_CPPv322wifi_mgmr_ap_start_advP16wifi_interface_tPciPci7uint8_t"></span><span id="_CPPv222wifi_mgmr_ap_start_advP16wifi_interface_tPciPci7uint8_t"></span><span id="wifi_mgmr_ap_start_adv__wifi_interface_tP.cP.i.cP.i.uint8_t"></span><span class="target" id="wifi__mgmr__ext_8h_1a53fdc9c9cad9943b3a66eff6e9ae9a71"></span>int <code class="descname">wifi_mgmr_ap_start_adv</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv416wifi_interface_t" title="wifi_interface_t">wifi_interface_t</a> *<em>interface</em>, char *<em>ssid</em>, int <em>hidden_ssid</em>, char *<em>passwd</em>, int <em>channel</em>, uint8_t <em>use_dhcp</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422wifi_mgmr_ap_start_advP16wifi_interface_tPciPci7uint8_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv424wifi_mgmr_ap_start_atcmdP16wifi_interface_tPciPcii">
+<span id="_CPPv324wifi_mgmr_ap_start_atcmdP16wifi_interface_tPciPcii"></span><span id="_CPPv224wifi_mgmr_ap_start_atcmdP16wifi_interface_tPciPcii"></span><span id="wifi_mgmr_ap_start_atcmd__wifi_interface_tP.cP.i.cP.i.i"></span><span class="target" id="wifi__mgmr__ext_8h_1ae9082aa7f60488cda33d70be6f1d6626"></span>int <code class="descname">wifi_mgmr_ap_start_atcmd</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv416wifi_interface_t" title="wifi_interface_t">wifi_interface_t</a> *<em>interface</em>, char *<em>ssid</em>, int <em>hidden_ssid</em>, char *<em>passwd</em>, int <em>channel</em>, int <em>max_sta_supported</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv424wifi_mgmr_ap_start_atcmdP16wifi_interface_tPciPcii" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv424wifi_mgmr_ap_sta_cnt_getP7uint8_t">
+<span id="_CPPv324wifi_mgmr_ap_sta_cnt_getP7uint8_t"></span><span id="_CPPv224wifi_mgmr_ap_sta_cnt_getP7uint8_t"></span><span id="wifi_mgmr_ap_sta_cnt_get__uint8_tP"></span><span class="target" id="wifi__mgmr__ext_8h_1a462185dd3b8ddb2e7fd20675811c50c3"></span>int <code class="descname">wifi_mgmr_ap_sta_cnt_get</code><span class="sig-paren">(</span>uint8_t *<em>sta_cnt</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv424wifi_mgmr_ap_sta_cnt_getP7uint8_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv425wifi_mgmr_ap_sta_info_getP19wifi_sta_basic_info7uint8_t">
+<span id="_CPPv325wifi_mgmr_ap_sta_info_getP19wifi_sta_basic_info7uint8_t"></span><span id="_CPPv225wifi_mgmr_ap_sta_info_getP19wifi_sta_basic_info7uint8_t"></span><span id="wifi_mgmr_ap_sta_info_get__wifi_sta_basic_infoP.uint8_t"></span><span class="target" id="wifi__mgmr__ext_8h_1aca7a00ae2e125a5ef105efc8bf69deb1"></span>int <code class="descname">wifi_mgmr_ap_sta_info_get</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv419wifi_sta_basic_info" title="wifi_sta_basic_info">wifi_sta_basic_info</a> *<em>sta_info</em>, uint8_t <em>idx</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv425wifi_mgmr_ap_sta_info_getP19wifi_sta_basic_info7uint8_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv423wifi_mgmr_ap_sta_delete7uint8_t">
+<span id="_CPPv323wifi_mgmr_ap_sta_delete7uint8_t"></span><span id="_CPPv223wifi_mgmr_ap_sta_delete7uint8_t"></span><span id="wifi_mgmr_ap_sta_delete__uint8_t"></span><span class="target" id="wifi__mgmr__ext_8h_1afac62ec3e25e9db906ad07025750166b"></span>int <code class="descname">wifi_mgmr_ap_sta_delete</code><span class="sig-paren">(</span>uint8_t <em>sta_idx</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv423wifi_mgmr_ap_sta_delete7uint8_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv424wifi_mgmr_ap_set_gatewayPc">
+<span id="_CPPv324wifi_mgmr_ap_set_gatewayPc"></span><span id="_CPPv224wifi_mgmr_ap_set_gatewayPc"></span><span id="wifi_mgmr_ap_set_gateway__cP"></span><span class="target" id="wifi__mgmr__ext_8h_1ad645e704a6668e169de9cc39cd799614"></span>int <code class="descname">wifi_mgmr_ap_set_gateway</code><span class="sig-paren">(</span>char *<em>gateway</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv424wifi_mgmr_ap_set_gatewayPc" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv424wifi_mgmr_sniffer_enablev">
+<span id="_CPPv324wifi_mgmr_sniffer_enablev"></span><span id="_CPPv224wifi_mgmr_sniffer_enablev"></span><span id="wifi_mgmr_sniffer_enable__void"></span><span class="target" id="wifi__mgmr__ext_8h_1af2b23c87149b02fca8230876cd2b0779"></span>int <code class="descname">wifi_mgmr_sniffer_enable</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv424wifi_mgmr_sniffer_enablev" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv425wifi_mgmr_sniffer_disablev">
+<span id="_CPPv325wifi_mgmr_sniffer_disablev"></span><span id="_CPPv225wifi_mgmr_sniffer_disablev"></span><span id="wifi_mgmr_sniffer_disable__void"></span><span class="target" id="wifi__mgmr__ext_8h_1ab454d44b169008ba7cbfd84d525fd11a"></span>int <code class="descname">wifi_mgmr_sniffer_disable</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv425wifi_mgmr_sniffer_disablev" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv421wifi_mgmr_rate_config8uint16_t">
+<span id="_CPPv321wifi_mgmr_rate_config8uint16_t"></span><span id="_CPPv221wifi_mgmr_rate_config8uint16_t"></span><span id="wifi_mgmr_rate_config__uint16_t"></span><span class="target" id="wifi__mgmr__ext_8h_1ac6dc4ab4cc4f717b4df23e338e0af6ab"></span>int <code class="descname">wifi_mgmr_rate_config</code><span class="sig-paren">(</span>uint16_t <em>config</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421wifi_mgmr_rate_config8uint16_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv422wifi_mgmr_conf_max_sta7uint8_t">
+<span id="_CPPv322wifi_mgmr_conf_max_sta7uint8_t"></span><span id="_CPPv222wifi_mgmr_conf_max_sta7uint8_t"></span><span id="wifi_mgmr_conf_max_sta__uint8_t"></span><span class="target" id="wifi__mgmr__ext_8h_1aa50ed3b1f67e687179d1cbb3d0972874"></span>int <code class="descname">wifi_mgmr_conf_max_sta</code><span class="sig-paren">(</span>uint8_t <em>max_sta_supported</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422wifi_mgmr_conf_max_sta7uint8_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv426wifi_mgmr_sniffer_registerPv12sniffer_cb_t">
+<span id="_CPPv326wifi_mgmr_sniffer_registerPv12sniffer_cb_t"></span><span id="_CPPv226wifi_mgmr_sniffer_registerPv12sniffer_cb_t"></span><span id="wifi_mgmr_sniffer_register__voidP.sniffer_cb_t"></span><span class="target" id="wifi__mgmr__ext_8h_1a0935a7d873a5717341ac104e4bfc99ed"></span>int <code class="descname">wifi_mgmr_sniffer_register</code><span class="sig-paren">(</span>void *<em>env</em>, <a class="reference internal" href="#_CPPv412sniffer_cb_t" title="sniffer_cb_t">sniffer_cb_t</a> <em>cb</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv426wifi_mgmr_sniffer_registerPv12sniffer_cb_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv428wifi_mgmr_sniffer_unregisterPv">
+<span id="_CPPv328wifi_mgmr_sniffer_unregisterPv"></span><span id="_CPPv228wifi_mgmr_sniffer_unregisterPv"></span><span id="wifi_mgmr_sniffer_unregister__voidP"></span><span class="target" id="wifi__mgmr__ext_8h_1ad3a0b067be884fc3ec18d7244a41b329"></span>int <code class="descname">wifi_mgmr_sniffer_unregister</code><span class="sig-paren">(</span>void *<em>env</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv428wifi_mgmr_sniffer_unregisterPv" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv430wifi_mgmr_sniffer_register_advPv16sniffer_cb_adv_t">
+<span id="_CPPv330wifi_mgmr_sniffer_register_advPv16sniffer_cb_adv_t"></span><span id="_CPPv230wifi_mgmr_sniffer_register_advPv16sniffer_cb_adv_t"></span><span id="wifi_mgmr_sniffer_register_adv__voidP.sniffer_cb_adv_t"></span><span class="target" id="wifi__mgmr__ext_8h_1a95e92b0e8ddf1c92931488c1e6a31b0f"></span>int <code class="descname">wifi_mgmr_sniffer_register_adv</code><span class="sig-paren">(</span>void *<em>env</em>, <a class="reference internal" href="#_CPPv416sniffer_cb_adv_t" title="sniffer_cb_adv_t">sniffer_cb_adv_t</a> <em>cb</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv430wifi_mgmr_sniffer_register_advPv16sniffer_cb_adv_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv432wifi_mgmr_sniffer_unregister_advPv">
+<span id="_CPPv332wifi_mgmr_sniffer_unregister_advPv"></span><span id="_CPPv232wifi_mgmr_sniffer_unregister_advPv"></span><span id="wifi_mgmr_sniffer_unregister_adv__voidP"></span><span class="target" id="wifi__mgmr__ext_8h_1a1dbf4a78a3ff7eaeebca1808b7eeeb11"></span>int <code class="descname">wifi_mgmr_sniffer_unregister_adv</code><span class="sig-paren">(</span>void *<em>env</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv432wifi_mgmr_sniffer_unregister_advPv" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv419wifi_mgmr_state_getPi">
+<span id="_CPPv319wifi_mgmr_state_getPi"></span><span id="_CPPv219wifi_mgmr_state_getPi"></span><span id="wifi_mgmr_state_get__iP"></span><span class="target" id="wifi__mgmr__ext_8h_1af0da906695d1a5b424ab02ff6ea7762d"></span>int <code class="descname">wifi_mgmr_state_get</code><span class="sig-paren">(</span>int *<em>state</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419wifi_mgmr_state_getPi" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv428wifi_mgmr_detailed_state_getPiPi">
+<span id="_CPPv328wifi_mgmr_detailed_state_getPiPi"></span><span id="_CPPv228wifi_mgmr_detailed_state_getPiPi"></span><span id="wifi_mgmr_detailed_state_get__iP.iP"></span><span class="target" id="wifi__mgmr__ext_8h_1a710aceabd7945aea245900e442d0f936"></span>int <code class="descname">wifi_mgmr_detailed_state_get</code><span class="sig-paren">(</span>int *<em>state</em>, int *<em>state_detailed</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv428wifi_mgmr_detailed_state_getPiPi" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv425wifi_mgmr_status_code_getPi">
+<span id="_CPPv325wifi_mgmr_status_code_getPi"></span><span id="_CPPv225wifi_mgmr_status_code_getPi"></span><span id="wifi_mgmr_status_code_get__iP"></span><span class="target" id="wifi__mgmr__ext_8h_1a546f7d8c968bc14e7b7ac02710109e2d"></span>int <code class="descname">wifi_mgmr_status_code_get</code><span class="sig-paren">(</span>int *<em>s_code</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv425wifi_mgmr_status_code_getPi" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv418wifi_mgmr_rssi_getPi">
+<span id="_CPPv318wifi_mgmr_rssi_getPi"></span><span id="_CPPv218wifi_mgmr_rssi_getPi"></span><span id="wifi_mgmr_rssi_get__iP"></span><span class="target" id="wifi__mgmr__ext_8h_1aed27d5b7af2e7a5bb7b079b6c9639ca9"></span>int <code class="descname">wifi_mgmr_rssi_get</code><span class="sig-paren">(</span>int *<em>rssi</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418wifi_mgmr_rssi_getPi" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv421wifi_mgmr_channel_getPi">
+<span id="_CPPv321wifi_mgmr_channel_getPi"></span><span id="_CPPv221wifi_mgmr_channel_getPi"></span><span id="wifi_mgmr_channel_get__iP"></span><span class="target" id="wifi__mgmr__ext_8h_1a4debe929ac11a90809d1f66cfab9a10c"></span>int <code class="descname">wifi_mgmr_channel_get</code><span class="sig-paren">(</span>int *<em>channel</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421wifi_mgmr_channel_getPi" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv421wifi_mgmr_channel_setii">
+<span id="_CPPv321wifi_mgmr_channel_setii"></span><span id="_CPPv221wifi_mgmr_channel_setii"></span><span id="wifi_mgmr_channel_set__i.i"></span><span class="target" id="wifi__mgmr__ext_8h_1ac5b5fbf348c79e12ac80f64b9c70f609"></span>int <code class="descname">wifi_mgmr_channel_set</code><span class="sig-paren">(</span>int <em>channel</em>, int <em>use_40Mhz</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421wifi_mgmr_channel_setii" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv421wifi_mgmr_all_ap_scanPP19wifi_mgmr_ap_item_tP8uint32_t">
+<span id="_CPPv321wifi_mgmr_all_ap_scanPP19wifi_mgmr_ap_item_tP8uint32_t"></span><span id="_CPPv221wifi_mgmr_all_ap_scanPP19wifi_mgmr_ap_item_tP8uint32_t"></span><span id="wifi_mgmr_all_ap_scan__wifi_mgmr_ap_item_tPP.uint32_tP"></span><span class="target" id="wifi__mgmr__ext_8h_1a9c003a69aee88492110effca7300b1f4"></span>int <code class="descname">wifi_mgmr_all_ap_scan</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv419wifi_mgmr_ap_item_t" title="wifi_mgmr_ap_item_t">wifi_mgmr_ap_item_t</a> **<em>ap_ary</em>, uint32_t *<em>num</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421wifi_mgmr_all_ap_scanPP19wifi_mgmr_ap_item_tP8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv433wifi_mgmr_scan_filter_hidden_ssidi">
+<span id="_CPPv333wifi_mgmr_scan_filter_hidden_ssidi"></span><span id="_CPPv233wifi_mgmr_scan_filter_hidden_ssidi"></span><span id="wifi_mgmr_scan_filter_hidden_ssid__i"></span><span class="target" id="wifi__mgmr__ext_8h_1afc279b7340cf103a779680c9adfd44bf"></span>int <code class="descname">wifi_mgmr_scan_filter_hidden_ssid</code><span class="sig-paren">(</span>int <em>filter</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv433wifi_mgmr_scan_filter_hidden_ssidi" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv414wifi_mgmr_scanPv18scan_complete_cb_t">
+<span id="_CPPv314wifi_mgmr_scanPv18scan_complete_cb_t"></span><span id="_CPPv214wifi_mgmr_scanPv18scan_complete_cb_t"></span><span id="wifi_mgmr_scan__voidP.scan_complete_cb_t"></span><span class="target" id="wifi__mgmr__ext_8h_1ab4e0f8a9d7951a5c8fa8ee3d785bda9f"></span>int <code class="descname">wifi_mgmr_scan</code><span class="sig-paren">(</span>void *<em>data</em>, <a class="reference internal" href="#_CPPv418scan_complete_cb_t" title="scan_complete_cb_t">scan_complete_cb_t</a> <em>cb</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414wifi_mgmr_scanPv18scan_complete_cb_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv418wifi_mgmr_scan_advPv18scan_complete_cb_tP8uint16_t8uint16_tAL6E_K7uint8_tPKc7uint8_t8uint32_t">
+<span id="_CPPv318wifi_mgmr_scan_advPv18scan_complete_cb_tP8uint16_t8uint16_tAL6E_K7uint8_tPKc7uint8_t8uint32_t"></span><span id="_CPPv218wifi_mgmr_scan_advPv18scan_complete_cb_tP8uint16_t8uint16_tA6_K7uint8_tPKc7uint8_t8uint32_t"></span><span id="wifi_mgmr_scan_adv__voidP.scan_complete_cb_t.uint16_tP.uint16_t.uint8_tCA.cCP.uint8_t.uint32_t"></span><span class="target" id="wifi__mgmr__ext_8h_1ab5e291d17388276c78a85e684bcb7ec5"></span>int <code class="descname">wifi_mgmr_scan_adv</code><span class="sig-paren">(</span>void *<em>data</em>, <a class="reference internal" href="#_CPPv418scan_complete_cb_t" title="scan_complete_cb_t">scan_complete_cb_t</a> <em>cb</em>, uint16_t *<em>channels</em>, uint16_t <em>channel_num</em>, <em class="property">const</em> uint8_t <em>bssid</em>[6], <em class="property">const</em> char *<em>ssid</em>, uint8_t <em>scan_mode</em>, uint32_t <em>duration_scan</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418wifi_mgmr_scan_advPv18scan_complete_cb_tP8uint16_t8uint16_tAL6E_K7uint8_tPKc7uint8_t8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv417wifi_mgmr_cfg_req8uint32_t8uint32_t8uint32_t8uint32_t8uint32_tP8uint32_t">
+<span id="_CPPv317wifi_mgmr_cfg_req8uint32_t8uint32_t8uint32_t8uint32_t8uint32_tP8uint32_t"></span><span id="_CPPv217wifi_mgmr_cfg_req8uint32_t8uint32_t8uint32_t8uint32_t8uint32_tP8uint32_t"></span><span id="wifi_mgmr_cfg_req__uint32_t.uint32_t.uint32_t.uint32_t.uint32_t.uint32_tP"></span><span class="target" id="wifi__mgmr__ext_8h_1a2607aa80fb3d79fd48cbb53a947322c2"></span>int <code class="descname">wifi_mgmr_cfg_req</code><span class="sig-paren">(</span>uint32_t <em>ops</em>, uint32_t <em>task</em>, uint32_t <em>element</em>, uint32_t <em>type</em>, uint32_t <em>length</em>, uint32_t *<em>buf</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417wifi_mgmr_cfg_req8uint32_t8uint32_t8uint32_t8uint32_t8uint32_tP8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv432wifi_mgmr_scan_complete_callbackv">
+<span id="_CPPv332wifi_mgmr_scan_complete_callbackv"></span><span id="_CPPv232wifi_mgmr_scan_complete_callbackv"></span><span id="wifi_mgmr_scan_complete_callback"></span><span class="target" id="wifi__mgmr__ext_8h_1aaec2cb4d10628aac5514d023e34ece76"></span>int <code class="descname">wifi_mgmr_scan_complete_callback</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv432wifi_mgmr_scan_complete_callbackv" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv422wifi_mgmr_cli_scanlistv">
+<span id="_CPPv322wifi_mgmr_cli_scanlistv"></span><span id="_CPPv222wifi_mgmr_cli_scanlistv"></span><span id="wifi_mgmr_cli_scanlist__void"></span><span class="target" id="wifi__mgmr__ext_8h_1a2f141fb975bcdddf951d84eb1c1abd72"></span>int <code class="descname">wifi_mgmr_cli_scanlist</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422wifi_mgmr_cli_scanlistv" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv418wifi_mgmr_cli_initv">
+<span id="_CPPv318wifi_mgmr_cli_initv"></span><span id="_CPPv218wifi_mgmr_cli_initv"></span><span id="wifi_mgmr_cli_init__void"></span><span class="target" id="wifi__mgmr__ext_8h_1ad33c777c06e7c17bccbd957b3d2f5acf"></span>int <code class="descname">wifi_mgmr_cli_init</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418wifi_mgmr_cli_initv" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv417wifi_mgmr_scan_apPcP19wifi_mgmr_ap_item_t">
+<span id="_CPPv317wifi_mgmr_scan_apPcP19wifi_mgmr_ap_item_t"></span><span id="_CPPv217wifi_mgmr_scan_apPcP19wifi_mgmr_ap_item_t"></span><span id="wifi_mgmr_scan_ap__cP.wifi_mgmr_ap_item_tP"></span><span class="target" id="wifi__mgmr__ext_8h_1ae26a572056244edc07431930477f5c99"></span>int <code class="descname">wifi_mgmr_scan_ap</code><span class="sig-paren">(</span>char *<em>ssid</em>, <a class="reference internal" href="#_CPPv419wifi_mgmr_ap_item_t" title="wifi_mgmr_ap_item_t">wifi_mgmr_ap_item_t</a> *<em>item</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417wifi_mgmr_scan_apPcP19wifi_mgmr_ap_item_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv421wifi_mgmr_scan_ap_allP19wifi_mgmr_ap_item_tP8uint32_t14scan_item_cb_t">
+<span id="_CPPv321wifi_mgmr_scan_ap_allP19wifi_mgmr_ap_item_tP8uint32_t14scan_item_cb_t"></span><span id="_CPPv221wifi_mgmr_scan_ap_allP19wifi_mgmr_ap_item_tP8uint32_t14scan_item_cb_t"></span><span id="wifi_mgmr_scan_ap_all__wifi_mgmr_ap_item_tP.uint32_tP.scan_item_cb_t"></span><span class="target" id="wifi__mgmr__ext_8h_1ad9262fb6cd087d760e1d685cb8e00db7"></span>int <code class="descname">wifi_mgmr_scan_ap_all</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv419wifi_mgmr_ap_item_t" title="wifi_mgmr_ap_item_t">wifi_mgmr_ap_item_t</a> *<em>env</em>, uint32_t *<em>param1</em>, <a class="reference internal" href="#_CPPv414scan_item_cb_t" title="scan_item_cb_t">scan_item_cb_t</a> <em>cb</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421wifi_mgmr_scan_ap_allP19wifi_mgmr_ap_item_tP8uint32_t14scan_item_cb_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv424wifi_mgmr_raw_80211_sendP7uint8_ti">
+<span id="_CPPv324wifi_mgmr_raw_80211_sendP7uint8_ti"></span><span id="_CPPv224wifi_mgmr_raw_80211_sendP7uint8_ti"></span><span id="wifi_mgmr_raw_80211_send__uint8_tP.i"></span><span class="target" id="wifi__mgmr__ext_8h_1ac852a3bcb8a744d1708275ca82452bac"></span>int <code class="descname">wifi_mgmr_raw_80211_send</code><span class="sig-paren">(</span>uint8_t *<em>pkt</em>, int <em>len</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv424wifi_mgmr_raw_80211_sendP7uint8_ti" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv426wifi_mgmr_set_country_codePc">
+<span id="_CPPv326wifi_mgmr_set_country_codePc"></span><span id="_CPPv226wifi_mgmr_set_country_codePc"></span><span id="wifi_mgmr_set_country_code__cP"></span><span class="target" id="wifi__mgmr__ext_8h_1a6a8058926456b285f7a23d559057bc1f"></span>int <code class="descname">wifi_mgmr_set_country_code</code><span class="sig-paren">(</span>char *<em>country_code</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv426wifi_mgmr_set_country_codePc" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv425wifi_mgmr_ext_dump_neededv">
+<span id="_CPPv325wifi_mgmr_ext_dump_neededv"></span><span id="_CPPv225wifi_mgmr_ext_dump_neededv"></span><span id="wifi_mgmr_ext_dump_needed"></span><span class="target" id="wifi__mgmr__ext_8h_1ad696bad1d5a69ebc13e493b6573e7f08"></span>int <code class="descname">wifi_mgmr_ext_dump_needed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv425wifi_mgmr_ext_dump_neededv" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv425wifi_mgmr_status_code_str8uint16_t">
+<span id="_CPPv325wifi_mgmr_status_code_str8uint16_t"></span><span id="_CPPv225wifi_mgmr_status_code_str8uint16_t"></span><span id="wifi_mgmr_status_code_str__uint16_t"></span><span class="target" id="wifi__mgmr__ext_8h_1aeb3a8ec20dca0255bb7d689cfe1f8f9a"></span><em class="property">const</em> char *<code class="descname">wifi_mgmr_status_code_str</code><span class="sig-paren">(</span>uint16_t <em>status_code</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv425wifi_mgmr_status_code_str8uint16_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv429wifi_mgmr_beacon_interval_set8uint16_t">
+<span id="_CPPv329wifi_mgmr_beacon_interval_set8uint16_t"></span><span id="_CPPv229wifi_mgmr_beacon_interval_set8uint16_t"></span><span id="wifi_mgmr_beacon_interval_set__uint16_t"></span><span class="target" id="wifi__mgmr__ext_8h_1acde1e516a7e7d037b1c2c82bc386cf56"></span>int <code class="descname">wifi_mgmr_beacon_interval_set</code><span class="sig-paren">(</span>uint16_t <em>beacon_int</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv429wifi_mgmr_beacon_interval_set8uint16_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv425wifi_mgmr_conn_result_getP8uint16_tP8uint16_t">
+<span id="_CPPv325wifi_mgmr_conn_result_getP8uint16_tP8uint16_t"></span><span id="_CPPv225wifi_mgmr_conn_result_getP8uint16_tP8uint16_t"></span><span id="wifi_mgmr_conn_result_get__uint16_tP.uint16_tP"></span><span class="target" id="wifi__mgmr__ext_8h_1ae333eadc445348788a8625205a08e830"></span>void <code class="descname">wifi_mgmr_conn_result_get</code><span class="sig-paren">(</span>uint16_t *<em>status_code</em>, uint16_t *<em>reason_code</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv425wifi_mgmr_conn_result_getP8uint16_tP8uint16_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv430wifi_mgmr_set_wifi_active_time8uint32_t">
+<span id="_CPPv330wifi_mgmr_set_wifi_active_time8uint32_t"></span><span id="_CPPv230wifi_mgmr_set_wifi_active_time8uint32_t"></span><span id="wifi_mgmr_set_wifi_active_time__uint32_t"></span><span class="target" id="wifi__mgmr__ext_8h_1a66dc8345470f05003eb6a42afd664603"></span>int <code class="descname">wifi_mgmr_set_wifi_active_time</code><span class="sig-paren">(</span>uint32_t <em>ms</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv430wifi_mgmr_set_wifi_active_time8uint32_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv429wifi_mgmr_set_listen_interval8uint16_t">
+<span id="_CPPv329wifi_mgmr_set_listen_interval8uint16_t"></span><span id="_CPPv229wifi_mgmr_set_listen_interval8uint16_t"></span><span id="wifi_mgmr_set_listen_interval__uint16_t"></span><span class="target" id="wifi__mgmr__ext_8h_1ac715b5ba9b3ed28248748f31bdbd9c80"></span>int <code class="descname">wifi_mgmr_set_listen_interval</code><span class="sig-paren">(</span>uint16_t <em>itv</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv429wifi_mgmr_set_listen_interval8uint16_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv425wifi_mgmr_pm_ops_registerv">
+<span id="_CPPv325wifi_mgmr_pm_ops_registerv"></span><span id="_CPPv225wifi_mgmr_pm_ops_registerv"></span><span id="wifi_mgmr_pm_ops_register__void"></span><span class="target" id="wifi__mgmr__ext_8h_1a2865bb8887743e5a59345b7ba6675c44"></span>int <code class="descname">wifi_mgmr_pm_ops_register</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv425wifi_mgmr_pm_ops_registerv" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv423wifi_mgmr_fw_affair_opsv">
+<span id="_CPPv323wifi_mgmr_fw_affair_opsv"></span><span id="_CPPv223wifi_mgmr_fw_affair_opsv"></span><span id="wifi_mgmr_fw_affair_ops__void"></span><span class="target" id="wifi__mgmr__ext_8h_1aed08af8018d37c0a3330808e94064608"></span>int <code class="descname">wifi_mgmr_fw_affair_ops</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv423wifi_mgmr_fw_affair_opsv" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv428wifi_mgmr_bcnind_auth_to_exti">
+<span id="_CPPv328wifi_mgmr_bcnind_auth_to_exti"></span><span id="_CPPv228wifi_mgmr_bcnind_auth_to_exti"></span><span id="wifi_mgmr_bcnind_auth_to_ext__i"></span><span class="target" id="wifi__mgmr__ext_8h_1a015e5d6e5187726f49a5247e6441fdc3"></span>int <code class="descname">wifi_mgmr_bcnind_auth_to_ext</code><span class="sig-paren">(</span>int <em>auth</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv428wifi_mgmr_bcnind_auth_to_exti" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv430wifi_mgmr_bcnind_cipher_to_exti">
+<span id="_CPPv330wifi_mgmr_bcnind_cipher_to_exti"></span><span id="_CPPv230wifi_mgmr_bcnind_cipher_to_exti"></span><span id="wifi_mgmr_bcnind_cipher_to_ext__i"></span><span class="target" id="wifi__mgmr__ext_8h_1ab602a8576ca681f4761aae663e55abcb"></span>int <code class="descname">wifi_mgmr_bcnind_cipher_to_ext</code><span class="sig-paren">(</span>int <em>cipher</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv430wifi_mgmr_bcnind_cipher_to_exti" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv430wifi_mgmr_diagnose_tlv_get_elev">
+<span id="_CPPv330wifi_mgmr_diagnose_tlv_get_elev"></span><span id="_CPPv230wifi_mgmr_diagnose_tlv_get_elev"></span><span id="wifi_mgmr_diagnose_tlv_get_ele__void"></span><span class="target" id="wifi__mgmr__ext_8h_1a952d8eb546cf1b3cc99d6fe01153724f"></span><em class="property">struct</em> sm_connect_tlv_desc *<code class="descname">wifi_mgmr_diagnose_tlv_get_ele</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv430wifi_mgmr_diagnose_tlv_get_elev" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv431wifi_mgmr_diagnose_tlv_free_eleP19sm_connect_tlv_desc">
+<span id="_CPPv331wifi_mgmr_diagnose_tlv_free_eleP19sm_connect_tlv_desc"></span><span id="_CPPv231wifi_mgmr_diagnose_tlv_free_eleP19sm_connect_tlv_desc"></span><span id="wifi_mgmr_diagnose_tlv_free_ele__sm_connect_tlv_descP"></span><span class="target" id="wifi__mgmr__ext_8h_1a5e1030cacc07b45484fa7a3a1832b05f"></span>void <code class="descname">wifi_mgmr_diagnose_tlv_free_ele</code><span class="sig-paren">(</span><em class="property">struct</em> sm_connect_tlv_desc *<em>ele</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv431wifi_mgmr_diagnose_tlv_free_eleP19sm_connect_tlv_desc" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="structures">
+<h3>Structures<a class="headerlink" href="#structures" title="永久链接至标题"></a></h3>
+<dl class="class">
+<dt id="_CPPv47ap_info">
+<span id="_CPPv37ap_info"></span><span id="_CPPv27ap_info"></span><span id="ap_info"></span><span class="target" id="structap__info"></span><em class="property">struct </em><code class="descname">ap_info</code><a class="headerlink" href="#_CPPv47ap_info" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="_CPPv414ap_connect_adv">
+<span id="_CPPv314ap_connect_adv"></span><span id="_CPPv214ap_connect_adv"></span><span id="ap_connect_adv"></span><span class="target" id="structap__connect__adv"></span><em class="property">struct </em><code class="descname">ap_connect_adv</code><a class="headerlink" href="#_CPPv414ap_connect_adv" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="_CPPv410bl_rx_info">
+<span id="_CPPv310bl_rx_info"></span><span id="_CPPv210bl_rx_info"></span><span id="bl_rx_info"></span><span class="target" id="structbl__rx__info"></span><em class="property">struct </em><code class="descname">bl_rx_info</code><a class="headerlink" href="#_CPPv410bl_rx_info" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="_CPPv417wifi_mgmr_ap_item">
+<span id="_CPPv317wifi_mgmr_ap_item"></span><span id="_CPPv217wifi_mgmr_ap_item"></span><span id="wifi_mgmr_ap_item"></span><span class="target" id="structwifi__mgmr__ap__item"></span><em class="property">struct </em><code class="descname">wifi_mgmr_ap_item</code><a class="headerlink" href="#_CPPv417wifi_mgmr_ap_item" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="_CPPv435wifi_mgmr_sta_connect_ind_stat_info">
+<span id="_CPPv335wifi_mgmr_sta_connect_ind_stat_info"></span><span id="_CPPv235wifi_mgmr_sta_connect_ind_stat_info"></span><span id="wifi_mgmr_sta_connect_ind_stat_info"></span><span class="target" id="structwifi__mgmr__sta__connect__ind__stat__info"></span><em class="property">struct </em><code class="descname">wifi_mgmr_sta_connect_ind_stat_info</code><a class="headerlink" href="#_CPPv435wifi_mgmr_sta_connect_ind_stat_info" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="_CPPv419wifi_sta_basic_info">
+<span id="_CPPv319wifi_sta_basic_info"></span><span id="_CPPv219wifi_sta_basic_info"></span><span id="wifi_sta_basic_info"></span><span class="target" id="structwifi__sta__basic__info"></span><em class="property">struct </em><code class="descname">wifi_sta_basic_info</code><a class="headerlink" href="#_CPPv419wifi_sta_basic_info" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="_CPPv416wifi_sta_ps_conf">
+<span id="_CPPv316wifi_sta_ps_conf"></span><span id="_CPPv216wifi_sta_ps_conf"></span><span id="wifi_sta_ps_conf"></span><span class="target" id="structwifi__sta__ps__conf"></span><em class="property">struct </em><code class="descname">wifi_sta_ps_conf</code><a class="headerlink" href="#_CPPv416wifi_sta_ps_conf" title="永久链接至目标"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N16wifi_sta_ps_conf15listen_intervalE">
+<span id="_CPPv3N16wifi_sta_ps_conf15listen_intervalE"></span><span id="_CPPv2N16wifi_sta_ps_conf15listen_intervalE"></span><span id="wifi_sta_ps_conf::listen_interval__i"></span><span class="target" id="structwifi__sta__ps__conf_1aa45b717ac0db1320764a109c0fcee31e"></span>int <code class="descname">listen_interval</code><a class="headerlink" href="#_CPPv4N16wifi_sta_ps_conf15listen_intervalE" title="永久链接至目标"></a><br /></dt>
+<dd><p>num of beacons </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16wifi_sta_ps_conf18wifi_active_periodE">
+<span id="_CPPv3N16wifi_sta_ps_conf18wifi_active_periodE"></span><span id="_CPPv2N16wifi_sta_ps_conf18wifi_active_periodE"></span><span id="wifi_sta_ps_conf::wifi_active_period__uint16_t"></span><span class="target" id="structwifi__sta__ps__conf_1a3e5e4bfdda7289bddad1350a904a4b90"></span>uint16_t <code class="descname">wifi_active_period</code><a class="headerlink" href="#_CPPv4N16wifi_sta_ps_conf18wifi_active_periodE" title="永久链接至目标"></a><br /></dt>
+<dd><p>wifi active ms. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv49wifi_conf">
+<span id="_CPPv39wifi_conf"></span><span id="_CPPv29wifi_conf"></span><span id="wifi_conf"></span><span class="target" id="structwifi__conf"></span><em class="property">struct </em><code class="descname">wifi_conf</code><a class="headerlink" href="#_CPPv49wifi_conf" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="macros">
+<h3>Macros<a class="headerlink" href="#macros" title="永久链接至标题"></a></h3>
+<dl class="macro">
+<dt id="c.WIFI_CONNECT_STOP_SCAN_ALL_CHANNEL_IF_TARGET_AP_FOUND">
+<span class="target" id="wifi__mgmr__ext_8h_1a8856fd5239158fa82bc165baaeb03fe7"></span><code class="descname">WIFI_CONNECT_STOP_SCAN_ALL_CHANNEL_IF_TARGET_AP_FOUND</code><a class="headerlink" href="#c.WIFI_CONNECT_STOP_SCAN_ALL_CHANNEL_IF_TARGET_AP_FOUND" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.WIFI_CONNECT_PCI_EN">
+<span class="target" id="wifi__mgmr__ext_8h_1ac522971c3f84bf10789050130ae5d5cc"></span><code class="descname">WIFI_CONNECT_PCI_EN</code><a class="headerlink" href="#c.WIFI_CONNECT_PCI_EN" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.WIFI_CONNECT_STOP_SCAN_CURRENT_CHANNEL_IF_TARGET_AP_FOUND">
+<span class="target" id="wifi__mgmr__ext_8h_1a086e8f435c3e8d3cfb208ff35a2a1639"></span><code class="descname">WIFI_CONNECT_STOP_SCAN_CURRENT_CHANNEL_IF_TARGET_AP_FOUND</code><a class="headerlink" href="#c.WIFI_CONNECT_STOP_SCAN_CURRENT_CHANNEL_IF_TARGET_AP_FOUND" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.WIFI_CONNECT_PMF_CAPABLE">
+<span class="target" id="wifi__mgmr__ext_8h_1a203d7d4301bc77a54cb0e130af84a45c"></span><code class="descname">WIFI_CONNECT_PMF_CAPABLE</code><a class="headerlink" href="#c.WIFI_CONNECT_PMF_CAPABLE" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.WIFI_CONNECT_PMF_REQUIRED">
+<span class="target" id="wifi__mgmr__ext_8h_1ae64346a807c3f9f4c0e773915eced89c"></span><code class="descname">WIFI_CONNECT_PMF_REQUIRED</code><a class="headerlink" href="#c.WIFI_CONNECT_PMF_REQUIRED" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.WIFI_STATE_AP_IS_ENABLED">
+<span class="target" id="wifi__mgmr__ext_8h_1ad6446a8bbe1d7f62e44ce0905e034a64"></span><code class="descname">WIFI_STATE_AP_IS_ENABLED</code><span class="sig-paren">(</span>status<span class="sig-paren">)</span><a class="headerlink" href="#c.WIFI_STATE_AP_IS_ENABLED" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="type-definitions">
+<h3>Type Definitions<a class="headerlink" href="#type-definitions" title="永久链接至标题"></a></h3>
+<dl class="type">
+<dt id="_CPPv416ap_connect_adv_t">
+<span id="_CPPv316ap_connect_adv_t"></span><span id="_CPPv216ap_connect_adv_t"></span><span id="ap_connect_adv_t"></span><span class="target" id="wifi__mgmr__ext_8h_1ad70a08f6dc2c8f9c574d0c776d7578b6"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv414ap_connect_adv" title="ap_connect_adv">ap_connect_adv</a> <code class="descname">ap_connect_adv_t</code><a class="headerlink" href="#_CPPv416ap_connect_adv_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv412bl_rx_info_t">
+<span id="_CPPv312bl_rx_info_t"></span><span id="_CPPv212bl_rx_info_t"></span><span id="bl_rx_info_t"></span><span class="target" id="wifi__mgmr__ext_8h_1ad1c01f548235edef1e8e3ed8ba23e452"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv410bl_rx_info" title="bl_rx_info">bl_rx_info</a> <code class="descname">bl_rx_info_t</code><a class="headerlink" href="#_CPPv412bl_rx_info_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv419wifi_mgmr_ap_item_t">
+<span id="_CPPv319wifi_mgmr_ap_item_t"></span><span id="_CPPv219wifi_mgmr_ap_item_t"></span><span id="wifi_mgmr_ap_item_t"></span><span class="target" id="wifi__mgmr__ext_8h_1a5d2b1f09f8db27d3f3d128aec09400c9"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv417wifi_mgmr_ap_item" title="wifi_mgmr_ap_item">wifi_mgmr_ap_item</a> <code class="descname">wifi_mgmr_ap_item_t</code><a class="headerlink" href="#_CPPv419wifi_mgmr_ap_item_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv437wifi_mgmr_sta_connect_ind_stat_info_t">
+<span id="_CPPv337wifi_mgmr_sta_connect_ind_stat_info_t"></span><span id="_CPPv237wifi_mgmr_sta_connect_ind_stat_info_t"></span><span id="wifi_mgmr_sta_connect_ind_stat_info_t"></span><span class="target" id="wifi__mgmr__ext_8h_1aa5fd203350872d84cba897f28dbaf18d"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv435wifi_mgmr_sta_connect_ind_stat_info" title="wifi_mgmr_sta_connect_ind_stat_info">wifi_mgmr_sta_connect_ind_stat_info</a> <code class="descname">wifi_mgmr_sta_connect_ind_stat_info_t</code><a class="headerlink" href="#_CPPv437wifi_mgmr_sta_connect_ind_stat_info_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv421wifi_sta_basic_info_t">
+<span id="_CPPv321wifi_sta_basic_info_t"></span><span id="_CPPv221wifi_sta_basic_info_t"></span><span id="wifi_sta_basic_info_t"></span><span class="target" id="wifi__mgmr__ext_8h_1a2f68f26dec2b8541e2f72fb67063e1fa"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv419wifi_sta_basic_info" title="wifi_sta_basic_info">wifi_sta_basic_info</a> <code class="descname">wifi_sta_basic_info_t</code><a class="headerlink" href="#_CPPv421wifi_sta_basic_info_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv418wifi_sta_ps_conf_t">
+<span id="_CPPv318wifi_sta_ps_conf_t"></span><span id="_CPPv218wifi_sta_ps_conf_t"></span><span id="wifi_sta_ps_conf_t"></span><span class="target" id="wifi__mgmr__ext_8h_1ad6d7363dc24f2c2d7588e943b552944e"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv416wifi_sta_ps_conf" title="wifi_sta_ps_conf">wifi_sta_ps_conf</a> <code class="descname">wifi_sta_ps_conf_t</code><a class="headerlink" href="#_CPPv418wifi_sta_ps_conf_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv416wifi_interface_t">
+<span id="_CPPv316wifi_interface_t"></span><span id="_CPPv216wifi_interface_t"></span><span id="wifi_interface_t"></span><span class="target" id="wifi__mgmr__ext_8h_1a8257a60fa7a2dd9e251588b0fb59d239"></span><em class="property">typedef </em>void *<code class="descname">wifi_interface_t</code><a class="headerlink" href="#_CPPv416wifi_interface_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv412sniffer_cb_t">
+<span id="_CPPv312sniffer_cb_t"></span><span id="_CPPv212sniffer_cb_t"></span><span id="sniffer_cb_t"></span><span class="target" id="wifi__mgmr__ext_8h_1ad225608f475f001dd3df194b0f08376d"></span><em class="property">typedef </em>void (*<code class="descname">sniffer_cb_t</code>)<span class="sig-paren">(</span>void *env, uint8_t *pkt, int len, <a class="reference internal" href="#_CPPv412bl_rx_info_t" title="bl_rx_info_t">bl_rx_info_t</a> *info<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412sniffer_cb_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv416sniffer_cb_adv_t">
+<span id="_CPPv316sniffer_cb_adv_t"></span><span id="_CPPv216sniffer_cb_adv_t"></span><span id="sniffer_cb_adv_t"></span><span class="target" id="wifi__mgmr__ext_8h_1a4a8b5ffc9ab4e985abd5a8f3decfb62a"></span><em class="property">typedef </em>void (*<code class="descname">sniffer_cb_adv_t</code>)<span class="sig-paren">(</span>void *env, void *pkt_wrap, <a class="reference internal" href="#_CPPv412bl_rx_info_t" title="bl_rx_info_t">bl_rx_info_t</a> *info<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416sniffer_cb_adv_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv414scan_item_cb_t">
+<span id="_CPPv314scan_item_cb_t"></span><span id="_CPPv214scan_item_cb_t"></span><span id="scan_item_cb_t"></span><span class="target" id="wifi__mgmr__ext_8h_1a78f64454d47ed6b4ad04cfd2d541bb90"></span><em class="property">typedef </em>void (*<code class="descname">scan_item_cb_t</code>)<span class="sig-paren">(</span><a class="reference internal" href="#_CPPv419wifi_mgmr_ap_item_t" title="wifi_mgmr_ap_item_t">wifi_mgmr_ap_item_t</a> *env, uint32_t *param1, <a class="reference internal" href="#_CPPv419wifi_mgmr_ap_item_t" title="wifi_mgmr_ap_item_t">wifi_mgmr_ap_item_t</a> *item<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414scan_item_cb_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv418scan_complete_cb_t">
+<span id="_CPPv318scan_complete_cb_t"></span><span id="_CPPv218scan_complete_cb_t"></span><span id="scan_complete_cb_t"></span><span class="target" id="wifi__mgmr__ext_8h_1ab43ea5a394be9f712dcd06cda2183e04"></span><em class="property">typedef </em>void (*<code class="descname">scan_complete_cb_t</code>)<span class="sig-paren">(</span>void *data, void *param<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418scan_complete_cb_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv411wifi_conf_t">
+<span id="_CPPv311wifi_conf_t"></span><span id="_CPPv211wifi_conf_t"></span><span id="wifi_conf_t"></span><span class="target" id="wifi__mgmr__ext_8h_1a310545c21e120cfdd93a3fceb03c6063"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv49wifi_conf" title="wifi_conf">wifi_conf</a> <code class="descname">wifi_conf_t</code><a class="headerlink" href="#_CPPv411wifi_conf_t" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="enumerations">
+<h3>Enumerations<a class="headerlink" href="#enumerations" title="永久链接至标题"></a></h3>
+<dl class="type">
+<dt id="_CPPv412ap_info_type">
+<span id="_CPPv312ap_info_type"></span><span id="_CPPv212ap_info_type"></span><span id="ap_info_type"></span><span class="target" id="wifi__mgmr__ext_8h_1a83d88f4b85366b99dc8c184a89144473"></span><em class="property">enum </em><code class="descname">ap_info_type</code><a class="headerlink" href="#_CPPv412ap_info_type" title="永久链接至目标"></a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv420AP_INFO_TYPE_SUGGEST">
+<span id="_CPPv320AP_INFO_TYPE_SUGGEST"></span><span id="_CPPv220AP_INFO_TYPE_SUGGEST"></span><span class="target" id="wifi__mgmr__ext_8h_1a83d88f4b85366b99dc8c184a89144473a0ecfd944f55bf9a43f9a0bbf356f0fdb"></span><code class="descname">AP_INFO_TYPE_SUGGEST</code><a class="headerlink" href="#_CPPv420AP_INFO_TYPE_SUGGEST" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv420AP_INFO_TYPE_PRESIST">
+<span id="_CPPv320AP_INFO_TYPE_PRESIST"></span><span id="_CPPv220AP_INFO_TYPE_PRESIST"></span><span class="target" id="wifi__mgmr__ext_8h_1a83d88f4b85366b99dc8c184a89144473a41997cd99cfd4bb089358a130e3b0d38"></span><code class="descname">AP_INFO_TYPE_PRESIST</code><a class="headerlink" href="#_CPPv420AP_INFO_TYPE_PRESIST" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="type">
+<dt id="_CPPv421wifi_mgmr_ap_cipher_t">
+<span id="_CPPv321wifi_mgmr_ap_cipher_t"></span><span id="_CPPv221wifi_mgmr_ap_cipher_t"></span><span id="wifi_mgmr_ap_cipher_t"></span><span class="target" id="wifi__mgmr__ext_8h_1a8d3009fccb6b72567103d044db3c8f47"></span><em class="property">enum </em><code class="descname">wifi_mgmr_ap_cipher_t</code><a class="headerlink" href="#_CPPv421wifi_mgmr_ap_cipher_t" title="永久链接至目标"></a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv419WM_WIFI_CIPHER_NONE">
+<span id="_CPPv319WM_WIFI_CIPHER_NONE"></span><span id="_CPPv219WM_WIFI_CIPHER_NONE"></span><span class="target" id="wifi__mgmr__ext_8h_1a8d3009fccb6b72567103d044db3c8f47a58b00cfc0cbf4b6fe977023a11a4ad22"></span><code class="descname">WM_WIFI_CIPHER_NONE</code> = 0<a class="headerlink" href="#_CPPv419WM_WIFI_CIPHER_NONE" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv418WM_WIFI_CIPHER_WEP">
+<span id="_CPPv318WM_WIFI_CIPHER_WEP"></span><span id="_CPPv218WM_WIFI_CIPHER_WEP"></span><span class="target" id="wifi__mgmr__ext_8h_1a8d3009fccb6b72567103d044db3c8f47a997e5e80bf655f25fdc39b161111971a"></span><code class="descname">WM_WIFI_CIPHER_WEP</code><a class="headerlink" href="#_CPPv418WM_WIFI_CIPHER_WEP" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv418WM_WIFI_CIPHER_AES">
+<span id="_CPPv318WM_WIFI_CIPHER_AES"></span><span id="_CPPv218WM_WIFI_CIPHER_AES"></span><span class="target" id="wifi__mgmr__ext_8h_1a8d3009fccb6b72567103d044db3c8f47a3087590e07cd684ae1b3f65dce929871"></span><code class="descname">WM_WIFI_CIPHER_AES</code><a class="headerlink" href="#_CPPv418WM_WIFI_CIPHER_AES" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv419WM_WIFI_CIPHER_TKIP">
+<span id="_CPPv319WM_WIFI_CIPHER_TKIP"></span><span id="_CPPv219WM_WIFI_CIPHER_TKIP"></span><span class="target" id="wifi__mgmr__ext_8h_1a8d3009fccb6b72567103d044db3c8f47adf015d3b1db4b85f80e3ffd84f2acda3"></span><code class="descname">WM_WIFI_CIPHER_TKIP</code><a class="headerlink" href="#_CPPv419WM_WIFI_CIPHER_TKIP" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv423WM_WIFI_CIPHER_TKIP_AES">
+<span id="_CPPv323WM_WIFI_CIPHER_TKIP_AES"></span><span id="_CPPv223WM_WIFI_CIPHER_TKIP_AES"></span><span class="target" id="wifi__mgmr__ext_8h_1a8d3009fccb6b72567103d044db3c8f47a96a02f10f29f7f23bfac0372ea50c363"></span><code class="descname">WM_WIFI_CIPHER_TKIP_AES</code><a class="headerlink" href="#_CPPv423WM_WIFI_CIPHER_TKIP_AES" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv418WM_WIFI_CIPHER_MAX">
+<span id="_CPPv318WM_WIFI_CIPHER_MAX"></span><span id="_CPPv218WM_WIFI_CIPHER_MAX"></span><span class="target" id="wifi__mgmr__ext_8h_1a8d3009fccb6b72567103d044db3c8f47a5505cad37f36227323b1cf36ad6192ab"></span><code class="descname">WM_WIFI_CIPHER_MAX</code><a class="headerlink" href="#_CPPv418WM_WIFI_CIPHER_MAX" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="type">
+<dt id="_CPPv424wifi_mgmr_ap_auth_mode_t">
+<span id="_CPPv324wifi_mgmr_ap_auth_mode_t"></span><span id="_CPPv224wifi_mgmr_ap_auth_mode_t"></span><span id="wifi_mgmr_ap_auth_mode_t"></span><span class="target" id="wifi__mgmr__ext_8h_1a2905a6528335f9bc08bfb2726e55d7c6"></span><em class="property">enum </em><code class="descname">wifi_mgmr_ap_auth_mode_t</code><a class="headerlink" href="#_CPPv424wifi_mgmr_ap_auth_mode_t" title="永久链接至目标"></a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv420WM_WIFI_AUTH_UNKNOWN">
+<span id="_CPPv320WM_WIFI_AUTH_UNKNOWN"></span><span id="_CPPv220WM_WIFI_AUTH_UNKNOWN"></span><span class="target" id="wifi__mgmr__ext_8h_1a2905a6528335f9bc08bfb2726e55d7c6a70d1e19bad8c2c26ed2148502f300ba1"></span><code class="descname">WM_WIFI_AUTH_UNKNOWN</code> = 0<a class="headerlink" href="#_CPPv420WM_WIFI_AUTH_UNKNOWN" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv417WM_WIFI_AUTH_OPEN">
+<span id="_CPPv317WM_WIFI_AUTH_OPEN"></span><span id="_CPPv217WM_WIFI_AUTH_OPEN"></span><span class="target" id="wifi__mgmr__ext_8h_1a2905a6528335f9bc08bfb2726e55d7c6a9c9b0de16cea97b80fdf5d8aca9adbe8"></span><code class="descname">WM_WIFI_AUTH_OPEN</code><a class="headerlink" href="#_CPPv417WM_WIFI_AUTH_OPEN" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv416WM_WIFI_AUTH_WEP">
+<span id="_CPPv316WM_WIFI_AUTH_WEP"></span><span id="_CPPv216WM_WIFI_AUTH_WEP"></span><span class="target" id="wifi__mgmr__ext_8h_1a2905a6528335f9bc08bfb2726e55d7c6a2c490600e5bca6a8eda768390bf06d76"></span><code class="descname">WM_WIFI_AUTH_WEP</code><a class="headerlink" href="#_CPPv416WM_WIFI_AUTH_WEP" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv420WM_WIFI_AUTH_WPA_PSK">
+<span id="_CPPv320WM_WIFI_AUTH_WPA_PSK"></span><span id="_CPPv220WM_WIFI_AUTH_WPA_PSK"></span><span class="target" id="wifi__mgmr__ext_8h_1a2905a6528335f9bc08bfb2726e55d7c6ab335365ab8c87b298732a2262698d52d"></span><code class="descname">WM_WIFI_AUTH_WPA_PSK</code><a class="headerlink" href="#_CPPv420WM_WIFI_AUTH_WPA_PSK" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv421WM_WIFI_AUTH_WPA2_PSK">
+<span id="_CPPv321WM_WIFI_AUTH_WPA2_PSK"></span><span id="_CPPv221WM_WIFI_AUTH_WPA2_PSK"></span><span class="target" id="wifi__mgmr__ext_8h_1a2905a6528335f9bc08bfb2726e55d7c6a52c5169ec83df882a076f3d4fa8a0de8"></span><code class="descname">WM_WIFI_AUTH_WPA2_PSK</code><a class="headerlink" href="#_CPPv421WM_WIFI_AUTH_WPA2_PSK" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv425WM_WIFI_AUTH_WPA_WPA2_PSK">
+<span id="_CPPv325WM_WIFI_AUTH_WPA_WPA2_PSK"></span><span id="_CPPv225WM_WIFI_AUTH_WPA_WPA2_PSK"></span><span class="target" id="wifi__mgmr__ext_8h_1a2905a6528335f9bc08bfb2726e55d7c6aa9f88e046489e93caff76dcf607089fc"></span><code class="descname">WM_WIFI_AUTH_WPA_WPA2_PSK</code><a class="headerlink" href="#_CPPv425WM_WIFI_AUTH_WPA_WPA2_PSK" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv427WM_WIFI_AUTH_WPA_ENTERPRISE">
+<span id="_CPPv327WM_WIFI_AUTH_WPA_ENTERPRISE"></span><span id="_CPPv227WM_WIFI_AUTH_WPA_ENTERPRISE"></span><span class="target" id="wifi__mgmr__ext_8h_1a2905a6528335f9bc08bfb2726e55d7c6a13e62e05373ccc0101af45a328df8288"></span><code class="descname">WM_WIFI_AUTH_WPA_ENTERPRISE</code><a class="headerlink" href="#_CPPv427WM_WIFI_AUTH_WPA_ENTERPRISE" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv421WM_WIFI_AUTH_WPA3_SAE">
+<span id="_CPPv321WM_WIFI_AUTH_WPA3_SAE"></span><span id="_CPPv221WM_WIFI_AUTH_WPA3_SAE"></span><span class="target" id="wifi__mgmr__ext_8h_1a2905a6528335f9bc08bfb2726e55d7c6af7199c886e3b0186c8429b14e5741dca"></span><code class="descname">WM_WIFI_AUTH_WPA3_SAE</code><a class="headerlink" href="#_CPPv421WM_WIFI_AUTH_WPA3_SAE" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv430WM_WIFI_AUTH_WPA2_PSK_WPA3_SAE">
+<span id="_CPPv330WM_WIFI_AUTH_WPA2_PSK_WPA3_SAE"></span><span id="_CPPv230WM_WIFI_AUTH_WPA2_PSK_WPA3_SAE"></span><span class="target" id="wifi__mgmr__ext_8h_1a2905a6528335f9bc08bfb2726e55d7c6afbb70dada084b290d4480a242c8527fc"></span><code class="descname">WM_WIFI_AUTH_WPA2_PSK_WPA3_SAE</code><a class="headerlink" href="#_CPPv430WM_WIFI_AUTH_WPA2_PSK_WPA3_SAE" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv416WM_WIFI_AUTH_MAX">
+<span id="_CPPv316WM_WIFI_AUTH_MAX"></span><span id="_CPPv216WM_WIFI_AUTH_MAX"></span><span class="target" id="wifi__mgmr__ext_8h_1a2905a6528335f9bc08bfb2726e55d7c6afb6c0b03ca70d28910bbd145ef05d6bd"></span><code class="descname">WM_WIFI_AUTH_MAX</code><a class="headerlink" href="#_CPPv416WM_WIFI_AUTH_MAX" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="type">
+<dt id="_CPPv412__anonymous0">
+<span id="_CPPv312__anonymous0"></span><span id="_CPPv212__anonymous0"></span><span id="__anonymous0"></span><span class="target" id="wifi__mgmr__ext_8h_1a06fc87d81c62e9abb8790b6e5713c55b"></span><em class="property">enum </em><code class="descname"><strong>[anonymous]</strong></code><a class="headerlink" href="#_CPPv412__anonymous0" title="永久链接至目标"></a><br /></dt>
+<dd><p>Power Save mode setting. </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv411PS_MODE_OFF">
+<span id="_CPPv311PS_MODE_OFF"></span><span id="_CPPv211PS_MODE_OFF"></span><span class="target" id="wifi__mgmr__ext_8h_1a06fc87d81c62e9abb8790b6e5713c55bad1ca9f05105619dbc67ea4285aaa79f5"></span><code class="descname">PS_MODE_OFF</code><a class="headerlink" href="#_CPPv411PS_MODE_OFF" title="永久链接至目标"></a><br /></dt>
+<dd><p>Power-save off. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv410PS_MODE_ON">
+<span id="_CPPv310PS_MODE_ON"></span><span id="_CPPv210PS_MODE_ON"></span><span class="target" id="wifi__mgmr__ext_8h_1a06fc87d81c62e9abb8790b6e5713c55ba51332c58541ab47d6feb74f22ac10265"></span><code class="descname">PS_MODE_ON</code><a class="headerlink" href="#_CPPv410PS_MODE_ON" title="永久链接至目标"></a><br /></dt>
+<dd><p>Power-save on - Normal mode. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv414PS_MODE_ON_DYN">
+<span id="_CPPv314PS_MODE_ON_DYN"></span><span id="_CPPv214PS_MODE_ON_DYN"></span><span class="target" id="wifi__mgmr__ext_8h_1a06fc87d81c62e9abb8790b6e5713c55ba06ff6d7ad62620a8c785c11daa02a94f"></span><code class="descname">PS_MODE_ON_DYN</code><a class="headerlink" href="#_CPPv414PS_MODE_ON_DYN" title="永久链接至目标"></a><br /></dt>
+<dd><p>Power-save on - Dynamic mode. </p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="type">
+<dt id="_CPPv420WIFI_STATE_ENUM_LIST">
+<span id="_CPPv320WIFI_STATE_ENUM_LIST"></span><span id="_CPPv220WIFI_STATE_ENUM_LIST"></span><span id="WIFI_STATE_ENUM_LIST"></span><span class="target" id="wifi__mgmr__ext_8h_1ad8f5f9f9385116d7b886cd9ef2b256b2"></span><em class="property">enum </em><code class="descname">WIFI_STATE_ENUM_LIST</code><a class="headerlink" href="#_CPPv420WIFI_STATE_ENUM_LIST" title="永久链接至目标"></a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv418WIFI_STATE_UNKNOWN">
+<span id="_CPPv318WIFI_STATE_UNKNOWN"></span><span id="_CPPv218WIFI_STATE_UNKNOWN"></span><span class="target" id="wifi__mgmr__ext_8h_1ad8f5f9f9385116d7b886cd9ef2b256b2a0224a71eca32a9753f05d01f97064e64"></span><code class="descname">WIFI_STATE_UNKNOWN</code> = 0x00<a class="headerlink" href="#_CPPv418WIFI_STATE_UNKNOWN" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv415WIFI_STATE_IDLE">
+<span id="_CPPv315WIFI_STATE_IDLE"></span><span id="_CPPv215WIFI_STATE_IDLE"></span><span class="target" id="wifi__mgmr__ext_8h_1ad8f5f9f9385116d7b886cd9ef2b256b2a43567f29556640c76a04a8984c18e05a"></span><code class="descname">WIFI_STATE_IDLE</code> = 0x01<a class="headerlink" href="#_CPPv415WIFI_STATE_IDLE" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv421WIFI_STATE_CONNECTING">
+<span id="_CPPv321WIFI_STATE_CONNECTING"></span><span id="_CPPv221WIFI_STATE_CONNECTING"></span><span class="target" id="wifi__mgmr__ext_8h_1ad8f5f9f9385116d7b886cd9ef2b256b2a9e1e4984c12bf85d20bb310be9eb36ff"></span><code class="descname">WIFI_STATE_CONNECTING</code> = 0x02<a class="headerlink" href="#_CPPv421WIFI_STATE_CONNECTING" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv431WIFI_STATE_CONNECTED_IP_GETTING">
+<span id="_CPPv331WIFI_STATE_CONNECTED_IP_GETTING"></span><span id="_CPPv231WIFI_STATE_CONNECTED_IP_GETTING"></span><span class="target" id="wifi__mgmr__ext_8h_1ad8f5f9f9385116d7b886cd9ef2b256b2a2becd72398a7c06d4d0c796b278d5edf"></span><code class="descname">WIFI_STATE_CONNECTED_IP_GETTING</code> = 0x03<a class="headerlink" href="#_CPPv431WIFI_STATE_CONNECTED_IP_GETTING" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv427WIFI_STATE_CONNECTED_IP_GOT">
+<span id="_CPPv327WIFI_STATE_CONNECTED_IP_GOT"></span><span id="_CPPv227WIFI_STATE_CONNECTED_IP_GOT"></span><span class="target" id="wifi__mgmr__ext_8h_1ad8f5f9f9385116d7b886cd9ef2b256b2a0ce05d08c0f0ebd52422b4a78fb99cce"></span><code class="descname">WIFI_STATE_CONNECTED_IP_GOT</code> = 0x04<a class="headerlink" href="#_CPPv427WIFI_STATE_CONNECTED_IP_GOT" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv421WIFI_STATE_DISCONNECT">
+<span id="_CPPv321WIFI_STATE_DISCONNECT"></span><span id="_CPPv221WIFI_STATE_DISCONNECT"></span><span class="target" id="wifi__mgmr__ext_8h_1ad8f5f9f9385116d7b886cd9ef2b256b2aa59c7f05303ff82680155ffd447d33ce"></span><code class="descname">WIFI_STATE_DISCONNECT</code> = 0x05<a class="headerlink" href="#_CPPv421WIFI_STATE_DISCONNECT" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv423WIFI_STATE_WITH_AP_IDLE">
+<span id="_CPPv323WIFI_STATE_WITH_AP_IDLE"></span><span id="_CPPv223WIFI_STATE_WITH_AP_IDLE"></span><span class="target" id="wifi__mgmr__ext_8h_1ad8f5f9f9385116d7b886cd9ef2b256b2a9ba5b3ad61098db81250a1c68b3cb8eb"></span><code class="descname">WIFI_STATE_WITH_AP_IDLE</code> = 0x11<a class="headerlink" href="#_CPPv423WIFI_STATE_WITH_AP_IDLE" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv429WIFI_STATE_WITH_AP_CONNECTING">
+<span id="_CPPv329WIFI_STATE_WITH_AP_CONNECTING"></span><span id="_CPPv229WIFI_STATE_WITH_AP_CONNECTING"></span><span class="target" id="wifi__mgmr__ext_8h_1ad8f5f9f9385116d7b886cd9ef2b256b2acf4673b1df6276cc4c463555ce7420f1"></span><code class="descname">WIFI_STATE_WITH_AP_CONNECTING</code> = 0x12<a class="headerlink" href="#_CPPv429WIFI_STATE_WITH_AP_CONNECTING" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv439WIFI_STATE_WITH_AP_CONNECTED_IP_GETTING">
+<span id="_CPPv339WIFI_STATE_WITH_AP_CONNECTED_IP_GETTING"></span><span id="_CPPv239WIFI_STATE_WITH_AP_CONNECTED_IP_GETTING"></span><span class="target" id="wifi__mgmr__ext_8h_1ad8f5f9f9385116d7b886cd9ef2b256b2a91c7586fa678f1dcf4fc7fd1e117ff02"></span><code class="descname">WIFI_STATE_WITH_AP_CONNECTED_IP_GETTING</code> = 0x13<a class="headerlink" href="#_CPPv439WIFI_STATE_WITH_AP_CONNECTED_IP_GETTING" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv435WIFI_STATE_WITH_AP_CONNECTED_IP_GOT">
+<span id="_CPPv335WIFI_STATE_WITH_AP_CONNECTED_IP_GOT"></span><span id="_CPPv235WIFI_STATE_WITH_AP_CONNECTED_IP_GOT"></span><span class="target" id="wifi__mgmr__ext_8h_1ad8f5f9f9385116d7b886cd9ef2b256b2ac445020f796ce803dec1df61a287a30f"></span><code class="descname">WIFI_STATE_WITH_AP_CONNECTED_IP_GOT</code> = 0x14<a class="headerlink" href="#_CPPv435WIFI_STATE_WITH_AP_CONNECTED_IP_GOT" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv429WIFI_STATE_WITH_AP_DISCONNECT">
+<span id="_CPPv329WIFI_STATE_WITH_AP_DISCONNECT"></span><span id="_CPPv229WIFI_STATE_WITH_AP_DISCONNECT"></span><span class="target" id="wifi__mgmr__ext_8h_1ad8f5f9f9385116d7b886cd9ef2b256b2a2f79b5f6913064dcc1d3ededfc9ff0f1"></span><code class="descname">WIFI_STATE_WITH_AP_DISCONNECT</code> = 0x15<a class="headerlink" href="#_CPPv429WIFI_STATE_WITH_AP_DISCONNECT" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv417WIFI_STATE_IFDOWN">
+<span id="_CPPv317WIFI_STATE_IFDOWN"></span><span id="_CPPv217WIFI_STATE_IFDOWN"></span><span class="target" id="wifi__mgmr__ext_8h_1ad8f5f9f9385116d7b886cd9ef2b256b2ad60afce598ad7c5e416f65c4246abae6"></span><code class="descname">WIFI_STATE_IFDOWN</code> = 0x06<a class="headerlink" href="#_CPPv417WIFI_STATE_IFDOWN" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv418WIFI_STATE_SNIFFER">
+<span id="_CPPv318WIFI_STATE_SNIFFER"></span><span id="_CPPv218WIFI_STATE_SNIFFER"></span><span class="target" id="wifi__mgmr__ext_8h_1ad8f5f9f9385116d7b886cd9ef2b256b2af2d1f05ad6133f3ffca8d936103ffbcc"></span><code class="descname">WIFI_STATE_SNIFFER</code> = 0x07<a class="headerlink" href="#_CPPv418WIFI_STATE_SNIFFER" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv420WIFI_STATE_PSK_ERROR">
+<span id="_CPPv320WIFI_STATE_PSK_ERROR"></span><span id="_CPPv220WIFI_STATE_PSK_ERROR"></span><span class="target" id="wifi__mgmr__ext_8h_1ad8f5f9f9385116d7b886cd9ef2b256b2afd6b0518e96b3a4bc1f4e19b50dd2f22"></span><code class="descname">WIFI_STATE_PSK_ERROR</code> = 0x08<a class="headerlink" href="#_CPPv420WIFI_STATE_PSK_ERROR" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv422WIFI_STATE_NO_AP_FOUND">
+<span id="_CPPv322WIFI_STATE_NO_AP_FOUND"></span><span id="_CPPv222WIFI_STATE_NO_AP_FOUND"></span><span class="target" id="wifi__mgmr__ext_8h_1ad8f5f9f9385116d7b886cd9ef2b256b2a669f0e20095f3a15fbe476062bb1e014"></span><code class="descname">WIFI_STATE_NO_AP_FOUND</code> = 0x09<a class="headerlink" href="#_CPPv422WIFI_STATE_NO_AP_FOUND" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="type">
+<dt id="_CPPv425WIFI_SCAN_DONE_EVENT_TYPE">
+<span id="_CPPv325WIFI_SCAN_DONE_EVENT_TYPE"></span><span id="_CPPv225WIFI_SCAN_DONE_EVENT_TYPE"></span><span id="WIFI_SCAN_DONE_EVENT_TYPE"></span><span class="target" id="wifi__mgmr__ext_8h_1acf8b85c2fe90fb0bd6ea62f21378ebd3"></span><em class="property">enum </em><code class="descname">WIFI_SCAN_DONE_EVENT_TYPE</code><a class="headerlink" href="#_CPPv425WIFI_SCAN_DONE_EVENT_TYPE" title="永久链接至目标"></a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv423WIFI_SCAN_DONE_EVENT_OK">
+<span id="_CPPv323WIFI_SCAN_DONE_EVENT_OK"></span><span id="_CPPv223WIFI_SCAN_DONE_EVENT_OK"></span><span class="target" id="wifi__mgmr__ext_8h_1acf8b85c2fe90fb0bd6ea62f21378ebd3afcc3fdae17bdc29412b8f3dd17087e19"></span><code class="descname">WIFI_SCAN_DONE_EVENT_OK</code> = 0x00<a class="headerlink" href="#_CPPv423WIFI_SCAN_DONE_EVENT_OK" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv425WIFI_SCAN_DONE_EVENT_BUSY">
+<span id="_CPPv325WIFI_SCAN_DONE_EVENT_BUSY"></span><span id="_CPPv225WIFI_SCAN_DONE_EVENT_BUSY"></span><span class="target" id="wifi__mgmr__ext_8h_1acf8b85c2fe90fb0bd6ea62f21378ebd3a69bb0cf2c4f517ecd063f8d5c218a9c7"></span><code class="descname">WIFI_SCAN_DONE_EVENT_BUSY</code> = 0x01<a class="headerlink" href="#_CPPv425WIFI_SCAN_DONE_EVENT_BUSY" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="type">
+<dt id="_CPPv418WIFI_COEX_PM_LEVEL">
+<span id="_CPPv318WIFI_COEX_PM_LEVEL"></span><span id="_CPPv218WIFI_COEX_PM_LEVEL"></span><span id="WIFI_COEX_PM_LEVEL"></span><span class="target" id="wifi__mgmr__ext_8h_1a5930eec1d4b454a7e92a4dbcaebeb2fa"></span><em class="property">enum </em><code class="descname">WIFI_COEX_PM_LEVEL</code><a class="headerlink" href="#_CPPv418WIFI_COEX_PM_LEVEL" title="永久链接至目标"></a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv421WIFI_COEX_PM_STA_NONE">
+<span id="_CPPv321WIFI_COEX_PM_STA_NONE"></span><span id="_CPPv221WIFI_COEX_PM_STA_NONE"></span><span class="target" id="wifi__mgmr__ext_8h_1a5930eec1d4b454a7e92a4dbcaebeb2faa389505c7a5634e89582d5f80de53ea10"></span><code class="descname">WIFI_COEX_PM_STA_NONE</code> = PM_MODE_STA_NONE<a class="headerlink" href="#_CPPv421WIFI_COEX_PM_STA_NONE" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv421WIFI_COEX_PM_STA_IDLE">
+<span id="_CPPv321WIFI_COEX_PM_STA_IDLE"></span><span id="_CPPv221WIFI_COEX_PM_STA_IDLE"></span><span class="target" id="wifi__mgmr__ext_8h_1a5930eec1d4b454a7e92a4dbcaebeb2faa6cabca58c3107364eee3eb902fb17412"></span><code class="descname">WIFI_COEX_PM_STA_IDLE</code> = PM_MODE_STA_IDLE<a class="headerlink" href="#_CPPv421WIFI_COEX_PM_STA_IDLE" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv421WIFI_COEX_PM_STA_MESH">
+<span id="_CPPv321WIFI_COEX_PM_STA_MESH"></span><span id="_CPPv221WIFI_COEX_PM_STA_MESH"></span><span class="target" id="wifi__mgmr__ext_8h_1a5930eec1d4b454a7e92a4dbcaebeb2faa0e62887829bc31f20994c452e6bec32f"></span><code class="descname">WIFI_COEX_PM_STA_MESH</code> = PM_MODE_STA_MESH<a class="headerlink" href="#_CPPv421WIFI_COEX_PM_STA_MESH" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv421WIFI_COEX_PM_STA_DOZE">
+<span id="_CPPv321WIFI_COEX_PM_STA_DOZE"></span><span id="_CPPv221WIFI_COEX_PM_STA_DOZE"></span><span class="target" id="wifi__mgmr__ext_8h_1a5930eec1d4b454a7e92a4dbcaebeb2faa98d654bc585e2a91bc39f3b9baebd0a2"></span><code class="descname">WIFI_COEX_PM_STA_DOZE</code> = PM_MODE_STA_DOZE<a class="headerlink" href="#_CPPv421WIFI_COEX_PM_STA_DOZE" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv421WIFI_COEX_PM_STA_COEX">
+<span id="_CPPv321WIFI_COEX_PM_STA_COEX"></span><span id="_CPPv221WIFI_COEX_PM_STA_COEX"></span><span class="target" id="wifi__mgmr__ext_8h_1a5930eec1d4b454a7e92a4dbcaebeb2faa8092cd5f2a66f95de37c7452139feb4f"></span><code class="descname">WIFI_COEX_PM_STA_COEX</code> = PM_MODE_STA_COEX<a class="headerlink" href="#_CPPv421WIFI_COEX_PM_STA_COEX" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv421WIFI_COEX_PM_STA_DOWN">
+<span id="_CPPv321WIFI_COEX_PM_STA_DOWN"></span><span id="_CPPv221WIFI_COEX_PM_STA_DOWN"></span><span class="target" id="wifi__mgmr__ext_8h_1a5930eec1d4b454a7e92a4dbcaebeb2faaad452eb24732a8e8b44bdb2e70d90cf2"></span><code class="descname">WIFI_COEX_PM_STA_DOWN</code> = PM_MODE_STA_DOWN<a class="headerlink" href="#_CPPv421WIFI_COEX_PM_STA_DOWN" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv420WIFI_COEX_PM_AP_IDLE">
+<span id="_CPPv320WIFI_COEX_PM_AP_IDLE"></span><span id="_CPPv220WIFI_COEX_PM_AP_IDLE"></span><span class="target" id="wifi__mgmr__ext_8h_1a5930eec1d4b454a7e92a4dbcaebeb2faad7453e012be5021e39b9b94f3a39f693"></span><code class="descname">WIFI_COEX_PM_AP_IDLE</code> = PM_MODE_AP_IDLE<a class="headerlink" href="#_CPPv420WIFI_COEX_PM_AP_IDLE" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv416WIFI_COEX_PM_MAX">
+<span id="_CPPv316WIFI_COEX_PM_MAX"></span><span id="_CPPv216WIFI_COEX_PM_MAX"></span><span class="target" id="wifi__mgmr__ext_8h_1a5930eec1d4b454a7e92a4dbcaebeb2faa7c92173a9be9a64bbfd582c92a841adc"></span><code class="descname">WIFI_COEX_PM_MAX</code> = PM_MODE_MAX<a class="headerlink" href="#_CPPv416WIFI_COEX_PM_MAX" title="永久链接至目标"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../peripherals/index.html" class="btn btn-neutral float-right" title="外设 API" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="连网 API" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

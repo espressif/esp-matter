@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+name="Rainfall" type="org.bluetooth.characteristic.rainfall" uuid="2A78" last-modified="2014-11-20" approved="Yes">
+<Value>
+    <Field name="Rainfall">
+        <InformativeText>Unit is in meters with a resolution of 1mm</InformativeText>
+        <Requirement>Mandatory</Requirement>
+        <Format>uint16</Format>
+        <Unit>org.bluetooth.unit.length.meter</Unit>
+        <DecimalExponent>-3</DecimalExponent>
+	</Field>
+</Value>
+</Characteristic>

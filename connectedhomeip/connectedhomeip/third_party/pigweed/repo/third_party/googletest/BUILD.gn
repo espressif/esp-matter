@@ -1,0 +1,71 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_docgen/docs.gni")
+import("googletest.gni")
+
+# This file defines a GN source_set for an external installation of googletest.
+# To use, checkout the googletest source into a directory, then set the build
+# arg dir_pw_third_party_googletest to point to that directory. The googletest
+# library will be available in GN at "$dir_pw_third_party/googletest".
+if (dir_pw_third_party_googletest != "") {
+  config("includes") {
+    include_dirs = [
+      "$dir_pw_third_party_googletest/googletest",
+      "$dir_pw_third_party_googletest/googletest/include",
+      "$dir_pw_third_party_googletest/googlemock",
+      "$dir_pw_third_party_googletest/googlemock/include",
+    ]
+
+    # Fix some compiler warnings.
+    cflags = [ "-Wno-undef" ]
+  }
+
+  pw_source_set("googletest") {
+    public_configs = [ ":includes" ]
+    public = [
+      "$dir_pw_third_party_googletest/googlemock/include/gmock/gmock.h",
+      "$dir_pw_third_party_googletest/googletest/include/gtest/gtest-spi.h",
+      "$dir_pw_third_party_googletest/googletest/include/gtest/gtest.h",
+    ]
+
+    # Only add the "*-all.cc" files (and no headers) to improve maintainability
+    # from upstream refactoring. The "*-all.cc" files include the respective
+    # source files.
+    sources = [
+      "$dir_pw_third_party_googletest/googlemock/src/gmock-all.cc",
+      "$dir_pw_third_party_googletest/googletest/src/gtest-all.cc",
+    ]
+  }
+
+  pw_source_set("gtest_main") {
+    public_deps = [ ":googletest" ]
+    sources = [ "$dir_pw_third_party_googletest/googletest/src/gtest_main.cc" ]
+  }
+
+  pw_source_set("gmock_main") {
+    public_deps = [ ":googletest" ]
+    sources = [ "$dir_pw_third_party_googletest/googlemock/src/gmock_main.cc" ]
+  }
+} else {
+  group("googletest") {
+  }
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}

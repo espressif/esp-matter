@@ -1,0 +1,53 @@
+id: sli_protocol_crypto
+label: Accelerated Crypto Primitives (CRYPTO and RADIOAES)
+package: platform
+description: >-
+  This component provides accelerated cryptographic primitives using the CRYPTO
+  (series-1) and RADIOAES (series-2) peripherals.
+category: Platform|Security|Protocol Crypto
+quality: production
+ui_hints:
+  visibility: never
+source:
+  - path: util/third_party/crypto/sl_component/sl_protocol_crypto/src/sli_protocol_crypto_crypto.c
+    condition: [device_has_crypto]
+  - path: util/third_party/crypto/sl_component/sl_protocol_crypto/src/sli_protocol_crypto_radioaes.c
+    condition: [device_has_radioaes]
+  - path: util/third_party/crypto/sl_component/sl_protocol_crypto/src/sli_radioaes_management.c
+    condition: [device_has_radioaes]
+include:
+  - path: util/third_party/crypto/sl_component/sl_protocol_crypto/src
+    file_list:
+      - path: sli_protocol_crypto.h
+      - path: sli_radioaes_management.h
+        condition: [device_has_radioaes]
+provides:
+  - name: sli_protocol_crypto
+requires:
+  - name: device
+  - name: status
+  - name: emlib_core
+  - name: emlib_crypto
+    condition: [device_has_crypto]
+  - name: psa_driver
+    condition: [device_has_crypto]
+  - name: se_manager
+    condition: [device_has_radioaes]
+  - name: psa_crypto_trng
+    condition: [device_has_radioaes]
+define:
+  - name: SLI_RADIOAES_REQUIRES_MASKING
+    condition: [device_has_radioaes]
+# Add a component catalog entry to allow build-time detection of protocol crypto presence
+template_contribution:
+  - name: component_catalog
+    value: sli_protocol_crypto
+  - name: event_handler
+    value:
+      event: service_init
+      include: sli_protocol_crypto.h
+      handler: sli_aes_seed_mask
+    # Seeding of the RADIOAES mask should come after init of Mbed TLS and the
+    # PSA crypto core.
+    priority: 2
+    condition: [device_has_radioaes]

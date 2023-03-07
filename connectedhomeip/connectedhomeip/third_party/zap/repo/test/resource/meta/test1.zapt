@@ -1,0 +1,53 @@
+Test1 template.
+
+Stamp: {{meta_stamp}}
+Category: {{meta_category}}
+
+Clusters:
+{{#zcl_clusters}}
+{{label}}
+{{#zcl_attributes}}
+  - attribute: {{code}}
+{{/zcl_attributes}}
+{{#zcl_commands}}
+  - command: {{code}} / Fabric-scoped: {{isFabricScoped}}
+{{/zcl_commands}}
+{{#zcl_events}}
+  - event: {{code}}
+{{#zcl_event_fields}}
+    * {{name}} / {{type}} / array={{isArray}} / nullable={{isNullable}}
+{{/zcl_event_fields}}
+{{/zcl_events}}
+
+Endpoint configuration:
+{{#endpoint_config}}
+
+Big endian defaults:
+====================
+{{endpoint_attribute_long_defaults endian="big"}}
+
+
+Little endian defaults:
+=======================
+{{endpoint_attribute_long_defaults endian="little"}}
+
+Endpoint type list:
+===================
+{{endpoint_types_list}}
+
+Endpoint cluster list:
+======================
+{{endpoint_cluster_list}}
+
+Attributes [{{endpoint_attribute_count}}]:
+=========================
+{{ endpoint_attribute_list }}
+
+{{/endpoint_config}}
+
+Reporting policy:
+{{#zcl_attributes}}
+  - attribute: {{name}} => {{isReportable}} => {{reportingPolicy}}
+{{/zcl_attributes}}
+
+{{/zcl_clusters}}

@@ -1,0 +1,155 @@
+id: "bluetooth_apploader_migration_util"
+label: "Bluetooth AppLoader migration utility"
+package: "Bluetooth"
+description: >
+    This component provides a utility script that is used to create GBL files
+    for migrating Series 2 devices with the separate Bootloader and AppLoader to
+    the new combined Bootloader and AppLoader.
+category: "Bluetooth|OTA"
+quality: "production"
+root_path: "protocol/bluetooth"
+requires:
+  - name: "device_series_2"
+provides:
+  - name: "bluetooth_apploader_migration_util"
+other_file:
+  - path: "bin/apploader/create_apploader_migration_gbl.sh"
+    project:
+      transfer_ownership: true
+      directory: apploader
+  - path: "bin/apploader/create_apploader_migration_gbl.bat"
+    project:
+      transfer_ownership: true
+      directory: apploader
+#EFR32BG21
+  - path: "lib/EFR32BG21/GCC/apploader.s37"
+    condition: ["toolchain_gcc","device_family_efr32bg21"]
+    project:
+      transfer_ownership: true
+      directory: apploader
+  - path: "lib/EFR32BG21/IAR/apploader.s37"
+    condition: ["toolchain_iar","device_family_efr32bg21"]
+    project:
+      transfer_ownership: true
+      directory: apploader
+#BGM21
+  - path: "lib/EFR32BG21/GCC/apploader.s37"
+    condition: ["toolchain_gcc","device_family_bgm21"]
+    project:
+      transfer_ownership: true
+      directory: apploader
+  - path: "lib/EFR32BG21/IAR/apploader.s37"
+    condition: ["toolchain_iar","device_family_bgm21"]
+    project:
+      transfer_ownership: true
+      directory: apploader
+#EFR32MG21
+  - path: "lib/EFR32MG21/GCC/apploader.s37"
+    condition: ["toolchain_gcc","device_family_efr32mg21"]
+    project:
+      transfer_ownership: true
+      directory: apploader
+  - path: "lib/EFR32MG21/IAR/apploader.s37"
+    condition: ["toolchain_iar","device_family_efr32mg21"]
+    project:
+      transfer_ownership: true
+      directory: apploader
+#MGM21
+  - path: "lib/EFR32MG21/GCC/apploader.s37"
+    condition: ["toolchain_gcc","device_family_mgm21"]
+    project:
+      transfer_ownership: true
+      directory: apploader
+  - path: "lib/EFR32MG21/IAR/apploader.s37"
+    condition: ["toolchain_iar","device_family_mgm21"]
+    project:
+      transfer_ownership: true
+      directory: apploader
+#EFR32BG22
+  - path: "lib/EFR32BG22/GCC/apploader.s37"
+    condition: ["toolchain_gcc","device_family_efr32bg22"]
+    project:
+      transfer_ownership: true
+      directory: apploader
+  - path: "lib/EFR32BG22/IAR/apploader.s37"
+    condition: ["toolchain_iar","device_family_efr32bg22"]
+    project:
+      transfer_ownership: true
+      directory: apploader
+#BGM22
+  - path: "lib/EFR32BG22/GCC/apploader.s37"
+    condition: ["toolchain_gcc","device_family_bgm22"]
+    project:
+      transfer_ownership: true
+      directory: apploader
+  - path: "lib/EFR32BG22/IAR/apploader.s37"
+    condition: ["toolchain_iar","device_family_bgm22"]
+    project:
+      transfer_ownership: true
+      directory: apploader
+#EFR32MG22
+  - path: "lib/EFR32MG22/GCC/apploader.s37"
+    condition: ["toolchain_gcc","device_family_efr32mg22"]
+    project:
+      transfer_ownership: true
+      directory: apploader
+  - path: "lib/EFR32MG22/IAR/apploader.s37"
+    condition: ["toolchain_iar","device_family_efr32mg22"]
+    project:
+      transfer_ownership: true
+      directory: apploader
+#MGM22
+  - path: "lib/EFR32MG22/GCC/apploader.s37"
+    condition: ["toolchain_gcc","device_family_mgm22"]
+    project:
+      transfer_ownership: true
+      directory: apploader
+  - path: "lib/EFR32MG22/IAR/apploader.s37"
+    condition: ["toolchain_iar","device_family_mgm22"]
+    project:
+      transfer_ownership: true
+      directory: apploader
+#EFR32MG24
+  - path: "lib/EFR32MG24/GCC/apploader.s37"
+    condition: ["toolchain_gcc","device_family_efr32mg24"]
+    project:
+      transfer_ownership: true
+      directory: apploader
+  - path: "lib/EFR32MG24/IAR/apploader.s37"
+    condition: ["toolchain_iar","device_family_efr32mg24"]
+    project:
+      transfer_ownership: true
+      directory: apploader
+#EFR32BG24
+  - path: "lib/EFR32BG24/GCC/apploader.s37"
+    condition: ["toolchain_gcc","device_family_efr32bg24"]
+    project:
+      transfer_ownership: true
+      directory: apploader
+  - path: "lib/EFR32BG24/IAR/apploader.s37"
+    condition: ["toolchain_iar","device_family_efr32bg24"]
+    project:
+      transfer_ownership: true
+      directory: apploader
+#MGM24
+  - path: "lib/EFR32MG24/GCC/apploader.s37"
+    condition: ["toolchain_gcc","device_family_mgm24"]
+    project:
+      transfer_ownership: true
+      directory: apploader
+  - path: "lib/EFR32MG24/IAR/apploader.s37"
+    condition: ["toolchain_iar","device_family_mgm24"]
+    project:
+      transfer_ownership: true
+      directory: apploader
+#BGM24
+  - path: "lib/EFR32BG24/GCC/apploader.s37"
+    condition: ["toolchain_gcc","device_family_bgm24"]
+    project:
+      transfer_ownership: true
+      directory: apploader
+  - path: "lib/EFR32BG24/IAR/apploader.s37"
+    condition: ["toolchain_iar","device_family_bgm24"]
+    project:
+      transfer_ownership: true
+      directory: apploader

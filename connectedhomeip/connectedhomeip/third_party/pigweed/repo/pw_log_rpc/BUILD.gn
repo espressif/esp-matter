@@ -1,0 +1,235 @@
+# Copyright 2020 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_chrono/backend.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+  visibility = [ ":*" ]
+}
+
+pw_source_set("config") {
+  sources = [ "public/pw_log_rpc/internal/config.h" ]
+  public_configs = [ ":public_include_path" ]
+  visibility = [ "./*" ]
+  friend = [ "./*" ]
+}
+
+pw_source_set("log_config") {
+  sources = [ "public/pw_log_rpc/internal/log_config.h" ]
+  public_configs = [ ":public_include_path" ]
+  public_deps = [ ":config" ]
+  visibility = [ "./*" ]
+  friend = [ "./*" ]
+}
+
+pw_source_set("log_service") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_log_rpc/log_service.h" ]
+  sources = [ "log_service.cc" ]
+  deps = [
+    ":log_config",
+    "$dir_pw_log",
+    "$dir_pw_log:protos.pwpb",
+  ]
+  public_deps = [
+    ":rpc_log_drain",
+    "$dir_pw_log:protos.raw_rpc",
+  ]
+}
+
+pw_source_set("log_filter_service") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_log_rpc/log_filter_service.h" ]
+  sources = [ "log_filter_service.cc" ]
+  deps = [
+    "$dir_pw_log:protos.pwpb",
+    "$dir_pw_protobuf",
+  ]
+  public_deps = [
+    ":log_filter",
+    "$dir_pw_log:protos.raw_rpc",
+    "$dir_pw_protobuf:bytes_utils",
+  ]
+}
+
+pw_source_set("log_filter") {
+  public_configs = [ ":public_include_path" ]
+  public = [
+    "public/pw_log_rpc/log_filter.h",
+    "public/pw_log_rpc/log_filter_map.h",
+  ]
+  sources = [ "log_filter.cc" ]
+  deps = [
+    "$dir_pw_log",
+    "$dir_pw_protobuf",
+  ]
+  public_deps = [
+    ":config",
+    "$dir_pw_assert",
+    "$dir_pw_bytes",
+    "$dir_pw_containers:vector",
+    "$dir_pw_log:protos.pwpb",
+    "$dir_pw_protobuf",
+    "$dir_pw_status",
+    dir_pw_span,
+  ]
+}
+
+pw_source_set("rpc_log_drain") {
+  public_configs = [ ":public_include_path" ]
+  public = [
+    "public/pw_log_rpc/rpc_log_drain.h",
+    "public/pw_log_rpc/rpc_log_drain_map.h",
+  ]
+  sources = [ "rpc_log_drain.cc" ]
+  public_deps = [
+    ":config",
+    ":log_filter",
+    "$dir_pw_assert",
+    "$dir_pw_chrono:system_clock",
+    "$dir_pw_function",
+    "$dir_pw_log:protos.pwpb",
+    "$dir_pw_log:protos.raw_rpc",
+    "$dir_pw_multisink",
+    "$dir_pw_protobuf",
+    "$dir_pw_result",
+    "$dir_pw_status",
+    "$dir_pw_sync:lock_annotations",
+    "$dir_pw_sync:mutex",
+    dir_pw_span,
+  ]
+}
+
+pw_source_set("rpc_log_drain_thread") {
+  public_configs = [ ":public_include_path" ]
+  public = [ "public/pw_log_rpc/rpc_log_drain_thread.h" ]
+  public_deps = [
+    ":log_service",
+    ":rpc_log_drain",
+    "$dir_pw_chrono:system_clock",
+    "$dir_pw_multisink",
+    "$dir_pw_result",
+    "$dir_pw_rpc/raw:server_api",
+    "$dir_pw_status",
+    "$dir_pw_sync:timed_thread_notification",
+    "$dir_pw_thread:thread",
+  ]
+}
+
+pw_source_set("test_utils") {
+  public_deps = [
+    "$dir_pw_bytes",
+    "$dir_pw_containers:vector",
+    "$dir_pw_log_tokenized:metadata",
+    "$dir_pw_protobuf",
+    "$dir_pw_unit_test",
+  ]
+  deps = [
+    "$dir_pw_log",
+    "$dir_pw_log:protos.pwpb",
+    "$dir_pw_protobuf:bytes_utils",
+  ]
+  public = [ "pw_log_rpc_private/test_utils.h" ]
+  sources = [ "test_utils.cc" ]
+  visibility = [ ":*" ]
+}
+
+pw_test("log_service_test") {
+  enable_if = pw_chrono_SYSTEM_CLOCK_BACKEND != ""
+  sources = [ "log_service_test.cc" ]
+  deps = [
+    ":log_filter",
+    ":log_service",
+    ":test_utils",
+    "$dir_pw_containers:vector",
+    "$dir_pw_log",
+    "$dir_pw_log:proto_utils",
+    "$dir_pw_log:protos.pwpb",
+    "$dir_pw_log_tokenized:metadata",
+    "$dir_pw_protobuf",
+    "$dir_pw_protobuf:bytes_utils",
+    "$dir_pw_result",
+    "$dir_pw_rpc/raw:test_method_context",
+    "$dir_pw_status",
+  ]
+}
+
+pw_test("log_filter_service_test") {
+  sources = [ "log_filter_service_test.cc" ]
+  deps = [
+    ":log_filter",
+    ":log_filter_service",
+    "$dir_pw_log:protos.pwpb",
+    "$dir_pw_protobuf",
+    "$dir_pw_protobuf:bytes_utils",
+    "$dir_pw_result",
+    "$dir_pw_rpc/raw:test_method_context",
+    "$dir_pw_status",
+  ]
+}
+
+pw_test("log_filter_test") {
+  sources = [ "log_filter_test.cc" ]
+  deps = [
+    ":log_filter",
+    "$dir_pw_log:proto_utils",
+    "$dir_pw_log:protos.pwpb",
+    "$dir_pw_log_tokenized:metadata",
+    "$dir_pw_result",
+    "$dir_pw_status",
+  ]
+}
+
+pw_test("rpc_log_drain_test") {
+  enable_if = pw_chrono_SYSTEM_CLOCK_BACKEND != ""
+  sources = [ "rpc_log_drain_test.cc" ]
+  deps = [
+    ":log_filter",
+    ":log_service",
+    ":rpc_log_drain",
+    ":test_utils",
+    "$dir_pw_bytes",
+    "$dir_pw_log:proto_utils",
+    "$dir_pw_log:protos.pwpb",
+    "$dir_pw_log_tokenized:metadata",
+    "$dir_pw_multisink",
+    "$dir_pw_protobuf",
+    "$dir_pw_rpc:common",
+    "$dir_pw_rpc/raw:fake_channel_output",
+    "$dir_pw_rpc/raw:server_api",
+    "$dir_pw_rpc/raw:test_method_context",
+    "$dir_pw_status",
+    "$dir_pw_sync:mutex",
+  ]
+}
+
+# TODO(cachinchilla): update docs.
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":log_filter_test",
+    ":log_filter_service_test",
+    ":log_service_test",
+    ":rpc_log_drain_test",
+  ]
+}

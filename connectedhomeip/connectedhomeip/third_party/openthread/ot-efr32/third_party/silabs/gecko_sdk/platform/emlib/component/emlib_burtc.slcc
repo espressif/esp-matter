@@ -1,0 +1,36 @@
+id: emlib_burtc
+label: BURTC
+package: platform
+description: >
+  Backup Real Time Counter (BURTC) Peripheral API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_burtc.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_burtc.h"
+provides:
+  - name: emlib_burtc
+requires:
+  - name: device
+  - name: device_has_burtc
+  - name: emlib_common
+  - name: cmsis_core
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efm32gg/group-burtc
+      condition: [device_sdid_72]
+    - page: emlib/api/efm32lg/group-burtc
+      condition: [device_sdid_74]
+    - page: emlib/api/efr32xg21/group-burtc
+      condition: [device_sdid_200]
+    - page: emlib/api/efr32xg22/group-burtc
+      condition: [device_sdid_205]
+    - page: emlib/api/efr32xg23/group-burtc
+      condition: [device_sdid_210]
+    - page: emlib/api/efr32xg24/group-burtc
+      condition: [device_sdid_215]

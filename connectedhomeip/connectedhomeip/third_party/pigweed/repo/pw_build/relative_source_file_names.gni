@@ -1,0 +1,67 @@
+# Copyright 2022 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/python_action.gni")
+
+# This isn't in a declare_args() block as it likely isn't necessary to change
+# this.
+pw_build_RELATIVE_PATH_TRANSFORM_JSON =
+    "$root_build_dir/relative_path_transformations.json"
+
+# Creates a JSON file containing an array of source file names with
+# -ffile-prefix-map style transformations applied to match __FILE__ as seen in
+# C/C++ sources when using pw_build's `relative_paths` config.
+#
+# Args:
+#    deps (required): A list of targets to recursively extract file names from.
+#    outputs (required): An array with a single element: the path to write the
+#        transformed file paths to. The output format is a JSON array of
+#        strings.
+template("pw_relative_source_file_names") {
+  _raw_file_names_json = "$target_gen_dir/${target_name}.raw.json"
+
+  # The various pw_* templates add pw_source_files metadata which we
+  # aggregate here.
+  generated_file("${target_name}.raw_source_files") {
+    forward_variables_from(invoker, [ "deps" ])
+
+    # Rebase the paths so that they match those that are passed to the
+    # compiler.
+    rebase = root_build_dir
+    outputs = [ _raw_file_names_json ]
+    data_keys = [ "pw_source_files" ]
+    output_conversion = "json"
+  }
+
+  pw_python_action(target_name) {
+    deps = [ ":${target_name}.raw_source_files" ]
+    python_deps = [ "$dir_pw_build/py" ]
+    module = "pw_build.file_prefix_map"
+
+    # GN-ism: You can't do invoker.outputs[0], but _outs[0] works.
+    _outs = invoker.outputs
+    args = [
+      rebase_path(_raw_file_names_json, root_build_dir),
+      "--prefix-map-json",
+      rebase_path(pw_build_RELATIVE_PATH_TRANSFORM_JSON, root_build_dir),
+      "--out",
+      rebase_path(_outs[0], root_build_dir),
+    ]
+
+    inputs = [ _raw_file_names_json ]
+    forward_variables_from(invoker, [ "outputs" ])
+  }
+}

@@ -1,0 +1,67 @@
+.. _i2c_master-index:
+
+i2c_master
+==================
+
+总览
+----------------
+
+本示例主要介绍使用i2c作为master模式的使用方法。(从设备没有memory addrs)
+
+准备及使用步骤
+----------------
+- 使用步骤：
+ - 将板子与电脑用USB电源线连接，USB电源线默认连接UART0；
+ - 将板子和EEPROM连接，其中板子的gpio4连接从设备的scl引脚，gpio3连接从设备的sda引脚，VCC和GND也对应连接；
+ - 编译 ``customer_app/periperal/demo_i2c`` 工程并下载工程，编译命令： ``genromap <chip name>``，<chip name>可选择 ``BL602`` , ``BL702``；
+ - 打开一个串口终端窗口（波特率为2000000，用于接收和发送uart消息）;
+ - 串口终端输入 ``demo_hosal_i2c_mater`` ，表示启动 ``i2c_master`` 的demo。
+
+应用实例
+----------------
+
+- 通过 ``hosal_i2c_init`` 初始化i2c主设备。
+
+::
+
+    hosal_i2c_dev_t i2c0;
+
+    ret = hosal_i2c_init(&i2c0);
+    if (ret != 0) {
+        hosal_i2c_finalize(&i2c0);
+        blog_error("hosal i2c init failed!\r\n");
+        return;
+    }
+
+- 通过 ``hosal_i2c_master_send`` 接口对i2c从设备写数据。
+
+::
+
+    ret = hosal_i2c_master_send(&i2c0, CK_IIC_SLAVE_ADDR, i2c_data_txbuf, 32, 1000);
+    vTaskDelay(500);
+    if (ret != 0) {
+        hosal_i2c_finalize(&i2c0);
+        blog_error("hosal i2c write failed!\r\n");
+        return;
+    }
+
+- 通过 ``hosal_i2c_master_recv`` 接口从i2c从设备接收数据。
+
+::
+
+    ret = hosal_i2c_master_recv(&i2c0, CK_IIC_SLAVE_ADDR, i2c_data_rxbuf, 32, 3000);
+    if (ret != 0) {
+        hosal_i2c_finalize(&i2c0);
+        blog_error("hosal i2c read failed!\r\n");
+        return;
+    }
+
+- 通过 ``hosal_i2c_finalize`` 接口关闭i2c主设备。
+
+::
+
+    ret = hosal_i2c_finalize(&i2c0);
+    if (ret != 0) {
+        blog_error("hosal i2c finalize failed!\r\n");
+        return;
+    }

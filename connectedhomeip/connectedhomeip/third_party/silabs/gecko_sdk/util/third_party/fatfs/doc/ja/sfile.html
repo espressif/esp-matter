@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="up" title="FatFs" href="../00index_j.html">
+<link rel="alternate" hreflang="en" title="English" href="../en/sfile.html">
+<link rel="stylesheet" href="../css_j.css" type="text/css" media="screen" title="ELM Default">
+<title>FatFs - FIL</title>
+</head>
+
+<body>
+
+<div class="para">
+<h2>FIL</h2>
+<p><tt>FIL</tt>構造体は、f_open関数で作成され、そのファイルの状態を保持します。また、f_close関数でファイルが閉じられると無効化されます。アプリケーションからの書き換えが可能なメンバは<tt>cltbl</tt>のみです。非タイニー構成では内部にセクタ・バッファが確保されるので、サイズに注意が必要です。</p>
+
+<pre>
+typedef struct {
+    FATFS*  fs;           <span>/* 親ファイル・システム・オブジェクトへのポインタ */</span>
+    WORD    id;           <span>/* 親ファイル・システム・オブジェクトのマウントID */</span>
+    BYTE    flag;         <span>/* ファイル・ステータス・フラグ */</span>
+    BYTE    pad1;
+    DWORD   fptr;         <span>/* ファイル読み書きポインタ(ファイル先頭からのバイト・オフセット) */</span>
+    DWORD   fsize;        <span>/* ファイル・サイズ(バイト単位) */</span>
+    DWORD   org_clust;    <span>/* ファイル開始クラスタ番号 (0: fsize==0) */</span>
+    DWORD   curr_clust;   <span>/* 現在のクラスタ */</span>
+    DWORD   dsect;        <span>/* 現在のデータ・セクタ */</span>
+#if _FS_READONLY == 0
+    DWORD   dir_sect;     <span>/* このファイルのディレクトリ・エントリのあるセクタ */</span>
+    BYTE*   dir_ptr;      <span>/* このファイルのディレクトリへのポインタ */</span>
+#endif
+#if _USE_FASTSEEK
+    DWORD*  cltbl;        <span>/* ファイルのクラスタ・リンク情報へのポインタ */</span>
+#endif
+#if _FS_SHARE
+    UINT    lockid;       <span>/* ファイル・ロックID */</span>
+#endif
+#if !_FS_TINY
+    BYTE    buf[_MAX_SS]; <span>/* データ転送バッファ */</span>
+#endif
+} FIL;
+</pre>
+</div>
+
+<p class="foot"><a href="../00index_j.html">戻る</a></p>
+</body>
+</html>

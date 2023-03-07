@@ -1,0 +1,88 @@
+project_name: sleeptimer_wallclock_baremetal
+package: platform
+quality: production
+label: Platform - Sleeptimer Wallclock
+description: > 
+  This example project demonstrates the wallclock
+  interface of the sleeptimer service. The user can get
+  and set the date and time in different formats through
+  the VCOM serial port.
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]
+source:
+  - path: app.c
+  - path: main.c
+  - path: sleeptimer_app.c
+include:
+  - path: .
+    file_list:
+    - path: app.h
+    - path: sleeptimer_app.h
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+component:
+  - id: sl_system
+  - id: device_init
+  - id: sleeptimer
+  - id: cli
+    instance: [sleeptimer]
+  - id: iostream_retarget_stdio
+  - id: iostream_stdlib_config
+  - id: iostream_recommended_stream
+define:
+  - name: DEBUG_EFM
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: SL_SLEEPTIMER_WALLCLOCK_CONFIG
+    value: "1"
+template_contribution:
+  - name: cli_command
+    value:
+      name: set_unix_time
+      handler: sleeptimer_app_set_time_unix
+      help: "Set Unix epoch time"
+      argument:
+        - type: uint32
+          help: "timestamp"
+  - name: cli_command
+    value:
+      name: get_unix_time
+      handler: sleeptimer_app_get_time_unix
+      help: "Get Unix epoch time"
+  - name: cli_command
+    value:
+      name: set_ntp_time
+      handler: sleeptimer_app_set_time_ntp
+      help: "Set NTP epoch time"
+      argument:
+        - type: uint32
+          help: "timestamp"
+  - name: cli_command
+    value:
+      name: get_ntp_time
+      handler: sleeptimer_app_get_time_ntp
+      help: "Get NTP epoch time"
+  - name: cli_command
+    value:
+      name: set_datetime
+      handler: sleeptimer_app_set_datetime
+      help: "Set date time"
+      argument:
+        - type: string
+          help: "Date string of form YYYY-MM-DD"
+        - type: string
+          help: "Time string of form HH:MM:SS"
+  - name: cli_command
+    value:
+      name: get_datetime
+      handler: sleeptimer_app_get_datetime
+      help: "Get date and time"

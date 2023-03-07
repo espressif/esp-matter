@@ -1,0 +1,14 @@
+id: zw_api_zw
+label: Z-Wave API ZW
+category: Z-Wave|API
+description: API for ZW
+package: Z-Wave
+quality: production
+ui_hints:
+  visibility: never
+include:
+  - path: "protocol/z-wave/ZWave/API"
+    file_list:
+      - path: "ZW.h"
+provides:
+  - name: zw_api_zw

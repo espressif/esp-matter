@@ -1,0 +1,14 @@
+id: bootloader_in_main_flash
+label: Bootloader in Main flash
+package: bootloader
+description: >
+  For XG14 and XG13 Devices to place bootloader in Main flash
+category: Platform|Bootloader|Core
+quality: production
+define:
+  - name: MAIN_BOOTLOADER_IN_MAIN_FLASH
+    value: 1
+provides:
+  - name: bootloader_in_main_flash
+  - name: bootloader_nonsecure_incompatible
+    condition: [bootloader_core_nonsecure]

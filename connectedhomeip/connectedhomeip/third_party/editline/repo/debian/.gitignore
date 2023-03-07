@@ -1,0 +1,10 @@
+*.log
+*.debhelper
+*.substvars
+autoreconf.*
+debhelper-build-stamp
+files
+tmp/*
+libeditline-dev/*
+libeditline0/*
+libeditline1/*

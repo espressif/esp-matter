@@ -1,0 +1,109 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_toolchain/generate_toolchain.gni")
+import("$dir_pw_toolchain/subtoolchain.gni")
+import("$dir_pw_unit_test/test.gni")
+
+declare_args() {
+  # Controls whether to build and run facade tests. Facade tests add
+  # considerably to build time, so they are disabled by default.
+  pw_unit_test_FACADE_TESTS_ENABLED = false
+
+  # Pigweed uses this internally to manage toolchain generation for facade
+  # tests. This should NEVER be set manually, or depended on as stable API.
+  pw_unit_test_FACADE_TEST_NAME = ""
+}
+
+# Create a facade test. This allows you to, for a single unit test, replace
+# backends for the purpose of testing logic in a facade. To test a single
+# facade, multiple backends may need to be replaced (e.g. to test logging, you
+# can't be using the logging test runner).
+#
+# Note: pw_facade_test names MUST be globally unique, as they all are enumerated
+# to GN's output directory.
+# (e.g. `out/stm32f429i_disc1_size_optimized.tokenizer_facade_test`)
+#
+# WARNING: Facade tests can be very costly, as ALL the test/target dependencies
+#   will be rebuilt in a completely new toolchain context. This may seem
+#   wasteful, but is the only technically correct solution.
+#
+# Args:
+#   build_args: (required) Toolchain build arguments to override in the
+#     generated subtoolchain.
+#   toolchain_suffix: (optional) The suffix to use when generating a
+#     subtoolchain for the currently active toolchain. This must be globally
+#     unique as two tests with the same toolchain_suffix will generate the same
+#     toolchain name, which is illegal.
+template("pw_facade_test") {
+  assert(
+      defined(invoker.build_args),
+      "A facade test with no `defaults` is just a more expensive pw_unit_test!")
+  assert(
+      target_name != "test",
+      "This is a dangerous name, facade tests must have globally unique names!")
+
+  # Only try to generate a facade test for toolchains created by
+  # generate_toolchain. Checking if pw_toolchain_SCOPE has the "name" member
+  # is a reliable way to do this since it's only ever set by generate_toolchain.
+  if (pw_unit_test_FACADE_TESTS_ENABLED && defined(pw_toolchain_SCOPE.name)) {
+    if (defined(invoker.toolchain_suffix)) {
+      _subtoolchain_suffix = invoker.toolchain_suffix
+    } else {
+      _subtoolchain_suffix =
+          get_label_info(":$target_name", "label_no_toolchain")
+      _subtoolchain_suffix = string_replace(_subtoolchain_suffix, "//", "")
+      _subtoolchain_suffix = string_replace(_subtoolchain_suffix, "/", "-")
+      _subtoolchain_suffix = string_replace(_subtoolchain_suffix, ":", "--")
+    }
+
+    # Generate a subtoolchain for this test unless we're already in the
+    # context of a subtoolchain that was generated for this test.
+    if (pw_unit_test_FACADE_TEST_NAME != _subtoolchain_suffix) {
+      # If this branch is hit, we're still in the context of the parent
+      # toolchain, and we should generate the subtoolchain for this test.
+      _current_toolchain_name = get_label_info(current_toolchain, "name")
+      _subtoolchain_name = "${_current_toolchain_name}.${_subtoolchain_suffix}"
+      pw_generate_subtoolchain(_subtoolchain_name) {
+        build_args = {
+          pw_unit_test_FACADE_TEST_NAME = _subtoolchain_suffix
+          forward_variables_from(invoker.build_args, "*")
+        }
+      }
+      not_needed(invoker, "*")
+
+      # This target acts as a somewhat strange passthrough. In this toolchain,
+      # it refers to a test group that depends on a test of the same name in the
+      # context of another toolchain. In the subtoolchain, this same target name
+      # refers to a concrete test. It's like Inception.
+      pw_test_group(target_name) {
+        tests = [ ":$target_name(:$_subtoolchain_name)" ]
+      }
+    } else {
+      # In this branch, we instantiate the actual pw_test target that can be
+      # run.
+      pw_test(target_name) {
+        forward_variables_from(invoker, "*", [ "build_args" ])
+      }
+    }
+  } else {
+    # No-op target for non-pigweed toolchains.
+    not_needed(invoker, "*")
+    pw_test_group(target_name) {
+      enable_if = false
+    }
+  }
+}

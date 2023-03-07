@@ -1,0 +1,12 @@
+
+Program the firmware using the official Open On-Chip Debugger and we have prepared MW320 flash package at mw320_matter_flash.zip.
+It will be uncompressed at $MW320_SDK_ROOT/mw320_matter_flash. If don't have OpenOCD installed at Ubuntu, please install it as follow command.
+
+$ sudo apt-get install openocd
+
+After OpenOCD installed, flash layout.txt, boot2.bin, mw32x_uapsta_W14.88.36.p172.bin and chip-mw320-light-example.mcufw.bin to MW320 platform.
+
+user@ubuntu:~/Desktop/MW320/mw320_matter_flash$ sudo $MW320_FOLDER/mw320_matter_openocd/flashprog.py -l $MW320_SDK_ROOT/mw320_matter_flash/Matter/layout.txt --boot2 $MW320_SDK_ROOT/mw320_matter_flash/Matter/boot2.bin
+user@ubuntu:~/Desktop/MW320/mw320_matter_flash$ sudo $MW320_FOLDER/mw320_matter_openocd/flashprog.py --wififw $MW320_SDK_ROOT/mw320_matter_flash/Matter/mw32x_uapsta_W14.88.36.p172.bin
+user@ubuntu:~/Desktop/MW320/mw320_matter_flash$ sudo $MW320_FOLDER/mw320_matter_openocd/flashprog.py --mcufw $MW320_SDK_ROOT/mw320_matter_flash/Matter/chip-mw320-light-example.mcufw.bin -r
+

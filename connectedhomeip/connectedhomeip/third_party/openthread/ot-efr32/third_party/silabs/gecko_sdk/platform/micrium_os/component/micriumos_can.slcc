@@ -1,0 +1,25 @@
+id: micriumos_can
+label: CAN Bus
+package: micrium-cano
+description: Micrium OS CAN Bus
+category: Services|Micrium|CANopen
+quality: production
+component_root_path: platform/micrium_os/can
+source:
+  - path: source/can_bus.c
+include:
+  - path: source
+    file_list:
+      - path: can_bus_priv.h
+  - path: include
+    file_list:
+      - path: can_bus.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: CAN_BUS
+provides:
+  - name: micriumos_can
+requires: 
+  - name: micriumos_bsp_can
+  - name: micriumos_kernel
+  - name: common_platform_manager

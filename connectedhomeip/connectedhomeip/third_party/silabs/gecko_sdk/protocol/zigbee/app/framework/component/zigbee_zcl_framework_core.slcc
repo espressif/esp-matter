@@ -1,0 +1,986 @@
+package: Zigbee
+description: This component contains all the core functionality to build ZCL applications.
+label: ZCL Framework Core
+quality: production
+id: zigbee_zcl_framework_core
+category: Zigbee|Cluster Library
+
+provides:
+  - name: zigbee_zcl_framework_core
+
+requires:
+  - name: zigbee_device_config
+  - name: zigbee_cluster_service
+  - name: zigbee_signature_decode
+  - name: silabs_core_sl_malloc
+  - name: zigbee_zcl_cli
+    condition:
+      - cli
+  - name: zigbee_cli
+    condition:
+      - cli
+  - name: zigbee_core_cli
+    condition:
+      - cli
+  - name: legacy_printf
+    condition:
+      - zigbee_debug_print
+      - zigbee_stack_common
+
+config_file:
+  - path: protocol/zigbee/app/framework/plugin/zcl-framework-core/config/zcl-framework-core-config.h
+
+define:
+  - name: "CONFIGURATION_HEADER"
+    value: "\"app/framework/util/config.h\""
+
+include:
+  - path: protocol/zigbee/app/framework/include
+    file_list:
+      - path: af.h
+      - path: af-types.h
+      - path: af-storage.h
+      - path: plugin-component-mappings.h
+  - path: protocol/zigbee/app/framework/util
+    file_list:
+      - path: af-event.h
+      - path: af-main.h
+      - path: af-token.h
+      - path: attribute-storage.h
+      - path: attribute-table.h
+      - path: client-api.h
+      - path: common.h
+      - path: config.h
+      - path: global-callback.h
+      - path: global-other-callback.h
+      - path: print.h
+      - path: service-discovery.h
+      - path: time-util.h
+      - path: tokens.h
+      - path: util.h
+      - path: zcl-debug-print.h
+  - path: protocol/zigbee/app/framework/security
+    file_list:
+      - path: af-security.h
+      - path: crypto-state.h
+      - path: security-config.h
+      - path: security-profile-data.h
+  - path: protocol/zigbee/app/util/zigbee-framework
+    file_list:
+      - path: ami-inter-pan.h
+      - path: fragment.h
+      - path: zigbee-device-common.h
+      - path: zigbee-device-library.h
+  - path: protocol/zigbee/app/util/counters
+    file_list:
+      - path: counters.h
+  - path: protocol/zigbee/app/framework/cli
+    file_list:
+      - path: security-cli.h
+      - path: option-cli.h
+  - path: protocol/zigbee/app/util/common
+    file_list:
+      - path: common.h
+      - path: library.h
+      - path: form-and-join.h
+  #TODO: temporary, see EMZIGBEE-6322    
+      - path: uc-temp-macros.h
+  - path: protocol/zigbee/app/util/security
+    file_list:
+      - path: security.h
+  # TODO: this is needed since af-main-common.c declares emberAfInvalidImageId and assigns it to INVALID_OTA_IMAGE_ID which is defined in this header.
+  - path: protocol/zigbee/app/framework/plugin/ota-storage-common
+    file_list:
+      - path: ota-storage.h
+  - path: protocol/zigbee/app/util/ezsp
+    file_list:
+      - path: ezsp-enum.h
+    condition:
+      - zigbee_ezsp
+  - path: protocol/zigbee/app/framework/plugin/zcl-framework-core
+    file_list:
+      - path: zcl-framework-core.h
+    condition:
+      - zigbee_ezsp
+  - path: protocol/zigbee/app/framework/cli
+    file_list:
+      - path: zcl-cli.h
+    condition:
+      - cli
+source:
+  - path: protocol/zigbee/app/framework/cli/core-cli.c
+    condition:
+      - cli
+  - path: protocol/zigbee/app/framework/cli/network-cli.c
+    condition:
+      - cli
+  - path: protocol/zigbee/app/framework/cli/option-cli.c
+    condition:
+      - cli
+#  - path: protocol/zigbee/app/framework/cli/plugin-cli.c
+  - path: protocol/zigbee/app/framework/cli/security-cli.c
+    condition:
+      - cli
+  - path: protocol/zigbee/app/framework/cli/zcl-cli.c
+    condition:
+      - cli
+  - path: protocol/zigbee/app/framework/cli/zdo-cli.c
+    condition:
+      - cli
+  - path: protocol/zigbee/app/framework/security/af-node.c
+  - path: protocol/zigbee/app/framework/util/af-common.c
+  - path: protocol/zigbee/app/framework/util/af-soc.c
+    condition:
+      - zigbee_stack_common
+  - path: protocol/zigbee/app/framework/security/af-security-common.c
+  - path: protocol/zigbee/app/framework/security/af-trust-center.c
+  - path: protocol/zigbee/app/framework/security/crypto-state.c
+  - path: protocol/zigbee/app/framework/util/af-event.c
+  - path: protocol/zigbee/app/framework/util/attribute-size.c
+  - path: protocol/zigbee/app/framework/util/attribute-storage.c
+  - path: protocol/zigbee/app/framework/util/attribute-table.c
+  - path: protocol/zigbee/app/framework/util/client-api.c
+  - path: protocol/zigbee/app/framework/util/message.c
+  - path: protocol/zigbee/app/framework/util/multi-network.c
+  - path: protocol/zigbee/app/framework/util/print.c
+    condition:
+      - zigbee_debug_print
+  - path: protocol/zigbee/app/framework/util/print-formatter.c
+    condition:
+      - zigbee_debug_print  
+  - path: protocol/zigbee/app/framework/util/process-cluster-message.c
+  - path: protocol/zigbee/app/framework/util/process-global-message.c
+  - path: protocol/zigbee/app/framework/util/service-discovery-common.c
+  - path: protocol/zigbee/app/framework/util/time-util.c
+  - path: protocol/zigbee/app/framework/util/util.c
+  - path: protocol/zigbee/app/framework/util/service-discovery-soc.c
+    condition:
+      - zigbee_stack_common
+  - path: protocol/zigbee/app/util/serial/sl_zigbee_command_interpreter.c
+    condition:
+      - cli
+  - path: protocol/zigbee/app/util/zigbee-framework/zigbee-device-common.c
+  - path: protocol/zigbee/app/util/zigbee-framework/zigbee-device-library.c
+    condition:
+      - zigbee_stack_common
+  - path: protocol/zigbee/app/util/common/library.c
+  - path: protocol/zigbee/app/framework/util/global-callback.c
+  - path: protocol/zigbee/app/framework/util/global-other-callback.c
+  - path: protocol/zigbee/app/framework/plugin/zcl-framework-core/zcl-framework-core-cb.c
+    condition:
+      - zigbee_ezsp
+
+template_file:
+  - path: protocol/zigbee/app/framework/util/template/zigbee_zcl_callback_dispatcher.h.jinja
+  - path: protocol/zigbee/app/framework/util/template/zigbee_zcl_callback_dispatcher.c.jinja
+  - path: protocol/zigbee/app/framework/util/template/zigbee_af_cluster_functions.h.jinja
+  - path: protocol/zigbee/app/framework/util/template/zigbee_af_token_headers.h.jinja
+
+template_contribution:
+  - name: component_catalog
+    value: zigbee_zcl_framework_core
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emAfZclFrameworkCoreInitEventsCallback
+    priority: -9700
+  - name: zigbee_af_callback
+    value:
+      callback_type: event_init
+      function_name: emAfServiceDiscoveryInitEventsCallback
+    priority: -9700
+# emberAfInit must be preceeded by emAfZclFrameworkCoreInitEventsCallback
+  - name: zigbee_af_callback
+    value:
+      callback_type: init_done
+      function_name: emberAfInit
+    priority: -9600
+  - name: zigbee_af_callback
+    value:
+      callback_type: init_done
+      function_name: emAfInitCallback
+    priority: -9900
+  - name: zigbee_af_callback
+    value:
+      callback_type: init_done
+      function_name: emAfNetworkInit
+    priority: 1000
+  - name: zigbee_stack_callback
+    value:
+      callback_type: message_sent
+      function_name: emAfMessageSentCallback
+  # The priority has been set to -9900 here because
+  # when we call emAfPluginNetworkCreatorSecurityStackStatusCallback
+  # after form a network, the NodeID is not set to EMBER_TRUST_CENTER_NODE_ID
+  - name: zigbee_stack_callback
+    value:
+      callback_type: stack_status
+      function_name: emAfStackStatusCallback
+    priority: -9900
+  - name: zigbee_stack_callback
+    value:
+      callback_type: incoming_message
+      function_name: emAfIncomingMessageCallback
+
+# "plugin" sub-group - to be used by all plugin-specific commands
+  - name: cli_group
+    value:
+      name: plugin
+
+#TODO: create a sub-component for each group of commands
+
+# Network CLI commands
+  - name: cli_group
+    value:
+      name: network
+      shortcuts:
+        - name: net
+      help: "Network related commands."
+
+  - name: cli_command
+    value:
+      group: network
+      name: form
+      handler: networkFormCommand
+      help: "Forms a network on a given channel, with a given TX Power and PAN ID."
+      argument:
+      - type: uint8
+        help: "The channel on which to form the network"
+      - type: int8
+        help: "One-byte signed value indicating the TX Power that the radio should be set to"
+      - type: uint16
+        help: "The PAN ID on which to form the network"
+  - name: cli_command
+    value:
+      group: network
+      name: join
+      handler: networkJoinCommand
+      help: "Joins a network on a given channel, with a given TX Power and PAN ID."
+      argument:
+      - type: uint8
+        help: "The channel on which to join the network"
+      - type: int8
+        help: "One-byte signed value indicating the TX Power that the radio should be set to"
+      - type: uint16
+        help: "The PAN ID on which to join the network"
+  - name: cli_command
+    value:
+      group: network
+      name: pjoin
+      handler: networkPermitJoinCommand
+      help: "Turns permit joining on for the amount of time indicated."
+      argument:
+      - type: uint8
+        help: "A single byte indicating how long the device should have permit joining turn on for. A value of 0xff turns permit join indefinitely."
+  - name: cli_command
+    value:
+      group: network
+      name: leave
+      handler: networkLeaveCommand
+      help: "Leaves a network."
+  - name: cli_command
+    value:
+      group: network
+      name: rejoin
+      handler: networkRejoinCommand
+      help: "ReJoins a network."
+      argument:
+      - type: uint8
+        help: "Boolean network key availability"
+      - type: int32
+        help: "Channel mask"
+  - name: cli_command
+    value:
+      group: network
+      name: rejoin-diff-device-type
+      handler: networkRejoinDiffDeviceTypeCommand
+      help: "Rejoins an existing network in a secure or insecure manner with a different device type."
+      argument:
+      - type: uint8
+        help: "Boolean network key availability"
+      - type: int32
+        help: "Channel mask"
+      - type: uint8
+        help: "An enumeration indicating the device type to rejoin as.The stack only accepts EMBER_END_DEVICE and EMBER_SLEEPY_END_DEVICE."  
+  - name: cli_command
+    value:
+      group: network
+      name: extpanid
+      handler: networkExtendedPanIdCommand
+      help: "Writes the extended pan ID for the device."
+      argument:
+      - type: hex
+        help: "extpanid"
+  - name: cli_command
+    value:
+      group: network
+      name: isopen
+      handler: networkCheckPjoinCommand
+      help: "Checks network pjoin status."
+  - name: cli_command
+    value:
+      group: network
+      name: broad-pjoin
+      handler: networkPermitJoinCommand
+      help: "Permits joining on the network for a given number of seconds AND broadcasts a ZDO Mgmt Permit Joining request to all routers."
+      argument:
+      - type: uint8
+        help: "A single byte indicating how long the device should have permit joining turned on for. A value of 0xff turns on permit join indefinitely."   
+
+   # network find cli
+  - name: cli_group
+    value:
+      name: find
+      group: network
+      help: "network find commands."
+  - name: cli_command
+    value:
+      name: joinable
+      group: find
+      handler: findJoinableNetworkCommand
+      help: "findJoinableNetwork"
+  - name: cli_command
+    value:
+      name: unused
+      group: find
+      handler: findUnusedPanIdCommand
+      help: "findUnusedPanId" 
+
+   #network cli      
+  - name: cli_command
+    value:
+      group: network
+      name: change-channel
+      handler: networkChangeChannelCommand
+      help: "Attempts to change device over to a different channel given in the channel argument."
+      argument:
+      - type: uint8
+        help: "The channel to change to"
+  - name: cli_command
+    value:
+      group: network
+      name: set
+      handler: networkSetCommand
+      help: "Sets the network index used by all future CLI commands.  Before executing a CLI command, the framework switches to this network.  After the command finishes executing, the framework switches back to the previous network.  The CLI uses the same network index until the device resets or it is changed through this command."
+      argument:
+      - type: uint8
+        help: "index" 
+  - name: cli_command
+    value:
+      group: network
+      name: init
+      handler: networkInitCommand
+      help: "Initializes a network; this is a test command used for tc-swap-out testing."  
+  - name: cli_command
+    value:
+      group: network
+      name: id
+      handler: networkIdCommand
+      help: "Prints the current Node ID, EUI64, and Pan ID."
+  - name: cli_command
+    value:
+      group: network
+      name: change-keep-alive-mode
+      handler: changeKeepAliveModeCommand
+      help: "Switches between different keep alive modes supported by a router."
+      argument:
+      - type: uint8
+        help: "Keep alive mode"
+  - name: cli_command
+    value:
+      group: network
+      name: timeout-option-mask
+      handler: networkChangeChildTimeoutOptionMaskCommand
+      help: "Attempts to change the child timeout option mask to filter out undesirable values (e.g. no more than 3 days)."
+      argument:
+      - type: uint16
+        help: "timeout option mask"
+  - name: cli_command
+    value:
+      group: network
+      name: multi-phy-start
+      handler: networkMultiPhyStartCommand
+      help: "Used to start multi-PHY interface other than native and form the network. The stack uses same PanId as native radio network."
+      argument:
+      - type: uint8
+        help: "page"
+      - type: uint8
+        help: "channel"
+      - type: int8
+        help: "power"     
+  - name: cli_command
+    value:
+      group: network
+      name: multi-phy-stop
+      handler: networkMultiPhyStopCommand
+      help: "Terminates the multi-PHY interface"      
+
+# Keys CLI commands
+  - name: cli_group
+    value:
+      name: keys
+      help: "Security keys related commands."
+  - name: cli_command
+    value:
+      name: print
+      group: keys
+      handler: keysPrintCommand
+      help: "Prints all security keys."
+  - name: cli_command
+    value:
+      name: delete
+      group: keys
+      handler: keysDeleteCommand
+      help: "Delete the specified link key index."
+      argument:
+      - type: uint8
+        help: "index"
+  - name: cli_command
+    value:
+      name: clear
+      group: keys
+      handler: keysClearCommand
+      help: "Clears all security keys."
+
+# Option CLI commands
+  - name: cli_group
+    value:
+      name: option
+      shortcuts:
+        - name: opt
+      help: "Option related commands."
+
+  - name: cli_group
+    value:
+      name: plugin
+      shortcuts:
+        - name: plug
+      help: "Plugin CLI group related commands"
+# option
+# Binding table CLI commands
+  - name: cli_group
+    value:
+      name: binding-table
+      group: option
+      help: "Binding table related commands."
+  - name: cli_command
+    value:
+      name: print
+      group: binding-table
+      handler: optionBindingTablePrintCommand
+      help: "Prints the binding table to the command line."
+  - name: cli_command
+    value:
+      name: clear
+      group: binding-table
+      handler: optionBindingTableClearCommand
+      help: "Clears the binding table." 
+  - name: cli_command
+    value:
+      name: set
+      group: binding-table
+      handler: optionBindingTableSetCommand
+      help: "Sets the binding table"
+      argument:
+      - type: uint8
+        help: "index"
+      - type: uint16
+        help: "cluster"
+      - type: uint8
+        help: "localEp"
+      - type: uint8
+        help: "remoteEp"      
+      - type: hex
+        help: "eui64"       
+
+  #option print-rx-messages
+  - name: cli_group
+    value:
+      name: print-rx-msgs
+      group: option
+      help: "Enables/Disables printing of Rx messages."    
+  - name: cli_command
+    value:
+      name: enable
+      group: print-rx-msgs
+      help: "Enables printing of Rx messages."
+      handler: optionPrintRxCommand
+      
+  - name: cli_command
+    value:
+      name: disable
+      group: print-rx-msgs
+      help: "Disables printing of Rx messages."
+      handler: optionPrintRxCommand    
+
+  - name: cli_command
+    value:
+      name: register
+      group: option 
+      help: ""   
+      handler: optionRegisterCommand
+  - name: cli_command
+    value:
+      name: target
+      group: option 
+      help: ""   
+      handler: optionDiscoveryTargetCommand
+      argument:
+      - type: uint16
+        help: "targetId" 
+  - name: cli_command
+    value:
+      name: disc
+      group: option
+      handler: optionDiscoverCommand
+      help: ""
+      argument:
+      - type: uint16
+        help: "profileId"
+      - type: uint16
+        help: "clusterId"
+  - name: cli_command
+    value:
+      name: edb
+      group: option 
+      help: ""   
+      handler: optionEndDeviceBindCommand
+      argument: 
+      - type: uint8
+        help: "endpointId"
+  #option apsretry
+  - name: cli_group
+    value:
+      name: apsretry
+      group: option
+      help: "APS retry flag force commands"
+  - name: cli_command
+    value:
+      name: "on"
+      group: apsretry 
+      help: ""   
+      handler: optionApsRetryCommand  
+  - name: cli_command
+    value:
+      name: "off"
+      group: apsretry 
+      help: ""   
+      handler: optionApsRetryCommand
+  - name: cli_command
+    value:
+      name: default
+      group: apsretry 
+      help: ""   
+      handler: optionApsRetryCommand           
+
+  #option security
+  - name: cli_group
+    value:
+      name: security
+      group: option
+      help: "Security related commands."
+  - name: cli_group
+    value:
+      name: aps
+      group: security
+      help: "Security aps related commands."       
+  - name: cli_command
+    value:
+      name: "on"
+      group: aps 
+      help: ""   
+      handler: optionApsSecurityCommand
+  #(EMZIGBEE-6470)     
+  - name: cli_command
+    value:
+      name: "off"
+      group: aps 
+      help: ""   
+      handler: optionApsSecurityCommand
+  - name: cli_command
+    value:
+      name: set-allow-trust-center-rejoin-using-well-known-key
+      group: security 
+      help: ""   
+      handler: optionSecurityAllowTrustCenterRejoinUsingWellKnownKey
+      argument:
+      - type: uint8
+        help: "Bool: allow trust center rejoin using well-known key"
+  - name: cli_command
+    value:
+      name: set-allow-trust-center-rejoin-using-well-known-key-timeout
+      group: security 
+      help: ""   
+      handler: optionSecurityAllowTrustCenterRejoinUsingWellKnownKeyTimeout   
+      argument:
+      - type: uint16
+        help: "timeout"
+  - name: cli_command
+    value:
+      name: set-key-request-policy
+      group: security 
+      help: ""   
+      handler: optionSecuritySetKeyRequestPolicy   
+      argument:
+      - type: uint8
+        help: "TC link key request policy"
+      - type: uint8
+        help: "App link key request policy"         
+  
+  #change-key
+  - name: cli_group
+    value:
+      name: changekey
+      shortcuts:
+        - name: changek
+      help: "changekey related commands."
+  - name: cli_command
+    value:
+      name: link
+      group: changekey 
+      help: ""   
+      handler: changeKeyCommand
+      argument:
+      - type: hex
+        help: "key"
+  - name: cli_command
+    value:
+      name: network
+      group: changekey 
+      help: ""   
+      handler: changeKeyCommand
+      argument:
+      - type: hex
+        help: "key"      
+      
+         
+  #option 
+  - name: cli_command
+    value:
+      name: link
+      group: option 
+      help: ""   
+      handler: optionLinkCommand
+      argument:
+      - type: uint8
+        help: "index"
+      - type: hex
+        help: "eui64" 
+      - type: hex
+        help: "key"
+  - name: cli_command
+    value:
+      name: install-code
+      group: option 
+      help: ""   
+      handler: optionInstallCodeCommand
+      argument:
+      - type: uint8
+        help: "index"
+      - type: hex
+        help: "eui64" 
+      - type: hex
+        help: "installCode"            
+
+
+  # zdo      
+  - name: cli_group
+    value:
+      name: zdo
+      help: "Zdo related commands." 
+  - name: cli_command
+    value:
+      name: route
+      group: zdo
+      handler: zdoRouteRequestCommand
+      help: "Sends a ZDO route request command to the target."
+      argument:
+      - type: uint16
+        help: "target"
+      - type: uint8
+        help: "index"
+  - name: cli_command
+    value:
+      name: power
+      group: zdo
+      handler: zdoPowerDescriptorRequestCommand
+      help: "Sends a ZDO Power Descriptor Request to the target device."
+      argument:
+      - type: uint16
+        help: "target"
+  - name: cli_command
+    value:
+      name: mgmt-lqi
+      group: zdo
+      handler: zdoMgmtLqiCommand
+      help: "Sends a ZDO MGMT-LQI (LQI Table) Request to the target device."
+      argument:
+      - type: uint16
+        help: "target"
+      - type: uint8
+        help: "startIndex"
+  - name: cli_command
+    value:
+      name: mgmt-bind
+      group: zdo
+      handler: zdoMgmtBindCommand
+      help: "Sends a ZDO MGMT-Bind (Binding Table) Request to the target device."
+      argument:
+      - type: uint16
+        help: "target"
+      - type: uint8
+        help: "startIndex"
+  - name: cli_command
+    value:
+      name: leave
+      group: zdo
+      handler: zdoLeaveRequestCommand
+      help: "Sends a ZDO Management Leave command to the target device."
+      argument:
+      - type: uint16
+        help: "target"
+      - type: uint8
+        help: "removeChildren"
+      - type: uint8
+        help: "rejoin"
+  - name: cli_group
+    value:
+      name: unbind
+      group: zdo
+      help: "Zdo unbind related commands."
+  #TODO: following could not be ported, because the actual command is called "group"  (EMZIGBEE-6470)        
+  - name: cli_command
+    value:
+      name: "group"
+      group: unbind
+      handler: zdoUnbindGroupCommand
+      help: "Sends an unbind request for a multicast binding to the target device."
+      argument:
+      - type: uint16
+        help: "target"
+      - type: hex
+        help: "source eui64"
+      - type: uint8
+        help: "source endpoint"
+      - type: uint16
+        help: "clusterID"
+      - type: uint16
+        help: "groupAddress"
+  - name: cli_command
+    value:
+      name: unicast
+      group: unbind
+      handler: zdoUnbindUnicastCommand
+      help: "Sends an unbind request for a unicast binding to the target device."
+      argument:
+      - type: uint16
+        help: "target"
+      - type: hex
+        help: "source eui64"
+      - type: uint8
+        help: "source endpoint"
+      - type: uint16
+        help: "clusterID"
+      - type: hex
+        help: "destinationEUI64" 
+      - type: uint8
+        help: "destination endpoint"
+  - name: cli_command
+    value:
+      name: active
+      group: zdo
+      handler: zdoActiveEpCommand
+      help: "Sends an active endpoint request to the device with the given short ID."
+      argument:
+      - type: uint16
+        help: "nodeId"
+  - name: cli_command
+    value:
+      name: bind
+      group: zdo
+      handler: zdoBindCommand
+      help: "Sends a ZDO Bind command to a device specified in the command arguments."
+      argument:
+      - type: uint16
+        help: "Destination"
+      - type: uint8
+        help: "Source endpoint"
+      - type: uint8
+        help: "Destination endpoint"     
+      - type: uint16
+        help: "clusterID"
+      - type: hex
+        help: "remoteEUI64"  
+      - type: hex
+        help: "destEUI64"
+  - name: cli_command
+    value:
+      name: node
+      group: zdo
+      handler: zdoNodeCommand
+      help: "Sends a node descriptor request to a given target device."
+      argument:
+      - type: uint16
+        help: "target"
+  - name: cli_command
+    value:
+      name: match
+      group: zdo
+      handler: zdoMatchCommand
+      help: "Sends a matchDescriptorsRequest to the given destination with the given profile."
+      argument:
+      - type: uint16
+        help: "nodeId"
+      - type: uint16
+        help: "profile"
+  - name: cli_command
+    value:
+      name: simple
+      group: zdo
+      handler: zdoSimpleCommand
+      help: "Sends a simple descriptor request for the short address and endpoint specified."
+      argument:
+      - type: uint16
+        help: "dest"
+      - type: uint8
+        help: "targetEndpoint"
+  - name: cli_command
+    value:
+      name: ieee
+      group: zdo
+      handler: zdoIeeeAddressRequestCommand
+      help: "Requests an IEEE address based on a given node ID."
+      argument:
+      - type: uint16
+        help: "nodeId"
+  - name: cli_command
+    value:
+      name: nwk
+      group: zdo
+      handler: zdoNwkAddressRequestCommand
+      help: "Sends a network address request for the given IEEE address."
+      argument:
+      - type: hex
+        help: "ieee"
+  - name: cli_group
+    value:
+      name: nwk-upd
+      group: zdo
+      help: "Zdo nwk-upd related commands."       
+  - name: cli_command
+    value:
+      name: scan-chan-mask
+      group: nwk-upd
+      handler: zdoNetworkUpdateScanCommand
+      help: "Performs an energy scan on given channel mask."
+      argument:
+      - type: uint16
+        help: "targetNodeId"
+      - type: uint8
+        help: "scanDuration"
+      - type: uint16
+        help: "scanCount"
+      - type: uint32
+        help: "channelMask" 
+  - name: cli_command
+    value:
+      name: set
+      group: nwk-upd
+      handler: zdoNetworkUpdateSetCommand
+      help: "Broadcasts the ID of the new network manager and active channels."
+      argument:
+      - type: uint16
+        help: "nwkMgeId" 
+      - type: uint32
+        help: "channelMask"            
+  - name: cli_command
+    value:
+      name: scan
+      group: nwk-upd
+      handler: zdoNetworkUpdateScanCommand
+      help: "Performs an energy scan."
+      argument:
+      - type: uint16
+        help: "targetNodeId"
+      - type: uint8
+        help: "scanDuration"
+      - type: uint16
+        help: "scanCount"
+  - name: cli_command
+    value:
+      name: chanPg
+      group: nwk-upd
+      handler: zdoNetworkUpdateChannelCommand
+      help: "Sends an update channel page req. The stack sends nwk enhanced update req for non-zero page."
+      argument:
+      - type: uint8
+        help: "channel" 
+      - type: uint8
+        help: "page"
+  - name: cli_command
+    value:
+      name: chan
+      group: nwk-upd
+      handler: zdoNetworkUpdateChannelCommand
+      help: "Sends an update channel request."
+      argument:
+      - type: uint8
+        help: "channel"
+  - name: cli_group
+    value:
+      name: out-cl-list
+      group: zdo
+      help: "Zdo out-cl-list related commands."       
+  - name: cli_command
+    value:
+      name: add
+      group: out-cl-list
+      handler: zdoAddClusterCommand
+      help: "Adds clusters to the known client (out) clusters on this device."
+      argument:
+      - type: uint16
+        help: "clusterId"
+  - name: cli_command
+    value:
+      name: clear
+      group: out-cl-list
+      handler: zdoClearClusterCommand
+      help: "Clears the ZDO list of client (out) clusters."      
+  - name: cli_group
+    value:
+      name: in-cl-list
+      group: zdo
+      help: "Zdo in-cl-list related commands."       
+  - name: cli_command
+    value:
+      name: add
+      group: in-cl-list
+      handler: zdoAddClusterCommand
+      help: "Adds clusters to the known client (in) clusters on this device."
+      argument:
+      - type: uint16
+        help: "clusterId"
+  - name: cli_command
+    value:
+      name: clear
+      group: in-cl-list
+      handler: zdoClearClusterCommand
+      help: "Clears the ZDO list of client (in) clusters."
+
+   # print group    
+  - name: cli_group
+    value:
+      name: print
+      help: "print related commands." 
+  - name: cli_command
+    value:
+      name: attr
+      group: print
+      handler: emberAfPrintAttributeTable
+      help: "Prints attribute."
+  - name: cli_command
+    value:
+      name: time
+      group: print
+      handler: printTimeCommand
+      help: "Prints time."    

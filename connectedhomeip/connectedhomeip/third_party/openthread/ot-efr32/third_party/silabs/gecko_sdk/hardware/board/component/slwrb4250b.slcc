@@ -1,0 +1,23 @@
+!!omap
+- id: slwrb4250b
+- label: SLWRB4250B
+- package: platform
+- description: Kit BSP support for the EFR32FG 2400/868 MHz 13 dBm Dual Band Radio
+    Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4250b
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4250B"'
+  - name: SL_KIT_REV
+    value: '"A03"'
+- tag:
+  - kit:opn:SLWRB4250B
+  - kit:pn:WRB4250
+  - kit:variant:B
+  - kit:revision:A03

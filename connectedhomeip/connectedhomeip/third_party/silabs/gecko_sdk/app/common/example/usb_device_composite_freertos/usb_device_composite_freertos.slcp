@@ -1,0 +1,44 @@
+project_name: usb_device_composite_freertos
+package: platform
+quality: production
+label: Platform - USB Composite Device with FreeRTOS kernel
+description: > 
+  This example uses the USB stack with the FreeRTOS kernel to create a composite device.
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+source:
+  - path: app.c
+  - path: main.c
+  - path: usb_composite_app.c
+include:
+  - path: .
+    file_list:
+    - path: app.h
+    - path: usb_composite_app.h
+component:
+  - id: sl_system
+  - id: device_init
+  - id: freertos
+  - id: usb_device_configuration
+    instance: [config0]
+  - id: usb_device_class_cdc_acm
+    instance: [acm0]
+  - id: usb_device_class_hid
+    instance: [hid0]
+define:
+  - name: DEBUG_EFM
+configuration:
+  - name: configTOTAL_HEAP_SIZE
+    value: 40000  
+readme:
+  - path: readme.md
+tag:
+  - hardware:component:usb
+ui_hints:
+  highlight: readme.md

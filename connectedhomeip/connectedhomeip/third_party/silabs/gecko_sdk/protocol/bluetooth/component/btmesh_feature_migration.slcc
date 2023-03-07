@@ -1,0 +1,17 @@
+id: "btmesh_feature_migration"
+label: "Migration"
+package: "Btmesh"
+description: "Enables Bluetooth Mesh stack key and database  migration from pre 3.2 releases."
+category: "Bluetooth Mesh|Stack Classes"
+quality: "production"
+root_path: "protocol/bluetooth"
+
+requires:
+  - name: "btmesh_stack"
+provides:
+  - name: "btmesh_feature_migration"
+template_contribution:
+  - name: btmesh_bgapi_class
+    value:
+      class: "migration"
+    priority: 3

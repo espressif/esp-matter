@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011 Bluetooth SIG, Inc. All rights reserved. -->
+<Characteristic xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="org.bluetooth.characteristic.reference_time_information" uuid="2A14" name="Reference Time Information">
+	<InformativeText>
+	</InformativeText>
+	<Value>
+		<Field name="Source">
+			<Requirement>Mandatory</Requirement>
+			<Reference>
+			org.bluetooth.characteristic.time_source
+		</Reference>
+		</Field>
+		<Field name="Accuracy">
+			<Requirement>Mandatory</Requirement>
+			<Reference>
+			org.bluetooth.characteristic.time_accuracy
+		</Reference>
+		</Field>
+		<Field name="Days Since Update">
+			<Requirement>Mandatory</Requirement>
+			<Format>uint8</Format>
+			<Unit>org.bluetooth.unit.time.day</Unit>
+			<Minimum>0</Minimum>
+			<Maximum>254</Maximum>
+			<AdditionalValues>
+				<Enumeration key="255" value="255 or more days"/>
+			</AdditionalValues>
+		</Field>
+		<Field name="Hours Since Update">
+			<InformativeText>If Days Since Update = 255, then Hours Since Update shall also be set to 255</InformativeText>
+			<Requirement>Mandatory</Requirement>
+			<Format>uint8</Format>
+			<Unit>org.bluetooth.unit.time.hour</Unit>
+			<Minimum>0</Minimum>
+			<Maximum>23</Maximum>
+			<AdditionalValues>
+				<Enumeration key="255" value="255 or more days"/>
+			</AdditionalValues>
+		</Field>
+	</Value>
+    <Note>
+    The fields in the above table are in the order of LSO to MSO. Where LSO = Least Significant Octet and MSO = Most Significant Octet.
+   </Note>
+</Characteristic>

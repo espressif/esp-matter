@@ -1,0 +1,109 @@
+/***************************************************************************//**
+ * @file    iot_pwm_desc.c.jinja
+ * @brief   PWM instance descriptors - auto-generated file.
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2021 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ ******************************************************************************/
+
+/*******************************************************************************
+ *                               INCLUDES
+ ******************************************************************************/
+
+/* standard C */
+#include "stddef.h"
+
+/* PWM driver layer */
+#include "iot_pwm_desc.h"
+
+{% for instance in iot_pwm_instances %}
+/* instance {{ instance }} config */
+#include "iot_pwm_cfg_{{ instance }}.h"
+{% endfor %}
+
+/*******************************************************************************
+ *                            DESCRIPTOR LIST
+ ******************************************************************************/
+
+IotPwmDescriptor_t iot_pwm_desc[] = {
+
+{% for instance in iot_pwm_instances %}
+  /* instance {{ instance }} config */
+  {
+    /* instance number */
+    .lInstNum           = IOT_PWM_CFG_{{ instance | upper }}_INST_NUM,
+
+    /* selected peripheral */
+    .pxPeripheral       = IOT_PWM_CFG_{{ instance | upper }}_PERIPHERAL,
+    .ucPeripheralNo     = IOT_PWM_CFG_{{ instance | upper }}_PERIPHERAL_NO,
+
+    /* channel 0 */
+#ifdef IOT_PWM_CFG_{{ instance | upper }}_CC0_PORT
+    .xCC0Port           = IOT_PWM_CFG_{{ instance | upper }}_CC0_PORT,
+    .ucCC0Pin           = IOT_PWM_CFG_{{ instance | upper }}_CC0_PIN,
+#if (_SILICON_LABS_32B_SERIES < 2)
+    .ucCC0Loc           = IOT_PWM_CFG_{{ instance | upper }}_CC0_LOC,
+#endif
+#endif
+
+    /* channel 1 */
+#ifdef IOT_PWM_CFG_{{ instance | upper }}_CC1_PORT
+    .xCC1Port           = IOT_PWM_CFG_{{ instance | upper }}_CC1_PORT,
+    .ucCC1Pin           = IOT_PWM_CFG_{{ instance | upper }}_CC1_PIN,
+#if (_SILICON_LABS_32B_SERIES < 2)
+    .ucCC1Loc           = IOT_PWM_CFG_{{ instance | upper }}_CC1_LOC,
+#endif
+#endif
+
+    /* channel 2 */
+#ifdef IOT_PWM_CFG_{{ instance | upper }}_CC2_PORT
+    .xCC2Port           = IOT_PWM_CFG_{{ instance | upper }}_CC2_PORT,
+    .ucCC2Pin           = IOT_PWM_CFG_{{ instance | upper }}_CC2_PIN,
+#if (_SILICON_LABS_32B_SERIES < 2)
+    .ucCC2Loc           = IOT_PWM_CFG_{{ instance | upper }}_CC2_LOC,
+#endif
+#endif
+  },
+{% endfor %}
+
+};
+
+/*******************************************************************************
+ *                          iot_pwm_desc_get
+ ******************************************************************************/
+
+IotPwmDescriptor_t *iot_pwm_desc_get(int32_t lInstNum)
+{
+  int32_t lInstCount = sizeof(iot_pwm_desc)/sizeof(IotPwmDescriptor_t);
+  int32_t lInstCur   = 0;
+
+  for (lInstCur = 0; lInstCur < lInstCount; lInstCur++) {
+    if (iot_pwm_desc[lInstCur].lInstNum == lInstNum) {
+      return &iot_pwm_desc[lInstCur];
+    }
+  }
+
+  return NULL;
+}

@@ -1,0 +1,15 @@
+!!omap
+- id: brd4546a_config
+- label: brd4546a config
+- description: Configuration files for BRD4546A
+- package: platform
+- category: Platform|Board|Config
+- quality: production
+- ui_hints:
+    visibility: never
+- root_path: hardware/board/config
+- requires:
+  - name: brd4546a
+- provides:
+  - name: brd4546a_config
+- config_file: []

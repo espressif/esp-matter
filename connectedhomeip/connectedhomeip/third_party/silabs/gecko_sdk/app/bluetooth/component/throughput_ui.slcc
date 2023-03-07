@@ -1,0 +1,29 @@
+id: throughput_ui
+package: Bluetooth
+label: Throughput User Interface API
+description: |-
+  API for drawing throughput test state and results to LCD
+category: Bluetooth|Application|Throughput
+quality: production
+root_path: app/bluetooth/common/throughput_ui
+include:
+  - path: .
+    file_list: 
+      - path: throughput_ui.h
+      - path: throughput_ui_types.h
+source:
+  - path: throughput_ui.c
+  - path: throughput_ui_common.c
+config_file:
+  - path: "config/throughput_ui_config.h"
+requires:
+  - name: "throughput"
+  - name: "app_assert"
+  - name: "glib"
+  - name: "dmd_memlcd"
+  - name: "ls013b7dh03"
+provides:
+  - name: throughput_ui
+template_contribution:
+  - name: component_catalog
+    value: throughput_ui

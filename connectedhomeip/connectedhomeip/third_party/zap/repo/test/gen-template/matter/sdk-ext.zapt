@@ -1,0 +1,47 @@
+// This test template tests the functionality of SDK extensions helper, using the sdk extensions
+// data provided in the gen-template.json
+
+------------------- Clusters -------------------
+{{#zcl_clusters}}
+// cluster: {{asHex code 4}} {{label}}, text extension: '{{cluster_extension property="testClusterExtension"}}'
+{{/zcl_clusters}}
+
+------------------- By-role Clusters -------------------
+{{#zcl_clusters}}
+// server cluster: {{asHex code 4}} {{label}}, text extension: '{{cluster_extension role="server" property="testClusterExtension"}}'
+// client cluster: {{asHex code 4}} {{label}}, text extension: '{{cluster_extension role="client" property="testClusterExtension"}}'
+{{/zcl_clusters}}
+
+------------------- Commands -------------------
+{{#zcl_command_tree}}
+// command: {{asHex clusterCode 4 'null'}} / {{asHex code 2}} => {{label}}, test extension: '{{command_extension
+property="testCommandExtension"}}'
+{{/zcl_command_tree}}
+
+------------------- Attributes -------------------
+{{#zcl_attributes}}
+// attribute: {{asHex clusterCode 4}} / {{asHex code 4}} => {{label}}, extensions: '{{attribute_extension
+property="testAttributeExtension1"}}', '{{attribute_extension property="testAttributeExtension2"}}'
+{{/zcl_attributes}}
+
+-------------------- Events -----------------------
+{{#zcl_events}}
+// event: {{asHex clusterCode 4}} / {{asHex code 4}} => {{name}}, extensions: '{{event_extension
+property="testEventExtension1"}}'
+{{/zcl_events}}
+
+------------------- Device types -------------------
+{{#zcl_device_types}}
+// device type: {{domain}} / {{asHex code 4}} => {{label}} // extension: '{{device_type_extension
+property="testDeviceTypeExtension"}}'
+{{/zcl_device_types}}
+
+-------------------- Test the implementedCommands extension.
+
+IMPLEMENTED_COMMANDS>{{#zcl_command_tree}}{{#if_command_extension_true
+property="implementedCommands"}}{{label}},{{/if_command_extension_true}}{{/zcl_command_tree}}<END
+
+------ Test if extension true in context of all_user_clusters
+
+IMPLEMENTED_COMMANDS2>{{#all_user_clusters}}{{#all_user_cluster_commands_irrespective_of_manufaturing_specification name side}}{{#if_command_extension_true property="implementedCommands"}}{{name}},{{/if_command_extension_true}}{{/all_user_cluster_commands_irrespective_of_manufaturing_specification}}{{/all_user_clusters}}<END2
+

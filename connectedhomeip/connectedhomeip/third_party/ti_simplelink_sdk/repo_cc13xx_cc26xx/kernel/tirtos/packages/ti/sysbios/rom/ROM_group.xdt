@@ -1,0 +1,116 @@
+%/*
+% *  ======== ROM.xdt ========
+% */
+%var BIOS = xdc.module("ti.sysbios.BIOS");
+%var Build = xdc.module("ti.sysbios.Build");
+%var ROM = xdc.module("ti.sysbios.rom.ROM");
+
+%if ((Build.buildROM == true) || (Build.buildROMApp == true)) {
+/* ROM_ExternFuncPtrs */
+%   for (var i = 0; i < ROM.excludeIncludes.length; i++) {
+#include <`ROM.excludeIncludes[i]`>
+%   }
+
+typedef struct {
+%   if (ROM.excludeFuncs.length != 0) {
+    /*
+     *  functions explicitly excluded from the ROM
+     */
+%   }
+%   for (var i = 0; i < ROM.excludeFuncs.length; i++) {
+    `ROM.excludeFuncs[i].type` (*`ROM.excludeFuncs[i].name`)(`ROM.excludeFuncs[i].args`);
+%   }
+} ROM_ExternFuncPtrs;
+
+/* xdcRomExternFuncsPtr */
+%if (Program.build.target.$name.match(/iar/)) {
+#pragma location = ".const_ROM_externFuncPtrs"
+%}
+%else if (Program.build.target.$name.match(/gnu/)) {
+const ROM_ExternFuncPtrs ROM_externFuncPtrs __attribute__ ((section(".const_ROM_externFuncPtrs")));
+%}
+%else if (Program.build.target.$name.match(/clang/)) {
+const ROM_ExternFuncPtrs ROM_externFuncPtrs __attribute__ ((section(".const:ROM_externFuncPtrs")));
+%}
+%else {
+#pragma DATA_SECTION(ROM_externFuncPtrs, ".const:ROM_externFuncPtrs");
+%}
+const ROM_ExternFuncPtrs ROM_externFuncPtrs = {
+%   for (var i = 0; i < ROM.excludeFuncs.length; i++) {
+    `ROM.excludeFuncs[i].name`,
+%   }
+};
+
+/* xdcRomExternFuncsPtr */
+%if (Program.build.target.$name.match(/iar/)) {
+#pragma location = ".data_xdcRomExternFuncPtr"
+%}
+%else if (Program.build.target.$name.match(/gnu/)) {
+const ROM_ExternFuncPtrs *xdcRomExternFuncPtr __attribute__ ((section(".data_xdcRomExternFuncPtr")));
+%}
+%else if (Program.build.target.$name.match(/clang/)) {
+const ROM_ExternFuncPtrs *xdcRomExternFuncPtr __attribute__ ((section(".data:xdcRomExternFuncPtr")));
+%}
+%else {
+#pragma DATA_SECTION(xdcRomExternFuncPtr, ".data:xdcRomExternFuncPtr");
+%}
+const ROM_ExternFuncPtrs *xdcRomExternFuncPtr = &ROM_externFuncPtrs;
+
+%   if ((ROM.excludeFuncs.length != 0) && 
+%	(Build.buildROM == true) && 
+%	(Build.buildROMApp == false)) {
+%       if (Program.build.target.$name.match(/C28/)) {
+/*
+ * The following asm functions are provided during the ROM build phase
+ * so that any references to the symbols not in big.c
+ * can be resolved when linking rom.obj. Sadly, the function pointers
+ * to functions excluded from the rom can't simply be initialized with the mangled API
+ * names because there would need to be a corresponding extern for
+ * the mangled API name. This would require knowing the signatures
+ * of all the mangled APIs, which seems a little too hard for this
+ * programmer. Advantage is taken of using assembly language to
+ * circumvent the need to know the function signatures.
+ */
+%           for (var i = 0; i < ROM.excludeFuncs.length; i++) {
+%               if (ROM.excludeFuncs[i].generated == false) {
+asm("\n"
+"   .sect \".text:`ROM.excludeFuncs[i].name`\"\n"
+"   .clink\n"
+"   .global _`ROM.excludeFuncs[i].name`\n"
+"   .global _`ROM.excludeFuncs[i].name`__mangled__\n"
+"_`ROM.excludedFuncs[i].name`:\n"
+"   movl    xar4, #_`ROM.excludeFuncs[i].name`__mangled__\n"
+"   lcr     *xar4\n"
+"   lretr\n");
+%                   if (i < ROM.excludeFuncs.length) {
+
+%                   }
+%               }
+%           }
+%       }
+%       else {
+%           for (var i = 0; i < ROM.excludeFuncs.length; i++) {
+%               if (ROM.excludeFuncs[i].generated == false) {
+asm("\n"
+"   .sect \".text:`ROM.excludeFuncs[i].name`\"\n"
+"   .clink\n"
+"   .thumbfunc `ROM.excludeFuncs[i].name`\n"
+"   .thumb\n"
+"   .global `ROM.excludeFuncs[i].name`\n"
+"   .global `ROM.excludeFuncs[i].name`__mangled__\n"
+"`ROM.excludeFuncs[i].name`:\n"
+"   push   {r4, lr}\n"
+"   ldr r4, `ROM.excludeFuncs[i].name`c\n"
+"   blx r4\n"
+"   pop {r4, pc}\n"
+"`ROM.excludeFuncs[i].name`c: \n"
+"   .word  `ROM.excludeFuncs[i].name`__mangled__\n");
+%                   if (i < ROM.excludeFuncs.length) {
+
+%                   }
+%               }
+%           }
+%       }
+%   }
+%}
+

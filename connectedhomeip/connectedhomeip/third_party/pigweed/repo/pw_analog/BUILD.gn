@@ -1,0 +1,92 @@
+# Copyright 2021 The Pigweed Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import("//build_overrides/pigweed.gni")
+
+import("$dir_pw_build/target_types.gni")
+import("$dir_pw_chrono/backend.gni")
+import("$dir_pw_docgen/docs.gni")
+import("$dir_pw_unit_test/test.gni")
+
+config("public_include_path") {
+  include_dirs = [ "public" ]
+}
+
+group("pw_analog") {
+  public_deps = [
+    ":analog_input",
+    ":microvolt_input",
+  ]
+}
+
+pw_source_set("analog_input") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    "$dir_pw_chrono:system_clock",
+    "$dir_pw_result",
+  ]
+  public = [ "public/pw_analog/analog_input.h" ]
+}
+
+pw_source_set("microvolt_input") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    ":analog_input",
+    "$dir_pw_chrono:system_clock",
+    "$dir_pw_result",
+    "$dir_pw_status",
+  ]
+  public = [ "public/pw_analog/microvolt_input.h" ]
+}
+
+pw_source_set("analog_input_gmock") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    ":analog_input",
+    "$dir_pw_third_party/googletest",
+  ]
+  public = [ "public/pw_analog/analog_input_gmock.h" ]
+}
+
+pw_source_set("microvolt_input_gmock") {
+  public_configs = [ ":public_include_path" ]
+  public_deps = [
+    ":microvolt_input",
+    "$dir_pw_third_party/googletest",
+  ]
+  public = [ "public/pw_analog/microvolt_input_gmock.h" ]
+}
+
+pw_test_group("tests") {
+  tests = [
+    ":analog_input_test",
+    ":microvolt_input_test",
+  ]
+}
+
+pw_test("analog_input_test") {
+  enable_if = pw_chrono_SYSTEM_CLOCK_BACKEND != ""
+  sources = [ "analog_input_test.cc" ]
+  deps = [ ":pw_analog" ]
+}
+
+pw_test("microvolt_input_test") {
+  enable_if = pw_chrono_SYSTEM_CLOCK_BACKEND != ""
+  sources = [ "microvolt_input_test.cc" ]
+  deps = [ ":pw_analog" ]
+}
+
+pw_doc_group("docs") {
+  sources = [ "docs.rst" ]
+}

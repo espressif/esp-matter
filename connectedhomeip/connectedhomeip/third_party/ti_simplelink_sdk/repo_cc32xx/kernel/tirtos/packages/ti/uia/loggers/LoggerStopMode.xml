@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="LoggerStopMode" title="LoggerStopMode Configuration" version="1">
+
+<page name="Module" title="Module Settings">
+<html><body><table>
+  <tr>
+    <td><form>
+      <p>A logger which routes `Log` events to a users exchange function.</p>
+      <p> </p>
+      <p> This logger processes log events as they are generated, stores them in
+          a buffer. When the buffer is full, the applications exchange function is called.</p>
+      <p> </p>
+    </form></td>
+  </tr>
+  <tr>
+    <td><control type="checkbox" label="Add the LoggerStopMode module to my configuration" value="value:this.$used" bold="true"/></td>
+  </tr>
+  <tr></tr>
+  <tr>
+    <td>
+      <h1>Logging Options</h1>
+        <table>
+          <tr></tr>
+          <tr>
+            <td><control type="label" label="Optimization parameters" align="left"/></td>
+          </tr>
+          <tr>
+            <td><control type="checkbox"
+              label="Timestamp"
+              value="value:this.isTimestampEnabled"
+              tooltip="value:this.isTimestampEnabled.$summary"/></td>
+          </tr>
+          <tr>
+            <td><control type="checkbox"
+              label="Support Disabling Logger"
+              value="value:this.supportLoggerDisable"
+              tooltip="value:this.supportLoggerDisable.$summary"/></td>
+          </tr>
+        </table>
+    </td>
+  </tr>
+</table></body></html>
+</page>
+
+<page name="Instance" title="Instance Settings" DPI="10">
+<html><body><table>
+  <!-- instance box section -->
+  <tr>
+    <td>
+      <h1>LoggerStopMode Instances</h1>
+
+      <table>
+        <tr>
+          <td><control type="listbox" id="master" width="10" height="15" align="fill" labels="value:this"/></td>
+          <td>
+            <control type="pushbutton" label="Add ..." align="fill" link="action:New"/>
+            <control type="pushbutton" label="Remove" align="fill" link="action:Delete" context="value:widget.master.selection"/>
+          </td>
+        </tr>
+      </table>
+    </td>
+
+    <td context="value:widget.master.selection">
+      <h1>Required Settings</h1>
+      <table>
+        <tr>
+          <td><control type="label" label="Handle" align="left"/></td>
+          <td><control type="editbox"
+               value="value:this.instance.name"
+               tooltip="Handle name"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Buffer Size" align="left"/></td>
+          <td><control type="editbox"
+            value="value:this.bufSize"
+            tooltip="value:this.bufSize.$summary"/></td>
+        </tr>
+        <tr>
+          <td><control type="label" label="Maximum Event Size (Bytes)" align="left"/></td>
+          <td><control type="editbox"
+            value="value:this.maxEventSize"
+            tooltip="value:this.maxEventSize.$summary"/></td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table></body></html>
+</page>
+
+</gep>

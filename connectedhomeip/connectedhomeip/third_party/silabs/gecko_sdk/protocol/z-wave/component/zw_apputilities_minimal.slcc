@@ -1,0 +1,23 @@
+id: zw_apputilities_minimal
+label: Z-Wave ApplicationUtility Minimal Component
+category: Z-Wave
+description: ApplicationUtility Minimal Component
+package: Z-Wave
+quality: production
+include:
+  - path: "protocol/z-wave/ZAF/ApplicationUtilities"
+    file_list:
+      - path: "ev_man.h"
+      - path: "AppTimer.h"
+      - path: "ZAF_CmdPublisher.h"
+      - path: "ZAF_types.h"
+      - path: "ZAF_file_ids.h"
+      - path: "ZW_product_id_enum.h"
+      - path: "ZW_TransportSecProtocol.h"
+      - path: "ZW_TransportEndpoint.h"
+source:
+  - path: "protocol/z-wave/ZAF/ApplicationUtilities/AppTimer.c"
+  - path: "protocol/z-wave/ZAF/ApplicationUtilities/_commonIF/ZAF_Common_interface.c"
+  - path: "protocol/z-wave/ZAF/ApplicationUtilities/PowerManagement/ZAF_PM_Wrapper.c"
+provides:
+  - name: zw_apputilities_minimal

@@ -1,0 +1,45 @@
+id: cpc_secondary
+label: Secondary Device (Co-Processor)
+package: platform
+description: Co-Processor Communication (CPC) for Secondary Device
+category: Services|Co-Processor Communication|Secondary Device
+quality: production
+root_path: platform/service/cpc
+
+config_file:
+  - path: config/sl_cpc_config.h
+  - path: config/sl_cpc_kernel_config.h
+    condition: [kernel]
+source:
+  - path: src/sl_cpc_system_secondary.c
+include:
+  - path: inc
+    file_list:
+      - path: sl_cpc_secondary_init.h
+
+provides:
+  - name: cpc_secondary
+
+requires:
+  - name: cpc_core
+  - name: cpc_secondary_driver
+  - name: emlib_rmu
+  - name: gsdk_version
+  - name: cpc_security_secondary
+
+recommends:
+  - id: cpc_security_secondary
+
+validation_helper:
+  - path: cpc_configuration_validation.lua
+
+template_contribution:
+  - name: component_catalog
+    value: cpc_secondary
+  - name: component_catalog
+    value: cpc_bootloader_interface
+    condition: [bootloader_interface]
+
+documentation:
+    docset: gecko-platform
+    document: service/api/group-cpc

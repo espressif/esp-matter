@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/release.dtd -->
+<release name="ti_uia_scripts" label="default" date="1582309293191" buildCount="1" producerId="undefined">
+<package name="ti.uia.scripts"
+    version=""/>
+<imports>
+    <package name="xdc.rov"
+        version=""/>
+    <package name="xdc.rta"
+        version=""/>
+</imports>
+<references>
+    <package name="xdc"
+        version="1, 1, 1, 1581216517657"
+        providerId="/db/rtree/library/trees/xdcprod/xdcprod-C16/product/xdccore/Linux/xdctools_3_61_00_16_core/packages">
+        <file name="IPackage.xdc"/>
+        <file name="IPackage.xs"/>
+        <file name="Warnings.xs"/>
+        <file name="om2.xs"/>
+        <file name="package.xs"/>
+        <file name="template.xs"/>
+        <file name="utils.js"/>
+        <file name="xdc.tci"/>
+        <file name="xmlgen.xs"/>
+        <file name="xmlgen2.xs"/>
+    </package>
+    <package name="xdc.services.global"
+        version="1, 0, 0, 1581216563115"
+        providerId="/db/rtree/library/trees/xdcprod/xdcprod-C16/product/xdccore/Linux/xdctools_3_61_00_16_core/packages">
+        <file name="Clock.xs"/>
+        <file name="Trace.xs"/>
+        <file name="java/package.jar"/>
+    </package>
+    <package name="xdc.bld"
+        version="1, 0, 2, 1581216521914"
+        providerId="/db/rtree/library/trees/xdcprod/xdcprod-C16/product/xdccore/Linux/xdctools_3_61_00_16_core/packages">
+        <file name="BuildEnvironment.xs"/>
+        <file name="Configuration.xs"/>
+        <file name="Executable.xs"/>
+        <file name="ITarget.xs"/>
+        <file name="ITarget2.xs"/>
+        <file name="ITarget3.xs"/>
+        <file name="ITargetFilter.xs"/>
+        <file name="Library.xs"/>
+        <file name="Manifest.xs"/>
+        <file name="PackageContents.xs"/>
+        <file name="Repository.xs"/>
+        <file name="Script.xs"/>
+        <file name="Utils.xs"/>
+        <file name="_gen.xs"/>
+        <file name="bld.js"/>
+        <file name="package.xs"/>
+    </package>
+    <package name="ti.targets"
+        version="1, 0, 3, 1581702728479"
+        providerId="/db/rtree/library/trees/platformprod/platformprod-w13/exports/packages">
+        <file name="C28_float.xs"/>
+        <file name="C28_large.xs"/>
+        <file name="ITarget.xs"/>
+        <file name="package.xs"/>
+    </package>
+    <package name="ti.targets.arp32.elf"
+        version="1, 0, 0, 1581702749442"
+        providerId="/db/rtree/library/trees/platformprod/platformprod-w13/exports/packages">
+        <file name="IARP32.xs"/>
+        <file name="package.xs"/>
+    </package>
+    <package name="ti.targets.elf"
+        version="1, 0, 0, 1581702755665"
+        providerId="/db/rtree/library/trees/platformprod/platformprod-w13/exports/packages">
+        <file name="C28_float.xs"/>
+        <file name="ITarget.xs"/>
+        <file name="package.xs"/>
+    </package>
+    <package name="ti.targets.arm.elf"
+        version="1, 0, 0, 1581702742620"
+        providerId="/db/rtree/library/trees/platformprod/platformprod-w13/exports/packages">
+        <file name="IArm.xs"/>
+        <file name="package.xs"/>
+    </package>
+    <package name="gnu.targets"
+        version="1, 0, 1, 1581216640547"
+        providerId="/db/rtree/library/trees/xdcprod/xdcprod-C16/product/xdccore/Linux/xdctools_3_61_00_16_core/packages">
+        <file name="ITarget.xs"/>
+        <file name="Linux86.xs"/>
+        <file name="Mingw.xs"/>
+        <file name="_utils.xs"/>
+        <file name="package.xs"/>
+    </package>
+    <package name="gnu.targets.arm"
+        version="1, 0, 0, 1581702697753"
+        providerId="/db/rtree/library/trees/platformprod/platformprod-w13/exports/packages">
+        <file name="A15F.xs"/>
+        <file name="A53F.xs"/>
+        <file name="A8F.xs"/>
+        <file name="A9F.xs"/>
+        <file name="GCArmv6.xs"/>
+        <file name="GCArmv7A.xs"/>
+        <file name="IM.xs"/>
+        <file name="ITarget.xs"/>
+        <file name="M3.xs"/>
+        <file name="_utils.xs"/>
+        <file name="package.xs"/>
+    </package>
+    <package name="ti.targets.arm.clang"
+        version="1, 0, 0, 1581702777406"
+        providerId="/db/rtree/library/trees/platformprod/platformprod-w13/exports/packages">
+        <file name="M3.xs"/>
+        <file name="M33.xs"/>
+        <file name="M33F.xs"/>
+        <file name="M4.xs"/>
+        <file name="M4F.xs"/>
+        <file name="package.xs"/>
+    </package>
+    <package name="iar.targets.arm"
+        version="1, 0, 0, 1581702720362"
+        providerId="/db/rtree/library/trees/platformprod/platformprod-w13/exports/packages">
+        <file name="ITarget.xs"/>
+        <file name="package.xs"/>
+    </package>
+    <package name="xdc.shelf"
+        version="1, 0, 0, 1581216603170"
+        providerId="/db/rtree/library/trees/xdcprod/xdcprod-C16/product/xdccore/Linux/xdctools_3_61_00_16_core/packages">
+        <file name="java/antlr.jar"/>
+        <file name="java/ecj.jar"/>
+        <file name="java/js.jar"/>
+        <file name="java/tar.jar"/>
+    </package>
+    <package name="xdc.services.intern.gen"
+        version="1, 0, 0, 1581216576822"
+        providerId="/db/rtree/library/trees/xdcprod/xdcprod-C16/product/xdccore/Linux/xdctools_3_61_00_16_core/packages">
+        <file name="java/package.jar"/>
+    </package>
+    <package name="xdc.services.intern.xsr"
+        version="1, 0, 0, 1581216578901"
+        providerId="/db/rtree/library/trees/xdcprod/xdcprod-C16/product/xdccore/Linux/xdctools_3_61_00_16_core/packages">
+        <file name="java/package.jar"/>
+    </package>
+    <package name="xdc.services.intern.cmd"
+        version="1, 0, 0, 1581216574742"
+        providerId="/db/rtree/library/trees/xdcprod/xdcprod-C16/product/xdccore/Linux/xdctools_3_61_00_16_core/packages">
+        <file name="java/package.jar"/>
+    </package>
+    <package name="xdc.services.spec"
+        version="1, 0, 0, 1581216588215"
+        providerId="/db/rtree/library/trees/xdcprod/xdcprod-C16/product/xdccore/Linux/xdctools_3_61_00_16_core/packages">
+        <file name="java/package.jar"/>
+    </package>
+    <xdcRoot base="/db/rtree/library/trees/xdcprod/xdcprod-C16/product/xdccore/Linux/xdctools_3_61_00_16_core/">
+        <file name="/packages/xdc/package.xdc"/>
+        <xdcCorePkg version="16, 0, 2, 1581216532406" producerId="/db/ztree/library/trees/xdc/xdc-I08/src/packages" buildCount="1" releaseName="xdc_corevers" label="default" date="1581216532406"/>
+    </xdcRoot>
+</references>
+<orphans>
+    <file name="/db/vtree/library/trees/uia/uia-2.41.00.01/src/config.bld"/>
+</orphans>
+</release>

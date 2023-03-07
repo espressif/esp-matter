@@ -1,0 +1,86 @@
+project_name: nvm3_baremetal
+package: platform
+quality: production
+label: Platform - NVM3 Bare-metal
+description: > 
+  This example project demonstrates use of the NVM3 interface.
+  Using the command line interface, the user can write, read and delete
+  NVM3 data objects through the serial connection. The number of
+  writes and deletes are tracked in counter objects.
+category: Example|Platform
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]
+source:
+  - path: app.c
+  - path: main.c
+  - path: nvm3_app.c
+include:
+  - path: .
+    file_list:
+    - path: app.h
+    - path: nvm3_app.h
+component:
+  - id: sl_system
+  - id: device_init
+  - id: nvm3_lib
+  - id: nvm3_default
+  - id: cli
+    instance: [vcom]
+  - id: iostream_stdlib_config
+  - id: iostream_retarget_stdio
+  - id: iostream_recommended_stream
+define:
+  - name: DEBUG_EFM
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: NVM3_DEFAULT_MAX_OBJECT_SIZE
+    value: 204
+  - name: SL_CLI_INPUT_BUFFER_SIZE
+    value: 256
+template_contribution:
+  - name: cli_command
+    value:
+      name: write
+      handler: nvm3_app_write
+      help: "Write data to nvm3"
+      argument:
+        - type: uint32
+          help: "NVM3 Key"
+        - type: string
+          help: "Data to store"
+  - name: cli_command
+    value:
+      name: delete
+      handler: nvm3_app_delete
+      help: "Delete NVM3 data"
+      argument:
+        - type: uint32
+          help: "NVM3 Key"
+  - name: cli_command
+    value:
+      name: read
+      handler: nvm3_app_read
+      help: "Read data from nvm3"
+      argument:
+        - type: uint32
+          help: "NVM3 Key"
+  - name: cli_command
+    value:
+      name: display
+      handler: nvm3_app_display
+      help: "Display stored data and deleted keys"
+  - name: cli_command
+    value:
+      name: reset
+      handler: nvm3_app_reset
+      help: "Erase all NVM3 data"
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md

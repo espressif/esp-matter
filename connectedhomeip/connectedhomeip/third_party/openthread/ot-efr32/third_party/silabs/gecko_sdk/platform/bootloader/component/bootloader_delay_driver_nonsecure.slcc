@@ -1,0 +1,16 @@
+id: bootloader_delay_driver_nonsecure
+label: Bootloader Delay Driver (Non-Secure)
+package: bootloader
+description: >
+  Micro and millisecond delays
+category: Platform|Bootloader|TrustZone NonSecure|Drivers
+quality: beta
+source:
+  - path: platform/bootloader/driver/btl_driver_delay_ns.c
+include:
+  - path: platform/bootloader
+    file_list:
+      - path: driver/btl_driver_delay.h
+provides:
+  - name: bootloader_delay_driver
+  - name: bootloader_delay_driver_nonsecure

@@ -1,0 +1,193 @@
+TRUE = 1
+FALSE = 0
+message = 'This example demonstrates BLE PER mode Transmit/Receive functionality'
+messagebox message ''
+send '|'
+wait 'U'
+sendln 'U'
+mpause 200
+sendln '1'
+wait 'Loading Done'
+message = 'Firmware Loading Done Successfully'
+messagebox message ''
+sendln 'at+rsi_opermode=851968,0,1,2147483648,2150629376,3221225472,0,275349504,2048'
+wait 'OK' ; 'bt_loaded' 'ERROR'
+if result == 2 then
+	goto error
+else
+	messagebox 'Opermode Successful' ''
+endif
+
+inputbox 'Enter BLE_PER mode 1.Transmit 2.Receive ' 'Mode'
+Mode = inputstr
+strcompare Mode '1'
+if result=0 then
+	inputbox 'Enter PER mode 1. Enable 2.Disable :' 'switch'
+	switch = inputstr
+	inputbox 'Enter device_address:' 'address'
+	address = inputstr
+	inputbox 'Enter phy/ble rate:'#10#13' 1 - 1 Mbps '#10#13' 2 - 2 Mbps '#10#13' 4 - 125 kbps Coded '#10#13' 8 - 500 kbps Coded' 'phy_rate'
+	phy_rate = inputstr
+	
+	inputbox 'Enter rx_channel_no(0-39):' 'rx_no'
+	rx_no = inputstr
+	
+	inputbox 'Enter tx_channel_no(0-39):' 'tx_no'
+	tx_no = inputstr
+	
+	inputbox 'Enter the Scrambler_seed as 5 in Continuous Wave mode, Please enter 0 in other modes:' 'seed'
+	seed = inputstr
+	
+	inputbox 'Enter le_channel_type:'#10#13' 0x00 - Advertise Channel '#10#13' 0x01 - Data Channel (to be used by Default)' 'ltype'
+	ltype = inputstr
+	
+	inputbox 'Enter hoping_type: '#10#13' 0 - No Hopping '#10#13' 1 - Fixed Hopping '#10#13' 2 - Random Hopping (rx_chnl_num, tx_chnl_num parameters areunused in this mode):' 'hp_type'
+	hp_type = inputstr
+	
+	inputbox 'Enter Antenna selection type: '#10#13' 2 - ONBOARD_ANT_SEL '#10#13' 3 - EXT_ANT_SEL ' 'ant_type'
+	ant_type = inputstr
+	
+	;inputbox 'Enter pll_mode:' 'pll'
+	;pll = inputstr
+	pll = '0' 
+	
+	;inputbox 'Enter rf_type:' 'rf'
+	;rf = inputstr
+	rf ='1'
+	
+	inputbox 'Enter rf_chain:  '#10#13' 2 - BT_HP_CHAIN '#10#13' 3 - BT_LP_CHAIN ' 'rc'
+	rc = inputstr
+	
+	;inputbox 'Enter the packet length:' 'length'
+	;length = inputstr
+	length = '240'
+	
+	inputbox 'Enter payload_type:'#10#13' 0x00 - PRBS9 sequence 11111111100000111101... '#10#13' 0x01 - Repeated 11110000 '#10#13' 0x02 - Repeated 10101010 '#10#13' 0x03 - PRBS15 '#10#13' 0x04 - Repeated 11111111 '#10#13' 0x05 - Repeated 00000000 '#10#13' 0x06 - Repeated 00001111 '#10#13' 0x07 - Repeated 01010101 ' 'pt'
+	pt = inputstr
+	
+	inputbox 'Enter tx_power_index: '#10#13' The range for the Tx Power Index is 1 to 75 (0 and 32 are invalid.) '#10#13' 1 - 31 BLE - 0 dBm Mode '#10#13' 33 - 63 BLE- 10 dBm Mode '#10#13' 64 - 75 BLE - HP Mode' 'ti'
+	ti = inputstr
+	
+	inputbox 'Enter tx_mode: '#10#13' 0 - BURST_MODE '#10#13' 1 - CONTINUOUS_MODE '#10#13' 2 - CONTINUOUS_WAVE_MODE (CW_MODE)' 'tm'
+	tm = inputstr
+	
+	inputbox 'Enter number_of_packets, this parameter valid only tx_mode is (Burst mode) otherwise give input as 0(Zero):' 'no_pkt'
+	no_pkt = inputstr
+
+	sendln 'at+rsibt_bletransmit='switch','address','phy_rate','rx_no','tx_no','seed','ltype','hp_type','ant_type','pll','rf','rc','length','pt','ti','tm',0,'no_pkt''
+	wait 'OK' 'ERROR'
+	if result == 2 then
+		goto error
+	else
+		strcompare tm '2'
+		if result = 0 then
+			sendln 'at+rsibt_percwmode=1'
+			if result == 2 then
+				goto error
+			else
+				messagebox 'BLE CW mode Executed Successful' ''
+			endif
+		endif
+		
+		strcompare tm '0'
+		if result = 0 then
+			messagebox 'BLE Transmit Executed Successful' ''
+		endif
+		
+		strcompare tm '1'
+		if result = 0 then
+			messagebox 'BLE Transmit Executed Successful' ''
+		endif
+		
+		;messagebox 'BLE Transmit Executed Successful' ''
+		;inputbox 'Enter CW_mode 1.Enable 2.Disable :' 'Choice'
+		;Choice = inputstr
+		;strcompare Choice '1'
+		;if result=0 then
+		;	sendln 'at+rsibt_percwmode=1'
+		;	wait 'OK' 'ERROR'
+		;	if result == 2 then
+		;		goto error
+		;	else
+		;		messagebox 'BLE CW mode Executed Successful' ''
+		;	endif
+		;endif
+		;strcompare Choice '2'
+		;if result=0 then
+		;	messagebox 'CW mode not enabled ' ''
+		;endif
+	endif
+endif
+
+strcompare Mode '2'
+if result=0 then
+	inputbox 'Enter PER mode 1. Enable 2.Disable :' 'switch'
+	switch = inputstr
+	
+	inputbox 'Enter device_address:' 'address'
+	address = inputstr
+	
+	inputbox 'Enter phy/ble rate:'#10#13' 1 - 1 Mbps '#10#13' 2 - 2 Mbps '#10#13' 4 - 125 kbps Coded '#10#13' 8 - 500 kbps Coded' 'phy_rate'
+	phy_rate = inputstr
+	
+	inputbox 'Enter rx_channel_no(0-39):' 'rx_no'
+	rx_no = inputstr
+	
+	inputbox 'Enter tx_channel_no(0-39):' 'tx_no'
+	tx_no = inputstr
+	
+	inputbox 'Enter the Scrambler_seed as 5 in Continuous Wave mode, Please enter 0 in Burst mode:' 'seed'
+	seed = inputstr
+	
+	inputbox 'Enter le_channel_type:'#10#13' 0x00 - Advertise Channel '#10#13' 0x01 - Data Channel (to be used by Default)' 'ltype'
+	ltype = inputstr
+	
+	inputbox 'Enter hoping_type: '#10#13' 0 - No Hopping '#10#13' 1 - Fixed Hopping '#10#13' 2 - Random Hopping (rx_chnl_num, tx_chnl_num parameters areunused in this mode):' 'hp_type'
+	hp_type = inputstr
+	
+	inputbox 'Enter Antenna selection type: '#10#13' 2 - ONBOARD_ANT_SEL '#10#13' 3 - EXT_ANT_SEL ' 'ant_type'
+	ant_type = inputstr
+	
+	;inputbox 'Enter pll_mode:' 'pll'
+	;pll = inputstr
+	pll = '0'
+	
+	;inputbox 'Enter rf_type:' 'rf'
+	;rf = inputstr
+	rf = '1'
+	
+	inputbox 'Enter rf_chain:  '#10#13' 2 - BT_HP_CHAIN '#10#13' 3 - BT_LP_CHAIN ' 'rc'
+	rc = inputstr
+	
+	inputbox 'Enter Extnd_data_length_ind: '#10#13' 0 - Extended Data length disabled(27 Bytes) '#10#13' 1 - Extended Data length enabled(240 Bytes) ' 'extend_ind'
+	extend_ind = inputstr
+	
+	inputbox 'Enter loop_back_mode: '#10#13' 0 - LOOP_BACK_MODE_DISABLE '#10#13' 1 - LOOP_BACK_MODE_ENABLE ' 'lb'
+	lb = inputstr
+	
+	inputbox 'Enter duty_cycling (power_save_options) '#10#13' 0 - Duty Cycling Disabled  (to be used by Default) '#10#13' 1 - Duty Cycling Enabled:' 'dc'
+	dc = inputstr
+	
+	sendln 'at+rsibt_blereceive='switch','address','phy_rate','rx_no','tx_no','seed','ltype','hp_type','ant_type','pll','rf','rc','extend_ind','lb','dc''
+	wait 'OK' 'ERROR'
+	if result == 2 then
+		goto error
+	else
+		messagebox 'BLE Receive Executed Successful' ''
+	endif
+
+	sendln 'at+rsibt_perstats'
+	wait 'OK' 'ERROR'
+	if result == 2 then
+		goto error
+	else
+		messagebox 'PER Stats command executed successfully' ''
+	endif
+endif
+
+goto endscript
+:error
+messagebox 'An error occurred, Please check your configuration and try again' 'ERROR'
+
+:endscript
+end

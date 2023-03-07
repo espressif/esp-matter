@@ -1,0 +1,156 @@
+
+SUIT_Envelope = {
+  ? suit-authentication-wrapper => bstr .cbor SUIT_Authentication,
+  suit-manifest  => bstr .cbor SUIT_Manifest,
+}
+
+SUIT_Authentication = [ + bstr .cbor SUIT_Authentication_Block ]
+
+SUIT_Authentication_Block /= COSE_Sign1_Tagged
+
+COSE_Sign1_Tagged = #6.18(COSE_Sign1)
+COSE_Sign1 = [
+    protected: bstr .cbor header_map,
+    unprotected: {},
+    payload : bstr .cbor SUIT_Digest,
+    signature : bstr
+]
+
+header_map = {
+    1 => sign_ES256,  ; algorithm identifier
+}
+
+sign_ES256 = -7 ; ECDSA, SHA256
+
+SUIT_Digest = [
+  suit-digest-algorithm-id : suit-digest-algorithm-ids,
+  suit-digest-bytes : bstr,
+]
+
+; Named Information Hash Algorithm Identifiers
+suit-digest-algorithm-ids /= algorithm-id-sha256
+
+algorithm-id-sha256 = 2
+
+SUIT_Manifest = {
+    suit-manifest-version         => 1,
+    suit-manifest-sequence-number => uint,
+    suit-common                   => bstr .cbor SUIT_Common,
+    ? suit-reference-uri          => tstr,
+    ? suit-payload-fetch          => bstr .cbor SUIT_Command_Sequence,
+    ? suit-install                => bstr .cbor SUIT_Command_Sequence,
+    ? suit-validate               => bstr .cbor SUIT_Command_Sequence,
+    ? suit-load                   => bstr .cbor SUIT_Command_Sequence,
+    ? suit-run                    => bstr .cbor SUIT_Command_Sequence,
+}
+
+SUIT_Common = {
+    ? suit-components             => SUIT_Components,
+    ? suit-common-sequence        => bstr .cbor SUIT_Common_Sequence,
+}
+
+SUIT_Components           = [ + SUIT_Component_Identifier ]
+
+SUIT_Component_Identifier =  [* bstr]
+
+SUIT_Common_Sequence = [
+    1**10 ( SUIT_Condition // SUIT_Common_Commands )
+]
+
+SUIT_Common_Commands //= (suit-directive-set-component-index,  uint/bool)
+SUIT_Common_Commands //= (suit-directive-set-parameters,
+    SUIT_Parameters)
+SUIT_Common_Commands //= (suit-directive-override-parameters,
+    SUIT_Parameters)
+SUIT_Common_Commands //= (suit-condition-vendor-identifier, SUIT_Reporting_Policy)
+SUIT_Common_Commands //= (suit-condition-class-identifier,  SUIT_Reporting_Policy)
+
+
+SUIT_Command_Sequence = [ 1**10 (
+    SUIT_Condition // SUIT_Directive
+) ]
+
+SUIT_Condition //= (suit-condition-vendor-identifier, SUIT_Reporting_Policy)
+SUIT_Condition //= (suit-condition-class-identifier,  SUIT_Reporting_Policy)
+SUIT_Condition //= (suit-condition-device-identifier, SUIT_Reporting_Policy)
+SUIT_Condition //= (suit-condition-image-match,       SUIT_Reporting_Policy)
+SUIT_Condition //= (suit-condition-component-offset,  SUIT_Reporting_Policy)
+
+SUIT_Directive //= (suit-directive-set-component-index,  uint/bool)
+SUIT_Directive //= (suit-directive-set-parameters,
+    SUIT_Parameters)
+SUIT_Directive //= (suit-directive-override-parameters,
+    SUIT_Parameters)
+SUIT_Directive //= (suit-directive-fetch,                SUIT_Reporting_Policy)
+SUIT_Directive //= (suit-directive-copy,                 SUIT_Reporting_Policy)
+SUIT_Directive //= (suit-directive-run,                  SUIT_Reporting_Policy)
+SUIT_Directive //= (suit-directive-abort,                SUIT_Reporting_Policy)
+SUIT_Directive //= (suit-directive-fetch-uri-list,       SUIT_Reporting_Policy)
+
+SUIT_Reporting_Policy = uint
+
+SUIT_Parameters = {1**10 SUIT_Parameter}
+
+SUIT_Parameter //= (suit-parameter-vendor-identifier => RFC4122_UUID)
+SUIT_Parameter //= (suit-parameter-class-identifier => RFC4122_UUID)
+SUIT_Parameter //= (suit-parameter-image-digest
+    => bstr .cbor SUIT_Digest)
+SUIT_Parameter //= (suit-parameter-image-size => uint)
+SUIT_Parameter //= (suit-parameter-component-offset => uint)
+
+SUIT_Parameter //= (suit-parameter-uri => tstr)
+SUIT_Parameter //= (suit-parameter-source-component => uint)
+
+SUIT_Parameter //= (suit-parameter-device-identifier => RFC4122_UUID)
+
+SUIT_Parameter //= (suit-parameter-uri-list =>
+    bstr .cbor SUIT_URI_List)
+
+RFC4122_UUID = bstr .size 16
+SUIT_URI_List = [+ tstr ]
+
+suit-authentication-wrapper = 2
+suit-manifest = 3
+
+suit-manifest-version = 1
+suit-manifest-sequence-number = 2
+suit-common = 3
+suit-reference-uri = 4
+
+suit-payload-fetch = 8
+suit-install = 9
+suit-validate = 10
+suit-load = 11
+suit-run = 12
+
+suit-components = 2
+suit-common-sequence = 4
+
+suit-component-identifier = 1
+
+suit-condition-vendor-identifier = 1
+suit-condition-class-identifier  = 2
+suit-condition-image-match       = 3
+suit-condition-component-offset  = 5
+suit-condition-device-identifier = 24
+
+suit-directive-set-component-index      = 12
+suit-directive-abort                    = 14
+suit-directive-set-parameters           = 19
+suit-directive-override-parameters      = 20
+suit-directive-fetch                    = 21
+suit-directive-copy                     = 22
+suit-directive-run                      = 23
+suit-directive-fetch-uri-list           = 30
+
+suit-parameter-vendor-identifier = 1
+suit-parameter-class-identifier  = 2
+suit-parameter-image-digest      = 3
+suit-parameter-component-offset  = 5
+suit-parameter-image-size        = 14
+
+suit-parameter-uri               = 21
+suit-parameter-source-component  = 22
+
+suit-parameter-device-identifier = 24
+suit-parameter-uri-list          = 30

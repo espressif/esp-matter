@@ -1,0 +1,1 @@
+CPPFLAGS += -D BFLB_COREDUMP_BINARY_ID=$(shell date '+%s')

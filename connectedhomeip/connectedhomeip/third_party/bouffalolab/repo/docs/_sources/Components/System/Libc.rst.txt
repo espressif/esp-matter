@@ -1,0 +1,525 @@
+BL libc
+===============
+
+.. _1-背景:
+
+1. 背景
+-------
+
+**问题**
+
+-  在使用编译器自带的newlibc中的C库函数时，会出现stack溢出的现象
+
+-  一些客户在不熟悉sdk
+   api的情况下，错误的使用C库函数自带的API，比如\ ``malloc``
+
+为了解决这些问题，将编译器的newlibc改为newlibc-nano，并使用sdk现有API适配部分C库函数，以提高sdk接口通用性，减少客户使用过程中可能出现的错误。
+
+.. _2-api:
+
+2. API
+------
+
+.. _21-support:
+
+2.1 Support
+~~~~~~~~~~~
+
+mkdir
+^^^^^
+
+-  创建目录
+
+.. code:: c
+
+   int	mkdir (const char *_path, mode_t __mode )
+   {
+   #ifndef CONF_VFS_ENABLE
+       return -1;
+   #else
+       int rc;
+
+       rc = aos_mkdir(_path);
+       return rc;
+   #endif
+   }
+
+open
+^^^^
+
+-  打开文件
+
+.. code:: c
+
+   int _open_r(struct _reent *ptr, const char *file, int flags, int mode)
+   {
+   #ifndef CONF_VFS_ENABLE
+       /* return "not supported" */
+       ptr->_errno = ENOSYS;
+       return -1;
+   #else
+       int rc;
+
+       rc = aos_open(file, flags);
+       return rc;
+   #endif
+   }
+
+clsoe
+^^^^^
+
+-  关闭文件
+
+.. code:: c
+
+   int _close_r(struct _reent *ptr, int fd)
+   {
+   #ifndef CONF_VFS_ENABLE
+       /* return "not supported" */
+       ptr->_errno = ENOSYS;
+       return -1;
+   #else
+       return aos_close(fd);
+   #endif
+   }
+
+read
+^^^^
+
+-  读取数据到buf
+
+.. code:: c
+
+   _ssize_t _read_r(struct _reent *ptr, int fd, void *buf, size_t nbytes)
+   {
+   #ifndef CONF_VFS_ENABLE
+       /* return "not supported" */
+       ptr->_errno = ENOSYS;
+       return -1;
+   #else
+       _ssize_t rc;
+
+       rc = aos_read(fd, buf, nbytes);
+       return rc;
+   #endif
+   }
+
+.. _write-1:
+
+write
+^^^^^
+
+-  写数据到文件
+
+.. code:: c
+
+   _ssize_t _write_r(struct _reent *ptr, int fd, const void *buf, size_t nbytes)
+   {
+   #ifndef CONF_VFS_ENABLE
+       /* return "not supported" */
+       ptr->_errno = ENOSYS;
+       return -1;
+   #else
+       _ssize_t rc;
+
+       rc = aos_write(fd, buf, nbytes);
+       return rc;
+   #endif
+   }
+
+rename
+^^^^^^
+
+-  重命名文件
+
+.. code:: c
+
+   int _rename_r(struct _reent *ptr, const char *old, const char *new)
+   {
+   #ifndef CONF_VFS_ENABLE
+       /* return "not supported" */
+       ptr->_errno = ENOSYS;
+       return -1;
+   #else
+       int rc;
+
+       rc = aos_rename(old, new);
+       return rc;
+   #endif
+   }
+
+lseek
+^^^^^
+
+-  改变读写一个文件时读写指针位置
+
+.. code:: c
+
+   _off_t _lseek_r(struct _reent *ptr, int fd, _off_t pos, int whence)
+   {
+   #ifndef CONF_VFS_ENABLE
+       /* return "not supported" */
+       ptr->_errno = ENOSYS;
+       return -1;
+   #else
+       _off_t rc;
+
+       rc = aos_lseek(fd, pos, whence);
+       return rc;
+   #endif
+   }
+
+stat
+^^^^
+
+-  获取文件状态
+
+.. code:: c
+
+   int _stat_r(struct _reent *ptr, const char *file, struct stat *pstat)
+   {
+   #ifndef CONF_VFS_ENABLE
+       /* return "not supported" */
+       ptr->_errno = ENOSYS;
+       return -1;
+   #else
+       int rc;
+
+       rc = aos_stat(file, pstat);
+       return rc;
+   #endif
+   }
+
+unlink
+^^^^^^
+
+-  删除文件
+
+.. code:: c
+
+   int _unlink_r(struct _reent *ptr, const char *file)
+   {
+   #ifndef CONF_VFS_ENABLE
+       /* return "not supported" */
+       ptr->_errno = ENOSYS;
+       return -1;
+   #else
+       return aos_unlink(file);
+   #endif
+   }
+
+malloc
+^^^^^^
+
+-  申请内存
+
+.. code:: c
+
+   void *_malloc_r(struct _reent *ptr, size_t size)
+   {
+       void* result;
+
+       result = (void*)pvPortMalloc(size);
+       if (result == NULL)
+       {
+           ptr->_errno = ENOMEM;
+       }
+
+       return result;
+   }
+
+free
+^^^^
+
+-  释放内存
+
+.. code:: c
+
+   void _free_r(struct _reent *ptr, void *addr)
+   {
+       vPortFree(addr);
+   }
+
+realloc
+^^^^^^^
+
+-  重新申请内存
+
+.. code:: c
+
+   void *_realloc_r(struct _reent *ptr, void *old, size_t newlen)
+   {
+       void* result;
+
+       result = (void*)pvPortRealloc(old, newlen);
+       if (result == NULL)
+       {
+           ptr->_errno = ENOMEM;
+       }
+
+       return result;
+   }
+
+calloc
+^^^^^^
+
+-  申请空内存
+
+.. code:: c
+
+   void *_calloc_r(struct _reent *ptr, size_t size, size_t len)
+   {
+       void* result;
+
+       result = (void*)pvPortCalloc(size, len);
+       if (result == NULL)
+       {
+           ptr->_errno = ENOMEM;
+       }
+
+       return result;
+   }
+
+abort
+^^^^^
+
+-  退出程序\ ``abort()``\ 、\ ``exit()``
+
+.. code:: c
+
+   void __attribute__ ((noreturn)) _exit (int status)
+   {
+       portABORT();
+       while (1);
+   }
+
+random
+^^^^^^
+
+-  生成一个\ ``1 < num < RAND_MAX``\ 的随机数
+
+..
+
+   使用RNG模块
+
+.. code:: c
+
+   long random (void)
+   {
+       long result = 0;
+       if (g_bl_sec_sha_mutex == NULL)
+       {
+           bl_sec_init();
+       }
+
+       result = (long)bl_rand();
+
+       return result;
+   }
+
+.. _22-not-support:
+
+2.2 Not support
+~~~~~~~~~~~~~~~
+
+以下函数仅提供符号，未实现实际功能
+
+sbrk
+^^^^
+
+-  调整\ ``data segment``\ 大小
+
+..
+
+   大部分我们使用的是malloc和free函数来分配和释放内存。这样能够提高程序的性能，不是每次分配内存都调用brk或sbrk，而是重用前面空闲的内存空间。brk和sbrk分配的堆空间类似于缓冲池，每次malloc从缓冲池获得内存，如果缓冲池不够了，再调用brk或sbrk扩充缓冲池，直到达到缓冲池大小的上限，free则将应用程序使用的内存空间归还给缓冲池。
+
+.. code:: c
+
+   void *_sbrk_r(struct _reent *ptr, ptrdiff_t incr)
+   {
+       return 0;
+   }
+
+getpid
+^^^^^^
+
+-  取得进程识别码
+
+.. code:: c
+
+   void *_sbrk_r(struct _reent *ptr, ptrdiff_t incr)
+   {
+       void *ret;
+       ptr->_errno = ENOMEM;
+       ret = (void *)-1;
+       return ret;
+   }
+
+execve
+^^^^^^
+
+-  execve（执行文件）在父进程中fork一个子进程，在子进程中调用exec函数启动新的程序
+
+.. code:: c
+
+   int _execve_r(struct _reent *ptr, const char * name, char *const *argv, char *const *env)
+   {
+       /* return "not supported" */
+       ptr->_errno = ENOSYS;
+       return -1;
+   }
+
+fcntl
+^^^^^
+
+-  改变文件性质
+
+.. code:: c
+
+   int _fcntl_r(struct _reent *ptr, int fd, int cmd, int arg)
+   {
+       /* return "not supported" */
+       ptr->_errno = ENOSYS;
+       return -1;
+   }
+
+fstat
+^^^^^
+
+-  由文件描述词取得文件状态
+
+..
+
+   fstat与stat区别在于fstat系统调用接受的是
+   一个“文件描述符”，stat可以调用完整的文件路径
+
+.. code:: c
+
+   int _fstat_r(struct _reent *ptr, int fd, struct stat *pstat)
+   {
+       /* return "not supported" */
+       ptr->_errno = ENOSYS;
+       return -1;
+   }
+
+srandom
+^^^^^^^
+
+-  ``srandom``
+   函数将其参数设置为由\ ``random``\ 返回的新伪随机整数序列的种子，同一个种子会得到相同的随机数
+
+.. _3-测试:
+
+3. 测试
+-------
+
+**$BL_IOT_SDK_PATH/customer_app/sdk_app_libc**
+
+.. _31-stack-used:
+
+3.1 stack used
+~~~~~~~~~~~~~~
+
+-  Task stack: 10*1024(Kb)
+
+==================== ============ =======
+Func                 newlibc-nano newlibc
+==================== ============ =======
+none                 69           69
+printf               137          195
+strstr/printf        137          195
+strstr/printf/sscanf 250          1403
+==================== ============ =======
+
+.. _32-io:
+
+3.2 IO
+~~~~~~
+
+Write data to the serial port
+
+===== ======
+Func  result
+===== ======
+open  ok
+write ok
+read  ok
+fsync ok
+close ok
+===== ======
+
+.. code:: c
+
+   static void cmd_write(char *buf, int len, int argc, char **argv)
+   {
+       if (argc != 2)
+       {
+           printf("Usage: write DATA to /dev/ttyS0\r\n");
+           return;
+       }
+
+       int fd = open("/dev/ttyS0", 0);
+       if (fd)
+       {
+           write(fd, argv[1], strlen(argv[1]));
+
+           fsync(fd);
+
+           close(fd);
+       }
+   }
+
+.. _33-random:
+
+3.3 random
+~~~~~~~~~~
+
+Generate random numbers
+
+====== ======
+Func   result
+====== ======
+random ok
+====== ======
+
+.. code:: c
+
+   static void cmd_random(char *buf, int len, int argc, char **argv)
+   {
+       long result = 0;
+
+       result = random();
+
+       printf("\r\n**********random test rand[%08x]**************\r\n", result);
+   }
+
+.. _34-memory:
+
+3.4 memory
+~~~~~~~~~~
+
+Malloc memory and free
+
+======= ======
+Func    result
+======= ======
+malloc  ok
+free    ok
+realloc ok
+======= ======
+
+.. code:: c
+
+   static void cmd_mem(char *buf, int len, int argc, char **argv)
+   {
+       void *p;
+
+       p = malloc(10);
+       if (p == NULL)
+           merror("malloc (10) failed.");
+
+       /* realloc (p, 0) == free (p).  */
+       p = realloc(p, 0);
+       if (p != NULL)
+           merror("realloc (p, 0) failed.");
+   }

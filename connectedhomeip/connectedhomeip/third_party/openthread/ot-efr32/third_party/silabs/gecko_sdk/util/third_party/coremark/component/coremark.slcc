@@ -1,0 +1,28 @@
+id: coremark
+label: "Coremark Benchmark"
+package: platform
+description: >
+    CoreMark is a simple, yet sophisticated benchmark that is designed specifically to
+    test the functionality of a processor core. Running CoreMark produces a single-number
+    score allowing users to make quick comparisons between processors.
+category: Application|Benchmark
+quality: production
+root_path: util/third_party/coremark
+include:
+  - path: .
+    file_list:
+      - path: core_main.h
+      - path: coremark.h
+      - path: core_portme.h
+source:
+  - path: core_main.c
+  - path: core_list_join.c
+  - path: core_matrix.c
+  - path: core_portme.c
+  - path: core_state.c
+  - path: core_util.c
+provides:
+  - name: coremark
+define:
+  - name: ITERATIONS
+    value: 1000

@@ -1,0 +1,25 @@
+id: micriumos_usbd_class_cdc_acm
+label: USB Device Class - CDC ACM
+package: micrium-usbd
+description: Micrium OS USB Device CDC ACM Class
+category: Services|Micrium|USB
+quality: deprecated
+source:
+  - path: platform/micrium_os/usb/source/device/class/usbd_cdc.c
+  - path: platform/micrium_os/usb/source/device/class/usbd_cdc_acm_serial.c
+include:
+  - path: platform/micrium_os
+    file_list:
+      - path: usb/include/device/usbd_cdc.h
+      - path: usb/include/device/usbd_cdc_acm_serial.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: USB_DEV_CDC
+  - name: micriumos_component_avails
+    value: USB_DEV_ACM
+provides:
+  - name: usbd_class_cdc_acm
+  - name: usbd_class
+    allow_multiple: true
+requires:
+  - name: usbd

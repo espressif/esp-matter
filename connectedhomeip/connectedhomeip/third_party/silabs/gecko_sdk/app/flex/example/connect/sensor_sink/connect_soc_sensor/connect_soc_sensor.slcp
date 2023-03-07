@@ -1,0 +1,245 @@
+project_name: connect_soc_sensor
+label: "Connect - SoC Sensor"
+package: Flex
+description: "Demonstrates how to properly setup a star network topology in which communication occurs in both directions between the Sink and the Sensor(s) nodes. The PB0 pushbutton can be used to enable or disable sleep, combined with changing the VCOM option 'Enable reception when sleeping'."
+category: Connect Examples
+quality: production
+
+#---------------- UC/UP components -------------------
+component:
+  - id: sl_system
+  - id: device_init
+  - id: radio_config_simple_connect_singlephy
+  - id: app_log
+  - id: app_assert
+  - id: legacy_hal
+  - id: token_manager
+  # Connect components
+  - id: sl_sensor_sink_core
+  - id: connect_debug_print
+  - id: connect_app_framework_common
+  - id: connect_stack_common
+  - id: connect_aes_security
+  - id: connect_mac_queue
+  - id: connect_stack_counters
+  - id: connect_poll
+  - id: connect_parent_support
+  - id: connect_frequency_hopping
+  #TODO: make temp sensor slcc from these
+  - id: si70xx_driver
+  - id: i2cspm
+    instance:
+      - sensor
+  - id: simple_button
+    instance:
+      - btn0
+  - id: simple_led
+    instance:
+      - led0
+
+#---------------------- CLI --------------------------
+  - id: cli
+    instance:
+    - example
+  - id: printf
+  - id: iostream_recommended_stream
+  - id: iostream_retarget_stdio
+#------------Memory Protection Unit-------------------
+  - id: mpu
+
+#-------------- Restriction rules -------------------
+  - id: restrictions_profile_connect
+  - id: restrictions_profile_long_range
+
+#----------------- Require list ----------------------
+requires:
+  - name: a_radio_config
+#----------------- Project files ---------------------
+include:
+  - path: "."
+    file_list:
+      - path: "app_init.h"
+      - path: "app_process.h"
+source:
+  - path: "main.c"
+  - path: "app_init.c"
+  - path: "app_process.c"
+  - path: "app_cli.c"
+    condition:
+    - "cli"
+
+other_file:
+  - path: "../../../../script/connect_create_gbl_image.bat"
+  - path: "../../../../script/connect_create_gbl_image.sh"
+  - path: "hw_filter_tags.yaml"
+    condition:
+      - "add_hw_filter_to_project"
+
+readme:
+  - path: ../../../../documentation/example/connect/connect_sink_sensor/readme.md
+
+#----------------- Project macros --------------------
+define:
+  - name: "SENSOR_ROLE"
+    value: "1"
+#------------ Configuration overrides ----------------
+configuration:
+#------------ RAIL init, Channel Config --------------
+  - name: SL_BOARD_ENABLE_SENSOR_RHT
+    value: "1"
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+  - name: SL_CLI_LOCAL_ECHO
+    value: "(1)"
+  - name: SL_IOSTREAM_USART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "(1)"
+  - name: SL_IOSTREAM_USART_VCOM_FLOW_CONTROL_TYPE
+    value: "usartHwFlowControlNone"
+  - name: SL_IOSTREAM_EUSART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "(1)"
+  - name: SL_IOSTREAM_EUSART_VCOM_FLOW_CONTROL_TYPE
+    value: "eusartHwFlowControlNone"
+  - name: APP_LOG_PREFIX_ENABLE
+    value: "0"
+  - name: "SL_HEAP_SIZE"
+    value: "8192"
+
+#-------------- Template Contribution ----------------
+template_contribution:
+#------------------ CLI commands ---------------------
+  - name: cli_command
+    value:
+      name: info
+      handler: cli_info
+      help: "MCU ID, Network state, Node ID, PAN ID, Channel ID, etc."
+  - name: cli_command
+    value:
+      name: reset
+      handler: cli_reset
+      help: "Reset the hardware"
+  - name: cli_command
+    value:
+      name: counter
+      handler: cli_counter
+      help: "Print out the passed stack counter"
+      argument:
+      - type: uint8
+        help: "Counter type"
+  - name: cli_command
+    value:
+      name: leave
+      handler: cli_leave
+      help: "Forget the current network and revert to EMBER_NO_NETWORK"
+  - name: cli_command
+    value:
+      name: set_tx_options
+      handler: cli_set_tx_option
+      help: "Set Tx options"
+      argument:
+      - type: uint8
+        help: "Security(0x01) MAC Ack(0x02) High Prio(0x04)"
+  - name: cli_command
+    value:
+      name: start_energy_scan
+      handler: cli_start_energy_scan
+      help: "Scan the energy level on the given channel"
+      argument:
+      - type: uint8
+        help: "Channel ID"
+      - type: uint8
+        help: "Number of samples"
+  - name: cli_command
+    value:
+      name: set_key
+      handler: cli_set_security_key
+      help: "Set security key"
+      argument:
+  # byte array feature is missing from UP cli - till this use string
+      - type: hex
+        help: "Security key (size:EMBER_ENCRYPTION_KEY_SIZE)"
+  - name: cli_command
+    value:
+      name: unset_key
+      handler: cli_unset_security_key
+      help: "Unset current security key"
+  - name: cli_command
+    value:
+      name: set_tx_power
+      handler: cli_set_tx_power
+      help: "Sets the antenna output power. The second optional parameter can be used to save the TX power as default."
+      argument:
+      - type: int16
+        help: "TX power value in 0.1 dBm steps"
+      - type: uint8opt
+        help: "1 - TX power persistent (saved in token), 0 - TX power volatile"
+  - name: cli_command
+    value:
+      name: pjoin
+      handler: cli_pjoin
+      help: "Permit join for a given time period with optional selective payload"
+      argument:
+      - type: uint8
+        help: "Duration"
+      - type: stringopt
+        help: "Optional Join payload"
+  - name: cli_command
+    value:
+      name: data
+      handler: cli_data
+      help: "Force sensor to send a report to the sink."
+  - name: cli_command
+    value:
+      name: set_report_period
+      handler: cli_set_report_period
+      help: ""
+      argument:
+      - type: uint16
+        help: "Sensor report period in ms"
+  - name: cli_command
+    value:
+      name: join
+      handler: cli_join
+      help: "Join as End Device"
+      argument:
+      - type: uint8
+        help: "Channel"
+      - type: uint16opt
+        help: "Optional PAN ID"
+  - name: cli_command
+    value:
+      name: join_sleepy
+      handler: cli_join_sleepy
+      help: "Join as Sleepy End Device"
+      argument:
+      - type: uint8
+        help: "Channel"
+      - type: uint16opt
+        help: "Optional PAN ID"
+  - name: cli_command
+    value:
+      name: join_extender
+      handler: cli_join_extender
+      help: "Join as Range Enxtender"
+      argument:
+      - type: uint8
+        help: "Channel"
+      - type: uint16opt
+        help: "Optional PAN ID"
+
+#--------------------- Toolchain ------------------------
+toolchain_settings:
+  - option: optimize
+    value: debug
+
+ui_hints:
+  highlight:
+    - path: readme.md
+      focus: true
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Connect"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]

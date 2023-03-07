@@ -1,0 +1,42 @@
+<gatt>
+  <!--CBAP Service-->>
+  <service advertise="true" name="CBAP Service" requirement="mandatory" sourceId="com.silabs.service.ota" type="primary" uuid="d8818cc6-8147-414d-918e-dd40d0285610">
+    <informativeText>Abstract: Service for Certificate Authentication and Pairing. </informativeText>
+
+    <!--Central Cert-->
+    <characteristic const="false" id="central_cert" name="Central Cert" sourceId="" uuid="315fd0f9-08aa-4a69-b6bd-daf6a2f325ca">
+      <informativeText/>
+      <value length="0" type="user" variable_length="false"/>
+      <properties>
+      <write authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+
+    <!--Peripheral Cert-->
+    <characteristic const="false" id="peripheral_cert" name="Peripheral Cert" sourceId="" uuid="0cf6da9e-16f5-4fc9-99a2-ad4d84fd5066">
+      <informativeText/>
+      <value length="0" type="user" variable_length="false"/>
+      <properties>
+      <indicate authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+
+    <!--Central OOB Data-->
+    <characteristic const="false" id="central_oob" name="Central OOB Data" sourceId="" uuid="e8d35751-897d-4e2c-8ab6-cd85ebf1192c">
+      <informativeText/>
+      <value length="0" type="user" variable_length="false"/>
+      <properties>
+      <write authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+
+    <!--Peripheral OOB Data-->
+    <characteristic const="false" id="peripheral_oob" name="Peripheral OOB Data" sourceId="" uuid="6991cb41-a251-4182-8bb3-41b85eb269ab">
+      <informativeText/>
+      <value length="0" type="user" variable_length="false"/>
+      <properties>
+      <indicate authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+  </service>
+</gatt>

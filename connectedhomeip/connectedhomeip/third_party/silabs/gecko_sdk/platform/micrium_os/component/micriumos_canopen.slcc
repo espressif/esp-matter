@@ -1,0 +1,60 @@
+id: micriumos_canopen
+label: CANopen
+package: micrium-cano
+description: Micrium OS CANopen
+category: Services|Micrium|CANopen
+quality: production
+component_root_path: platform/micrium_os/canopen
+config_file:
+  - path: ../cfg/canopen_cfg.h
+source:
+  - path: source/core/canopen_core.c
+  - path: source/core/canopen_core_priv.h
+  - path: source/core/canopen_ctr_priv.h
+  - path: source/core/canopen_dict.c
+  - path: source/core/canopen_dict_priv.h
+  - path: source/core/canopen_fobj.c
+  - path: source/core/canopen_if.c
+  - path: source/core/canopen_if_priv.h
+  - path: source/core/canopen_obj.c
+  - path: source/core/canopen_obj_priv.h
+  - path: source/core/canopen_param.c
+  - path: source/core/canopen_param_priv.h
+  - path: source/core/canopen_tmr.c
+  - path: source/core/canopen_tmr_priv.h
+  - path: source/nmt/canopen_hbcons.c
+  - path: source/nmt/canopen_hbprod.c
+  - path: source/nmt/canopen_nmt.c
+  - path: source/nmt/canopen_nmt_priv.h
+  - path: source/objects/emcy/canopen_emcy.c
+  - path: source/objects/emcy/canopen_emcy_priv.h
+  - path: source/objects/pdo/canopen_fpdo.c
+  - path: source/objects/pdo/canopen_rpdo.c
+  - path: source/objects/pdo/canopen_rpdo_priv.h
+  - path: source/objects/pdo/canopen_tpdo.c
+  - path: source/objects/pdo/canopen_tpdo_priv.h
+  - path: source/objects/sdo/canopen_fsdo.c
+  - path: source/objects/sdo/canopen_sdo.c
+  - path: source/objects/sdo/canopen_sdo_priv.h
+  - path: source/objects/sync/canopen_sync.c
+  - path: source/objects/sync/canopen_sync_priv.h
+include:
+  - path: include
+    file_list:
+      - path: canopen_core.h
+      - path: canopen_dict.h
+      - path: canopen_emcy.h
+      - path: canopen_if.h
+      - path: canopen_nmt.h
+      - path: canopen_obj.h
+      - path: canopen_param.h
+      - path: canopen_types.h
+template_contribution:
+  - name: micriumos_component_avails
+    value: CANOPEN
+provides:
+  - name: canopen
+requires:
+  - name: micriumos_can
+  - name: micriumos_kernel
+  - name: common_collections

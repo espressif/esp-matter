@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="SDK.HAL.SPIDISPLAY.COMMON">
+  <folder name="spidisplay">
+    <file name="display.c" partCompatibility="mcu.arm.efm32.* mcu.arm.ezr32.* mcu.arm.efr32.*" uri="$(sdkInstallationPath)/hardware/kit/common/drivers/display.c"/>
+    <file name="displaypalemlib.c" partCompatibility="mcu.arm.efm32.* mcu.arm.ezr32.* mcu.arm.efr32.*" uri="$(sdkInstallationPath)/hardware/kit/common/drivers/displaypalemlib.c"/>
+    <file name="displayls013b7dh03.c" partCompatibility="mcu.arm.efm32.* mcu.arm.ezr32.* mcu.arm.efr32.*" uri="$(sdkInstallationPath)/hardware/kit/common/drivers/displayls013b7dh03.c"/>
+  </folder>
+  <folder name="glib">
+    <file name="dmd_display.c" partCompatibility="mcu.arm.efm32.* mcu.arm.ezr32.* mcu.arm.efr32.*" uri="$(sdkInstallationPath)/platform/middleware/glib/dmd/display/dmd_display.c"/>
+    <file name="bmp.c" partCompatibility="mcu.arm.efm32.* mcu.arm.ezr32.* mcu.arm.efr32.*" uri="$(sdkInstallationPath)/platform/middleware/glib/glib/bmp.c"/>
+    <file name="glib.c" partCompatibility="mcu.arm.efm32.* mcu.arm.ezr32.* mcu.arm.efr32.*" uri="$(sdkInstallationPath)/platform/middleware/glib/glib/glib.c"/>
+    <file name="glib_bitmap.c" partCompatibility="mcu.arm.efm32.* mcu.arm.ezr32.* mcu.arm.efr32.*" uri="$(sdkInstallationPath)/platform/middleware/glib/glib/glib_bitmap.c"/>
+    <file name="glib_circle.c" partCompatibility="mcu.arm.efm32.* mcu.arm.ezr32.* mcu.arm.efr32.*" uri="$(sdkInstallationPath)/platform/middleware/glib/glib/glib_circle.c"/>
+    <file name="glib_font_normal_8x8.c" partCompatibility="mcu.arm.efm32.* mcu.arm.ezr32.* mcu.arm.efr32.*" uri="$(sdkInstallationPath)/platform/middleware/glib/glib/glib_font_normal_8x8.c"/>
+    <file name="glib_font_narrow_6x8.c" partCompatibility="mcu.arm.efm32.* mcu.arm.ezr32.* mcu.arm.efr32.*" uri="$(sdkInstallationPath)/platform/middleware/glib/glib/glib_font_narrow_6x8.c"/>
+    <file name="glib_font_number_16x20.c" partCompatibility="mcu.arm.efm32.* mcu.arm.ezr32.* mcu.arm.efr32.*" uri="$(sdkInstallationPath)/platform/middleware/glib/glib/glib_font_number_16x20.c"/>
+    <file name="glib_line.c" partCompatibility="mcu.arm.efm32.* mcu.arm.ezr32.* mcu.arm.efr32.*" uri="$(sdkInstallationPath)/platform/middleware/glib/glib/glib_line.c"/>
+    <file name="glib_polygon.c" partCompatibility="mcu.arm.efm32.* mcu.arm.ezr32.* mcu.arm.efr32.*" uri="$(sdkInstallationPath)/platform/middleware/glib/glib/glib_polygon.c"/>
+    <file name="glib_rectangle.c" partCompatibility="mcu.arm.efm32.* mcu.arm.ezr32.* mcu.arm.efr32.*" uri="$(sdkInstallationPath)/platform/middleware/glib/glib/glib_rectangle.c"/>
+    <file name="glib_string.c" partCompatibility="mcu.arm.efm32.* mcu.arm.ezr32.* mcu.arm.efr32.*" uri="$(sdkInstallationPath)/platform/middleware/glib/glib/glib_string.c"/>
+  </folder>
+  <folder name="kit-drivers">
+    <file name="udelay.c" partCompatibility="mcu.arm.efm32.* mcu.arm.ezr32.* mcu.arm.efr32.*" uri="$(sdkInstallationPath)/hardware/kit/common/drivers/udelay.c"/>
+  </folder>
+  <includePath uri="$(sdkInstallationPath)/hardware/kit/common/drivers/"/>
+  <includePath uri="$(sdkInstallationPath)/platform/middleware/glib/dmd/"/>
+  <includePath uri="$(sdkInstallationPath)/platform/middleware/glib/glib/"/>
+</project>

@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Copyright 2014 Bluetooth SIG, Inc. All rights reserved.-->
+<Descriptor xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/descriptor.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+name="Environmental Sensing Measurement" type="org.bluetooth.descriptor.es_measurement" uuid="290C" last-modified="2014-11-20" approved="Yes">
+    <InformativeText>This definition is shown in the Environmental Sensing Service Section 3.1.2.1 and its subsections.</InformativeText>
+    </Descriptor>

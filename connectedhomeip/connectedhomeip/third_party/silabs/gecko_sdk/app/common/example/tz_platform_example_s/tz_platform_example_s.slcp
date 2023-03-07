@@ -1,0 +1,86 @@
+project_name: tz_platform_example_s
+label: Sample project for TrustZone Secure Key Library
+description: >-
+  This project makes a TrustZone secure library for running TrustZone Non-secure security platform examples.
+package: platform
+category: Example|Platform
+quality: beta
+
+provides:
+  - name: tz_secure_key_library_s_app
+
+requires:
+  - name: tz_secure_key_library_s
+  - name: tz_service_nvm3
+  - name: tz_service_se_manager
+  - name: device_series_2
+
+define:
+  # PSA Crypto configuration:
+  - name: TFM_CRYPTO_CONC_OPER_NUM
+    value: 2
+
+  - name: TZ_NS_FLASH_OFFSET
+    value: 0x28000  # 160KB
+    unless: [tz_secure_memory_config, bootloader_interface]
+  - name: TZ_NS_FLASH_OFFSET
+    value: 0x2e000  # 184KB
+    condition: [bootloader_interface]
+    unless: [tz_secure_memory_config]
+
+  - name: TZ_NS_RAM_OFFSET
+    value: 0x3000   #  12KB
+    unless: [tz_secure_memory_config]
+
+template_contribution:
+
+  - name: memory_flash_start
+    value: 0x0
+    condition: [device_sdid_200]
+    unless: [tz_secure_memory_config, bootloader_interface]
+  - name: memory_flash_start
+    value: 0x0
+    condition: [device_sdid_205]
+    unless: [tz_secure_memory_config, bootloader_interface]
+  - name: memory_flash_start
+    value: 0x8000000
+    unless: [device_sdid_200, device_sdid_205, tz_secure_memory_config, bootloader_interface]
+
+  # Offset secure application if bootloader is used
+  - name: memory_flash_start
+    value: 0x6000
+    condition: [device_sdid_200, bootloader_interface]
+    unless: [tz_secure_memory_config]
+  - name: memory_flash_start
+    value: 0x6000
+    condition: [device_sdid_205, bootloader_interface]
+    unless: [tz_secure_memory_config]
+  - name: memory_flash_start
+    value: 0x8006000
+    condition: [bootloader_interface]
+    unless: [device_sdid_200, device_sdid_205, tz_secure_memory_config]
+
+  - name: memory_flash_size
+    value: 0x28000  # 160KB
+    unless: [tz_secure_memory_config]
+  - name: memory_ram_start
+    value: 0x20000000
+    unless: [tz_secure_memory_config]
+  - name: memory_ram_size
+    value: 0x3000   # 12KB
+    unless: [tz_secure_memory_config]
+
+configuration:
+  - name: SL_STACK_SIZE
+    value: '3072'
+  - name: SL_HEAP_SIZE
+    value: '4096'
+
+toolchain_settings:
+  - option: gcc_linker_option
+    value: -Xlinker --cmse-implib
+  - option: gcc_linker_option
+    value: -Xlinker --out-implib=skl_secure_lib.o
+
+tag:
+  - "companion:user-trustzone-non-secure-app.slcp"

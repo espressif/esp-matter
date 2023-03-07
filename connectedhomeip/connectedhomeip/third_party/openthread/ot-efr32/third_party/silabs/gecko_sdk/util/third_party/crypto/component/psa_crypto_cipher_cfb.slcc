@@ -1,0 +1,19 @@
+id: psa_crypto_cipher_cfb
+package: platform
+label: CFB Mode
+description: >-
+  This component provides support for the CFB stream cipher mode in PSA Crypto.
+category: Platform|Security|PSA Crypto|Encryption
+quality: production
+provides:
+  - name: psa_crypto_cipher_cfb
+requires:
+  - name: psa_crypto_aes
+  - name: mbedtls_cipher_cfb
+    condition: [device_series_0]
+template_contribution:
+  - name: psa_crypto_config
+    value: PSA_WANT_ALG_CFB
+  - name: psa_crypto_config
+    value: "MBEDTLS_PSA_BUILTIN_ALG_CFB 1"
+    condition: [mbedtls_cipher_cfb]

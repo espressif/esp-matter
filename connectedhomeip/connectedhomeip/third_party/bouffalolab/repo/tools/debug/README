@@ -1,0 +1,4 @@
+602                 602硬件gdb调试配置文件
+702                 702硬件gdb调试配置文件
+openocd_cfg         openocd 连接配置文件
+vsd                 硬件相关寄存器

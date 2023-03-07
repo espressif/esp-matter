@@ -1,0 +1,295 @@
+#!/bin/bash
+#
+#  Copyright (c) 2020, The OpenThread Authors.
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the
+#     names of its contributors may be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+# Test build and run otbr dbus server
+#
+
+set -euxo pipefail
+
+readonly OTBR_DBUS_SERVER_CONF=otbr-test-agent.conf
+
+on_exit()
+{
+    local status=$?
+
+    sudo killall otbr-agent || true
+    sudo killall expect || true
+    sudo killall ot-cli-ftd || true
+    sudo killall ot-cli-mtd || true
+    sudo killall dbus-monitor || true
+    sudo rm "/etc/dbus-1/system.d/${OTBR_DBUS_SERVER_CONF}" || true
+
+    grep -iE 'ot-cli|otbr' </var/log/syslog
+
+    return "${status}"
+}
+
+scan_meshcop_service()
+{
+    if command -v dns-sd; then
+        timeout 5 dns-sd -Z _meshcop._udp local. || true
+    else
+        avahi-browse -aprt || true
+    fi
+}
+
+update_meshcop_txt_and_check()
+{
+    sudo gdbus call --system --dest io.openthread.BorderRouter.wpan0 --method=io.openthread.BorderRouter.UpdateVendorMeshCopTxtEntries --object-path /io/openthread/BorderRouter/wpan0 "[('nn',[97])]" || true
+    sleep 5
+    service="$(scan_meshcop_service)"
+    grep --binary-files=text "nn=OpenThread" <<<"${service}"
+
+    sudo gdbus call --system --dest io.openthread.BorderRouter.wpan0 --method=io.openthread.BorderRouter.UpdateVendorMeshCopTxtEntries --object-path /io/openthread/BorderRouter/wpan0 "[('vn',[118,101,110,100,111,114])]"
+    sleep 5
+    service="$(scan_meshcop_service)"
+    grep --binary-files=text "vn=vendor" <<<"${service}"
+
+    sudo gdbus call --system --dest io.openthread.BorderRouter.wpan0 --method=io.openthread.BorderRouter.UpdateVendorMeshCopTxtEntries --object-path /io/openthread/BorderRouter/wpan0 "[]"
+    sleep 5
+    service="$(scan_meshcop_service)"
+    grep --binary-files=text "vn=OpenThread" <<<"${service}"
+
+    sudo gdbus call --system --dest io.openthread.BorderRouter.wpan0 --method=io.openthread.BorderRouter.UpdateVendorMeshCopTxtEntries --object-path /io/openthread/BorderRouter/wpan0 "[('A',[97,98,99]),('B',[49,50])]"
+    sleep 5
+    service="$(scan_meshcop_service)"
+    grep --binary-files=text "A=abc" <<<"${service}"
+    grep --binary-files=text "B=12" <<<"${service}"
+
+    sudo gdbus call --system --dest io.openthread.BorderRouter.wpan0 --method=io.openthread.BorderRouter.Reset --object-path /io/openthread/BorderRouter/wpan0
+    sleep 5
+    service="$(scan_meshcop_service)"
+    grep --binary-files=text "A=abc" <<<"${service}"
+    grep --binary-files=text "B=12" <<<"${service}"
+
+    sudo gdbus call --system --dest io.openthread.BorderRouter.wpan0 --method=io.openthread.BorderRouter.UpdateVendorMeshCopTxtEntries --object-path /io/openthread/BorderRouter/wpan0 "[('A',[97,99]),('B',[49,50])]"
+    sleep 5
+    service="$(scan_meshcop_service)"
+    grep --binary-files=text "A=ac" <<<"${service}"
+    grep --binary-files=text "B=12" <<<"${service}"
+}
+
+main()
+{
+    sudo rm -rf tmp
+    sudo install -m 644 "${CMAKE_BINARY_DIR}"/src/agent/otbr-agent.conf /etc/dbus-1/system.d/"${OTBR_DBUS_SERVER_CONF}"
+    sudo service dbus reload
+    trap on_exit EXIT
+    sudo "${CMAKE_BINARY_DIR}"/src/agent/otbr-agent -d7 -I wpan0 --radio-version "spinel+hdlc+forkpty://$(command -v ot-rcp)?forkpty-arg=1" | grep "OPENTHREAD"
+
+    local temp_dir
+    temp_dir=$(mktemp -d)
+
+    # Because we do want to run the command as root but redirect as the normal user.
+    # shellcheck disable=SC2024
+    sudo dbus-monitor --system path=/io/openthread/BorderRouter/wpan0,member=Ready >"${temp_dir}/dbus.out" &
+
+    sleep 1
+
+    sudo "${CMAKE_BINARY_DIR}"/src/agent/otbr-agent -d7 -I wpan0 "spinel+hdlc+forkpty://$(command -v ot-rcp)?forkpty-arg=1" &
+    if ! (tail -f "${temp_dir}/dbus.out" &) | timeout 10s grep -q Ready; then
+        cat "${temp_dir}/dbus.out"
+        exit 1
+    fi
+    sleep 5
+
+    local ot_version
+    local rcp_version
+    local thread_version
+    ot_version=$(sudo "${CMAKE_BINARY_DIR}"/third_party/openthread/repo/src/posix/ot-ctl version | grep -oE '^OPENTHREAD.*$' | tr -d '\r\n')
+    rcp_version=$(sudo "${CMAKE_BINARY_DIR}"/third_party/openthread/repo/src/posix/ot-ctl rcp version | grep -oE '^OPENTHREAD.*$' | tr -d '\r\n')
+    thread_version=$(sudo "${CMAKE_BINARY_DIR}"/third_party/openthread/repo/src/posix/ot-ctl thread version | grep -oE '^[0-9]+' | tr -d '\r\n')
+
+    sudo dbus-send --system --dest=io.openthread.BorderRouter.wpan0 --print-reply \
+        /io/openthread/BorderRouter/wpan0 \
+        io.openthread.BorderRouter.GetProperties \
+        array:string:OtHostVersion,OtRcpVersion,ThreadVersion \
+        | grep -oPz "\s+variant\s+string\s+\"${ot_version}\"\s+variant\s+string\s+\"${rcp_version}\"\s+variant\s+uint16\s+${thread_version}"
+
+    sudo "${CMAKE_BINARY_DIR}"/third_party/openthread/repo/src/posix/ot-ctl ifconfig up
+    sudo "${CMAKE_BINARY_DIR}"/third_party/openthread/repo/src/posix/ot-ctl thread start
+
+    sleep 12
+
+    update_meshcop_txt_and_check
+
+    sudo "${CMAKE_BINARY_DIR}"/third_party/openthread/repo/src/posix/ot-ctl factoryreset
+    sleep 1
+    sudo dbus-send --system --dest=io.openthread.BorderRouter.wpan0 \
+        --type=method_call --print-reply /io/openthread/BorderRouter/wpan0 \
+        org.freedesktop.DBus.Introspectable.Introspect | grep JoinerStart
+    (sudo dbus-send --system --dest=io.openthread.BorderRouter.wpan0 \
+        --type=method_call --print-reply /io/openthread/BorderRouter/wpan0 \
+        io.openthread.BorderRouter.JoinerStart \
+        string:ABCDEF string:mock string:mock \
+        string:mock string:mock string:mock 2>&1 || true) | grep NotFound
+
+    # Verify Eui64 property. 0x18b4300000000001 = 1780100529276321793
+    sudo dbus-send --system --dest=io.openthread.BorderRouter.wpan0 --print-reply /io/openthread/BorderRouter/wpan0 org.freedesktop.DBus.Properties.Get string:io.openthread.BorderRouter string:Eui64 \
+        | grep '1780100529276321793'
+
+    # The ot-cli-ftd node is used to test Thread attach.
+    expect <<EOF &
+spawn ot-cli-ftd 3
+send "panid 0x7890\r\n"
+expect "Done"
+send "networkname Test1\r\n"
+expect "Done"
+send "channel 15\r\n"
+expect "Done"
+send "ifconfig up\r\n"
+expect "Done"
+send "thread start\r\n"
+expect "Done"
+sleep 12
+send "state\r\n"
+expect "leader"
+expect "Done"
+send "commissioner start\r\n"
+expect "Commissioner: active"
+send "commissioner joiner add * ABCDEF\r\n"
+expect "Done"
+expect "Joiner end"
+send "commissioner stop\r\n"
+set timeout -1
+expect eof
+EOF
+    # The ot-cli-mtd node is used to test the child and neighbor table.
+    expect <<EOF &
+spawn ot-cli-mtd 2
+send "panid 0x3456\r\n"
+expect "Done"
+send "networkkey 00112233445566778899aabbccddeeff\r\n"
+expect "Done"
+send "networkname Test\r\n"
+expect "Done"
+send "channel 11\r\n"
+expect "Done"
+send "ifconfig up\r\n"
+expect "Done"
+send "thread start\r\n"
+expect "Done"
+set timeout -1
+expect eof
+EOF
+    sleep 12
+    sudo dbus-send --system --dest=io.openthread.BorderRouter.wpan0 \
+        --type=method_call --print-reply /io/openthread/BorderRouter/wpan0 \
+        io.openthread.BorderRouter.JoinerStart \
+        string:ABCDEF string:mock string:mock \
+        string:mock string:mock string:mock
+    sudo "${CMAKE_BINARY_DIR}"/third_party/openthread/repo/src/posix/ot-ctl state | grep -e child -e router
+
+    sudo dbus-send --system --dest=io.openthread.BorderRouter.wpan0 \
+        --type=method_call --print-reply /io/openthread/BorderRouter/wpan0 \
+        io.openthread.BorderRouter.Detach
+    sudo "${CMAKE_BINARY_DIR}"/third_party/openthread/repo/src/posix/ot-ctl state | grep disabled
+
+    sudo "${CMAKE_BINARY_DIR}"/third_party/openthread/repo/src/posix/ot-ctl factoryreset
+    sleep 1
+
+    sudo "${CMAKE_BINARY_DIR}"/tests/dbus/otbr-test-dbus-client
+
+    sudo "${CMAKE_BINARY_DIR}"/third_party/openthread/repo/src/posix/ot-ctl factoryreset
+    sleep 1
+
+    sudo dbus-send --system --dest=io.openthread.BorderRouter.wpan0 \
+        --type=method_call --print-reply /io/openthread/BorderRouter/wpan0 \
+        io.openthread.BorderRouter.Attach \
+        array:byte: \
+        uint16:0xffff \
+        string:OpenThread \
+        uint64:0xffffffffffffffff \
+        array:byte: \
+        uint32:0xffffffff
+
+    local dataset="0x0e,0x08,0x00,0x00,0x00,0x00,0x00,0x02,0x00,0x00,0x00,0x03,0x00,0x00,0x18,"
+    dataset+="0x35,0x06,0x00,0x04,0x00,0x1f,0xff,0xe0,0x02,0x08,0xef,0x18,0xe6,0xa1,0xf3,0xd6,"
+    dataset+="0x86,0xc4,0x07,0x08,0xfd,0x16,0x72,0x24,0xc2,0x4e,0x16,0x00,0x05,0x10,0xbe,0x3b,"
+    dataset+="0xd2,0x44,0xae,0x6d,0x99,0x70,0x20,0xa8,0x82,0xa2,0x4a,0x80,0x40,0xe2,0x03,0x0f,"
+    dataset+="0x4f,0x70,0x65,0x6e,0x54,0x68,0x72,0x65,0x61,0x64,0x2d,0x30,0x36,0x62,0x37,0x01,"
+    dataset+="0x02,0x06,0xb7,0x04,0x10,0xf9,0xc9,0x1b,0x11,0x45,0x02,0x54,0x67,0xbf,0x11,0xed,"
+    dataset+="0xf9,0x01,0x1a,0x58,0x12,0x0c,0x04,0x02,0xa0,0xff,0xf8"
+
+    sudo dbus-send --system --dest=io.openthread.BorderRouter.wpan0 \
+        --type=method_call --print-reply /io/openthread/BorderRouter/wpan0 \
+        io.openthread.BorderRouter.AttachAllNodesTo \
+        "array:byte:${dataset}" \
+        | grep "int64 300000"
+
+    sudo "${CMAKE_BINARY_DIR}"/third_party/openthread/repo/src/posix/ot-ctl dataset pending | grep "Active Timestamp: 2"
+
+    sleep 310
+
+    sudo "${CMAKE_BINARY_DIR}"/third_party/openthread/repo/src/posix/ot-ctl dataset active | grep "Active Timestamp: 2"
+    sudo "${CMAKE_BINARY_DIR}"/third_party/openthread/repo/src/posix/ot-ctl networkkey | grep be3bd244ae6d997020a882a24a8040e2
+
+    sudo "${CMAKE_BINARY_DIR}"/third_party/openthread/repo/src/posix/ot-ctl factoryreset
+    sleep 1
+
+    sudo dbus-send --system --dest=io.openthread.BorderRouter.wpan0 \
+        --type=method_call --print-reply /io/openthread/BorderRouter/wpan0 \
+        io.openthread.BorderRouter.AttachAllNodesTo \
+        "array:byte:${dataset}" \
+        | grep "int64 0"
+    sudo "${CMAKE_BINARY_DIR}"/third_party/openthread/repo/src/posix/ot-ctl state | grep "leader"
+
+    sudo "${CMAKE_BINARY_DIR}"/third_party/openthread/repo/src/posix/ot-ctl factoryreset
+    sleep 1
+
+    sudo dbus-send --system --dest=io.openthread.BorderRouter.wpan0 \
+        --type=method_call --print-reply /io/openthread/BorderRouter/wpan0 \
+        io.openthread.BorderRouter.Attach \
+        array:byte: \
+        uint16:0xffff \
+        string:OpenThread \
+        uint64:0xffffffffffffffff \
+        array:byte: \
+        uint32:0xffffffff
+
+    sudo "${CMAKE_BINARY_DIR}"/third_party/openthread/repo/src/posix/ot-ctl state | grep "leader"
+    sudo "${CMAKE_BINARY_DIR}"/third_party/openthread/repo/src/posix/ot-ctl thread stop
+    sudo "${CMAKE_BINARY_DIR}"/third_party/openthread/repo/src/posix/ot-ctl state | grep "disabled"
+    sudo "${CMAKE_BINARY_DIR}"/third_party/openthread/repo/src/posix/ot-ctl dataset active | grep "Done"
+
+    sudo dbus-send --system --dest=io.openthread.BorderRouter.wpan0 \
+        --type=method_call --print-reply /io/openthread/BorderRouter/wpan0 \
+        io.openthread.BorderRouter.AttachAllNodesTo \
+        "array:byte:${dataset}" \
+        | grep "int64 300000"
+
+    sudo "${CMAKE_BINARY_DIR}"/third_party/openthread/repo/src/posix/ot-ctl state | grep "leader"
+    sudo "${CMAKE_BINARY_DIR}"/third_party/openthread/repo/src/posix/ot-ctl dataset pending | grep "Active Timestamp: 2"
+
+    sleep 310
+
+    sudo "${CMAKE_BINARY_DIR}"/third_party/openthread/repo/src/posix/ot-ctl dataset active | grep "Active Timestamp: 2"
+    sudo "${CMAKE_BINARY_DIR}"/third_party/openthread/repo/src/posix/ot-ctl networkkey | grep be3bd244ae6d997020a882a24a8040e2
+}
+
+main "$@"

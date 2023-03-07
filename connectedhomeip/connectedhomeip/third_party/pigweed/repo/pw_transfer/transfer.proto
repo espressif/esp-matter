@@ -1,0 +1,217 @@
+// Copyright 2022 The Pigweed Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not
+// use this file except in compliance with the License. You may obtain a copy of
+// the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations under
+// the License.
+
+syntax = "proto3";
+
+package pw.transfer;
+
+option java_multiple_files = true;
+option java_package = "dev.pigweed.pw_transfer";
+
+// The transfer RPC service is used to send data between the client and server.
+service Transfer {
+  // Transfer data from the server to the client; a "download" from the client's
+  // perspective.
+  rpc Read(stream Chunk) returns (stream Chunk);
+
+  // Transfer data from the client to the server; an "upload" from the client's
+  // perspective.
+  rpc Write(stream Chunk) returns (stream Chunk);
+}
+
+// Represents a chunk of data sent by the transfer service. Includes fields for
+// configuring the transfer parameters.
+//
+// Notation: (Read|Write) (→|←)
+//   X → Means client sending data to the server.
+//   X ← Means server sending data to the client.
+message Chunk {
+  // Represents the source or destination of the data. May be ephemeral or
+  // stable depending on the implementation. Sent in every request to identify
+  // the transfer target.
+  //
+  // LEGACY FIELD ONLY. Split into resource_id and session_id in transfer v2.
+  //
+  //  Read → ID of transfer
+  //  Read ← ID of transfer
+  // Write → ID of transfer
+  // Write ← ID of transfer
+  uint32 transfer_id = 1;
+
+  // Used by the receiver to indicate how many bytes it can accept. The
+  // transmitter sends this much data, divided into chunks no larger than
+  // max_chunk_size_bytes. The receiver then starts another window by sending
+  // request_bytes again with a new offset.
+  //
+  //  Read → The client requests this many bytes to be sent.
+  //  Read ← N/A
+  // Write → N/A
+  // Write ← The server requests this many bytes to be sent.
+  optional uint32 pending_bytes = 2;
+
+  // Maximum size of an individual chunk. The transmitter may send smaller
+  // chunks if required.
+  //
+  //  Read → Set maximum size for subsequent chunks.
+  //  Read ← N/A
+  // Write → N/A
+  // Write ← Set maximum size for subsequent chunks.
+  optional uint32 max_chunk_size_bytes = 3;
+
+  // Minimum required delay between chunks. The transmitter may delay longer if
+  // desired.
+  //
+  //  Read → Set minimum delay for subsequent chunks.
+  //  Read ← N/A
+  // Write → N/A
+  // Write ← Set minimum delay for subsequent chunks.
+  optional uint32 min_delay_microseconds = 4;
+
+  // On writes, the offset of the data. On reads, the offset at which to read.
+  //
+  //  Read → Read data starting at this offset.
+  //  Read ← Offset of the data.
+  // Write → Offset of the data.
+  // Write ← Write data starting at this offset.
+  uint64 offset = 5;
+
+  // The data that was read or the data to write.
+  //
+  //  Read → N/A
+  //  Read ← Data read
+  // Write → Data to write
+  // Write ← N/A
+  bytes data = 6;
+
+  // Estimated bytes remaining to read/write. Optional except for the last data
+  // chunk, for which remaining_bytes must be set to 0.
+  //
+  // The sender can set remaining_bytes at the beginning of a read/write so that
+  // the receiver can track progress or cancel the transaction if the value is
+  // too large.
+  //
+  //  Read → N/A
+  //  Read ← Remaining bytes to read, excluding any data in this chunk. Set to
+  //         0 for the last chunk.
+  // Write → Remaining bytes to write, excluding any data in is chunk. Set to
+  //         0 for the last chunk.
+  // Write ← N/A
+  optional uint64 remaining_bytes = 7;
+
+  // Pigweed status code indicating the completion of a transfer. This is only
+  // present in the final packet sent by either the transmitter or receiver.
+  //
+  // The possible status codes and their meanings are listed below:
+  //
+  //   OK: Transfer completed successfully.
+  //   DATA_LOSS: Transfer data could not be read/written (e.g. corruption).
+  //   INVALID_ARGUMENT: Received malformed chunk.
+  //   NOT_FOUND: The requested resource ID is not registered (read/write).
+  //   OUT_OF_RANGE: The requested offset is larger than the data (read/write).
+  //   RESOURCE_EXHAUSTED: Concurrent transfer limit reached.
+  //   UNIMPLEMENTED: Resource ID does not support requested operation (e.g.
+  //       trying to write to a read-only transfer).
+  //
+  //  Read → Transfer complete.
+  //  Read ← Transfer complete.
+  // Write → Transfer complete.
+  // Write ← Transfer complete.
+  optional uint32 status = 8;
+
+  // The offset up to which the transmitter can send data before waiting for the
+  // receiver to acknowledge.
+  //
+  //  Read → Offset up to which the server can send without blocking.
+  //  Read ← N/A
+  // Write → N/A
+  // Write ← Offset up to which the client can send without blocking.
+  //
+  // TODO(frolv): This will replace the pending_bytes field. Once all uses of
+  // transfer are migrated, that field should be removed.
+  uint32 window_end_offset = 9;
+
+  enum Type {
+    // Chunk containing transfer data.
+    DATA = 0;
+
+    // First chunk of a transfer (only sent by the client).
+    START = 1;
+
+    // Transfer parameters indicating that the transmitter should retransmit
+    // from the specified offset.
+    PARAMETERS_RETRANSMIT = 2;
+
+    // Transfer parameters telling the transmitter to continue sending up to
+    // index `offset + pending_bytes` of data. If the transmitter is already
+    // beyond `offset`, it does not have to rewind.
+    PARAMETERS_CONTINUE = 3;
+
+    // Sender of the chunk is terminating the transfer.
+    COMPLETION = 4;
+
+    // Acknowledge the completion of a transfer. Currently unused.
+    // TODO(konkers): Implement this behavior.
+    COMPLETION_ACK = 5;
+
+    // Acknowledges a transfer start request, assigning a session ID for the
+    // transfer and optionally negotiating the protocol version. Sent from
+    // server to client.
+    START_ACK = 6;
+
+    // Confirmation of a START_ACK's assigned session ID and negotiated
+    // parameters, sent by the client to the server. Initiates the data transfer
+    // proper.
+    START_ACK_CONFIRMATION = 7;
+  };
+
+  // The type of this chunk. This field should only be processed when present.
+  // TODO(frolv): Update all users of pw_transfer and remove the optional
+  // semantics from this field.
+  //
+  //  Read → Chunk type (start/parameters).
+  //  Read ← Chunk type (data).
+  // Write → Chunk type (data).
+  // Write ← Chunk type (start/parameters).
+  optional Type type = 10;
+
+  // Unique identifier for the source or destination of transfer data. May be
+  // stable or ephemeral depending on the implementation. Only sent during the
+  // initial handshake phase of a version 2 or higher transfer.
+  //
+  //  Read → ID of transferable resource
+  //  Read ← ID of transferable resource
+  // Write → ID of transferable resource
+  // Write ← ID of transferable resource
+  optional uint32 resource_id = 11;
+
+  // Unique identifier for a specific transfer session. Assigned by a transfer
+  // service during the initial handshake phase, and persists for the remainder
+  // of that transfer operation.
+  //
+  //  Read → ID of transfer session
+  //  Read ← ID of transfer session
+  // Write → ID of transfer session
+  // Write ← ID of transfer session
+  optional uint32 session_id = 12;
+
+  // The protocol version to use for this transfer. Only sent during the initial
+  // handshake phase of a version 2 or higher transfer to negotiate a common
+  // protocol version between the client and server.
+  //
+  //  Read → Desired (START) or configured (START_ACK_CONFIRMATION) version.
+  //  Read ← Configured protocol version (START_ACK).
+  // Write → Desired (START) or configured (START_ACK_CONFIRMATION) version.
+  // Write ← Configured protocol version (START_ACK).
+  optional uint32 protocol_version = 13;
+}

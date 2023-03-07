@@ -1,0 +1,19 @@
+Trusted Firmware Fuzzer (TF-Fuzz) starting...
+
+Info:  random seed was not specified.
+
+Using seed value of \d+ \(0x[a-f\d]+\).
+Purpose line:  to illustrate that you can override TF-Fuzz's expected result
+ASSET_IDENTIFIER:  "napoleon"
+SST-asset identifier list:  "check"
+LITERAL:  "this won't work"
+SST-read check against literal:  "this won't work"
+Read SST command:  ""this won't work""
+Read command:  ""this won't work""
+Expect pass clause:  "pass"
+Command with expect:  ";"
+Lines:  Line number 3.
+Lines:  Line number 3.
+Writing test file, test.c.
+
+TF-Fuzz test generation complete.

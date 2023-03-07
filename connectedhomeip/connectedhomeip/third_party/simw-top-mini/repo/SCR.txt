@@ -1,0 +1,24 @@
+----------------------------------
+
+NXP Software Content Register
+
+Package: Plug&Trust Mini Package
+Version: 04.02.00
+
+-----------------------------------
+
+hostlib
+- Name: hostLib
+- License: Apache-2.0
+- Type of content: source code
+- Description: Contains communication protocol stack
+- Origin: NXP(Apache-2.0)
+- Location: hostlib
+
+sss
+- Name: sss
+- License: Apache-2.0
+- Type of content: source code
+- Description: Contains the SSS API interface to the Application Layer.
+- Origin: NXP(Apache-2.0)
+- Location: sss

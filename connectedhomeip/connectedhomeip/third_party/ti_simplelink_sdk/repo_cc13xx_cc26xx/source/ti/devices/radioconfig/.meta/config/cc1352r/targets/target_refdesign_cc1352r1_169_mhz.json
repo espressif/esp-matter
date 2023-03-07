@@ -1,0 +1,13 @@
+{
+    "target": {
+        "Name": "CC1352EM-XS169-XS24, 10 dBm",
+        "Revision": [],
+        "Description": "CC1352R\/P RF design. 7x7 VQFN48 package. External bias, single-ended output. 169 MHz. Reference design available on web only, no TI hardware provided.",
+        "DeviceName": "CC1352R",
+        "DevicePackage": "VQFN 7x7",
+        "FrontEnd": "XS_RFP",
+        "PaSettings": "pasettings.json",
+        "RfDesign": "CC1352EM-XS169-XS24, 10 dBm",
+        "DefaultCategory": "Settings for 169 MHz band"
+    }
+}

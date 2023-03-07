@@ -1,0 +1,22 @@
+!!omap
+- id: slwrb4168a
+- label: SLWRB4168A
+- package: platform
+- description: Kit BSP support for the EFR32MG13 2.4 GHz 19 dBm Radio Board.
+- category: Platform|Board|Kit|Radio Board
+- quality: production
+- requires:
+  - name: hardware_board_from_slwrb4168a
+- provides:
+  - name: hardware_kit
+  - name: hardware_kit_rb
+- define:
+  - name: SL_KIT_NAME
+    value: '"SLWRB4168A"'
+  - name: SL_KIT_REV
+    value: '"A03"'
+- tag:
+  - kit:opn:SLWRB4168A
+  - kit:pn:WRB4168
+  - kit:variant:A
+  - kit:revision:A03

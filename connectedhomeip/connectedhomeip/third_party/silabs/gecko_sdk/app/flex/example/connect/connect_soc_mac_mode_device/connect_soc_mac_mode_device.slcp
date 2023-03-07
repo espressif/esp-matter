@@ -1,0 +1,303 @@
+project_name: connect_soc_mac_mode_device
+label: "Connect - SoC MAC Mode Device"
+package: Flex
+description: "A 802.15.4 sample app that provides CLI commands to form a network or join an existing network, send data to another node based on short or long addresses."
+category: Connect Examples
+quality: production
+
+#---------------- UC/UP components -------------------
+component:
+  - id: radio_config_simple_connect_singlephy
+  - id: sl_system
+  - id: device_init
+  - id: connect_app_framework_common
+#-----------------MAC mode needs ---------------------
+  - id: connect_aes_security
+  - id: connect_mac_queue
+  - id: connect_parent_support
+  - id: connect_stack_counters
+  - id: connect_poll
+  - id: printf
+  - id: iostream_recommended_stream
+  - id: iostream_retarget_stdio
+  - id: cli
+    instance:
+    - example
+  - id: app_log
+  - id: app_assert
+  - id: token_manager
+#------------Memory Protection Unit-------------------
+  - id: mpu
+
+#-------------- Restriction rules -------------------
+  - id: restrictions_profile_connect
+  - id: restrictions_profile_long_range
+
+#----------------- Require list ----------------------
+requires:
+  - name: a_radio_config
+
+#----------------- Project files ---------------------
+include:
+  - path: .
+    file_list:
+    - path: app_init.h
+    - path: app_process.h
+    - path: app_common.h
+
+source:
+  - path: main.c
+  - path: app_init.c
+  - path: app_process.c
+  - path: app_cli.c
+
+other_file:
+  - path: "../../../script/connect_create_gbl_image.bat"
+  - path: "../../../script/connect_create_gbl_image.sh"
+  - path: "hw_filter_tags.yaml"
+    condition:
+      - "add_hw_filter_to_project"
+
+readme:
+  - path: ../../../documentation/example/connect/connect_soc_mac_mode_device/readme.md
+
+#------------ Configuration overrides ----------------
+configuration:
+#------------ RAIL init, Channel Config --------------
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+  - name: SL_CLI_LOCAL_ECHO
+    value: "(1)"
+  - name: SL_IOSTREAM_USART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "(1)"
+  - name: SL_IOSTREAM_USART_VCOM_FLOW_CONTROL_TYPE
+    value: "usartHwFlowControlNone"
+  - name: SL_IOSTREAM_EUSART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "(1)"
+  - name: SL_IOSTREAM_EUSART_VCOM_FLOW_CONTROL_TYPE
+    value: "eusartHwFlowControlNone"
+  - name: SL_CLI_MAX_INPUT_ARGUMENTS
+    value: "(9)"
+  - name: APP_LOG_PREFIX_ENABLE
+    value: "0"
+  - name: "SL_HEAP_SIZE"
+    value: "8192"
+#-------------- Template Contribution ----------------
+template_contribution:
+#------------------ CLI commands ---------------------
+  - name: cli_command
+    value:
+      name: active_scan
+      handler: cli_active_scan
+      help: "Start active scanning on selected channel"
+      argument:
+      - type: uint8
+        help: "Selected channel"
+  
+  - name: cli_command
+    value:
+      name: commission
+      handler: cli_commission
+      help: "Commission node parameters"
+      argument:
+      - type: uint8
+        help: "Node type"
+      - type: uint16
+        help: "Node id"
+      - type: uint16
+        help: "Pan id"
+      - type: int16
+        help: "Radio TX power"
+      - type: uint8
+        help: "Radio channel"
+
+  - name: cli_command
+    value:
+      name: energy_scan
+      handler: cli_energy_scan
+      help: "Start energy scanning on the given channel with samples (num)"
+      argument:
+      - type: uint8
+        help: "Channel to scan"
+      - type: uint8
+        help: "Samples"
+
+  - name: cli_command
+    value:
+      name: form
+      handler: cli_form
+      help: "Form network"
+      argument:
+      - type: uint16
+        help: "Pan id"
+      - type: int16
+        help: "Radio TX power"
+      - type: uint8
+        help: "Radio channel"
+
+  - name: cli_command
+    value:
+      name: info
+      handler: cli_info
+      help: "List network and device params"
+
+  - name: cli_command
+    value:
+      name: join
+      handler: cli_join_network
+      help: "Start to join network"
+      argument:
+      - type: uint8
+        help: "Node type"
+      - type: uint16
+        help: "Pan id"
+      - type: int16
+        help: "Radio TX power"
+      - type: uint8
+        help: "Radio channel"
+      - type: uint8
+        help: "Use long addressing"
+
+  - name: cli_command
+    value:
+      name: leave
+      handler: cli_leave
+      help: "Leave current network, resets states"
+
+  - name: cli_command
+    value:
+      name: pjoin
+      handler: cli_set_permit_join
+      help: "Permit join set with duration"
+      argument:
+      - type: uint8
+        help: "Duration"
+
+  - name: cli_command
+    value:
+      name: poll
+      handler: cli_poll
+      help: "Get poll status"
+
+  - name: cli_command
+    value:
+      name: purge_indirect
+      handler: cli_purge_indirect
+      help: "Indirect purge"
+
+  - name: cli_command
+    value:
+      name: reset
+      handler: cli_reset
+      help: "Reset device"
+
+  - name: cli_command
+    value:
+      name: send
+      handler: cli_send
+      help: "Send message"
+      argument:
+      - type: uint16
+        help: "MAC frame info"
+      - type: uint16
+        help: "Short Source id"
+      - type: hex
+        help: "Source long address"
+      - type: uint16
+        help: "Short Destination id"
+      - type: hex
+        help: "Destination long address"
+      - type: uint16
+        help: "Source pan id"
+      - type: uint16
+        help: "Destination pan id"
+      - type: hex
+        help: "Message"
+
+  - name: cli_command
+    value:
+      name: set_beacon_payload
+      handler: cli_set_beacon_payload
+      help: "Set beacon payload"
+      argument:
+      - type: hex
+        help: "Payload"
+
+  - name: cli_command
+    value:
+      name: set_channel
+      handler: cli_set_channel
+      help: "Radio channel set"
+      argument:
+      - type: uint8
+        help: "Channel"
+
+  - name: cli_command
+    value:
+      name: set_key
+      handler: cli_set_security_key
+      help: "Set security key"
+      argument:
+      - type: hex
+        help: "Security key (size:EMBER_ENCRYPTION_KEY_SIZE)"
+
+  - name: cli_command
+    value:
+      name: unset_key
+      handler: cli_unset_security_key
+      help: "Unset current security key"
+
+  - name: cli_command
+    value:
+      name: set_options
+      handler: cli_set_options
+      help: "Set options"
+      argument:
+      - type: uint8
+        help: "TX options"
+
+  - name: cli_command
+    value:
+      name: set_poll_dest
+      handler: cli_set_poll_destination
+      help: "Set Poll Destination"
+      argument:
+      - type: uint16
+        help: "Destination short address"
+      - type: hex
+        help: "Destination long address"
+
+  - name: cli_command
+    value:
+      name: set_security_mapping
+      handler: set_security_mapping_command
+      help: "The command fills up the Long address table to be able later use secure packets for communications."
+      argument:
+      - type: uint16
+        help: "Short Address"
+      - type: hex
+        help: "Long Address"
+
+  - name: cli_command
+    value:
+      name: clear_security_mappings
+      handler: clear_security_mappings_command
+      help: "The command clears the Long address table used for secure packet communications."
+
+#--------------------- Toolchain ------------------------
+toolchain_settings:
+  - option: optimize
+    value: debug
+
+ui_hints:
+  highlight:
+    - path: readme.md
+      focus: true
+
+filter:
+  - name: "Wireless Technology"
+    value: ["Connect"]
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]

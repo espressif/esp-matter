@@ -1,0 +1,33 @@
+id: "btmesh_scene_server"
+label: "Scene Server"
+package: "Btmesh"
+description: >
+  Used to support the control and reporting functionality of a node that can
+  participate in a scene.
+category: "Bluetooth Mesh|Models|Time and Scenes"
+quality: "production"
+root_path: "app/bluetooth/common/btmesh_scene_server"
+source:
+  - path: "sl_btmesh_scene_server.c"
+include:
+  - path: ""
+    file_list:
+      - path: "sl_btmesh_scene_server.h"
+provides:
+  - name: "btmesh_scene_server"
+requires:
+  - name: "app_assert"
+  - name: "btmesh_feature_scene_server"
+  - name: "btmesh_feature_scene_setup_server"
+  - name: "btmesh_stack"
+config_file:
+  - path: btmesh_scene_server.dcd
+    directory: btmeshconf
+
+template_contribution:
+  - name: "btmesh_on_event"
+    value:
+      include: "sl_btmesh_scene_server.h"  
+      function: "sl_btmesh_scene_server_on_event"
+  - name: component_catalog
+    value: "btmesh_scene_server"

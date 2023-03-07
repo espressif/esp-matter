@@ -1,0 +1,199 @@
+/***************************************************************************//**
+ * @file    iot_uart_desc.c.jinja
+ * @brief   UART instance descriptors - auto-generated file.
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2021 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ ******************************************************************************/
+
+/*******************************************************************************
+ *                               INCLUDES
+ ******************************************************************************/
+
+/* standard C */
+#include "stddef.h"
+
+/* UART driver layer */
+#include "iot_uart_desc.h"
+
+{% for instance in iot_uart_instances %}
+/* instance {{ instance }} config */
+#include "iot_uart_cfg_{{ instance }}.h"
+{% endfor %}
+
+/*******************************************************************************
+ *                            DESCRIPTOR LIST
+ ******************************************************************************/
+
+IotUARTDescriptor_t iot_uart_desc[] = {
+
+{% for instance in iot_uart_instances %}
+  /* instance {{ instance }} config */
+  {
+    /* instance number */
+    .lInstNum          = IOT_UART_CFG_{{ instance | upper }}_INST_NUM,
+
+    /* baudrate */
+    .ulDefaultBaudrate = IOT_UART_CFG_{{ instance | upper }}_DEFAULT_BAUDRATE,
+
+    /* peripheral settings */
+    .xDefaultDataBits  = IOT_UART_CFG_{{ instance | upper }}_DEFAULT_DATA_BITS,
+    .xDefaultParity    = IOT_UART_CFG_{{ instance | upper }}_DEFAULT_PARITY,
+    .xDefaultStopBits  = IOT_UART_CFG_{{ instance | upper }}_DEFAULT_STOP_BITS,
+
+    /* h/w flow control if supported */
+#if (_SILICON_LABS_32B_SERIES != 0)
+    .xDefaultFlowCtrl  = IOT_UART_CFG_{{ instance | upper }}_DEFAULT_FLOW_CONTROL_TYPE,
+#endif
+
+    /* loopback configuration */
+    .ucLoopbackEn       = IOT_UART_CFG_{{ instance | upper }}_LOOPBACK,
+
+    /* selected peripheral */
+    .pxPeripheral      = IOT_UART_CFG_{{ instance | upper }}_PERIPHERAL,
+    .ucPeripheralNo    = IOT_UART_CFG_{{ instance | upper }}_PERIPHERAL_NO,
+
+    /* TX pin */
+#ifdef IOT_UART_CFG_{{ instance | upper }}_TX_PORT
+    .ucTxEn            = 1,
+    .xTxPort           = IOT_UART_CFG_{{ instance | upper }}_TX_PORT,
+    .ucTxPin           = IOT_UART_CFG_{{ instance | upper }}_TX_PIN,
+#if (_SILICON_LABS_32B_SERIES < 2)
+    .ucTxLoc           = IOT_UART_CFG_{{ instance | upper }}_TX_LOC,
+#endif
+#endif
+
+    /* RX pin */
+#ifdef IOT_UART_CFG_{{ instance | upper }}_RX_PORT
+    .ucRxEn            = 1,
+    .xRxPort           = IOT_UART_CFG_{{ instance | upper }}_RX_PORT,
+    .ucRxPin           = IOT_UART_CFG_{{ instance | upper }}_RX_PIN,
+#if (_SILICON_LABS_32B_SERIES < 2)
+    .ucRxLoc           = IOT_UART_CFG_{{ instance | upper }}_RX_LOC,
+#endif
+#endif
+
+    /* CLK pin */
+#ifdef IOT_UART_CFG_{{ instance | upper }}_CLK_PORT
+    .ucClkEn           = 1,
+    .xClkPort          = IOT_UART_CFG_{{ instance | upper }}_CLK_PORT,
+    .ucClkPin          = IOT_UART_CFG_{{ instance | upper }}_CLK_PIN,
+#if (_SILICON_LABS_32B_SERIES < 2)
+    .ucClkLoc          = IOT_UART_CFG_{{ instance | upper }}_CLK_LOC,
+#endif
+#endif
+
+    /* CS pin */
+#ifdef IOT_UART_CFG_{{ instance | upper }}_CS_PORT
+    .ucCsEn            = 1,
+    .xCsPort           = IOT_UART_CFG_{{ instance | upper }}_CS_PORT,
+    .ucCsPin           = IOT_UART_CFG_{{ instance | upper }}_CS_PIN,
+#if (_SILICON_LABS_32B_SERIES < 2)
+    .ucCsLoc           = IOT_UART_CFG_{{ instance | upper }}_CS_LOC,
+#endif
+#endif
+
+    /* RTS pin */
+#ifdef IOT_UART_CFG_{{ instance | upper }}_RTS_PORT
+    .ucRtsEn           = 1,
+    .xRtsPort          = IOT_UART_CFG_{{ instance | upper }}_RTS_PORT,
+    .ucRtsPin          = IOT_UART_CFG_{{ instance | upper }}_RTS_PIN,
+#if (_SILICON_LABS_32B_SERIES < 2)
+    .ucCsLoc           = IOT_UART_CFG_{{ instance | upper }}_RTS_LOC,
+#endif
+#endif
+
+    /* CTS pin */
+#ifdef IOT_UART_CFG_{{ instance | upper }}_CTS_PORT
+    .ucCtsEn           = 1,
+    .xCtsPort          = IOT_UART_CFG_{{ instance | upper }}_CTS_PORT,
+    .ucCtsPin          = IOT_UART_CFG_{{ instance | upper }}_CTS_PIN,
+#if (_SILICON_LABS_32B_SERIES < 2)
+    .ucCsLoc           = IOT_UART_CFG_{{ instance | upper }}_CTS_LOC,
+#endif
+#endif
+
+    /* clocks and IRQ lines (USART0) */
+#if (IOT_UART_CFG_{{ instance | upper }}_PERIPHERAL_NO == 0)
+    .xClock            = cmuClock_USART0,
+    .xTxIRQn           = USART0_TX_IRQn,
+    .xRxIRQn           = USART0_RX_IRQn,
+#endif
+
+    /* clocks and IRQ lines (USART1) */
+#if (IOT_UART_CFG_{{ instance | upper }}_PERIPHERAL_NO == 1)
+    .xClock            = cmuClock_USART1,
+    .xTxIRQn           = USART1_TX_IRQn,
+    .xRxIRQn           = USART1_RX_IRQn,
+#endif
+
+    /* clocks and IRQ lines (USART2) */
+#if (IOT_UART_CFG_{{ instance | upper }}_PERIPHERAL_NO == 2)
+    .xClock            = cmuClock_USART2,
+    .xTxIRQn           = USART2_TX_IRQn,
+    .xRxIRQn           = USART2_RX_IRQn,
+#endif
+
+    /* clocks and IRQ lines (USART3) */
+#if (IOT_UART_CFG_{{ instance | upper }}_PERIPHERAL_NO == 3)
+    .xClock            = cmuClock_USART3,
+    .xTxIRQn           = USART3_TX_IRQn,
+    .xRxIRQn           = USART3_RX_IRQn,
+#endif
+
+    /* clocks and IRQ lines (USART4) */
+#if (IOT_UART_CFG_{{ instance | upper }}_PERIPHERAL_NO == 4)
+    .xClock            = cmuClock_USART4,
+    .xTxIRQn           = USART4_TX_IRQn,
+    .xRxIRQn           = USART4_RX_IRQn,
+#endif
+
+    /* clocks and IRQ lines (USART5) */
+#if (IOT_UART_CFG_{{ instance | upper }}_PERIPHERAL_NO == 5)
+    .xClock            = cmuClock_USART5,
+    .xTxIRQn           = USART5_TX_IRQn,
+    .xRxIRQn           = USART5_RX_IRQn,
+#endif
+  },
+{% endfor %}
+};
+
+/*******************************************************************************
+ *                          iot_uart_desc_get
+ ******************************************************************************/
+
+IotUARTDescriptor_t *iot_uart_desc_get(int32_t lInstNum)
+{
+  int32_t lInstCount = sizeof(iot_uart_desc)/sizeof(IotUARTDescriptor_t);
+  int32_t lInstCur   = 0;
+
+  for (lInstCur = 0; lInstCur < lInstCount; lInstCur++) {
+    if (iot_uart_desc[lInstCur].lInstNum == lInstNum) {
+      return &iot_uart_desc[lInstCur];
+    }
+  }
+
+  return NULL;
+}

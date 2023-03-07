@@ -1,0 +1,228 @@
+!!omap
+- id: EFR32MG13P733F512IM48
+- package: platform
+- description: Silicon Labs CMSIS-Device part headers for EFR32MG13P733F512IM48.
+- category: Platform|Device|EFR32MG13P
+- quality: production
+- define:
+  - name: EFR32MG13P733F512IM48
+    unless:
+    - device_content_override
+- source:
+  - path: platform/Device/SiliconLabs/EFR32MG13P/Source/system_efr32mg13p.c
+    unless:
+    - device_content_override
+  - path: platform/Device/SiliconLabs/EFR32MG13P/Source/startup_efr32mg13p.c
+    unless:
+    - device_content_override
+  - condition:
+    - toolchain_arm
+    path: platform/Device/SiliconLabs/EFR32MG13P/Source/ARM/startup_efr32mg13p.s
+    unless:
+    - device_content_override
+- include:
+  - file_list:
+    - path: efr32mg13p733f512im48.h
+    - path: efr32mg13p_acmp.h
+    - path: efr32mg13p_adc.h
+    - path: efr32mg13p_af_pins.h
+    - path: efr32mg13p_af_ports.h
+    - path: efr32mg13p_cmu.h
+    - path: efr32mg13p_cryotimer.h
+    - path: efr32mg13p_crypto.h
+    - path: efr32mg13p_csen.h
+    - path: efr32mg13p_devinfo.h
+    - path: efr32mg13p_dma_descriptor.h
+    - path: efr32mg13p_dmareq.h
+    - path: efr32mg13p_emu.h
+    - path: efr32mg13p_etm.h
+    - path: efr32mg13p_fpueh.h
+    - path: efr32mg13p_gpcrc.h
+    - path: efr32mg13p_gpio.h
+    - path: efr32mg13p_gpio_p.h
+    - path: efr32mg13p_i2c.h
+    - path: efr32mg13p_idac.h
+    - path: efr32mg13p_ldma.h
+    - path: efr32mg13p_ldma_ch.h
+    - path: efr32mg13p_lesense.h
+    - path: efr32mg13p_lesense_buf.h
+    - path: efr32mg13p_lesense_ch.h
+    - path: efr32mg13p_lesense_st.h
+    - path: efr32mg13p_letimer.h
+    - path: efr32mg13p_leuart.h
+    - path: efr32mg13p_msc.h
+    - path: efr32mg13p_pcnt.h
+    - path: efr32mg13p_prs.h
+    - path: efr32mg13p_prs_ch.h
+    - path: efr32mg13p_prs_signals.h
+    - path: efr32mg13p_rmu.h
+    - path: efr32mg13p_romtable.h
+    - path: efr32mg13p_rtc.h
+    - path: efr32mg13p_rtc_comp.h
+    - path: efr32mg13p_rtcc.h
+    - path: efr32mg13p_rtcc_cc.h
+    - path: efr32mg13p_rtcc_ret.h
+    - path: efr32mg13p_smu.h
+    - path: efr32mg13p_timer.h
+    - path: efr32mg13p_timer_cc.h
+    - path: efr32mg13p_trng.h
+    - path: efr32mg13p_usart.h
+    - path: efr32mg13p_vdac.h
+    - path: efr32mg13p_vdac_opa.h
+    - path: efr32mg13p_wdog.h
+    - path: efr32mg13p_wdog_pch.h
+    - path: em_device.h
+    - path: system_efr32mg13p.h
+    path: platform/Device/SiliconLabs/EFR32MG13P/Include/
+    unless:
+    - device_content_override
+- provides:
+  - name: efr32mg13p733f512im48
+  - name: device
+  - name: device_series_1
+  - name: device_sdid_89
+  - name: device_generic_family_efr32xg13
+  - name: device_family_efr32mg13p
+  - name: device_family_efr32mg13
+  - name: device_cortexm
+  - name: device_arm
+  - name: cortexm4
+  - name: armv7em
+  - name: device_has_acmp
+  - name: device_has_acmp0
+  - name: device_has_acmp1
+  - name: device_has_adc
+  - name: device_has_adc0
+  - name: device_has_cmu
+  - name: device_has_cryotimer
+  - name: device_has_crypto
+  - name: device_has_crypto0
+  - name: device_has_crypto1
+  - name: device_has_csen
+  - name: device_has_dcdc
+  - name: device_has_devinfo
+  - name: device_has_emu
+  - name: device_has_etm
+  - name: device_has_fpueh
+  - name: device_has_gpcrc
+  - name: device_has_gpio
+  - name: device_has_i2c
+  - name: device_has_i2c0
+  - name: device_has_i2c1
+  - name: device_has_idac
+  - name: device_has_idac0
+  - name: device_has_ldma
+  - name: device_has_lesense
+  - name: device_has_letimer
+  - name: device_has_letimer0
+  - name: device_has_leuart
+  - name: device_has_leuart0
+  - name: device_has_msc
+  - name: device_has_pcnt
+  - name: device_has_pcnt0
+  - name: device_has_prortc
+  - name: device_has_prs
+  - name: device_has_rmu
+  - name: device_has_romtable
+  - name: device_has_rtcc
+  - name: device_has_smu
+  - name: device_has_timer
+  - name: device_has_timer0
+  - name: device_has_timer1
+  - name: device_has_trng
+  - name: device_has_trng0
+  - name: device_has_uart
+  - name: device_has_usart
+  - name: device_has_usart0
+  - name: device_has_usart1
+  - name: device_has_usart2
+  - name: device_has_vdac
+  - name: device_has_vdac0
+  - name: device_has_wdog
+  - name: device_has_wdog0
+  - name: device_has_wdog1
+  - name: device_has_wtimer
+  - name: device_has_wtimer0
+  - name: device_has_bootloader_flash
+  - name: device_has_dwt
+  - name: device_has_emu_temp_sensor
+  - name: device_has_fpu
+  - name: device_has_mpu
+  - name: device_has_radio
+  - name: device_has_radio_2g4hz
+  - name: device_has_radio_dualband
+  - name: device_has_radio_subghz
+  - name: device_supports_rail
+  - name: device_supports_rail_stack
+  - name: device_supports_zigbee
+  - name: device_supports_thread
+  - name: device_supports_bluetooth
+  - name: device_supports_bluetooth_coded_phy
+  - name: device_supports_connect
+- requires:
+  - name: cmsis_core
+- template_contribution:
+  - name: device_opn
+    value: EFR32MG13P733F512IM48
+  - name: device_arch
+    value: armv7em
+  - name: device_cpu
+    value: cortexm4
+  - name: device_series
+    value: 1
+  - name: device_family
+    value: efr32mg13p
+  - name: device_flash_addr
+    value: 0
+  - name: device_flash_size
+    value: 524288
+  - name: device_flash_page_size
+    value: 2048
+  - name: device_bootloader_flash_size
+    value: 16384
+  - name: device_ram_addr
+    value: 536870912
+  - name: device_ram_size
+    value: 65536
+  - name: device_fpu
+    value: true
+  - name: device_mpu
+    value: true
+  - name: default_stack_size
+    value: 4096
+  - name: default_heap_size
+    value: 2048
+- tag:
+  - device:opn:efr32mg13p733f512im48
+- toolchain_settings:
+  - option: device_opn
+    value: efr32mg13p733f512im48
+  - option: architecture
+    value: armv7e-m
+  - option: cpu
+    value: cortex-m4
+  - option: fpu
+    value: fpv4-sp
+- config_file:
+  - condition:
+    - custom_radio_config
+    directory: rail
+    path: platform/Device/config/89/device.yaml
+- metadata:
+    device:
+      memory:
+      - name: Main Flash
+        page_size: 2048
+        size: 524288
+        start: 0
+        type: non-volatile
+      - name: Bootloader Flash
+        page_size: 2048
+        size: 16384
+        start: 266403840
+        type: non-volatile
+      - name: RAM
+        size: 65536
+        start: 536870912
+        type: volatile
+      opn: efr32mg13p733f512im48

@@ -1,0 +1,18 @@
+id: zw_appshw_wallcontroller
+label: WallController AppsHw
+category: Z-Wave|AppsHw
+description: AppsHw for WallController application
+package: Z-Wave
+quality: production
+ui_hints:
+  visibility: never
+source:
+  - path: "protocol/z-wave/platform/SiliconLabs/AppsHw/src/WallController/WallController_hw.c"
+include:
+  - path: "protocol/z-wave/Apps/WallController"
+    file_list:
+      - path: "WallController_hw.h"
+provides:
+  - name: zw_appshw_wallcontroller
+requires:
+  - name: zw_appshw

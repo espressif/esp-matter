@@ -1,0 +1,47 @@
+id: sim_eeprom2_to_nvm3_upgrade
+label: Simulated EEPROM 2 to NVM3 Upgrade
+package: platform
+description: Simulated EEPROM 2 to NVM3 Upgrade.
+category: Platform|Service
+quality: production
+provides:
+  - name: sim_eeprom2_to_nvm3_upgrade
+  - name: token_manager_storage
+requires:
+  - name: nvm3_lib
+  - name: emlib_msc
+  - name: ecode
+  # Embed SimEE2's components here since these three are the only pieces
+  # the SimEE2 to NVM3 upgrade code requires.
+  - name: sim_eeprom2
+  - name: sim_eeprom_callback
+  - name: sim_eeprom_headers
+  - name: device_series_1
+root_path: ./
+include:
+  - path: platform/service/sim_eeprom/sim_eeprom2_to_nvm3_upgrade/inc
+    file_list:
+      - path: sl_sim_eeprom2_to_nvm3_upgrade.h
+library:
+  - path: platform/service/sim_eeprom/sim_eeprom2_to_nvm3_upgrade/lib/libsim_eeprom2_to_nvm3_upgrade_CM4_gcc.a
+    condition:
+      - toolchain_gcc
+      - "cortexm4"
+  - path: platform/service/sim_eeprom/sim_eeprom2_to_nvm3_upgrade/lib/libsim_eeprom2_to_nvm3_upgrade_CM4_iar.a
+    condition:
+      - toolchain_iar
+      - "cortexm4"
+define:
+- name: SIMEE2_TO_NVM3_UPGRADE
+- name: USE_NVM3
+template_contribution:
+  - name: event_handler
+    value:
+      event: platform_init
+      include: sl_token_manager.h
+      handler: sl_token_init
+  - name: component_catalog
+    value: sim_eeprom2_to_nvm3_upgrade
+documentation:
+    docset: gecko-platform
+    document: service/api/group-simeeprom

@@ -1,0 +1,34 @@
+#ifndef SL_CPC_DRV_SPI_SECONDARY_CONFIG_H
+#define SL_CPC_DRV_SPI_SECONDARY_CONFIG_H
+
+{% for instance in cpc_instance_name %}
+{% for periph in cpc_periph_type %}
+#include "sl_cpc_drv_secondary_spi_{{ periph }}_{{ instance }}_config.h"
+
+#define SL_CPC_DRV_SPI_RX_QUEUE_SIZE                SL_CPC_DRV_SPI_{{ instance | upper }}_RX_QUEUE_SIZE
+#define SL_CPC_DRV_SPI_TX_QUEUE_SIZE                SL_CPC_DRV_SPI_{{ instance | upper }}_TX_QUEUE_SIZE
+#define SL_CPC_DRV_SPI_BITRATE                      SL_CPC_DRV_SPI_{{ instance | upper }}_BITRATE
+#define SL_CPC_DRV_SPI_CS_FALLING_EDGE_INT_NO       SL_CPC_DRV_SPI_{{ instance | upper }}_CS_FALLING_EDGE_INT_NO
+#define SL_CPC_DRV_SPI_CS_RISING_EDGE_INT_NO        SL_CPC_DRV_SPI_{{ instance | upper }}_CS_RISING_EDGE_INT_NO
+
+#define SL_CPC_DRV_SPI_RX_IRQ_PORT                  SL_CPC_DRV_SPI_{{ instance | upper }}_RX_IRQ_PORT
+#define SL_CPC_DRV_SPI_RX_IRQ_PIN                   SL_CPC_DRV_SPI_{{ instance | upper }}_RX_IRQ_PIN
+
+#define SL_CPC_DRV_SPI_PERIPHERAL                   SL_CPC_DRV_SPI_{{ instance | upper }}_PERIPHERAL
+#define SL_CPC_DRV_SPI_PERIPHERAL_NO                SL_CPC_DRV_SPI_{{ instance | upper }}_PERIPHERAL_NO
+
+#define SL_CPC_DRV_SPI_TX_PORT                      SL_CPC_DRV_SPI_{{ instance | upper }}_TX_PORT
+#define SL_CPC_DRV_SPI_TX_PIN                       SL_CPC_DRV_SPI_{{ instance | upper }}_TX_PIN
+
+#define SL_CPC_DRV_SPI_RX_PORT                      SL_CPC_DRV_SPI_{{ instance | upper }}_RX_PORT
+#define SL_CPC_DRV_SPI_RX_PIN                       SL_CPC_DRV_SPI_{{ instance | upper }}_RX_PIN
+
+#define SL_CPC_DRV_SPI_CLK_PORT                     SL_CPC_DRV_SPI_{{ instance | upper }}_CLK_PORT
+#define SL_CPC_DRV_SPI_CLK_PIN                      SL_CPC_DRV_SPI_{{ instance | upper }}_CLK_PIN
+
+#define SL_CPC_DRV_SPI_CS_PORT                      SL_CPC_DRV_SPI_{{ instance | upper }}_CS_PORT
+#define SL_CPC_DRV_SPI_CS_PIN                       SL_CPC_DRV_SPI_{{ instance | upper }}_CS_PIN
+{% endfor %}
+{% endfor %}
+
+#endif

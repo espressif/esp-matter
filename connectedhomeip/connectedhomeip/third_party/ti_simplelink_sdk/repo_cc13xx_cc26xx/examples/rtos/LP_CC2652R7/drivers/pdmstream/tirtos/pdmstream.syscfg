@@ -1,0 +1,92 @@
+/*
+ * Copyright (c) 2020-2021, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+// @cliArgs --board /ti/boards/LP_CC2652R7 --rtos tirtos
+
+/*
+ *  pdmstream.syscfg
+ */
+
+/* ======== TIRTOS7 ======== */
+if (system.getRTOS() === "tirtos7") {
+    const tirtos7_release_syscfg_js = system.getScript("tirtos7_release.syscfg.js");
+}
+
+/**
+ * Import the modules used in this configuration.
+ */
+const CCFG     = scripting.addModule("/ti/devices/CCFG");
+const Display  = scripting.addModule("/ti/display/Display", {}, false);
+const Display1 = Display.addInstance();
+const Button   = scripting.addModule("/ti/drivers/apps/Button", {}, false);
+const Button1  = Button.addInstance();
+const Button2  = Button.addInstance();
+const LED      = scripting.addModule("/ti/drivers/apps/LED", {}, false);
+const LED1     = LED.addInstance();
+const LED2     = LED.addInstance();
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+CCFG.ccfgTemplate.$name = "ti_devices_CCFGTemplate0";
+
+Display1.$name                    = "CONFIG_Display_0";
+Display1.$hardware                = system.deviceData.board.components.XDS110UART;
+Display1.uart.$name               = "CONFIG_UART_0";
+Display1.uart.txPinInstance.$name = "CONFIG_PIN_4";
+Display1.uart.rxPinInstance.$name = "CONFIG_PIN_5";
+
+Button1.$name                     = "CONFIG_BUTTON_0";
+Button1.$hardware                 = system.deviceData.board.components["BTN-1"];
+Button1.gpioPin.$name             = "CONFIG_GPIO_0";
+
+Button2.$name                     = "CONFIG_BUTTON_1";
+Button2.$hardware                 = system.deviceData.board.components["BTN-2"];
+Button2.gpioPin.$name             = "CONFIG_GPIO_1";
+
+LED1.$name                     = "CONFIG_LED_0";
+LED1.$hardware                 = system.deviceData.board.components.LED_RED;
+
+LED2.$name                     = "CONFIG_LED_1";
+LED2.$hardware                 = system.deviceData.board.components.LED_GREEN;
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+Display1.uart.uart.$suggestSolution       = "UART0";
+Display1.uart.uart.txPin.$suggestSolution = "boosterpack.4";
+Display1.uart.uart.rxPin.$suggestSolution = "boosterpack.3";
+Button1.button.$suggestSolution           = "boosterpack.13";
+Button2.button.$suggestSolution           = "boosterpack.12";
+LED1.ledPin.$suggestSolution              = "boosterpack.39";
+LED2.ledPin.$suggestSolution              = "boosterpack.40";

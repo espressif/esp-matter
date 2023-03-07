@@ -1,0 +1,24 @@
+id: mbedtls_md5
+package: platform
+label: MD5
+description: >-
+  This component provides support for the MD5 hash function using Mbed TLS.
+category: Platform|Security|Mbed TLS|Hashing
+quality: production
+source:
+  - path: util/third_party/crypto/mbedtls/library/md5.c
+    unless: [trustzone_nonsecure]
+include:
+  - path: util/third_party/crypto/mbedtls/include
+    file_list:
+      - path: mbedtls/md5.h
+    unless: [trustzone_nonsecure]
+provides:
+  - name: mbedtls_md5
+  - name: mbedtls_hash_function
+    allow_multiple: true
+requires:
+  - name: mbedtls_core
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_MD5_C

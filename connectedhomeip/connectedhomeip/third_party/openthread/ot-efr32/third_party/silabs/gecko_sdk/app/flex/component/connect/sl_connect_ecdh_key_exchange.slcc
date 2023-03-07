@@ -1,0 +1,28 @@
+id: "sl_connect_ecdh_key_exchange"
+label: "ECDH Key Exchange support"
+package: "Flex"
+category: "Connect|Test"
+quality: "production"
+description: "This component includes the core functionality for network key exchanging mechanism between two devices implemented based on Platform Security Architecture."
+root_path: "app/flex/component/connect/sl_connect_ecdh_key_exchange"
+provides:
+  - name: "sl_connect_ecdh_key_exchange"
+source:
+  - path: "sl_connect_ecdh_key_exchange.c"
+include:
+  - path: "."  
+    file_list:
+      - path: "sl_connect_ecdh_key_exchange.h"
+config_file:
+   - path: "config/sl_connect_ecdh_key_exchange_config.h"
+requires:
+  - name: gsdk_version
+  - name: psa_crypto_ecdh
+  - name: psa_crypto_hkdf
+  - name: psa_crypto_sha256
+  - name: psa_crypto_cipher_cbc
+#-------------- Template Contribution ----------------
+template_contribution:
+#---------------- Component Catalog ------------------
+  - name: component_catalog
+    value: sl_connect_ecdh_key_exchange

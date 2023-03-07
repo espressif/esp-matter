@@ -1,0 +1,24 @@
+{
+  "meta": {
+    "sdkRoot": ".",
+    "description": "Unit testing SDK",
+    "requiredFeatureLevel": 81
+  },
+  "zcl": {
+    "main": "zcl.json"
+  },
+  "templates": {
+    "main": "gen-test.json"
+  },
+  "zapFiles": {
+    "test": "../test-meta*.zap"
+  },
+  "generation": [
+    {
+      "zapFile": "test",
+      "output": "../../../tmp/{zapFileBasename}_{zapFileGlobIndex}/",
+      "zcl": "main",
+      "template": "main"
+    }
+  ]
+}

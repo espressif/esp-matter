@@ -1,0 +1,30 @@
+id: "bluetooth_feature_periodic_adv"
+label: "Periodic Advertising (Deprecated)"
+package: "Bluetooth"
+description: >
+  Deprecated and replaced by <bluetooth_feature_periodic_advertiser>.
+  This component provides the periodic advertising feature implemented by the
+  deprecated functions of the BGAPI class "advertiser". See the component
+  <bluetooth_feature_advertiser> and the Bluetooth API reference for more
+  details on deprecated advertiser functions.
+category: "Bluetooth|Feature"
+quality: "production"
+root_path: "protocol/bluetooth"
+requires:
+  - name: "bluetooth_controller"
+  - name: "bluetooth_feature_advertiser"
+config_file:
+  - path: "config/sl_bluetooth_periodic_adv_config.h"
+    unless: 
+      - "bluetooth_stack"
+provides:
+  - name: "bluetooth_feature_periodic_adv"
+template_contribution:
+  - name: component_catalog
+    value: bluetooth_feature_periodic_adv
+  - name: bluetooth_controller_init
+    value:
+      include: "sl_bluetooth_periodic_adv_config.h"
+      function: "sl_btctrl_alloc_periodic_adv(SL_BT_CONFIG_MAX_PERIODIC_ADVERTISERS);sl_btctrl_init_periodic_adv()"
+      deinit: "sl_btctrl_alloc_periodic_adv(0)"
+    priority: 10

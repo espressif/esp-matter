@@ -1,0 +1,27 @@
+id: emlib_pdm
+label: PDM
+package: platform
+description: >
+  Pulse Density Modulation (PDM) peripheral API
+category: Platform|Peripheral
+quality: production
+component_root_path: "platform/emlib"
+source:
+  - path: "src/em_pdm.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "em_pdm.h"
+provides:
+  - name: emlib_pdm
+requires:
+  - name: device
+  - name: device_has_pdm
+  - name: emlib_common
+documentation:
+  docset: gecko-platform
+  document:
+    - page: emlib/api/efm32gg12/group-pdm
+      condition: [device_sdid_106]
+    - page: emlib/api/efr32xg22/group-pdm
+      condition: [device_sdid_205]

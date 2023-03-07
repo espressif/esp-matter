@@ -1,0 +1,21 @@
+SPIFFS_IMAGE_COMPONENT_PATH := $(COMPONENT_PATH)
+
+.PHONY: flashfs
+.PHONY: makefs
+.PHONY: copyfs
+
+flashfs: $(SDKCONFIG_MAKEFILE) mkspiffs
+	@echo "Making spiffs image ..."
+	@echo "$(ESPTOOLPY_WRITE_FLASH)"
+	$(MKSPIFFS_COMPONENT_PATH)/../mkspiffs/src/mkspiffs -c $(SPIFFS_IMAGE_COMPONENT_PATH)/image -b $(CONFIG_SPIFFS_LOG_BLOCK_SIZE) -p $(CONFIG_SPIFFS_LOG_PAGE_SIZE) -s $(CONFIG_SPIFFS_SIZE) $(BUILD_DIR_BASE)/spiffs_image.img
+	$(ESPTOOLPY_WRITE_FLASH) $(CONFIG_SPIFFS_BASE_ADDR) $(BUILD_DIR_BASE)/spiffs_image.img
+
+makefs: $(SDKCONFIG_MAKEFILE) mkspiffs
+	@echo "Making spiffs image ..."
+	@echo "$(ESPTOOLPY_WRITE_FLASH)"
+	$(MKSPIFFS_COMPONENT_PATH)/../mkspiffs/src/mkspiffs -c $(SPIFFS_IMAGE_COMPONENT_PATH)/image -b $(CONFIG_SPIFFS_LOG_BLOCK_SIZE) -p $(CONFIG_SPIFFS_LOG_PAGE_SIZE) -s $(CONFIG_SPIFFS_SIZE) $(BUILD_DIR_BASE)/spiffs_image.img
+
+copyfs: 
+	@echo "Flashing spiffs image ..."
+	@echo "$(ESPTOOLPY_WRITE_FLASH)"
+	$(ESPTOOLPY_WRITE_FLASH) $(CONFIG_SPIFFS_BASE_ADDR) $(SPIFFS_IMAGE_COMPONENT_PATH)/spiffs_image.img

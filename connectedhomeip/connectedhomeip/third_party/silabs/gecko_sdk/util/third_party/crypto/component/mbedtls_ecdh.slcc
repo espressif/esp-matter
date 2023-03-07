@@ -1,0 +1,16 @@
+id: mbedtls_ecdh
+package: platform
+label: ECDH
+description: >-
+  This component provides support for key agreement with the ECDH protocol
+  using Mbed TLS.
+category: Platform|Security|Mbed TLS|Key Exchange
+quality: production
+provides:
+  - name: mbedtls_ecdh
+requires:
+  - name: mbedtls_ecc
+template_contribution:
+  - name: mbedtls_config
+    value: MBEDTLS_ECDH_C
+

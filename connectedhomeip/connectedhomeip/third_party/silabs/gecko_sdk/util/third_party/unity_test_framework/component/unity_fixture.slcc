@@ -1,0 +1,21 @@
+id: test_framework_unity_fixture
+label: Unity test framework fixture component
+package: platform
+category: Third Party|Unity
+quality: production
+description: |-
+  Unity unit test framework - fixture component
+component_root_path: "util/third_party/unity_test_framework/extras/fixture"
+source:
+  - path: "src/unity_fixture.c"
+include:
+  - path: "src"
+    file_list:
+      - path: "unity_fixture.h"
+      - path: "unity_fixture_internals.h"
+provides:
+  - name: test_framwork_unity_fixture
+  - name: test_framework_unity_fixture
+requires:
+  - name: test_framework_unity
+  - name: test_framework_unity_memory

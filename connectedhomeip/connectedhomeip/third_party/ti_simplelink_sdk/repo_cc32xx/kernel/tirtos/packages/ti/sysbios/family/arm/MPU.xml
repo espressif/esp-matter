@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="MPU" title="Memory Protection Unit Manager" version="1">
+
+<page name="Module" title="Module Settings">
+<html><body><table>
+  <tr>
+      <td><form>
+        <p>This module allows the ARM processor to map a virtual address to a different physical 
+           address and enable/disable the MMU.</p>
+        <p> </p>
+      </form></td>
+  </tr>
+  <tr>
+    <td><control type="checkbox" label="Add the MMU module to my configuration" value="value:this.$used" bold="true"/></td>
+  </tr>
+  <tr></tr>
+  <tr><td>
+      <h1>MMU Enable</h1>
+      <table>
+        <tr>
+          <td><control type="checkbox" 
+               label="Enable MMU"
+               value="value:this.enableMMU" 
+               tooltip="value:this.enableMMU.$summary"/></td>
+        </tr>
+      </table>
+  </td></tr>
+</table></body></html>
+</page>
+<properties name="Advanced" title="All Options" enabled="true" visible="true" link="this"/>
+</gep>
