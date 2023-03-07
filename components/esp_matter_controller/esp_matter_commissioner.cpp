@@ -22,6 +22,7 @@
 #include <credentials/attestation_verifier/DefaultDeviceAttestationVerifier.h>
 #include <crypto/CHIPCryptoPAL.h>
 #include <esp_heap_caps.h>
+#include <esp_matter_attestation_trust_store.h>
 #include <esp_matter_commissioner.h>
 #include <esp_matter_controller_pairing_command.h>
 #include <lib/support/TestGroupData.h>
@@ -119,8 +120,7 @@ esp_err_t init(uint16_t commissioner_port)
         return ESP_FAIL;
     }
 
-    // TODO: Root Store using spiffs
-    const Credentials::AttestationTrustStore *testingRootStore = Credentials::GetTestAttestationTrustStore();
+    const Credentials::AttestationTrustStore *testingRootStore = Credentials::get_attestation_trust_store();
     SetDeviceAttestationVerifier(GetDefaultDACVerifier(testingRootStore));
 
     Platform::ScopedMemoryBuffer<uint8_t> noc;
