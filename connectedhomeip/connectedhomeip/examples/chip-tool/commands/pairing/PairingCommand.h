@@ -26,7 +26,6 @@
 #include <lib/support/Span.h>
 #include <lib/support/ThreadOperationalDataset.h>
 
-
 enum class PairingMode
 {
     None,
@@ -156,7 +155,6 @@ public:
     /////////// DeviceDiscoveryDelegate Interface /////////
     void OnDiscoveredDevice(const chip::Dnssd::DiscoveredNodeData & nodeData) override;
     bool IsDiscoverOnce() { return mDiscoverOnce.ValueOr(false); }
-    
 
 private:
     CHIP_ERROR RunInternal(NodeId remoteId);

@@ -42,9 +42,6 @@
 #include <transport/raw/MessageHeader.h>
 #include <transport/raw/PeerAddress.h>
 
-// add time
-#include <time.h>
-
 namespace chip {
 
 extern const char * kSpake2pI2RSessionInfo;

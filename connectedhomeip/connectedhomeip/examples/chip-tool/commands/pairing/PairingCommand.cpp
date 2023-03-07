@@ -198,7 +198,6 @@ void PairingCommand::OnPairingComplete(CHIP_ERROR err)
     {
         ChipLogProgress(chipTool, "Pairing Success");
         ChipLogProgress(chipTool, "PASE establishment successful");
-
         if (mPairingMode == PairingMode::CodePaseOnly || mPaseOnly.ValueOr(false))
         {
             SetCommandExitStatus(err);

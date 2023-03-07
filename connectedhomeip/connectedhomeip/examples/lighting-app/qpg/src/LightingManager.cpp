@@ -131,7 +131,7 @@ bool LightingManager::InitiateAction(Action_t aAction, int32_t aActor, uint16_t 
             new_state = kState_On;
         }
     }
-    else if (aAction == COLOR_ACTION_HSV)HSV
+    else if (aAction == COLOR_ACTION_HSV)
     {
         action_initiated = true;
         if (hsv.h == 0 && hsv.s == 0)

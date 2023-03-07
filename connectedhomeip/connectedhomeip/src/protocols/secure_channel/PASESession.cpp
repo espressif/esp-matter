@@ -47,7 +47,6 @@
 #include <trace/trace.h>
 #include <transport/SessionManager.h>
 
-
 namespace chip {
 
 using namespace Crypto;

@@ -178,7 +178,7 @@ endif()
 
 if (CHIP_PROJECT_CONFIG)
     chip_gn_arg_append("chip_project_config_include" "\"${CHIP_PROJECT_CONFIG}\"")
-    # chip_gn_arg_append("chip_system_project_config_include" "\"${CHIP_PROJECT_CONFIG}\"")
+    chip_gn_arg_append("chip_system_project_config_include" "\"${CHIP_PROJECT_CONFIG}\"")
 endif()
 
 if (CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER)

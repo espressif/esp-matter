@@ -33,11 +33,6 @@ using chip::app::DataModel::MakeNullable;
 using chip::app::DataModel::Nullable;
 using chip::app::DataModel::NullNullable;
 
-////////////////////////////////////////////////
-// #include <time.h>
-// static clock_t t = 0;
-// static float time_taken = 0;
-////////////////////////////////////////////////
 namespace {
 
 // As per specifications (Section 13.3), Nodes SHALL exit commissioning mode after 20 failed commission attempts.
@@ -63,11 +58,6 @@ void CommissioningWindowManager::OnPlatformEvent(const DeviceLayer::ChipDeviceEv
     if (event->Type == DeviceLayer::DeviceEventType::kCommissioningComplete)
     {
         ChipLogProgress(AppServer, "Commissioning completed successfully");
-        /////////////////////////////////////////////////////////////////////
-        // t = clock() - t;
-        // time_taken = ((float)t)/CLOCKS_PER_SEC;
-        // printf("TOTAL COMMISSIONING TIME: time = %f seconds \n",time_taken);
-        /////////////////////////////////////////////////////////////////////
         DeviceLayer::SystemLayer().CancelTimer(HandleCommissioningWindowTimeout, this);
         mCommissioningTimeoutTimerArmed = false;
         Cleanup();
@@ -169,12 +159,6 @@ void CommissioningWindowManager::HandleFailedAttempt(CHIP_ERROR err)
 
 void CommissioningWindowManager::OnSessionEstablishmentStarted()
 {
-    ////////////////////////////////////////////////////////
-    // t = clock();
-    // time_taken = ((float)t)/CLOCKS_PER_SEC;
-    // printf("PASE TIMER START: time = %f seconds \n", time_taken);
-    // ChipLogDetail(AppServer, "PASE TIMER START: time = %f seconds \n", t);
-    ////////////////////////////////////////////////////////
     // As per specifications, section 5.5: Commissioning Flows
     constexpr System::Clock::Timeout kPASESessionEstablishmentTimeout = System::Clock::Seconds16(60);
     DeviceLayer::SystemLayer().StartTimer(kPASESessionEstablishmentTimeout, HandleSessionEstablishmentTimeout, this);
@@ -222,12 +206,6 @@ void CommissioningWindowManager::OnSessionEstablished(const SessionHandle & sess
         // clearing out mPASESession.
         mPASESession.Grab(session);
     }
-    ////////////////////////////////////////////////////////
-    // t = clock() - t;
-    // time_taken = ((float)t)/CLOCKS_PER_SEC;
-    // printf("PASE TIMER END: time = %f seconds \n", time_taken);
-    // ChipLogDetail(AppServer, "PASE TIMER END: time = %f seconds \n", time_taken);
-    ////////////////////////////////////////////////////////
 }
 
 CHIP_ERROR CommissioningWindowManager::OpenCommissioningWindow(Seconds16 commissioningTimeout)
