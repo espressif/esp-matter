@@ -242,7 +242,7 @@ static bool parent_endpoint_is_valid(node_t *node, uint16_t parent_endpoint_id)
     return false;
 }
 
-device_t *create_device(node_t *node, uint16_t parent_endpoint_id, uint32_t device_type_id)
+device_t *create_device(node_t *node, uint16_t parent_endpoint_id, uint32_t device_type_id, void *priv_data)
 {
     // Check whether the parent endpoint is valid
     if (!parent_endpoint_is_valid(node, parent_endpoint_id)) {
@@ -256,7 +256,7 @@ device_t *create_device(node_t *node, uint16_t parent_endpoint_id, uint32_t devi
     dev->persistent_info.parent_endpoint_id = parent_endpoint_id;
     bridged_node::config_t bridged_node_config;
     dev->endpoint =
-        bridged_node::create(node, &bridged_node_config, ENDPOINT_FLAG_DESTROYABLE | ENDPOINT_FLAG_BRIDGE, NULL);
+        bridged_node::create(node, &bridged_node_config, ENDPOINT_FLAG_DESTROYABLE | ENDPOINT_FLAG_BRIDGE, priv_data);
     if (!(dev->endpoint)) {
         ESP_LOGE(TAG, "Could not create esp_matter endpoint for bridged device");
         free(dev);
@@ -300,7 +300,7 @@ device_t *create_device(node_t *node, uint16_t parent_endpoint_id, uint32_t devi
     return dev;
 }
 
-device_t *resume_device(node_t *node, uint16_t device_endpoint_id)
+device_t *resume_device(node_t *node, uint16_t device_endpoint_id, void *priv_data)
 {
     esp_err_t err = ESP_OK;
     device_persistent_info_t persistent_info;
@@ -318,7 +318,7 @@ device_t *resume_device(node_t *node, uint16_t device_endpoint_id)
     dev->persistent_info = persistent_info;
     bridged_node::config_t bridged_node_config;
     dev->endpoint = bridged_node::resume(node, &bridged_node_config, ENDPOINT_FLAG_DESTROYABLE | ENDPOINT_FLAG_BRIDGE,
-                                         device_endpoint_id, NULL);
+                                         device_endpoint_id, priv_data);
     if (!(dev->endpoint)) {
         ESP_LOGE(TAG, "Could not resume esp_matter endpoint for bridged device");
         free(dev);
