@@ -70,6 +70,8 @@
 #define ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_WINDOW_COVERING_DEVICE_TYPE_ID 0x0202
 #define ESP_MATTER_WINDOW_COVERING_DEVICE_TYPE_VERSION 2
+#define ESP_MATTER_PUMP_DEVICE_TYPE_ID 0x0303
+#define ESP_MATTER_PUMP_DEVICE_TYPE_VERSION 2
 
 namespace esp_matter {
 
@@ -381,6 +383,19 @@ uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /* flow_sensor */
+
+namespace pump{
+typedef struct config {
+    cluster::identify::config_t identify;
+    cluster::on_off::config_t on_off;
+    cluster::pump_configuration_and_control::config_t pump_configuration_and_control;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
+} /** pump **/
 
 } /* endpoint */
 
