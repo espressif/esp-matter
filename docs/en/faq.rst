@@ -119,7 +119,7 @@ The QR code on my device console is not rendering properly:
    ::
 
       If QR code is not visible, copy paste the URL in a browser:
-      https://dhrishi.github.io/connectedhomeip/qrcode.html?data=....
+      https://project-chip.github.io/connectedhomeip/qrcode.html?data=....
 
 A1.6 Onboard LED not working
 ----------------------------
