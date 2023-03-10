@@ -34,12 +34,14 @@ typedef enum callback_type {
  * @param[in] type callback type.
  * @param[in] endpoint_id Endpoint ID to identify.
  * @param[in] effect_id Effect ID to identify with.
+ * @param[in] effect_variant Effect Variant
  * @param[in] priv_data Pointer to the private data passed while creating the endpoint.
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-typedef esp_err_t (*callback_t)(callback_type_t type, uint16_t endpoint_id, uint8_t effect_id, void *priv_data);
+typedef esp_err_t (*callback_t)(callback_type_t type, uint16_t endpoint_id, uint8_t effect_id, uint8_t effect_variant,
+                                    void *priv_data);
 
 /** Set identification callback
  *
@@ -60,11 +62,15 @@ esp_err_t set_callback(callback_t callback);
  *
  * @param[in] endpoint_id Endpoint ID to identify.
  * @param[in] identify_type The type supported by the device.
+ * @param[in] effect_identifier Effect identifier, default is EMBER_ZCL_IDENTIFY_EFFECT_IDENTIFIER_BLINK
+ * @param[in] effect_variant Effect variant, default is EMBER_ZCL_IDENTIFY_EFFECT_VARIANT_DEFAULT
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t init(uint16_t endpoint_id, uint8_t identify_type);
+esp_err_t init(uint16_t endpoint_id, uint8_t identify_type,
+                uint8_t effect_identifier = EMBER_ZCL_IDENTIFY_EFFECT_IDENTIFIER_BLINK,
+                uint8_t effect_variant = EMBER_ZCL_IDENTIFY_EFFECT_VARIANT_DEFAULT);
 
 } /* identification */
 } /* esp_matter */

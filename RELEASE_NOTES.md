@@ -1,8 +1,27 @@
 # 15-March-2023
- 
+
 API Change
 
+```
+esp_err_t esp_matter::identification::init(uint16_t endpoint_id, uint8_t identify_type,
+                                            uint8_t effect_identifier = EMBER_ZCL_IDENTIFY_EFFECT_IDENTIFIER_BLINK,
+                                            uint8_t effect_variant = EMBER_ZCL_IDENTIFY_EFFECT_VARIANT_DEFAULT);
+```
+
+- Above API now accepts the parameters for initial identification `effect_identifier` and `effect_variant`.
+- If not used then default value will be used for initialization
+
+```
+typedef esp_err_t (*callback_t)(callback_type_t type, uint16_t endpoint_id, uint8_t effect_id, uint8_t effect_variant,
+                                    void *priv_data);
+```
+
+- Added additional parameter `effect_variant` in identification callback.
+
+```
 esp_matter::start(event_callback_t callback, intptr_t callback_arg = static_cast<intptr_t>(NULL))
+```
+
 - This API now accepts a parameter to pass additional data to the event callback. By default, the data is set to NULL in the API.
 
 # 14-June-2022
