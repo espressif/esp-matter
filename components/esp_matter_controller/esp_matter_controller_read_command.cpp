@@ -34,7 +34,7 @@ static const char *TAG = "read_command";
 namespace esp_matter {
 namespace controller {
 
-void read_command::on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr, SessionHandle &sessionHandle)
+void read_command::on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr, const SessionHandle &sessionHandle)
 {
     read_command *cmd = (read_command *)context;
     ReadPrepareParams params(sessionHandle);

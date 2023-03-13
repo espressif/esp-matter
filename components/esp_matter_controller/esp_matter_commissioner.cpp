@@ -84,6 +84,7 @@ class ESPCommissionerCallback : public CommissionerCallback {
 ESPCommissionerCallback commissioner_callback;
 DeviceCommissioner device_commissioner;
 CommissionerDiscoveryController commissioner_discovery_controller;
+Crypto::RawKeySessionKeystore session_keystore;
 
 constexpr uint16_t kUdcListenPort = 5560;
 
@@ -98,8 +99,10 @@ esp_err_t init(uint16_t commissioner_port)
     factoryParams.listenPort = commissioner_port;
     factoryParams.fabricIndependentStorage = &controller_server_storage;
     factoryParams.fabricTable = &Server::GetInstance().GetFabricTable();
+    factoryParams.sessionKeystore          = &session_keystore;
 
     group_data_provider.SetStorageDelegate(&controller_server_storage);
+    group_data_provider.SetSessionKeystore(factoryParams.sessionKeystore);
     if (group_data_provider.Init() != CHIP_NO_ERROR) {
         return ESP_FAIL;
     }

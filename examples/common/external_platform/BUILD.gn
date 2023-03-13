@@ -90,15 +90,12 @@ static_library("ESP32_custom") {
     "KeyValueStoreManagerImpl.h",
     "Logging.cpp",
     "LwIPCoreLock.cpp",
-    "NetworkCommissioningDriver.h",
-    "NetworkCommissioningDriver.cpp",
     "PlatformManagerImpl.cpp",
     "PlatformManagerImpl.h",
     "SystemTimeSupport.cpp",
     "SystemTimeSupport.h",
     "bluedroid/BLEManagerImpl.cpp",
     "nimble/BLEManagerImpl.cpp",
-    "ConnectivityManagerImpl_WiFi.cpp",
   ]
 
   deps = [
@@ -116,18 +113,29 @@ static_library("ESP32_custom") {
     ":ESP32_custom_include",
   ]
 
-  if (chip_mdns == "platform") {
-    sources += [
-      "DnssdImpl.cpp",
-      "DnssdImpl.h",
-    ]
-  }
-
   if (chip_enable_ota_requestor) {
     sources += [
       "OTAImageProcessorImpl.cpp",
       "OTAImageProcessorImpl.h",
     ]
+  }
+
+  if (chip_enable_wifi) {
+    sources += [
+      "ConnectivityManagerImpl_WiFi.cpp",
+      "NetworkCommissioningDriver.cpp",
+      "NetworkCommissioningDriver.h",
+      "route_hook/ESP32RouteHook.c",
+      "route_hook/ESP32RouteHook.h",
+      "route_hook/ESP32RouteTable.c",
+      "route_hook/ESP32RouteTable.h",
+    ]
+    if (chip_mdns == "platform") {
+      sources += [
+        "DnssdImpl.cpp",
+        "DnssdImpl.h",
+      ]
+    }
   }
 
   if (chip_use_factory_data_provider) {

@@ -22,10 +22,10 @@ using namespace esp_matter::cluster;
 
 extern uint16_t aggregator_endpoint_id;
 
-void zigbee_bridge_find_bridged_on_off_light_cb(zb_uint8_t zdo_status, zb_uint16_t addr, zb_uint8_t endpoint)
+void zigbee_bridge_find_bridged_on_off_light_cb(esp_zb_zdp_status_t zdo_status, uint16_t addr, uint8_t endpoint, void *user_ctx)
 {
     ESP_LOGI(TAG, "on_off_light found: address:0x%x, endpoint:%d, response_status:%d", addr, endpoint, zdo_status);
-    if (zdo_status == ZB_ZDP_STATUS_SUCCESS) {
+    if (zdo_status == ESP_ZB_ZDP_STATUS_SUCCESS) {
         node_t *node = node::get();
         if (!node) {
             ESP_LOGE(TAG, "Could not find esp_matter node");
@@ -62,7 +62,7 @@ esp_err_t zigbee_bridge_attribute_update(uint16_t endpoint_id, uint32_t cluster_
                 cmd_req.zcl_basic_cmd.dst_endpoint = zigbee_device->dev_addr.zigbee_endpointid;
                 cmd_req.zcl_basic_cmd.src_endpoint = esp_matter::endpoint::get_id(zigbee_device->dev->endpoint);
                 cmd_req.address_mode = ESP_ZB_APS_ADDR_MODE_16_ENDP_PRESENT;
-                cmd_req.on_off_cmd_id = val->val.b ? ZB_ZCL_CMD_ON_OFF_ON_ID : ZB_ZCL_CMD_ON_OFF_OFF_ID;
+                cmd_req.on_off_cmd_id = val->val.b ? ESP_ZB_ZCL_CMD_ON_OFF_ON_ID : ESP_ZB_ZCL_CMD_ON_OFF_OFF_ID;
                 esp_zb_zcl_on_off_cmd_req(&cmd_req);
             }
         }

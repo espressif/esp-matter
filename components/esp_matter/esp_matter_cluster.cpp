@@ -69,6 +69,7 @@ cluster_t *create_default_binding_cluster(endpoint_t *endpoint)
     return binding::create(endpoint, &config, CLUSTER_FLAG_SERVER);
 }
 
+#if (FIXED_ENDPOINT_COUNT == 0)
 namespace descriptor {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
@@ -1811,6 +1812,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return cluster;
 }
 } /* pump_configuration_and_control */
-
+#endif // FIXED_ENDPOINT_COUNT == 0
 } /* cluster */
 } /* esp_matter */

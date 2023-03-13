@@ -100,7 +100,7 @@ private:
     attribute_free_handler m_attr_free;
     void *m_attr_free_ctx;
 
-    static void on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr, SessionHandle &sessionHandle);
+    static void on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr, const SessionHandle &sessionHandle);
     static void on_device_connection_failure_fcn(void *context, const ScopedNodeId &peerId, CHIP_ERROR error);
 
     chip::Callback::Callback<chip::OnDeviceConnected> on_device_connected_cb;

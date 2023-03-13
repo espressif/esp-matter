@@ -1000,7 +1000,7 @@ esp_err_t send_add_group(peer_device_t *remote_device, uint16_t remote_endpoint_
                          add_group_callback add_group_cb)
 {
     Groups::Commands::AddGroup::Type command_data;
-    command_data.groupId = group_id;
+    command_data.groupID = group_id;
     command_data.groupName = chip::CharSpan(group_name, strnlen(group_name, 16));
 
     chip::Controller::GroupsCluster cluster(*remote_device->GetExchangeManager(),
@@ -1013,7 +1013,7 @@ esp_err_t send_view_group(peer_device_t *remote_device, uint16_t remote_endpoint
                           view_group_callback view_group_cb)
 {
     Groups::Commands::ViewGroup::Type command_data;
-    command_data.groupId = group_id;
+    command_data.groupID = group_id;
 
     chip::Controller::GroupsCluster cluster(*remote_device->GetExchangeManager(),
                                             remote_device->GetSecureSession().Value(), remote_endpoint_id);
@@ -1025,7 +1025,7 @@ esp_err_t send_remove_group(peer_device_t *remote_device, uint16_t remote_endpoi
                             remove_group_callback remove_group_cb)
 {
     Groups::Commands::RemoveGroup::Type command_data;
-    command_data.groupId = group_id;
+    command_data.groupID = group_id;
 
     chip::Controller::GroupsCluster cluster(*remote_device->GetExchangeManager(),
                                             remote_device->GetSecureSession().Value(), remote_endpoint_id);

@@ -64,7 +64,7 @@ private:
     uint16_t m_endpoint_id;
     command_data_t *m_command_data;
 
-    static void on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr, SessionHandle &sessionHandle);
+    static void on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr, const SessionHandle &sessionHandle);
     static void on_device_connection_failure_fcn(void *context, const ScopedNodeId &peerId, CHIP_ERROR error);
 
     static esp_err_t dispatch_group_command(void *context);

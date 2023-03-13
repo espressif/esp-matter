@@ -35,9 +35,6 @@ void pairing_command::OnStatusUpdate(DevicePairingDelegate::Status status)
     case DevicePairingDelegate::Status::SecurePairingFailed:
         ESP_LOGI(TAG, "Secure Pairing Failed");
         break;
-    case DevicePairingDelegate::Status::SecurePairingDiscoveringMoreDevices:
-        ESP_LOGI(TAG, "Secure Pairing Discovering More Device");
-        break;
     }
 }
 
@@ -74,7 +71,7 @@ void pairing_command::OnCommissioningComplete(NodeId nodeId, CHIP_ERROR err)
     }
 }
 
-void pairing_command::OnDeviceConnectedFn(void *context, ExchangeManager &exchangeMgr, SessionHandle &sessionHandle)
+void pairing_command::OnDeviceConnectedFn(void *context, ExchangeManager &exchangeMgr, const SessionHandle &sessionHandle)
 {
     ESP_LOGI(TAG, "OnDeviceConnectedFn");
     CommissionerDiscoveryController *cdc = esp_matter::commissioner::get_discovery_controller();

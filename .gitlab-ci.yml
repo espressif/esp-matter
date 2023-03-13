@@ -90,10 +90,9 @@ variables:
     - idf.py build
     - idf.py set-target esp32c3
     - idf.py build
-# Controller and zap_light example builds are failing for te_1_1 disabling them for the short_term on this branch
-#    - cd $ESP_MATTER_PATH/examples/zap_light
-#    - idf.py set-target esp32
-#    - idf.py build
+    - cd $ESP_MATTER_PATH/examples/zap_light
+    - idf.py set-target esp32
+    - idf.py build
     - cd $ESP_MATTER_PATH/examples/light_switch
     - idf.py set-target esp32
     - idf.py build
@@ -102,9 +101,9 @@ variables:
     - idf.py build
     - idf.py set-target esp32c3
     - idf.py build
-#    - cd $ESP_MATTER_PATH/examples/controller
-#    - idf.py set-target esp32
-#    - idf.py build
+    - cd $ESP_MATTER_PATH/examples/controller
+    - idf.py set-target esp32
+    - idf.py build
 
 .build_external_platform_example: &build_external_platform_example
     - rm -rf $ESP_MATTER_PATH/../platform
@@ -118,15 +117,23 @@ variables:
     - idf.py build
     - cp sdkconfig.defaults.backup sdkconfig.defaults
 
-.build_examples_idf_v5_0: &build_examples_idf_v5_0
-#    - cd $ESP_MATTER_PATH/examples/zap_light
-#    - idf.py --preview set-target esp32h2
-#    - idf.py build
+.build_examples_idf_v5_1: &build_examples_idf_v5_1
+    - cd $ESP_MATTER_PATH/examples/zap_light
+    - idf.py --preview set-target esp32h2
+    - idf.py build
     - cd $ESP_MATTER_PATH/examples/light_switch
     - idf.py --preview set-target esp32h2
     - idf.py build
+    - idf.py --preview set-target esp32c6
+    - idf.py build
+    - idf.py set-target esp32c2
+    - idf.py build
     - cd $ESP_MATTER_PATH/examples/light
     - idf.py --preview set-target esp32h2
+    - idf.py build
+    - idf.py --preview set-target esp32c6
+    - idf.py build
+    - idf.py set-target esp32c2
     - idf.py build
     - cd $ESP_MATTER_PATH/examples/zigbee_bridge
     - idf.py set-target esp32
@@ -162,13 +169,13 @@ build_esp_matter_examples:
         - *build_examples
         - *build_external_platform_example
 
-build_esp_matter_examples_idf_v5_0:
+build_esp_matter_examples_idf_v5_1:
     extends:
         - .build_examples_template
     variables:
-        IDF_VERSION: "20949d444f466e1b1247b10e2b8d6a2fb8212815"
+        IDF_VERSION: "bb9200acec7dd60e9adb4a381e5400dcd5024534"
     script:
-        - *build_examples_idf_v5_0
+        - *build_examples_idf_v5_1
 
 build_upstream_examples:
     extends:
