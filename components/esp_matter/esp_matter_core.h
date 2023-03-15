@@ -52,11 +52,12 @@ typedef void (*event_callback_t)(const ChipDeviceEvent *event, intptr_t arg);
  * Initialize and start the matter thread.
  *
  * @param[in] callback event callback.
+ * @param[in] callback_arg private data to pass to callback function, optional argument, by default set to NULL.
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t start(event_callback_t callback);
+esp_err_t start(event_callback_t callback, intptr_t callback_arg = static_cast<intptr_t>(NULL));
 
 /** Factory reset
  *

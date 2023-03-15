@@ -1,3 +1,10 @@
+# 15-March-2023
+ 
+API Change
+
+esp_matter::start(event_callback_t callback, intptr_t callback_arg = static_cast<intptr_t>(NULL))
+- This API now accepts a parameter to pass additional data to the event callback. By default, the data is set to NULL in the API.
+
 # 14-June-2022
 
 First Github release of ESP Matter
