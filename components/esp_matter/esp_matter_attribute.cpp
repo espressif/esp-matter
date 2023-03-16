@@ -1608,7 +1608,7 @@ attribute_t *create_mode(cluster_t *cluster, uint8_t value)
 attribute_t *create_safety_status(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, WindowCovering::Attributes::SafetyStatus::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_uint16(value));
+                                         esp_matter_bitmap16(value));
 }
 
 } /* attribute */
