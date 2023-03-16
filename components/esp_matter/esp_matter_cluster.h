@@ -364,7 +364,7 @@ typedef struct config {
     nullable<int16_t> measured_value;
     nullable<int16_t> min_measured_value;
     nullable<int16_t> max_measured_value;
-    config() : cluster_revision(4), measured_value(), min_measured_value(), max_measured_value() {}
+    config() : cluster_revision(4), measured_value(), min_measured_value(27315), max_measured_value(32767) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
