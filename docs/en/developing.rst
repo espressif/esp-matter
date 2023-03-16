@@ -1,7 +1,7 @@
 2. Developing with the SDK
 ==========================
 
-Please refer the :project_file:`Release Notes <RELEASE_NOTES.txt>` to know more about
+Please refer the :project_file:`Release Notes <RELEASE_NOTES.md>` to know more about
 the releases
 
 2.1 Development Setup
