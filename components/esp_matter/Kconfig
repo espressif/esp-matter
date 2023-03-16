@@ -65,4 +65,38 @@ menu "ESP Matter"
         help
             APS unicast message count.
 
+    choice ESP_MATTER_MEM_ALLOC_MODE
+        prompt "Memory allocation strategy"
+        default ESP_MATTER_MEM_ALLOC_MODE_INTERNAL
+        help
+            Strategy for allocating memory for Matter data model, essentially provides ability to
+            allocate all required dynamic allocations from,
+
+            - Internal DRAM memory only
+            - External SPIRAM memory only
+            - Either internal or external memory based on default malloc()
+              behavior in ESP-IDF
+            - Internal IRAM memory wherever applicable else internal DRAM
+
+        config ESP_MATTER_MEM_ALLOC_MODE_INTERNAL
+            bool "Internal memory"
+
+        config ESP_MATTER_MEM_ALLOC_MODE_EXTERNAL
+            bool "External SPIRAM"
+            depends on SPIRAM_USE_CAPS_ALLOC || SPIRAM_USE_MALLOC
+
+        config ESP_MATTER_MEM_ALLOC_MODE_DEFAULT
+            bool "Default alloc mode"
+
+        config ESP_MATTER_MEM_ALLOC_MODE_IRAM_8BIT
+            bool "Internal IRAM"
+            depends on ESP32_IRAM_AS_8BIT_ACCESSIBLE_MEMORY
+            help
+                Allows to use IRAM memory region as 8bit accessible region.
+
+                Every unaligned (8bit or 16bit) access will result in an exception
+                and incur penalty of certain clock cycles per unaligned read/write.
+
+    endchoice #ESP_MATTER_MEM_ALLOC_MODE
+
 endmenu

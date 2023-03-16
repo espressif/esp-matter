@@ -19,6 +19,7 @@
 #include <string.h>
 
 #include <esp_matter_bridge.h>
+#include <esp_matter_mem.h>
 #if MAX_BRIDGED_DEVICE_COUNT > 0
 #define ESP_MATTER_BRIDGE_PESISTENT_INFO_KEY "persistent_info"
 #define ESP_MATTER_BRIDGE_NAMESPACE "bridge"
@@ -251,7 +252,7 @@ device_t *create_device(node_t *node, uint16_t parent_endpoint_id, uint32_t devi
     }
 
     // Create bridged device
-    device_t *dev = (device_t *)calloc(1, sizeof(device_t));
+    device_t *dev = (device_t *)esp_matter_mem_calloc(1, sizeof(device_t));
     dev->node = node;
     dev->persistent_info.parent_endpoint_id = parent_endpoint_id;
     bridged_node::config_t bridged_node_config;
@@ -259,7 +260,7 @@ device_t *create_device(node_t *node, uint16_t parent_endpoint_id, uint32_t devi
         bridged_node::create(node, &bridged_node_config, ENDPOINT_FLAG_DESTROYABLE | ENDPOINT_FLAG_BRIDGE, priv_data);
     if (!(dev->endpoint)) {
         ESP_LOGE(TAG, "Could not create esp_matter endpoint for bridged device");
-        free(dev);
+        esp_matter_mem_free(dev);
         return NULL;
     }
     if (set_device_type(dev, device_type_id) != ESP_OK) {
@@ -313,7 +314,7 @@ device_t *resume_device(node_t *node, uint16_t device_endpoint_id, void *priv_da
         ESP_LOGE(TAG, "Parent endpoint is invalid");
         return NULL;
     }
-    device_t *dev = (device_t *)calloc(1, sizeof(device_t));
+    device_t *dev = (device_t *)esp_matter_mem_calloc(1, sizeof(device_t));
     dev->node = node;
     dev->persistent_info = persistent_info;
     bridged_node::config_t bridged_node_config;
@@ -321,7 +322,7 @@ device_t *resume_device(node_t *node, uint16_t device_endpoint_id, void *priv_da
                                          device_endpoint_id, priv_data);
     if (!(dev->endpoint)) {
         ESP_LOGE(TAG, "Could not resume esp_matter endpoint for bridged device");
-        free(dev);
+        esp_matter_mem_free(dev);
         erase_bridged_device_info(device_endpoint_id);
         return NULL;
     }
@@ -349,7 +350,7 @@ esp_err_t remove_device(device_t *bridged_device)
     if (error != ESP_OK) {
         ESP_LOGE(TAG, "Failed to delete bridged endpoint");
     }
-    free(bridged_device);
+    esp_matter_mem_free(bridged_device);
     return error;
 }
 

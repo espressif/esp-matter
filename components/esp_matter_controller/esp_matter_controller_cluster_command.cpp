@@ -21,6 +21,7 @@
 #endif
 #include <esp_matter_controller_cluster_command.h>
 #include <esp_matter_controller_utils.h>
+#include <esp_matter_mem.h>
 #include <json_parser.h>
 
 using namespace chip::app::Clusters;
@@ -438,7 +439,7 @@ esp_err_t cluster_command::send_command()
 esp_err_t send_invoke_cluster_command(uint64_t destination_id, uint16_t endpoint_id, int cmd_data_argc,
                                       char **cmd_data_argv)
 {
-    command_data_t *command_data = (command_data_t *)calloc(1, sizeof(command_data_t));
+    command_data_t *command_data = (command_data_t *)esp_matter_mem_calloc(1, sizeof(command_data_t));
     if (!command_data) {
         ESP_LOGE(TAG, "Failed to alloc memory for command data");
         return ESP_ERR_NO_MEM;
