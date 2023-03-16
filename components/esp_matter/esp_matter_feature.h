@@ -195,9 +195,9 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 namespace position_aware_lift {
 
 typedef struct config {
-    uint16_t current_position_lift_percentage;
-    uint16_t target_position_lift_percent_100ths;
-    uint16_t current_position_lift_percent_100ths;
+    nullable<uint8_t> current_position_lift_percentage;
+    nullable<uint16_t> target_position_lift_percent_100ths;
+    nullable<uint16_t> current_position_lift_percent_100ths;
     config() : current_position_lift_percentage(), target_position_lift_percent_100ths(), current_position_lift_percent_100ths() {}
 } config_t;
 
@@ -210,14 +210,14 @@ namespace absolute_position {
 
 typedef struct config {
     uint16_t physical_closed_limit_lift;
-    uint16_t current_position_lift;
+    nullable<uint16_t> current_position_lift;
     uint16_t installed_open_limit_lift;
     uint16_t installed_closed_limit_lift;
     uint16_t physical_closed_limit_tilt;
-    uint16_t current_position_tilt;
+    nullable<uint16_t> current_position_tilt;
     uint16_t installed_open_limit_tilt;
     uint16_t installed_closed_limit_tilt;
-    config() : physical_closed_limit_lift(0), current_position_lift(0), installed_open_limit_lift(0), installed_closed_limit_lift(65534), physical_closed_limit_tilt(0), current_position_tilt(0), installed_open_limit_tilt(0), installed_closed_limit_tilt(65534) {}
+    config() : physical_closed_limit_lift(0), current_position_lift(), installed_open_limit_lift(0), installed_closed_limit_lift(65534), physical_closed_limit_tilt(0), current_position_tilt(), installed_open_limit_tilt(0), installed_closed_limit_tilt(65534) {}
 } config_t;
 
 uint32_t get_id();
@@ -228,9 +228,9 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 namespace position_aware_tilt {
 
 typedef struct config {
-    uint16_t current_position_tilt_percentage;
-    uint16_t target_position_tilt_percent_100ths;
-    uint16_t current_position_tilt_percent_100ths;
+    nullable<uint8_t> current_position_tilt_percentage;
+    nullable<uint16_t> target_position_tilt_percent_100ths;
+    nullable<uint16_t> current_position_tilt_percent_100ths;
     config() : current_position_tilt_percentage(), target_position_tilt_percent_100ths(), current_position_tilt_percent_100ths() {}
 } config_t;
 
