@@ -816,6 +816,13 @@ static void esp_matter_chip_init_task(intptr_t context)
         sWiFiNetworkCommissioningInstance.Init();
     }
 #endif
+#if CHIP_DEVICE_CONFIG_ENABLE_ETHERNET
+    {
+        static chip::app::Clusters::NetworkCommissioning::Instance sEthernetNetworkCommissioningInstance(0,
+                                            &(chip::DeviceLayer::NetworkCommissioning::ESPEthernetDriver::GetInstance()));
+        sEthernetNetworkCommissioningInstance.Init();
+    }
+#endif
     xTaskNotifyGive(task_to_notify);
 }
 
