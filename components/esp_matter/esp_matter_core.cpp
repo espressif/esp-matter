@@ -862,35 +862,43 @@ static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg
         break;
 #endif
 
+    case chip::DeviceLayer::DeviceEventType::kCommissioningComplete:
+        ESP_LOGI(TAG, "Commissioning Complete");
+        break;
+
 #if CONFIG_BT_ENABLED
 #if CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING
-    case chip::DeviceLayer::DeviceEventType::kCommissioningComplete:
-    {
-        esp_err_t err = ESP_OK;
+    case chip::DeviceLayer::DeviceEventType::kCHIPoBLEConnectionClosed:
+        if(chip::Server::GetInstance().GetFabricTable().FabricCount() > 0) {
+            esp_err_t err = ESP_OK;
 #if CONFIG_BT_NIMBLE_ENABLED
-        if (!ble_hs_is_enabled()) {
-            ESP_LOGI(TAG, "BLE already deinited");
-            return;
-        }
+            if (!ble_hs_is_enabled()) {
+                ESP_LOGI(TAG, "BLE already deinited");
+                return;
+            }
 
-        if (nimble_port_stop() != 0) {
-            ESP_LOGE(TAG, "nimble_port_stop() failed");
-            return;
-        }
+            if (nimble_port_stop() != 0) {
+                ESP_LOGE(TAG, "nimble_port_stop() failed");
+                return;
+            }
 
-        nimble_port_deinit();
+            nimble_port_deinit();
 #if ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(5, 0, 0)
-        err = esp_nimble_hci_and_controller_deinit();
+            err = esp_nimble_hci_and_controller_deinit();
 #endif
 #endif /* CONFIG_BT_NIMBLE_ENABLED */
-        err |= esp_bt_mem_release(ESP_BT_MODE_BTDM);
-        if (err != ESP_OK) {
-            ESP_LOGE(TAG, "BLE deinit failed");
-            return;
+#if CONFIG_IDF_TARGET_ESP32
+            err |= esp_bt_mem_release(ESP_BT_MODE_BTDM);
+#elif CONFIG_IDF_TARGET_ESP32C2 || CONFIG_IDF_TARGET_ESP32C3 || CONFIG_IDF_TARGET_ESP32S3 || CONFIG_IDF_TARGET_ESP32H2
+            err |= esp_bt_mem_release(ESP_BT_MODE_BLE);
+#endif
+            if (err != ESP_OK) {
+                ESP_LOGE(TAG, "BLE deinit failed");
+                return;
+            }
+            ESP_LOGI(TAG, "BLE deinit successful and memory reclaimed");
         }
-        ESP_LOGI(TAG, "BLE deinit successful and memory reclaimed");
         break;
-    }
 #endif /* CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING */
 #endif /* CONFIG_BT_ENABLED */
     default:
