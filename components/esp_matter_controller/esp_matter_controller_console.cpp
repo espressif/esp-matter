@@ -17,6 +17,7 @@
 
 #include <esp_matter_controller_cluster_command.h>
 #include <esp_matter_controller_console.h>
+#include <esp_matter_controller_group_settings.h>
 #include <esp_matter_controller_pairing_command.h>
 #include <esp_matter_controller_read_command.h>
 #include <esp_matter_controller_subscribe_command.h>
@@ -37,6 +38,8 @@ using chip::NodeId;
 using chip::Inet::IPAddress;
 using chip::Transport::PeerAddress;
 using esp_matter::controller::command_data_t;
+
+const static char *TAG = "controller_console";
 
 namespace esp_matter {
 
@@ -69,6 +72,71 @@ static esp_err_t controller_pairing_handler(int argc, char **argv)
         return ESP_ERR_NOT_SUPPORTED;
     }
     return ESP_ERR_INVALID_ARG;
+}
+
+static esp_err_t controller_group_settings_handler(int argc, char **argv)
+{
+    if (argc >= 1) {
+        if (strncmp(argv[0], "show-groups", sizeof("show-groups")) == 0) {
+            return controller::group_settings::show_groups();
+        } else if (strncmp(argv[0], "add-group", sizeof("add-group")) == 0) {
+            if (argc != 3) {
+                return ESP_ERR_INVALID_ARG;
+            }
+            uint16_t group_id = string_to_uint16(argv[1]);
+            char *group_name = argv[2];
+            return controller::group_settings::add_group(group_name, group_id);
+        } else if (strncmp(argv[0], "remove-group", sizeof("remove-group")) == 0) {
+            if (argc != 2) {
+                return ESP_ERR_INVALID_ARG;
+            }
+            uint16_t group_id = string_to_uint16(argv[1]);
+            return controller::group_settings::remove_group(group_id);
+        } else if (strncmp(argv[0], "show-keysets", sizeof("show-keysets")) == 0) {
+            return controller::group_settings::show_keysets();
+        } else if (strncmp(argv[0], "add-keyset", sizeof("add-keyset")) == 0) {
+            if (argc != 5) {
+                return ESP_ERR_INVALID_ARG;
+            }
+            uint16_t keyset_id = string_to_uint16(argv[1]);
+            uint8_t key_policy = string_to_uint8(argv[2]);
+            uint64_t validity_time = string_to_uint64(argv[3]);
+            char *epoch_key_oct_str = argv[4];
+            return controller::group_settings::add_keyset(keyset_id, key_policy, validity_time, epoch_key_oct_str);
+        } else if (strncmp(argv[0], "remove-keyset", sizeof("remove_keyset")) == 0) {
+            if (argc != 2) {
+                return ESP_ERR_INVALID_ARG;
+            }
+            uint16_t keyset_id = string_to_uint16(argv[1]);
+            return controller::group_settings::remove_keyset(keyset_id);
+        } else if (strncmp(argv[0], "bind-keyset", sizeof("bind_keyset")) == 0) {
+            if (argc != 3) {
+                return ESP_ERR_INVALID_ARG;
+            }
+            uint16_t group_id = string_to_uint16(argv[1]);
+            uint16_t keyset_id = string_to_uint16(argv[2]);
+            return controller::group_settings::bind_keyset(group_id, keyset_id);
+        } else if (strncmp(argv[0], "unbind-keyset", sizeof("unbind_keyset")) == 0) {
+            if (argc != 3) {
+                return ESP_ERR_INVALID_ARG;
+            }
+            uint16_t group_id = string_to_uint16(argv[1]);
+            uint16_t keyset_id = string_to_uint16(argv[2]);
+            return controller::group_settings::unbind_keyset(group_id, keyset_id);
+        }
+    }
+    ESP_LOGI(TAG, "Subcommands of group-settings:");
+    ESP_LOGI(TAG, "Show groups   : controller group-settings show-groups");
+    ESP_LOGI(TAG, "Add group     : controller group-settings add-group <group_id> <group_name>");
+    ESP_LOGI(TAG, "Remove group  : controller group-settings remove-group <group_id>");
+    ESP_LOGI(TAG, "Show keysets  : controller group-settings show-keysets");
+    ESP_LOGI(TAG,
+             "Add keyset    : controller group-settings add-keyset <ketset_id> <policy> <validity_time> "
+             "<epoch_key_oct_str>");
+    ESP_LOGI(TAG, "Remove keyset : controller group-settings remove-keyset <ketset_id>");
+    ESP_LOGI(TAG, "Bind keyset   : controller group-settings bind-keyset <group_id> <ketset_id>");
+    ESP_LOGI(TAG, "Unbind keyset : controller group-settings unbind-keyset <group_id> <ketset_id>");
+    return ESP_OK;
 }
 
 static esp_err_t controller_invoke_command_handler(int argc, char **argv)
@@ -188,62 +256,72 @@ esp_err_t controller_register_commands()
 #if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
         {
             .name = "pairing",
-            .description = "Pairing a node. "
-                           "Usage: controller pairing onnetwork [nodeid] [pincode] Or "
-                           "controller pairing ble-wifi [nodeid] [pincode] [discriminator] [ssid] [password] Or "
-                           "controller pairing ble-thread [nodeid] [pincode] [discriminator] [dataset]",
+            .description = "Pairing a node.\n"
+                           "\tUsage: controller pairing onnetwork [nodeid] [pincode] Or\n"
+                           "\tcontroller pairing ble-wifi [nodeid] [pincode] [discriminator] [ssid] [password] Or\n"
+                           "\tcontroller pairing ble-thread [nodeid] [pincode] [discriminator] [dataset]",
             .handler = controller_pairing_handler,
         },
 #endif
         {
+            .name = "group-settings",
+            .description = "Managing the groups and keysets of the controller.\n"
+                           "\tUsage: controller group-settings <sub-commands>",
+            .handler = controller_group_settings_handler,
+        },
+        {
             .name = "invoke-cmd",
-            .description = "Send command to the nodes. "
-                           "Usage: controller invoke-cmd [node-id] [endpoint-id] [cluster-id] [command-id] [payload]",
+            .description =
+                "Send command to the nodes.\n"
+                "\tUsage: controller invoke-cmd [node-id|group-id] [endpoint-id] [cluster-id] [command-id] [payload]\n"
+                "\tNotes: group-id should start with prefix '0xFFFFFFFFFFFF', endpoint-id will be ignored if the fist "
+                "parameter is group-id.",
             .handler = controller_invoke_command_handler,
         },
         {
             .name = "read-attr",
-            .description = "Read attributes of the nodes. "
-                           "Usage: controller read-attr [node-id] [endpoint-id] [cluster-id] [attr-id]",
+            .description = "Read attributes of the nodes.\n"
+                           "\tUsage: controller read-attr [node-id] [endpoint-id] [cluster-id] [attr-id]",
             .handler = controller_read_attr_handler,
         },
         {
             .name = "write-attr",
-            .description = "Write attributes of the nodes. "
-                           "Usage: controller write-attr [node-id] [endpoint-id] [cluster-id] [attr-id] [attr-value]",
+            .description =
+                "Write attributes of the nodes.\n"
+                "\tUsage: controller write-attr [node-id|group-id] [endpoint-id] [cluster-id] [attr-id] [attr-value]",
             .handler = controller_write_attr_handler,
         },
         {
             .name = "read-event",
-            .description = "Read events of the nodes. "
-                           "Usage: controller read-event [node-id] [endpoint-id] [cluster-id] [event-id]",
+            .description = "Read events of the nodes.\n"
+                           "\tUsage: controller read-event [node-id] [endpoint-id] [cluster-id] [event-id]",
             .handler = controller_read_event_handler,
         },
         {
             .name = "subs-attr",
-            .description = "Subscribe attributes of the nodes. "
-                           "Usage: controller subs-attr [node-id] [endpoint-id] [cluster-id] [attr-id] [min-interval] "
-                           "[max-interval]",
+            .description = "Subscribe attributes of the nodes.\n"
+                           "\tUsage: controller subs-attr [node-id] [endpoint-id] [cluster-id] [attr-id] "
+                           "[min-interval] [max-interval]",
             .handler = controller_subscribe_attr_handler,
         },
         {
             .name = "subs-event",
-            .description = "Subscribe events of the nodes. "
-                           "Usage: controller subs-attr [node-id] [endpoint-id] [cluster-id] [event-id] [min-interval] "
-                           "[max-interval]",
+            .description = "Subscribe events of the nodes.\n"
+                           "\tUsage: controller subs-attr [node-id] [endpoint-id] [cluster-id] [event-id] "
+                           "[min-interval] [max-interval]",
             .handler = controller_subscribe_event_handler,
         },
         {
             .name = "shutdown-subs",
-            .description = "Shutdown subscription."
-                           "Usage: controller shutdown-subs [node-id] [subscription-id]",
+            .description = "Shutdown subscription.\n"
+                           "\tUsage: controller shutdown-subs [node-id] [subscription-id]",
             .handler = controller_shutdown_subscription_handler,
         },
     };
 
     const static command_t controller_command = {
         .name = "controller",
-        .description = "Controller commands. Usage: matter controller [command_name]",
+        .description = "Controller commands. Usage: matter esp controller [command_name]",
         .handler = controller_dispatch,
     };
     // Register the controller commands

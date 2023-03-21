@@ -14,9 +14,9 @@
 #include <esp_matter_core.h>
 #include <esp_matter_bridge.h>
 
+#include <app_bridged_device.h>
 #include <blemesh_bridge.h>
 #include <app_blemesh.h>
-#include <app_bridged_device.h>
 
 static const char *TAG = "blemesh_bridge";
 
@@ -69,9 +69,8 @@ esp_err_t blemesh_bridge_match_bridged_onoff_light(uint8_t *composition_data, ui
 }
 
 esp_err_t blemesh_bridge_attribute_update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
-                                          esp_matter_attr_val_t *val)
+                                          esp_matter_attr_val_t *val, app_bridged_device_t *bridged_device)
 {
-    app_bridged_device_t *bridged_device = app_bridge_get_device_by_matter_endpointid(endpoint_id);
     if (bridged_device && bridged_device->dev && bridged_device->dev->endpoint) {
         if (cluster_id == OnOff::Id) {
             if (attribute_id == OnOff::Attributes::OnOff::Id) {
@@ -79,6 +78,9 @@ esp_err_t blemesh_bridge_attribute_update(uint16_t endpoint_id, uint32_t cluster
                 app_ble_mesh_onoff_set(bridged_device->dev_addr.blemesh_addr, val->val.b);
             }
         }
+    }
+    else{
+        ESP_LOGE(TAG, "Unable to Update Bridge Device, ep: %d, cluster: %d, att: %d", endpoint_id, cluster_id, attribute_id);
     }
     return ESP_OK;
 }

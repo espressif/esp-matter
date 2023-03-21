@@ -1,7 +1,7 @@
 2. Developing with the SDK
 ==========================
 
-Please refer the :project_file:`Release Notes <RELEASE_NOTES.txt>` to know more about
+Please refer the :project_file:`Release Notes <RELEASE_NOTES.md>` to know more about
 the releases
 
 2.1 Development Setup
@@ -24,7 +24,7 @@ Additionally, we also support developing on Windows Host using WSL.
 The Prerequisites for ESP-IDF and Matter:
 
 - Please see `Prerequisites <https://docs.espressif.com/projects/esp-idf/en/v4.4.3/esp32/get-started/index.html#step-1-install-prerequisites>`__ for ESP IDF.
-- Please get the `Prerequisites <https://github.com/project-chip/connectedhomeip/blob/master/docs/guides/BUILDING.md#prerequisites>`__ for Matter.
+- Please get the `Prerequisites <https://github.com/espressif/connectedhomeip/blob/v1.0.0.2/docs/guides/BUILDING.md#prerequisites>`__ for Matter.
 
 
 
@@ -41,7 +41,7 @@ Development on Windows is supported using Windows Subsystem for Linux (WSL). Ple
   and `WSL <https://github.com/espressif/vscode-esp-idf-extension/blob/master/docs/WSL.md#usbipd>`__ (usbipd-win `WSL Support <https://github.com/dorssel/usbipd-win/wiki/WSL-support>`__).
 - Here onwards process for setting esp-matter and building examples is same as other hosts.
 
-For using VSCode for developement, please check `Developing in WSL <https://code.visualstudio.com/docs/remote/wsl>`__.
+For using VSCode for development, please check `Developing in WSL <https://code.visualstudio.com/docs/remote/wsl>`__.
 
 
 2.1.2 Getting the Repositories
@@ -199,11 +199,11 @@ Choose IDF target.
 2.2 Commissioning and Control
 -----------------------------
 
-There are a few implementations of Matter commissioner present in the `connectedhomeip <https://github.com/project-chip/connectedhomeip/tree/master/src/controller#implementations>`__ repository.
+There are a few implementations of Matter commissioners present in the `connectedhomeip <https://github.com/espressif/connectedhomeip/tree/v1.0.0.2/src/controller#implementations>`__ repository.
 
 CHIP Tool is an example implementation of Matter commissioner and used for development purposes.
 
-Espressif also has an iOS application, `Espressif-Matter <https://apps.apple.com/in/app/espressif-matter/id1604739172>`__, to commission and control the Matter devices. Please follow `profile installation instructions <https://github.com/project-chip/connectedhomeip/blob/master/docs/guides/darwin.md#profile-installation>`__ in order to use the application.
+Espressif also has an iOS application, `Espressif-Matter <https://apps.apple.com/in/app/espressif-matter/id1604739172>`__, to commission and control the Matter devices. Please follow `profile installation instructions <https://github.com/espressif/connectedhomeip/blob/v1.0.0.2/docs/guides/darwin.md#profile-installation>`__ in order to use the application. Also, make sure to enable Developer Mode on the iOS.
 
 2.2.1 Test Setup (CHIP Tool)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -352,7 +352,7 @@ Use the cluster commands to control the attributes.
 
 chip-tool when used in interactive mode uses CASE resumption as against establishing CASE for cluster control commands. This results into shorter execution times, thereby improving the overall experience.
 
-For more details on chip-tool usage, check https://github.com/project-chip/connectedhomeip/tree/master/examples/chip-tool
+For more details on chip-tool usage, check https://github.com/espressif/connectedhomeip/tree/v1.0.0.2/examples/chip-tool
 
 2.3 Device console
 ------------------
@@ -370,12 +370,6 @@ The console on the device can be used to run commands for testing. It is configu
    ::
 
       matter wifi mode [disable|ap|sta]
-
--  Wi-Fi connect: Connect to the Access Point
-
-   ::
-
-      matter wifi connect <ssid> <password>
 
 -  Device configuration: Dump the device static configuration:
 
@@ -426,6 +420,12 @@ Additional Matter specific commands:
    ::
 
       matter esp diagnostics mem-dump
+
+-  Wi-Fi
+
+   ::
+
+      matter esp wifi connect <ssid> <password>
 
 2.4 Developing your Product
 ---------------------------
@@ -766,20 +766,21 @@ As an example, you can build *light* example on ``ESP32_custom`` platform with f
 
 2.4.5 Controller Example
 ~~~~~~~~~~~~~~~~~~~~~~~~
-This section introduces the Matter controller example. Now this example supports 4 features of the standard Matter controller, including onnetwork-pairing, unicast-cluster-commands(onoff, levelcontrol, colorcontrol), read-attributes-commands, and unicast-write-attributes-commands(onoff, levelcontrol, colorcontrol).
+This section introduces the Matter controller example. Now this example supports 8 features of the standard Matter controller, including onnetwork-pairing, invoke-cluster-commands, read-attributes-commands, write-attributes-commands, read-events-commands, subscribe-attributes-commands, subscribe-events-commands, and groupsettings-command.
 
 2.4.5.1 Starting with device console
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-After you flash the controller example to the device. you can use `device console<https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#device-console>` to commission and send commands to the end-device. All of the controller commands start with *matter esp controller*.
+After you flash the controller example to the device, you can use `device console <https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#device-console>`__ to commission and send commands to the end-device. All of the controller commands start with *matter esp controller*.
 
 2.4.5.2 Pairing commands
 ^^^^^^^^^^^^^^^^^^^^^^^^
-The *pairing* command is used for commissioning the end-devices. Here are three standard pairing methods:
+The ``pairing`` command is used for commissioning the end-devices. Here are three standard pairing methods:
 
-- Onnetwork pairing. Before you execute this commissioning method, you should connect both controller and end-device to the same network and ensure the commissioning window of the end-device is opened. You can use the command *matter wifi connect* to complete this process. Then we can start the pairing.
+- Onnetwork pairing. Before you execute this commissioning method, you should connect both controller and end-device to the same network and ensure the commissioning window of the end-device is opened. You can use the command ``matter esp wifi connect`` to complete this process. Then we can start the pairing.
 
    ::
 
+      matter esp wifi connect <ssid> <password>
       matter esp controller pairing onnetwork <node_id> <setup_passcode>
 
 - Ble-wifi pairing. This commissioning method is still not supported on current controller example.
@@ -788,17 +789,19 @@ The *pairing* command is used for commissioning the end-devices. Here are three 
 
 2.4.5.3 Cluster commands
 ^^^^^^^^^^^^^^^^^^^^^^^^
-The *invoke-cmd* command is used for sending cluster commands to the end-devices. Currently the controller only supports commands of on-off, level-control, and color-control clusters.
+The ``invoke-cmd`` command is used for sending cluster commands to the end-devices. Currently the controller only supports commands of on-off, level-control, and color-control clusters. The on-off cluster supports both unicast and multicast sending, and the other two clusters only support unicast sending.
 
 - Send the cluster command:
 
    ::
 
-      matter esp controller invoke-cmd <node_id> <endpoint_id> <cluster_id> <command_id> <command_data>
+      matter esp controller invoke-cmd <node_id | group-id> <endpoint_id> <cluster_id> <command_id> <command_data>
+
+Notes: ``group-id`` should start with the ``0xFFFFFFFFFFFF`` prefix, and ``endpoint-id`` will be ignored for multicast commands.
 
 2.4.5.4 Read attribute commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The *read-attr* command is used for sending the commands of reading attributes on the end-device.
+The ``read-attr`` command is used for sending the commands of reading attributes on the end-device.
 
 - Send the read-attribute command:
 
@@ -806,9 +809,9 @@ The *read-attr* command is used for sending the commands of reading attributes o
 
       matter esp controller read-attr <node_id> <endpoint_id> <cluster_id> <attribute_id>
 
-2.4.5.4 Read event commands
+2.4.5.5 Read event commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The *read-event* command is used for sending the commands of reading events on the end-device.
+The ``read-event`` command is used for sending the commands of reading events on the end-device.
 
 - Send the read-event command:
 
@@ -816,9 +819,9 @@ The *read-event* command is used for sending the commands of reading events on t
 
       matter esp controller read-event <node_id> <endpoint_id> <cluster_id> <event_id>
 
-2.4.5.5 Write attribute commands
+2.4.5.6 Write attribute commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The *write-attr* command is used for sending the commands of writing attributes on the end-device. Currently the controller only supports unicast-attributes-writing of on-off, level-control, and color-control clusters.
+The ``write-attr`` command is used for sending the commands of writing attributes on the end-device. Currently the controller only supports unicast-attributes-writing of on-off, level-control, color-control, access-control, binding, and group-key-management clusters.
 
 - Send the write-attribute command:
 
@@ -826,9 +829,9 @@ The *write-attr* command is used for sending the commands of writing attributes 
 
       matter esp controller write-attr <node_id> <endpoint_id> <cluster_id> <attribute_id> <attribute_value>
 
-2.4.5.6 Subscribe attribute commands
+2.4.5.7 Subscribe attribute commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The *subs-attr* command is used for sending the commands of subscribing attributes on the end-device.
+The ``subs-attr`` command is used for sending the commands of subscribing attributes on the end-device.
 
 - Send the subscribe-attribute command:
 
@@ -836,9 +839,9 @@ The *subs-attr* command is used for sending the commands of subscribing attribut
 
      matter esp controller subs-attr <node_id> <endpoint_id> <cluster_id> <attribute_id> <min-interval> <max-interval>
 
-2.4.5.7 Subscribe event commands
+2.4.5.8 Subscribe event commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The *subs-event* command is used for sending the commands of subscribing events on the end-device.
+The ``subs-event`` command is used for sending the commands of subscribing events on the end-device.
 
 - Send the subscribe-event command:
 
@@ -846,6 +849,22 @@ The *subs-event* command is used for sending the commands of subscribing events 
 
      matter esp controller subs-event <node_id> <endpoint_id> <cluster_id> <event_id> <min-interval> <max-interval>
 
+2.4.5.9 Group settings commands
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The ``group-settings`` command is used for setting group information of the controller. The controller should be the same group with the end-device if it wants to send multicast commands to the end-device.
+
+- Set group information of the controller:
+
+  ::
+
+     matter esp controller group-settings show-groups
+     matter esp controller group-settings add-group <group_id> <group_name>
+     matter esp controller group-settings remove-group <group_id>
+     matter esp controller group-settings show-keysets
+     matter esp controller group-settings add-keyset <ketset_id> <policy> <validity_time> <epoch_key_oct_str>
+     matter esp controller group-settings remove-keyset <ketset_id>
+     matter esp controller group-settings bind-keyset <group_id> <ketset_id>
+     matter esp controller group-settings unbind-keyset <group_id> <ketset_id>
 
 2.5 Using esp_secure_cert partition
 -----------------------------------
@@ -872,7 +891,7 @@ Build the firmware with below configuration options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you do not have an certification declaration file then you can generate the test CD with the help of below mentioned steps.
-We need to generate the new CD because it SHALL match the VID PID in DAC and the ones reported by basic cluster.
+We need to generate the new CD because it SHALL match the VID, PID in DAC and the ones reported by basic cluster.
 
 - Build the host tools if not done already
 
@@ -883,7 +902,7 @@ We need to generate the new CD because it SHALL match the VID PID in DAC and the
     ninja -C build
 
 Generate the Test CD, please make sure to change the ``-V`` (vendor_id) and ``-p`` (product-id) options based on the ones that are being used.
-For more into about the arguments, please check `here <https://github.com/project-chip/connectedhomeip/tree/master/src/tools/chip-cert#gen-cd>`__.
+For more info about the arguments, please check `here <https://github.com/espressif/connectedhomeip/tree/v1.0.0.2/src/tools/chip-cert#gen-cd>`__.
 
 ::
 

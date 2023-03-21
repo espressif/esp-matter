@@ -18,6 +18,7 @@
 #include <string.h>
 
 #include <app_bridged_device.h>
+#include <esp_matter_mem.h>
 
 // The bridge app can be used only when MAX_BRIDGED_DEVICE_COUNT > 0
 #if defined(MAX_BRIDGED_DEVICE_COUNT) && MAX_BRIDGED_DEVICE_COUNT > 0
@@ -125,11 +126,11 @@ app_bridged_device_t *app_bridge_create_bridged_device(node_t *node, uint16_t pa
         ESP_LOGE(TAG, "The device list is full, Could not add a zigbee bridged device");
         return NULL;
     }
-    app_bridged_device_t *new_dev = (app_bridged_device_t *)calloc(1, sizeof(app_bridged_device_t));
-    new_dev->dev = esp_matter_bridge::create_device(node, parent_endpoint_id, matter_device_type_id);
+    app_bridged_device_t *new_dev = (app_bridged_device_t *)esp_matter_mem_calloc(1, sizeof(app_bridged_device_t));
+    new_dev->dev = esp_matter_bridge::create_device(node, parent_endpoint_id, matter_device_type_id, new_dev);
     if (!(new_dev->dev)) {
         ESP_LOGE(TAG, "Failed to create the bridged device");
-        free(new_dev);
+        esp_matter_mem_free(new_dev);
         return NULL;
     }
 
@@ -170,15 +171,15 @@ esp_err_t app_bridge_initialize(node_t *node)
                          matter_endpoint_id_array[idx]);
                 continue;
             }
-            app_bridged_device_t *new_dev = (app_bridged_device_t *)calloc(1, sizeof(app_bridged_device_t));
+            app_bridged_device_t *new_dev = (app_bridged_device_t *)esp_matter_mem_calloc(1, sizeof(app_bridged_device_t));
             if (!new_dev) {
                 ESP_LOGE(TAG, "Failed to alloc memory for the resumed bridged device");
                 continue;
             }
-            new_dev->dev = esp_matter_bridge::resume_device(node, matter_endpoint_id_array[idx]);
+            new_dev->dev = esp_matter_bridge::resume_device(node, matter_endpoint_id_array[idx], new_dev);
             if (!(new_dev->dev)) {
                 ESP_LOGE(TAG, "Failed to resume the bridged device");
-                free(new_dev);
+                esp_matter_mem_free(new_dev);
                 continue;
             }
             new_dev->dev_type = device_type;
@@ -224,24 +225,12 @@ esp_err_t app_bridge_remove_device(app_bridged_device_t *bridged_device)
     if (error != ESP_OK) {
         ESP_LOGE(TAG, "Failed to delete bridged device");
     }
-    free(bridged_device);
+    esp_matter_mem_free(bridged_device);
 
     return error;
 }
 
 /** ZigBee Device APIs */
-app_bridged_device_t *app_bridge_get_device_by_matter_endpointid(uint16_t matter_endpointid)
-{
-    app_bridged_device_t *current_dev = g_bridged_device_list;
-    while (current_dev) {
-        if (current_dev->dev && (esp_matter::endpoint::get_id(current_dev->dev->endpoint) == matter_endpointid)) {
-            return current_dev;
-        }
-        current_dev = current_dev->next;
-    }
-    return NULL;
-}
-
 app_bridged_device_t *app_bridge_get_device_by_zigbee_shortaddr(uint16_t zigbee_shortaddr)
 {
     app_bridged_device_t *current_dev = g_bridged_device_list;

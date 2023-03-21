@@ -31,11 +31,11 @@ esp_err_t set_callback(callback_t callback)
     return ESP_OK;
 }
 
-static esp_err_t execute_callback(callback_type_t type, uint16_t endpoint_id, uint8_t effect_id)
+static esp_err_t execute_callback(callback_type_t type, uint16_t endpoint_id, uint8_t effect_id, uint8_t effect_variant)
 {
     if (identification_callback) {
         void *priv_data = endpoint::get_priv_data(endpoint_id);
-        return identification_callback(type, endpoint_id, effect_id, priv_data);
+        return identification_callback(type, endpoint_id, effect_id, effect_variant, priv_data);
     }
     return ESP_OK;
 }
@@ -43,24 +43,26 @@ static esp_err_t execute_callback(callback_type_t type, uint16_t endpoint_id, ui
 static void start_cb(Identify *identify)
 {
     ESP_LOGI(TAG, "Start callback");
-    execute_callback(START, identify->mEndpoint, identify->mCurrentEffectIdentifier);
+    execute_callback(START, identify->mEndpoint, identify->mCurrentEffectIdentifier, identify->mEffectVariant);
 }
 
 static void stop_cb(Identify *identify)
 {
     ESP_LOGI(TAG, "Stop callback");
-    execute_callback(STOP, identify->mEndpoint, identify->mCurrentEffectIdentifier);
+    execute_callback(STOP, identify->mEndpoint, identify->mCurrentEffectIdentifier, identify->mEffectVariant);
 }
 
 static void effect_cb(Identify *identify)
 {
     ESP_LOGI(TAG, "Effect callback");
-    execute_callback(EFFECT, identify->mEndpoint, identify->mCurrentEffectIdentifier);
+    execute_callback(EFFECT, identify->mEndpoint, identify->mCurrentEffectIdentifier, identify->mEffectVariant);
 }
 
-esp_err_t init(uint16_t endpoint_id, uint8_t identify_type)
+esp_err_t init(uint16_t endpoint_id, uint8_t identify_type, uint8_t effect_identifier, uint8_t effect_variant)
 {
-    Identify *identify = new Identify(endpoint_id, start_cb, stop_cb, (EmberAfIdentifyIdentifyType)identify_type, effect_cb);
+    Identify *identify = new Identify(endpoint_id, start_cb, stop_cb, (EmberAfIdentifyIdentifyType)identify_type,
+                                      effect_cb, static_cast<EmberAfIdentifyEffectIdentifier>(effect_identifier),
+                                      static_cast<EmberAfIdentifyEffectVariant>(effect_variant));
     if (!identify) {
         ESP_LOGE(TAG, "Fail to create identify object");
         return ESP_FAIL;

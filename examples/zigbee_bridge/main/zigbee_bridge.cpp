@@ -50,9 +50,8 @@ void zigbee_bridge_find_bridged_on_off_light_cb(zb_uint8_t zdo_status, zb_uint16
 }
 
 esp_err_t zigbee_bridge_attribute_update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
-                                         esp_matter_attr_val_t *val)
+                                         esp_matter_attr_val_t *val, app_bridged_device_t *zigbee_device)
 {
-    app_bridged_device_t *zigbee_device = app_bridge_get_device_by_matter_endpointid(endpoint_id);
     if (zigbee_device && zigbee_device->dev && zigbee_device->dev->endpoint) {
         if (cluster_id == OnOff::Id) {
             if (attribute_id == OnOff::Attributes::OnOff::Id) {
@@ -67,6 +66,9 @@ esp_err_t zigbee_bridge_attribute_update(uint16_t endpoint_id, uint32_t cluster_
                 esp_zb_zcl_on_off_cmd_req(&cmd_req);
             }
         }
+    }
+    else{
+        ESP_LOGE(TAG, "Unable to Update Bridge Device, ep: %d, cluster: %d, att: %d", endpoint_id, cluster_id, attribute_id);
     }
     return ESP_OK;
 }

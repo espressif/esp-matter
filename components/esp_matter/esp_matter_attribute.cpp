@@ -1537,10 +1537,10 @@ attribute_t *create_current_position_tilt_percentage(cluster_t *cluster, nullabl
                                          esp_matter_nullable_uint8(value));
 }
 
-attribute_t *create_operational_status(cluster_t *cluster, nullable<uint8_t> value)
+attribute_t *create_operational_status(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, WindowCovering::Attributes::OperationalStatus::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_bitmap8(value));
 }
 
 attribute_t *create_target_position_lift_percent_100ths(cluster_t *cluster, nullable<uint16_t> value)
@@ -1555,7 +1555,7 @@ attribute_t *create_target_position_tilt_percent_100ths(cluster_t *cluster, null
                                          ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
 }
 
-attribute_t *create_end_product_type(cluster_t *cluster, uint8_t value)
+attribute_t *create_end_product_type(cluster_t *cluster, const uint8_t value)
 {
     return esp_matter::attribute::create(cluster, WindowCovering::Attributes::EndProductType::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_enum8(value));
@@ -1599,16 +1599,16 @@ attribute_t *create_installed_closed_limit_tilt(cluster_t *cluster, uint16_t val
                                          ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint16(value));
 }
 
-attribute_t *create_mode(cluster_t *cluster, uint16_t value)
+attribute_t *create_mode(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::Mode::Id, ATTRIBUTE_FLAG_NONVOLATILE,
-                                         esp_matter_uint16(value));
+    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::Mode::Id, ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE,
+                                         esp_matter_bitmap8(value));
 }
 
 attribute_t *create_safety_status(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, WindowCovering::Attributes::SafetyStatus::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_uint16(value));
+                                         esp_matter_bitmap16(value));
 }
 
 } /* attribute */
@@ -1742,6 +1742,281 @@ attribute_t *create_supported_calendar_types(cluster_t *cluster, uint8_t *value,
 
 } /* attribute */
 } /* time_format_localization */
+
+namespace illuminance_measurement {
+namespace attribute {
+
+attribute_t *create_illuminance_measured_value(cluster_t *cluster, nullable<uint16_t> value, nullable<uint16_t> min, nullable<uint16_t> max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, IlluminanceMeasurement::Attributes::MeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+    if (!attribute) {
+	ESP_LOGE(TAG, "Could not create attribute");
+	return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint16(min), esp_matter_nullable_uint16(max));
+    return attribute;
+}
+
+attribute_t *create_illuminance_min_measured_value(cluster_t *cluster, nullable<uint16_t> value, nullable<uint16_t> min, nullable<uint16_t> max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, IlluminanceMeasurement::Attributes::MinMeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+    if (!attribute) {
+	ESP_LOGE(TAG, "Could not create attribute");
+	return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint16(min), esp_matter_nullable_uint16(max));
+    return attribute;
+}
+
+attribute_t *create_illuminance_max_measured_value(cluster_t *cluster, nullable<uint16_t> value, nullable<uint16_t> min, nullable<uint16_t> max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, IlluminanceMeasurement::Attributes::MaxMeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+    if (!attribute) {
+	ESP_LOGE(TAG, "Could not create attribute");
+	return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint16(min), esp_matter_nullable_uint16(max));
+    return attribute;
+}
+
+attribute_t *create_illuminance_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, IlluminanceMeasurement::Attributes::Tolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+   if (!attribute) {
+	ESP_LOGE(TAG, "Could not create attribute");
+	return NULL;
+   }
+   esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(min), esp_matter_uint16(max));
+   return attribute;
+}
+
+attribute_t *create_illuminance_light_sensor_type(cluster_t *cluster, nullable<uint8_t> value, nullable<uint8_t> min, nullable<uint8_t> max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, IlluminanceMeasurement::Attributes::LightSensorType::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_enum8(value));
+    if (!attribute) {
+	ESP_LOGE(TAG, "Could not create attribute");
+	return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_enum8(min), esp_matter_nullable_enum8(max));
+    return attribute;
+}
+
+} /* attribute */
+} /* illuminance_measurement */
+
+namespace pressure_measurement {
+namespace attribute {
+
+attribute_t *create_pressure_measured_value(cluster_t *cluster, nullable<int16_t> value)
+{
+	return esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::MeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_pressure_min_measured_value(cluster_t *cluster, nullable<int16_t> value)
+{
+	return esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::MinMeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_pressure_max_measured_value(cluster_t *cluster, nullable<int16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::MaxMeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_pressure_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::Tolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+    if (!attribute) {
+	ESP_LOGE(TAG, "Could not create attribute");
+	return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(min), esp_matter_uint16(max));
+    return attribute;
+}
+
+attribute_t *create_pressure_scaled_value(cluster_t *cluster, nullable<int16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::ScaledValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_pressure_min_scaled_value(cluster_t *cluster, nullable<int16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::MinScaledValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_pressure_max_scaled_value(cluster_t *cluster, nullable<int16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::MaxScaledValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_pressure_scaled_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::ScaledTolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+    if (!attribute) {
+	ESP_LOGE(TAG, "Could not create attribute");
+	return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(min), esp_matter_uint16(max));
+    return attribute;
+}
+
+attribute_t *create_pressure_scale(cluster_t *cluster, int8_t value)
+{
+    return esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::Scale::Id, ATTRIBUTE_FLAG_NONE, esp_matter_int8(value));
+}
+
+} /* attribute */
+} /* pressure_measurement */
+
+namespace flow_measurement {
+namespace attribute {
+
+attribute_t *create_flow_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, FlowMeasurement::Attributes::MeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_flow_min_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, FlowMeasurement::Attributes::MinMeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_flow_max_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, FlowMeasurement::Attributes::MaxMeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_flow_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, FlowMeasurement::Attributes::Tolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+    if (!attribute) {
+	ESP_LOGE(TAG, "Could not create attribute");
+	return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(min), esp_matter_uint16(max));
+    return attribute;
+}
+} /* attribute */
+} /* flow_measurement */
+
+namespace pump_configuration_and_control {
+namespace attribute {
+
+attribute_t *create_max_pressure(cluster_t *cluster, nullable<int16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MaxPressure::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_max_speed(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MaxSpeed::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_max_flow(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MaxFlow::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_min_const_pressure(cluster_t *cluster, nullable<int16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MinConstPressure::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_max_const_pressure(cluster_t *cluster, nullable<int16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MaxConstPressure::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_min_comp_pressure(cluster_t *cluster, nullable<int16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MinCompPressure::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_max_comp_pressure(cluster_t *cluster, nullable<int16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MaxCompPressure::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_min_const_speed(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MinConstSpeed::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_max_const_speed(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MaxConstSpeed::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_min_const_flow(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MinConstFlow::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_max_const_flow(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MaxConstFlow::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_min_const_temp(cluster_t *cluster, nullable<int16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MinConstTemp::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_max_const_temp(cluster_t *cluster, nullable<int16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MaxConstTemp::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_pump_status(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::PumpStatus::Id, ATTRIBUTE_FLAG_NONE, esp_matter_bitmap16(value));
+}
+
+attribute_t *create_effective_operation_mode(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::EffectiveOperationMode::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_enum8(value));
+}
+
+attribute_t *create_effective_control_mode(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::EffectiveControlMode::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_enum8(value));
+}
+
+attribute_t *create_capacity(cluster_t *cluster, nullable<int16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::Capacity::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_speed(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::Speed::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_lifetime_running_hours(cluster_t *cluster, nullable<uint32_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::LifetimeRunningHours::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint32(value));
+}
+
+attribute_t *create_pump_power(cluster_t *cluster, nullable<uint32_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::Power::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+}
+
+attribute_t *create_lifetime_energy_consumed(cluster_t *cluster, nullable<uint32_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::LifetimeEnergyConsumed::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint32(value));
+}
+
+attribute_t *create_operation_mode(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::OperationMode::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_enum8(value));
+}
+
+attribute_t *create_control_mode(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::ControlMode::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_enum8(value));
+}
+} /* attribute */
+} /* pump_configuration_and_control */
 
 } /* cluster */
 } /* esp_matter */

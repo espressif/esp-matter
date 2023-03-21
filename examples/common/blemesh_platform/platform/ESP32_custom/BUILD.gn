@@ -22,6 +22,7 @@ chip_enable_wifi = true
 declare_args() {
   # By default use default/example implementation of CommissionableDataProvider,
   # DeviceAttestationCredentialsProvider and DeviceInstanceInforProvider
+  chip_use_transitional_commissionable_data_provider = true
   chip_use_factory_data_provider = false
   chip_use_device_info_provider = false
   chip_config_software_version_number = 0

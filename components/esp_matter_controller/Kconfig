@@ -20,4 +20,23 @@ menu "ESP Matter Controller"
         help
             Maximum number of active device the commissioner supports.
 
+    choice ESP_MATTER_COMMISSIONER_ATTESTATION_TRUST_STORE
+        prompt "Attestation Trust Store"
+        depends on ESP_MATTER_COMMISSIONER_ENABLE
+        default TEST_ATTESTATION_TRUST_STORE
+        help
+            This option determines where the commissioner reads PAA trust root certificate.
+
+        config TEST_ATTESTATION_TRUST_STORE
+            bool "Attestation Trust Store - Test"
+            help
+                Use the two hardcoded PAA certificates(Chip-Test-PAA-FFF1-Cert&Chip-Test-PAA-NoVID-Cert) in the firmware.
+
+        config SPIFFS_ATTESTATION_TRUST_STORE
+            bool "Attestation Trust Store - Spiffs"
+            help
+                Read the PAA root certificates from the spiffs partition
+
+    endchoice
+
 endmenu

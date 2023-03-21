@@ -20,6 +20,7 @@ import("${chip_root}/src/platform/device.gni")
 declare_args() {
   # By default use default/example implementation of CommissionableDataProvider,
   # DeviceAttestationCredentialsProvider and DeviceInstanceInforProvider
+  chip_use_transitional_commissionable_data_provider = true
   chip_use_factory_data_provider = false
   chip_use_device_info_provider = false
   chip_config_software_version_number = 0
@@ -114,6 +115,13 @@ static_library("ESP32_custom") {
   public_configs = [
     ":ESP32_custom_include",
   ]
+
+  if (chip_mdns == "platform") {
+    sources += [
+      "DnssdImpl.cpp",
+      "DnssdImpl.h",
+    ]
+  }
 
   if (chip_enable_ota_requestor) {
     sources += [

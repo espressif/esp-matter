@@ -637,7 +637,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
-    window_covering::create(endpoint, &(config->window_covering), CLUSTER_FLAG_SERVER);
+    window_covering::create(endpoint, &(config->window_covering), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
 
     return endpoint;
 }
@@ -741,6 +741,141 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
     return endpoint;
 }
 } /* contact_sensor */
+
+namespace light_sensor {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_LIGHT_SENSOR_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_LIGHT_SENSOR_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+        return NULL;
+    }
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    illuminance_measurement::create(endpoint, &(config->illuminance_measurement), CLUSTER_FLAG_SERVER);
+
+    return endpoint;
+}
+} /* light_sensor */
+
+namespace pressure_sensor {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_PRESSURE_SENSOR_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_PRESSURE_SENSOR_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+        return NULL;
+    }
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    pressure_measurement::create(endpoint, &(config->pressure_measurement), CLUSTER_FLAG_SERVER);
+
+    return endpoint;
+}
+} /* pressure_sensor */
+
+namespace flow_sensor {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_FLOW_SENSOR_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_FLOW_SENSOR_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+        return NULL;
+    }
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    flow_measurement::create(endpoint, &(config->flow_measurement), CLUSTER_FLAG_SERVER);
+
+    return endpoint;
+}
+} /* flow_sensor */
+
+namespace pump{
+
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_PUMP_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_PUMP_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Could not create endpoint");
+        return NULL;
+    }
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
+    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
+    pump_configuration_and_control::create(endpoint, &(config->pump_configuration_and_control), CLUSTER_FLAG_SERVER);
+    
+    return endpoint;
+}
+} /** pump **/
+
 } /* endpoint */
 
 namespace node {

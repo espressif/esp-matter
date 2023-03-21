@@ -16,6 +16,7 @@
 
 #include <controller/CommissioneeDeviceProxy.h>
 #include <esp_matter.h>
+#include <esp_matter_mem.h>
 
 namespace esp_matter {
 namespace controller {
@@ -25,7 +26,7 @@ using chip::SessionHandle;
 using chip::Messaging::ExchangeManager;
 using esp_matter::client::peer_device_t;
 
-constexpr size_t k_max_command_data_str_len = 16;
+constexpr size_t k_max_command_data_str_len = 256;
 constexpr size_t k_max_command_data_size = 8;
 
 typedef struct command_data {
@@ -37,8 +38,8 @@ typedef struct command_data {
 
 class cluster_command {
 public:
-    cluster_command(uint64_t node_id, uint16_t endpoint_id, command_data_t *command_data)
-        : m_node_id(node_id)
+    cluster_command(uint64_t destination_id, uint16_t endpoint_id, command_data_t *command_data)
+        : m_destination_id(destination_id)
         , m_endpoint_id(endpoint_id)
         , m_command_data(command_data)
         , on_device_connected_cb(on_device_connected_fcn, this)
@@ -49,19 +50,25 @@ public:
     ~cluster_command()
     {
         if (m_command_data) {
-            free(m_command_data);
+            esp_matter_mem_free(m_command_data);
         }
     }
 
     esp_err_t send_command();
 
+    bool is_group_command() {
+        return chip::IsGroupId(m_destination_id);
+    }
+
 private:
-    uint64_t m_node_id;
+    uint64_t m_destination_id;
     uint16_t m_endpoint_id;
     command_data_t *m_command_data;
 
     static void on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr, SessionHandle &sessionHandle);
     static void on_device_connection_failure_fcn(void *context, const ScopedNodeId &peerId, CHIP_ERROR error);
+
+    static esp_err_t dispatch_group_command(void *context);
 
     chip::Callback::Callback<chip::OnDeviceConnected> on_device_connected_cb;
     chip::Callback::Callback<chip::OnDeviceConnectionFailure> on_device_connection_failure_cb;

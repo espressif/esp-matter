@@ -67,8 +67,6 @@ esp_err_t app_bridge_initialize(node_t *node);
 
 esp_err_t app_bridge_remove_device(app_bridged_device_t *bridged_device);
 
-app_bridged_device_t *app_bridge_get_device_by_matter_endpointid(uint16_t matter_endpointid);
-
 /** ZigBee Device APIs */
 app_bridged_device_t *app_bridge_get_device_by_zigbee_shortaddr(uint16_t zigbee_shortaddr);
 

@@ -320,31 +320,15 @@ namespace window_covering {
 typedef struct config {
     uint16_t cluster_revision;
     uint8_t type;
-    uint16_t physical_closed_limit_lift;
-    uint16_t physical_closed_limit_tilt;
-    nullable<uint16_t> current_position_lift;
-    nullable<uint16_t> current_position_tilt;
-    uint16_t number_of_actuations_lift;
-    uint16_t number_of_actuations_tilt;
     uint8_t config_status;
-    nullable<uint8_t> current_position_lift_percentage;
-    nullable<uint8_t> current_position_tilt_percentage;
-    nullable<uint8_t> operational_status;
-    nullable<uint16_t> target_position_lift_percent_100ths;
-    nullable<uint16_t> target_position_tilt_percent_100ths;
-    uint8_t end_product_type;
-    nullable<uint16_t> current_position_lift_percent_100ths;
-    nullable<uint16_t> current_position_tilt_percent_100ths;
-    uint16_t installed_open_limit_lift;
-    uint16_t installed_closed_limit_lift;
-    uint16_t installed_open_limit_tilt;
-    uint16_t installed_closed_limit_tilt;
-    uint16_t mode;
-    uint16_t safety_status;
-    config() : cluster_revision(5), type(0), operational_status(0), end_product_type(0), mode(0) {}
+    uint8_t operational_status;
+    const uint8_t end_product_type;
+    uint8_t mode;
+    feature::lift::config_t lift;
+    config() : cluster_revision(5), type(0), config_status(0), operational_status(0), end_product_type(0), mode(0) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
 } /* window_covering */
 
 namespace switch_cluster {
@@ -364,7 +348,7 @@ typedef struct config {
     nullable<int16_t> measured_value;
     nullable<int16_t> min_measured_value;
     nullable<int16_t> max_measured_value;
-    config() : cluster_revision(4), measured_value(), min_measured_value(), max_measured_value() {}
+    config() : cluster_revision(4), measured_value(), min_measured_value(27315), max_measured_value(32767) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -413,6 +397,61 @@ typedef struct config {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
 } /* time_format_localization */
+
+namespace illuminance_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    nullable<uint16_t> illuminance_measured_value;
+    nullable<uint16_t> illuminance_min_measured_value;
+    nullable<uint16_t> illuminance_max_measured_value;
+    config() : cluster_revision(3), illuminance_measured_value(0), illuminance_min_measured_value(1), illuminance_max_measured_value(2) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* illuminance_measurement */
+
+namespace pressure_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    nullable<int16_t> pressure_measured_value;
+    nullable<int16_t> pressure_min_measured_value;
+    nullable<int16_t> pressure_max_measured_value;
+    config() : cluster_revision(3), pressure_measured_value(), pressure_min_measured_value(), pressure_max_measured_value() {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* pressure_measurement */
+
+namespace flow_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    nullable<uint16_t> flow_measured_value;
+    nullable<uint16_t> flow_min_measured_value;
+    nullable<uint16_t> flow_max_measured_value;
+    config() : cluster_revision(3), flow_measured_value(), flow_min_measured_value(), flow_max_measured_value() {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* flow_measurement */
+
+namespace pump_configuration_and_control {
+typedef struct config {
+    uint16_t cluster_revision;
+    // Pump Information Attributes
+    const nullable<int16_t> max_pressure;
+    const nullable<uint16_t> max_speed;
+    const nullable<uint16_t> max_flow;
+    // Pump Dynamic Information Attributes
+    uint8_t effective_operation_mode;
+    uint8_t effective_control_mode;
+    nullable<int16_t> capacity;
+    // Pump Settings Attributes
+    uint8_t operation_mode;
+    config() : cluster_revision(3), max_pressure(), max_speed(), max_flow(), effective_operation_mode(0), effective_control_mode(0), capacity(), operation_mode(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* pump_configuration_and_control */
 
 } /* cluster */
 } /* esp_matter */

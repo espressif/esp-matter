@@ -66,9 +66,8 @@ static esp_err_t app_attribute_update_cb(callback_type_t type, uint16_t endpoint
                                          uint32_t attribute_id, esp_matter_attr_val_t *val, void *priv_data)
 {
     esp_err_t err = ESP_OK;
-
     if (type == PRE_UPDATE) {
-        err = blemesh_bridge_attribute_update(endpoint_id, cluster_id, attribute_id, val);
+        err = blemesh_bridge_attribute_update(endpoint_id, cluster_id, attribute_id, val, (app_bridged_device_t *)priv_data);
     }
     return err;
 }

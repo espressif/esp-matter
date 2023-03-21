@@ -46,13 +46,6 @@ CHIP_NVS_MAP = {
             'encoding': 'string',
             'value': None,
         },
-
-        # Device Attestation Credentials
-        'cert-dclrn': {
-            'type': 'file',
-            'encoding': 'binary',
-            'value': None,
-        },
     }
 }
 
