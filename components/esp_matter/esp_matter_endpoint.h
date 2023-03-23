@@ -74,6 +74,8 @@
 #define ESP_MATTER_WINDOW_COVERING_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_PUMP_DEVICE_TYPE_ID 0x0303
 #define ESP_MATTER_PUMP_DEVICE_TYPE_VERSION 2
+#define ESP_MATTER_MODE_SELECT_DEVICE_TYPE_ID 0x0027
+#define ESP_MATTER_MODE_SELECT_DEVICE_TYPE_VERSION 1
 
 namespace esp_matter {
 
@@ -416,6 +418,17 @@ uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /** pump **/
+
+namespace mode_select_device {
+typedef struct config {
+	cluster::mode_select::config_t mode_select;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
+} /** mode_select_device **/
 
 } /* endpoint */
 

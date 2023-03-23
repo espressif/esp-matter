@@ -470,5 +470,18 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* pump_configuration_and_control */
 
+namespace mode_select {
+typedef struct config {
+	uint16_t cluster_revision;
+	char mode_select_description[64];
+	const nullable<uint16_t> standard_namespace;
+	uint8_t current_mode;
+	feature::dep_on_off::config_t dep_on_off;
+	config() : cluster_revision(1), mode_select_description{0}, standard_namespace(), current_mode(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+} /* mode_select */
+
 } /* cluster */
 } /* esp_matter */

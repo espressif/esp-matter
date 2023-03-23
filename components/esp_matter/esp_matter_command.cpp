@@ -986,6 +986,16 @@ static esp_err_t esp_matter_command_callback_go_to_tilt_percentage(const Concret
     return ESP_OK;
 }
 
+static esp_err_t esp_matter_command_callback_change_to_mode(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
+{
+	chip::app::Clusters::ModeSelect::Commands::ChangeToMode::DecodableType command_data;
+	CHIP_ERROR error = Decode(tlv_data, command_data);
+	if (error == CHIP_NO_ERROR) {
+		emberAfModeSelectClusterChangeToModeCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+	}
+	return ESP_OK;
+}
+
 static esp_err_t esp_matter_command_callback_instance_action(const ConcreteCommandPath &command_path,
                                                              TLVReader &tlv_data, void *opaque_ptr)
 {
@@ -2009,6 +2019,17 @@ command_t *create_go_to_tilt_percentage(cluster_t *cluster)
 
 } /* command */
 } /* window_covering */
+
+namespace mode_select {
+namespace command {
+command_t *create_change_to_mode(cluster_t *cluster)
+{
+	return esp_matter::command::create(cluster, ModeSelect::Commands::ChangeToMode::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_change_to_mode);
+}
+
+} /* command */
+} /* mode_select */
+
 
 } /* cluster */
 } /* esp_matter */

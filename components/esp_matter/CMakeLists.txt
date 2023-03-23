@@ -1,4 +1,5 @@
 set(SRC_DIRS_LIST       "."
+                        "${MATTER_SDK_PATH}"
                         "${MATTER_SDK_PATH}/zzz_generated/app-common/app-common/zap-generated/attributes"
                         "${MATTER_SDK_PATH}/src/app"
                         "${MATTER_SDK_PATH}/src/app/server"
@@ -61,6 +62,8 @@ set(SRC_DIRS_LIST       "."
                         "${MATTER_SDK_PATH}/src/app/clusters/wake-on-lan-server"
                         "${MATTER_SDK_PATH}/src/app/clusters/wifi-network-diagnostics-server"
                         "${MATTER_SDK_PATH}/src/app/clusters/window-covering-server"
+                        "${MATTER_SDK_PATH}/src/app/clusters/mode-select-server"
+                        "${MATTER_SDK_PATH}/examples/platform/esp32/mode-support"
 )
 
 set(INCLUDE_DIRS_LIST   "."

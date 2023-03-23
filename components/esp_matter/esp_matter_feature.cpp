@@ -986,5 +986,34 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 } /* feature */
 } /* time_format_localization */
 
+namespace mode_select {
+namespace feature {
+
+namespace dep_on_off {
+
+uint32_t get_id()
+{
+    // enum class for DepOnOff is not present in the upstream code.
+    // Return the code according to the SPEC
+    return 0x00;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_on_mode(cluster, config->on_mode);
+
+    return ESP_OK;
+}
+
+} /* dep_on_off */
+
+} /* feature */
+} /* mode_select */
 } /* cluster */
 } /* esp_matter */

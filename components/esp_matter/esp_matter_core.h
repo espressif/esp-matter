@@ -201,6 +201,8 @@ endpoint_t *get_first(node_t *node);
  */
 endpoint_t *get_next(endpoint_t *endpoint);
 
+
+uint16_t get_endpoint_count(node_t *node);
 /** Get endpoint ID
  *
  * Get the endpoint ID for the endpoint.

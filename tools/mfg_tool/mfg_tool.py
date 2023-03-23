@@ -524,6 +524,9 @@ def get_args():
     g_dev_inst.add_argument('--fixed-labels', nargs='+',
                             help='List of fixed labels, eg: "0/orientation/up" "1/orientation/down" "2/orientation/down"')
 
+    g_dev_inst.add_argument('--supported-modes', type=str, nargs='+', required=False,
+                        help='List of supported modes, eg: mode1/label1/ep/"tagValue1\\mfgCode, tagValue2\\mfgCode"  mode2/label2/ep/"tagValue1\\mfgCode, tagValue2\\mfgCode"  mode3/label3/ep/"tagValue1\\mfgCode, tagValue2\\mfgCode"')
+
     g_basic = parser.add_argument_group('Few more Basic clusters options')
     g_basic.add_argument('--product-label', help='Product label')
     g_basic.add_argument('--product-url', help='Product URL')
@@ -597,6 +600,42 @@ def add_optional_KVs(args):
                 entry = dict[key][i]
                 chip_factory_append('fl-k/{:x}/{:x}'.format(int(key), i), 'data', 'string', list(entry.keys())[0])
                 chip_factory_append('fl-v/{:x}/{:x}'.format(int(key), i), 'data', 'string', list(entry.values())[0])
+
+    # SupportedModes are stored as multiple entries
+    #  - sm-sz/<ep>                 : number of supported modes for the endpoint
+    #  - sm-label/<ep>/<index>      : supported modes label key for the endpoint and index
+    #  - sm-mode/<ep>/<index>       : supported modes mode key for the endpoint and index
+    #  - sm-st-sz/<ep>/<index>      : supported modes SemanticTag key for the endpoint and index
+    #  - st-v/<ep>/<index>/<ind>    : semantic tag value key for the endpoint and index and ind
+    #  - st-mfg/<ep>/<index>/<ind>  : semantic tag mfg code key for the endpoint and index and ind
+    if (args.supported_modes is not None):
+        dictionary = get_supported_modes_dict(args.supported_modes)
+        for ep in dictionary.keys():
+            chip_factory_append('sm-sz/{:x}'.format(int(ep)), 'data', 'u32', len(dictionary[ep]))
+
+            for i in range(len(dictionary[ep])):
+                item = dictionary[ep][i]
+
+                chip_factory_append('sm-label/{:x}/{:x}'.format(int(ep), i), 'data', 'string', item["Label"])
+                chip_factory_append('sm-mode/{:x}/{:x}'.format(int(ep), i), 'data', 'u32', item["Mode"])
+                chip_factory_append('sm-st-sz/{:x}/{:x}'.format(int(ep), i), 'data', 'u32', len(item["Semantic_Tag"]))
+
+                for j in range(len(item["Semantic_Tag"])):
+                    entry = item["Semantic_Tag"][j]
+
+                    _value = {
+                        'type': 'data',
+                        'encoding': 'u32',
+                        'value': entry["value"]
+                    }
+                    _mfg_code = {
+                        'type': 'data',
+                        'encoding': 'u32',
+                        'value': entry["mfgCode"]
+                    }
+
+                    chip_factory_append('st-v/{:x}/{:x}/{:x}'.format(int(ep), i, j), 'data', 'u32', entry["value"])
+                    chip_factory_append('st-mfg/{:x}/{:x}/{:x}'.format(int(ep), i, j), 'data', 'u32', entry["mfgCode"])
 
     # Keys from basic clusters
     if args.product_label is not None:

@@ -255,5 +255,11 @@ command_t *create_go_to_tilt_percentage(cluster_t *cluster);
 } /* command */
 } /* window_covering */
 
+namespace mode_select {
+namespace command {
+command_t *create_change_to_mode(cluster_t *cluster);
+} /* command */
+} /* mode_select */
+
 } /* cluster */
 } /* esp_matter */
