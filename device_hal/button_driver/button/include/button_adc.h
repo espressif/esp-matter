@@ -15,7 +15,12 @@
 #define _IOT_BUTTON_ADC_H_
 
 #include "driver/gpio.h"
+#include <esp_idf_version.h>
+#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
+#include "esp_adc/adc_continuous.h"
+#else
 #include "driver/adc.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -30,7 +35,7 @@ extern "C" {
  * 
  */
 typedef struct {
-    adc1_channel_t adc_channel;  /**< Channel of ADC */
+    adc_channel_t adc_channel;  /**< Channel of ADC */
     uint8_t button_index;        /**< button index on the channel */
     uint16_t min;                /**< min voltage in mv corresponding to the button */
     uint16_t max;                /**< max voltage in mv corresponding to the button */
@@ -59,7 +64,7 @@ esp_err_t button_adc_init(const button_adc_config_t *config);
  *      - ESP_OK on success
  *      - ESP_ERR_INVALID_ARG   Arguments is invalid.
  */
-esp_err_t button_adc_deinit(adc1_channel_t channel, int button_index);
+esp_err_t button_adc_deinit(adc_channel_t channel, int button_index);
 
 /**
  * @brief Get the adc button level

@@ -70,7 +70,7 @@ public:
 
 private:
     static pairing_command instance;
-    static void OnDeviceConnectedFn(void *context, ExchangeManager &exchangeMgr, SessionHandle &sessionHandle);
+    static void OnDeviceConnectedFn(void *context, ExchangeManager &exchangeMgr, const SessionHandle &sessionHandle);
     static void OnDeviceConnectionFailureFn(void *context, const ScopedNodeId &peerId, CHIP_ERROR error);
 
     CommissioningParameters get_commissioning_params();

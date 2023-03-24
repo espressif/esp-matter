@@ -200,7 +200,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
 } // namespace color_control
 
 namespace group_key_management {
-using chip::app::Clusters::GroupKeyManagement::GroupKeySecurityPolicy;
+using chip::app::Clusters::GroupKeyManagement::GroupKeySecurityPolicyEnum;
 using cluster::group_key_management::command::group_keyset_struct;
 
 constexpr size_t k_epoch_key_bytes_len = chip::Credentials::GroupDataProvider::EpochKey::kLengthBytes;
@@ -229,7 +229,7 @@ static bool parse_group_keyset(group_keyset_struct *keyset, char *json_str, epoc
     if (json_obj_get_int(&jctx, "groupKeySecurityPolicy", &int_val) != 0) {
         return false;
     }
-    keyset->groupKeySecurityPolicy = static_cast<GroupKeySecurityPolicy>(int_val);
+    keyset->groupKeySecurityPolicy = static_cast<GroupKeySecurityPolicyEnum>(int_val);
     // epochKey0 & epochStartTime0
     if (json_obj_get_int64(&jctx, "epochStartTime0", &int64_val) == 0 &&
         json_obj_get_string(&jctx, "epochKey0", epoch_key_oct_str, k_epoch_key_bytes_len * 2 + 1) == 0 &&
@@ -367,7 +367,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
 
 } // namespace clusters
 
-void cluster_command::on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr, SessionHandle &sessionHandle)
+void cluster_command::on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr, const SessionHandle &sessionHandle)
 {
     cluster_command *cmd = reinterpret_cast<cluster_command *>(context);
     chip::OperationalDeviceProxy device_proxy(&exchangeMgr, sessionHandle);

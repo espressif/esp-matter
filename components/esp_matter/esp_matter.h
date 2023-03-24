@@ -55,13 +55,8 @@ typedef enum cluster_flags {
     CLUSTER_FLAG_INIT_FUNCTION = CLUSTER_MASK_INIT_FUNCTION, /* 0x01 */
     /** The cluster has an attribute changed function (function_flag) */
     CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION = CLUSTER_MASK_ATTRIBUTE_CHANGED_FUNCTION, /* 0x02 */
-    /** The cluster has a default response function (function_flag) */
-    CLUSTER_FLAG_DEFAULT_RESPONSE_FUNCTION = CLUSTER_MASK_DEFAULT_RESPONSE_FUNCTION, /* 0x04 */
-    /** The cluster has a message sent function (function_flag) */
-    CLUSTER_FLAG_MESSAGE_SENT_FUNCTION = CLUSTER_MASK_MESSAGE_SENT_FUNCTION, /* 0x08 */
-    /** The cluster has a manufacturer specific attribute changed function (function_flag) */
-    CLUSTER_FLAG_MANUFACTURER_SPECIFIC_ATTRIBUTE_CHANGED_FUNCTION =
-                                            CLUSTER_MASK_MANUFACTURER_SPECIFIC_ATTRIBUTE_CHANGED_FUNCTION, /* 0x10 */
+    /** The cluster has a shutdown function (function_flag) */
+    CLUSTER_FLAG_SHUTDOWN_FUNCTION = CLUSTER_MASK_SHUTDOWN_FUNCTION, /* 0x10 */
     /** The cluster has a pre attribute changed function (function_flag) */
     CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION = CLUSTER_MASK_PRE_ATTRIBUTE_CHANGED_FUNCTION, /* 0x20 */
     /** The cluster is a server cluster */

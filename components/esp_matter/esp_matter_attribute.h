@@ -207,12 +207,12 @@ attribute_t *create_active_network_faults(cluster_t *cluster, uint8_t *value, ui
 } /* attribute */
 } /* diagnostics_network_thread */
 
-namespace bridged_device_basic {
+namespace bridged_device_basic_information {
 namespace attribute {
-attribute_t *create_bridged_device_basic_node_label(cluster_t *cluster, char *value, uint16_t length);
+attribute_t *create_node_label(cluster_t *cluster, char *value, uint16_t length);
 attribute_t *create_reachable(cluster_t *cluster, bool value);
 } /* attribute */
-} /* bridged_device_basic */
+} /* bridged_device_basic_information */
 
 namespace user_label {
 namespace attribute {

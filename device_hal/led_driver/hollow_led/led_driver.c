@@ -59,7 +59,7 @@ esp_err_t led_driver_set_saturation(led_driver_handle_t handle, uint8_t saturati
 
 esp_err_t led_driver_set_temperature(led_driver_handle_t handle, uint32_t temperature)
 {
-    ESP_LOGI(TAG, "Setting temperature to: %d", temperature);
+    ESP_LOGI(TAG, "Setting temperature to: %lu", temperature);
     /* Set the color temp here*/
 
     return ESP_OK;

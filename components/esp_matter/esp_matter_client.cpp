@@ -50,7 +50,7 @@ esp_err_t set_command_callback(command_callback_t callback, group_command_callba
     return ESP_OK;
 }
 
-void esp_matter_connection_success_callback(void *context, ExchangeManager &exchangeMgr, SessionHandle &sessionHandle)
+void esp_matter_connection_success_callback(void *context, ExchangeManager &exchangeMgr, const SessionHandle &sessionHandle)
 {
     command_handle_t *cmd_handle = static_cast<command_handle_t *>(context);
     if (!cmd_handle) {
@@ -802,7 +802,7 @@ esp_err_t send_move_to_color_temperature(peer_device_t *remote_device, uint16_t 
                                          uint8_t option_mask, uint8_t option_override)
 {
     ColorControl::Commands::MoveToColorTemperature::Type command_data;
-    command_data.colorTemperature = color_temperature_mireds;
+    command_data.colorTemperatureMireds = color_temperature_mireds;
     command_data.transitionTime = transition_time;
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
@@ -818,7 +818,7 @@ esp_err_t group_send_move_to_color_temperature(uint8_t fabric_index, uint16_t gr
                                                uint8_t option_mask, uint8_t option_override)
 {
     ColorControl::Commands::MoveToColorTemperature::Type command_data;
-    command_data.colorTemperature = color_temperature_mireds;
+    command_data.colorTemperatureMireds = color_temperature_mireds;
     command_data.transitionTime = transition_time;
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
@@ -1000,7 +1000,7 @@ esp_err_t send_add_group(peer_device_t *remote_device, uint16_t remote_endpoint_
                          add_group_callback add_group_cb)
 {
     Groups::Commands::AddGroup::Type command_data;
-    command_data.groupId = group_id;
+    command_data.groupID = group_id;
     command_data.groupName = chip::CharSpan(group_name, strnlen(group_name, 16));
 
     chip::Controller::GroupsCluster cluster(*remote_device->GetExchangeManager(),
@@ -1013,7 +1013,7 @@ esp_err_t send_view_group(peer_device_t *remote_device, uint16_t remote_endpoint
                           view_group_callback view_group_cb)
 {
     Groups::Commands::ViewGroup::Type command_data;
-    command_data.groupId = group_id;
+    command_data.groupID = group_id;
 
     chip::Controller::GroupsCluster cluster(*remote_device->GetExchangeManager(),
                                             remote_device->GetSecureSession().Value(), remote_endpoint_id);
@@ -1025,7 +1025,7 @@ esp_err_t send_remove_group(peer_device_t *remote_device, uint16_t remote_endpoi
                             remove_group_callback remove_group_cb)
 {
     Groups::Commands::RemoveGroup::Type command_data;
-    command_data.groupId = group_id;
+    command_data.groupID = group_id;
 
     chip::Controller::GroupsCluster cluster(*remote_device->GetExchangeManager(),
                                             remote_device->GetSecureSession().Value(), remote_endpoint_id);
