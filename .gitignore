@@ -10,3 +10,4 @@ __pycache__/
 out/
 _build/
 tools/chip-tool/
+.zap/
