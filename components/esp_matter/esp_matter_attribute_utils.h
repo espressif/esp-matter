@@ -368,8 +368,9 @@ esp_err_t update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
  * @param[in] cluster_id Cluster ID of the attribute.
  * @param[in] attribute_id Attribute ID of the attribute.
  * @param[in] val Pointer to `esp_matter_attr_val_t`. Appropriate elements should be used as per the value type.
+ * @param[in] is_read Boolean variable to indicate read or write for attributes.
  */
-void val_print(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val);
+void val_print(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val, bool is_read);
 
 } /* attribute */
 } /* esp_matter */
