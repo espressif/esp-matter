@@ -22,7 +22,17 @@ echo ""
 zap_path=`python3 ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/scripts/tools/zap/zap_download.py \
     --sdk-root ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip --zap RELEASE --zap-version v2023.03.06-nightly \
     --extract-root .zap 2>/dev/null | cut -d= -f2`
-# Move files to one directory up, so that binaries will be in zap/ directory and export.sh can leverage the fixed path
+# Check whether the download is successful.
+if [ -z $zap_path ]; then
+    echo "Failed to install zap-cli"
+    deactivate
+    exit 1
+fi
+
+# Move files to one directory up, so that binaries will be in $ESP_MATTER_PATH/.zap/ directory and export.sh can leverage the fixed path
+if [ -d "${ESP_MATTER_PATH}/.zap" ]; then
+    rm -r ${ESP_MATTER_PATH}/.zap
+fi
 mkdir ${ESP_MATTER_PATH}/.zap
 mv $zap_path/* ${ESP_MATTER_PATH}/.zap/
 rm -r $zap_path
