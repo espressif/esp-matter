@@ -20,7 +20,7 @@ echo ""
 # output after cut: zap/zap-v2023.03.06-nightly
 # TODO: Remove the zap-version after https://github.com/project-chip/connectedhomeip/pull/25727 merged
 zap_path=`python3 ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/scripts/tools/zap/zap_download.py \
-    --sdk-root ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip --zap RELEASE --zap-version v2023.03.06-nightly \
+    --sdk-root ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip --zap RELEASE --zap-version v2023.03.27-nightly \
     --extract-root .zap 2>/dev/null | cut -d= -f2`
 # Check whether the download is successful.
 if [ -z $zap_path ]; then
