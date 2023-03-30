@@ -8,7 +8,9 @@ RUN set -x \
     && git clone --depth 1 https://github.com/espressif/esp-matter.git \
     && cd esp-matter \
     && git submodule update --init --depth 1 \
-    && ./connectedhomeip/connectedhomeip/scripts/checkout_submodules.py --platform esp32 --shallow \
+    && cd ./connectedhomeip/connectedhomeip \
+    && ./scripts/checkout_submodules.py --platform esp32 linux --shallow \
+    && cd ../.. \
     && . $IDF_PATH/export.sh \
     && ./install.sh \
     && : # last line
