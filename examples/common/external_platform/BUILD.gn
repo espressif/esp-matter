@@ -24,6 +24,9 @@ declare_args() {
   chip_use_factory_data_provider = false
   chip_use_device_info_provider = false
   chip_config_software_version_number = 0
+  chip_enable_chipoble = true
+  chip_bt_nimble_enabled = true
+  chip_bt_bluedroid_enabled = true
 }
 
 config("ESP32_custom_include") {
@@ -73,7 +76,6 @@ group("platform_buildconfig") {
 static_library("ESP32_custom") {
   sources = [
     "${chip_root}/src/platform/SingletonConfigurationManager.cpp",
-    "BLEManagerImpl.h",
     "CHIPDevicePlatformConfig.h",
     "CHIPDevicePlatformEvent.h",
     "ConfigurationManagerImpl.cpp",
@@ -94,8 +96,6 @@ static_library("ESP32_custom") {
     "PlatformManagerImpl.h",
     "SystemTimeSupport.cpp",
     "SystemTimeSupport.h",
-    "bluedroid/BLEManagerImpl.cpp",
-    "nimble/BLEManagerImpl.cpp",
   ]
 
   deps = [
@@ -117,6 +117,24 @@ static_library("ESP32_custom") {
     sources += [
       "OTAImageProcessorImpl.cpp",
       "OTAImageProcessorImpl.h",
+    ]
+  }
+
+  if (chip_enable_chipoble) {
+    sources += [
+      "BLEManagerImpl.h",
+    ]
+  }
+
+  if (chip_bt_nimble_enabled) {
+    sources += [
+      "nimble/BLEManagerImpl.cpp",
+    ]
+  }
+
+  if (chip_bt_bluedroid_enabled) {
+    sources += [
+      "bluedroid/BLEManagerImpl.cpp",
     ]
   }
 
