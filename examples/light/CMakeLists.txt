@@ -43,6 +43,9 @@ set(EXTRA_COMPONENT_DIRS
     ${extra_components_dirs_append})
 
 project(light)
+if(CONFIG_IDF_TARGET_ESP32C2)
+    include(relinker)
+endif()
 
 idf_build_set_property(CXX_COMPILE_OPTIONS "-std=gnu++14;-Os;-DCHIP_HAVE_CONFIG_H" APPEND)
 idf_build_set_property(C_COMPILE_OPTIONS "-Os" APPEND)
