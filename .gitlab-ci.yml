@@ -121,6 +121,8 @@ variables:
     - cd $ESP_MATTER_PATH/examples/zap_light
     - idf.py --preview set-target esp32h2
     - idf.py build
+    - idf.py set-target esp32c2
+    - idf.py build
     - cd $ESP_MATTER_PATH/examples/light_switch
     - idf.py --preview set-target esp32h2
     - idf.py build
