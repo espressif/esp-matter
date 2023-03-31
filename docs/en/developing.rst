@@ -68,18 +68,41 @@ For using VSCode for development, please check `Developing in WSL <https://code.
 Cloning the esp-matter repository takes a while due to a lot of submodules in the upstream connectedhomeip,
 so if you want to do a shallow clone use the following command:
 
-::
+- For Linux host:
 
-   cd esp-idf
-   source ./export.sh
-   cd ..
+    ::
 
-   git clone --depth 1 https://github.com/espressif/esp-matter.git
-   cd esp-matter
-   git submodule update --init --depth 1
-   ./connectedhomeip/connectedhomeip/scripts/checkout_submodules.py --platform esp32 --shallow
-   ./install.sh
-   cd ..
+        cd esp-idf
+        source ./export.sh
+        cd ..
+
+        git clone --depth 1 https://github.com/espressif/esp-matter.git
+        cd esp-matter
+        git submodule update --init --depth 1
+        cd ./connectedhomeip/connectedhomeip
+        ./scripts/checkout_submodules.py --platform esp32 linux --shallow
+        cd ../..
+        ./install.sh
+        cd ..
+
+- For Mac OS-X host:
+
+    ::
+
+        cd esp-idf
+        source ./export.sh
+        cd ..
+
+        git clone --depth 1 https://github.com/espressif/esp-matter.git
+        cd esp-matter
+        git submodule update --init --depth 1
+        cd ./connectedhomeip/connectedhomeip
+        ./scripts/checkout_submodules.py --platform esp32 darwin --shallow
+        cd ../..
+        ./install.sh
+        cd ..
+
+Note: The modules for platform ``linux`` or ``darwin`` are required for the host tools building.
 
 To clone the esp-matter repository with all the submodules, use the following command:
 
