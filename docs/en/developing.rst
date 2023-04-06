@@ -625,6 +625,28 @@ creating in the *app_main.cpp* of the example. Examples:
       door_lock::config_t door_lock_config;
       endpoint_t *endpoint = door_lock::create(node, &door_lock_config, ENDPOINT_FLAG_NONE);
 
+-  window_covering_device:
+
+   ::
+
+      window_covering_device::config_t window_covering_device_config(static_cast<uint8_t>(chip::app::Clusters::WindowCovering::EndProductType::kTiltOnlyInteriorBlind));
+      endpoint_t *endpoint = window_covering_device::create(node, &window_covering_config, ENDPOINT_FLAG_NONE);
+
+   The ``window_covering_device`` ``config_t`` structure includes a constructor that allows specifying
+   an end product type different than the default one, which is "Roller shade".
+   Once a ``config_t`` instance has been instantiated, its end product type cannot be modified.
+
+- pump
+
+   ::
+
+      pump::config_t pump_config(1, 10, 20);
+      endpoint_t *endpoint = pump::create(node, &pump_config, ENDPOINT_FLAG_NONE);
+
+   The ``pump`` ``config_t`` structure includes a constructor that allows specifying
+   maximum pressure, maximum speed and maximum flow values. If they aren't set, they will be set to null by default.
+   Once a ``config_t`` instance has been instantiated, these three values cannot be modified.
+
 
 2.4.2.2 Clusters
 ^^^^^^^^^^^^^^^^
@@ -644,6 +666,28 @@ Additional clusters can also be added to an endpoint. Examples:
 
       temperature_measurement::config_t temperature_measurement_config;
       cluster_t *cluster = temperature_measurement::create(endpoint, &temperature_measurement_config, CLUSTER_FLAG_SERVER);
+
+- window_covering:
+
+      ::
+   
+         window_covering::config_t window_covering_config(static_cast<uint8_t>(chip::app::Clusters::WindowCovering::EndProductType::kTiltOnlyInteriorBlind));
+         cluster_t *cluster = window_covering::create(endpoint, &window_covering_config, CLUSTER_FLAG_SERVER);
+
+   The ``window_covering`` ``config_t`` structure includes a constructor that allows specifying
+   an end product type different than the default one, which is "Roller shade".
+   Once a ``config_t`` instance has been instantiated, its end product type cannot be modified.
+
+- pump_configuration_and_control:
+
+   ::
+
+      pump_configuration_and_control::config_t pump_configuration_and_control_config(1, 10, 20);
+      cluster_t *cluster = pump_configuration_and_control::create(endpoint, &pump_configuration_and_control_config, CLUSTER_FLAG_SERVER);
+
+   The ``pump_configuration_and_control`` ``config_t`` structure includes a constructor that allows specifying
+   maximum pressure, maximum speed and maximum flow values. If they aren't set, they will be set to null by default.
+   Once a ``config_t`` instance has been instantiated, these three values cannot be modified.
 
 2.4.2.3 Attributes and Commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
