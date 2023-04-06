@@ -23,6 +23,7 @@ import sys
 import csv
 import uuid
 import shutil
+import base64
 import random
 import logging
 import binascii
@@ -32,16 +33,27 @@ import pyqrcode
 from chip_nvs import *
 from utils import *
 from datetime import datetime
+from types import SimpleNamespace
 
 if not os.getenv('IDF_PATH'):
     logging.error("IDF_PATH environment variable is not set")
     sys.exit(1)
 
+if not os.getenv('ESP_MATTER_PATH'):
+    logging.error("ESP_MATTER_PATH environment variable is not set")
+    sys.exit(1)
+
+sys.path.insert(0, os.path.join(os.getenv('ESP_MATTER_PATH'), 'connectedhomeip', 'connectedhomeip', 'scripts', 'tools', 'spake2p'))
+from spake2p import generate_verifier
+
+sys.path.insert(0, os.path.join(os.getenv('IDF_PATH'), 'tools', 'mass_mfg'))
+from mfg_gen import generate
+
+sys.path.insert(0, os.path.join(os.getenv('ESP_MATTER_PATH'), 'connectedhomeip', 'connectedhomeip', 'src', 'setup_payload', 'python'))
+from generate_setup_payload import SetupPayload, CommissioningFlow
+
 TOOLS = {
-    'spake2p': None,
     'chip-cert': None,
-    'chip-tool': None,
-    'mfg_gen': None,
 }
 
 PAI = {
@@ -67,10 +79,6 @@ UUIDs = list()
 
 
 def check_tools_exists(args):
-    TOOLS['spake2p'] = shutil.which('spake2p')
-    if TOOLS['spake2p'] is None:
-        logging.error('spake2p not found, please add spake2p path to PATH environment variable')
-        sys.exit(1)
     # if the certs and keys are not in the generated partitions or the specific dac cert and key are used,
     # the chip-cert is not needed.
     if args.paa or (args.pai and (args.dac_cert is None and args.dac_key is None)):
@@ -79,40 +87,26 @@ def check_tools_exists(args):
             logging.error('chip-cert not found, please add chip-cert path to PATH environment variable')
             sys.exit(1)
 
-    TOOLS['chip-tool'] = shutil.which('chip-tool')
-    if TOOLS['chip-tool'] is None:
-        logging.error('chip-tool not found, please add chip-tool path to PATH environment variable')
-        sys.exit(1)
-
-    TOOLS['mfg_gen'] = os.sep.join([os.getenv('IDF_PATH'), 'tools', 'mass_mfg', 'mfg_gen.py'])
-    if not os.path.exists(TOOLS['mfg_gen']):
-        logging.error('mfg_gen.py not found, please make sure IDF_PATH environment variable is set correctly')
-        sys.exit(1)
-
     logging.debug('Using following tools:')
-    logging.debug('spake2p:    {}'.format(TOOLS['spake2p']))
     logging.debug('chip-cert:  {}'.format(TOOLS['chip-cert']))
-    logging.debug('chip-tool:  {}'.format(TOOLS['chip-tool']))
-    logging.debug('mfg_gen:    {}'.format(TOOLS['mfg_gen']))
 
 
 def generate_passcodes(args):
     iter_count_max = 10000
     salt_len_max = 32
-
-    cmd = [
-        TOOLS['spake2p'], 'gen-verifier',
-        '--count', str(args.count),
-        '--iteration-count', str(iter_count_max),
-        '--salt-len', str(salt_len_max),
-        '--out', OUT_FILE['pin_csv'],
-    ]
-
-    # If passcode is provided, use it
-    if (args.passcode):
-        cmd.extend(['--pin-code', str(args.passcode)])
-
-    execute_cmd(cmd)
+    with open(OUT_FILE['pin_csv'], 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(["Index", "PIN Code", "Iteration Count", "Salt", "Verifier"])
+        for i in range(0, args.count):
+            if args.passcode:
+                passcode = args.passcode
+            else:
+                passcode = random.randint(1, 99999998)
+                if passcode in INVALID_PASSCODES:
+                    passcode -= 1
+            salt = os.urandom(salt_len_max)
+            verifier = generate_verifier(passcode, salt, iter_count_max)
+            writer.writerow([i, passcode, iter_count_max, base64.b64encode(salt).decode('utf-8'), base64.b64encode(verifier).decode('utf-8')])
 
 
 def generate_discriminators(args):
@@ -402,33 +396,36 @@ def generate_summary(args):
             for row in pin_disc_dict:
                 pincode = row['PIN Code']
                 discriminator = row['Discriminator']
-                qrcode = get_chip_qrcode(TOOLS['chip-tool'], args.vendor_id, args.product_id,
-                                         args.commissioning_flow, discriminator, pincode, args.discovery_mode)
-                manualcode = get_chip_manualcode(TOOLS['chip-tool'], args.vendor_id, args.product_id,
-                                                 args.commissioning_flow, discriminator, pincode)
+                payloads = SetupPayload(int(discriminator), int(pincode), 1 << args.discovery_mode, CommissioningFlow(args.commissioning_flow),
+                                        args.vendor_id, args.product_id)
+                qrcode = payloads.generate_qrcode()
+                manualcode = payloads.generate_manualcode()
                 summary_csv_data += summary_lines[1 + int(row['Index'])] + ',' + pincode + ',' + qrcode + ',' + manualcode + '\n'
 
     with open(summary_csv, 'w') as scsvf:
         scsvf.write(summary_csv_data)
 
 def generate_partitions(suffix, size, encrypt):
-    cmd = [
-        'python3', TOOLS['mfg_gen'], 'generate',
-        OUT_FILE['config_csv'], OUT_FILE['mcsv'],
-        suffix, hex(size), '--outdir', OUT_DIR['top']
-    ]
-
+    partition_args = SimpleNamespace(fileid = None,
+                                     version = 2,
+                                     inputkey = None,
+                                     outdir = OUT_DIR['top'],
+                                     conf = OUT_FILE['config_csv'],
+                                     values = OUT_FILE['mcsv'],
+                                     size = hex(size),
+                                     prefix = suffix)
     if encrypt:
-        cmd.append('--keygen')
-
-    execute_cmd(cmd)
+        partition_args.keygen = True
+    else:
+        partition_args.keygen = False
+    generate(partition_args)
 
 
 def generate_onboarding_data(args, index, discriminator, passcode):
-    chip_manualcode = get_chip_manualcode(TOOLS['chip-tool'], args.vendor_id, args.product_id,
-                                          args.commissioning_flow, discriminator, passcode)
-    chip_qrcode = get_chip_qrcode(TOOLS['chip-tool'], args.vendor_id, args.product_id,
-                                  args.commissioning_flow, discriminator, passcode, args.discovery_mode)
+    payloads = SetupPayload(discriminator, passcode, 1 << args.discovery_mode, CommissioningFlow(args.commissioning_flow),
+                            args.vendor_id, args.product_id)
+    chip_qrcode = payloads.generate_qrcode()
+    chip_manualcode = payloads.generate_manualcode()
 
     logging.info('Generated QR code: ' + chip_qrcode)
     logging.info('Generated manual code: ' + chip_manualcode)
