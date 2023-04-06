@@ -17,7 +17,6 @@ libfreertos.a,./esp-idf/freertos/libfreertos.a
 libhal.a,./esp-idf/hal/libhal.a
 libheap.a,./esp-idf/heap/libheap.a
 liblog.a,./esp-idf/log/liblog.a
-libmbedcrypto.a,./esp-idf/mbedtls/mbedtls/library/libmbedcrypto.a
 libnewlib.a,./esp-idf/newlib/libnewlib.a
 libpthread.a,./esp-idf/pthread/libpthread.a
 libriscv.a,./esp-idf/riscv/libriscv.a
