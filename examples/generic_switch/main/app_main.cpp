@@ -110,6 +110,9 @@ extern "C" void app_main()
     cluster::fixed_label::config_t fl_config;
     cluster_t *fl_cluster = cluster::fixed_label::create(endpoint, &fl_config, CLUSTER_FLAG_SERVER);
 
+    cluster::user_label::config_t ul_config;
+    cluster_t *ul_cluster = cluster::user_label::create(endpoint, &ul_config, CLUSTER_FLAG_SERVER);
+
     /* Add additional features to the node */
     cluster_t *cluster = cluster::get(endpoint, Switch::Id);
 #if CONFIG_GENERIC_SWITCH_TYPE_LATCHING
