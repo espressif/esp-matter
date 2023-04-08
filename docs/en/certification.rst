@@ -97,14 +97,18 @@ The option ``-n`` (count) is the number of generated binaries. In the above comm
 
 The option ``--paa-trust-store-path`` should be added when using chip-tool to pair the device for manual tests.
 
-.. only:: esp32 or esp32c3
+.. only:: esp32 or esp32c3 or esp32c2 or esp32c6
 
    ::
 
       cd path/to/connnectedhomeip/out/host/
       ./chip-tool pairing ble-wifi 0x7283 <ssid> <passphrase> <setup-pin-code> <discriminator> --paa-trust-store-path <paa-certificate-path>
 
-.. only:: esp32h2
+.. only:: esp32c6
+
+    or
+
+.. only:: esp32h2 or esp32c6
 
    ::
 

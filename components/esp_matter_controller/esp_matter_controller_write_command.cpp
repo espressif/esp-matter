@@ -35,7 +35,7 @@ namespace controller {
 
 template <class T>
 void write_command<T>::on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr,
-                                               SessionHandle &sessionHandle)
+                                               const SessionHandle &sessionHandle)
 {
     write_command<T> *cmd = (write_command<T> *)context;
     CHIP_ERROR err = CHIP_NO_ERROR;
@@ -184,14 +184,14 @@ static esp_err_t write_attribute(uint64_t node_id, uint16_t endpoint_id, uint32_
 
 namespace access_control {
 
-using AccessControl::AuthMode;
-using AccessControl::Privilege;
+using AccessControl::AccessControlEntryAuthModeEnum;
+using AccessControl::AccessControlEntryPrivilegeEnum;
 
 constexpr size_t k_max_acl_entries = CHIP_CONFIG_EXAMPLE_ACCESS_CONTROL_MAX_ENTRIES_PER_FABRIC;
 constexpr size_t k_max_subjects_per_acl = CHIP_CONFIG_EXAMPLE_ACCESS_CONTROL_MAX_SUBJECTS_PER_ENTRY;
 constexpr size_t k_max_targets_per_acl = CHIP_CONFIG_EXAMPLE_ACCESS_CONTROL_MAX_TARGETS_PER_ENTRY;
 
-using acl_obj = AccessControl::Structs::AccessControlEntry::Type;
+using acl_obj = AccessControl::Structs::AccessControlEntryStruct::Type;
 using acl_target_obj = AccessControl::Structs::Target::Type;
 typedef struct acl_attr {
     acl_obj acl_array[k_max_acl_entries];
@@ -220,11 +220,11 @@ static esp_err_t parse_acl_json(char *json_str, acl_attr_t *acl, size_t *acl_siz
         // Privilege
         ESP_RETURN_ON_FALSE(json_obj_get_int(&jctx, "privilege", &int_val) == 0, ESP_ERR_INVALID_ARG, TAG,
                             "Failed to get privilege from the ACL json string");
-        acl->acl_array[acl_index].privilege = Privilege(int_val);
+        acl->acl_array[acl_index].privilege = AccessControlEntryPrivilegeEnum(int_val);
         // AuthMode
         ESP_RETURN_ON_FALSE(json_obj_get_int(&jctx, "authMode", &int_val) == 0, ESP_ERR_INVALID_ARG, TAG,
                             "Failed to get authMode from the ACL json string");
-        acl->acl_array[acl_index].authMode = AuthMode(int_val);
+        acl->acl_array[acl_index].authMode = AccessControlEntryAuthModeEnum(int_val);
         // Subjects
         int subjects_num = 0;
         if (json_obj_get_array(&jctx, "subjects", &subjects_num) == 0 && subjects_num > 0) {
@@ -301,7 +301,7 @@ static esp_err_t parse_acl_json(char *json_str, acl_attr_t *acl, size_t *acl_siz
 constexpr size_t k_max_extension_entries = CHIP_CONFIG_EXAMPLE_ACCESS_CONTROL_MAX_ENTRIES_PER_FABRIC;
 constexpr size_t k_max_extension_data_len = 128;
 
-using extension_obj = AccessControl::Structs::ExtensionEntry::Type;
+using extension_obj = AccessControl::Structs::AccessControlExtensionStruct::Type;
 typedef struct extension_attr {
     extension_obj extension_array[k_max_extension_entries];
     uint8_t data_array[k_max_extension_entries][k_max_extension_data_len];

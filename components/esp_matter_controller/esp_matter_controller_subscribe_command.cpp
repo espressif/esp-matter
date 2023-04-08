@@ -35,7 +35,7 @@ namespace esp_matter {
 namespace controller {
 
 void subscribe_command::on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr,
-                                                SessionHandle &sessionHandle)
+                                                const SessionHandle &sessionHandle)
 {
     subscribe_command *cmd = (subscribe_command *)context;
     ReadPrepareParams params(sessionHandle);

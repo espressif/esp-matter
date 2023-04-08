@@ -837,7 +837,8 @@ static esp_err_t console_get_handler(int argc, char **argv)
         ESP_LOGE(TAG, "Type not handled: %d", type);
         return ESP_ERR_INVALID_ARG;
     }
-    val_print(endpoint_id, cluster_id, attribute_id, &val);
+    /* Here, the val_print function gets called on attribute read. */
+    val_print(endpoint_id, cluster_id, attribute_id, &val, true);
     return ESP_OK;
 }
 
@@ -1585,53 +1586,54 @@ static esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttri
     return ESP_OK;
 }
 
-void val_print(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val)
+void val_print(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val, bool is_read)
 {
+    char action = (is_read) ? 'R' :'W';
     if (val_is_null(val)) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is null **********", endpoint_id,
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is null **********", action, endpoint_id,
                  cluster_id, attribute_id);
         return;
     }
 
     if (val->type == ESP_MATTER_VAL_TYPE_BOOLEAN) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", action, endpoint_id,
                  cluster_id, attribute_id, val->val.b);
     } else if (val->type == ESP_MATTER_VAL_TYPE_INTEGER || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_INTEGER) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", action, endpoint_id,
                  cluster_id, attribute_id, val->val.i);
     } else if (val->type == ESP_MATTER_VAL_TYPE_FLOAT || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %f **********", endpoint_id,
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %f **********", action, endpoint_id,
                  cluster_id, attribute_id, val->val.f);
     } else if (val->type == ESP_MATTER_VAL_TYPE_UINT8 || val->type == ESP_MATTER_VAL_TYPE_BITMAP8
                || val->type == ESP_MATTER_VAL_TYPE_ENUM8 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_UINT8
                || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_ENUM8) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", action, endpoint_id,
                  cluster_id, attribute_id, val->val.u8);
     } else if (val->type == ESP_MATTER_VAL_TYPE_INT16 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_INT16) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", action, endpoint_id,
                  cluster_id, attribute_id, val->val.i16);
     } else if (val->type == ESP_MATTER_VAL_TYPE_UINT16 || val->type == ESP_MATTER_VAL_TYPE_BITMAP16
                || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_UINT16 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", action, endpoint_id,
                  cluster_id, attribute_id, val->val.u16);
     } else if (val->type == ESP_MATTER_VAL_TYPE_INT32|| val->type == ESP_MATTER_VAL_TYPE_NULLABLE_INT32) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", action, endpoint_id,
                  cluster_id, attribute_id, val->val.i32);
     } else if (val->type == ESP_MATTER_VAL_TYPE_UINT32 || val->type == ESP_MATTER_VAL_TYPE_BITMAP32
                || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_UINT32 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP32) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", action, endpoint_id,
                  cluster_id, attribute_id, val->val.u32);
     } else if (val->type == ESP_MATTER_VAL_TYPE_INT64 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_INT64) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %lld **********", endpoint_id,
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %lld **********", action, endpoint_id,
                  cluster_id, attribute_id, val->val.i64);
     } else if (val->type == ESP_MATTER_VAL_TYPE_UINT64 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_UINT64) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %lld **********", endpoint_id,
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %lld **********", action, endpoint_id,
                  cluster_id, attribute_id, val->val.u64);
     } else if (val->type == ESP_MATTER_VAL_TYPE_CHAR_STRING) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %.*s **********", endpoint_id,
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %.*s **********", action, endpoint_id,
                  cluster_id, attribute_id, val->val.a.s, val->val.a.b);
     } else {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is <invalid type: %d> **********",
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is <invalid type: %d> **********", action,
                  endpoint_id, cluster_id, attribute_id, val->type);
     }
 }
@@ -1646,7 +1648,7 @@ esp_err_t get_val_raw(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attrib
         return ESP_FAIL;
     }
 
-    EmberAfStatus status = emberAfReadServerAttribute(endpoint_id, cluster_id, attribute_id, value, attribute_size);
+    EmberAfStatus status = emberAfReadAttribute(endpoint_id, cluster_id, attribute_id, value, attribute_size);
     if (status != EMBER_ZCL_STATUS_SUCCESS) {
         ESP_LOGE(TAG, "Error getting raw value from matter: 0x%x", status);
         if (lock_status == lock::SUCCESS) {
@@ -1688,7 +1690,7 @@ esp_err_t update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
     /* Update matter */
     EmberAfStatus status = EMBER_ZCL_STATUS_SUCCESS;
     if (emberAfContainsServer(endpoint_id, cluster_id)) {
-        status = emberAfWriteServerAttribute(endpoint_id, cluster_id, attribute_id, value, attribute_type);
+        status = emberAfWriteAttribute(endpoint_id, cluster_id, attribute_id, value, attribute_type);
         if (status != EMBER_ZCL_STATUS_SUCCESS) {
             ESP_LOGE(TAG, "Error updating attribute to matter: 0x%X", status);
             esp_matter_mem_free(value);
@@ -1719,8 +1721,8 @@ Status MatterPreAttributeChangeCallback(const chip::app::ConcreteAttributePath &
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
     attribute::get_attr_val_from_data(&val, type, size, value, attribute_metadata);
 
-    /* Print */
-    attribute::val_print(endpoint_id, cluster_id, attribute_id, &val);
+    /* Here, the val_print function gets called on attribute write.*/
+    attribute::val_print(endpoint_id, cluster_id, attribute_id, &val, false);
 
     /* Callback to application */
     esp_err_t err = execute_callback(attribute::PRE_UPDATE, endpoint_id, cluster_id, attribute_id, &val);
@@ -1771,8 +1773,8 @@ EmberAfStatus emberAfExternalAttributeReadCallback(EndpointId endpoint_id, Clust
         attribute::get_val(attribute, &val);
     }
 
-    /* Print */
-    attribute::val_print(endpoint_id, cluster_id, attribute_id, &val);
+    /* Here, the val_print function gets called on attribute read. */
+    attribute::val_print(endpoint_id, cluster_id, attribute_id, &val, true);
 
     /* Get size */
     uint16_t attribute_size = 0;

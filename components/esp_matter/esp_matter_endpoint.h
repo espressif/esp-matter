@@ -276,7 +276,7 @@ endpoint_t *add(endpoint_t *endpoint);
 
 namespace bridged_node {
 typedef struct config {
-    cluster::bridged_device_basic::config_t bridged_device_basic;
+    cluster::bridged_device_basic_information::config_t bridged_device_basic_information;
 } config_t;
 
 uint32_t get_device_type_id();
@@ -304,6 +304,7 @@ typedef struct config {
     cluster::groups::config_t groups;
     cluster::scenes::config_t scenes;
     cluster::window_covering::config_t window_covering;
+    config(uint8_t end_product_type = 0) : window_covering(end_product_type) {}
 } config_t;
 
 uint32_t get_device_type_id();
@@ -389,6 +390,11 @@ typedef struct config {
     cluster::identify::config_t identify;
     cluster::on_off::config_t on_off;
     cluster::pump_configuration_and_control::config_t pump_configuration_and_control;
+    config(
+        nullable<int16_t> max_pressure = nullable<int16_t>(),
+        nullable<uint16_t> max_speed = nullable<uint16_t>(),
+        nullable<uint16_t> max_flow = nullable<uint16_t>()
+    ) : pump_configuration_and_control(max_pressure, max_speed, max_flow) {}
 } config_t;
 
 uint32_t get_device_type_id();

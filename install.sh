@@ -13,6 +13,32 @@ echo ""
 source ${MATTER_PATH}/scripts/bootstrap.sh
 
 echo ""
+echo "Installing zap-cli"
+echo ""
+# Run the zap_download.py and extract the path of installed binary
+# eg output before cut: "export ZAP_INSTALL_PATH=zap/zap-v2023.03.06-nightly"
+# output after cut: zap/zap-v2023.03.06-nightly
+# TODO: Remove the zap-version after https://github.com/project-chip/connectedhomeip/pull/25727 merged
+zap_path=`python3 ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/scripts/tools/zap/zap_download.py \
+    --sdk-root ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip --zap RELEASE --zap-version v2023.03.27-nightly \
+    --extract-root .zap 2>/dev/null | cut -d= -f2`
+# Check whether the download is successful.
+if [ -z $zap_path ]; then
+    echo "Failed to install zap-cli"
+    deactivate
+    exit 1
+fi
+
+# Move files to one directory up, so that binaries will be in $ESP_MATTER_PATH/.zap/ directory and export.sh can leverage the fixed path
+if [ -d "${ESP_MATTER_PATH}/.zap" ]; then
+    rm -r ${ESP_MATTER_PATH}/.zap
+fi
+mkdir ${ESP_MATTER_PATH}/.zap
+mv $zap_path/* ${ESP_MATTER_PATH}/.zap/
+rm -r $zap_path
+chmod +x ${ESP_MATTER_PATH}/.zap/zap-cli
+
+echo ""
 echo "Building host tools"
 echo ""
 gn --root="${MATTER_PATH}" gen ${MATTER_PATH}/out/host

@@ -24,7 +24,7 @@ Additionally, we also support developing on Windows Host using WSL.
 The Prerequisites for ESP-IDF and Matter:
 
 - Please see `Prerequisites <https://docs.espressif.com/projects/esp-idf/en/v4.4.3/esp32/get-started/index.html#step-1-install-prerequisites>`__ for ESP IDF.
-- Please get the `Prerequisites <https://github.com/espressif/connectedhomeip/blob/v1.0.0.2/docs/guides/BUILDING.md#prerequisites>`__ for Matter.
+- Please get the `Prerequisites <https://github.com/espressif/connectedhomeip/tree/bb9200ace/docs/guides/BUILDING.md#prerequisites>`__ for Matter.
 
 
 
@@ -56,30 +56,53 @@ For using VSCode for development, please check `Developing in WSL <https://code.
       ./install.sh
       cd ..
 
-.. only:: esp32h2
+.. only:: esp32h2 or esp32c6 or esp32c2
 
    ::
 
       git clone --recursive https://github.com/espressif/esp-idf.git
-      cd esp-idf; git checkout 20949d444f; git submodule update --init --recursive;
+      cd esp-idf; git checkout bb9200acec; git submodule update --init --recursive;
       ./install.sh
       cd ..
 
 Cloning the esp-matter repository takes a while due to a lot of submodules in the upstream connectedhomeip,
 so if you want to do a shallow clone use the following command:
 
-::
+- For Linux host:
 
-   cd esp-idf
-   source ./export.sh
-   cd ..
+    ::
 
-   git clone --depth 1 https://github.com/espressif/esp-matter.git
-   cd esp-matter
-   git submodule update --init --depth 1
-   ./connectedhomeip/connectedhomeip/scripts/checkout_submodules.py --platform esp32 --shallow
-   ./install.sh
-   cd ..
+        cd esp-idf
+        source ./export.sh
+        cd ..
+
+        git clone --depth 1 https://github.com/espressif/esp-matter.git
+        cd esp-matter
+        git submodule update --init --depth 1
+        cd ./connectedhomeip/connectedhomeip
+        ./scripts/checkout_submodules.py --platform esp32 linux --shallow
+        cd ../..
+        ./install.sh
+        cd ..
+
+- For Mac OS-X host:
+
+    ::
+
+        cd esp-idf
+        source ./export.sh
+        cd ..
+
+        git clone --depth 1 https://github.com/espressif/esp-matter.git
+        cd esp-matter
+        git submodule update --init --depth 1
+        cd ./connectedhomeip/connectedhomeip
+        ./scripts/checkout_submodules.py --platform esp32 darwin --shallow
+        cd ../..
+        ./install.sh
+        cd ..
+
+Note: The modules for platform ``linux`` or ``darwin`` are required for the host tools building.
 
 To clone the esp-matter repository with all the submodules, use the following command:
 
@@ -155,11 +178,23 @@ Choose IDF target.
 
       idf.py set-target esp32c3
 
+.. only:: esp32c2
+
+   ::
+
+      idf.py set-target esp32c2
+
 .. only:: esp32h2
 
    ::
 
       idf.py --preview set-target esp32h2
+
+.. only:: esp32c6
+
+   ::
+
+      idf.py --preview set-target esp32c6
 
 -  If IDF target has not been set explicitly, then ``esp32`` is
    considered as default.
@@ -176,6 +211,13 @@ Choose IDF target.
       etc. are selected based on the device selected.
    -  The configuration of the peripheral components can be found in
       ``$ESP_MATTER_DEVICE_PATH/esp_matter_device.cmake``.
+
+.. only:: esp32c6
+
+    -  ESP32-C6 supports both the Wi-Fi and IEEE 802.15.4 radio, so you can run Wi-Fi or Thread matter example on it.
+
+        -  To enable Thread, you should change the menuconfig options to ``CONFIG_OPENTHREAD_ENABLED=y``, ``CONFIG_ENABLE_WIFI_STATION=n``, and  ``CONFIG_USE_MINIMAL_MDNS=n``.
+        -  To enable Wi-Fi. you should change the menuconfig options to ``CONFIG_OPENTHREAD_ENABLED=n``, ``CONFIG_ENABLE_WIFI_STATION=n``, and ``CONFIG_USE_MINIMAL_MDNS=y``.
 
 (When flashing the SDK for the first time, it is recommended to do
 ``idf.py erase_flash`` to wipe out entire flash and start out fresh.)
@@ -224,13 +266,17 @@ Use ``chip-tool`` in interactive mode to commission the device:
    chip-tool interactive start
 
 
-.. only:: esp32 or esp32c3
+.. only:: esp32 or esp32c3 or esp32c2 or esp32c6
 
    ::
 
       pairing ble-wifi 0x7283 <ssid> <passphrase> 20202021 3840
 
-.. only:: esp32h2
+.. only:: esp32c6
+
+    or
+
+.. only:: esp32h2 or esp32c6
 
    ::
 
@@ -247,15 +293,20 @@ Above method commissions the device using setup passcode and discriminator. Devi
 
 To Commission the device using manual pairing code 34970112332
 
-.. only:: esp32 or esp32c3
+.. only:: esp32 or esp32c3 or esp32c2 or esp32c6
 
     ::
 
         pairing code-wifi 0x7283 <ssid> <passphrase> 34970112332
 
-.. only:: esp32h2
+.. only:: esp32c6
+
+    or
+
+.. only:: esp32h2 or esp32c6
 
     ::
+
         pairing code-thread 0x7283 hex:<operationalDataset> 34970112332
 
 Above default manual pairing code contains following values:
@@ -269,13 +320,17 @@ Above default manual pairing code contains following values:
 
 To commission the device using QR code MT:Y.K9042C00KA0648G00
 
-.. only:: esp32 or esp32c3
+.. only:: esp32 or esp32c3 or esp32c2 or esp32c6
 
     ::
 
         pairing code-wifi 0x7283 <ssid> <passphrase> MT:Y.K9042C00KA0648G00
 
-.. only:: esp32h2
+.. only:: esp32c6
+
+    or
+
+.. only:: esp32h2 or esp32c6
 
     ::
 
@@ -593,6 +648,28 @@ creating in the *app_main.cpp* of the example. Examples:
       door_lock::config_t door_lock_config;
       endpoint_t *endpoint = door_lock::create(node, &door_lock_config, ENDPOINT_FLAG_NONE);
 
+-  window_covering_device:
+
+   ::
+
+      window_covering_device::config_t window_covering_device_config(static_cast<uint8_t>(chip::app::Clusters::WindowCovering::EndProductType::kTiltOnlyInteriorBlind));
+      endpoint_t *endpoint = window_covering_device::create(node, &window_covering_config, ENDPOINT_FLAG_NONE);
+
+   The ``window_covering_device`` ``config_t`` structure includes a constructor that allows specifying
+   an end product type different than the default one, which is "Roller shade".
+   Once a ``config_t`` instance has been instantiated, its end product type cannot be modified.
+
+- pump
+
+   ::
+
+      pump::config_t pump_config(1, 10, 20);
+      endpoint_t *endpoint = pump::create(node, &pump_config, ENDPOINT_FLAG_NONE);
+
+   The ``pump`` ``config_t`` structure includes a constructor that allows specifying
+   maximum pressure, maximum speed and maximum flow values. If they aren't set, they will be set to null by default.
+   Once a ``config_t`` instance has been instantiated, these three values cannot be modified.
+
 
 2.4.2.2 Clusters
 ^^^^^^^^^^^^^^^^
@@ -612,6 +689,28 @@ Additional clusters can also be added to an endpoint. Examples:
 
       temperature_measurement::config_t temperature_measurement_config;
       cluster_t *cluster = temperature_measurement::create(endpoint, &temperature_measurement_config, CLUSTER_FLAG_SERVER);
+
+- window_covering:
+
+      ::
+   
+         window_covering::config_t window_covering_config(static_cast<uint8_t>(chip::app::Clusters::WindowCovering::EndProductType::kTiltOnlyInteriorBlind));
+         cluster_t *cluster = window_covering::create(endpoint, &window_covering_config, CLUSTER_FLAG_SERVER);
+
+   The ``window_covering`` ``config_t`` structure includes a constructor that allows specifying
+   an end product type different than the default one, which is "Roller shade".
+   Once a ``config_t`` instance has been instantiated, its end product type cannot be modified.
+
+- pump_configuration_and_control:
+
+   ::
+
+      pump_configuration_and_control::config_t pump_configuration_and_control_config(1, 10, 20);
+      cluster_t *cluster = pump_configuration_and_control::create(endpoint, &pump_configuration_and_control_config, CLUSTER_FLAG_SERVER);
+
+   The ``pump_configuration_and_control`` ``config_t`` structure includes a constructor that allows specifying
+   maximum pressure, maximum speed and maximum flow values. If they aren't set, they will be set to null by default.
+   Once a ``config_t`` instance has been instantiated, these three values cannot be modified.
 
 2.4.2.3 Attributes and Commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

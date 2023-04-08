@@ -22,6 +22,7 @@
 #include <platform/ESP32/OTAImageProcessorImpl.h>
 
 #include <esp_matter.h>
+#include <zap-generated/endpoint_config.h>
 
 using chip::BDXDownloader;
 using chip::DefaultOTARequestor;

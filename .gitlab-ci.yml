@@ -117,15 +117,27 @@ variables:
     - idf.py build
     - cp sdkconfig.defaults.backup sdkconfig.defaults
 
-.build_examples_idf_v5_0: &build_examples_idf_v5_0
+.build_examples_idf_v5_1: &build_examples_idf_v5_1
     - cd $ESP_MATTER_PATH/examples/zap_light
     - idf.py --preview set-target esp32h2
+    - idf.py build
+    - idf.py set-target esp32c2
     - idf.py build
     - cd $ESP_MATTER_PATH/examples/light_switch
     - idf.py --preview set-target esp32h2
     - idf.py build
+    - idf.py --preview set-target esp32c6
+    - idf.py build
+    - idf.py set-target esp32c2
+    - idf.py build
     - cd $ESP_MATTER_PATH/examples/light
     - idf.py --preview set-target esp32h2
+    - idf.py build
+    - idf.py --preview set-target esp32c6
+    - idf.py build
+    - idf.py set-target esp32c2
+    - idf.py build
+    - idf.py set-target esp32c3
     - idf.py build
     - cd $ESP_MATTER_PATH/examples/zigbee_bridge
     - idf.py set-target esp32
@@ -161,13 +173,13 @@ build_esp_matter_examples:
         - *build_examples
         - *build_external_platform_example
 
-build_esp_matter_examples_idf_v5_0:
+build_esp_matter_examples_idf_v5_1:
     extends:
         - .build_examples_template
     variables:
-        IDF_VERSION: "20949d444f466e1b1247b10e2b8d6a2fb8212815"
+        IDF_VERSION: "bb9200acec7dd60e9adb4a381e5400dcd5024534"
     script:
-        - *build_examples_idf_v5_0
+        - *build_examples_idf_v5_1
 
 build_upstream_examples:
     extends:
@@ -192,7 +204,7 @@ build_docs:
     script:
         - cd docs
         - pip install -r requirements.txt
-        - build-docs -t esp32 esp32c3 esp32h2 -l en
+        - build-docs -t esp32 esp32c2 esp32c3 esp32c6 esp32h2 -l en
 
 .deploy_docs_template:
     stage: docs
@@ -213,7 +225,7 @@ build_docs:
 deploy_docs_preview:
     extends:
         - .deploy_docs_template
-    when: manual
+    when: always
     variables:
         TYPE: "preview"
         DOCS_BUILD_DIR: "${CI_PROJECT_DIR}/docs/_build/"
@@ -226,7 +238,7 @@ deploy_docs_preview:
 deploy_docs_production:
     extends:
         - .deploy_docs_template
-    when: manual
+    when: always
     variables:
         TYPE: "preview"
         DOCS_BUILD_DIR: "${CI_PROJECT_DIR}/docs/_build/"

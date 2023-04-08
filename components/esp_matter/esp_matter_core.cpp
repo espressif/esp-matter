@@ -39,12 +39,9 @@
 #include <platform/DiagnosticDataProvider.h>
 #include <platform/ESP32/ESP32DeviceInfoProvider.h>
 #include <platform/ESP32/ESP32FactoryDataProvider.h>
+#include <platform/ESP32/ESP32Utils.h>
 #include <platform/ESP32/NetworkCommissioningDriver.h>
-#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-#include <esp_matter_openthread.h>
-#endif
 #include <esp_matter_ota.h>
-#include <esp_route_hook.h>
 #include <esp_matter_dac_provider.h>
 #include <esp_matter_mem.h>
 
@@ -817,7 +814,7 @@ static void esp_matter_chip_init_task(intptr_t context)
     // Record start up event in basic information cluster.
     PlatformMgr().HandleServerStarted();
     // Record boot reason evnet in general diagnostics cluster.
-    chip::app::Clusters::GeneralDiagnostics::BootReasonType bootReason;
+    chip::app::Clusters::GeneralDiagnostics::BootReasonEnum bootReason;
     if (GetDiagnosticDataProvider().GetBootReason(bootReason) == CHIP_NO_ERROR) {
         chip::app::Clusters::GeneralDiagnosticsServer::Instance().OnDeviceReboot(bootReason);
     }
@@ -840,57 +837,57 @@ static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg
         if (event->InterfaceIpAddressChanged.Type == chip::DeviceLayer::InterfaceIpChangeType::kIpV6_Assigned ||
                 event->InterfaceIpAddressChanged.Type == chip::DeviceLayer::InterfaceIpChangeType::kIpV4_Assigned) {
             chip::app::DnssdServer::Instance().StartServer();
-            esp_route_hook_init(esp_netif_get_handle_from_ifkey("WIFI_STA_DEF"));
         }
 #endif
-        if (event->InterfaceIpAddressChanged.Type == chip::DeviceLayer::InterfaceIpChangeType::kIpV6_Assigned) {
-            // When the OTA image is applied, the device will reboot and send the NotifyUpdateApplied to the Provider
-            // in esp_matter_ota_requestor_start(), so the device should be connected to the Wi-Fi network when calling
-            // esp_matter_ota_requestor_start(). IPv4 might be disabled on the Provider so we should call this function
-            // when the IPv6 address is assigned.
-            esp_matter_ota_requestor_start();
-            /* Initialize binding manager */
-            client::binding_manager_init();
-        }
         break;
 
-#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-    case chip::DeviceLayer::DeviceEventType::kDnssdPlatformInitialized:
-        esp_matter_ota_requestor_start();
-        /* Initialize binding manager */
-        client::binding_manager_init();
+    case chip::DeviceLayer::DeviceEventType::kDnssdInitialized:
+        // Wait some time to avoid issue https://github.com/project-chip/connectedhomeip/issues/25570
+        chip::DeviceLayer::SystemLayer().StartTimer(chip::System::Clock::Seconds16(2),
+                [](chip::System::Layer * systemLayer, void * appState) {
+                esp_matter_ota_requestor_start();
+                /* Initialize binding manager */
+                client::binding_manager_init();
+                } , NULL);
         break;
-#endif
+
+    case chip::DeviceLayer::DeviceEventType::kCommissioningComplete:
+        ESP_LOGI(TAG, "Commissioning Complete");
+        break;
 
 #if CONFIG_BT_ENABLED
 #if CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING
-    case chip::DeviceLayer::DeviceEventType::kCommissioningComplete:
-    {
-        esp_err_t err = ESP_OK;
+    case chip::DeviceLayer::DeviceEventType::kCHIPoBLEConnectionClosed:
+        if(chip::Server::GetInstance().GetFabricTable().FabricCount() > 0) {
+            esp_err_t err = ESP_OK;
 #if CONFIG_BT_NIMBLE_ENABLED
-        if (!ble_hs_is_enabled()) {
-            ESP_LOGI(TAG, "BLE already deinited");
-            return;
-        }
+            if (!ble_hs_is_enabled()) {
+                ESP_LOGI(TAG, "BLE already deinited");
+                return;
+            }
 
-        if (nimble_port_stop() != 0) {
-            ESP_LOGE(TAG, "nimble_port_stop() failed");
-            return;
-        }
+            if (nimble_port_stop() != 0) {
+                ESP_LOGE(TAG, "nimble_port_stop() failed");
+                return;
+            }
 
-        nimble_port_deinit();
+            nimble_port_deinit();
 #if ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(5, 0, 0)
-        err = esp_nimble_hci_and_controller_deinit();
+            err = esp_nimble_hci_and_controller_deinit();
 #endif
 #endif /* CONFIG_BT_NIMBLE_ENABLED */
-        err |= esp_bt_mem_release(ESP_BT_MODE_BTDM);
-        if (err != ESP_OK) {
-            ESP_LOGE(TAG, "BLE deinit failed");
-            return;
+#if CONFIG_IDF_TARGET_ESP32
+            err |= esp_bt_mem_release(ESP_BT_MODE_BTDM);
+#elif CONFIG_IDF_TARGET_ESP32C2 || CONFIG_IDF_TARGET_ESP32C3 || CONFIG_IDF_TARGET_ESP32S3 || CONFIG_IDF_TARGET_ESP32H2
+            err |= esp_bt_mem_release(ESP_BT_MODE_BLE);
+#endif
+            if (err != ESP_OK) {
+                ESP_LOGE(TAG, "BLE deinit failed");
+                return;
+            }
+            ESP_LOGI(TAG, "BLE deinit successful and memory reclaimed");
         }
-        ESP_LOGI(TAG, "BLE deinit successful and memory reclaimed");
         break;
-    }
 #endif /* CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING */
 #endif /* CONFIG_BT_ENABLED */
     default:
@@ -956,9 +953,20 @@ esp_err_t start(event_callback_t callback, intptr_t callback_arg)
         ESP_LOGE(TAG, "esp_matter has started");
         return ESP_ERR_INVALID_STATE;
     }
+    esp_err_t err = esp_event_loop_create_default();
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Error create default event loop");
+        return err;
+    }
+#if CHIP_DEVICE_CONFIG_ENABLE_WIFI
+    if (chip::DeviceLayer::Internal::ESP32Utils::InitWiFiStack() != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Error initializing Wi-Fi stack");
+        return ESP_FAIL;
+    }
+#endif
     esp_matter_ota_requestor_init();
 
-    esp_err_t err = chip_init(callback, callback_arg);
+    err = chip_init(callback, callback_arg);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Error initializing matter");
         return err;

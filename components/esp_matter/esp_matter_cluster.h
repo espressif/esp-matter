@@ -169,7 +169,7 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* time_synchronization */
 
-namespace bridged_device_basic {
+namespace bridged_device_basic_information {
 typedef struct config {
     uint16_t cluster_revision;
     bool reachable;
@@ -177,7 +177,7 @@ typedef struct config {
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* bridged_device_basic */
+} /* bridged_device_basic_information */
 
 namespace user_label {
 typedef struct config {
@@ -325,7 +325,7 @@ typedef struct config {
     const uint8_t end_product_type;
     uint8_t mode;
     feature::lift::config_t lift;
-    config() : cluster_revision(5), type(0), config_status(0), operational_status(0), end_product_type(0), mode(0) {}
+    config(uint8_t end_product_type = 0) : cluster_revision(5), type(0), config_status(0), operational_status(0), end_product_type(end_product_type), mode(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -447,7 +447,12 @@ typedef struct config {
     nullable<int16_t> capacity;
     // Pump Settings Attributes
     uint8_t operation_mode;
-    config() : cluster_revision(3), max_pressure(), max_speed(), max_flow(), effective_operation_mode(0), effective_control_mode(0), capacity(), operation_mode(0) {}
+    config(
+        nullable<int16_t> max_pressure = nullable<int16_t>(),
+        nullable<uint16_t> max_speed = nullable<uint16_t>(),
+        nullable<uint16_t> max_flow = nullable<uint16_t>()
+    ) : cluster_revision(3), max_pressure(max_pressure), max_speed(max_speed), max_flow(max_flow),
+        effective_operation_mode(0), effective_control_mode(0), capacity(), operation_mode(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
