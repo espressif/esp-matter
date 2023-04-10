@@ -5,3 +5,4 @@ future==0.18.2
 pycparser==2.21
 pypng==0.0.21
 PyQRCode==1.2.1
+python_stdnum==1.18
