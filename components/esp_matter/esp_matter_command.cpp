@@ -38,14 +38,14 @@ void DispatchSingleClusterCommandCommon(const ConcreteCommandPath &command_path,
     uint16_t endpoint_id = command_path.mEndpointId;
     uint32_t cluster_id = command_path.mClusterId;
     uint32_t command_id = command_path.mCommandId;
-    ESP_LOGI(TAG, "Received command 0x%08lx for endpoint 0x%04x's cluster 0x%08lx", command_id, endpoint_id, cluster_id);
+    ESP_LOGI(TAG, "Received command 0x%08" PRIX32 " for endpoint 0x%04" PRIX16 "'s cluster 0x%08" PRIX32 "", command_id, endpoint_id, cluster_id);
 
     node_t *node = node::get();
     endpoint_t *endpoint = endpoint::get(node, endpoint_id);
     cluster_t *cluster = cluster::get(endpoint, cluster_id);
     command_t *command = get(cluster, command_id, COMMAND_FLAG_ACCEPTED);
     if (!command) {
-        ESP_LOGE(TAG, "Command 0x%08lx not found", command_id);
+        ESP_LOGE(TAG, "Command 0x%08" PRIX32 " not found", command_id);
         return;
     }
     esp_err_t err = ESP_OK;
