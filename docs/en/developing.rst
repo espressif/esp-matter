@@ -217,7 +217,7 @@ Choose IDF target.
     -  ESP32-C6 supports both the Wi-Fi and IEEE 802.15.4 radio, so you can run Wi-Fi or Thread matter example on it.
 
         -  To enable Thread, you should change the menuconfig options to ``CONFIG_OPENTHREAD_ENABLED=y``, ``CONFIG_ENABLE_WIFI_STATION=n``, and  ``CONFIG_USE_MINIMAL_MDNS=n``.
-        -  To enable Wi-Fi. you should change the menuconfig options to ``CONFIG_OPENTHREAD_ENABLED=n``, ``CONFIG_ENABLE_WIFI_STATION=n``, and ``CONFIG_USE_MINIMAL_MDNS=y``.
+        -  To enable Wi-Fi. you should change the menuconfig options to ``CONFIG_OPENTHREAD_ENABLED=n``, ``CONFIG_ENABLE_WIFI_STATION=y``, and ``CONFIG_USE_MINIMAL_MDNS=y``.
 
 (When flashing the SDK for the first time, it is recommended to do
 ``idf.py erase_flash`` to wipe out entire flash and start out fresh.)
