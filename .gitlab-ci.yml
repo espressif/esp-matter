@@ -162,7 +162,7 @@ variables:
     # update caches only when setup succeed
     - *update_build_caches
   variables:
-    IDF_VERSION: "v4.4.3"
+    IDF_VERSION: "v5.0.1"
     REPOS_PATH: "$CI_PROJECT_DIR/repos"
     IDF_CCACHE_ENABLE: 1
 
@@ -172,6 +172,14 @@ build_esp_matter_examples:
     script:
         - *build_examples
         - *build_external_platform_example
+
+build_esp_matter_examples_idf_v4_4:
+    extends:
+        - .build_examples_template
+    variables:
+        IDF_VERSION: "v4.4.3"
+    script:
+        - *build_examples
 
 build_esp_matter_examples_idf_v5_1:
     extends:

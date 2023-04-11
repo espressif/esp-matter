@@ -23,7 +23,7 @@ Additionally, we also support developing on Windows Host using WSL.
 
 The Prerequisites for ESP-IDF and Matter:
 
-- Please see `Prerequisites <https://docs.espressif.com/projects/esp-idf/en/v4.4.3/esp32/get-started/index.html#step-1-install-prerequisites>`__ for ESP IDF.
+- Please see `Prerequisites <https://docs.espressif.com/projects/esp-idf/en/v5.0.1/esp32/get-started/index.html#step-1-install-prerequisites>`__ for ESP IDF.
 - Please get the `Prerequisites <https://github.com/espressif/connectedhomeip/tree/bb9200ace/docs/guides/BUILDING.md#prerequisites>`__ for Matter.
 
 
@@ -47,16 +47,16 @@ For using VSCode for development, please check `Developing in WSL <https://code.
 2.1.2 Getting the Repositories
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. only:: esp32 or esp32c3
+.. only:: esp32 or esp32c3 or esp32c2
 
    ::
 
       git clone --recursive https://github.com/espressif/esp-idf.git
-      cd esp-idf; git checkout v4.4.3; git submodule update --init --recursive;
+      cd esp-idf; git checkout v5.0.1; git submodule update --init --recursive;
       ./install.sh
       cd ..
 
-.. only:: esp32h2 or esp32c6 or esp32c2
+.. only:: esp32h2 or esp32c6
 
    ::
 

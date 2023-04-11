@@ -1590,51 +1590,51 @@ void val_print(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
 {
     char action = (is_read) ? 'R' :'W';
     if (val_is_null(val)) {
-        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is null **********", action, endpoint_id,
-                 cluster_id, attribute_id);
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04x's Cluster 0x%08lx's Attribute 0x%08lx is null **********", action,
+                 endpoint_id, cluster_id, attribute_id);
         return;
     }
 
     if (val->type == ESP_MATTER_VAL_TYPE_BOOLEAN) {
-        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", action, endpoint_id,
-                 cluster_id, attribute_id, val->val.b);
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04x's Cluster 0x%08lx's Attribute 0x%08lx is %d **********", action,
+                 endpoint_id, cluster_id, attribute_id, val->val.b);
     } else if (val->type == ESP_MATTER_VAL_TYPE_INTEGER || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_INTEGER) {
-        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", action, endpoint_id,
-                 cluster_id, attribute_id, val->val.i);
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04x's Cluster 0x%08lx's Attribute 0x%08lx is %d **********", action,
+                 endpoint_id, cluster_id, attribute_id, val->val.i);
     } else if (val->type == ESP_MATTER_VAL_TYPE_FLOAT || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT) {
-        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %f **********", action, endpoint_id,
-                 cluster_id, attribute_id, val->val.f);
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04x's Cluster 0x%08lx's Attribute 0x%08lx is %f **********", action,
+                 endpoint_id, cluster_id, attribute_id, val->val.f);
     } else if (val->type == ESP_MATTER_VAL_TYPE_UINT8 || val->type == ESP_MATTER_VAL_TYPE_BITMAP8
                || val->type == ESP_MATTER_VAL_TYPE_ENUM8 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_UINT8
                || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_ENUM8) {
-        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", action, endpoint_id,
-                 cluster_id, attribute_id, val->val.u8);
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04x's Cluster 0x%08lx's Attribute 0x%08lx is %d **********", action,
+                 endpoint_id, cluster_id, attribute_id, val->val.u8);
     } else if (val->type == ESP_MATTER_VAL_TYPE_INT16 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_INT16) {
-        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", action, endpoint_id,
-                 cluster_id, attribute_id, val->val.i16);
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04x's Cluster 0x%08lx's Attribute 0x%08lx is %d **********", action,
+                 endpoint_id, cluster_id, attribute_id, val->val.i16);
     } else if (val->type == ESP_MATTER_VAL_TYPE_UINT16 || val->type == ESP_MATTER_VAL_TYPE_BITMAP16
                || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_UINT16 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16) {
-        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", action, endpoint_id,
-                 cluster_id, attribute_id, val->val.u16);
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04x's Cluster 0x%08lx's Attribute 0x%08lx is %d **********", action,
+                 endpoint_id, cluster_id, attribute_id, val->val.u16);
     } else if (val->type == ESP_MATTER_VAL_TYPE_INT32|| val->type == ESP_MATTER_VAL_TYPE_NULLABLE_INT32) {
-        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", action, endpoint_id,
-                 cluster_id, attribute_id, val->val.i32);
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04x's Cluster 0x%08lx's Attribute 0x%08lx is %ld **********", action,
+                 endpoint_id, cluster_id, attribute_id, val->val.i32);
     } else if (val->type == ESP_MATTER_VAL_TYPE_UINT32 || val->type == ESP_MATTER_VAL_TYPE_BITMAP32
                || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_UINT32 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP32) {
-        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", action, endpoint_id,
-                 cluster_id, attribute_id, val->val.u32);
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04x's Cluster 0x%08lx's Attribute 0x%08lx is %ld **********", action,
+                 endpoint_id, cluster_id, attribute_id, val->val.u32);
     } else if (val->type == ESP_MATTER_VAL_TYPE_INT64 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_INT64) {
-        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %lld **********", action, endpoint_id,
-                 cluster_id, attribute_id, val->val.i64);
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04x's Cluster 0x%08lx's Attribute 0x%08lx is %lld **********", action,
+                 endpoint_id, cluster_id, attribute_id, val->val.i64);
     } else if (val->type == ESP_MATTER_VAL_TYPE_UINT64 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_UINT64) {
-        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %lld **********", action, endpoint_id,
-                 cluster_id, attribute_id, val->val.u64);
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04x's Cluster 0x%08lx's Attribute 0x%08lx is %lld **********", action,
+                 endpoint_id, cluster_id, attribute_id, val->val.u64);
     } else if (val->type == ESP_MATTER_VAL_TYPE_CHAR_STRING) {
-        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %.*s **********", action, endpoint_id,
-                 cluster_id, attribute_id, val->val.a.s, val->val.a.b);
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04x's Cluster 0x%08lx's Attribute 0x%08lx is %.*s **********", action,
+                 endpoint_id, cluster_id, attribute_id, val->val.a.s, val->val.a.b);
     } else {
-        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is <invalid type: %d> **********", action,
-                 endpoint_id, cluster_id, attribute_id, val->type);
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04x's Cluster 0x%08lx's Attribute 0x%08lx is <invalid type: %d> **********",
+                 action, endpoint_id, cluster_id, attribute_id, val->type);
     }
 }
 

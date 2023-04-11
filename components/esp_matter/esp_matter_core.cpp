@@ -1023,7 +1023,7 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint8_t flags, es
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     attribute_t *existing_attribute = get(cluster, attribute_id);
     if (existing_attribute) {
-        ESP_LOGW(TAG, "Attribute 0x%04x on cluster 0x%04x already exists. Not creating again.", attribute_id,
+        ESP_LOGW(TAG, "Attribute 0x%08lx on cluster 0x%08lx already exists. Not creating again.", attribute_id,
                  current_cluster->cluster_id);
         return existing_attribute;
     }
@@ -1306,14 +1306,14 @@ esp_err_t store_val_in_nvs(attribute_t *attribute)
     char nvs_namespace[16] = {0};
     char attribute_key[16] = {0};
     snprintf(nvs_namespace, 16, "endpoint_%X", endpoint_id); /* endpoint_id */
-    snprintf(attribute_key, 16, "%X:%X", cluster_id, attribute_id); /* cluster_id:attribute_id */
+    snprintf(attribute_key, 16, "%lX:%lX", cluster_id, attribute_id); /* cluster_id:attribute_id */
 
     nvs_handle_t handle;
     esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, nvs_namespace, NVS_READWRITE, &handle);
     if (err != ESP_OK) {
         return err;
     }
-    ESP_LOGD(TAG, "Store attribute in nvs: endpoint_id-0x%x, cluster_id-0x%x, attribute_id-0x%x",
+    ESP_LOGD(TAG, "Store attribute in nvs: endpoint_id-0x%x, cluster_id-0x%lx, attribute_id-0x%lx",
              endpoint_id, cluster_id, attribute_id);
     if (current_attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
         current_attribute->val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
@@ -1348,14 +1348,14 @@ esp_err_t get_val_from_nvs(attribute_t *attribute, esp_matter_attr_val_t *val)
     char nvs_namespace[16] = {0};
     char attribute_key[16] = {0};
     snprintf(nvs_namespace, 16, "endpoint_%X", endpoint_id); /* endpoint_id */
-    snprintf(attribute_key, 16, "%X:%X", cluster_id, attribute_id); /* cluster_id:attribute_id */
+    snprintf(attribute_key, 16, "%lX:%lX", cluster_id, attribute_id); /* cluster_id:attribute_id */
 
     nvs_handle_t handle;
     esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, nvs_namespace, NVS_READONLY, &handle);
     if (err != ESP_OK) {
         return err;
     }
-    ESP_LOGD(TAG, "read attribute from nvs: endpoint_id-0x%x, cluster_id-0x%x, attribute_id-0x%x",
+    ESP_LOGD(TAG, "read attribute from nvs: endpoint_id-0x%x, cluster_id-0x%lx, attribute_id-0x%lx",
              endpoint_id, cluster_id, attribute_id);
     if (current_attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
         current_attribute->val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
@@ -1395,7 +1395,7 @@ command_t *create(cluster_t *cluster, uint32_t command_id, uint8_t flags, callba
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     command_t *existing_command = get(cluster, command_id, flags);
     if (existing_command) {
-        ESP_LOGW(TAG, "Command 0x%04x on cluster 0x%04x already exists. Not creating again.", command_id,
+        ESP_LOGW(TAG, "Command 0x%08lx on cluster 0x%08lx already exists. Not creating again.", command_id,
                  current_cluster->cluster_id);
         return existing_command;
     }
@@ -1529,20 +1529,20 @@ cluster_t *create(endpoint_t *endpoint, uint32_t cluster_id, uint8_t flags)
         /* If a server already exists, do not create it again */
         _cluster_t *_existing_cluster = (_cluster_t *)existing_cluster;
         if ((_existing_cluster->flags & CLUSTER_FLAG_SERVER) && (flags & CLUSTER_FLAG_SERVER)) {
-            ESP_LOGW(TAG, "Server Cluster 0x%04x on endpoint 0x%04x already exists. Not creating again.", cluster_id,
+            ESP_LOGW(TAG, "Server Cluster 0x%08lx on endpoint 0x%04x already exists. Not creating again.", cluster_id,
                      current_endpoint->endpoint_id);
             return existing_cluster;
         }
 
         /* If a client already exists, do not create it again */
         if ((_existing_cluster->flags & CLUSTER_FLAG_CLIENT) && (flags & CLUSTER_FLAG_CLIENT)) {
-            ESP_LOGW(TAG, "Client Cluster 0x%04x on endpoint 0x%04x already exists. Not creating again.", cluster_id,
+            ESP_LOGW(TAG, "Client Cluster 0x%08lx on endpoint 0x%04x already exists. Not creating again.", cluster_id,
                      current_endpoint->endpoint_id);
             return existing_cluster;
         }
 
         /* The cluster already exists, but is of a different type. Just update the 'Set' part from below. */
-        ESP_LOGI(TAG, "Cluster 0x%04x on endpoint 0x%04x already exists. Updating values.", cluster_id,
+        ESP_LOGI(TAG, "Cluster 0x%08lx on endpoint 0x%04x already exists. Updating values.", cluster_id,
                  current_endpoint->endpoint_id);
         _existing_cluster->flags |= flags;
         return existing_cluster;
