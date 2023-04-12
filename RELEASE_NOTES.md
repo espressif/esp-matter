@@ -1,3 +1,13 @@
+# 14-April-2023
+
+#### *Changed how attribute data is stored in NVS*
+By default primitive data types are stored as blob and that consumes more space in NVS.
+Added a configuration option (`CONFIG_ESP_MATTER_NVS_USE_COMPACT_ATTR_STORAGE`) which uses
+the primitive data type specific NVS APIs to store the attribute. This saves space in NVS partition.
+
+Newer developements shall enable option `ESP_MATTER_NVS_USE_COMPACT_ATTR_STORAGE` to save on NVS space.
+All the examples have this option enabled.
+
 # 7-April-2023
 
 - `tools/mfg_tool/mfg_tool.py` now uses `connectedhomeip/connectedhomeip/src/setup_payload/python/generate_setup_payload.py` instead of previously used compiled `chip-tool` binary executable which additionally depends on `python-stdnum` module.
