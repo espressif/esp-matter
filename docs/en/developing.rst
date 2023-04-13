@@ -340,8 +340,8 @@ Above QR Code contains the below default values:
 ::
 
     Version:             0
-    Vendor ID:           65521
-    ProductID:           32768
+    Vendor ID:           65521    (0xFFF1)
+    ProductID:           32768    (0x8000)
     Custom flow:         0        (STANDARD)
     Discovery Bitmask:   0x02     (BLE)
     Long discriminator:  3840     (0xf00)
