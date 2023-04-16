@@ -217,7 +217,7 @@ Choose IDF target.
     -  ESP32-C6 supports both the Wi-Fi and IEEE 802.15.4 radio, so you can run Wi-Fi or Thread matter example on it.
 
         -  To enable Thread, you should change the menuconfig options to ``CONFIG_OPENTHREAD_ENABLED=y``, ``CONFIG_ENABLE_WIFI_STATION=n``, and  ``CONFIG_USE_MINIMAL_MDNS=n``.
-        -  To enable Wi-Fi. you should change the menuconfig options to ``CONFIG_OPENTHREAD_ENABLED=n``, ``CONFIG_ENABLE_WIFI_STATION=n``, and ``CONFIG_USE_MINIMAL_MDNS=y``.
+        -  To enable Wi-Fi. you should change the menuconfig options to ``CONFIG_OPENTHREAD_ENABLED=n``, ``CONFIG_ENABLE_WIFI_STATION=y``, and ``CONFIG_USE_MINIMAL_MDNS=y``.
 
 (When flashing the SDK for the first time, it is recommended to do
 ``idf.py erase_flash`` to wipe out entire flash and start out fresh.)
@@ -254,7 +254,7 @@ A host-based chip-tool can be used as a commissioner to commission and control a
 
 ::
 
-   $ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/out/host
+   ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/out/host
 
 2.2.1.1 Commissioning
 ^^^^^^^^^^^^^^^^^^^^^
@@ -340,8 +340,8 @@ Above QR Code contains the below default values:
 ::
 
     Version:             0
-    Vendor ID:           65521
-    ProductID:           32768
+    Vendor ID:           65521    (0xFFF1)
+    ProductID:           32768    (0x8000)
     Custom flow:         0        (STANDARD)
     Discovery Bitmask:   0x02     (BLE)
     Long discriminator:  3840     (0xf00)

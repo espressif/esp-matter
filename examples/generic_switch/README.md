@@ -2,7 +2,7 @@
 
 This example creates a Generic Switch device using the ESP
 Matter data model.
-This example aims to demonstrate the use of Fixed Label Cluster which provides a feature for the device to tag an endpoint with zero or more read-only labels using nvs api.
+This example aims to demonstrate the use of Fixed Label Cluster and User Label Cluster which provide a feature for the device to tag an endpoint with zero or more read-only labels using nvs api and zero or more labels respectively.
 
 Note:
     In order to retrieve the label-list from the fixed-label cluster the two options:
@@ -27,9 +27,17 @@ chip-tool pairing ble-wifi 0x7283 [ssid] [password] 20202020 3841
 -   To read the fixed-labels, use chip-tool.
 -   Command :
 ```
-chip-tool fixedlabels read label-list 0x7283 1
+chip-tool fixedlabel read label-list 0x7283 1
 ```
 
+The example command given below should be executed to write to the label-list of User Label Cluster.
+```
+chip-tool userlabel write label-list '[{"label":"room", "value":"bedroom 1"}, {"label":"orientation", "value":"east"}]' 0x7283 1
+```
+To read label-list of User Label Cluster execute the command given below.
+```
+chip-tool userlabel read label-list 0x7283 1
+```
 ## 2. Post Commissioning Setup
 
 This should be followed by: Commission the generic switch device

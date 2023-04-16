@@ -1,3 +1,12 @@
+# 7-April-2023
+
+- `tools/mfg_tool/mfg_tool.py` now uses `connectedhomeip/connectedhomeip/src/setup_payload/python/generate_setup_payload.py` instead of previously used compiled `chip-tool` binary executable which additionally depends on `python-stdnum` module.
+- Reinstall dependencies to use `mfg_tool` by running the following commands -
+```
+source $IDF_PATH/export.sh
+python3 -m pip install -r tools/mfg_tool/requirements.txt
+```
+
 # 15-March-2023
 
 API Change

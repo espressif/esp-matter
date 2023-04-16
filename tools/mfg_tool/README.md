@@ -2,16 +2,16 @@
 
 ## Dependencies
 * [CHIP Certificate Tool](https://github.com/project-chip/connectedhomeip/tree/master/src/tools/chip-cert),
-chip-cert provides command line interface (CLI) utility used for generating and manipulating CHIP certificates and CHIP private keys.
+*chip-cert* provides command line interface (CLI) utility used for generating and manipulating CHIP certificates and CHIP private keys.
 
-* [SPAKE2P Parameters Tool](https://github.com/project-chip/connectedhomeip/tree/master/src/tools/spake2p),
-spake2p tool provides command line interface (CLI) utility used for generating spake parameters (PIN code and verifier) for device manufacturing provisioning.
+* [SPAKE2+](https://github.com/project-chip/connectedhomeip/tree/master/scripts/tools/spake2p),
+*spake2p.py* is used for generating PAKE verifier for device manufacturing provisioning.
 
-* [chip-tool](https://github.com/project-chip/connectedhomeip/tree/master/examples/chip-tool),
-chip-tool supports generating onboarding QR code payload and manual pairing code.
+* [Setup Payload](https://github.com/project-chip/connectedhomeip/tree/master/src/setup_payload/),
+*generate_setup_payload.py* is used for generating onboarding payloads, QR code and manual pairing code.
 
 * [Mass Manufacturing Utility](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/storage/mass_mfg.html#manufacturing-utility),
-mfg_gen.py to create factory NVS partition images.
+*mfg_gen.py* is used for creating factory NVS partition images.
 
 ### Install python dependencies
 ```
@@ -21,14 +21,14 @@ python3 -m pip install -r requirements.txt
 
 ### [Build and setup tools in Matter SDK](https://github.com/project-chip/connectedhomeip/blob/master/docs/guides/BUILDING.md#build-for-the-host-os-linux-or-macos)
 
-#### Build chip-cert and spake2p
+#### Build chip-cert
 ```
 cd path/to/esp-matter/connectedhomeip/connectedhomeip
 source scripts/activate.sh
 gn gen out/host
 ninja -C out/host
 ```
-Above commands will generate spake2p and chip-cert at `esp-matter/connectedhomeip/connectedhomeip/out/host`.
+Above commands will generate chip-cert at `esp-matter/connectedhomeip/connectedhomeip/out/host`.
 
 #### Add the tools path to $PATH
 ```
