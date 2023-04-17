@@ -9,7 +9,8 @@ endif()
 if (NOT CONFIG_ESP_MATTER_COMMISSIONER_ENABLE)
     list(APPEND exclude_srcs_list esp_matter_commissioner.cpp
                                   esp_matter_controller_pairing_command.cpp
-                                  esp_matter_attestation_trust_store.cpp)
+                                  esp_matter_attestation_trust_store.cpp
+                                  esp_matter_controller_group_settings.cpp)
 endif()
 
 idf_component_register(SRC_DIRS ${src_dirs_list}

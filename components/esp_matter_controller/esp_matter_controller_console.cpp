@@ -52,6 +52,7 @@ static esp_err_t controller_help_handler(int argc, char **argv)
     return ESP_OK;
 }
 
+#if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
 static esp_err_t controller_pairing_handler(int argc, char **argv)
 {
     if (argc < 3 || argc > 6) {
@@ -138,6 +139,7 @@ static esp_err_t controller_group_settings_handler(int argc, char **argv)
     ESP_LOGI(TAG, "Unbind keyset : controller group-settings unbind-keyset <group_id> <ketset_id>");
     return ESP_OK;
 }
+#endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
 
 static esp_err_t controller_invoke_command_handler(int argc, char **argv)
 {
@@ -262,13 +264,13 @@ esp_err_t controller_register_commands()
                            "\tcontroller pairing ble-thread [nodeid] [pincode] [discriminator] [dataset]",
             .handler = controller_pairing_handler,
         },
-#endif
         {
             .name = "group-settings",
             .description = "Managing the groups and keysets of the controller.\n"
                            "\tUsage: controller group-settings <sub-commands>",
             .handler = controller_group_settings_handler,
         },
+#endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
         {
             .name = "invoke-cmd",
             .description =

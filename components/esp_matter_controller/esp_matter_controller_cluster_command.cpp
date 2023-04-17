@@ -57,7 +57,11 @@ static esp_err_t send_group_command(command_data_t *command_data, uint16_t group
     if (command_data->command_data_count != 0) {
         return ESP_ERR_INVALID_ARG;
     }
+#if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
     uint8_t fabric_index = commissioner::get_device_commissioner()->GetFabricIndex();
+#else
+    uint8_t fabric_index = 1;
+#endif
     switch (command_data->command_id) {
     case OnOff::Commands::On::Id:
         return esp_matter::cluster::on_off::command::group_send_on(fabric_index, group_id);
@@ -428,7 +432,7 @@ esp_err_t cluster_command::send_command()
     }
 #else
     chip::Server *server = &(chip::Server::GetInstance());
-    server->GetCASESessionManager()->FindOrEstablishSession(ScopedNodeId(m_node_id, /* fabric index */ 1),
+    server->GetCASESessionManager()->FindOrEstablishSession(ScopedNodeId(m_destination_id, /* fabric index */ 1),
                                                             &on_device_connected_cb, &on_device_connection_failure_cb);
     return ESP_OK;
 #endif
