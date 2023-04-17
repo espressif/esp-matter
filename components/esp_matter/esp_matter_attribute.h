@@ -319,6 +319,7 @@ attribute_t *create_percent_current(cluster_t *cluster, uint8_t value);
 namespace thermostat {
 namespace attribute {
 attribute_t *create_local_temperature(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_outdoor_temperature(cluster_t *cluster, nullable<int16_t> value);
 attribute_t *create_occupancy(cluster_t *cluster, uint8_t value);
 attribute_t *create_abs_min_heat_setpoint_limit(cluster_t *cluster, int16_t value);
 attribute_t *create_abs_max_heat_setpoint_limit(cluster_t *cluster, int16_t value);
@@ -326,6 +327,8 @@ attribute_t *create_abs_min_cool_setpoint_limit(cluster_t *cluster, int16_t valu
 attribute_t *create_abs_max_cool_setpoint_limit(cluster_t *cluster, int16_t value);
 attribute_t *create_pi_cooling_demand(cluster_t *cluster, uint8_t value);
 attribute_t *create_pi_heating_demand(cluster_t *cluster, uint8_t value);
+attribute_t *create_hvac_system_type_config(cluster_t *cluster, uint8_t value);
+attribute_t *create_local_temperature_calibration(cluster_t *cluster, int8_t value);
 attribute_t *create_occupied_cooling_setpoint(cluster_t *cluster, int16_t value);
 attribute_t *create_occupied_heating_setpoint(cluster_t *cluster, int16_t value);
 attribute_t *create_unoccupied_cooling_setpoint(cluster_t *cluster, int16_t value);
@@ -335,18 +338,35 @@ attribute_t *create_max_heat_setpoint_limit(cluster_t *cluster, int16_t value);
 attribute_t *create_min_cool_setpoint_limit(cluster_t *cluster, int16_t value);
 attribute_t *create_max_cool_setpoint_limit(cluster_t *cluster, int16_t value);
 attribute_t *create_min_setpoint_dead_band(cluster_t *cluster, int8_t value);
+attribute_t *create_remote_sensing(cluster_t *cluster, uint8_t value);
 attribute_t *create_control_sequence_of_operation(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
 attribute_t *create_system_mode(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
 attribute_t *create_thermostat_running_mode(cluster_t *cluster, uint8_t value);
 attribute_t *create_start_of_week(cluster_t *cluster, uint8_t value);
 attribute_t *create_number_of_weekly_transitions(cluster_t *cluster, uint8_t value);
 attribute_t *create_number_of_daily_transitions(cluster_t *cluster, uint8_t value);
+attribute_t *create_temperature_setpoint_hold(cluster_t *cluster, uint8_t value);
+attribute_t *create_temperature_setpoint_hold_duration(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_thermostat_programming_operation_mode(cluster_t *cluster, uint8_t value);
+attribute_t *create_thermostat_running_state(cluster_t *cluster, uint16_t value);
+attribute_t *create_setpoint_change_source(cluster_t *cluster, uint8_t value);
+attribute_t *create_setpoint_change_amount(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_setpoint_change_source_timestamp(cluster_t *cluster, uint16_t value);
 attribute_t *create_occupied_setback(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_occupied_setback_min(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_occupied_setback_max(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_unoccupied_setback(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_unoccupied_setback_min(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_unoccupied_setback_max(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_emergency_heat_delta(cluster_t *cluster, uint8_t value);
+attribute_t *create_ac_type(cluster_t *cluster, uint8_t value);
+attribute_t *create_ac_capacity(cluster_t *cluster, uint16_t value);
+attribute_t *create_ac_refrigerant_type(cluster_t *cluster, uint8_t value);
+attribute_t *create_ac_compressor_type(cluster_t *cluster, uint8_t value);
+attribute_t *create_ac_error_code(cluster_t *cluster, uint32_t value);
+attribute_t *create_ac_louver_position(cluster_t *cluster, uint8_t value);
+attribute_t *create_ac_coil_temperature(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_ac_capacity_format(cluster_t *cluster, uint8_t value);
 } /* attribute */
 } /* thermostat */
 
