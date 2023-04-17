@@ -74,13 +74,15 @@ esp_err_t blemesh_bridge_attribute_update(uint16_t endpoint_id, uint32_t cluster
     if (bridged_device && bridged_device->dev && bridged_device->dev->endpoint) {
         if (cluster_id == OnOff::Id) {
             if (attribute_id == OnOff::Attributes::OnOff::Id) {
-                ESP_LOGD(TAG, "Update Bridged Device, ep: %d, cluster: %d, att: %d", endpoint_id, cluster_id, attribute_id);
+                ESP_LOGD(TAG, "Update Bridged Device, ep: 0x%x, cluster: 0x%lx, att: 0x%lx", endpoint_id, cluster_id,
+                         attribute_id);
                 app_ble_mesh_onoff_set(bridged_device->dev_addr.blemesh_addr, val->val.b);
             }
         }
     }
     else{
-        ESP_LOGE(TAG, "Unable to Update Bridge Device, ep: %d, cluster: %d, att: %d", endpoint_id, cluster_id, attribute_id);
+        ESP_LOGE(TAG, "Unable to Update Bridge Device, ep: 0x%x, cluster: 0x%lx, att: 0x%lx", endpoint_id, cluster_id,
+                 attribute_id);
     }
     return ESP_OK;
 }

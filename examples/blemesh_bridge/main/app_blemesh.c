@@ -13,6 +13,7 @@
 
 #include <esp_err.h>
 #include <esp_log.h>
+#include <esp_mac.h>
 
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
@@ -383,11 +384,11 @@ static void ble_mesh_config_client_cb(esp_ble_mesh_cfg_client_cb_event_t event,
     uint32_t opcode = param->params->opcode;
     uint16_t addr = param->params->ctx.addr;
 
-    ESP_LOGI(TAG, "%s, error_code = 0x%02x, event = 0x%02x, addr: 0x%04x, opcode: 0x%04x",
+    ESP_LOGI(TAG, "%s, error_code = 0x%02x, event = 0x%02x, addr: 0x%04x, opcode: 0x%04lx",
              __func__, param->error_code, event, param->params->ctx.addr, opcode);
 
     if (param->error_code) {
-        ESP_LOGE(TAG, "Send config client message failed, opcode 0x%04x", opcode);
+        ESP_LOGE(TAG, "Send config client message failed, opcode 0x%04lx", opcode);
         return;
     }
 
@@ -526,11 +527,11 @@ static void ble_mesh_generic_client_cb(esp_ble_mesh_generic_client_cb_event_t ev
     uint32_t opcode = param->params->opcode;
     uint16_t addr = param->params->ctx.addr;
 
-    ESP_LOGI(TAG, "%s, error_code = 0x%02x, event = 0x%02x, addr: 0x%04x, opcode: 0x%04x",
+    ESP_LOGI(TAG, "%s, error_code = 0x%02x, event = 0x%02x, addr: 0x%04x, opcode: 0x%04lx",
              __func__, param->error_code, event, param->params->ctx.addr, opcode);
 
     if (param->error_code) {
-        ESP_LOGE(TAG, "Send generic client message failed, opcode 0x%04x", opcode);
+        ESP_LOGE(TAG, "Send generic client message failed, opcode 0x%04lx", opcode);
         return;
     }
 
