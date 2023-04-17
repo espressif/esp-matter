@@ -120,6 +120,9 @@ static esp_err_t status_attribute_update(bool status)
 
 static esp_err_t node_id_attribute_update(char *node_id)
 {
+    if (!node_id) {
+        return ESP_ERR_INVALID_ARG;
+    }
     uint16_t endpoint_id = cluster::rainmaker::endpoint_id;
     uint32_t cluster_id = cluster::rainmaker::Id;
     uint32_t attribute_id = cluster::rainmaker::attribute::node_id::Id;
@@ -262,8 +265,7 @@ esp_err_t start()
                                 &user_node_association_event_handler, NULL);
 
     /* Update node_id */
-    node_id_attribute_update(esp_rmaker_get_node_id());
-    return ESP_OK;
+    return node_id_attribute_update(esp_rmaker_get_node_id());
 }
 
 } /* rainmaker */
