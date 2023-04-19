@@ -360,6 +360,22 @@ esp_err_t set_callback(callback_t callback);
  */
 esp_err_t update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val);
 
+/** Attribute report
+ *
+ * This API reports the attribute value.
+ * After this API is called, the application doesn't gets the attribute update callback with `PRE_UPDATE` or `POST_UPDATE`, the
+ * attribute is updated in the database.
+ *
+ * @param[in] endpoint_id Endpoint ID of the attribute.
+ * @param[in] cluster_id Cluster ID of the attribute.
+ * @param[in] attribute_id Attribute ID of the attribute.
+ * @param[in] val Pointer to new value to report, of type `esp_matter_attr_val_t`. Appropriate elements should be used as per the value type.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t report(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val);
+
 /** Attribute value print
  *
  * This API prints the attribute value according to the type.

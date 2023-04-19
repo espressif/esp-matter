@@ -21,6 +21,7 @@
 #include <string.h>
 
 #include <app/util/attribute-storage.h>
+#include <app/reporting/reporting.h>
 #include <protocols/interaction_model/Constants.h>
 
 using chip::AttributeId;
@@ -1699,6 +1700,43 @@ esp_err_t update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
         }
     }
     esp_matter_mem_free(value);
+    if (lock_status == lock::SUCCESS) {
+        lock::chip_stack_unlock();
+    }
+    return ESP_OK;
+}
+
+esp_err_t report(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val)
+{
+    /* Take lock if not already taken */
+    lock::status_t lock_status = lock::chip_stack_lock(portMAX_DELAY);
+    if (lock_status == lock::FAILED) {
+        ESP_LOGE(TAG, "Could not get task context");
+        return ESP_FAIL;
+    }
+
+    /* Get attribute */
+    node_t *node = node::get();
+    endpoint_t *endpoint = endpoint::get(node, endpoint_id);
+    cluster_t *cluster = cluster::get(endpoint, cluster_id);
+    attribute_t *attribute = attribute::get(cluster, attribute_id);
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not find the attribute");
+        return ESP_FAIL;
+    }
+
+    /* Update attribute */
+    esp_matter_attr_val_t raw_val = esp_matter_invalid(NULL);
+    attribute::get_val(attribute, &raw_val);
+    if (val->type != raw_val.type) {
+        ESP_LOGE(TAG, "attribute type mismatch");
+        return ESP_FAIL;
+    }
+    attribute::set_val(attribute, val);
+
+    /* Report attribute */
+    MatterReportingAttributeChangeCallback(endpoint_id, cluster_id, attribute_id);
+
     if (lock_status == lock::SUCCESS) {
         lock::chip_stack_unlock();
     }
