@@ -1054,6 +1054,7 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint8_t flags, es
 
     if (attribute->flags & ATTRIBUTE_FLAG_NONVOLATILE) {
         esp_matter_attr_val_t val_nvs = esp_matter_invalid(NULL);
+        val_nvs.type = val.type;
         esp_err_t err = get_val_from_nvs((attribute_t *)attribute, &val_nvs);
         if (err == ESP_OK) {
             set_val((attribute_t *)attribute, &val_nvs);
@@ -1326,7 +1327,108 @@ esp_err_t store_val_in_nvs(attribute_t *attribute)
             err = ESP_OK;
         }
     } else {
+        // Handling how to store attributes in NVS based on config option.
+#if CONFIG_ESP_MATTER_NVS_USE_COMPACT_ATTR_STORAGE
+        // This switch case handles primitive data types
+        switch (current_attribute->val.type)
+        {
+            case ESP_MATTER_VAL_TYPE_BOOLEAN:
+            {
+                err = nvs_set_u8(handle, attribute_key, current_attribute->val.val.b != 0);
+                break;
+            }
+
+            case ESP_MATTER_VAL_TYPE_INTEGER:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_INTEGER:
+            {
+                err = nvs_set_i32(handle, attribute_key, current_attribute->val.val.i);
+                break;
+            }
+
+            // no nvs api to store float, storing as blob
+            case ESP_MATTER_VAL_TYPE_FLOAT:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT:
+            {
+                err = nvs_set_blob(handle, attribute_key, &current_attribute->val.val.f, sizeof(current_attribute->val.val.f));
+                break;
+            }
+
+            case ESP_MATTER_VAL_TYPE_INT8:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_INT8:
+            {
+                err = nvs_set_i8(handle, attribute_key, current_attribute->val.val.i8);
+                break;
+            }
+
+            case ESP_MATTER_VAL_TYPE_UINT8:
+            case ESP_MATTER_VAL_TYPE_ENUM8:
+            case ESP_MATTER_VAL_TYPE_BITMAP8:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_UINT8:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM8:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8:
+            {
+                err = nvs_set_u8(handle, attribute_key, current_attribute->val.val.u8);
+                break;
+            }
+
+            case ESP_MATTER_VAL_TYPE_INT16:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_INT16:
+            {
+                err = nvs_set_i16(handle, attribute_key, current_attribute->val.val.i16);
+                break;
+            }
+
+            case ESP_MATTER_VAL_TYPE_UINT16:
+            case ESP_MATTER_VAL_TYPE_BITMAP16:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_UINT16:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16:
+            {
+                err = nvs_set_u16(handle, attribute_key, current_attribute->val.val.u16);
+                break;
+            }
+
+            case ESP_MATTER_VAL_TYPE_INT32:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_INT32:
+            {
+                err = nvs_set_i32(handle, attribute_key, current_attribute->val.val.i32);
+                break;
+            }
+
+            case ESP_MATTER_VAL_TYPE_UINT32:
+            case ESP_MATTER_VAL_TYPE_BITMAP32:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_UINT32:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP32:
+            {
+                err = nvs_set_u32(handle, attribute_key, current_attribute->val.val.u32);
+                break;
+            }
+
+            case ESP_MATTER_VAL_TYPE_INT64:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_INT64:
+            {
+                err = nvs_set_i64(handle, attribute_key, current_attribute->val.val.i64);
+                break;
+            }
+
+            case ESP_MATTER_VAL_TYPE_UINT64:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_UINT64:
+            {
+                err = nvs_set_u64(handle, attribute_key, current_attribute->val.val.u64);
+                break;
+            }
+
+            default:
+            {
+                // handle the case where the type is not recognized
+                err = ESP_ERR_INVALID_ARG;
+                ESP_LOGE(TAG, "Invalid attribute type: %u", current_attribute->val.type);
+                break;
+            }
+        }
+#else
         err = nvs_set_blob(handle, attribute_key, &current_attribute->val, sizeof(esp_matter_attr_val_t));
+#endif // CONFIG_ESP_MATTER_NVS_USE_COMPACT_ATTR_STORAGE
+
         nvs_commit(handle);
     }
     nvs_close(handle);
@@ -1375,8 +1477,113 @@ esp_err_t get_val_from_nvs(attribute_t *attribute, esp_matter_attr_val_t *val)
             }
         }
     } else {
+        // Handling how to get attributes in NVS based on config option.
+#if CONFIG_ESP_MATTER_NVS_USE_COMPACT_ATTR_STORAGE
+        // This switch case handles primitive data types
+        switch (current_attribute->val.type)
+        {
+            case ESP_MATTER_VAL_TYPE_BOOLEAN:
+            {
+                uint8_t b_val;
+                if ((err = nvs_get_u8(handle, attribute_key, &b_val)) == ESP_OK)
+                {
+                    val->val.b = (b_val != 0);
+                }
+                break;
+            }
+
+            case ESP_MATTER_VAL_TYPE_INTEGER:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_INTEGER:
+            {
+                err = nvs_get_i32(handle, attribute_key, reinterpret_cast<int32_t *>(&val->val.i));
+                break;
+            }
+
+            // no nvs api to read float, since it is stored as blob, reading as blob
+            case ESP_MATTER_VAL_TYPE_FLOAT:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT:
+            {
+                size_t length = sizeof(val->val.f);
+                err = nvs_get_blob(handle, attribute_key, &val->val.f, &length);
+                break;
+            }
+
+            case ESP_MATTER_VAL_TYPE_INT8:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_INT8:
+            {
+                err = nvs_get_i8(handle, attribute_key, &val->val.i8);
+                break;
+            }
+
+            case ESP_MATTER_VAL_TYPE_UINT8:
+            case ESP_MATTER_VAL_TYPE_ENUM8:
+            case ESP_MATTER_VAL_TYPE_BITMAP8:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_UINT8:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM8:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8:
+            {
+                err = nvs_get_u8(handle, attribute_key, &val->val.u8);
+                break;
+            }
+
+            case ESP_MATTER_VAL_TYPE_INT16:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_INT16:
+            {
+                err = nvs_get_i16(handle, attribute_key, &val->val.i16);
+                break;
+            }
+
+            case ESP_MATTER_VAL_TYPE_UINT16:
+            case ESP_MATTER_VAL_TYPE_BITMAP16:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_UINT16:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16:
+            {
+                err = nvs_get_u16(handle, attribute_key, &val->val.u16);
+                break;
+            }
+
+            case ESP_MATTER_VAL_TYPE_INT32:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_INT32:
+            {
+                err = nvs_get_i32(handle, attribute_key, &val->val.i32);
+                break;
+            }
+
+            case ESP_MATTER_VAL_TYPE_UINT32:
+            case ESP_MATTER_VAL_TYPE_BITMAP32:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_UINT32:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP32:
+            {
+                err = nvs_get_u32(handle, attribute_key, &val->val.u32);
+                break;
+            }
+
+            case ESP_MATTER_VAL_TYPE_INT64:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_INT64:
+            {
+                err = nvs_get_i64(handle, attribute_key, &val->val.i64);
+                break;
+            }
+
+            case ESP_MATTER_VAL_TYPE_UINT64:
+            case ESP_MATTER_VAL_TYPE_NULLABLE_UINT64:
+            {
+                err = nvs_get_u64(handle, attribute_key, &val->val.u64);
+                break;
+            }
+
+            default:
+            {
+                // handle the case where the type is not recognized
+                err = ESP_ERR_INVALID_ARG;
+                ESP_LOGE(TAG, "Invalid attribute type: %u", current_attribute->val.type);
+                break;
+            }
+        }
+#else
         size_t len = sizeof(esp_matter_attr_val_t);
         err = nvs_get_blob(handle, attribute_key, val, &len);
+#endif // CONFIG_ESP_MATTER_NVS_USE_COMPACT_ATTR_STORAGE
     }
     nvs_close(handle);
     return err;
