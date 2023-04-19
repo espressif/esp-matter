@@ -8,17 +8,6 @@
 Espressif's SDK for Matter is the official Matter development framework for ESP32 series SoCs. It is built on top of the [open source Matter SDK](https://github.com/project-chip/connectedhomeip/), and provides simplified APIs, commonly used peripherals, tools and utilities for security, manufacturing and production accompanied by exhaustive documentation. It includes rich production references, aimed to simplify the development process of Matter products and enable the users to go to production in the shortest possible time.
 
 
-## Get the repository
-
-Please clone this repository using the below command:
-
-```
-git clone --recursive https://github.com/espressif/esp-matter.git
-```
-
-> Note the --recursive option. This is required to pull in the various dependencies into esp-matter. In case you have already cloned the repository without this option, execute this to pull in the submodules: `git submodule update --init --recursive`
-
-
 ## Supported ESP-IDF and connectedhomeip versions
 
 - This SDK currently works with [commit bc8c9ece1](https://github.com/espressif/connectedhomeip/tree/bc8c9ece1) of connectedhomeip.
