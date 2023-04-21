@@ -1285,13 +1285,13 @@ attribute_t *create_pi_heating_demand(cluster_t *cluster, uint8_t value)
 
 attribute_t *create_hvac_system_type_config(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, Thermostat::Attributes::HVACSystemTypeConfiguration::Id, 
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::HVACSystemTypeConfiguration::Id,
                                          ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_bitmap8(value));
 }
 
 attribute_t *create_local_temperature_calibration(cluster_t *cluster, int8_t value)
 {
-    return esp_matter::attribute::create(cluster, Thermostat::Attributes::LocalTemperatureCalibration::Id, 
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::LocalTemperatureCalibration::Id,
                                          ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_int8(value));
 }
 
@@ -1414,7 +1414,7 @@ attribute_t *create_temperature_setpoint_hold(cluster_t *cluster, uint8_t value)
 attribute_t *create_temperature_setpoint_hold_duration(cluster_t *cluster, nullable<uint16_t> value)
 {
     return esp_matter::attribute::create(cluster, Thermostat::Attributes::TemperatureSetpointHoldDuration::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, 
+                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE,
                                          esp_matter_nullable_uint16(value));
 }
 
@@ -1782,6 +1782,36 @@ attribute_t *create_temperature_max_measured_value(cluster_t *cluster, nullable<
 
 } /* attribute */
 } /* temperature_measurement */
+
+namespace relative_humidity_measurement {
+namespace attribute {
+
+attribute_t *create_relative_humidity_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, RelativeHumidityMeasurement::Attributes::MeasuredValue::Id,
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_relative_humidity_min_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, RelativeHumidityMeasurement::Attributes::MinMeasuredValue::Id,
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_relative_humidity_max_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, RelativeHumidityMeasurement::Attributes::MaxMeasuredValue::Id,
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_relative_humidity_tolerance(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, RelativeHumidityMeasurement::Attributes::Tolerance::Id,
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+} /* attribute */
+} /* relative_humidity_measurement */
 
 namespace occupancy_sensing {
 namespace attribute {

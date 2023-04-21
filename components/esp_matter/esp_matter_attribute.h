@@ -424,6 +424,15 @@ attribute_t *create_temperature_max_measured_value(cluster_t *cluster, nullable<
 } /* attribute */
 } /* temperature_measurement */
 
+namespace relative_humidity_measurement {
+namespace attribute {
+attribute_t *create_relative_humidity_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_relative_humidity_min_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_relative_humidity_max_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_relative_humidity_tolerance(cluster_t *cluster, nullable<uint16_t> value);
+} /* attribute */
+} /* relative_humidity_measurement */
+
 namespace occupancy_sensing {
 namespace attribute {
 attribute_t *create_occupancy(cluster_t *cluster, uint8_t value);

@@ -1483,6 +1483,46 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 } /* temperature_measurement */
 
+namespace relative_humidity_measurement {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, RelativeHumidityMeasurement::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        set_plugin_server_init_callback(cluster, MatterRelativeHumidityMeasurementPluginServerInitCallback);
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        set_plugin_client_init_callback(cluster, MatterRelativeHumidityMeasurementPluginClientInitCallback);
+        create_default_binding_cluster(endpoint);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+            attribute::create_relative_humidity_measured_value(cluster, config->measured_value);
+            attribute::create_relative_humidity_min_measured_value(cluster, config->min_measured_value);
+            attribute::create_relative_humidity_max_measured_value(cluster, config->max_measured_value);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    return cluster;
+}
+} /* relative_humidity_measurement */
+
 namespace occupancy_sensing {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
@@ -1789,11 +1829,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     	set_plugin_client_init_callback(cluster, MatterPumpConfigurationAndControlPluginClientInitCallback);
     	create_default_binding_cluster(endpoint);
     }
-    
+
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-    
+
         /** Attributes not managed internally **/
         if (config) {
     	    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
@@ -1808,7 +1848,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     	    ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
     }
-    
+
     return cluster;
 }
 } /* pump_configuration_and_control */
