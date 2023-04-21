@@ -876,13 +876,13 @@ This section introduces the Matter controller example. Now this example supports
 
 2.4.5.1 Starting with device console
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-After you flash the controller example to the device, you can use `device console <./developing.html#device-console>`__ to commission and send commands to the end-device. All of the controller commands start with *matter esp controller*.
+Once you have flashed the controller example onto the device, you can use the `device console <./developing.html#device-console>`__ to commission the device and send commands to the end-device. All of the controller commands begin with the prefix ``matter esp controller``.
 
 2.4.5.2 Pairing commands
 ^^^^^^^^^^^^^^^^^^^^^^^^
-The ``pairing`` command is used for commissioning the end-devices. Here are three standard pairing methods:
+The ``pairing`` commands are used for commissioning end-devices and are avaliable when the ``Enable matter commissioner`` option is enabled. Here are three standard pairing methods:
 
-- Onnetwork pairing. Before you execute this commissioning method, you should connect both controller and end-device to the same network and ensure the commissioning window of the end-device is opened. You can use the command ``matter esp wifi connect`` to complete this process. Then we can start the pairing.
+- Onnetwork pairing. Prior to executing this commissioning method, it is necessary to connect both the controller and the end-device to the same network and ensure that the commissioning window of the end-device is open. To complete this process, you can use the command ``matter esp wifi connect``. After the devices are connected, the pairing process can be initiated.
 
    ::
 
@@ -914,6 +914,7 @@ The ``invoke-cmd`` command is used for sending cluster commands to the end-devic
     | **Thermostat Cluster** (SetpointRaiseLower, SetWeeklySchedule, GetWeeklySchedule, ClearWeeklySchedule)
     | **DoorLock Cluster** (LockDoor, UnlockDoor, UnlockWithTimeout)
     | **WindowCovering Cluster** (UpOrOpen, DownOrClose, StopMotion, GoToLiftValue, GoToLiftPercentage, GoToTiltValue, GoToTiltPercentage)
+    | **Administrator Cluster** (OpenCommissioningWindow, OpenBasicCommissioningWindow, RevokeCommissioning)
 
 **Group commands**:
 
@@ -925,29 +926,49 @@ If you want to utilize commands not list above, you can use ``esp_matter::contro
 
    ::
 
-      matter esp controller invoke-cmd <node_id | group-id> <endpoint_id> <cluster_id> <command_id> <command_data>
+      matter esp controller invoke-cmd <node-id | group-id> <endpoint-id> <cluster-id> <command-id> <command-data>
 
-Notes: ``group-id`` should start with the ``0xFFFFFFFFFFFF`` prefix, and ``endpoint-id`` will be ignored for multicast commands.
+**Note**: To use multicast commands, the ``group-id`` should begin with the ``0xFFFFFFFFFFFF`` prefix. And the ``endpoint-id`` is still required for multicast commands even if it will be ignored.
+
+**Note**: You can obtain the order of the command datas by inputing an empty ``command-data``.
+
+For KeySetWrite command in Group Key Management cluster, the ``command-data`` should include an argument in json format:
+
+  ::
+
+     matter esp controller invoke-cmd <node-id> <endpoint-id> 63 0 "{\"groupKeySetID\": 42,\"groupKeySecurityPolicy\": 0, \"epochKey0\":\"d0d1d2d3d4d5d6d7d8d9dadbdcdddedf\", \"epochStartTime0\": 2220000 }"
+
+For AddGroup command in Groups cluster, the ``command-data`` should include a string argument:
+
+  ::
+
+     matter esp controller invoke-cmd <node-id> <endpoint-id> 0x4 0 1 grp1
+
+For OpenCommissioningWindow command in Administrator Commissioning cluster, the ``command_data`` is simplied to ``commissioning-timeout iterations discriminator``:
+
+  ::
+
+     matter esp controller invoke-cmd <node-id> <endpoint-id> 0x3c 0 500 1000 3840
 
 2.4.5.4 Read attribute commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The ``read-attr`` command is used for sending the commands of reading attributes on the end-device.
+The ``read-attr`` commands are used for sending the commands of reading attributes on end-devices.
 
 - Send the read-attribute command:
 
    ::
 
-      matter esp controller read-attr <node_id> <endpoint_id> <cluster_id> <attribute_id>
+      matter esp controller read-attr <node-id> <endpoint-id> <cluster-id> <attribute-id>
 
 2.4.5.5 Read event commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The ``read-event`` command is used for sending the commands of reading events on the end-device.
+The ``read-event`` commands are used for sending the commands of reading events on end-devices.
 
 - Send the read-event command:
 
   ::
 
-      matter esp controller read-event <node_id> <endpoint_id> <cluster_id> <event_id>
+      matter esp controller read-event <node-id> <endpoint-id> <cluster-id> <event-id>
 
 2.4.5.6 Write attribute commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -972,9 +993,9 @@ If you want to send the writing-attribute commands to the clusters not listed ab
 
    ::
 
-      matter esp controller write-attr <node_id> <endpoint_id> <cluster_id> <attribute_id> <attribute_value>
+      matter esp controller write-attr <node-id> <endpoint-id> <cluster-id> <attribute-id> <attribute-value>
 
-Note: ``attribute_value`` could be formatted as JSON string, as an example, For Binding attribute, you should use the follow JSON structure as the ``attribute_value`` : ``"[{\"node\":1, \"endpoint\":1, \"cluster\":6}]"``
+**Note**: ``attribute_value`` could be formatted as JSON string, as an example, For Binding attribute, you should use the follow JSON structure as the ``attribute_value`` : ``"[{\"node\":1, \"endpoint\":1, \"cluster\":6}]"``
 
    ::
 
@@ -983,40 +1004,52 @@ Note: ``attribute_value`` could be formatted as JSON string, as an example, For 
 
 2.4.5.7 Subscribe attribute commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The ``subs-attr`` command is used for sending the commands of subscribing attributes on the end-device.
+The ``subs-attr`` commands are used for sending the commands of subscribing attributes on end-devices.
 
 - Send the subscribe-attribute command:
 
   ::
 
-     matter esp controller subs-attr <node_id> <endpoint_id> <cluster_id> <attribute_id> <min-interval> <max-interval>
+     matter esp controller subs-attr <node-id> <endpoint-id> <cluster-id> <attribute-id> <min-interval> <max-interval>
 
 2.4.5.8 Subscribe event commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The ``subs-event`` command is used for sending the commands of subscribing events on the end-device.
+The ``subs-event`` commands are used for sending the commands of subscribing events on end-devices.
 
 - Send the subscribe-event command:
 
   ::
 
-     matter esp controller subs-event <node_id> <endpoint_id> <cluster_id> <event_id> <min-interval> <max-interval>
+     matter esp controller subs-event <node-id> <endpoint-id> <cluster-id> <event-id> <min-interval> <max-interval>
 
 2.4.5.9 Group settings commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The ``group-settings`` command is used for setting group information of the controller. The controller should be the same group with the end-device if it wants to send multicast commands to the end-device.
+The ``group-settings`` commands are used to set group information of the controller. They are avaliable when the ``Enable matter commissioner`` option is enabled in menuconfig. If the controller wants to send multicast commands to end-devices, it should be in the same group as the end-devices.
 
 - Set group information of the controller:
 
   ::
 
      matter esp controller group-settings show-groups
-     matter esp controller group-settings add-group <group_id> <group_name>
-     matter esp controller group-settings remove-group <group_id>
+     matter esp controller group-settings add-group <group-id> <group-name>
+     matter esp controller group-settings remove-group <group-id>
      matter esp controller group-settings show-keysets
-     matter esp controller group-settings add-keyset <ketset_id> <policy> <validity_time> <epoch_key_oct_str>
-     matter esp controller group-settings remove-keyset <ketset_id>
-     matter esp controller group-settings bind-keyset <group_id> <ketset_id>
-     matter esp controller group-settings unbind-keyset <group_id> <ketset_id>
+     matter esp controller group-settings add-keyset <ketset-id> <policy> <validity-time> <epoch-key-oct-str>
+     matter esp controller group-settings remove-keyset <ketset-id>
+     matter esp controller group-settings bind-keyset <group-id> <ketset-id>
+     matter esp controller group-settings unbind-keyset <group-id> <ketset-id>
+
+2.4.5.10 Attenstation Trust Storage
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The controller example offers two options for the Attenstation Trust Storage which is used to store and utilize the PAA certificates for the Device Attestation verification. You can modify this setting in menuconfig ``Components`` -> ``ESP Matter Controller`` -> ``Attestation Trust Store``
+
+- ``Attestation Trust Store - Test``
+
+  Use two hardcoded PAA certificates(Chip-Test-PAA-FFF1-Cert&Chip-Test-PAA-NoVID-Cert) in the firmware.
+
+- ``Attestation Trust Store - Spiffs``
+
+  Read the PAA root certificates from the spiffs partition. The PAA der files should be placed in ``paa_cert`` directory so that they can be flashed intothe spiffs partition of the controller.
 
 2.5 Factory Data Providers
 --------------------------

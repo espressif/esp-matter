@@ -1564,6 +1564,58 @@ esp_err_t send_go_to_tilt_percentage(peer_device_t *remote_device, uint16_t remo
 } // namespace command
 } // namespace window_covering
 
+namespace administrator_commissioning {
+namespace command {
+
+esp_err_t send_open_commissioning_window(peer_device_t *remote_device, uint16_t remote_endpoint_id,
+                                         uint16_t commissioning_timeout, chip::MutableByteSpan &pake_passcode_verifier,
+                                         uint16_t discriminator, uint32_t iterations, chip::MutableByteSpan &salt,
+                                         uint16_t timed_interaction_timeout_ms)
+{
+    AdministratorCommissioning::Commands::OpenCommissioningWindow::Type command_data;
+    command_data.commissioningTimeout = commissioning_timeout;
+    command_data.PAKEPasscodeVerifier = pake_passcode_verifier;
+    command_data.discriminator = discriminator;
+    command_data.iterations = iterations;
+    command_data.salt = salt;
+
+    chip::Controller::AdministratorCommissioningCluster cluster(
+        *remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback,
+                          timed_interaction_timeout_ms);
+    return ESP_OK;
+}
+
+esp_err_t send_open_basic_commissioning_window(peer_device_t *remote_device, uint16_t remote_endpoint_id,
+                                               uint16_t commissioning_timeout, uint16_t timed_interaction_timeout_ms)
+{
+    AdministratorCommissioning::Commands::OpenBasicCommissioningWindow::Type command_data;
+    command_data.commissioningTimeout = commissioning_timeout;
+
+    chip::Controller::AdministratorCommissioningCluster cluster(
+        *remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
+
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback,
+                          timed_interaction_timeout_ms);
+    return ESP_OK;
+}
+
+esp_err_t send_revoke_commissioning(peer_device_t *remote_device, uint16_t remote_endpoint_id,
+                                    uint16_t timed_interaction_timeout_ms)
+{
+    AdministratorCommissioning::Commands::RevokeCommissioning::Type command_data;
+
+    chip::Controller::AdministratorCommissioningCluster cluster(
+        *remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
+
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback,
+                          timed_interaction_timeout_ms);
+    return ESP_OK;
+}
+
+} // namespace command
+} // namespace administrator_commissioning
+
 #endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 
 } // namespace cluster

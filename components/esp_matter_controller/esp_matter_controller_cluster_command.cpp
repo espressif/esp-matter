@@ -25,6 +25,11 @@
 #include <esp_matter_mem.h>
 #include <json_parser.h>
 
+#include <crypto/CHIPCryptoPAL.h>
+#include <setup_payload/ManualSetupPayloadGenerator.h>
+#include <setup_payload/QRCodeSetupPayloadGenerator.h>
+#include <setup_payload/SetupPayload.h>
+
 using namespace chip::app::Clusters;
 static const char *TAG = "cluster_command";
 
@@ -88,7 +93,9 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     switch (command_data->command_id) {
     case LevelControl::Commands::Move::Id:
         if (command_data->command_data_count != 4) {
-            ESP_LOGE(TAG, "The command data should in following order: move_mode, rate, option_mask, option_override");
+            ESP_LOGE(TAG,
+                     "The command data should be specified in following order: move_mode, rate, option_mask, "
+                     "option_override");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::level_control::command::send_move(
@@ -100,9 +107,9 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
         break;
     case LevelControl::Commands::MoveToLevel::Id:
         if (command_data->command_data_count != 4) {
-            ESP_LOGE(
-                TAG,
-                "The command data should in following order: level, transition_time, option_mask, option_override");
+            ESP_LOGE(TAG,
+                     "The command data should be specified in following order: level, transition_time, option_mask, "
+                     "option_override");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::level_control::command::send_move_to_level(
@@ -115,8 +122,8 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     case LevelControl::Commands::Step::Id:
         if (command_data->command_data_count != 5) {
             ESP_LOGE(TAG,
-                     "The command data should in following order: step_mode, step_size, transition_time, option_mask, "
-                     "option_override");
+                     "The command data should be specified in following order: step_mode, step_size, transition_time, "
+                     "option_mask, option_override");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::level_control::command::send_step(
@@ -129,7 +136,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
         break;
     case LevelControl::Commands::Stop::Id:
         if (command_data->command_data_count != 2) {
-            ESP_LOGE(TAG, "The command data should in following order: option_mask, option_override");
+            ESP_LOGE(TAG, "The command data should be specified in following order: option_mask, option_override");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::level_control::command::send_stop(
@@ -154,8 +161,8 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     case ColorControl::Commands::MoveToHue::Id:
         if (command_data->command_data_count != 5) {
             ESP_LOGE(TAG,
-                     "The command data should in following order: hue, direction, transition_time, option_mask, "
-                     "option_override");
+                     "The command data should be specified in following order: hue, direction, transition_time, "
+                     "option_mask, option_override");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::color_control::command::send_move_to_hue(
@@ -168,9 +175,10 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
         break;
     case ColorControl::Commands::MoveToSaturation::Id:
         if (command_data->command_data_count != 4) {
-            ESP_LOGE(TAG,
-                     "The command data should in following order: saturation, transition_time, option_mask, "
-                     "option_override");
+            ESP_LOGE(
+                TAG,
+                "The command data should be specified in following order: saturation, transition_time, option_mask, "
+                "option_override");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::color_control::command::send_move_to_saturation(
@@ -183,7 +191,8 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     case ColorControl::Commands::MoveToHueAndSaturation::Id:
         if (command_data->command_data_count != 5) {
             ESP_LOGE(TAG,
-                     "The command data should in following order: hue, saturation, transition_time, option_mask, "
+                     "The command data should be specified in following order: hue, saturation, transition_time, "
+                     "option_mask, "
                      "option_override");
             return ESP_ERR_INVALID_ARG;
         }
@@ -279,7 +288,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     switch (command_data->command_id) {
     case GroupKeyManagement::Commands::KeySetWrite::Id: {
         if (command_data->command_data_count != 1) {
-            ESP_LOGE(TAG, "The command data should in following order: group_keyset");
+            ESP_LOGE(TAG, "The command data should be specified in following order: group_keyset");
             return ESP_ERR_INVALID_ARG;
         }
         group_keyset_struct keyset_struct;
@@ -294,7 +303,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     }
     case GroupKeyManagement::Commands::KeySetRead::Id: {
         if (command_data->command_data_count != 1) {
-            ESP_LOGE(TAG, "The command data should in following order: group_keyset_id");
+            ESP_LOGE(TAG, "The command data should be specified in following order: group_keyset_id");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::group_key_management::command::send_keyset_read(
@@ -333,7 +342,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     switch (command_data->command_id) {
     case Groups::Commands::AddGroup::Id: {
         if (command_data->command_data_count != 2) {
-            ESP_LOGE(TAG, "The command data should in following order: group_id group_name");
+            ESP_LOGE(TAG, "The command data should be specified in following order: group_id group_name");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::groups::command::send_add_group(
@@ -344,7 +353,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     }
     case Groups::Commands::ViewGroup::Id: {
         if (command_data->command_data_count != 1) {
-            ESP_LOGE(TAG, "The command data should in following order: group_id");
+            ESP_LOGE(TAG, "The command data should be specified in following order: group_id");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::groups::command::send_view_group(
@@ -354,7 +363,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     }
     case Groups::Commands::RemoveGroup::Id: {
         if (command_data->command_data_count != 1) {
-            ESP_LOGE(TAG, "The command data should in following order: group_id");
+            ESP_LOGE(TAG, "The command data should be specified in following order: group_id");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::groups::command::send_remove_group(
@@ -377,7 +386,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     switch (command_data->command_id) {
     case Identify::Commands::Identify::Id: {
         if (command_data->command_data_count != 1) {
-            ESP_LOGE(TAG, "The command data should in following order: identify_time");
+            ESP_LOGE(TAG, "The command data should be specified in following order: identify_time");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::identify::command::send_identify(
@@ -386,7 +395,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     }
     case Identify::Commands::TriggerEffect::Id: {
         if (command_data->command_data_count != 2) {
-            ESP_LOGE(TAG, "The command data should in following order: effect_identifier effect_variant");
+            ESP_LOGE(TAG, "The command data should in be specified following order: effect_identifier effect_variant");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::identify::command::send_trigger_effect(
@@ -493,9 +502,10 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     switch (command_data->command_id) {
     case Scenes::Commands::AddScene::Id: {
         if (command_data->command_data_count != 5) {
-            ESP_LOGE(TAG,
-                     "The command data should in following order: group_id scene_id transition_time scene_name "
-                     "extension_field_sets");
+            ESP_LOGE(
+                TAG,
+                "The command data should be specified in following order: group_id scene_id transition_time scene_name "
+                "extension_field_sets");
             return ESP_ERR_INVALID_ARG;
         }
         extension_field_set efs_array[max_cluster_per_scene];
@@ -517,7 +527,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     }
     case Scenes::Commands::ViewScene::Id: {
         if (command_data->command_data_count != 2) {
-            ESP_LOGE(TAG, "The command data should in following order: group_id scene_id");
+            ESP_LOGE(TAG, "The command data be specified should in following order: group_id scene_id");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::scenes::command::send_view_scene(
@@ -528,7 +538,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     }
     case Scenes::Commands::RemoveScene::Id: {
         if (command_data->command_data_count != 2) {
-            ESP_LOGE(TAG, "The command data should in following order: group_id scene_id");
+            ESP_LOGE(TAG, "The command data be specified should in following order: group_id scene_id");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::scenes::command::send_remove_scene(
@@ -539,7 +549,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     }
     case Scenes::Commands::RemoveAllScenes::Id: {
         if (command_data->command_data_count != 1) {
-            ESP_LOGE(TAG, "The command data should in following order: group_id");
+            ESP_LOGE(TAG, "The command data be specified should in following order: group_id");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::scenes::command::send_remove_all_scenes(
@@ -549,7 +559,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     }
     case Scenes::Commands::StoreScene::Id: {
         if (command_data->command_data_count != 2) {
-            ESP_LOGE(TAG, "The command data should in following order: group_id scene_id");
+            ESP_LOGE(TAG, "The command data should be specified in following order: group_id scene_id");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::scenes::command::send_store_scene(
@@ -560,7 +570,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     }
     case Scenes::Commands::RecallScene::Id: {
         if (command_data->command_data_count != 2) {
-            ESP_LOGE(TAG, "The command data should in following order: group_id scene_id");
+            ESP_LOGE(TAG, "The command data should be specified in following order: group_id scene_id");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::scenes::command::send_recall_scene(
@@ -571,7 +581,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     }
     case Scenes::Commands::GetSceneMembership::Id: {
         if (command_data->command_data_count != 1) {
-            ESP_LOGE(TAG, "The command data should in following order: group_id");
+            ESP_LOGE(TAG, "The command data should be specified in following order: group_id");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::scenes::command::send_get_scene_membership(
@@ -640,7 +650,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     switch (command_data->command_id) {
     case Thermostat::Commands::SetpointRaiseLower::Id: {
         if (command_data->command_data_count != 2) {
-            ESP_LOGE(TAG, "The command data should in following order: mode amount");
+            ESP_LOGE(TAG, "The command data should be specified in following order: mode amount");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::thermostat::command::send_setpoint_raise_lower(
@@ -651,7 +661,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     case Thermostat::Commands::SetWeeklySchedule::Id: {
         if (command_data->command_data_count != 4) {
             ESP_LOGE(TAG,
-                     "The command data should in following order: number_of_transitions_for_sequence "
+                     "The command data should be specified in following order: number_of_transitions_for_sequence "
                      "day_of_week_for_sequence mode_for_sequence transitions");
             return ESP_ERR_INVALID_ARG;
         }
@@ -672,7 +682,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     }
     case Thermostat::Commands::GetWeeklySchedule::Id: {
         if (command_data->command_data_count != 2) {
-            ESP_LOGE(TAG, "The command data should in following order: data_to_return mode_to_return");
+            ESP_LOGE(TAG, "The command data be specified should in following order: data_to_return mode_to_return");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::thermostat::command::send_get_weekly_schedule(
@@ -701,7 +711,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     switch (command_data->command_id) {
     case DoorLock::Commands::LockDoor::Id: {
         if (command_data->command_data_count != 1) {
-            ESP_LOGE(TAG, "The command data should in following order: timed_invoke_timeout_ms");
+            ESP_LOGE(TAG, "The command data be specified should in following order: timed_invoke_timeout_ms");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::door_lock::command::send_lock_door(
@@ -711,7 +721,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     }
     case DoorLock::Commands::UnlockDoor::Id: {
         if (command_data->command_data_count != 1) {
-            ESP_LOGE(TAG, "The command data should in following order: timed_invoke_timeout_ms");
+            ESP_LOGE(TAG, "The command data should be specified in following order: timed_invoke_timeout_ms");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::door_lock::command::send_unlock_door(
@@ -721,7 +731,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     }
     case DoorLock::Commands::UnlockWithTimeout::Id: {
         if (command_data->command_data_count != 2) {
-            ESP_LOGE(TAG, "The command data should in following order: timeout timed_invoke_timeout_ms");
+            ESP_LOGE(TAG, "The command data should be specified in following order: timeout timed_invoke_timeout_ms");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::door_lock::command::send_unlock_with_timeout(
@@ -757,7 +767,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     }
     case WindowCovering::Commands::GoToLiftValue::Id: {
         if (command_data->command_data_count != 1) {
-            ESP_LOGE(TAG, "The command data should in following order: lift_value");
+            ESP_LOGE(TAG, "The command data should be specified in following order: lift_value");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::window_covering::command::send_go_to_lift_value(
@@ -766,7 +776,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     }
     case WindowCovering::Commands::GoToLiftPercentage::Id: {
         if (command_data->command_data_count != 1) {
-            ESP_LOGE(TAG, "The command data should in following order: lift_percentage");
+            ESP_LOGE(TAG, "The command data should be specified in following order: lift_percentage");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::window_covering::command::send_go_to_lift_percentage(
@@ -775,7 +785,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     }
     case WindowCovering::Commands::GoToTiltValue::Id: {
         if (command_data->command_data_count != 1) {
-            ESP_LOGE(TAG, "The command data should in following order: tilt_value");
+            ESP_LOGE(TAG, "The command data should be specified in following order: tilt_value");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::window_covering::command::send_go_to_tilt_value(
@@ -784,7 +794,7 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
     }
     case WindowCovering::Commands::GoToTiltPercentage::Id: {
         if (command_data->command_data_count != 1) {
-            ESP_LOGE(TAG, "The command data should in following order: tilt_percentage");
+            ESP_LOGE(TAG, "The command data should be specified in following order: tilt_percentage");
             return ESP_ERR_INVALID_ARG;
         }
         return esp_matter::cluster::window_covering::command::send_go_to_tilt_percentage(
@@ -799,6 +809,98 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
 
 } // namespace window_covering
 
+namespace administrator_commissioning {
+
+constexpr uint16_t k_default_timed_interaction_timeout = 5000;
+
+static esp_err_t generate_pase_verifier(uint32_t iteration, uint32_t &pincode, chip::MutableByteSpan &salt,
+                                        chip::Crypto::Spake2pVerifier &verifier)
+{
+    if (chip::Crypto::DRBG_get_bytes(salt.data(), salt.size()) != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to generate salt");
+        return ESP_FAIL;
+    }
+    if (chip::PASESession::GeneratePASEVerifier(verifier, iteration, salt, true, pincode) != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to generate PASE verifier");
+        return ESP_FAIL;
+    }
+    return ESP_OK;
+}
+
+static esp_err_t print_manual_code(uint32_t pincode, uint16_t discriminator)
+{
+    chip::SetupPayload payload = chip::SetupPayload();
+    payload.setUpPINCode = pincode;
+    payload.version = 0;
+    payload.discriminator.SetLongValue(discriminator);
+    payload.rendezvousInformation.SetValue(chip::RendezvousInformationFlag::kOnNetwork);
+    char payload_buffer[chip::QRCodeBasicSetupPayloadGenerator::kMaxQRCodeBase38RepresentationLength + 1];
+    chip::MutableCharSpan manual_code(payload_buffer);
+    CHIP_ERROR err = chip::ManualSetupPayloadGenerator(payload).payloadDecimalStringRepresentation(manual_code);
+    if (err == CHIP_NO_ERROR) {
+        ESP_LOGI(TAG, "****************Manual code:[%s]********************", payload_buffer);
+    } else {
+        ESP_LOGE(TAG, "Unable to generate manual code for setup payload");
+        return ESP_FAIL;
+    }
+    return ESP_OK;
+}
+
+static esp_err_t send_command(command_data_t *command_data, peer_device_t *remote_device, uint16_t remote_endpoint_id)
+{
+    switch (command_data->command_id) {
+    case AdministratorCommissioning::Commands::OpenCommissioningWindow::Id: {
+        if (command_data->command_data_count != 3) {
+            ESP_LOGE(TAG,
+                     "The command data should be specified in following order: commissioning_timeout iteration "
+                     "discriminator");
+            return ESP_ERR_INVALID_ARG;
+        }
+        uint16_t commissioning_timeout = string_to_uint16(command_data->command_data_str[0]);
+        uint32_t iteration = string_to_uint32(command_data->command_data_str[1]);
+        uint16_t discriminator = string_to_uint16(command_data->command_data_str[2]);
+        uint8_t salt_buffer[chip::Crypto::kSpake2p_Max_PBKDF_Salt_Length];
+        chip::MutableByteSpan salt = chip::MutableByteSpan(salt_buffer);
+        uint32_t pincode = 0;
+        chip::Crypto::Spake2pVerifier verifier;
+        if (generate_pase_verifier(iteration, pincode, salt, verifier) != ESP_OK) {
+            return ESP_ERR_INVALID_ARG;
+        }
+        print_manual_code(pincode, discriminator);
+
+        chip::Spake2pVerifierSerialized serialized_verifier;
+        chip::MutableByteSpan serialized_verifier_span(serialized_verifier);
+        if (verifier.Serialize(serialized_verifier_span) != CHIP_NO_ERROR) {
+            ESP_LOGE(TAG, "Failed to serialize the verifier");
+            return ESP_FAIL;
+        }
+        return esp_matter::cluster::administrator_commissioning::command::send_open_commissioning_window(
+            remote_device, remote_endpoint_id, commissioning_timeout, serialized_verifier_span, discriminator,
+            iteration, salt, k_default_timed_interaction_timeout);
+    }
+    case AdministratorCommissioning::Commands::OpenBasicCommissioningWindow::Id: {
+        if (command_data->command_data_count != 1) {
+            ESP_LOGE(TAG, "The command data should be specified in following order: commissioning_timeout");
+            return ESP_ERR_INVALID_ARG;
+        }
+        return esp_matter::cluster::administrator_commissioning::command::send_open_basic_commissioning_window(
+            remote_device, remote_endpoint_id,
+            /* commissioning_timeout */ string_to_uint16(command_data->command_data_str[0]),
+            k_default_timed_interaction_timeout);
+        break;
+    }
+    case AdministratorCommissioning::Commands::RevokeCommissioning::Id: {
+        return esp_matter::cluster::administrator_commissioning::command::send_revoke_commissioning(
+            remote_device, remote_endpoint_id, k_default_timed_interaction_timeout);
+        break;
+    }
+    default:
+        break;
+    }
+    return ESP_ERR_NOT_SUPPORTED;
+}
+
+} // namespace administrator_commissioning
 } // namespace clusters
 
 cluster_command_handler_t cluster_command::unsupported_cluster_command_handler = NULL;
@@ -840,6 +942,9 @@ void cluster_command::on_device_connected_fcn(void *context, ExchangeManager &ex
         break;
     case DoorLock::Id:
         err = clusters::door_lock::send_command(cmd->m_command_data, &device_proxy, cmd->m_endpoint_id);
+        break;
+    case AdministratorCommissioning::Id:
+        clusters::administrator_commissioning::send_command(cmd->m_command_data, &device_proxy, cmd->m_endpoint_id);
         break;
     default:
         err = ESP_ERR_NOT_SUPPORTED;
