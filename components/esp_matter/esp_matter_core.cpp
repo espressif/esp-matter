@@ -88,7 +88,7 @@ void PostEvent(uint16_t eventType)
     CHIP_ERROR error = chip::DeviceLayer::PlatformMgr().PostEvent(&event);
     if (error != CHIP_NO_ERROR)
     {
-        ESP_LOGE(TAG, "Failed to post event for event type:%u, err:%" CHIP_ERROR_FORMAT, eventType, error.Format());
+        ESP_LOGE(TAG, "Failed to post event for event type:%" PRIu16 ", err:%" CHIP_ERROR_FORMAT, eventType, error.Format());
     }
 }
 
@@ -402,7 +402,7 @@ static esp_err_t erase_persistent_data(endpoint_t *endpoint)
 {
     uint16_t endpoint_id = endpoint::get_id(endpoint);
     char nvs_namespace[16] = {0};
-    snprintf(nvs_namespace, 16, "endpoint_%X", endpoint_id); /* endpoint_id */
+    snprintf(nvs_namespace, 16, "endpoint_%" PRIX16 "", endpoint_id); /* endpoint_id */
 
     nvs_handle_t handle;
     esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, nvs_namespace, NVS_READWRITE, &handle);
@@ -447,7 +447,7 @@ static esp_err_t disable(endpoint_t *endpoint)
         lock::chip_stack_unlock();
     }
     if (!(current_endpoint->endpoint_type)) {
-        ESP_LOGE(TAG, "endpoint %d's endpoint_type is NULL", current_endpoint->endpoint_id);
+        ESP_LOGE(TAG, "endpoint %" PRIu16 "'s endpoint_type is NULL", current_endpoint->endpoint_id);
         return ESP_ERR_INVALID_STATE;
     }
     /* Free all clusters */
@@ -678,7 +678,7 @@ esp_err_t enable(endpoint_t *endpoint)
     status = emberAfSetDynamicEndpoint(endpoint_index, current_endpoint->endpoint_id, endpoint_type, data_versions,
                                        device_types, current_endpoint->parent_endpoint_id);
     if (status != EMBER_ZCL_STATUS_SUCCESS) {
-        ESP_LOGE(TAG, "Error adding dynamic endpoint %d: 0x%x", current_endpoint->endpoint_id, status);
+        ESP_LOGE(TAG, "Error adding dynamic endpoint %" PRIu16 ": 0x%x", current_endpoint->endpoint_id, status);
         err = ESP_FAIL;
         if (lock_status == lock::SUCCESS) {
             lock::chip_stack_unlock();
@@ -688,7 +688,7 @@ esp_err_t enable(endpoint_t *endpoint)
     if (lock_status == lock::SUCCESS) {
         lock::chip_stack_unlock();
     }
-    ESP_LOGI(TAG, "Dynamic endpoint %d added", current_endpoint->endpoint_id);
+    ESP_LOGI(TAG, "Dynamic endpoint %" PRIu16 " added", current_endpoint->endpoint_id);
     return err;
 
 cleanup:
@@ -997,7 +997,7 @@ esp_err_t factory_reset()
         while (endpoint) {
             err = endpoint::erase_persistent_data(endpoint);
             if (err != ESP_OK) {
-                ESP_LOGE(TAG, "Error erasing persistent data of endpoint %d", endpoint::get_id(endpoint));
+                ESP_LOGE(TAG, "Error erasing persistent data of endpoint %" PRIu16 "", endpoint::get_id(endpoint));
                 continue;
             }
             endpoint = endpoint::get_next(endpoint);
@@ -1023,7 +1023,7 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint8_t flags, es
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     attribute_t *existing_attribute = get(cluster, attribute_id);
     if (existing_attribute) {
-        ESP_LOGW(TAG, "Attribute 0x%08lx on cluster 0x%08lx already exists. Not creating again.", attribute_id,
+        ESP_LOGW(TAG, "Attribute 0x%08" PRIX32 " on cluster 0x%08" PRIX32 " already exists. Not creating again.", attribute_id,
                  current_cluster->cluster_id);
         return existing_attribute;
     }
@@ -1306,15 +1306,15 @@ esp_err_t store_val_in_nvs(attribute_t *attribute)
     uint16_t endpoint_id = current_attribute->endpoint_id;
     char nvs_namespace[16] = {0};
     char attribute_key[16] = {0};
-    snprintf(nvs_namespace, 16, "endpoint_%X", endpoint_id); /* endpoint_id */
-    snprintf(attribute_key, 16, "%lX:%lX", cluster_id, attribute_id); /* cluster_id:attribute_id */
+    snprintf(nvs_namespace, 16, "endpoint_%" PRIX16 "", endpoint_id); /* endpoint_id */
+    snprintf(attribute_key, 16, "%" PRIX32 ":%" PRIX32 "", cluster_id, attribute_id); /* cluster_id:attribute_id */
 
     nvs_handle_t handle;
     esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, nvs_namespace, NVS_READWRITE, &handle);
     if (err != ESP_OK) {
         return err;
     }
-    ESP_LOGD(TAG, "Store attribute in nvs: endpoint_id-0x%x, cluster_id-0x%lx, attribute_id-0x%lx",
+    ESP_LOGD(TAG, "Store attribute in nvs: endpoint_id-0x%" PRIx16 ", cluster_id-0x%" PRIx32 ", attribute_id-0x%" PRIx32 "",
              endpoint_id, cluster_id, attribute_id);
     if (current_attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
         current_attribute->val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
@@ -1449,15 +1449,15 @@ esp_err_t get_val_from_nvs(attribute_t *attribute, esp_matter_attr_val_t *val)
     uint16_t endpoint_id = current_attribute->endpoint_id;
     char nvs_namespace[16] = {0};
     char attribute_key[16] = {0};
-    snprintf(nvs_namespace, 16, "endpoint_%X", endpoint_id); /* endpoint_id */
-    snprintf(attribute_key, 16, "%lX:%lX", cluster_id, attribute_id); /* cluster_id:attribute_id */
+    snprintf(nvs_namespace, 16, "endpoint_%" PRIX16 "", endpoint_id); /* endpoint_id */
+    snprintf(attribute_key, 16, "%" PRIX32 ":%" PRIX32 "", cluster_id, attribute_id); /* cluster_id:attribute_id */
 
     nvs_handle_t handle;
     esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, nvs_namespace, NVS_READONLY, &handle);
     if (err != ESP_OK) {
         return err;
     }
-    ESP_LOGD(TAG, "read attribute from nvs: endpoint_id-0x%x, cluster_id-0x%lx, attribute_id-0x%lx",
+    ESP_LOGD(TAG, "read attribute from nvs: endpoint_id-0x%" PRIx16 ", cluster_id-0x%" PRIx32 ", attribute_id-0x%" PRIx32 "",
              endpoint_id, cluster_id, attribute_id);
     if (current_attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
         current_attribute->val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
@@ -1602,7 +1602,7 @@ command_t *create(cluster_t *cluster, uint32_t command_id, uint8_t flags, callba
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     command_t *existing_command = get(cluster, command_id, flags);
     if (existing_command) {
-        ESP_LOGW(TAG, "Command 0x%08lx on cluster 0x%08lx already exists. Not creating again.", command_id,
+        ESP_LOGW(TAG, "Command 0x%08" PRIX32 " on cluster 0x%08" PRIX32 " already exists. Not creating again.", command_id,
                  current_cluster->cluster_id);
         return existing_command;
     }
@@ -1736,20 +1736,20 @@ cluster_t *create(endpoint_t *endpoint, uint32_t cluster_id, uint8_t flags)
         /* If a server already exists, do not create it again */
         _cluster_t *_existing_cluster = (_cluster_t *)existing_cluster;
         if ((_existing_cluster->flags & CLUSTER_FLAG_SERVER) && (flags & CLUSTER_FLAG_SERVER)) {
-            ESP_LOGW(TAG, "Server Cluster 0x%08lx on endpoint 0x%04x already exists. Not creating again.", cluster_id,
+            ESP_LOGW(TAG, "Server Cluster 0x%08" PRIX32 " on endpoint 0x%04" PRIx16 " already exists. Not creating again.", cluster_id,
                      current_endpoint->endpoint_id);
             return existing_cluster;
         }
 
         /* If a client already exists, do not create it again */
         if ((_existing_cluster->flags & CLUSTER_FLAG_CLIENT) && (flags & CLUSTER_FLAG_CLIENT)) {
-            ESP_LOGW(TAG, "Client Cluster 0x%08lx on endpoint 0x%04x already exists. Not creating again.", cluster_id,
+            ESP_LOGW(TAG, "Client Cluster 0x%08" PRIX32 " on endpoint 0x%04" PRIx16 " already exists. Not creating again.", cluster_id,
                      current_endpoint->endpoint_id);
             return existing_cluster;
         }
 
         /* The cluster already exists, but is of a different type. Just update the 'Set' part from below. */
-        ESP_LOGI(TAG, "Cluster 0x%08lx on endpoint 0x%04x already exists. Updating values.", cluster_id,
+        ESP_LOGI(TAG, "Cluster 0x%08" PRIX32 " on endpoint 0x%04" PRIx16 " already exists. Updating values.", cluster_id,
                  current_endpoint->endpoint_id);
         _existing_cluster->flags |= flags;
         return existing_cluster;
