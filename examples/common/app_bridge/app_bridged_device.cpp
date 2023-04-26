@@ -116,6 +116,16 @@ app_bridged_device_address_t app_bridge_blemesh_address(uint16_t blemesh_addr)
     return bridged_address;
 }
 
+app_bridged_device_address_t app_bridge_espnow_address(uint8_t espnow_macaddr[6], uint16_t espnow_initiator_attr)
+{
+    app_bridged_device_address_t bridged_address = {
+        .espnow_macaddr = {0},
+    };
+    memcpy(bridged_address.espnow_macaddr, espnow_macaddr, 6);
+    ESP_LOGI(TAG, "espnow_initiator_attr: %d", espnow_initiator_attr);
+    return bridged_address;
+}
+
 /** Bridged Device APIs */
 app_bridged_device_t *app_bridge_create_bridged_device(node_t *node, uint16_t parent_endpoint_id,
                                                        uint32_t matter_device_type_id,
@@ -308,5 +318,47 @@ uint16_t app_bridge_get_blemesh_addr_by_matter_endpointid(uint16_t matter_endpoi
         current_dev = current_dev->next;
     }
     return 0xFFFF;
+}
+
+/** ESP-NOW Device APIs */
+app_bridged_device_t *app_bridge_get_device_by_espnow_macaddr(uint8_t espnow_macaddr[6])
+{
+    app_bridged_device_t *current_dev = g_bridged_device_list;
+    while (current_dev) {
+        if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_ESPNOW) && current_dev->dev
+            && !memcmp(current_dev->dev_addr.espnow_macaddr, espnow_macaddr, 6)
+            ) {
+            return current_dev;
+        }
+        current_dev = current_dev->next;
+    }
+    return NULL;
+}
+
+uint16_t app_bridge_get_matter_endpointid_by_espnow_macaddr(uint8_t espnow_macaddr[6])
+{
+    app_bridged_device_t *current_dev = g_bridged_device_list;
+    while (current_dev) {
+        if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_ESPNOW) && current_dev->dev
+            && !memcmp(current_dev->dev_addr.espnow_macaddr, espnow_macaddr, 6)
+            ) {
+            return esp_matter::endpoint::get_id(current_dev->dev->endpoint);
+        }
+        current_dev = current_dev->next;
+    }
+    return chip::kInvalidEndpointId;
+}
+
+uint8_t* app_bridge_get_espnow_macaddr_by_matter_endpointid(uint16_t matter_endpointid)
+{
+    app_bridged_device_t *current_dev = g_bridged_device_list;
+    while (current_dev) {
+        if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_ESPNOW) && current_dev->dev &&
+            (esp_matter::endpoint::get_id(current_dev->dev->endpoint) == matter_endpointid)) {
+            return current_dev->dev_addr.espnow_macaddr;
+        }
+        current_dev = current_dev->next;
+    }
+    return NULL;
 }
 #endif
