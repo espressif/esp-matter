@@ -354,6 +354,18 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* temperature_measurement */
 
+namespace relative_humidity_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    nullable<uint16_t> measured_value;
+    nullable<uint16_t> min_measured_value;
+    nullable<uint16_t> max_measured_value;
+    config() : cluster_revision(3), measured_value(), min_measured_value(0), max_measured_value(10000) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* relative_humidity_measurement */
+
 namespace occupancy_sensing {
 typedef struct config {
     uint16_t cluster_revision;
